@@ -196,9 +196,6 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-T06
            MOVE    SPA-WORK        TO  SPA-T01KYOUTU
-      *??
-           DISPLAY "in SPA-GMN-T06-PTNUM=" SPA-GMN-T06-PTNUM "#"
-      *??
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -219,16 +216,9 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-      *??
-           DISPLAY "ot SPA-GMN-T06-PTNUM=" SPA-GMN-T06-PTNUM "#"
-      *??
            MOVE    SPA-T01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-T06         TO  SPA-FREE
-      *??
-           MOVE    SPA-FREE        TO  SPA-T06
-           DISPLAY "wk SPA-GMN-T06-PTNUM=" SPA-GMN-T06-PTNUM "#"
-      *??
       *
            .
            EXIT    PROGRAM
