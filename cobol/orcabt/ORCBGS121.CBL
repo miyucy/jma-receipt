@@ -1620,25 +1620,21 @@
       *
                    IF    ( BGS100P-HKNKBN-HKN
                                            NOT =   SPACE )
+      *
                        IF    ( BGS100P-HKNKBN-HKN
-                                               =   "1" OR "2" OR "3"
-                                                OR "7" OR "8" OR "9" )
+                                               =   "1" OR "2" OR "3" )
                            MOVE    BGS100P-HKNKBN-HKN
                                                TO  WRK-HKNKBN-HKN-G
                            IF    ( WRK-HKNKBN-HKN
                                            NOT =   BGSMEI-HOKEN )
                                MOVE    ZERO    TO  FLG-LOOPEND
                            END-IF
-                       ELSE
-                               MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-      *
-                       IF    ( BGS100P-HKNKBN-HKN
-                                               =   "1" OR "2" OR "3" )
                            IF    ( BGS100P-HKNKBN
                                            NOT =   BGSMEI-RECESBT (1:2))
                                MOVE    ZERO    TO  FLG-LOOPEND
                            END-IF
+                       ELSE
+                           MOVE        ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
       *
