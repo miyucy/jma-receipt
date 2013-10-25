@@ -695,6 +695,7 @@
            END-IF
            IF    ( SPA-D01-RSIPROCKBN      =   "1" )
              OR  ( SPA-D01-JBIPROCKBN      =   "1" )
+             OR  ( SPA-D01-DAISANPROCKBN   =   "1" )
                MOVE    "T"         TO  SPA-GMN-D01-CHK-RSIJBI
            END-IF
            IF    ( SPA-D01-KGIPROCKBN      =   "1" )
@@ -1101,6 +1102,8 @@
       *
            MOVE    ORCBSD01-CHIKENPROCKBN  TO  SHELLTBL-ARG34
       *
+           MOVE    ORCBSD01-DAISANPROCKBN  TO  SHELLTBL-ARG35
+      *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
            MOVE    "shell"                 TO  MCP-TABLE
@@ -1248,6 +1251,7 @@
            IF    ( SPA-GMN-D01-CHK-RSIJBI      =   "T" )
                MOVE    "1"         TO  ORCBSD01-RSIPROCKBN
                MOVE    "1"         TO  ORCBSD01-JBIPROCKBN
+               MOVE    "1"         TO  ORCBSD01-DAISANPROCKBN
            END-IF
       *
            IF    ( SPA-GMN-D01-CHK-KOUGAI      =   "T" )
@@ -1322,6 +1326,7 @@
            MOVE    ORCBSD01-RSIPROCKBN     TO  SPA-D01-RSIPROCKBN
            MOVE    ORCBSD01-KGIPROCKBN     TO  SPA-D01-KGIPROCKBN
            MOVE    ORCBSD01-JBIPROCKBN     TO  SPA-D01-JBIPROCKBN
+           MOVE    ORCBSD01-DAISANPROCKBN  TO  SPA-D01-DAISANPROCKBN
            MOVE    ORCBSD01-JIHIPROCKBN    TO  SPA-D01-JIHIPROCKBN
            MOVE    ORCBSD01-CHIKENPROCKBN  TO  SPA-D01-CHIKENPROCKBN
            MOVE    ORCBSD01-INGAIPROCKBN   TO  SPA-D01-INGAIPROCKBN
