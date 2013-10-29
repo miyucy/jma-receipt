@@ -121,6 +121,7 @@
            03  WRK-IN-SYMD             PIC X(08).
            03  WRK-IN-EYMD             PIC X(08).
            03  WRK-IDR                 PIC 9(03).
+      *
       *    »æ≥—¡¥≥— —¥π
       *01  WRK-HENKAN-AREA.
       *    03  WRK-MAE-INPUT       PIC X(100).
@@ -370,6 +371,8 @@
                PERFORM 3001-RSHKN-SET-SEC
            END-IF
       *
+      *    ∂Ë ¨ÀË•≥•Û•‹•‹•Ø•π ‘Ω∏
+           PERFORM 41012-SINKEI-SET-SEC
       *    •≥•Û•‹•‹•Ø•π§Œ ‘Ω∏
            PERFORM 3003-COMBBOX-SET-SEC
       *
@@ -829,25 +832,32 @@
            END-IF
       *
       *    ∏´Ω–§∑Ω§¿µ
-           EVALUATE    SPA-GMN2D-HKNKBN
-               WHEN    "5"
-                   MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
-               WHEN    OTHER
-                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
-           END-EVALUATE
+      *    EVALUATE    SPA-GMN2D-HKNKBN
+      *        WHEN    "5"
+      *            MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
+      *            MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
+      *        WHEN    OTHER
+      *            MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
+      *            MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
+      *    END-EVALUATE
       *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
-           MOVE    "1 ¥µº‘¿¡µ·§π§Î(100%)"
-                                       TO  SPA-GMN2D-JIBAISEIKBN-LST(01)
-           MOVE    "2 ¥µº‘¿¡µ·§∑§ §§(0%)"
-                                       TO  SPA-GMN2D-JIBAISEIKBN-LST(02)
-           IF      SPA-GMN2D-HKNKBN    =   "4"
-                                       OR  "5"
-               MOVE    2                   TO  SPA-GMN2D-JIBAISEIKBN-MAX
-           ELSE
-               MOVE    ZERO                TO  SPA-GMN2D-JIBAISEIKBN-MAX
-           END-IF
+      *    MOVE    "1 ¥µº‘¿¡µ·§π§Î(100%)"
+      *                                TO  SPA-GMN2D-JIBAISEIKBN-LST(01)
+      *    MOVE    "2 ¥µº‘¿¡µ·§∑§ §§(0%)"
+      *                                TO  SPA-GMN2D-JIBAISEIKBN-LST(02)
+      *!   ¬Ëª∞º‘
+      *    IF      SPA-GMN2D-HKNKBN    =   "6"
+      *        MOVE    "1 ¥µº‘¿¡µ·§π§Î"
+      *                                TO  SPA-GMN2D-JIBAISEIKBN-LST(01)
+      *    END-IF
+      *
+      *    IF      SPA-GMN2D-HKNKBN    =   "4"
+      *                                OR  "5"
+      *                                OR  "6"
+      *        MOVE    2                   TO  SPA-GMN2D-JIBAISEIKBN-MAX
+      *    ELSE
+      *        MOVE    ZERO                TO  SPA-GMN2D-JIBAISEIKBN-MAX
+      **** END-IF
       *
       *    ∫“≥≤∂Ë ¨
            MOVE    "1 ∂»Ã≥√Ê§Œ∫“≥≤"    TO  SPA-GMN2D-SAIGAI-LST (01)
@@ -1004,13 +1014,7 @@
                                            TO  SPA-GMN2D-HKNKBN-G
                END-IF
            END-PERFORM
-      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
-           IF      SPA-GMN2D-HKNKBN    =   "4"
-                                       OR  "5"
-               MOVE    2                   TO  SPA-GMN2D-JIBAISEIKBN-MAX
-           ELSE
-               MOVE    ZERO                TO  SPA-GMN2D-JIBAISEIKBN-MAX
-           END-IF
+      *
       *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN2D-JIBAISEIKBN-MAX
@@ -1021,15 +1025,6 @@
                END-IF
            END-PERFORM
       *
-      *    ∏´Ω–§∑Ω§¿µ
-           EVALUATE    SPA-GMN2D-HKNKBN
-               WHEN    "5"
-                   MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
-               WHEN    OTHER
-                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
-           END-EVALUATE
       *    ∫“≥≤∂Ë ¨
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN2D-SAIGAI-MAX
@@ -1040,18 +1035,8 @@
                END-IF
            END-PERFORM
       *
-      *    ∏´Ω–§∑Ω§¿µ
-           EVALUATE    SPA-GMN2D-HKNKBN
-               WHEN    "5"
-                   MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
-               WHEN    OTHER
-                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
-           END-EVALUATE
-      *
       *    ø∑∑—∂Ë ¨
-           PERFORM 41012-SINKEI-SET-SEC
+      *****PERFORM 41012-SINKEI-SET-SEC
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN2D-SINKEI-MAX
                IF      SPA-GMN2D-SINKEI-LST(IDX) (1:1)
@@ -1481,6 +1466,7 @@
                    EVALUATE    SPA-GMN2D-HKNKBN
                        WHEN    "4"
                        WHEN    "5"
+                       WHEN    "6"
                            MOVE    22              TO  SPA-GMN2D-CUR
                    END-EVALUATE
       *        º´«Â¿’¿¡µ·∂Ë ¨
@@ -1900,6 +1886,7 @@
       *    º´«Â¿’°¶∏¯Ã≥∫“≥≤∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
            IF      SPA-GMN2D-HKNKBN    =   "4"
                                        OR  "5"
+                                       OR  "6"
                CONTINUE
            ELSE
                MOVE    SPACE               TO  SPA-GMN2D-JIBAISEIKBN-G
@@ -1931,14 +1918,27 @@
       *****************************************************************
        41011-SYOKI-SET-SEC           SECTION.
       *
+      *    ∂¶ƒÃ ‘Ω∏
+           PERFORM 41012-SINKEI-SET-SEC
+      *  •Ø•Í•¢
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           MOVE    SPACE           TO  SPA-GMN2D-JIBAISEIKBN-G
+      *    ∫“≥≤∂Ë ¨
+           MOVE    SPACE           TO  SPA-GMN2D-SAIGAI-G
+      *    ø∑∑—∫∆ Ã ‘Ω∏
+           MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
+           MOVE    ZERO            TO  SPA-GMN2D-KAISU
+      *    ≈æµ¢
+           MOVE    SPACE           TO  SPA-GMN2D-TENKI-G
+           MOVE    SPACE           TO  SPA-GMN2D-SISIKBN-G
+      *    ¬ªΩ˝∂Ë ¨
+           MOVE    SPACE           TO  SPA-GMN2D-SONSHOUKBN-G
+      *
            EVALUATE    SPA-GMN2D-HKNKBN
+      *        √ª¥¸°¶Ω˝…¬
                WHEN    "1"
                WHEN    "2"
-      *            º´«Â¿’¿¡µ·∂Ë ¨
-                   MOVE    SPACE           TO  SPA-GMN2D-JIBAISEIKBN-G
-                   MOVE    ZERO            TO  SPA-GMN2D-JIBAISEIKBN-MAX
       *            ø∑∑—∫∆ Ã ‘Ω∏
-                   PERFORM 41012-SINKEI-SET-SEC
                    IF      SPA-GMN2D-SINKEIMEI =   SPACE
                        MOVE    SPA-GMN2D-SINKEI-LST (01)
                                                TO  SPA-GMN2D-SINKEI-G
@@ -1986,33 +1986,24 @@
       *************END-IF
       *            œ´∫“•Ï•ª≤ÛøÙµ≠∫‹°ß≤ÛøÙ
                    MOVE    1               TO  SPA-GMN2D-KAISU
-      *
+      *        •¢•’•ø°º•±•¢
                WHEN    "3"
-      *            º´«Â¿’¿¡µ·∂Ë ¨
-                   MOVE    SPACE           TO  SPA-GMN2D-JIBAISEIKBN-G
-                   MOVE    ZERO            TO  SPA-GMN2D-JIBAISEIKBN-MAX
       *
                    IF      SPA-GMN2D-SONSHOUKBN   =   SPACE
                        MOVE    SPA-GMN2D-SONSHOUKBN-LST (01)
                                            TO  SPA-GMN2D-SONSHOUKBN-G
                    END-IF
+      *        º´«Â¿’
                WHEN    "4"
-      *            º´«Â¿’
       *            º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
-                   MOVE    2               TO  SPA-GMN2D-JIBAISEIKBN-MAX
-      ***          IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
-      *                •∑•π•∆•‡¥…Õ˝¿ﬂƒÍ§À§Ë§Í°¢ΩÈ¥¸…Ωº® —ππ
-                       IF      SPA-JIBAI-SEI       =   "2"
-                           MOVE    SPA-GMN2D-JIBAISEIKBN-LST (2)
+      *            •∑•π•∆•‡¥…Õ˝¿ﬂƒÍ§À§Ë§Í°¢ΩÈ¥¸…Ωº® —ππ
+                   IF      SPA-JIBAI-SEI       =   "2"
+                       MOVE    SPA-GMN2D-JIBAISEIKBN-LST (2)
                                            TO  SPA-GMN2D-JIBAISEIKBN-G
-                       ELSE
-                           MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
+                   ELSE
+                       MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
                                            TO  SPA-GMN2D-JIBAISEIKBN-G
-                       END-IF
-      ***          END-IF
-      *
-                   PERFORM 41012-SINKEI-SET-SEC
-                   MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
+                   END-IF
       *            ≈æµ¢
                    IF      SPA-GMN2D-TENKI     =   SPACE
                        MOVE    SPA-GMN2D-TENKI-LST (02)
@@ -2023,12 +2014,9 @@
                        MOVE    SPA-GMN2D-SISIKBN-LST (01)
                                                TO  SPA-GMN2D-SISIKBN-G
                    END-IF
-      *            ∫“≥≤∂Ë ¨
-                   MOVE   SPACE                TO  SPA-GMN2D-SAIGAI-G
+      *        ∏¯Ã≥∫“≥≤
                WHEN    "5"
-      *            ∏¯Ã≥∫“≥≤
       *            º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
-                   MOVE    2               TO  SPA-GMN2D-JIBAISEIKBN-MAX
       ***          IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
       *                •∑•π•∆•‡¥…Õ˝¿ﬂƒÍ§À§Ë§Í°¢ΩÈ¥¸…Ωº® —ππ
                        IF      SPA-KOMU-SEI        =   "2"
@@ -2039,9 +2027,6 @@
                                            TO  SPA-GMN2D-JIBAISEIKBN-G
                        END-IF
       **           END-IF
-      *
-                   PERFORM 41012-SINKEI-SET-SEC
-                   MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
       *            ≈æµ¢
                    IF      SPA-GMN2D-TENKI     =   SPACE
                        MOVE    SPA-GMN2D-TENKI-LST (02)
@@ -2052,44 +2037,28 @@
                        MOVE    SPA-GMN2D-SISIKBN-LST (01)
                                                TO  SPA-GMN2D-SISIKBN-G
                    END-IF
-      *            ∫“≥≤∂Ë ¨
-                   MOVE   SPACE                TO  SPA-GMN2D-SAIGAI-G
       *!!!!
       *        ¬Ëª∞º‘π‘∞Ÿ
                WHEN    "6"
-                   MOVE    SPACE           TO  SPA-GMN2D-JIBAISEIKBN-G
-                   MOVE    ZERO            TO  SPA-GMN2D-JIBAISEIKBN-MAX
-      *
-                   PERFORM 41012-SINKEI-SET-SEC
-                   MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
+      *            º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+                   MOVE    SPA-GMN2D-JIBAISEIKBN-LST (2)
+                                           TO  SPA-GMN2D-JIBAISEIKBN-G
       *            ≈æµ¢
                    IF      SPA-GMN2D-TENKI     =   SPACE
                        MOVE    SPA-GMN2D-TENKI-LST (02)
                                                TO  SPA-GMN2D-TENKI-G
                    END-IF
-      *
-                   MOVE    SPACE               TO  SPA-GMN2D-SISIKBN-G
-      *            ∫“≥≤∂Ë ¨
-                   MOVE   SPACE                TO  SPA-GMN2D-SAIGAI-G
-           END-EVALUATE
-      *    ∏´Ω–§∑Ω§¿µ
-           EVALUATE    SPA-GMN2D-HKNKBN
-               WHEN    "5"
-                   MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
-               WHEN    OTHER
-                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
-                   MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
            END-EVALUATE
       *
           .
        41011-SYOKI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ø∑∑—∫∆ Ã ‘Ω∏ΩËÕ˝
+      *    ΩÈ¥¸ ‘Ω∏ΩËÕ˝
       *****************************************************************
        41012-SINKEI-SET-SEC           SECTION.
       *
+      *    ø∑∑—∫∆ Ã ‘Ω∏
            EVALUATE    SPA-GMN2D-HKNKBN
                WHEN    "1"
       *            √ª¥¸µÎ…’
@@ -2109,6 +2078,33 @@
                    MOVE    ZERO            TO  SPA-GMN2D-SINKEI-MAX
            END-EVALUATE
       *
+      *    ∏´Ω–§∑Ω§¿µ
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "5"
+                   MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
+                   MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
+               WHEN    OTHER
+                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
+                   MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
+           END-EVALUATE
+      *
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           MOVE    "1 ¥µº‘¿¡µ·§π§Î(100%)"
+                                       TO  SPA-GMN2D-JIBAISEIKBN-LST(01)
+           MOVE    "2 ¥µº‘¿¡µ·§∑§ §§(0%)"
+                                       TO  SPA-GMN2D-JIBAISEIKBN-LST(02)
+           IF      SPA-GMN2D-HKNKBN    =   "6"
+               MOVE    "1 ¥µº‘¿¡µ·§π§Î"
+                                       TO  SPA-GMN2D-JIBAISEIKBN-LST(01)
+           END-IF
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           IF      SPA-GMN2D-HKNKBN    =   "4"
+                                       OR  "5"
+                                       OR  "6"
+               MOVE    2                   TO  SPA-GMN2D-JIBAISEIKBN-MAX
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN2D-JIBAISEIKBN-MAX
+           END-IF
       *
           .
        41012-SINKEI-SET-EXT.
@@ -3036,6 +3032,8 @@
       *
       *    •≥•Û•‹•‹•Ø•π§Œ ‘Ω∏
            PERFORM 3002-COMBBOX-HEX-SEC
+      *    ∂Ë ¨ÀË•≥•Û•‹•‹•Ø•π ‘Ω∏
+           PERFORM 41012-SINKEI-SET-SEC
       *
            .
        4201-CLERA-SYORI-EXT.
@@ -3101,6 +3099,8 @@
                                        TO  SPA-NAI2D-RSHKN-EDANUM
       *    œ´∫“æ‹∫Ÿ ‘Ω∏
            PERFORM 3001-RSHKN-SET-SEC
+      *    ∂Ë ¨ÀË•≥•Û•‹•‹•Ø•π ‘Ω∏
+           PERFORM 41012-SINKEI-SET-SEC
       *    •≥•Û•‹•‹•Ø•π§Œ ‘Ω∏
            PERFORM 3003-COMBBOX-SET-SEC
       *
@@ -3558,6 +3558,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    "6"
       *    ¬Ëª∞º‘π‘∞Ÿ
+                   MOVE    SPA-GMN2D-JIBAISEIKBN
+                                               TO  PTRSI-JIBAISEIKBN
                    IF      SPA-GMN2D-DRCD      =   SPACE
                        MOVE    SPACE               TO  PTRSI-DRCD
                    ELSE

@@ -118,6 +118,7 @@
       *  04.06.05    NACL-門脇    13/09/13  生保に関わる保険組合せ作成修正
       *
       *  04.07.01    NACL-門脇    13/07/08  自賠責（第三者行為）対応
+      *  04.07.01    NACL-多々納  13/10/29  第三者行為対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -198,6 +199,7 @@
            03  FLG-HIYATOI         PIC 9(01).
            03  FLG-NYUSYO          PIC 9(01).
            03  FLG-TUUKA           PIC 9(01).
+           03  FLG-DAIRSIFLG       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -236,6 +238,8 @@
            03  IDX9                PIC 9(04).
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(04).
+      *
+           03  IDXR                PIC 9(04).
       *
        01  WRK-KCOMB-AREA.
       *      組合せ退避用
@@ -413,6 +417,8 @@
                    07  WRK-KOH-GENHKNNUM2  PIC X(03).
                    07  WRK-KOH-GENHKNNUM3  PIC X(03).
                    07  WRK-KOH-FTNJANUM    PIC X(08).
+      *            第三者
+                   07  WRK-KOH-JIBAISEIKBN  PIC X(01).
       *
            03  WRK-SYOCYO-TEKSTYMD         PIC 9(08).
            03  WRK-SYOCYO-TEKEDYMD         PIC 9(08).
@@ -463,10 +469,16 @@
            03  PTKOH-GENHKNNUM1   PIC X(03).
            03  PTKOH-GENHKNNUM2   PIC X(03).
            03  PTKOH-GENHKNNUM3   PIC X(03).
+      *    第三者
+           03  PTKOH-JIBAISEIKBN  PIC X(01).
       *
       *    パラメタ
        01  PARA-REC.
            COPY    "CPPARA.INC".
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -593,6 +605,7 @@
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           MOVE    ZERO                TO  FLG-DAIRSIFLG
       *    公費情報
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
@@ -646,6 +659,12 @@
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *!!!!!!!!!!
+      *    第三者行為　負担区分の取得
+           IF      FLG-DAIRSIFLG       =   1
+               PERFORM 3301-DAI3RSIINF-SEC
+           END-IF
       *
            .
        320-PARAFILE-KENSAKU-EXT.
@@ -771,6 +790,11 @@
                MOVE    HKN-GENHKNNUM2   TO  PTKOH-GENHKNNUM2
                MOVE    HKN-GENHKNNUM3   TO  PTKOH-GENHKNNUM3
                MOVE    HKN-TANSEIDONAME TO  PTKOH-SEIDO
+      *!!!!!!!!!!
+      *        第三者行為　負担区分の取得
+               IF      PTKOH-KOHNUM     =   "970"
+                   MOVE    1                TO  FLG-DAIRSIFLG
+               END-IF
            END-IF
       *
       ****     MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
@@ -796,6 +820,65 @@
       *
            .
        330-KOHINF-SET-EXT.
+           EXIT.
+      *
+      *!!!!!!!!!!
+      *****************************************************************
+      *    第三者行為　負担区分の取得処理
+      *****************************************************************
+       3301-DAI3RSIINF-SEC         SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           PERFORM
+               UNTIL  (FLG-PARA    NOT =   ZERO      )
+      *
+               MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
+               IF     (PTRSI-HKNKBN        =   "6"    )
+                AND   (PTRSI-SAKUJOKBN     =   SPACE  )
+      *
+                   PERFORM VARYING     IDXR    FROM    1   BY  1
+                           UNTIL       IDXR    >   CNT-KOH
+                       IF      (WRK-KOH-KOHID (IDXR)   =   PTRSI-KOHID)
+                           MOVE    PTRSI-JIBAISEIKBN
+                                               TO  WRK-KOH-JIBAISEIKBN
+                                                              (IDXR)
+      *TEST
+          DISPLAY "P02W2 IDXR:" IDXR
+                   ",KOHID:" WRK-KOH-KOHID (IDXR) 
+                   ",HKNNUM:" WRK-KOH-HKNNUM (IDXR) 
+                   ",JIBAISEIKBN:" WRK-KOH-JIBAISEIKBN (IDXR)
+      *TEST
+                           MOVE    CNT-KOH     TO  IDXR
+                       END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       3301-DAI3RSIINF-EXT.
            EXIT.
       *
       *****************************************************************
