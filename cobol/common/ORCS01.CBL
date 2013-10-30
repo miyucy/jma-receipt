@@ -2341,7 +2341,57 @@
       *
               PERFORM  500-JIBAI-SONOTA-HENSYU-SEC
       *
+              IF    LNK-SYU-PTFTNRATE      =   ZERO
+                MOVE     ZERO              TO  WK-GENTAI-SKYMONEY
+                MOVE     LNK-SYU-SKYMONEY  TO  WK-GENTAI-SKYMONEY2
+              ELSE
+                COMPUTE  LNK-SYU-SKYMONEY         =
+                         LNK-SYU-SKYMONEY         +
+                         LNK-SYU-RSISHOSHIN-MONEY +
+                         LNK-SYU-RSISAISHIN-MONEY +
+                         LNK-SYU-RSISDO-MONEY     +
+                         LNK-SYU-RSIETC-MONEY
+                COMPUTE  LNK-SYU-RSI-TOTAL        =
+                         LNK-SYU-RSISHOSHIN-MONEY +
+                         LNK-SYU-RSISAISHIN-MONEY +
+                         LNK-SYU-RSISDO-MONEY     +
+                         LNK-SYU-RSIETC-MONEY
+                COMPUTE  LNK-SYU-TAX-TAISHOU      =
+                         LNK-SYU-TGMONEY-TAX(17)  +
+                         LNK-SYU-JIHI-TOTAL-TAX   +
+                         WK-RSIETC-ZEITAISYO
+                IF    WK-TAX1001-KBN  =  "1"
+                   COMPUTE  LNK-SYU-SKYMONEY-TAX-SAI  =
+                           (LNK-SYU-TAX-TAISHOU  * 5 / 105) + 0.5
+                ELSE
+                   COMPUTE  LNK-SYU-SKYMONEY-TAX-SAI  =
+                           (LNK-SYU-TAX-TAISHOU  * 5 / 105)
+                END-IF
+                COMPUTE  WK-GENTAI-SKYMONEY       =
+                         WK-GENTAI-SKYMONEY       +
+                         LNK-SYU-RSISHOSHIN-MONEY +
+                         LNK-SYU-RSISAISHIN-MONEY +
+                         LNK-SYU-RSISDO-MONEY     +
+                         LNK-SYU-RSIETC-MONEY
+                COMPUTE  WK-GENTAI-SKYMONEY2      =
+                         WK-GENTAI-SKYMONEY2      +
+                         LNK-SYU-RSISHOSHIN-MONEY +
+                         LNK-SYU-RSISAISHIN-MONEY +
+                         LNK-SYU-RSISDO-MONEY     +
+                         LNK-SYU-RSIETC-MONEY
+              END-IF
               PERFORM  400-SEIKYU-HASUU-KEISAN-DAISAN-SEC
+      *
+              COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY  =
+                         LNK-SYU-RSIJIBAI-SKYMONEY  +
+                         LNK-SYU-TGMONEY(17)        +
+                         LNK-SYU-TGMONEY-TAX(17)    +
+                         LNK-SYU-JIHI-TOTAL         +
+                         LNK-SYU-JIHI-TOTAL-TAX     +
+                         LNK-SYU-RSISHOSHIN-MONEY   +
+                         LNK-SYU-RSISAISHIN-MONEY   +
+                         LNK-SYU-RSISDO-MONEY       +
+                         LNK-SYU-RSIETC-MONEY
       *
            END-IF.
       *
@@ -2405,9 +2455,10 @@
                MOVE   WK-KEISAN       TO   LNK-SYU-SKYMONEY
            END-IF.
       *
-           IF     (LNK-SYU-SYUHKNNUM   NOT =   SPACE     )
-           AND    (LNK-SYU-KOH1HKNNUM  =   "972" OR "974")
-           AND    (LNK-SYU-KOH2HKNNUM  =       SPACE     )
+           IF    ((LNK-SYU-SYUHKNNUM   NOT =   SPACE     ) AND
+                  (LNK-SYU-KOH1HKNNUM  =   "972" OR "974") AND
+                  (LNK-SYU-KOH2HKNNUM  =       SPACE     ))
+           OR    ( LNK-SYU-KOH1HKNNUM  =   "970"          )
               MOVE     "1"     TO     LNK-SYU-HKNTEKKBN
            END-IF.
       *
@@ -2847,37 +2898,59 @@
       ******************************************************************
        400-SEIKYU-HASUU-KEISAN-DAISAN-SEC          SECTION.
       *
-           EVALUATE   WK-HASU1001-KBN4J
-            WHEN  "0"
-                EVALUATE   WK-HASU1001-KBN4
-                 WHEN  "1"
-                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
-                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
-                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
-                 WHEN  "2"
-                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
-                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
-                 WHEN  "3"
-                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
-                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
-                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
-                 WHEN  "4"
-                   CONTINUE
-                END-EVALUATE
-            WHEN  "1"
-                COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
-                COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
-                COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
-            WHEN  "2"
-                COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
-                COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
-            WHEN  "3"
-                COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
-                COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
-                COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
-            WHEN  "4"
-                CONTINUE
-           END-EVALUATE
+           IF  WK-HASU1001-KBN4J  =  "0"
+             EVALUATE   WK-HASU1001-KBN4
+              WHEN  "1"
+                  COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
+                  COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                  COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+              WHEN  "2"
+                  COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                  COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+              WHEN  "3"
+                  COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
+                  COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                  COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+              WHEN  "4"
+                  CONTINUE
+             END-EVALUATE
+           ELSE
+             MOVE    WK-GENTAI-SKYMONEY      TO   LNK-SYU-SKYMONEY
+             COMPUTE WK-GENTAI-SKYMONEY3     =    WK-GENTAI-SKYMONEY2
+                                             -    WK-GENTAI-SKYMONEY
+             EVALUATE   WK-HASU1001-KBN4
+              WHEN  "1"
+                  COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
+                  COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                  COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+              WHEN  "2"
+                  COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                  COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+              WHEN  "3"
+                  COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
+                  COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                  COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+              WHEN  "4"
+                  CONTINUE
+             END-EVALUATE
+             EVALUATE   WK-HASU1001-KBN4J
+              WHEN  "1"
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 +  5
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 / 10
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 * 10
+              WHEN  "2"
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 / 10
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 * 10
+              WHEN  "3"
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 +  9
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 / 10
+                  COMPUTE WK-GENTAI-SKYMONEY3 = WK-GENTAI-SKYMONEY3 * 10
+              WHEN  "4"
+                  CONTINUE
+             END-EVALUATE
+             COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY
+                                        +  WK-GENTAI-SKYMONEY3
+           END-IF
       *
            .
       *
@@ -21029,6 +21102,10 @@
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     +
                                   LNK-SYU-SYUCOMPYKZFTN
+                        IF   COMB-KOH1HKNNUM  =  "970"
+                          MOVE    WK-TOKUTEI-COMPFTN
+                                        TO  LNK-SYU-RSIJIBAI-SKYMONEY
+                        END-IF
                ELSE
                         MOVE  HKN-KZK-GAIKFTNRATE
                                          TO  WK-KOH-FTNRATE
@@ -21240,6 +21317,10 @@
                         COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                   LNK-SYU-SYUCOMPFTN     +
                                   LNK-SYU-SYUCOMPYKZFTN
+                        IF   COMB-KOH1HKNNUM  =  "970"
+                          MOVE    WK-TOKUTEI-COMPFTN
+                                        TO  LNK-SYU-RSIJIBAI-SKYMONEY
+                        END-IF
                END-IF
              WHEN   "1"
       *        システム管理マスタ（４００１）から点数単価の取得
@@ -21621,6 +21702,12 @@
            END-IF.
       *
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "025"
+             MOVE    "2"                  TO   HKN-RECEFTNDSPKBN
+           END-IF.
+      *
+           IF  (COMB-KOHHKNNUM(KOH-IDX)  =  "970")
+           AND (LNK-SYU-PTFTNRATE    NOT =  ZERO )
+             MOVE    LNK-SYU-PTFTNRATE    TO   WK-GAIKFTNRATE
              MOVE    "2"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
@@ -25522,9 +25609,10 @@
                END-IF
              END-IF
             ELSE
-             IF  (WK-1001-PREFNUM       =  43           )
-             AND (COMB-KOH1HKNNUM       = "143" OR "342")
-             AND (LNK-SYU-SRYYMD(1:6)  <= "200911"      )
+             IF ((WK-1001-PREFNUM       =  43           ) AND
+                 (COMB-KOH1HKNNUM       = "143" OR "342") AND
+                 (LNK-SYU-SRYYMD(1:6)  <= "200911"      ))
+             OR ( COMB-KOH1HKNNUM       = "970"          )
                MOVE     LNK-SYU-KOH1COMPFTN  TO
                                LNK-SYU-KOH1HKNFTNMONEY
              ELSE
@@ -25905,6 +25993,10 @@
                IF   FLG-HIKAKU     =     4
                     MOVE    1      TO    FLG-FTNGAKEN
                END-IF
+           END-IF.
+      *
+           IF   LNK-SYU-KOH1HKNNUM      =   "970"
+                    MOVE    1      TO    FLG-FTNGAKEN
            END-IF.
       *
       *    現物給付に関する対象データフラグ編集
