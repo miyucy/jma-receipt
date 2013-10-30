@@ -880,6 +880,11 @@
                IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
                       (WRK-RSI-KBN     NOT =   SPACE  )
                    MOVE    "0094"          TO  LNK-SC91-ERRCD
+      *H25.10
+      *            上限回数エラー処理＝９の時、警告とする
+                   IF       TNS-JGNCNTERR      =   9
+                       MOVE    "K094"          TO  LNK-SC91-ERRCD
+                   END-IF
                END-IF
            END-IF
       *

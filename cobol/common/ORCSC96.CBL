@@ -565,6 +565,13 @@
                WHEN    "0094"
                    MOVE    "既にこの労災では算定済です。算定できません"
                                        TO  SPA-ERRMSG
+      *H25.10
+               WHEN    "K094"
+                   STRING  "警告！"
+                           "既にこの労災では算定済です。算定できません"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0095"
                    MOVE    "個別療法と集団療法の混在している日が"
                                        TO  SPA-ERRMSG
