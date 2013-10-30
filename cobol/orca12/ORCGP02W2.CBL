@@ -858,10 +858,10 @@
                                                TO  WRK-KOH-JIBAISEIKBN
                                                               (IDXR)
       *TEST
-          DISPLAY "P02W2 IDXR:" IDXR
-                   ",KOHID:" WRK-KOH-KOHID (IDXR) 
-                   ",HKNNUM:" WRK-KOH-HKNNUM (IDXR) 
-                   ",JIBAISEIKBN:" WRK-KOH-JIBAISEIKBN (IDXR)
+      ***     DISPLAY "P02W2 IDXR:" IDXR
+      ***             ",KOHID:" WRK-KOH-KOHID (IDXR) 
+      ***             ",HKNNUM:" WRK-KOH-HKNNUM (IDXR) 
+      ***             ",JIBAISEIKBN:" WRK-KOH-JIBAISEIKBN (IDXR)
       *TEST
                            MOVE    CNT-KOH     TO  IDXR
                        END-IF
@@ -2116,26 +2116,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   END-IF
       *           [Äã½êÆÀ]
                   IF  WRK-LCOMB-TSY-GAIFTNKBN(IDX2)   NOT =   "0"
-                      IF  HKN-TSY-GAIFTNKBN      =   "0"  OR  "2"
+                      IF  (HKN-TSY-GAIFTNKBN          =   "0"  OR  "2")
+                      AND (WRK-LCOMB-DELKBN(IDX2) NOT =   "9"         )
                           MOVE    HKN-TSY-GAIFTNKBN
                                  TO  WRK-LCOMB-TSY-GAIFTNKBN(IDX2)
                       END-IF
                   END-IF
                   IF  WRK-LCOMB-TSY-NYUFTNKBN(IDX2)   NOT =   "0"
-                      IF  HKN-TSY-NYUFTNNBK      =   "0"  OR  "2"
+                      IF  (HKN-TSY-NYUFTNNBK          =   "0"  OR  "2")
+                      AND (WRK-LCOMB-DELKBN(IDX2) NOT =   "9"         )
                           MOVE    HKN-TSY-NYUFTNNBK
                               TO  WRK-LCOMB-TSY-NYUFTNKBN(IDX2)
                       END-IF
                   END-IF
       *           [ÄãÇ¯¶â]
                   IF  WRK-LCOMB-TNK-GAIFTNKBN(IDX2)   NOT =   "0"
-                      IF  HKN-TNK-GAIFTNKBN      =   "0"  OR  "2"
+                      IF  (HKN-TNK-GAIFTNKBN          =   "0"  OR  "2")
+                      AND (WRK-LCOMB-DELKBN(IDX2) NOT =   "9"         )
                           MOVE    HKN-TNK-GAIFTNKBN
                               TO  WRK-LCOMB-TNK-GAIFTNKBN(IDX2)
                       END-IF
                   END-IF
                   IF  WRK-LCOMB-TNK-NYUFTNKBN(IDX2)   NOT =   "0"
-                      IF  HKN-TNK-NYUFTNKBN      =   "0"  OR  "2"
+                      IF  (HKN-TNK-NYUFTNKBN          =   "0"  OR  "2")
+                      AND (WRK-LCOMB-DELKBN(IDX2) NOT =   "9"         )
                           MOVE    HKN-TNK-NYUFTNKBN
                               TO  WRK-LCOMB-TNK-NYUFTNKBN(IDX2)
                       END-IF
@@ -2584,16 +2588,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE        WRK-LCOMB-TSY-GAI-NAIYO (IDX2)
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
-             IF  WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)  =   ZERO
+             IF  WRK-LCOMB-DELKBN(IDX2)  NOT =   "9"
+              IF  WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)  =   ZERO
                MOVE    HKN-TSY-GAIKFTNRATE
                       TO  WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)
-             ELSE
+              ELSE
                IF  (HKN-TSY-GAIKFTNRATE   >   ZERO )    AND
                    (HKN-TSY-GAIKFTNRATE
                       <   WRK-LCOMB-TSY-GAIKFTNRATE(IDX2))
                  MOVE  HKN-TSY-GAIKFTNRATE
                      TO  WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)
                END-IF
+              END-IF
              END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
              IF  WRK-LCOMB-TSY-GAIKKOTGAK(IDX2) =   ZERO
@@ -2685,16 +2691,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE        WRK-LCOMB-TSY-NYU-NAIYO (IDX2)
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
-             IF  WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)   =   ZERO
+             IF  WRK-LCOMB-DELKBN(IDX2)  NOT =   "9"
+              IF  WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)   =   ZERO
                MOVE    HKN-TSY-NYUKFTNRATE
                    TO  WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)
-             ELSE
+              ELSE
                IF  (HKN-TSY-NYUKFTNRATE  >   ZERO )    AND
                    (HKN-TSY-NYUKFTNRATE
                          <   WRK-LCOMB-TSY-NYUKFTNRATE(IDX2))
                  MOVE  HKN-TSY-NYUKFTNRATE
                          TO  WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)
                END-IF
+              END-IF
              END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
              IF  WRK-LCOMB-TSY-NYUKKOTGAK(IDX2)    =   ZERO
@@ -2773,16 +2781,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE        WRK-LCOMB-TNK-GAI-NAIYO (IDX2)
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
-             IF  WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)  =   ZERO
+             IF  WRK-LCOMB-DELKBN(IDX2)  NOT =   "9"
+              IF  WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)  =   ZERO
                MOVE    HKN-TNK-GAIKFTNRATE
                       TO  WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)
-             ELSE
+              ELSE
                IF  (HKN-TNK-GAIKFTNRATE   >   ZERO )    AND
                    (HKN-TNK-GAIKFTNRATE
                       <   WRK-LCOMB-TNK-GAIKFTNRATE(IDX2))
                  MOVE  HKN-TNK-GAIKFTNRATE
                      TO  WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)
                END-IF
+              END-IF
              END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
              IF  WRK-LCOMB-TNK-GAIKKOTGAK(IDX2) =   ZERO
@@ -2874,16 +2884,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE        WRK-LCOMB-TNK-NYU-NAIYO (IDX2)
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
-             IF  WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)   =   ZERO
+             IF  WRK-LCOMB-DELKBN(IDX2)  NOT =   "9"
+              IF  WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)   =   ZERO
                MOVE    HKN-TNK-NYUKFTNRATE
                    TO  WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
-             ELSE
+              ELSE
                IF  (HKN-TNK-NYUKFTNRATE  >   ZERO )    AND
                    (HKN-TNK-NYUKFTNRATE
                          <   WRK-LCOMB-TNK-NYUKFTNRATE(IDX2))
                  MOVE  HKN-TNK-NYUKFTNRATE
                          TO  WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
                END-IF
+              END-IF
              END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
              IF  WRK-LCOMB-TNK-NYUKKOTGAK(IDX2)    =   ZERO
@@ -3077,7 +3089,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 END-IF
               END-IF
            WHEN    "1"
-              IF  HKN-TSY-NYUSKJRYYKBN   =   "3"  OR  "0"  OR  "2"
+              IF  (HKN-TSY-NYUSKJRYYKBN       =  "3"  OR  "0"  OR  "2")
+              AND (WRK-LCOMB-DELKBN(IDX2) NOT =  "9"                  )
                 IF  (IDA                    =    1 )
                 AND (HKN-TSY-NYUSKJRYYKBN   =   "0")
                   CONTINUE
@@ -3138,7 +3151,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 END-IF
               END-IF
            WHEN    "1"
-              IF  HKN-TNK-NYUSKJRYYKBN    =   "3"  OR  "0"  OR  "2"
+              IF  (HKN-TNK-NYUSKJRYYKBN       =  "3"  OR  "0"  OR  "2")
+              AND (WRK-LCOMB-DELKBN(IDX2) NOT =  "9"                  )
                 IF  (IDA                    =    1 )
                 AND (HKN-TNK-NYUSKJRYYKBN   =   "0")
                   CONTINUE
