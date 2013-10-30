@@ -817,22 +817,54 @@
       *****************************************************************
        2001-HENSYU6-SEC            SECTION.
       *
+           MOVE    ZERO                TO   WRK-PTFTNRATE
+      *
+           INITIALIZE                       ORCSAGECHKAREA
+           MOVE    SPA-HOSPNUM         TO   AGECHK-HOSPNUM
+           MOVE    RECE10-PTID         TO   AGECHK-PTID
+           MOVE    RECE10-SRYYM        TO   AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO   AGECHK-SRYYMD(7:2)
+           MOVE    RECE10-HKNCOMBI(1)  TO   AGECHK-HKNCOMBINUM
+           MOVE    RECE10-NYUGAIKBN    TO   AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+           IF    AGECHK-RC       =  ZERO
+             MOVE  AGECHK-FTNRATE      TO   WRK-PTFTNRATE
+           END-IF
+      *
            MOVE    RECE10-JNISSU(1)         TO LNK-SKYGET-IRYO-NISSU
            MOVE    RECE10-TOTALTEN(1)       TO LNK-SKYGET-IRYO-TOTALTEN
-           MOVE    ZERO                     TO LNK-SKYGET-IRYO-ICHIBUFTN
-           IF    RECE10-NYUGAIKBN   =  "1"
-             COMPUTE   LNK-SKYGET-IRYO-HOKENJA   =
-                       RECE10-FTNMONEY(1)        -
-                       RECE10-SHOKUJIRYOYOHI(1)
+           IF    WRK-PTFTNRATE   =  ZERO
+             IF    RECE10-NYUGAIKBN   =  "1"
+               COMPUTE   LNK-SKYGET-IRYO-HOKENJA   =
+                         RECE10-FTNMONEY(1)        -
+                         RECE10-SHOKUJIRYOYOHI(1)
+             ELSE
+               MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-HOKENJA
+             END-IF
+             MOVE    ZERO                   TO LNK-SKYGET-IRYO-ICHIBUFTN
            ELSE
-             MOVE  RECE10-FTNMONEY(1)       TO LNK-SKYGET-IRYO-HOKENJA
+             IF    RECE10-NYUGAIKBN   =  "1"
+               COMPUTE   LNK-SKYGET-IRYO-ICHIBUFTN =
+                         RECE10-FTNMONEY(1)        -
+                         RECE10-SHOKUJIRYOYOHI(1)
+             ELSE
+               MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-ICHIBUFTN
+             END-IF
+             MOVE    ZERO                   TO LNK-SKYGET-IRYO-HOKENJA
            END-IF
            MOVE    ZERO                     TO LNK-SKYGET-IRYO-KOHFTN
       *
            MOVE    RECE10-SHOKUJINISSU(1)   TO LNK-SKYGET-SKJ-KAISU
            MOVE    RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-RYOYOHI
-           MOVE    ZERO                     TO LNK-SKYGET-SKJ-ICHIBUFTN
-           MOVE    RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-HOKENJA
+           IF    WRK-PTFTNRATE   =  ZERO
+             MOVE  RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-HOKENJA
+             MOVE  ZERO                     TO LNK-SKYGET-SKJ-ICHIBUFTN
+           ELSE
+             MOVE  RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-ICHIBUFTN
+             MOVE  ZERO                     TO LNK-SKYGET-SKJ-HOKENJA
+           END-IF
            MOVE    ZERO                     TO LNK-SKYGET-SKJ-KOHFTN
       *
            .
