@@ -118,7 +118,7 @@
       *  04.06.05    NACL-門脇    13/09/13  生保に関わる保険組合せ作成修正
       *
       *  04.07.01    NACL-門脇    13/07/08  自賠責（第三者行為）対応
-      *  04.07.01    NACL-多々納  13/10/29  第三者行為対応
+      *  04.07.02    NACL-多々納  13/10/29  第三者行為対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -238,7 +238,6 @@
            03  IDX9                PIC 9(04).
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(04).
-      *
            03  IDXR                PIC 9(04).
       *
        01  WRK-KCOMB-AREA.
@@ -418,7 +417,7 @@
                    07  WRK-KOH-GENHKNNUM3  PIC X(03).
                    07  WRK-KOH-FTNJANUM    PIC X(08).
       *            第三者
-                   07  WRK-KOH-JIBAISEIKBN  PIC X(01).
+                   07  WRK-KOH-JIBAISEIKBN PIC X(01).
       *
            03  WRK-SYOCYO-TEKSTYMD         PIC 9(08).
            03  WRK-SYOCYO-TEKEDYMD         PIC 9(08).
@@ -660,7 +659,6 @@
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *!!!!!!!!!!
       *    第三者行為　負担区分の取得
            IF      FLG-DAIRSIFLG       =   1
                PERFORM 3301-DAI3RSIINF-SEC
@@ -790,7 +788,7 @@
                MOVE    HKN-GENHKNNUM2   TO  PTKOH-GENHKNNUM2
                MOVE    HKN-GENHKNNUM3   TO  PTKOH-GENHKNNUM3
                MOVE    HKN-TANSEIDONAME TO  PTKOH-SEIDO
-      *!!!!!!!!!!
+      *
       *        第三者行為　負担区分の取得
                IF      PTKOH-KOHNUM     =   "970"
                    MOVE    1                TO  FLG-DAIRSIFLG
@@ -822,7 +820,6 @@
        330-KOHINF-SET-EXT.
            EXIT.
       *
-      *!!!!!!!!!!
       *****************************************************************
       *    第三者行為　負担区分の取得処理
       *****************************************************************
@@ -1028,6 +1025,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 AND  (WRK-LCOMB-TEKEDYMD(IDZ)   >= "20080401")
                   IF  WRK-LCOMB-TEKSTYMD(IDZ)   <  "20080401"
                     MOVE  "20080401"  TO  WRK-LCOMB-TEKSTYMD(IDZ)
+                  END-IF
+                  IF  WRK-LCOMB-DELKBN(IDZ) = "9"
+                    MOVE   SPACE      TO  WRK-LCOMB-DELKBN(IDZ)
                   END-IF
                   ADD     1    TO  WRK-TCOMB2-MAX
                   MOVE    WRK-LCOMB-REC(IDZ)
@@ -2101,13 +2101,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *           == 2件目以降 == 保険マスタを比較し、負担区分を転送
       *           [通常]本人
                   IF  WRK-LCOMB-GAI-FTNKBN(IDX2)      NOT =   "0"
-                      IF  HKN-HON-GAIFTNKBN         =   "0"  OR  "2"
+                      IF  (HKN-HON-GAIFTNKBN          =   "0"  OR  "2")
+                      AND (WRK-LCOMB-DELKBN(IDX2) NOT =   "9"         )
                           MOVE    HKN-HON-GAIFTNKBN
                                          TO  WRK-LCOMB-GAI-FTNKBN(IDX2)
                       END-IF
                   END-IF
                   IF  WRK-LCOMB-NYU-FTNKBN(IDX2)      NOT =   "0"
-                      IF  HKN-HON-NYUFTNKGN          =   "0"  OR  "2"
+                      IF  (HKN-HON-NYUFTNKGN          =   "0"  OR  "2")
+                      AND (WRK-LCOMB-DELKBN(IDX2) NOT =   "9"         )
                           MOVE    HKN-HON-NYUFTNKGN
                                          TO  WRK-LCOMB-NYU-FTNKBN(IDX2)
                       END-IF
@@ -2352,16 +2354,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  END-IF
              END-IF
       *
-             IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
+             IF  WRK-LCOMB-DELKBN(IDX2)  NOT =   "9"
+              IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
                 MOVE    HKN-HON-GAIKFTNRATE
                         TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
-             ELSE
+              ELSE
                 IF  (HKN-HON-GAIKFTNRATE     >   ZERO )    AND
                     (HKN-HON-GAIKFTNRATE
                          <   WRK-LCOMB-GAI-KFTNRATE(IDX2))
                   MOVE  HKN-HON-GAIKFTNRATE
                          TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
                 END-IF
+              END-IF
              END-IF
       *****  IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
       *         MOVE    WRK-GAIKFTNRATE
@@ -2486,15 +2490,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                   (IDX2)
                  END-IF
              END-IF
-             IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
+             IF  WRK-LCOMB-DELKBN(IDX2)  NOT =   "9"
+              IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
                 MOVE    HKN-HON-NYUKFTNRATE
                      TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
-             ELSE
+              ELSE
                IF  (HKN-HON-NYUKFTNRATE     >   ZERO )    AND
                   (HKN-HON-NYUKFTNRATE < WRK-LCOMB-NYU-KFTNRATE(IDX2))
                  MOVE  HKN-HON-NYUKFTNRATE
                     TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
                END-IF
+              END-IF
              END-IF
      ****    IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
       *         MOVE    WRK-GAIKFTNRATE
@@ -3009,7 +3015,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 END-IF
               END-IF
            WHEN    "1"
-              IF  HKN-HON-NYUSKJRYYKBN      =   "3"  OR  "0"  OR  "2"
+              IF  (HKN-HON-NYUSKJRYYKBN       =  "3"  OR  "0"  OR  "2")
+              AND (WRK-LCOMB-DELKBN(IDX2) NOT =  "9"                  )
                 IF  (IDA                    =    1 )
                 AND (HKN-HON-NYUSKJRYYKBN   =   "0")
                   CONTINUE
@@ -3636,9 +3643,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                      TO  WRK-KCOMB-KOH1PAYKBN   (IDX2)
            MOVE    WRK-KOH-SEIDO  (IDX)
                                   TO  WRK-KCOMB-KOH1-TANSEIDONAME(IDX2)
-      *    ------------------------------------
            MOVE    WRK-KOH-SBT  (IDX)
                                   TO  WRK-KCOMB-KOH1-HKNKOHSBTKBN(IDX2)
+      *
+           IF  (WRK-KOH-HKNNUM(IDX)       = "970")
+           AND (WRK-KOH-JIBAISEIKBN(IDX)  = "1"  )
+             MOVE  "9"               TO  WRK-KCOMB-DELKBN(IDX2)
+           END-IF
       *
       *    [主保険 開始日]≦[主公費 開始日]
            IF  WRK-HKN-TEKSTYMD(WRK-COMB-SYUHOIDX)
