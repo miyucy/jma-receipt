@@ -749,6 +749,14 @@
                    MOVE    PTRSI-SHOBYOYMD     TO  WRK-COMB-TEKSTYMD
                END-IF
           END-IF
+      *   保険組合せ名は２０バイト
+          INITIALIZE                  ORCSKANACHKAREA
+          MOVE    "1"                 TO  KANACHK-SYORI
+          MOVE    WRK-HKNCOMBIMEI     TO  KANACHK-MAE-INPUT
+          MOVE    20                  TO  KANACHK-MAX-CNT
+          CALL    "ORCSKANACHK"       USING
+                                          ORCSKANACHKAREA
+          MOVE    KANACHK-MAE-INPUT   TO  WRK-HKNCOMBIMEI
            .
        31011-HKNCOMBI-SET-EXT.
            EXIT.
