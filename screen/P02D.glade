@@ -1107,7 +1107,7 @@
         <name>hseparator5</name>
         <x>220</x>
         <y>460</y>
-        <width>570</width>
+        <width>578</width>
         <height>16</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1354,9 +1354,9 @@
       <widget>
         <class>GtkHSeparator</class>
         <name>hseparator3</name>
-        <x>420</x>
+        <x>442</x>
         <y>88</y>
-        <width>380</width>
+        <width>356</width>
         <height>16</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1404,7 +1404,7 @@
         <name>label251</name>
         <x>94</x>
         <y>88</y>
-        <width>320</width>
+        <width>350</width>
         <height>20</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1413,7 +1413,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>＜短期給付  傷病年金  自賠責  公務災害　第三者＞</label>
+        <label>＜短期給付  傷病年金  自賠責  公務災害　第三者行為＞</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
