@@ -29,7 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-藤原    13/08/20  ０９５９３で始まるコードがあ
       *                                     るレセプトは対象外とする
-      *  04.07.01    NACL-藤原    13/08/30  改行コードの編集追加
+      *  04.07.02    NACL-藤原    13/08/30  改行コードの編集追加
+      *  04.07.03    NACL-藤原    13/10/07  返戻対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,6 +110,7 @@
            03  FLG-DATA                PIC 9(01).
            03  FLG-RECE3W              PIC 9(01).
            03  FLG-SET                 PIC 9(01).
+           03  FLG-SYORI               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -164,6 +166,7 @@
            03  WRK-RECENUM-ALL         PIC 9(06).
       *    請求年月日（和暦）
            03  WRK-SKYYMD              PIC 9(07).
+           03  WRK-SRYYMW              PIC X(05).
       *    請求年月（医療機関レコード用）
            03  WRK-SRYYM               PIC 9(06).
            03  WRK-SRYYM-W             PIC X(05).
@@ -473,10 +476,6 @@
       *
       *    システム管理情報取得
            PERFORM 110-SYSKANRI-HENSYU-SEC
-      *
-           MOVE    "key83"             TO  WRK-MCP-PATHNAME
-           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
-           PERFORM 900-SEIKYU-SELECT-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -594,6 +593,64 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    一時請求分
+           MOVE    1                   TO  FLG-SYORI
+      *
+           MOVE    ZERO                TO  WRK-FILE-SEQNUM1
+                                           WRK-FILE-RENNUM
+      *
+           MOVE    "key83"             TO  WRK-MCP-PATHNAME
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+           PERFORM 900-SEIKYU-SELECT-SEC
+      *
+           PERFORM 2001-RECEDEN-HENSYU-SEC
+                                       UNTIL   FLG-END =   1
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    再請求分
+           MOVE    2                   TO  FLG-SYORI
+      *
+           MOVE    ZERO                TO  WRK-FILE-SEQNUM1
+                                           WRK-FILE-RENNUM
+      *
+           MOVE    "key83"             TO  WRK-MCP-PATHNAME
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+           PERFORM 900-SEIKYU-SELECT-SEC
+      *
+           PERFORM 2001-RECEDEN-HENSYU-SEC
+                                       UNTIL   FLG-END =   1
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *
+           IF      CNT-RECEDEN         =   ZERO
+               MOVE    "処理対象のデータがありませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           ELSE
+      *        ファイル保存情報更新
+               IF      WRK-PARA-DATAKBN    =   "5" OR  "6"
+                   PERFORM 3001-FILE-INFO-INSERT-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.             
+      * 
+      *****************************************************************
+      *    レセ電データ作成処理
+      *****************************************************************
+       2001-RECEDEN-HENSYU-SEC              SECTION.
+      *
+      *
            MOVE    ZERO            TO  WRK-RECENUM
                                        SUM-AREA
                                        WRK-LENGTH 
@@ -675,7 +732,7 @@
            MOVE    9               TO  FLG-DATA 
            PERFORM 2008-HENSYU-SEC
            .
-       200-MAIN-EXT.
+       2001-RECEDEN-HENSYU-EXT.
            EXIT.             
       * 
       *****************************************************************
@@ -735,6 +792,7 @@
                        RECEDEN-RECEDATA (5:)     DELIMITED  BY  SIZE
                        INTO        WRK-REC
                END-STRING
+      *
                MOVE    WRK-REC         TO  RECEDEN-RECEDATA
       *
       *        請求情報の編集（診療年月、請求年月）
@@ -991,11 +1049,22 @@
            COMPUTE WRK-FILE-RENNUM =   WRK-FILE-RENNUM  +   1
            MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM
            MOVE    WRK-FILE-SEQNUM1    TO  RECE30PARA-SEQNUM1
-           IF      WRK-PARA-PRTKBN     =   "1"
-               MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
-           ELSE
-               MOVE    "TENKENT"           TO  RECE30PARA-FILENM
-           END-IF
+           EVALUATE    FLG-SYORI
+               WHEN    1
+      *            一時請求分
+                   IF      WRK-PARA-PRTKBN     =   "1"
+                       MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
+                   ELSE
+                       MOVE    "TENKENT"           TO  RECE30PARA-FILENM
+                   END-IF
+               WHEN    2
+      *            再請求分
+                   IF      WRK-PARA-PRTKBN     =   "1"
+                       MOVE    "UKSRECE"           TO  RECE30PARA-FILENM
+                   ELSE
+                       MOVE    "UKSTENK"           TO  RECE30PARA-FILENM
+                   END-IF
+           END-EVALUATE
       *??
            DISPLAY "RECE30PARA=" RECE30PARA
       *??
@@ -1537,21 +1606,6 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           IF      CNT-RECEDEN         =   ZERO
-               MOVE    "処理対象のデータがありませんでした"
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           ELSE
-      *        ファイル保存情報更新
-               IF      WRK-PARA-DATAKBN    =   "5" OR  "6"
-                   PERFORM 3001-FILE-INFO-INSERT-SEC
-               END-IF
-           END-IF
-      *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1972,6 +2026,9 @@
       *****************************************************************
        900-SEIKYU-SELECT-SEC             SECTION.
       *
+      *??
+           DISPLAY "FLG-SYORI=" FLG-SYORI
+      *??
            MOVE    ZERO                TO  FLG-END
       *     
            MOVE    SPACE               TO  RECE10-REC
@@ -2053,6 +2110,19 @@
                        GO  TO  900-SEIKYU-READ-SEC
                    END-IF
                END-IF
+      *
+               EVALUATE    FLG-SYORI
+                   WHEN    1
+      *                一時請求分
+                       IF      RECE10-HENREI-SIJI-FLG      =   1
+                           GO  TO  900-SEIKYU-READ-SEC
+                       END-IF
+                   WHEN    2
+      *                再請求分
+                       IF      RECE10-HENREI-SIJI-FLG      =   0
+                           GO  TO  900-SEIKYU-READ-SEC
+                       END-IF
+               END-EVALUATE
       *
                ADD     1                   TO  CNT-RECE10
                MOVE    RECE10-HKNJANUM-S   TO  KEY-N-SYOCD
