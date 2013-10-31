@@ -192,6 +192,9 @@
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
       *
+           03  WRK-KETA1               PIC 9(04).
+           03  WRK-KETA2               PIC 9(04).
+      *
       *     ±¦¤Å¤áÊÔ½¸ÍÑ
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
@@ -726,6 +729,32 @@
                        INTO        WRK-REC
                END-STRING
                MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+      *
+      *        ÀÁµá¾ðÊó¤ÎÊÔ½¸¡Ê¿ÇÎÅÇ¯·î¡¢ÀÁµáÇ¯·î¡Ë
+               MOVE    ZERO            TO  IDYY
+                                           WRK-KETA1
+                                           WRK-KETA2
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       2500
+                       OR      WRK-REC (IDX:1)
+                                       =   WRK-KAIGYO
+                   IF      WRK-REC (IDXX:1) =   ","
+                       ADD     1               TO  IDYY
+                       IF      IDYY            =   20
+                           MOVE    IDXX            TO  WRK-KETA1
+                           COMPUTE WRK-KETA2   =   WRK-KETA1 +   1
+                           MOVE    2500            TO  IDXX
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      WRK-KETA1           >   ZERO
+                   STRING    WRK-REC (1:WRK-KETA1) DELIMITED  BY  SIZE
+                             LNK-PRTKANRI-SRYYM    DELIMITED  BY  SIZE
+                             RECE10-SRYYM          DELIMITED  BY  SIZE
+                             WRK-REC (WRK-KETA2:)  DELIMITED  BY  SIZE
+                             INTO          RECEDEN-RECEDATA
+                   END-STRING
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  WRK-REC
