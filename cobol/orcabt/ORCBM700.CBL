@@ -168,6 +168,8 @@
            03  WRK-SRYYM               PIC 9(06).
            03  WRK-SRYYM-W             PIC X(05).
       *
+           03  WRK-SKYYM-W             PIC X(05).
+      *
            03  WRK-MOJISU              PIC 9(02).
       *
            03  WRK-RSIIRYOCD           PIC X(07).
@@ -464,6 +466,11 @@
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-SKYYMD
       *
+           MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SYMD (1:6)
+           MOVE    "01"                TO  WRK-SYMD (7:2)
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMD (1:5)    TO  WRK-SKYYM-W
+      *
       *    システム管理情報取得
            PERFORM 110-SYSKANRI-HENSYU-SEC
       *
@@ -748,11 +755,15 @@
                    END-IF
                END-PERFORM
                IF      WRK-KETA1           >   ZERO
+                   MOVE    RECE10-SRYYM        TO  WRK-SYMD (1:6)
+                   MOVE    "01"                TO  WRK-SYMD (7:2)
+                   PERFORM 5002-HIZUKE-HEN-SEC
+      *
                    STRING    WRK-REC (1:WRK-KETA1) DELIMITED  BY  SIZE
-                             LNK-PRTKANRI-SRYYM    DELIMITED  BY  SIZE
-                             RECE10-SRYYM          DELIMITED  BY  SIZE
+                             WRK-SKYYM-W           DELIMITED  BY  SIZE
+                             WRK-HENYMD (1:5)      DELIMITED  BY  SIZE
                              WRK-REC (WRK-KETA2:)  DELIMITED  BY  SIZE
-                             INTO          RECEDEN-RECEDATA
+                             INTO                  RECEDEN-RECEDATA
                    END-STRING
                END-IF
            END-IF
