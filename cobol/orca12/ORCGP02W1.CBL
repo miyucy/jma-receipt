@@ -98,6 +98,7 @@
       * 04.07.00     NACL-多々納  11/09/06  住所等半角全角変換へ
       * 04.07.00     NACL-多々納  11/11/07  地方公費負担額変更対応
       * 04.07.00     NACL-多々納  13/07/XX  第三者行為対応など
+      * 04.07.00     NACL-多々納  13/11/01  API保険・公費追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -760,19 +761,19 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *   日付変換サブ
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   患者番号変換サブ
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *   画面日付変換サブ
-          COPY    "CPORCSGDAY.INC".
+      *    画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
-      *   公費月上限額取得用パラメタ
-          COPY    "CPORCSJGNGET.INC".
+      *    公費月上限額取得用パラメタ
+           COPY    "CPORCSJGNGET.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -1546,12 +1547,15 @@
       *!API
       *    API処理（新規入力とする）
            IF      FLG-APICHK              =   1
-               MOVE    SPACE               TO  SPA-OLD-KIGO
-               MOVE    SPACE               TO  SPA-OLD-NUM
-               MOVE    SPACE               TO  SPA-MAE-HKNNUM
-               MOVE    SPACE               TO  SPA-MAE-HKNJANUM
-      ***      MOVE    SPACE               TO  SPA-MAE-HONKZKKBN
-      ****     MOVE    SPACE               TO  SPA-MAE-HOJOKBN
+               IF      SPA-PTHKN-SINKIKBN (IDX)    =   "1"
+                   MOVE    SPACE               TO  SPA-OLD-KIGO
+                   MOVE    SPACE               TO  SPA-OLD-NUM
+                   MOVE    SPACE               TO  SPA-MAE-HKNNUM
+                   MOVE    SPACE               TO  SPA-MAE-HKNJANUM
+      *            後期高齢者警告済みとする
+                   MOVE    1                   TO  SPA-PTHKN-ROU-KEIFLG
+                                                               (IDX)
+               END-IF
            END-IF
       *!API
       *
@@ -1639,6 +1643,8 @@
       *        END-IF
       *****END-PERFORM
       *
+      *    本人家族区分等
+           PERFORM 31011-HKN-HEN-SEC
       *!API
       *    API処理（保険種類設定なし）
            IF     (FLG-APICHK          =   1   )
@@ -1646,7 +1652,7 @@
            END-IF
       *!API
       *    本人家族区分等
-           PERFORM 31011-HKN-HEN-SEC
+      *    PERFORM 31011-HKN-HEN-SEC
       *
       *    労災保険の番号設定
            IF      SPA-GMN-HKNNUM      =   "971"
@@ -2080,15 +2086,17 @@
       *!API
       *    API処理（新規入力とする）
            IF      FLG-APICHK          =   1
-               MOVE    SPACE           TO  SPA-MAE-KOHNUM  (IDY)
-               MOVE    SPACE           TO  SPA-MAE-FTNJANUM(IDY)
-               MOVE    SPACE           TO  SPA-NAI-PTKOH-KEIFLG(IDY)
-      *        警告チェック済みとする
-               MOVE    1                   TO  SPA-NAI-AGE65 (IDY)
-               MOVE    1                   TO  SPA-NAI-AGECHK(IDY)
-               MOVE    1                   TO  SPA-NAI-FTNCHK(IDY)
-      *        受給者番号警告
-               MOVE    1                   TO  SPA-NAI-JYUCHK(IDY)
+               IF      SPA-PTKOH-SINKIKBN (IDX)    =   "1"
+                   MOVE    SPACE           TO  SPA-MAE-KOHNUM  (IDY)
+                   MOVE    SPACE           TO  SPA-MAE-FTNJANUM(IDY)
+                   MOVE    SPACE           TO  SPA-NAI-PTKOH-KEIFLG(IDY)
+      *            警告チェック済みとする
+                   MOVE    1               TO  SPA-NAI-AGE65 (IDY)
+                   MOVE    1               TO  SPA-NAI-AGECHK(IDY)
+                   MOVE    1               TO  SPA-NAI-FTNCHK(IDY)
+      *            受給者番号警告
+                   MOVE    1               TO  SPA-NAI-JYUCHK(IDY)
+               END-IF
            END-IF
       *!API
       *
@@ -2716,6 +2724,7 @@
       *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       *   API保険情報処理
                WHEN    "CLICKED"       ALSO    "API"
+               WHEN    "CLICKED"       ALSO    "API4"
                    MOVE    2           TO  FLG-TOUROKU 
                    MOVE    1           TO  FLG-TOUROKU2
                    PERFORM 4199-API-SYORI-SEC
@@ -6949,12 +6958,6 @@
                                                SPA-P02SCRAREA
                                                SPA-P02KYOUTU
                    IF      SPA-ERRCD           =   SPACE
-      *!API
-                       IF      FLG-APICHK          =   1
-      *                    公費画面の内容をＴＢＬへ編集する
-                           PERFORM 4509-API-KOHSPA-TBL-SEC
-                       END-IF
-      *!API
                        MOVE    ZERO                TO  IDY
                    END-IF
                END-IF
@@ -6967,12 +6970,6 @@
                    CALL    "ORCSP03B"          USING   SPA-AREA
                                                    SPA-P02SCRAREA
                                                    SPA-P02KYOUTU
-      *!API
-                   IF      FLG-APICHK          =   1
-      *                公費画面の内容をＴＢＬへ編集する
-                       PERFORM 4509-API-KOHSPA-TBL-SEC
-                   END-IF
-      *!API
                END-IF
            END-IF
       *    元へ戻す
@@ -6997,10 +6994,7 @@
               IF     (SPA-GMN-KOHNUM      (IDX)  NOT =   SPACE ) AND
                      (SPA-NAI-PTKOH-EDANUM(IDX)  NOT =   ZERO  )
                    MOVE    SPA-NAI-PTKOH-EDANUM(IDX)   TO  IDY
-                   IF      SPA-GMN-KOHNUM (IDX)
-                                           NOT = SPA-PTKOH-KOHNUM (IDY)
-                       PERFORM 3102-KOH-SPATBL-HEN-SEC
-                   END-IF
+                   PERFORM 3102-KOH-SPATBL-HEN-SEC
                END-IF
            END-PERFORM
       *
@@ -8271,6 +8265,84 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  FLG-ERRCHK
            MOVE    ZERO                TO  SPA-KOH-ERRIDX
            MOVE    1                   TO  FLG-APICHK
+      *
+      *    新規保険チェック
+           IF     (SPA-PTHKN-MAX       >   ZERO  )
+             AND  (SPA-PTHKN-SINKIKBN (SPA-PTHKN-MAX)  =   "1" )
+               INITIALIZE                  SPA-GMN-HKN-AREA
+      *        被保険者名の自動変更はしない
+               MOVE    SPA-PTHKN-MAX       TO  IDX
+               MOVE    1                   TO  SPA-NAI-HIHKNFLG
+               MOVE    IDX             TO  WRK-NAI-HKNSTR
+               MOVE    IDX             TO  SPA-NAI-HKNSTR
+               PERFORM 3101-HOKEN-HEN-SEC
+      *        保険情報チェックサブ
+               CALL    "ORCSP03A"          USING
+                                           SPA-AREA
+                                           SPA-P02SCRAREA
+                                           SPA-P02KYOUTU
+               PERFORM 410312-HKN-SPATBL-SET-SEC
+           END-IF
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
+               GO      TO      4199-API-SYORI-EXT
+           END-IF
+      *
+           MOVE    SPA-NAI-KOHSTR      TO  WRK-NAI-KOHSTR
+           MOVE    ZERO                TO  IDY
+           INITIALIZE                  SPA-GMN-KOH-AREA
+           MOVE    SPA-GMN-KOH-AREA    TO  WRK-GMN-KOH-AREA
+           IF      WRK-NAI-KOHSTR      =   ZERO
+               MOVE    1                   TO  WRK-NAI-KOHSTR
+           END-IF
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
+                              (SPA-PIDCD   NOT =   SPACE )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      IDY                 =   ZERO
+                   INITIALIZE                  SPA-GMN-KOH-AREA
+                   MOVE    ZERO                TO  SPA-NAI-KOHEND
+               END-IF
+               IF      SPA-PTKOH-SINKIKBN (IDX)    =   "1"
+                   IF      IDY             =   ZERO
+                       MOVE    IDX             TO  SPA-NAI-KOHSTR
+                   END-IF
+                   MOVE    IDX                 TO  SPA-NAI-KOHEND
+                   ADD     1                   TO  IDY
+                   MOVE    1                   TO  FLG-CHK
+                   PERFORM 3102-KOUHI-HEN-SEC
+               END-IF
+               IF      IDY                 >=  3
+      *            公費情報チェックサブ
+                   CALL    "ORCSP03B"          USING   SPA-AREA
+                                               SPA-P02SCRAREA
+                                               SPA-P02KYOUTU
+                   IF      SPA-ERRCD           =   SPACE
+      *                公費画面の内容をＴＢＬへ編集する
+                       PERFORM 4509-API-KOHSPA-TBL-SEC
+                       MOVE    ZERO                TO  IDY
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF     (SPA-PIDCD           =   SPACE )
+              AND (SPA-ERRCD           =   SPACE )
+               IF      IDY                 >   ZERO
+      *            公費情報チェックサブ
+                   CALL    "ORCSP03B"          USING   SPA-AREA
+                                                   SPA-P02SCRAREA
+                                                   SPA-P02KYOUTU
+                   IF      SPA-ERRCD           =   SPACE
+      *                公費画面の内容をＴＢＬへ編集する
+                       PERFORM 4509-API-KOHSPA-TBL-SEC
+                   END-IF
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
+               GO      TO      4199-API-SYORI-EXT
+           END-IF
       *
       *    保険・公費一括チェック処理
            PERFORM 4501-ALLHKN-CHK-SEC

@@ -66,10 +66,10 @@
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "P01PARA".
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "P01PARA".
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -92,6 +92,8 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-OVER            PIC 9(01).
+      *
+           03  FLG-INIT            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -352,6 +354,7 @@
            MOVE    1                   TO  SPA-GMN27-HKN-PCNT
            MOVE    1                   TO  SPA-GMN27-KOH-PCNT
       *
+           MOVE    1                   TO  FLG-INIT
       *    パラメタファイル検索処理
            PERFORM 320-PARAFILE-KENSAKU-SEC
       *
@@ -464,6 +467,7 @@
                    IF     (IDX             >=  WRK-ST )   AND
                           (IDX             <=  WRK-ED )
                        ADD     1               TO  IDY
+      *
       *DDDD            MOVE    PARA-EDANUM     TO  SPA-NAI27-EDANUM
       *DDD                                                 (IDY)
                        MOVE    PARA-DATA-REC   TO  LNK-HKNCOMB-REC(IDY)
@@ -472,7 +476,8 @@
                    END-IF
                END-IF
       *        今回追加分を非表示テーブルへ追加
-               IF      COMB-CHGKBN         =   "A"
+               IF     (COMB-CHGKBN         =   "A" )
+                 AND  (FLG-INIT            =   1   )
                    ADD     1                   TO  SPA-HYO-MAX
                    MOVE    COMB-HKNCOMBINUM    TO  SPA-HYO-HKNCOMBINUM
                                                           (SPA-HYO-MAX)
@@ -1050,6 +1055,9 @@
       *
       *    パラメタより編集
            PERFORM 320-PARAFILE-KENSAKU-SEC
+           IF      IDY                 =   ZERO
+               COMPUTE SPA-P027-PG     =   SPA-P027-PG   -   1
+           END-IF
       *
       *ver.4.7.0
            IF     SPA-NAI-NEXTFLG      =   0
