@@ -758,44 +758,53 @@
       *    返却領域へのセット
            MOVE     WRK-TOKUBETSU-NYUIN
                                      TO   LNK-NYUKSNGET-TOKUBETSU-NYUIN
+      *
+      *    復帰コード
+           IF    WRK-NYUKHNKSN-SRYCD(1)   =   SPACE
+                MOVE    1            TO   LNK-NYUKSNGET-RC
+           ELSE
+                MOVE    ZERO         TO   LNK-NYUKSNGET-RC
+           END-IF
+      *
       *    返却情報の表示（テスト用）
-           DISPLAY    "===========   ORCSNYUKSNGET HENKYAKU ====="
-           DISPLAY    "WRK-NENREI = " WRK-NENREI
-           DISPLAY    "LNK-NYUKSNGET-TOKUBETSU-NYUIN = "
-                       LNK-NYUKSNGET-TOKUBETSU-NYUIN
-           PERFORM     VARYING    IDX    FROM   1   BY   1
-             UNTIL    (IDX    >   20)   OR
-                      (LNK-NYUKSNGET-KSNSRYCD(IDX)  =  SPACE)
-               DISPLAY "IDX = " IDX
-               MOVE    LNK-NYUKSNGET-HOSPNUM
-                                       TO  TNS-HOSPNUM
-               MOVE    WRK-NYUKHNKSN-SRYCD(IDX)
-                                       TO  TNS-SRYCD
-               MOVE    LNK-NYUKSNGET-SANTEIYM
-                                       TO  TNS-YUKOSTYMD(1:6)
-               MOVE    "01"            TO  TNS-YUKOSTYMD(7:2)
-               MOVE    TNS-YUKOSTYMD   TO  TNS-YUKOEDYMD
-               MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-               MOVE    "tbl_tensu"     TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               MOVE    "tbl_tensu"     TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                  MOVE    MCPDATA-REC TO  TNS-TENSU-REC
-                  MOVE    ZERO        TO  FLG-TENSU
-               ELSE
-                  MOVE    1           TO  FLG-TENSU
-               END-IF
+      **     DISPLAY    "===========   ORCSNYUKSNGET HENKYAKU ====="
+      **     DISPLAY    "WRK-NENREI = " WRK-NENREI
+      **     DISPLAY    "LNK-NYUKSNGET-TOKUBETSU-NYUIN = "
+      **                 LNK-NYUKSNGET-TOKUBETSU-NYUIN
+      **     PERFORM     VARYING    IDX    FROM   1   BY   1
+      **       UNTIL    (IDX    >   20)   OR
+      **                (LNK-NYUKSNGET-KSNSRYCD(IDX)  =  SPACE)
+      **         DISPLAY "IDX = " IDX
+      **         MOVE    LNK-NYUKSNGET-HOSPNUM
+      **                                 TO  TNS-HOSPNUM
+      **         MOVE    WRK-NYUKHNKSN-SRYCD(IDX)
+      **                                 TO  TNS-SRYCD
+      **         MOVE    LNK-NYUKSNGET-SANTEIYM
+      **                                 TO  TNS-YUKOSTYMD(1:6)
+      **         MOVE    "01"            TO  TNS-YUKOSTYMD(7:2)
+      **         MOVE    TNS-YUKOSTYMD   TO  TNS-YUKOEDYMD
+      **         MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
+      **         MOVE    "tbl_tensu"     TO  MCP-TABLE
+      **         MOVE    "key"           TO  MCP-PATHNAME
+      **         PERFORM 910-DBSELECT-SEC
+      **         MOVE    "tbl_tensu"     TO  MCP-TABLE
+      **         MOVE    "key"           TO  MCP-PATHNAME
+      **         PERFORM 910-DBFETCH-SEC
+      **         IF    ( MCP-RC          =   ZERO )
+      **            MOVE    MCPDATA-REC TO  TNS-TENSU-REC
+      **            MOVE    ZERO        TO  FLG-TENSU
+      **         ELSE
+      **            MOVE    1           TO  FLG-TENSU
+      **         END-IF
       *
-               MOVE    "tbl_tensu"     TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-               DISPLAY "KSN-SRYCD = " WRK-NYUKHNKSN-SRYCD(IDX) 
-                       " NAME = " TNS-NAME
-           END-PERFORM
+      **         MOVE    "tbl_tensu"     TO  MCP-TABLE
+      **         MOVE    "key"           TO  MCP-PATHNAME
+      **         PERFORM 990-DBCLOSE-SEC
+      **         DISPLAY "KSN-SRYCD = " WRK-NYUKHNKSN-SRYCD(IDX) 
+      **                 " NAME = " TNS-NAME
+      **     END-PERFORM
       *
+      **     DISPLAY  "LNK-NYUKSNGET-RC = " LNK-NYUKSNGET-RC
            .
       *
        100-NYUKSN-GET-EXT.
