@@ -886,6 +886,13 @@
                WHEN    "8100"
                    MOVE    "公害保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG
+      *H25.11
+               WHEN    "8101"
+                   STRING  "公務災害の診療コードです。"
+                           "入力できません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "S001"
                    STRING  "約束セット内に使用できないコードがあります"
                            "。この約束セットは使用できません。"
