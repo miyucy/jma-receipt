@@ -888,7 +888,7 @@
                                        TO  SPA-ERRMSG
       *H25.11
                WHEN    "8101"
-                   STRING  "¸øÌ³ºÒ³²¤Î¿ÇÎÅ¥³¡¼¥É¤Ç¤¹¡£"
+                   STRING  "Ï«ºÒÊÝ¸±¡Ú¸øÌ³ºÒ³²¡Û¤Î¿ÇÎÅ¥³¡¼¥É¤Ç¤¹¡£"
                            "ÆþÎÏ¤Ç¤­¤Þ¤»¤ó¡£"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG

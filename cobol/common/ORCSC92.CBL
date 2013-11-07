@@ -3588,7 +3588,7 @@
                   AND (SPA-RSI-HKNKBN      =   5 )
                    CONTINUE
                ELSE
-                   MOVE    "8100"              TO  LNK-SC92-ERRCD8
+                   MOVE    "8101"              TO  LNK-SC92-ERRCD8
                END-IF
            END-IF
            .
