@@ -135,6 +135,9 @@
        200-EDIT-SEC                    SECTION.
       *
            DISPLAY  "====  ORCSTOKNYUIN2 SET  ===="
+           DISPLAY  "LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN  = " 
+                     LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+           DISPLAY  "LNK-TOKNYUIN2-IDOKBN    = " LNK-TOKNYUIN2-IDOKBN
            DISPLAY  "LNK-TOKNYUIN2-NYUINYMD  = " LNK-TOKNYUIN2-NYUINYMD
            DISPLAY  "LNK-TOKNYUIN2-SANTEIYMD = " LNK-TOKNYUIN2-SANTEIYMD
            DISPLAY  "LNK-TOKNYUIN2-NISSU08   = " LNK-TOKNYUIN2-NISSU08
@@ -142,13 +145,13 @@
       *    ∆√ ÃΩËÕ˝
       *    ¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡£±§Œµﬁ¿≠¡˝∞≠§À§Ë§Î≈æ≈Ô
            IF   (LNK-TOKNYUIN2-SET-SRYCD   =  "190121110")  AND
-                (LNK-TOKNYUIN2-IDOKBN      =   "2")         AND
+                (LNK-TOKNYUIN2-IDOKBN      =  "1")          AND
                 (LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN   =   "24")
                MOVE    ZERO            TO  LNK-TOKNYUIN2-NISSU08
            END-IF
       *    ¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡£≤§Œµﬁ¿≠¡˝∞≠§À§Ë§Î≈æ≈Ô
            IF   (LNK-TOKNYUIN2-SET-SRYCD   =  "190121210")  AND
-                (LNK-TOKNYUIN2-IDOKBN      =   "2")         AND
+                (LNK-TOKNYUIN2-IDOKBN      =  "1")          AND
                 (LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN   =   "25")
                MOVE    ZERO            TO  LNK-TOKNYUIN2-NISSU08
            END-IF
