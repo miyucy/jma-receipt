@@ -796,7 +796,7 @@
       **         ELSE
       **            MOVE    1           TO  FLG-TENSU
       **         END-IF
-      *
+      ***
       **         MOVE    "tbl_tensu"     TO  MCP-TABLE
       **         MOVE    "key"           TO  MCP-PATHNAME
       **         PERFORM 990-DBCLOSE-SEC
@@ -1155,7 +1155,7 @@
            MOVE    LNK-NYUKSNGET-HOSPNUM
                                        TO  SYS-HOSPNUM
            MOVE    "5002"              TO  SYS-KANRICD
-           MOVE    LNK-NYUKSNGET-BTUNUM
+           MOVE    LNK-NYUKSNGET-BRMNUM
                                        TO  SYS-KBNCD
            MOVE    LNK-NYUKSNGET-SANTEIYM
                                        TO  SYS-STYUKYMD(1:6)
