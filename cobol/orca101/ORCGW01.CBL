@@ -2262,6 +2262,8 @@
                WHEN    "2005"
       *        患者情報通知
                WHEN    "1920"
+      *        ＣＬＡＩＭ接続情報
+               WHEN    "9000"
       *
                    IF     (SPA-NAI-STYUKYMD    =   ZERO )  AND
                           (SPA-NAI-EDYUKYMD    =   99999999)
