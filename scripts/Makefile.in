@@ -144,6 +144,11 @@ ruby_scripts = \
 	monthly/receden_error.rb \
 	monthly/receden.rb \
 	allways/mask.rb \
+	monthly/rosai_receden.rb \
+	monthly/rosai_receden_check.rb \
+	monthly/rosai_receden_common.rb \
+	monthly/rosai_receden_common_const.rb \
+	monthly/rosai_receden_error.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \
