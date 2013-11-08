@@ -798,7 +798,8 @@
            END-IF
       *
            IF      FLG-END         =   ZERO
-               MOVE   SPACE                TO  LNK-KYOUTU
+      *????    MOVE   SPACE                TO  LNK-KYOUTU
+               MOVE    SPACE               TO  LINKAREA
       *
                MOVE   SPACE                TO  MCP-PUTTYPE
                MOVE   "I41"                TO  MCP-WINDOW
