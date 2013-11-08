@@ -487,7 +487,7 @@ class Receden_error < Receden_common
         errdata << sprintf("<ERR_LINE>%d</ERR_LINE>",err.line)
         errdata << sprintf("<ERR_DATA>%s</ERR_DATA>",err.data)
         errdata << sprintf("\n",err.data)
-        f.print NKF.nkf("-We -Lu", errdata)
+        f.print NKF.nkf("-Wex -Lu", errdata)
       }
     }
   end

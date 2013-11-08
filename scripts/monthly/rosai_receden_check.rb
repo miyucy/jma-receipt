@@ -225,7 +225,7 @@ class Receden_check < Receden_common
           if item.required? && rows[item.name].value.strip == ""
               @errors.push("20210",rece,rows,item.name)
           else
-            sjisStr=NKF.nkf("-Ws", rows[item.name].value)
+            sjisStr=NKF.nkf("-Wsx", rows[item.name].value)
             if item.maxsize < sjisStr.bytesize
               @errors.push("25390",rece,rows,item.name)
             else
@@ -1219,13 +1219,9 @@ class Receden_check < Receden_common
                 @errors.push("38390",rece,zai,"KINGAKU",nil,tbl_tensu["NAME"])
               end
             else
-              if @check_level == "1"
+              if ( @check_level == "1" ) || ( @check_level == "2" && zai["RECID"].value != "IY" )
                 if zai["TEN"].value.to_i == 0
                   @errors.push("33070",rece,zai,"TEN",nil,tbl_tensu["NAME"])
-                end
-              else
-                if zai["TEN"].value == ""
-                  @errors.push("33071",rece,zai,"TEN",nil,tbl_tensu["NAME"])
                 end
               end
             end
