@@ -179,6 +179,8 @@
            03  FLG-KOGHKN-OK       PIC 9(01).
            03  FLG-RSIHKN-OK       PIC 9(01).
       *
+           03  FLG-DAISAN          PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -837,6 +839,7 @@
                END-IF
       *        プレビューから
                IF      WRK-MOTOPG          =   "XC01"
+                   MOVE    SPACE               TO  LINKAREA
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -871,7 +874,17 @@
       *            プレビュー保険一覧より
                    IF      SPA-I411-SELNUM     NOT =   SPACE
       *                プレビュー処理
+      ****             PERFORM 4130-PREVIEW-SEC
+      *               第三者行為あり
+                      IF     (SPA-XC01-HKNKBN     =   "0"  )
+                        AND  (SPA-XC01-DAISANFLG  =   "1"  )
+                       MOVE    "0120"          TO  SPA-IIDCD
+                       PERFORM 520-JIDSET-SEC
+                     ELSE
+      *                プレビュー処理
+                       MOVE    SPACE           TO  SPA-I4ID-FLG
                        PERFORM 4130-PREVIEW-SEC
+                     END-IF
                    END-IF
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
@@ -1050,6 +1063,12 @@
                    IF      SPA-I4ID-FLG        =   "OK"
                        PERFORM 4701-KAKUTEI-SYORI-SEC
                    END-IF
+      *
+               WHEN    "0120"
+      *            第三者行為あり
+                   MOVE    SPACE           TO  SPA-IIDCD
+      *            プレビュー処理
+                   PERFORM 4130-PREVIEW-SEC
       *
            END-EVALUATE.
       *
@@ -8023,6 +8042,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-JIB-CNT
            MOVE    ZERO                TO  WRK-KOG-CNT
       *
+           MOVE    ZERO                TO  FLG-DAISAN
+           MOVE    SPACE               TO  SPA-XC01-DAISANFLG
+      *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX     >   SPA-NAI-MAX-41
                IF      SPA-NAI-TZAISKBKBN-41 (IDX) =   "5"
@@ -8054,8 +8076,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            プレビュー保険選択画面へ
                    PERFORM 40104-I411-SYORI-SEC
                ELSE
+      *!!!
+      *          第三者行為あり
+                 IF     (SPA-XC01-HKNKBN     =   "0"  )
+                   AND  (SPA-XC01-DAISANFLG  =   "1"  )
+                   MOVE    "0120"          TO  SPA-IIDCD
+                 ELSE
       *            プレビュー処理
+                   MOVE    SPACE           TO  SPA-I4ID-FLG
                    PERFORM 4130-PREVIEW-SEC
+                 END-IF
                END-IF
            END-IF
            .
@@ -8090,6 +8120,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    1               TO  FLG-KOGHKN-OK
                        WHEN    OTHER
                            MOVE    1               TO  FLG-HKN-OK
+      *                第三者行為
+                           IF      SPA-I41-RSI-HKNKBN (IDH)  =   "6"
+                               MOVE    1           TO  FLG-DAISAN
+                           END-IF
                    END-EVALUATE
                END-IF
            END-PERFORM
@@ -8141,6 +8175,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                   OR  (WRK-KOG-CNT         >   ZERO )
                    MOVE    "1"             TO  SPA-XC01-CHK
                END-IF
+           END-IF
+      *
+           IF      FLG-DAISAN          =   1
+               MOVE    "1"             TO  SPA-XC01-DAISANFLG
+           ELSE
+               MOVE    SPACE           TO  SPA-XC01-DAISANFLG
            END-IF
            .
        40102-ALL-HKNCOMBI-CHK-EXT.
@@ -8197,6 +8237,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    自賠責
            IF     SPA-XC01-RSI-HKNKBN  =   "4"
                MOVE    "2"                 TO  SPA-XC01-HKNKBN
+           END-IF
+      *H25.10
+      *    第三者行為
+           IF     (SPA-XC01-HKNKBN     =   "0"  )  AND
+                  (SPA-XC01-RSI-HKNKBN =   SPACE)
+               IF      (SPA-I4ID-FLG        =   "OK" )
+      *            第三者行為
+                   MOVE    "4"                 TO  SPA-XC01-HKNKBN
+                   MOVE    "6"                 TO  SPA-XC01-RSI-HKNKBN
+               END-IF
            END-IF
       *
       *    レセプトプレビュー区分
@@ -8690,8 +8740,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-JIDMSG1
                    MOVE    "す、よろしいですか。"
                                        TO  WRK-JIDMSG2
+      *
+               WHEN    "0120"
+                   STRING  "第三者行為の保険組合せです。"
+                           "ＯＫで第三者をＮＯで健保の処理を行います。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    OTHER
-                   MOVE    SPA-ERRCD
+                   MOVE    SPA-IIDCD
                                        TO  WRK-JIDMSG
            END-EVALUATE.
       *
@@ -8701,6 +8758,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE.
            MOVE    WRK-JIDMSG          TO  I4ID1-ID1MSG.
            MOVE    "B12"               TO  MCP-WIDGET.
+      *
+           MOVE    "戻る"              TO  I4ID1-B01
+           MOVE    "ＯＫ"              TO  I4ID1-B12
+           EVALUATE    SPA-IIDCD
+               WHEN    "0120"
+                   MOVE    "ＮＯ"              TO  I4ID1-B01
+           END-EVALUATE
+      *
       *
            MOVE    "I41"               TO  SPA-MOTOPG.
            MOVE    "I4ID1"             TO  SPA-SAKIPG.

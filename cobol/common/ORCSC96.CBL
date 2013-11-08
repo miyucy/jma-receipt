@@ -893,6 +893,7 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *
                WHEN    "S001"
                    STRING  "約束セット内に使用できないコードがあります"
                            "。この約束セットは使用できません。"
