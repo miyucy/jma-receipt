@@ -29,10 +29,6 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/07/24  Ï«ºÒ¶èÊ¬ÄÉ²ÃÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  13/11/01  ÊÝ¸±ÁÈ¹ç¤»£²£°·ï°Ê¾åÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  14/03/XX  Á°´ü¹âÎð¼Ô£²³äÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  14/11/XX  ÊÝ¸±³ÎÇ§ÆüÉÕÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  15/10/XX  Êä½õ¶èÊ¬Ì¾¾Î¥µ¥ÖÂÐ±þ
-      * 05.00.00     NACL-Â¿¡¹Ç¼  17/10/XX  ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æÂÐ¾ÝÂÐ±þ
       *****************************************************************
       *
       *
@@ -126,8 +122,6 @@
            03  WRK-Z9                  PIC 9.ZZ.
            03  WRK-FTNRATEMEI          PIC X(04).
            03  WRK-ZZ9                 PIC ZZZZZ9.
-      *
-           03  WRK-SYSYMD              PIC X(08).
       *
       *    ¸øÈñÊÂÂØ¤¨ÍÑ¥ï¡¼¥¯
        01  WRK-KOHNUM-AREA.
@@ -249,10 +243,7 @@
       *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSKANACHK.INC".
       *    Ç¯Îð¡¦ÉéÃ´³ä¹ç¥µ¥Ö
-      ***  COPY    "CPORCSAGECHK.INC".
-      *H27.10
-      *    Êä½õ¶èÊ¬Ì¾¾ÎÊÔ½¸¥Ñ¥é¥á¥¿
-           COPY    "CPORAPI012SUB1.INC".
+           COPY    "CPORCSAGECHK.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -290,14 +281,6 @@
       *
       *    ÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸½èÍý
            PERFORM 100-HKNCOMBI-HENSYU-SEC
-      *
-      *
-      *H29.9
-           IF      ORCSAPIHKN-KBN      =   "3"
-      *        ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¤Î¤ßÂÐ±þ
-               PERFORM 250-HKNCOMBI-SELECT-SEC
-               GO      TO  000-PROC-EXT
-           END-IF
       *
       *    ÊÝ¸±ÁÈ¹ç¤»·èÄê
            PERFORM 200-HKNCOMBI-SET-SEC
@@ -338,6 +321,16 @@
                MOVE    ZERO                TO  FLG-CHK-OK
                IF     (COMB-DELKBN         =   SPACE     ) AND
                       (COMB-HYOJIKBN   NOT =   "1"       )
+      *ver.4.7     IF      ORCSAPIHKN-KBN2     =   "1"
+      *                ¿·µ¬ÅÐÏ¿»þ¤¹¤Ù¤Æ
+      *                MOVE    1                   TO  FLG-CHK-OK
+      *            ELSE
+      *                ÅöÆüÍ­¸ú
+      *                IF     (SPA-SYSYMD      >=  COMB-TEKSTYMD ) AND
+      *                       (SPA-SYSYMD      <=  COMB-TEKEDYMD )
+      *                    MOVE    1               TO  FLG-CHK-OK
+      *                END-IF
+      *****        END-IF
                    EVALUATE    ORCSAPIHKN-KBN2
                    WHEN    "1"
       *                ¿·µ¬ÅÐÏ¿»þ¤¹¤Ù¤Æ
@@ -394,6 +387,16 @@
                                ( IDH-MAX       >=  90)
                MOVE    ZERO                TO  FLG-CHK-OK
                IF     (PTHKN-SAKJOKBN      =   SPACE )
+      *ver.4.7     IF      ORCSAPIHKN-KBN2     =   "1"
+      *                ¿·µ¬ÅÐÏ¿»þ¤¹¤Ù¤Æ
+      *                MOVE    1                   TO  FLG-CHK-OK
+      *            ELSE
+      *                ÅöÆüÍ­¸ú¤Ç¤¢¤ë¤³¤È
+      *                IF     (PTHKN-TEKSTYMD    <=  SPA-SYSYMD )  AND
+      *                       (PTHKN-TEKEDYMD    >=  SPA-SYSYMD )
+      *                    MOVE    1               TO  FLG-CHK-OK
+      *                END-IF
+      *****        END-IF
                    EVALUATE    ORCSAPIHKN-KBN2
                    WHEN    "1"
       *                ¿·µ¬ÅÐÏ¿»þ¤¹¤Ù¤Æ
@@ -450,6 +453,16 @@
                                ( IDK-MAX       >=  90)
                MOVE    ZERO                TO  FLG-CHK-OK
                IF     (PTKOH-SAKJOKBN      =   SPACE )
+      *ver.4.7**   IF      ORCSAPIHKN-KBN2     =   "1"
+      *                ¿·µ¬ÅÐÏ¿»þ¤¹¤Ù¤Æ
+      *                MOVE    1                   TO  FLG-CHK-OK
+      *            ELSE
+      *                ÅöÆüÍ­¸ú¤Ç¤¢¤ë¤³¤È
+      *                IF     (PTKOH-TEKSTYMD    <=  SPA-SYSYMD )  AND
+      *                       (PTKOH-TEKEDYMD    >=  SPA-SYSYMD )
+      *                    MOVE    1               TO  FLG-CHK-OK
+      *                END-IF
+      *******      END-IF
                    EVALUATE    ORCSAPIHKN-KBN2
                    WHEN    "1"
       *                ¿·µ¬ÅÐÏ¿»þ¤¹¤Ù¤Æ
@@ -538,26 +551,11 @@
            END-IF
       *
       *    ½ÐÎÏÊÔ½¸
-           IF     (ORCSAPIHKN-KBN      =   "2" )
-      *        ³ºÅöÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸
-               PERFORM 291-HKNCOMBI-ONLYHEN-SEC
-           ELSE
-      *        Á´ÊÝ¸±ÁÈ¹ç¤»½ÐÎÏÊÔ½¸
-               PERFORM 290-HKNCOMBI-OUTHENSYU-SEC
-           END-IF
-      *
+           PERFORM 290-HKNCOMBI-OUTHENSYU-SEC
       *    ¿·µ¬ÅÐÏ¿»þ¡¢ÊÝ¸±ÁÈ¹ç¤»ÂÐ¾Ý³°¤Î¸øÈñ
            IF      ORCSAPIHKN-KBN2     =   "1"
                PERFORM 299-PTKOHINF-OUTHEN-SEC
            END-IF
-      *
-      *    ºÇÂç·ï¿ô 
-           PERFORM VARYING    IDX      FROM    1   BY  1
-                   UNTIL     (IDX      >   200 )
-               IF      ORCSAPIHKN-THKNCOMBI (IDX) NOT  =  SPACE
-                   MOVE    IDX             TO  ORCSAPIHKN-OT-MAX
-               END-IF
-           END-PERFORM
       *
            .
        200-HKNCOMBI-SET-EXT.
@@ -566,27 +564,19 @@
       *****************************************************************
       *    Á°²óÊÝ¸±ÁÈ¹ç¤»¤Ç·èÄê
       *****************************************************************
-       2001-HKNCOMBI-SRYKA-SEC         SECTION.
+       2001-HKNCOMBI-SRYKA-SEC             SECTION.
       *
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    ORCSAPIHKN-SRYKA    TO  JYURRK-SRYKA
-           IF      SPA-NYUGAIKBN       =   "1"
-               MOVE    "1"                 TO  JYURRK-NYUGAIKBN
-           ELSE
-               MOVE    "2"                 TO  JYURRK-NYUGAIKBN
-           END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-      *!!  Æþ³°¶èÊ¬¤òÈ¿±Ç¤¹¤ë¤Ê¤é key7
-      **** MOVE    "key7"              TO  MCP-PATHNAME
            MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-      ***      MOVE    "key7"              TO  MCP-PATHNAME
                MOVE    "key30"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            ELSE
@@ -597,7 +587,6 @@
                MOVE    JYURRK-HKNCOMBINUM      TO  WRK-HKNCOMBINUM
            END-IF
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-      ***  MOVE    "key7"              TO  MCP-PATHNAME
            MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -947,9 +936,8 @@
       *
            MOVE    ZERO                TO  IDX-TBL
            MOVE    ZERO                TO  FLG-COMBIOK
-           IF     (IDX-MAX             >   20 )
-             AND  (ORCSAPIHKN-KBN3 NOT =   "1" )
-      *        £²£°·ï°Ê¾å¤Ï¡¢ºÇ¸å¤«¤éÊÔ½¸¡Ê£²£°·ï¤Þ¤Ç¤Î»þ¡Ë
+           IF      IDX-MAX             >   20
+      *        £²£°·ï°Ê¾å¤Ï¡¢ºÇ¸å¤«¤éÊÔ½¸
                MOVE    20                  TO  IDXH
                PERFORM VARYING     IDX     FROM    IDX-MAX BY  -1
                        UNTIL      (IDX     <   1       )
@@ -962,15 +950,12 @@
                    COMPUTE IDXH            =   IDXH    -   1
                END-PERFORM
                MOVE    20                  TO  IDX-TBL
-               IF      ORCSAPIHKN-ERRCD    =   ZERO
-                   MOVE    9                   TO  ORCSAPIHKN-ERRCD
-               END-IF
+               MOVE    9                   TO  ORCSAPIHKN-ERRCD
            ELSE
                MOVE    1                   TO  IDXH
                PERFORM VARYING     IDX      FROM    1   BY  1
                        UNTIL      (IDX     >   IDX-MAX )
-      *H29.1                  OR  (IDXH    >   20      )
-                              OR  (IDXH    >   200     )
+                              OR  (IDXH    >   20      )
                    IF      TBL-COMB-HKNCOMBINUM (IDX) NOT =   SPACE
                        PERFORM 2901-HKNCOMBI-HEN-SEC
                        IF      TBL-COMB-HKNCOMBINUM (IDX) 
@@ -995,38 +980,9 @@
                        MOVE    1               TO  FLG-COMBIOK
                    END-IF
                END-PERFORM
-      *        ÂÐ¾Ý¤Ê¤·
-               IF      FLG-COMBIOK         =   ZERO
-                   MOVE    4                   TO  ORCSAPIHKN-ERRCD
-               END-IF
            END-IF
            .
        290-HKNCOMBI-OUTHENSYU-EXT.
-           EXIT.
-      *****************************************************************
-      *    ³ºÅöÊÝ¸±ÁÈ¹ç¤»¾ðÊóÊÔ½¸½èÍý
-      *****************************************************************
-       291-HKNCOMBI-ONLYHEN-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  IDX-TBL
-           MOVE    ZERO                TO  FLG-COMBIOK
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   IDX-MAX )
-                          OR  (FLG-COMBIOK =   1   )
-               IF      TBL-COMB-HKNCOMBINUM (IDX)
-                                           =   ORCSAPIHKN-OT-HKNCOMBI
-                   MOVE    1               TO  IDXH
-                   PERFORM 2901-HKNCOMBI-HEN-SEC
-                   MOVE    1               TO  FLG-COMBIOK
-               END-IF
-           END-PERFORM
-      *    ÂÐ¾Ý¤Ê¤·
-           IF      FLG-COMBIOK         =   ZERO
-               MOVE    4                   TO  ORCSAPIHKN-ERRCD
-           END-IF
-           .
-       291-HKNCOMBI-ONLYHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1039,9 +995,6 @@
                                                                (IDXH)
            MOVE    TBL-COMB-HKNNUM (IDX)
                                        TO  ORCSAPIHKN-HKNNUM (IDXH)
-      *    ÊÝ¸±£É£Ä
-           MOVE    TBL-COMB-HKNID  (IDX)
-                                       TO  ORCSAPIHKN-NAI-HKNID (IDXH)
       *    ¼çÊÝ¸±¡ÝÃ»½ÌÀ©ÅÙÌ¾
            MOVE    TBL-COMB-SYU-TANSEIDONAME (IDX)
                                        TO  ORCSAPIHKN-HKNNUM-NAME
@@ -1057,29 +1010,6 @@
       *    ·ÑÂ³¶èÊ¬
            MOVE    TBL-COMB-CONTKBN (IDX)
                                        TO  ORCSAPIHKN-CONTKBN (IDXH)
-      *H29.1
-      *    ÊÝ¸±ÁÈ¹ç¤»ÉéÃ´³ä¹ç
-           MOVE    TBL-COMB-GAI-KFTNRATE (IDX)
-                                       TO  ORCSAPIHKN-COMB-RATEG(IDXH)
-           MOVE    TBL-COMB-NYU-KFTNRATE(IDX)
-                                       TO  ORCSAPIHKN-COMB-RATEN(IDXH)
-      *    Í­¸ú´ü´Ö
-           MOVE    TBL-COMB-TEKSTYMD (IDX) TO  WRK-SYMD
-           PERFORM 800-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE       TO  ORCSAPIHKN-COMB-TEKSTYMD(IDXH)
-           MOVE    TBL-COMB-TEKEDYMD (IDX) TO  WRK-SYMD
-           PERFORM 800-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE       TO  ORCSAPIHKN-COMB-TEKEDYMD(IDXH)
-      *
-           MOVE    TBL-COMB-TEKSTYMD (IDX)
-                                      TO  ORCSAPIHKN-COMBN-TEKSTYMD
-                                                                (IDXH)
-           MOVE    TBL-COMB-TEKEDYMD (IDX)
-                                      TO  ORCSAPIHKN-COMBN-TEKEDYMD
-                                                                (IDXH)
-      *    ÈóÉ½¼¨¶èÊ¬
-           MOVE    TBL-COMB-HYOJIKBN (IDX)
-                                       TO  ORCSAPIHKN-HYOJIKBN (IDXH)
       *
       *    ÊÝ¸±¾ðÊó
            PERFORM VARYING     IDH     FROM    1   BY  1
@@ -1118,18 +1048,6 @@
                    MOVE    TBL-PTHKN-SKKGETYMD (IDH)
                                            TO  ORCSAPIHKN-NAI-SKKGETYMD
                                                                 (IDXH)
-      *H26.11
-      *            ³ÎÇ§ÆüÉÕ
-                   IF      TBL-PTHKN-KAKUNINYMD(IDH) NOT =   SPACE
-                       MOVE    TBL-PTHKN-KAKUNINYMD(IDH) TO  WRK-SYMD
-                       PERFORM 800-DAYHEN01-SEC
-                       MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KAKUNINYMD
-                                                                (IDXH)
-                   END-IF
-                   MOVE    TBL-PTHKN-KAKUNINYMD (IDH)
-                                           TO  ORCSAPIHKN-NAI-KAKUNINYMD
-                                                                (IDXH)
-      *
                    MOVE    IDH-MAX         TO  IDH
                END-IF
            END-PERFORM
@@ -1148,7 +1066,6 @@
                    PERFORM 29012-KOHHENSYU-SEC
                END-PERFORM
            END-IF
-      *
            .
        2901-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -1158,17 +1075,140 @@
       *****************************************************************
        29013-HOJOKBN-NAME-HEN-SEC             SECTION.
       *
-      *
-           INITIALIZE                  ORAPI012SUB1AREA
-           MOVE    TBL-COMB-HKNNUM (IDX)   TO  API012SUB1-HKNNUM
-           MOVE    TBL-COMB-HOJOKBN (IDX)  TO  API012SUB1-HOJOKBN
-           MOVE    SPA-SYSYMD              TO  API012SUB1-SYSYMD
-           CALL    "ORAPI012SUB1"          USING
-                                           ORAPI012SUB1AREA
-                                           SPA-AREA
-           MOVE    API012SUB1-HOJOKBN-NAME
+           EVALUATE    TBL-COMB-HKNNUM (IDX)
+      *    Á¥°÷
+               WHEN    "002"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "¿¦Ì³" 
                                        TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "2"
+                       MOVE    "²¼Á¥" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "3"
+                       MOVE    "ÄÌ¶Ð" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "7"
+                       MOVE    "£³³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "9"
+                       MOVE    "£±³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "A"
+                       MOVE    "£±³ä¿¦Ì³" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "B"
+                       MOVE    "£±³ä²¼Á¥" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "C"
+                       MOVE    "£±³äÄÌ¶Ð" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "G"
+                       MOVE    "£³³ä¿¦Ì³" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "H"
+                       MOVE    "£³³ä²¼Á¥" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "I"
+                       MOVE    "£³³äÄÌ¶Ð" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+               END-EVALUATE
+      *    ¸å´ü¹âÎð¼Ô
+               WHEN    "039"
+               WHEN    "040"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "£±³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "3"
+                       MOVE    "£³³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+               END-EVALUATE
+      *        ¶¦ºÑ
+               WHEN    "031"
+               WHEN    "032"
+               WHEN    "033"
+               WHEN    "034"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "2"
+                       MOVE    "²¼Á¥£³·î"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "7"
+                       MOVE    "£³³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "9"
+                       MOVE    "£±³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "B"
+                       MOVE    "£±³ä²¼Á¥" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "H"
+                       MOVE    "£³³ä²¼Á¥" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+               END-EVALUATE
+      *        ¹ñÊÝ
+               WHEN    "060"
+               WHEN    "068"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "0"
+                       MOVE    "Ìµ¤·"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "1"
+                       MOVE    "£±³ä"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "2"
+                       MOVE    "£²³ä"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "3"
+                       MOVE    "£³³ä"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "4"
+                       MOVE    "³°£±³ä Æþ£°³ä"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "5"
+                       MOVE    "³°£²³ä Æþ£±³ä"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "6"
+                       MOVE    "³°£³³ä Æþ£²³ä"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+               END-EVALUATE
+      *        ¼£¸³
+               WHEN    "900"
+               WHEN    "901"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "2"
+                       MOVE    "Èó²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+               END-EVALUATE
+      *        ¼«Èñ
+               WHEN    "980"   THRU   "989"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   WHEN    "2"
+                       MOVE    "Èó²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+               END-EVALUATE
       *
+               WHEN    OTHER
+                   IF      TBL-COMB-HKNNUM (IDX)(1:1)  =   "9"
+                       CONTINUE
+                   ELSE
+      *            ¶¨²ñÅù
+                   EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                       WHEN    "9"
+                           MOVE    "£±³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                       WHEN    "7"
+                           MOVE    "£³³ä" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+                   END-EVALUATE
+                   END-IF
+           END-EVALUATE
            .
        29013-HOJOKBN-NAME-HEN-EXT.
            EXIT.
@@ -1223,17 +1263,7 @@
       *        ¸øÈñÌ¾¾Î
                MOVE    TBL-COMB-KOH-TANSEIDONAME  (IDX IDZ)
                                            TO  WRK-KOHNUMMEI-I (IDZ)
-      *H26.11
-      *        ÊÂ¤ÓÂØ¤¨ÇÑ»ß
-               MOVE    WRK-KOH-I-TBL (IDZ) TO  WRK-KOH-O-TBL (IDZ)
            END-PERFORM
-      *
-      *
-      *
-      *H26.11
-      *    ÊÂ¤ÓÂØ¤¨ÇÑ»ß¡Ê°Ê²¼¤Ê¤·¡Ë
-           GO      TO      29011-KOHID-HENSYU-EXT
-      *
       *
       *    Í¥Àè½ç°Ì¤ËÊÂ¤ÙÂØ¤¨
            MOVE    ZERO                TO  IDX-KOH
@@ -1297,10 +1327,6 @@
                    UNTIL      (IDH     >   IDK-MAX )
       *        ¸øÈñ¾ðÊó
                IF      WRK-KOHID-O (IDY)   =   TBL-PTKOH-KOHID (IDH)
-      *            ¸øÈñ£É£Ä
-                   MOVE    TBL-PTKOH-KOHID (IDH)
-                                           TO  ORCSAPIHKN-NAI-KOHID
-                                                            (IDXH IDY)
       *            ¸øÈñ¤Î¼ïÎà
                    MOVE    TBL-PTKOH-KOHNUM (IDH)
                                            TO  ORCSAPIHKN-KOHNUM
@@ -1329,7 +1355,6 @@
                                                             (IDXH IDY)
       *
       *            ÉéÃ´Î¨¡¦ÉéÃ´³ÛÊÔ½¸
-                   MOVE    SPA-SYSYMD      TO  WRK-SYSYMD
                    PERFORM 400-KOHFTN-HENSYU-SEC
       *
                    MOVE    IDK-MAX             TO  IDH
@@ -1349,10 +1374,8 @@
            MOVE    TBL-PTKOH-KOHNUM (IDH)  TO  HKN-HKNNUM
       *    »ÙÊ§¶èÊ¬
            MOVE    TBL-PTKOH-PAYKBN (IDH)  TO  HKN-PAYKBN
-           MOVE    WRK-SYSYMD          TO  HKN-TEKSTYMD
-           MOVE    WRK-SYSYMD          TO  HKN-TEKEDYMD
-      *    MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
-      *    MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -1437,10 +1460,6 @@
                    MOVE    ALL "¡ö"        TO  ORCSAPIHKN-HKNNUM-NAME
                                                                  (IDX)
                    MOVE    1               TO  IDY
-      *            ¸øÈñ£É£Ä
-                   MOVE    TBL-PTKOH-KOHID (IDH)
-                                           TO  ORCSAPIHKN-NAI-KOHID
-                                                            (IDX IDY)
       *            ¸øÈñ¤Î¼ïÎà
                    MOVE    TBL-PTKOH-KOHNUM (IDH)
                                            TO  ORCSAPIHKN-KOHNUM
@@ -1464,7 +1483,6 @@
                    MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKEDYMD
                                                                (IDX IDY)
       *            ÉéÃ´Î¨¡¦ÉéÃ´³ÛÊÔ½¸
-                   MOVE    SPA-SYSYMD      TO  WRK-SYSYMD
                    PERFORM 400-KOHFTN-HENSYU-SEC
       *            ¸øÈñ¤ÎÌ¾¾Î
                    MOVE    HKN-TANSEIDONAME
@@ -1476,224 +1494,6 @@
            END-PERFORM
            .
        299-PTKOHINF-OUTHEN-EXT.
-           EXIT.
-      *
-      *H29.9
-      *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æÊÔ½¸½èÍý
-      *****************************************************************
-       250-HKNCOMBI-SELECT-SEC                SECTION.
-      *
-           MOVE    ZERO                TO  FLG-COMBIOK
-           MOVE    1                   TO  IDXH
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   IDX-MAX )
-                          OR  (FLG-COMBIOK =   1   )
-               IF      TBL-COMB-HKNCOMBINUM (IDX)
-                                           =   ORCSAPIHKN-IN-HKNCOMBI
-                   MOVE    ORCSAPIHKN-IN-HKNCOMBI
-                                           TO  ORCSAPIHKN-OT-HKNCOMBI
-                   PERFORM 2901-HKNCOMBI-HEN-SEC
-                   MOVE    1               TO  FLG-COMBIOK
-               END-IF
-           END-PERFORM
-           IF      FLG-COMBIOK         =   1
-               GO      TO      250-HKNCOMBI-SELECT-EXT
-           END-IF
-      *
-      *    ÊÝ¸±ÁÈ¹ç¤»Åö·î¤Ê¤·
-           MOVE    SPACE               TO  HKNCOMBI-REC
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
-           MOVE    SPA-PTID            TO  COMB-PTID
-           MOVE    ORCSAPIHKN-IN-HKNCOMBI
-                                       TO  COMB-HKNCOMBINUM
-      *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-HKNCOMBI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
-           END-IF
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-HKNCOMBI        =   1
-      *        ÂÐ¾Ý¤Ê¤·
-               MOVE    4                   TO  ORCSAPIHKN-ERRCD
-               GO      TO      250-HKNCOMBI-SELECT-EXT
-           END-IF
-      *
-           MOVE    ORCSAPIHKN-IN-HKNCOMBI
-                                       TO  ORCSAPIHKN-OT-HKNCOMBI
-      *
-           IF      COMB-DELKBN         =   "1"
-      *        ºï½üÊ¬
-               MOVE    8                   TO  ORCSAPIHKN-ERRCD
-           ELSE
-      *        ´ü´Ö³°
-               MOVE    ZERO                TO  FLG-CHK-OK
-               EVALUATE    ORCSAPIHKN-KBN2
-                   WHEN    "1"
-                       MOVE    1                   TO  FLG-CHK-OK
-                   WHEN    "2"
-      *                Ç¯·î¤ÇÍ­¸ú¤Ç¤¢¤ë¤³¤È
-                       IF     (COMB-TEKSTYMD(1:6)
-                                               <=  SPA-SYSYMD(1:6)) AND
-                              (COMB-TEKEDYMD(1:6)
-                                               >=  SPA-SYSYMD(1:6))
-                           MOVE    1               TO  FLG-CHK-OK
-                       END-IF
-                   WHEN    OTHER
-      *                ÅöÆüÍ­¸ú¤Ç¤¢¤ë¤³¤È
-                       IF     (COMB-TEKSTYMD   <=  SPA-SYSYMD )  AND
-                              (COMB-TEKEDYMD   >=  SPA-SYSYMD )
-                           MOVE    1               TO  FLG-CHK-OK
-                       END-IF
-               END-EVALUATE
-      *        ´ü´Ö³°
-               IF      FLG-CHK-OK          =   ZERO
-                   MOVE    7                   TO  ORCSAPIHKN-ERRCD
-               END-IF
-           END-IF
-      *
-      *    ÊÔ½¸
-           MOVE    COMB-HKNCOMBINUM    TO  ORCSAPIHKN-THKNCOMBI
-                                                             (IDXH)
-           MOVE    COMB-HKNNUM         TO  ORCSAPIHKN-HKNNUM (IDXH)
-      *    ÊÝ¸±£É£Ä
-           MOVE    COMB-HKNID          TO  ORCSAPIHKN-NAI-HKNID (IDXH)
-      *    ¼çÊÝ¸±¡ÝÃ»½ÌÀ©ÅÙÌ¾
-           MOVE    COMB-SYU-TANSEIDONAME
-                                       TO  ORCSAPIHKN-HKNNUM-NAME
-                                                                 (IDXH)
-      *    ËÜ¿Í²ÈÂ²¶èÊ¬
-           MOVE    COMB-HONKZKKBN      TO  ORCSAPIHKN-HONKZKKBN(IDXH)
-      *    Êä½õ¶èÊ¬
-           MOVE    COMB-HOJOKBN        TO  ORCSAPIHKN-HOJOKBN (IDXH)
-      *
-           INITIALIZE                  ORAPI012SUB1AREA
-           MOVE    COMB-HKNNUM         TO  API012SUB1-HKNNUM
-           MOVE    COMB-HOJOKBN        TO  API012SUB1-HOJOKBN
-           MOVE    COMB-TEKSTYMD       TO  API012SUB1-SYSYMD
-           CALL    "ORAPI012SUB1"          USING
-                                           ORAPI012SUB1AREA
-                                           SPA-AREA
-           MOVE    API012SUB1-HOJOKBN-NAME
-                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
-      *
-      *    ·ÑÂ³¶èÊ¬
-           MOVE    COMB-CONTKBN        TO  ORCSAPIHKN-CONTKBN (IDXH)
-      *
-      *    ÊÝ¸±ÁÈ¹ç¤»ÉéÃ´³ä¹ç
-           MOVE    COMB-GAI-KFTNRATE   TO  ORCSAPIHKN-COMB-RATEG(IDXH)
-           MOVE    COMB-NYU-KFTNRATE   TO  ORCSAPIHKN-COMB-RATEN(IDXH)
-      *    Í­¸ú´ü´Ö
-           MOVE    COMB-TEKSTYMD       TO  WRK-SYMD
-           PERFORM 800-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-COMB-TEKSTYMD
-                                                             (IDXH)
-           MOVE    COMB-TEKEDYMD       TO  WRK-SYMD
-           PERFORM 800-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-COMB-TEKEDYMD
-                                                             (IDXH)
-      *
-           MOVE    COMB-TEKSTYMD       TO  ORCSAPIHKN-COMBN-TEKSTYMD
-                                                                (IDXH)
-           MOVE    COMB-TEKEDYMD       TO  ORCSAPIHKN-COMBN-TEKEDYMD
-                                                                (IDXH)
-      *    ÈóÉ½¼¨¶èÊ¬
-           MOVE    COMB-HYOJIKBN       TO  ORCSAPIHKN-HYOJIKBN (IDXH)
-      *
-      *    ÊÝ¸±¾ðÊó
-           IF      COMB-HKNID      NOT =   ZERO
-               PERFORM 901-PTHKNINF-READ-SEC
-               MOVE    PTHKN-HKNJANUM      TO  ORCSAPIHKN-HKNJANUM(IDXH)
-               MOVE    PTHKN-KIGO          TO  ORCSAPIHKN-KIGO (IDXH)
-               MOVE    PTHKN-NUM           TO  ORCSAPIHKN-NUM  (IDXH)
-               MOVE    PTHKN-HIHKNJANAME   TO  ORCSAPIHKN-HIHKNJANAME
-                                                                (IDXH)
-      *        ÊÝ¸±Í­¸ú´ü´Ö
-               MOVE    PTHKN-TEKSTYMD      TO  WRK-SYMD
-               PERFORM 800-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-TEKSTYMD(IDXH)
-               MOVE    PTHKN-TEKEDYMD      TO  WRK-SYMD
-               PERFORM 800-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-TEKEDYMD(IDXH)
-      *
-               MOVE    PTHKN-TEKSTYMD      TO  ORCSAPIHKN-NAI-TEKSTYMD
-                                                               (IDXH)
-               MOVE    PTHKN-TEKEDYMD      TO  ORCSAPIHKN-NAI-TEKEDYMD
-                                                               (IDXH)
-      *        »ñ³Ê¼èÆÀÆü
-               IF      PTHKN-SKKGETYMD     NOT =   SPACE
-                   MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
-                   PERFORM 800-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-SKKGETYMD
-                                                                (IDXH)
-               END-IF
-               MOVE    PTHKN-SKKGETYMD     TO  ORCSAPIHKN-NAI-SKKGETYMD
-                                                                (IDXH)
-      *        ³ÎÇ§ÆüÉÕ
-               IF      PTHKN-KAKUNINYMD    NOT =   SPACE
-                   MOVE    PTHKN-KAKUNINYMD    TO  WRK-SYMD
-                   PERFORM 800-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KAKUNINYMD
-                                                                (IDXH)
-               END-IF
-               MOVE    PTHKN-KAKUNINYMD    TO  ORCSAPIHKN-NAI-KAKUNINYMD
-                                                                (IDXH)
-           END-IF
-      *    Ï«ºÒ¡¦¼«ÇåÀÕ¶èÊ¬
-           IF      COMB-HKNNUM         =   "971"  OR  "973"
-               PERFORM 29013-PTRSIINF-HEN-SEC
-           END-IF
-      *    ¸øÈñ¾ðÊó
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   4   )
-                           OR (COMB-KOHHKNNUM (IDY)   =   SPACE)
-      *        ¸øÈñ¤Î¼ïÎà
-               MOVE    COMB-KOHHKNNUM (IDY)
-                                       TO  ORCSAPIHKN-KOHNUM
-                                                            (IDXH IDY)
-      *        ¸øÈñ¤Î¼ïÎàÌ¾¾Î
-               MOVE    COMB-KOH-TANSEIDONAME(IDY)
-                                       TO  ORCSAPIHKN-KOHNUM-NAME
-                                                            (IDXH IDY)
-               MOVE    COMB-KOHID (IDY)
-                                       TO  ORCSAPIHKN-NAI-KOHID
-                                                            (IDXH IDY)
-      *        ÉéÃ´¼ÔÈÖ¹æ¡¢¼õµë¼ÔÈÖ¹æ
-               PERFORM 901-PTKOHINF-READ-SEC
-               MOVE    PTKOH-FTNJANUM  TO  ORCSAPIHKN-FTNJANUM
-                                                            (IDXH IDY)
-               MOVE    PTKOH-JKYSNUM   TO  ORCSAPIHKN-JKYSNUM
-                                                            (IDXH IDY)
-      *        Í­¸ú³«»ÏÆü
-               MOVE    PTKOH-TEKSTYMD  TO  WRK-SYMD
-               PERFORM 800-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKSTYMD
-                                                            (IDXH IDY)
-      *        Í­¸ú½ªÎ»Æü
-               MOVE    PTKOH-TEKEDYMD  TO  WRK-SYMD
-               PERFORM 800-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKEDYMD
-                                                            (IDXH IDY)
-      *        ÉéÃ´Î¨¡¦ÉéÃ´³ÛÊÔ½¸
-               MOVE    1               TO  IDH
-               MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC(IDH)
-               MOVE    PTKOH-TEKSTYMD  TO  WRK-SYSYMD
-               PERFORM 400-KOHFTN-HENSYU-SEC
-           END-PERFORM
-           .
-       250-HKNCOMBI-SELECT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1833,79 +1633,6 @@
       *
            .
        920-PTKOHINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷
-      *****************************************************************
-       901-PTHKNINF-READ-SEC         SECTION.
-      *
-           INITIALIZE                  PTHKNINF-REC
-           MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
-           MOVE    COMB-PTID           TO  PTHKN-PTID
-           MOVE    COMB-HKNID          TO  PTHKN-HKNID
-      *
-           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-PTHKNINF
-                   MOVE    MCPDATA-REC         TO  PTHKNINF-REC
-               ELSE
-                   MOVE    1                   TO  FLG-PTHKNINF
-                   INITIALIZE                  PTHKNINF-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-PTHKNINF
-               INITIALIZE                  PTHKNINF-REC
-           END-IF
-           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       901-PTHKNINF-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊó¸¡º÷
-      *****************************************************************
-       901-PTKOHINF-READ-SEC         SECTION.
-      *
-           INITIALIZE                  PTKOHINF-REC
-           MOVE    COMB-HOSPNUM        TO  PTKOH-HOSPNUM
-           MOVE    COMB-PTID           TO  PTKOH-PTID
-           MOVE    COMB-KOHID (IDY)    TO  PTKOH-KOHID
-      *
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-PTKOHINF
-                   MOVE    MCPDATA-REC         TO  PTKOHINF-REC
-               ELSE
-                   MOVE    1                   TO  FLG-PTKOHINF
-                   INITIALIZE                  PTKOHINF-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-PTKOHINF
-               INITIALIZE                  PTKOHINF-REC
-           END-IF
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       901-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý

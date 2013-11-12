@@ -161,9 +161,4 @@
                         09  PTMODRES-INSURANCE-START-DATE    PIC X(10).
       *                 有効終了日
                         09  PTMODRES-INSURANCE-END-DATE      PIC X(10).
-      *H30.4
-      *         患者個別情報
-                05  PTMODRES-PTCONF-INFO.
-      *             妊婦設定
-                    07  PTMODRES-NINPUKBN             PIC X(05).
       *
