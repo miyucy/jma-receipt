@@ -3472,8 +3472,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2004141-KOHJYUCHK-SEC               SECTION.
       *
-           PERFORM VARYING    IDX      FROM   1   BY  1
-                   UNTIL     (IDX      >   SPA-PTKOH-MAX)
+           PERFORM VARYING    IDY      FROM   1   BY  1
+                   UNTIL     (IDY      >   SPA-PTKOH-MAX)
                          OR  (WRK-ERRCD    NOT =   SPACE )
                IF      (IDX        NOT =   IDY )
                AND     (SPA-PTKOH-KOHNUM (IDX)
@@ -4080,7 +4080,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "63"
-               STRING  "同じ内容の公費があります。"
+               STRING  WRK-ERR-KOHNUM
+                       " "               DELIMITED  BY  SIZE
+                       WRK-ERR-KOHNUMMEI DELIMITED  BY  SPACE
+                       " "               DELIMITED  BY  SIZE
+                       "同じ内容の公費があります。"
                        "処理できません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
