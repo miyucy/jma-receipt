@@ -34,14 +34,12 @@ else
   LOG="$LOGDIR"/program_upgrade_check.log
 fi
 
-echo ${LOG}
-
 # echo message (default character-code EUC)
 echomsg() {
   if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.utf8" ]; then
-    echo `echo $1 | nkf -wE`
+    echo `echo $1 | nkf -wE | tee -a $2`
   else
-    echo $1
+    echo $1 | tee -a $2
   fi
 }
 
@@ -51,7 +49,7 @@ jobend97() {
   exit 97
 }
 
-#rm -f ${LOG}
+rm -f ${LOG}
 
 # disk space check
 VOLSIZE=`df -m /var | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
@@ -119,17 +117,17 @@ do
   echomsg "$file Execute." ${LOG}
   rm -rf $PRGDIR/*
   if [ -e $PATCHDIR/$file ]; then
-    tar zxf $PATCHDIR/$file -C $PRGDIR 
+    tar zxf $PATCHDIR/$file -C $PRGDIR 2>&1 >> ${LOG}
     if [ $? -ne 0 ]; then
       RESULT="[ERROR] tar zxf $file" 
       jobend97 "${RESULT}"
     fi
-    mv $PRGDIR/patch/* $PRGDIR 
-    rmdir $PRGDIR/patch 
+    mv $PRGDIR/patch/* $PRGDIR 2>&1 >> ${LOG}
+    rmdir $PRGDIR/patch 2>&1 >> ${LOG}
     if [ "$METHOD" = "update" ]; then
-      bash $PRGDIR/PROCEDURE $PRGDIR 
+      bash $PRGDIR/PROCEDURE $PRGDIR 2>&1 >> ${LOG}
     else
-      bash $PRGDIR/INITIATOR $PRGDIR 
+      bash $PRGDIR/INITIATOR $PRGDIR 2>&1 >> ${LOG}
     fi
     if [ $? -ne 0 ]; then
       RESULT="[ERROR] $file/Execute Error" 
