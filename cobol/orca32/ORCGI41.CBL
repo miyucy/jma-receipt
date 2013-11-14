@@ -6369,9 +6369,15 @@
                           MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
                       END-IF
                   ELSE
-                      IF  STUSAN-NISSU08   >=   90
+                   IF    LNK-AKYUSEI-RC   =   1
+                      IF   STUSAN-NISSU08   >=   90
                           MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
                       END-IF
+                   ELSE
+                      IF   STUSAN-NISSU08   >=   60
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                      END-IF
+                   END-IF
                   END-IF
                END-IF
            END-IF

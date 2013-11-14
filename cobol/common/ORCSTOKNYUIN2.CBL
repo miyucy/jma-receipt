@@ -1433,6 +1433,7 @@
                  END-IF
            END-IF
       *
+           DISPLAY   "TN-IDX = " TN-IDX
       *    特定入院期間を経過した際の一般入院会計作成用のフラグ設定
            EVALUATE   LNK-TOKNYUIN2-IDOKBN
                WHEN   "1"
@@ -1457,13 +1458,21 @@
                                              LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI   TO      WRK-IPN-HANTEI-YMD1
       *    特定入院料の終了日付をセット
-           MOVE    LNK-TOKNYUIN2-EDYMD(WRK-SRYCD-COUNT)
+           IF     TN-IDX      NOT =     ZERO
+               MOVE    LNK-TOKNYUIN2-EDYMD(TN-IDX)
                                      TO      WRK-IPN-HANTEI-YMD2
+           ELSE
+               MOVE    "00000000"    TO      WRK-IPN-HANTEI-YMD2
+           END-IF
       *    一般入院会計作成用のフラグ設定
            DISPLAY "WRK-IPN-HANTEI-YMD1 = " WRK-IPN-HANTEI-YMD1
            DISPLAY "WRK-IPN-HANTEI-YMD2 = " WRK-IPN-HANTEI-YMD2
            IF    WRK-IPN-HANTEI-YMD1    >   WRK-IPN-HANTEI-YMD2
-               CONTINUE
+               MOVE    "1"        TO     LNK-TOKNYUIN2-IPN-KAIKEI-FLG
+               IF    WRK-IPN-HANTEI-YMD2   =   "00000000"
+                   MOVE   LNK-TOKNYUIN2-SANTEIYMD
+                                  TO     LNK-TOKNYUIN2-IPN-KAIKEI-YMD
+               END-IF
            ELSE
                MOVE    SPACE      TO     LNK-TOKNYUIN2-IPN-KAIKEI-FLG
                                          LNK-TOKNYUIN2-IPN-KAIKEI-YMD
