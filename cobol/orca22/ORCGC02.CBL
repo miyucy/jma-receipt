@@ -301,11 +301,11 @@
       *  04.07.08    NACL-藤原    13/07/12  第三者行為対応
       *  04.07.09    NACL-藤原    13/11/05  補足コメントのコード検索戻り
       *                                     時の病名欄設定の変更
-      *  04.07.10    NACL-藤原    13/11/15  病名入力時のコード置換え画面
+      *  04.07.10    NACL-藤原    13/10/11  更新時のopid 設定
+      *  04.07.11    NACL-藤原    13/11/15  病名入力時のコード置換え画面
       *                                     の表示
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
-      *  04.08.02    NACL-藤原    13/10/11  更新時のopid 設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3180,10 +3180,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                        MOVE    SPA-NAI-C02-BYOMEICD(IDZ)
                                            TO  BYO-BYOMEICD
                        PERFORM 410111-BYOMEI-HENSYU-SEC
-      *
-                       INITIALIZE                  SPA-C02-HAISI-AREA
-                       PERFORM 41021-BYOMEICD-HENSYU-SEC
-                       MOVE    34              TO  SPA-GMN-C02-CUR
                    END-IF
                    IF      SPA-CID6-FLG    =   "CHG"
                        PERFORM VARYING IDXX    FROM
@@ -3254,14 +3250,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                        ELSE
                            COMPUTE SPA-GMN-C02-CUR     =   1   +   IDZ
                        END-IF 
-                       INITIALIZE                  SPA-C02-HAISI-AREA
-                       PERFORM 41021-BYOMEICD-HENSYU-SEC
-                       MOVE    34              TO  SPA-GMN-C02-CUR
                    END-IF
-                   IF      SPA-CID6-FLG    =   SPACE
-                       INITIALIZE                  SPA-C02-HAISI-AREA
-                       PERFORM 41021-BYOMEICD-HENSYU-SEC
-                   END-IF
+      *
+                   INITIALIZE                  SPA-C02-HAISI-AREA
+                   PERFORM 41021-BYOMEICD-HENSYU-SEC
+                   MOVE    34              TO  SPA-GMN-C02-CUR
                WHEN    "0104"
                WHEN    "0106"
       *            自院病名コードの移行
