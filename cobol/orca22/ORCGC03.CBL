@@ -3730,26 +3730,49 @@ grpsys                                         SPA-AREA
                                        =   1     )
       *        移行・推奨病名、廃止病名の警告表示をしないとき
       *        または、検索結果がひとつのとき
-                   CONTINUE
+               CONTINUE
            ELSE
       *        編集病名でなく移行等があるとき
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       LNK-BYOMEI-KENSAKU-MAX
                    IF      LNK-BYO-O-BYOMEIHENFLG(IDXX) =   SPACE
-                       IF    ( LNK-BYO-O-IKOSAKICD   (IDXX)
-                                                       =   SPACE )
-                       AND   ( LNK-BYO-O-HAISIYMD-ERR(IDXX)
-                                                       =   ZERO  )
-                           CONTINUE
+                       IF      LNK-BYO-O-IKOSAKICD   (IDXX)
+                                               NOT =   SPACE
+                           IF      SPA-C02-1042-MSG2-DSPKBN
+                                                   =   "0"
+                               MOVE    IDXX        TO  WRK-LNK-BYO-INDEX
+                               MOVE    LNK-BYOMEI-KENSAKU-MAX
+                                                   TO  IDXX
+                           END-IF
                        ELSE
-                           MOVE    IDXX        TO  WRK-LNK-BYO-INDEX
-                           MOVE    LNK-BYOMEI-KENSAKU-MAX
-                                               TO  IDXX
-                       END-IF
+                           IF      LNK-BYO-O-HAISIYMD-ERR(IDXX)
+                                               NOT =   ZERO
+                               IF      SPA-C02-1042-MSG3-DSPKBN
+                                                       =   "0"
+                                   MOVE    IDXX    TO  WRK-LNK-BYO-INDEX
+                                   MOVE    LNK-BYOMEI-KENSAKU-MAX
+                                                   TO  IDXX
+                               END-IF
+                               IF      SPA-C02-1042-MSG2-DSPKBN
+                                                       =   "0"
+                                   INITIALIZE          SYNONYM-REC
+                                   MOVE    LNK-BYO-BYOMEI
+                                                   TO  SYNONYM-BYOMEI
+      *                            同義語マスタから病名検索処理
+                                   PERFORM 5002-SYNONYM-CHK-SEC
+                                   IF      FLG-SYNONYM =   ZERO
+                                       MOVE    IDXX
+                                                   TO  WRK-LNK-BYO-INDEX
+                                       MOVE    LNK-BYOMEI-KENSAKU-MAX
+                                                   TO  IDXX
+                                   END-IF
+                               END-IF
+                           END-IF
+                       END-IF     
                    END-IF
                END-PERFORM
       *
-               IF          WRK-LNK-BYO-INDEX   >   ZERO              
+               IF      WRK-LNK-BYO-INDEX   >   ZERO
       *            編集病名でなく移行等もないとき置換病名に設定
                    IF    ( LNK-BYO-BYOMEIHENFLG    =   SPACE )
                    AND   ( LNK-BYO-IKOSAKICD       =   SPACE )
