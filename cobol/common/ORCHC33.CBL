@@ -1269,6 +1269,7 @@
            IF      COMB-HKNNUM         =   "971"  OR  "973"
                MOVE    1               TO  TBL-HKNKBN (IDX)
            ELSE
+      *      ¬Ëª∞º‘π‘∞Ÿ
              IF    COMB-KOH1HKNNUM     =   "970"
                MOVE    2               TO  TBL-HKNKBN (IDX)
              ELSE
@@ -1837,11 +1838,15 @@
                    COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY
                                            -   WRK-JIHIKEI
       *            …È√¥≥€
+                   IF      WRK-SKYMONEY    NOT =   ZERO
+      *H25.11
                    ADD     1                   TO  IDX-T1
                    MOVE    WRK-SKYMONEY        TO  WRK-Z79S
                    MOVE    WRK-Z79S            TO  TBL-NAIYO (IDX-T1 9)
       *            ∑Ó∑◊…È√¥≥€
                    ADD     WRK-SKYMONEY        TO  WRK-TUK-SKYMONEY
+      *
+                   END-IF
                END-IF
       *
                MOVE    "tbl_syunou"        TO  MCP-TABLE
