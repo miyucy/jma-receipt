@@ -1870,6 +1870,10 @@
                END-PERFORM
       *
                IF      SPA-ERRCD           =   SPACE 
+                IF    ( SPA-C02-1042-MSG2-DSPKBN =   "1" )
+                AND   ( SPA-C02-1042-MSG3-DSPKBN =   "1" )
+                     CONTINUE
+                ELSE
                  IF     ( SPA-CIDCD2      NOT =   SPACE )
                  OR     ( WRK-HAISIYMDH   NOT =   SPACE )
                  OR     ( USBYO-BYOMEIHENFLG  =   "1"   )
@@ -1903,14 +1907,20 @@
                            MOVE    SPA-CIDCD2     TO  SPA-CIDCD6
                            MOVE    SPACE          TO  SPA-CIDCD2
                        ELSE
-                           IF      WRK-HAISIYMDH   NOT =   SPACE
-                               MOVE    "0109"         TO  SPA-CIDCD6
+                           IF    ( WRK-HAISIYMDH   NOT =   SPACE )
+                           AND   ( SPA-C02-1042-MSG3-DSPKBN
+                                                       =   "0"   )
+                               MOVE    "0109"          TO  SPA-CIDCD6
                            ELSE
-                               MOVE    "0108"         TO  SPA-CIDCD6
+                               IF      SPA-C02-1042-MSG2-DSPKBN
+                                                       =   "0"
+                                   MOVE    "0108"      TO  SPA-CIDCD6
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
                  END-IF
+                END-IF
                END-IF
       *
                IF    ( SPA-CIDCD2          =   SPACE )
@@ -3063,11 +3073,12 @@
                            IF      BYO-HAISIYMD    =   ALL "9" OR  SPACE
                                CONTINUE
                            ELSE
+                               MOVE    WRK-BYO-HAISIYMD
+                                                       TO  WRK-SYMD
+                               PERFORM 5002-HIZUKE-HEN-SEC
+      *
                                IF      SPA-C02-1042-MSG3-DSPKBN
                                                            =   ZERO
-                                   MOVE    WRK-BYO-HAISIYMD
-                                                           TO  WRK-SYMD
-                                   PERFORM 5002-HIZUKE-HEN-SEC
                                    MOVE    LNK-DAY2-EDTYMD3
                                                            TO
                                                SPA-NAI-C03-HAISIYMD(IDZ)
@@ -3088,6 +3099,9 @@
                                    MOVE    "0104"          TO
                                            SPA-NAI-C03-IKOSAKI-ERRCD
                                                             (IDZ)
+                                   MOVE    LNK-DAY2-EDTYMD3
+                                                           TO
+                                           SPA-NAI-C03-HAISIYMD(IDZ)
                                END-IF
                            END-IF        
                       END-IF        
@@ -3744,28 +3758,26 @@ grpsys                                         SPA-AREA
                                MOVE    LNK-BYOMEI-KENSAKU-MAX
                                                    TO  IDXX
                            END-IF
-                       ELSE
-                           IF      LNK-BYO-O-HAISIYMD-ERR(IDXX)
+                       END-IF
+                       IF      LNK-BYO-O-HAISIYMD-ERR(IDXX)
                                                NOT =   ZERO
-                               IF      SPA-C02-1042-MSG3-DSPKBN
-                                                       =   "0"
+                           IF      SPA-C02-1042-MSG3-DSPKBN
+                                                   =   "0"
+                               MOVE    IDXX        TO  WRK-LNK-BYO-INDEX
+                               MOVE    LNK-BYOMEI-KENSAKU-MAX
+                                                   TO  IDXX
+                           END-IF
+                           IF      SPA-C02-1042-MSG2-DSPKBN
+                                                   =   "0"
+                               INITIALIZE          SYNONYM-REC
+                               MOVE    LNK-BYO-BYOMEI
+                                                   TO  SYNONYM-BYOMEI
+      *                        同義語マスタから病名検索処理
+                               PERFORM 5002-SYNONYM-CHK-SEC
+                               IF      FLG-SYNONYM =   ZERO
                                    MOVE    IDXX    TO  WRK-LNK-BYO-INDEX
                                    MOVE    LNK-BYOMEI-KENSAKU-MAX
                                                    TO  IDXX
-                               END-IF
-                               IF      SPA-C02-1042-MSG2-DSPKBN
-                                                       =   "0"
-                                   INITIALIZE          SYNONYM-REC
-                                   MOVE    LNK-BYO-BYOMEI
-                                                   TO  SYNONYM-BYOMEI
-      *                            同義語マスタから病名検索処理
-                                   PERFORM 5002-SYNONYM-CHK-SEC
-                                   IF      FLG-SYNONYM =   ZERO
-                                       MOVE    IDXX
-                                                   TO  WRK-LNK-BYO-INDEX
-                                       MOVE    LNK-BYOMEI-KENSAKU-MAX
-                                                   TO  IDXX
-                                   END-IF
                                END-IF
                            END-IF
                        END-IF     

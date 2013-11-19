@@ -7696,28 +7696,26 @@ grpsys                                       SPA-AREA
                                MOVE    LNK-BYOMEI-KENSAKU-MAX
                                                    TO  IDXX
                            END-IF
-                       ELSE
-                           IF      LNK-BYO-O-HAISIYMD-ERR(IDXX)
+                       END-IF
+                       IF      LNK-BYO-O-HAISIYMD-ERR(IDXX)
                                                NOT =   ZERO
-                               IF      SPA-C02-1042-MSG3-DSPKBN
-                                                       =   "0"
+                           IF      SPA-C02-1042-MSG3-DSPKBN
+                                                   =   "0"
+                               MOVE    IDXX        TO  WRK-LNK-BYO-INDEX
+                               MOVE    LNK-BYOMEI-KENSAKU-MAX
+                                                   TO  IDXX
+                           END-IF
+                           IF      SPA-C02-1042-MSG2-DSPKBN
+                                                   =   "0"
+                               INITIALIZE          SYNONYM-REC
+                               MOVE    LNK-BYO-BYOMEI
+                                                   TO  SYNONYM-BYOMEI
+      *                        同義語マスタから病名検索処理
+                               PERFORM 5001-SYNONYM-CHK-SEC
+                               IF      FLG-SYNONYM =   ZERO
                                    MOVE    IDXX    TO  WRK-LNK-BYO-INDEX
                                    MOVE    LNK-BYOMEI-KENSAKU-MAX
                                                    TO  IDXX
-                               END-IF
-                               IF      SPA-C02-1042-MSG2-DSPKBN
-                                                       =   "0"
-                                   INITIALIZE          SYNONYM-REC
-                                   MOVE    LNK-BYO-BYOMEI
-                                                   TO  SYNONYM-BYOMEI
-      *                            同義語マスタから病名検索処理
-                                   PERFORM 5001-SYNONYM-CHK-SEC
-                                   IF      FLG-SYNONYM =   ZERO
-                                       MOVE    IDXX
-                                                   TO  WRK-LNK-BYO-INDEX
-                                       MOVE    LNK-BYOMEI-KENSAKU-MAX
-                                                   TO  IDXX
-                                   END-IF
                                END-IF
                            END-IF
                        END-IF     
