@@ -18,7 +18,7 @@ bindapi	"visitptlstv2"	"OpenCOBOL"	"ORAPI021R2V2";
 bindapi "hsconfbasev2"  "OpenCOBOL" "ORAPI031RC1V2";
 bindapi "hsconfwardv2"  "OpenCOBOL" "ORAPI031RC2V2";
 bindapi	"tmedicalgetv2"	"OpenCOBOL"	"ORAPI021R3V2";
-bindapi "hsfoodv2"      "OpenCOBOL" "ORAPI032R1V2";
+bindapi "hsmealv2"      "OpenCOBOL" "ORAPI032R1V2";
 bindapi	"insprogetv2"	"OpenCOBOL"	"ORAPI105R1V2";
 bindapi "hsptevalv2"    "OpenCOBOL" "ORAPI032R2V2";
 bindapi "hsptinfv2"     "OpenCOBOL" "ORAPI031R1V2";
@@ -44,7 +44,7 @@ data	{
         hsconfbasev2;
         hsconfwardv2;
 		tmedicalgetv2;
-        hsfoodv2;
+        hsmealv2;
         insprogetv2;
         hsptevalv2;
         hsptinfv2;
@@ -85,8 +85,8 @@ db "xml2" {
  xml_hsconfroomv2res;
  xml_tmedicalgetv2req;
  xml_tmedicalgetv2res;
- xml_hsfoodv2res;
- xml_hsfoodv2req;
+ xml_hsmealv2res;
+ xml_hsmealv2req;
  xml_insprogetv2req;
  xml_insprogetv2res;
  xml_hsptevalv2res;

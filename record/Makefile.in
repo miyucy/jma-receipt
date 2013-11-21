@@ -482,7 +482,7 @@ RECORD_files = \
 	tmedicalgetv2.rec \
 	insprogetv2.rec \
 	_YDMY01.rec \
-    hsfoodv2.rec \
+    hsmealv2.rec \
     hsptevalv2.rec \
     hsptinfv2.rec \
 	hsacsimulatev2.rec \
@@ -754,8 +754,8 @@ DB_files = \
     xml_hsconfroomv2res.db \
 	xml_tmedicalgetv2req.db \
 	xml_tmedicalgetv2res.db \
-    xml_hsfoodv2req.db \
-    xml_hsfoodv2res.db \
+    xml_hsmealv2req.db \
+    xml_hsmealv2res.db \
 	xml_insprogetv2req.db \
 	xml_insprogetv2res.db \
     xml_hsptevalv2req.db \

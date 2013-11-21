@@ -1,4 +1,4 @@
-xml_hsfoodv2req {
+xml_hsmealv2req {
     context	int;
     object	object;
     mode	int;
