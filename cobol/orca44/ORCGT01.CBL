@@ -174,6 +174,8 @@
       *                                     チェックのとき０９５９３で始
       *                                     まるコードがあるレセプトは対
       *                                     象外とする
+      *  04.07.12    NACL-藤原    13/11/01  労災レセ電データチェック機能
+      *                                     対応
       *
       *  04.08.01    NACL-森脇    13/04/12  システムＤＢ対応
       *****************************************************************
@@ -2069,15 +2071,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                        PERFORM 4501-JOBKANRI-CHK-SEC
                        IF      SPA-ERRCD       =   SPACE
                            MOVE    SPA-TID1-FLG    TO  SPA-RECEDEN-FLG 
-                           IF      SPA-GMN-DATAKBN     =   "1" OR  "2"
-                               MOVE    SPACE           TO  SPA-TID1-FLG
-                               MOVE    "2001"          TO  SPA-TIDCD
-                               GO  TO  340-TID2-SET-EXT
-                           ELSE
-      *                        レセ電出力処理
-                               PERFORM 470-RECEDEN-SEC
-                               GO  TO  340-TID2-SET-EXT
-                           END-IF
+      *                    レセ電出力処理
+                           PERFORM 470-RECEDEN-SEC
+                           GO  TO  340-TID2-SET-EXT
                        END-IF
                    WHEN    "1011"
                    WHEN    "1019"
@@ -5458,6 +5454,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
                                    TO  SHELLTBL-ARG23
            MOVE    SPA-NAI-200501-RECEDEN-RIREKIKBN
                                    TO  SHELLTBL-ARG24
+           IF      SPA-NAI-SKYYM   <   201307
+               MOVE    "0"             TO  SHELLTBL-ARG26
+           ELSE
+               MOVE    SPA-GMN-RECEDEN-CHK
+                                       TO  SHELLTBL-ARG26
+           END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -7011,10 +7013,23 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1027"
                WHEN    "1028"
                WHEN    "1029"
-                   MOVE    WRK-TIDMSG      TO  TID2-ID1MSG
-                   MOVE    "blue"          TO  TID2-LABEL-STYLE
-                   IF      SPA-GMN-PRTKBN  =   "2"
-                       MOVE    "【点検用】"    TO  TID2-LABEL
+                   IF  ( ( SPA-GMN-RECEDEN-CHK
+                                           =   "1"    )    AND
+                         ( SPA-NAI-SKYYM   >=  201307 )        )
+                       STRING   WRK-TIDMSG         DELIMITED  BY  SPACE
+                                "（レセ電チェックリストの印刷を指定）" 
+                                                   DELIMITED  BY  SIZE
+                                                   INTO  TID2-ID1MSG
+                       END-STRING
+                   ELSE
+                       MOVE    WRK-TIDMSG      TO  TID2-ID1MSG
+                   END-IF    
+                   IF      FLG-RECEDEN-CHK =   1
+                       MOVE    "red"           TO  TID2-ID1MSG-STYLE
+                   END-IF
+                   MOVE    "blue"              TO  TID2-LABEL-STYLE
+                   IF      SPA-GMN-PRTKBN      =   "2"
+                       MOVE    "【点検用】"        TO  TID2-LABEL
                    END-IF
                WHEN    OTHER
                    MOVE    WRK-TIDMSG      TO  TID2-ID1MSG
@@ -7060,9 +7075,17 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1027"
                WHEN    "1028"
                WHEN    "1029"
-                   MOVE    "F"             TO  TID2-B10-VISIBLE
-                   MOVE    "F"             TO  TID2-B11-VISIBLE
-                   MOVE    "F12:作成する"  TO  TID2-B12-LABEL
+                   IF  ( ( SPA-GMN-RECEDEN-CHK
+                                           =   "1"    )    AND
+                         ( SPA-NAI-SKYYM   >=  201307 )        )
+                       MOVE    "T"             TO  TID2-B10-VISIBLE
+                       MOVE    "T"             TO  TID2-B11-VISIBLE
+                       MOVE    "F12:印刷する"  TO  TID2-B12-LABEL
+                   ELSE
+                       MOVE    "F"             TO  TID2-B10-VISIBLE
+                       MOVE    "F"             TO  TID2-B11-VISIBLE
+                       MOVE    "F12:作成する"  TO  TID2-B12-LABEL
+                   END-IF
            END-EVALUATE
       * 
            MOVE    ZERO            TO  FLG-RECEDEN-CHK

@@ -43,6 +43,8 @@
       *                                     クライアント保存（ＣＤ−Ｒ）対応
       *
       *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *  04.07.02    NACL-藤原    13/11/01  労災レセ電データチェック機能
+      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -518,10 +520,10 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                END-IF
                            END-IF
                        ELSE
-      ***                     IF      SPA-RECEDEN-FLG =   "OK"
-      ***                         PERFORM 210-BACK
-      ***                         GO  TO  490-KAKUNIN-EXT
-      ***                     ELSE
+      ***                  IF      SPA-RECEDEN-FLG =   "OK"
+      ***                      PERFORM 210-BACK
+      ***                      GO  TO  490-KAKUNIN-EXT
+      ***                  ELSE
                                IF    ( SPA-RECEDEN-FLG     =   "PV"
                                                            OR  "OK" )
                                AND   ( SPA-T01-SYORIFLG    =   1    )
@@ -532,7 +534,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *                        メッセージ編集処理
                                PERFORM 4900-MSG-HENSYU-SEC
                                GO  TO  490-KAKUNIN-EXT
-      ***                     END-IF
+      ***                  END-IF
                        END-IF
                    END-IF
                ELSE
@@ -746,13 +748,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *    レセ電処理後の印刷処理
       *****************************************************************
        4903-PRINT-SEC            SECTION.
-      *
-      *    労災レセ電のときは印刷処理はしない
-           IF      SPA-LNK-PRTKANRI-SHELLID
-                                   =   "recept41.sh"
-               MOVE    9               TO  SPA-T01-SYORIFLG
-               GO  TO  4903-PRINT-EXT
-           END-IF
       *
       *    ジョブ開始セット処理
            ADD     1               TO  SPA-T01-JOB-JOBID
