@@ -48,6 +48,7 @@
       * 04.07.00     NACL-多々納  11/07/01  公費一覧表示対応
       * 04.07.00     NACL-多々納  12/09/25  生活保護重複対応
       * 04.07.00     NACL-多々納  12/11/16  長期高額療養重複不可
+      * 04.07.00     NACL-多々納  13/11/13  生活保護重複警告対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -72,6 +73,7 @@
            03  FLG-HKNJAINF        PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
+           03  FLG-CHK2             PIC 9(01).
            03  FLG-CHK-ERR         PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -2024,12 +2026,26 @@
                        END-IF
       *
                    END-IF
+      *v4.7
+      *            生活保護の期間重複チェック
+                   IF     (SPA-GMN-KOHNUM (IDX-K) =   "012")
+                      AND (SPA-GMN-KOHNUM (IDK2)  =   "012")
+                      AND (SPA-NAI-JFKCHKFLG (IDX-K)  =   ZERO )
+                       MOVE    1               TO  SPA-NAI-JFKCHKFLG
+                                                              (IDX-K)
+                       MOVE    "K136"          TO  SPA-ERRCD
+                       MOVE    23              TO  SPA-GMN-CUR
+                       MOVE    IDX-K           TO  WRK-IDX1
+                       MOVE    IDK2            TO  WRK-IDX2
+                   END-IF
+      *
       *
                    END-IF
                END-IF
            END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
+             OR   (SPA-ERRCD(1:1)      =   "K"   )
                GO      TO      3001-INPUT-KOH-CHK-EXT
            END-IF
       *
@@ -2092,6 +2108,7 @@
                    UNTIL      (IDX             >   SPA-PTKOH-MAX )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                MOVE    ZERO            TO  FLG-CHK
+               MOVE    ZERO            TO  FLG-CHK2
       *        現在表示分、削除分はチェックしない
                IF     (IDX             =   WRK-IDX (1) OR
                                            WRK-IDX (2)  OR
@@ -2107,6 +2124,7 @@
                        CONTINUE
                    ELSE
                        MOVE    1            TO  FLG-CHK
+                       MOVE    1            TO  FLG-CHK2
                    END-IF
                END-IF
       *
@@ -2121,7 +2139,7 @@
                                                OR  "091" 
       *                   肝炎治療　追加
                                                OR  "038"
-      *ver.4.7         生活保護　追加
+      *ver.4.7            生活保護　追加
                                                OR  "012"
       *                   更正・育成追加
                                                OR  "015"  OR  "016"  )
@@ -2172,6 +2190,18 @@
                    END-IF
       *
                END-IF
+      *v4.7
+      *        生活保護の期間重複チェック
+               IF     (FLG-CHK2        =   1  )
+                  AND (SPA-GMN-KOHNUM (IDX-K) =   "012")
+                  AND (SPA-PTKOH-KOHNUM(IDX)  =   "012")
+                  AND (SPA-NAI-JFKCHKFLG (IDX-K) =   ZERO )
+                   MOVE    1               TO  SPA-NAI-JFKCHKFLG(IDX-K)
+                   MOVE    "K136"          TO  SPA-ERRCD
+                   MOVE    23              TO  SPA-GMN-CUR
+                   MOVE    IDX             TO  WRK-IDX1
+               END-IF
+      *
            END-PERFORM
       *
            IF      (WRK-IDX1           >   ZERO  )  AND
@@ -2179,6 +2209,8 @@
                                        >=  SPA-NAI-KTEKSTYMD(IDX-K)) AND
                    (SPA-PTKOH-TEKSTYMD (WRK-IDX1)
                                        <   SPA-NAI-KTEKSTYMD(IDX-K))
+               AND (SPA-ERRCD(1:1) NOT =   "K"   )
+      *
                MOVE    IDX-K           TO  SPA-KOH-IDX1
                MOVE    WRK-IDX1        TO  SPA-KOH-IDX2
                MOVE    1               TO  SPA-KOH-FLG
