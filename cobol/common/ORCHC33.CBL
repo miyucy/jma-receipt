@@ -1843,10 +1843,10 @@
                    ADD     1                   TO  IDX-T1
                    MOVE    WRK-SKYMONEY        TO  WRK-Z79S
                    MOVE    WRK-Z79S            TO  TBL-NAIYO (IDX-T1 9)
-      *            ·î·×ÉéÃ´³Û
-                   ADD     WRK-SKYMONEY        TO  WRK-TUK-SKYMONEY
       *
                    END-IF
+      *            ·î·×ÉéÃ´³Û
+                   ADD     WRK-SKYMONEY        TO  WRK-TUK-SKYMONEY
                END-IF
       *
                MOVE    "tbl_syunou"        TO  MCP-TABLE
