@@ -1867,6 +1867,9 @@
                MOVE    WRK-GOK-JIHIKEI     TO  WRK-Z89
       *        £±π‘Ã‹§ÿ
                MOVE    WRK-Z89             TO  TBL-NAIYO  (1  10)
+               IF      IDX-MAX             =   ZERO
+                   MOVE    1               TO  IDX-MAX
+               END-IF
            END-IF
       *
            .
