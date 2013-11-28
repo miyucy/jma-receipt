@@ -515,8 +515,8 @@
                    END-IF
                END-PERFORM
                IF      FLG-OK              =   ZERO
-                   MOVE    "2804"          TO  SPA-ERRCD
-                   MOVE    4               TO  SPA-GMN26-CUR
+                   MOVE    "2805"          TO  SPA-ERRCD
+                   MOVE    5               TO  SPA-GMN26-CUR
                END-IF
            END-IF
            .
