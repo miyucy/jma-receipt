@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07/06/04  グループ診療対応
-      *  04.08.01    NACL-森脇    14/07/29  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,7 +58,7 @@
                03  BD009-PTNUM     PIC X(20).
                03  BD009-PTID      PIC 9(10).
                03  BD009-SRYYMD    PIC X(08).
-               03  BD009-UKEHMS    PIC X(08).
+               03  BD009-UKEHMS    PIC X(06).
                03  BD009-KARTE-KEY PIC X(36).
                03  BD009-ORDERNUM  PIC 9(02).
            02  BD009-NAME          PIC X(100).
@@ -78,10 +77,6 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //BD009//.
-      *
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *    帳票領域
            COPY    "HCM45.INC".
@@ -117,11 +112,9 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDP                 PIC 9(05).
            03  IDX                 PIC 9(05).
            03  IDY                 PIC 9(05).
            03  IDZ                 PIC 9(05).
-           03  IDXL                PIC 9(05).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -129,9 +122,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR             PIC X(100).
-      *----(04.08.01)--UPD-START---
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-UKESTYMD   PIC X(08).
            03  WRK-PARA-UKEEDYMD   PIC X(08).
            03  WRK-PARA-SYORIKBN   PIC X(01).
@@ -148,7 +139,6 @@
            03  WRK-SAKYMDWH        PIC X(09).
            03  WRK-SYORIKBN        PIC X(12).
            03  WRK-ITEM            PIC X(10000).
-           03  WRK-ITEM-SIZE       PIC 9(05).
       *
            03  WRK-SYSYMD.
                05  WRK-SYSYY       PIC 9(04).
@@ -227,11 +217,6 @@
       *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -274,9 +259,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -297,7 +279,6 @@
                                                WRK-PARA-UKESTYMD
                                                WRK-PARA-UKEEDYMD
                                                WRK-PARA-SYORIKBN
-           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM TO SPA-HOSPNUM
       *
@@ -319,21 +300,6 @@
            MOVE    "BD009ZZ"       TO  BD009PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BD009PARA-TERMID
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BD009PARA-BASENAME  TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BD009PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
-      *
-           MOVE    ZERO            TO  WRK-ITEM-SIZE
-           MOVE    SPACE           TO  WRK-ITEM
-           INSPECT WRK-ITEM  TALLYING  WRK-ITEM-SIZE  FOR ALL " "
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -584,21 +550,20 @@
       *
       *    異動内容セット
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >   NORDERID-MAX
+                   UNTIL   IDX     >   15
                IF      NORDERID-ORCAID(IDX)    =   BD009-ORDER-ORDERID
                    MOVE    NORDERID-ORCAMES2(IDX)
                                        TO  HCM45-IDONAIYO(CNT-LINE)
-                   MOVE    NORDERID-MAX
-                                       TO  IDX
+                   MOVE    15          TO  IDX
                END-IF
            END-PERFORM
       *
       *    状態セット
            EVALUATE    BD009-ORDER-STATUS
                WHEN    1
-                   MOVE    "エラー"    TO  HCM45-JYOTAI(CNT-LINE)
+                   MOVE    "重"        TO  HCM45-JYOTAI(CNT-LINE)
                WHEN    2
-                   MOVE    "エラー"    TO  HCM45-JYOTAI(CNT-LINE)
+                   MOVE    "有"        TO  HCM45-JYOTAI(CNT-LINE)
                WHEN    3
                    MOVE    "削除"      TO  HCM45-JYOTAI(CNT-LINE)
                WHEN    4
@@ -616,37 +581,21 @@
                                            SPA-AREA
       *        エラー内容作業領域にセット
                MOVE    SPACE           TO  WRK-ITEM
-               MOVE    1               TO  IDP
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >   BD009S-ERR-CNT
                        OR      IDX     >=  100
-                   STRING  " "                 DELIMITED  BY  SIZE
-                           BD009S-ERRCD (IDX)  DELIMITED  BY  SPACE
-                           " "                 DELIMITED  BY  SIZE
+                   STRING  WRK-ITEM            DELIMITED  BY  SPACE
                            BD009S-ERRMES(IDX)  DELIMITED  BY  SPACE
-                   INTO    WRK-ITEM
-                   WITH    POINTER     IDP
+                                       INTO    WRK-ITEM
                    END-STRING
                    IF      IDX     <   BD009S-ERR-CNT
-                       STRING  "／"            DELIMITED  BY  SIZE
-                       INTO    WRK-ITEM
-                       WITH    POINTER     IDP
+                       STRING  WRK-ITEM        DELIMITED  BY  SPACE
+                               "／"            DELIMITED  BY  SIZE
+                                       INTO    WRK-ITEM
                        END-STRING
                    END-IF
                END-PERFORM
-               MOVE    1               TO  IDXL
-               PERFORM UNTIL ( IDXL    >   WRK-ITEM-SIZE )
-                        OR   ( WRK-ITEM(IDXL :)    =   SPACE )
-                   MOVE    WRK-ITEM(IDXL:100) TO  HCM45-ITEM(CNT-LINE)
-                   COMPUTE IDXL = IDXL +   100
-                   IF    ( WRK-ITEM(IDXL :)    NOT =   SPACE )
-                      ADD     1               TO  CNT-LINE
-                      IF      CNT-LINE    >   40
-                         PERFORM 390-PRINT-OUT-SEC
-                         PERFORM 310-HEAD-HEN-SEC
-                      END-IF
-                   END-IF
-               END-PERFORM
+               MOVE    WRK-ITEM(1:100) TO  HCM45-ITEM(CNT-LINE)
            END-IF
       *
            ADD     1               TO  CNT-LINE
