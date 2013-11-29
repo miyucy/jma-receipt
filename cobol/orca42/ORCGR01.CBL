@@ -267,7 +267,7 @@
                05  KEY-O-HKNCOMBI                      PIC 9(04).
                05  KEY-O-SRYKA                         PIC X(02).
       *
-      *    画面用ワーク
+      *    画面用ワーク（画面ＳＰＡにあわせる）
        01  WRK-GMN-SORT.
            03  WRK-GMN-TBL.
                05  WRK-GMN-TBL-G           OCCURS   500.
@@ -284,6 +284,7 @@
                    07  WRK-GMN-TRSI    PIC X(04).
                    07  WRK-GMN-TJBI    PIC X(04).
                    07  WRK-GMN-TKGI    PIC X(04).
+                   07  WRK-GMN-TDAISAN PIC X(04).
       * 
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBL-G           OCCURS   500.
