@@ -504,7 +504,8 @@
            END-IF
       *
            IF      FLG-END             =   ZERO
-               MOVE    SYS-1001-HOSPNAME   TO  WRK-SYS-1001-HOSPNAME
+               MOVE    SYS-1002-POST       TO  WRK-SYS-1002-POST
+               MOVE    SYS-1002-ADRS       TO  WRK-SYS-1002-ADRS
                MOVE    SYS-1002-TEL        TO  WRK-SYS-1002-TEL
       *        ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
                PERFORM 900-1900-READ-SEC
@@ -2342,6 +2343,12 @@
                MOVE    MCPDATA-REC         TO  SYS-1902-REC
                IF      SYS-1902-TEL    NOT =   SPACE
                    MOVE    SYS-1902-TEL        TO  WRK-SYS-1002-TEL
+               END-IF
+               IF      SYS-1902-POST   NOT =   SPACE
+                   MOVE    SYS-1902-TEL        TO  WRK-SYS-1002-POST
+               END-IF
+               IF      SYS-1902-ADRS1  NOT =   SPACE
+                   MOVE    SYS-1902-ADRS1      TO  WRK-SYS-1002-ADRS
                END-IF
            ELSE
                INITIALIZE                      SYS-1902-REC
