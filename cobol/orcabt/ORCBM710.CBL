@@ -504,6 +504,7 @@
            END-IF
       *
            IF      FLG-END             =   ZERO
+               MOVE    SYS-1001-HOSPNAME   TO  WRK-SYS-1001-HOSPNAME
                MOVE    SYS-1002-POST       TO  WRK-SYS-1002-POST
                MOVE    SYS-1002-ADRS       TO  WRK-SYS-1002-ADRS
                MOVE    SYS-1002-TEL        TO  WRK-SYS-1002-TEL
