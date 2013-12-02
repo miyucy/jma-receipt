@@ -43,7 +43,7 @@
       *                                     クライアント保存（ＣＤ−Ｒ）対応
       *
       *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
-      *  04.07.02    NACL-藤原    13/11/01  労災レセ電データチェック機能
+      *  04.07.02    NACL-藤原    13/10/07  労災レセ電データチェック機能
       *                                     対応
       *****************************************************************
       *
@@ -587,7 +587,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        PERFORM 4903-FILESV-UPDATE-SEC
                    END-IF
                END-IF
-            END-IF       
+            END-IF
       *
            IF    ( SPA-TID1-FLG    =   "SV" )
                IF      JOB-ENDYMD  NOT =   SPACE
