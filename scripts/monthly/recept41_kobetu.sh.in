@@ -91,13 +91,16 @@ fi
 
 #   一時フォルダ作成
     if  [ ${24} -eq '2' ]; then
-        ROUSAI_FOLDER="${23}_TRousai_${5}/Kobetsu"
         ROUSAI_FOLDER1="${23}_TRousai_${5}"
     else
-        ROUSAI_FOLDER="${23}_Rousai_${5}/Kobetsu"
         ROUSAI_FOLDER1="${23}_Rousai_${5}"
     fi
-    OUT_FOLDER="/tmp/$ROUSAI_FOLDER/"
+    if  [ ${21} -eq '5' ]|| [ ${21} -eq '6' ]; then
+        ROUSAI_FOLDER="${ROUSAI_FOLDER1}_Kobetsu"
+    else
+        ROUSAI_FOLDER="${ROUSAI_FOLDER1}/Kobetsu"
+    fi
+    OUT_FOLDER="/tmp/${ROUSAI_FOLDER}/"
 
     echo "--- rm work folder [" /tmp/${ROUSAI_FOLDER1} "]" >>$LOG_FILE
     rm -fr /tmp/${ROUSAI_FOLDER1}
@@ -106,7 +109,7 @@ fi
         echo "--- not out holder  ---" >>$LOG_FILE
     else
         echo "--- folder name  [" ${OUT_FOLDER} "]" >>$LOG_FILE
-        if ! test -d  "$OUT_FOLDER"; then
+        if ! test -d  "${OUT_FOLDER}"; then
             mkdir -p ${OUT_FOLDER}
             RC=$?
             if  [ $RC -ne '0' ]; then
@@ -115,7 +118,7 @@ fi
                 echo "--- mkdir  err   ---" >>$LOG_FILE
                 exit
             fi
-            chmod -R g+r ${OUT_FOLDER}ROUSAI_FOLDER
+            chmod -R g+r ${OUT_FOLDER}
             echo "--- mkdir out holder ---" >>$LOG_FILE
         else
             rm ${OUT_FOLDER}*
@@ -177,7 +180,7 @@ fi
 	ERRFILE="${ERRFILE// /X}"
 	ERRLOG="${TMPFILEBASE}${SHNAME%%.sh}.log"
 
-	echo "echo " ${ERRFILE}
+	echo "echo " ${ERRFILE} >> $LOG_FILE
         if  [ -e ${ERRFILE} ]; then
             rm ${ERRFILE}
         fi
@@ -238,8 +241,9 @@ fi
     if  [ ${21} -eq '3' ]|| [ ${21} -eq '4' ]; then
         if  [ ${26} -eq '1' ]; then
 #           履歴保存先のフォルダへファイル作成
-            RIREKI_FOLDER="${17}$ROUSAI_FOLDER/"
-            RIREKI_FOLDER1="${17}$ROUSAI_FOLDER1/"
+            RIREKI_FOLDER1="${17}${ROUSAI_FOLDER1}/"
+            RIREKI_FOLDER="${RIREKI_FOLDER1}Kobetsu/"
+
             echo "--- rireki folder name  [" ${RIREKI_FOLDER} "]" >>$LOG_FILE
             if ! test -d  "${RIREKI_FOLDER}"; then
                  mkdir -p ${RIREKI_FOLDER}
@@ -273,9 +277,9 @@ fi
 #   クライアント保存
     if  [ ${21} -eq '5' ]; then
         cd  /tmp/
-        echo "--- zip name [" ${ROUSAI_FOLDER1}_Kobetsu.zip "]" >>$LOG_FILE
-        rm  ${ROUSAI_FOLDER1}_Kobetsu.zip
-        zip -r ${ROUSAI_FOLDER1}_Kobetsu.zip ${ROUSAI_FOLDER}/
+        echo "--- zip name [" ${ROUSAI_FOLDER}.zip "]" >>$LOG_FILE
+        rm  ${ROUSAI_FOLDER}.zip
+        zip -r ${ROUSAI_FOLDER}.zip ${ROUSAI_FOLDER}/
 	RC=$?
         echo "--- zip end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
@@ -290,8 +294,8 @@ fi
     if  [ ${21} -eq '6' ]; then
         echo "--- iso start ---" >>$LOG_FILE
         cd  /tmp/
-        echo "--- iso name [" ${17}${ROUSAI_FOLDER1}_Kobetsu.iso "]" >>$LOG_FILE
-        mkisofs --input-charset cp437 -l -o ${17}${ROUSAI_FOLDER1}_Kobetsu.iso ${ROUSAI_FOLDER}/
+        echo "--- iso name [" ${17}${ROUSAI_FOLDER}.iso "]" >>$LOG_FILE
+        mkisofs --input-charset cp437 -l -o ${17}${ROUSAI_FOLDER}.iso ${ROUSAI_FOLDER}/
 	RC=$?
         echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
