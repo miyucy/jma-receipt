@@ -91,6 +91,7 @@
            03  WRK-Z9              PIC Z9.
            03  WRK-ZZ9             PIC ZZ9.
       *
+      *    SPA-GMN-T09-SELNUM-OCCにあわせる
            03  WRK-GKN-T09.
                05  WRK-GMN-T09-SELNUM-OCC.
                    07  WRK-GMN-T09-SELNUM

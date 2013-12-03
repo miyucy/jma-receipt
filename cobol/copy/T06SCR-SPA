@@ -299,6 +299,10 @@
                        09  SPA-NAI-T09-RECE10-THKNNUM  PIC X(03).
                        09  SPA-NAI-T09-RECE10-THENREI-SIJI-FLG
                                                        PIC 9(01).
+                       09  SPA-NAI-T09-RECE10-THKNJANUM-S
+                                                       PIC X(08).
+                       09  SPA-NAI-T09-RECE10-TSYOKAIFLG
+                                                       PIC X(01).
                        09  SPA-NAI-T09-RECE10-TKIGO    PIC X(40).
                        09  SPA-NAI-T09-RECE10-TNUM     PIC X(40).
       *

@@ -1548,15 +1548,26 @@
                        INITIALIZE                  RECE10-REC
                        MOVE    SPA-NAI-T09-RECE10-KEY   (IDY)
                                                TO  RECE10-KEY
-                       MOVE    SPA-NAI-T09-RECE10-TKIGO (IDY)
-                                               TO  RECE10-KIGO
-                       MOVE    SPA-NAI-T09-RECE10-TNUM  (IDY)
-                                               TO  RECE10-NUM 
+                       IF      RECE10-TEISYUTUSAKI =   "3"
+                           MOVE    SPA-NAI-T09-RECE10-TKIGO (IDY)
+                                                   TO  RECE10-KOFUNUM
+                       ELSE
+                           MOVE    SPA-NAI-T09-RECE10-TKIGO (IDY)
+                                                   TO  RECE10-KIGO
+                           MOVE    SPA-NAI-T09-RECE10-TNUM  (IDY)
+                                                   TO  RECE10-NUM
+                       END-IF
                        MOVE    SPA-NAI-T09-RECE10-THKNNUM  (IDY)
                                                TO  RECE10-HKNNUM
                        MOVE    SPA-NAI-T09-RECE10-THENREI-SIJI-FLG(IDY)
                                                TO
                                                RECE10-HENREI-SIJI-FLG
+                       IF      RECE10-TEISYUTUSAKI =   "3"
+                           MOVE    SPA-NAI-T09-RECE10-TSYOKAIFLG  (IDY)
+                                               TO  RECE10-SYOKAIFLG
+                           MOVE    SPA-NAI-T09-RECE10-THKNJANUM-S (IDY)
+                                               TO  RECE10-HKNJANUM-S
+                       END-IF
                        MOVE    SPA-NAI-T09-TCREYMD  (IDY)
                                                TO  RECE10-CREYMD
                        MOVE    SPA-GMN-T09-TPTNUM  (IDY)
@@ -2788,6 +2799,14 @@
                                    TO
                                    SPA-NAI-T09-RECE10-THENREI-SIJI-FLG
                                                                   (IDX)
+           IF      RECE10-TEISYUTUSAKI =   "3"
+               MOVE    RECE10-SYOKAIFLG    TO
+                                       SPA-NAI-T09-RECE10-TSYOKAIFLG
+                                                                  (IDX)
+               MOVE    RECE10-HKNJANUM-S   TO
+                                       SPA-NAI-T09-RECE10-THKNJANUM-S
+                                                                 (IDX)
+           END-IF
            IF      RECE10-TEISYUTUSAKI =   "1"
                MOVE    RECE10-HKNJANUM-S
                                    TO  SPA-NAI-T09-THKNJANUM-S    (IDX)
@@ -2931,15 +2950,24 @@
                MOVE    PTKOH-JKYSNUM   TO  SPA-NAI-T09-RECE10-TNUM (IDX)
              END-IF
            ELSE
-               MOVE    RECE10-KIGO     TO  SPA-NAI-T09-RECE10-TKIGO(IDX)
-               MOVE    RECE10-NUM      TO  SPA-NAI-T09-RECE10-TNUM (IDX)
-               STRING  SPA-NAI-T09-RECE10-TKIGO (IDX)
+               EVALUATE    RECE10-TEISYUTUSAKI
+                   WHEN    "3"
+                       MOVE    RECE10-KOFUNUM  TO
+                                           SPA-GMN-T09-TKIGO       (IDX)
+                                           SPA-NAI-T09-RECE10-TKIGO(IDX)
+                   WHEN    OTHER
+                       MOVE    RECE10-KIGO     TO
+                                           SPA-NAI-T09-RECE10-TKIGO(IDX)
+                       MOVE    RECE10-NUM      TO
+                                           SPA-NAI-T09-RECE10-TNUM (IDX)
+                       STRING  SPA-NAI-T09-RECE10-TKIGO (IDX)
                                                DELIMITED   BY  SPACE
-                       "¡¡"                    DELIMITED   BY  SIZE
-                       SPA-NAI-T09-RECE10-TNUM  (IDX)
+                               "¡¡"            DELIMITED   BY  SIZE
+                               SPA-NAI-T09-RECE10-TNUM  (IDX)
                                                DELIMITED   BY  SPACE
                                        INTO    SPA-GMN-T09-TKIGO  (IDX)
-               END-STRING
+                       END-STRING
+               END-EVALUATE
            END-IF
       *
            EVALUATE    RECE10-RECEIPT-KBN (1:1)
@@ -3045,7 +3073,7 @@
                                            HENREI-B-XXTEISYUTUSAKI
                    WHEN    2
                    WHEN    6
-                       MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
+                       MOVE    "2"     TO  HENREI-B-TEISYUTUSAKI
                                            HENREI-B-XXTEISYUTUSAKI
                    WHEN    3
                        MOVE    "3"     TO  HENREI-B-TEISYUTUSAKI
@@ -3450,8 +3478,7 @@
            MOVE    SPA-GMN-T06-SRYYM   TO  SPA-GMN-T06-R-TSRYYM    (IDX)
            EVALUATE    RECE10-TEISYUTUSAKI
                WHEN    "3"
-                   MOVE    RECE10-KOFUNUM  TO
-                                               SPA-GMN-T06-R-TKIGO (IDX)
+                   MOVE    RECE10-KOFUNUM  TO  SPA-GMN-T06-R-TKIGO (IDX)
                WHEN    OTHER
                    STRING  RECE10-KIGO         DELIMITED   BY  SPACE
                            "¡¡"                DELIMITED   BY  SIZE
