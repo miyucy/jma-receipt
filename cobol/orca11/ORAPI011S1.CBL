@@ -2120,7 +2120,7 @@
                MOVE    "保険情報と一致する保険組合せがありません"
                                                TO  WRK-ERRMSG
            WHEN    "50"
-               STRING  "受付登録件数うが上限以上となります。"
+               STRING  "受付登録件数が上限以上となります。"
                        "登録できません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
