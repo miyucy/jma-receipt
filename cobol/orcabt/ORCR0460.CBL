@@ -152,6 +152,8 @@
       *
       *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
       *  04.07.02    NACL-門脇    13/10/02  自賠責（第三者行為）対応
+      *  04.07.03    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
+      *                                     追加対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -3949,6 +3951,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    ADD     1           TO  CNT-IN-CANCEL
       *
                    DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
+      *
+                   IF    (WRK-PARA-RECEKBN       =  "4")
+                   AND   (WRK-PARA-JIBAIPRTKBN   =  "2")
+                       GO  TO  990-RECE41-READ-SEC
+                   END-IF
       *
            END-READ
       *

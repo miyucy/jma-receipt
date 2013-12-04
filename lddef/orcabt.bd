@@ -299,6 +299,8 @@ bind    "ORCBMNOTE"      "OpenCOBOL";
 bind    "ORCBDELMNOTE"      "OpenCOBOL";
 bind    "ORCBM570"      "OpenCOBOL";
 bind    "ORCBM710"      "OpenCOBOL";
+bind    "ORCR0469"      "OpenCOBOL";
+bind    "ORCR0937"      "OpenCOBOL";
 
 #include "orcadb.inc"
 db "shell" {
