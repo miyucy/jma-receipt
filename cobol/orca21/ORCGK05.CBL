@@ -2093,6 +2093,7 @@
       *        追加処理へ
                MOVE    "1"                 TO  SPA-K05-SYORI
                INITIALIZE                      SPA-K051-TBL
+               INITIALIZE                      SPA-K05-KIKAN-AREA
                MOVE    2                   TO  SPA-GMN5-CUR
                MOVE    "00000000"          TO  SPA-K05-GMN-YUKOSTYMD
                MOVE    "00000000"          TO  SPA-K05-NAI-YUKOSTYMD
