@@ -821,11 +821,18 @@
            END-IF
       *
       *    月内で異動処理分のデータでないことのチェック
-      *(2013.11.15-MEMO)処理対象月以降に異動がないことのチェックに修正すること
            IF   WRK-ERRCD           =    SPACE
                IF  (WRK-PARA-SRYYM  =    PTNYUINRRK-TENNYUYMD(1:6)) OR
                    (WRK-PARA-SRYYM  =    PTNYUINRRK-TENSTUYMD(1:6))
                    MOVE   "2010"    TO   WRK-ERRCD
+               END-IF
+           END-IF
+      *
+      *   処理対象月以降に異動がないことのチェック
+           IF   WRK-ERRCD           =    SPACE
+               IF (PTNYUINRRK-TENSTUYMD       NOT = "99999999")  AND
+                  (PTNYUINRRK-TENSTUYMD(1:6)  >   WRK-PARA-SRYYM)
+                   MOVE   "2013"    TO   WRK-ERRCD
                END-IF
            END-IF
       *
@@ -982,6 +989,9 @@
                                                       TO  WRK-NAIYO
                    WHEN    "2012"
                       MOVE  "入院行為照会用テーブルの更新に失敗"
+                                                      TO  WRK-NAIYO
+                   WHEN    "2013"
+                    MOVE  "対象月以降で異動処理があるため処理できません"
                                                       TO  WRK-NAIYO
                    END-EVALUATE
            END-IF
