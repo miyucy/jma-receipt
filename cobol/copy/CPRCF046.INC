@@ -101,5 +101,5 @@
            03  RECE46-TEKIYO2-INF.
                05  RECE46-TEKIYO2-KISAIFLG  PIC  9(01).
                05  RECE46-TEKIYO2-YENFLG    PIC  9(01).
-               05  RECE46-TEKIYO2-TEN       PIC  9(07).
+               05  RECE46-TEKIYO2-TEN       PIC S9(07).
                05  RECE46-TEKIYO2-KAISU     PIC  9(03).
