@@ -33,11 +33,24 @@
        CONFIGURATION                             SECTION.
        INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
+      *    連携基盤用デイレクトリ出力先チェック用ワークファイル
+           SELECT  WRK-FILE        ASSIGN  WRKPARA
+                                   FILE    STATUS  IS  STS-WRK.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
+      *    連携基盤用デイレクトリ出力先チェック用ワークファイル
+       FD  WRK-FILE.
+       01  WRK-R                       PIC X(10).
+      *
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    連携基盤用デイレクトリ出力先チェック用ワークファイル
+       01  STS-AREA.
+           03  STS-WRK                 PIC X(02).
+       01  WRKPARA                     PIC X(210).
+      *
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -106,6 +119,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -485,16 +501,54 @@
                                            ORCSKANACHKAREA
                IF     (KANACHK-RC          =   ZERO  )  AND
                       (KANACHK-SYUBETU     =   1     )
-      *            半角以外はエラー
-                   CONTINUE
+      *            １桁目と最終桁のチェック
+                   IF     (SPA-GMN-FILE-DIR(1:1)   NOT =   "/" )
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   END-IF
+                   IF     (SPA-GMN-FILE-DIR(KANACHK-MAX:1)
+                                                   =   "/" )
+                    AND   (SPA-ERRCD               =   SPACE)
+                       MOVE    "0003"          TO  SPA-ERRCD
+                   END-IF
                ELSE
-                   MOVE    2               TO  SPA-GMN-CUR
-                   MOVE    "0002"          TO  SPA-ERRCD
+      *            半角以外はエラー
+                   MOVE    "0004"          TO  SPA-ERRCD
                END-IF
+      *
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 41021-FILE-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2               TO  SPA-GMN-CUR
            END-IF
       *
            .
        4102-FILEDIR-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ディレクトリ位置チェック処理
+      *****************************************************************
+       41021-FILE-CHK-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRKPARA
+           STRING  SPA-GMN-FILE-DIR    DELIMITED   BY  SPACE
+                   "/W91.txt"          DELIMITED   BY  SIZE
+                                       INTO    WRKPARA
+           END-STRING
+      *
+           OPEN    OUTPUT              WRK-FILE
+           IF      STS-WRK             =   "00"
+               CLOSE   WRK-FILE
+               MOVE    ZERO                TO  IF-RESULT
+               MOVE    WRKPARA             TO  IF-FILENAME
+               CALL    "orcfiledel"    USING   ORCSFDELAREA
+           ELSE
+               MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
+           .
+       41021-FILE-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -646,7 +700,7 @@
       *
            IF      SPA-GMN-COOPBASE    =   "1"
                IF      SPA-GMN-FILE-DIR    =   SPACE
-                   MOVE    "0003"          TO  SPA-ERRCD
+                   MOVE    "0010"          TO  SPA-ERRCD
                    MOVE    2               TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -812,12 +866,30 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "連携基盤用データ作成区分がありません"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   STRING  "連携基盤用ディレクトリはすべて半角で"
+                   STRING  "連携基盤用ディレクトリの１桁目は/で"
                            "入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0003"
+                   STRING  "連携基盤用ディレクトリの最終文字は"
+                           "/以外で入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0004"
+                   STRING  "連携基盤用ディレクトリはすべて半角で"
+                           "入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0005"
+                   STRING  "連携基盤用ディレクトリが存在しません。"
+                           "または、権限がありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0010"
                    MOVE    "連携基盤用ディレクトリを入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "9001"
