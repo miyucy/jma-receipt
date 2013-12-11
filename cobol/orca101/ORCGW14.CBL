@@ -36,39 +36,19 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
-      *
-      *  04.08.01    NACL-藤原    16/01/18  地方公費処理スクリプトの存在
-      *                                     チェック対応
-      *
-      *  04.09.01    NACL-藤原    16/11/18  Ｄｏｃｋｅｒ対応
-      *  04.09.02    NACL-藤原    17/02/24  レポジトリ名設定時は地方公費
-      *                                     処理スクリプトの存在チェック
-      *                                     を行わない
       *****************************************************************
       *
-       ENVIRONMENT                 DIVISION.
-       CONFIGURATION               SECTION.
-       INPUT-OUTPUT                SECTION.
+       ENVIRONMENT                               DIVISION.
+       CONFIGURATION                             SECTION.
+       INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
-      *    
-      *    処理スクリプトチェック用ワークファイル
-           SELECT  WRK-FILE        ASSIGN  WRKPARA
-                                   FILE    STATUS  IS  STS-WRK.
       *
-       DATA                        DIVISION.
+       DATA                    DIVISION.
        FILE                        SECTION.
-      *
-      *    処理スクリプトチェック用ワークファイル
-       FD  WRK-FILE.
-       01  WRK-R                   PIC X(10).
-      *
       *
        WORKING-STORAGE             SECTION.
       *
            COPY    "ENUM-VALUE".
-      *
-       01  STS-AREA.
-           03  STS-WRK             PIC X(02).
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -77,15 +57,53 @@
            COPY    "W01COMMON-SPA".
       *
       *    画面用ＳＰＡ
-           COPY    "W14SCR-SPA".
+       01  SPA-W14.
+           03  SPA-W14-AREA.
+               05  SPA-GMN-PAGE        PIC 9(02).
+               05  SPA-GMN-LINE        PIC 9(02).
+               05  SPA-GMN-MAX         PIC 9(04).
+               05  SPA-GMN-PAGE-MAX    PIC 9(02).
+               05  SPA-GMN-CUR         PIC 9(03).
       *
+               05  SPA-GMN-AREA.
+                   07  SPA-GMN-STYUKYMD    PIC X(09).
+                   07  SPA-GMN-EDYUKYMD    PIC X(09).
+                   07  SPA-GMN-TBL.
+                       09  SPA-GMN-TBLO            OCCURS  25.
+                           11  SPA-GMN-TCD         PIC X(04).
+                           11  SPA-GMN-SHELLID     PIC X(20).
+                           11  SPA-GMN-SHORIMSG    PIC X(40).
+                           11  SPA-GMN-CHK.
+                              13  SPA-GMN-CHKFLG   PIC X(01)
+                                                   OCCURS   4.
+                           11  SPA-GMN-PRTNM       PIC X(16).
+                           11  SPA-GMN-PARAKBN-G.
+                               13  SPA-GMN-PARAKBN PIC X(01).
+                               13  SPA-GMN-F1      PIC X(01).
+                               13  SPA-GMN-PARAKBNMEI
+                                                   PIC X(12).
+                   07  SPA-GMN-PARAKBNLST          OCCURS  3.
+                       09  SPA-GMN-PARAKBNL        PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-PARAKBNMEIL     PIC X(12).
+                   07  SPA-GMN-PARAKBN-MAX         PIC 9(02).
+                   07  SPA-GMN-PRTKBN11    PIC X(01).
+                   07  SPA-GMN-PRTKBN12    PIC X(01).
+                   07  SPA-GMN-PRTKBN21    PIC X(01).
+                   07  SPA-GMN-PRTKBN22    PIC X(01).
+                   07  SPA-GMN-PRTKBN31    PIC X(01).
+                   07  SPA-GMN-PRTKBN32    PIC X(01).
+                   07  SPA-GMN-PRTKBN41    PIC X(01).
+                   07  SPA-GMN-PRTKBN42    PIC X(01).
+                   07  SPA-GMN-PRTKBN51    PIC X(01).
+                   07  SPA-GMN-PRTKBN52    PIC X(01).
+      *                                                             
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
-           03  FLG-CHK             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -101,13 +119,9 @@
            03  WRK-IDX2            PIC 9(02).
            03  WRK-IDX3            PIC 9(03).
            03  WRK-WIDGET.
-               05  WRK-WIDGET1     PIC X(06).
-               05  WRK-WIDGET2     PIC 9(03).
-               05  WRK-WIDGET-FIL  PIC X(03).
-           03  WRK-WIDGET-R        REDEFINES    WRK-WIDGET.
-               05  WRK-WIDGET-R1   PIC X(02).
-               05  WRK-WIDGET-R2   PIC 9(02).
-               05  WRK-WIDGET-FIL  PIC X(08).
+               05  WRK-WIDGET1     PIC X(07).
+               05  WRK-WIDGET2     PIC 9(02).
+               05  WRK-WIDGET-FIL  PIC X(03). 
            03  WRK-HENFLG          PIC 9(01).
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
@@ -123,8 +137,6 @@
            03  WRK-GMN-CUR         PIC 9(02).
            03  WRK-MCP-WIDGET      PIC X(64).
       *
-       01  WRKPARA                 PIC X(512).
-      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -136,12 +148,6 @@
                05  WRK-HDD         PIC 9(02).
       *
        01  WRK-CONS-LINE-MAX       PIC 9(02)   VALUE   25.              
-      *
-      *    県単独事業用シェル
-       01  WRK-SHELL-KENTAN.
-           03  FILLER             PIC X(15) VALUE
-                                             "scripts/kentan/".
-           03  WRK-SHELL-SHELL    PIC X(30).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -167,9 +173,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -181,7 +185,62 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W91.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -196,7 +255,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-W14FREE
+           MOVE    SPA-FREE        TO  SPA-W14
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -217,7 +276,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-W14FREE     TO  SPA-FREE
+           MOVE    SPA-W14         TO  SPA-FREE
            MOVE    SPA-W01KYOUTU   TO  SPA-WORK 
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
@@ -253,9 +312,9 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "W14    "           TO  MCP-WINDOW
+           MOVE    "W14    "           TO  MCP-WINDOW.
       *
-           PERFORM 900-PUT-WINDOW
+           PERFORM 900-PUT-WINDOW.
       *
            MOVE    1                   TO  FLG-END
            .
@@ -275,9 +334,6 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
-               WHEN    "W141"
-               WHEN    "W142"
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -403,9 +459,6 @@
                MOVE    SYS-3004-CHK        TO  SPA-GMN-CHK     (IDX)
                MOVE    SYS-3004-PRTNM      TO  SPA-GMN-PRTNM   (IDX)
                MOVE    SYS-3004-PARAKBN    TO  SPA-GMN-PARAKBN (IDX)
-               MOVE    SYS-3004-NAME       TO  SPA-GMN-NAME    (IDX)
-                                               SPA-GMN-NAME-BACK
-                                                               (IDX)
                PERFORM VARYING IDZ FROM    1   BY  1
                        UNTIL   IDZ >       SPA-GMN-PARAKBN-MAX
                    IF      SPA-GMN-PARAKBN (IDX)
@@ -415,7 +468,7 @@
                        MOVE    SPA-GMN-PARAKBN-MAX 
                                            TO  IDZ
                    END-IF
-               END-PERFORM
+               END-PERFORM     
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -426,59 +479,15 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    処理スクリプトの存在チェック
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       25
-               PERFORM 3101-SCRIPT-CHECK-SEC
-           END-PERFORM
-      *
            MOVE    WRK-CONS-LINE-MAX   TO  SPA-GMN-MAX
       *
            COMPUTE SPA-GMN-PAGE-MAX    =   (SPA-GMN-MAX - 1)     /
-                                            WRK-CONS-LINE-MAX    +   1
+                                            WRK-CONS-LINE-MAX    + 1
            MOVE    1                   TO  SPA-GMN-PAGE
            MOVE    1                   TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
-           EXIT.
-      *     
-      *****************************************************************
-      *    処理スクリプトの存在チェック
-      *****************************************************************
-       3101-SCRIPT-CHECK-SEC              SECTION.
-      *
-           MOVE    SPACE           TO  SPA-NAI-SHELLID-CHK (IDX)
-      *
-           IF    ( SPA-MW          =   SPA-GINBEE )
-           AND   ( SPA-GMN-NAME (IDX)
-                               NOT =   SPACE      )
-               GO  TO  3101-SCRIPT-CHECK-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-SHELLID  (IDX)  =   SPACE  )
-           OR    ( SPA-GMN-SHORIMSG (IDX)  =   SPACE  )
-           OR    ( SPA-GMN-CHK      (IDX)  =   "FFFF" )
-               CONTINUE
-           ELSE
-      *        ファイルデイレクトリ位置指定
-               MOVE    SPA-GMN-SHELLID (IDX)
-                                       TO  WRK-SHELL-SHELL
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    WRK-SHELL-KENTAN
-                                       TO  MKPASS-IN-01
-               CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  WRKPARA
-      *
-               OPEN    INPUT               WRK-FILE
-               IF      STS-WRK         =   "00"
-                   CLOSE   WRK-FILE
-               ELSE
-                   MOVE    "1"         TO  SPA-NAI-SHELLID-CHK (IDX)
-               END-IF
-           END-IF
-           .
-       3101-SCRIPT-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -506,9 +515,6 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM  210-BACK
-      *       Ｄｏｃｋｅｒ一覧
-               WHEN    "CLICKED"       ALSO    "B05"
-                   PERFORM 470-DOCER-LIST-SEC
       *       前画面
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 430-MAEGMN-SEC
@@ -550,13 +556,6 @@
                            MOVE    MCP-WIDGET          TO  WRK-WIDGET
                            MOVE    WRK-WIDGET2         TO  IDX 
                            PERFORM 420-CHKFLG-CHK-SEC
-                  END-EVALUATE
-      *        Ｄｏｃｋｅｒ登録
-                   EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET(1:2)
-                       WHEN    "CLICKED"   ALSO    "BD"
-                           MOVE    MCP-WIDGET       TO  WRK-WIDGET
-                           MOVE    WRK-WIDGET-R2    TO  SPA-NAI-SELCD
-                           PERFORM 460-DOCER-SEC
                   END-EVALUATE    
            END-EVALUATE
            .
@@ -631,12 +630,6 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      410-INPUT-CHK-EXT
            END-IF
-      *
-      *    処理スクリプトの存在チェック
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       25
-               PERFORM 3101-SCRIPT-CHECK-SEC
-           END-PERFORM
       *
            .
        410-INPUT-CHK-EXT.
@@ -877,14 +870,11 @@
                GO      TO      420-CHKFLG-CHK-EXT
            END-IF
       *
+      *    次のカーソル位置指定
            MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
            COMPUTE IDX     =   (WRK-IDX3  +   3)  /   4
            COMPUTE IDY     =    WRK-IDX3  -   (IDX    -   1)  *   4   
       *
-      *    処理スクリプトの存在チェック
-           PERFORM 3101-SCRIPT-CHECK-SEC
-      *
-      *    次のカーソル位置指定
            IF      IDY                 <   3
                ADD     1                  TO  SPA-GMN-CUR
            ELSE
@@ -915,6 +905,7 @@
       *
            COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    -   1
       *
+      *    PERFORM 3101-SHELLID-HENSYU-SEC  
            .
        430-MAEGMN-EXT.
            EXIT.
@@ -1069,7 +1060,7 @@
       *****************************************************************
       *    標準レセ電広域連合総括表印刷指示処理
       *****************************************************************
-       450-PRTKBN52-SEC            SECTION.
+       450-PRTKBN52-SEC          SECTION.
       *
            MOVE    W14-PRTKBN52    TO  SPA-GMN-PRTKBN52
       *
@@ -1079,113 +1070,6 @@
            .
        450-PRTKBN52-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    Ｄｏｃｋｅｒ登録画面
-      *****************************************************************
-       460-DOCER-SEC               SECTION.
-      *
-      *    入力チェック処理
-           MOVE    ZERO            TO  FLG-TOUROKU
-           PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD   NOT =   SPACE
-               MOVE    ZERO            TO  SPA-NAI-SELCD
-               GO  TO  460-DOCER-EXT
-           END-IF
-      *
-      *    シェル名等が未入力の場合は遷移しない
-           IF    ( SPA-GMN-SHORIMSG (SPA-NAI-SELCD) 
-                                   =   SPACE )
-           OR    ( SPA-GMN-SHELLID  (SPA-NAI-SELCD) 
-                                   =   SPACE )
-               IF      SPA-GMN-NAME (SPA-NAI-SELCD)    =   SPACE
-                   MOVE    ZERO            TO  SPA-NAI-SELCD
-                   GO  TO  460-DOCER-EXT
-               END-IF
-           END-IF
-      *
-           MOVE    SPACE           TO  SPA-MOTOPG
-      *
-           MOVE    SPA-GMN-NAME (SPA-NAI-SELCD)
-                                   TO  SPA-GMN-NAME-BACK (SPA-NAI-SELCD)
-      *
-           MOVE    SPA-W14FREE     TO  SPA-FREE
-           MOVE    SPA-W01KYOUTU   TO  SPA-WORK
-           MOVE    SPA-AREA        TO  SPA-COMMON
-      *
-           MOVE    "LINK"          TO  MCP-STATUS
-           MOVE    SPACE           TO  MCP-EVENT
-      *
-           CALL    "ORCGW141"      USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-W14FREE
-      *
-           MOVE    1               TO  FLG-END
-      *
-           .
-       460-DOCER-EXT.
-      *
-      *****************************************************************
-      *    Ｄｏｃｋｅｒ一覧画面
-      *****************************************************************
-       470-DOCER-LIST-SEC          SECTION.
-      *
-           IF      SPA-MW          =   SPA-GINBEE
-               CONTINUE
-           ELSE
-               GO  TO  470-DOCER-LIST-EXT
-           END-IF
-      *
-      *    Ｄｏｃｋｅｒが未登録の場合は遷移しない
-           MOVE    ZERO            TO  FLG-CHK
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       25
-               IF      SPA-GMN-NAME (IDX) 
-                                   NOT =   SPACE
-                   MOVE    1               TO  FLG-CHK
-                   MOVE    25              TO  IDX
-               END-IF
-           END-PERFORM
-           IF      FLG-CHK         =   ZERO
-               GO  TO  470-DOCER-LIST-EXT
-           END-IF
-      *
-      *    入力チェック処理
-           MOVE    ZERO            TO  FLG-TOUROKU
-           PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD   NOT =   SPACE
-               GO  TO  470-DOCER-LIST-EXT
-           END-IF
-      *
-           MOVE    SPACE               TO  SPA-MOTOPG
-      *
-           MOVE    SPA-W14FREE     TO  SPA-FREE
-           MOVE    SPA-W01KYOUTU   TO  SPA-WORK 
-           MOVE    SPA-AREA        TO  SPA-COMMON
-      *
-           MOVE    "LINK"          TO  MCP-STATUS
-           MOVE    SPACE           TO  MCP-EVENT
-      *
-           CALL    "ORCGW142"      USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-W14FREE
-      *
-           MOVE    1               TO  FLG-END
-      *
-           .
-       470-DOCER-LIST-EXT.
       *
       *****************************************************************
       *    確定
@@ -1254,6 +1138,7 @@
       *
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            IF      FLG-SYSKANRI        =   ZERO
@@ -1278,6 +1163,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
@@ -1303,8 +1189,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-CHK      (IDX)  TO  SYS-3004-CHK
                    MOVE    SPA-GMN-PRTNM    (IDX)  TO  SYS-3004-PRTNM
                    MOVE    SPA-GMN-PARAKBN  (IDX)  TO  SYS-3004-PARAKBN
-                   MOVE    SPA-GMN-NAME     (IDX)  TO  SYS-3004-NAME
-     *
+      *
                    MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
                    MOVE    SYS-3004-REC            TO  MCPDATA-REC
                    MOVE    "DBINSERT"              TO  MCP-FUNC
@@ -1455,54 +1340,22 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-PARAKBNLST (IDY)
                                        TO  W14-PARAKBN-ITEM (IDX IDY)
                END-PERFORM
-      *
-               IF      SPA-NAI-SHELLID-CHK (IDX)
-                                       =   SPACE
-                   MOVE    "black"         TO  W14-SHELLID-STYLE (IDX)
-               ELSE
-                  MOVE    "red"            TO  W14-SHELLID-STYLE (IDX)
-                  MOVE    "処理スクリプトがインストールされていません"
-                                           TO  W14-MSG
-               END-IF
                MOVE    SPA-GMN-PARAKBN-MAX
                                        TO  W14-PARAKBN-COUNT (IDX)
+           END-PERFORM   
       *
-               MOVE    "black"         TO  W14-BD-STYLE (IDX)
-               MOVE    SPACE           TO  W14-BD-LABEL (IDX)
-               IF      SPA-MW          =   SPA-GINBEE
-                   MOVE    "T"             TO  W14-BD-VISIBLE (IDX)
-                   IF      SPA-GMN-NAME (IDX)
-                                           =   SPACE
-                       MOVE    "black"         TO  W14-BD-STYLE (IDX)
-                   ELSE
-                       MOVE    "blue"          TO  W14-BD-STYLE (IDX)
-                       MOVE    "*"             TO  W14-BD-LABEL (IDX)
-                   END-IF
-               ELSE
-                   MOVE    "F"             TO  W14-BD-VISIBLE (IDX)
-               END-IF
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-STYUKYMD    TO  W14-STYUKYMD
-           MOVE    SPA-GMN-EDYUKYMD    TO  W14-EDYUKYMD
-           MOVE    SPA-GMN-PRTKBN11    TO  W14-PRTKBN11
-           MOVE    SPA-GMN-PRTKBN12    TO  W14-PRTKBN12
-           MOVE    SPA-GMN-PRTKBN21    TO  W14-PRTKBN21
-           MOVE    SPA-GMN-PRTKBN22    TO  W14-PRTKBN22
-           MOVE    SPA-GMN-PRTKBN31    TO  W14-PRTKBN31
-           MOVE    SPA-GMN-PRTKBN32    TO  W14-PRTKBN32
-           MOVE    SPA-GMN-PRTKBN41    TO  W14-PRTKBN41
-           MOVE    SPA-GMN-PRTKBN42    TO  W14-PRTKBN42
-           MOVE    SPA-GMN-PRTKBN51    TO  W14-PRTKBN51
-           MOVE    SPA-GMN-PRTKBN52    TO  W14-PRTKBN52
-      *
-           MOVE    "red"               TO  W14-MSG-STYLE
-      *
-           IF      SPA-MW          =   SPA-GINBEE
-               MOVE    "一覧"          TO  W14-B05-LABEL
-           ELSE
-               MOVE    SPACE           TO  W14-B05-LABEL
-           END-IF
+           MOVE    SPA-GMN-STYUKYMD     TO  W14-STYUKYMD
+           MOVE    SPA-GMN-EDYUKYMD     TO  W14-EDYUKYMD
+           MOVE    SPA-GMN-PRTKBN11     TO  W14-PRTKBN11
+           MOVE    SPA-GMN-PRTKBN12     TO  W14-PRTKBN12
+           MOVE    SPA-GMN-PRTKBN21     TO  W14-PRTKBN21
+           MOVE    SPA-GMN-PRTKBN22     TO  W14-PRTKBN22
+           MOVE    SPA-GMN-PRTKBN31     TO  W14-PRTKBN31
+           MOVE    SPA-GMN-PRTKBN32     TO  W14-PRTKBN32
+           MOVE    SPA-GMN-PRTKBN41     TO  W14-PRTKBN41
+           MOVE    SPA-GMN-PRTKBN42     TO  W14-PRTKBN42
+           MOVE    SPA-GMN-PRTKBN51     TO  W14-PRTKBN51
+           MOVE    SPA-GMN-PRTKBN52     TO  W14-PRTKBN52
       *
       *★★平成２０年４月改正対応
            MOVE    "F"                 TO  W14-PRTKBN51
@@ -2032,7 +1885,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

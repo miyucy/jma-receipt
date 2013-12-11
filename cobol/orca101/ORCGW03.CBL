@@ -34,9 +34,6 @@
       *  03.04.00    NACL-多々納  06/10/26  診療コード対応
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *  04.07.00    NACL-多々納  12/03/06  平成２４年４月改正対応
-      *  04.07.00    NACL-多々納  14/03/06  平成２６年４月改正対応
-      *  04.08.00    NACL-多々納  16/01/XX  表示内容切替え対応
-      *  04.08.00    NACL-多々納  16/03/18  平成２８年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -61,14 +58,12 @@
            03  SPA-W25-KYOUTU          PIC X(30000).
       *
            03  SPA-W03-AREA.
-      *
                05  SPA-W03-GMN-AREA.
                    07  SPA-GMN-PAGE        PIC 9(04).
                    07  SPA-GMN-LINE        PIC 9(02).
                    07  SPA-GMN-MAX         PIC 9(04).
                    07  SPA-GMN-PAGE-MAX    PIC 9(04).
                    07  SPA-GMN-CUR         PIC 9(02).
-                   07  SPA-GMN-NEXT        PIC 9(01).
       *
                    07  SPA-GMN-AREA.
                        09  SPA-GMN-STYUKYMD    PIC X(09).
@@ -79,21 +74,13 @@
                                13  SPA-GMN-TNAME       PIC X(100).
                                13  SPA-GMN-TSSTKIJUN   PIC 9(01).
                                13  SPA-GMN-TKEIFLG     PIC 9(01).
-      *                        期間外
-                               13  SPA-GMN-TMEIFLG     PIC 9(01).
                    07  SPA-GMN-SELCD                   PIC X(04).
       *
                    07  SPA-NAI-AREA.
                        09  SPA-NAI-TBL.
-                           11  SPA-NAI-TBLO            OCCURS  8500.
+                           11  SPA-NAI-TBLO            OCCURS  3500.
                                13  SPA-NAI-TSSTKIJUN   PIC 9(01).
                                13  SPA-NAI-TKEIFLG     PIC 9(01).
-      *
-                               13  SPA-MAE-TSSTKIJUN   PIC 9(01).
-      *H28.1           施設基準名称有
-                       09  SPA-NAI-TBL2.
-                           11  SPA-NAI-TBL2            OCCURS  8500.
-                               13  SPA-NAI-MEIFLG      PIC 9(01).
       *
                        09  SPA-SYORIFLG                PIC 9(01).
                        09  SPA-NAI-SELCD               PIC 9(04).
@@ -116,9 +103,6 @@
       *
                    07  SPA-NAI-KIJUNFLG                PIC 9(04).
       *
-      *H28.1
-               05  SPA-HYOJI-FLG           PIC 9(01).
-      *
       *    検索画面用ＳＰＡ
            COPY    "W25SCR-SPA".
       *
@@ -132,9 +116,6 @@
            03  FLG-INPUTCD                        PIC 9(01).
       *
            03  FLG-KANJI                         PIC 9(01).
-      *H28.1
-           03  FLG-HENEND                        PIC 9(01).
-           03  FLG-HYOJIOK                       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -144,16 +125,10 @@
            03  IDZ1                              PIC 9(04).
            03  IDZ2                              PIC 9(04).
       *
-           03  IDX-STR                           PIC 9(04).
-           03  IDX2                              PIC 9(04).
-      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-WIDMSG          PIC X(70).
-           03  WRK-KBNCD           PIC 9(02).
-           03  WRK-KBNCD-R         REDEFINES   WRK-KBNCD.
-               05  WRK-KBNCD-RR    PIC 9(01).
-               05  WRK-KBNCD-1     PIC 9(01).
+           03  WRK-KBNCD           PIC 9(01).
            03  WRK-MAX-X.
                05  WRK-MAX         PIC 9(04). 
            03  WRK-MCP-WIDGET      PIC X(64).
@@ -173,7 +148,6 @@
                05  WRK-WDD         PIC 9(02).
       *
            03  WRK-EDYUKYMD        PIC X(08).
-           03  WRK-YUKOSTYMD       PIC X(08).
       *
            03  WRK-TCD             PIC 9(04).
            03  WRK-PAGE            PIC 9(04).
@@ -193,9 +167,6 @@
       *
       *   
            COPY    "ENUM-VALUE".
-      *
-      *    画面最大
-       01  CONS-GYO-MAX            PIC 9(04)   VALUE    25.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -241,7 +212,62 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W91.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -381,10 +407,7 @@
       *
            MOVE    ZERO                TO  WRK-MAX
            PERFORM             UNTIL   FLG-SYSKANRI   =   1
-               MOVE    MCPDATA-REC         TO  SYS-0031-REC
-      *        施設基準名称あり
-               MOVE    SYS-0031-KBNCD(1:4) TO  IDY
-               MOVE    1                   TO  SPA-NAI-MEIFLG(IDY)
+               MOVE    MCPDATA-REC        TO  SYS-0031-REC
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -425,6 +448,7 @@
       *
            MOVE    ZERO                TO  IDX
            PERFORM             UNTIL   FLG-SYSKANRI   =   1
+                               OR      IDX            >=  3500
                MOVE    ZERO                TO  SPA-SYORIFLG
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
       *H2.4
@@ -435,19 +459,12 @@
                        MOVE    500             TO  IDX
                    WHEN    "7"
                        MOVE    3000            TO  IDX
-                   WHEN    "8"
-                       MOVE    3500            TO  IDX
-                   WHEN    "17"
-                       MOVE    8000            TO  IDX
                END-EVALUATE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       500
                    ADD     1               TO  IDX
                    MOVE    SYS-1006-SSTKIJUN  (IDY)
                                            TO  SPA-NAI-TSSTKIJUN (IDX)
-      *H28.1
-                   MOVE    SYS-1006-SSTKIJUN  (IDY)
-                                           TO  SPA-MAE-TSSTKIJUN (IDX)
                END-PERFORM
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -471,23 +488,14 @@
                    MOVE    3500            TO  IDX
                END-IF
            END-IF
-      *H26.4  8500 とする
-           IF      SPA-W01-EDYUKYMD    >=  "20140401"
-               IF      IDX                 <   8500
-                   MOVE    8500            TO  IDX
-               END-IF
-           END-IF
       *
            END-IF
       *
            MOVE    IDX                 TO  SPA-GMN-MAX
       *
            COMPUTE SPA-GMN-PAGE-MAX    =   (SPA-GMN-MAX - 1)     /
-                                           CONS-GYO-MAX  + 1
+                                            25  + 1      
            MOVE    1                   TO  SPA-GMN-PAGE
-      *
-      *H28.1
-           MOVE    1                   TO  SPA-HYOJI-FLG
       *
            PERFORM 3101-SSTKIJUN-HENSYU-SEC  
       *
@@ -541,20 +549,12 @@
                        MOVE    500             TO  IDX
                    WHEN    "7"
                        MOVE    3000            TO  IDX
-                   WHEN    "8"
-                       MOVE    3500            TO  IDX
-                   WHEN    "17"
-                       MOVE    8000            TO  IDX
                    END-EVALUATE
                    PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL   IDY     >   500
                        ADD     1               TO  IDX
                        MOVE    SYS-1006-SSTKIJUN  (IDY)
                                                TO  SPA-NAI-TSSTKIJUN
-                                                              (IDX)
-      *H28.1
-                       MOVE    SYS-1006-SSTKIJUN  (IDY)
-                                               TO  SPA-MAE-TSSTKIJUN
                                                               (IDX)
                    END-PERFORM
                    MOVE    SYS-1006-EDYUKYMD   TO  WRK-EDYUKYMD
@@ -569,6 +569,7 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+
       *H24.4
            IF      SPA-W01-EDYUKYMD    >=  "20120401"
                IF      IDX                 <   3500
@@ -576,59 +577,29 @@
                END-IF
            END-IF
       *
-      *H26.4
-           IF      SPA-W01-EDYUKYMD    >=  "20140401"
-               IF      IDX                 <   8500
-                   MOVE    8500            TO  IDX
-               END-IF
-           END-IF
-      *
       *    施設基準があるかの判定
            PERFORM VARYING IDY         FROM    1   BY  1
                    UNTIL   IDY         >   IDX
-               IF      SPA-NAI-TSSTKIJUN (IDY)     =   1
-                   IF      SPA-NAI-MEIFLG (IDY)    =   ZERO
-      *                施設基準なし
-                       MOVE    ZERO            TO  SPA-NAI-TSSTKIJUN
-                                                             (IDY)
-                       MOVE    ZERO            TO  SPA-MAE-TSSTKIJUN
-                                                             (IDY)
-                   END-IF
+               MOVE    SPACE               TO  SYS-0031-REC
+               INITIALIZE                      SYS-0031-REC
+               MOVE    "0031"              TO  SYS-0031-KANRICD
+               MOVE    IDY                 TO  SYS-0031-KBNCD (1:4)
+               MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-STYUKYMD
+               MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-0031-HOSPNUM
+               MOVE    SYS-0031-REC        TO  MCPDATA-REC
+               PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO                TO  SPA-NAI-TSSTKIJUN
+                                                                (IDY)
                END-IF
            END-PERFORM
-      *
-      *        MOVE    SPACE               TO  SYS-0031-REC
-      *        INITIALIZE                      SYS-0031-REC
-      *        MOVE    "0031"              TO  SYS-0031-KANRICD
-      *        MOVE    IDY                 TO  SYS-0031-KBNCD (1:4)
-      *        MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-STYUKYMD
-      *        MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-EDYUKYMD
-      *        MOVE    SPA-HOSPNUM         TO  SYS-0031-HOSPNUM
-      *        MOVE    SYS-0031-REC        TO  MCPDATA-REC
-      *        PERFORM 900-SYSKANRI-INV-SEC
-      *        IF      FLG-SYSKANRI        =   ZERO
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    ZERO                TO  SPA-NAI-TSSTKIJUN
-      *                                                         (IDY)
-      *            MOVE    ZERO                TO  SPA-MAE-TSSTKIJUN
-      *                                                         (IDY)
-      *        END-IF
-      *H26.4
-      *        1000 の次は、3000
-      *        IF      IDY                 =   1000
-      *            MOVE    3000            TO  IDY
-      *        END-IF
-      *        3500 の次は、8001
-      *        IF      IDY                 =   3500
-      *            MOVE    8000            TO  IDY
-      *        END-IF
-      **** END-PERFORM
       *    対象がない時、１レコード分とする
            IF      IDX                 =   ZERO
                MOVE    1               TO  SPA-SYORIFLG
-      **       MOVE    3500            TO  IDX
-               MOVE    8500            TO  IDX
+               MOVE    3500            TO  IDX
            END-IF
       *
            .
@@ -640,37 +611,15 @@
       *****************************************************************
        3101-SSTKIJUN-HENSYU-SEC            SECTION.
       *
-           EVALUATE    SPA-HYOJI-FLG
-               WHEN    0
-      *            全体
-                   PERFORM 3101-SSTKIJUN-HEN01-SEC
-               WHEN    1
-      *            施設基準（名称有）
-                   PERFORM 3102-SSTKIJUN-HEN02-SEC
-               WHEN    2
-      *            設定分のみ
-                   PERFORM 3103-SSTKIJUN-HEN03-SEC
-           END-EVALUATE
-           .
-       3101-SSTKIJUN-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設基準編集処理（全体）
-      *****************************************************************
-       3101-SSTKIJUN-HEN01-SEC            SECTION.
-      *
-      *
            INITIALIZE                      SPA-GMN-TBL
       *
-      **** COMPUTE IDX =   (SPA-GMN-PAGE    -   1)   *   25
-           COMPUTE IDX =   (SPA-GMN-PAGE    -   1)   *   CONS-GYO-MAX
+           COMPUTE IDX =   (SPA-GMN-PAGE    -   1)   *   25
       * 
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       CONS-GYO-MAX
+                   UNTIL   IDY >       25
                ADD     1                           TO  IDX
                IF      IDX     >   SPA-GMN-MAX
-                   MOVE    CONS-GYO-MAX            TO  IDY
+                   MOVE    25                      TO  IDY
                ELSE
                    MOVE    IDX             TO  SPA-GMN-TCD       (IDY)
                    MOVE    SPA-NAI-TSSTKIJUN   (IDX)
@@ -691,208 +640,13 @@
                        MOVE    MCPDATA-REC     TO  SYS-0031-REC
                        MOVE    SYS-0031-SSTKIJUN
                                                TO  SPA-GMN-TNAME(IDY)
-      *H28.1
-                   ELSE
-                       IF     SPA-NAI-TSSTKIJUN (IDX)  =   1
-      *                    履歴から編集
-                           PERFORM 310211-SYS0031-HEN-SEC
-                           MOVE    1           TO  SPA-GMN-TMEIFLG(IDY)
-                       END-IF
                    END-IF
                END-IF 
            END-PERFORM      
       *
            MOVE    1                   TO  SPA-GMN-CUR
            .
-       3101-SSTKIJUN-HEN01-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設基準編集処理（名称有）
-      *****************************************************************
-       3102-SSTKIJUN-HEN02-SEC            SECTION.
-      *
-           INITIALIZE                      SPA-GMN-TBL
-      *
-           COMPUTE IDX-STR         =   (SPA-GMN-PAGE    -   1)
-                                   *   CONS-GYO-MAX
-                                   +   1
-      *
-           MOVE    ZERO                TO  FLG-HENEND
-           MOVE    ZERO                TO  FLG-HYOJIOK
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  IDY
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >      SPA-GMN-MAX )
-                       OR     (FLG-HENEND     =   1   )
-      *        名称あり
-               IF     (SPA-NAI-MEIFLG (IDX)   =   1 )
-                  OR  (SPA-MAE-TSSTKIJUN(IDX) =   1 )
-                   ADD     1                  TO  IDX2
-                   IF      IDX2               <   IDX-STR
-                       CONTINUE
-                   ELSE
-      *                テーブル編集
-                       PERFORM 31021-SSTKIJUN-TBLHEN-SEC
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      FLG-HENEND          =   1
-               MOVE    1                   TO  SPA-GMN-NEXT
-           ELSE
-               MOVE    ZERO                TO  SPA-GMN-NEXT
-           END-IF
-      *
-           MOVE    1                   TO  SPA-GMN-CUR
-           .
-       3102-SSTKIJUN-HEN02-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設基準編集処理
-      *****************************************************************
-       31021-SSTKIJUN-TBLHEN-SEC            SECTION.
-      *
-           ADD     1                       TO  IDY
-           IF      IDY         >   CONS-GYO-MAX
-               MOVE    CONS-GYO-MAX        TO  IDY
-               MOVE    1                   TO  FLG-HENEND
-           ELSE
-               MOVE    IDX                 TO  SPA-GMN-TCD       (IDY)
-               MOVE    SPA-NAI-TSSTKIJUN   (IDX)
-                                           TO  SPA-GMN-TSSTKIJUN (IDY)
-               MOVE    SPA-NAI-TKEIFLG     (IDX)
-                                           TO  SPA-GMN-TKEIFLG   (IDY)
-               MOVE    SPACE               TO  SYS-0031-REC
-               INITIALIZE                      SYS-0031-REC
-               MOVE    "0031"              TO  SYS-0031-KANRICD
-               MOVE    SPA-GMN-TCD (IDY)
-                                           TO  SYS-0031-KBNCD (1:4)
-               MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-STYUKYMD
-               MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-0031-HOSPNUM
-               MOVE    SYS-0031-REC        TO  MCPDATA-REC
-               PERFORM 900-SYSKANRI-INV-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    SYSKANRI-REC        TO  SYS-0031-REC
-                   MOVE    SYS-0031-SSTKIJUN
-                                               TO  SPA-GMN-TNAME(IDY)
-               ELSE
-      *            履歴から編集
-                   PERFORM 310211-SYS0031-HEN-SEC
-                   MOVE    1               TO  SPA-GMN-TMEIFLG   (IDY)
-               END-IF
-      *
-               IF     (WRK-TCD     NOT =   ZERO  )
-                   IF     (SPA-GMN-TCD (IDY)   =   WRK-TCD )
-                       MOVE    1               TO  FLG-HYOJIOK
-                   END-IF
-                   IF     (SPA-GMN-TCD (IDY)   >   WRK-TCD )
-                       MOVE    1               TO  FLG-HYOJIOK
-                   END-IF
-               END-IF
-           END-IF
-           .
-       31021-SSTKIJUN-TBLHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設基準名称編集
-      *****************************************************************
-       310211-SYS0031-HEN-SEC            SECTION.
-      *
-      *    施設基準情報
-           MOVE    SPACE               TO  SYS-0031-REC 
-           INITIALIZE                      SYS-0031-REC
-           MOVE    "0031"              TO  SYS-0031-KANRICD
-           MOVE    SPA-HOSPNUM         TO  SYS-0031-HOSPNUM
-           MOVE    SPA-GMN-TCD (IDY)   TO  SYS-0031-KBNCD (1:4)
-           MOVE    SYS-0031-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key8"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-0031-REC
-               IF      SYS-0031-EDYUKYMD   <   SPA-W01-STYUKYMD
-                   MOVE    SYS-0031-EDYUKYMD     TO  WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   STRING  "[外]"                DELIMITED  BY  SIZE
-                           SYS-0031-SSTKIJUN     DELIMITED  BY  SPACE
-                           "　【終了日："
-                           WRK-HENYMDG
-                           "】"                  DELIMITED  BY  SIZE
-                                       INTO  SPA-GMN-TNAME(IDY)
-                   END-STRING
-               ELSE
-               IF      SYS-0031-STYUKYMD   >   SPA-W01-EDYUKYMD
-                   MOVE    SYS-0031-STYUKYMD     TO  WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   STRING  "[外] "               DELIMITED  BY  SIZE
-                           SYS-0031-SSTKIJUN     DELIMITED  BY  SPACE
-                           "　【開始日："
-                           WRK-HENYMDG
-                           "】"                  DELIMITED  BY  SIZE
-                                       INTO  SPA-GMN-TNAME(IDY)
-                   END-STRING
-               END-IF
-               END-IF
-           END-IF
-           .
-       310211-SYS0031-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設基準編集処理（設定有）
-      *****************************************************************
-       3103-SSTKIJUN-HEN03-SEC            SECTION.
-      *
-      *
-           INITIALIZE                      SPA-GMN-TBL
-      *
-           COMPUTE IDX-STR         =   (SPA-GMN-PAGE    -   1)
-                                   *   CONS-GYO-MAX
-                                   +   1
-      *
-           MOVE    ZERO                TO  FLG-HENEND
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  IDY
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >      SPA-GMN-MAX )
-                       OR     (FLG-HENEND     =   1   )
-      *        設定あり
-               IF     (SPA-MAE-TSSTKIJUN(IDX) =   1 )
-                  OR  (SPA-NAI-TSSTKIJUN(IDX) =   1 )
-                   ADD     1                  TO  IDX2
-                   IF      IDX2               <   IDX-STR
-                       CONTINUE
-                   ELSE
-      *                テーブル編集
-                       PERFORM 31021-SSTKIJUN-TBLHEN-SEC
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      FLG-HENEND          =   1
-               MOVE    1                   TO  SPA-GMN-NEXT
-           ELSE
-               MOVE    ZERO                TO  SPA-GMN-NEXT
-           END-IF
-      *
-           MOVE    1                   TO  SPA-GMN-CUR
-           .
-       3103-SSTKIJUN-HEN03-EXT.
+       310-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -969,9 +723,6 @@
       *        →
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM  408-IDOU-02-SEC
-      *H28.1   表示切替え
-               WHEN    "CLICKED"       ALSO    "B10"
-                   PERFORM  410-HYOUJI-SEC
            END-EVALUATE
            .
       *
@@ -1070,15 +821,8 @@
        4203-SYRCD-SYORI-SEC       SECTION.
       *
       *    点数マスタ読込み
-           MOVE    SPA-W01-EDYUKYMD    TO  WRK-YUKOSTYMD
            MOVE    SPA-GMN-SRYCD       TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU           =   1
-      *        開始日での検索
-               MOVE    SPA-W01-STYUKYMD    TO  WRK-YUKOSTYMD
-               MOVE    SPA-GMN-SRYCD       TO  TNS-SRYCD
-               PERFORM 910-TENSU-READ-SEC
-           END-IF
            IF      FLG-TENSU           =   1
                MOVE    "0102"              TO  SPA-ERRCD
                MOVE    50                  TO  SPA-GMN-CUR
@@ -1118,10 +862,10 @@
                    UNTIL      (IDX         >   10  )
                IF      TNS-SSTKIJUNCD (IDX)    NOT =   ZERO
                    ADD    1                    TO  SPA-KIJUN-MAX
-               END-IF
-               MOVE    TNS-SSTKIJUNCD (IDX) 
+                   MOVE    TNS-SSTKIJUNCD (IDX) 
                                                TO  SPA-GMN-SSTKIJUNCD
-                                                      (IDX)
+                                                      (SPA-KIJUN-MAX)
+               END-IF
            END-PERFORM
       *    基準不適合逓減対象施設基準
            MOVE    TNS-KIJUNTEIGENCD    TO  SPA-GMN-KIJUNTEIGENCD
@@ -1131,7 +875,6 @@
                MOVE    "0103"              TO  SPA-ERRCD
                MOVE    50                  TO  SPA-GMN-CUR
            ELSE
-               MOVE    10                  TO  SPA-KIJUN-MAX
                MOVE    SPACE               TO  SPA-GMN-SELCD
                IF      SPA-GMN-SSTKIJUNCD(1)   NOT =   ZERO
                    MOVE    SPA-GMN-SSTKIJUNCD(1)   TO  SPA-GMN-SELCD
@@ -1187,7 +930,7 @@
            MOVE    W03-SELCD           TO  SPA-GMN-SELCD
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   CONS-GYO-MAX
+                   UNTIL       IDX     >   25
                MOVE    W03-SSTKIJUN (IDX)  TO  SPA-GMN-TSSTKIJUN (IDX)
            END-PERFORM
       *
@@ -1256,16 +999,8 @@
                END-IF
       *H24.4
       *        1001から3000 はエラーとする
-               IF     (SPA-NAI-SELCD       >=  1001  AND
-                                           <=  3000   )
-      *        3501から8000 はエラーとする
-      *          OR   (SPA-NAI-SELCD       >=  3501  AND
-      *                                    <=  8000   )
-      *        3601から8000 はエラーとする
-      **         OR   (SPA-NAI-SELCD       >=  3601  AND
-      *        4001から8000 はエラーとする
-                 OR   (SPA-NAI-SELCD       >=  4001  AND
-                                           <=  8000   )
+               IF      SPA-NAI-SELCD       >=  1001  AND
+                                           <=  3000
                    MOVE    "0001"              TO  SPA-ERRCD
                    MOVE    90                  TO  SPA-GMN-CUR
                END-IF
@@ -1282,27 +1017,14 @@
            MOVE    ZERO                TO  FLG-SELCD
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   CONS-GYO-MAX  )  OR
+                   UNTIL      (IDX     >   25  )  OR
                               (SPA-ERRCD   NOT =   SPACE )
       *
-      *H28.1
-      *        COMPUTE IDZ             =   IDX
-      *                                +   (SPA-GMN-PAGE - 1 ) * 25
-               IF      SPA-GMN-TCD (IDX)       =   ZERO
-                                               OR  SPACE
-                   MOVE    ZERO                TO  IDZ
-               ELSE
-                   MOVE    SPA-GMN-TCD (IDX)   TO  IDZ
-               END-IF
-      *!!!!
+               COMPUTE IDZ             =   IDX
+                                       +   (SPA-GMN-PAGE - 1 ) * 25
       *        施設基準名があること
-               IF   (( SPA-GMN-TNAME (IDX)     =   SPACE )
-               AND   ( SPA-GMN-TSSTKIJUN (IDX) =   1     ))
-      *           今回選択あり
-               OR   (( SPA-NAI-MEIFLG (IDZ)    =   ZERO  )  AND
-                     ( SPA-GMN-TSSTKIJUN (IDX) =   1     )  AND
-                     ( SPA-MAE-TSSTKIJUN (IDZ) =   ZERO  ))
-      *
+               IF      SPA-GMN-TNAME (IDX)     =   SPACE
+               AND     SPA-GMN-TSSTKIJUN (IDX) =   1
                    IF      SPA-GMN-TKEIFLG (IDX)   =   ZERO
                        MOVE    1                  TO  SPA-GMN-TKEIFLG
                                                             (IDX)
@@ -1316,8 +1038,6 @@
                END-IF
       *
                IF      SPA-ERRCD           =   SPACE
-      *H28.1
-               AND    (IDZ                 >   ZERO  )
                    EVALUATE    SPA-GMN-TSSTKIJUN (IDX)
                        WHEN    ZERO
                        WHEN    1
@@ -1339,16 +1059,9 @@
       *****************************************************************
        4103-SELCD-HENSYU-SEC             SECTION.
       *
-      *H28.1
-      *    コード判定
-           IF      SPA-HYOJI-FLG       =   1
-                                       OR  2
-               PERFORM 41031-SELCE-HENSYU-02-SEC
-           ELSE
-      *
            MOVE    SPA-GMN-SELCD       TO  WRK-TCD
            COMPUTE WRK-PAGE            =  ((WRK-TCD - 1  )
-                                       /   CONS-GYO-MAX )
+                                       /   25 )
                                        +   1
            IF      WRK-PAGE            >   SPA-GMN-PAGE-MAX
                MOVE    "0010"              TO  SPA-ERRCD
@@ -1357,62 +1070,19 @@
                MOVE    WRK-PAGE            TO  SPA-GMN-PAGE
                PERFORM 3101-SSTKIJUN-HENSYU-SEC
            END-IF
-      *
-           END-IF
            .
        4103-SELCD-HENSYU-EXT.
            EXIT.
-      *H28.1
-      *****************************************************************
-      *    コード表示へ処理
-      *****************************************************************
-       41031-SELCE-HENSYU-02-SEC             SECTION.
-      *
-           MOVE    SPA-GMN-SELCD       TO  WRK-TCD
-           IF      SPA-HYOJI-FLG       =   1
-               IF      (SPA-MAE-TSSTKIJUN (WRK-TCD)  =   1 )
-                    OR (SPA-NAI-MEIFLG (WRK-TCD)     =   1 )
-                   CONTINUE
-               ELSE
-      *            対象なし
-                   MOVE    "0010"              TO  SPA-ERRCD
-                   MOVE    90                  TO  SPA-GMN-CUR
-               END-IF
-           ELSE
-               IF      (SPA-MAE-TSSTKIJUN (WRK-TCD)  =   1 )
-                   OR  (SPA-NAI-TSSTKIJUN (WRK-TCD)  =   1 )
-                   CONTINUE
-               ELSE
-      *            対象なし
-                   MOVE    "0010"              TO  SPA-ERRCD
-                   MOVE    90                  TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    ZERO                TO  FLG-HYOJIOK
-               PERFORM VARYING    SPA-GMN-PAGE FROM   1  BY  1
-                       UNTIL      FLG-HYOJIOK  =   1
-                   PERFORM 3101-SSTKIJUN-HENSYU-SEC
-                   IF      SPA-GMN-NEXT        =   ZERO
-                       MOVE    1               TO  FLG-HYOJIOK
-                   END-IF
-               END-PERFORM
-           END-IF
-           .
-       41031-SELCE-HENSYU-02-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    カーソル移動処理
       *****************************************************************
        4103-SELCD-CUR-SEC             SECTION.
       *    カーソル
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   CONS-GYO-MAX  )
+                   UNTIL      (IDX     >   25  )
                IF      SPA-GMN-TCD (IDX)   =   SPA-GMN-SELCD
                    MOVE    IDX             TO  SPA-GMN-CUR
-                   MOVE    CONS-GYO-MAX    TO  IDX
+                   MOVE    25              TO  IDX
                END-IF
            END-PERFORM
            MOVE    SPACE           TO  SPA-GMN-SELCD
@@ -1436,32 +1106,10 @@
            END-IF
       *
            COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    -   1
-      *    H28.1
-           IF      SPA-HYOJI-FLG       =   1
-                                       OR  2
-               PERFORM 3101-SSTKIJUN-HENSYU-SEC
-               GO  TO  430-MAEGMN-EXT
-           END-IF
-      *
       *H24.4
       *    1001から3000 までは画面表示なしとする
            IF      SPA-GMN-PAGE   =   120
                MOVE    40         TO  SPA-GMN-PAGE
-           END-IF
-      *H26.4
-      *    3501から8000 までは画面表示なしとする
-      *    IF      SPA-GMN-PAGE   =   320
-      *        MOVE    140        TO  SPA-GMN-PAGE
-      *    END-IF
-      *H28.4
-      *    3601から8000 までは画面表示なしとする
-      *    IF      SPA-GMN-PAGE   =   320
-      *        MOVE    144        TO  SPA-GMN-PAGE
-      *    END-IF
-      *H30.4
-      *    4001から8000 までは画面表示なしとする
-           IF      SPA-GMN-PAGE   =   320
-               MOVE    160        TO  SPA-GMN-PAGE
            END-IF
       *
            PERFORM 3101-SSTKIJUN-HENSYU-SEC  
@@ -1478,17 +1126,6 @@
            IF      SPA-ERRCD      NOT =   SPACE
                GO  TO  440-ATOGMN-EXT
            END-IF
-      *    H28.1
-           IF      SPA-HYOJI-FLG       =   1
-                                       OR  2
-               IF      SPA-GMN-NEXT        =   1
-                   COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    +   1
-                   PERFORM 3101-SSTKIJUN-HENSYU-SEC
-               ELSE
-                   MOVE    "0007"             TO  SPA-ERRCD
-               END-IF
-               GO  TO  440-ATOGMN-EXT
-           END-IF
       *
            IF      SPA-GMN-PAGE       =   SPA-GMN-PAGE-MAX
                MOVE    "0007"             TO  SPA-ERRCD
@@ -1500,49 +1137,10 @@
            IF      SPA-GMN-PAGE   =   41
                MOVE    121        TO  SPA-GMN-PAGE
            END-IF
-      *H26.4
-      *    3501から8000 までは画面表示なしとする
-      *    IF      SPA-GMN-PAGE   =   141
-      *        MOVE    321        TO  SPA-GMN-PAGE
-      *    END-IF
-      *H28.4
-      *    3601から8000 までは画面表示なしとする
-      *    IF      SPA-GMN-PAGE   =   145
-      *        MOVE    321        TO  SPA-GMN-PAGE
-      *    END-IF
-      *H30.4
-      *    4001から8000 までは画面表示なしとする
-           IF      SPA-GMN-PAGE   =   161
-               MOVE    321        TO  SPA-GMN-PAGE
-           END-IF
       *
            PERFORM 3101-SSTKIJUN-HENSYU-SEC  
            .
        440-ATOGMN-EXT.
-           EXIT.
-      *****************************************************************
-      *    表示切替え処理
-      *****************************************************************
-       410-HYOUJI-SEC             SECTION.
-      *
-           EVALUATE    SPA-HYOJI-FLG
-               WHEN    0
-                   MOVE    1               TO  SPA-HYOJI-FLG
-               WHEN    1
-                   MOVE    2               TO  SPA-HYOJI-FLG
-               WHEN    2
-                   MOVE    0               TO  SPA-HYOJI-FLG
-           END-EVALUATE
-      *
-           INITIALIZE                      SPA-GMN-SELCD
-           INITIALIZE                      SPA-NAI-SELCD 
-           INITIALIZE                      SPA-GMN-INPUT-AREA
-      *
-           MOVE    1                       TO  SPA-GMN-PAGE
-           PERFORM 3101-SSTKIJUN-HENSYU-SEC
-      *
-           .
-       410-HYOUJI-EXT.
            EXIT.
       *****************************************************************
       *    クリア処理
@@ -1560,73 +1158,38 @@
       *****************************************************************
        405-IDOU-01-SEC             SECTION.
       *
-      *    施設基準なし
-           IF     (SPA-GMN-SSTKIJUNCD-G    =   ZERO )
-             AND  (SPA-GMN-KIJUNTEIGENCD   =   ZERO )
-               GO      TO      405-IDOU-01-EXT
-           END-IF
-      *
-           IF      SPA-NAI-KIJUNFLG    =   1
-               MOVE    11                  TO  IDX-STR
+           IF      SPA-NAI-KIJUNFLG    =   11
+               MOVE    SPA-KIJUN-MAX       TO  SPA-NAI-KIJUNFLG
            ELSE
-               COMPUTE IDX-STR             =   SPA-NAI-KIJUNFLG
-                                           -   1
-           END-IF
-           MOVE    SPACE               TO  SPA-GMN-SELCD
-           PERFORM VARYING     IDX     FROM    IDX-STR BY  -1
-                   UNTIL       SPA-GMN-SELCD   NOT =   SPACE
-      *
-               IF      IDX             =   11
-                   IF      SPA-GMN-KIJUNTEIGENCD   NOT =   ZERO
-                       MOVE    IDX             TO  SPA-NAI-KIJUNFLG
-                       MOVE    SPA-GMN-KIJUNTEIGENCD
-                                               TO  SPA-GMN-SELCD
-                   END-IF
+               IF      SPA-NAI-KIJUNFLG    =   1
+                   MOVE    11                   TO  SPA-NAI-KIJUNFLG
                ELSE
-                   IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
-                       MOVE    SPA-GMN-SSTKIJUNCD(IDX)
-                                               TO  SPA-GMN-SELCD
-                       MOVE    IDX             TO  SPA-NAI-KIJUNFLG
-                   ELSE
-                       IF      IDX             =   1
-                           MOVE    12          TO  IDX
-                       END-IF
+                   COMPUTE SPA-NAI-KIJUNFLG     =   SPA-NAI-KIJUNFLG
+                                                -   1
+                   IF      SPA-NAI-KIJUNFLG     =   ZERO
+                       MOVE    11                   TO  SPA-NAI-KIJUNFLG
                    END-IF
                END-IF
-           END-PERFORM
+           END-IF
       *
-      *    IF      SPA-NAI-KIJUNFLG    =   11
-      *        MOVE    SPA-KIJUN-MAX       TO  SPA-NAI-KIJUNFLG
-      *    ELSE
-      *        IF      SPA-NAI-KIJUNFLG    =   1
-      *            MOVE    11                   TO  SPA-NAI-KIJUNFLG
-      *        ELSE
-      *            COMPUTE SPA-NAI-KIJUNFLG     =   SPA-NAI-KIJUNFLG
-      *                                         -   1
-      *            IF      SPA-NAI-KIJUNFLG     =   ZERO
-      *                MOVE    11                   TO  SPA-NAI-KIJUNFLG
-      *            END-IF
-      *        END-IF
-      *    END-IF
-      *
-      *    IF      SPA-NAI-KIJUNFLG    =   11
-      *        IF      SPA-GMN-KIJUNTEIGENCD   =   ZERO
-      *            MOVE    SPA-KIJUN-MAX       TO  SPA-NAI-KIJUNFLG
-      *        END-IF
-      *    END-IF
-      *    MOVE    SPACE               TO  SPA-GMN-SELCD
-      *    IF      SPA-NAI-KIJUNFLG    =   11
-      *        MOVE    SPA-GMN-KIJUNTEIGENCD   TO  SPA-GMN-SELCD
-      *    ELSE
-      *        MOVE    SPA-NAI-KIJUNFLG        TO  IDX
-      *        IF      IDX                     =   ZERO
-      *            CONTINUE
-      *        ELSE
-      *            IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
-      *                MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
-      *            END-IF
-      *        END-IF
-      ***  END-IF
+           IF      SPA-NAI-KIJUNFLG    =   11
+               IF      SPA-GMN-KIJUNTEIGENCD   =   ZERO
+                   MOVE    SPA-KIJUN-MAX       TO  SPA-NAI-KIJUNFLG
+               END-IF
+           END-IF
+           MOVE    SPACE               TO  SPA-GMN-SELCD
+           IF      SPA-NAI-KIJUNFLG    =   11
+               MOVE    SPA-GMN-KIJUNTEIGENCD   TO  SPA-GMN-SELCD
+           ELSE
+               MOVE    SPA-NAI-KIJUNFLG        TO  IDX
+               IF      IDX                     =   ZERO
+                   CONTINUE
+               ELSE
+                   IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
+                       MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
+                   END-IF
+               END-IF
+           END-IF
       *
            IF      SPA-GMN-SELCD   NOT =   SPACE
                MOVE    SPA-GMN-SELCD       TO  W03-SELCD
@@ -1642,63 +1205,28 @@
       *****************************************************************
        408-IDOU-02-SEC             SECTION.
       *
-      *    施設基準なし
-           IF     (SPA-GMN-SSTKIJUNCD-G    =   ZERO )
-             AND  (SPA-GMN-KIJUNTEIGENCD   =   ZERO )
-               GO      TO      408-IDOU-02-EXT
-           END-IF
-      *
-      *
-           IF      SPA-NAI-KIJUNFLG    =   11
-               MOVE    1                   TO  IDX-STR
-           ELSE
-               COMPUTE IDX-STR             =   SPA-NAI-KIJUNFLG
-                                           +   1
-           END-IF
-           MOVE    SPACE               TO  SPA-GMN-SELCD
-           PERFORM VARYING     IDX     FROM    IDX-STR BY  1
-                   UNTIL       SPA-GMN-SELCD   NOT =   SPACE
-      *
-               IF      IDX             =   11
-                   IF      SPA-GMN-KIJUNTEIGENCD   NOT =   ZERO
-                       MOVE    IDX             TO  SPA-NAI-KIJUNFLG
-                       MOVE    SPA-GMN-KIJUNTEIGENCD
-                                               TO  SPA-GMN-SELCD
-                   ELSE
-                       MOVE    0               TO  IDX
+           ADD     1                   TO  SPA-NAI-KIJUNFLG
+           IF      SPA-NAI-KIJUNFLG    >   SPA-KIJUN-MAX
+               IF      SPA-NAI-KIJUNFLG    <=  10
+                   MOVE    11                  TO  SPA-NAI-KIJUNFLG
+                   IF      SPA-GMN-KIJUNTEIGENCD   =   ZERO
+                       MOVE    1                   TO  SPA-NAI-KIJUNFLG
                    END-IF
                ELSE
+                   MOVE    1                   TO  SPA-NAI-KIJUNFLG
+               END-IF
+           END-IF
+           MOVE    SPACE               TO  SPA-GMN-SELCD
+           IF      SPA-NAI-KIJUNFLG    =   11
+               MOVE    SPA-GMN-KIJUNTEIGENCD   TO  SPA-GMN-SELCD
+           ELSE
+               MOVE    SPA-NAI-KIJUNFLG        TO  IDX
+               IF      IDX                     >   ZERO
                    IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
-                       MOVE    SPA-GMN-SSTKIJUNCD(IDX)
-                                               TO  SPA-GMN-SELCD
-                       MOVE    IDX             TO  SPA-NAI-KIJUNFLG
+                       MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
                    END-IF
                END-IF
-           END-PERFORM
-      *
-      *
-      *****ADD     1                   TO  SPA-NAI-KIJUNFLG
-      *    IF      SPA-NAI-KIJUNFLG    >   SPA-KIJUN-MAX
-      *        IF      SPA-NAI-KIJUNFLG    <=  10
-      *            MOVE    11                  TO  SPA-NAI-KIJUNFLG
-      *            IF      SPA-GMN-KIJUNTEIGENCD   =   ZERO
-      *                MOVE    1                   TO  SPA-NAI-KIJUNFLG
-      *            END-IF
-      *        ELSE
-      *            MOVE    1                   TO  SPA-NAI-KIJUNFLG
-      *        END-IF
-      *    END-IF
-      *    MOVE    SPACE               TO  SPA-GMN-SELCD
-      *    IF      SPA-NAI-KIJUNFLG    =   11
-      *        MOVE    SPA-GMN-KIJUNTEIGENCD   TO  SPA-GMN-SELCD
-      *    ELSE
-      *        MOVE    SPA-NAI-KIJUNFLG        TO  IDX
-      *        IF      IDX                     >   ZERO
-      *            IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
-      *                MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
-      *            END-IF
-      *        END-IF
-      *****END-IF
+           END-IF
       *
            IF      SPA-GMN-SELCD   NOT =   SPACE
                MOVE    SPA-GMN-SELCD       TO  W03-SELCD
@@ -1863,24 +1391,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    7                   TO  WRK-KBNCD
                    MOVE    3000                TO  IDX
                END-IF
-      *H26.4
-      *        3501 →　8001　とする
-      *        IF     (WRK-KBNCD               =   8  )
-      *            MOVE    17                  TO  WRK-KBNCD
-      *            MOVE    8000                TO  IDX
-      *        END-IF
-      *H26.4
-      *        3601 →　8001　とする
-               IF     (WRK-KBNCD               =   9  )
-                   MOVE    17                  TO  WRK-KBNCD
-                   MOVE    8000                TO  IDX
-               END-IF
-               IF      WRK-KBNCD               <   10
-      *            １桁をキーとする
-                   MOVE    WRK-KBNCD-1             TO  SYS-1006-KBNCD
-               ELSE
-                   MOVE    WRK-KBNCD               TO  SYS-1006-KBNCD
-               END-IF
+               MOVE    WRK-KBNCD               TO  SYS-1006-KBNCD
       *
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       500
@@ -2092,15 +1603,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  W03
       *
-           INITIALIZE                      W03
-      *    COMPUTE IDY     =   SPA-GMN-PAGE    *   25
-      *    COMPUTE IDZ     =   IDY             -   24
+           COMPUTE IDY     =   SPA-GMN-PAGE    *   25
+           COMPUTE IDZ     =   IDY             -   24
       *
            MOVE    ZERO                 TO  IDX
-      **** PERFORM VARYING     IDZ1     FROM    IDZ   BY  1
-      ***          UNTIL       IDZ1     >       IDY
-           PERFORM VARYING     IDZ1     FROM    1     BY  1
-                   UNTIL       IDZ1     >       CONS-GYO-MAX
+           PERFORM VARYING     IDZ1     FROM    IDZ   BY  1
+                   UNTIL       IDZ1     >       IDY
                ADD     1                        TO  IDX
                MOVE    SPA-GMN-TCD        (IDX) TO  W03-CD       (IDX)
                MOVE    SPA-GMN-TSSTKIJUN  (IDX) TO  W03-SSTKIJUN (IDX)
@@ -2111,14 +1619,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                  (IDX)
                ELSE
                    MOVE    "black"              TO  W03-DSPNAME-STYLE
-                                                                 (IDX)
-               END-IF
-      *H28.1
-      *        施設基準名なし
-               IF     (SPA-GMN-TSSTKIJUN  (IDX) =   "1" )
-                  AND (SPA-GMN-TNAME (IDX)  NOT =   SPACE )
-                  AND (SPA-GMN-TMEIFLG (IDX)    =   1   )
-                   MOVE    "red"                TO  W03-DSPNAME-STYLE
                                                                  (IDX)
                END-IF
       *
@@ -2136,7 +1636,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       (SPA-GMN-KIJUNTEIGENCD   =   WRK-TCD  )
                    MOVE    "red"               TO  W03-CD-STYLE (IDX)
                END-IF
-           END-PERFORM
+           END-PERFORM   
       *
            MOVE    SPA-GMN-STYUKYMD     TO  W03-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  W03-EDYUKYMD
@@ -2151,19 +1651,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       IDX      >       10
                MOVE    SPA-GMN-SSTKIJUNCD (IDX) TO  W03-KIJUNCD (IDX)
            END-PERFORM
-      *H28.1
-      *    表示モード
-           EVALUATE   SPA-HYOJI-FLG
-               WHEN   0
-                   MOVE    "≪全コード≫"    TO  W03-MIDASI-DATA
-                   MOVE    "有効分"          TO  W03-B10-LABEL
-               WHEN   1
-                   MOVE    "≪有効分≫"      TO  W03-MIDASI-DATA
-                   MOVE    "設定分"          TO  W03-B10-LABEL
-               WHEN   2
-                   MOVE    "≪設定分≫"      TO  W03-MIDASI-DATA
-                   MOVE    "全コード"        TO  W03-B10-LABEL
-           END-EVALUATE
       *
       *    業務権限非活性処理
            PERFORM 510-GSRAUTH-SEC
@@ -2185,7 +1672,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    WIDGET-NORMAL       TO  W03-B03-STATE
            END-IF
-           MOVE    WIDGET-NORMAL       TO  W03-B10-STATE
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -2363,7 +1849,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2399,7 +1884,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI
@@ -2424,7 +1908,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
@@ -2438,8 +1921,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    WRK-YUKOSTYMD       TO  TNS-YUKOSTYMD
-           MOVE    WRK-YUKOSTYMD       TO  TNS-YUKOEDYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  TNS-YUKOSTYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  TNS-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
