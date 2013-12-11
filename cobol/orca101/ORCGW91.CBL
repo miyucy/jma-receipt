@@ -866,14 +866,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "連携基盤用データ作成区分がありません"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   STRING  "連携基盤用ディレクトリの１桁目は/で"
-                           "入力して下さい。"
+                   STRING  "連携基盤用ディレクトリの先頭は/から"
+                           "指定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0003"
-                   STRING  "連携基盤用ディレクトリの最終文字は"
-                           "/以外で入力して下さい。"
+                   STRING  "連携基盤用ディレクトリの末尾は/を省略して"
+                           "下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -884,8 +884,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0005"
-                   STRING  "連携基盤用ディレクトリが存在しません。"
-                           "または、権限がありません。"
+                   STRING  "連携基盤用ディレクトリが存在しないか"
+                           "又は権限がありません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
