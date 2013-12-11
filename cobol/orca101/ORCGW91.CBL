@@ -399,7 +399,9 @@
            PERFORM 4102-COOPBASE-CHK-SEC
       *
       *    連携基盤デイレクトリ
-           PERFORM 4102-FILEDIR-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4102-FILEDIR-CHK-SEC
+           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
