@@ -631,6 +631,7 @@
       *  04.07.07    NACL-ÌçÏÆ    13/01/17  Ê£¿ôËç¥ì¥»¥×¥ÈÊ¬³äÂÐ±þ
       *  04.07.08    NACL-ÌçÏÆ    13/07/10  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
       *  04.07.09    NACL-ÌçÏÆ    13/11/11  ¸º³Û¡Ê±ß¡Ë¤ÎÂÐ±þ
+      *  04.07.10    NACL-ÌçÏÆ    13/12/09  °åÎÅ¾ðÊóÏ¢·ÈÂÐ±þ
       *
       *  04.08.01    NACL-ÌçÏÆ    13/01/22  Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë£±£°²óÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
@@ -834,6 +835,7 @@
            03  FLG-HENSYU-NG2                          PIC 9(01).
            03  FLG-HENSYU-ARI                          PIC 9(01).
            03  FLG-ZEROKOGAITO                         PIC 9(01).
+           03  FLG-IRYORENKEI                          PIC 9(01).
            03  FLG-NYUSYO                              PIC 9(01).
            03  FLG-DAISAN-ARI                          PIC 9(01).
       *
@@ -931,7 +933,9 @@
            03  IDX11                                   PIC 9(03).
            03  IDX13                                   PIC 9(03).
            03  IDX14                                   PIC 9(03).
+           03  IDX15                                   PIC 9(03).
            03  IDX16                                   PIC 9(03).
+           03  IDX17                                   PIC 9(03).
            03  IDX-SAI                                 PIC 9(03).
       *
            03  IDA                 PIC 9(04).
@@ -1145,6 +1149,13 @@
                05  WRK-TNS-KNSJISKBN                   PIC 9(01).
                05  WRK-TNS-SRYCD                       PIC X(09).
       *
+      *    ±¡³°½èÊý°ìÈÌÌ¾ÊÔ½¸¾ðÊóÂàÈòÎÎ°è
+       01  WRK-ORCSGETGE-OUT-AREA.
+           03  WRK-ORCSGETGE-OUT-TABLE                 OCCURS  50.
+               05  WRK-ORCSGETGE-YAKKAKJNCD            PIC X(12).
+               05  WRK-ORCSGETGE-GENERIC-KBN           PIC X(01).
+               05  WRK-ORCSGETGE-GENERICNAME           PIC X(200).
+      *
       *    ¼ÂÆü¿ô¥«¥¦¥ó¥ÈÍÑÎÎ°è                                         
        01  TBL-JNISSU.
            03  TBL-JNISSU-HKN                          OCCURS   5.
@@ -1174,6 +1185,10 @@
            03  TBL-SYS1006-OCC                         OCCURS  100.
                05  TBL-SYS10062                        PIC X(610).
                05  TBL-SYS10067                        PIC X(610).
+      *    Ä¢É¼ÊÔ½¸¶èÊ¬¾ðÊóÂàÈòÍÑÎÎ°è
+       01  TBL-SYS1030-T.
+           03  TBL-SYS1030-OCC                         OCCURS  100.
+               05  TBL-SYS1030                         PIC X(610).
       *
        01  TBL-TOKUSYU-KEISAN.
            03  TBL-TOKUSYU-KEISAN-OCC                  OCCURS  5.
@@ -1528,6 +1543,8 @@
                05  WRK-INPUTCOMENT-KIN         PIC 9(07).
            03  WRK-INPUTCOMENT-KIN2-T.
                05  WRK-INPUTCOMENT-KIN2        PIC X(07).
+      *
+           03  WRK-1030-KOUHATUKA              PIC X(01).
       *
            03  WRK-TAIHI-ZAINUM                PIC 9(08).
            03  WRK-TAIHI-OKIKAE                PIC 9(01).
@@ -2201,6 +2218,8 @@
            COPY    "CPSK1001.INC"  REPLACING  //SYS-1001-//
                                    BY         //WRK-1001-//.
       *
+           COPY    "CPSK1030.INC".
+      *
       *    ´µ¼Ô¥³¥á¥ó¥È
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
@@ -2249,6 +2268,8 @@
            COPY    "CPORCSFTNJGNCHK.INC".
       *    ÆÃÄê¼À´µÅù»»ÄêÈ½Äê¥µ¥Ö
            COPY    "CPORCSSRHKOH.INC".
+      *    ±¡³°½èÊý°ìÈÌÌ¾ÊÔ½¸¥µ¥Ö
+           COPY    "CPORCSGETGENERIC.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -2382,6 +2403,24 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                  END-IF
                END-IF
               END-PERFORM
+      *       Ä¢É¼ÊÔ½¸¶èÊ¬¾ðÊó
+              MOVE    SPACE            TO  WRK-1030-KOUHATUKA
+              IF      WRK-PARA-PRTKBN     =   "9"
+                INITIALIZE                   SYSKANRI-REC
+                MOVE    "1030"           TO  SYS-KANRICD
+                MOVE    "*"              TO  SYS-KBNCD
+                MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
+                MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+                MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+                MOVE    "tbl_syskanri"   TO  WRK-MCP-TABLE
+                MOVE    "key10"          TO  WRK-MCP-PATHNAME
+                PERFORM 960-KANRIMST-READ-SEC
+                IF      FLG-SYSKANRI     =   ZERO
+                  MOVE    MCPDATA-REC  TO  SYS-1030-REC
+                  MOVE    SYS-1030-KOUHATUKA
+                                       TO  WRK-1030-KOUHATUKA
+                END-IF
+              END-IF
            ELSE
               MOVE     ZERO               TO  SYSKAN-IDX
               MOVE     SPACE              TO  TBL-SYS1001-T
@@ -2469,6 +2508,38 @@ grpsys           PERFORM 900-DBSELECT-SEC
                END-IF
               END-PERFORM
       *
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1030-T
+              INITIALIZE                      TBL-SYS1030-T
+              IF      WRK-PARA-PRTKBN     =   "9"
+                INITIALIZE                      SYSKANRI-REC
+                MOVE    "1030"              TO  SYS-KANRICD
+                MOVE    "*"                 TO  SYS-KBNCD
+                MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                MOVE    "key8"              TO  MCP-PATHNAME
+                PERFORM 900-DBSELECT-SEC
+                IF      MCP-RC              =   ZERO
+                  MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                  MOVE    "key8"              TO  MCP-PATHNAME
+                  PERFORM  970-KANRIMST-READ-SEC
+                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                            OR    (SYSKAN-IDX   >=  100)
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1030-REC
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-1030-REC  TO  TBL-SYS1030(SYSKAN-IDX)
+      *
+                    MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                    MOVE    "key8"              TO  MCP-PATHNAME
+                    PERFORM 970-KANRIMST-READ-SEC
+                  END-PERFORM
+                END-IF
+                MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                MOVE    "key8"              TO  MCP-PATHNAME
+                PERFORM 900-CLOSE-SEC
+              END-IF
            END-IF
       *
       *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
@@ -7993,7 +8064,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      ACCT-HOSPNUM
            MOVE    RECE02-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+           IF      WRK-PARA-PRTKBN     =   "4" OR "5" OR "9"
                MOVE    "key62"             TO  WRK-SRYACCT-PATHNAME
            ELSE
                MOVE    "key32"             TO  WRK-SRYACCT-PATHNAME
@@ -8494,6 +8565,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        21044-RECE05-HENSYU-SEC               SECTION.
       *
+           INITIALIZE     WRK-ORCSGETGE-OUT-AREA
+           MOVE    ZERO                 TO      FLG-IRYORENKEI
+           IF     (WRK-PARA-PRTKBN     =   "9"     )
+           AND    (RECE02-SRYYM       >=   "201204")
+             PERFORM 210443-IRYORENKEI-HENSYU-SEC
+           END-IF
+           MOVE    ZERO                 TO      IDX17
+      *
            INITIALIZE                           SRYACT-REC
 grpsys     MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
@@ -8577,6 +8656,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
       *
+             ADD     1                  TO  IDX17
       *
              PERFORM 900-TENSU-TBL-SEC
       **     ÅÀ¿ô¥Þ¥¹¥¿¾ðÊóÂàÈò
@@ -8884,6 +8964,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         END-IF
                     ELSE
                         MOVE    "1"       TO    RECE04-TOYAKUFLG
+                        IF   (RECE05-SRYCD(IDX4)(1:1) = "6"   )
+                        AND  (WRK-ORCSGETGE-GENERICNAME(IDX17)
+                                                  NOT =  SPACE)
+                          MOVE  "1"       TO    RECE05-INGAIFLG(IDX4)
+                          MOVE  WRK-ORCSGETGE-YAKKAKJNCD(IDX17)
+                                          TO    RECE05-YAKKAKJNCD(IDX4)
+                          MOVE  WRK-ORCSGETGE-GENERIC-KBN(IDX17)
+                                          TO    RECE05-GENERIC-KBN(IDX4)
+                          MOVE  WRK-ORCSGETGE-GENERICNAME(IDX17)
+                                          TO    RECE05-GENERICNAME(IDX4)
+                        END-IF
                     END-IF
                   END-IF
                END-IF
@@ -8904,6 +8995,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         END-IF
                     ELSE
                         MOVE    "1"       TO    RECE04-TOYAKUFLG
+                        IF   (RECE05-SRYCD(IDX4)(1:1) = "6"   )
+                        AND  (WRK-ORCSGETGE-GENERICNAME(IDX17)
+                                                  NOT =  SPACE)
+                          MOVE  "1"       TO    RECE05-INGAIFLG(IDX4)
+                          MOVE  WRK-ORCSGETGE-YAKKAKJNCD(IDX17)
+                                          TO    RECE05-YAKKAKJNCD(IDX4)
+                          MOVE  WRK-ORCSGETGE-GENERIC-KBN(IDX17)
+                                          TO    RECE05-GENERIC-KBN(IDX4)
+                          MOVE  WRK-ORCSGETGE-GENERICNAME(IDX17)
+                                          TO    RECE05-GENERICNAME(IDX4)
+                        END-IF
                     END-IF
                   END-IF
                END-IF
@@ -10703,6 +10805,12 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  AND (RECE05-SRYCD(IDX4) = "840000077")
                    MOVE    2            TO  RECE05-SETCOMATFLG(IDX4)
                  END-IF
+      *
+           END-IF
+      *
+           IF    RECE05-INGAIFLG(IDX4)  =   "1"
+      *
+                 MOVE  "1"              TO  RECE04-SETCOMFLG
       *
            END-IF
       *
@@ -12824,6 +12932,78 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            .
       *
        2104421-RECE-LEFT-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    °åÎÅ¾ðÊóÏ¢·ÈÊÔ½¸
+      *****************************************************************
+       210443-IRYORENKEI-HENSYU-SEC               SECTION.
+      *
+           IF   (ACCT-SRYKBN       =  "14" OR "21" OR "22" OR "23")
+           AND  (ACCT-ZAITEN       =  ZERO                        )
+           AND  (ACCT-ZAIKBN   NOT =   1                          )
+           AND  (ACCT-JIHOKBN      =  SPACE                       )
+      *
+             INITIALIZE                   SRYACT-REC
+             MOVE    ACCT-HOSPNUM     TO  SRY-HOSPNUM
+             MOVE    ACCT-NYUGAIKBN   TO  SRY-NYUGAIKBN
+             MOVE    ACCT-PTID        TO  SRY-PTID
+             MOVE    ACCT-SRYYM       TO  SRY-SRYYM
+             MOVE    ACCT-ZAINUM      TO  SRY-ZAINUM
+             MOVE    "820000046"      TO  SRY-SRYCD(1)
+             MOVE    "820000046"      TO  SRY-SRYCD(2)
+             MOVE    "820000046"      TO  SRY-SRYCD(3)
+             MOVE    "820000046"      TO  SRY-SRYCD(4)
+             MOVE    "820000046"      TO  SRY-SRYCD(5)
+             MOVE    SRYACT-REC       TO  MCPDATA-REC
+             MOVE    "tbl_sryact"     TO  MCP-TABLE
+             MOVE    "key8"           TO  MCP-PATHNAME
+             PERFORM 900-DBSELECT-SEC
+             IF      MCP-RC   =   ZERO
+               MOVE    "tbl_sryact"   TO  MCP-TABLE
+               MOVE    "key8"         TO  MCP-PATHNAME
+               PERFORM  900-SRYACT-READ-SEC
+               IF   FLG-SRYACT  =  ZERO
+                 CONTINUE
+               ELSE
+                 MOVE    1            TO  FLG-IRYORENKEI
+               END-IF
+             END-IF
+             MOVE    "tbl_sryact"     TO  MCP-TABLE
+             MOVE    "key8"           TO  MCP-PATHNAME
+             PERFORM 900-CLOSE-SEC
+      *
+           END-IF
+      *
+           IF    FLG-IRYORENKEI   =   1
+      *
+             INITIALIZE                      ORCSGETGENERICAREA
+             MOVE    RECE02-HOSPNUM      TO  ORCSGETGE-HOSPNUM
+             MOVE    RECE02-PTID         TO  ORCSGETGE-PTID
+             MOVE    RECE02-SRYYM        TO  ORCSGETGE-SRYYM
+             MOVE    "2"                 TO  ORCSGETGE-NYUGAIKBN
+             MOVE    ACCT-ZAINUM         TO  ORCSGETGE-ZAINUM
+             MOVE    WRK-1030-KOUHATUKA  TO  ORCSGETGE-KOUHATUKA
+             CALL    "ORCSGETGENERIC"    USING
+                                         ORCSGETGENERICAREA
+                                         SPA-AREA 
+             IF      ORCSGETGE-ERRCD     =   ZERO
+               PERFORM   VARYING  IDX15    FROM    1   BY  1
+                          UNTIL   IDX15     >     50
+                 MOVE  ORCSGETGE-YAKKAKJNCD(IDX15)
+                            TO  WRK-ORCSGETGE-YAKKAKJNCD(IDX15)
+                 MOVE  ORCSGETGE-GENERIC-KBN(IDX15)
+                            TO  WRK-ORCSGETGE-GENERIC-KBN(IDX15)
+                 MOVE  ORCSGETGE-GENERICNAME(IDX15)
+                            TO  WRK-ORCSGETGE-GENERICNAME(IDX15)
+               END-PERFORM
+             END-IF
+      *
+           END-IF
+      *
+           .
+      *
+       210443-IRYORENKEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -22491,6 +22671,25 @@ grpsys         PERFORM 900-DBFETCH-SEC
                MOVE  SYS-1006-SSTKIJUN(58)   TO  WRK-SISETU3058
                MOVE  SYS-1006-SSTKIJUN(168)  TO  WRK-SISETU3168
                MOVE  SYS-1006-SSTKIJUN(169)  TO  WRK-SISETU3169
+           END-IF
+      *
+      *    Ä¢É¼ÊÔ½¸¶èÊ¬¾ðÊó
+           MOVE    ZERO                TO  FLG-SET
+           MOVE    SPACE               TO  WRK-1030-KOUHATUKA
+      *
+           IF      WRK-PARA-PRTKBN     =   "9"
+             PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                     UNTIL ( SYSKAN-IDX              >  100  )
+                     OR    ( TBL-SYS1030(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS1030(SYSKAN-IDX) TO  SYS-1030-REC
+               IF    ( SYS-1030-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-1030-EDYUKYMD )
+                   MOVE     1          TO  FLG-SET
+                   MOVE    SYS-1030-KOUHATUKA
+                                       TO  WRK-1030-KOUHATUKA
+               END-IF
+             END-PERFORM
            END-IF
       *
            .
