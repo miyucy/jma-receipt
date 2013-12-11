@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCSRECEGENE.
+       PROGRAM-ID.             ORCSGETGENERIC.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為
@@ -169,10 +169,10 @@
            COPY    "COMMON-SPA".
       *
       *    院外処方一般名編集パラメタ
-           COPY    "CPORCSRECEGENE.INC".
+           COPY    "CPORCSGETGENERIC.INC".
       *
        PROCEDURE                   DIVISION    USING
-           ORCSRECEGENEAREA
+           ORCSGETGENERICAREA
            SPA-AREA
            .
       *
@@ -185,28 +185,29 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  ORCSRECEGENE-OUT-AREA
+           INITIALIZE                  ORCSGETGE-OUT-AREA
       *
            PERFORM 100-INIT-SEC
       *
-           IF      ORCSRECEGENE-ERRCD  =   ZERO
+           IF      ORCSGETGE-ERRCD  =   ZERO
                PERFORM 200-MAIN-SEC
            END-IF
       *
       *TEST
-           DISPLAY "ZAINUM:"  ORCSRECEGENE-ZAINUM
+           DISPLAY "ZAINUM:"  ORCSGETGE-ZAINUM
                  ",SRYKBN:"  WRK-SRYKBN
-                 ",ERRCD:"  ORCSRECEGENE-ERRCD
+                 ",ERRCD:"  ORCSGETGE-ERRCD
+                 ",TBLMAX:"  ORCSGETGE-TBLMAX
            PERFORM VARYING   IDX   FROM   1  BY  1
                    UNTIL     IDX   >   50
-                       OR   (ORCSRECEGENE-SRYCD (IDX) = SPACE)
+                       OR   (ORCSGETGE-SRYCD (IDX) = SPACE)
                 DISPLAY "IDX:"  IDX
-                    ",SRYCD:"  ORCSRECEGENE-SRYCD (IDX)
-                  ",YAKK:" ORCSRECEGENE-YAKKAKJNCD (IDX)
-                  ",GENERIC-KBN:" ORCSRECEGENE-GENERIC-KBN (IDX)
-                  ",NAME-KBN:" ORCSRECEGENE-NAME-KBN (IDX)
-               IF    ORCSRECEGENE-GENERICNAME (IDX) NOT = SPACE
-                DISPLAY  "GENERICNAME:" ORCSRECEGENE-GENERICNAME (IDX)
+                    ",SRYCD:"  ORCSGETGE-SRYCD (IDX)
+                  ",YAKK:" ORCSGETGE-YAKKAKJNCD (IDX)
+                  ",GENERIC-KBN:" ORCSGETGE-GENERIC-KBN (IDX)
+                  ",NAME-KBN:" ORCSGETGE-NAME-KBN (IDX)
+               IF    ORCSGETGE-GENERICNAME (IDX) NOT = SPACE
+                DISPLAY  "GENERICNAME:" ORCSGETGE-GENERICNAME (IDX)
                              (1:20)
                END-IF
            END-PERFORM
@@ -220,11 +221,11 @@
       *****************************************************************
        100-INIT-SEC                      SECTION.
       *
-           MOVE    ORCSRECEGENE-SRYYM  TO  WRK-SRYYM
+           MOVE    ORCSGETGE-SRYYM     TO  WRK-SRYYM
            MOVE    "01"                TO  WRK-SRYDD
       *
-           IF      ORCSRECEGENE-PTID   =   ZERO
-               MOVE    1               TO  ORCSRECEGENE-ERRCD
+           IF      ORCSGETGE-PTID      =   ZERO
+               MOVE    1               TO  ORCSGETGE-ERRCD
            END-IF
            .
        100-INIT-EXT.
@@ -238,11 +239,11 @@
            MOVE    ZERO                TO  IDX-SRY
       *    診療行為検索
            INITIALIZE                  SRYACT-REC
-           MOVE    ORCSRECEGENE-HOSPNUM    TO  SRY-HOSPNUM
-           MOVE    ORCSRECEGENE-NYUGAIKBN  TO  SRY-NYUGAIKBN
-           MOVE    ORCSRECEGENE-PTID       TO  SRY-PTID
-           MOVE    ORCSRECEGENE-SRYYM      TO  SRY-SRYYM
-           MOVE    ORCSRECEGENE-ZAINUM     TO  SRY-ZAINUM
+           MOVE    ORCSGETGE-HOSPNUM   TO  SRY-HOSPNUM
+           MOVE    ORCSGETGE-NYUGAIKBN TO  SRY-NYUGAIKBN
+           MOVE    ORCSGETGE-PTID      TO  SRY-PTID
+           MOVE    ORCSGETGE-SRYYM     TO  SRY-SRYYM
+           MOVE    ORCSGETGE-ZAINUM    TO  SRY-ZAINUM
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
@@ -281,7 +282,7 @@
            IF      IDX-SRY             >   ZERO
                PERFORM 2001-SRYACT-CHK-SEC
            ELSE
-               MOVE    9               TO  ORCSRECEGENE-ERRCD
+               MOVE    9               TO  ORCSGETGE-ERRCD
            END-IF
            .
        200-MAIN-EXT.
@@ -344,9 +345,9 @@
                    END-PERFORM
                END-IF
       *        明細編集処理
-               PERFORM 20012-ORCSRECEGENE-HEN-SEC
+               PERFORM 20012-ORCSGETGE-HEN-SEC
            END-PERFORM
-           MOVE    IDX                 TO  ORCSRECEGENE-TBLMAX 
+           MOVE    IDX                 TO  ORCSGETGE-TBLMAX 
            .
        20021-SRYACT-CHK-EXT.
            EXIT.
@@ -381,60 +382,60 @@
       *****************************************************************
       *     明細編集処理
       *****************************************************************
-       20012-ORCSRECEGENE-HEN-SEC      SECTION.
+       20012-ORCSGETGE-HEN-SEC      SECTION.
       *
            IF      WRK-SRY-SRYCD (IDXA)(1:1)   =   "6"
       *        薬剤チェック
                PERFORM 200121-GENERIC-CHK-SEC
       *        薬剤明細編集
-               PERFORM 200122-ORCSRECEGENE-HEN-SEC
+               PERFORM 200122-ORCSGETGE-HEN-SEC
            ELSE
                ADD     1                   TO  IDX
       *        診療コード
                MOVE    WRK-SRY-SRYCD (IDXA)
-                                           TO  ORCSRECEGENE-SRYCD(IDX)
+                                           TO  ORCSGETGE-SRYCD(IDX)
            END-IF
            .
-       20012-ORCSRECEGENE-HEN-EXT.
+       20012-ORCSGETGE-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    薬剤明細編集処理
       *****************************************************************
-       200122-ORCSRECEGENE-HEN-SEC     SECTION.
+       200122-ORCSGETGE-HEN-SEC     SECTION.
       *
            ADD     1                   TO  IDX
       *    診療コード
-           MOVE    WRK-SRY-SRYCD (IDXA)    TO  ORCSRECEGENE-SRYCD(IDX)
+           MOVE    WRK-SRY-SRYCD (IDXA)    TO  ORCSGETGE-SRYCD(IDX)
       *    一般名コード（薬価基準コード）
-           MOVE    WRK-YAKKAKJNCD      TO  ORCSRECEGENE-YAKKAKJNCD
+           MOVE    WRK-YAKKAKJNCD      TO  ORCSGETGE-YAKKAKJNCD
                                                                 (IDX)
       *    一般名区分（１：一般名加算）
-           MOVE    WRK-GENERIC-KBN     TO  ORCSRECEGENE-GENERIC-KBN
+           MOVE    WRK-GENERIC-KBN     TO  ORCSGETGE-GENERIC-KBN
                                                                 (IDX)
       *    一般名称
-           MOVE    WRK-GENERICNAME     TO  ORCSRECEGENE-GENERICNAME
+           MOVE    WRK-GENERICNAME     TO  ORCSGETGE-GENERICNAME
                                                                 (IDX)
       *    一般名単位コード
-           MOVE    WRK-GEN-TANICD      TO  ORCSRECEGENE-GEN-TANICD
+           MOVE    WRK-GEN-TANICD      TO  ORCSGETGE-GEN-TANICD
                                                                 (IDX)
-           MOVE    WRK-GEN-TANINAME    TO  ORCSRECEGENE-GEN-TANINAME
+           MOVE    WRK-GEN-TANINAME    TO  ORCSGETGE-GEN-TANINAME
                                                                 (IDX)
       *    一般名名称区分（1:一般名,2：処方名称）
-           MOVE    WRK-NAME-KBN        TO  ORCSRECEGENE-NAME-KBN(IDX)
+           MOVE    WRK-NAME-KBN        TO  ORCSGETGE-NAME-KBN(IDX)
       *
       *    換算値
-           MOVE    TNSP-IPN-KANZANCHI  TO  ORCSRECEGENE-KANZANCHI
+           MOVE    TNSP-IPN-KANZANCHI  TO  ORCSGETGE-KANZANCHI
                                                                 (IDX)
       *    換算値の単位
            MOVE    TNSP-IPN-KANZANTANICD
-                                       TO  ORCSRECEGENE-KNS-TANICD
+                                       TO  ORCSGETGE-KNS-TANICD
                                                                 (IDX)
            MOVE    TNSP-IPN-KANZANTANINAME
-                                       TO  ORCSRECEGENE-KNS-TANINAME
+                                       TO  ORCSGETGE-KNS-TANINAME
                                                                 (IDX)
            .
-       200122-ORCSRECEGENE-HEN-EXT.
+       200122-ORCSGETGE-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -457,7 +458,7 @@
            MOVE    TNSP-IPN-KISAIKBN   TO  WRK-IPN-KISAIKBN
       *    システム管理の変更可によって一般名記載とする
            IF     (WRK-IPN-KISAIKBN        =   ZERO    )
-              AND (ORCSRECEGENE-KOUHATUKA  =   "1"     )
+              AND (ORCSGETGE-KOUHATUKA     =   "1"     )
               AND (TNS-KOUHATUKBN          =   1
                                            OR  2
                                            OR  7       )
