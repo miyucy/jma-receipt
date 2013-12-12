@@ -6,7 +6,7 @@ xml_incomeinfv2res {
 	private_objects {
 		Information_Date 		varchar(10);
 		Information_Time 		varchar(08);
-		Api_Result	     		varchar(02);
+		Api_Result	     		varchar(04);
 		Api_Result_Message 		varchar(100);
 		Patient_Information{
 			Patient_ID			varchar(20);

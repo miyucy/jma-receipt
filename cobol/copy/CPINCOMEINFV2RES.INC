@@ -26,7 +26,7 @@
             03  ICINFRES-PRIVATE-OBJECTS.
               05  ICINFRES-INFORMATION-DATE            PIC X(10).
               05  ICINFRES-INFORMATION-TIME            PIC X(8).
-              05  ICINFRES-API-RESULT                  PIC X(2).
+              05  ICINFRES-API-RESULT                  PIC X(4).
               05  ICINFRES-API-RESULT-MSG              PIC X(100).
               05  ICINFRES-PTINF-AREA.
                 07  ICINFRES-PTNUM                     PIC X(20).
