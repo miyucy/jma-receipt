@@ -1058,7 +1058,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE   "HCMSL55.red"    TO  SPRT-PRTID
-           MOVE    "入院会計一括置換え"
+           MOVE    "入院会計一括置換"
                                     TO  SPRT-TITLE
            MOVE    HCMSL55          TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
@@ -1721,6 +1721,29 @@
                                                ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA      TO  SPA-SRYKA
       *
+      *
+      *    システム管理５０００の外泊区分を取得
+           INITIALIZE                      SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-5000-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-5000-STYUKYMD (7:2)
+           MOVE    SYS-5000-STYUKYMD   TO  SYS-5000-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-5000-HOSPNUM
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-SYSKANRI-SELECT-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM     910-SYSKANRI-READ-SEC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           DISPLAY "===== GAIHAKU-KBN = " SYS-5000-NACCT-GAIHAKUKBN
+      *
       *    入院会計作成後に退避データの食事区分を復元
            IF WRK-PARA-SRYYM        >= "200604"
       *       （更新月分）
@@ -1760,18 +1783,36 @@
                             UNTIL     IDX-SKJ   >   31
                                MOVE   WRK-TAIHI-SKJ18(IDX-SKJ)
                                              TO  NACCT-DAY(IDX-SKJ)
+                               IF  (SYS-5000-NACCT-GAIHAKUKBN = "2") AND
+                                   (WRK-TAIHI-GAIHAKU(IDX-SKJ) =  1 OR
+                                                                  2 OR
+                                                                  3)
+                                    MOVE  ZERO  TO   NACCT-DAY(IDX-SKJ)
+                               END-IF
                           END-PERFORM
                          WHEN  2
                           PERFORM VARYING IDX-SKJ FROM 1 BY 1
                             UNTIL     IDX-SKJ   >   31
                                MOVE   WRK-TAIHI-SKJ19(IDX-SKJ)
                                              TO  NACCT-DAY(IDX-SKJ)
+                               IF  (SYS-5000-NACCT-GAIHAKUKBN = "2") AND
+                                   (WRK-TAIHI-GAIHAKU(IDX-SKJ) =  1 OR
+                                                                  2 OR
+                                                                  3)
+                                    MOVE  ZERO  TO   NACCT-DAY(IDX-SKJ)
+                               END-IF
                           END-PERFORM
                          WHEN  3
                           PERFORM VARYING IDX-SKJ FROM 1 BY 1
                             UNTIL     IDX-SKJ   >   31
                                MOVE   WRK-TAIHI-SKJ20(IDX-SKJ)
                                              TO  NACCT-DAY(IDX-SKJ)
+                               IF  (SYS-5000-NACCT-GAIHAKUKBN = "2") AND
+                                   (WRK-TAIHI-GAIHAKU(IDX-SKJ) =  1 OR
+                                                                  2 OR
+                                                                  3)
+                                    MOVE  ZERO  TO   NACCT-DAY(IDX-SKJ)
+                               END-IF
                           END-PERFORM
                      END-EVALUATE
       *              剤回数再セット
@@ -1799,9 +1840,95 @@
                          MOVE    "key32"     TO  MCP-PATHNAME
                  END-EVALUATE
                  PERFORM 900-CLOSE-SEC
-
               END-PERFORM
            END-IF
+      *
+      *    入院会計作成後に食堂加算に外泊区分を反映
+      *    （更新月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key43"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-SELECT-SEC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key43"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-READ-SEC
+           IF      FLG-NYUINACCT        =   ZERO
+      *        外泊を反映
+               PERFORM   VARYING   IDX   FROM  1  BY  1
+                         UNTIL     IDX    >   31
+                 IF  (SYS-5000-NACCT-GAIHAKUKBN = "2") AND
+                     (WRK-TAIHI-GAIHAKU(IDX)     =  1 OR
+                                                    2 OR
+                                                    3)
+                     MOVE  ZERO  TO   NACCT-DAY(IDX)
+                 END-IF
+               END-PERFORM
+      *        剤回数再セット
+               MOVE  ZERO              TO  NACCT-ZAIKAISU
+               PERFORM  VARYING   IDX   FROM  1  BY  1
+                        UNTIL     IDX  >   31
+                   IF   NACCT-DAY(IDX)   NOT =  0
+                       ADD   1        TO  NACCT-ZAIKAISU
+                   END-IF
+               END-PERFORM   
+           END-IF
+           MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+           MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+           MOVE     "key"              TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+      *    入院会計マスタクローズ
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key43"             TO  MCP-PATHNAME
+           PERFORM  900-CLOSE-SEC
+      *
+      *    入院会計作成後に入院料加算に外泊区分を反映
+      *    （更新月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
+           MOVE    "6"                 TO  NACCT-ZAISKBKBN
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-SELECT-SEC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-READ-SEC
+           PERFORM  UNTIL   FLG-NYUINACCT     NOT =   ZERO
+      *        外泊を反映
+               PERFORM   VARYING   IDX   FROM  1  BY  1
+                         UNTIL     IDX    >   31
+                 IF  (SYS-5000-NACCT-GAIHAKUKBN = "2") AND
+                     (WRK-TAIHI-GAIHAKU(IDX)     =  1 OR
+                                                    2 OR
+                                                    3)
+                     MOVE  ZERO  TO   NACCT-DAY(IDX)
+                 END-IF
+               END-PERFORM
+      *        剤回数再セット
+               MOVE  ZERO              TO  NACCT-ZAIKAISU
+               PERFORM  VARYING   IDX   FROM  1  BY  1
+                        UNTIL     IDX  >   31
+                   IF   NACCT-DAY(IDX)   NOT =  0
+                       ADD   1        TO  NACCT-ZAIKAISU
+                   END-IF
+               END-PERFORM   
+               MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+               MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+               MOVE     "key"              TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key17"             TO  MCP-PATHNAME
+               PERFORM  910-NYUINACCT-READ-SEC
+           END-PERFORM
+      *    入院会計マスタクローズ
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM  900-CLOSE-SEC
       *
       *    入院会計作成後に退避データの外泊区分を復元
       *    （更新月分）
