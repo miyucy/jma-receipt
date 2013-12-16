@@ -43,8 +43,8 @@
            03  FLG-END                 PIC 9(01).
            03  FLG-EDIT-AREA.
                05  FLG-COMMA           PIC 9(01).
-               05  FLG-DQST            PIC 9(01).
-               05  FLG-DQED            PIC 9(01).
+               05  FLG-DELI1           PIC 9(01).
+               05  FLG-DELI2           PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
       *
       *    添字領域
@@ -54,7 +54,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-REC-LEN             PIC 9(04).
            03  WRK-POINT-AREA.
                05  WRK-PO-ST           PIC 9(04).
                05  WRK-PO-ED           PIC 9(04).
@@ -69,7 +68,6 @@
            03  CONST-RECSIZE-MAX       PIC 9(04)  VALUE 3000.
            03  CONST-TBL-MAX           PIC 9(03)  VALUE 100.
            03  CONST-ELESIZE-MAX       PIC 9(03)  VALUE 300.
-           03  CONST-DQ                PIC X(01)  VALUE X"22".
       *
       *****************************************************************
       *    連絡　領域
@@ -108,32 +106,9 @@
                   (ORCSDIVCSV-ELE-C    >   CONST-TBL-MAX )
                MOVE    1                   TO  ORCSDIVCSV-RC
                MOVE    1                   TO  FLG-END
-           ELSE
-               PERFORM 1001-REC-SIZE-SEC
            END-IF
            .
        100-PARAM-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    データの有効文字数を求める
-      *****************************************************************
-       1001-REC-SIZE-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  WRK-REC-LEN
-      *
-           PERFORM VARYING IDX
-                           FROM    CONST-RECSIZE-MAX
-                           BY      -1
-                   UNTIL   IDX         <   1
-               IF      ORCSDIVCSV-CHAR (IDX)
-                                       NOT =   SPACE
-                   MOVE    IDX                 TO  WRK-REC-LEN
-                   MOVE    1                   TO  IDX
-               END-IF
-           END-PERFORM
-           .
-       1001-REC-SIZE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -163,8 +138,7 @@
                PERFORM 2002-ELEMENT-KYOTU-SEC
       *
                IF     (IDX                 =   ORCSDIVCSV-ELE-C)   OR
-                      (WRK-PO-ED          >=   CONST-RECSIZE-MAX)  OR
-                      (WRK-PO-ED          >=   WRK-REC-LEN)
+                      (WRK-PO-ED          >=   CONST-RECSIZE-MAX)
                    MOVE    1                   TO  FLG-END
                END-IF
            END-PERFORM
@@ -180,28 +154,24 @@
            PERFORM VARYING IDY
                            FROM    WRK-PO-ST
                            BY      1
-                   UNTIL  (IDY        >    CONST-RECSIZE-MAX)
-                       OR (IDY        >    WRK-REC-LEN)
+                   UNTIL  (IDY        >=   CONST-RECSIZE-MAX)
                        OR (FLG-COMMA   =   1)
-      *        デリミタの位置
-               IF      ORCSDIVCSV-CHAR (IDY)
-                                           =   ORCSDIVCSV-DELI
+      *        カンマの位置
+               IF     (ORCSDIVCSV-CHAR (IDY)
+                                           =   ",")    OR
+                     ((IDX                 =   ORCSDIVCSV-ELE-C)   AND
+                      (ORCSDIVCSV-CHAR (IDY)
+                                           =   SPACE))
                    MOVE    IDY                 TO  WRK-PO-ED
                    MOVE    1                   TO  FLG-COMMA
                END-IF
-               IF     (IDY                 =   WRK-REC-LEN)  AND
-                      (FLG-COMMA           =   0)
-                   COMPUTE WRK-PO-ED           =   IDY +   1
-               END-IF
       *        デリミタ(")存在するかどうか
-               IF      ORCSDIVCSV-DQ       =   1
-                   IF      ORCSDIVCSV-CHAR (IDY)
-                                               =   CONST-DQ
-                       IF      FLG-DQST            =   ZERO
-                           MOVE    1                   TO  FLG-DQST
-                       ELSE
-                           MOVE    1                   TO  FLG-DQED
-                       END-IF
+               IF      ORCSDIVCSV-CHAR (IDY)
+                                           =   """"
+                   IF      FLG-DELI1           =   ZERO
+                       MOVE    1                   TO  FLG-DELI1
+                   ELSE
+                       MOVE    1                   TO  FLG-DELI2
                    END-IF
                END-IF
            END-PERFORM
@@ -217,10 +187,9 @@
            MOVE    ZERO                TO  WRK-MOVE-AREA
       *
       *    データが省略されている場合、FLG-NODATAに1をセット
-           IF     (ORCSDIVCSV-DQ       =   1)  AND
-                  (FLG-DQST            =   1)
+           IF      FLG-DELI1           =   1
       *        デリミタ(")を含んでいる場合
-               IF      FLG-DQED            =   1
+               IF      FLG-DELI2           =   1
                    COMPUTE WRK-WK1     =   WRK-PO-ST   +   2
                ELSE
                    COMPUTE WRK-WK1     =   WRK-PO-ST   +   1
@@ -237,18 +206,17 @@
       *
            IF      FLG-NODATA          =   ZERO
       *    転送開始位置・転送桁数を算出
-               IF     (ORCSDIVCSV-DQ       =   1)  AND
-                      (FLG-DQST            =   1)
+               IF      FLG-DELI1           =   1
       *            デリミタ(")を含んでいる場合
                    COMPUTE WRK-MO-ST           =   WRK-PO-ST   +   1
-                   IF      FLG-DQED            =   1
+                   IF      FLG-DELI2           =   1
                        COMPUTE WRK-MO-BYTE         =   WRK-PO-ED
                                                    -   WRK-PO-ST
-                                                   -   2
+                                                   +   2
                    ELSE
                        COMPUTE WRK-MO-BYTE         =   WRK-PO-ED
-                                                   -   WRK-PO-ST
                                                    -   1
+                                                   -   WRK-PO-ST
                    END-IF
                ELSE
       *            デリミタ(")を含んでいない場合
