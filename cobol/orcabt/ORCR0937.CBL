@@ -28,11 +28,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.01    NACL-門脇    13/10/02  自賠責（第三者行為）対応
-      *  04.07.02    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -403,13 +398,23 @@
              MOVE    ZERO                  TO  RECE87-KNSJISKBN
              MOVE    SPACE                 TO  RECE87-SRYSYUKBN
              MOVE    ZERO                  TO  RECE87-DAY
-             MOVE    9                     TO  RECE87-CDKBN-SYO
-             MOVE    99                    TO  RECE87-CDKBN-BU
-             MOVE    "9"                   TO  RECE87-CDKBN-KBN
-             MOVE    999                   TO  RECE87-CDKBN-KBNNUM
-             MOVE    99                    TO  RECE87-CDKBN-KBNNUM-EDA
-             MOVE    99                    TO  RECE87-CDKBN-KOUBAN
-             MOVE    999999999             TO  RECE87-KOUHYOJUNNUM
+             IF    WRK-RECE86-SRYKBN  = "11"
+               MOVE  ZERO                  TO  RECE87-CDKBN-SYO
+               MOVE  ZERO                  TO  RECE87-CDKBN-BU
+               MOVE  SPACE                 TO  RECE87-CDKBN-KBN
+               MOVE  ZERO                  TO  RECE87-CDKBN-KBNNUM
+               MOVE  ZERO                  TO  RECE87-CDKBN-KBNNUM-EDA
+               MOVE  ZERO                  TO  RECE87-CDKBN-KOUBAN
+               MOVE  ZERO                  TO  RECE87-KOUHYOJUNNUM
+             ELSE
+               MOVE  9                     TO  RECE87-CDKBN-SYO
+               MOVE  99                    TO  RECE87-CDKBN-BU
+               MOVE  "9"                   TO  RECE87-CDKBN-KBN
+               MOVE  999                   TO  RECE87-CDKBN-KBNNUM
+               MOVE  99                    TO  RECE87-CDKBN-KBNNUM-EDA
+               MOVE  99                    TO  RECE87-CDKBN-KOUBAN
+               MOVE  999999999             TO  RECE87-KOUHYOJUNNUM
+             END-IF
              MOVE    WRK-RECE86-NYUTENTTLKBN
                                            TO  RECE87-NYUTENTTLKBN
              MOVE    WRK-RECE86-SRYCD1     TO  RECE87-SRYCD1
@@ -472,8 +477,15 @@
       *
                IF    WRK-TBLMAX    =    1
                AND   FLG-HENSYU2   =    ZERO
-                   MOVE   "＊"  TO   TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
-                   MOVE    1    TO   FLG-HENSYU2
+                   EVALUATE  RECE86-SRYCD1(1:5)
+                     WHEN   "09591"
+                       MOVE  "診"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                     WHEN   "09592"
+                       MOVE  "明"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                     WHEN    OTHER
+                       MOVE  "＊"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                   END-EVALUATE
+                   MOVE      1     TO  FLG-HENSYU2
                END-IF
                MOVE  RECE86-NAME(WRK-ST:)  TO
                                      TBL-ZAI-NAME(WRK-TBLMAX)(3:)

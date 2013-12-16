@@ -28,11 +28,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.01    NACL-門脇    13/10/02  自賠責（第三者行為）対応
-      *  04.07.02    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,6 +136,9 @@
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-KINGAKU         PIC 9(09)V9(02).
            03  WRK-ZAIKAISU        PIC 9(04).
+      *
+           03  WRK-ZAIKAISUX       PIC Z9.
+           03  WRK-TNSKAI          PIC X(10).
       *
            03  WRK-ST              PIC 9(03).
       *
@@ -336,13 +334,23 @@
       *    外来管理加算（特例５２）の編集
            IF      RECE41-GAITOKU-PRTKBN1  =   "1"
                INITIALIZE                    TBL-ZAI-AREA
-               MOVE    "＊（特）"        TO  TBL-ZAI-NAME(1)(1:8)
-               MOVE    1                 TO  TBL-ZAI-KISAIFLG(1)
-               MOVE    1                 TO  TBL-ZAI-YENFLG(1)
-               MOVE    RECE41-GAITOKU-TEN1
-                                         TO  TBL-ZAI-TEN(1)
+               MOVE    "＊（特）　"      TO  TBL-ZAI-NAME(1)(1:10)
+               MOVE    "　　　　　"      TO  WRK-TNSKAI
                MOVE    RECE41-GAITOKU-KAISU1
-                                         TO  TBL-ZAI-KAISU(1)
+                                         TO  WRK-ZAIKAISUX
+               INITIALIZE                    ORCSKANACHKAREA
+               MOVE    "2"               TO  KANACHK-SYORI
+               MOVE    "52"              TO  KANACHK-MAE-INPUT (1:2)
+               MOVE    "X"               TO  KANACHK-MAE-INPUT (3:1)
+               MOVE    WRK-ZAIKAISUX     TO  KANACHK-MAE-INPUT (4:2)
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-RC      =   ZERO
+               AND     KANACHK-MAX     >   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                         TO  WRK-TNSKAI
+                 MOVE    "×"            TO  WRK-TNSKAI(5:2)
+               END-IF
+               MOVE    WRK-TNSKAI        TO  TBL-ZAI-NAME(1)(11:10)
       *
                MOVE    1                 TO  WRK-TBLMAX
                MOVE    RECE41-KEY        TO  WRK-RECE46-KEY
@@ -359,13 +367,23 @@
       *    外来管理加算（特例２６）の編集
            IF      RECE41-GAITOKU-PRTKBN2  =   "1"
                INITIALIZE                    TBL-ZAI-AREA
-               MOVE    "＊（特）"        TO  TBL-ZAI-NAME(1)(1:8)
-               MOVE    1                 TO  TBL-ZAI-KISAIFLG(1)
-               MOVE    1                 TO  TBL-ZAI-YENFLG(1)
-               MOVE    RECE41-GAITOKU-TEN2
-                                         TO  TBL-ZAI-TEN(1)
+               MOVE    "＊（特）　"      TO  TBL-ZAI-NAME(1)(1:10)
+               MOVE    "　　　　　"      TO  WRK-TNSKAI
                MOVE    RECE41-GAITOKU-KAISU2
-                                         TO  TBL-ZAI-KAISU(1)
+                                         TO  WRK-ZAIKAISUX
+               INITIALIZE                    ORCSKANACHKAREA
+               MOVE    "2"               TO  KANACHK-SYORI
+               MOVE    "26"              TO  KANACHK-MAE-INPUT (1:2)
+               MOVE    "X"               TO  KANACHK-MAE-INPUT (3:1)
+               MOVE    WRK-ZAIKAISUX     TO  KANACHK-MAE-INPUT (4:2)
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-RC      =   ZERO
+               AND     KANACHK-MAX     >   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                         TO  WRK-TNSKAI
+                 MOVE    "×"            TO  WRK-TNSKAI(5:2)
+               END-IF
+               MOVE    WRK-TNSKAI        TO  TBL-ZAI-NAME(1)(11:10)
       *
                MOVE    1                 TO  WRK-TBLMAX
                MOVE    RECE41-KEY        TO  WRK-RECE46-KEY
@@ -483,17 +501,31 @@
              MOVE    WRK-RECE46-TEKSTYMD   TO  RECE47-TEKSTYMD
              MOVE    WRK-RECE46-SRYKBN     TO  RECE47-SRYKBN
              MOVE    ZERO                  TO  RECE47-KNSJISKBN
-             MOVE    ZERO                  TO  RECE47-SYOHOUFLG
+             IF    WRK-RECE46-SRYKBN  = "80"
+               MOVE  1                     TO  RECE47-SYOHOUFLG
+             ELSE
+               MOVE  ZERO                  TO  RECE47-SYOHOUFLG
+             END-IF
              MOVE    SPACE                 TO  RECE47-SRYSYUKBN
              MOVE    ZERO                  TO  RECE47-DAY
              MOVE    SPACE                 TO  RECE47-OKIKAEFLG
-             MOVE    9                     TO  RECE47-CDKBN-SYO
-             MOVE    99                    TO  RECE47-CDKBN-BU
-             MOVE    "9"                   TO  RECE47-CDKBN-KBN
-             MOVE    999                   TO  RECE47-CDKBN-KBNNUM
-             MOVE    99                    TO  RECE47-CDKBN-KBNNUM-EDA
-             MOVE    99                    TO  RECE47-CDKBN-KOUBAN
-             MOVE    999999999             TO  RECE47-KOUHYOJUNNUM
+             IF    WRK-RECE46-SRYKBN  = "11" OR "12"
+               MOVE  ZERO                  TO  RECE47-CDKBN-SYO
+               MOVE  ZERO                  TO  RECE47-CDKBN-BU
+               MOVE  SPACE                 TO  RECE47-CDKBN-KBN
+               MOVE  ZERO                  TO  RECE47-CDKBN-KBNNUM
+               MOVE  ZERO                  TO  RECE47-CDKBN-KBNNUM-EDA
+               MOVE  ZERO                  TO  RECE47-CDKBN-KOUBAN
+               MOVE  ZERO                  TO  RECE47-KOUHYOJUNNUM
+             ELSE
+               MOVE  9                     TO  RECE47-CDKBN-SYO
+               MOVE  99                    TO  RECE47-CDKBN-BU
+               MOVE  "9"                   TO  RECE47-CDKBN-KBN
+               MOVE  999                   TO  RECE47-CDKBN-KBNNUM
+               MOVE  99                    TO  RECE47-CDKBN-KBNNUM-EDA
+               MOVE  99                    TO  RECE47-CDKBN-KOUBAN
+               MOVE  999999999             TO  RECE47-KOUHYOJUNNUM
+             END-IF
              MOVE    WRK-RECE46-GAITENTTLKBN
                                            TO  RECE47-GAITENTTLKBN
              MOVE    WRK-RECE46-SRYCD1     TO  RECE47-SRYCD1
@@ -561,8 +593,15 @@
       *
                IF    WRK-TBLMAX    =    1
                AND   FLG-HENSYU2   =    ZERO
-                   MOVE   "＊"  TO   TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
-                   MOVE    1    TO   FLG-HENSYU2
+                   EVALUATE  RECE46-SRYCD1(1:5)
+                     WHEN   "09591"
+                       MOVE  "診"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                     WHEN   "09592"
+                       MOVE  "明"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                     WHEN    OTHER
+                       MOVE  "＊"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                   END-EVALUATE
+                   MOVE      1     TO  FLG-HENSYU2
                END-IF
                MOVE  RECE46-NAME(WRK-ST:)  TO
                                      TBL-ZAI-NAME(WRK-TBLMAX)(3:)
