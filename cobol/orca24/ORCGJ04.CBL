@@ -1267,14 +1267,17 @@
                    UNTIL   (IDX        >   SPA-MAX-LINE )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
-               IF     (SPA-COM-ZAIEND(IDX)     =   "1" )  OR
-                     ((SPA-COM-SRYKBN(IDX)     =   "95"
+      *H25.12
+               IF     (SPA-COM-SRYKBN(IDX)     =   "95"
                                                OR  "96" ) AND
-                      (SPA-COM-JIHIMONEY(IDX)  >   ZERO ))
+                      (SPA-COM-JIHIMONEY(IDX)  >   ZERO )
+                   ADD     SPA-COM-JIHIMONEY(IDX)
+                                                   TO  WRK-TENSU
+               END-IF
+               IF     (SPA-COM-ZAIEND(IDX)     =   "1" )
                    IF      SPA-COM-SRYKBN(IDX)     =   "95"
                                                    OR  "96"
-                       MOVE    SPA-COM-JIHIMONEY(IDX)
-                                                   TO  WRK-TENSU
+                       CONTINUE
                    ELSE
                        MOVE    SPA-COM-TENSU (IDX)
                                                    TO  WRK-TENSU
