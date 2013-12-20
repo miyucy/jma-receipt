@@ -36,6 +36,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
       *  04.06.00    NACL-多々納  11/02/14  用法コメント対応
+      *  04.07.00    NACL-多々納  13/12/20  行挿入対応
       *****************************************************************
       *
       *
@@ -402,7 +403,37 @@
                               (IDX                 =   CONS-INPUT) OR
                               (WRK-INPUTCD2(IDX3:) =   SPACE     ))
                            MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-CHK-FLG
+      *!!!!!!!!!!!!!!!!!!
+      *    連続挿入
+                           IF     (WRK-INPUTCD2(IDX:2)  =   "++")
+                               MOVE    1           TO  LNK-SC97-INSREN
+                               ADD     1               TO  IDX
+                           END-IF
+      *!!!!!!!!!!!!!!!!!!
                        END-IF
+      *!!!!!!!!!!!!!!!!!!
+      *    連続挿入
+                       COMPUTE IDX4                =   IDX  +  2
+                       IF    ( WRK-CHK-FLG         =   SPACE )
+                           IF     (WRK-INPUTCD2(IDX:2)  =   "++")
+                            AND   (WRK-INPUTCD2(IDX4:)  =   SPACE)
+                               MOVE    WRK-INPUTCD2(IDX:1)
+                                                   TO  WRK-CHK-FLG
+                               MOVE    1           TO  LNK-SC97-INSREN
+                               ADD     1               TO  IDX
+                           END-IF
+                       END-IF
+                       IF    ( WRK-CHK-FLG         =   SPACE )
+                           IF     (WRK-INPUTCD2(IDX3:1)  NUMERIC )
+                              AND (WRK-INPUTCD2(IDX4:) =   SPACE )
+                               MOVE    WRK-INPUTCD2(IDX:1)
+                                                   TO  WRK-CHK-FLG
+                               MOVE    WRK-INPUTCD2(IDX3:1)
+                                                   TO  LNK-SC97-INSCNT
+                               ADD     2           TO  IDX
+                           END-IF
+                       END-IF
+      *!!!!!!!!!!!!!!!!!!
                    END-IF
                ELSE
                    ADD     1                   TO  IDX2

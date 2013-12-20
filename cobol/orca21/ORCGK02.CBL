@@ -105,6 +105,7 @@
       *  04.08.00    NACL-多々納  12/12/17  患者情報通知対応
       *  04.08.00    NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
       *  04.08.00    NACL-多々納  13/06/28  ドクターカーソル移動対応
+      *  04.08.00    NACL-多々納  13/12/20  行挿入・カーソル移動位置変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -171,10 +172,6 @@
            03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
-      *
-       01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(60000)
-                                   OCCURS  10.
       *
       *    画面色等
            COPY    "ENUM-VALUE".
@@ -349,6 +346,9 @@
            03  FLG-POPINI              PIC 9(01).
       *    悪性区分前
            03  FLG-MAE-AKUSEI          PIC 9(01).
+      *!!!!!!!!!!!!!!!!!!
+           03  FLG-INPUT-NASI2         PIC 9(01).
+      *!!!!!!!!!!!!!!!!!!
       *
       *    添字領域
        01  IDX-AREA.
@@ -686,6 +686,11 @@
                05  WRK-GMN-F1          PIC X(01).
                05  WRK-GMN-DRCDNAME    PIC X(24).
       *
+      *!!!!!!!!!!!!!!!!!!
+      *    挿入行数
+           03  WRK-INSCNT    PIC 9(02).
+      *!!!!!!!!!!!!!!!!!!
+      *
       *    訂正時の内容保存
        01  WRK-ORCSC95AREA             PIC X(150).
       *
@@ -765,6 +770,12 @@
        01  CL-RED                  PIC X(07)   VALUE   "#FF0000".
       *クロ
        01  CL-BLACK                PIC X(07)   VALUE   "#000000".
+      *白
+       01  CL-WHITE                PIC X(07)   VALUE   "#FFFFFF".
+      *@TEST
+      *@TEST
+      *緑
+       01  CL-GREEN                PIC X(07)   VALUE   "#00B000".
       *
        01  WRK-MOJI-AREA.
            03  FLG-SP              PIC 9(02).
@@ -941,6 +952,15 @@
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
+      *
+      *TEST
+      *    パラメタテーブル
+       01  PARAS-REC.
+           COPY    "CPPARA.INC"       REPLACING
+                                     //PARA-// BY //PARAS-//.
+      *TEST
+      *
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1114,6 +1134,12 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *TEST
+      *   ACCEPT  WRK-SYSTIME         FROM    TIME
+      *    DISPLAY "K02 START:" WRK-SYSTIME (1:2) ":" 
+      *                         WRK-SYSTIME (3:2) ":" 
+      *                         WRK-SYSTIME (5:2) ":" 
+      *                         WRK-SYSTIME (7:2) "/" 
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
@@ -1138,7 +1164,8 @@
            PERFORM 1001-SRYKBN-SET-SEC
       *
       *    画面ＳＰＡ読み込み
-           PERFORM 1002-K02SPA-SET-SEC
+      *TES PERFORM 1002-K02SPA-SET-SEC
+           PERFORM 1002-K02SPA-SET-TST-SEC
       *    画面制御
            MOVE    SPACE           TO  WRK-PUTTYPE
       *
@@ -1160,7 +1187,8 @@
       *
       *    画面ＳＰＡ書込み
            IF      FLG-END2            =   ZERO
-               PERFORM 1003-K02SPA-OUT-SEC
+      *TEST    PERFORM 1003-K02SPA-OUT-SEC
+               PERFORM 1003-K02SPA-OUT-TST-SEC
            END-IF
       *
       *    クライアント印刷
@@ -1172,6 +1200,12 @@
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
+      *TEST
+      *    ACCEPT  WRK-SYSTIME         FROM    TIME
+      *    DISPLAY "K02 END  :" WRK-SYSTIME (1:2) ":" 
+      *                         WRK-SYSTIME (3:2) ":" 
+      *                         WRK-SYSTIME (5:2) ":" 
+      *                         WRK-SYSTIME (7:2) "/" 
       *
            .
            EXIT    PROGRAM
@@ -1294,6 +1328,80 @@
        1002-K02SPA-SET-EXT.
            EXIT.
       *
+      *TEST
+      *****************************************************************
+      *    ＳＰＡデータＲＥＡＤ処理
+      *****************************************************************
+       1002-K02SPA-SET-TST-SEC             SECTION.
+      *
+      *
+           MOVE    SPACE               TO  SPA-SCR-REC
+           INITIALIZE          SPA-SCR-REC
+           MOVE    ZERO                TO  IDX
+      *
+      *    TBL_PARA を使用する
+           INITIALIZE                      PARAS-REC
+           MOVE    SPA-HOSPNUM         TO  PARAS-HOSPNUM
+           MOVE    "K02"               TO  PARAS-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARAS-TERMID
+           MOVE    "SPAGMN"            TO  PARAS-FILEMEI
+           MOVE    PARAS-REC           TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARAS-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           PERFORM
+               UNTIL  (FLG-PARA            =   1 )
+               ADD    1                    TO  IDX
+               MOVE   PARAS-DATA-REC        TO  SPA-GMN-TBL (IDX)
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    行位置とカーソル位置の決定
+           MOVE    1                   TO  WRK-PAGE
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     WRK-IDX     FROM    1   BY  1
+                   UNTIL       WRK-IDX     >   SPA-MAX-LINE
+               MOVE    ZERO                TO  SPA-COM-PAGE (WRK-IDX)
+               MOVE    ZERO                TO  SPA-COM-GYOU (WRK-IDX)
+      *        画面表示外のものに頁、行位置を設定する
+               IF      SPA-COM-SET    (WRK-IDX)  =   SPACE
+                   ADD     1                 TO  IDX
+                   IF      IDX               >   MAX-GMN
+                       ADD     1             TO  WRK-PAGE
+                       MOVE    1             TO  IDX
+                   END-IF
+      *
+                   MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
+                   MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
+               END-IF
+      *
+               IF      (SPA-COM-INPUTCD(WRK-IDX)   =   SPACE ) AND
+                       (SPA-GMN-INPUTCD(WRK-IDX)   =   SPACE )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  SPA-GMN-MAX
+               END-IF
+           END-PERFORM
+           .
+       1002-K02SPA-SET-TST-EXT.
+           EXIT.
+      *TEST 
+      *
       *****************************************************************
       *    ＳＰＡデータＷＲＩＴＥ処理
       *****************************************************************
@@ -1326,8 +1434,62 @@
       *
            CLOSE                       SPASCR-FILE
            .
-       1003-K02SPA-SET-EXT.
+       1003-K02SPA-OUT-EXT.
            EXIT.
+      *
+      *TEST 
+      *TEST 
+      *****************************************************************
+      *    ＳＰＡデータＷＲＩＴＥ処理
+      *****************************************************************
+       1003-K02SPA-OUT-TST-SEC             SECTION.
+      *
+           INITIALIZE                      PARAS-REC
+           MOVE    SPA-HOSPNUM         TO  PARAS-HOSPNUM
+           MOVE    "K02"               TO  PARAS-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARAS-TERMID
+           MOVE    "SPAGMN"            TO  PARAS-FILEMEI
+           MOVE    PARAS-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           INITIALIZE                      PARAS-REC
+           MOVE    SPA-HOSPNUM         TO  PARAS-HOSPNUM
+           MOVE    "K02"               TO  PARAS-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARAS-TERMID
+           MOVE    "SPAGMN"            TO  PARAS-FILEMEI
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )
+               IF      (SPA-COM-INPUTCD(IDX)   =   SPACE ) AND
+                       (SPA-GMN-INPUTCD(IDX)   =   SPACE )
+               AND     (IDX           >   SPA-GMN-MAX  )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-TBL (IDX)   TO  PARAS-DATA-REC
+                   MOVE    IDX                 TO  PARAS-EDANUM
+                   MOVE    PARAS-REC           TO  MCPDATA-REC
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   MOVE    "tbl_para"          TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "K02 PARA INSERT ERR:"  MCP-RC
+                           ",KEY2:" PARA-KEY
+                           ",EDANUM:" PARA-EDANUM
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       1003-K02SPA-OUT-TST-EXT.
+           EXIT.
+      *
+      *TEST
       *
       *****************************************************************
       *    初期画面処理
@@ -2079,6 +2241,7 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
+      *
       *    メモ登録有無
            PERFORM 41021-PTMEMOINF-SEC
       *    排他制御処理
@@ -2583,6 +2746,14 @@
                    MOVE    SPA-K98-SRYCD(IDX-K98)
                                            TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
+      *!!!!!!!!
+      *            挿入行へ移動
+                   IF     SPA-GMN-INPUTCD (SPA-GMN-IDX + 1)
+                                               NOT =   SPACE
+                       MOVE    "1"             TO  SPA-COM-IN4
+                                                           (SPA-GMN-IDX)
+                   END-IF
+      *!!!!!!!!
                ELSE
                    ADD     1               TO  SPA-GMN-IDX
                    PERFORM 41014-GYOINSN-SEC
@@ -2590,6 +2761,14 @@
                        MOVE    SPA-K98-SRYCD(IDX-K98)
                                                TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
+      *!!!!!!!!
+      *            挿入行へ移動
+                       IF     SPA-GMN-INPUTCD (SPA-GMN-IDX + 1)
+                                               NOT =   SPACE
+                           MOVE    "1"             TO  SPA-COM-IN4
+                                                           (SPA-GMN-IDX)
+                       END-IF
+      *!!!!!!!!
                    END-IF
                END-IF
       *
@@ -3437,6 +3616,10 @@
                                        SPA-SCR-REC
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
+           IF      SPA-KIDCD       NOT =   SPACE
+              GO     TO    300110-SAISINSET-EXT
+           END-IF
       *
       *    診療行為、計計算処理、編集
            MOVE    SPACE           TO  FLG-TOROKU
@@ -6341,6 +6524,52 @@
                MOVE    ZERO                TO  FLG-FUKU
                PERFORM 410112-KOUI-SPACHK-SEC
            END-IF
+      *!!!!!!!!!!!!!!!!!!
+      *!!!!!!!!!!!!!!!!!!
+      *!!連続挿入　ver.4.8は新しいSPAを追加。SPA-SYOKI-XXX は流用）
+           IF     (SPA-ERRCD           =   SPACE )
+            AND   (SPA-KIDCD           =   SPACE )
+            AND   (FLG-END             =   ZERO  )
+            AND   (FLG-INPUT-NASI2     =   1     )
+               IF     (SPA-SYOKAI-YMD(1:3)     =   "INS" )
+                   IF    (SPA-SYOKAI-SRYCD     =   SPA-COM-INPUTCD
+                                                   (SPA-SYOKAI-IDX))
+                      OR (SPA-SYOKAI-SRYCD     =   SPA-GMN-INPUTCD
+                                             (SPA-SYOKAI-IDX)(1:9))
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO            TO  SPA-SYOKAI-IDX
+                       MOVE    SPACE           TO  SPA-SYOKAI-SRYCD
+                       MOVE    SPACE           TO  SPA-SYOKAI-YMD
+                   END-IF
+               END-IF
+               IF     (SPA-SYOKAI-YMD(1:3)     =   "INS" )
+                   MOVE    SPA-SYOKAI-IDX      TO  SPA-GMN-IDX
+                   MOVE    1                   TO  WRK-INSCNT
+                   PERFORM 41014-GYOINSN-SEC
+                   MOVE    ZERO                TO  SPA-SYOKAI-IDX
+                   MOVE    SPACE               TO  SPA-SYOKAI-SRYCD
+                   MOVE    SPACE               TO  SPA-SYOKAI-YMD
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "INS"           TO  SPA-SYOKAI-YMD
+                       MOVE    "3"             TO  SPA-COM-CUR
+                                                       (SPA-GMN-IDX)
+                       ADD     1               TO  SPA-GMN-IDX
+                       MOVE    SPA-GMN-IDX     TO  SPA-SYOKAI-IDX
+                       MOVE    1               TO  FLG-INS
+                       IF      SPA-COM-INPUTCD (SPA-GMN-IDX)
+                                               =   SPACE
+                           MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                                         (1:9)
+                                               TO  SPA-SYOKAI-SRYCD
+                       ELSE
+                           MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)
+                                               TO  SPA-SYOKAI-SRYCD
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *!!!!!!!!!!!!!!!!!!
       *
            .
        41011-KOUI-ALLHEN-EXT.
@@ -6363,6 +6592,9 @@
            MOVE    SPA-SCR-REC         TO  MAE-SCR-REC
       *
            MOVE    1                   TO  FLG-INPUT-NASI
+      *!!!!!!!!!!!!!!!!!!
+           MOVE    1                   TO  FLG-INPUT-NASI2
+      *!!!!!!!!!!!!!!!!!!
       *    カーソル位置のクリア等
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-MAX-LINE
@@ -6390,7 +6622,7 @@
                PERFORM 41011-GYOU-SET-SEC
                IF     (K02-INPUTCD (WRK-IDX2)  NOT =
                                        SPA-GMN-INPUTCD (SPA-GMN-IDX)) OR
-                      (K02-MEISYO  (WRK-IDX2)   NOT =
+                      (K02-MEISYO  (WRK-IDX2)  NOT =
                                        SPA-GMN-MEISYO-G (SPA-GMN-IDX))
                    MOVE    "1"                 TO  SPA-COM-IN2
                                                            (SPA-GMN-IDX)
@@ -6399,6 +6631,9 @@
       *************MOVE    "1"                 TO  SPA-COM-IN
       ************                                        (SPA-GMN-IDX)
                    MOVE    ZERO                TO  FLG-INPUT-NASI
+      *!!!!!!!!!!!!!!!!!!
+           MOVE    ZERO                TO  FLG-INPUT-NASI2
+      *!!!!!!!!!!!!!!!!!!
                END-IF
       *ver.4.7
       *        今回変更位置
@@ -6781,11 +7016,41 @@
                                        TO  WRK-HEN-INPUTCD
                MOVE    WRK-HEN-INPUTCD
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+      *
+      *!!!!!!!!!!!!!!!!!!
+               MOVE    SPACE           TO  SPA-COM-IN4 (SPA-GMN-IDX)
+      *        挿入行数
+               MOVE    LNK-SC97-INSCNT TO  WRK-INSCNT
+      *        MOVE    1               TO  WRK-INSCNT
+      *!!!!!!!!!!!!!!!!!!!
                PERFORM 41014-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
                    MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                    ADD     1               TO  SPA-GMN-IDX
                    MOVE    1               TO  FLG-INS
+      *!!!!!!!!!!!!!!!!!!
+      *            連続挿入
+      *               (SPA-SYOKAIXXXX　は流用　4.8　ではSPAを追加）
+                   IF     (SPA-SYOKAI-IDX      =   ZERO )
+                   AND    (LNK-SC97-INSREN     =   1    )
+                       MOVE    "INS"           TO  SPA-SYOKAI-YMD
+                       MOVE    SPA-GMN-IDX     TO  SPA-SYOKAI-IDX
+                       IF      SPA-COM-INPUTCD (SPA-GMN-IDX)
+                                               =   SPACE
+                           MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                                         (1:9)
+                                               TO  SPA-SYOKAI-SRYCD
+                       ELSE
+                           MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)
+                                               TO  SPA-SYOKAI-SRYCD
+                       END-IF
+                       IF      SPA-SYOKAI-SRYCD    =   SPACE
+                           MOVE    SPACE       TO  SPA-SYOKAI-YMD
+                           MOVE    ZERO        TO  SPA-SYOKAI-IDX
+                       END-IF
+                   END-IF
+      *!!!!!!!!!!!!!!!!!!
+      *
                END-IF
                GO  TO                  41011-KOUI-HEN2-EXT
            END-IF
@@ -6950,8 +7215,10 @@
       *    診療種別入力
            IF      (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)  =   ".") AND
                    (SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:3)  NUMERIC)
+               MOVE    SPA-COM-IN4    (SPA-GMN-IDX)    TO  WRK-FLG-IN4
                INITIALIZE                  SPA-GMN-TBLREC (SPA-GMN-IDX)
                INITIALIZE                  SPA-COM-TBLREC (SPA-GMN-IDX)
+               MOVE    WRK-FLG-IN4     TO  SPA-COM-IN4 (SPA-GMN-IDX)
                MOVE    LNK-SC97-INPUTCD(1:4)   TO  SPA-GMN-INPUTCD
                                                           (SPA-GMN-IDX)
                MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:3)
@@ -7042,12 +7309,14 @@
       *    保険の有無
            MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:4)
                                        TO  WRK-HKNCOMBI
+           MOVE    SPA-COM-IN4    (SPA-GMN-IDX)    TO  WRK-FLG-IN4
            INITIALIZE                  SPA-GMN-TBLREC (SPA-GMN-IDX)
            INITIALIZE                  SPA-COM-TBLREC (SPA-GMN-IDX)
            MOVE    "#"                 TO  SPA-GMN-INPUTCD
                                                   (SPA-GMN-IDX)(1:1)
            MOVE    WRK-HKNCOMBI        TO  SPA-GMN-INPUTCD
                                                   (SPA-GMN-IDX)(2:4)
+           MOVE    WRK-FLG-IN4         TO  SPA-COM-IN4 (SPA-GMN-IDX)
       *    包括分入力、労災・自賠責はエラー
       *    Ｈ１８．４から包括保険可能
            IF     (SPA-HKNCOMBINUM     =   "9999")  OR
@@ -7222,6 +7491,7 @@
       *    診療科、ドクター入力処理
       *****************************************************************
        410114-GMN-SRYKA-SEC       SECTION.
+      *
       *    継続
            IF     (SPA-CONTKBN         =   SPACE )  AND
                   (SPA-FUKU-SYORI      =   SPACE )
@@ -8343,7 +8613,7 @@
                GO      TO      4101191-INPUTSET-SYORI-EXT
            END-IF
       *    入力位置クリア
-           MOVE    SPACE               TO  SPA-COM-IN4 (SPA-GMN-IDX)
+      *?   MOVE    SPACE               TO  SPA-COM-IN4 (SPA-GMN-IDX)
       *
            INITIALIZE                  ORCSCSETHENAREA
            MOVE    "K02"               TO  ORCSCSETHEN-PG
@@ -8688,6 +8958,13 @@
                    UNTIL       IDX     >   SPA-MAX-LINE
                IF      IDX             =   SPA-GMN-IDX
                    CONTINUE
+      *!!!!!!!!!!!!!!!!!!
+      *            複数行挿入
+                   IF     WRK-INSCNT   >   1
+                       COMPUTE IDX         =    IDX
+                                           +   (WRK-INSCNT  -  1)
+                   END-IF
+      *!!!!!!!!!!!!!!!!!!
                ELSE
                    ADD     1               TO  IDY
                    MOVE    WRK-COM-TBLREC (IDY) 
@@ -8878,6 +9155,15 @@
                           (WRK-GMN-SRYKBN (IDX + 1)    NOT =   SPACE))
                        MOVE    ZERO            TO  FLG-ZAIEND
                    END-IF
+      *!!!!!!!!!!!!!!!!!!
+      *連続挿入解除
+                   IF     (IDX                 =  SPA-SYOKAI-IDX )
+                      OR  (WRK-COM-IN (IDX)    =   "1"   )
+                       MOVE    SPACE           TO  SPA-SYOKAI-SRYCD
+                       MOVE    SPACE           TO  SPA-SYOKAI-YMD
+                       MOVE    ZERO            TO  SPA-SYOKAI-IDX
+                   END-IF
+      *!!!!!!!!!!!!!!!!!!
                ELSE
                    IF      FLG-ZAIEND          =   1
                        IF      WRK-COM-AUTOKBN(IDX)    NOT =   SPACE
@@ -9428,6 +9714,20 @@
                                        ORCSFDELAREA
       *
            MOVE    1                   TO  FLG-END2
+      *
+      *TEST
+           INITIALIZE                      PARAS-REC
+           MOVE    SPA-HOSPNUM         TO  PARAS-HOSPNUM
+           MOVE    "K02"               TO  PARAS-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARAS-TERMID
+           MOVE    PARAS-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
       *
            .
        210-PARA-DEL-EXT.
@@ -11501,7 +11801,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
-      *!!!!!!
       *    再度、排他のチェック
            IF      SPA-LOCK            =   ZERO
                MOVE    1                   TO  SLOCK-MODE
@@ -11517,7 +11816,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO      TO      41002-KOUSIN-SYORI-EXT
                END-IF
            END-IF
-      *!!!!!!
       *
            MOVE    "K08"               TO  SPA-NAI-SAKIPG
            MOVE    SPA-NAI-SAKIPG      TO  SPA-SAKIPG
@@ -12184,6 +12482,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-MAP-CUR4
            MOVE    ZERO                TO  FLG-MAP-CUR4
       *ver.4.7
+      *!!!!!!!!!!!!!!!
+      *    訂正展開　設定によって最終行へ
+      *    IF     (SPA-GMN-CUR         =   98  )
+      *       AND (SPA-MAE-CHK (1)     =   1   )
+      *        MOVE    99              TO  SPA-GMN-CUR
+      *    END-IF
+      *!!!!!!!!!!!!!!!
       *訂正展開時、１行目にカーソル移動
            IF      SPA-GMN-CUR         =   98
                MOVE    "1"             TO  SPA-COM-CUR (1)
@@ -12238,6 +12543,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    WRK-PAGE        TO  WRK-MAP-PAGE3
                        END-IF
       *ver.4.7
+      *!!!!!!!!!!!!!!!
+      *        設定によって最終
+      *                IF    (SPA-MAE-CHK (1)     =   ZERO )
+      *!!!!!!!!!!!!!!!
       *                今回入力位置
                        IF     (SPA-COM-IN4 (WRK-IDX)   =   "1" )
                            MOVE    IDX             TO  WRK-MAP-CUR4
@@ -12247,6 +12556,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    IDX             TO  WRK-MAP-CUR4
                            MOVE    2               TO  FLG-MAP-CUR4
                        END-IF
+      *!!!!!!!!!!!!!!!
+      *                END-IF
+      *!!!!!!!!!!!!!!!
       *
                        END-IF
                    END-IF
@@ -12476,6 +12788,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    CL-RED        TO
                                        K02-MEISYO-FGCOLOR (IDX)
                    END-IF
+      *!!!!!!!!!!!!!!!!!!!!
+      * 変更行を緑へ
+                   IF     (SPA-COM-IN4 (WRK-IDX)   =   "1" )
+                      OR  (SPA-COM-IN4 (WRK-IDX)   =   "2" )
+                       MOVE    CL-GREEN      TO
+                                       K02-MEISYO-FGCOLOR (IDX)
+                       MOVE    CL-GREEN      TO
+                                       K02-SURYO-FGCOLOR (IDX)
+                   END-IF
+      *!!!!!!!!!!!!!!!!!!!!
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"
                         MOVE    ALL "#"             TO  K02-SRYKBN(IDX)
@@ -13986,6 +14308,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
            .
        32012-SRYACCTPLUS-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARAS-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARAS-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
            EXIT.
       *
       *****************************************************************
