@@ -163,6 +163,8 @@
       *                                     ¼«Èñ¥ì¥»¥×¥ÈÂÐ¾Ý¤ÎÍ­ÌµÀßÄê
       *  04.07.12    NACL-Æ£¸¶    13/06/26  Æþ±¡ÎÁÂ¾ÊÝ¸±»»Äê»þ¥³¥á¥ó¥Èµ­ºÜ
       *                                     ÂÐ±þ
+      *  04.07.13    NACL-Æ£¸¶    13/12/04  ¼«ÇåÀÕ¡ÊÏ«ºÒ½àµò¡Ë¤Î¥ì¥»¥×¥È
+      *                                     ÍÍ¼°ÄÉ²ÃÂÐ±þ
       *
       *  04.08.01    NACL-Æ£¸¶    12/01/08  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­
       *                                     ºÜÂÐ±þ
@@ -1532,7 +1534,7 @@
                                               PIC X(20).
                    07  SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX PIC 9(02).   
       * 
-                   07  SPA-GMN-JIBAIPRTKBNLST  OCCURS  2.
+                   07  SPA-GMN-JIBAIPRTKBNLST  OCCURS  5.
                        09  SPA-GMN-JIBAIPRTKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
@@ -1541,7 +1543,7 @@
                    07  SPA-GMN-JIBAIPRTKBN-MAX
                                               PIC 9(02).   
       * 
-                   07  SPA-GMN-JIBAIPRTKBN-NLST  OCCURS  2.
+                   07  SPA-GMN-JIBAIPRTKBN-NLST  OCCURS  5.
                        09  SPA-GMN-JIBAIPRTKBN-NL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
@@ -1587,6 +1589,7 @@
            03  FLG-IN-SELNUM       PIC 9(01).
            03  FLG-HKNJANUMLIST-ROW
                                    PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    Åº»úÎÎ°è
       *
@@ -2842,7 +2845,10 @@
            MOVE    "1"             TO  SPA-GMN-JIBAIPRTKBNL    (2)
            MOVE    "Ê¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°"
                                    TO  SPA-GMN-JIBAIPRTKBNMEIL (2)
-           MOVE    2               TO  SPA-GMN-JIBAIPRTKBN-MAX 
+           MOVE    "2"             TO  SPA-GMN-JIBAIPRTKBNL    (3)
+           MOVE    "£Ï£Ã£ÒÍÍ¼°"
+                                   TO  SPA-GMN-JIBAIPRTKBNMEIL (3)
+           MOVE    3               TO  SPA-GMN-JIBAIPRTKBN-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAIPRTKBN-NL      (1)
            MOVE    "µìÍÍ¼°"
@@ -2850,7 +2856,10 @@
            MOVE    "1"             TO  SPA-GMN-JIBAIPRTKBN-NL      (2)
            MOVE    "Ê¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°"
                                    TO  SPA-GMN-JIBAIPRTKBN-NMEIL   (2)
-           MOVE    2               TO  SPA-GMN-JIBAIPRTKBN-N-MAX 
+           MOVE    "2"             TO  SPA-GMN-JIBAIPRTKBN-NL      (3)
+           MOVE    "£Ï£Ã£ÒÍÍ¼°"
+                                   TO  SPA-GMN-JIBAIPRTKBN-NMEIL   (3)
+           MOVE    3               TO  SPA-GMN-JIBAIPRTKBN-N-MAX 
       *
       *       °åÎÅµ¡´Ø¾ðÊó
            MOVE    SPACE               TO  SYS-1001-REC
@@ -7940,7 +7949,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4164-FRAME-ROUPRTKBN-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-FRAME-ROUPRTKBN   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-FRAME-ROUPRTKBN-G   =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -7951,10 +7962,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-FRAME-ROUPRTKBN-G
                        MOVE    SPA-GMN-FRAME-ROUPRTKBN-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-FRAME-ROUPRTKBNMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    212                 TO  SPA-GMN-CUR
                    MOVE    "0055"              TO  SPA-ERRCD
                END-IF
@@ -7969,7 +7981,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4165-FRAME-ROUPRTKBN-N-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-FRAME-ROUPRTKBN-N   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-FRAME-ROUPRTKBN-N-G =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -7980,10 +7994,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-FRAME-ROUPRTKBN-N-G
                        MOVE    SPA-GMN-FRAME-ROUPRTKBN-N-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-FRAME-ROUPRTKBN-NMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    213                 TO  SPA-GMN-CUR
                    MOVE    "0056"              TO  SPA-ERRCD
                END-IF
@@ -7998,7 +8013,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4166-COMMENT-ROU-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-COMMENT-ROU   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-COMMENT-ROU-G   =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8009,10 +8026,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-COMMENT-ROU-G
                        MOVE    SPA-GMN-COMMENT-ROU-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-COMMENT-ROUMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    214                 TO  SPA-GMN-CUR
                    MOVE    "0057"              TO  SPA-ERRCD
                END-IF
@@ -8027,7 +8045,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4182-ROUPRTKBN-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-ROUPRTKBN   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-ROUPRTKBN-G =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8038,10 +8058,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-ROUPRTKBN-G
                        MOVE    SPA-GMN-ROUPRTKBN-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-ROUPRTKBNMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    215                 TO  SPA-GMN-CUR
                    MOVE    "0068"              TO  SPA-ERRCD
                END-IF
@@ -8056,7 +8077,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4183-ROUPRTKBN-N-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-ROUPRTKBN-N   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-ROUPRTKBN-N-G =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8067,10 +8090,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-ROUPRTKBN-N-G
                        MOVE    SPA-GMN-ROUPRTKBN-N-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-ROUPRTKBN-NMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    216                   TO  SPA-GMN-CUR
                    MOVE    "0069"                TO  SPA-ERRCD
                END-IF
@@ -8085,7 +8109,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4146-FRAME-JIBAIPRTKBN-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-FRAME-JIBAIPRTKBN   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-FRAME-JIBAIPRTKBN-G =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8096,10 +8122,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-FRAME-JIBAIPRTKBN-G
                        MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-FRAME-JIBAIPRTKBNMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    200                 TO  SPA-GMN-CUR
                    MOVE    "0037"              TO  SPA-ERRCD
                END-IF
@@ -8114,7 +8141,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4147-FRAME-JIBAIPRTKBN-N-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-FRAME-JIBAIPRTKBN-N   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-FRAME-JIBAIPRTKBN-N-G =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8125,10 +8154,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-G
                        MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-FRAME-JIBAIPRTKBN-NMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    201                 TO  SPA-GMN-CUR
                    MOVE    "0038"              TO  SPA-ERRCD
                END-IF
@@ -8143,7 +8173,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4153-JIBAIPRTKBN-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-JIBAIPRTKBN   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-JIBAIPRTKBN-G   =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8154,10 +8186,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-JIBAIPRTKBN-G
                        MOVE    SPA-GMN-JIBAIPRTKBN-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-JIBAIPRTKBNMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    210                 TO  SPA-GMN-CUR
                    MOVE    "0044"              TO  SPA-ERRCD
                END-IF
@@ -8172,7 +8205,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4154-JIBAIPRTKBN-N-CHK-SEC  SECTION.
       *
-           IF      SPA-GMN-JIBAIPRTKBN-N   =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-JIBAIPRTKBN-N-G =   SPACE
                CONTINUE         
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8183,10 +8218,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-JIBAIPRTKBN-N-G
                        MOVE    SPA-GMN-JIBAIPRTKBN-N-MAX
                                        TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-JIBAIPRTKBN-NMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    211                 TO  SPA-GMN-CUR
                    MOVE    "0045"              TO  SPA-ERRCD
                END-IF
@@ -8201,7 +8237,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4148-SYUKA-SYAHO-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SYUKA-SYAHO =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-SYUKA-SYAHO-G   =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8212,10 +8250,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  SPA-GMN-SYUKA-SYAHO-G
                        MOVE    SPA-GMN-SYUKA-SYAHO-MAX
                                            TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SYUKA-SYAHOMEI =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    95                      TO  SPA-GMN-CUR
                    MOVE    "0039"                  TO  SPA-ERRCD
                END-IF
@@ -8229,7 +8268,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4149-SYUKA-KOKUHO-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SYUKA-KOKUHO    =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-SYUKA-KOKUHO-G  =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8240,10 +8281,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  SPA-GMN-SYUKA-KOKUHO-G
                        MOVE    SPA-GMN-SYUKA-KOKUHO-MAX
                                            TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SYUKA-KOKUHOMEI =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    96                      TO  SPA-GMN-CUR
                    MOVE    "0040"                  TO  SPA-ERRCD
                END-IF
@@ -8257,7 +8299,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4150-SYUKA-KOUIKI-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SYUKA-KOUIKI    =   SPACE
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           IF      SPA-GMN-SYUKA-KOUIKI-G  =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -8268,10 +8312,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  SPA-GMN-SYUKA-KOUIKI-G
                        MOVE    SPA-GMN-SYUKA-KOUIKI-MAX
                                            TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SYUKA-KOUIKIMEI =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    97                      TO  SPA-GMN-CUR
                    MOVE    "0050"                  TO  SPA-ERRCD
                END-IF
@@ -8285,6 +8330,8 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4146-KOUIKIPRTKBN-CHK-SEC       SECTION.
       *
+           MOVE    ZERO            TO  FLG-CHK
+      *
            IF      SPA-GMN-KOUIKIPRTKBN   =   SPACE
                CONTINUE
            ELSE
@@ -8296,10 +8343,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  SPA-GMN-KOUIKIPRTKBN-G
                        MOVE    SPA-GMN-KOUIKIPRTKBN-MAX
                                            TO  IDY
+                       MOVE    1       TO  FLG-CHK
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-KOUIKIPRTKBNMEI    =   SPACE
+               IF      FLG-CHK             =   ZERO
                    MOVE    151                     TO  SPA-GMN-CUR
                    MOVE    "0051"                  TO  SPA-ERRCD
                END-IF

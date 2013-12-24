@@ -357,14 +357,14 @@ W12	{
 						value	varchar(24);
 					};
 					count	int;
-					item	varchar(24)[2];
+					item	varchar(24)[5];
 				};
 				JIBAIPRTKBN_N_COMBO	{
 					JIBAIPRTKBN_N	{
 						value	varchar(24);
 					};
 					count	int;
-					item	varchar(24)[2];
+					item	varchar(24)[5];
 				};
 				ROUPRTNM	{
 					value	varchar(16);
