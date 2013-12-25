@@ -554,7 +554,7 @@
              IF      FLG-RECE47            =   1
                  WRITE   RECE47-REC
                  IF      STS-RECE47          =   "00"
-                     CONTINUE
+                     ADD     1             TO  CNT-RECE47
                  ELSE
                      MOVE    SPACE               TO  WRK-ERR-AREA
                      INITIALIZE                      WRK-ERR-AREA
