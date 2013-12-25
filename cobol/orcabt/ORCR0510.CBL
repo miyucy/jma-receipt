@@ -2098,17 +2098,6 @@
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       WRK-CONS-RECECOM-MAX
                            OR      WRK-COMMENT (IDX)   =   SPACE
-      *                Å¦Í×Íó¤Ë£±¹Ô¤¢¤±¤ë
-                       IF      WRK-RECECOM         =   ZERO
-                           MOVE    1               TO  WRK-RECECOM
-                           IF  WRK-LINETEK         >   ZERO
-                               IF      WRK-LINETEK >=  WRK-LINE-MAX
-                                   PERFORM 34120-PAGE-SEC
-                               ELSE
-                                   PERFORM 34110-KUGIRI-LINE-SEC
-                               END-IF
-                           END-IF    
-                       END-IF
       *
       *                ¾É¾õ¾Üµ­¶èÊ¬¤Î¸«½Ð¤·¤òµ­ºÜ
                        IF      FLG-RECECOM-SJKBN   =   1
@@ -2121,11 +2110,23 @@
                                        TO  HCM76-TEKIYO (WRK-LINETEK)
                                MOVE    "¡ö"
                                        TO  HCM76-MARK   (WRK-LINETEK)
+                               IF      WRK-R061-SRYKBN-O
+                                                   NOT =   "99"
+                                   MOVE    "99"    TO
+                                               HCM76-SRYKBN(WRK-LINETEK)
+                                   MOVE    "99"    TO  WRK-R061-SRYKBN-O
+                               END-IF
                            ELSE                
                                MOVE    WRK-RECECOM-NAME
                                        TO  HCM77-TEKIYO (WRK-LINETEK)
                                MOVE    "¡ö"
                                        TO  HCM77-MARK   (WRK-LINETEK)
+                               IF      WRK-R061-SRYKBN-O
+                                                   NOT =   "99"
+                                   MOVE    "99"    TO
+                                               HCM77-SRYKBN(WRK-LINETEK)
+                                   MOVE    "99"    TO  WRK-R061-SRYKBN-O
+                               END-IF
                            END-IF
                            IF      WRK-RECECOM-SJKBN   =   "51"
                                MOVE    TBL-RECECOM-NAME (2)
@@ -2163,6 +2164,12 @@
                        IF      CNT-PAGE    =   1
                            MOVE    WRK-COMMENT (IDX)
                                            TO  HCM76-TEKIYO(WRK-LINETEK)
+                           IF      WRK-R061-SRYKBN-O
+                                           NOT =   "99"
+                               MOVE    "99"    TO
+                                               HCM76-SRYKBN(WRK-LINETEK)
+                               MOVE    "99"    TO  WRK-R061-SRYKBN-O
+                           END-IF
                            IF      FLG-RECECOM-SJKBN
                                                =   9
                                MOVE    "¡ö"        TO
@@ -2175,6 +2182,12 @@
                        ELSE
                            MOVE    WRK-COMMENT (IDX)
                                            TO  HCM77-TEKIYO(WRK-LINETEK)
+                           IF      WRK-R061-SRYKBN-O
+                                           NOT =   "99"
+                               MOVE    "99"    TO
+                                               HCM77-SRYKBN(WRK-LINETEK)
+                               MOVE    "99"    TO  WRK-R061-SRYKBN-O
+                           END-IF
                            IF      FLG-RECECOM-SJKBN
                                                =   9
                                MOVE    "¡ö"        TO
