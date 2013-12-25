@@ -257,13 +257,13 @@
       *
            03  WRK-EDIT-AREA.
       *        編集傷病名文字数 
-               05  WRK-CLM                     PIC 9(03).
+               05  WRK-CLM                     PIC 9(04).
       *        ワーク編集傷病名文字数 
-               05  WRK-WCLM                    PIC 9(03).
+               05  WRK-WCLM                    PIC 9(04).
       *        病名文字数         
-               05  WRK-MOJISU                  PIC 9(03).
+               05  WRK-MOJISU                  PIC 9(04).
       *        編集開始位置         
-               05  WRK-STCLM                   PIC 9(03).
+               05  WRK-STCLM                   PIC 9(04).
       *        傷病名欄編集行         
                05  WRK-LINEBYO                 PIC 9(02).
       *        適用欄編集行（点数）               
@@ -1346,7 +1346,10 @@
            INITIALIZE                  HCM77
            MOVE    "JK22"              TO  HCM77-CYOHYONAME
            MOVE    "入院外"            TO  HCM77-NYUGAINAME
-      *      
+      *    診療年月
+           MOVE     WRK-STYMDW(1:1)    TO  HCM77-HAKKOUG
+           MOVE     WRK-STYMDW(2:2)    TO  HCM77-HAKKOUYY
+           MOVE     WRK-STYMDW(4:2)    TO  HCM77-HAKKOUMM 
       *    氏名
            STRING   RECE41-NAME    DELIMITED   BY  SPACE
                     "　　"         DELIMITED   BY  SIZE
@@ -1493,14 +1496,14 @@
            MOVE    WRK-ZZ              TO  HCM76-SHIDOKAISU
       *
       *    診断書料
-           MOVE    RECE41-SINDAN-TUU   TO  WRK-ZZZ
-           MOVE    WRK-ZZZ             TO  HCM76-SHINDANSYOSUU
+           MOVE    RECE41-SINDAN-TUU   TO  WRK-ZZ
+           MOVE    WRK-ZZ              TO  HCM76-SHINDANSYOSUU
       *    診断書金額
            MOVE    RECE41-SINDAN-KIN   TO  WRK-KINGAKUZ
            MOVE    WRK-KINGAKUZ        TO  HCM76-SHINDANSYOMONEY
       *    明細書料
-           MOVE    RECE41-MEISAI-TUU   TO  WRK-ZZZ
-           MOVE    WRK-ZZZ             TO  HCM76-MEISAISYOSUU
+           MOVE    RECE41-MEISAI-TUU   TO  WRK-ZZ
+           MOVE    WRK-ZZ              TO  HCM76-MEISAISYOSUU
       *    明細書金額
            MOVE    RECE41-MEISAI-KIN   TO  WRK-KINGAKUZ
            MOVE    WRK-KINGAKUZ        TO  HCM76-MEISAISYOMONEY
@@ -1569,9 +1572,7 @@
                WHEN    WRK-LINEBYO     <   WRK-BYOMEI-LINE
       *            傷病名欄に編集
                    IF      WRK-WCLM        >   WRK-BYOMEI1-MAX
-                       IF      WRK-BYOMEI1 NOT =  SPACE
-                           PERFORM 200232-BYOMEI1-OUT-SEC
-                       END-IF
+                       PERFORM 200232-BYOMEI1-OUT-SEC
                    ELSE
                        IF      WRK-CLM     >   ZERO
       *                    前の病名の直後に編集
@@ -2039,14 +2040,12 @@
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
-           MOVE    ZERO            TO  FLG-RECECOM-SJKBN
+      **** MOVE    ZERO            TO  FLG-RECECOM-SJKBN
       *
       *    症状詳記区分の見出しを記載
-           IF      RECECOM-SJKBN   =   "51"   OR  "52"
-               MOVE    RECECOM-SJKBN   TO  RECECOM-SJKBN
-           ELSE
-               MOVE    SPACE           TO  RECECOM-SJKBN
-           END-IF 
+           IF      RECECOM-SJKBN   =   "07"   OR  "08"    OR  "09"
+               MOVE    "07"            TO  RECECOM-SJKBN
+           END-IF
            IF      RECECOM-SJKBN   NOT =   WRK-RECECOM-SJKBN
                MOVE   RECECOM-SJKBN        TO  WRK-RECECOM-SJKBN
       *
@@ -2060,6 +2059,8 @@
                        MOVE    1               TO  FLG-RECECOM-SJKBN
                        MOVE    TBL-RECECOM-NAME (3)
                                                TO  WRK-RECECOM-NAME
+                   WHEN    OTHER
+                       MOVE    9               TO  FLG-RECECOM-SJKBN
                END-EVALUATE
            END-IF
       *
@@ -2118,9 +2119,13 @@
                            IF      CNT-PAGE        =   1   
                                MOVE    WRK-RECECOM-NAME
                                        TO  HCM76-TEKIYO (WRK-LINETEK)
+                               MOVE    "＊"
+                                       TO  HCM76-MARK   (WRK-LINETEK)
                            ELSE                
                                MOVE    WRK-RECECOM-NAME
                                        TO  HCM77-TEKIYO (WRK-LINETEK)
+                               MOVE    "＊"
+                                       TO  HCM77-MARK   (WRK-LINETEK)
                            END-IF
                            IF      WRK-RECECOM-SJKBN   =   "51"
                                MOVE    TBL-RECECOM-NAME (2)
@@ -2138,7 +2143,7 @@
                                END-IF
                            END-IF
       *
-                           MOVE    ZERO            TO  FLG-RECECOM-SJKBN
+                           MOVE    ZERO        TO  FLG-RECECOM-SJKBN
                        END-IF            
       *
                        MOVE    0               TO  FLG-NEXT
@@ -2150,8 +2155,7 @@
                            END-IF
                        END-IF
       *
-                       IF      WRK-LINETEK      >=
-                                                WRK-LINE-MAX
+                       IF      WRK-LINETEK >=  WRK-LINE-MAX
                            PERFORM 34120-PAGE-SEC
                        END-IF
                        ADD     1           TO  WRK-LINETEK
@@ -2159,6 +2163,11 @@
                        IF      CNT-PAGE    =   1
                            MOVE    WRK-COMMENT (IDX)
                                            TO  HCM76-TEKIYO(WRK-LINETEK)
+                           IF      FLG-RECECOM-SJKBN
+                                               =   9
+                               MOVE    "＊"        TO
+                                        HCM76-MARK(WRK-LINETEK)
+                           END-IF
                            IF      FLG-NEXT    =   1
                                MOVE    "＆"        TO
                                        HCM76-TEKIYO(WRK-LINETEK)(29:2)
@@ -2166,11 +2175,18 @@
                        ELSE
                            MOVE    WRK-COMMENT (IDX)
                                            TO  HCM77-TEKIYO(WRK-LINETEK)
+                           IF      FLG-RECECOM-SJKBN
+                                               =   9
+                               MOVE    "＊"        TO
+                                        HCM77-MARK(WRK-LINETEK)
+                           END-IF
                            IF      FLG-NEXT    =   1
                                MOVE    "＆"        TO
                                        HCM77-TEKIYO(WRK-LINETEK)(29:2)
                            END-IF
-                       END-IF                
+                       END-IF
+      *
+                       MOVE    ZERO            TO  FLG-RECECOM-SJKBN
                    END-PERFORM
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
