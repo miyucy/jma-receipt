@@ -2258,6 +2258,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                   WHEN     "1"
+                  WHEN     "2"
                     MOVE    "80" TO  WRK-SRYKBN
                  END-EVALUATE
                END-IF
@@ -2303,6 +2304,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                   WHEN     "1"
+                  WHEN     "2"
                     MOVE    "80" TO  WRK-SRYKBN
                  END-EVALUATE
                END-IF
@@ -2347,6 +2349,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                   WHEN     "1"
+                  WHEN     "2"
                     MOVE    "80" TO  WRK-SRYKBN
                  END-EVALUATE
                END-IF
@@ -2372,6 +2375,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                   WHEN     "1"
+                  WHEN     "2"
                     MOVE    "80" TO  WRK-SRYKBN
                  END-EVALUATE
                END-IF
@@ -2397,6 +2401,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                   WHEN     "1"
+                  WHEN     "2"
                     MOVE    "80" TO  WRK-SRYKBN
                  END-EVALUATE
                END-IF
@@ -2441,6 +2446,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                   WHEN     "1"
+                  WHEN     "2"
                     MOVE    "80" TO  WRK-SRYKBN
                  END-EVALUATE
                END-IF
@@ -2466,6 +2472,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                   WHEN     "1"
+                  WHEN     "2"
                     MOVE    "80" TO  WRK-SRYKBN
                  END-EVALUATE
                END-IF
