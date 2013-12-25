@@ -366,6 +366,20 @@ W12	{
 					count	int;
 					item	varchar(24)[5];
 				};
+				JIBAIPRTKBN1_COMBO	{
+					JIBAIPRTKBN1	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[5];
+				};
+				JIBAIPRTKBN1_N_COMBO	{
+					JIBAIPRTKBN1_N	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[5];
+				};
 				ROUPRTNM	{
 					value	varchar(16);
 				};
