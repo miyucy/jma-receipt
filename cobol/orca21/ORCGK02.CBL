@@ -1164,8 +1164,7 @@
            PERFORM 1001-SRYKBN-SET-SEC
       *
       *    ²èÌÌ£Ó£Ð£ÁÆÉ¤ß¹þ¤ß
-      *TES PERFORM 1002-K02SPA-SET-SEC
-           PERFORM 1002-K02SPA-SET-TST-SEC
+           PERFORM 1002-K02SPA-SET-SEC
       *    ²èÌÌÀ©¸æ
            MOVE    SPACE           TO  WRK-PUTTYPE
       *
@@ -1272,6 +1271,13 @@
       *    £Ó£Ð£Á¥Ç¡¼¥¿£Ò£Å£Á£Ä½èÍý
       *****************************************************************
        1002-K02SPA-SET-SEC             SECTION.
+      *
+      *TEST
+      *TEST
+           PERFORM 1002-K02SPA-SET-TST-SEC
+           GO      TO      1002-K02SPA-SET-EXT
+      *TEST
+      *TEST
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
