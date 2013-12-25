@@ -1345,6 +1345,10 @@
            INITIALIZE          SPA-SCR-REC
            MOVE    ZERO                TO  IDX
       *
+           IF     SPA-HOSPNUM  NOT NUMERIC
+               GO   TO  1002-K02SPA-SET-TST-EXT
+           END-IF  
+      *
       *    TBL_PARA を使用する
            INITIALIZE                      PARAS-REC
            MOVE    SPA-HOSPNUM         TO  PARAS-HOSPNUM
@@ -1375,6 +1379,11 @@
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+           IF      IDX                 =   ZERO
+               MOVE    ZERO                TO  SPA-GMN-MAX
+               GO      TO      1002-K02SPA-SET-TST-EXT
+           END-IF
       *
       *    行位置とカーソル位置の決定
            MOVE    1                   TO  WRK-PAGE
