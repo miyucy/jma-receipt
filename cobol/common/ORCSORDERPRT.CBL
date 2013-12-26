@@ -181,11 +181,14 @@
            COPY    "ORCA-SPA".
       *
       *    診療行為入力項目変換パラメタ（回数の設定に使用）
-           COPY    "CPORCSC97.INC".
+      *    COPY    "CPORCSC97.INC".
       *
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
-       01  SPA-SCR-REC.
-           COPY    "CPK02SPASCR.INC".
+      *01  SPA-SCR-REC.
+      *    COPY    "CPK02SPASCR.INC".
+      *H25.12 変更
+      *    一括日変換パラメタ
+           COPY    "CPORCSNDAYCHG.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -460,35 +463,46 @@
       *****************************************************************
        10021-KAISUU-SYORI-SEC              SECTION.
       *
-           INITIALIZE                  ORCSC97AREA
-           MOVE    SPACE               TO  SPA-SCR-REC
+      *    INITIALIZE                  ORCSC97AREA
+      *    MOVE    SPACE               TO  SPA-SCR-REC
       *    ＰＧ名
-           MOVE    "K02N"              TO  LNK-SC97-PG
+      *    MOVE    "K02N"              TO  LNK-SC97-PG
+      *    MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
+      *                                TO  LNK-SC97-INPUTCD
+      *    CALL    "ORCSC97"           USING
+      *                                SPA-AREA
+      *                                ORCSC97AREA
+      *                                SPA-SCR-REC
+      *
+           INITIALIZE                      ORCSNDAYCHGAREA
+           MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
            MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
-                                       TO  LNK-SC97-INPUTCD
-           CALL    "ORCSC97"           USING
+                                       TO  ORCSNDAYCHG-INPUTCD
+           MOVE    54                  TO  ORCSNDAYCHG-KETA
+           CALL    "ORCSNDAYCHG"       USING
                                        SPA-AREA
-                                       ORCSC97AREA
-                                       SPA-SCR-REC
+                                       ORCSNDAYCHGAREA
+           MOVE    ORCSNDAYCHG-ERRCD   TO  SPA-ERRCD
       *
       *    回数
-           IF      LNK-SC97-KAISU      =   ZERO
-               MOVE    1               TO  LNK-SC97-KAISU
+           IF      ORCSNDAYCHG-KAISU   =   ZERO
+               MOVE    1               TO  ORCSNDAYCHG-KAISU
            END-IF
       *    外用薬の時、回数は１回とする
            IF      LNK-WKSRY-SRYKBN (01)   =   "23"
-               MOVE    1               TO  LNK-SC97-KAISU
+               MOVE    1               TO  ORCSNDAYCHG-KAISU
            END-IF
+      *
            MOVE    ZERO                TO  IDX-KAI1
            MOVE    ZERO                TO  IDX-KAI2
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >   10   )  OR
                               (IDX-KAI1    >   ZERO )
-               IF      TBL-KAISU (IDX2)     =   ZERO
-                   MOVE    IDX2            TO  IDX-KAI1
-                   MOVE    LNK-SC97-KAISU  TO  TBL-KAISU (IDX-KAI1)
+               IF      TBL-KAISU (IDX2)    =   ZERO
+                   MOVE    IDX2                TO  IDX-KAI1
+                   MOVE    ORCSNDAYCHG-KAISU   TO  TBL-KAISU (IDX-KAI1)
                ELSE
-                   IF       LNK-SC97-KAISU     =   TBL-KAISU (IDX2)
+                   IF       ORCSNDAYCHG-KAISU  =   TBL-KAISU (IDX2)
                        MOVE    IDX2            TO  IDX-KAI1
                    END-IF
                END-IF
@@ -498,7 +512,7 @@
            MOVE    ZERO                TO  FLG-DAY
            PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
                    UNTIL       IDX-KAI2    >   31
-               IF      LNK-SC97-NYU-DAY (IDX-KAI2) NOT =   ZERO
+               IF      ORCSNDAYCHG-NYU-DAY (IDX-KAI2) NOT =   ZERO
                    MOVE    1               TO  TBL-DAY
                                                    (IDX-KAI1 IDX-KAI2)
                    MOVE    1               TO  FLG-DAY
