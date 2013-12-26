@@ -214,7 +214,7 @@
            COPY    "CPORCSC96.INC".
       *
       *    診療行為入力項目変換パラメタ
-           COPY    "CPORCSC97.INC".
+      *****COPY    "CPORCSC97.INC".
       *
       *    投与量等チェックパラメタ
            COPY    "CPORCSC98.INC".
