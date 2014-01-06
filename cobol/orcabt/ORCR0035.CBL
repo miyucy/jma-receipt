@@ -56,13 +56,6 @@
       *  04.06.01    NACL-門脇    10/10/14  編集条件判定修正
       *
       *  04.07.01    NACL-門脇    13/09/04  自賠責（第三者行為）対応
-      *  04.07.02    NACL-門脇    14/01/08  請求点数がない保険組み合わせが有る
-      *                                     場合の公費分離区分編集対応
-      *  04.07.03    NACL-門脇    15/03/17  請求点数０点公費レセ記載対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    16/02/08  RECE02の予備項目使用分について、
-      *                                     個々に項目を設ける事に伴う修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -112,22 +105,21 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE01PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE01//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE04PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE04//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE05PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE05//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -219,8 +211,6 @@ grpsys     COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -270,32 +260,17 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE040"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    "RECE050"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE04PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE05PARA
+           MOVE    "RECE020"           TO  RECE01PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
-      **   MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE04PARA-HOSPNUM
+      *
+           MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE05PARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -351,46 +326,43 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            INITIALIZE                  WRK-HIKAKU-TABLE
            MOVE       SPACE     TO     WRK-3SYU-KBN
       *
-           IF   (RECE02-KOHNUM(1)    =     SPACE)
-           AND  (RECE02-KOHNUM(2)    =     SPACE)
-           AND  (RECE02-KOHNUM(3)    =     SPACE)
-           AND  (RECE02-KOHNUM(4)    =     SPACE)
+           IF (RECE02-HENTOTALTEN(2)       =      ZERO)    AND
+              (RECE02-HENTOTALTEN(3)       =      ZERO)    AND
+              (RECE02-HENTOTALTEN(4)       =      ZERO)    AND
+              (RECE02-HENTOTALTEN(5)       =      ZERO)    AND
+              (RECE02-TENKEN-FLG           =     SPACE)
                CONTINUE
            ELSE
-             IF     RECE02-HKNNUM         NOT = SPACE
-               IF ((RECE02-KOHNUM(1)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1)
-                                      NOT = RECE02-HENTOTALTEN(2)))
-               OR ((RECE02-KOHNUM(1)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1) = RECE02-HENTOTALTEN(2)) AND
-                   (RECE02-SKYTENFLG      =  1                   ))
+             IF     RECE02-HENTOTALTEN(1) NOT = ZERO
+               IF ((RECE02-HENTOTALTEN(2) NOT = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(2)))
+               OR ((RECE02-TENKEN-FLG         = "1" )    AND
+                   (RECE02-HENTOTALTEN(2)     = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(2)))
                    MOVE      1          TO     BUN-IDX
                    PERFORM   20011-RECE04-HENSYU-SEC
                END-IF
-               IF ((RECE02-KOHNUM(2)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1)
-                                      NOT = RECE02-HENTOTALTEN(3)))
-               OR ((RECE02-KOHNUM(2)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1) = RECE02-HENTOTALTEN(3)) AND
-                   (RECE02-SKYTENFLG      =  1                   ))
+               IF ((RECE02-HENTOTALTEN(3) NOT = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(3)))
+               OR ((RECE02-TENKEN-FLG         = "1" )    AND
+                   (RECE02-HENTOTALTEN(3)     = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(3)))
                    MOVE      2          TO     BUN-IDX
                    PERFORM   20011-RECE04-HENSYU-SEC
                END-IF
-               IF ((RECE02-KOHNUM(3)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1)
-                                      NOT = RECE02-HENTOTALTEN(4)))
-               OR ((RECE02-KOHNUM(3)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1) = RECE02-HENTOTALTEN(4)) AND
-                   (RECE02-SKYTENFLG      =  1                   ))
+               IF ((RECE02-HENTOTALTEN(4) NOT = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(4)))
+               OR ((RECE02-TENKEN-FLG         = "1" )    AND
+                   (RECE02-HENTOTALTEN(4)     = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(4)))
                    MOVE      3          TO     BUN-IDX
                    PERFORM   20011-RECE04-HENSYU-SEC
                END-IF
-               IF ((RECE02-KOHNUM(4)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1)
-                                      NOT = RECE02-HENTOTALTEN(5)))
-               OR ((RECE02-KOHNUM(4)  NOT = SPACE                ) AND
-                   (RECE02-HENTOTALTEN(1) = RECE02-HENTOTALTEN(5)) AND
-                   (RECE02-SKYTENFLG      =  1                   ))
+               IF ((RECE02-HENTOTALTEN(5) NOT = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(5)))
+               OR ((RECE02-TENKEN-FLG         = "1" )    AND
+                   (RECE02-HENTOTALTEN(5)     = ZERO)    AND
+                   (RECE02-HENTOTALTEN(1) NOT = RECE02-HENTOTALTEN(5)))
                    MOVE      4          TO     BUN-IDX
                    PERFORM   20011-RECE04-HENSYU-SEC
                END-IF
@@ -401,7 +373,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            IF     (FLG-KOHBUNRI-OKIKAE   =     1    )
            AND    (RECE02-SRYYM         >=  "200804")
-             IF    RECE02-HKNNUM     NOT =   SPACE
+             IF    RECE02-HENTOTALTEN(1)   NOT =  ZERO
                 DISPLAY   "< KOHBUNRI OKIKAE >"
                 PERFORM   20013-KOHBUNRI-OKIKAE-SEC
              END-IF
@@ -533,19 +505,26 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE       ZERO              TO   KH-IDX
            IF ((RECE02-KOHNUMHC(HC-IDX 1) = RECE02-KOHNUM(BUN-IDX)) AND
-               (RECE02-KOHIDHC(HC-IDX 1)  = RECE02-KOHID(BUN-IDX) ) AND
-               (RECE02-KOHNUM(BUN-IDX)    NOT = SPACE             ))
+               (RECE02-KOHIDHC(HC-IDX 1)  = RECE02-KOHID(BUN-IDX) ))
            OR ((RECE02-KOHNUMHC(HC-IDX 2) = RECE02-KOHNUM(BUN-IDX)) AND
-               (RECE02-KOHIDHC(HC-IDX 2)  = RECE02-KOHID(BUN-IDX) ) AND
-               (RECE02-KOHNUM(BUN-IDX)    NOT = SPACE             ))
+               (RECE02-KOHIDHC(HC-IDX 2)  = RECE02-KOHID(BUN-IDX) ))
            OR ((RECE02-KOHNUMHC(HC-IDX 3) = RECE02-KOHNUM(BUN-IDX)) AND
-               (RECE02-KOHIDHC(HC-IDX 3)  = RECE02-KOHID(BUN-IDX) ) AND
-               (RECE02-KOHNUM(BUN-IDX)    NOT = SPACE             ))
+               (RECE02-KOHIDHC(HC-IDX 3)  = RECE02-KOHID(BUN-IDX) ))
            OR ((RECE02-KOHNUMHC(HC-IDX 4) = RECE02-KOHNUM(BUN-IDX)) AND
-               (RECE02-KOHIDHC(HC-IDX 4)  = RECE02-KOHID(BUN-IDX) ) AND
-               (RECE02-KOHNUM(BUN-IDX)    NOT = SPACE             ))
+               (RECE02-KOHIDHC(HC-IDX 4)  = RECE02-KOHID(BUN-IDX) ))
                 MOVE    BUN-IDX     TO        KH-IDX
            END-IF
+      *
+      ***  IF   (RECE02-SEIHOFLG                     =  "1" )
+      ***  AND  (KH-IDX                          NOT =  ZERO)
+      ***  AND  (RECE02-HENTOTALTEN(1)           NOT =  ZERO)
+      ***  AND  (RECE02-HENTOTALTEN(KH-IDX + 1)  NOT =  ZERO)
+      ***  AND  (RECE02-HENTOTALTEN(1) <
+      ***                     RECE02-HENTOTALTEN(KH-IDX + 1))
+      ***     IF   RECE02-HKNNUMHC(HC-IDX)  NOT = SPACE
+      ***       MOVE    ZERO        TO        KH-IDX
+      ***     END-IF
+      ***  END-IF
       *
            IF    KH-IDX      NOT =   ZERO
                 IF  ( RECE04-KOHBUNRI  NOT =  ZERO )
@@ -881,7 +860,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                             -  1
                      MOVE     WRK-KOHBUNRI  TO   RECE04-KOHBUNRI
                      MOVE     1             TO   FLG-KOHBUNRI-OKIKAE2
-                     MOVE     1             TO   RECE02-KOHBUNRICHIKAN
+                     MOVE     1             TO   RECE02-YOBIETC(9)
                      MOVE     31            TO   IDX
                    END-IF
                END-PERFORM
@@ -1053,17 +1032,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCR0035 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
