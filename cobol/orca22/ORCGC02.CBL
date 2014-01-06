@@ -304,6 +304,8 @@
       *  04.07.10    NACL-藤原    13/10/11  更新時のopid 設定
       *  04.07.11    NACL-藤原    13/11/15  病名入力時のコード置換え画面
       *                                     の表示
+      *  04.07.12    NACL-藤原    13/12/26  病名入力時のコード置換え画面
+      *                                     の表示時の移行先のチェック
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
@@ -7688,6 +7690,14 @@ grpsys                                       SPA-AREA
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       LNK-BYOMEI-KENSAKU-MAX
                    IF      LNK-BYO-O-BYOMEIHENFLG(IDXX) =   SPACE
+                     IF    ( LNK-BYO-O-IKOSAKICD   (IDXX)
+                                             NOT =   SPACE           )
+                     AND   ( LNK-BYO-O-IKOSAKICD   (IDXX)
+                                                 =
+                                                 LNK-BYO-KHNBYOMEICD )
+      *                移行先病名が元の病名と同じ時は対象としない
+                       CONTINUE
+                     ELSE  
                        IF      LNK-BYO-O-IKOSAKICD   (IDXX)
                                                NOT =   SPACE
                            IF      SPA-C02-1042-MSG2-DSPKBN
@@ -7699,12 +7709,12 @@ grpsys                                       SPA-AREA
                        END-IF
                        IF      LNK-BYO-O-HAISIYMD-ERR(IDXX)
                                                NOT =   ZERO
-                           IF      SPA-C02-1042-MSG3-DSPKBN
-                                                   =   "0"
-                               MOVE    IDXX        TO  WRK-LNK-BYO-INDEX
-                               MOVE    LNK-BYOMEI-KENSAKU-MAX
-                                                   TO  IDXX
-                           END-IF
+      **************       IF      SPA-C02-1042-MSG3-DSPKBN
+      **************                               =   "0"
+      **************           MOVE    IDXX        TO  WRK-LNK-BYO-INDEX
+      **************           MOVE    LNK-BYOMEI-KENSAKU-MAX
+      **************                               TO  IDXX
+      **************       END-IF
                            IF      SPA-C02-1042-MSG2-DSPKBN
                                                    =   "0"
                                INITIALIZE          SYNONYM-REC
@@ -7719,6 +7729,7 @@ grpsys                                       SPA-AREA
                                END-IF
                            END-IF
                        END-IF     
+                     END-IF     
                    END-IF
                END-PERFORM
       *
