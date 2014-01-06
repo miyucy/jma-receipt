@@ -3369,7 +3369,7 @@
             <class>GtkLabel</class>
             <name>label5</name>
             <x>30</x>
-            <y>250</y>
+            <y>248</y>
             <width>140</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -3637,7 +3637,7 @@
             <class>GtkLabel</class>
             <name>label500</name>
             <x>30</x>
-            <y>337</y>
+            <y>340</y>
             <width>140</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -4075,9 +4075,9 @@
           <widget>
             <class>GtkLabel</class>
             <name>label25</name>
-            <x>57</x>
+            <x>60</x>
             <y>362</y>
-            <width>70</width>
+            <width>65</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -4093,9 +4093,9 @@
           <widget>
             <class>GtkLabel</class>
             <name>label26</name>
-            <x>57</x>
+            <x>60</x>
             <y>436</y>
-            <width>70</width>
+            <width>65</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
