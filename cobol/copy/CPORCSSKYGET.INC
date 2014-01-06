@@ -21,8 +21,6 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-門脇    13/10/15  自賠責（第三者行為）対応
-      *  04.08.01    NACL-門脇    16/09/28  自賠責（第三者行為）
-      *                                     保険別請求チェック表の機能追加
       ************************************************************
        01  ORCSSKYGETAREA.
       *
@@ -31,9 +29,6 @@
            03  LNK-SKYGET-KBN                           PIC X(01).
       *  診療年月
            03  LNK-SKYGET-SRYYM                         PIC 9(06).
-      *  パラメタ：（第三者行為）医療費一部負担額・食事標準負担額の集計先
-      *              ０：自賠責（第三者行為）、１：医保
-           03  LNK-SKYGET-PARA                          PIC X(01).
       *
       *返却値
            03  LNK-SKYGET-OUT-AREA.
@@ -85,10 +80,6 @@
                    07  LNK-SKYGET-KOHETC-KAISU          PIC 9(02).
                    07  LNK-SKYGET-KOHETC-RYOYOHI        PIC 9(09).
                    07  LNK-SKYGET-KOHETC-SHOKUJIFTN     PIC 9(09).
-      *
-      *  請求フラグ（レセプトと公費請求書の請求年月が異なる場合）
-      *  （０：同じ又は公費請求書なし　１：レセプトのみ　２：公費請求書のみ）
-               05  LNK-SKYGET-SEIKYUFLG                 PIC 9(01).
       *
       *返却値２
            03  LNK-SKYGET-OUT2-AREA.

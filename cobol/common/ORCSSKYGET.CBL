@@ -31,12 +31,6 @@
       *  04.07.01    NACL-ÃÁœ∆    12/10/12   ›∏± Ã¿¡µ·•¡•ß•√•Ø…Ω° …∏Ω‡ƒ¢…º°À
       *                                     §Œµ°«Ωƒ…≤√¬–±˛
       *  04.07.02    NACL-ÃÁœ∆    13/10/15  º´«Â¿’° ¬Ëª∞º‘π‘∞Ÿ°À¬–±˛
-      *  04.08.01    NACL-ÃÁœ∆    15/08/27  º´«Â¿’•Ï•ª•◊•»§Œ¿¡µ·∂‚≥€ÕÛ√ºøÙ
-      *                                     ΩËÕ˝¬–±˛
-      *  04.08.02    NACL-ÃÁœ∆    16/09/28  º´«Â¿’° ¬Ëª∞º‘π‘∞Ÿ°À
-      *                                      ›∏± Ã¿¡µ·•¡•ß•√•Ø…Ω§Œµ°«Ωƒ…≤√
-      *  04.08.03    NACL-ÃÁœ∆    17/03/17   ›∏± Ã¿¡µ·•¡•ß•√•Ø…Ω§Œµ°«Ωƒ…≤√
-      *                                     ° ∏¯»Ò¿¡µ·ΩÒ§À¥ÿ§Ô§Î¬–±˛°À
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -59,12 +53,6 @@
            03  FLG-JIHIRANSYUKEI         PIC 9(01).
            03  FLG-PTINF                 PIC 9(01).
            03  FLG-OK                    PIC 9(01).
-           03  FLG-TAISYO                PIC 9(01).
-           03  FLG-TAISYO2               PIC 9(01).
-           03  FLG-TAISYO3               PIC 9(01).
-           03  FLG-SEIKYU-HENSYU-NG      PIC 9(01).
-           03  FLG-KOHSKY-HENSYU-NG      PIC 9(01).
-           03  FLG-KOHSKY-NASHI          PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -86,19 +74,6 @@
              05  WRK-TAIHI-DAY           PIC 9(01)   OCCURS   31.
       *
            03  WRK-PTFTNRATE             PIC 9(03).
-      *
-           03  WRK-DAISAN-DATA.
-               05  WRK-DAISAN-FTNMONEY   PIC 9(09).
-           03  WRK-DAISAN-DATA2.
-               05  WRK-DAISAN-SKJFTN     PIC 9(06).
-      *
-           03  WRK-KOHSKY-DATA.
-               05  WRK-KOHSKY-KOHFTN     PIC 9(09).
-           03  WRK-KOHSKY-DATA2.
-               05  WRK-KOHSKY-SKJFTN     PIC 9(06).
-      *
-           03  WRK-SKYIRYO-KOHFTN-KOHSKY PIC 9(09).
-           03  WRK-SKYSKJ-KOHFTN-KOHSKY  PIC 9(06).
       *
       *    ∂¶ƒÃŒŒ∞Ë
            COPY    "MCPAREA".
@@ -181,8 +156,6 @@
              WHEN      "5"
       *      °„¬Ëª∞º‘π‘∞Ÿ§Œ¿¡µ·¥…Õ˝•«°º•ø√±∞Ã§Œ ‘Ω∏°‰
              WHEN      "6"
-      *      °„∆√ ÃŒ≈Õ‹»Ò§Œ¿¡µ·¥…Õ˝•«°º•ø√±∞Ã§Œ ‘Ω∏°‰
-             WHEN      "7"
                IF      LNK-SKYGET-SRYYM  <  201004
                       MOVE    1     TO   LNK-SKYGET-RC
                ELSE
@@ -220,13 +193,11 @@
                PERFORM    2002-HENSYU2-SEC
              WHEN      "3"
              WHEN      "4"
-               PERFORM    2003-HENSYU3-SEC
+               PERFORM    2001-HENSYU3-SEC
              WHEN      "5"
-               PERFORM    2005-HENSYU5-SEC
+               PERFORM    2001-HENSYU5-SEC
              WHEN      "6"
-               PERFORM    2006-HENSYU6-SEC
-             WHEN      "7"
-               PERFORM    2007-HENSYU7-SEC
+               PERFORM    2001-HENSYU6-SEC
            END-EVALUATE
       *
            .
@@ -234,244 +205,46 @@
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë ¨£±§Œ ‘Ω∏  °„∞Â ›°‰
+      *    ∂Ë ¨°…£±°…§Œ ‘Ω∏
       *****************************************************************
        2001-HENSYU1-SEC            SECTION.
       *
-           MOVE     ZERO         TO  FLG-TAISYO
-           MOVE     ZERO         TO  FLG-TAISYO2
-           MOVE     ZERO         TO  FLG-TAISYO3
-           MOVE     ZERO         TO  FLG-SEIKYU-HENSYU-NG
-           MOVE     ZERO         TO  FLG-KOHSKY-HENSYU-NG
-           MOVE     ZERO         TO  FLG-KOHSKY-NASHI
+           MOVE   RECE10-SKYIRYO-INF   TO   LNK-SKYGET-IRYO-INF
+           MOVE   RECE10-SKYSKJ-INF    TO   LNK-SKYGET-SKJ-INF
       *
-           MOVE     ZERO         TO  WRK-SKYIRYO-KOHFTN-KOHSKY
-           MOVE     ZERO         TO  WRK-SKYSKJ-KOHFTN-KOHSKY
-      *
-           IF       RECE10-SRYYM  =  LNK-SKYGET-SRYYM
-             IF     RECE10-SKYYM  =  "000000"
-             OR     RECE10-SKYYM  =  LNK-SKYGET-SRYYM
-                  MOVE   1       TO  FLG-TAISYO
-             END-IF
-           ELSE
-             IF     RECE10-SKYYM  =  LNK-SKYGET-SRYYM
-                  MOVE   1       TO  FLG-TAISYO
-             END-IF
-           END-IF
-           IF       FLG-TAISYO    =  ZERO
-                  MOVE   1       TO  FLG-SEIKYU-HENSYU-NG
-           END-IF
-      *
-           IF     RECE10-NYUGAIKBN  =  "1"
-               MOVE  RECE10-RESERVE-AREA(28:9)  TO  WRK-KOHSKY-DATA
-               IF    WRK-KOHSKY-DATA   IS  NUMERIC
-               AND   WRK-KOHSKY-KOHFTN    NOT = ZERO
-                 MOVE   WRK-KOHSKY-KOHFTN
-                               TO  WRK-SKYIRYO-KOHFTN-KOHSKY
-               END-IF
-               MOVE  RECE10-RESERVE-AREA(37:6)  TO  WRK-KOHSKY-DATA2
-               IF    WRK-KOHSKY-DATA2  IS  NUMERIC
-               AND   WRK-KOHSKY-SKJFTN    NOT = ZERO
-                 MOVE   WRK-KOHSKY-SKJFTN
-                               TO  WRK-SKYSKJ-KOHFTN-KOHSKY
-               END-IF
-           ELSE
-               MOVE  RECE10-RESERVE-AREA(22:9)  TO  WRK-KOHSKY-DATA
-               IF    WRK-KOHSKY-DATA   IS  NUMERIC
-               AND   WRK-KOHSKY-KOHFTN    NOT = ZERO
-                 MOVE   WRK-KOHSKY-KOHFTN
-                               TO  WRK-SKYIRYO-KOHFTN-KOHSKY
-               END-IF
-           END-IF
-      *
-           INITIALIZE                KOHSKY-REC
-           MOVE     RECE10-KEY   TO  KOHSKY-KEY
-           PERFORM  900-KOHSKY-READ-SEC
-           IF       FLG-KOHSKY  =  ZERO
-             IF     KOHSKY-SRYYM  =  LNK-SKYGET-SRYYM
-               IF   KOHSKY-SKYYM  =  "000000"
-               OR   KOHSKY-SKYYM  =  LNK-SKYGET-SRYYM
-                  MOVE   1       TO  FLG-TAISYO2
-               END-IF
-             ELSE
-               IF   KOHSKY-SKYYM  =  LNK-SKYGET-SRYYM
-                  MOVE   1       TO  FLG-TAISYO2
-               END-IF
-             END-IF
-             IF     FLG-TAISYO2   =  ZERO
-                  MOVE   1       TO  FLG-KOHSKY-HENSYU-NG
-             END-IF
-           ELSE
-                  MOVE   1       TO  FLG-KOHSKY-NASHI
-           END-IF
-      *
-           IF    FLG-SEIKYU-HENSYU-NG  =  ZERO
-             IF  FLG-KOHSKY-NASHI      =  ZERO
-               IF  FLG-KOHSKY-HENSYU-NG  =  ZERO
-                    CONTINUE
-               ELSE
-                 IF  (WRK-SKYIRYO-KOHFTN-KOHSKY NOT =  ZERO)
-                 OR  (WRK-SKYSKJ-KOHFTN-KOHSKY  NOT =  ZERO)
-                    MOVE   1     TO  FLG-TAISYO3
-                 END-IF
-               END-IF
-             END-IF
-           ELSE
-             IF  FLG-KOHSKY-NASHI      =  ZERO
-               IF  FLG-KOHSKY-HENSYU-NG  =  ZERO
-                 IF  (WRK-SKYIRYO-KOHFTN-KOHSKY NOT =  ZERO)
-                 OR  (WRK-SKYSKJ-KOHFTN-KOHSKY  NOT =  ZERO)
-                    MOVE   2     TO  FLG-TAISYO3
-                 ELSE
-                    MOVE   9     TO  FLG-TAISYO3
-                 END-IF
-               ELSE
-                    MOVE   9     TO  FLG-TAISYO3
-               END-IF
-             ELSE
-                    MOVE   9     TO  FLG-TAISYO3
-             END-IF
-           END-IF
-      *
-           IF   (RECE10-SKYIRYO-TOTALTEN    NOT = ZERO)
-           OR   (RECE10-SKYSKJ-RYOYOHI      NOT = ZERO)
-             IF   FLG-TAISYO3  =  9
-                  MOVE   12      TO  LNK-SKYGET-RC
-             END-IF
-           ELSE
-                  MOVE   11      TO  LNK-SKYGET-RC
-           END-IF
-      *
-           IF    LNK-SKYGET-RC  =  ZERO
-      *
-      *      ¿¡µ·≥€æ Û ‘Ω∏
-             PERFORM  20011-HENSYU11-SEC
-      *
-      *      ∏¯»Òæ Û ‘Ω∏
-             EVALUATE   FLG-TAISYO3
-               WHEN      0
-                 PERFORM  20012-HENSYU12-SEC
-                 PERFORM  20013-HENSYU13-SEC
-               WHEN      1
-                 PERFORM  20012-HENSYU12-SEC
-                 MOVE       1    TO  LNK-SKYGET-SEIKYUFLG
-               WHEN      2
-                 PERFORM  20013-HENSYU13-SEC
-                 MOVE       2    TO  LNK-SKYGET-SEIKYUFLG
-             END-EVALUATE
-      *
-           END-IF
-      *
-           .
-       2001-HENSYU1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¿¡µ·≥€æ Û ‘Ω∏
-      *****************************************************************
-       20011-HENSYU11-SEC            SECTION.
-      *
-           MOVE   RECE10-SKYIRYO-INF   TO  LNK-SKYGET-IRYO-INF
-           MOVE   RECE10-SKYSKJ-INF    TO  LNK-SKYGET-SKJ-INF
-      *
-           IF     LNK-SKYGET-PARA   =  "1"
-             IF   RECE10-NYUGAIKBN  =  "1"
-               MOVE  RECE10-RESERVE-AREA(13:9)  TO  WRK-DAISAN-DATA
-               IF    WRK-DAISAN-DATA   IS  NUMERIC
-               AND   WRK-DAISAN-FTNMONEY  NOT = ZERO
-                 ADD   WRK-DAISAN-FTNMONEY
-                               TO  LNK-SKYGET-IRYO-ICHIBUFTN
-               END-IF
-               MOVE  RECE10-RESERVE-AREA(22:6)  TO  WRK-DAISAN-DATA2
-               IF    WRK-DAISAN-DATA2  IS  NUMERIC
-               AND   WRK-DAISAN-SKJFTN    NOT = ZERO
-                 ADD   WRK-DAISAN-SKJFTN
-                               TO  LNK-SKYGET-SKJ-RYOYOHI
-                                   LNK-SKYGET-SKJ-ICHIBUFTN
-               END-IF
-             ELSE
-               MOVE  RECE10-RESERVE-AREA(13:9)  TO  WRK-DAISAN-DATA
-               IF    WRK-DAISAN-DATA   IS  NUMERIC
-               AND   WRK-DAISAN-FTNMONEY  NOT = ZERO
-                 ADD   WRK-DAISAN-FTNMONEY
-                               TO  LNK-SKYGET-IRYO-ICHIBUFTN
-               END-IF
-             END-IF
-           END-IF
-      *
-           EVALUATE   FLG-TAISYO3
-             WHEN      1
-               COMPUTE   LNK-SKYGET-IRYO-KOHFTN =
-                         LNK-SKYGET-IRYO-KOHFTN -
-                         WRK-SKYIRYO-KOHFTN-KOHSKY
-               COMPUTE   LNK-SKYGET-SKJ-RYOYOHI =
-                         LNK-SKYGET-SKJ-RYOYOHI -
-                         WRK-SKYSKJ-KOHFTN-KOHSKY
-               COMPUTE   LNK-SKYGET-SKJ-KOHFTN  =
-                         LNK-SKYGET-SKJ-KOHFTN  -
-                         WRK-SKYSKJ-KOHFTN-KOHSKY
-             WHEN      2
-               MOVE   ZERO     TO  LNK-SKYGET-IRYO-NISSU
-               MOVE   ZERO     TO  LNK-SKYGET-IRYO-TOTALTEN
-               MOVE   ZERO     TO  LNK-SKYGET-IRYO-ICHIBUFTN
-               MOVE   ZERO     TO  LNK-SKYGET-IRYO-HOKENJA
-               MOVE   WRK-SKYIRYO-KOHFTN-KOHSKY
-                               TO  LNK-SKYGET-IRYO-KOHFTN
-               MOVE   ZERO     TO  LNK-SKYGET-SKJ-KAISU
-               MOVE   WRK-SKYSKJ-KOHFTN-KOHSKY
-                               TO  LNK-SKYGET-SKJ-RYOYOHI
-               MOVE   ZERO     TO  LNK-SKYGET-SKJ-ICHIBUFTN
-               MOVE   ZERO     TO  LNK-SKYGET-SKJ-HOKENJA
-               MOVE   WRK-SKYSKJ-KOHFTN-KOHSKY
-                               TO  LNK-SKYGET-SKJ-KOHFTN
-           END-EVALUATE
-      *
-           .
-       20011-HENSYU11-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∏¯»Òæ Û ‘Ω∏
-      *****************************************************************
-       20012-HENSYU12-SEC            SECTION.
-      *
-           PERFORM   VARYING   IDX1   FROM  1  BY  1
-                      UNTIL    IDX1     >   4
-             IF   RECE10-KOHNUM(IDX1)  NOT = SPACE
-               MOVE  RECE10-KOHNUM(IDX1)
-                          TO  LNK-SKYGET-KOH-HKNNUM(IDX1)
-               MOVE  RECE10-JNISSU(IDX1 + 1)
-                          TO  LNK-SKYGET-KOH-NISSU(IDX1)
-               MOVE  RECE10-TOTALTEN(IDX1 + 1)
-                          TO  LNK-SKYGET-KOH-TOTALTEN(IDX1)
-               MOVE  RECE10-FTNMONEY(IDX1 + 1)
-                          TO  LNK-SKYGET-KOH-FTNMONEY(IDX1)
-               MOVE  RECE10-SHOKUJINISSU(IDX1 + 1)
-                          TO  LNK-SKYGET-KOH-KAISU(IDX1)
-               MOVE  RECE10-SHOKUJIRYOYOHI(IDX1 + 1)
-                          TO  LNK-SKYGET-KOH-RYOYOHI(IDX1)
-               MOVE  RECE10-SHOKUJIFTN(IDX1 + 1)
-                          TO  LNK-SKYGET-KOH-SHOKUJIFTN(IDX1)
-             END-IF
-           END-PERFORM
-      *
-           .
-       20012-HENSYU12-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∏¯»Òæ Û ‘Ω∏
-      *****************************************************************
-       20013-HENSYU13-SEC            SECTION.
-      *
-           IF  FLG-KOHSKY-NASHI  =  ZERO
+           IF    (LNK-SKYGET-IRYO-TOTALTEN   NOT = ZERO)
+           OR    (LNK-SKYGET-SKJ-RYOYOHI     NOT = ZERO)
              PERFORM   VARYING   IDX1   FROM  1  BY  1
-                        UNTIL    IDX1     >   4
-               IF  (KOHSKY-KOHNUM(IDX1) NOT = SPACE                   )
-               AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(1))
-               AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(2))
-               AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(3))
-               AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(4))
+                        UNTIL    IDX1                >  4
+               IF   RECE10-KOHNUM(IDX1)  NOT = SPACE
+                 MOVE  RECE10-KOHNUM(IDX1)
+                            TO  LNK-SKYGET-KOH-HKNNUM(IDX1)
+                 MOVE  RECE10-JNISSU(IDX1 + 1)
+                            TO  LNK-SKYGET-KOH-NISSU(IDX1)
+                 MOVE  RECE10-TOTALTEN(IDX1 + 1)
+                            TO  LNK-SKYGET-KOH-TOTALTEN(IDX1)
+                 MOVE  RECE10-FTNMONEY(IDX1 + 1)
+                            TO  LNK-SKYGET-KOH-FTNMONEY(IDX1)
+                 MOVE  RECE10-SHOKUJINISSU(IDX1 + 1)
+                            TO  LNK-SKYGET-KOH-KAISU(IDX1)
+                 MOVE  RECE10-SHOKUJIRYOYOHI(IDX1 + 1)
+                            TO  LNK-SKYGET-KOH-RYOYOHI(IDX1)
+                 MOVE  RECE10-SHOKUJIFTN(IDX1 + 1)
+                            TO  LNK-SKYGET-KOH-SHOKUJIFTN(IDX1)
+               END-IF
+             END-PERFORM
+      *
+             INITIALIZE                          KOHSKY-REC
+             MOVE     RECE10-KEY             TO  KOHSKY-KEY
+             PERFORM  900-KOHSKY-READ-SEC
+             IF       FLG-KOHSKY  =   ZERO
+               PERFORM   VARYING   IDX1   FROM  1  BY  1
+                          UNTIL    IDX1                >  4
+                IF  (KOHSKY-KOHNUM(IDX1) NOT = SPACE                   )
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(1))
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(2))
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(3))
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(4))
                  MOVE  KOHSKY-KOHNUM(IDX1)
                             TO  LNK-SKYGET-KOHETC-HKNNUM(IDX1)
                  MOVE  KOHSKY-JNISSU(IDX1 + 1)
@@ -486,16 +259,19 @@
                             TO  LNK-SKYGET-KOHETC-RYOYOHI(IDX1)
                  MOVE  KOHSKY-SHOKUJIFTN(IDX1 + 1)
                             TO  LNK-SKYGET-KOHETC-SHOKUJIFTN(IDX1)
-               END-IF
-             END-PERFORM
+                END-IF
+               END-PERFORM
+             END-IF
+           ELSE
+             MOVE    11     TO  LNK-SKYGET-RC
            END-IF
       *
            .
-       20013-HENSYU13-EXT.
+       2001-HENSYU1-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë ¨£≤§Œ ‘Ω∏
+      *    ∂Ë ¨°…£≤°…§Œ ‘Ω∏
       *****************************************************************
        2002-HENSYU2-SEC            SECTION.
       *
@@ -519,7 +295,7 @@
              PERFORM    UNTIL   (FLG-SYUNOU   =   1)
                IF  SYU-DENPJTIKBN    NOT =  "3"
                  MOVE      1             TO   IDX2
-                 PERFORM   20021-CHECK-SEC
+                 PERFORM   2002A-CHECK-SEC
                END-IF
                MOVE    "tbl_syunou"      TO   MCP-TABLE
                MOVE    "key76"           TO   MCP-PATHNAME
@@ -550,7 +326,7 @@
              PERFORM    UNTIL   (FLG-SYUNOU   =   1)
                IF  SYU-DENPJTIKBN    NOT =  "3"
                  MOVE      2             TO   IDX2
-                 PERFORM   20021-CHECK-SEC
+                 PERFORM   2002A-CHECK-SEC
                END-IF
                MOVE    "tbl_syunou"      TO   MCP-TABLE
                MOVE    "key75"           TO   MCP-PATHNAME
@@ -581,7 +357,7 @@
              PERFORM    UNTIL   (FLG-SYUNOU   =   1)
                IF  SYU-DENPJTIKBN    NOT =  "3"
                  MOVE      3             TO   IDX2
-                 PERFORM   20021-CHECK-SEC
+                 PERFORM   2002A-CHECK-SEC
                END-IF
                MOVE    "tbl_syunou"      TO   MCP-TABLE
                MOVE    "key75"           TO   MCP-PATHNAME
@@ -597,9 +373,9 @@
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë ¨£≤° ¥µº‘æ Û•¡•ß•√•Ø°À
+      *    ∂Ë ¨°…£≤°…° ¥µº‘æ Û•¡•ß•√•Ø°À
       *****************************************************************
-       20021-CHECK-SEC            SECTION.
+       2002A-CHECK-SEC            SECTION.
       *
            IF  (WRK-TAIHI-PTID         =  SYU-PTID       )
            AND (WRK-TAIHI-HKNCOMBINUM  =  SYU-HKNCOMBINUM)
@@ -626,20 +402,20 @@
       *
            IF   FLG-OK  =   1
       *      ∂‚≥€ ‘Ω∏
-             PERFORM   200211-KINGAKU-HENSYU-SEC
+             PERFORM   20021-KINGAKU-HENSYU-SEC
            END-IF
       *
            .
-       20021-CHECK-EXT.
+       2002A-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë ¨£≤° ∂‚≥€ ‘Ω∏°À
+      *    ∂Ë ¨°…£≤°…° ∂‚≥€ ‘Ω∏°À
       *****************************************************************
-       200211-KINGAKU-HENSYU-SEC            SECTION.
+       20021-KINGAKU-HENSYU-SEC            SECTION.
       *
       *    •§•Û•«•√•Ø•π ‘Ω∏
-           PERFORM   2002111-INDEX-HENSYU-SEC
+           PERFORM   200211-INDEX-HENSYU-SEC
       *
            MOVE     ZERO     TO    FLG-JIHIRANSYUKEI
            IF  (SYU-TOTAL-HKNTEN      =  ZERO)
@@ -870,25 +646,6 @@
                         SYU-CHOSEI
              END-IF
            ELSE
-            IF   IDX1  =  10
-             IF   SYU-PTFTNRATE   =  ZERO
-               COMPUTE  WRK-KEISAN                 =
-                        SYU-RMSAGAKU               +
-                        SYU-SKYMONEY-SKJ-JIHI-KEI  +
-                        SYU-SKYMONEY-LIFE-JIHI-KEI +
-                        SYU-TOTAL-TGMONEY          +
-                        SYU-TOTAL-TGMONEY-TAX      +
-                        SYU-JIHI-TOTAL             +
-                        SYU-JIHI-TOTAL-TAX         -
-                        SYU-DISCOUNT-MONEY         +
-                        SYU-CHOSEI
-             ELSE
-               COMPUTE  WRK-KEISAN            =
-                        SYU-RSIJIBAI-SKYMONEY -
-                        SYU-DISCOUNT-MONEY    +
-                        SYU-CHOSEI
-             END-IF
-            ELSE
              COMPUTE    WRK-KEISAN                 =
                         SYU-HKNTEKMONEY            +
                         SYU-KOH-FTN                +
@@ -903,7 +660,6 @@
                         SYU-JIHI-TOTAL-TAX         -
                         SYU-DISCOUNT-MONEY         +
                         SYU-CHOSEI
-            END-IF
            END-IF
            COMPUTE      WRK-KEISAN2  =
                         SYU-SKYMONEY -
@@ -913,13 +669,13 @@
                         WRK-KEISAN2
       *
            .
-       200211-KINGAKU-HENSYU-EXT.
+       20021-KINGAKU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë ¨£≤° •§•Û•«•√•Ø•π ‘Ω∏°À
+      *    ∂Ë ¨°…£≤°…° •§•Û•«•√•Ø•π ‘Ω∏°À
       *****************************************************************
-       2002111-INDEX-HENSYU-SEC            SECTION.
+       200211-INDEX-HENSYU-SEC            SECTION.
       *
            MOVE      ZERO            TO    IDX1
       *    º´»Ò ›∏±
@@ -964,14 +720,14 @@
            END-IF
       *
            .
-       2002111-INDEX-HENSYU-EXT.
+       200211-INDEX-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë ¨£≥§Œ ‘Ω∏  °„œ´∫“°‰
-      *    ∂Ë ¨£¥§Œ ‘Ω∏  °„º´«Â¿’°‰
+      *    ∂Ë ¨°…£≥°…§Œ ‘Ω∏°°°„œ´∫“°‰
+      *    ∂Ë ¨°…£¥°…§Œ ‘Ω∏°°°„º´«Â¿’°‰
       *****************************************************************
-       2003-HENSYU3-SEC            SECTION.
+       2001-HENSYU3-SEC            SECTION.
       *
            MOVE    ZERO                TO   WRK-PTFTNRATE
       *
@@ -994,19 +750,12 @@
            MOVE    ZERO                     TO LNK-SKYGET-IRYO-ICHIBUFTN
            MOVE    ZERO                     TO LNK-SKYGET-IRYO-HOKENJA
            IF    WRK-PTFTNRATE   =  100
-      ***    IF    RECE10-NYUGAIKBN   =  "1"
-      ***      COMPUTE   LNK-SKYGET-IRYO-ICHIBUFTN =
-      ***                RECE10-FTNMONEY(1)        -
-      ***                RECE10-SHOKUJIRYOYOHI(1)
-      ***    ELSE
-      ***      MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-ICHIBUFTN
-      ***    END-IF
              IF    RECE10-NYUGAIKBN   =  "1"
                COMPUTE   LNK-SKYGET-IRYO-ICHIBUFTN =
-                         RECE10-FTNMONEY-FTN(1)    +
-                         RECE10-FTNMONEY-KOJ(1)
+                         RECE10-FTNMONEY(1)        -
+                         RECE10-SHOKUJIRYOYOHI(1)
              ELSE
-               PERFORM   20031-SYUNOU-CHECK-SEC
+               MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-ICHIBUFTN
              END-IF
            ELSE
              IF    RECE10-NYUGAIKBN   =  "1"
@@ -1031,66 +780,13 @@
            MOVE    ZERO                     TO LNK-SKYGET-SKJ-KOHFTN
       *
            .
-       2003-HENSYU3-EXT.
+       2001-HENSYU3-EXT.
            EXIT.
       *
       *****************************************************************
-      *    °„œ´∫“°¶º´«Â¿’°‰  ≥∞ÕË§«…È√¥≥‰πÁ£±£∞£∞°Û§ŒæÏπÁ
+      *    ∂Ë ¨°…£µ°…§Œ ‘Ω∏°°°„∏¯≥≤°‰
       *****************************************************************
-       20031-SYUNOU-CHECK-SEC            SECTION.
-      *
-           INITIALIZE                         SYUNOU-REC
-           MOVE    RECE10-HOSPNUM        TO   SYU-HOSPNUM
-           MOVE    RECE10-NYUGAIKBN      TO   SYU-NYUGAIKBN
-           MOVE    RECE10-PTID           TO   SYU-PTID
-           MOVE    RECE10-SRYYM          TO   SYU-SRYYMD(1:6)
-           MOVE    "__"                  TO   SYU-SRYYMD(7:2)
-           MOVE    RECE10-HKNCOMBI(1)    TO   SYU-HKNCOMBINUM
-           MOVE    SYUNOU-REC            TO   MCPDATA-REC
-           MOVE    "tbl_syunou"          TO   MCP-TABLE
-           MOVE    "key41"               TO   MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC   =   ZERO
-             MOVE    "tbl_syunou"        TO   MCP-TABLE
-             MOVE    "key41"             TO   MCP-PATHNAME
-             PERFORM 900-SYUNOU-READ-SEC
-             PERFORM    UNTIL   (FLG-SYUNOU   =   1)
-               IF  SYU-DENPJTIKBN    NOT =  "3"
-                 COMPUTE    WRK-KEISAN                 =
-                            SYU-SYUSKJ-RYOYOHI         +
-                            SYU-RMSAGAKU               +
-                            SYU-SKYMONEY-SKJ-JIHI-KEI  +
-                            SYU-SKYMONEY-LIFE-JIHI-KEI +
-                            SYU-TOTAL-TGMONEY          +
-                            SYU-TOTAL-TGMONEY-TAX      +
-                            SYU-JIHI-TOTAL             +
-                            SYU-JIHI-TOTAL-TAX
-      *
-                 COMPUTE    WRK-KEISAN2                =
-                            SYU-RSIJIBAI-SKYMONEY      -
-                            WRK-KEISAN
-      *
-                 COMPUTE    LNK-SKYGET-IRYO-ICHIBUFTN  =
-                            LNK-SKYGET-IRYO-ICHIBUFTN  +
-                            WRK-KEISAN2
-               END-IF
-               MOVE    "tbl_syunou"      TO   MCP-TABLE
-               MOVE    "key41"           TO   MCP-PATHNAME
-               PERFORM 900-SYUNOU-READ-SEC
-             END-PERFORM
-           END-IF
-           MOVE    "tbl_syunou"          TO   MCP-TABLE
-           MOVE    "key41"               TO   MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       20031-SYUNOU-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∂Ë ¨£µ§Œ ‘Ω∏  °„∏¯≥≤°‰
-      *****************************************************************
-       2005-HENSYU5-SEC            SECTION.
+       2001-HENSYU5-SEC            SECTION.
       *
            MOVE    RECE10-JNISSU(1)         TO LNK-SKYGET-IRYO-NISSU
            MOVE    RECE10-TOTALTEN(1)       TO LNK-SKYGET-IRYO-TOTALTEN
@@ -1113,13 +809,13 @@
            MOVE    ZERO                     TO LNK-SKYGET-SKJ-KOHFTN
       *
            .
-       2005-HENSYU5-EXT.
+       2001-HENSYU5-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë ¨£∂§Œ ‘Ω∏  °„¬Ëª∞º‘π‘∞Ÿ°‰
+      *    ∂Ë ¨°…£∂°…§Œ ‘Ω∏°°°„¬Ëª∞º‘π‘∞Ÿ°‰
       *****************************************************************
-       2006-HENSYU6-SEC            SECTION.
+       2001-HENSYU6-SEC            SECTION.
       *
            MOVE    ZERO                TO   WRK-PTFTNRATE
       *
@@ -1139,61 +835,40 @@
       *
            MOVE    RECE10-JNISSU(1)         TO LNK-SKYGET-IRYO-NISSU
            MOVE    RECE10-TOTALTEN(1)       TO LNK-SKYGET-IRYO-TOTALTEN
-           MOVE    ZERO                     TO LNK-SKYGET-IRYO-ICHIBUFTN
-           MOVE    ZERO                     TO LNK-SKYGET-IRYO-HOKENJA
+           IF    WRK-PTFTNRATE   =  ZERO
+             IF    RECE10-NYUGAIKBN   =  "1"
+               COMPUTE   LNK-SKYGET-IRYO-HOKENJA   =
+                         RECE10-FTNMONEY(1)        -
+                         RECE10-SHOKUJIRYOYOHI(1)
+             ELSE
+               MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-HOKENJA
+             END-IF
+             MOVE    ZERO                   TO LNK-SKYGET-IRYO-ICHIBUFTN
+           ELSE
+             IF    RECE10-NYUGAIKBN   =  "1"
+               COMPUTE   LNK-SKYGET-IRYO-ICHIBUFTN =
+                         RECE10-FTNMONEY(1)        -
+                         RECE10-SHOKUJIRYOYOHI(1)
+             ELSE
+               MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-ICHIBUFTN
+             END-IF
+             MOVE    ZERO                   TO LNK-SKYGET-IRYO-HOKENJA
+           END-IF
            MOVE    ZERO                     TO LNK-SKYGET-IRYO-KOHFTN
       *
            MOVE    RECE10-SHOKUJINISSU(1)   TO LNK-SKYGET-SKJ-KAISU
-           MOVE    ZERO                     TO LNK-SKYGET-SKJ-RYOYOHI
-           MOVE    ZERO                     TO LNK-SKYGET-SKJ-ICHIBUFTN
-           MOVE    ZERO                     TO LNK-SKYGET-SKJ-HOKENJA
+           MOVE    RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-RYOYOHI
+           IF    WRK-PTFTNRATE   =  ZERO
+             MOVE  RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-HOKENJA
+             MOVE  ZERO                     TO LNK-SKYGET-SKJ-ICHIBUFTN
+           ELSE
+             MOVE  RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-ICHIBUFTN
+             MOVE  ZERO                     TO LNK-SKYGET-SKJ-HOKENJA
+           END-IF
            MOVE    ZERO                     TO LNK-SKYGET-SKJ-KOHFTN
       *
-           IF    LNK-SKYGET-PARA  =  "1"
-             IF    WRK-PTFTNRATE  =  ZERO
-               COMPUTE   LNK-SKYGET-IRYO-HOKENJA   =
-                         RECE10-FTNMONEY-KOJ(1)
-             ELSE
-               COMPUTE   LNK-SKYGET-IRYO-ICHIBUFTN =
-                         RECE10-FTNMONEY-KOJ(1)
-             END-IF
-           ELSE
-             IF    WRK-PTFTNRATE  =  ZERO
-               COMPUTE   LNK-SKYGET-IRYO-HOKENJA   =
-                         RECE10-FTNMONEY-FTN(1)    +
-                         RECE10-FTNMONEY-KOJ(1)
-               MOVE   RECE10-SHOKUJIRYOYOHI(1)
-                                     TO LNK-SKYGET-SKJ-RYOYOHI
-                                        LNK-SKYGET-SKJ-HOKENJA
-             ELSE
-               COMPUTE   LNK-SKYGET-IRYO-ICHIBUFTN =
-                         RECE10-FTNMONEY-FTN(1)    +
-                         RECE10-FTNMONEY-KOJ(1)
-               MOVE   RECE10-SHOKUJIRYOYOHI(1)
-                                     TO LNK-SKYGET-SKJ-RYOYOHI
-                                        LNK-SKYGET-SKJ-ICHIBUFTN
-             END-IF
-           END-IF
-      *
            .
-       2006-HENSYU6-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∂Ë ¨£∑§Œ ‘Ω∏  °„∆√ ÃŒ≈Õ‹»Ò°‰
-      *****************************************************************
-       2007-HENSYU7-SEC            SECTION.
-      *
-           MOVE   RECE10-SKYIRYO-INF   TO  LNK-SKYGET-IRYO-INF
-           MOVE   RECE10-SKYSKJ-INF    TO  LNK-SKYGET-SKJ-INF
-      *
-           MOVE   ZERO                 TO  LNK-SKYGET-IRYO-HOKENJA
-           MOVE   ZERO                 TO  LNK-SKYGET-IRYO-KOHFTN
-           MOVE   ZERO                 TO  LNK-SKYGET-SKJ-HOKENJA
-           MOVE   ZERO                 TO  LNK-SKYGET-SKJ-KOHFTN
-      *
-           .
-       2007-HENSYU7-EXT.
+       2001-HENSYU6-EXT.
            EXIT.
       *
       *****************************************************************
