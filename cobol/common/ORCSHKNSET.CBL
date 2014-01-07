@@ -40,7 +40,6 @@
       * 04.06.00     NACL-ÂÀÅÄ    10/08/30  Êä½õ¶èÊ¬¡¢ËÜ¿Í²ÈÂ²¶èÊ¬ÄÉ²Ã
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/09/29  Æþ±¡¡¦³°ÍèÈó³ºÅöÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/07/XX  Âè»°¼Ô¹Ô°ÙÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  14/01/XX  ÉéÃ´³ä¹ç¸øÈñÂÐ±þ
       *****************************************************************
       *
       *
@@ -98,8 +97,7 @@
            03  WRK-HKNCOMBI            PIC X(100).
       *
            03  WRK-HKNCOMBINUM         PIC X(04).
-      **   03  WRK-HKNKBN-MEI          PIC X(02).
-           03  WRK-HKNKBN-MEI          PIC X(06).
+           03  WRK-HKNKBN-MEI          PIC X(02).
       *
            03  WRK-JIBAISEKIKBN        PIC X(01).
       *
@@ -172,11 +170,6 @@
            COPY    "CPORCSKANACHK.INC".
       *    Ç¯Îð¡¦ÉéÃ´³ä¹ç¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
-      *
-      *!!
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»ÉéÃ´³ä¹ç¼èÆÀ¥µ¥Ö
-           COPY    "CPORCSFTNRATE.INC".
-      *!!
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -496,30 +489,6 @@
                END-IF
            END-PERFORM
       *
-      *!!!!
-           IF     (COMB-KOH1HKNNUM     =   "970" )
-               OR (COMB-KOH1HKNNUM     =   SPACE )
-               CONTINUE
-           ELSE
-      *        ÃÏÊý¸øÈñÂÐ±þÉéÃ´³ä¹çÀßÄê
-               INITIALIZE                  ORCSFTNRATEAREA
-               MOVE    COMB-HOSPNUM        TO  LNK-FTNRATE-HOSPNUM
-               MOVE    COMB-PTID           TO  LNK-FTNRATE-PTID
-               MOVE    WRK-SRYYMD          TO  LNK-FTNRATE-SRYYMD
-               MOVE    COMB-HKNCOMBINUM    TO  LNK-FTNRATE-HKNCOMBINUM
-               MOVE    "1"                 TO  LNK-FTNRATE-KBN
-               CALL    "ORCSFTNRATE"       USING
-                                           ORCSFTNRATEAREA
-                                           SPA-AREA
-                                           HKNCOMBI-REC
-               IF      LNK-FTNRATE-RC      =   ZERO
-                   MOVE    LNK-FTNRATE-NYUIN   TO  COMB-NYU-KFTNRATE
-                   MOVE    LNK-FTNRATE-GAIRAI  TO  COMB-GAI-KFTNRATE
-               END-IF
-           END-IF
-      *
-      *!!!!
-      *
       *    ÉéÃ´³ä¹ç
            IF      SPA-NYUGAIKBN       =   "1"
       *        Æþ±¡
@@ -541,11 +510,11 @@
            END-IF
       *    £³ºÐÌ¤Ëþ¤Î»þ¡¢£²³ä¤ò¾å¸Â¤È¤¹¤ë
            IF    ((COMB-TEKEDYMD       >=  "20021001") AND
-                  (WRK-SRYYMD          >=  "20021001") AND
+                  (SPA-SRYYMD          >=  "20021001") AND
                   (WRK-NENREI          <   03        ))
       *    £È£²£°¡¥£´²þÀµ
              OR  ((COMB-TEKEDYMD       >=  "20080401") AND
-                  (WRK-SRYYMD          >=  "20080401") AND
+                  (SPA-SRYYMD          >=  "20080401") AND
                   (AGECHK-SYUGAKUKBN   =   1         ))
       *        ¼«Èñ¡¦¼£¸³
                IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9"    )
@@ -640,26 +609,12 @@
       *        ÊÝ¸±¶èÊ¬
                MOVE    2                   TO  ORCSHKN-NAI-HKNKBN(IDX)
            END-IF
-      *H29.5
-      *    ¼«ÇåÀÕÅÀ¿ô¶èÊ¬¤È¥·¥¹¥Æ¥à´ÉÍýÈ½Äê
-           MOVE    SPACE               TO  WRK-HKNKBN-MEI
-           IF      COMB-HKNNUM         =   "973"
-               IF      (PTRSI-JIBAIKBN     =   "1"  )
-      *            Ï«ºÒ½àµò
-                   MOVE   "[Ï«]"             TO  WRK-HKNKBN-MEI
-               END-IF
-               IF      (PTRSI-JIBAIKBN     =   "2"  )
-      *            ·òÊÝ½àµò
-                   MOVE   "[·ò]"             TO  WRK-HKNKBN-MEI
-               END-IF
-           END-IF
-      *
       *    Ï«ºÒ¤Î»þ¡¢¥³¥á¥ó¥È¤ÎÄÉ²Ã
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        ÊÝ¸±¶èÊ¬
                MOVE    1                   TO  ORCSHKN-NAI-HKNKBN(IDX)
       *
-      **       MOVE    SPACE               TO  WRK-HKNKBN-MEI
+               MOVE    SPACE               TO  WRK-HKNKBN-MEI
                EVALUATE    PTRSI-HKNKBN
                    WHEN    "1"
                        MOVE    "Ã»"        TO  WRK-HKNKBN-MEI
@@ -733,10 +688,7 @@
                            INTO              WRK-HKNCOMBI
                    END-STRING
                END-IF
-      *        ½ýÉÂÇ¯·îÆü
-               MOVE    PTRSI-SHOBYOYMD     TO  ORCSHKN-NAI-RSI-SHOBYOYMD
-                                                                  (IDX)
-           END-IF
+          END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -834,8 +786,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
                               (FLG-HKNCOMBICHK =   1   )
-               IF      (WRK-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
-                   AND (WRK-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
+               IF      (SPA-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
+                   AND (SPA-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
                    IF      WRK-HKNCOMBINUM
                                        =   ORCSHKN-GMN-HKNCOMBINUM
                                                                 (IDX)
@@ -867,8 +819,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   ORCSHKN-HKN-MAX
                MOVE    ZERO                TO  WRK-CNT-HKN2
-               IF      (WRK-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
-                   AND (WRK-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
+               IF      (SPA-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
+                   AND (SPA-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
                    AND (ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        NOT =   "9999"    )
       *
@@ -934,7 +886,7 @@
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
-           MOVE    WRK-SRYYMD          TO  JYURRK-SRYYMD
+           MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE

@@ -32,9 +32,6 @@ tbl_ptrsiinf {
         KIJYUNYM			char(6);
         KAISU				number(03);
 	SYOCD				char(5);
-	DAISAN_GENBTKBN 		char(1);
-	DAISAN_TOKKIKBN			char(1);
-	JIBAIKBN			char(1);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
