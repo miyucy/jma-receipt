@@ -46,7 +46,7 @@
                 04  C02-SRYKA-COUNT
                                 PIC S9(9)   BINARY.
                 04  C02-SRYKALST
-                                PIC X(21)   OCCURS  100 TIMES.
+                                PIC X(21)   OCCURS  40 TIMES.
               03  C02-SYOKBN-COMBO.
                 04  C02-SYOKBN   PIC X(6).
                 04  C02-SYOKBN-COUNT
@@ -147,21 +147,6 @@
                   05  C02-VALUE   PIC X(12).
                 04  C02-REZEFLG-COUNT   PIC S9(9)   BINARY.
                 04  C02-REZEFLG-ITEM    PIC X(12)   OCCURS  5 TIMES.
-              03  C02-DISCHARGEFLGCOMBO.
-                04  C02-DISCHARGEFLG.
-                  05  C02-VALUE   PIC X(12).
-                04  C02-DISCHARGEFLG-COUNT   PIC S9(9)  BINARY.
-                04  C02-DISCHARGEFLG-ITEM    PIC X(12)  OCCURS  2 TIMES.
-              03  C02-CLASS1COMBO.
-                04  C02-CLASS1.
-                  05  C02-VALUE   PIC X(11).
-                04  C02-CLASS1-COUNT   PIC S9(9)   BINARY.
-                04  C02-CLASS1-ITEM    PIC X(11)   OCCURS  10 TIMES.
-              03  C02-CLASS2COMBO.
-                04  C02-CLASS2.
-                  05  C02-VALUE   PIC X(13).
-                04  C02-CLASS2-COUNT   PIC S9(9)   BINARY.
-                04  C02-CLASS2-ITEM    PIC X(13)   OCCURS  10 TIMES.
               03  C02-SCROLLEDWINDOW6.
                 04  C02-HKNCOMBILST.
                   05  C02-HKN-COUNT       PIC S9(9)   BINARY.
@@ -192,21 +177,12 @@
                     06  C02-TREZEFLG      PIC X(10).
                     06  C02-TREZEMM       PIC X(4).
                     06  C02-THKNBYOMEIFLG PIC X(10).
-                    06  C02-TDISCHARGEFLG PIC X(4).
-                    06  C02-TCLASS1       PIC X(8).
-                    06  C02-TCLASS2       PIC X(10).
-                    06  C02-TCREYMD       PIC X(09).
-                    06  C02-TCREHMS       PIC X(08).
-                    06  C02-TUPYMD        PIC X(09).
-                    06  C02-TUPHMS        PIC X(08).
                   05  C02-BYO-SELECT      PIC X   OCCURS  200 TIMES.
-                  05  C02-BYO-FGCOLOR     PIC X(16)   OCCURS  200 TIMES.
-                  05  C02-BYO-BGCOLOR     PIC X(16)   OCCURS  200 TIMES.
               03  C02-BSRYKA-COMBO.
                 04  C02-BSRYKA  PIC X(21).
                 04  C02-BSRYKA-COUNT
                                 PIC S9(9)   BINARY.
                 04  C02-BSRYKALST
-                                PIC X(21)   OCCURS  100 TIMES.
+                                PIC X(21)   OCCURS  40 TIMES.
               03  C02-HYOUJI-STYLE   PIC X(20).
               03  C02-HYOUJI         PIC X(22).

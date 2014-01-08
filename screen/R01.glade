@@ -376,6 +376,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <text_max_length>7</text_max_length>
         <text>H17.12</text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -401,6 +402,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <text_max_length>10</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -426,6 +428,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <text_max_length>10</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -451,7 +454,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <format>ZZZZ</format>
+        <format>ZZZ</format>
         <signal>
           <name>changed</name>
           <handler>entry_changed</handler>
@@ -474,6 +477,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <text_max_length>7</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -499,6 +503,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <text_max_length>20</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -524,6 +529,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <text_max_length>1</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -549,6 +555,7 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
+        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -720,7 +727,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>9999/9999</label>
+        <label>999/999</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
@@ -845,6 +852,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <text_max_length>12</text_max_length>
           <text>5 個別１１１</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1095,7 +1103,6 @@
             <class>GtkLabel</class>
             <child_name>CList:title</child_name>
             <name>label2</name>
-            <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -1104,7 +1111,7 @@
             <xpad>0</xpad>
             <ypad>0</ypad>
             <label>第三者</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
+            <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
         </widget>
@@ -1112,9 +1119,9 @@
       <widget>
         <class>GtkLabel</class>
         <name>SYOKBN</name>
-        <x>3</x>
+        <x>100</x>
         <y>3</y>
-        <width>445</width>
+        <width>350</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1123,14 +1130,14 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４</label>
+        <label>１２３４５６７８９０１２３４５６７８９０１２３４５</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
       <widget>
         <class>GtkLabel</class>
         <name>HYODAI</name>
-        <x>450</x>
+        <x>460</x>
         <y>3</y>
         <width>220</width>
         <height>24</height>
@@ -1148,9 +1155,9 @@
       <widget>
         <class>GtkLabel</class>
         <name>JYOKEN1</name>
-        <x>670</x>
+        <x>620</x>
         <y>3</y>
-        <width>350</width>
+        <width>220</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1159,7 +1166,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>平成１２年１２月１２日　～　平成１２年１２月３１日</label>
+        <label></label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>

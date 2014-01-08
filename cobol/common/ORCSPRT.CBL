@@ -55,8 +55,6 @@
            03  FLG-PRTKANRI            PIC 9(01).
            03  FLG-PRTDATA             PIC 9(01). 
       *
-           COPY    "ENUM-VALUE".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -73,10 +71,10 @@
       *    サブプロ用領域
       *****************************************************************
       *
-      *    一時ディレクトリ取得サブ
-           COPY    "CPORCSGETTEMP.INC".
+      *    monpe印刷データ泣き別れ修正サブ
+           COPY    "CPORCSFIXREDDATA.INC".
       *
-      *    日付変換サブ
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
@@ -111,12 +109,6 @@ grpsys     COPY    "COMMON-SPA".
       *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
-      *
-      *    SPA-MWの値を取得
-           INITIALIZE                  SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE     SGETTEMP-MW        TO  SPA-MW
       *
            IF      SPRT-GYOUMU-CD  NOT NUMERIC
                    MOVE  99            TO  SPRT-GYOUMU-CD
@@ -170,8 +162,7 @@ grpsys     COPY    "COMMON-SPA".
       *    印刷管理ＤＢ更新処理
       *****************************************************************
        200-PRTKANRI-HENSYU-SEC         SECTION.
-      *
-      *
+      * 
            MOVE    SPACE               TO  PRTKANRI-REC
            INITIALIZE                      PRTKANRI-REC
            MOVE    SPRT-TBL-KEY        TO  PRTKANRI-TBL-KEY
@@ -234,8 +225,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                END-EVALUATE
       * ★ end
                MOVE    1                   TO  PRTKANRI-PAGE
-               IF      SPRT-PRTFLG         =   "1" OR "D"
-                   MOVE    SPRT-PRTFLG         TO  PRTKANRI-PRTFLG
+               IF      SPRT-PRTFLG         =   "1"
+                   MOVE    "1"                 TO  PRTKANRI-PRTFLG
                ELSE
                    MOVE    SPACE               TO  PRTKANRI-PRTFLG
                END-IF
@@ -243,7 +234,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                MOVE    SPRT-TERMID         TO  PRTKANRI-TERMID
                MOVE    SPRT-OPID           TO  PRTKANRI-OPID
                MOVE    SPRT-PRTNM          TO  PRTKANRI-PRTNM
-               MOVE    SPRT-API-ID         TO  PRTKANRI-API-ID
            END-IF
       *
            MOVE    SPRT-TBL-GROUP(1:8) TO  PRTKANRI-CREYMD
@@ -334,8 +324,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                END-EVALUATE
       * ★ end
            MOVE    PRTKANRI-PAGE       TO  PRTDATA-PAGE
-           IF      SPRT-PRTFLG         =   "1" OR "D"
-               MOVE    SPRT-PRTFLG         TO  PRTDATA-PRTFLG
+           IF      SPRT-PRTFLG         =   "1"
+               MOVE    "1"                 TO  PRTDATA-PRTFLG
            ELSE
                MOVE    SPACE               TO  PRTDATA-PRTFLG
            END-IF
@@ -345,24 +335,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                MOVE    SPRT-SITEKBN        TO  PRTDATA-SITEKBN
            END-IF    
            MOVE    SPRT-PRTNM          TO  PRTDATA-PRTNM
-           MOVE    FUNCTION LOWER-CASE (SPRT-DATA-TYPE)
-                                       TO  PRTDATA-DATA-TYPE
       *
-           IF    ( SPA-MW              =   SPA-GINBEE )
-            AND  ( SPRT-SITEKBN        =   "2" )
-               MOVE    "pdf"           TO  PRTDATA-DATA-TYPE
-           END-IF
-      *
-           MOVE    SPRT-API-ID         TO  PRTDATA-API-ID
-      *
-           IF    ( PRTDATA-DATA-TYPE   =   "pdf" )
-               CALL    "ORCSPDF"       USING
-                                       ORCSPRTAREA
-                                       SPA-AREA
-               MOVE    SPRT-PDF        TO  PRTDATA-PRTDATA
-           ELSE
-               MOVE    SPRT-PRTDATA    TO  PRTDATA-PRTDATA
-           END-IF
+           INITIALIZE                      SFIXREDDATA-AREA
+           MOVE    PRTDATA-SITEKBN     TO  SFIXREDDATA-SITEKBN
+           MOVE    PRTDATA-PRTID       TO  SFIXREDDATA-FORMID
+           MOVE    SPRT-PRTDATA        TO  SFIXREDDATA-DATA
+           CALL    "ORCSFIXREDDATA"        USING
+                                           SFIXREDDATA-AREA
+                                           SPA-AREA
+           MOVE    SFIXREDDATA-DATA    TO  PRTDATA-PRTDATA
       *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "tbl_prtdata"       TO  MCP-TABLE
