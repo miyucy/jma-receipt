@@ -456,6 +456,8 @@
                05  WRK-HENSYU-DATA-G.
                    07  WRK-HENSYU-DATA-O
                                    PIC X(10)   OCCURS  9.
+               05  WRK-HENSYU-DATA-9
+                                   PIC 9(10).
       *
            03  WRK-TEKSTYMD        PIC 9(08).
            03  WRK-TEKEDYMD        PIC 9(08).
@@ -2631,6 +2633,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPA-C01-HENSYU-DATA-O (IDX)
                                        TO  WRK-HENSYU-DATA-O (IDX)
            END-PERFORM
+           MOVE    SPA-C01-HENSYU-DATA-9
+                                       TO  WRK-HENSYU-DATA-9
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       5
                MOVE    SPA-C01-STNUM-O (IDX)
@@ -2793,6 +2797,17 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    WRK-HENSYU-DATA-O (7)
                                    TO  WRK-PTBYO-COPY-HKNCOMBI
            END-EVALUATE      
+      *
+      *    保険適用（第三者行為）
+           EVALUATE    WRK-HENSYU-DATA-9
+               WHEN    ZERO
+                   CONTINUE
+               WHEN    9999999999               
+                   MOVE    ZERO    TO  WRK-PTBYO-COPY-KOHID
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-9
+                                   TO  WRK-PTBYO-COPY-KOHID
+           END-EVALUATE
       *
       *    レセ電エラーフラグ
            INITIALIZE                  WRK-PTBYOMEI-CHK-AREA
@@ -4670,6 +4685,17 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    WRK-HENSYU-DATA-O (7)
                                    TO  PTBYO-HKNCOMBI
            END-EVALUATE      
+      *
+      *    保険適用（第三者行為）
+           EVALUATE    WRK-HENSYU-DATA-9
+               WHEN    ZERO
+                   CONTINUE
+               WHEN    9999999999               
+                   MOVE    ZERO    TO  PTBYO-KOHID
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-9
+                                   TO  PTBYO-KOHID
+           END-EVALUATE
       *
       *    レセ電エラーフラグ
            INITIALIZE                      WRK-PTBYOMEI-CHK-AREA

@@ -983,9 +983,9 @@
       *
       *    保険組合せと第三者行為のチェック
            IF    ( SPA-NAI-C10-KOHID
-                                   NOT =   ZERO    AND 99999999 )
+                                   NOT =   ZERO    AND 9999999999 )
            AND   ( SPA-GMN-C10-HKNCOMBI
-                                   NOT =   SPACE   AND "-"      )
+                                   NOT =   SPACE   AND "-"        )
                MOVE    "0099"              TO  SPA-ERRCD
                MOVE    7                   TO  SPA-GMN-C10-CUR
                GO  TO  4103-KANREN-CHK-EXT
@@ -2487,6 +2487,8 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    WRK-HENSYU-DATA-O (IDX)
                                        TO  SPA-C01-HENSYU-DATA-O (IDX)
                END-PERFORM
+               MOVE    WRK-HENSYU-DATA-9
+                                       TO  SPA-C01-HENSYU-DATA-9
            END-IF
       *
            IF    ( SPA-ERRCD            =   SPACE )
