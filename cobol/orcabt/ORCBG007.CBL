@@ -60,7 +60,6 @@
            03  BG00701-SRYKADAY-G.
                05  BG00701-SRYKADAY            PIC 9(01)
                                                OCCURS  31.
-           03  BG00701-TSTPTNUMKBN             PIC X(01).
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -72,11 +71,7 @@
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //ORCBG00701//.
-@@@@@@*    ファイル名に拡張子を別途編集している場合は削除する。
-      *    03  FILLER                      PIC X(04)   VALUE   ".dat".
-      *
-@@@@@@*    エラーファイル名用のコピー句を追加
-           COPY    "CPRECEERR.INC".
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    ステータス領域
        01  STS-AREA.
@@ -123,7 +118,6 @@
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
            03  IDX4                                PIC 9(05).
-           03  IDXA                                PIC 9(05).
            03  IDXE                                PIC 9(05).
            03  IDX-DAY                             PIC 9(05).
       *
@@ -133,22 +127,19 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-@@@@@@*    エラーファイル名はコピー句を使用する。
-      *    03  RECEERR                             PIC X(100).
+           03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-PTNUM                      PIC X(20).
            03  WRK-PARA-NYUGAIKBN                  PIC X(01).
            03  WRK-PARA-BTUNUM                     PIC X(02).
            03  WRK-PARA-SRTKBN                     PIC X(01).
-           03  WRK-PARA-EDITKBN                    PIC X(10).
+           03  WRK-PARA-EDITKBN                    PIC X(01).
            03  WRK-PARA-SRYKA                      PIC X(02).
            03  WRK-PARA-HOKEN                      PIC X(01).
            03  WRK-PARA-STDAY                      PIC X(05).
            03  WRK-PARA-EDDAY                      PIC X(05).
            03  WRK-PARA-SRYKAKBN                   PIC X(01).
            03  WRK-PARA-HIDEBYOKBN                 PIC X(01).
-           03  WRK-PARA-HIDEHOKATSU                PIC X(01).
-           03  WRK-PARA-EDIT-MEDADL                PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -223,13 +214,6 @@
            03  SORTKEY5-KEY    REDEFINES           SORTKEY1-KEY.
                05  SORTKEY5-RENNUM                 PIC 9(10).
                05  SORTKEY5-DUMMY                  PIC X(120).
-      *    ターミナルデジット順
-           03  SORTKEY6-KEY    REDEFINES           SORTKEY1-KEY.
-               05  SORTKEY6-SRYKA                  PIC X(02).
-               05  SORTKEY6-HOKENBUNRUI            PIC X(01).
-               05  SORTKEY6-TDIGIT                 PIC X(02).
-               05  SORTKEY6-PTNUM                  PIC X(20).
-               05  SORTKEY6-DUMMY                  PIC X(105).
       *
        01  KEY-AREA.
            03  KEY-SRYKA                           PIC X(02).
@@ -334,13 +318,6 @@
       *    数値変換
            COPY    "CPORCSNUM.INC".
       *
-@@@@@@*    サブプログラムのコピーを追加
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
-      *    一時テーブル編集
-           COPY    "CPORCSTEMPTBL.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -394,8 +371,6 @@
            INITIALIZE                  ERR-EDIT-AREA
 grpsys     INITIALIZE                  SPA-AREA
            INITIALIZE                  WRK-PARA
-@@@@@@*    エラーファイル名初期化
-           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -441,24 +416,15 @@ grpsys     END-UNSTRING
       *
            MOVE    WRK-PARA-NYUGAIKBN  TO  WRK-NYUGAI
       *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   10 )
-      *
-               EVALUATE    WRK-PARA-EDITKBN (IDX0 : 1)
-               WHEN    "1"
-                   MOVE    "1"             TO  WRK-PARA-SRYKAKBN
-               WHEN    "2"
-                   MOVE    "1"             TO  WRK-PARA-HIDEBYOKBN
-               WHEN    "3"
-                   MOVE    "1"             TO  WRK-PARA-SRYKAKBN
-                   MOVE    "1"             TO  WRK-PARA-HIDEBYOKBN
-               WHEN    "4"
-                   MOVE    "1"             TO  WRK-PARA-HIDEHOKATSU
-               WHEN    "5"
-                   MOVE   "1"              TO  WRK-PARA-EDIT-MEDADL
-               END-EVALUATE
-      *
-           END-PERFORM
+           EVALUATE    WRK-PARA-EDITKBN
+           WHEN    "1"
+               MOVE    "1"             TO  WRK-PARA-SRYKAKBN
+           WHEN    "2"
+               MOVE    "1"             TO  WRK-PARA-HIDEBYOKBN
+           WHEN    "3"
+               MOVE    "1"             TO  WRK-PARA-SRYKAKBN
+               MOVE    "1"             TO  WRK-PARA-HIDEBYOKBN
+           END-EVALUATE
       *
            IF    ( WRK-PARA-SRYKA      NOT =   SPACE )
             AND  ( WRK-PARA-SRYKAKBN       =   SPACE )
@@ -500,24 +466,9 @@ grpsys     END-UNSTRING
                                            JOBKANRI-REC
                                            SPA-AREA
       *
-@@@@@@*    サブプログラムより、一時ファイル名の編集を行う。
-@@@@@@*    ORCBG00701PARA-FULLNAME設定後の
-@@@@@@*    ORCBG00701PARA-BASENAME再利用はできません。
-           INITIALIZE                      SGETTEMP-AREA
-      *
            MOVE    WRK-PARA-HOSPNUM    TO  ORCBG00701PARA-HOSPNUM
            MOVE    "BG00701"           TO  ORCBG00701PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  ORCBG00701PARA-TERMID
-      *
-           MOVE    ORCBG00701PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  ORCBG00701PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECEERR
       *
       *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC
@@ -537,11 +488,11 @@ grpsys     END-UNSTRING
       *****************************************************************
        110-SPA-SET-SEC                 SECTION.
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                        TO  SPA-SYSYMD
-           MOVE    WRK-PARA-SRYYM      TO  SPA-SRYYMD
-           MOVE    "01"                TO  SPA-SRYYMD(7:)
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
            MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
       *
            .
@@ -657,11 +608,6 @@ grpsys     END-UNSTRING
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    IF    ( WRK-PARA-STDAY  NOT =   SPACE )
-      *     OR   ( WRK-PARA-EDDAY  NOT =   SPACE )
-      *        PERFORM 800-TEMP-TABLE-CREATE-SEC
-      *    END-IF
-      *
            EVALUATE    WRK-PARA-NYUGAIKBN
                                    ALSO WRK-PARA-PTNUM
       *    入院全患者
@@ -684,11 +630,6 @@ grpsys     END-UNSTRING
            IF    ( FLG-END     =   ZERO )
                PERFORM 2101-KAIKEI-HEN-SEC
            END-IF
-      *
-      *    IF    ( WRK-PARA-STDAY  NOT =   SPACE )
-      *     OR   ( WRK-PARA-EDDAY  NOT =   SPACE )
-      *        PERFORM 800-TEMP-TABLE-DROP-SEC
-      *    END-IF
       *
            MOVE    1                   TO  FLG-END
       *
@@ -806,14 +747,18 @@ grpsys     END-UNSTRING
            IF    ( FLG-END     =   1 )
                GO  TO  21011-NYU-BG00701-HEN-EXT
            END-IF
+           IF    ( PTINF-TSTPTNUMKBN   =   "1" )
+               CONTINUE
+           ELSE
       *
-           MOVE    PTNYUINRRK-PTID     TO  WRK-PTID
-           PERFORM 800-ORCSS001-SEC
+               MOVE    PTNYUINRRK-PTID     TO  WRK-PTID
+               PERFORM 800-ORCSS001-SEC
       *
-           IF    ( SS001-SRYKA-MAX     >   ZERO )
-               PERFORM 21011-NYU-BG00701-OUT-SEC
-               IF    ( FLG-END     =   1 )
-                   GO  TO  21011-NYU-BG00701-HEN-EXT
+               IF    ( SS001-SRYKA-MAX     >   ZERO )
+                   PERFORM 21011-NYU-BG00701-OUT-SEC
+                   IF    ( FLG-END     =   1 )
+                       GO  TO  21011-NYU-BG00701-HEN-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -960,26 +905,6 @@ grpsys     END-UNSTRING
                MOVE    PTNUM-PTNUM         TO  SORTKEY4-PTNUM
                MOVE    SORTKEY4-KEY        TO  BG00701-KEY
       *
-           WHEN    "6"
-      *
-               MOVE    SS001-SRYKA (IDX1)  TO  SORTKEY6-SRYKA
-               MOVE    WRK-HOKENBUNRUI     TO  SORTKEY6-HOKENBUNRUI
-      *
-               PERFORM VARYING IDXA    FROM    20   BY  -1
-                       UNTIL ( IDXA        <   2 )
-      *
-                   IF ( IDXA               <=  2 )
-                    OR( PTNUM-PTNUM (IDXA : )   NOT  = SPACE )
-                       MOVE    PTNUM-PTNUM (IDXA - 1 : 2)
-                                           TO  SORTKEY6-TDIGIT
-                       MOVE    2           TO  IDXA
-                   END-IF
-      *
-               END-PERFORM
-      *
-               MOVE    PTNUM-PTNUM         TO  SORTKEY6-PTNUM
-               MOVE    SORTKEY6-KEY        TO  BG00701-KEY
-      *
            WHEN    OTHER
                MOVE    SS001-SRYKA (IDX1)  TO  SORTKEY4-SRYKA
                MOVE    WRK-HOKENBUNRUI     TO  SORTKEY4-HOKENBUNRUI
@@ -999,8 +924,6 @@ grpsys     END-UNSTRING
       *
            MOVE    SS001-SRYKA-NYURRK-DAY-G (IDX1)
                                            TO  BG00701-SRYKADAY-G
-      *
-           MOVE    PTINF-TSTPTNUMKBN       TO  BG00701-TSTPTNUMKBN
       *
            WRITE   BG00701-REC
       *
@@ -1311,10 +1234,6 @@ grpsys     END-UNSTRING
            IF    ( WRK-PARA-PTNUM      NOT =   SPACE )
                MOVE    "1"             TO  ORCHCM34-PRTCTRLKBN
            END-IF
-           MOVE    WRK-PARA-HIDEHOKATSU
-                                       TO  ORCHCM34-HIDEHOKATSU
-           MOVE    WRK-PARA-EDIT-MEDADL
-                                       TO  ORCHCM34-EDIT-MEDADL
       *
            MOVE    ORCSPRTAREA         TO  ORCHCM34-PRTAREA
       *
@@ -1402,7 +1321,6 @@ grpsys     END-UNSTRING
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    CNT-JOB-UPDCNT  TO  JOB-UPDCNT
-      *     
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -1639,45 +1557,6 @@ grpsys     END-UNSTRING
        800-ERRMSG-EDIT-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    一時テーブル作成処理
-      *****************************************************************
-       800-TEMP-TABLE-CREATE-SEC           SECTION.
-      *
-           INITIALIZE                      STEMPTBL-AREA
-           MOVE    WRK-PARA-SRYYM      TO  STEMPTBL-SRYYM
-           MOVE    WRK-STDAY           TO  STEMPTBL-FROM
-           MOVE    WRK-EDDAY           TO  STEMPTBL-TO
-           MOVE    "DBCREATE"          TO  STEMPTBL-FUNC
-           MOVE    "SRYACCT"           TO  STEMPTBL-TABLE
-           CALL    "ORCSTEMPTBL"       USING
-                                       STEMPTBL-AREA
-                                       SPA-AREA
-      *
-           PERFORM 900-DBCOMMIT-SEC
-           PERFORM 900-DBSTART-SEC
-      *
-           .
-       800-TEMP-TABLE-CREATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    一時テーブル廃棄処理
-      *****************************************************************
-       800-TEMP-TABLE-DROP-SEC         SECTION.
-      *
-           PERFORM 900-DBCOMMIT-SEC
-           PERFORM 900-DBSTART-SEC
-      *
-           INITIALIZE                      STEMPTBL-AREA
-           MOVE    "DBDROP"            TO  STEMPTBL-FUNC
-           MOVE    "SRYACCT"           TO  STEMPTBL-TABLE
-           CALL    "ORCSTEMPTBL"       USING
-                                       STEMPTBL-AREA
-                                       SPA-AREA
-      *
-           .
-       800-TEMP-TABLE-DROP-EXT.
-           EXIT.
       *****************************************************************
       *    入院履歴検索処理(KEY43)
       *****************************************************************
@@ -2057,12 +1936,6 @@ grpsys     END-UNSTRING
                                             OR "7" OR "8" OR "9" ))
                        CONTINUE
                    ELSE
-                       MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-               END-IF
-      *
-               IF    ( WRK-PARA-PTNUM      =   SPACE )
-                   IF    ( BG00701-TSTPTNUMKBN =   "1" )
                        MOVE    ZERO    TO  FLG-LOOPEND
                    END-IF
                END-IF
