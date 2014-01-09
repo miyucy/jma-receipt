@@ -2794,6 +2794,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6"
       *            给巢
                    MOVE    "2"             TO  SSANTEI-HKNKBN
+      *
+               WHEN    "7"
+      *            极清勒∈妈话荚乖百∷
+                   MOVE    "1"             TO  SSANTEI-HKNKBN
+                   MOVE    "6"             TO  SSANTEI-RSI-HKNKBN
+                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
            END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
