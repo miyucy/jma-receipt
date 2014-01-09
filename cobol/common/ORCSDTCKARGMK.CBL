@@ -35,7 +35,7 @@
        FILE-CONTROL.
       *
       *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  ASGNPARA
+           SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
@@ -49,8 +49,6 @@
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-           COPY    "CPASGNPARA.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -97,6 +95,10 @@
        01  WRK-PARA-REA.
            COPY    "CPORCSPRTLNK.INC".
       *
+       01  WRK-SHELL-NAME.
+           05  FILLER             PIC X(16) VALUE  "scripts/monthly/".
+           05  WRK-SHELL-SHELL    PIC X(20).
+      *
            COPY    "MCPAREA".
       *
       *    データチェック一括処理パラメータ
@@ -125,9 +127,6 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -227,16 +226,17 @@
            MOVE    WRK-TERMID      TO  RECEERR-TERMID
            MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR-BASENAME    TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-           MOVE    SGETTEMP-ST         TO  ASGNPARA-ST
-      *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE            RECEERR-FILE
       *
-           MOVE   "dtck_prv.sh"    TO  SHELLTBL-NAME
+           MOVE   "dtck_prv.sh"    TO  WRK-SHELL-SHELL
+      *
+           MOVE    SPACE           TO  SHELLTBL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *                                     
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
@@ -311,8 +311,7 @@
            MOVE    LNK-PRTKANRI-TBL-KEY
                                    TO  SHELLTBL-ARG14
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
-           MOVE    ASGNPARA (ASGNPARA-ST :)
-                                   TO  SHELLTBL-ARG16
+           MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    ORCBSD01-IKTKBT TO  SHELLTBL-ARG17
            MOVE    ORCBSD01-SRYYM  TO  SHELLTBL-ARG18
            MOVE    ORCBSD01-NYUGAIKBN
@@ -355,7 +354,7 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "monthly"       TO  MCP-PATHNAME
+           MOVE    "shell"         TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC

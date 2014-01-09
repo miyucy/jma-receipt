@@ -64,10 +64,9 @@
            COPY  "HCGS121GV02.INC" REPLACING  //HCGS121GV02//
                                    BY         //HCGS121G//.
       *
-           COPY  "CPASGNPARA.INC"  REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGSMEI//.
-           COPY  "CPASGNPARA.INC"  REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGS100ERR//.
+       01  ASS-AREA.
+           03  ASS-BGSMEI          PIC X(255).
+           03  ASS-BGS100ERR       PIC X(255).
       *
        01  STS-AREA.
            03  STS-BGSMEI          PIC X(02).
@@ -129,14 +128,13 @@
            03  WRK-NYUGAIKBN       PIC X(01).
            03  WRK-NYUGAIKBNMEI    PIC X(04).
            03  WRK-PRTKBN.
-               05  WRK-PRTKBNZ9    PIC Z9.
+               05  WRK-PRTKBN9     PIC 9(01).
            03  WRK-PRTKBNMEI       PIC X(40).
            03  WRK-DATAKBN         PIC X(01).
            03  WRK-DATAKBNMEI      PIC X(50).
-           03  WRK-SBTKBN-G.
-               05  WRK-SBTGRPID    PIC 9(02).
-               05  WRK-SBTRATE     PIC 9(02).
-               05  WRK-SBTHKN      PIC 9(02).
+           03  WRK-HKNKBN-G.
+               05  WRK-HKNKBN1     PIC 9(02).
+               05  WRK-HKNKBN2     PIC 9(02).
            03  WRK-HKNKBNNAME      PIC X(20).
            03  WRK-SYUKA-HKN       PIC 9(01).
            03  WRK-HKNKBN-HKN-G.
@@ -276,17 +274,15 @@
            03  KEY-RECEKA          PIC X(02).
            03  KEY-NYUGAIKBN       PIC X(01).
            03  KEY-SKYSBT          PIC X(01).
-           03  KEY-SBTKBN-G.
-               05  KEY-SBTGRPID    PIC 9(02).
-               05  KEY-SBTRATE     PIC 9(02).
-               05  KEY-SBTHKN      PIC 9(02).
+           03  KEY-HKNKBN-G.
+               05  KEY-HKNKBN1     PIC 9(02).
+               05  KEY-HKNKBN2     PIC 9(02).
       *
        01  CONST-AREA.
-           03  CONST-H2605         PIC X(06)   VALUE "201405".
            03  CONST-SYAHO         PIC 9(02)   VALUE 1.
            03  CONST-KOKUHO        PIC 9(02)   VALUE 2.
            03  CONST-KOUKI         PIC 9(02)   VALUE 3.
-           03  CONST-TOKUYO        PIC 9(02)   VALUE 4.
+           03  CONST-TOKUYOU       PIC 9(02)   VALUE 4.
            03  CONST-JIHI          PIC 9(02)   VALUE 5.
            03  CONST-CHIKEN        PIC 9(02)   VALUE 6.
            03  CONST-ROUSAI        PIC 9(02)   VALUE 7.
@@ -316,10 +312,6 @@
       *
            03  CONST-KOU-KOU9      PIC 9(02)   VALUE 1.
            03  CONST-KOU-KOU7      PIC 9(02)   VALUE 2.
-      *
-           03  CONST-TKY-H068      PIC 9(02)   VALUE 1.
-           03  CONST-TKY-H069      PIC 9(02)   VALUE 2.
-           03  CONST-TKY-H040      PIC 9(02)   VALUE 3.
       *
            03  CONST-RSI-TG        PIC 9(02)   VALUE 1.
            03  CONST-RSI-TT        PIC 9(02)   VALUE 2.
@@ -584,7 +576,7 @@
            PERFORM UNTIL ( FLG-BGSMEI  NOT =   ZERO )
       *
                MOVE    BGSMEI-NYUGAIKBN    TO  KEY-NYUGAIKBN
-               MOVE    BGSMEI-SBTKBN-G     TO  KEY-SBTKBN-G
+               MOVE    BGSMEI-RECESBT      TO  KEY-HKNKBN-G
                MOVE    SPACE               TO  WRK-HKNKBNNAME
                INITIALIZE                      TOTAL-AREA
       *
@@ -637,9 +629,6 @@
            WHEN    CONST-KOUKI
                MOVE    "∈稿袋光勿荚∷"
                                        TO  HCGS121N-HKNNAME
-           WHEN    CONST-TOKUYO
-               MOVE    "∈泼侍闻蛙锐∷" 
-                                       TO  HCGS121N-HKNNAME
            WHEN    CONST-ROUSAI
                MOVE    "∈汐阂∷"      TO  HCGS121N-HKNNAME
            WHEN    CONST-JIBAI
@@ -680,9 +669,9 @@
       *
            COMPUTE CNT-LINE = CNT-LINE +   1
       *
-           MOVE    BGSMEI-SBTKBN-G TO  WRK-SBTKBN-G
+           MOVE    BGSMEI-RECESBT      TO  WRK-HKNKBN-G
       *
-           IF    ( WRK-SBTHKN      =   CONST-HKNKBN2-TTL )
+           IF    ( WRK-HKNKBN2     =   CONST-HKNKBN2-TTL )
                MOVE    "　　井　纷"
                                    TO  HCGS121N-HKNKBNNAME (CNT-LINE)
                                        TMPS121-HKNKBNNAME (CNT-LINE)
@@ -690,33 +679,19 @@
       *
                PERFORM 900-PTNUM-KEY-SEL-SEC
       *
-               IF    ( CNT-LINE            =   1 )
-                OR   ( KEY-SBTGRPID    NOT =   WRK-SBTGRPID )
-                OR   ( KEY-SBTRATE     NOT =   WRK-SBTRATE )
+               IF    ( CNT-LINE        =   1 )
+                OR   ( KEY-HKNKBN1 NOT =   WRK-HKNKBN1 )
       *
-                   MOVE    WRK-SBTGRPID
-                                   TO  KEY-SBTGRPID
-                   MOVE    WRK-SBTRATE
-                                   TO  KEY-SBTRATE
+                   MOVE    WRK-HKNKBN1
+                                   TO  KEY-HKNKBN1
       *
                    PERFORM 2201-HKNKBNNAME-EDIT-SEC
-      *
-                   EVALUATE    WRK-HKNKBNNAME
-                   WHEN "光办给锐驶脱∈９∷"
-                       MOVE    "光办给锐驶脱(9)"
-                                   TO  HCGS121N-HKNKBNNAME(CNT-LINE)(3:)
-                   WHEN "光办给锐驶脱∈８∷"
-                       MOVE    "光办给锐驶脱(8)"
-                                   TO  HCGS121N-HKNKBNNAME(CNT-LINE)(3:)
-                   WHEN OTHER
-                       MOVE    WRK-HKNKBNNAME
-                                   TO  HCGS121N-HKNKBNNAME(CNT-LINE)(3:)
-                   END-EVALUATE
-      *
+                   MOVE    WRK-HKNKBNNAME
+                                   TO  HCGS121N-HKNKBNNAME (CNT-LINE)
                END-IF
       *
                IF   (  BGSMEI-HOKEN        =   CONST-SYAHO
-                   AND WRK-SBTGRPID        =   CONST-SYA-KOH )
+                   AND WRK-HKNKBN1         =   CONST-SYA-KOH )
                  OR (  BGSMEI-HOKEN        =   CONST-ROUSAI
                                             OR CONST-JIBAI
                                             OR CONST-KOUGAI
@@ -724,14 +699,12 @@
                                                             )
                    CONTINUE
                ELSE
-                   IF    ( BGSMEI-HOKEN    NOT =   CONST-TOKUYO )
-                       IF    ( BGSMEI-HKNNUM   =   "009" )
-                           MOVE    "01"
+                   IF    ( BGSMEI-HKNNUM   =   "009" )
+                       MOVE    "01"
                                    TO  HCGS121N-HBTNUM (CNT-LINE)
-                       ELSE
-                           MOVE    BGSMEI-HKNNUM (2:2)
+                   ELSE
+                       MOVE    BGSMEI-HKNNUM (2:2)
                                    TO  HCGS121N-HBTNUM (CNT-LINE)
-                       END-IF
                    END-IF
       *
                    MOVE    BGSMEI-HKNJANUM
@@ -744,13 +717,6 @@
                                    TO  HCGS121N-HKNJANAME (CNT-LINE)
                    END-IF
                END-IF
-      *
-               EVALUATE    BGSMEI-SEIKYUFLG
-               WHEN   1
-                    MOVE    "" TO  HCGS121N-HKNKBNNAME(CNT-LINE)(1:2)
-               WHEN   2
-                    MOVE    "〓" TO  HCGS121N-HKNKBNNAME(CNT-LINE)(1:2)
-               END-EVALUATE
       *
                IF    ( PTNUM-PTNUM (11:)   =   SPACE )
                    MOVE    PTNUM-PTNUM
@@ -785,12 +751,8 @@
            MOVE    BGSMEI-REC      TO  TBGSMEI-AREA
            MOVE    CNT-LINE        TO  IDXM
            PERFORM 2201-BODY-SEC
-           IF    ( BGSMEI-SEIKYUFLG    =    2 )
-               MOVE    SPACE       TO  HCGS121N-NISSU (CNT-LINE)
-                                       HCGS121N-TENSU (CNT-LINE)
-           END-IF
       *
-           IF    ( WRK-SBTHKN     NOT =   CONST-HKNKBN2-TTL )
+           IF    ( WRK-HKNKBN2     NOT =   CONST-HKNKBN2-TTL )
                PERFORM 2201-TOTAL-SUM-SEC
            END-IF
       *
@@ -898,33 +860,13 @@
       *
            EVALUATE    BGSMEI-HOKEN
            WHEN    CONST-SYAHO
-               EVALUATE    WRK-SBTGRPID
+               EVALUATE    WRK-HKNKBN1
                WHEN    CONST-SYA-KOU9HEI
-                   IF    ( BGS100P-SRYYM  >=  CONST-H2605 )
-                       IF    ( BGSMEI-SBTRATE  =  1 )
-                           MOVE    "光办给锐驶脱∈９∷"
+                   MOVE    "光９给锐驶脱"
                                        TO  WRK-HKNKBNNAME
-                       ELSE
-                           MOVE    "光办给锐驶脱∈８∷"
-                                       TO  WRK-HKNKBNNAME
-                       END-IF
-                   ELSE
-                       MOVE    "光９给锐驶脱"
-                                       TO  WRK-HKNKBNNAME
-                   END-IF
                WHEN    CONST-SYA-KOU9TAN
-                   IF    ( BGS100P-SRYYM  >=  CONST-H2605 )
-                       IF    ( BGSMEI-SBTRATE  =  1 )
-                           MOVE    "光办帽迫∈９∷"
+                   MOVE    "光９帽迫"
                                        TO  WRK-HKNKBNNAME
-                       ELSE
-                           MOVE    "光办帽迫∈８∷"
-                                       TO  WRK-HKNKBNNAME
-                       END-IF
-                   ELSE
-                       MOVE    "光９帽迫"
-                                       TO  WRK-HKNKBNNAME
-                   END-IF
                WHEN    CONST-SYA-KOU7HEI
                    MOVE    "光７给锐驶脱"
                                        TO  WRK-HKNKBNNAME
@@ -954,20 +896,10 @@
                                        TO  WRK-HKNKBNNAME
                END-EVALUATE
            WHEN    CONST-KOKUHO
-               EVALUATE    WRK-SBTGRPID
+               EVALUATE    WRK-HKNKBN1
                WHEN    CONST-KOK-IPNKOU9
-                   IF    ( BGS100P-SRYYM  >=  CONST-H2605 )
-                       IF    ( BGSMEI-SBTRATE  =  1 )
-                           MOVE    "办忍光办∈９∷"
+                   MOVE    "办忍光９"
                                        TO  WRK-HKNKBNNAME
-                       ELSE
-                           MOVE    "办忍光办∈８∷"
-                                       TO  WRK-HKNKBNNAME
-                       END-IF
-                   ELSE
-                       MOVE    "办忍光９"
-                                       TO  WRK-HKNKBNNAME
-                   END-IF
                WHEN    CONST-KOK-IPNKOU7
                    MOVE    "办忍光７"
                                        TO  WRK-HKNKBNNAME
@@ -988,7 +920,7 @@
                                        TO  WRK-HKNKBNNAME
                END-EVALUATE
            WHEN    CONST-KOUKI
-               EVALUATE    WRK-SBTGRPID
+               EVALUATE    WRK-HKNKBN1
                WHEN    CONST-KOU-KOU9
                    MOVE    "光９"
                                        TO  WRK-HKNKBNNAME
@@ -996,20 +928,8 @@
                    MOVE    "光７"
                                        TO  WRK-HKNKBNNAME
                END-EVALUATE
-           WHEN    CONST-TOKUYO
-               EVALUATE    WRK-SBTGRPID
-               WHEN    CONST-TKY-H068
-                   MOVE    "泼蛙锐"
-                                       TO  WRK-HKNKBNNAME
-               WHEN    CONST-TKY-H069
-                   MOVE    "锣泼蛙锐"
-                                       TO  WRK-HKNKBNNAME
-               WHEN    CONST-TKY-H040
-                   MOVE    "稿袋泼蛙锐"
-                                       TO  WRK-HKNKBNNAME
-               END-EVALUATE
            WHEN    CONST-ROUSAI
-               EVALUATE    WRK-SBTGRPID
+               EVALUATE    WRK-HKNKBN1
                WHEN    CONST-RSI-TG
                    MOVE    "没袋ˇ度坛"
                                        TO  WRK-HKNKBNNAME
@@ -1030,7 +950,7 @@
                                        TO  WRK-HKNKBNNAME
                END-EVALUATE
            WHEN    CONST-JIBAI
-               EVALUATE    WRK-SBTGRPID
+               EVALUATE    WRK-HKNKBN1
                WHEN    CONST-JBI-NEW
                    MOVE    "糠屯及"
                                        TO  WRK-HKNKBNNAME
@@ -1039,13 +959,13 @@
                                        TO  WRK-HKNKBNNAME
                END-EVALUATE
            WHEN    CONST-KOUGAI
-               EVALUATE    WRK-SBTGRPID
+               EVALUATE    WRK-HKNKBN1
                WHEN    CONST-KGI-GRP
                    MOVE    "给巢"
                                        TO  WRK-HKNKBNNAME
                END-EVALUATE
            WHEN    CONST-DAISAN
-               EVALUATE    WRK-SBTGRPID
+               EVALUATE    WRK-HKNKBN1
                WHEN    CONST-DSN-GRP
                    MOVE    "妈话荚乖百"
                                        TO  WRK-HKNKBNNAME
@@ -1184,7 +1104,7 @@
       *****************************************************************
        2001-HCGS121-CSV-SEC            SECTION.
       *
-           MOVE    BGS100P-HOKEN   TO  WRK-PRTKBNZ9
+           MOVE    BGS100P-HOKEN   TO  WRK-PRTKBN9
       *
            MOVE    SPACE           TO  WRK-PRTKBNMEI
            EVALUATE    BGS100P-HOKEN
@@ -1195,8 +1115,6 @@
            WHEN    CONST-KOUKI
                MOVE    "稿袋光勿荚"
                                    TO  WRK-PRTKBNMEI
-           WHEN    CONST-TOKUYO
-               MOVE    "泼侍闻蛙锐" TO WRK-PRTKBNMEI
            WHEN    CONST-ROUSAI
                MOVE    "汐阂"      TO  WRK-PRTKBNMEI
            WHEN    CONST-JIBAI
@@ -1712,7 +1630,7 @@
                                MOVE    ZERO    TO  FLG-LOOPEND
                            END-IF
                            IF    ( BGS100P-HKNKBN
-                                       NOT =   BGSMEI-SBTKBN-G (1:2))
+                                           NOT =   BGSMEI-RECESBT (1:2))
                                MOVE    ZERO    TO  FLG-LOOPEND
                            END-IF
                        ELSE

@@ -61,12 +61,12 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "HCM402V03.INC"
-                                   REPLACING  //HCM402V03//
+           COPY    "HCM402V02.INC"
+                                   REPLACING  //HCM402V02//
                                    BY         //HCM402//.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //DTCHKERRPARA//.
       *
       *    中間ファイルファイル名称領域 
@@ -215,9 +215,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -233,7 +230,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -303,15 +300,6 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
            MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    DTCHK004PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-      *
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  DTCHK004PARA-FULLNAME
       *
       *    データチェック２機能情報
            PERFORM 1001-SYS1101-GET-SEC
@@ -701,12 +689,7 @@
       *
            IF    ( WRK-MESG        NOT =   WRK-MESG-ORG )
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
-               MOVE    WRK-MESG        TO  HCM402-MESG2 (CNT-LINE)
-               IF    ( HCM402-MESG2 (CNT-LINE)(157:)   =   SPACE )
-                   MOVE    HCM402-MESG2 (CNT-LINE)
-                                       TO  HCM402-MESG (CNT-LINE)
-                   MOVE    SPACE       TO  HCM402-MESG2 (CNT-LINE)
-               END-IF
+               MOVE    WRK-MESG        TO  HCM402-MESG (CNT-LINE)
            END-IF
       *
            .
@@ -832,19 +815,13 @@
                    STRING  WRK-HKNMES      DELIMITED   BY  SPACE
                            "："            DELIMITED   BY  SIZE
                            DTCHK004-ERRMSG DELIMITED   BY  SIZE
-                   INTO    HCM402-MESG2 (CNT-LINE)
+                   INTO    HCM402-MESG  (CNT-LINE)
                    END-STRING
                ELSE
-                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG2  (CNT-LINE)
+                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG  (CNT-LINE)
                END-IF
            ELSE
-                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG2  (CNT-LINE)
-           END-IF
-      *
-           IF    ( HCM402-MESG2 (CNT-LINE)(157:)   =   SPACE )
-               MOVE    HCM402-MESG2 (CNT-LINE)
-                                   TO  HCM402-MESG  (CNT-LINE)
-               MOVE    SPACE       TO  HCM402-MESG2 (CNT-LINE)
+                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG  (CNT-LINE)
            END-IF
       *
            .
@@ -930,7 +907,7 @@
            MOVE    WRK-SHORI-RENNUM    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM402V03.red"      TO  SPRT-PRTID
+           MOVE   "HCM402V02.red"      TO  SPRT-PRTID
            IF    ( WRK-HKNMES      NOT =   SPACE )
                STRING  WRK-SPRT-TITLE      DELIMITED   BY  SPACE
                        "（"                DELIMITED   BY  SIZE

@@ -61,12 +61,12 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "HCM401V05.INC"
-                                   REPLACING  //HCM401V05//
+           COPY    "HCM401V04.INC"
+                                   REPLACING  //HCM401V04//
                                    BY         //HCM401//.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //DTCHKERRPARA//.
       *
       *    中間ファイルファイル名称領域 
@@ -209,9 +209,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -227,7 +224,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -295,13 +292,6 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
            MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    DTCHK004PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  DTCHK004PARA-FULLNAME
       *
       *    データチェック２機能情報
            PERFORM 1001-SYS1101-GET-SEC
@@ -958,7 +948,7 @@
            MOVE    WRK-SHORI-RENNUM    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM401V05.red"      TO  SPRT-PRTID
+           MOVE   "HCM401V04.red"      TO  SPRT-PRTID
            IF    ( WRK-HKNMES      NOT =   SPACE )
                STRING  WRK-SPRT-TITLE      DELIMITED   BY  SPACE
                        "（"                DELIMITED   BY  SIZE

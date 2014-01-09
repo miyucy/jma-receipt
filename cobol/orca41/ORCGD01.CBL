@@ -45,7 +45,6 @@
       *  01.00.10    NACL-太田    03/11/19  シェルパラメータの変更他
       *  01.00.11    NACL-森脇    04/07/29  直前ジョブ管理チェック
       *  03.05.00    NACL-太田    07/06/01  グループ診療対応
-      *  05.00.00    NACL-森脇    17/11/30  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -99,7 +98,7 @@
                            11  SPA-GMN-D01-USRCHKKBN       PIC X(02).
                            11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-USRCHKKBNMEI    PIC X(30).
-                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  20.
+                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  19.
                            11  SPA-GMN-D01-CHKKBN-G.
                                13  SPA-GMN-D01-CHKKBN      PIC X(01).
                                13  SPA-GMN-D01-FL1         PIC X(01).
@@ -108,7 +107,7 @@
                            11  SPA-GMN-D01-INGAIPROCKBN    PIC X(01).
                            11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-INGAIPROCKBNMEI PIC X(18).
-                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  20.
+                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  19.
                        09  SPA-GMN-D01-CHKMSG              PIC X(40).
                    07  SPA-GMN-D01-INGAIPROCMSG            PIC X(40).
                    07  SPA-GMN-D01-NYUGAIKBNLST-G.
@@ -172,10 +171,6 @@
        01  STS-AREA.
            03  STS-DID1                    PIC X(02).
       *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-CHK                     PIC 9(05).
-      *
       *    添字領域
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
@@ -228,7 +223,6 @@
            03  WRK-KBNCD-G.
                05  WRK-KBNCD-NUM           PIC 9(02).
                05  WRK-KBNCD-FL            PIC X(06).
-           03  WRK-MOTOPG                  PIC X(08).
       *
        01  CONST-AREA.
            03  CONST-H2004                 PIC X(06)   VALUE   "200804".
@@ -256,6 +250,10 @@
       *
       *    データチェック確認項目
            COPY    "CPDTCHKKOMOKU.INC".
+      *
+       01  SHELL-AREA.
+           03  SHELL-NAME                  PIC X(50)   VALUE
+               "scripts/allways/orcbsd01.sh".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -313,10 +311,6 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *----(05.00.00)--ADD-START---
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -354,7 +348,6 @@
       *
            INITIALIZE                      FLG-AREA
                                            IDX-AREA
-                                           CNT-AREA
                                            WRK-AREA
       *
            MOVE    SPA-COMMON          TO  SPA-AREA.
@@ -432,7 +425,6 @@
       *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-               MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *
       *        元の画面へ戻す
                IF    ( SPA-MOTOPG      =   "XA01" OR "XB01" OR "XC01" )
@@ -443,7 +435,6 @@
                END-IF
       *
                MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
-               MOVE    WRK-MOTOPG          TO  SPA-MOTOPG
            END-IF
       *
            EVALUATE    SPA-MOTOPG
@@ -609,14 +600,12 @@
        3101-CHKKBNLST-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ユーザーチェック区分コンボ編集処理
+      *    院外処方の処理項目コンボ編集処理
       *****************************************************************
        3101-USRCHKKBNLST-HEN-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-D01-USRCHKKBNLST-G
                                        SPA-NAI-D01-USRCHKKBNLST-G
-      *
-           MOVE    ZERO            TO  CNT-CHK
       *
            INITIALIZE                  CHK004-REC
            MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
@@ -646,23 +635,14 @@
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
-                   EVALUATE    CK4-2002-CHKKBN (IDX0)
-                   WHEN    ZERO
+                   IF    ( CK4-2002-CHKKBN (IDX0)  =   ZERO )
                        MOVE    SPACE   TO  SPA-NAI-D01-USRCHKKBN
                                                          (IDX-CMB IDX0)
-                   WHEN    SPACE
-                       IF    ( IDX0 - 1    =   CNT-CHK )
-                           MOVE    "2"
-                                       TO  SPA-NAI-D01-USRCHKKBN
-                                                         (IDX-CMB IDX0)
-                           COMPUTE CNT-CHK =   CNT-CHK     +   1
-                       END-IF
-                   WHEN    OTHER
+                   ELSE
                        MOVE    CK4-2002-CHKKBN (IDX0)
                                        TO  SPA-NAI-D01-USRCHKKBN
                                                          (IDX-CMB IDX0)
-                       COMPUTE CNT-CHK =   CNT-CHK     +   1
-                   END-EVALUATE
+                   END-IF
                END-PERFORM
       *
                MOVE    CK4-2002-INGAIPROCKBN
@@ -1056,84 +1036,85 @@
       *
            MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
-           MOVE    "orcbsd01.sh"           TO  SHELLTBL-NAME
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-           MOVE    MCP-TENANT              TO  SHELLTBL-ARG1
-      *
-           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG1
            MOVE    LNK-PRTKANRI-RENNUM
-                                           TO  SHELLTBL-ARG3
+                                           TO  SHELLTBL-ARG2
            MOVE    LNK-PRTKANRI-TBL-KEY
-                                           TO  SHELLTBL-ARG4
+                                           TO  SHELLTBL-ARG3
            MOVE    LNK-PRTKANRI-TBL-GROUP
-                                           TO  SHELLTBL-ARG5
+                                           TO  SHELLTBL-ARG4
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                           TO  SHELLTBL-ARG6
+                                           TO  SHELLTBL-ARG5
            MOVE    LNK-PRTKANRI-SRYYM
-                                           TO  SHELLTBL-ARG7
+                                           TO  SHELLTBL-ARG6
            MOVE    LNK-PRTKANRI-SKYYMD
-                                           TO  SHELLTBL-ARG8
+                                           TO  SHELLTBL-ARG7
            MOVE    LNK-PRTKANRI-SHELLID
-                                           TO  SHELLTBL-ARG9
+                                           TO  SHELLTBL-ARG8
            MOVE    LNK-PRTKANRI-PRIORITY
-                                           TO  SHELLTBL-ARG10
+                                           TO  SHELLTBL-ARG9
            MOVE    LNK-PRTKANRI-TERMID
-                                           TO  SHELLTBL-ARG11
+                                           TO  SHELLTBL-ARG10
            MOVE    LNK-PRTKANRI-OPID
-                                           TO  SHELLTBL-ARG12
+                                           TO  SHELLTBL-ARG11
            MOVE    LNK-PRTKANRI-PRTNM
-                                           TO  SHELLTBL-ARG13
+                                           TO  SHELLTBL-ARG12
       *
            MOVE    CONST-JOB-JOBID
-                                           TO  SHELLTBL-ARG14
+                                           TO  SHELLTBL-ARG13
            MOVE    CONST-JOB-SHELLID
-                                           TO  SHELLTBL-ARG15
-           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG16
+                                           TO  SHELLTBL-ARG14
+           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG15
       *
-           MOVE    DTCHKERR-BASENAME       TO  SHELLTBL-ARG17
+           MOVE    DTCHKERR                TO  SHELLTBL-ARG16
       *
-           MOVE    ORCBSD01-IKTKBT         TO  SHELLTBL-ARG18
+           MOVE    ORCBSD01-IKTKBT         TO  SHELLTBL-ARG17
       *
-           MOVE    ORCBSD01-SRYYM          TO  SHELLTBL-ARG19
+           MOVE    ORCBSD01-SRYYM          TO  SHELLTBL-ARG18
       *
-           MOVE    ORCBSD01-NYUGAIKBN      TO  SHELLTBL-ARG20
+           MOVE    ORCBSD01-NYUGAIKBN      TO  SHELLTBL-ARG19
       *
-           MOVE    ORCBSD01-CHKKBN-G       TO  SHELLTBL-ARG21
+           MOVE    ORCBSD01-CHKKBN-G       TO  SHELLTBL-ARG20
       *
-           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SHELLTBL-ARG22
+           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SHELLTBL-ARG21
       *
-           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SHELLTBL-ARG23
+           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SHELLTBL-ARG22
       *
-           MOVE    ORCBSD01-RSIPROCKBN     TO  SHELLTBL-ARG24
+           MOVE    ORCBSD01-RSIPROCKBN     TO  SHELLTBL-ARG23
       *
-           MOVE    ORCBSD01-JBIPROCKBN     TO  SHELLTBL-ARG25
+           MOVE    ORCBSD01-JBIPROCKBN     TO  SHELLTBL-ARG24
       *
-           MOVE    ORCBSD01-JIHIPROCKBN    TO  SHELLTBL-ARG26
+           MOVE    ORCBSD01-JIHIPROCKBN    TO  SHELLTBL-ARG25
       *
-           MOVE    ORCBSD01-INGAIPROCKBN   TO  SHELLTBL-ARG27
+           MOVE    ORCBSD01-INGAIPROCKBN   TO  SHELLTBL-ARG26
       *
-           MOVE    ORCBSD01-PRTSRTKBN      TO  SHELLTBL-ARG28
+           MOVE    ORCBSD01-PRTSRTKBN      TO  SHELLTBL-ARG27
       *
-           MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG29
+           MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG28
       *
-           MOVE    ORCBSD01-SRYYMDKBN      TO  SHELLTBL-ARG30
+           MOVE    ORCBSD01-SRYYMDKBN      TO  SHELLTBL-ARG29
       *
-           MOVE    ORCBSD01-STSRYYMD       TO  SHELLTBL-ARG31
+           MOVE    ORCBSD01-STSRYYMD       TO  SHELLTBL-ARG30
       *
-           MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG32
+           MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG31
       *
-           MOVE    ORCBSD01-KGIPROCKBN     TO  SHELLTBL-ARG33
+           MOVE    ORCBSD01-KGIPROCKBN     TO  SHELLTBL-ARG32
       *
-           MOVE    ORCBSD01-KOUKIPROCKBN   TO  SHELLTBL-ARG34
+           MOVE    ORCBSD01-KOUKIPROCKBN   TO  SHELLTBL-ARG33
       *
-           MOVE    ORCBSD01-CHIKENPROCKBN  TO  SHELLTBL-ARG35
+           MOVE    ORCBSD01-CHIKENPROCKBN  TO  SHELLTBL-ARG34
       *
-           MOVE    ORCBSD01-DAISANPROCKBN  TO  SHELLTBL-ARG36
+           MOVE    ORCBSD01-DAISANPROCKBN  TO  SHELLTBL-ARG35
       *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
            MOVE    "shell"                 TO  MCP-TABLE
-           MOVE    "allways"               TO  MCP-PATHNAME
+           MOVE    "shell"                 TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1154,7 +1135,11 @@
                MOVE    SPACE               TO  SHELLTBL
       *
       *        ファイルデイレクトリ位置指定
-               MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
+               INITIALIZE                  ORCSMKPASSAREA
+               MOVE    "/scripts/allways/print_prv.sh"
+                                           TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
                MOVE    SPACE               TO  LNK-PRTKANRI-AREA
                INITIALIZE                      LNK-PRTKANRI-AREA
                MOVE    CONST-PRTKANRI-TBL-KEY
@@ -1186,7 +1171,7 @@
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *
-               MOVE    DTCHKERR-BASENAME   TO  SHELLTBL-ARG12
+               MOVE    DTCHKERR            TO  SHELLTBL-ARG12
                MOVE    CONST-JOB-JOBID     TO  SHELLTBL-ARG13
                MOVE    CONST-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
@@ -1197,22 +1182,14 @@
                    MOVE    "3"             TO  SHELLTBL-ARG17
       *         WHEN    "NO"
       *             MOVE    "3"             TO  SHELLTBL-ARG17
-      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   IF      SPA-CLIENT-PRT-FLG  =  2
-                       MOVE    "5"         TO  SHELLTBL-ARG17
-                   ELSE
-                       MOVE    "2"         TO  SHELLTBL-ARG17
-                   END-IF
+                   MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-               MOVE    SPA-CLIENT-SHOWDIALOG
-                                           TO  SHELLTBL-ARG22
-      *----(05.00.00)--ADD-END-----
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "allways"           TO  MCP-PATHNAME
+               MOVE    "shell"             TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -2523,7 +2500,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  D99
-           INITIALIZE                      D99
            MOVE    ZERO                TO  D99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  D99-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE
@@ -3110,8 +3086,6 @@
                MOVE    "CHKKBN18"      TO  MCP-WIDGET
            WHEN    21
                MOVE    "CHKKBN19"      TO  MCP-WIDGET
-           WHEN    22
-               MOVE    "CHKKBN20"      TO  MCP-WIDGET
            WHEN    51
                MOVE    "INGAIPROCKBN"  TO  MCP-WIDGET
            WHEN    101
@@ -3191,8 +3165,6 @@
            WHEN    "CHKKBN18"
                MOVE    21              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN19"
-               MOVE    22              TO  SPA-GMN-D01-CUR
-           WHEN    "CHKKBN20"
                MOVE    51              TO  SPA-GMN-D01-CUR
            WHEN    "CHK_SYAHO"
                MOVE    102             TO  SPA-GMN-D01-CUR
@@ -3342,7 +3314,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  DID1
-           INITIALIZE                      DID1
            MOVE    SPA-DIDCD           TO  DID1-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -3381,7 +3352,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  DID2
-           INITIALIZE                      DID2
            MOVE    SPA-DIDCD           TO  DID2-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

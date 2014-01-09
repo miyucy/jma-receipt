@@ -43,7 +43,7 @@
        01  DTCHK-RC                    PIC S9(09).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //DTCHKERRPARA//.
       *
       *    パラメタ領域
@@ -73,9 +73,6 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -213,11 +210,6 @@
                    PERFORM 100-DBOPEN-SEC
            END-IF
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    DTCHKERRPARA        TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  DTCHKERRPARA
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -268,8 +260,6 @@
            END-IF
       *
            IF    ( DTCHK-RC            =   ZERO )
-      *        入院会計は現状入院時算定可能な項目のみ
-      *        登録している為、入院処理時に限り実行する。
                IF    ( ORCBSD01-NYUGAIKBN  =       "1" )
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK006"
@@ -293,18 +283,6 @@
                                                ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK001"
-           END-IF
-      *
-           IF    ( DTCHK-RC            =   ZERO )
-                   PERFORM 800-MCNDATE-SEC
-                   DISPLAY SMCNDATE-HMS "ST:ORCDTCHK011"
-                   CALL    "ORCDTCHK011"       USING
-                                               DTCHK-RC
-                                               WRK-PARA
-                                               DTCHKERRPARA
-                                               ORCBSD01PARA
-                   PERFORM 800-MCNDATE-SEC
-                   DISPLAY SMCNDATE-HMS "ED:ORCDTCHK011"
            END-IF
       *
            IF    ( DTCHK-RC            =   ZERO )

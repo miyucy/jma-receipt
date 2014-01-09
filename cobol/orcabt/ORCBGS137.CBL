@@ -89,17 +89,11 @@
            COPY  "HCGS137N2.INC".
            COPY  "HCGS137G.INC".
       *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGSSKY//.
-      *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGSKOH//.
-      *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGSETC//.
-      *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGS100ERR//.
+       01  ASS-AREA.
+           03  ASS-BGSSKY          PIC X(255).
+           03  ASS-BGSKOH          PIC X(255).
+           03  ASS-BGSETC          PIC X(255).
+           03  ASS-BGS100ERR       PIC X(255).
       *
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).
@@ -389,7 +383,6 @@
                                                VALUE   19.
       *
        01  CONST-AREA.
-           03  CONST-H2605         PIC X(06) VALUE "201405".
            03  CONST-SYAHO         PIC 9(02) VALUE 1.
            03  CONST-KOU9          PIC 9(03) VALUE 1.
            03  CONST-KOU7          PIC 9(03) VALUE 10.
@@ -537,9 +530,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    文字列操作サブ
-           COPY    "CPORCSSTRING.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -1162,20 +1152,6 @@
       *
            END-PERFORM
       *
-           IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0101 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS137N1-LOPTION
-               END-STRING
-           ELSE
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0102 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS137N1-LOPTION
-               END-STRING
-           END-IF
-      *
            PERFORM 230-HCGS137N1-PRINT-SEC
       *
            .
@@ -1446,16 +1422,6 @@
       *
                    MOVE  CONST-HKNMEI (IDX2)
                                        TO  WRK-ITEM
-                   IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-                       INITIALIZE          ORCSSTRINGAREA
-                       MOVE    "sub"   TO  ORCSSTR-COMMAND
-                       MOVE    WRK-ITEM TO ORCSSTR-STRING1
-                       MOVE    "高９"  TO  ORCSSTR-STRING2
-                       MOVE    "高一"  TO  ORCSSTR-STRING3
-                       CALL    "orcsstring" USING  ORCSSTRINGAREA
-                       MOVE    ORCSSTR-STRING1
-                                       TO  WRK-ITEM
-                   END-IF
                    PERFORM 801-CSVDATA-EDIT-SEC
       *
                    MOVE    THKN-KENSU (IDX1 IDX2)
@@ -1850,20 +1816,6 @@
                END-STRING
            END-IF
       *
-           IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0101 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS137G-LOPTION
-               END-STRING
-           ELSE
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0102 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS137G-LOPTION
-               END-STRING
-           END-IF
-      *
            PERFORM 230-HCGS137G-PRINT-SEC
       *
            .
@@ -1927,16 +1879,6 @@
       *
                    MOVE  CONST-HKNMEI (IDX2)
                                        TO  WRK-ITEM
-                   IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-                       INITIALIZE          ORCSSTRINGAREA
-                       MOVE    "sub"   TO  ORCSSTR-COMMAND
-                       MOVE    WRK-ITEM TO ORCSSTR-STRING1
-                       MOVE    "高９"  TO  ORCSSTR-STRING2
-                       MOVE    "高一"  TO  ORCSSTR-STRING3
-                       CALL    "orcsstring" USING  ORCSSTRINGAREA
-                       MOVE    ORCSSTR-STRING1
-                                       TO  WRK-ITEM
-                   END-IF
                    PERFORM 801-CSVDATA-EDIT-SEC
       *
       *

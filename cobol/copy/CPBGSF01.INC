@@ -40,15 +40,7 @@
       *    レセプト種別(1,4) ※()の数字は項目を使用するデータ区分
       *    レセプト別は保険区分を設定
       *      1:請求/2:公費/3:保険者/4:レセプト別
-               05  BGSF01-RECESBT-G.
-                   07  BGSF01-RECESBT  PIC X(04).
-                   07  BGSF01-FIL1     PIC X(02).
-               05  BGSF01-SBTKBN-G     REDEFINES BGSF01-RECESBT-G.
-                   07  BGSF01-SBTGRPID PIC 9(02).
-                   07  BGSF01-SBTRATE  PIC 9(02).
-                   07  BGSF01-SBTHKN   PIC 9(02).
-      *    患者負担割合（H26.5以降レセプト別の前期高齢者のみ設定）
-               05  BGSF01-FTNRATE      PIC 9(02).
+               05  BGSF01-RECESBT      PIC X(04).
       *    保険番号(1)
                05  BGSF01-HKNNUM       PIC X(03).
       *    公費区分    (2)
@@ -100,9 +92,6 @@
            03  BGSF01-SKJKOHMONEY      PIC 9(09).
       *    合計２（合計＋食事請求円）
            03  BGSF01-TTLTTLMONEY      PIC 9(09).
-      *    請求フラグ（レセプトと公費請求書の請求年月が異なる場合）
-      *   （０：同じ又は公費請求書なし　１：レセプトのみ　２：公費請求書のみ）
-           03  BGSF01-SEIKYUFLG        PIC 9(01).
       *
       *    以下その他請求で使用
       *    自費
