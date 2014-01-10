@@ -1398,6 +1398,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EVALUATE    WRK-FILENM
                WHEN    "RECEIPTC.HEN"
                WHEN    "receiptc.hen"
+               WHEN    "RRECEC.HEN"
+               WHEN    "rrecec.hen"
                    MOVE    "0"             TO  SPA-NAI-T05-TFLG2 (IDY)
                WHEN    "RECEIPTC.SAH"
                WHEN    "receiptc.sah" 
@@ -1974,7 +1976,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                WHEN    "RRECEC"
                WHEN    "rrecec"
-                   ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
+                   IF       PARA-DATA(1:1) =   X"1A"
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
+                   END-IF
            END-EVALUATE
       *
            .

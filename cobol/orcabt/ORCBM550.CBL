@@ -759,32 +759,36 @@
       *
                INITIALIZE                      WRK-RIREKIKANRI-CHK
       * 
-               EVALUATE    WRK-PARA-REC (1:2)
+               IF      WRK-PARA-REC (1:1)  =   X"1A"
+                   CONTINUE
+               ELSE
+                   EVALUATE    WRK-PARA-REC (1:2)
                                            ALSO    WRK-FILE-TMP(10:12) 
-                   WHEN    "RE"            ALSO     ANY
-                       IF      IDZZ            >   ZERO
-      *                    ＤＢ更新処理（労災・返戻ファイル）
-                           PERFORM 20031-DB-UPDATE-SEC
-      *                    MOVE    ZERO        TO  IDZZ
-                           INITIALIZE              TABLE-AREA
-                                                   WRK-HENREI-B-REC
-                       END-IF
-                       MOVE    ZERO            TO  IDZZ
-                       MOVE    1               TO  IDZZ
-                       MOVE    21              TO  SPLIT-CNT
-                       MOVE    22              TO  SPLIT-CNT1
-                       PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    "RR"            ALSO     ANY
-                       ADD     1               TO  IDZZ
-                       MOVE    6               TO  SPLIT-CNT
-                       MOVE    7               TO  SPLIT-CNT1
-                       PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    OTHER
-                       ADD     1               TO  IDZZ
-                       MOVE    1               TO  SPLIT-CNT
-                       MOVE    2               TO  SPLIT-CNT1
-                       PERFORM 20011-PARA-SPLIT-SEC
-               END-EVALUATE
+                       WHEN    "RE"            ALSO     ANY
+                           IF      IDZZ            >   ZERO
+      *                        ＤＢ更新処理（労災・返戻ファイル）
+                               PERFORM 20031-DB-UPDATE-SEC
+      *                        MOVE    ZERO        TO  IDZZ
+                               INITIALIZE              TABLE-AREA
+                                                       WRK-HENREI-B-REC
+                           END-IF
+                           MOVE    ZERO            TO  IDZZ
+                           MOVE    1               TO  IDZZ
+                           MOVE    21              TO  SPLIT-CNT
+                           MOVE    22              TO  SPLIT-CNT1
+                           PERFORM 20011-PARA-SPLIT-SEC
+                       WHEN    "RR"            ALSO     ANY
+                           ADD     1               TO  IDZZ
+                           MOVE    6               TO  SPLIT-CNT
+                           MOVE    7               TO  SPLIT-CNT1
+                           PERFORM 20011-PARA-SPLIT-SEC
+                       WHEN    OTHER
+                           ADD     1               TO  IDZZ
+                           MOVE    1               TO  SPLIT-CNT
+                           MOVE    2               TO  SPLIT-CNT1
+                           PERFORM 20011-PARA-SPLIT-SEC
+                   END-EVALUATE
+               END-IF
       *
       *        取り込みデータファイル読み込み処理
                PERFORM 900-PARA-READ-SEC
@@ -2364,14 +2368,14 @@
                    MOVE    WRK-PARA-REC    TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
                WHEN    OTHER
-                   MOVE    0             TO  TBL-HENREI-B-SELECT-FLG
+                   MOVE    0               TO  TBL-HENREI-B-SELECT-FLG
                                                             (IDZZ)
-                   MOVE    SPACE         TO  TBL-HENREI-B-HENREI-INFO1
+                   MOVE    SPACE           TO  TBL-HENREI-B-HENREI-INFO1
                                                             (IDZZ)
-                   MOVE    WRK-PARA-REC  TO  TBL-HENREI-B-HENREI-INFO2
+                   MOVE    WRK-PARA-REC    TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
       *
-                   MOVE    "E99"         TO  WRK-ERRCD
+                   MOVE    "E99"           TO  WRK-ERRCD
                    PERFORM 500-ERRCD-HENSYU-SEC
            END-EVALUATE
       *
