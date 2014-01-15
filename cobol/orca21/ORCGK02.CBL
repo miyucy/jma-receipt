@@ -13419,8 +13419,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    4               TO  K02-PANDATABLE1-TROWATTR
                    MOVE    2               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
-                   MOVE    "F"             TO
-                                           K02-PANDATABLE1-XIMENABLED
       *
       *            エラー位置の背景色
                    IF     (SPA-ERRCD       =   SPACE )
@@ -13457,8 +13455,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    4               TO  K02-PANDATABLE1-TROWATTR
                    MOVE    3               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
-                   MOVE    "T"             TO
-                                           K02-PANDATABLE1-XIMENABLED
                WHEN    04
                    MOVE    "DOSELNUM"      TO  MCP-WIDGET
                WHEN    05

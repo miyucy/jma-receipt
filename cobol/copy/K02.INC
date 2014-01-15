@@ -141,7 +141,6 @@
                   05  K02-PANDATABLE1-TROWATTR    PIC S9(9)   BINARY.
                   05  K02-PANDATABLE1-TCOLUMN PIC S9(9)   BINARY.
                   05  K02-PANDATABLE1-TVALUE  PIC X(256).
-                  05  K02-PANDATABLE1-XIMENABLED  PIC X(1).
                   05  K02-PANDATABLE1-ROWDATA     OCCURS  400 TIMES.
                     06  K02-SRYKBN-G.
                       07  K02-SRYKBN  PIC X(2).

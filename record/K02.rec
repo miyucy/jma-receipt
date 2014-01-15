@@ -166,7 +166,6 @@ K02	{
 				trowattr	int;
 				tcolumn	int;
 				tvalue	varchar(256);
-				ximenabled	bool;
 				rowdata {
 					SRYKBN {
 						celldata	varchar(2);
