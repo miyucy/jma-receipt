@@ -203,23 +203,23 @@
            END-IF
       *
       *TEST
-           DISPLAY "ZAINUM:"  ORCSGETGE-ZAINUM
-                 ",SRYKBN:"  WRK-SRYKBN
-                 ",ERRCD:"  ORCSGETGE-ERRCD
-                 ",TBLMAX:"  ORCSGETGE-TBLMAX
-           PERFORM VARYING   IDX   FROM   1  BY  1
-                   UNTIL     IDX   >   50
-                       OR   (ORCSGETGE-SRYCD (IDX) = SPACE)
-                DISPLAY "IDX:"  IDX
-                    ",SRYCD:"  ORCSGETGE-SRYCD (IDX)
-                  ",YAKK:" ORCSGETGE-YAKKAKJNCD (IDX)
-                  ",GENERIC-KBN:" ORCSGETGE-GENERIC-KBN (IDX)
-                  ",NAME-KBN:" ORCSGETGE-NAME-KBN (IDX)
-               IF    ORCSGETGE-GENERICNAME (IDX) NOT = SPACE
-                DISPLAY  "GENERICNAME:" ORCSGETGE-GENERICNAME (IDX)
-                             (1:20)
-               END-IF
-           END-PERFORM
+      *    DISPLAY "ZAINUM:"  ORCSGETGE-ZAINUM
+      *          ",SRYKBN:"  WRK-SRYKBN
+      *          ",ERRCD:"  ORCSGETGE-ERRCD
+      *          ",TBLMAX:"  ORCSGETGE-TBLMAX
+      *    PERFORM VARYING   IDX   FROM   1  BY  1
+      *            UNTIL     IDX   >   50
+      *                OR   (ORCSGETGE-SRYCD (IDX) = SPACE)
+      *         DISPLAY "IDX:"  IDX
+      *             ",SRYCD:"  ORCSGETGE-SRYCD (IDX)
+      *           ",YAKK:" ORCSGETGE-YAKKAKJNCD (IDX)
+      *           ",GENERIC-KBN:" ORCSGETGE-GENERIC-KBN (IDX)
+      *           ",NAME-KBN:" ORCSGETGE-NAME-KBN (IDX)
+      *        IF    ORCSGETGE-GENERICNAME (IDX) NOT = SPACE
+      *         DISPLAY  "GENERICNAME:" ORCSGETGE-GENERICNAME (IDX)
+      *                      (1:20)
+      *        END-IF
+      **** END-PERFORM
            .
        000-PROC-EXT.
            EXIT    PROGRAM
