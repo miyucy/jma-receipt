@@ -3164,7 +3164,11 @@
                MOVE    RECE10-TEISYUTUSAKI
                                        TO  ONRECE-B-TEISYUTUSAKI
            ELSE
-               MOVE    "2"             TO  ONRECE-B-TEISYUTUSAKI
+               IF      RECE10-TEISYUTUSAKI =   "3"
+                   MOVE    "3"             TO  ONRECE-B-TEISYUTUSAKI
+               ELSE
+                   MOVE    "2"             TO  ONRECE-B-TEISYUTUSAKI
+               END-IF
            END-IF
            MOVE    SPA-NAI-T06-SRYYM-H
                                    TO  ONRECE-B-SRYYM
