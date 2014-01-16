@@ -180,7 +180,7 @@ for i in $LD; do
           break
       fi
     done
-    if [ $kido ]; then
+    if [ $kido -eq 1 ]; then
 	if [ $i = $TRACE_LD ] ; then
 	    $APS -nocheck -timer -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
 	else
