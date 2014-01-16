@@ -45,7 +45,6 @@
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  10/03/XX  Ｈ２２．４改正対応
       *  04.07.00    NACL-多々納  11/11/25  同日再入院対応
-      *  04.08.00    NACL-多々納  16/06/08  332　の外来対応追加
       *****************************************************************
       *
       *
@@ -468,20 +467,10 @@
                        IF      WRK-GMN-INPUTCD(IDX-Z)  =   ".350"
                                                        OR  ".332"
                                                        OR  ".352"
-      *H28.6
-      *                    H28.4 から、.332 入力可
-                           IF    (SPA-SRYYMD           >=  "20160401")
-                             AND (WRK-GMN-INPUTCD(IDX-Z)
-                                                       =   ".332" )
-                               CONTINUE
-                           ELSE
-      *
                            IF     SPA-NYUGAIKBN        =   "2"
                                MOVE    "9024"          TO  WRK-ERRCD
                                MOVE    "1"             TO  WRK-COM-CUR
                                                                (IDX-Z)
-                           END-IF
-      *
                            END-IF
                        END-IF
                        IF      WRK-GMN-INPUTCD(IDX-Z)  =   ".312"
@@ -644,16 +633,6 @@
                        MOVE    "0039"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
-      *!!!!
-      *H27.1       入院時の中心静脈注射と器材は分ける
-                   IF    (SPA-NYUGAIKBN        =   "1" )   AND
-                         (FLG-SYUGI-CHU        =   1   )   AND
-                         (WRK-COM-HKNCOMBI (IDX-Z)
-                                           NOT =   "9999")
-                       MOVE    "9042"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-                   END-IF
-      *!!!!
            END-EVALUATE
       *
            .
@@ -1391,10 +1370,8 @@
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-      **              (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
-      **                                               "960") AND
-                      (WRK-COM-SRYKBN   (IDX)  NOT =   "95"   AND
-                                                       "96" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130009310" OR
                                                        "130003710" OR
                                                        "130003810")
@@ -1406,10 +1383,8 @@
                END-IF
       *        動脈注射は１回のみとする
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-      ***             (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
-      ***                                              "960") AND
-                      (WRK-COM-SRYKBN   (IDX)  NOT =   "95"   AND
-                                                       "96" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130006110" OR
                                                        "130006210")
                    IF      FLG-DOUCHU          =   1
@@ -1822,15 +1797,10 @@
                               (SPA-ERRCD        NOT =   SPACE)
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
              AND  (WRK-COM-YAKUHYO  (IDX) NOT =   "1"   )
-      *H27.8 包括剤対象外
-             AND  (WRK-COM-HOUKATU-ZAI(IDX)   =   ZERO  )
-      *
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-      **              (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
-      **                                               "960") AND
-                      (WRK-COM-SRYKBN   (IDX)  NOT =   "95"   AND
-                                                       "96" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130009310" OR
                                                        "130003710" OR
                                                        "130003810")
@@ -2379,7 +2349,7 @@
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
