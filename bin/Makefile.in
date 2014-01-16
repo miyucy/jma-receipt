@@ -16,7 +16,8 @@ BIN_sources = \
 	jma-receipt-program-upgrade-check.sh.in \
 	jma-receipt-program-upgrade.sh.in \
 	orcvt_exec.sh.in \
-	create_dbgroup.sh.in
+	create_dbgroup.sh.in \
+	passwd_store.sh.in
 
 BIN_cmdsrc = jma-setup.in
 BIN_cmd = jma-setup

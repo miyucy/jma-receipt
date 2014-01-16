@@ -182,4 +182,5 @@ db	{
         tbl_ptconf;
         tbl_byomeiinputset;
         tbl_renkei_tmp;
+        tbl_passwd;
 };

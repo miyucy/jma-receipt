@@ -57,6 +57,7 @@
       * 04.07.01     NACL-森脇    13/07/05  業務処理権限変更不可
       *                           13/07/17  スーパーバイザー処理変更
       * 04.07.01     NACL-太田    13/07/22  ＩＣカードリーダ／ライタ設定追加
+      * 04.08.00     NACL-森脇    13/04/03  パスワード追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -121,6 +122,8 @@
                        09  SPA-GMN-USERID         PIC X(16).
                        09  SPA-GMN-KANANAME       PIC X(80).
                        09  SPA-GMN-NAME           PIC X(80).
+                       09  SPA-GMN-PASSWORD1      PIC X(16).
+                       09  SPA-GMN-PASSWORD2      PIC X(16).
       *
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-MAYAKULICENSE  PIC X(40).
@@ -376,6 +379,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-SYSUSER         PIC 9(01).
+           03  FLG-PASSWD          PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-ERR             PIC 9(01).
@@ -432,6 +436,8 @@
                05  WRK-GRPUSERIDNUM        PIC 9(02).
            03  WRK-ERRCUR          PIC 9(03).
       *
+           03  WRK-PASSWORD        PIC X(128).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -465,6 +471,8 @@
       *    システムユーザー
        01  SYSUSER-REC.
            COPY    "CPSYSUSER.INC".
+      *    パスワード
+           COPY    "CPPASSWD.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -489,6 +497,9 @@
            COPY    "CPORCSGDAY.INC".
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    パスワード変換
+           COPY    "CPORCSAUTH.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1149,6 +1160,9 @@
       *       タブ切替え
                WHEN    "SWITCH"        ALSO    "nt1"
                    PERFORM 460-TAGUCHG-SEC
+      *        パスワード再入力
+               WHEN    "ACTIVATE"      ALSO    "PASSWORD2"
+                   PERFORM 4121-PASSWORD-CHK-SEC
       *
                WHEN    OTHER
       *            入力チェック処理
@@ -1961,6 +1975,9 @@
       *
            MOVE    W06-STYUKYMD        TO  SPA-GMN-STYUKYMD
            MOVE    W06-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
+      *
+           MOVE    W06-PASSWORD1       TO  SPA-GMN-PASSWORD1
+           MOVE    W06-PASSWORD2       TO  SPA-GMN-PASSWORD2
       *
            MOVE    W06-USERID          TO  SPA-GMN-USERID
            MOVE    W06-KANANAME        TO  SPA-GMN-KANANAME
@@ -3170,6 +3187,30 @@
        4122-GRPUSERID-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    パスワードチェック処理
+      *****************************************************************
+       4121-PASSWORD-CHK-SEC       SECTION.
+      *
+           MOVE    W06-PASSWORD2   TO  SPA-GMN-PASSWORD2
+      *
+           IF      SPA-GMN-PASSWORD1   NOT =   SPACE
+               IF      SPA-GMN-PASSWORD2   =   SPACE
+                   MOVE    "0033"          TO  SPA-ERRCD
+                   MOVE    82              TO  SPA-GMN-CUR
+               ELSE
+                   IF      SPA-GMN-PASSWORD1   NOT =   SPA-GMN-PASSWORD2
+                       MOVE    "0034"          TO  SPA-ERRCD
+                       MOVE    82              TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-PASSWORD2
+           END-IF
+      *
+           .
+       4121-PASSWORD-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    タグ切替え処理
       *****************************************************************
        460-TAGUCHG-SEC           SECTION.
@@ -3365,6 +3406,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
            END-IF
       *
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               INITIALIZE                  PASSWD-REC
+               MOVE    SPA-GMN-USERID  TO  PASSWD-USERID
+               MOVE    PASSWD-REC      TO  MCPDATA-REC
+               MOVE    "tbl_passwd"    TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME 
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -3606,6 +3659,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        システムユーザーチェック
                PERFORM 49001-SYSUSER-CHK-SEC
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        パスワードチェック
+               PERFORM 4121-PASSWORD-CHK-SEC
+           END-IF
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -3786,6 +3844,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (FLG-USERID-UPD      =   1     )
       *        システムユーザー更新処理
                PERFORM 4905-SYSUSER-UPD-SEC
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-PASSWORD1   NOT =   SPACE  )
+      *        パスワード更新処理
+               PERFORM 4905-PASSWD-UPD-SEC
            END-IF
            IF      SPA-ERRCD           =   SPACE
       *        職員情報初期表示
@@ -4174,6 +4237,91 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    パスワード更新処理
+      *****************************************************************
+       4905-PASSWD-UPD-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  WRK-PASSWORD
+      *
+           INITIALIZE                  ORCSAUTHAREA
+           MOVE    "passwd"        TO  AUTH-COMMAND
+           MOVE    1               TO  AUTH-ID
+           MOVE    SPA-GMN-PASSWORD1
+                                   TO  AUTH-PASSWORD1
+           CALL    "orcsauth"          USING
+                                       ORCSAUTHAREA
+           IF      AUTH-RC         =   ZERO
+                MOVE    AUTH-PASSWORD2      TO  WRK-PASSWORD
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-PASSWD
+      *
+           INITIALIZE                  PASSWD-REC
+           MOVE    SPA-GMN-USERID  TO  PASSWD-USERID
+           MOVE    PASSWD-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_passwd"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_passwd"    TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+               IF      MCP-RC              =   ZERO
+                   MOVE   ZERO             TO  FLG-PASSWD
+               ELSE
+                   MOVE    1               TO  FLG-PASSWD
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PASSWD
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_passwd"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           IF      FLG-PASSWD      =   ZERO
+               INITIALIZE                  PASSWD-REC
+               MOVE    SPA-GMN-USERID  TO  PASSWD-USERID
+               MOVE    WRK-PASSWORD    TO  PASSWD-PASSWORD
+      *
+               MOVE    PASSWD-REC      TO  MCPDATA-REC
+               MOVE    "tbl_passwd"    TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"      TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           ELSE
+               INITIALIZE                  PASSWD-REC
+               MOVE    SPA-GMN-USERID  TO  PASSWD-USERID
+               MOVE    WRK-PASSWORD    TO  PASSWD-PASSWORD
+      *
+               MOVE    PASSWD-REC      TO  MCPDATA-REC
+               MOVE    "tbl_passwd"    TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "DBINSERT"      TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           END-IF
+           .
+       4905-PASSWD-UPD-EXT.
+           EXIT.
+      *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
@@ -4243,6 +4391,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-TBL-MAX         TO  W06-KIKAN-COUNT
            MOVE    SPA-GMN-SELNUM          TO  W06-SELNUM
+      *
+           MOVE    SPA-GMN-PASSWORD1       TO  W06-PASSWORD1
+           MOVE    SPA-GMN-PASSWORD2       TO  W06-PASSWORD2
       *
            MOVE    SPA-GMN-USERID          TO  W06-USERID
            MOVE    SPA-GMN-KANANAME        TO  W06-KANANAME
@@ -4715,6 +4866,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0032"
                    MOVE    "ＩＣカードリーダ／ライタ入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0033"
+                   MOVE    "パスワードを再入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0034"
+                   MOVE    "再入力されたパスワードが異なります"
+                                               TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
                    "オルカマスターはシステム管理を有効にして下さい"
@@ -4868,6 +5025,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    30
                     MOVE  "ICCARDRW"       TO   MCP-WIDGET
       *
+                WHEN    81
+                    MOVE  "PASSWORD1"      TO   MCP-WIDGET
+                WHEN    82
+                    MOVE  "PASSWORD2"      TO   MCP-WIDGET
+      *
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
       *    他院設定画面
@@ -4912,7 +5074,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SELNUM"
                    MOVE    3               TO  SPA-GMN-CUR
                WHEN    "USERID"
-                   MOVE    7               TO  SPA-GMN-CUR
+                   MOVE    81              TO  SPA-GMN-CUR
                WHEN    "KANANAME"
                    MOVE    8               TO  SPA-GMN-CUR
                WHEN    "NAME"
@@ -4991,6 +5153,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                WHEN     "GRPUSERID09"
                    MOVE    99              TO  SPA-GMN-CUR
+      *
+               WHEN     "PASSWORD1"
+                   MOVE    82              TO  SPA-GMN-CUR
+               WHEN     "PASSWORD2"
+                   MOVE    7               TO  SPA-GMN-CUR
       *
                WHEN     OTHER
                    IF      WRK-MCP-WIDGET(1:3) =   "CHK"

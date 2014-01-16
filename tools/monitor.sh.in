@@ -41,7 +41,7 @@ LD=`ls $LDDEF/*.ld|xargs -I{} basename {} .ld`
 
 # 常に起動するLD
 # このLDは引数に関係なく起動される
-ALWAYS_LD="orca00"
+ALWAYS_LD="session orca00"
 
 # トレースするLD
 TRACE_LD="orca11"
@@ -53,7 +53,7 @@ START_PORT=9100
 
 # soチェック
 # 起動する時にコンパイル済かチェックする *soファイル
-COB_SO=ORCGM00.so
+COB_SO="orca00/ORCGM00.so"
 
 # MCPSUB lib
 COB_LIBRARY_PATH=/usr/local/lib:/usr/lib:/usr/lib/panda
@@ -101,12 +101,14 @@ if ! test -d $RECORD ; then
     echo "${RECORD} ディレクトリがありません"
     exit 1
 fi
-if ! test -d ${ORCA_DIR}/cobol/${ALWAYS_LD}; then
-    echo "LD(COBOL) ${ORCA_DIR}/cobol/${ALWAYS_LD} ディレクトリがありません"
-    exit 1
-fi
-if ! test -f ${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO}; then
-    echo "${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO} がありません"
+for i in $ALWAYS_LD; do
+    if ! test -d ${ORCA_DIR}/cobol/${i}; then
+        echo "LD(COBOL) ${ORCA_DIR}/cobol/${i} ディレクトリがありません"
+        exit 1
+    fi
+done
+if ! test -f ${ORCA_DIR}/cobol/${COB_SO}; then
+    echo "${ORCA_DIR}/cobol/${COB_SO} がありません"
     echo "コンパイル前？"
     exit 1
 fi
@@ -147,7 +149,7 @@ then
     }
 fi
 if test "x"$Start_GLSERVER = "xtrue"; then
-    $GLSERVER -api -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
+    $GLSERVER -api -auth api://localhost/session/session_start -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
     glpid=$!
 fi
 
@@ -164,13 +166,21 @@ $WFC -dir $DIRECTORY  -base $ORCA_DIR &
 	sleep 5
 
 for i in $ALWAYS_LD; do
-    LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
-    ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
+#    LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
+#    ORCA_PORT=`expr $START_PORT + $LDNUM`
+#    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
+    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i &
 done
 
 for i in $LD; do
-    if [ $i != $ALWAYS_LD ]; then
+    for j in $ALWAYS_LD; do
+      kido=1
+      if [ $i = $j ]; then
+          kido=0
+          break
+      fi
+    done
+    if [ $kido ]; then
 	if [ $i = $TRACE_LD ] ; then
 	    $APS -nocheck -timer -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
 	else
