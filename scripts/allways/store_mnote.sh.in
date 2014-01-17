@@ -40,7 +40,7 @@ fi
 
 BASENAME=$(basename ${0%%.sh})
 LOG=/var/log/jma-receipt/$2${BASENAME}.log
-CSVFILE=${18}
+CSVFILE=${19}
 
 DIRNAME1=jma-receipt-${BASENAME}
 DIRNAME2=${DIRNAME1}-$(date +"%Y%m%d")

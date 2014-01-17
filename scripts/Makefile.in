@@ -95,7 +95,6 @@ utf8_shell_sources = \
 	allways/orc_print_dmy.sh.in \
 	allways/orcbi202.sh.in \
 	allways/log_shell.sh.in \
-	allways/store_mnote.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \
@@ -111,6 +110,7 @@ shell_sources = \
 	monthly/das-upload.sh.in \
 	daily/das-infection.sh.in \
 	daily/das-infection2.sh.in \
+	allways/store_mnote.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
