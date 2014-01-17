@@ -359,7 +359,7 @@
            03  WRK-KHNTENZ         PIC ZZZZZZZ.
            03  WRK-KAISUZ          PIC ZZZ.
            03  WRK-TENSUZ          PIC ZZZZZZZ.
-           03  WRK-JNISSU          PIC Z9.
+           03  WRK-JNISSU          PIC ZZ9.
            03  WRK-TOTALTEN        PIC ZZZ,ZZZ.
            03  WRK-NENREI-X        PIC ZZ9.
            03  WRK-KINGAKUZ        PIC ZZZZZZ.

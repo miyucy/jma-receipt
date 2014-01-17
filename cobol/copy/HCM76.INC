@@ -28,7 +28,7 @@
             02  HCM76-NENREI
                         PIC X(3).
             02  HCM76-JITSUNISSU
-                        PIC X(2).
+                        PIC X(3).
             02  HCM76-TENKI
                         PIC X(2)        OCCURS 5 TIMES.
             02  HCM76-JYUSYOU-G.

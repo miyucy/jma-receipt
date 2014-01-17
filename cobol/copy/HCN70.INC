@@ -28,7 +28,7 @@
             02  HCN70-NENREI
                         PIC X(3).
             02  HCN70-JITSUNISSU
-                        PIC X(2).
+                        PIC X(3).
             02  HCN70-TENKI
                         PIC X(2)        OCCURS 5 TIMES.
             02  HCN70-JYUSYOUBI-G.
@@ -108,10 +108,6 @@
                         PIC X(4)        OCCURS 10 TIMES.
             02  HCN70-NYUKOUTEN
                         PIC X(7)        OCCURS 11 TIMES.
-            02  HCN70-NYUKOUTENN
-                                        OCCURS 11 TIMES.
-              03  HCN70-NYUKOUTENN-S
-                        PIC X(2)        OCCURS 7 TIMES.
             02  HCN70-KOUTENG
                         PIC X(7).
             02  HCN70-YKZTENSUG
