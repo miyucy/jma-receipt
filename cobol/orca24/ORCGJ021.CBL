@@ -36,7 +36,7 @@
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正
       * 04.06.00     NACL-多々納  10/09/06  自費保険入院中入力対応
       * 04.08.00     NACL-多々納  13/01/15  診療回数テーブル１０対応
-      * 04.07.00     NACL-多々納  14/01/08  第三者行為対応
+      * 04.08.00     NACL-多々納  14/01/08  第三者行為対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -563,7 +563,8 @@
                    CALL    "ORCSAGECHK"        USING
                                                ORCSAGECHKAREA
                                                SPA-AREA
-                   IF      AGECHK-FTNRATE  NOT =   ZERO
+      *!!!!!!!     IF      AGECHK-FTNRATE  NOT =   ZERO
+                   IF      AGECHK-RC           =   ZERO
       *                負担率
                        MOVE    AGECHK-FTNRATE      TO  SPA-NAI-FTNWARI
                                                          (SPA-J021-MAX)
@@ -1784,7 +1785,8 @@
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                                            SPA-AREA
-               IF      AGECHK-FTNRATE  NOT =   ZERO
+      *?????   IF      AGECHK-FTNRATE  NOT =   ZERO
+               IF      AGECHK-RC           =   ZERO
                    MOVE    AGECHK-FTNRATE      TO  WRK-PTFTNRATE
                END-IF
       *
