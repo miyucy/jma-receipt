@@ -4029,8 +4029,8 @@
           <widget>
             <class>GtkNumberEntry</class>
             <name>P02_BIRTHWEIGHT</name>
-            <x>938</x>
-            <y>480</y>
+            <x>946</x>
+            <y>452</y>
             <width>40</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -4259,8 +4259,8 @@
           <widget>
             <class>GtkLabel</class>
             <name>label27</name>
-            <x>866</x>
-            <y>480</y>
+            <x>878</x>
+            <y>452</y>
             <width>70</width>
             <height>24</height>
             <visible>True</visible>
@@ -4278,15 +4278,15 @@
           <widget>
             <class>GtkLabel</class>
             <name>label28</name>
-            <x>976</x>
-            <y>480</y>
-            <width>20</width>
+            <x>986</x>
+            <y>452</y>
+            <width>16</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0.5</xalign>
+            <xalign>0</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>

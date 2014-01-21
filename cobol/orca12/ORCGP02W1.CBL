@@ -8766,10 +8766,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "P02_CONDITION3"
       *******      MOVE    51                  TO  SPA-GMN-CUR
                    MOVE    66                  TO  SPA-GMN-CUR
-      *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬
-               WHEN    "P02_SKYPRTFLG"
-                   MOVE    51                  TO  SPA-GMN-CUR
-      *????????????
+      *H26.1
       *            £±ºÐÌ¤Ëþ¤Ï½ÐÀ¸»þÂÎ½Å¤Ø
                    IF     (SPA-NAI-NENREI-YY   =   ZERO )
       ****           AND  (SPA-P02-SYORI       =   1    )
@@ -8778,6 +8775,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *H26.1
       *    ½ÐÀ¸»þÂÎ½Å
                WHEN    "P02_BIRTHWEIGHT"
+                   MOVE    66                  TO  SPA-GMN-CUR
+      *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬
+               WHEN    "P02_SKYPRTFLG"
                    MOVE    51                  TO  SPA-GMN-CUR
       *
       *    ¶Ø´÷
