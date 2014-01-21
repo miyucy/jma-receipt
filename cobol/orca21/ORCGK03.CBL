@@ -387,6 +387,9 @@
        01  INFECTION-FILE          PIC X(17)   VALUE
                                    "infectiondata2.sh".
       *
+      *    日医版診療情報ファイル名
+       01  JMAMR-FILE              PIC X(08)   VALUE   "jmamr.sh".
+      *
       *    ＣＬＡＩＭファイル名
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
@@ -1327,6 +1330,16 @@
            PERFORM 970-PTCONF-READ-SEC
            IF      FLG-PTCONF          =   ZERO
                MOVE    PTCONF-CDATA(1:1)   TO  SPA-NAI-CSVKBN
+           END-IF
+      *    日医版診療情報データフォーマット区分設定
+           MOVE    SPACE               TO  PTCONF-REC
+           INITIALIZE                  PTCONF-REC
+           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
+           MOVE    SPA-PTID            TO  PTCONF-PTID
+           MOVE    "JMAMRVER"          TO  PTCONF-CKEY
+           PERFORM 970-PTCONF-READ-SEC
+           IF      FLG-PTCONF          =   ZERO
+               MOVE    PTCONF-CDATA(1:1)   TO  SPA-NAI-CSVKBN2
            END-IF
            .
        3108-PTCONF-SET-EXT.
@@ -6059,6 +6072,11 @@
                PERFORM 4907-USERPG-SEC
            END-IF
       *
+      *    日医版診療情報データ作成
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-NAI-CSVKBN2 NOT =   SPACE )
+               PERFORM 4908-JMAMR-SEC
+           END-IF
            .
        450011-KOUSIN-ATO-EXT.
            EXIT.
@@ -7015,6 +7033,32 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-END
            .
        49071-XD01-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日医版診療情報データ作成処理
+      *****************************************************************
+       4908-JMAMR-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    JMAMR-FILE          TO  SHELLTBL-NAME
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
+           MOVE    SPA-PTID            TO  WRK-PTID
+           MOVE    WRK-PTID            TO  SHELLTBL-ARG2
+           MOVE    SPA-NYUGAIKBN       TO  SHELLTBL-ARG3
+           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
+           MOVE    SPA-NAI-CSVKBN2     TO  SHELLTBL-ARG5
+           MOVE    SPA-DRCD            TO  SHELLTBL-ARG6
+           MOVE    SPA-OPID            TO  SHELLTBL-ARG7
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "allways"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       4908-JMAMR-EXT.
            EXIT.
       *
       *****************************************************************

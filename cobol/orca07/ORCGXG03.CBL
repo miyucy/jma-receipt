@@ -105,6 +105,7 @@
                05  SPA-NAI-AREA.
                    07  SPA-NAI-ICCARDRW            PIC X(01).
                    07  SPA-NAI-CLIENT-SAVE         PIC X(01).
+                   07  SPA-NAI-TBL-KEY             PIC X(08).
       *
                    07  SPA-NAI-MLIST-AREA.
                        09  SPA-NAI-MLIST-OCC       OCCURS  200.
@@ -244,6 +245,7 @@
        01  CONST-AREA.
            03  CONST-TBL-MAX    PIC 9(03)   VALUE   200.
            03  CONST-TBL-KEY    PIC X(08)   VALUE   "MNOTE".
+           03  CONST-TBL-KEY2   PIC X(08)   VALUE   "JMAMR".
       *
        01  TMNOTE-B-REC.
            COPY    "CPMNOTE-B.INC"      REPLACING    //MNOTE-//
@@ -445,6 +447,8 @@
       *
       *    更新日取得
            PERFORM 800-ORCSMCNDATE-SEC
+      *
+           MOVE    CONST-TBL-KEY   TO  SPA-NAI-TBL-KEY
       *
            MOVE    SMCNDATE-YMD    TO  SPA-NAI-TODAY
            MOVE    SMCNDATE-YMD    TO  WRK-SYMD 
@@ -693,6 +697,9 @@
       *    絞込
            WHEN    "CLICKED"       ALSO    "B04"
                PERFORM 440-COLLECT-MNOTE-SEC
+      *    データ切り替え
+           WHEN    "CLICKED"       ALSO    "B05"
+               PERFORM 440-DATA-CHANGE-SEC
       *    前日
            WHEN    "CLICKED"       ALSO    "B06"
                PERFORM 440-BEFORE-SEC
@@ -1288,6 +1295,20 @@
        440-COLLECT-MNOTE-EXT.
            EXIT.
       *****************************************************************
+      *    データ切り替え処理
+      *****************************************************************
+       440-DATA-CHANGE-SEC             SECTION.
+      *
+           IF      SPA-NAI-TBL-KEY     =   CONST-TBL-KEY
+               MOVE    CONST-TBL-KEY2      TO  SPA-NAI-TBL-KEY
+           ELSE
+               MOVE    CONST-TBL-KEY       TO  SPA-NAI-TBL-KEY
+           END-IF
+           PERFORM 470-REFRESH-SEC
+           .
+       440-DATA-CHANGE-EXT.
+           EXIT.
+      *****************************************************************
       *    前日処理
       *****************************************************************
        440-BEFORE-SEC                  SECTION.
@@ -1505,17 +1526,30 @@
       *
                PERFORM 800-ORCUIDSET-SEC
       *
-               STRING  "/tmp/"         DELIMITED BY SIZE
-                       "/okusuri_techo-"
-                                       DELIMITED BY SIZE
-                       SMCNDATE-YMD    DELIMITED BY SIZE
-                       "-"             DELIMITED BY SIZE
-                       SMCNDATE-HMS    DELIMITED BY SIZE
-                       "-"             DELIMITED BY SIZE
-                       UIDIO-UID       DELIMITED BY SPACE
-                       ".csv"          DELIMITED BY SIZE
-               INTO    ASS-CSVDATA
-               END-STRING
+               IF      SPA-NAI-TBL-KEY     =   CONST-TBL-KEY2
+                   STRING  "/tmp/"         DELIMITED BY SIZE
+                           "jmamr-"        DELIMITED BY SIZE
+                           SMCNDATE-YMD    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           SMCNDATE-HMS    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           UIDIO-UID       DELIMITED BY SPACE
+                           ".csv"          DELIMITED BY SIZE
+                   INTO    ASS-CSVDATA
+                   END-STRING
+               ELSE
+                   STRING  "/tmp/"         DELIMITED BY SIZE
+                           "/okusuri_techo-"
+                                           DELIMITED BY SIZE
+                           SMCNDATE-YMD    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           SMCNDATE-HMS    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           UIDIO-UID       DELIMITED BY SPACE
+                           ".csv"          DELIMITED BY SIZE
+                   INTO    ASS-CSVDATA
+                   END-STRING
+               END-IF
       *
                OPEN    OUTPUT          CSVDATA-FILE
       *
@@ -1575,12 +1609,21 @@
       *
            PERFORM 800-ORCUIDSET-SEC
       *
-           STRING  "/tmp/"         DELIMITED BY SIZE
-                   "/okusuri_techo-reset-"
-                   UIDIO-UID       DELIMITED BY SPACE
-                   ".ksr"          DELIMITED BY SIZE
-           INTO    ASS-CSVDATA
-           END-STRING
+           IF      SPA-NAI-TBL-KEY     =   CONST-TBL-KEY2
+               STRING  "/tmp/"         DELIMITED BY SIZE
+                       "jmamr-reset-"
+                       UIDIO-UID       DELIMITED BY SPACE
+                       ".ksr"          DELIMITED BY SIZE
+               INTO    ASS-CSVDATA
+               END-STRING
+           ELSE
+               STRING  "/tmp/"         DELIMITED BY SIZE
+                       "/okusuri_techo-reset-"
+                       UIDIO-UID       DELIMITED BY SPACE
+                       ".ksr"          DELIMITED BY SIZE
+               INTO    ASS-CSVDATA
+               END-STRING
+           END-IF
       *
            OPEN    OUTPUT          CSVDATA-FILE
            MOVE    SPACE           TO  CSVDATA-REC
@@ -1594,8 +1637,12 @@
            MOVE    ASS-CSVDATA         TO  ORCA-BLOB-FILE
            PERFORM 910-BLOBIMPORT-SEC
            MOVE    ORCA-BLOB-OBJECT    TO  WRK-OBJECTDATA
-           MOVE    "okusuri_techo-reset.ksr"
+           IF      SPA-NAI-TBL-KEY     =   CONST-TBL-KEY2
+               MOVE    "jmamr-reset.ksr"   TO  WRK-DL-FILENAME
+           ELSE
+               MOVE    "okusuri_techo-reset.ksr"
                                        TO  WRK-DL-FILENAME
+           END-IF
       *
            MOVE    1                   TO  FLG-RESET
       *
@@ -1654,17 +1701,30 @@
       *
                PERFORM 800-ORCUIDSET-SEC
       *
-               STRING  "/tmp/"         DELIMITED BY SIZE
-                       "/okusuri_techo-"
-                                       DELIMITED BY SIZE
-                       SMCNDATE-YMD    DELIMITED BY SIZE
-                       "-"             DELIMITED BY SIZE
-                       SMCNDATE-HMS    DELIMITED BY SIZE
-                       "-"             DELIMITED BY SIZE
-                       UIDIO-UID       DELIMITED BY SPACE
-                       ".ksr"          DELIMITED BY SIZE
-               INTO    ASS-CSVDATA
-               END-STRING
+               IF      SPA-NAI-TBL-KEY     =   CONST-TBL-KEY2
+                   STRING  "/tmp/"         DELIMITED BY SIZE
+                           "jmamr-"        DELIMITED BY SIZE
+                           SMCNDATE-YMD    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           SMCNDATE-HMS    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           UIDIO-UID       DELIMITED BY SPACE
+                           ".ksr"          DELIMITED BY SIZE
+                   INTO    ASS-CSVDATA
+                   END-STRING
+               ELSE
+                   STRING  "/tmp/"         DELIMITED BY SIZE
+                           "/okusuri_techo-"
+                                           DELIMITED BY SIZE
+                           SMCNDATE-YMD    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           SMCNDATE-HMS    DELIMITED BY SIZE
+                           "-"             DELIMITED BY SIZE
+                           UIDIO-UID       DELIMITED BY SPACE
+                           ".ksr"          DELIMITED BY SIZE
+                   INTO    ASS-CSVDATA
+                   END-STRING
+               END-IF
       *
                OPEN    OUTPUT          CSVDATA-FILE
       *
@@ -1710,8 +1770,12 @@
                MOVE    FLEN-OUTFILENAME    TO  ORCA-BLOB-FILE
                PERFORM 910-BLOBIMPORT-SEC
                MOVE    ORCA-BLOB-OBJECT    TO  WRK-OBJECTDATA
-               MOVE    "okusuri_techo.ksr"
+               IF      SPA-NAI-TBL-KEY     =   CONST-TBL-KEY2
+                   MOVE    "jmamr.ksr"         TO  WRK-DL-FILENAME
+               ELSE
+                   MOVE    "okusuri_techo.ksr"
                                            TO  WRK-DL-FILENAME
+               END-IF
       *
                MOVE    SPA-GMN-NAME    TO  WRK-NAME
       *
@@ -2224,7 +2288,8 @@
            INITIALIZE                      MNOTE-H-REC
       *
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
-           MOVE    CONST-TBL-KEY       TO  MNOTE-H-TBL-KEY
+      *     MOVE    CONST-TBL-KEY       TO  MNOTE-H-TBL-KEY
+           MOVE    SPA-NAI-TBL-KEY     TO  MNOTE-H-TBL-KEY
            MOVE    SPA-NAI-IRENNUM     TO  MNOTE-H-RENNUM
            MOVE    SPA-NAI-ITBL-GROUP  TO  MNOTE-H-TBL-GROUP
            MOVE    SPA-NAI-ITBL-UUID   TO  MNOTE-H-TBL-UUID
@@ -2314,7 +2379,8 @@
            INITIALIZE                      MNOTE-H-REC
       *
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
-           MOVE    CONST-TBL-KEY       TO  MNOTE-H-TBL-KEY
+      *     MOVE    CONST-TBL-KEY       TO  MNOTE-H-TBL-KEY
+           MOVE    SPA-NAI-TBL-KEY     TO  MNOTE-H-TBL-KEY
            IF    ( SPA-NAI-COLLECT     =   SPACE )
                MOVE    SPA-NAI-CREYMD  TO  MNOTE-H-CREYMD
            ELSE
@@ -2354,7 +2420,8 @@
       *
                    MOVE    1               TO  FLG-LOOPEND
       *
-                   IF    ( MNOTE-H-TBL-KEY =   CONST-TBL-KEY )
+      *             IF    ( MNOTE-H-TBL-KEY =   CONST-TBL-KEY )
+                   IF    ( MNOTE-H-TBL-KEY =   SPA-NAI-TBL-KEY )
                        CONTINUE
                    ELSE
                        MOVE    ZERO        TO  FLG-LOOPEND

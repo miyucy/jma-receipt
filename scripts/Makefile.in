@@ -112,6 +112,7 @@ shell_sources = \
 	daily/das-infection2.sh.in \
 	allways/store_mnote.sh.in \
 	tools/run_renkei_data_2.sh.in \
+	allways/jmamr.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
