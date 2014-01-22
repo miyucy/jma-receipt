@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+umask 022
+
+HOSPNUM=$1
+PTID=$2
+NYUGAI=$3
+SRYYMD=$4
+JMAMRVER=$5
+DRCD=$6
+OPID=$7
+
+TEMP=$(mktemp)
+# store_mnote.sh でファイル削除
+
+PARAM="${HOSPNUM},${PTID},${NYUGAI},${SRYYMD},${JMAMRVER},${DRCD},${OPID},${TEMP},"
+
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBMRCSV -parameter "${PARAM}"
+
+exit 0
