@@ -22,7 +22,6 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（自賠責）
       *  コンポーネント名  : 月次業務　自賠責明細書ファイル作成
-      *                      自賠責保険・印刷データ編集
       *                      ＯＣＲ様式
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -122,7 +121,6 @@
            03  FLG-RECE10          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
       *
-           03  FLG-KUGIRI          PIC 9(01).
            03  FLG-SET             PIC 9(01).
            03  FLG-SYS-1900        PIC 9(01).
            03  FLG-SYS-1901        PIC 9(01).
@@ -268,8 +266,6 @@
                05  WRK-LINEBYO                 PIC 9(02).
       *        適用欄編集行（点数）               
                05  WRK-LINETEK                 PIC 9(03).
-      *        適用欄編集行（金額）               
-               05  WRK-LINETEK1                PIC 9(03).
       *         
       *    傷病名編集（傷病名欄）
            03  WRK-BYOMEI1.
@@ -341,22 +337,8 @@
                05  TBL-RECE-FORMID PIC X(20). 
                05  TBL-RECE-RENNUM PIC 9(02).
       *
-      *    区切り線
-       01  WRK-LINE-AREA.
-           03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "―".
-           03  WRK-KUGIRI2.
-               05  FILLER          PIC X(16)   VALUE
-                                   "＝＝＝＝＝＝＝＝".
-               05  FILLER          PIC X(20)   VALUE
-                                   "　金額行為（続き）　".
-               05  FILLER          PIC X(16)   VALUE
-                                   "＝＝＝＝＝＝＝＝".
-      **   03  WRK-KUGIRI3         PIC X(44)   VALUE
-      **       ALL "―".
-      *
        01  WRK-TENSU-AREA.
-           03  WRK-KHNTENZ         PIC ZZZZZZZ.
+           03  WRK-KHNTENZ         PIC ZZ.
            03  WRK-KAISUZ          PIC ZZZ.
            03  WRK-TENSUZ          PIC ZZZZZZZ.
            03  WRK-JNISSU          PIC ZZ9.
@@ -368,6 +350,8 @@
            03  WRK-Z9              PIC Z9.
            03  WRK-ZZ              PIC ZZ.
            03  WRK-ZZZ             PIC ZZZ.
+           03  WRK-KGK4            PIC ZZZZ.
+           03  WRK-KGK2            PIC ZZ.
       *
            03  WRK-TENSUX          PIC X(07).
            03  WRK-TENSUX-R        REDEFINES   WRK-TENSUX.
@@ -449,7 +433,7 @@
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
-      *    手術歴レセプトコメントマスター
+      *    手術歴レセプトコメントマスタ
        01  OPECOM-REC.
            COPY    "CPOPECOM.INC".
       *
@@ -997,7 +981,7 @@
                MOVE    "Ｅ"            TO  HCM77-MARK   (WRK-LINETEK)
                MOVE    "終わり"        TO  HCM77-TEKIYO (WRK-LINETEK)
            END-IF
-     *
+      *
       *    帳票印刷処理（続紙）
            IF      CNT-PAGE        >   1
                PERFORM 20028-PRINT-OUT-SEC
@@ -1373,26 +1357,6 @@
            EXIT.
       *
       *****************************************************************
-      *    区切り線編集処理
-      *****************************************************************
-       34110-KUGIRI-LINE-SEC       SECTION.
-      *
-           GO  TO  34110-KUGIRI-LINE-EXT
-      *
-           ADD     1               TO  WRK-LINETEK
-      *
-           IF      CNT-PAGE        =   1
-               MOVE    WRK-KUGIRI1     TO  HCM76-TEKIYO (WRK-LINETEK)
-           ELSE    
-               MOVE    WRK-KUGIRI1     TO  HCM77-TEKIYO (WRK-LINETEK)
-           END-IF    
-      *
-           .
-       34110-KUGIRI-LINE-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
       *    改ページ処理
       *****************************************************************
        34120-PAGE-SEC       SECTION.
@@ -1454,12 +1418,12 @@
                    WHEN    13
                    WHEN    14
                        MOVE    RECE41-KHNTEN (IDX)
-                                               TO  WRK-KHNTENZ
-                       MOVE    WRK-KHNTENZ     TO  HCM76-KHNTEN   (IDZ)
+                                               TO  WRK-KGK2
+                       MOVE    WRK-KGK2        TO  HCM76-KHNTEN   (IDZ)
                END-EVALUATE
       *        回数
-               MOVE    RECE41-KAISU (IDX)      TO  WRK-KAISUZ
-               MOVE    WRK-KAISUZ              TO  HCM76-KHNKAISU (IDZ)
+               MOVE    RECE41-KAISU (IDX)      TO  WRK-KGK4
+               MOVE    WRK-KGK4                TO  HCM76-KHNKAISU (IDZ)
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1698,8 +1662,8 @@
        20024-OPECOM-HEN-SEC        SECTION.
       *
            MOVE    ZERO                TO  WRK-OPECOM
-                                           WRK-OPECOM-G
            MOVE    SPACE               TO  WRK-R061-SRYKBN-O
+                                           WRK-OPECOM-G
       *
       *    手術歴編集
            INITIALIZE                      OPECOM-REC
@@ -1842,14 +1806,6 @@
       *****************************************************************
        20025-TEKIYOU-HEN-SEC       SECTION.
       *
-      *    摘要欄に既に印刷されている場合、１行あける
-           IF      WRK-LINETEK     >   ZERO
-               IF      WRK-LINETEK     >=   WRK-LINE-MAX
-                   PERFORM 34120-PAGE-SEC
-               END-IF    
-               PERFORM 34110-KUGIRI-LINE-SEC
-           END-IF
-      *
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
            MOVE    ZERO                TO  CNT-RECE47
            MOVE    ZERO                TO  CNT-ZAIMEISAISU
@@ -1869,7 +1825,6 @@
                UNTIL  ( FLG-RECE47     =   1           )
                OR     ( RECE41-KEY NOT =   RECE47-KEY1 )
       *
-               MOVE    ZERO              TO  FLG-KUGIRI
                IF      RECE47-ZAINUM     NOT =   WRK-R061-ZAINUM-O
                    MOVE    ZERO              TO  CNT-ZAIMEISAISU
                END-IF
@@ -1912,8 +1867,8 @@
            END-IF
       *
       *    明細
-           INSPECT RECE47-TEKIYO-INF
-                           REPLACING   ALL   "  "   BY   "　"
+           INSPECT RECE47-TEKIYO-INF  REPLACING   ALL "  "    BY  "　"
+      *
            IF      RECE47-TEKIYO2-KISAIFLG =   1
                MOVE    RECE47-TEKIYO2-TEN  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ          TO  WRK-TENSUX
@@ -2040,7 +1995,6 @@
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
-      **** MOVE    ZERO            TO  FLG-RECECOM-SJKBN
       *
       *    症状詳記区分の見出しを記載
            IF      RECECOM-SJKBN   =   "07"   OR  "08"    OR  "09"
