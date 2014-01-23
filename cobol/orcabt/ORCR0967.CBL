@@ -144,7 +144,9 @@
            03  FLG-SHOKUJI-ETC     PIC 9(01).
            03  FLG-RECECOM-SJKBN   PIC 9(01).
            03  FLG-STS             PIC 9(01).
+      *
            03  FLG-NEXT            PIC 9(01).
+           03  FLG-MARK            PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -327,9 +329,6 @@
            03  WRK-SJKBN-X.
                05  WRK-SJKBN       PIC 9(02).
            03  WRK-RECECOM-SJKBN   PIC X(02).
-      *
-      *    ¼ê½ÑÎòÊÔ½¸
-           03  WRK-OPECOM          PIC 9(01).
       *                 
       *    ÆþÂà±¡ÍúÎòÊÔ½¸¡ÊÅ¬ÍÑÍó¡Ë
            03  WRK-NYUTAI-RIREKI-AREA.
@@ -404,7 +403,7 @@
            03  WRK-JNISSU          PIC ZZ9.
            03  WRK-TOTALTEN        PIC ZZZ,ZZZ.
            03  WRK-NENREI-X        PIC ZZ9.
-           03  WRK-KINGAKUZ        PIC ZZZZZZ.
+           03  WRK-KINGAKU6        PIC ZZZZZZ.
            03  WRK-ZZZ9            PIC ZZZ9.
            03  WRK-SEIKYUZ         PIC Z,ZZZ,ZZ9.
            03  WRK-Z9              PIC Z9.
@@ -413,7 +412,7 @@
            03  WRK-KGK9            PIC Z,ZZZ,ZZZ.
            03  WRK-KGK4            PIC ZZZZ.
            03  WRK-KGK2            PIC ZZ.
-           03  WRK-KINGAKUZ9       PIC Z,ZZZ,ZZZ.
+           03  WRK-KINGAKU68       PIC ZZZZZZZZ.
       *
            03  WRK-TENSUX          PIC X(07).
            03  WRK-TENSUX-R        REDEFINES   WRK-TENSUX.
@@ -439,7 +438,7 @@
       *    ½ýÉÂÌ¾ÍóºÇÂç¹Ô¿ô
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   4.
       *    Å¬ÍÑÍóºÇÂç¹Ô¿ô
-           03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   31.
+           03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   25.
       *    Å¬ÍÑÍóºÇÂç¹Ô¿ô¡ÊÂ³»æ¡Ë
            03  WRK-TEKIYOU-HCM77-LINE
                                    PIC 9(03)   VALUE   113.
@@ -1477,8 +1476,8 @@
                      UNTIL     IDX       >   4
       *        <´ðËÜÎÁ>
                MOVE    RECE82-NYUKHNRYO (IDX)
-                                             TO  WRK-KINGAKUZ
-               MOVE    WRK-KINGAKUZ          TO  HCN70-NYUKHNTEN (IDX)
+                                             TO  WRK-KINGAKU6
+               MOVE    WRK-KINGAKU6          TO  HCN70-NYUKHNTEN (IDX)
       *        <Æü¿ô>
                MOVE    RECE82-NYUKHNNISSU(IDX)
                                              TO  WRK-KAISUZ
@@ -1635,21 +1634,21 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       2
       *        <¶â³Û>
-               MOVE    RECE82-KINGAKU2 (IDX)   TO  WRK-KINGAKUZ9
-               MOVE    WRK-KINGAKUZ9           TO  HCN70-KINGAKU (IDX)
+               MOVE    RECE82-KINGAKU2 (IDX)   TO  WRK-KINGAKU68
+               MOVE    WRK-KINGAKU68           TO  HCN70-KINGAKU (IDX)
            END-PERFORM
       *
       *     ¡Ê£±£°¡Ë¾®·×¥Ï
-           MOVE    RECE82-KINGAKU2-SYO TO  WRK-KINGAKUZ9
-           MOVE    WRK-KINGAKUZ9       TO  HCN70-KINGAKU (3)
+           MOVE    RECE82-KINGAKU2-SYO TO  WRK-KINGAKU68
+           MOVE    WRK-KINGAKU68       TO  HCN70-KINGAKU (3)
       *
       *    ¡Ê£¸£°¡Ë¤½¤ÎÂ¾
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       3
                COMPUTE IDZ     =   IDX     +   3  
       *        <¶â³Û>
-               MOVE    RECE82-KINGAKU3(IDX)    TO  WRK-KINGAKUZ9
-               MOVE    WRK-KINGAKUZ9           TO  HCN70-KINGAKU (IDZ)
+               MOVE    RECE82-KINGAKU3(IDX)    TO  WRK-KINGAKU68
+               MOVE    WRK-KINGAKU68           TO  HCN70-KINGAKU (IDZ)
            END-PERFORM
       *    <Æþ±¡¼¼ÎÁ²Ã»»>
            MOVE    RECE82-HEYA-NINZU   TO  WRK-ZZ
@@ -1658,8 +1657,8 @@
            MOVE    WRK-ZZ              TO  HCN70-SONOTAKAISU
       *
       *     ¡Ê£¸£°¡Ë¾®·×
-           MOVE    RECE82-KINGAKU3-SYO TO  WRK-KINGAKUZ9
-           MOVE    WRK-KINGAKUZ9       TO  HCN70-KINGAKU (7)
+           MOVE    RECE82-KINGAKU3-SYO TO  WRK-KINGAKU68
+           MOVE    WRK-KINGAKU68       TO  HCN70-KINGAKU (7)
       *
       *    £¹£·¿©»ö
            MOVE    RECE82-SHOKUJISYUBETU (1)
@@ -1688,21 +1687,21 @@
            END-PERFORM          
       *
       *     ¡Ê£¹£·¡Ë¾®·×
-           MOVE    RECE82-SHOKUJITOTALKIN  TO  WRK-KINGAKUZ
-           MOVE    WRK-KINGAKUZ            TO  HCN70-SYOKINGAKU
+           MOVE    RECE82-SHOKUJITOTALKIN  TO  WRK-KINGAKU6
+           MOVE    WRK-KINGAKU6            TO  HCN70-SYOKINGAKU
       *
       *    ¿ÇÃÇ½ñÎÁ
            MOVE    RECE82-SINDAN-TUU       TO  WRK-ZZ
            MOVE    WRK-ZZ                  TO  HCN70-SHINDANSYOSUU
       *    ¿ÇÃÇ½ñ¶â³Û
-           MOVE    RECE82-SINDAN-KIN       TO  WRK-KINGAKUZ
-           MOVE    WRK-KINGAKUZ            TO  HCN70-SHINDANSYOMONEY
+           MOVE    RECE82-SINDAN-KIN       TO  WRK-KINGAKU6
+           MOVE    WRK-KINGAKU6            TO  HCN70-SHINDANSYOMONEY
       *    ÌÀºÙ½ñÎÁ
            MOVE    RECE82-MEISAI-TUU       TO  WRK-ZZ
            MOVE    WRK-ZZ                  TO  HCN70-MEISAISYOSUU
       *    ÌÀºÙ½ñ¶â³Û
-           MOVE    RECE82-MEISAI-KIN       TO  WRK-KINGAKUZ
-           MOVE    WRK-KINGAKUZ            TO  HCN70-MEISAISYOMONEY
+           MOVE    RECE82-MEISAI-KIN       TO  WRK-KINGAKU6
+           MOVE    WRK-KINGAKU6            TO  HCN70-MEISAISYOMONEY
       *
            .
        20022-TENSU-HEN-EXT.
@@ -2083,8 +2082,8 @@
       *****************************************************************
        20025-OPECOM-HEN-SEC      SECTION.
       *
-           MOVE    ZERO                TO  WRK-OPECOM
            INITIALIZE                      WRK-TEKIYOU-G
+           MOVE    ZERO                TO  FLG-MARK
       *
       *    ¼ê½ÑÎòÊÔ½¸
            INITIALIZE                      OPECOM-REC
@@ -2103,10 +2102,11 @@
                    MOVE    OPECOM-SRYYMD       TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    LNK-DAY2-EDTYMD3    TO  WRK-TEKIYOU-G
-                   PERFORM 200251-OPECOM-HENSYU-SEC                 
+                   MOVE    1                   TO  FLG-MARK
+                   PERFORM 200251-OPECOM-HENSYU-SEC
                    MOVE    OPECOM-OPENAME      TO  WRK-TEKIYOU-G
                    PERFORM 200251-OPECOM-HENSYU-SEC
-                   IF      OPECOM-OPECOMMENT   NOT =   SPACE                
+                   IF      OPECOM-OPECOMMENT   NOT =   SPACE
                        MOVE    OPECOM-OPECOMMENT   TO  WRK-TEKIYOU-G
                        PERFORM 200251-OPECOM-HENSYU-SEC
                    END-IF                 
@@ -2140,6 +2140,7 @@
                IF    ( OPECOM-HKNNUM    =   RECE82-HKNNUM )
                AND   ( OPECOM-HKNID     =   RECE82-HKNID  )
                    MOVE    OPECOM-OPENAME      TO  WRK-TEKIYOU-G
+                   MOVE    1                   TO  FLG-MARK
                    PERFORM 200251-OPECOM-HENSYU-SEC
                    IF      OPECOM-OPECOMMENT   NOT =   SPACE                
                        MOVE    OPECOM-OPECOMMENT   TO  WRK-TEKIYOU-G
@@ -2199,7 +2200,7 @@
                END-IF    
       *
                IF      CNT-PAGE        =   1
-                   IF      IDXX            =   1
+                   IF      FLG-MARK        =   1
                        MOVE    "¡ö"        TO  HCN70-MARK  (WRK-LINETEK)
                    END-IF 
                    MOVE    WRK-TEKIYOU-T (IDXX)
@@ -2209,7 +2210,7 @@
                                       HCN70-TEKIYO(WRK-LINETEK)(29:2)
                    END-IF
                ELSE                
-                   IF      IDXX            =   1
+                   IF      FLG-MARK        =   1
                        MOVE    "¡ö"        TO  HCM77-MARK  (WRK-LINETEK)
                    END-IF 
                    MOVE    WRK-TEKIYOU-T (IDXX)
@@ -2219,6 +2220,8 @@
                                       HCM77-TEKIYO(WRK-LINETEK)(29:2)
                    END-IF
                END-IF
+      *
+               MOVE    ZERO                TO  FLG-MARK
            END-PERFORM
       *
            MOVE    SPACE           TO  WRK-TEKIYOU-G
