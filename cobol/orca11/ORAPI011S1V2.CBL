@@ -1309,6 +1309,18 @@
       *    診療内容
            MOVE    WRK-SRYNAIYO        TO  ACCPTRES-REGIST-DEP-INFO
       *
+      *    受付ＩＤ登録チェック
+           INITIALIZE                      UKETUKE-REC
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    WRK-UKEID           TO  UKE-UKEID
+           PERFORM 900-UKETUKE-READ-SEC
+           IF      FLG-UKETUKE         =   ZERO
+               MOVE    "52"                TO  WRK-ERRCD
+               DISPLAY "UKETUKE INS ERR KEY:"  UKE-KEY
+               GO  TO  20022-UKEADD-SYORI-EXT
+           END-IF
+      *
       *    明細レコード追加
            INITIALIZE                      UKETUKE-REC
            MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
@@ -1334,16 +1346,8 @@
       *
            MOVE    WRK-OPID            TO  UKE-OPID
       *
-           MOVE    UKETUKE-REC         TO  WRK-UKETUKE-REC
-      *    受付ＩＤ登録チェック
-           PERFORM 900-UKETUKE-READ-SEC
-           IF      FLG-UKETUKE         =   ZERO
-               MOVE    "52"                TO  WRK-ERRCD
-               DISPLAY "UKETUKE INS ERR KEY:"  UKE-KEY
-               GO  TO  20022-UKEADD-SYORI-EXT
-           END-IF
       *    受付登録
-           MOVE    WRK-UKETUKE-REC     TO  MCPDATA-REC
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

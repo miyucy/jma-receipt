@@ -2260,6 +2260,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        41011-PTNUM-HENSYU-SEC            SECTION.
       *
+      *    患者マスター存在チェック
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
@@ -2363,8 +2364,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                        CONTINUE
                    ELSE
       *                患者マスタあり
-                       MOVE    WRK-PTID            TO  SPA-GMN-PTID
                        MOVE    WRK-PTNUM           TO  SPA-GMN-PTNUM
+                       MOVE    WRK-PTID            TO  SPA-GMN-PTID
                        MOVE    HZN-PTINF-REC       TO  PTINF-REC
       *                排他制御処理
                        PERFORM 990-LOCK-IN-SEC
@@ -4509,6 +4510,21 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        49001-KOUSIN-SEC             SECTION.
       *
+      *H25.11
+      *    選択番号のＥＮＴＥＲチェック
+           IF     (SPA-GMN-SELNUM  NOT =   ZERO  )
+               MOVE    SPA-GMN-SELNUM          TO  IDX
+               IF     (SPA-GMN-TUKEID  (IDX)   =   SPA-NAI-UKEID   )
+                  AND (SPA-GMN-TKYYKTIME(IDX)  =   SPA-NAI-KYYKTIME)
+                  AND (SPA-GMN-TYYKID   (IDX)  =   SPA-NAI-YYKID   )
+                   CONTINUE
+               ELSE
+                   MOVE    "1012"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   GO  TO  49001-KOUSIN-EXT
+               END-IF
+           END-IF
+      *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -4889,13 +4905,14 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    MOVE    "K013"              TO  SPA-ERRCD
                END-IF
            END-IF
-      *TEST
+      *
+      *    保険組合せ矛盾エラー
            IF      SPA-ERRCD           =   SPACE
                IF      AGECHK-HKNCHK   NOT =   ZERO
                    MOVE    "K006"              TO  SPA-ERRCD
                END-IF
            END-IF
-      *TEST
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    4                   TO  SPA-GMN-CUR
                MOVE    1                   TO  SPA-NAI-KEIFLG2
@@ -4963,7 +4980,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  4901-UKEADD-EXT
            END-IF
       *
-      *
       *    受付ＩＤの二重登録チェック
            INITIALIZE                       UKETUKE-REC
            MOVE    SPA-HOSPNUM              TO  UKE-HOSPNUM
@@ -4977,7 +4993,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    明細レコード追加
-      *
            INITIALIZE                       UKETUKE-REC
            MOVE    SPA-HOSPNUM              TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD               TO  UKE-UKEYMD
@@ -4998,8 +5013,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    保険組合せ
            MOVE    SPA-GMN-COMBINUM         TO  UKE-HKNCOMBI
       *
-      **** MOVE    UKE-UKEYMD               TO  UKE-CREYMD
-      ****                                      UKE-UPYMD
            IF      SPA-GMN-SELNUM           >   ZERO
                MOVE    SPA-GMN-SELNUM           TO  IDX 
                IF      SPA-GMN-TYYKTIME(IDX)    NOT =  SPACE
@@ -6972,6 +6985,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1010"
                    STRING  "選択番号の受付情報が選択されていません。"
                            "再度、受付を選択して下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1012"
+                   STRING  "選択番号の情報が受付選択されていません。"
+                           "再度、選択番号を入力して下さい。"
                                                 DELIMITED  BY  SIZE
                                                 INTO  SPA-ERRMSG
                    END-STRING
