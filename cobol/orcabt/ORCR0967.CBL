@@ -1939,11 +1939,6 @@
            END-IF
       *
       *    ∆˛±°¥À‹Œ¡ºÔ Ã
-      *??
-           MOVE "£±£±£±£±" TO RECE82-NYUSYUBETU (14)
-           MOVE "£≤£±£±£±" TO RECE82-NYUSYUBETU (15)
-           MOVE "£≥£±£±£±" TO RECE82-NYUSYUBETU (16)
-      *??
            IF      RECE82-NYUSYUBETU (14)  NOT =   SPACE
                MOVE    SPACE           TO  WRK-TEKIYOU-G
                MOVE    ZERO            TO  WRK-TEKIYOU-MAX
