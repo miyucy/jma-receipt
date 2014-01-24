@@ -6047,7 +6047,9 @@
                    END-IF
                END-PERFORM    
       *        <基本料>
-               MOVE    SPACE                 TO  HC06-NYUKHNTEN (9)
+               MOVE    SPACE                 TO  HC06-NYUKHNTEN  (9)
+                                                 HC06-NYUKHNTENN (9)
+                                                 HC06-NYUKHNTENN2(9)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISU             TO  HC06-NYUKAISU  (9)

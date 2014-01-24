@@ -1863,8 +1863,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    ADD     RECE82-NYUTOKKEI(IDX) TO  SUM-NYUKHNKEI
                END-PERFORM
       *        <基本料>
-               MOVE    SPACE                 TO  HC23-NYUKHNTEN(8)
-                                                 HC23-NYUKHNTENN(8)
+               MOVE    SPACE                 TO  HC23-NYUKHNTEN  (8)
+                                                 HC23-NYUKHNTENN (8)
+                                                 HC23-NYUKHNTENN2(8)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISUZ            TO  HC23-NYUKAISU(8)

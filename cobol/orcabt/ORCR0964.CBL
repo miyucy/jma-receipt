@@ -1933,8 +1933,9 @@
                                                  TO  SUM-NYUKHNKEI (1)
                END-PERFORM    
       *        <基本料>
-               MOVE    SPACE                 TO  HCN67-NYUKHNTEN (8)
-                                                 HCN67-NYUKHNTENN(8)
+               MOVE    SPACE                 TO  HCN67-NYUKHNTEN  (8)
+                                                 HCN67-NYUKHNTENN (8)
+                                                 HCN67-NYUKHNTENN2(8)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISUZ            TO  HCN67-NYUKAISU  (8)
