@@ -1981,7 +1981,7 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       11
                    OR      RECE82-NYUSYUBETU (IDX) =   SPACE
-               IF      RECE82-NYUSYUBETU (IDX) (13:)
+               IF      RECE82-NYUSYUBETU (IDX) (11:)
                                        =   SPACE
                    MOVE    RECE82-NYUSYUBETU (IDX)
                                          TO  HCN67-NYUSYUBETSU (IDX)
