@@ -1,4 +1,4 @@
-﻿tbl_labor_sio {
+tbl_labor_sio {
 	SYOCD			char(5);
 	YUKOSTYMD		char(8);
 	YUKOEDYMD		char(8);
