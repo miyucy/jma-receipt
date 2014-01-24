@@ -127,7 +127,9 @@
            03  FLG-SYS-1902        PIC 9(01).
            03  FLG-RECECOM-SJKBN   PIC 9(01).
            03  FLG-STS             PIC 9(01).
+      *
            03  FLG-NEXT            PIC 9(01).
+           03  FLG-MARK            PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -137,7 +139,6 @@
            03  CNT-RECE47          PIC 9(06).
            03  CNT-RECE09          PIC 9(06).
            03  CNT-OUT             PIC 9(06).
-           03  CNT-ZAIMEISAISU     PIC 9(03).
            03  CNT-PAGE            PIC 9(03).
            03  CNT-KENSU           PIC 9(03). 
       *
@@ -253,6 +254,8 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-SRYKBN          PIC X(02).
+      *
            03  WRK-EDIT-AREA.
       *        ÊÔ½¸½ýÉÂÌ¾Ê¸»ú¿ô 
                05  WRK-CLM                     PIC 9(04).
@@ -291,16 +294,15 @@
            03  WRK-COL             PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
-           03  WRK-RECECOM-NAME    PIC X(30).
+           03  WRK-RECECOM-NAME    PIC X(56).
            03  WRK-SJKBN-X.
                05  WRK-SJKBN       PIC 9(02).
            03  WRK-RECECOM-SJKBN   PIC X(02).
       *
-      *    ¼ê½ÑÎòÊÔ½¸
-           03  WRK-OPECOM          PIC 9(01).
-           03  WRK-OPECOM-G.
-               05  WRK-OPECOM-HEN  PIC X(28)
-                                       OCCURS  2.
+           03  WRK-TEKIYOU-G.
+               05  WRK-TEKIYOU-T   PIC X(28)
+                                       OCCURS  86.
+           03  WRK-TEKIYOU-MAX     PIC 9(03).
       *
       *    Ê£¿ôËç¥ì¥»ÍÑÏ¢ÈÖ
            03  WRK-HEN-PAGE-AREA.
@@ -387,17 +389,15 @@
                                    BY         //WRK-RECE07//.
       *
       *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
+      *
+      *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
        01  TBL-RECECOM-AREA.
-           03  FILLER              PIC X(30)   VALUE
-               "¡Ú¼À´µÊÌ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó¤Ë¡õ".
-           03  FILLER              PIC X(30)   VALUE
-               "·¸¤ë¼£ÎÅ·ÑÂ³¤ÎÍýÍ³Åù¡Û¡¡¡¡¡¡¡¡".
-           03  FILLER              PIC X(30)   VALUE
-               "¡ÚÇÑÍÑ¾É¸õ·²¤Ë·¸¤ëÉ¾²ÁÉ½¡Û¡¡¡¡".
+           03  FILLER              PIC X(56)   VALUE
+               "¡Ú¼À´µÊÌ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó¤Ë·¸¤ë¼£ÎÅ·ÑÂ³¤ÎÍýÍ³Åù¡Û".
+           03  FILLER              PIC X(56)   VALUE
+               "¡ÚÇÑÍÑ¾É¸õ·²¤Ë·¸¤ëÉ¾²ÁÉ½¡Û".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
-           03  TBL-RECECOM-NAME    PIC X(30)   OCCURS   3.
-      *     
-           COPY    "ORCA-DBMETA".
+           03  TBL-RECECOM-NAME    PIC X(56)   OCCURS   2.
       *
            COPY    "COMMON-SPA".
       *
@@ -1497,13 +1497,13 @@
            END-START
       *
            PERFORM
-               UNTIL  ( FLG-RECE43      =   1           )
-               OR     ( RECE41-KEY  NOT =   RECE43-KEY1 )
+               UNTIL  ( FLG-RECE43     =   1           )
+               OR     ( RECE41-KEY NOT =   RECE43-KEY1 )
       *        ÉÂÌ¾ÊÔ½¸½èÍý
                PERFORM 200231-BYOMEI-SET-SEC
            END-PERFORM
       *
-           MOVE    1               TO  FLG-RECE43     
+           MOVE    1               TO  FLG-RECE43
       *
            IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
                IF      WRK-BYOMEI1-NAME    NOT =   SPACE
@@ -1550,6 +1550,7 @@
       *            Å¬ÍÑÍó¤ËÊÔ½¸
                    IF      WRK-WCLM        >   WRK-MOJISU-MAX
                        PERFORM 200233-BYOMEI2-OUT-SEC
+                       MOVE    WRK-LINE-MAX    TO  WRK-LINETEK
                    ELSE
                        IF      WRK-CLM     >   ZERO
       *                    Á°¤ÎÉÂÌ¾¤ÎÄ¾¸å¤ËÊÔ½¸
@@ -1601,9 +1602,9 @@
       *
                MOVE    WRK-BYOMEI1-NAME-T (IDZZ)
                                        TO  HCM76-SYOBYO-S (IDZZ)
-      *
-               MOVE    IDZZ            TO  WRK-LINEBYO
            END-PERFORM
+      *
+           MOVE    WRK-BYOMEI1-MAX TO  WRK-LINEBYO
       *
       *    ¥¯¥ê¥¢
            MOVE    SPACE           TO  WRK-BYOMEI1
@@ -1645,7 +1646,7 @@
                                        TO  HCM77-TEKIYO  (IDZZ)
                END-IF    
       *     
-               MOVE    IDZZ            TO  WRK-LINETEK
+               MOVE    IDZZ        TO  WRK-LINETEK
            END-PERFORM
       *
       *    ¥¯¥ê¥¢
@@ -1661,9 +1662,11 @@
       *****************************************************************
        20024-OPECOM-HEN-SEC        SECTION.
       *
-           MOVE    ZERO                TO  WRK-OPECOM
            MOVE    SPACE               TO  WRK-R061-SRYKBN-O
-                                           WRK-OPECOM-G
+           MOVE    "01"                TO  WRK-SRYKBN
+      *
+           INITIALIZE                      WRK-TEKIYOU-G
+           MOVE    ZERO                TO  FLG-MARK
       *
       *    ¼ê½ÑÎòÊÔ½¸
            INITIALIZE                      OPECOM-REC
@@ -1681,12 +1684,13 @@
                AND   ( OPECOM-HKNID     =   RECE41-HKNID  )
                    MOVE    OPECOM-SRYYMD       TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
-                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-OPECOM-G
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-TEKIYOU-G
+                   MOVE    1                   TO  FLG-MARK
                    PERFORM 200241-OPECOM-HENSYU-SEC
-                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-G
+                   MOVE    OPECOM-OPENAME      TO  WRK-TEKIYOU-G
                    PERFORM 200241-OPECOM-HENSYU-SEC
                    IF      OPECOM-OPECOMMENT   NOT =   SPACE
-                       MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-G
+                       MOVE    OPECOM-OPECOMMENT   TO  WRK-TEKIYOU-G
                        PERFORM 200241-OPECOM-HENSYU-SEC
                    END-IF
                END-IF
@@ -1718,10 +1722,11 @@
            PERFORM             UNTIL   FLG-OPECOM   =   1
                IF    ( OPECOM-HKNNUM    =   RECE41-HKNNUM )
                AND   ( OPECOM-HKNID     =   RECE41-HKNID  )
-                   MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-G
+                   MOVE    OPECOM-OPENAME      TO  WRK-TEKIYOU-G
+                   MOVE    1                   TO  FLG-MARK
                    PERFORM 200241-OPECOM-HENSYU-SEC
                    IF      OPECOM-OPECOMMENT   NOT =   SPACE                
-                       MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-G
+                       MOVE    OPECOM-OPECOMMENT   TO  WRK-TEKIYOU-G
                        PERFORM 200241-OPECOM-HENSYU-SEC
                    END-IF                 
                END-IF               
@@ -1748,57 +1753,86 @@
       *****************************************************************
        200241-OPECOM-HENSYU-SEC    SECTION.
       *
+      *
+      *    Å¦Í×ÍóÊÔ½¸½èÍý
+           MOVE    2               TO  WRK-TEKIYOU-MAX
+           PERFORM 2002411-TEKIYOU-HENNSYU-SEC
+           .
+       200241-OPECOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Å¦Í×ÍóÊÔ½¸½èÍý
+      *****************************************************************
+       2002411-TEKIYOU-HENNSYU-SEC      SECTION.
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
-                   OR      WRK-OPECOM-HEN (IDXX)
+                   UNTIL   IDXX    >       WRK-TEKIYOU-MAX
+                   OR      WRK-TEKIYOU-T (IDXX)
                                    =       SPACE
-               IF      WRK-LINETEK     >=  WRK-LINE-MAX
-                   PERFORM 34120-PAGE-SEC
-               END-IF
+               INSPECT WRK-TEKIYOU-T (IDXX)    REPLACING   ALL "  "
+                                                           BY  "¡¡"
       *
                MOVE    0               TO  FLG-NEXT
-               IF      IDXX        <   2
+               IF      IDXX            <   WRK-TEKIYOU-MAX
                    COMPUTE IDYY    =   IDXX    +   1 
-                   IF      WRK-OPECOM-HEN (IDYY)
-                                   NOT =   SPACE
+                   IF      WRK-TEKIYOU-T (IDYY)
+                                       NOT =   SPACE
                        MOVE    1               TO  FLG-NEXT
                    END-IF
                END-IF
       *
-               ADD     1               TO  WRK-LINETEK
+               IF      WRK-LINETEK     >=  WRK-LINE-MAX
+                   PERFORM 34120-PAGE-SEC
+               END-IF
       *
-               IF      WRK-R061-SRYKBN-O
-                                       =   SPACE
-                   IF      CNT-PAGE        =   1
-                       MOVE    "01"        TO  HCM76-SRYKBN(WRK-LINETEK)
-                       MOVE    "¡ö"        TO  HCM76-MARK  (WRK-LINETEK)
-                   ELSE
-                       MOVE    "01"        TO  HCM77-SRYKBN(WRK-LINETEK)
-                       MOVE    "¡ö"        TO  HCM77-MARK  (WRK-LINETEK)
+               ADD     1                   TO  WRK-LINETEK
+      *
+               IF      CNT-PAGE        =   1
+                   IF      WRK-R061-SRYKBN-O
+                                       NOT =   WRK-SRYKBN
+                       MOVE    WRK-SRYKBN      TO
+                                               HCM76-SRYKBN(WRK-LINETEK)
                    END-IF
-                   MOVE    "01"            TO  WRK-R061-SRYKBN-O
-               END-IF    
       *
-               IF      CNT-PAGE        =   1   
-                   MOVE    WRK-OPECOM-HEN (IDXX)
-                                          TO  HCM76-TEKIYO (WRK-LINETEK)
-                   IF      FLG-NEXT       =   1
+                   IF      FLG-MARK        >   ZERO
+                       MOVE    "¡ö"            TO
+                                               HCM76-MARK  (WRK-LINETEK)
+                   END-IF
+      *
+                   MOVE    WRK-TEKIYOU-T (IDXX)
+                                           TO  HCM76-TEKIYO(WRK-LINETEK)
+                   IF      FLG-NEXT        =   1
                        MOVE    "¡õ"           TO
                                       HCM76-TEKIYO(WRK-LINETEK)(29:2)
                    END-IF
-               ELSE                
-                   MOVE    WRK-OPECOM-HEN (IDXX)
-                                          TO  HCM77-TEKIYO (WRK-LINETEK)
-                   IF      FLG-NEXT       =   1
-                       MOVE    "¡õ"           TO
+               ELSE                    
+                   IF      WRK-R061-SRYKBN-O
+                                       NOT =   WRK-SRYKBN
+                       MOVE    WRK-SRYKBN      TO
+                                               HCM77-SRYKBN(WRK-LINETEK)
+                   END-IF
+      *
+                   IF      FLG-MARK        >   ZERO
+                       MOVE    "¡ö"            TO
+                                               HCM77-MARK  (WRK-LINETEK)
+                   END-IF
+      *
+                   MOVE    WRK-TEKIYOU-T (IDXX)
+                                           TO  HCM77-TEKIYO(WRK-LINETEK)
+                   IF      FLG-NEXT        =   1
+                       MOVE    "¡õ"            TO
                                       HCM77-TEKIYO(WRK-LINETEK)(29:2)
                    END-IF
                END-IF
+      *
+               MOVE    WRK-SRYKBN     TO  WRK-R061-SRYKBN-O
+               MOVE    ZERO           TO  FLG-MARK
            END-PERFORM
       *
-           MOVE    SPACE           TO  WRK-OPECOM-G
+           MOVE    SPACE           TO  WRK-TEKIYOU-G
            .
-       200241-OPECOM-HENSYU-EXT.
+       2002411-TEKIYOU-HENNSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1808,7 +1842,6 @@
       *
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
            MOVE    ZERO                TO  CNT-RECE47
-           MOVE    ZERO                TO  CNT-ZAIMEISAISU
       *
       *    ¥Ñ¥é¥á¡¼¥¿£°£¶¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸
            INITIALIZE                      RECE47-REC
@@ -1821,20 +1854,10 @@
                NOT INVALID
                    PERFORM 990-RECE47-NEXT-SEC
            END-START
-           PERFORM
-               UNTIL  ( FLG-RECE47     =   1           )
-               OR     ( RECE41-KEY NOT =   RECE47-KEY1 )
-      *
-               IF      RECE47-ZAINUM     NOT =   WRK-R061-ZAINUM-O
-                   MOVE    ZERO              TO  CNT-ZAIMEISAISU
-               END-IF
-               ADD     1                     TO  CNT-ZAIMEISAISU
-      *
+           PERFORM UNTIL  ( FLG-RECE47     =   1           )
+                   OR     ( RECE41-KEY NOT =   RECE47-KEY1 )
       *        ¥ì¥»¥×¥È£°£¶¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
                PERFORM 200251-RECE47-HENSYU-SEC
-      *
-               MOVE    RECE47-ZAINUM        TO  WRK-R061-ZAINUM-O
-               MOVE    RECE47-SRYKBN        TO  WRK-R061-SRYKBN-O
       *
                PERFORM 990-RECE47-NEXT-SEC
            END-PERFORM
@@ -1852,7 +1875,7 @@
            END-IF
            ADD     1               TO  WRK-LINETEK
       *
-           IF      CNT-ZAIMEISAISU =   1
+           IF      RECE47-ZAINUM     NOT =   WRK-R061-ZAINUM-O
       *        ¿ÇÎÅ¶èÊ¬
                IF      RECE47-SRYKBN
                                    NOT =   WRK-R061-SRYKBN-O
@@ -1867,7 +1890,7 @@
            END-IF
       *
       *    ÌÀºÙ
-           INSPECT RECE47-TEKIYO-INF  REPLACING   ALL "  "    BY  "¡¡"
+           INSPECT RECE47-TEKIYO-INF   REPLACING   ALL "  "    BY  "¡¡"
       *
            IF      RECE47-TEKIYO2-KISAIFLG =   1
                MOVE    RECE47-TEKIYO2-TEN  TO  WRK-TENSUZ
@@ -1908,6 +1931,9 @@
                MOVE    RECE47-ASTER    TO  HCM77-MARK   (WRK-LINETEK)
                MOVE    RECE47-TEKIYO   TO  HCM77-TEKIYO (WRK-LINETEK)
            END-IF    
+      *
+           MOVE    RECE47-ZAINUM        TO  WRK-R061-ZAINUM-O
+           MOVE    RECE47-SRYKBN        TO  WRK-R061-SRYKBN-O
       *
            .
        200251-RECE47-HENSYU-EXT.
@@ -1993,6 +2019,9 @@
       *****************************************************************
        2002611-COMMENT-HENSYU-SEC    SECTION.
       *                                          
+           MOVE    "99"                TO  WRK-SRYKBN
+           MOVE    1                   TO  FLG-MARK
+      *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
       *
@@ -2011,11 +2040,13 @@
                                                TO  WRK-RECECOM-NAME
                    WHEN    "52"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
-                       MOVE    TBL-RECECOM-NAME (3)
+                       MOVE    TBL-RECECOM-NAME (2)
                                                TO  WRK-RECECOM-NAME
                    WHEN    OTHER
                        MOVE    9               TO  FLG-RECECOM-SJKBN
                END-EVALUATE
+           ELSE
+               MOVE    ZERO           TO  FLG-MARK
            END-IF
       *
            PERFORM     UNTIL       WRK-RECEHEN  =   1      
@@ -2048,113 +2079,34 @@
                        MOVE    WRK-COMM        TO  WRK-COMMENT-G
                        MOVE    1               TO  WRK-RECEHEN
                    END-IF
-      *                                       
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       WRK-CONS-RECECOM-MAX
-                           OR      WRK-COMMENT (IDX)   =   SPACE
       *
+                   IF      WRK-COMMENT (1) NOT =   SPACE
       *                ¾É¾õ¾Üµ­¶èÊ¬¤Î¸«½Ð¤·¤òµ­ºÜ
                        IF      FLG-RECECOM-SJKBN   =   1
-                           IF      WRK-LINETEK      >= WRK-LINE-MAX
-                               PERFORM 34120-PAGE-SEC
-                           END-IF
-                           ADD     1               TO  WRK-LINETEK
-                           IF      CNT-PAGE        =   1   
-                               MOVE    WRK-RECECOM-NAME
-                                       TO  HCM76-TEKIYO (WRK-LINETEK)
-                               MOVE    "¡ö"
-                                       TO  HCM76-MARK   (WRK-LINETEK)
-                               IF      WRK-R061-SRYKBN-O
-                                                   NOT =   "99"
-                                   MOVE    "99"    TO
-                                               HCM76-SRYKBN(WRK-LINETEK)
-                                   MOVE    "99"    TO  WRK-R061-SRYKBN-O
-                               END-IF
-                           ELSE                
-                               MOVE    WRK-RECECOM-NAME
-                                       TO  HCM77-TEKIYO (WRK-LINETEK)
-                               MOVE    "¡ö"
-                                       TO  HCM77-MARK   (WRK-LINETEK)
-                               IF      WRK-R061-SRYKBN-O
-                                                   NOT =   "99"
-                                   MOVE    "99"    TO
-                                               HCM77-SRYKBN(WRK-LINETEK)
-                                   MOVE    "99"    TO  WRK-R061-SRYKBN-O
-                               END-IF
-                           END-IF
-                           IF      WRK-RECECOM-SJKBN   =   "51"
-                               MOVE    TBL-RECECOM-NAME (2)
-                                                   TO  WRK-RECECOM-NAME
-                               IF      WRK-LINETEK      >= WRK-LINE-MAX
-                                   PERFORM 34120-PAGE-SEC
-                               END-IF
-                               ADD     1               TO  WRK-LINETEK
-                               IF      CNT-PAGE        =   1   
-                                   MOVE    WRK-RECECOM-NAME
-                                           TO  HCM76-TEKIYO(WRK-LINETEK)
-                               ELSE                
-                                   MOVE    WRK-RECECOM-NAME
-                                           TO  HCM77-TEKIYO(WRK-LINETEK)
-                               END-IF
-                           END-IF
+                           MOVE    2               TO  WRK-TEKIYOU-MAX
+                           MOVE    WRK-RECECOM-NAME
+                                                   TO  WRK-TEKIYOU-G
+      *                    Å¦Í×ÍóÊÔ½¸½èÍý
+                           PERFORM 2002411-TEKIYOU-HENNSYU-SEC
       *
                            MOVE    ZERO        TO  FLG-RECECOM-SJKBN
-                       END-IF            
-      *
-                       MOVE    0               TO  FLG-NEXT
-                       IF      IDX         <   WRK-CONS-RECECOM-MAX
-                           COMPUTE IDYY    =   IDX     +   1 
-                           IF      WRK-COMMENT (IDYY)
-                                           NOT =   SPACE
-                               MOVE    1               TO  FLG-NEXT
-                           END-IF
                        END-IF
-      *
-                       IF      WRK-LINETEK >=  WRK-LINE-MAX
-                           PERFORM 34120-PAGE-SEC
-                       END-IF
-                       ADD     1           TO  WRK-LINETEK
-      *
-                       IF      CNT-PAGE    =   1
+      *                                       
+                       MOVE    SPACE           TO  WRK-TEKIYOU-G
+                       MOVE    ZERO            TO  WRK-TEKIYOU-MAX
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       WRK-CONS-RECECOM-MAX
+                               OR      WRK-COMMENT (IDX)   =   SPACE
                            MOVE    WRK-COMMENT (IDX)
-                                           TO  HCM76-TEKIYO(WRK-LINETEK)
-                           IF      WRK-R061-SRYKBN-O
-                                           NOT =   "99"
-                               MOVE    "99"    TO
-                                               HCM76-SRYKBN(WRK-LINETEK)
-                               MOVE    "99"    TO  WRK-R061-SRYKBN-O
-                           END-IF
-                           IF      FLG-RECECOM-SJKBN
-                                               =   9
-                               MOVE    "¡ö"        TO
-                                        HCM76-MARK(WRK-LINETEK)
-                           END-IF
-                           IF      FLG-NEXT    =   1
-                               MOVE    "¡õ"        TO
-                                       HCM76-TEKIYO(WRK-LINETEK)(29:2)
-                           END-IF
-                       ELSE
-                           MOVE    WRK-COMMENT (IDX)
-                                           TO  HCM77-TEKIYO(WRK-LINETEK)
-                           IF      WRK-R061-SRYKBN-O
-                                           NOT =   "99"
-                               MOVE    "99"    TO
-                                               HCM77-SRYKBN(WRK-LINETEK)
-                               MOVE    "99"    TO  WRK-R061-SRYKBN-O
-                           END-IF
-                           IF      FLG-RECECOM-SJKBN
-                                               =   9
-                               MOVE    "¡ö"        TO
-                                        HCM77-MARK(WRK-LINETEK)
-                           END-IF
-                           IF      FLG-NEXT    =   1
-                               MOVE    "¡õ"        TO
-                                       HCM77-TEKIYO(WRK-LINETEK)(29:2)
-                           END-IF
-                       END-IF
+                                               TO  WRK-TEKIYOU-T (IDX)
+                           ADD     1           TO  WRK-TEKIYOU-MAX
+                       END-PERFORM
+      *
+      *                Å¦Í×ÍóÊÔ½¸½èÍý
+                       PERFORM 2002411-TEKIYOU-HENNSYU-SEC
       *
                        MOVE    ZERO            TO  FLG-RECECOM-SJKBN
-                   END-PERFORM
+                   END-IF
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
            END-PERFORM   
@@ -3410,9 +3362,6 @@
                    IF      RECE47-SRYKBN    =   "64"
                        MOVE    "60"          TO  RECE47-SRYKBN
                    END-IF
-      *************IF      RECE47-SRYKBN    =   "99"
-      *************    MOVE    SPACE         TO  RECE47-SRYKBN
-      *************END-IF
            END-READ
       *
            .

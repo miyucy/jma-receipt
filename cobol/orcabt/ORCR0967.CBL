@@ -157,7 +157,6 @@
            03  CNT-RECE871         PIC 9(06).
            03  CNT-RECE09          PIC 9(06).
            03  CNT-OUT             PIC 9(06).
-           03  CNT-ZAIMEISAISU     PIC 9(03).
            03  CNT-PAGE            PIC 9(03).
            03  CNT-KENSU           PIC 9(03). 
       *
@@ -175,10 +174,10 @@
            03  IDY1                PIC 9(04).
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(03).
-           03  IDXX                PIC 9(03).
            03  IDXY                PIC 9(03).
       *
-           03  IDYY                PIC 9(02).
+           03  IDXX                PIC 9(04).
+           03  IDYY                PIC 9(04).
            03  IDZZ                PIC 9(05).
       *
            03  SYSKAN-IDX          PIC 9(03).
@@ -2160,7 +2159,6 @@
       *
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
            MOVE    ZERO                TO  CNT-RECE87
-           MOVE    ZERO                TO  CNT-ZAIMEISAISU
       *
       *    パラメータ０６ファイルより編集
            INITIALIZE                      RECE87-REC
@@ -2209,8 +2207,8 @@
            END-IF
       *
       *    明細
-           INSPECT RECE87-TEKIYO-INF
-                           REPLACING   ALL   "  "   BY   "　"
+           INSPECT RECE87-TEKIYO-INF   REPLACING   ALL "  "    BY  "　"
+      *
            IF      RECE87-TEKIYO2-KISAIFLG =   1
                MOVE    RECE87-TEKIYO2-TEN  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ          TO  WRK-TENSUX
