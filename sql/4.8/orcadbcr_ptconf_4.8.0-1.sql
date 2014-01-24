@@ -1,6 +1,4 @@
---
--- Š³ÒŒÂ•Êİ’èî•ñ
---
+
 CREATE TABLE tbl_ptconf (
     hospnum smallint DEFAULT 0 NOT NULL,
     ptid    bigint   DEFAULT 0 NOT NULL,

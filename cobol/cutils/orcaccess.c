@@ -187,7 +187,7 @@ void orcaccess (char *args)
 	StringC2Cobol(out_filename, str_len);
 }
 
-/* CALLインターフェイス連絡領域 */
+/* liked data stucture */
 /*
 typedef struct
 {
