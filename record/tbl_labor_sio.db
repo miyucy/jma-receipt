@@ -1,4 +1,4 @@
-tbl_labor_sio {
+ï»¿tbl_labor_sio {
 	SYOCD			char(5);
 	YUKOSTYMD		char(8);
 	YUKOEDYMD		char(8);
@@ -8,7 +8,7 @@ tbl_labor_sio {
 	CREYMD			varchar(8);
 	UPYMD			varchar(8);
 	UPHMS			varchar(6);
-#-----> ŽåƒL[XV—p€–Ú
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 	UPSYOCD			char(5),virtual;
 	UPYUKOSTYMD		char(8),virtual;
 	UPYUKOEDYMD		char(8),virtual;
