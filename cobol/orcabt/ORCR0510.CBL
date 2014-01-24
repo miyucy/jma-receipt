@@ -1408,7 +1408,7 @@
            END-IF
       *
            PERFORM VARYING     IDX     FROM    2   BY  1
-                   UNTIL       IDX     >       32
+                   UNTIL       IDX     >       33
                COMPUTE IDZ     =   IDX     -   1
       * 
       *        Ã±²Á
@@ -1452,12 +1452,12 @@
            END-PERFORM
       *     
       *    ºÆ¿Ç²ó¿ô
-           MOVE    RECE41-KAISU2 (2)   TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  HCM76-SAISINKAISU
+           MOVE    RECE41-KAISU2 (2)   TO  WRK-ZZZ
+           MOVE    WRK-ZZZ             TO  HCM76-SAISINKAISU
       *     
       *    »ØÆ³²ó¿ô
-           MOVE    RECE41-KAISU2 (3)   TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  HCM76-SHIDOKAISU
+           MOVE    RECE41-KAISU2 (3)   TO  WRK-ZZZ
+           MOVE    WRK-ZZZ             TO  HCM76-SHIDOKAISU
       *
       *    ¿ÇÃÇ½ñÎÁ
            MOVE    RECE41-SINDAN-TUU   TO  WRK-ZZ
@@ -2540,36 +2540,36 @@
                                            RECE41-TENSU-YAK (14)   +
                                            RECE41-TENSU-YAK (15)   +
                                            RECE41-TENSU-YAK (16)
-           COMPUTE RECE10-TENSU (6 1)  =   RECE41-TENSU     (19)   +
+           COMPUTE RECE10-TENSU (6 1)  =   RECE41-TENSU     (18)   +
+                                           RECE41-TENSU     (19)   +
                                            RECE41-TENSU     (20)   +
                                            RECE41-TENSU     (21)   +
-                                           RECE41-TENSU     (22)   +
+                                           RECE41-TENSU-YAK (18)   +
                                            RECE41-TENSU-YAK (19)   +
                                            RECE41-TENSU-YAK (20)   +
-                                           RECE41-TENSU-YAK (21)   +
-                                           RECE41-TENSU-YAK (22)
-           COMPUTE RECE10-TENSU (7 1)  =   RECE41-TENSU     (25)   +
+                                           RECE41-TENSU-YAK (21)
+           COMPUTE RECE10-TENSU (7 1)  =   RECE41-TENSU     (23)   +
+                                           RECE41-TENSU     (24)   +
+                                           RECE41-TENSU-YAK (23)   +
+                                           RECE41-TENSU-YAK (24)
+           COMPUTE RECE10-TENSU (8 1)  =   RECE41-TENSU     (25)   +
                                            RECE41-TENSU     (26)   +
                                            RECE41-TENSU-YAK (25)   +
                                            RECE41-TENSU-YAK (26)
-           COMPUTE RECE10-TENSU (8 1)  =   RECE41-TENSU     (27)   +
+           COMPUTE RECE10-TENSU (9 1)  =   RECE41-TENSU     (27)   +
                                            RECE41-TENSU     (28)   +
                                            RECE41-TENSU-YAK (27)   +
                                            RECE41-TENSU-YAK (28)
-           COMPUTE RECE10-TENSU (9 1)  =   RECE41-TENSU     (29)   +
+           COMPUTE RECE10-TENSU (10 1) =   RECE41-TENSU     (29)   +
                                            RECE41-TENSU     (30)   +
                                            RECE41-TENSU-YAK (29)   +
                                            RECE41-TENSU-YAK (30)
-           COMPUTE RECE10-TENSU (10 1) =   RECE41-TENSU     (31)   +
+           COMPUTE RECE10-TENSU (11 1) =   RECE41-TENSU     (31)   +
                                            RECE41-TENSU     (32)   +
+                                           RECE41-TENSU     (33)   +
                                            RECE41-TENSU-YAK (31)   +
-                                           RECE41-TENSU-YAK (32)
-           COMPUTE RECE10-TENSU (11 1) =   RECE41-TENSU     (33)   +
-                                           RECE41-TENSU     (34)   +
-                                           RECE41-TENSU     (35)   +
-                                           RECE41-TENSU-YAK (33)   +
-                                           RECE41-TENSU-YAK (34)   +
-                                           RECE41-TENSU-YAK (35) 
+                                           RECE41-TENSU-YAK (32)   +
+                                           RECE41-TENSU-YAK (33) 
            MOVE    RECE41-KINGAKU2 (1) TO  RECE10-TENSU (13 1) 
            MOVE    RECE41-KINGAKU2 (2) TO  RECE10-TENSU (14 1) 
            MOVE    RECE41-KINGAKU2 (3) TO  RECE10-TENSU (15 1) 

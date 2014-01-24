@@ -1556,6 +1556,7 @@
       *        <´ðËÜÎÁ>
                MOVE    SPACE                 TO  HCN70-NYUKHNTEN   (9)
                                                  HCN70-NYUKHNTENN  (9)
+                                                 HCN70-NYUKHNTENN2 (9)
       *        <Æü¿ô>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KGK2
                MOVE    WRK-KGK2              TO  HCN70-NYUKAISU    (9)
@@ -1664,6 +1665,7 @@
                    MOVE    WRK-ZZZ             TO  HCN70-SYOKAISU (IDX)
                    EVALUATE    IDX
                        WHEN    4
+                           MOVE    "±ß"            TO  HCN70-SYOYEN
                            MOVE    "¡ß"            TO  HCN70-SYOKAKERU
                            MOVE    "Æü"            TO  HCN70-SYONICHI
                    END-EVALUATE
@@ -2828,35 +2830,36 @@
                                            RECE82-TENSU-YAK (7)    +
                                            RECE82-TENSU-YAK (8)    +
                                            RECE82-TENSU-YAK (9)
-           COMPUTE RECE10-TENSU (6 1)  =   RECE82-TENSU     (12)   +
-                                           RECE82-TENSU     (13)   +
-                                           RECE82-TENSU-YAK (12)   +
-                                           RECE82-TENSU-YAK (13)
-           COMPUTE RECE10-TENSU (7 1)  =   RECE82-TENSU     (14)   +
-                                           RECE82-TENSU     (15)   +
-                                           RECE82-TENSU-YAK (14)   +
-                                           RECE82-TENSU-YAK (15)
-           COMPUTE RECE10-TENSU (8 1)  =   RECE82-TENSU     (16)   +
-                                           RECE82-TENSU     (17)   +
-                                           RECE82-TENSU-YAK (16)   +
-                                           RECE82-TENSU-YAK (17)
-           COMPUTE RECE10-TENSU (9 1)  =   RECE82-TENSU     (18)   +
-                                           RECE82-TENSU     (19)   +
-                                           RECE82-TENSU-YAK (18)   +
-                                           RECE82-TENSU-YAK (19)
-           COMPUTE RECE10-TENSU (10 1) =   RECE82-TENSU     (20)   +
-                                           RECE82-TENSU     (21)   +
-                                           RECE82-TENSU-YAK (20)   +
-                                           RECE82-TENSU-YAK (21)
-           COMPUTE RECE10-TENSU (11 1) =   RECE82-TENSU     (22)   +
-                                           RECE82-TENSU     (23)   +
-                                           RECE82-TENSU-YAK (22)   +
-                                           RECE82-TENSU-YAK (23)
+           COMPUTE RECE10-TENSU (6 1)  =   RECE82-TENSU     (11)   +
+                                           RECE82-TENSU     (12)   +
+                                           RECE82-TENSU-YAK (11)   +
+                                           RECE82-TENSU-YAK (12)
+           COMPUTE RECE10-TENSU (7 1)  =   RECE82-TENSU     (13)   +
+                                           RECE82-TENSU     (14)   +
+                                           RECE82-TENSU-YAK (13)   +
+                                           RECE82-TENSU-YAK (14)
+           COMPUTE RECE10-TENSU (8 1)  =   RECE82-TENSU     (15)   +
+                                           RECE82-TENSU     (16)   +
+                                           RECE82-TENSU-YAK (15)   +
+                                           RECE82-TENSU-YAK (16)
+           COMPUTE RECE10-TENSU (9 1)  =   RECE82-TENSU     (17)   +
+                                           RECE82-TENSU     (18)   +
+                                           RECE82-TENSU-YAK (17)   +
+                                           RECE82-TENSU-YAK (18)
+           COMPUTE RECE10-TENSU (10 1) =   RECE82-TENSU     (19)   +
+                                           RECE82-TENSU     (20)   +
+                                           RECE82-TENSU-YAK (19)   +
+                                           RECE82-TENSU-YAK (20)
+           COMPUTE RECE10-TENSU (11 1) =   RECE82-TENSU     (21)   +
+                                           RECE82-TENSU     (22)   +
+                                           RECE82-TENSU-YAK (21)   +
+                                           RECE82-TENSU-YAK (22)
            MOVE    RECE82-NYUTOTALTEN  TO  RECE10-TENSU (12 1)
            MOVE    RECE82-KINGAKU2 (1) TO  RECE10-TENSU (13 1)
            MOVE    RECE82-KINGAKU2 (2) TO  RECE10-TENSU (16 1)
            MOVE    RECE82-KINGAKU3 (1) TO  RECE10-TENSU (17 1)
-           MOVE    RECE82-KINGAKU3 (3) TO  RECE10-TENSU (18 1)
+           COMPUTE RECE10-TENSU (18 1) =   RECE82-KINGAKU3 (2)     +
+                                           RECE82-KINGAKU3 (3)
            MOVE    RECE82-SINDAN-KIN   TO  RECE10-TENSU (19 1)
            MOVE    RECE82-MEISAI-KIN   TO  RECE10-TENSU (20 1)
       *
