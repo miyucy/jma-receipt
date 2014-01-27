@@ -1572,17 +1572,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            MOVE    1                 TO  IDX
                
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
-               IF      TBL-HOUKNSKBN(IDX)   =   ZERO
-               OR      FLG-SRYCD1           =    1
-                   IF     (TBL-HOUKNSKBN(IDX)  NOT =  ZERO)
-                   AND    (FLG-SRYCD1              =   1  )
+      **>      IF      TBL-HOUKNSKBN(IDX)   =   ZERO
+      **>      OR      FLG-SRYCD1           =    1
+      **>          IF     (TBL-HOUKNSKBN(IDX)  NOT =  ZERO)
+      **>          AND    (FLG-SRYCD1              =   1  )
                      IF    IDX  =   1
                        MOVE  TBL-HOUKNSKBN(IDX)  TO  WRK-TNS-HOUKNSKBN
                      END-IF
                      IF  TBL-DATAKBN (IDX)   NOT =   "2"
                        ADD     1                 TO  WRK-KOUMOKUSU
                      END-IF
-                   END-IF
+      **>          END-IF
                    ADD     1                        TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3)          TO  IDZ
                    MOVE    TBL-NAMEINF (IDX)   TO
@@ -1610,74 +1610,74 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                            PERFORM 200511-GJK-DAY-ADD-SEC
                    END-IF
                    ADD     1                   TO  IDX                     
-               ELSE
-                   IF      IDX             =   1
-                       MOVE    TBL-HOUKNSKBN(IDX)
-                                           TO  WRK-TNS-HOUKNSKBN         
-                   END-IF                                
-                   MOVE    ZERO            TO  WRK-YUKOKETA
-                   MOVE    SPACE           TO  WRK-NAME
-                   MOVE    TBL-SRYCD (IDX) TO  WRK-SRYCD
-                   PERFORM     UNTIL   IDX >       WRK-KENSA-MAX
-                               OR      TBL-SRYCD (IDX) (1:1)
-                                           NOT =   WRK-SRYCD
-      *                次の名称があるとき”、”＋名称をつける
-                       IF      WRK-YUKOKETA    >   ZERO
-                           STRING  WRK-NAME    DELIMITED  BY  SPACE
-                                   "，"        DELIMITED  BY  SIZE
-                                   INTO        WRK-NAME
-                           END-STRING        
-                           ADD     2           TO  WRK-YUKOKETA
-      *              
-                           COMPUTE IDZ     =   WRK-YUKOKETA        +
-                                               TBL-YUKOKETA (IDX)  *  2
-                           IF      IDZ             >   38
-                               ADD     1               TO
-                                                   WRK-ZAIWMAX (3)
-                               MOVE    WRK-ZAIWMAX (3) TO  IDZ
-                               MOVE    WRK-NAME        TO
-                                           TBL-ZAIW-NAME(3 IDZ)
-                               COMPUTE TBL-ZAIW-YUKOKETA (3 IDZ) 
-                                           =   WRK-YUKOKETA   /   2  
-                               MOVE    SPACE           TO  WRK-NAME
-                               MOVE    ZERO            TO  WRK-YUKOKETA
-                           END-IF
-                       END-IF
-      *
-                       IF      TBL-YUKOKETA (IDX)  >   19
-                           ADD     1               TO  WRK-ZAIWMAX (3)
-                           MOVE    WRK-ZAIWMAX (3) TO  IDZ
-                           MOVE    TBL-NAME (IDX) (1:38)   TO
-                                       TBL-ZAIW-NAME    (3 IDZ)
-                           MOVE    19                      TO  
-                                       TBL-ZAIW-YUKOKETA(3 IDZ)
-                           MOVE    TBL-NAME (IDX) (39:)    TO  WRK-NAME
-                           COMPUTE WRK-YUKOKETA    =  
-                                   ( TBL-YUKOKETA (IDX) -   19 )  *   2
-                       ELSE
-                           STRING  WRK-NAME        DELIMITED  BY  SPACE
-                                   TBL-NAME    (IDX)
-                                                   DELIMITED  BY  SPACE
-                                   INTO            WRK-NAME
-                           END-STRING
-                           COMPUTE WRK-YUKOKETA =  WRK-YUKOKETA   +
-                                       TBL-YUKOKETA (IDX)  *   2
-                       END-IF
-      *                 
-                       IF      TBL-DATAKBN (IDX)   NOT =   "2"
-                           ADD     1           TO  WRK-KOUMOKUSU 
-                       END-IF
-                       ADD     1           TO  IDX
-                   END-PERFORM                            
-                   ADD     1               TO  WRK-ZAIWMAX (3)
-                   MOVE    WRK-ZAIWMAX (3) TO  IDZ
-                   MOVE    WRK-NAME    TO  TBL-ZAIW-NAME (3 IDZ)
-                   COMPUTE TBL-ZAIW-YUKOKETA (3 IDZ) 
-                                       =   WRK-YUKOKETA   /   2
-                   IF      (FLG-GAIJINKEN  =   1) 
-                           PERFORM 200512-GJK-DAY-ADD-SEC
-                   END-IF
-               END-IF
+      **>      ELSE
+      **>          IF      IDX             =   1
+      **>              MOVE    TBL-HOUKNSKBN(IDX)
+      **>                                  TO  WRK-TNS-HOUKNSKBN
+      **>          END-IF
+      **>          MOVE    ZERO            TO  WRK-YUKOKETA
+      **>          MOVE    SPACE           TO  WRK-NAME
+      **>          MOVE    TBL-SRYCD (IDX) TO  WRK-SRYCD
+      **>          PERFORM     UNTIL   IDX >       WRK-KENSA-MAX
+      **>                      OR      TBL-SRYCD (IDX) (1:1)
+      **>                                  NOT =   WRK-SRYCD
+      **>              次の名称があるとき”、”＋名称をつける
+      **>              IF      WRK-YUKOKETA    >   ZERO
+      **>                  STRING  WRK-NAME    DELIMITED  BY  SPACE
+      **>                          "，"        DELIMITED  BY  SIZE
+      **>                          INTO        WRK-NAME
+      **>                  END-STRING
+      **>                  ADD     2           TO  WRK-YUKOKETA
+      **>
+      **>                  COMPUTE IDZ     =   WRK-YUKOKETA        +
+      **>                                      TBL-YUKOKETA (IDX)  *  2
+      **>                  IF      IDZ             >   38
+      **>                      ADD     1               TO
+      **>                                          WRK-ZAIWMAX (3)
+      **>                      MOVE    WRK-ZAIWMAX (3) TO  IDZ
+      **>                      MOVE    WRK-NAME        TO
+      **>                                  TBL-ZAIW-NAME(3 IDZ)
+      **>                      COMPUTE TBL-ZAIW-YUKOKETA (3 IDZ)
+      **>                                  =   WRK-YUKOKETA   /   2
+      **>                      MOVE    SPACE           TO  WRK-NAME
+      **>                      MOVE    ZERO            TO  WRK-YUKOKETA
+      **>                  END-IF
+      **>              END-IF
+      **>
+      **>              IF      TBL-YUKOKETA (IDX)  >   19
+      **>                  ADD     1               TO  WRK-ZAIWMAX (3)
+      **>                  MOVE    WRK-ZAIWMAX (3) TO  IDZ
+      **>                  MOVE    TBL-NAME (IDX) (1:38)   TO
+      **>                              TBL-ZAIW-NAME    (3 IDZ)
+      **>                  MOVE    19                      TO
+      **>                              TBL-ZAIW-YUKOKETA(3 IDZ)
+      **>                  MOVE    TBL-NAME (IDX) (39:)    TO  WRK-NAME
+      **>                  COMPUTE WRK-YUKOKETA    =
+      **>                          ( TBL-YUKOKETA (IDX) -   19 )  *   2
+      **>              ELSE
+      **>                  STRING  WRK-NAME        DELIMITED  BY  SPACE
+      **>                          TBL-NAME    (IDX)
+      **>                                          DELIMITED  BY  SPACE
+      **>                          INTO            WRK-NAME
+      **>                  END-STRING
+      **>                  COMPUTE WRK-YUKOKETA =  WRK-YUKOKETA   +
+      **>                              TBL-YUKOKETA (IDX)  *   2
+      **>              END-IF
+      **>
+      **>              IF      TBL-DATAKBN (IDX)   NOT =   "2"
+      **>                  ADD     1           TO  WRK-KOUMOKUSU
+      **>              END-IF
+      **>              ADD     1           TO  IDX
+      **>          END-PERFORM
+      **>          ADD     1               TO  WRK-ZAIWMAX (3)
+      **>          MOVE    WRK-ZAIWMAX (3) TO  IDZ
+      **>          MOVE    WRK-NAME    TO  TBL-ZAIW-NAME (3 IDZ)
+      **>          COMPUTE TBL-ZAIW-YUKOKETA (3 IDZ)
+      **>                              =   WRK-YUKOKETA   /   2
+      **>          IF      (FLG-GAIJINKEN  =   1)
+      **>                  PERFORM 200512-GJK-DAY-ADD-SEC
+      **>          END-IF
+      **>      END-IF
            END-PERFORM
       *
       *    検査の項目数をコメントにセット
