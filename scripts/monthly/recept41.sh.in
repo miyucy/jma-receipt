@@ -202,7 +202,7 @@ fi
             echo "INFILE= " ${INFILE} >> $LOG_FILE 2>&1
 	    UTF8FILE="${TMPFILEBASE}$(basename ${f}).euc"
 
-            if  [ ${f: -4} -eq '.UKE' ]; then
+            if  [ ${f: -4} = '.UKE' ]; then
 	        SKYKBN="1"
             else
 #              ∫∆¿¡µ·
