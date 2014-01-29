@@ -64,6 +64,7 @@ db	{
         tbl_ptkohinf;
 	tbl_ptnum;
 	tbl_receden;
+	tbl_renkei_tmp;
 	tbl_seikyu_main;
 	tbl_seikyu_koh;
 	tbl_seikyu_etc;

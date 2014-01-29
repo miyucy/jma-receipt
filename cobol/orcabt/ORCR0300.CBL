@@ -674,6 +674,7 @@ grpsys     COPY    "COMMON-SPA".
                                        PIC X(01).
                05  WRK-PARA-CREYMD     PIC X(08).
                05  WRK-PARA-CREHMS     PIC X(08).
+               05  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
@@ -1712,6 +1713,7 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-HOSPNUM
                                                WRK-PARA-CREYMD
                                                WRK-PARA-CREHMS
+                                               WRK-PARA-PRTKBN
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -4114,7 +4116,7 @@ grpsys         OR     ( RECE041-KEY1       NOT =   RECE05-KEY1         )
                                                 TO  WRK-KIZAI-SRYCD
                        MOVE    "777770000"      TO  RECE05-SRYCD (IDX)
                    END-IF
-                   IF      RECE05-INGAIFLG(IDX) = "1"
+                   IF      RECE05-INGAIFLG(IDX) =   "1"
                        MOVE    "699990001"      TO  RECE05-SRYCD (IDX)
                    END-IF
       *
@@ -7605,11 +7607,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    RECE09-FILE
                    RECE11-FILE
                    RECE055-FILE
-		   RECE12-FILE 
+                   RECE12-FILE 
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           IF      WRK-PARA-PRTKBN =   "9"
+               MOVE    CNT-OUT         TO  JOB-UPDCNT
+           END-IF
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
@@ -7826,7 +7831,11 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
                                        TO  RECEDEN-CREHMS
       *
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "tbl_receden"       TO  MCP-TABLE
+           IF      WRK-PARA-PRTKBN =   "9"
+               MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
+           ELSE
+               MOVE    "tbl_receden"       TO  MCP-TABLE
+           END-IF
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-DBINSERT-SEC
       *

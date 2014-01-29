@@ -183,6 +183,7 @@
       *  04.07.02    NACL-藤原    12/03/25  公費記載順設定対応
       *  04.07.03    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *  04.07.04    NACL-藤原    13/08/01  公費記載順設定時の条件の修正
+      *  04.07.05    NACL-藤原    13/12/09  医療情報連携基盤対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -1078,7 +1079,7 @@
                MOVE    "1"                 TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9"
                    MOVE    "key60"             TO  WRK-SRYACCT-PATHNAME
                ELSE
                    MOVE    "key36"             TO  WRK-SRYACCT-PATHNAME
@@ -1481,7 +1482,8 @@
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
-                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5"
+                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
+                                                       "9"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -1539,7 +1541,8 @@
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
-                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5"
+                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
+                                                       "9"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -1974,7 +1977,8 @@
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
-                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5"
+                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
+                                                       "9"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -2032,7 +2036,8 @@
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
-                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5"
+                       IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
+                                                       "9"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -3836,7 +3841,7 @@
                    MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+                   IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9"
                        MOVE    "key61"         TO  WRK-SRYACCT-PATHNAME
                    ELSE
                        MOVE    "key37"         TO  WRK-SRYACCT-PATHNAME
@@ -4415,6 +4420,12 @@
       *****************************************************************
        800-MISEIKYU-CHECK-SEC          SECTION.
       *
+      *    連携基盤用のとき未請求設定分も作成する
+           IF      WRK-PARA-PRTKBN     =   "9"
+               INITIALIZE                      SYUKA-REC
+               GO  TO  800-MISEIKYU-CHECK-EXT
+           END-IF
+      *
            INITIALIZE                      SYUKA-REC
            MOVE    SYS-1001-HOSPNUM    TO  SYUKA-HOSPNUM
            MOVE    WRK-SYUKA-PTID      TO  SYUKA-PTID
@@ -4855,32 +4866,6 @@
            END-READ
            .
        900-RECE61-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト明細書読込（順読み）
-      *****************************************************************
-       910-RECE61-READ-N-SEC             SECTION.
-      *
-           READ    RECE61-FILE     NEXT
-               AT  END
-                   IF      STS-RECE61          =   "00"
-                       CONTINUE
-                   ELSE
-                       MOVE    SPACE           TO  WRK-ERRMSG-AREA
-                       INITIALIZE                  WRK-ERRMSG-AREA
-                       MOVE    2               TO  WRK-ERR-FLG
-                       MOVE    RECE61PARA      TO  WRK-ERR-FILE-NM
-                       MOVE    STS-RECE61      TO  WRK-ERR-FILE-STS
-                       PERFORM 500-FILE-ERR-ABORT-SEC
-                   END-IF
-      *
-                   MOVE    1           TO  FLG-RECE61
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-RECE61
-           END-READ
-           .
-       910-RECE61-READ-N-EXT.
            EXIT.
       *
       *****************************************************************

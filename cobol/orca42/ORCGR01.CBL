@@ -158,8 +158,9 @@
       *                                     一画面対応
       *  04.07.04    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
       *  04.07.05    NACL-藤原    12/11/21  労災レセ電作成対応
-      *  04.07.05    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.06    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
+      *  04.07.06    NACL-藤原    13/12/09  医療情報連携基盤対応
+      *  04.07.07    NACL-藤原    13/09/20  第三者行為対応
+      *  04.07.08    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
       *                                     様式追加対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
@@ -2177,7 +2178,10 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD            =   SPACE
+           IF      SPA-R01-PRTKBN       =   "9"
+             CONTINUE
+           ELSE
+             IF      SPA-ERRCD            =   SPACE
       *        未請求設定のチェック（医保）
                IF      SPA-R01-RECEKBN     =   "0"
                    INITIALIZE                  SYUKA-REC
@@ -2214,7 +2218,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
                        MOVE    ZERO                TO  SPA-NAI-R01-CHK
                    END-IF
                END-IF
-           ELSE
+             ELSE
       *        請求管理テーブルの存在チェック
       *********IF      SPA-R01-RECEKBN     =   "0" OR  "6"
                    EVALUATE    SPA-ERRCD
@@ -2263,7 +2267,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
                            END-IF    
                    END-EVALUATE
       *********END-IF
-           END-IF             
+             END-IF
+           END-IF
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO  SPA-GMN-R01-CUR

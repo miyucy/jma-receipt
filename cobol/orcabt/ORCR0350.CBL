@@ -368,6 +368,7 @@
       *  04.07.02    NACL-藤原    12/09/04  薬剤料減点対応
       *  04.07.03    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *  04.07.04    NACL-門脇    13/09/11  自賠責（第三者行為）対応
+      *  04.07.06    NACL-藤原    13/12/09  医療情報連携基盤対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -660,6 +661,7 @@
                                        PIC X(01).
                05  WRK-PARA-CREYMD     PIC X(08).
                05  WRK-PARA-CREHMS     PIC X(08).
+               05  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
@@ -1687,6 +1689,7 @@
                                                WRK-PARA-HOSPNUM
                                                WRK-PARA-CREYMD
                                                WRK-PARA-CREHMS
+                                               WRK-PARA-PRTKBN
                                                RECEERR
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -2734,6 +2737,12 @@
       *    記録条件仕様年月情報
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    請求情報
+           IF      WRK-PARA-PRTKBN =   "9"
+               MOVE    RECE62-TAIINYMD TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMD          TO  WRK-DATA
+               MOVE    7                   TO  WRK-NAGASA
+           END-IF
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    診療科名１
            IF      RECE62-SYUKA    NOT =   SPACE
@@ -8815,6 +8824,9 @@
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           IF      WRK-PARA-PRTKBN =   "9"
+               MOVE    CNT-OUT         TO  JOB-UPDCNT
+           END-IF
            PERFORM   900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
@@ -9030,7 +9042,11 @@
                                        TO  RECEDEN-CREHMS
       *
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "tbl_receden"       TO  MCP-TABLE
+           IF      WRK-PARA-PRTKBN =   "9"
+               MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
+           ELSE
+               MOVE    "tbl_receden"       TO  MCP-TABLE
+           END-IF
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-DBINSERT-SEC
       *

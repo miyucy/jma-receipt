@@ -215,6 +215,7 @@
       *  04.07.01    NACL-門脇    12/10/02  高齢者判定フラグ編集
       *  04.07.02    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *  04.07.03    NACL-門脇    13/07/10  自賠責（第三者行為）対応
+      *  04.07.04    NACL-藤原    13/12/09  医療情報連携基盤対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -438,6 +439,8 @@
            03  WK-PTNYUINRRK-TENSTUYMD                 PIC  X(08).
            03  WK-PTNYUINRRK-TENSTUYMD2                PIC  X(08).
            03  WK-PTNYUINRRK-TENNYUYMD                 PIC  X(08).
+      *
+           03  WRK-TAIINYMD        PIC X(08).
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -3488,6 +3491,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                                            WRK-SHONUM
            MOVE      SPACE             TO  WK-PTNYUINRRK-TENSTUYMD2
            MOVE      SPACE             TO  WK-PTNYUINRRK-TENNYUYMD
+           MOVE      SPACE             TO  WRK-TAIINYMD
       *
            MOVE      ZERO              TO  FLG-BUNBEN-SET
       *
@@ -3678,7 +3682,8 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                     END-EVALUATE
                 END-IF                                                
            END-PERFORM                                                 
-      *                                                                
+      *
+           MOVE    WRK-TAIINYMD    TO  RECE62-TAIINYMD                                                                
            .
        240-PTNYUINRRK-SYORI-EXT.
            EXIT.
@@ -3906,7 +3911,11 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                END-IF
       *
                ADD     1                   TO  CNT-RECE68
-           END-IF    
+           END-IF
+      *
+           IF      WRK-TAIINYMD        <   RECE68-TAIINYMD
+               MOVE    RECE68-TAIINYMD     TO  WRK-TAIINYMD
+           END-IF
            .
        24012-RECE68-WRITE-EXT.
            EXIT.

@@ -74,7 +74,8 @@
       *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
       *  04.07.02    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
+      *  04.07.03    NACL-藤原    13/12/09  医療情報連携基盤対応
+      *  04.07.04    NACL-藤原    13/09/20  第三者行為対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -414,7 +415,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "F12:プレビュー"    TO  R99-B12-LABEL
                END-IF
            ELSE
-               IF      SPA-R01-GMNKBN  =   "R97"
+               IF    ( SPA-R01-GMNKBN  =   "R97" )
+               OR    ( SPA-R01-PRTKBN  =   "9"   )
                    CONTINUE
                ELSE
                    MOVE    "F12:印    刷"      TO  R99-B12-LABEL
@@ -517,6 +519,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                MOVE    "対象データがありませんでした"
                                                        TO  R99-MSG
                            ELSE
+                             IF      SPA-R01-PRTKBN  =   "9"
+                               CONTINUE
+                             ELSE
                                PERFORM 4501-REPRINT-CHK-SEC
                                IF      SPA-RECE07-PRTID    =   SPACE
                                    MOVE    
@@ -563,7 +568,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    MOVE    SPA-RECE07-HKNJANUM-SYAHO-T
                                            TO
                                        SPA-R01-RECE07-HKNJANUM-SYAHO-T
-                               END-IF   
+                               END-IF
+                             END-IF
                            END-IF   
                        END-IF
                    ELSE
@@ -608,7 +614,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            END-IF
                        END-IF
                    ELSE
-                       IF      SPA-R01-GMNKBN  =   "R97"
+                       IF    ( SPA-R01-GMNKBN  =   "R97" )
+                       OR    ( SPA-R01-PRTKBN  =   "9"   )
                            MOVE    "処理は正常に終了しました"
                                                 TO  R99-MSG
                        ELSE
@@ -650,7 +657,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            MOVE    "B01"            TO  MCP-WIDGET
                        END-IF
                    ELSE
-                     IF      SPA-R01-GMNKBN  =   "R97"
+                     IF    ( SPA-R01-GMNKBN  =   "R97" )
+                     OR    ( SPA-R01-PRTKBN  =   "9"   )
                          MOVE    "B01"                TO  MCP-WIDGET
                      ELSE
                        MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
@@ -669,7 +677,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                PERFORM 4501-NEXT-GMN-SEC
                                GO  TO  490-KAKUNIN-EXT
                            END-IF
-                       END-IF  
+                       END-IF
                      END-IF 
                    END-IF 
                ELSE

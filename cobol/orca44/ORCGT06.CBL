@@ -59,7 +59,10 @@
       *  04.07.02    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *  04.07.03    NACL-藤原    12/08/28  スクリプト起動パスサーチ対応
       *  04.07.04    NACL-藤原    12/11/19  主科情報の取得方法変更
-      *  04.07.05    NACL-藤原    13/10/07  労災レセ電対応
+      *  04.07.05    NACL-藤原    13/12/09  医療情報連携基盤対応
+      *  04.07.06    NACL-藤原    13/10/07  労災レセ電対応
+      *
+      *  04.08.01    NACL-森脇    13/04/12  システムＤＢ対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -114,6 +117,7 @@
            03  FLG-MONTHLYNUM          PIC 9(01).
            03  FLG-PTKOHINF            PIC 9(01).
            03  FLG-HENREI-B            PIC 9(01).
+           03  FLG-RENKEI-TMP          PIC 9(01).
       *
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
@@ -166,7 +170,7 @@
              05  WRK-SHELL-SRYYM   PIC  X(06).
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
-      *       
+      *
            03  WRK-SHELL-RECEKBN   PIC X(01).
            03  WRK-SHELL-SYOKBN    PIC X(01).
       *  
@@ -512,7 +516,7 @@
                    MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
                    MOVE    LNK-SCRSPA      TO  SPA-T06
       *************MOVE    SPA-WORK        TO  SPA-T01KYOUTU
-                   INITIALIZE              SPA-T01KYOUTU
+                   INITIALIZE              SPA-T01KYOUTU-H
                    GO  TO  300-SCREEN-EXT
                END-IF
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
@@ -521,7 +525,7 @@
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-T06
       *************MOVE    SPA-WORK        TO  SPA-T01KYOUTU
-                   INITIALIZE              SPA-T01KYOUTU
+                   INITIALIZE              SPA-T01KYOUTU-H
                    PERFORM 3101-U01SPASET-SEC
                    GO  TO  300-SCREEN-EXT
                END-IF
@@ -660,7 +664,8 @@
                                        SPA-GMN-T06-TEISYUTUSAKI4-STATE
            MOVE    WIDGET-INSENSITIVE  TO
                                        SPA-GMN-T06-TEISYUTUSAKI3-STATE
-           IF      SPA-NAI-T06-SRYYM-H <   201307
+           IF    ( SPA-NAI-T06-SRYYM-H <   201307      )
+           OR    ( SPA-T01-PRTKBN      =   "6" OR  "7" )
                MOVE    WIDGET-INSENSITIVE  TO
                                        SPA-GMN-T06-TEISYUTUSAKI4-STATE
            END-IF
@@ -843,6 +848,10 @@
                GO  TO  3101-ONRECE-KANRI-HENSYU-EXT
            END-IF 
       *
+           IF      SPA-T01-PRTKBN  =   "6" OR  "7"
+               GO  TO  3101-ONRECE-KANRI-HENSYU-EXT
+           END-IF
+      *
            MOVE    ZERO            TO  IDX
       *
            INITIALIZE                  ONRECE-K-REC
@@ -851,12 +860,7 @@
                                    =   "T"
                MOVE   "1"              TO  ONRECE-K-TEISYUTUSAKI
            ELSE
-               IF      SPA-GMN-T06-TEISYUTUSAKI2
-                                       =   "T"
-                   MOVE   "2"              TO  ONRECE-K-TEISYUTUSAKI
-               ELSE
-                   MOVE   "3"              TO  ONRECE-K-TEISYUTUSAKI
-               END-IF
+               MOVE   "2"              TO  ONRECE-K-TEISYUTUSAKI
            END-IF
            MOVE   SPA-NAI-T06-SRYYM-H
                                    TO  ONRECE-K-SRYYM
@@ -1131,7 +1135,7 @@
       *
            MOVE    1               TO  SPA-GMN-T06-CUR
       *
-           INITIALIZE                  SPA-T01KYOUTU
+           INITIALIZE                  SPA-T01KYOUTU-H
            .
        320-T99-SET-EXT.
            EXIT.
@@ -1450,7 +1454,7 @@
                END-EVALUATE
            END-IF
       *
-           INITIALIZE                  SPA-T01KYOUTU
+           INITIALIZE                  SPA-T01KYOUTU-H
       *
            INITIALIZE                  SPA-NAI-T06-SRYYM-OLD
                                        SPA-GMN-T06-SRYYM-OLD
@@ -1545,6 +1549,7 @@
                        MOVE    SPA-GMN-T09-SELNUM (IDZ)
                                                TO  IDY
       *
+      *
                        INITIALIZE                  RECE10-REC
                        MOVE    SPA-NAI-T09-RECE10-KEY   (IDY)
                                                TO  RECE10-KEY
@@ -1622,7 +1627,7 @@
                END-IF
            END-IF
       *
-           INITIALIZE                  SPA-T01KYOUTU
+           INITIALIZE                  SPA-T01KYOUTU-H
            MOVE    4               TO  SPA-GMN-T06-CUR      
       *
            .
@@ -1898,8 +1903,12 @@
                INITIALIZE                  SPA-NAI-T06-SRYYM-OLD
                                            SPA-GMN-T06-SRYYM-OLD
                MOVE    2               TO  SPA-GMN-T06-CUR
-               IF      SPA-NAI-T06-SYSYM-2 >=  SPA-NAI-T06-SRYYM-H
-                   MOVE    "2001"              TO  SPA-ERRCD
+               IF      SPA-T01-PRTKBN  =   "6" OR  "7"
+                   CONTINUE
+               ELSE
+                   IF      SPA-NAI-T06-SYSYM-2 >=  SPA-NAI-T06-SRYYM-H
+                       MOVE    "2001"              TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -2511,6 +2520,13 @@
                GO  TO  4105-NYUGAIKBN-CHK-EXT
            END-IF
       *
+      *    連携用の時Ｔ０１で設定した入外区分とする
+           IF      SPA-T01-PRTKBN  =   "6" OR  "7"
+               MOVE    SPA-T01-NYUGAIKBN
+                                       TO  SPA-GMN-T06-NYUGAIKBN
+               GO  TO  4105-NYUGAIKBN-CHK-EXT
+           END-IF
+      *
       *    患者番号入力時に診療年月が未入力のとき
            IF    ( WRK-MCP-WIDGET     =   "PTNUM"  OR  "SKYYMD_H" )
            AND   ( SPA-GMN-T06-NYUGAIKBN
@@ -2569,6 +2585,14 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-T01-PRTKBN      =   "6" OR  "7"         )
+               AND   ( SPA-NAI-T06-SRYYM
+                                       NOT =   SPA-NAI-T06-SRYYM-H )
+                   MOVE    "0028"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-T06-SRYYM   >   SPA-NAI-T06-SRYYM-H
                    MOVE    "0012"              TO  SPA-ERRCD
                END-IF
@@ -2595,7 +2619,105 @@
                END-IF
            END-IF
       *
+           IF      SPA-T01-PRTKBN      =   "6" OR  "7"
+      *        連携テンポラリとのチェック処理
+               PERFORM 41041-RENKEI-TMP-TUIKA-SEC
+           ELSE
+      *       請求管理とのチェック処理
+               PERFORM 41041-SEIKYU-TUIKA-SEC
+           END-IF
+           .
+      *
+       41041-TUIKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    連携テンポラリから編集処理
+      *****************************************************************
+       41041-RENKEI-TMP-TUIKA-SEC              SECTION.
+      *
+           INITIALIZE                      RECEDEN-REC
+           MOVE    SPA-HOSPNUM         TO  RECEDEN-HOSPNUM
+           MOVE    SPA-NAI-T06-PTID    TO  RECEDEN-PTID
+           MOVE    SPA-NAI-T06-SRYYM   TO  RECEDEN-SRYYM
+           MOVE    SPA-GMN-T06-NYUGAIKBN
+                                       TO  RECEDEN-NYUGAIKBN
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                       =   "T"
+               MOVE    "key4"              TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    "key5"              TO  WRK-MCP-PATHNAME
+           END-IF
+           PERFORM 900-RENKEI-TMP-READ-SEC
+      *
+           IF      FLG-RENKEI-TMP      =   ZERO
+      *        レセ電請求一覧とのチェック
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-T06-RECE-MAX
+                   IF      RECEDEN-PTID    =   SPA-NAI-T06-RECE10-PTID
+                                                                  (IDY)
+                       MOVE    "0008"          TO  SPA-ERRCD
+                       MOVE    SPA-GMN-T06-RECE-MAX
+                                               TO  IDY  
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    "0021"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-ERRCD            =   SPACE
+               IF      SPA-GMN-T06-SELNUM  =   ZERO
+                   ADD     1                   TO  SPA-GMN-T06-RECE-MAX
+                   MOVE    SPA-GMN-T06-RECE-MAX
+                                               TO  SPA-GMN-T06-R-TRENNUM
+                                                (SPA-GMN-T06-RECE-MAX)
+                   MOVE    SPA-GMN-T06-RECE-MAX
+                                               TO  IDX
+               ELSE
+                   MOVE    SPA-GMN-T06-SELNUM  TO  IDX
+               END-IF    
+      *
+               MOVE    RECEDEN-KEY      TO  SPA-NAI-T06-RECE10-KEY (IDX)
+      *   
+               EVALUATE    RECEDEN-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    "入"    TO  SPA-GMN-T06-R-TNYUGAIKBN(IDX)
+                   WHEN    "2"    
+                       MOVE    "外"    TO  SPA-GMN-T06-R-TNYUGAIKBN(IDX)
+               END-EVALUATE
+               MOVE    SPA-GMN-T06-PTNUM   TO  SPA-GMN-T06-R-TPTNUM(IDX)
+               MOVE    SPA-GMN-T06-NAME    TO  SPA-GMN-T06-R-TNAME (IDX)
+               MOVE    SPA-GMN-T06-SRYYM   TO  SPA-GMN-T06-R-TSRYYM(IDX)
+      *
+               MOVE    RECEDEN-CREYMD  TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-T06-R-TCREYMD (IDX)
+      *
+               IF      SPA-GMN-T06-SELNUM  =   ZERO
+                   MOVE    SPA-GMN-T06-RECE-MAX
+                                            TO  T06-RECE-LIST-ROW
+               ELSE
+                   MOVE    SPA-GMN-T06-SELNUM
+                                            TO  T06-RECE-LIST-ROW
+               END-IF
+      * 
+               INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
+                                           SPA-NAI-T06-RECE-KOUMOKU
+                                           SPA-NAI-T06-BODY-SELNUM
+           END-IF
+      *
+           MOVE    4                    TO  SPA-GMN-T06-CUR
+           .
+      *
+       41041-RENKEI-TMP-TUIKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    請求管理とのチェック処理
+      *****************************************************************
+       41041-SEIKYU-TUIKA-SEC              SECTION.
+      *
            INITIALIZE                      RECE10-REC
            MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    SPA-NAI-T06-PTID    TO  RECE10-PTID
@@ -2773,7 +2895,7 @@
       *************INITIALIZE              SPA-T09-AREA
                WHEN    OTHER
                    PERFORM 42032-T09-HENSYU-SEC
-                   GO  TO  41041-TUIKA-EXT
+                   GO  TO  41041-SEIKYU-TUIKA-EXT
            END-EVALUATE
       *
            IF      SPA-ERRCD            =   SPACE
@@ -2783,7 +2905,7 @@
            END-IF             
            .
       *
-       41041-TUIKA-EXT.
+       41041-SEIKYU-TUIKA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3073,7 +3195,7 @@
                                            HENREI-B-XXTEISYUTUSAKI
                    WHEN    2
                    WHEN    6
-                       MOVE    "2"     TO  HENREI-B-TEISYUTUSAKI
+                       MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
                                            HENREI-B-XXTEISYUTUSAKI
                    WHEN    3
                        MOVE    "3"     TO  HENREI-B-TEISYUTUSAKI
@@ -3840,6 +3962,13 @@
            IF      FLG-ONRECE-B    =   1
                MOVE    "0025"          TO  SPA-ERRCD
                GO  TO  480-ZENKAI-HYOUJI-TID-EXT
+           ELSE
+      *        前回が連携用のとき
+               IF      ONRECE-B-U-HENREI-FLG
+                                       =   "9"
+                   MOVE    "0029"          TO  SPA-ERRCD
+                   GO  TO  480-ZENKAI-HYOUJI-TID-EXT
+               END-IF
            END-IF
       *
       *    直接請求する保険者とのチェック（社保）
@@ -3965,7 +4094,6 @@
                                        TO
                                        SPA-NAI-T06-RECE10-RECEIPT-KBN
                                                                (IDX)
-      *
       *        請求管理チェック
                MOVE    SPA-NAI-T06-RECE10-KEY (IDX)
                                        TO  RECE10-KEY      
@@ -4116,7 +4244,7 @@
                    MOVE    RECE10-HKNJANUM-S   TO
                                        SPA-NAI-T06-R-THKNJANUM-S (IDX)
                END-IF
-      * 
+      *
                MOVE    "tbl_onrece_body"
                                        TO  MCP-TABLE
                MOVE    "key6"          TO  MCP-PATHNAME
@@ -4447,9 +4575,14 @@
                                            TO  ONRECE-B-KIGO
                MOVE    SPA-NAI-T06-R-THKNNUM      (IDX)
                                            TO  ONRECE-B-HKNNUM
-               IF      SPA-NAI-T06-R-THENREI-SIJI-FLG (IDX)
-                                           =   1
-                   MOVE    "1"                 TO  ONRECE-B-U-HENREI-FLG
+               IF      SPA-T01-PRTKBN      =   "6" OR  "7"
+      *            連携用のとき識別のためにセット
+                   MOVE    "9"             TO  ONRECE-B-U-HENREI-FLG
+               ELSE
+                   IF      SPA-NAI-T06-R-THENREI-SIJI-FLG (IDX)
+                                               =   1
+                       MOVE    "1"             TO  ONRECE-B-U-HENREI-FLG
+                  END-IF
                END-IF
                IF      ONRECE-B-TEISYUTUSAKI-B
                                            =   "3"
@@ -4510,7 +4643,7 @@
                                    TO  SPA-T01-TBL-GROUP
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *
+      *             
            MOVE    SPACE           TO  SHELLTBL
            EVALUATE    ONRECE-K-TEISYUTUSAKI
                WHEN    "1"
@@ -4611,6 +4744,21 @@
                MOVE    SPA-NAI-T06-200501-RECEDEN-CHK-KBN
                                        TO  SHELLTBL-ARG28
            END-IF
+           MOVE    SPA-T01-NYUGAIKBN
+                                   TO  SHELLTBL-ARG29
+      *
+      *    連携基盤用の時再設定
+           IF      SPA-T01-PRTKBN  =   "6" OR  "7"
+               MOVE    SPACE           TO  SHELLTBL-ARG17 
+               STRING  SPA-T01-9101-FILE-DIR   DELIMITED  BY  SPACE
+                       "/"                     DELIMITED  BY  SIZE
+                                       INTO    SHELLTBL-ARG17
+               END-STRING
+               MOVE    "0"             TO  SHELLTBL-ARG25
+               MOVE    "0"             TO  SHELLTBL-ARG26
+               MOVE    "0"             TO  SHELLTBL-ARG28
+           END-IF
+      *
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -5441,42 +5589,45 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                                            TO  T06-RECE-TNAME     (IDX)
                MOVE    SPA-GMN-T06-R-TSRYYM     (IDX)
                                            TO  T06-RECE-TSRYYM    (IDX)
-      *
-               EVALUATE    SPA-NAI-T06-RECE10-RECESYUBETU (IDX)
-                   WHEN    "7101"
-                   WHEN    "7091"
-                       MOVE    "傷病・業務"        TO
+               IF      SPA-T01-PRTKBN      =   "6" OR  "7"
+                   CONTINUE
+               ELSE
+                   EVALUATE    SPA-NAI-T06-RECE10-RECESYUBETU (IDX)
+                       WHEN    "7101"
+                       WHEN    "7091"
+                           MOVE    "傷病・業務"        TO
                                            T06-RECE-TRECESYUBETU (IDX)
-                   WHEN    "7102"
-                   WHEN    "7092"
-                       MOVE    "傷病・通勤"        TO
+                       WHEN    "7102"
+                       WHEN    "7092"
+                           MOVE    "傷病・通勤"        TO
                                            T06-RECE-TRECESYUBETU (IDX)
-                   WHEN    "7071"
-                   WHEN    "7081"
-                       MOVE    "短期・業務"        TO
+                       WHEN    "7071"
+                       WHEN    "7081"
+                           MOVE    "短期・業務"        TO
                                            T06-RECE-TRECESYUBETU (IDX)
-                   WHEN    "7072"
-                   WHEN    "7082"
-                       MOVE    "短期・通勤"        TO
+                       WHEN    "7072"
+                       WHEN    "7082"
+                           MOVE    "短期・通勤"        TO
                                            T06-RECE-TRECESYUBETU (IDX)
-                   WHEN    OTHER
-                       MOVE    SPA-NAI-T06-RECE10-RECESYUBETU (IDX)
-                                                   TO
+                       WHEN    OTHER
+                           MOVE    SPA-NAI-T06-RECE10-RECESYUBETU (IDX)
+                                                       TO
                                            T06-RECE-TRECESYUBETU (IDX)
-               END-EVALUATE
-      *
-               IF     SPA-NAI-T06-RECE10-HKNJANUM  (IDX)
+                   END-EVALUATE
+                   IF     SPA-NAI-T06-RECE10-HKNJANUM  (IDX)
                                        NOT =   "00000000"
-                   MOVE    SPA-NAI-T06-RECE10-HKNJANUM  (IDX)
+                       MOVE    SPA-NAI-T06-RECE10-HKNJANUM  (IDX)
                                            TO  T06-RECE-THKNJANUM (IDX)
-               END-IF
-               MOVE    SPA-GMN-T06-R-TKIGO      (IDX)
+                   END-IF
+      *
+                   MOVE    SPA-GMN-T06-R-TKIGO      (IDX)
                                            TO  T06-RECE-TKIGO     (IDX)
-               MOVE    SPA-GMN-T06-R-THOJOKBN   (IDX)
+                   MOVE    SPA-GMN-T06-R-THOJOKBN   (IDX)
                                            TO  T06-RECE-THOJOKBN  (IDX)
-               MOVE    SPA-GMN-T06-R-TRECEIPT-KBN (IDX)
+                   MOVE    SPA-GMN-T06-R-TRECEIPT-KBN (IDX)
                                            TO
                                            T06-RECE-TRECEIPT-KBN  (IDX)
+               END-IF
                MOVE    SPA-GMN-T06-R-TCREYMD    (IDX)
                                            TO  T06-RECE-TCREYMD   (IDX)
       *         
@@ -5546,6 +5697,27 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                                            T06-B12-STATE
            IF      SPA-NAI-T06-SYSYM-2 >=  SPA-NAI-T06-SRYYM-H
                MOVE    WIDGET-INSENSITIVE  TO  T06-B12-STATE
+           END-IF
+      *
+      *    連携用のとき
+           MOVE    "blue"                  TO  T06-TITLE1-STYLE
+                                               T06-TITLE2-STYLE
+           IF      SPA-T01-PRTKBN      =   "6" OR  "7"
+               EVALUATE    SPA-T01-PRTKBN
+                   WHEN    "6"
+                       MOVE    "連携用"            TO  T06-TITLE1
+                   WHEN    "7"
+                       MOVE    "連携用（当日）"    TO  T06-TITLE1
+               END-EVALUATE
+               EVALUATE    SPA-T01-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    "【入院】"          TO  T06-TITLE2
+                   WHEN    "2"
+                       MOVE    "【入院外】"        TO  T06-TITLE2
+               END-EVALUATE
+               MOVE    WIDGET-NORMAL       TO  T06-B12-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  T06-B18-STATE
+                                               T06-B08-STATE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -5691,7 +5863,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                                                    INTO    TERR-ERRMSG
                    END-STRING
                WHEN    "0021"
-                   MOVE    "労災指定医療機関ではありません"
+                   MOVE    "対象の連携データがありません"
                                                        TO  TERR-ERRMSG
                WHEN    "0022"
                    MOVE    "患者情報を入力中です"      TO  TERR-ERRMSG
@@ -5707,6 +5879,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                                                        TO  TERR-ERRMSG
                WHEN    "0027"
                    MOVE    "選択した保険者と違います"  TO  TERR-ERRMSG
+               WHEN    "0028"
+                   MOVE
+                   "連携用のときは違う診療年月は入力できません"
+                                                       TO  TERR-ERRMSG
+               WHEN    "0029"
+                   MOVE    "前回作成分が連携用ですので表示できません"
+                                                       TO  TERR-ERRMSG
                WHEN    "0041"
                    MOVE    "データが入力してあるので遷移できません"
                                                        TO  TERR-ERRMSG
@@ -6306,6 +6485,36 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        900-RECEDEN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    連携テンポラリ読込
+      *****************************************************************
+       900-RENKEI-TMP-READ-SEC             SECTION.
+      *
+           MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_renkei_tmp"      TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-RENKEI-TMP
+                   MOVE    MCPDATA-REC         TO  RECEDEN-REC
+               ELSE
+                   MOVE    1                   TO  FLG-RENKEI-TMP
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-RENKEI-TMP
+           END-IF
+      *
+           MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-RENKEI-TMP-READ-EXT.
            EXIT.
       *
       *****************************************************************

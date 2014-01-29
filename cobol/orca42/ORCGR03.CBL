@@ -123,8 +123,9 @@
       *                                     一画面対応
       *  04.07.03    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
       *  04.07.04    NACL-藤原    12/11/21  労災レセ電作成対応
-      *  04.07.05    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.06    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
+      *  04.07.05    NACL-藤原    13/12/09  医療情報連携基盤対応
+      *  04.07.06    NACL-藤原    13/09/20  第三者行為対応
+      *  04.07.07    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
       *                                     様式追加対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
@@ -188,7 +189,7 @@
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-NYUGAIKBNMEI    PIC X(06).
       *                         
-                   07  SPA-GMN-PRTKBNLST           OCCURS  2.
+                   07  SPA-GMN-PRTKBNLST           OCCURS  3.
                        09  SPA-GMN-PRTKBNL         PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PRTKBNMEIL      PIC X(30).    
@@ -231,6 +232,7 @@
                    07  SPA-NAI-200505-HKNJANUM     PIC X(08).
                    07  SPA-NAI-200501-INSPECT-INCLUDE-KBN
                                                    PIC X(01).
+                   07  SPA-NAI-9101-COOPBASE       PIC X(01).
       *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -387,6 +389,8 @@
            COPY    "CPSK2006.INC".
       *
            COPY    "CPSK4001.INC".
+      *
+           COPY    "CPSK9101.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -594,6 +598,26 @@
       *
            INITIALIZE              SPA-R03-AREA
       *
+      *    医療情報連携基盤用情報
+           INITIALIZE                  SYS-9101-REC
+           MOVE    "9101"          TO  SYS-9101-KANRICD
+           MOVE    "*"             TO  SYS-9101-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-9101-STYUKYMD
+                                       SYS-9101-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-9101-HOSPNUM
+           MOVE    SYS-9101-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-9101-REC
+           ELSE
+               MOVE   SPACE        TO  SYS-9101-REC
+           END-IF
+           IF      SYS-9101-COOPBASE   =   SPACE
+               MOVE    "0"             TO  SYS-9101-COOPBASE
+           END-IF
+           MOVE    SYS-9101-COOPBASE
+                                   TO  SPA-NAI-9101-COOPBASE
+      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL       (1)
                MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEIL    (1)
@@ -614,6 +638,12 @@
            MOVE    "点検用レセプト（院外処方含）"
                                        TO  SPA-GMN-PRTKBNMEIL    (2)
            MOVE    2                   TO  SPA-GMN-PRTKBN-MAX
+           IF      SPA-NAI-9101-COOPBASE
+                                       =   "1"
+               MOVE    "6"                 TO  SPA-GMN-PRTKBNL   (3)
+               MOVE    "連携基盤用"        TO  SPA-GMN-PRTKBNMEIL(3)
+               MOVE    3                   TO  SPA-GMN-PRTKBN-MAX
+           END-IF
            MOVE    SPA-GMN-PRTKBNLST (1)
                                        TO  SPA-GMN-PRTKBN-G
       *
@@ -872,6 +902,26 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
       *
            INITIALIZE              SPA-R03-AREA
       *
+      *    医療情報連携基盤用情報
+           INITIALIZE                  SYS-2005-REC
+           MOVE    "9101"          TO  SYS-2005-KANRICD
+           MOVE    "*"             TO  SYS-2005-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-2005-STYUKYMD
+                                       SYS-2005-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
+           MOVE    SYS-9101-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-9101-REC
+           ELSE
+               MOVE   SPACE        TO  SYS-9101-REC
+           END-IF
+           IF      SYS-9101-COOPBASE   =   SPACE
+               MOVE    "0"             TO  SYS-9101-COOPBASE
+           END-IF
+           MOVE    SYS-9101-COOPBASE
+                                   TO  SPA-NAI-9101-COOPBASE
+      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL       (1)
                MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEIL    (1)
@@ -898,6 +948,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
            MOVE    "点検用レセプト（院外処方含）"
                                        TO  SPA-GMN-PRTKBNMEIL    (2)
            MOVE    2                   TO  SPA-GMN-PRTKBN-MAX
+           IF      SPA-NAI-9101-COOPBASE
+                                       =   "1"
+               MOVE    "6"                 TO  SPA-GMN-PRTKBNL   (3)
+               MOVE    "連携基盤用"        TO  SPA-GMN-PRTKBNMEIL(3)
+               MOVE    3                   TO  SPA-GMN-PRTKBN-MAX
+           END-IF
            EVALUATE    SPA-R01-PRTKBN
                WHEN    "1"
                    MOVE    SPA-GMN-PRTKBNLST (1)
@@ -907,6 +963,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                WHEN    "4"
                WHEN    "5"
                    MOVE    SPA-GMN-PRTKBNLST (2)
+                                               TO  SPA-GMN-PRTKBN-G
+               WHEN    "9"
+                   MOVE    SPA-GMN-PRTKBNLST (3)
                                                TO  SPA-GMN-PRTKBN-G
            END-EVALUATE        
       *   
@@ -1346,7 +1405,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
       *
            IF    (  SPA-NAI-SRYYM       <   200804 )
            AND   (  SPA-GMN-IKKATU      =   "T"    )
-           AND   (  SPA-GMN-PRTKBN      =   "2"    ) 
+           AND   (  SPA-GMN-PRTKBN      =   "2" 
+                                        OR  "6"    )
                MOVE    "0012"              TO  SPA-ERRCD
            END-IF
       *
@@ -1383,6 +1443,27 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
        4103-KAKUTEI-CHK-SEC        SECTION.
       *   
       *
+      *    医保分のみ連携基盤を選択可能
+           IF      SPA-GMN-PRTKBN   =   "6"
+               EVALUATE    TRUE
+                   WHEN    SPA-DATAKBN1-VALUE  =   "T"
+                       CONTINUE
+                   WHEN    SPA-DATAKBN2-VALUE  =   "T"
+                   WHEN    SPA-DATAKBN3-VALUE  =   "T"
+                   WHEN    SPA-DATAKBN5-VALUE  =   "T"
+                   WHEN    SPA-DATAKBN21-VALUE =   "T"
+                       MOVE    "0011"          TO  SPA-ERRCD
+                   WHEN    SPA-DATAKBN11-VALUE =   "T"
+                   WHEN    SPA-DATAKBN31-VALUE =   "T"
+                   WHEN    SPA-DATAKBN32-VALUE =   "T"
+                   WHEN    SPA-DATAKBN4-VALUE  =   "T"
+                   WHEN    SPA-DATAKBN22-VALUE =   "T"
+                   WHEN    SPA-DATAKBN23-VALUE =   "T"
+                   WHEN    SPA-DATAKBN24-VALUE =   "T"
+                   WHEN    SPA-DATAKBN25-VALUE =   "T"
+                       MOVE    "0011"          TO  SPA-ERRCD
+               END-EVALUATE
+          END-IF
            .
        4103-KAKUTEI-CHK-EXT.
            EXIT.
@@ -2924,6 +3005,12 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    END-EVALUATE
                END-IF
            END-IF
+      *    医保分で連携基盤用のとき
+           IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
+                                           "2" OR  "7"    )
+           AND   ( SPA-R01-PRTKBN      =   "6"            )
+               MOVE    "9"                 TO  SPA-R01-PRTKBN
+           END-IF
      *
            MOVE    SPACE               TO  SPA-R01-GMNKBN
       *
@@ -2985,7 +3072,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                      R99
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE
-           MOVE    "F12:印    刷"      TO  R99-B12-LABEL
+           IF      SPA-R01-PRTKBN  =   "9"
+               CONTINUE
+           ELSE
+               MOVE    "F12:印    刷"      TO  R99-B12-LABEL
+           END-IF
            MOVE    "black"             TO  R99-MSG-STYLE
       *
       *    ジョブ管理チェック処理
@@ -3026,11 +3117,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                          MOVE    "対象データがありませんでした"
                                                        TO  R99-MSG
                      ELSE
-                       PERFORM 4501-REPRINT-CHK-SEC
-                       IF      SPA-RECE07-PRTID    =   SPACE
+                       IF      SPA-R01-PRTKBN  =   "9"
+                         CONTINUE
+                       ELSE
+                         PERFORM 4501-REPRINT-CHK-SEC
+                         IF      SPA-RECE07-PRTID    =   SPACE
                            MOVE    "対象のレセプトが作成されていません"
                                                TO  R99-MSG
-                       ELSE                    
+                         ELSE                    
                            MOVE    SPA-RECE07-KEY
                                           TO  SPA-R01-RECE07-KEY
                            MOVE    SPA-RECE07-RECEKBN
@@ -3068,6 +3162,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            MOVE    SPA-RECE07-HKNJANUM-SYAHO-T
                                           TO
                                        SPA-R01-RECE07-HKNJANUM-SYAHO-T
+                         END-IF
                        END-IF
                      END-IF 
                    ELSE
@@ -3086,6 +3181,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
            IF      R99-MSG              =   SPACE
                IF      R99-COUNT            >   ZERO    
+                 IF      SPA-R01-PRTKBN  =   "9"
+                    MOVE    "処理は正常に終了しました"
+                                                TO  R99-MSG
+                 ELSE
                    MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
                    MOVE    "B12"                TO  MCP-WIDGET
                    IF    ( SPA-R01-RECE07-SRYKA =   "XX" )
@@ -3106,8 +3205,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    "処理は正常に終了しました"
                                                 TO  R99-MSG
                    END-IF
-                   MOVE   100                   TO
-                                                R99-PROGRESSBAR-VALUE
+                 END-IF  
+                 MOVE   100                 TO  R99-PROGRESSBAR-VALUE
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"
@@ -3405,6 +3504,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            DELIMITED   BY  SIZE  
                                            INTO        SPA-ERRMSG
                    END-STRING
+               WHEN    "0011"
+                   STRING  "連携基盤用は医保分（一括作成・全件）"
+                                           DELIMITED   BY  SIZE  
+                           "のときだけ選択できます"
+                                           DELIMITED   BY  SIZE  
+                                           INTO        SPA-ERRMSG
+                   END-STRING
                WHEN    "0012"
                    MOVE    "レセプト作成区分入力エラー"
                                                        TO  SPA-ERRMSG
@@ -3535,6 +3641,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( SPA-GMN-PRTKBN       =   "2" )
            AND   ( SPA-RIDCD (1:1)      =   "1" )
                MOVE    "【点検用レセプト】"     TO  RID1-LABEL
+           END-IF
+           IF    ( SPA-GMN-PRTKBN       =   "6" )
+           AND   ( SPA-RIDCD (1:1)      =   "1" )
+               MOVE    "【連携基盤用レセプト】" TO  RID1-LABEL
            END-IF
       *
            MOVE    "戻る"               TO  RID1-B01-LABEL

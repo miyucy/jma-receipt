@@ -64,6 +64,7 @@
       *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
       *  04.07.03    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
       *                                     様式追加対応
+      *  04.07.04    NACL-藤原    13/12/09  医療情報連携基盤対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -487,6 +488,7 @@
            STRING   WRK-PARA0      DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
                     WRK-PARA-PRTKBN
+                                   DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
                     WRK-PARA-HOSPNUM
                                    DELIMITED   BY  SIZE
@@ -515,6 +517,7 @@
            STRING   WRK-PARA2      DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
                     WRK-PARA-PRTKBN
+                                   DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
                     WRK-PARA-HOSPNUM
                                    DELIMITED   BY  SIZE

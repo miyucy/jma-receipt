@@ -1386,7 +1386,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label400</name>
-        <x>90</x>
+        <x>100</x>
         <y>8</y>
         <width>70</width>
         <height>24</height>
@@ -1404,7 +1404,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label540</name>
-        <x>90</x>
+        <x>100</x>
         <y>35</y>
         <width>70</width>
         <height>24</height>
@@ -1435,6 +1435,44 @@
         <ypad>0</ypad>
         <label>直接請求する保険者以外２３４５</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>TITLE1</name>
+        <x>2</x>
+        <y>2</y>
+        <width>93</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>連携（今月）</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>TITLE2</name>
+        <x>2</x>
+        <y>28</y>
+        <width>93</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>入院外</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
       </widget>
     </widget>
