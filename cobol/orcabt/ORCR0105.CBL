@@ -1393,10 +1393,6 @@
                PERFORM 5001-DB-DELETE-SEC
            END-IF
       *
-           IF      FLG-STS             =   ZERO
-              PERFORM 990-RECE02-READ-SEC
-           END-IF
-      *
       *    連携基盤用のとき処理終了
            IF      WRK-PARA-PRTKBN      =   "9"
                MOVE    2                    TO  FLG-STS
