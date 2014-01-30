@@ -35,7 +35,6 @@
       * 01.00.05     ¤Ò¤µ¤Ê¤¬     03/05/21  ¿ÇÎÅÇ¯·îÀßÄê»þ¤ÎÈ½Äê½çÊÑ¹¹
       * 01.00.06     ¤Ò¤µ¤Ê¤¬     03/06/05  ´µ¼Ô£É£ÄÃÖ´¹¥á¥Ã¥»¡¼¥¸¤ÎÄÉ²Ã
       * 03.05.01     NACL-¿¹ÏÆ    07/06/11  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      * 04.08.01     NACL-¿¹ÏÆ    14/08/25  °ì»þ¥Õ¥¡¥¤¥ë¥Ç¥£¥ì¥¯¥È¥êÀßÄê
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -71,14 +70,13 @@
       *
        COPY    "COMMON-SPA".
       *
-      *----(04.08.01)--UPD-START---
       *    £Ã£Ó£ÖºîÀ®¾ò·ïÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
 grpsys*DD  COPY    "CPCOMMONDAT4.INC"
 grpsys*DD                          REPLACING  //ORCGD//
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //EIE00//.
-grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
+grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    £Ã£Ó£ÖºîÀ®¾ò·ï£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
 grpsys*DD  COPY    "CPCOMMONDAT4.INC"
@@ -87,8 +85,7 @@ grpsys*DD                          BY         //EIE01//.
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //EIE01//.
-grpsys*     03  EIE01PARA-FILE      PIC X(23).
-      *----(04.08.01)--UPD-END-----
+grpsys     03  EIE01PARA-FILE      PIC X(23).
       *
       *    £Ã£Ó£Ö£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
        01  EIECSPARA.
@@ -97,7 +94,6 @@ grpsys*     03  EIE01PARA-FILE      PIC X(23).
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-CHANGE          PIC 9(01).
       *
       *    ¥¨¥ó¥É¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
        01  STS-AREA.
@@ -109,21 +105,18 @@ grpsys*     03  EIE01PARA-FILE      PIC X(23).
        01  IDX-AREA.
            03  IDX1                PIC 9(03).
            03  IDX2                PIC 9(03).
-           03  IDX3                PIC 9(05).
+           03  IDX3                PIC 9(03).
            03  IDX4                PIC 9(05).
            03  IDX5                PIC 9(05).
            03  IDX6                PIC 9(03).
            03  IDX7                PIC 9(03).
            03  IDX8                PIC 9(03).
            03  IDX9                PIC 9(05).
-           03  IDXA                PIC 9(05).
-           03  IDXB                PIC 9(05).
            03  IDXP                PIC 9(05).
       *
       *    ÊÔ½¸ºî¶È
        01  W-AREA.
            03  WK-EIECS-REC            PIC  X(51000).
-           03  WK-HEADER-REC           PIC  X(51000).
            03  WRK-PARA.
                05  WRK-PARA-SRYYM      PIC  X(06).
                05  WRK-PARA-TERMID     PIC  X(64).
@@ -152,8 +145,6 @@ grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
                05  WRK-SNUM            PIC  S9(18).
            03  WRK-NUM-G.
                05  WRK-NUM             PIC  9(18).
-           03  WRK-INT-G.
-               05  WRK-INT             PIC  S9(09) BINARY.
            03  WRK-STR                 PIC  X(20).
            03  WRK-SIGN                PIC  X(1).
            03  WRK-SEISU               PIC  9(03).
@@ -174,9 +165,8 @@ grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
        01  WK-TBL2.
            03  WK-TBLRET       OCCURS  900.
                05  WK-TBL-RMSG.
-                   07  WK-TBL-RMSG-ID.
-                       09  WK-TBL-RMSG-1   PIC X(01).
-                       09  WK-TBL-RMSG-2   PIC X(29).
+                   07  WK-TBL-RMSG-1   PIC X(01).
+                   07  WK-TBL-RMSG-2   PIC X(29).
                    07  WK-TBL-RMSG-3   PIC X(07).
                    07  WK-TBL-RMSG-4   PIC X(13).
                    07  WK-TBL-RMSG-5   PIC X(05).
@@ -189,9 +179,6 @@ grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPSHELLTBL.INC".
       *
-      *----(04.08.01)--ADD-START---
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -249,7 +236,6 @@ grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
       *****************************************************************
        000-DBOPEN-SEC                  SECTION.
       *
-           DISPLAY "e03START-------------------"
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
@@ -305,18 +291,6 @@ grpsys*DD  MOVE    "ORCE00.CNV"    TO  EIE00PARA-FILE
 grpsys     MOVE    "ORCGE00"         TO  EIE00PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE00PARA-HOSPNUM.
 grpsys     MOVE    WRK-PARA-TERMID   TO  EIE00PARA-TERMID.
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    EIE00PARA-BASENAME
-                                       TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    ALL SPACE           TO  EIE00PARA-FULLNAME
-           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
-                   ".dat"              DELIMITED  BY    SIZE
-                                       INTO       EIE00PARA-FULLNAME
-           END-STRING.
-      *----(04.08.01)--ADD-END-----
       *
            MOVE    SPACE           TO  WK-TBL1.
            MOVE    1               TO  IDX1.
@@ -424,25 +398,10 @@ grpsys     MOVE    WRK-PARA-TERMID   TO  EIE00PARA-TERMID.
 grpsys     MOVE    "ORCGE01"         TO  EIE01PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE01PARA-HOSPNUM.
 grpsys     MOVE    WRK-PARA-TERMID   TO  EIE01PARA-TERMID.
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    EIE01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    ALL SPACE           TO  EIE01PARA-FULLNAME
-           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
-                   WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
+           MOVE    ALL SPACE           TO  EIE01PARA-FILE.
+           STRING  WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
                    ".SLT"              DELIMITED  BY    SIZE
-                                       INTO       EIE01PARA-FULLNAME
-           END-STRING.
-      *----(04.08.01)--ADD-END-----
-      *----(04.08.01)--UPD-START---
-      *     MOVE    ALL SPACE           TO  EIE01PARA-FILE.
-      *     STRING  WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
-      *             ".SLT"              DELIMITED  BY    SIZE
-      *                                 INTO       EIE01PARA-FILE.
-      *----(04.08.01)--UPD-END-----
+                                       INTO       EIE01PARA-FILE.
            MOVE    SPACE               TO  EIECSPARA-FILE-ID.
            MOVE    SPACE               TO  WK-TABLE.
            MOVE    SPACE               TO  WK-PATHNAME.
@@ -467,12 +426,9 @@ grpsys     MOVE    WRK-PARA-TERMID   TO  EIE01PARA-TERMID.
                    MOVE    EIE01-REC(8:128)  TO  EIECSPARA-FILE-ID
                    MOVE    WK-TBL-NAME(IDX2) TO  WK-TABLE
                    MOVE    "all"             TO  WK-PATHNAME
-                   EVALUATE    WK-TABLE
-                   WHEN    "tbl_jyurrk_prv"
+                   IF    ( WK-TABLE      =   "tbl_jyurrk_prv" )
                        MOVE    "all3"        TO  WK-PATHNAME
-                   WHEN    "tbl_tsyrrk"
-                       MOVE    "all2"        TO  WK-PATHNAME
-                   END-EVALUATE
+                   END-IF
                    PERFORM UNTIL   FLG-END   NOT  =  ZERO
                        READ    EIE01-FILE
                          AT   END
@@ -502,57 +458,6 @@ grpsys*DD                                        TO  WK-HOSPID-L(2:5)
       *
                CLOSE                       EIE01-FILE
                OPEN    OUTPUT              EIECS-FILE
-      *
-               MOVE    1             TO  FLG-CHANGE
-               PERFORM VARYING IDXA      FROM  1   BY  1
-                       UNTIL ( IDXA      >     900 )
-                        OR   ( WK-TBL-RMSG (IDXA)   =   SPACE )
-                        OR   ( FLG-CHANGE           =   ZERO )
-      *
-                   IF ( WK-TBL-RMSG-ID (IDXA)       =   "PTNUM" )
-                       MOVE    ZERO  TO  FLG-CHANGE
-                   END-IF
-      *
-               END-PERFORM
-      *
-               MOVE    1               TO  IDXB
-               MOVE    SPACE           TO  WK-HEADER-REC
-               PERFORM VARYING IDXA      FROM  1   BY  1
-                       UNTIL ( IDXA      >     900 )
-                        OR   ( WK-TBL-RMSG (IDXA)   =   SPACE )
-      *
-                   IF    ( IDXA        >   1 )
-                       STRING  ","     DELIMITED BY  SIZE
-                       INTO    WK-HEADER-REC
-                       WITH    POINTER IDXB
-                       END-STRING
-                   END-IF
-      *
-                   IF  (WK-TBL-CHKBTN01            =   "T")   AND
-                       (FLG-CHANGE                 =   1  )  AND
-                       (WK-TBL-RMSG-ID (IDXA)      =   "PTID")
-      *
-                       STRING  "PTNUM"            DELIMITED BY  SPACE
-                       INTO    WK-HEADER-REC
-                       WITH    POINTER IDXB
-                       END-STRING
-                   ELSE
-                       STRING  WK-TBL-RMSG-ID (IDXA) DELIMITED BY SPACE
-                       INTO    WK-HEADER-REC
-                       WITH    POINTER IDXB
-                       END-STRING
-                   END-IF
-      *
-               END-PERFORM
-      *
-               PERFORM VARYING IDX5   FROM   1   BY   1
-                       UNTIL   IDX5   >=  IDXB
-                   MOVE    WK-HEADER-REC(IDX5:1)  TO  EIECS-REC
-                   WRITE   EIECS-REC
-               END-PERFORM
-      *
-               MOVE    X"0A"          TO   EIECS-REC
-               WRITE   EIECS-REC
       *
       *         MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                MOVE    SPACE           TO  MCPDATA-REC
@@ -695,8 +600,10 @@ grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
            MOVE    WK-TBL-RMSG-5 (IDX1)        TO  WK-KTPNT.
            MOVE    WK-TBL-RMSG-7 (IDX1)        TO  WK-PTPNT.
       *½¤Àµ/*³«»Ï*03.06.05*********************************************
-           IF  (FLG-CHANGE               =   1      )  AND
-               (WK-TBL-RMSG-ID (IDX1)    =   "PTID")
+           IF  (WK-TBL-MSG (IDX2)(1:5)    NOT =   "PTNUM")  AND
+               (WK-TBL-MSG (IDX2)(1:5)    NOT =   "BD001")  AND
+               (WK-TBL-MSG (IDX2)(1:4)    NOT =   "I001")   AND
+               (WK-TBL-RMSG (IDX1)(1:4)       =   "PTID")
                MOVE    IDX4                        TO  WK-PTID-C
                MOVE    WK-TBL-RMSG-9 (IDX1)        TO  WK-PTID-S
                MOVE    WK-TBL-RMSG-5 (IDX1)        TO  WK-PTID-L
@@ -710,17 +617,9 @@ grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                MOVE    ","   TO  WK-EIECS-REC(IDX4:1)
                COMPUTE       IDX4 = IDX4 + 1
            ELSE
-               IF  WK-TBL-RMSG-3 (IDX1)   =   "number " OR "integer"
-                   MOVE    ZERO           TO  WRK-SNUM-G
-                   IF    ( WK-TBL-RMSG-3 (IDX1)   =   "number " )
-                       MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
+               IF  WK-TBL-RMSG-3 (IDX1)   =   "number "
+                   MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
                            TO  WRK-SNUM-G (19 - WK-KTPNT : WK-KTPNT )
-                   ELSE
-                       MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
-                           TO  WRK-INT-G
-                       MOVE    WRK-INT    TO  WRK-SNUM
-                       MOVE    9          TO  WK-KTPNT
-                   END-IF
                    MOVE    SPACE  TO  WRK-STR
                    MOVE    SPACE  TO  WRK-SIGN
                    MOVE    ZERO   TO  WRK-NUM-G
@@ -789,6 +688,8 @@ grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
       *
        T-001-TBLCNVAT-02-EXT.
            EXIT.
+      *
+      **********************
       *
        T-001-WRITWRIT-01-SEC             SECTION.
       *
