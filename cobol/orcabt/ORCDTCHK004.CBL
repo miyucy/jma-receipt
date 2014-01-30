@@ -159,7 +159,6 @@
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05).
-           03  IDXA                                    PIC 9(05).
            03  IDX-COMB                                PIC 9(05).
       *
        01  WRK-AREA.
@@ -527,12 +526,6 @@
                        MOVE    IDX0        TO  DTCHK005-DAY
                        MOVE    ACCT-DAY (1 IDX0)
                                            TO  DTCHK005-DAYCNT
-                       PERFORM VARYING IDXA    FROM    2   BY  1
-                               UNTIL ( IDXA    >   10 )
-                           MOVE    ACCT-DAY (IDXA IDX0)
-                                       TO  DTCHK005-DAYCNT2 (IDXA - 1)
-                       END-PERFORM
-      *
                        IF    ( ACCT-NYUGAIKBN  =   "1" )
       *
                            MOVE    DTCHK005-REC    TO  DTCHK005N-REC
@@ -692,7 +685,6 @@
            MOVE    DTCHK005-ZAIKBN     TO  DCACCT-ZAIKBN
            MOVE    DTCHK005-DAY        TO  DCACCT-DAY
            MOVE    DTCHK005-DAYCNT     TO  DCACCT-DAYCNT
-           MOVE    DTCHK005-DAYCNT2-G  TO  DCACCT-DAYCNT2-G
            MOVE    DTCHK005-INGAITEN   TO  DCACCT-INGAITEN
       *
            PERFORM 800-MCNDATE-SEC
