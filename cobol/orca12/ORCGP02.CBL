@@ -1766,7 +1766,7 @@
                    MOVE    "P020"          TO  SPA-P02-GAMEN
       *        基本
                WHEN    "N02"
-                   MOVE    "P02 "         TO  SPA-P02-GAMEN
+                   MOVE    "P02 "          TO  SPA-P02-GAMEN
       *        保険組合せ
                WHEN    "N03"
                    MOVE    "P027"         TO  SPA-P02-GAMEN
@@ -1801,6 +1801,7 @@
       *
            MOVE    SPACE              TO  SPA-P02-WIDGET
            MOVE    ZERO               TO  SPA-FLG-END
+           MOVE    ZERO               TO  FLG-END
       *
            .
        460-TAGUCHG-EXT.

@@ -183,4 +183,6 @@ db	{
         tbl_byomeiinputset;
         tbl_renkei_tmp;
         tbl_passwd;
+	tbl_ptcare_hkninf;
+	tbl_ptcare_nintei;
 };

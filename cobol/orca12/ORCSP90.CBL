@@ -1244,6 +1244,51 @@
                WHEN    "2805"
                    MOVE    "予備１データフォーマット入力エラー"
                                                    TO  SPA-ERRMSG
+      *        介護認定
+               WHEN    "2810"
+                   MOVE    "介護保険者番号は半角で入力して下さい"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2811"
+                   MOVE    "介護被保険者番号は半角で入力して下さい"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2812"
+                   MOVE    "介護認定選択番号がありません。"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2813"
+                   MOVE    "要介護状態区分がありません。"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2814"
+                   MOVE    "認定日暦日エラーです"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2815"
+                   MOVE    "有効開始日暦日エラーです"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2816"
+                   MOVE    "有効終了日暦日エラーです"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2817"
+                   MOVE    "有効開始日＜有効終了日で入力して下さい"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2818"
+                   MOVE    "有効開始日が未入力です"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2819"
+                   MOVE    "有効終了日が未入力です"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2820"
+                   MOVE    "有効期間が重複しています。"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2821"
+                   STRING  "介護認定情報は５０件登録済みです。"
+                           "これ以上登録できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2822"
+                   STRING  "選択番号を入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
       *        患者番号取得エラー
                WHEN    "8000"

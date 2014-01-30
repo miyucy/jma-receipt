@@ -856,6 +856,43 @@
                     06  P02-P028-JMAMRVER-COUNT   PIC S9(9)   BINARY.
                     06  P02-P028-JMAMRVER-ITEM
                             PIC X(50)   OCCURS  20 TIMES.
+                  05  P02-P028-CRHKNJANUM.
+                    06  P02-VALUE   PIC X(6).
+                  05  P02-P028-CRHIHKNJANUM.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-SCROLLEDWINDOW4.
+                    06  P02-HPOS    PIC S9(9)   BINARY.
+                    06  P02-VPOS    PIC S9(9)   BINARY.
+                    06  P02-P028-CARENINLST.
+                      07  P02-P028-CARELST-COUNT   PIC S9(9)   BINARY.
+                      07  P02-P028-CARELST-ROW PIC S9(9)   BINARY.
+                      07  P02-P028-CARLST-ITEM        OCCURS  50 TIMES.
+                        08  P02-P028-TCRNUM  PIC X(3).
+                        08  P02-P028-TCAREJOTAI  PIC X(30).
+                        08  P02-P028-TCRNINYMD   PIC X(9).
+                        08  P02-P028-TCRTEKSTYMD  PIC X(9).
+                        08  P02-P028-TCRTEKEDYMD  PIC X(9).
+                      07  P02-P028-CARELST-SELECT
+                              PIC X       OCCURS  50 TIMES.
+                      07  P02-P028-CARELST-FGCOLOR
+                              PIC X(16)   OCCURS  50 TIMES.
+                      07  P02-P028-CARELST-BGCOLOR
+                              PIC X(16)   OCCURS  50 TIMES.
+                  05  P02-P028-CRNINYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P028-CRTEKSTYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P028-CRTEKEDYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P028-CAREJOTAI-COMB.
+                    06  P02-P028-CAREJOTAI.
+                      07  P02-VALUE   PIC X(50).
+                    06  P02-P028-CAREJOTAI-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P028-CAREJOTAI-ITEM
+                            PIC X(50)   OCCURS  99 TIMES.
+                  05  P02-P028-CRSELNUM.
+                    06  P02-VALUE   PIC S9(3).
+
 
 
 

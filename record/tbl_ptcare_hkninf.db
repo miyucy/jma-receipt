@@ -1,0 +1,38 @@
+tbl_ptcare_hkninf {
+	HOSPNUM				number(2,0);
+	PTID				number(10,0);
+	HKNJANUM			varchar(06);
+	HIHKNJANUM 			varchar(10);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPNUM,PTID;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptcare_hkninf_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptcare_hkninf
+			WHERE   HOSPNUM     =   :HOSPNUM
+			 AND	PTID  	    =   :PTID
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptcare_hkninf
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+
