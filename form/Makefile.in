@@ -560,6 +560,7 @@ FORM_files = \
           HCGS121NV02.red \
           HCGS139GV02.red \
           HCGS139NV02.red \
+	      HCM78.red \
 
 all:   
 
