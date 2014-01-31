@@ -27,14 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
-      *  04.07.01    NACL-藤原    15/06/18  光ディスク等送付書の媒体種類
-      *                                     設定対応
-      *  04.07.02    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    17/04/12  平成２９年３月診療分からの
-      *                                     様式変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -55,7 +47,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
            COPY    "HCM78.INC".
       *
@@ -98,8 +91,6 @@
                05  WRK-ADRS1       PIC X(40).
                05  WRK-ADRS2       PIC X(40).
                05  WRK-ADRS3       PIC X(20).
-      *
-           03  WRK-KAISETUNAME     PIC X(80).
       *
            03  WRK-RSIIRYOCD       PIC X(07).
       *
@@ -151,9 +142,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
-      *
-           COPY  "CPSK200501.INC".
       *
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
@@ -195,8 +183,6 @@
       *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -269,13 +255,6 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
-      *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
@@ -334,8 +313,6 @@
            END-IF
       *
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-ADRS
       *
       *    医療機関編集情報取得
@@ -376,31 +353,6 @@
                PERFORM 800-NUM-HANKAKU-HENKAN-SEC
                MOVE    WRK-CHAR-X          TO  WRK-RSIIRYOCD
            END-IF
-      *
-      *    レセプト・総括編集情報
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
-           ELSE
-               INITIALIZE                      SYS-200501-REC
-           END-IF
-      *    光ディスク等送付書（媒体種類）
-           IF      SYS-200501-RECEDEN-LST2-MEDIA
-                                       =   SPACE
-               MOVE    "0"             TO  SYS-200501-RECEDEN-LST2-MEDIA
-           END-IF
-           DISPLAY "SYS-200501-RECEDEN-LST2-MEDIA="
-                                       SYS-200501-RECEDEN-LST2-MEDIA
-           DISPLAY "WRK-PARA-DATAKBN             ="
-                                       WRK-PARA-DATAKBN
       *
            .
        1001-SYSKANRI-HENSYU-EXT.
@@ -444,7 +396,8 @@
            MOVE    WRK-ADRS3           TO  HCM78-ADRS-S3
       *
       *    開設者
-           MOVE    WRK-KAISETUNAME     TO  HCM78-KAISETUNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCM78-KAISETUNAME
       *
       *    医療機関コード
            MOVE    WRK-RSIIRYOCD       TO  HCM78-HOSPCD
@@ -473,18 +426,14 @@
            MOVE    WRK-HENYMD-D        TO  HCM78-SKYYMD
       *
       *    媒体種類
-           EVALUATE    SYS-200501-RECEDEN-LST2-MEDIA
-                                       ALSO    WRK-PARA-DATAKBN
-               WHEN    "0"             ALSO    "1"
-               WHEN    "0"             ALSO    "3"
-               WHEN    "1"             ALSO    ANY
+           EVALUATE    WRK-PARA-DATAKBN
+               WHEN    "1"
+               WHEN    "3"
                    MOVE    "○"                TO  HCM78-BAITAI (2)
-               WHEN    "0"             ALSO    "2"
-               WHEN    "0"             ALSO    "4"
-               WHEN    "2"             ALSO    ANY
+               WHEN    "2"
+               WHEN    "4"
                    MOVE    "○"                TO  HCM78-BAITAI (3)
-               WHEN    "0"             ALSO    "6"
-               WHEN    "3"             ALSO    ANY
+               WHEN    "6"
                    MOVE    "○"                TO  HCM78-BAITAI (1)
            END-EVALUATE
       *
@@ -518,11 +467,7 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           IF      LNK-PRTKANRI-SRYYM  <   "201702"
-               MOVE    "HCM78.red"         TO  SPRT-PRTID
-           ELSE
-               MOVE    "HCM78V01.red"      TO  SPRT-PRTID
-           END-IF
+           MOVE   "HCM78.red"          TO  SPRT-PRTID
            MOVE    "光ディスク等送付書（労災）"
                                        TO  SPRT-TITLE
            MOVE    HCM78               TO  SPRT-PRTDATA
@@ -722,8 +667,6 @@
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                 END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -792,36 +735,6 @@
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(21)
-                                   TO  SYS-1903-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1903-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *****************************************************************
