@@ -471,21 +471,37 @@
       *
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-           MOVE    "key"                 TO  MCP-PATHNAME
+           MOVE    "key4"                TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-               MOVE    "key"                 TO  MCP-PATHNAME
+               MOVE    "key4"                TO  MCP-PATHNAME
                PERFORM 900-HKNJAINF-READ-SEC
            ELSE
                INITIALIZE                  HKNJAINF-REC
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-           MOVE    "key"                 TO  MCP-PATHNAME
+           MOVE    "key4"                 TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  WRK-HKNJA-HKNNUM
+      *    ÊÝ¸±¼ÔÈÖ¹æ¤¢¤ê
+           IF      FLG-HKNJAINF        =   ZERO
+      *        ²ð¸îÊÝ¸±¤Ï¥¨¥é¡¼
+               IF      HKNJA-HKNNUM    =   "C00"
+                   STRING  "¡Ú²ð¸î¡Û"
+                       HKNJA-HKNJANAME     DELIMITED  BY  SPACE
+                                           INTO    SPA-HKNJA-HKNJANAME
+                   END-STRING 
+                   MOVE    HKNJA-ADRS          TO  SPA-HKNJA-ADRS
+                   MOVE    HKNJA-BANTI         TO  SPA-HKNJA-BANTI
+                   MOVE    HKNJA-TEL           TO  SPA-HKNJA-TEL
+                   MOVE    "1052"              TO  SPA-ERRCD
+                   MOVE    8                   TO  SPA-GMN-CUR
+                   GO      TO      100-HKNJANUM-CHK-EXT
+               END-IF
+           END-IF
       *    ÊÝ¸±¼ÔÈÖ¹æ¤¢¤ê
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNJANAME     TO  SPA-HKNJA-HKNJANAME

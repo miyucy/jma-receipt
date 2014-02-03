@@ -4859,6 +4859,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ²ð¸îÊÝ¸±¾ðÊó
            MOVE    SPA-GMN28-CR-HKNJANUM   TO  P02-P028-CRHKNJANUM
            MOVE    SPA-GMN28-CR-HIHKNJANUM TO  P02-P028-CRHIHKNJANUM
+      *    ²ð¸îÊÝ¸±¼Ô¾ðÊó
+           MOVE    SPA-P028-CRHKNJANAME    TO  P02-P028-CAREHKNJAMEI
+           MOVE    SPA-P028-CRHKNJAADRS    TO  P02-P028-CAREHKNJAADRS
+           MOVE    SPA-P028-CRHKNJATEL     TO  P02-P028-CAREHKNJATEL
       *    ²ð¸îÇ§Äê¼Ô¾ðÊó
            PERFORM   VARYING     IDX     FROM   1   BY  1
                      UNTIL     ( IDX     >   50 )

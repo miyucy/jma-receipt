@@ -1195,6 +1195,10 @@
                    07  SPA-GMN28-CR-HIHKNJANUM     PIC X(10).
       *            介護保険情報登録あり
                    07  SPA-NAI28-PTCRHKN           PIC X(01).
+      *            介護保険者情報
+                   07  SPA-P028-CRHKNJANAME        PIC X(50).
+                   07  SPA-P028-CRHKNJAADRS        PIC X(80).
+                   07  SPA-P028-CRHKNJATEL         PIC X(16).
       *
       *        介護認定者情報
                05  SPA-GMN28-CARENIN-AREA.

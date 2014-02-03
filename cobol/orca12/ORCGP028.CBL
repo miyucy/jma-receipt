@@ -56,6 +56,7 @@
        01  FLG-AREA.
            03  FLG-PARA            PIC 9(01).
            03  FLG-END             PIC 9(01).
+           03  FLG-HKNJAINF        PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -79,6 +80,10 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    保険者号マスタ
+       01  HKNJAINF-REC.
+           COPY    "CPHKNJAINF.INC".
       *
       *
       *****************************************************************
@@ -197,6 +202,12 @@
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
+      *
+      *    介護保険情報名称編集
+           IF      SPA-GMN28-CR-HKNJANUM   NOT =   SPACE
+               PERFORM 41012-CR-HKNJANUM-CHK-SEC
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
            .
        310-SPASET-EXT.
            EXIT.
@@ -658,6 +669,9 @@
       *****************************************************************
        41012-CR-HKNJANUM-CHK-SEC           SECTION.
       *
+           MOVE    SPACE               TO  SPA-P028-CRHKNJANAME
+           MOVE    SPACE               TO  SPA-P028-CRHKNJAADRS
+           MOVE    SPACE               TO  SPA-P028-CRHKNJATEL
            IF      SPA-GMN28-CR-HKNJANUM   NOT =   SPACE
                MOVE    SPA-GMN28-CR-HKNJANUM   TO  WRK-MAE-INPUT
                MOVE    6                       TO  WRK-MAX
@@ -666,6 +680,48 @@
                IF      FLG-ERR         NOT =   ZERO
                    MOVE    "2810"          TO  SPA-ERRCD
                    MOVE    10              TO  SPA-GMN28-CUR
+                   GO      TO      41012-CR-HKNJANUM-CHK-EXT
+               END-IF
+           END-IF
+           IF      SPA-GMN28-CR-HKNJANUM   =   SPACE
+               GO      TO      41012-CR-HKNJANUM-CHK-EXT
+           END-IF
+      *    保険者番号　検索チェック
+           INITIALIZE                    HKNJAINF-REC
+           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
+           MOVE    SPA-GMN28-CR-HKNJANUM TO  HKNJA-HKNJANUM
+      *
+           MOVE    HKNJAINF-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknjainf"        TO  MCP-TABLE
+           MOVE    "key4"                TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknjainf"        TO  MCP-TABLE
+               MOVE    "key4"                TO  MCP-PATHNAME
+               PERFORM 900-HKNJAINF-READ-SEC
+           ELSE
+               INITIALIZE                  HKNJAINF-REC
+               MOVE    1               TO  FLG-HKNJAINF
+           END-IF
+           MOVE    "tbl_hknjainf"        TO  MCP-TABLE
+           MOVE    "key4"                 TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    保険者番号あり
+           IF      FLG-HKNJAINF        =   ZERO
+               STRING  "【介護】"
+                       HKNJA-HKNJANAME     DELIMITED  BY  SPACE
+                                           INTO    SPA-P028-CRHKNJANAME
+               END-STRING 
+               STRING  HKNJA-ADRS
+                       HKNJA-BANTI         DELIMITED  BY  SPACE
+                                           INTO    SPA-P028-CRHKNJAADRS
+               END-STRING 
+               MOVE    HKNJA-TEL           TO  SPA-P028-CRHKNJATEL
+               IF      HKNJA-HKNNUM    NOT =   "C00"
+      *        介護保険は以外エラー
+                   MOVE    "2823"              TO  SPA-ERRCD
+                   MOVE    8                   TO  SPA-GMN-CUR
                END-IF
            END-IF
            .
@@ -1081,6 +1137,25 @@
       *
            .
        891-HALF-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者番号マスタ次検索処理
+      *****************************************************************
+       900-HKNJAINF-READ-SEC              SECTION.
+      *
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  HKNJAINF-REC
+               MOVE    ZERO                TO  FLG-HKNJAINF
+           ELSE
+               INITIALIZE                  HKNJAINF-REC
+               MOVE    1                   TO  FLG-HKNJAINF
+           END-IF
+           .
+       900-HKNJAINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

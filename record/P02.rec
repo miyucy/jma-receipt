@@ -1225,6 +1225,15 @@ P02	{
 				P028_CRSELNUM	{
 					value	number(3);
 				};
+				P028_CAREHKNJAMEI	{
+					value	varchar(50);
+				};
+				P028_CAREHKNJAADRS	{
+					value	varchar(80);
+				};
+				P028_CAREHKNJATEL	{
+					value	varchar(16);
+				};
 			};
 		};
 	};

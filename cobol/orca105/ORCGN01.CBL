@@ -36,6 +36,7 @@
       *  02.01.01    NACL-森脇    04/07/14  給付割合を追加
       *  02.01.02    NACL-多々納  04/07/27  検証番号チェックの修正
       *  04.06.00    NACL-多々納  11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
+      *  04.07.00    NACL-多々納  14/02/03  介護保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -495,6 +496,16 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
+      *TEST
+           IF     SPA-GMN-HKNIDX       <   100
+               ADD    1                    TO  SPA-GMN-HKNIDX
+           ELSE
+               MOVE   100                  TO  SPA-GMN-HKNIDX
+           END-IF
+           MOVE   "C00"                TO  SPA-GMN-HKNNUML
+                                                      (SPA-GMN-HKNIDX)
+           MOVE    "介護保険"          TO  SPA-GMN-HKNNUMNML
+                                                      (SPA-GMN-HKNIDX)
       *
       *    異動内容
            MOVE    "1:廃止"            TO  SPA-GMN-IDOKBNLST (1)
@@ -1167,6 +1178,12 @@
                            END-IF
                        END-IF
       *----(02.01.01)--ADD-END-----
+      *!!!
+                   WHEN    "C00"
+                       IF      SPA-HKNJANUM-LEN NOT =   6
+                           MOVE    "0005"         TO  SPA-ERRCD
+                       END-IF
+      *!!!
                    WHEN    OTHER
                        IF      SPA-HKNJANUM-LEN NOT =   8
                            MOVE    "0005"         TO  SPA-ERRCD
@@ -2229,7 +2246,7 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key4"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -2237,7 +2254,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_hknjainf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key4"               TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
@@ -2254,7 +2271,7 @@
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key4"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
