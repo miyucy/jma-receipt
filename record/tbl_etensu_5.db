@@ -56,7 +56,7 @@ path	all	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_etensu_5
+		UPDATE	tbl_etensu_5
 				SET
 				SRYCD      = :SRYCD,
 				YUKOSTYMD      = :YUKOSTYMD,

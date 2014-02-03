@@ -27,18 +27,18 @@ SHELLID=${14}
 HOSPNUM=${15}
 ERR_FILE=${16}
 LOGNUM=$(( $(echo ${PGID} | sed  "s/[^0-9]//g") ))
-LOG_FILE=/var/log/jma-receipt/${HOSPNUM}orcb103_${LOGNUM}.log
-[ -e ${LOG_FILE} ] && rm ${LOG_FILE}
-echo $(basename ${LOG_FILE})
-
+LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb103_${LOGNUM}.log
+echo $LOGFILE
 ##      エラーファイル削除
+	echo $#
+	echo "echo " $ERR_FILE
         if  [ -e $ERR_FILE ]; then
             rm  $ERR_FILE
         fi
 
         shift
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGID} -parameter \"$(printf "%s," "$@")\"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGID} -parameter "$(printf '%s,' $@)" > $LOGFILE 2>&1
         if  [ -e $ERR_FILE ]; then
             exit
         fi

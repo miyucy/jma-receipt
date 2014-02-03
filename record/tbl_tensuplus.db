@@ -25,10 +25,6 @@ tbl_tensuplus {
 	IPNKANZANTANINAME		varchar(24);
 	IPNKANZANCHI			number(10,5);
 	ZENKNSKBN			number(1,0);
-	SIPPURYO1			number(3,0);
-	SIPPUIRISU1			number(3,0);
-	SIPPURYO2			number(3,0);
-	SIPPUIRISU2			number(3,0);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
@@ -87,10 +83,6 @@ path	upd1	{
 	IPNKANZANTANINAME	=	:IPNKANZANTANINAME,
 	IPNKANZANCHI	=	:IPNKANZANCHI,
 	ZENKNSKBN	=	:ZENKNSKBN,
-	SIPPURYO1	=	:SIPPURYO1,
-	SIPPUIRISU1	=	:SIPPUIRISU1,
-	SIPPURYO2	=	:SIPPURYO2,
-	SIPPUIRISU2	=	:SIPPUIRISU2,
 	TERMID 			=	:TERMID,
 	OPID 			=	:OPID,
 	CREYMD 			=	:CREYMD,
@@ -144,25 +136,4 @@ path	key3 	{
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 		) ;
 	};
-};
-
-path	key4 	{
-	DBSELECT	{
-		DECLARE tbl_tensuplus_key4_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensuplus
-		WHERE 	HOSPNUM	= :HOSPNUM
-			AND   SRYCD    =   :SRYCD
-			ORDER   BY  YUKOSTYMD DESC
-		;
-	};
-};
-path    del1    {
-        DBDELETE        {
-                DELETE
-                FROM tbl_tensuplus
-                        WHERE   HOSPNUM    =   :HOSPNUM
-			AND   SRYCD    =   :SRYCD
-                ;
-        };
 };
