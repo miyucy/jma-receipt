@@ -369,6 +369,8 @@
       *  04.07.03    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *  04.07.04    NACL-門脇    13/09/11  自賠責（第三者行為）対応
       *  04.07.06    NACL-藤原    13/12/09  医療情報連携基盤対応
+      *  04.07.07    NACL-門脇    14/02/03  第三者行為対応（院外処方のみの
+      *                                     保険組み合わせの病名記載対応）
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -4380,7 +4382,7 @@
            MOVE    "01"                TO  WRK-SRYKBN
       *
            MOVE    SPACE               TO  WRK-DISASTER-COMMENT
-           IF   RECE62-DAISAN-GAITO   =   1  OR  2
+           IF   RECE62-DAISAN-GAITO   =   1  OR  2  OR  4
                MOVE    RECE62-DAISAN-TOTALTEN  TO  WRK-FUTAN4
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
