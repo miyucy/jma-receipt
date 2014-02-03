@@ -98,7 +98,7 @@
                            11  SPA-GMN-D01-USRCHKKBN       PIC X(02).
                            11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-USRCHKKBNMEI    PIC X(30).
-                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  19.
+                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  20.
                            11  SPA-GMN-D01-CHKKBN-G.
                                13  SPA-GMN-D01-CHKKBN      PIC X(01).
                                13  SPA-GMN-D01-FL1         PIC X(01).
@@ -107,7 +107,7 @@
                            11  SPA-GMN-D01-INGAIPROCKBN    PIC X(01).
                            11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-INGAIPROCKBNMEI PIC X(18).
-                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  19.
+                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  20.
                        09  SPA-GMN-D01-CHKMSG              PIC X(40).
                    07  SPA-GMN-D01-INGAIPROCMSG            PIC X(40).
                    07  SPA-GMN-D01-NYUGAIKBNLST-G.
@@ -170,6 +170,10 @@
       *    エンドステータス領域
        01  STS-AREA.
            03  STS-DID1                    PIC X(02).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-CHK                     PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
@@ -344,6 +348,7 @@
       *
            INITIALIZE                      FLG-AREA
                                            IDX-AREA
+                                           CNT-AREA
                                            WRK-AREA
       *
            MOVE    SPA-COMMON          TO  SPA-AREA.
@@ -596,12 +601,14 @@
        3101-CHKKBNLST-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    院外処方の処理項目コンボ編集処理
+      *    ユーザーチェック区分コンボ編集処理
       *****************************************************************
        3101-USRCHKKBNLST-HEN-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-D01-USRCHKKBNLST-G
                                        SPA-NAI-D01-USRCHKKBNLST-G
+      *
+           MOVE    ZERO            TO  CNT-CHK
       *
            INITIALIZE                  CHK004-REC
            MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
@@ -631,14 +638,23 @@
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
-                   IF    ( CK4-2002-CHKKBN (IDX0)  =   ZERO )
+                   EVALUATE    CK4-2002-CHKKBN (IDX0)
+                   WHEN    ZERO
                        MOVE    SPACE   TO  SPA-NAI-D01-USRCHKKBN
                                                          (IDX-CMB IDX0)
-                   ELSE
+                   WHEN    SPACE
+                       IF    ( IDX0 - 1    =   CNT-CHK )
+                           MOVE    "2"
+                                       TO  SPA-NAI-D01-USRCHKKBN
+                                                         (IDX-CMB IDX0)
+                           COMPUTE CNT-CHK =   CNT-CHK     +   1
+                       END-IF
+                   WHEN    OTHER
                        MOVE    CK4-2002-CHKKBN (IDX0)
                                        TO  SPA-NAI-D01-USRCHKKBN
                                                          (IDX-CMB IDX0)
-                   END-IF
+                       COMPUTE CNT-CHK =   CNT-CHK     +   1
+                   END-EVALUATE
                END-PERFORM
       *
                MOVE    CK4-2002-INGAIPROCKBN
@@ -3075,6 +3091,8 @@
                MOVE    "CHKKBN18"      TO  MCP-WIDGET
            WHEN    21
                MOVE    "CHKKBN19"      TO  MCP-WIDGET
+           WHEN    22
+               MOVE    "CHKKBN20"      TO  MCP-WIDGET
            WHEN    51
                MOVE    "INGAIPROCKBN"  TO  MCP-WIDGET
            WHEN    101
@@ -3154,6 +3172,8 @@
            WHEN    "CHKKBN18"
                MOVE    21              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN19"
+               MOVE    22              TO  SPA-GMN-D01-CUR
+           WHEN    "CHKKBN20"
                MOVE    51              TO  SPA-GMN-D01-CUR
            WHEN    "CHK_SYAHO"
                MOVE    102             TO  SPA-GMN-D01-CUR

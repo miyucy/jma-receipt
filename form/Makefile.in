@@ -561,6 +561,8 @@ FORM_files = \
           HCGS139GV02.red \
           HCGS139NV02.red \
 	      HCM78.red \
+          HCM401V05.red \
+          HCM402V03.red \
 
 all:   
 
