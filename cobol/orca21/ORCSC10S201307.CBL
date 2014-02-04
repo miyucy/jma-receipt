@@ -979,6 +979,7 @@
                        MOVE    1               TO  FLG-CHK
                   END-IF
               WHEN     2
+      *           ¸ø³²
                   IF      JYURRK-HKNKBN        =   "6"
                        CONTINUE
                   ELSE
@@ -1071,6 +1072,8 @@
                                                    OR  "5"
       *                    ¸ø³²
                                                    OR  "6"
+      *ver.4.7             Âè»°¼Ô¹Ô°Ù
+                                                   OR  "7"
       *                    °ìÈÌ
                            PERFORM 100011-IPN-DOUJI-CHK-SEC
                        ELSE
@@ -6199,6 +6202,27 @@
       *    ¿Ç»¡ÎÁ¤Î¤ß¤ÎÊÑ¹¹½èÍý
       *****************************************************************
        1010-SINSATU-HEN-SEC              SECTION.
+      *
+      *H26.2
+      *    ÊÝ¸±¶èÊ¬ÊÑ¹¹¤Î»þ
+           IF     (SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN)
+      *        ¾®»ù²Ê³°Íè¿ÇÎÅ²ÊÈ½Äê
+               IF     (SPA-SYONIKA         =   1   )
+                 AND  (SPA-NYUGAIKBN       =   "2" )
+      *            Åö·î»»Äê²ó¿ô¤òµá¤á¤ë
+                   PERFORM 1001-TOUGETU-KAISU-SEC
+      *            ¾®»ù²Ê³°Íè¿ÇÎÅ²ÊÈ½Äê
+                   IF     (WRK-ZAITAKU-CNT     =   ZERO)
+                     AND  (SPA-HKNKBN          =   ZERO )
+                       PERFORM 1001-SYONIKA-CHK-SEC
+                   ELSE
+                       MOVE    ZERO            TO  SPA-SYONIKA-ARI3
+                       MOVE    ZERO            TO  SPA-SYONIKA-ARI2
+                       MOVE    ZERO            TO  SPA-SYONIKA-ARI
+                   END-IF
+               END-IF
+           END-IF
+      *
       *
            MOVE    ZERO                TO  FLG-SYOSIN2
            MOVE    ZERO                TO  FLG-GAI
