@@ -50,10 +50,6 @@
       *
       *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
       *                                     追加対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    16/08/23  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -158,8 +154,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -201,7 +195,6 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
-                                       RECEERR
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -213,29 +206,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE86PARA
-           INITIALIZE                      RECE86PARA
            MOVE    "RECE860"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE87PARA
-           INITIALIZE                      RECE87PARA
            MOVE    "RECE870"           TO  RECE87PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE87PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE86PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE87PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE86PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE87PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -321,8 +298,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                           MOVE   4      TO      RECE87-KNSJISKBN
                   END-IF
               END-IF
-              IF   (RECE86-SAFLG   NOT =  SPACE)
-              OR   (RECE86-ZAIKBN  NOT =  ZERO )
+              IF   (RECE86-SAFLG   NOT =   SPACE )
+              OR   (RECE86-ZAIKBN      =   1 OR 2)
                    MOVE    9            TO      RECE87-KNSJISKBN
               END-IF
            END-IF     
@@ -371,8 +348,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE   RECE86-ZAIKBN      TO   RECE87-ZAIKBN
       *
            MOVE   RECE86-DAY2        TO   RECE87-DAY2
-      *
-           MOVE   RECE86-JIHOKBN     TO   RECE87-JIHOKBN
       *
            MOVE   RECE86-TEKIYO2-INF TO   RECE87-TEKIYO2-INF
       *
