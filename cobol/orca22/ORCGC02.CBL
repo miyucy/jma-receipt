@@ -308,6 +308,7 @@
       *                                     の表示時の移行先のチェック
       *  04.07.13    NACL-藤原    14/01/29  病名入力時のコード置換え画面
       *                                     の表示時のチェック追加
+      *                                     病名コード削除時の修正 
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
@@ -5571,6 +5572,17 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
       *
            IF    ( C02-BYOMEICD  (IDZ)
                                    =   SPACE )
+           AND   ( SPA-GMN-C02-BYOMEICD (IDZ)
+                               NOT =   SPACE )
+               STRING   SPA-GMN-C02-BYOMEICD (IDZ)
+                                       DELIMITED  BY  SPACE
+                        "-"            DELIMITED  BY  SIZE
+                                       INTO    C02-BYOMEICD  (IDZ)
+               END-STRING
+           END-IF
+      *
+           IF    ( C02-BYOMEICD  (IDZ)
+                                   =   SPACE )
            AND   ( SPA-GMN-C02-BYOMEICD-G  
                                NOT =   SPACE )
       *      病名コード未入力時他の病名コードに入力があるときの処理
@@ -5863,7 +5875,7 @@ grpsys                         MOVE    SPA-HOSPNUM
                        MOVE    SPA-GMN-C02-BYOMEICD   (IDW)
                                        TO  SPA-GMN-C02-BYOMEICD   (IDX)
                    END-IF                     
-               END-PERFORM                           
+               END-PERFORM
            ELSE
       *        ７桁入力のときは病名マスタ、以外は自院病名マスタを先に読み込む
                IF         WRK-LENGTH       =   7
