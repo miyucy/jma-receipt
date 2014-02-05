@@ -10450,7 +10450,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-ROUPRTKBN-N-MAX
                                            TO  W12-ROUPRTKBN-N-COUNT 
-     *     
+      *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-FRAME-JIBAIPRTKBN-MAX
                MOVE    SPA-GMN-FRAME-JIBAIPRTKBNLST (IDY)
