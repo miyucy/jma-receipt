@@ -38,15 +38,6 @@
       *
       *  04.07.01    NACL-藤原    14/02/07  入院会計の保険組合せが全て
       *                                     公害以外のときの一括処理の修正
-      *  04.07.02    NACL-門脇    14/03/28  平成２６年４月改正対応
-      *  04.07.03    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
-      *                                     を修正
-      *                                    （入院日と退院日が同じとき）
-      *
-      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
-      *                                     載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-藤原    17/03/31  同日再入院の入退院履歴のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,23 +78,20 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル 名称領域
+      *     レセプト明細ファイル 名称領域 
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
       *
-      *     入退院履歴情報ファイル 名称領域
+      *     入退院履歴情報ファイル 名称領域 
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE250//.
       *
-      *    エラーファイル名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名称領域
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -185,7 +173,8 @@
                05  WRK-PARA-PTID       PIC X(10).
                05  WRK-PARA-SRYYM-O    PIC X(06).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
-           03  WRK-PARA-PRTKBN         PIC X(01).
+      *
+           03  WRK-RECEERR             PIC X(200). 
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -241,21 +230,6 @@
                    07  WRK-DAY         PIC 9(03)
                                            OCCURS   31.
       *
-       01  WRK-ERRMSG-AREA.
-           03  WRK-RECEERR         PIC X(200).
-           03  WRK-ERRMSG          PIC X(300).
-           03  WRK-MCP-RC          PIC 9(9).
-           03  WRK-ERR-FILE-STS    PIC X(02).
-           03  WRK-ERR-FILE-MSG    PIC X(100).
-           03  WRK-ERR-FILE-MSG1   PIC X(17).
-           03  WRK-ERR-FLG         PIC 9(01).
-      *    エラーファイル名称領域
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
-                                   BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME内のBASENAME開始位置
-       01  WRK-SGETTEMP-ST         PIC 9(05).
-      *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
            03  WRK-BYOTOKBN-T            OCCURS  4.                     
@@ -271,9 +245,9 @@
                                    BY         //WRK-RECE250//.
       *
       *    ワーク入院履歴
-       01  WRK-PTNRRK-REC.
+       01  WRK-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                       BY         //WRK-PTNRRK-//.
+                                       BY         //WRK-PTNYUINRRK-//.
       *     
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
@@ -383,8 +357,6 @@
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -393,7 +365,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(400).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -429,35 +401,20 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
-                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           DISPLAY "WRK-PARA-HOSPNUM=" WRK-PARA-HOSPNUM
-           DISPLAY "WRK-PARA-SYOKBN =" WRK-PARA-SYOKBN
-           DISPLAY "WRK-PARA-SRYYM  =" WRK-PARA-SRYYM
-           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
-      *
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
-      *
-           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE200PARA
-      *
-           MOVE    "RECE750"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE250PARA
-      *
-           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
+           MOVE    "RECE750"           TO  RECE250PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE250PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE250PARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -725,13 +682,8 @@
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "tbl_sryacct"       TO
                                                WRK-SRYACCT-MCP-TABLE
-                   IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
-                       MOVE    "key61"         TO
+                   MOVE    "key37"             TO
                                                WRK-SRYACCT-MCP-PATHNAME
-                   ELSE
-                       MOVE    "key37"         TO
-                                               WRK-SRYACCT-MCP-PATHNAME
-                   END-IF
                    PERFORM 200122-SRYACCT-HENSYU-SEC
       *
       *            基本ファイル出力処理
@@ -781,9 +733,8 @@
       *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
-                   IF    ((WRK-DAY (1 IDX)        >   ZERO) OR
-                          (LNK-NYUINDAY-KBN(IDX)  =   "1" ))  AND
-                         ( WRK-DAY (2 IDX)        >   ZERO )
+                   IF      WRK-DAY (1 IDX)     >   ZERO    AND
+                           WRK-DAY (2 IDX)     >   ZERO
       *                入院会計チェック処理
                        PERFORM 2001211-NYUINACCT-CHK-SEC
                    END-IF
@@ -947,9 +898,8 @@
            ELSE
                PERFORM   VARYING   IDX3    FROM    1   BY  1
                          UNTIL     IDX3    >       31
-                   IF    ((WRK-DAY (1 IDX3)        >   ZERO) OR
-                          (LNK-NYUINDAY-KBN(IDX3)  =   "1" ))  AND
-                         ( WRK-DAY (2 IDX3)        >   ZERO )
+                   IF      WRK-DAY (1 IDX3)    >   ZERO    AND
+                           WRK-DAY (2 IDX3)    >   ZERO
                        MOVE   WRK-DAY(2 IDX3)  TO  WRK-RECE200-DAY(IDX3)
                    END-IF
                END-PERFORM
@@ -1078,9 +1028,8 @@
            ELSE
                PERFORM   VARYING   IDX3    FROM    1   BY  1
                          UNTIL     IDX3    >       31
-                   IF    ((WRK-DAY (1 IDX3)        >   ZERO) OR
-                          (LNK-NYUINDAY-KBN(IDX3)  =   "1" ))  AND
-                         ( WRK-DAY (2 IDX3)        >   ZERO )
+                   IF      WRK-DAY (1 IDX3)    >   ZERO    AND
+                           WRK-DAY (2 IDX3)    >   ZERO
                        MOVE   WRK-DAY(2 IDX3)  TO  WRK-RECE200-DAY(IDX3)
                    END-IF
                END-PERFORM
@@ -1143,19 +1092,6 @@
                        " RECESYUBETU="  RECE200-RECESYUBETU 
       *
                WRITE   RECE200-REC
-      *
-               IF      STS-RECE200         =   "00"
-                   CONTINUE
-               ELSE
-                   MOVE    SPACE               TO  WRK-ERRMSG-AREA
-                   INITIALIZE                      WRK-ERRMSG-AREA
-      *
-                   MOVE    3                   TO  WRK-ERR-FLG
-                   MOVE    RECE200PARA         TO  WRK-ERR-FILE-NM
-                   MOVE    STS-RECE200         TO  WRK-ERR-FILE-STS
-                   PERFORM 500-FILE-ERR-ABORT-SEC
-               END-IF
-      *
                ADD     1                    TO  CNT-RECE200
            END-PERFORM
            .
@@ -1461,11 +1397,7 @@
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  WRK-SRYACCT-MCP-TABLE
-           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
-               MOVE    "key61"             TO  WRK-SRYACCT-MCP-PATHNAME
-           ELSE
-               MOVE    "key37"             TO  WRK-SRYACCT-MCP-PATHNAME
-           END-IF
+           MOVE    "key37"             TO  WRK-SRYACCT-MCP-PATHNAME
            PERFORM 200122-SRYACCT-HENSYU-SEC
       *
       *    入院会計読み込み
@@ -1596,13 +1528,8 @@
                    MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "tbl_sryacct"       TO  WRK-SRYACCT-MCP-TABLE
-                   IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
-                       MOVE    "key61"         TO
+                   MOVE    "key37"             TO
                                                WRK-SRYACCT-MCP-PATHNAME
-                   ELSE
-                       MOVE    "key37"         TO
-                                               WRK-SRYACCT-MCP-PATHNAME
-                   END-IF
                    PERFORM 200122-SRYACCT-HENSYU-SEC
                END-IF 
       *
@@ -1717,8 +1644,7 @@
                            UNTIL   IDX >       IDX5
                        IF    ( IDX             =   IDX4 )
                        AND   ( WRK-RECE200-DOUJITSU-HKNCOMBI (IDX)
-                                               =
-                                               PTNYUINRRK-HKNCOMBINUM )
+                                               >   ZERO )
       *                    同日再入院のとき再入院分の保険組合せをチェック
                            IF      WRK-RECE200-DOUJITSU-HKNCOMBI (IDX)
                                                =   WRK-RECE200-HKNCOMBI
@@ -1821,11 +1747,12 @@
       *
       *    診療月内の入退院情報の履歴
            IF      FLG-RECE250          =   1                            
-               MOVE    PTNYUINRRK-REC      TO  WRK-PTNRRK-REC
+               MOVE    PTNYUINRRK-REC      TO  WRK-PTNYUINRRK-REC
                INITIALIZE                      PTNYUINRRK-REC
                MOVE    WRK-RECE200-HOSPNUM TO  PTNYUINRRK-HOSPNUM
                MOVE    WRK-RECE200-PTID    TO  PTNYUINRRK-PTID
-               MOVE    WRK-PTNRRK-SHONUM   TO  PTNYUINRRK-SHONUM
+               MOVE    WRK-PTNYUINRRK-SHONUM
+                                           TO  PTNYUINRRK-SHONUM
                MOVE    WRK-RECE200-SRYYM   TO  PTNYUINRRK-NYUINYMD (1:6)
                MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
@@ -1979,15 +1906,6 @@
       *
            MOVE    WRK-RECE200-KEY     TO  RECE250-KEY1
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE250-NYUINYMD
-           IF      PTNYUINRRK-NYUINYMD =   PTNYUINRRK-TAIINYMD
-               MOVE    0                   TO  RECE250-NYUINYMD-SEQNO
-           ELSE 
-               IF      PTNYUINRRK-TAIINYMD =   "99999999"
-                   MOVE    9                   TO RECE250-NYUINYMD-SEQNO
-               ELSE
-                   MOVE    1                   TO RECE250-NYUINYMD-SEQNO
-               END-IF
-           END-IF
            MOVE    RECE250-REC         TO  WRK-RECE250-REC          
            PERFORM 900-RECE250-READ-SEC
            IF      FLG-RECE250         =   1
@@ -1996,19 +1914,6 @@
                MOVE    PTNYUINRRK-NYUINCHUKBN
                                            TO  RECE250-NYUINCHUKBN
                WRITE   RECE250-REC
-      *
-               IF      STS-RECE250         =   "00"
-                   CONTINUE
-               ELSE
-                   MOVE    SPACE               TO  WRK-ERRMSG-AREA
-                   INITIALIZE                      WRK-ERRMSG-AREA
-      *
-                   MOVE    3                   TO  WRK-ERR-FLG
-                   MOVE    RECE250PARA         TO  WRK-ERR-FILE-NM
-                   MOVE    STS-RECE250         TO  WRK-ERR-FILE-STS
-                   PERFORM 500-FILE-ERR-ABORT-SEC
-               END-IF
-      *
                ADD     1                   TO  CNT-RECE250
            END-IF    
            .
@@ -2043,68 +1948,6 @@
            MOVE    1                   TO  FLG-END
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    エラー時終了処理
-      *****************************************************************
-       500-COBABORT-SEC                SECTION.
-      *
-           CALL    "cobabort"          USING   WRK-ERRMSG
-      *
-           .
-       500-COBABORT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ファイルエラー処理
-      *****************************************************************
-       500-FILE-ERR-ABORT-SEC           SECTION.
-      *
-           EVALUATE    WRK-ERR-FLG
-               WHEN    1
-                   MOVE    "ファイルＯＰＥＮエラー　FILE="
-                                           TO  WRK-ERR-FILE-MSG
-                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
-               WHEN    2
-                   MOVE    "ファイル読み込みエラー　FILE="
-                                           TO  WRK-ERR-FILE-MSG
-                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
-               WHEN    3
-                   MOVE    "ファイル書き込みエラー　FILE="
-                                           TO  WRK-ERR-FILE-MSG
-                   MOVE    "file write err"
-                                           TO  WRK-ERR-FILE-MSG1
-               WHEN    4
-                   MOVE    "ファイル更新エラー　FILE="
-                                           TO  WRK-ERR-FILE-MSG
-                   MOVE    "file rewrite err"
-                                           TO  WRK-ERR-FILE-MSG1
-           END-EVALUATE
-      *
-           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
-                   " STS="                 DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
-                                           INTO    WRK-RECEERR
-           END-STRING
-           PERFORM 500-ERR-HENSYU-SEC
-      *
-           STRING  "ORCR1200 "             DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
-                   " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
-                   "  STS="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
-                   LOW-VALUE               DELIMITED   BY  SIZE
-                                           INTO    WRK-ERRMSG
-           END-STRING
-           PERFORM 500-COBABORT-SEC
-      *
-           .
-       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2310,20 +2153,6 @@
            PERFORM 900-SYUKA-READ-SEC
            .
        800-MISEIKYU-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  TEMPFLPARA (SGETTEMP-ST:)
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2678,6 +2507,33 @@
            EXIT.
       *
       *****************************************************************
+      *    クローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           PERFORM    900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト明細書読込
+      *****************************************************************
+       900-RECE200-READ-SEC             SECTION.
+      *
+           READ    RECE200-FILE
+               INVALID
+                   MOVE    1           TO  FLG-RECE200
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-RECE200
+           END-READ
+           .
+       900-RECE200-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入退院履歴読込
       *****************************************************************
        900-RECE250-READ-SEC            SECTION.
@@ -2719,30 +2575,8 @@
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               MOVE    SPACE               TO  WRK-ERRMSG-AREA
-               INITIALIZE                      WRK-ERRMSG-AREA
-               MOVE    MCP-RC              TO  WRK-MCP-RC
-      *
-               STRING  "ＤＢ読み込みエラー　TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                                           INTO    WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-      *
-               STRING  "ORCR1200 select err TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " PATHNAME="        DELIMITED   BY  SIZE
-                       MCP-PATHNAME        DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                       LOW-VALUE           DELIMITED   BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING
-               PERFORM 500-COBABORT-SEC
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
            END-IF
            .
        900-DBSELECT-EXT.
@@ -2760,17 +2594,6 @@
        900-DBFETCH-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    クローズ処理
-      *****************************************************************
-       900-CLOSE-SEC                  SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           PERFORM    900-ORCDBMAIN-SEC
-      *
-           .
-       900-CLOSE-EXT.
-           EXIT.
       *
       *****************************************************************
       *    テーブルアクセス処理
