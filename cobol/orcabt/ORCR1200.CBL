@@ -36,6 +36,9 @@
       *                                     履歴対応
       *  04.05.02    NACL-藤原    11/11/22  同日再入院対応
       *
+      *  04.07.01    NACL-藤原    14/02/07  入院会計の保険組合せが全て
+      *                                     公害以外のときの一括処理の修正
+      *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *****************************************************************
@@ -690,6 +693,8 @@
                IF    ( FLG-END             =   ZERO ) 
       *********AND   ( TBL-RECE200-HOSPNUM (1)
       *********                            >   ZERO )
+                   MOVE    "1"                 TO  WRK-DBKBN
+      *
                    INITIALIZE                      SRYACCT-REC
                    MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    KEY-O-PTID          TO  ACCT-PTID
