@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 require "monthly/receden_check"
 

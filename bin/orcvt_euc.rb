@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : euc-jp
 require "jcode"
 
 # È¾³Ñ±Ñ¿ô»úµ­¹æ -> Á´³ÑÊÑ´¹(EUC) script for ORCA

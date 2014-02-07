@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 module OrcaDAS
   USER_AGENT = "das-upload"

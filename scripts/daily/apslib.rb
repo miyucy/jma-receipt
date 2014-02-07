@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 # PANDA -- a simple transaction monitor
 # 

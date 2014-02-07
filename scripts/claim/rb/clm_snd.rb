@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# coding : utf-8
 
 # claim client script
 #   args  0:[server ip or hostname] 

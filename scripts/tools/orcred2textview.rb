@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 $KCODE="UTF8"
 
@@ -65,4 +66,3 @@ ARGV.each{|file|
     }
   end  
 }
-

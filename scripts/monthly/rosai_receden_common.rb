@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 require "monthly/rosai_receden_common_const"
 require "date"

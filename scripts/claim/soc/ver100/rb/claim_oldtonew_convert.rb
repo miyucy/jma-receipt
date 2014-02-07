@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : euc-jp
 
 
 
@@ -861,5 +862,3 @@ when	OLDCONV_MODE_HIR
 
 
 end
-
-

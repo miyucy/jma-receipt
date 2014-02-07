@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# coding : euc-jp
 
 # XMLfile j-code convert scirpt
 #     args 0:in_file

@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 begin
   require "monthly/rosai_receden"

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# coding : euc-jp
 
 # claim test Rcv server script
 #   args  0:[port]
@@ -321,4 +322,3 @@ if __FILE__ == $0
   claim = ClaimRcv.new
   claim.Reception
 end
-

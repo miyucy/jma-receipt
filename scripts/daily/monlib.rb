@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 # PANDA -- a simple transaction monitor
 # Copyright (C) 2004-2005  ogochan
@@ -112,4 +113,3 @@ class	PG_Server
 		@s.close;
 	end
 end
-

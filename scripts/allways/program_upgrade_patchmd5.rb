@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 $:.unshift(File.dirname(__FILE__))
 
@@ -64,4 +65,3 @@ end
 PRGDIR = ENV['PRGDIR'] + "/"
 PATCHMD5 = ENV['PATCHMD5']
 OrcaMNT::Command.main(ARGV) if $0 == __FILE__
-

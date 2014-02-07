@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 require "monthly/rosai_receden_check"
 
@@ -10,4 +11,3 @@ class Rosai_receden_check_start
     receden_check.main(_param)
   end
 end
-

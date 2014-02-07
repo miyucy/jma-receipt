@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# coding : utf-8
 
 $:.unshift(File.dirname(__FILE__))
 
@@ -87,4 +88,3 @@ PRGPATH = ENV['PRGPATH'] + "/"
 CACERTFILE = ENV['CACERTFILE']
 PATCHLIST = ENV['PATCHLIST']
 OrcaMNT::Command.main(ARGV) if $0 == __FILE__
-
