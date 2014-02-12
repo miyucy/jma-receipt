@@ -896,6 +896,8 @@
                     06  P02-VALUE   PIC X(50).
                   05  P02-P028-CAREHKNJAADRS.
                     06  P02-VALUE   PIC X(80).
+                  05  P02-P028-CAREHKNJAADRS2.
+                    06  P02-VALUE   PIC X(80).
                   05  P02-P028-CAREHKNJATEL.
                     06  P02-VALUE   PIC X(16).
 

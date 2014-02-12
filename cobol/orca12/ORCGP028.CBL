@@ -56,7 +56,7 @@
        01  FLG-AREA.
            03  FLG-PARA            PIC 9(01).
            03  FLG-END             PIC 9(01).
-           03  FLG-HKNJAINF        PIC 9(01).
+           03  FLG-HKNJAINFCARE    PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -81,9 +81,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    保険者号マスタ
-       01  HKNJAINF-REC.
-           COPY    "CPHKNJAINF.INC".
+      *    介護保険者号マスタ
+       01  HKNJAINFCARE-REC.
+           COPY    "CPHKNJAINFCARE.INC".
       *
       *
       *****************************************************************
@@ -687,42 +687,32 @@
                GO      TO      41012-CR-HKNJANUM-CHK-EXT
            END-IF
       *    保険者番号　検索チェック
-           INITIALIZE                    HKNJAINF-REC
-           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
-           MOVE    SPA-GMN28-CR-HKNJANUM TO  HKNJA-HKNJANUM
+           INITIALIZE                    HKNJAINFCARE-REC
+      **** MOVE    SPA-HOSPNUM           TO  HKNJAC-HKNJANUM
+           MOVE    SPA-GMN28-CR-HKNJANUM TO  HKNJAC-HKNJANUM
       *
-           MOVE    HKNJAINF-REC          TO  MCPDATA-REC
-           MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-           MOVE    "key4"                TO  MCP-PATHNAME
+           MOVE    HKNJAINFCARE-REC      TO  MCPDATA-REC
+           MOVE    "tbl_hknjainf_care"   TO  MCP-TABLE
+           MOVE    "key"                 TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-               MOVE    "key4"                TO  MCP-PATHNAME
-               PERFORM 900-HKNJAINF-READ-SEC
+               MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-HKNJAINFCARE-READ-SEC
            ELSE
-               INITIALIZE                  HKNJAINF-REC
-               MOVE    1               TO  FLG-HKNJAINF
+               INITIALIZE                  HKNJAINFCARE-REC
+               MOVE    1               TO  FLG-HKNJAINFCARE
            END-IF
-           MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-           MOVE    "key4"                 TO  MCP-PATHNAME
+           MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    保険者番号あり
-           IF      FLG-HKNJAINF        =   ZERO
-               STRING  "【介護】"
-                       HKNJA-HKNJANAME     DELIMITED  BY  SPACE
-                                           INTO    SPA-P028-CRHKNJANAME
-               END-STRING 
-               STRING  HKNJA-ADRS
-                       HKNJA-BANTI         DELIMITED  BY  SPACE
-                                           INTO    SPA-P028-CRHKNJAADRS
-               END-STRING 
-               MOVE    HKNJA-TEL           TO  SPA-P028-CRHKNJATEL
-               IF      HKNJA-HKNNUM    NOT =   "C00"
-      *        介護保険は以外エラー
-                   MOVE    "2823"              TO  SPA-ERRCD
-                   MOVE    8                   TO  SPA-GMN-CUR
-               END-IF
+           IF      FLG-HKNJAINFCARE    =   ZERO
+               MOVE    HKNJAC-HKNJANAME    TO  SPA-P028-CRHKNJANAME
+               MOVE    HKNJAC-ADRS         TO  SPA-P028-CRHKNJAADRS
+               MOVE    HKNJAC-BANTI        TO  SPA-P028-CRHKNJAADRS2
+               MOVE    HKNJAC-TEL          TO  SPA-P028-CRHKNJATEL
            END-IF
            .
        41012-CR-HKNJANUM-CHK-EXT.
@@ -1142,20 +1132,20 @@
       *****************************************************************
       *    保険者番号マスタ次検索処理
       *****************************************************************
-       900-HKNJAINF-READ-SEC              SECTION.
+       900-HKNJAINFCARE-READ-SEC              SECTION.
       *
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_care"    TO  MCP-TABLE
       *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  HKNJAINF-REC
-               MOVE    ZERO                TO  FLG-HKNJAINF
+               MOVE    MCPDATA-REC         TO  HKNJAINFCARE-REC
+               MOVE    ZERO                TO  FLG-HKNJAINFCARE
            ELSE
-               INITIALIZE                  HKNJAINF-REC
-               MOVE    1                   TO  FLG-HKNJAINF
+               INITIALIZE                  HKNJAINFCARE-REC
+               MOVE    1                   TO  FLG-HKNJAINFCARE
            END-IF
            .
-       900-HKNJAINF-READ-EXT.
+       900-HKNJAINFCARE-READ-EXT.
            EXIT.
       *
       *****************************************************************

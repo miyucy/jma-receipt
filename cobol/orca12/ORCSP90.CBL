@@ -417,12 +417,6 @@
                            "保険を確認して下さい。"
                                                INTO    SPA-ERRMSG
                    END-STRING
-      *H26.2
-               WHEN    "1052"
-                   STRING  "介護の保険者番号が入力されています。"
-                           "入力できません。"
-                                               INTO    SPA-ERRMSG
-                   END-STRING
       *    公費エラー
                WHEN    "0070"
                    MOVE    "負担者番号・受給者番号が入力されています"
@@ -1293,11 +1287,6 @@
                    END-STRING
                WHEN    "2822"
                    STRING  "選択番号を入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2823"
-                   STRING  "保険者番号は介護保険者番号ではありません。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING

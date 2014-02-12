@@ -1198,6 +1198,7 @@
       *            介護保険者情報
                    07  SPA-P028-CRHKNJANAME        PIC X(50).
                    07  SPA-P028-CRHKNJAADRS        PIC X(80).
+                   07  SPA-P028-CRHKNJAADRS2       PIC X(80).
                    07  SPA-P028-CRHKNJATEL         PIC X(16).
       *
       *        介護認定者情報
