@@ -281,6 +281,12 @@ W06	{
 					count	int;
 					item	varchar(40)[2];
 				};
+				GLINECNT	{
+					value	number(2);
+				};
+				NLINECNT	{
+					value	number(2);
+				};
 			};
               		TGN3	{
 				state   int;

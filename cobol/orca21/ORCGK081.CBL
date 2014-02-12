@@ -220,7 +220,7 @@
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
+           MOVE    SPA-ETCKYOUTU-AREA(3:)  TO  SPA-K081
       *
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    ZERO                TO  FLG-END
@@ -245,7 +245,7 @@
                PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
-           MOVE    SPA-K081        TO  SPA-ETCKYOUTU-AREA
+           MOVE    SPA-K081        TO  SPA-ETCKYOUTU-AREA(3:)
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
@@ -1275,7 +1275,7 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA(3:)
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE

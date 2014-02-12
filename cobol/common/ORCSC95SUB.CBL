@@ -67,6 +67,10 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *
+           03  WRK-LINECNT-G.
+               05  WRK-GLINECNT        PIC 9(02).
+               05  WRK-NLINECNT        PIC 9(02).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -90,6 +94,8 @@
            COPY    "CPSK1030.INC".
       *
            COPY    "CPSK1014.INC".
+      *
+           COPY    "CPSK1050.INC".
       *    患者情報通知
            COPY    "CPSK1920.INC".
       *    ＣＬＡＩＭ接続情報 
@@ -587,6 +593,13 @@
                MOVE    SYS-1920-POPUP-MEMO2    TO  SPA-POPUP-MEMO2
            END-IF
       *
+      *
+      *    職員情報より入力スクロール設定
+           IF     (LNK-SC95-PG         =   "K02"
+                                       OR  "KT01" )
+               PERFORM 10050-LINECNT-HEN-SEC
+           END-IF
+      *
            .
        100-K01KYOUTU-EXT.
            EXIT.
@@ -1082,6 +1095,80 @@
       *
            .
        1001-PRTFLG-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    職員情報よりスクロール行数設定処理
+      *****************************************************************
+       10050-LINECNT-HEN-SEC            SECTION.
+      *
+      *    初期設定
+           MOVE    24                  TO  WRK-GLINECNT
+           MOVE    28                  TO  WRK-NLINECNT
+      *    当日の職員情報より業務識別の判定
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           STRING  SPA-OPID            DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    SYS-1010-TBL
+           END-STRING
+           MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
+      *    システム管理検索
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM UNTIL   FLG-SYSKANRI        =   1
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               IF      SYS-1010-USERID     =   SPA-OPID
+      *            入力スクロール設定
+                   MOVE    SPACE               TO  SYS-1050-REC
+                   INITIALIZE                      SYS-1050-REC
+                   MOVE    "1050"              TO  SYS-1050-KANRICD
+                   MOVE    SYS-1010-KBNCD      TO  SYS-1050-KBNCD
+                   MOVE    SYS-1010-STYUKYMD   TO  SYS-1050-STYUKYMD 
+                   MOVE    SYS-1010-STYUKYMD   TO  SYS-1050-EDYUKYMD 
+                   MOVE    SPA-HOSPNUM         TO  SYS-1050-HOSPNUM
+                   MOVE    SYS-1050-REC        TO  SYSKANRI-REC
+                   PERFORM 900-SYSKANRI-INV-SEC
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    SYSKANRI-REC        TO  SYS-1050-REC
+                       IF      SYS-1050-GLINECNT   NUMERIC
+                           MOVE    SYS-1050-GLINECNT   TO  WRK-GLINECNT
+                       END-IF
+                       IF      SYS-1050-NLINECNT   NUMERIC
+                           MOVE    SYS-1050-NLINECNT   TO  WRK-NLINECNT
+                       END-IF
+                   END-IF
+                   MOVE    1                   TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *ver.4.7　は一部を流用
+      *    ver.4.8 からは K01COMMON-SPA に項目追加
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    WRK-NLINECNT        TO  SPA-ETCKYOUTU-AREA(1:2)
+           ELSE
+               MOVE    WRK-GLINECNT        TO  SPA-ETCKYOUTU-AREA(1:2)
+           END-IF
+           .
+       10050-LINECNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************

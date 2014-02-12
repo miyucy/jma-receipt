@@ -105,7 +105,7 @@
       *  04.08.00    NACL-多々納  12/12/17  患者情報通知対応
       *  04.08.00    NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
       *  04.08.00    NACL-多々納  13/06/28  ドクターカーソル移動対応
-      *  04.08.00    NACL-多々納  13/12/20  行挿入・カーソル移動位置変更
+      *  04.08.00    NACL-多々納  14/02/XX  行挿入・カーソル移動位置変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -346,8 +346,12 @@
            03  FLG-POPINI              PIC 9(01).
       *    悪性区分前
            03  FLG-MAE-AKUSEI          PIC 9(01).
+      *
       *!!!!!!!!!!!!!!!!!!
+      *    連続行挿入
            03  FLG-INPUT-NASI2         PIC 9(01).
+           03  FLG-F6                  PIC 9(01).
+           03  FLG-F7                  PIC 9(01).
       *!!!!!!!!!!!!!!!!!!
       *
       *    添字領域
@@ -688,7 +692,10 @@
       *
       *!!!!!!!!!!!!!!!!!!
       *    挿入行数
-           03  WRK-INSCNT    PIC 9(02).
+           03  WRK-INSCNT              PIC 9(02).
+           03  WRK-GYO                 PIC 9(04).
+      *改頁行数
+           03  WRK-PAGE-LINE           PIC 9(02).
       *!!!!!!!!!!!!!!!!!!
       *
       *    訂正時の内容保存
@@ -762,6 +769,10 @@
       *画面ページ数（処理最大行÷画面最大行）
       *01  MAX-PAGE                PIC 9(04)   VALUE   20.
        01  MAX-PAGE                PIC 9(04)   VALUE   1.
+      *TEST
+      *改頁行数
+       01  PAGE-LINE               PIC 9(02)   VALUE   24.
+      *
       *
       *PandaTable色
       *青
@@ -772,8 +783,6 @@
        01  CL-BLACK                PIC X(07)   VALUE   "#000000".
       *白
        01  CL-WHITE                PIC X(07)   VALUE   "#FFFFFF".
-      *@TEST
-      *@TEST
       *緑
        01  CL-GREEN                PIC X(07)   VALUE   "#00B000".
       *
@@ -806,8 +815,8 @@
            03  WRK-SANTEI-SYORI    PIC X(01).
       *
       *    継続の時、自動発生のチェック
-       01  WRK-CONTCHK-TBL.
-           03  WRK-IDX-Y               PIC 9(04).
+      *01  WRK-CONTCHK-TBL.
+      *    03  WRK-IDX-Y               PIC 9(04).
       *
       *    自動加算テーブル
        01  WRK-KASAN-AREA.
@@ -880,8 +889,8 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *    患者番号変換
-       01  PTNUM-REC.
-           COPY    "CPPTNUM.INC".
+      *01  PTNUM-REC.
+      *    COPY    "CPPTNUM.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -1096,33 +1105,6 @@
       *
        01  SCRAREA.
            COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1159,6 +1141,14 @@
            MOVE    ZERO                TO  FLG-END
       *    テーブル最大行
            MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
+      *???
+           IF      SPA-ETCKYOUTU-AREA(1:2) NUMERIC
+               MOVE    SPA-ETCKYOUTU-AREA(1:2) TO  WRK-PAGE-LINE
+           ELSE
+               MOVE    PAGE-LINE               TO  WRK-PAGE-LINE
+           END-IF
+      *TEST
+           DISPLAY "K02 INIT WRK-PAGE-LINE:"  WRK-PAGE-LINE
       *
       *    診療種別テーブルセット
            PERFORM 1001-SRYKBN-SET-SEC
@@ -1213,17 +1203,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-      *TEST
-      *   ACCEPT  WRK-SYSTIME         FROM    TIME
-      *    DISPLAY "K02 START:" WRK-SYSTIME (1:2) ":" 
-      *                         WRK-SYSTIME (3:2) ":" 
-      *                         WRK-SYSTIME (5:2) ":" 
-      *                         WRK-SYSTIME (7:2) "/" 
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
@@ -1304,8 +1283,21 @@
            CLOSE                       SPASCR-FILE
       *
       *    行位置とカーソル位置の決定
+           PERFORM 10021-K02SPA-INIT-SET-SEC
+      *
+           .
+       1002-K02SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    行位置とカーソル位置の決定処理
+      *****************************************************************
+       10021-K02SPA-INIT-SET-SEC             SECTION.
+      *
+      *    行位置とカーソル位置の決定
            MOVE    1                   TO  WRK-PAGE
            MOVE    ZERO                TO  SPA-GMN-MAX
+           MOVE    ZERO                TO  WRK-MAP-MAX
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL       WRK-IDX     >   SPA-MAX-LINE
@@ -1321,6 +1313,11 @@
       *
                    MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
                    MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
+      *            画面表示の最終行（次頁用）
+                   IF     (SPA-GMN-INPUTCD(WRK-IDX)  NOT =   SPACE) OR
+                          (SPA-COM-INPUTCD(WRK-IDX)  NOT =   SPACE)
+                       MOVE    IDX             TO  WRK-MAP-MAX
+                   END-IF
                END-IF
       *
                IF      (SPA-COM-INPUTCD(WRK-IDX)   =   SPACE ) AND
@@ -1331,7 +1328,7 @@
                END-IF
            END-PERFORM
            .
-       1002-K02SPA-SET-EXT.
+       10021-K02SPA-INIT-SET-EXT.
            EXIT.
       *
       *TEST
@@ -1370,7 +1367,7 @@
            PERFORM
                UNTIL  (FLG-PARA            =   1 )
                ADD    1                    TO  IDX
-               MOVE   PARAS-DATA-REC        TO  SPA-GMN-TBL (IDX)
+               MOVE   PARAS-DATA-REC       TO  SPA-GMN-TBL (IDX)
       *
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
@@ -1386,32 +1383,7 @@
            END-IF
       *
       *    行位置とカーソル位置の決定
-           MOVE    1                   TO  WRK-PAGE
-           MOVE    ZERO                TO  SPA-GMN-MAX
-           MOVE    ZERO                TO  IDX
-           PERFORM VARYING     WRK-IDX     FROM    1   BY  1
-                   UNTIL       WRK-IDX     >   SPA-MAX-LINE
-               MOVE    ZERO                TO  SPA-COM-PAGE (WRK-IDX)
-               MOVE    ZERO                TO  SPA-COM-GYOU (WRK-IDX)
-      *        画面表示外のものに頁、行位置を設定する
-               IF      SPA-COM-SET    (WRK-IDX)  =   SPACE
-                   ADD     1                 TO  IDX
-                   IF      IDX               >   MAX-GMN
-                       ADD     1             TO  WRK-PAGE
-                       MOVE    1             TO  IDX
-                   END-IF
-      *
-                   MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
-                   MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
-               END-IF
-      *
-               IF      (SPA-COM-INPUTCD(WRK-IDX)   =   SPACE ) AND
-                       (SPA-GMN-INPUTCD(WRK-IDX)   =   SPACE )
-                   CONTINUE
-               ELSE
-                   ADD     1               TO  SPA-GMN-MAX
-               END-IF
-           END-PERFORM
+           PERFORM 10021-K02SPA-INIT-SET-SEC
            .
        1002-K02SPA-SET-TST-EXT.
            EXIT.
@@ -1997,6 +1969,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    0               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
+      *
+           MOVE    SPA-ETCKYOUTU-AREA(1:2)
+                                   TO  WRK-PAGE-LINE
       *
            .
        30010-INIT-GMNN-EXT.
@@ -5209,6 +5184,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *        受診履歴 次頁
                WHEN    "CLICKED"       ALSO    "BC07"
                    PERFORM 4109-BC07-SYORI-SEC
+      *!!!!!!!!!!!
+      *        １行目へ
+               WHEN    "CLICKED"       ALSO    "CTRLHOME"
+                   PERFORM 4501-CTRHOME-SEC
            END-EVALUATE
       *
            .
@@ -6647,7 +6626,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       ************                                        (SPA-GMN-IDX)
                    MOVE    ZERO                TO  FLG-INPUT-NASI
       *!!!!!!!!!!!!!!!!!!
-           MOVE    ZERO                TO  FLG-INPUT-NASI2
+                   MOVE    ZERO                TO  FLG-INPUT-NASI2
       *!!!!!!!!!!!!!!!!!!
                END-IF
       *ver.4.7
@@ -6731,7 +6710,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       IDX     >   SPA-MAX-LINE
                IF     (SPA-COM-PAGE (IDX)  =   SPA-GMN-PAGE )  AND
                       (SPA-COM-GYOU (IDX)  =   WRK-IDX2     )
-                   MOVE    IDX                 TO  SPA-GMN-IDX
+                   MOVE    IDX                     TO  SPA-GMN-IDX
                    MOVE    SPA-MAX-LINE            TO  IDX
                END-IF
            END-PERFORM
@@ -7036,7 +7015,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE           TO  SPA-COM-IN4 (SPA-GMN-IDX)
       *        挿入行数
                MOVE    LNK-SC97-INSCNT TO  WRK-INSCNT
-      *        MOVE    1               TO  WRK-INSCNT
       *!!!!!!!!!!!!!!!!!!!
                PERFORM 41014-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
@@ -9027,6 +9005,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                           MOVE    1               TO  IDX
                        ELSE
                            MOVE    SPACE       TO  SPA-GMN-INPUTCD(IDX)
+      *                    診療区分行まで
+                           IF      SPA-GMN-SRYKBN(IDX)
+                                               NOT =   SPACE
+                               MOVE    1       TO  IDX
+                           END-IF
                        END-IF
                    END-IF
                END-PERFORM
@@ -9374,7 +9357,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SNUM-OUTNUM       TO  SPA-NAI-SELNUM
                END-IF
            END-IF
-    *
+      *
            MOVE    ZERO                TO  SPA-NAI-DOSELNUM
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX1
@@ -9443,6 +9426,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-ZZ              TO  SPA-GMN-DOSELNUM
       *
                IF      SPA-NAI-SYORI       =   ZERO
+      *
       *            ＤＯ検索処理へ
                    PERFORM 4801-K09-SYORI-SEC
                ELSE
@@ -10602,7 +10586,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-HENKOU
                PERFORM 41011-KOUI-ALLHEN-SEC
                IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-      ****            (SPA-KIDCD           =   "0180" )  OR
                       (SPA-KIDCD       NOT =   SPACE  )  OR
                       (FLG-END             =   1      )
                    GO      TO      450-KAIKEI-EXT
@@ -10644,7 +10627,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-HENKOU
                PERFORM 41011-KOUI-ALLHEN-SEC
                IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-      *********       (SPA-KIDCD           =   "0180" )  OR
                       (SPA-KIDCD       NOT =   SPACE  )  OR
                       (FLG-END             =   1      )
                    GO      TO      460-SYUNOU-EXT
@@ -10761,21 +10743,74 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        450-MAEGMN-SEC             SECTION.
       *
-      *H25.5  警告メッセージ表示対応
-      **   MOVE    1                   TO  FLG-HENKOU
+      *H25.5
+      *    警告メッセージ非表示へ戻す
+      **** MOVE    1                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
-     **********   (SPA-KIDCD           =   "0180" )  OR
                   (SPA-KIDCD       NOT =   SPACE  )  OR
                   (FLG-END             =   1     )
                GO      TO      450-MAEGMN-EXT
            END-IF
       *TEST
-      *    １行へカーソル移動
-           MOVE    "1"                 TO  SPA-COM-CUR (1)
-           GO      TO      450-MAEGMN-EXT
       *TEST
+           DISPLAY "450-MAEGMN IN SPA-MAP-IDX:" SPA-MAP-IDX
+               ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
+      *
+      *TEST
+      *
+      *    行位置とカーソル位置の決定
+           PERFORM 10021-K02SPA-INIT-SET-SEC
+      *
+           IF      K02-PANDATABLE1-TROW    =  ZERO
+               MOVE    ZERO                TO  WRK-IDX2
+           ELSE
+               MOVE    K02-PANDATABLE1-TROW    TO  WRK-IDX2
+               IF      K02-INPUTCD(WRK-IDX2)   =   SPACE
+                   MOVE    ZERO                TO  WRK-IDX2
+               END-IF
+           END-IF
+      *!!
+      *画面の位置取得できないのでゼロ設定
+      *!!!
+      ***  MOVE    ZERO                TO  WRK-IDX2
+      *!!
+           IF      WRK-IDX2            =   ZERO
+               MOVE    SPA-MAP-IDX     TO  WRK-IDX2
+           END-IF
+           IF     (WRK-IDX2            >   WRK-MAP-MAX )
+               MOVE    WRK-MAP-MAX         TO  WRK-IDX2
+           END-IF
+           IF      WRK-IDX2            >   WRK-PAGE-LINE
+               COMPUTE WRK-GYO         =   WRK-IDX2    -   WRK-PAGE-LINE
+           ELSE
+               MOVE    1               TO  WRK-GYO
+           END-IF
+      *TEST
+      *    DISPLAY "450-MAEGMN WRK-PAGE-LINE:" WRK-PAGE-LINE
+      **           ",WRK-GYO:"  WRK-GYO
+      *
+           PERFORM VARYING     IDX     FROM    WRK-IDX2  BY  -1
+                   UNTIL      (IDX     <   1   )
+               IF     (SPA-COM-PAGE (IDX)  =   SPA-GMN-PAGE )  AND
+                      (SPA-COM-GYOU (IDX)  =   WRK-GYO      )
+                   MOVE    "1"                 TO  SPA-COM-CUR (IDX)
+                   MOVE    1                   TO  IDX
+                   MOVE    1                   TO  FLG-F6
+               END-IF
+           END-PERFORM
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
+           IF      FLG-F6              =   ZERO
+               MOVE    "1"                 TO  SPA-COM-CUR (1)
+           END-IF
+      *TEST
+      *TEST
+      *TEST
+      *TEST
+      *TEST
+           GO      TO      450-MAEGMN-EXT
       *
            IF      SPA-GMN-PAGE        =   1
                MOVE    1               TO  SPA-GMN-PAGE
@@ -10795,24 +10830,60 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        460-ATOGMN-SEC             SECTION.
       *
       *H25.5  警告メッセージ表示対応
-      **   MOVE    1                   TO  FLG-HENKOU
+      ***  MOVE    1                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
-     ***********  (SPA-KIDCD           =   "0180" )  OR
-                  (SPA-KIDCD       NOT =   SPACE  )  OR
+                  (SPA-KIDCD       NOT =   SPACE )  OR
                   (FLG-END             =   1     )
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
       *TEST
-      *    最終行へカーソル移動
-           IF      SPA-GMN-MAX         <   SPA-MAX-LINE
-               MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-MAX + 1)
+           DISPLAY "460-ATOGMN SPA-MAP-IDX:" SPA-MAP-IDX
+               ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
+      *
+      *TEST
+      *
+      *    行位置とカーソル位置の決定
+           PERFORM 10021-K02SPA-INIT-SET-SEC
+      *
+           IF     (K02-PANDATABLE1-TROW     =  ZERO )
+               MOVE    ZERO                TO  WRK-IDX2
            ELSE
-               MOVE    "1"             TO  SPA-COM-CUR (SPA-MAX-LINE)
+               MOVE    K02-PANDATABLE1-TROW    TO  WRK-IDX2
+               IF      K02-INPUTCD(WRK-IDX2)   =   SPACE
+                   MOVE    ZERO                TO  WRK-IDX2
+               END-IF
            END-IF
+      *!!! カーソル位置不明
+      **   MOVE    ZERO                TO  WRK-IDX2
+      *!!!
+           IF      WRK-IDX2            =   ZERO
+               MOVE    SPA-MAP-IDX     TO  WRK-IDX2
+           END-IF
+           COMPUTE WRK-GYO             =   WRK-IDX2 +   WRK-PAGE-LINE
+      *TEST
+      *    DISPLAY "460-ATOGMN WRK-PAGE-LINE:" WRK-PAGE-LINE
+      *            ",WRK-GYO:"  WRK-GYO
+      *
+           MOVE    ZERO                TO  FLG-F7
+           PERFORM VARYING     IDX     FROM    WRK-IDX2  BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE   )
+                           OR (IDX     >   SPA-GMN-MAX    )
+               IF     (SPA-COM-PAGE (IDX)  =   SPA-GMN-PAGE )  AND
+                      (SPA-COM-GYOU (IDX)  =   WRK-GYO      )
+                   MOVE    "1"                 TO  SPA-COM-CUR (IDX)
+                   MOVE    SPA-MAX-LINE        TO  IDX
+                   MOVE    1                   TO  FLG-F7
+               END-IF
+           END-PERFORM
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
+      *TEST
+      *TEST
            GO      TO      460-ATOGMN-EXT
+      *TEST
       *TEST
            IF      SPA-GMN-PAGE        =   MAX-PAGE
                MOVE    1                   TO  SPA-GMN-CUR
@@ -10835,6 +10906,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        460-ATOGMN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    １行目へ　処理
+      *****************************************************************
+       4501-CTRHOME-SEC             SECTION.
+      *
+      *    診療行為入力チェック
+           PERFORM 41011-KOUI-ALLHEN-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD       NOT =   SPACE  )  OR
+                  (FLG-END             =   1     )
+               GO      TO      4501-CTRHOME-EXT
+           END-IF
+      *
+           MOVE    01                  TO  SPA-GMN-CUR
+           MOVE    "1"                 TO  SPA-COM-CUR (1)
+           .
+       4501-CTRHOME-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴 前頁　処理
@@ -12492,23 +12582,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-MAP-PAGE2
            MOVE    ZERO                TO  WRK-MAP-PAGE3
            MOVE    1                   TO  WRK-PAGE
-           MOVE    ZERO                TO  SPA-GMN-MAX
+      *****MOVE    ZERO                TO  SPA-GMN-MAX
       *ver.4.7
            MOVE    ZERO                TO  WRK-MAP-CUR4
            MOVE    ZERO                TO  FLG-MAP-CUR4
-      *ver.4.7
-      *!!!!!!!!!!!!!!!
-      *    訂正展開　設定によって最終行へ
-      *    IF     (SPA-GMN-CUR         =   98  )
-      *       AND (SPA-MAE-CHK (1)     =   1   )
-      *        MOVE    99              TO  SPA-GMN-CUR
-      *    END-IF
-      *!!!!!!!!!!!!!!!
+      *!!
       *訂正展開時、１行目にカーソル移動
            IF      SPA-GMN-CUR         =   98
-               MOVE    "1"             TO  SPA-COM-CUR (1)
+               IF      SPA-GMN-MAX     >=  WRK-PAGE-LINE
+      *            頁行以上であれば１行目へ
+                   MOVE    "1"             TO  SPA-COM-CUR (1)
+               END-IF
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
+      *
+           MOVE    ZERO                TO  SPA-GMN-MAX
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL       WRK-IDX     >   SPA-MAX-LINE
@@ -12518,26 +12606,31 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        画面表示外のものに頁、行位置を設定する
                IF      SPA-COM-SET    (WRK-IDX)  =   SPACE
                    ADD     1                 TO  IDX
-                   IF      IDX               >   MAX-GMN
-                       ADD     1             TO  WRK-PAGE
-                       MOVE    1             TO  IDX
-                   END-IF
+      *ページなし
+      ****         IF      IDX               >   MAX-GMN
+      *                ADD     1             TO  WRK-PAGE
+      *                MOVE    1             TO  IDX
+      ****         END-IF
+      *
+                   MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
+                   MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
+      *
                    IF     (SPA-GMN-INPUTCD(WRK-IDX)  NOT =   SPACE) OR
                           (SPA-COM-CUR (WRK-IDX)     NOT =   SPACE)
                        MOVE    IDX             TO  WRK-MAP-MAX
                        MOVE    WRK-PAGE        TO  WRK-MAP-MAXPAGE
-      *                前・次ページの時
-                       IF     (SPA-GMN-CUR         =   88  OR  99 )
-                           IF      SPA-COM-CUR (WRK-IDX)   =   "1" 
-                              AND (SPA-ERRCD      NOT =   SPACE )
-                               IF      WRK-MAP-CUR         =   ZERO
-                                   MOVE    IDX        TO  WRK-MAP-CUR
-                                   MOVE    WRK-PAGE   TO  WRK-MAP-PAGE
-                               END-IF
-                           END-IF
-                       ELSE
+      *********        前・次ページの時
+      *                IF     (SPA-GMN-CUR         =   88  OR  99 )
+      *                    IF      SPA-COM-CUR (WRK-IDX)   =   "1" 
+      *                       AND (SPA-ERRCD      NOT =   SPACE )
+      *                        IF      WRK-MAP-CUR         =   ZERO
+      *                            MOVE    IDX        TO  WRK-MAP-CUR
+      *                            MOVE    WRK-PAGE   TO  WRK-MAP-PAGE
+      *                        END-IF
+      *                    END-IF
+      *********        ELSE
       *                エラー位置
-                       IF      SPA-COM-CUR (WRK-IDX)   =   "1" 
+                       IF      SPA-COM-CUR (WRK-IDX)   =   "1"
                                                        OR  "3"
                            IF      WRK-MAP-CUR         =   ZERO
                                MOVE    IDX            TO  WRK-MAP-CUR
@@ -12557,11 +12650,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    IDX             TO  WRK-MAP-CUR3
                            MOVE    WRK-PAGE        TO  WRK-MAP-PAGE3
                        END-IF
+      *
       *ver.4.7
-      *!!!!!!!!!!!!!!!
-      *        設定によって最終
-      *                IF    (SPA-MAE-CHK (1)     =   ZERO )
-      *!!!!!!!!!!!!!!!
       *                今回入力位置
                        IF     (SPA-COM-IN4 (WRK-IDX)   =   "1" )
                            MOVE    IDX             TO  WRK-MAP-CUR4
@@ -12571,11 +12661,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    IDX             TO  WRK-MAP-CUR4
                            MOVE    2               TO  FLG-MAP-CUR4
                        END-IF
-      *!!!!!!!!!!!!!!!
-      *                END-IF
-      *!!!!!!!!!!!!!!!
       *
-                       END-IF
+      ****             END-IF
                    END-IF
       *
                    MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
@@ -12612,6 +12699,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
+      *
       *    画面カーソル位置決定（警告はエラーの次に）
            MOVE    ZERO                TO  SPA-MAP-IDX
            IF      WRK-MAP-CUR         =   ZERO
@@ -12645,6 +12733,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      5002-GMNSPA-HEN-EXT
            END-IF
       *
+      *    カーソル指定のない時、次ぎの空白行へ
+           COMPUTE SPA-MAP-IDX         =   WRK-MAP-MAX
+                                       +   1
+           MOVE    1                   TO  SPA-GMN-PAGE
+      *TEST
+              DISPLAY "WRK-MAP-MAX:" WRK-MAP-MAX
+                       ",SPA-MAP-IDX:" SPA-MAP-IDX
+      *TEST
+      *
+      *
+      *
+           GO      TO      5002-GMNSPA-HEN-EXT
       *
       *    カーソル指定のない時、次ぎの空白行へ
       *    後画面へ
@@ -12730,8 +12830,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            スクロール背景色（１行毎）
                    IF      FLG-BGCOLORS        =   ZERO
       *                白色設定
-     ***************** MOVE    "white"         TO
-                       MOVE    "#FFFFFF"       TO
+      **************   MOVE    "#FFFFFF"       TO
+                       MOVE    CL-WHITE        TO
                                        K02-SRYKBN-BGCOLOR  (IDX)
                                        K02-INPUTCD-BGCOLOR (IDX)
                                        K02-MEISYO-BGCOLOR  (IDX)
@@ -12780,18 +12880,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
-      ****************     MOVE    "blue"         TO
                            MOVE    CL-BLUE        TO
                                        K02-SRYKBN-FGCOLOR (IDX)
                                        K02-MEISYO-FGCOLOR (IDX)
                        IF      SPA-COM-HOUKATU-FLG2(WRK-IDX)   =   1
-      *****************    MOVE    "red"          TO
                            MOVE    CL-RED         TO
                                        K02-SRYKBN-FGCOLOR (IDX)
                                        K02-MEISYO-FGCOLOR (IDX)
                        END-IF
                    ELSE
-      *************    MOVE    "black"       TO
                        MOVE    CL-BLACK      TO
                                        K02-SRYKBN-FGCOLOR (IDX)
                                        K02-MEISYO-FGCOLOR (IDX)
@@ -12799,20 +12896,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *!!          禁忌薬剤
                    IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
-      ************     MOVE    "red"         TO
                        MOVE    CL-RED        TO
                                        K02-MEISYO-FGCOLOR (IDX)
                    END-IF
-      *!!!!!!!!!!!!!!!!!!!!
-      * 変更行を緑へ
-                   IF     (SPA-COM-IN4 (WRK-IDX)   =   "1" )
-                      OR  (SPA-COM-IN4 (WRK-IDX)   =   "2" )
-                       MOVE    CL-GREEN      TO
-                                       K02-MEISYO-FGCOLOR (IDX)
-                       MOVE    CL-GREEN      TO
-                                       K02-SURYO-FGCOLOR (IDX)
-                   END-IF
-      *!!!!!!!!!!!!!!!!!!!!
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"
                         MOVE    ALL "#"             TO  K02-SRYKBN(IDX)
@@ -12862,19 +12948,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WRK-HEN-PAGE1       DELIMITED  BY  SIZE
                                        INTO      K02-MODE
            END-STRING
-      *
-      *    前頁表示の時、１行目へ
-           IF      SPA-GMN-CUR         =   99  OR  88
-               MOVE    1                   TO  SPA-GMN-CUR
-      *********MOVE    1                   TO  SPA-MAP-IDX
-           END-IF
-      *
-      *    明細入力の時、コードが入力されていること
-           IF      SPA-GMN-CUR         =   2
-               IF      K02-INPUTCD(SPA-MAP-IDX)    =   SPACE
-                   MOVE    1               TO  SPA-GMN-CUR
-               END-IF
-           END-IF
       *
            MOVE    SPA-GMN-PTNUM       TO  K02-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  K02-KANANAME
@@ -13390,6 +13463,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  WRK-IDX2
            END-IF
       *
+      *    明細入力の時、コードが入力されていること
+           IF      SPA-GMN-CUR         =   2
+               IF      K02-INPUTCD(SPA-MAP-IDX)    =   SPACE
+                   MOVE    1               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            IF      SPA-GMN-CUR         =   1
                IF      WRK-IDX2            >   MAX-GMN
                    MOVE    08              TO  SPA-GMN-CUR
@@ -13417,6 +13497,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            MOVE    WRK-IDX2        TO  MCP-WIDGET(8:2)
                    MOVE    "PANDATABLE1"   TO  MCP-WIDGET
                    MOVE    4               TO  K02-PANDATABLE1-TROWATTR
+      *TEST
+      *            最終行は画面の最後へ
+                   IF     (WRK-IDX2        >=  WRK-MAP-MAX  )
+                       MOVE    1           TO  K02-PANDATABLE1-TROWATTR
+                   END-IF
+      *
+      *            前次頁の時は、画面の先頭へ
+                   IF     (FLG-F6          =   1)  OR
+                          (FLG-F7          =   1)
+                       MOVE    ZERO            TO
+                                               K02-PANDATABLE1-TROWATTR
+                       MOVE    ZERO            TO  FLG-F6
+                       MOVE    ZERO            TO  FLG-F7
+                   END-IF
+      *TEST
                    MOVE    2               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
       *
@@ -13434,13 +13529,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        IF      SPA-ERRCD(1:1)  =   "K"
       *                    白の時、設定なし
-                           IF      SPA-KEICOLORS   NOT =   "#FFFFFF"
+                           IF      SPA-KEICOLORS   NOT =   CL-WHITE
                                MOVE    SPA-KEICOLORS
                                    TO  K02-INPUTCD-BGCOLOR (WRK-IDX2) 
                            END-IF
                        ELSE
       *                    白の時、設定なし
-                           IF      SPA-ERRCOLORS   NOT =   "#FFFFFF"
+                           IF      SPA-ERRCOLORS   NOT =   CL-WHITE
                                MOVE    SPA-ERRCOLORS
                                    TO  K02-INPUTCD-BGCOLOR (WRK-IDX2) 
                            END-IF
@@ -13453,6 +13548,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            MOVE    WRK-IDX2        TO  MCP-WIDGET(7:2)
                    MOVE    "PANDATABLE1"   TO  MCP-WIDGET
                    MOVE    4               TO  K02-PANDATABLE1-TROWATTR
+      *TEST
+      *            最終行は画面の最後へ
+                   IF     (WRK-IDX2        >=  WRK-MAP-MAX  )
+                       MOVE    1           TO  K02-PANDATABLE1-TROWATTR
+                   END-IF
+      *TEST
                    MOVE    3               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
                WHEN    04
