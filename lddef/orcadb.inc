@@ -185,4 +185,5 @@ db	{
         tbl_passwd;
 	tbl_ptcare_hkninf;
 	tbl_ptcare_nintei;
+	tbl_hknjainf_care;
 };
