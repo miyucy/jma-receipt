@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # coding : euc-jp
-Encoding.default_external = "euc-jp"
+Encoding.default_external = "euc-jp" unless RUBY_VERSION == "1.8.7"
 
 # ======================================================================
 # 共通 スクリプト

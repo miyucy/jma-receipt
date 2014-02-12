@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # coding : euc-jp
-Encoding.default_external = "euc-jp"
+Encoding.default_external = "euc-jp" unless RUBY_VERSION == "1.8.7"
 
 
 # Claim通信バージョン2

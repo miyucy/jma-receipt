@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # coding : utf-8
-Encoding.default_external = "euc-jp"
+Encoding.default_external = "euc-jp" unless RUBY_VERSION == "1.8.7"
 
 require "csv"
 require "iconv"
