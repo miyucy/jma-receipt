@@ -1,5 +1,6 @@
 #!/usr/bin/ruby 
 # coding : utf-8
+Encoding.default_external = "euc-jp"
 
 require "monthly/rosai_receden_common"
 require "nkf"

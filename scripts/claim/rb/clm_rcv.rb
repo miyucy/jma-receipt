@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # coding : euc-jp
+Encoding.default_external = "euc-jp"
 
 # claim test Rcv server script
 #   args  0:[port]

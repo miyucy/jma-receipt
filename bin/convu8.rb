@@ -1,6 +1,6 @@
 #!/usr/bin/ruby 
 # coding : utf-8
-# -*- coding: utf-8 -*-
+Encoding.default_external = "euc-jp"
 
 require 'optparse'
 require 'iconv'

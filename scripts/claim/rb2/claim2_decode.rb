@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 # coding : euc-jp
+Encoding.default_external = "euc-jp"
 
 
 # Claim通信バージョン2

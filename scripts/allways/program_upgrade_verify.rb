@@ -1,5 +1,6 @@
 #!/usr/bin/ruby -Ke
 # coding : utf-8
+Encoding.default_external = "euc-jp"
 
 require "digest/md5"
 require "yaml"

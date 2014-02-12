@@ -1,5 +1,6 @@
 #!/usr/bin/ruby 
 # coding : euc-jp
+Encoding.default_external = "euc-jp"
 # print_parent2.rb のプレビュー用対応 
 # 文字列の改行区切りで配列にして、それを引数のプログラムに渡す処理 
 # (2002/03/07 竹田氏追加依頼) 

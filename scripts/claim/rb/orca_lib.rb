@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # coding : euc-jp
+Encoding.default_external = "euc-jp"
 
 # ======================================================================
 # 共通 スクリプト

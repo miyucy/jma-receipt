@@ -1,5 +1,6 @@
 #!/usr/bin/ruby -Ke
 # coding : euc-jp
+Encoding.default_external = "euc-jp"
 
 require "getoptlong"
 require "tempfile"

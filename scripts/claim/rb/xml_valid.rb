@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # coding : utf-8
+Encoding.default_external = "euc-jp"
 #
 # claim test Rcv server
 #   xml valid parser check interface module

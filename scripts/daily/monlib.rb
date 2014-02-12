@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 # coding : utf-8
+Encoding.default_external = "euc-jp"
 
 # PANDA -- a simple transaction monitor
 # Copyright (C) 2004-2005  ogochan

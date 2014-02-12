@@ -1,5 +1,6 @@
 #!/usr/bin/ruby1.8
 # coding : utf-8
+Encoding.default_external = "euc-jp"
 
 require "openssl"
 require "open-uri"

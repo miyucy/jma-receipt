@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # coding : utf-8
+Encoding.default_external = "euc-jp"
 
 # claim client script
 #   args  0:[server ip or hostname] 
