@@ -1,8 +1,8 @@
-#!/usr/bin/ruby
+#!%RUBY%
 # coding : utf-8
 Encoding.default_external = "euc-jp" unless RUBY_VERSION == "1.8.7"
 
-require "monthly/rosai_receden_common_const"
+require "monthly/receden_common_const"
 require "date"
 
 $KCODE = "UTF-8"
@@ -94,33 +94,15 @@ class Receden_common < Receden_common_const
     return s
   end
 
-  def katakana(s)
-    !(s =~ /^[#{ROSAI_KATAKANA}]+$/) && s = ""
-    return s
-  end
-
   def wtos(wareki)
-
-    if wareki != nil && wareki.length < 7
-      wareki = sprintf("%s%s",wareki, "01")
-    end
-
-    return warekiToseireki(wareki)
-
-  end
-
-  def wYmdtos(wareki)
-
-    return warekiToseireki(wareki)
-
-  end
-
-
-  def warekiToseireki(wareki)
 
     ret = ""
 
-    if wareki != nil && wareki =~ /^[0-9]{7}$/
+    if wareki.length < 7
+      wareki = sprintf("%s%s",wareki, "01")
+    end
+
+    if wareki =~ /^[0-9]{7}$/
     else
       return ret
     end
@@ -138,6 +120,7 @@ class Receden_common < Receden_common_const
   end
 
 end
+
 
 
 class Recedata < Receden_common
@@ -163,14 +146,6 @@ class Recedata < Receden_common
 
   def wtos
     super(@value.to_s)
-  end
-
-  def wYmdtos
-    super(@value.to_s)
-  end
-
-  def katakana
-    super(@value)
   end
 
   def nissu
@@ -248,14 +223,19 @@ class Recinfo < Receden_common_const
 
     @rec["IR"]=Rowsinfo.new(IRrecord)
     @rec["RE"]=Rowsinfo.new(RErecord)
-    @rec["RR"]=Rowsinfo.new(RRrecord)
+    @rec["HO"]=Rowsinfo.new(HOrecord)
+    @rec["RO"]=Rowsinfo.new(ROrecord)
+    @rec["KO"]=Rowsinfo.new(KOrecord)
+    @rec["KH"]=Rowsinfo.new(KHrecord)
     @rec["SY"]=Rowsinfo.new(SYrecord)
-    @rec["RI"]=Rowsinfo.new(RIrecord)
+    @rec["SI"]=Rowsinfo.new(SIrecord)
     @rec["IY"]=Rowsinfo.new(IYrecord)
     @rec["TO"]=Rowsinfo.new(TOrecord)
     @rec["CO"]=Rowsinfo.new(COrecord)
+    @rec["NI"]=Rowsinfo.new(NIrecord)
     @rec["SJ"]=Rowsinfo.new(SJrecord)
-    @rec["RS"]=Rowsinfo.new(RSrecord)
+    @rec["GO"]=Rowsinfo.new(GOrecord)
+    @rec["SAI"]=Rowsinfo.new(SAIrecord)
     @rec["ETC"]=Rowsinfo.new(ETCrecord)
 
   end
@@ -268,17 +248,21 @@ end
 
 class Recesbt < Receden_common_const
 
-  attr_reader :form,:nyugai
+  attr_reader :sskkn,:nyugai,:sikaku,:honkzk
 
-  def initialize(formsbt)
+  def initialize(recesbt)
 
-   @form    = ""
+   @sskkn  = ""
    @nyugai = ""
+   @sikaku = [0,0,0,0,0]
+   @honkzk = ""
    @exists = true
 
-   if FORMSBT.key?(formsbt)
-     @nyugai = FORMSBT[formsbt][0]
-     @form   = FORMSBT[formsbt][1]
+   if RECESBT.key?(recesbt)
+     @sskkn  = RECESBT[recesbt][0]
+     @nyugai = RECESBT[recesbt][1]
+     @sikaku = RECESBT[recesbt][2]
+     @honkzk = RECESBT[recesbt][3]
    else
      @exists = false
    end
@@ -286,6 +270,31 @@ class Recesbt < Receden_common_const
 
   def exists?
     @exists
+  end
+
+  def ho_count
+    return @sikaku[0]
+  end
+
+  def ko_count
+    return @sikaku[1...@sikaku.size].select{|ko| ko == 1}.size
+  end
+
+end
+
+
+class KoSort < Receden_common_const
+
+  def KoSort.key?(hbtnum)
+    KOSORT.key?(hbtnum)
+  end
+
+  def KoSort.tandoku?(hbtnum)
+    KOSORT[hbtnum][0]
+  end
+
+  def KoSort.pty(hbtnum)
+    KOSORT[hbtnum][1]
   end
 
 end
