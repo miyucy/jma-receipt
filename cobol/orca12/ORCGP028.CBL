@@ -671,6 +671,7 @@
       *
            MOVE    SPACE               TO  SPA-P028-CRHKNJANAME
            MOVE    SPACE               TO  SPA-P028-CRHKNJAADRS
+           MOVE    SPACE               TO  SPA-P028-CRHKNJAADRS2
            MOVE    SPACE               TO  SPA-P028-CRHKNJATEL
            IF      SPA-GMN28-CR-HKNJANUM   NOT =   SPACE
                MOVE    SPA-GMN28-CR-HKNJANUM   TO  WRK-MAE-INPUT
