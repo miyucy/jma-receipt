@@ -4,8 +4,9 @@ include $(top_srcdir)/Makefile.directories
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+RUBY = @RUBY@
 
-BIN_sources = \
+shell_sources = \
 	jma-receipt-db-setup.sh.in \
 	jma-receipt-db-check.sh.in \
 	jma-receipt-sysbase-setup.sh.in \
@@ -19,23 +20,18 @@ BIN_sources = \
 	create_dbgroup.sh.in \
 	passwd_store.sh.in
 
-BIN_cmdsrc = jma-setup.in
-BIN_cmd = jma-setup
+ruby_sources = \
+	orcvt_euc.rb.in \
+	orcvt_euc_kananame.rb.in \
+	convu8.rb.in
 
-BIN_bin = \
-	orcvt_euc.rb \
-	orcvt_euc_kananame.rb \
-	jma-plugin \
-	convu8.rb
+shell_scripts = $(shell_sources:.sh.in=.sh)
 
-BIN_objs = $(BIN_sources:.sh.in=.sh) \
-           $(BIN_cmd)
+ruby_scripts = $(ruby_sources:.rb.in=.rb)
 
-BIN_files = $(BIN_objs) $(BIN_bin) $(BIN_cmd)
+.SUFFIXES: .sh.in .sh .rb.in .rb
 
-.SUFFIXES: .sh.in .sh
-
-all:	$(BIN_objs)
+all: $(shell_scripts) $(ruby_scripts) jma-plugin
 
 .sh.in.sh:
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
@@ -43,19 +39,25 @@ all:	$(BIN_objs)
 	$< > $@
 	chmod +x $@
 
-$(BIN_cmd): $(BIN_cmdsrc)
-	sed -e 's,\@bindir\@,$(bindir),g' \
-	$(BIN_cmdsrc) > $@
+jma-plugin: jma-plugin.in
+	sed -e 's,%RUBY%,$(RUBY),' $< > $@
+	chmod +x $@
+
+.rb.in.rb: 
+	sed -e 's,%RUBY%,$(RUBY),' $< > $@
 	chmod +x $@
 
 filecheck:
 
 clean:
-	-rm -f $(BIN_objs)
+	-rm -f $(shell_scripts)
+	-rm -f $(ruby_scripts)
+	-rm -f jma-plugin
 
 distclean: clean
 	-rm -f Makefile
 
 install: all
 	$(INSTALL) -d $(bindir)
-	$(INSTALL_SCRIPT) $(BIN_files) $(bindir)
+	$(INSTALL_SCRIPT) $(shell_scripts) $(ruby_scripts) jma-plugin \
+		$(bindir)

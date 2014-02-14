@@ -208,6 +208,20 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
 
+dnl *************************************************************************** 
+dnl for Ruby
+dnl *************************************************************************** 
+AC_ARG_WITH(ruby, 
+[  --with-ruby=PATH        path to ruby],[
+    AC_MSG_CHECKING(for ruby)
+    RUBY="$withval"
+    AC_MSG_RESULT($RUBY)
+],[
+    AC_MSG_CHECKING(for ruby)
+    RUBY="/usr/bin/ruby"
+    AC_MSG_RESULT(no)
+])
+AC_SUBST(RUBY) 
 
 AC_CONFIG_FILES([
 cobol/Makefile
