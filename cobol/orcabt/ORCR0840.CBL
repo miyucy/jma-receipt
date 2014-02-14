@@ -239,6 +239,7 @@
       *  04.07.07    NACL-ÌçÏÆ    13/10/02  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
       *  04.07.08    NACL-ÌçÏÆ    13/12/03  ¼«ÇåÀÕ¡ÊÏ«ºÒ½àµò¡Ë¤Î¥ì¥»¥×¥ÈÍÍ¼°
       *                                     ÄÉ²ÃÂÐ±þ
+      *  04.07.09    NACL-ÌçÏÆ    14/02/13  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»Ü½Ñ²Ã»»ÂÐ±þ
       *
       *  04.08.01    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
       *****************************************************************
@@ -3019,8 +3020,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    OR ((SRY-SRYCD(IDX2)  >= "101800570" AND
                                          <= "101800860"     ) AND
                        (RECE82-SRYYM    >=  "201307"        ))
+                   OR ((SRY-SRYCD(IDX2)  >= "101801010" AND
+                                         <= "101801020"     ) AND
+                       (RECE82-SRYYM    >=  "201307"        ))
                    OR ((SRY-SRYCD(IDX2)   = "101800550" OR
-                             "101800560" OR "101800990"     ) AND
+                             "101800560" OR "101800990" OR
+                             "101801030"                    ) AND
                        (RECE82-SRYYM    >=  "201307"        ))
                      IF   SRY-SRYCD(IDX2)(1:5) =  "09593"
                        MOVE  TNS-KANANAMECHGKBN
@@ -3494,8 +3499,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                OR (( SRY-SRYCD(IDX2) >= "101800570" AND
                                      <= "101800860"   )   AND
                    ( RECE82-SRYYM   >=  "201307"      ))
+               OR (( SRY-SRYCD(IDX2) >= "101801010" AND
+                                     <= "101801020"   )   AND
+                   ( RECE82-SRYYM   >=  "201307"      ))
                OR (( SRY-SRYCD(IDX2)  = "101800550" OR
-                         "101800560" OR "101800990"   )   AND
+                         "101800560" OR "101800990" OR
+                         "101801030"                  )   AND
                    ( RECE82-SRYYM   >=  "201307"      ))
       *
                      ADD      1          TO  WRK-MEISAI-CNT
@@ -3504,7 +3513,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                           (SRY-JIHIMONEY(IDX2) / 10)
                      ELSE
                       IF SRY-SRYCD(IDX2)  =  "101800550" OR
-                              "101800560" OR "101800990"
+                              "101800560" OR "101800990" OR
+                              "101801030"
                         COMPUTE  WRK-FUTANWARI  = TNS-TEN / 100
                         COMPUTE  WRK-KEISAN-KG  =
                                 (WRK-TEN-KG  * WRK-FUTANWARI) + 0.5
@@ -3533,7 +3543,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                + WRK-JIBAIKZI-TNS(IDX2)
                      ELSE
                       IF  SRY-SRYCD(IDX2)  =  "101800550" OR
-                               "101800560" OR "101800990"
+                               "101800560" OR "101800990" OR
+                               "101801030"
                        COMPUTE WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
                                                + WRK-KEISAN-KG2
                        MOVE    WRK-KEISAN-KG2  TO  RECE85-TEN(IDX4)
@@ -3676,6 +3687,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       OR (( ACCT-SRYKBN     = "80"              ) AND
                           ( WRK-CHECK-SRYCD >= "101800570" AND
                                             <= "101800860"      ) AND
+                          ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
+                           (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
+                          ( RECE82-SRYYM   >=  "201307"         ))
+                      OR (( ACCT-SRYKBN     = "80"              ) AND
+                          ( WRK-CHECK-SRYCD >= "101801010" AND
+                                            <= "101801020"      ) AND
                           ((SRY-SRYCD(IDX2)(1:3)   =   "008") OR
                            (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
                           ( RECE82-SRYYM   >=  "201307"         ))
@@ -5409,8 +5426,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                      OR ((SRY-SRYCD(IDX3) >= "101800570" AND
                                           <= "101800860" )  AND
                          (RECE82-SRYYM   >=  "201307"    ))
+                     OR ((SRY-SRYCD(IDX3) >= "101801010" AND
+                                          <= "101801020" )  AND
+                         (RECE82-SRYYM   >=  "201307"    ))
                      OR ((SRY-SRYCD(IDX3)  = "101800550" OR
-                              "101800560" OR "101800990" )  AND
+                              "101800560" OR "101800990" OR
+                              "101801030"                )  AND
                          (RECE82-SRYYM   >=  "201307"    ))
                        IF SRY-SRYCD(IDX3)(1:5) =  "09593"
                          COMPUTE   RECE82-KINGAKU2(2)  =
@@ -5425,7 +5446,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          END-IF
                        ELSE
                         IF  SRY-SRYCD(IDX3)  = "101800550" OR
-                                "101800560" OR "101800990"
+                                "101800560" OR "101800990" OR
+                                "101801030"
                          COMPUTE   WRK-FUTANWARI  = TNS-TEN / 100
                          COMPUTE   WRK-KEISAN-KG2 =
                                   (WRK-TEN-KG2 * WRK-FUTANWARI)
@@ -6006,8 +6028,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                     OR ((SRY-SRYCD(IDX3) >= "101800570" AND
                                          <= "101800860" )  AND
                         (RECE82-SRYYM   >=  "201307"    ))
+                    OR ((SRY-SRYCD(IDX3) >= "101801010" AND
+                                         <= "101801020" )  AND
+                        (RECE82-SRYYM   >=  "201307"    ))
                     OR ((SRY-SRYCD(IDX3)  = "101800550" OR
-                             "101800560" OR "101800990" )  AND
+                             "101800560" OR "101800990" OR
+                             "101801030"                )  AND
                         (RECE82-SRYYM   >=  "201307"    ))
                      IF  SRY-SRYCD(IDX3)(1:5) =  "09593"
                       EVALUATE  WRK-JIBAIKZI-SYUKEIKBN(IDX3)
@@ -6027,7 +6053,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       END-EVALUATE
                      ELSE
                       IF  SRY-SRYCD(IDX3)  = "101800550" OR
-                              "101800560" OR "101800990"
+                              "101800560" OR "101800990" OR
+                              "101801030"
                          COMPUTE WRK-FUTANWARI  = TNS-TEN / 100
                          COMPUTE WRK-KEISAN-KG2 =
                              (WRK-TEN-KG2 * WRK-FUTANWARI)
@@ -6174,8 +6201,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                     OR ((SRY-SRYCD(IDX3) >= "101800570" AND
                                          <= "101800860" )  AND
                         (RECE82-SRYYM   >=  "201307"    ))
+                    OR ((SRY-SRYCD(IDX3) >= "101801010" AND
+                                         <= "101801020" )  AND
+                        (RECE82-SRYYM   >=  "201307"    ))
                     OR ((SRY-SRYCD(IDX3)  = "101800550" OR
-                             "101800560" OR "101800990" )  AND
+                             "101800560" OR "101800990" OR
+                             "101801030"                )  AND
                         (RECE82-SRYYM   >=  "201307"    ))
                      IF  SRY-SRYCD(IDX3)(1:5) =  "09593"
                       EVALUATE  WRK-JIBAIKZI-SYUKEIKBN(IDX3)
@@ -6195,7 +6226,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       END-EVALUATE
                      ELSE
                       IF  SRY-SRYCD(IDX3)  = "101800550" OR
-                              "101800560" OR "101800990"
+                              "101800560" OR "101800990" OR
+                              "101801030"
                          COMPUTE WRK-FUTANWARI  = TNS-TEN / 100
                          COMPUTE WRK-KEISAN-KG2 =
                              (WRK-TEN-KG2 * WRK-FUTANWARI)
@@ -6839,8 +6871,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                     OR ((SRY-SRYCD(IDX3) >= "101800570" AND
                                          <= "101800860" )  AND
                         (RECE82-SRYYM   >=  "201307"    ))
+                    OR ((SRY-SRYCD(IDX3) >= "101801010" AND
+                                         <= "101801020" )  AND
+                        (RECE82-SRYYM   >=  "201307"    ))
                     OR ((SRY-SRYCD(IDX3)  = "101800550" OR
-                             "101800560" OR "101800990" )  AND
+                             "101800560" OR "101800990" OR
+                             "101801030"                )  AND
                         (RECE82-SRYYM   >=  "201307"    ))
                      IF  SRY-SRYCD(IDX3)(1:5) =  "09593"
                       IF   (RECE82-HKNKBN    =  "4")
@@ -6864,7 +6900,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       END-IF
                      ELSE
                       IF  SRY-SRYCD(IDX3)  = "101800550" OR
-                              "101800560" OR "101800990"
+                              "101800560" OR "101800990" OR
+                              "101801030"
                              COMPUTE  WRK-FUTANWARI  = TNS-TEN / 100
                              COMPUTE  WRK-KEISAN-KG2 =
                                (WRK-TEN-KG2 * WRK-FUTANWARI)
@@ -7316,8 +7353,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                      OR ((SRY-SRYCD(IDX3) >= "101800570" AND
                                           <= "101800860" )  AND
                          (RECE82-SRYYM   >=  "201307"    ))
+                     OR ((SRY-SRYCD(IDX3) >= "101801010" AND
+                                          <= "101801020" )  AND
+                         (RECE82-SRYYM   >=  "201307"    ))
                      OR ((SRY-SRYCD(IDX3)  = "101800550" OR
-                              "101800560" OR "101800990" )  AND
+                              "101800560" OR "101800990" OR
+                              "101801030"                )  AND
                          (RECE82-SRYYM   >=  "201307"    ))
                        IF   (FLG-TAISYO           =   1     )
                        AND  (SRY-SRYCD(IDX3)(1:5) =  "09593")
