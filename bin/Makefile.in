@@ -31,7 +31,7 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 
 .SUFFIXES: .sh.in .sh .rb.in .rb
 
-all: $(shell_scripts) $(ruby_scripts) jma-plugin
+all: $(shell_scripts) $(ruby_scripts) jma-plugin jma-setup
 
 .sh.in.sh:
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
@@ -41,6 +41,10 @@ all: $(shell_scripts) $(ruby_scripts) jma-plugin
 
 jma-plugin: jma-plugin.in
 	sed -e 's,%RUBY%,$(RUBY),' $< > $@
+	chmod +x $@
+
+jma-setup: jma-setup.in
+	sed -e 's,\@bindir\@,$(bindir),g' $< > $@
 	chmod +x $@
 
 .rb.in.rb: 
@@ -53,11 +57,13 @@ clean:
 	-rm -f $(shell_scripts)
 	-rm -f $(ruby_scripts)
 	-rm -f jma-plugin
+	-rm -f jma-setup
 
 distclean: clean
 	-rm -f Makefile
 
 install: all
 	$(INSTALL) -d $(bindir)
-	$(INSTALL_SCRIPT) $(shell_scripts) $(ruby_scripts) jma-plugin \
+	$(INSTALL_SCRIPT) \
+		$(shell_scripts) $(ruby_scripts) jma-plugin jma-setup\
 		$(bindir)
