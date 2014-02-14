@@ -56,6 +56,7 @@
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/07/01  »ÄÎÌÇÑ´þ¼«Æ°»»ÄêÂÐ±þ
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/10/XX  Êñ³ç»»Äê¡ÊºÞ¡ËÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/06/XX  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/02/13  Ï«ºÒ¶â³Û¡ó²Ã»»ÂÐ±þ
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -433,6 +434,15 @@
       *
       *    ¿ÇÎÅ¼ïÊÌ
            03  WRK-MAE-SRYSYUKBN          PIC X(03).
+      *
+      *    Ï«ºÒ»Ü½Ñ²Ã»»ÍÑ
+           03  WRK-ENTANKA             PIC S9(08).
+           03  IDR-1                   PIC 9(04).
+           03  IDR-2                   PIC 9(04).
+           03  WRK-TENKEISAN           PIC 9(08)V99.
+           03  WRK-TENSUKEI-9          PIC S9(08).
+           03  WRK-TENSUKEI-G          PIC S9(08).
+           03  WRK-TENSUKEI-K          PIC S9(08).
       *
       *    ¹Ô°ÌÃÖÊÔ½¸
        01  WRK-GMNGYO-AREA.
@@ -5627,9 +5637,14 @@
                   (SPA-COM-RSIKBN      (IDX)   =   1  )  AND
                   (SPA-COM-INPUTCD (IDX)(1:1)  =   "1")
       *        ±ß
-               COMPUTE WRK-EN          =   SPA-COM-TEN (IDX)
+      *H26.2
+      *        »Ü½Ñ²Ã»»ÂÐ±þ
+               PERFORM 450112-RSI-SKASAN-SEC
+      *******  COMPUTE WRK-EN          =   SPA-COM-TEN (IDX)
+               COMPUTE WRK-EN          =   WRK-ENTANKA
                                        *   SPA-COM-KAISU (IDX)
-               MOVE    SPA-COM-TEN (IDX)       TO  WRK-TANKA
+      ******** MOVE    SPA-COM-TEN (IDX)       TO  WRK-TANKA
+               MOVE    WRK-ENTANKA     TO  WRK-TANKA
       *        Ï«ºÒ¤Î±ß¡ÊÃ±²Á¡Ë
                MOVE    WRK-TANKA       TO  SPA-COM-RSIKIN(IDX)
            END-IF
@@ -5739,6 +5754,55 @@
            .
        450112-JIBAISEKI-SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    »Ü½Ñ²Ã»»ÂÐ±þ½èÍý
+      *****************************************************************
+       450112-RSI-SKASAN-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  WRK-ENTANKA
+           MOVE    ZERO                TO  WRK-TENSUKEI-G
+           MOVE    ZERO                TO  WRK-TENSUKEI-K
+           IF      SPA-COM-ZAIEND (IDX)    =   "1"
+               COMPUTE IDR-1           =   SPA-GMN-MAX +   1
+           ELSE
+               COMPUTE IDR-1           =   IDX     +   1
+           END-IF
+           PERFORM VARYING     IDR-2   FROM    IDR-1   BY  1
+                   UNTIL      (IDR-2   >   SPA-GMN-MAX  )
+      *
+               IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "5"  )  AND
+                      (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
+      *            ¡ó²Ã»»¡¡±ßÌ¤ËþÀÚ¤ê¼Î¤Æ 
+                   MOVE    ZERO                TO  WRK-TENKEISAN
+                   COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
+                                           *   SPA-COM-KISOTEN (IDR-2)
+                                           /   100
+                   MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
+               END-IF
+      *
+               IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "6"  )  AND
+                      (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
+      *            ¡ó¸º»»¡¡±ßÌ¤ËþÀÚ¤ê¼Î¤Æ 
+                   MOVE    ZERO                TO  WRK-TENKEISAN
+                   COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
+                                           *   SPA-COM-KISOTEN (IDR-2)
+                                           /   100
+                   MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+               END-IF
+               IF      (SPA-COM-ZAIEND (IDR-2)  =   "1" )
+                   MOVE    SPA-GMN-MAX     TO  IDR-2
+               END-IF
+           END-PERFORM
+           COMPUTE WRK-ENTANKA         =   SPA-COM-TEN (IDX)
+                                       +   WRK-TENSUKEI-K
+                                       -   WRK-TENSUKEI-G
+           .
+       450112-RSI-SKASAN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ÂÐ¾Ý¤ÎºÞ¥¯¥ê¥¢½èÍý
