@@ -10,7 +10,7 @@ CODES = {
   NKF::EUC      => "EUC",
 }
 
-STDIN.read.each{|l|
+STDIN.read.each_line{|l|
   l.split(//).each{|c|
     if CODES[ NKF.guess(c) ] == "EUC"
       print "¢¢"

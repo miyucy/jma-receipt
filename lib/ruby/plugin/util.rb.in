@@ -54,7 +54,7 @@ module JMA::Plugin
         FileUtils.chmod(0700,dir)
         return dir
       rescue Errno::EEXIST
-        redo
+        retry
       end
     end
 
