@@ -1070,7 +1070,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA

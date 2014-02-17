@@ -7,6 +7,8 @@
 CREATE TABLE tbl_ptcare_hkninf (
 	HOSPNUM		smallint NOT NULL,
 	PTID		bigint,
+        TEKSTYMD	character varying(8)  NOT NULL,
+        TEKEDYMD	character varying(8),
         HKNJANUM	character varying(6),
         HIHKNJANUM	character varying(10),
 	TERMID		character varying(16),
@@ -17,4 +19,4 @@ CREATE TABLE tbl_ptcare_hkninf (
 );
 
 ALTER TABLE ONLY tbl_ptcare_hkninf
-    ADD CONSTRAINT tbl_ptcare_hkninf_primary_key PRIMARY KEY (HOSPNUM,PTID);
+    ADD CONSTRAINT tbl_ptcare_hkninf_primary_key PRIMARY KEY (HOSPNUM,PTID,TEKSTYMD);

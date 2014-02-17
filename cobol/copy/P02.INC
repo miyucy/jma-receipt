@@ -900,6 +900,31 @@
                     06  P02-VALUE   PIC X(80).
                   05  P02-P028-CAREHKNJATEL.
                     06  P02-VALUE   PIC X(16).
+                  05  P02-P028-CRHSELNUM.
+                    06  P02-VALUE   PIC S9(2).
+                  05  P02-P028-CHTEKSTYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P028-CHTEKEDYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-SCROLLEDWINDOW5.
+                    06  P02-HPOS    PIC S9(9)   BINARY.
+                    06  P02-VPOS    PIC S9(9)   BINARY.
+                    06  P02-P028-CAREHKNLST.
+                      07  P02-P028-CRHKNLST-COUNT   PIC S9(9)  BINARY.
+                      07  P02-P028-CRHKNLST-ROW PIC S9(9)   BINARY.
+                      07  P02-P028-ITEM        OCCURS  10 TIMES.
+                        08  P02-P028-TCHNUM    PIC X(2).
+                        08  P02-P028-TCRHKNJANUM  PIC X(6).
+                        08  P02-P028-TCRHIHKNJANUM  PIC X(10).
+                        08  P02-P028-TCRHSTRYMD     PIC X(9).
+                        08  P02-P028-TCRHENDYMD     PIC X(9).
+                      07  P02-P028-CRHKNLST-SELECT
+                              PIC X       OCCURS  10 TIMES.
+                      07  P02-P028-CRHKNLST-FGCOLOR
+                              PIC X(16)   OCCURS  10 TIMES.
+                      07  P02-P028-CRHKNLST-BGCOLOR
+                              PIC X(16)   OCCURS  10 TIMES.
+
 
 
 

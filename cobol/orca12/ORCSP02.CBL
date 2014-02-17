@@ -157,6 +157,7 @@
            03  WRK-YMD                 PIC X(08).
            03  WRK-RENNUMZ             PIC ZZZZ.
            03  WRK-RENNUMZ3            PIC ZZZ.
+           03  WRK-RENNUMZ2            PIC ZZ.
            03  WRK-HST                 PIC 9(04).
            03  WRK-HED                 PIC 9(04).
            03  WRK-KST                 PIC 9(04).
@@ -3003,14 +3004,38 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        10028-PTCARE-SET-SEC           SECTION.
       *
-      *
       *    ´µ¼Ô²ð¸îÊÝ¸±¾ðÊó
-           PERFORM 9300-PTCAREHKNINF-READ-SEC
-           IF      FLG-PTCARE-HKNINF   =   ZERO
-               MOVE    PTCRHKN-HKNJANUM    TO  SPA-GMN28-CR-HKNJANUM
-               MOVE    PTCRHKN-HIHKNJANUM  TO  SPA-GMN28-CR-HIHKNJANUM
-               MOVE    "1"                 TO  SPA-NAI28-PTCRHKN
+           MOVE    SPACE               TO  PTCARE-HKNINF-REC
+           INITIALIZE                  PTCARE-HKNINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTCRHKN-PTID
+      *
+           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
+           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCAREHKNINF-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTCARE-HKNINF
+               INITIALIZE                  PTCARE-HKNINF-REC
            END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL      (FLG-PTCARE-HKNINF   =   1  )
+                          OR  (IDX                 >=  10 )
+               ADD     1                       TO  IDX
+               PERFORM 100281-PTCAREHKNINF-HEN-SEC
+      *
+               MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCAREHKNINF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ´µ¼Ô²ð¸îÊÝ¸±¾ðÊó
            INITIALIZE                  PTCARE-NINTEI-REC
@@ -3046,6 +3071,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        10028-PTCARE-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô²ð¸îÊÝ¸±¾ðÊó¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
+      *****************************************************************
+       100281-PTCAREHKNINF-HEN-SEC           SECTION.
+      *
+           MOVE    IDX                 TO  SPA-GMN28-TCHNUM (IDX)
+      *
+           MOVE    PTCRHKN-HKNJANUM    TO  SPA-GMN28-TCRHKNJANUM
+                                                             (IDX)
+           MOVE    PTCRHKN-HIHKNJANUM  TO  SPA-GMN28-TCRHIHKNJANUM
+                                                             (IDX)
+           MOVE    PTCRHKN-TEKSTYMD    TO  SPA-NAI28-TCRHSTRYMD
+                                                             (IDX)
+           MOVE    PTCRHKN-TEKEDYMD    TO  SPA-NAI28-TCRHENDYMD
+                                                             (IDX)
+      *
+           MOVE    PTCRHKN-TEKSTYMD   TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-GMN28-TCRHSTRYMD (IDX)
+      *
+           MOVE    PTCRHKN-TEKEDYMD   TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-GMN28-TCRHENDYMD (IDX)
+      *
+           MOVE    "1"                 TO  SPA-NAI28-TCHKNSKBN (IDX)
+           MOVE    IDX                 TO  SPA-GMN28-CRHKN-MAX
+           .
+       100281-PTCAREHKNINF-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4857,8 +4912,46 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  P02-P028-JMAMRVER
       *
       *    ²ð¸îÊÝ¸±¾ðÊó
+           PERFORM   VARYING     IDX     FROM   1   BY  1
+                     UNTIL     ( IDX     >   50 )
+                     OR        ( IDX     >   SPA-GMN28-CRHKN-MAX )
+               MOVE    SPA-GMN28-TCHNUM (IDX)   TO WRK-RENNUMZ2
+               MOVE    WRK-RENNUMZ2        TO  P02-P028-TCHNUM (IDX)
+               MOVE    SPA-GMN28-TCRHKNJANUM (IDX)
+                                           TO  P02-P028-TCRHKNJANUM
+                                                               (IDX)
+               MOVE    SPA-GMN28-TCRHIHKNJANUM (IDX)
+                                           TO  P02-P028-TCRHIHKNJANUM
+                                                               (IDX)
+               MOVE    SPA-GMN28-TCRHSTRYMD (IDX)
+                                           TO  P02-P028-TCRHSTRYMD
+                                                               (IDX)
+               MOVE    SPA-GMN28-TCRHENDYMD (IDX)
+                                           TO  P02-P028-TCRHENDYMD
+                                                               (IDX)
+      *
+               IF      IDX             =   SPA-GMN28-CRHSELNUM
+                   MOVE    "T"         TO  P02-P028-CRHKNLST-SELECT
+                                                              (IDX)
+               ELSE
+                   MOVE    "F"         TO  P02-P028-CRHKNLST-SELECT
+                                                              (IDX)
+               END-IF
+      *ver.4.8 ¤Î¤ß
+      *        º£²ó¿·µ¬
+               IF      SPA-NAI28-TCHKNSKBN (IDX) =   SPACE
+                   MOVE    CL-GREEN    TO  P02-P028-CRHKNLST-BGCOLOR
+                                                              (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN28-CRHKN-MAX     TO  P02-P028-CRHKNLST-COUNT
+      *
+           MOVE    SPA-GMN28-CRHSELNUM     TO  P02-P028-CRHSELNUM
+      *
            MOVE    SPA-GMN28-CR-HKNJANUM   TO  P02-P028-CRHKNJANUM
            MOVE    SPA-GMN28-CR-HIHKNJANUM TO  P02-P028-CRHIHKNJANUM
+           MOVE    SPA-GMN28-CHTEKSTYMD    TO  P02-P028-CHTEKSTYMD
+           MOVE    SPA-GMN28-CHTEKEDYMD    TO  P02-P028-CHTEKEDYMD
       *    ²ð¸îÊÝ¸±¼Ô¾ðÊó
            MOVE    SPA-P028-CRHKNJANAME    TO  P02-P028-CAREHKNJAMEI
            MOVE    SPA-P028-CRHKNJAADRS    TO  P02-P028-CAREHKNJAADRS
@@ -4904,9 +4997,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN28-CRNIN-MAX     TO  P02-P028-CARELST-COUNT
       *
-           MOVE    SPA-GMN28-CRSELNUM  TO  P02-P028-CRSELNUM
-      *
            MOVE    SPA-GMN28-CRSELNUM      TO  P02-P028-CRSELNUM
+      *
            MOVE    SPA-GMN28-CRNINYMD      TO  P02-P028-CRNINYMD
            MOVE    SPA-GMN28-CRTEKSTYMD    TO  P02-P028-CRTEKSTYMD
            MOVE    SPA-GMN28-CRTEKEDYMD    TO  P02-P028-CRTEKEDYMD
@@ -5354,41 +5446,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô²ð¸îÊÝ¸±¾ðÊó¥Ç¡¼¥¿ÆÉ¤ß¹þ¤ß
+      *    ´µ¼Ô²ð¸îÊÝ¸±¾ðÊó¥Ç¡¼¥¿¥Ç¡¼¥¿ÆÉ¹þ½èÍý
       *****************************************************************
-       9300-PTCAREHKNINF-READ-SEC         SECTION.
+       930-PTCAREHKNINF-READ-SEC         SECTION.
       *
-           MOVE    SPACE               TO  PTCARE-HKNINF-REC
-           INITIALIZE                  PTCARE-HKNINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTCRHKN-PTID
-      *
-           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
-           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTCARE-HKNINF-REC
-                   MOVE    ZERO                TO  FLG-PTCARE-HKNINF
-               ELSE
-                   MOVE    1                   TO  FLG-PTCARE-HKNINF
-                   INITIALIZE                  PTCARE-HKNINF-REC
-               END-IF
+               MOVE    ZERO                TO  FLG-PTCARE-HKNINF
+               MOVE    MCPDATA-REC         TO  PTCARE-HKNINF-REC
            ELSE
                MOVE    1                   TO  FLG-PTCARE-HKNINF
                INITIALIZE                  PTCARE-HKNINF-REC
            END-IF
       *
-           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
            .
-       9300-PTCAREHKNINF-READ-EXT.
+       930-PTCAREHKNINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

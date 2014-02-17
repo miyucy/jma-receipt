@@ -29,6 +29,10 @@
                05  PTCRHKN-HOSPNUM         PIC  9(02).
       *患者ＩＤ
                05  PTCRHKN-PTID            PIC  9(10).
+      *適用開始年月日
+               05  PTCRHKN-TEKSTYMD        PIC  X(08).
+      *適用終了年月日
+           03  PTCRHKN-TEKEDYMD            PIC  X(08).
       *保険者番号
            03  PTCRHKN-HKNJANUM            PIC  X(06).
       *被保険者名

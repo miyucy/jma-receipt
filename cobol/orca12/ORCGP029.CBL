@@ -2611,47 +2611,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2130-PTCARE-HKNINF-SYORI-SEC         SECTION.
       *
-           IF     (SPA-GMN28-CR-HKNJANUM   =   SPACE )
-             AND  (SPA-GMN28-CR-HIHKNJANUM =   SPACE )
-             AND  (SPA-NAI28-PTCRHKN       =   SPACE )
-               GO      TO      2130-PTCARE-HKNINF-SYORI-EXT
-           END-IF
-      *
-           MOVE    SPACE               TO  PTCARE-HKNINF-REC
-           INITIALIZE                  PTCARE-HKNINF-REC
+      *    すべて削除
+           INITIALIZE                      PTCARE-HKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTCRHKN-PTID
-           PERFORM 900-PTCAREHKNINF-READ-SEC
+           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
-           IF      FLG-PTCARE-HKNINF   =   ZERO
-               IF     (SPA-GMN28-CR-HKNJANUM   =   SPACE )
-                 AND  (SPA-GMN28-CR-HIHKNJANUM =   SPACE )
-      *            保険情報が空白なら削除
-                   MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "P029 PTCARE-HKNINF DEL ERR:" MCP-RC
-                               ",KEY:" PTCRHKN-KEY
-                       MOVE    "9000"          TO  SPA-ERRCD
-                   END-IF
-               ELSE
-      *            更新
-                   PERFORM 21301-PTCAREHKNINF-UPS-SEC
-               END-IF
-           ELSE
-               IF     (SPA-GMN28-CR-HKNJANUM   =   SPACE )
-                 AND  (SPA-GMN28-CR-HIHKNJANUM =   SPACE )
-                   CONTINUE
-               ELSE
-      *            登録
-                   PERFORM 21301-PTCAREHKNINF-INS-SEC
-               END-IF
-           END-IF
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL      (IDX     >   SPA-GMN28-CRHKN-MAX )
+                           OR (SPA-ERRCD   NOT =   SPACE )
+      *        登録
+               PERFORM 21301-PTCAREHKNINF-INS-SEC
+           END-PERFORM
            .
        2130-PTCARE-HKNINF-SYORI-EXT.
            EXIT.
@@ -2663,10 +2640,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  PTCARE-HKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTCRHKN-PTID
-           MOVE    SPA-GMN28-CR-HKNJANUM
+           MOVE    SPA-GMN28-TCRHKNJANUM (IDX)
                                        TO  PTCRHKN-HKNJANUM
-           MOVE    SPA-GMN28-CR-HIHKNJANUM
+           MOVE    SPA-GMN28-TCRHIHKNJANUM (IDX)
                                        TO  PTCRHKN-HIHKNJANUM
+           MOVE    SPA-NAI28-TCRHSTRYMD(IDX)
+                                       TO  PTCRHKN-TEKSTYMD
+           MOVE    SPA-NAI28-TCRHENDYMD(IDX)
+                                       TO  PTCRHKN-TEKEDYMD
       *    作成年月日
            MOVE    SMCNDATE-YMD        TO  PTCRHKN-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTCRHKN-UPYMD
@@ -2688,36 +2669,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        21301-PTCAREHKNINF-INS-EXT.
            EXIT.
-      *****************************************************************
-      *    患者介護保険情報データ更新処理
-      *****************************************************************
-       21301-PTCAREHKNINF-UPS-SEC        SECTION.
       *
-      *    入力値編集
-           MOVE    SPA-GMN28-CR-HKNJANUM
-                                       TO  PTCRHKN-HKNJANUM
-           MOVE    SPA-GMN28-CR-HIHKNJANUM
-                                       TO  PTCRHKN-HIHKNJANUM
-      *    更新年月日
-           MOVE    SMCNDATE-YMD        TO  PTCRHKN-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTCRHKN-UPHMS
-           MOVE    SPA-OPID            TO  PTCRHKN-OPID
-      *
-           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P029 PTCARE-HKNINF UPD ERR:" MCP-RC
-                           ",KEY:" PTCRHKN-KEY
-               MOVE    "9000"          TO  SPA-ERRCD
-           END-IF
-           .
-       21301-PTCAREHKNINF-UPS-EXT.
-           EXIT.
       *****************************************************************
       *    患者介護認定者情報更新処理
       *****************************************************************

@@ -1237,6 +1237,33 @@ P02	{
 				P028_CAREHKNJATEL	{
 					value	varchar(16);
 				};
+				P028_CRHSELNUM	{
+					value	number(2);
+				};
+				P028_CHTEKSTYMD	{
+					value	varchar(10);
+				};
+				P028_CHTEKEDYMD	{
+					value	varchar(10);
+				};
+				scrolledwindow5	{
+					hpos	int;
+					vpos	int;
+					P028_CAREHKNLST	{
+						count	int;
+						row	int;
+						item	{
+							value0	varchar(2);
+							value1	varchar(6);
+							value2	varchar(10);
+							value3	varchar(9);
+							value4	varchar(9);
+						}	[10];
+						select	bool[10];
+						fgcolor	varchar(16)[10];
+						bgcolor	varchar(16)[10];
+					};
+				};
 			};
 		};
 	};
