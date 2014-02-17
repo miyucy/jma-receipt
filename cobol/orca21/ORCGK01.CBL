@@ -49,11 +49,30 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDANUM          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    ¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ëÌ¾
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -213,11 +232,21 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-SRYACT          PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
+           03  FLG-HKNMST          PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-PTCOM           PIC 9(01).
+           03  FLG-SRYACCT         PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
+           03  FLG-SRYKARRK        PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-PTNYUINRRK        PIC 9(01).
+      *
+           03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-WKSYORI         PIC 9(01).
            03  FLG-HEN             PIC 9(01).
@@ -353,43 +382,43 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *    ´µ¼ÔÈÖ¹æÊÑ´¹
-      *01  PTNUM-REC.
-      *    COPY    "CPPTNUM.INC".
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
-      *01  SRYACT-REC.
-      *    COPY    "CPSRYACT.INC".
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
       *
       *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *
       *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
-      *01  HKNCOMBI-REC.
-      *    COPY    "CPHKNCOMBI.INC".
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *    ´µ¼Ô¥³¥á¥ó¥È
-      *01  PTCOM-REC.
-      *    COPY    "CPPTCOM.INC".
+       01  PTCOM-REC.
+           COPY    "CPPTCOM.INC".
       *
       *    ¼õ¿ÇÍúÎò
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
-      *01  SRYACCT-REC.
-      *    COPY    "CPSRYACCT.INC".
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *    ¼õÉÕ
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
       *    ¿ÇÎÅ²ÊÍúÎò
-      *01  SRYKARRK-REC.
-      *    COPY    "CPSRYKARRK.INC".
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
       *
       *    ¼ýÇ¼
-      *01  SYUNOU-REC.
-      *    COPY    "CPSYUNOU.INC".
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *    ´µ¼ÔÉÂÌ¾
       *01  PTBYOMEI-REC.
@@ -434,7 +463,9 @@
            COPY    "CPORCSLOCK.INC".
       *
       *    £Ä£Â¸¡º÷
+      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *
       *****************************************************************
@@ -721,10 +752,6 @@
                        MOVE    SPA-DRCD-MAX    TO  IDX
                    END-IF
                END-PERFORM
-      *H29.8
-           ELSE
-               MOVE    SPACE               TO  SPA-GMN-DRCD-G
-               MOVE    SPACE               TO  SPA-NAI-DRCD
            END-IF
            .
        3101-PTINF-SPA-EXT.
@@ -1019,7 +1046,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   99   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
       *********MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-TKACD  (IDX)
