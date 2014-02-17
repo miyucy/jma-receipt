@@ -31,8 +31,6 @@
       *  04.07.00    NACL-多々納  11/12/19  商品名コード単価対応
       *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *  04.07.00    NACL-多々納  14/02/13  労災金額％加算対応
-      *  04.07.00    NACL-多々納  14/10/14  コメント対象他追加
-      *  05.00.00    NACL-太田    16/02/02  診療科名他追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -63,7 +61,6 @@
            03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
-           03  FLG-PTCOM           PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -244,10 +241,6 @@
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    患者コメント
-       01  PTCOM-REC.
-           COPY    "CPPTCOM.INC".
-      *
       *    保存用収納ワーク
        01  TBL-SYUNOU-AREA.
          02  TBL-SYUNOU-REC        OCCURS   15.
@@ -257,11 +250,6 @@
        01  HZN-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //HZN-SYU-//.
-      *
-      *    保存用受診履歴ワーク
-       01  HZN-JYURRK-REC.
-           COPY    "CPJYURRK.INC"  REPLACING
-                                     //JYURRK-// BY //HZN-JYURRK-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -273,9 +261,6 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *
-      *    保険組合せ名称編集サブ
-           COPY    "CPORCSHKNMEI.INC".
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
@@ -315,9 +300,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  ORCHC04SUB-INFO-AREA
            INITIALIZE                  ORCHC04SUB-LIST-AREA
-           INITIALIZE                  HZN-JYURRK-REC
       *
       *    各ＤＢ読込
            PERFORM 100-INIT-SEC
@@ -373,7 +356,6 @@
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 910-JYURRK-READ-SEC
-               MOVE    JYURRK-REC      TO  HZN-JYURRK-REC
            ELSE
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
@@ -390,56 +372,8 @@
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF    ( HZN-JYURRK-HOSPNUM  NOT =   ZERO )
-               PERFORM 20011-INFO-HEN-SEC
-           END-IF
-      *
            .
        2012-DENPNUM-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療科名等概要編集処理
-      *****************************************************************
-       20011-INFO-HEN-SEC              SECTION.
-      *
-           MOVE    HZN-JYURRK-SRYKA    TO  ORCHC04SUB-SRYKA
-           MOVE    HZN-JYURRK-HKNCOMBINUM
-                                       TO  ORCHC04SUB-HKNCOMBI
-           MOVE    HZN-JYURRK-SRYYMD   TO  ORCHC04SUB-SRYYMD
-      *
-           MOVE    SPACE               TO  SYS-1005-REC
-           MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    HZN-JYURRK-SRYKA    TO  SYS-1005-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-KEY10-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC    TO  SYS-1005-REC
-               MOVE    SYS-1005-SRYKANAME1
-                                       TO  ORCHC04SUB-SRYKAMEI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           INITIALIZE                  ORCSHKNMEIAREA
-           MOVE    HZN-JYURRK-HKNCOMBINUM
-                                       TO  ORCSHKNMEI-HKNCOMBINUM
-           MOVE    HZN-JYURRK-SRYYMD   TO  ORCSHKNMEI-SRYYMD
-           MOVE    HZN-JYURRK-PTID     TO  ORCSHKNMEI-PTID
-           CALL    "ORCSHKNMEI"        USING
-                                       SPA-AREA
-                                       ORCSHKNMEIAREA
-           MOVE    ORCSHKNMEI-HKNCOMBIMEI
-                                       TO  ORCHC04SUB-HKNCOMBIMEI
-      *
-           MOVE    HZN-JYURRK-SRYYMD   TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  ORCHC04SUB-SRYYMDMEI
-      *
-           .
-       20011-INFO-HEN-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴からの判定編集処理
@@ -451,10 +385,9 @@
                               (JYURRK-ZAINUM (IDX-JYU) =   ZERO )
                COMPUTE IDX-REN         =   JYURRK-RENNUM
                                        +   1
-      *ver.4.8
-      ***      IF      IDX-REN         >   4
-      *            MOVE    4               TO  IDX-REN
-      ***      END-IF
+               IF      IDX-REN         >   4
+                   MOVE    4               TO  IDX-REN
+               END-IF
                PERFORM 2002-SRYACCT-SYORI-SEC
            END-PERFORM
       *
@@ -537,17 +470,8 @@
       *
       *    自費金額・点数＝ゼロは対象外
            IF     (ACCT-ZAITEN         =   ZERO )  AND
-                  (SRY-JIHIMONEYTOTAL  =   ZERO )  AND
-                  (FLG-SRYACT          =   ZERO )
+                  (SRY-JIHIMONEYTOTAL  =   ZERO )
                MOVE    1                   TO  FLG-SRYACT
-      *H26.10
-      *        自費対象であれば、点数ゼロも対象とする
-               IF      ORCHC04SUB-PARAJIHIKBN  =   "1"
-                   IF     (ACCT-SRYKBN         =   "95"
-                                               OR  "96" )
-                       MOVE    ZERO            TO  FLG-SRYACT
-                   END-IF
-               END-IF
            END-IF
       *
            INITIALIZE                  WRK-MEISAI-AREA
@@ -569,12 +493,6 @@
                                                        OR  "096")
       *            器材商品名対象
                        OR  (SRY-SRYCD (IDXA)(1:3)      =   "058")
-      *H26.10
-      *            コメントコード対象
-                       OR ((ORCHC04SUB-PARACOMKBN  =   "1"  )  AND
-                           ((SRY-SRYCD (IDXA)(1:3)  =   "008") OR
-                            (SRY-SRYCD (IDXA)(1:1)  =   "8"  )))
-      *
                        PERFORM 200211-MEISE-HEN-SEC
                    END-IF
                END-PERFORM
@@ -612,13 +530,6 @@
            ELSE
       *        薬剤以外で帳票名があれば帳票名称
                MOVE    TNSP-SHONAME        TO  TNS-NAME
-           END-IF
-      *
-      *    コメント対象
-           IF    ((SRY-SRYCD (IDXA)(1:1)   =   "8" )  OR
-                  (SRY-SRYCD (IDXA)(1:3)   =   "008"))
-              AND (SRY-INPUTNUM (IDXA) NOT =   ZERO )
-               PERFORM 2002110-PTCOM-SET-SEC
            END-IF
       *
            MOVE    TNS-NAME            TO  WRK-TBL-NAME  (IDX-S)
@@ -710,24 +621,6 @@
        200211-MEISE-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    患者コメントから編集する
-      *****************************************************************
-       2002110-PTCOM-SET-SEC              SECTION.
-      *
-           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
-           MOVE    SRY-PTID            TO  PTCOM-PTID
-           MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
-           MOVE    SRY-SRYCD (IDXA)    TO  PTCOM-SRYCD
-           MOVE    SRY-INPUTNUM(IDXA)  TO  PTCOM-RENNUM
-      *    主キーで検索
-           PERFORM 950-PTCOM-READ-SEC
-           IF      FLG-PTCOM           =   ZERO
-               MOVE    PTCOM-INPUTCOMENT   TO  TNS-NAME
-           END-IF
-           .
-       2002110-PTCOM-SET-EXT.
-           EXIT.
-      *****************************************************************
       *        テーブル編集処理
       *****************************************************************
        20023-TBL-HENSYU-SEC      SECTION.
@@ -806,11 +699,6 @@
                    MOVE    "1"             TO  TBL-RSIKIN   (IDX-TBL)
                    MOVE    ZERO            TO  TBL-ZAITENSU (IDX-TBL)
                    MOVE    ZERO            TO  FLG-MEISAI
-      *            その他とする
-                   IF     (ACCT-SRYKBN         =   "80"  )
-                     AND  (WRK-SRYSYUKBN       =   "800" )
-                       MOVE    "86"            TO  TBL-SRYKBN (IDX-TBL)
-                   END-IF
                END-IF
            END-IF
       *
@@ -1287,12 +1175,9 @@
            END-IF
            MOVE    WRK-TENSU-KEI       TO  ORCHC04SUB-ZAITENSU (IDX-H)
            MOVE    "XX"                TO  ORCHC04SUB-SRYKBN   (IDX-H)
-      *
       *    剤終了
-           IF      ORCHC04SUB-APIKBN   NOT =   "1"
-               MOVE    SPACE           TO  ORCHC04SUB-ZAIEND
+           MOVE    SPACE               TO  ORCHC04SUB-ZAIEND
                                                             (IDX-H - 1 )
-           END-IF
            MOVE    "1"                 TO  ORCHC04SUB-ZAIEND
                                                             (IDX-H)
            .
@@ -1553,8 +1438,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -1582,82 +1467,7 @@
            .
        9101-TENSUPLUS-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    患者コメントマスタ読み込み
-      *****************************************************************
-       950-PTCOM-READ-SEC           SECTION.
       *
-           MOVE    PTCOM-REC           TO  MCPDATA-REC
-           MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptcom"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTCOM-REC
-                   MOVE    ZERO                TO  FLG-PTCOM
-               ELSE
-                   MOVE    1                   TO  FLG-PTCOM
-                   INITIALIZE                  PTCOM-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-PTCOM
-               INITIALIZE                  PTCOM-REC
-           END-IF
-      *
-           MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       950-PTCOM-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    システム管理マスタ主キー読み込み処理
-      *****************************************************************
-       900-SYSKANRI-KEY10-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       900-SYSKANRI-KEY10-EXT.
-           EXIT.
-      *****************************************************************
-      *    システム管理マスタ読み込み処理
-      *****************************************************************
-       900-SYSKANRI-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           .
-       900-SYSKANRI-READ-EXT.
-           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
