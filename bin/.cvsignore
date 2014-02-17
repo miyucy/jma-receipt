@@ -11,5 +11,7 @@ jma-dbsync.sh
 jma-dbconvert.sh
 jma-restorecluster.sh
 jma-setup
+jma-plugin
 create_dbgroup.sh
 passwd_store.sh
+*.rb
