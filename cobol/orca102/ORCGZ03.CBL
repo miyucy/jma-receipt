@@ -3089,17 +3089,18 @@
                MOVE    ZERO                TO  SPA-GMN-CHUKSNCD
             END-IF
       *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    SPA-GMN-CHUKSNCD    TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN     NOT =   SPACE )   OR
-                  (SNUM-SYOKBN     NOT =   SPACE )
-               MOVE    "0007"              TO  SPA-ERRCD
-           ELSE
-               MOVE    SNUM-OUTEDT(12:4)       TO  SPA-GMN-CHUKSNCD
-           END-IF
+      *H26.2 労災対応でチェック削除
+      *    INITIALIZE                      ORCSNUMAREA
+      *    MOVE    SPA-GMN-CHUKSNCD    TO  SNUM-INX
+      *    CALL    "ORCSNUM"           USING
+      *                                ORCSNUMAREA
+      *    IF     (SNUM-RC         NOT =   ZERO  )   OR
+      *           (SNUM-MINKBN     NOT =   SPACE )   OR
+      *           (SNUM-SYOKBN     NOT =   SPACE )
+      *        MOVE    "0007"              TO  SPA-ERRCD
+      *    ELSE
+      *        MOVE    SNUM-OUTEDT(12:4)       TO  SPA-GMN-CHUKSNCD
+      *****END-IF
            .    
       *
        5042-CHUKSNCD-CHK-EXT.
