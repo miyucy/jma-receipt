@@ -11842,9 +11842,9 @@
             <class>GtkLabel</class>
             <name>label43</name>
             <x>416</x>
-            <y>184</y>
+            <y>208</y>
             <width>60</width>
-            <height>24</height>
+            <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -11860,10 +11860,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label44</name>
-            <x>420</x>
-            <y>216</y>
+            <x>416</x>
+            <y>240</y>
             <width>60</width>
-            <height>24</height>
+            <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -11880,7 +11880,7 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJAMEI</name>
             <x>480</x>
-            <y>184</y>
+            <y>208</y>
             <width>300</width>
             <height>20</height>
             <visible>True</visible>
@@ -11899,7 +11899,7 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJAADRS</name>
             <x>480</x>
-            <y>212</y>
+            <y>236</y>
             <width>384</width>
             <height>20</height>
             <visible>True</visible>
@@ -11910,17 +11910,17 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label></label>
+            <label>あ</label>
             <justify>GTK_JUSTIFY_LEFT</justify>
             <wrap>False</wrap>
           </widget>
           <widget>
             <class>GtkLabel</class>
             <name>label45</name>
-            <x>420</x>
-            <y>252</y>
+            <x>416</x>
+            <y>272</y>
             <width>60</width>
-            <height>24</height>
+            <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -11937,7 +11937,7 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJATEL</name>
             <x>480</x>
-            <y>252</y>
+            <y>272</y>
             <width>100</width>
             <height>20</height>
             <visible>True</visible>
@@ -11956,7 +11956,7 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJAADRS2</name>
             <x>480</x>
-            <y>232</y>
+            <y>254</y>
             <width>384</width>
             <height>20</height>
             <visible>True</visible>
@@ -11967,7 +11967,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label></label>
+            <label>あ</label>
             <justify>GTK_JUSTIFY_LEFT</justify>
             <wrap>False</wrap>
           </widget>
@@ -12278,6 +12278,25 @@
               <data>CLICKED</data>
               <after>True</after>
             </signal>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>P028_CAREHKNMEI</name>
+            <x>412</x>
+            <y>184</y>
+            <width>300</width>
+            <height>20</height>
+            <visible>True</visible>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label></label>
+            <justify>GTK_JUSTIFY_LEFT</justify>
+            <wrap>False</wrap>
           </widget>
         </widget>
         <widget>

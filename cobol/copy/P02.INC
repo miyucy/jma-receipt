@@ -892,6 +892,8 @@
                             PIC X(50)   OCCURS  99 TIMES.
                   05  P02-P028-CRSELNUM.
                     06  P02-VALUE   PIC S9(3).
+                  05  P02-P028-CAREHKNMEI.
+                    06  P02-VALUE   PIC X(50).
                   05  P02-P028-CAREHKNJAMEI.
                     06  P02-VALUE   PIC X(50).
                   05  P02-P028-CAREHKNJAADRS.

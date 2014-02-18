@@ -206,13 +206,39 @@
       *    介護保険情報編集
            IF     (SPA-GMN28-CRHKN-MAX >   ZERO )
               AND (SPA-GMN28-CRHSELNUM =   ZERO )
-               MOVE    1                   TO  SPA-GMN28-CRHSELNUM
-               MOVE    SPA-GMN28-CRHSELNUM TO  P02-P028-CRHSELNUM
-               PERFORM 41012-CRHSELNUM-CHK-SEC
-               MOVE    SPACE               TO  SPA-ERRCD
+      *        システム日で有効な保険情報を記載する
+               PERFORM 3101-CARAHKN-INIT-SEC
            END-IF
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    介護保険情報編集初期編集処理
+      *****************************************************************
+       3101-CARAHKN-INIT-SEC              SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN28-CRHKN-MAX
+               IF     (SPA-NAI28-TCRHSTRYMD (IDX)  <=  SPA-SYSYMD)
+                  AND (SPA-NAI28-TCRHENDYMD (IDX)  >=  SPA-SYSYMD)
+                   IF      SPA-GMN28-TCRHKNJANUM (IDX) NOT =   SPACE
+                       MOVE    SPA-GMN28-TCRHKNJANUM (IDX)
+                                           TO  SPA-GMN28-CR-HKNJANUM
+                       PERFORM 41012-CR-HKNJANUM-CHK-SEC
+                       STRING  "【有効保険者番号："
+                               SPA-GMN28-CR-HKNJANUM
+                               "】"
+                                           DELIMITED  BY  SPACE
+                                           INTO   SPA-P028-CAREHKNMEI
+                       END-STRING
+                   END-IF
+                   MOVE    SPACE               TO  SPA-GMN28-CR-HKNJANUM
+                   MOVE    SPA-GMN28-CRHKN-MAX TO  IDX
+               END-IF
+           END-PERFORM
+           .
+       3101-CARAHKN-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -308,7 +334,10 @@
                    MOVE    14          TO  SPA-GMN28-CUR
                WHEN    "P028_CHTEKEDYMD"
                    MOVE    15          TO  SPA-GMN28-CUR
-                   IF      SPA-GMN28-CHTEKEDYMD   =   SPACE
+                   IF     (SPA-GMN28-CR-HKNJANUM   =   SPACE )
+                      AND (SPA-GMN28-CR-HIHKNJANUM =   SPACE )
+                      AND (SPA-GMN28-CHTEKSTYMD    =   SPACE )
+                      AND (SPA-GMN28-CHTEKEDYMD    =   SPACE )
                        MOVE    20          TO  SPA-GMN28-CUR
                    END-IF
       *
@@ -321,7 +350,10 @@
                WHEN    "P028_CRTEKSTYMD"
                    MOVE    24          TO  SPA-GMN28-CUR
                WHEN    "P028_CRTEKEDYMD"
-                   IF      SPA-GMN28-CRTEKEDYMD    =   SPACE
+                   IF     (SPA-GMN28-CAREJOTAI     =   SPACE )
+                     AND  (SPA-GMN28-CRNINYMD      =   SPACE )
+                     AND  (SPA-GMN28-CRTEKSTYMD    =   SPACE )
+                     AND  (SPA-GMN28-CRTEKEDYMD    =   SPACE )
                        MOVE    90          TO  SPA-GMN28-CUR
                    ELSE
                        MOVE    25          TO  SPA-GMN28-CUR
@@ -754,6 +786,11 @@
                IF      SPA-GMN28-CRHSELNUM  =   ZERO
                    MOVE    SPA-GMN28-CRHSELNUM  TO  SPA-MAE28-CRHSELNUM
                    INITIALIZE                  SPA-GMN28-CRHKN-ING
+      *
+                   IF     (SPA-GMN28-CRHKN-MAX >   ZERO )
+      *                  システム日で有効な保険情報を記載する
+                         PERFORM 3101-CARAHKN-INIT-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -802,6 +839,11 @@
       *****************************************************************
        41012-CR-HKNJANUM-CHK-SEC           SECTION.
       *
+           IF      SPA-GMN28-CR-HKNJANUM   =   SPACE
+               GO      TO      41012-CR-HKNJANUM-CHK-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-P028-CAREHKNMEI
            MOVE    SPACE               TO  SPA-P028-CRHKNJANAME
            MOVE    SPACE               TO  SPA-P028-CRHKNJAADRS
            MOVE    SPACE               TO  SPA-P028-CRHKNJAADRS2
@@ -1005,6 +1047,11 @@
            MOVE    ZERO                TO  SPA-MAE28-CRHSELNUM
            MOVE    10                  TO  SPA-GMN28-CUR
       *
+           IF     (SPA-GMN28-CRHKN-MAX >   ZERO )
+      *        システム日で有効な保険情報を記載する
+               PERFORM 3101-CARAHKN-INIT-SEC
+           END-IF
+      *
            .
        48021-CRHKN-TBLDEL-EXT.
            EXIT.
@@ -1120,6 +1167,11 @@
            MOVE    ZERO                TO  SPA-GMN28-CRHSELNUM
            MOVE    ZERO                TO  SPA-MAE28-CRHSELNUM
            MOVE    10                  TO  SPA-GMN28-CUR
+      *
+           IF     (SPA-GMN28-CRHKN-MAX >   ZERO )
+      *        システム日で有効な保険情報を記載する
+               PERFORM 3101-CARAHKN-INIT-SEC
+           END-IF
       *
            .
        4802-CRHKN-TOUROKU-EXT.

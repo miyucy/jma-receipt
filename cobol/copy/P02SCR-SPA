@@ -1218,6 +1218,7 @@
                        09  SPA-NAI28-CHKNSKBN          PIC X(01).
       *
       *                ²ð¸îÊÝ¸±¼Ô¾ðÊó
+                       09  SPA-P028-CAREHKNMEI         PIC X(50).
                        09  SPA-P028-CRHKNJANAME        PIC X(50).
                        09  SPA-P028-CRHKNJAADRS        PIC X(80).
                        09  SPA-P028-CRHKNJAADRS2       PIC X(80).
