@@ -203,9 +203,12 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *    ²ð¸îÊÝ¸±¾ðÊóÌ¾¾ÎÊÔ½¸
-           IF      SPA-GMN28-CR-HKNJANUM   NOT =   SPACE
-               PERFORM 41012-CR-HKNJANUM-CHK-SEC
+      *    ²ð¸îÊÝ¸±¾ðÊóÊÔ½¸
+           IF     (SPA-GMN28-CRHKN-MAX >   ZERO )
+              AND (SPA-GMN28-CRHSELNUM =   ZERO )
+               MOVE    1                   TO  SPA-GMN28-CRHSELNUM
+               MOVE    SPA-GMN28-CRHSELNUM TO  P02-P028-CRHSELNUM
+               PERFORM 41012-CRHSELNUM-CHK-SEC
                MOVE    SPACE               TO  SPA-ERRCD
            END-IF
            .
