@@ -226,9 +226,8 @@
                        MOVE    SPA-GMN28-TCRHKNJANUM (IDX)
                                            TO  SPA-GMN28-CR-HKNJANUM
                        PERFORM 41012-CR-HKNJANUM-CHK-SEC
-                       STRING  "【有効保険者番号："
+                       STRING  "保険者番号　"
                                SPA-GMN28-CR-HKNJANUM
-                               "】"
                                            DELIMITED  BY  SPACE
                                            INTO   SPA-P028-CAREHKNMEI
                        END-STRING
