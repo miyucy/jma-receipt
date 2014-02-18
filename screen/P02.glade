@@ -12282,7 +12282,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>P028_CAREHKNMEI</name>
-            <x>412</x>
+            <x>416</x>
             <y>184</y>
             <width>300</width>
             <height>20</height>
