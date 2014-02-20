@@ -2851,6 +2851,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF   (SRY-SRYKBN       =  "31" OR "32")
                AND  (ACCT-JIHOKBN     =  SPACE       )
+                IF  (RECE41-HKNKBN         =  "4")
+                AND (WRK-PARA-RECEKBN      =  "4")
+                AND (WRK-PARA-JIBAIPRTKBN  =  "2")
+                 CONTINUE
+                ELSE
                  IF        SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
       ***                                  OR    CONS-SEIBUTU
       ***                                  OR    CONS-MAYAKU
@@ -2858,6 +2863,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ***                                  OR    CONS-JYOMYAKUKASAN
                    MOVE    SPACE           TO    RECE45-NAME(IDX4)
                  END-IF
+                END-IF
                END-IF
                IF  ( SRY-SRYSYUKBN         =  "334"       )
                AND ((SRY-SRYCD(IDX2)       =  "810000001") OR

@@ -139,6 +139,7 @@
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-GAIJINKEN       PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2089,6 +2090,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
            MOVE    ZERO              TO  WRK-TBLMAX
            MOVE    SPACE             TO  WRK-ZAI
            MOVE    "＊"              TO  WRK-ZAI-MK
+           MOVE    ZERO              TO  FLG-ARI
       *     
            PERFORM VARYING IDX3    FROM    1   BY  1
                    UNTIL   IDX3    >       5
@@ -2103,8 +2105,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        MOVE    IDX3            TO  IDX1
                END-EVALUATE
       *
-               IF      RECE44-SRYKBN   <=   "33"
+               IF    ( RECE44-SRYKBN   <=   "33" )
+               OR    ((RECE44-SRYKBN    >   "33") AND
+                      (FLG-ARI          =    1  ))
                    MOVE    "＊"            TO  WRK-ZAI-MK
+                   MOVE    ZERO            TO  FLG-ARI
                END-IF    
       *************IF      RECE44-SRYKBN     =   "31"  OR  "32"
       *************AND     IDX1              =   3
@@ -2167,6 +2172,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        MOVE    WRK-TBLMAX        TO  IDY
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
+                       IF   RECE44-SRYKBN    >   "33"
+                         MOVE    1               TO  FLG-ARI
+                       END-IF
                    END-IF
                END-IF    
       *        点数・回数セット処理（特定器材）
@@ -2186,6 +2194,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        MOVE    WRK-TBLMAX        TO  IDY
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
+                       IF   RECE44-SRYKBN    >   "33"
+                         MOVE    1               TO  FLG-ARI
+                       END-IF
                    END-IF
                  END-IF
                END-IF     
@@ -2208,6 +2219,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                            MOVE    WRK-TBLMAX        TO  IDY
                            PERFORM 440-TNSKAI-SET-SEC
                            MOVE    IDY               TO  WRK-TBLMAX 
+                           IF   RECE44-SRYKBN    >   "33"
+                             MOVE    1               TO  FLG-ARI
+                           END-IF
                        END-IF          
       ***          END-IF
                  END-IF
@@ -2269,6 +2283,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       ***  END-IF
            IF    (RECE44-SRYKBN    =   "31" OR "32")
            AND   (RECE44-JIHOKBN   =   SPACE       )
+            IF  (WRK-PARA-RECEKBN      =  "4")
+            AND (WRK-PARA-JIBAIPRTKBN  =  "2")
+              CONTINUE
+            ELSE
               IF  FLG-HIKAKIN     =  ZERO
                 IF   ( TBL-ZAIW-NAME (3 1)         = SPACE )
                 AND  ( TBL-ZAIW-NAME (3 2)     NOT = SPACE )
@@ -2283,6 +2301,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                    MOVE    1                 TO  FLG-NOPRT
                 END-IF
               END-IF
+            END-IF
            END-IF
       *
            .
