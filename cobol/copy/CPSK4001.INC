@@ -91,7 +91,8 @@
       *¸øÌ³ºÒ³²Ï«ºÒ½àµòÅÀ¿ôÃ±²Á¶èÊ¬
                05  SYS-4001-KOMURSITANKAKBN PIC  X(01).
       *¸øÌ³ºÒ³²Ï«ºÒ½àµòÅÀ¿ôÃ±²Á
-               05  SYS-4001-KOMURSITANKA    PIC  99V99.
+               05  SYS-4001-KOMURSITANKA-G.
+                   07  SYS-4001-KOMURSITANKA    PIC  99V99.
       *Í½È÷
            03  SYS-4001-YOBI            PIC  X(391).
       *Ã¼Ëö£É£Ä
