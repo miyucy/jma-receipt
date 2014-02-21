@@ -46,11 +46,11 @@
                                    FILE    STATUS  IS  STS-IN.
       *
       *    エラーファイル
-           SELECT  MSTERR-FILE     ASSIGN  RECEERR
+           SELECT  MSTERR-FILE     ASSIGN  PARA-ERRFILE
                                    FILE    STATUS IS  STS-MSTERR.
       *
       *    ＰＲＦファイル（マスタデータ別）
-           SELECT  MSTPRF-FILE     ASSIGN  MSTPRFFILE
+           SELECT  MSTPRF-FILE     ASSIGN  WRK-MSTPRFFILE
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS IS  STS-MSTPRFFILE.
       *
@@ -83,12 +83,12 @@ grpsys     COPY    "COMMON-SPA".
       *
            COPY    "HCMSL55.INC".
       *
-           COPY    "CPRECEERR.INC".
-      *
+       01  PGEXIST01                   PIC X(256).
       *    ファイル指定領域
        01  ASS-AREA.
-           03  PGEXIST01               PIC X(256).
-           03  MSTPRFFILE              PIC X(256).
+           03  ASS-IN                  PIC X(256).
+           03  ASS-ERR                 PIC X(256).
+           03  ASS-PRF                 PIC X(256).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -108,6 +108,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-PRF                 PIC 9(01).
            03  FLG-MSTPRF              PIC 9(01).
       *
+           03  FLG-CHECK               PIC 9(01).
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
@@ -138,10 +139,9 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-UPFILE              PIC X(100).
            03  WRK-UPFILE2             PIC X(100).
            03  WRK-MSTERR              PIC X(200).
+           03  WRK-MSTPRFFILE          PIC X(100).
            03  WRK-MSTNAME             PIC X(60).
            03  WRK-ZZZZZ9              PIC ZZZZZ9.
-      *
-           03  WRK-HOMEDIR             PIC X(128). 
       *
        01  PARA-AREA.
            03  PARA-MAIN.
@@ -198,9 +198,6 @@ grpsys     COPY    "COMMON-SPA".
       *    サブプロ用　領域
       *****************************************************************
       *
-      *    ファイル存在チェックサブ
-           COPY    "CPORCSACCESS.INC".
-      *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
@@ -216,16 +213,11 @@ grpsys     COPY    "COMMON-SPA".
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
-           COPY    "ENUM-VALUE".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
-       01  PARA-REC                PIC   X(1000).
+       01  PARA-REC                PIC   X(500).
       *
        PROCEDURE                       DIVISION
            USING
@@ -244,9 +236,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 300-END-SEC
       *
-           MOVE    ZERO                TO  RETURN-CODE
-      *
-           EXIT    PROGRAM
+           STOP    RUN
       *
            .
       *
@@ -261,8 +251,6 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
                                        SPA-AREA
                                        PARA-AREA
-      *
-           MOVE    SPACE           TO  RECEERR
       *
            UNSTRING    PARA-REC    DELIMITED   BY  ","
            INTO                    PARA-MAIN
@@ -282,20 +270,6 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 100-DBOPEN-SEC
       *
-           PERFORM 800-MSTNAME-SEC
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    PARA-ERRFILE    TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
-      *
-           IF      SGETTEMP-MW         =   SPA-PANDA
-               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
-           ELSE
-               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
-           END-IF
-      *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    PARA-HOSPNUM    TO  JOB-HOSPNUM
@@ -309,6 +283,9 @@ grpsys     COPY    "COMMON-SPA".
            END-IF
       *
            IF    ( FLG-END         =   ZERO )
+      *
+               PERFORM 800-MSTNAME-SEC
+      *
       *
       *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -350,13 +327,13 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SPACE               TO  WRK-UPFILE2
            MOVE    WRK-UPFILE(IDY:)    TO  WRK-UPFILE2
       *
-           MOVE    SPACE               TO  MSTPRFFILE
-           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+           MOVE    SPACE               TO  WRK-MSTPRFFILE
+           STRING  CONST-HOMEDIR       DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
                    "/orca-mstlog/"     DELIMITED  BY  SIZE
                    WRK-UPFILE2         DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
-               INTO    MSTPRFFILE
+           INTO    WRK-MSTPRFFILE
            END-STRING
       *
            .
@@ -449,6 +426,7 @@ grpsys     COPY    "COMMON-SPA".
        200111-EDIT-PRF-HEAD-SEC        SECTION.
       *
            INITIALIZE          PRF-HEAD-AREA
+           PERFORM 800-MSTNAME-SEC
            STRING  "【"            DELIMITED   BY  SIZE 
                    WRK-MSTNAME     DELIMITED   SPACE
                    "】"            DELIMITED   BY  SIZE
@@ -481,14 +459,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SMCNDATE-YMD    TO  MSTKANRI-UPYMD
                MOVE    SMCNDATE-HMS    TO  MSTKANRI-UPHMS
                MOVE    MSTKANRI-REC    TO  MCPDATA-REC
-               IF      MSTKANRI-KANRICD (7:2)  =           "01"
-                                OR "02" OR "15" OR "16"
-                   MOVE    "tbl_mstkanri_public"
-                                   TO  MCP-TABLE
-               ELSE
-                   MOVE    "tbl_mstkanri_master"
-                                   TO  MCP-TABLE
-               END-IF
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
 grpsys         PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
@@ -512,19 +483,35 @@ grpsys         PERFORM 910-DBUPDATE-SEC
       *****************************************************************
        2001-PGEXIST-CHECK              SECTION.
       *
-           MOVE    SPACE           TO  PGEXIST01
-           STRING  PARA-UPPG           DELIMITED  BY  SPACE
+           MOVE    ZERO            TO  FLG-CHECK
+      *
+           STRING  HOMEDIR-NAME        DELIMITED  BY  SPACE
+                   PARA-UPPG           DELIMITED  BY  SPACE
                    ".so"               DELIMITED  BY  SIZE
-                                       INTO   PGEXIST01
+                                       INTO   PGEXIST01 
            END-STRING
+      *    入力　初期処理
+           OPEN    INPUT           IN-FILE
+           IF      STS-IN          NOT =   ZERO
+               STRING  HOMEDIR-NAME        DELIMITED  BY  SPACE
+                       "patch-lib/"        DELIMITED  BY  SIZE
+                       PARA-UPPG           DELIMITED  BY  SPACE
+                       ".so"               DELIMITED  BY  SIZE
+                                           INTO   PGEXIST01 
+               END-STRING
+               OPEN    INPUT           IN-FILE
+               IF      STS-IN          NOT =   ZERO
+                   MOVE    1           TO  FLG-CHECK
+                   DISPLAY "*(ORCXRMST2)* IN-FILE OPN STS["
+                                           STS-IN "]"
+               ELSE
+                   CLOSE    IN-FILE
+               END-IF
+           ELSE
+               CLOSE    IN-FILE
+           END-IF
       *
-           INITIALIZE                  SACCESS-AREA
-           MOVE    "X"             TO  SACCESS-MODE
-           MOVE    PGEXIST01       TO  SACCESS-IN-FILENAME
-           CALL    "ORCSACCESS"    USING
-                                   SACCESS-AREA
-      *
-           IF    ( SACCESS-RC      NOT =  ZERO )
+           IF    ( FLG-CHECK       NOT =  ZERO )
                DISPLAY "*(ORCXMST2)* MODULE NOT FOUND:" PARA-UPPG
                MOVE    SPACE           TO  WRK-MSTERR
                STRING  "更新プログラムが存在しません:"
@@ -696,6 +683,8 @@ grpsys                                 SPA-AREA
            ELSE
                OPEN    OUTPUT              MSTERR-FILE
       *
+               PERFORM 800-MSTNAME-SEC
+      *
                INITIALIZE          MSTERR-REC
                STRING  WRK-MSTERR      DELIMITED   BY  SPACE
                        "【"            DELIMITED   BY  SIZE
@@ -797,12 +786,64 @@ grpsys                                 SPA-AREA
       *
            MOVE    SPACE           TO  WRK-MSTNAME
       *
-           PERFORM 900-MSTKANRI-KEY-SEL-SEC
-           IF    ( FLG-MSTKANRI    =   ZERO )
-               MOVE    MSTKANRI-NAME           TO  WRK-MSTNAME
-           ELSE
+           EVALUATE    PARA-MASTER-KBN
+           WHEN    "00"
+               MOVE    "点数マスタ"            TO  WRK-MSTNAME
+           WHEN    "01"
+               MOVE    "保険番号マスタ"        TO  WRK-MSTNAME
+           WHEN    "02"
+               MOVE    "システム管理マスタ"    TO  WRK-MSTNAME
+           WHEN    "03"
+               MOVE    "病名マスタ"            TO  WRK-MSTNAME
+           WHEN    "04"
+               MOVE    "チェックマスタ"        TO  WRK-MSTNAME
+           WHEN    "05"
+               MOVE    "一般老人置換マスタ"    TO  WRK-MSTNAME
+           WHEN    "06"
+               MOVE    "検査分類マスタ"        TO  WRK-MSTNAME
+           WHEN    "07"
+               MOVE    "相互作用マスタ"        TO  WRK-MSTNAME
+           WHEN    "08"
+               MOVE    "症状措置マスタ"        TO  WRK-MSTNAME
+           WHEN    "09"
+               MOVE    "保険者マスタ"          TO  WRK-MSTNAME
+           WHEN    "10"
+               MOVE    "住所マスタ"            TO  WRK-MSTNAME
+           WHEN    "11"
+               MOVE    "適応病名マスタ"        TO  WRK-MSTNAME
+           WHEN    "12"
+               MOVE    "一般名マスタ"          TO  WRK-MSTNAME
+           WHEN    "13"
+               MOVE    "包括チェックマスタ"    TO  WRK-MSTNAME
+           WHEN    "14"
+               MOVE    "包括診療コードマスタ"  TO  WRK-MSTNAME
+           WHEN    "15"
+               MOVE    "統計メモマスタ"        TO  WRK-MSTNAME
+           WHEN    "16"
+               MOVE    "オプションマスタ"      TO  WRK-MSTNAME
+           WHEN    "17"
+               MOVE    "感染症判定マスタ"      TO  WRK-MSTNAME
+           WHEN    "18"
+               MOVE    "入院基本料マスタ"      TO  WRK-MSTNAME
+           WHEN    "19"
+               MOVE    "入院料加算チェックマスタ"
+                                               TO  WRK-MSTNAME
+           WHEN    "20"
+               MOVE    "入院レセプト記載略称マスタ"
+                                               TO  WRK-MSTNAME
+           WHEN    "21"
+               MOVE    "同義語マスタ"          TO  WRK-MSTNAME
+           WHEN    "22"
+               MOVE    "電子点数表マスタ"      TO  WRK-MSTNAME
+           WHEN    "23"
+               MOVE    "労働基準監督署マスタ"  TO  WRK-MSTNAME
+           WHEN    "24"
+               MOVE    "最低薬価マスタ"        TO  WRK-MSTNAME
+           WHEN    "25"
+               MOVE    "介護保険者マスタ"      TO  WRK-MSTNAME
+           WHEN    OTHER
                MOVE    PARA-MASTER-KBN         TO  WRK-MSTNAME
-           END-IF
+           END-EVALUATE
       *
            .
        800-MSTNAME-EXT.
