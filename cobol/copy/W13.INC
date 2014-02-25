@@ -95,10 +95,8 @@
                 04  W13-RSIPRT           PIC X(10).
                 04  W13-RSIPRT-COUNT   PIC S9(9)   BINARY.
                 04  W13-RSIPRTLST      PIC X(10)   OCCURS  2 TIMES.
-              03  W13-SYUTENTANKA-G      PIC S9(2).
-              03  W13-SYUTENTANKA-N      PIC S9(2).
-              03  W13-YKZTENTANKA-G      PIC S9(2).
-              03  W13-YKZTENTANKA-N      PIC S9(2).
+              03  W13-SYUTENTANKA      PIC S9(2).
+              03  W13-YKZTENTANKA      PIC S9(2).
               03  W13-KOMUKBN-COMBO.
                 04  W13-KOMUKBN           PIC X(10).
                 04  W13-KOMUKBN-COUNT   PIC S9(9)   BINARY.
@@ -116,10 +114,6 @@
                 04  W13-JBISKYKBN           PIC X(10).
                 04  W13-JBISKYKBN-COUNT   PIC S9(9)   BINARY.
                 04  W13-JBISKYKBNLST      PIC X(10)   OCCURS  2 TIMES.
-              03  W13-DAISANGENBTKBN-COMBO.
-                04  W13-DAISANGENBTKBN         PIC X(20).
-                04  W13-DAISANGENBTKBN-COUNT   PIC S9(9)   BINARY.
-                04  W13-DAISANGENBTKBNLST PIC X(20)   OCCURS  5 TIMES.
               03  W13-KOMUSKYKBN-COMBO.
                 04  W13-KOMUSKYKBN           PIC X(10).
                 04  W13-KOMUSKYKBN-COUNT   PIC S9(9)   BINARY.

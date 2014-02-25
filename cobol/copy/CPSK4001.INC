@@ -65,12 +65,12 @@
                05  SYS-4001-ROUKAISU    PIC  X(01).
       *º´«Â¿’∂Ë ¨
                05  SYS-4001-JIBAIKBN    PIC  X(01).
-      *º´«Â¿’° ∑Ú ›Ω‡µÚ°À  µªΩ—≈¿√±≤¡    °„≥∞ÕË°‰
+      *µªΩ—≈¿√±≤¡
                05  SYS-4001-SYUTENTANKA-G.
                    07   SYS-4001-SYUTENTANKA-X PIC  X(02).
                    07   SYS-4001-SYUTENTANKA   REDEFINES
                         SYS-4001-SYUTENTANKA-X PIC  9(02).
-      *º´«Â¿’° ∑Ú ›Ω‡µÚ°À  ÃÙ∫ﬁ≈˘≈¿√±≤¡  °„≥∞ÕË°‰
+      *ÃÙ∫ﬁ≈˘≈¿√±≤¡
                05  SYS-4001-YKZTENTANKA-G.
                    07   SYS-4001-YKZTENTANKA-X PIC  X(02).
                    07   SYS-4001-YKZTENTANKA   REDEFINES
@@ -84,7 +84,7 @@
                         SYS-4001-KOMUTENTANKA-X PIC  9(02).
       *º´«Â¿’¿¡µ·∂Ë ¨
                05  SYS-4001-JIBAI-SEIKYUKBN   PIC  X(01).
-      *∏¯Ã≥∫“≥≤¿¡µ·∂Ë ¨
+      *∏¯Ã≥∫“≥≤¿’¿¡µ·∂Ë ¨
                05  SYS-4001-KOMU-SEIKYUKBN   PIC  X(01).
       *µŸ∂»æ⁄Ã¿µ≠∫‹∂Ë ¨
                05  SYS-4001-KYUGYO-PRTKBN   PIC  X(01).
@@ -93,20 +93,8 @@
       *∏¯Ã≥∫“≥≤œ´∫“Ω‡µÚ≈¿øÙ√±≤¡
                05  SYS-4001-KOMURSITANKA-G.
                    07  SYS-4001-KOMURSITANKA    PIC  99V99.
-      *º´«Â¿’° ∑Ú ›Ω‡µÚ°À  µªΩ—≈¿√±≤¡    °„∆˛±°°‰
-               05  SYS-4001-SYUTENTANKA2-G.
-                   07   SYS-4001-SYUTENTANKA2-X PIC  X(02).
-                   07   SYS-4001-SYUTENTANKA2   REDEFINES
-                        SYS-4001-SYUTENTANKA2-X PIC  9(02).
-      *º´«Â¿’° ∑Ú ›Ω‡µÚ°À  ÃÙ∫ﬁ≈˘≈¿√±≤¡  °„∆˛±°°‰
-               05  SYS-4001-YKZTENTANKA2-G.
-                   07   SYS-4001-YKZTENTANKA2-X PIC  X(02).
-                   07   SYS-4001-YKZTENTANKA2   REDEFINES
-                        SYS-4001-YKZTENTANKA2-X PIC  9(02).
-      *¬Ëª∞º‘π‘∞Ÿ∏Ω ™µÎ…’∂Ë ¨ΩÈ¥¸¿ﬂƒÍ
-               05  SYS-4001-DAISAN-GENBTKBN     PIC  X(01).
       *ÕΩ»˜
-           03  SYS-4001-YOBI            PIC  X(386).
+           03  SYS-4001-YOBI            PIC  X(391).
       *√ºÀˆ£…£ƒ
            03  SYS-4001-TERMID          PIC  X(16).
       *•™•⁄°º•Ï°º•ø£…£ƒ
