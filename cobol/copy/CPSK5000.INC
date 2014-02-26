@@ -70,7 +70,9 @@
       ******   05                          PIC  X(56).
       ******   05  SYS-5000-YOBI           PIC  X(55).
       ******   05  SYS-5000-YOBI           PIC  X(54).
-               05  SYS-5000-YOBI           PIC  X(53).
+               05  SYS-5000-YOBI           PIC  X(52).
+      *月平均夜勤時間超過減算
+               05  SYS-5000-YKNCHOKAKBN    PIC  X(01).
       *入院時の食事
                05  SYS-5000-SKJKBN         PIC  X(01).
       *入院時の選定入院
