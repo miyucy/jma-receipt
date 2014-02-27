@@ -1634,17 +1634,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "0033"              TO  SPA-ERRCD
                ELSE
                    MOVE    WRK-KBNMEI          TO  SPA-GMN-NYUGAIKBNMEI
-                   IF      SPA-GMN-HKNNUM      =   SPACE
-                       MOVE    "0014"              TO  SPA-ERRCD
-                   ELSE 
-                       IF      SPA-GMN-HKNNUM(1:1) =   "0"
-                           MOVE    "0035"              TO  SPA-ERRCD
-                       ELSE
-                           IF      SPA-NAI-RECESKYKBN  =   "3"
-                               MOVE    "0036"              TO  SPA-ERRCD
-                           END-IF
-                       END-IF 
-                   END-IF
                END-IF
            END-IF
       *
