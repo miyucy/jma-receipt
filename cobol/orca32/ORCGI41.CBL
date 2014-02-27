@@ -100,6 +100,10 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/21  Æþ±¡ÎÁºï½ü¤ÎÆþ±¡²Ã»»ÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/09/17  °ì³ç½¤ÀµÆþÎÏÊÑ¹¹ÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/11/09  ¥×¥ì¥Ó¥å¡¼ÄÉ²ÃÂÐ±þ
+      *Ê¿À®£²£¶Ç¯£´·î²þÄêÂÐ±þ
+      *  00.00.00    NACL-¾®Æ¦Âô  14/02/27  Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±
+      *                                     Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²
+      *                                     Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³ÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3204,6 +3208,21 @@
                                                     "190135210"   OR
                                                     "190135310")  AND
                            (SYS-5001-BTU-KHNSRYCD = "099999952"))
+                                               OR
+                          ((SPA-GMN-TSRYCD (IDU)  = "190169610"   OR
+                                                    "190169710"   OR
+                                                    "190169810")  AND
+                           (SYS-5001-BTU-KHNSRYCD = "099999955"))
+                                               OR
+                          ((SPA-GMN-TSRYCD (IDU)  = "190169910"   OR
+                                                    "190170010"   OR
+                                                    "190170110")  AND
+                           (SYS-5001-BTU-KHNSRYCD = "099999956"))
+                                               OR
+                          ((SPA-GMN-TSRYCD (IDU)  = "190170210"   OR
+                                                    "190170310"   OR
+                                                    "190170410")  AND
+                           (SYS-5001-BTU-KHNSRYCD = "099999957"))
                                CONTINUE
                         ELSE
                            MOVE   SPACE  TO  SPA-GMN-KEIKOKU
@@ -6686,7 +6705,10 @@
                                                 "190152010"   OR
                                                 "099999950"   OR
                                                 "099999951"   OR
-                                                "099999952"
+                                                "099999952"   OR
+                                                "099999955"   OR
+                                                "099999956"   OR
+                                                "099999957"
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
@@ -6964,13 +6986,82 @@
            END-IF
       *
       *    Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¤ÎÁê¸ß»»Äê¥³¡¼¥ÉÃÖ¤­´¹¤¨
-           IF     LNK-SCNYUACCT-STSRYYMD   >=   "20120401"
+           IF    (LNK-SCNYUACCT-STSRYYMD   >=   "20120401")  AND
+                 (LNK-SCNYUACCT-STSRYYMD   <=   "20140331")
                IF  (SYS-5001-BTU-SBT       =    "09")  AND
                    (SYS-5001-CRYOYOKBN     =    "1" OR "2" OR "3")
                   PERFORM    VARYING   IDX  FROM   1  BY  1
                     UNTIL (LNK-SCNYUACCT-KAGEN-SRYCD(IDX)  =  SPACE) OR
                           (IDX           >   10)
                       EVALUATE   LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190097010"
+                             MOVE "190153410" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190119510"
+                             MOVE "190153610" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190119610"
+                             MOVE "190153810" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190097210"
+                             MOVE "190154010" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190119710"
+                             MOVE "190154210" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190119810"
+                             MOVE "190154410" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190135110"
+                             MOVE "190154610" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190135210"
+                             MOVE "190154810" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190135310"
+                             MOVE "190155010" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                      END-EVALUATE
+                  END-PERFORM
+               END-IF
+           END-IF
+      *
+      *    Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¤ÎÁê¸ß»»Äê¥³¡¼¥ÉÃÖ¤­´¹¤¨¡ÊÊ¿À®£²£¶Ç¯²þÄê¡Ë
+           IF     LNK-SCNYUACCT-STSRYYMD   >=   "20140401"
+               IF  (SYS-5001-BTU-SBT       =    "09")  AND
+                   (SYS-5001-CRYOYOKBN     =    "1" OR "2" OR "3" OR
+                                                "4" OR "5" OR "6")
+                  PERFORM    VARYING   IDX  FROM   1  BY  1
+                    UNTIL (LNK-SCNYUACCT-KAGEN-SRYCD(IDX)  =  SPACE) OR
+                          (IDX           >   10)
+                      EVALUATE   LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190169610"
+                             MOVE "190170810" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190169710"
+                             MOVE "190170910" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190169810"
+                             MOVE "190171010" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190169910"
+                             MOVE "190171110" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190170010"
+                             MOVE "190171210" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190170110"
+                             MOVE "190171310" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190170210"
+                             MOVE "190171410" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190170310"
+                             MOVE "190171510" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
+                          WHEN    "190170410"
+                             MOVE "190171610" TO
+                                        LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
                           WHEN    "190097010"
                              MOVE "190153410" TO
                                         LNK-SCNYUACCT-KAGEN-SRYCD(IDX)
