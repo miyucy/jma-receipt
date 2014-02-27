@@ -102,6 +102,7 @@
            03  IDX-ATO             PIC 9(04).
            03  IDX-SYU             PIC 9(04).
            03  IDX-EIYOU           PIC 9(04).
+           03  IDX-YAKIN           PIC 9(04).
       *
            03  IDX1                PIC 9(02).
            03  IDX2                PIC 9(02).
@@ -323,6 +324,9 @@
       *    ±ÉÍÜ´ÉÍý·Ð²áÁ¼ÃÖÆþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö
            COPY "CPORCSEIYOUKKS.INC".
       *
+      *    Ìë¶Ð»þ´ÖÄ¶²á¸º»»Æþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö
+           COPY "CPORCSYAKINGEN.INC".
+      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -388,6 +392,46 @@
                         IF   LNK-EIYOUKKS-RC     =       ZERO
                              MOVE LNK-EIYOUKKS-CHGSRYCD   TO
                                  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-EIYOU)
+                        END-IF
+                   END-PERFORM
+               END-IF
+      *
+           END-IF
+      *
+      *    Ê¿À®£²£¶Ç¯²þÀµ¡¡Ìë¶Ð»þ´ÖÄ¶²á¸º»»¤ÎÆþ±¡ÎÁÃÖ¤­´¹¤¨
+      *   ¡Ê°åÎÅ´Ñ»¡Æþ±¡»þ¤Ï¤³¤Î½èÍý¤ò¥¹¥­¥Ã¥×¡Ë
+           IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1)(1:3) = "188"
+               CONTINUE
+           ELSE
+               IF   LNK-SCNYUACCT-NYUKHN-SRYCD (1)   NOT  =  SPACE
+                    INITIALIZE    ORCSYAKINGEN-AREA
+                            MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO    LNK-YAKINGEN-SANTEIYM
+                    MOVE   LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                                           TO    LNK-YAKINGEN-SRYCD
+                    CALL   "ORCSYAKINGEN"    USING   ORCSYAKINGEN-AREA
+                                                     SPA-AREA
+                    IF   LNK-YAKINGEN-RC     =       ZERO
+                       MOVE LNK-YAKINGEN-CHGSRYCD   TO
+                                         LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                    END-IF
+               END-IF
+      *
+               IF    LNK-SCNYUACCT-KAGEN-SRYCD(1)  NOT =  SPACE
+                   PERFORM    VARYING   IDX-YAKIN  FROM  1   BY   1
+                     UNTIL   (IDX-YAKIN     >   10)    OR
+                             (LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
+                                                  = SPACE)
+                        INITIALIZE    ORCSYAKINGEN-AREA
+                        MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO    LNK-YAKINGEN-SANTEIYM
+                        MOVE  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-EIYOU)
+                                           TO    LNK-YAKINGEN-SRYCD
+                        CALL "ORCSYAKINGEN" USING ORCSYAKINGEN-AREA
+                                                 SPA-AREA
+                        IF   LNK-YAKINGEN-RC     =       ZERO
+                             MOVE LNK-YAKINGEN-CHGSRYCD   TO
+                                 LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
                         END-IF
                    END-PERFORM
                END-IF
