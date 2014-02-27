@@ -395,11 +395,14 @@
            03  FLG-CHKSKIP                             PIC 9(01).
            03  FLG-TMPSND                              PIC 9(01).
            03  FLG-TEKBYO                              PIC 9(01).
+           03  FLG-PTCRNIN                             PIC 9(01).
            03  FLG-HAISHI                              PIC 9(01).
            03  FLG-RSI-KANA                            PIC 9(01).
            03  FLG-NORMAL                              PIC 9(01).
            03  FLG-TANKI-SHOBYO                        PIC 9(01).
            03  FLG-KAISU-CHK                           PIC 9(01).
+           03  FLG-KAIGO-CHK                           PIC 9(01).
+           03  FLG-HKNKBN                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -473,11 +476,13 @@
            03  IDX39                                   PIC 9(05).
            03  IDX40                                   PIC 9(05).
            03  IDX41                                   PIC 9(05).
+           03  IDX42                                   PIC 9(05).
            03  IDXA                                    PIC 9(05).
            03  IDXD                                    PIC 9(05).
            03  IDXE                                    PIC 9(05).
            03  IDXH                                    PIC 9(05).
            03  IDXI                                    PIC 9(05).
+           03  IDXK                                    PIC 9(05).
            03  IDXP                                    PIC 9(05).
            03  IDXR                                    PIC 9(05).
            03  IDX-TSRYKA                              PIC 9(05).
@@ -690,6 +695,9 @@
                                                        OCCURS  5.
            03  WRK-KAISU                               PIC 9(05).
            03  WRK-KAISU-X                             PIC X(05).
+           03  WRK-TEKYMD.
+               05  WRK-TEKYM                           PIC X(06).
+               05  WRK-TEKDD                           PIC 9(02).
       *
        01  TERRINF-AREA.
            03  TERRINF-CHKKBN                          PIC X(01).
@@ -823,6 +831,8 @@
                                                    VALUE   30.
            03  CONST-TRSIRECEDEN-MAX               PIC 9(05)
                                                    VALUE   20.
+           03  CONST-TKAIGO-MAX                    PIC 9(05)
+                                                   VALUE   50.
            03  CONST-CHKPTN                        PIC X(05)
                                                    VALUE   "1 111".
            03  CONST-NBHOUKTCD                     PIC X(09)
@@ -1170,6 +1180,10 @@
       *    適応病名マスタ
        01  TEKIOUBYOMEI-REC.
            COPY    "CPTEKIOUBYOMEI.INC".
+      *
+      *    患者介護認定者情報
+       01  PTCRNIN-REC.
+           COPY    "CPPTCARE-NINTEI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -2075,7 +2089,7 @@
                MOVE    "2"             TO  SYS-1101-SRYKAISUMSTKBN
            END-IF
            IF    ( SYS-1101-SRYKAISUWRNKBN =   SPACE )
-               MOVE    "1"             TO  SYS-1101-SRYKAISUWRNKBN
+               MOVE    "2"             TO  SYS-1101-SRYKAISUWRNKBN
            END-IF
       *
            .
@@ -2479,6 +2493,7 @@
                                        TINGAI-AREA
                                        TKZI-AREA
                                        TRSIRECEDEN-AREA
+                                       TKAIGO-AREA
                                        PTACCT-AREA
                                        PTSRY-AREA
                                        PTZAI-AREA
@@ -3214,6 +3229,9 @@
                            IF    ( DCSRY-SRYCD (1:1)   =   "7" )
                                PERFORM 200111-TKZI-HEN-SEC
                            END-IF
+      *
+      *                    介護突合チェック退避領域編集処理
+                           PERFORM 200111-TKAIGO-HEN-SEC
       *
                        END-IF
       *
@@ -4156,6 +4174,72 @@
       *
            .
        2001111-TKZI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    介護突合チェック退避領域編集処理
+      *****************************************************************
+       200111-TKAIGO-HEN-SEC           SECTION.
+      *
+           IF    ( PTZAI-HKNNUM (IDX-ZAI)
+                                       =   "971" OR "973" OR "975" )
+               CONTINUE
+           ELSE
+      *
+               MOVE    ZERO            TO  FLG-KAIGO-CHK
+      *
+               IF    ( DCSRY-SRYCD     =   "114006410"
+                                        OR "114015010"
+                                        OR "114007810"
+                                        OR "114015110"
+                                        OR "114007910"
+                                        OR "114015210" )
+                   MOVE    1           TO  FLG-KAIGO-CHK
+               END-IF
+      *
+               IF    ( PTZAI-HKNNUM (IDX-ZAI)
+                                       =   "039" OR "040" )
+                   IF    ( DCSRY-SRYCD =   "114015310" )
+                       MOVE    1       TO  FLG-KAIGO-CHK
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-KAIGO-CHK   =   1 )
+      *
+                   MOVE    ZERO        TO  TKAIGO-IDX
+                   PERFORM VARYING IDXK    FROM    1   BY  1
+                           UNTIL ( IDXK    >   CONST-TKAIGO-MAX )
+                            OR   ( TKAIGO-IDX  NOT =   ZERO )
+      *
+                       IF    ( TKAIGO-SRYCD (IDXK) =   SPACE )
+                           MOVE    IDXK    TO  TKAIGO-MAX
+                                               TKAIGO-IDX
+                           MOVE    DCSRY-SRYCD
+                                           TO  TKAIGO-SRYCD (IDXK)
+                       ELSE
+                           IF    ( TKAIGO-SRYCD (IDXK) =   DCSRY-SRYCD )
+                               MOVE    IDXK    TO  TKAIGO-IDX
+                           END-IF
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   IF    ( TKAIGO-IDX  >   ZERO )
+                       PERFORM VARYING IDXD    FROM    1   BY  1
+                               UNTIL ( IDXD    >   31 )
+      *
+                           IF    ( PTZAI-DAY (IDX-ZAI IDXD) >  ZERO )
+                               MOVE    1   TO  TKAIGO-SRYCD-DAY
+                                                     (TKAIGO-IDX IDXD)
+                           END-IF
+      *
+                       END-PERFORM
+                   END-IF
+               END-IF
+      *
+           END-IF
+      *
+           .
+       200111-TKAIGO-HEN-EXT.
            EXIT.
       *****************************************************************
       *    コメントエラー退避ワーク編集処理
@@ -10533,6 +10617,8 @@
       *    内分泌負荷試験チェック処理
            PERFORM 200111-NBFUKA-CHK-SEC
       *
+           PERFORM 200111-KAIGO-CHK-SEC
+      *
       *
            .
        200111-SONOTA-HISSU-CHK-EXT.
@@ -10784,6 +10870,80 @@
       *
            .
        200111-RSIRECEDEN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    介護との給付調整項目突合チェック処理
+      *****************************************************************
+       200111-KAIGO-CHK-SEC            SECTION.
+      *
+           PERFORM 900-PTCARE-NINTEI-KEY1-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-PTCRNIN NOT =   ZERO )
+      *
+               MOVE    ORCBSD01-SRYYM  TO  WRK-TEKYM
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+      *
+                   MOVE    IDXD        TO  WRK-TEKDD
+                   IF    ( PTCRNIN-CAREJOTAICD NOT =   "01" )
+                       IF    ( PTCRNIN-TEKSTYMD    <=  WRK-TEKYMD )
+                        AND  ( PTCRNIN-TEKEDYMD    >=  WRK-TEKYMD )
+                           MOVE    1   TO  TKAIGO-NINTEI-DAY (IDXD)
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+               PERFORM 900-PTCARE-NINTEI-KEY1-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+           MOVE    "key1"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           PERFORM VARYING IDXK    FROM    1   BY  1
+                   UNTIL ( IDXK    >   TKAIGO-MAX )
+      *
+               MOVE    ZERO        TO  TKAIGO-ERR-DAY-G
+      *
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+      *
+                   IF    ( TKAIGO-NINTEI-DAY (IDXD)        =   1 )
+                    AND  ( TKAIGO-SRYCD-DAY  (IDXK IDXD)   =   1 )
+                       MOVE    1   TO  TKAIGO-ERR-DAY (IDXD)
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( TKAIGO-ERR-DAY-G    NOT =   ZERO )
+      *
+                   MOVE    TKAIGO-SRYCD (IDXK)
+                                           TO  WRK-SRYCD
+                   MOVE    WRK-KJNYMD      TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+      *
+                   INITIALIZE  WRK-NISSU-DAY-G
+                   MOVE    TKAIGO-ERR-DAY-G
+                                   TO  WRK-NISSU-DAY-G
+                   PERFORM 200111-NISSU-HEN-SEC
+      *
+                   MOVE    SPACE   TO      WRK-ERRMES-PLUS
+                   STRING  TNS-NAME        DELIMITED   BY  SPACE
+                           WRK-NISSU-MES   DELIMITED   BY  SPACE
+                   INTO    WRK-ERRMES-PLUS
+                   END-STRING
+      *
+                   MOVE    "990032"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 215-ERRMES-HEN-SEC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-KAIGO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者コメントチェック処理
@@ -11143,6 +11303,31 @@
            PERFORM UNTIL ( FLG-DTCHK013    NOT =   ZERO )
       *
                MOVE    1               TO  FLG-KAISU-CHK
+      *
+               MOVE    ZERO            TO  FLG-HKNKBN
+               PERFORM VARYING IDX42   FROM    1   BY  1
+                       UNTIL ( IDX42   >   DTCHK013-HKNCOMBI-MAX )
+                        OR   ( FLG-HKNKBN  =   1 )
+      *
+                   MOVE    DTCHK013-HKNCOMBI (IDX42)
+                                       TO  WRK-HKNCOMBI
+                   PERFORM 220-HKNCOMBI-GET-SEC
+                   MOVE    COMB-HKNNUM
+                                  TO   WRK-ZAIHKNNUM
+                   IF    ( COMB-KOHHKNNUM (1)  =   "970" )
+                       MOVE    COMB-KOHHKNNUM (1)
+                                  TO   WRK-ZAIHKNNUM
+                   END-IF
+                   PERFORM 2001111-TAISYO-HKN-CHK-SEC
+                   IF    ( FLG-TAISYO-HKN  =   1 )
+                       MOVE    1  TO   FLG-HKNKBN
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( FLG-HKNKBN              =   ZERO )
+                   MOVE    ZERO        TO  FLG-KAISU-CHK
+               END-IF
       *
                IF    ( DTCHK013-JGNCNTERR      =   9 )
                 AND  ( SYS-1101-SRYKAISUWRNKBN =   "2" )
@@ -15611,6 +15796,53 @@
            .
       *
        900-TEKIOUBYOMEI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者介護認定者情報検索処理
+      *****************************************************************
+       900-PTCARE-NINTEI-KEY1-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTCRNIN
+      *
+           INITIALIZE                  PTCRNIN-REC
+      *
+           MOVE    SPA-HOSPNUM         TO   PTCRNIN-HOSPNUM
+           MOVE    DTCHK003-PTID       TO   PTCRNIN-PTID
+           MOVE    WRK-GETUMATU        TO   PTCRNIN-TEKSTYMD
+           MOVE    WRK-KJNYMD          TO   PTCRNIN-TEKEDYMD
+           MOVE    PTCRNIN-REC         TO   MCPDATA-REC
+           MOVE    "tbl_ptcare_nintei" TO   MCP-TABLE
+           MOVE    "key1"              TO   MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTCRNIN-REC
+           ELSE
+               INITIALIZE                  PTCRNIN-REC
+               MOVE    1               TO  FLG-PTCRNIN
+           END-IF
+           .
+      *
+       900-PTCARE-NINTEI-KEY1-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者介護認定者情報FETCH処理
+      *****************************************************************
+       900-PTCARE-NINTEI-KEY1-FET-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTCRNIN
+      *
+           MOVE    "tbl_ptcare_nintei" TO   MCP-TABLE
+           MOVE    "key1"              TO   MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTCRNIN-REC
+           ELSE
+               INITIALIZE                  PTCRNIN-REC
+               MOVE    1               TO  FLG-PTCRNIN
+           END-IF
+           .
+      *
+       900-PTCARE-NINTEI-KEY1-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
