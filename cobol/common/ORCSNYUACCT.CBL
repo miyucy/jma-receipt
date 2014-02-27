@@ -425,7 +425,7 @@
                         INITIALIZE    ORCSYAKINGEN-AREA
                         MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
                                            TO    LNK-YAKINGEN-SANTEIYM
-                        MOVE  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-EIYOU)
+                        MOVE  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
                                            TO    LNK-YAKINGEN-SRYCD
                         CALL "ORCSYAKINGEN" USING ORCSYAKINGEN-AREA
                                                  SPA-AREA
