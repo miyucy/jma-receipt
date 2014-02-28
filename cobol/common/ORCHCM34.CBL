@@ -450,6 +450,10 @@
                05  WRK-BYOMEI.
                    07  WRK-BYOMEI-LINE             PIC X(56)
                                                    OCCURS 3.
+           03  WRK-RATE1                           PIC 999V99.
+           03  WRK-RATE2                           PIC 999V99.
+           03  WRK-RATE3                           PIC 999V99.
+           03  WRK-RATE4                           PIC 999V99.
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -606,8 +610,11 @@
                05  RSIJBI-SRYCD                    PIC X(09).
                05  RSIJBI-INPUTNUM                 PIC 9(3).
                05  RSIJBI-NAME                     PIC X(200).
+           03  WRK-TAX-RATE                        PIC 9V99.
       *
        01  CONST-AREA.
+           03  CONST-H2710             PIC X(08)   VALUE "999999".
+           03  CONST-H2604             PIC X(08)   VALUE "201404".
            03  CONST-H190401           PIC X(08)   VALUE "20070401".
            03  CONST-H141001           PIC X(08)   VALUE "20021001".
            03  CONST-H181001           PIC X(08)   VALUE "20061001".
@@ -1055,6 +1062,21 @@
            MOVE    ZERO                TO  WRK-TTL-JIHI
            MOVE    ZERO                TO  WRK-TTL-JIHI-TAX
            MOVE    ZERO                TO  WRK-TTL-BRMSAGAKU
+      *
+           EVALUATE    TRUE
+           WHEN  ( ORCHCM34-SRYYM      >=  CONST-H2710 )
+               MOVE    0.10            TO  WRK-RATE1
+           WHEN  ( ORCHCM34-SRYYM      >=  CONST-H2604 )
+               MOVE    0.08            TO  WRK-RATE1
+           WHEN  OTHER
+               MOVE    0.05            TO  WRK-RATE1
+           END-EVALUATE
+      *
+           COMPUTE WRK-RATE2 = WRK-RATE1   +   1
+      *
+           COMPUTE WRK-RATE3 = WRK-RATE1   *   100
+      *
+           COMPUTE WRK-RATE4 = WRK-RATE2   *   100
       *
            .
        100-INIT-EXT.
@@ -4112,10 +4134,10 @@
                 IF   ( SYS-4001-TAXKBN         =   "2" )
                   IF ( SYS-1001-TAX-HASU-KBN   =   "1" )
                      COMPUTE  WRK-ZAITEN
-                         =  ( WRK-ZAITEN   *   1.05)  +  0.5
+                         =  ( WRK-ZAITEN   *   WRK-RATE2 )  +  0.5
                   ELSE
                      COMPUTE  WRK-ZAITEN
-                         =    WRK-ZAITEN   *   1.05
+                         =    WRK-ZAITEN   *   WRK-RATE2
                   END-IF
                 END-IF
            WHEN    "3"
@@ -4147,10 +4169,10 @@
                    IF    ( FLG-JBI-KZI-OUT =   ZERO )
                        IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
                            COMPUTE  WRK-ZAITEN
-                               =  ( WRK-ZAITEN   *   1.05)  +  0.5
+                               =  ( WRK-ZAITEN   *   WRK-RATE2 )  +  0.5
                        ELSE
                            COMPUTE  WRK-ZAITEN
-                               =    WRK-ZAITEN   *   1.05
+                               =    WRK-ZAITEN   *   WRK-RATE2
                        END-IF
                    END-IF
                END-IF
@@ -4521,20 +4543,24 @@
                    IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
                        IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
                            COMPUTE  WRK-TENSU
-                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                                = ( WRK-TTL-JIHI-TAX
+                                 *  WRK-RATE3
+                                 /  WRK-RATE4 )
                                 +  0.5
                        ELSE
                            COMPUTE  WRK-TENSU
-                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                                = ( WRK-TTL-JIHI-TAX   *  WRK-RATE1 )
                                 +  0.5
                        END-IF
                    ELSE
                        IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
                            COMPUTE  WRK-TENSU
-                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                                = ( WRK-TTL-JIHI-TAX
+                                 *  WRK-RATE3
+                                 /  WRK-RATE4 )
                        ELSE
                            COMPUTE  WRK-TENSU
-                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                                = ( WRK-TTL-JIHI-TAX   *  WRK-RATE1 )
                        END-IF
                    END-IF
                    PERFORM 2001111-KINGAKU-HEN-SEC
@@ -6011,10 +6037,12 @@
       *
                    IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
                        COMPUTE  WRK-TTL-BRMSAGAKU-TAX
-                            = ( WRK-TTL-BRMSAGAKU  *  5 / 105)
+                            = ( WRK-TTL-BRMSAGAKU
+                             *  WRK-RATE3
+                             /  WRK-RATE4 )
                    ELSE
                        COMPUTE  WRK-TTL-BRMSAGAKU-TAX
-                            = ( WRK-TTL-BRMSAGAKU  *  0.05 )
+                            = ( WRK-TTL-BRMSAGAKU  *  WRK-RATE1 )
                    END-IF
       *
                    IF    ( WRK-TTL-BRMSAGAKU-TAX   >   ZERO )

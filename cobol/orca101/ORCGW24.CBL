@@ -2951,8 +2951,10 @@
                                    TO  SYS-5000-KYUKYUKSNKBN
       *
       *    ±…Õ‹¥…Õ˝∑–≤·¡º√÷∂Ë ¨
-           MOVE    SPA-GMN-W24-EIYOUKSN
-                                   TO  SYS-5000-EIYOUKSNKBN
+           IF    ( SPA-HOSPSBT         =   2 )
+            AND  ( SPA-W01-STYUKYMD   >=   CONST-H260401 )
+               MOVE    SPACE           TO  SYS-5000-EIYOUKSNKBN
+           END-IF
       *
       *    ∏∫ªªæ Û
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -5540,6 +5542,12 @@
       *
            MOVE    "±…Õ‹¥…Õ˝∑–≤·¡º√÷"          TO  W24-LBLEIYOUKSN
       *
+           IF    ( SPA-HOSPSBT         =   2 )
+            AND  ( SPA-W01-STYUKYMD   >=   CONST-H260401 )
+               MOVE    SPACE                   TO  W24-LBLEIYOUKSN
+               INITIALIZE                          W24-CMB-EIYOUKSN
+           END-IF
+      *
       *    π‡Ã‹æı¬÷ ‘Ω∏
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
@@ -5612,6 +5620,8 @@
            END-IF
       *
            IF    ( SPA-W01-STYUKYMD    <   "20120401" )
+            OR  (( SPA-HOSPSBT         =   2 )
+            AND  ( SPA-W01-STYUKYMD   >=   CONST-H260401 ))
                MOVE    WIDGET-INSENSITIVE
                                        TO  W24-EIYOUKSN-STATE
                                            W24-EIYOUKSN-ITM-STATE

@@ -227,7 +227,7 @@
            03  CONST-KSN-MAX           PIC 9(03) VALUE 10.
            03  CONST-GKSN-MAX          PIC 9(03) VALUE 14.
            03  CONST-5002-KSN-MAX      PIC 9(03) VALUE 12.
-           03  CONST-TOKNYUIN-MAX      PIC 9(03) VALUE 30.
+           03  CONST-TOKNYUIN-MAX      PIC 9(03) VALUE 50.
            03  CONST-H24-AREA.
                05   CONST-H2404-BTURYO1     PIC X(09) VALUE "190120210".
                05   CONST-H2404-BTURYO2     PIC X(09) VALUE "190106070".
