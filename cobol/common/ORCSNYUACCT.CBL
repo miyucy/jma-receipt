@@ -964,6 +964,51 @@
                 END-EVALUATE
              END-IF
       *
+             IF      LNK-SCNYUACCT-STSRYYMD   >=   "20141001"
+                EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+      *         Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£≤° ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
+                 WHEN      "190166110"
+                 WHEN      "190166310"
+                 WHEN      "190166510"
+                 WHEN      "190166710"
+                 WHEN      "190166910"
+                 WHEN      "190167110"
+                 WHEN      "190167310"
+                 WHEN      "190167510"
+                 WHEN      "190167710"
+                   MOVE    1           TO  FLG-RYOYO-NYUIN
+                   MOVE   "190166110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
+                   MOVE   "190166310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
+                   MOVE   "190166510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
+                   MOVE   "190166710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
+                   MOVE   "190166910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
+                   MOVE   "190167110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
+                   MOVE   "190167310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
+                   MOVE   "190167510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
+                   MOVE   "190167710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
+      *         Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À° ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
+                 WHEN      "190166210"
+                 WHEN      "190166410"
+                 WHEN      "190166610"
+                 WHEN      "190166810"
+                 WHEN      "190167010"
+                 WHEN      "190167210"
+                 WHEN      "190167410"
+                 WHEN      "190167610"
+                 WHEN      "190167810"
+                   MOVE    1           TO  FLG-RYOYO-NYUIN
+                   MOVE   "190166210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
+                   MOVE   "190166410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
+                   MOVE   "190166610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
+                   MOVE   "190166810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
+                   MOVE   "190167010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
+                   MOVE   "190167210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
+                   MOVE   "190167410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
+                   MOVE   "190167610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
+                   MOVE   "190167810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
+                END-EVALUATE
+             END-IF
+      *
              EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
       *        Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡
                 WHEN      "190122010"
