@@ -2429,12 +2429,15 @@
       *            データチェック処理（チェックマスタ以外）
                    PERFORM 20011-DATA-CHK-SEC
       *
-                   IF    ( FLG-CHKSKIP     =   ZERO )
-      *                データチェック処理（チェックマスタ）
-                       PERFORM 20011-DATA-CHK-CHKMST-SEC
+                   IF    ( FLG-CHKSKIP          =   ZERO )
       *
-      *                データチェック処理（電子点数表）
-                       PERFORM 20011-DATA-CHK-ETENSU-CHK-SEC
+                       IF   ( DTCHK003-HKNKBN  NOT =   CONST-HOUKATU )
+      *                    データチェック処理（チェックマスタ）
+                           PERFORM 20011-DATA-CHK-CHKMST-SEC
+      *
+      *                    データチェック処理（電子点数表）
+                           PERFORM 20011-DATA-CHK-ETENSU-CHK-SEC
+                       END-IF
       *
       *                禁忌チェック項目退避処理
                        PERFORM 20012-CHK-KINKI-TAIHI-SEC
@@ -4620,6 +4623,7 @@
       *    基本チェック処理
            PERFORM 200111-KIHON-CHK-SEC
            IF    ( FLG-CHKSKIP     =   ZERO )
+            AND  ( DTCHK003-HKNKBN NOT =   CONST-HOUKATU )
                PERFORM 200111-DATA-CHK-SEC
            END-IF
       *
