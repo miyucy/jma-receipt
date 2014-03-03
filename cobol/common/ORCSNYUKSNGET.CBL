@@ -516,7 +516,8 @@
              END-IF
       *
       *      平成２４年４月からの加算セット処理
-             IF     LNK-NYUKSNGET-SANTEIYM   >=     "201204"
+             IF    (LNK-NYUKSNGET-SANTEIYM    >=     "201204")  AND
+                   (LNK-NYUKSNGET-SANTEIYM    <=     "201403")
       *         （システム管理の病棟設定見直しによるもの）
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (IDX7      >   14)
@@ -560,6 +561,237 @@
                                    ADD    1            TO  IDX8
                                    MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                      一般病棟看護必要度評価加算（１３対１入院基本料）
+                             WHEN    "190131570"
+      *                            一般病棟看護必要度評価加算
+                                   IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                         = "190077510"
+                                     ADD    1            TO  IDX8
+                                     MOVE   "190131570"  TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                   END-IF
+      *                            一般病棟看護必要度評価加算（専門病院）
+                                   IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                         = "190090310"
+                                     ADD    1            TO  IDX8
+                                     MOVE   "190134970"  TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                   END-IF
+      *                            一般病棟看護必要度評価加算（特定一般病棟入院料１）
+                                   IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                         = "190151910"
+                                     ADD    1            TO  IDX8
+                                     MOVE   "190152570"  TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                   END-IF
+      *                      休日リハビリテーション提供体制加算（回復期リハビリテーション病棟入院料）
+                             WHEN    "190140870"
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                       = "190141610" OR
+                                                         "190141710" OR
+                                                         "190141810" OR
+                                                         "190141910" OR
+                                                         "190150110" OR
+                                                         "190150210"
+                                   ADD    1            TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                      看護必要度加算１（１０対１入院基本料）
+                             WHEN    "190143070"
+      *                         看護必要度加算１（一般病棟入院基本料）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                       =  "190077410"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190143070"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                         看護必要度加算１（特定機能病院）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                       =  "190085910"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190143970"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                         看護必要度加算１（専門病院）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                       =  "190090210"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190144570"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                      看護必要度加算２（１０対１入院基本料）
+                             WHEN    "190143170"
+      *                         看護必要度加算２（一般病棟入院基本料）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                       =  "190077410"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190143170"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                         看護必要度加算２（特定機能病院）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                       =  "190085910"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190144070"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                         看護必要度加算２（専門病院）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
+                                                       =   "190090210"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190144670"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+                             WHEN   OTHER
+                                ADD    1                TO  IDX8
+                                MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                         END-EVALUATE
+                     END-IF
+               END-PERFORM
+             END-IF
+      *
+      *      平成２６年４月からの加算セット処理
+             IF     LNK-NYUKSNGET-SANTEIYM   >=     "201404"
+               PERFORM   VARYING   IDX7   FROM   1  BY  1
+                 UNTIL  (IDX7      >   14)
+                     IF   SYS-5001-KSNKBN(IDX7)   =   "2"
+                         EVALUATE    SYS-5001-KSNCD(IDX7)
+      *                      医師配置加算１（有床診療所入院基本料１から６）
+      *                      医師配置加算２（有床診療所入院基本料１から６）
+      *                      看護配置加算１（有床診療所入院基本料１から６）
+      *                      看護配置加算２（有床診療所入院基本料１から６）
+      *                      夜間看護配置加算１（有床診療所入院基本料１から６）
+      *                      夜間看護配置加算２（有床診療所入院基本料１から６）
+      *                      看護補助配置加算１（有床診療所入院基本料１から６）
+      *                      看護補助配置加算２（有床診療所入院基本料１から６）
+                             WHEN    "190135570"
+                             WHEN    "190117070"
+                             WHEN    "190109670"
+                             WHEN    "190126570"
+                             WHEN    "190126770"
+                             WHEN    "190126670"
+                             WHEN    "190170570"
+                             WHEN    "190170670"
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD  =
+      *                                                 有床診療所入院基本料１
+                                                           "190169610"
+                                                        OR "190169710"
+                                                        OR "190169810"
+      *                                                 有床診療所入院基本料２
+                                                        OR "190169910"
+                                                        OR "190170010"
+                                                        OR "190170110"
+      *                                                 有床診療所入院基本料３
+                                                        OR "190170210"
+                                                        OR "190170310"
+                                                        OR "190170410"
+      *                                                 有床診療所入院基本料４
+                                                        OR "190097010"
+                                                        OR "190119510"
+                                                        OR "190119610"
+      *                                                 有床診療所入院基本料５
+                                                        OR "190097210"
+                                                        OR "190119710"
+                                                        OR "190119810"
+      *                                                 有床診療所入院基本料６
+                                                        OR "190135110"
+                                                        OR "190135210"
+                                                        OR "190135310"
+                                   ADD    1            TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                      夜間緊急体制確保加算（有床診療所入院基本料１から６）
+                             WHEN    "190126470"
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD  =
+      *                                                 有床診療所入院基本料１
+                                                           "190169610"
+                                                        OR "190169710"
+                                                        OR "190169810"
+      *                                                 有床診療所入院基本料２
+                                                        OR "190169910"
+                                                        OR "190170010"
+                                                        OR "190170110"
+      *                                                 有床診療所入院基本料３
+                                                        OR "190170210"
+                                                        OR "190170310"
+                                                        OR "190170410"
+      *                                                 有床診療所入院基本料４
+                                                        OR "190097010"
+                                                        OR "190119510"
+                                                        OR "190119610"
+      *                                                 有床診療所入院基本料５
+                                                        OR "190097210"
+                                                        OR "190119710"
+                                                        OR "190119810"
+      *                                                 有床診療所入院基本料６
+                                                        OR "190135110"
+                                                        OR "190135210"
+                                                        OR "190135310"
+                                   ADD    1            TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                      栄養管理実施加算
+                             WHEN    "190170770"
+      *                         栄養管理実施加算（有床診療所入院基本料）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD  =
+      *                                                 有床診療所入院基本料１
+                                                           "190169610"
+                                                        OR "190169710"
+                                                        OR "190169810"
+      *                                                 有床診療所入院基本料２
+                                                        OR "190169910"
+                                                        OR "190170010"
+                                                        OR "190170110"
+      *                                                 有床診療所入院基本料３
+                                                        OR "190170210"
+                                                        OR "190170310"
+                                                        OR "190170410"
+      *                                                 有床診療所入院基本料４
+                                                        OR "190097010"
+                                                        OR "190119510"
+                                                        OR "190119610"
+      *                                                 有床診療所入院基本料５
+                                                        OR "190097210"
+                                                        OR "190119710"
+                                                        OR "190119810"
+      *                                                 有床診療所入院基本料６
+                                                        OR "190135110"
+                                                        OR "190135210"
+                                                        OR "190135310"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190170770"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                         栄養管理実施加算（有床診療所療養病床入院基本料）
+                                IF  LNK-NYUKSNGET-NYUIN-SRYCD  =
+      *                                         有床診療所療養病床入院基本料Ａ
+                                                          "190122010"
+      *                                         有床診療所療養病床入院基本料Ａ（生活療養）
+                                                       OR "190124310"
+      *                                         有床診療所療養病床入院基本料Ｂ
+                                                       OR "190122110"
+      *                                         有床診療所療養病床入院基本料Ｂ（生活療養）
+                                                       OR "190124410"
+      *                                         有床診療所療養病床入院基本料Ｃ
+                                                       OR "190122210"
+      *                                         有床診療所療養病床入院基本料Ｃ（生活療養）
+                                                       OR "190124510"
+      *                                         有床診療所療養病床入院基本料Ｄ
+                                                       OR "190122310"
+      *                                         有床診療所療養病床入院基本料Ｄ（生活療養）
+                                                       OR "190124610"
+      *                                         有床診療所療養病床入院基本料Ｅ
+                                                       OR "190122410"
+      *                                         有床診療所療養病床入院基本料Ｅ（生活療養）
+                                                       OR "190124710"
+                                   ADD    1            TO  IDX8
+                                   MOVE   "190171770"  TO
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                                 END-IF
       *                      一般病棟看護必要度評価加算（１３対１入院基本料）
                              WHEN    "190131570"
