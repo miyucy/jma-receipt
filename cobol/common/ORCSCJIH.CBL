@@ -386,16 +386,30 @@
        10021-ZEIKEISEN-SEC                  SECTION.
       *
            COMPUTE WRK-ZEIKIN-9        =   WRK-KISOTEN
-      *!!                              *   0.05
                                        *   WRK-ZEIRITU
-           IF      SPA-TAX-HASU-KBN    =   "1"
+      *
+      *****IF      SPA-TAX-HASU-KBN    =   "1"
       *        小数点以下四捨五入
-               COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
-                                       +   0.5
-           ELSE
+      *        COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
+      *                                +   0.5
+      *    ELSE
       *        小数点以下切り捨て
-               MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
-           END-IF
+      *        MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
+      *****END-IF
+           EVALUATE    SPA-TAX-HASU-KBN
+               WHEN    "1"
+      *        小数点以下四捨五入
+                   COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
+                                           +   0.5
+               WHEN    "3"
+      *        小数点以下切り上げ
+                   COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
+                                           +   0.99999
+               WHEN    OTHER
+      *            小数点以下切り捨て
+                   MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
+           END-EVALUATE
+      *
            COMPUTE WRK-TANKA           =   WRK-KISOTEN
                                        +   WRK-ZEIKIN
            .
