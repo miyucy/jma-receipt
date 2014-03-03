@@ -29,9 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/11/20  自賠責器材追加
       * 01.00.02     NACL-多々納  03/04/30  剤別点数追加
-      * 04.07.00     NACL-多々納  14/10/03  消費税計算＠、.961対応
-      * 04.08.00     NACL-多々納  17/06/XX  商品コード対応他
-      * 04.08.00     NACL-多々納  17/09/XX  自費コード端数処理対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -49,7 +46,6 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -69,19 +65,16 @@
            03  WRK-MOJI            PIC X(01). 
       *
            03  WRK-ERRCD           PIC X(04). 
-      *H29.9   小数点以下５桁へ
-      *    03  WRK-KINGAK-9        PIC 9(08)V99.
-           03  WRK-KINGAK-9        PIC 9(08)V9(5).
+      *
+           03  WRK-KINGAK-9        PIC 9(08)V99.
            03  WRK-KINGAK          PIC 9(08).
       *
            03  WRK-ZEIKIN-9        PIC 9(08)V9(5).
            03  WRK-ZEIKIN          PIC 9(08).
-           03  WRK-TANKA           PIC 9(08)V9(5).
-           03  WRK-KISOTEN         PIC 9(08)V9(5).
+           03  WRK-TANKA           PIC 9(08)V99.
+           03  WRK-KISOTEN         PIC 9(08)V99.
       *
            03  WRK-ZEIRITU         PIC 9(01)V99.
-      *
-           03  WRK-TENSIKIBETU     PIC 9(01).
       *
       *消費税率
        01  CONS-ZEI1               PIC 9(01)V99   VALUE   0.05.
@@ -95,11 +88,6 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
-      *
-      *    システム管理マスタ
-           COPY    "CPSYSKANRI.INC".
-      *
-           COPY    "CPSK1001.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -115,15 +103,9 @@
       *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
       *
-      *    画面再編集パラメタ
-           COPY    "CPORCSC94.INC".
-      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
-      *H29.9
-      *    診療行為用共通パラメタ
-           COPY    "K01COMMON-SPA".
       *
       *****************************************************************
       *    連絡　領域
@@ -153,16 +135,6 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
-      *
-           INITIALIZE                  WRK-AREA
-           INITIALIZE                  FLG-AREA
-      *H29.9
-      *    自費コード端数処理設定
-           IF      LNK-ORCSC-PG        =   "J04"
-               PERFORM 400-JIHI-HASU-SEC
-           ELSE
-               MOVE    SPA-WORK        TO  SPA-K01KYOUTU
-           END-IF
       *
       *
            EVALUATE    LNK-ORCSC-KBN
@@ -383,43 +355,10 @@
        1002-TENSU-KEI-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    自費計算処理
       *****************************************************************
        10021-JIHI-KEI-SEC                  SECTION.
-      *
-      *H29.6
-      *    商品コード対象外
-           IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "058"
-               GO  TO  10021-JIHI-KEI-EXT
-           END-IF
-      *
-      *H26.10
-      *    金額＠　で消費税計算
-           IF     (WRK-COM-AUTOFLG2 (IDX-Z)    =   "1"   )
-               IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
-                                                       "096" ) AND
-                      (WRK-COM-SRYSYUKBN(IDX-Z)    =   "960" ) AND
-                      (WRK-COM-KISOTEN(IDX-Z)      =   ZERO  ) AND
-                      (WRK-COM-KEIFLG   (IDX-Z)    =   "1"   ) AND
-                      (WRK-COM-JIHIMONEY(IDX-Z)    >   ZERO  )
-                   PERFORM 100211-JIHI-KEISAN-SEC
-               ELSE
-      *            ＠の削除
-                   MOVE    SPACE           TO  WRK-COM-AUTOFLG2 (IDX-Z)
-      *            表示
-                   INITIALIZE                  ORCSC94AREA
-                   MOVE    "1"                 TO  LNK-SC94-KBN
-                   MOVE    "K02"               TO  LNK-SC94-PG
-                   MOVE    IDX-Z               TO  LNK-SC94-IDX
-                   CALL    "ORCSC94"           USING
-                                               ORCSC94AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-               END-IF
-           END-IF
-      *
       *
            IF      WRK-COM-KISOTEN(IDX-Z)      =   ZERO
                CONTINUE
@@ -428,42 +367,13 @@
                IF      (SPA-SRYYMD     >=  "20070401" )  AND
                        (WRK-COM-SRYKBN(IDX-Z)  =   "96")  AND
                        (WRK-COM-TENSIKIBETU(IDX-Z)  =  0 )
-      *
-      *H26.10      単価×数量を対象
-                   IF      WRK-COM-SRYSYUKBN(IDX-Z) =   "961"
-                       COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN
-                                                            (IDX-Z)
-                                               *   WRK-COM-SURYO(IDX-Z)
-                       PERFORM 10021-ZEIKEISEN-SEC
-                       MOVE    WRK-TANKA       TO  WRK-KINGAK-9
-                   ELSE
-      *
-                       MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-KISOTEN
-                       PERFORM 10021-ZEIKEISEN-SEC
-                       COMPUTE WRK-KINGAK-9    =   WRK-TANKA
-                                               *   WRK-COM-SURYO(IDX-Z)
-                   END-IF
+                   MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-KISOTEN
+                   PERFORM 10021-ZEIKEISEN-SEC
                ELSE
                    MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-TANKA
-                   COMPUTE WRK-KINGAK-9    =   WRK-TANKA
-                                           *   WRK-COM-SURYO(IDX-Z)
                END-IF
-      *
-      *H29.9
-      *        端数処理
-               EVALUATE    SPA-JIHI-HASU-KBN
-               WHEN    "1"
-      *        小数点以下四捨五入
-                   COMPUTE WRK-KINGAK      =   WRK-KINGAK-9
-                                           +   0.5
-               WHEN    "3"
-      *        小数点以下切り上げ
-                   COMPUTE WRK-KINGAK      =   WRK-KINGAK-9
-                                           +   0.9999
-               WHEN    OTHER
-      *        小数点以下切り捨て
-                   MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
-               END-EVALUATE
+               COMPUTE WRK-KINGAK      =   WRK-TANKA
+                                       *   WRK-COM-SURYO(IDX-Z)
            END-IF
       *
            .
@@ -474,7 +384,6 @@
       *    消費税計算処理
       *****************************************************************
        10021-ZEIKEISEN-SEC                  SECTION.
-      *
       *
            COMPUTE WRK-ZEIKIN-9        =   WRK-KISOTEN
                                        *   WRK-ZEIRITU
@@ -507,50 +416,6 @@
        10021-ZEIKEISEN-EXT.
            EXIT.
       *
-      *H26.10
-      *****************************************************************
-      *    入力金額の消費税計算処理
-      *****************************************************************
-       100211-JIHI-KEISAN-SEC                  SECTION.
-      *
-      *
-           COMPUTE WRK-ZEIKIN-9        =   WRK-COM-JIHIMONEY(IDX-Z)
-                                       *   WRK-ZEIRITU
-      *
-           EVALUATE    SPA-TAX-HASU-KBN
-               WHEN    "1"
-      *        小数点以下四捨五入
-                   COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
-                                           +   0.5
-               WHEN    "3"
-      *        小数点以下切り上げ
-                   COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
-                                           +   0.99999
-               WHEN    OTHER
-      *            小数点以下切り捨て
-                   MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
-           END-EVALUATE
-           COMPUTE WRK-TANKA           =   WRK-COM-JIHIMONEY(IDX-Z)
-                                       +   WRK-ZEIKIN
-      *
-           MOVE    WRK-TANKA           TO  WRK-COM-JIHIMONEY(IDX-Z)
-           MOVE    WRK-TANKA           TO  WRK-COM-KEI      (IDX-Z)
-           MOVE    WRK-TANKA           TO  WRK-GMN-KEI      (IDX-Z)
-           MOVE    SPACE               TO  WRK-COM-AUTOFLG2 (IDX-Z)
-      *    表示
-           INITIALIZE                  ORCSC94AREA
-           MOVE    "1"                 TO  LNK-SC94-KBN
-           MOVE    "K02"               TO  LNK-SC94-PG
-           MOVE    IDX-Z               TO  LNK-SC94-IDX
-           CALL    "ORCSC94"           USING
-                                       ORCSC94AREA
-                                       WRK-SCR-REC
-                                       SPA-AREA
-           .
-       100211-JIHI-KEISAN-EXT.
-           EXIT.
-      *!!
-      *
       *****************************************************************
       *    点数計算処理
       *****************************************************************
@@ -564,56 +429,13 @@
                MOVE    WRK-COM-TEN(IDX-Z)  TO  WRK-COM-KISOTEN(IDX-Z)
            END-IF
       *
-      *H29.6
-      *    金額・点数判定
-           MOVE    ZERO                TO  WRK-TENSIKIBETU
-           IF      WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"
-               EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
-      *        金額
-               WHEN    1
-                   MOVE    1           TO  WRK-TENSIKIBETU
-      *        点数
-               WHEN    3
-      *        都道府県購入価格
-               WHEN    4
-                   MOVE    3           TO  WRK-TENSIKIBETU
-               END-EVALUATE
-           END-IF
-           IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "7"
-                                               OR  "6" )
-             OR   (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "059")
-               EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
-      *        金額
-               WHEN    1
-      *        都道府県購入価格
-               WHEN    2
-                   MOVE    1           TO  WRK-TENSIKIBETU
-      *        金額（整数)（金額は計算済み）
-               WHEN    4
-                   MOVE    1           TO  WRK-TENSIKIBETU
-               END-EVALUATE
-           END-IF
-      *
-      ***  EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
-           EVALUATE    WRK-TENSIKIBETU
+           EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
       *        金額
                WHEN    1
       *            消費税計算
-                   IF      (WRK-COM-SRYSYUKBN(IDX-Z)  =   "961")
-      *H26.10          単価×数量　に税
-                       COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN
-                                                            (IDX-Z)
-                                               *   WRK-COM-SURYO(IDX-Z)
-                       PERFORM 10021-ZEIKEISEN-SEC
-                       COMPUTE WRK-KINGAK-9    =   WRK-TANKA
-                                               +   0.5
-                       MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
-                   ELSE
-      *
                    IF      (SPA-SRYYMD     >=  "20070401" )  AND
                            (WRK-COM-SRYKBN(IDX-Z)  =   "96")
-                       MOVE    WRK-COM-KISOTEN (IDX-Z)
-                                                   TO  WRK-KISOTEN
+                       MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-KISOTEN
                        PERFORM 10021-ZEIKEISEN-SEC
                    ELSE
                        MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-TANKA
@@ -626,10 +448,9 @@
                                                +   0.5
                        MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
                    END-IF
-      *
-                   END-IF
       *        点数
                WHEN    3
+               WHEN    4
                    COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN (IDX-Z)
                                            *   10
                    IF      (SPA-SRYYMD     >=  "20070401" )  AND
@@ -644,41 +465,6 @@
            .
        10021-KEISAN-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    自費コード端数設定処理
-      *****************************************************************
-       400-JIHI-HASU-SEC                SECTION.
-      *
-           INITIALIZE                   SPA-K01KYOUTU
-      *    システム管理検索（医療機関情報）
-           MOVE    SPACE               TO  SYS-1001-REC
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-           MOVE    SYS-1001-REC        TO  SYSKANRI-REC
-      *
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
-      *        自費コード端数設定
-               MOVE    SYS-1001-JIHI-HASU-KBN  TO  SPA-JIHI-HASU-KBN
-           END-IF
-      *
-      *    端数切上げが初期
-           IF      SPA-JIHI-HASU-KBN   =   SPACE
-               MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
-           END-IF
-           IF      SPA-SRYYMD          <   "20170901"
-               MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
-           END-IF
-          .
-       400-JIHI-HASU-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    全診療行為チェック処理
@@ -697,81 +483,5 @@
       *
            .
        300-AUTO-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    管理マスター読込（キー）
-      *****************************************************************
-       900-SYSKANRI-INV-SEC         SECTION.
-      *
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
-                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
-               ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
-                   MOVE    SPACE               TO  SYSKANRI-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-               MOVE    SPACE               TO  SYSKANRI-REC
-           END-IF
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       900-SYSKANRI-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢクロース処理
-      *****************************************************************
-       990-DBCLOSE-SEC           SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
            EXIT.
       *
