@@ -207,6 +207,7 @@
            03  WRK-RATE2                       PIC 999V99.
            03  WRK-RATE3                       PIC 999V99.
            03  WRK-RATE4                       PIC 999V99.
+           03  WRK-HASU                        PIC 9V99999.
       *
       *    Æþ±¡ÎÁ
        01  WNYUINRYO-AREA.
@@ -915,6 +916,14 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+           MOVE    0                   TO  WRK-HASU
+           EVALUATE  SYS-1001-TAX-HASU-KBN
+           WHEN    "1"
+               MOVE    0.5             TO  WRK-HASU
+           WHEN    "3"
+               MOVE    0.99999         TO  WRK-HASU
+           END-EVALUATE
+      *
            .
        1501-SYS1001-GET-EXT.
            EXIT.
@@ -1519,6 +1528,7 @@
                        IF    ( SYS-5000-BRMSGK-TAXKBN  =   "1" )
                            COMPUTE WRK-BRMSAGAKU
                                =   WRK-BRMSAGAKU   *   WRK-RATE2
+                               +   WRK-HASU
                        END-IF
                    END-IF
                END-IF

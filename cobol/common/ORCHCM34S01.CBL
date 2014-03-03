@@ -254,6 +254,7 @@
            03  WRK-RATE2                       PIC 999V99.
            03  WRK-RATE3                       PIC 999V99.
            03  WRK-RATE4                       PIC 999V99.
+           03  WRK-HASU                        PIC 9V99999.
       *
       *    Æþ±¡ÎÁ
        01  WNYUINRYO-AREA.
@@ -955,6 +956,14 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           MOVE    0                   TO  WRK-HASU
+           EVALUATE  SYS-1001-TAX-HASU-KBN
+           WHEN    "1"
+               MOVE    0.5             TO  WRK-HASU
+           WHEN    "3"
+               MOVE    0.99999         TO  WRK-HASU
+           END-EVALUATE
       *
            .
        1501-SYS1001-GET-EXT.
@@ -2599,20 +2608,12 @@
                                + ( WRK-KHNTEN  -   WRK-SENTEI-KHNTEN )
                                *   WRK-SENTEI-TANKA
                        ELSE
-                           IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
-                               COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
-                                   =   WRK-SENTEI-PTFTN (IDX-TAX)
-                                   + ( WRK-KHNTEN - WRK-SENTEI-KHNTEN )
-                                   *   WRK-SENTEI-TANKA
-                                   *   WRK-RATE2
-                                   +   0.5
-                           ELSE
-                               COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
-                                   =   WRK-SENTEI-PTFTN (IDX-TAX)
-                                   + ( WRK-KHNTEN - WRK-SENTEI-KHNTEN )
-                                   *   WRK-SENTEI-TANKA
-                                   *   WRK-RATE2
-                           END-IF
+                           COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
+                               =   WRK-SENTEI-PTFTN (IDX-TAX)
+                               + ( WRK-KHNTEN - WRK-SENTEI-KHNTEN )
+                               *   WRK-SENTEI-TANKA
+                               *   WRK-RATE2
+                               +   WRK-HASU
                        END-IF
                    END-IF
                END-EVALUATE
@@ -2639,18 +2640,11 @@
                            =   WRK-SENTEI-PTFTN (IDX-TAX)
                            +   WRK-SENTEI-KINGAKU
                    ELSE
-                       IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
-                           COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
-                               =   WRK-SENTEI-PTFTN (IDX-TAX)
-                               +   WRK-SENTEI-KINGAKU
-                               *   WRK-RATE2
-                               +   0.5
-                       ELSE
-                           COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
-                               =   WRK-SENTEI-PTFTN (IDX-TAX)
-                               +   WRK-SENTEI-KINGAKU
-                               *   WRK-RATE2
-                       END-IF
+                       COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
+                           =   WRK-SENTEI-PTFTN (IDX-TAX)
+                           +   WRK-SENTEI-KINGAKU
+                           *   WRK-RATE2
+                           +   WRK-HASU
                    END-IF
                END-EVALUATE
       *
@@ -2808,6 +2802,7 @@
                        IF    ( SYS-5000-BRMSGK-TAXKBN  =   "1" )
                            COMPUTE WRK-BRMSAGAKU
                                =   WRK-BRMSAGAKU   *   WRK-RATE2
+                               +   WRK-HASU
                        END-IF
                    END-IF
                END-IF
