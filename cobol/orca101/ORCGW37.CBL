@@ -61,6 +61,7 @@
                05  SPA-GMN-NAI-TANKI3-G.
                    07  SPA-NAI-TANKI3-OCC         OCCURS  25.
                        09  SPA-NAI-TANKI3-SRYCD   PIC X(09).
+                       09  SPA-NAI-TANKI3-TOKCD   PIC X(02).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -301,6 +302,9 @@
            STRING  TNS-NAME                DELIMITED BY SPACE
            INTO    SPA-GMN-CHK-LBLTANKI3 (IDX2)
            END-STRING
+      *
+           MOVE    TANKI3-TOKCD (IDX1)
+                                       TO  SPA-NAI-TANKI3-TOKCD (IDX2)
       *
            .
        3101-SPASET-EXT.
@@ -662,6 +666,8 @@
                    MOVE    WRK-KBNCD-G TO  SYS-5003-KBNCD
                    MOVE    SPA-NAI-TANKI3-SRYCD (IDX2)
                                        TO  SYS-5003-TANKICD
+                   MOVE    SPA-NAI-TANKI3-TOKCD (IDX2)
+                                       TO  SYS-5003-TOKCD
                    MOVE    SYS-5003-REC
                                        TO  MCPDATA-REC
                    MOVE    "tbl_syskanri"

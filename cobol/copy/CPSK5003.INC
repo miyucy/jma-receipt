@@ -38,8 +38,9 @@
       *´ÉÍý¥Æ¡¼¥Ö¥ë
            03  SYS-5003-TBL.
                05  SYS-5003-TANKICD     PIC  X(09).
+               05  SYS-5003-TOKCD       PIC  X(02).
       *Í½È÷
-               05  SYS-5003-YOBI        PIC  X(491).
+               05  SYS-5003-YOBI        PIC  X(489).
       *Ã¼Ëö£É£Ä
            03  SYS-5003-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -436,7 +436,7 @@
                    13  SPA-GMN-I01-TOKNYUIN-SRYCDTTL
                                                    PIC 9(14).
                    13  SPA-GMN-I01-TOKNYUIN-CNT    PIC 9(5).
-                   13  SPA-GMN-I01-TOKNYUIN-ITM-OCC    OCCURS  30.
+                   13  SPA-GMN-I01-TOKNYUIN-ITM-OCC    OCCURS  100.
                      15    SPA-GMN-I01-TOKNYUIN-ITM.
                        17  SPA-GMN-I01-TOKNYUINL   PIC X(02).
                        17  SPA-GMN-I01-TOKNYUINFLL PIC X(01).
