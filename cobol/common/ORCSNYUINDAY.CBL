@@ -30,8 +30,6 @@
       *Ê¿ÀÅ£²£°Ç¯£´·î²þÄêÂÐ±þ
       *  04.02.00    NACL-¾®Æ¦Âô  08/03/05  Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¤ÎÆþ±¡ÄÉ²Ã
       *  04.02.00    NACL-¾®Æ¦Âô  08/06/02  µßµÞÈÂÁ÷¿ÇÎÅÎÁ¤Î»»ÄêÆü¤òÈ½ÄêÄÉ²Ã
-      *Ê¿À®£³£°Ç¯£´·î²þÄêÂÐ±þ
-      *  05.00.00    NACL-¾®Æ¦Âô  18/03/07  Ã»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ¤ÎÈ½ÄêÊÑ¹¹
       *****************************************************************
       *
       *
@@ -56,14 +54,12 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-TANKI2                  PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
-           03  FLG-TENSU                   PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
            03  IDX-ST                      PIC 9(02).
            03  IDX-ED                      PIC 9(02).
-           03  IDX-TK3                     PIC 9(02).
       *
       *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
        01  CONSTANT-AREA.
@@ -75,230 +71,6 @@
            03   CONS-TANKI3                PIC X(09) VALUE "190130410".
       *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë
            03   CONS-TANKI3-SEIKATSU       PIC X(09) VALUE "190130510".
-      *
-           03   CONS-TANKI3-H26-AREA.
-      *      Ã»¼ê£³¡Ê½ªÌë¿çÌ²¥Ý¥ê¥°¥é¥Õ¥£¡¼£±¡Ê·ÈÂÓÍÑÁõÃÖ»ÈÍÑ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "97".
-             05   FILLER                   PIC X(09) VALUE "190177610".
-      *      Ã»¼ê£³¡Ê½ªÌë¿çÌ²¥Ý¥ê¥°¥é¥Õ¥£¡¼£²¡ÊÂ¿ÅÀ´¶°µ¥»¥ó¥µ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "99".
-             05   FILLER                   PIC X(09) VALUE "190177810".
-      *      Ã»¼ê£³¡Ê½ªÌë¿çÌ²¥Ý¥ê¥°¥é¥Õ¥£¡¼£³¡Ê£±µÚ¤Ó£²°Ê³°¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9B".
-             05   FILLER                   PIC X(09) VALUE "190178010".
-      *      Ã»¼ê£³¡Ê¾®»ù¿©Êª¥¢¥ì¥ë¥®¡¼Éé²Ù¸¡ºº¡Ë
-             05   FILLER                   PIC X(02) VALUE "9D".
-             05   FILLER                   PIC X(09) VALUE "190178210".
-      *      Ã»¼ê£³¡ÊÁ°Î©Á£¿ËÀ¸¸¡Ë¡¡Ë
-             05   FILLER                   PIC X(02) VALUE "9F".
-             05   FILLER                   PIC X(09) VALUE "190178410".
-      *      Ã»¼ê£³¡Êæþ½­¾É¼ê½Ñ¡ÊÈéÉæÍ­ÌÓÉôÀÚ½ü½Ñ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9H".
-             05   FILLER                   PIC X(09) VALUE "190178610".
-      *      Ã»¼ê£³¡Ê´ØÀá¶À²¼¼êº¬´É³«Êü¼ê½Ñ¡Ë
-             05   FILLER                   PIC X(02) VALUE "9J".
-             05   FILLER                   PIC X(09) VALUE "190178810".
-      *      Ã»¼ê£³¡Ê¶»¹Ð¶À²¼¸ò´¶¿À·ÐÀáÀÚ½ü½Ñ¡ÊÎ¾Â¦¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9L".
-             05   FILLER                   PIC X(09) VALUE "190179010".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦´ãÆâ¥ì¥ó¥ºÁÞÆþ¡¦¤½¤ÎÂ¾¤Î¤â¤Î¡Ë
-             05   FILLER                   PIC X(02) VALUE "9N".
-             05   FILLER                   PIC X(09) VALUE "190179210".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡Ê´ãÆâ¥ì¥ó¥ºÁÞÆþ¤·¤Ê¤¤¾ì¹ç¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9P".
-             05   FILLER                   PIC X(09) VALUE "190179410".
-      *      Ã»¼ê£³¡ÊÆýÁ£¼ðáçÅ¦½Ð½Ñ¡ÊÄ¹·Â£µ£ã£íÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9R".
-             05   FILLER                   PIC X(09) VALUE "190179610".
-      *      Ã»¼ê£³¡Ê²¼»èÀÅÌ®áî¼ê½Ñ¡ÊÈ´µîÀÚ½ü½Ñ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9T".
-             05   FILLER                   PIC X(09) VALUE "190179810".
-      *      Ã»¼ê£³¡Ê²¼»èÀÅÌ®áî¼ê½Ñ¡Ê¹Å²½ÎÅË¡¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9V".
-             05   FILLER                   PIC X(09) VALUE "190180010".
-      *      Ã»¼ê£³¡Ê²¼»èÀÅÌ®áî¼ê½Ñ¡Ê¹â°Ì·ëå§½Ñ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9X".
-             05   FILLER                   PIC X(09) VALUE "190180210".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£±£µºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "9Z".
-             05   FILLER                   PIC X(09) VALUE "190180410".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£±£µºÐ°Ê¾å¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "A1".
-             05   FILLER                   PIC X(09) VALUE "190180610".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£±£µºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "A3".
-             05   FILLER                   PIC X(09) VALUE "190180810".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£±£µºÐ°Ê¾å¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "A5".
-             05   FILLER                   PIC X(09) VALUE "190181010".
-      *      Ã»¼ê£³¡ÊÆâ»ë¶ÀÅª·ëÄ²¥Ý¥ê¡¼¥×¡¦Ç´ËìÀÚ½ü½Ñ£²£ã£íÌ¤Ëþ¡Ë
-             05   FILLER                   PIC X(02) VALUE "A7".
-             05   FILLER                   PIC X(09) VALUE "190181210".
-      *      Ã»¼ê£³¡ÊÆâ»ë¶ÀÅª·ëÄ²¥Ý¥ê¡¼¥×¡¦Ç´ËìÀÚ½ü½Ñ£²£ã£í°Ê¾å¡Ë
-             05   FILLER                   PIC X(02) VALUE "A9".
-             05   FILLER                   PIC X(09) VALUE "190181410".
-      *      Ã»¼ê£³¡Ê¼¦³Ë¼ê½Ñ¡Ê¹Å²½ÎÅË¡¡Ê»ÍÃÊ³¬Ãí¼ÍË¡¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "AB".
-             05   FILLER                   PIC X(09) VALUE "190181610".
-      *      Ã»¼ê£³¡Ê»ÒµÜ·ÛÉô¡ÊçµÉô¡ËÀÚ½ü½Ñ¡Ë
-             05   FILLER                   PIC X(02) VALUE "AD".
-             05   FILLER                   PIC X(09) VALUE "190181810".
-      *      Ã»¼ê£³¡Ê»ÒµÜ¶À²¼»ÒµÜ¶Ú¼ðÅ¦½Ð½Ñ¡Ë
-             05   FILLER                   PIC X(02) VALUE "AF".
-             05   FILLER                   PIC X(09) VALUE "190182010".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦¿å¾½ÂÎÇ¹³ÈÄ¥¥ê¥ó¥°¡¦Ë¥Ãå¤Ê¤·¡Ë
-             05   FILLER                   PIC X(02) VALUE "AW".
-             05   FILLER                   PIC X(09) VALUE "190182750".
-      *      Ã»¼ê£³¡Ê½ªÌë¿çÌ²¥Ý¥ê¥°¥é¥Õ¥£¡¼£±¡Ê·ÈÂÓÍÑÁõÃÖ»ÈÍÑ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "98".
-             05   FILLER                   PIC X(09) VALUE "190177710".
-      *      Ã»¼ê£³¡Ê½ªÌë¿çÌ²¥Ý¥ê¥°¥é¥Õ¥£¡¼£²¡ÊÂ¿ÅÀ´¶°µ¥»¥ó¥µ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9A".
-             05   FILLER                   PIC X(09) VALUE "190177910".
-      *      Ã»¼ê£³¡Ê½ªÌë¿çÌ²¥Ý¥ê¥°¥é¥Õ¥£¡¼£³¡Ê£±µÚ¤Ó£²°Ê³°¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9C".
-             05   FILLER                   PIC X(09) VALUE "190178110".
-      *      Ã»¼ê£³¡Ê¾®»ù¿©Êª¥¢¥ì¥ë¥®¡¼Éé²Ù¸¡ºº¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9E".
-             05   FILLER                   PIC X(09) VALUE "190178310".
-      *      Ã»¼ê£³¡ÊÁ°Î©Á£¿ËÀ¸¸¡Ë¡¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9G".
-             05   FILLER                   PIC X(09) VALUE "190178510".
-      *      Ã»¼ê£³¡Êæþ½­¾É¼ê½Ñ¡ÊÈéÉæÍ­ÌÓÉôÀÚ½ü½Ñ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9I".
-             05   FILLER                   PIC X(09) VALUE "190178710".
-      *      Ã»¼ê£³¡Ê´ØÀá¶À²¼¼êº¬´É³«Êü¼ê½Ñ¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9K".
-             05   FILLER                   PIC X(09) VALUE "190178910".
-      *      Ã»¼ê£³¡Ê¶»¹Ð¶À²¼¸ò´¶¿À·ÐÀáÀÚ½ü½Ñ¡ÊÎ¾Â¦¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9M".
-             05   FILLER                   PIC X(09) VALUE "190179110".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦´ãÆâ¥ì¥ó¥ºÁÞÆþ¡¦¤½¤ÎÂ¾¤Î¤â¤Î¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9O".
-             05   FILLER                   PIC X(09) VALUE "190179310".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡Ê´ãÆâ¥ì¥ó¥ºÁÞÆþ¤·¤Ê¤¤¾ì¹ç¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9Q".
-             05   FILLER                   PIC X(09) VALUE "190179510".
-      *      Ã»¼ê£³¡ÊÆýÁ£¼ðáçÅ¦½Ð½Ñ¡ÊÄ¹·Â£µ£ã£íÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9S".
-             05   FILLER                   PIC X(09) VALUE "190179710".
-      *      Ã»¼ê£³¡Ê²¼»èÀÅÌ®áî¼ê½Ñ¡ÊÈ´µîÀÚ½ü½Ñ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9U".
-             05   FILLER                   PIC X(09) VALUE "190179910".
-      *      Ã»¼ê£³¡Ê²¼»èÀÅÌ®áî¼ê½Ñ¡Ê¹Å²½ÎÅË¡¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9W".
-             05   FILLER                   PIC X(09) VALUE "190180110".
-      *      Ã»¼ê£³¡Ê²¼»èÀÅÌ®áî¼ê½Ñ¡Ê¹â°Ì·ëå§½Ñ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "9Y".
-             05   FILLER                   PIC X(09) VALUE "190180310".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£±£µºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "A0".
-             05   FILLER                   PIC X(09) VALUE "190180510".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£±£µºÐ°Ê¾å¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "A2".
-             05   FILLER                   PIC X(09) VALUE "190180710".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£±£µºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "A4".
-             05   FILLER                   PIC X(09) VALUE "190180910".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£±£µºÐ°Ê¾å¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "A6".
-             05   FILLER                   PIC X(09) VALUE "190181110".
-      *      Ã»¼ê£³¡ÊÆâ»ë¶ÀÅª·ëÄ²¥Ý¥ê¡¼¥×¡¦Ç´ËìÀÚ½ü½Ñ£²£ã£íÌ¤Ëþ¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "A8".
-             05   FILLER                   PIC X(09) VALUE "190181310".
-      *      Ã»¼ê£³¡ÊÆâ»ë¶ÀÅª·ëÄ²¥Ý¥ê¡¼¥×¡¦Ç´ËìÀÚ½ü½Ñ£²£ã£í°Ê¾å¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "AA".
-             05   FILLER                   PIC X(09) VALUE "190181510".
-      *      Ã»¼ê£³¡Ê¼¦³Ë¼ê½Ñ¡Ê¹Å²½ÎÅË¡¡Ê»ÍÃÊ³¬Ãí¼ÍË¡¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "AC".
-             05   FILLER                   PIC X(09) VALUE "190181710".
-      *      Ã»¼ê£³¡Ê»ÒµÜ·ÛÉô¡ÊçµÉô¡ËÀÚ½ü½Ñ¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "AE".
-             05   FILLER                   PIC X(09) VALUE "190181910".
-      *      Ã»¼ê£³¡Ê»ÒµÜ¶À²¼»ÒµÜ¶Ú¼ðÅ¦½Ð½Ñ¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "AG".
-             05   FILLER                   PIC X(09) VALUE "190182110".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦¿å¾½ÂÎÇ¹³ÈÄ¥¥ê¥ó¥°¡¦Ë¥Ãå¤Ê¤·¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "AX".
-             05   FILLER                   PIC X(09) VALUE "190182850".
-      *
-           03  CONS-TANKI3-H26-AREA-R  REDEFINES  CONS-TANKI3-H26-AREA.
-             05   CONS-TANKI3-H26-TBL      OCCURS  48.
-                07   CONS-TANKI3-H26-KBNCD PIC X(02).
-                07   CONS-TANKI3-H26-SRYCD PIC X(09).
-      *
-           03   CONS-TANKI3-H28-AREA.
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦´ãÆâ¥ì¥ó¥ºÁÞÆþ¡¦¤½¤ÎÂ¾¡¦Î¾Â¦¡Ë
-             05   FILLER                   PIC X(02) VALUE "AY".
-             05   FILLER                   PIC X(09) VALUE "190195910".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦´ãÆâ¥ì¥ó¥ºÁÞÆþ¤·¤Ê¤¤¡¦Î¾Â¦¡Ë
-             05   FILLER                   PIC X(02) VALUE "B0".
-             05   FILLER                   PIC X(09) VALUE "190196110".
-      *      Ã»¼ê£³¡Ê·ÐÈéÅª¥·¥ã¥ó¥È³ÈÄ¥½Ñ¡¦·ìÀò½üµî½Ñ¡Ë
-             05   FILLER                   PIC X(02) VALUE "B2".
-             05   FILLER                   PIC X(09) VALUE "190196310".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£³ºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "B4".
-             05   FILLER                   PIC X(09) VALUE "190196510".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£³ºÐ°Ê¾å£¶ºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "B6".
-             05   FILLER                   PIC X(09) VALUE "190196610".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£¶ºÐ°Ê¾å£±£µºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "B8".
-             05   FILLER                   PIC X(09) VALUE "190196710".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£³ºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "BA".
-             05   FILLER                   PIC X(09) VALUE "190197110".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£³ºÐ°Ê¾å£¶ºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "BC".
-             05   FILLER                   PIC X(09) VALUE "190197210".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£¶ºÐ°Ê¾å£±£µºÐÌ¤Ëþ¡Ë¡Ë
-             05   FILLER                   PIC X(02) VALUE "BE".
-             05   FILLER                   PIC X(09) VALUE "190197310".
-      *      Ã»¼ê£³¡ÊÂÎ³°¾×·âÇÈ¿Õ¡¦Ç¢´É·ëÀÐÇËºÕ½Ñ¡Ë
-             05   FILLER                   PIC X(02) VALUE "BG".
-             05   FILLER                   PIC X(09) VALUE "190197710".
-      *      Ã»¼ê£³¡Ê¥¬¥ó¥Þ¥Ê¥¤¥Õ¤Ë¤è¤ëÄê°ÌÊü¼ÍÀþ¼£ÎÅ¡Ë
-             05   FILLER                   PIC X(02) VALUE "BI".
-             05   FILLER                   PIC X(09) VALUE "190197910".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦´ãÆâ¥ì¥ó¥ºÁÞÆþ¡¦¤½¤ÎÂ¾¡¦Î¾Â¦¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "AZ".
-             05   FILLER                   PIC X(09) VALUE "190196010".
-      *      Ã»¼ê£³¡Ê¿å¾½ÂÎºÆ·ú½Ñ¡¦´ãÆâ¥ì¥ó¥ºÁÞÆþ¤·¤Ê¤¤¡¦Î¾Â¦¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "B1".
-             05   FILLER                   PIC X(09) VALUE "190196210".
-      *      Ã»¼ê£³¡Ê·ÐÈéÅª¥·¥ã¥ó¥È³ÈÄ¥½Ñ¡¦·ìÀò½üµî½Ñ¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "B3".
-             05   FILLER                   PIC X(09) VALUE "190196410".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£³ºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "B5".
-             05   FILLER                   PIC X(09) VALUE "190196810".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£³ºÐ°Ê¾å£¶ºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "B7".
-             05   FILLER                   PIC X(09) VALUE "190196910".
-      *      Ã»¼ê£³¡ÊÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ê£¶ºÐ°Ê¾å£±£µºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "B9".
-             05   FILLER                   PIC X(09) VALUE "190197010".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£³ºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "BB".
-             05   FILLER                   PIC X(09) VALUE "190197410".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£³ºÐ°Ê¾å£¶ºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "BD".
-             05   FILLER                   PIC X(09) VALUE "190197510".
-      *      Ã»¼ê£³¡ÊÊ¢¹Ð¶À²¼ÁÍ·Â¥Ø¥ë¥Ë¥¢¼ê½Ñ¡Ë¡Ê£¶ºÐ°Ê¾å£±£µºÐÌ¤Ëþ¡Ë¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "BF".
-             05   FILLER                   PIC X(09) VALUE "190197610".
-      *      Ã»¼ê£³¡ÊÂÎ³°¾×·âÇÈ¿Õ¡¦Ç¢´É·ëÀÐÇËºÕ½Ñ¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "BH".
-             05   FILLER                   PIC X(09) VALUE "190197810".
-      *      Ã»¼ê£³¡Ê¥¬¥ó¥Þ¥Ê¥¤¥Õ¤Ë¤è¤ëÄê°ÌÊü¼ÍÀþ¼£ÎÅ¡Ë¡ÊÀ¸³è¡Ë
-             05   FILLER                   PIC X(02) VALUE "BJ".
-             05   FILLER                   PIC X(09) VALUE "190198010".
-      *
-           03  CONS-TANKI3-H28-AREA-R  REDEFINES  CONS-TANKI3-H28-AREA.
-             05   CONS-TANKI3-H28-TBL      OCCURS  22.
-                07   CONS-TANKI3-H28-KBNCD PIC X(02).
-                07   CONS-TANKI3-H28-SRYCD PIC X(09).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -316,15 +88,6 @@
            03  WRK-YOKUJITSU-YMDR   REDEFINES   WRK-YOKUJITSU-YMD.
                05  WRK-YOKUJITSU-YYMM      PIC 9(06).
                05  WRK-YOKUJITSU-DD        PIC 9(02).
-      *
-      *    ·îËöÆü¼èÆÀÍÑ
-           03  WRK-GETSUMATSU-YMD.
-               05  WRK-GETSUMATSU-YY       PIC 9(04).
-               05  WRK-GETSUMATSU-MM       PIC 9(02).
-               05  WRK-GETSUMATSU-DD       PIC 9(02).
-      *
-      *    Ã»´üÂÚºß°Ê³°¤ÇÆþ±¡ÎÁ¤ò»»Äê¤·¤Æ¤¤¤ëÆü
-           03  WRK-TANKI-IGAI              PIC X(01)  OCCURS 31.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -357,9 +120,6 @@
       *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
-           COPY    "CPTENSU.INC".
       *
       *
       *    £Ä£Â¸¡º÷
@@ -411,14 +171,6 @@
            IF      LNK-NYUINDAY-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
-      *
-      *     PERFORM    VARYING IDX   FROM   1   BY  1
-      *                UNTIL IDX   >   31
-      *       DISPLAY "IDX = " IDX " LNK-NYUINDAY-KBN = "
-      *                 LNK-NYUINDAY-KBN(IDX)
-      *               " LNK-NYUINDAY-TANKI2-KBN = " 
-      *                LNK-NYUINDAY-TANKI2-KBN(IDX)
-      *     END-PERFORM
       *
            .
        000-PROC-EXT.
@@ -481,65 +233,6 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    ·îËöÆü¤ò¼èÆÀ
-           INITIALIZE                         STS-AREA-DAY
-           INITIALIZE                         LNK-DAY7-AREA
-           MOVE    "71"                   TO  LNK-DAY7-IRAI
-           MOVE    LNK-NYUINDAY-SANTEIYM
-                                          TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"          USING   STS-AREA-DAY
-                                              LNK-DAY7-AREA
-           IF      STS-DAY-RC1            =   ZERO
-               MOVE    LNK-DAY7-KOYOMI    TO  WRK-GETSUMATSU-YMD
-           END-IF
-      *
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ°Ê³°¤ÇÆþ±¡ÎÁ¤Î¥«¥ì¥ó¥À¡¼¤¬Î©¤Ã¤Æ¤¤¤ëÆü¤ò
-      *    ÆÃÄê¤¹¤ë
-           INITIALIZE                       NYUINACCT-REC
-           MOVE    LNK-NYUINDAY-HOSPNUM   TO  NACCT-HOSPNUM
-           MOVE    LNK-NYUINDAY-PTID      TO  NACCT-PTID
-           MOVE    LNK-NYUINDAY-SANTEIYM  TO  NACCT-SRYYM
-           MOVE    "tbl_nyuinacct"        TO  MCP-TABLE
-           MOVE    "key36"                TO  MCP-PATHNAME
-           PERFORM 910-NYUINACCT-SELECT-SEC
-           IF      FLG-NYUINACCT          =   ZERO
-               MOVE    "tbl_nyuinacct"    TO  MCP-TABLE
-               MOVE    "key36"            TO  MCP-PATHNAME
-               PERFORM 910-NYUINACCT-READ-SEC
-               PERFORM  UNTIL  ( FLG-NYUINACCT    =   1 )
-                  PERFORM    210-NYUINACT-GET-SEC
-      *           ÅÀ¿ô¥Þ¥¹¥¿¤è¤êÃ»´üÂÚºß°Ê³°¤Ç¤¢¤ë¤³¤È¤ÎÈ½Äê
-                  INITIALIZE                  TNS-TENSU-REC
-                  MOVE    LNK-NYUINDAY-HOSPNUM
-                                          TO  TNS-HOSPNUM
-                  MOVE    NSRY-SRYCD(1)   TO  TNS-SRYCD
-                  MOVE    LNK-NYUINDAY-SANTEIYM
-                                          TO  TNS-YUKOSTYMD(1:6)
-                  MOVE    "01"            TO  TNS-YUKOSTYMD(7:2)
-                  MOVE    TNS-YUKOSTYMD   TO  TNS-YUKOEDYMD
-                  PERFORM   910-TENSU-READ-SEC
-                  IF    (TNS-CDKBN-KBN     =   "A")   AND
-                        (TNS-CDKBN-KBNNUM  =   400)   AND
-                        (TNS-CDKBN-KOUBAN  =   2  OR 3)
-                      CONTINUE
-                  ELSE
-                      PERFORM    VARYING IDX   FROM   1   BY  1
-                        UNTIL IDX   >   31
-                            IF  NACCT-DAY(IDX)  NOT =   ZERO
-                                MOVE   "1"      TO   WRK-TANKI-IGAI(IDX)
-                            END-IF
-                      END-PERFORM
-                  END-IF
-                  MOVE    "tbl_nyuinacct"    TO  MCP-TABLE
-                  MOVE    "key36"            TO  MCP-PATHNAME
-                  PERFORM 910-NYUINACCT-READ-SEC
-               END-PERFORM
-           END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
-           MOVE    "tbl_nyuinacct"        TO  MCP-TABLE
-           MOVE    "key36"                TO  MCP-PATHNAME
-           PERFORM   900-CLOSE-SEC
-      *
       *    Æþ±¡ÍúÎò¤è¤êÃ»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤Î»»ÄêÍ­Ìµ¤òÆÃÄê
            INITIALIZE                     PTNYUINRRK-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
@@ -586,10 +279,9 @@
                            MOVE   99     TO    IDX-ED
                       END-IF
                       PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
+                               UNTIL     IDX   >   31
                          IF    (IDX-ST    <=    IDX)   AND
                                (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
                             MOVE  "1"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
                          END-IF
                       END-PERFORM
@@ -651,10 +343,9 @@
                            MOVE   99     TO    IDX-ED
                       END-IF
                       PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
+                               UNTIL     IDX   >   31
                          IF    (IDX-ST    <=    IDX)   AND
                                (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
                             MOVE  "2"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
                          END-IF
                       END-PERFORM
@@ -716,10 +407,9 @@
                            MOVE   99     TO    IDX-ED
                       END-IF
                       PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
+                               UNTIL     IDX   >   31
                          IF    (IDX-ST    <=    IDX)   AND
                                (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
                             MOVE  "1"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
                          END-IF
                       END-PERFORM
@@ -781,10 +471,9 @@
                            MOVE   99     TO    IDX-ED
                       END-IF
                       PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
+                               UNTIL     IDX   >   31
                          IF    (IDX-ST    <=    IDX)   AND
                                (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
                             MOVE  "2"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
                          END-IF
                       END-PERFORM
@@ -799,292 +488,6 @@
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
-      *
-      *    Ê¿À®£²£¶Ç¯²þÄê¤ÎÄÉ²ÃÊ¬
-      *    Æþ±¡ÍúÎò¤è¤êÃ»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ°Ê³°¡Ë¤Î»»ÄêÍ­Ìµ¤òÆÃÄê
-           IF       LNK-NYUINDAY-SANTEIYM   >=   "201404"
-            PERFORM     VARYING   IDX-TK3  FROM   1  BY  1
-             UNTIL     IDX-TK3   >   24
-             INITIALIZE                     PTNYUINRRK-REC
-             MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
-             MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
-             MOVE    "3"                    TO  PTNYUINRRK-TOKUTEI-KBN
-             MOVE    CONS-TANKI3-H26-KBNCD(IDX-TK3)
-                                            TO  PTNYUINRRK-TOKUTEI-NYUIN
-             MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
-             MOVE    "key49"                TO  MCP-PATHNAME
-             PERFORM 910-PTNYUINRRK-SELECT-SEC
-             IF      FLG-PTNYUINRRK         =   ZERO
-               MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
-               MOVE    "key49"            TO  MCP-PATHNAME
-               PERFORM   910-PTNYUINRRK-READ-SEC
-               PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
-                 IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
-                      MOVE     ZERO       TO     IDX-ST
-                                                 IDX-ED
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          <  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                            =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  1                          TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          >  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  99                         TO  IDX-ED
-                      END-IF
-                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
-                           MOVE   99     TO    IDX-ED
-                      END-IF
-                      PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
-                         IF    (IDX-ST    <=    IDX)   AND
-                               (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI3-KBN(IDX)
-                         END-IF
-                      END-PERFORM
-                 END-IF
-                 MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
-                 MOVE    "key49"              TO  MCP-PATHNAME
-                 PERFORM 910-PTNYUINRRK-READ-SEC
-               END-PERFORM
-             END-IF
-      *      ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
-             MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-             MOVE    "key49"                 TO  MCP-PATHNAME
-             PERFORM   900-CLOSE-SEC
-            END-PERFORM
-      *
-      *
-      *    Æþ±¡ÍúÎò¤è¤êÃ»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë¤Î»»ÄêÍ­Ìµ¤òÆÃÄê
-            PERFORM     VARYING   IDX-TK3  FROM   25  BY  1
-             UNTIL     IDX-TK3   >   48
-             INITIALIZE                     PTNYUINRRK-REC
-             MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
-             MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
-             MOVE    "3"                    TO  PTNYUINRRK-TOKUTEI-KBN
-             MOVE    CONS-TANKI3-H26-KBNCD(IDX-TK3)
-                                            TO  PTNYUINRRK-TOKUTEI-NYUIN
-             MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
-             MOVE    "key49"                TO  MCP-PATHNAME
-             PERFORM 910-PTNYUINRRK-SELECT-SEC
-             IF      FLG-PTNYUINRRK         =   ZERO
-               MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
-               MOVE    "key49"            TO  MCP-PATHNAME
-               PERFORM   910-PTNYUINRRK-READ-SEC
-               PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
-                 IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
-                      MOVE     ZERO       TO     IDX-ST
-                                                 IDX-ED
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          <  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                            =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  1                          TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          >  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  99                         TO  IDX-ED
-                      END-IF
-                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
-                           MOVE   99     TO    IDX-ED
-                      END-IF
-                      PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
-                         IF    (IDX-ST    <=    IDX)   AND
-                               (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
-                            MOVE  "2"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
-                            MOVE  "2"  TO  LNK-NYUINDAY-TANKI3-KBN(IDX)
-                         END-IF
-                      END-PERFORM
-                 END-IF
-                 MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
-                 MOVE    "key49"              TO  MCP-PATHNAME
-                 PERFORM 910-PTNYUINRRK-READ-SEC
-               END-PERFORM
-             END-IF
-      *      ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
-             MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-             MOVE    "key49"                 TO  MCP-PATHNAME
-             PERFORM   900-CLOSE-SEC
-            END-PERFORM
-      *
-           END-IF
-      *
-      *    Ê¿À®£²£¸Ç¯²þÄê¤ÎÄÉ²ÃÊ¬
-      *    Æþ±¡ÍúÎò¤è¤êÃ»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ°Ê³°¡Ë¤Î»»ÄêÍ­Ìµ¤òÆÃÄê
-           IF       LNK-NYUINDAY-SANTEIYM   >=   "201604"
-            PERFORM     VARYING   IDX-TK3  FROM   1  BY  1
-             UNTIL     IDX-TK3   >   11
-             INITIALIZE                     PTNYUINRRK-REC
-             MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
-             MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
-             MOVE    "3"                    TO  PTNYUINRRK-TOKUTEI-KBN
-             MOVE    CONS-TANKI3-H28-KBNCD(IDX-TK3)
-                                            TO  PTNYUINRRK-TOKUTEI-NYUIN
-             MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
-             MOVE    "key49"                TO  MCP-PATHNAME
-             PERFORM 910-PTNYUINRRK-SELECT-SEC
-             IF      FLG-PTNYUINRRK         =   ZERO
-               MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
-               MOVE    "key49"            TO  MCP-PATHNAME
-               PERFORM   910-PTNYUINRRK-READ-SEC
-               PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
-                 IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
-                      MOVE     ZERO       TO     IDX-ST
-                                                 IDX-ED
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          <  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                            =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  1                          TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          >  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  99                         TO  IDX-ED
-                      END-IF
-                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
-                           MOVE   99     TO    IDX-ED
-                      END-IF
-                      PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
-                         IF    (IDX-ST    <=    IDX)   AND
-                               (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI3-KBN(IDX)
-                         END-IF
-                      END-PERFORM
-                 END-IF
-                 MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
-                 MOVE    "key49"              TO  MCP-PATHNAME
-                 PERFORM 910-PTNYUINRRK-READ-SEC
-               END-PERFORM
-             END-IF
-      *      ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
-             MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-             MOVE    "key49"                 TO  MCP-PATHNAME
-             PERFORM   900-CLOSE-SEC
-            END-PERFORM
-      *
-      *
-      *    Æþ±¡ÍúÎò¤è¤êÃ»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë¤Î»»ÄêÍ­Ìµ¤òÆÃÄê
-            PERFORM     VARYING   IDX-TK3  FROM   12  BY  1
-             UNTIL     IDX-TK3   >   22
-             INITIALIZE                     PTNYUINRRK-REC
-             MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
-             MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
-             MOVE    "3"                    TO  PTNYUINRRK-TOKUTEI-KBN
-             MOVE    CONS-TANKI3-H28-KBNCD(IDX-TK3)
-                                            TO  PTNYUINRRK-TOKUTEI-NYUIN
-             MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
-             MOVE    "key49"                TO  MCP-PATHNAME
-             PERFORM 910-PTNYUINRRK-SELECT-SEC
-             IF      FLG-PTNYUINRRK         =   ZERO
-               MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
-               MOVE    "key49"            TO  MCP-PATHNAME
-               PERFORM   910-PTNYUINRRK-READ-SEC
-               PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
-                 IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
-                                   OR
-                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
-                      MOVE     ZERO       TO     IDX-ST
-                                                 IDX-ED
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          <  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                            =  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  1                          TO  IDX-ST
-                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                      END-IF
-                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
-                                          =  LNK-NYUINDAY-SANTEIYM) AND
-                          (PTNYUINRRK-TENSTUYMD(1:6)
-                                          >  LNK-NYUINDAY-SANTEIYM)
-                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                          MOVE  99                         TO  IDX-ED
-                      END-IF
-                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
-                           MOVE   99     TO    IDX-ED
-                      END-IF
-                      PERFORM    VARYING   IDX   FROM   1   BY   1
-                               UNTIL     IDX   >   WRK-GETSUMATSU-DD
-                         IF    (IDX-ST    <=    IDX)   AND
-                               (IDX-ED    >=    IDX)
-                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI-KBN(IDX)
-                            MOVE  "2"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
-                            MOVE  "2"  TO  LNK-NYUINDAY-TANKI3-KBN(IDX)
-                         END-IF
-                      END-PERFORM
-                 END-IF
-                 MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
-                 MOVE    "key49"              TO  MCP-PATHNAME
-                 PERFORM 910-PTNYUINRRK-READ-SEC
-               END-PERFORM
-             END-IF
-      *      ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
-             MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-             MOVE    "key49"                 TO  MCP-PATHNAME
-             PERFORM   900-CLOSE-SEC
-            END-PERFORM
-      *
-           END-IF
       *
       *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡ÊÀ¸³èÎÅÍÜ´Þ¤à¡ËËô¤ÏÃ»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ´Þ¤à¡Ë
       *    ¤Ë³ºÅö¤¹¤ëÆþ±¡ÎÁ¤òÈ½Äê¤·¡¢Æþ±¡²ñ·×¤Ç»»ÄêºÑ¤ß¤Î¾ì¹ç¤ÏÊÖµÑÃÍ¤ò¥¯¥ê¥¢¤¹¤ë
@@ -1105,82 +508,12 @@
                        CONTINUE
                    ELSE
                        PERFORM    210-NYUINACT-GET-SEC
-                       IF  NSRY-SRYCD(1)  = CONS-TANKI2     OR
-                                            CONS-TANKI2-SEIKATSU OR
-                                            CONS-TANKI3     OR
-                                            CONS-TANKI3-SEIKATSU OR
-                                            CONS-TANKI3-H26-SRYCD(1) OR
-                                            CONS-TANKI3-H26-SRYCD(2) OR
-                                            CONS-TANKI3-H26-SRYCD(3) OR
-                                            CONS-TANKI3-H26-SRYCD(4) OR
-                                            CONS-TANKI3-H26-SRYCD(5) OR
-                                            CONS-TANKI3-H26-SRYCD(6) OR
-                                            CONS-TANKI3-H26-SRYCD(7) OR
-                                            CONS-TANKI3-H26-SRYCD(8) OR
-                                            CONS-TANKI3-H26-SRYCD(9) OR
-                                            CONS-TANKI3-H26-SRYCD(10) OR
-                                            CONS-TANKI3-H26-SRYCD(11) OR
-                                            CONS-TANKI3-H26-SRYCD(12) OR
-                                            CONS-TANKI3-H26-SRYCD(13) OR
-                                            CONS-TANKI3-H26-SRYCD(14) OR
-                                            CONS-TANKI3-H26-SRYCD(15) OR
-                                            CONS-TANKI3-H26-SRYCD(16) OR
-                                            CONS-TANKI3-H26-SRYCD(17) OR
-                                            CONS-TANKI3-H26-SRYCD(18) OR
-                                            CONS-TANKI3-H26-SRYCD(19) OR
-                                            CONS-TANKI3-H26-SRYCD(20) OR
-                                            CONS-TANKI3-H26-SRYCD(21) OR
-                                            CONS-TANKI3-H26-SRYCD(22) OR
-                                            CONS-TANKI3-H26-SRYCD(23) OR
-                                            CONS-TANKI3-H26-SRYCD(24) OR
-                                            CONS-TANKI3-H26-SRYCD(25) OR
-                                            CONS-TANKI3-H26-SRYCD(26) OR
-                                            CONS-TANKI3-H26-SRYCD(27) OR
-                                            CONS-TANKI3-H26-SRYCD(28) OR
-                                            CONS-TANKI3-H26-SRYCD(29) OR
-                                            CONS-TANKI3-H26-SRYCD(30) OR
-                                            CONS-TANKI3-H26-SRYCD(31) OR
-                                            CONS-TANKI3-H26-SRYCD(32) OR
-                                            CONS-TANKI3-H26-SRYCD(33) OR
-                                            CONS-TANKI3-H26-SRYCD(34) OR
-                                            CONS-TANKI3-H26-SRYCD(35) OR
-                                            CONS-TANKI3-H26-SRYCD(36) OR
-                                            CONS-TANKI3-H26-SRYCD(37) OR
-                                            CONS-TANKI3-H26-SRYCD(38) OR
-                                            CONS-TANKI3-H26-SRYCD(39) OR
-                                            CONS-TANKI3-H26-SRYCD(40) OR
-                                            CONS-TANKI3-H26-SRYCD(41) OR
-                                            CONS-TANKI3-H26-SRYCD(42) OR
-                                            CONS-TANKI3-H26-SRYCD(43) OR
-                                            CONS-TANKI3-H26-SRYCD(44) OR
-                                            CONS-TANKI3-H26-SRYCD(45) OR
-                                            CONS-TANKI3-H26-SRYCD(46) OR
-                                            CONS-TANKI3-H26-SRYCD(47) OR
-                                            CONS-TANKI3-H26-SRYCD(48) OR
-                                            CONS-TANKI3-H28-SRYCD(1)  OR
-                                            CONS-TANKI3-H28-SRYCD(2)  OR
-                                            CONS-TANKI3-H28-SRYCD(3)  OR
-                                            CONS-TANKI3-H28-SRYCD(4)  OR
-                                            CONS-TANKI3-H28-SRYCD(5)  OR
-                                            CONS-TANKI3-H28-SRYCD(6)  OR
-                                            CONS-TANKI3-H28-SRYCD(7)  OR
-                                            CONS-TANKI3-H28-SRYCD(8)  OR
-                                            CONS-TANKI3-H28-SRYCD(9)  OR
-                                            CONS-TANKI3-H28-SRYCD(10) OR
-                                            CONS-TANKI3-H28-SRYCD(11) OR
-                                            CONS-TANKI3-H28-SRYCD(12) OR
-                                            CONS-TANKI3-H28-SRYCD(13) OR
-                                            CONS-TANKI3-H28-SRYCD(14) OR
-                                            CONS-TANKI3-H28-SRYCD(15) OR
-                                            CONS-TANKI3-H28-SRYCD(16) OR
-                                            CONS-TANKI3-H28-SRYCD(17) OR
-                                            CONS-TANKI3-H28-SRYCD(18) OR
-                                            CONS-TANKI3-H28-SRYCD(19) OR
-                                            CONS-TANKI3-H28-SRYCD(20) OR
-                                            CONS-TANKI3-H28-SRYCD(21) OR
-                                            CONS-TANKI3-H28-SRYCD(22)
+                       IF   NSRY-SRYCD(1)   =  CONS-TANKI2     OR
+                                               CONS-TANKI2-SEIKATSU OR
+                                               CONS-TANKI3     OR
+                                               CONS-TANKI3-SEIKATSU
                           PERFORM    VARYING   IDX   FROM   1   BY   1
-                                  UNTIL     IDX   >   WRK-GETSUMATSU-DD
+                                  UNTIL     IDX   >   31
                             IF     NACCT-DAY(IDX)  NOT =  ZERO
                                MOVE  SPACE TO LNK-NYUINDAY-TANKI2-KBN
                                                                  (IDX)
@@ -1204,17 +537,6 @@
                  UNTIL     IDX   >   31
                IF   LNK-NYUINDAY-TANKI2-KBN(IDX)  NOT =   SPACE
                    MOVE   "1"     TO   LNK-NYUINDAY-KBN(IDX)
-               END-IF
-           END-PERFORM
-      *
-      *    Æþ±¡¶èÊ¬¤Î¥¯¥ê¥¢
-           PERFORM    VARYING   IDX   FROM   1   BY   1
-                 UNTIL     IDX   >   31
-               IF   WRK-TANKI-IGAI(IDX)  NOT =   SPACE
-                   MOVE   SPACE     TO   LNK-NYUINDAY-KBN(IDX)
-                   MOVE   SPACE     TO   LNK-NYUINDAY-TANKI-KBN(IDX)
-                   MOVE   SPACE     TO   LNK-NYUINDAY-TANKI2-KBN(IDX)
-                   MOVE   SPACE     TO   LNK-NYUINDAY-TANKI3-KBN(IDX)
                END-IF
            END-PERFORM
       *
@@ -1998,39 +1320,6 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
-      *****************************************************************
-       910-TENSU-READ-SEC         SECTION.
-      *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"     TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM   900-DBFETCH-SEC
-               IF      MCP-RC          =   ZERO
-                   MOVE    MCPDATA-REC TO  TNS-TENSU-REC
-                   MOVE    ZERO        TO  FLG-TENSU
-               ELSE
-                   MOVE    1           TO  FLG-TENSU
-                   INITIALIZE              TNS-TENSU-REC
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-TENSU
-               INITIALIZE                  TNS-TENSU-REC
-           END-IF
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   900-CLOSE-SEC
-      *
-           .
-       910-TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************
