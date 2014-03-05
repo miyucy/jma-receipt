@@ -2387,8 +2387,14 @@
                    END-STRING
       *        Ｈ１８．１０改正から
                WHEN    "1070"
-                   STRING  "老人の保険割合が２割です。"
-                           "３割に保険を登録し直して下さい。"
+      *            STRING  "老人の保険割合が２割です。"
+      *                    "３割に保険を登録し直して下さい。"
+      *                                DELIMITED  BY  SIZE
+      *                                INTO    SPA-ERRMSG
+      *            END-STRING
+      *H26.5 から　２割も対象なるので、割合削除
+                   STRING  "老人の保険割合が違います。"
+                           "保険を登録し直して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -2939,6 +2945,15 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *
+      *H26.4　改正から
+               WHEN    "K250"
+                   STRING  "警告！"
+                           "うがい薬のみの投薬となります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "K910"
                    STRING  "警告！"
                            "入院会計照会を確認して下さい。"
