@@ -1321,6 +1321,8 @@
                WHEN   79
                WHEN   83
                WHEN   84
+      *        平成２６年改正で月平均夜勤時間超過減算の入院基本料区分追加
+               WHEN   88
                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
            END-EVALUATE
            IF  TNS-SRYCD      =    "190121810"
