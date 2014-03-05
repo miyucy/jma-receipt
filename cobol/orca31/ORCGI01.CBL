@@ -5555,20 +5555,43 @@
       *
                MOVE    ZERO        TO  FLG-TARGET
       *
-               IF    ( FLG-RYOYOKHN                =   1 OR 3)
+               IF    ( FLG-RYOYOKHN                =   1 )
                 AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                   IF    ( FLG-LIFE-RJN    =   ZERO OR 2)
-                       IF    ( SYS-5111-SEIKATU-RYOKBN
+                       IF    ( FLG-LIFE-RJN    =   ZERO OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
                                                =   SPACE )
-                           MOVE    1   TO  FLG-TARGET
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
                        END-IF
-                   END-IF
-                   IF    ( FLG-LIFE-RJN    =   1    OR 2)
-                       IF    ( SYS-5111-SEIKATU-RYOKBN
+                       IF    ( FLG-LIFE-RJN    =   1    OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
                                            NOT =   SPACE )
                                MOVE    1   TO  FLG-TARGET
+                           END-IF
                        END-IF
-                   END-IF
+               END-IF
+      *
+               IF    ( FLG-RYOYOKHN                =   3 )
+                AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
+                  IF    ( WRK-KJNYMD             >=   CONST-H260401 )
+                          IF    ( SYS-5111-SEIKATU-RYOKBN
+                                              =   SPACE )
+                              MOVE    1   TO  FLG-TARGET
+                          END-IF
+                  ELSE
+                       IF    ( FLG-LIFE-RJN    =   ZERO OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                               =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       END-IF
+                       IF    ( FLG-LIFE-RJN    =   1    OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                           NOT =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       END-IF
+                  END-IF
                END-IF
       *
                IF    ( FLG-RYOYOKHN                =   5 )
@@ -17618,7 +17641,7 @@
            END-IF
       *
            IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
-            OR   ( AGECHK-HKNKBN           =   4 OR 5 )
+            OR   ( AGECHK-HKNKBN           =   4 OR 5 OR 7 )
                EVALUATE    TRUE
                WHEN  ( WRK-AGECHK-SRYYMD   >=  CONST-H200401 )
       *
