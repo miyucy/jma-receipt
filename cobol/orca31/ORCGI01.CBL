@@ -3250,8 +3250,11 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TAIINCD
            END-IF
       *
-      *
       *    特定入院料コンボ設定処理
+           MOVE    PTNYUINRRK-TOKUTEI-KBN
+                                       TO  SPA-NAI-I01-TOKUTEI-KBN
+           MOVE    PTNYUINRRK-TOKUTEI-NYUIN
+                                       TO  SPA-NAI-I01-TOKUTEI-NYUIN
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  WRK-KJNYMD
            PERFORM 4101-CMB-TOKNYUIN-SET-SEC
@@ -5501,6 +5504,29 @@
                MOVE    "52"        TO  WRK-KBNCD
                MOVE    "3"         TO  WRK-TOKNYUIN-KBN
                PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+           END-IF
+      *
+      *    入院履歴に登録のある特定入院料がコンボボックスにない場合は、
+      *    追加表示を行う。
+           IF    ( SPA-NAI-I01-TOKUTEI-KBN =   "2" OR "3" )
+               MOVE    SPACE           TO  WRK-CMB-CD
+               MOVE    SPA-NAI-I01-TOKUTEI-KBN
+                                       TO  WRK-CMB-CD (1 : 1)
+               MOVE    SPA-NAI-I01-TOKUTEI-NYUIN
+                                       TO  WRK-CMB-CD (2 : 2)
+               PERFORM 4103-CMB-TOKNYUIN-SRH2-SEC
+               IF    ( WRK-CMB-ITM     =   SPACE )
+                   IF    ( SPA-NAI-I01-TOKUTEI-KBN =   "2" )
+                       MOVE    "5110"  TO  WRK-KANRICD
+                   ELSE
+                       MOVE    "5111"  TO  WRK-KANRICD
+                   END-IF
+                   MOVE    SPA-NAI-I01-TOKUTEI-NYUIN
+                                       TO  WRK-KBNCD
+                   MOVE    SPA-NAI-I01-TOKUTEI-KBN
+                                       TO  WRK-TOKNYUIN-KBN
+                   PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+               END-IF
            END-IF
       *
            .

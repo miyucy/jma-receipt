@@ -265,6 +265,8 @@
                                                    PIC X(02).
                  11  SPA-NAI-I01-TOKNYUINMOT       PIC X(3).
                  11  SPA-NAI-I01-TOKNYUINCD        PIC X(09).
+                 11  SPA-NAI-I01-TOKUTEI-KBN       PIC X(01).
+                 11  SPA-NAI-I01-TOKUTEI-NYUIN     PIC X(02).
       *          …¬≈Ô∆˛±°¥À‹Œ¡
                  11  SPA-NAI-I01-KHNRYO-G.
                     13  SPA-NAI-I01-KHNRYO-CD      PIC X(09).
