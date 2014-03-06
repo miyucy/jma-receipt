@@ -129,6 +129,9 @@
            COPY    "CPORCSLNK.INC".
            COPY    "CPORCSGDAY.INC".
       *
+      *    夜勤時間超過減算入院料コード取得サブ
+           COPY "CPORCSYAKINGEN.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -1264,6 +1267,25 @@
            MOVE    ZERO            TO  WRK-BTU-CDKBN-KBNNUM
            MOVE    ZERO            TO  WRK-BTU-CDKBN-KBNNUM-EDA
            MOVE    SPACE           TO  WRK-TOKUBETSU-NYUIN
+      *
+      *    平成２６年改正　夜勤時間超過減算の特別入院基本料判定用に
+      *    入院料コードを置き換え
+      *   （医療観察入院時はこの処理をスキップ）
+           IF      LNK-NYUKSNGET-NYUIN-SRYCD(1:3) = "188"
+               CONTINUE
+           ELSE
+               INITIALIZE    ORCSYAKINGEN-AREA
+               MOVE   LNK-NYUKSNGET-SANTEIYM
+                                   TO    LNK-YAKINGEN-SANTEIYM
+               MOVE   LNK-NYUKSNGET-NYUIN-SRYCD
+                                   TO    LNK-YAKINGEN-SRYCD
+               CALL   "ORCSYAKINGEN"    USING   ORCSYAKINGEN-AREA
+                                                SPA-AREA
+               IF   LNK-YAKINGEN-RC     =       ZERO
+                    MOVE LNK-YAKINGEN-CHGSRYCD
+                                   TO    LNK-NYUKSNGET-NYUIN-SRYCD
+               END-IF
+           END-IF
       *
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE                  TNS-TENSU-REC
