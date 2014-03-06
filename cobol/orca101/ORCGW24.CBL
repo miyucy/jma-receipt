@@ -183,6 +183,8 @@
            03  WRK-KSNCD                           PIC X(09).
            03  WRK-KBN1-G.
                05  WRK-KBN1                        PIC 9(01).
+           03  WRK-KBN2-G.
+               05  WRK-KBN2                        PIC 9(02).
            03  WRK-5020-STYUKYMD                   PIC X(08).
            03  WRK-5020-EDYUKYMD                   PIC X(08).
            03  WRK-NYUKSN-MAX                      PIC 9(03).
@@ -190,10 +192,10 @@
        01  SSTKJN-AREA.
            03  SSTKJN-VAL.
                05  SSTKJN-VAL-OCC                  PIC X(500)
-                                                   OCCURS  7.
+                                                   OCCURS  20.
            03  SSTKJN-R    REDEFINES       SSTKJN-VAL.
                05  SSTKJN-CD                       PIC X(01)
-                                                   OCCURS  3500.
+                                                   OCCURS  10000.
       *
       *    ¸ÇÄêÃÍÎÎ°è
        01  CONST-AREA.
@@ -3248,12 +3250,20 @@
       *
                MOVE    SYSKANRI-REC    TO  SYS-1006-REC
       *
-               IF    ( SYS-1006-KBNCD  >=  "1" )
-                AND  ( SYS-1006-KBNCD  <=  "7" )
+               EVALUATE    TRUE
+               WHEN  ( SYS-1006-KBNCD (2:)         =   SPACE )
+                AND  ( SYS-1006-KBNCD  >=  "1" )
+                AND  ( SYS-1006-KBNCD  <=  "9" )
                    MOVE    SYS-1006-KBNCD  TO  WRK-KBN1-G
                    MOVE    SYS-1006-TBL    TO  SSTKJN-VAL-OCC
                                                      (WRK-KBN1)
-               END-IF
+               WHEN  ( SYS-1006-KBNCD (2:1)    NOT =   SPACE )
+                AND  ( SYS-1006-KBNCD  >=  "10" )
+                AND  ( SYS-1006-KBNCD  <=  "19" )
+                   MOVE    SYS-1006-KBNCD  TO  WRK-KBN2-G
+                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL-OCC
+                                                     (WRK-KBN2)
+               END-EVALUATE
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
