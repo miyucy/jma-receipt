@@ -31,7 +31,6 @@ db	{
 	tbl_ptinf;
 	tbl_tnkrrk;
 	tbl_tsyrrk;
-	tbl_list_doctor;
 };
 
 /* #include "orcadb.inc" */

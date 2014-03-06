@@ -10,7 +10,6 @@ bind	"I22"		"OpenCOBOL"	"ORCGI22";
 bind	"I23"		"OpenCOBOL"	"ORCGI23";
 bind	"I2ERR"		"OpenCOBOL"	"ORCGI2ERR";
 bind	"I2ID1"		"OpenCOBOL"	"ORCGI2ID1";
-bindapi "hsfindv3"  "OpenCOBOL"	"ORCGI2API01"; 
 
 multiplex_group	orca36;
 
@@ -24,7 +23,6 @@ data	{
 		I23;
 		I2ERR;
 		I2ID1;
-        hsfindv3;
 	};
 };
 
@@ -45,18 +43,6 @@ db	{
 	tbl_ptsrh;
 	tbl_tnkrrk;
 	tbl_tsyrrk;
-	tbl_spa_tmp;
-	tbl_sysuser;
-	tbl_sysbase;
-	tbl_passwd;
-	tbl_dbcatalog;
-	tbl_api_para;
-	tbl_teikirrk;
-};
-
-db "xml2" {
- xml_hsfindv3req;
- xml_hsfindv3res;
 };
 
 /* #include "orcadb.inc" */
