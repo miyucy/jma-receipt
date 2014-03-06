@@ -5429,7 +5429,7 @@
                WHEN  ( SPA-NAI-I01-BTUSBT  =   "09" )
                    MOVE    "5110"      TO  WRK-KANRICD
                    MOVE    "2"         TO  WRK-TOKNYUIN-KBN
-                   EVALUATE    TURE
+                   EVALUATE    TRUE
                    WHEN  ( WRK-KJNYMD     >=  CONST-H260401 )
                        EVALUATE    SYS-5001-CRYOYOKBN
                        WHEN    "1"
