@@ -305,7 +305,9 @@
                 AND  ( WRK-KSN-CDKBN-KBNNUM  <=   199 )
                WHEN  ( WRK-KSN-CDKBN-KBNNUM  >=   300 )
                 AND  ( WRK-KSN-CDKBN-KBNNUM  <=   400 )
-                   PERFORM 2001-KBNNUMCHK-SEC
+                   IF   SNYUKSNCHK-SRYYMD  <=   "20140331"
+                      PERFORM 2001-KBNNUMCHK-SEC
+                   END-IF
                WHEN    OTHER
                    MOVE    ZERO        TO  SNYUKSNCHK-ERR
                END-EVALUATE
