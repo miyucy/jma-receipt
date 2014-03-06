@@ -5429,16 +5429,40 @@
                WHEN  ( SPA-NAI-I01-BTUSBT  =   "09" )
                    MOVE    "5110"      TO  WRK-KANRICD
                    MOVE    "2"         TO  WRK-TOKNYUIN-KBN
-                   EVALUATE    SYS-5001-CRYOYOKBN
-                   WHEN    "1"
-                       MOVE    "35"  TO  WRK-KBNCD
-                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                   WHEN    "2"
-                       MOVE    "36"  TO  WRK-KBNCD
-                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                   WHEN    "3"
-                       MOVE    "37"  TO  WRK-KBNCD
-                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   EVALUATE    TURE
+                   WHEN  ( WRK-KJNYMD     >=  CONST-H260401 )
+                       EVALUATE    SYS-5001-CRYOYOKBN
+                       WHEN    "1"
+                           MOVE    "38"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       WHEN    "2"
+                           MOVE    "39"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       WHEN    "3"
+                           MOVE    "40"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       WHEN    "4"
+                           MOVE    "35"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       WHEN    "5"
+                           MOVE    "36"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       WHEN    "6"
+                           MOVE    "37"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-EVALUATE
+                   WHEN    OTHER
+                       EVALUATE    SYS-5001-CRYOYOKBN
+                       WHEN    "1"
+                           MOVE    "35"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       WHEN    "2"
+                           MOVE    "36"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       WHEN    "3"
+                           MOVE    "37"  TO  WRK-KBNCD
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-EVALUATE
                    END-EVALUATE
                WHEN  ( SYS-5001-BTU-TOKTEI-NYUIN
                                      =  "33" OR "34" )
