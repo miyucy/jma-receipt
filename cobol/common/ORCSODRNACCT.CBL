@@ -583,7 +583,10 @@
                                                 "190152010"   OR
                                                 "099999950"   OR
                                                 "099999951"   OR
-                                                "099999952"
+                                                "099999952"   OR
+                                                "099999955"   OR
+                                                "099999956"   OR
+                                                "099999957"
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
