@@ -348,6 +348,9 @@
       *    入院料加算取得パラメタ
            COPY  "CPORCSNYUKSNGET.INC".
       *
+      *    夜勤時間超過減算入院料コード取得サブ
+           COPY "CPORCSYAKINGEN.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -1279,6 +1282,7 @@
                    MOVE    SYS-5001-BTU-KHNSRYCD
                                                TO  SYOKIKSN-IN-KHNSRYCD
                    PERFORM 4801-RJNCD-CHG-SEC
+                   PERFORM 4801-YAKINGEN-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
@@ -1719,6 +1723,7 @@
                    MOVE    SYS-5001-BTU-KHNSRYCD
                                            TO  SYOKIKSN-IN-KHNSRYCD
                    PERFORM 4801-RJNCD-CHG-SEC
+                   PERFORM 4801-YAKINGEN-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
@@ -2072,6 +2077,29 @@
       *
            .
        4801-BTUSEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    夜勤時間超過減算コードへの置き換え処理
+      *****************************************************************
+       4801-YAKINGEN-CHG-SEC   SECTION.
+      *
+           IF    SYOKIKSN-IN-SANTEISTYMD   >=   "20140401"
+               INITIALIZE    ORCSYAKINGEN-AREA
+               MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
+                                   TO    LNK-YAKINGEN-SANTEIYM
+               MOVE   SYOKIKSN-IN-KHNSRYCD
+                                   TO    LNK-YAKINGEN-SRYCD
+               CALL   "ORCSYAKINGEN"    USING   ORCSYAKINGEN-AREA
+                                                SPA-AREA
+               IF   LNK-YAKINGEN-RC     =       ZERO
+                    MOVE LNK-YAKINGEN-CHGSRYCD
+                                   TO    SYOKIKSN-IN-KHNSRYCD
+               END-IF
+           END-IF
+      *
+           .
+       4801-YAKINGEN-CHG-EXT.
            EXIT.
       *
       *****************************************************************
