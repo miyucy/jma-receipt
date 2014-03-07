@@ -964,7 +964,7 @@
                 END-EVALUATE
              END-IF
       *
-             IF      LNK-SCNYUACCT-STSRYYMD   >=   "20141001"
+             IF      LNK-SCNYUACCT-STSRYYMD   >=   "20140401"
                 EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
       *         療養病棟入院基本料２（夜勤時間超過減算）
                  WHEN      "190166110"
