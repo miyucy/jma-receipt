@@ -468,7 +468,7 @@
       *    入院料算定マスタ検索処理
            PERFORM 210-NYUINKHN-SEL-SEC
            IF    ( FLG-ERR NOT =   ZERO )
-               GO  TO  200-EDIT-EXT
+               GO  TO  201-EDIT-EXT
            END-IF
       *
       *    平成２２年４月改定対応（有床診療所入院基本料）
@@ -597,7 +597,7 @@
       *    入院料算定マスタ検索処理
            PERFORM 210-NYUINKHN-SEL-SEC
            IF    ( FLG-ERR NOT =   ZERO )
-               GO  TO  200-EDIT-EXT
+               GO  TO  202-EDIT-EXT
            END-IF
       *
       *    平成２６年４月改定対応（有床診療所入院基本料）
