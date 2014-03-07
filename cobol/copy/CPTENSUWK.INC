@@ -35,12 +35,6 @@
       *                                     副鼻腔手術用骨軟部組織切除機器加算
       *                                     長時間麻酔管理加算
       *                                     DPC適応区分
-      * 04.08.00     NACL-多々納  16/03/XX  非侵襲的血行動態モニタリング加算
-      *                                     凍結保存同種組織加算
-      *                                     点数表区分番号
-      *                                     労災算定不可
-      *                                     四肢加算（労災）
-      * 05.01.00     NACL-伊藤    18/03/05  悪性腫瘍病理組織標本加算
       ************************************************************
        01  TNSWK-TENSU-REC.
       *(1)
@@ -135,22 +129,12 @@
            03  TNSWK-GAZOOPESUP          PIC  9(01).
            03  TNSWK-IRYOKANSATUKBN      PIC  9(01).
            03  TNSWK-MASUISKBKBN         PIC  9(01).
-      *H26.4 ADD START
+      *H24.4 ADD START
            03  TNSWK-FUKUBIKUNAIKBN      PIC  9(01).
            03  TNSWK-FUKUBIKUKOTUKBN     PIC  9(01).
            03  TNSWK-TIMEMASUIKBN        PIC  9(01).
            03  TNSWK-DPCKBN              PIC  9(01).
-      *H26.4 ADD END
-      *H28.4 ADD START
-           03  TNSWK-HISINSYUMONITORKSN  PIC  9(01).
-           03  TNSWK-TOUKETUHOZONKSN     PIC  9(01).
-           03  TNSWK-KUBUNBANGOU         PIC  X(30).
-           03  TNSWK-ROSAIKBN            PIC  9(01).
-           03  TNSWK-SISIKSN             PIC  9(01).
-      *H28.4 ADD END
-      *H30.4 ADD START
-           03  TNSWK-AKUSEIBYORIKSN      PIC  9(01).
-      *H30.4 ADD END
+      *H24.4 ADD END
            03  TNSWK-OLDTENSKB           PIC  9(01).
            03  TNSWK-OLDTEN              PIC  9(09)V99.
            03  TNSWK-MADOKUKBN           PIC  9(01).

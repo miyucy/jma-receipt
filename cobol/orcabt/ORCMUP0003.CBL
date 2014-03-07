@@ -33,8 +33,6 @@
       *                                     対応
       * 04.07.00     NACL-伊藤    14/03/06  点数マスタレイアウト変更
       *                                     対応
-      * 04.08.00     NACL-伊藤    16/03/01  点数マスタレイアウト変更
-      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -151,7 +149,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-X-3                 PIC X(03). 
            03  WRK-9-3-R               REDEFINES  WRK-X-3. 
                05  WRK-9-3                 PIC 9(03). 
-           03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -215,9 +212,11 @@ grpsys     COPY    "COMMON-SPA".
            03  TNSWK-V05-AREA-02       PIC X(206).
       *---(04.06.00) LINE ADD START -------------------------------------
       *
-       01  CONST-AREA.
-           03  CONST-HOMEDIR           PIC X(28)  VALUE
+       01  WRK-HOMEDIR.
+           03  FILLER                  PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
+           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+           03  FILLER                  PIC X(01)  VALUE "/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -225,9 +224,6 @@ grpsys     COPY    "COMMON-SPA".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-           COPY    "ENUM-VALUE".
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    ファイル定義
@@ -338,20 +334,11 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           IF      SGETTEMP-MW         =   SPA-PANDA
-               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
-           ELSE
-               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
-           END-IF
+           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE         DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE         DELIMITED  BY  SPACE
@@ -361,8 +348,6 @@ grpsys     COPY    "COMMON-SPA".
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE         DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -372,8 +357,6 @@ grpsys     COPY    "COMMON-SPA".
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE         DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
@@ -388,6 +371,7 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    メイン処理
       *****************************************************************
@@ -1148,17 +1132,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****MOVE    ZERO                TO  TNSWK-TIMEMASUIKBN
       *****MOVE    ZERO                TO  TNSWK-DPCKBN
            MOVE    ZERO                TO  TNSWK-TENSU-REC (1095 : 4)
-      *****MOVE    TNSWK-V05-AREA-02   TO  TNSWK-TENSU-REC (1099 :)
-      *2016.03
-      *****MOVE    ZERO                TO  TNSWK-HISINSYUMONITORKSN
-      *****MOVE    ZERO                TO  TNSWK-TOUKETUHOZONKSN
-      *****MOVE    SPACE               TO  TNSWK-KUBUNBANGOU
-      *****MOVE    ZERO                TO  TNSWK-ROSAIKBN
-      *****MOVE    ZERO                TO  TNSWK-SISIKSN
-           MOVE    ZERO                TO  TNSWK-TENSU-REC (1099 : 2)
-           MOVE    SPACE               TO  TNSWK-TENSU-REC (1101 : 30)
-           MOVE    ZERO                TO  TNSWK-TENSU-REC (1131 : 2)
-           MOVE    TNSWK-V05-AREA-02   TO  TNSWK-TENSU-REC (1133 :)
+           MOVE    TNSWK-V05-AREA-02   TO  TNSWK-TENSU-REC (1099 :)
       *
           .
        900-TNSWK-V05-EXT.

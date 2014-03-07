@@ -35,13 +35,6 @@
       *                                     副鼻腔手術用骨軟部組織切除機器加算
       *                                     長時間麻酔管理加算
       *                                     DPC適応区分
-      * 04.08.00     NACL-多々納  16/03/XX  非侵襲的血行動態モニタリング加算
-      *                                     凍結保存同種組織加算
-      *                                     点数表区分番号
-      *                                     労災算定不可
-      *                                     四肢加算（労災）
-      * 05.00.00     NACL-伊藤    17/01/05  マスター区分
-      * 05.01.00     NACL-伊藤    18/03/05  悪性腫瘍病理組織標本加算
       ************************************************************
        01  TNS-TENSU-REC.
       *(1)
@@ -135,28 +128,12 @@
            03  TNS-GAZOOPESUP          PIC  9(01).
            03  TNS-IRYOKANSATUKBN      PIC  9(01).
            03  TNS-MASUISKBKBN         PIC  9(01).
-      *H26.4 ADD START
+      *H24.4 ADD START
            03  TNS-FUKUBIKUNAIKBN      PIC  9(01).
            03  TNS-FUKUBIKUKOTUKBN     PIC  9(01).
            03  TNS-TIMEMASUIKBN        PIC  9(01).
            03  TNS-DPCKBN              PIC  9(01).
-      *H26.4 ADD END
-      *H28.4 ADD START
-      *    非侵襲的血行動態モニタリング加算
-           03  TNS-HISINSYUMONITORKSN  PIC  9(01).
-      *    凍結保存同種組織加算
-           03  TNS-TOUKETUHOZONKSN     PIC  9(01).
-      *    点数表区分番号
-           03  TNS-KUBUNBANGOU         PIC  X(30).
-      *    労災算定不可
-           03  TNS-ROSAIKBN            PIC  9(01).
-      *    四肢加算（労災）
-           03  TNS-SISIKSN             PIC  9(01).
-      *H28.4 ADD END
-      *H30.4 ADD START
-      *    悪性腫瘍病理組織標本加算
-           03  TNS-AKUSEIBYORIKSN      PIC  9(01).
-      *H30.4 ADD END
+      *H24.4 ADD END
            03  TNS-OLDTENSKB           PIC  9(01).
            03  TNS-OLDTEN              PIC  9(09)V99.
            03  TNS-MADOKUKBN           PIC  9(01).
@@ -210,7 +187,6 @@
            03  TNS-CREYMD              PIC  X(08).
            03  TNS-UPYMD               PIC  X(08).
            03  TNS-UPHMS               PIC  X(06).
-           03  TNS-MASTER-CLASS        PIC  9(01).
       *　　主キー更新用項目
            03  TNSUP-KEY.
                05  TNSUP-HOSPNUM       PIC 9(2).
