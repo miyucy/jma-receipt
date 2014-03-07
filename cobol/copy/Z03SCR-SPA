@@ -25,7 +25,6 @@
       * 01.00.01     MCC-多々納   01/07/17  正式名称、血液採取料等追加
       * 01.00.02     MCC-多々納   02/03/17  施設基準不適合追加
       * 01.00.03     NACL-多々納  02/10/09  診療種別の最大数を１００へ
-      * 04.07.00     NACL-多々納  14/09/09  診療種別の最大数を２００へ
       *****************************************************************
        01  SPA-Z03.
       *
@@ -53,7 +52,7 @@
                        09  SPA-GMN-F1              PIC X(1).
                        09  SPA-GMN-SRYKBNMEI       PIC X(10).
                    07  SPA-GMN-SRYKBNCOB-G.
-                       09  SPA-GMN-SRYKBNCOB       OCCURS  200.
+                       09  SPA-GMN-SRYKBNCOB       OCCURS  100.
                            11  SPA-GMN-SRYKBN-L    PIC X(02).
                            11  SPA-GMN-FL1         PIC X(01).
                            11  SPA-GMN-SRYKBNME-L  PIC X(10).
@@ -65,7 +64,7 @@
                        09  SPA-GMN-SRYSYUKBNMEI    PIC X(40).
                    07  SPA-GMN-SRYSYUKBNCOB-G.
                        09  SPA-GMN-SRYSYUKBNCOB    PIC X(44)
-                                                   OCCURS  200.
+                                                   OCCURS  100.
                    07  SPA-SRYSYUKBN-MAX           PIC 9(04).
       *
                    07  SPA-GMN-DATAKBN-G.
@@ -170,10 +169,10 @@
                    07  SPA-GMN-HOSPSRYKBN-G.
                        09  SPA-GMN-HOSPSRYKBN      PIC X(1).
                        09  SPA-GMN-F3              PIC X(1).
-                       09  SPA-GMN-HOSPSRYKBNMEI   PIC X(28).
+                       09  SPA-GMN-HOSPSRYKBNMEI   PIC X(18).
                    07  SPA-GMN-HOSPSRYKBNCOB-G.
-                       09  SPA-GMN-HOSPSRYKBNCOB   PIC X(30)
-                                                   OCCURS  9.
+                       09  SPA-GMN-HOSPSRYKBNCOB   PIC X(20)
+                                                   OCCURS  3.
                    07  SPA-HOSPSRYKBN-MAX           PIC 9(04).
       *            医療観察法
                    07  SPA-GMN-IRYOKAN-G.
@@ -228,8 +227,6 @@
                    07  SPA-GMN-TSUSOKUAGE      PIC 9(1).
                    07  SPA-GMN-KGNAGE          PIC X(2).
                    07  SPA-GMN-JGNAGE          PIC X(2).
-      *            労災算定不可区分
-                   07  SPA-GMN-ROSAIKBN        PIC 9(01).
       *            採血料区分
                    07  SPA-GMN-SAIKETUKBN-G.
                        09  SPA-GMN-SAIKETUKBN  PIC X(01).
@@ -327,17 +324,6 @@
                    07  SPA-GMN-NYUKHNKSNKBN    PIC 9(3).
                    07  SPA-GMN-KANGOKSN        PIC 9(2).
                    07  SPA-GMN-CHIIKIKSN       PIC 9(1).
-      *H28.4
-      *            非侵襲的血行動態モニタリング加算
-                   07  SPA-GMN-HISINSYUMONKSN   PIC 9(1).
-      *            凍結保存同種組織加算
-                   07  SPA-GMN-TOUKETUHOZONKSN  PIC 9(1).
-      *            労災四肢加算区分
-                   07  SPA-GMN-SISIKSN          PIC 9(01).
-      *H30.4
-      *            悪性腫瘍病理組織標本加算
-                   07  SPA-GMN-AKUSEIBYORIKSN  PIC 9(01).
-      *            
                05  SPA-GMN-BANGO.
                    07  SPA-GMN-SSTKIJUNCDTBL   OCCURS 10.
                        09  SPA-GMN-SSTKIJUNCD  PIC 9(4).
@@ -358,9 +344,6 @@
                    07  SPA-GMN-KOKUCHI-KOUBAN  PIC 9(2).
                    07  SPA-GMN-KOKUJISKBKBN1   PIC 9(1).
                    07  SPA-GMN-KOKUJISKBKBN2   PIC 9(1).
-      *H28.4
-      *            点数表区分番号
-                   07  SPA-GMN-KUBUNBANGOU     PIC X(30).
       *
       *    第三画面内容
            03  SPA-NAI-AREA.

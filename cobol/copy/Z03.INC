@@ -48,9 +48,9 @@
                     06  Z03-VALUE   PIC S9(1).
                   05  Z03-HOSPSRYKBNCOMB.
                     06  Z03-HOSPSRYKBN.
-                      07  Z03-VALUE   PIC X(30).
+                      07  Z03-VALUE   PIC X(20).
                     06  Z03-HOSPSRYKBN-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-HOSPSRYKBN-ITEM    PIC X(30)   OCCURS  70.
+                    06  Z03-HOSPSRYKBN-ITEM    PIC X(20)   OCCURS  70.
                   05  Z03-TANICDCOB.
                     06  Z03-TANICD.
                       07  Z03-VALUE   PIC X(28).
@@ -60,7 +60,7 @@
                     06  Z03-SRYKBN.
                       07  Z03-VALUE   PIC X(20).
                     06  Z03-SRYKBN-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-SRYKBN-ITEM    PIC X(20)   OCCURS  200.
+                    06  Z03-SRYKBN-ITEM    PIC X(20)   OCCURS  100.
                   05  Z03-TENSIKIBETUCOB.
                     06  Z03-TENSIKIBETU.
                       07  Z03-VALUE   PIC X(30).
@@ -75,7 +75,7 @@
                     06  Z03-SRYSYUKBN.
                       07  Z03-VALUE   PIC X(74).
                     06  Z03-SRYSYUKBN-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-SRYSYUKBN-ITEM    PIC X(74)   OCCURS  200.
+                    06  Z03-SRYSYUKBN-ITEM    PIC X(74)   OCCURS  100.
                   05  Z03-DATAKBNCOB.
                     06  Z03-DATAKBN.
                       07  Z03-VALUE   PIC X(16).
@@ -149,8 +149,6 @@
                     06  Z03-ZENKNSKBN-ITEM
                             PIC X(30)   OCCURS  5 TIMES.
                   05  Z03-DPCKBN.
-                    06  Z03-VALUE   PIC S9(1).
-                  05  Z03-ROSAIKBN.
                     06  Z03-VALUE   PIC S9(1).
                 04  Z03-FIXED10.
                   05  Z03-JITUDAY.
@@ -286,14 +284,6 @@
                     06  Z03-VALUE   PIC S9(1).
                   05  Z03-TIMEMASUIKBN.
                     06  Z03-VALUE   PIC S9(1).
-                  05  Z03-HISINSYUMONKSN.
-                    06  Z03-NUMDATA PIC S9(1).
-                  05  Z03-TOUKETUHOZONKSN.
-                    06  Z03-NUMDATA PIC S9(1).
-                  05  Z03-SISIKSN.
-                    06  Z03-NUMDATA PIC S9(1).
-                  05  Z03-AKUSEIBYORIKSN.
-                    06  Z03-NUMDATA PIC S9(1).
                 04  Z03-FIXED12.
                   05  Z03-SSTKIJUNCD1.
                     06  Z03-VALUE   PIC S9(4).
@@ -349,8 +339,6 @@
                     06  Z03-VALUE   PIC S9(1).
                   05  Z03-KOUHYOJYUNNUM.
                     06  Z03-VALUE   PIC S9(9).
-                  05  Z03-KUBUNBANGOU.
-                    06  Z03-TEXTDATA    PIC X(30).
               03  Z03-SRYCDH.
                 04  Z03-VALUE   PIC X(9).
               03  Z03-NAMEH.
@@ -359,12 +347,3 @@
                 04  Z03-VALUE   PIC X(9).
               03  Z03-YUKOEDYMDH.
                 04  Z03-VALUE   PIC X(9).
-              03  Z03-MIDASHI.
-                04  Z03-MIDASHI-STYLE   PIC X(20).
-                04  Z03-MIDASHI-DATA    PIC X(80).
-              03  Z03-B03.
-                04  Z03-B03-STATE   PIC S9(9)   BINARY.
-              03  Z03-B10.
-                04  Z03-B10-STATE   PIC S9(9)   BINARY.
-              03  Z03-B12.
-                04  Z03-B12-STATE   PIC S9(9)   BINARY.
