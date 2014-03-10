@@ -263,6 +263,7 @@
            03  IDX14                       PIC 9(05).
            03  IDX15                       PIC 9(05).
            03  IDX16                       PIC 9(05).
+           03  IDX17                       PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
            03  IDX-DAY                     PIC 9(02).
            03  IDX-SKJ-TAIHI               PIC 9(02).
@@ -5527,7 +5528,7 @@
            PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
            IF    ( WRK-KJNYMD  >=  CONST-H260401 )
-               PERFORM 410111-TANKI3-SET-SEC
+               PERFORM 410111-TANKI3-EDIT-SEC
            ELSE
                MOVE    "5111"      TO  WRK-KANRICD
                MOVE    "52"        TO  WRK-KBNCD
@@ -5537,7 +5538,12 @@
       *
       *    入院履歴に登録のある特定入院料がコンボボックスにない場合は、
       *    追加表示を行う。
-           IF    ( SPA-NAI-I01-TOKUTEI-KBN =   "2" OR "3" )
+           IF    ( SPA-NAI-I01-TOKUTEI-KBN
+                                   =   "2" OR "3" )
+            AND  ( SPA-GMN-I01-BTUNAME-CD
+                                   =   SPA-NAI-I01-BTUNAME-MOT (1 : 2))
+            AND  ( SPA-GMN-I01-BRMNUM
+                                   =   SPA-NAI-I01-BRMNUM-MOT )
                MOVE    SPACE           TO  WRK-CMB-CD
                MOVE    SPA-NAI-I01-TOKUTEI-KBN
                                        TO  WRK-CMB-CD (1 : 1)
@@ -5564,7 +5570,7 @@
       *****************************************************************
       *    短期滞在手術等基本料３編集処理
       *****************************************************************
-       410111-TANKI3-SET-SEC       SECTION.
+       410111-TANKI3-EDIT-SEC       SECTION.
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
@@ -5575,11 +5581,13 @@
            MOVE    SYSKANRI-REC    TO  SYS-5003-REC
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
       *
-               MOVE    "5111"      TO  WRK-KANRICD
-               MOVE    SYS-5003-TOKCD
+               IF    ( SYS-5003-KBNCD  NOT =   "*" )
+                   MOVE    "5111"  TO  WRK-KANRICD
+                   MOVE    SYS-5003-TOKCD
                                    TO  WRK-KBNCD
-               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   MOVE    "3"     TO  WRK-TOKNYUIN-KBN
+                   PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+               END-IF
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
                MOVE    SYSKANRI-REC    TO  SYS-5003-REC
@@ -5590,7 +5598,7 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       410111-TANKI3-SET-EXT.
+       410111-TANKI3-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    療養病棟入院基本料編集処理
@@ -6536,17 +6544,26 @@
            MOVE    WRK-KBNCD           TO  WRK-CHKTOKNYUIN-CD
       *
            IF    ( SPA-NAI-I01-BTUSBT  =   "04" OR "09" )
-            AND  ( FLG-LIFE-RJN        =   1    OR 2 )
       *
-               PERFORM VARYING IDX-LIFE    FROM    1   BY  1
+                PERFORM VARYING IDX-LIFE    FROM    1   BY  1
                        UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX )
       *
-                   IF    ( WRK-CHKTOKNYUIN =   CONST-TOK-LIFECD-IPN
+                   IF     ( FLG-LIFE-RJN        =   1    OR 2 )
+                       IF    ( WRK-CHKTOKNYUIN =   CONST-TOK-LIFECD-IPN
                                                              (IDX-LIFE))
-                       MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
-                                           TO  WRK-CHKTOKNYUIN
-                       MOVE    CONST-TOK-LIFECD-MAX
-                                           TO  IDX-LIFE
+                           MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
+                                               TO  WRK-CHKTOKNYUIN
+                           MOVE    CONST-TOK-LIFECD-MAX
+                                               TO  IDX-LIFE
+                       END-IF
+                   ELSE
+                       IF    ( WRK-CHKTOKNYUIN =   CONST-TOK-LIFECD-LIFE
+                                                             (IDX-LIFE))
+                           MOVE    CONST-TOK-LIFECD-IPN (IDX-LIFE)
+                                               TO  WRK-CHKTOKNYUIN
+                           MOVE    CONST-TOK-LIFECD-MAX
+                                               TO  IDX-LIFE
+                       END-IF
                    END-IF
       *
                END-PERFORM
@@ -6666,6 +6683,16 @@
                END-IF
            END-IF
       *
+           PERFORM VARYING IDX17   FROM    1   BY  1
+                   UNTIL ( IDX17   >   CONST-TOKNYUIN-MAX )
+                    OR   ( FLG-PASS    =   1 )
+      *
+               IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX17)
+                                       =   WRK-TOKNYUIN )
+                   MOVE    1           TO  FLG-PASS
+               END-IF
+      *
+           END-PERFORM
       *
            IF    ( SPA-GMN-I01-TOKNYUIN-CNT   >=   CONST-TOKNYUIN-MAX )
             OR   ( FLG-PASS                    =   1 )
