@@ -30,6 +30,8 @@
       *
       *算定年月
            03  LNK-YAKINGEN-SANTEIYM               PIC  X(06).
+      *病棟番号
+           03  LNK-YAKINGEN-BTU-NUM                PIC  X(02).
       *入院料コード
            03  LNK-YAKINGEN-SRYCD                  PIC  X(09).
       *返却項目

@@ -7136,6 +7136,7 @@
       *
            DISPLAY "LNK-SCNYUACCT-STSRYYMD = "
                     LNK-SCNYUACCT-STSRYYMD
+           MOVE     PTNYUINRRK-BTUNUM  TO  LNK-SCNYUACCT-BTU-NUM
            CALL    "ORCSNYUACCT"       USING   SPA-AREA
                                                ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA      TO  SPA-SRYKA
@@ -7308,6 +7309,7 @@
                   MOVE   ZERO   TO  LNK-SCNYUACCT-NYUCAL-KBN
            END-IF
       *
+           MOVE    PTNYUINRRK-BTUNUM  TO  LNK-SCNYUACCT-BTU-NUM
            CALL   "ORCSNYUACCT"    USING   SPA-AREA
                                            ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA  TO  SPA-SRYKA
@@ -7570,6 +7572,8 @@
                INITIALIZE    ORCSYAKINGEN-AREA
                MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
                                    TO    LNK-YAKINGEN-SANTEIYM
+               MOVE   SYS-5001-BTU-NUM
+                                   TO    LNK-YAKINGEN-BTU-NUM
                MOVE   SYOKIKSN-IN-KHNSRYCD
                                    TO    LNK-YAKINGEN-SRYCD
                CALL   "ORCSYAKINGEN"    USING   ORCSYAKINGEN-AREA

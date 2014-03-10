@@ -1906,6 +1906,8 @@
            MOVE    "1"             TO  SPA-NYUGAIKBN
            DISPLAY "SPA-HOSPNUM = " SPA-HOSPNUM
            DISPLAY "SPA-PTID = " SPA-PTID
+           MOVE     PTNYUINRRK-BTUNUM
+                                   TO  LNK-SCNYUACCT-BTU-NUM
            CALL    "ORCSNYUACCT"       USING   SPA-AREA
                                                ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA      TO  SPA-SRYKA
@@ -2351,6 +2353,8 @@
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "00"            TO  SPA-SRYKA
            MOVE    "1"             TO  SPA-NYUGAIKBN
+           MOVE    PTNYUINRRK-BTUNUM
+                                   TO  LNK-SCNYUACCT-BTU-NUM
            CALL   "ORCSNYUACCT"    USING   SPA-AREA
                                            ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA  TO  SPA-SRYKA
@@ -2617,6 +2621,8 @@
                INITIALIZE    ORCSYAKINGEN-AREA
                MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
                                    TO    LNK-YAKINGEN-SANTEIYM
+               MOVE   SYS-5001-BTU-NUM
+                                   TO    LNK-YAKINGEN-BTU-NUM
                MOVE   SYOKIKSN-IN-KHNSRYCD
                                    TO    LNK-YAKINGEN-SRYCD
                CALL   "ORCSYAKINGEN"    USING   ORCSYAKINGEN-AREA

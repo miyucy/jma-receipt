@@ -405,8 +405,10 @@
            ELSE
                IF   LNK-SCNYUACCT-NYUKHN-SRYCD (1)   NOT  =  SPACE
                     INITIALIZE    ORCSYAKINGEN-AREA
-                            MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
+                    MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
                                            TO    LNK-YAKINGEN-SANTEIYM
+                    MOVE  LNK-SCNYUACCT-BTU-NUM
+                                           TO    LNK-YAKINGEN-BTU-NUM
                     MOVE   LNK-SCNYUACCT-NYUKHN-SRYCD (1)
                                            TO    LNK-YAKINGEN-SRYCD
                     CALL   "ORCSYAKINGEN"    USING   ORCSYAKINGEN-AREA
@@ -425,6 +427,8 @@
                         INITIALIZE    ORCSYAKINGEN-AREA
                         MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
                                            TO    LNK-YAKINGEN-SANTEIYM
+                        MOVE  LNK-SCNYUACCT-BTU-NUM
+                                           TO    LNK-YAKINGEN-BTU-NUM
                         MOVE  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
                                            TO    LNK-YAKINGEN-SRYCD
                         CALL "ORCSYAKINGEN" USING ORCSYAKINGEN-AREA

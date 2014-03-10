@@ -50,7 +50,7 @@
       *****************************************************************
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
-           COPY    "CPSK5000.INC".
+           COPY    "CPSK5001.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -85,16 +85,17 @@
       *
            IF  LNK-YAKINGEN-SANTEIYM       >=   "201404"
       *        ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¤Î¶èÊ¬¼èÆÀ¡Ë
-               MOVE    SPACE               TO  SYS-5000-REC
-               INITIALIZE                      SYS-5000-REC
-               MOVE    "5000"              TO  SYS-5000-KANRICD
-               MOVE    "*"                 TO  SYS-5000-KBNCD
+               MOVE    SPACE               TO  SYS-5001-REC
+               INITIALIZE                      SYS-5001-REC
+               MOVE    "5001"              TO  SYS-5001-KANRICD
+               MOVE    LNK-YAKINGEN-BTU-NUM
+                                           TO  SYS-5001-KBNCD
                MOVE    LNK-YAKINGEN-SANTEIYM
-                                           TO  SYS-5000-STYUKYMD(1:6)
-               MOVE    "01"                TO  SYS-5000-STYUKYMD(7:2)
-               MOVE    SYS-5000-STYUKYMD   TO  SYS-5000-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
-               MOVE    SYS-5000-REC        TO  MCPDATA-REC
+                                           TO  SYS-5001-STYUKYMD(1:6)
+               MOVE    "01"                TO  SYS-5001-STYUKYMD(7:2)
+               MOVE    SYS-5001-STYUKYMD   TO  SYS-5001-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-5001-HOSPNUM
+               MOVE    SYS-5001-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 910-DBSELECT-SEC
@@ -104,13 +105,13 @@
                    PERFORM 920-DBFETCH-SEC
                    IF      MCP-RC              =   ZERO
                        MOVE    ZERO                TO  FLG-SYSKANRI
-                       MOVE    MCPDATA-REC         TO  SYS-5000-REC
+                       MOVE    MCPDATA-REC         TO  SYS-5001-REC
                    ELSE
                        MOVE    1                   TO  FLG-SYSKANRI
                    END-IF
                ELSE
-                   MOVE    SPACE               TO  SYS-5000-REC
-                   INITIALIZE                  SYS-5000-REC
+                   MOVE    SPACE               TO  SYS-5001-REC
+                   INITIALIZE                  SYS-5001-REC
                    MOVE    1               TO  FLG-SYSKANRI
                END-IF
       *
@@ -118,7 +119,7 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
       *
-               IF    SYS-5000-YKNCHOKAKBN  =   "1"
+               IF    SYS-5001-YKNCHOKAKBN  =   "1"
                    IF    LNK-YAKINGEN-SRYCD    NOT  =  SPACE
                        PERFORM    200-CDCHG-SEC
                    END-IF
