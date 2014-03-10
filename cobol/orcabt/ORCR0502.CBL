@@ -40,6 +40,7 @@
       *                                     診療分以降は全て記載
       *  04.07.03    NACL-藤原    13/08/20  ０９５９３で始まるコードの有
       *                                     無区分を追加
+      *  04.07.04    NACL-藤原    14/03/10  誕生日に平成の元号を追加
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -1289,6 +1290,8 @@
                    MOVE    "○"            TO  HCM70-TANJYOG (2)    
                WHEN    "S"
                    MOVE    "○"            TO  HCM70-TANJYOG (3)   
+               WHEN    "H"
+                   MOVE    "○"            TO  HCM70-TANJYOG2
            END-EVALUATE     
            MOVE    WRK-HENYY           TO  HCM70-TANJYOY
            MOVE    WRK-HENMM           TO  HCM70-TANJYOM
