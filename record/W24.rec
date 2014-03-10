@@ -432,6 +432,7 @@ W24	{
 			state	int;
 		};
 		CMB_YKNCHOKA	{
+			visible		bool;
 			YKNCHOKA	{
 				value	varchar(32);
 				state	int;

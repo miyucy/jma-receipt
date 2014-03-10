@@ -84,6 +84,15 @@
                 05  W20-KHNTEN               PIC S9(6).
                 05  W20-KHNTEN-STATE         PIC S9(9)   BINARY.
       *
+              04  W20-LBLYKNCHOKAKBN          PIC X(40).
+      *
+              04  W20-CMB-YKNCHOKAKBN.
+                05  W20-YKNCHOKAKBN           PIC X(22).
+                05  W20-YKNCHOKAKBN-STATE     PIC S9(9)   BINARY.
+                05  W20-YKNCHOKAKBN-CNT       PIC S9(9)   BINARY.
+                05  W20-YKNCHOKAKBN-ITM       PIC X(22)   OCCURS  10.
+                05  W20-YKNCHOKAKBN-ITM-STATE PIC S9(9)   BINARY.
+      *
               04  W20-CMB-RECEDSPKBN.
       *
                 05  W20-RECEDSPKBN         PIC X(13).

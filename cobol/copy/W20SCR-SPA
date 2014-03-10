@@ -62,6 +62,11 @@
                  11  SPA-GMN-W20-SBT               PIC X(02).
                  11  SPA-GMN-W20-SBTFL             PIC X(01).
                  11  SPA-GMN-W20-SBTMEI            PIC X(20).
+      *        夜勤超過減算区分
+               09  SPA-GMN-W20-YKNCHOKAKBN-G.
+                 11  SPA-GMN-W20-YKNCHOKAKBN       PIC X(01).
+                 11  SPA-GMN-W20-YKNCHOKAKBNFL     PIC X(01).
+                 11  SPA-GMN-W20-YKNCHOKAKBNMEI    PIC X(20).
       *        レセプト表示区分
                09  SPA-GMN-W20-RECEDSPKBN-G.
                  11  SPA-GMN-W20-RECEDSPKBN        PIC X(02).
@@ -363,6 +368,13 @@
                    13  SPA-GMN-W20-SBTL            PIC X(02).
                    13  SPA-GMN-W20-SBTFL1          PIC X(01).
                    13  SPA-GMN-W20-SBTMEIL         PIC X(20).
+      *        夜勤超過減算区分
+               09  SPA-GMN-W20-YKNCHOKAKBNLST-G.
+                 11  SPA-GMN-W20-YKNCHOKAKBN-MAX   PIC 9(03).
+                 11  SPA-GMN-W20-YKNCHOKAKBNLST    OCCURS  10.
+                   13  SPA-GMN-W20-YKNCHOKAKBNL    PIC X(01).
+                   13  SPA-GMN-W20-YKNCHOKAKBNFL1  PIC X(01).
+                   13  SPA-GMN-W20-YKNCHOKAKBNMEIL PIC X(20).
       *        療養病棟入院基本料算定区分
                09  SPA-GMN-W20-RYOYOKBNLST-G.
                  11  SPA-GMN-W20-RYOYOKBN-MAX      PIC 9(03).
@@ -747,6 +759,8 @@
                    11  SPA-NAI-W20-KHNTEN          PIC 9(05).
       *            入院基本料区分
                    11  SPA-NAI-W20-NYUKHNKBN       PIC 9(02).
+      *            夜勤超過減算対象
+                   11  SPA-NAI-W20-YKNCHOKACHK     PIC X(01).
       *        小規格病棟病床数加算コード
                09  SPA-NAI-W20-SYOUBTUBRMCD        PIC X(09).
       *        特定入院料区分コード
@@ -760,6 +774,7 @@
                      13  SPA-NAI-W20-KHNSRYCDLST   PIC X(09).
                      13  SPA-NAI-W20-KHNTENLST     PIC 9(05).
                      13  SPA-NAI-W20-NYUKHNKBNLST  PIC 9(02).
+                     13  SPA-NAI-W20-YKNCHOKACHKLST PIC X(01).
       *
                09  SPA-NAI-W20-KSNINF-G.
       *          看護必要度加算１（一般病棟入院基本料のものを設定）

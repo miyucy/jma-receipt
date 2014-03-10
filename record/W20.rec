@@ -80,6 +80,18 @@ W20	{
 			value	number(6);
 			state	int;
 		};
+		LBLYKNCHOKAKBN	{
+			value	varchar(40);
+		};
+		CMB_YKNCHOKAKBN	{
+			YKNCHOKAKBN	{
+				value	varchar(22);
+				state	int;
+			};
+			count	int;
+			item	varchar(22)[10];
+			state	int;
+		};
 		CMB_RECEDSPKBN	{
 			RECEDSPKBN	{
 				value	varchar(13);

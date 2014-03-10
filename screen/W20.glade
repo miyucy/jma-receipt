@@ -310,7 +310,7 @@
       <class>GtkNumberEntry</class>
       <name>BTUNUM</name>
       <x>76</x>
-      <y>324</y>
+      <y>300</y>
       <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -334,7 +334,7 @@
       <class>GtkPandaEntry</class>
       <name>NAME</name>
       <x>76</x>
-      <y>350</y>
+      <y>328</y>
       <width>150</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -362,7 +362,7 @@
       <class>GtkPandaEntry</class>
       <name>TANNAME</name>
       <x>308</x>
-      <y>350</y>
+      <y>328</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -446,7 +446,7 @@
       <class>GtkNumberEntry</class>
       <name>KHNTEN</name>
       <x>604</x>
-      <y>402</y>
+      <y>380</y>
       <width>60</width>
       <height>24</height>
       <signal>
@@ -468,8 +468,8 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM</name>
-      <x>784</x>
-      <y>456</y>
+      <x>788</x>
+      <y>432</y>
       <width>32</width>
       <height>25</height>
       <can_focus>True</can_focus>
@@ -491,66 +491,9 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label926</name>
-      <x>12</x>
-      <y>402</y>
-      <width>76</width>
-      <height>24</height>
-      <label>入院基本料</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>CMB_SBT</name>
-      <x>396</x>
-      <y>376</y>
-      <width>204</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>SBT</name>
-	<width>163</width>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>23</text_max_length>
-	<text>99 １２３４５６７８９０</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label902</name>
       <x>232</x>
-      <y>350</y>
+      <y>328</y>
       <width>76</width>
       <height>24</height>
       <label>短縮病棟名</label>
@@ -566,7 +509,7 @@
       <class>GtkLabel</class>
       <name>label918</name>
       <x>396</x>
-      <y>350</y>
+      <y>328</y>
       <width>75</width>
       <height>24</height>
       <label>特定入院料</label>
@@ -579,53 +522,12 @@
     </widget>
 
     <widget>
-      <class>GtkPandaCombo</class>
-      <name>CMB_TOKUTEINYUIN</name>
-      <x>470</x>
-      <y>350</y>
-      <width>312</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>TOKUTEINYUIN</name>
-	<width>163</width>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>43</text_max_length>
-	<text>99 １２３４５６７８９０１２３４５</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>KJNYMD</name>
       <x>516</x>
-      <y>324</y>
+      <y>300</y>
       <width>75</width>
-      <height>25</height>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
@@ -651,7 +553,7 @@
       <class>GtkLabel</class>
       <name>label906</name>
       <x>328</x>
-      <y>376</y>
+      <y>354</y>
       <width>64</width>
       <height>24</height>
       <label>病棟種別</label>
@@ -667,26 +569,10 @@
       <class>GtkLabel</class>
       <name>label913</name>
       <x>668</x>
-      <y>402</y>
+      <y>380</y>
       <width>25</width>
       <height>24</height>
       <label>点</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBLRYOYOKBN</name>
-      <x>264</x>
-      <y>428</y>
-      <width>136</width>
-      <height>24</height>
-      <label>一般・療養相互算定</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2129,12 +2015,101 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label502</name>
+      <x>12</x>
+      <y>328</y>
+      <width>64</width>
+      <height>24</height>
+      <label>病棟名称</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLKJNYMD</name>
+      <x>468</x>
+      <y>300</y>
+      <width>48</width>
+      <height>24</height>
+      <label>基準日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label476</name>
+      <x>12</x>
+      <y>300</y>
+      <width>64</width>
+      <height>24</height>
+      <label>病棟番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_EDKBN</name>
+      <x>360</x>
+      <y>688</y>
+      <width>88</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>EDKBN</name>
+	<width>161</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>8</text_max_length>
+	<text>99 １２</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow28</name>
       <x>4</x>
       <y>4</y>
       <width>1008</width>
-      <height>316</height>
+      <height>292</height>
       <hscrollbar_policy>GTK_POLICY_ALWAYS</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -2304,12 +2279,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label502</name>
+      <name>label903</name>
       <x>12</x>
-      <y>350</y>
+      <y>354</y>
       <width>64</width>
       <height>24</height>
-      <label>病棟名称</label>
+      <label>病棟科名</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2320,10 +2295,10 @@
 
     <widget>
       <class>GtkPandaCombo</class>
-      <name>CMB_SRYKA</name>
-      <x>76</x>
-      <y>376</y>
-      <width>190</width>
+      <name>CMB_TOKUTEINYUIN</name>
+      <x>472</x>
+      <y>328</y>
+      <width>312</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -2335,8 +2310,49 @@
       <widget>
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
-	<name>SRYKA</name>
-	<width>161</width>
+	<name>TOKUTEINYUIN</name>
+	<width>163</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>43</text_max_length>
+	<text>99 １２３４５６７８９０１２３４５</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_SBT</name>
+      <x>396</x>
+      <y>354</y>
+      <width>204</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>SBT</name>
+	<width>163</width>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>
@@ -2361,110 +2377,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label903</name>
+      <name>label926</name>
       <x>12</x>
-      <y>376</y>
-      <width>64</width>
+      <y>380</y>
+      <width>76</width>
       <height>24</height>
-      <label>病棟科名</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>CMB_RECEDSPKBN</name>
-      <x>164</x>
-      <y>428</y>
-      <width>90</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>RECEDSPKBN</name>
-	<width>161</width>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>13</text_max_length>
-	<text>99 １２</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>CMB_RYOYOKBN</name>
-      <x>400</x>
-      <y>428</y>
-      <width>380</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>RYOYOKBN</name>
-	<width>115</width>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>52</text_max_length>
-	<text>0 １２３４５６７８９０１２３４５６７８９０１２３</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBLKJNYMD</name>
-      <x>468</x>
-      <y>324</y>
-      <width>48</width>
-      <height>24</height>
-      <label>基準日</label>
+      <label>入院基本料</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2475,12 +2393,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label476</name>
+      <name>label1000</name>
       <x>12</x>
-      <y>324</y>
-      <width>64</width>
+      <y>432</y>
+      <width>120</width>
       <height>24</height>
-      <label>病棟番号</label>
+      <label>レセプト表示区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2492,8 +2410,8 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow29</name>
-      <x>784</x>
-      <y>322</y>
+      <x>788</x>
+      <y>296</y>
       <width>226</width>
       <height>132</height>
       <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
@@ -2560,9 +2478,50 @@
 
     <widget>
       <class>GtkPandaCombo</class>
+      <name>CMB_SRYKA</name>
+      <x>76</x>
+      <y>354</y>
+      <width>190</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>SRYKA</name>
+	<width>161</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>23</text_max_length>
+	<text>99 １２３４５６７８９０</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
       <name>CMB_KHNRYO</name>
       <x>96</x>
-      <y>402</y>
+      <y>380</y>
       <width>504</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -2601,12 +2560,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1000</name>
+      <name>LBLYKNCHOKAKBN</name>
       <x>12</x>
-      <y>428</y>
-      <width>120</width>
+      <y>406</y>
+      <width>152</width>
       <height>24</height>
-      <label>レセプト表示区分</label>
+      <label>月平均夜勤時間超過</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2617,10 +2576,10 @@
 
     <widget>
       <class>GtkPandaCombo</class>
-      <name>CMB_EDKBN</name>
-      <x>360</x>
-      <y>688</y>
-      <width>88</width>
+      <name>CMB_RECEDSPKBN</name>
+      <x>164</x>
+      <y>432</y>
+      <width>92</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -2632,7 +2591,7 @@
       <widget>
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
-	<name>EDKBN</name>
+	<name>RECEDSPKBN</name>
 	<width>161</width>
 	<can_focus>True</can_focus>
 	<signal>
@@ -2649,8 +2608,106 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>8</text_max_length>
+	<text_max_length>13</text_max_length>
 	<text>99 １２</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_YKNCHOKAKBN</name>
+      <x>140</x>
+      <y>406</y>
+      <width>116</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>YKNCHOKAKBN</name>
+	<width>161</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>22</text_max_length>
+	<text>9 １２３４</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLRYOYOKBN</name>
+      <x>264</x>
+      <y>406</y>
+      <width>136</width>
+      <height>24</height>
+      <label>一般・療養相互算定</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_RYOYOKBN</name>
+      <x>400</x>
+      <y>406</y>
+      <width>380</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>RYOYOKBN</name>
+	<width>115</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>52</text_max_length>
+	<text>0 １２３４５６７８９０１２３４５６７８９０１２３</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>

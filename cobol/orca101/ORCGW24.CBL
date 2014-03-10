@@ -1499,14 +1499,14 @@
            END-IF
       *
       *    Ìë¶Ð»þ´ÖÄ¶²á¶èÊ¬
-           MOVE    SYS-5000-YKNCHOKAKBN  TO  WRK-CMB-CD
-           PERFORM 4200-YKNCHOKALST-CHK-SEC
-           IF    ( WRK-CMB-ITM     NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-YKNCHOKA-G
-           ELSE
+      *    MOVE    SYS-5000-YKNCHOKAKBN  TO  WRK-CMB-CD
+      *    PERFORM 4200-YKNCHOKALST-CHK-SEC
+      *    IF    ( WRK-CMB-ITM     NOT =   SPACE )
+      *        MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-YKNCHOKA-G
+      *    ELSE
                MOVE    SPA-GMN-W24-YKNCHOKALST (1)
                                        TO  SPA-GMN-W24-YKNCHOKA-G
-           END-IF
+      *    END-IF
       *
       *    £Á£Ä£ÌÆþÎÏ¶èÊ¬
            MOVE    SYS-5000-ADLINPUTKBN  TO  WRK-CMB-CD
@@ -2929,8 +2929,8 @@
                                    TO  SYS-5000-TEISUKBN
       *
       *    Ìë¶Ð»þ´ÖÄ¶²á¶èÊ¬
-           MOVE    SPA-GMN-W24-YKNCHOKA
-                                   TO  SYS-5000-YKNCHOKAKBN
+      *    MOVE    SPA-GMN-W24-YKNCHOKA
+      *                            TO  SYS-5000-YKNCHOKAKBN
       *
       *    £Á£Ä£ÌÆþÎÏ¶èÊ¬
            MOVE    SPA-GMN-W24-ADLINPUT
@@ -5584,8 +5584,9 @@
            MOVE    WIDGET-NORMAL       TO  W24-HYOUKETU-ITM-STATE
            MOVE    WIDGET-NORMAL       TO  W24-TEISU-STATE
            MOVE    WIDGET-NORMAL       TO  W24-TEISU-ITM-STATE
-           MOVE    WIDGET-NORMAL       TO  W24-YKNCHOKA-STATE
-           MOVE    WIDGET-NORMAL       TO  W24-YKNCHOKA-ITM-STATE
+           MOVE    WIDGET-INSENSITIVE  TO  W24-YKNCHOKA-STATE
+           MOVE    WIDGET-INSENSITIVE  TO  W24-YKNCHOKA-ITM-STATE
+           MOVE    "F"                 TO  W24-YKNCHOKA-VISIBLE
       *
            IF    ( SPA-W01-STYUKYMD    =   ZERO )
                MOVE    WIDGET-INSENSITIVE
@@ -5623,11 +5624,11 @@
                                            W24-TEISU-ITM-STATE
            END-IF
       *
-           IF    ( SPA-W01-STYUKYMD    <   CONST-H260401 )
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  W24-YKNCHOKA-STATE
-                                           W24-YKNCHOKA-ITM-STATE
-           END-IF
+      *    IF    ( SPA-W01-STYUKYMD    <   CONST-H260401 )
+      *        MOVE    WIDGET-INSENSITIVE
+      *                                TO  W24-YKNCHOKA-STATE
+      *                                    W24-YKNCHOKA-ITM-STATE
+      *    END-IF
       *
            IF    ( SPA-W01-STYUKYMD    <   "20120401" )
             OR  (( SPA-HOSPSBT         =   2 )

@@ -3392,38 +3392,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1026</name>
-      <x>340</x>
-      <y>140</y>
-      <width>72</width>
-      <height>25</height>
-      <label>定数超過</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label1040</name>
-      <x>340</x>
-      <y>165</y>
-      <width>165</width>
-      <height>25</height>
-      <label>月平均夜勤時間超過</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label1025</name>
       <x>340</x>
       <y>115</y>
@@ -3516,6 +3484,38 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1026</name>
+      <x>340</x>
+      <y>140</y>
+      <width>72</width>
+      <height>25</height>
+      <label>定数超過</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1040</name>
+      <x>340</x>
+      <y>164</y>
+      <width>165</width>
+      <height>25</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

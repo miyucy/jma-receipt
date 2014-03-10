@@ -130,6 +130,7 @@
                05  WRK-CMB-ITM2                    PIC X(200).
                05  WRK-CMB-ITM3                    PIC X(200).
                05  WRK-CMB-ITM4                    PIC X(200).
+               05  WRK-CMB-ITM5                    PIC X(200).
            03  WRK-KIJUN-YMD                       PIC X(08).
            03  WRK-BTU-NINZU                       PIC 9(05).
            03  WRK-BTULST                          PIC 9(05).
@@ -2493,6 +2494,9 @@
       *    病棟科名
            MOVE    W20-SRYKA       TO  SPA-GMN-W20-SRYKA-G
       *
+      *    夜勤超過減算区分
+           MOVE    W20-YKNCHOKAKBN TO  SPA-GMN-W20-YKNCHOKAKBN-G
+      *
       *    レセプト表示区分
            MOVE    W20-RECEDSPKBN  TO  SPA-GMN-W20-RECEDSPKBN-G
       *
@@ -2588,6 +2592,11 @@
            IF    ( SPA-ERRCD       =   SPACE )
       *        病棟種別チェック処理
                PERFORM 4101-SBT-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        夜勤超過減算区分チェック処理
+               PERFORM 4101-YKNCHOKAKBN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -3431,6 +3440,16 @@
       *
       *    病棟種別
            MOVE    SPA-GMN-W20-SBT     TO  SYS-5001-BTU-SBT
+      *
+      *    夜勤超過減算区分
+           EVALUATE    TRUE
+           WHEN  ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H260401 )
+             AND ( SPA-NAI-W20-YKNCHOKACHK   = "1" )
+               MOVE    SPA-GMN-W20-YKNCHOKAKBN
+                                       TO  SYS-5001-YKNCHOKAKBN
+           WHEN    OTHER
+               MOVE    "0"             TO  SYS-5001-YKNCHOKAKBN
+           END-EVALUATE
       *
       *    レセプト表示区分
            MOVE    SPA-GMN-W20-RECEDSPKBN
@@ -4532,11 +4551,13 @@
       *
                INITIALIZE  SPA-NAI-W20-KHNRYOLST-G
                            SPA-GMN-W20-KHNRYOLST-G
+                           SPA-GMN-W20-YKNCHOKAKBNLST-G
                            SPA-GMN-W20-RYOYOKBNLST-G
       *
                INITIALIZE  SPA-GMN-W20-KHNRYO-G
                            SPA-NAI-W20-KHNRYO-G
                            SPA-GMN-W20-RECEDSPKBN-G
+                           SPA-GMN-W20-YKNCHOKAKBN-G
                            SPA-GMN-W20-RYOYOKBN-G
                            SPA-NAI-W20-SBT-MOT
                PERFORM 4100-SYS-KANRI-SAI-SET-SEC
@@ -4565,10 +4586,12 @@
       *
            INITIALIZE      SPA-NAI-W20-KHNRYOLST-G
                            SPA-GMN-W20-KHNRYOLST-G
+                           SPA-GMN-W20-YKNCHOKAKBNLST-G
                            SPA-GMN-W20-RYOYOKBNLST-G
       *
            INITIALIZE      SPA-GMN-W20-KHNRYO-G
                            SPA-NAI-W20-KHNRYO-G
+                           SPA-GMN-W20-YKNCHOKAKBN-G
                            SPA-GMN-W20-RECEDSPKBN-G
                            SPA-GMN-W20-RYOYOKBN-G
       *
@@ -4734,6 +4757,7 @@
       *
            INITIALIZE  SPA-NAI-W20-KHNRYOLST-G
                        SPA-GMN-W20-KHNRYOLST-G
+                       SPA-GMN-W20-YKNCHOKAKBNLST-G
                        SPA-GMN-W20-RYOYOKBNLST-G
       *
            MOVE    ZERO            TO  IDX-CMB
@@ -4895,6 +4919,15 @@
            MOVE    TNS-NYUKHNKBN
                                TO  SPA-NAI-W20-NYUKHNKBNLST
                                                (IDX-CMB)
+           IF    ( TNS-CDKBN-KBNNUM   =   100 )
+            OR   ( TNS-CDKBN-KBNNUM   =   101 AND TNS-CDKBN-KOUBAN = 2 )
+            OR   ( TNS-CDKBN-KBNNUM   =   102 )
+            OR   ( TNS-CDKBN-KBNNUM   =   103 )
+            OR   ( TNS-CDKBN-KBNNUM   =   106 )
+            OR   ( TNS-SRYCD          =   "099999954" )
+               MOVE    "1"     TO  SPA-NAI-W20-YKNCHOKACHKLST
+                                               (IDX-CMB)
+           END-IF
       *
            MOVE    IDX-CMB     TO  WRK-99
            MOVE    WRK-99      TO  SPA-GMN-W20-KHNRYOL
@@ -5074,6 +5107,40 @@
        4100-RYOYOKBN-CMB-EDT-EXT.
            EXIT.
       *****************************************************************
+      *    夜勤超過減算区分コンボ編集処理
+      *****************************************************************
+       4100-YKNCHOKAKBN-CMB-EDT-SEC       SECTION.
+      *
+           INITIALIZE                  SPA-GMN-W20-YKNCHOKAKBNLST-G
+      *
+           MOVE    "0"            TO   SPA-GMN-W20-YKNCHOKAKBNL  (1)
+           MOVE    "超過なし"     TO   SPA-GMN-W20-YKNCHOKAKBNMEIL (1)
+      *
+           MOVE    "1"            TO  SPA-GMN-W20-YKNCHOKAKBNL  (2)
+           MOVE    "超過あり"     TO   SPA-GMN-W20-YKNCHOKAKBNMEIL (2)
+           MOVE    2              TO   SPA-GMN-W20-YKNCHOKAKBN-MAX
+      *
+           MOVE    SPA-GMN-W20-YKNCHOKAKBNLST (1)
+                                  TO   SPA-GMN-W20-YKNCHOKAKBN-G
+      *
+           .
+       4100-YKNCHOKAKBN-CMB-EDT-EXT.
+           EXIT.
+      *****************************************************************
+      *    夜勤超過減算区分チェック処理
+      *****************************************************************
+       4101-YKNCHOKAKBN-CHK-SEC     SECTION.
+      *
+           MOVE    SPA-GMN-W20-YKNCHOKAKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4200-YKNCHOKAKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-W20-YKNCHOKAKBN-G
+      *
+           .
+      *
+       4101-YKNCHOKAKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    レセプト表示区分
       *****************************************************************
        4101-RECEDSPKBN-CHK-SEC     SECTION.
@@ -5250,6 +5317,7 @@
       *
            INITIALIZE                  SPA-GMN-W20-KHNRYO-G
                                        SPA-NAI-W20-KHNRYO-G
+                                       SPA-GMN-W20-YKNCHOKAKBN-G
                                        SPA-GMN-W20-RYOYOKBN-G
       *
            PERFORM 4201-KSN-AREA-CLEAR-SEC
@@ -5341,6 +5409,12 @@
                            PERFORM 4100-RYOYOKBN-CMB-EDT-SEC
                        END-IF
                    END-IF
+                   INITIALIZE      SPA-GMN-W20-YKNCHOKAKBNLST-G
+                                   SPA-GMN-W20-YKNCHOKAKBN-G
+                   IF    ( SPA-NAI-W20-YUKOSTYMD  >=  CONST-H260401 )
+                    AND  ( SPA-NAI-W20-YKNCHOKACHK =  "1" )
+                       PERFORM 4100-YKNCHOKAKBN-CMB-EDT-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -5366,6 +5440,7 @@
                    MOVE    WRK-CMB-ITM2    TO  SPA-NAI-W20-KHNSRYCD
                    MOVE    WRK-CMB-ITM3    TO  SPA-NAI-W20-KHNTEN
                    MOVE    WRK-CMB-ITM4    TO  SPA-NAI-W20-NYUKHNKBN
+                   MOVE    WRK-CMB-ITM5    TO  SPA-NAI-W20-YKNCHOKACHK
                END-IF
            END-IF
       *
@@ -5715,7 +5790,19 @@
                MOVE    WRK-CMB-ITM2    TO  SPA-NAI-W20-KHNSRYCD
                MOVE    WRK-CMB-ITM3    TO  SPA-NAI-W20-KHNTEN
                MOVE    WRK-CMB-ITM4    TO  SPA-NAI-W20-NYUKHNKBN
+               MOVE    WRK-CMB-ITM5    TO  SPA-NAI-W20-YKNCHOKACHK
            END-IF
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=  CONST-H260401 )
+            AND  ( SPA-NAI-W20-YKNCHOKACHK =  "1" )
+               PERFORM 4100-YKNCHOKAKBN-CMB-EDT-SEC
+           END-IF
+      *
+      *    夜勤超加減算区分
+           MOVE    SYS-5001-YKNCHOKAKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-YKNCHOKAKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W20-YKNCHOKAKBN-G
       *
            IF    ( SPA-NAI-W20-YUKOSTYMD  >=  CONST-H241001 )
             AND  ( SPA-GMN-W20-SBT         =  "01" )
@@ -8505,6 +8592,33 @@
        4200-RECEDSPKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    夜勤超過減算区分コンボチェック処理
+      *****************************************************************
+       4200-YKNCHOKAKBNLST-CHK-SEC      SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W20-YKNCHOKAKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W20-YKNCHOKAKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W20-YKNCHOKAKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-W20-YKNCHOKAKBNLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-YKNCHOKAKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    レセプト表示区分コンボチェック処理
       *****************************************************************
        4201-RECEDSPKBNLST-CHK-SEC      SECTION.
@@ -8602,6 +8716,9 @@
       *
                    MOVE    SPA-NAI-W20-NYUKHNKBNLST   (IDX-CMB)
                                    TO  WRK-CMB-ITM4
+      *
+                   MOVE    SPA-NAI-W20-YKNCHOKACHKLST   (IDX-CMB)
+                                   TO  WRK-CMB-ITM5
                END-IF
       *
            END-PERFORM
@@ -8634,6 +8751,9 @@
       *
                    MOVE    SPA-NAI-W20-NYUKHNKBNLST   (IDX-CMB)
                                    TO  WRK-CMB-ITM4
+      *
+                   MOVE    SPA-NAI-W20-YKNCHOKACHKLST   (IDX-CMB)
+                                   TO  WRK-CMB-ITM5
                END-IF
       *
            END-PERFORM
@@ -8725,6 +8845,22 @@
                UNTIL     ( IDX1    >   W20-SBT-CNT )
                 MOVE   SPA-GMN-W20-SBTLST (IDX1)
                                    TO  W20-SBT-ITM (IDX1)
+           END-PERFORM
+      *
+      *    夜勤超過減算区分
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=  CONST-H260401 )
+            AND  ( SPA-NAI-W20-YKNCHOKACHK =  "1" )
+               MOVE    "月平均夜勤時間超過" TO W20-LBLYKNCHOKAKBN
+           END-IF
+      *
+           MOVE    SPA-GMN-W20-YKNCHOKAKBN-G
+                                       TO  W20-YKNCHOKAKBN
+           MOVE    SPA-GMN-W20-YKNCHOKAKBN-MAX
+                                       TO  W20-YKNCHOKAKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   W20-YKNCHOKAKBN-CNT )
+                MOVE   SPA-GMN-W20-YKNCHOKAKBNLST (IDX1)
+                                       TO  W20-YKNCHOKAKBN-ITM (IDX1)
            END-PERFORM
       *
       *    レセプト表示区分
@@ -9012,6 +9148,8 @@
                                        W20-KHNRYO-STATE
                                        W20-KHNRYO-ITM-STATE
                                        W20-KHNTEN-STATE
+                                       W20-YKNCHOKAKBN-STATE
+                                       W20-YKNCHOKAKBN-ITM-STATE
                                        W20-RYOYOKBN-STATE
                                        W20-RYOYOKBN-ITM-STATE
                                        W20-LBLKSNP02-STATE
@@ -9058,6 +9196,12 @@
            IF    ( SPA-GMN-W20-BTULST-MAX >=   CONST-BTULST-MAX )
                MOVE    WIDGET-INSENSITIVE
                                        TO  W20-B06-STATE
+           END-IF
+      *
+           IF    ( W20-LBLYKNCHOKAKBN     =   SPACE )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W20-YKNCHOKAKBN-STATE
+                                           W20-YKNCHOKAKBN-ITM-STATE
            END-IF
       *
            IF    ( W20-LBLRYOYOKBN     =   SPACE )
@@ -9179,6 +9323,8 @@
                MOVE    "EDKBN"             TO  MCP-WIDGET
            WHEN    054
                MOVE    "RYOYOKBN"          TO  MCP-WIDGET
+           WHEN    055
+               MOVE    "YKNCHOKAKBN"       TO  MCP-WIDGET
            WHEN    100
                MOVE    "SELNUM"            TO  MCP-WIDGET
            WHEN    101
@@ -9218,10 +9364,17 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-GMN-W20-CUR     =   55 )
+               IF    ( W20-YKNCHOKAKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    54          TO  SPA-GMN-W20-CUR
+               END-IF
+           END-IF
+      *
            IF    ( SPA-GMN-W20-CUR     =   54 )
                IF    ( W20-RYOYOKBN-STATE
                                        =   WIDGET-INSENSITIVE )
-                   MOVE    9           TO  SPA-GMN-W20-CUR
+                   MOVE    8           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -9273,11 +9426,13 @@
            WHEN    "SBT"
                MOVE    007             TO  SPA-GMN-W20-CUR
            WHEN    "KHNRYO"
+               MOVE    055             TO  SPA-GMN-W20-CUR
+           WHEN    "YKNCHOKAKBN"
+               MOVE    054             TO  SPA-GMN-W20-CUR
+           WHEN    "RYOYOKBN"
                MOVE    008             TO  SPA-GMN-W20-CUR
            WHEN    "RECEDSPKBN"
                MOVE    054             TO  SPA-GMN-W20-CUR
-           WHEN    "RYOYOKBN"
-               MOVE    009             TO  SPA-GMN-W20-CUR
            WHEN    "KNGHJO"
                MOVE    010             TO  SPA-GMN-W20-CUR
            WHEN    "KSN01"
