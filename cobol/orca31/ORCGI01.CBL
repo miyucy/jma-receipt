@@ -6257,10 +6257,12 @@
                MOVE    NSRYSRH-SRYCD   TO  WRK-SRYCD
                PERFORM 900-TENSU-KEY-SEL-SEC
                IF    ( TNS-DATAKBN         =   1 )
-                AND  ( TNS-CDKBN-KBN       = 'A' )
-                AND  ( TNS-CDKBN-KBNNUM    = 100 OR 101 OR 109)
+                AND  ( TNS-CDKBN-KBN       = "A" )
+                AND (( TNS-CDKBN-KBNNUM    = 100 OR 101 OR 109)
+                  OR(( TNS-CDKBN-KBNNUM    = 308 )
+                   AND(TNS-CDKBN-KBNNUM-EDA =  3 )))
       *
-                   MOVE    1       TO  FLG-IPPAN
+                   MOVE    1           TO  FLG-IPPAN
       *
                    IF    TNS-CDKBN-KBNNUM   =   100
                        MOVE    1       TO  FLG-IPPAN2
