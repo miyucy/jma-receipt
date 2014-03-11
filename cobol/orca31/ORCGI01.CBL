@@ -903,7 +903,7 @@
                05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   66.
            03  CONST-GMN-KSN-MAX           PIC 9(05)   VALUE   3.
            03  CONST-KSNCD-G.
-               05  CONST-KSNCD-MAX         PIC 9(05)   VALUE   7.
+               05  CONST-KSNCD-MAX         PIC 9(05)   VALUE   8.
                05  CONST-KSNCD-VAL.
                    07  CONST-KSNCD-190116990
                                    PIC X(09)   VALUE   "190116990".
@@ -919,8 +919,10 @@
                                    PIC X(09)   VALUE   "190143370".
                    07  CONST-KSNCD-190152470
                                    PIC X(09)   VALUE   "190152470".
+                   07  CONST-KSNCD-190177170
+                                   PIC X(09)   VALUE   "190177170".
                05  CONST-KSNCD-R REDEFINES CONST-KSNCD-VAL.
-                   07  CONST-KSNCD-OCC     OCCURS  7.
+                   07  CONST-KSNCD-OCC     OCCURS  8.
                        09  CONST-KSNCD     PIC X(09).
            03  CONST-KANSATU               PIC X(02)    VALUE "10".
       *
@@ -5888,6 +5890,13 @@
                    ELSE
                        MOVE    ZERO    TO  FLG-HIT
                    END-IF
+               WHEN  ( CONST-KSNCD (IDX-KSN)
+                                   =   CONST-KSNCD-190177170 )
+                   IF    ( WRK-KJNYMD     >=  CONST-H260401 )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-HIT
+                   END-IF
                END-EVALUATE
       *
                IF    ( SPA-GMN-I01-SYORIKBN-CD =   CONST-IDO )
@@ -5898,7 +5907,8 @@
                                     OR CONST-KSNCD-190116990
                                     OR CONST-KSNCD-190142970
                                     OR CONST-KSNCD-190143370
-                                    OR CONST-KSNCD-190152470 )
+                                    OR CONST-KSNCD-190152470
+                                    OR CONST-KSNCD-190177170 )
                      AND ( SPA-NAI-I01-IDOYMD
                                            >=  SPA-NAI-I01-NYUINYMD )
                        CONTINUE
@@ -5972,6 +5982,29 @@
                        IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
                            CONTINUE
                        ELSE
+                         EVALUATE    TRUE
+                         WHEN ( TNS-CDKBN-KBN          =   "A" )
+                          AND ( TNS-CDKBN-KBNNUM       =   308 )
+                          AND ( TNS-CDKBN-KBNNUM-EDA   =   3 )
+                               IF    ( CONST-KSNCD (IDX-KSN)
+                                           =   CONST-KSNCD-190177170 )
+                                   IF    ( SPA-GMN-I01-SYORIKBN-CD
+                                                   =   CONST-NYUIN )
+                                   OR    ( SPA-NAI-I01-IDOYMD
+                                             =  SPA-NAI-I01-NYUINYMD )
+                                     CONTINUE
+                                   ELSE
+                                     PERFORM 410111-IPPAN-NYUIN-CHK-SEC
+                                     IF    ( FLG-IPPAN       =   1 )
+                                       CONTINUE
+                                     ELSE
+                                       MOVE    ZERO        TO  FLG-HIT
+                                     END-IF
+                                   END-IF
+                               ELSE
+                                   MOVE    ZERO            TO  FLG-HIT
+                               END-IF
+                         WHEN   OTHER
                            EVALUATE    TNS-NYUKHNKSNKBN
                            WHEN    2      THRU    3
                                IF    ( CONST-KSNCD (IDX-KSN)
@@ -6051,6 +6084,7 @@
                            WHEN    OTHER
                                    MOVE    ZERO            TO  FLG-HIT
                            END-EVALUATE
+                         END-EVALUATE
                        END-IF
                    ELSE
                            MOVE    ZERO            TO  FLG-HIT
