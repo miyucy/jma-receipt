@@ -15,7 +15,7 @@
                         PIC X(22).
             02  HCM03V02B-HOKEN
                         PIC X(20).
-            02  HCM03V02B-FUTAN-OLD
+            02  HCM03V02B-FUTAN
                         PIC X(3).
             02  HCM03V02B-TUKISRYKA
                         PIC X(100).
@@ -115,9 +115,3 @@
                         PIC X(50).
             02  HCM03V02B-CHUI
                         PIC X(100).
-            02  HCM03V02B-FUTAN
-                        PIC X(10).
-            02  HCM03V02B-KANANAME2
-                        PIC X(50).
-            02  HCM03V02B-KNJNAMW2
-                        PIC X(50).

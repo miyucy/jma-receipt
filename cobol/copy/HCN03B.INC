@@ -93,7 +93,3 @@
                         PIC X(24).
             02  HCN03B-CHUI
                         PIC X(100).
-            02  HCN03B-KANANAME2
-                        PIC X(50).
-            02  HCN03B-KNJNAMW2
-                        PIC X(50).

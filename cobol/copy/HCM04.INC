@@ -13,7 +13,7 @@
                         PIC X(22).
             02  HCM04-HOKEN
                         PIC X(20).
-            02  HCM04-FUTAN-OLD
+            02  HCM04-FUTAN
                         PIC X(3).
             02  HCM04-PAGE
                         PIC X(3).
@@ -55,7 +55,3 @@
                         PIC X(50).
             02  HCM04-CHUI
                         PIC X(100).
-            02  HCM04-FUTAN
-                        PIC X(10).
-            02  HCM04-NAME2
-                        PIC X(50).

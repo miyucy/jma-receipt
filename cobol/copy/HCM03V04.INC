@@ -19,7 +19,7 @@
                         PIC X(50).
             02  HCM03V04-HOKEN
                         PIC X(20).
-            02  HCM03V04-FUTAN-OLD
+            02  HCM03V04-FUTAN
                         PIC X(3).
             02  HCM03V04-FUTANLABEL
                         PIC X(2).
@@ -101,7 +101,3 @@
                         PIC X(100).
             02  HCM03V04-MCHUI
                         PIC X(100).
-            02  HCM03V04-FUTAN
-                        PIC X(10).
-            02  HCM03V04-NAME2
-                        PIC X(50).
