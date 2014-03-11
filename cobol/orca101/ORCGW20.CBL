@@ -1875,7 +1875,8 @@
       *
                IF    ( SYS-5110-SEIKATU-RYOKBN NOT =   SPACE )
                 OR   ( SYS-5110-KBNCD  =   "24" OR "25"
-                                        OR "35" OR "36" OR "37" )
+                                        OR "35" OR "36" OR "37" 
+                                        OR "38" OR "39" OR "40"  )
                    CONTINUE
                ELSE
       *

@@ -5544,6 +5544,8 @@
                                    =   SPA-NAI-I01-BTUNAME-MOT (1 : 2))
             AND  ( SPA-GMN-I01-BRMNUM
                                    =   SPA-NAI-I01-BRMNUM-MOT )
+            AND  ( SPA-GMN-I01-SYORIKBN-CD
+                               NOT =   "08" )
                MOVE    SPACE           TO  WRK-CMB-CD
                MOVE    SPA-NAI-I01-TOKUTEI-KBN
                                        TO  WRK-CMB-CD (1 : 1)
