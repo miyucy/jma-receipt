@@ -5881,6 +5881,13 @@
                    ELSE
                        MOVE    ZERO    TO  FLG-HIT
                    END-IF
+               WHEN  ( CONST-KSNCD (IDX-KSN)
+                                   =   CONST-KSNCD-190177170 )
+                   IF    ( WRK-KJNYMD     >=  CONST-H260401 )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-HIT
+                   END-IF
       *        褥瘡患者管理加算は平成２４年３月まで
                WHEN  ( CONST-KSNCD (IDX-KSN)
                                   =   CONST-KSNCD-190116990)
@@ -6189,6 +6196,15 @@
       *
       *            救急・在宅等支援病床初期加算（特定一般病棟入院料）
                    IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190152470"
+                       IF    SYS-5000-KYUKYUKSNKBN   =   SPACE  OR  "0"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       ELSE
+                           MOVE   "2"         TO  WRK-CMB-CD
+                       END-IF
+                   END-IF
+      *
+      *            救急・在宅等支援病床初期加算（地域包括ケア病棟入院料）
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190177170"
                        IF    SYS-5000-KYUKYUKSNKBN   =   SPACE  OR  "0"
                            MOVE   "1"         TO  WRK-CMB-CD
                        ELSE
@@ -13543,6 +13559,11 @@
       *    扱いに含める
            PERFORM   210-KYUKYU-KSN5-SEC
       *
+      *    退院日に救急・在宅等支援療養病床初期加算（地域包括ケア病棟入院料）が算定
+      *    されているかチェックして、算定されていれば入院料加算の
+      *    扱いに含める
+           PERFORM   210-KYUKYU-KSN6-SEC
+      *
       *    退院日に有床診療所一般病床初期加算が算定
       *    されているかチェックして、算定されていれば入院料加算の
       *    扱いに含める
@@ -14028,6 +14049,48 @@
       *
            .
        210-KYUKYU-KSN5-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    救急・在宅等支援療養病床初期加算（地域包括ケア病棟入院料）の
+      *    算定有無チェック
+      *****************************************************************
+       210-KYUKYU-KSN6-SEC            SECTION.
+      *
+           MOVE     ZERO               TO  WRK-TENNYUYMD9
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    SPA-PTID            TO  NACCT-PTID
+      *    転入日付のマイナス１日
+           INITIALIZE   LNK-DAY6-AREA
+           MOVE  "61"         TO  LNK-DAY6-IRAI
+           MOVE  PTNYUINRRK-TENNYUYMD  TO  LNK-DAY6-KIJUN
+           MOVE  "1"                   TO  LNK-DAY6-ZOGENPTN
+           MOVE  -1                    TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"    USING        STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           MOVE   LNK-DAY6-KEISAN      TO  WRK-TENNYUYMD
+           MOVE   WRK-TENNYUYMD(1:6)   TO  NACCT-SRYYM
+           MOVE    "key52"             TO  MCP-PATHNAME
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT       =   ZERO
+               MOVE    "key52"         TO  MCP-PATHNAME
+               PERFORM  910-NYUINACCT-READ-SEC
+               IF   FLG-NYUINACCT      =    0
+                    IF   NACCT-DAY(WRK-TENNYUYMD-DD9)  =  1
+                         ADD    1      TO   IDX9
+                         MOVE   "190177170"
+                              TO   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+                    END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key52"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       210-KYUKYU-KSN6-EXT.
            EXIT.
       *
       *****************************************************************

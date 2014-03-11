@@ -1190,6 +1190,13 @@
            MOVE    WRK-BTU-NYUKSNKBN
                                    TO  NYUKSNCHK-NYUINKBN
            PERFORM   48012-TENSU-SEL-SEC
+      *
+      *    救急・在宅等支援病床初期加算（地域包括ケア病棟入院料）は
+      *    入院料加算チェックができない為、チェックしない
+           IF      TNS-SRYCD  =   "190177170"
+               GO  TO   4801-NYUKSN-CHK-EXT
+           END-IF
+      *
            IF      TNS-NYUKHNKSNKBN    NOT =   ZERO
                MOVE    WRK-KSN-NYUKSNKBN
                                        TO  NYUKSNCHK-KSNKBN
