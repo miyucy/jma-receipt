@@ -490,6 +490,7 @@ RECORD_files = \
 	W91.rec \
 	XG03.rec \
 	session_start.rec \
+	W37.rec \
 
 DEF_files = \
 
