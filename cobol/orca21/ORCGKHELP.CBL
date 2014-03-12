@@ -204,7 +204,7 @@
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *    ヘルプ・発行指示共通
-           MOVE    SPA-ETCKYOUTU-AREA(3:)  TO  SPA-KHELP
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-KHELP
       *
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    ZERO                TO  FLG-END
@@ -225,7 +225,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-KHELP           TO  SPA-ETCKYOUTU-AREA(3:)
+           MOVE    SPA-KHELP           TO  SPA-ETCKYOUTU-AREA
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
       *

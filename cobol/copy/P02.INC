@@ -926,6 +926,14 @@
                               PIC X(16)   OCCURS  10 TIMES.
                       07  P02-P028-CRHKNLST-BGCOLOR
                               PIC X(16)   OCCURS  10 TIMES.
+                  05  P02-P028-CHKHKTBYO1.
+                    06  P02-VALUE   PIC X.
+                  05  P02-P028-CHKHKTBYO2.
+                    06  P02-VALUE   PIC X.
+                  05  P02-P028-CHKHKTBYO3.
+                    06  P02-VALUE   PIC X.
+                  05  P02-P028-CHKHKTBYO4.
+                    06  P02-VALUE   PIC X.
 
 
 

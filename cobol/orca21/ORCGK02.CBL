@@ -698,6 +698,7 @@
            03  WRK-PAGE-LINE           PIC 9(02).
       *!!!!!!!!!!!!!!!!!!
       *
+      *
       *    訂正時の内容保存
        01  WRK-ORCSC95AREA             PIC X(150).
       *
@@ -1141,14 +1142,12 @@
            MOVE    ZERO                TO  FLG-END
       *    テーブル最大行
            MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
-      *???
-           IF      SPA-ETCKYOUTU-AREA(1:2) NUMERIC
-               MOVE    SPA-ETCKYOUTU-AREA(1:2) TO  WRK-PAGE-LINE
+      *v4.7
+           IF      SPA-GMLINCNT(1:2)   NUMERIC
+               MOVE    SPA-GMLINCNT        TO  WRK-PAGE-LINE
            ELSE
-               MOVE    PAGE-LINE               TO  WRK-PAGE-LINE
+               MOVE    PAGE-LINE           TO  WRK-PAGE-LINE
            END-IF
-      *TEST
-           DISPLAY "K02 INIT WRK-PAGE-LINE:"  WRK-PAGE-LINE
       *
       *    診療種別テーブルセット
            PERFORM 1001-SRYKBN-SET-SEC
@@ -1970,8 +1969,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    0               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
       *
-           MOVE    SPA-ETCKYOUTU-AREA(1:2)
-                                   TO  WRK-PAGE-LINE
+           MOVE    SPA-GMLINCNT    TO  WRK-PAGE-LINE
       *
            .
        30010-INIT-GMNN-EXT.
@@ -8256,6 +8254,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        OR  "101110010"
       *        紹介状なし追加
                                        OR  "111012510"
+      *        妥結率５割以下
+                                       OR  "111012710"
                CONTINUE
            ELSE
                GO      TO      4101125-SYOSIN-CHK-EXT
@@ -8313,6 +8313,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            OR  "101110010"
       *                紹介状なし追加
                                            OR  "111012510"
+      *                妥結率５割以下
+                                           OR  "111012710"
                    IF      SPA-SYOSINFLG       =   ZERO
                        MOVE    "099110001"         TO  WRK-SRYCD
                    ELSE
@@ -10753,12 +10755,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (FLG-END             =   1     )
                GO      TO      450-MAEGMN-EXT
            END-IF
-      *TEST
-      *TEST
-           DISPLAY "450-MAEGMN IN SPA-MAP-IDX:" SPA-MAP-IDX
-               ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
-      *
-      *TEST
       *
       *    行位置とカーソル位置の決定
            PERFORM 10021-K02SPA-INIT-SET-SEC
@@ -10838,12 +10834,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (FLG-END             =   1     )
                GO      TO      460-ATOGMN-EXT
            END-IF
-      *
-      *TEST
-           DISPLAY "460-ATOGMN SPA-MAP-IDX:" SPA-MAP-IDX
-               ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
-      *
-      *TEST
       *
       *    行位置とカーソル位置の決定
            PERFORM 10021-K02SPA-INIT-SET-SEC
@@ -12737,10 +12727,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            COMPUTE SPA-MAP-IDX         =   WRK-MAP-MAX
                                        +   1
            MOVE    1                   TO  SPA-GMN-PAGE
-      *TEST
-              DISPLAY "WRK-MAP-MAX:" WRK-MAP-MAX
-                       ",SPA-MAP-IDX:" SPA-MAP-IDX
-      *TEST
       *
       *
       *

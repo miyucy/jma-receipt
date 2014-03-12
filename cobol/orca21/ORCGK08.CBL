@@ -63,8 +63,6 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/04/09  £È£²£´Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡Ê°ìÈÌÌ¾µ­ºÜÊÔ½¸¡Ë
       *  04.07.00    NACL-Â¿¡¹Ç¼  13/03/XX  £È£²£µÇ¯£´·î²þÀµÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  13/10/XX  Âè»°¼Ô¹Ô°ÙÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  14/02/13  Ï«ºÒ¶â³Û¡ó²Ã»»ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1108,7 +1106,7 @@
       *****************************************************************
        3014-K081-SET-SEC                  SECTION.
       *
-           MOVE    SPA-ETCKYOUTU-AREA(3:)  TO  SPA-K081
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
       *
            EVALUATE    SPA-K081-OKFLG
                WHEN    ZERO
@@ -1434,7 +1432,7 @@
                PERFORM 30001-SIJISEN-CHK-SEC
            ELSE
                INITIALIZE                  SPA-K081
-               MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA(3:)
+               MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
            END-IF
       *
            MOVE    ZERO                TO  IDX4
@@ -3343,7 +3341,7 @@
                END-IF
              END-IF
            END-PERFORM
-           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA(3:)
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
       *
            .
        30001-SIJISEN-CHK-EXT.
@@ -4166,6 +4164,8 @@
                        WHEN    "099110001"
       *                ¾Ò²ð¾õ¤Ê¤·ÄÉ²Ã
                        WHEN    "111012510"
+      *                ÂÅ·ëÎ¨£µ³ä°Ê²¼
+                       WHEN    "111012710"
                            MOVE    1             TO  FLG-SYOSIN-OK
                    END-EVALUATE
                END-PERFORM
@@ -5011,6 +5011,10 @@
       *        ¡ó²Ã»»¤¢¤ê¤Ï¡¢ºÞÅÀ¿ô¤òÂÐ¾Ý¤È¤¹¤ë
                ADD     LNK-WKSRY-SYUTEN1 (IDX) TO  WRK-SYUTEN1
                MOVE    ZERO                TO  FLG-RSIFLG
+      *TEST
+            DISPLAY "IDX:" IDX ",SRYKBN:"  LNK-WKSRY-SRYKBN (IDX)
+                 ",WRK-SYUTEN1:" WRK-SYUTEN1
+      *TEST
            END-IF
            MOVE    TNSWK-TENSU-REC     TO  TNS-TENSU-REC
            .
@@ -5951,7 +5955,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPACE               TO  SPA-MOTOPG
       *
-           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA(3:)
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-K08             TO  SPA-FREE
@@ -5968,7 +5972,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-K08
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           MOVE    SPA-ETCKYOUTU-AREA(3:)  TO  SPA-K081
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
       *
            MOVE    "K081"              TO  SPA-SAKIPG
            MOVE    "K08"               TO  SPA-MOTOPG
@@ -6897,7 +6901,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  K08-B10-LABEL
            MOVE    WIDGET-INSENSITIVE  TO  K08-B10-STATE
            IF      SPA-NYUGAIKBN       =   "1"
-               MOVE    SPA-ETCKYOUTU-AREA(3:)  TO  SPA-K081
+               MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
                IF     (SPA-NAI-SIJISENKBN  =   1  )  AND
                      ((SPA-NAI-SYOHOU      =   1 )  OR
                       (SPA-NAI-CHUSYA      =   1 )  OR

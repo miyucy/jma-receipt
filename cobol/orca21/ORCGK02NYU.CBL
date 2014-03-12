@@ -1004,11 +1004,11 @@
            MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
       *
       *!!!
-      *    頁行数(v4.7のみ）
-           IF      SPA-ETCKYOUTU-AREA(1:2) NUMERIC
-               MOVE    SPA-ETCKYOUTU-AREA(1:2) TO  WRK-PAGE-LINE
+      *    頁行数
+           IF      SPA-GMLINCNT(1:2)   NUMERIC
+               MOVE    SPA-GMLINCNT         TO  WRK-PAGE-LINE
            ELSE
-               MOVE    PAGE-LINE               TO  WRK-PAGE-LINE
+               MOVE    PAGE-LINE            TO  WRK-PAGE-LINE
            END-IF
       *
       *    診療種別テーブルセット
@@ -1622,8 +1622,7 @@
            MOVE    0               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
       *
-           MOVE    SPA-ETCKYOUTU-AREA(1:2)
-                                   TO  WRK-PAGE-LINE
+           MOVE    SPA-GMLINCNT    TO  WRK-PAGE-LINE
            .
        30010-INIT-GMNN-EXT.
            EXIT.
@@ -2481,8 +2480,7 @@
       *****************************************************************
        3014-K081-SET-SEC                  SECTION.
       *
-      *!!! MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
-           MOVE    SPA-ETCKYOUTU-AREA(3:)  TO  SPA-K081
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
       *
            EVALUATE    SPA-K081-OKFLG
                WHEN    ZERO
@@ -9302,7 +9300,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *!!!!!!
       *
-           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA(3:)
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
       *
            MOVE    "K08"               TO  SPA-NAI-SAKIPG
       *****MOVE    "K03"               TO  SPA-SAKIPG
@@ -9459,7 +9457,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
              END-IF
            END-PERFORM
-           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA(3:)
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
       *
            .
        451091-SIJISEN-CHK-EXT.
@@ -9495,7 +9493,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-GYOUMU-ARI  TO  SPA-K081NAI-GYOUMU-ARI
            MOVE    "K02N"              TO  SPA-ETC-MOTOPG
       *
-           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA(3:)
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-K02             TO  SPA-FREE
@@ -9512,7 +9510,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           MOVE    SPA-ETCKYOUTU-AREA(3:)  TO  SPA-K081
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
       *
            MOVE    "K081"              TO  SPA-SAKIPG
            MOVE    "K02N"              TO  SPA-MOTOPG

@@ -35,6 +35,7 @@
       *                                     ºßÂðËö´üÁí¹ç¿Ç»¡ÎÁÄÉ²Ã
       *  04.06.00    NACL-Â¿¡¹Ç¼  11/01/XX  ÅÅ»ÒÅÀ¿ôÉ½ÂÐ±þ
       *                                     ³ÆÆþ±¡ÎÁÅùÄÉ²Ã
+      *  04.07.00    NACL-Â¿¡¹Ç¼  14/03/XX  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -434,6 +435,10 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *H24.4       MOVE    "ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ" 
                    MOVE    "ºßÂð¤¬¤ó°åÎÅÁí¹ç¿ÇÎÅÎÁ" 
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
+      *H26.4
+               WHEN    "207"
+                   MOVE    "ÃÏ°èÊñ³ç¿ÇÎÅÎÁ" 
+                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
                WHEN    "504"
                    MOVE    "²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ" 
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
@@ -742,6 +747,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "206"
       *            ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ
                    PERFORM 200211-KBNCD-206-SEC
+               WHEN    "207"
+      *            ÃÏ°èÊñ³ç¿ÇÎÅÎÁ
+                   PERFORM 200211-KBNCD-207-SEC
                WHEN    "504"
       *            ²óÉü´ü¥ê¥ÏÆþ±¡ÎÁ
                    PERFORM 200211-KBNCD-504-SEC
@@ -1155,6 +1163,35 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
        200211-KBNCD-206-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÃÏ°èÊñ³ç¿ÇÎÅÎÁ½èÍý
+      *****************************************************************
+       200211-KBNCD-207-SEC       SECTION.
+      *
+      *    Êñ³ç»»ÄêÊýË¡¤Ï»»Äê¤¹¤ë¤ò½é´ü
+           MOVE    SPA-GMN-SANTEIHOU-LST (2)   TO  SPA-GMN-SANTEIHOU-G
+      *
+      *    Êñ³ç»»Äê¶èÊ¬
+           MOVE    SPA-GMN-SANTEIKBN-LST (3)   TO  SPA-GMN-SANTEIKBN-G
+           MOVE    SPA-GMN-NYUGAIKBN-LST (1)   TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    SPA-GMN-HKNCOMBIKBN-LST(1)  TO  SPA-GMN-HKNCOMBIKBN-G
+      *
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-GMN-SRYKBN-MAX
+               IF      IDX             =    01
+                                       OR   12
+      *            ÅêÌô¡¦ºßÂð¡¡Êñ³ç³°
+                   MOVE    SPA-GMN-SRYKBN-LST (1)
+                                           TO  SPA-GMN-SRYKBN-G (IDX)
+               ELSE
+                   MOVE    SPA-GMN-SRYKBN-LST (2)
+                                           TO  SPA-GMN-SRYKBN-G (IDX)
+               END-IF
+           END-PERFORM
+      *
+           .
+       200211-KBNCD-207-EXT.
            EXIT.
       *****************************************************************
       *    ÈÖ¹æÁªÂò¥Á¥§¥Ã¥¯½èÍý

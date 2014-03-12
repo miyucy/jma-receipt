@@ -31,6 +31,7 @@
       * 04.08.00     NACL=多々納  12/12/14  患者情報通知対応
       * 04.08.00     NACL-多々納  13/06/XX  労災レセ電対応
       * 04.08.00     NACL-多々納  13/07/XX  時間外緊急院内チェック追加
+      * 04.08.00     NACL-多々納  14/03/XX  平成２６年４月改正対応
       *****************************************************************
       *
       *
@@ -242,6 +243,7 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
       *
       *    職員情報より発行フラグ再設定
            IF     (LNK-SC95-PG         =   "K02" )
@@ -915,6 +917,15 @@
                                END-IF
                        END-EVALUATE
                    END-IF
+      *H26.4
+                   IF      SPA-SRYYMD      >=  "20140401"
+      *                地域包括診療加算（3195)
+                       IF      SYS-1006-SSTKIJUN (195) =   1
+                           MOVE    1               TO  SPA-CHKHTKKSN
+                       ELSE
+                           MOVE    ZERO            TO  SPA-CHKHTKKSN
+                       END-IF
+                   END-IF
                END-IF
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
@@ -1160,12 +1171,10 @@
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *ver.4.7　は一部を流用
-      *    ver.4.8 からは K01COMMON-SPA に項目追加
            IF      SPA-NYUGAIKBN       =   "1"
-               MOVE    WRK-NLINECNT        TO  SPA-ETCKYOUTU-AREA(1:2)
+               MOVE    WRK-NLINECNT        TO  SPA-GMLINCNT
            ELSE
-               MOVE    WRK-GLINECNT        TO  SPA-ETCKYOUTU-AREA(1:2)
+               MOVE    WRK-GLINECNT        TO  SPA-GMLINCNT
            END-IF
            .
        10050-LINECNT-HEN-EXT.

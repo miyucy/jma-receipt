@@ -32,6 +32,7 @@
       *  04.06.00    NACL=多々納  10/11/02  難病外来指導管理料対応
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *  04.08.00    NACL-多々納  13/01/15  診療回数テーブル１０対応
+      *  04.08.00    NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
       *****************************************************************
       *
       *
@@ -94,6 +95,7 @@
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-PTTOKKI         PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
+           03  FLG-PTCONF          PIC 9(01).
       *
            03  FLG-SYSKANRIOK      PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -296,6 +298,10 @@
                05  WRK-CHK-SRYYM           PIC X(06).
                05  WRK-CHK-SRYDD           PIC X(02).
       *
+           03  WRK-CHKHKTBYO-G.
+               05  WRK-CHKHKTBYO       PIC X(01)   OCCURS   4.
+           03  WRK-CNT                 PIC 9(02).
+      *
       *    禁忌１
        01  WRK-TABOO-G.
            03  WRK-TABOO               PIC X(62)
@@ -460,6 +466,10 @@
       *    同一患者識別テーブル
        01  PTSAME-REC.
            COPY    "CPPTSAME.INC".
+      *
+      *    患者個別設定テーブル
+       01  PTCONF-REC.
+           COPY    "CPPTCONF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2065,6 +2075,14 @@
                PERFORM 10015-PTSAME-SET-SEC
            END-IF
       *
+      *H26.4
+      *    地域包括診療対象疾病
+           IF     (SPA-SRYYMD          >=  "20140401" )
+            AND   (SPA-CHKHTKKSN       =   1          )
+               PERFORM 11019-CHKHTKBYO-SET-SEC
+           END-IF
+      *
+      *
            .
        1101-PTINF-HENSYU-EXT.
            EXIT.
@@ -2134,6 +2152,54 @@
            .
        10015-PTSAME-SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    地域包括診療対象疾病編集処理
+      *****************************************************************
+       11019-CHKHTKBYO-SET-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  SPA-CHKHKTBYO-ARI
+      *
+           INITIALIZE                  PTCONF-REC
+           MOVE    PTINF-HOSPNUM       TO  PTCONF-HOSPNUM
+           MOVE    PTINF-PTID          TO  PTCONF-PTID
+           MOVE    "TIIKIHOKATU"       TO  PTCONF-CKEY
+      *
+           MOVE    PTCONF-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptconf"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptconf"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 930-PTCONF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTCONF
+               INITIALIZE                  PTCONF-REC
+           END-IF
+           MOVE    "tbl_ptconf"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-PTCONF          =   ZERO
+      *        地域包括診療対象疾病チェック
+               MOVE    PTCONF-CDATA(1:4)   TO  WRK-CHKHKTBYO-G
+               MOVE    ZERO                TO  WRK-CNT
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   4
+                   IF      WRK-CHKHKTBYO (IDX) =   "1"
+                       ADD     1               TO  WRK-CNT
+                   END-IF
+               END-PERFORM
+               IF      WRK-CNT             >=  2
+      *            地域包括診療加算　算定あり
+                   MOVE    1               TO  SPA-CHKHKTBYO-ARI
+               END-IF
+           END-IF
+           .
+       11019-CHKHTKBYO-SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    禁忌情報設定処理
@@ -5441,6 +5507,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-PTTOKKI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者特記事項読み込み
+      *****************************************************************
+       930-PTCONF-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTCONF-REC
+               MOVE    ZERO            TO  FLG-PTCONF
+           ELSE
+               INITIALIZE                  PTCONF-REC
+               MOVE    1               TO  FLG-PTCONF
+           END-IF
+      *
+           .
+       930-PTCONF-READ-EXT.
            EXIT.
       *****************************************************************
       *    同一患者識別マスター読込処理
