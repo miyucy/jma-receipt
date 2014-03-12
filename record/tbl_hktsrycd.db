@@ -1,6 +1,6 @@
 tbl_hktsrycd {
 	KANRICD   			number(3);
-	RENNUM    			number(3);
+	RENNUM    			number(2);
 	YUKOSTYMD  			char(8);
 	YUKOEDYMD	  		char(8);
 	SRYCD				char(9);
@@ -80,19 +80,6 @@ path	key5	{
 	};
 };
 
-path	key6		{ 	
-	DBSELECT	{
-		DECLARE tbl_hktsrycd_key6_csr CURSOR FOR
-		SELECT *
-		FROM tbl_hktsrycd
-			WHERE   KANRICD     =   :KANRICD
-                        AND     RENNUM      =   1
-			AND     YUKOEDYMD  <=   :YUKOEDYMD
-			ORDER   BY         YUKOSTYMD DESC
-		;
-	};
-};
-
 path	all	{ 	
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_all_csr CURSOR FOR
@@ -103,18 +90,5 @@ path	all	{
 			                   YUKOSTYMD
                        
  		;
-	};
-};
-
-path	key7		{ 	
-	DBSELECT	{
-		DECLARE tbl_hktsrycd_key7_csr CURSOR FOR
-		SELECT *
-		FROM tbl_hktsrycd
-			WHERE   KANRICD     =   :KANRICD
-                        AND     RENNUM      =   1
-			AND     YUKOEDYMD  >=   :YUKOSTYMD
-			ORDER   BY         YUKOSTYMD DESC
-		;
 	};
 };
