@@ -50,6 +50,7 @@
       *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
       *  04.07.04    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
       *                                     様式追加対応
+      *  04.07.05    NACL-藤原    14/03/12  第三者行為のプリンタ設定
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -726,6 +727,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                    MOVE    SYS-2005-ROUPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG16
                WHEN   "1"              ALSO    "2"
+               WHEN   "1"              ALSO    "4"
                    MOVE    SYS-2005-JBAIPRTNM-N
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-JBAIPRTNM-NEXT-N
@@ -736,6 +738,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                    MOVE    SYS-2005-ROUPRTNM-NEXT
                                    TO  SHELLTBL-ARG16
                WHEN   "2"              ALSO    "2"
+               WHEN   "2"              ALSO    "4"
                    MOVE    SYS-2005-JBAIPRTNM
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-JBAIPRTNM-NEXT
