@@ -138,19 +138,7 @@
                05  SYS-5001-KSN2.
                  09  SYS-5001-KSNCD2           PIC X(09) OCCURS 10.
       *予備 ** 予備の後にも項目があるので注意すること **
-               05  SYS-5001-YOBI               PIC X(130).
-      *看護職員比率過措置区分（平成３０年改正　療養病棟入院料２の経過措置）
-               05  SYS-5001-SYOKUINKBN2    PIC  X(01).
-      *重症患者割合特別入院基本料区分（平成３０年改正　結核病棟）
-               05  SYS-5001-JUUSHOUKNGKBN  PIC  X(01).
-      *病棟診療行為コード（特定入院料）
-               05  SYS-5001-TSRYCD         PIC  X(09).
-      *病棟診療行為コード
-               05  SYS-5001-SRYCD          PIC  X(09).
-      *看護職員数等経過措置区分
-               05  SYS-5001-SYOKUINKBN     PIC  X(01).
-      *夜勤時間特別入院基本料区分
-               05  SYS-5001-YKNTOKUKBN     PIC  X(01).
+               05  SYS-5001-YOBI               PIC X(152).
       *月平均夜勤時間超過減算
                05  SYS-5001-YKNCHOKAKBN    PIC  X(01).
       *診療所一般・療養病床相互算定区分

@@ -56,7 +56,7 @@
                 05  W21-BRM-SAGAKU         PIC X(12).
                 05  W21-BRM-SAGAKU-STT     PIC S9(9)   BINARY.
                 05  W21-BRM-SAGAKU-CNT     PIC S9(9)   BINARY.
-                05  W21-BRM-SAGAKU-ITM     PIC X(12)   OCCURS  99.
+                05  W21-BRM-SAGAKU-ITM     PIC X(12)   OCCURS  30.
                 05  W21-BRM-SAGAKU-ITM-STT PIC S9(9)   BINARY.
               04  W21-CMB-BRM-SEX.
                 05  W21-BRM-SEX            PIC X(12).
@@ -82,17 +82,6 @@
                 05  W21-KHNRYO-ITM-STT     PIC S9(9)   BINARY.
               04  W21-KHNTEN               PIC S9(6).
               04  W21-KHNTEN-STT           PIC S9(9)   BINARY.
-      *
-              04  W21-CMB-TBTUTYPE.
-                05  W21-TBTUTYPE            PIC X(20).
-                05  W21-TBTUTYPE-STATE      PIC S9(9)   BINARY.
-                05  W21-TBTUTYPE-CNT        PIC S9(9)   BINARY.
-                05  W21-TBTUTYPE-ITM        PIC X(20)   OCCURS  5.
-                05  W21-TBTUTYPE-ITM-STATE
-                                           PIC S9(9)   BINARY.
-      *
-              04  W21-TBTUCD                PIC S9(2).
-              04  W21-TBTUCD-STATE          PIC S9(9)   BINARY.
       *
               04  W21-LBLKSN-G.
                 05  W21-LBLKSN             PIC X(36)
