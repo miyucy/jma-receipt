@@ -2949,7 +2949,7 @@
       *H26.4　改正から
                WHEN    "K106"
                    STRING  "警告！"
-                           "地域包括診療料が算定中です。"
+                           "地域包括診療料が算定済みです。"
                            "診察料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
