@@ -30,11 +30,6 @@
       *  03.05.00    NACL-¾®Æ¦Âô  07/05/29  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-¾®Æ¦Âô  07/08/20  £Á£Ä£ÌÅÀ¿ô¤ÎÄ¾ÀÜÆþÎÏÂÐ±þ
       *  04.02.00    NACL-¾®Æ¦Âô  08/04/08  °åÎÅ¶èÊ¬¥³¥á¥ó¥È²þÄêÂÐ±þ
-      *  05.00.00    NACL-¾®Æ¦Âô  17/08/23  ÆÃÄêÆþ±¡ÎÁ¤Î»»ÄêÍ×·ï³°¤Ç
-      *                                     ÎÅÍÜÉÂÅïÆþ±¡ÎÁ»»ÄêÆü¤Ï¥³¥á
-      *                                     ¥ó¥È½ÐÎÏ¤·¤Ê¤¤
-      *Ê¿À®£³£°Ç¯£´·î²þÄêÂÐ±þ
-      *  05.00.00    NACL-¾®Æ¦Âô  18/03/08  ÎÅÍÜÉÂÅïÆþ±¡ÎÁ¤ÎÈ½ÄêÊÑ¹¹
       *****************************************************************
       *
       *
@@ -54,7 +49,6 @@
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
-           03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-RYOUYOCOM               PIC 9(01).
            03  FLG-RYOYO-NYUIN             PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
@@ -67,8 +61,6 @@
            03  SIDX1                       PIC 9(04).
            03  SIDX2                       PIC 9(04).
            03  SIDX3                       PIC 9(04).
-           03  IDX-ST                      PIC 9(02).
-           03  IDX-ED                      PIC 9(02).
       *
       *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
        01  CONSTANT-AREA.
@@ -232,93 +224,12 @@
                05  CONS-RYOYO-NYUIN-OCC-H22    OCCURS  50.
                    07  CONS-RYOYO-SRYCD-H22    PIC X(09).
       *
-      *    Ê¿À®£²£¸Ç¯£´·î¤Ë¿·Àß¤µ¤ì¤¿£Á£Ä£ÌÅÀ¿ô¥³¥á¥ó¥È¤Î¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
-           03  CONS-ADL-A.
-      *        £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­¡¡£±ÅÀ
-               05                          PIC X(09) VALUE "820000199".
-      *        £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­¡¡£²ÅÀ
-               05                          PIC X(09) VALUE "820000200".
-      *        £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­¡¡£³ÅÀ
-               05                          PIC X(09) VALUE "820000201".
-      *        £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­¡¡£´ÅÀ
-               05                          PIC X(09) VALUE "820000202".
-      *        £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­¡¡£µÅÀ
-               05                          PIC X(09) VALUE "820000203".
-      *        £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­¡¡£¶ÅÀ
-               05                          PIC X(09) VALUE "820000204".
-      *        £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­¡¡£°ÅÀ
-               05                          PIC X(09) VALUE "820000198".
-           03  CONS-ADL-AR      REDEFINES    CONS-ADL-A.
-               05  CONS-ADL-A-OCC          OCCURS  7.
-                   07  CONS-ADL-A-COMCD    PIC X(09).
-      *
-           03  CONS-ADL-B.
-      *        £Á£Ä£Ì£â¡¡°Ü¾è¡¡£±ÅÀ
-               05                          PIC X(09) VALUE "820000206".
-      *        £Á£Ä£Ì£â¡¡°Ü¾è¡¡£²ÅÀ
-               05                          PIC X(09) VALUE "820000207".
-      *        £Á£Ä£Ì£â¡¡°Ü¾è¡¡£³ÅÀ
-               05                          PIC X(09) VALUE "820000208".
-      *        £Á£Ä£Ì£â¡¡°Ü¾è¡¡£´ÅÀ
-               05                          PIC X(09) VALUE "820000209".
-      *        £Á£Ä£Ì£â¡¡°Ü¾è¡¡£µÅÀ
-               05                          PIC X(09) VALUE "820000210".
-      *        £Á£Ä£Ì£â¡¡°Ü¾è¡¡£¶ÅÀ
-               05                          PIC X(09) VALUE "820000211".
-      *        £Á£Ä£Ì£â¡¡°Ü¾è¡¡£°ÅÀ
-               05                          PIC X(09) VALUE "820000205".
-           03  CONS-ADL-BR      REDEFINES    CONS-ADL-B.
-               05  CONS-ADL-B-OCC          OCCURS  7.
-                   07  CONS-ADL-B-COMCD    PIC X(09).
-      *
-           03  CONS-ADL-C.
-      *        £Á£Ä£Ì£ã¡¡¿©»ö¡¡£±ÅÀ
-               05                          PIC X(09) VALUE "820000213".
-      *        £Á£Ä£Ì£ã¡¡¿©»ö¡¡£²ÅÀ
-               05                          PIC X(09) VALUE "820000214".
-      *        £Á£Ä£Ì£ã¡¡¿©»ö¡¡£³ÅÀ
-               05                          PIC X(09) VALUE "820000215".
-      *        £Á£Ä£Ì£ã¡¡¿©»ö¡¡£´ÅÀ
-               05                          PIC X(09) VALUE "820000216".
-      *        £Á£Ä£Ì£ã¡¡¿©»ö¡¡£µÅÀ
-               05                          PIC X(09) VALUE "820000217".
-      *        £Á£Ä£Ì£ã¡¡¿©»ö¡¡£¶ÅÀ
-               05                          PIC X(09) VALUE "820000218".
-      *        £Á£Ä£Ì£ã¡¡¿©»ö¡¡£°ÅÀ
-               05                          PIC X(09) VALUE "820000212".
-           03  CONS-ADL-CR      REDEFINES    CONS-ADL-C.
-               05  CONS-ADL-C-OCC          OCCURS  7.
-                   07  CONS-ADL-C-COMCD    PIC X(09).
-      *
-           03  CONS-ADL-D.
-      *        £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ¡¡£±ÅÀ
-               05                          PIC X(09) VALUE "820000220".
-      *        £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ¡¡£²ÅÀ
-               05                          PIC X(09) VALUE "820000221".
-      *        £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ¡¡£³ÅÀ
-               05                          PIC X(09) VALUE "820000222".
-      *        £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ¡¡£´ÅÀ
-               05                          PIC X(09) VALUE "820000223".
-      *        £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ¡¡£µÅÀ
-               05                          PIC X(09) VALUE "820000224".
-      *        £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ¡¡£¶ÅÀ
-               05                          PIC X(09) VALUE "820000225".
-      *        £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ¡¡£°ÅÀ
-               05                          PIC X(09) VALUE "820000219".
-           03  CONS-ADL-DR      REDEFINES    CONS-ADL-D.
-               05  CONS-ADL-D-OCC          OCCURS  7.
-                   07  CONS-ADL-D-COMCD    PIC X(09).
-      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *
       *    ³°ÇñÂàÈò¥¨¥ê¥¢
            03  WRK-GAIHAKU-AREA.
              05  WRK-GAIHAKU       PIC X(01)   OCCURS   31.
-      *
-      *    ÆÃÄêÆþ±¡ÎÁ»»ÄêÍ×·ï³°ÂàÈò¥¨¥ê¥¢
-           03  WRK-TOKUGAI-AREA.
-             05  WRK-TOKUGAI       PIC X(01)   OCCURS   31.
       *
       *    ¿ÇÎÅ¥³¡¼¥É·×½¸·×ÍÑ
            03  WRK-SRYCD-X                 PIC X(09).
@@ -327,7 +238,6 @@
       *
       *    °åÎÅ¶èÊ¬¥³¥á¥ó¥ÈÊÂ¤ÓÂØ¤¨ÍÑ
            03  WRK-IDX                     PIC 9(04).
-           03  WRK-RYOCOM-IRYO-SORT-COM    PIC X(04).
            03  WRK-RYOCOM-IRYO-SRYCD       PIC X(09).
            03  WRK-RYOCOM-IRYO-ZAINUM      PIC 9(08).
       *
@@ -385,10 +295,6 @@
       *    ÎÅÍÜ¥ì¥»¥×¥È¥³¥á¥ó¥È¥Þ¥¹¥¿¡Ý
        01  RYOUYOCOM-REC.
            COPY    "CPRYOCOM.INC".
-      *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
            COPY    "CPTENSU.INC".
@@ -533,66 +439,6 @@
                    MOVE    "key17"                 TO  MCP-PATHNAME
                    PERFORM   910-DB-CLOSE-SEC
                END-IF
-           END-IF
-      *
-      *    ÆÃÄêÆþ±¡ÎÁ¤Î»»ÄêÍ×·ï³°¤ÇÆþ±¡¤·¤Æ¤¤¤ëÆü¤ÏÎÅÍÜ¥³¥á¥ó¥È¤ò
-      *    ÊÖµÑ¤·¤Ê¤¤¡Ê´µ¼ÔÆþ±¡ÍúÎò¤«¤é¼èÆÀ¡Ë
-           INITIALIZE    WRK-TOKUGAI-AREA
-           IF      LNK-RYOCOM-RC    =    ZERO
-               INITIALIZE                      PTNYUINRRK-REC
-               MOVE    LNK-RYOCOM-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
-               MOVE    LNK-RYOCOM-PTID     TO  PTNYUINRRK-PTID
-               MOVE    LNK-RYOCOM-SANTEIYM TO  PTNYUINRRK-TENNYUYMD(1:6)
-               MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD(7:2)
-               MOVE    LNK-RYOCOM-SANTEIYM TO  PTNYUINRRK-TENSTUYMD(1:6)
-               MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:2)
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key41"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-SELECT-SEC
-               IF      FLG-PTNYUINRRK      =   ZERO
-                   MOVE    "tbl_ptnyuinrrk" TO  MCP-TABLE
-                   MOVE    "key41"         TO  MCP-PATHNAME
-                   PERFORM 910-PTNYUINRRK-READ-SEC
-                   PERFORM    UNTIL   FLG-PTNYUINRRK  =   1
-                        IF    PTNYUINRRK-TENNYUYMD(1:6)  < 
-                                                   LNK-RYOCOM-SANTEIYM
-                            MOVE   1       TO  IDX-ST
-                        END-IF
-                        IF    PTNYUINRRK-TENNYUYMD(1:6)  = 
-                                                   LNK-RYOCOM-SANTEIYM
-                            MOVE   PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                        END-IF
-                        IF    PTNYUINRRK-TENSTUYMD(1:6)  > 
-                                                   LNK-RYOCOM-SANTEIYM
-                            MOVE   31       TO  IDX-ED
-                        END-IF
-                        IF    PTNYUINRRK-TENSTUYMD(1:6)  = 
-                                                   LNK-RYOCOM-SANTEIYM
-                            MOVE   PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                        END-IF
-      *                  DISPLAY "PTNYUINRRK-TENNYUYMD = "
-      *                           PTNYUINRRK-TENNYUYMD
-      *                  DISPLAY "PTNYUINRRK-TENSTUYMD = "
-      *                           PTNYUINRRK-TENSTUYMD
-      *                  DISPLAY "IDX-ST = " IDX-ST
-      *                  DISPLAY "IDX-ED = " IDX-ED
-                        PERFORM   VARYING   IDX    FROM   IDX-ST  BY  1
-                          UNTIL   IDX       >      IDX-ED
-                          IF   PTNYUINRRK-TOKU-SANTEIYOUKENKBN   = "1"
-                             MOVE "1"  TO  WRK-TOKUGAI(IDX)
-                          ELSE
-                             MOVE  SPACE   TO  WRK-TOKUGAI(IDX)
-                          END-IF
-                        END-PERFORM
-                     MOVE    "tbl_ptnyuinrrk" TO  MCP-TABLE
-                     MOVE    "key41"          TO  MCP-PATHNAME
-                     PERFORM 910-PTNYUINRRK-READ-SEC
-                   END-PERFORM
-               END-IF
-      *        ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
-               MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-               MOVE    "key41"                 TO  MCP-PATHNAME
-               PERFORM   910-DB-CLOSE-SEC
            END-IF
       *
       *    ÎÅÍÜÆþ±¡»»Äê¤Î¥Á¥§¥Ã¥¯¡ÊÆþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷¡Ë
@@ -809,9 +655,8 @@
                    MOVE    "key"         TO  MCP-PATHNAME
                    PERFORM  910-DB-CLOSE-SEC
                END-IF
-      *        Ê¿À®£²£¶Ç¯£´·î¤«¤éÊ¿À®£²£¸Ç¯£³·î¤Þ¤Ç¤ÎÆþ±¡¥Á¥§¥Ã¥¯
-               IF   ( LNK-RYOCOM-SANTEIYM   >=  "201404" )   AND
-                    ( LNK-RYOCOM-SANTEIYM   <=  "201603" )
+      *        Ê¿À®£²£¶Ç¯£´·î¤«¤é¤ÎÆþ±¡¥Á¥§¥Ã¥¯
+               IF     LNK-RYOCOM-SANTEIYM   >=  "201404"
                    INITIALIZE                       TNS-TENSU-REC
                    MOVE   LNK-RYOCOM-SANTEIYM  TO  TNS-YUKOSTYMD (1:6)
                    MOVE   "01"                 TO  TNS-YUKOSTYMD (7:2)
@@ -904,218 +749,6 @@
                                  UNTIL  ( IDX1     >   31 )
                                  IF  (NACCT-DAY(IDX1)    =   1)   AND
                                      (WRK-GAIHAKU(IDX1)  =   SPACE)
-                                      MOVE "1"  TO  LNK-RYOCOM-NYUINKBN
-                                                                (IDX1)
-                                      MOVE  1     TO  FLG-RYOYO-NYUIN
-                                 END-IF
-                               END-PERFORM
-                           END-EVALUATE
-                       END-IF
-                   END-IF
-      *
-                   MOVE    "tbl_tensu"   TO  MCP-TABLE
-                   MOVE    "key"         TO  MCP-PATHNAME
-                   PERFORM  910-DB-CLOSE-SEC
-               END-IF
-      *        Ê¿À®£²£¸Ç¯£´·î¤«¤é¤ÎÆþ±¡¥Á¥§¥Ã¥¯
-               IF   ( LNK-RYOCOM-SANTEIYM   >=  "201604" )   AND
-                    ( LNK-RYOCOM-SANTEIYM   <=  "201803" )
-                   INITIALIZE                       TNS-TENSU-REC
-                   MOVE   LNK-RYOCOM-SANTEIYM  TO  TNS-YUKOSTYMD (1:6)
-                   MOVE   "01"                 TO  TNS-YUKOSTYMD (7:2)
-                   MOVE   TNS-YUKOSTYMD        TO  TNS-YUKOEDYMD
-                   MOVE   LNK-RYOCOM-HOSPNUM   TO  TNS-HOSPNUM
-                   MOVE   NSRY-SRYCD(1)        TO  TNS-SRYCD
-                   MOVE   TNS-TENSU-REC        TO  MCPDATA-REC
-                   MOVE    "tbl_tensu"         TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 910-DBSELECT-SEC
-                   IF      MCP-RC              =   ZERO
-                       MOVE  "tbl_tensu"       TO  MCP-TABLE
-                       MOVE  "key"             TO  MCP-PATHNAME
-                       PERFORM 910-DBFETCH-SEC
-                       IF      MCP-RC          =   ZERO
-                           MOVE  MCPDATA-REC   TO  TNS-TENSU-REC
-      *                    Æþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬¤«¤é¤ÎÈ½Äê
-                           EVALUATE   TNS-NYUKHNKSNKBN
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   152
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á
-                             WHEN   153
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Â
-                             WHEN   154
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ã
-                             WHEN   155
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ä
-                             WHEN   156
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Å
-                             WHEN   157
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   158
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë
-                             WHEN   173
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë
-                             WHEN   174
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë
-                             WHEN   175
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë
-                             WHEN   176
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë
-                             WHEN   177
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë
-                             WHEN   178
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë
-                             WHEN   179
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë
-                             WHEN   180
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë
-                             WHEN   181
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë
-                             WHEN   182
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë
-                             WHEN   183
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë
-                             WHEN   184
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë
-                             WHEN   185
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë
-                             WHEN   186
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë
-                             WHEN   187
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë
-                             WHEN   188
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë
-                             WHEN   189
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë
-                             WHEN   190
-      *                      ¡Ê°ìÈÌÉÂÅïÆþ±¡´µ¼Ô¡ËÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±
-                             WHEN   196
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   199
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   004
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   005
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   006
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   007
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   008
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   010
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   011
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡Ê·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-                             WHEN   012
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   048
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   049
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   051
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   052
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   053
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   054
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   057
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   058
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-                             WHEN   059
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   060
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   061
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   062
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   063
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   064
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   065
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   066
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   067
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   068
-                               PERFORM  VARYING   IDX1 FROM 1 BY 1
-                                 UNTIL  ( IDX1     >   31 )
-                                 IF  (NACCT-DAY(IDX1)    =   1)   AND
-                                     (WRK-GAIHAKU(IDX1)  =   SPACE) AND
-                                     (WRK-TOKUGAI(IDX1)  =   SPACE)
-                                      MOVE "1"  TO  LNK-RYOCOM-NYUINKBN
-                                                                (IDX1)
-                                      MOVE  1     TO  FLG-RYOYO-NYUIN
-                                 END-IF
-                               END-PERFORM
-                           END-EVALUATE
-                       END-IF
-                   END-IF
-      *
-                   MOVE    "tbl_tensu"   TO  MCP-TABLE
-                   MOVE    "key"         TO  MCP-PATHNAME
-                   PERFORM  910-DB-CLOSE-SEC
-               END-IF
-      *        Ê¿À®£³£°Ç¯£´·î¤«¤é¤ÎÆþ±¡¥Á¥§¥Ã¥¯
-               IF     LNK-RYOCOM-SANTEIYM   >=  "201804"
-                   INITIALIZE                       TNS-TENSU-REC
-                   MOVE   LNK-RYOCOM-SANTEIYM  TO  TNS-YUKOSTYMD (1:6)
-                   MOVE   "01"                 TO  TNS-YUKOSTYMD (7:2)
-                   MOVE   TNS-YUKOSTYMD        TO  TNS-YUKOEDYMD
-                   MOVE   LNK-RYOCOM-HOSPNUM   TO  TNS-HOSPNUM
-                   MOVE   NSRY-SRYCD(1)        TO  TNS-SRYCD
-                   MOVE   TNS-TENSU-REC        TO  MCPDATA-REC
-                   MOVE    "tbl_tensu"         TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 910-DBSELECT-SEC
-                   IF      MCP-RC              =   ZERO
-                       MOVE  "tbl_tensu"       TO  MCP-TABLE
-                       MOVE  "key"             TO  MCP-PATHNAME
-                       PERFORM 910-DBFETCH-SEC
-                       IF      MCP-RC          =   ZERO
-                           MOVE  MCPDATA-REC   TO  TNS-TENSU-REC
-      *                    Æþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬¤«¤é¤ÎÈ½Äê
-                           EVALUATE TNS-CDKBN-KBNNUM    ALSO
-                                    TNS-CDKBN-KOUBAN
-      *                      ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   101   ALSO   03
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á
-                             WHEN   109   ALSO   01
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Â
-                             WHEN   109   ALSO   02
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ã
-                             WHEN   109   ALSO   03
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ä
-                             WHEN   109   ALSO   04
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Å
-                             WHEN   109   ALSO   05
-      *                      Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                             WHEN   109   ALSO   06
-      *                      ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡
-                             WHEN   108   ALSO   13
-      *                      ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£±
-                             WHEN   101   ALSO   01
-      *                      ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²
-                             WHEN   101   ALSO   02
-      *                      ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-                             WHEN   101   ALSO   10
-      *                      ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-                             WHEN   101   ALSO   11
-      *                      °ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±
-                             WHEN   100   ALSO   14
-      *                      ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±
-                             WHEN   317   ALSO   08
-                               PERFORM  VARYING   IDX1 FROM 1 BY 1
-                                 UNTIL  ( IDX1     >   31 )
-                                 IF  (NACCT-DAY(IDX1)    =   1)   AND
-                                     (WRK-GAIHAKU(IDX1)  =   SPACE) AND
-                                     (WRK-TOKUGAI(IDX1)  =   SPACE)
                                       MOVE "1"  TO  LNK-RYOCOM-NYUINKBN
                                                                 (IDX1)
                                       MOVE  1     TO  FLG-RYOYO-NYUIN
@@ -1320,117 +953,38 @@
                               LNK-RYOCOM-SRYCDTOTAL(IDX)   +
                               LNK-RYOCOM-ADL-TEN(IDX)
                   ELSE
-      **              DISPLAY "==============================="
-      **              DISPLAY "IDX = " IDX
-      **              DISPLAY "LNK-RYOCOM-ADL-TEN-H22(IDX 1) = "
-      **                      LNK-RYOCOM-ADL-TEN-H22(IDX 1)
-      **              DISPLAY "LNK-RYOCOM-ADL-TEN-H22(IDX 2) = "
-      **                       LNK-RYOCOM-ADL-TEN-H22(IDX 2)
-      **              DISPLAY "LNK-RYOCOM-ADL-TEN-H22(IDX 3) = "
-      **                       LNK-RYOCOM-ADL-TEN-H22(IDX 3)
-      **              DISPLAY "LNK-RYOCOM-ADL-TEN-H22(IDX 4) = "
-      **                       LNK-RYOCOM-ADL-TEN-H22(IDX 4)
-                    MOVE   LNK-RYOCOM-SRYCDTOTAL(IDX)
-                                         TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
       *             £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­
                     MOVE   LNK-RYOCOM-ADL-SRYCD-H22(IDX 1)
                                          TO  WRK-SRYCD-X
                     ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL(IDX)
-                    ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
-                    ADD    LNK-RYOCOM-ADL-TEN-H22(IDX 1)
-                                         TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
+                    COMPUTE   LNK-RYOCOM-SRYCDTOTAL2(IDX)   =
+                              LNK-RYOCOM-SRYCDTOTAL(IDX)   +
+                              LNK-RYOCOM-ADL-TEN-H22(IDX 1)
       *             £Á£Ä£Ì£â¡¡°Ü¾è
                     MOVE   LNK-RYOCOM-ADL-SRYCD-H22(IDX 2)
                                          TO  WRK-SRYCD-X
                     ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL(IDX)
-                    ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
-                    ADD    LNK-RYOCOM-ADL-TEN-H22(IDX 2)
-                                         TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
+                    COMPUTE   LNK-RYOCOM-SRYCDTOTAL2(IDX)   =
+                              LNK-RYOCOM-SRYCDTOTAL(IDX)   +
+                              LNK-RYOCOM-ADL-TEN-H22(IDX 2)
       *             £Á£Ä£Ì£ã¡¡¿©»ö
                     MOVE   LNK-RYOCOM-ADL-SRYCD-H22(IDX 3)
                                          TO  WRK-SRYCD-X
                     ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL(IDX)
-                    ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
-                    ADD    LNK-RYOCOM-ADL-TEN-H22(IDX 3)
-                                         TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
+                    COMPUTE   LNK-RYOCOM-SRYCDTOTAL2(IDX)   =
+                              LNK-RYOCOM-SRYCDTOTAL(IDX)   +
+                              LNK-RYOCOM-ADL-TEN-H22(IDX 3)
       *             £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ
                     MOVE   LNK-RYOCOM-ADL-SRYCD-H22(IDX 4)
                                          TO  WRK-SRYCD-X
                     ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL(IDX)
-                    ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
-                    ADD    LNK-RYOCOM-ADL-TEN-H22(IDX 4)
-                                         TO  LNK-RYOCOM-SRYCDTOTAL2(IDX)
+                    COMPUTE   LNK-RYOCOM-SRYCDTOTAL2(IDX)   =
+                              LNK-RYOCOM-SRYCDTOTAL(IDX)   +
+                              LNK-RYOCOM-ADL-TEN-H22(IDX 4)
                   END-IF
                END-IF
            END-PERFORM
       *
-      **     PERFORM     VARYING   IDX1    FROM  1  BY  1
-      **       UNTIL     IDX1   >  31
-      **           DISPLAY "IDX1 = " IDX1
-      **           DISPLAY "LNK-RYOCOM-SRYCDTOTAL(IDX1) = "
-      **                    LNK-RYOCOM-SRYCDTOTAL(IDX1)
-      **           DISPLAY "LNK-RYOCOM-SRYCDTOTAL2(IDX1) = "
-      **                    LNK-RYOCOM-SRYCDTOTAL2(IDX1)
-      **     END-PERFORM
-      *
-      *    £Á£Ä£ÌÅÀ¿ô¤Î¥³¡¼¥ÉÊÑ´¹¡ÊÊ¿À®£²£¸Ç¯£´·î¤«¤é¤Î¿·Àß¥³¡¼¥ÉÊÖµÑÍÑ¡Ë
-           IF    LNK-RYOCOM-SANTEIYM       >=   "201604"
-             PERFORM   VARYING   IDX   FROM  1  BY  1
-               UNTIL   IDX    >   31
-                 IF   LNK-RYOCOM-NYUINKBN(IDX)  =  "1"
-      *             £Á£Ä£Ì£á¡¡¥Ù¥Ã¥É¾å¤Î²ÄÆ°À­
-                    IF      LNK-RYOCOM-ADL-TEN-H22(IDX 1)   =  ZERO
-                        MOVE  CONS-ADL-A-COMCD(7)
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 1)
-                    ELSE
-                        MOVE  LNK-RYOCOM-ADL-TEN-H22(IDX 1)   TO  IDX1
-                        MOVE  CONS-ADL-A-COMCD(IDX1) 
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 1)
-                    END-IF
-      *             £Á£Ä£Ì£â¡¡°Ü¾è
-                    IF      LNK-RYOCOM-ADL-TEN-H22(IDX 2)   =  ZERO
-                        MOVE  CONS-ADL-B-COMCD(7)
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 2)
-                    ELSE
-                        MOVE  LNK-RYOCOM-ADL-TEN-H22(IDX 2)   TO  IDX1
-                        MOVE  CONS-ADL-B-COMCD(IDX1) 
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 2)
-                    END-IF
-      *             £Á£Ä£Ì£ã¡¡¿©»ö
-                    IF      LNK-RYOCOM-ADL-TEN-H22(IDX 3)   =  ZERO
-                        MOVE  CONS-ADL-C-COMCD(7)
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 3)
-                    ELSE
-                        MOVE  LNK-RYOCOM-ADL-TEN-H22(IDX 3)   TO  IDX1
-                        MOVE  CONS-ADL-C-COMCD(IDX1) 
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 3)
-                    END-IF
-      *             £Á£Ä£Ì£ä¡¡¥È¥¤¥ì¤Î»ÈÍÑ
-                    IF      LNK-RYOCOM-ADL-TEN-H22(IDX 4)   =  ZERO
-                        MOVE  CONS-ADL-D-COMCD(7)
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 4)
-                    ELSE
-                        MOVE  LNK-RYOCOM-ADL-TEN-H22(IDX 4)   TO  IDX1
-                        MOVE  CONS-ADL-D-COMCD(IDX1) 
-                                    TO  LNK-RYOCOM-ADL-SRYCD-H28(IDX 4)
-                    END-IF
-                 END-IF
-             END-PERFORM
-           END-IF
-      *
-      **     PERFORM     VARYING   IDX    FROM  1  BY  1
-      **       UNTIL     IDX   >  31
-      **           DISPLAY "-----------(H28 COMMENT-----------"
-      **           DISPLAY "IDX = " IDX
-      **           DISPLAY "LNK-RYOCOM-ADL-SRYCD-H28(IDX 1) = "
-      **                    LNK-RYOCOM-ADL-SRYCD-H28(IDX 1)
-      **           DISPLAY "LNK-RYOCOM-ADL-SRYCD-H28(IDX 2) = "
-      **                    LNK-RYOCOM-ADL-SRYCD-H28(IDX 2)
-      **           DISPLAY "LNK-RYOCOM-ADL-SRYCD-H28(IDX 3) = "
-      **                    LNK-RYOCOM-ADL-SRYCD-H28(IDX 3)
-      **           DISPLAY "LNK-RYOCOM-ADL-SRYCD-H28(IDX 4) = "
-      **                    LNK-RYOCOM-ADL-SRYCD-H28(IDX 4)
-      **     END-PERFORM
            .
        200-MAIN-EXT.
            EXIT.
@@ -1594,193 +1148,98 @@
       *
       *****************************************************************
       *    °åÎÅ¶èÊ¬¥³¥á¥ó¥È¤ÎÃÖ´¹¤¨¡ÊÊ¿À®£²£°Ç¯£´·î²þÄê¤è¤ê¡Ë
-      *    ¡Ê¡¡¡¡¡ËÆâ¤Î¿ô»ú¤Ï²þÄê»þÅÀ¤ÎºÇ¿·¤Î°åÎÅ¶èÊ¬
       *****************************************************************
        2101-RYOCOM-CHG-SEC            SECTION.
       *
            EVALUATE   RYOCOM-SRYCD
-      *      ¡Ê£±£°¡Ë
              WHEN   "820000057"
                 MOVE  "820000105"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£²¡Ë
              WHEN   "820000058"
                 MOVE  "820000107"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£³¡Ë
              WHEN   "820000059"
                 MOVE  "820000108"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±¡Ë
              WHEN   "820000060"
                 MOVE  "820000096"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£´¡Ë
              WHEN   "820000061"
                 MOVE  "820000109"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£µ¡Ë
              WHEN   "820000062"
                 MOVE  "820000110"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£¶¡Ë
              WHEN   "820000063"
                 MOVE  "820000111"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£·¡Ë
              WHEN   "820000064"
-      *         Ê¿À®£²£¸Ç¯£³·î¤Þ¤Ç 820000112
-      *         Ê¿À®£²£¸Ç¯£´·î¤«¤é 820000229
-                IF  RYOCOM-SRYYM   <=   "201603"
-                    MOVE  "820000112"
-                                   TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-                ELSE
-                    MOVE  "820000229"
-                                   TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-                END-IF
-      *      ¡Ê£±£¸¡Ë
+                MOVE  "820000112"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
              WHEN   "820000065"
                 MOVE  "820000113"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£±¡Ë
              WHEN   "820000066"
                 MOVE  "820000106"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£±£¹¡Ë
              WHEN   "820000067"
-      *         Ê¿À®£²£¸Ç¯£³·î¤Þ¤Ç 820000114
-      *         Ê¿À®£²£¸Ç¯£´·î¤«¤é 820000230
-                IF  RYOCOM-SRYYM   <=   "201603"
-                    MOVE  "820000114"
-                                   TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-                ELSE
-                    MOVE  "820000230"
-                                   TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-                END-IF
-      *      ¡Ê£²£°¡Ë
+                MOVE  "820000114"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
              WHEN   "820000068"
                 MOVE  "820000115"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£±¡Ë
              WHEN   "820000069"
                 MOVE  "820000116"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£²¡Ë
              WHEN   "820000070"
                 MOVE  "820000117"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£³¡Ë
              WHEN   "820000071"
-      *         Ê¿À®£²£¸Ç¯£³·î¤Þ¤Ç 820000118
-      *         Ê¿À®£²£¸Ç¯£´·î¤«¤é 820000231
-                IF  RYOCOM-SRYYM   <=   "201603"
-                    MOVE  "820000118"
-                                   TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-                ELSE
-                    MOVE  "820000231"
-                                   TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-                END-IF
-      *      ¡Ê£²£´¡Ë
+                MOVE  "820000118"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
              WHEN   "820000072"
                 MOVE  "820000119"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£µ¡Ë
              WHEN   "820000073"
                 MOVE  "820000120"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£¹¡Ë
              WHEN   "820000074"
                 MOVE  "820000124"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£°¡Ë
              WHEN   "820000075"
                 MOVE  "820000125"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²¡Ë
              WHEN   "820000076"
                 MOVE  "820000097"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³¡Ë
              WHEN   "820000077"
                 MOVE  "820000098"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£´¡Ë
              WHEN   "820000078"
                 MOVE  "820000099"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£µ¡Ë
              WHEN   "820000079"
                 MOVE  "820000100"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£¶¡Ë
              WHEN   "820000080"
                 MOVE  "820000101"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£±¡Ë
              WHEN   "820000081"
                 MOVE  "820000126"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£²¡Ë
              WHEN   "820000082"
                 MOVE  "820000127"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£·¡Ë
              WHEN   "820000083"
                 MOVE  "820000102"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£³¡Ë
              WHEN   "820000084"
                 MOVE  "820000128"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£´¡Ë
              WHEN   "820000085"
                 MOVE  "820000129"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£¶¡Ë
              WHEN   "820000086"
                 MOVE  "820000121"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£¸¡Ë
              WHEN   "820000087"
                 MOVE  "820000103"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£µ¡Ë
              WHEN   "820000088"
                 MOVE  "820000130"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£¶¡Ë
              WHEN   "820000089"
                 MOVE  "820000131"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£¹¡Ë
              WHEN   "820000090"
                 MOVE  "820000104"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£·¡Ë
              WHEN   "820000091"
                 MOVE  "820000132"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£·¡Ë
              WHEN   "820000092"
                 MOVE  "820000122"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£²£¸¡Ë
              WHEN   "820000093"
                 MOVE  "820000123"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      ¡Ê£³£¸¡Ë  Ê¿À®£²£¸Ç¯£´·î¤«¤é
-             WHEN   "820000232"
-                MOVE  "820000232"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-      *      
-      *      ¡Ê£¹£±¡Ë  Ê¿À®£²£²Ç¯£´·î¤«¤éÊ¿À®£²£´Ç¯£³·î
+      *      Ê¿À®£²£²Ç¯£´·îÄÉ²ÃÊ¬
              WHEN   "820000158"
                 MOVE  "820000158"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
              WHEN   "820000159"
       *         Ê¿À®£²£´Ç¯£´·î°Ê¹ß¤Ï "820000159" ==> "820000160"
-      *        ¡Ê£¹£²¡Ë
                 IF  RYOCOM-SRYYM   <=   "201203"
                     MOVE  "820000159"
                                    TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
                 ELSE
-      *        ¡Ê£¹£±¡Ë
                     MOVE  "820000160"
                                    TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
                 END-IF
            END-EVALUATE
       *
-           IF     LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)   NOT =    SPACE
-               INITIALIZE                      TNS-TENSU-REC
-               MOVE   LNK-RYOCOM-SANTEIYM  TO  TNS-YUKOSTYMD (1:6)
-               MOVE   "01"                 TO  TNS-YUKOSTYMD (7:2)
-               MOVE   TNS-YUKOSTYMD        TO  TNS-YUKOEDYMD
-               MOVE   LNK-RYOCOM-HOSPNUM   TO  TNS-HOSPNUM
-               MOVE   LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
-                                           TO  TNS-SRYCD
-               MOVE   TNS-TENSU-REC        TO  MCPDATA-REC
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE  "tbl_tensu"       TO  MCP-TABLE
-                   MOVE  "key"             TO  MCP-PATHNAME
-                   PERFORM 910-DBFETCH-SEC
-                   IF      MCP-RC          =   ZERO
-                       MOVE  MCPDATA-REC   TO  TNS-TENSU-REC
-                       MOVE  TNS-NAME(1:4) TO  LNK-RYOCOM-IRYO-SORT-COM
-                                                            (IDX IDX2)
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_tensu"   TO  MCP-TABLE
-               MOVE    "key"         TO  MCP-PATHNAME
-               PERFORM  910-DB-CLOSE-SEC
-           END-IF
            .
        2101-RYOCOM-CHG-EXT.
            EXIT.
@@ -1800,22 +1259,14 @@
                    PERFORM   VARYING   SIDX3   FROM  WRK-IDX   BY   1
                      UNTIL (SIDX3    >   30)    OR
                            (LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3) = SPACE)
-                         IF   LNK-RYOCOM-IRYO-SORT-COM(SIDX1 SIDX2)
-                                >  LNK-RYOCOM-IRYO-SORT-COM(SIDX1 SIDX3)
+                         IF   LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX2)
+                                 >  LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3)
       *                       SIDX2¤«¤é¥ï¡¼¥¯¤Ø¤ÎÂàÈò
-                              MOVE  LNK-RYOCOM-IRYO-SORT-COM
-                                                         (SIDX1 SIDX2)
-                                            TO  WRK-RYOCOM-IRYO-SORT-COM
                               MOVE  LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX2)
                                             TO  WRK-RYOCOM-IRYO-SRYCD
                               MOVE  LNK-RYOCOM-IRYO-ZAINUM(SIDX1 SIDX2)
                                             TO  WRK-RYOCOM-IRYO-ZAINUM
       *                       SIDX3¤«¤éSIDX2¤Ø¤Î°ÜÆþ
-                              MOVE  LNK-RYOCOM-IRYO-SORT-COM
-                                                      (SIDX1 SIDX3)
-                                            TO
-                                    LNK-RYOCOM-IRYO-SORT-COM
-                                                      (SIDX1 SIDX2)
                               MOVE  LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3)
                                             TO
                                     LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX2)
@@ -1823,10 +1274,6 @@
                                             TO
                                     LNK-RYOCOM-IRYO-ZAINUM(SIDX1 SIDX2)
       *                       ¥ï¡¼¥¯¤«¤éSIDX3¤Ø¤Î°ÜÆþ
-                              MOVE  WRK-RYOCOM-IRYO-SORT-COM
-                                            TO
-                                    LNK-RYOCOM-IRYO-SORT-COM
-                                                     (SIDX1 SIDX3)
                               MOVE  WRK-RYOCOM-IRYO-SRYCD
                                             TO
                                     LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3)
@@ -1879,47 +1326,6 @@
       *
            .
        900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼¸¡º÷
-      *****************************************************************
-       910-PTNYUINRRK-SELECT-SEC        SECTION.
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"   USING MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-PTNYUINRRK
-           ELSE
-               MOVE    1                  TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           .
-       910-PTNYUINRRK-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       910-PTNYUINRRK-READ-SEC        SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"   USING MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  PTNYUINRRK-REC
-               MOVE    ZERO               TO  FLG-PTNYUINRRK
-           ELSE
-               INITIALIZE                     PTNYUINRRK-REC
-               MOVE    1                  TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           .
-       910-PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
