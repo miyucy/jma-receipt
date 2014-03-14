@@ -2073,6 +2073,31 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H26.4 から
+               WHEN    "0511"
+                   STRING  "副鼻腔手術用内視鏡加算の算定できない"
+                           "手術です。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0512"
+                   STRING  "副鼻腔手術軟骨部組織切除器加算の"
+                           "算定できない手術です。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0513"
+                   STRING  "この脊髄誘発電位測定等加算の算定できない"
+                           "手術です。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0514"
+                   STRING  "脊髄誘発電位測定等加算は算定できない"
+                           "手術です。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

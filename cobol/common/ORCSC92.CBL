@@ -4005,6 +4005,8 @@
            MOVE    TNS-FUKUBIKUKOTUKBN TO  SPA-COM-YOBI1 (IDX-T)(3:1)
       *    長時間麻酔管理加算
            MOVE    TNS-TIMEMASUIKBN    TO  SPA-COM-YOBI1 (IDX-T)(4:1)
+      *    脊髄誘発電位測定
+           MOVE    TNS-SEKIZUISOKUTEI  TO  SPA-COM-YOBI1 (IDX-T)(5:1)
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
