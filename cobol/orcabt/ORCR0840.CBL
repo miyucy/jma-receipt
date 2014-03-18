@@ -1989,6 +1989,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "key30"           TO  MCP-PATHNAME
            PERFORM  900-CLOSE-SEC
       *
+      *    œ´∫“Õ—•≥°º•… ‘Ω∏
+           ADD     1          TO  IDX14
+           MOVE  "101900100"  TO  WRK-CHUKSNSRYCD(IDX14)
+           ADD     1          TO  IDX14
+           MOVE  "101900110"  TO  WRK-CHUKSNSRYCD(IDX14)
+           ADD     1          TO  IDX14
+           MOVE  "101900120"  TO  WRK-CHUKSNSRYCD(IDX14)
+      *
            .
        140-NYUINKASAN-JYOGAI-CYUSYUTU-EXT.
            EXIT.
