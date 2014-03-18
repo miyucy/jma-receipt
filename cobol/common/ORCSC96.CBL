@@ -2099,7 +2099,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0541"
-                   STRING  "長期時間外麻酔管理加算の算定できない"
+                   STRING  "長時間麻酔管理加算の算定できない"
                            "麻酔です。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
