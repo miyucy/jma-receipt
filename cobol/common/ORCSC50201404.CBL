@@ -122,8 +122,11 @@
            03  WRK-SRYCD           PIC X(09). 
            03  WRK-SRYCD1          PIC X(09). 
            03  WRK-SRYCD2          PIC X(09). 
+           03  WRK-SRYCD3          PIC X(09). 
            03  WRK-TIMEFLG         PIC 9(01). 
            03  WRK-RSI-SRYCD           PIC X(09). 
+      *
+           03  WRK-SRYKA               PIC X(02). 
       *
            03  WRK-TENSUKEI        PIC 9(10)V99.
            03  WRK-TENSUKEI-9      PIC S9(10).
@@ -210,6 +213,10 @@
       *
       *    システム管理マスタ（施設基準）
            COPY    "CPSK1006.INC".
+      *    システム管理マスタ（診療科）
+           COPY    "CPSK1005.INC".
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -596,24 +603,13 @@
            END-IF
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
-      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-KANRIMST-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    システム管理検索
+           MOVE    SYS-1006-REC        TO  SYSKANRI-REC
+      *    システム管理検索
+           PERFORM 9001-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1006-REC
            ELSE
                INITIALIZE                  SYS-1006-REC
            END-IF
@@ -1088,6 +1084,8 @@
       *
            MOVE    SPACE               TO  WRK-SRYCD
            MOVE    SPACE               TO  WRK-SRYCD1
+           MOVE    SPACE               TO  WRK-SRYCD2
+           MOVE    SPACE               TO  WRK-SRYCD3
       *
            MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-TIMEFLG
            IF      WRK-TIMEFLG         =   ZERO
@@ -1116,24 +1114,24 @@
            EVALUATE    WRK-TIMEFLG
       *      /* 時間外 */
                WHEN    1
-                   MOVE    "150000490"     TO  WRK-SRYCD
+                   MOVE    "150000490"     TO  WRK-SRYCD2
       *            時間外１
                    MOVE    "150371390"     TO  WRK-SRYCD1
       *     /* 休日 */
                WHEN    2
-                   MOVE    "150000590"     TO  WRK-SRYCD
+                   MOVE    "150000590"     TO  WRK-SRYCD2
                    MOVE    "150371290"     TO  WRK-SRYCD1
       *        /* 深夜 */
                WHEN    3
-                   MOVE    "150000690"     TO  WRK-SRYCD
+                   MOVE    "150000690"     TO  WRK-SRYCD2
                    MOVE    "150371490"     TO  WRK-SRYCD1
       *        /* 時間外特例 */
                WHEN    4
-                   MOVE    "150000790"     TO  WRK-SRYCD
+                   MOVE    "150000790"     TO  WRK-SRYCD2
                    MOVE    "150371590"     TO  WRK-SRYCD1
            END-EVALUATE
-      *
-           IF      WRK-SRYCD            =    SPACE
+      *    時間外加算なし
+           IF      WRK-SRYCD2           =    SPACE
                GO      TO      10012-JIKANKASAN-SET-EXT
            END-IF
       *
@@ -1143,14 +1141,17 @@
            MOVE    ZERO                TO  IDX-TUS
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
-      *********************** (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
+                           OR (SPA-ERRCD       NOT =   SPACE  )
                IF     (WRK-COM-DATAKBN    (IDX1)       =   "2"  )  AND
                       (WRK-COM-TIMEKSNKBN (IDX1)   NOT =   ZERO )
                     MOVE    1              TO  FLG-ARI
                     IF      IDX-T          =   ZERO
                         MOVE    IDX1           TO  IDX-T
+                    ELSE
+                        MOVE    "0043"         TO  SPA-ERRCD
+                        MOVE    "1"            TO  WRK-COM-CUR (IDX1)
                     END-IF
                END-IF
       *        最後の通加算対象位置
@@ -1160,9 +1161,14 @@
                END-IF
            END-PERFORM
       *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      10012-JIKANKASAN-SET-EXT
+           END-IF
+      *
            IF      FLG-ARI             =   1
-               IF      WRK-COM-INPUTCD (IDX-T) =   WRK-SRYCD
-                                               OR  WRK-SRYCD1
+      *        時間外加算ありの時は、追加処理なし
+               IF      WRK-COM-INPUTCD (IDX-T) =   WRK-SRYCD1
+                                               OR  WRK-SRYCD2
       *            追加処理なし
                    MOVE    2               TO  FLG-ARI
                END-IF
@@ -1179,14 +1185,10 @@
            END-IF
       *    加算料追加処理
            IF      FLG-ARI             =   2
-               MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
                MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
            ELSE
-               PERFORM 1002-KASAN-SET-SEC
-               IF      FLG-ADD             =   1
-                   MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
-                   MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
-               END-IF
+      *        時間外加算
+               PERFORM 100125-TIMEKSN-HENSYU-SEC
            END-IF
       *
       *    入院の時、手技料に時間外フラグを設定する
@@ -1197,6 +1199,72 @@
       *
            .
        10012-JIKANKASAN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    時間外加算算定チェック処理
+      *****************************************************************
+       100125-TIMEKSN-HENSYU-SEC            SECTION.
+      *
+      *    システム管理検索
+           PERFORM 1001251-SYS1005-HEN-SEC
+      *
+           MOVE    ZERO                TO  FLG-ADD
+      *    時間外加算１のチェック
+           IF      WRK-SRYCD1      NOT =    SPACE
+               MOVE    WRK-SRYCD1      TO  WRK-SRYCD
+               PERFORM 1002-KASAN-SET-SEC
+               IF      FLG-ADD             =   1
+                   MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
+                   MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
+               END-IF
+           END-IF
+           IF      FLG-ADD             =   ZERO
+               MOVE    WRK-SRYCD2      TO  WRK-SRYCD
+               PERFORM 1002-KASAN-SET-SEC
+               IF      FLG-ADD             =   1
+                   MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
+                   MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
+               END-IF
+           END-IF
+      *
+           .
+       100125-TIMEKSN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手術時間外加算等１算定チェック処理
+      *****************************************************************
+       1001251-SYS1005-HEN-SEC            SECTION.
+      *
+           IF      WRK-COM-SRYKA (IDX-ZS)  =   SPACE
+               MOVE    SPA-SRYKA               TO  WRK-SRYKA
+           ELSE
+               MOVE    WRK-COM-SRYKA (IDX-ZS)  TO  WRK-SRYKA
+           END-IF
+      *
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                      SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    SYS-1005-REC        TO  SYSKANRI-REC
+      *    システム管理検索
+           PERFORM 9001-SYSKANRI-KEY-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1005-REC
+           ELSE
+               INITIALIZE                      SYS-1005-REC
+           END-IF
+           IF      SYS-1005-JIKANKSN1-50   =   "1"
+               CONTINUE
+           ELSE
+               MOVE    SPACE           TO  WRK-SRYCD1
+           END-IF
+           .
+       1001251-SYS1005-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2155,8 +2223,39 @@
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
-     *
+      *
        300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       9001-SYSKANRI-KEY-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    SPACE           TO  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    SPACE           TO  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9001-SYSKANRI-KEY-EXT.
            EXIT.
       *
       *****************************************************************
