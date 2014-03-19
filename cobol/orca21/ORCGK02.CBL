@@ -106,6 +106,7 @@
       *  04.08.00    NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
       *  04.08.00    NACL-多々納  13/06/28  ドクターカーソル移動対応
       *  04.08.00    NACL-多々納  14/02/XX  行挿入・カーソル移動位置変更
+      *  04.08.00    NACL-多々納  14/03/19  .123 処理対応他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3013,6 +3014,27 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+      *H26.4
+      *        小児科外来診療料を初診料へ自動算定の確認
+               WHEN    "0133"
+               WHEN    "0134"
+      *                初診料算定へ
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    9               TO  SPA-SYONIKA-ARI
+                       PERFORM 300109-SYOSINSET-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+      *        小児科外来診療料を再診料へ自動算定の確認
+               WHEN    "0135"
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    9               TO  SPA-SYONIKA-ARI
+                       PERFORM 300110-SAISINSET-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
       *
       *        診療日が未来日の確認
                WHEN    "0111"
@@ -7112,6 +7134,33 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *H26.4
+      *    小児科外来診療料を初・再診料へ変更する
+           IF    ( SPA-SRYYMD          >=  "20140401" )
+             AND ((SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:4)  =   ".113"  AND
+                   SPA-GMN-INPUTCD(SPA-GMN-IDX)(5:)   =   SPACE )   OR
+                  (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:4)  =   ".123"  AND
+                   SPA-GMN-INPUTCD(SPA-GMN-IDX)(5:)   =   SPACE ))
+            AND   (SPA-GMN-IDX                        >   1     )  AND
+                  (SPA-GMN-INPUTCD(SPA-GMN-IDX + 1)   =   SPACE )
+      *            包括保険は対象外
+              AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
+              AND (SPA-COM-HKNCOMBI(SPA-GMN-IDX)
+                                       NOT =   "9999" )
+      *       診察料自動発生なしは対象外
+              AND (SPA-INITAUTO-FLG    =   "1"        )
+      *       治験は対象外
+              AND (SPA-CHIKENKBN   NOT =   "1"        )
+              AND (SPA-COM-CHIKENKBN(SPA-GMN-IDX)
+                                   NOT =   "1"        )
+      *
+               PERFORM 4101123-SYOUNIKA-CHENGE-SEC
+               IF      FLG-OK          NOT =   ZERO
+                   GO      TO                  41011-KOUI-HEN2-EXT
+               END-IF
+           END-IF
+      *
+      *
            IF     LNK-SC97-NYURYOKU    =   1
       *///     セットコードに変更がない時
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1) =   "S" ) AND
@@ -8350,12 +8399,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    前に再診があること
            MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-OK2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >=   SPA-GMN-IDX
                IF     (SPA-COM-SRYKBN (IDX) =   "12" )  OR
                       (SPA-COM-INPUTCD(IDX) =   "113003610" OR
                                                 "113003810")
                   MOVE    1               TO  FLG-OK
+               END-IF
+               IF     (SPA-COM-SRYKBN (IDX) =   "12" )  OR
+                      (SPA-COM-SRYKBN (IDX) =   "11" )
+                   MOVE    1               TO  FLG-OK2
                END-IF
            END-PERFORM
            IF      FLG-OK             =   ZERO
@@ -8386,6 +8440,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *                再度、自動発生
                        MOVE    "0132"              TO  SPA-KIDCD
                    END-IF
+      *H26.4
+      *            小児科外来診療料算定可能へ
+                   IF     (SPA-SYONIKA         =   1  )
+                      AND (FLG-OK2             =   1  )
+                      AND (SPA-SYONIKA-ARI     =   ZERO)
+                       MOVE    8               TO  SPA-SYONIKA-ARI
+                   END-IF
                END-IF
            ELSE
                MOVE    "1016"              TO  SPA-ERRCD
@@ -8400,6 +8461,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        4101122-SYOSIN-SAISIN-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-OK2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >=   SPA-GMN-IDX
                IF    ((SPA-COM-SRYKBN (IDX) =   "11" )  AND
@@ -8407,6 +8469,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                      ( SPA-COM-INPUTCD(IDX) =   "113003510" OR
                                                 "113003710")
                    MOVE    1               TO  FLG-OK
+               END-IF
+               IF     (SPA-COM-SRYKBN (IDX) =   "12" )  OR
+                      (SPA-COM-SRYKBN (IDX) =   "11" )
+                   MOVE    1               TO  FLG-OK2
                END-IF
            END-PERFORM
       *
@@ -8425,6 +8491,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      FLG-OK              =   ZERO
       *                再度、自動発生
                        MOVE    "0137"              TO  SPA-KIDCD
+                   END-IF
+      *H26.4
+      *            小児科外来診療料算定可能へ
+                   IF     (SPA-SYONIKA         =   1  )
+                      AND (FLG-OK2             =   1  )
+                      AND (SPA-SYONIKA-ARI     =   ZERO)
+                       MOVE    8               TO  SPA-SYONIKA-ARI
                    END-IF
                ELSE
                    IF      SPA-SYOSINFLG       =   ZERO
@@ -8512,6 +8585,68 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        41011202-SYOSIN-CHK-EXT.
            EXIT.
+      *H26.4
+      *****************************************************************
+      *    小児科外来診療料を初・再診料へ変更処理
+      *****************************************************************
+       4101123-SYOUNIKA-CHENGE-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >=   SPA-GMN-IDX
+               IF      SPA-COM-INPUTCD(IDX) =   "113003510"
+                                            OR  "113003710"
+                                            OR  "113003610"
+                                            OR  "113003810"
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK             =   ZERO
+               MOVE    "1318"              TO  SPA-ERRCD
+               GO      TO      4101123-SYOUNIKA-CHENGE-EXT
+           END-IF
+      *
+           IF      SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                                           =   ".113"
+               IF      (SPA-SYORIFLG       =   ZERO      )  AND
+                       (SPA-LSTYMD         <   SPA-SRYYMD)
+      *        初診料へ変換
+                   MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+      *            病名をチェックする
+                   PERFORM 41011201-BYOMEI-CHK-SEC
+      *            初診料算定時、算定不可のコードチェック
+                   IF      FLG-OK              =   1
+                       PERFORM 41011202-SYOSIN-CHK-SEC
+                   END-IF
+                   IF      SPA-ERRCD           =   SPACE
+                       IF      FLG-KEIZOKU         =   ZERO
+                           MOVE    "0133"              TO  SPA-KIDCD
+                       ELSE
+                           MOVE    "0134"              TO  SPA-KIDCD
+                       END-IF
+                   END-IF
+               ELSE
+                   MOVE    "1316"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        再診料へ変換
+               IF      (SPA-SYORIFLG       =   ZERO )  AND
+                       (SPA-SYOSINFLG      =   1    )  AND
+                       (SPA-LSTYMD     NOT =   SPACE)
+                   MOVE    "0135"              TO  SPA-KIDCD
+                   MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+               ELSE
+                   MOVE    "1317"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4101123-SYOUNIKA-CHENGE-EXT.
+           EXIT.
+      *H26.4
       *
       *****************************************************************
       *    入力文字を数字変換処理
@@ -10835,6 +10970,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
+      *TEST
+      *    DISPLAY "460-ATOGMN SPA-MAP-IDX:" SPA-MAP-IDX
+      *        ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
+      *
+      *TEST
+      *
       *    行位置とカーソル位置の決定
            PERFORM 10021-K02SPA-INIT-SET-SEC
       *
@@ -10853,9 +10994,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-MAP-IDX     TO  WRK-IDX2
            END-IF
            COMPUTE WRK-GYO             =   WRK-IDX2 +   WRK-PAGE-LINE
-      *TEST
-      *    DISPLAY "460-ATOGMN WRK-PAGE-LINE:" WRK-PAGE-LINE
-      *            ",WRK-GYO:"  WRK-GYO
       *
            MOVE    ZERO                TO  FLG-F7
            PERFORM VARYING     IDX     FROM    WRK-IDX2  BY  1
@@ -13965,7 +14103,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO   WRK-KIDMSG
                    END-STRING
-               WHEN    OTHER
+      *H26.4
+               WHEN    "0133"
+                   STRING  "小児科外来診療料を初診料へ変更します。"
+                           "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "0134"
+                   STRING  "小児科外来診療料を初診料へ変更しますが、"
+                           "転帰が未入力の病名が存在します。"
+                           "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "0135"
+                   STRING   "小児科外来診療料を再診料へ変更します。"
+                            "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+              WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
            END-EVALUATE

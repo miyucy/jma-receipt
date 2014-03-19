@@ -198,6 +198,7 @@
            03  FLG-03MIMAN         PIC 9(01).
       *H25.4
            03  FLG-SYOKAINASI      PIC 9(01).
+           03  FLG-SYONIKA-NAI     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -835,6 +836,10 @@
            IF     (SPA-SYONIKA         =   1   )  AND
                   (SPA-NYUGAIKBN       =   "2" )
              AND  (WRK-ZAITAKU-CNT     =   ZERO)
+      *!!!!!
+             AND  (FLG-SYONIKA-NAI     =   ZERO)
+      *      小児科外来診療料を算定しない
+             AND  (SPA-SYONIKA-ARI NOT =   9   )
                PERFORM 1001-SYONIKA-CHK-SEC
            ELSE
                MOVE    ZERO                TO  SPA-SYONIKA-ARI3
@@ -2520,6 +2525,13 @@
       *    小児科対象
            MOVE    1                   TO  FLG-SYONIKA-ARI
            MOVE    1                   TO  SPA-SYONIKA-ARI3
+      *H26.4
+           IF     (SPA-DOUJITU         >   ZERO)
+             AND  (WRK-DAYCNT-SUM      =   ZERO)
+      *        同日に受診があり、小児科外来以外の算定は再診料とする
+               MOVE    ZERO            TO  FLG-SYONIKA-ARI
+               MOVE    ZERO            TO  SPA-SYONIKA-ARI3
+           END-IF
       *
            .
        1001-SYONIKA-CHK-EXT.
@@ -3043,8 +3055,7 @@
            END-IF
       *H26.4
       *    妥結率５０%
-      *    （人工腎臓を流用　v4.8は項目追加）
-           IF      SPA-TOKUTEI-JNZ     =   1
+           IF      SPA-DAKT50-KBN      =   1
                MOVE    "2"             TO  WRK-ETCKBN
            END-IF
       *
@@ -3304,6 +3315,13 @@
                                            TO  SPA-COM-SRYKBN
                                                          (SPA-GMN-IDX)
            END-IF
+      *!!!!!!!!!!!!!!!!
+      *??  加算自動発生済み設定
+      *    IF     (WRK-SRYCD(1:1)      =   "1" )
+      *       AND (SPA-COM-DATAKBN(SPA-GMN-IDX)    =   "1" )
+      *        MOVE    "1"             TO  SPA-COM-KSNAUTO
+      *                                                  (SPA-GMN-IDX)
+      *??? END-IF
       *
            IF      WRK-SRYCD(1:2)      =   "83"
       *        再編集処理
@@ -6082,6 +6100,7 @@
                    AT  END
                        MOVE    ZERO                TO  FLG-ARI
                        MOVE    SPACE               TO  WRK-KBN
+                       MOVE    ZERO                TO  WRK-KAISU
                    WHEN   SPA-COM-INPUTCD (IDX) =
                                              TBL-SRYCD (TBL-IDX)
                        MOVE    1                   TO  FLG-ARI
@@ -6090,6 +6109,8 @@
                        MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN3
       *H25.4           紹介なし対応
                        MOVE    TBL-ETCKBN(TBL-IDX) TO  WRK-ETCKBN
+      *H26.4
+                       MOVE    TBL-KAISU (TBL-IDX) TO  WRK-KAISU
                    END-SEARCH
                END-IF
       *
@@ -6207,6 +6228,22 @@
       *        画面テーブル内容チェック
                PERFORM 1001-TBLCHEK-SEC
            END-IF
+      *!!!!!!!!!!!!!!!!!
+      *    小児科外来診察料以外の入力は、そのまま
+           MOVE    ZERO                TO  FLG-SYONIKA-NAI
+           IF     (SPA-SYONIKA         =   1  )
+             AND  (LNK-SC10S-SYORI     =   "S"
+                                       OR  "J"
+                                       OR  "E"
+                                       OR  "K" )
+      *        画面テーブル内容チェック
+               PERFORM 1001-TBLCHEK-SEC
+               IF     (WRK-KAISU           =   1  OR  3  )
+                 AND  (SPA-SYONIKA-ARI     =   ZERO)
+                   MOVE    1               TO  FLG-SYONIKA-NAI
+               END-IF
+           END-IF
+      *
       *    同時他科受診があった時は、診察料の変更をおこなわない
       *    （中途終了時以外）
            MOVE    1                   TO  FLG-HENKAN
