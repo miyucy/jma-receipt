@@ -97,6 +97,7 @@
            03  KEY-BRMNUM              PIC X(06).
       *
        01  CONST-AREA.
+           03  CONST-H260401           PIC X(08)   VALUE "20140401".
            03  CONST-H240401           PIC X(08)   VALUE "20120401".
            03  CONST-H200401           PIC X(08)   VALUE "20080401".
            03  CONST-BYOTO-MAX         PIC 9(03)   VALUE 50.
@@ -411,6 +412,12 @@
                    MOVE    "190097210" TO  SYS-5001-BTU-KHNSRYCD
                WHEN    "099999952"
                    MOVE    "190135110" TO  SYS-5001-BTU-KHNSRYCD
+               WHEN    "099999955"
+                   MOVE    "190169610" TO  SYS-5001-BTU-KHNSRYCD
+               WHEN    "099999956"
+                   MOVE    "190169910" TO  SYS-5001-BTU-KHNSRYCD
+               WHEN    "099999957"
+                   MOVE    "190170210" TO  SYS-5001-BTU-KHNSRYCD
                END-EVALUATE
            END-IF
       *
