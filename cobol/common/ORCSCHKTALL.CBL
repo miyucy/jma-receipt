@@ -154,6 +154,9 @@
       *    電子点数表マスタチェックパラメタ
            COPY    "CPORCSCETNSCHK.INC".
       *
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
+      *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
@@ -324,6 +327,15 @@
       *****************************************************************
        200-NYUIN-CHKSYORI-SEC         SECTION.
       *
+      *    入院料未算定日取得
+           INITIALIZE                      ORCSNYUINDAY-AREA
+           MOVE    SPA-HOSPNUM         TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    ORCSCHKTALL-PTID    TO  LNK-NYUINDAY-PTID
+           MOVE    ORCSCHKTALL-SRYYM   TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"      USING
+                                           ORCSNYUINDAY-AREA
+                                           SPA-AREA
+      *
            INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
@@ -363,7 +375,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            .
-       500-NYUIN-CHKSYORI-EXT.
+       200-NYUIN-CHKSYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -408,9 +420,19 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
-               IF      NACCT-DAY (IDX-D)   NOT =   ZERO
+      *        短期滞在手術基本料２・３判定
+               IF    ((WRK-IDX-N               >   ZERO  ) AND
+                      (TBL-N-KANRICD (WRK-IDX-N)   =   "526"
+                                                   OR  "525"))
+                 AND ( LNK-NYUINDAY-TANKI2-KBN (IDX-D)
+                                           NOT =   SPACE     )
+                   MOVE    1               TO  NACCT-DAY (IDX-D)
+               END-IF
+      *
+               IF    ( NACCT-DAY (IDX-D)   NOT =   ZERO  )
                    IF      WRK-IDX-N       >   ZERO
                        MOVE    TBL-N-KANRICD (WRK-IDX-N)
                                            TO  WRK-NYUHKTCD (IDX-D)
@@ -432,6 +454,7 @@
       *****************************************************************
        5001-SRYCD-CHK-SEC         SECTION.
       *
+           MOVE    SPACE               TO  WRK-K-SRYCD
            PERFORM VARYING     IDX-N   FROM    1  BY  1
                    UNTIL      (IDX-N       >   TBL-N-MAX )
                            OR (FLG-CHK     =   1         )
@@ -479,6 +502,8 @@
                                                TO  ORCSCHKTALL-NYUHKTCD
                                                                   (IDX)
                    ELSE
+                       MOVE    WRK-NYUSRYCD (IDX)
+                                           TO  WRK-K-SRYCD
                        PERFORM 3002-NYUHKTCD-CHK-SEC
                    END-IF
                END-IF
@@ -649,6 +674,12 @@
       *****************************************************************
        30022-HKTSANTEI-CHK-SEC            SECTION.
       *
+           INITIALIZE                  TBL-HKTSANTEI-AREA
+      *    電子点数表対象分から対象外
+           IF      WRK-SRYYMD          >=  "20100401"
+               MOVE    1               TO  FLG-HKTSANTEI
+           ELSE
+      *
            MOVE    SPACE               TO  HKTSANTEI-REC
            INITIALIZE                  HKTSANTEI-REC
            MOVE    WRK-KANRICD         TO  HKTSANTEI-KANRICD
@@ -669,10 +700,6 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
            INITIALIZE                  TBL-HKTSANTEI-AREA
            MOVE    ZERO                TO  IDX-H
-      *    電子点数表対象分から対象外
-           IF      WRK-SRYYMD          >=  "20100401"
-               MOVE    1               TO  FLG-HKTSANTEI
-           END-IF
       *
            PERFORM UNTIL  (FLG-HKTSANTEI   =   1  )
                       OR  (IDX-H           >=  600 )
@@ -687,6 +714,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    "tbl_hktsantei"     TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *
+           END-IF
       *
            MOVE    ZERO                TO  FLG-CHK2
            MOVE    ZERO                TO  FLG-CHK3

@@ -7953,6 +7953,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 3008-HKNCOMBI-HEN-SEC
            END-IF
       *
+      *    入院料包括診療チェック処理
+           PERFORM 30091-HKTCD-CHK-SEC
+      *
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
       *    保存用パラメタ作成
