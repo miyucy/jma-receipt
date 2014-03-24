@@ -35,7 +35,6 @@ path	key		{
 		FROM tbl_hknjainf
 			WHERE   HOSPNUM      =   :HOSPNUM  AND
 				HKNJANUM	=   :HKNJANUM
-			AND     HKNNUM       <> 'C00'
 		;
 	};
 };
@@ -46,8 +45,7 @@ path	key2		{
 		SELECT *
 		FROM tbl_hknjainf
 			WHERE   HOSPNUM      =   :HOSPNUM  AND
-				SUBSTR(HKNJANUM,1,5)	=   SUBSTR(:HKNJANUM,1,5)
-			AND     HKNNUM       <> 'C00'
+					SUBSTR(HKNJANUM,1,5)	=   SUBSTR(:HKNJANUM,1,5)
 		;
 	};
 };
@@ -70,29 +68,6 @@ path	key3		{
 			WHERE   HOSPNUM      =   :HOSPNUM  AND
 				HKNNUM       =   :HKNNUM
                         ORDER   BY     HKNJANUM
-		;
-	};
-};
-
-path	key4		{ 	
-	DBSELECT	{
-		DECLARE tbl_hknjainf_key4_csr CURSOR FOR
-		SELECT *
-		FROM tbl_hknjainf
-			WHERE   HOSPNUM      =   :HOSPNUM  AND
-				HKNJANUM     =   :HKNJANUM
-		;
-	};
-};
-
-path	key5		{ 	
-	DBSELECT	{
-		DECLARE tbl_hknjainf_key5_csr CURSOR FOR
-		SELECT *
-		FROM tbl_hknjainf
-			WHERE   HOSPNUM      =   :HOSPNUM  AND
-				HKNJANUM     =   :HKNJANUM
-			AND     HKNNUM       =  'C00'
 		;
 	};
 };
