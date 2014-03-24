@@ -506,18 +506,18 @@
       *
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-           MOVE    "key4"                TO  MCP-PATHNAME
+           MOVE    "key"                 TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-               MOVE    "key4"                TO  MCP-PATHNAME
+               MOVE    "key"                 TO  MCP-PATHNAME
                PERFORM 900-HKNJAINF-READ-SEC
            ELSE
                INITIALIZE                  HKNJAINF-REC
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
-           MOVE    "key4"                 TO  MCP-PATHNAME
+           MOVE    "key"                  TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  WRK-HKNJA-HKNNUM
@@ -943,6 +943,8 @@
            MOVE    ZERO                TO  FLG-RJN-02
            IF      (SPA-NAI-BIRTHDAY       >=  "19440402")
              AND   (SPA-GMN-HKNNUM(1:1) NOT =  "9"       )
+             AND  ((SPA-NAI-HTEKSTYMD      >=  SPA-BYMD-70)
+               OR  (SPA-SYSYMD             >=  SPA-BYMD-70 ))
                IF      (SPA-NAI-HTEKSTYMD      >=  "20140501")
                    OR ((SPA-NAI-HTEKSTYMD      =   SPACE     ) AND
                        (SPA-SYSYMD             >=  "20140501"))
