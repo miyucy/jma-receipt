@@ -4301,6 +4301,9 @@
            MOVE    ZERO                TO  SPA-SYONIKA-ARI2
            MOVE    ZERO                TO  SPA-SYONIKA-ARI3
       *
+           MOVE    ZERO                TO  WRK-KAISU
+           MOVE    SPACE               TO  WRK-SRYCD
+      *
       *    ½é¿ÇÎÁ»»Äê
            IF      SPA-SYOSIN          =   1
                MOVE    ZERO                TO  WRK-KAISU
