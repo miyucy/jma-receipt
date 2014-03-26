@@ -495,6 +495,11 @@
                    IF     (IDX             >   1   )  AND
                           (WRK-NYUHKTCD (IDX)
                                            =   WRK-NYUHKTCD (IDX - 1))
+      *!!!
+      *            入院料コード毎にチェックする
+                   AND     (WRK-NYUSRYCD (IDX)
+                                           =   WRK-NYUSRYCD (IDX - 1))
+      *!!!
                        MOVE    ORCSCHKTALL-HKTCHKFLG (IDX - 1)
                                                TO  ORCSCHKTALL-HKTCHKFLG
                                                                   (IDX)
@@ -622,6 +627,7 @@
                    UNTIL      (IDY     >   TBL-N-MAX )
               MOVE     ZERO                TO  FLG-HKTCHK
               IF       TBL-N-KANRICD (IDY) =   WRK-NYUHKTCD (IDX)
+      *
       *            包括判定
                    PERFORM 30021-HKTSRYCD-CHK-SEC
                    IF      TBL-N-SANTEI-HOU (IDY)  =   "1"

@@ -109,6 +109,8 @@
            03  IDX-TUS             PIC 9(04).
       *
            03  IDX-KSN             PIC 9(04).
+      *    施設基準用
+           03  IDS                 PIC 9(04).
       *
       *
       *    一時領域
@@ -593,14 +595,25 @@
            MOVE    WRK-COM-KIJUNTEIGENCD (IDX-Z)
                                        TO  IDY
            MOVE    ZERO                TO  FLG-ERR
+      *H26.4
+           MOVE    ZERO                TO  IDS
       *    施設基準情報検索
            MOVE    SPACE               TO  SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
-           IF      IDY                 <=  500
-               MOVE    "1"                 TO  SYS-1006-KBNCD
-           ELSE
-               MOVE    "2"                 TO  SYS-1006-KBNCD
-           END-IF
+           EVALUATE    TRUE
+               WHEN    IDY             <=  500
+                   MOVE    "1"                 TO  SYS-1006-KBNCD
+                   MOVE    ZERO                TO  IDS
+               WHEN    IDY             <=  1000
+                   MOVE    "2"                 TO  SYS-1006-KBNCD
+                   MOVE    500                 TO  IDS
+               WHEN    IDY             <=  3500
+                   MOVE    "7"                 TO  SYS-1006-KBNCD
+                   MOVE    3000                TO  IDS
+               WHEN    IDY             <=  8500
+                   MOVE    "17"                TO  SYS-1006-KBNCD
+                   MOVE    8000                TO  IDS
+           END-EVALUATE
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
@@ -615,20 +628,10 @@
            END-IF
       *
       *    基準不適合逓減対象施設基準
-           MOVE    WRK-COM-KIJUNTEIGENCD (IDX-Z)
-                                       TO  IDY
-           IF      IDY                 <=  500
-               IF      SYS-1006-SSTKIJUN (IDY) =   1
-                   CONTINUE
-               ELSE
-                   MOVE    1               TO  FLG-ERR
-               END-IF
+           IF      SYS-1006-SSTKIJUN (IDY - IDS)   =   1
+               CONTINUE
            ELSE
-               IF      SYS-1006-SSTKIJUN (IDY - 500) =   1
-                   CONTINUE
-               ELSE
-                   MOVE    1               TO  FLG-ERR
-               END-IF
+               MOVE    1                   TO  FLG-ERR
            END-IF
       *
            .
