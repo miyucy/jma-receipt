@@ -41,7 +41,6 @@
       *  01.00.08    NACL-太田    04/07/07  検索画面戻り時のカーソル制御
       *                                     修正
       *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
-      *  05.01.00    NACL-多々納  17/09/XX  GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -274,7 +273,6 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -527,7 +525,7 @@
       *
                MOVE    SPA-GMN-TTEKCD (IDX-LINE)
                                        TO  WRK-SRYCD
-               PERFORM 900-CHKMST-KEY21-SEL-SEC
+               PERFORM 900-CHKMST-KEY-SEL-SEC
                IF    ( FLG-CHKMST      =   ZERO )
                    MOVE    CHK-CHKERR  TO  SPA-GMN-TCHKERR2
                                                   (IDX-LINE)
@@ -680,14 +678,11 @@
        330-XID1-SET-SEC            SECTION.
       *
            IF      SPA-XID1-FLG        =   "OK"
-               EVALUATE    SPA-XIDCD
-               WHEN    "1001"
-                   PERFORM 490-KOUSHIN-SEC
-               WHEN    "1002"
+               IF      SPA-XIDCD           =   "1002"
                    PERFORM 4031-DEL-SEC
-               WHEN    "2001"
-                   PERFORM 4111-PRINT-SEC
-               END-EVALUATE
+               ELSE
+                   PERFORM 490-KOUSHIN-SEC
+               END-IF
            END-IF
       *
            MOVE    SPACE           TO  SPA-XID1-FLG
@@ -843,13 +838,13 @@
                    MOVE    SPACE               TO  SPA-GMN-TTEKCD (IDZ)
                END-IF
       *
-      *        IF    ( SPA-GMN-TCHKERR (IDZ)   =   8 )
-      *            IF    ( SPA-GMN-TDATAKBN (IDZ)  =   "1" )
-      *                CONTINUE
-      *            ELSE
-      *                MOVE    SPACE           TO  SPA-GMN-TTEKCD (IDZ)
-      *            END-IF
-      *        END-IF
+               IF    ( SPA-GMN-TCHKERR (IDZ)   =   8 )
+                   IF    ( SPA-GMN-TDATAKBN (IDZ)  =   "1" )
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  SPA-GMN-TTEKCD (IDZ)
+                   END-IF
+               END-IF
       *
       *        全角入力の時、１０文字まで
                INITIALIZE                  ORCSKANACHKAREA
@@ -1096,7 +1091,7 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
       *
-               PERFORM 900-CHKMST-KEY21-SEL-SEC
+               PERFORM 900-CHKMST-KEY-SEL-SEC
                IF    ( FLG-CHKMST      =   ZERO )
                    MOVE    CHK-CHKERR  TO  SPA-GMN-TCHKERR2 (IDX-LINE)
                ELSE
@@ -1394,8 +1389,7 @@
            MOVE    SPA-X01-SEL-STYUKYMD TO CHK-YUKOSTYMD
            MOVE    SPA-X01-SEL-EDYUKYMD TO CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
-     ******MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "tbl_chk_user"      TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          NOT =   ZERO  )
@@ -1611,43 +1605,18 @@
       *****************************************************************
       *    印刷処理
       *****************************************************************
-       411-PRINT-SEC                   SECTION.
+       411-PRINT-SEC               SECTION.
       *
-          PERFORM 410-KAKUTEI-SEC
-          IF    ( SPA-ERRCD        =   SPACE )
-              MOVE    "2001"       TO  SPA-XIDCD
-          END-IF
+           INITIALIZE                  ORCHXLSTAREA
+           MOVE    SPA-GMN-CHKKBN      TO  HXLST-CHKKBN
+           MOVE    SPA-GMN-SRYCD       TO  HXLST-SRYCD
+           MOVE    "1"                 TO  HXLST-PROCKBN
+           MOVE    SPA-X01-KJNYMD      TO  HXLST-KJNYMD
+           CALL    "ORCHXLST"      USING   SPA-AREA
+                                           ORCHXLSTAREA
       *
            .
        411-PRINT-EXT.
-           EXIT.
-      *****************************************************************
-      *    印刷処理
-      *****************************************************************
-       4111-PRINT-SEC                  SECTION.
-      *
-           PERFORM 4901-KOUSHIN-SEC
-           IF    ( SPA-ERRCD      =   SPACE )
-      *
-               IF    ( SPA-X01-SELNUM      =   ZERO )
-                   MOVE    99              TO  SPA-X01-SELNUM
-                   MOVE    SPA-X01-STYUKYMD
-                                           TO  SPA-X01-SEL-STYUKYMD
-                   MOVE    SPA-X01-EDYUKYMD
-                                           TO  SPA-X01-SEL-EDYUKYMD
-               END-IF
-      *
-               INITIALIZE                  ORCHXLSTAREA
-               MOVE    SPA-GMN-CHKKBN      TO  HXLST-CHKKBN
-               MOVE    SPA-GMN-SRYCD       TO  HXLST-SRYCD
-               MOVE    "1"                 TO  HXLST-PROCKBN
-               MOVE    SPA-X01-KJNYMD      TO  HXLST-KJNYMD
-               CALL    "ORCHXLST"      USING   SPA-AREA
-                                               ORCHXLSTAREA
-           END-IF
-      *
-           .
-       4111-PRINT-EXT.
            EXIT.
       *
       *
@@ -1675,26 +1644,11 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-           PERFORM 4901-KOUSHIN-SEC
-           IF    ( SPA-ERRCD      =   SPACE )
-               MOVE   "JOIN"     TO   MCP-PUTTYPE
-               PERFORM 210-BACK
-           END-IF
-      *
-           .
-       490-KOUSHIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       登録処理
-      *****************************************************************
-       4901-KOUSHIN-SEC            SECTION.
-      *
       *    チェックマスタ削除 
            PERFORM 40311-DEL-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                MOVE    "1003"      TO  SPA-ERRCD
-               GO  TO  4901-KOUSHIN-EXT
+               GO  TO  490-KOUSHIN-EXT
            END-IF
       *
       *    チェックマスタ追加
@@ -1734,8 +1688,7 @@
                END-IF
       *
                MOVE    CHK-REC         TO  MCPDATA-REC
-      ******   MOVE    "tbl_chk"       TO  MCP-TABLE
-               MOVE    "tbl_chk_user"  TO  MCP-TABLE
+               MOVE    "tbl_chk"       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC      NOT =   ZERO )
@@ -1744,9 +1697,15 @@
       *
            END-PERFORM
       *
+           IF    ( SPA-ERRCD      =   SPACE )
+               MOVE   "JOIN"     TO   MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
+      *
            .
-       4901-KOUSHIN-EXT.
+       490-KOUSHIN-EXT.
            EXIT.
+      *
       *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
@@ -1926,7 +1885,6 @@
                     OR   ( X02-B03-STATE   =   WIDGET-INSENSITIVE )
       *
                IF    ( SPA-GMN-TDATAKBN  (IDX1)    =   "1" )
-                AND  ( SPA-X01-ID                  =   ZERO )
                    MOVE    WIDGET-INSENSITIVE
                                            TO  X02-B03-STATE
                END-IF
@@ -2203,21 +2161,14 @@
            EVALUATE    SPA-XIDCD
                WHEN    "1001"
                    MOVE    "チェックマスタ設定情報を登録します"
-                                       TO  WRK-XIDMSG
+                                        TO  WRK-XIDMSG
                WHEN    "1002"
                    MOVE    "チェックマスタ設定情報を削除します"
-                                       TO  WRK-XIDMSG
-               WHEN    "2001"
-                   MOVE    "チェックマスタを登録後、印刷を行います"
-                                       TO  WRK-XIDMSG
+                                        TO  WRK-XIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  XID1
-           INITIALIZE                       XID1
            MOVE    SPA-XIDCD            TO  XID1-ID1CODE
-           MOVE    "戻る"               TO  XID1-B01
-           MOVE    "ＯＫ"               TO  XID1-B12
-      *
            MOVE    WRK-XIDMSG           TO  XID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
       *
@@ -2249,7 +2200,7 @@
       *****************************************************************
       *    チェックマスタ検索処理
       *****************************************************************
-       900-CHKMST-KEY21-SEL-SEC        SECTION.
+       900-CHKMST-KEY-SEL-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKMST
       *
@@ -2259,11 +2210,11 @@
            MOVE    WRK-SRYCD           TO  CHK-SRYCD
       *
            IF    ( SPA-X01-SEL-STYUKYMD    =    SPACE )
-               MOVE    SPA-X01-STYUKYMD        TO  CHK-YUKOEDYMD
-               MOVE    SPA-X01-EDYUKYMD        TO  CHK-YUKOSTYMD
+               MOVE    SPA-X01-STYUKYMD        TO  CHK-YUKOSTYMD
+                                                   CHK-YUKOEDYMD
            ELSE
-               MOVE    SPA-X01-SEL-STYUKYMD    TO  CHK-YUKOEDYMD
-               MOVE    SPA-X01-SEL-EDYUKYMD    TO  CHK-YUKOSTYMD
+               MOVE    SPA-X01-SEL-STYUKYMD    TO  CHK-YUKOSTYMD
+                                                   CHK-YUKOEDYMD
            END-IF
            MOVE    "2"                 TO  CHK-CDKBN
            MOVE    SPA-X01-SRYCD       TO  CHK-CD
@@ -2271,7 +2222,7 @@
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key21"             TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  CHK-REC
@@ -2281,11 +2232,11 @@
            END-IF
       *
            MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key21"             TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-CHKMST-KEY21-SEL-EXT.
+       900-CHKMST-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ検索処理 (KEY2)
