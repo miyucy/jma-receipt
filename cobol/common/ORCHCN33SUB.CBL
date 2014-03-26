@@ -1479,6 +1479,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE   "190107290"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     2
                       MOVE   "190107390"   TO  WRK-GAIHAKU(IDX1)
+                    WHEN     3
+                      MOVE   "999999999"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     4
                     WHEN     5
                     WHEN     6
@@ -1498,6 +1500,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE   "190107490"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     2
                       MOVE   "190107590"   TO  WRK-GAIHAKU(IDX1)
+                    WHEN     3
+                      MOVE   "999999999"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     4
                     WHEN     5
                     WHEN     6
