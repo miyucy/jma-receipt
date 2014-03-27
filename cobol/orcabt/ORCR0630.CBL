@@ -111,6 +111,8 @@
       *  04.06.01    NACL-門脇    10/12/13  保険別請求チェック表の本体取込み
       *
       *  04.07.01    NACL-門脇    13/07/10  自賠責（第三者行為）対応
+      *  04.07.02    NACL-門脇    14/03/26  平成２６年４月改正対応
+      *                                     （夜勤時間経過減算の選定対応）
       *****************************************************************
       *
       *
@@ -2844,7 +2846,23 @@
                  END-IF
       *
                  IF  FLG-SENTEICDCHG   =   ZERO
-      *
+                  IF    SENCHG-IPNSRYCD  =  SENCHG-SENTEISRYCD
+      *             夜勤時間経過減算の選定対応
+      *             "190131410","190165810","190165910","190131310"
+                    IF   RECE62-SRYYM >= "201404"
+                       COMPUTE  WRK-SENTEI-KHNTEN  =
+                               (WRK-KHNTEN * 0.85) +  0.5
+                       COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
+                                                   +  WRK-KSNTEN
+                       IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *                  標欠：％減算
+                         COMPUTE    WRK-SENTEI-ZAITEN  =
+                                  ( WRK-SENTEI-ZAITEN  -
+                                   (WRK-SENTEI-ZAITEN  *
+                                    (WRK-HYOKETU-TEN   /  100)))  +  0.5
+                       END-IF
+                    END-IF
+                  ELSE
                     MOVE    SPACE               TO    TNS-TENSU-REC
                     INITIALIZE                        TNS-TENSU-REC
                     MOVE    SENCHG-SENTEISRYCD  TO    TNS-SRYCD
@@ -2864,7 +2882,7 @@
                                     (WRK-HYOKETU-TEN   /  100)))  +  0.5
                        END-IF
                     END-IF  
-      *
+                  END-IF
                  END-IF
       *
                  MOVE    "tbl_senteicdchg"   TO  MCP-TABLE
