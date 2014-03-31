@@ -113,6 +113,7 @@
       *  04.07.01    NACL-門脇    13/07/10  自賠責（第三者行為）対応
       *  04.07.02    NACL-門脇    14/03/26  平成２６年４月改正対応
       *                                     （夜勤時間経過減算の選定対応）
+      *  04.07.03    NACL-門脇    14/03/28  平成２６年４月改正対応
       *****************************************************************
       *
       *
@@ -1053,7 +1054,8 @@
       *
                  IF        WRK-DAY5(IDY)   =   RECE62-HKNCOMBI (IDX1)
                       MOVE    ZERO            TO    FLG-SHOSAISIN
-                      IF   WRK-DAY1(IDY)   NOT =    ZERO    
+                      IF  (WRK-DAY1(IDY)   NOT =    ZERO )
+                      OR  (RECE62-NYUINDAY-KBN(IDY) = "1")
                                MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
       *

@@ -63,6 +63,7 @@
       *
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
+      *  04.07.03    NACL-門脇    14/03/28  平成２６年４月改正対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -183,9 +184,9 @@
                                                        OCCURS   31.
       *
            03  WRK-DAY-AREA2.
-               05  WRK-DAY-TBL2.
-                   07  WRK-DAY-DOJITU                  PIC 9(04)
-                                                       OCCURS   31.
+               05  WRK-DAY-TBL2                        OCCURS   31.
+                   07  WRK-DAY-DOJITU                  PIC 9(04).
+                   07  WRK-DAY-KBN                     PIC X(01).
       *
            03  WRK-ROUSAIKBN                           PIC X(01).
            03  WRK-DENPNUM                             PIC 9(07).
@@ -872,6 +873,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                   UNTIL    IDX    >    31
                         MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX)
                                             TO  WRK-DAY-DOJITU(IDX)
+                        MOVE  LNK-NYUINDAY-KBN(IDX)
+                                            TO  WRK-DAY-KBN(IDX)
                       END-PERFORM
                    END-IF
                END-IF
@@ -880,7 +883,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *            対象の入院会計があるとき仮収納作成
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       31
-                       IF    ( WRK-DAY (1 IDX)     >   ZERO )   AND
+                       IF    ((WRK-DAY (1 IDX)     >   ZERO) OR
+                              (WRK-DAY-KBN(IDX)    =   "1" ))  AND
                              ( WRK-DAY (2 IDX)     >   ZERO )
                            MOVE    WRK-DAY (2 IDX) TO  WRK-HKNCOMBINUM
                            PERFORM 200121-NYUINACCT-CHK-SEC
@@ -1763,6 +1767,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                               UNTIL    IDX    >    31
                     MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX)
                                         TO  WRK-DAY-DOJITU(IDX)
+                    MOVE  LNK-NYUINDAY-KBN(IDX)
+                                        TO  WRK-DAY-KBN(IDX)
                   END-PERFORM
                END-IF
            END-IF
@@ -1771,7 +1777,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *        対象の入院会計があるとき仮収納作成
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
-                   IF    ( WRK-DAY (1 IDX)     >   ZERO )  AND
+                   IF    ((WRK-DAY (1 IDX)     >   ZERO) OR
+                          (WRK-DAY-KBN(IDX)    =   "1" ))  AND
                          ( WRK-DAY (2 IDX)     >   ZERO )
                        MOVE    WRK-DAY (2 IDX) TO  WRK-HKNCOMBINUM
                        PERFORM 200121-NYUINACCT-CHK-SEC
