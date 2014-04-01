@@ -66,6 +66,8 @@
       *                                     レセプト記載対応
       *  04.06.02    NACL-門脇    13/02/27  平成２５年４月改正対応
       *
+      *  04.07.01    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -568,7 +570,7 @@
       *
       *    電子化加算等情報
        01  TBL-DENSHI-INF.
-         02    TBL-DENSHI-OCC              OCCURS  12.
+         02    TBL-DENSHI-OCC              OCCURS  13.
            03  TBL-DENSHI-FLG              PIC  9(01).
            03  TBL-DENSHI-TEN              PIC  9(07).
            03  TBL-DENSHI-ZAIKAISU         PIC  9(04).
@@ -719,6 +721,8 @@
            03  FILLER          PIC X(09)   VALUE   "112015670".
       *    明細書発行体制等加算
            03  FILLER          PIC X(09)   VALUE   "112015770".
+      *    地域包括診療加算
+           03  FILLER          PIC X(09)   VALUE   "112017270".
       *    時間外対応加算１
            03  FILLER          PIC X(09)   VALUE   "112016070".
       *    時間外対応加算３
@@ -732,9 +736,9 @@
            03  FILLER          PIC X(09)   VALUE   "099140001".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   69.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   70.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   69.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   70.
       *
       *    固定値
        01  CONST-AREA.
@@ -1135,7 +1139,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        電子化加算編集
                MOVE    ZERO      TO    FLG-TEIGEN
                PERFORM  VARYING  IDX6   FROM   1   BY  1
-                         UNTIL   IDX6    >    12
+                         UNTIL   IDX6    >    13
                  IF      TBL-DENSHI-FLG(IDX6)  =   1
                    PERFORM 2010-DENSHI-HENSYU-SEC
                  END-IF
@@ -1688,6 +1692,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
             OR (( RECE100-SRYYM   >=  "201004"            ) AND
                 ( TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                        =   "112015670"  OR  "112015770"  OR
+                           "112017270"  OR
                            "112016070"  OR  "112016170"   ))
       *
              EVALUATE   TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
@@ -1711,6 +1716,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   MOVE    11     TO     IDX6
                WHEN       "112015770"
                   MOVE    12     TO     IDX6
+               WHEN       "112017270"
+                  MOVE    13     TO     IDX6
              END-EVALUATE
       *
              MOVE     1              TO  TBL-DENSHI-FLG(IDX6)
@@ -2748,6 +2755,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                  WHEN     10
                  WHEN     11
                  WHEN     12
+                 WHEN     13
       *
                    MOVE    SPACE             TO  WRK-ZAI
                    MOVE    TBL-DENSHI-TEN(IDX6)  TO  WRK-ZAITENX
@@ -2788,6 +2796,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                      WHEN     12
                        MOVE  "明細書発行体制等加算"
                                              TO  WRK-ZAI-NAME(1:20)
+                     WHEN     13
+                       MOVE  "地域包括診療加算"
+                                             TO  WRK-ZAI-NAME(1:16)
                    END-EVALUATE
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
@@ -2871,6 +2882,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                COMPUTE RECE140-ZAINUM   = 99994101
              WHEN    12
                COMPUTE RECE140-ZAINUM   = 99994111
+             WHEN    13
+               COMPUTE RECE140-ZAINUM   = 99994121
            END-EVALUATE
       *
            MOVE    1                 TO  RECE140-ZAIMEISAISU
@@ -2890,6 +2903,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
              WHEN    10
              WHEN    11
              WHEN    12
+             WHEN    13
                 MOVE    "12"         TO  RECE140-SRYKBN
            END-EVALUATE
       *
