@@ -1016,8 +1016,15 @@
                       (TNS-SRYCD (1:1)         =   "6"   )   AND
                       (TNS-KEIKASOCHIYMD   NOT =   SPACE
                                                AND ZERO  )
-                 AND  (HCSET-KEIKAYMD      <   TNS-KEIKASOCHIYMD)
-                   MOVE    ZERO                TO  FLG-OK-KEIKA
+                   IF     (HCSET-KEIKAYMD      <   TNS-KEIKASOCHIYMD)
+                       MOVE    ZERO                TO  FLG-OK-KEIKA
+                   END-IF
+      *            経過措置日に有効
+                   IF    ((TNS-YUKOSTYMD       <=  HCSET-KEIKAYMD )
+                     AND  (TNS-YUKOEDYMD       >=  HCSET-KEIKAYMD ))
+                     AND  (HCSET-KEIKAYMD      =   TNS-KEIKASOCHIYMD)
+                       MOVE    1               TO  FLG-OK-KEIKA
+                   END-IF
                END-IF
             ELSE
       *
