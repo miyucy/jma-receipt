@@ -9536,7 +9536,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               OR "112015810"
                                               OR "112015950"
                                               OR "112016210"
-                                              OR "112016410"      )
+                                              OR "112016410"
+                                              OR "113015810"      )
       *
                              MOVE    1      TO    FLG-SHOSAISIN         
       *
