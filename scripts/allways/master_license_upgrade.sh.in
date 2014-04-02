@@ -14,29 +14,23 @@ fi
 # $4 : エラーファイル名
 # $5 : ジョブＩＤ
 # $6 : シェルＩＤ
-# $7 : アクセスキー
 #------------------------------------
 
 HOSPNUM=$1
-ERR_FILE_BASE=$(basename $4)
-ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
+ERRFILE=$4
 JOBID=$5
 SHELLID=$(printf "%-8s" $6)
 
 MSTDIR=lics-$(date +%Y%m%d)
-WGETRCFL=${MCP_TEMPDIR}/.wgetrc.license-master
+WGETRCFL=/tmp/.wgetrc.license-master
 LIUPWD=$3
-ACCESSKEY=$7
 
 KANRIFILE=ORCADBR-LI.DAT
 UPDKANRIFILE=info/${KANRIFILE}
 
-if [ "${MCP_MIDDLEWARE_NAME}" = "ginbee" ]; then
-  MASTERDIR="${MCP_TEMPDIR}"
-fi
 UPDFILE=${MASTERDIR}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
-PRFFILE=${MCP_TEMPDIR}/MSTMLI.PRF.$$
+PRFFILE=/tmp/MSTMLI.PRF.$$
 
 
 orcawget () {
@@ -51,7 +45,7 @@ orcawget () {
 	export WGETRC=${WGETRCFL}
 	wget -q ${WGETOPTION} ${DBLICENSEPATH}/$1
     else
-	orcadt_verify.rb --dir . --cacert ${CACERTFILE} --user ${LIUPWD} --password ${ACCESSKEY} ${DBLICENSEPATH}/$1.p7m
+	orcadt_verify.rb --dir . --cacert ${CACERTFILE} --user ${LIUPWD:0:5} --password ${LIUPWD:0:5} ${DBLICENSEPATH}/$1.p7m
     fi
 #接続確認
     if [ $? -eq 0 ] ; then
@@ -133,17 +127,6 @@ cleanup () {
     fi
 }
 
-if [ "${LIUPWD:3:2}" != "50" ]; then
-  if [ -z ${ACCESSKEY} ]; then
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8102,${HOSPNUM},${ERR_FILE_BASE},,アクセスキーがありません"
-    echo "${ERRMSG}"
-    exit 99
-  fi
-else
-  if [ -z ${ACCESSKEY} ]; then
-    ACCESSKEY=${LIUPWD} 
-  fi
-fi
 
 # disk space check
 VOLSIZE=`df -m /var | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
@@ -153,7 +136,7 @@ if [ -z "$MINSIZE" ]; then
 fi
 if [ $VOLSIZE -lt $MINSIZE ]; then
     ERRMSG="The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8101,${HOSPNUM},${ERR_FILE_BASE},,${ERRMSG}"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8101,${HOSPNUM},${ERRFILE},,${ERRMSG}"
     echo "${ERRMSG}"
     exit 99
 fi
@@ -169,8 +152,8 @@ fi
 echo ${MSTDIR}
 echo ${UPDFILE}
 
-if [ -e ${ERR_FILE_FULL} ] ; then
-    rm ${ERR_FILE_FULL}
+if [ -e ${ERRFILE} ] ; then
+    rm ${ERRFILE}
 fi
 
 if [ -e ${PRFFILE} ] ; then
@@ -194,8 +177,8 @@ fi
 
 cd ${MASTERDIR}/${HOSPNUM}/${MSTDIR}
 
-${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},${HOSPNUM},${ERR_FILE_BASE},ＤＢレコード管理情報を取得しています,"
-if [ -e ${ERR_FILE_FULL} ] ; then
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},${HOSPNUM},${ERRFILE},ＤＢレコード管理情報を取得しています,"
+if [ -e ${ERRFILE} ] ; then
     cleanup
     exit 99
 fi
@@ -206,7 +189,7 @@ if  [ ${OFFLINE} = "offline" ] ; then
 	echo "DBレコード管理情報を複写しました"
     else
 	echo "DBレコード管理情報がありませんでした"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},${ERR_FILE_BASE},,ＤＢレコード管理情報がありませんでした"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},${ERRFILE},,ＤＢレコード管理情報がありませんでした"
 	cleanup
 	exit 99
     fi
@@ -219,7 +202,7 @@ else
     else
         echo "${LOGMSG}"
 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERR_FILE_BASE},,${RESULT}"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERRFILE},,${RESULT}"
 	cleanup
         exit 99
     fi
@@ -228,7 +211,7 @@ else
 	echo "センタからのDBレコード管理情報は正常でした"
     else
 	echo "センタからのDBレコード管理情報は空でした"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERR_FILE_BASE},,ＤＢレコード管理情報は未設定でした"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERRFILE},,ＤＢレコード管理情報は未設定でした"
 	cleanup
         exit 99
     fi
@@ -238,7 +221,7 @@ fi
 ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST3 -parameter "${HOSPNUM}$2${MSTDIR}"
 if [ $? -ne 0 ]	; then
     echo "ダウンロードファイル生成に失敗しました"
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,${HOSPNUM},${ERR_FILE_BASE},,ダウンロードファイル生成に失敗しました"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,${HOSPNUM},${ERRFILE},,ダウンロードファイル生成に失敗しました"
     cleanup
     exit 99
 fi
@@ -248,7 +231,7 @@ if [ -s ${UPDFILE} ] ; then
     echo "更新用ダウンロードファイルの作成が終了しました"
 else
     echo "更新用ダウンロードファイルは作成されませんでした"
-    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERR_FILE_BASE},,"
+    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERRFILE},,"
     cleanup
     exit 0
 fi
@@ -259,8 +242,8 @@ MSTSEQ=0
 for UPD in ${UPDLIST}
 do
     MSTSEQ=$(expr ${MSTSEQ} + 1)
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERR_FILE_BASE},更新データを取得しています $(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})"
-    if [ -e ${ERR_FILE_FULL} ] ; then
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},更新データを取得しています $(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})"
+    if [ -e ${ERRFILE} ] ; then
 	cleanup
 	exit 99
     fi
@@ -270,7 +253,7 @@ do
 	    echo ${UPD:35:${LEN}} "複写が終了しました"
 	else
 	    echo ${UPD:35:${LEN}} "複写に失敗しました"
-	    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERR_FILE_BASE},,複写に失敗しました"
+	    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERRFILE},,複写に失敗しました"
 	    cleanup
 	    exit 99
 	fi
@@ -282,7 +265,7 @@ do
 	else
             echo "${LOGMSG}"
 	    echo ${UPD:35:${LEN}} "ダウンロードに失敗しました"
-	    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0008,${HOSPNUM},${ERR_FILE_BASE},,${RESULT}"
+	    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0008,${HOSPNUM},${ERRFILE},,${RESULT}"
 	    cleanup
 	    exit 99
 	fi
@@ -296,7 +279,7 @@ do
     if orcatar ${UPD} ; then
 	echo ${UPD} "解凍処理が終了しました"
     else
-	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0009,${HOSPNUM},${ERR_FILE_BASE},,解凍処理に失敗しました"
+	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0009,${HOSPNUM},${ERRFILE},,解凍処理に失敗しました"
 	echo ${UPD} "解凍処理に失敗しました"
 	cleanup
 	exit 99
@@ -317,14 +300,14 @@ do
     MSTCNTMSG=$(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})
     echo ${UPD1} "DB更新"
 #ダウンロードファイル生成
-    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST4 -parameter "${HOSPNUM}${MSTDIR}${UPD1}*****************************************************,$(printf "%06d" ${MSTCOUNT}),$(printf "%06d" ${MSTSEQ}),${MSTCNTMSG},${COUNT},${ERR_FILE_BASE},${JOBID},${SHELLID},${PRFFILE}"
+    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST4 -parameter "${HOSPNUM}${MSTDIR}${UPD1}*****************************************************,$(printf "%06d" ${MSTCOUNT}),$(printf "%06d" ${MSTSEQ}),${MSTCNTMSG},${COUNT},${ERRFILE},${JOBID},${SHELLID},${PRFFILE}"
 	if [ $? -ne 0 ]	; then
     	echo "処理が中止されました"
-		${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0006,${HOSPNUM},${ERR_FILE_BASE},,処理が中止されました"
+		${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0006,${HOSPNUM},${ERRFILE},,処理が中止されました"
 		cleanup
 		exit 99
 	fi
-    if [ -e ${ERR_FILE_FULL} ] ; then
+    if [ -e ${ERRFILE} ] ; then
 		cleanup
 		exit 99
     fi
@@ -332,6 +315,6 @@ done
 
 echo  "全ての処理が完了しました"
 cleanup
-${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERR_FILE_BASE},,マスタ更新処理が終了しました"
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},,マスタ更新処理が終了しました"
 
 exit 0
