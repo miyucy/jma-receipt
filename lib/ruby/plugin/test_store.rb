@@ -16,14 +16,19 @@ class JMA::Plugin::StoreTest < Test::Unit::TestCase
   end
 
   def dircmp(a,b)
-    lista = Dir.glob(File.join(a,"*")).sort
-    listb = Dir.glob(File.join(b,"*")).sort
+    lista = Dir.glob(File.join(a,"*")).sort.select do |n| /CVS/ =~ n end
+    listb = Dir.glob(File.join(b,"*")).sort.select do |n| /CVS/ =~ n end
     lista.each_with_index{|fa, i|
       case File.ftype(fa)
       when "file"
-        return false unless FileUtils.cmp(fa,listb[i])
+        unless FileUtils.cmp(fa,listb[i])
+          puts "#{fa} #{listb[i]}"
+          return false
+        end
       when "directory"
-        return false unless dircmp(fa,listb[i])
+        unless dircmp(fa,listb[i])
+          return false
+        end
       end
     }
     return true
@@ -38,7 +43,7 @@ class JMA::Plugin::StoreTest < Test::Unit::TestCase
 
   def test_install
     assert_nothing_raised{
-      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"))
+      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"),"install")
     }
     assert(dircmp(
       File.join(@root,"foo-1.0"),
@@ -48,27 +53,27 @@ class JMA::Plugin::StoreTest < Test::Unit::TestCase
 
   def test_uninstall
     assert_nothing_raised{
-      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"))
+      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"),"install")
     }
     assert_equal(true, File.exist?(File.join(@root,"foo-1.0")))
     assert_nothing_raised{
-      @store.uninstall("foo","1.0")
+      @store.uninstall("foo","1.0","uninstall")
     }
     assert_equal(false, File.exist?(File.join(@root,"foo-1.0")))
   end
 
   def test_uninstall_ng
     assert_raise(RuntimeError) {
-      @store.uninstall("bar","1.0")
+      @store.uninstall("bar","1.0","uninstall")
     }
   end
 
   def test_link
     assert_nothing_raised{
-      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"))
+      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"),"install")
     }
     assert_nothing_raised{
-      @store.link("foo","1.0")
+      @store.link("foo","1.0","link")
     }
     assert_equal("link", File.ftype(File.join(@linkprefix,"1.txt")))
     assert_equal("link", File.ftype(File.join(@linkprefix,"2.txt")))
@@ -91,40 +96,40 @@ class JMA::Plugin::StoreTest < Test::Unit::TestCase
 
   def test_link_already
     assert_nothing_raised{
-      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"))
+      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"),"install")
     }
     assert_nothing_raised{
-      @store.link("foo","1.0")
+      @store.link("foo","1.0","link")
     }
     assert_raise(RuntimeError){
-      @store.link("foo","1.0")
+      @store.link("foo","1.0","link")
     }
   end
 
   def test_link_ng
     assert_raise(RuntimeError) {
-      @store.link("bar","1.0")
+      @store.link("bar","1.0","link")
     }
   end
 
   def test_link_ng2
     assert_nothing_raised{
-      @store.install("baz","1.0",File.join(@datadir,"baz-1.0.jpp"))
+      @store.install("baz","1.0",File.join(@datadir,"baz-1.0.jpp"),"install")
     }
     assert_nothing_raised{
-      @store.link("baz","1.0")
+      @store.link("baz","1.0","link")
     }
   end
 
   def test_unlink
     assert_nothing_raised{
-      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"))
+      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"),"install")
     }
     assert_nothing_raised{
-      @store.link("foo","1.0")
+      @store.link("foo","1.0","link")
     }
     assert_nothing_raised{
-      @store.unlink("foo","1.0")
+      @store.unlink("foo","1.0","unlink")
     }
     assert_equal(false, File.exist?(File.join(@linkprefix,"1.txt")))
     assert_equal(false, File.exist?(File.join(@linkprefix,"2.txt")))
@@ -139,16 +144,16 @@ class JMA::Plugin::StoreTest < Test::Unit::TestCase
 
   def test_unlink_ng
     assert_raise(RuntimeError) {
-      @store.unlink("bar","1.0")
+      @store.unlink("bar","1.0","unlink")
     }
   end
 
   def test_unlink_ng2
     assert_nothing_raised{
-      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"))
+      @store.install("foo","1.0",File.join(@datadir,"foo-1.0.jpp"),"install")
     }
     assert_raise(RuntimeError){
-      @store.unlink("foo","1.0")
+      @store.unlink("foo","1.0","unlink")
     }
   end
 
