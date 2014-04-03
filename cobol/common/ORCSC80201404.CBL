@@ -52,6 +52,7 @@
       * 04.07.00     NACL-多々納  12/03/XX  Ｈ２４．４改正対応
       * 04.07.00     NACL-多々納  13/05/15  疾患別リハビリ月上限対応
       * 04.07.00     NACL-多々納  14/03/XX  Ｈ２６年４月改正対応
+      * 04.07.00     NACL-多々納  14/04/03  精２０歳未満加算削除対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -184,6 +185,8 @@
            03  IDXT                PIC 9(04).
            03  IDT2                PIC 9(04).
            03  IDT3                PIC 9(04).
+      *
+           03  IDX-ZS3                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -349,10 +352,7 @@
            03  WRK-TUKI-CNT            PIC 9(03).
       *    訂正
            03  WRK-TEI-CNT             PIC 9(04).
-      *    今回算定回数
-      *    03  WRK-RIHA-CNT-G.
-      *        05  WRK-RIHA-CNT            PIC 9(03)
-      *                                    OCCURS   31.
+      *
       *
        01  TBL-RIHA-ZAINUM-G.
            03  TBL-RIHA-ZAINUM-OCC     OCCURS  50.
@@ -721,8 +721,6 @@
       *    外来の時、精神通院
            IF      SPA-NYUGAIKBN       =   "2"
                PERFORM 10002-DOUJIT-YMD-SEC
-      *??      診療科の最初の受診日???
-      *??      PERFORM 10002-SRYKA-FYMD-SEC
            END-IF
       *
            MOVE    "1"                 TO  WRK-RIGAKU-INT
@@ -965,15 +963,6 @@
        100011-RIHA-SANTEIPLUS-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    精神通院の診療科の最初の受診日編集処理
-      *****************************************************************
-       10002-SRYKA-FYMD-SEC                SECTION.
-      *
-      *
-           .
-       10002-SRYKA-FYMD-EXT.
-           EXIT.
       *****************************************************************
       *    精神通院の同日初診編集処理
       *****************************************************************
@@ -1300,9 +1289,6 @@
                                                NOT =   ZERO
                        PERFORM 100111-KIJUNN-CHK-SEC
                    END-IF
-      *
-      *            精神通院の乳幼児の自動加算を追加する
-      *****        PERFORM 10011-NENREI-SET-SEC
       *
       *            労災の時、労災加算の算定
                    IF      SPA-HKNKBN          =   1
@@ -2277,6 +2263,13 @@
       *
            MOVE    ZERO                TO  FLG-NENREI
            MOVE    ZERO                TO  FLG-NENREI2
+      *    通院・在宅精神のみ
+           IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
+                  (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002")
+               CONTINUE
+           ELSE
+               GO      TO      1001132-GAIRI-SEISIN-EXT
+           END-IF
       *
            IF      LNK-ORCSC-SYORIFLG      =   1
       *        訂正時点の初診算定日
@@ -2308,20 +2301,7 @@
            END-IF
            MOVE    WRK-SYOYMD          TO  WRK-SYOYMD2
            MOVE    WRK-SYOYMD          TO  WRK-SYOYMD3
-      *    初診料算定日＋６月後
-      *    INITIALIZE                      STS-AREA-DAY
-      *    INITIALIZE                      LNK-DAY6-AREA
-      *    MOVE    "61"                TO  LNK-DAY6-IRAI
-      *    MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
-      *    MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-      *    MOVE    6                   TO  LNK-DAY6-ZOGEN
-      *    CALL    "ORCSDAY"           USING   STS-AREA-DAY
-      *                                        LNK-DAY6-AREA
-      *    MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
-      *    ６ヶ月以上
-      *    IF      SPA-SRYYMD          >   WRK-SYOYMD
-      *        MOVE    1               TO  FLG-NENREI
-      **** END-IF
+      *
       *    Ｈ２０．４から１年未満とする
            COMPUTE WRK-SYO2-YY         =   WRK-SYO2-YY   +   1
            COMPUTE WRK-SYO3-YY         =   WRK-SYO3-YY   +   2
@@ -2438,6 +2418,7 @@
            .
        10011321-GAIRI-SEISINCHK-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *     入院　精神通院の加算チェック処理
@@ -2562,89 +2543,6 @@
            IF     (SPA-STR-NYUINYMD    NOT =   SPACE)
            AND    (FLG-SEISIN              =   ZERO )
                MOVE    SPA-STR-NYUINYMD    TO  WRK-NYUINYMD
-           END-IF
-      *
-           GO      TO      10011310-NYUINYMD-HEN-EXT
-      *!!
-      *!!
-           INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    SPA-K02N-NYUINYMD   TO  PTNYUINRRK-NYUINYMD
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key12"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key12"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-           MOVE    ZERO                TO  WRK-SHONUM
-           MOVE    ZERO                TO  FLG-SHOKAIKBN
-           PERFORM
-                   UNTIL      (FLG-PTNYUINRRK      =   1 )
-               IF     (PTNYUINRRK-NYUINYMD     =   SPA-K02N-NYUINYMD)
-                  AND (PTNYUINRRK-TAIINYMD     =   SPA-K02N-TAIINYMD)
-                  IF      PTNYUINRRK-SHOKAIKBN     =   "2"
-      *                継続
-                       MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
-                       MOVE    1                   TO  FLG-SHOKAIKBN
-                   END-IF
-                   MOVE    1                   TO  FLG-PTNYUINRRK
-               END-IF
-               IF      FLG-PTNYUINRRK          =   ZERO
-                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-                   MOVE    "key12"             TO  MCP-PATHNAME
-                   PERFORM 910-PTNYUINRRK-READ-SEC
-               END-IF
-           END-PERFORM
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key12"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF     (FLG-SHOKAIKBN       =   1   )
-           AND    (FLG-SEISIN          =   1   )
-      *        継続の時、家族は算定不可
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
-               AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
-                   MOVE    "K844"              TO  WRK-ERRCD
-                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                   MOVE    "1"                 TO  WRK-COM-CUR
-                                                           (IDX-Z)
-               END-IF
-           END-IF
-      *    継続の時、初回入院日検索
-           IF     (WRK-SHONUM          >   ZERO )
-           AND    (FLG-SEISIN          =   ZERO )
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-               MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-               MOVE    SPA-K02N-NYUINYMD   TO  PTNYUINRRK-NYUINYMD
-               MOVE    WRK-SHONUM          TO  PTNYUINRRK-SHONUM
-      *
-               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "key13"             TO  MCP-PATHNAME
-                   PERFORM 910-PTNYUINRRK-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-PTNYUINRRK
-                   INITIALIZE                  PTNYUINRRK-REC
-               END-IF
-               IF      FLG-PTNYUINRRK      =   ZERO
-                   MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYUINYMD
-               END-IF
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
            END-IF
       *
            .
@@ -2846,34 +2744,6 @@
        10011312-RIGAKU-SERCH-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    年齢加算追加処理（共通）
-      *****************************************************************
-       10011-NENREI-SET-SEC            SECTION.
-      *
-      *    通院精神の時、初診日から１年以内チェック
-           IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
-                  (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002")
-               IF      (LNK-ORCSC-PG        =   "K02"
-                                            OR  "KT01"  )
-                   PERFORM 100113-SEISIN-CHK-SEC
-               ELSE
-                   MOVE    1               TO  FLG-NENREI
-               END-IF
-               IF      FLG-NENREI          =   ZERO
-                   PERFORM 10021-JIDO-AGEKASAN-SEC
-               END-IF
-           ELSE
-               PERFORM 10021-JIDO-AGEKASAN-SEC
-               IF      FLG-ADD             =   1
-                   MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
-               END-IF
-           END-IF
-      *
-           .
-       10011-NENREI-SET-EXT.
-           EXIT.
-      *
       *H24.4
       *****************************************************************
       *    年齢加算自動加算追加処理
@@ -2917,8 +2787,22 @@
                ELSE
                    MOVE    1               TO  FLG-NENREI
                END-IF
+      *H26.4
+      *        自動発生は入力時のみとする
+               IF     (FLG-NENREI          =   ZERO   )
+                 AND  (WRK-COM-KSNAUTO(IDX-Z)  =   "1" )
+                   MOVE    1               TO  FLG-NENREI
+               END-IF
+      *
                IF      FLG-NENREI          =   ZERO
+                   MOVE    IDX-Z           TO  IDX-ZS3
                    PERFORM 10021-JIDO-AGEKASAN-SEC
+      *H26.4
+      *            自動発生は手入力分とする
+                   IF      FLG-ADD         =   1
+                       MOVE    "1"         TO  WRK-COM-KSNAUTO(IDX-ZS3)
+                       MOVE    SPACE       TO  WRK-COM-AUTOKBN (IDX-S)
+                   END-IF
                END-IF
            ELSE
                PERFORM 10021-JIDO-AGEKASAN-SEC
