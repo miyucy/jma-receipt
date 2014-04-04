@@ -38,7 +38,6 @@
       *  04.05.00    NACL-多々納  09/07/15  小児科特例時間外区分追加
       *  04.07.00    NACL-多々納  12/01/26  背景色変更追加
       *  04.07.00    NACL-多々納  12/05/28  タブラベル対応
-      *  04.08.00    NACL-多々納  18/03/XX  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -93,8 +92,6 @@
                        09  SPA-MAE-SRYKA        PIC X(02).
                        09  SPA-M95GMN-SRYKAMEI  PIC X(20).
                        09  SPA-M95-KOUSIN       PIC 9(01).
-      *H29.10
-                       09  SPA-M95-DELONL       PIC 9(01).
       *
                        09  SPA-M95GMN-INPUT-G.
                            11  SPA-M95GMN-RENNUM       PIC X(04).
@@ -258,8 +255,6 @@
            COPY    "CPORCSMCNDATE.INC".
       *    COMMON-SPA 初期編集
            COPY    "CPORCSCOMMON.INC".
-      *    数字変換領域
-           COPY    "CPORCSNUM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -281,6 +276,8 @@
            COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
@@ -519,27 +516,10 @@
            MOVE    5                   TO  SPA-JIKANKBN-MAX
       *
            IF      WRK-JIKANTOKU-NYU   =   1
-                                       OR  2
                MOVE    "5 小児科特例夜間"  TO  SPA-GMN-JIKANKBN-LST(6)
                MOVE    "6 小児科特例休日"  TO  SPA-GMN-JIKANKBN-LST(7)
                MOVE    "7 小児科特例深夜"  TO  SPA-GMN-JIKANKBN-LST(8)
                ADD     3                   TO  SPA-JIKANKBN-MAX
-           END-IF
-      *
-      *H30.4
-      *    産科・産婦人科
-           IF     (SPA-NAI-SYSYMD      >=  "20180401" )
-               IF      WRK-JIKANTOKU-NYU   =   1
-                                           OR  2
-                                           OR  3
-                   MOVE    "5 小児・産・産婦人科特例夜間"
-                                           TO  SPA-GMN-JIKANKBN-LST(6)
-                   MOVE    "6 小児・産・産婦人科特例休日"
-                                           TO  SPA-GMN-JIKANKBN-LST(7)
-                   MOVE    "7 小児・産・産婦人科特例深夜"
-                                           TO  SPA-GMN-JIKANKBN-LST(8)
-                   MOVE    8               TO  SPA-JIKANKBN-MAX
-               END-IF
            END-IF
       *
            IF      WRK-YAKANKBN        =   1
@@ -869,71 +849,20 @@
       *****************************************************************
       *     診療科入力チェック処理
       *****************************************************************
-       4110-SRYKA-CHK-SEC              SECTION.
+       4110-SRYKA-CHK-SEC                 SECTION.
       *
            MOVE    M95-SRYKA           TO  SPA-M95GMN-SRYKA
-      *H29.9
-      *    数値変換
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    M95-SRYKA           TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN     NOT =   SPACE )   OR
-                  (SNUM-SYOKBN     NOT =   SPACE )
-               MOVE    "0101"              TO  SPA-ERRCD
-               MOVE    10                  TO  SPA-M95-CUR
-               GO      TO      4110-SRYKA-CHK-EXT
-           ELSE
-               MOVE    SNUM-OUTEDT(14:2)   TO  SPA-M95GMN-SRYKA
-           END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
-      *
-      *H29.10
-      *    １桁の診療科登録チェック
-           MOVE    ZERO            TO  SPA-M95-DELONL
-           IF     (M95-SRYKA       NOT =   SPA-M95GMN-SRYKA)
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   SPA-M95GMN-MAX )
-                               OR (FLG-CHK     =   1          )
-                   IF      M95-SRYKA       =   SPA-M95GMN-TSRYKA
-                                                          (IDX)
-                       MOVE    SPA-M95GMN-TSRYKAMEI (IDX)
-                                               TO  WRK-SRYKAMEI
-                       MOVE    IDX             TO  IDX-S
-                       MOVE    1               TO  FLG-CHK
-                       MOVE    1               TO  SPA-M95-DELONL
-                       MOVE    M95-SRYKA       TO  SPA-M95GMN-SRYKA
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-M95GMN-MAX )
-                          OR  (FLG-CHK =   1    )
+                   UNTIL       IDX     >   SPA-M95GMN-MAX
                IF      SPA-M95GMN-SRYKA    =   SPA-M95GMN-TSRYKA
                                                           (IDX)
-                   MOVE    SPA-M95GMN-TSRYKAMEI (IDX)
-                                           TO  WRK-SRYKAMEI
                    MOVE    IDX             TO  IDX-S
                    MOVE    1               TO  FLG-CHK
                    MOVE    SPA-M95GMN-MAX  TO  IDX
                END-IF
            END-PERFORM
-      *
-           PERFORM VARYING     IDX     FROM    1       BY  1
-                   UNTIL      (IDX     >   SPA-SRYKA-MAX )
-                          OR  (FLG-CHK =   1    )
-               IF      SPA-NAI-SRYKA (IDX) =   SPA-M95GMN-SRYKA
-                   MOVE    SPA-NAI-SRYKAMEI (IDX)
-                                           TO  WRK-SRYKAMEI
-                   MOVE    1               TO  FLG-CHK
-                   MOVE    IDX             TO  IDX-S
-               END-IF
-           END-PERFORM
-      *
       *
            IF      SPA-M95-SYORI       =   2
                IF      SPA-M95GMN-SRYKA    NOT =   SPA-MAE-SRYKA
@@ -943,7 +872,7 @@
                END-IF
            ELSE
       *
-           IF      FLG-CHK         =   ZERO
+           IF      FLG-CHK             =   ZERO
                MOVE    "0101"          TO  SPA-ERRCD
                MOVE    10              TO  SPA-M95-CUR
                MOVE    SPACE           TO  SPA-MAE-SRYKA
@@ -956,8 +885,8 @@
                    CONTINUE
                ELSE
                    MOVE    SPA-M95GMN-SRYKA    TO  SPA-MAE-SRYKA
-      ************ MOVE    SPA-M95GMN-TSRYKAMEI (IDX-S)
-                   MOVE    WRK-SRYKAMEI        TO  SPA-M95GMN-SRYKAMEI
+                   MOVE    SPA-M95GMN-TSRYKAMEI (IDX-S)
+                                               TO  SPA-M95GMN-SRYKAMEI
       *            担当医一覧表示
                    MOVE    2                   TO  SPA-M95-SYORI
                    PERFORM 42001-SYSLIST-INIT-SEC
@@ -976,10 +905,6 @@
                    MOVE    ORCSDR-IN-DRCD-G    TO  SPA-M95GMN-DRCD-G 
       *
                    MOVE    11                  TO  SPA-M95-CUR
-      *H29.10
-                   IF      SPA-M95-DELONL      =   1
-                       MOVE    21                  TO  SPA-M95-CUR
-                   END-IF
                END-IF
            END-IF
       *
@@ -1045,14 +970,6 @@
       *     診療科入力チェック処理
       *****************************************************************
        4120-RENNUM-CHK-SEC                 SECTION.
-      *
-      *H29.10
-           IF      SPA-M95-DELONL      =   1
-               MOVE    21                  TO  SPA-M95-CUR
-               MOVE    "0107"              TO  SPA-ERRCD
-               MOVE    SPACE               TO  SPA-M95GMN-RENNUM
-               GO      TO      4120-RENNUM-CHK-EXT
-           END-IF
       *
            MOVE    M95-RENNUM          TO  SPA-M95GMN-RENNUM
            MOVE    ZERO                TO  FLG-CHK
@@ -1584,7 +1501,7 @@
            END-PERFORM
            IF     (FLG-HEN             =   ZERO  )
               AND (WRK-SRYKA       NOT =   SPACE )
-              AND (IDX-H               <   COM-TANMAX )
+              AND (IDX-H               >=  COM-TANMAX )
       *        診療科なし
                ADD     1               TO  IDX-H
                MOVE    WRK-SRYKA       TO  SPA-M95GMN-TSRYKA  (IDX-H)
@@ -1614,7 +1531,7 @@
            END-PERFORM
       *
            IF     (FLG-HEN             =   ZERO )
-             AND  (IDX-H               <   COM-TANMAX )
+             AND  (IDX-H               >=  COM-TANMAX )
       *        診療科なし
                ADD     1               TO  IDX-H
                MOVE    WRK-SRYKA       TO  SPA-M95GMN-TSRYKA  (IDX-H)
@@ -1883,7 +1800,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SPACE               TO  SPA-MIDCD
                    PERFORM 4020-PAGE2-TOROKU-SEC
                END-IF
-      *
            END-IF
       *
            .
@@ -1965,10 +1881,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        4020-PAGE2-TOROKU-SEC            SECTION.
       *
-           IF      SPA-M95-SYORI       =   2
-      *H29.9   ドクター登録タブのみ登録
-               PERFORM 4021-SYS1011-UPDATE-SEC
-           END-IF
+           PERFORM 4021-SYS1011-UPDATE-SEC
       *
       *    担当医一覧表示
            IF      SPA-ERRCD           =   SPACE
@@ -2213,9 +2126,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                            TO  M95-TDRCDMEI (IDX)
                MOVE    "F"                 TO  M95-SYSLIST-SELECT(IDX)
                IF      SPA-M95-SYORI       =   2
-                   IF     (SPA-M95GMN-TRENNUM (IDX)
-                                           =   SPA-M95GMN-RENNUM )
-                      AND (SPA-M95GMN-RENNUM   NOT =   SPACE     )
+                   IF      SPA-M95GMN-TRENNUM (IDX)
+                                           =   SPA-M95GMN-RENNUM
                    MOVE    "T"             TO  M95-SYSLIST-SELECT(IDX)
                    MOVE    IDX             TO  M95-SYSLIST-ROW
                    MOVE    2               TO  M95-SYSLIST-ROWATTR
@@ -2287,8 +2199,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DRCD"      TO  MCP-WIDGET
                WHEN    20
                    MOVE  "B10"       TO  MCP-WIDGET
-               WHEN    21
-                   MOVE  "B04"       TO  MCP-WIDGET
       *        他院切替
                WHEN    31
                    MOVE  "TAINNUM"   TO  MCP-WIDGET
@@ -2324,18 +2234,11 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                WHEN    "0106"
                    MOVE    "診療科は変更できません。"
                                                TO  SPA-ERRMSG
-               WHEN    "0107"
-                   STRING  "診療科が２桁ではありません。"
-                           "削除して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
                WHEN    "0109"
                    STRING  "２０件以上になります。"
                            "これ以上登録できません。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
-                   END-STRING
                WHEN    "0110"
                    MOVE    "本院・分院機能が有効な場合に設定可能です。"
                                                TO  SPA-ERRMSG
@@ -2374,7 +2277,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        520-MIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  MID1
-           INITIALIZE                      MID1
            EVALUATE    SPA-MIDCD
                WHEN    "0102"
                    STRING  "表示されているすべての担当医を削除します。"
@@ -2427,7 +2329,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        520-MIDSET2-SEC             SECTION.
       *
            MOVE    SPACE               TO  MID2
-           INITIALIZE                      MID2
            EVALUATE    SPA-MIDCD
                WHEN    "0106"
                    MOVE    SPA-M95GMN-TAINNUM  TO  WRK-NUM-1-X
@@ -2438,7 +2339,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                            "設定されていません"
                                                DELIMITED   BY  SIZE
                                                INTO  MID2-ID1MSG
-                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-MIDCD
                                        TO  MID2-ID1MSG
