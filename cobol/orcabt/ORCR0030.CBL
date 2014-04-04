@@ -1977,6 +1977,72 @@
       *    特医総管（機能強化した在支診等）（病床なし）（処方せんなし）
            03  CONS-ZAIIKAN16-COMMENT PIC X(09) VALUE  "114019410".
       *
+      *    在医総管（機能強化在支診等）（病床有・処方せん有・同一建物以外）
+           03  CONS-ZAIIKAN17-COMMENT PIC X(09) VALUE  "114023110".
+      *    在医総管（機能強化在支診等）（病床有・処方せん有・同一建物居住）
+           03  CONS-ZAIIKAN18-COMMENT PIC X(09) VALUE  "114023210".
+      *    在医総管（機能強化在支診等）（病床有・処方せん無・同一建物以外）
+           03  CONS-ZAIIKAN19-COMMENT PIC X(09) VALUE  "114023310".
+      *    在医総管（機能強化在支診等）（病床有・処方せん無・同一建物居住）
+           03  CONS-ZAIIKAN20-COMMENT PIC X(09) VALUE  "114023410".
+      *    在医総管（機能強化在支診等）（病床無・処方せん有・同一建物以外）
+           03  CONS-ZAIIKAN21-COMMENT PIC X(09) VALUE  "114023510".
+      *    在医総管（機能強化在支診等）（病床無・処方せん有・同一建物居住）
+           03  CONS-ZAIIKAN22-COMMENT PIC X(09) VALUE  "114023610".
+      *    在医総管（機能強化在支診等）（病床無・処方せん無・同一建物以外）
+           03  CONS-ZAIIKAN23-COMMENT PIC X(09) VALUE  "114023710".
+      *    在医総管（機能強化在支診等）（病床無・処方せん無・同一建物居住）
+           03  CONS-ZAIIKAN24-COMMENT PIC X(09) VALUE  "114023810".
+      *    在医総管（在支診等）（処方せんあり・同一建物居住者以外）
+           03  CONS-ZAIIKAN25-COMMENT PIC X(09) VALUE  "114023910".
+      *    在医総管（在支診等）（処方せんあり・同一建物居住者）
+           03  CONS-ZAIIKAN26-COMMENT PIC X(09) VALUE  "114024010".
+      *    在医総管（在支診等）（処方せんなし・同一建物居住者以外）
+           03  CONS-ZAIIKAN27-COMMENT PIC X(09) VALUE  "114024110".
+      *    在医総管（在支診等）（処方せんなし・同一建物居住者）
+           03  CONS-ZAIIKAN28-COMMENT PIC X(09) VALUE  "114024210".
+      *    在医総管（在支診等以外）（処方せんあり・同一建物居住者以外）
+           03  CONS-ZAIIKAN29-COMMENT PIC X(09) VALUE  "114024310".
+      *    在医総管（在支診等以外）（処方せんあり・同一建物居住者）
+           03  CONS-ZAIIKAN30-COMMENT PIC X(09) VALUE  "114024410".
+      *    在医総管（在支診等以外）（処方せんなし・同一建物居住者以外）
+           03  CONS-ZAIIKAN31-COMMENT PIC X(09) VALUE  "114024510".
+      *    在医総管（在支診等以外）（処方せんなし・同一建物居住者）
+           03  CONS-ZAIIKAN32-COMMENT PIC X(09) VALUE  "114024610".
+      *
+      *    特医総管（機能強化在支診等）（病床有・処方せん有・同一建物以外）
+           03  CONS-ZAIIKAN33-COMMENT PIC X(09) VALUE  "114024910".
+      *    特医総管（機能強化在支診等）（病床有・処方せん有・同一建物居住）
+           03  CONS-ZAIIKAN34-COMMENT PIC X(09) VALUE  "114025010".
+      *    特医総管（機能強化在支診等）（病床有・処方せん無・同一建物以外）
+           03  CONS-ZAIIKAN35-COMMENT PIC X(09) VALUE  "114025110".
+      *    特医総管（機能強化在支診等）（病床有・処方せん無・同一建物居住）
+           03  CONS-ZAIIKAN36-COMMENT PIC X(09) VALUE  "114025210".
+      *    特医総管（機能強化在支診等）（病床無・処方せん有・同一建物以外）
+           03  CONS-ZAIIKAN37-COMMENT PIC X(09) VALUE  "114025310".
+      *    特医総管（機能強化在支診等）（病床無・処方せん有・同一建物居住）
+           03  CONS-ZAIIKAN38-COMMENT PIC X(09) VALUE  "114025410".
+      *    特医総管（機能強化在支診等）（病床無・処方せん無・同一建物以外）
+           03  CONS-ZAIIKAN39-COMMENT PIC X(09) VALUE  "114025510".
+      *    特医総管（機能強化在支診等）（病床無・処方せん無・同一建物居住）
+           03  CONS-ZAIIKAN40-COMMENT PIC X(09) VALUE  "114025610".
+      *    特医総管（在支診等）（処方せんあり・同一建物居住者以外）
+           03  CONS-ZAIIKAN41-COMMENT PIC X(09) VALUE  "114025710".
+      *    特医総管（在支診等）（処方せんあり・同一建物居住者）
+           03  CONS-ZAIIKAN42-COMMENT PIC X(09) VALUE  "114025810".
+      *    特医総管（在支診等）（処方せんなし・同一建物居住者以外）
+           03  CONS-ZAIIKAN43-COMMENT PIC X(09) VALUE  "114025910".
+      *    特医総管（在支診等）（処方せんなし・同一建物居住者）
+           03  CONS-ZAIIKAN44-COMMENT PIC X(09) VALUE  "114026010".
+      *    特医総管（在支診等以外）（処方せんあり・同一建物居住者以外）
+           03  CONS-ZAIIKAN45-COMMENT PIC X(09) VALUE  "114026110".
+      *    特医総管（在支診等以外）（処方せんあり・同一建物居住者）
+           03  CONS-ZAIIKAN46-COMMENT PIC X(09) VALUE  "114026210".
+      *    特医総管（在支診等以外）（処方せんなし・同一建物居住者以外）
+           03  CONS-ZAIIKAN47-COMMENT PIC X(09) VALUE  "114026310".
+      *    特医総管（在支診等以外）（処方せんなし・同一建物居住者）
+           03  CONS-ZAIIKAN48-COMMENT PIC X(09) VALUE  "114026410".
+      *
       *    小児特定疾患カウンセリング料（１回目）
            03  CONS-SYOUNI1-COMMENT  PIC X(09)  VALUE  "113000810".
       *    小児特定疾患カウンセリング料（２回目）
@@ -10666,6 +10732,38 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                       OR    CONS-ZAIIKAN14-COMMENT
                                       OR    CONS-ZAIIKAN15-COMMENT
                                       OR    CONS-ZAIIKAN16-COMMENT
+                                      OR    CONS-ZAIIKAN17-COMMENT
+                                      OR    CONS-ZAIIKAN18-COMMENT
+                                      OR    CONS-ZAIIKAN19-COMMENT
+                                      OR    CONS-ZAIIKAN20-COMMENT
+                                      OR    CONS-ZAIIKAN21-COMMENT
+                                      OR    CONS-ZAIIKAN22-COMMENT
+                                      OR    CONS-ZAIIKAN23-COMMENT
+                                      OR    CONS-ZAIIKAN24-COMMENT
+                                      OR    CONS-ZAIIKAN25-COMMENT
+                                      OR    CONS-ZAIIKAN26-COMMENT
+                                      OR    CONS-ZAIIKAN27-COMMENT
+                                      OR    CONS-ZAIIKAN28-COMMENT
+                                      OR    CONS-ZAIIKAN29-COMMENT
+                                      OR    CONS-ZAIIKAN30-COMMENT
+                                      OR    CONS-ZAIIKAN31-COMMENT
+                                      OR    CONS-ZAIIKAN32-COMMENT
+                                      OR    CONS-ZAIIKAN33-COMMENT
+                                      OR    CONS-ZAIIKAN34-COMMENT
+                                      OR    CONS-ZAIIKAN35-COMMENT
+                                      OR    CONS-ZAIIKAN36-COMMENT
+                                      OR    CONS-ZAIIKAN37-COMMENT
+                                      OR    CONS-ZAIIKAN38-COMMENT
+                                      OR    CONS-ZAIIKAN39-COMMENT
+                                      OR    CONS-ZAIIKAN40-COMMENT
+                                      OR    CONS-ZAIIKAN41-COMMENT
+                                      OR    CONS-ZAIIKAN42-COMMENT
+                                      OR    CONS-ZAIIKAN43-COMMENT
+                                      OR    CONS-ZAIIKAN44-COMMENT
+                                      OR    CONS-ZAIIKAN45-COMMENT
+                                      OR    CONS-ZAIIKAN46-COMMENT
+                                      OR    CONS-ZAIIKAN47-COMMENT
+                                      OR    CONS-ZAIIKAN48-COMMENT
                                       OR    CONS-ZAIHOU-COMMENT
                                       OR    CONS-ZAIHOU3-COMMENT
                                       OR    CONS-ZAIHOU4-COMMENT
