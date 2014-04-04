@@ -1357,7 +1357,8 @@
            IF     (SPA-COM-INPUTCD(IDX)    =   "099800101"
                                            OR  "099800102"
       *        在総診算定終了
-                                           OR  "099140001" )
+                                           OR  "099140001"
+                                           OR  "099140004" )
                MOVE    1               TO  FLG-HASSYO
            ELSE
                IF      FLG-HASSYO          =   1
@@ -1939,6 +1940,8 @@
                            MOVE    1               TO  FLG-ZAI
       *                在総診終了
                        WHEN    "099140001"
+      *                在宅患者共同開始日
+                       WHEN    "099140004"
                            MOVE    "14"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "140"           TO  SPA-COM-SRYSYUKBN
@@ -2084,6 +2087,7 @@
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
                        ELSE
+      *                    コメントとする
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
       *!                   MOVE    "990"           TO  SPA-COM-SRYSYUKBN

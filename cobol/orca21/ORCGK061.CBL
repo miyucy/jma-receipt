@@ -246,12 +246,15 @@
       *    Àº¿À²Ê¥±¥¢³«»ÏÆü
            03  FILLER          PIC X(09)   VALUE  "099830101".
            03  FILLER          PIC X(09)   VALUE  SPACE.
+      *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ³«»ÏÆü
+           03  FILLER          PIC X(09)   VALUE  "099140004".
+           03  FILLER          PIC X(09)   VALUE  SPACE.
       *
        01  TBL-RRK-SRYCD-GR    REDEFINES   TBL-RRK-SRYCD-G.
-           03  TBL-RRK-SRYCD-GT        OCCURS    10.
+           03  TBL-RRK-SRYCD-GT        OCCURS    11.
                05  TBL-RRK-SRYCD           PIC X(09).
                05  TBL-END-SRYCD           PIC X(09).
-       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   10.
+       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   11.
       *
       *
        01  WRK-MIDAIS-HEN.
@@ -1872,6 +1875,8 @@
                                        OR  "111003610"
       *                ¾Ò²ð¾õ¤Ê¤·ÄÉ²Ã
                                        OR  "111012510"
+      *                ÂÅ·ëÎ¨£µ³ä°Ê²¼
+                                       OR  "111012710"
                                                        )
                MOVE    "2"                 TO  SPA-K061-KBN2
            END-IF
