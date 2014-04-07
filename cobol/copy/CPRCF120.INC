@@ -35,6 +35,7 @@
       *  04.05.03    NACL-門脇    12/04/10  改正対応項目追加
       *
       *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
+      *  04.07.02    NACL-門脇    14/04/07  改正対応項目追加
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -207,6 +208,18 @@
       *
       *在宅持続陽圧呼吸療法指導管理料
            03  RECE120-FLG-YOUATU-COMMENT  PIC  X(01).
+      *
+      *心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
+           03  RECE120-FLG-SINPESUR-COMMENT
+                                           PIC  X(01).
+      *がん患者指導管理料２・３
+           03  RECE120-FLG-GANSIDO-COMMENT PIC  X(01).
+      *在宅患者共同診療料
+           03  RECE120-FLG-ZAIKYO-COMMENT  PIC  X(01).
+      *在宅患者訪問リハビリテーション指導管理料
+           03  RECE120-FLG-ZAIRIHA-COMMENT PIC  X(01).
+      *磁気による膀胱等刺激法
+           03  RECE120-FLG-BOKOHO-COMMENT  PIC  X(01).
       *
       *日数回数テーブル
            03  RECE120-DAY-AREA.

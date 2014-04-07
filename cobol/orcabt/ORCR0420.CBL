@@ -1261,6 +1261,31 @@
       *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ
            03  CONS-YOUATU-COMMENT   PIC X(09)  VALUE  "114009710".
       *
+      *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ¡Ê±ý¿Ç¡Ë
+           03  CONS-ZAIKYO1-COMMENT  PIC X(09)  VALUE  "114027610".
+      *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ¡ÊË¬Ìä¿ÇÎÅ¡Ë¡ÊÆ±°ì·úÊªµï½»¼Ô°Ê³°¡Ë
+           03  CONS-ZAIKYO2-COMMENT  PIC X(09)  VALUE  "114027710".
+      *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ¡ÊË¬Ìä¿ÇÎÅ¡Ë¡ÊÆ±°ì·úÊªµï½»¼Ô¡¦ÆÃÄê»ÜÀßÅù¡Ë
+           03  CONS-ZAIKYO3-COMMENT  PIC X(09)  VALUE  "114027810".
+      *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ¡ÊË¬Ìä¿ÇÎÅ¡Ë¡ÊÆ±°ì·úÊªµï½»¼Ô¡¦ÆÃÄê»ÜÀßÅù°Ê³°¡Ë
+           03  CONS-ZAIKYO4-COMMENT  PIC X(09)  VALUE  "114027910".
+      *
+      *    ºßÂð´µ¼ÔË¬Ìä¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó»ØÆ³´ÉÍýÎÁ¡ÊÆ±°ì·úÊª½»µï¼Ô°Ê³°¡Ë
+           03  CONS-ZAIRIHA1-COMMENT PIC X(09)  VALUE  "114006410".
+      *    ºßÂð´µ¼ÔË¬Ìä¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó»ØÆ³´ÉÍýÎÁ¡ÊÆ±°ì·úÊª½»µï¼Ô¡Ë
+           03  CONS-ZAIRIHA2-COMMENT PIC X(09)  VALUE  "114015010".
+      *
+      *    ¿´Â¡¥Ú¡¼¥¹¥á¡¼¥«¡¼»ØÆ³´ÉÍýÎÁ¡Ê¥í¡¦¿¢¹þ·¿½üºÙÆ°´ï°Ü¹Ô´ü²Ã»»´Þ¤à¡Ë
+           03  CONS-SINPESUR-COMMENT PIC X(09)  VALUE  "113015130".
+      *
+      *    ¤¬¤ó´µ¼Ô»ØÆ³´ÉÍýÎÁ¡Ê°å»Õ¡¦´Ç¸î»Õ¤¬¿´ÍýÅªÉÔ°Â·Ú¸º¤Î¤¿¤áÌÌÀÜ¡Ë
+           03  CONS-GANSIDO1-COMMENT PIC X(09)  VALUE  "113015310".
+      *    ¤¬¤ó´µ¼Ô»ØÆ³´ÉÍýÎÁ¡Ê°å»ÕÅù¤¬¹£°­À­¼ðáçºÞ¤ÎÉ¬Í×À­Åù¤òÊ¸½ñÀâÌÀ¡Ë
+           03  CONS-GANSIDO2-COMMENT PIC X(09)  VALUE  "113015410".
+      *
+      *    ¼§µ¤¤Ë¤è¤ëç¯æùÅù»É·ãË¡
+           03  CONS-BOKOHO-COMMENT   PIC X(09)  VALUE  "140055110".
+      *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
@@ -2223,6 +2248,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
              IF       SRY-SRYCD(IDX2)(1:5)  =
                       "09960" OR "09970" OR "09980"
+                  MOVE    1     TO    FLG-HENSYU-NG
+             END-IF
+             IF       SRY-SRYCD(IDX2)  =  "099140004"
                   MOVE    1     TO    FLG-HENSYU-NG
              END-IF
       *
@@ -3720,6 +3748,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  END-IF
                 END-IF
               END-IF
+      *       ¼§µ¤¤Ë¤è¤ëç¯æùÅù»É·ãË¡
+              IF   RECE41-SRYYM    >=     "201404"
+                IF   SRY-SRYCD(IDX2) =  CONS-BOKOHO-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-BOKOHO-COMMENT
+                END-IF
+              END-IF
            END-IF
       *
            IF    ((RECE41-HKNKBN    NOT  =  "4" AND "6" ) AND
@@ -4059,6 +4093,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE   "1"    TO    RECE44-FLG-GAIRIHA-COMMENT
                 END-IF
               END-IF
+      *       ¿´Â¡¥Ú¡¼¥¹¥á¡¼¥«¡¼»ØÆ³´ÉÍýÎÁ¡Ê¥í¡¦¿¢¹þ·¿½üºÙÆ°´ï°Ü¹Ô´ü²Ã»»´Þ¤à¡Ë
+      *       ¤¬¤ó´µ¼Ô»ØÆ³´ÉÍýÎÁ
+              IF   RECE41-SRYYM    >=     "201404"
+                IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-SINPESUR-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-GANSIDO1-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-GANSIDO-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-GANSIDO2-COMMENT
+                   MOVE   "2"   TO    RECE44-FLG-GANSIDO-COMMENT
+                END-IF
+              END-IF
            END-IF
       *
            IF      RECE44-SRYKBN      =     "14"
@@ -4209,6 +4256,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ***       IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
       ***          MOVE   "1"   TO    RECE44-FLG-YOUATU-COMMENT
       ***       END-IF
+              END-IF
+      *       ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ
+              IF   RECE41-SRYYM    >=     "201404"
+                IF   SRY-SRYCD(IDX2) =  CONS-ZAIKYO1-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-ZAIKYO-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-ZAIKYO2-COMMENT
+                   MOVE   "2"   TO    RECE44-FLG-ZAIKYO-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-ZAIKYO3-COMMENT
+                   MOVE   "3"   TO    RECE44-FLG-ZAIKYO-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-ZAIKYO4-COMMENT
+                   MOVE   "4"   TO    RECE44-FLG-ZAIKYO-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-ZAIRIHA1-COMMENT
+                                    OR  CONS-ZAIRIHA2-COMMENT
+                   MOVE   "1"   TO    RECE44-FLG-ZAIRIHA-COMMENT
+                END-IF
               END-IF
            END-IF
       *
