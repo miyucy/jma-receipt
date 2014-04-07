@@ -245,6 +245,8 @@
       *  04.07.11    NACL-門脇    14/03/01  労災マスタ追加対応
       *  04.07.12    NACL-門脇    14/03/04  平成２６年４月改正対応
       *  04.07.13    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *  04.07.14    NACL-門脇    14/04/07  平成２６年４月改正対応
+      *                                     （労災マスタに置き換え）
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -2001,6 +2003,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE  "101900110"  TO  WRK-CHUKSNSRYCD(IDX14)
            ADD     1          TO  IDX14
            MOVE  "101900120"  TO  WRK-CHUKSNSRYCD(IDX14)
+      *
+           ADD     1          TO  IDX14
+           MOVE  "101900130"  TO  WRK-CHUKSNSRYCD(IDX14)
+           ADD     1          TO  IDX14
+           MOVE  "101900140"  TO  WRK-CHUKSNSRYCD(IDX14)
       *
            .
        140-NYUINKASAN-JYOGAI-CYUSYUTU-EXT.
