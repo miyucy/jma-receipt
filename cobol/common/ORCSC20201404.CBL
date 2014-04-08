@@ -1323,10 +1323,6 @@
               OR  (SPA-CHKHKT-ARI2     =   1   )
       *        地域包括診療料算定　有
                MOVE    2                   TO  FLG-CHKCARKSN
-      *        初診料入力時以外とする
-               IF     (LNK-ORCSC-SYOSIN2   =   1 )
-                   MOVE    ZERO            TO  FLG-CHKCARKSN
-               END-IF
            END-IF
       *
       *    継続の時、算定分の編集
