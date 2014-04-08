@@ -1075,9 +1075,17 @@
       *                前期高齢者到達日で切り替え
                        PERFORM 50022-HKNINF-BYMD-SEC
                    ELSE
+      *H26.5
+      *                H26.5.1以降のS19.4.2生以降の高齢者負担割合
+                       IF      (PTINF-BIRTHDAY     >=  "19440402")
+                           PERFORM 50024-FTNKBN-201405-SEC
+                       ELSE
+      *
       *                ２割は３割へ
                        IF      WRK-HEN-FTNKBN      =   "2"
                            MOVE    "3"             TO  WRK-HEN-FTNKBN
+                       END-IF
+      *
                        END-IF
       *                開始日が７５歳以上の日はエラー
                        IF      (PTHKN-TEKSTYMD     <    "20080401" )
@@ -1115,6 +1123,26 @@
            MOVE    PTHKNINF-REC        TO  TBL-PTHKNINF-REC (IDX)
            .
        5002-ROUJIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    S19.4.2生以降の高齢者負担割合処理
+      *****************************************************************
+       50024-FTNKBN-201405-SEC        SECTION.
+      *
+           IF      (PTHKN-TEKSTYMD     >=   WRK-BYMD-70 )
+      *        １割は２割へ
+               IF      WRK-HEN-FTNKBN      =   "1"
+                   MOVE    "2"             TO  WRK-HEN-FTNKBN
+               END-IF
+           ELSE
+      *
+      *        ２割は３割へ
+               IF      WRK-HEN-FTNKBN      =   "2"
+                   MOVE    "3"             TO  WRK-HEN-FTNKBN
+               END-IF
+           END-IF
+           .
+       50024-FTNKBN-201405-EXT.
            EXIT.
       *****************************************************************
       *    Ｈ１８．１０からの切替え処理
