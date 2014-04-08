@@ -147,6 +147,9 @@
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *  04.07.03    NACL-門脇    13/09/04  自賠責（第三者行為）対応
       *  04.07.04    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *  04.07.05    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *                                     漢字モードの継続するスペース
+      *                                     の記録方法の変更
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -8723,7 +8726,32 @@
            MOVE    WRK-HEN-SEQNO         TO  RECE655-SEQNO
       *
            MOVE    RECE651-SRYCD(IDX)    TO  RECE655-SRYCD
+      *    後ろの全角空白を削除する
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "1"                 TO  KANACHK-SYORIKBN
+           MOVE    RECE651-NAME (IDX) TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF    ( KANACHK-RC          =   ZERO )
+           AND   ( KANACHK-MAX         >   ZERO )
+               MOVE    SPACE               TO  RECE651-NAME (IDX)
+               MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
+                                           TO  RECE651-NAME (IDX)
+           END-IF
            MOVE    RECE651-NAME(IDX)     TO  RECE655-NAME
+      *    後ろの全角空白を削除する
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "1"                 TO  KANACHK-SYORIKBN
+           MOVE    RECE651-INPUTCOMENT(IDX)
+                                       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF    ( KANACHK-RC          =   ZERO )
+           AND   ( KANACHK-MAX         >   ZERO )
+               MOVE    SPACE               TO  RECE651-INPUTCOMENT (IDX)
+               MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
+                                           TO  RECE651-INPUTCOMENT (IDX)
+           END-IF
            MOVE    RECE651-INPUTCOMENT(IDX)
                                          TO  RECE655-INPUTCOMENT
       *
