@@ -158,6 +158,8 @@
            03  FLG-MEISAKBN        PIC 9(01).
       *    ÃÏ°èÊñ³ç¥±¥¢¿ÇÎÅ²Ã»»
            03  FLG-CHKCARKSN       PIC 9(01).
+      *    ±ý¿ÇÎÁ¤¢¤ê
+           03  FLG-OUSIN           PIC 9(01).
       *
            03  FLG-DOUJITU-S       PIC 9(01).
            03  FLG-DOUJITU-T       PIC 9(01).
@@ -4971,6 +4973,7 @@
            MOVE    ZERO                TO  FLG-TAITAIIN
       *H25.4
            MOVE    ZERO                TO  FLG-SYOKAINASI
+           MOVE    ZERO                TO  FLG-OUSIN
       *
       *    ¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
@@ -5148,6 +5151,14 @@
                     MOVE    1              TO  FLG-FUKUSU
                END-IF
       *
+      *H26.4
+      *        ±ý¿ÇÎÁ¤¢¤ê
+               IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "C" ) AND
+                      (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "000" ) AND
+                      (WRK-COM-DATAKBN  (IDX-Z)    =   "1"   )
+                    MOVE    1              TO  FLG-OUSIN
+               END-IF
+      *
            END-PERFORM
       *
       *    ¿Ç»¡ÎÁ°Ê³°¥Á¥§¥Ã¥¯
@@ -5254,6 +5265,15 @@
                           INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
                           INITIALIZE              WRK-COM-TBLREC(IDX-Z)
                       END-IF
+                  END-IF
+               END-IF
+      *!!!!
+      *H26.4
+      *        ±ý¿ÇÎÁ»»Äê»þ¤Ï¡¢ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»ºï½ü
+               IF      WRK-COM-INPUTCD (IDX-Z) =   TBL-CHKCARKSN
+                   IF      FLG-OUSIN           =   1
+                      INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
+                      INITIALIZE              WRK-COM-TBLREC(IDX-Z)
                   END-IF
                END-IF
       *!!!!
