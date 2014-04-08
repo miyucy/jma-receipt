@@ -3440,6 +3440,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "0012"              TO  SPA-ERRCD
                        MOVE    9                   TO  SPA-GMN2D-CUR
                    END-IF
+               WHEN    OTHER
+                   MOVE    "0052"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN2D-CUR
            END-EVALUATE
       *
            .
@@ -4029,6 +4032,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0051"
                    STRING  "選択番号エラーです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0052"
+                   STRING  "労災・自賠責保険区分の設定がありません。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
