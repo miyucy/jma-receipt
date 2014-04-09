@@ -249,12 +249,15 @@
       *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ³«»ÏÆü
            03  FILLER          PIC X(09)   VALUE  "099140004".
            03  FILLER          PIC X(09)   VALUE  SPACE.
+      *    ÄÌ±¡¡¦ºßÂðÀº¿ÀÎÅË¡³«»ÏÆü
+           03  FILLER          PIC X(09)   VALUE  "099830102".
+           03  FILLER          PIC X(09)   VALUE  SPACE.
       *
        01  TBL-RRK-SRYCD-GR    REDEFINES   TBL-RRK-SRYCD-G.
-           03  TBL-RRK-SRYCD-GT        OCCURS    11.
+           03  TBL-RRK-SRYCD-GT        OCCURS    12.
                05  TBL-RRK-SRYCD           PIC X(09).
                05  TBL-END-SRYCD           PIC X(09).
-       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   11.
+       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   12.
       *
       *
        01  WRK-MIDAIS-HEN.

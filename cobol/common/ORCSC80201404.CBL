@@ -405,6 +405,10 @@
                05  WRK-DOUSYOSIN-OCC       OCCURS   10.
                    07  WRK-DOU-SRYKA       PIC X(02).
                    07  WRK-DOU-SRYYMD      PIC X(08).
+      *H26.4
+      *    通院・在宅精神開始日
+           03  WRK-TUINSTR-INT             PIC X(01).
+           03  WRK-TUINSTR-YMD             PIC X(08).
       *    精神科ケア早期加算開始日
            03  WRK-KEASOKI-INT             PIC X(01).
            03  WRK-KEASOKI-YMD             PIC X(08).
@@ -759,10 +763,13 @@
       *    労災毎とする
            IF     (SPA-HKNKBN          =   1
                                        OR  2   )
-      *        逓減対象外は１件
-              AND (WRK-SRYCD       NOT =   "099800401" )
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
            ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *    逓減対象外、通院精神療法開始日は１件
+           IF     (WRK-SRYCD           =   "099800401" )
+               OR (WRK-SRYCD           =   "099830102" )
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
@@ -968,15 +975,17 @@
       *****************************************************************
        10002-DOUJIT-YMD-SEC                SECTION.
       *
+      *    開始日検索
+           MOVE    "099830102"         TO  WRK-SRYCD
+           PERFORM 10001-KYUSEI-YMD-SEC
+           IF      WRK-YMD         NOT =   SPACE
+               MOVE    WRK-YMD             TO  WRK-TUINSTR-YMD
+               MOVE    "1"                 TO  WRK-TUINSTR-INT
+               GO      TO      10002-DOUJIT-YMD-EXT
+           END-IF
+      *
       *    同日初診の診療科設定
            MOVE    SPA-SRYYMD          TO  WRK-SRYYMD-1
-      **   IF      WRK-SRYMM           <=  6
-      **       COMPUTE WRK-SRYMM       =  (WRK-SRYMM   +   12 )
-      *                                                -   6
-      *        COMPUTE WRK-SRYYY       =   WRK-SRYYY   -   1
-      *    ELSE
-      *        COMPUTE WRK-SRYMM       =   WRK-SRYMM   -   6
-      ***  END-IF
       *H25.3
       *    診療日付から前２年間で判定する
            MOVE    SPA-SRYYMD          TO  WRK-SRYYMD-1
@@ -1462,6 +1471,12 @@
            IF     (LNK-ORCSC-PG        =   "K02"  )  AND
                   (WRK-COM-INPUTCD (IDX-Z) =   "099830101" )
                MOVE    "2"                 TO  WRK-KEASOKI-INT
+           END-IF
+      *
+      *    通院・在宅精神開始日
+           IF     (LNK-ORCSC-PG        =   "K02"  )  AND
+                  (WRK-COM-INPUTCD (IDX-Z) =   "099830102" )
+               MOVE    "2"                 TO  WRK-TUINSTR-INT
            END-IF
       *
            .
@@ -2271,34 +2286,47 @@
                GO      TO      1001132-GAIRI-SEISIN-EXT
            END-IF
       *
-           IF      LNK-ORCSC-SYORIFLG      =   1
+           EVALUATE    WRK-TUINSTR-INT
+               WHEN    "1"
+      *            通院・在宅精神開始日あり
+                   MOVE    WRK-TUINSTR-YMD     TO  WRK-SYOYMD
+               WHEN    "2"
+      *            今回入力
+                   MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
+               WHEN    OTHER
+      *            初診算定日から設定
+                   PERFORM 10011321-SYOSIN-SET-SEC
+           END-EVALUATE
+      *
+      *以下 10011321-SYOSIN-SET-SEC
+      ***  IF      LNK-ORCSC-SYORIFLG      =   1
       *        訂正時点の初診算定日
-               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
-           ELSE
-               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
-           END-IF
+      *        MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+      *    ELSE
+      *        MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+      *    END-IF
       *    同じ科で同日初診がある時、同日初診
-           IF      WRK-COM-SRYKA (IDX-Z)   =   SPACE
-               MOVE    SPA-SRYKA           TO  WRK-SRYKA
-           ELSE
-               MOVE    WRK-COM-SRYKA (IDX-Z)   TO  WRK-SRYKA
-           END-IF
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )   OR
-                              (WRK-DOU-SRYKA (IDX) =   SPACE)
-               IF      WRK-DOU-SRYKA (IDX) =   WRK-SRYKA
-                   IF      WRK-DOU-SRYYMD(IDX) >   WRK-SYOYMD
-                       MOVE    WRK-DOU-SRYYMD(IDX)
-                                               TO  WRK-SYOYMD
-                   END-IF
-                   MOVE    10          TO  IDX
-               END-IF
-           END-PERFORM
+      *    IF      WRK-COM-SRYKA (IDX-Z)   =   SPACE
+      *        MOVE    SPA-SRYKA           TO  WRK-SRYKA
+      *    ELSE
+      *        MOVE    WRK-COM-SRYKA (IDX-Z)   TO  WRK-SRYKA
+      *    END-IF
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL      (IDX     >   10  )   OR
+      *                       (WRK-DOU-SRYKA (IDX) =   SPACE)
+      *        IF      WRK-DOU-SRYKA (IDX) =   WRK-SRYKA
+      *            IF      WRK-DOU-SRYYMD(IDX) >   WRK-SYOYMD
+      *                MOVE    WRK-DOU-SRYYMD(IDX)
+      *                                        TO  WRK-SYOYMD
+      *            END-IF
+      *            MOVE    10          TO  IDX
+      *        END-IF
+      *    END-PERFORM
       *    初診算定日から６月以内
-           IF     (WRK-SYOYMD          =   SPACE  )  OR
-                  (LNK-ORCSC-SYOSIN2   =   1      )
-               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
-           END-IF
+      *    IF     (WRK-SYOYMD          =   SPACE  )  OR
+      *           (LNK-ORCSC-SYOSIN2   =   1      )
+      *        MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
+      *****END-IF
            MOVE    WRK-SYOYMD          TO  WRK-SYOYMD2
            MOVE    WRK-SYOYMD          TO  WRK-SYOYMD3
       *
@@ -2357,6 +2385,10 @@
                                MOVE    "0215"      TO  WRK-ERRCD
       *H24.4
                                MOVE    "K873"      TO  WRK-ERRCD
+      *H26.4
+                               IF      WRK-TUINSTR-INT NOT =   SPACE
+                                   MOVE    "K874"      TO  WRK-ERRCD
+                               END-IF
                                MOVE    "1"         TO  WRK-COM-CUR
                                                            (IDX-Z)
                            END-IF
@@ -2370,6 +2402,44 @@
       *
            .
        1001132-GAIRI-SEISIN-EXT.
+           EXIT.
+      *H26.4
+      *****************************************************************
+      *     初診算定日・同日初診算定日設定処理
+      *****************************************************************
+       10011321-SYOSIN-SET-SEC            SECTION.
+      *
+           IF      LNK-ORCSC-SYORIFLG      =   1
+      *        訂正時点の初診算定日
+               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+           END-IF
+      *    同じ科で同日初診がある時、同日初診
+           IF      WRK-COM-SRYKA (IDX-Z)   =   SPACE
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           ELSE
+               MOVE    WRK-COM-SRYKA (IDX-Z)   TO  WRK-SRYKA
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )   OR
+                              (WRK-DOU-SRYKA (IDX) =   SPACE)
+               IF      WRK-DOU-SRYKA (IDX) =   WRK-SRYKA
+                   IF      WRK-DOU-SRYYMD(IDX) >   WRK-SYOYMD
+                       MOVE    WRK-DOU-SRYYMD(IDX)
+                                               TO  WRK-SYOYMD
+                   END-IF
+                   MOVE    10          TO  IDX
+               END-IF
+           END-PERFORM
+      *    初診算定日から６月以内
+           IF     (WRK-SYOYMD          =   SPACE  )  OR
+                  (LNK-ORCSC-SYOSIN2   =   1      )
+               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
+           END-IF
+      *
+           .
+       10011321-SYOSIN-SET-EXT.
            EXIT.
       *H24.4
       *****************************************************************

@@ -2067,6 +2067,8 @@
                            MOVE    1               TO  FLG-ZAI
       *ver.4.7         精神科ケア開始
                        WHEN    "099830101"
+      *H26.4           通院・在宅精神療法開始
+                       WHEN    "099830102"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "830"           TO  SPA-COM-SRYSYUKBN
