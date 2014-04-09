@@ -34,12 +34,6 @@
       *
       *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
       *  04.07.02    NACL-門脇    14/04/07  改正対応項目追加
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.03    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
-      *  04.08.04    NACL-門脇    16/08/23  持参薬対応
       ************************************************************
       *01  RECE220-REC.
            03  RECE220-KEY.
@@ -110,12 +104,6 @@
            03  RECE220-ZAIKBN              PIC 9(03).
       *画像診断（２回目以降減算あり）
            03  RECE220-GAZOGEN             PIC X(01).
-      *再診加算（入院）の剤
-           03  RECE220-NYUSAIFLG           PIC X(01).
-      *１５円以下薬剤レセプト記載フラグ
-           03  RECE220-YKZKISAIFLG         PIC X(01).
-      *持参薬区分
-           03  RECE220-JISANYAKKBN         PIC X(01).
       *
       *リハビリ
            03  RECE220-RIHABIRI-COMMENT    PIC X(01).
@@ -133,17 +121,8 @@
            03  RECE220-SYOGAI-COMMENT      PIC X(01).
       *リハビリ（摂食）
            03  RECE220-SESSYOKU-COMMENT    PIC X(01).
-      *リハビリ（廃用症候群）
-           03  RECE220-HAIYO-COMMENT       PIC X(01).
       *介達牽引
            03  RECE220-KAITATU-COMMENT     PIC X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-           03  RECE220-SINDAI9-COMMENT     PIC X(01).
-      *リハビリ加算（呼吸器）
-           03  RECE220-KOKYUKI9-COMMENT    PIC X(01).
-      *リハビリ加算（廃用症候群）
-           03  RECE220-HAIYO9-COMMENT      PIC X(01).
       *
       *薬剤管理指導料
            03  RECE220-FLG-YAKUKAN-COMMENT PIC X(01).
@@ -216,7 +195,6 @@
       *在宅持続陽圧呼吸療法指導管理料
            03  RECE220-FLG-YOUATU-COMMENT  PIC  X(01).
       *
-      *心臓ペースメーカー指導管理料（着用型自動除細動器）
       *心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
            03  RECE220-FLG-SINPESUR-COMMENT  PIC  X(01).
       *がん患者指導管理料２・３
@@ -227,8 +205,6 @@
            03  RECE220-FLG-BOKOHO-COMMENT    PIC  X(01).
       *超重症児（者）入院診療加算・準超重症児（者）入院診療加算
            03  RECE220-FLG-CYOJKSN-COMMENT   PIC  X(01).
-      *排尿自立指導料
-           03  RECE220-FLG-HAIJRT-COMMENT    PIC  X(01).
       *
       *日数回数テーブル
            03  RECE220-DAY-AREA.
@@ -236,16 +212,3 @@
              04  RECE220-DAY-TBL           OCCURS  4.
                  05  RECE220-KAISUINF      OCCURS  31.
                      07  RECE220-KAISU     PIC 9(03).
-      *
-      *包括診療分退避点数
-           03  RECE220-HOKATU-TENSU-AREA.
-      *剤点数
-               05  RECE220-HOKATU-ZAITEN   PIC  9(08).
-      *手技点数１
-               05  RECE220-HOKATU-SYUTEN1  PIC  9(07).
-      *手技点数２
-               05  RECE220-HOKATU-SYUTEN2  PIC  9(07).
-      *薬剤点数
-               05  RECE220-HOKATU-YKZTEN   PIC  9(07).
-      *器材点数
-               05  RECE220-HOKATU-KIZAITEN PIC  9(07).
