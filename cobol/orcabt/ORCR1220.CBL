@@ -1857,7 +1857,7 @@
                      "09960" OR "09970" OR "09980"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
-            IF       SRY-SRYCD(IDX2)   =  "099140004"
+            IF       SRY-SRYCD(IDX2)   =  "099140004" OR "099830102"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
       *
