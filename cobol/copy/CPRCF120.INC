@@ -220,6 +220,8 @@
            03  RECE120-FLG-ZAIRIHA-COMMENT PIC  X(01).
       *磁気による膀胱等刺激法
            03  RECE120-FLG-BOKOHO-COMMENT  PIC  X(01).
+      *通院・在宅精神療法（２０歳未満）加算
+           03  RECE120-FLG-TUINZAI-COMMENT PIC  X(01).
       *
       *日数回数テーブル
            03  RECE120-DAY-AREA.

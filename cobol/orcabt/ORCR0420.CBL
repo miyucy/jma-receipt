@@ -1286,6 +1286,9 @@
       *    ¼§µ¤¤Ë¤è¤ëç¯æùÅù»É·ãË¡
            03  CONS-BOKOHO-COMMENT   PIC X(09)  VALUE  "140055110".
       *
+      *    ÄÌ±¡¡¦ºßÂðÀº¿ÀÎÅË¡¡Ê£²£°ºÐÌ¤Ëþ¡Ë²Ã»»
+           03  CONS-TUINZAI-COMMENT  PIC X(09)  VALUE  "180020570".
+      *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
@@ -4000,6 +4003,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 END-IF
                 IF   SRY-SRYCD(IDX2)  =     CONS-NINRYO2-COMMENT
                         MOVE   "2"    TO    RECE44-FLG-NINRYO-COMMENT
+                END-IF
+              END-IF
+      *       ÄÌ±¡¡¦ºßÂðÀº¿ÀÎÅË¡¡Ê£²£°ºÐÌ¤Ëþ¡Ë²Ã»»
+              IF   RECE41-SRYYM      >=    "201404"
+                IF   SRY-SRYCD(IDX2)  =     CONS-TUINZAI-COMMENT
+                        MOVE   "1"    TO    RECE44-FLG-TUINZAI-COMMENT
                 END-IF
               END-IF
            END-IF
