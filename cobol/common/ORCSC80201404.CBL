@@ -2476,9 +2476,10 @@
            END-IF
       *
       *    対象施設基準(3039)（児童・思春期精神科入院管理料）
-      *                (3146)（〃（栄養管理経過措置））追加
-           IF    ((SYS-1006-SSTKIJUN (039)  =   1  )  OR 
-                  (SYS-1006-SSTKIJUN (146)  =   1  )) AND
+      *H25.3　まで     (3146)（〃（栄養管理経過措置））追加
+      *****IF    ((SYS-1006-SSTKIJUN (039)  =   1  )  OR 
+      *********   (SYS-1006-SSTKIJUN (146)  =   1  )) AND
+           IF     (SYS-1006-SSTKIJUN (039)  =   1  )  AND
       *           １６歳未満
                   (LNK-ORCSC-NENREI-YY      <   16 )
                CONTINUE
