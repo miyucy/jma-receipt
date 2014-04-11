@@ -5637,10 +5637,10 @@
                       MOVE    ZERO                TO  WRK-SYOSUU
                    ELSE
                        PERFORM VARYING IDW2    FROM    WRK-SYOSUU  BY -1
-                               UNTIL   IDW2    <       2
+                               UNTIL   IDW2    <       1
                            IF      WRK-NUM-R-2 (IDW2:1)    NOT =   "0"
-                               MOVE   IDW2             TO  WRK-SYOSUU
-                               MOVE    2               TO  IDW2
+                               MOVE    IDW2            TO  WRK-SYOSUU
+                               MOVE    1               TO  IDW2
                            END-IF
                        END-PERFORM
                    END-IF
