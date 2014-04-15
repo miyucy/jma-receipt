@@ -2066,7 +2066,7 @@
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
       *H26.4
-      *                磁気による刺激療法開始日
+      *                磁気による刺激法開始日
                        WHEN    "099400001"
                            MOVE    "40"            TO  SPA-COM-SRYKBN
                                                                   (IDX)

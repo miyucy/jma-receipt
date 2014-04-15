@@ -252,7 +252,7 @@
       *    通院・在宅精神療法開始日
            03  FILLER          PIC X(09)   VALUE  "099830102".
            03  FILLER          PIC X(09)   VALUE  SPACE.
-      *    磁気による刺激療法開始日
+      *    磁気による刺激法開始日
            03  FILLER          PIC X(09)   VALUE  "099400001".
            03  FILLER          PIC X(09)   VALUE  SPACE.
       *

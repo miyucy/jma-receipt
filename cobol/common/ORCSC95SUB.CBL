@@ -173,21 +173,11 @@
            MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    SYS-1001-REC        TO  SYSKANRI-REC
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1001-REC
-               INITIALIZE                  SYS-1001-REC
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
+           PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
       *        請求書発行
                MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG-SYS
       *        診療費明細書発行
@@ -240,9 +230,6 @@
       *        消費税端数設定
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
       *
       *    職員情報より発行フラグ再設定
@@ -259,21 +246,11 @@
            MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1008-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
-           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+           MOVE    SYS-1008-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-INV-SEC
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1008-REC
-               INITIALIZE                  SYS-1008-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1008-REC
       *
       *        相互作用チェック期間
                MOVE    SYS-1008-INTERACT-KIKAN TO  SPA-INTERACT-KIKAN
@@ -505,9 +482,6 @@
       *        時間外緊急院内チェック
                MOVE    "1"                 TO  SPA-JGAIKEIKBN-FLG
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *    診察料自動発生なしは、時間外加算なし
            IF      SPA-INITAUTO-FLG    =   "0"
                MOVE    0                    TO  SPA-GAI-JIKANKBN
@@ -618,21 +592,11 @@
            MOVE    SPA-SRYYMD          TO  SYS-1007-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1007-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1007-HOSPNUM
-           MOVE    SYS-1007-REC        TO  MCPDATA-REC
+           MOVE    SYS-1007-REC        TO  SYSKANRI-REC
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1007-REC
-               INITIALIZE                  SYS-1007-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+           PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1007-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1007-REC
       *
                MOVE    SYS-1007-SANTEI (1:1)   TO  SPA-CHOKI-FLG
                MOVE    SYS-1007-SANTEI (2:1)   TO  SPA-YAKJYO-1
@@ -656,10 +620,6 @@
                    END-IF
                END-IF
            END-IF
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
       *    システム管理検索（診療行為一括入金管理情報）
            MOVE    SPACE               TO  SYS-1038-REC
@@ -945,26 +905,13 @@
            MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
-           MOVE    SYS-1030-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1030-REC
-               INITIALIZE                  SYS-1030-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+           MOVE    SYS-1030-REC        TO  SYSKANRI-REC
+      *
+           PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1030-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1030-REC
                MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-KOUHATUKA       =   SPACE
                MOVE    "0"                 TO  SPA-KOUHATUKA
@@ -1298,21 +1245,11 @@
            MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1008-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
-           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+           MOVE    SYS-1008-REC        TO  SYSKANRI-REC
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1008-REC
-               INITIALIZE                  SYS-1008-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+           PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1008-REC
       *
       *        外来管理加算チェック
                MOVE    SYS-1008-GAIKANRIKBN-CHK
@@ -1423,9 +1360,6 @@
       *        時間外緊急院内チェック
                MOVE    "1"                 TO  SPA-JGAIKEIKBN-FLG
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            .
        2001-SYSKANRI-SAISET-EXT.
@@ -1463,9 +1397,12 @@
                PERFORM 900-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    MCPDATA-REC         TO  SYSKANRI-REC
-               END-IF
+                ELSE
+                   MOVE    SPACE               TO  SYSKANRI-REC
+              END-IF
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
+               MOVE    SPACE               TO  SYSKANRI-REC
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

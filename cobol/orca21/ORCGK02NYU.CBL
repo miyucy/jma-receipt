@@ -586,7 +586,7 @@
       *    挿入行数
            03  WRK-INSCNT              PIC 9(02).
            03  WRK-GYO                 PIC 9(04).
-      *改頁行数
+      *    改頁行数
            03  WRK-PAGE-LINE           PIC 9(02).
       *!!!!!!!!!!!!!!!!!!
       *
@@ -729,7 +729,6 @@
       *入力文字数
        01  CONS-INPUT              PIC 9(04)   VALUE   54.
       *
-      *TEST
       *改頁行数
        01  PAGE-LINE               PIC 9(02)   VALUE   28.
       *
@@ -3219,7 +3218,7 @@
       *        同日再入院日へ
                WHEN    "CLICKED"       ALSO    "BNYU"
                    PERFORM 4125-NYUINRRK-NEXT-SEC
-      *!!!!!!!!!!!
+      *H26.4
       *        １行目へ
                WHEN    "CLICKED"       ALSO    "CTRLHOME"
                    PERFORM 4501-CTRHOME-SEC
@@ -4489,7 +4488,7 @@
            MOVE    ZERO                TO  SPA-GMN-IDX
            PERFORM VARYING     WRK-IDX2    FROM    1   BY  1
                    UNTIL      (WRK-IDX2        >   MAX-GMN   )
-      *???               OR   (SPA-GMN-IDX     >=  SPA-MAX-LINE)
+      *********          OR   (SPA-GMN-IDX     >=  SPA-MAX-LINE)
       *        ＳＰＡ内の行決定
                PERFORM 41011-GYOU-SET-SEC
                IF     (K02N-INPUTCD (WRK-IDX2)  NOT =
@@ -10441,7 +10440,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            スクロール背景色（１行毎）
                    IF      FLG-BGCOLORS        =   ZERO
       *                白色設定
-      **************   MOVE    "#FFFFFF"       TO
                        MOVE    CL-WHITE        TO
                                        K02N-SRYKBN-BGCOLOR  (IDX)
                                        K02N-INPUTCD-BGCOLOR (IDX)
@@ -11010,7 +11008,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       ****         MOVE    WRK-IDX2        TO  MCP-WIDGET(8:2)
                    MOVE    "PANDATABLE1"   TO  MCP-WIDGET
                    MOVE    4               TO  K02N-PANDATABLE1-TROWATTR
-      *TEST
+      *H26.4
       *            最終行は画面の最後へ
                    IF     (WRK-IDX2        >=  WRK-MAP-MAX  )
                        MOVE    1           TO  K02N-PANDATABLE1-TROWATTR
@@ -11024,7 +11022,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    ZERO            TO  FLG-F6
                        MOVE    ZERO            TO  FLG-F7
                    END-IF
-      *TEST
+      *
                    MOVE    2               TO  K02N-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02N-PANDATABLE1-TROW
       *
@@ -11061,12 +11059,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       ****         MOVE    WRK-IDX2        TO  MCP-WIDGET(7:2)
                    MOVE    "PANDATABLE1"   TO  MCP-WIDGET
                    MOVE    4               TO  K02N-PANDATABLE1-TROWATTR
-      *TEST
+      *H26.4
       *            最終行は画面の最後へ
                    IF     (WRK-IDX2        >=  WRK-MAP-MAX  )
                        MOVE    1           TO  K02N-PANDATABLE1-TROWATTR
                    END-IF
-      *TEST
+      *
                    MOVE    3               TO  K02N-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02N-PANDATABLE1-TROW
                WHEN    03

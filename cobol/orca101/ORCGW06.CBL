@@ -1404,6 +1404,17 @@
       *
            MOVE    W06-SELNUM          TO  SPA-GMN-SELNUM
       *
+      *H26.5
+           IF      SPA-GMN-SELNUM      =   ZERO
+      *        最終履歴が999999であれば、選択する
+               IF     (SPA-GMN-TBL-MAX     >   ZERO    )
+                 AND  (SPA-NAI-TEDYUKYMD (SPA-GMN-TBL-MAX)
+                                           =   "99999999" )
+                   MOVE    SPA-GMN-TBL-MAX     TO  SPA-GMN-SELNUM
+               END-IF
+           END-IF
+      *
+      *
            IF     (SPA-GMN-SELNUM      >=  1   )  AND
                   (SPA-GMN-SELNUM      <=  SPA-GMN-TBL-MAX)
                MOVE    SPA-GMN-SELNUM      TO  IDX
