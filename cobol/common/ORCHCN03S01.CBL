@@ -36,12 +36,12 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  IN01-FILE   ASSIGN  ASGN0001
+           SELECT  IN01-FILE   ASSIGN  WRK-ASSIGN
                                ORGANIZATION    IS  LINE SEQUENTIAL 
                                FILE    STATUS  IS  STS-IN01.
       *
       *    印刷用データ
-           SELECT  PRT-FILE    ASSIGN  ASGN0002
+           SELECT  PRT-FILE    ASSIGN  HC03PARA
                                ORGANIZATION    IS  SEQUENTIAL 
                                FILE    STATUS  IS  STS-PARA.
       *
@@ -64,13 +64,7 @@
        WORKING-STORAGE                 SECTION.
       *
            COPY    "CPCOMMONPRT.INC"   REPLACING   //HC01PARA//
-                                       BY          //HC03TEMP//.
-      *
-           COPY    "CPASGNPARA.INC"    REPLACING   //ASGNPARA//
-                                       BY          //ASGN0001//.
-      *
-           COPY    "CPASGNPARA.INC"    REPLACING   //ASGNPARA//
-                                       BY          //ASGN0002//.
+                                       BY          //HC03PARA//.
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -90,6 +84,7 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-ASSIGN              PIC X(500).
            03  WRK-REDFILE             PIC X(20).
       *
            COPY    "COMMON-SPA"        REPLACING   //SPA-//
@@ -111,16 +106,10 @@
       *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
       *
-      *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
-      *
       *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
            COPY  "CPORCSMKPRT.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -128,12 +117,12 @@
         LINKAGE                     SECTION.
       *
            COPY    "CPORCHCN03.INC".
-           COPY    "CPASGNPARA.INC".
+           COPY    "CPCOMMONPRT.INC".
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            ORCHCN03AREA
-           ASGNPARA
+           HC01PARA
            SPA-AREA
            .
       *
@@ -162,18 +151,10 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           MOVE    ASGNPARA        TO  ASGN0001
+           MOVE    HC01PARA        TO  WRK-ASSIGN
+                                       HC03PARA
       *
-           INITIALIZE                  HC03TEMP
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    ASGNPARA        TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)(SGETTEMP-ST :)
-                                   TO  HC03TEMP-BASENAME
-      *
-           COMPUTE HC03TEMP-CNT    =   HC03TEMP-CNT    +   1
+           COMPUTE HC03PARA-CNT    =   HC03PARA-CNT    +   1
       *
            .
        100-INIT-EXT.
@@ -248,15 +229,7 @@
       *
            PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
       *
-               COMPUTE HC03TEMP-CNT    =   HC03TEMP-CNT    +   1
-      *
-               INITIALIZE                  SGETTEMP-AREA
-               MOVE    HC03TEMP
-                                       TO  SGETTEMP-BASENAMES (1)
-               CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
-               MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  ASGN0002
+               COMPUTE HC03PARA-CNT    =   HC03PARA-CNT    +   1
       *
                OPEN    OUTPUT  PRT-FILE
       *
@@ -277,7 +250,7 @@
                                            TO  MKPRT-INFO
                MOVE   IN01-PRTID           TO  MKPRT-DIA
                MOVE   SPACE                TO  MKPRT-DEF
-               MOVE   ASGN0002             TO  MKPRT-DAT
+               MOVE   HC03PARA             TO  MKPRT-DAT
                MOVE   IN01-PRTNM           TO  MKPRT-PRTNM
                IF  (  IN01-SITEKBN     =   "1" )
                    CALL   "ORCSMKPRT1"        USING
@@ -303,10 +276,6 @@
       *****************************************************************
        200-END-SEC                 SECTION.
       *
-           MOVE    ZERO        TO  IF-RESULT
-           MOVE    ASGN0001    TO  IF-FILENAME
-           CALL    "orcfiledel"    USING
-                                   ORCSFDELAREA
       *
            .
        200-END-EXT.
