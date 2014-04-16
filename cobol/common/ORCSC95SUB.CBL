@@ -152,7 +152,7 @@
       *        訂正時診療日変更
                WHEN    "4"
                    PERFORM 200-TEISEISYORI-SEC
-           END-EVALUATE
+            END-EVALUATE
       *
            .
        000-PROC-EXT.
@@ -569,10 +569,12 @@
                MOVE    SYS-1920-POPUP-MEMO2    TO  SPA-POPUP-MEMO2
            END-IF
       *
-      *
       *    職員情報より入力スクロール設定
-           IF     (LNK-SC95-PG         =   "K02"
-                                       OR  "KT01" )
+           IF     (SPA-TERMID          =   ALL "*")
+             OR   (SPA-TERMID (1:4)    =   "API+" )
+      *        API、入院一括登録は対象外
+               CONTINUE
+           ELSE
                PERFORM 10050-LINECNT-HEN-SEC
            END-IF
       *

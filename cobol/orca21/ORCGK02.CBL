@@ -696,7 +696,7 @@
            03  WRK-INSCNT              PIC 9(02).
            03  WRK-GYO                 PIC 9(04).
       *改頁行数
-           03  WRK-PAGE-LINE           PIC 9(02).
+      ***  03  WRK-PAGE-LINE           PIC 9(02).
       *!!!!!!!!!!!!!!!!!!
       *
       *
@@ -1144,10 +1144,10 @@
       *    テーブル最大行
            MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
       *v4.7
-           IF      SPA-GMLINCNT(1:2)   NUMERIC
-               MOVE    SPA-GMLINCNT        TO  WRK-PAGE-LINE
-           ELSE
-               MOVE    PAGE-LINE           TO  WRK-PAGE-LINE
+      *    頁行数
+           IF     (SPA-GMLINCNT(1:2)   NOT NUMERIC )
+             OR   (SPA-GMLINCNT        =    ZERO)
+               MOVE    PAGE-LINE            TO  SPA-GMLINCNT
            END-IF
       *
       *    診療種別テーブルセット
@@ -1177,7 +1177,7 @@
       *    画面ＳＰＡ書込み
            IF      FLG-END2            =   ZERO
       *TEST    PERFORM 1003-K02SPA-OUT-SEC
-               PERFORM 1003-K02SPA-OUT-TST-SEC
+               PERFORM 1003-K02SPA-OUT-PARA-SEC
            END-IF
       *
       *    クライアント印刷
@@ -1253,7 +1253,7 @@
       *
       *TEST
       *TEST
-           PERFORM 1002-K02SPA-SET-TST-SEC
+           PERFORM 1002-K02SPA-SET-PARA-SEC
            GO      TO      1002-K02SPA-SET-EXT
       *TEST
       *TEST
@@ -1335,15 +1335,16 @@
       *****************************************************************
       *    ＳＰＡデータＲＥＡＤ処理
       *****************************************************************
-       1002-K02SPA-SET-TST-SEC             SECTION.
+       1002-K02SPA-SET-PARA-SEC        SECTION.
       *
       *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE          SPA-SCR-REC
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  SPA-GMN-MAX
       *
            IF     SPA-HOSPNUM  NOT NUMERIC
-               GO   TO  1002-K02SPA-SET-TST-EXT
+               GO   TO  1002-K02SPA-SET-PARA-EXT
            END-IF  
       *
       *    TBL_PARA を使用する
@@ -1366,6 +1367,7 @@
            END-IF
            PERFORM
                UNTIL  (FLG-PARA            =   1 )
+                 OR   (IDX                 >=  SPA-MAX-LINE)
                ADD    1                    TO  IDX
                MOVE   PARAS-DATA-REC       TO  SPA-GMN-TBL (IDX)
       *
@@ -1379,13 +1381,13 @@
       *
            IF      IDX                 =   ZERO
                MOVE    ZERO                TO  SPA-GMN-MAX
-               GO      TO      1002-K02SPA-SET-TST-EXT
+               GO      TO      1002-K02SPA-SET-PARA-EXT
            END-IF
       *
       *    行位置とカーソル位置の決定
            PERFORM 10021-K02SPA-INIT-SET-SEC
            .
-       1002-K02SPA-SET-TST-EXT.
+       1002-K02SPA-SET-PARA-EXT.
            EXIT.
       *TEST 
       *
@@ -1429,7 +1431,7 @@
       *****************************************************************
       *    ＳＰＡデータＷＲＩＴＥ処理
       *****************************************************************
-       1003-K02SPA-OUT-TST-SEC             SECTION.
+       1003-K02SPA-OUT-PARA-SEC        SECTION.
       *
            INITIALIZE                      PARAS-REC
            MOVE    SPA-HOSPNUM         TO  PARAS-HOSPNUM
@@ -1473,7 +1475,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
            .
-       1003-K02SPA-OUT-TST-EXT.
+       1003-K02SPA-OUT-PARA-EXT.
            EXIT.
       *
       *TEST
@@ -1969,8 +1971,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    0               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
-      *
-           MOVE    SPA-GMLINCNT    TO  WRK-PAGE-LINE
       *
            .
        30010-INIT-GMNN-EXT.
@@ -10913,8 +10913,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (WRK-IDX2            >   WRK-MAP-MAX )
                MOVE    WRK-MAP-MAX         TO  WRK-IDX2
            END-IF
-           IF      WRK-IDX2            >   WRK-PAGE-LINE
-               COMPUTE WRK-GYO         =   WRK-IDX2    -   WRK-PAGE-LINE
+           IF      WRK-IDX2            >   SPA-GMLINCNT
+               COMPUTE WRK-GYO         =   WRK-IDX2    -   SPA-GMLINCNT
            ELSE
                MOVE    1               TO  WRK-GYO
            END-IF
@@ -10993,7 +10993,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      WRK-IDX2            =   ZERO
                MOVE    SPA-MAP-IDX     TO  WRK-IDX2
            END-IF
-           COMPUTE WRK-GYO             =   WRK-IDX2 +   WRK-PAGE-LINE
+           COMPUTE WRK-GYO             =   WRK-IDX2 +   SPA-GMLINCNT
       *
            MOVE    ZERO                TO  FLG-F7
            PERFORM VARYING     IDX     FROM    WRK-IDX2  BY  1
@@ -12718,7 +12718,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *!!
       *訂正展開時、１行目にカーソル移動
            IF      SPA-GMN-CUR         =   98
-               IF      SPA-GMN-MAX     >=  WRK-PAGE-LINE
+               IF      SPA-GMN-MAX     >=  SPA-GMLINCNT
       *            頁行以上であれば１行目へ
                    MOVE    "1"             TO  SPA-COM-CUR (1)
                END-IF
