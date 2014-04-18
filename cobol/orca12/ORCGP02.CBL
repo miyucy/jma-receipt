@@ -1164,6 +1164,7 @@
                                                SPA-P02SCRAREA
                                                P02
            MOVE    SPA-ERRCD           TO  WRK-ERRCD
+      *
       *    £Ñ£Ò¥Ç¡¼¥¿È½Äê
       *DD  PERFORM 3101-QRDATA-CHK-SEC
       *
@@ -4071,6 +4072,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                P02
       *
            PERFORM 5001-MAPCUR-SEC
+      *H26.4
+           IF      SPA-ERRCD           =   "9108"
+               MOVE    "B12"           TO   MCP-WIDGET
+           END-IF
       *
            .
        500-GMNHEN-EXT.
