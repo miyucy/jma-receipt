@@ -4978,7 +4978,11 @@
                                           TO  WRK-TOKUREI-SRYCD
              END-IF
              IF     LNK-EIYOUKKS-RC  =  9
-               MOVE    1                  TO  WRK-TOKUREI-FLG
+               IF   WRK-TOKUREI-SRYCD2(1:3)  =  "188"
+                  CONTINUE
+               ELSE
+                  MOVE    1               TO  WRK-TOKUREI-FLG
+               END-IF
              END-IF
       *
            END-IF
