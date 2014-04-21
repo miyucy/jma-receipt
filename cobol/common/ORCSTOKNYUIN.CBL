@@ -2259,7 +2259,7 @@
                WHEN    "AV"
       *            特定一般病棟入院料（地域包括ケア入院医療管理１）
       *            特定一般病棟入院料（地域包括ケア入院医療管理２）
-      *            般病棟特別入院基本料を算定
+      *            一般病棟特別入院基本料を算定
                    MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                    MOVE   "190079010"  TO  LNK-TOKNYUIN-GAI-SRYCD
                END-EVALUATE
