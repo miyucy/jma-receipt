@@ -1658,6 +1658,10 @@
       *        初期加算サブを呼び出す（平成２４年改正で追加）
       *        療養病床で有床診療所入院基本料を相互算定する場合も
       *        初期加算サブを呼び出す（平成２４年改正で追加）
+      *        特定入院料の算定要件外に算定にする以下入院料を追加（平成２６年改正で対応）
+      *        ・一般病棟特別入院基本料
+      *        ・精神病棟１５対１入院基本料
+      *        ・精神病棟特別入院基本料
                IF    SYOKIKSN-IN-KHNSRYCD   =   "190151910"   OR
                                                 "190152010"   OR
                                                 "099999950"   OR
@@ -1665,7 +1669,11 @@
                                                 "099999952"   OR
                                                 "099999955"   OR
                                                 "099999956"   OR
-                                                "099999957"
+                                                "099999957"   OR
+      *                                         特定入院料の算定要件外の算定
+                                                "190079010"   OR
+                                                "190083810"   OR
+                                                "190085010"
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
@@ -2663,12 +2671,19 @@
            MOVE    PTNYUINRRK-TOKUTEI-KBN   TO  LNK-TOKNYUIN-KBN
            MOVE    PTNYUINRRK-TOKUTEI-NYUIN TO  LNK-TOKNYUIN-NYUIN
            MOVE    PTNYUINRRK-BTUNUM        TO  LNK-TOKNYUIN-BTUNUM
+           MOVE    PTNYUINRRK-TOKU-SANTEIYOUKENKBN
+                                        TO  LNK-TOKNYUIN-SANTEIYOUKENKBN
            MOVE    SYOKIKSN-IN-SANTEISTYMD(1:6)
                                             TO  LNK-TOKNYUIN-SANTEIYM
            CALL    "ORCSTOKNYUIN"      USING    ORCSTOKNYUIN-AREA
                                                 SPA-AREA
            IF      LNK-TOKNYUIN-RC          =   ZERO
-               MOVE   LNK-TOKNYUIN-SRYCD    TO  SYOKIKSN-IN-KHNSRYCD
+               IF    LNK-TOKNYUIN-GAI-SRYCD =  SPACE
+                   MOVE   LNK-TOKNYUIN-SRYCD   TO  SYOKIKSN-IN-KHNSRYCD
+               ELSE
+                   MOVE   LNK-TOKNYUIN-GAI-SRYCD
+                                               TO  SYOKIKSN-IN-KHNSRYCD
+               END-IF
            END-IF
       *
            .
