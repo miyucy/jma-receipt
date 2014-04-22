@@ -9082,6 +9082,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41014-GYOINSN-EXT
            END-IF
       *
+      *    挿入行のチェック
+           IF     WRK-INSCNT           >   1
+               IF      (SPA-GMN-MAX + (WRK-INSCNT - 1))  >= SPA-MAX-LINE
+                   MOVE    "0007"              TO  SPA-ERRCD
+                   GO      TO      41014-GYOINSN-EXT
+               END-IF
+           END-IF
+      *
       *    IF      SPA-GMN-IDX         >=  SPA-MAX-LINE
            IF      SPA-GMN-IDX         =   SPA-MAX-LINE
                MOVE    "0007"              TO  SPA-ERRCD
@@ -10925,9 +10933,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    1               TO  WRK-GYO
            END-IF
-      *TEST
-      *    DISPLAY "450-MAEGMN WRK-PAGE-LINE:" WRK-PAGE-LINE
-      **           ",WRK-GYO:"  WRK-GYO
       *
            PERFORM VARYING     IDX     FROM    WRK-IDX2  BY  -1
                    UNTIL      (IDX     <   1   )
@@ -10977,12 +10982,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
-      *TEST
-      *    DISPLAY "460-ATOGMN SPA-MAP-IDX:" SPA-MAP-IDX
-      *        ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
-      *
-      *TEST
-      *
       *    行位置とカーソル位置の決定
            PERFORM 10021-K02SPA-INIT-SET-SEC
       *
@@ -10994,9 +10993,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  WRK-IDX2
                END-IF
            END-IF
-      *!!! カーソル位置不明
-      **   MOVE    ZERO                TO  WRK-IDX2
-      *!!!
+      *
            IF      WRK-IDX2            =   ZERO
                MOVE    SPA-MAP-IDX     TO  WRK-IDX2
            END-IF
