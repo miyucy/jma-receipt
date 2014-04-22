@@ -5011,6 +5011,13 @@
                MOVE    SPACE           TO  SPA-COM-IN4 (SPA-GMN-IDX)
       *        挿入行数
                MOVE    LNK-SC97-INSCNT TO  WRK-INSCNT
+      *        約束セット前は１行
+               IF     (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
+                                           =   "S"  )  AND
+                      (LNK-SC97-INSCNT     >   1    )
+                   MOVE    1               TO  WRK-INSCNT
+               END-IF
+      *
       *!!!!!!!!!!!!!!!!!!!
                PERFORM 41014-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
@@ -10289,7 +10296,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        (SPA-GMN-INPUTCD(WRK-IDX)   =   SPACE )
                    CONTINUE
                ELSE
-                   ADD     1               TO  SPA-GMN-MAX
+      **********   ADD     1               TO  SPA-GMN-MAX
+                   MOVE    WRK-IDX         TO  SPA-GMN-MAX
                END-IF
            END-PERFORM
       *
@@ -10964,7 +10972,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-GMN-CUR         =   1
                IF      WRK-IDX2            >   MAX-GMN
-                   MOVE    09              TO  SPA-GMN-CUR
+      *********    MOVE    09              TO  SPA-GMN-CUR
+      *            最終行へ
+                   MOVE    MAX-GMN         TO  WRK-IDX2
                END-IF
            END-IF
       *
