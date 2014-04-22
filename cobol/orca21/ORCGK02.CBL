@@ -1324,7 +1324,8 @@
                        (SPA-GMN-INPUTCD(WRK-IDX)   =   SPACE )
                    CONTINUE
                ELSE
-                   ADD     1               TO  SPA-GMN-MAX
+      ********     ADD     1               TO  SPA-GMN-MAX
+                   MOVE    WRK-IDX         TO  SPA-GMN-MAX
                END-IF
            END-PERFORM
            .
@@ -9082,6 +9083,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41014-GYOINSN-EXT
            END-IF
       *
+      *TEST
+           DISPLAY "WRK-INSCNT:" WRK-INSCNT
+                  ",SPA-GMN-MAX:"  SPA-GMN-MAX
+      *TEST
       *    挿入行のチェック
            IF     WRK-INSCNT           >   1
                IF      (SPA-GMN-MAX + (WRK-INSCNT - 1))  >= SPA-MAX-LINE
@@ -12801,7 +12806,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
                    MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
       *
-      *************IF      SPA-ERRCD       =   SPACE
                    IF      SPA-COM-CUR (WRK-IDX)   =   "1"
       *!!
       *            セットで警告の時
