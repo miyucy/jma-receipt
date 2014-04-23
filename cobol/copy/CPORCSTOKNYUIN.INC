@@ -38,7 +38,7 @@
            03  LNK-TOKNYUIN-SANTEIYM                  PIC  X(06).
       *病棟番号
            03  LNK-TOKNYUIN-BTUNUM                    PIC  X(02).
-      *特定入院料算定要件区分（０：該当する／１：該当しない）
+      *特定入院料算定要件区分（空白：該当する／１：該当しない）
            03  LNK-TOKNYUIN-SANTEIYOUKENKBN           PIC  X(01).
       *返却項目
            03  LNK-TOKNYUIN-HENKYAKU-AREA.
