@@ -10590,10 +10590,11 @@
                                    TO  PTNYUINRRK-TOKUTEI-NYUIN
       *    ∆√ƒÍ∆˛±°Œ¡»Û≥∫≈ˆ
            IF    ( SPA-NAI-I01-TOKHIGAITOCD    NOT =   SPACE )
+            AND  ( SPA-GMN-I01-TOKHIGAITO-CD   NOT =   "0"  )
                MOVE    SPA-GMN-I01-TOKHIGAITO-CD
                                    TO  PTNYUINRRK-TOKU-SANTEIYOUKENKBN
            ELSE
-               MOVE    "0"         TO  PTNYUINRRK-TOKU-SANTEIYOUKENKBN
+               MOVE    SPACE       TO  PTNYUINRRK-TOKU-SANTEIYOUKENKBN
            END-IF
       *
       *    ººŒ¡∫π≥€
