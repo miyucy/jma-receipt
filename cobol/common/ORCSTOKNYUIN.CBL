@@ -2145,6 +2145,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190132210"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                WHEN    "32"
                WHEN    "28"
@@ -2162,6 +2164,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190132310"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                WHEN    "29"
                WHEN    "43"
@@ -2182,6 +2186,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134010"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                WHEN    "30"
                WHEN    "44"
@@ -2197,6 +2203,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134110"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                END-EVALUATE
              END-IF
@@ -2222,6 +2230,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190132210"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                WHEN    "AM"
                WHEN    "AQ"
@@ -2231,6 +2241,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190132310"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                WHEN    "AN"
                WHEN    "AR"
@@ -2245,6 +2257,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134010"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                WHEN    "AO"
                WHEN    "AS"
@@ -2254,6 +2268,8 @@
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134110"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
                WHEN    "AU"
                WHEN    "AV"

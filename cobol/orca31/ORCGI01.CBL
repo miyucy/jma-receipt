@@ -12676,6 +12676,13 @@
                MOVE   LNK-SCNYUACCT-KAGEN-SRYCD(1)
                                         TO  LNK-NYUKSNGET-NYUIN-SRYCD
            END-IF
+      *
+      *    ÆÃÄêÆþ±¡ÎÁ»»ÄêÍ×·ï³°¤ÇÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£É¤ò»»Äê»þ¤Ë¡¢Æþ±¡ÎÁ
+      *    ²Ã»»¤ò°ìÈÌÉÂÅïÆÃÊÌÆþ±¡´ðËÜÎÁ¤ÎÎã¤Ç»»Äê¤¹¤ë°Ù¡¢¥³¡¼¥É¤ÎÃÖ¤­´¹¤¨
+           IF      LNK-TOKNYUIN-GAI-NYUKSNKBN   =    "1"
+               MOVE   "190079010"       TO  LNK-NYUKSNGET-NYUIN-SRYCD
+           END-IF
+      *
            MOVE    ZERO                 TO  IDX
            PERFORM VARYING IDX-KSN FROM    1   BY  1
                    UNTIL ( IDX-KSN      >   CONST-GMN-KSN-MAX )
