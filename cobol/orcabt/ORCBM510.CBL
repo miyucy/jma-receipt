@@ -1313,6 +1313,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *----(04.02.01)--ADD-START---
                                            OR  "52"
       *----(04.02.01)--ADD-END-----
+                                           OR  "90"
                                            OR  "99"
                        ADD     1               TO  CNT-RECEDEN
                        MOVE    1               TO  FLG-RECEDENOK

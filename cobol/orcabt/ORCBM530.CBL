@@ -1076,6 +1076,7 @@
                                            OR  "50"
                                            OR  "51"
                                            OR  "52"
+                                           OR  "90"
                                            OR  "99"
                        ADD     1               TO  CNT-RECEDEN
                        MOVE    1               TO  FLG-RECEDENOK
