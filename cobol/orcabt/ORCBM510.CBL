@@ -53,12 +53,6 @@
       *
       *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
-      *  04.07.02    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -78,8 +72,11 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *----(04.02.02)--UPD-START---
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+      *     COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+      *                             BY         //RECEERR//.
+      *----(04.02.02)--UPD-END-----
       *
       *----(04.02.02)--UPD-START---
            COPY    "HCM37V01.INC"  REPLACING  //HCM37V01//
@@ -126,9 +123,10 @@
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
+      *----(04.02.01)--ADD-START---
+           05  RECEERR                 PIC X(100).
+      *----(04.02.01)--ADD-END-----
            05  WRK-PARA-HKNJANUM       PIC X(08).
-           05  WRK-PARA-STSRYYM        PIC 9(06).
-           05  WRK-PARA-EDSRYYM        PIC 9(06).
       *
       *    一時領域
        01  WRK-AREA.
@@ -198,9 +196,6 @@
            03  WRK-MOJI12.
                05  FILLER121           PIC X(50)   VALUE
                    "【上記以外の診療報酬明細書】".
-           03  WRK-MOJI13.
-               05  FILLER              PIC X(50)   VALUE
-               "【医薬品医療機器等法に規定する治験に係る治験概要】".
       *
        01  CONST-AREA.
            03  CONST-H2004             PIC X(06)   VALUE    "200804".
@@ -278,8 +273,6 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -350,22 +343,9 @@
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-HKNJANUM
                                                WRK-PARA-HOSPNUM
-                                               WRK-PARA-STSRYYM
-                                               WRK-PARA-EDSRYYM
                                                RECEERR
            END-UNSTRING
-      *
-           DISPLAY "WRK-PARA-STSRYYM     ="  WRK-PARA-STSRYYM
-           DISPLAY "WRK-PARA-EDSRYYM     ="  WRK-PARA-EDSRYYM
-      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -550,13 +530,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  HCM37-NAIYO(CNT-LINE)
       *----(03.04.02)--ADD-START---
                            WHEN    "50"
-                               IF      RECE10-SRYYM    <   201412
-                                   MOVE    WRK-MOJI9
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               ELSE
-                                   MOVE    WRK-MOJI13
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               END-IF
+                               MOVE    WRK-MOJI9
+                                       TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "51"
                                MOVE    WRK-MOJI10
                                        TO  HCM37-NAIYO(CNT-LINE)
@@ -1269,15 +1244,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
-      *
-               IF      WRK-PARA-STSRYYM    =   "999999"
-                   CONTINUE
-               ELSE
-                   IF    ( RECE10-SRYYM    <   WRK-PARA-STSRYYM )
-                   OR    ( RECE10-SRYYM    >   WRK-PARA-EDSRYYM )
-                       GO  TO  900-SEIKYU-READ-SEC
-                   END-IF
-               END-IF
       *
       *        未確定分をレセ電データに記録するか
                IF    (  SYS-200501-RECEDEN-DISASTER
