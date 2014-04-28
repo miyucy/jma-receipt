@@ -217,6 +217,7 @@
       *  04.07.03    NACL-ÌçÏÆ    13/07/10  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
       *  04.07.04    NACL-Æ£¸¶    13/12/09  °åÎÅ¾ðÊóÏ¢·È´ðÈ×ÂÐ±þ
       *  04.07.05    NACL-ÌçÏÆ    14/04/08  Ä¹´ü¤ÎÆÃµ­»ö¹à½ÅÊ£½¤Àµ
+      *  04.07.06    NACL-Æ£¸¶    14/03/30  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2398,6 +2399,7 @@
                IF      RECE62-YOBIETC (8)  =   1
                    MOVE    SPACE       TO  LNK-SYUBETUGET-HKN-HOJOKBN
                END-IF
+               MOVE    RECE62-BIRTHDAY TO  LNK-SYUBETUGET-BIRTHDAY
                CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
                MOVE    LNK-SYUBETUGET-RECESYUBETU
@@ -3058,6 +3060,8 @@
                                    MOVE   30   TO  RECE62-KYURATE
                                WHEN   "9"
                                    MOVE   10   TO  RECE62-KYURATE
+                               WHEN   "8"
+                                   MOVE   20   TO  RECE62-KYURATE
                            END-EVALUATE
                        END-IF
                    END-IF
@@ -3256,7 +3260,9 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                              IF  (   PTHKN-HKNNUM     =   "002"        )
                              AND (   PTHKN-HOJOKBN    =   "A" OR "B" OR
                                                           "C" OR "G" OR 
-                                                          "H" OR "I"   )
+                                                          "H" OR "I" OR
+                                                          "D" OR "E" OR
+                                                          "F"          )
                                  IF    ( RECE61-AGE  >=  75    )
                                  OR    ( RECE61-AGE  =   74          AND
                                          RECE61-BIRTHDAY (5:2)

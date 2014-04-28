@@ -231,6 +231,7 @@
       *  04.07.03    NACL-Æ£¸¶    12/12/17  Ê£¿ôËç¥ì¥»¥×¥ÈÊ¬³äÂÐ±þ
       *  04.07.04    NACL-Æ£¸¶    13/08/01  ¸øÈñµ­ºÜ½çÀßÄê»þ¤Î¾ò·ï¤Î½¤Àµ
       *  04.07.05    NACL-Æ£¸¶    13/12/09  °åÎÅ¾ðÊóÏ¢·È´ðÈ×ÂÐ±þ
+      *  04.07.06    NACL-Æ£¸¶    14/03/30  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *
       *  04.08.01    NACL-Æ£¸¶    12/01/08  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­
       *                                     ºÜÂÐ±þ
@@ -619,7 +620,6 @@
            03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.      
       *
            03  WRK-CONS-SRYYM-201004   PIC 9(06)   VALUE   201004.      
-      *     
       * 
        01  WRK-RECE01-REC. 
            COPY    "CPRCF001.INC"  REPLACING  //RECE01//
@@ -1853,12 +1853,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                            EVALUATE    PTHKN-HOJOKBN
                                WHEN    "A"
                                WHEN    "G"
+                               WHEN    "D"
                                    MOVE    "1" TO  WRK-RECE01-HOJOKBN
                                WHEN    "B"
                                WHEN    "H"
+                               WHEN    "E"
                                    MOVE    "2" TO  WRK-RECE01-HOJOKBN
                                WHEN    "C"
                                WHEN    "I"
+                               WHEN    "F"
                                    MOVE    "3" TO  WRK-RECE01-HOJOKBN
                                WHEN    OTHER
                                    MOVE    PTHKN-HOJOKBN
@@ -2095,12 +2098,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "A"
                        WHEN    "G"
+                       WHEN    "D"
                            MOVE    "1" TO  WRK-RECE01-HKN-HOJOKBN
                        WHEN    "B"
                        WHEN    "H"
+                       WHEN    "E"
                            MOVE    "2" TO  WRK-RECE01-HKN-HOJOKBN
                        WHEN    "C"
                        WHEN    "I"
+                       WHEN    "F"
                            MOVE    "3" TO  WRK-RECE01-HKN-HOJOKBN
                    END-EVALUATE
                END-IF
@@ -2321,12 +2327,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                        EVALUATE    PTHKN-HOJOKBN
                            WHEN    "A"
                            WHEN    "G"
+                           WHEN    "D"
                                MOVE    "1" TO  WRK-RECE01-HKN-HOJOKBN
                            WHEN    "B"
                            WHEN    "H"
+                           WHEN    "E"
                                MOVE    "2" TO  WRK-RECE01-HKN-HOJOKBN
                            WHEN    "C"
                            WHEN    "I"
+                           WHEN    "F"
                                MOVE    "3" TO  WRK-RECE01-HKN-HOJOKBN
                        END-EVALUATE
                    END-IF
