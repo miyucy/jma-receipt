@@ -592,6 +592,11 @@
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                MOVE    "key9"              TO  MCP-PATHNAME
                PERFORM  910-DB-READ-SEC
+           END-IF
+           IF    ( MCP-RC      =   ZERO  )
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM  910-DB-READ-SEC
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
                IF      PTNYUINRRK-JTIKBN   NOT =   "5"  AND "6"
                    IF  PTNYUINRRK-TAIINYMD  = WRK-DOU-NAI-I01-NYUINYMD                   
