@@ -649,6 +649,8 @@
       *  04.07.17    NACL-門脇    14/04/08  長期の特記事項重複修正
       *  04.07.18    NACL-門脇    14/04/28  運動器・脳血管リハの診療コード
       *                                     追加対応
+      *  04.07.19    NACL-門脇    14/04/28  愛媛県地方公費の受診日コメント
+      *                                     に関する修正
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -16518,6 +16520,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 "7" OR "8"
                     MOVE   SYU-SRYYMD(7:2)  TO   IDX8
                     MOVE     "1"     TO   RECE02-KOHJNISSUTBL(IDX8)
+                    IF  SYU-TOTAL-HKNTEN  NOT = ZERO
+                      MOVE   "2"     TO   RECE02-KOHJNISSUTBL(IDX8)
+                    END-IF
                END-IF
       *
            END-EVALUATE
@@ -17364,7 +17369,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM    VARYING    ACCT-IDX    FROM    1   BY   1
                       UNTIL      ACCT-IDX    >     31
               IF    RECE02-KOHJNISSUTBL(ACCT-IDX)  NOT =  SPACE
-                 IF  RECE02-JNISSUTBL(ACCT-IDX)  = SPACE
+                 IF  (RECE02-JNISSUTBL(ACCT-IDX)     = SPACE)
+                 AND (RECE02-KOHJNISSUTBL(ACCT-IDX)  =  "1" )
                      MOVE   SPACE   TO   RECE02-KOHJNISSUTBL(ACCT-IDX)
                  END-IF
               END-IF
