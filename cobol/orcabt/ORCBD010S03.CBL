@@ -486,7 +486,7 @@
                =   SYURRK-CHOSEI2
       *
            COMPUTE TSRRK-GENMEN
-               =   SYURRK-DISCOUNT-MONEY * -1
+               =   SYURRK-DISCOUNT-MONEY
       *
            COMPUTE WRK-SAGAKU
                =   TSRRK-SEIKYU
@@ -585,8 +585,8 @@
                COMPUTE TSKY-JIHCHOSEI1(1)
                    =   TSKY-JIHCHOSEI1(1)
                    +   TSKY-CHOSEI1   (1)
-               COMPUTE TSKY-JIHCHOSEI2(1)
-                   =   TSKY-JIHCHOSEI2(1)
+               COMPUTE TSKY-HKNCHOSEI2(1)
+                   =   TSKY-HKNCHOSEI2(1)
                    +   TSKY-CHOSEI2   (1)
            ELSE
       *
