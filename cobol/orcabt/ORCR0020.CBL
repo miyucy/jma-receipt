@@ -259,6 +259,7 @@
       *  04.07.05    NACL-門脇    14/04/04  平成２６年４月改正対応
       *  04.07.06    NACL-門脇    14/04/08  長期の特記事項重複修正
       *  04.07.07    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *  04.07.08    NACL-藤原    14/04/30  治験が複数あるときの対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1512,7 +1513,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE    RECE01-NYUGAIKBN     TO  RECE02-NYUGAIKBN
            MOVE    RECE01-PTID          TO  RECE02-PTID
            MOVE    RECE01-RECEKA        TO  RECE02-RECEKA
-           IF      RECE01-HKNNUM (1:2)  =   "98"
+           IF      RECE01-HKNNUM (1:2)  =   "98"    OR  "90"    OR
+                                            "91"
                MOVE    RECE01-HKNNUM        TO  RECE02-HKNJANUM-KEY
            ELSE  
                MOVE    RECE01-HKNJANUM      TO  RECE02-HKNJANUM-KEY
