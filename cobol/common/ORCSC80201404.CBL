@@ -2652,8 +2652,10 @@
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
-      *    リハビリテーション総合計画評価料は対象外
+      *    リハビリテーション総合計画評価料・
+      *    リハビリテーション総合計画提供料　対象外
            IF      WRK-COM-INPUTCD (IDX-Z) =   "180024710"
+                                           OR  "180042910"
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
