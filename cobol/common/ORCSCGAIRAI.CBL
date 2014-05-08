@@ -2171,6 +2171,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
+      *H25.5
+      *    レセプト作成管理マスタ更新処理
+           IF     (SPA-HKNCOMBINUM NOT =   "9999")
+             AND  (SPA-ERRCD           =   SPACE )
+               PERFORM 3009-RECEUPD-UPDATE-SEC
+           END-IF
+      *
            .
        1001-TEISEI-SYORI-EXT.
            EXIT.
