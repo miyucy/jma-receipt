@@ -260,6 +260,7 @@
       *  04.07.11    NACL-ÌçÏÆ    14/03/28  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *  04.07.12    NACL-ÌçÏÆ    14/04/28  ±¿Æ°´ï¡¦Ç¾·ì´É¥ê¥Ï¤Î¿ÇÎÅ¥³¡¼¥É
       *                                     ÄÉ²ÃÂÐ±þ
+      *  04.07.13    NACL-ÌçÏÆ    14/05/07  ºßÂð¤Î²ó¿ôµ­ºÜÂÐ±þ
       *
       *  04.08.01    NACL-ÌçÏÆ    13/01/22  Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë£±£°²óÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
@@ -430,6 +431,7 @@
            03  FLG-HENSYU-NG                           PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
            03  FLG-SYUNOU                              PIC 9(01).
+           03  FLG-ZAITAKU-CHECK                       PIC 9(01).
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°
        01  FLG-KHNTEN-AREA.
@@ -533,6 +535,9 @@
            03  FUKA-IDX                                PIC 9(03).
            03  IDYY                                    PIC 9(02).
            03  IDXX                                    PIC 9(02).
+           03  IDX19                                   PIC 9(03).
+           03  IDX20                                   PIC 9(03).
+           03  IDX21                                   PIC 9(03).
       *
       *    ºÞ¾ðÊóÂàÈòÎÎ°è
        01  WK-ZAIKAISU                                 PIC S9(07).
@@ -577,6 +582,12 @@
            03  TBL-TENSU-JI                            OCCURS   50.
                05  TBL-SYUTEN-JI                       PIC 9(09).
                05  TBL-YKZTEN-JI                       PIC 9(09).
+      *
+       01  TBL-ZAITAKU-KAISU-XXX.
+           03  TBL-ZAITAKU-KAISU-XXX2                  OCCURS   6.
+             05  TBL-ZAITAKU-KAISU-XXX3                OCCURS   9.
+               07  TBL-ZAITAKU-KAISU-XXX4              OCCURS  31.
+                 09  TBL-ZAITAKU-KAISU                 PIC 9(03).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -1830,6 +1841,8 @@ grpsys           PERFORM 900-DBSELECT-SEC
            INITIALIZE                   FLG-SAISIN-AREA
            INITIALIZE                   CNT-SAISIN-AREA
       *
+           INITIALIZE                   TBL-ZAITAKU-KAISU-XXX
+      *
            IF      RECE41-HKNKBN   NOT  =   "3"
       *
               INITIALIZE                   FLG-KHNTEN-AREA
@@ -1869,9 +1882,107 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *
            PERFORM     2107-GENTEN-HENSYU-SEC
       *
+      *    ºßÂð²ó¿ô¤ÎºÆÊÔ½¸
+           PERFORM     2108-ZAITAKU-KAISU-HENSYU-SEC
+      *
            PERFORM     2105-RECE41-REWRITE-SEC
            .
        210-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð²ó¿ô¤ÎºÆÊÔ½¸
+      *****************************************************************
+       2108-ZAITAKU-KAISU-HENSYU-SEC               SECTION.
+      *
+           IF    RECE41-SRYYM   >=  "201404"
+             EVALUATE   RECE41-HKNKBN
+               WHEN      "1"
+               WHEN      "2"
+      *          ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡Ê±ý¿Ç¡Ë¤Ë´Ø¤¹¤ë²ó¿ô¤ÎºÆÊÔ½¸
+                 PERFORM  VARYING  IDX19  FROM  1  BY  1
+                           UNTIL   IDX19   >    9
+                   PERFORM  VARYING  IDX20  FROM  1  BY  1
+                             UNTIL   IDX20   >   31
+                     IF  TBL-ZAITAKU-KAISU(1 IDX19 IDX20) NOT = ZERO
+                     AND TBL-ZAITAKU-KAISU(2 IDX19 IDX20) NOT = ZERO
+                       COMPUTE  RECE41-KAISU(8) =
+                                RECE41-KAISU(8) -
+                                TBL-ZAITAKU-KAISU(2 IDX19 IDX20)
+                     END-IF
+                   END-PERFORM
+                 END-PERFORM
+      *          ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡ÊÆÃÊÌ±ý¿Ç¡Ë¤Ë´Ø¤¹¤ë²ó¿ô¤ÎºÆÊÔ½¸
+                 PERFORM  VARYING  IDX19  FROM  1  BY  1
+                           UNTIL   IDX19   >    9
+                   PERFORM  VARYING  IDX20  FROM  1  BY  1
+                             UNTIL   IDX20   >   31
+                     IF  TBL-ZAITAKU-KAISU(3 IDX19 IDX20) NOT = ZERO
+                     AND TBL-ZAITAKU-KAISU(4 IDX19 IDX20) NOT = ZERO
+                       COMPUTE  RECE41-KAISU(8) =
+                                RECE41-KAISU(8) -
+                                TBL-ZAITAKU-KAISU(4 IDX19 IDX20)
+                     END-IF
+                   END-PERFORM
+                 END-PERFORM
+      *          ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡ÊºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¡Ë¤Ë´Ø¤¹¤ë²ó¿ô¤ÎºÆÊÔ½¸
+                 PERFORM  VARYING  IDX19  FROM  1  BY  1
+                           UNTIL   IDX19   >    9
+                   PERFORM  VARYING  IDX20  FROM  1  BY  1
+                             UNTIL   IDX20   >   31
+                     IF  TBL-ZAITAKU-KAISU(5 IDX19 IDX20) NOT = ZERO
+                     AND TBL-ZAITAKU-KAISU(6 IDX19 IDX20) NOT = ZERO
+                       COMPUTE  RECE41-KAISU(11) =
+                                RECE41-KAISU(11) -
+                                TBL-ZAITAKU-KAISU(6 IDX19 IDX20)
+                     END-IF
+                   END-PERFORM
+                 END-PERFORM
+               WHEN      "5"
+      *          ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡Ê±ý¿Ç¡Ë¤Ë´Ø¤¹¤ë²ó¿ô¤ÎºÆÊÔ½¸
+                 PERFORM  VARYING  IDX19  FROM  1  BY  1
+                           UNTIL   IDX19   >    9
+                   PERFORM  VARYING  IDX20  FROM  1  BY  1
+                             UNTIL   IDX20   >   31
+                     IF  TBL-ZAITAKU-KAISU(1 IDX19 IDX20) NOT = ZERO
+                     AND TBL-ZAITAKU-KAISU(2 IDX19 IDX20) NOT = ZERO
+                       COMPUTE  RECE41-KAISU(10) =
+                                RECE41-KAISU(10) -
+                                TBL-ZAITAKU-KAISU(2 IDX19 IDX20)
+                     END-IF
+                   END-PERFORM
+                 END-PERFORM
+      *          ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡ÊÆÃÊÌ±ý¿Ç¡Ë¤Ë´Ø¤¹¤ë²ó¿ô¤ÎºÆÊÔ½¸
+                 PERFORM  VARYING  IDX19  FROM  1  BY  1
+                           UNTIL   IDX19   >    9
+                   PERFORM  VARYING  IDX20  FROM  1  BY  1
+                             UNTIL   IDX20   >   31
+                     IF  TBL-ZAITAKU-KAISU(3 IDX19 IDX20) NOT = ZERO
+                     AND TBL-ZAITAKU-KAISU(4 IDX19 IDX20) NOT = ZERO
+                       COMPUTE  RECE41-KAISU(10) =
+                                RECE41-KAISU(10) -
+                                TBL-ZAITAKU-KAISU(4 IDX19 IDX20)
+                     END-IF
+                   END-PERFORM
+                 END-PERFORM
+      *          ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡ÊºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¡Ë¤Ë´Ø¤¹¤ë²ó¿ô¤ÎºÆÊÔ½¸
+                 PERFORM  VARYING  IDX19  FROM  1  BY  1
+                           UNTIL   IDX19   >    9
+                   PERFORM  VARYING  IDX20  FROM  1  BY  1
+                             UNTIL   IDX20   >   31
+                     IF  TBL-ZAITAKU-KAISU(5 IDX19 IDX20) NOT = ZERO
+                     AND TBL-ZAITAKU-KAISU(6 IDX19 IDX20) NOT = ZERO
+                       COMPUTE  RECE41-KAISU(13) =
+                                RECE41-KAISU(13) -
+                                TBL-ZAITAKU-KAISU(6 IDX19 IDX20)
+                     END-IF
+                   END-PERFORM
+                 END-PERFORM
+             END-EVALUATE
+           END-IF
+      *
+           .
+       2108-ZAITAKU-KAISU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1970,6 +2081,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    ZERO    TO      FLG-SETCOM
                                MOVE    ZERO    TO      WRK-SETCOM-JIDO
                                MOVE    ZERO    TO      WRK-SETCOM-JIDO2
+                               MOVE    ZERO    TO      FLG-ZAITAKU-CHECK
                                PERFORM   21011-RECE44-TENSOU-SEC
                                PERFORM   21012-RECE45-HENSYU-SEC
                                IF    FLG-WRITE45  =   1
@@ -2044,6 +2156,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       MOVE  ZERO  TO  FLG-SETCOM
                                       MOVE  ZERO  TO  WRK-SETCOM-JIDO
                                       MOVE  ZERO  TO  WRK-SETCOM-JIDO2
+                                      MOVE  ZERO  TO  FLG-ZAITAKU-CHECK
                                       IF    ACCT-SRYKBN  =
                                             "60" OR "64" OR "80"
                                         PERFORM 21014-SINRYO-CHECK-SEC
@@ -3482,6 +3595,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     MOVE        9         TO    FLG-OSINKBN
                  END-IF
       *
+                 IF (SRY-SRYCD(IDX2) =  "114001470")
+                    MOVE        9         TO    FLG-OSINKBN
+                 END-IF
+      *
                  EVALUATE    SRY-SRYCD(IDX2)
       *±ý¿Ç¡ÊÆÃÊÌ±ý¿Ç¡Ë
                    WHEN    "114000110"
@@ -3519,6 +3636,101 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE     3         TO    FLG-OSINKBN
                    END-IF
                  END-EVALUATE
+      *
+                 IF    RECE41-SRYYM   >=  "201404"
+                  EVALUATE    SRY-SRYCD(IDX2)
+      *            ±ý¿Ç
+                   WHEN    "114000110"
+                     PERFORM  VARYING  IDX19  FROM  2  BY  1
+                               UNTIL   IDX19   >   10
+                       COMPUTE  IDX21 = IDX19 - 1
+                       PERFORM  VARYING  IDX20  FROM  1  BY  1
+                                 UNTIL   IDX20   >   31
+                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
+                          ADD    ACCT-DAY(IDX19 IDX20)
+                                   TO  TBL-ZAITAKU-KAISU(1 IDX21 IDX20)
+                        END-IF
+                       END-PERFORM
+                     END-PERFORM
+                     MOVE  1  TO  FLG-ZAITAKU-CHECK
+      *            ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡Ê±ý¿Ç¡Ë
+                   WHEN    "114000970"
+                    IF  FLG-ZAITAKU-CHECK = ZERO
+                     PERFORM  VARYING  IDX19  FROM  2  BY  1
+                               UNTIL   IDX19   >   10
+                       COMPUTE  IDX21 = IDX19 - 1
+                       PERFORM  VARYING  IDX20  FROM  1  BY  1
+                                 UNTIL   IDX20   >   31
+                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
+                          ADD    ACCT-DAY(IDX19 IDX20)
+                                   TO  TBL-ZAITAKU-KAISU(2 IDX21 IDX20)
+                        END-IF
+                       END-PERFORM
+                     END-PERFORM
+                    END-IF
+      *            ÆÃÊÌ±ý¿Ç
+                   WHEN    "114001610"
+                     PERFORM  VARYING  IDX19  FROM  2  BY  1
+                               UNTIL   IDX19   >   10
+                       COMPUTE  IDX21 = IDX19 - 1
+                       PERFORM  VARYING  IDX20  FROM  1  BY  1
+                                 UNTIL   IDX20   >   31
+                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
+                          ADD    ACCT-DAY(IDX19 IDX20)
+                                   TO  TBL-ZAITAKU-KAISU(3 IDX21 IDX20)
+                        END-IF
+                       END-PERFORM
+                     END-PERFORM
+                     MOVE  1  TO  FLG-ZAITAKU-CHECK
+      *            ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡ÊÆÃÊÌ±ý¿Ç¡Ë
+                   WHEN    "114002470"
+                    IF  FLG-ZAITAKU-CHECK = ZERO
+                     PERFORM  VARYING  IDX19  FROM  2  BY  1
+                               UNTIL   IDX19   >   10
+                       COMPUTE  IDX21 = IDX19 - 1
+                       PERFORM  VARYING  IDX20  FROM  1  BY  1
+                                 UNTIL   IDX20   >   31
+                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
+                          ADD    ACCT-DAY(IDX19 IDX20)
+                                   TO  TBL-ZAITAKU-KAISU(4 IDX21 IDX20)
+                        END-IF
+                       END-PERFORM
+                     END-PERFORM
+                    END-IF
+      *            ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ
+                   WHEN    "114001110"
+                   WHEN    "114012910"
+                   WHEN    "114018010"
+                     PERFORM  VARYING  IDX19  FROM  2  BY  1
+                               UNTIL   IDX19   >   10
+                       COMPUTE  IDX21 = IDX19 - 1
+                       PERFORM  VARYING  IDX20  FROM  1  BY  1
+                                 UNTIL   IDX20   >   31
+                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
+                          ADD    ACCT-DAY(IDX19 IDX20)
+                                   TO  TBL-ZAITAKU-KAISU(5 IDX21 IDX20)
+                        END-IF
+                       END-PERFORM
+                     END-PERFORM
+                     MOVE  1  TO  FLG-ZAITAKU-CHECK
+      *            ´µ²È¿ÇÎÅ»þ´Ö²Ã»»¡ÊºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¡Ë
+                   WHEN    "114001470"
+                    IF  FLG-ZAITAKU-CHECK = ZERO
+                     PERFORM  VARYING  IDX19  FROM  2  BY  1
+                               UNTIL   IDX19   >   10
+                       COMPUTE  IDX21 = IDX19 - 1
+                       PERFORM  VARYING  IDX20  FROM  1  BY  1
+                                 UNTIL   IDX20   >   31
+                        IF  ACCT-DAY(IDX19 IDX20) NOT = ZERO
+                          ADD    ACCT-DAY(IDX19 IDX20)
+                                   TO  TBL-ZAITAKU-KAISU(6 IDX21 IDX20)
+                        END-IF
+                       END-PERFORM
+                     END-PERFORM
+                    END-IF
+                  END-EVALUATE
+                 END-IF
+      *
                END-IF
       *
                MOVE    ACCT-ZAIKBN  TO  RECE44-ZAIKBN
@@ -9893,6 +10105,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    ZERO    TO    FLG-SETCOM
                                MOVE    ZERO    TO    WRK-SETCOM-JIDO
                                MOVE    ZERO    TO    WRK-SETCOM-JIDO2
+                               MOVE    ZERO    TO    FLG-ZAITAKU-CHECK
                                PERFORM   21011-RECE44-TENSOU-SEC
                                PERFORM   21012-RECE45-HENSYU-SEC
                                IF    FLG-WRITE45  =   1
@@ -9969,6 +10182,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       MOVE  ZERO  TO  FLG-SETCOM
                                       MOVE  ZERO  TO  WRK-SETCOM-JIDO
                                       MOVE  ZERO  TO  WRK-SETCOM-JIDO2
+                                      MOVE  ZERO  TO  FLG-ZAITAKU-CHECK
                                       IF    ACCT-SRYKBN  =
                                             "60" OR "64" OR "80"
                                         PERFORM 21014-SINRYO-CHECK-SEC
