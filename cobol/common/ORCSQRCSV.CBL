@@ -36,6 +36,7 @@
       *  04.06.00    NACL-Â¿¡¹Ç¼  12/08/17  Ìô²Á´ð½à¥³¡¼¥ÉÊÑ´¹ÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  12/09/27  °å»Õ¥³¡¼¥ÉÅùÊÔ½¸ÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  13/03/27  °ìÈÌÌ¾Îã³°¥Æ¡¼¥Ö¥ë´ü´ÖÂÐ±þ
+      *  04.07.00    NACL-Â¿¡¹Ç¼  14/05/XX  ÆâÉþ£±²óÎÌÂÐ±þ
       *****************************************************************
       *
       *
@@ -106,6 +107,9 @@
            03  TBL-MAX             PIC 9(04).
            03  IDX-B2              PIC 9(03).
       *
+           03  IDXF                PIC 9(04).
+           03  IDXF2               PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-POINT-AREA.
@@ -155,6 +159,8 @@
            03  WRK-YAKKAKJNCD          PIC X(12).
            03  WRK-GENERIC-STYMD       PIC X(08).
            03  WRK-GENERIC-EDYMD       PIC X(08).
+      *
+           03  WRK-KEI-SURYO           PIC 9(05)V9(05).
       *
       *    £Ñ£Ò¥Æ¡¼¥Ö¥ë
        01  TBL-QRCSV-AREA.
@@ -1036,6 +1042,14 @@
                PERFORM 400-DATAOUT-SEC
            END-IF
       *
+      *H26.5
+      *    £±²óÉþÍÑÎÌ¥ì¥³¡¼¥É
+           IF     (ORCSQRCSV-SURYOU-SG (IDX IDX2)  NOT =   ZERO)
+              AND (ORCSQRCSV-KAISU-SG  (IDX IDX2)  NOT =   ZERO)
+               PERFORM 20032-RP241-SYORI-SEC
+           END-IF
+      *
+      *
            MOVE    ZERO                TO   WRK-RP2-1
       *    Á°¤ËÇËºÕ¤¬¤¢¤ë»þ
            COMPUTE IDX3                =   IDX2  -  1
@@ -1087,6 +1101,57 @@
            END-IF
            .
        20039-GENERICCD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £±²óÉþÍÑÎÌ¥ì¥³¡¼¥ÉºîÀ®½èÍý
+      *****************************************************************
+       20032-RP241-SYORI-SEC         SECTION.
+      *
+           COMPUTE WRK-KEI-SURYO  =   ORCSQRCSV-SURYOU-SG (IDX IDX2)
+                                  *   ORCSQRCSV-KAISU-SG  (IDX IDX2)
+           IF      WRK-KEI-SURYO      =    ORCSQRCSV-SURYOU(IDX IDX2)
+      *    ÉþÍÑÎÌ¡ßÉþÍÑ²ó¿ô¡á¿ôÎÌ
+               MOVE    SPACE               TO  TBL-QRCSV-AREA
+               MOVE    "241"               TO  TBL-QRCSV-DATA (1)
+               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+               MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
+      *        £±²óÉþÍÑÎÌ
+               MOVE    ORCSQRCSV-SURYOU-SG (IDX IDX2)
+                                           TO  WRK-SURYO
+               PERFORM 20031-SURYO-HEN-SEC
+               MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA (4)
+      *        £±ÆüÉþÍÑ²ó¿ô
+               MOVE    ORCSQRCSV-KAISU-SG (IDX IDX2)
+                                           TO  WRK-SURYO
+               PERFORM 20031-SURYO-HEN-SEC
+               MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA (5)
+               MOVE    5                   TO  TBL-MAX
+               PERFORM 400-DATAOUT-SEC
+           ELSE
+      *        ÉÔ¶ÑÅù¥ì¥³¡¼¥É
+               MOVE    SPACE               TO  TBL-QRCSV-AREA
+               MOVE    "221"               TO  TBL-QRCSV-DATA (1)
+               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+               MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
+      *        £±²óÉþÍÑÎÌ
+               MOVE    ORCSQRCSV-SURYOU-SG (IDX IDX2)
+                                           TO  WRK-SURYO
+               PERFORM 20031-SURYO-HEN-SEC
+               MOVE    3                   TO  IDXF
+               PERFORM VARYING    IDXF2    FROM    1   BY  1
+                       UNTIL     (IDXF2    >   ORCSQRCSV-KAISU-SG
+                                                         (IDX IDX2))
+                              OR (IDXF2    >   5    )
+                   ADD     1               TO  IDXF
+                   PERFORM 20031-SURYO-HEN-SEC
+                   MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA(IDXF)
+               END-PERFORM
+               MOVE    IDXF                TO  TBL-MAX
+               PERFORM 400-DATAOUT-SEC
+           END-IF
+           .
+       20032-RP241-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

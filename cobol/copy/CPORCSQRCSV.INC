@@ -100,6 +100,11 @@
                        09  ORCSQRCSV-YCOMMNTKBN       PIC X(01).
       *                一般名コード
                        09  ORCSQRCSV-YAKKAKJNCD       PIC X(13).
+      *H26.5
+      *                内服１回量
+                       09  ORCSQRCSV-SURYOU-SG        PIC 9(05)V9(05).
+      *                内服服用回数
+                       09  ORCSQRCSV-KAISU-SG         PIC 9(03).
       *    ファイル名組み立て項目
            03  ORCSQRCSV-SYSTIME       PIC 9(08).
       *    エラーコード
