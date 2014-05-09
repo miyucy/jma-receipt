@@ -72,6 +72,7 @@ db	{
 	tbl_syskanri;
 	tbl_syuka;
 	tbl_sysuser;
+	tbl_efout;
 };
 
 /* #include "orcadb.inc" */

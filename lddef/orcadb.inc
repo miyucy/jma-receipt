@@ -186,4 +186,5 @@ db	{
 	tbl_ptcare_hkninf;
 	tbl_ptcare_nintei;
 	tbl_hknjainf_care;
+	tbl_efout;
 };
