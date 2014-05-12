@@ -72,15 +72,6 @@
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *  04.07.02    NACL-藤原    14/03/30  平成２６年４月改正対応
-      *  04.07.03    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    16/09/13  公費番号まとめ情報の公費番号
-      *                                     の追加
-      *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -118,9 +109,11 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
            COPY    "HCM2WV01.INC"  REPLACING  //HCM2WV01//
                                    BY         //HCM2W//.
@@ -173,8 +166,6 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-HKNJANUM   PIC X(08).
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-SYOKBN1    PIC X(01).
-           03  WRK-PARA-STSRYYM    PIC 9(06).
-           03  WRK-PARA-EDSRYYM    PIC 9(06).
            03  WRK-PARA-PAGE       PIC 9(10).
       *
       *    一時領域
@@ -188,6 +179,9 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
+      *
+           03  WRK-RECEERR         PIC X(200). 
+           03  WRK-ERRMSG          PIC X(300). 
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -219,28 +213,15 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
                05  WRK-HOSPADRS1       PIC X(50).
                05  WRK-HOSPADRS2       PIC X(50).
-           03  WRK-KAISETUNAME         PIC X(80).
       *
            03  WRK-MEISYO          PIC X(44).
-      *
-       01  WRK-ERR-AREA.
-           03  WRK-RECEERR                         PIC X(200).
-           03  WRK-ERRMSG                          PIC X(300).
-           03  WRK-MCP-RC                          PIC 9(9).
-           03  WRK-ERR-FILE-STS                    PIC X(02).
-           03  WRK-ERR-FILE-MSG                    PIC X(100).
-           03  WRK-ERR-FILE-MSG1                   PIC X(17).
-           03  WRK-ERR-FLG                         PIC 9(01).
-      *    エラーファイル名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //WRK-ERR-FILE-NM//.
       *
        01  WRK-2007-AREA.
            03  WRK-2007-TBL        OCCURS  100.
                05  WRK-2007-MEISYO PIC X(44).
                05  WRK-2007-KOH-AREA.
                    07  WRK-2007-KOHNUM
-                                   PIC X(03)   OCCURS  30.
+                                   PIC X(03)   OCCURS  10.
            03  WRK-2007-MAX        PIC 9(03).
       *
        01  WRK-2010-AREA.
@@ -338,7 +319,6 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
       *
            COPY    "CPSK2007.INC".
       *
@@ -372,8 +352,6 @@ grpsys COPY    "COMMON-SPA".
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -414,7 +392,6 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  SUM-AREA
                                        SPA-AREA
                                        WRK-PARA
-           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -437,15 +414,9 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-HKNJANUM
                                                WRK-PARA-SYOKBN
                                                WRK-PARA-SYOKBN1
-                                               WRK-PARA-STSRYYM
-                                               WRK-PARA-EDSRYYM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           DISPLAY "WRK-PARA-STSRYYM   ="  WRK-PARA-STSRYYM
-           DISPLAY "WRK-PARA-EDSRYYM   ="  WRK-PARA-EDSRYYM
-      *
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -460,16 +431,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  RECEUPD-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  RECEUPD-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECEUPD-BASENAME    TO  SGETTEMP-BASENAMES  (2)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECEUPD
       *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)
@@ -496,11 +457,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            INITIALIZE              SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1001-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1001-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1001-STYUKYMD (7:2)
            MOVE    SYS-1001-STYUKYMD
                                    TO  SYS-1001-EDYUKYMD
@@ -527,11 +485,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            INITIALIZE              SYS-1002-REC
            MOVE    "1002"          TO  SYS-1002-KANRICD
            MOVE    "*"             TO  SYS-1002-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1002-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1002-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1002-STYUKYMD (7:2)
            MOVE    SYS-1002-STYUKYMD
                                    TO  SYS-1002-EDYUKYMD
@@ -551,8 +506,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            END-IF 
       *
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
@@ -586,20 +539,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
       *
                ADD     1                   TO  IDX
                MOVE    SYS-2007-MEISYO (1) TO  WRK-2007-MEISYO   (IDX)
-               MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       10
                        OR      SYS-2007-KOHNUM (IDY)   =   SPACE
-                   ADD     1               TO  IDZ
                    MOVE    SYS-2007-KOHNUM (IDY)
-                                           TO WRK-2007-KOHNUM (IDX IDZ)
-               END-PERFORM
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       20
-                       OR      SYS-2007-KOHNUM1(IDY)   =   SPACE
-                   ADD     1               TO  IDZ
-                   MOVE    SYS-2007-KOHNUM1(IDY)
-                                           TO WRK-2007-KOHNUM (IDX IDZ)
+                                           TO WRK-2007-KOHNUM (IDX IDY)
                END-PERFORM
       *
                MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
@@ -1062,7 +1006,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                        PERFORM VARYING IDZ1    FROM    1   BY  1
                                UNTIL   IDZ1    >       WRK-2007-MAX
                            PERFORM VARYING IDZ2    FROM    1   BY  1
-                                   UNTIL   IDZ2    >       30
+                                   UNTIL   IDZ2    >       10
                                    OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
                                                    =   SPACE
                                IF      RECE10-KOHNUM (IDZ)
@@ -1071,7 +1015,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                                                TO  RECE10-KOHNUM (IDZ)
                                    MOVE    WRK-2007-MEISYO (IDZ1)
                                                TO  WRK-MEISYO
-                                   MOVE    30  TO  IDZ2
+                                   MOVE    10  TO  IDZ2
                                    MOVE    WRK-2007-MAX
                                                TO  IDZ1
                                END-IF
@@ -1206,7 +1150,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
            MOVE    WRK-HOSPNAME        TO  HCM2W-HOSPNAME
            INSPECT HCM2W-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *    
-           MOVE    WRK-KAISETUNAME     TO  HCM2W-KAISETUNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCM2W-KAISETUNAME
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2W-HOSPCD
       *
@@ -1862,15 +1807,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
                MOVE    ZERO            TO  FLG-RECE10
                MOVE    MCPDATA-REC         TO  RECE10-REC
       *
-               IF      WRK-PARA-STSRYYM    =   "999999"
-                   CONTINUE
-               ELSE
-                   IF    ( RECE10-SRYYM    <   WRK-PARA-STSRYYM )
-                   OR    ( RECE10-SRYYM    >   WRK-PARA-EDSRYYM )
-                       GO  TO  900-SEIKYU-READ-SEC
-                   END-IF
-               END-IF
-      *
       *        返戻分でオンライン請求分は読み飛ばす
                IF    ( WRK-SYOKBN      =   "2" )
                AND   ( RECE10-HENREI-SIJI-FLG
@@ -1966,11 +1902,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
            MOVE    "*"             TO  SYS-1900-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1900-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1900-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1900-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
            MOVE    SYS-1900-STYUKYMD
                                    TO  SYS-1900-EDYUKYMD
@@ -1984,8 +1917,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                 END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -2006,11 +1937,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
            MOVE    "1901"          TO  SYS-1901-KANRICD
            MOVE    SYS-1900-PRTKBN(8)
                                    TO  SYS-1901-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1901-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1901-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1901-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
            MOVE    SYS-1901-STYUKYMD
                                    TO  SYS-1901-EDYUKYMD
@@ -2040,11 +1968,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
            MOVE    "1902"          TO  SYS-1902-KANRICD
            MOVE    SYS-1900-PRTKBN(8)
                                    TO  SYS-1902-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1902-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1902-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1902-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
            MOVE    SYS-1902-STYUKYMD
                                    TO  SYS-1902-EDYUKYMD
@@ -2061,39 +1986,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(8)
-                                   TO  SYS-1903-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1903-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1903-STYUKYMD (1:6)
-           END-IF
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-KEY10-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2245,34 +2137,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               MOVE    SPACE               TO  WRK-ERR-AREA
-               INITIALIZE                      WRK-ERR-AREA
-               MOVE    MCP-RC              TO  WRK-MCP-RC
-      *
-               STRING  "ＤＢ読み込みエラー　TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                                           INTO    WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-      *
-               STRING  "ORCBM029 select err TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " PATHNAME="        DELIMITED   BY  SIZE
-                       MCP-PATHNAME        DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                       LOW-VALUE           DELIMITED   BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING
-               CALL    "cobabort"          USING   WRK-ERRMSG
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
            END-IF
            .
        900-DBSELECT-EXT.
