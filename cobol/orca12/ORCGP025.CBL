@@ -496,25 +496,12 @@
                    PERFORM 470-KYUSEI-DELETE-SEC
       *
                WHEN    "CLICKED"       ALSO     ANY
-                   PERFORM 4101-BETUGAMEN-SEC
+                   MOVE    "0110"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-GMN25-CUR
            END-EVALUATE
       *
            .
        200-GMNSENI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    タグ変更・別画面切替　表示処理
-      *****************************************************************
-       4101-BETUGAMEN-SEC          SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-      *    他画面
-               WHEN    OTHER
-                   PERFORM 490-TOUROKU-SEC
-           END-EVALUATE
-           .
-       4101-BETUGAMEN-EXT.
            EXIT.
       *
       *****************************************************************

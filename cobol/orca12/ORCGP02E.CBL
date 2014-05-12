@@ -1946,11 +1946,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        520-JIDSET-SEC              SECTION.
       *
-           EVALUATE    SPA-PIDCD
-               WHEN    OTHER
+      *    EVALUATE    SPA-PIDCD
+      *        WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
-           END-EVALUATE
+      *!!  END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
@@ -1959,12 +1959,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
            MOVE    "Ã·§Î"              TO  PID1-B01
            MOVE    "£œ£À"              TO  PID1-B12
-           EVALUATE    SPA-PIDCD
-               WHEN    "0103"
-                   MOVE    "B01"               TO  MCP-WIDGET
-               WHEN    OTHER
+      ***  EVALUATE    SPA-PIDCD
+      *        WHEN    "0103"
+      *            MOVE    "B01"               TO  MCP-WIDGET
+      ***      WHEN    OTHER
                    MOVE    "B12"               TO  MCP-WIDGET
-           END-EVALUATE
+      *****END-EVALUATE
       *
            MOVE    "P02E"              TO  SPA-MOTOPG
            MOVE    "PID1"              TO  SPA-SAKIPG
