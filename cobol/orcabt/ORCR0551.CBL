@@ -36,6 +36,8 @@
       *                                     漢字モードの継続するスペース
       *                                     の記録方法の変更
       *  04.07.04    NACL-門脇    14/04/07  平成２６年４月改正対応
+      *  04.07.05    NACL-門脇    14/05/08  救急医療管理加算の算定日記載
+      *                                     やめる
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7343,11 +7345,12 @@
            IF (( RECE41-KYUKYU-PRTKBN    =      1         ) AND
                ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  ) AND
                ( RECE41-SRYYM           <=   "201306"     ))
-           OR (( RECE41-KYUKYU-PRTKBN    =      1         ) AND
-               ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU2 ) AND
-               ( RECE41-SRYYM           >=   "201307"     ))
+      ***  OR (( RECE41-KYUKYU-PRTKBN    =      1         ) AND
+      ***      ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU2 ) AND
+      ***      ( RECE41-SRYYM           >=   "201307"     ))
            OR (( RECE44-JIBAISYUKEIKBN   =      4         ) AND
-               ( RECE44-SRYCDTOTAL(6:5)  =   "09593"      ))
+               ( RECE44-SRYCDTOTAL(6:5)  =   "09593"      ) AND
+               ( RECE41-SRYYM           <=   "201306"     ))
                MOVE    SPACE   TO   WRK-TAIHI-SRYYMD
                IF  (RECE44-JIBAISYUKEIKBN   =    4   )
                AND (RECE44-SRYCDTOTAL(6:5)  = "09593")
