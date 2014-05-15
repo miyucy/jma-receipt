@@ -1125,7 +1125,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                WHEN    "T"
                    MOVE    "レセプト新規作成"  TO  SPA-GMN-SYOKBN-LABEL
                    MOVE    SPACE               TO  SPA-GMN-PRTKBN-LABEL
-                   IF      SPA-R01-PRTKBN      =   "2"
+                   IF      SPA-R01-PRTKBN      =   "1" OR  "8" OR  "9"
+                     CONTINUE
+                   ELSE
                      EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
                                ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
                        WHEN    "1"     ALSO     "0"
