@@ -1,58 +1,58 @@
-Z100	{
-	fixed1	{
-		ID1CODE	{
-			value	varchar(10);
-		};
-		ID1MSG	{
-			value	varchar(80);
-		};
-		FILENAME1	{
-			value	varchar(100);
-			state	int;
-		};
-		FILENAME2	{
-			value	varchar(100);
-			state	int;
-		};
-		FILENAME3	{
-			value	varchar(100);
-			state	int;
-		};
-		FILENAME4	{
-			value	varchar(100);
-			state	int;
-		};
-		FILENAME5	{
-			value	varchar(100);
-			state	int;
-		};
-		FILENAME6	{
-			value	varchar(100);
-			state	int;
-		};
-		FILENAME7	{
-			value	varchar(100);
-			state	int;
-		};
-		FILENAME8	{
-			value	varchar(100);
-			state	int;
-		};
-		FILE_COMBO	{
-			state	int;
-			FILE	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[6];
-		};
-		CDKBN_COMBO	{
-			state	int;
-			CDKBN	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[5];
-		};
-	};
+Z100 {
+  fixed1 {
+    ID1CODE {
+      textdata varchar(10);
+    };
+    ID1MSG {
+      textdata varchar(80);
+    };
+    FILENAME1 {
+      textdata varchar(100);
+      state int;
+    };
+    FILENAME2 {
+      textdata varchar(100);
+      state int;
+    };
+    FILENAME3 {
+      textdata varchar(100);
+      state int;
+    };
+    FILENAME4 {
+      textdata varchar(100);
+      state int;
+    };
+    FILENAME5 {
+      textdata varchar(100);
+      state int;
+    };
+    FILENAME6 {
+      textdata varchar(100);
+      state int;
+    };
+    FILENAME7 {
+      textdata varchar(100);
+      state int;
+    };
+    FILENAME8 {
+      textdata varchar(100);
+      state int;
+    };
+    FILE_COMBO {
+      state int;
+      FILE {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[6];
+    };
+    CDKBN_COMBO {
+      state int;
+      CDKBN {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[5];
+    };
+  };
 };

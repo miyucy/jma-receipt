@@ -1,24 +1,24 @@
-P02H	{
-	fixed10	{
-		HBTNUM	{
-			value	varchar(3);
-		};
-		SELNUM	{
-			value	number(3);
-		};
-		scrolledwindow1	{
-			hpos	int;
-			vpos	int;
-			HBTNUMLST	{
-				count	int;
-				row	int;
-				item	{
-					value0	varchar(2);
-					value1	varchar(3);
-					value2	varchar(20);
-				}	[50];
-				select	bool[50];
-			};
-		};
-	};
+P02H {
+  fixed10 {
+    HBTNUM {
+      textdata varchar(3);
+    };
+    SELNUM {
+      numdata number(3);
+    };
+    scrolledwindow1 {
+      hpos int;
+      vpos int;
+      HBTNUMLST {
+        count int;
+        row int;
+          item {
+            column1 varchar(2);
+            column2 varchar(3);
+            column3 varchar(20);
+          }[50];
+          selectdata bool[50];
+      };
+    };
+  };
 };

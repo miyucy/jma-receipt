@@ -1,819 +1,819 @@
-W14	{
-	fixed2	{
-		STYUKYMD	{
-			value	varchar(9);
-		};
-		EDYUKYMD	{
-			value	varchar(9);
-		};
-		CD01	{
-			value	varchar(4);
-		};
-		CD02	{
-			value	varchar(4);
-		};
-		CD03	{
-			value	varchar(4);
-		};
-		CD04	{
-			value	varchar(4);
-		};
-		CD05	{
-			value	varchar(4);
-		};
-		CD06	{
-			value	varchar(4);
-		};
-		CD07	{
-			value	varchar(4);
-		};
-		CD08	{
-			value	varchar(4);
-		};
-		CD09	{
-			value	varchar(4);
-		};
-		CD10	{
-			value	varchar(4);
-		};
-		CD11	{
-			value	varchar(4);
-		};
-		CD12	{
-			value	varchar(4);
-		};
-		CD13	{
-			value	varchar(4);
-		};
-		CD14	{
-			value	varchar(4);
-		};
-		CD15	{
-			value	varchar(4);
-		};
-		CD16	{
-			value	varchar(4);
-		};
-		CD17	{
-			value	varchar(4);
-		};
-		CD18	{
-			value	varchar(4);
-		};
-		CD19	{
-			value	varchar(4);
-		};
-		CD20	{
-			value	varchar(4);
-		};
-		CD21	{
-			value	varchar(4);
-		};
-		CD22	{
-			value	varchar(4);
-		};
-		CD23	{
-			value	varchar(4);
-		};
-		CD24	{
-			value	varchar(4);
-		};
-		CD25	{
-			value	varchar(4);
-		};
-		SHELLID01	{
-			value	varchar(20);
-		};
-		SHELLID02	{
-			value	varchar(20);
-		};
-		SHELLID03	{
-			value	varchar(20);
-		};
-		SHELLID04	{
-			value	varchar(20);
-		};
-		SHELLID05	{
-			value	varchar(20);
-		};
-		SHELLID06	{
-			value	varchar(20);
-		};
-		SHELLID07	{
-			value	varchar(20);
-		};
-		SHELLID08	{
-			value	varchar(20);
-		};
-		SHELLID09	{
-			value	varchar(20);
-		};
-		SHELLID10	{
-			value	varchar(20);
-		};
-		SHELLID11	{
-			value	varchar(20);
-		};
-		SHELLID12	{
-			value	varchar(20);
-		};
-		SHELLID13	{
-			value	varchar(20);
-		};
-		SHELLID14	{
-			value	varchar(20);
-		};
-		SHELLID15	{
-			value	varchar(20);
-		};
-		SHELLID16	{
-			value	varchar(20);
-		};
-		SHELLID17	{
-			value	varchar(20);
-		};
-		SHELLID18	{
-			value	varchar(20);
-		};
-		SHELLID19	{
-			value	varchar(20);
-		};
-		SHELLID20	{
-			value	varchar(20);
-		};
-		SHELLID21	{
-			value	varchar(20);
-		};
-		SHELLID22	{
-			value	varchar(20);
-		};
-		SHELLID23	{
-			value	varchar(20);
-		};
-		SHELLID24	{
-			value	varchar(20);
-		};
-		SHELLID25	{
-			value	varchar(20);
-		};
-		SHORIMSG01	{
-			value	varchar(40);
-		};
-		SHORIMSG02	{
-			value	varchar(40);
-		};
-		SHORIMSG03	{
-			value	varchar(40);
-		};
-		SHORIMSG04	{
-			value	varchar(40);
-		};
-		SHORIMSG05	{
-			value	varchar(40);
-		};
-		SHORIMSG06	{
-			value	varchar(40);
-		};
-		SHORIMSG07	{
-			value	varchar(40);
-		};
-		SHORIMSG08	{
-			value	varchar(40);
-		};
-		SHORIMSG09	{
-			value	varchar(40);
-		};
-		SHORIMSG10	{
-			value	varchar(40);
-		};
-		SHORIMSG11	{
-			value	varchar(40);
-		};
-		SHORIMSG12	{
-			value	varchar(40);
-		};
-		SHORIMSG13	{
-			value	varchar(40);
-		};
-		SHORIMSG14	{
-			value	varchar(40);
-		};
-		SHORIMSG15	{
-			value	varchar(40);
-		};
-		SHORIMSG16	{
-			value	varchar(40);
-		};
-		SHORIMSG17	{
-			value	varchar(40);
-		};
-		SHORIMSG18	{
-			value	varchar(40);
-		};
-		SHORIMSG19	{
-			value	varchar(40);
-		};
-		SHORIMSG20	{
-			value	varchar(40);
-		};
-		SHORIMSG21	{
-			value	varchar(40);
-		};
-		SHORIMSG22	{
-			value	varchar(40);
-		};
-		SHORIMSG23	{
-			value	varchar(40);
-		};
-		SHORIMSG24	{
-			value	varchar(40);
-		};
-		SHORIMSG25	{
-			value	varchar(40);
-		};
-		CHKBTN001	{
-			value	bool;
-		};
-		CHKBTN002	{
-			value	bool;
-		};
-		CHKBTN003	{
-			value	bool;
-		};
-		CHKBTN004	{
-			value	bool;
-		};
-		CHKBTN005	{
-			value	bool;
-		};
-		CHKBTN006	{
-			value	bool;
-		};
-		CHKBTN007	{
-			value	bool;
-		};
-		CHKBTN008	{
-			value	bool;
-		};
-		CHKBTN009	{
-			value	bool;
-		};
-		CHKBTN010	{
-			value	bool;
-		};
-		CHKBTN011	{
-			value	bool;
-		};
-		CHKBTN012	{
-			value	bool;
-		};
-		CHKBTN013	{
-			value	bool;
-		};
-		CHKBTN014	{
-			value	bool;
-		};
-		CHKBTN015	{
-			value	bool;
-		};
-		CHKBTN016	{
-			value	bool;
-		};
-		CHKBTN017	{
-			value	bool;
-		};
-		CHKBTN018	{
-			value	bool;
-		};
-		CHKBTN019	{
-			value	bool;
-		};
-		CHKBTN020	{
-			value	bool;
-		};
-		CHKBTN021	{
-			value	bool;
-		};
-		CHKBTN022	{
-			value	bool;
-		};
-		CHKBTN023	{
-			value	bool;
-		};
-		CHKBTN024	{
-			value	bool;
-		};
-		CHKBTN025	{
-			value	bool;
-		};
-		CHKBTN026	{
-			value	bool;
-		};
-		CHKBTN027	{
-			value	bool;
-		};
-		CHKBTN028	{
-			value	bool;
-		};
-		CHKBTN029	{
-			value	bool;
-		};
-		CHKBTN030	{
-			value	bool;
-		};
-		CHKBTN031	{
-			value	bool;
-		};
-		CHKBTN032	{
-			value	bool;
-		};
-		CHKBTN033	{
-			value	bool;
-		};
-		CHKBTN034	{
-			value	bool;
-		};
-		CHKBTN035	{
-			value	bool;
-		};
-		CHKBTN036	{
-			value	bool;
-		};
-		CHKBTN037	{
-			value	bool;
-		};
-		CHKBTN038	{
-			value	bool;
-		};
-		CHKBTN039	{
-			value	bool;
-		};
-		CHKBTN040	{
-			value	bool;
-		};
-		CHKBTN041	{
-			value	bool;
-		};
-		CHKBTN042	{
-			value	bool;
-		};
-		CHKBTN043	{
-			value	bool;
-		};
-		CHKBTN044	{
-			value	bool;
-		};
-		CHKBTN045	{
-			value	bool;
-		};
-		CHKBTN046	{
-			value	bool;
-		};
-		CHKBTN047	{
-			value	bool;
-		};
-		CHKBTN048	{
-			value	bool;
-		};
-		CHKBTN049	{
-			value	bool;
-		};
-		CHKBTN050	{
-			value	bool;
-		};
-		CHKBTN051	{
-			value	bool;
-		};
-		CHKBTN052	{
-			value	bool;
-		};
-		CHKBTN053	{
-			value	bool;
-		};
-		CHKBTN054	{
-			value	bool;
-		};
-		CHKBTN055	{
-			value	bool;
-		};
-		CHKBTN056	{
-			value	bool;
-		};
-		CHKBTN057	{
-			value	bool;
-		};
-		CHKBTN058	{
-			value	bool;
-		};
-		CHKBTN059	{
-			value	bool;
-		};
-		CHKBTN060	{
-			value	bool;
-		};
-		CHKBTN061	{
-			value	bool;
-		};
-		CHKBTN062	{
-			value	bool;
-		};
-		CHKBTN063	{
-			value	bool;
-		};
-		CHKBTN064	{
-			value	bool;
-		};
-		CHKBTN065	{
-			value	bool;
-		};
-		CHKBTN066	{
-			value	bool;
-		};
-		CHKBTN067	{
-			value	bool;
-		};
-		CHKBTN068	{
-			value	bool;
-		};
-		CHKBTN069	{
-			value	bool;
-		};
-		CHKBTN070	{
-			value	bool;
-		};
-		CHKBTN071	{
-			value	bool;
-		};
-		CHKBTN072	{
-			value	bool;
-		};
-		CHKBTN073	{
-			value	bool;
-		};
-		CHKBTN074	{
-			value	bool;
-		};
-		CHKBTN075	{
-			value	bool;
-		};
-		CHKBTN076	{
-			value	bool;
-		};
-		CHKBTN077	{
-			value	bool;
-		};
-		CHKBTN078	{
-			value	bool;
-		};
-		CHKBTN079	{
-			value	bool;
-		};
-		CHKBTN080	{
-			value	bool;
-		};
-		CHKBTN081	{
-			value	bool;
-		};
-		CHKBTN082	{
-			value	bool;
-		};
-		CHKBTN083	{
-			value	bool;
-		};
-		CHKBTN084	{
-			value	bool;
-		};
-		CHKBTN085	{
-			value	bool;
-		};
-		CHKBTN086	{
-			value	bool;
-		};
-		CHKBTN087	{
-			value	bool;
-		};
-		CHKBTN088	{
-			value	bool;
-		};
-		CHKBTN089	{
-			value	bool;
-		};
-		CHKBTN090	{
-			value	bool;
-		};
-		CHKBTN091	{
-			value	bool;
-		};
-		CHKBTN092	{
-			value	bool;
-		};
-		CHKBTN093	{
-			value	bool;
-		};
-		CHKBTN094	{
-			value	bool;
-		};
-		CHKBTN095	{
-			value	bool;
-		};
-		CHKBTN096	{
-			value	bool;
-		};
-		CHKBTN097	{
-			value	bool;
-		};
-		CHKBTN098	{
-			value	bool;
-		};
-		CHKBTN099	{
-			value	bool;
-		};
-		CHKBTN100	{
-			value	bool;
-		};
-		PRTNM01	{
-			value	varchar(16);
-		};
-		PRTNM02	{
-			value	varchar(16);
-		};
-		PRTNM03	{
-			value	varchar(16);
-		};
-		PRTNM04	{
-			value	varchar(16);
-		};
-		PRTNM05	{
-			value	varchar(16);
-		};
-		PRTNM06	{
-			value	varchar(16);
-		};
-		PRTNM07	{
-			value	varchar(16);
-		};
-		PRTNM08	{
-			value	varchar(16);
-		};
-		PRTNM09	{
-			value	varchar(16);
-		};
-		PRTNM10	{
-			value	varchar(16);
-		};
-		PRTNM11	{
-			value	varchar(16);
-		};
-		PRTNM12	{
-			value	varchar(16);
-		};
-		PRTNM13	{
-			value	varchar(16);
-		};
-		PRTNM14	{
-			value	varchar(16);
-		};
-		PRTNM15	{
-			value	varchar(16);
-		};
-		PRTNM16	{
-			value	varchar(16);
-		};
-		PRTNM17	{
-			value	varchar(16);
-		};
-		PRTNM18	{
-			value	varchar(16);
-		};
-		PRTNM19	{
-			value	varchar(16);
-		};
-		PRTNM20	{
-			value	varchar(16);
-		};
-		PRTNM21	{
-			value	varchar(16);
-		};
-		PRTNM22	{
-			value	varchar(16);
-		};
-		PRTNM23	{
-			value	varchar(16);
-		};
-		PRTNM24	{
-			value	varchar(16);
-		};
-		PRTNM25	{
-			value	varchar(16);
-		};
-		PARAKBN01_COMBO	{
-			PARAKBN01	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN02_COMBO	{
-			PARAKBN02	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN03_COMBO	{
-			PARAKBN03	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN04_COMBO	{
-			PARAKBN04	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN05_COMBO	{
-			PARAKBN05	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN06_COMBO	{
-			PARAKBN06	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN07_COMBO	{
-			PARAKBN07	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN08_COMBO	{
-			PARAKBN08	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN09_COMBO	{
-			PARAKBN09	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN10_COMBO	{
-			PARAKBN10	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN11_COMBO	{
-			PARAKBN11	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN12_COMBO	{
-			PARAKBN12	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN13_COMBO	{
-			PARAKBN13	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN14_COMBO	{
-			PARAKBN14	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN15_COMBO	{
-			PARAKBN15	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN16_COMBO	{
-			PARAKBN16	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN17_COMBO	{
-			PARAKBN17	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN18_COMBO	{
-			PARAKBN18	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN19_COMBO	{
-			PARAKBN19	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN20_COMBO	{
-			PARAKBN20	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN21_COMBO	{
-			PARAKBN21	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN22_COMBO	{
-			PARAKBN22	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN23_COMBO	{
-			PARAKBN23	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN24_COMBO	{
-			PARAKBN24	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PARAKBN25_COMBO	{
-			PARAKBN25	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		PRTKBN11	{
-			value	bool;
-		};
-		PRTKBN12	{
-			value	bool;
-		};
-		PRTKBN21	{
-			value	bool;
-		};
-		PRTKBN22	{
-			value	bool;
-		};
-		PRTKBN31	{
-			value	bool;
-		};
-		PRTKBN32	{
-			value	bool;
-		};
-		PRTKBN41	{
-			state	int;
-			value	bool;
-		};
-		PRTKBN42	{
-			state	int;
-			value	bool;
-		};
-		PRTKBN51	{
-			state	int;
-			value	bool;
-		};
-		PRTKBN52	{
-			state	int;
-			value	bool;
-		};
-	};
+W14 {
+  fixed2 {
+    STYUKYMD {
+      textdata varchar(9);
+    };
+    EDYUKYMD {
+      textdata varchar(9);
+    };
+    CD01 {
+      textdata varchar(4);
+    };
+    CD02 {
+      textdata varchar(4);
+    };
+    CD03 {
+      textdata varchar(4);
+    };
+    CD04 {
+      textdata varchar(4);
+    };
+    CD05 {
+      textdata varchar(4);
+    };
+    CD06 {
+      textdata varchar(4);
+    };
+    CD07 {
+      textdata varchar(4);
+    };
+    CD08 {
+      textdata varchar(4);
+    };
+    CD09 {
+      textdata varchar(4);
+    };
+    CD10 {
+      textdata varchar(4);
+    };
+    CD11 {
+      textdata varchar(4);
+    };
+    CD12 {
+      textdata varchar(4);
+    };
+    CD13 {
+      textdata varchar(4);
+    };
+    CD14 {
+      textdata varchar(4);
+    };
+    CD15 {
+      textdata varchar(4);
+    };
+    CD16 {
+      textdata varchar(4);
+    };
+    CD17 {
+      textdata varchar(4);
+    };
+    CD18 {
+      textdata varchar(4);
+    };
+    CD19 {
+      textdata varchar(4);
+    };
+    CD20 {
+      textdata varchar(4);
+    };
+    CD21 {
+      textdata varchar(4);
+    };
+    CD22 {
+      textdata varchar(4);
+    };
+    CD23 {
+      textdata varchar(4);
+    };
+    CD24 {
+      textdata varchar(4);
+    };
+    CD25 {
+      textdata varchar(4);
+    };
+    SHELLID01 {
+      textdata varchar(20);
+    };
+    SHELLID02 {
+      textdata varchar(20);
+    };
+    SHELLID03 {
+      textdata varchar(20);
+    };
+    SHELLID04 {
+      textdata varchar(20);
+    };
+    SHELLID05 {
+      textdata varchar(20);
+    };
+    SHELLID06 {
+      textdata varchar(20);
+    };
+    SHELLID07 {
+      textdata varchar(20);
+    };
+    SHELLID08 {
+      textdata varchar(20);
+    };
+    SHELLID09 {
+      textdata varchar(20);
+    };
+    SHELLID10 {
+      textdata varchar(20);
+    };
+    SHELLID11 {
+      textdata varchar(20);
+    };
+    SHELLID12 {
+      textdata varchar(20);
+    };
+    SHELLID13 {
+      textdata varchar(20);
+    };
+    SHELLID14 {
+      textdata varchar(20);
+    };
+    SHELLID15 {
+      textdata varchar(20);
+    };
+    SHELLID16 {
+      textdata varchar(20);
+    };
+    SHELLID17 {
+      textdata varchar(20);
+    };
+    SHELLID18 {
+      textdata varchar(20);
+    };
+    SHELLID19 {
+      textdata varchar(20);
+    };
+    SHELLID20 {
+      textdata varchar(20);
+    };
+    SHELLID21 {
+      textdata varchar(20);
+    };
+    SHELLID22 {
+      textdata varchar(20);
+    };
+    SHELLID23 {
+      textdata varchar(20);
+    };
+    SHELLID24 {
+      textdata varchar(20);
+    };
+    SHELLID25 {
+      textdata varchar(20);
+    };
+    SHORIMSG01 {
+      textdata varchar(40);
+    };
+    SHORIMSG02 {
+      textdata varchar(40);
+    };
+    SHORIMSG03 {
+      textdata varchar(40);
+    };
+    SHORIMSG04 {
+      textdata varchar(40);
+    };
+    SHORIMSG05 {
+      textdata varchar(40);
+    };
+    SHORIMSG06 {
+      textdata varchar(40);
+    };
+    SHORIMSG07 {
+      textdata varchar(40);
+    };
+    SHORIMSG08 {
+      textdata varchar(40);
+    };
+    SHORIMSG09 {
+      textdata varchar(40);
+    };
+    SHORIMSG10 {
+      textdata varchar(40);
+    };
+    SHORIMSG11 {
+      textdata varchar(40);
+    };
+    SHORIMSG12 {
+      textdata varchar(40);
+    };
+    SHORIMSG13 {
+      textdata varchar(40);
+    };
+    SHORIMSG14 {
+      textdata varchar(40);
+    };
+    SHORIMSG15 {
+      textdata varchar(40);
+    };
+    SHORIMSG16 {
+      textdata varchar(40);
+    };
+    SHORIMSG17 {
+      textdata varchar(40);
+    };
+    SHORIMSG18 {
+      textdata varchar(40);
+    };
+    SHORIMSG19 {
+      textdata varchar(40);
+    };
+    SHORIMSG20 {
+      textdata varchar(40);
+    };
+    SHORIMSG21 {
+      textdata varchar(40);
+    };
+    SHORIMSG22 {
+      textdata varchar(40);
+    };
+    SHORIMSG23 {
+      textdata varchar(40);
+    };
+    SHORIMSG24 {
+      textdata varchar(40);
+    };
+    SHORIMSG25 {
+      textdata varchar(40);
+    };
+    CHKBTN001 {
+      isactive bool;
+    };
+    CHKBTN002 {
+      isactive bool;
+    };
+    CHKBTN003 {
+      isactive bool;
+    };
+    CHKBTN004 {
+      isactive bool;
+    };
+    CHKBTN005 {
+      isactive bool;
+    };
+    CHKBTN006 {
+      isactive bool;
+    };
+    CHKBTN007 {
+      isactive bool;
+    };
+    CHKBTN008 {
+      isactive bool;
+    };
+    CHKBTN009 {
+      isactive bool;
+    };
+    CHKBTN010 {
+      isactive bool;
+    };
+    CHKBTN011 {
+      isactive bool;
+    };
+    CHKBTN012 {
+      isactive bool;
+    };
+    CHKBTN013 {
+      isactive bool;
+    };
+    CHKBTN014 {
+      isactive bool;
+    };
+    CHKBTN015 {
+      isactive bool;
+    };
+    CHKBTN016 {
+      isactive bool;
+    };
+    CHKBTN017 {
+      isactive bool;
+    };
+    CHKBTN018 {
+      isactive bool;
+    };
+    CHKBTN019 {
+      isactive bool;
+    };
+    CHKBTN020 {
+      isactive bool;
+    };
+    CHKBTN021 {
+      isactive bool;
+    };
+    CHKBTN022 {
+      isactive bool;
+    };
+    CHKBTN023 {
+      isactive bool;
+    };
+    CHKBTN024 {
+      isactive bool;
+    };
+    CHKBTN025 {
+      isactive bool;
+    };
+    CHKBTN026 {
+      isactive bool;
+    };
+    CHKBTN027 {
+      isactive bool;
+    };
+    CHKBTN028 {
+      isactive bool;
+    };
+    CHKBTN029 {
+      isactive bool;
+    };
+    CHKBTN030 {
+      isactive bool;
+    };
+    CHKBTN031 {
+      isactive bool;
+    };
+    CHKBTN032 {
+      isactive bool;
+    };
+    CHKBTN033 {
+      isactive bool;
+    };
+    CHKBTN034 {
+      isactive bool;
+    };
+    CHKBTN035 {
+      isactive bool;
+    };
+    CHKBTN036 {
+      isactive bool;
+    };
+    CHKBTN037 {
+      isactive bool;
+    };
+    CHKBTN038 {
+      isactive bool;
+    };
+    CHKBTN039 {
+      isactive bool;
+    };
+    CHKBTN040 {
+      isactive bool;
+    };
+    CHKBTN041 {
+      isactive bool;
+    };
+    CHKBTN042 {
+      isactive bool;
+    };
+    CHKBTN043 {
+      isactive bool;
+    };
+    CHKBTN044 {
+      isactive bool;
+    };
+    CHKBTN045 {
+      isactive bool;
+    };
+    CHKBTN046 {
+      isactive bool;
+    };
+    CHKBTN047 {
+      isactive bool;
+    };
+    CHKBTN048 {
+      isactive bool;
+    };
+    CHKBTN049 {
+      isactive bool;
+    };
+    CHKBTN050 {
+      isactive bool;
+    };
+    CHKBTN051 {
+      isactive bool;
+    };
+    CHKBTN052 {
+      isactive bool;
+    };
+    CHKBTN053 {
+      isactive bool;
+    };
+    CHKBTN054 {
+      isactive bool;
+    };
+    CHKBTN055 {
+      isactive bool;
+    };
+    CHKBTN056 {
+      isactive bool;
+    };
+    CHKBTN057 {
+      isactive bool;
+    };
+    CHKBTN058 {
+      isactive bool;
+    };
+    CHKBTN059 {
+      isactive bool;
+    };
+    CHKBTN060 {
+      isactive bool;
+    };
+    CHKBTN061 {
+      isactive bool;
+    };
+    CHKBTN062 {
+      isactive bool;
+    };
+    CHKBTN063 {
+      isactive bool;
+    };
+    CHKBTN064 {
+      isactive bool;
+    };
+    CHKBTN065 {
+      isactive bool;
+    };
+    CHKBTN066 {
+      isactive bool;
+    };
+    CHKBTN067 {
+      isactive bool;
+    };
+    CHKBTN068 {
+      isactive bool;
+    };
+    CHKBTN069 {
+      isactive bool;
+    };
+    CHKBTN070 {
+      isactive bool;
+    };
+    CHKBTN071 {
+      isactive bool;
+    };
+    CHKBTN072 {
+      isactive bool;
+    };
+    CHKBTN073 {
+      isactive bool;
+    };
+    CHKBTN074 {
+      isactive bool;
+    };
+    CHKBTN075 {
+      isactive bool;
+    };
+    CHKBTN076 {
+      isactive bool;
+    };
+    CHKBTN077 {
+      isactive bool;
+    };
+    CHKBTN078 {
+      isactive bool;
+    };
+    CHKBTN079 {
+      isactive bool;
+    };
+    CHKBTN080 {
+      isactive bool;
+    };
+    CHKBTN081 {
+      isactive bool;
+    };
+    CHKBTN082 {
+      isactive bool;
+    };
+    CHKBTN083 {
+      isactive bool;
+    };
+    CHKBTN084 {
+      isactive bool;
+    };
+    CHKBTN085 {
+      isactive bool;
+    };
+    CHKBTN086 {
+      isactive bool;
+    };
+    CHKBTN087 {
+      isactive bool;
+    };
+    CHKBTN088 {
+      isactive bool;
+    };
+    CHKBTN089 {
+      isactive bool;
+    };
+    CHKBTN090 {
+      isactive bool;
+    };
+    CHKBTN091 {
+      isactive bool;
+    };
+    CHKBTN092 {
+      isactive bool;
+    };
+    CHKBTN093 {
+      isactive bool;
+    };
+    CHKBTN094 {
+      isactive bool;
+    };
+    CHKBTN095 {
+      isactive bool;
+    };
+    CHKBTN096 {
+      isactive bool;
+    };
+    CHKBTN097 {
+      isactive bool;
+    };
+    CHKBTN098 {
+      isactive bool;
+    };
+    CHKBTN099 {
+      isactive bool;
+    };
+    CHKBTN100 {
+      isactive bool;
+    };
+    PRTNM01 {
+      textdata varchar(16);
+    };
+    PRTNM02 {
+      textdata varchar(16);
+    };
+    PRTNM03 {
+      textdata varchar(16);
+    };
+    PRTNM04 {
+      textdata varchar(16);
+    };
+    PRTNM05 {
+      textdata varchar(16);
+    };
+    PRTNM06 {
+      textdata varchar(16);
+    };
+    PRTNM07 {
+      textdata varchar(16);
+    };
+    PRTNM08 {
+      textdata varchar(16);
+    };
+    PRTNM09 {
+      textdata varchar(16);
+    };
+    PRTNM10 {
+      textdata varchar(16);
+    };
+    PRTNM11 {
+      textdata varchar(16);
+    };
+    PRTNM12 {
+      textdata varchar(16);
+    };
+    PRTNM13 {
+      textdata varchar(16);
+    };
+    PRTNM14 {
+      textdata varchar(16);
+    };
+    PRTNM15 {
+      textdata varchar(16);
+    };
+    PRTNM16 {
+      textdata varchar(16);
+    };
+    PRTNM17 {
+      textdata varchar(16);
+    };
+    PRTNM18 {
+      textdata varchar(16);
+    };
+    PRTNM19 {
+      textdata varchar(16);
+    };
+    PRTNM20 {
+      textdata varchar(16);
+    };
+    PRTNM21 {
+      textdata varchar(16);
+    };
+    PRTNM22 {
+      textdata varchar(16);
+    };
+    PRTNM23 {
+      textdata varchar(16);
+    };
+    PRTNM24 {
+      textdata varchar(16);
+    };
+    PRTNM25 {
+      textdata varchar(16);
+    };
+    PARAKBN01_COMBO {
+      PARAKBN01 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN02_COMBO {
+      PARAKBN02 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN03_COMBO {
+      PARAKBN03 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN04_COMBO {
+      PARAKBN04 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN05_COMBO {
+      PARAKBN05 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN06_COMBO {
+      PARAKBN06 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN07_COMBO {
+      PARAKBN07 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN08_COMBO {
+      PARAKBN08 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN09_COMBO {
+      PARAKBN09 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN10_COMBO {
+      PARAKBN10 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN11_COMBO {
+      PARAKBN11 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN12_COMBO {
+      PARAKBN12 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN13_COMBO {
+      PARAKBN13 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN14_COMBO {
+      PARAKBN14 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN15_COMBO {
+      PARAKBN15 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN16_COMBO {
+      PARAKBN16 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN17_COMBO {
+      PARAKBN17 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN18_COMBO {
+      PARAKBN18 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN19_COMBO {
+      PARAKBN19 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN20_COMBO {
+      PARAKBN20 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN21_COMBO {
+      PARAKBN21 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN22_COMBO {
+      PARAKBN22 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN23_COMBO {
+      PARAKBN23 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN24_COMBO {
+      PARAKBN24 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PARAKBN25_COMBO {
+      PARAKBN25 {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    PRTKBN11 {
+      isactive bool;
+    };
+    PRTKBN12 {
+      isactive bool;
+    };
+    PRTKBN21 {
+      isactive bool;
+    };
+    PRTKBN22 {
+      isactive bool;
+    };
+    PRTKBN31 {
+      isactive bool;
+    };
+    PRTKBN32 {
+      isactive bool;
+    };
+    PRTKBN41 {
+      state int;
+      isactive bool;
+    };
+    PRTKBN42 {
+      state int;
+      isactive bool;
+    };
+    PRTKBN51 {
+      state int;
+      isactive bool;
+    };
+    PRTKBN52 {
+      state int;
+      isactive bool;
+    };
+  };
 };

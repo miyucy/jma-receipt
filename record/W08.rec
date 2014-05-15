@@ -1,22 +1,22 @@
-W08	{
-	fixed1	{
-		YUKOSTYMD	{
-			value	varchar(9);
-		};
-		YUKOEDYMD	{
-			value	varchar(9);
-		};
-	        B03	{
-	           	state	int;
-                };
-		SYUBETUNAME	{
-			value	varchar(40);
-		};
-		SYUBETU	{
-			value	varchar(4);
-		};
-		PRTJYUNI	{
-			value	varchar(2);
-		};
-	};
+W08 {
+  fixed1 {
+    YUKOSTYMD {
+      textdata varchar(9);
+    };
+    YUKOEDYMD {
+      textdata varchar(9);
+    };
+    B03 {
+      state int;
+    };
+    SYUBETUNAME {
+      textdata varchar(40);
+    };
+    SYUBETU {
+      textdata varchar(4);
+    };
+    PRTJYUNI {
+      textdata varchar(2);
+    };
+  };
 };

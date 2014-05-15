@@ -1,102 +1,102 @@
-W64	{
-	fixed6	{
-		scrolledwindow28	{
-			KOHNUMLST	{
-				count	int;
-				row	int;
-				item	{
-					value0	varchar(3);
-					value1	varchar(44);
-					value2	varchar(9);
-					value3	varchar(9);
-					value4	varchar(3);
-					value5	varchar(3);
-					value6	varchar(3);
-					value7	varchar(3);
-					value8	varchar(3);
-					value9	varchar(3);
-					value10	varchar(3);
-					value11	varchar(3);
-					value12	varchar(3);
-					value13	varchar(3);
-				}	[100];
-				select	bool[100];
-			};
-		};
-		SELNUM	{
-			value	number(3);
-		};
-		STYUKYMD	{
-			value	varchar(9);
-		};
-		EDYUKYMD	{
-			value	varchar(9);
-		};
-		MEISYO	{
-			value	varchar(44);
-		};
-		MEISYO2	{
-			value	varchar(44);
-		};
-		KOHNUM1	{
-			value	varchar(3);
-		};
-		SEIDONAME1	{
-			value	varchar(50);
-		};
-		KOHNUM2	{
-			value	varchar(3);
-		};
-		SEIDONAME2	{
-			value	varchar(50);
-		};
-		KOHNUM3	{
-			value	varchar(3);
-		};
-		SEIDONAME3	{
-			value	varchar(50);
-		};
-		KOHNUM4	{
-			value	varchar(3);
-		};
-		SEIDONAME4	{
-			value	varchar(50);
-		};
-		KOHNUM5	{
-			value	varchar(3);
-		};
-		SEIDONAME5	{
-			value	varchar(50);
-		};
-		KOHNUM6	{
-			value	varchar(3);
-		};
-		SEIDONAME6	{
-			value	varchar(50);
-		};
-		KOHNUM7	{
-			value	varchar(3);
-		};
-		SEIDONAME7	{
-			value	varchar(50);
-		};
-		KOHNUM8	{
-			value	varchar(3);
-		};
-		SEIDONAME8	{
-			value	varchar(50);
-		};
-		KOHNUM9	{
-			value	varchar(3);
-		};
-		SEIDONAME9	{
-			value	varchar(50);
-		};
-		KOHNUM10	{
-			value	varchar(3);
-		};
-		SEIDONAME10	{
-			value	varchar(50);
-		};
-	};
+W64 {
+  fixed6 {
+    scrolledwindow28 {
+      KOHNUMLST {
+        count int;
+        row int;
+          item {
+            column1 varchar(3);
+            column2 varchar(44);
+            column3 varchar(9);
+            column4 varchar(9);
+            column5 varchar(3);
+            column6 varchar(3);
+            column7 varchar(3);
+            column8 varchar(3);
+            column9 varchar(3);
+            column10 varchar(3);
+            column11 varchar(3);
+            column12 varchar(3);
+            column13 varchar(3);
+            column14 varchar(3);
+          }[100];
+          selectdata bool[100];
+      };
+    };
+    SELNUM {
+      numdata number(3);
+    };
+    STYUKYMD {
+      textdata varchar(9);
+    };
+    EDYUKYMD {
+      textdata varchar(9);
+    };
+    MEISYO {
+      textdata varchar(44);
+    };
+    MEISYO2 {
+      textdata varchar(44);
+    };
+    KOHNUM1 {
+      textdata varchar(3);
+    };
+    SEIDONAME1 {
+      textdata varchar(50);
+    };
+    KOHNUM2 {
+      textdata varchar(3);
+    };
+    SEIDONAME2 {
+      textdata varchar(50);
+    };
+    KOHNUM3 {
+      textdata varchar(3);
+    };
+    SEIDONAME3 {
+      textdata varchar(50);
+    };
+    KOHNUM4 {
+      textdata varchar(3);
+    };
+    SEIDONAME4 {
+      textdata varchar(50);
+    };
+    KOHNUM5 {
+      textdata varchar(3);
+    };
+    SEIDONAME5 {
+      textdata varchar(50);
+    };
+    KOHNUM6 {
+      textdata varchar(3);
+    };
+    SEIDONAME6 {
+      textdata varchar(50);
+    };
+    KOHNUM7 {
+      textdata varchar(3);
+    };
+    SEIDONAME7 {
+      textdata varchar(50);
+    };
+    KOHNUM8 {
+      textdata varchar(3);
+    };
+    SEIDONAME8 {
+      textdata varchar(50);
+    };
+    KOHNUM9 {
+      textdata varchar(3);
+    };
+    SEIDONAME9 {
+      textdata varchar(50);
+    };
+    KOHNUM10 {
+      textdata varchar(3);
+    };
+    SEIDONAME10 {
+      textdata varchar(50);
+    };
+  };
 };

@@ -1,10 +1,10 @@
-QERR	{
-	fixed1	{
-		ERRCODE	{
-			value	varchar(10);
-		};
-		ERRMSG	{
-			value	varchar(100);
-		};
-	};
+QERR {
+  fixed1 {
+    ERRCODE {
+      textdata varchar(10);
+    };
+    ERRMSG {
+      textdata varchar(100);
+    };
+  };
 };

@@ -1,33 +1,33 @@
-W22	{
-	fixed6	{
-		KANRICD		{
-			value	varchar(31);
-		};
-		KBNCD	{
-			value	varchar(02);
-		};
-		MEISYOU	{
-			value	varchar(6);
-		};
-		STYUKYMD	{
-			value	varchar(10);
-		};
-		EDYUKYMD	{
-			value	varchar(10);
-		};
-		MEISYOUWINDOW	{
-			MEISYOULIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value1	varchar(16);
-					value2	varchar(60);
-					value3	varchar(19);
-					value4	varchar(19);
-				}	[30];
-				select	bool[30];
-			};
-		};
-	};
+W22 {
+  fixed6 {
+    KANRICD {
+      textdata varchar(31);
+    };
+    KBNCD {
+      textdata varchar(2);
+    };
+    MEISYOU {
+      textdata varchar(6);
+    };
+    STYUKYMD {
+      textdata varchar(10);
+    };
+    EDYUKYMD {
+      textdata varchar(10);
+    };
+    MEISYOUWINDOW {
+      MEISYOULIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(16);
+            column2 varchar(60);
+            column3 varchar(19);
+            column4 varchar(19);
+          }[30];
+          selectdata bool[30];
+      };
+    };
+  };
 };

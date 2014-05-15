@@ -1,90 +1,90 @@
-S04	{
-	fixed2	{
-		B10             {
-			state	int;
-		};
-		B12             {
-			state	int;
-		};
-		LBLKARA	{
-			value	varchar(2);
-		};
-		LBLSUMKBN	{
-			value	varchar(30);
-		};
-		LBLSYORIKBN	{
-			value	varchar(22);
-		};
-		SIHARAICOMBO	{
-			SIHARAIKBN	{
-				value	varchar(12);
-			};
-			count	int;
-			item	varchar(12)[3];
-		};
-		NYUGAICOMBO	{
-			NYUGAIKBN	{
-				value	varchar(6);
-			};
-			count	int;
-			item	varchar(6)[3];
-		};
-		SRYCOMBO	{
-			SRYKBN	{
-				value	varchar(8);
-			};
-			count	int;
-			item	varchar(8)[3];
-		};
-		STRSRYYMD	{
-			value	varchar(10);
-		};
-		ENDSRYYMD	{
-			value	varchar(10);
-			state	int;
-		};
-		KIKANCOMBO	{
-			KIKANKBN	{
-				value	varchar(10);
-			};
-			count	int;
-			item	varchar(10)[2];
-		};
-		DSPCOMBO	{
-			DSPKBN	{
-				value	varchar(20);
-				state	int;
-			};
-			count	int;
-			item	varchar(20)[3];
-			state	int;
-		};
-		SUMKBNCOMBO	{
-			SUMKBN	{
-				value	varchar(18);
-				state	int;
-			};
-			count	int;
-			item	varchar(18)[2];
-			state	int;
-		};
-		SYORICOMBO	{
-			SYORIKBN	{
-				value	varchar(18);
-				state	int;
-			};
-			count	int;
-			item	varchar(18)[2];
-			state	int;
-		};
-		JIHICOMBO	{
-			JIHIKBN	{
-				value	varchar(12);
-				state	int;
-			};
-			count	int;
-			item	varchar(12)[3];
-			state	int;
-		};
-	};
+S04 {
+  fixed2 {
+    B10 {
+      state int;
+    };
+    B12 {
+      state int;
+    };
+    LBLKARA {
+      textdata varchar(2);
+    };
+    LBLSUMKBN {
+      textdata varchar(30);
+    };
+    LBLSYORIKBN {
+      textdata varchar(22);
+    };
+    SIHARAICOMBO {
+      SIHARAIKBN {
+        textdata varchar(12);
+      };
+      count int;
+        item varchar(12)[3];
+    };
+    NYUGAICOMBO {
+      NYUGAIKBN {
+        textdata varchar(6);
+      };
+      count int;
+        item varchar(6)[3];
+    };
+    SRYCOMBO {
+      SRYKBN {
+        textdata varchar(8);
+      };
+      count int;
+        item varchar(8)[3];
+    };
+    STRSRYYMD {
+      textdata varchar(10);
+    };
+    ENDSRYYMD {
+      textdata varchar(10);
+      state int;
+    };
+    KIKANCOMBO {
+      KIKANKBN {
+        textdata varchar(10);
+      };
+      count int;
+        item varchar(10)[2];
+    };
+    DSPCOMBO {
+      DSPKBN {
+        textdata varchar(20);
+        state int;
+      };
+      count int;
+        item varchar(20)[3];
+      state int;
+    };
+    SUMKBNCOMBO {
+      SUMKBN {
+        textdata varchar(18);
+        state int;
+      };
+      count int;
+        item varchar(18)[2];
+      state int;
+    };
+    SYORICOMBO {
+      SYORIKBN {
+        textdata varchar(18);
+        state int;
+      };
+      count int;
+        item varchar(18)[2];
+      state int;
+    };
+    JIHICOMBO {
+      JIHIKBN {
+        textdata varchar(12);
+        state int;
+      };
+      count int;
+        item varchar(12)[3];
+      state int;
+    };
+  };
 };

@@ -1,228 +1,228 @@
-W97	{
-	fixed1	{
-		SHELL01	{
-			value	varchar(100);
-		};
-		SHELL02	{
-			value	varchar(100);
-		};
-		SHELL03	{
-			value	varchar(100);
-		};
-		SHELL04	{
-			value	varchar(100);
-		};
-		SHELL05	{
-			value	varchar(100);
-		};
-		SHELL06	{
-			value	varchar(100);
-		};
-		SHELL07	{
-			value	varchar(100);
-		};
-		SHELL08	{
-			value	varchar(100);
-		};
-		SHELL09	{
-			value	varchar(100);
-		};
-		SHELL10	{
-			value	varchar(100);
-		};
-		SYORINM01	{
-			value	varchar(30);
-		};
-		SYORINM02	{
-			value	varchar(30);
-		};
-		SYORINM03	{
-			value	varchar(30);
-		};
-		SYORINM04	{
-			value	varchar(30);
-		};
-		SYORINM05	{
-			value	varchar(30);
-		};
-		SYORINM06	{
-			value	varchar(30);
-		};
-		SYORINM07	{
-			value	varchar(30);
-		};
-		SYORINM08	{
-			value	varchar(30);
-		};
-		SYORINM09	{
-			value	varchar(30);
-		};
-		SYORINM10	{
-			value	varchar(30);
-		};
-		PRTNM01	{
-			value	varchar(16);
-		};
-		PRTNM02	{
-			value	varchar(16);
-		};
-		PRTNM03	{
-			value	varchar(16);
-		};
-		PRTNM04	{
-			value	varchar(16);
-		};
-		PRTNM05	{
-			value	varchar(16);
-		};
-		PRTNM06	{
-			value	varchar(16);
-		};
-		PRTNM07	{
-			value	varchar(16);
-		};
-		PRTNM08	{
-			value	varchar(16);
-		};
-		PRTNM09	{
-			value	varchar(16);
-		};
-		PRTNM10	{
-			value	varchar(16);
-		};
-		GYOUMUMEI_COMB	{
-			GYOUMUMEI	{
-				value	varchar(40);
-			};
-			count	int;
-			item	varchar(40)[25];
-		};
-		TYPE01_COMB	{
-			TYPE01	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE02_COMB	{
-			TYPE02	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE03_COMB	{
-			TYPE03	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE04_COMB	{
-			TYPE04	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE05_COMB	{
-			TYPE05	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE06_COMB	{
-			TYPE06	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE07_COMB	{
-			TYPE07	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE08_COMB	{
-			TYPE08	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE09_COMB	{
-			TYPE09	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		TYPE10_COMB	{
-			TYPE10	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		EXECUTE01	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE02	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE03	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE04	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE05	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE06	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE07	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE08	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE09	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		EXECUTE10	{
-			value	bool;
-		        state   int;
-			label	varchar(10);
-		};
-		GYOUMUFLG_COMB	{
-			GYOUMUFLG	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-	};
+W97 {
+  fixed1 {
+    SHELL01 {
+      textdata varchar(100);
+    };
+    SHELL02 {
+      textdata varchar(100);
+    };
+    SHELL03 {
+      textdata varchar(100);
+    };
+    SHELL04 {
+      textdata varchar(100);
+    };
+    SHELL05 {
+      textdata varchar(100);
+    };
+    SHELL06 {
+      textdata varchar(100);
+    };
+    SHELL07 {
+      textdata varchar(100);
+    };
+    SHELL08 {
+      textdata varchar(100);
+    };
+    SHELL09 {
+      textdata varchar(100);
+    };
+    SHELL10 {
+      textdata varchar(100);
+    };
+    SYORINM01 {
+      textdata varchar(30);
+    };
+    SYORINM02 {
+      textdata varchar(30);
+    };
+    SYORINM03 {
+      textdata varchar(30);
+    };
+    SYORINM04 {
+      textdata varchar(30);
+    };
+    SYORINM05 {
+      textdata varchar(30);
+    };
+    SYORINM06 {
+      textdata varchar(30);
+    };
+    SYORINM07 {
+      textdata varchar(30);
+    };
+    SYORINM08 {
+      textdata varchar(30);
+    };
+    SYORINM09 {
+      textdata varchar(30);
+    };
+    SYORINM10 {
+      textdata varchar(30);
+    };
+    PRTNM01 {
+      textdata varchar(16);
+    };
+    PRTNM02 {
+      textdata varchar(16);
+    };
+    PRTNM03 {
+      textdata varchar(16);
+    };
+    PRTNM04 {
+      textdata varchar(16);
+    };
+    PRTNM05 {
+      textdata varchar(16);
+    };
+    PRTNM06 {
+      textdata varchar(16);
+    };
+    PRTNM07 {
+      textdata varchar(16);
+    };
+    PRTNM08 {
+      textdata varchar(16);
+    };
+    PRTNM09 {
+      textdata varchar(16);
+    };
+    PRTNM10 {
+      textdata varchar(16);
+    };
+    GYOUMUMEI_COMB {
+      GYOUMUMEI {
+        textdata varchar(40);
+      };
+      count int;
+        item varchar(40)[25];
+    };
+    TYPE01_COMB {
+      TYPE01 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE02_COMB {
+      TYPE02 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE03_COMB {
+      TYPE03 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE04_COMB {
+      TYPE04 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE05_COMB {
+      TYPE05 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE06_COMB {
+      TYPE06 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE07_COMB {
+      TYPE07 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE08_COMB {
+      TYPE08 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE09_COMB {
+      TYPE09 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    TYPE10_COMB {
+      TYPE10 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    EXECUTE01 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE02 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE03 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE04 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE05 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE06 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE07 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE08 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE09 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    EXECUTE10 {
+      isactive bool;
+      state int;
+      label varchar(10);
+    };
+    GYOUMUFLG_COMB {
+      GYOUMUFLG {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+  };
 };

@@ -1,31 +1,30 @@
-L06	{
-	fixed	{
-		B03	{
-			state	int;
-		};
-		LBLSTDATE	{
-			style   varchar(20);
-			value	varchar(50);
-		};
-		EDSRYYMD	{
-			    value	varchar(10);
-		};
-		EDHR	{
-			value	number (2);
-		};
-		EDMIN	{
-			value	number (2);
-		};
-		LBLPREDATE	{
-			value	varchar(60);
-		};
-		CMB_HOURSKBN	{
-			HOURSKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[10];
-		};
-	};
+L06 {
+  fixed {
+    B03 {
+      state int;
+    };
+    LBLSTDATE {
+      style varchar(20);
+      textdata varchar(50);
+    };
+    EDSRYYMD {
+      textdata varchar(10);
+    };
+    EDHR {
+      numdata number(2);
+    };
+    EDMIN {
+      numdata number(2);
+    };
+    LBLPREDATE {
+      textdata varchar(60);
+    };
+    CMB_HOURSKBN {
+      HOURSKBN {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[10];
+    };
+  };
 };
-

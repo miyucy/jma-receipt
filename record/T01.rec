@@ -1,198 +1,198 @@
-T01	{
-	fixed6	{
-		SKYYM	{
-			value	varchar(7);
-		};
-		B06	{
-			state	int;
-		};
-		B07	{
-			state	int;
-		};
-		B08	{
-			state	int;
-		};
-		B09	{
-			state	int;
-		};
-		B10	{
-			state	int;
-		};
-		B15	{
-			state	int;
-		};
-		B16	{
-			state	int;
-		};
-		B17	{
-			state	int;
-		};
-		B18	{
-			state	int;
-			label	varchar(6);
-		};
-		B19	{
-			state	int;
-		};
-		B20	{
-			state	int;
-		};
-		B21	{
-			state	int;
-		};
-		B22	{
-			state	int;
-		};
-		SKYYMD	{
-			value	varchar(10);
-		};
-		HKNJANUM	{
-			value	varchar(8);
-		};
-		HKNJANUM1	{
-			state	int;
-			value	varchar(8);
-		};
-		PRTKBN_COMBO	{
-			state   int;
-			PRTKBN	{
-				value	varchar(32);
-			};
-			count	int;
-			item	varchar(32)[5];
-		};
-		RECEDEN_CHK_COMBO	{
-			state   int;
-			RECEDEN_CHK	{
-				value	varchar(16);
-			};
-			count	int;
-			item	varchar(16)[3];
-		};
-		DATA_COMBO	{
-			state   int;
-			DATA	{
-				value	varchar(38);
-			};
-			count	int;
-			item	varchar(38)[6];
-		};
-		NYUGAIKBN_COMBO	{
-			state   int;
-			NYUGAIKBN	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[3];
-		};
-		HKNJANUM_TITLE	{
-			visible bool;
-			value	varchar(10);
-		};
-		DIRECT_HKNJANUM_COMBO	{
-			visible bool;
-			DIRECT_HKNJANUM	{
-				value	varchar(39);
-			};
-			count	int;
-			item	varchar(39)[10];
-		};
-		DATAKBN4	{
-			state	int;
-			value	bool;
-		};
-		DATAKBN3	{
-			state	int;
-			value	bool;
-		};
-		DATAKBN6	{
-			state	int;
-			value	bool;
-		};
-		DATAKBN7	{
-			state	int;
-			value	bool;
-		};
-		DATAKBN8	{
-			state	int;
-			value	bool;
-		};
-		HKNJAMEI	{
-			value	varchar(50);
-		};
-		HKNJAMEI1	{
-			value	varchar(50);
-		};
-		CHK11	{
-			state	int;
-			value	bool;
-		};
-		CHK12	{
-			state	int;
-			value	bool;
-		};
-		CHK21	{
-			state	int;
-			value	bool;
-		};
-		CHK22	{
-			state	int;
-			value	bool;
-		};
-		CHK31	{
-			state	int;
-			value	bool;
-		};
-		CHK32	{
-			state	int;
-			value	bool;
-		};
-		DATAKBN5	{
-			state	int;
-			value	bool;
-		};
-		DATAKBN1	{
-			state	int;
-			value	bool;
-		};
-		DATAKBN2	{
-			state	int;
-			value	bool;
-		};
-		PRTKBN1	{
-			style	varchar(20);
-			value	varchar(4);
-		};
-		PRTKBN2	{
-			style	varchar(20);
-			value	varchar(4);
-		};
-		PRTKBN3	{
-			style	varchar(20);
-			value	varchar(4);
-		};
-		PRTKBN4	{
-			style	varchar(20);
-			value	varchar(4);
-		};
-		PRTKBN5	{
-			style	varchar(20);
-			value	varchar(4);
-		};
-		TITLE	{
-			style	varchar(20);
-			value	varchar(110);
-		};
-		TITLE1	{
-			style	varchar(20);
-			value	varchar(90);
-		};
-		SYOKBN1	{
-			state	int;
-			value	bool;
-		};
-		SYOKBN2	{
-			value	bool;
-		};
-	};
+T01 {
+  fixed6 {
+    SKYYM {
+      textdata varchar(7);
+    };
+    B06 {
+      state int;
+    };
+    B07 {
+      state int;
+    };
+    B08 {
+      state int;
+    };
+    B09 {
+      state int;
+    };
+    B10 {
+      state int;
+    };
+    B15 {
+      state int;
+    };
+    B16 {
+      state int;
+    };
+    B17 {
+      state int;
+    };
+    B18 {
+      state int;
+      label varchar(6);
+    };
+    B19 {
+      state int;
+    };
+    B20 {
+      state int;
+    };
+    B21 {
+      state int;
+    };
+    B22 {
+      state int;
+    };
+    SKYYMD {
+      textdata varchar(10);
+    };
+    HKNJANUM {
+      textdata varchar(8);
+    };
+    HKNJANUM1 {
+      state int;
+      textdata varchar(8);
+    };
+    PRTKBN_COMBO {
+      state int;
+      PRTKBN {
+        textdata varchar(32);
+      };
+      count int;
+        item varchar(32)[5];
+    };
+    RECEDEN_CHK_COMBO {
+      state int;
+      RECEDEN_CHK {
+        textdata varchar(16);
+      };
+      count int;
+        item varchar(16)[3];
+    };
+    DATA_COMBO {
+      state int;
+      DATA {
+        textdata varchar(38);
+      };
+      count int;
+        item varchar(38)[6];
+    };
+    NYUGAIKBN_COMBO {
+      state int;
+      NYUGAIKBN {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[3];
+    };
+    HKNJANUM_TITLE {
+      visible bool;
+      textdata varchar(10);
+    };
+    DIRECT_HKNJANUM_COMBO {
+      visible bool;
+      DIRECT_HKNJANUM {
+        textdata varchar(39);
+      };
+      count int;
+        item varchar(39)[10];
+    };
+    DATAKBN4 {
+      state int;
+      isactive bool;
+    };
+    DATAKBN3 {
+      state int;
+      isactive bool;
+    };
+    DATAKBN6 {
+      state int;
+      isactive bool;
+    };
+    DATAKBN7 {
+      state int;
+      isactive bool;
+    };
+    DATAKBN8 {
+      state int;
+      isactive bool;
+    };
+    HKNJAMEI {
+      textdata varchar(50);
+    };
+    HKNJAMEI1 {
+      textdata varchar(50);
+    };
+    CHK11 {
+      state int;
+      isactive bool;
+    };
+    CHK12 {
+      state int;
+      isactive bool;
+    };
+    CHK21 {
+      state int;
+      isactive bool;
+    };
+    CHK22 {
+      state int;
+      isactive bool;
+    };
+    CHK31 {
+      state int;
+      isactive bool;
+    };
+    CHK32 {
+      state int;
+      isactive bool;
+    };
+    DATAKBN5 {
+      state int;
+      isactive bool;
+    };
+    DATAKBN1 {
+      state int;
+      isactive bool;
+    };
+    DATAKBN2 {
+      state int;
+      isactive bool;
+    };
+    PRTKBN1 {
+      style varchar(20);
+      textdata varchar(4);
+    };
+    PRTKBN2 {
+      style varchar(20);
+      textdata varchar(4);
+    };
+    PRTKBN3 {
+      style varchar(20);
+      textdata varchar(4);
+    };
+    PRTKBN4 {
+      style varchar(20);
+      textdata varchar(4);
+    };
+    PRTKBN5 {
+      style varchar(20);
+      textdata varchar(4);
+    };
+    TITLE {
+      style varchar(20);
+      textdata varchar(110);
+    };
+    TITLE1 {
+      style varchar(20);
+      textdata varchar(90);
+    };
+    SYOKBN1 {
+      state int;
+      isactive bool;
+    };
+    SYOKBN2 {
+      isactive bool;
+    };
+  };
 };

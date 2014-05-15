@@ -1,28 +1,28 @@
-XE01	{
-	fixed10	{
-		SEIDO_KBN	{
-			value	varchar(3);
-		};
-		KIGONUM	{
-			value	varchar(20);
-		};
-		HONKZKKBN	{
-			value	varchar(1);
-		};
-		KANANAME	{
-			value	varchar(28);
-		};
-		SEX	{
-			value	varchar(1);
-		};
-		BIRTHDAY	{
-			value	varchar(7);
-		};
-		NIN	{
-			value	varchar(100);
-		};
-		HKNNUM	{
-			value	varchar(8);
-		};
-	};
+XE01 {
+  fixed10 {
+    SEIDO_KBN {
+      textdata varchar(3);
+    };
+    KIGONUM {
+      textdata varchar(20);
+    };
+    HONKZKKBN {
+      textdata varchar(1);
+    };
+    KANANAME {
+      textdata varchar(28);
+    };
+    SEX {
+      textdata varchar(1);
+    };
+    BIRTHDAY {
+      textdata varchar(7);
+    };
+    NIN {
+      textdata varchar(100);
+    };
+    HKNNUM {
+      textdata varchar(8);
+    };
+  };
 };

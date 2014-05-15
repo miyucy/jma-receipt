@@ -1,83 +1,83 @@
-N01	{
-	fixed6	{
-		HKNJANUM	{
-			value	varchar(8);
-		};
-		HKNJANAME	{
-			value	varchar(100);
-		};
-		HKNJANAMETAN1	{
-			value	varchar(50);
-		};
-		HKNJANAMETAN2	{
-			value	varchar(20);
-		};
-		HKNJANAMETAN3	{
-			value	varchar(20);
-		};
-		HKNNUMCOMBO	{
-			HKNNUM	{
-				value	varchar(30);
-			};
-			count	int;
-			item	varchar(30)[100];
-		};
-		HGKYURATECOMBO	{
-			HGKYURATE	{
-				value	varchar(30);
-			};
-			state   int;
-			count	int;
-			item	varchar(30)[4];
-		};
-		HNKYURATECOMBO	{
-			HNKYURATE	{
-				value	varchar(30);
-			};
-			state   int;
-			count	int;
-			item	varchar(30)[4];
-		};
-		KGKYURATECOMBO	{
-			KGKYURATE	{
-				value	varchar(30);
-			};
-			state   int;
-			count	int;
-			item	varchar(30)[4];
-		};
-		KNKYURATECOMBO	{
-			KNKYURATE	{
-				value	varchar(30);
-			};
-			state   int;
-			count	int;
-			item	varchar(30)[4];
-		};
-		POST	{
-			value	varchar(7);
-		};
-		ADRS	{
-			value	varchar(100);
-		};
-		BANTI	{
-			value	varchar(100);
-		};
-		TEL	{
-			value	varchar(15);
-		};
-		KIGO	{
-			value	varchar(40);
-		};
-		IDOKBNCOBO	{
-			IDOKBN	{
-				value	varchar(30);
-			};
-			count	int;
-			item	varchar(30)[10];
-		};
-		IDOYMD	{
-			value	varchar(10);
-		};
-	};
+N01 {
+  fixed6 {
+    HKNJANUM {
+      textdata varchar(8);
+    };
+    HKNJANAME {
+      textdata varchar(100);
+    };
+    HKNJANAMETAN1 {
+      textdata varchar(50);
+    };
+    HKNJANAMETAN2 {
+      textdata varchar(20);
+    };
+    HKNJANAMETAN3 {
+      textdata varchar(20);
+    };
+    HKNNUMCOMBO {
+      HKNNUM {
+        textdata varchar(30);
+      };
+      count int;
+        item varchar(30)[100];
+    };
+    HGKYURATECOMBO {
+      HGKYURATE {
+        textdata varchar(30);
+      };
+      state int;
+      count int;
+        item varchar(30)[4];
+    };
+    HNKYURATECOMBO {
+      HNKYURATE {
+        textdata varchar(30);
+      };
+      state int;
+      count int;
+        item varchar(30)[4];
+    };
+    KGKYURATECOMBO {
+      KGKYURATE {
+        textdata varchar(30);
+      };
+      state int;
+      count int;
+        item varchar(30)[4];
+    };
+    KNKYURATECOMBO {
+      KNKYURATE {
+        textdata varchar(30);
+      };
+      state int;
+      count int;
+        item varchar(30)[4];
+    };
+    POST {
+      textdata varchar(7);
+    };
+    ADRS {
+      textdata varchar(100);
+    };
+    BANTI {
+      textdata varchar(100);
+    };
+    TEL {
+      textdata varchar(15);
+    };
+    KIGO {
+      textdata varchar(40);
+    };
+    IDOKBNCOBO {
+      IDOKBN {
+        textdata varchar(30);
+      };
+      count int;
+        item varchar(30)[10];
+    };
+    IDOYMD {
+      textdata varchar(10);
+    };
+  };
 };

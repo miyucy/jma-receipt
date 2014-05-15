@@ -1,7 +1,7 @@
-MVER	{
-	fixed1	{
-		label4	{
-			value	varchar(5);
-		};
-	};
+MVER {
+  fixed1 {
+    label4 {
+      textdata varchar(5);
+    };
+  };
 };

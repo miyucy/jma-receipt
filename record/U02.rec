@@ -1,179 +1,179 @@
-U02	{
-	fixed1	{
-		SRYYMD	{
-			value	varchar(30);
-		};
-		PTNUM	{
-	           	state	int;
-			value	varchar(20);
-		};
-		NAME	{
-	           	state	int;
-			value	varchar(50);
-		};
-		BIRTHDAY	{
-			value	varchar(9);
-		};
-		SRYKA_COMBO	{
-			SRYKA	{
-				value	varchar(21);
-			};
-			count	int;
-			item	varchar(21)[40];
-		};
-		DRNAME_COMBO	{
-			DRNAME	{
-				value	varchar(29);
-			};
-			count	int;
-			item	varchar(29)[99];
-		};
-		SRYNAIYO_COMBO	{
-			SRYNAIYO	{
-				value	varchar(21);
-			};
-			count	int;
-			item	varchar(21)[99];
-		};
-		KARUTE_COMBO	{
-			KARUTE	{
-				value	varchar(30);
-			};
-			count	int;
-			item	varchar(30)[5];
-		};
-		SYOHO_COMBO	{
-			SYOHO	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[2];
-		};
-		HKNCOMBI	{
-			value	number(4);
-		};
-		SELNUM	{
-			value	number(4);
-		};
-		scrolledwindow3	{
-			HKNCOMBI_LIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(4);
-					value1	varchar(10);
-					value2	varchar(10);
-					value3	varchar(10);
-					value4	varchar(10);
-					value5	varchar(10);
-				}	[15];
-				select	bool[15];
-			};
-		};
-		BHK1	{
-			value	bool;
-			label	varchar(2);
-		};
-		BHK2	{
-			value	bool;
-			label	varchar(2);
-		};
-		BHK3	{
-			value	bool;
-			label	varchar(2);
-		};
-		BHK4	{
-			value	bool;
-			label	varchar(2);
-		};
-		BHK5	{
-			value	bool;
-			label	varchar(2);
-		};
-		scrolledwindow4	{
-			UKETUKE_LIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(4);
-					value1	varchar(6);
-					value2	varchar(6);
-					value3	varchar(20);
-					value4	varchar(50);
-					value5	varchar(02);
-					value6	varchar(06);
-					value7	varchar(21);
-					value8	varchar(29);
-					value9	varchar(21);
-					value10	varchar(55);
-					value11	varchar(10);
-					value12	varchar(04);
-				}	[400];
-				select	bool[400];
-			};
-		};
-		MIKAKUNINN_LIST	{
-			count	int;
-			row	int;
-			rowattr	int;
-			item	{
-				value0	varchar(22);
-				value1	varchar(40);
-				value2	varchar(10);
-			}	[5];
-			select	bool[5];
-		};
-		USERPG_COMB	{
-			USERPG	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		NENREI	{
-			value	varchar(6);
-		};
-		LASTYMD	{
-			value	varchar(16);
-		};
-		MEMOC	{
-			style	varchar(20);
-			value	varchar(6);
-		};
-		KOHMSG	{
-			style	varchar(20);
-			value	varchar(50);
-		};
-		LABEL	{
-			style	varchar(20);
-			value	varchar(50);
-		};
-		SEX	{
-			value	varchar(2);
-		};
-		CHKMSG	{
-			style	varchar(20);
-			value	varchar(20);
-		};
-		B05	{
-	           	state	int;
-		};
-		B06	{
-	           	state	int;
-		};
-		B07	{
-	           	state	int;
-		};
-		B08	{
-	           	state	int;
-		};
-		B09S	{
-	           	state	int;
-		};
-		B10S	{
-	           	state	int;
-		};
-	};
+U02 {
+  fixed1 {
+    SRYYMD {
+      textdata varchar(30);
+    };
+    PTNUM {
+      state int;
+      textdata varchar(20);
+    };
+    NAME {
+      state int;
+      textdata varchar(50);
+    };
+    BIRTHDAY {
+      textdata varchar(9);
+    };
+    SRYKA_COMBO {
+      SRYKA {
+        textdata varchar(21);
+      };
+      count int;
+        item varchar(21)[40];
+    };
+    DRNAME_COMBO {
+      DRNAME {
+        textdata varchar(29);
+      };
+      count int;
+        item varchar(29)[99];
+    };
+    SRYNAIYO_COMBO {
+      SRYNAIYO {
+        textdata varchar(21);
+      };
+      count int;
+        item varchar(21)[99];
+    };
+    KARUTE_COMBO {
+      KARUTE {
+        textdata varchar(30);
+      };
+      count int;
+        item varchar(30)[5];
+    };
+    SYOHO_COMBO {
+      SYOHO {
+        textdata varchar(14);
+      };
+      count int;
+        item varchar(14)[2];
+    };
+    HKNCOMBI {
+      numdata number(4);
+    };
+    SELNUM {
+      numdata number(4);
+    };
+    scrolledwindow3 {
+      HKNCOMBI_LIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(10);
+            column3 varchar(10);
+            column4 varchar(10);
+            column5 varchar(10);
+            column6 varchar(10);
+          }[15];
+          selectdata bool[15];
+      };
+    };
+    BHK1 {
+      isactive bool;
+      label varchar(2);
+    };
+    BHK2 {
+      isactive bool;
+      label varchar(2);
+    };
+    BHK3 {
+      isactive bool;
+      label varchar(2);
+    };
+    BHK4 {
+      isactive bool;
+      label varchar(2);
+    };
+    BHK5 {
+      isactive bool;
+      label varchar(2);
+    };
+    scrolledwindow4 {
+      UKETUKE_LIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(6);
+            column3 varchar(6);
+            column4 varchar(20);
+            column5 varchar(50);
+            column6 varchar(2);
+            column7 varchar(6);
+            column8 varchar(21);
+            column9 varchar(29);
+            column10 varchar(21);
+            column11 varchar(55);
+            column12 varchar(10);
+            column13 varchar(4);
+          }[400];
+          selectdata bool[400];
+      };
+    };
+    MIKAKUNINN_LIST {
+      count int;
+      row int;
+      rowattr int;
+        item {
+          column1 varchar(22);
+          column2 varchar(40);
+          column3 varchar(10);
+        }[5];
+        selectdata bool[5];
+    };
+    USERPG_COMB {
+      USERPG {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[2];
+    };
+    NENREI {
+      textdata varchar(6);
+    };
+    LASTYMD {
+      textdata varchar(16);
+    };
+    MEMOC {
+      style varchar(20);
+      textdata varchar(6);
+    };
+    KOHMSG {
+      style varchar(20);
+      textdata varchar(50);
+    };
+    LABEL {
+      style varchar(20);
+      textdata varchar(50);
+    };
+    SEX {
+      textdata varchar(2);
+    };
+    CHKMSG {
+      style varchar(20);
+      textdata varchar(20);
+    };
+    B05 {
+      state int;
+    };
+    B06 {
+      state int;
+    };
+    B07 {
+      state int;
+    };
+    B08 {
+      state int;
+    };
+    B09S {
+      state int;
+    };
+    B10S {
+      state int;
+    };
+  };
 };

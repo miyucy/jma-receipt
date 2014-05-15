@@ -1,26 +1,26 @@
-TID2	{
-	fixed1	{
-		B10	{
-			visible	bool;
-			label	varchar(14);
-		};
-		B11	{
-			visible	bool;
-			label	varchar(14);
-		};
-		B12	{
-			label	varchar(14);
-		};
-		ID1CODE	{
-			value	varchar(10);
-		};
-		ID1MSG	{
-			style	varchar(20);
-			value	varchar(144);
-		};
-		LABEL   {
-			style	varchar(20);
-			value	varchar(80);
-		};
-	};
+TID2 {
+  fixed1 {
+    B10 {
+      visible bool;
+      label varchar(14);
+    };
+    B11 {
+      visible bool;
+      label varchar(14);
+    };
+    B12 {
+      label varchar(14);
+    };
+    ID1CODE {
+      textdata varchar(10);
+    };
+    ID1MSG {
+      style varchar(20);
+      textdata varchar(144);
+    };
+    LABEL {
+      style varchar(20);
+      textdata varchar(80);
+    };
+  };
 };

@@ -1,57 +1,57 @@
-Z08	{
-	fixed1	{
-		SRYCDH	{
-			value	varchar(9);
-		};
-		YUKOSTYMDH	{
-			value	varchar(9);
-		};
-		YUKOEDYMDH	{
-			value	varchar(9);
-		};
-		NAMEH	{
-			value	varchar(100);
-		};
-		NAME	{
-			value	varchar(100);
-		};
-		KANANAME	{
-			value	varchar(100);
-		};
-		YUKOSTYMD	{
-			value	varchar(10);
-		};
-		YUKOEDYMD	{
-			value	varchar(10);
-		};
-		FORMALNAME	{
-			value	varchar(200);
-		};
-		IDOKANREN	{
-			value	varchar(9);
-		};
-		IDOKANRENNAME	{
-			value	varchar(100);
-		};
-		IDOKIKAN	{
-			style	varchar(20);
-			value	varchar(30);
-		};
-		COPYCD	{
-			value	varchar(9);
-		};
-		TEN	{
-			value	number(10,2);
-		};
-		TANICD_COMB	{
-			TANICD	{
-				value	varchar(30);
-			};
-			count	int;
-			item	varchar(30)[200];
-		};
-		MSGLBEL	{
-			value	varchar(100);
-		};
-	};
+Z08 {
+  fixed1 {
+    SRYCDH {
+      textdata varchar(9);
+    };
+    YUKOSTYMDH {
+      textdata varchar(9);
+    };
+    YUKOEDYMDH {
+      textdata varchar(9);
+    };
+    NAMEH {
+      textdata varchar(100);
+    };
+    NAME {
+      textdata varchar(100);
+    };
+    KANANAME {
+      textdata varchar(100);
+    };
+    YUKOSTYMD {
+      textdata varchar(10);
+    };
+    YUKOEDYMD {
+      textdata varchar(10);
+    };
+    FORMALNAME {
+      textdata varchar(200);
+    };
+    IDOKANREN {
+      textdata varchar(9);
+    };
+    IDOKANRENNAME {
+      textdata varchar(100);
+    };
+    IDOKIKAN {
+      style varchar(20);
+      textdata varchar(30);
+    };
+    COPYCD {
+      textdata varchar(9);
+    };
+    TEN {
+      numdata number(10,2);
+    };
+    TANICD_COMB {
+      TANICD {
+        textdata varchar(30);
+      };
+      count int;
+        item varchar(30)[200];
+    };
+    MSGLBEL {
+      textdata varchar(100);
+    };
+  };
 };

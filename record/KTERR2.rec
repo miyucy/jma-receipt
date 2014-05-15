@@ -1,13 +1,13 @@
-KTERR2	{
-	fixed1	{
-		ERRCODE	{
-			value	varchar(10);
-		};
-		ERRMSG	{
-			value	varchar(80);
-		};
-		ERRMSG2	{
-			value	varchar(80);
-		};
-	};
+KTERR2 {
+  fixed1 {
+    ERRCODE {
+      textdata varchar(10);
+    };
+    ERRMSG {
+      textdata varchar(80);
+    };
+    ERRMSG2 {
+      textdata varchar(80);
+    };
+  };
 };

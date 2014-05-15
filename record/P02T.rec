@@ -1,22 +1,22 @@
-P02T	{
-	fixed10	{
-		KAKUNINYMD1	{
-			value	varchar(11);
-		};
-		KAKUNINYMD2	{
-			value	varchar(11);
-		};
-		KAKUNINYMD3	{
-			value	varchar(11);
-		};
-		KAKUNINYMD4	{
-			value	varchar(11);
-		};
-		KAKUNINYMD5	{
-			value	varchar(11);
-		};
-		HKNMSG	{
-			value	varchar(22);
-		};
-	};
+P02T {
+  fixed10 {
+    KAKUNINYMD1 {
+      textdata varchar(11);
+    };
+    KAKUNINYMD2 {
+      textdata varchar(11);
+    };
+    KAKUNINYMD3 {
+      textdata varchar(11);
+    };
+    KAKUNINYMD4 {
+      textdata varchar(11);
+    };
+    KAKUNINYMD5 {
+      textdata varchar(11);
+    };
+    HKNMSG {
+      textdata varchar(22);
+    };
+  };
 };

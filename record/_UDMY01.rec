@@ -1,13 +1,12 @@
-_UDMY01	{
-	fixed1	{
-	pandaprint1	{
-		item	{
-			path		varchar(256);
-			title		varchar(256);
-			showdialog	int;
-			nretry		int;
-		}[10];
-	};
-	};
+_UDMY01 {
+  fixed1 {
+    pandaprint1 {
+        item {
+          path varchar(256);
+          title varchar(256);
+          showdialog int;
+          nretry int;
+        }[10];
+    };
+  };
 };
-

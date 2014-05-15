@@ -1,291 +1,291 @@
-W10	{
-	fixed12	{
-		B03	{
-			state	int;
-	        };
-		B06	{
-			label   varchar(08);
-	        };
-		B07	{
-			label   varchar(08);
-	        };
-		LBLKANRICD	{
-			style   varchar(20);
-			value   varchar(08);
-		};
-		LBLKIKAN	{
-			style   varchar(20);
-		};
-		STYUKYMD	{
-			value	varchar(9);
-		};
-		EDYUKYMD	{
-			value	varchar(9);
-		};
-		not1	{
-			pageno	int;
-			fixed	{
-				PROGNAME	{
-					value	varchar(24);
-				};
-				HCNAME	{
-					value	varchar(80);
-				};
-				HCNUM	{
-					value	number(3);
-				};
-				CHK_SAVEPARA	{
-					value	bool;
-                        		state	int;
-				};
-				PARAHYOJI1	{
-					value	varchar(20);
-				};
-				PARA1	{
-					value	varchar(10);
-				};
-				PARAHYOJI2	{
-					value	varchar(20);
-				};
-				PARA2	{
-					value	varchar(10);
-				};
-				PARAHYOJI3	{
-					value	varchar(20);
-				};
-				PARA3	{
-					value	varchar(10);
-				};
-				PARAHYOJI4	{
-					value	varchar(20);
-				};
-				PARA4	{
-					value	varchar(10);
-				};
-				PARAHYOJI5	{
-					value	varchar(20);
-				};
-				PARA5	{
-					value	varchar(10);
-				};
-				PARAHYOJI6	{
-					value	varchar(20);
-				};
-				PARA6	{
-					value	varchar(10);
-				};
-				PARAHYOJI7	{
-					value	varchar(20);
-				};
-				PARA7	{
-					value	varchar(10);
-				};
-				PARAHYOJI8	{
-					value	varchar(20);
-				};
-				PARA8	{
-					value	varchar(10);
-				};
-				OPTHISSU01	{
-					value	bool;
-				};
-				OPTNINI01	{
-					value	bool;
-				};
-				OPTHISSU02	{
-					value	bool;
-				};
-				OPTNINI02	{
-					value	bool;
-				};
-				OPTHISSU03	{
-					value	bool;
-				};
-				OPTNINI03	{
-					value	bool;
-				};
-				OPTHISSU04	{
-					value	bool;
-				};
-				OPTNINI04	{
-					value	bool;
-				};
-				OPTHISSU05	{
-					value	bool;
-				};
-				OPTNINI05	{
-					value	bool;
-				};
-				OPTHISSU06	{
-					value	bool;
-				};
-				OPTNINI06	{
-					value	bool;
-				};
-				OPTHISSU07	{
-					value	bool;
-				};
-				OPTNINI07	{
-					value	bool;
-				};
-				OPTHISSU08	{
-					value	bool;
-				};
-				OPTNINI08	{
-					value	bool;
-				};
-				scrolledwindow1	{
-					MEMO	{
-						value	varchar(6000);
-					};
-				};
-			};
-                    N01	{
-                        state	int;
-                    };
-			fixed1	{
-				PROGNAME1	{
-					value	varchar(24);
-				};
-				HCNAME1	{
-					value	varchar(80);
-				};
-				HCNUM1	{
-					value	number(3);
-				};
-				CHK_SAVEPARA1	{
-					value	bool;
-                        		state	int;
-				};
-				PARAHYOJI11	{
-					value	varchar(20);
-				};
-				PARA11	{
-					value	varchar(10);
-				};
-				PARAHYOJI21	{
-					value	varchar(20);
-				};
-				PARA21	{
-					value	varchar(10);
-				};
-				PARAHYOJI31	{
-					value	varchar(20);
-				};
-				PARA31	{
-					value	varchar(10);
-				};
-				PARAHYOJI41	{
-					value	varchar(20);
-				};
-				PARA41	{
-					value	varchar(10);
-				};
-				PARAHYOJI51	{
-					value	varchar(20);
-				};
-				PARA51	{
-					value	varchar(10);
-				};
-				PARAHYOJI61	{
-					value	varchar(20);
-				};
-				PARA61	{
-					value	varchar(10);
-				};
-				PARAHYOJI71	{
-					value	varchar(20);
-				};
-				PARA71	{
-					value	varchar(10);
-				};
-				PARAHYOJI81	{
-					value	varchar(20);
-				};
-				PARA81	{
-					value	varchar(10);
-				};
-				PARAHYOJI91	{
-					value	varchar(20);
-				};
-				PARA91	{
-					value	varchar(10);
-				};
-				PARAHYOJI101	{
-					value	varchar(20);
-				};
-				PARA101	{
-					value	varchar(10);
-				};
-				OPTHISSU011	{
-					value	bool;
-				};
-				OPTNINI011	{
-					value	bool;
-				};
-				OPTHISSU021	{
-					value	bool;
-				};
-				OPTNINI021	{
-					value	bool;
-				};
-				OPTHISSU031	{
-					value	bool;
-				};
-				OPTNINI031	{
-					value	bool;
-				};
-				OPTHISSU041	{
-					value	bool;
-				};
-				OPTNINI041	{
-					value	bool;
-				};
-				OPTHISSU051	{
-					value	bool;
-				};
-				OPTNINI051	{
-					value	bool;
-				};
-				OPTHISSU061	{
-					value	bool;
-				};
-				OPTNINI061	{
-					value	bool;
-				};
-				OPTHISSU071	{
-					value	bool;
-				};
-				OPTNINI071	{
-					value	bool;
-				};
-				OPTHISSU081	{
-					value	bool;
-				};
-				OPTNINI081	{
-					value	bool;
-				};
-				OPTHISSU091	{
-					value	bool;
-				};
-				OPTNINI091	{
-					value	bool;
-				};
-				OPTHISSU101	{
-					value	bool;
-				};
-				OPTNINI101	{
-					value	bool;
-				};
-				scrolledwindow2	{
-					MEMO1	{
-						value	varchar(6000);
-					};
-				};
-			};
-                    N02	{
-                        state	int;
-                    };
-		};
-	};
+W10 {
+  fixed12 {
+    B03 {
+      state int;
+    };
+    B06 {
+      label varchar(8);
+    };
+    B07 {
+      label varchar(8);
+    };
+    LBLKANRICD {
+      style varchar(20);
+      textdata varchar(8);
+    };
+    LBLKIKAN {
+      style varchar(20);
+    };
+    STYUKYMD {
+      textdata varchar(9);
+    };
+    EDYUKYMD {
+      textdata varchar(9);
+    };
+    not1 {
+      pageno int;
+      fixed {
+        PROGNAME {
+          textdata varchar(24);
+        };
+        HCNAME {
+          textdata varchar(80);
+        };
+        HCNUM {
+          numdata number(3);
+        };
+        CHK_SAVEPARA {
+          isactive bool;
+          state int;
+        };
+        PARAHYOJI1 {
+          textdata varchar(20);
+        };
+        PARA1 {
+          textdata varchar(10);
+        };
+        PARAHYOJI2 {
+          textdata varchar(20);
+        };
+        PARA2 {
+          textdata varchar(10);
+        };
+        PARAHYOJI3 {
+          textdata varchar(20);
+        };
+        PARA3 {
+          textdata varchar(10);
+        };
+        PARAHYOJI4 {
+          textdata varchar(20);
+        };
+        PARA4 {
+          textdata varchar(10);
+        };
+        PARAHYOJI5 {
+          textdata varchar(20);
+        };
+        PARA5 {
+          textdata varchar(10);
+        };
+        PARAHYOJI6 {
+          textdata varchar(20);
+        };
+        PARA6 {
+          textdata varchar(10);
+        };
+        PARAHYOJI7 {
+          textdata varchar(20);
+        };
+        PARA7 {
+          textdata varchar(10);
+        };
+        PARAHYOJI8 {
+          textdata varchar(20);
+        };
+        PARA8 {
+          textdata varchar(10);
+        };
+        OPTHISSU01 {
+          isactive bool;
+        };
+        OPTNINI01 {
+          isactive bool;
+        };
+        OPTHISSU02 {
+          isactive bool;
+        };
+        OPTNINI02 {
+          isactive bool;
+        };
+        OPTHISSU03 {
+          isactive bool;
+        };
+        OPTNINI03 {
+          isactive bool;
+        };
+        OPTHISSU04 {
+          isactive bool;
+        };
+        OPTNINI04 {
+          isactive bool;
+        };
+        OPTHISSU05 {
+          isactive bool;
+        };
+        OPTNINI05 {
+          isactive bool;
+        };
+        OPTHISSU06 {
+          isactive bool;
+        };
+        OPTNINI06 {
+          isactive bool;
+        };
+        OPTHISSU07 {
+          isactive bool;
+        };
+        OPTNINI07 {
+          isactive bool;
+        };
+        OPTHISSU08 {
+          isactive bool;
+        };
+        OPTNINI08 {
+          isactive bool;
+        };
+        scrolledwindow1 {
+          MEMO {
+            textdata varchar(6000);
+          };
+        };
+      };
+      N01 {
+        state int;
+      };
+      fixed1 {
+        PROGNAME1 {
+          textdata varchar(24);
+        };
+        HCNAME1 {
+          textdata varchar(80);
+        };
+        HCNUM1 {
+          numdata number(3);
+        };
+        CHK_SAVEPARA1 {
+          isactive bool;
+          state int;
+        };
+        PARAHYOJI11 {
+          textdata varchar(20);
+        };
+        PARA11 {
+          textdata varchar(10);
+        };
+        PARAHYOJI21 {
+          textdata varchar(20);
+        };
+        PARA21 {
+          textdata varchar(10);
+        };
+        PARAHYOJI31 {
+          textdata varchar(20);
+        };
+        PARA31 {
+          textdata varchar(10);
+        };
+        PARAHYOJI41 {
+          textdata varchar(20);
+        };
+        PARA41 {
+          textdata varchar(10);
+        };
+        PARAHYOJI51 {
+          textdata varchar(20);
+        };
+        PARA51 {
+          textdata varchar(10);
+        };
+        PARAHYOJI61 {
+          textdata varchar(20);
+        };
+        PARA61 {
+          textdata varchar(10);
+        };
+        PARAHYOJI71 {
+          textdata varchar(20);
+        };
+        PARA71 {
+          textdata varchar(10);
+        };
+        PARAHYOJI81 {
+          textdata varchar(20);
+        };
+        PARA81 {
+          textdata varchar(10);
+        };
+        PARAHYOJI91 {
+          textdata varchar(20);
+        };
+        PARA91 {
+          textdata varchar(10);
+        };
+        PARAHYOJI101 {
+          textdata varchar(20);
+        };
+        PARA101 {
+          textdata varchar(10);
+        };
+        OPTHISSU011 {
+          isactive bool;
+        };
+        OPTNINI011 {
+          isactive bool;
+        };
+        OPTHISSU021 {
+          isactive bool;
+        };
+        OPTNINI021 {
+          isactive bool;
+        };
+        OPTHISSU031 {
+          isactive bool;
+        };
+        OPTNINI031 {
+          isactive bool;
+        };
+        OPTHISSU041 {
+          isactive bool;
+        };
+        OPTNINI041 {
+          isactive bool;
+        };
+        OPTHISSU051 {
+          isactive bool;
+        };
+        OPTNINI051 {
+          isactive bool;
+        };
+        OPTHISSU061 {
+          isactive bool;
+        };
+        OPTNINI061 {
+          isactive bool;
+        };
+        OPTHISSU071 {
+          isactive bool;
+        };
+        OPTNINI071 {
+          isactive bool;
+        };
+        OPTHISSU081 {
+          isactive bool;
+        };
+        OPTNINI081 {
+          isactive bool;
+        };
+        OPTHISSU091 {
+          isactive bool;
+        };
+        OPTNINI091 {
+          isactive bool;
+        };
+        OPTHISSU101 {
+          isactive bool;
+        };
+        OPTNINI101 {
+          isactive bool;
+        };
+        scrolledwindow2 {
+          MEMO1 {
+            textdata varchar(6000);
+          };
+        };
+      };
+      N02 {
+        state int;
+      };
+    };
+  };
 };

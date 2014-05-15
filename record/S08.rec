@@ -1,201 +1,201 @@
-S08	{
-	fixed6	{
-		B04	{
-			label	varchar(10);
-		};
-		B05	{
-	           	state	int;
-		};
-		B07	{
-			label	varchar(10);
-		};
-		B12	{
-	           	state	int;
-		};
-		PTNUM	{
-			value	varchar(20);
-		};
-		NAME	{
-			value	varchar(60);
-			style	varchar(20);
-		};
-		KANANAME	{
-			value	varchar(60);
-		};
-		BIRTHDAY_MOM	{
-			value	varchar(9);
-		};
-		AGE	{
-			value	varchar(8);
-		};
-		NYUINYMD	{
-			value	varchar(10);
-		};
-		TAIINYMD	{
-			value	varchar(10);
-		};
-		SYAKOK	{
-			value	varchar(4);
-		};
-		HONKZK	{
-			value	varchar(4);
-		};
-		HKNJANUM	{
-			value	varchar(8);
-		};
-		KIGO	{
-			value	varchar(80);
-		};
-		NUM	{
-			value	varchar(80);
-		};
-		CMB_RIYOUKBN	{
-			RIYOUKBN	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[05];
-		};
-		SKYYM	{
-			value	varchar(10);
-	           	state	int;
-		};
-		CMB_TEISYUTUBIKBN{
-			TEISYUTUBIKBN{
-				value	varchar(22);
-		           	state	int;
-			};
-			count	int;
-			item	varchar(22)[05];
-	           	state	int;
-		};
-		CMB_SKYKBN	{
-			SKYKBN	{
-				value	varchar(22);
-		           	state	int;
-			};
-			count	int;
-			item	varchar(22)[05];
-	           	state	int;
-		};
-		CMB_BUNBENKBN	{
-			BUNBENKBN	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[05];
-		};
-		CMB_TEISYUTUSAKI	{
-			TEISYUTUSAKI	{
-				value	varchar(22);
-		           	state	int;
-			};
-			count	int;
-			item	varchar(22)[05];
-		        state	int;
-		};
-		ZAIWEEK	{
-			value	number(2);
-		};
-		BIRTHDAY_BABY	{
-			value	varchar(10);
-		};
-		CMB_SIZANKBN	{
-			SIZANKBN	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[05];
-		};
-		BIRTHCNT	{
-			value	number(1);
-		};
-		NYUIN_DAY	{
-			value	number(3);
-		};
-		CMB_SANKAKBN	{
-			SANKAKBN	{
-				value	varchar(22);
-		           	state	int;
-			};
-			count	int;
-			item	varchar(22)[05];
-	           	state	int;
-		};
-		NYU_MONEY	{
-			value	number(7);
-		};
-		RMSGK_MONEY	{
-			value	number(7);
-		};
-		KAIJO_MONEY	{
-			value	number(7);
-		};
-		BUNBEN_MONEY	{
-			value	number(7);
-		};
-		SHIN_MONEY	{
-			value	number(7);
-		};
-		KNS_MONEY	{
-			value	number(7);
-		};
-		SYC_MONEY	{
-			value	number(7);
-		};
-		SNK_MONEY	{
-			value	number(7);
-		};
-		ETC_MONEY	{
-			value	number(7);
-		};
-		ICBFTN_MONEY	{
-			value	number(7);
-		};
-		NINPUFTN_MONEY	{
-			value	number(7);
-		};
-		DAIRI_MONEY	{
-			value	number(7);
-		};
-		BIKOU	{
-			value	varchar(60);
-		};
-		CMB_MEIPRTKBN	{
-			MEIPRTKBN	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[05];
-		};
-		LBLINFO01	{
-			value	varchar(100);
-			style	varchar(20);
-		};
-		LBLINFO02	{
-			value	varchar(100);
-			style	varchar(20);
-		};
-		LBLINFO03	{
-			value	varchar(100);
-			style	varchar(20);
-		};
-		LBLINFO04	{
-			value	varchar(100);
-			style	varchar(20);
-		};
-		LBLHEADER	{
-			value	varchar(50);
-			style	varchar(20);
-		};
-		LBLNYUINYMD{
-			value	varchar(10);
-		};
-		LBLTAIINYMD{
-			value	varchar(10);
-		};
-		LBLNYUINDAY{
-			value	varchar(10);
-		};
-	};
+S08 {
+  fixed6 {
+    B04 {
+      label varchar(10);
+    };
+    B05 {
+      state int;
+    };
+    B07 {
+      label varchar(10);
+    };
+    B12 {
+      state int;
+    };
+    PTNUM {
+      textdata varchar(20);
+    };
+    NAME {
+      textdata varchar(60);
+      style varchar(20);
+    };
+    KANANAME {
+      textdata varchar(60);
+    };
+    BIRTHDAY_MOM {
+      textdata varchar(9);
+    };
+    AGE {
+      textdata varchar(8);
+    };
+    NYUINYMD {
+      textdata varchar(10);
+    };
+    TAIINYMD {
+      textdata varchar(10);
+    };
+    SYAKOK {
+      textdata varchar(4);
+    };
+    HONKZK {
+      textdata varchar(4);
+    };
+    HKNJANUM {
+      textdata varchar(8);
+    };
+    KIGO {
+      textdata varchar(80);
+    };
+    NUM {
+      textdata varchar(80);
+    };
+    CMB_RIYOUKBN {
+      RIYOUKBN {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[5];
+    };
+    SKYYM {
+      textdata varchar(10);
+      state int;
+    };
+    CMB_TEISYUTUBIKBN {
+      TEISYUTUBIKBN {
+        textdata varchar(22);
+        state int;
+      };
+      count int;
+        item varchar(22)[5];
+      state int;
+    };
+    CMB_SKYKBN {
+      SKYKBN {
+        textdata varchar(22);
+        state int;
+      };
+      count int;
+        item varchar(22)[5];
+      state int;
+    };
+    CMB_BUNBENKBN {
+      BUNBENKBN {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[5];
+    };
+    CMB_TEISYUTUSAKI {
+      TEISYUTUSAKI {
+        textdata varchar(22);
+        state int;
+      };
+      count int;
+        item varchar(22)[5];
+      state int;
+    };
+    ZAIWEEK {
+      numdata number(2);
+    };
+    BIRTHDAY_BABY {
+      textdata varchar(10);
+    };
+    CMB_SIZANKBN {
+      SIZANKBN {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[5];
+    };
+    BIRTHCNT {
+      numdata number(1);
+    };
+    NYUIN_DAY {
+      numdata number(3);
+    };
+    CMB_SANKAKBN {
+      SANKAKBN {
+        textdata varchar(22);
+        state int;
+      };
+      count int;
+        item varchar(22)[5];
+      state int;
+    };
+    NYU_MONEY {
+      numdata number(7);
+    };
+    RMSGK_MONEY {
+      numdata number(7);
+    };
+    KAIJO_MONEY {
+      numdata number(7);
+    };
+    BUNBEN_MONEY {
+      numdata number(7);
+    };
+    SHIN_MONEY {
+      numdata number(7);
+    };
+    KNS_MONEY {
+      numdata number(7);
+    };
+    SYC_MONEY {
+      numdata number(7);
+    };
+    SNK_MONEY {
+      numdata number(7);
+    };
+    ETC_MONEY {
+      numdata number(7);
+    };
+    ICBFTN_MONEY {
+      numdata number(7);
+    };
+    NINPUFTN_MONEY {
+      numdata number(7);
+    };
+    DAIRI_MONEY {
+      numdata number(7);
+    };
+    BIKOU {
+      textdata varchar(60);
+    };
+    CMB_MEIPRTKBN {
+      MEIPRTKBN {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[5];
+    };
+    LBLINFO01 {
+      textdata varchar(100);
+      style varchar(20);
+    };
+    LBLINFO02 {
+      textdata varchar(100);
+      style varchar(20);
+    };
+    LBLINFO03 {
+      textdata varchar(100);
+      style varchar(20);
+    };
+    LBLINFO04 {
+      textdata varchar(100);
+      style varchar(20);
+    };
+    LBLHEADER {
+      textdata varchar(50);
+      style varchar(20);
+    };
+    LBLNYUINYMD {
+      textdata varchar(10);
+    };
+    LBLTAIINYMD {
+      textdata varchar(10);
+    };
+    LBLNYUINDAY {
+      textdata varchar(10);
+    };
+  };
 };

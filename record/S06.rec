@@ -1,130 +1,130 @@
-S06	{
-	fixed12	{
-		PTNUM	{
-			value	varchar(20);
-		};
-		NAME	{
-			value	varchar(50);
-		};
-		CMB_NYUGAIKBN	{
-			NYUGAIKBN	{
-				value	varchar(10);
-			};
-			count	int;
-			item	varchar(10)[03];
-		};
-		LBLMSG	{
-			style   varchar(20);
-			value	varchar(50);
-		};
-		GAI_MISYU	{
-			value	number(9);
-		};
-		NYU_MISYU	{
-			value	number(9);
-		};
-		SELNUM	{
-			value	number(3);
-			state	int;
-		};
-		RD_NYUKIN_IKT	{
-			value	bool;
-		};
-		RD_NYUKIN_KBT	{
-			value	bool;
-		};
-		CMB_NYKNKNRKBN	{
-			NYKNKNRKBN	{
-				value	varchar(42);
-				state	int;
-			};
-			count	int;
-			item	varchar(42)[5];
-			state	int;
-		};
-		CMB_IKTSRYYMKBN {
-			IKTSRYYMKBN	{
-				value	varchar(32);
-				state	int;
-			};
-			count	int;
-			item	varchar(32)[5];
-			state	int;
-		};
-		IKTSRYYM	{
-			value	varchar(10);
-			state	int;
-		};
-		NYUKINYMD	{
-			value	varchar(10);
-		};
-		CMB_NYKNHOHO	{
-			NYKNHOHO	{
-				value	varchar(33);
-			};
-			count	int;
-			item	varchar(33)[50];
-		};
-		GAI_NYUKIN	{
-			value	number(9);
-			state	int;
-		};
-		GAI_NYUKIN_MAX	{
-			value	number(9);
-			state	int;
-		};
-		NYU_NYUKIN	{
-			value	number(9);
-			state	int;
-		};
-		NYU_NYUKIN_MAX	{
-			value	number(9);
-			state	int;
-		};
-		NYUKIN	{
-			value	number(9);
-			state	int;
-		};
-		NYUKIN_MAX	{
-			value	number(9);
-			state	int;
-		};
-		CMB_SKYPRTKBN	{
-			SKYPRTKBN	{
-				value	varchar(32);
-			};
-			count	int;
-			item	varchar(32)[05];
-		};
-		CMB_SKYSUMKBN	{
-			SKYSUMKBN	{
-				value	varchar(42);
-				state	int;
-			};
-			count	int;
-			item	varchar(42)[05];
-			state	int;
-		};
-		scrolledwindow1	{
-			SYULIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(5);
-					value1	varchar(10);
-					value2	varchar(6);
-					value3	varchar(4);
-					value4	varchar(50);
-					value5	varchar(5);
-					value6	varchar(11);
-					value7	varchar(15);
-					value8	varchar(11);
-					value9	varchar(11);
-					value10	varchar(11);
-				}	[400];
-				select	bool[400];
-			};
-		};
-	};
+S06 {
+  fixed12 {
+    PTNUM {
+      textdata varchar(20);
+    };
+    NAME {
+      textdata varchar(50);
+    };
+    CMB_NYUGAIKBN {
+      NYUGAIKBN {
+        textdata varchar(10);
+      };
+      count int;
+        item varchar(10)[3];
+    };
+    LBLMSG {
+      style varchar(20);
+      textdata varchar(50);
+    };
+    GAI_MISYU {
+      numdata number(9);
+    };
+    NYU_MISYU {
+      numdata number(9);
+    };
+    SELNUM {
+      numdata number(3);
+      state int;
+    };
+    RD_NYUKIN_IKT {
+      isactive bool;
+    };
+    RD_NYUKIN_KBT {
+      isactive bool;
+    };
+    CMB_NYKNKNRKBN {
+      NYKNKNRKBN {
+        textdata varchar(42);
+        state int;
+      };
+      count int;
+        item varchar(42)[5];
+      state int;
+    };
+    CMB_IKTSRYYMKBN {
+      IKTSRYYMKBN {
+        textdata varchar(32);
+        state int;
+      };
+      count int;
+        item varchar(32)[5];
+      state int;
+    };
+    IKTSRYYM {
+      textdata varchar(10);
+      state int;
+    };
+    NYUKINYMD {
+      textdata varchar(10);
+    };
+    CMB_NYKNHOHO {
+      NYKNHOHO {
+        textdata varchar(33);
+      };
+      count int;
+        item varchar(33)[50];
+    };
+    GAI_NYUKIN {
+      numdata number(9);
+      state int;
+    };
+    GAI_NYUKIN_MAX {
+      numdata number(9);
+      state int;
+    };
+    NYU_NYUKIN {
+      numdata number(9);
+      state int;
+    };
+    NYU_NYUKIN_MAX {
+      numdata number(9);
+      state int;
+    };
+    NYUKIN {
+      numdata number(9);
+      state int;
+    };
+    NYUKIN_MAX {
+      numdata number(9);
+      state int;
+    };
+    CMB_SKYPRTKBN {
+      SKYPRTKBN {
+        textdata varchar(32);
+      };
+      count int;
+        item varchar(32)[5];
+    };
+    CMB_SKYSUMKBN {
+      SKYSUMKBN {
+        textdata varchar(42);
+        state int;
+      };
+      count int;
+        item varchar(42)[5];
+      state int;
+    };
+    scrolledwindow1 {
+      SYULIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(5);
+            column2 varchar(10);
+            column3 varchar(6);
+            column4 varchar(4);
+            column5 varchar(50);
+            column6 varchar(5);
+            column7 varchar(11);
+            column8 varchar(15);
+            column9 varchar(11);
+            column10 varchar(11);
+            column11 varchar(11);
+          }[400];
+          selectdata bool[400];
+      };
+    };
+  };
 };

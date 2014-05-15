@@ -1,731 +1,731 @@
-F01	{
-	fixed6	{
-		FILENAME	{
-			value	varchar(129);
-		};
-		CHKBTN001	{
-			value	bool;
-        	};
-		CHKBTN002	{
-			value	bool;
-		};
-		CHKBTN003	{
-			value	bool;
-		};
-		CHKBTN004	{
-			value	bool;
-		};
-		CHKBTN005	{
-			value	bool;
-		};
-		CHKBTN006	{
-			value	bool;
-		};
-		CHKBTN007	{
-			value	bool;
-		};
-		CHKBTN008	{
-			value	bool;
-		};
-		CHKBTN009	{
-			value	bool;
-		};
-		CHKBTN010	{
-			value	bool;
-		};
-		CHKBTN011	{
-			value	bool;
-		};
-		CHKBTN012	{
-			value	bool;
-		};
-		CHKBTN013	{
-			value	bool;
-		};
-		CHKBTN014	{
-			value	bool;
-		};
-		CHKBTN015	{
-			value	bool;
-		};
-		CHKBTN016	{
-			value	bool;
-		};
-		CHKBTN017	{
-			value	bool;
-		};
-		CHKBTN018	{
-			value	bool;
-		};
-		CHKBTN019	{
-			value	bool;
-		};
-		CHKBTN020	{
-			value	bool;
-		};
-		CHKBTN021	{
-			value	bool;
-		};
-		CHKBTN022	{
-			value	bool;
-		};
-		CHKBTN023	{
-			value	bool;
-		};
-		CHKBTN024	{
-			value	bool;
-		};
-		CHKBTN025	{
-			value	bool;
-		};
-		CHKBTN026	{
-			value	bool;
-		};
-		CHKBTN027	{
-			value	bool;
-		};
-		CHKBTN028	{
-			value	bool;
-		};
-		CHKBTN029	{
-			value	bool;
-		};
-		CHKBTN030	{
-			value	bool;
-		};
-		CHKBTN031	{
-			value	bool;
-		};
-		CHKBTN032	{
-			value	bool;
-		};
-		CHKBTN033	{
-			value	bool;
-		};
-		CHKBTN034	{
-			value	bool;
-		};
-		CHKBTN035	{
-			value	bool;
-		};
-		CHKBTN036	{
-			value	bool;
-		};
-		CHKBTN037	{
-			value	bool;
-		};
-		CHKBTN038	{
-			value	bool;
-		};
-		CHKBTN039	{
-			value	bool;
-		};
-		CHKBTN040	{
-			value	bool;
-		};
-		CHKBTN041	{
-			value	bool;
-		};
-		CHKBTN042	{
-			value	bool;
-		};
-		CHKBTN043	{
-			value	bool;
-		};
-		CHKBTN044	{
-			value	bool;
-		};
-		CHKBTN045	{
-			value	bool;
-		};
-		CHKBTN046	{
-			value	bool;
-		};
-		CHKBTN047	{
-			value	bool;
-		};
-		CHKBTN048	{
-			value	bool;
-		};
-		CHKBTN049	{
-			value	bool;
-		};
-		CHKBTN050	{
-			value	bool;
-		};
-		CHKBTN051	{
-			value	bool;
-		};
-		CHKBTN052	{
-			value	bool;
-		};
-		CHKBTN053	{
-			value	bool;
-		};
-		CHKBTN054	{
-			value	bool;
-		};
-		CHKBTN055	{
-			value	bool;
-		};
-		CHKBTN056	{
-			value	bool;
-		};
-		CHKBTN057	{
-			value	bool;
-		};
-		CHKBTN058	{
-			value	bool;
-		};
-		CHKBTN059	{
-			value	bool;
-		};
-		CHKBTN060	{
-			value	bool;
-		};
-		CHKBTN061	{
-			value	bool;
-		};
-		CHKBTN062	{
-			value	bool;
-		};
-		CHKBTN063	{
-			value	bool;
-		};
-		CHKBTN064	{
-			value	bool;
-		};
-		CHKBTN065	{
-			value	bool;
-		};
-		CHKBTN066	{
-			value	bool;
-		};
-		CHKBTN067	{
-			value	bool;
-		};
-		CHKBTN068	{
-			value	bool;
-		};
-		CHKBTN069	{
-			value	bool;
-		};
-		CHKBTN070	{
-			value	bool;
-		};
-		CHKBTN071	{
-			value	bool;
-		};
-		CHKBTN072	{
-			value	bool;
-		};
-		CHKBTN073	{
-			value	bool;
-		};
-		CHKBTN074	{
-			value	bool;
-		};
-		CHKBTN075	{
-			value	bool;
-		};
-		CHKBTN076	{
-			value	bool;
-		};
-		CHKBTN077	{
-			value	bool;
-		};
-		CHKBTN078	{
-			value	bool;
-		};
-		CHKBTN079	{
-			value	bool;
-		};
-		CHKBTN080	{
-			value	bool;
-		};
-		CHKBTN081	{
-			value	bool;
-		};
-		CHKBTN082	{
-			value	bool;
-		};
-		CHKBTN083	{
-			value	bool;
-		};
-		CHKBTN084	{
-			value	bool;
-		};
-		CHKBTN085	{
-			value	bool;
-		};
-		CHKBTN086	{
-			value	bool;
-		};
-		CHKBTN087	{
-			value	bool;
-		};
-		CHKBTN088	{
-			value	bool;
-		};
-		CHKBTN089	{
-			value	bool;
-		};
-		CHKBTN090	{
-			value	bool;
-		};
-		CHKBTN091	{
-			value	bool;
-		};
-		CHKBTN092	{
-			value	bool;
-		};
-		CHKBTN093	{
-			value	bool;
-		};
-		CHKBTN094	{
-			value	bool;
-		};
-		CHKBTN095	{
-			value	bool;
-		};
-		CHKBTN096	{
-			value	bool;
-		};
-		CHKBTN097	{
-			value	bool;
-		};
-		CHKBTN098	{
-			value	bool;
-		};
-		CHKBTN099	{
-			value	bool;
-		};
-		CHKBTN100	{
-			value	bool;
-		};
-		CHKBTN101	{
-			value	bool;
-		};
-		CHKBTN102	{
-			value	bool;
-		};
-		CHKBTN103	{
-			value	bool;
-		};
-		CHKBTN104	{
-			value	bool;
-		};
-		CHKBTN105	{
-			value	bool;
-		};
-		CHKBTN106	{
-			value	bool;
-		};
-		CHKBTN107	{
-			value	bool;
-		};
-		CHKBTN108	{
-			value	bool;
-		};
-		CHKBTN109	{
-			value	bool;
-		};
-		CHKBTN110	{
-			value	bool;
-		};
-		CHKBTN111	{
-			value	bool;
-		};
-		CHKBTN112	{
-			value	bool;
-		};
-		CHKBTN113	{
-			value	bool;
-		};
-		CHKBTN114	{
-			value	bool;
-		};
-		CHKBTN115	{
-			value	bool;
-		};
-		CHKBTN116	{
-			value	bool;
-		};
-		CHKBTN117	{
-			value	bool;
-		};
-		CHKBTN118	{
-			value	bool;
-		};
-		CHKBTN119	{
-			value	bool;
-		};
-		CHKBTN120	{
-			value	bool;
-		};
-		CHKMSG01	{
-			value	char(30);
-		};
-		CHKMSG02	{
-			value	char(30);
-		};
-		CHKMSG03	{
-			value	char(30);
-		};
-		CHKMSG04	{
-			value	char(30);
-		};
-		CHKMSG05	{
-			value	char(30);
-		};
-		CHKMSG06	{
-			value	char(30);
-		};
-		CHKMSG07	{
-			value	char(30);
-		};
-		CHKMSG08	{
-			value	char(30);
-		};
-		CHKMSG09	{
-			value	char(30);
-		};
-		CHKMSG10	{
-			value	char(30);
-		};
-		CHKMSG11	{
-			value	char(30);
-		};
-		CHKMSG12	{
-			value	char(30);
-		};
-		CHKMSG13	{
-			value	char(30);
-		};
-		CHKMSG14	{
-			value	char(30);
-		};
-		CHKMSG15	{
-			value	char(30);
-		};
-		CHKMSG16	{
-			value	char(30);
-		};
-		CHKMSG17	{
-			value	char(30);
-		};
-		CHKMSG18	{
-			value	char(30);
-		};
-		CHKMSG19	{
-			value	char(30);
-		};
-		CHKMSG20	{
-			value	char(30);
-		};
-		CHKMSG21	{
-			value	char(30);
-		};
-		CHKMSG22	{
-			value	char(30);
-		};
-		CHKMSG23	{
-			value	char(30);
-		};
-		CHKMSG24	{
-			value	char(30);
-		};
-		CHKMSG25	{
-			value	char(30);
-		};
-		CHKMSG26	{
-			value	char(30);
-		};
-		CHKMSG27	{
-			value	char(30);
-		};
-		CHKMSG28	{
-			value	char(30);
-		};
-		CHKMSG29	{
-			value	char(30);
-		};
-		CHKMSG30	{
-			value	char(30);
-		};
-		CHKMSG31	{
-			value	char(30);
-		};
-		CHKMSG32	{
-			value	char(30);
-		};
-		CHKMSG33	{
-			value	char(30);
-		};
-		CHKMSG34	{
-			value	char(30);
-		};
-		CHKMSG35	{
-			value	char(30);
-		};
-		CHKMSG36	{
-			value	char(30);
-		};
-		CHKMSG37	{
-			value	char(30);
-		};
-		CHKMSG38	{
-			value	char(30);
-		};
-		CHKMSG39	{
-			value	char(30);
-		};
-		CHKMSG40	{
-			value	char(30);
-		};
-		CHKMSG41	{
-			value	char(30);
-		};
-		CHKMSG42	{
-			value	char(30);
-		};
-		CHKMSG43	{
-			value	char(30);
-		};
-		CHKMSG44	{
-			value	char(30);
-		};
-		CHKMSG45	{
-			value	char(30);
-		};
-		CHKMSG46	{
-			value	char(30);
-		};
-		CHKMSG47	{
-			value	char(30);
-		};
-		CHKMSG48	{
-			value	char(30);
-		};
-		CHKMSG49	{
-			value	char(30);
-		};
-		CHKMSG50	{
-			value	char(30);
-		};
-		CHKMSG51	{
-			value	char(30);
-		};
-		CHKMSG52	{
-			value	char(30);
-		};
-		CHKMSG53	{
-			value	char(30);
-		};
-		CHKMSG54	{
-			value	char(30);
-		};
-		CHKMSG55	{
-			value	char(30);
-		};
-		CHKMSG56	{
-			value	char(30);
-		};
-		CHKMSG57	{
-			value	char(30);
-		};
-		CHKMSG58	{
-			value	char(30);
-		};
-		CHKMSG59	{
-			value	char(30);
-		};
-		CHKMSG60	{
-			value	char(30);
-		};
-		CHKMSG61	{
-			value	char(30);
-		};
-		CHKMSG62	{
-			value	char(30);
-		};
-		CHKMSG63	{
-			value	char(30);
-		};
-		CHKMSG64	{
-			value	char(30);
-		};
-		CHKMSG65	{
-			value	char(30);
-		};
-		CHKMSG66	{
-			value	char(30);
-		};
-		CHKMSG67	{
-			value	char(30);
-		};
-		CHKMSG68	{
-			value	char(30);
-		};
-		CHKMSG69	{
-			value	char(30);
-		};
-		CHKMSG70	{
-			value	char(30);
-		};
-		CHKMSG71	{
-			value	char(30);
-		};
-		CHKMSG72	{
-			value	char(30);
-		};
-		CHKMSG73	{
-			value	char(30);
-		};
-		CHKMSG74	{
-			value	char(30);
-		};
-		CHKMSG75	{
-			value	char(30);
-		};
-		CHKMSG76	{
-			value	char(30);
-		};
-		CHKMSG77	{
-			value	char(30);
-		};
-		CHKMSG78	{
-			value	char(30);
-		};
-		CHKMSG79	{
-			value	char(30);
-		};
-		CHKMSG80	{
-			value	char(30);
-		};
-		CHKMSG81	{
-			value	char(30);
-		};
-		CHKMSG82	{
-			value	char(30);
-		};
-		CHKMSG83	{
-			value	char(30);
-		};
-		CHKMSG84	{
-			value	char(30);
-		};
-		CHKMSG85	{
-			value	char(30);
-		};
-		CHKMSG86	{
-			value	char(30);
-		};
-		CHKMSG87	{
-			value	char(30);
-		};
-		CHKMSG88	{
-			value	char(30);
-		};
-		CHKMSG89	{
-			value	char(30);
-		};
-		CHKMSG90	{
-			value	char(30);
-		};
-		CHKMSG91	{
-			value	char(30);
-		};
-		CHKMSG92	{
-			value	char(30);
-		};
-		CHKMSG93	{
-			value	char(30);
-		};
-		CHKMSG94	{
-			value	char(30);
-		};
-		CHKMSG95	{
-			value	char(30);
-		};
-		CHKMSG96	{
-			value	char(30);
-		};
-		CHKMSG97	{
-			value	char(30);
-		};
-		CHKMSG98	{
-			value	char(30);
-		};
-		CHKMSG99	{
-			value	char(30);
-		};
-		CHKMSG100	{
-			value	char(30);
-		};
-		CHKMSG101	{
-			value	char(30);
-		};
-		CHKMSG102	{
-			value	char(30);
-		};
-		CHKMSG103	{
-			value	char(30);
-		};
-		CHKMSG104	{
-			value	char(30);
-		};
-		CHKMSG105	{
-			value	char(30);
-		};
-		CHKMSG106	{
-			value	char(30);
-		};
-		CHKMSG107	{
-			value	char(30);
-		};
-		CHKMSG108	{
-			value	char(30);
-		};
-		CHKMSG109	{
-			value	char(30);
-		};
-		CHKMSG110	{
-			value	char(30);
-		};
-		CHKMSG111	{
-			value	char(30);
-		};
-		CHKMSG112	{
-			value	char(30);
-		};
-		CHKMSG113	{
-			value	char(30);
-		};
-		CHKMSG114	{
-			value	char(30);
-		};
-		CHKMSG115	{
-			value	char(30);
-		};
-		CHKMSG116	{
-			value	char(30);
-		};
-		CHKMSG117	{
-			value	char(30);
-		};
-		CHKMSG118	{
-			value	char(30);
-		};
-		CHKMSG119	{
-			value	char(30);
-		};
-		CHKMSG120	{
-			value	char(30);
-		};
-		LBLCAUTION	{
-			style   varchar(20);
-			value	varchar(100);
-		};
-	};
+F01 {
+  fixed6 {
+    FILENAME {
+      textdata varchar(129);
+    };
+    CHKBTN001 {
+      isactive bool;
+    };
+    CHKBTN002 {
+      isactive bool;
+    };
+    CHKBTN003 {
+      isactive bool;
+    };
+    CHKBTN004 {
+      isactive bool;
+    };
+    CHKBTN005 {
+      isactive bool;
+    };
+    CHKBTN006 {
+      isactive bool;
+    };
+    CHKBTN007 {
+      isactive bool;
+    };
+    CHKBTN008 {
+      isactive bool;
+    };
+    CHKBTN009 {
+      isactive bool;
+    };
+    CHKBTN010 {
+      isactive bool;
+    };
+    CHKBTN011 {
+      isactive bool;
+    };
+    CHKBTN012 {
+      isactive bool;
+    };
+    CHKBTN013 {
+      isactive bool;
+    };
+    CHKBTN014 {
+      isactive bool;
+    };
+    CHKBTN015 {
+      isactive bool;
+    };
+    CHKBTN016 {
+      isactive bool;
+    };
+    CHKBTN017 {
+      isactive bool;
+    };
+    CHKBTN018 {
+      isactive bool;
+    };
+    CHKBTN019 {
+      isactive bool;
+    };
+    CHKBTN020 {
+      isactive bool;
+    };
+    CHKBTN021 {
+      isactive bool;
+    };
+    CHKBTN022 {
+      isactive bool;
+    };
+    CHKBTN023 {
+      isactive bool;
+    };
+    CHKBTN024 {
+      isactive bool;
+    };
+    CHKBTN025 {
+      isactive bool;
+    };
+    CHKBTN026 {
+      isactive bool;
+    };
+    CHKBTN027 {
+      isactive bool;
+    };
+    CHKBTN028 {
+      isactive bool;
+    };
+    CHKBTN029 {
+      isactive bool;
+    };
+    CHKBTN030 {
+      isactive bool;
+    };
+    CHKBTN031 {
+      isactive bool;
+    };
+    CHKBTN032 {
+      isactive bool;
+    };
+    CHKBTN033 {
+      isactive bool;
+    };
+    CHKBTN034 {
+      isactive bool;
+    };
+    CHKBTN035 {
+      isactive bool;
+    };
+    CHKBTN036 {
+      isactive bool;
+    };
+    CHKBTN037 {
+      isactive bool;
+    };
+    CHKBTN038 {
+      isactive bool;
+    };
+    CHKBTN039 {
+      isactive bool;
+    };
+    CHKBTN040 {
+      isactive bool;
+    };
+    CHKBTN041 {
+      isactive bool;
+    };
+    CHKBTN042 {
+      isactive bool;
+    };
+    CHKBTN043 {
+      isactive bool;
+    };
+    CHKBTN044 {
+      isactive bool;
+    };
+    CHKBTN045 {
+      isactive bool;
+    };
+    CHKBTN046 {
+      isactive bool;
+    };
+    CHKBTN047 {
+      isactive bool;
+    };
+    CHKBTN048 {
+      isactive bool;
+    };
+    CHKBTN049 {
+      isactive bool;
+    };
+    CHKBTN050 {
+      isactive bool;
+    };
+    CHKBTN051 {
+      isactive bool;
+    };
+    CHKBTN052 {
+      isactive bool;
+    };
+    CHKBTN053 {
+      isactive bool;
+    };
+    CHKBTN054 {
+      isactive bool;
+    };
+    CHKBTN055 {
+      isactive bool;
+    };
+    CHKBTN056 {
+      isactive bool;
+    };
+    CHKBTN057 {
+      isactive bool;
+    };
+    CHKBTN058 {
+      isactive bool;
+    };
+    CHKBTN059 {
+      isactive bool;
+    };
+    CHKBTN060 {
+      isactive bool;
+    };
+    CHKBTN061 {
+      isactive bool;
+    };
+    CHKBTN062 {
+      isactive bool;
+    };
+    CHKBTN063 {
+      isactive bool;
+    };
+    CHKBTN064 {
+      isactive bool;
+    };
+    CHKBTN065 {
+      isactive bool;
+    };
+    CHKBTN066 {
+      isactive bool;
+    };
+    CHKBTN067 {
+      isactive bool;
+    };
+    CHKBTN068 {
+      isactive bool;
+    };
+    CHKBTN069 {
+      isactive bool;
+    };
+    CHKBTN070 {
+      isactive bool;
+    };
+    CHKBTN071 {
+      isactive bool;
+    };
+    CHKBTN072 {
+      isactive bool;
+    };
+    CHKBTN073 {
+      isactive bool;
+    };
+    CHKBTN074 {
+      isactive bool;
+    };
+    CHKBTN075 {
+      isactive bool;
+    };
+    CHKBTN076 {
+      isactive bool;
+    };
+    CHKBTN077 {
+      isactive bool;
+    };
+    CHKBTN078 {
+      isactive bool;
+    };
+    CHKBTN079 {
+      isactive bool;
+    };
+    CHKBTN080 {
+      isactive bool;
+    };
+    CHKBTN081 {
+      isactive bool;
+    };
+    CHKBTN082 {
+      isactive bool;
+    };
+    CHKBTN083 {
+      isactive bool;
+    };
+    CHKBTN084 {
+      isactive bool;
+    };
+    CHKBTN085 {
+      isactive bool;
+    };
+    CHKBTN086 {
+      isactive bool;
+    };
+    CHKBTN087 {
+      isactive bool;
+    };
+    CHKBTN088 {
+      isactive bool;
+    };
+    CHKBTN089 {
+      isactive bool;
+    };
+    CHKBTN090 {
+      isactive bool;
+    };
+    CHKBTN091 {
+      isactive bool;
+    };
+    CHKBTN092 {
+      isactive bool;
+    };
+    CHKBTN093 {
+      isactive bool;
+    };
+    CHKBTN094 {
+      isactive bool;
+    };
+    CHKBTN095 {
+      isactive bool;
+    };
+    CHKBTN096 {
+      isactive bool;
+    };
+    CHKBTN097 {
+      isactive bool;
+    };
+    CHKBTN098 {
+      isactive bool;
+    };
+    CHKBTN099 {
+      isactive bool;
+    };
+    CHKBTN100 {
+      isactive bool;
+    };
+    CHKBTN101 {
+      isactive bool;
+    };
+    CHKBTN102 {
+      isactive bool;
+    };
+    CHKBTN103 {
+      isactive bool;
+    };
+    CHKBTN104 {
+      isactive bool;
+    };
+    CHKBTN105 {
+      isactive bool;
+    };
+    CHKBTN106 {
+      isactive bool;
+    };
+    CHKBTN107 {
+      isactive bool;
+    };
+    CHKBTN108 {
+      isactive bool;
+    };
+    CHKBTN109 {
+      isactive bool;
+    };
+    CHKBTN110 {
+      isactive bool;
+    };
+    CHKBTN111 {
+      isactive bool;
+    };
+    CHKBTN112 {
+      isactive bool;
+    };
+    CHKBTN113 {
+      isactive bool;
+    };
+    CHKBTN114 {
+      isactive bool;
+    };
+    CHKBTN115 {
+      isactive bool;
+    };
+    CHKBTN116 {
+      isactive bool;
+    };
+    CHKBTN117 {
+      isactive bool;
+    };
+    CHKBTN118 {
+      isactive bool;
+    };
+    CHKBTN119 {
+      isactive bool;
+    };
+    CHKBTN120 {
+      isactive bool;
+    };
+    CHKMSG01 {
+      textdata char(30);
+    };
+    CHKMSG02 {
+      textdata char(30);
+    };
+    CHKMSG03 {
+      textdata char(30);
+    };
+    CHKMSG04 {
+      textdata char(30);
+    };
+    CHKMSG05 {
+      textdata char(30);
+    };
+    CHKMSG06 {
+      textdata char(30);
+    };
+    CHKMSG07 {
+      textdata char(30);
+    };
+    CHKMSG08 {
+      textdata char(30);
+    };
+    CHKMSG09 {
+      textdata char(30);
+    };
+    CHKMSG10 {
+      textdata char(30);
+    };
+    CHKMSG11 {
+      textdata char(30);
+    };
+    CHKMSG12 {
+      textdata char(30);
+    };
+    CHKMSG13 {
+      textdata char(30);
+    };
+    CHKMSG14 {
+      textdata char(30);
+    };
+    CHKMSG15 {
+      textdata char(30);
+    };
+    CHKMSG16 {
+      textdata char(30);
+    };
+    CHKMSG17 {
+      textdata char(30);
+    };
+    CHKMSG18 {
+      textdata char(30);
+    };
+    CHKMSG19 {
+      textdata char(30);
+    };
+    CHKMSG20 {
+      textdata char(30);
+    };
+    CHKMSG21 {
+      textdata char(30);
+    };
+    CHKMSG22 {
+      textdata char(30);
+    };
+    CHKMSG23 {
+      textdata char(30);
+    };
+    CHKMSG24 {
+      textdata char(30);
+    };
+    CHKMSG25 {
+      textdata char(30);
+    };
+    CHKMSG26 {
+      textdata char(30);
+    };
+    CHKMSG27 {
+      textdata char(30);
+    };
+    CHKMSG28 {
+      textdata char(30);
+    };
+    CHKMSG29 {
+      textdata char(30);
+    };
+    CHKMSG30 {
+      textdata char(30);
+    };
+    CHKMSG31 {
+      textdata char(30);
+    };
+    CHKMSG32 {
+      textdata char(30);
+    };
+    CHKMSG33 {
+      textdata char(30);
+    };
+    CHKMSG34 {
+      textdata char(30);
+    };
+    CHKMSG35 {
+      textdata char(30);
+    };
+    CHKMSG36 {
+      textdata char(30);
+    };
+    CHKMSG37 {
+      textdata char(30);
+    };
+    CHKMSG38 {
+      textdata char(30);
+    };
+    CHKMSG39 {
+      textdata char(30);
+    };
+    CHKMSG40 {
+      textdata char(30);
+    };
+    CHKMSG41 {
+      textdata char(30);
+    };
+    CHKMSG42 {
+      textdata char(30);
+    };
+    CHKMSG43 {
+      textdata char(30);
+    };
+    CHKMSG44 {
+      textdata char(30);
+    };
+    CHKMSG45 {
+      textdata char(30);
+    };
+    CHKMSG46 {
+      textdata char(30);
+    };
+    CHKMSG47 {
+      textdata char(30);
+    };
+    CHKMSG48 {
+      textdata char(30);
+    };
+    CHKMSG49 {
+      textdata char(30);
+    };
+    CHKMSG50 {
+      textdata char(30);
+    };
+    CHKMSG51 {
+      textdata char(30);
+    };
+    CHKMSG52 {
+      textdata char(30);
+    };
+    CHKMSG53 {
+      textdata char(30);
+    };
+    CHKMSG54 {
+      textdata char(30);
+    };
+    CHKMSG55 {
+      textdata char(30);
+    };
+    CHKMSG56 {
+      textdata char(30);
+    };
+    CHKMSG57 {
+      textdata char(30);
+    };
+    CHKMSG58 {
+      textdata char(30);
+    };
+    CHKMSG59 {
+      textdata char(30);
+    };
+    CHKMSG60 {
+      textdata char(30);
+    };
+    CHKMSG61 {
+      textdata char(30);
+    };
+    CHKMSG62 {
+      textdata char(30);
+    };
+    CHKMSG63 {
+      textdata char(30);
+    };
+    CHKMSG64 {
+      textdata char(30);
+    };
+    CHKMSG65 {
+      textdata char(30);
+    };
+    CHKMSG66 {
+      textdata char(30);
+    };
+    CHKMSG67 {
+      textdata char(30);
+    };
+    CHKMSG68 {
+      textdata char(30);
+    };
+    CHKMSG69 {
+      textdata char(30);
+    };
+    CHKMSG70 {
+      textdata char(30);
+    };
+    CHKMSG71 {
+      textdata char(30);
+    };
+    CHKMSG72 {
+      textdata char(30);
+    };
+    CHKMSG73 {
+      textdata char(30);
+    };
+    CHKMSG74 {
+      textdata char(30);
+    };
+    CHKMSG75 {
+      textdata char(30);
+    };
+    CHKMSG76 {
+      textdata char(30);
+    };
+    CHKMSG77 {
+      textdata char(30);
+    };
+    CHKMSG78 {
+      textdata char(30);
+    };
+    CHKMSG79 {
+      textdata char(30);
+    };
+    CHKMSG80 {
+      textdata char(30);
+    };
+    CHKMSG81 {
+      textdata char(30);
+    };
+    CHKMSG82 {
+      textdata char(30);
+    };
+    CHKMSG83 {
+      textdata char(30);
+    };
+    CHKMSG84 {
+      textdata char(30);
+    };
+    CHKMSG85 {
+      textdata char(30);
+    };
+    CHKMSG86 {
+      textdata char(30);
+    };
+    CHKMSG87 {
+      textdata char(30);
+    };
+    CHKMSG88 {
+      textdata char(30);
+    };
+    CHKMSG89 {
+      textdata char(30);
+    };
+    CHKMSG90 {
+      textdata char(30);
+    };
+    CHKMSG91 {
+      textdata char(30);
+    };
+    CHKMSG92 {
+      textdata char(30);
+    };
+    CHKMSG93 {
+      textdata char(30);
+    };
+    CHKMSG94 {
+      textdata char(30);
+    };
+    CHKMSG95 {
+      textdata char(30);
+    };
+    CHKMSG96 {
+      textdata char(30);
+    };
+    CHKMSG97 {
+      textdata char(30);
+    };
+    CHKMSG98 {
+      textdata char(30);
+    };
+    CHKMSG99 {
+      textdata char(30);
+    };
+    CHKMSG100 {
+      textdata char(30);
+    };
+    CHKMSG101 {
+      textdata char(30);
+    };
+    CHKMSG102 {
+      textdata char(30);
+    };
+    CHKMSG103 {
+      textdata char(30);
+    };
+    CHKMSG104 {
+      textdata char(30);
+    };
+    CHKMSG105 {
+      textdata char(30);
+    };
+    CHKMSG106 {
+      textdata char(30);
+    };
+    CHKMSG107 {
+      textdata char(30);
+    };
+    CHKMSG108 {
+      textdata char(30);
+    };
+    CHKMSG109 {
+      textdata char(30);
+    };
+    CHKMSG110 {
+      textdata char(30);
+    };
+    CHKMSG111 {
+      textdata char(30);
+    };
+    CHKMSG112 {
+      textdata char(30);
+    };
+    CHKMSG113 {
+      textdata char(30);
+    };
+    CHKMSG114 {
+      textdata char(30);
+    };
+    CHKMSG115 {
+      textdata char(30);
+    };
+    CHKMSG116 {
+      textdata char(30);
+    };
+    CHKMSG117 {
+      textdata char(30);
+    };
+    CHKMSG118 {
+      textdata char(30);
+    };
+    CHKMSG119 {
+      textdata char(30);
+    };
+    CHKMSG120 {
+      textdata char(30);
+    };
+    LBLCAUTION {
+      style varchar(20);
+      textdata varchar(100);
+    };
+  };
 };

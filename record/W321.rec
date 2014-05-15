@@ -1,31 +1,31 @@
-W321	{
-	fixed32	{
-		scrolledwindow26	{
-			hpos	int;
-			vpos	int;
-			LIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(4);
-					value1	varchar(9);
-					value2	varchar(2);
-					value3	varchar(80);
-					value4	varchar(20);
-				}	[500];
-				select	bool[500];
-			};
-		};
-		NEXT	{
-			style	varchar(20);
-			value	varchar(20);
-		};
-		SELNUM	{
-			value	number(4);
-		};
-		MIDASI	{
-			value	varchar(30);
-		};
-	};
+W321 {
+  fixed32 {
+    scrolledwindow26 {
+      hpos int;
+      vpos int;
+      LIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(9);
+            column3 varchar(2);
+            column4 varchar(80);
+            column5 varchar(20);
+          }[500];
+          selectdata bool[500];
+      };
+    };
+    NEXT {
+      style varchar(20);
+      textdata varchar(20);
+    };
+    SELNUM {
+      numdata number(4);
+    };
+    MIDASI {
+      textdata varchar(30);
+    };
+  };
 };

@@ -1,59 +1,59 @@
-U01	{
-	fixed1	{
-		SELNUM2	{
-			value	varchar(4);
-		};
-		SELNUM1	{
-			value	varchar(4);
-		};
-		SRYYMD	{
-			value	varchar(30);
-		};
-		scrolledwindow1	{
-			LIST1	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value1	varchar(4);
-					value2	varchar(20);
-					value3	varchar(50);
-					value4	varchar(06);
-					value5	varchar(50);
-					value6	varchar(6);
-					value7	varchar(6);
-					value8	varchar(8);
-					value9	varchar(24);
-					value10	varchar(50);
-					value11	varchar(8);
-					value12	varchar(8);
-					value13	varchar(4);
-				}	[400];
-				select	bool[400];
-			};
-		};
-		scrolledwindow2	{
-			LIST2	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value1	varchar(4);
-					value2	varchar(20);
-					value3	varchar(50);
-					value4	varchar(6);
-					value5	varchar(50);
-					value6	varchar(6);
-					value7	varchar(6);
-					value8	varchar(8);
-					value9	varchar(24);
-					value10	varchar(50);
-					value11	varchar(8);
-					value12	varchar(8);
-					value13	varchar(4);
-				}	[400];
-				select	bool[400];
-			};
-		};
-	};
+U01 {
+  fixed1 {
+    SELNUM2 {
+      textdata varchar(4);
+    };
+    SELNUM1 {
+      textdata varchar(4);
+    };
+    SRYYMD {
+      textdata varchar(30);
+    };
+    scrolledwindow1 {
+      LIST1 {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(20);
+            column3 varchar(50);
+            column4 varchar(6);
+            column5 varchar(50);
+            column6 varchar(6);
+            column7 varchar(6);
+            column8 varchar(8);
+            column9 varchar(24);
+            column10 varchar(50);
+            column11 varchar(8);
+            column12 varchar(8);
+            column13 varchar(4);
+          }[400];
+          selectdata bool[400];
+      };
+    };
+    scrolledwindow2 {
+      LIST2 {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(20);
+            column3 varchar(50);
+            column4 varchar(6);
+            column5 varchar(50);
+            column6 varchar(6);
+            column7 varchar(6);
+            column8 varchar(8);
+            column9 varchar(24);
+            column10 varchar(50);
+            column11 varchar(8);
+            column12 varchar(8);
+            column13 varchar(4);
+          }[400];
+          selectdata bool[400];
+      };
+    };
+  };
 };

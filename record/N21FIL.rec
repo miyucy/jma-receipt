@@ -1,8 +1,8 @@
-N21FIL	{
-	fixed1 {
-		fileentry1 {
-			objectdata	object;
-			filename	varchar(256);
-		};
-	};
+N21FIL {
+  fixed1 {
+    fileentry1 {
+      objectdata object;
+      filename varchar(256);
+    };
+  };
 };

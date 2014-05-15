@@ -1,220 +1,220 @@
-S02	{
-	fixed12	{
-		B04	{
-	           	state	int;
-		};
-		B04S	{
-	           	state	int;
-		};
-		B03S	{
-	           	state	int;
-			label	varchar(10);
-		};
-		B06	{
-	           	state	int;
-			label	varchar(10);
-		};
-		B07	{
-	           	state	int;
-			label	varchar(10);
-		};
-		B08	{
-	           	label	varchar(10);
-		};
-		B12	{
-	           	state	int;
-		};
-		B12C	{
-			state	int;
-			style	varchar(20);
-			label	varchar(20);
-		};
-		LBLMSG	{
-			style   varchar(20);
-			value	varchar(60);
-		};
-		LBLMSG2	{
-			style   varchar(20);
-			value	varchar(60);
-		};
-		LBLMSG3	{
-			style   varchar(20);
-			value	varchar(40);
-		};
-		LBLMSG4	{
-			style   varchar(20);
-			value	varchar(100);
-		};
-		LBLMSG5	{
-			value	varchar(10);
-		};
-		LBLMSG6	{
-			style   varchar(20);
-			value	varchar(28);
-		};
-		LBLMSG7	{
-			style   varchar(20);
-			value	varchar(20);
-		};
-		LBLSRYYMG	{
-			value	varchar(50);
-		};
-		LBLSRYYMN	{
-			value	varchar(50);
-		};
-		PTNUM	{
-	           	state	int;
-			value	varchar(20);
-		};
-		KANANAME	{
-			style   varchar(20);
-			value	varchar(50);
-		};
-		NAME	{
-			style   varchar(20);
-			value	varchar(50);
-		};
-		BIRTHDAY	{
-			value	varchar(9);
-		};
-		SEX	{
-			value	varchar(2);
-		};
-		SELNUM	{
-			value	number(4);
-		};
-		GAI_MISYU	{
-			value	number(09);
-		};
-		NYU_MISYU	{
-			value	number(09);
-		};
-		GAI_TUKISKY	{
-			value	number(09);
-		};
-		NYU_TUKISKY	{
-			value	number(09);
-		};
-		SRYYM	{
-	           	state	int;
-			value	varchar(10);
-		};
-		scrolledwindow1	{
-			SYULIST	{
-				count	int;
-				row int;
-				rowattr int;
-				item	{
-					value0	varchar(5);
-					value1	varchar(10);
-					value2	varchar(6);
-					value3	varchar(4);
-					value4	varchar(50);
-					value5	varchar(5);
-					value6	varchar(11);
-					value7	varchar(15);
-					value8	varchar(11);
-					value9	varchar(11);
-					value10	varchar(11);
-					value11	varchar(16);
-				}	[500];
-				select	bool[500];
-			};
-		};
-		SRYKACOMBO	{
-			SRYKA	{
-				value	varchar(21);
-			};
-			count	int;
-			item	varchar(21)[99];
-		};
-		NYUGAIKBNCOMBO	{
-			NYUGAIKBN	{
-				value	varchar(8);
-			};
-			count	int;
-			item	varchar(8)[3];
-		};
-		CMB_MODE	{
-			MODE	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[5];
-		};
-		CMB_SORTKBN	{
-			SORTKBN	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[5];
-		};
-		CHOSEI1IN	{
-			value	varchar(10);
-			state	int;
-		};
-		CHOSEI2IN	{
-			value	varchar(10);
-			state	int;
-		};
-		SKYMONEYIN	{
-			style   varchar(20);
-			value	varchar(10);
-			state	int;
-		};
-		NYUKINGK2	{
-			value	varchar(10);
-			state	int;
-		};
-		NYUKINYMD	{
-			value	varchar(10);
-			state	int;
-		};
-		NYUKINHOUHOU_COMBO	{
-			NYUKINHOUHOU	{
-				value	varchar(33);
-				state	int;
-			};
-			count	int;
-			item	varchar(33)[50];
-			state	int;
-		};
-		SKYPRT_COMBO	{
-			SKYPRT	{
-				value	varchar(24);
-				state	int;
-			};
-			count	int;
-			item	varchar(24)[5];
-			state	int;
-		};
-		SRYPRT_COMBO	{
-			SRYPRT	{
-				value	varchar(24);
-				state	int;
-			};
-			count	int;
-			item	varchar(24)[5];
-			state	int;
-		};
-		EDANUM	{
-			value	number(2);
-		};
-		scrolledwindow2	{
-			MEILST	{
-				count	int;
-				row int;
-				rowattr int;
-				item	{
-					value0	varchar(4);
-					value1	varchar(12);
-					value2	varchar(12);
-					value3	varchar(11);
-					value4	varchar(12);
-					value5	varchar(10);
-				}	[99];
-				select	bool[99];
-			};
-		};
-	};
+S02 {
+  fixed12 {
+    B04 {
+      state int;
+    };
+    B04S {
+      state int;
+    };
+    B03S {
+      state int;
+      label varchar(10);
+    };
+    B06 {
+      state int;
+      label varchar(10);
+    };
+    B07 {
+      state int;
+      label varchar(10);
+    };
+    B08 {
+      label varchar(10);
+    };
+    B12 {
+      state int;
+    };
+    B12C {
+      state int;
+      style varchar(20);
+      label varchar(20);
+    };
+    LBLMSG {
+      style varchar(20);
+      textdata varchar(60);
+    };
+    LBLMSG2 {
+      style varchar(20);
+      textdata varchar(60);
+    };
+    LBLMSG3 {
+      style varchar(20);
+      value varchar(40);
+    };
+    LBLMSG4 {
+      style varchar(20);
+      textdata varchar(100);
+    };
+    LBLMSG5 {
+      textdata varchar(10);
+    };
+    LBLMSG6 {
+      style varchar(20);
+      textdata varchar(28);
+    };
+    LBLMSG7 {
+      style varchar(20);
+      textdata varchar(20);
+    };
+    LBLSRYYMG {
+      textdata varchar(50);
+    };
+    LBLSRYYMN {
+      textdata varchar(50);
+    };
+    PTNUM {
+      state int;
+      textdata varchar(20);
+    };
+    KANANAME {
+      style varchar(20);
+      textdata varchar(50);
+    };
+    NAME {
+      style varchar(20);
+      textdata varchar(50);
+    };
+    BIRTHDAY {
+      textdata varchar(9);
+    };
+    SEX {
+      textdata varchar(2);
+    };
+    SELNUM {
+      numdata number(4);
+    };
+    GAI_MISYU {
+      numdata number(9);
+    };
+    NYU_MISYU {
+      numdata number(9);
+    };
+    GAI_TUKISKY {
+      numdata number(9);
+    };
+    NYU_TUKISKY {
+      numdata number(9);
+    };
+    SRYYM {
+      state int;
+      textdata varchar(10);
+    };
+    scrolledwindow1 {
+      SYULIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(5);
+            column2 varchar(10);
+            column3 varchar(6);
+            column4 varchar(4);
+            column5 varchar(50);
+            column6 varchar(5);
+            column7 varchar(11);
+            column8 varchar(15);
+            column9 varchar(11);
+            column10 varchar(11);
+            column11 varchar(11);
+            column12 varchar(16);
+          }[500];
+          selectdata bool[500];
+      };
+    };
+    SRYKACOMBO {
+      SRYKA {
+        textdata varchar(21);
+      };
+      count int;
+        item varchar(21)[99];
+    };
+    NYUGAIKBNCOMBO {
+      NYUGAIKBN {
+        textdata varchar(8);
+      };
+      count int;
+        item varchar(8)[3];
+    };
+    CMB_MODE {
+      MODE {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[5];
+    };
+    CMB_SORTKBN {
+      SORTKBN {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[5];
+    };
+    CHOSEI1IN {
+      textdata varchar(10);
+      state int;
+    };
+    CHOSEI2IN {
+      textdata varchar(10);
+      state int;
+    };
+    SKYMONEYIN {
+      style varchar(20);
+      textdata varchar(10);
+      state int;
+    };
+    NYUKINGK2 {
+      textdata varchar(10);
+      state int;
+    };
+    NYUKINYMD {
+      textdata varchar(10);
+      state int;
+    };
+    NYUKINHOUHOU_COMBO {
+      NYUKINHOUHOU {
+        textdata varchar(33);
+        state int;
+      };
+      count int;
+        item varchar(33)[50];
+      state int;
+    };
+    SKYPRT_COMBO {
+      SKYPRT {
+        value varchar(24);
+        state int;
+      };
+      count int;
+        item varchar(24)[5];
+      state int;
+    };
+    SRYPRT_COMBO {
+      SRYPRT {
+        value varchar(24);
+        state int;
+      };
+      count int;
+        item varchar(24)[5];
+      state int;
+    };
+    EDANUM {
+      numdata number(2);
+    };
+    scrolledwindow2 {
+      MEILST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(12);
+            column3 varchar(12);
+            column4 varchar(11);
+            column5 varchar(12);
+            column6 varchar(10);
+          }[99];
+          selectdata bool[99];
+      };
+    };
+  };
 };

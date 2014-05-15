@@ -1,123 +1,123 @@
-Z91	{
-	fixed2	{
-		SRYCHK	{
-			value	bool;
-		};
-		SRY1	{
-			value	bool;
-		};
-		SRY2	{
-			value	bool;
-		};
-		SRYSTRCOMBO	{
-			SRYSTR	{
-				value	varchar(17);
-			};
-			state   int;
-			count	int;
-			item	varchar(17)[14];
-		};
-		SRYENDCOMBO	{
-			SRYEND	{
-				value	varchar(17);
-			};
-			state   int;
-			count	int;
-			item	varchar(17)[14];
-		};
-		IYKCHKALL	{
-			value	bool;
-		};
-		IPNCHKALL	{
-			value	bool;
-		};
-		IYKCHK1	{
-			value	bool;
-			state   int;
-		};
-		IYKCHK2	{
-			value	bool;
-			state   int;
-		};
-		IYKCHK3	{
-			value	bool;
-			state   int;
-		};
-		IYKCHK4	{
-			value	bool;
-			state   int;
-		};
-		IYKCHK5	{
-			value	bool;
-			state   int;
-		};
-		IYKCHK6	{
-			value	bool;
-			state   int;
-		};
-		IYKCHK7	{
-			value	bool;
-			state   int;
-		};
-		TOKCHK	{
-			value	bool;
-		};
-		HOKACHK	{
-			value	bool;
-		};
-		KZICHK	{
-			value	bool;
-		};
-		COMCHKALL	{
-			value	bool;
-		};
-		COMCHK1	{
-			value	bool;
-		};
-		COMCHK2	{
-			value	bool;
-		};
-		COMCHK3	{
-			value	bool;
-		};
-		JIHCHK	{
-			value	bool;
-		};
-		MSTYMD	{
-			value	varchar(10);
-		};
-		KEI1	{
-			value	bool;
-		};
-		KEI2	{
-			value	bool;
-		};
-		CYU1	{
-			value	bool;
-			state   int;
-		};
-		CYU2	{
-			value	bool;
-		};
-		CYU3	{
-			value	bool;
-		};
-		IPN	{
-			value	bool;
-			state   int;
-		};
-		SYU1	{
-			value	bool;
-		};
-		SYU2	{
-			value	bool;
-		};
-		SYU3	{
-			value	bool;
-		};
-		SYU4	{
-			value	bool;
-			state   int;
-		};
-	};
+Z91 {
+  fixed2 {
+    SRYCHK {
+      isactive bool;
+    };
+    SRY1 {
+      isactive bool;
+    };
+    SRY2 {
+      isactive bool;
+    };
+    SRYSTRCOMBO {
+      SRYSTR {
+        textdata varchar(17);
+      };
+      state int;
+      count int;
+        item varchar(17)[14];
+    };
+    SRYENDCOMBO {
+      SRYEND {
+        textdata varchar(17);
+      };
+      state int;
+      count int;
+        item varchar(17)[14];
+    };
+    IYKCHKALL {
+      isactive bool;
+    };
+    IPNCHKALL {
+      isactive bool;
+    };
+    IYKCHK1 {
+      isactive bool;
+      state int;
+    };
+    IYKCHK2 {
+      isactive bool;
+      state int;
+    };
+    IYKCHK3 {
+      isactive bool;
+      state int;
+    };
+    IYKCHK4 {
+      isactive bool;
+      state int;
+    };
+    IYKCHK5 {
+      isactive bool;
+      state int;
+    };
+    IYKCHK6 {
+      isactive bool;
+      state int;
+    };
+    IYKCHK7 {
+      isactive bool;
+      state int;
+    };
+    TOKCHK {
+      isactive bool;
+    };
+    HOKACHK {
+      isactive bool;
+    };
+    KZICHK {
+      isactive bool;
+    };
+    COMCHKALL {
+      isactive bool;
+    };
+    COMCHK1 {
+      isactive bool;
+    };
+    COMCHK2 {
+      isactive bool;
+    };
+    COMCHK3 {
+      isactive bool;
+    };
+    JIHCHK {
+      isactive bool;
+    };
+    MSTYMD {
+      textdata varchar(10);
+    };
+    KEI1 {
+      isactive bool;
+    };
+    KEI2 {
+      isactive bool;
+    };
+    CYU1 {
+      isactive bool;
+      state int;
+    };
+    CYU2 {
+      isactive bool;
+    };
+    CYU3 {
+      isactive bool;
+    };
+    IPN {
+      isactive bool;
+      state int;
+    };
+    SYU1 {
+      isactive bool;
+    };
+    SYU2 {
+      isactive bool;
+    };
+    SYU3 {
+      isactive bool;
+    };
+    SYU4 {
+      isactive bool;
+      state int;
+    };
+  };
 };

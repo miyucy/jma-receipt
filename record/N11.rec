@@ -1,25 +1,25 @@
-N11	{
-	fixed17	{
-		JYOKEN	{
-			value	varchar(50);
-		};
-		SELNUM	{
-			value	number(3);
-		};
-		NAIYO	{
-			value	varchar(50);
-		};
-		scrolledwindow1	{
-			KEKKALST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(5);
-					value1	varchar(100);
-				}	[200];
-				select	bool[200];
-			};
-		};
-	};
+N11 {
+  fixed17 {
+    JYOKEN {
+      textdata varchar(50);
+    };
+    SELNUM {
+      numdata number(3);
+    };
+    NAIYO {
+      textdata varchar(50);
+    };
+    scrolledwindow1 {
+      KEKKALST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(5);
+            column2 varchar(100);
+          }[200];
+          selectdata bool[200];
+      };
+    };
+  };
 };

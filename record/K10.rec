@@ -1,25 +1,25 @@
-K10	{
-	fixed1	{
-		SELNUM	{
-			value	varchar(3);
-		};
-		scrolledwindow1	{
-			LIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(3);
-					value1	varchar(20);
-					value2	varchar(50);
-					value3	varchar(12);
-					value4	varchar(10);
-					value5	varchar(50);
-					value6	varchar(50);
-					value7	varchar(2);
-				}	[200];
-				select	bool[200];
-			};
-		};
-	};
+K10 {
+  fixed1 {
+    SELNUM {
+      textdata varchar(3);
+    };
+    scrolledwindow1 {
+      LIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(3);
+            column2 varchar(20);
+            column3 varchar(50);
+            column4 varchar(12);
+            column5 varchar(10);
+            column6 varchar(50);
+            column7 varchar(50);
+            column8 varchar(2);
+          }[200];
+          selectdata bool[200];
+      };
+    };
+  };
 };

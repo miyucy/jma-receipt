@@ -1,10 +1,10 @@
-I49	{
-	fixed1	{
-		PED	{
-			value	varchar(20);
-		};
-		PIN	{
-			value	varchar(2);
-		};
-	};
+I49 {
+  fixed1 {
+    PED {
+      textdata varchar(20);
+    };
+    PIN {
+      textdata varchar(2);
+    };
+  };
 };

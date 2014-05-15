@@ -1,87 +1,87 @@
-R03	{
-	fixed6	{
-		B10	{
-			state	int;
-		};
-		B23	{
-			state	int;
-		};
-		SRYYM	{
-			value	varchar(7);
-		};
-		SYOKBN	{
-			value	bool;
-			label	varchar(20);
-		};
-		IKKATU	{
-			value	bool;
-		};
-		NYUGAIKBNCOMBO	{
-			NYUGAIKBN	{
-				value	varchar(8);
-			};
-			count	int;
-			item	varchar(8)[2];
-		};
-		PRTKBNCOMBO	{
-			state	int;
-			PRTKBN	{
-				value	varchar(32);
-			};
-			count	int;
-			item	varchar(32)[10];
-		};
-		PRTKBN_LABEL	{
-			style   varchar(20);
-			value	varchar(28);
-		};
-		KOBETU	{
-			value	bool;
-		};
-		DATAKBN1	{
-			value	bool;
-		};
-		DATAKBN2	{
-			value	bool;
-		};
-		DATAKBN3	{
-			value	bool;
-		};
-		DATAKBN5	{
-			value	bool;
-		};
-		DATAKBN32	{
-			value	bool;
-		};
-		DATAKBN33	{
-			value	bool;
-		};
-		DATAKBN11	{
-			value	bool;
-		};
-		DATAKBN31	{
-			value	bool;
-		};
-		DATAKBN4	{
-			value	bool;
-		};
-		DATAKBN21	{
-			value	bool;
-		};
-		DATAKBN22	{
-			value	bool;
-		};
-		DATAKBN23	{
-			value	bool;
-		};
-		DATAKBN24	{
-			value	bool;
-		};
-		DATAKBN25	{
-			value	bool;
-		};
-		DATAKBN26	{
-			value	bool;
-		};
-	};
+R03 {
+  fixed6 {
+    B10 {
+      state int;
+    };
+    B23 {
+      state int;
+    };
+    SRYYM {
+      textdata varchar(7);
+    };
+    SYOKBN {
+      isactive bool;
+      label varchar(20);
+    };
+    IKKATU {
+      isactive bool;
+    };
+    NYUGAIKBNCOMBO {
+      NYUGAIKBN {
+        textdata varchar(8);
+      };
+      count int;
+        item varchar(8)[2];
+    };
+    PRTKBNCOMBO {
+      state int;
+      PRTKBN {
+        textdata varchar(32);
+      };
+      count int;
+        item varchar(32)[10];
+    };
+    PRTKBN_LABEL {
+      style varchar(20);
+      textdata varchar(28);
+    };
+    KOBETU {
+      isactive bool;
+    };
+    DATAKBN1 {
+      isactive bool;
+    };
+    DATAKBN2 {
+      isactive bool;
+    };
+    DATAKBN3 {
+      isactive bool;
+    };
+    DATAKBN5 {
+      isactive bool;
+    };
+    DATAKBN32 {
+      isactive bool;
+    };
+    DATAKBN33 {
+      isactive bool;
+    };
+    DATAKBN11 {
+      isactive bool;
+    };
+    DATAKBN31 {
+      isactive bool;
+    };
+    DATAKBN4 {
+      isactive bool;
+    };
+    DATAKBN21 {
+      isactive bool;
+    };
+    DATAKBN22 {
+      isactive bool;
+    };
+    DATAKBN23 {
+      isactive bool;
+    };
+    DATAKBN24 {
+      isactive bool;
+    };
+    DATAKBN25 {
+      isactive bool;
+    };
+    DATAKBN26 {
+      isactive bool;
+    };
+  };
 };

@@ -1,49 +1,49 @@
-K97	{
-	fixed32	{
-		SELNUM1	{
-			value	varchar(4);
-		};
-		SELNUM2	{
-			value	varchar(2);
-		};
-		SELNUM3	{
-			value	varchar(4);
-		};
-		scrolledwindow28	{
-			DRCDLIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(4);
-					value1	varchar(24);
-				}	[99];
-				select	bool[99];
-			};
-		};
-		scrolledwindow27	{
-			SRYKALIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(2);
-					value1	varchar(12);
-				}	[40];
-				select	bool[40];
-			};
-		};
-		scrolledwindow26	{
-			HKNCOMBILST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(04);
-					value1	varchar(60);
-				}	[15];
-				select	bool[15];
-			};
-		};
-	};
+K97 {
+  fixed32 {
+    SELNUM1 {
+      textdata varchar(4);
+    };
+    SELNUM2 {
+      textdata varchar(2);
+    };
+    SELNUM3 {
+      textdata varchar(4);
+    };
+    scrolledwindow28 {
+      DRCDLIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(24);
+          }[99];
+          selectdata bool[99];
+      };
+    };
+    scrolledwindow27 {
+      SRYKALIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(2);
+            column2 varchar(12);
+          }[40];
+          selectdata bool[40];
+      };
+    };
+    scrolledwindow26 {
+      HKNCOMBILST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(60);
+          }[15];
+          selectdata bool[15];
+      };
+    };
+  };
 };

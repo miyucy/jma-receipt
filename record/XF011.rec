@@ -1,25 +1,25 @@
-XF011	{
-	fixed1	{
-		SELNUM	{
-			value	number(3);
-		};
-		scrolledwindow1	{
-			hpos	int;
-			vpos	int;
-			BUNREILIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(3);
-					value1	varchar(400);
-				}	[200];
-				select	bool[200];
-			};
-		};
-		NEXT	{
-			style	varchar(20);
-			value	varchar(20);
-		};
-	};
+XF011 {
+  fixed1 {
+    SELNUM {
+      numdata number(3);
+    };
+    scrolledwindow1 {
+      hpos int;
+      vpos int;
+      BUNREILIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(3);
+            column2 varchar(400);
+          }[200];
+          selectdata bool[200];
+      };
+    };
+    NEXT {
+      style varchar(20);
+      textdata varchar(20);
+    };
+  };
 };

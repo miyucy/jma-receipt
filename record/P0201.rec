@@ -1,21 +1,21 @@
-P0201	{
-	fixed1	{
-		SELNUM	{
-			value	varchar(4);
-		};
-		scrolledwindow1	{
-			YYKLIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value1	varchar(5);
-					value2	varchar(6);
-					value3	varchar(30);
-					value4	varchar(10);
-				}	[20];
-				select	bool[20];
-			};
-		};
-	};
+P0201 {
+  fixed1 {
+    SELNUM {
+      textdata varchar(4);
+    };
+    scrolledwindow1 {
+      YYKLIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(5);
+            column2 varchar(6);
+            column3 varchar(30);
+            column4 varchar(10);
+          }[20];
+          selectdata bool[20];
+      };
+    };
+  };
 };

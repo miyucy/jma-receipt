@@ -1,188 +1,188 @@
-K06	{
-	fixed5	{
-		PTNUM	{
-			value	varchar(20);
-		};
-		SRYYM	{
-			value	varchar(7);
-		};
-		KANANAME	{
-			style	varchar(20);
-			value	varchar(30);
-		};
-		MEISYO	{
-			value	varchar(70);
-		};
-		SEX	{
-			value	varchar(2);
-		};
-		DAY01	{
-			value	number(2);
-		};
-		DAY02	{
-			value	number(2);
-		};
-		DAY03	{
-			value	number(2);
-		};
-		DAY04	{
-			value	number(2);
-		};
-		DAY05	{
-			value	number(2);
-		};
-		DAY06	{
-			value	number(2);
-		};
-		DAY07	{
-			value	number(2);
-		};
-		DAY08	{
-			value	number(2);
-		};
-		DAY09	{
-			value	number(2);
-		};
-		DAY10	{
-			value	number(2);
-		};
-		DAY11	{
-			value	number(2);
-		};
-		DAY12	{
-			value	number(2);
-		};
-		DAY13	{
-			value	number(2);
-		};
-		DAY14	{
-			value	number(2);
-		};
-		DAY15	{
-			value	number(2);
-		};
-		DAY16	{
-			value	number(2);
-		};
-		DAY17	{
-			value	number(2);
-		};
-		DAY18	{
-			value	number(2);
-		};
-		DAY19	{
-			value	number(2);
-		};
-		DAY20	{
-			value	number(2);
-		};
-		DAY21	{
-			value	number(2);
-		};
-		DAY22	{
-			value	number(2);
-		};
-		DAY23	{
-			value	number(2);
-		};
-		DAY24	{
-			value	number(2);
-		};
-		DAY25	{
-			value	number(2);
-		};
-		DAY26	{
-			value	number(2);
-		};
-		DAY27	{
-			value	number(2);
-		};
-		DAY28	{
-			value	number(2);
-		};
-		DAY29	{
-			value	number(2);
-		};
-		DAY30	{
-			value	number(2);
-		};
-		DAY31	{
-			value	number(2);
-		};
-		SRYCD	{
-			value	varchar(9);
-		};
-		NYUGAIKBN	{
-			value	number(1);
-		};
-		FSANTEIYMD	{
-			value	varchar(10);
-		};
-		NAME	{
-			style	varchar(20);
-			value	varchar(30);
-		};
-		BIRTHDAY	{
-			value	varchar(9);
-		};
-		SELNUM	{
-			value	number(3);
-		};
-		MSANTEID	{
-			value	number(2);
-		};
-		MSANTEICNT	{
-			value	number(3);
-		};
-		NENREI	{
-			value	varchar(6);
-		};
-		SRYKA	{
-			value	number(2);
-		};
-		HKNCOMBI	{
-			value	number(4);
-		};
-		SRYKAMEI	{
-			value	varchar(7);
-		};
-		HKNCOMBIMEI	{
-			value	varchar(15);
-		};
-		scrolledwindow1	{
-			SANTEILST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(4);
-					value1	varchar(9);
-					value2	varchar(2);
-					value3	varchar(10);
-					value4	varchar(20);
-					value5	varchar(60);
-					value6	varchar(10);
-					value7	varchar(2);
-					value8	varchar(4);
-					value9	varchar(10);
-				}	[100];
-				select	bool[100];
-			};
-		};
-		B03	{
-	           	state	int;
-		};
-		B12	{
-	           	state	int;
-		};
-		B08	{
-	           	state	int;
-		};
-		B09	{
-	           	state	int;
-		};
-		B10	{
-	           	state	int;
-		};
-	};
+K06 {
+  fixed5 {
+    PTNUM {
+      textdata varchar(20);
+    };
+    SRYYM {
+      textdata varchar(7);
+    };
+    KANANAME {
+      style varchar(20);
+      textdata varchar(30);
+    };
+    MEISYO {
+      textdata varchar(70);
+    };
+    SEX {
+      textdata varchar(2);
+    };
+    DAY01 {
+      numdata number(2);
+    };
+    DAY02 {
+      numdata number(2);
+    };
+    DAY03 {
+      numdata number(2);
+    };
+    DAY04 {
+      numdata number(2);
+    };
+    DAY05 {
+      numdata number(2);
+    };
+    DAY06 {
+      numdata number(2);
+    };
+    DAY07 {
+      numdata number(2);
+    };
+    DAY08 {
+      numdata number(2);
+    };
+    DAY09 {
+      numdata number(2);
+    };
+    DAY10 {
+      numdata number(2);
+    };
+    DAY11 {
+      numdata number(2);
+    };
+    DAY12 {
+      numdata number(2);
+    };
+    DAY13 {
+      numdata number(2);
+    };
+    DAY14 {
+      numdata number(2);
+    };
+    DAY15 {
+      numdata number(2);
+    };
+    DAY16 {
+      numdata number(2);
+    };
+    DAY17 {
+      numdata number(2);
+    };
+    DAY18 {
+      numdata number(2);
+    };
+    DAY19 {
+      numdata number(2);
+    };
+    DAY20 {
+      numdata number(2);
+    };
+    DAY21 {
+      numdata number(2);
+    };
+    DAY22 {
+      numdata number(2);
+    };
+    DAY23 {
+      numdata number(2);
+    };
+    DAY24 {
+      numdata number(2);
+    };
+    DAY25 {
+      numdata number(2);
+    };
+    DAY26 {
+      numdata number(2);
+    };
+    DAY27 {
+      numdata number(2);
+    };
+    DAY28 {
+      numdata number(2);
+    };
+    DAY29 {
+      numdata number(2);
+    };
+    DAY30 {
+      numdata number(2);
+    };
+    DAY31 {
+      numdata number(2);
+    };
+    SRYCD {
+      textdata varchar(9);
+    };
+    NYUGAIKBN {
+      numdata number(1);
+    };
+    FSANTEIYMD {
+      textdata varchar(10);
+    };
+    NAME {
+      style varchar(20);
+      textdata varchar(30);
+    };
+    BIRTHDAY {
+      textdata varchar(9);
+    };
+    SELNUM {
+      numdata number(3);
+    };
+    MSANTEID {
+      numdata number(2);
+    };
+    MSANTEICNT {
+      numdata number(3);
+    };
+    NENREI {
+      textdata varchar(6);
+    };
+    SRYKA {
+      numdata number(2);
+    };
+    HKNCOMBI {
+      numdata number(4);
+    };
+    SRYKAMEI {
+      textdata varchar(7);
+    };
+    HKNCOMBIMEI {
+      textdata varchar(15);
+    };
+    scrolledwindow1 {
+      SANTEILST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(4);
+            column2 varchar(9);
+            column3 varchar(2);
+            column4 varchar(10);
+            column5 varchar(20);
+            column6 varchar(60);
+            column7 varchar(10);
+            column8 varchar(2);
+            column9 varchar(4);
+            column10 varchar(10);
+          }[100];
+          selectdata bool[100];
+      };
+    };
+    B03 {
+      state int;
+    };
+    B12 {
+      state int;
+    };
+    B08 {
+      state int;
+    };
+    B09 {
+      state int;
+    };
+    B10 {
+      state int;
+    };
+  };
 };

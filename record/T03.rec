@@ -1,31 +1,31 @@
-T03	{
-	fixed6	{
-		SELNUM	{
-			value	number(3);
-		};
-		SHORIMSG	{
-			value	varchar(40);
-		};
-		scrolledwindow28	{
-			hpos	int;
-			vpos	int;
-			SHELLIDLST	{
-				count	int;
-				row	int;
-				item	{
-					value0	varchar(3);
-					value1	varchar(40);
-					value2	varchar(16);
-				}	[30];
-				select	bool[30];
-			};
-		};
-		PRTNM_COMBO	{
-			PRTNM	{
-				value	varchar(19);
-			};
-			count	int;
-			item	varchar(19)[100];
-		};
-	};
+T03 {
+  fixed6 {
+    SELNUM {
+      numdata number(3);
+    };
+    SHORIMSG {
+      textdata varchar(40);
+    };
+    scrolledwindow28 {
+      hpos int;
+      vpos int;
+      SHELLIDLST {
+        count int;
+        row int;
+          item {
+            column1 varchar(3);
+            column2 varchar(40);
+            column3 varchar(16);
+          }[30];
+          selectdata bool[30];
+      };
+    };
+    PRTNM_COMBO {
+      PRTNM {
+        textdata varchar(19);
+      };
+      count int;
+        item varchar(19)[100];
+    };
+  };
 };

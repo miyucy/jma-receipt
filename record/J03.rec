@@ -1,87 +1,87 @@
-J03	{
-	fixed19	{
-		PTNUM	{
-			value	varchar(20);
-		};
-		KANANAME	{
-			value	varchar(30);
-		};
-		NAME	{
-			value	varchar(30);
-		};
-		BIRTHDAY	{
-			value	varchar(9);
-		};
-		SEX	{
-			value	varchar(2);
-		};
-		scrolledwindow2	{
-			SRYACTCNT	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(7);
-					value1	varchar(40);
-					value2	varchar(5);
-				}	[200];
-				select	bool[200];
-			};
-		};
-		scrolledwindow1	{
-			SRYACTYMD	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value0	varchar(10);
-					value1	varchar(40);
-				}	[200];
-				select	bool[200];
-			};
-		};
-		NYUGAIKBN_COMB	{
-			NYUGAIKBN	{
-				value	varchar(10);
-			};
-			count	int;
-			item	varchar(10)[2];
-		};
-		SRYKA_COMB	{
-			SRYKA	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[41];
-		};
-		HHKNCOMBI_COMB	{
-			HHKNCOMBI	{
-				value	varchar(65);
-			};
-			count	int;
-			item	varchar(65)[20];
-		};
-		MIDASI	{
-		        style   varchar(20);
-			value	varchar(20);
-		};
-		TENSU	{
-			value	varchar(10);
-		};
-		RSITENSU	{
-			value	varchar(10);
-		};
-		JIHIKIN	{
-			value	varchar(10);
-		};
-		SRYYM	{
-			value	varchar(6);
-		};
-		NYUTENSU	{
-			value	varchar(10);
-		};
-		MIDASIN	{
-			value	varchar(10);
-		};
-	};
+J03 {
+  fixed19 {
+    PTNUM {
+      textdata varchar(20);
+    };
+    KANANAME {
+      textdata varchar(30);
+    };
+    NAME {
+      textdata varchar(30);
+    };
+    BIRTHDAY {
+      textdata varchar(9);
+    };
+    SEX {
+      textdata varchar(2);
+    };
+    scrolledwindow2 {
+      SRYACTCNT {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(7);
+            column2 varchar(40);
+            column3 varchar(5);
+          }[200];
+          selectdata bool[200];
+      };
+    };
+    scrolledwindow1 {
+      SRYACTYMD {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(10);
+            column2 varchar(40);
+          }[200];
+          selectdata bool[200];
+      };
+    };
+    NYUGAIKBN_COMB {
+      NYUGAIKBN {
+        textdata varchar(10);
+      };
+      count int;
+        item varchar(10)[2];
+    };
+    SRYKA_COMB {
+      SRYKA {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[41];
+    };
+    HHKNCOMBI_COMB {
+      HHKNCOMBI {
+        textdata varchar(65);
+      };
+      count int;
+        item varchar(65)[20];
+    };
+    MIDASI {
+      style varchar(20);
+      textdata varchar(20);
+    };
+    TENSU {
+      textdata varchar(10);
+    };
+    RSITENSU {
+      textdata varchar(10);
+    };
+    JIHIKIN {
+      textdata varchar(10);
+    };
+    SRYYM {
+      textdata varchar(6);
+    };
+    NYUTENSU {
+      textdata varchar(10);
+    };
+    MIDASIN {
+      textdata varchar(10);
+    };
+  };
 };

@@ -1,10 +1,10 @@
-FID2	{
-	fixed1	{
-		ID2CODE	{
-			value	varchar(11);
-		};
-		ID2MSG	{
-			value	varchar(71);
-		};
-	};
+FID2 {
+  fixed1 {
+    ID2CODE {
+      textdata varchar(11);
+    };
+    ID2MSG {
+      textdata varchar(71);
+    };
+  };
 };

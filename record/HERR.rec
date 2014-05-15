@@ -1,10 +1,10 @@
-HERR	{
-	fixed1	{
-		ERRCODE	{
-			value	char(10);
-		};
-		ERRMSG	{
-			value	char(60);
-		};
-	};
+HERR {
+  fixed1 {
+    ERRCODE {
+      textdata char(10);
+    };
+    ERRMSG {
+      textdata char(60);
+    };
+  };
 };

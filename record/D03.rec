@@ -1,7 +1,7 @@
-D03	{
-	fixed4	{
-		NAME	{
-			value	varchar(30);
-		};
-	};
+D03 {
+  fixed4 {
+    NAME {
+      textdata varchar(30);
+    };
+  };
 };

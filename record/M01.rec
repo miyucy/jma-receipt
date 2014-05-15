@@ -1,68 +1,66 @@
-M01	{
-	title  varchar(120);
-	bgcolor		varchar(20);
-	fixed1	{
-		                 B08	{
-		                	label	varchar(10);
-	                          };
-		                 G11	{
-		                	state	int;
-	                          };
-	 	                 G12	{
-			               state	int;
-		                 };
-		                 G13	{
-		                	state	int;
-	                          };
-	 	                 G14	{
-			               state	int;
-		                 };
-		                 G21	{
-		                	state	int;
-	                          };
-	 	                 G22	{
-			               state	int;
-		                 };
-		                 G23	{
-		                	state	int;
-	                          };
-	 	                 G24	{
-			               state	int;
-		                 };
-		                 G41	{
-		                	state	int;
-	                          };
-	 	                 G42	{
-			               state	int;
-		                 };
-		                 G43	{
-		                	state	int;
-	                          };
-	 	                 G44	{
-			               state	int;
-		                 };
-		                 G51	{
-		                	state	int;
-	                          };
-	 	                 G52	{
-			               state	int;
-		                 };
-		                 G71	{
-		                	state	int;
-	                          };
-	 	                 G82	{
-			               state	int;
-		                 };
-		                 G91	{
-		                	state	int;
-	                          };
-		                 G92	{
-		                	state	int;
-	                          };
-
-		SELNUM	{
-			value	number(2);
-		};
-	};
+M01 {
+  title varchar(120);
+  bgcolor varchar(20);
+  fixed1 {
+    B08 {
+      label varchar(10);
+    };
+    G11 {
+      state int;
+    };
+    G12 {
+      state int;
+    };
+    G13 {
+      state int;
+    };
+    G14 {
+      state int;
+    };
+    G21 {
+      state int;
+    };
+    G22 {
+      state int;
+    };
+    G23 {
+      state int;
+    };
+    G24 {
+      state int;
+    };
+    G41 {
+      state int;
+    };
+    G42 {
+      state int;
+    };
+    G43 {
+      state int;
+    };
+    G44 {
+      state int;
+    };
+    G51 {
+      state int;
+    };
+    G52 {
+      state int;
+    };
+    G71 {
+      state int;
+    };
+    G82 {
+      state int;
+    };
+    G91 {
+      state int;
+    };
+    G92 {
+      state int;
+    };
+    SELNUM {
+      numdata number(2);
+    };
+  };
 };
-

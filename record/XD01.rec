@@ -1,72 +1,72 @@
-XD01	{
-	fixed1	{
-		PTNUM	{
-			value	varchar(20);
-		};
-		NAME	{
-			value	varchar(50);
-		};
-		SEX	{
-			value	varchar(2);
-		};
-		BIRTHDAY	{
-			value	varchar(10);
-		};
-		SRYYMD	{
-			value	varchar(10);
-		};
-		scrolledwindow1	{
-			MLIST	{
-				count	int;
-				row 	int;
-				rowattr	int;
-				item	{
-					value0	varchar(3);
-					value1	varchar(30);
-					value2	varchar(12);
-					value3	varchar(24);
-					value4	varchar(60);
-					value5	varchar(16);
-				}	[10];
-				select	bool[10];
-			};
-		};
-		SELNUM	{
-			value	number(3);
-		};
-		PRTNM	{
-			value	varchar(16);
-		};
-		HKNCOMBI_COMB	{
-			HKNCOMBI	{
-				value	varchar(65);
-			};
-			count	int;
-			item	varchar(65)[15];
-		};
-		DRCD_COMB	{
-			DRCD	{
-				value	varchar(35);
-			};
-			count	int;
-			item	varchar(35)[99];
-		};
-		SRYKA_COMB	{
-			SRYKA	{
-				value	varchar(15);
-			};
-			count	int;
-			item	varchar(15)[40];
-		};
-		SYORINM_COMB	{
-			SYORINM	{
-				value	varchar(30);
-			};
-			count	int;
-			item	varchar(30)[10];
-		};
-		SYORIMEI	{
-			value	varchar(40);
-		};
-	};
+XD01 {
+  fixed1 {
+    PTNUM {
+      textdata varchar(20);
+    };
+    NAME {
+      textdata varchar(50);
+    };
+    SEX {
+      textdata varchar(2);
+    };
+    BIRTHDAY {
+      textdata varchar(10);
+    };
+    SRYYMD {
+      textdata varchar(10);
+    };
+    scrolledwindow1 {
+      MLIST {
+        count int;
+        row int;
+        rowattr int;
+          item {
+            column1 varchar(3);
+            column2 varchar(30);
+            column3 varchar(12);
+            column4 varchar(24);
+            column5 varchar(60);
+            column6 varchar(16);
+          }[10];
+          selectdata bool[10];
+      };
+    };
+    SELNUM {
+      numdata number(3);
+    };
+    PRTNM {
+      textdata varchar(16);
+    };
+    HKNCOMBI_COMB {
+      HKNCOMBI {
+        textdata varchar(65);
+      };
+      count int;
+        item varchar(65)[15];
+    };
+    DRCD_COMB {
+      DRCD {
+        textdata varchar(35);
+      };
+      count int;
+        item varchar(35)[99];
+    };
+    SRYKA_COMB {
+      SRYKA {
+        textdata varchar(15);
+      };
+      count int;
+        item varchar(15)[40];
+    };
+    SYORINM_COMB {
+      SYORINM {
+        textdata varchar(30);
+      };
+      count int;
+        item varchar(30)[10];
+    };
+    SYORIMEI {
+      textdata varchar(40);
+    };
+  };
 };

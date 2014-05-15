@@ -1,36 +1,36 @@
-L02	{
-	fixed6	{
-		SRYYMD	{
-			value	varchar(10);
-		};
-		FILE1_COMBO	{
-			FILE1	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[6];
-		};
-		KOJINKBN1	{
-			value	bool;
-		};
-		KOJINKBN2	{
-			value	bool;
-		};
-		NYUGAIKBNCOMBO	{
-			NYUGAIKBN	{
-				value	varchar(8);
-			};
-			count	int;
-			item	varchar(8)[2];
-		};
-		CDKBN1	{
-			value	bool;
-		};
-		CDKBN2	{
-			value	bool;
-		};
-		FILENM1	{
-			value	varchar(150);
-		};
-	};
+L02 {
+  fixed6 {
+    SRYYMD {
+      textdata varchar(10);
+    };
+    FILE1_COMBO {
+      FILE1 {
+        textdata varchar(22);
+      };
+      count int;
+        item varchar(22)[6];
+    };
+    KOJINKBN1 {
+      isactive bool;
+    };
+    KOJINKBN2 {
+      isactive bool;
+    };
+    NYUGAIKBNCOMBO {
+      NYUGAIKBN {
+        textdata varchar(8);
+      };
+      count int;
+        item varchar(8)[2];
+    };
+    CDKBN1 {
+      isactive bool;
+    };
+    CDKBN2 {
+      isactive bool;
+    };
+    FILENM1 {
+      textdata varchar(150);
+    };
+  };
 };
