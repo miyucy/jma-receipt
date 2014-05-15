@@ -28,8 +28,6 @@
       *  04.07.01    NACL-門脇    12/10/12  合計日数（食事）追加
       *  04.07.02    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
       *                                     算定フラグ追加
-      *  04.08.01    NACL-門脇    16/04/15  平成２８年４月改正対応
-      *  04.08.02    NACL-門脇    18/03/27  平成３０年４月改正対応
       ********************************************************************
       *01  RECE200-REC.
            03  RECE200-KEY.
@@ -191,9 +189,6 @@
       *合計日数（食事）
            03  RECE200-SHOKUJITOTALDAY     PIC 9(02).
       *
-      *食事基本料の金額集計
-           03  RECE200-SHOKUJIKHNRYO-KEI   PIC 9(09).
-      *
       *他保険入院料算定済みフラグ
            03  RECE200-NYUINRYOFLG         PIC X(01).
       *
@@ -271,17 +266,6 @@
       *
       *超重症児（者）入院診療加算等の算定フラグ
            03  RECE200-CYOJKSNFLG          PIC X(01).
-      *
-      *再診加算（入院）情報
-           03  RECE200-NYUSAIINF.
-               05  RECE200-NYUSAI-TENSU    PIC 9(08).
-      *入院料日別診療区分情報
-           03  RECE200-NYUDAYINF.
-               05  RECE200-NYUDAY-SRYKBN   PIC X(02)  OCCURS 31.
-      *
-      *夜間看護体制特定日減算情報
-           03  RECE200-KANGOGENINF.
-               05  RECE200-KANGOGEN-SRYCD  PIC X(09)  OCCURS 31.
       *
       *予備
            03  RECE200-YOBIETC-AREA.
