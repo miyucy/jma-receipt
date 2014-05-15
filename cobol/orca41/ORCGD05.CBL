@@ -367,6 +367,9 @@
                EVALUATE    CHKREIGAI-CHKNUM
                WHEN    "99"
                    MOVE    "╓╫╓нб╬"    TO  SPA-GMN-D05-TCHKNUMNAME(IDXL)
+               WHEN    "A1"
+                   MOVE    "║нлТ╨ч╓хибл╬║ол╓епо©"
+                                       TO  SPA-GMN-D05-TCHKNUMNAME(IDXL)
                WHEN    OTHER
                    PERFORM VARYING IDX0    FROM    1   BY  1
                            UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
@@ -380,9 +383,6 @@
                        END-IF
       *
                    END-PERFORM
-               WHEN    "A1"
-                   MOVE    "║нлТ╨ч╓хибл╬║ол╓епо©"
-                                       TO  SPA-GMN-D05-TCHKNUMNAME(IDXL)
                END-EVALUATE
       *
                MOVE    SPACE           TO  WRK-ERRMSG
