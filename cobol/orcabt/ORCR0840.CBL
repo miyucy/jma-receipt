@@ -249,6 +249,8 @@
       *                                     （労災マスタに置き換え）
       *  04.07.15    NACL-門脇    14/04/24  超重症児（者）入院診療加算等の
       *                                     コメント自動記載修正
+      *  04.07.16    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
+      *                                     コメント自動記載修正
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -4606,35 +4608,53 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN1-COMMENT)
                 AND (FLG-CYOJKSN-COM =  ZERO                 )
                    MOVE   "1"   TO    RECE84-FLG-CYOJKSN-COMMENT
+                   MOVE   "1"   TO    RECE82-COMCNTFLG
+                   EVALUATE  RECE82-CYOJKSNFLG
+                     WHEN     SPACE
+                        MOVE   "X"    TO   RECE82-CYOJKSNFLG
+                     WHEN     "Y"
+                        MOVE   "Z"    TO   RECE82-CYOJKSNFLG
+                   END-EVALUATE
                 END-IF
                 IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN2-COMMENT)
                 AND (FLG-CYOJKSN-COM =  ZERO                 )
                    MOVE   "2"   TO    RECE84-FLG-CYOJKSN-COMMENT
+                   MOVE   "1"   TO    RECE82-COMCNTFLG
+                   EVALUATE  RECE82-CYOJKSNFLG
+                     WHEN     SPACE
+                        MOVE   "Y"    TO   RECE82-CYOJKSNFLG
+                     WHEN     "X"
+                        MOVE   "Z"    TO   RECE82-CYOJKSNFLG
+                   END-EVALUATE
                 END-IF
                 IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN3-COMMENT)
                 AND (FLG-CYOJKSN-COM =  ZERO                 )
                    MOVE   "3"   TO    RECE84-FLG-CYOJKSN-COMMENT
+                   MOVE   "1"   TO    RECE82-COMCNTFLG
+                   EVALUATE  RECE82-CYOJKSNFLG
+                     WHEN     SPACE
+                        MOVE   "X"    TO   RECE82-CYOJKSNFLG
+                     WHEN     "Y"
+                        MOVE   "Z"    TO   RECE82-CYOJKSNFLG
+                   END-EVALUATE
                 END-IF
                 IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN4-COMMENT)
                 AND (FLG-CYOJKSN-COM =  ZERO                 )
                    MOVE   "4"   TO    RECE84-FLG-CYOJKSN-COMMENT
+                   MOVE   "1"   TO    RECE82-COMCNTFLG
+                   EVALUATE  RECE82-CYOJKSNFLG
+                     WHEN     SPACE
+                        MOVE   "Y"    TO   RECE82-CYOJKSNFLG
+                     WHEN     "X"
+                        MOVE   "Z"    TO   RECE82-CYOJKSNFLG
+                   END-EVALUATE
                 END-IF
                 IF   SRY-SRYCD(IDX2) =  CONS-CYOJKSN5-COMMENT
-                   EVALUATE  RECE84-FLG-CYOJKSN-COMMENT
-                     WHEN     "1"
-                       MOVE  "A"  TO  RECE84-FLG-CYOJKSN-COMMENT
-                       MOVE  "1"  TO  RECE85-RECEDENFLG(IDX4)
-                     WHEN     "2"
-                       MOVE  "B"  TO  RECE84-FLG-CYOJKSN-COMMENT
-                       MOVE  "1"  TO  RECE85-RECEDENFLG(IDX4)
-                     WHEN     "3"
-                       MOVE  "C"  TO  RECE84-FLG-CYOJKSN-COMMENT
-                       MOVE  "1"  TO  RECE85-RECEDENFLG(IDX4)
-                     WHEN     "4"
-                       MOVE  "D"  TO  RECE84-FLG-CYOJKSN-COMMENT
-                       MOVE  "1"  TO  RECE85-RECEDENFLG(IDX4)
-                   END-EVALUATE
                    MOVE    1    TO    FLG-CYOJKSN-COM
+                   IF  RECE84-FLG-CYOJKSN-COMMENT  NOT = SPACE
+                        MOVE   "1"    TO   RECE85-RECEPTFLG(IDX4)
+                                           RECE85-RECEDENFLG(IDX4)
+                   END-IF
                 END-IF
               END-IF
            END-IF
