@@ -1089,7 +1089,7 @@
                WHEN    "1"
                    MOVE    "レセ電データチェックリスト（社保）"
                                            TO  SPRT-TITLE
-               WHEN    OTHER
+               WHEN    "2"
                    MOVE    "レセ電データチェックリスト（国保）"
                                            TO  SPRT-TITLE
                WHEN    "3"
