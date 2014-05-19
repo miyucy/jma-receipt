@@ -83,11 +83,8 @@
                                    REPLACING   //RECE01//
                                    BY          //BD01004//.
       *
-           COPY    "CPRECEERR.INC".
-      *
-      *     COPY    "HCM51V03.INC"  REPLACING   //HCM51V03//
-      *                             BY          //HCM51//.
-           COPY    "HCM51.INC".
+           COPY    "HCM51V03.INC"  REPLACING   //HCM51V03//
+                                   BY          //HCM51//.
            COPY    "HCM51V02.INC".
            COPY    "HCM52V05.INC"  REPLACING   //HCM52V05//
                                    BY          //HCM52//.
@@ -139,10 +136,6 @@
            03  WRK-RECEERR                 PIC X(200).
            03  WRK-TOUKEIERR               PIC X(200).
            03  WRK-REC                     PIC X(20000).
-           03  WRK-SOURCE                  PIC X(20000).
-           03  WRK-PATTERN                 PIC X(64).
-           03  WRK-REPLACEMENT             PIC X(64).
-           03  WRK-FLAGS                   PIC X(64).
            03  WRK-HENSURYO                PIC X(10).
            03  WRK-SURYO                   PIC ---------9.
            03  WRK-SYSYMD                  PIC X(08).
@@ -194,15 +187,6 @@
            03  WRK-LINE-MAX                PIC 9(05).
            03  WRK-PARA-NAME               PIC X(25).
            03  WRK-PARA                    PIC X(100).
-           03  WRK-CSV-STSRYYMD            PIC X(10).
-           03  WRK-CSV-EDSRYYMD            PIC X(10).
-           03  WRK-CSV-STTIME              PIC X(05).
-           03  WRK-CSV-EDTIME              PIC X(05).
-           03  WRK-CSV-SAKYMD              PIC X(10).
-           03  WRK-CSV-DATE                PIC X(10).
-           03  WRK-CSV-TIME                PIC X(05).
-           03  WRK-CSV-DASH                PIC X(02).
-           03  WRK-TIME                    PIC X(04).
       *
        01  WRK-HEN-YMD-OT.
            03  WRK-HEN-YY-OT       PIC X(04).
@@ -225,7 +209,6 @@
            03  TTL-CHOSEI2             PIC     S9(10).
            03  TTL-GENMEN              PIC     S9(10).
            03  TTL-MISYU               PIC     S9(10).
-           03  TTL-ZENMISYU            PIC     S9(10).
       *
        01  CSV-AREA.
            03  CSV-SYOSIN              PIC X(10).
@@ -330,28 +313,10 @@
                05  FILLER              PIC X(04)   VALUE   ".csv".
       *
       *    ヘッダー情報
-       01  CSV-HEAD-01A.
+       01  CSV-HEAD-01.
            03  FILLER              PIC X(08)   VALUE   "収納日報".
            03  CSV-NYUGAI          PIC X(08)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SRYKA           PIC X(10)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "診療日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-STHSRYYMD       PIC X(10).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-STTIME          PIC X(05).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-DASH            PIC X(02).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-EDHSRYYMD       PIC X(10).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-EDTIME          PIC X(05).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "作成日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SAKYMD          PIC X(10).
-       01  CSV-HEAD-01B.
+           03  FILLER              PIC X(01)   VALUE   X"0D".
            03  FILLER              PIC X(08)   VALUE   "伝票番号".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "患者番号".
@@ -403,28 +368,10 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(06)   VALUE   "未収額".
       *    ヘッダー情報
-       01  CSV-HEAD-02A.
+       01  CSV-HEAD-02.
            03  FILLER              PIC X(06)   VALUE   "合計表".
            03  CSV-NYUGAI2         PIC X(08)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SRYKA2          PIC X(10)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "診療日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-STHSRYYMD2      PIC X(10).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-STTIME2         PIC X(05).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-DASH2           PIC X(02).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-EDHSRYYMD2      PIC X(10).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-EDTIME2         PIC X(05).
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "作成日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SAKYMD2         PIC X(10).
-       01  CSV-HEAD-02B.
+           03  FILLER              PIC X(01)   VALUE   X"0D".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "合計".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -445,6 +392,8 @@
            03  FILLER              PIC X(06)   VALUE   "自賠責".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "公害".
+      *
+       01  RECEERR                         PIC X(100).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -495,8 +444,6 @@
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
-       01  PTSRH-REC.
-           COPY    "CPPTSRH.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -529,9 +476,6 @@
       *
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -612,22 +556,6 @@
                                    TO  BD01004PARA-TERMID
       *
            MOVE    SBD010-ERRFLPARA TO RECEERR
-      *
-
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    BD01003PARA-BASENAME
-                                   TO  SGETTEMP-BASENAMES (1)
-           MOVE    BD01004PARA-BASENAME
-                                   TO  SGETTEMP-BASENAMES (2)
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (3)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  BD01003PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                   TO  BD01004PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                   TO  RECEERR
       *
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYSYMD
       *
@@ -800,44 +728,6 @@
                MOVE    CONST-LINE-FORM1
                                    TO  WRK-LINE-MAX
            END-IF
-      *
-           IF    ( SBD010-SIMEKBN      =   ZERO )
-               MOVE    WRK-STDAILYKEY-YMD  TO  WRK-SYMD
-               PERFORM 800-CSV-DATE-SEC
-               MOVE    WRK-CSV-DATE        TO  WRK-CSV-STSRYYMD
-      *
-               IF    ( SBD010-EDSRYYMD     NOT =   SPACE )
-      *
-                   MOVE    "〜"            TO  WRK-CSV-DASH
-      *
-                   MOVE    WRK-EDDAILYKEY-YMD  TO  WRK-SYMD
-                   PERFORM 800-CSV-DATE-SEC
-                   MOVE    WRK-CSV-DATE        TO  WRK-CSV-EDSRYYMD
-               END-IF
-      *
-           ELSE
-               MOVE    WRK-STDAILYKEY-YMD  TO  WRK-SYMD
-               PERFORM 800-CSV-DATE-SEC
-               MOVE    WRK-CSV-DATE        TO  WRK-CSV-STSRYYMD
-      *
-               MOVE    WRK-STDAILYKEY-TIME TO  WRK-TIME
-               PERFORM 800-CSV-TIME-SEC
-               MOVE    WRK-CSV-TIME        TO  WRK-CSV-STTIME
-      *
-               MOVE    "〜"                TO  WRK-CSV-DASH
-      *
-               MOVE    WRK-EDDAILYKEY-YMD  TO  WRK-SYMD
-               PERFORM 800-CSV-DATE-SEC
-               MOVE    WRK-CSV-DATE        TO  WRK-CSV-EDSRYYMD
-      *
-               MOVE    WRK-EDDAILYKEY-TIME TO  WRK-TIME
-               PERFORM 800-CSV-TIME-SEC
-               MOVE    WRK-CSV-TIME        TO  WRK-CSV-EDTIME
-           END-IF
-      *
-           MOVE    WRK-SYSYMD          TO  WRK-SYMD
-           PERFORM 800-CSV-DATE-SEC
-           MOVE    WRK-CSV-DATE        TO  WRK-CSV-SAKYMD
       *
            .
        100-INIT-EXT.
@@ -1242,14 +1132,6 @@
                MOVE    IDX-JIHHKN      TO  IDX-HOKEN
            END-IF
       *
-           COMPUTE BD01003-TENSU-TOTAL
-               =   BD01003-TENSU-TOTAL
-               +   SBD010S02-HKNTEN (IDX-S02)
-      *
-           COMPUTE BD01003-TENSU (IDX-HOKEN)
-               =   BD01003-TENSU (IDX-HOKEN)
-               +   SBD010S02-HKNTEN (IDX-S02)
-      *
            COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYUREL)
                =   BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYUREL)
                +   SBD010S02-SEIKYU (IDX-S02)
@@ -1563,6 +1445,7 @@
                INITIALIZE                           TTL-AREA
       *
       *        ＣＳＶ出力処理
+               INITIALIZE                  WRK-REC
                IF    ( BD01004-SRT-NYUGAIKBN   =   "1" )
                    MOVE    "（入院）"      TO  CSV-NYUGAI
                    MOVE    "伝票発行日"    TO  CSV-SRYYMDMEI
@@ -1572,35 +1455,13 @@
                    MOVE    "診療年月日"    TO  CSV-SRYYMDMEI
                    MOVE    "初再"          TO  CSV-SYOSAIMEI
                END-IF
-               MOVE    WRK-CSV-STSRYYMD    TO  CSV-STHSRYYMD
-               MOVE    WRK-CSV-STTIME      TO  CSV-STTIME
-               MOVE    WRK-CSV-DASH        TO  CSV-DASH
-               MOVE    WRK-CSV-EDSRYYMD    TO  CSV-EDHSRYYMD
-               MOVE    WRK-CSV-EDTIME      TO  CSV-EDTIME
-               MOVE    WRK-CSV-SAKYMD      TO  CSV-SAKYMD
-               IF    ( SBD010-SUMKBN   =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    BD01004-SRYKA   TO  SRH-CD
-                   PERFORM 250-GET-1005-SEC
-                   MOVE    SRH-ITM         TO  CSV-SRYKA
-               END-IF
-               MOVE    CSV-HEAD-01A    TO   WRK-SOURCE
-               MOVE    " *, *"         TO   WRK-PATTERN
-               MOVE    ","             TO   WRK-REPLACEMENT
-               MOVE    "g"             TO   WRK-FLAGS
-               PERFORM 800-REGEXP-REPLACE-SEC
-               MOVE    WRK-SOURCE      TO   WRK-REC
-               PERFORM 500-TOUKEICSV-SEC
-      *
-               INITIALIZE                   WRK-REC
                IF    ( TPARA-FORM      =   ZERO )
-                   STRING  CSV-HEAD-01B    DELIMITED BY SIZE
+                   STRING  CSV-HEAD-01     DELIMITED BY SIZE
                            CSV-HEAD-011    DELIMITED BY SIZE
                                            INTO  WRK-REC
                    END-STRING
                ELSE
-                   STRING  CSV-HEAD-01B    DELIMITED BY SIZE
+                   STRING  CSV-HEAD-01     DELIMITED BY SIZE
                            CSV-HEAD-012    DELIMITED BY SIZE
                                            INTO  WRK-REC
                    END-STRING
@@ -1965,8 +1826,6 @@
                COMPUTE TTL-MISYU
                    =   TTL-MISYU   +   BD01004-TTLMISYU
            END-IF
-           COMPUTE TTL-ZENMISYU
-               =   TTL-ZENMISYU    +   BD01004-ZENMISYU
       *
            .
        220-SUM-BODY-TOTAL-EXT.
@@ -1997,7 +1856,6 @@
            MOVE    "（内今回入金額）"
                                    TO  HCM51-TTL-KONNYUKINMSG
            MOVE    "今回未収額"    TO  HCM51-TTL-MISYUMSG
-           MOVE    "前回未収額"    TO  HCM51-TTL-ZENMISYUMSG
       *
            MOVE    TTL-HKNTEN      TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-HKNTEN
@@ -2029,8 +1887,6 @@
            MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-GENMEN
            MOVE    TTL-MISYU       TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-MISYU
-           MOVE    TTL-ZENMISYU    TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-ZENMISYU
       *
            .
        2201-BODY-TOTAL-EXT.
@@ -2042,8 +1898,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            PERFORM 230-PRINT-COMMON-SEC
-      *     MOVE   "HCM51V03.red"   TO  SPRT-PRTID
-           MOVE   "HCM51.red"      TO  SPRT-PRTID
+           MOVE   "HCM51V03.red"   TO  SPRT-PRTID
            MOVE    "収納日報"      TO  SPRT-TITLE
            MOVE    HCM51           TO  SPRT-PRTDATA
            CALL    "ORCSPRT"           USING
@@ -2474,30 +2329,7 @@
                MOVE    "（外来）"      TO  CSV-NYUGAI2
            END-IF
       *
-           MOVE    WRK-CSV-STSRYYMD    TO  CSV-STHSRYYMD2
-           MOVE    WRK-CSV-STTIME      TO  CSV-STTIME2
-           MOVE    WRK-CSV-DASH        TO  CSV-DASH2
-           MOVE    WRK-CSV-EDSRYYMD    TO  CSV-EDHSRYYMD2
-           MOVE    WRK-CSV-EDTIME      TO  CSV-EDTIME2
-           MOVE    WRK-CSV-SAKYMD      TO  CSV-SAKYMD2
-           IF    ( SBD010-SUMKBN   =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    BD01003-SRT-SRYKA
-                                       TO  SRH-CD
-               PERFORM 250-GET-1005-SEC
-               MOVE    SRH-ITM         TO  CSV-SRYKA2
-           END-IF
-      *
-           MOVE    CSV-HEAD-02A    TO  WRK-SOURCE
-           MOVE    " *, *"         TO  WRK-PATTERN
-           MOVE    ","             TO  WRK-REPLACEMENT
-           MOVE    "g"             TO  WRK-FLAGS
-           PERFORM 800-REGEXP-REPLACE-SEC
-           MOVE    WRK-SOURCE      TO  WRK-REC
-           PERFORM 500-TOUKEICSV-SEC
-      *
-           MOVE    CSV-HEAD-02B    TO  WRK-REC
+           MOVE    CSV-HEAD-02     TO  WRK-REC
            PERFORM 500-TOUKEICSV-SEC
       *
            MOVE    WRK-PRT-SRYYMD      TO  HCM52-HSRYYMD
@@ -2512,7 +2344,6 @@
            END-IF
       *
            MOVE    WRK-PRT-SAKYMD      TO  HCM52-SAKYMD
-      *
       *
            MOVE    CNT-PAGE            TO  WRK-ZZZZ9
            MOVE    WRK-ZZZZ9           TO  HCM52-PAGE
@@ -2548,34 +2379,6 @@
                                    TO  HCM52-KONMISYUMSG
            END-IF
       *
-           INITIALIZE              CSV-AREA2
-      *
-           MOVE    "保険点数"      TO  CSV-DAI
-      *
-           MOVE    BD01003-TENSU-TOTAL
-                                   TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9    TO  HCM52-TTLTENSU
-           MOVE    BD01003-TENSU-TOTAL
-                                   TO  WRK-SURYO
-           PERFORM 400-ZHEN-SURYO-SET-SEC
-           MOVE    WRK-HENSURYO    TO  CSV-GOKEI
-      *
-           PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL ( IDX2    >   WRK-SKYTTL-MAX )
-      *
-               MOVE    BD01003-TENSU (IDX2)
-                                   TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9 TO HCM52-TENSU (IDX2)
-      *
-               MOVE    BD01003-TENSU (IDX2)
-                                   TO  WRK-SURYO
-               PERFORM 400-ZHEN-SURYO-SET-SEC
-               MOVE    WRK-HENSURYO    TO  CSV-SKYMONEY2(IDX2)
-      *
-           END-PERFORM
-      *
-           PERFORM 2211-BODY-SEC
-      *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   11 )
       *
@@ -2603,7 +2406,6 @@
                END-IF
       *
                IF    ( FLG-TARGET  =   1 )
-      *
                    INITIALIZE              CSV-AREA2
                    IF    ( IDX1        =   CONST-TTLKONNYUKIN )
                        INITIALIZE              WRK-KONNYUKIN-G
@@ -2691,7 +2493,31 @@
                        WHEN    CONST-TTLSYOSAI
                            MOVE    "初再診件"    TO  CSV-DAI
                    END-EVALUATE
-                   PERFORM 2211-BODY-SEC
+                   INITIALIZE              WRK-REC
+                   STRING  CSV-DAI             DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-GOKEI           DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(1)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(2)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(3)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(4)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(5)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(6)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(7)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(8)    DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(9)    DELIMITED BY SPACE
+                                         INTO  WRK-REC
+                   END-STRING
+                   PERFORM 500-TOUKEICSV-SEC
                END-IF
       *
            END-PERFORM
@@ -2923,40 +2749,6 @@
       *
            .
        221-BODY-EXT.
-           EXIT.
-      *****************************************************************
-      *   明細編集処理
-      *****************************************************************
-       2211-BODY-SEC               SECTION.
-      *
-           INITIALIZE              WRK-REC
-           STRING  CSV-DAI             DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-GOKEI           DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(1)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(2)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(3)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(4)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(5)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(6)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(7)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(8)    DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(9)    DELIMITED BY SPACE
-                                 INTO  WRK-REC
-           END-STRING
-           PERFORM 500-TOUKEICSV-SEC
-      *
-           .
-       2211-BODY-EXT.
            EXIT.
       *****************************************************************
       *   印刷処理
@@ -3197,36 +2989,6 @@
        800-DEL-FILE-EXT.
            EXIT.
       *****************************************************************
-      *    CSV日付編集処理
-      *****************************************************************
-       800-CSV-DATE-SEC            SECTION.
-      *
-            MOVE    SPACE          TO  WRK-CSV-DATE
-      *
-            MOVE    WRK-SYMD(1:4)  TO  WRK-CSV-DATE(1:4)
-            MOVE    "/"            TO  WRK-CSV-DATE(5:1)
-            MOVE    WRK-SYMD(5:2)  TO  WRK-CSV-DATE(6:2)
-            MOVE    "/"            TO  WRK-CSV-DATE(8:1)
-            MOVE    WRK-SYMD(7:2)  TO  WRK-CSV-DATE(9:2)
-      *
-           .
-       800-CSV-DATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    CSV時刻編集処理
-      *****************************************************************
-       800-CSV-TIME-SEC            SECTION.
-      *
-            MOVE    SPACE          TO  WRK-CSV-TIME
-      *
-            MOVE    WRK-TIME(1:2)  TO  WRK-CSV-TIME(1:2)
-            MOVE    ":"            TO  WRK-CSV-TIME(3:1)
-            MOVE    WRK-TIME(3:2)  TO  WRK-CSV-TIME(4:2)
-      *
-           .
-       800-CSV-TIME-EXT.
-           EXIT.
-      *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
@@ -3295,33 +3057,6 @@
            .
       *
        800-ORCSJOB-EXT.
-           EXIT.
-      *****************************************************************
-      *    文字列置換処理
-      *****************************************************************
-       800-REGEXP-REPLACE-SEC          SECTION.
-      *
-           INITIALIZE                  PTSRH-REC
-           MOVE    WRK-SOURCE      TO  PTSRH-VTEXT
-           MOVE    WRK-PATTERN     TO  PTSRH-VSTR (1)
-           MOVE    WRK-REPLACEMENT TO  PTSRH-VSTR (2)
-           MOVE    WRK-FLAGS       TO  PTSRH-VSTR (3)
-           MOVE    PTSRH-REC       TO  MCPDATA-REC
-           MOVE    "tbl_ptsrh"     TO  MCP-TABLE
-           MOVE    "regexp_replace" TO MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  PTSRH-REC
-               MOVE    PTSRH-SQL   TO  WRK-SOURCE
-           END-IF
-      *
-           MOVE    "tbl_ptsrh"     TO  MCP-TABLE
-           MOVE    "regexp_replace" TO MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       800-REGEXP-REPLACE-EXT.
            EXIT.
       *****************************************************************
       *    収納明細検索処理
