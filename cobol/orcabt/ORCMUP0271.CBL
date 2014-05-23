@@ -129,7 +129,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-IN                  PIC X(01).
            03  WRK-MEMO                PIC X(10000).
            03  WRK-MEMO-LEN            PIC 9(08).
-           03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -157,9 +156,11 @@ grpsys     COPY    "COMMON-SPA".
            03  FILLER                  PIC X(01)   VALUE   "-".
            03  WRK-YUKOEDYMD           PIC  X(08).
       *
-       01  CONST-AREA.
-           03  CONST-HOMEDIR           PIC X(28)  VALUE
+       01  WRK-HOMEDIR.
+           03  FILLER                  PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
+           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+           03  FILLER                  PIC X(01)  VALUE "/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -175,10 +176,6 @@ grpsys     COPY    "COMMON-SPA".
       *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-      *
-           COPY    "ENUM-VALUE".
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -252,25 +249,17 @@ grpsys     COPY    "COMMON-SPA".
            .
        100-INIT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           IF      SGETTEMP-MW         =   SPA-PANDA
-               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
-           ELSE
-               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
-           END-IF
+           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
@@ -280,8 +269,6 @@ grpsys     COPY    "COMMON-SPA".
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -291,8 +278,6 @@ grpsys     COPY    "COMMON-SPA".
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
@@ -301,6 +286,7 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    メイン処理
       *****************************************************************
@@ -316,12 +302,11 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    NYUINCDCHGWK-KEY    TO  NYUINCDCHG-KEY
                MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "tbl_nyuincdchg_master"
-                                           TO  MCP-TABLE
+               MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_nyuincdchg_master"
+                   MOVE    "tbl_nyuincdchg"
                                            TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM  910-NYUINCDCHG-READ-SEC
@@ -330,8 +315,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                END-IF
       *
       *        入院料置換クローズ
-               MOVE    "tbl_nyuincdchg_master"
-                                           TO  MCP-TABLE
+               MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-TBL-CLOSE-SEC
       *
@@ -406,8 +390,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  NYUINCDCHG-UPHMS
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_nyuincdchg_master"
-                                       TO  MCP-TABLE
+           MOVE    "tbl_nyuincdchg"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -430,8 +413,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  NYUINCDCHG-UPHMS
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_nyuincdchg_master"
-                                       TO  MCP-TABLE
+           MOVE    "tbl_nyuincdchg"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -453,8 +435,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        TO  NYUINCDCHG-REC
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_nyuincdchg_master"
-                                       TO  MCP-TABLE
+           MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

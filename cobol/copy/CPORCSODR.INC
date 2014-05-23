@@ -36,7 +36,7 @@
                05  SODR-DRCD               PIC X(05).
                05  SODR-ORDERID            PIC X(04).
                05  SODR-UKEYMD             PIC X(08).
-               05  SODR-UKEHMS             PIC X(08).
+               05  SODR-UKEHMS             PIC X(06).
                05  SODR-PROCKBN            PIC X(01).
                05  SODR-KEYGENERATE        PIC 9(01).
                05  SODR-INF-DIALOG         PIC 9(02).
@@ -51,8 +51,6 @@
                05  SODR-RRKEDANUM          PIC 9(03).
                05  SODR-SHONUM             PIC 9(03).
                05  SODR-SKYSTYMD           PIC X(08).
-               05  SODR-UNSKYSTYMD         PIC X(08).
-               05  SODR-UNSKYEDYMD         PIC X(08).
                05  SODR-DENPNUM-MAX        PIC 9(03).
                05  SODR-DENPNUM-G.
                    07  SODR-DENPNUM-OCC    OCCURS  10.

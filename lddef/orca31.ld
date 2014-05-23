@@ -15,7 +15,7 @@ bind	"I0ID1"			"OpenCOBOL"	"ORCGI0ID1";
 bind	"I0ID2"			"OpenCOBOL"	"ORCGI0ID2";
 bind	"I041"			"OpenCOBOL"	"ORCGI041";
 bindapi "hsptinfmodv2" 	"OpenCOBOL"	"ORCGI0API01";
-bindapi "birthdeliveryv2" "OpenCOBOL"	"ORCGI0API02";
+bindapi "hsacctmodv2" 	"OpenCOBOL"	"ORCGI0API09";
 
 multiplex_group	orca31;
 
@@ -34,7 +34,7 @@ data	{
 		I0ID2;
 		I041;
 		hsptinfmodv2;
-		birthdeliveryv2;
+		hsacctmodv2;
 	};
 };
 
@@ -42,19 +42,10 @@ db "xml2" {
  xml_hsptinfmodv2req;
  xml_hsptinfmod01v2res;
  xml_hsptinfmod02v2res;
- xml_birthdeliveryv2req;
- xml_birthdeliveryv2res;
- fm_prescription;
- fm_discharge_certificate;
- fm_karte_no1_h;
- fm_invoice_receipt_h;
- fm_statement_h;
+ xml_hsacctmodv2req;
+ xml_hsacctmodv2res;
 };
 
 #include "orcadb.inc"
 #include "orcadbh.inc"
-
-db "push" {
- push_hospital_stay;
-};
 

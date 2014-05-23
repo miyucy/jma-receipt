@@ -105,9 +105,7 @@
                05  ERRCD-ORDER         PIC X(04).
            03  ERRCD-ERRCD             PIC X(04).
       *
-      *
-       01  CONST-AREA.
-           03  CONST-API               PIC 9(01)   VALUE 2.
+      *01  CONST-AREA.
       *
       *    入院CLAIM項目IDコピー句
            COPY    "CPNCLAIMID.INC".
@@ -194,26 +192,14 @@
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //LNK-PTNYUINRRK-//.
       *
-      *    入退院登録PUSH通知
-           COPY    "CPORCSI03.INC".
-      *
-      *
-      *    分娩情報編集サブ
-           COPY    "CPORCSI02.INC".
-       01  SNRRK-AREA.
-           COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                       BY         //SNRRK-//.
-      *
       *    排他制御
            COPY    "CPORCSLOCK.INC".
       *
       *    収納更新差額取得
            COPY  "CPORCSS002.INC".
       *
-      *    ユーザプログラム起動サブパラメタ
-           COPY    "CPORCSUSERCHK.INC".
-      *
            COPY    "MCPDATA.INC".
+           COPY    "MCPAREA".
       *
       *****************************************************************
       *    連絡　領域
@@ -227,7 +213,6 @@
            02  LNK-ODRITEM-OCC         OCCURS   30.
            COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
                                        BY         //LNK-ODRITEM-//.
-           COPY    "MCPAREA".
            COPY    "COMMON-SPA".
       *
       ******************************************************************
@@ -235,7 +220,6 @@
        PROCEDURE                       DIVISION
                                        USING   SODR-AREA
                                                LNK-ODRITEM-REC
-                                               MCPAREA
                                                SPA-AREA.
       *
       *****************************************************************
@@ -280,15 +264,14 @@
                    MOVE    PTNYUINRRK-REC
                                        TO  TRRK-REC
                ELSE
-                   MOVE    "0051"      TO  ERRCD-ORDER
+                   MOVE    "0131"      TO  ERRCD-ORDER
                END-IF
            END-IF
       *
-           IF    ( SODR-KEYGENERATE     =   2 )
+           IF    ( SODR-ORDERID        =   NORDERID-ALLCANNYUINID
+                                        OR NORDERID-CANNYUINID )
                MOVE    PTNYUINRRK-NYUINKA     TO  SODR-SRYKA
-                                                  ITEM-NYUINKA
                MOVE    PTNYUINRRK-HKNCOMBINUM TO  SODR-HKNCOMBI
-                                                  ITEM-HKNCOMBI
            END-IF
       *
            .
@@ -330,12 +313,6 @@
                END-IF
       *
                IF    ( FLG-END  =   ZERO )
-                   IF    ( SODR-SRCKBN =   "1" OR "2" )
-                       PERFORM 2101-ORCSI02-CALL-SEC
-                   END-IF
-               END-IF
-      *
-               IF    ( FLG-END  =   ZERO )
                   PERFORM  2101-PTINF-UPDATE-SEC
                END-IF
       *
@@ -352,16 +329,6 @@
                        PERFORM 2101-ORDER-INSERT-SEC
                    END-IF
                END-IF
-      *
-               IF    ( FLG-END  =   ZERO )
-                   IF    ( SODR-KEYGENERATE
-                                           =   CONST-API )
-                       PERFORM 2101-USERPG-CALL-SEC
-      *
-                       PERFORM 2101-PUSHEVENT-SEC
-                   END-IF
-               END-IF
-      *
            ELSE
                IF    ( SODR-PROCKBN    =   "1" OR "2" )
                        CONTINUE
@@ -404,7 +371,6 @@
            COMPUTE CNT-NYUINKA  =   CNT-NYUINKA  +   1
       *
            IF    ( CNT-NYUINKA  =   1 )
-            AND  ( ITEM-NYUINKA =   SPACE )
       *
                MOVE    "1005"          TO  WRK-SYS-KANRICD
                MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
@@ -417,10 +383,14 @@
                                        TO  ITEM-NYUINKA
       *
                ELSE
-                   MOVE    "0002"      TO  ERRCD-ERRCD
+                   MOVE    "0127"      TO  ERRCD-ERRCD
                    PERFORM 2100-ITEM-ERR-SET-SEC
                END-IF
       *
+           ELSE
+               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
+               MOVE    "0128"      TO  ERRCD-ERRCD
+               PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
            .
@@ -434,7 +404,6 @@
            COMPUTE CNT-HKNCOMBI  =   CNT-HKNCOMBI  +   1
       *
            IF    ( CNT-HKNCOMBI  =   1 )
-            AND  ( ITEM-HKNCOMBI =   ZERO )
       *
                MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
                                        TO  WRK-COMBI-HKNCOMBI
@@ -447,17 +416,17 @@
                        MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
                                        TO  ITEM-HKNCOMBI
                    ELSE
-                       MOVE    "0005"  TO  ERRCD-ERRCD
+                       MOVE    "0129"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                     END-IF
                ELSE
-                       MOVE    "0005"  TO  ERRCD-ERRCD
+                       MOVE    "0129"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                END-IF
       *
            ELSE
                PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
-               MOVE    "0041"      TO  ERRCD-ERRCD
+               MOVE    "0130"      TO  ERRCD-ERRCD
                PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
@@ -520,8 +489,11 @@
       *****************************************************************
        20021-NYUINKA-CHK-SEC           SECTION.
       *
-           IF    ( ITEM-NYUINKA    =   SPACE )
-               MOVE    "0002"          TO  ERRCD-ORDER
+           IF    ( SODR-ORDERID        =   NORDERID-DELNYUINID
+                                        OR NORDERID-ALLDELNYUINID  )
+               IF    ( ITEM-NYUINKA    =   SPACE )
+                   MOVE    "0127"          TO  ERRCD-ORDER
+               END-IF
            END-IF
       *
            .
@@ -532,8 +504,11 @@
       *****************************************************************
        20021-HKNCOMBI-CHK-SEC          SECTION.
       *
-           IF    ( ITEM-HKNCOMBI   =   ZERO )
-               MOVE    "0005"          TO  ERRCD-ORDER
+           IF    ( SODR-ORDERID        =   NORDERID-DELNYUINID
+                                        OR NORDERID-ALLDELNYUINID  )
+               IF    ( ITEM-HKNCOMBI   =   ZERO )
+                   MOVE    "0129"          TO  ERRCD-ORDER
+               END-IF
            END-IF
       *
            .
@@ -548,20 +523,16 @@
       *
       *    入院中であること
            IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
-               MOVE    "0052"      TO  ERRCD-ORDER
+               MOVE    "0132"      TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
       *    入院日と異動日が等しいこと
-           IF    ( ERRCD-ORDER             =   SPACE )
-               IF    ( SODR-KEYGENERATE    =   2 )
-                   CONTINUE
-               ELSE
-                   IF    ( SODR-ORDERID    =   NORDERID-ALLDELNYUINID
+           IF    ( SODR-ORDERID            =   NORDERID-ALLDELNYUINID
                                             OR NORDERID-DELNYUINID     )
-                       IF    ( PTNYUINRRK-NYUINYMD NOT =   SODR-SRYYMD )
-                           MOVE    "0133"  TO  ERRCD-ORDER
-                       END-IF
-                   END-IF
+               IF    ( PTNYUINRRK-NYUINYMD NOT =   SODR-SRYYMD )
+                   MOVE    "0133"      TO  ERRCD-ORDER
+                   GO  TO  20021-NYUINRRK-CHK-EXT
                END-IF
            END-IF
       *
@@ -798,7 +769,6 @@
            CALL    "ORCSODRS01"        USING   SODR-AREA
                                                SODRS01-AREA
                                                LNK-ODRITEM-REC
-                                               MCPAREA
                                                SPA-AREA
            MOVE    SODRS01-RC      TO  FLG-END
       *
@@ -824,54 +794,6 @@
        2101-ORDER-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ユーザプログラム実行処理
-      *****************************************************************
-       2101-USERPG-CALL-SEC            SECTION.
-      *
-           INITIALIZE                      ORCSUSERCHKAREA
-           MOVE    "I01"               TO  ORCSUSERCHK-GMNPG
-           MOVE    "2"                 TO  ORCSUSERCHK-SYORI
-           MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
-           MOVE    TRRK-TENNYUYMD      TO  ORCSUSERCHK-SRYYMD
-           MOVE    SODR-PTID           TO  ORCSUSERCHK-PTID
-           MOVE    SODR-PTNUM          TO  ORCSUSERCHK-PTNUM
-           MOVE    TRRK-NYUINKA        TO  ORCSUSERCHK-SRYKA
-           MOVE    TRRK-HKNCOMBINUM    TO  ORCSUSERCHK-HKNCOMBI
-           MOVE    TRRK-DRCD1          TO  ORCSUSERCHK-DRCD
-           IF    ( SODR-ORDERID        =   NORDERID-DELNYUINID )
-               MOVE    05              TO  ORCSUSERCHK-SYORI-FLG
-           ELSE
-               MOVE    06              TO  ORCSUSERCHK-SYORI-FLG
-           END-IF
-           CALL    "ORCSUSERCHK"           USING
-                                           ORCSUSERCHKAREA
-                                           SPA-AREA
-      *
-           .
-       2101-USERPG-CALL-EXT.
-           EXIT.
-      *****************************************************************
-      *    PUSH通知処理
-      *****************************************************************
-       2101-PUSHEVENT-SEC            SECTION.
-      *
-           INITIALIZE                      SI03-AREA
-      *
-           IF    ( SODR-ORDERID        =   NORDERID-DELNYUINID )
-               MOVE    "05"            TO  SI03-REQNUM
-           ELSE
-               MOVE    "06"            TO  SI03-REQNUM
-           END-IF
-           MOVE    SODR-PTNUM          TO  SI03-PTNUM
-           MOVE    TRRK-NYUINYMD       TO  SI03-NYUINYMD
-           CALL    "ORCSI03"           USING
-                                       SI03-AREA
-                                       SPA-AREA
-      *
-           .
-       2101-PUSHEVENT-EXT.
-           EXIT.
-      *****************************************************************
       *    オーダ編集処理
       *****************************************************************
        21011-ORDER-HEN-SEC             SECTION.
@@ -893,7 +815,6 @@
            MOVE   SODR-KEYGENERATE     TO  ORDER-KEYGENERATE
       *
            MOVE   ERRCD-ORDER          TO  ORDER-ERRCD1
-           MOVE   ERRCD-ITEM           TO  ORDER-ERRCD2
       *
            IF    ( ERRCD-ITEM          =   SPACE )
             AND  ( ERRCD-ORDER         =   SPACE )
@@ -994,7 +915,16 @@
       *
       *
            INITIALIZE                  SODRNACCT-AREA
-           MOVE    SODR-ORDERID    TO  SODRNACCT-ORDERID
+           EVALUATE    SODR-ORDERID
+           WHEN    NORDERID-ALLCANNYUINID
+               MOVE    NORDERID-ALLDELNYUINID
+                                       TO  SODRNACCT-ORDERID
+           WHEN    NORDERID-CANNYUINID
+               MOVE    NORDERID-DELNYUINID
+                                       TO  SODRNACCT-ORDERID
+           WHEN    OTHER
+               MOVE    SODR-ORDERID    TO  SODRNACCT-ORDERID
+           END-EVALUATE
            MOVE    SODR-OPID       TO  SODRNACCT-OPID
            MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
            MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
@@ -1013,29 +943,6 @@
       *
            .
        2101-ORCSODRNACCT-CALL-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩管理情報更新処理
-      *****************************************************************
-       2101-ORCSI02-CALL-SEC           SECTION.
-      *
-           INITIALIZE                  SI02-AREA
-           MOVE    "3"             TO  SI02-REQID
-           MOVE    TRRK-REC        TO  SNRRK-AREA
-           CALL    "ORCSI02"       USING
-                                   SI02-AREA
-                                   SNRRK-AREA
-                                   MCPAREA
-                                   SPA-AREA
-           IF     ( MCP-RC         NOT =  ZERO )
-               DISPLAY "ORCSDR07 ERROR 010:BUNBEN UPDATE ERR"
-                       " PTID="        SODR-PTID
-                       " KARTE-KEY="   SODR-KARTE-KEY
-               MOVE    1               TO  FLG-END
-           END-IF
-      *
-           .
-       2101-ORCSI02-CALL-EXT.
            EXIT.
       *****************************************************************
       *    患者情報更新処理
@@ -1802,19 +1709,6 @@
            .
       *
        910-DBDELETE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＰＵＳＨＥＶＥＮＴ処理
-      *****************************************************************
-       910-PUSHEVENT-SEC               SECTION.
-      *
-           MOVE    "PUSHEVENT"         TO      MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-PUSHEVENT-EXT.
            EXIT.
       *****************************************************************
       *    排他制御処理（チェックのみ）

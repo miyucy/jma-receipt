@@ -16,18 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION                  DIVISION.
-       PROGRAM-ID.                     ORCSODR03.
+       PROGRAM-ID.                     ORCSODR09.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 
-      *  コンポーネント名  : オーダー編集（外泊）
+      *  コンポーネント名  : オーダー編集（異動取消）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  05/03/18    NACL−太田    新規作成
+      *  14/05/01    NACL−太田    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07/05/28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -45,15 +44,18 @@
            03  FLG-PTNYUINRRK          PIC 9(01).
            03  FLG-ORDER               PIC 9(01).
            03  FLG-ODRITEM             PIC 9(01).
-           03  FLG-NYUINACCT           PIC 9(01).
-           03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-PTINF               PIC 9(01).
            03  FLG-END                 PIC 9(01).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-NYUINKA             PIC 9(05).
-           03  CNT-HKNCOMBI            PIC 9(05).
+           03  FLG-ITEM-CHK-G.
+               05  FLG-ITEM-CHK        PIC 9(01)   OCCURS  20.
+           03  FLG-HIZUKE-ERR          PIC 9(01).
+           03  FLG-HKNCOMBI            PIC 9(01).
+           03  FLG-PTTEIKIRRK          PIC 9(01).
+           03  FLG-SYUNOU              PIC 9(01).
+           03  FLG-SYUMEI              PIC 9(01).
+           03  FLG-NYUINACCT           PIC 9(01).
+           03  FLG-LOOPEND             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -66,27 +68,36 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-COMBI-HKNCOMBI      PIC 9(04).
            03  WRK-SYS-KANRICD         PIC X(04).
            03  WRK-SYS-KBNCD           PIC X(08).
+           03  WRK-YMD                 PIC X(10).
+           03  WRK-ZOGENPTN            PIC X(01).
+           03  WRK-ZOGEN               PIC S9(05).
+           03  WRK-SYMD                PIC X(08).
+           03  WRK-KEISANYMD           PIC X(08).
+           03  WRK-HENYMDG             PIC X(10).
+           03  WRK-COMBI-HKNCOMBI      PIC 9(04).
+           03  WRK-STYMD               PIC X(08).
+           03  WRK-EDYMD               PIC X(08).
+           03  WRK-NISSU-G.
+               05  WRK-NISSU1          PIC 9(05).
+               05  WRK-NISSU2          PIC 9(05).
+           03  WRK-SKYMONEY            PIC S9(07).
+           03  WRK-DENPEDANUM          PIC 9(05).
            03  WRK-DIALOG              PIC 9(02).
+           03  WRK-NYUKBN              PIC X(02).
            03  WRK-MCP-WINDOW          PIC X(64).
-      *
-       01  ITEM-AREA.
-           03  ITEM-NYUINKA            PIC X(02).
-           03  ITEM-HKNCOMBI           PIC 9(04).
-           03  ITEM-GAIHAKUKBN         PIC X(01).
+           03  WRK-SKYSTYMD            PIC X(08).
       *
        01  ERRCD-AREA.
            03  ERRCD-ITEM-G.
                05  ERRCD-ITEM          PIC X(04).
-               05  ERRCD-ERRCD         PIC X(04).
-           03  ERRCD-ORDER             PIC X(04).
+               05  ERRCD-ORDER         PIC X(04).
+           03  ERRCD-ERRCD             PIC X(04).
       *
-       01  CONST-AREA.
-           03  CONST-ITEMNUM-MAX               PIC 9(05)   VALUE 30.
+      *01  CONST-AREA.
       *
-      *    項目IDコピー句
+      *    入院CLAIM項目IDコピー句
            COPY    "CPNCLAIMID.INC".
       *
       *    ORDERIDコピー句
@@ -97,6 +108,11 @@
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //TRRK-//.
       *
+      *
+           COPY    "CPORCSODRNACCT.INC"
+                                   REPLACING  //SODRNACCT-//
+                                   BY         //WKSODRNACCT-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -106,25 +122,41 @@
       *
            COPY    "CPSK1005.INC".
       *
-      *    入院会計
-       01  NYUINACCT-REC.
-           COPY    "CPNYUINACCT.INC".
-      *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    保険組み合わせ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
       *
       *    オーダーテーブル
        01  ORDER-REC.
            COPY    "CPORDER.INC".
       *
-      *    オーダ項目テーブル
+      *    オーダ項目
        01  ODRITEM-REC.
            COPY    "CPODRITEM.INC".
+      *
+      *    患者マスタ
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
+      *    患者定期請求履歴
+        01 PTTEIKIRRK-REC.
+           COPY     "CPPTTEIKIRRK.INC".
+      *
+      *    収納
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
+      *
+      *    収納明細
+       01  SYUMEI-REC.
+           COPY    "CPSYUMEI.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -133,8 +165,16 @@
       *    オーダー共通サブ
            COPY    "CPORCSODRS01.INC".
       *
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+           COPY    "CPORCSGDAY.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    日報キー取得サブ
+           COPY "CPORCSDAILYKEY.INC".
       *
       *    入院会計作成サブ
            COPY    "CPORCSODRNACCT.INC".
@@ -144,6 +184,9 @@
       *
       *    排他制御
            COPY    "CPORCSLOCK.INC".
+      *
+      *    収納更新差額取得
+           COPY  "CPORCSS002.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -165,8 +208,7 @@
       ******************************************************************
       *
        PROCEDURE                       DIVISION
-                                       USING
-                                               SODR-AREA
+                                       USING   SODR-AREA
                                                LNK-ODRITEM-REC
                                                SPA-AREA.
       *
@@ -192,36 +234,32 @@
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  CNT-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  ERRCD-AREA
-           INITIALIZE                  ITEM-AREA
-           INITIALIZE                  SODR-OT
            INITIALIZE                  TRRK-REC
+           INITIALIZE                  SODR-OT
       *
-           IF    ( SODR-SRCKBN     =    "1" OR "2" )
+           PERFORM 800-MCNDATE-SEC
+      *
+           IF    ( SODR-SRCKBN     =   "1" OR "2" )
                PERFORM 990-LOCK-CHK-SEC
            END-IF
       *
-           IF    ( ERRCD-ITEM-G  =   SPACE )
+           IF    ( ERRCD-ITEM-G    =   SPACE )
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    SODR-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
                MOVE    SODR-PTID       TO  PTNYUINRRK-PTID
-               MOVE    SODR-SRYYMD     TO  PTNYUINRRK-TENNYUYMD
-                                           PTNYUINRRK-TENSTUYMD
-               PERFORM 900-PTNYUINRRK-KEY42-SEL-SEC
+               PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
                IF    ( FLG-PTNYUINRRK  =   ZERO )
-                   MOVE    PTNYUINRRK-REC  TO  TRRK-REC
+                   MOVE    PTNYUINRRK-REC
+                                       TO  TRRK-REC
                ELSE
-                   MOVE    "0075"          TO  ERRCD-ORDER
+                   MOVE    "0131"      TO  ERRCD-ORDER
                END-IF
            END-IF
       *
-           IF    ( SODR-ORDERID        =   NORDERID-GPTSTID )
-               MOVE    PTNYUINRRK-NYUINKA  TO  SODR-SRYKA
-               MOVE    PTNYUINRRK-HKNCOMBINUM
-                                           TO  SODR-HKNCOMBI
-           END-IF
+           MOVE    PTNYUINRRK-NYUINKA      TO  SODR-SRYKA
+           MOVE    PTNYUINRRK-HKNCOMBINUM  TO  SODR-HKNCOMBI
       *
            .
        100-INIT-EXT.
@@ -246,7 +284,15 @@
             AND  ( ERRCD-ITEM   =   SPACE )
       *
                IF    ( FLG-END  =   ZERO )
-                  PERFORM 2101-ORCSODRNACCT-CALL-SEC
+                   PERFORM 2101-PTNYUINRRK-UPDATE-SEC
+               END-IF
+      *
+               IF    ( FLG-END  =   ZERO )
+                  PERFORM  2101-ORCSODRNACCT-CALL-SEC
+               END-IF
+      *
+               IF    ( FLG-END  =   ZERO )
+                  PERFORM  2101-PTINF-UPDATE-SEC
                END-IF
       *
                IF    ( FLG-END  =   ZERO )
@@ -281,103 +327,9 @@
       *****************************************************************
        2001-INPUT-CHK-SEC              SECTION.
       *
-           PERFORM VARYING IDX-ODR    FROM    1   BY  1
-                   UNTIL ( IDX-ODR    >   LNK-ODRITEM-MAX )
-      *
-               EVALUATE    LNK-ODRITEM-ITEMID (IDX-ODR)
-               WHEN    NCLAIMID-NYUINKAJMA
-                   PERFORM 20011-NYUINKA-CHK-SEC
-               WHEN    NCLAIMID-HKNCOMBIJMA
-                   PERFORM 20011-HKNCOMBI-CHK-SEC
-               WHEN    NCLAIMID-GAIHAKUKBNJMA
-                   PERFORM 20011-GAIHAKUKBN-CHK-SEC
-               END-EVALUATE
-      *
-           END-PERFORM
       *
            .
        2001-INPUT-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院科チェック処理
-      *****************************************************************
-       20011-NYUINKA-CHK-SEC           SECTION.
-      *
-           COMPUTE CNT-NYUINKA  =   CNT-NYUINKA  +   1
-      *
-           IF    ( CNT-NYUINKA  =   1 )
-      *
-               MOVE    "1005"          TO  WRK-SYS-KANRICD
-               MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
-                                       TO  WRK-SYS-KBNCD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   MOVE    MCPDATA-REC TO  SYS-1005-REC
-      *
-                   MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
-                                       TO  ITEM-NYUINKA
-      *
-               ELSE
-                   MOVE    "0071"      TO  ERRCD-ERRCD
-                   PERFORM 2100-ITEM-ERR-SET-SEC
-               END-IF
-      *
-           ELSE
-               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
-               MOVE    "0072"      TO  ERRCD-ERRCD
-               PERFORM 2100-ITEM-ERR-SET-SEC
-           END-IF
-      *
-           .
-       20011-NYUINKA-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せチェック処理
-      *****************************************************************
-       20011-HKNCOMBI-CHK-SEC           SECTION.
-      *
-           COMPUTE CNT-HKNCOMBI  =   CNT-HKNCOMBI  +   1
-      *
-           IF    ( CNT-HKNCOMBI  =   1 )
-      *
-               MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
-                                       TO  WRK-COMBI-HKNCOMBI
-               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
-               IF    ( FLG-HKNCOMBI        =   ZERO )
-                   IF    ( COMB-DELKBN NOT =   "1" )
-                     AND ( SODR-SRYYMD    >=  COMB-TEKSTYMD )
-                     AND ( SODR-SRYYMD    <=  COMB-TEKEDYMD )
-      *
-                       MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
-                                       TO  ITEM-HKNCOMBI
-                   ELSE
-                       MOVE    "0073"  TO  ERRCD-ERRCD
-                       PERFORM 2100-ITEM-ERR-SET-SEC
-                    END-IF
-               ELSE
-                       MOVE    "0073"  TO  ERRCD-ERRCD
-                       PERFORM 2100-ITEM-ERR-SET-SEC
-               END-IF
-      *
-           ELSE
-               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
-               MOVE    "0074"      TO  ERRCD-ERRCD
-               PERFORM 2100-ITEM-ERR-SET-SEC
-           END-IF
-      *
-           .
-       20011-HKNCOMBI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    外泊区分チェック処理
-      *****************************************************************
-       20011-GAIHAKUKBN-CHK-SEC        SECTION.
-      *
-           MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
-                                   TO  ITEM-GAIHAKUKBN
-      *
-           .
-       20011-GAIHAKUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    項目未処理状態設定処理
@@ -402,7 +354,7 @@
                MOVE    2       TO  LNK-ODRITEM-STATUS (IDX-ODR)
            END-IF
       *
-           MOVE    ERRCD-ERRCD TO  LNK-ODRITEM-ERRCD (IDX-ODR)
+           MOVE    ERRCD-ERRCD TO  LNK-ODRITEM-ERRCD  (IDX-ODR)
       *
            .
        2100-ITEM-ERR-SET-EXT.
@@ -413,59 +365,12 @@
        2002-KANREN-CHK-SEC             SECTION.
       *
            IF    ( ERRCD-ORDER     =   SPACE )
-      *        入院科チェック処理
-               PERFORM 20021-NYUINKA-CHK-SEC
-           END-IF
-      *
-           IF    ( ERRCD-ORDER     =   SPACE )
-      *        保険組合せチェック処理
-               PERFORM 20021-HKNCOMBI-CHK-SEC
-           END-IF
-      *
-           IF    ( ERRCD-ORDER     =   SPACE )
       *        入院履歴チェック処理
                PERFORM 20021-NYUINRRK-CHK-SEC
            END-IF
       *
-           IF    ( ERRCD-ORDER     =   SPACE )
-      *        入院会計チェック処理
-               PERFORM 20021-NACCT-CHK-SEC
-           END-IF
-      *
            .
        2002-KANREN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院科チェック処理
-      *****************************************************************
-       20021-NYUINKA-CHK-SEC           SECTION.
-      *
-           IF    ( SODR-ORDERID        =   NORDERID-GAIHKID
-                                        OR NORDERID-GBACKID
-                                                             )
-               IF    ( ITEM-NYUINKA    =   SPACE )
-                   MOVE    "0071"      TO  ERRCD-ORDER
-               END-IF
-           END-IF
-      *
-           .
-       20021-NYUINKA-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せチェック処理
-      *****************************************************************
-       20021-HKNCOMBI-CHK-SEC          SECTION.
-      *
-           IF    ( SODR-ORDERID        =   NORDERID-GAIHKID
-                                        OR NORDERID-GBACKID
-                                                             )
-               IF    ( ITEM-HKNCOMBI   =   ZERO )
-                   MOVE    "0073"      TO  ERRCD-ORDER
-               END-IF
-           END-IF
-      *
-           .
-       20021-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴チェック処理
@@ -474,19 +379,15 @@
       *
            MOVE    TRRK-REC        TO  PTNYUINRRK-REC
       *
-           IF    ( SODR-ORDERID        =   NORDERID-GAIHKID
-                                        OR NORDERID-GBACKID
-                                                             )
+      *    入院中であること
+           IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
+               MOVE    "0132"      TO  ERRCD-ORDER
+           END-IF
       *
-      *        診療科と保険組合せの変更は不可
-               IF    ( PTNYUINRRK-NYUINKA  NOT =   ITEM-NYUINKA )
-                   MOVE    "0077"      TO  ERRCD-ORDER
-                   GO  TO  20021-NYUINRRK-CHK-EXT
-               END-IF
-      *
-               IF    ( PTNYUINRRK-HKNCOMBINUM  NOT =   ITEM-HKNCOMBI )
-                   MOVE    "0078"      TO  ERRCD-ORDER
-                   GO  TO  20021-NYUINRRK-CHK-EXT
+           IF    ( ERRCD-ITEM-G    =   SPACE )
+      *        異動歴があること
+               IF    ( PTNYUINRRK-RRKEDANUM    =   1 )
+                   MOVE    "0142"  TO  ERRCD-ORDER
                END-IF
            END-IF
       *
@@ -494,17 +395,64 @@
        20021-NYUINRRK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計チェック処理
+      *    入院履歴更新処理
       *****************************************************************
-       20021-NACCT-CHK-SEC             SECTION.
+       2101-PTNYUINRRK-UPDATE-SEC      SECTION.
       *
-           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-           IF    ( FLG-NYUINACCT   NOT =   ZERO )
-               MOVE    "0076"      TO  ERRCD-ORDER
+           MOVE    TRRK-REC            TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               DISPLAY "ORCSDR09 ERROR 003 :PTNYUINRRK DELETE ERR"
+                       " PTID="        SODR-PTID
+                       " KARTE-KEY="   SODR-KARTE-KEY
+               MOVE    1               TO  FLG-END
+           END-IF
+      *
+           IF    ( FLG-END             =   ZERO )
+               MOVE    TRRK-REC            TO  PTNYUINRRK-REC
+               PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+               IF    ( FLG-PTNYUINRRK  =   ZERO )
+                   MOVE    "99999999"          TO  PTNYUINRRK-TENSTUYMD
+                   MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
+                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                     DISPLAY "ORCSDR09 ERROR 011 :PTNYUINRRK UPDATE ERR"
+                               " PTID="        SODR-PTID
+                               " KARTE-KEY="   SODR-KARTE-KEY
+                       MOVE    1               TO  FLG-END
+                   END-IF
+               ELSE
+                   DISPLAY "ORCSDR09 ERROR 012 :PTNYUINRRK UPDATE ERR"
+                           " PTID="        SODR-PTID
+                           " KARTE-KEY="   SODR-KARTE-KEY
+                   MOVE    1               TO  FLG-END
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-END             =   ZERO )
+               MOVE    TRRK-REC        TO  PTNYUINRRK-REC
+               MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-UPYMD
+               MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
+               MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "upd4"              TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   DISPLAY "ORCSDR09 ERROR 004 :PTNYUINRRK UPDATE ERR"
+                           " PTID="        SODR-PTID
+                           " KARTE-KEY="   SODR-KARTE-KEY
+                   MOVE    1               TO  FLG-END
+               END-IF
            END-IF
       *
            .
-       20021-NACCT-CHK-EXT.
+       2101-PTNYUINRRK-UPDATE-EXT.
            EXIT.
       *****************************************************************
       *    オーダー情報再編成処理
@@ -545,7 +493,7 @@
       *
            INITIALIZE                      ORDER-REC
       *
-           MOVE   SODR-HOSPNUM         TO  ORDER-HOSPNUM
+           MOVE   SODR-HOSPNUM          TO  ORDER-HOSPNUM
            MOVE   SODR-KARTE-KEY       TO  ORDER-KARTE-KEY
            MOVE   SODR-ORDERNUM        TO  ORDER-ORDERNUM
            MOVE   SODR-NYUGAIKBN       TO  ORDER-NYUGAIKBN
@@ -585,7 +533,7 @@
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            IF    ( FLG-ORDER           =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 001:ORDER INSERT CHK ERR"
+               DISPLAY "ORCSDR09 ERROR 005:ORDER INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -597,7 +545,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 002:ORDER INSERT ERR"
+               DISPLAY "ORCSDR09 ERROR 006:ORDER INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -614,16 +562,15 @@
            MOVE    LNK-ODRITEM-OCC (IDX-ODR)
                                        TO  ODRITEM-REC
       *
-           IF    ( LNK-ODRITEM-ITEMID (IDX-ODR)
-                                       =   NCLAIMID-NYUINKAJMA
-                                       OR  NCLAIMID-HKNCOMBIJMA
-                                       OR  NCLAIMID-GAIHAKUKBNJMA
-                                           )
-               CONTINUE
-           ELSE
+      *    IF    ( LNK-ODRITEM-ITEMID (IDX-ODR)
+      *                                =   NCLAIMID-XXXXXXXX
+      *                                OR  NCLAIMID-XXXXXXXX
+      *                                    )
+      *        CONTINUE
+      *    ELSE
                MOVE    3               TO  ODRITEM-STATUS
                MOVE    "9001"          TO  ODRITEM-ERRCD
-           END-IF
+      *    END-IF
       *
            MOVE    SODR-OPID           TO  ODRITEM-OPID
            MOVE    SODR-UPYMD          TO  ODRITEM-CREYMD
@@ -632,8 +579,8 @@
       *
       *
            PERFORM 900-ODRITEM-KEY-SEL-SEC
-           IF    ( FLG-ODRITEM         =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 003:ODRITEM INSERT CHK ERR"
+           IF    ( FLG-ODRITEM           =   ZERO )
+               DISPLAY "ORCSDR09 ERROR 007:ODRITEM INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -645,7 +592,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 004:ODRITEM INSERT ERR"
+               DISPLAY "ORCSDR09 ERROR 008:ODRITEM INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -660,21 +607,7 @@
        2101-ORCSODRNACCT-CALL-SEC      SECTION.
       *
            INITIALIZE                  SODRNACCT-AREA
-           EVALUATE    SODR-ORDERID
-           WHEN    NORDERID-GPTSTID
-               IF    ( ITEM-GAIHAKUKBN    =   "0" )
-                   MOVE    NORDERID-GBACKID
-                                   TO  SODRNACCT-ORDERID
-               ELSE
-                   MOVE    NORDERID-GAIHKID
-                                   TO  SODRNACCT-ORDERID
-               END-IF
-           WHEN    OTHER
-               MOVE    SODR-ORDERID
-                                   TO  SODRNACCT-ORDERID
-           END-EVALUATE
-           MOVE    ZERO            TO  SODRNACCT-NYUKBN
-           MOVE    SODR-SRYYMD     TO  SODRNACCT-STARTYMD
+           MOVE    SODR-ORDERID    TO  SODRNACCT-ORDERID
            MOVE    SODR-OPID       TO  SODRNACCT-OPID
            MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
            MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
@@ -692,6 +625,72 @@
        2101-ORCSODRNACCT-CALL-EXT.
            EXIT.
       *****************************************************************
+      *    患者情報更新処理
+      *****************************************************************
+       2101-PTINF-UPDATE-SEC           SECTION.
+      *
+      *    入院歴より最新の歴情報を取得
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SODR-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+           MOVE    SODR-PTID       TO  PTNYUINRRK-PTID
+           PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+      *
+      *    患者マスタ検索
+           MOVE    ZERO                TO  FLG-PTINF
+           INITIALIZE  PTINF-REC
+           MOVE    SODR-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SODR-PTID           TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+      *
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+      *    患者マスタクローズ
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( FLG-PTINF           NOT =   ZERO )
+               DISPLAY "ORCSDR09 ERROR 009:PTINF UPDATE CHK ERR"
+                       " PTID="        SODR-PTID
+                       " KARTE-KEY="   SODR-KARTE-KEY
+               MOVE    1               TO  FLG-END
+               GO  TO  2101-PTINF-UPDATE-EXT
+           END-IF
+      *
+      *    患者情報の入院歴番号を更新する
+           MOVE   PTNYUINRRK-RRKNUM
+                                       TO  PTINF-RRKNUM
+           MOVE   PTNYUINRRK-RRKEDANUM
+                                       TO  PTINF-RRKEDANUM
+      *
+           MOVE    SODR-OPID           TO  PTINF-OPID
+           MOVE    SODR-UPYMD          TO  PTINF-UPYMD
+           MOVE    SODR-UPHMS          TO  PTINF-UPHMS
+      *
+      *    患者情報更新
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+           IF     ( MCP-RC         NOT =  ZERO )
+               DISPLAY "ORCSDR09 ERROR 010:PTINF UPDATE ERR"
+                       " PTID="        SODR-PTID
+                       " KARTE-KEY="   SODR-KARTE-KEY
+               MOVE    1               TO  FLG-END
+           END-IF
+      *
+           .
+       2101-PTINF-UPDATE-EXT.
+           EXIT.
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
@@ -704,6 +703,8 @@
            END-IF
       *
            MOVE    ERRCD-ORDER     TO  SODR-ERRCD
+      *
+           MOVE    WRK-DIALOG      TO  SODR-DIALOG
       *
            MOVE    FLG-END         TO  SODR-RC
       *
@@ -722,20 +723,135 @@
                PERFORM 910-DBSELECT-SEC
            END-IF
       *
-      *
            .
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    入院履歴検索処理(KEY42)
+      *    西暦日本語変換処理
       *****************************************************************
-       900-PTNYUINRRK-KEY42-SEL-SEC    SECTION.
+       800-SEIWA-HEN-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIZUKE-ERR
+           MOVE    SPACE               TO  WRK-SYMD
+                                           WRK-HENYMDG
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    WRK-YMD             TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF  ( SGDAY-RC              =   ZERO )
+               MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY      TO  WRK-SYMD
+           ELSE
+               MOVE    1               TO  FLG-HIZUKE-ERR
+           END-IF
+      *
+           .
+       800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    期間計算処理
+      *****************************************************************
+       800-KIKAN-CALC-SEC              SECTION.
+      *
+           INITIALIZE                  WRK-NISSU-G
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY5-AREA
+           MOVE    "51"                TO  LNK-DAY5-IRAI
+           MOVE    WRK-STYMD           TO  LNK-DAY5-START
+           MOVE    WRK-EDYMD           TO  LNK-DAY5-END
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                           LNK-DAY5-AREA
+           IF      ( STS-DAY-RC1       =   ZERO )
+               MOVE    LNK-DAY5-NISSU1 TO  WRK-NISSU1
+               MOVE    LNK-DAY5-NISSU2 TO  WRK-NISSU2
+           END-IF
+      *
+           .
+       800-KIKAN-CALC-EXT.
+           EXIT.
+      *****************************************************************
+      *    カレンダー処理
+      *****************************************************************
+       800-CALENDAR-SEC                SECTION.
+      *
+      *    増減パターン 1:日／2:月／3:年
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-KEISANYMD
+      *
+           .
+       800-CALENDAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    日報キー取得サブ
+      *****************************************************************
+       800-DAILYKEY-SEC         SECTION.
+      *
+           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+                                            SPA-AREA
+      *
+           .
+      *
+       800-DAILYKEY-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納更新差額取得サブ
+      *****************************************************************
+       800-SS002-SEC           SECTION.
+      *
+           INITIALIZE                      SS002-AREA
+           CALL    "ORCSS002"      USING   SS002-AREA
+                                           SYUNOU-REC
+                                           SPA-AREA
+      *
+           .
+      *
+       800-SS002-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納明細更新差額設定処理
+      *****************************************************************
+       800-SET-SS002-SMEI-SEC      SECTION.
+      *
+           MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+           MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+           MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
+      *
+           .
+      *
+       800-SET-SS002-SMEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴検索処理(KEY3)
+      *****************************************************************
+       900-PTNYUINRRK-KEY3-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -745,39 +861,41 @@
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-PTNYUINRRK-KEY42-SEL-EXT.
+       900-PTNYUINRRK-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計検索処理(KEY17)
+      *    システム管理検索処理(KEY10)
       *****************************************************************
-       900-NYUINACCT-KEY17-SEL-SEC     SECTION.
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-NYUINACCT
+           MOVE    ZERO                TO  FLG-SYSKANRI
       *
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    SODR-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    SODR-PTID           TO  NACCT-PTID
-           MOVE    SODR-SRYYMD (1:6)   TO  NACCT-SRYYM
-           MOVE    "1"                 TO  NACCT-ZAISKBKBN
+           INITIALIZE                      SYSKANRI-REC
       *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
+           MOVE    WRK-SYS-KANRICD     TO  SYS-KANRICD
+           MOVE    WRK-SYS-KBNCD       TO  SYS-KBNCD
+           MOVE    SODR-SRYYMD         TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           MOVE    SODR-HOSPNUM        TO  SYS-HOSPNUM
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  FLG-NYUINACCT
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-NYUINACCT-KEY17-SEL-EXT.
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    オーダー検索処理(KEY)
@@ -824,63 +942,175 @@
        900-ODRITEM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理検索処理(KEY10)
+      *    オーダー検索処理(KEY3)
       *****************************************************************
-       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+       900-ORDER-KEY3-SEL-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    ZERO                TO  FLG-ORDER
       *
-           INITIALIZE                      SYSKANRI-REC
-      *
-           MOVE    WRK-SYS-KANRICD     TO  SYS-KANRICD
-           MOVE    WRK-SYS-KBNCD       TO  SYS-KBNCD
-           MOVE    SODR-SRYYMD         TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-           MOVE    SODR-HOSPNUM        TO  SYS-HOSPNUM
-      *
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-SYSKANRI-KEY10-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せ検索処理(KEY)
-      *****************************************************************
-       900-HKNCOMBI-KEY-SEL-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  FLG-HKNCOMBI
-      *
-           INITIALIZE                      HKNCOMBI-REC
-           MOVE    SODR-HOSPNUM         TO  COMB-HOSPNUM
-           MOVE    SODR-PTID           TO  COMB-PTID
-           MOVE    WRK-COMBI-HKNCOMBI  TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    ORDER-REC           TO  MCPDATA-REC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    MCPDATA-REC     TO  ORDER-REC
            ELSE
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  ORDER-REC
+               MOVE    1               TO  FLG-ORDER
            END-IF
       *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           .
+       900-ORDER-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    オーダーFETCH処理(KEY3)
+      *****************************************************************
+       900-ORDER-KEY3-FET-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ORDER
+      *
+           MOVE    ORDER-REC           TO  MCPDATA-REC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  ORDER-REC
+           ELSE
+               INITIALIZE                  ORDER-REC
+               MOVE    1               TO  FLG-ORDER
+           END-IF
+      *
+           .
+       900-ORDER-KEY3-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者定期請求履歴検索処理(KEY7)
+      *****************************************************************
+       900-PTTEIKIRRK-KEY7-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTTEIKIRRK
+      *
+           INITIALIZE  PTTEIKIRRK-REC
+           MOVE    SODR-HOSPNUM         TO  PTTEIKIRRK-HOSPNUM
+           MOVE    SODR-PTID           TO  PTTEIKIRRK-PTID
+           MOVE    TRRK-RRKNUM         TO  PTTEIKIRRK-RRKNUM
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
+           ELSE
+               INITIALIZE                  PTTEIKIRRK-REC
+               MOVE    1               TO  FLG-PTTEIKIRRK
+           END-IF
+      *
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-HKNCOMBI-KEY-SEL-EXT.
+       900-PTTEIKIRRK-KEY7-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納検索処理
+      *****************************************************************
+       900-SYUNOU-KEY5-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           INITIALIZE  SYUNOU-REC
+      *
+           MOVE    SODR-HOSPNUM        TO  SYU-HOSPNUM
+           MOVE    SODR-PTID           TO  SYU-PTID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    WRK-SKYSTYMD        TO  SYU-SKYSTYMD
+           MOVE    TRRK-TAIINYMD       TO  SYU-SKYEDYMD
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key5"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-SYUNOU-KEY5-FET-SEC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       900-SYUNOU-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納FETCH処理(KEY5)
+      *****************************************************************
+       900-SYUNOU-KEY5-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-LOOPEND
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
+      *
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key5"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SYUNOU-REC
+      *
+                   MOVE    1               TO  FLG-LOOPEND
+      *
+                   IF    ( TRRK-RRKNUM     =   SYU-NYUIN-RRKNUM )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO        TO  FLG-LOOPEND
+                   END-IF
+      *
+                   IF    ( SYU-CREATEKBN  =   "1" )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO        TO  FLG-LOOPEND
+                   END-IF
+      *
+               ELSE
+                   INITIALIZE                  SYUNOU-REC
+                   MOVE    1               TO  FLG-SYUNOU
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       900-SYUNOU-KEY5-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納明細検索処理(KEY7)
+      *****************************************************************
+       900-SYUMEI-KEY7-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUMEI
+      *
+           INITIALIZE  SYUMEI-REC
+      *
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUMEI-REC
+           ELSE
+               INITIALIZE                  SYUMEI-REC
+               MOVE    1               TO  FLG-SYUMEI
+           END-IF
+      *
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYUMEI-KEY7-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
@@ -898,7 +1128,7 @@
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
@@ -913,7 +1143,7 @@
       *
            .
       *
-       910-DB-SELECT-EXT.
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
@@ -933,7 +1163,7 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSECURSOR-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
