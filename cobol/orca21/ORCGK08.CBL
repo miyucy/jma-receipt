@@ -166,7 +166,7 @@
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC-G    OCCURS  900.
+                   07  SPA-GMN-TBLREC-G    OCCURS  800.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TDELFLG     PIC 9(01).
                        09  SPA-GMN-TMEISYO     PIC X(150).
@@ -236,7 +236,7 @@
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-TBL.
-                   07  SPA-NAI-TBLREC  OCCURS  900.
+                   07  SPA-NAI-TBLREC  OCCURS  800.
                        09  SPA-NAI-BANGO           PIC 9(03).
                        09  SPA-NAI-EDANUM          PIC 9(03).
                        09  SPA-NAI-ZAINUM          PIC 9(08).
@@ -596,7 +596,7 @@
       *        05  HZN-PARA-DATA-REC            PIC X(60000).
       *
       *²èÌÌ¹Ô£Í£Á£Ø
-       01  MAX-GMN                 PIC 9(04)   VALUE   900.
+       01  MAX-GMN                 PIC 9(04)   VALUE   800.
       *½èÍý¥Æ¡¼¥Ö¥ë£Í£Á£Ø
        01  MAX-LINE                PIC 9(04)   VALUE   600.
       *

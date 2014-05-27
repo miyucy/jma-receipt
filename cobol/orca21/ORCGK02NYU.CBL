@@ -6671,9 +6671,6 @@
       *        GO      TO      41015-ZAIDEL-EXT
       **** END-IF
       *
-      *TEST
-      *    DISPLAY "41015-ZAIDEL-SEC SPA-GMN-IDX:" SPA-GMN-IDX
-      *TEST
       *    ’−’は剤内のどの位置でも削除とする
       *    対象より、前
            IF      (SPA-GMN-IDX        =   1   )  OR
@@ -10475,10 +10472,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            COMPUTE SPA-MAP-IDX         =   WRK-MAP-MAX
                                        +   1
            MOVE    1                   TO  SPA-GMN-PAGE
-      *TEST
-              DISPLAY "WRK-MAP-MAX:" WRK-MAP-MAX
-                       ",SPA-MAP-IDX:" SPA-MAP-IDX
-      *TEST
       *
       *
       *
