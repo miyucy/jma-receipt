@@ -82,6 +82,7 @@
       *                                     予約選択患者登録遷移対応他
       *  04.07.00    NACL-多々納  11/08/XX  患者保険確認履歴追加
       *  04.07.01    NACL-多々納  12/01/05  クライアント印刷対応
+      *  04.08.01    NACL-多々納  14/05/XX  診療行為一時データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -126,7 +127,7 @@
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-PTRSIINF            PIC 9(01).
            03  FLG-SRYKARRK            PIC 9(01).
-           03  FLG-QRCDHKN         PIC 9(01).
+           03  FLG-QRCDHKN             PIC 9(01).
            03  FLG-PTMEMOINF           PIC 9(01).
       *
            03  FLG-HENFLG              PIC 9(01).
@@ -173,27 +174,28 @@
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
+      *
       *    診療行為ＳＰＡデータ
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
-           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(04)   VALUE   ".TXT".
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+      *    03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(04)   VALUE   ".TXT".
       *    診療行為パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
-       01  FILE-NAME22.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(08)   VALUE   "K01PARA2".
-           03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME22.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(08)   VALUE   "K01PARA2".
+      *    03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    一時領域
        01  WRK-AREA.
@@ -435,6 +437,17 @@
       *    患者メモ
        01  PTMEMOINF-REC.
            COPY    "CPPTMEMOINF.INC".
+      *
+      *v4.8
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC". 
+      *
+      *    ＳＰＡ一時テーブル
+       01  SPATMP-REC.
+           COPY    "CPSPA-TMP.INC".
+      *
+           COPY    "MCPDATA2.INC".
       *
       *
       *****************************************************************
@@ -4020,27 +4033,51 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        210-PARA-DEL-SEC               SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      *                                ORCSFDELAREA
       *
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME2          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME2          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      *                                ORCSFDELAREA
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID22
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME22         TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID22
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME22         TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      **                               ORCSFDELAREA
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "K02"               TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del2"              TO  MCP-PATHNAME
+           MOVE    "tbl_spa_tmp"       TO  MCP-TABLE
+           CALL    "ORCDBSPATMP"       USING   MCPAREA
+                                               MCPDATA2-REC
+                                               SPA-AREA
       *
            .
        210-PARA-DEL-EXT.

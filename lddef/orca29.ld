@@ -64,6 +64,7 @@ db	{
         tbl_mnote_b;
         tbl_ptconf;
 	tbl_tnkrrk;
+	tbl_spa_tmp;
 };
 
 /* #include "orcadb.inc" */

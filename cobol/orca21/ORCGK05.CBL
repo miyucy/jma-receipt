@@ -48,6 +48,7 @@
       *                                     数量小数５桁対応
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更他
+      *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -56,53 +57,53 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
       *    ＳＰＡデータ
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SPASCR.
+      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDANUM          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDANUM          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
       *    ＳＰＡパラメタデータ
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(1500).
+      *FD  SPASCR-FILE.
+      *01  SPA-DATA-REC            PIC X(1500).
       *
        WORKING-STORAGE             SECTION.
       * ＳＰＡデータ
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "K05SPASCR".
-           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "K05SPASCR".
+      *    03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    画面色等
            COPY    "ENUM-VALUE".
       *
-       01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(60000)
-                                   OCCURS  10.
+      *01  WRK-DATA-REC.
+      *    03  WRK-DATA            PIC X(60000)
+      *                            OCCURS  10.
       *    ＳＰＡパラメタ
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
@@ -483,6 +484,11 @@
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+      *
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -691,28 +697,46 @@
       *****************************************************************
        1002-K05SPA-SET-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO      1002-K05SPA-SET-EXT
-           END-IF
-      *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE                      SPA-SCR-REC
-           MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1                TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1                TO  IDX
-                       MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
-               END-READ
+           MOVE    ZERO                TO  SPA-GMN-MAX
+      *
+      *    IF     SPA-HOSPNUM  NOT NUMERIC
+      *        GO   TO  1002-K05SPA-SET-EXT
+      *    END-IF  
+      *
+      *    TBL_PARA を使用する
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K05"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           PERFORM
+               UNTIL  (FLG-PARA            =   1 )
+                 OR   (IDX                 >=  SPA-MAX-LINE)
+               ADD    1                    TO  IDX
+               MOVE   PARA-DATA-REC       TO  SPA-GMN-TBL (IDX)
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           CLOSE                       SPASCR-FILE
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    行位置とカーソル位置の決定
            MOVE    1                   TO  WRK-PAGE
@@ -750,32 +774,62 @@
       *****************************************************************
        1003-K05SPA-OUT-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    PARA削除
+           PERFORM 10031-PARA-DELETE-SEC
       *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "K05SPASCR OUT OPEN ERR:"   STS-SPASCR "."
-            END-IF
-      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K05"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE ) 
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )
                IF      (SPA-COM-INPUTCD(IDX)   =   SPACE ) AND
                        (SPA-GMN-INPUTCD(IDX)   =   SPACE )
                AND     (IDX           >   SPA-GMN-MAX  )
                    CONTINUE
                ELSE
-                   MOVE    SPA-GMN-TBL(IDX)    TO  SPA-DATA-REC
-                   WRITE                       SPA-DATA-REC
-                   IF      STS-SPASCR     NOT =   ZERO
-                       DISPLAY "K05SPASCR OUT WRITE ERR:" STS-SPASCR "."
+                   MOVE    SPA-GMN-TBL (IDX)   TO  PARA-DATA-REC
+                   MOVE    IDX                 TO  PARA-EDANUM
+                   MOVE    PARA-REC            TO  MCPDATA-REC
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   MOVE    "tbl_para"          TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "K05 PARA INSERT ERR:"  MCP-RC
+                           ",KEY2:" PARA-KEY
+                           ",EDANUM:" PARA-EDANUM
                    END-IF
-                END-IF
+               END-IF
            END-PERFORM
       *
-           CLOSE                       SPASCR-FILE
            .
-       1003-K05SPA-SET-EXT.
+       1003-K05SPA-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡパラメターＤＢ削除処理
+      *****************************************************************
+       10031-PARA-DELETE-SEC         SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K05"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       10031-PARA-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -867,33 +921,87 @@
       *    パラメタファイルより見出し表示
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
-           OPEN    INPUT               PARA-FILE
-           IF      STS-PARA           =  ZERO
-               PERFORM 980-PARA-READ-SEC
+      *    OPEN    INPUT               PARA-FILE
+      *    IF      STS-PARA           =  ZERO
+      *        PERFORM 980-PARA-READ-SEC
+      *    ELSE
+      *        MOVE    2               TO  FLG-PARA 
+      *    END-IF
+      *    PERFORM
+      *        UNTIL   FLG-PARA        NOT =   ZERO
+      *        IF      PARA-FILEMEI    =   "WKSRYACT"
+      *            MOVE    PARA-DATA-REC    TO  LNK-WKSRYACT-REC
+      *                                                (PARA-EDANUM)
+      *            MOVE    PARA-EDANUM      TO  LNK-WKSRYACT-MAX
+      *        END-IF
+      *
+      *        IF      PARA-FILEMEI     =   "K01PARA"
+      *            MOVE    PARA-DATA-REC    TO  SPA-K01KYOUTU
+      *        END-IF
+      *
+      *        PERFORM 980-PARA-READ-SEC
+      *    END-PERFORM
+      *
+      *    IF      FLG-PARA            =   1
+      *        CLOSE                       PARA-FILE
+      *****END-IF
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            ELSE
-               MOVE    2               TO  FLG-PARA 
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
            END-IF
            PERFORM
-               UNTIL   FLG-PARA        NOT =   ZERO
-               IF      PARA-FILEMEI    =   "WKSRYACT"
-                   MOVE    PARA-DATA-REC    TO  LNK-WKSRYACT-REC
-                                                       (PARA-EDANUM)
-                   MOVE    PARA-EDANUM      TO  LNK-WKSRYACT-MAX
+               UNTIL  (FLG-PARA            =   1     )
+                  OR  (SPA-ERRCD       NOT =   SPACE )
+               ADD     1                   TO  LNK-WKSRYACT-MAX
+               IF      LNK-WKSRYACT-MAX    >   SPA-MAX-LINE
+                   DISPLAY "K02 LNK-WKSRYACT-MAX 400 OVR"
+                   MOVE    "9000"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
+                                                      (LNK-WKSRYACT-MAX)
                END-IF
       *
-               IF      PARA-FILEMEI     =   "K01PARA"
-                   MOVE    PARA-DATA-REC    TO  SPA-K01KYOUTU
-               END-IF
-      *
-               PERFORM 980-PARA-READ-SEC
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            END-PERFORM
-      *
-           IF      FLG-PARA            =   1
-               CLOSE                       PARA-FILE
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    PARA削除
+           IF      LNK-WKSRYACT-MAX    >  ZERO
+               INITIALIZE                      PARA-REC
+               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+               MOVE    "K02"               TO  PARA-GYOUMUID
+               MOVE    SPA-TERMID          TO  PARA-TERMID
+               MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+               MOVE    PARA-REC            TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
            END-IF
+      *
       *
            MOVE    SPACE           TO  SPA-KIDCD
       *
@@ -5144,51 +5252,6 @@
            EXIT.
       *
       *****************************************************************
-      *    診療行為名入力処理
-      *****************************************************************
-      *41012-MEISYO-HEN-SEC        SECTION.
-      *
-      *    MOVE    K05-MEISYO (WRK-IDX2)
-      *                                TO  SPA-GMN-MEISYO-G
-      *                                                (SPA-GMN-IDX)
-      *
-      *    MOVE    4                   TO  SPA-GMN5-CUR
-      *
-      *
-      *    半角の空白を全角に置きかえる
-      *    フリーコメントは１桁目から
-      *    IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
-      *        MOVE    1                   TO  IDX-STR
-      *    ELSE
-      *        MOVE    3                   TO  IDX-STR
-      *    END-IF
-      *    INITIALIZE                  ORCSKANACHKAREA
-      *    MOVE    "1"                 TO  KANACHK-SYORI
-      *    MOVE    SPA-GMN-MEISYO-G (SPA-GMN-IDX)(IDX-STR:)
-      *                                TO  KANACHK-MAE-INPUT
-      *    CALL    "ORCSKANACHK"       USING
-      *                                ORCSKANACHKAREA
-      *    IF     (KANACHK-RC      NOT =   ZERO  )  OR
-      *           (KANACHK-SYUBETU     =   1     )
-      *        MOVE    "0080"          TO  SPA-ERRCD
-      *        MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
-      *        GO      TO      41012-MEISYO-HEN-EXT
-      *    END-IF
-      *    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G(SPA-GMN-IDX)
-      *                                                     (IDX-STR:)
-      *
-      *    MOVE    "1"                 TO  SPA-COM-MEIFLG
-      *                                                (SPA-GMN-IDX)
-      *
-      *    PERFORM 510-TBLHEN-SEC
-      *
-      *    MOVE    3                   TO  SPA-GMN5-CUR
-      *
-      *    .
-      *41012-MEISYO-HEN-EXT.
-      *    EXIT.
-      *
-      *****************************************************************
       *    行挿入処理
       *****************************************************************
        41014-GYOINSN-SEC         SECTION.
@@ -5458,9 +5521,16 @@
                                        SPA-SCR-REC
                                        SPA-AREA
            END-IF
+      *
            IF      SPA-ERRCD           =   "0060"  OR  "0064"
                CONTINUE
            ELSE
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL       IDX     >   SPA-MAX-LINE
+                       MOVE    SPACE           TO  SPA-COM-CUR (IDX)
+                   END-PERFORM
+               END-IF
                MOVE    SPACE           TO  SPA-ERRCD
            END-IF
       *
@@ -5495,12 +5565,14 @@
            END-IF
       *
       *    中間ファイルのクリア
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      ***                              ORCSFDELAREA
+      *    PARA削除
+           PERFORM 10031-PARA-DELETE-SEC
       *
            MOVE    1                   TO  FLG-END2
       *
@@ -5538,12 +5610,15 @@
            END-IF
       *
       *    中間ファイルのクリア
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      *                                ORCSFDELAREA
+      *
+      *    PARA削除
+           PERFORM 10031-PARA-DELETE-SEC
       *
            MOVE    1                   TO  FLG-END2
       *
@@ -5862,12 +5937,15 @@
            END-IF
       *
       *    中間ファイルのクリア
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      ***                              ORCSFDELAREA
+      *    PARA削除
+           PERFORM 10031-PARA-DELETE-SEC
+      *
       *
            MOVE    1                   TO  FLG-END2
       *
@@ -7078,25 +7156,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       980-PARA-READ-SEC         SECTION.
+      *980-PARA-READ-SEC         SECTION.
       *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
-      *
-           .
-       980-PARA-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
-      *990-PARA-NEXT-SEC           SECTION.
-      *
-      *    READ    PARA-FILE       NEXT
+      *    READ    PARA-FILE 
       *        AT  END
       *            MOVE    1           TO  FLG-PARA
       *        NOT AT  END
@@ -7104,8 +7166,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    END-READ
       *
       *    .
-      *990-PARA-NEXT-EXT.
+      *980-PARA-READ-EXT.
       *    EXIT.
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    テーブル検索処理

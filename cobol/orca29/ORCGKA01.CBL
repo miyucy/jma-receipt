@@ -45,27 +45,27 @@
        FILE-CONTROL.
       *
       *    ＳＰＡデータ
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SPASCR.
+      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-SPASCR.
       *
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    ＳＰＡパラメタデータ
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(10000).
+      *FD  SPASCR-FILE.
+      *01  SPA-DATA-REC            PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
       *
       * ＳＰＡデータ
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "KA01SPA".
-           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "KA01SPA".
+      *    03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    画面色等
            COPY    "ENUM-VALUE".
@@ -243,7 +243,7 @@
                            11  SPA-WKSRY-SRYSURYO      PIC  9(05)V9(05).
                            11  SPA-WKSRY-KANSURYO   PIC  9(05)V9(05).
                            11  SPA-WKSRY-SRYKAISU      PIC  9(03).
-                           11  SPA-WKSRY-ZAIKAISU      PIC  9(08).
+                           11  SPA-WKSRY-ZAIKAISU      PIC  9(03).
                            11  SPA-WKSRY-INPUTNUM      PIC  9(03).
                            11  SPA-WKSRY-INPUTCOMENT   PIC  X(80).
       *
@@ -254,8 +254,8 @@
                            11  SPA-WKSRY-ERRKBN        PIC  9(01).
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-SPASCR          PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-SPASCR          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -271,6 +271,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-PTCONF          PIC 9(01).
+           03  FLG-SPATMP          PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -327,7 +328,7 @@
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-ZAINUM          PIC 9(08).
-           03  WRK-ZAIKAISU        PIC 9(08).
+           03  WRK-ZAIKAISU        PIC 9(03).
            03  WRK-EDANUM          PIC 9(02).
            03  WRK-SRYYMD          PIC X(08).
       *
@@ -500,6 +501,13 @@
        01  PTCONF-REC.
            COPY    "CPPTCONF.INC".
       *
+      *TEST
+      *    ＳＰＡ一時テーブル
+       01  SPATMP-REC.
+           COPY    "CPSPA-TMP.INC".
+      *
+           COPY    "MCPDATA2.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -632,32 +640,64 @@
            MOVE    SPACE               TO  SPA-KA01-DATA
            INITIALIZE                      SPA-KA01-DATA
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-           MOVE    ZERO                TO  FLG-SPASCR
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    ZERO                TO  FLG-SPASCR
       *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR      NOT =   ZERO
-               DISPLAY "KA01SPASCR OPEN  INPUT ERRR:" STS-SPASCR
-               MOVE    2                   TO  FLG-SPASCR
-           END-IF
+      *    OPEN    INPUT               SPASCR-FILE
+      *    IF      STS-SPASCR      NOT =   ZERO
+      *        DISPLAY "KA01SPASCR OPEN  INPUT ERRR:" STS-SPASCR
+      *        MOVE    2                   TO  FLG-SPASCR
+      *    END-IF
+      *
+      *    MOVE    ZERO                TO  IDX
+      *    PERFORM UNTIL       FLG-SPASCR  NOT =   ZERO
+      *        READ    SPASCR-FILE
+      *            AT  END
+      *                MOVE   1                TO  FLG-SPASCR
+      *            NOT AT  END
+      *                ADD    1                TO  IDX
+      *                IF     IDX              <=  100
+      *                    MOVE   SPA-DATA-REC     TO  SPA-NAI-WKSRYREC
+      *                                                          (IDX)
+      *                END-IF
+      *        END-READ
+      *    END-PERFORM
+      *    IF      FLG-SPASCR          =   1
+      **       CLOSE                       SPASCR-FILE
+      **** END-IF
       *
            MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  NOT =   ZERO
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1                TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1                TO  IDX
-                       IF     IDX              <=  100
-                           MOVE   SPA-DATA-REC     TO  SPA-NAI-WKSRYREC
-                                                                 (IDX)
-                       END-IF
-               END-READ
-           END-PERFORM
-           IF      FLG-SPASCR          =   1
-               CLOSE                       SPASCR-FILE
+           MOVE    ZERO                TO  SPA-WKSRY-MAX
+      *
+      *    tbl_spa_tmp を使用する
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "KA01"              TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
+      *
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SPATMP-READ-SEC
+           ELSE
+               INITIALIZE                  SPATMP-REC
+               MOVE    1               TO  FLG-SPATMP
            END-IF
+           PERFORM
+               UNTIL  (FLG-SPATMP          =   1   )
+                 OR   (IDX                 >=  100 )
+               ADD    1                    TO  IDX
+               MOVE   SPATMP-DATA-REC      TO  SPA-NAI-WKSRYREC
+                                                       (IDX)
+      *
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SPATMP-READ-SEC
+           END-PERFORM
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-SPATMP-DBCLOSE-SEC
       *
            MOVE    IDX                 TO  SPA-WKSRY-MAX
            .
@@ -669,29 +709,75 @@
       *****************************************************************
        1003-KA01SPA-OUT-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
       *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "KA01SPASCR OUT OPEN ERR:"   STS-SPASCR "."
-           END-IF
+      *    OPEN    OUTPUT              SPASCR-FILE
+      *    IF      STS-SPASCR     NOT =   ZERO
+      *        DISPLAY "KA01SPASCR OUT OPEN ERR:"   STS-SPASCR "."
+      *    END-IF
       *
+      *    PERFORM VARYING     IDX     FROM   1   BY  1
+      *            UNTIL      (IDX     >   100  )  OR
+      *                       (SPA-WKSRY-ZAINUM (IDX)  =   ZERO)
+      *
+      *        MOVE    SPA-NAI-WKSRYREC (IDX)  TO  SPA-DATA-REC
+      *        WRITE                       SPA-DATA-REC
+      *        IF      STS-SPASCR     NOT =   ZERO
+      *            DISPLAY "KA01SPASCR OUT WRITE ERR:"   STS-SPASCR "."
+      *        END-IF
+      *    END-PERFORM
+      *
+      **** CLOSE                       SPASCR-FILE
+      *
+      *    ＳＰＡ一時保存テーブル削除
+           PERFORM 10031-SPATMP-DELETE-SEC
+      *
+      *    SPA-GMN-TBL保存
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "KA01"              TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   100  )  OR
                               (SPA-WKSRY-ZAINUM (IDX)  =   ZERO)
       *
-               MOVE    SPA-NAI-WKSRYREC (IDX)  TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "KA01SPASCR OUT WRITE ERR:"   STS-SPASCR "."
+               MOVE    SPA-NAI-WKSRYREC (IDX)  TO  SPATMP-DATA-REC
+               MOVE    IDX                     TO  SPATMP-EDANUM
+      *
+               MOVE    SPATMP-REC          TO  MCPDATA2-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-SPATMP-CALL-SEC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "KT01 SPATMP INSERT ERR:"  MCP-RC
+                           ",KEY:" SPATMP-KEY
                END-IF
            END-PERFORM
       *
-           CLOSE                       SPASCR-FILE
-      *
            .
        1003-KA01SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＳＰＡ一時保存テーブル削除処理
+      *****************************************************************
+       10031-SPATMP-DELETE-SEC                SECTION.
+      *
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "KA01"              TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
+      *
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del1"              TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-CALL-SEC
+      *
+           .
+       10031-SPATMP-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3167,13 +3253,22 @@
       *****************************************************************
        210-PARA-DEL-SEC               SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
       *
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      *                                ORCSFDELAREA
+      *
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "KA01"              TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del2"              TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-CALL-SEC
       *
            MOVE    1                   TO  FLG-END2
       *
@@ -5047,6 +5142,65 @@
            .
        970-PTCONF-READ-EXT.
            EXIT.
+      *TEST
+      *****************************************************************
+      *    一時保存テーブル読み込み
+      *****************************************************************
+       990-SPATMP-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           PERFORM 910-SPATMP-CALL-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA2-REC    TO  SPATMP-REC
+               MOVE    ZERO            TO  FLG-SPATMP
+           ELSE
+               INITIALIZE                  SPATMP-REC
+               MOVE    1               TO  FLG-SPATMP
+           END-IF
+      *
+           .
+       990-SPATMP-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-SPATMP-DBSELECT-SEC                SECTION.
+      *
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-SPATMP-CALL-SEC
+      *
+           .
+       910-SPATMP-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-SPATMP-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           PERFORM 910-SPATMP-CALL-SEC
+      *
+           .
+       990-SPATMP-DBCLOSE-EXT.
+           EXIT.
+      *****************************************************************
+      *    一時保存テーブル検索処理
+      *****************************************************************
+       910-SPATMP-CALL-SEC                SECTION.
+      *
+           MOVE    "tbl_spa_tmp"       TO  MCP-TABLE
+      *
+           CALL    "ORCDBSPATMP"       USING   MCPAREA
+                                               MCPDATA2-REC
+                                               SPA-AREA
+      *
+           .
+       910-SPATMP-CALL-EXT.
+           EXIT.
+      *TEST
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

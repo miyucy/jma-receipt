@@ -16,29 +16,23 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    パラメタ　  COPY  (CPPARA.INC)               *
+      *    ＳＰＡ一時データ　  COPY  (CPSPA-TMP.INC)             *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    多々納       02/07/30  端末ＩＤを16 から 32 へ
-      *  01.00.02    伊藤         03/03/12  端末ＩＤを32 から 64 へ
       ************************************************************
-      *01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-HOSPNUM           PIC 9(2).
+      *01  SPATMP-REC.
+           03  SPATMP-KEY.
+               05  SPATMP-HOSPNUM           PIC 9(02).
       *業務ＩＤ
-               05  PARA-GYOUMUID          PIC X(04).
+               05  SPATMP-GYOUMUID          PIC X(04).
       *端末ＩＤ
-               05  PARA-TERMID            PIC X(64).
+               05  SPATMP-TERMID            PIC X(64).
       *ファイル名
-               05  PARA-FILEMEI           PIC X(20).
+               05  SPATMP-FILEMEI           PIC X(20).
       *枝番
-               05  PARA-EDANUM            PIC 9(03).
+               05  SPATMP-EDANUM            PIC 9(03).
       *データ領域
-           03  PARA-DATA-REC.
-               05  PARA-DATA-REC1         PIC X(1000).
-               05  PARA-DATA-REC2         PIC X(1000).
-               05  PARA-DATA-REC3         PIC X(1000).
-               05  PARA-DATA-REC4         PIC X(1000).
-               05  PARA-DATA-REC5         PIC X(1000).
+           03  SPATMP-DATA-REC              PIC X(600000).
+      *

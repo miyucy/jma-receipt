@@ -31,6 +31,7 @@
       * 04. 05.00    NACL-太田    10/01/29  拡張漢字対応
       * 04.07.00     NACL-多々納  11/10/31  同日再入院対応
       * 04.07.00     NACL-多々納  14/01/17  数量ゼロエラー対応
+      * 04.08.00     NACL-多々納  14/05/XX  一時ファイル変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,9 +47,9 @@
                                    ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-DATA.
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -61,12 +62,12 @@
        01  DATA-REC                   PIC X(6000).
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDABAN          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDABAN          PIC 9(03).
+      *****03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -78,12 +79,12 @@
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    確認一覧（縦）
            COPY    "HCMSL80.INC".
@@ -435,6 +436,12 @@
       *    排他管理情報（詳細）
            COPY  "CPTBLLOCK.INC".
       *
+      *ver.4.8
+      *     パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+      *
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -774,7 +781,10 @@
            INITIALIZE              SPA-K02
            INITIALIZE              SPA-SCR-REC
       *
-           MOVE    ALL "*"             TO  SPA-TERMID
+      *****MOVE    ALL "*"             TO  SPA-TERMID
+      *v4.8
+           MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
+      *
       *    オペレータＩＤ
            MOVE    LNK-PRTKANRI-OPID   TO  SPA-OPID
            INSPECT SPA-OPID            REPLACING  ALL " "  BY  "*"
@@ -1380,27 +1390,87 @@
       *****************************************************************
        20012-WKSRYACT-PARA-SEC         SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
-           OPEN    OUTPUT              PARA-FILE
+      ***  OPEN    OUTPUT              PARA-FILE
+      *ver.4.8
+      *    一時データ削除
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+           MOVE    "del3"              TO  MCP-PATHNAME
+           PERFORM 30011-PARA-DBDELETE-SEC
       *
            MOVE    ZERO                TO  WRK-EDABAN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
-               MOVE    SPACE               TO  PARA-REC
-               MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-               ADD     1                   TO  WRK-EDABAN
-               MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      ******   MOVE    SPACE               TO  PARA-REC
+      *        MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *        ADD     1                   TO  WRK-EDABAN
+      *        MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      *        ワーク診療行為マスタからの作成判定とする
+      *        MOVE    "WKSRYACT"          TO  LNK-WKSRY-TERMID (IDX)
+      *
+      *        MOVE    LNK-WKSRYACT-REC(IDX)   TO  PARA-DATA-REC
+      ******   WRITE                       PARA-REC
+      *
       *        ワーク診療行為マスタからの作成判定とする
                MOVE    "WKSRYACT"          TO  LNK-WKSRY-TERMID (IDX)
+               ADD     1                   TO  WRK-EDABAN
       *
-               MOVE    LNK-WKSRYACT-REC(IDX)   TO  PARA-DATA-REC
-               WRITE                       PARA-REC
+               INITIALIZE                      PARA-REC
+               MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+               MOVE    WRK-EDABAN          TO  PARA-EDANUM
+               MOVE    LNK-WKSRYACT-REC(IDX)
+                                           TO  PARA-DATA-REC
+               PERFORM 30010-PARA-DBINSERT-SEC
            END-PERFORM
-           CLOSE                       PARA-FILE
+      *****CLOSE                       PARA-FILE
            .
        20012-WKSRYACT-PARA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタＤＢ削除処理
+      *****************************************************************
+       30011-PARA-DBDELETE-SEC          SECTION.
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       30011-PARA-DBDELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタＤＢ出力処理
+      *****************************************************************
+       30010-PARA-DBINSERT-SEC          SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+               DISPLAY "ORCABNYUALL PARA INSERT ERR:"  MCP-RC
+                       ",KEY:" PARA-KEY
+           END-IF
+           .
+       30010-PARA-DBINSERT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1843,23 +1913,42 @@
       *****************************************************************
        6001-ZAINUMSORT-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-           OPEN    INPUT               PARA-FILE
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    OPEN    INPUT               PARA-FILE
       *
-           IF      STS-PARA           =  ZERO
-               PERFORM 980-PARA-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PARA 
-           END-IF
+      *    IF      STS-PARA           =  ZERO
+      *        PERFORM 980-PARA-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-PARA 
+      *****END-IF
            INITIALIZE                      SRT-WKSRYACT-AREA
            INITIALIZE                      SRT2-WKSRYACT-AREA
            MOVE    ZERO                TO  IDX
+      *
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
            PERFORM
                    UNTIL      (FLG-PARA    =    1   )  OR
                               (IDX         >=   600 )
       *        ワーク診療行
-               IF      PARA-FILEMEI    =   "WKSRYACT"
+      ****     IF      PARA-FILEMEI    =   "WKSRYACT"
                    ADD     1                    TO  IDX
                    MOVE    PARA-DATA-REC        TO  SRT-WKSRYACT-REC
                                                                 (IDX)
@@ -1871,11 +1960,18 @@
                        MOVE    SPA-SRYKA       TO
                                                SRT-WKSRY-SRYKA   (IDX)
                    END-IF
-               END-IF
-               PERFORM 980-PARA-READ-SEC
+      *****    END-IF
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
            MOVE    IDX                 TO  WRK-MAX
-           CLOSE                       PARA-FILE
+      **** CLOSE                       PARA-FILE
       *
       *    ＳＯＲＴ（診療区分別にＳＯＲＴする）
            MOVE    ZERO                TO  IDX1
@@ -1934,21 +2030,39 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
-           OPEN    OUTPUT              PARA-FILE
+      *    OPEN    OUTPUT              PARA-FILE
+      *ver.4.8
+      *    一時データ削除
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+           MOVE    "del3"              TO  MCP-PATHNAME
+           PERFORM 30011-PARA-DBDELETE-SEC
+      *
            MOVE    ZERO                TO  WRK-EDABAN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SRT2-WKSRYACT-MAX
-               MOVE    SPACE               TO  PARA-REC
-               MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      ***      MOVE    SPACE               TO  PARA-REC
+      *        MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *        ADD     1                   TO  WRK-EDABAN
+      *        MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      *        MOVE    SRT2-WKSRYACT-REC(IDX)   TO  PARA-DATA-REC
+      ****     WRITE                       PARA-REC
+      *
                ADD     1                   TO  WRK-EDABAN
-               MOVE    WRK-EDABAN          TO  PARA-EDABAN
-               MOVE    SRT2-WKSRYACT-REC(IDX)   TO  PARA-DATA-REC
-               WRITE                       PARA-REC
+               INITIALIZE                      PARA-REC
+               MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+               MOVE    WRK-EDABAN          TO  PARA-EDANUM
+               MOVE    SRT2-WKSRYACT-REC(IDX) 
+                                           TO  PARA-DATA-REC
+               PERFORM 30010-PARA-DBINSERT-SEC
            END-PERFORM
-           CLOSE                       PARA-FILE
+      *****CLOSE                       PARA-FILE
       *
            .
        6001-ZAINUMSORT-EXT.
@@ -2391,13 +2505,13 @@
       *****************************************************************
        3001-PARA-DEL-SEC               SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      ***  MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME2          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME2          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      *                                ORCSFDELAREA
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
@@ -2406,6 +2520,15 @@
            MOVE    FILE-NAME1          TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
+      *
+      *    一時データ削除
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "del2"              TO  MCP-PATHNAME
+           PERFORM 30011-PARA-DBDELETE-SEC
+      *
            .
        3001-PARA-DEL-SEC-EXT.
            EXIT.
@@ -2581,17 +2704,35 @@
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       980-PARA-READ-SEC         SECTION.
+      *980-PARA-READ-SEC         SECTION.
       *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
+      *    READ    PARA-FILE 
+      *        AT  END
+      *            MOVE    1           TO  FLG-PARA
+      *        NOT AT  END
+      *            MOVE    ZERO        TO  FLG-PARA
+      *    END-READ
+      *
+      *    .
+      *980-PARA-READ-EXT.
+      *    EXIT.
+      *v.4.8
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
       *
            .
-       980-PARA-READ-EXT.
+       990-PARA-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

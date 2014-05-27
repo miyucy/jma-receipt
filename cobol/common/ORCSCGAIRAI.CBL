@@ -47,6 +47,7 @@
       *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加テーブル削除対応
       *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *  04.08.00    NACL-多々納  13/07/XX  第三者行為対応
+      *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *****************************************************************
       *
       *
@@ -56,34 +57,34 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDABAN          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDABAN          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -456,6 +457,12 @@
            02  TBL-JYURRK-REC        OCCURS   10.
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
+      *
+      *v4.8
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC". 
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -889,26 +896,45 @@
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
            MOVE    ZERO                TO  IDX-KOUI
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-           OPEN    INPUT               PARA-FILE
-           IF      STS-PARA        NOT =   ZERO
-               DISPLAY "ORCSGAIARI PARA STS-PARA:" STS-PARA
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    OPEN    INPUT               PARA-FILE
+      *    IF      STS-PARA        NOT =   ZERO
+      *        DISPLAY "ORCSGAIARI PARA STS-PARA:" STS-PARA
+      *    END-IF
+      *****PERFORM 980-PARA-READ-SEC
+      *ver.4.8
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1                   TO  FLG-PARA
            END-IF
-           PERFORM 980-PARA-READ-SEC
       *
            PERFORM
                    UNTIL      (FLG-PARA   =    1  )  OR
                               (SPA-ERRCD  NOT =   SPACE)
-               IF      PARA-FILEMEI        =   "WKSRYACT"
       *!!!
-      *          対象有
-                 MOVE    1                   TO  FLG-SYORI-ARI
+      *        対象有
+               MOVE    1                   TO  FLG-SYORI-ARI
       *!!!
-                 MOVE    PARA-DATA-REC     TO  WRK-WKSRYACT-REC
-                 IF     (WRK-WKSRY-SRYKA      =   WRK-SRYKA)  AND
-                        (WRK-WKSRY-HKNCOMBI   =   WRK-HKNCOMBI) AND
-                        (WRK-WKSRY-SRYCD (1)(1:1)
+               MOVE    PARA-DATA-REC       TO  WRK-WKSRYACT-REC
+               IF     (WRK-WKSRY-SRYKA     =   WRK-SRYKA)  AND
+                      (WRK-WKSRY-HKNCOMBI  =   WRK-HKNCOMBI) AND
+                      (WRK-WKSRY-SRYCD (1)(1:1)
                                            NOT =  "$"  AND "#" )
       *
                    IF     (IDX-KOUI        >   ZERO  )  AND
@@ -925,22 +951,15 @@
                    ADD     1               TO  IDX-KOUI
                    MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
                                                             (IDX-KOUI)
-                 END-IF
-               ELSE
-                   IF      IDX-KOUI        >   ZERO
-                       PERFORM 4501-SRYACT-KOU-SEC
-                       IF      SPA-ERRCD       =   SPACE
-                           PERFORM 45001-JYURRK-SYORI2-SEC
-                       END-IF
-                       MOVE    SPACE           TO  LNK-WKSRYACT-AREA
-                       MOVE    ZERO            TO  IDX-KOUI
-                   END-IF
                END-IF
       *
-               PERFORM 980-PARA-READ-SEC
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            END-PERFORM
-      *
-           CLOSE                       PARA-FILE
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF     (SPA-ERRCD       =   SPACE ) AND
                   (IDX-KOUI        >   ZERO  )
@@ -5778,6 +5797,24 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-SRYACCTPLUS-READ-EXT.
            EXIT.
+      *v.4.8
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    テーブル検索処理
@@ -5821,19 +5858,4 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
-       980-PARA-READ-SEC         SECTION.
-      *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END 
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
-      *
-           .
-       980-PARA-READ-EXT.
-           EXIT.
       *

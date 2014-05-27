@@ -35,39 +35,40 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDABAN          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDABAN          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
+           03  FLG-PARA                PIC 9(01).
       *
            03  FLG-SURYO               PIC 9(01).
       *
@@ -123,7 +124,7 @@
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
       *
-           03  WRK-EDABAN              PIC 9(02).
+           03  WRK-EDABAN              PIC 9(03).
            03  WRK-ZAINUM              PIC 9(08).
            03  WRK-RENNUM              PIC 9(01).
       *
@@ -196,6 +197,11 @@
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *
+      *     パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+      *
+      *
            COPY    "MCPDATA.INC".
       *
       *    COPY    "ORCA-BLOB".
@@ -263,10 +269,24 @@
            MOVE    ORAPIWKSRY-HKNCOMBI     TO  WRK-HKNCOMBI
       *
       *    ワーク診療行為データOPEN
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
+      **** MOVE    SPA-TERMID          TO  FILE-TERMID
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
       *
-           OPEN    OUTPUT              PARA-FILE
+      **** OPEN    OUTPUT              PARA-FILE
+      *
+      *    一時データ削除
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        100-INIT-EXT.
@@ -299,7 +319,7 @@
                MOVE    "対象データなし"    TO  ORAPIWKSRY-ERRMSG
            END-IF
       *
-           CLOSE                       PARA-FILE
+      *****CLOSE                       PARA-FILE
            .
        200-MAIN-EXT.
            EXIT.
@@ -334,7 +354,6 @@
       *****************************************************************
        200211-ZAI-HENSYU-SEC     SECTION.
       *
-           MOVE    ZERO                TO  WRK-EDABAN
            MOVE    ZERO                TO  TBL-MAX
            MOVE    SPACE               TO  TBL-WKSRYACT-AREA
            INITIALIZE                      TBL-WKSRYACT-AREA
@@ -776,16 +795,18 @@
                MOVE    TBL-WKSRYACT-REC (IDX-W)    TO  WKSRYACT-REC
                PERFORM 2002121-WKSRYACT-HEN-SEC
       *        中間データ出力
-               MOVE    SPACE               TO  PARA-REC
-               MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-               ADD     1                   TO  WRK-EDABAN
-               MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      *        MOVE    SPACE               TO  PARA-REC
+      *        MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *        ADD     1                   TO  WRK-EDABAN
+      *        MOVE    WRK-EDABAN          TO  PARA-EDABAN
       *
       *        ワーク診療行為マスタからの作成判定とする
                MOVE    "WKSRYACT"          TO  WKSRY-TERMID
       *
-               MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
-               WRITE                       PARA-REC
+      ***      MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
+      *****    WRITE                       PARA-REC
+      *        一時データ出力
+               PERFORM 2002129-PARA-DBINSERT-SEC
       *
                ADD     1                   TO  CNT-SRYCNT
       *
@@ -797,6 +818,40 @@
            .
        200212-WKSRYACT-OUT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    パラメタＤＢ出力処理
+      *****************************************************************
+       2002129-PARA-DBINSERT-SEC          SECTION.
+      *
+           ADD     1                   TO  WRK-EDABAN
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+           MOVE    WRK-EDABAN          TO  PARA-EDANUM
+           MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "API PARA INSERT ERR:"  MCP-RC
+                       ",KEY:" PARA-KEY
+               MOVE    "0009"              TO  ORAPIWKSRY-ERRCD
+               MOVE    "一時データ出力エラー"
+                                           TO  ORAPIWKSRY-ERRMSG
+           END-IF
+           .
+       2002129-PARA-DBINSERT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ワーク診療行為編集処理
       *****************************************************************

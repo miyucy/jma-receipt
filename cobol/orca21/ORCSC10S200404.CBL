@@ -62,34 +62,11 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  LINE SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDABAN          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.

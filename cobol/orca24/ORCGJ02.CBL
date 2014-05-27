@@ -71,6 +71,7 @@
       *  04.07.00    NACL-多々納  13/02/06  レセ電データ移行対応
       *  04.07.00    NACL-多々納  13/04/XX  労災レセ電コード変換対応
       *  04.07.00    NACL-多々納  13/10/XX  第三者行為対応
+      *  04.08.00    NACL-多々納  14/05/XX  一時データ変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -87,17 +88,17 @@
       *******                      FILE    STATUS  IS  STS-PARA.
       *
       *    ＳＰＡデータ
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SPASCR.
+      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-SPASCR.
       *
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    ＳＰＡパラメタデータ
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
+      *FD  SPASCR-FILE.
+      *01  SPA-DATA-REC            PIC X(30000).
       *
       *    パラメタデータ
       *FD  PARA-FILE.
@@ -111,22 +112,22 @@
       *
        WORKING-STORAGE             SECTION.
       * ＳＰＡパラメタデータ
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "J02SPASCR".
-           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "J02SPASCR".
+      *    03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "J01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "J01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *
-       01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
-                                   OCCURS  20.
+      *01  WRK-DATA-REC.
+      *    03  WRK-DATA            PIC X(30000)
+      ***                          OCCURS  20.
        01  SPA-SCR-REC.
            COPY    "CPJ02SPASCR.INC".
       *
@@ -173,6 +174,7 @@
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-SYUTTL          PIC 9(01).
            03  FLG-SANTEIPLUS      PIC 9(01).
+           03  FLG-SPATMP          PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -754,6 +756,10 @@
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
+      *    ＳＰＡ一時テーブル
+       01  SPATMP-REC.
+           COPY    "CPSPA-TMP.INC".
+      *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -852,6 +858,9 @@
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
+      *
+      *TEST
+           COPY    "MCPDATA2.INC".
       *****COPY    "CPORCMCP.INC".
       *
       *****COPY    "ORCA-DBPATH".
@@ -958,31 +967,67 @@
       *
        1002-J02SPA-SET-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
-      *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO         1002-J02SPA-SET-EXT
-           END-IF
-      *
-           INITIALIZE          SPA-SCR-REC
-           INITIALIZE          WRK-DATA-REC
+           INITIALIZE                      SPA-SCR-REC
            MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1            TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
-               END-READ
+      *
+      *    tbl_spa_tmp を使用する
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "J02"               TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
+      *
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SPATMP-READ-SEC
+           ELSE
+               INITIALIZE                  SPATMP-REC
+               MOVE    1               TO  FLG-SPATMP
+           END-IF
+           PERFORM
+               UNTIL  (FLG-SPATMP           =   1 )
+               IF     SPATMP-EDANUM         =   1
+                   MOVE   SPATMP-DATA-REC       TO   SPA-GMN-TBL
+               END-IF
+               IF     SPATMP-EDANUM         =   2
+                   MOVE   SPATMP-DATA-REC       TO   SPA-NAI-G
+               END-IF
+      *
+               MOVE    "tbl_spa_tmp"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SPATMP-READ-SEC
            END-PERFORM
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-SPATMP-DBCLOSE-SEC
       *
-           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC
+      **** MOVE    SPA-TERMID          TO  FILE-TERMID
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
       *
-           CLOSE                       SPASCR-FILE
+      *    OPEN    INPUT               SPASCR-FILE
+      *    IF      STS-SPASCR     NOT =   ZERO
+      *        GO      TO         1002-J02SPA-SET-EXT
+      *    END-IF
+      *
+      *    INITIALIZE          SPA-SCR-REC
+      *    INITIALIZE          WRK-DATA-REC
+      *    MOVE    ZERO                TO  FLG-SPASCR
+      *    MOVE    ZERO                TO  IDX
+      *    PERFORM UNTIL       FLG-SPASCR  =   1
+      *        READ    SPASCR-FILE
+      *            AT  END
+      *                MOVE   1            TO  FLG-SPASCR
+      *            NOT AT  END
+      *                ADD    1            TO  IDX
+      *                MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+      *        END-READ
+      *    END-PERFORM
+      *
+      *    MOVE    WRK-DATA-REC        TO  SPA-SCR-REC
+      *
+      *****CLOSE                       SPASCR-FILE
            .
        1002-J02SPA-SET-EXT.
            EXIT.
@@ -991,28 +1036,80 @@
       *****************************************************************
        1003-J02SPA-OUT-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
       *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "J02SPASCR OUT OPEN ERR:"   STS-SPASCR "."
-           END-IF
-           MOVE    SPA-SCR-REC         TO  WRK-DATA-REC
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   20  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "J02"               TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
       *
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "J02SPASCR OUT WRITE ERR:"   STS-SPASCR "."
-                END-IF
-           END-PERFORM
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del1"              TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-CALL-SEC
       *
-           CLOSE                       SPASCR-FILE
+      *    SPA-GMN-TBL保存
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "J02"               TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
+           MOVE    1                   TO  SPATMP-EDANUM
+           MOVE    SPA-GMN-TBL         TO  SPATMP-DATA-REC
+           PERFORM 10031-SPATMP-INSERT-SEC
+      *
+      *    SPA-NAI-G保存
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "J02"               TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
+           MOVE    2                   TO  SPATMP-EDANUM
+           MOVE    SPA-NAI-G           TO  SPATMP-DATA-REC
+           PERFORM 10031-SPATMP-INSERT-SEC
+      *TEST
+      *
+      *
+      **   MOVE    SPA-TERMID          TO  FILE-TERMID
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
+      *
+      *    OPEN    OUTPUT              SPASCR-FILE
+      *    IF      STS-SPASCR     NOT =   ZERO
+      *        DISPLAY "J02SPASCR OUT OPEN ERR:"   STS-SPASCR "."
+      *    END-IF
+      *    MOVE    SPA-SCR-REC         TO  WRK-DATA-REC
+      *    PERFORM VARYING     IDX     FROM   1   BY  1
+      *            UNTIL      (IDX     >   20  )  OR
+      *                       (WRK-DATA (IDX)     =   SPACE)
+      *
+      *        MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
+      *        WRITE                       SPA-DATA-REC
+      *        IF      STS-SPASCR     NOT =   ZERO
+      *            DISPLAY "J02SPASCR OUT WRITE ERR:"   STS-SPASCR "."
+      *         END-IF
+      *    END-PERFORM
+      *
+      **** CLOSE                       SPASCR-FILE
            .
        1003-J02SPA-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＳＰＡ一時保存テーブル追加
+      *****************************************************************
+       10031-SPATMP-INSERT-SEC                SECTION.
+      *
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-CALL-SEC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "J02 SPATMP INSERT ERR:"  MCP-RC
+                           ",KEY:" SPATMP-KEY
+               MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
+           .
+       10031-SPATMP-INSERT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1771,21 +1868,11 @@
            MOVE    "01"                TO  SYS-1001-STYUKYMD(7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-      *    システム管理検索
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-KANRIMST-READ-SEC
-           ELSE
-               INITIALIZE                  SYS-1001-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+           MOVE    SYS-1001-REC        TO  SYSKANRI-REC
+           PERFORM 9001-SYSKANRI-READ-SEC
+      *
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
       *        病院種別
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                IF      SPA-BEDKBN          =   ZERO
@@ -1802,9 +1889,6 @@
                    END-IF
                END-IF
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-BEDSU           >   ZERO
                MOVE    "1 入院"            TO  SPA-GMN-NYUGAIKBN-LST (1)
@@ -2087,23 +2171,13 @@
            MOVE    SPA-NAI-SRYYM       TO  SYS-1043-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-1043-STYUKYMD(7:2)
            MOVE    SYS-1043-STYUKYMD   TO  SYS-1043-EDYUKYMD
-      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1043-HOSPNUM
-           MOVE    SYS-1043-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-KANRIMST-READ-SEC
-           ELSE
-               INITIALIZE                  SYS-1043-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+      *    システム管理検索
+           MOVE    SYS-1043-REC        TO  SYSKANRI-REC
+           PERFORM 9001-SYSKANRI-READ-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1043-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1043-REC
                MOVE    SYS-1043-SRYKBN-FLG TO  SPA-NAI-SRYKBN-FLG
                IF      SYS-1043-SRYKA-FLG  =   SPACE
                    MOVE    ZERO                TO  SPA-NAI-SRYKA-FLG
@@ -2117,9 +2191,6 @@
                    MOVE    "1"                 TO  SPA-NAI-RESPRVFLG
                END-IF
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            .
        3005-SRYKA-HEN-EXT.
@@ -4362,30 +4433,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NYUKIN-HOHO     TO  SYS-1041-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1041-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1041-EDYUKYMD
-      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
-           MOVE    SYS-1041-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-KANRIMST-READ-SEC
-           ELSE
-               INITIALIZE                  SYS-1041-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+      *    システム管理検索
+           MOVE    SYS-1041-REC        TO  SYSKANRI-REC
+           PERFORM 9001-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1041-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1041-REC
                MOVE    SYS-1041-NYKN-JYOTAI
                                            TO  SPA-NYUKIN-JYOTAI
            ELSE
                MOVE    "1"                 TO  SPA-NYUKIN-JYOTAI
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            .
        410109-JYOTAI-SET-EXT.
@@ -11466,28 +11524,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-SRYYMD          TO  SYS-0041-EDYUKYMD
       *
            MOVE    SPA-HOSPNUM         TO  SYS-0041-HOSPNUM
-           MOVE    SYS-0041-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-KANRIMST-READ-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-0041-REC
-               ELSE
-                   INITIALIZE                  SYS-0041-REC
-               END-IF
-           ELSE
-               INITIALIZE                  SYS-0041-REC
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    システム管理検索
+           MOVE    SYS-0041-REC        TO  SYSKANRI-REC
+           PERFORM 9001-SYSKANRI-READ-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-0041-REC
                ADD     1                   TO  SYS-0041-DENPNUMMAX
       *!!!
                IF      SYS-0041-DENPNUMMAX     =   0
@@ -14863,6 +14905,40 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
+      *    システム管理マスタキー読み込み処理
+      *****************************************************************
+       9001-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *    システム管理検索
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       9001-SYSKANRI-READ-SEC-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
@@ -15336,6 +15412,66 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *
+      *TEST
+      *****************************************************************
+      *    一時保存テーブル読み込み
+      *****************************************************************
+       990-SPATMP-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           PERFORM 910-SPATMP-CALL-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA2-REC    TO  SPATMP-REC
+               MOVE    ZERO            TO  FLG-SPATMP
+           ELSE
+               INITIALIZE                  SPATMP-REC
+               MOVE    1               TO  FLG-SPATMP
+           END-IF
+      *
+           .
+       990-SPATMP-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-SPATMP-DBSELECT-SEC                SECTION.
+      *
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-SPATMP-CALL-SEC
+      *
+           .
+       910-SPATMP-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-SPATMP-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           PERFORM 910-SPATMP-CALL-SEC
+      *
+           .
+       990-SPATMP-DBCLOSE-EXT.
+           EXIT.
+      *****************************************************************
+      *    一時保存テーブル検索処理
+      *****************************************************************
+       910-SPATMP-CALL-SEC                SECTION.
+      *
+           MOVE    "tbl_spa_tmp"       TO  MCP-TABLE
+      *
+           CALL    "ORCDBSPATMP"       USING   MCPAREA
+                                               MCPDATA2-REC
+                                               SPA-AREA
+      *
+           .
+       910-SPATMP-CALL-EXT.
+           EXIT.
+      *TEST
+      *
       *****************************************************************
       *    排他制御処理
       *****************************************************************
@@ -15381,12 +15517,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        999-FILE-DEL-SEC         SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      **** MOVE    SPA-TERMID          TO  FILE-TERMID
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      ****                             ORCSFDELAREA
            MOVE    1                   TO  FLG-END2
       *
       *    パラメタ削除
@@ -15402,6 +15538,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
+      *
+      *    パラメタ削除
+           INITIALIZE                      SPATMP-REC
+           MOVE    "J02"               TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+      *
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del2"              TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-CALL-SEC
       *
            .
        999-FILE-DEL-EXT.

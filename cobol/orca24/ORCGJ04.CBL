@@ -65,26 +65,26 @@
        FILE-CONTROL.
       *
       *    ＳＰＡデータ
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SPASCR.
+      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    ＳＰＡパラメタデータ
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(1500).
+      *FD  SPASCR-FILE.
+      *01  SPA-DATA-REC            PIC X(1500).
       *
       *
        WORKING-STORAGE             SECTION.
       * ＳＰＡパラメタデータ
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "J04SPASCR".
-           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "J04SPASCR".
+      *    03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    ＳＰＡパラメタ
        01  SPA-SCR-REC.
@@ -905,27 +905,45 @@
       *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE                  SPA-SCR-REC
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
+           MOVE    ZERO                TO  SPA-GMN-MAX
       *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO      1002-J04SPA-SET-EXT
+           IF     SPA-HOSPNUM  NOT NUMERIC
+               GO   TO  1002-J04SPA-SET-EXT
            END-IF
       *
-           MOVE    ZERO                TO  FLG-SPASCR
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1                TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1                TO  IDX
-                       MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
-               END-READ
-           END-PERFORM
+           INITIALIZE                      PARA-REC
+           MOVE    "J04"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
       *
-           CLOSE                       SPASCR-FILE
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL  (FLG-PARA            =   1 )
+                 OR   (IDX                 >=  SPA-MAX-LINE)
+               ADD    1                    TO  IDX
+               MOVE   PARA-DATA-REC        TO  SPA-GMN-TBL (IDX)
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    行位置とカーソル位置の決定
            MOVE    1                   TO  WRK-PAGE
@@ -954,6 +972,7 @@
                    ADD     1               TO  SPA-GMN-MAX
                END-IF
            END-PERFORM
+      *
            .
        1002-J04SPA-SET-EXT.
            EXIT.
@@ -963,29 +982,50 @@
       *****************************************************************
        1003-J04SPA-OUT-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
+           INITIALIZE                      PARA-REC
+           MOVE    "J04"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
       *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "J04SPASCR OUT OPEN ERR:"   STS-SPASCR "."
-            END-IF
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "J04"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE )
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )
                IF      (SPA-COM-INPUTCD(IDX)   =   SPACE ) AND
                        (SPA-GMN-INPUTCD(IDX)   =   SPACE )
+               AND     (IDX            >   SPA-GMN-MAX  )
                    CONTINUE
                ELSE
-                   MOVE    SPA-GMN-TBL (IDX)   TO  SPA-DATA-REC
-                   WRITE                       SPA-DATA-REC
-                   IF      STS-SPASCR     NOT =   ZERO
-                       DISPLAY "J04SPASCR OUT WRITE ERR:" STS-SPASCR "."
+                   MOVE    SPA-GMN-TBL (IDX)   TO  PARA-DATA-REC
+                   MOVE    IDX                 TO  PARA-EDANUM
+                   MOVE    PARA-REC            TO  MCPDATA-REC
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   MOVE    "tbl_para"          TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "J04 PARA INSERT ERR:"  MCP-RC
+                           ",KEY2:" PARA-KEY
+                           ",EDANUM:" PARA-EDANUM
                    END-IF
                END-IF
            END-PERFORM
       *
-           CLOSE                       SPASCR-FILE
            .
        1003-J04SPA-OUT-EXT.
            EXIT.
@@ -5006,12 +5046,19 @@
        210-BACK                    SECTION.
       *
       *    ファイル削除
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+           INITIALIZE                      PARA-REC
+           MOVE    "J04"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
            MOVE    1                   TO  FLG-END2
       *
            MOVE    "J02"               TO  SPA-SAKIPG
@@ -5312,13 +5359,19 @@
       *****************************************************************
        410021-END-SYORI-SEC            SECTION.
       *
-      *    ファイル削除
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+           INITIALIZE                      PARA-REC
+           MOVE    "J04"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
            MOVE    1                   TO  FLG-END2
       *
            MOVE    "J02"               TO  SPA-SAKIPG

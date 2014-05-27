@@ -1,6 +1,6 @@
 tbl_para {
 	HOSPNUM				number(2,0);
-	GYOUMUID			char(3);
+	GYOUMUID			char(4);
 	TERMID				char(64);
 	FILEMEI 			char(20);
 	EDANUM  			number(3,0);
@@ -18,7 +18,7 @@ path	key 	{
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   GYOUMUID   =   :GYOUMUID
 			AND   TERMID       =   :TERMID
-			AND   FILEMEI      LIKE  :FILEMEI
+			AND   FILEMEI      =  :FILEMEI
 			AND   EDANUM       =   :EDANUM
 		;
 	};

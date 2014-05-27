@@ -39,27 +39,27 @@
       *
       *
       *    ＳＰＡデータ
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SPASCR.
+      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    ＳＰＡパラメタデータ
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(1500).
+      *FD  SPASCR-FILE.
+      *01  SPA-DATA-REC            PIC X(1500).
       *
       *
        WORKING-STORAGE             SECTION.
       *
       * ＳＰＡデータ
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
-           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+      *    03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    画面色等
            COPY    "ENUM-VALUE".
@@ -77,8 +77,8 @@
       *    画面スパ領域
            COPY    "K02SCR-SPA".
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-SPASCR          PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-SPASCR          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -86,6 +86,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-PARA            PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -167,6 +168,11 @@
       *    入力コードマスタ−
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
+      *
+      *     パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -499,29 +505,64 @@
       *****************************************************************
        1002-K02SPA-SET-SEC             SECTION.
       *
+      *
+      *****MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *
+      *    OPEN    INPUT               SPASCR-FILE
+      *    IF      STS-SPASCR     NOT =   ZERO
+      *        GO      TO      1002-K02SPA-SET-EXT
+      *    END-IF
+      *
+      *    MOVE    ZERO                TO  FLG-SPASCR
+      *    MOVE    ZERO                TO  IDX
+      *    PERFORM UNTIL       FLG-SPASCR  =   1
+      *        READ    SPASCR-FILE
+      *            AT  END
+      *                MOVE   1            TO  FLG-SPASCR
+      *            NOT AT  END
+      *                ADD    1                TO  IDX
+      *                MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
+      *        END-READ
+      *    END-PERFORM
+      *****CLOSE                       SPASCR-FILE
+      *
+      *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE                  SPA-SCR-REC
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO      1002-K02SPA-SET-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1            TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1                TO  IDX
-                       MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
-               END-READ
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "SPAGMN"            TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           PERFORM
+               UNTIL  (FLG-PARA            =   1 )
+                 OR   (IDX                 >=  SPA-MAX-LINE)
+               ADD    1                    TO  IDX
+               MOVE   PARA-DATA-REC        TO  SPA-GMN-TBL (IDX)
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           CLOSE                       SPASCR-FILE
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1594,6 +1635,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        920-INPUTCD-NEXT-EXT.
            EXIT.
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
