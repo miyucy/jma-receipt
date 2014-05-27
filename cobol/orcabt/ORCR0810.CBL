@@ -65,6 +65,8 @@
       *  04.07.04    NACL-門脇    14/02/21  公務災害（労災準拠）の点数単価
       *                                     設定対応
       *  04.07.05    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *  04.07.06    NACL-門脇    14/05/27  第三者行為の給付割合の設定
+      *                                     （社保前期高齢２割）
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -1632,6 +1634,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                                EVALUATE   PTHKN-HOJOKBN
                                    WHEN   "7"
                                        MOVE    30  TO
+                                                   WRK-RECE82-FTNRATE
+                                   WHEN   "8"
+                                       MOVE    20  TO
                                                    WRK-RECE82-FTNRATE
                                    WHEN   "9"
                                        MOVE    10  TO
