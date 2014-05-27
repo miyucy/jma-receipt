@@ -36,6 +36,7 @@
       *  04.04.00    NACL-多々納  08/12/22  出来高算定コード対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値数量追加対応
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
+      *  04.08.00    NACL-多々納  14/05/XX  一時保存データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -44,34 +45,34 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDANUM          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDANUM          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -154,6 +155,12 @@
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
+      *v4.8
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC". 
+      *
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -213,7 +220,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  STS-AREA
+      *****INITIALIZE                  STS-AREA
            INITIALIZE                  LNK-ORDERPRT-RCD
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -1025,19 +1032,39 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-           OPEN    INPUT               PARA-FILE
+      **   MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    OPEN    INPUT               PARA-FILE
       *
-           IF      STS-PARA           =  ZERO
-               PERFORM 980-PARA-READ-SEC
+      *    IF      STS-PARA           =  ZERO
+      *        PERFORM 980-PARA-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-PARA 
+      **** END-IF
+      *ver.4.8
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-PARA 
+               INITIALIZE                  PARA-REC
+               MOVE    1                   TO  FLG-PARA
            END-IF
+      *
            PERFORM
                UNTIL   FLG-PARA            =   1
-               IF     (PARA-FILEMEI        =   "WKSRYACT" )  AND
-                      (PARA-DATA-REC   NOT =   SPACE      )
+               IF     (PARA-DATA-REC   NOT =   SPACE      )
                    MOVE    PARA-DATA-REC   TO  WKSRYACT-REC
       *            剤毎に保存する
                    IF     (LNK-WKSRYACT-MAX   >    ZERO  )  AND
@@ -1056,15 +1083,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                       (LNK-WKSRYACT-MAX)
                    END-IF
                END-IF
-               PERFORM 980-PARA-READ-SEC
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
            END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    剤毎に保存する
            IF      LNK-WKSRYACT-MAX   >    ZERO
                PERFORM 1001-ORDERPRT-SYORI-SEC
            END-IF
-      *
-           CLOSE                       PARA-FILE
       *
            .
        200-PARA-SYORI-EXT.
@@ -1134,6 +1165,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-TENSU-READ-EXT.
            EXIT.
+      *v.4.8
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
@@ -1180,22 +1230,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-DBCLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
-       980-PARA-READ-SEC         SECTION.
-      *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
-      *
-           .
-       980-PARA-READ-EXT.
            EXIT.
       *
       *
