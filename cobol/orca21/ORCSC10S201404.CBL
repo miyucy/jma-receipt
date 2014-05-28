@@ -842,7 +842,10 @@
              AND  (SPA-SYONIKA-ARI NOT =   9   )
                PERFORM 1001-SYONIKA-CHK-SEC
            ELSE
-               MOVE    ZERO                TO  SPA-SYONIKA-ARI3
+      *        初診・再診料への変換
+               IF      SPA-SYONIKA-ARI     =   9
+                   MOVE    ZERO                TO  SPA-SYONIKA-ARI3
+               END-IF
                MOVE    ZERO                TO  SPA-SYONIKA-ARI2
                MOVE    ZERO                TO  SPA-SYONIKA-ARI
            END-IF
@@ -1825,7 +1828,7 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
       *TEST
-                 DISPLAY "SC10 LNK-DAY6-KEISAN:"  LNK-DAY6-KEISAN
+      *          DISPLAY "SC10 LNK-DAY6-KEISAN:"  LNK-DAY6-KEISAN
       *TEST
                IF      LNK-DAY6-KEISAN     >   SPA-SRYYMD
       *            外来リハ診察料等算定中（後期高齢者診療料の区分に）
@@ -2525,9 +2528,10 @@
       *    小児科対象
            MOVE    1                   TO  FLG-SYONIKA-ARI
            MOVE    1                   TO  SPA-SYONIKA-ARI3
-      *H26.4
+      *
            IF     (SPA-DOUJITU         >   ZERO)
              AND  (WRK-DAYCNT-SUM      =   ZERO)
+             AND  (SPA-SYORIFLG        =   ZERO)
       *        同日に受診があり、小児科外来以外の算定は再診料とする
                MOVE    ZERO            TO  FLG-SYONIKA-ARI
                MOVE    ZERO            TO  SPA-SYONIKA-ARI3
@@ -6205,7 +6209,7 @@
                      AND  (SPA-HKNKBN          =   ZERO )
                        PERFORM 1001-SYONIKA-CHK-SEC
                    ELSE
-                       MOVE    ZERO            TO  SPA-SYONIKA-ARI3
+      **H26.5**        MOVE    ZERO            TO  SPA-SYONIKA-ARI3
                        MOVE    ZERO            TO  SPA-SYONIKA-ARI2
                        MOVE    ZERO            TO  SPA-SYONIKA-ARI
                    END-IF
