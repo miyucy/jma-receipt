@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.07.00     NACL-多々納  12/03/07  処方せん料表示対応（H24.4対応）
+      *  04.08.00    NACL-多々納  14/05/29  一時ファイル変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -37,37 +38,30 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDANUM          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDANUM          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
-      * ＳＰＡデータ
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(11)   VALUE   "KT012SPASCR".
-           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(08)   VALUE   "KT01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(08)   VALUE   "KT01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    画面非表示
            COPY    "ENUM-VALUE".
@@ -372,6 +366,12 @@
        01  HZN-JYURRK-REC.
            COPY    "CPJYURRK.INC"    REPLACING
                                      //JYURRK-// BY //HZN-JYURRK-//.
+      *
+      *v4.8
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC". 
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2863,9 +2863,23 @@
       *****************************************************************
        4201-WKSRYACT-SET-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-           OPEN    OUTPUT              PARA-FILE
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    OPEN    OUTPUT              PARA-FILE
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "KT01"              TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
       *
            MOVE    ZERO                TO  WRK-EDANUM
       *
@@ -2877,7 +2891,7 @@
       *
            MOVE    1                   TO  SPA-KT012-SELOK
       *
-           CLOSE                       PARA-FILE
+      *****CLOSE                       PARA-FILE
       *
            .
        4201-WKSRYACT-SET-EXT.
@@ -2945,13 +2959,24 @@
                    PERFORM 41012-SRYACT-HEN-SEC
       *
       *            パラメタファイル作成
-                   MOVE    SPACE               TO  PARA-REC
+      *****        MOVE    SPACE               TO  PARA-REC
+      *            MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *            ADD     1                   TO  WRK-EDANUM
+      *            MOVE    WRK-EDANUM          TO  PARA-EDANUM
+      *            MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
+      *
+      *****        WRITE                       PARA-REC
+      *
+                   INITIALIZE                      PARA-REC
+                   MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+                   MOVE    "KT01"              TO  PARA-GYOUMUID
+                   MOVE    SPA-TERMID          TO  PARA-TERMID
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    ADD     1                   TO  WRK-EDANUM
                    MOVE    WRK-EDANUM          TO  PARA-EDANUM
                    MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
       *
-                   WRITE                       PARA-REC
+                   PERFORM 8002-PARA-DBINSERT-SEC
                END-IF
       *
                MOVE    "tbl_sryact"        TO  MCP-TABLE
@@ -3017,10 +3042,10 @@
        210-BACK                        SECTION.
       *
       *    中間ファイル削除
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      *                                ORCSFDELAREA
       *
            MOVE    1                   TO  FLG-END2
       *
@@ -3521,6 +3546,33 @@
        510-ERRSET-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    パラメタ一時ファイル書き込み処理
+      *****************************************************************
+       8002-PARA-DBINSERT-SEC          SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+               DISPLAY "KT012 PARA INSERT ERR:"  MCP-RC
+                       ",KEY:" PARA-KEY
+           END-IF
+      *
+           .
+       8002-PARA-DBINSERT-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    点数マスター読込
       *****************************************************************
@@ -3678,18 +3730,18 @@
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       980-PARA-READ-SEC         SECTION.
+      *980-PARA-READ-SEC         SECTION.
       *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
+      *    READ    PARA-FILE 
+      *        AT  END
+      *            MOVE    1           TO  FLG-PARA
+      *        NOT AT  END
+      *            MOVE    ZERO        TO  FLG-PARA
+      *    END-READ
       *
-           .
-       980-PARA-READ-EXT.
-           EXIT.
+      *    .
+      *980-PARA-READ-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    パラメタデータ順読み

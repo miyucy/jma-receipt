@@ -33,6 +33,7 @@
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *  04.08.00    NACL-多々納  13/01/15  診療回数テーブル１０対応
       *  04.08.00    NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
+      *  04.08.00    NACL-多々納  14/05/28  一時ファイル変更
       *****************************************************************
       *
       *
@@ -42,34 +43,34 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDABAN          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDABAN          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(08)   VALUE   "KT01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(08)   VALUE   "KT01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -174,7 +175,7 @@
       *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-ZAIKAISU        PIC 9(08).
-           03  WRK-EDABAN          PIC 9(02).
+           03  WRK-EDABAN          PIC 9(03).
       *剤番号
            03  WRK-ZAINUM-TBL.
                05  WRK-ZAINUM-G        OCCURS   50.
@@ -470,6 +471,12 @@
       *    患者個別設定テーブル
        01  PTCONF-REC.
            COPY    "CPPTCONF.INC".
+      *
+      *v4.8
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC". 
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -4188,10 +4195,14 @@
            MOVE    SPACE               TO  PARA-REC
            MOVE    "WKSRYACT"          TO  PARA-FILEMEI
            ADD     1                   TO  WRK-EDABAN
-           MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      **** MOVE    WRK-EDABAN          TO  PARA-EDABAN
            MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
       *
-           WRITE                       PARA-REC
+      *****WRITE                       PARA-REC
+      *ver.4.8
+      *    一時データ出力
+           PERFORM 8002-PARA-DBINSERT-SEC
+      *
       *    ワーク診療行為作成有無
            MOVE    1               TO  LNK-SC95-WKSRYACT
           .
@@ -4278,13 +4289,16 @@
                        MOVE    SPACE               TO  PARA-REC
                        MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                        ADD     1                   TO  WRK-EDABAN
-                       MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      **************   MOVE    WRK-EDABAN          TO  PARA-EDABAN
       *TEST
                        MOVE    "99999"             TO  WKSRY-UPHMS
       *TEST
                        MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
       *
-                       WRITE                       PARA-REC
+      ***********      WRITE                       PARA-REC
+      *ver.4.8
+      *                一時データ出力
+                       PERFORM 8002-PARA-DBINSERT-SEC
       *                ワーク診療行為作成有無
                        MOVE    1               TO  LNK-SC95-WKSRYACT
                    END-IF
@@ -4744,13 +4758,16 @@
                    MOVE    SPACE               TO  PARA-REC
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    ADD     1                   TO  WRK-EDABAN
-                   MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      ***********  MOVE    WRK-EDABAN          TO  PARA-EDABAN
       *
       *            ワーク診療行為マスタからの作成判定とする
                    MOVE    "WKSRYACT"          TO  WKSRY-TERMID
       *
                    MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
-                   WRITE                       PARA-REC
+      *********    WRITE                       PARA-REC
+      *ver.4.8
+      *            一時データ出力
+                   PERFORM 8002-PARA-DBINSERT-SEC
       *            ワーク診療行為作成有無
                    MOVE    1                   TO  LNK-SC95-WKSRYACT
       *
@@ -4845,10 +4862,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        300-WKSRYACT-INSERT-SEC              SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
-           OPEN    OUTPUT              PARA-FILE
+      **** OPEN    OUTPUT              PARA-FILE
+      *
+      *    一時ファイル削除
+           PERFORM 8001-PARA-DELETE-SEC
       *
       *    ＣＬＡＩＭ展開
            MOVE    ZERO                TO  SPA-WKSRY-KARTE-FLG
@@ -4898,7 +4918,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPACE               TO  PARA-REC
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    ADD     1                   TO  WRK-EDABAN
-                   MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      ************ MOVE    WRK-EDABAN          TO  PARA-EDABAN
       *            剤番号
                    MOVE    WKSRYACT-REC        TO  HZN-WKSRYACT-REC
                    MOVE    WRK-ZAINUM          TO  HZN-WKSRY-ZAINUM
@@ -4906,7 +4926,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "WKSRYACT"          TO  HZN-WKSRY-TERMID
       *
                    MOVE    HZN-WKSRYACT-REC    TO  PARA-DATA-REC
-                   WRITE                       PARA-REC
+      *****        WRITE                       PARA-REC
+      *ver.4.8
+      *            一時データ出力
+                   PERFORM 8002-PARA-DBINSERT-SEC
+      *
                END-IF
       *        ＣＬＡＩＭ展開
                MOVE    WKSRY-KARTE-FLG     TO  SPA-WKSRY-KARTE-FLG
@@ -4936,7 +4960,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           CLOSE                       PARA-FILE
+      *****CLOSE                       PARA-FILE
       *
           .
        300-WKSRYACT-INSERT-EXT.
@@ -4988,13 +5012,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  PARA-REC
            MOVE    "WKSRYACT"          TO  PARA-FILEMEI
            ADD     1                   TO  WRK-EDABAN
-           MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      **** MOVE    WRK-EDABAN          TO  PARA-EDABAN
       *
       *    ワーク診療行為マスタからの作成判定とする
            MOVE    "WKSRYACT"          TO  HZN-WKSRY-TERMID
       *
            MOVE    HZN-WKSRYACT-REC    TO  PARA-DATA-REC
-           WRITE                       PARA-REC
+      *****WRITE                       PARA-REC
+      *
+      *ver.4.8
+      *    一時データ出力
+           PERFORM 8002-PARA-DBINSERT-SEC
            .
        30011-WKSRYACT-INS-EXT.
            EXIT.
@@ -5101,6 +5129,55 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル削除処理
+      *****************************************************************
+       8001-PARA-DELETE-SEC         SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "KT01"              TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       8001-PARA-DELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタ一時ファイル書き込み処理
+      *****************************************************************
+       8002-PARA-DBINSERT-SEC          SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "KT01"              TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    WRK-EDABAN          TO  PARA-EDANUM
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+               DISPLAY "KT01 PARA INSERT ERR:"  MCP-RC
+                       ",KEY:" PARA-KEY
+           END-IF
+      *
+           .
+       8002-PARA-DBINSERT-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ読み込み処理
@@ -5558,21 +5635,39 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        921-SANTEIPLUS-READ-EXT.
            EXIT.
+      *ver.4.8
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
+           EXIT.
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       990-PARA-NEXT-SEC           SECTION.
+      *990-PARA-NEXT-SEC           SECTION.
       *
-           READ    PARA-FILE       NEXT
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
+      *    READ    PARA-FILE       NEXT
+      *        AT  END
+      *            MOVE    1           TO  FLG-PARA
+      *        NOT AT  END
+      *            MOVE    ZERO        TO  FLG-PARA
+      *    END-READ
       *
-           .
-       990-PARA-NEXT-EXT.
-           EXIT.
+      *    .
+      *990-PARA-NEXT-EXT.
+      *    EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

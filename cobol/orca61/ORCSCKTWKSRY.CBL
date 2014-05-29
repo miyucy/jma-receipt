@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
+      *  04.08.00    NACL-多々納  14/05/29  一時ファイル変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -36,115 +37,115 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *    パラメタデータ
-           SELECT  PARA-FILE2       ASSIGN  FILE-NAME22
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA2.
+      *    SELECT  PARA-FILE2       ASSIGN  FILE-NAME22
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA2.
       *
       *    日毎データ（ワーク診療行為）
-           SELECT  WKSRY-FILE      ASSIGN  FILE-NAME3
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  WKSRY-F-KEY
-                                   FILE    STATUS  IS  STS-WKSRY.
+      *    SELECT  WKSRY-FILE      ASSIGN  FILE-NAME3
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  WKSRY-F-KEY
+      *                            FILE    STATUS  IS  STS-WKSRY.
       *
       *    収納データ
-           SELECT  OUTSYU-FILE     ASSIGN  FILE-NAME4
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-OUTSYU.
+      *    SELECT  OUTSYU-FILE     ASSIGN  FILE-NAME4
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-OUTSYU.
       *    日毎データ（ＫＴ０２）
-           SELECT  WKSRY-FILE02    ASSIGN  FILE-NAME5
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-WKSRY02.
+      *    SELECT  WKSRY-FILE02    ASSIGN  FILE-NAME5
+      *                            ORGANIZATION    IS  SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-WKSRY02.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDANUM          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDANUM          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *    パラメタデータ
-       FD  PARA-FILE2.
+      *FD  PARA-FILE2.
       *    画面スパ領域
-           COPY    "KT01SCR-SPA"      REPLACING
-                                     //SPA-// BY //PARA-SPA-//.
+      *    COPY    "KT01SCR-SPA"      REPLACING
+      *                              //SPA-// BY //PARA-SPA-//.
       *
       *    ワーク診療
-       FD  WKSRY-FILE.
-       01  WKSRY-F-REC.
-           03  WKSRY-F-KEY.
-               05  WKSRY-F-ZAINUM      PIC 9(08).
-               05  WKSRY-F-RENNUM      PIC 9(02).
-           03  WKSRY-DATA-REC          PIC X(2000).
+      *FD  WKSRY-FILE.
+      *01  WKSRY-F-REC.
+      *    03  WKSRY-F-KEY.
+      *        05  WKSRY-F-ZAINUM      PIC 9(08).
+      *        05  WKSRY-F-RENNUM      PIC 9(02).
+      *    03  WKSRY-DATA-REC          PIC X(2000).
       *
       *    ワーク診療
-       FD  OUTSYU-FILE.
-       01  OUTSYU-REC.
-           03  OUTSYU-DATA-REC         PIC X(2000).
+      *FD  OUTSYU-FILE.
+      *01  OUTSYU-REC.
+      *    03  OUTSYU-DATA-REC         PIC X(2000).
       *
       *    ワーク診療
-       FD  WKSRY-FILE02.
-       01  WKSRY-F02-REC.
-           03  WKSRY-F02-KEY.
-               05  WKSRY-F02-ZAINUM      PIC 9(08).
-               05  WKSRY-F02-RENNUM      PIC 9(02).
-           03  WKSRY02-DATA-REC          PIC X(2000).
+      *FD  WKSRY-FILE02.
+      *01  WKSRY-F02-REC.
+      *    03  WKSRY-F02-KEY.
+      *        05  WKSRY-F02-ZAINUM      PIC 9(08).
+      *        05  WKSRY-F02-RENNUM      PIC 9(02).
+      *    03  WKSRY02-DATA-REC          PIC X(2000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(08)   VALUE   "KT01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(08)   VALUE   "KT01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
-       01  FILE-NAME22.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "KT01PARA2".
-           03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME22.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "KT01PARA2".
+      *    03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
-       01  FILE-NAME3.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "KT01WKSRY".
-           03  FILE-DAY            PIC 9(02)   VALUE   ZERO.
-           03  FILE-HOSPNUM3       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID3        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME3.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "KT01WKSRY".
+      *    03  FILE-DAY            PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-HOSPNUM3       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID3        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
-       01  FILE-NAME4.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "KT01SYUNO".
-           03  FILE-DAY4           PIC 9(02)   VALUE   ZERO.
-           03  FILE-HOSPNUM4       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID4        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME4.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "KT01SYUNO".
+      *    03  FILE-DAY4           PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-HOSPNUM4       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID4        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
-       01  FILE-NAME5.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(09)   VALUE   "KT02WKSRY".
-           03  FILE-DAY5           PIC 9(02)   VALUE   ZERO.
-           03  FILE-HOSPNUM5       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID5        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME5.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(09)   VALUE   "KT02WKSRY".
+      *    03  FILE-DAY5           PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-HOSPNUM5       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID5        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
-           03  STS-PARA2           PIC X(02).
-           03  STS-WKSRY           PIC X(02).
-           03  STS-WKSRY02         PIC X(02).
-           03  STS-OUTSYU          PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
+      *    03  STS-PARA2           PIC X(02).
+      *    03  STS-WKSRY           PIC X(02).
+      *    03  STS-WKSRY02         PIC X(02).
+      *    03  STS-OUTSYU          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -157,6 +158,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-SPATMP          PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-SYORIFLG        PIC 9(01).
@@ -261,6 +263,8 @@
            03  WRK-ZAINUM              PIC 9(08).
            03  WRK-PARAEDABAN          PIC 9(04).
       *
+           03  WRK-EDANUM              PIC 9(03).
+      *
       *    小児科外来診察料加算判定
            03  WRK-SYONIKA-KBN         PIC X(01).
       *    自費用
@@ -315,6 +319,13 @@
                05  TBL-KAISU           PIC 9(03).
                05  TBL-DAY             PIC 9(02)
                                        OCCURS   31.
+      *
+      *    診療日毎の連番
+       01  TBL-DAY-GRP-G.
+           03  TBL-DAY-OCC             OCCURS   31.
+               05  TBL-DAY-EDANUM      PIC 9(03).
+               05  TBL-DAY-ZAINUM      PIC 9(04).
+      *
       *
       *画面最大行
       *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
@@ -420,6 +431,22 @@
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
+      *v4.8
+       01  HZN-WKSRYACT-REC.
+           COPY    "CPWKSRYACT.INC"  REPLACING
+                                     //WKSRY-// BY //HZN-WKSRY-//.
+      *
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC". 
+      *
+      *    ＳＰＡ一時テーブル
+       01  SPATMP-REC.
+           COPY    "CPSPA-TMP.INC".
+      *
+           COPY    "MCPDATA2.INC".
+      *
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -453,7 +480,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  STS-AREA
+      **** INITIALIZE                  STS-AREA
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
@@ -506,26 +533,52 @@
       *****************************************************************
        1001-WKSRYACT-INIT-SEC          SECTION.
       *
+      *    MOVE    ZERO                TO  LNK-WKSRYACT-MAX
+      *    MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+      *
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID3
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
+      *    MOVE    ORCSCWKSRY-DAY      TO  FILE-DAY
+      *
+      *    OPEN    INPUT               WKSRY-FILE
+      *    IF      STS-WKSRY        NOT =  ZERO
+      *******  DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
+      *        MOVE    1                   TO  FLG-WKSRY
+      *    ELSE
+      *        MOVE    ZERO                TO  FLG-WKSRY
+      *    END-IF
+      *    IF      FLG-WKSRY           =   ZERO
+      *        PERFORM 980-WKSRY-READ-SEC
+      *    END-IF
+      *
+      *ver.4.8
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           MOVE    ZERO                TO  FLG-WKSRY
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID3
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
-           MOVE    ORCSCWKSRY-DAY      TO  FILE-DAY
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "KTDA"              TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           STRING  "KT01WKSRY"
+                   ORCSCWKSRY-DAY      DELIMITED  BY  SIZE
+                                   INTO    PARA-FILEMEI
+           END-STRING
       *
-           OPEN    INPUT               WKSRY-FILE
-           IF      STS-WKSRY        NOT =  ZERO
-      *******  DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
-               MOVE    1                   TO  FLG-WKSRY
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
            ELSE
-               MOVE    ZERO                TO  FLG-WKSRY
-           END-IF
-      *
-           IF      FLG-WKSRY           =   ZERO
-               PERFORM 980-WKSRY-READ-SEC
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
            END-IF
            PERFORM
-               UNTIL   FLG-WKSRY       NOT =   ZERO
+               UNTIL  (FLG-PARA            =   1     )
+                 OR   (SPA-ERRCD       NOT =   SPACE )
                ADD     1                   TO  LNK-WKSRYACT-MAX
                IF      LNK-WKSRYACT-MAX    >   SPA-MAX-LINE
                    DISPLAY "KY01 LNK-WKSRYACT-MAX 400 OVR "
@@ -533,23 +586,29 @@
                    MOVE    "9000"              TO  SPA-ERRCD
                    MOVE    1                   TO  FLG-WKSRY
                ELSE
-                   MOVE    WKSRY-DATA-REC      TO  LNK-WKSRYACT-REC
+                   MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
                                                       (LNK-WKSRYACT-MAX)
                    MOVE    "WKSRYACT"          TO  LNK-WKSRY-TERMID
                                                       (LNK-WKSRYACT-MAX)
                END-IF
       *
-               PERFORM 980-WKSRY-READ-SEC
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+      ******** PERFORM 980-WKSRY-READ-SEC
            END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
-           CLOSE                       WKSRY-FILE
+      **** CLOSE                       WKSRY-FILE
       *
            IF    (LNK-WKSRYACT-MAX     =   ZERO )
       *        対象データがない時、データ削除
-               IF      (FLG-WKSRY        NOT =   2    )
-                   MOVE    ORCSCWKSRY-DAY      TO  WRK-DAY
-                   PERFORM 210-PARA-DEL-SEC
-               END-IF
+      *???     IF      (FLG-WKSRY        NOT =   2    )
+      *            MOVE    ORCSCWKSRY-DAY      TO  WRK-DAY
+      *            PERFORM 210-PARA-DEL-SEC
+      *????    END-IF
                MOVE    ZERO                TO  SPA-NAI-RRKDAY
                                                   (ORCSCWKSRY-DAY)
            END-IF
@@ -1889,33 +1948,71 @@
       *****************************************************************
        4001-WKSRYACT-INIT-SEC         SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-           OPEN    INPUT               PARA-FILE
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *    OPEN    INPUT               PARA-FILE
       *
-           IF      STS-PARA           =  ZERO
-               PERFORM 980-PARA-READ-SEC
+      *    IF      STS-PARA           =  ZERO
+      *        PERFORM 980-PARA-READ-SEC
+      *    ELSE
+      *        MOVE    2               TO  FLG-PARA 
+      *    END-IF
+      *    PERFORM
+      *        UNTIL   FLG-PARA        NOT =   ZERO
+      *        IF      PARA-FILEMEI        =   "WKSRYACT"
+      *            IF      PARA-DATA-REC   NOT =   SPACE
+      *                ADD     1                   TO  LNK-WKSRYACT-MAX
+      *                IF      LNK-WKSRYACT-MAX    >   SPA-MAX-LINE
+      *                    DISPLAY "KT01 LNK-WKSRYACT-MAX 400 OVR"
+      *                    MOVE    "9000"          TO  SPA-ERRCD
+      *                ELSE
+      *                    MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
+      *                                               (LNK-WKSRYACT-MAX)
+      *                END-IF
+      *            END-IF
+      *        END-IF
+      *        PERFORM 980-PARA-READ-SEC
+      *    END-PERFORM
+      *
+      *****CLOSE                       PARA-FILE
+      *
+      *ver.4.8
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "KT01"              TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
            ELSE
-               MOVE    2               TO  FLG-PARA 
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
            END-IF
            PERFORM
-               UNTIL   FLG-PARA        NOT =   ZERO
-               IF      PARA-FILEMEI        =   "WKSRYACT"
-                   IF      PARA-DATA-REC   NOT =   SPACE
-                       ADD     1                   TO  LNK-WKSRYACT-MAX
-                       IF      LNK-WKSRYACT-MAX    >   SPA-MAX-LINE
-                           DISPLAY "KT01 LNK-WKSRYACT-MAX 400 OVR"
-                           MOVE    "9000"          TO  SPA-ERRCD
-                       ELSE
-                           MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
+               UNTIL  (FLG-PARA            =   1     )
+                  OR  (SPA-ERRCD       NOT =   SPACE )
+               ADD     1                   TO  LNK-WKSRYACT-MAX
+               IF      LNK-WKSRYACT-MAX    >   SPA-MAX-LINE
+                   DISPLAY "KT01 LNK-WKSRYACT-MAX 400 OVR"
+                   MOVE    "9000"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
                                                       (LNK-WKSRYACT-MAX)
-                       END-IF
-                   END-IF
                END-IF
-               PERFORM 980-PARA-READ-SEC
-           END-PERFORM
       *
-           CLOSE                       PARA-FILE
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        4001-WKSRYACT-INIT-EXT.
@@ -1925,14 +2022,25 @@
       *****************************************************************
        210-PARA-DEL-SEC         SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID3
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
-           MOVE    WRK-DAY             TO  FILE-DAY
+      **** MOVE    SPA-TERMID          TO  FILE-TERMID3
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
+      *    MOVE    WRK-DAY             TO  FILE-DAY
       *
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME3          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME3          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      ****                             ORCSFDELAREA
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "KTDA"              TO  PARA-GYOUMUID
+           STRING  "KT01WKSRY"
+                   WRK-DAY             DELIMITED  BY  SIZE
+                                   INTO    PARA-FILEMEI
+           END-STRING
+      *
+           MOVE    "del3"              TO  MCP-PATHNAME
+           PERFORM 8003-PARA-DBDELETET-SEC
+      *
            .
        210-PARA-DEL-EXT.
            EXIT.
@@ -1944,16 +2052,20 @@
       *    画面の診療日分は削除
            MOVE    SPA-NAI-SRYDD       TO  WRK-DAY
            MOVE    ZERO                TO  SPA-NAI-RRKDAY (WRK-DAY)
-           MOVE    SPA-TERMID          TO  FILE-TERMID3
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
-           MOVE    WRK-DAY             TO  FILE-DAY
-           OPEN    INPUT               WKSRY-FILE
-           IF      STS-WKSRY           =   ZERO
-               CLOSE                       WKSRY-FILE
-               PERFORM 210-PARA-DEL-SEC
-           ELSE
-               CLOSE                       WKSRY-FILE
-           END-IF
+           PERFORM 210-PARA-DEL-SEC
+      *
+           INITIALIZE                  TBL-DAY-GRP-G
+      *
+      **   MOVE    SPA-TERMID          TO  FILE-TERMID3
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
+      *    MOVE    WRK-DAY             TO  FILE-DAY
+      *    OPEN    INPUT               WKSRY-FILE
+      *    IF      STS-WKSRY           =   ZERO
+      *        CLOSE                       WKSRY-FILE
+      *        PERFORM 210-PARA-DEL-SEC
+      *    ELSE
+      *        CLOSE                       WKSRY-FILE
+      *****END-IF
       *
       *
            MOVE    ZERO                TO  IDX-STR
@@ -2223,49 +2335,21 @@
       *
       *    診療日
            MOVE    1                   TO  SPA-NAI-RRKDAY (WRK-DAY)
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID3
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
-           MOVE    WRK-DAY             TO  FILE-DAY
-           MOVE    ZERO                TO  FLG-WKSRY
-           MOVE    ZERO                TO  WRK-ZAINUM
-      *
-           OPEN    INPUT               WKSRY-FILE
-           IF      STS-WKSRY        NOT =  ZERO
-      *******  DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
-               MOVE    1                   TO  FLG-WKSRY
+      *ver.4.8
+           IF     (WRK-DAY         NOT =   SPA-NAI-SRYDD )
+             AND  (TBL-DAY-EDANUM (WRK-DAY)
+                                       =   ZERO          )
+      *        画面診療日以外は、一時ファイル検索
+               PERFORM 20021-DAYPARA-SYORI-SEC
            END-IF
       *
-           IF      STS-WKSRY           =  ZERO
-               INITIALIZE                      WKSRY-F-REC
-               START   WKSRY-FILE
-                   KEY IS      >=   WKSRY-F-KEY
-               INVALID
-                   MOVE    1               TO  FLG-WKSRY
-               NOT INVALID
-                   PERFORM 980-WKSRY-READ-SEC
-               END-START
-               PERFORM UNTIL     FLG-WKSRY     =   1
-                   IF      WRK-ZAINUM          <   WKSRY-F-ZAINUM
-                       MOVE    WKSRY-F-ZAINUM      TO  WRK-ZAINUM
-                   END-IF
-                   PERFORM 980-WKSRY-READ-SEC
-               END-PERFORM
-               CLOSE                           WKSRY-FILE
-           ELSE
-               CLOSE                       WKSRY-FILE
-               OPEN    OUTPUT              WKSRY-FILE
-               CLOSE                       WKSRY-FILE
-           END-IF
-      *
-           OPEN    I-O                 WKSRY-FILE
-           IF      STS-WKSRY        NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-WKSRY OPEN I-O:"  STS-WKSRY  "]"
-           END-IF
+           MOVE    TBL-DAY-EDANUM (WRK-DAY)    TO  WRK-EDANUM
+           MOVE    TBL-DAY-ZAINUM (WRK-DAY)    TO  WRK-ZAINUM
       *
            ADD     1                   TO  WRK-ZAINUM
            PERFORM VARYING     IDXW2   FROM    1   BY  1
-                   UNTIL       IDXW2   >   IDXL
+                   UNTIL      (IDXW2   >   IDXL  )
+                         OR   (SPA-ERRCD   NOT =   SPACE)
                MOVE    WRK-ZAINUM          TO  LNK-WKSRY-ZAINUM 
                                                               (IDXW2)
                MOVE    IDXW2               TO  LNK-WKSRY-RENNUM 
@@ -2273,22 +2357,126 @@
                MOVE    WRK-KAISUKEI        TO  LNK-WKSRY-ZAIKAIKEI
                                                               (IDXW2)
       *
-               MOVE    SPACE               TO  WKSRY-F-REC
-               MOVE    WRK-ZAINUM          TO  WKSRY-F-ZAINUM
-               MOVE    IDXW2               TO  WKSRY-F-RENNUM
+               INITIALIZE                      PARA-REC
+               MOVE    "KTDA"              TO  PARA-GYOUMUID
+               STRING  "KT01WKSRY"
+                       WRK-DAY             DELIMITED  BY  SIZE
+                                       INTO    PARA-FILEMEI
+               END-STRING
+               ADD     1                   TO  WRK-EDANUM
+               MOVE    WRK-EDANUM          TO  PARA-EDANUM
+               MOVE    LNK-WKSRYACT-REC (IDXW2)   TO  PARA-DATA-REC
       *
-               MOVE    LNK-WKSRYACT-REC (IDXW2)   TO  WKSRY-DATA-REC
-               WRITE   WKSRY-F-REC
-               IF      STS-WKSRY        NOT =  ZERO
-                   DISPLAY "ORCSCWKSRY STS-WKSRY OUT:"  STS-WKSRY  "]"
-                     ",WKSRY-F-KEY:" WKSRY-F-KEY
-               END-IF
+               PERFORM 8002-PARA-DBINSERT-SEC
+      *
            END-PERFORM
       *
-           CLOSE                           WKSRY-FILE
+           MOVE    WRK-EDANUM          TO  TBL-DAY-EDANUM (WRK-DAY)
+           MOVE    WRK-ZAINUM          TO  TBL-DAY-ZAINUM (WRK-DAY)
+      *
+      ***  MOVE    SPA-TERMID          TO  FILE-TERMID3
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
+      *    MOVE    WRK-DAY             TO  FILE-DAY
+      *    MOVE    ZERO                TO  FLG-WKSRY
+      *    MOVE    ZERO                TO  WRK-ZAINUM
+      *
+      *    OPEN    INPUT               WKSRY-FILE
+      *    IF      STS-WKSRY        NOT =  ZERO
+      *******  DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
+      *        MOVE    1                   TO  FLG-WKSRY
+      *    END-IF
+      *
+      *    IF      STS-WKSRY           =  ZERO
+      *        INITIALIZE                      WKSRY-F-REC
+      *        START   WKSRY-FILE
+      *            KEY IS      >=   WKSRY-F-KEY
+      *        INVALID
+      *            MOVE    1               TO  FLG-WKSRY
+      *        NOT INVALID
+      *            PERFORM 980-WKSRY-READ-SEC
+      *        END-START
+      *        PERFORM UNTIL     FLG-WKSRY     =   1
+      *            IF      WRK-ZAINUM          <   WKSRY-F-ZAINUM
+      *                MOVE    WKSRY-F-ZAINUM      TO  WRK-ZAINUM
+      *            END-IF
+      *            PERFORM 980-WKSRY-READ-SEC
+      *        END-PERFORM
+      *        CLOSE                           WKSRY-FILE
+      *    ELSE
+      *        CLOSE                       WKSRY-FILE
+      *        OPEN    OUTPUT              WKSRY-FILE
+      *        CLOSE                       WKSRY-FILE
+      *    END-IF
+      *
+      *    OPEN    I-O                 WKSRY-FILE
+      *    IF      STS-WKSRY        NOT =  ZERO
+      *        DISPLAY "ORCSCWKSRY STS-WKSRY OPEN I-O:"  STS-WKSRY  "]"
+      *    END-IF
+      *
+      *    ADD     1                   TO  WRK-ZAINUM
+      *    PERFORM VARYING     IDXW2   FROM    1   BY  1
+      *            UNTIL       IDXW2   >   IDXL
+      *        MOVE    WRK-ZAINUM          TO  LNK-WKSRY-ZAINUM 
+      *                                                       (IDXW2)
+      *        MOVE    IDXW2               TO  LNK-WKSRY-RENNUM 
+      *                                                       (IDXW2)
+      *        MOVE    WRK-KAISUKEI        TO  LNK-WKSRY-ZAIKAIKEI
+      *                                                       (IDXW2)
+      *
+      *        MOVE    SPACE               TO  WKSRY-F-REC
+      *        MOVE    WRK-ZAINUM          TO  WKSRY-F-ZAINUM
+      *        MOVE    IDXW2               TO  WKSRY-F-RENNUM
+      *
+      *        MOVE    LNK-WKSRYACT-REC (IDXW2)   TO  WKSRY-DATA-REC
+      *        WRITE   WKSRY-F-REC
+      *        IF      STS-WKSRY        NOT =  ZERO
+      *            DISPLAY "ORCSCWKSRY STS-WKSRY OUT:"  STS-WKSRY  "]"
+      *              ",WKSRY-F-KEY:" WKSRY-F-KEY
+      *        END-IF
+      *    END-PERFORM
+      *
+      *****CLOSE                           WKSRY-FILE
            .
        2002-DAYTBL-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    日毎の一時テーブル検索処理
+      *****************************************************************
+       20021-DAYPARA-SYORI-SEC            SECTION.
+      *
+      *    当日分に追加
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "KTDA"              TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           STRING  "KT01WKSRY"
+                   WRK-DAY             DELIMITED  BY  SIZE
+                                   INTO    PARA-FILEMEI
+           END-STRING
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           IF      FLG-PARA            =   ZERO
+               MOVE    PARA-DATA-REC       TO  HZN-WKSRYACT-REC
+               MOVE    PARA-EDANUM         TO  TBL-DAY-EDANUM (WRK-DAY)
+               MOVE    HZN-WKSRY-ZAINUM    TO  TBL-DAY-ZAINUM (WRK-DAY)
+           END-IF
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       20021-DAYPARA-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2647,17 +2835,30 @@
       *    保険毎の科をテーブルへ
            PERFORM 45021-HKNCOMBI-SRYKA-SEC
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID5
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM5
-           MOVE    ORCSCWKSRY-DAY      TO  FILE-DAY5
+      **   MOVE    SPA-TERMID          TO  FILE-TERMID5
+      **   MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM5
+      **   MOVE    ORCSCWKSRY-DAY      TO  FILE-DAY5
            MOVE    ZERO                TO  FLG-WKSRY02
            MOVE    ZERO                TO  WRK-ZAINUM
       *
-           OPEN    OUTPUT              WKSRY-FILE02
-           IF      STS-WKSRY02      NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY02  "]"
-               MOVE    1                   TO  FLG-WKSRY02
-           END-IF
+      **** OPEN    OUTPUT              WKSRY-FILE02
+      *    IF      STS-WKSRY02      NOT =  ZERO
+      *        DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY02  "]"
+      *        MOVE    1                   TO  FLG-WKSRY02
+      **** END-IF
+      *ver.4.8
+      *    一時データ削除
+           INITIALIZE                      PARA-REC
+           MOVE    "KTDA"              TO  PARA-GYOUMUID
+           STRING  "KT02WKSRY"
+                   ORCSCWKSRY-DAY      DELIMITED  BY  SIZE
+                                       INTO    PARA-FILEMEI
+           END-STRING
+           MOVE    "del3"              TO  MCP-PATHNAME
+           PERFORM 8003-PARA-DBDELETET-SEC
+      *
+           MOVE    ZERO                TO  WRK-EDANUM
+      *
       *    診療行為マスタのパラメタを作成する
            MOVE    1                   TO  IDX-STR
            MOVE    SPA-GMN-MAX         TO  IDX-END
@@ -2667,7 +2868,7 @@
       *    自動作成の診療行為作成処理
            PERFORM 3004-JIDOU-SAKU-SEC
       *
-           CLOSE                       WKSRY-FILE02
+      *****CLOSE                       WKSRY-FILE02
       *
       *    収納マスタ処理 
            PERFORM 30021-SYUNOU-NYU-SYORI-SEC
@@ -2781,21 +2982,33 @@
       *    ドクター
            MOVE    SPA-DRCD            TO  WKSRY-DRCD
       *
-           MOVE    SPACE               TO  WKSRY-F02-REC
-           MOVE    WRK-ZAINUM          TO  WKSRY-F02-ZAINUM
-           MOVE    WRK-RENNUM          TO  WKSRY-F02-RENNUM
+      ***  MOVE    SPACE               TO  WKSRY-F02-REC
+      *    MOVE    WRK-ZAINUM          TO  WKSRY-F02-ZAINUM
+      **** MOVE    WRK-RENNUM          TO  WKSRY-F02-RENNUM
       *    ＤＢからの作成でない
            MOVE    ALL "1"             TO  WKSRY-TERMID
       *
            MOVE    WKSRYACT-REC        TO  PARA-WKSRYACT-REC
            MOVE    WKSRYACTPLUS-REC    TO  PARA-WKSRYACTPLUS-REC
-           MOVE    SPACE               TO  PARA-DATA-REC
-           MOVE    PARA-WKSRYACT-REC   TO  WKSRY02-DATA-REC
+      **** MOVE    SPACE               TO  PARA-DATA-REC
+      *    MOVE    PARA-WKSRYACT-REC   TO  WKSRY02-DATA-REC
+      **
+      *    WRITE   WKSRY-F02-REC
+      *    IF      STS-WKSRY02     NOT =   ZERO
+      *        DISPLAY "ORCSCWKSRY PARA WRITE ERR:"   STS-WKSRY02    "."
+      **** END-IF
       *
-           WRITE   WKSRY-F02-REC
-           IF      STS-WKSRY02     NOT =   ZERO
-               DISPLAY "ORCSCWKSRY PARA WRITE ERR:"   STS-WKSRY02    "."
-           END-IF
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "KTDA"              TO  PARA-GYOUMUID
+           STRING  "KT02WKSRY"
+                   ORCSCWKSRY-DAY      DELIMITED  BY  SIZE
+                                       INTO    PARA-FILEMEI
+           END-STRING
+           ADD     1                   TO  WRK-EDANUM
+           MOVE    WRK-EDANUM          TO  PARA-EDANUM
+           MOVE    PARA-WKSRYACT-REC   TO  PARA-DATA-REC
+           PERFORM 8002-PARA-DBINSERT-SEC
       *
            MOVE    ZERO                TO  IDY
            MOVE    SPACE               TO  WKSRYACT-REC
@@ -2930,54 +3143,115 @@
       *****************************************************************
        3001-PARA-SYORI-SEC          SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
-           OPEN    OUTPUT              PARA-FILE
-           IF      STS-PARA        NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-PARA OPEN:"  STS-PARA  "]"
-           END-IF
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "KT01"              TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del2"              TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-CALL-SEC
+      *
+      *    SPA-K01KYOUTU 保存
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "KT01"              TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "KT01PARA"          TO  SPATMP-FILEMEI
+           MOVE    1                   TO  SPATMP-EDANUM
+           MOVE    SPA-K01KYOUTU       TO  SPATMP-DATA-REC
+           PERFORM 30011-SPATMP-INSERT-SEC
+      *
+      *    SPA-KT01  保存
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "KT01"              TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "SPAKT01"           TO  SPATMP-FILEMEI
+           MOVE    1                   TO  SPATMP-EDANUM
+           MOVE    SPA-KT01            TO  SPATMP-DATA-REC
+           PERFORM 30011-SPATMP-INSERT-SEC
+      *
+      **** MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *
+      *    OPEN    OUTPUT              PARA-FILE
+      *    IF      STS-PARA        NOT =  ZERO
+      *        DISPLAY "ORCSCWKSRY STS-PARA OPEN:"  STS-PARA  "]"
+      *    END-IF
       *
       *    共通ＳＰＡをパラメタへ出力
-           MOVE    SPACE               TO  PARA-REC
-           MOVE    "KT01PARA"          TO  PARA-FILEMEI
-           MOVE    1                   TO  PARA-EDANUM
-           MOVE    SPA-K01KYOUTU       TO  PARA-DATA-REC
-           WRITE                       PARA-REC
+      *    MOVE    SPACE               TO  PARA-REC
+      *    MOVE    "KT01PARA"          TO  PARA-FILEMEI
+      *    MOVE    1                   TO  PARA-EDANUM
+      *    MOVE    SPA-K01KYOUTU       TO  PARA-DATA-REC
+      *    WRITE                       PARA-REC
       *
-           CLOSE                       PARA-FILE
+      *    CLOSE                       PARA-FILE
       *
       *    ＫＴ０１ＳＰＡをパラメタへ出力
-           MOVE    SPA-TERMID          TO  FILE-TERMID22
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID22
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
       *
-           OPEN    OUTPUT              PARA-FILE2
-           IF      STS-PARA2       NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-PARA2 OPEN:"  STS-PARA2 "]"
-           END-IF
-           MOVE    SPA-KT01            TO  PARA-SPA-KT01
-           WRITE                       PARA-SPA-KT01
+      *    OPEN    OUTPUT              PARA-FILE2
+      *    IF      STS-PARA2       NOT =  ZERO
+      *        DISPLAY "ORCSCWKSRY STS-PARA2 OPEN:"  STS-PARA2 "]"
+      *    END-IF
+      *    MOVE    SPA-KT01            TO  PARA-SPA-KT01
+      *    WRITE                       PARA-SPA-KT01
       *
-           CLOSE                       PARA-FILE2
+      **** CLOSE                       PARA-FILE2
       *
            .
        3001-PARA-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
+      *    ＳＰＡ一時保存テーブル追加
+      *****************************************************************
+       30011-SPATMP-INSERT-SEC                SECTION.
+      *
+           MOVE    SPATMP-REC          TO  MCPDATA2-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-SPATMP-CALL-SEC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "KT01 SPATMP INSERT ERR:"  MCP-RC
+                           ",KEY:" SPATMP-KEY
+               MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
+           .
+       30011-SPATMP-INSERT-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *   負担金算定・収納マスタ処理
       *****************************************************************
        30021-SYUNOU-NYU-SYORI-SEC          SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID4
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM4
-           MOVE    ORCSCWKSRY-DAY      TO  FILE-DAY4
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID4
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM4
+      *    MOVE    ORCSCWKSRY-DAY      TO  FILE-DAY4
       *
-           OPEN    OUTPUT              OUTSYU-FILE
-           IF      STS-OUTSYU        NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-OUTSYU OPEN:"  STS-OUTSYU  "]"
-               MOVE    1                   TO  FLG-OUTSYU
-           END-IF
+      *    OPEN    OUTPUT              OUTSYU-FILE
+      *    IF      STS-OUTSYU        NOT =  ZERO
+      *        DISPLAY "ORCSCWKSRY STS-OUTSYU OPEN:"  STS-OUTSYU  "]"
+      *        MOVE    1                   TO  FLG-OUTSYU
+      *****END-IF
+      *ver.4.8
+      *    一時データ削除
+           INITIALIZE                      PARA-REC
+           MOVE    "KTDA"              TO  PARA-GYOUMUID
+           STRING  "KT01SYUNO"
+                   ORCSCWKSRY-DAY      DELIMITED  BY  SIZE
+                                       INTO    PARA-FILEMEI
+           END-STRING
+           MOVE    "del3"              TO  MCP-PATHNAME
+           PERFORM 8003-PARA-DBDELETET-SEC
+      *
+           MOVE    ZERO                TO  WRK-EDANUM
       *
       *    負担金算定・収納マスタ処理 
            MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
@@ -2997,7 +3271,7 @@
            PERFORM 4520101-SYUNOU-HENSYU-SEC
       *
       *
-           CLOSE                       OUTSYU-FILE
+      *****CLOSE                       OUTSYU-FILE
            .
        30021-SYUNOU-NYU-SYORI-EXT.
            EXIT.
@@ -3052,9 +3326,21 @@
       *    各合計計算処理
            PERFORM 4506-TOTALKEI-SEC
       *
-           MOVE    SYUNOU-REC          TO  OUTSYU-DATA-REC
-           WRITE   OUTSYU-REC
+      **** MOVE    SYUNOU-REC          TO  OUTSYU-DATA-REC
+      *****WRITE   OUTSYU-REC
       *
+      *ver.4.8
+      *    一時データ出力
+           INITIALIZE                      PARA-REC
+           MOVE    "KTDA"              TO  PARA-GYOUMUID
+           STRING  "KT01SYUNO"
+                   ORCSCWKSRY-DAY      DELIMITED  BY  SIZE
+                                       INTO    PARA-FILEMEI
+           END-STRING
+           ADD     1                   TO  WRK-EDANUM
+           MOVE    WRK-EDANUM          TO  PARA-EDANUM
+           MOVE    SYUNOU-REC          TO  PARA-DATA-REC
+           PERFORM 8002-PARA-DBINSERT-SEC
            .
        4520101-SYUNOU-HENSYU-EXT.
            EXIT.
@@ -3969,6 +4255,50 @@
            .
        400-SENI-PARA-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    パラメタ一時ファイル書き込み処理
+      *****************************************************************
+       8002-PARA-DBINSERT-SEC          SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+               DISPLAY "KT01 PARA INSERT ERR:"  MCP-RC
+                       ",KEY:" PARA-KEY
+           END-IF
+      *
+           .
+       8002-PARA-DBINSERT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ一時ファイル削除処理
+      *****************************************************************
+       8003-PARA-DBDELETET-SEC          SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       8003-PARA-DBDELETE-EXT.
+           EXIT.
       *****************************************************************
       *    点数マスター読込
       *****************************************************************
@@ -4075,36 +4405,70 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *
+      *ver.4.8
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時保存テーブル検索処理
+      *****************************************************************
+       910-SPATMP-CALL-SEC                SECTION.
+      *
+           MOVE    "tbl_spa_tmp"       TO  MCP-TABLE
+      *
+           CALL    "ORCDBSPATMP"       USING   MCPAREA
+                                               MCPDATA2-REC
+                                               SPA-AREA
+      *
+           .
+       910-SPATMP-CALL-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       980-WKSRY-READ-SEC         SECTION.
+      *980-WKSRY-READ-SEC         SECTION.
       *
-           READ    WKSRY-FILE           NEXT
-               AT  END
-                   MOVE    1           TO  FLG-WKSRY
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-WKSRY
-           END-READ
+      *    READ    WKSRY-FILE           NEXT
+      *        AT  END
+      *            MOVE    1           TO  FLG-WKSRY
+      *        NOT AT  END
+      *            MOVE    ZERO        TO  FLG-WKSRY
+      *    END-READ
       *
-           .
-       980-WKSRY-READ-EXT.
-           EXIT.
+      *    .
+      *980-WKSRY-READ-EXT.
+      *    EXIT.
       *
       *
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       980-PARA-READ-SEC         SECTION.
+      *980-PARA-READ-SEC         SECTION.
       *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
+      *    READ    PARA-FILE 
+      *        AT  END
+      *            MOVE    1           TO  FLG-PARA
+      *        NOT AT  END
+      *            MOVE    ZERO        TO  FLG-PARA
+      *    END-READ
       *
-           .
-       980-PARA-READ-EXT.
-           EXIT.
+      *    .
+      *980-PARA-READ-EXT.
+      **   EXIT.
       *
