@@ -150,3 +150,33 @@ path	key7 	{
 		;
 	};
 };
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_para_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_para
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   GYOUMUID   =   :GYOUMUID
+			AND   TERMID       =   :TERMID
+			AND   FILEMEI      LIKE :FILEMEI
+			ORDER   BY      FILEMEI,
+					EDANUM
+		;
+	};
+};
+
+path	key9 	{
+	DBSELECT	{
+		DECLARE tbl_para_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_para
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   GYOUMUID   =   :GYOUMUID
+			AND   TERMID       =   :TERMID
+			AND   FILEMEI      =   :FILEMEI
+			ORDER   BY        EDANUM DESC
+		;
+	};
+};
+
