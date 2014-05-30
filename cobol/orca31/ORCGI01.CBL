@@ -6293,7 +6293,7 @@
       *****************************************************************
        410111-IPPAN-NYUIN-CHK-SEC      SECTION.
       *
-           MOVE    ZERO            TO  FLG-IPPAN
+           MOVE    1               TO  FLG-IPPAN
            MOVE    ZERO            TO  FLG-IPPAN2
       *
       *    MOVE    SPA-NAI-I01-IDOYMD
