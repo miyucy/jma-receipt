@@ -43,8 +43,7 @@
       *                                     キーにkohid 追加
       *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
       *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加 
-      *  04.06.03    NACL-藤原    13/11/01  請求情報への更新日設定
+      *                                     receipt_kbn 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,9 +171,6 @@
            03  WRK-MCP-RECEDEN-TABLE   PIC X(64).
            03  WRK-MCP-RECEDEN-PATHNAME
                                        PIC X(64).
-      *
-           03  WRK-KETA1               PIC 9(04).
-           03  WRK-KETA2               PIC 9(04).
       *
       *     右づめ編集用     
            03  WRK-HENKAN              PIC X(20).
@@ -683,34 +679,6 @@
                        INTO        WRK-REC
                END-STRING
                MOVE    WRK-REC         TO  RECEDEN-RECEDATA
-      *
-      *        請求情報の編集（更新日）
-               MOVE    ZERO            TO  IDYY
-                                           WRK-KETA1
-                                           WRK-KETA2
-               PERFORM VARYING IDXX    FROM    1   BY  1
-                       UNTIL   IDXX    >       2500
-                       OR      WRK-REC (IDX:1)
-                                       =   WRK-KAIGYO
-                   IF      WRK-REC (IDXX:1) =   ","
-                       ADD     1               TO  IDYY
-                       IF      IDYY            =   20
-                           MOVE    IDXX            TO  WRK-KETA1
-                           COMPUTE WRK-KETA2   =   WRK-KETA1 +   1
-                           MOVE    2500            TO  IDXX
-                       END-IF
-                   END-IF
-               END-PERFORM
-               IF      WRK-KETA1           >   ZERO
-                   MOVE    SPACE               TO  RECEDEN-RECEDATA
-      *
-                   STRING  WRK-REC (1:WRK-KETA1) DELIMITED  BY  SIZE
-                           RECEDEN-CREYMD        DELIMITED  BY  SIZE
-                           RECEDEN-CREHMS        DELIMITED  BY  SIZE
-                           WRK-REC (WRK-KETA2:)  DELIMITED  BY  SIZE
-                           INTO                  RECEDEN-RECEDATA
-                   END-STRING
-               END-IF
            END-IF
       *
            MOVE    SPACE               TO  WRK-REC

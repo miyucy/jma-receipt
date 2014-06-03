@@ -411,6 +411,8 @@
       *                                     法の変更
       *                                     漢字モードの継続するスペース
       *                                     の記録方法の変更
+      *
+      *  04.08.01    NACL-藤原    14/06/02  請求情報への更新日設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2471,7 +2473,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    記録条件仕様年月情報
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    請求情報
+      *    請求情報（作成日時）
+           STRING  WRK-PARA-CREYMD     DELIMITED  BY SIZE
+                   WRK-PARA-CREHMS     DELIMITED  BY SIZE
+                                       INTO  WRK-DATA
+           END-STRING
+           MOVE    14                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    診療科名１
            IF      RECE02-SYUKA    NOT =   SPACE

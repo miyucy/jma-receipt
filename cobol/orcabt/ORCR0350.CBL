@@ -371,13 +371,14 @@
       *  04.07.06    NACL-藤原    13/12/09  医療情報連携基盤対応
       *  04.07.07    NACL-門脇    14/02/03  第三者行為対応（院外処方のみの
       *                                     保険組み合わせの病名記載対応）
-      *  04.07.06    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *  04.07.08    NACL-藤原    14/03/30  平成２６年４月改正対応
       *                                     使用量、単価の小数部の記録方
       *                                     法の変更
       *                                     漢字モードの継続するスペース
       *                                     の記録方法の変更
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/06/02  請求情報への更新日設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2756,12 +2757,18 @@
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    記録条件仕様年月情報
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    請求情報
+      *    請求情報（連係基盤用の時は入院日、以外は作成日時）
            IF      WRK-PARA-PRTKBN =   "9"
                MOVE    RECE62-TAIINYMD TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMD          TO  WRK-DATA
                MOVE    7                   TO  WRK-NAGASA
+           ELSE
+               STRING  WRK-PARA-CREYMD     DELIMITED  BY SIZE
+                       WRK-PARA-CREHMS     DELIMITED  BY SIZE
+                                           INTO  WRK-DATA
+               END-STRING
+               MOVE    14                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    診療科名１
