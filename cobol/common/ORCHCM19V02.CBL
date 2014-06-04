@@ -820,9 +820,6 @@
            MOVE    "SURYOHEN"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-SURYOHEN
-           IF      PARA-SURYOHEN   NOT =   "0"
-               MOVE    "1"             TO  PARA-SURYOHEN
-           END-IF
       *
            .
        100-OPTION-SELECT-EXT.
