@@ -1887,7 +1887,7 @@
                05  SPA-P02K-CUR                PIC 9(02).
                05  SPA-P02K-NAI-AREA.
                    07  SPA-P02K-LIST-AREA.
-                       09  SPA-P02K-LIST-G     OCCURS   200.
+                       09  SPA-P02K-LIST-G     OCCURS   100.
                            11  SPA-P02K-TNUM            PIC 9(03).
                            11  SPA-P02K-TGSRYYMD        PIC X(09).
                            11  SPA-P02K-TGJITAKBN       PIC X(10).
