@@ -145,6 +145,8 @@
       *                                     出力の対象としない
       *  04.07.05    NACL-藤原    13/03/01  保険者番号の条件設定変更
       *  04.07.06    NACL-藤原    13/07/24  入力順指定時の画面表示の修正
+      *  04.07.07    NACL-藤原    14/06/10  ターミナルデジットのときは
+      *                                     特別療養費等の処理はしない
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -5637,57 +5639,61 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                END-IF 
             END-EVALUATE
       *
-            MOVE    "%%"             TO  WRK-SYUKA
-      *     特別療養費（広域連合）レセプト出力
-            IF    ( SPA-ERRCD        =   SPACE )
-                IF    ( SPA-GMN-TCHK-VALUE  (1 33)   =   "T"  )
-                AND   ( SPA-GMN-TPAGE       (1 33)   >   ZERO )
+            IF      SPA-GMN-PRTJYUN =   "13"
+               CONTINUE
+            ELSE
+               MOVE    "%%"             TO  WRK-SYUKA
+      *        特別療養費（広域連合）レセプト出力
+               IF    ( SPA-ERRCD        =   SPACE )
+                   IF    ( SPA-GMN-TCHK-VALUE  (1 33)   =   "T"  )
+                   AND   ( SPA-GMN-TPAGE       (1 33)   >   ZERO )
                        MOVE    1           TO  IDW
                        MOVE    "6"         TO  WRK-TEISYUTUSAKI
                        MOVE    "%"         TO  WRK-PREFKBN
                        MOVE    33          TO  IDX
                        MOVE    1           TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                END-IF
-            END-IF
-      *     特別療養費（国保）レセプト出力
-            IF    ( SPA-ERRCD        =   SPACE )
-                IF    ( SPA-GMN-TCHK-VALUE  (1 34)   =   "T"  )
-                AND   ( SPA-GMN-TPAGE       (1 34)   >   ZERO )
+                   END-IF
+               END-IF
+      *        特別療養費（国保）レセプト出力
+               IF    ( SPA-ERRCD        =   SPACE )
+                   IF    ( SPA-GMN-TCHK-VALUE  (1 34)   =   "T"  )
+                   AND   ( SPA-GMN-TPAGE       (1 34)   >   ZERO )
                        MOVE    1           TO  IDW
                        MOVE    "2"         TO  WRK-TEISYUTUSAKI
                        MOVE    "%"         TO  WRK-PREFKBN
                        MOVE    34          TO  IDX
                        MOVE    1           TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                END-IF
-            END-IF
+                   END-IF
+               END-IF
       *
-      *     自費レセプト出力
-            IF    ( SPA-ERRCD        =   SPACE )
-                IF      SPA-GMN-TCHK-VALUE  (1 35)   =   "T"
-                AND     SPA-GMN-TPAGE       (1 35)   >   ZERO
+      *        自費レセプト出力
+               IF    ( SPA-ERRCD        =   SPACE )
+                   IF      SPA-GMN-TCHK-VALUE  (1 35)   =   "T"
+                   AND     SPA-GMN-TPAGE       (1 35)   >   ZERO
                        MOVE    1               TO  IDW
                        MOVE    "%"             TO  WRK-TEISYUTUSAKI
                        MOVE    "%"             TO  WRK-PREFKBN
                        MOVE    35              TO  IDX
                        MOVE    1               TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                END-IF
-            END-IF
+                   END-IF
+               END-IF
       *
-      *     レセプト不明分出力
-            IF    ( SPA-ERRCD        =   SPACE )
-                IF      SPA-GMN-TCHK-VALUE  (1 36)   =   "T"
-                AND     SPA-GMN-TPAGE       (1 36)   >   ZERO
+      *        レセプト不明分出力
+               IF    ( SPA-ERRCD        =   SPACE )
+                   IF      SPA-GMN-TCHK-VALUE  (1 36)   =   "T"
+                   AND     SPA-GMN-TPAGE       (1 36)   >   ZERO
                        MOVE    1               TO  IDW
                        MOVE    "%"             TO  WRK-TEISYUTUSAKI
                        MOVE    "%"             TO  WRK-PREFKBN
                        MOVE    36              TO  IDX
                        MOVE    1               TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                END-IF
-            END-IF    
+                   END-IF
+               END-IF
+            END-IF
            END-IF
       *
       *    印刷処理開始（ＯＲＣＲ０１０２）
