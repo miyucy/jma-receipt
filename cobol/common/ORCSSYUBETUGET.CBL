@@ -40,6 +40,7 @@
       *                                     ¤È¤¹¤ë
       *
       *  04.07.01    NACL-Æ£¸¶    14/03/30  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
+      *  04.07.02    NACL-Æ£¸¶    14/05/20  Âè»°¼Ô¹Ô°ÙÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,7 +67,10 @@
       *    ¼«ÇåÀÕÊÝ¸±ÈÖ¹æ 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
       *    ¸ø³²ÊÝ¸±ÈÖ¹æ 
-           03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975".       
+           03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975".
+      *    Âè»°¼Ô¹Ô°Ù
+           03  WRK-CONS-DAISANSYA-HKNNUM
+                                       PIC X(03)   VALUE   "970".
       *
            03  WRK-CONS-SRYYM-200209   PIC 9(06)   VALUE   200209.      
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
@@ -125,6 +129,8 @@
                PERFORM 2001-JYOKEN-HENSYU-SEC
                IF      LNK-SYUBETUGET-RECESYUBETU
                                                >   0
+                   MOVE    LNK-SYUBETUGET-RECESYUBETU
+                                        TO  LNK-SYUBETUGET-RECESYUBETU-Y 
                    GO  TO  200-MAIN-EXT
                END-IF
            END-IF
@@ -2271,6 +2277,7 @@
                    WHEN    "3"         ALSO    ANY     ALSO    ANY
                        MOVE    7021    TO  LNK-SYUBETUGET-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY                     
+                   WHEN    "6"         ALSO    ANY     ALSO    ANY                     
                        MOVE    7001    TO  LNK-SYUBETUGET-RECESYUBETU
       *            ¸øÌ³ºÒ³²
                    WHEN    "5"         ALSO    ANY     ALSO    "1"                     
