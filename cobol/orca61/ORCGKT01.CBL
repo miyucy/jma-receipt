@@ -6312,6 +6312,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      WRK-COM-AUTOKBN2(IDX)   NOT =   SPACE
                            MOVE    SPACE           TO  WRK-GMN-INPUTCD
                                                                  (IDX)
+                           MOVE    ZERO            TO  FLG-ZAIEND
                        END-IF
                    END-IF
       *            診療の時間加算削除の時、自動追加した時間加算を削除
