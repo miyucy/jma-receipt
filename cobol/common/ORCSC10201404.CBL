@@ -4984,6 +4984,9 @@
       *              来まとめは診察料チェックなし
                    OR        (LNK-ORCSC-PG        =   "KT01" )
       *!!!
+      *H26.5   労災読み替えクリア
+               MOVE    ZERO                TO  WRK-COM-RSIGIRI (IDX-Z)
+      *
                IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
       *          治験減点分
                OR   (WRK-COM-GENTEN (IDX-Z)   =   "1")
