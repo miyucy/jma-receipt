@@ -29,4 +29,7 @@
       *    サイトホーム
            03  HOMEDIR-SITE-NAME        PIC X(100)   VALUE
            "@sitedir@/".
+      *    パッチホーム
+           03  HOMEDIR-PATCH-NAME       PIC X(100)   VALUE
+           "@patchdir@/".
       *

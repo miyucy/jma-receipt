@@ -2007,6 +2007,7 @@ all: MCPAREA $(COPYS_inc)
 	printscripts_len=`echo -n $(printscripts)|wc -c|sed -e "s/ //g"` &&\
 	sed -e 's,\@prefix\@,$(prefix),g' \
 	    -e 's,\@sitedir\@,$(SITEDIR),g' \
+	    -e 's,\@patchdir\@,$(PATCHDIR),g' \
 	    -e 's,\@formdir\@,$(formdir)/,g' \
 	    -e 's,\@recorddir\@,$(recorddir)/,g' \
 	    -e 's,\@scriptsdir\@,$(scriptsdir)/,g' \
