@@ -104,10 +104,10 @@
       *
       *
       *    ¥Õ¥é¥°ÎÎ°è
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
-           03  STS-SRYKBN          PIC X(02).
-           03  STS-SPASCR          PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
+      *    03  STS-SRYKBN          PIC X(02).
+      *    03  STS-SPASCR          PIC X(02).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -798,7 +798,7 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
+      **** INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
       *
@@ -7683,7 +7683,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "J04 PARA REWRITE ERR:"  STS-PARA
+                       DISPLAY "J04 PARA UPDATE  ERR:"  MCP-RC
                    END-IF
                    MOVE    1                   TO  FLG-PARA
                ELSE

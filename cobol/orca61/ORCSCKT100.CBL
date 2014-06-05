@@ -188,8 +188,8 @@
            COPY    "COMMON-SPA"      REPLACING
                                      //SPA-// BY //WRK-SPA-//.
       *    画面スパ領域
-           COPY    "K02SCR-SPA"      REPLACING
-                                     //SPA-// BY //WKSPA-//.
+      *    COPY    "K02SCR-SPA"      REPLACING
+      *                              //SPA-// BY //WKSPA-//.
       *
       *処理最大行
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.

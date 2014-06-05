@@ -41,6 +41,7 @@
       * 04.07.00     NACL-多々納  11/12/19  商品名コード単価対応
       * 04.07.00     NACL-多々納  12/03/07  処方せん料表示対応（H24.4対応）
       * 04.07.00     NACL-多々納  13/05/XX  労災レセ電コード対応(H25.7)
+      * 04.08.00     NACL-多々納  14/06/XX  一時保存データ修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -90,11 +91,6 @@
       *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
-      *
-      *01  WRK-DATA-REC.
-      *    03  WRK-DATA            PIC X(60000)
-      *                            OCCURS  10.
-      *
       *    画面非表示
            COPY    "ENUM-VALUE".
       *
@@ -109,10 +105,10 @@
       *
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
-           03  STS-SRYKBN          PIC X(02).
-           03  STS-SPASCR          PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
+      *    03  STS-SRYKBN          PIC X(02).
+      *    03  STS-SPASCR          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -335,6 +331,35 @@
       *
            03  WRK-SRYCD               PIC X(09).
       *
+      *H26.6
+      *     診療内容テーブル(SPAからWRKへ）
+       01  TBL-K09GMN-TBL.
+           03  TBL-GMN-TBLREC-G      OCCURS  800.
+                   09  SPA-GMN-TMEISYO         PIC X(100).
+                   09  SPA-GMN-TMEISYO-1   REDEFINES   SPA-GMN-TMEISYO.
+                       11  SPA-GMN-TYOBI0          PIC X(02).
+                       11  SPA-GMN-TMEISYO1        PIC X(98).
+                   09  SPA-GMN-TMEISYO-2   REDEFINES   SPA-GMN-TMEISYO.
+                       11  SPA-GMN-TMEISYO2        PIC X(44).
+                       11  SPA-GMN-HEN1.
+                           13  SPA-GMN-TSURYOU     PIC X(18).
+                           13  SPA-GMN-TTANI1      PIC X(08).
+                           13  SPA-GMN-TTANMEI     PIC X(06).
+                           13  SPA-GMN-TTANI2      PIC X(04).
+                           13  SPA-GMN-TYOBI1      PIC X(04).
+                       11  SPA-GMN-HEN2    REDEFINES   SPA-GMN-HEN1.
+                           13  SPA-GMN-TZAIKEI     PIC X(40).
+                   09  SPA-GMN-TMEISYO-3   REDEFINES   SPA-GMN-TMEISYO.
+                       11  SPA-GMN-TMEISYO3        PIC X(40).
+                       11  SPA-GMN-TSURYOU3        PIC X(22).
+                       11  SPA-GMN-TTANI3          PIC X(08).
+      *            換算値表示
+                   09  SPA-GMN-TMEISYO-4   REDEFINES   SPA-GMN-TMEISYO.
+                       11  SPA-GMN-TMEISYO4        PIC X(38).
+                       11  SPA-GMN-TK4             PIC X(02).
+                       11  SPA-GMN-TSURYOU4        PIC X(30).
+      *
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -356,15 +381,6 @@
       *H25.7
       *    労災コード置換えテーブル 
            COPY   "CMRSICNGTBL.INC".
-      *
-      *
-      *   日本語数字
-      * 01  TBL-SUJI-AREA.
-      *     03  FILLER          PIC X(20)   VALUE
-      *        "１２３４５６７８９０".
-      * 01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
-      *     03  TBL-SUJI        PIC X(02)   OCCURS   10.
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -461,33 +477,6 @@
       *
        01  SCRAREA.
            COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -501,7 +490,7 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
+      **** INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
@@ -511,8 +500,8 @@
       *    診療種別テーブルセット
            PERFORM 1001-SRYKBN-SET-SEC
       *
-      *    画面ＳＰＡ読み込み
-      *    PERFORM 1002-K09SPA-SET-SEC
+      *    画面ＳＰＡ編集
+           PERFORM 1002-K09SPA-SET-SEC
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -531,11 +520,6 @@
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
-      *
-      *    画面ＳＰＡ書込み
-      *    IF      FLG-END2            =   ZERO
-      *        PERFORM 1003-K09SPA-OUT-SEC
-      *    END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -558,70 +542,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ＳＰＡデータＲＥＡＤ処理
+      *    画面ＳＰＡ編集処理
       *****************************************************************
-      *1002-K09SPA-SET-SEC             SECTION.
+       1002-K09SPA-SET-SEC             SECTION.
       *
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-      *    OPEN    INPUT               SPASCR-FILE
-      *    IF      STS-SPASCR     NOT =   ZERO
-      *        GO      TO      1002-K09SPA-SET-EXT
-      *    END-IF
-      *
-      *    MOVE    SPACE               TO  SPA-K09
-      *    INITIALIZE                  SPA-K09
-      *    MOVE    SPACE               TO  WRK-DATA-REC
-      *    INITIALIZE          WRK-DATA-REC
-      *    MOVE    ZERO                TO  FLG-SPASCR
-      *    MOVE    ZERO                TO  IDX
-      *    PERFORM UNTIL       FLG-SPASCR  =   1
-      *        READ    SPASCR-FILE
-      *            AT  END
-      *                MOVE   1            TO  FLG-SPASCR
-      *            NOT AT  END
-      *                ADD    1            TO  IDX
-      *                MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
-      *        END-READ
-      *    END-PERFORM
-      *
-      *    MOVE    WRK-DATA-REC        TO  SPA-K09
-      *
-      *    CLOSE                       SPASCR-FILE
-      *    .
-      *1002-K09SPA-SET-EXT.
-      *    EXIT.
-      *
-      *****************************************************************
-      *    ＳＰＡデータＷＲＩＴＥ処理
-      *****************************************************************
-      *1003-K09SPA-OUT-SEC             SECTION.
-      *
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-      *    OPEN    OUTPUT              SPASCR-FILE
-      *    IF      STS-SPASCR     NOT =   ZERO
-      *        DISPLAY "K09SPASCR OUT OPEN ERR:"   STS-SPASCR "."
-      *    END-IF
-      *
-      *    MOVE    SPA-K09             TO  WRK-DATA-REC
-      *    PERFORM VARYING     IDX     FROM   1   BY  1
-      *            UNTIL      (IDX     >   10  )  OR
-      *                       (WRK-DATA (IDX)     =   SPACE)
-      *
-      *        MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-      *        WRITE                       SPA-DATA-REC
-      *        IF      STS-SPASCR     NOT =   ZERO
-      *            DISPLAY "K09SPASCR OUT WRITE ERR:"   STS-SPASCR "."
-      *         END-IF
-      *    END-PERFORM
-      *
-      *    CLOSE                       SPASCR-FILE
-      *    .
-      *1003-K09SPA-SET-EXT.
-      *    EXIT.
+      *    診療内容を画面テーブルに保存
+           MOVE    SPACE               TO  TBL-K09GMN-TBL
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-GMN-MAX2
+               IF      K09-MEISAI (IDX)(1:2)   =   "―"
+                   MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDX)
+               ELSE
+                   MOVE    K09-MEISAI (IDX)    TO  SPA-GMN-TMEISYO (IDX)
+               END-IF 
+           END-PERFORM
+           .
+       1002-K09SPA-SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    初期　処理
@@ -631,7 +568,6 @@
       *    DISPLAY "*** ORCSNPL    START  ***"
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
@@ -1616,6 +1552,8 @@
       *        ELSE
       *            PERFORM 3101-JYURRK-DBHEN-SEC
       ******** END-IF
+      *H26.6
+               MOVE    SPACE               TO  TBL-K09GMN-TBL
                INITIALIZE                  SPA-K09GMN-TBL
                INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
@@ -1713,6 +1651,8 @@
                MOVE    ZERO                TO  SPA-K09-RRK-NEXT
       *        受診履歴編集
                PERFORM 3101-JYURRK-DBHEN-SEC
+      *H26.6
+               MOVE    SPACE               TO  TBL-K09GMN-TBL
                INITIALIZE                  SPA-K09GMN-TBL
                INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
@@ -1742,6 +1682,8 @@
       *    パラメタファイルより、診療会計マスターを編集
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDG
+      *H26.6
+           MOVE    SPACE               TO  TBL-K09GMN-TBL
       *
            INITIALIZE                  SPA-GMN-DOSEL
            INITIALIZE                  SPA-NAI-DOSEL-G
@@ -1820,6 +1762,9 @@
       *
            INITIALIZE                  SPA-GMN-DOSEL
            INITIALIZE                  SPA-NAI-DOSEL-G
+      *H26.6
+           MOVE    SPACE               TO  TBL-K09GMN-TBL
+      *
            MOVE    SPACE               TO  SPA-K09GMN-TBL
            INITIALIZE                  SPA-K09GMN-TBL
            INITIALIZE                  SPA-K09NAI-TBL
@@ -2432,9 +2377,14 @@
                        MOVE    SPA-GMN-TBLREC-G (IDG3)
                                                TO  SPA-GMN-TBLREC-G
                                                            (IDG3 + 1)
+                       MOVE    TBL-GMN-TBLREC-G (IDG3)
+                                               TO  TBL-GMN-TBLREC-G
+                                                           (IDG3 + 1)
                    END-PERFORM
                    COMPUTE WRK-HOUKNS-IDX  =   WRK-HOUKNS-IDX  +  1
                    INITIALIZE                  SPA-GMN-TBLREC-G
+                                                        (WRK-HOUKNS-IDX)
+                   INITIALIZE                  TBL-GMN-TBLREC-G
                                                         (WRK-HOUKNS-IDX)
                    MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO
                                                         (WRK-HOUKNS-IDX)
@@ -3565,6 +3515,8 @@
       *
                PERFORM 3101-JYURRK-DBHEN-SEC
       *
+      *H26.6
+               MOVE    SPACE               TO  TBL-K09GMN-TBL
                INITIALIZE                  SPA-K09GMN-TBL
                INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
@@ -3593,7 +3545,8 @@
                COMPUTE SPA-K09-RRK-PAGE    =   SPA-K09-RRK-PAGE  +  1
       *
                PERFORM 3101-JYURRK-DBHEN-SEC
-      *
+      *H26.6
+               MOVE    SPACE               TO  TBL-K09GMN-TBL
                INITIALIZE                  SPA-K09GMN-TBL
                INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2

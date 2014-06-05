@@ -144,10 +144,10 @@
            COPY    "J02SCR-SPA".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
-           03  STS-SPASCR          PIC X(02).
-           03  STS-SRYKBN          PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-PARA            PIC X(02).
+      *    03  STS-SPASCR          PIC X(02).
+      *    03  STS-SRYKBN          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -904,7 +904,7 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
+      **** INITIALIZE                  STS-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
@@ -977,30 +977,21 @@
            MOVE    "J02"               TO  SPATMP-GYOUMUID
            MOVE    SPA-TERMID          TO  SPATMP-TERMID
            MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
+           MOVE    1                   TO  SPATMP-EDANUM
       *
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-SPATMP-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-SPATMP-READ-SEC
+               IF      FLG-SPATMP          =   ZERO
+                   MOVE    SPATMP-DATA-REC     TO   SPA-SCR-REC
+               END-IF
            ELSE
                INITIALIZE                  SPATMP-REC
                MOVE    1               TO  FLG-SPATMP
            END-IF
-           PERFORM
-               UNTIL  (FLG-SPATMP           =   1 )
-               IF     SPATMP-EDANUM         =   1
-                   MOVE   SPATMP-DATA-REC       TO   SPA-GMN-TBL
-               END-IF
-               IF     SPATMP-EDANUM         =   2
-                   MOVE   SPATMP-DATA-REC       TO   SPA-NAI-G
-               END-IF
-      *
-               MOVE    "tbl_spa_tmp"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 990-SPATMP-READ-SEC
-           END-PERFORM
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key"              TO  MCP-PATHNAME
            PERFORM 990-SPATMP-DBCLOSE-SEC
       *
       **** MOVE    SPA-TERMID          TO  FILE-TERMID
@@ -1048,26 +1039,15 @@
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-SPATMP-CALL-SEC
       *
-      *    SPA-GMN-TBL保存
+      *    SPA-SCR-REC保存
            INITIALIZE                      SPATMP-REC
            MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
            MOVE    "J02"               TO  SPATMP-GYOUMUID
            MOVE    SPA-TERMID          TO  SPATMP-TERMID
            MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
            MOVE    1                   TO  SPATMP-EDANUM
-           MOVE    SPA-GMN-TBL         TO  SPATMP-DATA-REC
+           MOVE    SPA-SCR-REC         TO  SPATMP-DATA-REC
            PERFORM 10031-SPATMP-INSERT-SEC
-      *
-      *    SPA-NAI-G保存
-           INITIALIZE                      SPATMP-REC
-           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
-           MOVE    "J02"               TO  SPATMP-GYOUMUID
-           MOVE    SPA-TERMID          TO  SPATMP-TERMID
-           MOVE    "SPAGMN"            TO  SPATMP-FILEMEI
-           MOVE    2                   TO  SPATMP-EDANUM
-           MOVE    SPA-NAI-G           TO  SPATMP-DATA-REC
-           PERFORM 10031-SPATMP-INSERT-SEC
-      *TEST
       *
       *
       **   MOVE    SPA-TERMID          TO  FILE-TERMID
@@ -1119,7 +1099,7 @@
       *
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
+      *****INITIALIZE                  STS-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
