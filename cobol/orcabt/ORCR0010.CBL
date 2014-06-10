@@ -235,6 +235,7 @@
       *  04.07.07    NACL-Æ£¸¶    14/04/22  £Å£Æ¥Õ¥¡¥¤¥ëºîÀ®ÂÐ±þ
       *  04.07.08    NACL-Æ£¸¶    14/06/02  °åÊÝÊ¬¤Ç¼õ¿ÇÆü»ØÄê»þ¡¢°åÊÝ¡Ü
       *                                     Âè»°¼Ô¹Ô°Ù¤âÂÐ¾Ý¤È¤¹¤ë
+      *  04.07.09    NACL-ÌçÏÆ    14/06/10  »ÜÀßÆþ½ê¾ðÊó½èÍý½¤Àµ
       *
       *  04.08.01    NACL-Æ£¸¶    12/01/08  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­
       *                                     ºÜÂÐ±þ
@@ -596,11 +597,11 @@
       *
       *    »ÜÀßÆþ½ê¾ðÊó¡Ê£¹£µ£°¡¢£¹£µ£±¡ËÂàÈòÍÑÎÎ°è
        01  TABLE-PTKOHINF-AREA.
-           02  TBL-PTKOHINF-REC        OCCURS  10.
+           02  TBL-PTKOHINF-REC        OCCURS  100.
            COPY    "CPPTKOHINF.INC"
                                    REPLACING   //PTKOH//
                                    BY          //TBL-PTKOH//.
-           02  TBL-PTKOHINF-MAX    PIC 9(02).
+           02  TBL-PTKOHINF-MAX    PIC 9(03).
       *
       *    ´µ¼Ô¥ì¥»¥×¥ÈÊ¬³ä¾ðÊóÂàÈòÍÑÎÎ°è
        01  TBL-PT-HDIST-DAY-T.
@@ -3842,7 +3843,7 @@ grpsys                                     SPA-AREA
            END-IF
            PERFORM     UNTIL   FLG-PTKOHINF    =   1
                        OR      TBL-PTKOHINF-MAX
-                                               >=  10
+                                               >=  100
                IF      PTKOH-SAKJOKBN      =  SPACE
                    ADD     1               TO  TBL-PTKOHINF-MAX
                    MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
@@ -3882,7 +3883,7 @@ grpsys                                     SPA-AREA
            END-IF
            PERFORM     UNTIL   FLG-PTKOHINF    =   1
                        OR      TBL-PTKOHINF-MAX
-                                               >=  10
+                                               >=  100
                IF      PTKOH-SAKJOKBN      =  SPACE
                    ADD     1               TO  TBL-PTKOHINF-MAX
                    MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
