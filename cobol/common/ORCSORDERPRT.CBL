@@ -339,7 +339,10 @@
                                                OR  "222"
                                                OR  "232"
                                                OR  "148"
-                                               OR  "149")
+                                               OR  "149"
+      *H26.4       Î×»þ
+                                               OR  "292"
+                                               OR  "295")
                    CONTINUE
                ELSE
                    MOVE     1                  TO  FLG-SYORI
@@ -1054,9 +1057,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+               MOVE    MCPDATA-REC         TO  PARA-REC
+               MOVE    ZERO                TO  FLG-PARA
            ELSE
                INITIALIZE                  PARA-REC
                MOVE    1                   TO  FLG-PARA

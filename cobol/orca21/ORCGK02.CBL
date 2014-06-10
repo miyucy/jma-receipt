@@ -11830,28 +11830,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
       *
-      *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-      *TEST
-      *    電子点数表との一括チェック
-      *    IF      SPA-SRYYMD          >=   "20140401"
-      *        点数マスタ電子点数表チェック一括
-      *        INITIALIZE                  ORCSC92AREA
-      *        MOVE    "G"                 TO  LNK-SC92-KBN
-      *        MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
-      *        MOVE    "K02"               TO  LNK-SC92-PG 
-      *        警告チェックあり
-      *        MOVE    "1"                 TO  LNK-SC92-KEIFLG
-      *        MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
-      *        MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
-      *        CALL    "ORCSC92SUB2"           USING
-      *                                        MCPAREA
-      *                                        ORCSC92AREA
-      *                                        SPA-SCR-REC
-      *                                        SPA-AREA
-      *         MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-      **** END-IF
-      *
-      *
            .
        41001-KIHON-CHK-EXT.
            EXIT.
@@ -12122,7 +12100,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-COM-SRYSYUKBN(IDX)  =  "212"  OR
                                                   "222"  OR
                                                   "232"  OR
-                                                  "292"
+                                                  "292"  OR
+                                                  "295"
                    MOVE    1               TO  FLG-SYOHOU-ARI
                END-IF
       *        在宅注射院外処方

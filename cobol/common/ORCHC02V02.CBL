@@ -2652,7 +2652,8 @@
                                                    "211"  OR
                                                    "221"  OR
                                                    "231"  OR
-                                                   "291" )
+                                                   "291"  OR
+                                                   "294" )
       *                院内処方種別
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -2669,7 +2670,8 @@
                    IF     (WRK-SRYSYUKBN       =   "212"  OR
                                                    "222"  OR
                                                    "232"  OR
-                                                   "292")
+                                                   "292"  OR
+                                                   "295")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
            END-EVALUATE
@@ -2684,7 +2686,9 @@
                                            OR  "22"
                                            OR  "23" )
                AND   ((WRK-SRYSYUKBN       =   SPACE )
-                  OR  (WRK-SRYSYUKBN(3:1)  =   "0"   ))
+                  OR  (WRK-SRYSYUKBN(3:1)  =   "0"   )
+      *H26.4      外用（臨時）
+                  OR  (WRK-SRYSYUKBN       =   "293" ))
                    IF     (FLG-SYOHO-IN        =   2    )
       *                剤点数ゼロで院内処方印刷
                        IF     (ACCT-ZAITEN         =   ZERO )

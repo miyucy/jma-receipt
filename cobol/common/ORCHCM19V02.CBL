@@ -2652,7 +2652,8 @@
                                                    "211"  OR
                                                    "221"  OR
                                                    "231"  OR
-                                                   "291" )
+                                                   "291"  OR
+                                                   "294" )
       *                情ま質杅潘帎
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -2669,7 +2670,8 @@
                    IF     (WRK-SRYSYUKBN       =   "212"  OR
                                                    "222"  OR
                                                    "232"  OR
-                                                   "292")
+                                                   "292"  OR
+                                                   "295")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
            END-EVALUATE
@@ -2684,7 +2686,9 @@
                                            OR  "22"
                                            OR  "23" )
                AND   ((WRK-SRYSYUKBN       =   SPACE )
-                  OR  (WRK-SRYSYUKBN(3:1)  =   "0"   ))
+                  OR  (WRK-SRYSYUKBN(3:1)  =   "0"   )
+      *H26.4      陸迕﹋拵凜﹌
+                  OR  (WRK-SRYSYUKBN       =   "293" ))
                    IF     (FLG-SYOHO-IN        =   2    )
       *                管鰾醒未伕匹情ま質杅執綬
                        IF     (ACCT-ZAITEN         =   ZERO )
@@ -4657,14 +4661,16 @@
                IF     (WRK-SRYSYUKBN       =   "211"
                                            OR  "221"
                                            OR  "231"
-                                           OR  "291" )
+                                           OR  "291"
+                                           OR  "294" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
       *        情陸質杅
                IF     (WRK-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
-                                           OR  "292" )
+                                           OR  "292"
+                                           OR  "295" )
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
@@ -4680,14 +4686,16 @@
                IF     (WRK-SRYSYUKBN       =   "211"
                                            OR  "221"
                                            OR  "231"
-                                           OR  "291" )
+                                           OR  "291"
+                                           OR  "294" )
                    MOVE    1               TO  FLG-OK2
                END-IF
       *        情陸質杅
                IF     (WRK-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
-                                           OR  "292" )
+                                           OR  "292"
+                                           OR  "295" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
            END-IF

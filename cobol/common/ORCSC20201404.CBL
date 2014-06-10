@@ -58,6 +58,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/07/04  ½èÊý¤»¤óÎÁÈ½ÄêÍÑË¡ÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/08/10  ¥µ¥ó¥×¥ëÌô¡Ê¥µ¡ËÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÂÐ±þ
+      *  04.07.00    NACL-Â¿¡¹Ç¼  14/06/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -204,6 +205,9 @@
       *
            03  IDXW                PIC 9(04).
       *
+      *TEST
+           03  IDX-PS              PIC 9(04).
+      *TEST
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
@@ -447,6 +451,13 @@
       *
       *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
            COPY    "K01COMMON-SPA".
+      *
+      *TEST
+      *TEST
+      *    ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+      *    COPY    "CPORCSPSYCHO.INC".
+      *TEST
+      *TEST
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -1073,11 +1084,13 @@
            IF     (WRK-CHK-SRYSYUKBN           =   "212"  OR
                                                    "222"  OR
                                                    "232"  OR
-                                                   "292" )  OR
+                                                   "292"  OR
+                                                   "295" )  OR
                  ((LNK-ORCSC-INGAIKBN          =   "1"   ) AND
                   (WRK-CHK-SRYSYUKBN           =   "210"  OR
                                                    "220"  OR
                                                    "230"  OR
+                                                   "293"  OR
                                                    "290" ))  OR
                  ( WRK-CHK-SRYSYUKBN           =   "213"  OR
                                                    "223"  OR
@@ -1139,10 +1152,12 @@
                    (WRK-COM-SRYKBN (IDX-Z)     =   "21" )
       *        ±¡³°ÆâÉþÅêÌô
                IF    (WRK-COM-SRYSYUKBN(IDX-Z) =   "212"
-                                               OR  "292" )  OR
+                                               OR  "292"
+                                               OR  "295" )  OR
                     ((WRK-COM-SRYSYUKBN(IDX-Z)  =   SPACE
                                                 OR  "210"
-                                                OR  "290" ) AND
+                                                OR  "290"
+                                                OR  "293" ) AND
                      (LNK-ORCSC-INGAIKBN       =   "1"   ))
       *            °ìÈÌÌ¾µ­ºÜÍ­Ìµ
                    MOVE    ZERO                TO  FLG-CHK-P
@@ -1489,6 +1504,13 @@
            MOVE    ZERO                TO  WRK-UGAI-YAK
            MOVE    ZERO                TO  WRK-UGAI-IGAI
            MOVE    ZERO                TO  IDX-UGAI
+      *TEST
+      *TEST
+      *    ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¥Á¥§¥Ã¥¯
+      *    INITIALIZE                  ORCSPSYCHOAREA
+      *    MOVE    ZERO                TO  IDX-PS
+      *TEST
+      *TEST
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
@@ -1547,6 +1569,7 @@
                    WHEN    "222"
                        MOVE     1              TO  FLG-TONPUK2
                    WHEN    "231"
+                   WHEN    "294"
                        MOVE     1              TO  FLG-GAIYAK
                        IF      WRK-GAI-HKNCOMBI    =   SPACE
                            MOVE    WRK-COM-HKNCOMBI (IDX)
@@ -1555,6 +1578,7 @@
                                                    TO  WRK-GAI-CHIKENKBN
                        END-IF
                    WHEN    "232"
+                   WHEN    "295"
                        MOVE     1              TO  FLG-GAIYAK2
                END-EVALUATE
       *
@@ -1742,6 +1766,9 @@
                        MOVE    "222"          TO  WRK-CHK-SRYSYUKBN
                    WHEN    "230" 
                        MOVE    "232"          TO  WRK-CHK-SRYSYUKBN
+      *H26.4
+                   WHEN    "293"
+                       MOVE    "295"          TO  WRK-CHK-SRYSYUKBN
                END-EVALUATE
            ELSE
                EVALUATE    WRK-CHK-SRYSYUKBN
@@ -1753,6 +1780,9 @@
                        MOVE    "221"          TO  WRK-CHK-SRYSYUKBN
                    WHEN    "230" 
                        MOVE    "231"          TO  WRK-CHK-SRYSYUKBN
+      *H26.4
+                   WHEN    "293"
+                       MOVE    "294"          TO  WRK-CHK-SRYSYUKBN
                END-EVALUATE
            END-IF
           .
@@ -2465,6 +2495,7 @@
                    WHEN    "221"
                    WHEN    "231"
                    WHEN    "291"
+                   WHEN    "294"
       *            ÆâÉþ¡¡ËãÆÇ¶èÊ¬È½Äê
                       IF      WRK-COM-MADOKUKBN (IDX) NOT =   ZERO
                            MOVE    1           TO  FLG-MADOKU
@@ -2490,6 +2521,7 @@
                    WHEN    "222"
                    WHEN    "232"
                    WHEN    "292"
+                   WHEN    "295"
       *                ±¡³°½èÊý¡¡°ìÈÌÌ¾µ­ºÜÈ½Äê
                        MOVE    ZERO                TO  FLG-CHK-P
       ***************  IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
@@ -2535,6 +2567,13 @@
                MOVE    1                   TO  FLG-NAIFUKU
       *        ÌôºÞ¤Ê¤·
                IF      FLG-YAKUZAI-ARI     =   ZERO
+                   MOVE    ZERO                TO  FLG-NAIFUKU
+               END-IF
+      *H26.4
+      *        ³°ÍÑ¡ÊÎ×»þ¡Ë¤ÏÂÐ¾Ý³°
+               IF      (WRK-CHK-SRYSYUKBN       =   "293"
+                                                OR  "294"
+                                                OR  "295")
                    MOVE    ZERO                TO  FLG-NAIFUKU
                END-IF
            ELSE
@@ -2680,7 +2719,10 @@
            END-IF
       *    ³°ÍÑ¤Î¾ì¹ç
            IF      (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
-                   (WRK-CHK-SRYSYUKBN (1:2)   =   "23" )  AND
+                  ((WRK-CHK-SRYSYUKBN (1:2)   =   "23" ) OR  
+                   (WRK-CHK-SRYSYUKBN         =   "293"
+                                              OR  "294"
+                                              OR  "295")) AND
                    (WRK-COM-KAISU2(IDX)       >=  28   )
                MOVE    1                   TO  FLG-CHOUKI
                IF      WRK-CHK-SRYSYUKBN(3:1)  =   "1"

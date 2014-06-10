@@ -4954,12 +4954,14 @@
                IF     (WRK-CHK-SRYSYUKBN           =   "211"  OR
                                                        "221"  OR
                                                        "231"  OR
-                                                       "291" )  OR
+                                                       "291"  OR
+                                                       "294" )  OR
                      ((SPA-INGAIKBN            NOT =   "1"   ) AND
                       (WRK-CHK-SRYSYUKBN           =   "210"  OR
                                                        "220"  OR
                                                        "230"  OR
-                                                       "290" ))
+                                                       "290"  OR
+                                                       "293" ))
                    ADD     1                   TO  IDY
                    IF      IDY                 >   40
                        GO      TO      45051-ORCS01-SET-EXT

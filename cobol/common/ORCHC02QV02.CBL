@@ -82,6 +82,7 @@
       * 04.08.00     NACL-多々納  13/03/18  一般名記載ログ出力対応
       * 04.07.00     NACL-多々納  13/10/08  第三者行為対応
       * 04.07.00     NACL-多々納  14/05/XX  内服１回量編集対応
+      * 04.07.00     NACL-多々納  14/06/XX  外用薬（臨時投薬）対応
       *****************************************************************
       *
       *
@@ -2732,7 +2733,8 @@
                                                    "211"  OR
                                                    "221"  OR
                                                    "231"  OR
-                                                   "291" )
+                                                   "291"  OR
+                                                   "294" )
       *                院内処方種別
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -2749,7 +2751,8 @@
                    IF     (WRK-SRYSYUKBN       =   "212"  OR
                                                    "222"  OR
                                                    "232"  OR
-                                                   "292")
+                                                   "292"  OR
+                                                   "295")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
            END-EVALUATE
@@ -2764,7 +2767,10 @@
                                            OR  "22"
                                            OR  "23" )
                AND   ((WRK-SRYSYUKBN       =   SPACE )
-                  OR  (WRK-SRYSYUKBN(3:1)  =   "0"   ))
+                  OR  (WRK-SRYSYUKBN(3:1)  =   "0"   )
+      *H26.4
+      *           外用臨時投薬
+                  OR  (WRK-SRYSYUKBN       =   "293"  ))
                    IF     (FLG-SYOHO-IN        =   2    )
       *                剤点数ゼロで院内処方印刷
                        IF     (ACCT-ZAITEN         =   ZERO )
@@ -4748,14 +4754,16 @@
                IF     (WRK-SRYSYUKBN       =   "211"
                                            OR  "221"
                                            OR  "231"
-                                           OR  "291" )
+                                           OR  "291"
+                                           OR  "294" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
       *        院外処方
                IF     (WRK-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
-                                           OR  "292" )
+                                           OR  "292"
+                                           OR  "295" )
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
@@ -4771,14 +4779,16 @@
                IF     (WRK-SRYSYUKBN       =   "211"
                                            OR  "221"
                                            OR  "231"
-                                           OR  "291" )
+                                           OR  "291"
+                                           OR  "294" )
                    MOVE    1               TO  FLG-OK2
                END-IF
       *        院外処方
                IF     (WRK-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
-                                           OR  "292" )
+                                           OR  "292"
+                                           OR  "295" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
            END-IF
