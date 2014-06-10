@@ -494,6 +494,7 @@ RECORD_files = \
 	W92.rec \
 	hsacctmodv2.rec \
 	hsptinfmodv2.rec \
+    hsptevalmodv2.rec \
 
 DEF_files = \
 
@@ -789,6 +790,8 @@ DB_files = \
 	xml_hsptinfmod02v2res.db \
 	xml_hsptinfmodv2req.db \
 	tbl_spa_tmp.db \
+    xml_hsptevalmodv2req.db \
+    xml_hsptevalmodv2res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
