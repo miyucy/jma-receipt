@@ -5810,13 +5810,14 @@
                MOVE    1                   TO  FLG-IN-ATAI
            END-IF
       *
+      *ェ情反凝價粗陸侳褲說恔卅仄
       *    凝價粗陸侳褲恓粗及凜﹜ヵ昦巨仿□反公及引引
-           IF     (SPA-SYONIKA-ARI     NOT =   ZERO )  AND
-                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)  =   "1" )
-               IF      SPA-ERRCD           =   "0032"
-                   MOVE    SPACE               TO  SPA-ERRCD
-               END-IF
-           END-IF
+      *    IF     (SPA-SYONIKA-ARI     NOT =   ZERO )  AND
+      *           (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)  =   "1" )
+      *        IF      SPA-ERRCD           =   "0032"
+      *            MOVE    SPACE               TO  SPA-ERRCD
+      *        END-IF
+      **** END-IF
       *---(01.00.01) LINE ADD  START  ----
       *    煞屢�衝�
            IF      SPA-ERRCD(1:1)      =   "K"
