@@ -1714,20 +1714,14 @@
            END-IF
       *
       *    早期リハビリ加算チェック
-           IF     (SPA-ERRCD           =   SPACE  )
+           IF     (WRK-ERRCD           =   SPACE  )
              AND  (LNK-ORCSC-PG        =   "K02"  )
              AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-RIHAKSN )
-      *        IF     (SPA-HKNKBN          =   1   )
-      *          AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-      *            労災はチェックなし
-      *            CONTINUE
-      *        ELSE
-                   PERFORM 20011-RIHAKSN-CHK-SEC
-      *        END-IF
+               PERFORM 20011-RIHAKSN-CHK-SEC
            END-IF
       *H24.4
       *    初期加算（リハビリテーション料）
-           IF     (SPA-ERRCD           =   SPACE  )
+           IF     (WRK-ERRCD           =   SPACE  )
              AND  (LNK-ORCSC-PG        =   "K02"  )
              AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-SYOKIKSN)
                PERFORM 20011-SYOKIKSN-CHK-SEC
@@ -1736,7 +1730,7 @@
       *
       *ver.4.7
       *    精神科ケア早期加算チェック
-           IF     (SPA-ERRCD           =   SPACE  )
+           IF     (WRK-ERRCD           =   SPACE  )
              AND  (LNK-ORCSC-PG        =   "K02"  )
              AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-KEAKSN1
                                            OR  CON-KEAKSN2
@@ -1785,44 +1779,57 @@
                        "です"                DELIMITED  BY  SIZE
                       INTO                 WRK-KYUSEI-30-MSG
                END-STRING
-      *        入力日分のチェック
-               PERFORM VARYING     IDX2    FROM    1   BY  1
+      *H26.4   外来あり
+               IF      SPA-NYUGAIKBN       =   "2"
+      *            外来
+                   MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+                   PERFORM 200111-RIHAKSN-CHK02-SEC
+               ELSE
+      *            入院　入力日分のチェック
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2    >   31  )   OR
                                   (WRK-ERRCD   NOT =   SPACE )
-                   IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
-                       MOVE    IDX2                TO  IDD
-                       MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-                       MOVE    IDD                 TO  WRK-SRYYMD (7:2)
-                       IF     (WRK-KYUSEI-30       <   WRK-SRYYMD)
-      *                 発生日＋３０日以上はエラー
-                            MOVE    "8047"          TO  WRK-ERRCD
-                            MOVE    "1"             TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                            MOVE    WRK-KYUSEI-30-MSG
-                                                    TO  LNK-ORCSC-ERRMSG
-      *                    労災は警告とする
-                           IF     (SPA-HKNKBN          =   1   )
-                            AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-                               IF     (WRK-COM-KZMFLG (IDX-Z)
-                                                           =   SPACE)
-                               AND    (LNK-ORCSC-KEI-IDX   =   ZERO )
-                                   MOVE    "K845"      TO  WRK-ERRCD
-                                   MOVE    IDX-Z   TO  LNK-ORCSC-KEI-IDX
-                                   MOVE    "1"     TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                               ELSE
-                                   MOVE    SPACE   TO  WRK-ERRCD
-                                   MOVE    SPACE   TO  LNK-ORCSC-ERRMSG
-                                   MOVE    SPACE   TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                               END-IF
-                           END-IF
+                       IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
+                           MOVE    IDX2            TO  IDD
+                           MOVE    SPA-SRYYMD      TO  WRK-SRYYMD
+                           MOVE    IDD             TO  WRK-SRYYMD (7:2)
+                           PERFORM 200111-RIHAKSN-CHK02-SEC
                        END-IF
-                   END-IF
-               END-PERFORM
+                   END-PERFORM
+               END-IF
            END-IF
            .
        20011-RIHAKSN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    早期リハビリ加算チェック処理
+      *****************************************************************
+       200111-RIHAKSN-CHK02-SEC                SECTION.
+      *
+           IF     (WRK-KYUSEI-30       <   WRK-SRYYMD)
+      *        発生日＋３０日以上はエラー
+               MOVE    "8047"              TO  WRK-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+               MOVE    WRK-KYUSEI-30-MSG   TO  LNK-ORCSC-ERRMSG
+      *        労災は警告とする
+               IF     (SPA-HKNKBN          =   1   )
+                 AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+                   AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
+                       MOVE    "K845"          TO  WRK-ERRCD
+                       MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-Z)
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERRCD
+                       MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       MOVE    SPACE           TO  WRK-COM-CUR(IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+           .
+       200111-RIHAKSN-CHK02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1861,44 +1868,56 @@
                        "です"                DELIMITED  BY  SIZE
                       INTO                 WRK-KYUSEI-14-MSG
                END-STRING
-      *        入力日分のチェック
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2    >   31  )   OR
-                                  (WRK-ERRCD   NOT =   SPACE )
-                   IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
-                       MOVE    IDX2                TO  IDD
-                       MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-                       MOVE    IDD                 TO  WRK-SRYYMD (7:2)
-                       IF     (WRK-KYUSEI-14       <   WRK-SRYYMD)
-      *                 発生日＋１４日以上はエラー
-                            MOVE    "8070"          TO  WRK-ERRCD
-                            MOVE    "1"             TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                            MOVE    WRK-KYUSEI-14-MSG
-                                                    TO  LNK-ORCSC-ERRMSG
-      *                    労災は警告とする
-                           IF     (SPA-HKNKBN          =   1   )
-                            AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-                               IF     (WRK-COM-KZMFLG (IDX-Z)
-                                                           =   SPACE)
-                               AND    (LNK-ORCSC-KEI-IDX   =   ZERO )
-                                   MOVE    "K870"      TO  WRK-ERRCD
-                                   MOVE    IDX-Z   TO  LNK-ORCSC-KEI-IDX
-                                   MOVE    "1"     TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                               ELSE
-                                   MOVE    SPACE   TO  WRK-ERRCD
-                                   MOVE    SPACE   TO  LNK-ORCSC-ERRMSG
-                                   MOVE    SPACE   TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                               END-IF
-                           END-IF
+      *H26.4   外来追加
+               IF      SPA-NYUGAIKBN       =   "2"
+      *            外来
+                   MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+                   PERFORM 200111-SYOKIKSN-CHK02-SEC
+               ELSE
+      *            入院　入力日分のチェック
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL      (IDX2    >   31  )   OR
+                                      (WRK-ERRCD   NOT =   SPACE )
+                       IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
+                           MOVE    IDX2            TO  IDD
+                           MOVE    SPA-SRYYMD      TO  WRK-SRYYMD
+                           MOVE    IDD             TO  WRK-SRYYMD (7:2)
+                           PERFORM 200111-SYOKIKSN-CHK02-SEC
                        END-IF
-                   END-IF
-               END-PERFORM
+                   END-PERFORM
+               END-IF
            END-IF
            .
        20011-SYOKIKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初期加算（リハビリテーション料）チェック処理
+      *****************************************************************
+       200111-SYOKIKSN-CHK02-SEC                SECTION.
+      *
+           IF     (WRK-KYUSEI-14       <   WRK-SRYYMD)
+      *        発生日＋１４日以上はエラー
+               MOVE    "8070"              TO  WRK-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+               MOVE    WRK-KYUSEI-14-MSG   TO  LNK-ORCSC-ERRMSG
+      *        労災は警告とする
+               IF     (SPA-HKNKBN          =   1   )
+                 AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+                   AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
+                       MOVE    "K870"          TO  WRK-ERRCD
+                       MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                             (IDX-Z)
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERRCD
+                       MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       MOVE    SPACE           TO  WRK-COM-CUR (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+           .
+       200111-SYOKIKSN-CHK02-EXT.
            EXIT.
       *****************************************************************
       *    精神科ケア早期加算チェック処理
@@ -2324,35 +2343,6 @@
                    PERFORM 10011321-SYOSIN-SET-SEC
            END-EVALUATE
       *
-      *以下 10011321-SYOSIN-SET-SEC
-      ***  IF      LNK-ORCSC-SYORIFLG      =   1
-      *        訂正時点の初診算定日
-      *        MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
-      *    ELSE
-      *        MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
-      *    END-IF
-      *    同じ科で同日初診がある時、同日初診
-      *    IF      WRK-COM-SRYKA (IDX-Z)   =   SPACE
-      *        MOVE    SPA-SRYKA           TO  WRK-SRYKA
-      *    ELSE
-      *        MOVE    WRK-COM-SRYKA (IDX-Z)   TO  WRK-SRYKA
-      *    END-IF
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL      (IDX     >   10  )   OR
-      *                       (WRK-DOU-SRYKA (IDX) =   SPACE)
-      *        IF      WRK-DOU-SRYKA (IDX) =   WRK-SRYKA
-      *            IF      WRK-DOU-SRYYMD(IDX) >   WRK-SYOYMD
-      *                MOVE    WRK-DOU-SRYYMD(IDX)
-      *                                        TO  WRK-SYOYMD
-      *            END-IF
-      *            MOVE    10          TO  IDX
-      *        END-IF
-      *    END-PERFORM
-      *    初診算定日から６月以内
-      *    IF     (WRK-SYOYMD          =   SPACE  )  OR
-      *           (LNK-ORCSC-SYOSIN2   =   1      )
-      *        MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
-      *****END-IF
            MOVE    WRK-SYOYMD          TO  WRK-SYOYMD2
            MOVE    WRK-SYOYMD          TO  WRK-SYOYMD3
       *
