@@ -648,6 +648,7 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   DISPLAY  "SYS-5000  FETCH MCP-RC = " MCP-RC
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYS-5000-REC
                    IF      SYS-5000-EIYOUKSNKBN  =   "1"
@@ -1861,6 +1862,44 @@
                        MOVE    1       TO  FLG-HOSPSBT
                    END-IF
                END-IF
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    •∑•π•∆•‡¥…Õ˝∏°∫˜° ±…Õ‹¥…Õ˝¬Œ¿©∏∫ªª§ŒºË∆¿°À
+           MOVE    SPACE               TO  SYS-5000-REC
+           INITIALIZE                      SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    "*"                 TO  SYS-5000-KBNCD
+           MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                       TO  SYS-5000-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-5000-STYUKYMD(7:2)
+           MOVE    SYS-5000-STYUKYMD   TO  SYS-5000-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   DISPLAY  "SYS-5000  FETCH MCP-RC = " MCP-RC
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYS-5000-REC
+                   IF      SYS-5000-EIYOUKSNKBN  =   "1"
+                        MOVE    1              TO  FLG-EIYOUKSNKBN
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    SPACE               TO  SYS-5000-REC
+               INITIALIZE                  SYS-5000-REC
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
