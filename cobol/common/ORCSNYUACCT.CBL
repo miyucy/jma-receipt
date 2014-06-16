@@ -77,6 +77,10 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-TANKI           PIC 9(01).
            03  FLG-TANKI-NASI      PIC 9(01).
+           03  FLG-TANKI2          PIC 9(01).
+           03  FLG-TANKI3          PIC 9(01).
+           03  FLG-HOSPSBT         PIC 9(01).
+           03  FLG-EIYOUKSNKBN     PIC 9(01).
       *    選定療養費
            03  FLG-SENTEI              PIC 9(01).
       *    食事
@@ -221,6 +225,9 @@
       *    救急・在宅等支援療養病床初期加算の算定済日数
            03  WRK-KYUKYU-NISSU                 PIC 9(05).
       *
+      *    栄養管理体制減算の減算コード
+           03  WRK-EIYOU-GENSANCD               PIC X(09).
+      *
       *    加算算定済回数カウント用
            03  WRK-KSN-YMD.
                05  WRK-KSN-YY          PIC 9(04).
@@ -288,6 +295,8 @@
            COPY    "CPPTINF.INC".
       *
       *    システム管理（自動算定情報・チェック機能）
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK1001.INC".
            COPY    "CPSK1007.INC".
            COPY    "CPSK5000.INC".
       *
@@ -641,6 +650,9 @@
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYS-5000-REC
+                   IF      SYS-5000-EIYOUKSNKBN  =   "1"
+                        MOVE    1              TO  FLG-EIYOUKSNKBN
+                   END-IF
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI
                END-IF
@@ -1177,6 +1189,12 @@
                      IF   TNS-NYUKHNKSNKBN  =  226  OR
                                                240
                          MOVE    1         TO  FLG-TANKI
+                         IF   TNS-NYUKHNKSNKBN  =  226
+                             MOVE    1         TO  FLG-TANKI2
+                         END-IF
+                         IF   TNS-NYUKHNKSNKBN  =  240
+                             MOVE    1         TO  FLG-TANKI3
+                         END-IF
                      END-IF
                      MOVE    ZERO          TO  FLG-TENSU
                  ELSE
@@ -1468,6 +1486,11 @@
       *    入院料加算作成処理
       *****************************************************************
        210-NYUKHNKSN-SYORI-SEC            SECTION.
+      *
+      *    栄養管理体制減算の判定処理（該当減算コードの取得）２６年７月改定
+           IF     LNK-SCNYUACCT-STSRYYMD    >=   "20140701"
+               PERFORM    210-EIYOU-GENSAN-SEC
+           END-IF
       *
       *    加算により剤を決定する
            PERFORM VARYING     IDX-K   FROM    1   BY  1
@@ -1777,6 +1800,13 @@
                    INITIALIZE                  TBL-NYUIN-AREA
                    MOVE    LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)
                                                TO  TBL-SRYCD (1)
+      *            栄養管理体制減算（短期滞在手術等基本料２は終了日を
+      *                              開始日と同じにする）
+                   IF   (FLG-TANKI2     =     1)   AND
+                        (LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)  =
+                                                 "190182690")
+                           MOVE   WRK-STYMD    TO  WRK-OTYMD2
+                   END-IF
                    MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
                    MOVE    WRK-OTYMD2          TO  WRK-KHN-EDYMD
                    IF      WRK-KHN-EDYMD       >   WRK-EDYMD
@@ -1795,6 +1825,95 @@
       *
            .
        210-NYUKHNKSN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    栄養管理体制減算の判定処理（該当減算コードの取得）２６年７月改定
+      *****************************************************************
+       210-EIYOU-GENSAN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-EIYOU-GENSANCD
+      *
+      *    病院診療所の判定（システム管理テーブルより）
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "1001"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    LNK-SCNYUACCT-STSRYYMD
+                                       TO  SYS-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM  910-SYSKANRI-FETCH-SEC
+               IF  FLG-SYSKANRI     =      ZERO
+                   IF   SYS-1001-HOSPSBT  =  1
+                       MOVE    1       TO  FLG-HOSPSBT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    点数マスタから入院基本料、特定入院料を判定し減算コードを決定
+      *    （短期滞在は事前にセットしたフラグも参照）
+           IF    (FLG-HOSPSBT          =   1)   AND
+                 (FLG-EIYOUKSNKBN      =   1)
+               MOVE    SPACE           TO  TNS-TENSU-REC
+               IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1)  NOT = SPACE
+                   MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                       TO  TNS-SRYCD
+               ELSE
+                   MOVE    LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                                       TO  TNS-SRYCD
+               END-IF
+               MOVE    WRK-STYMD       TO  WRK-YMD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU       =   ZERO
+                    IF  TNS-NYUTENTTLKBN   =   903
+      *                 特別入院基本料は除く
+                        IF   TNS-NYUKHNKBN   =  79
+                            CONTINUE
+                        ELSE
+                            MOVE   "190182590"
+                                       TO   WRK-EIYOU-GENSANCD
+                        END-IF
+                    END-IF
+                    IF   TNS-NYUTENTTLKBN   =   920
+      *                 短期滞在手術等基本料３は除く
+                        IF    FLG-TANKI3    =   1
+                            CONTINUE
+                        ELSE
+                            MOVE   "190182690"
+                                       TO   WRK-EIYOU-GENSANCD
+                        END-IF
+                    END-IF
+               END-IF
+           END-IF
+      *
+           PERFORM VARYING     IDX-K   FROM    1   BY  1
+                   UNTIL      (IDX-K       >   20  )  OR
+                              (LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)
+                                          =   SPACE )
+                  CONTINUE
+           END-PERFORM
+           MOVE      WRK-EIYOU-GENSANCD   TO
+                               LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)
+      *
+           .
+       210-EIYOU-GENSAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4666,6 +4785,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+      *            栄養管理体制減算の場合は点数識別を変更
+                   IF    TNS-SRYCD         =   "190182590"  OR
+                                               "190182690"
+                        MOVE    3          TO   TNS-TENSIKIBETU
+                   END-IF
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
                    INITIALIZE                  TNS-TENSU-REC
@@ -4816,6 +4940,28 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-NYUINACCT-FETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスター読込
+      *****************************************************************
+       910-SYSKANRI-FETCH-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                      SYS-1001-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       910-SYSKANRI-FETCH-EXT.
            EXIT.
       *
       *****************************************************************
