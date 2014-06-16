@@ -289,7 +289,7 @@
                05  FILLER              PIC X(12)   VALUE
                                                    "¹³Àº¿ÀÉÂÌô¡§".
                05  PRT-F-CNT34         PIC ZZZ9.
-               05  FILLER              PIC X(02)   VALUE   "¡Ë".
+               05  FILLER              PIC X(01)   VALUE   ")".
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -982,6 +982,11 @@
                 ADD     1               TO  CNT-LINE
                 MOVE    ALL "-"         TO  HCMSL80-MOJI (CNT-LINE)
            END-IF
+           IF      CNT-LINE            >=  MAX-LINE
+               PERFORM 400-PRINT-SEC
+               MOVE    ZERO            TO  CNT-LINE
+               PERFORM 280-HEAD-HENSYU-SEC
+           END-IF
            ADD     1                   TO  CNT-LINE
            MOVE    LST-PRT-BODY-01     TO  HCMSL80-MOJI (CNT-LINE)
            IF      WRK-MAE-PTID     NOT =   TBL-PTID
@@ -1440,7 +1445,7 @@
            MOVE    WRK-TO-DATA         TO  STOUKEICSV-TO-DATA
            MOVE    "2"                 TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-CSV-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    "¹¹À¸¿·ÌôºÞ»ÈÍÑ´µ¼Ô°ìÍ÷É½£Ã£Ó£ÖºîÀ®"
+           MOVE    "¸þÀº¿ÀÌôºÞ»ÈÍÑ´µ¼Ô°ìÍ÷É½£Ã£Ó£ÖºîÀ®"
                                        TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
