@@ -54,7 +54,7 @@
       **   COPY    "HCMSL55.INC".
       *
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    £Ó£Ô£ÓÎÎ°è
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
       *
@@ -820,8 +820,9 @@
            END-IF
       *
            PERFORM VARYING     IDS     FROM    1   BY  1
-                   UNTIL      (IDS         >   5   )   OR
-                              (SRY-SRYCD (IDS) =   SPACE )
+                   UNTIL      (IDS         >   5   )
+                         OR   (SRY-SRYCD (IDS) =   SPACE )
+                         OR   (IDX-TBL         >=  50    )
                IF      SRY-SRYCD (IDS)(1:1)    =   "6"
                    ADD     1                   TO  IDX-TBL
                    MOVE    SRY-SRYCD (IDS)     TO  TBL-SRY-SRYCD
@@ -989,7 +990,7 @@
            END-IF
            ADD     1                   TO  CNT-LINE
            MOVE    LST-PRT-BODY-01     TO  HCMSL80-MOJI (CNT-LINE)
-           IF      WRK-MAE-PTID     NOT =   TBL-PTID
+           IF      WRK-MAE-PTID    NOT =   TBL-PTID
                ADD     1                   TO  CNT-LINE
            END-IF
       *
@@ -1216,7 +1217,7 @@
            ADD     1                   TO  CNT-LINE
            MOVE    ALL "-"             TO  HCMSL80-MOJI (CNT-LINE)
            ADD     2                   TO  CNT-LINE
-           MOVE    LST-PRT-FOOT-01     TO  HCMSL80-MOJI  (CNT-LINE)
+           MOVE    LST-PRT-FOOT-01     TO  HCMSL80-MOJI (CNT-LINE)
       *
            .
        2004-GOUKEI-HENSYU-EXT.
@@ -1445,7 +1446,7 @@
            MOVE    WRK-TO-DATA         TO  STOUKEICSV-TO-DATA
            MOVE    "2"                 TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-CSV-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    "¸þÀº¿ÀÌôºÞ»ÈÍÑ´µ¼Ô°ìÍ÷É½£Ã£Ó£ÖºîÀ®"
+           MOVE    "¸þÀº¿ÀÌô»ÈÍÑ´µ¼Ô°ìÍ÷£Ã£Ó£ÖºîÀ®"
                                        TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
