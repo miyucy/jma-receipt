@@ -1908,6 +1908,11 @@
       *
       *    点数マスタから入院基本料、特定入院料を判定し減算コードを決定
       *    （短期滞在は事前にセットしたフラグも参照）
+           DISPLAY  "============ORCSNYUACCT===================="
+           DISPLAY  "LNK-SCNYUACCT-NYUKHN-SRYCD(1) = "
+                     LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+           DISPLAY  "LNK-SCNYUACCT-KAGEN-SRYCD(1) = "
+                     LNK-SCNYUACCT-KAGEN-SRYCD(1)
            IF    (FLG-HOSPSBT          =   1)   AND
                  (FLG-EIYOUKSNKBN      =   1)
                MOVE    SPACE           TO  TNS-TENSU-REC
@@ -1921,9 +1926,13 @@
                MOVE    WRK-STYMD       TO  WRK-YMD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU       =   ZERO
+                    DISPLAY  "TNS-NYUKHNKBN = "
+                              TNS-NYUKHNKBN
                     IF  TNS-NYUTENTTLKBN   =   903
       *                 特別入院基本料は除く
-                        IF   TNS-NYUKHNKBN   =  79
+                        IF  (TNS-NYUKHNKBN   =  79  OR  88)  OR
+                            (TNS-SRYCD       =  "190121810"  OR
+                                                "190799510")
                             CONTINUE
                         ELSE
                             MOVE   "190182590"
