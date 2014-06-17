@@ -118,6 +118,7 @@
       *                                     コメント自動記載修正
       *  04.07.09    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
       *                                     コメント自動記載修正
+      *  04.07.10    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -1725,6 +1726,10 @@
            INITIALIZE                           RECE220-REC
            MOVE    RECE200-KEY          TO      RECE220-KEY1
            MOVE    ACCT-SRYKBN          TO      RECE220-SRYKBN
+           IF     (ACCT-SRYKBN      =  "90"     )
+           AND    (ACCT-SRYCDTOTAL  =  190182690)
+             MOVE    "92"               TO      RECE220-SRYKBN
+           END-IF
            IF      ACCT-SRYKBN = "90" OR "92"
                  MOVE    "6"            TO      RECE220-ZAISKBKBN
            ELSE 
@@ -1857,6 +1862,11 @@
            MOVE    SRY-SRYKA            TO      RECE230-SRYKA
            MOVE    SRY-SRYKBN           TO      RECE230-SRYKBN
            MOVE    SRY-SRYSYUKBN        TO      RECE230-SRYSYUKBN
+           IF     (ACCT-SRYKBN      =  "90"     )
+           AND    (ACCT-SRYCDTOTAL  =  190182690)
+             MOVE    "92"               TO      RECE230-SRYKBN
+             MOVE    "920"              TO      RECE230-SRYSYUKBN
+           END-IF
            MOVE    SRY-JIHIMONEYTOTAL   TO      RECE230-JIHIMONEY
       *
            MOVE    ZERO                 TO      IDX4
