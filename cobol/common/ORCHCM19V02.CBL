@@ -80,7 +80,6 @@
       * 04.08.00     NACL-多々納  13/01/11  診療回数テーブル１０対応
       * 04.08.00     NACL-多々納  13/03/18  一般名記載ログ出力対応
       * 04.07.00     NACL-多々納  13/10/08  第三者行為対応
-      * 04.07.00     NACL-多々納  14/05/XX  内服１回量編集対応
       *****************************************************************
       *
       *
@@ -377,36 +376,6 @@
       *
            03  WRK-BIKOU-FTN           PIC X(01).
       *
-      *H26.5
-      *１回量編集用
-      *    ＱＲ数量
-           03  WRK-QR-SURYO            PIC 9(05)V9(05).
-      *    ＱＲ１回量
-           03  WRK-QR-SURYO-SG         PIC 9(05)V9(05).
-      *    投与回数
-           03  WRK-DAYCNT              PIC 9(02).
-           03  WRK-SURYO3-3            PIC 9(05)V99.
-      *
-           03  WRK-SURYO-DAY           PIC X(30).
-           03  WRK-SURYO-HD            PIC X(30).
-           03  WRK-SURYO-KAI           PIC X(30).
-           03  WRK-SURYO-HN            PIC X(30).
-           03  WRK-SURYO-NN            PIC X(22).
-           03  WRK-MIDASI-3            PIC X(76).
-      *    用法コメント名称
-           03  WRK-YOH-NAME-WK         PIC X(200).
-           03  IDX-NS                  PIC 9(04).
-           03  IDX-NN                  PIC 9(04).
-           03  IDXF-Y                  PIC 9(04).
-           03  IDX-D                   PIC 9(04).
-           03  IDX-D2                  PIC 9(04).
-           03  IDX-N                   PIC 9(04).
-           03  IDX-DK                  PIC 9(04).
-           03  IDM                     PIC 9(04).
-           03  IDX-NY                  PIC 9(04).
-           03  IDX-N4                  PIC 9(04).
-           03  HZN-IDXA                PIC 9(04).
-      *
       *    剤毎の内容
        01  WRK-NAIYOU-AREA.
            03  WRK-NAIYOU-TBL          OCCURS   100.
@@ -434,13 +403,6 @@
                    07  WRK-SURYOU4         PIC X(22).
                    07  WRK-TANI4           PIC X(12).
                    07  WRK-FIL42           PIC X(06).
-      *H26.5
-      *        数量編集
-               05  WRK-NAIYOU-R6           REDEFINES   WRK-NAIYOU-Z.
-                   07  WRK-FIL61           PIC X(06).
-                   07  WRK-MIDASI61-G.
-                       09  WRK-MIDASI61        PIC X(56).
-                       09  WRK-MIDASI62        PIC X(20).
       *
       *    薬剤名編集
        01  WRK-MEISAI-AREA.
@@ -470,16 +432,6 @@
            03  WRK-HEN-NAME            PIC X(100).
            03  WRK-HEN-NAME2           PIC X(100).
            03  WRK-HEN-KETA            PIC 9(03).
-      *H26.5
-      *    不均等服用用法コード
-           03  WRK-FUKN-YOH-AREA.
-               05  WRK-FKN-SRYCD           PIC X(09).
-               05  WRK-FKN-YOH-NAME        PIC X(200).
-               05  WRK-FKN-YOH-NAME-R      REDEFINES
-                                           WRK-FKN-YOH-NAME.
-                   07  WRK-FKN-YOH-NAME-1      PIC X(76).
-                   07  WRK-FKN-YOH-NAME-2      PIC X(76).
-                   07  WRK-FKN-YOH-NAME-3      PIC X(48).
       *
       *    剤内容テーブル
        01  WRK-SRYACT-GRP-AREA.
@@ -571,8 +523,6 @@
            03  PARA-ALLERGY            PIC X(01).
            03  PARA-KANSENSYO          PIC X(01).
            03  PARA-COMMENT            PIC X(01).
-      *H26.5
-           03  PARA-SURYOHEN           PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -814,12 +764,6 @@
            MOVE    "COMMENT"           TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-COMMENT
-      *
-      *H26.5
-      *    １日量編集
-           MOVE    "SURYOHEN"          TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)       TO  PARA-SURYOHEN
       *
            .
        100-OPTION-SELECT-EXT.
@@ -2818,29 +2762,6 @@
       *****************************************************************
        20040-MEISAI-HEN-SEC         SECTION.
       *
-      *H26.5
-      *
-      *    最終行の用法コードから１日回数を取得する
-           MOVE    ZERO                TO  WRK-DAYCNT
-           IF     (PARA-SURYOHEN       =   "1"  )
-             AND  (WRK-SRY-SRYCD(WRK-SRY-MAX)(1:3)  =   "001")
-               MOVE    WRK-SRY-SRYCD(WRK-SRY-MAX)
-                                          TO  TNS-SRYCD
-               PERFORM 910-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
-                   IF     (TNS-KENTAICOMMENT   =   0
-                                               OR  1 )
-                       PERFORM VARYING    IDXA FROM    1   BY  1
-                               UNTIL      IDXA >   5
-                           IF      TNS-SSTKIJUNCD (IDXA)   =   1
-                               ADD     1           TO  WRK-DAYCNT
-                           END-IF
-                       END-PERFORM
-                   END-IF
-               END-IF
-           END-IF
-      *
-      *
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   WRK-SRY-MAX      )   OR
                               (WRK-SRY-SRYCD (IDXA)    =   SPACE)
@@ -2889,18 +2810,8 @@
       *            薬剤の下変更不可コード判定
                    PERFORM 310391-FUKACHK-SEC
                END-IF
-      *H26.5
-               IF      IDXA            =   IDXF-Y
-      *            不均等服用量
-                   CONTINUE
-               ELSE
-      *            コード毎の編集
-                   PERFORM 31032-TENSU-HENSYU-SEC
-      *
-               END-IF
-      *H26.5
       *        コード毎の編集
-      *????    PERFORM 31032-TENSU-HENSYU-SEC
+               PERFORM 31032-TENSU-HENSYU-SEC
            END-IF
            .
        3103-SRYACT-HEN-EXT.
@@ -2976,18 +2887,6 @@
       *                COMPUTE IDX-S             =   IDX-S    -   1
       **********   END-IF
            END-EVALUATE
-      *H26.5
-      *    １回量編集あり
-           IF      PARA-SURYOHEN       =   "1"
-               EVALUATE    WRK-SRYKBN
-               WHEN    "21"
-                   MOVE    SPACE                 TO  WRK-K3      (IDX-S)
-                   MOVE    "日分"                TO  WRK-HINICHI (IDX-S)
-               WHEN    "22"
-                   MOVE    SPACE                 TO  WRK-K3      (IDX-S)
-                   MOVE    "回分"                TO  WRK-HINICHI (IDX-S)
-               END-EVALUATE
-           END-IF
       *
            INSPECT WRK-NAIYOU-Z (IDX-S)    REPLACING  ALL "  "  BY  "　"
            INSPECT WRK-KAISUU   (IDX-S)    REPLACING  ALL "  "  BY  "　"
@@ -3071,10 +2970,6 @@
            INITIALIZE                      WRK-FUKA-MEI-AREA
            MOVE    ZERO                TO  FLG-FUKACHK
            MOVE    ZERO                TO  FLG-FUKACHK2
-      *H26.5
-           MOVE    ZERO                TO  IDXF-Y
-           INITIALIZE                      WRK-FUKN-YOH-AREA
-      *
       *
            COMPUTE IDXF2               =   IDXA    +   1
            PERFORM VARYING     IDXF    FROM    IDXF2   BY  1
@@ -3114,14 +3009,6 @@
                        MOVE    2                   TO  WRK-IPNMEI
                        MOVE    1                   TO  FLG-FUKACHK
                    WHEN    OTHER
-      *H26.5
-                       IF      PARA-SURYOHEN       =   "1"
-      *                    不均等投与用法コードのコメントチェック
-                           IF      WRK-SRY-SRYCD (IDXF)(1:3) =   "001"
-                               PERFORM 3103919-FUKINCOM-HEN-SEC
-                           END-IF
-                       END-IF
-      *
                        MOVE    WRK-SRY-MAX         TO  IDXF
                END-EVALUATE
            END-PERFORM
@@ -3137,43 +3024,6 @@
            END-IF
            .
        310391-FUKACHK-EXT.
-           EXIT.
-      *
-      *H26.5
-      *****************************************************************
-      *    不均等投与用法コードのコメントチェック編集処理
-      *****************************************************************
-       3103919-FUKINCOM-HEN-SEC         SECTION.
-      *
-           MOVE    WRK-SRY-SRYCD (IDXF)    TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF    ((TNS-SSTKIJUNCD (1)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (2)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (3)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (4)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (5)  =   ZERO ))
-            OR   ((TNS-SSTKIJUNCD (6)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (7)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (8)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (9)  =   ZERO )  AND
-                  (TNS-SSTKIJUNCD (10) =   ZERO ))
-            OR   ( TNS-KENTAICOMMENT   =   0
-                                       OR  1   )
-               CONTINUE
-           ELSE
-      *        服用時点・数値埋め込みがある、コメントであること
-               MOVE    IDXA                 TO  HZN-IDXA
-               MOVE    IDXF                 TO  IDXA
-               PERFORM 310300-YOUHO-NAME-SEC
-      *        服用内容
-               MOVE    WRK-YOH-NAME        TO  WRK-FKN-YOH-NAME
-               MOVE    WRK-SRY-SRYCD (IDXF)
-                                           TO  WRK-FKN-SRYCD
-               MOVE    IDXF                TO  IDXF-Y
-               MOVE    HZN-IDXA            TO  IDXA
-           END-IF
-           .
-       3103919-FUKINCOM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3432,18 +3282,6 @@
            END-IF
       *    名称編集
            PERFORM 31031-MEISYOU-HEN-SEC
-      *H26.5
-      *
-           MOVE    ZERO                TO  WRK-QR-SURYO
-           MOVE    ZERO                TO  WRK-QR-SURYO-SG
-      *    １回量編集あり
-           IF     (PARA-SURYOHEN       =   "1"   )
-               IF     (WRK-SRYCD (1:1)     =   "6"  OR  "7" )  OR
-                      (WRK-SRYCD (1:3)     =   "059"        )
-                   PERFORM 310310-SURYOHEN02-SYORI-SEC
-                   GO      TO      31031-NAIYOU-HENSYU-EXT
-               END-IF
-           END-IF
       *
            IF     (WRK-SRYCD (1:1)     =   "6"  OR  "7" )  OR
                   (WRK-SRYCD (1:3)     =   "059"        )
@@ -3533,15 +3371,6 @@
                END-IF
            END-IF
            MOVE    WRK-SURYO2          TO  ORCSQRCSV-SURYOU
-                                                  (IDX-QR1 IDX-QR2)
-      *H26.5
-           MOVE    WRK-QR-SURYO        TO  ORCSQRCSV-SURYOU
-                                                  (IDX-QR1 IDX-QR2)
-      *    １回量
-           MOVE    WRK-QR-SURYO-SG     TO  ORCSQRCSV-SURYOU-SG
-                                                  (IDX-QR1 IDX-QR2)
-      *    服用回数
-           MOVE    WRK-DAYCNT          TO  ORCSQRCSV-KAISU-SG
                                                   (IDX-QR1 IDX-QR2)
       *
            MOVE    TNS-TANINAME        TO  ORCSQRCSV-TANINAME
@@ -3906,8 +3735,6 @@
            END-IF
            COMPUTE WRK-SURYO2          =   WRK-KANZANCHI
                                        *   WRK-SURYO
-      *H26.5
-           MOVE    WRK-SURYO2          TO  WRK-QR-SURYO
       *
            MOVE    SPACE               TO  WRK-SURYO-X
            IF      WRK-SURYO2-S2(4:2)  =   ZERO
@@ -3951,27 +3778,6 @@
            PERFORM 2009-HENKAN-SEC
            MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N
       *
-      *H26.5
-      *
-           IF      PARA-SURYOHEN   NOT =   "1"
-               GO      TO      100111-SURYO-HEN03-EXT
-           END-IF
-      *    前づめ編集（１回量編集対応）
-           MOVE    SPACE               TO  WRK-SURYO-NN
-           MOVE    1                   TO  IDX-NS
-           MOVE    ZERO                TO  IDX-NN
-           PERFORM VARYING     IDXM    FROM    1  BY  2
-                   UNTIL       IDXM    >   18
-               IF      WRK-SURYO-N(IDXM:2)     =   SPACE
-                                               OR  "　"
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-SURYO-N(IDXM:2)
-                                           TO  WRK-SURYO-NN(IDX-NS:2)
-                   ADD     2               TO  IDX-NS
-                   ADD     2               TO  IDX-NN
-               END-IF
-           END-PERFORM
            .
        100111-SURYO-HEN03-EXT.
            EXIT.
@@ -4013,368 +3819,8 @@
                MOVE    WRK-ZENKAKU-G(1:22) TO  WRK-SURYO-N22
            END-IF
       *
-      *H26.5
-           IF      PARA-SURYOHEN   NOT =   "1"
-               GO      TO      100112-SURYO-HEN05-EXT
-           END-IF
-      *
-      *    前づめ編集
-           IF      WRK-SURYO-N22       =   SPACE
-               MOVE    WRK-SURYO-N         TO  WRK-SURYO-N22
-           END-IF
-           MOVE    SPACE               TO  WRK-SURYO-NN
-           MOVE    1                   TO  IDX-NS
-           MOVE    ZERO                TO  IDX-NN
-           PERFORM VARYING     IDXM    FROM    1  BY  2
-                   UNTIL       IDXM    >   22
-               IF      WRK-SURYO-N22(IDXM:2)   =   SPACE
-                                               OR  "　"
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-SURYO-N22(IDXM:2)
-                                           TO  WRK-SURYO-NN(IDX-NS:2)
-                   ADD     2               TO  IDX-NS
-                   ADD     2               TO  IDX-NN
-               END-IF
-           END-PERFORM
            .
        100112-SURYO-HEN05-EXT.
-           EXIT.
-      *
-      *
-      *H26.5
-      *****************************************************************
-      *    １回量編集処理
-      *****************************************************************
-       310310-SURYOHEN02-SYORI-SEC              SECTION.
-      *
-      *    数量
-           MOVE    WRK-SRY-SRYSURYO (IDXA) TO  WRK-SURYO
-           IF     (WRK-SRYKBN          =   "21" )
-              AND (WRK-SRYCD (1:1) NOT =   "7"  )
-              AND (FLG-SOURYOHEN   NOT =   1    )
-              AND (WRK-SURYO       NOT =   ZERO )
-      *        内服1回数量編集
-               PERFORM 3103102-SURYO-HEN02-SEC
-           ELSE
-      *        数量編集
-               PERFORM 3103101-SURYO-HEN01-SEC
-           END-IF
-           .
-       310310-SURYOHEN02-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    数量表示用編集処理
-      *****************************************************************
-       3103101-SURYO-HEN01-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  WRK-SURYO-N
-           MOVE    SPACE               TO  WRK-SURYO-N22
-      *    換算値により数量変更
-           IF      WRK-KANZANCHI       =   ZERO
-               MOVE    1               TO  WRK-KANZANCHI
-           END-IF
-           COMPUTE WRK-SURYO2          =   WRK-KANZANCHI
-                                       *   WRK-SURYO
-      *
-           MOVE    WRK-SURYO2          TO  WRK-QR-SURYO
-      *
-           MOVE    SPACE               TO  WRK-SURYO-X
-           IF      WRK-SURYO2-S2(4:2)  =   ZERO
-      *        小数点３桁まで
-               PERFORM 100111-SURYO-HEN03-SEC
-           ELSE
-      *        小数点５桁
-               PERFORM 100112-SURYO-HEN05-SEC
-           END-IF
-      *
-           MOVE    WRK-SURYO-NN        TO  WRK-SURYO-DAY
-           MOVE    IDX-NN              TO  IDX-D
-      *
-           COMPUTE IDXM            =   56
-                                   -   (IDX-D  +  4)
-           IF      WRK-MIDASI61(IDX-S) (IDXM:)  NOT =   SPACE
-               ADD     1               TO  IDX-S
-               MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-               MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-           END-IF
-           COMPUTE IDM                 =   56
-                                       -   IDX-D
-                                       +   1
-      *
-           MOVE    WRK-SURYO-DAY       TO  WRK-MIDASI61
-                                                      (IDX-S)(IDM:)
-           MOVE    TNS-TANINAME        TO  WRK-MIDASI62 (IDX-S)
-      *
-           .
-       3103101-SURYO-HEN01-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    数量表示用編集処理
-      *****************************************************************
-       3103102-SURYO-HEN02-SEC         SECTION.
-      *
-      *    １日量
-           PERFORM 10012-DAY-SURYO-HEN-SEC
-      *
-           IF      IDXF-Y              =   ZERO
-               IF     WRK-DAYCNT      >   ZERO
-      *            １回量・１日量編集
-                   PERFORM 100121-SURYO-KAIHEN-SEC
-               ELSE
-      *            １日量
-                   PERFORM 100122-SURYO-DAYHEN-SEC
-               END-IF
-           ELSE
-      *        不均等コメント編集
-               PERFORM 100123-SURYO-COMHEN-SEC
-           END-IF
-      *
-           .
-       3103102-SURYO-HEN02-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    １日量表示用編集処理
-      *****************************************************************
-       10012-DAY-SURYO-HEN-SEC                  SECTION.
-      *
-           MOVE    SPACE               TO  WRK-SURYO-DAY
-           MOVE    SPACE               TO  WRK-SURYO-N
-           MOVE    SPACE               TO  WRK-SURYO-N22
-      *    換算値により数量変更
-           IF      WRK-KANZANCHI       =   ZERO
-               MOVE    1               TO  WRK-KANZANCHI
-           END-IF
-           COMPUTE WRK-SURYO2          =   WRK-KANZANCHI
-                                       *   WRK-SURYO
-      *
-           MOVE    WRK-SURYO2          TO  WRK-QR-SURYO
-      *
-           MOVE    SPACE               TO  WRK-SURYO-X
-           IF      WRK-SURYO2-S2(4:2)  =   ZERO
-      *        小数点３桁まで
-               PERFORM 100111-SURYO-HEN03-SEC
-           ELSE
-      *        小数点５桁
-               PERFORM 100112-SURYO-HEN05-SEC
-           END-IF
-           MOVE    WRK-SURYO-NN        TO  WRK-SURYO-DAY
-           MOVE    IDX-NN              TO  IDX-D
-      *
-           MOVE    SPACE               TO  WRK-SURYO-HD
-           STRING  "（１日"
-                   WRK-SURYO-DAY       DELIMITED  BY  SPACE
-                   TNS-TANINAME        DELIMITED  BY  SPACE
-                   "）"                DELIMITED  BY  SIZE
-                                       INTO    WRK-SURYO-HD
-           END-STRING
-           COMPUTE IDX-D2              =   IDX-D   +   8 
-                                       +  (TNS-TANIMOJISU  *  2)
-      *
-           .
-       10012-DAY-SURYO-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    １日量編集処理
-      *****************************************************************
-       100122-SURYO-DAYHEN-SEC                  SECTION.
-      *
-           MOVE    SPACE               TO  WRK-SURYO-HD
-           STRING  "１日"
-                   WRK-SURYO-DAY       DELIMITED  BY  SPACE
-                                       INTO    WRK-SURYO-HD
-           END-STRING
-           COMPUTE IDX-D2              =   IDX-D   +   4
-      *
-      *    １回量編集
-           COMPUTE IDXM            =   56
-                                   -   (IDX-D2  +  4)
-           IF      WRK-MIDASI61(IDX-S) (IDXM:)  NOT =   SPACE
-               ADD     1               TO  IDX-S
-               MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-               MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-           END-IF
-           COMPUTE IDM                 =   56
-                                       -   IDX-D2
-                                       +   1
-           MOVE    WRK-SURYO-HD        TO  WRK-MIDASI61
-                                                      (IDX-S)(IDM:)
-           MOVE    TNS-TANINAME        TO  WRK-MIDASI62(IDX-S)
-      *
-           .
-       100122-SURYO-DAYHEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    １回量編集処理
-      *****************************************************************
-       100121-SURYO-KAIHEN-SEC                  SECTION.
-      *
-      *    １回量
-           COMPUTE WRK-SURYO2          =  (WRK-KANZANCHI
-                                       *   WRK-SURYO )
-                                       /   WRK-DAYCNT
-      *
-           IF      WRK-SURYO-S2        =   ZERO
-      *        小数点２桁まで
-      *        小数点３桁目で四捨五入
-               COMPUTE WRK-SURYO3-3    =   WRK-SURYO2
-                                       +   0.005
-               MOVE    WRK-SURYO3-3    TO  WRK-SURYO2
-               PERFORM 100111-SURYO-HEN03-SEC
-           ELSE
-      *        小数点５桁
-               PERFORM 100112-SURYO-HEN05-SEC
-           END-IF
-           MOVE    WRK-SURYO-NN        TO  WRK-SURYO-KAI
-           MOVE    IDX-NN              TO  IDX-DK
-      *
-           MOVE    WRK-SURYO2          TO  WRK-QR-SURYO-SG
-      *
-      *    １回量　編集
-           MOVE    SPACE               TO  WRK-SURYO-HN
-           STRING  "１回"
-                   WRK-SURYO-KAI       DELIMITED  BY  SPACE
-                                       INTO    WRK-SURYO-HN
-           END-STRING
-           COMPUTE IDX-DK              =   IDX-DK  +   4
-      *
-      *    １回量編集
-           COMPUTE IDXM            =   56
-                                   -   (IDX-DK  +  4)
-           IF      WRK-MIDASI61(IDX-S) (IDXM:)  NOT =   SPACE
-               ADD     1               TO  IDX-S
-               MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-               MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-           END-IF
-           COMPUTE IDXM                =   IDXM    +   5
-           MOVE    WRK-SURYO-HN        TO  WRK-MIDASI61
-                                                      (IDX-S)(IDXM:)
-      *    １日量が20文字以内は横に
-           COMPUTE IDX-N4              =  (TNS-TANIMOJISU  *  2)
-                                       +   IDX-D2
-                                       +   2
-           IF      IDX-N4              <=  20
-               MOVE    SPACE               TO  WRK-MIDASI-3
-               STRING  TNS-TANINAME        DELIMITED  BY  SPACE
-                       "　"                DELIMITED  BY  SIZE
-                       WRK-SURYO-HD        DELIMITED  BY  SPACE
-                                       INTO    WRK-MIDASI-3
-               END-STRING
-               MOVE    WRK-MIDASI-3    TO  WRK-MIDASI62
-                                                    (IDX-S)
-           ELSE
-               MOVE    TNS-TANINAME    TO  WRK-MIDASI62(IDX-S)
-      *
-               ADD     1               TO  IDX-S
-               MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-               MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-               COMPUTE IDM             =   76
-                                       -   IDX-D2
-                                       +   1
-               MOVE    WRK-SURYO-HD    TO  WRK-MIDASI61-G(IDX-S)
-                                                      (IDM:)
-           END-IF
-           .
-       100121-SURYO-KAIHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    不均等コメント編集処理
-      *****************************************************************
-       100123-SURYO-COMHEN-SEC                  SECTION.
-      *
-      *    桁数
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-FKN-YOH-NAME    TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAX         TO  IDX-NY
-      *
-           IF      IDX-NY              >=  76
-               ADD     1               TO  IDX-S
-               MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-               MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-               MOVE    WRK-FKN-YOH-NAME    TO  WRK-MIDASI61-G
-                                                      (IDX-S)
-               IF      WRK-FKN-YOH-NAME-2  NOT =   SPACE
-                   COMPUTE IDX-NY          =   IDX-NY    -  76
-      *
-                   ADD     1               TO  IDX-S
-                   MOVE    ALL "　"        TO  WRK-NO (IDX-S)
-                   MOVE    ALL "　"        TO  WRK-K2 (IDX-S)
-                   IF      IDX-NY              >=  76
-                       MOVE    WRK-FKN-YOH-NAME-2  TO  WRK-MIDASI61-G
-                                                           (IDX-S)
-      *
-                       COMPUTE IDX-NY          =   IDX-NY    -  76
-                       ADD     1                   TO  IDX-S
-                       MOVE    ALL "　"            TO  WRK-NO (IDX-S)
-                       MOVE    ALL "　"            TO  WRK-K2 (IDX-S)
-                       MOVE    WRK-FKN-YOH-NAME-3  TO  WRK-YOH-NAME
-                   ELSE
-                       MOVE    WRK-FKN-YOH-NAME-2  TO  WRK-YOH-NAME
-                   END-IF
-               ELSE
-                   MOVE    SPACE           TO  WRK-YOH-NAME
-                   MOVE    ZERO            TO  IDX-NY
-               END-IF
-           ELSE
-               MOVE    WRK-FKN-YOH-NAME    TO  WRK-YOH-NAME
-           END-IF
-           IF     (IDX-NY  +  IDX-D2 + 2)  >  76
-      *        不均等コメント・１日量を別行
-               ADD     1               TO  IDX-S
-               MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-               MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-               COMPUTE IDM             =   76
-                                       -  (IDX-NY    +   1 )
-               MOVE    WRK-YOH-NAME    TO  WRK-MIDASI61-G
-                                                      (IDX-S)(IDM:)
-               ADD     1               TO  IDX-S
-               MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-               MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-               COMPUTE IDM             =   76
-                                       -  (IDX-D2    +   1 )
-               MOVE    WRK-SURYO-HD    TO  WRK-MIDASI61-G
-                                                      (IDX-S)(IDM:)
-           ELSE
-      *        まとめ
-               MOVE    SPACE               TO  WRK-MIDASI-3
-               IF      WRK-YOH-NAME        =   SPACE
-                   MOVE    WRK-SURYO-HD    TO  WRK-MIDASI-3
-                   MOVE    ZERO            TO  IDX-NY
-               ELSE
-                   STRING  WRK-YOH-NAME        DELIMITED  BY  SPACE
-                           "　"                DELIMITED  BY  SIZE
-                           WRK-SURYO-HD        DELIMITED  BY  SPACE
-                                           INTO    WRK-MIDASI-3
-                   END-STRING
-               END-IF
-               MOVE    ZERO            TO  IDXM
-               COMPUTE IDXM            =   76
-                                       -  (IDX-NY
-                                       +   IDX-D2
-                                       +   4      )
-               IF      WRK-MIDASI61-G (IDX-S)(IDXM:)
-                                       NOT =   SPACE
-                   ADD     1               TO  IDX-S
-                   MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-                   MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
-               END-IF
-               COMPUTE IDM             =   76
-                                       -  (IDX-NY
-                                       +   IDX-D2
-                                       +   3     )
-               MOVE    WRK-MIDASI-3    TO  WRK-MIDASI61-G (IDX-S)
-                                                    (IDM:)
-           END-IF
-      *
-           .
-       100123-SURYO-COMHEN-EXT.
            EXIT.
       *
       *
