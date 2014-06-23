@@ -97,6 +97,14 @@
            END-IF
       *
            MOVE   WRK-POINTER-PATH TO  WRK-POINTER
+           MOVE   WRK-FULLNAME     TO  SGETTEMP-TEMPDIR
+      *
+           STRING "/"
+           INTO   SGETTEMP-FULLNAME
+           WITH   POINTER  WRK-POINTER
+           END-STRING
+      *
+           MOVE   WRK-POINTER-PATH TO  WRK-POINTER
            MOVE   WRK-FULLNAME     TO  SGETTEMP-FULLNAME
       *
            STRING "/"
@@ -114,7 +122,7 @@
       *
                STRING "/"
                       FUNCTION TRIM(SGETTEMP-BASENAME) DELIMITED BY SIZE
-                      "-"                              DELIMITED BY SIZE
+                      "."                              DELIMITED BY SIZE
                       WRK-SEQ-X                        DELIMITED BY SIZE
                INTO   SGETTEMP-FULLNAMES (WRK-SEQ)
                WITH   POINTER  WRK-POINTER

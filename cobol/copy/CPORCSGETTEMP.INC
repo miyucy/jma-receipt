@@ -24,6 +24,7 @@
       ************************************************************
        01  SGETTEMP-AREA.
            03  SGETTEMP-BASENAME           PIC X(1024).
+           03  SGETTEMP-TEMPDIR            PIC X(1024).
            03  SGETTEMP-FULLNAME-AREA.
                05  SGETTEMP-FULLNAME       PIC X(1024).
                05  SGETTEMP-FULLNAMES-OCC  OCCURS 10.
