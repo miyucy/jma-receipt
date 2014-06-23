@@ -699,7 +699,9 @@
            IF    IDX-TBL           >   ZERO
       *        伝票番号毎処理
                PERFORM 2002-HENSYU-SYORI-SEC
+           END-IF
       *        件数集計
+           IF      FLG-CNT-ARI         =   1
                PERFORM 20029-CNT-SYORI-SEC
            END-IF
       *    合計
