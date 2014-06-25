@@ -1,39 +1,16 @@
-#!%RUBY%
-# coding : euc-jp
-Encoding.default_external = "euc-jp" unless RUBY_VERSION == "1.8.7"
-
-
-# Claimバージョン2ライブラリ
-
-
-
-
-
-# =============================================================================
-
-
-
-# 項目の前後にある空白の除去処理
-#    引数
-# word - 空白を除去する文字列
-#    戻り値
-# 空白除去後の文字列
-#    備考
-# 引数に対しても空白の除去処理を行うので、
-# 内容を保存したい場合は、別領域にデータを退避してから実行してください
-def item_trim(word)
-	# 行頭・行末・項目間の空白除去
-	while  /^\s+?/ =~ word
-		word.gsub! /^\s+?/ , ''
-	end
-	while  /\s+?\n/ =~ word
-		word.gsub! /\s+?\n/ , "\n"
+Encoding.default_external = "euc-jisx0213"
+/ =~ word
+		word.gsub! /\s+?
+/ , "
+"
 	end
 	while  /\s+?$/ =~ word
 		word.gsub! /\s+?$/ , ''
 	end
-	while  /,[^\S\n]+?/ =~ word
-		word.gsub! /,[^\S\n]+?/ , ','
+	while  /,[^\S
+]+?/ =~ word
+		word.gsub! /,[^\S
+]+?/ , ','
 	end
 	while  /\s+?,/ =~ word
 		word.gsub! /\s+?,/ , ","
@@ -54,21 +31,38 @@ end
 # 内容を保存したい場合は、別領域にデータを退避してから実行してください
 def record_del_comment_space(word)
 	# コメントの削除
-	while  /#[^\n]+?\n/ =~ word
-#	while  /#[\s\S]*?\n/ =~ word
-		word.gsub! /#[^\n]+?\n/ , "\n"
-#		word.gsub! /#[\s\S]*?\n/ , "\n"
-#		word.gsub! /#[\s\S]*?\n/ , ''
+	while  /#[^
+]+?
+/ =~ word
+#	while  /#[\s\S]*?
+/ =~ word
+		word.gsub! /#[^
+]+?
+/ , "
+"
+#		word.gsub! /#[\s\S]*?
+/ , "
+"
+#		word.gsub! /#[\s\S]*?
+/ , ''
 	end
 	# コメントのみの削除 (2003/12/5追加)
-	while  /^\s*?#[^\n]*?\n/ =~ word
-		word.gsub! /^\s*?#[^\n]*?\n/ , "\n"
+	while  /^\s*?#[^
+]*?
+/ =~ word
+		word.gsub! /^\s*?#[^
+]*?
+/ , "
+"
 	end
 	# ファイル末コメントの削除
-	word.gsub! /#[^\n]+?$/, ''
+	word.gsub! /#[^
+]+?$/, ''
 	# 空白行の削除処理
-	while  /^\s*?\n/ =~ word
-		word.gsub! /^\s*?\n/ , ''
+	while  /^\s*?
+/ =~ word
+		word.gsub! /^\s*?
+/ , ''
 	end
 	# 行頭・行末・項目間の空白除去
 	item_trim word
@@ -102,7 +96,8 @@ def repeat_extend_proc(in_data)
 
 	# 識別子は、「_」を付けた、可変長数字をセットする
 
-	w_data1 = in_data.split("\n")	# Repeat定義に対応できるように配列化
+	w_data1 = in_data.split("
+")	# Repeat定義に対応できるように配列化
 	w_data1.each_index do |x|
 		w_str1 = ''
 		w_str2 = ''
@@ -134,13 +129,16 @@ def repeat_extend_proc(in_data)
 	end
 
 
-	w_data2 = w_data1.join("\n")
+	w_data2 = w_data1.join("
+")
 	w_data1 = []
 	# このjoinした直後は、最後の行の後ろに改行がないので注意
 
 	# 最後が改行でない場合は、ここで改行を追加
-	if w_data2[-1, 1] != "\n"
-		w_data2 += "\n"
+	if w_data2[-1, 1] != "
+"
+		w_data2 += "
+"
 	end
 
 
@@ -153,7 +151,8 @@ def repeat_extend_proc(in_data)
 		repeat_target = ''		# 繰り返しターゲット領域
 		repeat_figformat = ''	# 桁数をsprintfで表現する際の表現を格納する領域
 
-		if w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,[\s\S]*?)\n/
+		if w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,[\s\S]*?)
+/
 			w_data3 = $1.split(',')
 			if (w_data3.size != 4)
 				puts 'Repeat定義の中で、引数の指定が3つではないものがあります'
@@ -161,7 +160,9 @@ def repeat_extend_proc(in_data)
 		end
 
 
-		while w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,\s*?([0-9]+?)\s*?,\s*?(\S+?)\s*?,\s*?([0-9]+?)[\s\S]*?\n([\s\S]*?)^\s*?\$EndRepeat#{rname}[\s\S]*?\n)/i
+		while w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,\s*?([0-9]+?)\s*?,\s*?(\S+?)\s*?,\s*?([0-9]+?)[\s\S]*?
+([\s\S]*?)^\s*?\$EndRepeat#{rname}[\s\S]*?
+)/i
 			# $1 = $Repeat定義の開始行から終了行までの全体
 			# $2 = 繰り返し回数
 			# $3 = 置換対象文字列
@@ -265,7 +266,8 @@ def basehierarchy_extend_proc(in_data)
 
 	# 識別子は、「_」を付けた、可変長数字をセットする
 
-	w_data1 = in_data.split("\n")	# Base定義に対応できるように配列化
+	w_data1 = in_data.split("
+")	# Base定義に対応できるように配列化
 	w_data1.each_index do |x|
 		w_str1 = ''
 		w_str2 = ''
@@ -348,11 +350,13 @@ def basehierarchy_extend_proc(in_data)
 		if w_data1[x] =~ /^\s*?\$BaseStart_[0-9]+?\s*?/i
 			# BaseStart文の行である
 			w_data1[x] = ''
-#			w_data1[x] = "\n"
+#			w_data1[x] = "
+"
 		elsif w_data1[x] =~ /^\s*?\$BaseEnd_[0-9]+?\s*?/i
 			# BaseEnd文の行である
 			w_data1[x] = ''
-#			w_data1[x] = "\n"
+#			w_data1[x] = "
+"
 		end
 	end
 	# ここでは、単純に$BaseStart,$BaseEndの行を空白にしているだけなので、
@@ -370,13 +374,16 @@ def basehierarchy_extend_proc(in_data)
 	# 単純に、gsubを使った方法がだめだったので、こちらの方法をとる
 
 
-	w_data2 = w_data1.join("\n")
+	w_data2 = w_data1.join("
+")
 	w_data1 = []
 	# このjoinした直後は、最後の行の後ろに改行がないので注意
 
 	# 最後が改行でない場合は、ここで改行を追加
-	if w_data2[-1, 1] != "\n"
-		w_data2 += "\n"
+	if w_data2[-1, 1] != "
+"
+		w_data2 += "
+"
 	end
 
 	return w_data2
@@ -405,7 +412,8 @@ def linetarget_setmark_proc(in_data)
 	marknum_stack = []	# ネストに対応するためのスタック領域
 
 
-	w_data1 = in_data.split("\n")
+	w_data1 = in_data.split("
+")
 
 	w_data1.each_index do |i|
 		w_data2 = ''	# １行のデータの一時格納領域
@@ -424,12 +432,15 @@ def linetarget_setmark_proc(in_data)
 	end
 
 
-	out_data = w_data1.join("\n")
+	out_data = w_data1.join("
+")
 	# このjoinした直後は、最後の行の後ろに改行がないので注意
 
 	# 最後が改行でない場合は、ここで改行を追加
-	if out_data[-1, 1] != "\n"
-		out_data += "\n"
+	if out_data[-1, 1] != "
+"
+		out_data += "
+"
 	end
 
 	return out_data
@@ -462,7 +473,8 @@ def hierarchy_add_startpoint_proc(in_data)
 	w_num1 = 0
 
 
-	h_data1 = in_data.split "\n"
+	h_data1 = in_data.split "
+"
 
 
 	w_idx1 = 0		# 起点位置のインデックス
@@ -497,10 +509,13 @@ def hierarchy_add_startpoint_proc(in_data)
 
 
 	ret_data = ''
-	ret_data = h_data1.join "\n"
+	ret_data = h_data1.join "
+"
 	# 最後が改行でない場合は、ここで改行を追加
-	if ret_data[-1, 1] != "\n"
-		ret_data += "\n"
+	if ret_data[-1, 1] != "
+"
+		ret_data += "
+"
 	end
 
 
@@ -695,44 +710,64 @@ def debug_realize_topline_mes(output_mode, info_ary)
 	case	output_mode
 	# ----------------------------------------
 	when	1
-		output_mes += '-' * 40 + "\n"
-		output_mes += 'ファイルの形式' + "\n"
+		output_mes += '-' * 40 + "
+"
+		output_mes += 'ファイルの形式' + "
+"
 		case	info_ary[0]
 		when	0
-			output_mes += '0 = 不正な内容か、バージョン2より前のもの' + "\n"
+			output_mes += '0 = 不正な内容か、バージョン2より前のもの' + "
+"
 		when	1
-			output_mes += '1 = XMLテンプレートファイル' + "\n"
+			output_mes += '1 = XMLテンプレートファイル' + "
+"
 		when	2
-			output_mes += '2 = defソースファイル' + "\n"
+			output_mes += '2 = defソースファイル' + "
+"
 		when	3
-			output_mes += '3 = 階層情報ソースファイル' + "\n"
+			output_mes += '3 = 階層情報ソースファイル' + "
+"
 		when	4
-			output_mes += '4 = def実行時ファイル' + "\n"
+			output_mes += '4 = def実行時ファイル' + "
+"
 		when	5
-			output_mes += '5 = 階層実行時ファイル' + "\n"
+			output_mes += '5 = 階層実行時ファイル' + "
+"
 		else
-			output_mes += String(info_ary[0]) + ' = ' + 'realize_topline関数のファイル形式の値か不正です' + "\n"
+			output_mes += String(info_ary[0]) + ' = ' + 'realize_topline関数のファイル形式の値か不正です' + "
+"
 		end
 
-		output_mes += '-' * 40 + "\n"
-		output_mes += 'メジャーバージョン = ' + String(info_ary[1]) + "\n"
-		output_mes += 'マイナーバージョン = ' + String(info_ary[2]) + "\n"
+		output_mes += '-' * 40 + "
+"
+		output_mes += 'メジャーバージョン = ' + String(info_ary[1]) + "
+"
+		output_mes += 'マイナーバージョン = ' + String(info_ary[2]) + "
+"
 
-		output_mes += '-' * 40 + "\n"
-		output_mes += '文字コード' + "\n"
+		output_mes += '-' * 40 + "
+"
+		output_mes += '文字コード' + "
+"
 		case	info_ary[3]
 		when	0
-			output_mes += '0 = 未定義か未定義の文字コードである' + "\n"
+			output_mes += '0 = 未定義か未定義の文字コードである' + "
+"
 		when	1
-			output_mes += '1 = EUC-JPコード' + "\n"
+			output_mes += '1 = EUC-JPコード' + "
+"
 		when	2
-			output_mes += '2 = Shift_JISコード' + "\n"
+			output_mes += '2 = Shift_JISコード' + "
+"
 		when	3
-			output_mes += '3 = UTF-8コード' + "\n"
+			output_mes += '3 = UTF-8コード' + "
+"
 		when	4
-			output_mes += '4 = JISコード' + "\n"
+			output_mes += '4 = JISコード' + "
+"
 		else
-			output_mes += String(info_ary[0]) + ' = ' + 'realize_topline関数の文字コードの値か不正です' + "\n"
+			output_mes += String(info_ary[0]) + ' = ' + 'realize_topline関数の文字コードの値か不正です' + "
+"
 		end
 	# ----------------------------------------
 	else

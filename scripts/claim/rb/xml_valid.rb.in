@@ -1,39 +1,24 @@
-#!%RUBY%
-# coding : utf-8
-Encoding.default_external = "euc-jp" unless RUBY_VERSION == "1.8.7"
-#
-# claim test Rcv server
-#   xml valid parser check interface module
-#
-#   in : xml file path_name
-#      : dtd file path_name
-#      : log file path_name
-#   out: retrun code ( OK=true, NG=false )
-#      : log file( append mode )
-# 
-# version 1.3.0
-#                  '01-10-30 by Yamamoto
-
-#--- Define Method --------------------
-def parser_check(xml_fl_path_name, dtd_fl_path_name, log_fl_path_name)
-
-  tmp_fl = xml_fl_path_name.gsub(/.xml$/, "_tmp.xml")
-  pre_pro(xml_fl_path_name, dtd_fl_path_name, tmp_fl)
-  
-#-----<
-#--  ans = `export LD_LIBRARY_PATH=.:/usr/local/orca/lib && ./SAXPrint -v=auto -n #{tmp_fl} 2>&1 1>/dev/null`
-#  if ans == ""
-#    ans = "\n" + xml_fl_path_name + " : validate check OK\n"
+Encoding.default_external = "euc-jisx0213"
+" + xml_fl_path_name + " : validate check OK
+"
 #    rtn = true
 #  else
 #    rtn = false
 #  end
   
     rtn = true
-#  ans = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "\n" + ans + "\n\n"
+#  ans = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "
+" + ans + "
+
+"
 #-----<
-  ans = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "\n"  + "\n\n"
-  $stderr.print "\n[Results]\n" + ans
+  ans = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "
+"  + "
+
+"
+  $stderr.print "
+[Results]
+" + ans
   open(log_fl_path_name, "a") do |log|
     log.puts ans
   end
@@ -45,7 +30,8 @@ end
 #   Insert DTD declare <!DOCTYPE ... >
 #   replace "EMPTY" declared Elements <kara ... ></kara> --> <kara ... />
 def pre_pro(xml_fl_path_name, dtd_fl_path_name, tmp_fl)
-  doctype_line = '<!DOCTYPE Mml SYSTEM "' + dtd_fl_path_name + '">' + "\n"
+  doctype_line = '<!DOCTYPE Mml SYSTEM "' + dtd_fl_path_name + '">' + "
+"
   clm_emp_elem_list = './claim_empty_elem.list'
   
   ins_flg = false ; buf_out = ""
@@ -66,7 +52,8 @@ def pre_pro(xml_fl_path_name, dtd_fl_path_name, tmp_fl)
 #      emp_elem.gsub!(/\s+(.)*/m,"")
       emp_elem.chop!
       $stderr.puts "  empty elements " + emp_elem
-      buf_out.gsub!(/>\s*\n*\r*<\s*\/\s*#{emp_elem}\s*>/,'/>') if emp_elem != ""
+      buf_out.gsub!(/>\s*
+*\r*<\s*\/\s*#{emp_elem}\s*>/,'/>') if emp_elem != ""
     end
   end
   

@@ -1,230 +1,5 @@
-#!%RUBY%
-# coding : euc-jp
-Encoding.default_external = "euc-jp" unless RUBY_VERSION == "1.8.7"
-
-
-# Claim通信バージョン2
-# 受信XMLのシーケンシャルファイルへの変換処理
-
-# 2004/01/28 version2.00
-#   ★XMLデータをリスト構造にすることで高速化
-#     ただし、データ量の少ないファイルについては、速度は変わらない
-#     大きいXMLファイルに対する効果が高く、
-#     最も大きな物で90倍の高速化を確認している
-#     なお、速度は設定ファイルの大きさに依存しているため、
-#     設定ファイルのサイズが大きくなると遅くなるので、
-#     設計には注意してほしい
-#   ★設定ファイルをコンバートして生成する形をとることで、可読性を向上
-#     いままで、設定ファイルの見栄えがかなり特殊だったが、
-#     記述をXMLパスに似せた形にし、開始位置情報をなくすことで
-#     設定ファイルは見やすくなっている。
-
-
-
-# =============================================================================
-# =============================================================================
-# 直接実行したときの処理
-if __FILE__ == $0
-
-
-#	$debug = 0	# デバッグモードではない
-#	$debug = 1	# デバッグモードである (レベル1)
-#	$debug = 2	# デバッグモードである (レベル2)
-	$debug = 3	# デバッグモードである (レベル3)
-
-	# Debian環境ではEUC環境を、Windows環境ではシフトJIS環境を選択してください。
-	$lang_conf = '1'	# EUC環境
-#	$lang_conf = '2'	# シフトJIS環境
-
-
-
-	# LineTarget定義で、空白にするXMLパスの置き換え文字
-	$nodata_word = '<none>'
-
-	help_flg = 0		# ヘルプ表示フラグ [0 = ヘルプを表示しない, 1 = ヘルプを表示する]
-	$output_mode = 0	# 出力モード [0 = シーケンシャルファイル出力, 1 = CSVファイル出力]
-						# 上記の出力モードがデフォルト
-	w_file_name = []		# ファイル名の一時的な格納領域
-
-	$hir_match_mode = 0		# 階層情報突き合わせモード[0 = 階層配列検索, 1 = 階層リスト検索]
-
-
-
-	# 引数のセット処理
-	ARGV.each do |w_a1|
-		case	w_a1.strip
-		when	'-s'
-			# 出力するファイルはシーケンシャルファイル形式である
-			$output_mode = 0
-		when	'-c'
-			# 出力するファイルはCSVファイル形式である
-			$output_mode = 1
-		when	'--lang=euc-jp'
-			# 言語環境は、EUC-JPである
-			$lang_conf = '1'
-		when	'--lang=shift_jis'
-			# 言語環境は、シフトJISである
-			$lang_conf = '2'
-		when	'--hierarcy-match=array'
-			# 階層情報とのマッチングは、配列形式である
-			$hir_match_mode = 0
-		when	'--hierarcy-match=list'
-			# 階層情報とのマッチングは、階層情報形式である
-			$hir_match_mode = 1
-		when	'--help', '-?'
-			help_flg = 1
-		else
-			if (w_a1.strip)[0, 1] != '-'
-				# １文字目がマイナス以外のその他のコマンドオプションはファイル名としてセットする
-				w_file_name.push w_a1.strip
-			end
-		end
-	end
-
-	# ファイル名の数が少ないときは、エラー表示させる
-	case	w_file_name.size
-	when	0
-		# ファイル名の指定がない
-		help_flg = 1
-	when	1, 2
-		# ファイルの数が少ない
-		$stderr.puts 'コマンドラインの引数にファイル名が指定されていません'
-		$stderr.puts ''
-		help_flg = 1
-	else
-		# ファイル名の指定が３つ以上なので、セットされた内容を渡す
-		$hir_file = w_file_name[0]
-		$xml_file = w_file_name[1]
-		$seq_file = w_file_name[2]
-	end
-
-
-	if help_flg == 1
-		$stderr.puts 'claim2_decode.rb [option] [階層定義ファイル] [入力XMLファイル] [出力ファイル]'
-		$stderr.puts ''
-		$stderr.puts '  [option]'
-		$stderr.puts '    -s  シーケンシャルファイル出力 [default]'
-		$stderr.puts '    -c  CSVファイル出力'
-		$stderr.puts '    --lang=euc-jp     実行環境の文字コードがEUC-JPである(Default)'
-		$stderr.puts '    --lang=shift_jis  実行環境の文字コードがShift_JISである(Windowsでの実行用)'
-		exit 0
-	end
-
-
-	# 変数確認用の表示処理
-	$stderr.puts '階層定義ファイル           = [' + $hir_file + ']'
-	$stderr.puts '入力XMLファイル            = [' + $xml_file + ']'
-	$stderr.puts '出力シーケンシャルファイル = [' + $seq_file + ']'
-
-
-
-# =============================================================================
-	# 別モジュール取り込み処理
-
-
-
-end
-
-
-require 'claim2_lib'
-require 'xmlparser'
-require 'kconv'
-require 'uconv'
-include Uconv
-
-
-
-# =============================================================================
-# =============================================================================
-# クラス部
-
-
-# XMLリスト基本クラス
-class Xml_baselist
-
-
-	# ------------------------------------------------------------
-	# 初期化
-	def initialize
-		@flg = 0	# フラグ(0=データ、または、データなし, 1=属性)
-		@name = ''	# タグ名・属性名
-		@data = nil	# 実データ
-		@list_value = 0	# 派生XMLリスト数
-		@xmllist = []	# 派生XMLリスト
-	end
-
-
-	# ------------------------------------------------------------
-	# XMLリスト基本クラスの生成
-	#    引数
-	# name - タグ名、または、属性名 [IN / String型]
-	# flg - フラグ [IN / Numeric型]
-	#          0 = データ、または、データなし
-	#          1 = 属性
-	# data - タグ、または、属性のデータ内容 [IN / String型]
-	def childadd(name, flg, data)
-		xml_newlist = Xml_baselist.new
-		xml_newlist.name = name
-		xml_newlist.flg = flg
-		xml_newlist.data = data
-		@xmllist.push xml_newlist
-		@list_value += 1
-		@xml_newlist = nil
-		return	xml_newlist
-	end
-
-
-	# ------------------------------------------------------------
-	# XMLパスをXMLパス配列形式に変換
-	#    引数
-	# xmlpath - 変換するXMLパス [IN / String型]
-	#    戻り値
-	# XMLパス配列
-	#    備考
-	# この関数は、相対パスを考慮した作りにはなっていませんので、
-	# 相対パスで記述している場合は、絶対パスに変換してください。
-	#    メモ
-	# メンバー関数としては、あまり好ましくないが、
-	# 配列形式でのやりとりを前提にしているので、とりあえずメンバー関数として作成する
-	def convert_xml_path_to_patharray(xmlpath)
-		xml_array = [] ; xml_array_size = 0 ; w_xmlpath = ''
-		# 前後の空白を除去した上で、「/」の区切りで配列化する
-		w_xmlpath = xmlpath.strip
-		xml_array = w_xmlpath.split(/\//)
-		# 配列の先頭が空白等なら、該当配列のみ削除
-		case	xml_array[0]
-		when	nil, ''
-			xml_array.delete_at(0)
-		end
-		xml_array_size = xml_array.size
-		if xml_array[xml_array_size - 1] =~ /\S@\S/
-			word1 = '' ; word2 = []
-			word1 = xml_array[xml_array_size - 1]
-			word2 = word1.split(/@/)
-			# ※「@」が２回以上出現することは考慮していません
-			xml_array[xml_array_size - 1] = word2[0]	# 「@」より前をセット
-			xml_array.push('@' + word2[1])	# 「@」以降をセット
-		end
-		return	xml_array
-	end
-
-
-	# ------------------------------------------------------------
-	# 該当XMLパス(絶対パス形式のみ)配列のデータの取得
-	#    引数
-	# xmlpatharray - XMLパス配列 [IN / 配列(String)型]
-	#    戻り値
-	# 指定したXMLパス配列のデータ(nilの場合、取得できなかった) [OUT / String型]
-	#    備考
-	# 引数の配列は関数実行後の値を保証しません
-	# 派生XMLリストのデータを取得する処理です
-	def get_data_from_xmlpatharray(xmlpatharray)
-		xml_tag = '' ; array_size = 0 ; xmllist_size = 0
-		ret_data = nil
-		xml_tag = xmlpatharray.shift
-		if xml_tag == nil
-			# nilの状態の場合は、例外を発生させる
-			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+Encoding.default_external = "euc-jisx0213"
+" + '引数のXMLパス配列にデータがありません。'
 			# 例外が発生できない場合を考慮する
 			return	nil
 		end
@@ -323,7 +98,8 @@ class Xml_baselist
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
 			# nilの状態の場合は、例外を発生させる
-			raise 'get_data_from_xmlpatharray_regで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+			raise 'get_data_from_xmlpatharray_regで例外が発生しました。' + "
+" + '引数のXMLパス配列にデータがありません。'
 			# 例外が発生できない場合を考慮する
 			return	[]
 		end
@@ -634,7 +410,8 @@ class HierarcydataList
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
 			# nilの状態の場合は、例外を発生させる
-			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "
+" + '引数のXMLパス配列にデータがありません。'
 			# 例外が発生できない場合を考慮する
 			return	nil
 		end
@@ -721,7 +498,8 @@ class HierarcydataList
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
 			# nilの状態の場合は、例外を発生させる
-			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "
+" + '引数のXMLパス配列にデータがありません。'
 			# 例外が発生できない場合を考慮する
 			return	nil
 		end
@@ -760,7 +538,8 @@ class HierarcydataList
 				# シフト後のXMLパス配列を引数に指定して、派生XMLのデータ格納関数を呼び出す
 				ret_data = @hirlist[x3].put_data_from_xmlpatharray(xmlpatharray.clone, position, byte, seq_num)
 			else
-				raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
+				raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "
+" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
 			end
 		else
 			# 派生XMLリストは検索しない
@@ -798,9 +577,12 @@ class HierarcydataList
 #					@hirlist[x].position = position
 #					@hirlist[x].byte = byte
 					# 上書き書き込みをせずに、エラーを発生させる
-					raise 'put_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '同じXMLパスに対して、上書き書き込みしようとしました。' + "\n" + 'XMLパス末尾 = [' + xml_tag + ']'
+					raise 'put_data_from_xmlpatharrayで例外が発生しました。' + "
+" + '同じXMLパスに対して、上書き書き込みしようとしました。' + "
+" + 'XMLパス末尾 = [' + xml_tag + ']'
 				else
-					raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
+					raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "
+" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
 				end
 			else
 				# タグのデータ取得である
@@ -839,10 +621,13 @@ class HierarcydataList
 					else
 						# すでに書き込まれているタグである
 						# 上書き書き込みをせずに、エラーを発生させる
-						raise 'put_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '同じXMLパスに対して、上書き書き込みしようとしました。' + "\n" + 'XMLパス末尾 = [' + xml_tag + ']'
+						raise 'put_data_from_xmlpatharrayで例外が発生しました。' + "
+" + '同じXMLパスに対して、上書き書き込みしようとしました。' + "
+" + 'XMLパス末尾 = [' + xml_tag + ']'
 					end
 				else
-					raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
+					raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "
+" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
 				end
 
 			end
@@ -941,7 +726,8 @@ class Xml_listdata
 
 
 		# １行目の取得
-		idx1 = xml_data.index("\n")
+		idx1 = xml_data.index("
+")
 		w_xml1 = xml_data[0, idx1]
 
 		# ヘッダの変換
@@ -949,7 +735,8 @@ class Xml_listdata
 		# encodingの記述がなければ、UTF-8として扱う
 		if w_xml1 =~ /^.*?(<\?xml\sversion\s*?=\s*?\"[\.\d]+?\")\s*?(\?\>)/i 
 #		if w_xml1 =~ /^.*?(<\?xml\sversion\s*?=\s*?\".+?\")\s*?(\?\>)/i 
-			w_xml1 = $1 + " encoding=\"UTF-8\"" + $2 + "\n"
+			w_xml1 = $1 + " encoding=\"UTF-8\"" + $2 + "
+"
 		end
 		if w_xml1 =~ /^.*?(<\?xml\sversion\s*?=.+\sencoding\s*?=\s*?.UTF-8.*?)/i
 			w_xml1.gsub!(/UTF-8/i, "UTF-8")
@@ -1263,7 +1050,8 @@ class Xml_listdata
 
 		h_data1 = hierarcy_data.clone	# 念のため、新しい領域を確保してのコピー
 
-		while h_data1 =~ /^(\s*?\$LineTargetStart\s*?,\s*?(\S+?)\s*?,(.+?)\n)/i
+		while h_data1 =~ /^(\s*?\$LineTargetStart\s*?,\s*?(\S+?)\s*?,(.+?)
+)/i
 			# LineTarget定義がパラメータデータに存在する
 			# $1 = LineTarget定義が出現した行
 			# $2 = LineTarget定義のシンボル名
@@ -1426,7 +1214,8 @@ class Xml_listdata
 #   対処方法は、代替文字でXMLデータを置き換える方法をとる
 
 				w_define_after1 = []
-				w_define_after1 = define_after.split "\n"
+				w_define_after1 = define_after.split "
+"
 
 				w_define_after1.each_index do |w_aryidx1|
 					if w_define_after1[w_aryidx1] =~ /^\s*?\S+?\s*?\=\s*?([\S\s]+?)\s*?$/
@@ -1434,10 +1223,13 @@ class Xml_listdata
 						w_define_after1[w_aryidx1] = $nodata_word + '=' + $1
 					end
 				end
-				define_after = w_define_after1.join "\n"
+				define_after = w_define_after1.join "
+"
 				# 最後の文字が改行でない場合は、改行を追加する
-				if define_after[-1, 1] != "\n"
-					define_after += "\n"
+				if define_after[-1, 1] != "
+"
+					define_after += "
+"
 				end
 				w_idx1 = 0 ; w_idx2 = 0 ; w_idx3 = 0
 				w_idx1 = h_data1.index define_before		# 変換前文字列を検索する
@@ -1467,7 +1259,8 @@ class Xml_listdata
 # # 後で、デバッグコードを組み込んで、確かめてみること
 
 		# 抽象階層情報を実階層情報に変換
-		while h_data1 =~ /^\s*?(.*?\([xX]\).*?)\s*?=.*?\n/
+		while h_data1 =~ /^\s*?(.*?\([xX]\).*?)\s*?=.*?
+/
 			# $1 = 階層名
 			w_hname = $1.strip
 			r1_data = []
@@ -1518,7 +1311,9 @@ class Xml_listdata
 		# バージョン・言語チェックと変換
 		first_line = ''	# １行目の内容をセットする領域
 		hfdef_flg = []	# 行頭から解析した内容をセットする領域
-		hierarcy_data =~ /^([^\n]+?)\n/
+		hierarcy_data =~ /^([^
+]+?)
+/
 		first_line = $1	# １行目の内容をセット
 		# 行頭認識処理の実行
 		hfdef_flg = realize_topline(first_line)
@@ -1603,8 +1398,10 @@ class Xml_listdata
 		h_data1 = record_del_comment_space(h_data0)
 
 		# 「=」の前後の空白を除去
-		while  /\=[^\S\n]+?/ =~ h_data1
-			h_data1.gsub! /\=[^\S\n]+?/ , '='
+		while  /\=[^\S
+]+?/ =~ h_data1
+			h_data1.gsub! /\=[^\S
+]+?/ , '='
 		end
 		while  /\s+?\=/ =~ h_data1
 			h_data1.gsub! /\s+?\=/ , '='
@@ -1621,7 +1418,8 @@ class Xml_listdata
 
 
 		# 改行単位で配列化
-		h_data2 = h_data1.split("\n")
+		h_data2 = h_data1.split("
+")
 
 		w_idx1 = 0
 
@@ -1636,7 +1434,8 @@ class Xml_listdata
 				seq_byte1.gsub! /^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1'	# 書式が変わっても大丈夫なように先手をうつ
 				ret_data.push [xml_path1, Integer(seq_byte1)]
 			else
-				raise '階層情報の中に、不正な記述を発見しました。(ほぼ' + String(w_idx1) + '行目付近)' + "\n" + '[' + h_data_ex1 + ']'
+				raise '階層情報の中に、不正な記述を発見しました。(ほぼ' + String(w_idx1) + '行目付近)' + "
+" + '[' + h_data_ex1 + ']'
 				# 例外が発生できない場合を考慮する
 				return	nil
 			end
@@ -1710,7 +1509,8 @@ class Xml_listdata
 					end
 				elsif xml_size1 > h_data1[1]
 					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数より大きい
-					$stderr.puts '該当文字は長すぎるので、値を切り捨てます' + "\n" + '切り捨て前[' + xml_data1 + ']'
+					$stderr.puts '該当文字は長すぎるので、値を切り捨てます' + "
+" + '切り捨て前[' + xml_data1 + ']'
 					ret_data.push xml_data1[0, h_data1[1]]	# 書き込める文字数のみ書き込み
 					$stderr.puts '切り捨て後[' + xml_data1[0, h_data1[1]] + ']'
 				else
@@ -1781,7 +1581,9 @@ class Xml_listdata
 		# バージョン・言語チェックと変換
 		first_line = ''	# １行目の内容をセットする領域
 		hfdef_flg = []	# 行頭から解析した内容をセットする領域
-		hierarcy_data =~ /^([^\n]+?)\n/
+		hierarcy_data =~ /^([^
+]+?)
+/
 		first_line = $1	# １行目の内容をセット
 		# 行頭認識処理の実行
 		hfdef_flg = realize_topline(first_line)
@@ -1866,8 +1668,10 @@ class Xml_listdata
 		h_data1 = record_del_comment_space(h_data0)
 
 		# 「=」の前後の空白を除去
-		while  /\=[^\S\n]+?/ =~ h_data1
-			h_data1.gsub! /\=[^\S\n]+?/ , '='
+		while  /\=[^\S
+]+?/ =~ h_data1
+			h_data1.gsub! /\=[^\S
+]+?/ , '='
 		end
 		while  /\s+?\=/ =~ h_data1
 			h_data1.gsub! /\s+?\=/ , '='
@@ -1890,7 +1694,8 @@ class Xml_listdata
 		# 階層情報を階層データリスト形式に変換する
 
 		# 改行単位で配列化
-		h_data2 = h_data1.split("\n")
+		h_data2 = h_data1.split("
+")
 
 		w_idx1 = 0
 		seq_point1 = 0	# 起点位置の初期化
@@ -1914,7 +1719,8 @@ class Xml_listdata
 				# 指定バイト数起点位置をずらす
 				seq_point1 += seq_byte2
 			else
-				raise '階層情報の中に、不正な記述を発見しました。(ほぼ' + String(w_idx1 + 1) + '行目付近)' + "\n" + '[' + h_data_ex1 + ']'
+				raise '階層情報の中に、不正な記述を発見しました。(ほぼ' + String(w_idx1 + 1) + '行目付近)' + "
+" + '[' + h_data_ex1 + ']'
 				# 例外が発生できない場合を考慮する
 				return	nil
 			end
