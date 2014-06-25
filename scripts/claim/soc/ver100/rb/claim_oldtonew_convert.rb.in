@@ -1,6 +1,16 @@
+#!%RUBY%
+# coding : euc-jp
 Encoding.default_external = "euc-jisx0213"
- b, equal, c 
- c, equal, a」のようなものには対応していません。（最悪、無限ループします）
+
+
+
+# Claim既存形式→新形式変換コンバータ
+
+# メモ
+# $Repeat定義は手作業で修正してください。
+# xmlテンプレートファイルは、変換の必要がありません。（$Repeat定義の修正は手作業です）
+# equal定義のうち、文字列の定義をしてあるものは、あらかじめ手作業で修正してから行ってください。
+# equal定義の「a, equal, b \n b, equal, c \n c, equal, a」のようなものには対応していません。（最悪、無限ループします）
 #
 #
 # 現在作業中
@@ -106,30 +116,18 @@ OLDCONV_MODE_HIR = 3
 	if help_flg == 1
 		# ヘルプメッセージの表示
 		mes = ''
-		mes += __FILE__ + ' [opt] [ファイル名...]' + "
-"
-		mes += '    -D [入力defファイル] [出力defファイル]' + "
-"
-		mes += '        defファイルの既存形式からの変換' + "
-"
-#		mes += '    -X [入力xmlファイル] [出力xmlファイル]' + "
-"
-#		mes += '        xmlテンプレートファイルの既存形式からの変換' + "
-"
-		mes += '    -H [入力defファイル] [入力階層パラメータリンクファイル] [出力階層データファイル]' + "
-"
-		mes += '        階層データファイルの既存形式からの変換' + "
-"
-		mes += "
-"
-		mes += __FILE__ + ' --help' + "
-"
-		mes += '    ヘルプの表示' + "
-"
-		mes += "
-"
-		mes += "
-"
+		mes += __FILE__ + ' [opt] [ファイル名...]' + "\n"
+		mes += '    -D [入力defファイル] [出力defファイル]' + "\n"
+		mes += '        defファイルの既存形式からの変換' + "\n"
+#		mes += '    -X [入力xmlファイル] [出力xmlファイル]' + "\n"
+#		mes += '        xmlテンプレートファイルの既存形式からの変換' + "\n"
+		mes += '    -H [入力defファイル] [入力階層パラメータリンクファイル] [出力階層データファイル]' + "\n"
+		mes += '        階層データファイルの既存形式からの変換' + "\n"
+		mes += "\n"
+		mes += __FILE__ + ' --help' + "\n"
+		mes += '    ヘルプの表示' + "\n"
+		mes += "\n"
+		mes += "\n"
 
 		$stdout.print	mes
 		exit 0
@@ -194,8 +192,7 @@ def	def_convert_proc(in_data)
 	w_idx2 = 0
 
 
-	w_line1 = in_data.split("
-")		# 改行で配列に分ける
+	w_line1 = in_data.split("\n")		# 改行で配列に分ける
 
 
 	w_line1.each_index do |w_idx1|
@@ -311,8 +308,7 @@ def	def_convert_proc(in_data)
 
 
 	# 配列に分けたものを元に戻す
-	out_data = w_line1.join("
-")
+	out_data = w_line1.join("\n")
 
 
 
@@ -359,8 +355,7 @@ def defdata_expand_equal(in_def)
 
 
 	# 行単位で配列にする
-	w_def1 = in_def.split("
-")
+	w_def1 = in_def.split("\n")
 
 
 	# equalデータをスタックにためて、元の領域から削除
@@ -593,8 +588,7 @@ def defdata_expand_equal(in_def)
 
 
 	# 配列形式のdefデータをString型に戻す
-	out_def = w_def1.join("
-")
+	out_def = w_def1.join("\n")
 
 
 	return	out_def
@@ -690,8 +684,7 @@ def	hierarchy_convert_proc(in_def, in_hirlnk)
 
 
 	# 配列にする
-	w_hirlnk2 = w_hirlnk1.split("
-")
+	w_hirlnk2 = w_hirlnk1.split("\n")
 
 
 	# LineTarget構文の既存形式から新形式への変換
@@ -793,8 +786,7 @@ def	hierarchy_convert_proc(in_def, in_hirlnk)
 	w_hirout = w_hirlnk2
 
 	# 識別情報を冒頭に追加する
-	w_hirout.unshift('#$ type="hierarchy" version="2.0" encoding="EUC-JP"' + "
-")
+	w_hirout.unshift('#$ type="hierarchy" version="2.0" encoding="EUC-JP"' + "\n")
 
 
 

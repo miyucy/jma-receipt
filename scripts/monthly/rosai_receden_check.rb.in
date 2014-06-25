@@ -1,16 +1,21 @@
+#!%RUBY%
+# coding : utf-8
 Encoding.default_external = "euc-jisx0213"
-#{err.message}
-#{err.backtrace.join("
-")}"
+
+begin
+  require "monthly/rosai_receden"
+  require "monthly/rosai_receden_common"
+  require "monthly/rosai_receden_error"
+  require "date"
+  require "nkf"
+  require "jcode"
+  require "json"
+rescue LoadError => err
+    STDERR.puts "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     open(@errlog,"w"){|f|
-      f.print "#{err.class}
-#{err.message}
-#{err.backtrace.join("
-")}"
+      f.print "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     }
-    raise "#{err.message}
-#{err.backtrace.join("
-")}"
+    raise "#{err.message}\n#{err.backtrace.join("\n")}"
 end
 
 
@@ -1431,19 +1436,11 @@ class Receden_check < Receden_common
     db.exec("DBDISCONNECT")
 
   rescue => err
-    STDERR.puts "#{err.class}
-#{err.message}
-#{err.backtrace.join("
-")}"
+    STDERR.puts "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     open(@errlog,"w"){|f|
-      f.print "#{err.class}
-#{err.message}
-#{err.backtrace.join("
-")}"
+      f.print "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     }
-    raise "#{err.message}
-#{err.backtrace.join("
-")}"
+    raise "#{err.message}\n#{err.backtrace.join("\n")}"
   end
 
 end

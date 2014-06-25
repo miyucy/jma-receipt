@@ -1,5 +1,32 @@
+#!%RUBY%
+# coding : utf-8
 Encoding.default_external = "euc-jisx0213"
-"
+
+# XMLfile j-code convert scirpt
+#     args 0:in_file
+#          1:out_code
+# 
+# version 1.3.0
+#                  '01-10-30 by Yamamoto
+
+require 'nkf'
+require 'uconv'
+in_file, out_code, mode = ARGV
+
+#----- Define Classes ----------------------------------------
+
+class XmlJCnv
+  def initialize(fl,ocd,mode)
+    @fpn = "" ; @fpn = String(fl)   if fl
+    @to = ""  ; @to  = String(ocd)  if ocd
+    @md = ""  ; @md  = String(mode) if mode
+    @lct = 0
+  end
+
+  def argchk
+    @arg = true
+    if !File.exists?(@fpn)
+      print " xmljcnv ERR: no file [ " + @fpn + " ]\n"
       @arg = false
     end
     case @to
@@ -44,8 +71,7 @@ Encoding.default_external = "euc-jisx0213"
   def ersub
     @ermes = "jcode unmatching at " + String(@lct) + " line"
     if @md == "-f"
-      $stderr.print " xmljcnv Warrning:" + @ermes + "
-"
+      $stderr.print " xmljcnv Warrning:" + @ermes + "\n"
     else
       raise @ermes 
     end

@@ -1,31 +1,177 @@
+#!%RUBY%
+# coding : euc-jp
 Encoding.default_external = "euc-jisx0213"
-"
-		mes += '    -D [入力defファイル] [出力defファイル]' + "
-"
-		mes += '        defファイルの既存形式への変換' + "
-"
-		mes += '    -X [入力xmlファイル] [出力xmlファイル]' + "
-"
-		mes += '        xmlテンプレートファイルの既存形式への変換' + "
-"
-		mes += '    -H [入力階層データファイル] [出力defファイル] [出力階層パラメータリンクファイル]' + "
-"
-		mes += '        階層データファイルの既存形式への変換' + "
-"
-		mes += '    -h [入力階層データファイル] [出力階層データファイル]' + "
-"
-		mes += '        階層データファイルのver2形式への変換' + "
-"
-		mes += "
-"
-		mes += __FILE__ + ' --help' + "
-"
-		mes += '    ヘルプの表示' + "
-"
-		mes += "
-"
-		mes += "
-"
+
+
+
+# Claim設定ファイルコンバータ(2003年夏バージョン)
+# 旧形式データの互換性のために作成
+
+# Repeat構文に対応したもの
+
+
+# 既存の設定ファイル形式への変換時の引数指定
+
+# claim_convert.rb -D [入力defファイル] [出力defファイル]
+# claim_convert.rb -X [入力xmlファイル] [出力xmlファイル]
+# claim_convert.rb -H [入力階層データファイル] [出力defファイル] [出力階層パラメータリンクファイル]
+
+
+# ヘルプメッセージ
+# claim_convert.rb --help
+#
+#
+# 現在作業中
+# なし
+#
+# 修正履歴
+# 2003/06/27・defファイルの属性指定の並びをわかりやすくする。（COBOLのINCファイルにしやすくする）
+# 2003/07/11 - 旧形式のファイルから新形式のファイルへの移行を考慮し、ヘッダ情報を追加する
+# 2003/07/11 - 階層情報の旧形式への2ファイル分離処理を高速化(1時間を20秒に短縮(180倍の高速化))
+#
+
+
+# ※注意
+# "〜"や'〜'の中に「,」が入っていた場合、正しい処理ができないので、注意すること
+# $BaseStartと$Repeatでは、$Repeatを優先してしまうので、注意すること
+# XMLの場合、EUCコード固定としている。UTF-8のXML等を変換する場合は、変換してから実行すること
+# $define定義は、文字列の定義はできませんので、注意してください。（値の定義はできます）
+
+
+
+if __FILE__ == $0
+
+
+# =============================================================================
+# デバッグ対応
+
+	# デバッグ用引数指定
+	debug_argv_set = 0	# デバッグではない
+#	debug_argv_set = 1	# defファイルの既存への変換でのデバッグ
+#	debug_argv_set = 2	# xmlテンプレートファイルの既存への変換でのデバッグ
+#	debug_argv_set = 3	# 階層データファイルの既存への変換でのデバッグ
+#	debug_argv_set = 13	# 階層データファイルのver2形式への変換でのデバッグ
+
+
+
+	DEBUG = 0		# デバッグではない
+#	DEBUG = 1		# デバッグメッセージを有効にする
+
+
+
+
+# =============================================================================
+# 定数の指定
+
+# defファイルの既存形式への変換である
+CONV_MODE_EXISTING_DEF = 1
+# XMLテンプレートファイルの既存形式への変換である
+CONV_MODE_EXISTING_XML = 2
+# 階層データファイルの既存形式への変換である
+CONV_MODE_EXISTING_HIR = 3
+# Repeat定義の変換である
+CONV_MODE_REPEAT = 4
+
+# defファイルのver2形式への変換である
+# CONV_MODE_VER200_DEF = 11
+# XMLテンプレートファイルのver2形式への変換である
+# CONV_MODE_VER200_XML = 12
+# 階層データファイルのVER2形式への変換である
+CONV_MODE_VER200_HIR = 13
+
+
+# =============================================================================
+# 引数の判定
+
+
+	argv_size = 0	# ARGVの大きさ
+	argv_size = ARGV.size
+
+	help_flg = 0	# ヘルプ表示させるかのフラグ
+
+
+	argv_f = []		# 引数で指定したファイル名を格納する領域
+	conv_mode = 0	# 変換モード(1 = defファイル, 2 = XMLテンプレートファイル, 3 = 階層データファイル)
+
+
+	case	debug_argv_set
+	when	1
+		# defファイルの既存への変換でのデバッグ
+		argv_f.push 'test001.def'			# テスト実行時に読み込むファイル名
+		argv_f.push 'test001out.def'		# テスト実行時の出力ファイル名
+		conv_mode = CONV_MODE_EXISTING_DEF
+	when	2
+		# xmlテンプレートファイルの既存への変換でのデバッグ
+		argv_f.push 'test002.xml'			# テスト時に読み込むXMLテンプレートファイル名
+		argv_f.push 'test002out.xml'		# テスト時に出力するXMLテンプレートファイル名
+		conv_mode = CONV_MODE_EXISTING_XML
+	when	3
+		# 階層データファイルの既存への変換でのデバッグ
+		argv_f.push 'test003.hir'			# テスト時に読み込む階層データファイル名
+		argv_f.push 'test003out.def'		# テスト時に出力するdefファイル名
+		argv_f.push 'test003out.link'		# テスト時に出力する階層パラメータリンクファイル名
+		conv_mode = CONV_MODE_EXISTING_HIR
+	when	13
+		# 階層データファイルのver2形式への変換でのデバッグ
+		argv_f.push 'testa013.hir'			# テスト時に読み込む階層データファイル名
+		argv_f.push 'testa013exe.hir'		# テスト時に出力する実行時階層データファイル名
+		conv_mode = CONV_MODE_VER200_HIR
+	end
+
+
+
+	if argv_size != 0
+		ARGV.each do |x|
+			case	x
+			when	'--help'
+				# ヘルプメッセージを表示させる
+				help_flg = 1
+			when	'-D'
+				# defファイルの既存形式への変換である
+				conv_mode = CONV_MODE_EXISTING_DEF
+			when	'-X'
+				# XMLテンプレートファイルの既存形式への変換である
+				conv_mode = CONV_MODE_EXISTING_XML
+			when	'-H'
+				# 階層データファイルの既存形式への変換である
+				conv_mode = CONV_MODE_EXISTING_HIR
+			when	'-h'
+				# 階層データファイルのver2形式への変換である
+				conv_mode = CONV_MODE_VER200_HIR
+			when	'-r'
+				# Repeat定義の変換である
+				conv_mode = CONV_MODE_REPEAT
+			else
+				# ファイルの指定
+				argv_f.push x	# ファイルリストにpushする
+			end
+		end
+	else
+		# 引数が指定されていない
+		if debug_argv_set == 0
+			help_flg = 1
+		end
+	end
+
+
+
+	if help_flg == 1
+		# ヘルプメッセージの表示
+		mes = ''
+		mes += __FILE__ + ' [opt] [ファイル名...]' + "\n"
+		mes += '    -D [入力defファイル] [出力defファイル]' + "\n"
+		mes += '        defファイルの既存形式への変換' + "\n"
+		mes += '    -X [入力xmlファイル] [出力xmlファイル]' + "\n"
+		mes += '        xmlテンプレートファイルの既存形式への変換' + "\n"
+		mes += '    -H [入力階層データファイル] [出力defファイル] [出力階層パラメータリンクファイル]' + "\n"
+		mes += '        階層データファイルの既存形式への変換' + "\n"
+		mes += '    -h [入力階層データファイル] [出力階層データファイル]' + "\n"
+		mes += '        階層データファイルのver2形式への変換' + "\n"
+		mes += "\n"
+		mes += __FILE__ + ' --help' + "\n"
+		mes += '    ヘルプの表示' + "\n"
+		mes += "\n"
+		mes += "\n"
 
 		$stdout.print	mes
 		exit 0
@@ -104,8 +250,7 @@ def repeat_extend_proc(in_data)
 
 	# 識別子は、「_」を付けた、可変長数字をセットする
 
-	w_data1 = in_data.split("
-")	# Repeat定義に対応できるように配列化
+	w_data1 = in_data.split("\n")	# Repeat定義に対応できるように配列化
 	w_data1.each_index do |x|
 		w_str1 = ''
 		w_str2 = ''
@@ -137,8 +282,7 @@ def repeat_extend_proc(in_data)
 	end
 
 
-	w_data2 = w_data1.join("
-")
+	w_data2 = w_data1.join("\n")
 	w_data1 = []
 
 
@@ -151,8 +295,7 @@ def repeat_extend_proc(in_data)
 		repeat_target = ''		# 繰り返しターゲット領域
 		repeat_figformat = ''	# 桁数をsprintfで表現する際の表現を格納する領域
 
-		if w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,[\s\S]*?)
-/
+		if w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,[\s\S]*?)\n/
 			w_data3 = $1.split(',')
 			if (w_data3.size != 4)
 				puts 'Repeat定義の中で、引数の指定が3つではないものがあります'
@@ -160,9 +303,7 @@ def repeat_extend_proc(in_data)
 		end
 
 
-		while w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,\s*?([0-9]+?)\s*?,\s*?(\S+?)\s*?,\s*?([0-9]+?)[\s\S]*?
-([\s\S]*?)^\s*?\$EndRepeat#{rname}[\s\S]*?)
-/i
+		while w_data2 =~ /^(\s*?\$Repeat#{rname}\s*?,\s*?([0-9]+?)\s*?,\s*?(\S+?)\s*?,\s*?([0-9]+?)[\s\S]*?\n([\s\S]*?)^\s*?\$EndRepeat#{rname}[\s\S]*?)\n/i
 			# $1 = $Repeat定義の開始行から終了行までの全体
 			# $2 = 繰り返し回数
 			# $3 = 置換対象文字列
@@ -214,8 +355,7 @@ def def_conversion_proc_a(in_data)
 	offset_count1 = 0	# パラメータ情報のオフセット値のカウント領域
 
 
-	data2 = in_data.split("
-")		# 入力データの配列化
+	data2 = in_data.split("\n")		# 入力データの配列化
 
 
 	data2.each do |x|
@@ -418,8 +558,7 @@ def basehierarchy_extend_proc(in_data)
 
 	# 識別子は、「_」を付けた、可変長数字をセットする
 
-	w_data1 = in_data.split("
-")	# Base定義に対応できるように配列化
+	w_data1 = in_data.split("\n")	# Base定義に対応できるように配列化
 	w_data1.each_index do |x|
 		w_str1 = ''
 		w_str2 = ''
@@ -498,19 +637,16 @@ def basehierarchy_extend_proc(in_data)
 		if w_data1[x] =~ /^\s*?\$BaseStart_[0-9]+?\s*?/i
 			# BaseStart文の行である
 			w_data1[x] = ''
-#			w_data1[x] = "
-"
+#			w_data1[x] = "\n"
 		elsif w_data1[x] =~ /^\s*?\$BaseEnd_[0-9]+?\s*?/i
 			# BaseEnd文の行である
 			w_data1[x] = ''
-#			w_data1[x] = "
-"
+#			w_data1[x] = "\n"
 		end
 	end
 
 
-	w_data2 = w_data1.join("
-")
+	w_data2 = w_data1.join("\n")
 	w_data1 = []
 
 	return w_data2
@@ -539,8 +675,7 @@ def linetarget_setmark_proc(in_data)
 	marknum_stack = []	# ネストに対応するためのスタック領域
 
 
-	w_data1 = in_data.split("
-")
+	w_data1 = in_data.split("\n")
 
 	w_data1.each_index do |i|
 		w_data2 = ''	# １行のデータの一時格納領域
@@ -559,8 +694,7 @@ def linetarget_setmark_proc(in_data)
 	end
 
 
-	out_data = w_data1.join("
-")
+	out_data = w_data1.join("\n")
 
 	return out_data
 
@@ -692,8 +826,7 @@ def hierarchy_save_proc_ver200(in_data, hir_filename)
 	w_str2 = ''
 
 
-	w_data1 = in_data.split("
-")
+	w_data1 = in_data.split("\n")
 
 
 	# 先頭行に「#$ type=hierarchy version=2.0」があれば、
@@ -854,8 +987,7 @@ def hierarchy_conversion_proc_a(in_data)
 
 
 	# LineTargetStartの既存形式への変換
-	w_data2 = w_data1.split("
-")
+	w_data2 = w_data1.split("\n")
 
 	w_data2.each_index do |i|
 		if w_data2[i] =~ /^[\s]*?\$LineTargetStart/i
@@ -923,8 +1055,7 @@ def hierarchy_conversion_proc_a(in_data)
 
 
 	# 絶対パスになったものに対して、既存形式
-	w_data1 = w_data2.join("
-")
+	w_data1 = w_data2.join("\n")
 
 
 
@@ -966,8 +1097,7 @@ def hierarchy_save_proc_a(in_data, hir_filename, def_filename)
 	w_str2 = ''
 
 
-	w_data1 = in_data.split("
-")
+	w_data1 = in_data.split("\n")
 
 
 	# 先頭行の「#$ type=hierarchy version=2.0 encoding=EUC-JP」を削除する
@@ -984,26 +1114,18 @@ $stderr.puts '  階層データをdefデータと階層リンクデータに分離します'		if (DEBUG 
 	w_data1.each do |x|
 		if x =~ /^\s*?$/
 			# 空行である
-			def_data.push "
-"
-			hir_data.push "
-"
+			def_data.push "\n"
+			hir_data.push "\n"
 		elsif x =~ /^\s*?\#[\s\S]*?$/
 			# コメント行である
-			def_data.push x + "
-"
-			hir_data.push x + "
-"
+			def_data.push x + "\n"
+			hir_data.push x + "\n"
 		elsif x =~ /^\s*?\$LineTargetStart\s*?,\s*?(\S*?)/i
-			def_data.push '# LineTargetStart [' + $1 + "]
-"
-			hir_data.push x + "
-"
+			def_data.push '# LineTargetStart [' + $1 + "]\n"
+			hir_data.push x + "\n"
 		elsif x =~ /^\s*?\$LineTargetEnd\s*?,\s*?(\S*?)/i
-			def_data.push '# LineTargetEnd   [' + $1 + "]
-"
-			hir_data.push x + "
-"
+			def_data.push '# LineTargetEnd   [' + $1 + "]\n"
+			hir_data.push x + "\n"
 		else
 			# 階層情報行である
 			param_num += 1		# パラメータ番号の加算
@@ -1020,10 +1142,8 @@ $stderr.puts '  階層データをdefデータと階層リンクデータに分離します'		if (DEBUG 
 				# 属性である
 				def_data.push ', , ' + $1
 			end
-			def_data.push "
-"
-			hir_data.push w_data2[0] + ' = ' + w_str1 + "
-"
+			def_data.push "\n"
+			hir_data.push w_data2[0] + ' = ' + w_str1 + "\n"
 			offset_count += Integer(w_data3[0])
 		end
 

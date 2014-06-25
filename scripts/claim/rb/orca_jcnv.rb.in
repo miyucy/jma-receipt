@@ -1,5 +1,137 @@
+#!%RUBY%
+# coding : euc-jp
 Encoding.default_external = "euc-jisx0213"
-"
+
+# XMLfile j-code convert scirpt
+#     args 0:in_file
+#          1:out_file
+#          2:out_code
+#          3:mode
+
+require 'kconv'
+require 'uconv'
+
+
+# @jcnv_debug = 1	# DebugModeである
+
+if __FILE__ == $0
+	# このスクリプトを単独で起動した
+
+	in_file, out_file, out_code, mode = ARGV
+
+end
+
+
+# ------------------------------------------------------------
+
+
+# XMLファイルの文字コード変換処理
+#    引数
+# in_word       - 変換対象文字列 [IN / String型]
+# after_code    - 変換後文字列コード [IN / String型]
+#   1 - EUC
+#   2 - Shift_JIS
+#   3 - UTF-8
+#   4 - JISコード
+# linefeed_code - 変換後の改行コード
+#   1 - UNIX系改行コード(LF(0xa)のみ)
+#   2 - Machintosh系改行コード(CR(0xd)のみ)
+#   3 - Windows系改行コード(CR(0xd)+LF(0xa))
+# exec_mode     - 変換実行モード [IN / String型]
+#   1 - 通常実行
+#   2 - エラーがあっても、実行
+#    戻り値
+# 配列形式
+# [0] = 終了ステータス
+#       0 - 正常終了
+#      -1 - 変換前文字コードの指定が不正(この関数内部のエラー)
+#      -2 - 変換後文字コードの指定が不正(引数の指定が不正)
+#      -3 - 変換前改行コードの指定が不正(関数内部のエラー)
+#      -4 - 変換後改行コードの指定が不正(引数の指定が不正)
+#      -5 - 変換前対象文字列に改行コードがないか不明です(引数の指定が不正)
+#      -6 - 変換後文字コードの指定が不正(引数の指定が不正)
+#      -7 - 最初の行の文字コード指定がないか不正です(引数の指定が不正)
+#      -8 - 「Kconv::guess」での判定結果、文字コードが対応していないか不明
+#      -9 - 「Kconv::guess」からの戻り値が不正(発生した場合、原因調査が必要)
+#     -10 - XMLのencodeとKconvの判定結果が異なる(入力文字のコードが不正)
+# [1] = 変換後文字列
+# [2] = エラーメッセージ(エラーがない場合、nil)
+#    備考
+# ※※※注意！！！　注意！！！　注意！！！※※※
+# ファイルへ書き込む際は、open関数の引数にかならず「"wb"」と、
+#   バイナリ指定での書き込みを行ってください。
+def xml_code_conversion(in_word, after_code, linefeed_code, exec_mode)
+	ret = [0, '']
+
+# ****************************************
+$stderr.puts '[xml_code_conversion] Start'			if @jcnv_debug == 1
+# ****************************************
+
+	# 1行目を取得し、文字判定
+	# 改行コードの取得
+	lf_code = get_linefeed_code(in_word)
+	if lf_code == nil
+		ret = [-5, nil, '改行コードが存在しないか、不明です']
+		return ret
+	end
+	# 最初の改行までの文字を取得
+	first_word = in_word[0, in_word.index(lf_code)]
+
+
+	# 変換後文字コードの種類の取得
+	case	after_code
+	when	1	# EUC
+		after_word = 'EUC-JP'
+	when	2	# Shift_JIS
+		after_word = 'Shift_JIS'
+	when	3	# UTF-8
+		after_word = 'UTF-8'
+	when	4	# JISコード
+		after_word = 'JIS'
+	else
+		ret = [-6, nil, '変換後文字コードの指定が不正です(after_code = [' + String(after_code) + '])']
+		return ret
+	end
+
+
+	# 変換前文字コードの取得
+	case	first_word
+	when /euc/i
+		before_code = 1
+		before_word = 'EUC-JP'
+	when /shift-jis/i
+		before_code = 2
+		before_word = 'Shift-JIS'
+	when /shift_jis/i
+		before_code = 2
+		before_word = 'Shift_JIS'
+	when /utf-8/i
+		before_code = 3
+		before_word = 'UTF-8'
+	when /jis/i
+		before_code = 4
+		before_word = 'JIS'
+	else
+		ret = [-7, nil, '最初の行の文字コード指定がないか不正です']
+		return ret
+	end
+
+	# 文字コード判定
+	kconv_code = Kconv::guess(in_word)
+	case	kconv_code
+	when	Kconv::UNKNOWN		# 文字コードは、不明
+		# １行目の文字コードを、そのまま採用する
+	when	Kconv::EUC			# 文字コードはEUCコード
+		if before_code != 1
+			# １行目の文字列と実際の文字コードが異なる
+			if exec_mode == 1
+				# 異常終了させる
+				ret = [-10, nil, 'XMLのencodeとKconvの判定結果が異なります(Kconv=EUC, before_code=' + String(before_code) + ')']
+				return ret
+			else
+				# 強制続行
+				# エラーメッセージの出力
+      			$stderr.print " orca_jcnv Warrning : XMLのencodeとKconvの判定結果が異なります\n"
 			end
 		end
 	when	Kconv::SJIS			# 文字コードは、シフトJISコードか、UTF-8コード
@@ -12,8 +144,7 @@ Encoding.default_external = "euc-jisx0213"
 			else
 				# 強制続行
 				# エラーメッセージの出力
-      			$stderr.print " orca_jcnv Warrning : XMLのencodeとKconvの判定結果が異なります
-"
+      			$stderr.print " orca_jcnv Warrning : XMLのencodeとKconvの判定結果が異なります\n"
 			end
 		end
 	when	Kconv::JIS			# 文字コードはJISコード
@@ -26,8 +157,7 @@ Encoding.default_external = "euc-jisx0213"
 			else
 				# 強制続行
 				# エラーメッセージの出力
-      			$stderr.print " orca_jcnv Warrning : XMLのencodeとKconvの判定結果が異なります
-"
+      			$stderr.print " orca_jcnv Warrning : XMLのencodeとKconvの判定結果が異なります\n"
 			end
 		end
 	when	Kconv::BINARY		# 文字コードは、不明？

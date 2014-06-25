@@ -1,17 +1,21 @@
+#!%RUBY%
+# coding : utf-8
 Encoding.default_external = "euc-jisx0213"
- グループ|医療機関| 期  限 |本分院|本分院|医療機関名
-") 
-  $stderr.printf(  " 番    号|識別番号|        |番  号|区  分|(下段：システム管理)
-") 
-  $stderr.printf(  " --------+--------+--------+------+------+----------------------------------------
-") 
+
+$:.unshift(File.dirname(__FILE__) + "/../daily")
+
+require	"apslib"
+require	"kconv"
+
+def sysbase_list_print_title
+  $stderr.printf("\n グループ|医療機関| 期  限 |本分院|本分院|医療機関名\n") 
+  $stderr.printf(  " 番    号|識別番号|        |番  号|区  分|(下段：システム管理)\n") 
+  $stderr.printf(  " --------+--------+--------+------+------+----------------------------------------\n") 
 end
 
 def sysbase_list_print_body
-    $stderr.printf("    %-9s%-6s%-11s%-7s%-5s%-s
-",@item[0],@item[1],@item[2],@item[3],@item[4],@item[5])
-    $stderr.printf("                                          %s
-",@item[6])
+    $stderr.printf("    %-9s%-6s%-11s%-7s%-5s%-s\n",@item[0],@item[1],@item[2],@item[3],@item[4],@item[5])
+    $stderr.printf("                                          %s\n",@item[6])
 end
 
 def syskanri_hospname
@@ -102,13 +106,11 @@ def sysbase_mod
       rc = sysbase.execFunction("DBFETCH","key")
       sysbase.execFunction("DBCLOSECURSOR","key")
       if rc != 0
-        $stderr.printf("NOTICE: 指定された医療機関識別番号はありませんでした。
-")
+        $stderr.printf("NOTICE: 指定された医療機関識別番号はありませんでした。\n")
         return
       end
     else
-      $stderr.printf("ERROR: 医療機関識別番号が正しくありません。
-")
+      $stderr.printf("ERROR: 医療機関識別番号が正しくありません。\n")
       return
     end
     if "#{@hospnum}".size != 0
@@ -131,8 +133,7 @@ def sysbase_mod
 
     sysbase.execFunction("DBUPDATE","key")
   else
-    $stderr.printf("ERROR: 医療機関識別番号を指定してください。
-")
+    $stderr.printf("ERROR: 医療機関識別番号を指定してください。\n")
   end
 end
 
@@ -145,19 +146,16 @@ def sysbase_del
       rc = sysbase.execFunction("DBFETCH","key")
       sysbase.execFunction("DBCLOSECURSOR","key")
       if rc != 0
-        $stderr.printf("NOTICE: 指定された医療機関識別番号はありませんでした。
-")
+        $stderr.printf("NOTICE: 指定された医療機関識別番号はありませんでした。\n")
         return
       end
     else
-      $stderr.printf("ERROR: 医療機関識別番号が正しくありません。
-")
+      $stderr.printf("ERROR: 医療機関識別番号が正しくありません。\n")
       return
     end
     sysbase.execFunction("DBDELETE","key")
   else
-    $stderr.printf("ERROR: 医療機関識別番号を指定してください。
-")
+    $stderr.printf("ERROR: 医療機関識別番号を指定してください。\n")
   end
 end
 
@@ -180,20 +178,13 @@ if param[6] != nil
   @hospname = Kconv.toeuc(param[6])
 end
 
-#$stderr.printf("command=[%s]
-",command)
-#$stderr.printf("groupnum=[%s]
-",@groupnum)
-#$stderr.printf("hospnum=[%s]
-",@hospnum)
-#$stderr.printf("kigen=[%s]
-",@kigen)
-#$stderr.printf("hbgroup=[%s]
-",@hbgroup)
-#$stderr.printf("hbkubun=[%s]
-",@hbkubun)
-#$stderr.printf("hospname=[%s]
-",@hospname)
+#$stderr.printf("command=[%s]\n",command)
+#$stderr.printf("groupnum=[%s]\n",@groupnum)
+#$stderr.printf("hospnum=[%s]\n",@hospnum)
+#$stderr.printf("kigen=[%s]\n",@kigen)
+#$stderr.printf("hbgroup=[%s]\n",@hbgroup)
+#$stderr.printf("hbkubun=[%s]\n",@hbkubun)
+#$stderr.printf("hospname=[%s]\n",@hospname)
 
 @db = PandaDB.new
 @db.execFunction("DBOPEN")

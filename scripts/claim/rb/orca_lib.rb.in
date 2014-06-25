@@ -1,16 +1,43 @@
+#!%RUBY%
+# coding : euc-jp
 Encoding.default_external = "euc-jisx0213"
-/ =~ word
-		word.gsub! /\s+?
-/ , "
-"
+
+# ======================================================================
+# 共通 スクリプト
+
+# 2001/9/19 - debian linuxで「class」メソッドが動作しなかったため、
+#             その部分を削除
+
+# 2001/10/11 - ifdefの処理で、１個のみの時に正常な判定をしていなかった
+#              原因は、インデックスの指定方法にあり、０番目から指定すべきものを
+#              １番目から指定していたために、不具合が発生していた
+
+# 2001/10/12 - equalマクロを高速化した(10倍以上を確認)
+
+
+# ======================================================================
+# 関数定義部
+
+
+# 項目の前後にある空白の除去処理
+#    引数
+# word - 空白を除去する文字列
+#    備考
+# 引数に対して空白の除去処理を行うので、
+# 内容を保存したい場合は、別領域にデータを退避してから実行してください
+def item_trim(word)
+	# 行頭・行末・項目間の空白除去
+	while  /^\s+?/ =~ word
+		word.gsub! /^\s+?/ , ''
+	end
+	while  /\s+?\n/ =~ word
+		word.gsub! /\s+?\n/ , "\n"
 	end
 	while  /\s+?$/ =~ word
 		word.gsub! /\s+?$/ , ''
 	end
-	while  /,[^\S
-]+?/ =~ word
-		word.gsub! /,[^\S
-]+?/ , ','
+	while  /,[^\S\n]+?/ =~ word
+		word.gsub! /,[^\S\n]+?/ , ','
 	end
 	while  /\s+?,/ =~ word
 		word.gsub! /\s+?,/ , ","
@@ -25,19 +52,13 @@ end
 # word - 空白等の削除をする文字列
 def record_del_comment_space(word)
 	# コメントの削除
-	while  /#[\s\S]*?
-/ =~ word
-		word.gsub! /#[\s\S]*?
-/ , "
-"
-#		word.gsub! /#[\s\S]*?
-/ , ''
+	while  /#[\s\S]*?\n/ =~ word
+		word.gsub! /#[\s\S]*?\n/ , "\n"
+#		word.gsub! /#[\s\S]*?\n/ , ''
 	end
 	# 空白行の削除処理
-	while  /^\s*?
-/ =~ word
-		word.gsub! /^\s*?
-/ , ''
+	while  /^\s*?\n/ =~ word
+		word.gsub! /^\s*?\n/ , ''
 	end
 	# 行頭・行末・項目間の空白除去
 	item_trim word
@@ -60,26 +81,19 @@ def get_record_layout_linediv(layout_data)
 	record_del_comment_space(wd)
 #	# コメントの削除
 #	begin
-#		wd.gsub! /#[\s\S]*?
-/ , "
-"
-##		wd.gsub! /#[\s\S]*?
-/ , ''
-#	end  while  /#[\s\S]*?
-/ =~ wd
+#		wd.gsub! /#[\s\S]*?\n/ , "\n"
+##		wd.gsub! /#[\s\S]*?\n/ , ''
+#	end  while  /#[\s\S]*?\n/ =~ wd
 #	# 空白行の削除処理
 #	begin
-#		wd.gsub! /^\s*?
-/ , ''
-#	end  while  /^\s*?
-/ =~ wd
+#		wd.gsub! /^\s*?\n/ , ''
+#	end  while  /^\s*?\n/ =~ wd
 #	# 行頭・行末・項目間の空白除去
 #	item_trim wd
 
 #	$stderr.puts wd
 #	wd
-	ad = wd.split("
-")
+	ad = wd.split("\n")
 #	ad.each do |e|
 #		$stderr.puts "["+e+"]"
 #	end
@@ -125,23 +139,18 @@ def macro_get_equal_data(layout)
 	                  	# (cloneとしないと、ポインタのみの複製)
 	# コメントと空白行と行頭・行末・項目間の空白除去
 	record_del_comment_space(wd1)
-	wd1 = wd1+"
-"
+	wd1 = wd1+"\n"
 	# マクロ以外の削除
 	begin
-		wd1.gsub! /(?!^.*?,equal,)^.*?
-/ , ''
-	end  while  /(?!^.*?,equal,)^.*?
-/ =~ wd1
+		wd1.gsub! /(?!^.*?,equal,)^.*?\n/ , ''
+	end  while  /(?!^.*?,equal,)^.*?\n/ =~ wd1
 
-# [文字列][,][equal][,][内容][#文字列][
-]
+# [文字列][,][equal][,][内容][#文字列][\n]
 
 	if wd1.to_s !=''
 		# 定数マクロあり
 		# 重複パラメータの検索
-		wd2 = wd1.split "
-"	# 行単位で配列にする
+		wd2 = wd1.split "\n"	# 行単位で配列にする
 		wd2.each_with_index do |x, i|
 			wd2.each_with_index do |y, j|
 				if i!=j
@@ -149,8 +158,7 @@ def macro_get_equal_data(layout)
 					wy1=y.split ','
 					# 別のレコードである
 					if wx1[0]==wy1[0]
-						raise '定数定義マクロ(equal)において、重複するパラメータがあります('+wx1[0]+")
-"
+						raise '定数定義マクロ(equal)において、重複するパラメータがあります('+wx1[0]+")\n"
 					end
 				end
 			end
@@ -217,8 +225,7 @@ def macro_get_equal_data(layout)
 
 #			# 変化がなければ、エラー扱いする
 #			if flg2==0
-#				raise "定数定義マクロ(equal)において、定数に定数をセットしているもので不正な指定をしているものがあります
-"
+#				raise "定数定義マクロ(equal)において、定数に定数をセットしているもので不正な指定をしているものがあります\n"
 #			end
 #			flg1=0
 		end
@@ -261,25 +268,20 @@ def macro_execute_equal(layout)
 		# **********
 
 		# 定数マクロの行の削除
-#		wd2 = wd1.split "
-"	# 行単位で配列にする
+#		wd2 = wd1.split "\n"	# 行単位で配列にする
 #		reg1 = Regexp.new ""	# 高速化のため、正規表現型の生成
 #		wd2.each do |x|
 #			wx1=x.split ','
-#			reg1 = "^.*?#{wx1[0]}.*?,\s*?equal.*?
-"
+#			reg1 = "^.*?#{wx1[0]}.*?,\s*?equal.*?\n"
 #			while layout =~ reg1
 #				layout.gsub! reg1, ''
 #			end
-# #			while  /^.*?#{wx1[0]}.*?,\s*?equal.*?
-/ =~ layout
-# #				layout.gsub! /^.*?#{wx1[0]}.*?,\s*?equal.*?
-/, ''
+# #			while  /^.*?#{wx1[0]}.*?,\s*?equal.*?\n/ =~ layout
+# #				layout.gsub! /^.*?#{wx1[0]}.*?,\s*?equal.*?\n/, ''
 # #			end
 #			wx1=[]
 #		end
-		layout.gsub! /^.+?equal.+?
-/, ''
+		layout.gsub! /^.+?equal.+?\n/, ''
 
 		# **********
 		$stderr.puts 'complete'
@@ -299,20 +301,15 @@ def macro_execute_equal(layout)
 #$stderr.print '[+'
 # **********
 			layout.gsub! wx1[0], wx1[2]
-# 			layout.gsub! /(^.+?,.*?)#{wx1[0]}(.*?
-)/, '\1'+wx1[2]+'\2'
+# 			layout.gsub! /(^.+?,.*?)#{wx1[0]}(.*?\n)/, '\1'+wx1[2]+'\2'
 # **********
 #$stderr.print '-] '
 # **********
-# 			while  /(^.+?,.*?)#{wx1[0]}(.*?
-)/ =~ layout
-# # #				layout.gsub! /(^.+?,.*?)#{wx1[0]}(.*?
-)/, $1+wx1[2]+$2
-# #				layout.gsub! /^.+?,.*?#{wx1[0]}.*?
-/, $1+wx1[2]+$2
+# 			while  /(^.+?,.*?)#{wx1[0]}(.*?\n)/ =~ layout
+# # #				layout.gsub! /(^.+?,.*?)#{wx1[0]}(.*?\n)/, $1+wx1[2]+$2
+# #				layout.gsub! /^.+?,.*?#{wx1[0]}.*?\n/, $1+wx1[2]+$2
 # #				# ↑バックリファレンスを使用している
-# 				layout.gsub! /(^.+?,.*?)#{wx1[0]}(.*?
-)/, '\1'+wx1[2]+'\2'
+# 				layout.gsub! /(^.+?,.*?)#{wx1[0]}(.*?\n)/, '\1'+wx1[2]+'\2'
 # 			end
 			wx1=[]
 		end
@@ -449,8 +446,7 @@ def macro_execute_ifdefl(layout, rdata)
 		tag1 = $1
 #		if /(^(.+?),ifdef,.+?$)([\s\S]*?)(^.+?,endif.*?$)/ =~ rec_layout
 #		if /((^(.+?),ifdef,.+?$)([\s\S]*?)(^\3,endif.*?$))/ =~ rec_layout
-		if /((^(.+?),ifdef,.+?
-)([\s\S]*?)(^\3,endif.*?$))/ =~ rec_layout
+		if /((^(.+?),ifdef,.+?\n)([\s\S]*?)(^\3,endif.*?$))/ =~ rec_layout
 			# 対象が見つかった
 # 			$stderr.puts '対象が見つかりました $1=['+$1+'],  $2=['+$2+'],  $3=['+$3+'],  $4=['+$4+'],  $5=['+$5+']'
 # 			exit

@@ -1,7 +1,300 @@
+#!%RUBY%
+# coding : euc-jp
 Encoding.default_external = "euc-jisx0213"
-\s*/)
-word2 = word1.split(/
-/)
+# print_parent2.rb のプレビュー用対応 
+# 文字列の改行区切りで配列にして、それを引数のプログラムに渡す処理 
+# (2002/03/07 竹田氏追加依頼) 
+# 引数指定のものを、一部dataファイルに含めるように変更(2002/04/16 :竹田氏依頼 :曳野対応) 
+# 
+# red2ps対応済み 
+# site-lib区分対応 (2002/10/16) 
+#   woody版では、site-libのdia/redファイルも見なければならないので、それに関する対応 
+#   基準ディレクトリを追加することで対応 
+#   dataファイルフォーマットを修正(LP名のあとに、site区分を追加) 
+# ディレクトリ位置対応 (2002/11/13)
+#   コマンドライン引数3〜6のディレクトリ位置情報を使用するように修正
+# プレビュー対応
+# (2003/01/20 ) 引渡しファイルのレイアウト変更
+# postscript出力対応 (2003/03/03)
+# (2004/12/05 ) 印刷出力停止機能追加
+# (2007/05/09 ) オンライン再印刷処理追加(UUID)
+# (2007/05/31 ) グループ診療対応(hospnum追加)
+# (2007/06/19 ) 労災枠なし対応
+# (2007/12/27 ) patch-lib 対応
+# (2008/07/30 ) 労災、自賠枠なし対応
+# (2008/11/12 ) レイアウトオプション対応
+# (2011/03/08 ) クライアント印刷対応
+# (2013/02/07 ) 労災枠有り対応
+#
+
+# クライアント印刷用(複数ps をまとめる)
+# (2011/08/05 ) 労災枠有り対応
+# (2012/04/11 ) 改正対応
+$:.unshift(File.dirname(__FILE__))
+require 'tempfile'
+
+# ※複数のプロセスの実行はできない
+# For Debug st
+#$>=open("/tmp/red2pslog", "w")
+# For Debug ed
+
+
+# 引数指定方法
+# 引数1  = 一時ファイル名
+# 引数2  = 起動プログラム
+# 引数3  = 日医標準レセプトformディレクトリ
+# 引数4  = 日医標準レセプトrecordディレクトリ
+# 引数5  = 日医標準レセプトsite固有formディレクトリ
+# 引数6  = 日医標準レセプトsite固有recordディレクトリ
+# 引数7  = dataファイル
+# 引数8  = 起動用スクリプト名1
+# 引数9  = 日医標準レセプトpatch固有formディレクトリ
+
+# dataファイルフォーマット
+# +------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
+# |ファイル名(30Byte)|LP名(20Byte)|offset-x(5byte)|offset-y(5byte)|site区分(1Byte)|出力区分(1Byte)|出力先フォルダ(165byte)|
+# +------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
+# +------------------+-----------+----------------+-----------------+-------------+------------+--------------------------+
+# |tbl_key情報(8byte)|連番(4byte)|グループ(14byte)|処理内連番(4byte)|ページ(5byte)|UUID(36byte)|帳票データ(Max20000バイト)|
+# +------------------+-----------+----------------+-----------------+-------------+------------+--------------------------+
+# ファイル名に、拡張子とディレクトリ名を付加したものを子プロセスの引数に渡す
+#    site区分
+#      1 = orca標準
+#      2 = site-libのカスタマイズ帳票
+#      3 = Postscriptファイルの出力(印刷イメージ表示対応)
+#
+# ※LP名は空白の場合、子プロセスの引数を省略する
+
+
+
+
+#	puts '<temp>        = 一時ファイル名'
+
+# ============================================================
+
+# ヘルプ表示
+
+help_flg = 0
+
+case	ARGV[0]
+when	nil
+	help_flg = 1
+when	'-?', '/?', '-h', '/h', '--help'
+	help_flg = 1
+else
+	help_flg = 0
+end
+
+if (help_flg != 0)
+	puts 'このスクリプトは、改行で区切って、引数のプログラムに渡すプログラムです'
+	puts $0 + ' <temp> <exec> <form> <record> <site-form> <site-record> <data>'
+	puts '<temp>        = 一時ファイル名'
+	puts '<exec>        = 起動プログラム'
+	puts '<form>        = 日医標準レセプトformディレクトリ'
+	puts '<record>      = 日医標準レセプトrecordディレクトリ'
+	puts '<site-form>   = 日医標準レセプトsite固有formディレクトリ'
+	puts '<site-record> = 日医標準レセプトsite固有recordディレクトリ'
+	puts '<data>        = dataファイル'
+	exit 0
+end
+
+
+std_form = ''; std_record = ''; site_form = ''; site_record = ''; patch_form = ''
+
+# 定数の指定(最後に、かならず「/」を付けた形にしてください)
+std_form = ARGV[2] + '/'   		# 日レセ標準formディレクトリ
+std_record = ARGV[3] + '/' 		# 日レセ標準recordディレクトリ
+site_form = ARGV[4] + '/'  		# 日レセsite固有formディレクトリ
+site_record = ARGV[5] + '/'		# 日レセsite固有recordディレクトリ
+patch_form = ARGV[8] + '/'  		# 日レセsite固有formディレクトリ
+
+
+# .redからpsファイルに変換する際に使用するプログラム
+#RED_EXEC = 'red2ps'
+RED2EMBED = 'red2embed'
+MONPE = 'monpe'
+
+# .redファイルで、LP名を省略された際に使用するプリンタ名
+DEFAULT_LP = 'lp1'
+
+# クライアント印刷用(複数ps をまとめる)
+Print_Area = []
+PDF = "ps2pdf"
+
+
+# ============================================================
+# 領域の初期化
+
+# ファイル名領域
+temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''; offset_xy = ''
+temp_file2 = ''; exec_file2 = ''; dia_file2 = ''; def_file2 = ''; data_file2 = ''; lp_name2 = ''
+site_flag = ''; base_dir = ''
+#---- (2003/01/20 ) start
+prt_flg = '';pdffile_name = '';pdffile_name_folder = '';exec_file_prv = '';exec_file_prv = ''
+#---- (2003/01/20 ) end
+# 文字列領域
+word1 = ''; word2 = []; word3 = ''
+# exec用領域
+w_exec= []
+# fork用領域
+pid = []
+# カウンタ用領域
+li_cnt1 = 0
+# 文字列長用領域
+d2_len = 0
+
+
+# ============================================================
+# 引数のセット
+
+# 引数の数チェック
+for li_cnt1 in 1..8 do
+	if ARGV[li_cnt1] == nil
+		puts '引数の数が足りません'
+		exit 1
+	end
+end
+
+
+# 引数の領域から、文字列の取得
+#temp_file = String(ARGV[0])		# 一時ファイル
+exec_file = String(ARGV[1])		# 起動プログラムファイル
+data_file = String(ARGV[6])		# dataファイル名
+#---- (2003/07/03 ) add start
+exec_file_prv = String(ARGV[7])		# 起動プログラムファイル
+#---- (2003/07/03 ) add end  
+
+
+# 一時ファイルのファイル名を生成
+temp_file = data_file + '.tmp'
+
+
+# ============================================================
+# 関数定義部
+
+
+# ファイル名の前後の「'」「"」を取り除く処理
+def filename_change(name)
+	filename_change = name.gsub /\A[\'\"]([\s\S]*?)[\'\"][\s]*?\z/, '\1'
+end
+
+
+# ファイル名に空白がある場合、前後に「"」をセットする処理
+def filename_unchange(name)
+	if name =~ / /
+		filename_unchange = "\"" + name + "\""
+	else
+		filename_unchange = name
+	end
+end
+
+
+# slashを付ける
+def add_slash(str)
+	if str =~ /[^\/]$/
+		return (str += '/')
+	else
+		return str
+	end
+end
+
+# ファイル名から医療機関番号を取得する
+def get_hospnum(str)
+  b = str.split(/\//)
+  return b[b.size-1][0,2].strip
+#  return str.scan(/\/\S\S/).last.sub(/\//, "")
+end
+
+
+
+# ============================================================
+# 引数の加工処理
+
+# 関数を呼び出して、前後の「'」「"」を削除
+temp_file = filename_change(temp_file)
+exec_file = filename_change(exec_file)
+data_file = filename_change(data_file)
+#---- (2003/07/03 ) add start
+exec_file_prv = filename_change(exec_file_prv)
+#---- (2003/07/03 ) add end  
+#---- (2007/05/30 ) add start
+hospnum = get_hospnum(data_file)
+puts "医療機関番号   = [" + hospnum + "]"
+#---- (2007/05/30 ) add end
+
+
+# 逆に、間に空白がある文字列に、「"」を追加したものを用意
+temp_file2 = filename_unchange(temp_file)
+#exec_file2 = filename_unchange(exec_file_prv)
+data_file2 = filename_unchange(data_file)
+
+
+# コマンド引数のformやrecordのディレクトリ名に「/」がない場合、「/」を付ける処理
+std_form = add_slash(std_form)
+std_record = add_slash(std_record)
+site_form = add_slash(site_form)
+site_record = add_slash(site_record)
+patch_form = add_slash(patch_form)
+
+
+
+
+# デバッグ用の表示
+puts "一時ファイル   = [" + temp_file + "]"
+puts "起動プログラム = [" + exec_file + "]"
+puts "dataファイル   = [" + data_file + "]"
+
+
+# ============================================================
+
+# 一時ファイル存在チェック
+begin
+	if nil != File.size(temp_file)
+		puts '一時ファイルが存在するので削除します'
+		puts 'ファイル名 = [' + temp_file + ']'
+		# 一時ファイルの削除
+		File.delete(temp_file)
+		puts '削除しました'
+#		puts '一時ファイルが存在するため、書き込みできません'
+#		puts 'ファイル名 = [' + temp_file + ']'
+#		exit 2
+	end
+rescue
+# 例外が発生すれば、一時ファイルが存在しないので、ＯＫ
+end
+
+
+# dataファイルの存在チェック
+begin
+	if nil == File.size(data_file)
+		puts 'dataファイルが存在しません'
+		puts 'ファイル名 = [' + data_file + ']'
+		exit 3
+	end
+rescue
+# 例外が発生すれば、dataファイルが存在しない
+	puts 'dataファイルが存在しません'
+	puts 'ファイル名 = [' + data_file + ']'
+	exit 3
+end
+
+
+# ============================================================
+
+# dataファイルの読み込み
+# 入力ファイルの読み込み処理
+open(data_file, "r") do |fp|
+	word1 = fp.read
+end
+
+# layeroption 設定
+
+
+# -----------------------------------
+
+# 改行区切り処理
+#word2 = word1.split(/\s*\n\s*/)
+word2 = word1.split(/\n/)
 
 
 # -----------------------------------
@@ -366,8 +659,7 @@ is_portlait=''
 optRotate = ''
 w_exec.clear
 
-is_portlait=`zcat -f #{red_file} | ruby -e 'STDIN.read.delete("
-").scan(/attribute name="is_portrait".*?"(.*?)"/){|s| print s}'`
+is_portlait=`zcat -f #{red_file} | ruby -e 'STDIN.read.delete("\n").scan(/attribute name="is_portrait".*?"(.*?)"/){|s| print s}'`
 puts is_portlait
 if is_portlait=='false'
     optRotate=''
