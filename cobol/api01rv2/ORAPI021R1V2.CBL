@@ -1373,7 +1373,7 @@
       *
            IF      IDX                 =   ZERO
       *        対象なし
-               MOVE    "22"                TO  WRK-ERRCD
+               MOVE    "15"                TO  WRK-ERRCD
                IF      WRK-HKNCOMBI    NOT =   SPACE
                    MOVE    1                   TO  IDX
                    MOVE    WRK-HKNCOMBI        TO  WRK-KEY-HKNCOMBI
@@ -3177,19 +3177,24 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "患者番号未設定"
+      ***      MOVE    "患者番号未設定"
+               MOVE    "患者番号の設定がありません"
                                                TO  WRK-ERRMSG
            WHEN    "02"
-               MOVE    "診療科未設定"
+      ***      MOVE    "診療科未設定"
+               MOVE    "診療科の設定がありません"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "該当患者番号なし"
+      ***      MOVE    "該当患者番号なし"
+               MOVE    "患者番号に該当する患者が存在しません"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "診療日設定誤り"
+      ***      MOVE    "診療日設定誤り"
+               MOVE    "診療日が暦日ではありません"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               MOVE    "保険組合せ番号誤り"
+      *****    MOVE    "保険組合せ番号誤り"
+               MOVE    "保険組合せ番号の設定が違います"
                                                TO  WRK-ERRMSG
            WHEN    "13"
                MOVE    "診療科が存在しません"
@@ -3201,14 +3206,15 @@
                MOVE    "対象がありません"
                                                TO  WRK-ERRMSG
            WHEN    "20"
-               MOVE    "保険組合せがありません"
+     ******    MOVE    "保険組合せがありません"
+               MOVE    "該当する保険組合せがありません"
                                                TO  WRK-ERRMSG
            WHEN    "21"
                MOVE    "対象の保険組合せが５件以上あります。"
                                                TO  WRK-ERRMSG
-           WHEN    "22"
-               MOVE    "対象がありません。"
-                                               TO  WRK-ERRMSG
+     ****  WHEN    "22"
+     ****      MOVE    "対象がありません。"
+     ****                                      TO  WRK-ERRMSG
       *警告
            WHEN    "K1"
                MOVE    "診療日を設定しました"
