@@ -69,6 +69,7 @@ else
 fi
 APS="$PANDA_SERVER_DIR"/aps
 WFC="$PANDA_SERVER_DIR"/wfc
+LISTEN_WFC_PORT="/tmp/wfc.term"
 GLSERVER="$PANDA_SERVER_DIR"/glserver
 DBREDIRECTOR="$PANDA_SERVER_DIR"/dbredirector
 
@@ -163,7 +164,13 @@ if test "x"$Start_dbredirector = "xtrue"; then
 fi
 
 $WFC -dir $DIRECTORY  -base $ORCA_DIR &
-	sleep 5
+while :
+do
+  if /bin/ss -ax|grep ${LISTEN_WFC_PORT} >/dev/null; then
+    break
+  fi
+  sleep 0.5
+done
 
 for i in $ALWAYS_LD; do
 #    LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
