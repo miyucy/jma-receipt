@@ -57,7 +57,6 @@
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDY2                    PIC 9(04).
-           03  IDK                     PIC 9(04).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -95,9 +94,7 @@
       *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
-           03  WRK-KEICD-G.
-               05  WRK-KEICD               PIC X(02)
-                                           OCCURS   5.
+           03  WRK-KEICD               PIC X(02).
       *
            03  WRK-MCP-PATHNAME        PIC X(62).
            03  WRK-MCP-WINDOW          PIC X(62).
@@ -290,13 +287,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APIMOD-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-APTXMLMAKE-SEC
       *
            DISPLAY   "***************"
            DISPLAY   "* appoint end  *"
@@ -334,7 +326,6 @@
            MOVE    WRK-HEN-TIME        TO  APNTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -372,8 +363,7 @@
       *
            MOVE    ZERO                TO  APNTRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
-           MOVE    SPACE               TO  WRK-KEICD-G
-           MOVE    ZERO                TO  IDK
+           MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    APIMOD-CLASS
@@ -424,8 +414,6 @@
            IF      APIMOD-BODY         NOT =   LOW-VALUE
                DISPLAY "APNTRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
-           INITIALIZE                      XML-APPOINTREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_appointv2req"  TO  MCP-TABLE
@@ -508,18 +496,11 @@
       *H26.6
       *    警告メッセージ
            IF     (WRK-ERRCD           =   SPACE )  AND
-                  (WRK-KEICD-G     NOT =   SPACE )
-               PERFORM VARYING     IDK     FROM    1   BY  1
-                       UNTIL      (IDK     >   5   )
-                              OR  (WRK-KEICD (IDK) =   SPACE )
-                   MOVE    WRK-KEICD (IDK)     TO  WRK-ERRCD
-                   PERFORM 890-ERRCD-MSG-SEC
-                   IF      IDK             =   1
-                       MOVE    WRK-ERRCD       TO  APNTRES-API-RESULT
-                   END-IF
-                   MOVE    WRK-ERRMSG      TO  APNTRES-API-WARNING-MSG
-                                                                 (IDK)
-               END-PERFORM
+                  (WRK-KEICD       NOT =   SPACE )
+               MOVE    WRK-KEICD           TO  WRK-ERRCD
+               PERFORM 890-ERRCD-MSG-SEC
+               MOVE    WRK-ERRCD           TO  APNTRES-API-RESULT
+               MOVE    WRK-ERRMSG          TO  APNTRES-API-WARNING-MSG
            END-IF
       *
       *
@@ -942,10 +923,6 @@
                MOVE    "14"                TO  WRK-ERRCD
            END-IF
       *
-           IF      WRK-DRCD (1:1)  NOT =   "1"
-               MOVE    "14"                TO  WRK-ERRCD
-           END-IF
-      *
            .
        20011-DRCD-CHK-EXT.
            EXIT.
@@ -984,8 +961,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1012-REC
                IF      WRK-SRYNAIYO        =   SPACE
       *            設定がなければ１件目を対象とする
-                   ADD     1                   TO  IDK
-                   MOVE    "K3"                TO  WRK-KEICD (IDK)
+                   MOVE    "K3"                TO  WRK-KEICD
                END-IF
                MOVE    SYS-1012-KBNCD(1:2)     TO  WRK-SRYNAIYO
                MOVE    SYS-1012-SRYNAIYODSP    TO  WRK-SRYNAIYO-NAME
@@ -1067,7 +1043,7 @@
            IF      WRK-YYKMEMO     NOT =   SPACE
       *        半角空白を全角空白へ
                MOVE    WRK-YYKMEMO         TO  WRK-MAE-INPUT
-               MOVE    80                  TO  WRK-LEN
+               MOVE    50                  TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  WRK-YYKMEMO
                IF      FLG-ERR             =   1
@@ -1531,8 +1507,7 @@
                MOVE    YYK-YYKCNT          TO  WRK-YYKCNT
       *        予約最大件数
                IF      WRK-YYKCNT          >   WRK-YYKMAXCNT
-                   ADD     1                   TO  IDK
-                   MOVE    "K4"            TO  WRK-KEICD (IDK)
+                   MOVE    "K4"            TO  WRK-KEICD
                END-IF
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
@@ -1598,8 +1573,7 @@
            MOVE    WRK-YYKNAIYO        TO  APNTRES-APPOINT-INFO
       *    予約日＜システム日付
            IF      WRK-APPOINT-YMD     <   SPA-SYSYMD
-               ADD     1                   TO  IDK
-               MOVE    "K5"                TO  WRK-KEICD (IDK)
+               MOVE    "K5"            TO  WRK-KEICD
            END-IF
       *
       *    明細レコード追加

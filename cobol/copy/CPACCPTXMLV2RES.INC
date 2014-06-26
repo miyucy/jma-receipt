@@ -33,9 +33,7 @@
       *       返却メッセージ
               03  ACCPTRES-API-RESULT-MSG             PIC X(100).
       *       ワーニングメッセージ
-              03  ACCPTRES-API-WARNING-MSG-G.
-                  05  ACCPTRES-API-WARNING-MSG-TBL    OCCURS  5.
-                      07  ACCPTRES-API-WARNING-MSG    PIC X(100).
+              03  ACCPTRES-API-WARNING-MSG            PIC X(100).
       *
               03  ACCPTRES-RESKEY                     PIC X(100).
       *       受付日
@@ -74,13 +72,7 @@
                   05  ACCPTRES-HOME-ADDRESSES         PIC X(100).
       *         保険情報
                 04  ACCPTRES-INSURANCE-G.
-                  05  ACCPTRES-INSURANCE-INFO          OCCURS 30 TIMES.
-      *             保険組合せ番号
-                    06  ACCPTRES-COMBINATION-NUMBER     PIC X(04).
-      *H29.04
-      *             非表示区分
-                    06  ACCPTRES-COMBINATION-HYOJI      PIC X(01).
-      *
+                  05  ACCPTRES-INSURANCE-INFO          OCCURS 20 TIMES.
       *             保険の種類
                     06  ACCPTRES-MAIN-INSURANCE-CLASS   PIC X(03).
       *             保険者番号

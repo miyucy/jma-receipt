@@ -8,9 +8,7 @@ xml_acceptv2res {
 		Information_Time		varchar(8);
 		Api_Result			varchar(2);
 		Api_Result_Message		varchar(100);
-		Api_Warning_Message_Information {
-	        	Api_Warning_Message		varchar(100);
-        	} [5];
+	        Api_Warning_Message		varchar(100);
 		Reskey				varchar(100);
 		Acceptance_Date			varchar(10);
 		Acceptance_Time			varchar(8);
@@ -31,9 +29,6 @@ xml_acceptv2res {
 			WholeAddress			varchar(100);
         	};
 		HealthInsurance_Information  {
-		Insurance_Combination_Number		varchar(04);
-#-----> •ÛŒ¯‘g‡‚¹”ñ•\¦‹æ•ª
-		Insurance_Nondisplay			varchar(01);
 		InsuranceProvider_Class			varchar(03);
             	InsuranceProvider_Number		varchar(08);
             	InsuranceProvider_WholeName		varchar(20);
@@ -57,7 +52,7 @@ xml_acceptv2res {
                 	Certificate_IssuedDate		varchar(10);
                 	Certificate_ExpiredDate		varchar(10);
             	} [4];
-        	} [30];
+        	} [20];
     	};
    	};
 };
