@@ -13,7 +13,6 @@
 # ディレクトリの移動
 cd `dirname $0`/..
 
-
 # 環境変数の取り込み
 if test -z "$JMARECEIPT_ENV" ; then
     JMARECEIPT_ENV="@jma-receipt-env@"
@@ -46,11 +45,6 @@ ALWAYS_LD="session orca00"
 # トレースするLD
 TRACE_LD="orca11"
 
-# aps のポート番号 
-# この番号+ LDの数値 (orca101 なら 101) = 9201
-# で起動される。
-START_PORT=9100
-
 # soチェック
 # 起動する時にコンパイル済かチェックする *soファイル
 COB_SO="orca00/ORCGM00.so"
@@ -80,7 +74,11 @@ RECORD="$ORCA_DIR"/record
 if test "x"$1 != "x"; then
     LD=$@
 fi
-
+LDLIST=(`echo ${LD} ${ALWAYS_LD};`)
+IFS_BACKUP=$IFS
+IFS=$'\n'
+LDLIST=(`echo "${LDLIST[*]}" | sort|uniq`)
+IFS=$IFS_BACKUP
 ####################################################################
 if ! test -d $LDDEF ; then
     echo "${LDDEF} ディレクトリがありません"
@@ -115,6 +113,24 @@ if ! test -f ${ORCA_DIR}/cobol/${COB_SO}; then
 fi
 
 ####################################################################
+function server_exit() {
+    if test ! -z "$glpid"; then
+	killall glserver
+    fi
+    killall -HUP aps
+    sleep 0.5;
+    killall -HUP wfc
+    if test ! -z "$dbrepid"; then
+	killall -HUP dbredirector
+    fi
+    if test -f $$dbredirector; then
+	rm $$dbredirector
+    fi
+    killall wfc
+    exit 0
+}
+
+####################################################################
 
 for i in "$ORCA_DIR"/cobol/*; do
     if [ -d $i ] && [ $i != "CVS" ] ; then
@@ -124,31 +140,8 @@ done
 export COB_LIBRARY_PATH
 export JMARECEIPT_ENV="$ORCA_DIR"/etc/jma-receipt.env
 
-if test "x"$Start_GLSERVER = "xtrue" || test "x"$Start_dbredirector = "xtrue";
-then
-    trap "server_exit" 2
-    #server end
-    server_exit()
-    {
-	if test ! -z "$glpid"; then
-	    killall glserver
-	fi
-	killall -HUP aps
-	sleep 0.5;
-	killall -HUP wfc
-	if test "x"$Start_dbredirector = "xtrue"; then
-	    killall -HUP dbredirector
-	fi
-	if test ! -z "$dbrecid"; then
-	    kill $dbrecid
-	fi
-	if test -f $$dbredirector; then
-	    rm $$dbredirector
-	fi
-    	killall wfc
-	exit 0
-    }
-fi
+trap "server_exit" 2
+
 if test "x"$Start_GLSERVER = "xtrue"; then
     $GLSERVER -api -auth api://localhost/session/session_start -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
     glpid=$!
@@ -156,8 +149,9 @@ fi
 
 if test "x"$Start_dbredirector = "xtrue"; then
     $DBREDIRECTOR -dir $DIRECTORY -record $RECORD log|tee $$dbredirector &
+    dbrepid=$!
     until [ -s $$dbredirector ]
-    do 
+    do
 	echo "wait..."
 	sleep 1
     done
@@ -172,36 +166,20 @@ do
   sleep 0.5
 done
 
-for i in $ALWAYS_LD; do
-#    LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
-#    ORCA_PORT=`expr $START_PORT + $LDNUM`
-#    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
-    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i &
-done
-
-for i in $LD; do
-    for j in $ALWAYS_LD; do
-      kido=1
-      if [ $i = $j ]; then
-          kido=0
-          break
-      fi
-    done
-    if [ $kido -eq 1 ]; then
-	if [ $i = $TRACE_LD ] ; then
-	    $APS -nocheck -timer -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
-	else
-	    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
-	fi
-    fi
+for i in ${LDLIST[@]}; do
+  OPT='-nocheck'
+  if [ x$i = x$TRACE_LD ] ; then
+    OPT="${OPT} -timer"
+  fi
+  $APS $OPT -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i &
 done
 
 while :
 do
+  echo 'Please Type "exit"'
   read END
   if [ "$END" == "exit" ]; then
-    killall wfc
-    killall glserver
+    server_exit
     break
   fi
 done
