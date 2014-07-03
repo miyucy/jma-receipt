@@ -28,9 +28,13 @@ PWDCSQL="select count(*) from tbl_passwd;"
 # tbl_passwdのレコード有無チェック
 create_pgpass
 PWDC=`psql ${DBCONNOPTION} -At -c "${PWDCSQL}" ${DBNAME}`
+RC=$?
+if [ $RC -ne 0 ] ;then
+  echo "ERROR: tbl_passwd を読めませんでした。"
+  exit 1
+fi
 if [ ${PWDC} -ne "0" ]; then
   echo "パスワード設定処理 ... 設定済のため処理は中止します。"
-  delete_pgpass
   exit 0
 fi
 
@@ -102,11 +106,9 @@ ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
           -parameter "00,${TEMP2}"
 if [ $? -ne 0 ] ; then 
   echo "パスワード設定処理 ... テーブル格納処理でエラーが発生しました。"
-  delete_pgpass
   exit 1
 else
   echo "パスワード設定処理 ... 終了しました。"
-  delete_pgpass
   exit 0
 fi
 
