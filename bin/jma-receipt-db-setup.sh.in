@@ -1,15 +1,4 @@
 #!/bin/bash
-#
-# Project code name "ORCA"
-# 日医標準レセプトソフト(JMA standard receipt software)
-#
-# Copyright(C) 2002 JMA(Japan Medical Association)
-#
-# CREATE: 20060124
-#
-#
-# データベース構造変更処理起動
-#
 
 JMARECEIPT_ENV="@jma-receipt-env@"
 if [ ! -f ${JMARECEIPT_ENV} ]; then
@@ -17,6 +6,36 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
     exit 1
 fi
 . $JMARECEIPT_ENV
+
+ECHO_STDERR() {
+    echo "$@" >&2
+}
+
+err () {
+  MSG="\e[1;31mERROR:\e[m $1"
+  NUM=$2
+  ECHO_STDERR -e $MSG
+  exit ${NUM}
+}
+
+run() {
+    /bin/bash "$@" 2> >(while read line; do
+	if [[ "$line" =~ "ERROR:" ]]; then
+	    echo -e "${line/ERROR:/\e[1;31mERROR:\e[m}"
+	    echo "($@)"
+	    if [ ${JMSG} -eq 1 ] ; then
+		err "データベース構造変更処理は異常終了しました。" 99
+	    else
+    		err "Database structure change process was aborted." 99
+	    fi
+	fi
+    done)
+    result=$?
+    if [ $result -ne 0 ]; then
+	exit $result
+    fi
+    return 0
+}
 
 CHANGE=$1
 NOINST=$2
@@ -31,9 +50,9 @@ FLAG=`id -u`
 
 if [ ${FLAG} -ne 0 ] ; then
     if [ ${JMSG} -eq 1 ] ; then
-	echo "ERROR: root権限で実行してください。"
+	err "root権限で実行してください。"
     else
-    	echo "ERROR: must be root permission."
+    	err "must be root permission."
     fi
     exit 1
 fi
@@ -80,48 +99,29 @@ fi
 # メイン処理
 #
 
-RC=0
-echo "$INITDIR"/orca-db-create.sh ......
-bash "$INITDIR"/orca-db-create.sh
-RC=$?
-if [ ${RC} -eq 0 ] ; then
-    if [ x"$NOINST" = x"--noinstall" ] ; then
+run "$INITDIR"/orca-db-create.sh
+if [ x"$NOINST" = x"--noinstall" ] ; then
+    if [ ${JMSG} -eq 1 ] ; then
 	echo "OK! データベースをリストア後再度 jma-setupを実行してください"
-	exit 0
+    else
+	echo "OK! Please execute jma-setup again after restoring the database."
     fi
-    echo "$INITDIR"/orca-db-init.sh .....
-    bash "$INITDIR"/orca-db-init.sh
-    RC=$?
+    exit 0
 fi
-if [ ${RC} -eq 0 ] ; then
-    echo "$INITDIR"/orca-db-install.sh .....
-    bash "$INITDIR"/orca-db-install.sh
-    RC=$?
-fi
-if [ ${RC} -eq 0 ] ; then
-    echo "$BINDIR"/jma-receipt-db-check.sh .....
-    bash "$BINDIR"/jma-receipt-db-check.sh
-    if [ $? -eq 0 ] ; then
-	if [ -e "$SYSCONFDIR"/database-non-upgrade ] ; then
-	    rm -f "$SYSCONFDIR"/database-non-upgrade
-	fi
-    fi
+
+run "$INITDIR"/orca-db-init.sh
+run "$INITDIR"/orca-db-install.sh
+run "$BINDIR"/jma-receipt-db-check.sh
+if [ -e "$SYSCONFDIR"/database-non-upgrade ] ; then
+    rm -f "$SYSCONFDIR"/database-non-upgrade
 fi
 #
 # 処理終了
 #
 if [ ${JMSG} -eq 1 ] ; then
-    if [ ${RC} -eq 0 ] ; then
-	echo "データベース構造変更処理は終了しました"
-    else
-        echo "データベース構造変更処理は異常終了しました。"
-    fi
+    echo "データベース構造変更処理は終了しました"
 else
-    if [ ${RC} -eq 0 ] ; then
-	echo "Done. Completed."
-    else
-        echo "Done. Incompleted."
-    fi
+    echo "Done. Completed."
 fi
 echo
-exit ${RC}
+exit 0

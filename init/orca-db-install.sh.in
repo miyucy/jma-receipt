@@ -7,15 +7,6 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
-err () {
-  MSG=$1
-  NUM=$2
-  delete_pgpass
-  echo "ERROR: ${MSG}" | tee -a $INSTALLLOG $THISTIMELOG
-  exit ${NUM}
-}
-
-create_pgpass
 TMPDIR=/var/tmp
 MSTDIR=orca-$(date +%Y%m%d)
 VERSIONFL=${DOCDIR}/version
@@ -26,13 +17,29 @@ DBVERSIONSQL="SELECT version FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
 UPDKANRIFILE=info/ORCADBS.DAT
 
 UPDFILE=$TMPDIR/$MSTDIR/ORCADBS.OUT
-# TBLFILE=$TMPDIR/$MSTDIR/ORCADBS.TBL
 LEN=100
-
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 THISTIMELOG="$LOGDIR"/orca-db-install-thistime.log
 
 PATH=$BINDIR:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATCHLIBDIR:$ORCALIBDIR:$PATH
+
+ECHO_STDERR() {
+    echo "$@" >&2
+}
+
+ECHO_RUN () {
+  echo -e "\e[1;34m${@}\e[m"
+}
+ECHO_N_RUN () {
+  echo -ne "\e[1;34m${@}\e[m"
+}
+
+err () {
+  MSG="ERROR: $1"
+  NUM=$2
+  ECHO_STDERR -e $MSG
+  exit ${NUM}
+}
 
 orcawget () {
     DWNFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
@@ -45,12 +52,11 @@ orcawget () {
     fi
     RST=`orcadt_verify.rb --dir . --cacert ${CACERTFILE} ${DBUPGRADEPATH}/$1.p7m 2>&1`
     RC=$?
+    ECHO_STDERR "$RST : $DWNFL"
 #接続確認 && ファイルサイズチェック
     if [ $RC -eq 0 ] && [ -s $DWNFL ] ; then
-	echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG > /dev/null
         return 0;
     else
-	echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG
         return 1;
     fi
 }
@@ -67,9 +73,9 @@ orcatar () {
     fi
 #tar確認
     if [ $? -eq 0 ] ; then
-        echo "tar end OK"
+        ECHO_STDERR "$TARFL tar end OK"
     else
-        echo "tar end NG"
+        ECHO_STDERR "$TARFL tar end NG"
         return 1;
     fi
 #ファイルサイズチェック
@@ -79,6 +85,8 @@ orcatar () {
         return 1;
     fi
 }
+
+create_pgpass
 
 if [ ! -e "$INSTALLLOG" ]; then
     su - $ORCAUSER -c "touch $INSTALLLOG"
@@ -96,18 +104,20 @@ DBVERSION=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${DBVERSIONSQL}\" $D
 if [ $? -ne 0 ] ; then
     err "データベース管理情報が読み取れません。処理を中止します" 99
 fi
+
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 if [ -z "$DBVERSION1" ] ; then
-    err "データベースバージョンが読み取れません。処理を中止します" 99
+    err "データベースバージョン(tbl_dbkanri:$DBVERSION)が読み取れません。処理を中止します" 99
 fi
 if [ "$DBVERSION1" -gt "$VERDATA1" ] ; then
-    echo "Database: ${DBVERSION1}" | tee -a $INSTALLLOG $THISTIMELOG
-    echo " Version: ${VERDATA1}"   | tee -a $INSTALLLOG $THISTIMELOG
+    ECHO_STDERR "Database: ${DBVERSION1}"
+    ECHO_STDERR " Version: ${VERDATA1}"
     err "ダウングレードの処理となっています。処理を中止します" 99
 fi
 
+echo -ne "UPDATE CHECK:\t"
 #DB管理情報更新
-echo "update tbl_dbkanri set version='$VERDATA2' where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -q $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+echo "update tbl_dbkanri set version='$VERDATA2' where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -q $DBNAME" >&2
 
 #オフラインメンテナンスであるかチェック
 OFFLINEPATH=`echo $DBUPGRADEPATH | sed -ne 's#file://##p'`
@@ -128,54 +138,58 @@ if  [ $OFFLINE = "offline" ]; then
         err "DBレコード管理情報がありませんでした" 99
     fi
     cp $OFFLINEPATH/$UPDKANRIFILE ./
-    echo "OFFLINE: DBレコード管理情報を複写しました" | tee -a $INSTALLLOG $THISTIMELOG
+    echo "OK (${OFFLINE})"
+    ECHO_STDERR "OFFLINE: DBレコード管理情報を複写しました"
 else
     #センタからのDB構造体ダウンロード
     if orcawget $UPDKANRIFILE ; then
-        echo "ONLINE: センタからのDBレコード管理情報のダウンロードが終了しました" | tee -a $INSTALLLOG $THISTIMELOG
+	echo "OK (${OFFLINE})"
+        ECHO_STDERR "ONLINE: センタからのDBレコード管理情報のダウンロードが終了しました"
     else
         err "センタからのDBレコード管理情報のダウンロードに失敗しました" 99
     fi
 fi
 
+echo -ne "DBLIST:\t\t"
 DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${DBLISTSQL}\" $DBNAME"`
 if [ $? -ne 0 ] || [ -z "$DBLIST" ] ; then
     err "データベース管理情報が読み取れません。処理を中止します" 99
 fi
+echo "OK (`echo $DBLIST|cut -d'|' -f2`)"
 
 #ダウンロードファイル生成
+echo -ne "LIST DOWNLOAD:\t"
 RST=`ORCXSMST1 $MSTDIR$DBLIST 2>&1`
 RC=$?
+ECHO_STDERR "$RST"
 if [ $RC -ne 0 ] ; then
-    echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG
     err "ダウンロードファイル生成に失敗しました" 99
-else
-    echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG > /dev/null
 fi
 #更新用ダウンロードファイル受信
 #ファイルサイズチェック
 if [ -s $UPDFILE ] ; then
-    echo "更新用ダウンロードファイルの作成が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+    UPDNUM=`cat $UPDFILE|wc -l`
+    ECHO_RUN "FILE ($UPDNUM)"
+    ECHO_STDERR "更新用ダウンロードファイルの作成が終了しました"
 else
-    echo "更新用ファイルはありません" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+    echo "OK (nothing)"
+    ECHO_STDERR "更新用ファイルはありません"
     rm -r $TMPDIR/$MSTDIR
-    delete_pgpass
     exit 0
 fi
 
 UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
-
+echo -ne "DOWNLOAD:\t"
 for UPD in $UPDLIST
 do
-    echo ${UPD:35:$LEN}
     if  [ $OFFLINE = "offline" ]; then
         DWNFL=`echo ${UPD:35:$LEN} | awk '{i=split($0,arr,"/"); print arr[i]} ' `
         if [ ${DWNFL:1:10} = "XXXXXXXXXX" ] ; then
-            echo ${UPD:35:$LEN} "オリジナルダンプスキップしました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+            ECHO_STDERR ${UPD:35:$LEN} "オリジナルダンプスキップしました"
         else
             if  [ -e $OFFLINEPATH/${UPD:35:$LEN} ]; then
                 cp $OFFLINEPATH/${UPD:35:$LEN} ./
-                echo ${UPD:35:$LEN} "複写が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+                ECHO_STDERR ${UPD:35:$LEN} "複写が終了しました"
             else
 		echo "$OFFLINEPATH/"
                 err "${UPD:35:$LEN} 複写に失敗しました" 99
@@ -183,37 +197,44 @@ do
         fi
     else
         if orcawget ${UPD:35:$LEN} ; then
-            echo ${UPD:35:$LEN} "ダウンロードが終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+            ECHO_STDERR ${UPD:35:$LEN} "ダウンロードが終了しました"
         else
             err "${UPD:35:$LEN} ダウンロードに失敗しました" 99
         fi
     fi
+    ECHO_N_RUN "."
 done
+ECHO_RUN "OK"
 
+echo -ne "EXTRACT:\t"
 for UPD in $UPDLIST
 do
-    echo $UPD 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+    ECHO_STDERR $UPD
     if orcatar $UPD ; then
-        echo "$UPD 解凍処理が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+        ECHO_STDERR "$UPD 解凍処理が終了しました"
     else
         err "$UPD 解凍処理に失敗しました" 99
     fi
+    ECHO_N_RUN "."
 done
+ECHO_RUN "OK"
+
 #DB構造変更処理
 DBOPTION="${DBCONNOPTION} ${DBNAME}"
 
+echo -ne "UPDATE:\t\t"
 for UPD in $UPDLIST
 do
     UPD1=`echo $UPD | awk '{gsub(/.tar.gz/,".dat"); print} ' `
     UPD2=`echo $UPD1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
     if [ -s $TMPDIR/$MSTDIR/$UPD2 ]; then
         if [ "${UPD2:0:7}" = "ORCADBC" ]; then
-	    echo $UPD2 | tee -a ${INSTALLLOG} ${THISTIMELOG}
-            su - $ORCAUSER -c "bash $TMPDIR/$MSTDIR/$UPD2 \"${DBOPTION}\" ${INSTALLLOG} ${THISTIMELOG}"
+	    echo $UPD2 >>${THISTIMELOG}
+            su - $ORCAUSER -c "bash $TMPDIR/$MSTDIR/$UPD2 \"${DBOPTION}\" ${INSTALLLOG} ${THISTIMELOG}" >&2
         else
-            su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME < $TMPDIR/$MSTDIR/$UPD2 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+            su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME < \"$TMPDIR/$MSTDIR/$UPD2\" " >&2
         fi
-	echo "$TMPDIR/$MSTDIR/$UPD2 done." | tee -a $INSTALLLOG $THISTIMELOG
+	echo "$TMPDIR/$MSTDIR/$UPD2 done." >&2
     fi
     LOGLIST=`awk '/ERROR:/{gsub(/\t| |;/,""); print} ' $THISTIMELOG`
     for LOG in $LOGLIST
@@ -222,14 +243,13 @@ do
             err "$UDP2 更新処理に失敗しました" 99
         fi
     done
-
-#DB管理情報更新
-
-    echo "update tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}',upymd=to_char(now(),'yyyymmdd'),uphms=to_char(now(),'hh24miss') where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+    #DB管理情報更新
+    echo "UPDATE tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}',upymd=to_char(now(),'yyyymmdd'),uphms=to_char(now(),'hh24miss') WHERE kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME >&2"
+    ECHO_N_RUN "."
 done
+ECHO_RUN "OK"
 
-echo  "全ての処理が完了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+ECHO_STDERR "全ての処理が完了しました"
 
 rm -r $TMPDIR/$MSTDIR
-delete_pgpass
 exit 0

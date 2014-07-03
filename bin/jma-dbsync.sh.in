@@ -9,7 +9,7 @@ fi
 
 if [ `id -u` -eq 0 ] ; then
     # root
-    su - $ORCAUSER -c "$DBSYNC -dir "$LDDEFDIR"/directory $*"
+    su - $ORCAUSER -c "${DBSYNC} -dir ${LDDEFDIR}/directory $*"
 else
-    $DBSYNC -dir "$LDDEFDIR"/directory $*
+    $DBSYNC -dir ${LDDEFDIR}/directory $*
 fi
