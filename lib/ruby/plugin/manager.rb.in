@@ -86,6 +86,13 @@ module JMA::Plugin
       }
     end
 
+    def upgrade2(name,version)
+      lock {
+        @log.info("upgrade2 #{name}-#{version}")
+        _install(name,version,"upgrade")
+      }
+    end
+
     def upgrade
       lock {
         @log.info("upgrade")
