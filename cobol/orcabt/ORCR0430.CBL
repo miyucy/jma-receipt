@@ -131,6 +131,7 @@
       *  04.07.05    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
       *                                     追加対応
       *  04.07.06    NACL-門脇    14/04/07  平成２６年４月改正対応
+      *  04.07.07    NACL-門脇    14/07/08  明細が５０を超える場合の対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -529,12 +530,12 @@
                                    BY          //WRK-RECE45//.
       *
        01  WRK-RECE45XX-REC.
-         02 WRK-RECE45XX-TBL       OCCURS 50.
+         02 WRK-RECE45XX-TBL       OCCURS 100.
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //WRK-RECE45XX//.
       *
        01  WRK-RECE45YY-REC.
-         02 WRK-RECE45YY-TBL       OCCURS 50.
+         02 WRK-RECE45YY-TBL       OCCURS 100.
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //WRK-RECE45YY//.
       *
@@ -2226,7 +2227,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          UNTIL   (IDX       >    5)   OR
                                  (FLG-WRKRECE45   =   1)
                    ADD         1            TO  IDX-RECE45
-                   IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                   IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                   OR (IDX-RECE45                       >  100 )
                        MOVE    1            TO  FLG-WRKRECE45
                    ELSE
                        MOVE  WRK-RECE45XX-SRYACT-TBL (IDX-RECE45 1)
@@ -2886,7 +2888,8 @@ grpsys        PERFORM  900-DBSELECT-SEC
                           UNTIL   (IDX             >    5)   OR
                                   (FLG-WRKRECE45   =    1)
                    ADD         1            TO  IDX-RECE45
-                   IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                   IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                   OR (IDX-RECE45                       >  100 )
                        MOVE    1            TO  FLG-WRKRECE45
                    ELSE
                        MOVE  WRK-RECE45XX-SRYACT-TBL (IDX-RECE45 1)
@@ -3217,7 +3220,8 @@ grpsys        PERFORM  900-DBSELECT-SEC
                           UNTIL   (IDX             >    5)   OR
                                   (FLG-WRKRECE45   =    1)
                    ADD         1            TO  IDX-RECE45
-                   IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                   IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                   OR (IDX-RECE45                       >  100 )
                        MOVE    1            TO  FLG-WRKRECE45
                    ELSE
                        MOVE  WRK-RECE45XX-SRYACT-TBL (IDX-RECE45 1)
@@ -6379,7 +6383,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                            UNTIL   (IDX       >    5)   OR
                                    (FLG-WRKRECE45   =   1)
                      ADD         1             TO    IDX-RECE45
-                     IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                     IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                     OR (IDX-RECE45                       >  100 )
                          MOVE    1             TO    FLG-WRKRECE45
                      ELSE
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
@@ -7464,7 +7469,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                            UNTIL   (IDX       >    5)   OR
                                    (FLG-WRKRECE45   =   1)
                      ADD         1             TO    IDX-RECE45
-                     IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                     IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                     OR (IDX-RECE45                       >  100 )
                          MOVE    1             TO    FLG-WRKRECE45
                      ELSE
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
@@ -8590,7 +8596,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO      TO   FLG-GAIKAN
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                      UNTIL  ( IDX                       >  50   )
+                      UNTIL  ( IDX                       >  100  )
                        OR    ( WRK-RECE45XX-SRYCD(IDX 1) = SPACE )
              IF     FLG-GAIKAN  =  1
                 IF  (WRK-RECE45XX-MEISKYFLG(IDX 1)  NOT = "R")
@@ -8612,7 +8618,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE    SPACE                TO  WRK-RECE45YY-REC
            INITIALIZE                       WRK-RECE45YY-REC
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                      UNTIL  ( IDX                       >  50   )
+                      UNTIL  ( IDX                       >  100  )
                        OR    ( WRK-RECE45XX-SRYCD(IDX 1) = SPACE )
              ADD     1      TO  IDX-RECE45
              MOVE    WRK-RECE45XX-SRYACT-TBL(IDX 1)
@@ -8642,7 +8648,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                      UNTIL  ( IDX                       >  50   )
+                      UNTIL  ( IDX                       >  100  )
                        OR    ( WRK-RECE45YY-SRYCD(IDX 1) = SPACE )
              ADD     1      TO  IDX-RECE45
              MOVE    WRK-RECE45YY-SRYACT-TBL(IDX 1)
@@ -8764,7 +8770,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                            UNTIL   (IDX       >    5)   OR
                                    (FLG-WRKRECE45   =   1)
                      ADD         1             TO    IDX-RECE45
-                     IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                     IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                     OR (IDX-RECE45                       >  100 )
                          MOVE    1             TO    FLG-WRKRECE45
                      ELSE
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)

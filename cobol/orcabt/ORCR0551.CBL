@@ -38,6 +38,7 @@
       *  04.07.04    NACL-ÌçÏÆ    14/04/07  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *  04.07.05    NACL-ÌçÏÆ    14/05/08  µßµÞ°åÎÅ´ÉÍý²Ã»»¤Î»»ÄêÆüµ­ºÜ
       *                                     ¤ä¤á¤ë
+      *  04.07.06    NACL-ÌçÏÆ    14/07/08  ÌÀºÙ¤¬£µ£°¤òÄ¶¤¨¤ë¾ì¹ç¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -488,12 +489,12 @@
                                    BY          //WRK-RECE45//.
       *
        01  WRK-RECE45XX-REC.
-         02 WRK-RECE45XX-TBL       OCCURS 50.
+         02 WRK-RECE45XX-TBL       OCCURS 100.
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //WRK-RECE45XX//.
       *
        01  WRK-RECE45YY-REC.
-         02 WRK-RECE45YY-TBL       OCCURS 50.
+         02 WRK-RECE45YY-TBL       OCCURS 100.
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //WRK-RECE45YY//.
       *
@@ -2220,7 +2221,8 @@
                          UNTIL   (IDX       >    5)   OR
                                  (FLG-WRKRECE45   =   1)
                    ADD         1            TO  IDX-RECE45
-                   IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                   IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                   OR (IDX-RECE45                       >  100 )
                        MOVE    1            TO  FLG-WRKRECE45
                    ELSE
                        MOVE  WRK-RECE45XX-SRYACT-TBL (IDX-RECE45 1)
@@ -2876,7 +2878,8 @@
                           UNTIL   (IDX             >    5)   OR
                                   (FLG-WRKRECE45   =    1)
                    ADD         1            TO  IDX-RECE45
-                   IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                   IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                   OR (IDX-RECE45                       >  100 )
                        MOVE    1            TO  FLG-WRKRECE45
                    ELSE
                        MOVE  WRK-RECE45XX-SRYACT-TBL (IDX-RECE45 1)
@@ -3198,7 +3201,8 @@
                           UNTIL   (IDX             >    5)   OR
                                   (FLG-WRKRECE45   =    1)
                    ADD         1            TO  IDX-RECE45
-                   IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                   IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                   OR (IDX-RECE45                       >  100 )
                        MOVE    1            TO  FLG-WRKRECE45
                    ELSE
                        MOVE  WRK-RECE45XX-SRYACT-TBL (IDX-RECE45 1)
@@ -6426,7 +6430,8 @@
                            UNTIL   (IDX       >    5)   OR
                                    (FLG-WRKRECE45   =   1)
                      ADD         1             TO    IDX-RECE45
-                     IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                     IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                     OR (IDX-RECE45                       >  100 )
                          MOVE    1             TO    FLG-WRKRECE45
                      ELSE
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
@@ -7609,7 +7614,8 @@
                            UNTIL   (IDX       >    5)   OR
                                    (FLG-WRKRECE45   =   1)
                      ADD         1             TO    IDX-RECE45
-                     IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                     IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                     OR (IDX-RECE45                       >  100 )
                          MOVE    1             TO    FLG-WRKRECE45
                      ELSE
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
@@ -8741,7 +8747,7 @@
       *
            MOVE    ZERO      TO   FLG-GAIKAN
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                      UNTIL  ( IDX                       >  50   )
+                      UNTIL  ( IDX                       >  100  )
                        OR    ( WRK-RECE45XX-SRYCD(IDX 1) = SPACE )
              IF     FLG-GAIKAN  =  1
                 IF  (WRK-RECE45XX-MEISKYFLG(IDX 1)  NOT = "R")
@@ -8763,7 +8769,7 @@
            MOVE    SPACE                TO  WRK-RECE45YY-REC
            INITIALIZE                       WRK-RECE45YY-REC
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                      UNTIL  ( IDX                       >  50   )
+                      UNTIL  ( IDX                       >  100  )
                        OR    ( WRK-RECE45XX-SRYCD(IDX 1) = SPACE )
              ADD     1      TO  IDX-RECE45
              MOVE    WRK-RECE45XX-SRYACT-TBL(IDX 1)
@@ -8793,7 +8799,7 @@
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                      UNTIL  ( IDX                       >  50   )
+                      UNTIL  ( IDX                       >  100  )
                        OR    ( WRK-RECE45YY-SRYCD(IDX 1) = SPACE )
              ADD     1      TO  IDX-RECE45
              MOVE    WRK-RECE45YY-SRYACT-TBL(IDX 1)
@@ -8915,7 +8921,8 @@
                            UNTIL   (IDX       >    5)   OR
                                    (FLG-WRKRECE45   =   1)
                      ADD         1             TO    IDX-RECE45
-                     IF  WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE
+                     IF (WRK-RECE45XX-SRYCD(IDX-RECE45 1) = SPACE)
+                     OR (IDX-RECE45                       >  100 )
                          MOVE    1             TO    FLG-WRKRECE45
                      ELSE
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)

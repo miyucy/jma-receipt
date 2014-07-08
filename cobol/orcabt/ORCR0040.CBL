@@ -152,6 +152,7 @@
       *                                     漢字モードの継続するスペース
       *                                     の記録方法の変更
       *  04.07.06    NACL-門脇    14/04/07  平成２６年４月改正対応
+      *  04.07.07    NACL-門脇    14/07/08  明細が５０を超える場合の対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -602,7 +603,7 @@
                                    BY          //WRK-RECE05//.
       *
        01  WRK-RECE05XX-REC.
-         02 WRK-RECE05XX-TBL       OCCURS 50.
+         02 WRK-RECE05XX-TBL       OCCURS 100.
            COPY    "CPRCF005.INC"  REPLACING   //RECE05//
                                    BY          //WRK-RECE05XX//.
       *
@@ -2055,7 +2056,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          UNTIL   (IDX       >    5)   OR
                                  (FLG-WRKRECE05   =   1)
                    ADD         1             TO    IDX-RECE05
-                   IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                   IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                   OR (IDX-RECE05                       >  100 )
                        MOVE    1             TO    FLG-WRKRECE05
                    ELSE
                        MOVE  WRK-RECE05XX-SRYACT-TBL (IDX-RECE05 1)
@@ -2516,7 +2518,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          UNTIL   (IDX       >    5)   OR
                                  (FLG-WRKRECE05   =   1)
                    ADD         1             TO    IDX-RECE05
-                   IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                   IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                   OR (IDX-RECE05                       >  100 )
                        MOVE    1             TO    FLG-WRKRECE05
                    ELSE
                        MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
@@ -3890,7 +3893,8 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                           UNTIL   (IDX             >    5)   OR
                                   (FLG-WRKRECE05   =    1)
                    ADD         1             TO    IDX-RECE05
-                   IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                   IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                   OR (IDX-RECE05                       >  100 )
                        MOVE    1             TO    FLG-WRKRECE05
                    ELSE
                        MOVE  WRK-RECE05XX-SRYACT-TBL (IDX-RECE05 1)
@@ -4156,7 +4160,8 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                           UNTIL   (IDX             >    5)   OR
                                   (FLG-WRKRECE05   =    1)
                    ADD         1             TO    IDX-RECE05
-                   IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                   IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                   OR (IDX-RECE05                       >  100 )
                        MOVE    1             TO    FLG-WRKRECE05
                    ELSE
                        MOVE  WRK-RECE05XX-SRYACT-TBL (IDX-RECE05 1)
@@ -4417,7 +4422,8 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                           UNTIL   (IDX             >    5)   OR
                                   (FLG-WRKRECE05   =    1)
                    ADD         1             TO    IDX-RECE05
-                   IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                   IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                   OR (IDX-RECE05                       >  100 )
                        MOVE    1             TO    FLG-WRKRECE05
                    ELSE
                        MOVE  WRK-RECE05XX-SRYACT-TBL (IDX-RECE05 1)
@@ -7336,7 +7342,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                              UNTIL   (IDX       >    5)   OR
                                      (FLG-WRKRECE05   =   1)
                        ADD         1             TO    IDX-RECE05
-                       IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                       IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                       OR (IDX-RECE05                       >  100 )
                            MOVE    1             TO    FLG-WRKRECE05
                        ELSE
                            MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
@@ -8403,7 +8410,8 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                              UNTIL   (IDX       >    5)   OR
                                      (FLG-WRKRECE05   =   1)
                        ADD         1             TO    IDX-RECE05
-                       IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                       IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                       OR (IDX-RECE05                       >  100 )
                            MOVE    1             TO    FLG-WRKRECE05
                        ELSE
                            MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
@@ -9285,7 +9293,8 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                              UNTIL   (IDX       >    5)   OR
                                      (FLG-WRKRECE05   =   1)
                        ADD         1             TO    IDX-RECE05
-                       IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                       IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                       OR (IDX-RECE05                       >  100 )
                            MOVE    1             TO    FLG-WRKRECE05
                        ELSE
                            MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
@@ -9452,7 +9461,8 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                              UNTIL   (IDX       >    5)   OR
                                      (FLG-WRKRECE05   =   1)
                        ADD         1             TO    IDX-RECE05
-                       IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                       IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                       OR (IDX-RECE05                       >  100 )
                            MOVE    1             TO    FLG-WRKRECE05
                        ELSE
                            MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
@@ -9565,7 +9575,8 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                              UNTIL   (IDX       >    5)   OR
                                      (FLG-WRKRECE05   =   1)
                        ADD         1             TO    IDX-RECE05
-                       IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                       IF (WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE)
+                       OR (IDX-RECE05                       >  100 )
                            MOVE    1             TO    FLG-WRKRECE05
                        ELSE
                            MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
