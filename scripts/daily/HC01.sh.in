@@ -10,10 +10,10 @@ fi
 . $JMARECEIPT_ENV
 
 export HOME=/home/orca
-ruby -e "puts File.readlines(ARGV[0]).at(0).chomp + ' ' * 20000  " $4 > $4.tmp
+%RUBY% -e "puts File.readlines(ARGV[0]).at(0).chomp + ' ' * 20000  " $4 > $4.tmp
 mv $4.tmp $4
-LAYEROPTION=`ruby -ne '$_.scan(/MonpeLayerIn(.*)MonpeLayerOut/){ print $1.gsub(/ *-L */,",").sub(/,/,"-H ") }' $4`
-ruby -ne 'print $_.gsub(/MonpeLayerIn(.*)MonpeLayerOut/){|s| " " * s.length } ' $4 > $4.tmp
+LAYEROPTION=`%RUBY% -ne '$_.scan(/MonpeLayerIn(.*)MonpeLayerOut/){ print $1.gsub(/ *-L */,",").sub(/,/,"-H ") }' $4`
+%RUBY% -ne 'print $_.gsub(/MonpeLayerIn(.*)MonpeLayerOut/){|s| " " * s.length } ' $4 > $4.tmp
 mv $4.tmp $4
 
 #
@@ -57,7 +57,7 @@ fi
 		[ -e $RED2IFILE ] && rm $RED2IFILE
 		[ -e $PDFFILE ]   && rm $PDFFILE
 	else	
-		ruby $1 $2 $3 $4 $5
+		%RUBY% $1 $2 $3 $4 $5
 	fi
 #----------------------------------------------------------------------#
 #	ファイル削除処理
@@ -74,10 +74,10 @@ HCLIST="HC04 HC08 HC18 HC20 HC21 HC22 HC23 HC24"
         echo $4
 #------ 処方せんQRイメージ削除
 	if	[ ${4:7:4} = "HC2Q" ]	;then
-	    ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
+	    %RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
 	fi
 	if	[ ${4:7:4} = "HC62" ]	;then
-	    ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
+	    %RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
 	fi
 	rm $4
   fi

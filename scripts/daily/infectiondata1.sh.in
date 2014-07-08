@@ -117,7 +117,7 @@ make_infection_file () {
   if [ -e $INFECFILE ]; then
     if [ -s $INFECFILE ]; then
       TIMESTAMP=`(date +%Y%m%d%H%M%S)`
-      RANDOMIZE=`ruby -e 'print sprintf("%04d",rand(10000))'`
+      RANDOMIZE=`%RUBY% -e 'print sprintf("%04d",rand(10000))'`
       mv $INFECFILE $INFECFILE.$TIMESTAMP$RANDOMIZE
       gzip $INFECFILE.$TIMESTAMP$RANDOMIZE
     else

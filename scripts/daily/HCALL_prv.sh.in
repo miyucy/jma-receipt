@@ -33,7 +33,7 @@ else
 	export	RED2PS_OUTPUT_CHARSET=EUC-JP
 fi
 
-	ruby "$SCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "ruby ${SCRIPTSDIR}/daily/print-data_prv.rb " "ruby ${SCRIPTSDIR}/daily/orcred2ps.rb " ${PATCHFORMDIR}
+	%RUBY% "$SCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "%RUBY% ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "%RUBY% ${SCRIPTSDIR}/daily/print-data_prv.rb " "%RUBY% ${SCRIPTSDIR}/daily/orcred2ps.rb " ${PATCHFORMDIR}
 
 	if	[ $?  =  0 ]; then
         	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter $1,$2
@@ -46,11 +46,11 @@ fi
         if [ ${4:0:4} = "/tmp" ] ; then
 #------ 処方せんQRイメージ削除
 	if      [ ${4:7:4} = "HC2Q" ]   ;then
-		ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' ${4} | xargs rm -f
+		%RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' ${4} | xargs rm -f
 	fi
 	if      [ ${4:7:4} = "HC62" ]   ;then
                 LDATA=`ls \`echo $4 | sed 's/[[:digit:]]*\.dat$//g'\`* | sort -r | head -n 1`
-                ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $LDATA |xargs rm -f
+                %RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $LDATA |xargs rm -f
 
 	fi
 	rm ${4:0:53}*

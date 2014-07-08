@@ -73,7 +73,7 @@ fi
 if [ -e $INFECFILE ]; then
   if [ -s $INFECFILE ]; then
     TIMESTAMP=`(date +%Y%m%d%H%M%S)`
-    RANDOMIZE=`ruby -e 'print sprintf("%04d",rand(10000))'`
+    RANDOMIZE=`%RUBY% -e 'print sprintf("%04d",rand(10000))'`
     mv $INFECFILE $INFECRFILE.$TIMESTAMP$RANDOMIZE
     gzip $INFECRFILE.$TIMESTAMP$RANDOMIZE
   else

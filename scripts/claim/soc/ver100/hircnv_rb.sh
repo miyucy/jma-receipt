@@ -17,7 +17,7 @@ echo 'claim通信 バージョン2実行時用の階層データファイルを出力します'
 echo '  出力ファイル名 = ['$OUTHIRFILE']'
 echo ''
 # コンバートの実行
-ruby -Ke hircnv.rb $INDIR/$INHIRFILE $OUTDIR/$OUTHIRFILE > /dev/null
+%RUBY% -Ke hircnv.rb $INDIR/$INHIRFILE $OUTDIR/$OUTHIRFILE > /dev/null
 
 echo ''
 echo 'done.'

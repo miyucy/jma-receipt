@@ -25,7 +25,7 @@ else
 	export	RED2PS_OUTPUT_CHARSET=EUC-JP
 fi
 
-ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 ${PATCHFORMDIR}
+%RUBY% "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "%RUBY% ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 ${PATCHFORMDIR}
 
 	rm -f $1
 	echo	`date`

@@ -71,7 +71,7 @@ end
 #----- convert claim data J-code to $out_code ----------
 print "Convert J-code to #{$out_code}\n"
 snd_file = $file_path_name.gsub(/.xml$/, "_#{$out_code}_snd.xml")
-`ruby xml_jcnv.rb #{$file_path_name} to#{$out_code} -f > #{snd_file}`  
+`%RUBY% xml_jcnv.rb #{$file_path_name} to#{$out_code} -f > #{snd_file}`  
 #-------------------------------------------------------
 
 logmsg = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "\n"

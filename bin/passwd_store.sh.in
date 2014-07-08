@@ -88,7 +88,7 @@ export TEMP1
 export TEMP2
 trap "rm -f ${TEMP1}; rm -f ${TEMP2}" EXIT
 
-ruby <<RUBY_END
+%RUBY% <<RUBY_END
   fi = open(ENV['TEMP1'])
   fo = open(ENV['TEMP2'], 'w')
 

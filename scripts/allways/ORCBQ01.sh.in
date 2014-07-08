@@ -50,7 +50,7 @@ fi
 ##      ＣＳＶファイル作成
         if  [ $1 -eq "0" ]; then
             if  [ -e ${15} ]; then
-		ruby -e 'STDIN.readlines.each{|y| puts y.split(",").each{|x|  x.strip!}.join(",")}' <  ${15} > ${2}.tmp
+		%RUBY% -e 'STDIN.readlines.each{|y| puts y.split(",").each{|x|  x.strip!}.join(",")}' <  ${15} > ${2}.tmp
 
                 if   [ ${11} = '1' ]; then
 #                   クライアント保存のとき固定ファイルに文字コード変換（ＥＵＣからＳ−ｊｉｓ）

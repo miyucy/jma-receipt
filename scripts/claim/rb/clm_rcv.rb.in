@@ -219,7 +219,7 @@ class ClaimRcv
       # convert claim data J-code to UTF8
       Log("Convert to UTF-8\n")
       u8_file = file_path_name.gsub(/.xml$/, "_u8.xml")
-      `ruby xml_jcnv.rb #{file_path_name} tou8 -f > #{u8_file}`  
+      `%RUBY% xml_jcnv.rb #{file_path_name} tou8 -f > #{u8_file}`  
       file_path_name = u8_file
 
       # check claim data and send respons to client

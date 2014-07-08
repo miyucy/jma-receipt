@@ -23,14 +23,14 @@ echo '  出力defファイル名 = ['$OUTDEFFILE']'
 echo ''
 STARTTIME=`date '+%T'`
 # コンバートの実行
-ruby -Ke claim_convert.rb -D $INDEFDIR/$INDEFFILE $OUTDEFDIR/$OUTDEFFILE
+%RUBY% -Ke claim_convert.rb -D $INDEFDIR/$INDEFFILE $OUTDEFDIR/$OUTDEFFILE
 
 echo ''
 echo 'ver2形式XMLテンプレートソースファイルから、ver1形式XMLテンプレートファイルを生成します'
 echo '  出力テンプレートファイル名 = ['$OUTTEMPLATEFILE']'
 echo ''
 XMLSTARTTIME=`date '+%T'`
-ruby -Ke claim_convert.rb -X $INTEMPLATEDIR/$INTEMPLATEFILE $OUTTEMPLATEDIR/$OUTTEMPLATEFILE
+%RUBY% -Ke claim_convert.rb -X $INTEMPLATEDIR/$INTEMPLATEFILE $OUTTEMPLATEDIR/$OUTTEMPLATEFILE
 
 
 echo ''
