@@ -149,6 +149,22 @@ W60 {
           count int;
             item varchar(32)[5];
         };
+        CMB_SRYHEIMSTKBN {
+          SRYHEIMSTKBN { #GtkPandaEntry
+            textdata varchar(32);
+          };
+          count int;
+          item varchar(32)[5];
+        };
+        CMB_SRYHEIEXPKBN {
+          SRYHEIEXPKBN {
+            textdata varchar(40);
+      		state int;
+          };
+          count int;
+          item varchar(40)[5];
+ 		  state int;
+        };
       };
       fixed3 {
         CMB_SRYKAISUMSTKBN {

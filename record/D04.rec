@@ -3,7 +3,13 @@ D04 {
     B06 {
       state int;
     };
+    B06C {
+      state int;
+    };
     B07 {
+      state int;
+    };
+    B07C {
       state int;
     };
     B08 {
