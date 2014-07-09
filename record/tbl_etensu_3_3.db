@@ -55,7 +55,7 @@ path	key2 	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_etensu_3_3
+		UPDATE	tbl_etensu_3_3
 				SET
 				SRYCD1      = :SRYCD1,
 				SRYCD2      = :SRYCD2,
