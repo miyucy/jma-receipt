@@ -23,10 +23,18 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SGETTEMP-AREA.
+      *    入力引数
+      *    ファイル名（パス無し） 
            03  SGETTEMP-BASENAME           PIC X(1024).
+      *    返却値
+      *    FULLNAME内のBASENAME開始位置
+           03  SGETTEMP-ST                 PIC 9(05).
+      *    一時ディレクトリ名
            03  SGETTEMP-TEMPDIR            PIC X(1024).
            03  SGETTEMP-FULLNAME-AREA.
+      *    TEMPDIR + "/" + BASENAME
                05  SGETTEMP-FULLNAME       PIC X(1024).
+      *    TEMPDIR + "/" + BASENAME + "." + nnn
                05  SGETTEMP-FULLNAMES-OCC  OCCURS 10.
                    07  SGETTEMP-FULLNAMES  PIC X(1024).
 
