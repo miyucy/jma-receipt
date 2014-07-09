@@ -67,6 +67,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -120,21 +121,21 @@ grpsys     COPY    "COMMON-SPA".
       *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE100//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE100PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE110//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE110PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE140//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE140PARA//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+      *    エラーファイル名称領域
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
       *
       *****COPY    "HCM58V01.INC"  REPLACING  //HCM58V01//
            COPY    "HCM58V02.INC"  REPLACING  //HCM58V02//
@@ -370,17 +371,18 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
        01  WRK-ERR-AREA.
-           03  WRK-RECEERR                         PIC X(200).
-           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-RECEERR                         PIC X(1500).
+           03  WRK-ERRMSG                          PIC X(1500).
            03  WRK-MCP-RC                          PIC 9(9).
            03  WRK-ERR-FILE-STS                    PIC X(02).
            03  WRK-ERR-FILE-MSG                    PIC X(100).
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -636,6 +638,8 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -693,16 +697,24 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+      *    ＤＢオープン処理
+           PERFORM 100-DBOPEN-SEC
+      *
       *    ファイルＯＰＥＮ処理
-           MOVE    "RECE900"           TO  RECE100PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE100PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE100PARA-HOSPNUM
-           MOVE    "RECE910"           TO  RECE110PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE110PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE110PARA-HOSPNUM
-           MOVE    "RECE940"           TO  RECE140PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE140PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE140PARA-HOSPNUM
+           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
+      *
+           MOVE    "RECE910"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE110PARA
+      *
+           MOVE    "RECE940"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE140PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+           DISPLAY "WRK-SGETTEMP-ST=" WRK-SGETTEMP-ST
       *
            OPEN    INPUT               RECE100-FILE
            IF      STS-RECE100         =   "00"
@@ -740,8 +752,6 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                PERFORM 500-FILE-ERR-ABORT-SEC
            END-IF
       *
-           PERFORM 100-DBOPEN-SEC
-      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -749,7 +759,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                MOVE    "ORCR1060"      TO  JOB-PGID
                MOVE    "印刷データ編集"
                                        TO  JOB-SHELLMSG
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+               PERFORM 900-CALL-ORCSJOB-SEC
       *
       *        処理中止設定処理
                IF      FLG-STS             =   ZERO
@@ -761,7 +771,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "STP"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    3               TO  JOB-STOPFLG
-grpsys             PERFORM 900-CALL-ORCSJOB-SEC
+                   PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF
       *
@@ -2822,7 +2832,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -2832,8 +2843,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            STRING  "ORCR1060 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
-                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
                                            INTO    WRK-ERRMSG
@@ -3244,6 +3256,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-ORCSGETTEMP-CALL-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEDAT1PARA-FILENM TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           .
+       800-ORCSGETTEMP-CALL-EXT.
            EXIT.
       *
       *****************************************************************

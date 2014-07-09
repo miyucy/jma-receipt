@@ -54,6 +54,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,9 +74,12 @@
        01  RECEERR-REC             PIC X(200).
        WORKING-STORAGE         SECTION.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+      *    エラーファイル名称
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECEERR//.
+      *
+      *    エラーファイル名称領域 
+           COPY    "CPERRFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -587,9 +591,28 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    LINK-PTID       TO  WRK-PTID
       *
-           MOVE    "ORPRVERR"      TO  RECEERR-FILE-ID
-           MOVE    WRK-PTID        TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
+           MOVE    "ORPRVERR"      TO  ERRFLPARA-FILE-ID
+           MOVE    WRK-PTID        TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM     TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE           TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-FILENM    DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
+      *??
+           IF      LINK-HKNKBN         =   "3"
+           AND     LINK-NYUGAIKBN      =   "2"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  RECEERR
+               STRING  "tmp/"              DELIMITED   BY  SIZE
+                       ERRFLPARA-FILENM    DELIMITED   BY  SPACE
+                                           INTO        RECEERR
+               END-STRING
+           END-IF
+           DISPLAY "RECERR=" RECEERR
+      *?? 
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -623,7 +646,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                WHEN    "4"
                    MOVE    "8"             TO  SHELLTBL-ARG3
            END-EVALUATE 
-           MOVE    RECEERR         TO  SHELLTBL-ARG4
+           MOVE    ERRFLPARA-FILENM
+                                   TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID

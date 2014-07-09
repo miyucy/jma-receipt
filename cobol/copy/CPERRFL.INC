@@ -25,9 +25,10 @@
       *****************************************************************
        01  ERRFLPARA.
            03  FILLER                  PIC X(05)   VALUE   "/tmp/".
-           03  ERRFLPARA-HOSPNUM       PIC 9(2).
-           03  ERRFLPARA-SYOKBN1       PIC 9(01)   VALUE   0.
-           03  ERRFLPARA-SYOKBN2       PIC 9(01)   VALUE   0.
-           03  ERRFLPARA-FILE-ID       PIC X(08).
-           03  ERRFLPARA-TERMID        PIC X(16).
-           03  FILLER                  PIC X(04)   VALUE   ".dat".
+           03  ERRFLPARA-FILENM.
+               05  ERRFLPARA-HOSPNUM   PIC 9(2).
+               05  ERRFLPARA-SYOKBN1   PIC 9(01)   VALUE   0.
+               05  ERRFLPARA-SYOKBN2   PIC 9(01)   VALUE   0.
+               05  ERRFLPARA-FILE-ID   PIC X(08).
+               05  ERRFLPARA-TERMID    PIC X(16).
+               05  FILLER              PIC X(04)   VALUE   ".dat".

@@ -30,6 +30,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.01    NACL-藤原    10/11/04  補足コメント対応
       *  04.06.02    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -68,17 +70,18 @@
       *
            COPY    "COMMON-SPA".
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE100//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE100PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE110//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE110PARA//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+      *    エラーファイル名称領域
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -177,6 +180,8 @@
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -227,12 +232,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    "RECE900"           TO  RECE100PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE100PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE100PARA-HOSPNUM
-           MOVE    "RECE910"           TO  RECE110PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE110PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE110PARA-HOSPNUM
+           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
+      *
+           MOVE    "RECE910"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE110PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -652,6 +658,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCR1040 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-ORCSGETTEMP-CALL-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEDAT1PARA-FILENM TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           .
+       800-ORCSGETTEMP-CALL-EXT.
            EXIT.
       *
       *****************************************************************

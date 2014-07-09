@@ -113,6 +113,7 @@
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -159,22 +160,21 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE100//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE100PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE120//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE120PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE130//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE130PARA//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+      *    エラーファイル名称領域
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -1079,6 +1079,8 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -1127,15 +1129,18 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    "RECE900"           TO  RECE100PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE100PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE100PARA-HOSPNUM
-           MOVE    "RECE920"           TO  RECE120PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE120PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE120PARA-HOSPNUM
-           MOVE    "RECE930"           TO  RECE130PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE130PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE130PARA-HOSPNUM
+           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
+      *
+           MOVE    "RECE920"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE120PARA
+      *
+           MOVE    "RECE930"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE130PARA
+      *
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -2049,7 +2054,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2104411-RECE130-TENSOU-COMCNT-HEN-SEC
+                  PERFORM  2104411-RECE130-COMCNT-HEN-SEC
                ELSE
                   IF   RECE120-SRYKBN     =     "50"
                      MOVE   "1"   TO    RECE120-FLG-SHUJUTU-COMMENT
@@ -2405,7 +2410,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 2104412-RECE130-TENSOU-TANKA-HEN-SEC
+                       PERFORM 2104412-RECE130-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE130-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -2605,7 +2610,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *****************************************************************
       *    レセプトコメントフラグ編集処理
       *****************************************************************
-       2104411-RECE130-TENSOU-COMCNT-HEN-SEC               SECTION.
+       2104411-RECE130-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE120-SRYKBN      =     "11"
       *       初診料算定科：
@@ -3397,16 +3402,16 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            END-IF
       *
            .
-       2104411-RECE130-TENSOU-COMCNT-HEN-EXT.
+       2104411-RECE130-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    酸素の単価編集処理
       *****************************************************************
-       2104412-RECE130-TENSOU-TANKA-HEN-SEC     SECTION.
+       2104412-RECE130-TANKA-HEN-SEC     SECTION.
       *
       ***  IF      TNS-TEN         =   ZERO
-      ***      GO  TO  2104412-RECE130-TENSOU-TANKA-HEN-EXT  
+      ***      GO  TO  2104412-RECE130-TANKA-HEN-EXT  
       ***  END-IF
       *
            MOVE    SPACE           TO  WRK-TANKA-X
@@ -3467,7 +3472,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            END-IF                             
       *
            .
-       2104412-RECE130-TENSOU-TANKA-HEN-EXT.
+       2104412-RECE130-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5410,6 +5415,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCR1010 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-ORCSGETTEMP-CALL-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEDAT1PARA-FILENM TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           .
+       800-ORCSGETTEMP-CALL-EXT.
            EXIT.
       *
       *****************************************************************

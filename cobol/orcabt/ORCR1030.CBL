@@ -71,6 +71,7 @@
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -161,37 +162,33 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE100//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE100PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE120//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE120PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE130//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE130PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE1201//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE1201PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE1301//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE1301PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE1209//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE1209PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE1309//.
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECE1309PARA//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+      *    エラーファイル名称領域
+           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
+                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -430,9 +427,9 @@
            03  WRK-ZAIKYO-YMD9               PIC X(08).
            03  WRK-ZAIKYO-KAISU              PIC 9(02).
       *
-       01  WRK-RECE120-REC. 
+       01  WK-RECE120-REC. 
            COPY    "CPRCF120.INC"  REPLACING   //RECE120//
-                                   BY          //WRK-RECE120//.
+                                   BY          //WK-RECE120//.
       *
        01  WRK-RECE130-REC. 
            COPY    "CPRCF130.INC"  REPLACING   //RECE130//
@@ -836,9 +833,10 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      ***  COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -914,29 +912,34 @@
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           MOVE    "RECE900"           TO  RECE100PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE100PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE100PARA-HOSPNUM
-           MOVE    "RECE920"           TO  RECE120PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE120PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE120PARA-HOSPNUM
-           MOVE    "RECE930"           TO  RECE130PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE130PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE130PARA-HOSPNUM
+           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
       *
-           MOVE    "RECE922"           TO  RECE1201PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE1201PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE1201PARA-HOSPNUM
-           MOVE    "RECE932"           TO  RECE1301PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE1301PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE1301PARA-HOSPNUM
+           MOVE    "RECE920"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE120PARA
       *
-           MOVE    "RECE92Y"           TO  RECE1209PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE1209PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE1209PARA-HOSPNUM
-           MOVE    "RECE93Y"           TO  RECE1309PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE1309PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE1309PARA-HOSPNUM
+           MOVE    "RECE930"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE130PARA
+      *
+           MOVE    "RECE922"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE1201PARA
+      *
+           MOVE    "RECE932"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE1301PARA
+      *
+           MOVE    "RECE92Y"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE1209PARA
+      *
+           MOVE    "RECE93Y"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-ORCSGETTEMP-CALL-SEC
+           MOVE    SGETTEMP-FULLNAME   TO  RECE1309PARA
+      *
       *
            OPEN    INPUT               RECE100-FILE
            OPEN    INPUT               RECE120-FILE
@@ -1021,7 +1024,7 @@
                    WHEN      "14"
       *            （在支援に関する診療のカウント）
                       IF  RECE120-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
-                        MOVE  RECE120-REC    TO   WRK-RECE120-REC
+                        MOVE  RECE120-REC    TO   WK-RECE120-REC
                         EVALUATE  RECE120-FLG-ZAISIEN-COMMENT
                           WHEN      "1"
                             MOVE  1  TO  TBL-ZAISIEN-COMMENT
@@ -1892,7 +1895,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            PERFORM 800-RECE100-SET049-SEC
            MOVE    99999965             TO  RECE1209-ZAINUM
-           MOVE    WRK-RECE120-SRYKBN   TO  RECE1209-SRYKBN
+           MOVE    WK-RECE120-SRYKBN    TO  RECE1209-SRYKBN
            MOVE    1                    TO  RECE1209-MEISAISU
       *
            WRITE   RECE1209-REC
@@ -1900,7 +1903,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            PERFORM 800-RECE100-SET059-SEC
            MOVE    99999965             TO  RECE1309-ZAINUM
-           MOVE    WRK-RECE120-SRYKBN   TO  RECE1309-SRYKBN
+           MOVE    WK-RECE120-SRYKBN    TO  RECE1309-SRYKBN
       *    在支援コメントの挿入
            MOVE    SPACE                TO  WRK-RECE130XX-REC
            INITIALIZE                       WRK-RECE130XX-REC
@@ -2454,7 +2457,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    21   TO  IDC1
                MOVE    27   TO  IDC2
                MOVE    33   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                COMPUTE WRK-ZAINUM    =    99998000
                                      +   (IDX16 + 31)
                MOVE    "40" TO  WRK-SRYKBN
@@ -2465,7 +2468,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    29   TO  IDC1
                MOVE    35   TO  IDC2
                MOVE    41   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99998201      TO   WRK-ZAINUM
                ELSE
@@ -2482,7 +2485,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    21  TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
                    MOVE    "脳血管疾患等リハ：手術　　　年　　月　　日"
@@ -2490,7 +2493,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    23  TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
                    MOVE
@@ -2499,7 +2502,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    29  TO  IDC1
                    MOVE    35  TO  IDC2
                    MOVE    41  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998401      TO   WRK-ZAINUM
@@ -2517,7 +2520,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    18  TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
                    MOVE    "運動器リハ：手術　　　年　　月　　日"
@@ -2525,7 +2528,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    20  TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
                    MOVE    "運動器リハ：急性増悪　　　年　　月　　日"
@@ -2533,7 +2536,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    23  TO  IDC1
                    MOVE    29  TO  IDC2
                    MOVE    35  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998601      TO   WRK-ZAINUM
@@ -2549,7 +2552,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    23   TO  IDC1
                MOVE    29   TO  IDC2
                MOVE    35   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99998801      TO   WRK-ZAINUM
                ELSE
@@ -2564,7 +2567,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99999001      TO   WRK-ZAINUM
                ELSE
@@ -2581,7 +2584,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    19  TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
                    MOVE    "難病患者リハ：手術　　　年　　月　　日"
@@ -2589,7 +2592,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    21  TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
                    MOVE    "難病患者リハ：急性増悪　　　年　　月　　日"
@@ -2597,7 +2600,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99999201      TO   WRK-ZAINUM
@@ -2613,7 +2616,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99999401      TO   WRK-ZAINUM
                ELSE
@@ -2683,7 +2686,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
       *****************************************************************
       *    発症日のコメント編集（年月日）
       *****************************************************************
-       200111-HASSYO-COMMENT-HIZUKE-SEC          SECTION.
+       200111-HASSYO-COMMENT-DATE-SEC          SECTION.
       *
            INITIALIZE                         STS-AREA-DAY
            INITIALIZE                         LNK-DAY2-AREA
@@ -2724,7 +2727,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
            END-IF
       *
            .
-       200111-HASSYO-COMMENT-HIZUKE-EXT.
+       200111-HASSYO-COMMENT-DATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2863,7 +2866,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                OR    ( FLG-KYUSEI-COMMENT2 =   1 )
       *
                      IF   SANTEI-DAY(IDX3)  NOT =  ZERO
-                       PERFORM  200111-RIHA-SANTEIPLUS-HANTEI-SEC
+                       PERFORM  200111-RIHA-SANTEIPLUS-SEC
                      END-IF
       *
                      IF  (SANTEI-DAY(IDX3)  NOT =  ZERO)
@@ -3021,7 +3024,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    リハビリ・算定履歴付加判定
       *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
       *****************************************************************
-       200111-RIHA-SANTEIPLUS-HANTEI-SEC          SECTION.
+       200111-RIHA-SANTEIPLUS-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-SANTEIPLUS-HANTEI
       *
@@ -3054,7 +3057,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
            .
-       200111-RIHA-SANTEIPLUS-HANTEI-EXT.
+       200111-RIHA-SANTEIPLUS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5940,7 +5943,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
            END-IF
       *
            IF      WRK-RIHAIGAKU-SANTEI-FLG  NOT = SPACE
-             PERFORM    20011-RIHAIGAKU-DUMMY-COMMENT-SEC
+             PERFORM    20011-RIHAIGAKU-DUMMY-COM-SEC
            ELSE
              PERFORM    200111-SRYACTINF-HENSYU-SEC
            END-IF
@@ -5952,7 +5955,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
       *****************************************************************
       *    リハビリ医学管理料のコメント編集（リハ実施日）
       *****************************************************************
-       20011-RIHAIGAKU-DUMMY-COMMENT-SEC          SECTION.
+       20011-RIHAIGAKU-DUMMY-COM-SEC          SECTION.
       *
            INITIALIZE             TBL-SANTEI-DAY
       *
@@ -5987,7 +5990,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
            PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       20011-RIHAIGAKU-DUMMY-COMMENT-EXT.
+       20011-RIHAIGAKU-DUMMY-COM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6721,7 +6724,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
       *
                       WRITE     RECE1209-REC
                       ADD       1             TO  CNT-RECE1209
-                      PERFORM   24021-YAKUTEI-RECE130-TENSOU-SEC
+                      PERFORM   24021-YAKUTEI-RECE130-HEN-SEC
       *
                  END-PERFORM
       *
@@ -6750,7 +6753,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
       *
                       WRITE     RECE1209-REC
                       ADD       1             TO  CNT-RECE1209
-                      PERFORM   24021-YAKUTEI-RECE130-TENSOU-SEC
+                      PERFORM   24021-YAKUTEI-RECE130-HEN-SEC
       *
                  END-PERFORM
       *
@@ -6763,7 +6766,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
       *****************************************************************
       *    内服薬剤料逓減に関するファイル出力（０５ファイル）
       *****************************************************************
-       24021-YAKUTEI-RECE130-TENSOU-SEC          SECTION.
+       24021-YAKUTEI-RECE130-HEN-SEC          SECTION.
       *
            PERFORM 800-RECE1209-SET05-SEC
            MOVE    WRK-YAKUTEI-ZAINUM   TO  RECE130-ZAINUM
@@ -6789,7 +6792,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
            END-PERFORM
       *
            .
-       24021-YAKUTEI-RECE130-TENSOU-EXT.
+       24021-YAKUTEI-RECE130-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6968,7 +6971,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
              COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
                                    *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              MOVE    "円×" TO  WK-FREE-NAME3(WRK-KETA:4)
              COMPUTE  WRK-KETA   =  WRK-KETA   +  4
@@ -6978,7 +6981,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
                              = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
                              *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              IF    TBL-KASAN-SRYSURYO  =  ZERO
                 MOVE    "Ｌ×１．３）" TO  WK-FREE-NAME3(WRK-KETA:12)
@@ -6999,7 +7002,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
                              = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
                              *   1000
       *
-                PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                 MOVE    "）" TO  WK-FREE-NAME3(WRK-KETA:2)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -7024,7 +7027,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
               COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
               MOVE     ZERO       TO   WRK-KEISAN2
       *
-              PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+              PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
               MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -7043,7 +7046,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
                   COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
                   MOVE     ZERO       TO   WRK-KEISAN2
       *
-                  PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                  PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                   MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -7081,7 +7084,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
       *****************************************************************
       *    酸素計算式・数値編集
       *****************************************************************
-       2501111-SANSO-FREE-COMMENT-SUCHI-SEC          SECTION.
+       2501111-SANSO-FREE-COM-NUM-SEC          SECTION.
       *
            IF    WRK-KEISAN  NOT  =  ZERO
                PERFORM   VARYING   IDX4    FROM   1   BY   1
@@ -7145,7 +7148,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
            END-IF
       *
            .
-       2501111-SANSO-FREE-COMMENT-SUCHI-EXT.
+       2501111-SANSO-FREE-COM-NUM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7446,6 +7449,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        310-FILE-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-ORCSGETTEMP-CALL-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEDAT1PARA-FILENM TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           .
+       800-ORCSGETTEMP-CALL-EXT.
            EXIT.
       *
       *****************************************************************

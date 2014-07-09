@@ -17,17 +17,11 @@
       ********************************************************************
       *****************************************************************
       *
-      *     レセプト作成用中間ファイル名称領域      CPRECEDAT1.INC
+      *     一時ファイル名称領域      CPTEMPFL.INC
       *            
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
-       01  RECEDAT1PARA.
-           03  FILLER                  PIC X(05)   VALUE   "/tmp/".
-           03  RECEDAT1PARA-FILENM.
-               05  RECEDAT1PARA-HOSPNUM    PIC 9(2).
-               05  RECEDAT1PARA-SYOKBN     PIC 9(01)   VALUE   0.
-               05  RECEDAT1PARA-RECEKBN    PIC 9(01)   VALUE   0.
-               05  RECEDAT1PARA-FILE-ID    PIC X(07).
-               05  RECEDAT1PARA-TERMID     PIC X(16).
+       01  TEMPFLPARA.
+           03  FILLER                  PIC X(1024).
