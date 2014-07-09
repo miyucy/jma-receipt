@@ -109,28 +109,31 @@
       *
            MOVE   WRK-POINTER      TO  SGETTEMP-ST
       *
-           STRING "/"
-                  FUNCTION TRIM(SGETTEMP-BASENAME) DELIMITED BY SIZE
-           INTO   SGETTEMP-FULLNAME
-           WITH   POINTER  WRK-POINTER
-           END-STRING
-      *
-           MOVE    ZERO            TO  WRK-SEQ
-           PERFORM VARYING WRK-SEQ FROM    1   BY  1
-                   UNTIL ( WRK-SEQ > 10 )
-      *
-               MOVE   WRK-POINTER-PATH TO  WRK-POINTER
-               MOVE   WRK-FULLNAME     TO  SGETTEMP-FULLNAMES (WRK-SEQ)
-      *
+           IF  ( SGETTEMP-BASENAME     NOT =   SPACE )
                STRING "/"
                       FUNCTION TRIM(SGETTEMP-BASENAME) DELIMITED BY SIZE
-                      "."                              DELIMITED BY SIZE
-                      WRK-SEQ-X                        DELIMITED BY SIZE
-               INTO   SGETTEMP-FULLNAMES (WRK-SEQ)
+               INTO   SGETTEMP-FULLNAME
                WITH   POINTER  WRK-POINTER
                END-STRING
       *
-           END-PERFORM
+               MOVE    ZERO            TO  WRK-SEQ
+               PERFORM VARYING WRK-SEQ FROM    1   BY  1
+                       UNTIL ( WRK-SEQ > 10 )
+      *
+                   MOVE   WRK-POINTER-PATH
+                                       TO  WRK-POINTER
+                   MOVE   WRK-FULLNAME TO  SGETTEMP-FULLNAMES (WRK-SEQ)
+      *
+                   STRING "/"
+                      FUNCTION TRIM(SGETTEMP-BASENAME) DELIMITED BY SIZE
+                      "."                              DELIMITED BY SIZE
+                      WRK-SEQ-X                        DELIMITED BY SIZE
+                   INTO   SGETTEMP-FULLNAMES (WRK-SEQ)
+                   WITH   POINTER  WRK-POINTER
+                   END-STRING
+      *
+               END-PERFORM
+           END-IF
       *
            EXIT PROGRAM
       *
