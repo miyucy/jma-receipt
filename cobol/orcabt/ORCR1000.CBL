@@ -133,6 +133,8 @@
            03  WRK-PARA-HOSPNUM        PIC 9(02).
            03  WRK-PARA-PRTKBN         PIC X(01).
       *
+           03  WRK-PARA-RECEERR        PIC X(100).
+      *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
            03  WRK-SRYACCT-PATHNAME    PIC X(64).
@@ -316,7 +318,7 @@
                                        INTO    WRK-PARA
                                                WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
-                                               RECEERR
+                                               WRK-PARA-RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -331,6 +333,12 @@
            MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
            PERFORM 800-ORCSGETTEMP-CALL-SEC
            MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
+      *
+           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理

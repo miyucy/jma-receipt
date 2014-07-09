@@ -315,6 +315,8 @@
                                    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
+           03  WRK-PARA-RECEERR    PIC X(100).
+      *
            03  WRK-JYUNBAN         PIC 9(04).
            03  WRK-GYOSUU          PIC 9(04).
            03  WRK-GYOSUU2         PIC 9(04).
@@ -879,7 +881,7 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
-                                               RECEERR
+                                               WRK-PARA-RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -940,6 +942,11 @@
            PERFORM 800-ORCSGETTEMP-CALL-SEC
            MOVE    SGETTEMP-FULLNAME   TO  RECE1309PARA
       *
+           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            OPEN    INPUT               RECE100-FILE
            OPEN    INPUT               RECE120-FILE

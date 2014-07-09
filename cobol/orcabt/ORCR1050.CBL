@@ -225,6 +225,8 @@
            03  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
+           03  WRK-PARA-RECEERR    PIC X(100).
+      *
            03  WRK-LINENUM         PIC 9(05).
       *
            03  WRK-TENSUGOKEI      PIC 9(07).
@@ -1003,7 +1005,7 @@
                                        INTO    WRK-PARA
                                                WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
-                                               RECEERR
+                                               WRK-PARA-RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -1037,6 +1039,12 @@
            MOVE    "RECE940"           TO  RECEDAT1PARA-FILE-ID
            PERFORM 800-ORCSGETTEMP-CALL-SEC
            MOVE    SGETTEMP-FULLNAME   TO  RECE140PARA
+      *
+           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *

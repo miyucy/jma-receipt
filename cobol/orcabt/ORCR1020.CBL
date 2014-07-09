@@ -159,6 +159,8 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
+           03  WRK-PARA-RECEERR        PIC X(100).
+      *
            03  WRK-COMRENNUM           PIC 9(05).
       *    ºÞÈÖ¹æ¤ÎÂàÈò
            03  WRK-ZAINUM              PIC 9(08).
@@ -237,7 +239,7 @@ grpsys     COPY    "COMMON-SPA".
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
-                                               RECEERR
+                                               WRK-PARA-RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -256,6 +258,12 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    "RECE921"           TO  RECEDAT1PARA-FILE-ID
            PERFORM 800-ORCSGETTEMP-CALL-SEC
            MOVE    SGETTEMP-FULLNAME   TO  RECE121PARA
+      *
+           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        £Ä£Â¥ª¡¼¥×¥ó½èÍý

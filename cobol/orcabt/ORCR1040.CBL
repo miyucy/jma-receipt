@@ -119,6 +119,8 @@
                                    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
+           03  WRK-PARA-RECEERR    PIC X(100).
+      *
            03  WRK-YM              PIC 9(06).
            03  WRK-RENNUM          PIC 9(02).
       *
@@ -228,7 +230,7 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
-                                               RECEERR
+                                               WRK-PARA-RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -239,6 +241,12 @@
            MOVE    "RECE910"           TO  RECEDAT1PARA-FILE-ID
            PERFORM 800-ORCSGETTEMP-CALL-SEC
            MOVE    SGETTEMP-FULLNAME   TO  RECE110PARA
+      *
+           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理

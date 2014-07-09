@@ -264,6 +264,8 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-PARA-DLTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
       *
+           03  WRK-PARA-RECEERR     PIC X(100).
+      *
            03  WRK-SYS-SRYYMD       PIC  X(08).
       *
            03  WRK-SYMD.
@@ -686,7 +688,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                                                WRK-PARA-PRTKBN
                                                WRK-PARA-DLTKBN
                                                WRK-PARA-HOSPNUM
-                                               RECEERR
+                                               WRK-PARA-RECEERR
            END-UNSTRING
       *
            DISPLAY "WRK-PARA-HOSPNUM   =" WRK-PARA-HOSPNUM
@@ -713,8 +715,13 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            PERFORM 800-ORCSGETTEMP-CALL-SEC
            MOVE    SGETTEMP-FULLNAME   TO  RECE140PARA
       *
+           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
+      *
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
-           DISPLAY "WRK-SGETTEMP-ST=" WRK-SGETTEMP-ST
       *
            OPEN    INPUT               RECE100-FILE
            IF      STS-RECE100         =   "00"
