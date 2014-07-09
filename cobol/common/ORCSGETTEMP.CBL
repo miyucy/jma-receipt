@@ -100,16 +100,16 @@
            MOVE   WRK-FULLNAME     TO  SGETTEMP-TEMPDIR
       *
            STRING "/"
-           INTO   SGETTEMP-FULLNAME
+           INTO   SGETTEMP-TEMPDIR
            WITH   POINTER  WRK-POINTER
            END-STRING
-      *
-           MOVE   WRK-POINTER-PATH TO  WRK-POINTER
-           MOVE   WRK-FULLNAME     TO  SGETTEMP-FULLNAME
       *
            MOVE   WRK-POINTER      TO  SGETTEMP-ST
       *
            IF  ( SGETTEMP-BASENAME     NOT =   SPACE )
+      *
+               MOVE   WRK-POINTER-PATH TO  WRK-POINTER
+               MOVE   WRK-FULLNAME     TO  SGETTEMP-FULLNAME
                STRING "/"
                       FUNCTION TRIM(SGETTEMP-BASENAME) DELIMITED BY SIZE
                INTO   SGETTEMP-FULLNAME
