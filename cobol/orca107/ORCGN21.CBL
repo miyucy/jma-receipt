@@ -55,6 +55,7 @@
       * 04.03.01     NACL-森脇     08/06/25  画像選択機能追加
       * 04.03.02     NACL-森脇     08/12/04  薬剤情報複写機能追加
       * 04.07.01     NACL-森脇     14/04/02  画像表示方法変更
+      * 04.08.01     NACL-森脇     14/07/09  一時ファイルパスセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -219,6 +220,11 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイルパスセット
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1208,11 +1214,16 @@
       *        パス名をフォルダ名とファイル名に分ける
                PERFORM 431-GAZO-PATH-CHK-SEC
                IF      FLG-OK          =   ZERO
-                   MOVE    SPACE           TO  ORCA-BLOB-FILE
-                   STRING  WRK-CONS-PASS       DELIMITED  BY  SPACE
-                           WRK-FILEMEI         DELIMITED  BY  SPACE
-                                       INTO    ORCA-BLOB-FILE
+      *----(04.08.01)-UPD-START---
+                   INITIALIZE                  SGETTEMP-AREA
+                   STRING  WRK-FILEMEI         DELIMITED BY SPACE
+                                       INTO    SGETTEMP-BASENAME
                    END-STRING
+                   CALL    "ORCSGETTEMP"       USING
+                                               SGETTEMP-AREA
+                   MOVE    SGETTEMP-FULLNAME
+                                           TO  ORCA-BLOB-FILE
+      *----(04.08.01)-UPD-END-----
                END-IF
       *        画像ファイルがない場合はファイル作成する
                INITIALIZE                  ORCSFILECHKAREA
@@ -1934,11 +1945,16 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *        パス名をフォルダ名とファイル名に分ける
                PERFORM 431-GAZO-PATH-CHK-SEC
                IF      FLG-OK          =   ZERO
-                   MOVE    SPACE           TO  ORCA-BLOB-FILE
-                   STRING  WRK-CONS-PASS       DELIMITED  BY  SPACE
-                           WRK-FILEMEI         DELIMITED  BY  SPACE
-                                       INTO    ORCA-BLOB-FILE
+      *----(04.08.01)-UPD-START---
+                   INITIALIZE                  SGETTEMP-AREA
+                   STRING  WRK-FILEMEI         DELIMITED BY SPACE
+                                       INTO    SGETTEMP-BASENAME
                    END-STRING
+                   CALL    "ORCSGETTEMP"       USING
+                                               SGETTEMP-AREA
+                   MOVE    SGETTEMP-FULLNAME
+                                           TO  ORCA-BLOB-FILE
+      *----(04.08.01)-UPD-END-----
                END-IF
       *
                MOVE    "BLOBINPORT"        TO  MCP-FUNC

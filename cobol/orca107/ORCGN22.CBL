@@ -34,6 +34,7 @@
       *                                      タイマーイベントクリア追加
       *  04.06.00    NACL-森脇     11/02/07  情報削除追加
       *  04.07.00    NACL-伊藤     11/12/01  参照スクリプト変更
+      *  04.08.01    NACL-森脇     14/07/07  一時ファイルパスセット
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -85,8 +86,10 @@
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(13)  VALUE "siori_pull.sh".
            03  SHELL-NAME2         PIC X(16)  VALUE "medphoto_copy.sh".
-       01  WRK-FILE-AREA.
-           03  WRK-FILE-FOLDER     PIC X(14)  VALUE "/tmp/medphoto/".
+      *----(04.08.01)--UPD-START---
+      * 01  WRK-FILE-AREA.
+      *     03  WRK-FILE-FOLDER     PIC X(14)  VALUE "/tmp/medphoto/".
+      *----(04.08.01)--UPD-END-----
       *
        01  WRK-CONS-AREA.
       *    ジョブ管理ＤＢのキー値  
@@ -120,6 +123,11 @@
       *
       *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
+      *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイルパスセット
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    連絡　領域
@@ -803,20 +811,34 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4115-GAZOSET-SEC            SECTION.
       *
-           INITIALIZE                  WRK-GAZOFILE
-           STRING  WRK-FILE-FOLDER     DELIMITED BY SIZE
-                   SPA-HOSPNUM         DELIMITED BY SIZE
+      *----(04.08.01)-ADD-START---
+           INITIALIZE                  SGETTEMP-AREA
+           STRING  SPA-HOSPNUM         DELIMITED BY SIZE
                    "/"                 DELIMITED BY SIZE
-                               INTO    WRK-GAZOFILE
+                   WRK-GAZO            DELIMITED BY SPACE
+                               INTO    SGETTEMP-BASENAME
            END-STRING
-           PERFORM VARYING IDY     FROM    128 BY  -1
-                   UNTIL   IDY     <       1
-               IF  WRK-GAZOFILE(IDY:1)     NOT =   SPACE
-                   COMPUTE IDY     =   IDY +   1
-                   MOVE  WRK-GAZO          TO  WRK-GAZOFILE(IDY:)
-                   MOVE    1               TO  IDY
-               END-IF
-           END-PERFORM
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  WRK-GAZOFILE
+      *----(04.08.01)-ADD-END-----
+      *----(04.08.01)-UPD-START---
+      *     INITIALIZE                  WRK-GAZOFILE
+      *     STRING  WRK-FILE-FOLDER     DELIMITED BY SIZE
+      *             SPA-HOSPNUM         DELIMITED BY SIZE
+      *             "/"                 DELIMITED BY SIZE
+      *                         INTO    WRK-GAZOFILE
+      *     END-STRING
+      *     PERFORM VARYING IDY     FROM    128 BY  -1
+      *             UNTIL   IDY     <       1
+      *         IF  WRK-GAZOFILE(IDY:1)     NOT =   SPACE
+      *             COMPUTE IDY     =   IDY +   1
+      *             MOVE  WRK-GAZO          TO  WRK-GAZOFILE(IDY:)
+      *             MOVE    1               TO  IDY
+      *         END-IF
+      *     END-PERFORM
+      *----(04.08.01)-UPD-END-----
       *
       *    ファイル存在チェック
            INITIALIZE                  ORCSFILECHKAREA
