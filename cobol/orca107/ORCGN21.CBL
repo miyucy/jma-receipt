@@ -175,7 +175,7 @@
                            "中止し、医師に相談して下さい。".
       *       05  FILLER            PIC X(01)   VALUE   X"0A".
       *----(04.07.01)--ADD-START---------------------------------------
-           03  WRK-CONS-KARI        PIC X(05)   VALUE  "/tmp/".
+      *     03  WRK-CONS-KARI        PIC X(05)   VALUE  "/tmp/".
       *----(04.07.01)--ADD-END-----------------------------------------
       *
       *    文字数多い場合の変換領域
@@ -217,6 +217,9 @@
       *
       *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *----(04.08.01)--ADD-START---
       *    一時ファイルパスセット
@@ -1977,6 +1980,14 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *        作業領域クリア
                MOVE    SPACE           TO  SPA-N21FIL-PHOTO
                MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
+      *----(04.08.01)-ADD-START---
+      *        ファイル削除
+               MOVE    ZERO            TO  IF-RESULT
+               MOVE    SGETTEMP-FULLNAME
+                                       TO  IF-FILENAME
+               CALL    "orcfiledel"        USING
+                                           ORCSFDELAREA
+      *----(04.08.01)-ADD-END-----
       *----(04.07.01)--UPD-END-----------------------------------------
            END-IF
       *
