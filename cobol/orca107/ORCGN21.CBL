@@ -218,9 +218,6 @@
       *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
       *
-      *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
-      *
       *----(04.08.01)--ADD-START---
       *    一時ファイルパスセット
            COPY    "CPORCSGETTEMP.INC".
@@ -1216,9 +1213,7 @@
                IF      FLG-OK          =   ZERO
       *----(04.08.01)-UPD-START---
                    INITIALIZE                  SGETTEMP-AREA
-                   STRING  WRK-FILEMEI         DELIMITED BY SPACE
-                                       INTO    SGETTEMP-BASENAME
-                   END-STRING
+                   MOVE    WRK-FILEMEI     TO  SGETTEMP-BASENAME
                    CALL    "ORCSGETTEMP"       USING
                                                SGETTEMP-AREA
                    MOVE    SGETTEMP-FULLNAME
@@ -1947,9 +1942,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                IF      FLG-OK          =   ZERO
       *----(04.08.01)-UPD-START---
                    INITIALIZE                  SGETTEMP-AREA
-                   STRING  WRK-FILEMEI         DELIMITED BY SPACE
-                                       INTO    SGETTEMP-BASENAME
-                   END-STRING
+                   MOVE    WRK-FILEMEI     TO  SGETTEMP-BASENAME
                    CALL    "ORCSGETTEMP"       USING
                                                SGETTEMP-AREA
                    MOVE    SGETTEMP-FULLNAME

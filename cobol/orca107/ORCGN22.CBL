@@ -813,11 +813,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *----(04.08.01)-ADD-START---
            INITIALIZE                  SGETTEMP-AREA
-           STRING  SPA-HOSPNUM         DELIMITED BY SIZE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-GAZO            DELIMITED BY SPACE
-                               INTO    SGETTEMP-BASENAME
-           END-STRING
+           MOVE    WRK-GAZO        TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
                                        SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAME
