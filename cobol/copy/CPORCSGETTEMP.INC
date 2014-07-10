@@ -24,8 +24,10 @@
       ************************************************************
        01  SGETTEMP-AREA.
       *    入力引数
-      *    ファイル名（パス無し） 
+      *    ファイル名（パス無し）
            03  SGETTEMP-BASENAME           PIC X(1024).
+           03  SGETTEMP-BASENAMES-OCC      OCCURS 10.
+               05  SGETTEMP-BASENAMES      PIC X(1024).
       *    返却値
       *    FULLNAME内のBASENAME開始位置
            03  SGETTEMP-ST                 PIC 9(05).
