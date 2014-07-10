@@ -38,7 +38,7 @@
        WORKING-STORAGE                     SECTION.
       *
        01  WRK-AREA.
-           03  WRK-ORCB-TEMPDIR            PIC X(1024).
+           03  WRK-ORCA-TEMPDIR            PIC X(1024).
            03  WRK-FULLNAME                PIC X(1024).
            03  WRK-POINTER                 PIC 9(05).
            03  WRK-POINTER-PATH            PIC 9(05).
@@ -74,11 +74,11 @@
            INITIALIZE                      WRK-AREA
       *
            MOVE      SPACE             TO  MCP-TEMPDIR
-                                           WRK-ORCB-TEMPDIR
+                                           WRK-ORCA-TEMPDIR
                                            SGETTEMP-FULLNAME-AREA
       *
            ACCEPT   MCP-TEMPDIR      FROM ENVIRONMENT  "MCP_TEMPDIR"
-           ACCEPT   WRK-ORCB-TEMPDIR FROM ENVIRONMENT  "ORCB_TEMPDIR"
+           ACCEPT   WRK-ORCA-TEMPDIR FROM ENVIRONMENT  "ORCA_TEMPDIR"
       *
            MOVE   1                    TO  WRK-POINTER-PATH
       *
@@ -87,9 +87,9 @@
            WITH   POINTER  WRK-POINTER-PATH
            END-STRING
       *
-           IF   ( WRK-ORCB-TEMPDIR     NOT =   SPACE )
+           IF   ( WRK-ORCA-TEMPDIR     NOT =   SPACE )
                STRING "/"                      DELIMITED BY SIZE
-                      FUNCTION TRIM(WRK-ORCB-TEMPDIR)
+                      FUNCTION TRIM(WRK-ORCA-TEMPDIR)
                                                DELIMITED BY SIZE
                INTO   WRK-FULLNAME
                WITH   POINTER  WRK-POINTER-PATH
