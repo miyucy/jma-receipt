@@ -74,6 +74,7 @@
       *  04.06.01    NACL-門脇    13/03/27  エラー時終了処理対応
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *  04.07.02    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *  04.07.03    NACL-藤原    14/07/11  医療情報連携基盤、ＥＦファイル作成対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -622,7 +623,8 @@
                MOVE    "1"                 TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9" OR
+                                               "8"
                    MOVE    "key60"             TO  WRK-SRYACCT-PATHNAME
                ELSE
                    MOVE    "key36"             TO  WRK-SRYACCT-PATHNAME
@@ -1710,7 +1712,8 @@
                MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9"
+                                               OR  "8"
                    MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
                ELSE
                    MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
@@ -2184,6 +2187,12 @@
       *    未請求フラグチェック処理（医保のみ）
       *****************************************************************
        800-MISEIKYU-CHECK-SEC          SECTION.
+      *
+      *    ＥＦファイル作成、連係基盤用のとき未請求設定分も作成する
+           IF      WRK-PARA-PRTKBN     =   "9" OR  "8"
+               INITIALIZE                      SYUKA-REC
+               GO  TO  800-MISEIKYU-CHECK-EXT
+           END-IF
       *
            EVALUATE    WRK-PARA-RECEKBN
                WHEN    "0"
