@@ -26,8 +26,14 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
-       01  RECE01PARA.
-           03  FILLER                  PIC X(05) VALUE "/tmp/".
-           03  RECE01PARA-HOSPNUM      PIC 9(02).
-           03  RECE01PARA-FILE-ID      PIC X(07).
-           03  RECE01PARA-TERMID       PIC X(16).
+       01  RECE01PARA-AREA.
+           03  RECE01PARA.
+               05  RECE01PARA-OLD.
+                   07  FILLER                  PIC X(05) VALUE "/tmp/".
+                   07  RECE01PARA-BASENAME.
+                       09  RECE01PARA-HOSPNUM  PIC 9(02).
+                       09  RECE01PARA-FILE-ID  PIC X(07).
+                       09  RECE01PARA-TERMID   PIC X(16).
+                   07  FILLER                  PIC X(994) VALUE SPACE.
+               05  RECE01PARA-FULLNAME-R REDEFINES RECE01PARA-OLD.
+                   07  RECE01PARA-FULLNAME     PIC X(1024).
