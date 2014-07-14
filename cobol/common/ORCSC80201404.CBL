@@ -54,6 +54,7 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/04/03  Àº£²£°ºÐÌ¤Ëþ²Ã»»ºï½üÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/05/02  Ï«ºÒ¥ê¥Ï¥Ó¥ê²Ã»»·×»»ÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/07/14  Ï«ºÒ¥ê¥Ï¡Ê1.2ÇÜ¡ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3353,11 +3354,13 @@
       *        Ï«ºÒ¥ê¥Ï¡Ê£±¡¥£²¡Ë²Ã»»
                IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "101")  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
-                      (WRK-COM-SANFLG     (IDX)    =   0   )
+      *??             (WRK-COM-SANFLG     (IDX)    =   0   )
+                      (WRK-COM-INPUTCD (IDX)       =   "101800080")
+      *
+      *            ´ðÁÃÅÀ¿ô¤Î£±.2ÇÜ
                    MOVE    ZERO                TO  WRK-TENSUKEI
-                   COMPUTE WRK-TENSUKEI        =  (WRK-COM-KISOTEN
-                                                             (IDX-SYU)
-                                               -   WRK-TENSUKEI-G )
+                   COMPUTE WRK-TENSUKEI        =  (WRK-COM-TEN
+                                                             (IDX-SYU))
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
                                                +   0.5
@@ -3389,9 +3392,9 @@
                          OR   (FLG-RIHAEND =   1        )
       *
       *        Ï«ºÒ£±¡¥£µ ¡ó²Ã»»
-               IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "101")  AND
-                      (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
-                      (WRK-COM-SANFLG     (IDX)    =   2   )
+               IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "101")
+                 AND  (WRK-COM-TENSIKIBETU(IDX)    =   5   )
+                 AND  (WRK-COM-SANFLG     (IDX)    =   2   )
       *        ¥ê¥Ï¥Ó¥ê¤ÎÏ«ºÒ²Ã»»¤ÏÃ±°ÌÅÀ¿ôËè¤È¤¹¤ë¡ÊÂ¾¤Î²Ã»»¤Ê¤·¡Ë
       *            ÅÀ¿ô¤Î¡ó²Ã»»
                    COMPUTE WRK-TENSUKEI        =   WRK-COM-TEN
