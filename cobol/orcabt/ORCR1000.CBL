@@ -61,15 +61,17 @@
        WORKING-STORAGE             SECTION.
       *
       *    レセプト明細ファイル名称
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE100PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE100//.
       *
       *    エラーファイル名称領域
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECEERR//.
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    ファイル名称領域
            COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -133,8 +135,6 @@
            03  WRK-PARA-HOSPNUM        PIC 9(02).
            03  WRK-PARA-PRTKBN         PIC X(01).
       *
-           03  WRK-PARA-RECEERR        PIC X(100).
-      *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
            03  WRK-SRYACCT-PATHNAME    PIC X(64).
@@ -181,6 +181,8 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-RECE100-REC.
            COPY    "CPRCF100.INC"  REPLACING   //RECE100//
@@ -318,7 +320,7 @@
                                        INTO    WRK-PARA
                                                WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
-                                               WRK-PARA-RECEERR
+                                               RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -330,15 +332,17 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
       *
-           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *
-           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE
-                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
-                                       INTO        RECEERR
-           END-STRING
+           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE100PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -1537,7 +1541,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -1547,7 +1552,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            STRING  "ORCR1000 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -1650,17 +1656,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
       *****************************************************************
       *    一時ファイル名取得処理
       *****************************************************************
-       800-ORCSGETTEMP-CALL-SEC        SECTION.
+       800-FILENM-SET-SEC        SECTION.
       *
            MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEDAT1PARA-FILENM TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
            .
-       800-ORCSGETTEMP-CALL-EXT.
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -94,24 +94,29 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE100PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE100//.
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE120PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE120//.
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE130PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE130//.
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE121PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE121//.
       *
       *    エラーファイル名称領域
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECEERR//.
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    ファイル名称領域
            COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -158,8 +163,6 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-JOBID      PIC 9(07).
                05  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
-      *
-           03  WRK-PARA-RECEERR        PIC X(100).
       *
            03  WRK-COMRENNUM           PIC 9(05).
       *    剤番号の退避
@@ -239,31 +242,31 @@ grpsys     COPY    "COMMON-SPA".
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
-                                               WRK-PARA-RECEERR
+                                               RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
            MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE100PARA
       *
            MOVE    "RECE920"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE120PARA
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE120PARA
       *
            MOVE    "RECE930"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE130PARA
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE130PARA
       *
            MOVE    "RECE921"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE121PARA
-      *
-           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE
-                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
-                                       INTO        RECEERR
-           END-STRING
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE121PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -719,17 +722,15 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
       *    一時ファイル名取得処理
       *****************************************************************
-       800-ORCSGETTEMP-CALL-SEC        SECTION.
+       800-FILENM-SET-SEC        SECTION.
       *
            MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEDAT1PARA-FILENM TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
            .
-       800-ORCSGETTEMP-CALL-EXT.
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

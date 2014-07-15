@@ -31,7 +31,9 @@
       *                                     （診療区分６４：病理診断対応）
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,6 +89,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *    レセプト明細ファイル名称
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
@@ -103,10 +106,13 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE221//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+      *    エラーファイル名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -184,6 +190,8 @@
       *    サブプロ用領域
       *****************************************************************
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *    ＤＢ検索
@@ -251,18 +259,28 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
-           MOVE    "RECE720"           TO  RECE220PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE220PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE220PARA-HOSPNUM
-           MOVE    "RECE730"           TO  RECE230PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE230PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE230PARA-HOSPNUM
-           MOVE    "RECE721"           TO  RECE221PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE221PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE221PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE200PARA
+      *
+           MOVE    "RECE720"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE220PARA
+      *
+           MOVE    "RECE730"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE230PARA
+      *
+           MOVE    "RECE721"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE221PARA
+      *
       *
            OPEN    OUTPUT               RECE221-FILE
            CLOSE                        RECE221-FILE
@@ -629,6 +647,20 @@
            DISPLAY "*** ORCR01230 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -42,6 +42,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -82,20 +83,23 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル 名称領域 
+      *     レセプト明細ファイル 名称領域
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
       *
-      *     入退院履歴情報ファイル 名称領域 
+      *     入退院履歴情報ファイル 名称領域
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE250//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+      *    エラーファイル名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -241,10 +245,12 @@
            03  WRK-ERR-FILE-MSG    PIC X(100).
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
-      *    エラーファイル名称領域 
+      *    エラーファイル名称領域
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
@@ -261,9 +267,9 @@
                                    BY         //WRK-RECE250//.
       *
       *    ワーク入院履歴
-       01  WRK-PTNYUINRRK-REC.
+       01  WRK-PTNRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                       BY         //WRK-PTNYUINRRK-//.
+                                       BY         //WRK-PTNRRK-//.
       *     
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
@@ -373,6 +379,8 @@
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -381,7 +389,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(1000).
+           02  FILLER      PIC X(400).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -431,12 +439,21 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
       *
-           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
-           MOVE    "RECE750"           TO  RECE250PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE250PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE250PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE200PARA
+      *
+           MOVE    "RECE750"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE250PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -1799,12 +1816,11 @@
       *
       *    診療月内の入退院情報の履歴
            IF      FLG-RECE250          =   1                            
-               MOVE    PTNYUINRRK-REC      TO  WRK-PTNYUINRRK-REC
+               MOVE    PTNYUINRRK-REC      TO  WRK-PTNRRK-REC
                INITIALIZE                      PTNYUINRRK-REC
                MOVE    WRK-RECE200-HOSPNUM TO  PTNYUINRRK-HOSPNUM
                MOVE    WRK-RECE200-PTID    TO  PTNYUINRRK-PTID
-               MOVE    WRK-PTNYUINRRK-SHONUM
-                                           TO  PTNYUINRRK-SHONUM
+               MOVE    WRK-PTNRRK-SHONUM   TO  PTNYUINRRK-SHONUM
                MOVE    WRK-RECE200-SRYYM   TO  PTNYUINRRK-NYUINYMD (1:6)
                MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
@@ -2053,7 +2069,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -2063,7 +2080,8 @@
            STRING  "ORCR1200 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -2278,6 +2296,20 @@
            PERFORM 900-SYUKA-READ-SEC
            .
        800-MISEIKYU-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

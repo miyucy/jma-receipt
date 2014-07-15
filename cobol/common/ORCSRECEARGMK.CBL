@@ -175,6 +175,8 @@
       *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *???
@@ -592,24 +594,21 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    LINK-PTID       TO  WRK-PTID
       *
            MOVE    "ORPRVERR"      TO  ERRFLPARA-FILE-ID
-           MOVE    WRK-PTID        TO  ERRFLPARA-TERMID
+           MOVE    SPA-TERMID      TO  ERRFLPARA-TERMID
            MOVE    SPA-HOSPNUM     TO  ERRFLPARA-HOSPNUM
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
            MOVE    SPACE           TO  RECEERR
-           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE
-                   ERRFLPARA-FILENM    DELIMITED   BY  SPACE
-                                       INTO        RECEERR
-           END-STRING
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
       *??
            IF      LINK-HKNKBN         =   "3"
-           AND     LINK-NYUGAIKBN      =   "2"
                CONTINUE
            ELSE
                MOVE    SPACE               TO  RECEERR
-               STRING  "tmp/"              DELIMITED   BY  SIZE
-                       ERRFLPARA-FILENM    DELIMITED   BY  SPACE
-                                           INTO        RECEERR
-               END-STRING
+               MOVE    ERRFLPARA-OLD        TO  RECEERR
            END-IF
            DISPLAY "RECERR=" RECEERR
       *?? 
@@ -646,8 +645,13 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "4"
                    MOVE    "8"             TO  SHELLTBL-ARG3
            END-EVALUATE 
-           MOVE    ERRFLPARA-FILENM
+           MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG4
+      *??
+           IF      LINK-HKNKBN   NOT =   "3"
+               MOVE    ERRFLPARA-OLD   TO  SHELLTBL-ARG4
+           END-IF
+      *??
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID

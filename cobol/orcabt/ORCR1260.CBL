@@ -61,6 +61,7 @@
       *  04.07.02    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -132,11 +133,14 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE240//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+      *    エラーファイル名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *     
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
+      *
       *    フラグ領域
        01  STS-AREA.
            03  SPA-STS             PIC 9(04).
@@ -783,6 +787,8 @@
       *    数値変換サブ
            COPY    "CPORCSNUM.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -835,21 +841,27 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *
-           MOVE    "RECE722"           TO  RECE220PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE220PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE220PARA-HOSPNUM
+           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE200PARA
       *
-           MOVE    "RECE732"           TO  RECE230PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE230PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE230PARA-HOSPNUM
+           MOVE    "RECE722"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE220PARA
       *
-           MOVE    "RECE740"           TO  RECE240PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE240PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE240PARA-HOSPNUM
+           MOVE    "RECE732"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE230PARA
+      *
+           MOVE    "RECE740"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE240PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -3390,6 +3402,20 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

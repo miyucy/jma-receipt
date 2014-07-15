@@ -4355,19 +4355,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE               TO  RECEERR
            STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
                    "/"                 DELIMITED   BY  SIZE
-                   ERRFLPARA-FILENM    DELIMITED   BY  SPACE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
                                        INTO        RECEERR
            END-STRING
       *??
            IF      SPA-R01-RECEKBN     =   "6"
-           AND     SPA-R01-NYUGAIKBN   =   "2"
                CONTINUE
            ELSE
-               MOVE    SPACE               TO  RECEERR
-               STRING  "tmp/"              DELIMITED   BY  SIZE
-                       ERRFLPARA-FILENM    DELIMITED   BY  SPACE
-                                           INTO        RECEERR
-               END-STRING
+               MOVE    ERRFLPARA-OLD        TO  RECEERR
            END-IF
            DISPLAY "RECERR=" RECEERR
       *?? 
@@ -4591,8 +4586,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
            MOVE    "2"             TO  SHELLTBL-ARG2
            MOVE    SPA-R01-RECEKBN TO  SHELLTBL-ARG3
-           MOVE    ERRFLPARA-FILENM
+           MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG4
+      *??
+                   IF      SPA-R01-RECEKBN NOT =   "6"
+                       MOVE    ERRFLPARA-OLD
+                                           TO  SHELLTBL-ARG4
+                   END-IF
+                   DISPLAY "SHELLTBL-ARG4=" SHELLTBL-ARG4
+      *??
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID

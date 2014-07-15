@@ -78,6 +78,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,11 +98,10 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
       *
+      *    エラーファイル名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -180,8 +180,7 @@
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
       *
       *    一時領域
@@ -225,7 +224,7 @@
       *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
-      *
+      *@
        01  WRK-CONS-AREA.
       *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
@@ -314,13 +313,15 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(2000).
+           02  FILLER      PIC X(400).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -362,10 +363,27 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
+           DISPLAY "WRK-PARA-HOSPNUM =" WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-PRTKBN  =" WRK-PARA-PRTKBN
+           DISPLAY "WRK-PARA-SRYYM   =" WRK-PARA-SRYYM
+           DISPLAY "WRK-PARA-SYOKBN  =" WRK-PARA-SYOKBN
+           DISPLAY "WRK-PARA-RECEKBN =" WRK-PARA-RECEKBN
       *
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
-           MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
+           MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN
+      *
+      *??
+           IF      WRK-PARA-RECEKBN    =   "6"
+      *??
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *??
+           END-IF
+           DISPLAY "RECEERR=" RECEERR
+      *??
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -679,7 +697,7 @@
       *
                PERFORM UNTIL       FLG-NYUINACCT   =   1
                          OR        FLG-ERR         =   1
-                   PERFORM 20012-IKKATU-NYUINACCT-HENSYU-SEC
+                   PERFORM 20012-IKKATU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                IF   FLG-ERR   =   ZERO
@@ -858,7 +876,7 @@
       *****************************************************************
       *    入院会計一括編集処理
       *****************************************************************
-       20012-IKKATU-NYUINACCT-HENSYU-SEC              SECTION.
+       20012-IKKATU-NYUINACCT-HEN-SEC              SECTION.
       *
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
@@ -866,7 +884,7 @@
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key13"             TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
-               GO  TO  20012-IKKATU-NYUINACCT-HENSYU-EXT
+               GO  TO  20012-IKKATU-NYUINACCT-HEN-EXT
            END-IF
       *
            MOVE    SPACE                   TO  WRK-DATAKBN
@@ -998,7 +1016,7 @@
              END-IF
            END-IF    
            .
-       20012-IKKATU-NYUINACCT-HENSYU-EXT.
+       20012-IKKATU-NYUINACCT-HEN-EXT.
            EXIT. 
       *            
       *****************************************************************
@@ -1592,7 +1610,7 @@
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
                      OR        FLG-ERR         =   1
-               PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
+               PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -1630,7 +1648,7 @@
       *
                PERFORM UNTIL       FLG-NYUINACCT     =   1
                          OR        FLG-ERR           =   1
-                   PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
+                   PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                IF   FLG-ERR   =   ZERO
@@ -1733,7 +1751,7 @@
       *
                PERFORM UNTIL       FLG-SRYACCT     =   1
                          OR        FLG-ERR         =   1
-                   PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
+                   PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -1771,7 +1789,7 @@
       *
                    PERFORM UNTIL       FLG-NYUINACCT     =   1
                              OR        FLG-ERR           =   1
-                       PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
+                       PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
                    END-PERFORM
       *            カーソルクロース
                    IF   FLG-ERR   =   ZERO
@@ -1794,7 +1812,7 @@
       *****************************************************************
       *    診療会計個別処理（患者ＩＤ、保険組合せ、診療科順）
       *****************************************************************
-       200211-KOBETU-SRYACCT-HENSYU-SEC    SECTION.
+       200211-KOBETU-SRYACCT-HEN-SEC    SECTION.
       *
       *    保険組合せ読込み
            INITIALIZE                  HKNCOMBI-REC
@@ -1877,13 +1895,13 @@
                END-IF 
            END-PERFORM    
            .
-       200211-KOBETU-SRYACCT-HENSYU-EXT.
+       200211-KOBETU-SRYACCT-HEN-EXT.
            EXIT.
       *            
       *****************************************************************
       *    入院会計個別編集処理
       *****************************************************************
-       200212-KOBETU-NYUINACCT-HENSYU-SEC              SECTION.
+       200212-KOBETU-NYUINACCT-HEN-SEC              SECTION.
       *
            MOVE    KEY-NEW             TO  KEY-OLD
            INITIALIZE                      WRK-DAY-AREA
@@ -1971,7 +1989,7 @@
                END-IF
            END-IF    
            .
-       200212-KOBETU-NYUINACCT-HENSYU-EXT.
+       200212-KOBETU-NYUINACCT-HEN-EXT.
            EXIT.
       * 
       *****************************************************************

@@ -127,24 +127,29 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE100PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE100//.
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE120PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE120//.
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE130PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE130//.
       *
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECE140PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE140//.
       *
       *    エラーファイル名称領域
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECEERR//.
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    ファイル名称領域
            COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *     
        01  STS-AREA.
            03  SPA-STS             PIC 9(04).
@@ -224,8 +229,6 @@
                                    PIC X(08).
            03  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *
-           03  WRK-PARA-RECEERR    PIC X(100).
       *
            03  WRK-LINENUM         PIC 9(05).
       *
@@ -341,7 +344,8 @@
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
       *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
@@ -1005,7 +1009,7 @@
                                        INTO    WRK-PARA
                                                WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
-                                               WRK-PARA-RECEERR
+                                               RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -1024,27 +1028,27 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
            MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE100PARA
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE100PARA
       *
            MOVE    "RECE922"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE120PARA
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE120PARA
       *
            MOVE    "RECE932"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE130PARA
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE130PARA
       *
            MOVE    "RECE940"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-ORCSGETTEMP-CALL-SEC
-           MOVE    SGETTEMP-FULLNAME   TO  RECE140PARA
-      *
-           STRING  SGETTEMP-TEMPDIR    DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE
-                   WRK-PARA-RECEERR    DELIMITED   BY  SPACE
-                                       INTO        RECEERR
-           END-STRING
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE140PARA
       *
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
@@ -3881,17 +3885,15 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
       *    一時ファイル名取得処理
       *****************************************************************
-       800-ORCSGETTEMP-CALL-SEC        SECTION.
+       800-FILENM-SET-SEC        SECTION.
       *
            MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEDAT1PARA-FILENM TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
            .
-       800-ORCSGETTEMP-CALL-EXT.
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

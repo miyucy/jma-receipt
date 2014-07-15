@@ -71,6 +71,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -147,8 +148,13 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE250//.
       *
+      *    エラーファイル名称領域
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *****COPY    "HCN58V01.INC"  REPLACING  //HCN58V01//
       *****COPY    "HCN58V02.INC"  REPLACING  //HCN58V02//
@@ -427,6 +433,8 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -662,6 +670,8 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -727,19 +737,29 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           PERFORM 100-DBOPEN-SEC
+      *
       *    ファイルＯＰＥＮ処理
-           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
-           MOVE    "RECE710"           TO  RECE210PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE210PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE210PARA-HOSPNUM
-           MOVE    "RECE740"           TO  RECE240PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE240PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE240PARA-HOSPNUM
-           MOVE    "RECE750"           TO  RECE250PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE250PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE250PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE200PARA
+           MOVE    "RECE710"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE210PARA
+           MOVE    "RECE740"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE240PARA
+           MOVE    "RECE750"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE250PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            OPEN    INPUT               RECE200-FILE
            IF      STS-RECE200         =   "00"
@@ -788,8 +808,6 @@
                MOVE    STS-RECE250         TO  WRK-ERR-FILE-STS
                PERFORM 500-FILE-ERR-ABORT-SEC
            END-IF
-      *
-           PERFORM 100-DBOPEN-SEC
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理開始処理
@@ -3249,7 +3267,8 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -3259,7 +3278,8 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            STRING  "ORCR1270 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -3523,6 +3543,20 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

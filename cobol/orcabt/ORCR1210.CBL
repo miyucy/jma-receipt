@@ -46,6 +46,8 @@
       *  04.07.01    NACL-門脇    14/03/28  平成２６年４月改正対応
       *  04.07.02    NACL-門脇    14/04/08  平成２６年４月改正対応
       *  04.07.03    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,15 +76,18 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル 名称領域 
+      *    レセプト明細ファイル名称
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+      *    エラーファイル名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -272,6 +277,8 @@
       *    栄養管理経過措置入院料コード取得サブ
            COPY    "CPORCSEIYOUKKS.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -413,9 +420,15 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE200PARA
       *
            OPEN    I-O                 RECE200-FILE
       *
@@ -1381,7 +1394,7 @@
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
       *                       看護比率基準未達時の入院基本点数の取得
                               IF    RECE200-SRYYM  <=  "201203"
-                               PERFORM 20011231-GAIHAKU-NYUINKHN-SET-SEC
+                               PERFORM 20011231-GAIHAKU-NYUKHN-SET-SEC
                               END-IF
                               IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
@@ -1452,7 +1465,7 @@
       **************************************************************
       *    外泊時の入院基本料取得
       **************************************************************
-       20011231-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+       20011231-GAIHAKU-NYUKHN-SET-SEC           SECTION.
       *
            EVALUATE  TNS-SRYCD
                WHEN  "190078210"
@@ -1627,7 +1640,7 @@
            END-IF
       *
            .
-       20011231-GAIHAKU-NYUINKHN-SET-EXT.
+       20011231-GAIHAKU-NYUKHN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2384,6 +2397,20 @@
       *
            .
        500-RYAKUSYO-KEISO-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -121,6 +121,7 @@
       *  04.07.10    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,7 +167,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル 名称領域 
+      *    レセプト明細ファイル名称
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
@@ -179,10 +180,13 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE230//.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+      *    エラーファイル名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名称領域
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -1035,6 +1039,8 @@
       *    入院点滴手技加算まとめサブ
            COPY    "CPORCSTENTEK2.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -1329,15 +1335,23 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
-           MOVE    "RECE720"           TO  RECE220PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE220PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE220PARA-HOSPNUM
-           MOVE    "RECE730"           TO  RECE230PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE230PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE230PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE200PARA
+      *
+           MOVE    "RECE720"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE220PARA
+      *
+           MOVE    "RECE730"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    TEMPFLPARA          TO  RECE230PARA
       *
            OPEN    OUTPUT              RECE220-FILE
            CLOSE                       RECE220-FILE
@@ -2180,7 +2194,7 @@
                END-IF
       *
                IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2101211-RECE230-TENSOU-COMCNT-HEN-SEC
+                  PERFORM  2101211-RECE230-COMMENT-HEN-SEC
                ELSE
                   IF   RECE220-SRYKBN     =     "50"
                      MOVE   "1"   TO    RECE220-FLG-SHUJUTU-COMMENT
@@ -2484,7 +2498,7 @@
                      IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 2101212-RECE230-TENSOU-TANKA-HEN-SEC
+                       PERFORM 2101212-RECE230-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE230-YUKOKETA(IDX4)  *  2
                                                    +   3
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -2536,7 +2550,7 @@
       *****************************************************************
       *    レセプトコメントフラグ編集処理
       *****************************************************************
-       2101211-RECE230-TENSOU-COMCNT-HEN-SEC               SECTION.
+       2101211-RECE230-COMMENT-HEN-SEC               SECTION.
       *
            IF      RECE220-SRYKBN      =     "11"
       *       初診（同日複数診療科）
@@ -3122,16 +3136,16 @@
            END-IF
       *
            .
-       2101211-RECE230-TENSOU-COMCNT-HEN-EXT.
+       2101211-RECE230-COMMENT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    酸素の単価編集処理
       *****************************************************************
-       2101212-RECE230-TENSOU-TANKA-HEN-SEC     SECTION.
+       2101212-RECE230-TANKA-HEN-SEC     SECTION.
       *
       ***  IF      TNS-TEN         =   ZERO
-      ***      GO  TO  2101212-RECE230-TENSOU-TANKA-HEN-EXT
+      ***      GO  TO  2101212-RECE230-TANKA-HEN-EXT
       ***  END-IF
       *
            MOVE    SPACE           TO  WRK-TANKA-X
@@ -3192,7 +3206,7 @@
            END-IF
       *
            .
-       2101212-RECE230-TENSOU-TANKA-HEN-EXT.
+       2101212-RECE230-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6751,7 +6765,7 @@
                       IF      TNS-TEN         =   ZERO
                         CONTINUE
                       ELSE
-                        PERFORM 2101212-RECE230-TENSOU-TANKA-HEN-SEC
+                        PERFORM 2101212-RECE230-TANKA-HEN-SEC
                         COMPUTE IDW =   RECE230-YUKOKETA(IDX4)  *  2
                                     +   3
                         MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -7528,6 +7542,20 @@
       *
            .
        800-NUM-ZENKAKU-HENKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  TEMPFLPARA (SGETTEMP-ST:)
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
