@@ -23,11 +23,20 @@
       *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *****************************************************************
-       01  RECEDAT1PARA.
-           03  FILLER                  PIC X(05)   VALUE   "/tmp/".
-           03  RECEDAT1PARA-FILENM.
-               05  RECEDAT1PARA-HOSPNUM    PIC 9(2).
-               05  RECEDAT1PARA-SYOKBN     PIC 9(01)   VALUE   0.
-               05  RECEDAT1PARA-RECEKBN    PIC 9(01)   VALUE   0.
-               05  RECEDAT1PARA-FILE-ID    PIC X(07).
-               05  RECEDAT1PARA-TERMID     PIC X(16).
+       01  RECEDAT1PARA-AREA.
+           03  RECEDAT1PARA.
+               05  RECEDAT1PARA-OLD.
+                   07  FILLER                      PIC X(05)
+                                                       VALUE   "/tmp/".
+                   07  RECEDAT1PARA-BASENAME.
+                       09  RECEDAT1PARA-HOSPNUM    PIC 9(02).
+                       09  RECEDAT1PARA-SYOKBN     PIC 9(01)
+                                                       VALUE   0.
+                       09  RECEDAT1PARA-RECEKBN    PIC 9(01)
+                                                       VALUE   0.
+                       09  RECEDAT1PARA-FILE-ID    PIC X(07).
+                       09  RECEDAT1PARA-TERMID     PIC X(16).
+                   07  FILLER                      PIC X(992)
+                                                       VALUE   SPACE.
+               05  RECEDAT1PARA-FULLNAME-R REDEFINES RECEDAT1PARA-OLD.
+                   07  RECEDAT1PARA-FULLNAME      PIC X(1024).

@@ -23,12 +23,20 @@
       *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *****************************************************************
-       01  ERRFLPARA.
-           03  FILLER                  PIC X(05)   VALUE   "/tmp/".
-           03  ERRFLPARA-FILENM.
-               05  ERRFLPARA-HOSPNUM   PIC 9(2).
-               05  ERRFLPARA-SYOKBN1   PIC 9(01)   VALUE   0.
-               05  ERRFLPARA-SYOKBN2   PIC 9(01)   VALUE   0.
-               05  ERRFLPARA-FILE-ID   PIC X(08).
-               05  ERRFLPARA-TERMID    PIC X(16).
-               05  FILLER              PIC X(04)   VALUE   ".dat".
+       01  ERRFLPARA-AREA.
+           03  ERRFLPARA.
+               05  ERRFLPARA-OLD.
+                   07  FILLER                  PIC X(05)   VALUE
+                                                               "/tmp/".
+                   07  ERRFLPARA-BASENAME.
+                       09  ERRFLPARA-HOSPNUM   PIC 9(02).
+                       09  ERRFLPARA-SYOKBN1   PIC 9(01)   VALUE   0.
+                       09  ERRFLPARA-SYOKBN2   PIC 9(01)   VALUE   0.
+                       09  ERRFLPARA-FILE-ID   PIC X(08).
+                       09  ERRFLPARA-TERMID    PIC X(16).
+                       09  ERRFLPARA-FILL1     PIC X(04)   VALUE
+                                                               ".dat".
+                   07  FILLER                  PIC X(987)  VALUE
+                                                               SPACE.
+               05  ERRFLPARA-FULLNAME-R REDEFINES ERRFLPARA-OLD.
+                   07  ERRFLPARA-FULLNAME      PIC X(1024).
