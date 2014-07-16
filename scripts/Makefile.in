@@ -97,6 +97,7 @@ utf8_shell_sources = \
 	allways/orcbi202.sh.in \
 	allways/log_shell.sh.in \
 	monthly/recept42.sh.in \
+	allways/mask.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \
@@ -148,7 +149,6 @@ ruby_sources = \
 	monthly/receden_const.rb.in \
 	monthly/receden_error.rb.in \
 	monthly/receden.rb.in \
-	allways/mask.rb.in \
 	monthly/Rosai_receden_check_start.rb.in \
 	monthly/rosai_receden.rb.in \
 	monthly/rosai_receden_check.rb.in \

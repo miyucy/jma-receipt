@@ -10,11 +10,12 @@ fi
 . $JMARECEIPT_ENV
 
 export HOME=/home/orca
-%RUBY% -e "puts File.readlines(ARGV[0]).at(0).chomp + ' ' * 20000  " $4 > $4.tmp
+printf %-20000s "$(cat $4)" > $4.tmp
 mv $4.tmp $4
-LAYEROPTION=`%RUBY% -ne '$_.scan(/MonpeLayerIn(.*)MonpeLayerOut/){ print $1.gsub(/ *-L */,",").sub(/,/,"-H ") }' $4`
-%RUBY% -ne 'print $_.gsub(/MonpeLayerIn(.*)MonpeLayerOut/){|s| " " * s.length } ' $4 > $4.tmp
-mv $4.tmp $4
+
+[[ $(cat $4) =~ MonpeLayerIn(.*)MonpeLayerOut ]]
+LAYEROPTION=$(echo " ${BASH_REMATCH[1]}" | sed -e "s/ *-L */,/g" | sed -e "s/,/-H /")
+sed -i -e "s/${BASH_REMATCH[0]}/$(printf %-$(expr length "${BASH_REMATCH[0]}")s ' ')/"  $4
 
 #
 #-------> path switch st

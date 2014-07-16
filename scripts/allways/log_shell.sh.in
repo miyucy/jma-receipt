@@ -9,9 +9,9 @@ fi
 
 . $JMARECEIPT_ENV
 
-RBDIR=${SCRIPTSDIR}/allways
-[ -e ${PATCHSCRIPTSDIR}/allways/mask.rb ] && RBDIR=${PATCHSCRIPTSDIR}/allways
-[ -e ${SITESCRIPTSDIR}/allways/mask.rb ]  && RBDIR=${SITESCRIPTSDIR}/allways
+SHDIR=${SCRIPTSDIR}/allways
+[ -e ${PATCHSCRIPTSDIR}/allways/mask.sh ] && SHDIR=${PATCHSCRIPTSDIR}/allways
+[ -e ${SITESCRIPTSDIR}/allways/mask.sh ]  && SHDIR=${SITESCRIPTSDIR}/allways
 
 LOG="/var/log/jma-receipt/shell.log"
 LOGGZ=${LOG}.gz
@@ -30,5 +30,5 @@ if [ -f ${LOGGZ} ];  then
     fi
 fi
 
-echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$@") | nkf -e | $RBDIR/mask.rb | gzip -c >> ${LOGGZ}
+echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$@") | nkf -e | $SHDIR/mask.sh | gzip -c >> ${LOGGZ}
 
