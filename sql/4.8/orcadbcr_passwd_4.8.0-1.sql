@@ -10,4 +10,4 @@ CREATE TABLE tbl_passwd (
 );
 
 ALTER TABLE ONLY tbl_passwd
-  ADD CONSTRAINT tbl_passwd_key PRIMARY KEY (USERID);
+  ADD CONSTRAINT tbl_passwd_primary_key PRIMARY KEY (USERID);
