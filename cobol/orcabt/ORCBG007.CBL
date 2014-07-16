@@ -71,7 +71,9 @@
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //ORCBG00701//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
+      *    03  FILLER                      PIC X(04)   VALUE   ".dat".
+      *
+           COPY    "CPRECEERR.INC".
       *
       *    ステータス領域
        01  STS-AREA.
@@ -127,7 +129,7 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(100).
+      *    03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-PTNUM                      PIC X(20).
            03  WRK-PARA-NYUGAIKBN                  PIC X(01).
@@ -318,6 +320,9 @@
       *    数値変換
            COPY    "CPORCSNUM.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -371,6 +376,7 @@
            INITIALIZE                  ERR-EDIT-AREA
 grpsys     INITIALIZE                  SPA-AREA
            INITIALIZE                  WRK-PARA
+           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -466,9 +472,21 @@ grpsys     END-UNSTRING
                                            JOBKANRI-REC
                                            SPA-AREA
       *
+           INITIALIZE                      SGETTEMP-AREA
+      *
            MOVE    WRK-PARA-HOSPNUM    TO  ORCBG00701PARA-HOSPNUM
            MOVE    "BG00701"           TO  ORCBG00701PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  ORCBG00701PARA-TERMID
+      *
+           MOVE    ORCBG00701PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ORCBG00701PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
       *
       *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC

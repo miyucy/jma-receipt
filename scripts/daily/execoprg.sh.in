@@ -9,7 +9,9 @@ fi
 
 . $JMARECEIPT_ENV
 
-RENNUM=0
+trap "cleanup" EXIT
+
+
 #-------------------------------------------#
 #    日次統計出力処理
 #        $1-${11} 印刷ＤＢ用固定引数
@@ -31,7 +33,9 @@ RENNUM=0
 #-------------------------------------------#
 ##
 
-ERR_FILE=${15}
+
+RENNUM=0
+ERR_FILE=$(basename ${15})
 HOSPNUM=${14}
 LD=051
 
@@ -42,28 +46,28 @@ case ${13} in
         LD=102;;
 esac
 
+export ORCA_TEMPDIR=orcb${LD}-$$
+TEMPDIR=${MCP_TEMPDIR}/${ORCA_TEMPDIR}
 
-OLDLOG=/home/orca/execoprg.log
 LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb${LD}.log
 
-##      旧ログファイルを削除
-        if  [ -e $OLDLOG ]; then
-            rm  $OLDLOG
-        fi
+
+
+cleanup () {
+	rm -Rf ${TEMPDIR}
+}
+
+
+mkdir -p ${TEMPDIR}
 
 	echo $#
-##      エラーファイル削除
-	echo "echo " $ERR_FILE
-        if  [ -e $ERR_FILE ]; then
-            rm  $ERR_FILE
-        fi
-##
-        RENNUM=$(expr $RENNUM + 1) 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBLMAIN -parameter "${16},$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},"  > $LOGFILE 2>&1
 
-        if  [ -e $ERR_FILE ]; then
-            exit
-        fi
-       
-       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${12}${13},${14}"
-        exit 
+
+    RENNUM=$(expr $RENNUM + 1) 
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBLMAIN -parameter "${16},$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${ERR_FILE},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},"  > $LOGFILE 2>&1
+    if  [ -e ${TEMPDIR}/${ERR_FILE} ]; then
+    	exit
+    fi
+    
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${12}${13},${14}"
+    exit 
