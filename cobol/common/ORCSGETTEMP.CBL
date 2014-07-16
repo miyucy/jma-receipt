@@ -37,13 +37,21 @@
        FILE                                SECTION.
        WORKING-STORAGE                     SECTION.
       *
+       01  IDX-AREA.
+           03  IDX0                        PIC 9(05).
+      *
        01  WRK-AREA.
            03  WRK-ORCA-TEMPDIR            PIC X(1024).
+           03  WRK-BASENAME                PIC X(1024).
+           03  WRK-TEMPNAME                PIC X(1024).
            03  WRK-FULLNAME                PIC X(1024).
            03  WRK-POINTER                 PIC 9(05).
            03  WRK-POINTER-PATH            PIC 9(05).
            03  WRK-SEQ-X.
                05  WRK-SEQ                 PIC 9(03).
+      *
+       01  CONST-AREA.
+           03  CONST-PATH-SIZE             PIC 9(05)    VALUE 1024.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -71,7 +79,8 @@
       *****************************************************************
        000-PROC-SEC                        SECTION.
       *
-           INITIALIZE                      WRK-AREA
+           INITIALIZE                      IDX-AREA
+                                           WRK-AREA
       *
            MOVE      SPACE             TO  MCP-TEMPDIR
                                            WRK-ORCA-TEMPDIR
@@ -108,10 +117,14 @@
       *
            IF  ( SGETTEMP-BASENAME     NOT =   SPACE )
       *
+               MOVE    SGETTEMP-BASENAME
+                                   TO  WRK-BASENAME
+               PERFORM 100-GET-BASENAME-SEC
+      *
                MOVE   WRK-POINTER-PATH TO  WRK-POINTER
                MOVE   WRK-FULLNAME     TO  SGETTEMP-FULLNAME
                STRING "/"
-                      FUNCTION TRIM(SGETTEMP-BASENAME) DELIMITED BY SIZE
+                      FUNCTION TRIM(WRK-BASENAME)   DELIMITED BY SIZE
                INTO   SGETTEMP-FULLNAME
                WITH   POINTER  WRK-POINTER
                END-STRING
@@ -121,10 +134,15 @@
                    UNTIL ( WRK-SEQ > 10 )
       *
                IF  ( SGETTEMP-BASENAMES (WRK-SEQ)  NOT =   SPACE )
+      *
+                   MOVE    SGETTEMP-BASENAMES (WRK-SEQ)
+                                   TO  WRK-BASENAME
+                   PERFORM 100-GET-BASENAME-SEC
+      *
                    MOVE   WRK-POINTER-PATH TO  WRK-POINTER
                    MOVE   WRK-FULLNAME TO  SGETTEMP-FULLNAMES (WRK-SEQ)
                    STRING "/"
-                          FUNCTION TRIM(SGETTEMP-BASENAMES (WRK-SEQ))
+                          FUNCTION TRIM(WRK-BASENAME)
                                                        DELIMITED BY SIZE
                    INTO   SGETTEMP-FULLNAMES (WRK-SEQ)
                    WITH   POINTER  WRK-POINTER
@@ -139,5 +157,26 @@
        000-PROC-EXT.
            EXIT.
            .
+      *****************************************************************
+      *    ファイル名取得処理
+      *****************************************************************
+       100-GET-BASENAME-SEC            SECTION.
       *
-
+           MOVE    WRK-BASENAME    TO  WRK-TEMPNAME
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >=  CONST-PATH-SIZE )
+                    OR   ( WRK-BASENAME (IDX0 : )  =   SPACE )
+      *
+              IF    ( WRK-BASENAME (IDX0 : 1 ) =   "/" )
+                   MOVE    WRK-BASENAME (IDX0 + 1 : )
+                                   TO      WRK-TEMPNAME
+              END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    WRK-TEMPNAME    TO  WRK-BASENAME
+      *
+           .
+       100-GET-BASENAME-EXT.
+           EXIT.
