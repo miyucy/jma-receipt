@@ -70,7 +70,7 @@
            ACCEPT  WRK-YYMMDD      FROM    DATE
            MOVE    WRK-YMD         TO      SMCNDATE-YMD
       *
-           ACCEPT  SMCNDATE-HMS    FROM    TIME
+           ACCEPT  SMCNDATE-TIME   FROM    TIME
       *
            .
        000-PROC-EXT.

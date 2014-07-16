@@ -24,4 +24,6 @@
       *****************************************************************
        01  ORCSMCNDATEAREA.
            03  SMCNDATE-YMD       PIC X(08).
-           03  SMCNDATE-HMS       PIC X(06).
+           03  SMCNDATE-TIME.
+               05  SMCNDATE-HMS   PIC X(06).
+               05  SMCNDATE-MSEC  PIC X(02).
