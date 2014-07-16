@@ -16,7 +16,7 @@ CREATE TABLE tbl_para (
 	GYOUMUID	character varying(4)  NOT NULL,
 	TERMID		character varying(64) NOT NULL,
 	FILEMEI		character varying(20) NOT NULL,
-	EDANUM		numeric(3,0) DEFAULT 0,
+	EDANUM		smallint DEFAULT 0,
         DATA_REC        character varying(5000)
 );
 
