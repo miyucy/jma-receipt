@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  03.08.22  患者番号チェック追加
       * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
+      * 04.08.00     NACL-多々納  14/07/17  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,6 +57,10 @@
       *    03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCMZ001.INC".
+      *
+      *    一時ファイル対応
+           COPY    "CPRECEERR.INC".
+      *
       *
       *    スパ領域
        01  STS-AREA.
@@ -93,7 +98,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
+      **** 03  RECEERR                 PIC X(100).
            03  WRK-PARA-PTNUM          PIC X(20).
            03  WRK-PARA-PTNUM-END      PIC X(20).
       *
@@ -161,6 +166,9 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -235,6 +243,15 @@
       *
       *    ＳＰＡセット
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+      *
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE

@@ -31,7 +31,7 @@
       * 04. 05.00    NACL-太田    10/01/29  拡張漢字対応
       * 04.07.00     NACL-多々納  11/10/31  同日再入院対応
       * 04.07.00     NACL-多々納  14/01/17  数量ゼロエラー対応
-      * 04.08.00     NACL-多々納  14/05/XX  一時ファイル変更
+      * 04.08.00     NACL-多々納  14/07/17  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,10 +46,6 @@
            SELECT  DATA-FILE       ASSIGN  FILE-NAME1
                                    ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-DATA.
-      *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -61,30 +57,21 @@
        FD  DATA-FILE.
        01  DATA-REC                   PIC X(6000).
       *
-      *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDABAN          PIC 9(03).
-      *****03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    パラメタファイル名
+      *    パラメタファイル名 (X(1024))
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(08)   VALUE   "WKSRYACT".
            03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
-      *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
-      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *
+           03  FILLER              PIC X(935)  VALUE   SPACE.
+      *
+           COPY    "CPRECEERR.INC".
+      *
       *
       *    確認一覧（縦）
            COPY    "HCMSL80.INC".
@@ -154,7 +141,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
+    ****** 03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYMD         PIC X(08).
            03  WRK-PARA-SYORIKBN       PIC X(01).
            03  WRK-PARA-PRTKBN1        PIC X(01).
@@ -386,11 +373,6 @@
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
-      *    患者入院履歴ワーク
-       01  HZN-PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC"  REPLACING
-                               //PTNYUINRRK-// BY //HZN-PTNYUINRRK-//.
-      *
        01  HZN-WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //HZN-WKSRY-//.
@@ -509,6 +491,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -597,6 +582,20 @@
            CALL    "ORCSENCODING"      USING
                                        MCPAREA
                                        SPA-AREA
+      *
+      *    一時ファイル名取得
+           MOVE    LNK-PRTKANRI-TERMID TO  FILE-TERMID1
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    FILE-NAME1          TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  FILE-NAME1
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -876,8 +875,8 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
       *
            OPEN    OUTPUT              DATA-FILE
       *
@@ -2505,16 +2504,6 @@
       *****************************************************************
        3001-PARA-DEL-SEC               SECTION.
       *
-      ***  MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *
-      *    MOVE    ZERO                TO  IF-RESULT
-      *    MOVE    FILE-NAME2          TO  IF-FILENAME
-      *    CALL    "orcfiledel"        USING
-      *                                ORCSFDELAREA
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
       *
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME1          TO  IF-FILENAME

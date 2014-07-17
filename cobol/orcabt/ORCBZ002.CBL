@@ -31,6 +31,7 @@
       * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
       * 03.05.00     NACL-多々納  07/06/26  外来カルテ印刷内容選択追加
       * 03.05.00     NACL-多々納  08/08/04  患者指定機能追加
+      * 04.08.00     NACL-多々納  14/07/17  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,6 +59,10 @@
       *D   03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCM33.INC".
+      *
+      *    一時ファイル対応
+           COPY    "CPRECEERR.INC".
+      *
       *
       *    スパ領域
        01  STS-AREA.
@@ -92,7 +97,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
+     ***** 03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-SRYYM-END      PIC X(06).
            03  WRK-PARA-SRYKA          PIC X(02).
@@ -163,6 +168,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -237,6 +245,14 @@
       *
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *

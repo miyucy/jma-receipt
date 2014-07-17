@@ -30,6 +30,7 @@
       * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
       * 04.03.00     NACL-太田    08/06/20  カスタマイズカルテ印刷対応
       * 04.04.00     NACL-多々納  08/12/04  プログラムオプション対応
+      * 04.08.00     NACL-多々納  14/07/17  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,6 +54,10 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
+      *
+      *    一時ファイル対応
+           COPY    "CPRECEERR.INC".
+      *
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -87,7 +92,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
+     ******03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-SRYKA          PIC X(02).
            03  WRK-PARA-BYOMEIFLG      PIC X(01).
@@ -201,6 +206,9 @@
       *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -272,6 +280,14 @@
                                        WRK-PARA-KBT
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
