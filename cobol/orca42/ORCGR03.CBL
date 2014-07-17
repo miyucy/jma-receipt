@@ -2645,7 +2645,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SPA-R01-RECEKBN     =   "6"
                        CONTINUE
                    ELSE
-                       MOVE    ERRFLPARA-OLD        TO  RECEERR
+                       IF      SPA-R01-RECEKBN     =   "3"
+                       AND     SPA-R01-NYUGAIKBN   =   "2"
+                          CONTINUE
+                       ELSE
+                           MOVE    ERRFLPARA-OLD        TO  RECEERR
+                       END-IF
                    END-IF
                    DISPLAY "RECERR=" RECEERR
       *?? 
@@ -2870,10 +2875,17 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    MOVE    ERRFLPARA-BASENAME
                                            TO  SHELLTBL-ARG4
       *??
-                   IF      SPA-R01-RECEKBN NOT =   "6"
-                       MOVE    ERRFLPARA-OLD
+                   IF      SPA-R01-RECEKBN     =   "6"
+                       CONTINUE
+                   ELSE
+                       IF      SPA-R01-RECEKBN     =   "3"
+                       AND     SPA-R01-NYUGAIKBN   =   "2"
+                          CONTINUE
+                       ELSE
+                           MOVE    ERRFLPARA-OLD
                                            TO  SHELLTBL-ARG4
-                   END-IF
+                       END-IF
+                   END-IF    
       *??
                    MOVE    WRK-CONS-JOB-JOBID
                                            TO  SHELLTBL-ARG5

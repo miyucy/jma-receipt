@@ -39,6 +39,8 @@
       *  04.07.05    NACL-門脇    14/05/08  救急医療管理加算の算定日記載
       *                                     やめる
       *  04.07.06    NACL-門脇    14/07/08  明細が５０を超える場合の対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -479,6 +481,8 @@
       *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
@@ -891,6 +895,8 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -927,6 +933,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -991,6 +998,43 @@
            MOVE    "RECE456"           TO  RECE455PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE455PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE455PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE441PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE451PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           MOVE    RECE449PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (7)
+           MOVE    RECE459PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (8)
+           MOVE    RECE455PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (9)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE41PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE44PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE45PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE441PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE451PARA
+           MOVE    SGETTEMP-FULLNAMES (7)
+                                       TO  RECE449PARA
+           MOVE    SGETTEMP-FULLNAMES (8)
+                                       TO  RECE459PARA
+           MOVE    SGETTEMP-FULLNAMES (9)
+                                       TO  RECE455PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            OPEN    INPUT               RECE41-FILE
            IF      STS-RECE41          =   "00"
@@ -2930,7 +2974,7 @@
                MOVE    21   TO  IDC1
                MOVE    27   TO  IDC2
                MOVE    33   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                COMPUTE WRK-ZAINUM    =    99998000
                                      +   (IDX16 + 31)
                MOVE    "40" TO  WRK-SRYKBN
@@ -2941,7 +2985,7 @@
                MOVE    29   TO  IDC1
                MOVE    35   TO  IDC2
                MOVE    41   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99998201      TO   WRK-ZAINUM
                ELSE
@@ -2968,7 +3012,7 @@
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                  WHEN       1
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "脳血管疾患等リハ：手術　　　年　　月　　日"
@@ -2976,7 +3020,7 @@
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                  WHEN       2
                    MOVE    23  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE
@@ -2985,7 +3029,7 @@
                    MOVE    29  TO  IDC1
                    MOVE    35  TO  IDC2
                    MOVE    41  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998401      TO   WRK-ZAINUM
@@ -3013,7 +3057,7 @@
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                  WHEN       1
                    MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "運動器リハ：手術　　　年　　月　　日"
@@ -3021,7 +3065,7 @@
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                  WHEN       2
                    MOVE    20  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "運動器リハ：急性増悪　　　年　　月　　日"
@@ -3029,7 +3073,7 @@
                    MOVE    23  TO  IDC1
                    MOVE    29  TO  IDC2
                    MOVE    35  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998601      TO   WRK-ZAINUM
@@ -3055,7 +3099,7 @@
                MOVE    23   TO  IDC1
                MOVE    29   TO  IDC2
                MOVE    35   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99998801      TO   WRK-ZAINUM
                ELSE
@@ -3080,7 +3124,7 @@
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99999001      TO   WRK-ZAINUM
                ELSE
@@ -3107,7 +3151,7 @@
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                  WHEN       1
                    MOVE    19  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "難病患者リハ：手術　　　年　　月　　日"
@@ -3115,7 +3159,7 @@
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                  WHEN       2
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "難病患者リハ：急性増悪　　　年　　月　　日"
@@ -3123,7 +3167,7 @@
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99999201      TO   WRK-ZAINUM
@@ -3149,7 +3193,7 @@
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-YMD-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99999401      TO   WRK-ZAINUM
                ELSE
@@ -3233,7 +3277,7 @@
       *****************************************************************
       *    発症日のコメント編集（年月日）
       *****************************************************************
-       200111-HASSYO-COMMENT-HIZUKE-SEC          SECTION.
+       200111-HASSYO-COMMENT-YMD-SEC          SECTION.
       *
            INITIALIZE                         STS-AREA-DAY
            INITIALIZE                         LNK-DAY2-AREA
@@ -3274,7 +3318,7 @@
            END-IF
       *
            .
-       200111-HASSYO-COMMENT-HIZUKE-EXT.
+       200111-HASSYO-COMMENT-YMD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6767,7 +6811,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-NEXT-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -6781,7 +6825,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  24 OR 25
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-NEXT-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)(3:2)     
@@ -6807,7 +6851,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-NEXT-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -6820,7 +6864,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  23 OR 24 OR 25
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  2001111-FREE-COMMENT2-NEXT-SEC
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)     
@@ -6852,7 +6896,7 @@
       *****************************************************************
       *    手術日等の日付の編集（改行）
       *****************************************************************
-       2001111-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
+       2001111-FREE-COMMENT2-NEXT-SEC          SECTION.                  
       *
            ADD      1              TO  IDZ
       *
@@ -6866,7 +6910,7 @@
            END-IF
       *
            .
-       2001111-FREE-COMMENT2-KAIGYO-EXT.
+       2001111-FREE-COMMENT2-NEXT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8246,7 +8290,7 @@
              COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
                                    *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              MOVE    "円×" TO  WK-FREE-NAME3(WRK-KETA:4)
              COMPUTE  WRK-KETA   =  WRK-KETA   +  4
@@ -8256,7 +8300,7 @@
                              = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
                              *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              IF    TBL-KASAN-SRYSURYO  =  ZERO
                 MOVE    "Ｌ×１．３）" TO  WK-FREE-NAME3(WRK-KETA:12)
@@ -8277,7 +8321,7 @@
                              = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
                              *   1000
       *
-                PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                 MOVE    "）" TO  WK-FREE-NAME3(WRK-KETA:2)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -8302,7 +8346,7 @@
               COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
               MOVE     ZERO       TO   WRK-KEISAN2
       *
-              PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+              PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
               MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -8321,7 +8365,7 @@
                   COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
                   MOVE     ZERO       TO   WRK-KEISAN2
       *
-                  PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                  PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                   MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -8359,7 +8403,7 @@
       *****************************************************************
       *    酸素計算式・数値編集
       *****************************************************************
-       2501111-SANSO-FREE-COMMENT-SUCHI-SEC          SECTION.          
+       2501111-SANSO-FREE-COM-NUM-SEC          SECTION.          
       *
            IF    WRK-KEISAN  NOT  =  ZERO
                PERFORM   VARYING   IDX4    FROM   1   BY   1
@@ -8423,7 +8467,7 @@
            END-IF
       *
            .
-       2501111-SANSO-FREE-COMMENT-SUCHI-EXT.
+       2501111-SANSO-FREE-COM-NUM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9465,7 +9509,7 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -9475,7 +9519,7 @@
            STRING  "ORCR0551 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

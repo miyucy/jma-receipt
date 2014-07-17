@@ -52,6 +52,7 @@
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,6 +237,8 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -278,6 +281,7 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
+                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -306,6 +310,29 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE442PARA-HOSPNUM
            MOVE    "RECE44W"           TO  RECE44WPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44WPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44WPARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE442PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE44WPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE41PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE44PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE45PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE442PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE44WPARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC

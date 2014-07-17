@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-藤原    13/08/20  ０９５９３で始まるコードがあ
       *                                     るレセプトは対象外とする
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,6 +187,8 @@
       *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -200,6 +204,8 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -238,6 +244,7 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
+                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -267,6 +274,31 @@
            MOVE    "RECE44E"           TO  RECE44WPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44WPARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE44WPARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE442PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE44WPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE41PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE44PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE45PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE442PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE44WPARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -396,12 +428,12 @@
                MOVE    RECE44-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
                IF       RECE44-SRYKBN  =  "60" OR "64" OR "99"
-                   PERFORM   2101-RECE45-SRYSYUKBN-HENSYU-SEC
+                   PERFORM   2101-RECE45-SRYSYUKBN-HEN-SEC
                END-IF
       *
                INITIALIZE          WRK-COM-AREA
                IF       RECE44-COMCDFLG   =   "1" OR "2"
-                   PERFORM   2101-RECE45-COM-HENSYU-SEC
+                   PERFORM   2101-RECE45-COM-HEN-SEC
                END-IF
       *
                IF      RECE44-COMCDFLG     =   "3"
@@ -657,7 +689,7 @@
       *****************************************************************
       *    診療種別区分取得
       *****************************************************************
-       2101-RECE45-SRYSYUKBN-HENSYU-SEC         SECTION.
+       2101-RECE45-SRYSYUKBN-HEN-SEC         SECTION.
       *
            INITIALIZE                           RECE45-REC
            MOVE    RECE41-HOSPNUM       TO      RECE45-HOSPNUM
@@ -693,13 +725,13 @@
            END-PERFORM
       *
            .
-       2101-RECE45-SRYSYUKBN-HENSYU-EXT.
+       2101-RECE45-SRYSYUKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    コメント編集
       *****************************************************************
-       2101-RECE45-COM-HENSYU-SEC         SECTION.
+       2101-RECE45-COM-HEN-SEC         SECTION.
       *
            MOVE    ZERO                 TO      IDZ2
       *
@@ -749,7 +781,7 @@
            END-PERFORM
       *
            .
-       2101-RECE45-COM-HENSYU-EXT.
+       2101-RECE45-COM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -885,7 +917,7 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -895,7 +927,7 @@
            STRING  "ORCR0550 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

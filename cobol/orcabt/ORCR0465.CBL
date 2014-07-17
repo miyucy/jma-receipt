@@ -57,6 +57,8 @@
       *  04.07.03    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
       *                                     追加対応
       *  04.07.04    NACL-門脇    14/02/13  労災・自賠責の施術加算対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -373,6 +375,8 @@
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -415,6 +419,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  TBL-ZAI-AREA
            INITIALIZE                  TBL-ZAIW-AREA
+           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -467,6 +472,24 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
            MOVE    "RECE461"           TO  RECE46PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE46PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE46PARA-BASENAME TO  SGETTEMP-BASENAMES  (5)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE01PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE44PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE45PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE46PARA
       *
            OPEN    INPUT               RECE41-FILE
       *

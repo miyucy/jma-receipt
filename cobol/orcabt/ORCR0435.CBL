@@ -53,6 +53,8 @@
       *  04.07.03    NACL-門脇    14/05/08  救急医療管理加算の算定日記載
       *                                     やめる
       *  04.07.04    NACL-門脇    14/07/08  明細が５０を超える場合の対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -314,6 +316,8 @@
       *    数値変換サブ
            COPY    "CPORCSNUM.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -354,6 +358,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -410,6 +415,29 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE441PARA-HOSPNUM
            MOVE    "RECE45B"           TO  RECE451PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE451PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE441PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE451PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE41PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE44PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE45PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE441PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE451PARA
       *
            OPEN    INPUT               RECE41-FILE
       *

@@ -50,6 +50,8 @@
       *  04.07.01    NACL-藤原    13/01/21  労災レセ電対応
       *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
       *  04.07.03    NACL-藤原    14/03/18  連番号を３桁に変更
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,6 +158,8 @@
       *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    ワーク患者病名
        01  WRK-PTBYOMEI-REC.
@@ -202,6 +206,8 @@
       *    拡張漢字チェックサブ
            COPY    "CPORCSKANACHK2.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -244,6 +250,7 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
+                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -261,6 +268,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE42PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE42PARA-HOSPNUM
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE42PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE01PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE42PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
       *
@@ -268,7 +289,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE42PARA-HOSPNUM
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR0440"      TO  JOB-PGID
-               MOVE    "傷病名編集（労災・自賠責）" 
+               MOVE    "傷病名編集（労災・自賠責）"
                                        TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        処理中止設定処理
@@ -743,7 +764,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -753,7 +775,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            STRING  "ORCR0440 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
