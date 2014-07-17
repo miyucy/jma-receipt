@@ -84,6 +84,9 @@
       *
            COPY    "COMMON-SPA".
       *
+      *    定期請求一括処理パラメータ
+           COPY    "CPTEIKI1PARA.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -100,6 +103,8 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -135,12 +140,21 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       TEIKI1PARA-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    WRK-PARA-HOSPNUM
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               TEIKIERR
+                                               TEIKI1P-ERRFILE
+      *
+           INITIALIZE                  SGETTEMP-AREA
+      *
+           MOVE    TEIKI1P-ERRFILE TO  SGETTEMP-BASENAMES(1)
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)
+                                   TO  TEIKIERR-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *

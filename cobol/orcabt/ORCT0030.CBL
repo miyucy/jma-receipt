@@ -205,6 +205,9 @@
          02 LNK-SYUDAY-REC     OCCURS 10.
            COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -244,6 +247,7 @@
                                        CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       TEIKI1PARA-AREA
                                        ERR-EDIT-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -283,7 +287,31 @@
            MOVE    ZERO            TO  FLG-END
                                        FLG-ERR
       *
-           MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
+           MOVE    TEIKI1P-HOSPNUM TO  TEIKI03PARA-HOSPNUM
+           MOVE    "TEIKI003"      TO  TEIKI03PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID  TO  TEIKI03PARA-TERMID
+      *
+           MOVE    TEIKI1P-HOSPNUM TO  TEIKI04PARA-HOSPNUM
+           MOVE    "TEIKI004"      TO  TEIKI04PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID  TO  TEIKI04PARA-TERMID
+      *
+      *
+           INITIALIZE                  SGETTEMP-AREA
+      *
+           MOVE    TEIKI03PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    TEIKI04PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (2)
+           MOVE    TEIKI1P-ERRFILE TO  SGETTEMP-BASENAMES (3)
+
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)
+                                   TO  TEIKI03PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES(2)
+                                   TO  TEIKI04PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES(3)
+                                   TO  TEIKIERR-FULLNAME
       *
            INITIALIZE                  ORCSTEIKI01AREA
            MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
@@ -294,14 +322,6 @@
                MOVE    "8888"      TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
-      *
-           MOVE    TEIKI1P-HOSPNUM TO  TEIKI03PARA-HOSPNUM
-           MOVE    "TEIKI003"      TO  TEIKI03PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID  TO  TEIKI03PARA-TERMID
-      *
-           MOVE    TEIKI1P-HOSPNUM TO  TEIKI04PARA-HOSPNUM
-           MOVE    "TEIKI004"      TO  TEIKI04PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID  TO  TEIKI04PARA-TERMID
       *
            OPEN    INPUT               TEIKI03-FILE
            OPEN    OUTPUT              TEIKI04-FILE

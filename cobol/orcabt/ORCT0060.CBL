@@ -271,6 +271,8 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -312,6 +314,7 @@
                                        CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       TEIKI1PARA-AREA
                                        ERR-EDIT-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -352,18 +355,6 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
-           MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
-      *
-           INITIALIZE                  ORCSTEIKI01AREA
-           MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
-           MOVE    TEIKI1P-SHELLID TO  STEIKI01-SHELLID
-           CALL    "ORCSTEIKI01"   USING   ORCSTEIKI01AREA
-                                           SPA-AREA
-           IF    ( STEIKI01-STOP   =   1 )
-               MOVE    "8888"      TO  ERR-ERRCD
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
            MOVE    TEIKI1P-HOSPNUM     TO  TEIKI01PARA-HOSPNUM
            MOVE    "TEIKI001"          TO  TEIKI01PARA-FILE-ID
            MOVE    TEIKI1P-TERMID      TO  TEIKI01PARA-TERMID
@@ -387,6 +378,34 @@
            MOVE    TEIKI1P-HOSPNUM     TO  TEIKI09PARA-HOSPNUM
            MOVE    "TEIKI009"          TO  TEIKI09PARA-FILE-ID
            MOVE    TEIKI1P-TERMID      TO  TEIKI09PARA-TERMID
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    TEIKI01PARA-BASENAME    TO  SGETTEMP-BASENAMES (1)
+           MOVE    TEIKI04PARA-BASENAME    TO  SGETTEMP-BASENAMES (2)
+           MOVE    TEIKI06PARA-BASENAME    TO  SGETTEMP-BASENAMES (3)
+           MOVE    TEIKI07PARA-BASENAME    TO  SGETTEMP-BASENAMES (4)
+           MOVE    TEIKI08PARA-BASENAME    TO  SGETTEMP-BASENAMES (5)
+           MOVE    TEIKI09PARA-BASENAME    TO  SGETTEMP-BASENAMES (6)
+           MOVE    TEIKI1P-ERRFILE         TO  SGETTEMP-BASENAMES (7)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1) TO   TEIKI01PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2) TO   TEIKI04PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3) TO   TEIKI06PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (4) TO   TEIKI07PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (5) TO   TEIKI08PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (6) TO   TEIKI09PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (7) TO   TEIKIERR-FULLNAME
+      *
+           INITIALIZE                  ORCSTEIKI01AREA
+           MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
+           MOVE    TEIKI1P-SHELLID TO  STEIKI01-SHELLID
+           CALL    "ORCSTEIKI01"   USING   ORCSTEIKI01AREA
+                                           SPA-AREA
+           IF    ( STEIKI01-STOP   =   1 )
+               MOVE    "8888"      TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *
            OPEN    INPUT               TEIKI01-FILE
            OPEN    INPUT               TEIKI04-FILE

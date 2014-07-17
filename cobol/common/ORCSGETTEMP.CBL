@@ -108,7 +108,7 @@
            MOVE   WRK-POINTER-PATH TO  WRK-POINTER
            MOVE   WRK-FULLNAME     TO  SGETTEMP-TEMPDIR
       *
-           STRING "/"
+           STRING "/"                  DELIMITED BY SIZE
            INTO   SGETTEMP-TEMPDIR
            WITH   POINTER  WRK-POINTER
            END-STRING

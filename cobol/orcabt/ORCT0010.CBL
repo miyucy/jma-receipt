@@ -342,6 +342,9 @@
       *    入院請求期間取得サブ
            COPY    "CPORCSS006.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -421,7 +424,31 @@
            MOVE    ZERO            TO  FLG-END
                                        FLG-ERR
       *
-           MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
+           MOVE    TEIKI1P-HOSPNUM TO  TEIKI01PARA-HOSPNUM
+           MOVE    "TEIKI001"      TO  TEIKI01PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID  TO  TEIKI01PARA-TERMID
+      *
+           MOVE    TEIKI1P-HOSPNUM TO  TEIKI03PARA-HOSPNUM
+           MOVE    "TEIKI003"      TO  TEIKI03PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID  TO  TEIKI03PARA-TERMID
+      *
+           INITIALIZE                  SGETTEMP-AREA
+      *
+           MOVE    TEIKI01PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES(1)
+           MOVE    TEIKI03PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES(2)
+      *
+           MOVE    TEIKI1P-ERRFILE TO  SGETTEMP-BASENAMES(3)
+      *
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)
+                                   TO  TEIKI01PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES(2)
+                                   TO  TEIKI03PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES(3)
+                                   TO  TEIKIERR-FULLNAME
       *
            INITIALIZE                  ORCSTEIKI01AREA
            MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
@@ -432,14 +459,6 @@
                MOVE    "8888"      TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
-      *
-           MOVE    TEIKI1P-HOSPNUM TO  TEIKI01PARA-HOSPNUM
-           MOVE    "TEIKI001"      TO  TEIKI01PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID  TO  TEIKI01PARA-TERMID
-      *
-           MOVE    TEIKI1P-HOSPNUM TO  TEIKI03PARA-HOSPNUM
-           MOVE    "TEIKI003"      TO  TEIKI03PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID  TO  TEIKI03PARA-TERMID
       *
            OPEN    OUTPUT              TEIKI01-FILE
            OPEN    OUTPUT              TEIKI03-FILE
