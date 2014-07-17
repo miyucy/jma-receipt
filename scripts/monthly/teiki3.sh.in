@@ -9,6 +9,8 @@ fi
 
 . $JMARECEIPT_ENV
 
+trap "cleanup" EXIT
+
 #-------------------------------------------#
 #    定期請求一括削除
 #
@@ -26,21 +28,22 @@ fi
 #-------------------------------------------#
 ##      エラーファイル削除
 
-ERR_FILE=$1
+export ORCA_TEMPDIR=orcb033_3-$$
 
+WORKDIR=${MCP_TEMPDIR}/${ORCA_TEMPDIR}
+ERR_FILE_BASE=$(basename $1)
+ERR_FILE_FULL=${WORKDIR}/${ERR_FILE_BASE}
 
-	echo $#
-	echo "echo " $ERR_FILE
-        if  [ -e $ERR_FILE ]; then
-            rm   $ERR_FILE
-        fi
-        
-        rm  /var/tmp/TEIKI*
+cleanup () {
+	rm -Rf ${WORKDIR}
+}
+
+mkdir -p ${WORKDIR}
 
 ##   -- ORCT0070 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0070 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11}"
-        if  [ -e $ERR_FILE ]; then
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$2,$6,$7,$1"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0070 -parameter "${ERR_FILE_BASE},$2,$3,$4,$5,$6,$7,$8,$9,${10},${11}"
+        if  [ -e ${ERR_FILE_FULL} ]; then
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$2,$6,$7,${ERR_FILE_BASE}"
             exit  
         fi 
 

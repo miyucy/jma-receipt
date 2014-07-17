@@ -177,6 +177,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -214,6 +217,7 @@
            INITIALIZE                  IDX-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       TEIKI3PARA-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                       INTO             TEIKI3P-ERRFILE
@@ -252,7 +256,7 @@
            MOVE    TEIKI3P-HOSPNUM TO  JOB-HOSPNUM
            MOVE    TEIKI3P-JOBID   TO  JOB-JOBID
            MOVE    TEIKI3P-SHELLID TO  JOB-SHELLID
-           MOVE    "ORCT0030"      TO  JOB-PGID
+           MOVE    "ORCT0070"      TO  JOB-PGID
       *
            STRING  "ÀÁµáºï½ü¡Ê"    DELIMITED   BY  SIZE
                    WRK-SRYYM-MSG   DELIMITED   BY  SIZE
@@ -270,7 +274,11 @@
            MOVE    ZERO            TO  FLG-END
                                        FLG-ERR
       *
-           MOVE    TEIKI3P-ERRFILE TO  TEIKIERR
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    TEIKI3P-ERRFILE         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)  TO  TEIKIERR-FULLNAME
       *
            .
        100-INIT-EXT.
