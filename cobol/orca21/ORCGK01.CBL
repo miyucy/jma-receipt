@@ -49,30 +49,11 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  LINE SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDANUM          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -232,21 +213,11 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
-           03  FLG-SRYACT          PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
-           03  FLG-HKNMST          PIC 9(01).
-           03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-PTCOM           PIC 9(01).
-           03  FLG-SRYACCT         PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
-           03  FLG-SRYKARRK        PIC 9(01).
-           03  FLG-SYUNOU          PIC 9(01).
-           03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-PTNYUINRRK        PIC 9(01).
-      *
-           03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-WKSYORI         PIC 9(01).
            03  FLG-HEN             PIC 9(01).
@@ -382,43 +353,43 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *    患者番号変換
-       01  PTNUM-REC.
-           COPY    "CPPTNUM.INC".
+      *01  PTNUM-REC.
+      *    COPY    "CPPTNUM.INC".
       *    診療行為マスタ−
-       01  SRYACT-REC.
-           COPY    "CPSRYACT.INC".
+      *01  SRYACT-REC.
+      *    COPY    "CPSRYACT.INC".
       *
       *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *
       *    保険組み合わせ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
+      *01  HKNCOMBI-REC.
+      *    COPY    "CPHKNCOMBI.INC".
       *
       *    患者コメント
-       01  PTCOM-REC.
-           COPY    "CPPTCOM.INC".
+      *01  PTCOM-REC.
+      *    COPY    "CPPTCOM.INC".
       *
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
       *    診療会計マスタ−
-       01  SRYACCT-REC.
-           COPY    "CPSRYACCT.INC".
+      *01  SRYACCT-REC.
+      *    COPY    "CPSRYACCT.INC".
       *
       *    受付
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
       *    診療科履歴
-       01  SRYKARRK-REC.
-           COPY    "CPSRYKARRK.INC".
+      *01  SRYKARRK-REC.
+      *    COPY    "CPSRYKARRK.INC".
       *
       *    収納
-       01  SYUNOU-REC.
-           COPY    "CPSYUNOU.INC".
+      *01  SYUNOU-REC.
+      *    COPY    "CPSYUNOU.INC".
       *
       *    患者病名
       *01  PTBYOMEI-REC.
@@ -463,9 +434,7 @@
            COPY    "CPORCSLOCK.INC".
       *
       *    ＤＢ検索
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
       *
       *
       *****************************************************************
