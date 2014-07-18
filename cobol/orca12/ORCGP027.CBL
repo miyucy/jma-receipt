@@ -45,31 +45,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
-      *                            ORGANIZATION    IS  INDEXED
-      *                            ACCESS  MODE    IS  DYNAMIC
-      *                            RECORD  KEY     IS  PAR-KEY
-      *                            FILE    STATUS  IS  STS-PARA.
-      *
        DATA                    DIVISION.
       *FILE                        SECTION.
       *
-      *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PAR-KEY.
-      *        05  PAR-FILEMEI         PIC X(08).
-      *        05  PAR-EDANUM          PIC 9(04).
-      *****03  PAR-DATA-REC            PIC X(3000).
-      *
        WORKING-STORAGE             SECTION.
-      *
-      *    パラメタファイル名
-      *01  FILE-NAME1.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(07)   VALUE   "P01PARA".
-      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -77,10 +56,6 @@
            COPY    "P02COMMON-SPA".
       *    患者画面スパ領域
            COPY    "P02SCR-SPA".
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
