@@ -52,6 +52,7 @@
       *                                     追加対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,6 +157,8 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -197,6 +200,7 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       RECEERR
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -215,6 +219,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            MOVE    "RECE870"           TO  RECE87PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE87PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE86PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE87PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE86PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE87PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC

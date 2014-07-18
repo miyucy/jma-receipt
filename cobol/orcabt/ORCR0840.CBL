@@ -254,6 +254,7 @@
       *  04.07.17    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -849,6 +850,8 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    固定値
        01  CONST-AREA.
@@ -1445,6 +1448,8 @@
       *    入院点滴手技加算まとめサブ
            COPY    "CPORCSTENTEK2.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -1484,6 +1489,7 @@
            INITIALIZE                  SPA-AREA
                                        WRK-AREA
                                        FLG-AREA
+                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -1517,6 +1523,37 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE8BPARA-HOSPNUM
            MOVE    "RECE85C"           TO  RECE85CPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85CPARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE85CPARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE84PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE85PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE8APARA-BASENAME TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE8BPARA-BASENAME TO  SGETTEMP-BASENAMES  (6)
+           MOVE    RECE84CPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (7)
+           MOVE    RECE85CPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (8)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE82PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE84PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE85PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE8APARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE8BPARA
+           MOVE    SGETTEMP-FULLNAMES (7)
+                                       TO  RECE84CPARA
+           MOVE    SGETTEMP-FULLNAMES (8)
+                                       TO  RECE85CPARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -13311,7 +13348,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -13321,7 +13359,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            STRING  "ORCR0840 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

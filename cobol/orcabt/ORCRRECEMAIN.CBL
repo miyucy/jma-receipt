@@ -1336,8 +1336,6 @@
            DISPLAY "ORCR0820 start = [" WRK-ARG "]"
            CALL    "ORCR0820"          USING
                                        WRK-ARG
-           CALL    "ORCR0820"          USING
-                                       WRK-ARG
            CALL    "ORCR0830"          USING
                                        WRK-ARG
       *

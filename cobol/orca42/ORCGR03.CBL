@@ -2646,7 +2646,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        CONTINUE
                    ELSE
                        IF      SPA-R01-RECEKBN     =   "3"
-                       AND     SPA-R01-NYUGAIKBN   =   "2"
                           CONTINUE
                        ELSE
                            MOVE    ERRFLPARA-OLD        TO  RECEERR
@@ -2879,7 +2878,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        CONTINUE
                    ELSE
                        IF      SPA-R01-RECEKBN     =   "3"
-                       AND     SPA-R01-NYUGAIKBN   =   "2"
                           CONTINUE
                        ELSE
                            MOVE    ERRFLPARA-OLD

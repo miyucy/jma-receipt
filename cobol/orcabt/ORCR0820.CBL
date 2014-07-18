@@ -53,6 +53,8 @@
       *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
       *  04.07.04    NACL-門脇    14/05/08  労災レセ「新継再別」記載修正
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -234,6 +236,8 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -275,6 +279,7 @@
                                        FLG-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -292,6 +297,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE88PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE88PARA-HOSPNUM
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE88PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE82PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE88PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC

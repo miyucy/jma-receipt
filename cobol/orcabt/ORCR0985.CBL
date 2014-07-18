@@ -34,6 +34,8 @@
       *                                     法の変更
       *                                     漢字モードの継続するスペース
       *                                     の記録方法の変更
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -380,6 +382,8 @@
       *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG             PIC 9(08).
@@ -1084,6 +1088,8 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -1122,6 +1128,7 @@
                                        FLG-AREA
                                        SPA-AREA
                                        KEY-AREA
+                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA1
@@ -1169,6 +1176,34 @@
            MOVE    "RECE880"           TO  RECE88PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE88PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE88PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE83PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE84PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE85PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE855PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           MOVE    RECE88PARA-BASENAME TO  SGETTEMP-BASENAMES  (7)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE82PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE83PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE84PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE85PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE855PARA
+           MOVE    SGETTEMP-FULLNAMES (7)
+                                       TO  RECE88PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            OPEN    I-O                 RECE82-FILE  
            IF      STS-RECE82          =   "00"
@@ -5694,7 +5729,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -5704,7 +5740,8 @@
            STRING  "ORCR0985 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

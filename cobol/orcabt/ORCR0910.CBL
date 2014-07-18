@@ -127,6 +127,7 @@
       *                                     追加対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -822,6 +823,8 @@
       *****************************************************************
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *     
       *    数値変換サブ
            COPY    "CPORCSNUM.INC".
@@ -868,6 +871,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  TBL-ZAI-AREA
            INITIALIZE                  TBL-ZAIW-AREA
+           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -924,6 +928,25 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
            MOVE    "RECE860"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE84PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE85PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE86PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE01PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE84PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE85PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE86PARA
       *
            OPEN    I-O                 RECE82-FILE
       *

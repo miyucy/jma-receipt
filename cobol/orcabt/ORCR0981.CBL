@@ -19,9 +19,9 @@
        PROGRAM-ID.             ORCR0981.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト入院（労災・自賠責）
-      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                      コメント編集（労災・自賠責）（レセ電用）
+      *  サブシステム名    : レセプト入院（労災）
+      *  コンポーネント名  : レセプト電算ファイル作成
+      *                      コメント編集
       *  管理者            : 
       *  作成日付    作業者        記述
       *  13/02/12    NACL−門脇    新規作成
@@ -42,6 +42,8 @@
       *  04.07.07    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
       *                                     コメント自動記載修正
       *  04.07.08    NACL-門脇    14/07/08  明細が５０を超える場合の対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -496,6 +498,8 @@
       *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-RECE84-REC. 
            COPY    "CPRCF084.INC"  REPLACING   //RECE84//
@@ -861,6 +865,8 @@
       *    療養レセコメント取得サブ
            COPY    "CPORCSRYOCOM.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -901,6 +907,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+           INITIALIZE                  RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -965,6 +972,43 @@
            MOVE    "RECE856"           TO  RECE855PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE855PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE855PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE84PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE85PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE841PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE851PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           MOVE    RECE849PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (7)
+           MOVE    RECE859PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (8)
+           MOVE    RECE855PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (9)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE82PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE84PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE85PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE841PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE851PARA
+           MOVE    SGETTEMP-FULLNAMES (7)
+                                       TO  RECE849PARA
+           MOVE    SGETTEMP-FULLNAMES (8)
+                                       TO  RECE859PARA
+           MOVE    SGETTEMP-FULLNAMES (9)
+                                       TO  RECE855PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            OPEN    INPUT               RECE82-FILE
            IF      STS-RECE82          =   "00"
@@ -9547,7 +9591,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -9557,7 +9602,8 @@
            STRING  "ORCR0981 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

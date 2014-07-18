@@ -608,7 +608,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                CONTINUE
            ELSE
                IF      LINK-HKNKBN         =   "1"
-               AND     LINK-NYUGAIKBN      =   "2"
                    CONTINUE
                ELSE
                    MOVE    SPACE               TO  RECEERR
@@ -657,7 +656,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                CONTINUE
            ELSE
                IF      LINK-HKNKBN         =   "1"
-               AND     LINK-NYUGAIKBN      =   "2"
                    CONTINUE
                ELSE
                    MOVE    ERRFLPARA-OLD   TO  SHELLTBL-ARG4
