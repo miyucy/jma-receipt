@@ -157,20 +157,20 @@
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *    患者病名マスタ−
-       01  PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC".
+      *01  PTBYOMEI-REC.
+      *    COPY    "CPPTBYOMEI.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *    印刷管理
-       01  PRTKANRI-REC.
-           COPY    "CPPRTKANRI.INC".
+      *01  PRTKANRI-REC.
+      *    COPY    "CPPRTKANRI.INC".
       *
       *    印刷用データ
-       01  PRTDATA-REC.
-           COPY    "CPPRTDATA.INC".
+      *01  PRTDATA-REC.
+      *    COPY    "CPPRTDATA.INC".
       *
       *    バッチパラメタ
        01  BTPARA-REC.
@@ -188,7 +188,7 @@
            COPY    "CPORCSPTID.INC".
       *
       *    全角変換
-           COPY    "CPORCSKANACHK.INC".
+      **   COPY    "CPORCSKANACHK.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".

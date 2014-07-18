@@ -347,31 +347,31 @@
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *    患者番号変換
-       01  PTNUM-REC.
-           COPY    "CPPTNUM.INC".
+      *01  PTNUM-REC.
+      *    COPY    "CPPTNUM.INC".
       *    診療行為マスタ−
-       01  SRYACT-REC.
-           COPY    "CPSRYACT.INC".
+      *01  SRYACT-REC.
+      *    COPY    "CPSRYACT.INC".
       *
       *    保険組み合わせ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
+      *01  HKNCOMBI-REC.
+      *    COPY    "CPHKNCOMBI.INC".
       *
       *    患者コメント
-       01  PTCOM-REC.
-           COPY    "CPPTCOM.INC".
+      *01  PTCOM-REC.
+      *    COPY    "CPPTCOM.INC".
       *
       *    受診履歴
-       01  JYURRK-REC.
-           COPY    "CPJYURRK.INC".
+      *01  JYURRK-REC.
+      *    COPY    "CPJYURRK.INC".
       *
       *    診療会計マスタ−
-       01  SRYACCT-REC.
-           COPY    "CPSRYACCT.INC".
+      *01  SRYACCT-REC.
+      *    COPY    "CPSRYACCT.INC".
       *
       *    診療科履歴
-       01  SRYKARRK-REC.
-           COPY    "CPSRYKARRK.INC".
+      *01  SRYKARRK-REC.
+      *    COPY    "CPSRYKARRK.INC".
       *
        01  HZN-WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC"  REPLACING
@@ -408,12 +408,12 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    印刷管理
-       01  PRTKANRI-REC.
-           COPY    "CPPRTKANRI.INC".
+      *01  PRTKANRI-REC.
+      *    COPY    "CPPRTKANRI.INC".
       *
       *    印刷用データ
-       01  PRTDATA-REC.
-           COPY    "CPPRTDATA.INC".
+      *01  PRTDATA-REC.
+      *    COPY    "CPPRTDATA.INC".
       *
       *    排他管理情報（詳細）
            COPY  "CPTBLLOCK.INC".
@@ -489,7 +489,7 @@
            COPY    "CPORCSLNK.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
-           COPY    "CPORCSPRTNM.INC".
+      *    COPY    "CPORCSPRTNM.INC".
       *
       *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".

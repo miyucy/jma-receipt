@@ -267,12 +267,12 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    印刷管理
-       01  PRTKANRI-REC.
-           COPY    "CPPRTKANRI.INC".
+      *01  PRTKANRI-REC.
+      *    COPY    "CPPRTKANRI.INC".
       *
       *    印刷用データ
-       01  PRTDATA-REC.
-           COPY    "CPPRTDATA.INC".
+      *01  PRTDATA-REC.
+      *    COPY    "CPPRTDATA.INC".
       *
       *
       *****************************************************************
@@ -298,7 +298,7 @@
            COPY    "CPORCSLNK.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
-           COPY    "CPORCSPRTNM.INC".
+      **   COPY    "CPORCSPRTNM.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".

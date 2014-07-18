@@ -407,12 +407,12 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    印刷管理
-       01  PRTKANRI-REC.
-           COPY    "CPPRTKANRI.INC".
+      *01  PRTKANRI-REC.
+      *    COPY    "CPPRTKANRI.INC".
       *
       *    印刷用データ
-       01  PRTDATA-REC.
-           COPY    "CPPRTDATA.INC".
+      *01  PRTDATA-REC.
+      *    COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -435,10 +435,10 @@
            COPY    "CPORCSLNK.INC".
       *
       *    画面日付変換サブ
-           COPY    "CPORCSGDAY.INC".
+      *    COPY    "CPORCSGDAY.INC".
       *
       *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
+      **   COPY    "CPORCSFDEL.INC".
       *
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".

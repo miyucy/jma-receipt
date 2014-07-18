@@ -136,12 +136,12 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    印刷管理
-       01  PRTKANRI-REC.
-           COPY    "CPPRTKANRI.INC".
+      *01  PRTKANRI-REC.
+      *    COPY    "CPPRTKANRI.INC".
       *
       *    印刷用データ
-       01  PRTDATA-REC.
-           COPY    "CPPRTDATA.INC".
+      *01  PRTDATA-REC.
+      *    COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -151,7 +151,7 @@
            COPY    "CPORCHC33.INC".
       *
       *    全角変換
-           COPY    "CPORCSKANACHK.INC".
+      *    COPY    "CPORCSKANACHK.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -164,10 +164,10 @@
            COPY    "CPORCSLNK.INC".
       *
       *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
+      *    COPY    "CPORCSFDEL.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
-           COPY    "CPORCSPRTNM.INC".
+      *    COPY    "CPORCSPRTNM.INC".
       *
       *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".

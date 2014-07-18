@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-多々納  14/07/18  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,6 +54,9 @@
            COPY    "HCMSL55.INC".
       *    帳票
            COPY    "HCPOM2.INC".
+      *
+      *    一時ファイル対応
+           COPY    "CPRECEERR.INC".
       *
       *    スパ領域
        01  STS-AREA.
@@ -126,7 +130,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
+     ***** 03  RECEERR                 PIC X(100).
            03  WRK-PARA-SYORIKBN       PIC X(01).
            03  WRK-PARA-SRYYMD         PIC X(08).
       *
@@ -535,25 +539,25 @@
            COPY    "CPJOBKANRI.INC".
       *
       *    印刷管理
-       01  PRTKANRI-REC.
-           COPY    "CPPRTKANRI.INC".
+      *01  PRTKANRI-REC.
+      *    COPY    "CPPRTKANRI.INC".
       *
       *    印刷用データ
-       01  PRTDATA-REC.
-           COPY    "CPPRTDATA.INC".
+      *01  PRTDATA-REC.
+      *    COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
       *
       *    数字変換領域
-           COPY    "CPORCSNUM.INC".
+      *    COPY    "CPORCSNUM.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
       *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
+      *    COPY    "CPORCSFDEL.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -566,7 +570,10 @@
            COPY    "CPORCSLNK.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
-           COPY    "CPORCSPRTNM.INC".
+      *    COPY    "CPORCSPRTNM.INC".
+      *
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -642,6 +649,15 @@
       *
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+      *
       *
            PERFORM 100-DBOPEN-SEC
       *
