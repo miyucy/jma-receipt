@@ -274,9 +274,9 @@
               03  WRK-NYUINDAY-TAIHI-KBN   PIC X(01)  OCCURS  31.
               03  WRK-NYUINDAY-TAIHI-KYUKYU-KBN
                                            PIC X(01)  OCCURS  31.
-              03  WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI
+              03  WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI
                                            PIC 9(04)  OCCURS  31.
-              03  WRK-NYUINDAY-TAIHI-DOUJITSU-SKJKBN
+              03  WRK-NYUINDAY-TAIHI-DOU-SKJKBN
                                            PIC X(01)  OCCURS  31.
       *
        01  WRK-TAISYOGAI-HANTEI-TABLE.
@@ -1279,9 +1279,9 @@
                    MOVE  LNK-NYUINDAY-KYUKYU-KBN(IDY) TO
                            WRK-NYUINDAY-TAIHI-KYUKYU-KBN(IDX IDY)
                    MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDY) TO
-                           WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(IDX IDY)
+                           WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX IDY)
                    MOVE  LNK-NYUINDAY-DOUJITSU-SKJKBN(IDY) TO
-                           WRK-NYUINDAY-TAIHI-DOUJITSU-SKJKBN(IDX IDY)
+                           WRK-NYUINDAY-TAIHI-DOU-SKJKBN(IDX IDY)
                  END-PERFORM
               END-IF
       *
@@ -1612,7 +1612,7 @@
              PERFORM  VARYING   IDY   FROM   WRK-HI-ST(IDX)   BY   1
                        UNTIL    IDY     >    WRK-HI-ED(IDX)
       *
-               IF  WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(IDX IDY)
+               IF  WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX IDY)
                                                          NOT =  ZERO
                  MOVE     ZERO     TO  FLG-HANBETU
                  PERFORM   VARYING  IDZ  FROM   1   BY   1
@@ -1620,7 +1620,7 @@
                              OR    (WRK-HANBETU3-SKYYM(IDZ) = SPACE)
                    IF   WRK-HANBETU3-SKYYM(IDZ) = WRK-SKYYM(IDX) 
                    AND  WRK-HANBETU3-HKNCOMBINUM(IDZ) =
-                          WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(IDX IDY)
+                          WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX IDY)
                      MOVE   "9"    TO  WRK-HANBETU3-DAY(IDZ IDY)
                      MOVE    1     TO  FLG-HANBETU
                      MOVE    10    TO  IDZ
@@ -1629,7 +1629,7 @@
                  IF   FLG-HANBETU   =   ZERO
                    MOVE   WRK-SKYYM(IDX) 
                                    TO  WRK-HANBETU3-SKYYM(IDZ)
-                   MOVE   WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(IDX IDY)
+                   MOVE   WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX IDY)
                                    TO  WRK-HANBETU3-HKNCOMBINUM(IDZ)
                    MOVE   "9"      TO  WRK-HANBETU3-DAY(IDZ IDY)
                  END-IF
@@ -2279,11 +2279,11 @@
       *
                 MOVE  LNK-SYU-SKYSTYMD(IDX)(7:2) TO  WRK-CHECK-STDAY
                 MOVE  LNK-SYU-SKYEDYMD(IDX)(7:2) TO  WRK-CHECK-EDDAY
-                IF   (WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(IDX7 IDY)
+                IF   (WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX7 IDY)
                                                           NOT = ZERO)
                 AND  (WRK-CHECK-STDAY       <=   IDY                )
                 AND  (IDY                   <=   WRK-CHECK-EDDAY    )
-                  IF  WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(IDX7 IDY)
+                  IF  WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX7 IDY)
                                           =  LNK-SYU-HKNCOMBINUM(IDX)
                      IF  LNK-SYU-HKNCOMBINUM(IDX)
                                               =  WRK-DAY5(IDX7 IDY)
@@ -2383,10 +2383,9 @@
                        END-EVALUATE
                      END-IF
                   END-IF
-                  MOVE  WRK-NYUINDAY-TAIHI-DOUJITSU-SKJKBN(IDX7 IDY)
+                  MOVE  WRK-NYUINDAY-TAIHI-DOU-SKJKBN(IDX7 IDY)
                                 TO   WRK-DOJITUSKJST-FLG(IDX IDY)
-                  EVALUATE  WRK-NYUINDAY-TAIHI-DOUJITSU-SKJKBN
-                                                          (IDX7 IDY)
+                  EVALUATE  WRK-NYUINDAY-TAIHI-DOU-SKJKBN(IDX7 IDY)
                     WHEN     "0"
                       MOVE "3"  TO   WRK-DOJITUSKJED-FLG(IDX IDY)
                     WHEN     "1"
@@ -2490,9 +2489,9 @@
                   IF    FLG-KOREI-TANYUIN2  =  1
                     PERFORM   VARYING   IDY   FROM  1  BY   1
                                UNTIL    IDY    >   31
-                     IF  WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(1 IDY)
+                     IF  WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(1 IDY)
                                                             NOT = ZERO
-                      MOVE WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(1 IDY)
+                      MOVE WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(1 IDY)
                                               TO  WRK-HKNCOMBINUM
                       PERFORM  HKNCOMBI-KENSAKU-SEC
                       IF   COMB-HKNNUM  =  "971" OR "973" OR "975"
@@ -2539,9 +2538,9 @@
                   IF    FLG-KOREI-TANYUIN2  =  1
                     PERFORM   VARYING   IDY   FROM  1  BY   1
                                UNTIL    IDY    >   31
-                     IF  WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(2 IDY)
+                     IF  WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(2 IDY)
                                                             NOT = ZERO
-                      MOVE WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(2 IDY)
+                      MOVE WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(2 IDY)
                                               TO  WRK-HKNCOMBINUM
                       PERFORM  HKNCOMBI-KENSAKU-SEC
                       IF   COMB-HKNNUM  =  "971" OR "973" OR "975"

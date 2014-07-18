@@ -1538,12 +1538,12 @@
            COPY  "CPORCS02.INC".
        01  LNK-SYUNOU-REC.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
-       01  LNK-WRK-SYUNOU-REC-T.
-         02 LNK-WRK-SYUNOU-REC     OCCURS 10.
-           COPY  "CPSYUNOU.INC"  
-                               REPLACING  //SYU-// BY //LNK-WRK-SYU-//.
+       01  LNK2-SYUNOU-REC-T.
+         02 LNK2-SYUNOU-REC     OCCURS 10.
+           COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK2-SYU-//.
        01  LNK-SYUDAY-REC.
-           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
+           COPY  "CPSYUDAY.INC"
+                             REPLACING  //SDAY-// BY //LNK-SDAY-//.
        01  LNK-WRK-SYUDAY-REC-T.
          02 LNK-WRK-SYUDAY-REC     OCCURS 10.
            COPY  "CPSYUDAY.INC"
@@ -1555,7 +1555,7 @@
                                      MCPAREA
                                      LNK-ORCS02-REC
                                      LNK-SYUNOU-REC
-                                     LNK-WRK-SYUNOU-REC-T
+                                     LNK2-SYUNOU-REC-T
                                      LNK-SYUDAY-REC
                                      LNK-WRK-SYUDAY-REC-T
                                      SPA-AREA.
@@ -2216,7 +2216,7 @@
       *
               MOVE     ZERO              TO  WK-GENTAI-SKYMONEY
               MOVE     LNK-SYU-SKYMONEY  TO  WK-GENTAI-SKYMONEY2
-              PERFORM  400-SEIKYU-HASUU-KEISAN-ROSAI-SEC
+              PERFORM  400-SEIKYU-HASUU-ROSAI-SEC
       *
            END-IF.
       *    ＜非労災指定（１００％）＞
@@ -2246,7 +2246,7 @@
                                               + LNK-SYU-RSISAISHIN-MONEY
                                               + LNK-SYU-RSISDO-MONEY
                                               + LNK-SYU-RSIETC-MONEY
-                 PERFORM  400-SEIKYU-HASUU-KEISAN-ROSAI-SEC
+                 PERFORM  400-SEIKYU-HASUU-ROSAI-SEC
       *
            END-IF.
       *
@@ -2335,7 +2335,7 @@
                                               + LNK-SYU-RSISAISHIN-MONEY
                                               + LNK-SYU-RSISDO-MONEY
                                               + LNK-SYU-RSIETC-MONEY
-                 PERFORM  400-SEIKYU-HASUU-KEISAN-JIBAI-SEC
+                 PERFORM  400-SEIKYU-HASUU-JIBAI-SEC
       *
            END-IF.
       *    ＜患者請求しない（０％）の場合＞
@@ -2390,7 +2390,7 @@
       *
               MOVE     ZERO              TO  WK-GENTAI-SKYMONEY
               MOVE     LNK-SYU-SKYMONEY  TO  WK-GENTAI-SKYMONEY2
-              PERFORM  400-SEIKYU-HASUU-KEISAN-JIBAI-SEC
+              PERFORM  400-SEIKYU-HASUU-JIBAI-SEC
       *
            END-IF.
       *
@@ -2406,7 +2406,7 @@
       *
            IF    LNK-SYU-SYUHKNNUM       =    "975"
       *
-              PERFORM  400-SEIKYU-HASUU-KEISAN-KOGAI-SEC
+              PERFORM  400-SEIKYU-HASUU-KOGAI-SEC
       *
            END-IF.
       *
@@ -2480,7 +2480,7 @@
                          LNK-SYU-RSISDO-MONEY     +
                          LNK-SYU-RSIETC-MONEY
               END-IF
-              PERFORM   400-SEIKYU-HASUU-KEISAN-DAISAN-SEC
+              PERFORM   400-SEIKYU-HASUU-DAISAN-SEC
       *
               COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY      =
                          LNK-SYU-RSIJIBAI-SKYMONEY      +
@@ -2824,7 +2824,7 @@
       ******************************************************************
       *        請求額端数計算処理：労災（減免無し）
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-ROSAI-SEC          SECTION.
+       400-SEIKYU-HASUU-ROSAI-SEC          SECTION.
       *
            IF  WK-HASU1001-KBN3J  =  "0"
              EVALUATE   WK-HASU1001-KBN3
@@ -2882,13 +2882,13 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-ROSAI-EXT.
+       400-SEIKYU-HASUU-ROSAI-EXT.
            EXIT.
       *
       ******************************************************************
       *        請求額端数計算処理：自賠責（減免無し）
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-JIBAI-SEC          SECTION.
+       400-SEIKYU-HASUU-JIBAI-SEC          SECTION.
       *
            IF  WK-HASU1001-KBN4J  =  "0"
              EVALUATE   WK-HASU1001-KBN4
@@ -2946,13 +2946,13 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-JIBAI-EXT.
+       400-SEIKYU-HASUU-JIBAI-EXT.
            EXIT.
       *
       ******************************************************************
       *        請求額端数計算処理：公害（減免無し）
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-KOGAI-SEC          SECTION.
+       400-SEIKYU-HASUU-KOGAI-SEC          SECTION.
       *
            EVALUATE   WK-HASU1001-KBN5J
             WHEN  "1"
@@ -2972,13 +2972,13 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-KOGAI-EXT.
+       400-SEIKYU-HASUU-KOGAI-EXT.
            EXIT.
       *
       ******************************************************************
       *        請求額端数計算処理：第三者行為（減免無し）
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-DAISAN-SEC          SECTION.
+       400-SEIKYU-HASUU-DAISAN-SEC          SECTION.
       *
            IF  WK-HASU1001-KBN6J  =  "0"
              EVALUATE   WK-HASU1001-KBN6
@@ -3036,7 +3036,7 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-DAISAN-EXT.
+       400-SEIKYU-HASUU-DAISAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -11786,11 +11786,11 @@
       *
                PERFORM    VARYING   IDZ    FROM   1   BY   1
                            UNTIL  (IDZ    >    10)
-                             OR   (LNK-WRK-SYU-SKYSTYMD(IDZ) =  SPACE)
+                             OR   (LNK2-SYU-SKYSTYMD(IDZ) =  SPACE)
       *
                   IF  LNK-SYU-SKYSTYMD(1:6) = 
-                                   LNK-WRK-SYU-SKYSTYMD(IDZ)(1:6) 
-                      MOVE    LNK-WRK-SYUNOU-REC(IDZ)  
+                                   LNK2-SYU-SKYSTYMD(IDZ)(1:6) 
+                      MOVE    LNK2-SYUNOU-REC(IDZ)
                                              TO  SYU-SYUNOU-REC
                       IF   SYU-DAYINFFLG  =  "1"
                          MOVE    LNK-WRK-SYUDAY-REC(IDZ)
@@ -17768,19 +17768,19 @@
       *
              PERFORM  VARYING  RRK-IDX4  FROM  1  BY  1
                        UNTIL  (RRK-IDX4                >   10  )
-                         OR   (LNK-WRK-SYU-SKYSTYMD(RRK-IDX4)
+                         OR   (LNK2-SYU-SKYSTYMD(RRK-IDX4)
                                                        =  SPACE)
                IF  ( WK-RRK-SRYYM  =
-                               LNK-WRK-SYU-SKYSTYMD(RRK-IDX4)(1:6) )
+                               LNK2-SYU-SKYSTYMD(RRK-IDX4)(1:6) )
                AND ((WK-RRK-HKNNUM =
-                               LNK-WRK-SYU-KOH1HKNNUM(RRK-IDX4)) OR
+                               LNK2-SYU-KOH1HKNNUM(RRK-IDX4)) OR
                     (WK-RRK-HKNNUM =
-                               LNK-WRK-SYU-KOH2HKNNUM(RRK-IDX4)) OR
+                               LNK2-SYU-KOH2HKNNUM(RRK-IDX4)) OR
                     (WK-RRK-HKNNUM =
-                               LNK-WRK-SYU-KOH3HKNNUM(RRK-IDX4)) OR
+                               LNK2-SYU-KOH3HKNNUM(RRK-IDX4)) OR
                     (WK-RRK-HKNNUM =
-                               LNK-WRK-SYU-KOH4HKNNUM(RRK-IDX4))   )
-                  MOVE     LNK-WRK-SYUNOU-REC(RRK-IDX4)
+                               LNK2-SYU-KOH4HKNNUM(RRK-IDX4))   )
+                  MOVE     LNK2-SYUNOU-REC(RRK-IDX4)
                                 TO  SYU-SYUNOU-REC
                   IF   SYU-DAYINFFLG  =  "1"
                      MOVE  LNK-WRK-SYUDAY-REC(RRK-IDX4)
@@ -19115,7 +19115,7 @@
            OR   (FLG-GENBUTU70          NOT =  ZERO)
            OR   (FLG-TOKU75-CYO             =    3 )
            OR   (FLG-CYOKI-ARI              =    2 )
-                PERFORM    2303-SYUENTANI-ZANKIN-KEISAN-SEC
+                PERFORM    2303-SYUENTANI-ZAN-KEISAN-SEC
            END-IF.
       *
       *    食事療養費等の計算
@@ -19627,7 +19627,7 @@
       ******************************************************************
       *        主保険負担金額の円単位　残金額計算
       ******************************************************************
-       2303-SYUENTANI-ZANKIN-KEISAN-SEC           SECTION.              
+       2303-SYUENTANI-ZAN-KEISAN-SEC           SECTION.              
       *
       *    算定可能フラグの初期化
            MOVE     SPACE                  TO     FLG-SANTEI1-ENTANI
@@ -19672,7 +19672,7 @@
                END-IF
            END-IF.
       *
-       2303-SYUENTANI-ZANKIN-KEISAN-EXT.
+       2303-SYUENTANI-ZAN-KEISAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -20900,10 +20900,10 @@
                        UNTIL    IDY    >    31
       *
               IF  LNK-S02-DOJITU-DAY(IDY)  =  9
-                  PERFORM   230461-SHOKUJI-FURIWAKE-HENSYU-SEC
+                  PERFORM   230461-SHOKUJI-FURIWAKE-SEC
               END-IF
               IF  LNK-S02-DOJITU-DAY(IDY)  =  1
-                  PERFORM   230462-SHOKUJI-FURIWAKE-HENSYU2-SEC
+                  PERFORM   230462-SHOKUJI-FURIWAKE2-SEC
               END-IF
       *
            END-PERFORM
@@ -20973,7 +20973,7 @@
       ******************************************************************
       *    入院時食事療養と特別食加算をわける
       ******************************************************************
-       230461-SHOKUJI-FURIWAKE-HENSYU-SEC                 SECTION.
+       230461-SHOKUJI-FURIWAKE-SEC                 SECTION.
       *
            EVALUATE  LNK-S02-DOJITU-SKJST(IDY)
              WHEN     "0"
@@ -21003,13 +21003,13 @@
       *
            .
       *
-       230461-SHOKUJI-FURIWAKE-HENSYU-EXT.
+       230461-SHOKUJI-FURIWAKE-EXT.
            EXIT.
       *
       ******************************************************************
       *    入院時食事療養と特別食加算をわける
       ******************************************************************
-       230462-SHOKUJI-FURIWAKE-HENSYU2-SEC                 SECTION.
+       230462-SHOKUJI-FURIWAKE2-SEC                 SECTION.
       *
            EVALUATE  LNK-S02-DOJITU-SKJED(IDY)
              WHEN     "0"
@@ -21035,7 +21035,7 @@
       *
            .
       *
-       230462-SHOKUJI-FURIWAKE-HENSYU2-EXT.
+       230462-SHOKUJI-FURIWAKE2-EXT.
            EXIT.
       *
       ******************************************************************
@@ -29163,7 +29163,7 @@
            PERFORM   23094-DAYDATA-OKIKAE-HENSYU-SEC.
       *
       *    現物給付に関する対象データフラグ編集
-           PERFORM   23096-GENBUTU-TAISYODATA-HENSYU-SEC.
+           PERFORM   23096-GENBUTU-TAISYODATA-SEC.
       *
        2309-FTNKIN-HIKAKU-EXT.
            EXIT.
@@ -31009,7 +31009,7 @@
       ******************************************************************
       *    現物給付に関する対象データフラグ編集
       ******************************************************************
-       23096-GENBUTU-TAISYODATA-HENSYU-SEC         SECTION.
+       23096-GENBUTU-TAISYODATA-SEC         SECTION.
       *
            IF  (FLG-GENBUTU70       NOT =   ZERO)
            AND (FLG-GENBUTU-TAISYODATA  =    1  )
@@ -31057,7 +31057,7 @@
       *
            .
       *
-       23096-GENBUTU-TAISYODATA-HENSYU-EXT.
+       23096-GENBUTU-TAISYODATA-EXT.
            EXIT.
       *
       *****************************************************************

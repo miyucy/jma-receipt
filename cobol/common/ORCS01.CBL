@@ -943,7 +943,7 @@
            03  WK-SYUNOU-GENBUTU70-TABLE.
                05  WK-SYUNOU-GENBUTU70-OCC              OCCURS  50.
                  06  WK-SYUNOU-GENBUTU70-HKNCOMBINUM    PIC  X(04).
-                 06  WK-SYUNOU-GENBUTU70-TOTAL-HKNTEN   PIC  9(07).
+                 06  WK-SYUNOU-GENBUTU70-TOTALTEN       PIC  9(07).
                  06  WK-SYUNOU-GENBUTU70-SYUHKNNUM      PIC  X(03).
                  06  WK-SYUNOU-GENBUTU70-KOH1HKNNUM     PIC  X(03).
                  06  WK-SYUNOU-GENBUTU70-KOH1COMPFTN    PIC  9(07).
@@ -958,7 +958,7 @@
                  06  WK-SYUNOU-GENBUTU70-HANTEIFLG      PIC  9(01).
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¼ýÇ¼¥Ç¡¼¥¿ÂàÈò¡Ê¼çÊÝ¸±Ã±ÆÈÊ¬¡Ë
            03  WK-SYUNOU-GENBUTU70T-TABLE.
-                 06  WK-SYUNOU-GENBUTU70T-TOTAL-HKNTEN  PIC  9(07).
+                 06  WK-SYUNOU-GENBUTU70T-TOTALTEN      PIC  9(07).
                  06  WK-SYUNOU-GENBUTU70T-SKYMONEY      PIC  9(07).
                  06  WK-SYUNOU-GENBUTU70T-HANTEIFLG     PIC  9(01).
       *
@@ -967,9 +967,9 @@
            03  WK-SYUNOU-GENBUTU70-MSG                  PIC  9(01).
       *
            03  WK-SYUNOU-GENBUTU-JGNFLG                 PIC  9(01).
-           03  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY         PIC  9(07).
-           03  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2        PIC  9(07).
-           03  WK-SYUNOU-GENBUTU-KOREI-SYUHKNFLG        PIC  9(01).
+           03  WK-SYUNOU-GENBUTU-KR-SKYMONEY            PIC  9(07).
+           03  WK-SYUNOU-GENBUTU-KR-SKYMONEY2           PIC  9(07).
+           03  WK-SYUNOU-GENBUTU-KR-SYUHKNFLG           PIC  9(01).
       *
            03  WK-SYUNOU-GENBUTU-SECMONEY-MAE           PIC  9(07).
       *
@@ -1602,10 +1602,9 @@
            COPY  "CPORCS01.INC".
        01  LNK-SYU-SYUNOU-REC.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
-       01  LNK-WRK-SYUNOU-REC-T.
-        02 LNK-WRK-SYUNOU-REC      OCCURS 15.
-           COPY  "CPSYUNOU.INC" 
-                               REPLACING  //SYU-// BY //LNK-WRK-SYU-//.
+       01  LNK2-SYUNOU-REC-T.
+        02 LNK2-SYUNOU-REC      OCCURS 15.
+           COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK2-SYU-//.
       *
            COPY  "COMMON-SPA".
       /
@@ -1613,7 +1612,7 @@
                                      MCPAREA
                                      LNK-ORCS01-REC
                                      LNK-SYU-SYUNOU-REC
-                                     LNK-WRK-SYUNOU-REC-T
+                                     LNK2-SYUNOU-REC-T
                                      SPA-AREA.
       *
       ******************************************************************
@@ -2190,7 +2189,7 @@
       *
              MOVE     ZERO              TO  WK-GENTAI-SKYMONEY
              MOVE     LNK-SYU-SKYMONEY  TO  WK-GENTAI-SKYMONEY2
-             PERFORM  400-SEIKYU-HASUU-KEISAN-ROSAI-SEC
+             PERFORM  400-SEIKYU-HASUU-ROSAI-SEC
       *
            END-IF.
       *
@@ -2220,7 +2219,7 @@
                                               + LNK-SYU-RSISAISHIN-MONEY
                                               + LNK-SYU-RSISDO-MONEY
                                               + LNK-SYU-RSIETC-MONEY
-                 PERFORM  400-SEIKYU-HASUU-KEISAN-ROSAI-SEC
+                 PERFORM  400-SEIKYU-HASUU-ROSAI-SEC
       *
            END-IF.                                                      
       *
@@ -2314,7 +2313,7 @@
                                               + LNK-SYU-RSISAISHIN-MONEY
                                               + LNK-SYU-RSISDO-MONEY
                                               + LNK-SYU-RSIETC-MONEY
-                 PERFORM  400-SEIKYU-HASUU-KEISAN-JIBAI-SEC
+                 PERFORM  400-SEIKYU-HASUU-JIBAI-SEC
       *
            END-IF.
       *    ¡ã´µ¼ÔÀÁµá¤·¤Ê¤¤¡Ê£°¡ó¡Ë¤Î¾ì¹ç¡ä
@@ -2373,7 +2372,7 @@
       *
               MOVE     ZERO              TO  WK-GENTAI-SKYMONEY
               MOVE     LNK-SYU-SKYMONEY  TO  WK-GENTAI-SKYMONEY2
-              PERFORM  400-SEIKYU-HASUU-KEISAN-JIBAI-SEC
+              PERFORM  400-SEIKYU-HASUU-JIBAI-SEC
       *
            END-IF.
       *
@@ -2389,7 +2388,7 @@
       *
            IF    LNK-SYU-SYUHKNNUM       =    "975"
       *
-              PERFORM  400-SEIKYU-HASUU-KEISAN-KOGAI-SEC
+              PERFORM  400-SEIKYU-HASUU-KOGAI-SEC
       *
            END-IF.
       *
@@ -2458,7 +2457,7 @@
                          LNK-SYU-RSISDO-MONEY     +
                          LNK-SYU-RSIETC-MONEY
               END-IF
-              PERFORM  400-SEIKYU-HASUU-KEISAN-DAISAN-SEC
+              PERFORM  400-SEIKYU-HASUU-DAISAN-SEC
       *
               COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY  =
                          LNK-SYU-RSIJIBAI-SKYMONEY  +
@@ -2820,7 +2819,7 @@
       ******************************************************************
       *        ÀÁµá³ÛÃ¼¿ô·×»»½èÍý¡§Ï«ºÒ¡Ê¸ºÌÈÌµ¤·¡Ë
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-ROSAI-SEC          SECTION.
+       400-SEIKYU-HASUU-ROSAI-SEC          SECTION.
       *
            IF  WK-HASU1001-KBN3J  =  "0"
              EVALUATE   WK-HASU1001-KBN3
@@ -2878,13 +2877,13 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-ROSAI-EXT.
+       400-SEIKYU-HASUU-ROSAI-EXT.
            EXIT.
       *
       ******************************************************************
       *        ÀÁµá³ÛÃ¼¿ô·×»»½èÍý¡§¼«ÇåÀÕ¡Ê¸ºÌÈÌµ¤·¡Ë
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-JIBAI-SEC          SECTION.
+       400-SEIKYU-HASUU-JIBAI-SEC          SECTION.
       *
            IF  WK-HASU1001-KBN4J  =  "0"
              EVALUATE   WK-HASU1001-KBN4
@@ -2942,13 +2941,13 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-JIBAI-EXT.
+       400-SEIKYU-HASUU-JIBAI-EXT.
            EXIT.
       *
       ******************************************************************
       *        ÀÁµá³ÛÃ¼¿ô·×»»½èÍý¡§¸ø³²¡Ê¸ºÌÈÌµ¤·¡Ë
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-KOGAI-SEC          SECTION.
+       400-SEIKYU-HASUU-KOGAI-SEC          SECTION.
       *
            EVALUATE   WK-HASU1001-KBN5J
             WHEN  "1"
@@ -2968,13 +2967,13 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-KOGAI-EXT.
+       400-SEIKYU-HASUU-KOGAI-EXT.
            EXIT.
       *
       ******************************************************************
       *        ÀÁµá³ÛÃ¼¿ô·×»»½èÍý¡§Âè»°¼Ô¹Ô°Ù¡Ê¸ºÌÈÌµ¤·¡Ë
       ******************************************************************
-       400-SEIKYU-HASUU-KEISAN-DAISAN-SEC          SECTION.
+       400-SEIKYU-HASUU-DAISAN-SEC          SECTION.
       *
            IF  WK-HASU1001-KBN6J  =  "0"
              EVALUATE   WK-HASU1001-KBN6
@@ -3032,7 +3031,7 @@
       *
            .
       *
-       400-SEIKYU-HASUU-KEISAN-DAISAN-EXT.
+       400-SEIKYU-HASUU-DAISAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -6610,19 +6609,19 @@
            MOVE   ZERO   TO   WK-SYUNOU-GENBUTU70-FTNRATE.
            MOVE   ZERO   TO   WK-SYUNOU-GENBUTU70-MSG.
            MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-JGNFLG.
-           MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-KOREI-SKYMONEY.
-           MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2.
-           MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-KOREI-SYUHKNFLG.
+           MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-KR-SKYMONEY.
+           MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-KR-SKYMONEY2.
+           MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-KR-SYUHKNFLG.
            MOVE   ZERO   TO   WK-SYUNOU-GENBUTU-SECMONEY-MAE.
            IF    LNK-SYU-SRYYMD(1:6)   >=  "201204"
              IF  (FLG-GENBUTU70           NOT =   ZERO)
              AND (FLG-OITA-GENBUTU70          =   ZERO)
-               PERFORM     2114-SYUNOU-GENBUTU70-KENSAKU-SEC
-               PERFORM     2115-SYUNOU-GENBUTU70-HENSYU-SEC
+               PERFORM     2114-SYUNOU-GEN70-KENSAKU-SEC
+               PERFORM     2115-SYUNOU-GEN70-HENSYU-SEC
              END-IF
              IF  (LNK-S01-KOUREI-ZAITAKU-KBN  =   "1" )
              AND (COMB-HKNNUM             NOT =  SPACE)
-               PERFORM     2114-SYUNOU-GENBUTU70-KENSAKU-SEC
+               PERFORM     2114-SYUNOU-GEN70-KENSAKU-SEC
              END-IF
            END-IF.
       *
@@ -6868,7 +6867,7 @@
                           (COMB-KOH2HKNNUM  =   "972"        ) OR
                           (COMB-KOH3HKNNUM  =   "972"        ) OR
                           (COMB-KOH4HKNNUM  =   "972"        ))
-                     AND ( WK-SYUNOU-GENBUTU-KOREI-SYUHKNFLG
+                     AND ( WK-SYUNOU-GENBUTU-KR-SYUHKNFLG
                                                        = ZERO )
                         IF    FLG-TOKU75  =  1 OR 2
                           IF   MAX-KIN-SYU-M   >  5000
@@ -6890,7 +6889,7 @@
                              (COMB-KOH2HKNNUM  =   "974"        ) OR
                              (COMB-KOH3HKNNUM  =   "974"        ) OR
                              (COMB-KOH4HKNNUM  =   "974"        ))
-                        AND ( WK-SYUNOU-GENBUTU-KOREI-SYUHKNFLG
+                        AND ( WK-SYUNOU-GENBUTU-KR-SYUHKNFLG
                                                           = ZERO )
                           IF    FLG-TOKU75  =  1 OR 2
                             IF   MAX-KIN-SYU-M   >  10000
@@ -11509,7 +11508,7 @@
       ******************************************************************
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¼ýÇ¼¥Þ¥¹¥¿¸¡º÷
       ******************************************************************
-       2114-SYUNOU-GENBUTU70-KENSAKU-SEC           SECTION.
+       2114-SYUNOU-GEN70-KENSAKU-SEC           SECTION.
       *
            INITIALIZE                         SYU-SYUNOU-REC
            MOVE    LNK-SYU-HOSPNUM      TO    SYU-HOSPNUM
@@ -11530,7 +11529,7 @@
              PERFORM    SYUNOU-READ2-SEC
              PERFORM  UNTIL  (FLG-SYUNOU  =  "1")
                IF   SYU-DENPJTIKBN   NOT =  "3"
-                 PERFORM  21141-SYUNOU-GENBUTU70-COUNT-SEC
+                 PERFORM  21141-SYUNOU-GEN70-CNT-SEC
                END-IF
                MOVE    "tbl_syunou"     TO    MCP-TABLE
                MOVE    "key26"          TO    MCP-PATHNAME
@@ -11545,26 +11544,25 @@
       *
            PERFORM    VARYING   IDZ    FROM   1   BY   1
                        UNTIL   (IDZ    >    15)
-                         OR    (LNK-WRK-SYU-SRYYMD(IDZ) =  SPACE)
-             MOVE  LNK-WRK-SYUNOU-REC(IDZ)
-                                        TO    SYU-SYUNOU-REC
-             PERFORM  21141-SYUNOU-GENBUTU70-COUNT-SEC
+                         OR    (LNK2-SYU-SRYYMD(IDZ) =  SPACE)
+             MOVE  LNK2-SYUNOU-REC(IDZ) TO    SYU-SYUNOU-REC
+             PERFORM  21141-SYUNOU-GEN70-CNT-SEC
            END-PERFORM
       *
            .
       *
-       2114-SYUNOU-GENBUTU70-KENSAKU-EXT.
+       2114-SYUNOU-GEN70-KENSAKU-EXT.
            EXIT.
       *
       ******************************************************************
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¼ýÇ¼¥Þ¥¹¥¿¶â³ÛÊÔ½¸
       ******************************************************************
-       21141-SYUNOU-GENBUTU70-COUNT-SEC          SECTION.
+       21141-SYUNOU-GEN70-CNT-SEC          SECTION.
       *
       *    ¼ýÇ¼ÊÝ¸±¾ðÊóÊÔ½¸
            PERFORM  2202B-SYUNOU-HKN-HENSYU-SEC
            IF   FLG-SYUNOU-HKN-HANTEI  =  1
-             GO   TO   21141-SYUNOU-GENBUTU70-COUNT-EXT
+             GO   TO   21141-SYUNOU-GEN70-CNT-EXT
            END-IF
       *
            IF (SYU-SYUHKNNUM       =  "971" OR "973" OR "975"
@@ -11583,23 +11581,23 @@
                  AND   (SYU-KOH3HKNNUM = SPACE)
                  AND   (SYU-KOH4HKNNUM = SPACE)
                    ADD   SYU-HKNTEKMONEY
-                               TO  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY
-                                   WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2
+                               TO  WK-SYUNOU-GENBUTU-KR-SKYMONEY
+                                   WK-SYUNOU-GENBUTU-KR-SKYMONEY2
                    IF   SYU-SKJ-FTNGAKU(1) =  1
                      MOVE   1  TO  WK-SYUNOU-GENBUTU-JGNFLG
                    END-IF
-                   MOVE     1  TO  WK-SYUNOU-GENBUTU-KOREI-SYUHKNFLG
+                   MOVE     1  TO  WK-SYUNOU-GENBUTU-KR-SYUHKNFLG
                  ELSE
                    ADD   SYU-KOH-FTN
-                               TO  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY
+                               TO  WK-SYUNOU-GENBUTU-KR-SKYMONEY
                    IF   (SYU-KOH2HKNNUM  =  SPACE)
                    AND  (SYU-KOH3HKNNUM  =  SPACE)
                    AND  (SYU-KOH4HKNNUM  =  SPACE)
                      ADD   SYU-KOH-FTN
-                               TO  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2
+                               TO  WK-SYUNOU-GENBUTU-KR-SKYMONEY2
                    ELSE
                      ADD   SYU-KOH1COMPFTN
-                               TO  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2
+                               TO  WK-SYUNOU-GENBUTU-KR-SKYMONEY2
                    END-IF
                  END-IF
                ELSE
@@ -11609,7 +11607,7 @@
                  AND   (SYU-KOH3HKNNUM = SPACE)
                  AND   (SYU-KOH4HKNNUM = SPACE)
                    ADD   SYU-TOTAL-HKNTEN      TO
-                                   WK-SYUNOU-GENBUTU70T-TOTAL-HKNTEN
+                                   WK-SYUNOU-GENBUTU70T-TOTALTEN
                    ADD   SYU-HKNTEKMONEY       TO
                                    WK-SYUNOU-GENBUTU70T-SKYMONEY
                    IF   SYU-SKJ-FTNGAKU(1) =  1
@@ -11623,7 +11621,7 @@
                      IF  SYU-HKNCOMBINUM =
                                WK-SYUNOU-GENBUTU70-HKNCOMBINUM(IDX13)
                        ADD   SYU-TOTAL-HKNTEN  TO
-                               WK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX13)
+                               WK-SYUNOU-GENBUTU70-TOTALTEN(IDX13)
                        ADD   SYU-KOH1COMPFTN   TO
                                WK-SYUNOU-GENBUTU70-KOH1COMPFTN(IDX13)
                        ADD   SYU-KOH2COMPFTN   TO
@@ -11646,7 +11644,7 @@
                        MOVE  SYU-HKNCOMBINUM   TO
                                WK-SYUNOU-GENBUTU70-HKNCOMBINUM(IDX13)
                        ADD   SYU-TOTAL-HKNTEN  TO
-                               WK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX13)
+                               WK-SYUNOU-GENBUTU70-TOTALTEN(IDX13)
                        MOVE  SYU-SYUHKNNUM     TO
                                WK-SYUNOU-GENBUTU70-SYUHKNNUM(IDX13)
                        MOVE  SYU-KOH1HKNNUM    TO
@@ -11679,13 +11677,13 @@
       *
            .
       *
-       21141-SYUNOU-GENBUTU70-COUNT-EXT.
+       21141-SYUNOU-GEN70-CNT-EXT.
            EXIT.
       *
       ******************************************************************
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¥Ç¡¼¥¿ÊÔ½¸
       ******************************************************************
-       2115-SYUNOU-GENBUTU70-HENSYU-SEC          SECTION.
+       2115-SYUNOU-GEN70-HENSYU-SEC          SECTION.
       *
       *    ÉéÃ´³ä¹ç
       *
@@ -11763,7 +11761,7 @@
            COMPUTE  WK-FUTANWARI  =  WK-SYUNOU-GENBUTU70-FTNRATE
                                   /  100
            COMPUTE  WK-SYUNOU-GENBUTU70-KEISAN
-                      =  WK-SYUNOU-GENBUTU70T-TOTAL-HKNTEN
+                      =  WK-SYUNOU-GENBUTU70T-TOTALTEN
                       *  10
                       *  WK-FUTANWARI
            IF    FLG-TOKU75  =  3
@@ -11791,7 +11789,7 @@
                COMPUTE  WK-FUTANWARI  =  WK-SYUNOU-GENBUTU70-FTNRATE
                                       /  100
                COMPUTE  WK-SYUNOU-GENBUTU70-KEISAN
-                          =  WK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX13)
+                          =  WK-SYUNOU-GENBUTU70-TOTALTEN(IDX13)
                           *  10
                           *  WK-FUTANWARI
                IF ((WK-SYUNOU-GENBUTU70-KOH1HKNNUM(IDX13)
@@ -11833,7 +11831,7 @@
       *
            .
       *
-       2115-SYUNOU-GENBUTU70-HENSYU-EXT.
+       2115-SYUNOU-GEN70-HENSYU-EXT.
            EXIT.
       *
       ******************************************************************
@@ -12076,11 +12074,11 @@
       *
                PERFORM    VARYING   IDZ    FROM   1   BY   1
                            UNTIL  (IDZ    >    15)
-                             OR   (LNK-WRK-SYU-SRYYMD(IDZ) =  SPACE)
+                             OR   (LNK2-SYU-SRYYMD(IDZ) =  SPACE)
       *
                       MOVE    1              TO  FLG-GRPNYURYOKU
       *
-                      MOVE    LNK-WRK-SYUNOU-REC(IDZ)
+                      MOVE    LNK2-SYUNOU-REC(IDZ)
                                              TO  SYU-SYUNOU-REC
                       INITIALIZE     SYU-SYUDAY-REC
                       PERFORM        2202-SYUNOU-COUNT-SEC
@@ -20345,7 +20343,7 @@
            OR  (FLG-GENBUTU70            NOT =  ZERO)
            OR  (FLG-TOKU75-CYO         = 1 OR 2 OR 3)
            OR  (FLG-CYOKI-ARI          = 1 OR 2     )
-                PERFORM    2302-SYUENTANI-ZANKIN-KEISAN-SEC
+                PERFORM    2302-SYUENTANI-ZAN-KEISAN-SEC
            END-IF.
       *
       *    ÊÝ¸±¡¦¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤Î·×»»
@@ -20883,7 +20881,7 @@
       ******************************************************************
       *        ¼çÊÝ¸±ÉéÃ´¶â³Û¤Î±ßÃ±°Ì¡¡»Ä¶â³Û·×»»
       ******************************************************************
-       2302-SYUENTANI-ZANKIN-KEISAN-SEC           SECTION.
+       2302-SYUENTANI-ZAN-KEISAN-SEC           SECTION.
       *
       *    »»Äê²ÄÇ½¥Õ¥é¥°¤Î½é´ü²½
            MOVE     SPACE                  TO     FLG-SANTEI1-ENTANI
@@ -20961,7 +20959,7 @@
       *
            END-IF.
       *
-       2302-SYUENTANI-ZANKIN-KEISAN-EXT.
+       2302-SYUENTANI-ZAN-KEISAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -26606,7 +26604,7 @@
            END-IF.
       *
       *    ¸½ÊªµëÉÕ¤Ë´Ø¤¹¤ëÂÐ¾Ý¥Ç¡¼¥¿¥Õ¥é¥°ÊÔ½¸
-           PERFORM   23075-GENBUTU-TAISYODATA-HENSYU-SEC.
+           PERFORM   23075-GENBUTU-TAISYODATA-SEC.
       *
       *    ¸½ÊªµëÉÕ¤Ë´Ø¤¹¤ë¥á¥Ã¥»¡¼¥¸¥Õ¥é¥°ÊÔ½¸
            PERFORM   23076-GENBUTU-MSG-HENSYU-SEC.
@@ -27768,7 +27766,7 @@
       ******************************************************************
       *    ¸½ÊªµëÉÕ¤Ë´Ø¤¹¤ëÂÐ¾Ý¥Ç¡¼¥¿¥Õ¥é¥°ÊÔ½¸
       ******************************************************************
-       23075-GENBUTU-TAISYODATA-HENSYU-SEC         SECTION.
+       23075-GENBUTU-TAISYODATA-SEC         SECTION.
       *
            IF  (FLG-GENBUTU70       NOT =   ZERO  )
            AND (FLG-GENBUTU-TAISYODATA  =    1    )
@@ -27784,7 +27782,7 @@
       *
            .
       *
-       23075-GENBUTU-TAISYODATA-HENSYU-EXT.
+       23075-GENBUTU-TAISYODATA-EXT.
            EXIT.
       *
       ******************************************************************
@@ -27831,15 +27829,15 @@
                        MOVE       "1"   TO   LNK-S01-GENBUTU-MSG-FLG
                        MOVE        1    TO   LNK-SYU-SECMONEY
                      ELSE
-                       PERFORM    230761-GENBUTU-MSG-HENSYU-CHECK-SEC
-                       PERFORM    230763-GENBUTU-MSG-HENSYU-CHECK3-SEC
+                       PERFORM    230761-GENBUTU-MSG-CHECK-SEC
+                       PERFORM    230763-GENBUTU-MSG-CHECK3-SEC
                      END-IF
                  WHEN       2
                      IF    WK-SYUNOU-GENBUTU-JGNFLG  =  1
                        IF   LNK-SYU-SRYYMD(1:6)   >= "201205"
-                         PERFORM    230761-GENBUTU-MSG-HENSYU-CHECK-SEC
+                         PERFORM    230761-GENBUTU-MSG-CHECK-SEC
                          MOVE       ZERO  TO   FLG-GENBUTU-OK
-                         PERFORM    230762-GENBUTU-MSG-HENSYU-CHECK2-SEC
+                         PERFORM    230762-GENBUTU-MSG-CHECK2-SEC
                          IF  LNK-S01-SAIKEISAN-KBN  = "1"
                            IF  FLG-GENBUTU-OK  =  1
                                  MOVE  "1"  TO  LNK-S01-GENBUTU-MSG-FLG
@@ -27866,11 +27864,11 @@
                                  MOVE   1   TO  LNK-SYU-SECMONEY
                        END-IF
                      ELSE
-                       PERFORM    230761-GENBUTU-MSG-HENSYU-CHECK-SEC
+                       PERFORM    230761-GENBUTU-MSG-CHECK-SEC
                        MOVE       ZERO  TO   FLG-GENBUTU-OK
-                       PERFORM    230762-GENBUTU-MSG-HENSYU-CHECK2-SEC
+                       PERFORM    230762-GENBUTU-MSG-CHECK2-SEC
                        IF  FLG-GENBUTU-OK  =  1
-                         PERFORM  230763-GENBUTU-MSG-HENSYU-CHECK3-SEC
+                         PERFORM  230763-GENBUTU-MSG-CHECK3-SEC
                        END-IF
                      END-IF
                  WHEN       3
@@ -27879,20 +27877,20 @@
                        MOVE        2    TO   LNK-SYU-SECMONEY
                      ELSE
                        ADD    WK-GENBUTU-SKYMONEY  TO
-                                  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY
+                                  WK-SYUNOU-GENBUTU-KR-SKYMONEY
                        IF   (LNK-SYU-KOH2HKNNUM  =  SPACE)
                        AND  (LNK-SYU-KOH3HKNNUM  =  SPACE)
                        AND  (LNK-SYU-KOH4HKNNUM  =  SPACE)
                          ADD  WK-GENBUTU-SKYMONEY  TO
-                                  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2
+                                  WK-SYUNOU-GENBUTU-KR-SKYMONEY2
                        ELSE
                          ADD  LNK-SYU-KOH1COMPFTN  TO
-                                  WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2
+                                  WK-SYUNOU-GENBUTU-KR-SKYMONEY2
                        END-IF
                        IF  (WK-GENBUTU-SYUMAXKIN  <=
-                                WK-SYUNOU-GENBUTU-KOREI-SKYMONEY )
+                                WK-SYUNOU-GENBUTU-KR-SKYMONEY )
                        OR  (WK-GENBUTU-SYUMAXKIN  <=
-                                WK-SYUNOU-GENBUTU-KOREI-SKYMONEY2)
+                                WK-SYUNOU-GENBUTU-KR-SKYMONEY2)
                          MOVE     "1"   TO   LNK-S01-GENBUTU-MSG-FLG
                          MOVE      2    TO   LNK-SYU-SECMONEY
                        END-IF
@@ -27922,7 +27920,7 @@
       ******************************************************************
       *    ¸½ÊªµëÉÕ¤Ë´Ø¤¹¤ë¥á¥Ã¥»¡¼¥¸¥Õ¥é¥°ÊÔ½¸¥Á¥§¥Ã¥¯
       ******************************************************************
-       230761-GENBUTU-MSG-HENSYU-CHECK-SEC         SECTION.
+       230761-GENBUTU-MSG-CHECK-SEC         SECTION.
       *
            MOVE     ZERO      TO     FLG-HANBETU
            PERFORM VARYING IDX13  FROM   1   BY   1
@@ -27932,7 +27930,7 @@
              IF    LNK-SYU-HKNCOMBINUM =
                          WK-SYUNOU-GENBUTU70-HKNCOMBINUM(IDX13)
                ADD   LNK-SYU-TOTAL-HKNTEN  TO
-                           WK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX13)
+                           WK-SYUNOU-GENBUTU70-TOTALTEN(IDX13)
                ADD   LNK-SYU-KOH1COMPFTN   TO
                            WK-SYUNOU-GENBUTU70-KOH1COMPFTN(IDX13)
                ADD   LNK-SYU-KOH2COMPFTN   TO
@@ -27958,7 +27956,7 @@
                MOVE  LNK-SYU-HKNCOMBINUM   TO
                            WK-SYUNOU-GENBUTU70-HKNCOMBINUM(IDX13)
                ADD   LNK-SYU-TOTAL-HKNTEN  TO
-                           WK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX13)
+                           WK-SYUNOU-GENBUTU70-TOTALTEN(IDX13)
                MOVE  LNK-SYU-SYUHKNNUM     TO
                            WK-SYUNOU-GENBUTU70-SYUHKNNUM(IDX13)
                MOVE  LNK-SYU-KOH1HKNNUM    TO
@@ -27990,13 +27988,13 @@
       *
            .
       *
-       230761-GENBUTU-MSG-HENSYU-CHECK-EXT.
+       230761-GENBUTU-MSG-CHECK-EXT.
            EXIT.
       *
       ******************************************************************
       *    ¸½ÊªµëÉÕ¤Ë´Ø¤¹¤ë¥á¥Ã¥»¡¼¥¸¥Õ¥é¥°ÊÔ½¸¥Á¥§¥Ã¥¯£²
       ******************************************************************
-       230762-GENBUTU-MSG-HENSYU-CHECK2-SEC         SECTION.
+       230762-GENBUTU-MSG-CHECK2-SEC         SECTION.
       *
       *    ¸øÈñÊ»ÍÑÊ¬¤Î·×»»
            PERFORM   VARYING   IDX13   FROM   1   BY   1
@@ -28008,7 +28006,7 @@
                COMPUTE  WK-FUTANWARI  =  WK-SYUNOU-GENBUTU70-FTNRATE
                                       /  100
                COMPUTE  WK-SYUNOU-GENBUTU70-KEISAN
-                          =  WK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX13)
+                          =  WK-SYUNOU-GENBUTU70-TOTALTEN(IDX13)
                           *  10
                           *  WK-FUTANWARI
                IF ((WK-SYUNOU-GENBUTU70-KOH1HKNNUM(IDX13)
@@ -28055,13 +28053,13 @@
       *
            .
       *
-       230762-GENBUTU-MSG-HENSYU-CHECK2-EXT.
+       230762-GENBUTU-MSG-CHECK2-EXT.
            EXIT.
       *
       ******************************************************************
       *    ¸½ÊªµëÉÕ¤Ë´Ø¤¹¤ë¥á¥Ã¥»¡¼¥¸¥Õ¥é¥°ÊÔ½¸¥Á¥§¥Ã¥¯£³
       ******************************************************************
-       230763-GENBUTU-MSG-HENSYU-CHECK3-SEC         SECTION.
+       230763-GENBUTU-MSG-CHECK3-SEC         SECTION.
       *
            MOVE      ZERO      TO  WK-GENBUTU-FTNKIN
       *
@@ -28097,7 +28095,7 @@
       *
            .
       *
-       230763-GENBUTU-MSG-HENSYU-CHECK3-EXT.
+       230763-GENBUTU-MSG-CHECK3-EXT.
            EXIT.
       *
       ******************************************************************
