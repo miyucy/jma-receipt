@@ -32,6 +32,7 @@
       *  01.00.02    NACL-太田    03/12/03  通算日数チェックに失敗時
       *                                     処理がループする不具合を修正
       *  03.05.01    NACL-森脇    07/06/07  グループ診療対応
+      *  04.08.01    NACL-森脇    14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -57,10 +58,14 @@ grpsys*DD  COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
 grpsys*DD                              BY         //RECEERR//.
 grpsys*DD  03  FILLER                  PIC X(04)   VALUE   ".dat".
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
+      *
            COPY    "HCMG003.INC".
       *
       *    スパ領域
-       01  STS-AREA.
+       01  STS-AREA. 
            03  STS-RECEERR                         PIC X(02).
       *
       *    フラグ領域
@@ -99,7 +104,9 @@ grpsys*DD  03  FILLER                  PIC X(04)   VALUE   ".dat".
            03  WRK-PARA-SHELLID                    PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID                     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
-grpsys     03  RECEERR                             PIC X(100).
+      *----(04.08.01)--UPD-START---
+grpsys*     03  RECEERR                             PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-SYORIKBN                   PIC X(01).
       *
@@ -203,6 +210,11 @@ grpsys     03  WRK-DBTABLE                         PIC X(100).
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -250,6 +262,9 @@ grpsys     03  WRK-DBTABLE                         PIC X(100).
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
 grpsys     INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -292,6 +307,13 @@ grpsys                                     SPA-AREA
 grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID
 grpsys*DD                              TO  RECEERR-TERMID
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

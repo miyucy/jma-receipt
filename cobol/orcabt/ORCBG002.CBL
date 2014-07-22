@@ -470,7 +470,7 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
            ELSE
                MOVE    "医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR
+                                       TO  WRK-RECEERR 
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
            END-IF
