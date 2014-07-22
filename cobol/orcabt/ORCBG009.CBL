@@ -33,6 +33,7 @@
       * 01.02.01     NACL-森脇     04/01/23  包括分読み飛ばし
       * 01.02.02     NACL-森脇     04/08/31  条件修正
       * 03.05.01     NACL-森脇     07/06/04  グループ診療対応
+      * 04.08.01     NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -82,11 +83,17 @@
       *    統計ファイル
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01//
                                        BY         //TOKEI//.
-grpsys     03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+grpsys*     03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
       *    エラーファイル 名称領域 
 grpsys*DD  COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
 grpsys*DD                              BY         //RECEERR//.
 grpsys*DD  03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *    印刷用領域
            COPY    "HCM36.INC".
@@ -137,7 +144,9 @@ grpsys*DD  03  FILLER                  PIC X(04)   VALUE   ".dat".
            03  PARA-SHELLID            PIC X(08).
 grpsys*DD  03  PARA-HOSPID             PIC X(24).
 grpsys     03  PARA-HOSPNUM            PIC 9(02).
-grpsys     03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-START---
+grpsys*     03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  PARA-DENPPRTYM          PIC X(06).
            03  PARA-SYORIKBN           PIC X(01).
            03  PARA-NAIYO              PIC X(20).
@@ -273,6 +282,11 @@ grpsys     03  RECEERR                 PIC X(100).
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -327,6 +341,9 @@ grpsys     03  RECEERR                 PIC X(100).
            INITIALIZE                  WRK-AREA
            INITIALIZE                  KEY-AREA
 grpsys     INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
@@ -376,6 +393,17 @@ grpsys     MOVE    "BG00901"           TO  TOKEIPARA-FILE-ID
            MOVE    SPA-HOSPNUM         TO  TOKEIPARA-HOSPNUM
 grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TOKEIPARA-BASENAME  TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  TOKEIPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
