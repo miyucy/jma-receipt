@@ -48,6 +48,7 @@
       *                                      支払機関請求対応
       *  04.07.02    NACL-森脇     13/06/14  在総診区分分類なし追加   
       *  04.08.00    NACL-森脇     14/05/01  平成２６年４月改正
+      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -159,12 +160,18 @@
       *    統計ファイル
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01//
                                        BY         //TOKEI//.
-           03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
        01  RECECSV.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  RECECSV-HOSPNUM     PIC 9(02).
            03  RECECSV-FILE-ID     PIC X(08).
            03  FILLER              PIC X(04)   VALUE   ".csv".
+      *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
            COPY    "HCMSL55.INC".
       *
@@ -242,7 +249,9 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
-           03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-DENPPRTYM      PIC X(06).
            03  WRK-PARA-TEISYUTU       PIC X(01).
            03  WRK-PARA-HKNJANUM       PIC X(08).
@@ -599,6 +608,11 @@
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *    LIKE使用KEY対応
@@ -652,6 +666,9 @@
            INITIALIZE                  SUM-AREA
            INITIALIZE                  WRK-PARA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
@@ -706,6 +723,18 @@
            MOVE    "BG01401"           TO  TOKEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  TOKEIPARA-TERMID
            MOVE    SPA-HOSPNUM         TO  TOKEIPARA-HOSPNUM
+      *
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TOKEIPARA-BASENAME  TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  TOKEIPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            MOVE    "ORCBG014"          TO  RECECSV-FILE-ID
            MOVE    SPA-HOSPNUM         TO  RECECSV-HOSPNUM
