@@ -246,11 +246,10 @@
       *
       *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
                                        SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *
       *
       *    ステップ管理開始処理
