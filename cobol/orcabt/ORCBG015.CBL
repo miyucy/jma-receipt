@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  03.05.01    NACL-森脇     07/06/06  グループ診療対応
+      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,11 +72,17 @@
       *    統計ファイル
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01//
                                        BY         //TOKEI//.
-           03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
       *    エラーファイル 名称領域 
 grpsys*    COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
 grpsys*                                BY         //RECEERR//.
 grpsys*    03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
            COPY    "HCM46.INC".
       *
@@ -112,7 +119,9 @@ grpsys*    03  FILLER                  PIC X(04)   VALUE   ".dat".
            03  WRK-PARA-SHELLID        PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID         PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM        PIC 9(02).
-grpsys     03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-START---
+grpsys*     03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-DENPPRTYM      PIC X(06).
       *
       *    カウント領域
@@ -231,6 +240,11 @@ grpsys     03  RECEERR                 PIC X(100).
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *    LIKE使用KEY対応
@@ -275,6 +289,9 @@ grpsys     03  RECEERR                 PIC X(100).
            INITIALIZE                  SUM-AREA
            INITIALIZE                  WRK-PARA
 grpsys     INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
@@ -322,6 +339,17 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TOKEIPARA-HOSPNUM
       *
 grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TOKEIPARA-BASENAME  TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  TOKEIPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

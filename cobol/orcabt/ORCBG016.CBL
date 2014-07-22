@@ -30,6 +30,7 @@
       *  03.05.01    NACL-森脇     07/06/06  グループ診療対応
       *  04.03.01    NACL-森脇     08/08/29  パラメタ増加
       *  04.05.01    NACL-森脇     08/09/18  病棟別集計対応
+      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -89,13 +90,20 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0161//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
       *
       *    診療会計ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0162//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
            COPY    "HCG016.INC".
       *
@@ -148,7 +156,9 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-SRYYM      PIC X(06).
            03  WRK-PARA-NYUGAIKBN-G.
                05  WRK-PARA-NYUGAIKBN
@@ -366,6 +376,11 @@
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -412,6 +427,9 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  TPTINF-AREA
            INITIALIZE                  TOTAL-AREA
 grpsys     INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -474,6 +492,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0161-HOSPNUM
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0162-TERMID
 grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    BG0161-BASENAME     TO  SGETTEMP-BASENAMES (1)
+           MOVE    BG0162-BASENAME     TO  SGETTEMP-BASENAMES (2)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (3)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  BG0161-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  BG0162-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
