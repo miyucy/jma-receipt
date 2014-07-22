@@ -4359,10 +4359,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                        INTO        RECEERR
            END-STRING
       *??
-           IF      SPA-R01-RECEKBN     =   "6"
+           IF      SPA-R01-RECEKBN     =   "6" OR  "3"
                CONTINUE
            ELSE
-               IF      SPA-R01-RECEKBN     =   "3"
+               IF      SPA-R01-RECEKBN     =   "4"
+               AND     SPA-R01-NYUGAIKBN   =   "2"
                    CONTINUE
                ELSE
                    MOVE    ERRFLPARA-OLD        TO  RECEERR

@@ -46,6 +46,8 @@
       *
       *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
       *                                     追加対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,12 +72,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE47-KEY
                                    FILE    STATUS  IS  STS-RECE47.
-      *    
-           SELECT  RECE47X-FILE     ASSIGN  RECE47PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE47X-KEY
-                                   FILE    STATUS  IS  STS-RECE47.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -97,11 +93,6 @@
        01  RECE47-REC. 
            COPY    "CPRCF0471.INC"  REPLACING //RECE471//
                                    BY         //RECE47//.
-      *
-       FD  RECE47X-FILE.
-       01  RECE47X-REC. 
-           COPY    "CPRCF0471.INC"  REPLACING //RECE471//
-                                   BY         //RECE47X//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -305,6 +296,8 @@
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -345,6 +338,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -394,12 +388,27 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE47PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE46PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE47PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE01PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE46PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE47PARA
+      *
            OPEN    INPUT               RECE41-FILE
       *
            OPEN    INPUT               RECE46-FILE
       *
-           OPEN    OUTPUT              RECE47X-FILE
-           CLOSE                       RECE47X-FILE
+           OPEN    OUTPUT              RECE47-FILE
+           CLOSE                       RECE47-FILE
       *
            OPEN    I-O                 RECE47-FILE
       *

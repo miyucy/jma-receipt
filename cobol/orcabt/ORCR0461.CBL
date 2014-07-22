@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,12 +61,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE46-KEY
                                    FILE    STATUS  IS  STS-RECE46.
-      *    
-           SELECT  RECE46X-FILE     ASSIGN  RECE46PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE46X-KEY
-                                   FILE    STATUS  IS  STS-RECE46.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -88,10 +84,6 @@
        01  RECE46-REC. 
            COPY    "CPRCF046.INC".
       *
-       FD  RECE46X-FILE.
-       01  RECE46X-REC. 
-           COPY    "CPRCF046.INC"  REPLACING  //RECE46//
-                                   BY         //RECE46X//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -817,6 +809,8 @@
       *    数値変換サブ
            COPY    "CPORCSNUM.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -859,6 +853,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  TBL-ZAI-AREA
            INITIALIZE                  TBL-ZAIW-AREA
+           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -913,14 +908,32 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE46PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE46PARA-BASENAME TO  SGETTEMP-BASENAMES  (5)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE01PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE44PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE45PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE46PARA
+      *
            OPEN    I-O                 RECE41-FILE
       *
            OPEN    INPUT               RECE44-FILE
       *
            OPEN    INPUT               RECE45-FILE
       *
-           OPEN    OUTPUT              RECE46X-FILE
-           CLOSE                       RECE46X-FILE
+           OPEN    OUTPUT              RECE46-FILE
+           CLOSE                       RECE46-FILE
       *
            OPEN    I-O                 RECE46-FILE
       *

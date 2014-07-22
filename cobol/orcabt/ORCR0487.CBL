@@ -66,6 +66,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -379,6 +380,8 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG.
@@ -538,6 +541,7 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -579,6 +583,7 @@
            INITIALIZE                  TABLE-AREA
            INITIALIZE                  SYS-1001-REC
            INITIALIZE                  SYS-1002-REC
+           INITIALIZE                  RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -612,6 +617,27 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
            MOVE    "RECE471"           TO  RECE471PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE471PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE471PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE43PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE47PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE471PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE41PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE43PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE47PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE471PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -2937,7 +2963,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -2947,7 +2974,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            STRING  "ORCR0487 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -3387,11 +3415,20 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        PERFORM 500-FILE-ERR-ABORT-SEC
                    END-IF
       *
-                   MOVE    ZERO                TO  FLG-RECE41
+      *??
+                   DISPLAY "RECE41=" RECE41-PTNUM "#"
+                                  RECE41-HKNKBN "#" RECE41-RECESYUBETU
+      *??
+                  MOVE    ZERO                TO  FLG-RECE41
                    IF    ( RECE41-PTNUM        =   SPACE  )
                    OR    ( RECE41-HKNKBN       =   "4"    )
                    OR    ( RECE41-RECESYUBETU  =   "0000" )
       *
+      *??
+                   DISPLAY "RECE41=" RECE41-TOTALKIN "#"
+                         RECE41-TOTALKIN-YAK "#" RECE41-TOTALKIN2 "#"
+                         RECE41-TOTALKIN2-ETC
+      *??
                        IF    ( RECE41-TOTALKIN      =   ZERO )
                        AND   ( RECE41-TOTALKIN-YAK  =   ZERO )
                        AND   ( RECE41-TOTALKIN2     =   ZERO )
