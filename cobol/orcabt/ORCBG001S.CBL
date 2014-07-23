@@ -38,6 +38,7 @@
       * 04.05.01     NACL-森脇    09/08/07  パラメタに期間指定追加
       * 04.05.02     NACL-森脇    09/09/18  病棟別集計対応
       * 04.05.03     NACL-森脇    09/12/15  ＣＳＶ出力対応
+      * 04.08.01     NACL-森脇    14/07/23  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -82,7 +83,12 @@
       *
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01//
                                        BY         //TOKEI//.
-           03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
            COPY    "HCMG001.INC".
       *
@@ -371,6 +377,11 @@
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -390,7 +401,10 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
-           03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  RECEERR                 PIC X(100).
+           03  RECEERRX                PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-STRYMD         PIC X(08).
            03  WRK-PARA-ENDYMD         PIC X(08).
            03  WRK-PARA-YKZKBN         PIC 9(01).
@@ -432,6 +446,9 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  TTNS-AREA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            MOVE    WRK-PARA-HOSPNUM TO SPA-HOSPNUM
            PERFORM 100-DBOPEN-SEC
@@ -453,6 +470,17 @@
            MOVE    "BG00101"           TO  TOKEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  TOKEIPARA-TERMID
            MOVE    SPA-HOSPNUM         TO  TOKEIPARA-HOSPNUM
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TOKEIPARA-BASENAME  TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  TOKEIPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -780,7 +808,7 @@
            MOVE   SPACE            TO  WRK-SRYKBN
       *
            EVALUATE    WRK-PARA-SRYKBN
-               WHEN    ""
+      *         WHEN    ""
                WHEN    "0"
                WHEN    "00"
                WHEN    SPACE
