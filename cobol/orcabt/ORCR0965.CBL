@@ -60,6 +60,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -424,6 +425,8 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG.
@@ -584,6 +587,7 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -625,6 +629,7 @@
            INITIALIZE                  TABLE-AREA
            INITIALIZE                  SYS-1001-REC
            INITIALIZE                  SYS-1002-REC
+           INITIALIZE                  RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -663,6 +668,30 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE871PARA-HOSPNUM
            MOVE    "RECE880"           TO  RECE88PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE88PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE88PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
+           MOVE    RECE83PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
+           MOVE    RECE87PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
+           MOVE    RECE871PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    RECE88PARA-BASENAME TO  SGETTEMP-BASENAMES  (6)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE82PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE83PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE87PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE871PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE88PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -3318,7 +3347,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -3328,7 +3358,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            STRING  "ORCR0965 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

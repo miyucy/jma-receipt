@@ -604,17 +604,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SGETTEMP-FULLNAME
                                    TO  RECEERR
       *??
-           IF      LINK-HKNKBN         =   "3" OR "1"
-               CONTINUE
-           ELSE
-               IF      LINK-HKNKBN         =   "2"
-               AND     LINK-NYUGAIKBN      =   "2"
-                   CONTINUE
-               ELSE
+           EVALUATE    LINK-HKNKBN
+               WHEN    "0"
                    MOVE    SPACE               TO  RECEERR
                    MOVE    ERRFLPARA-OLD        TO  RECEERR
-               END-IF
-           END-IF
+           END-EVALUATE
            DISPLAY "RECERR=" RECEERR
       *?? 
       *
@@ -653,16 +647,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG4
       *??
-           IF      LINK-HKNKBN         =   "3" OR "1"
-               CONTINUE
-           ELSE
-               IF      LINK-HKNKBN         =   "2"
-               AND     LINK-NYUGAIKBN      =   "2"
-                   CONTINUE
-               ELSE
+           EVALUATE    LINK-HKNKBN
+               WHEN    "0"
                    MOVE    ERRFLPARA-OLD   TO  SHELLTBL-ARG4
-               END-IF
-           END-IF
+           END-EVALUATE
       *??
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5

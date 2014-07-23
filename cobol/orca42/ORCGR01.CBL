@@ -4359,16 +4359,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                        INTO        RECEERR
            END-STRING
       *??
-           IF      SPA-R01-RECEKBN     =   "6" OR  "3"
-               CONTINUE
-           ELSE
-               IF      SPA-R01-RECEKBN     =   "4"
-               AND     SPA-R01-NYUGAIKBN   =   "2"
-                   CONTINUE
-               ELSE
+                   EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "0"
+                       WHEN    "1"
+                       WHEN    "2"
+                       WHEN    "7"
                    MOVE    ERRFLPARA-OLD        TO  RECEERR
-               END-IF
-           END-IF
+               END-EVALUATE
            DISPLAY "RECERR=" RECEERR
       *?? 
       *
@@ -4594,16 +4591,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG4
       *??
-           IF      SPA-R01-RECEKBN     =   "6"
-               CONTINUE
-           ELSE
-               IF      SPA-R01-RECEKBN     =   "3"
-                   CONTINUE
-               ELSE
+                   EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "0"
+                       WHEN    "1"
+                       WHEN    "2"
+                       WHEN    "7"
                    MOVE    ERRFLPARA-OLD
                                            TO  SHELLTBL-ARG4
-               END-IF
-           END-IF    
+               END-EVALUATE
            DISPLAY "SHELLTBL-ARG4=" SHELLTBL-ARG4
       *??
            MOVE    WRK-CONS-JOB-JOBID
