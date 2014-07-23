@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.06.01     NACL-森脇    10/08/25  ＣＳＶ出力対応
+      * 04.08.01     NACL-森脇    14/07/23  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -91,13 +92,20 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0171//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
       *
       *    診療会計ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0172//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
            COPY    "HCG017.INC".
       *
@@ -401,6 +409,11 @@
       *    指定診療行為件数調サブ２
            COPY    "CPORCSS009.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -413,7 +426,10 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  RECEERR             PIC X(100).
+           03  RECEERRX            PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-STRYMD     PIC X(08).
            03  WRK-PARA-ENDYMD     PIC X(08).
            03  WRK-PARA-KIKANFLG   PIC X(01).
@@ -461,6 +477,9 @@
            INITIALIZE                  TPTINF-AREA
            INITIALIZE                  TTNS-AREA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            MOVE    WRK-PARA-HOSPNUM
                                    TO  SPA-HOSPNUM
@@ -490,6 +509,20 @@
            MOVE    "BG01702"       TO  BG0172-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0172-TERMID
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    BG0171-BASENAME     TO  SGETTEMP-BASENAMES (1)
+           MOVE    BG0172-BASENAME     TO  SGETTEMP-BASENAMES (2)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (3)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  BG0171-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  BG0172-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
