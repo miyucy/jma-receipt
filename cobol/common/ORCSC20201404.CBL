@@ -2993,13 +2993,6 @@
       *ver.4.7
       *!!!
                END-IF
-      *TEST
-           DISPLAY "ATO FLG-CHKCARKSN:" FLG-CHKCARKSN
-                 ",WRK-ZAICNT2:" WRK-ZAICNT2
-                 ",WRK-ZAICNT2-AL:" WRK-ZAICNT2-AL
-                 ",LNK-ORCSC-KIDCD:" LNK-ORCSC-KIDCD
-                 ",SPA-ERRCDD:" SPA-ERRCD
-      *TEST
       *
                IF     (LNK-ORCSC-KIDCD     =   SPACE )  AND
                       (SPA-ERRCD           =   SPACE )
@@ -4617,13 +4610,9 @@
                EVALUATE    WRK-SRYCD
                    WHEN    "120002710"
                    WHEN    "120002910"
-      **********   WHEN    "120003010"
-      *************WHEN    "120002810"
                        EVALUATE    WRK-TBL-SRYCD (IDX)
                            WHEN    "120002710"
                            WHEN    "120002910"
-      *************:       WHEN    "120003010"
-      *************        WHEN    "120002810"
                                MOVE    1               TO  FLG-ERR
                        END-EVALUATE
                END-EVALUATE
@@ -5225,9 +5214,10 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-                      IF      IDX-Y3              >   4
-                           MOVE    4               TO  IDX-Y3
-                      END-IF
+      *ver.4.8
+      *               IF      IDX-Y3              >   4
+      *                    MOVE    4               TO  IDX-Y3
+      ********        END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
@@ -5295,10 +5285,6 @@
                             SRY-SRYSYUKBN          =   "820" )
                        ADD     1                   TO  IDX-TBL
                        EVALUATE     SRY-SRYCD (IDX2)
-      *                ΩË ˝‰µŒ¡
-      *                    WHEN    "180016410"
-      *                    WHEN    "180011110"
-      *                        MOVE    "180011110"     TO  WRK-SRYCD
       *                 ΩË ˝Œ¡
                            WHEN    "120002610"
                            WHEN    "120001210"

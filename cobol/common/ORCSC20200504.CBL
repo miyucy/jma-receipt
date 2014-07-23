@@ -3553,9 +3553,10 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-                      IF      IDX-Y3              >   4
-                           MOVE    4               TO  IDX-Y3
-                      END-IF
+      *ver.4.8
+      ****            IF      IDX-Y3              >   4
+      *                    MOVE    4               TO  IDX-Y3
+      *****           END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
