@@ -36,6 +36,8 @@
       *                                     の記録方法の変更
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -603,9 +605,9 @@
       *        診療コード
                05  WRK-KOUI-SRY-TAIHI-SRYCD         PIC  X(09).
       *        告示等識別区分１
-               05  WRK-KOUI-SRY-TAIHI-KOKUJISKBKBN1 PIC  9(01).
+               05  WRK-KOUI-SRY-TAIHI-KOKUJISKB1    PIC  9(01).
       *        告示等識別区分２
-               05  WRK-KOUI-SRY-TAIHI-KOKUJISKBKBN2 PIC  9(01).
+               05  WRK-KOUI-SRY-TAIHI-KOKUJISKB2    PIC  9(01).
       *        通則加算対象外区分
                05  WRK-KOUI-SRY-TAIHI-TUSOKUGAIKBN  PIC  9(01).
       *        時間外加算区分
@@ -740,9 +742,10 @@
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //WRK-RECE85//.
       *
-       01  WRK-TAIHI-RECE84-REC.
-           COPY    "CPRCF0841.INC"  REPLACING //RECE841//
-                                   BY         //WRK-TAIHI-RECE84//.
+      *01  WRK-TAIHI-RECE84-REC.
+      *    COPY    "CPRCF0841.INC"  REPLACING //RECE841//
+      *                            BY         //WRK-TAIHI-RECE84//.
+       01  WRK-TAIHI-RECE84-REC                PIC X(2000).
       *
       *    画像診断用退避エリア
       *    撮影料退避
@@ -758,34 +761,43 @@
                                    BY         //WRK-700-RECE85//.
       *    撮影料退避（同時撮影）
        01  FLG-SRYSYUKBN721-DOUJI             PIC 9(01).
-       01  WRK-721-DOUJI-RECE85-REC.
-           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-                                   BY         //WRK-721-DOUJI-RECE85//.
+      *01  WRK-721-DOUJI-RECE85-REC.
+      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+      *                            BY         //WRK-721-DOUJI-RECE85//.
+       01  WRK-721-DOUJI-RECE85-REC           PIC X(5000).
        01  WRK-700-DOUJI-RECE85-AREA.
            02  WRK-SRYSYUKBN700-DOUJI-MAX     PIC 9(01).
            02  FLG-SRYSYUKBN700-DOUJI         PIC 9(01)  OCCURS  5.
-           02  WRK-700-DOUJI-RECE85-REC                  OCCURS  5.
-           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-                                   BY         //WRK-700-DOUJI-RECE85//.
+      *    02  WRK-700-DOUJI-RECE85-REC                  OCCURS  5.
+      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+      *                            BY         //WRK-700-DOUJI-RECE85//.
+           02  WRK-700-DOUJI-RECE85-REC       PIC X(5000)
+                                                         OCCURS  5.
       *    間接撮影の５０％逓減
-       01  WRK-SRYKBN70-RECE85-REC.
-           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-                                   BY         //WRK-SRYKBN70-RECE85//.
+      *01  WRK-SRYKBN70-RECE85-REC.
+      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+      *                            BY         //WRK-SRYKBN70-RECE85//.
+       01  WRK-SRYKBN70-RECE85-REC            PIC X(5000).
       *    生体検査・加算用退避エリア
-       01  WRK-KASAN-RECE85-REC.
-           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-                                   BY         //WRK-KASAN-RECE85//.
+      *01  WRK-KASAN-RECE85-REC.
+      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+      *                            BY         //WRK-KASAN-RECE85//.
+       01  WRK-KASAN-RECE85-REC               PIC X(5000).
       *    生体検査・逓減用退避エリア
-       01  WRK-TEIGEN-RECE85-REC.
-           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-                                   BY         //WRK-TEIGEN-RECE85//.
+      *01  WRK-TEIGEN-RECE85-REC.
+      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+      *                            BY         //WRK-TEIGEN-RECE85//.
+       01  WRK-TEIGEN-RECE85-REC              PIC X(5000).
       *
       *    検査（判断料）用退避エリア
        01  TBL-KENSA-RECE84-AREA.
-         02  TBL-KENSA-RECE84-REC  OCCURS  100.
+      *  02  TBL-KENSA-RECE84-REC  OCCURS  100.
       *
-           COPY    "CPRCF0841.INC"  REPLACING  //RECE841//
-                                    BY         //TBL-KENSA-RECE84//.
+      *    COPY    "CPRCF0841.INC"  REPLACING  //RECE841//
+      *                             BY         //TBL-KENSA-RECE84//.
+         02  TBL-KENSA-RECE84-OCC  OCCURS  100.
+           03  TBL-KENSA-RECE84-REC           PIC X(2000).
+           03  TBL-KENSA-RECE84-ZAIKAISU      PIC 9(04).
       *
            03  TBL-KENSA-RECE85-REC        OCCURS  50.
                05  TBL-KENSA-RECE85-KEY.
@@ -841,7 +853,7 @@
                        09  TBL-KENSA-RECE85-CDKBN-SYO   PIC  9(01).
                        09  TBL-KENSA-RECE85-CDKBN-BU    PIC  9(02).
                        09  TBL-KENSA-RECE85-CDKBN-KBNNUM     PIC 9(03).
-                       09  TBL-KENSA-RECE85-CDKBN-KBNNUM-EDA PIC 9(02).
+                       09  TBL-KENSA-RECE85-CDKBN-EDA        PIC 9(02).
                        09  TBL-KENSA-RECE85-CDKBN-KOUBAN     PIC 9(02).
                        09  TBL-KENSA-RECE85-KOUHYOJYUNNUM    PIC 9(09).
       *            告示等識別区分１
@@ -853,7 +865,7 @@
       *            時間外加算区分
                    07  TBL-KENSA-RECE85-TIMEKSNKBN      PIC  9(01).
       *            きざみ値計算識別
-                   07  TBL-KENSA-RECE85-KZMCOMPSIKIBETU PIC  9(01).
+                   07  TBL-KENSA-RECE85-KZMCOMPSKB      PIC  9(01).
       *            注加算コード
                    07  TBL-KENSA-RECE85-CHUKSNINF.
       *                コード
@@ -2169,7 +2181,7 @@
                                            >   0                )
                    MOVE    RECE84-REC          TO  WRK-TAIHI-RECE84-REC
       *
-                   PERFORM 20078-KENSA-HANDANRYO-HENSYU-SEC
+                   PERFORM 20078-KENSA-HANDANRYO-HEN-SEC
       *
                    MOVE    WRK-TAIHI-RECE84-REC
                                                TO  RECE84-REC
@@ -2198,7 +2210,7 @@
       *    注射（その他）の編集
            IF    ( TBL-KENSA-RECE84-MAX
                                        >   0        )
-               PERFORM 20078-KENSA-HANDANRYO-HENSYU-SEC
+               PERFORM 20078-KENSA-HANDANRYO-HEN-SEC
       *
                INITIALIZE                  TBL-KENSA-RECE84-AREA
            END-IF
@@ -2383,7 +2395,9 @@
       *    検査（判断料）の退避
            IF     ( RECE84-KNSJISKBN   =   2 )
                ADD     1               TO  TBL-KENSA-RECE84-MAX
-               MOVE    RECE84-REC     TO  TBL-KENSA-RECE84-REC
+               MOVE    RECE84-REC      TO  TBL-KENSA-RECE84-REC
+                                           (TBL-KENSA-RECE84-MAX)
+               MOVE    RECE84-ZAIKAISU TO  TBL-KENSA-RECE84-ZAIKAISU
                                            (TBL-KENSA-RECE84-MAX)
            END-IF
            MOVE    ZERO                 TO  TBL-KENSA-RECE85-MAX
@@ -2517,7 +2531,7 @@
                                                                "14"   OR
                                                                "70"
                                      PERFORM
-                                      200711-SRYKBN13-COMMENT-TAIHI-SEC
+                                      200711-SRYKBN13-COM-TAIHI-SEC
                                    ELSE
                                      PERFORM 200711-COMMENT-TAIHI-SEC
                                    END-IF
@@ -2660,7 +2674,7 @@
       *****************************************************************
       *    摘要データ（コメント）退避処理
       *****************************************************************
-       200711-SRYKBN13-COMMENT-TAIHI-SEC       SECTION.
+       200711-SRYKBN13-COM-TAIHI-SEC       SECTION.
       *
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE85-SRYCD (IDX) (1:1) =   "0"
@@ -2672,7 +2686,7 @@
       *********OR    ( RECE85-SRYCD (IDX)       =   WRK-CONS-COMMENT4 ) 
                    CONTINUE
                ELSE
-                   GO  TO  200711-SRYKBN13-COMMENT-TAIHI-EXT
+                   GO  TO  200711-SRYKBN13-COM-TAIHI-EXT
                END-IF
            END-IF    
       *               
@@ -2712,7 +2726,7 @@
                END-IF
            END-IF
           .
-       200711-SRYKBN13-COMMENT-TAIHI-EXT.
+       200711-SRYKBN13-COM-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3264,7 +3278,7 @@
                            MOVE    TBL-KOUI-CHUKSNCD     (IDX) TO
                                        WRK-KOUI-SRY-TAIHI-CHUKSNCD(IDYY)
                            MOVE    TBL-KOUI-KOKUJISKBKBN1(IDX) TO
-                                       WRK-KOUI-SRY-TAIHI-KOKUJISKBKBN1
+                                       WRK-KOUI-SRY-TAIHI-KOKUJISKB1
                                                                   (IDYY)
                            MOVE    TBL-KOUI-TUSOKUGAIKBN(IDX) TO
                                        WRK-KOUI-SRY-TAIHI-TUSOKUGAIKBN
@@ -3288,7 +3302,7 @@
                        MOVE    TBL-KOUI-CHUKSNCD     (IDX) TO
                                        WRK-KOUI-SRY-TAIHI-CHUKSNCD(IDYY)
                        MOVE    TBL-KOUI-KOKUJISKBKBN1(IDX) TO
-                                       WRK-KOUI-SRY-TAIHI-KOKUJISKBKBN1
+                                       WRK-KOUI-SRY-TAIHI-KOKUJISKB1
                                                                   (IDYY)
                        MOVE    TBL-KOUI-TUSOKUGAIKBN(IDX) TO
                                        WRK-KOUI-SRY-TAIHI-TUSOKUGAIKBN
@@ -3390,7 +3404,7 @@
                                                                   (1:1)
                                                    NOT =   "1"
                            MOVE    ZERO            TO  IDZ
-                           EVALUATE    WRK-KOUI-SRY-TAIHI-KOKUJISKBKBN1
+                           EVALUATE    WRK-KOUI-SRY-TAIHI-KOKUJISKB1
                                                                 (IDZZ)
                                WHEN    "1"
                                WHEN    "3" 
@@ -3625,7 +3639,7 @@
                                                 TO
                                                 WRK-RECE855-SHORI-RENNUM
                            MOVE    ZERO         TO  WRK-RECE855-SEQNO
-                           PERFORM 200799-KANREN-COMMENT-TAIHI-SEC
+                           PERFORM 200799-KANREN-COM-TAIHI-SEC
                        END-IF
       *  
                        MOVE    "RI,"               TO  WRK-REC
@@ -3778,12 +3792,12 @@
                PERFORM 5001-FILE-WRITE-SEC
       *
       *        関連コメント編集処理
-               PERFORM 200799-KANREN-COMMENT-HENSYU-SEC
+               PERFORM 200798-KANREN-COM-HEN-SEC
            END-PERFORM
       *
       *    加算項目扱いの基本項目を編集
            IF      TBL-KOUI-SRYKBN12-MAX   >   ZERO
-               PERFORM 200725-SRYKBN12-JIKANGAI-HENSYU-SEC
+               PERFORM 200725-SRYKBN12-JIKANGAIHEN-SEC
            END-IF
       *
       *    コメントデータの編集（診療区分１１〜１４）
@@ -3910,7 +3924,7 @@
                MOVE    TBL-ZAIW-SHORI-RENNUM (1 IDX)
                                            TO  WRK-RECE855-SHORI-RENNUM
                MOVE    ZERO                TO  WRK-RECE855-SEQNO
-               PERFORM 200799-KANREN-COMMENT-TAIHI-SEC
+               PERFORM 200799-KANREN-COM-TAIHI-SEC
            END-IF
       *
            MOVE    SPACE               TO  WRK-REC
@@ -4027,7 +4041,7 @@
            PERFORM 5001-FILE-WRITE-SEC
       *
       *    関連コメント編集処理
-           PERFORM 200799-KANREN-COMMENT-HENSYU-SEC
+           PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200722-YKZ-HENSYU-EXT.
            EXIT.
@@ -4046,7 +4060,7 @@
                MOVE    TBL-ZAIW-SHORI-RENNUM (2 IDX)
                                            TO  WRK-RECE855-SHORI-RENNUM
                MOVE    ZERO                TO  WRK-RECE855-SEQNO
-               PERFORM 200799-KANREN-COMMENT-TAIHI-SEC
+               PERFORM 200799-KANREN-COM-TAIHI-SEC
            END-IF
       *
            MOVE    SPACE               TO  WRK-REC
@@ -4204,7 +4218,7 @@
            PERFORM 5001-FILE-WRITE-SEC
       *
       *    関連コメント編集処理
-           PERFORM 200799-KANREN-COMMENT-HENSYU-SEC
+           PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200723-KIZAI-HENSYU-EXT.
            EXIT.
@@ -4239,7 +4253,7 @@
                MOVE    ORCSRECESORT-SHORI-RENNUM (IDXX IDX)
                                            TO  WRK-RECE855-SHORI-RENNUM
                MOVE    ZERO                TO  WRK-RECE855-SEQNO
-               PERFORM 200799-KANREN-COMMENT-TAIHI-SEC
+               PERFORM 200799-KANREN-COM-TAIHI-SEC
            END-IF
       *
            MOVE    SPACE               TO  WRK-REC
@@ -4398,7 +4412,7 @@
            PERFORM 5001-FILE-WRITE-SEC
       *
       *    関連コメント編集処理
-           PERFORM 200799-KANREN-COMMENT-HENSYU-SEC
+           PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200723-KIZAI-SORT-HENSYU-EXT.
            EXIT.
@@ -4455,7 +4469,7 @@
       *****************************************************************
       *    加算項目扱いの基本項目の編集処理
       *****************************************************************
-       200725-SRYKBN12-JIKANGAI-HENSYU-SEC   SECTION.
+       200725-SRYKBN12-JIKANGAIHEN-SEC   SECTION.
       *
       *    診療行為データの編集
            PERFORM VARYING IDX FROM    1   BY  1
@@ -4471,7 +4485,7 @@
                                                 TO
                                                 WRK-RECE855-SHORI-RENNUM
                        MOVE    ZERO         TO  WRK-RECE855-SEQNO
-                       PERFORM 200799-KANREN-COMMENT-TAIHI-SEC
+                       PERFORM 200799-KANREN-COM-TAIHI-SEC
                    END-IF
       *
                    MOVE    SPACE               TO  WRK-REC
@@ -4574,11 +4588,11 @@
                    PERFORM 5001-FILE-WRITE-SEC
       *
       *            関連コメント編集処理
-                   PERFORM 200799-KANREN-COMMENT-HENSYU-SEC
+                   PERFORM 200798-KANREN-COM-HEN-SEC
                END-IF
            END-PERFORM
            .
-       200725-SRYKBN12-JIKANGAI-HENSYU-EXT.
+       200725-SRYKBN12-JIKANGAIHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4782,7 +4796,7 @@
       *****************************************************************
       *    検査に判断料がある場合の検査の編集処理
       *****************************************************************
-       20078-KENSA-HANDANRYO-HENSYU-SEC      SECTION.
+       20078-KENSA-HANDANRYO-HEN-SEC      SECTION.
       *
            PERFORM VARYING IDZ3 FROM    1   BY  1
                    UNTIL   IDZ3 >   TBL-KENSA-RECE84-MAX
@@ -4818,7 +4832,7 @@
                END-IF
            END-PERFORM
            .
-       20078-KENSA-HANDANRYO-HENSYU-EXT.
+       20078-KENSA-HANDANRYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4877,7 +4891,7 @@
                                                     (IDZ3 IDZ4)
                                             TO  WRK-RECE855-SHORI-RENNUM
                        MOVE    ZERO         TO  WRK-RECE855-SEQNO
-                       PERFORM 200799-KANREN-COMMENT-TAIHI-SEC
+                       PERFORM 200799-KANREN-COM-TAIHI-SEC
                    END-IF
       *
                    MOVE    "RI,"               TO  WRK-REC
@@ -4988,7 +5002,7 @@
            PERFORM 5001-FILE-WRITE-SEC
       *
       *    関連コメント編集処理
-           PERFORM 200799-KANREN-COMMENT-HENSYU-SEC
+           PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200781-KENSA-HENSYU-EXT.
            EXIT.
@@ -4996,7 +5010,7 @@
       *****************************************************************
       *    関連コメント退避処理
       *****************************************************************
-       200799-KANREN-COMMENT-TAIHI-SEC SECTION.
+       200799-KANREN-COM-TAIHI-SEC     SECTION.
       *
            INITIALIZE                  TBL-RECE855-COMMENT-AREA
       *
@@ -5013,19 +5027,19 @@
                                        NOT =   RECE855-KEY1         )
                    OR     ( WRK-RECE855-SHORI-RENNUM
                                        NOT =   RECE855-SHORI-RENNUM )
-               PERFORM 2007991-KANREN-COMENNT-TAIHI-HENSYU-SEC
+               PERFORM 2007991-KANREN-COM-TAIHIHEN-SEC
       *
                PERFORM 900-RECE855-NEXT-SEC
            END-PERFORM
       *
            .
-       200799-KANREN-COMMENT-TAIHI-EXT.
+       200799-KANREN-COM-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
       *    関連コメントチェック退避処理
       *****************************************************************
-       2007991-KANREN-COMENNT-TAIHI-HENSYU-SEC    SECTION.
+       2007991-KANREN-COM-TAIHIHEN-SEC    SECTION.
       *
       *    診療行為コード＝'０'のとき対象外は出力しない
            IF      RECE855-SRYCD (1:1) =   "0"
@@ -5037,7 +5051,7 @@
                OR    ( RECE855-SRYCD       =   WRK-CONS-COMMENT4 )
                    CONTINUE
                ELSE
-                   GO  TO  2007991-KANREN-COMMENT-TAIHI-HENSYU-EXT
+                   GO  TO  2007991-KANREN-COM-TAIHIHEN-EXT
                END-IF     
            END-IF
       *     
@@ -5074,19 +5088,19 @@
            END-IF
       *
            .
-       2007991-KANREN-COMMENT-TAIHI-HENSYU-EXT.
+       2007991-KANREN-COM-TAIHIHEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    関連コメント編集処理
       *****************************************************************
-       200799-KANREN-COMMENT-HENSYU-SEC    SECTION.
+       200798-KANREN-COM-HEN-SEC    SECTION.
       *
-           GO  TO  200799-KANREN-COMMENT-HENSYU-EXT
+           GO  TO  200798-KANREN-COM-HEN-EXT
       *
       *    関連コメントが３対を超える場合
            IF      TBL-RECE855-MAX     <=  3
-               GO  TO  200799-KANREN-COMMENT-HENSYU-EXT
+               GO  TO  200798-KANREN-COM-HEN-EXT
            END-IF
       *
            PERFORM VARYING IDVV    FROM    4   BY  1
@@ -5130,7 +5144,7 @@
            INITIALIZE                  TBL-RECE855-COMMENT-AREA
       *
            .
-       200799-KANREN-COMMENT-HENSYU-EXT.
+       200798-KANREN-COM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5319,7 +5333,7 @@
            PERFORM             UNTIL   FLG-RECECOM   =   1
                IF      RECECOM-HKNCOMBI    =   RECE82-HKNCOMBI
                    IF      RECECOM-SJKBN   =   "99"
-                       PERFORM 20091-RECECOM-TEKIYOU-HENSYU-SEC 
+                       PERFORM 20091-RECECOM-TEKIYOU-HEN-SEC
                    ELSE      
                        PERFORM 20092-RECECOM-SJ-HENSYU-SEC                 
                    END-IF                 
@@ -5341,7 +5355,7 @@
       *****************************************************************
       *    適用欄コメント（レセコメント）の改行コード削除処理
       *****************************************************************
-       20091-RECECOM-TEKIYOU-HENSYU-SEC    SECTION.
+       20091-RECECOM-TEKIYOU-HEN-SEC    SECTION.
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
@@ -5402,7 +5416,7 @@
            END-PERFORM   
       *
            .
-       20091-RECECOM-TEKIYOU-HENSYU-EXT.
+       20091-RECECOM-TEKIYOU-HEN-EXT.
            EXIT.
       *
       *****************************************************************

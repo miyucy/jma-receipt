@@ -255,6 +255,8 @@
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1879,7 +1881,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            IF  FLG-END =  ZERO
               INITIALIZE  WRK-CHUKSNSRYCD-TABLE
               IF  RECE82-SRYYM  >= "201004"
-                 PERFORM   140-NYUINKASAN-JYOGAI-CYUSYUTU-SEC
+                 PERFORM   140-NYUINKASAN-JYOGAI-SEC
               END-IF
            END-IF
       *
@@ -2014,7 +2016,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    入院料加算除外コード抽出
       *****************************************************************
-       140-NYUINKASAN-JYOGAI-CYUSYUTU-SEC      SECTION.
+       140-NYUINKASAN-JYOGAI-SEC      SECTION.
       *
            MOVE   ZERO               TO  IDX14
       *
@@ -2097,7 +2099,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE  "190182690"  TO  WRK-CHUKSNSRYCD(IDX14)
       *
            .
-       140-NYUINKASAN-JYOGAI-CYUSYUTU-EXT.
+       140-NYUINKASAN-JYOGAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3255,7 +3257,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF                                                   
       *
                IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  220211-RECE85-TENSOU-COMCNT-HEN-SEC
+                  PERFORM  220211-RECE85-COMCNT-HEN-SEC
                ELSE
                   IF   RECE84-SRYKBN      =     "50"
                      MOVE   "1"   TO    RECE84-FLG-SHUJUTU-COMMENT
@@ -3323,11 +3325,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     AND    (SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
                                                             OR "09593")
                       IF    SRY-SRYCD(IDX2)(1:5) =  "09593"
-                        PERFORM   220212-JIBAI-KIZAI-TENSU-HENSYU-SEC
+                        PERFORM   220212-JIBAI-KIZAI-TENHEN-SEC
                         MOVE  WRK-TEN-KZI TO  RECE85-TEN(IDX4)
                         MOVE  WRK-TEN-KZI TO  WRK-JIBAIKZI-TNS(IDX2)
                       ELSE
-                        PERFORM   220214-JIBAI-BUNSYO-TENSU-HENSYU-SEC
+                        PERFORM   220214-JIBAI-BUNSYO-TENHEN-SEC
                         MOVE  WRK-TEN-BUN TO  RECE85-TEN(IDX4)
                         MOVE  WRK-TEN-BUN TO  WRK-JIBAIKZI-TNS(IDX2)
                       END-IF
@@ -3489,7 +3491,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
                   IF  RECE85-SRYSURYO(IDX4)  NOT = ZERO
-                    PERFORM  220215-RECE85-TENSOU-SURYO-HEN-SEC
+                    PERFORM  220215-RECE85-SURYO-HEN-SEC
       *
                     MOVE    SPACE      TO  RECE85-NAME(IDX4)
                     MOVE    SPACE      TO  RECE85-INPUTCOMENT(IDX4)
@@ -3912,7 +3914,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 220213-RECE85-TENSOU-TANKA-HEN-SEC
+                       PERFORM 220213-RECE85-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE85-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -4000,7 +4002,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *        レセ電（点滴の記録順並び替え用）
                IF      SRY-SRYKBN         =     "33"
                AND     FLG-HENSYU-OK      =     ZERO
-                 PERFORM  220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC
+                 PERFORM  220217-TENTEKI-CDKBN-HEN-SEC
                  MOVE     1     TO    FLG-HENSYU-OK
                END-IF
       *
@@ -4031,7 +4033,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    レセプトコメントフラグ編集処理
       *****************************************************************
-       220211-RECE85-TENSOU-COMCNT-HEN-SEC               SECTION.
+       220211-RECE85-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE84-SRYKBN      =     "11"
       *       初診（同日複数診療科）
@@ -4725,13 +4727,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            .
-       220211-RECE85-TENSOU-COMCNT-HEN-EXT.
+       220211-RECE85-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    自賠責特定器材点数編集処理
       *****************************************************************
-       220212-JIBAI-KIZAI-TENSU-HENSYU-SEC     SECTION.
+       220212-JIBAI-KIZAI-TENHEN-SEC     SECTION.
       *
            MOVE     ZERO                   TO    WRK-TEN-KZI
            MOVE     ZERO                   TO    FLG-TAIGAI
@@ -4791,13 +4793,13 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            END-IF
       *
            .
-       220212-JIBAI-KIZAI-TENSU-HENSYU-EXT.
+       220212-JIBAI-KIZAI-TENHEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    酸素の単価編集処理
       *****************************************************************
-       220213-RECE85-TENSOU-TANKA-HEN-SEC     SECTION.
+       220213-RECE85-TANKA-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       * 
@@ -4857,13 +4859,13 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            END-IF                             
       *
            .
-       220213-RECE85-TENSOU-TANKA-HEN-EXT.
+       220213-RECE85-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    自賠責文書料点数編集処理
       *****************************************************************
-       220214-JIBAI-BUNSYO-TENSU-HENSYU-SEC     SECTION.
+       220214-JIBAI-BUNSYO-TENHEN-SEC     SECTION.
       *
            MOVE        ZERO          TO    WRK-TEN-BUN
       *
@@ -4885,13 +4887,13 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            END-IF
       *
            .
-       220214-JIBAI-BUNSYO-TENSU-HENSYU-EXT.
+       220214-JIBAI-BUNSYO-TENHEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    残量廃棄の数量編集処理
       *****************************************************************
-       220215-RECE85-TENSOU-SURYO-HEN-SEC     SECTION.
+       220215-RECE85-SURYO-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-SURYO-X
            MOVE    ZERO            TO  WRK-SURYOST
@@ -5005,7 +5007,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            END-STRING
       *
            .
-       220215-RECE85-TENSOU-SURYO-HEN-EXT.
+       220215-RECE85-SURYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5125,7 +5127,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *****************************************************************
       *    点滴コード表用番号−区分番号編集
       *****************************************************************
-       220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC     SECTION.
+       220217-TENTEKI-CDKBN-HEN-SEC     SECTION.
       *
       *    表用−区分番号
       *    ４:点滴
@@ -5173,7 +5175,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            END-IF
       *
            .
-       220217-TENTEKI-CDKBN-KBNNUM-HENSYU-EXT.
+       220217-TENTEKI-CDKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8090,16 +8092,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                  IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                                                     NOT =  ZERO
-                      PERFORM  2305-RECE84-TENSOU2-SKJ200604-SEC
-                      PERFORM  2306-RECE85-HENSYU2-SKJ200604-SEC
+                      PERFORM  2305X-RECE84-TENSOU2-SKJ2-SEC
+                      PERFORM  2306X-RECE85-HENSYU2-SKJ2-SEC
                       PERFORM  900-RECE84-WRITE-SEC
                  END-IF
       *
                  IF   WRK-SKJ200604-DAY-KAN(SYUKEI-IDX3)
                                                     NOT =  ZERO
                  AND  WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
-                      PERFORM  2308-RECE84-TENSOU2-SKJ200610-KAN-SEC
-                      PERFORM  2309-RECE85-HENSYU2-SKJ200610-KAN-SEC
+                      PERFORM  2308-RECE84-TENSOU2-KAN-SEC
+                      PERFORM  2309-RECE85-HENSYU2-KAN-SEC
                       PERFORM  900-RECE84-WRITE-SEC
                  END-IF
       *
@@ -9054,7 +9056,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００４）
       *****************************************************************
-       2305-RECE84-TENSOU2-SKJ200604-SEC                SECTION.
+       2305X-RECE84-TENSOU2-SKJ2-SEC                SECTION.
       *
            ADD      1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
            IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 2)  NOT =  ZERO
@@ -9473,13 +9475,13 @@ grpsys     PERFORM  900-DBSELECT-SEC
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
       *
            .
-       2305-RECE84-TENSOU2-SKJ200604-EXT.
+       2305X-RECE84-TENSOU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（環境）（Ｆ００４）
       *****************************************************************
-       2308-RECE84-TENSOU2-SKJ200610-KAN-SEC                SECTION.
+       2308-RECE84-TENSOU2-KAN-SEC                SECTION.
       *
            ADD     1    TO   WRK-SKJ200604-MEISAISU-KAN(SYUKEI-IDX3)
            IF  ((RECE82-HKNKBN      =   "4") AND
@@ -9624,7 +9626,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
       *
            .
-       2308-RECE84-TENSOU2-SKJ200610-KAN-EXT.
+       2308-RECE84-TENSOU2-KAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9775,30 +9777,30 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００５）
       *****************************************************************
-       2306-RECE85-HENSYU2-SKJ200604-SEC               SECTION.
+       2306X-RECE85-HENSYU2-SKJ2-SEC               SECTION.
       *
            MOVE         1      TO     IDX7
            MOVE         1      TO     IDX8
            MOVE         5      TO     IDX9
-           PERFORM   23061-RECE85-TENSOU2-SKJ200604-SEC
+           PERFORM   2306X1-RECE85-TENSOU2-SKJ2-SEC
            PERFORM   900-RECE85-WRITE-SEC
       *
            IF   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)  >  5
               MOVE      2      TO     IDX7
               MOVE      6      TO     IDX8
               MOVE      9      TO     IDX9
-              PERFORM   23061-RECE85-TENSOU2-SKJ200604-SEC
+              PERFORM   2306X1-RECE85-TENSOU2-SKJ2-SEC
               PERFORM   900-RECE85-WRITE-SEC
            END-IF
       *
            .
-       2306-RECE85-HENSYU2-SKJ200604-EXT.
+       2306X-RECE85-HENSYU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
-       23061-RECE85-TENSOU2-SKJ200604-SEC                SECTION.
+       2306X1-RECE85-TENSOU2-SKJ2-SEC                SECTION.
       *
            MOVE    SPACE                TO  RECE85-REC
            INITIALIZE                       RECE85-REC
@@ -9931,28 +9933,28 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
            .
-       23061-RECE85-TENSOU2-SKJ200604-EXT.
+       2306X1-RECE85-TENSOU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（環境）（Ｆ００５）
       *****************************************************************
-       2309-RECE85-HENSYU2-SKJ200610-KAN-SEC               SECTION.
+       2309-RECE85-HENSYU2-KAN-SEC               SECTION.
       *
            MOVE         1      TO     IDX7
            MOVE         1      TO     IDX8
            MOVE         3      TO     IDX9
-           PERFORM   23091-RECE85-TENSOU2-SKJ200610-KAN-SEC
+           PERFORM   23091-RECE85-TENSOU2-KAN-SEC
            PERFORM   900-RECE85-WRITE-SEC
       *
            .
-       2309-RECE85-HENSYU2-SKJ200610-KAN-EXT.
+       2309-RECE85-HENSYU2-KAN-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（環境）（Ｆ００５）
       *****************************************************************
-       23091-RECE85-TENSOU2-SKJ200610-KAN-SEC                SECTION.
+       23091-RECE85-TENSOU2-KAN-SEC                SECTION.
       *
            MOVE    SPACE                TO  RECE85-REC
            INITIALIZE                       RECE85-REC
@@ -10083,7 +10085,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
            .
-       23091-RECE85-TENSOU2-SKJ200610-KAN-EXT.
+       23091-RECE85-TENSOU2-KAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10548,7 +10550,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   IF  WRK-ORCSTEN-SRYCD(IDX2)  =  CONS-ZANHAIKI
                      IF  RECE85-SRYSURYO(IDX4)  NOT = ZERO
-                       PERFORM  220215-RECE85-TENSOU-SURYO-HEN-SEC
+                       PERFORM  220215-RECE85-SURYO-HEN-SEC
       *
                        MOVE    SPACE      TO  RECE85-NAME(IDX4)
                        MOVE    SPACE      TO  RECE85-INPUTCOMENT(IDX4)
@@ -10665,7 +10667,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       IF      TNS-TEN         =   ZERO
                         CONTINUE
                       ELSE
-                        PERFORM 220213-RECE85-TENSOU-TANKA-HEN-SEC
+                        PERFORM 220213-RECE85-TANKA-HEN-SEC
                         COMPUTE IDW =   RECE85-YUKOKETA(IDX4)  *  2
                                     +   3
                         MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -10693,7 +10695,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
       **
                   IF      FLG-HENSYU-OK      =     ZERO
-                    PERFORM  220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC
+                    PERFORM  220217-TENTEKI-CDKBN-HEN-SEC
                     MOVE     1     TO    FLG-HENSYU-OK
                   END-IF
       *
@@ -10946,7 +10948,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
       *
                   IF      FLG-HENSYU-OK      =     ZERO
-                    PERFORM  220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC
+                    PERFORM  220217-TENTEKI-CDKBN-HEN-SEC
                     MOVE     1     TO    FLG-HENSYU-OK
                   END-IF
       *
@@ -11503,9 +11505,9 @@ grpsys     PERFORM  900-DBSELECT-SEC
                                        RECE82-SHOKUJIKHNRYO-SEI(1)
                       EVALUATE  ID1
                         WHEN     5
-                          MOVE  "１"   TO  RECE82-SHOKUJISYUBETU-KHNSEI
+                          MOVE  "１"   TO  RECE82-SHOKUJISYUBETU-SEI
                         WHEN     6
-                          MOVE  "２"   TO  RECE82-SHOKUJISYUBETU-KHNSEI
+                          MOVE  "２"   TO  RECE82-SHOKUJISYUBETU-SEI
                       END-EVALUATE
                      WHEN       7
                       ADD   SYU-SHOKUJI-NISSU(ID1)  TO

@@ -60,6 +60,8 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1240,7 +1242,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
            IF      RECE82-SHOKUJIKHNRYO-SEI(1)  >   ZERO
-               MOVE    RECE82-SHOKUJISYUBETU-KHNSEI
+               MOVE    RECE82-SHOKUJISYUBETU-SEI
                                          TO  HC23-KIJYUN-SEI
                MOVE    RECE82-SHOKUJIKHNRYO-SEI(1)
                                          TO  WRK-KINGAKUZZ

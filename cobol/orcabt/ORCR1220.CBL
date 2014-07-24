@@ -122,6 +122,8 @@
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2194,7 +2196,7 @@
                END-IF
       *
                IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2101211-RECE230-COMMENT-HEN-SEC
+                  PERFORM  2101211-RECE230-COMCNT-HEN-SEC
                ELSE
                   IF   RECE220-SRYKBN     =     "50"
                      MOVE   "1"   TO    RECE220-FLG-SHUJUTU-COMMENT
@@ -2550,7 +2552,7 @@
       *****************************************************************
       *    レセプトコメントフラグ編集処理
       *****************************************************************
-       2101211-RECE230-COMMENT-HEN-SEC               SECTION.
+       2101211-RECE230-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE220-SRYKBN      =     "11"
       *       初診（同日複数診療科）
@@ -3136,17 +3138,13 @@
            END-IF
       *
            .
-       2101211-RECE230-COMMENT-HEN-EXT.
+       2101211-RECE230-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    酸素の単価編集処理
       *****************************************************************
        2101212-RECE230-TANKA-HEN-SEC     SECTION.
-      *
-      ***  IF      TNS-TEN         =   ZERO
-      ***      GO  TO  2101212-RECE230-TANKA-HEN-EXT
-      ***  END-IF
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       *
@@ -3949,7 +3947,7 @@
       *
            IF   RECE200-SRYYM   >=  "200604"
               IF   FLG-DOJITU   =   1
-                    PERFORM   210221-NYUINACCT-SYU2-DOJITU-SEC
+                    PERFORM   210221-NYUINACCT-SYU2-DOU-SEC
               END-IF
            END-IF
       *
@@ -3987,8 +3985,8 @@
       *
                  IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                                                     NOT =  ZERO
-                    PERFORM 210213-RECE220-TENSOU2-SKJ200604-SEC
-                    PERFORM 210214-RECE230-HENSYU2-SKJ200604-SEC
+                    PERFORM 210213-RECE220-TENSOU2-SKJ2-SEC
+                    PERFORM 210214-RECE230-HENSYU2-SKJ2-SEC
                     PERFORM RECE230-WRITE-SEC
                     PERFORM RECE220-WRITE-SEC
                  END-IF
@@ -3996,8 +3994,8 @@
                  IF   WRK-SKJ200604-DAY-KAN(SYUKEI-IDX3)
                                                     NOT =  ZERO
                  AND  WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
-                    PERFORM 210219-RECE220-TENSOU2-SKJ200610-KAN-SEC
-                    PERFORM 210220-RECE230-HENSYU2-SKJ200610-KAN-SEC
+                    PERFORM 210219-RECE220-TENSOU2-KAN-SEC
+                    PERFORM 210220-RECE230-HENSYU2-KAN-SEC
                     PERFORM RECE230-WRITE-SEC
                     PERFORM RECE220-WRITE-SEC
                  END-IF
@@ -4070,7 +4068,7 @@
                                            TO   WRK-NYUINKHN
       *                   看護比率基準未達時の入院基本点数の取得
                           IF    RECE200-SRYYM  <=  "201203"
-                           PERFORM 2102011-GAIHAKU-NYUINKHN-SET-SEC
+                           PERFORM 2102011-GAIHAKU-NYUINKHN-SEC
                           END-IF
                           IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
@@ -4117,7 +4115,7 @@
       **************************************************************
       *    外泊時の入院基本料取得
       **************************************************************
-       2102011-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+       2102011-GAIHAKU-NYUINKHN-SEC           SECTION.
       *
            EVALUATE  TNS-SRYCD
                WHEN  "190078210"
@@ -4289,7 +4287,7 @@
            END-IF
       *
            .
-       2102011-GAIHAKU-NYUINKHN-SET-EXT.
+       2102011-GAIHAKU-NYUINKHN-EXT.
            EXIT.
       *
       **************************************************************
@@ -4778,7 +4776,7 @@
       **************************************************************
       *    食事療養費の集計（同日再入院分）
       **************************************************************
-       210221-NYUINACCT-SYU2-DOJITU-SEC           SECTION.
+       210221-NYUINACCT-SYU2-DOU-SEC           SECTION.
       *
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
@@ -4890,7 +4888,7 @@
            END-PERFORM
       *
            .
-       210221-NYUINACCT-SYU2-DOJITU-EXT.
+       210221-NYUINACCT-SYU2-DOU-EXT.
            EXIT.
       *
       **************************************************************
@@ -5242,14 +5240,14 @@
                   WHEN    16
                   WHEN    19
                   WHEN    20
-                     PERFORM  2102091-NYUINACCT-HEN-TAKIKAN-SEC
+                     PERFORM  2102091-NYUINACCT-HEN-TAIN-SEC
                   WHEN    23  THRU  24
                   WHEN    27  THRU  28
                   WHEN    31  THRU  32
                   WHEN    35  THRU  36
                   WHEN    39  THRU  40
                   WHEN    43  THRU  44
-                     PERFORM  2102093-NYUINACCT-HEN-GENSAN-SEC
+                     PERFORM  2102093-NYUINACCT-HEN-GEN-SEC
                END-EVALUATE
                MOVE   WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
                                     TO   WRK-GAI2-ZAITEN  (SYUKEI-IDX3)
@@ -5343,7 +5341,7 @@
       **************************************************************
       *    他医療機関受診時の診療行為コード取得
       **************************************************************
-       2102091-NYUINACCT-HEN-TAKIKAN-SEC           SECTION.
+       2102091-NYUINACCT-HEN-TAIN-SEC           SECTION.
       *
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
@@ -5540,13 +5538,13 @@
            END-EVALUATE
            .
       *
-       2102091-NYUINACCT-HEN-TAKIKAN-EXT.
+       2102091-NYUINACCT-HEN-TAIN-EXT.
            EXIT.
       *
       **************************************************************
       *    減算の診療行為コード取得
       **************************************************************
-       2102093-NYUINACCT-HEN-GENSAN-SEC           SECTION.
+       2102093-NYUINACCT-HEN-GEN-SEC           SECTION.
       *
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
@@ -5579,7 +5577,7 @@
                    MOVE   "190162070"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                END-EVALUATE
                IF   SYUKEI-IDX = 31 OR 32 OR 35 OR 36
-                   PERFORM  2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC
+                   PERFORM  2102094-NYUINACCT-HEN-TAIN2-SEC
                END-IF
              WHEN     27
              WHEN     28
@@ -5609,18 +5607,18 @@
                    MOVE   "190162170"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                END-EVALUATE
                IF   SYUKEI-IDX = 39 OR 40 OR 43 OR 44
-                   PERFORM  2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC
+                   PERFORM  2102094-NYUINACCT-HEN-TAIN2-SEC
                END-IF
            END-EVALUATE
            .
       *
-       2102093-NYUINACCT-HEN-GENSAN-EXT.
+       2102093-NYUINACCT-HEN-GEN-EXT.
            EXIT.
       *
       **************************************************************
       *    他医療機関受診時の診療行為コード取得２
       **************************************************************
-       2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC           SECTION.
+       2102094-NYUINACCT-HEN-TAIN2-SEC           SECTION.
       *
            EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
       *      特定入院基本料
@@ -5649,7 +5647,7 @@
            END-EVALUATE
            .
       *
-       2102094-NYUINACCT-HEN-TAKIKAN-XXX-EXT.
+       2102094-NYUINACCT-HEN-TAIN2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5853,17 +5851,17 @@
             IF WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)       NOT = ZERO
               ADD   1     TO     SYUKEI-IDX5
               MOVE  WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)      TO  WRK-SRYCD2
-              PERFORM    21021111-RECE230-TENSOU2-GAI2-SEC
+              PERFORM    21021111-RECE230-TENSOU2-G2-SEC
             END-IF
             IF WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)      NOT = ZERO
               ADD   1     TO     SYUKEI-IDX5
               MOVE  WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)     TO  WRK-SRYCD2
-              PERFORM    21021111-RECE230-TENSOU2-GAI2-SEC
+              PERFORM    21021111-RECE230-TENSOU2-G2-SEC
             END-IF
             IF WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4)  NOT = ZERO
               ADD   1     TO     SYUKEI-IDX5
               MOVE  WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4) TO  WRK-SRYCD2
-              PERFORM    21021111-RECE230-TENSOU2-GAI2-SEC
+              PERFORM    21021111-RECE230-TENSOU2-G2-SEC
             END-IF
       *
            END-IF
@@ -5875,7 +5873,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
-       21021111-RECE230-TENSOU2-GAI2-SEC                SECTION.
+       21021111-RECE230-TENSOU2-G2-SEC                SECTION.
       *
            MOVE  WRK-SRYCD2       TO RECE230-SRYCD(SYUKEI-IDX5)
            MOVE  1                TO RECE230-SRYSURYO(SYUKEI-IDX5)
@@ -5931,13 +5929,13 @@
            MOVE  TNS-NAME    TO RECE230-NAME(SYUKEI-IDX5)
       *
            .
-       21021111-RECE230-TENSOU2-GAI2-EXT.
+       21021111-RECE230-TENSOU2-G2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００４）
       *****************************************************************
-       210213-RECE220-TENSOU2-SKJ200604-SEC               SECTION.
+       210213-RECE220-TENSOU2-SKJ2-SEC               SECTION.
       *
            ADD      1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
            IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 2)  NOT =  ZERO
@@ -6028,13 +6026,13 @@
            MOVE    1                    TO  RECE220-KAISU(1 SYUKEI-IDX3)
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
            .
-       210213-RECE220-TENSOU2-SKJ200604-EXT.
+       210213-RECE220-TENSOU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（環境）（Ｆ００４）
       *****************************************************************
-       210219-RECE220-TENSOU2-SKJ200610-KAN-SEC               SECTION.
+       210219-RECE220-TENSOU2-KAN-SEC               SECTION.
       *
            MOVE    SPACE                TO  RECE220-REC
            INITIALIZE                       RECE220-REC
@@ -6068,13 +6066,13 @@
            MOVE    1                    TO  RECE220-KAISU(1 SYUKEI-IDX3)
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
            .
-       210219-RECE220-TENSOU2-SKJ200610-KAN-EXT.
+       210219-RECE220-TENSOU2-KAN-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００５）
       *****************************************************************
-       210214-RECE230-HENSYU2-SKJ200604-SEC               SECTION.
+       210214-RECE230-HENSYU2-SKJ2-SEC               SECTION.
       *
            MOVE    SPACE                TO   RECE230-REC
            INITIALIZE                        RECE230-REC
@@ -6195,13 +6193,13 @@
            END-PERFORM
       *
            .
-       210214-RECE230-HENSYU2-SKJ200604-EXT.
+       210214-RECE230-HENSYU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（環境）（Ｆ００５）
       *****************************************************************
-       210220-RECE230-HENSYU2-SKJ200610-KAN-SEC               SECTION.
+       210220-RECE230-HENSYU2-KAN-SEC               SECTION.
       *
            MOVE    SPACE                TO   RECE230-REC
            INITIALIZE                        RECE230-REC
@@ -6267,7 +6265,7 @@
            MOVE    TNS-TEN              TO  RECE220-SYUTEN1
       *
            .
-       210220-RECE230-HENSYU2-SKJ200610-KAN-EXT.
+       210220-RECE230-HENSYU2-KAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6404,7 +6402,7 @@
                        PERFORM   21032X-RECE220-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-T-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21035-RECE230-TENTEKI2-HENSYU-SEC
+                       PERFORM   21035-RECE230-TENTEKI2-HEN-SEC
                        PERFORM   21034-RECE200-HENSYU3-SEC
                        PERFORM   RECE220-WRITE-SEC
                     END-IF
@@ -6419,7 +6417,7 @@
                        PERFORM   21032X-RECE220-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-C-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21035-RECE230-TENTEKI2-HENSYU-SEC
+                       PERFORM   21035-RECE230-TENTEKI2-HEN-SEC
                        PERFORM   21034-RECE200-HENSYU3-SEC
                        PERFORM   RECE220-WRITE-SEC
                     END-IF
@@ -6795,7 +6793,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
-       21035-RECE230-TENTEKI2-HENSYU-SEC                SECTION.
+       21035-RECE230-TENTEKI2-HEN-SEC                SECTION.
       *
            INITIALIZE             WRK-TENTEKI2-SRYCD2-X
       *
@@ -6833,7 +6831,7 @@
            END-PERFORM
       *
            .
-       21035-RECE230-TENTEKI2-HENSYU-EXT.
+       21035-RECE230-TENTEKI2-HEN-EXT.
            EXIT.
       *
       *****************************************************************

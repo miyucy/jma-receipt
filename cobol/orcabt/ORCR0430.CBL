@@ -136,6 +136,8 @@
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.04    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2977,7 +2979,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                MOVE    21   TO  IDC1
                MOVE    27   TO  IDC2
                MOVE    33   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                COMPUTE WRK-ZAINUM    =    99998000
                                      +   (IDX16 + 31)
                MOVE    "40" TO  WRK-SRYKBN
@@ -2988,7 +2990,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                MOVE    29   TO  IDC1
                MOVE    35   TO  IDC2
                MOVE    41   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99998201      TO   WRK-ZAINUM
                ELSE
@@ -3016,7 +3018,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "脳血管疾患等リハ：手術　　　年　　月　　日"
@@ -3024,7 +3026,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    23  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE
@@ -3033,7 +3035,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    29  TO  IDC1
                    MOVE    35  TO  IDC2
                    MOVE    41  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998401      TO   WRK-ZAINUM
@@ -3062,7 +3064,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "運動器リハ：手術　　　年　　月　　日"
@@ -3070,7 +3072,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    20  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "運動器リハ：急性増悪　　　年　　月　　日"
@@ -3078,7 +3080,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    23  TO  IDC1
                    MOVE    29  TO  IDC2
                    MOVE    35  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998601      TO   WRK-ZAINUM
@@ -3105,7 +3107,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                MOVE    23   TO  IDC1
                MOVE    29   TO  IDC2
                MOVE    35   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99998801      TO   WRK-ZAINUM
                ELSE
@@ -3131,7 +3133,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99999001      TO   WRK-ZAINUM
                ELSE
@@ -3159,7 +3161,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    19  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "難病患者リハ：手術　　　年　　月　　日"
@@ -3167,7 +3169,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE    "難病患者リハ：急性増悪　　　年　　月　　日"
@@ -3175,7 +3177,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99999201      TO   WRK-ZAINUM
@@ -3202,7 +3204,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  MOVE    99999401      TO   WRK-ZAINUM
                ELSE
@@ -3289,7 +3291,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
       *****************************************************************
       *    発症日のコメント編集（年月日）
       *****************************************************************
-       200111-HASSYO-COMMENT-HIZUKE-SEC          SECTION.
+       200111-HASSYO-COMMENT-DATE-SEC          SECTION.
       *
            INITIALIZE                         STS-AREA-DAY
            INITIALIZE                         LNK-DAY2-AREA
@@ -3330,7 +3332,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
            END-IF
       *
            .
-       200111-HASSYO-COMMENT-HIZUKE-EXT.
+       200111-HASSYO-COMMENT-DATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3469,7 +3471,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                OR    ( FLG-KYUSEI-COMMENT2 =   1 )
       *
                      IF   SANTEI-DAY(IDX3)  NOT =  ZERO
-                       PERFORM  200111-RIHA-SANTEIPLUS-HANTEI-SEC
+                       PERFORM  200111-RIHA-SANTEIPLUS-SEC
                      END-IF
       *
                      IF  (SANTEI-DAY(IDX3)  NOT =  ZERO)
@@ -3627,7 +3629,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    リハビリ・算定履歴付加判定
       *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
       *****************************************************************
-       200111-RIHA-SANTEIPLUS-HANTEI-SEC          SECTION.
+       200111-RIHA-SANTEIPLUS-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-SANTEIPLUS-HANTEI
       *
@@ -3660,7 +3662,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
            .
-       200111-RIHA-SANTEIPLUS-HANTEI-EXT.
+       200111-RIHA-SANTEIPLUS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6490,7 +6492,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  200111-FREE-COMMENT2-SEC                              
+           PERFORM  20011-FREE-COMMENT2-SEC                              
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
@@ -6529,7 +6531,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  200111-FREE-COMMENT2-SEC                              
+           PERFORM  20011-FREE-COMMENT2-SEC                              
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
@@ -6613,7 +6615,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    手術日等の日付の編集
       *****************************************************************
-       200111-FREE-COMMENT2-SEC          SECTION.                         
+       20011-FREE-COMMENT2-SEC          SECTION.                         
       *
            ADD      1          TO    IDZ
       *
@@ -6756,7 +6758,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                        IF   (WK-FREE-YUKOKETA2(IDZ)  =  25  )
                        AND  (FLG-JIBAI-OCR           =  ZERO)
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -6771,7 +6773,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                        IF   (WK-FREE-YUKOKETA2(IDZ)  =  24 OR 25)
                        AND  (FLG-JIBAI-OCR           =  ZERO    )
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)(3:2)     
@@ -6798,7 +6800,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                        IF   (WK-FREE-YUKOKETA2(IDZ)  =  25  )
                        AND  (FLG-JIBAI-OCR           =  ZERO)
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "、"
@@ -6812,7 +6814,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                        IF   (WK-FREE-YUKOKETA2(IDZ)  =  23 OR 24 OR 25)
                        AND  (FLG-JIBAI-OCR           =  ZERO          )
-                          PERFORM  2001111-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)     
@@ -6838,13 +6840,13 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            END-PERFORM
            .
-       200111-FREE-COMMENT2-EXT.
+       20011-FREE-COMMENT2-EXT.
            EXIT.
       *
       *****************************************************************
       *    手術日等の日付の編集（改行）
       *****************************************************************
-       2001111-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
+       200111-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
       *
            ADD      1              TO  IDZ
       *
@@ -6858,7 +6860,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-IF
       *
            .
-       2001111-FREE-COMMENT2-KAIGYO-EXT.
+       200111-FREE-COMMENT2-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7015,7 +7017,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF      WRK-RIHAIGAKU-SANTEI-FLG  NOT = SPACE
-             PERFORM    20011-RIHAIGAKU-DUMMY-COMMENT-SEC
+             PERFORM    20011-RIHAIGAKU-DUMMY-COM-SEC
            ELSE
              PERFORM    200111-SRYACTINF-HENSYU-SEC
            END-IF
@@ -7027,7 +7029,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    リハビリ医学管理料のコメント編集（リハ実施日）
       *****************************************************************
-       20011-RIHAIGAKU-DUMMY-COMMENT-SEC          SECTION.
+       20011-RIHAIGAKU-DUMMY-COM-SEC          SECTION.
       *
            INITIALIZE             TBL-SANTEI-DAY
       *
@@ -7044,7 +7046,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            INITIALIZE         WRK-FREE-AREA2
       *
            MOVE     2         TO   FLG-COMMENT
-           PERFORM  200111-FREE-COMMENT2-SEC
+           PERFORM  20011-FREE-COMMENT2-SEC
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   50    )
@@ -7063,7 +7065,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       20011-RIHAIGAKU-DUMMY-COMMENT-EXT.
+       20011-RIHAIGAKU-DUMMY-COM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7988,7 +7990,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                IF RECE449-FLG-GAIKAN-COMMENT  =    "1"
                  PERFORM  25032-GAIKAN-INS-HENSYU2-SEC
                END-IF
-               PERFORM    2509-SRYACTINF2-KYOTU-HENSYU-SEC
+               PERFORM    2509-SRYACTINF2-KYOTU-HEN-SEC
            END-IF
       *
            .
@@ -8122,7 +8124,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
              COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
                                    *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              MOVE    "円×" TO  WK-FREE-NAME3(WRK-KETA:4)
              COMPUTE  WRK-KETA   =  WRK-KETA   +  4
@@ -8132,7 +8134,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                              = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
                              *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              IF    TBL-KASAN-SRYSURYO  =  ZERO
                 MOVE    "Ｌ×１．３）" TO  WK-FREE-NAME3(WRK-KETA:12)
@@ -8153,7 +8155,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                              = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
                              *   1000
       *
-                PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                 MOVE    "）" TO  WK-FREE-NAME3(WRK-KETA:2)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -8178,7 +8180,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
               COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
               MOVE     ZERO       TO   WRK-KEISAN2
       *
-              PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+              PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
               MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -8197,7 +8199,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                   COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
                   MOVE     ZERO       TO   WRK-KEISAN2
       *
-                  PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                  PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                   MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -8243,7 +8245,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    酸素計算式・数値編集
       *****************************************************************
-       2501111-SANSO-FREE-COMMENT-SUCHI-SEC          SECTION.          
+       2501111-SANSO-FREE-COM-NUM-SEC          SECTION.          
       *
            IF    WRK-KEISAN  NOT  =  ZERO
                PERFORM   VARYING   IDX4    FROM   1   BY   1
@@ -8307,7 +8309,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-IF
       *
            .
-       2501111-SANSO-FREE-COMMENT-SUCHI-EXT.
+       2501111-SANSO-FREE-COM-NUM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8421,7 +8423,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                MOVE       20      TO     WRK-JIDO-SETCOMATFLG
                MOVE       99      TO     FLG-COMMENT
                PERFORM    25021-FILM-COMMENT-SEC
-               PERFORM    2509-SRYACTINF2-KYOTU-HENSYU-SEC
+               PERFORM    2509-SRYACTINF2-KYOTU-HEN-SEC
            END-IF
       *
            .
@@ -8578,7 +8580,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                MOVE       99      TO     FLG-COMMENT
                PERFORM    25031-GAIKAN-INS-HENSYU-SEC
                PERFORM    25032-GAIKAN-INS-HENSYU2-SEC
-               PERFORM    2509-SRYACTINF2-KYOTU-HENSYU-SEC
+               PERFORM    2509-SRYACTINF2-KYOTU-HEN-SEC
            END-IF
       *
            .
@@ -8782,7 +8784,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    ４５９　ＳＲＹＡＣＴＩＮＦ編集処理（共通）
       *****************************************************************
-       2509-SRYACTINF2-KYOTU-HENSYU-SEC     SECTION.
+       2509-SRYACTINF2-KYOTU-HEN-SEC     SECTION.
       *
       *    コメントを含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
@@ -8833,7 +8835,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            ADD     1                 TO      CNT-RECE44
       *
            .
-       2509-SRYACTINF2-KYOTU-HENSYU-EXT.
+       2509-SRYACTINF2-KYOTU-HEN-EXT.
            EXIT.
       *
       *****************************************************************

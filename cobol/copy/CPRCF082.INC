@@ -266,7 +266,7 @@
                05  RECE82-SHOKUJIKHNNISSU PIC  9(02).
       *
       *食事種別情報‐基本（生活）
-           03  RECE82-SHOKUJISYUBETU-KHNSEI   PIC  X(02).
+           03  RECE82-SHOKUJISYUBETU-SEI  PIC  X(02).
       *
       *食事基本料情報（生活）
            03  RECE82-SHOKUJIKHNINF-SEI   OCCURS   2.

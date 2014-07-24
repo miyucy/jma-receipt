@@ -71,6 +71,8 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -766,7 +768,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
                PERFORM UNTIL       FLG-NYUINACCT   =   1
                        OR          FLG-END         =   1
-                   PERFORM 20012-IKKATU-NYUINACCT-HENSYU-SEC
+                   PERFORM 20012-IKKATU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -982,7 +984,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
       *****************************************************************
       *    入院会計一括編集処理
       *****************************************************************
-       20012-IKKATU-NYUINACCT-HENSYU-SEC              SECTION.
+       20012-IKKATU-NYUINACCT-HEN-SEC              SECTION.
       *     
       *    テスト患者のときは読み飛ばす
            MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
@@ -1077,7 +1079,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
                END-IF    
            END-IF    
            .
-       20012-IKKATU-NYUINACCT-HENSYU-EXT.
+       20012-IKKATU-NYUINACCT-HEN-EXT.
            EXIT. 
       *            
       *****************************************************************
@@ -1957,7 +1959,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
                    OR          FLG-END         =   1 
-               PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
+               PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -1990,7 +1992,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
       *
                PERFORM UNTIL       FLG-NYUINACCT     =   1
                        OR          FLG-END           =   1
-                   PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
+                   PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -2173,7 +2175,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
                PERFORM UNTIL       FLG-SRYACCT     =   1
                        OR          FLG-END         =   1 
-                   PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
+                   PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -2207,7 +2209,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
       *
                PERFORM UNTIL       FLG-NYUINACCT     =   1
                        OR          FLG-END           =   1
-                   PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
+                   PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -2226,7 +2228,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
       *****************************************************************
       *    データ出力処理
       *****************************************************************
-       200211-KOBETU-SRYACCT-HENSYU-SEC                SECTION.
+       200211-KOBETU-SRYACCT-HEN-SEC                SECTION.
       *
            MOVE    KEY-NEW             TO  KEY-OLD
            PERFORM             UNTIL   FLG-SRYACCT     =   1 
@@ -2308,13 +2310,13 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            END-PERFORM         
       *
            .
-       200211-KOBETU-SRYACCT-HENSYU-EXT.
+       200211-KOBETU-SRYACCT-HEN-EXT.
            EXIT.
       *            
       *****************************************************************
       *    入院会計個別編集処理
       *****************************************************************
-       200212-KOBETU-NYUINACCT-HENSYU-SEC              SECTION.
+       200212-KOBETU-NYUINACCT-HEN-SEC              SECTION.
       *     
            MOVE    KEY-NEW             TO  KEY-OLD
            INITIALIZE                      WRK-DAY-AREA
@@ -2385,7 +2387,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                END-PERFORM
            END-IF
            .
-       200212-KOBETU-NYUINACCT-HENSYU-EXT.
+       200212-KOBETU-NYUINACCT-HEN-EXT.
            EXIT. 
       *
       *****************************************************************

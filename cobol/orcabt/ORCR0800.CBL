@@ -68,6 +68,8 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -652,7 +654,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
                PERFORM UNTIL       FLG-NYUINACCT   =   1
                        OR          FLG-ERR         =   1
-                   PERFORM 20012-IKKATU-NYUINACCT-HENSYU-SEC
+                   PERFORM 20012-IKKATU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                IF   FLG-ERR   =   ZERO
@@ -799,7 +801,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    入院会計一括編集処理
       *****************************************************************
-       20012-IKKATU-NYUINACCT-HENSYU-SEC              SECTION.
+       20012-IKKATU-NYUINACCT-HEN-SEC              SECTION.
       *
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
@@ -807,7 +809,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key13"             TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
-               GO  TO  20012-IKKATU-NYUINACCT-HENSYU-EXT
+               GO  TO  20012-IKKATU-NYUINACCT-HEN-EXT
            END-IF
       *
            MOVE    SPACE                   TO  WRK-DATAKBN
@@ -934,7 +936,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
              END-IF
            END-IF    
            .
-       20012-IKKATU-NYUINACCT-HENSYU-EXT.
+       20012-IKKATU-NYUINACCT-HEN-EXT.
            EXIT. 
       *            
       *****************************************************************
@@ -1492,7 +1494,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
                      OR        FLG-ERR         =   1
-               PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
+               PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
            END-PERFORM
       *    カーソルクロース
            IF   FLG-ERR   =   ZERO
@@ -1527,7 +1529,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                PERFORM UNTIL       FLG-NYUINACCT     =   1
                          OR        FLG-ERR           =   1
-                   PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
+                   PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                IF   FLG-ERR   =   ZERO
@@ -1617,7 +1619,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
                      OR        FLG-ERR         =   1
-               PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
+               PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
            END-PERFORM
       *    カーソルクロース
            IF   FLG-ERR   =   ZERO
@@ -1652,7 +1654,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                PERFORM UNTIL       FLG-NYUINACCT     =   1
                          OR        FLG-ERR           =   1
-                   PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
+                   PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
                END-PERFORM
       *        カーソルクロース
                IF   FLG-ERR   =   ZERO
@@ -1675,7 +1677,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    診療会計個別処理（患者ＩＤ、保険組合せ、診療科順）
       *****************************************************************
-       200211-KOBETU-SRYACCT-HENSYU-SEC    SECTION.
+       200211-KOBETU-SRYACCT-HEN-SEC    SECTION.
       *
       *    保険組合せ読込み
            INITIALIZE                  HKNCOMBI-REC
@@ -1732,13 +1734,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF 
            END-PERFORM    
            .
-       200211-KOBETU-SRYACCT-HENSYU-EXT.
+       200211-KOBETU-SRYACCT-HEN-EXT.
            EXIT.
       *            
       *****************************************************************
       *    入院会計個別編集処理
       *****************************************************************
-       200212-KOBETU-NYUINACCT-HENSYU-SEC              SECTION.
+       200212-KOBETU-NYUINACCT-HEN-SEC              SECTION.
       *
            MOVE    KEY-NEW             TO  KEY-OLD
            INITIALIZE                      WRK-DAY-AREA
@@ -1826,7 +1828,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF        
            .
-       200212-KOBETU-NYUINACCT-HENSYU-EXT.
+       200212-KOBETU-NYUINACCT-HEN-EXT.
            EXIT. 
       *****************************************************************
       *    エラー出力処理

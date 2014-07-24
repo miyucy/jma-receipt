@@ -269,6 +269,8 @@
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.04    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2410,10 +2412,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND    (SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
                                                      OR "09593")
                IF    SRY-SRYCD(IDX2)(1:5) =  "09593"
-                 PERFORM   2101213-JIBAI-KIZAI-TENSU-HENSYU-SEC
+                 PERFORM   2101213-JIBAI-KIZAI-TENHEN-SEC
                  MOVE   WRK-TEN-KZI     TO  WRK-TNS-TEN(IDX2)
                ELSE
-                 PERFORM   2101214-JIBAI-BUNSYO-TENSU-HENSYU-SEC
+                 PERFORM   2101214-JIBAI-BUNSYO-TENHEN-SEC
                  MOVE   WRK-TEN-BUN     TO  WRK-TNS-TEN(IDX2)
                END-IF
              ELSE
@@ -2937,7 +2939,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF                                                   
       *
                IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2101211-RECE45-TENSOU-COMCNT-HEN-SEC
+                  PERFORM  2101211-RECE45-COMCNT-HEN-SEC
                ELSE
                   IF   RECE44-SRYKBN      =     "50"
                      MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
@@ -3172,7 +3174,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
                   IF  RECE45-SRYSURYO(IDX4)  NOT = ZERO
-                    PERFORM  2101215-RECE45-TENSOU-SURYO-HEN-SEC
+                    PERFORM  2101215-RECE45-SURYO-HEN-SEC
       *
                     MOVE    SPACE      TO  RECE45-NAME(IDX4)
                     MOVE    SPACE      TO  RECE45-INPUTCOMENT(IDX4)
@@ -3607,7 +3609,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 2101212-RECE45-TENSOU-TANKA-HEN-SEC
+                       PERFORM 2101212-RECE45-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE45-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -3821,7 +3823,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    レセプトコメントフラグ編集処理
       *****************************************************************
-       2101211-RECE45-TENSOU-COMCNT-HEN-SEC               SECTION.
+       2101211-RECE45-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE44-SRYKBN      =     "11"
       *       初診料算定科：
@@ -4735,17 +4737,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            .
-       2101211-RECE45-TENSOU-COMCNT-HEN-EXT.
+       2101211-RECE45-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    酸素の単価編集処理
       *****************************************************************
-       2101212-RECE45-TENSOU-TANKA-HEN-SEC     SECTION.
-      *
-      ***  IF      TNS-TEN         =   ZERO
-      ***      GO  TO  2101212-RECE45-TENSOU-TANKA-HEN-EXT  
-      ***  END-IF
+       2101212-RECE45-TANKA-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       * 
@@ -4805,13 +4803,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF                             
       *
            .
-       2101212-RECE45-TENSOU-TANKA-HEN-EXT.
+       2101212-RECE45-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    自賠責特定器材点数編集処理
       *****************************************************************
-       2101213-JIBAI-KIZAI-TENSU-HENSYU-SEC     SECTION.
+       2101213-JIBAI-KIZAI-TENHEN-SEC     SECTION.
       *
            MOVE     ZERO                   TO    WRK-TEN-KZI
            MOVE     ZERO                   TO    FLG-TAIGAI
@@ -4871,13 +4869,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            END-IF
       *
            .
-       2101213-JIBAI-KIZAI-TENSU-HENSYU-EXT.
+       2101213-JIBAI-KIZAI-TENHEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    自賠責文書料点数編集処理
       *****************************************************************
-       2101214-JIBAI-BUNSYO-TENSU-HENSYU-SEC     SECTION.
+       2101214-JIBAI-BUNSYO-TENHEN-SEC     SECTION.
       *
            MOVE        ZERO          TO    WRK-TEN-BUN
       *
@@ -4899,13 +4897,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            END-IF
       *
            .
-       2101214-JIBAI-BUNSYO-TENSU-HENSYU-EXT.
+       2101214-JIBAI-BUNSYO-TENHEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    残量廃棄の数量編集処理
       *****************************************************************
-       2101215-RECE45-TENSOU-SURYO-HEN-SEC     SECTION.
+       2101215-RECE45-SURYO-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-SURYO-X
            MOVE    ZERO            TO  WRK-SURYOST
@@ -5019,7 +5017,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            END-STRING
       *
            .
-       2101215-RECE45-TENSOU-SURYO-HEN-EXT.
+       2101215-RECE45-SURYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
