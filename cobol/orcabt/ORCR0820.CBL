@@ -55,6 +55,8 @@
       *  04.07.04    NACL-門脇    14/05/08  労災レセ「新継再別」記載修正
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -198,9 +200,9 @@
                                    BY         //WRK-RECE88//.
       *
       *    ワーク入院履歴
-       01  WRK-PTNYUINRRK-REC.
+       01  WRK-PTNRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                       BY         //WRK-PTNYUINRRK-//.
+                                       BY         //WRK-PTNRRK-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -644,12 +646,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    診療月内の入退院情報の履歴
            IF      FLG-RECE88          =   1                            
-               MOVE    PTNYUINRRK-REC    TO  WRK-PTNYUINRRK-REC
+               MOVE    PTNYUINRRK-REC    TO  WRK-PTNRRK-REC
                INITIALIZE                    PTNYUINRRK-REC
                MOVE    RECE82-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
                MOVE    RECE82-PTID       TO  PTNYUINRRK-PTID
-               MOVE    WRK-PTNYUINRRK-SHONUM
-                                         TO  PTNYUINRRK-SHONUM
+               MOVE    WRK-PTNRRK-SHONUM TO  PTNYUINRRK-SHONUM
                MOVE    RECE82-SRYYM      TO  PTNYUINRRK-NYUINYMD (1:6)
                MOVE    "31"              TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC    TO  MCPDATA-REC
