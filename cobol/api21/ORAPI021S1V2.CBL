@@ -1727,17 +1727,11 @@
            WHEN    "11"
                MOVE    "診療日設定誤り"
                                                TO  WRK-ERRMSG
-           WHEN    "12"
-               MOVE    "診療時間設定誤り"
-                                               TO  WRK-ERRMSG
            WHEN    "13"
                MOVE    "診療科が存在しません"
                                                TO  WRK-ERRMSG
            WHEN    "14"
                MOVE    "ドクターが存在しません"
-                                               TO  WRK-ERRMSG
-           WHEN    "15"
-               MOVE    "診療内容情報が存在しません"
                                                TO  WRK-ERRMSG
            WHEN    "17"
                MOVE    "病名開始日付が暦日エラーです。"
