@@ -1745,7 +1745,7 @@
            EXIT.
       *
       *****************************************************************
-      *    早期リハビリ加算チェック処理（入院）
+      *    早期リハビリ加算チェック処理
       *****************************************************************
        20011-RIHAKSN-CHK-SEC                SECTION.
       *
@@ -1990,13 +1990,13 @@
       *            施設基準不適合（脳血管疾患リハビリ）
                    IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H" )
                       AND (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "001")
-      **廃止*********  MOVE    "180042770"         TO  WRK-SRYCD
+      **廃止*******    MOVE    "180042770"         TO  WRK-SRYCD
                        MOVE    1                   TO  WRK-ERRCHK
                    END-IF
       *            施設基準不適合（運動器リハビリ）
                    IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H" )
                       AND (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002")
-      **廃止********   MOVE    "180043370"         TO  WRK-SRYCD
+      **廃止*******    MOVE    "180043370"         TO  WRK-SRYCD
                        MOVE    1                   TO  WRK-ERRCHK
                    END-IF
       *            不適合あり
@@ -2324,6 +2324,7 @@
       *
            MOVE    ZERO                TO  FLG-NENREI
            MOVE    ZERO                TO  FLG-NENREI2
+      *
       *    通院・在宅精神のみ
            IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
                   (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002")
@@ -2371,7 +2372,6 @@
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)
                WHEN    "180020570"
       *            逓減チェック
-      *!!
                    COMPUTE IDX-Z3      =   IDX-Z   -  1
                    IF     (WRK-COM-INPUTCD (IDX-Z3)
                                                =   "180012210"  OR
@@ -2384,7 +2384,9 @@
                                                OR  "180031010"
                                                OR  "180031110"
                                                OR  "180031210"
-                                               OR  "180031310" )
+                                               OR  "180031310"
+      *H26.4       在宅精神療法
+                                               OR  "180040210" )
       *H26.4 
       *        注加算診療コードが存在する
                      OR   (WRK-COM-AGEKSNSRYCD (IDX-Z3  1)
@@ -2697,6 +2699,7 @@
                    OR (WRK-COM-DATAKBN (IDX-Z) =   "2"  )
                    GO      TO      1001131-RSIKASAN-AUTO-EXT
                END-IF
+      *H26.7
       *        合成コードは対象外
                IF     (WRK-COM-KOKUJISKBKBN1 (IDX-Z) =   3 )
                    GO      TO      1001131-RSIKASAN-AUTO-EXT
@@ -2790,6 +2793,7 @@
                           (WRK-COM-DATAKBN (IDX1)      =  "1" )
                       MOVE    SPA-MAX-LINE          TO  IDX1
                    END-IF
+      *H26.7
       *            労災リハ（1.2）より下
                    IF     (WRK-COM-INPUTCD (IDX1)   =  "101800080")
                        MOVE    IDX1            TO  IDX-T
