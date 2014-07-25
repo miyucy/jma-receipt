@@ -2697,6 +2697,10 @@
                    OR (WRK-COM-DATAKBN (IDX-Z) =   "2"  )
                    GO      TO      1001131-RSIKASAN-AUTO-EXT
                END-IF
+      *        合成コードは対象外
+               IF     (WRK-COM-KOKUJISKBKBN1 (IDX-Z) =   3 )
+                   GO      TO      1001131-RSIKASAN-AUTO-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE                TO  WRK-SRYCD
@@ -2782,13 +2786,13 @@
                    MOVE    1               TO  FLG-ARI
                ELSE
       *!四肢加算は手技料の直下とする
-      *!           IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
-      *                   (WRK-COM-DATAKBN (IDX1)      =  "2" )
-      *               MOVE    IDX1             TO  IDX-T
-      *!           END-IF
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                           (WRK-COM-DATAKBN (IDX1)      =  "1" )
                       MOVE    SPA-MAX-LINE          TO  IDX1
+                   END-IF
+      *            労災リハ（1.2）より下
+                   IF     (WRK-COM-INPUTCD (IDX1)   =  "101800080")
+                       MOVE    IDX1            TO  IDX-T
                    END-IF
                END-IF
            END-PERFORM
