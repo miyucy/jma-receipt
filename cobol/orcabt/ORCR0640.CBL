@@ -650,6 +650,8 @@
       *  04.07.26    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
       *  04.07.28    NACL-門脇    14/07/17  マル長患者で、月途中に公費が追加と
       *                                     なった場合の対応
+      *  04.07.29    NACL-門脇    14/07/28  マル長患者で、月途中に公費が追加と
+      *                                     なった場合の対応修正
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -876,6 +878,7 @@
            03  FLG-SYOGAISEIHO3                        PIC 9(01).
            03  FLG-DAISAN-ARI                          PIC 9(01).
            03  FLG-CYOKI-HENSYU                        PIC 9(01).
+           03  FLG-CYOKI-HENSYU2                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1145,6 +1148,10 @@
              05  WRK-SYUNOU-CYOKI-TEKSTYMD-XXX         PIC X(08).
              05  WRK-SYUNOU-CYOKI-HANTEIFLG            PIC 9(01).
              05  WRK-SYUNOU-CYOKI-HANTEIFLG2           PIC 9(01).
+             05  FTN-CYOKI-XXX                         PIC 9(07).
+             05  FTN-CYOKI-YYY                         PIC 9(07).
+             05  FTN-CYOKI-XX2                         PIC 9(07).
+             05  FTN-CYOKI-YY2                         PIC 9(07).
       *
        01  WRK-SKY-AREA.
            03  WRK-SKY-KEISAN                          PIC 9(09).
@@ -6170,7 +6177,7 @@
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "tbl_sryacct"        TO      MCP-TABLE
-           IF      WRK-PARA-PRTKBN     =   "4" OR "5" OR "9" OR  "8"
+           IF      WRK-PARA-PRTKBN     =   "4" OR "5" OR "9" OR "8"
                MOVE    "key63"             TO  WRK-SRYACCT-PATHNAME
            ELSE
                MOVE    "key33"             TO  WRK-SRYACCT-PATHNAME
@@ -16263,6 +16270,7 @@
            MOVE      ZERO       TO   CNT-CYOKI-HENSYU1
            MOVE      ZERO       TO   CNT-CYOKI-HENSYU2
            MOVE      ZERO       TO   FLG-CYOKI-HENSYU
+           MOVE      ZERO       TO   FLG-CYOKI-HENSYU2
            INITIALIZE                WRK-SYUNOU-CYOKI-AREA
            IF  (RECE62-SRYYM     >=    "201204")
            AND (RECE62-KOUREI     =  "1" OR "2")
@@ -17106,9 +17114,47 @@
            EXIT.
       *
       *****************************************************************
-      *    長期チェック１
+      *    長期チェック編集
       *****************************************************************
        2104L1-CYOKI-HENSYU1-SEC              SECTION.
+      *
+           IF    FLG-CYOKI-HENSYU2  =  ZERO
+             MOVE   1   TO   FLG-CYOKI-HENSYU2
+             IF  (SYU-KOH-HKNNUM(1) =  "972")
+             OR  (SYU-KOH-HKNNUM(2) =  "972")
+             OR  (SYU-KOH-HKNNUM(3) =  "972")
+             OR  (SYU-KOH-HKNNUM(4) =  "972")
+               EVALUATE   RECE62-KOUREI
+                 WHEN      "1"
+                     IF  FLG-TOKU75 = 1 OR 2
+                       MOVE      5000   TO   WRK-KINGAKU
+                     ELSE
+                       MOVE     10000   TO   WRK-KINGAKU
+                     END-IF
+                 WHEN      "2"
+                     IF  FLG-TOKU75 = 3
+                       MOVE      5000   TO   WRK-KINGAKU
+                     ELSE
+                       MOVE     10000   TO   WRK-KINGAKU
+                     END-IF
+               END-EVALUATE
+             ELSE
+               EVALUATE   RECE62-KOUREI
+                 WHEN      "1"
+                     IF  FLG-TOKU75 = 1 OR 2
+                       MOVE     10000   TO   WRK-KINGAKU
+                     ELSE
+                       MOVE     20000   TO   WRK-KINGAKU
+                     END-IF
+                 WHEN      "2"
+                     IF  FLG-TOKU75 = 3
+                       MOVE     10000   TO   WRK-KINGAKU
+                     ELSE
+                       MOVE     20000   TO   WRK-KINGAKU
+                     END-IF
+               END-EVALUATE
+             END-IF
+           END-IF
       *
            MOVE  SYU-HKNCOMBINUM
                       TO   WRK-SYUNOU-CYOKI-HKNCOMBINUM(IDX1)
@@ -17128,10 +17174,31 @@
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
-             ADD   WRK-FTNKEI
-                      TO   WRK-SYUNOU-CYOKI-FTNMONEY
+             IF   FTN-CYOKI-XX2  >=  WRK-KINGAKU
+               CONTINUE
+             ELSE
+               IF  FTN-CYOKI-XXX  >  WRK-KINGAKU
+                 MOVE  WRK-KINGAKU   TO  FTN-CYOKI-XXX
+               END-IF
+               COMPUTE FTN-CYOKI-YYY = WRK-KINGAKU - FTN-CYOKI-XXX
+               IF  WRK-FTNKEI     >  FTN-CYOKI-YYY
+                 ADD  FTN-CYOKI-YYY  TO  FTN-CYOKI-XXX
+               ELSE
+                 ADD  WRK-FTNKEI     TO  FTN-CYOKI-XXX
+               END-IF
+             END-IF
            ELSE
              MOVE  2  TO   WRK-SYUNOU-CYOKI-KOHFLG(IDX1)
+           END-IF
+      *
+           IF  FTN-CYOKI-XX2  >  WRK-KINGAKU
+             MOVE  WRK-KINGAKU   TO  FTN-CYOKI-XX2
+           END-IF
+           COMPUTE FTN-CYOKI-YY2 = WRK-KINGAKU - FTN-CYOKI-XX2
+           IF  WRK-FTNKEI     >  FTN-CYOKI-YY2
+             ADD  FTN-CYOKI-YY2  TO  FTN-CYOKI-XX2
+           ELSE
+             ADD  WRK-FTNKEI     TO  FTN-CYOKI-XX2
            END-IF
       *
            .
@@ -17139,7 +17206,7 @@
            EXIT.
       *
       *****************************************************************
-      *    長期チェック２
+      *    長期チェック編集２
       *    ＜月途中の公費適用前に「主保険＋長期」での診療があるか＞
       *****************************************************************
        2104L2-CYOKI-HENSYU2-SEC              SECTION.
@@ -17189,43 +17256,14 @@
       *
            IF  (WRK-SYUNOU-CYOKI-HANTEIFLG  =  1  )
            AND (WRK-SYUNOU-CYOKI-HANTEIFLG2 = ZERO)
-             EVALUATE   RECE62-KOUREI
-               WHEN      "1"
-                 IF   WRK-SYUNOU-CYOKI-HKNNUM = "972"
-                   IF  FLG-TOKU75 = 1 OR 2
-                     MOVE      5000   TO   WRK-KINGAKU
-                   ELSE
-                     MOVE     10000   TO   WRK-KINGAKU
-                   END-IF
-                 ELSE
-                   IF  FLG-TOKU75 = 1 OR 2
-                     MOVE     10000   TO   WRK-KINGAKU
-                   ELSE
-                     MOVE     20000   TO   WRK-KINGAKU
-                   END-IF
-                 END-IF
-               WHEN      "2"
-                 IF   WRK-SYUNOU-CYOKI-HKNNUM = "972"
-                   IF  FLG-TOKU75 = 3
-                     MOVE      5000   TO   WRK-KINGAKU
-                   ELSE
-                     MOVE     10000   TO   WRK-KINGAKU
-                   END-IF
-                 ELSE
-                   IF  FLG-TOKU75 = 3
-                     MOVE     10000   TO   WRK-KINGAKU
-                   ELSE
-                     MOVE     20000   TO   WRK-KINGAKU
-                   END-IF
-                 END-IF
-             END-EVALUATE
-      *
              IF    FTN-KOH-XXX   <   WRK-KINGAKU
                COMPUTE  WRK-SYUNOU-CYOKI-FTNMONEY2 = WRK-KINGAKU
                                                    - FTN-KOH-XXX
-               IF  WRK-SYUNOU-CYOKI-FTNMONEY2 <
-                                   WRK-SYUNOU-CYOKI-FTNMONEY
+               IF  WRK-SYUNOU-CYOKI-FTNMONEY2 < FTN-CYOKI-XXX
                  MOVE   WRK-SYUNOU-CYOKI-FTNMONEY2
+                               TO  WRK-SYUNOU-CYOKI-FTNMONEY
+               ELSE
+                 MOVE   FTN-CYOKI-XXX
                                TO  WRK-SYUNOU-CYOKI-FTNMONEY
                END-IF
                IF  WRK-SYUNOU-CYOKI-FTNMONEY  NOT = ZERO
