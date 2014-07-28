@@ -402,22 +402,32 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
+           MOVE    SPACE               TO  RECE82PARA
+           INITIALIZE                      RECE82PARA
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE84PARA
+           INITIALIZE                      RECE84PARA
            MOVE    "RECE84X"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE85PARA
+           INITIALIZE                      RECE85PARA
            MOVE    "RECE851"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE841PARA
+           INITIALIZE                      RECE841PARA
            MOVE    "RECE84B"           TO  RECE841PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE841PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE841PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE851PARA
+           INITIALIZE                      RECE851PARA
            MOVE    "RECE85B"           TO  RECE851PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE851PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM

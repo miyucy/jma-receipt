@@ -1502,26 +1502,40 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE82PARA
+           INITIALIZE                      RECE82PARA
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
+           MOVE    SPACE               TO  RECE84PARA
+           INITIALIZE                      RECE84PARA
            MOVE    "RECE840"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
+           MOVE    SPACE               TO  RECE85PARA
+           INITIALIZE                      RECE85PARA
            MOVE    "RECE850"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE8APARA
+           INITIALIZE                      RECE8APARA
            MOVE    "RECE841"           TO  RECE8APARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE8APARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE8APARA-HOSPNUM
+           MOVE    SPACE               TO  RECE8BPARA
+           INITIALIZE                      RECE8BPARA
            MOVE    "RECE851"           TO  RECE8BPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE8BPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE8BPARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE84CPARA
+           INITIALIZE                      RECE84CPARA
            MOVE    "RECE84C"           TO  RECE84CPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84CPARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE84CPARA-HOSPNUM
+           MOVE    SPACE               TO  RECE85CPARA
+           INITIALIZE                      RECE85CPARA
            MOVE    "RECE85C"           TO  RECE85CPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85CPARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE85CPARA-HOSPNUM

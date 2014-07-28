@@ -280,22 +280,32 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE82PARA
+           INITIALIZE                      RECE82PARA
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE84PARA
+           INITIALIZE                      RECE84PARA
            MOVE    "RECE841"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE85PARA
+           INITIALIZE                      RECE85PARA
            MOVE    "RECE851"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE843PARA
+           INITIALIZE                      RECE843PARA
            MOVE    "RECE843"           TO  RECE843PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE843PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE843PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE84XPARA
+           INITIALIZE                      RECE84XPARA
            MOVE    "RECE84X"           TO  RECE84XPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84XPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84XPARA-HOSPNUM
