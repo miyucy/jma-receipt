@@ -1033,18 +1033,26 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE01PARA
+           INITIALIZE                      RECE01PARA
            MOVE    "RECE410"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE44PARA
+           INITIALIZE                      RECE44PARA
            MOVE    "RECE44A"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE45PARA
+           INITIALIZE                      RECE45PARA
            MOVE    "RECE45A"           TO  RECE45PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE46PARA
+           INITIALIZE                      RECE46PARA
            MOVE    "RECE460"           TO  RECE46PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE46PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM

@@ -335,6 +335,8 @@
                  MOVE    "970"         TO  WRK-CONS-HKNNUM
            END-EVALUATE
       *
+           MOVE    SPACE               TO  RECE40PARA
+           INITIALIZE                      RECE40PARA
            MOVE    "RECE400"           TO  RECE40PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE40PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE40PARA-HOSPNUM

@@ -1011,30 +1011,44 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE41PARA
+           INITIALIZE                      RECE41PARA
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE44PARA
+           INITIALIZE                      RECE44PARA
            MOVE    "RECE44W"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE45PARA
+           INITIALIZE                      RECE45PARA
            MOVE    "RECE450"           TO  RECE45PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE441PARA
+           INITIALIZE                      RECE441PARA
            MOVE    "RECE44A"           TO  RECE441PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE441PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE441PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE451PARA
+           INITIALIZE                      RECE451PARA
            MOVE    "RECE45A"           TO  RECE451PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE451PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE449PARA
+           INITIALIZE                      RECE449PARA
            MOVE    "RECE44Y"           TO  RECE449PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE449PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE449PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE459PARA
+           INITIALIZE                      RECE459PARA
            MOVE    "RECE45Y"           TO  RECE459PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE459PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM

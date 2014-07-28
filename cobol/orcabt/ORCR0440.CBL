@@ -260,10 +260,14 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE01PARA
+           INITIALIZE                      RECE01PARA
            MOVE    "RECE410"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE42PARA
+           INITIALIZE                      RECE42PARA
            MOVE    "RECE420"           TO  RECE42PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE42PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE42PARA-HOSPNUM

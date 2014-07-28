@@ -642,18 +642,26 @@
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
+           MOVE    SPACE               TO  RECE41PARA
+           INITIALIZE                      RECE41PARA
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE43PARA
+           INITIALIZE                      RECE43PARA
            MOVE    "RECE430"           TO  RECE43PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE43PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE43PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE47PARA
+           INITIALIZE                      RECE47PARA
            MOVE    "RECE470"           TO  RECE47PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE47PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
+           MOVE    SPACE               TO  RECE471PARA
+           INITIALIZE                      RECE471PARA
            MOVE    "RECE471"           TO  RECE471PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE471PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE471PARA-HOSPNUM
