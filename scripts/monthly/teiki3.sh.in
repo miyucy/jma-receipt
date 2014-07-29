@@ -28,17 +28,12 @@ trap "cleanup" EXIT
 #-------------------------------------------#
 ##      エラーファイル削除
 
-export ORCA_TEMPDIR=orcb033_3-$$
-
-WORKDIR=${MCP_TEMPDIR}/${ORCA_TEMPDIR}
 ERR_FILE_BASE=$(basename $1)
-ERR_FILE_FULL=${WORKDIR}/${ERR_FILE_BASE}
+ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
 
 cleanup () {
-	rm -Rf ${WORKDIR}
+	echo
 }
-
-mkdir -p ${WORKDIR}
 
 ##   -- ORCT0070 START --  
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0070 -parameter "${ERR_FILE_BASE},$2,$3,$4,$5,$6,$7,$8,$9,${10},${11}"

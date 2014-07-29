@@ -35,7 +35,7 @@
        FILE-CONTROL.
       *
       *    パラメータファイル
-           SELECT  BQ01-FILE   ASSIGN  PRFNAME
+           SELECT  BQ01-FILE   ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  SEQUENTIAL.
       *
        DATA                            DIVISION.
@@ -60,6 +60,8 @@
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //PRFNAME//.
+      *
+           COPY    "CPASGNPARA.INC".
       *
       *    エラーファイル 名称領域
            COPY    "CPERRFL.INC".
@@ -166,9 +168,9 @@
            03  CONST-JYOKENMEI-R   REDEFINES   CONST-JYOKENMEI-AREA.
                05  CONST-JYOKENMEI PIC X(10)   OCCURS  5.
            03  CONST-SHELNAME      PIC X(100)
-               VALUE   "scripts/allways/ORCBQ01.sh".
+               VALUE   "ORCBQ01.sh".
            03  CONST-SHELNAME2     PIC X(100)
-               VALUE   "scripts/allways/ORCBQ02.sh".
+               VALUE   "ORCBQ02.sh".
            03  CONST-SHELNAME3     PIC X(100)
                VALUE   "ORCBQ03.sh".
            03  CONST-LINE                          PIC 9(05)
@@ -261,6 +263,9 @@
       *
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *     
            COPY    "ORCA-DBMETA".
       *
@@ -507,6 +512,14 @@
            MOVE    1                   TO  PRFNAME-SYOKBN1
            MOVE    SPA-TERMID          TO  PRFNAME-TERMID
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    PRFNAME-BASENAME    TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASGNPARA
+           MOVE    SGETTEMP-ST         TO  ASGNPARA-ST
+      *
            PERFORM 800-MCNDATE-SEC
       *
            OPEN    OUTPUT              BQ01-FILE
@@ -587,11 +600,10 @@
       *
       *    印刷用スクリプト処理
       *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    CONST-SHELNAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    SPACE           TO  SHELLTBL
+           INITIALIZE                  SHELLTBL
+      *
+           MOVE    CONST-SHELNAME  TO  SHELLTBL-NAME
       *
            MOVE    SPA-Q02-Q100-PROC-FLG
                                    TO  SHELLTBL-ARG1
@@ -604,7 +616,8 @@
                MOVE    SPA-Q02-Q100-FILENAME
                                        TO  SHELLTBL-ARG2
            END-IF
-           MOVE    PRFNAME         TO  SHELLTBL-ARG3
+           MOVE    ASGNPARA(ASGNPARA-ST:)
+                                   TO  SHELLTBL-ARG3
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG4
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
            MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG6
@@ -620,10 +633,10 @@
            MOVE    WRK-FILENM-FOLDER
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
-           STRING   "/tmp/"                DELIMITED  BY  SIZE
-                    WRK-FILENM             DELIMITED  BY  SPACE
-                    ".wk"                  DELIMITED  BY  SIZE
-                                           INTO  SHELLTBL-ARG15
+           STRING  WRK-FILENM          DELIMITED  BY  SPACE
+                   SPA-TERMID          DELIMITED  BY  SIZE
+                   ".wk"               DELIMITED  BY  SIZE
+                                       INTO  SHELLTBL-ARG15
            END-STRING
       *
       *    検索結果パターン
@@ -632,7 +645,7 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -664,6 +677,14 @@
            MOVE    "OR013002"          TO  PRFNAME-FILE-ID
            MOVE    2                   TO  PRFNAME-SYOKBN1
            MOVE    SPA-TERMID          TO  PRFNAME-TERMID
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    PRFNAME-BASENAME    TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASGNPARA
+           MOVE    SGETTEMP-ST         TO  ASGNPARA-ST
       *
            PERFORM 800-MCNDATE-SEC
       *
@@ -704,19 +725,20 @@
       *
       *    印刷用スクリプト処理
       *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    CONST-SHELNAME2 TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    SPACE           TO  SHELLTBL
+           INITIALIZE                  SHELLTBL
       *
-           MOVE    PRFNAME         TO  SHELLTBL-ARG1
+           MOVE    CONST-SHELNAME2 TO  SHELLTBL-NAME
+      *
+           MOVE    ASGNPARA(ASGNPARA-ST:)
+                                   TO  SHELLTBL-ARG1
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG2
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG3
            MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG4
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG5
            MOVE    SPA-OPID        TO  SHELLTBL-ARG6
-           MOVE    ERRFLPARA       TO  SHELLTBL-ARG7
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG7
            MOVE    CONST-JOBID2    TO  SHELLTBL-ARG8
       *    IDは検索結果印刷に併せる
            MOVE    CONST-JOB-SHELLID
@@ -732,7 +754,7 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -796,6 +818,15 @@
                STRING  C-UID               DELIMITED   BY  SIZE
                INTO    PRFNAME-TERMID
                END-STRING
+      *
+               INITIALIZE                      SGETTEMP-AREA
+               MOVE    PRFNAME-BASENAME    TO  SGETTEMP-BASENAMES (1)
+               CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAMES (1)
+                                           TO  ASGNPARA
+               MOVE    SGETTEMP-ST         TO  ASGNPARA-ST
+      *
                OPEN    OUTPUT              BQ01-FILE
                INITIALIZE                  BQ01
                MOVE    QSUB02-SQL      TO  BQ01-SQL
@@ -803,13 +834,15 @@
                WRITE   BQ01
                CLOSE   BQ01-FILE
       *
-      *        フィアルデイレクトリ位置指定
-               INITIALIZE              ORCSMKPASSAREA
+               MOVE    SPACE           TO  SHELLTBL
+               INITIALIZE                  SHELLTBL
+      *
                MOVE    CONST-SHELNAME3 TO  SHELLTBL-NAME
       *
                MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
                MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
-               MOVE    PRFNAME         TO  SHELLTBL-ARG3
+               MOVE    ASGNPARA (ASGNPARA-ST:)
+                                       TO  SHELLTBL-ARG3
                MOVE    SMCNDATE-YMD    TO  SHELLTBL-ARG4
                MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG5
                MOVE    SHELLTBL        TO  MCPDATA-REC

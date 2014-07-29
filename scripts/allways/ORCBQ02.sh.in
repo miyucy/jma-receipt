@@ -9,10 +9,8 @@ fi
 
 . $JMARECEIPT_ENV
 
-OLDLOG=/var/log/jma-receipt/"$5"ORCBQ02.log
 LOG=/var/log/jma-receipt/"$5"orcb013_2.log
 
-[ -e "${OLDLOG}" ] &&  rm ${OLDLOG}
 [ -e "${LOG}" ] &&  rm ${LOG}
 
 
@@ -30,21 +28,28 @@ LOG=/var/log/jma-receipt/"$5"orcb013_2.log
 #        $10  シェルＩＤ（バッチパラメタ用）
 #
 #-------------------------------------------#
+PARA_FILE_BASE=$1
+PARA_FILE_FULL=${MCP_TEMPDIR}/${PARA_FILE_BASE}
+
+ERR_FILE_BASE=$7
+ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
+
+
 ##      エラーファイル削除
-	echo "echo " $7
-        if  [ -e $7 ]; then
-            rm  $7
+	echo ${ERR_FILE_FULL}
+        if  [ -e $${ERR_FILE_FULL} ]; then
+            rm  $${ERR_FILE_FULL}
         fi
 ##
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ02 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10} > ${LOG} 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ02 -parameter ${PARA_FILE_BASE},$2,$3,$4,$5,$6,${ERR_FILE_BASE},$8,$9,${10} > ${LOG} 2>&1
         if  [ -e $7 ]; then
             exit
         fi
 
 ##      パラメータファイル削除
-        if  [ -e $1 ]; then
-            rm  $1
+        if  [ -e ${PARA_FILE_FULL} ]; then
+            rm  ${PARA_FILE_FULL}
         fi
 
        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$8$9,$5"

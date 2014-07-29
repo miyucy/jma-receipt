@@ -52,7 +52,7 @@
                                    FILE    STATUS  IS    STS-ASS03.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
@@ -114,6 +114,7 @@
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
       *
@@ -407,6 +408,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
        01 UIDIO-AREA.
            03  C-RET                   PIC X(2).
@@ -2215,6 +2219,14 @@
            MOVE    SMCNDATE-HMS        TO  HC01PARA-SYOHMS
       *
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA-BASENAME   TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
       *
            .
@@ -2235,7 +2247,7 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HCM44.red"         TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA

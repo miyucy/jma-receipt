@@ -11,10 +11,6 @@ fi
 export HOME=/home/orca
 export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$PATH
 
-#if ! test -d /var/tmp/.orca_ps ; then
-#    mkdir /var/tmp/.orca_ps
-#fi
-
 #----------------------------------------------------------------------#
 #       引数	
 #       1:DATAファイル名称
@@ -23,38 +19,38 @@ export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$PATH
 #       4:DATAファイル名称(オリジナル)
 #----------------------------------------------------------------------#
 
-	echo	`date`
-	echo $#
-	echo	$1
-#whether encoding is utf-8 or not.
-if [ "$3"  == '2' ]; then
-	export	RED2PS_OUTPUT_CHARSET=UTF-8
-else
-	export	RED2PS_OUTPUT_CHARSET=EUC-JP
+echo	`date`
+echo $#
+
+PRT_FILE_BASE=$1
+PRT_FILE_FULL=${MCP_TEMPDIR}/${PRT_FILE_BASE}
+
+ORG_FILE_BASE=$4
+ORG_FILE_FULL=${MCP_TEMPDIR}/${ORG_FILE_BASE}
+
+print_parent_prv.rb ${PRT_FILE_FULL} ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} ${PATCHFORMDIR}
+if	[ $?  -eq  0 ]; then
+       	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2
 fi
 
-	%RUBY% "$SCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "%RUBY% ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "%RUBY% ${SCRIPTSDIR}/daily/print-data_prv.rb " "%RUBY% ${SCRIPTSDIR}/daily/orcred2ps.rb " ${PATCHFORMDIR}
+rm -f ${PRT_FILE_FULL}
 
-	if	[ $?  =  0 ]; then
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter $1,$2
-	fi
-	rm -f $1
-        if [ -z "$4" ]  ; then
-                echo "HCALL end"
-                exit
-        fi
-        if [ ${4:0:4} = "/tmp" ] ; then
+if [ -z "${ORG_FILE_BASE}" ]  ; then
+	echo "HCALL end"
+	exit
+fi
+
+if [ $dirname(${ORG_FILE_FULL}) = ${MCP_TEMPDIR} ] ; then
 #------ 処方せんQRイメージ削除
-	if      [ ${4:7:4} = "HC2Q" ]   ;then
-		%RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' ${4} | xargs rm -f
+	if      [[ ${ORG_FILE_FULL} =~ ^${MCP_TEMPDIR}/..HC2Q ]]   ;then
+		grep -Eo "${MCP_TEMPDIR}.*\.png" ${ORG_FILE_FULL} | sed -e "s/ \+/ /" | xargs rm -f
 	fi
-	if      [ ${4:7:4} = "HC62" ]   ;then
-                LDATA=`ls \`echo $4 | sed 's/[[:digit:]]*\.dat$//g'\`* | sort -r | head -n 1`
-                %RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $LDATA |xargs rm -f
-
+	if      [[ ${ORG_FILE_FULL} =~ ^${MCP_TEMPDIR}/..HC62 ]]   ;then
+                LDATA=`ls \`echo ${ORG_FILE_FULL} | sed 's/[[:digit:]]*\.dat$//g'\`* | sort -r | head -n 1`
+		grep -Eo "${MCP_TEMPDIR}.*\.png" ${LDATA} | sed -e "s/ \+/ /" | xargs rm -f
 	fi
-	rm ${4:0:53}*
-#	rm ${4}
-	fi
+	rm ${ORG_FILE_FULL:0:$(expr ${#ORG_FILE_FULL} - 10 )}*
+	rm ${PRT_FILE_FULL:0:$(expr ${#PRT_FILE_FULL} - 10 )}*
+fi
 
 	echo	`date`

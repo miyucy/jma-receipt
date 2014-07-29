@@ -49,7 +49,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
@@ -92,10 +92,10 @@ grpsys COPY    "COMMON-SPA".
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -194,6 +194,9 @@ grpsys COPY    "COMMON-SPA".
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -243,6 +246,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
                                        SPA-AREA
+                                       RECEERR
       *
            ACCEPT  SYS-TIME            FROM    TIME     
       *
@@ -258,7 +262,7 @@ grpsys COPY    "COMMON-SPA".
                                                LNK-PRTKANRI-TERMID
                                                LNK-PRTKANRI-OPID
                                                LNK-PRTKANRI-PRTNM
-                                               RECEERR    
+                                               RECEERR
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-STPAGE
@@ -280,7 +284,14 @@ grpsys COPY    "COMMON-SPA".
            CALL    "ORCSENCODING"          USING
                                            MCPAREA
                                            SPA-AREA
-           MOVE    SPA-ENCODING        TO  WRK-ENCODING9
+           MOVE    SPA-ENCODING    TO      WRK-ENCODING9
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR         TO      SGETTEMP-FULLNAMES (1)
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO      RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -333,7 +344,7 @@ grpsys           PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    印刷用ファイル作成  
+      *    印刷用ファイル作成
            MOVE    "HC99"          TO  HC01PARA-FORM-ID
 grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  HC01PARA-HOSPNUM
@@ -341,6 +352,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    1               TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  ASGNPARA
+           MOVE    SGETTEMP-ST     TO  ASGNPARA-ST
+      *
            OPEN    OUTPUT              PRT-FILE
       *
            PERFORM                     UNTIL   FLG-PRTKANRI =   1
@@ -374,7 +395,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
                MOVE    SPACE           TO  SHELLTBL
                MOVE    "HCALL_prv.sh"  TO  SHELLTBL-NAME
-               MOVE    HC01PARA        TO  SHELLTBL-ARG1
+               MOVE    ASGNPARA (ASGNPARA-ST:)
+                                       TO  SHELLTBL-ARG1
 grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
                MOVE    WRK-FILENAME2   TO  SHELLTBL-ARG4

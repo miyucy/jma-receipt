@@ -1,6 +1,6 @@
 #!%RUBY%
 # coding : euc-jp
-Encoding.default_external = "euc-jisx0213"
+Encoding.default_external = "ascii-8bit"
 # print_parent2.rb のプレビュー用対応 
 # 文字列の改行区切りで配列にして、それを引数のプログラムに渡す処理 
 # (2002/03/07 竹田氏追加依頼) 
@@ -26,7 +26,6 @@ Encoding.default_external = "euc-jisx0213"
 # (2011/03/08 ) クライアント印刷対応
 # (2013/02/07 ) 労災枠有り対応
 #
-
 # クライアント印刷用(複数ps をまとめる)
 # (2011/08/05 ) 労災枠有り対応
 # (2012/04/11 ) 改正対応
@@ -41,14 +40,6 @@ require 'tempfile'
 
 # 引数指定方法
 # 引数1  = 一時ファイル名
-# 引数2  = 起動プログラム
-# 引数3  = 日医標準レセプトformディレクトリ
-# 引数4  = 日医標準レセプトrecordディレクトリ
-# 引数5  = 日医標準レセプトsite固有formディレクトリ
-# 引数6  = 日医標準レセプトsite固有recordディレクトリ
-# 引数7  = dataファイル
-# 引数8  = 起動用スクリプト名1
-# 引数9  = 日医標準レセプトpatch固有formディレクトリ
 
 # dataファイルフォーマット
 # +------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
@@ -64,8 +55,6 @@ require 'tempfile'
 #      3 = Postscriptファイルの出力(印刷イメージ表示対応)
 #
 # ※LP名は空白の場合、子プロセスの引数を省略する
-
-
 
 
 #	puts '<temp>        = 一時ファイル名'
@@ -87,14 +76,8 @@ end
 
 if (help_flg != 0)
 	puts 'このスクリプトは、改行で区切って、引数のプログラムに渡すプログラムです'
-	puts $0 + ' <temp> <exec> <form> <record> <site-form> <site-record> <data>'
-	puts '<temp>        = 一時ファイル名'
-	puts '<exec>        = 起動プログラム'
-	puts '<form>        = 日医標準レセプトformディレクトリ'
-	puts '<record>      = 日医標準レセプトrecordディレクトリ'
-	puts '<site-form>   = 日医標準レセプトsite固有formディレクトリ'
-	puts '<site-record> = 日医標準レセプトsite固有recordディレクトリ'
-	puts '<data>        = dataファイル'
+	puts $0 + ' <data>'
+	puts '<data>        = 一時ファイル名'
 	exit 0
 end
 
@@ -102,12 +85,11 @@ end
 std_form = ''; std_record = ''; site_form = ''; site_record = ''; patch_form = ''
 
 # 定数の指定(最後に、かならず「/」を付けた形にしてください)
-std_form = ARGV[2] + '/'   		# 日レセ標準formディレクトリ
-std_record = ARGV[3] + '/' 		# 日レセ標準recordディレクトリ
-site_form = ARGV[4] + '/'  		# 日レセsite固有formディレクトリ
-site_record = ARGV[5] + '/'		# 日レセsite固有recordディレクトリ
-patch_form = ARGV[8] + '/'  		# 日レセsite固有formディレクトリ
-
+std_form = ARGV[1] + '/'   		# 日レセ標準formディレクトリ
+std_record = ARGV[2] + '/' 	# 日レセ標準recordディレクトリ
+site_form = ARGV[3] + '/'  		# 日レセsite固有formディレクトリ
+site_record = ARGV[4] + '/'		# 日レセsite固有recordディレクトリ
+patch_form = ARGV[5] + '/'  		# 日レセsite固有formディレクトリ
 
 # .redからpsファイルに変換する際に使用するプログラム
 #RED_EXEC = 'red2ps'
@@ -126,11 +108,11 @@ PDF = "ps2pdf"
 # 領域の初期化
 
 # ファイル名領域
-temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''; offset_xy = ''
-temp_file2 = ''; exec_file2 = ''; dia_file2 = ''; def_file2 = ''; data_file2 = ''; lp_name2 = ''
+temp_file = '';   data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''; offset_xy = ''
+temp_file2 = '';  lp_name2 = ''
 site_flag = ''; base_dir = ''
 #---- (2003/01/20 ) start
-prt_flg = '';pdffile_name = '';pdffile_name_folder = '';exec_file_prv = '';exec_file_prv = ''
+prt_flg = '';pdffile_name = '';pdffile_name_folder = ''
 #---- (2003/01/20 ) end
 # 文字列領域
 word1 = ''; word2 = []; word3 = ''
@@ -147,23 +129,8 @@ d2_len = 0
 # ============================================================
 # 引数のセット
 
-# 引数の数チェック
-for li_cnt1 in 1..8 do
-	if ARGV[li_cnt1] == nil
-		puts '引数の数が足りません'
-		exit 1
-	end
-end
-
-
 # 引数の領域から、文字列の取得
-#temp_file = String(ARGV[0])		# 一時ファイル
-exec_file = String(ARGV[1])		# 起動プログラムファイル
-data_file = String(ARGV[6])		# dataファイル名
-#---- (2003/07/03 ) add start
-exec_file_prv = String(ARGV[7])		# 起動プログラムファイル
-#---- (2003/07/03 ) add end  
-
+data_file = String(ARGV[0])		# dataファイル名
 
 # 一時ファイルのファイル名を生成
 temp_file = data_file + '.tmp'
@@ -212,21 +179,13 @@ end
 
 # 関数を呼び出して、前後の「'」「"」を削除
 temp_file = filename_change(temp_file)
-exec_file = filename_change(exec_file)
 data_file = filename_change(data_file)
 #---- (2003/07/03 ) add start
-exec_file_prv = filename_change(exec_file_prv)
 #---- (2003/07/03 ) add end  
 #---- (2007/05/30 ) add start
 hospnum = get_hospnum(data_file)
 puts "医療機関番号   = [" + hospnum + "]"
 #---- (2007/05/30 ) add end
-
-
-# 逆に、間に空白がある文字列に、「"」を追加したものを用意
-temp_file2 = filename_unchange(temp_file)
-#exec_file2 = filename_unchange(exec_file_prv)
-data_file2 = filename_unchange(data_file)
 
 
 # コマンド引数のformやrecordのディレクトリ名に「/」がない場合、「/」を付ける処理
@@ -241,7 +200,6 @@ patch_form = add_slash(patch_form)
 
 # デバッグ用の表示
 puts "一時ファイル   = [" + temp_file + "]"
-puts "起動プログラム = [" + exec_file + "]"
 puts "dataファイル   = [" + data_file + "]"
 
 
@@ -346,8 +304,6 @@ end
 
 	# 先頭30バイトは、.diaと.defファイルのファイル名部分
 	# あるいは、.redファイルの拡張子を含むファイル名
-	dia_file = ''
-	def_file = ''
 	red_file = ''
 	ls_w1 = ''	# 一時用文字列領域
 	ls_w1 = d2[0, 30].strip	# ファイル名を後ろの空白を除いて取得
@@ -655,16 +611,7 @@ else
   end
 end
 
-is_portlait=''
-optRotate = ''
 w_exec.clear
-
-is_portlait=`zcat -f #{red_file} | %RUBY% -e 'STDIN.read.delete("\n").scan(/attribute name="is_portrait".*?"(.*?)"/){|s| print s}'`
-puts is_portlait
-if is_portlait=='false'
-    optRotate=''
-end
-puts "is_portlait[" +  is_portlait + "]"
 
 #---- (2003/07/03) start
 		case	prt_flg
@@ -692,11 +639,7 @@ puts "is_portlait[" +  is_portlait + "]"
 				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' -o ' + pdffile_name + ' '  + layeroption
 				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
 				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
-				if optRotate == ''
-					w_exec << "mv #{fpdf.path} #{pdffile_name}"
-                else
-					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
-                end
+				w_exec << "mv #{fpdf.path} #{pdffile_name}"
 				w_exec << "lpr -P #{lp_name} #{pdffile_name}"
 			end
 		when	'3'     # PDFファイル出力の指示
@@ -708,11 +651,7 @@ puts "is_portlait[" +  is_portlait + "]"
 				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + pdffile_name + ' ' + layeroption
 				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
 				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
-				if optRotate == ''
-					w_exec << "mv #{fpdf.path} #{pdffile_name}"
-                else
-					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
-                end
+				w_exec << "mv #{fpdf.path} #{pdffile_name}"
 				Print_Area.push(pdffile_name)
 			end
 		when	'4'     # PDFファイル出力の指示
@@ -723,11 +662,7 @@ puts "is_portlait[" +  is_portlait + "]"
 				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + pdffile_name + ' ' + layeroption
 				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
 				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
-				if optRotate == ''
-					w_exec << "mv #{fpdf.path} #{pdffile_name}"
-                else
-					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
-                end
+				w_exec << "mv #{fpdf.path} #{pdffile_name}"
 			end
 		when	'5'     # クライアント印刷指示
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
@@ -737,11 +672,7 @@ puts "is_portlait[" +  is_portlait + "]"
 				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -o ' + pdffile_name + ' ' + layeroption
 				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
 				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
-				if optRotate == ''
-					w_exec << "mv #{fpdf.path} #{pdffile_name}"
-                else
-					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
-                end
+				w_exec << "mv #{fpdf.path} #{pdffile_name}"
 				Print_Area.push(pdffile_name)
 			end
 		else

@@ -1,6 +1,6 @@
 #!%RUBY%
 # coding : euc-jp
-Encoding.default_external = "euc-jisx0213"
+Encoding.default_external = "ascii-8bit"
 
 # 文字列の改行区切りで配列にして、それを引数のプログラムに渡す処理
 # (2002/03/07 竹田氏追加依頼)
@@ -27,13 +27,7 @@ Encoding.default_external = "euc-jisx0213"
 
 
 # 引数指定方法
-# 引数1 = [ダミー]
-# 引数2 = 起動プログラム
-# 引数3 = 日医標準レセプトformディレクトリ
-# 引数4 = 日医標準レセプトrecordディレクトリ
-# 引数5 = 日医標準レセプトsite固有formディレクトリ
-# 引数6 = 日医標準レセプトsite固有recordディレクトリ
-# 引数7 = dataファイル
+# 引数1 = dataファイル
 
 # dataファイルフォーマット
 # +------------------+------------+---------------+---------------+---------------+--------------------------+
@@ -67,13 +61,7 @@ end
 
 if (help_flg != 0)
 	puts 'このスクリプトは、改行で区切って、引数のプログラムに渡すプログラムです'
-	puts $0 + ' <dummy> <exec> <form> <record> <site-form> <site-record> <data>'
-	puts '<dummy>       = ダミー文字列'
-	puts '<exec>        = 起動プログラム'
-	puts '<form>        = 日医標準レセプトformディレクトリ'
-	puts '<record>      = 日医標準レセプトrecordディレクトリ'
-	puts '<site-form>   = 日医標準レセプトsite固有formディレクトリ'
-	puts '<site-record> = 日医標準レセプトsite固有recordディレクトリ'
+	puts $0 + ' <data>'
 	puts '<data>        = dataファイル'
 	exit 0
 end
@@ -82,12 +70,11 @@ end
 std_form = ''; std_record = ''; site_form = ''; site_record = ''; patch_form = ''
 
 # 定数の指定(最後に、かならず「/」を付けた形にしてください)
-std_form = ARGV[2] + '/'   		# 日レセ標準formディレクトリ
-std_record = ARGV[3] + '/' 		# 日レセ標準recordディレクトリ
-site_form = ARGV[4] + '/'  		# 日レセsite固有formディレクトリ
-site_record = ARGV[5] + '/'		# 日レセsite固有recordディレクトリ
-patch_form = ARGV[7] + '/'  		# 日レセpatch固有formディレクトリ
-
+std_form = ARGV[1] + '/'   		# 日レセ標準formディレクトリ
+std_record = ARGV[2] + '/' 	# 日レセ標準recordディレクトリ
+site_form = ARGV[3] + '/'  		# 日レセsite固有formディレクトリ
+site_record = ARGV[4] + '/'		# 日レセsite固有recordディレクトリ
+patch_form = ARGV[5] + '/'  		# 日レセsite固有formディレクトリ
 
 # .redからpsファイルに変換する際に使用するプログラム
 #RED_EXEC = 'red2ps'
@@ -102,8 +89,7 @@ DEFAULT_LP = 'lp1'
 # 領域の初期化
 
 # ファイル名領域
-temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''
-temp_file2 = ''; exec_file2 = ''; dia_file2 = ''; def_file2 = ''; data_file2 = ''; lp_name2 = ''
+temp_file = '';  data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''
 site_flag = ''; base_dir = ''
 # 文字列領域
 word1 = ''; word2 = []; word3 = ''
@@ -120,19 +106,9 @@ d2_len = 0
 # ============================================================
 # 引数のセット
 
-# 引数の数チェック
-for li_cnt1 in 1..6 do
-	if ARGV[li_cnt1] == nil
-		puts '引数の数が足りません'
-		exit 1
-	end
-end
-
-
 # 引数の領域から、文字列の取得
 #temp_file = String(ARGV[0])		# 一時ファイル
-exec_file = String(ARGV[1])		# 起動プログラムファイル
-data_file = String(ARGV[6])		# dataファイル名
+data_file = String(ARGV[0])		# dataファイル名
 
 
 # 一時ファイルのファイル名を生成
@@ -176,13 +152,10 @@ end
 
 # 関数を呼び出して、前後の「'」「"」を削除
 temp_file = filename_change(temp_file)
-exec_file = filename_change(exec_file)
 data_file = filename_change(data_file)
 
 
 # 逆に、間に空白がある文字列に、「"」を追加したものを用意
-temp_file2 = filename_unchange(temp_file)
-exec_file2 = filename_unchange(exec_file)
 data_file2 = filename_unchange(data_file)
 
 
@@ -195,7 +168,6 @@ site_record = add_slash(site_record)
 
 # デバッグ用の表示
 #puts "一時ファイル   = [" + temp_file + "]"
-#puts "起動プログラム = [" + exec_file + "]"
 #puts "dataファイル   = [" + data_file + "]"
 
 
@@ -273,8 +245,6 @@ word2.each do |d2|
 
 	# 先頭30バイトは、.diaと.defファイルのファイル名部分
 	# あるいは、.redファイルの拡張子を含むファイル名
-	dia_file = ''
-	def_file = ''
 	red_file = ''
 	ls_w1 = ''	# 一時用文字列領域
 	ls_w1 = d2[0, 30].strip	# ファイル名を後ろの空白を除いて取得
@@ -350,7 +320,7 @@ end
 
 		w_exec = RED2EMBED + ' '   + red_file + ' ' + temp_file + ' -o ' + fred.path  + ' ; ' \
                + MONPE + ' ' +  fred.path + ' -x ' + offset_x + ' -y ' + offset_y + ' -e ' + fpdf.path + ' ' + layeroption  + ' ; ' \
-               + 'cat ' + fpdf.path + ' |  lpr -P ' + lp_name
+               + 'lpr -P ' + lp_name + ' ' + fpdf.path
 
 
 # デバッグ用の表示

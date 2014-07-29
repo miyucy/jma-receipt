@@ -30,48 +30,51 @@ fi
 #
 #-------------------------------------------#
 
-        OLDLOG="/var/log/jma-receipt/${7}ORCBQ01.log"
-        LOG_FILE="/var/log/jma-receipt/${7}orcb013_1.log"
+LOG_FILE="/var/log/jma-receipt/${7}orcb013_1.log"
 
-[ -e "${OLDLOG}" ] &&  rm ${OLDLOG}
 [ -e "${LOG_FILE}" ] &&  rm ${LOG_FILE}
 
-        echo "all params [" $@ "]"   >$LOG_FILE
-        echo "arg2   = [" ${2}   "]" <>$LOG_FILE
-        echo "arg11  = [" ${11}  "]" >>$LOG_FILE
-        echo "arg12  = [" ${12}  "]" >>$LOG_FILE
+    printf "[%s]\n" "$@" > $LOG_FILE
+
+PARA_FILE_BASE=$3
+PARA_FILE_FULL=${MCP_TEMPDIR}/${3}
+
+WKCSV_FILE_BASE=${15}
+WKCSV_FILE_FULL=${MCP_TEMPDIR}/${15}
+
 ##
         PGNAME=ORCBQ01
         [ ${16} == "1" ] && PGNAME=ORCBQ01A
         [ ${16} == "2" ] && PGNAME=ORCBQ01B
 ##
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGNAME} -parameter $3,$4,$5,$6,$7,$8,${11},${13},${14},${15},${16} >> $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGNAME} -parameter ${PARA_FILE_BASE},$4,$5,$6,$7,$8,${11},${13},${14},${WKCSV_FILE_BASE},${16} >> $LOG_FILE 2>&1
 
 ##      ＣＳＶファイル作成
         if  [ $1 -eq "0" ]; then
-            if  [ -e ${15} ]; then
-		%RUBY% -e 'STDIN.readlines.each{|y| puts y.split(",").each{|x|  x.strip!}.join(",")}' <  ${15} > ${2}.tmp
+            if  [ -e ${WKCSV_FILE_FULL} ]; then
+		%RUBY% -e 'Encoding.default_external = "ascii-8bit" if defined?(Encoding) && Encoding.respond_to?("default_external"); \
+                          STDIN.readlines.each{|y| puts y.split(",").each{|x|  x.strip!}.join(",")}' <  ${WKCSV_FILE_FULL} > $2.tmp
 
                 if   [ ${11} = '1' ]; then
-#                   クライアント保存のとき固定ファイルに文字コード変換（ＥＵＣからＳ−ｊｉｓ）
+#                   クライアント保存のとき固定ファイルに文字コード変換（ＥＵＣからＳ�・ｊｉｓ）
                     if  [ ${12} = '2' ]; then
-                        nkf -s -Lw ${2}.tmp > ${15}
-                        rm  ${2}.tmp
+                        nkf -s -Lw $2.tmp > ${WKCSV_FILE_FULL}
+                        rm  $2.tmp
                     else 
-                        mv  ${2}.tmp ${15}
+                        mv  $2.tmp ${WKCSV_FILE_FULL}
                     fi
                 else
-                    mv  ${2}.tmp $2
-                    rm  ${15}
+                    mv  $2.tmp $2
+                    rm  ${WKCSV_FILE_FULL}
                 fi 
             fi
         fi
 
 ##      パラメータファイル削除
-        if  [ -e $3 ]; then
-            rm  $3
+        if  [ -e ${PARA_FILE_FULL} ]; then
+            rm  ${PARA_FILE_FULL}
         fi
 
-       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$9${10},$7" >> $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$9${10},$7" >> $LOG_FILE 2>&1
 
         exit

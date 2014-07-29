@@ -29,18 +29,14 @@
       *  03.05.00    NACL-太田    07/05/24  グループ診療対応
       *****************************************************************
        01  HC01PARA.
-           03  HC01PARA-OLD.
-               05  FILLER                      PIC  X(05) VALUE "/tmp/".
-               05  HC01PARA-BASENAME.
-                   07  HC01PARA-HOSPNUM        PIC  9(02).
-                   07  HC01PARA-FORM-ID        PIC  X(04).
-                   07  FILLER                  PIC  X(01) VALUE ".".
-                   07  HC01PARA-TERMID         PIC  X(32).
-                   07  FILLER                  PIC  X(01) VALUE ".".
-                   07  HC01PARA-SYOHMS         PIC  9(08).
-                   07  FILLER                  PIC  X(01) VALUE ".".
-                   07  HC01PARA-CNT            PIC  9(06).
-                   07  FILLER                  PIC  X(04) VALUE ".dat".
-               05  FILLER                      PIC  X(960) VALUE SPACE.
-           03  HC01PARA-R    REDEFINES HC01PARA-OLD.
-               05  HC01PARA-FULLNAME           PIC  X(1024).
+           03  FILLER                      PIC  X(05) VALUE "/tmp/".
+           03  HC01PARA-BASENAME.
+               05  HC01PARA-HOSPNUM        PIC  9(02).
+               05  HC01PARA-FORM-ID        PIC  X(04).
+               05  FILLER                  PIC  X(01) VALUE ".".
+               05  HC01PARA-TERMID         PIC  X(32).
+               05  FILLER                  PIC  X(01) VALUE ".".
+               05  HC01PARA-SYOHMS         PIC  9(08).
+               05  FILLER                  PIC  X(01) VALUE ".".
+               05  HC01PARA-CNT            PIC  9(06).
+               05  FILLER                  PIC  X(04) VALUE ".dat".

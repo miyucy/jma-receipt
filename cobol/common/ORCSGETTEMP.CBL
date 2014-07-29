@@ -87,7 +87,6 @@
                                            SGETTEMP-FULLNAME-AREA
       *
            ACCEPT   MCP-TEMPDIR      FROM ENVIRONMENT  "MCP_TEMPDIR"
-           ACCEPT   WRK-ORCA-TEMPDIR FROM ENVIRONMENT  "ORCA_TEMPDIR"
       *
            MOVE   1                    TO  WRK-POINTER-PATH
       *
@@ -95,15 +94,6 @@
            INTO   WRK-FULLNAME
            WITH   POINTER  WRK-POINTER-PATH
            END-STRING
-      *
-           IF   ( WRK-ORCA-TEMPDIR     NOT =   SPACE )
-               STRING "/"                      DELIMITED BY SIZE
-                      FUNCTION TRIM(WRK-ORCA-TEMPDIR)
-                                               DELIMITED BY SIZE
-               INTO   WRK-FULLNAME
-               WITH   POINTER  WRK-POINTER-PATH
-               END-STRING
-           END-IF
       *
            MOVE   WRK-POINTER-PATH TO  WRK-POINTER
            MOVE   WRK-FULLNAME     TO  SGETTEMP-TEMPDIR

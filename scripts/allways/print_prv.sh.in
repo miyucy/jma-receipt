@@ -27,15 +27,21 @@ fi
 #        ${21} 印刷データ(オリジナル)
 #-------------------------------------------#
 #
+ERR_FILE_BASE=${12}
+ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
+
+PRT_FILE_BASE=${21}
+PRT_FILE_FULL=${MCP_TEMPDIR}/${PRT_FILE_BASE}
+
 ##      エラーファイル削除
 	echo $#
-	echo "echo " ${12}
-	echo "echo " ${21}
-        if  [ -e ${12} ]; then
-            rm  ${12}
+	echo "echo " ${ERR_FILE_FULL}
+	echo "echo " ${PRT_FILE_FULL}
+        if  [ -e ${ERR_FILE_FULL} ]; then
+            rm  ${ERR_FILE_FULL}
         fi
         
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPRT1 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22}
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPRT1 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${ERR_FILE_BASE},${13},${14},${15},${16},${17},${18},${19},${20},${PRT_FILE_BASE},${22}
         if  [ -e ${12} ]; then
             exit
         else

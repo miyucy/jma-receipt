@@ -36,7 +36,6 @@
            03  SGETTEMP-FULLNAME-AREA.
       *    TEMPDIR + "/" + BASENAME
                05  SGETTEMP-FULLNAME       PIC X(1024).
-      *    TEMPDIR + "/" + BASENAME + "." + nnn
                05  SGETTEMP-FULLNAMES-OCC  OCCURS 10.
                    07  SGETTEMP-FULLNAMES  PIC X(1024).
 

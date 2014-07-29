@@ -9,13 +9,21 @@ fi
 
 . $JMARECEIPT_ENV
 
-export HOME=/home/orca
-printf %-20000s "$(cat $4)" > $4.tmp
-mv $4.tmp $4
+PRT_FILE=${MCP_TEMPDIR}/$4
 
-[[ $(cat $4) =~ MonpeLayerIn(.*)MonpeLayerOut ]]
-LAYEROPTION=$(echo " ${BASH_REMATCH[1]}" | sed -e "s/ *-L */,/g" | sed -e "s/,/-H /")
-sed -i -e "s/${BASH_REMATCH[0]}/$(printf %-$(expr length "${BASH_REMATCH[0]}")s ' ')/"  $4
+export HOME=/home/orca
+printf %-20000s "$(cat ${PRT_FILE})" > ${PRT_FILE}.tmp
+mv ${PRT_FILE}.tmp ${PRT_FILE}
+
+LAYEROPTION=""
+[[ $(cat ${PRT_FILE}) =~ MonpeLayerIn(.*)MonpeLayerOut ]]
+
+if [ -e "${BASH_REMATCH[0]}" ]; then
+  LAYEROPTION=$(echo "${BASH_REMATCH[1]}" | sed -e "s/ *-L */,/g" | sed -e "s/,/-H /")
+  sed -i -e "s/${BASH_REMATCH[0]}/$(printf %-$(expr length "${BASH_REMATCH[0]}")s ' ')/"  ${PRT_FILE}
+fi
+
+echo "printed file=>" ${PRT_FILE}
 
 #
 #-------> path switch st
@@ -33,16 +41,11 @@ then
   fi
 fi
 #-------> path switch ed
-#whether encoding is utf-8 or not.
-if [ "$8"  == '2' ]; then
-	export	RED2PS_OUTPUT_CHARSET=UTF-8
-else
-	export	RED2PS_OUTPUT_CHARSET=EUC-JP
-fi
+
 	if	[ $1 = 'red2ps' ];then
-		RED2IFILE=$4.red2
-		PDFFILE=$4.pdf
-		FILE=$4.pdf
+		RED2IFILE=${PRT_FILE}.red2
+		PDFFILE=${PRT_FILE}.pdf
+		FILE=${PRT_FILE}.pdf
 		PRINTER=$5
 		OFFSETX=$6
 		OFFSETY=$7
@@ -51,36 +54,31 @@ fi
 		[ -z $OFFSETX  ] && OFFSETX=0
 		[ -z $OFFSETY  ] && OFFSETY=0
 
-		red2embed $usr_form $4 -o $RED2IFILE
+		red2embed $usr_form ${PRT_FILE} -o $RED2IFILE
 		monpe $LAYEROPTION -x $OFFSETX -y $OFFSETY $RED2IFILE -e $PDFFILE
 	 	lpr -P $PRINTER $PDFFILE
 
 		[ -e $RED2IFILE ] && rm $RED2IFILE
 		[ -e $PDFFILE ]   && rm $PDFFILE
 	else	
-		%RUBY% $1 $2 $3 $4 $5
+		%RUBY% $1 $2 $3 ${PRT_FILE} $5
 	fi
 #----------------------------------------------------------------------#
 #	ファイル削除処理
 #----------------------------------------------------------------------#
-HCLIST="HC04 HC08 HC18 HC20 HC21 HC22 HC23 HC24"
-  for FL in $HCLIST
-  do
-	if	[ $FL = ${4:9:4} ]	;then
-                 echo ${4:9:4}
-		exit
-	fi
-  done
-  if [ -e $4 ]	;then
-        echo $4
+
+  if [ -e ${PRT_FILE} ]	;then
+        echo ${PRT_FILE}
 #------ 処方せんQRイメージ削除
-	if	[ ${4:7:4} = "HC2Q" ]	;then
-	    %RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
+	if      [[ ${PRT_FILE} =~ ^${MCP_TEMPDIR}/..HC2Q ]]   ;then
+		grep -Eo "${MCP_TEMPDIR}.*\.png" ${PRT_FILE} | sed -e "s/ \+/ /" | xargs rm -f
 	fi
-	if	[ ${4:7:4} = "HC62" ]	;then
-	    %RUBY% -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
+
+	if      [[ ${PRT_FILE} =~ ^${MCP_TEMPDIR}/..HC62 ]]   ;then
+		grep -Eo "${MCP_TEMPDIR}.*\.png" ${PRT_FILE} | sed -e "s/ \+/ /" | xargs rm -f
 	fi
-	rm $4
+
+	rm ${PRT_FILE}
   fi
 #----------------------------------------------------------------------#
 #	終了処理

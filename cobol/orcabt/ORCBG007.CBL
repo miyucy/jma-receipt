@@ -71,8 +71,10 @@
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //ORCBG00701//.
+@@@@@@*    ファイル名に拡張子を別途編集している場合は削除する。
       *    03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
+@@@@@@*    エラーファイル名用のコピー句を追加
            COPY    "CPRECEERR.INC".
       *
       *    ステータス領域
@@ -129,6 +131,7 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
+@@@@@@*    エラーファイル名はコピー句を使用する。
       *    03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-PTNUM                      PIC X(20).
@@ -320,6 +323,7 @@
       *    数値変換
            COPY    "CPORCSNUM.INC".
       *
+@@@@@@*    サブプログラムのコピーを追加
       *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
@@ -376,6 +380,7 @@
            INITIALIZE                  ERR-EDIT-AREA
 grpsys     INITIALIZE                  SPA-AREA
            INITIALIZE                  WRK-PARA
+@@@@@@*    エラーファイル名初期化
            INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
@@ -472,6 +477,9 @@ grpsys     END-UNSTRING
                                            JOBKANRI-REC
                                            SPA-AREA
       *
+@@@@@@*    サブプログラムより、一時ファイル名の編集を行う。
+@@@@@@*    ORCBG00701PARA-FULLNAME設定後の
+@@@@@@*    ORCBG00701PARA-BASENAME再利用はできません。
            INITIALIZE                      SGETTEMP-AREA
       *
            MOVE    WRK-PARA-HOSPNUM    TO  ORCBG00701PARA-HOSPNUM

@@ -9,6 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 export HOME=/home/orca
+export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$PATH
 
 #----------------------------------------------------------------------#
 #       °ú¿ô	
@@ -18,14 +19,12 @@ export HOME=/home/orca
 
 	echo	`date`
 	echo	$1
-#whether encoding is utf-8 or not.
-if [ "$2"  == '2' ]; then
-	export	RED2PS_OUTPUT_CHARSET=UTF-8
-else
-	export	RED2PS_OUTPUT_CHARSET=EUC-JP
-fi
 
-%RUBY% "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "%RUBY% ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 ${PATCHFORMDIR}
+PRT_FILE_BASE=$1
+PRT_FILE_FULL=${MCP_TEMPDIR}/${PRT_FILE_BASE}
 
-	rm -f $1
+
+print_parent2.rb ${PRT_FILE_FULL} ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} ${PATCHFORMDIR}
+
+	rm -f ${PRT_FILE_FULL}
 	echo	`date`

@@ -30,7 +30,7 @@
       *    £Ä£Å£ÆÌ¾
            03  MKPRT-DEF                PIC  X(50).
       *    ¥Ç¡¼¥¿ÆâÍÆ
-           03  MKPRT-DAT                PIC  X(90).
+           03  MKPRT-DAT                PIC  X(1024).
       *    °õºþ°ÌÃÖ
            03  MKPRT-PRTNM              PIC  X(16).
       *    °õºþÆâÍÆ

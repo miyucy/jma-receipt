@@ -120,11 +120,12 @@
                                    REPLACING  //TMPFLPARA//
                                    BY         //TMP02PARA//.
       *
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
+                                   BY         //PRFNAME//.
+      *
       *    画面SPA(KYOUTU領域を使用)
            COPY    "Q01SCR-SPA".
-      *
-       01  ASSIGN-NAME-AREA.
-           03  PRFNAME                 PIC X(100).
       *
       *    ステータス領域
        01  STS-AREA.
@@ -268,6 +269,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -331,6 +335,19 @@
            MOVE    SPA-HOSPNUM         TO  TMP02PARA-HOSPNUM
            MOVE    "BQ03TMP2"          TO  TMP02PARA-FILE-ID
            MOVE    SPA-TERMID          TO  TMP02PARA-TERMID
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    PRFNAME             TO  SGETTEMP-BASENAMES (1)
+           MOVE    TMP01PARA-BASENAME  TO  SGETTEMP-BASENAMES (2)
+           MOVE    TMP02PARA-BASENAME  TO  SGETTEMP-BASENAMES (3)
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  PRFNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  TMP01PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  TMP02PARA-FULLNAME
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BQ01-FILE

@@ -44,7 +44,7 @@
        FILE-CONTROL.
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PARA.
@@ -66,6 +66,7 @@
       *
       *     °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *
       *    ¥·¥§¥ëÍÑÎÎ°è
       *    COPY    "CPCOMMONSHELL.INC".
@@ -352,6 +353,9 @@
       *    Ì¤¼ý³ÛÊÔ½¸
            COPY    "CPORCSMISYU.INC".
       *
+      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -491,6 +495,14 @@
            MOVE    ORCHCN03-TERMID     TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    1                   TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASGNPARA
+      *
            OPEN    OUTPUT               PRT-FILE
       *
            .
@@ -1900,7 +1912,7 @@
            CLOSE   PRT-FILE
       *
            CALL    "ORCHCN03S01"   USING   ORCHCN03AREA
-                                           HC01PARA
+                                           ASGNPARA
                                            SPA-AREA
       *
            .

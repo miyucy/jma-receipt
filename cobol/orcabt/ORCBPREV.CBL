@@ -77,9 +77,10 @@
        WORKING-STORAGE             SECTION.
 grpsys*
 grpsys COPY    "COMMON-SPA".
+       COPY    "CPASGNPARA.INC"    REPLACING //ASGNPARA//
+                                   BY        //PRT-FILE-ID//.
       *
        01  PS-PRTDATA              PIC X(100000).
-       01  PRT-FILE-ID             PIC X(200).
        01  PS-FILE-ID              PIC X(200).
        01  PS-FILE-DATA            PIC X(200).
       *
@@ -175,6 +176,9 @@ grpsys COPY    "COMMON-SPA".
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -219,7 +223,12 @@ grpsys COPY    "COMMON-SPA".
            PERFORM 100-DBOPEN-SEC
       *
       *    指定ファイル読み込み処理
-           MOVE    PARA-FILENM         TO  PRT-FILE-ID
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    PARA-FILENM         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  PRT-FILE-ID
            OPEN    INPUT               PRT-FILE
            IF      STS-PRT             NOT =   ZERO
                DISPLAY "PRT-FILE OPEN ERR=" STS-PRT 

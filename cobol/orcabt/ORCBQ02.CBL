@@ -84,9 +84,14 @@
            COPY    "CPBQ01.INC"    REPLACING  //BQ01//
                                    BY         //WKBQ01//.
       *
-       01  ASSIGN-NAME-AREA.
-           03  PRFNAME                 PIC X(100).
-           03  ERRFNAME                PIC X(200).
+      *
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
+                                   BY         //PRFNAME//.
+      *
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
+                                   BY         //ERRFNAME//.
       *
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
@@ -204,6 +209,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -269,7 +277,27 @@
            MOVE    "BQ03T01"           TO  BQ03T01PARA-FILE-ID
            MOVE    SPA-TERMID          TO  BQ03T01PARA-TERMID
       *
-           MOVE    WRK-PARA-PAFNAME    TO  PRFNAME
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    BQ03T01PARA-BASENAME TO SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  BQ03T01PARA-FULLNAME
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    WRK-PARA-PAFNAME    TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  PRFNAME
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    WRK-PARA-ERRFNAME   TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ERRFNAME
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BQ01-FILE

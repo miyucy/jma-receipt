@@ -25,28 +25,38 @@ LOG=/var/log/jma-receipt/"$2"orcb013_3.log
 #        $5  処理時間
 #-------------------------------------------#
 
-TMPFILE=$3
+PARA_FILE_BASE=$3
+PARA_FILE_FULL=${MCP_TEMPDIR}/${PARA_FILE_BASE}
 
 cleanup(){
-echo "$TMPFILE" >> $LOG
+echo "${PARA_FILE_FULL}" >> $LOG
 ##      パラメータファイル削除
-        if  [ -e ${TMPFILE} ]; then
-            rm   ${TMPFILE}
+        if  [ -e ${PARA_FILE_FULL} ]; then
+            rm   ${PARA_FILE_FULL}
         fi
 }
+
+killtree(){
+  local children=$(pgrep -P $1 2>/dev/null)
+  for ${child} in ${children} ; do
+    killtree ${child}
+  done
+  kill -9 $1
+}
+
 
 trap cleanup 0
 
 for p in $(pgrep -u orca -f "$0 $1" ) ; do
   if [ $p -ne $$ ]; then
-    pkill -P $p
+    killtree $p
   fi
 done
 
 n=1
 while [ $n -lt 3 ] ; do
     n=$(expr $n + 1)
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ03 -parameter "$1,$2,$3,$4,$5,"  > $LOG 2>&1
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ03 -parameter "$1,$2,${PARA_FILE_BASE},$4,$5,"  > $LOG 2>&1
     [ $? -eq 0 ] && break
     sleep 3
 done

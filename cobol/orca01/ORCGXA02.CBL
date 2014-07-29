@@ -235,11 +235,6 @@
        01  WRK-ROW.
            05  WRK-LIST-ROW        PIC S9(9)   BINARY.
       *                             
-       01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(16) VALUE
-                                             "scripts/allways/".
-           05  WRK-SHELL-SHELL    PIC X(20).         
-      *
            COPY    "CPSHELLTBL.INC".
       *
        01  WRK-LNK-AREA.
@@ -1974,12 +1969,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF                            
       *             
            MOVE    SPACE               TO  SHELLTBL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    "print_prv.sh"      TO  WRK-SHELL-SHELL
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
       *     
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
@@ -2010,7 +2000,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
       *                 
-           MOVE    XA02ERR             TO  SHELLTBL-ARG12
+           MOVE    XA02ERR-BASENAME    TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
@@ -2032,7 +2022,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "allways"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
       *    ＪＯＢＩＤ更新処理

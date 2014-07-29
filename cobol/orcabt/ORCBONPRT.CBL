@@ -75,17 +75,9 @@
        01  INDEX-AREA.
            03  IDX                     PIC 9(03). 
       *
+       COPY    "CPASGNPARA.INC"        REPLACING   //ASGNPARA//
+                                       BY          //PRTOUTPARA//.
       *
-       01  PRTOUTPARA.
-           03  FILLER                  PIC  X(09) VALUE "/var/tmp/".
-           03  PRTOUTPARA-FORM-ID      PIC  X(04).
-           03  FILLER                  PIC  X(01) VALUE ".".
-           03  PRTOUTPARA-UUID         PIC  X(31).
-           03  FILLER                  PIC  X(01) VALUE ".".
-           03  PRTOUTPARA-SYOHMS       PIC  9(08).
-           03  FILLER                  PIC  X(01) VALUE ".".
-           03  PRTOUTPARA-CNT          PIC  9(06).
-           03  FILLER                  PIC  X(04) VALUE ".dat".
       *    一時領域
        01  WRK-AREA.
       *
@@ -149,6 +141,9 @@
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -226,7 +221,12 @@
        200-MAIN-SEC                SECTION.
       *
       *    帳票印刷処理
+           INITIALIZE                  SGETTEMP-AREA
            MOVE    WRK-PARA-DATASETNAME
+                                       TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  PRTOUTPARA
            OPEN    INPUT               PRT-FILE
            MOVE    SPACE               TO  PRT-PRTDATA
