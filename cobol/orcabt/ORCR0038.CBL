@@ -56,6 +56,8 @@
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.03    NACL-門脇    14/07/29  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -390,7 +392,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    RECE04-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
                IF       RECE04-SRYKBN  =  "60" OR "64" OR "99"
-                   PERFORM   2101-RECE05-SRYSYUKBN-HENSYU-SEC
+                   PERFORM   2101-RECE05-SRYSYUKBN-HEN-SEC
                END-IF
       *
                INITIALIZE          WRK-COM-AREA
@@ -594,7 +596,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
       *    診療種別区分取得
       *****************************************************************
-       2101-RECE05-SRYSYUKBN-HENSYU-SEC         SECTION.
+       2101-RECE05-SRYSYUKBN-HEN-SEC         SECTION.
       *
            INITIALIZE                           RECE05-REC
            MOVE    RECE02-KEY           TO      RECE05-KEY1
@@ -618,7 +620,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-PERFORM
       *
            .
-       2101-RECE05-SRYSYUKBN-HENSYU-EXT.
+       2101-RECE05-SRYSYUKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************

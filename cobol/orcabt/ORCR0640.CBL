@@ -654,6 +654,8 @@
       *                                     なった場合の対応修正
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-門脇    14/07/29  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2284,17 +2286,18 @@
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
       *
-       01  WRK-RECE62-REC. 
+      *    ＲＥＣＥ６２のワークレコード
+       01  RECE6W-REC.
            COPY    "CPRCF062.INC"  REPLACING  //RECE62//
-                                   BY         //WRK-RECE62//.
+                                   BY         //RECE6W//.
       *
-       01  WRK-RECE62G-REC. 
+       01  RECE6G-REC.
            COPY    "CPRCF062.INC"  REPLACING  //RECE62//
-                                   BY         //WRK-RECE62G//.
+                                   BY         //RECE6G//.
       *
-       01  WRK-RECE62C-REC. 
+       01  RECE6C-REC.
            COPY    "CPRCF062.INC"  REPLACING  //RECE62//
-                                   BY         //WRK-RECE62C//.
+                                   BY         //RECE6C//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -3130,8 +3133,8 @@
                                WRK-NYULIFE-TABLE
                                WRK-TENTEKI2-TABLE
       *
-           INITIALIZE          WRK-RECE62G-REC
-           INITIALIZE          WRK-RECE62C-REC
+           INITIALIZE          RECE6G-REC
+           INITIALIZE          RECE6C-REC
       *
            INITIALIZE          WRK-SYS2010-TAIHI-TBL
            INITIALIZE          WRK-SYS2012-TAIHI-TBL
@@ -7011,7 +7014,7 @@
                END-IF
       *
                IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2101211-RECE65-TENSOU-COMCNT-HEN-SEC
+                  PERFORM  2101211-RECE65-COMCNT-HEN-SEC
                ELSE
                   IF   RECE64-SRYKBN      =     "50"
                      MOVE   "1"   TO    RECE64-FLG-SHUJUTU-COMMENT
@@ -7216,7 +7219,7 @@
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
                   IF  RECE65-SRYSURYO(IDX4)  NOT = ZERO
-                    PERFORM  2101213-RECE65-TENSOU-SURYO-HEN-SEC
+                    PERFORM  2101213-RECE65-SURYO-HEN-SEC
       *
                     MOVE    SPACE      TO  RECE65-NAME(IDX4)
                     MOVE    SPACE      TO  RECE65-INPUTCOMENT(IDX4)
@@ -7383,7 +7386,7 @@
                      IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 2101212-RECE65-TENSOU-TANKA-HEN-SEC
+                       PERFORM 2101212-RECE65-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE65-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -7437,7 +7440,7 @@
       *****************************************************************
       *    レセプトコメントフラグ編集処理
       *****************************************************************
-       2101211-RECE65-TENSOU-COMCNT-HEN-SEC               SECTION.
+       2101211-RECE65-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE64-SRYKBN      =     "11"
       *       初診（同日複数診療科）
@@ -8085,17 +8088,13 @@
            END-IF
       *
            .
-       2101211-RECE65-TENSOU-COMCNT-HEN-EXT.
+       2101211-RECE65-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    酸素の単価編集処理
       *****************************************************************
-       2101212-RECE65-TENSOU-TANKA-HEN-SEC     SECTION.
-      *
-      ***  IF      TNS-TEN         =   ZERO
-      ***      GO  TO  2101212-RECE65-TENSOU-TANKA-HEN-EXT  
-      ***  END-IF
+       2101212-RECE65-TANKA-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       * 
@@ -8155,13 +8154,13 @@
            END-IF                             
       *
            .
-       2101212-RECE65-TENSOU-TANKA-HEN-EXT.
+       2101212-RECE65-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    残量廃棄の数量編集処理
       *****************************************************************
-       2101213-RECE65-TENSOU-SURYO-HEN-SEC     SECTION.
+       2101213-RECE65-SURYO-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-SURYO-X
            MOVE    ZERO            TO  WRK-SURYOST
@@ -8275,7 +8274,7 @@
            END-STRING
       *
            .
-       2101213-RECE65-TENSOU-SURYO-HEN-EXT.
+       2101213-RECE65-SURYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8874,23 +8873,23 @@
                WHEN    "13"
                  IF  ACCT-ZAIKBN   =    2
                    IF    BUN-IDX        =   1
-                       COMPUTE    WRK-RECE62G-TENSU(2 BUN-IDX)  =
-                                  WRK-RECE62G-TENSU(2 BUN-IDX)  +
+                       COMPUTE    RECE6G-TENSU(2 BUN-IDX)  =
+                                  RECE6G-TENSU(2 BUN-IDX)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
-                       COMPUTE    WRK-RECE62G-TENSU(2 BUN-IDX2)  =
-                                  WRK-RECE62G-TENSU(2 BUN-IDX2)  +
+                       COMPUTE    RECE6G-TENSU(2 BUN-IDX2)  =
+                                  RECE6G-TENSU(2 BUN-IDX2)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
-                       COMPUTE    WRK-RECE62G-TENSU(2 BUN-IDX3)  =
-                                  WRK-RECE62G-TENSU(2 BUN-IDX3)  +
+                       COMPUTE    RECE6G-TENSU(2 BUN-IDX3)  =
+                                  RECE6G-TENSU(2 BUN-IDX3)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
-                       COMPUTE    WRK-RECE62G-TENSU(2 BUN-IDX4)  =
-                                  WRK-RECE62G-TENSU(2 BUN-IDX4)  +
+                       COMPUTE    RECE6G-TENSU(2 BUN-IDX4)  =
+                                  RECE6G-TENSU(2 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -8919,23 +8918,23 @@
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
                    IF    BUN-IDX        =   1
-                       COMPUTE    WRK-RECE62G-TENSU(3 BUN-IDX)  =
-                                  WRK-RECE62G-TENSU(3 BUN-IDX)  +
+                       COMPUTE    RECE6G-TENSU(3 BUN-IDX)  =
+                                  RECE6G-TENSU(3 BUN-IDX)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
-                       COMPUTE    WRK-RECE62G-TENSU(3 BUN-IDX2)  =
-                                  WRK-RECE62G-TENSU(3 BUN-IDX2)  +
+                       COMPUTE    RECE6G-TENSU(3 BUN-IDX2)  =
+                                  RECE6G-TENSU(3 BUN-IDX2)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
-                       COMPUTE    WRK-RECE62G-TENSU(3 BUN-IDX3)  =
-                                  WRK-RECE62G-TENSU(3 BUN-IDX3)  +
+                       COMPUTE    RECE6G-TENSU(3 BUN-IDX3)  =
+                                  RECE6G-TENSU(3 BUN-IDX3)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
-                       COMPUTE    WRK-RECE62G-TENSU(3 BUN-IDX4)  =
-                                  WRK-RECE62G-TENSU(3 BUN-IDX4)  +
+                       COMPUTE    RECE6G-TENSU(3 BUN-IDX4)  =
+                                  RECE6G-TENSU(3 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -9168,32 +9167,32 @@
                        COMPUTE   RECE62-TENSU(10 BUN-IDX)  =
                                  RECE62-TENSU(10 BUN-IDX)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX)  =
-                                 WRK-RECE62C-TENSU(10 BUN-IDX)  +
+                       COMPUTE   RECE6C-TENSU(10 BUN-IDX)  =
+                                 RECE6C-TENSU(10 BUN-IDX)  +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(10 BUN-IDX2)  =
                                  RECE62-TENSU(10 BUN-IDX2)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX2) =
-                                 WRK-RECE62C-TENSU(10 BUN-IDX2) +
+                       COMPUTE   RECE6C-TENSU(10 BUN-IDX2) =
+                                 RECE6C-TENSU(10 BUN-IDX2) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(10 BUN-IDX3)  =
                                  RECE62-TENSU(10 BUN-IDX3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX3) =
-                                 WRK-RECE62C-TENSU(10 BUN-IDX3) +
+                       COMPUTE   RECE6C-TENSU(10 BUN-IDX3) =
+                                 RECE6C-TENSU(10 BUN-IDX3) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(10 BUN-IDX4)  =
                                  RECE62-TENSU(10 BUN-IDX4)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX4) =
-                                 WRK-RECE62C-TENSU(10 BUN-IDX4) +
+                       COMPUTE   RECE6C-TENSU(10 BUN-IDX4) =
+                                 RECE6C-TENSU(10 BUN-IDX4) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
       *    静脈内注射のレセ点数欄の編集
@@ -9203,55 +9202,55 @@
                        COMPUTE   RECE62-TENSU(11 BUN-IDX)  =
                                  RECE62-TENSU(11 BUN-IDX)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX)  =
-                                 WRK-RECE62C-TENSU(11 BUN-IDX)  +
+                       COMPUTE   RECE6C-TENSU(11 BUN-IDX)  =
+                                 RECE6C-TENSU(11 BUN-IDX)  +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(11 BUN-IDX2)  =
                                  RECE62-TENSU(11 BUN-IDX2)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX2) =
-                                 WRK-RECE62C-TENSU(11 BUN-IDX2) +
+                       COMPUTE   RECE6C-TENSU(11 BUN-IDX2) =
+                                 RECE6C-TENSU(11 BUN-IDX2) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(11 BUN-IDX3)  =
                                  RECE62-TENSU(11 BUN-IDX3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX3) =
-                                 WRK-RECE62C-TENSU(11 BUN-IDX3) +
+                       COMPUTE   RECE6C-TENSU(11 BUN-IDX3) =
+                                 RECE6C-TENSU(11 BUN-IDX3) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(11 BUN-IDX4)  =
                                  RECE62-TENSU(11 BUN-IDX4)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX4) =
-                                 WRK-RECE62C-TENSU(11 BUN-IDX4) +
+                       COMPUTE   RECE6C-TENSU(11 BUN-IDX4) =
+                                 RECE6C-TENSU(11 BUN-IDX4) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
                  IF  ACCT-ZAIKBN   =    2
                    IF    BUN-IDX        =   1
-                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX)  =
-                                 WRK-RECE62G-TENSU(12 BUN-IDX)  +
+                       COMPUTE   RECE6G-TENSU(12 BUN-IDX)  =
+                                 RECE6G-TENSU(12 BUN-IDX)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
-                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX2)  =
-                                 WRK-RECE62G-TENSU(12 BUN-IDX2)  +
+                       COMPUTE   RECE6G-TENSU(12 BUN-IDX2)  =
+                                 RECE6G-TENSU(12 BUN-IDX2)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
-                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX3)  =
-                                 WRK-RECE62G-TENSU(12 BUN-IDX3)  +
+                       COMPUTE   RECE6G-TENSU(12 BUN-IDX3)  =
+                                 RECE6G-TENSU(12 BUN-IDX3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
-                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX4)  =
-                                 WRK-RECE62G-TENSU(12 BUN-IDX4)  +
+                       COMPUTE   RECE6G-TENSU(12 BUN-IDX4)  =
+                                 RECE6G-TENSU(12 BUN-IDX4)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -9260,32 +9259,32 @@
                        COMPUTE   RECE62-TENSU(12 BUN-IDX)  =
                                  RECE62-TENSU(12 BUN-IDX)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX)  =
-                                 WRK-RECE62C-TENSU(12 BUN-IDX)  +
+                       COMPUTE   RECE6C-TENSU(12 BUN-IDX)  =
+                                 RECE6C-TENSU(12 BUN-IDX)  +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(12 BUN-IDX2)  =
                                  RECE62-TENSU(12 BUN-IDX2)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX2) =
-                                 WRK-RECE62C-TENSU(12 BUN-IDX2) +
+                       COMPUTE   RECE6C-TENSU(12 BUN-IDX2) =
+                                 RECE6C-TENSU(12 BUN-IDX2) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(12 BUN-IDX3)  =
                                  RECE62-TENSU(12 BUN-IDX3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX3) =
-                                 WRK-RECE62C-TENSU(12 BUN-IDX3) +
+                       COMPUTE   RECE6C-TENSU(12 BUN-IDX3) =
+                                 RECE6C-TENSU(12 BUN-IDX3) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(12 BUN-IDX4)  =
                                  RECE62-TENSU(12 BUN-IDX4)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX4) =
-                                 WRK-RECE62C-TENSU(12 BUN-IDX4) +
+                       COMPUTE   RECE6C-TENSU(12 BUN-IDX4) =
+                                 RECE6C-TENSU(12 BUN-IDX4) +
                                 (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                  END-IF
@@ -10409,7 +10408,7 @@
               IF   FLG-DOJITU   =   1
                  PERFORM  VARYING  IDX1  FROM  1  BY  1
                            UNTIL   IDX1    >  10
-                    PERFORM   210223-NYUINACCT-SYU2-DOJITU-SEC
+                    PERFORM   210223-NYUINACCT-SYU2-DOU-SEC
                  END-PERFORM
               END-IF
            END-IF
@@ -10457,8 +10456,8 @@
       *
                      IF   WRK-SKJ200604-DAY(IDX1 SYUKEI-IDX3 1)
                                                         NOT =  ZERO
-                        PERFORM 210213-RECE64-TENSOU2-SKJ200604-SEC
-                        PERFORM 210214-RECE65-HENSYU2-SKJ200604-SEC
+                        PERFORM 210213X-RECE64-TENSOU2-SKJ2-SEC
+                        PERFORM 210214X-RECE65-HENSYU2-SKJ2-SEC
                         PERFORM RECE65-WRITE-SEC
                         PERFORM RECE64-WRITE-SEC
                      END-IF
@@ -10466,8 +10465,8 @@
                      IF   WRK-SKJ200604-DAY-KAN(IDX1 SYUKEI-IDX3)
                                                         NOT =  ZERO
                      AND  WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
-                       PERFORM 210219-RECE64-TENSOU2-SKJ200610-KAN-SEC
-                       PERFORM 210220-RECE65-HENSYU2-SKJ200610-KAN-SEC
+                       PERFORM 210219-RECE64-TENSOU2-KAN-SEC
+                       PERFORM 210220-RECE65-HENSYU2-KAN-SEC
                        PERFORM RECE65-WRITE-SEC
                        PERFORM RECE64-WRITE-SEC
       *
@@ -10553,8 +10552,8 @@
                                                 (IDX1 SYUKEI-IDX3)
                                                         NOT =  ZERO
                           MOVE    1    TO   FLG-SKJ200610FTN
-                          PERFORM 210221-RECE64-TENSOU2-SKJ200610FTN-SEC
-                          PERFORM 210222-RECE65-HENSYU2-SKJ200610FTN-SEC
+                          PERFORM 210221-RECE64-TENSOU2-SFTN-SEC
+                          PERFORM 210222-RECE65-HENSYU2-SFTN-SEC
                           PERFORM RECE65-WRITE-SEC
                           PERFORM RECE64-WRITE-SEC
                         END-IF
@@ -10563,8 +10562,8 @@
                         AND  WRK-NYULIFE-KANFTN-MONEY(SYUKEI-IDX3)
                                                         NOT =  ZERO
                           MOVE    2    TO   FLG-SKJ200610FTN
-                          PERFORM 210221-RECE64-TENSOU2-SKJ200610FTN-SEC
-                          PERFORM 210222-RECE65-HENSYU2-SKJ200610FTN-SEC
+                          PERFORM 210221-RECE64-TENSOU2-SFTN-SEC
+                          PERFORM 210222-RECE65-HENSYU2-SFTN-SEC
                           PERFORM RECE65-WRITE-SEC
                           PERFORM RECE64-WRITE-SEC
                         END-IF
@@ -10656,7 +10655,7 @@
                                            TO   WRK-SENTEI-SRYCD
       *                   看護比率基準未達時の入院基本点数の取得
                           IF    RECE62-SRYYM  <=  "201203"
-                           PERFORM 2102011-GAIHAKU-NYUINKHN-SET-SEC
+                           PERFORM 2102011-GAIHAKU-NYUINKHN-SEC
                           END-IF
                           IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
@@ -10769,7 +10768,7 @@
       **************************************************************
       *    外泊時の入院基本料取得
       **************************************************************
-       2102011-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+       2102011-GAIHAKU-NYUINKHN-SEC           SECTION.
       *
            EVALUATE  TNS-SRYCD
                WHEN  "190078210"
@@ -10941,7 +10940,7 @@
            END-IF
       *
            .
-       2102011-GAIHAKU-NYUINKHN-SET-EXT.
+       2102011-GAIHAKU-NYUINKHN-EXT.
            EXIT.
       *
       **************************************************************
@@ -12078,7 +12077,7 @@
       **************************************************************
       *    食事療養費の集計（同日再入院分）
       **************************************************************
-       210223-NYUINACCT-SYU2-DOJITU-SEC           SECTION.
+       210223-NYUINACCT-SYU2-DOU-SEC           SECTION.
       *
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
@@ -12202,7 +12201,7 @@
            END-PERFORM
       *
            .
-       210223-NYUINACCT-SYU2-DOJITU-EXT.
+       210223-NYUINACCT-SYU2-DOU-EXT.
            EXIT.
       *
       **************************************************************
@@ -13047,7 +13046,7 @@
                   WHEN    16
                   WHEN    19
                   WHEN    20
-                     PERFORM  2102091-NYUINACCT-HEN-TAKIKAN-SEC
+                     PERFORM  2102091-NYUINACCT-HEN-TAIN-SEC
                   WHEN     5
                   WHEN    10
                   WHEN    12
@@ -13056,9 +13055,9 @@
       **>         WHEN    18
       **>         WHEN    21
       **>         WHEN    22
-                     PERFORM  2102092-NYUINACCT-HEN-TAKIKAN2-SEC
+                     PERFORM  2102092-NYUINACCT-HEN-TAIN2-SEC
                   WHEN    23  THRU  46
-                     PERFORM  2102093-NYUINACCT-HEN-GENSAN-SEC
+                     PERFORM  2102093-NYUINACCT-HEN-GEN-SEC
                END-EVALUATE
                MOVE   WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
                                     TO   WRK-GAI2-ZAITEN  (SYUKEI-IDX3)
@@ -13174,7 +13173,7 @@
       **************************************************************
       *    他医療機関受診時の診療行為コード取得
       **************************************************************
-       2102091-NYUINACCT-HEN-TAKIKAN-SEC           SECTION.
+       2102091-NYUINACCT-HEN-TAIN-SEC           SECTION.
       *
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
@@ -13371,13 +13370,13 @@
            END-EVALUATE
            .
       *
-       2102091-NYUINACCT-HEN-TAKIKAN-EXT.
+       2102091-NYUINACCT-HEN-TAIN-EXT.
            EXIT.
       *
       **************************************************************
       *    他医療機関受診時の診療行為コード取得（選定療養）
       **************************************************************
-       2102092-NYUINACCT-HEN-TAKIKAN2-SEC           SECTION.
+       2102092-NYUINACCT-HEN-TAIN2-SEC           SECTION.
       *
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
@@ -13462,13 +13461,13 @@
            END-EVALUATE
            .
       *
-       2102092-NYUINACCT-HEN-TAKIKAN2-EXT.
+       2102092-NYUINACCT-HEN-TAIN2-EXT.
            EXIT.
       *
       **************************************************************
       *    減算の診療行為コード取得
       **************************************************************
-       2102093-NYUINACCT-HEN-GENSAN-SEC           SECTION.
+       2102093-NYUINACCT-HEN-GEN-SEC           SECTION.
       *
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
@@ -13508,7 +13507,7 @@
                END-EVALUATE
                IF   SYUKEI-IDX = 31 OR 32 OR 33 OR 34
                               OR 35 OR 36 OR 37 OR 38
-                   PERFORM  2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC
+                   PERFORM  2102094-NYUINACCT-HEN-TAIN3-SEC
                END-IF
              WHEN     27
              WHEN     28
@@ -13545,18 +13544,18 @@
                END-EVALUATE
                IF   SYUKEI-IDX = 39 OR 40 OR 41 OR 42
                               OR 43 OR 44 OR 45 OR 46
-                   PERFORM  2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC
+                   PERFORM  2102094-NYUINACCT-HEN-TAIN3-SEC
                END-IF
            END-EVALUATE
            .
       *
-       2102093-NYUINACCT-HEN-GENSAN-EXT.
+       2102093-NYUINACCT-HEN-GEN-EXT.
            EXIT.
       *
       **************************************************************
       *    他医療機関受診時の診療行為コード取得２
       **************************************************************
-       2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC           SECTION.
+       2102094-NYUINACCT-HEN-TAIN3-SEC           SECTION.
       *
            EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
       *      特定入院基本料
@@ -13597,7 +13596,7 @@
            END-EVALUATE
            .
       *
-       2102094-NYUINACCT-HEN-TAKIKAN-XXX-EXT.
+       2102094-NYUINACCT-HEN-TAIN3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -13808,17 +13807,17 @@
             IF WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)       NOT = ZERO
               ADD   1     TO     SYUKEI-IDX5
               MOVE  WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)      TO  WRK-SRYCD2
-              PERFORM    21021111-RECE65-TENSOU2-GAI2-SEC
+              PERFORM    21021111-RECE65-TENSOU2-G2-SEC
             END-IF
             IF WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)      NOT = ZERO
               ADD   1     TO     SYUKEI-IDX5
               MOVE  WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)     TO  WRK-SRYCD2
-              PERFORM    21021111-RECE65-TENSOU2-GAI2-SEC
+              PERFORM    21021111-RECE65-TENSOU2-G2-SEC
             END-IF
             IF WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4)  NOT = ZERO
               ADD   1     TO     SYUKEI-IDX5
               MOVE  WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4) TO  WRK-SRYCD2
-              PERFORM    21021111-RECE65-TENSOU2-GAI2-SEC
+              PERFORM    21021111-RECE65-TENSOU2-G2-SEC
             END-IF
       *
            END-IF
@@ -13830,7 +13829,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
-       21021111-RECE65-TENSOU2-GAI2-SEC                SECTION.
+       21021111-RECE65-TENSOU2-G2-SEC                SECTION.
       *
            MOVE  WRK-SRYCD2       TO  RECE65-SRYCD(SYUKEI-IDX5)
            MOVE  1                TO  RECE65-SRYSURYO(SYUKEI-IDX5)
@@ -13892,7 +13891,7 @@
            MOVE  TNS-NAME    TO RECE65-NAME(SYUKEI-IDX5)
       *
            .
-       21021111-RECE65-TENSOU2-GAI2-EXT.
+       21021111-RECE65-TENSOU2-G2-EXT.
            EXIT.
       *
       **************************************************************
@@ -14005,7 +14004,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００４）
       *****************************************************************
-       210213-RECE64-TENSOU2-SKJ200604-SEC               SECTION.
+       210213X-RECE64-TENSOU2-SKJ2-SEC               SECTION.
       *
            ADD      1   TO   WRK-SKJ200604-MEISAISU(IDX1 SYUKEI-IDX3)
            IF   WRK-SKJ200604-DAY(IDX1 SYUKEI-IDX3 2)  NOT =  ZERO
@@ -14097,13 +14096,13 @@
            MOVE    1                    TO  RECE64-KAISU(1 SYUKEI-IDX3)
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
            .
-       210213-RECE64-TENSOU2-SKJ200604-EXT.
+       210213X-RECE64-TENSOU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（環境）（Ｆ００４）
       *****************************************************************
-       210219-RECE64-TENSOU2-SKJ200610-KAN-SEC               SECTION.
+       210219-RECE64-TENSOU2-KAN-SEC               SECTION.
       *
            PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO  RECE64-KOHBUNRI
@@ -14138,13 +14137,13 @@
            MOVE    1                    TO  RECE64-KAISU(1 SYUKEI-IDX3)
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
            .
-       210219-RECE64-TENSOU2-SKJ200610-KAN-EXT.
+       210219-RECE64-TENSOU2-KAN-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（食事負担）（Ｆ００４）
       *****************************************************************
-       210221-RECE64-TENSOU2-SKJ200610FTN-SEC               SECTION.
+       210221-RECE64-TENSOU2-SFTN-SEC               SECTION.
       *
            PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO  RECE64-KOHBUNRI
@@ -14195,7 +14194,7 @@
            MOVE    1                    TO  RECE64-KAISU(1 SYUKEI-IDX3)
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
            .
-       210221-RECE64-TENSOU2-SKJ200610FTN-EXT.
+       210221-RECE64-TENSOU2-SFTN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -14328,7 +14327,7 @@
       *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００５）
       *****************************************************************
-       210214-RECE65-HENSYU2-SKJ200604-SEC               SECTION.
+       210214X-RECE65-HENSYU2-SKJ2-SEC               SECTION.
       *
            PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
@@ -14453,13 +14452,13 @@
            END-PERFORM
       *
            .
-       210214-RECE65-HENSYU2-SKJ200604-EXT.
+       210214X-RECE65-HENSYU2-SKJ2-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（環境）（Ｆ００５）
       *****************************************************************
-       210220-RECE65-HENSYU2-SKJ200610-KAN-SEC               SECTION.
+       210220-RECE65-HENSYU2-KAN-SEC               SECTION.
       *
            PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
@@ -14528,13 +14527,13 @@
            MOVE    TNS-TEN              TO  RECE64-SYUTEN1
       *
            .
-       210220-RECE65-HENSYU2-SKJ200610-KAN-EXT.
+       210220-RECE65-HENSYU2-KAN-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（食事負担）（Ｆ００５）
       *****************************************************************
-       210222-RECE65-HENSYU2-SKJ200610FTN-SEC               SECTION.
+       210222-RECE65-HENSYU2-SFTN-SEC               SECTION.
       *
            PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
@@ -14629,7 +14628,7 @@
            END-EVALUATE
       *
            .
-       210222-RECE65-HENSYU2-SKJ200610FTN-EXT.
+       210222-RECE65-HENSYU2-SFTN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -15105,7 +15104,7 @@
                        PERFORM   21032X-RECE64-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-T-SRYCD-X(IDX1 IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21035-RECE65-TENTEKI2-HENSYU-SEC
+                       PERFORM   21035-RECE65-TENTEKI2-HEN-SEC
                        PERFORM   21034-RECE62-HENSYU3-SEC
                        PERFORM   RECE64-WRITE-SEC
                     END-IF
@@ -15121,7 +15120,7 @@
                        PERFORM   21032X-RECE64-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-C-SRYCD-X(IDX1 IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21035-RECE65-TENTEKI2-HENSYU-SEC
+                       PERFORM   21035-RECE65-TENTEKI2-HEN-SEC
                        PERFORM   21034-RECE62-HENSYU3-SEC
                        PERFORM   RECE64-WRITE-SEC
                     END-IF
@@ -15530,7 +15529,7 @@
       *
                   IF  WRK-ORCSTEN-SRYCD(IDX2)  =  CONS-ZANHAIKI
                      IF  RECE65-SRYSURYO(IDX4)  NOT = ZERO
-                       PERFORM  2101213-RECE65-TENSOU-SURYO-HEN-SEC
+                       PERFORM  2101213-RECE65-SURYO-HEN-SEC
       *
                        MOVE    SPACE      TO  RECE65-NAME(IDX4)
                        MOVE    SPACE      TO  RECE65-INPUTCOMENT(IDX4)
@@ -15647,7 +15646,7 @@
                       IF      TNS-TEN         =   ZERO
                         CONTINUE
                       ELSE
-                        PERFORM 2101212-RECE65-TENSOU-TANKA-HEN-SEC
+                        PERFORM 2101212-RECE65-TANKA-HEN-SEC
                         COMPUTE IDW =   RECE65-YUKOKETA(IDX4)  *  2
                                     +   3
                         MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -15691,7 +15690,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
-       21035-RECE65-TENTEKI2-HENSYU-SEC                SECTION.
+       21035-RECE65-TENTEKI2-HEN-SEC                SECTION.
       *
            INITIALIZE             WRK-TENTEKI2-SRYCD2-X
       *
@@ -15729,7 +15728,7 @@
            END-PERFORM
       *
            .
-       21035-RECE65-TENTEKI2-HENSYU-EXT.
+       21035-RECE65-TENTEKI2-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -15935,32 +15934,32 @@
                  COMPUTE   RECE62-TENSU(12 BUN-IDX)  =
                            RECE62-TENSU(12 BUN-IDX)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
-                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX)  =
-                           WRK-RECE62C-TENSU(12 BUN-IDX)  +
+                 COMPUTE   RECE6C-TENSU(12 BUN-IDX)  =
+                           RECE6C-TENSU(12 BUN-IDX)  +
                            (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX2       =   2
                  COMPUTE   RECE62-TENSU(12 BUN-IDX2)  =
                            RECE62-TENSU(12 BUN-IDX2)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
-                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX2) =
-                           WRK-RECE62C-TENSU(12 BUN-IDX2) +
+                 COMPUTE   RECE6C-TENSU(12 BUN-IDX2) =
+                           RECE6C-TENSU(12 BUN-IDX2) +
                            (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX3       =   3
                  COMPUTE   RECE62-TENSU(12 BUN-IDX3)  =
                            RECE62-TENSU(12 BUN-IDX3)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
-                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX3) =
-                           WRK-RECE62C-TENSU(12 BUN-IDX3) +
+                 COMPUTE   RECE6C-TENSU(12 BUN-IDX3) =
+                           RECE6C-TENSU(12 BUN-IDX3) +
                            (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX4       =   4
                  COMPUTE   RECE62-TENSU(12 BUN-IDX4)  =
                            RECE62-TENSU(12 BUN-IDX4)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
-                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX4) =
-                           WRK-RECE62C-TENSU(12 BUN-IDX4) +
+                 COMPUTE   RECE6C-TENSU(12 BUN-IDX4) =
+                           RECE6C-TENSU(12 BUN-IDX4) +
                            (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
       *
@@ -16182,7 +16181,7 @@
            END-IF
       *
            PERFORM         21041-KOREISYA-KOHI-SEC
-           PERFORM         2104C-ZENKOKUKOHI-NISYU-CHECK-SEC
+           PERFORM         2104C-ZENKOKUKOHI-NISYU-CHK-SEC
            IF  ( RECE62-KOUREI    =    "1"  OR  "2"    )
            OR  ( FLG-TOKU75       =     1  OR  2  OR 3 )
               PERFORM      21042-KOREISYA-CHECK-SEC
@@ -21659,14 +21658,14 @@
            END-PERFORM
       *
       *    食事請求額等の置き換え
-           PERFORM  210453-SEIKYUGAK-SKJ-HENSYU-SEC
+           PERFORM  210453-SEIKYUGAK-SKJ-HEN-SEC
       *
       *    ０７９＋０１２に関わる保険組み合わせチェック
            IF  ( RECE62-HKNNUM          =  SPACE         )
            AND ( RECE62-KOHNUM(1)       =  "079" OR "024")
            AND ( RECE62-KOHNUM(2)       =  "012"         )
            AND ( RECE62-SRYYM          >=  "200804"      )
-              PERFORM    210455-SYOGAISEIHO-HKNCOMBI-CHECK-SEC
+              PERFORM    210455-SYOGAISEIHO-CHK-SEC
            END-IF
       *
            IF   ( RECE62-SHOKUJIRYOYOHI(1) = ZERO )
@@ -21763,7 +21762,7 @@
       *****************************************************************
       *    食事請求額等の置き換え
       *****************************************************************
-       210453-SEIKYUGAK-SKJ-HENSYU-SEC               SECTION.
+       210453-SEIKYUGAK-SKJ-HEN-SEC               SECTION.
       *
            IF  ( RECE62-HKNNUM       NOT = SPACE    )
            AND ( RECE62-KOHNUM(1)(1:1)   =  "0"     )
@@ -21799,7 +21798,7 @@
                 MOVE     "3"     TO   RECE62-FUKUSHIFLG-SKJIPA(2)
                 MOVE     "3"     TO   RECE62-FUKUSHIFLG-SKJSEI(2)
                 MOVE      2      TO   KOHFTN-IDX4
-                PERFORM  2104531-SEIKYUGAK-SKJ-HENSYU2-SEC
+                PERFORM  2104531-SEIKYUGAK-SKJ-HEN2-SEC
               END-IF
            END-IF
       *
@@ -21864,7 +21863,7 @@
                 MOVE     "3"     TO   RECE62-FUKUSHIFLG-SKJIPA(3)
                 MOVE     "3"     TO   RECE62-FUKUSHIFLG-SKJSEI(3)
                 MOVE      3      TO   KOHFTN-IDX4
-                PERFORM  2104531-SEIKYUGAK-SKJ-HENSYU2-SEC
+                PERFORM  2104531-SEIKYUGAK-SKJ-HEN2-SEC
               END-IF
            END-IF
       *
@@ -21896,13 +21895,13 @@
            END-IF
       *
            .
-       210453-SEIKYUGAK-SKJ-HENSYU-EXT.
+       210453-SEIKYUGAK-SKJ-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    食事請求額等の置き換え
       *****************************************************************
-       2104531-SEIKYUGAK-SKJ-HENSYU2-SEC               SECTION.
+       2104531-SEIKYUGAK-SKJ-HEN2-SEC               SECTION.
       *
            PERFORM VARYING KOHFTN-IDX FROM  1  BY 1
                     UNTIL  KOHFTN-IDX  >   10
@@ -21934,13 +21933,13 @@
            END-PERFORM
       *
            .
-       2104531-SEIKYUGAK-SKJ-HENSYU2-EXT.
+       2104531-SEIKYUGAK-SKJ-HEN2-EXT.
            EXIT.
       *
       *****************************************************************
       *    ０７９＋０１２に関わる保険組み合わせチェック
       *****************************************************************
-       210455-SYOGAISEIHO-HKNCOMBI-CHECK-SEC               SECTION.
+       210455-SYOGAISEIHO-CHK-SEC               SECTION.
       *
            MOVE    ZERO    TO   FLG-SYOGAISEIHO
            MOVE    ZERO    TO   FLG-SYOGAISEIHO2
@@ -22042,13 +22041,13 @@
                  MOVE     "3"     TO   RECE62-FUKUSHIFLG-SKJIPA(2)
                  MOVE     "3"     TO   RECE62-FUKUSHIFLG-SKJSEI(2)
                  MOVE      2      TO   KOHFTN-IDX4
-                 PERFORM  2104531-SEIKYUGAK-SKJ-HENSYU2-SEC
+                 PERFORM  2104531-SEIKYUGAK-SKJ-HEN2-SEC
                END-IF
       *
            END-IF
       *
            .
-       210455-SYOGAISEIHO-HKNCOMBI-CHECK-EXT.
+       210455-SYOGAISEIHO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -22171,9 +22170,9 @@
                IF      FLG-JYOGENKBN   =   1
                 MOVE     WRK-JYOGENKBN-TEN  TO  WRK-JYOGENKBN-TEN9
                 IF   FLG-ZEROKOGAITO   =   1
-                  PERFORM  210468X-SYUHKN-JYOHEN-KEISAN2-SEC
+                  PERFORM  210468X-SYUHKN-JYOHEN2-SEC
                 ELSE
-                  PERFORM  210468-SYUHKN-JYOHEN-KEISAN-SEC
+                  PERFORM  210468-SYUHKN-JYOHEN-SEC
                 END-IF
       *
       **>       IF   WK-GENGAKUKBN    NOT =   ZERO
@@ -22355,7 +22354,7 @@
                             WRK-JYOGENKBN-TEN4 +
                             WRK-JYOGENKBN-TEN5 +
                             WRK-JYOGENKBN-TEN2
-                    PERFORM  210468-SYUHKN-JYOHEN-KEISAN-SEC
+                    PERFORM  210468-SYUHKN-JYOHEN-SEC
                     IF  WRK-KINGAKU-GENBUTU3 < WRK-FTNKEI5
                     AND WRK-JYOGENKBN-TEN2   = ZERO
                         MOVE   ZERO   TO   WRK-CHK-KEIKASOCHI1
@@ -22412,7 +22411,7 @@
                   COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 / 10
                   COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 * 10
                   MOVE  WRK-TAIHI-TOTALTEN TO  WRK-JYOGENKBN-TEN9
-                  PERFORM  210468-SYUHKN-JYOHEN-KEISAN-SEC
+                  PERFORM  210468-SYUHKN-JYOHEN-SEC
                   IF WRK-KINGAKU-GENBUTU3 > RECE62-FTNMONEY(2)
                     COMPUTE  WRK-CHK-KOKIGAK9      =
                              WRK-KINGAKU-GENBUTU3  -
@@ -22649,7 +22648,7 @@
              END-IF
            END-IF
       *
-           PERFORM  21046A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-SEC
+           PERFORM  21046A-CHIHO-ICHIBUFTN-HEN-SEC
       *
            MOVE    999999999   TO   WRK-FTNMONEY-MAE
            PERFORM  VARYING  KOHFTN-IDX  FROM  1  BY  1
@@ -22687,7 +22686,7 @@
                    ELSE
                      IF   TBL-HKNFTNDATA-FLG(KOHFTN-IDX)  =  1
                        PERFORM  210465-KOH-ICHIBUFTN-HENSYU-SEC
-                       PERFORM  21046A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-SEC
+                       PERFORM  21046A-CHIHO-ICHIBUFTN-HEN-SEC
                      END-IF
                    END-IF
                 END-IF
@@ -23458,7 +23457,7 @@
             END-EVALUATE
       *
       *     保険欄の括弧再掲（下）金額加算
-            PERFORM       210469-SAIKEI-KINGAKU-KASAN-SEC
+            PERFORM       210469-SAIKEIKIN-KASAN-SEC
       *
            ELSE
       *
@@ -24790,7 +24789,7 @@
       *****************************************************************
       *    主保険の上限金額計算
       *****************************************************************
-       210468-SYUHKN-JYOHEN-KEISAN-SEC               SECTION.
+       210468-SYUHKN-JYOHEN-SEC               SECTION.
       *
            MOVE     ZERO     TO   WRK-KINGAKU-GENBUTU3
            MOVE     ZERO     TO   WRK-CHIHOU-KIN3
@@ -24884,13 +24883,13 @@
            END-EVALUATE
       *
            .
-       210468-SYUHKN-JYOHEN-KEISAN-EXT.
+       210468-SYUHKN-JYOHEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    主保険の上限金額計算（０１公）
       *****************************************************************
-       210468X-SYUHKN-JYOHEN-KEISAN2-SEC               SECTION.
+       210468X-SYUHKN-JYOHEN2-SEC               SECTION.
       *
            MOVE     ZERO     TO   WRK-KINGAKU-GENBUTU3
            MOVE     ZERO     TO   WRK-CHIHOU-KIN3
@@ -24924,13 +24923,13 @@
            END-IF
       *
            .
-       210468X-SYUHKN-JYOHEN-KEISAN2-EXT.
+       210468X-SYUHKN-JYOHEN2-EXT.
            EXIT.
       *
       *****************************************************************
       *    保険欄の括弧再掲（下）金額加算
       *****************************************************************
-       210469-SAIKEI-KINGAKU-KASAN-SEC               SECTION.
+       210469-SAIKEIKIN-KASAN-SEC               SECTION.
       *
            EVALUATE    FLG-ZENKOKUKOHI-NISYU5
              WHEN          2
@@ -24952,7 +24951,7 @@
                      (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
                      (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
                      (  WRK-TAIHI-TOTALTEN =  RECE62-HENTOTALTEN(4)))
-                    PERFORM       2104691-SAIKEI-KINGAKU-KASAN2-SEC
+                    PERFORM       2104691-SAIKEIKIN-KASAN2-SEC
                  END-IF
                END-IF
              WHEN          3
@@ -24963,7 +24962,7 @@
                      (  RECE62-KOHNUM(2)(1:1) >=  "1" AND <= "8"   ) AND
                      (  TBL-TOKATUKAIFLG(2)    =  ZERO             ) AND
                      (  WRK-TAIHI-TOTALTEN =  RECE62-HENTOTALTEN(3)))
-                    PERFORM       2104691-SAIKEI-KINGAKU-KASAN2-SEC
+                    PERFORM       2104691-SAIKEIKIN-KASAN2-SEC
                  END-IF
                END-IF
              WHEN          4
@@ -24979,19 +24978,19 @@
                      (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
                      (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
                      (  WRK-TAIHI-TOTALTEN =  RECE62-HENTOTALTEN(4)))
-                    PERFORM       2104691-SAIKEI-KINGAKU-KASAN2-SEC
+                    PERFORM       2104691-SAIKEIKIN-KASAN2-SEC
                  END-IF
                END-IF
            END-EVALUATE
       *
            .
-       210469-SAIKEI-KINGAKU-KASAN-EXT.
+       210469-SAIKEIKIN-KASAN-EXT.
            EXIT.
       *
       *****************************************************************
       *    保険欄の括弧再掲（下）金額加算
       *****************************************************************
-       2104691-SAIKEI-KINGAKU-KASAN2-SEC               SECTION.
+       2104691-SAIKEIKIN-KASAN2-SEC               SECTION.
       *
            IF   FLG-KOH  =   2
              COMPUTE  WRK-CHK-KOKIGAK8  =  RECE62-FTNMONEY(2)
@@ -25013,13 +25012,13 @@
            END-IF
       *
            .
-       2104691-SAIKEI-KINGAKU-KASAN2-EXT.
+       2104691-SAIKEIKIN-KASAN2-EXT.
            EXIT.
       *
       *****************************************************************
       *    全国公費併用時の地方公費一部負担金編集
       *****************************************************************
-       21046A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-SEC               SECTION.
+       21046A-CHIHO-ICHIBUFTN-HEN-SEC               SECTION.
       *
            IF  (((RECE62-KOHNUM(1)(1:1) = "0"            ) AND
                  (RECE62-KOHNUM(1)  NOT = "012" AND "025"))  OR
@@ -25066,7 +25065,7 @@
            END-IF
       *
            .
-       21046A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-EXT.
+       21046A-CHIHO-ICHIBUFTN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -25440,7 +25439,7 @@
       *****************************************************************
       *    全国公費２種チェック
       *****************************************************************
-       2104C-ZENKOKUKOHI-NISYU-CHECK-SEC               SECTION.
+       2104C-ZENKOKUKOHI-NISYU-CHK-SEC               SECTION.
       *
            IF     (RECE62-SRYYM          >=  "200804")
            AND    (RECE62-HKNNUM      NOT =  SPACE   )
@@ -25927,7 +25926,7 @@
            END-IF
       *
            .
-       2104C-ZENKOKUKOHI-NISYU-CHECK-EXT.
+       2104C-ZENKOKUKOHI-NISYU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -26722,163 +26721,163 @@
        2113-GENTEN-HENSYU-SEC      SECTION.
       *
       *    指導のレセ点数の編集（減点）
-           IF   RECE62-TENSU(2 1)  >=  WRK-RECE62G-TENSU(2 1)
+           IF   RECE62-TENSU(2 1)  >=  RECE6G-TENSU(2 1)
              COMPUTE  RECE62-TENSU(2 1)  =
-                      RECE62-TENSU(2 1)  -  WRK-RECE62G-TENSU(2 1)
+                      RECE62-TENSU(2 1)  -  RECE6G-TENSU(2 1)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(2 1)
            END-IF
-           IF   RECE62-TENSU(2 2)  >=  WRK-RECE62G-TENSU(2 2)
+           IF   RECE62-TENSU(2 2)  >=  RECE6G-TENSU(2 2)
              COMPUTE  RECE62-TENSU(2 2)  =
-                      RECE62-TENSU(2 2)  -  WRK-RECE62G-TENSU(2 2)
+                      RECE62-TENSU(2 2)  -  RECE6G-TENSU(2 2)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(2 2)
            END-IF
-           IF   RECE62-TENSU(2 3)  >=  WRK-RECE62G-TENSU(2 3)
+           IF   RECE62-TENSU(2 3)  >=  RECE6G-TENSU(2 3)
              COMPUTE  RECE62-TENSU(2 3)  =
-                      RECE62-TENSU(2 3)  -  WRK-RECE62G-TENSU(2 3)
+                      RECE62-TENSU(2 3)  -  RECE6G-TENSU(2 3)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(2 3)
            END-IF
-           IF   RECE62-TENSU(2 4)  >=  WRK-RECE62G-TENSU(2 4)
+           IF   RECE62-TENSU(2 4)  >=  RECE6G-TENSU(2 4)
              COMPUTE  RECE62-TENSU(2 4)  =
-                      RECE62-TENSU(2 4)  -  WRK-RECE62G-TENSU(2 4)
+                      RECE62-TENSU(2 4)  -  RECE6G-TENSU(2 4)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(2 4)
            END-IF
       *
       *    在宅のレセ点数の編集（減点）
-           IF   RECE62-TENSU(3 1)  >=  WRK-RECE62G-TENSU(3 1)
+           IF   RECE62-TENSU(3 1)  >=  RECE6G-TENSU(3 1)
              COMPUTE  RECE62-TENSU(3 1)  =
-                      RECE62-TENSU(3 1)  -  WRK-RECE62G-TENSU(3 1)
+                      RECE62-TENSU(3 1)  -  RECE6G-TENSU(3 1)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(3 1)
            END-IF
-           IF   RECE62-TENSU(3 2)  >=  WRK-RECE62G-TENSU(3 2)
+           IF   RECE62-TENSU(3 2)  >=  RECE6G-TENSU(3 2)
              COMPUTE  RECE62-TENSU(3 2)  =
-                      RECE62-TENSU(3 2)  -  WRK-RECE62G-TENSU(3 2)
+                      RECE62-TENSU(3 2)  -  RECE6G-TENSU(3 2)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(3 2)
            END-IF
-           IF   RECE62-TENSU(3 3)  >=  WRK-RECE62G-TENSU(3 3)
+           IF   RECE62-TENSU(3 3)  >=  RECE6G-TENSU(3 3)
              COMPUTE  RECE62-TENSU(3 3)  =
-                      RECE62-TENSU(3 3)  -  WRK-RECE62G-TENSU(3 3)
+                      RECE62-TENSU(3 3)  -  RECE6G-TENSU(3 3)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(3 3)
            END-IF
-           IF   RECE62-TENSU(3 4)  >=  WRK-RECE62G-TENSU(3 4)
+           IF   RECE62-TENSU(3 4)  >=  RECE6G-TENSU(3 4)
              COMPUTE  RECE62-TENSU(3 4)  =
-                      RECE62-TENSU(3 4)  -  WRK-RECE62G-TENSU(3 4)
+                      RECE62-TENSU(3 4)  -  RECE6G-TENSU(3 4)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(3 4)
            END-IF
       *
       *    その他注射のレセ点数の編集（減点）
-           IF   WRK-RECE62C-TENSU(12 1)  >=  WRK-RECE62G-TENSU(12 1)
+           IF   RECE6C-TENSU(12 1)  >=  RECE6G-TENSU(12 1)
              COMPUTE  RECE62-TENSU(12 1)  =
-                      RECE62-TENSU(12 1)  -  WRK-RECE62G-TENSU(12 1)
+                      RECE62-TENSU(12 1)  -  RECE6G-TENSU(12 1)
            ELSE
              COMPUTE  RECE62-TENSU(12 1)  =
-                      RECE62-TENSU(12 1)  -  WRK-RECE62C-TENSU(12 1)
-             COMPUTE  WRK-RECE62G-TENSU(12 1) =
-                      WRK-RECE62G-TENSU(12 1) -
-                      WRK-RECE62C-TENSU(12 1)
-             IF  WRK-RECE62C-TENSU(11 1)  >=   WRK-RECE62G-TENSU(12 1)
+                      RECE62-TENSU(12 1)  -  RECE6C-TENSU(12 1)
+             COMPUTE  RECE6G-TENSU(12 1) =
+                      RECE6G-TENSU(12 1) -
+                      RECE6C-TENSU(12 1)
+             IF  RECE6C-TENSU(11 1)  >=   RECE6G-TENSU(12 1)
                COMPUTE  RECE62-TENSU(11 1)  =
-                        RECE62-TENSU(11 1)  -  WRK-RECE62G-TENSU(12 1)
+                        RECE62-TENSU(11 1)  -  RECE6G-TENSU(12 1)
              ELSE
                COMPUTE  RECE62-TENSU(11 1)  =
-                        RECE62-TENSU(11 1)  -  WRK-RECE62C-TENSU(11 1)
-               COMPUTE  WRK-RECE62G-TENSU(12 1) =
-                        WRK-RECE62G-TENSU(12 1) -
-                        WRK-RECE62C-TENSU(11 1)
-               IF  WRK-RECE62C-TENSU(10 1)  >=   WRK-RECE62G-TENSU(12 1)
+                        RECE62-TENSU(11 1)  -  RECE6C-TENSU(11 1)
+               COMPUTE  RECE6G-TENSU(12 1) =
+                        RECE6G-TENSU(12 1) -
+                        RECE6C-TENSU(11 1)
+               IF  RECE6C-TENSU(10 1)  >=   RECE6G-TENSU(12 1)
                  COMPUTE  RECE62-TENSU(10 1)  =
-                          RECE62-TENSU(10 1)  -  WRK-RECE62G-TENSU(12 1)
+                          RECE62-TENSU(10 1)  -  RECE6G-TENSU(12 1)
                ELSE
                  COMPUTE  RECE62-TENSU(10 1)  =
-                          RECE62-TENSU(10 1)  -  WRK-RECE62C-TENSU(10 1)
+                          RECE62-TENSU(10 1)  -  RECE6C-TENSU(10 1)
                END-IF
              END-IF
            END-IF
-           IF   WRK-RECE62C-TENSU(12 2)  >=  WRK-RECE62G-TENSU(12 2)
+           IF   RECE6C-TENSU(12 2)  >=  RECE6G-TENSU(12 2)
              COMPUTE  RECE62-TENSU(12 2)  =
-                      RECE62-TENSU(12 2)  -  WRK-RECE62G-TENSU(12 2)
+                      RECE62-TENSU(12 2)  -  RECE6G-TENSU(12 2)
            ELSE
              COMPUTE  RECE62-TENSU(12 2)  =
-                      RECE62-TENSU(12 2)  -  WRK-RECE62C-TENSU(12 2)
-             COMPUTE  WRK-RECE62G-TENSU(12 2) =
-                      WRK-RECE62G-TENSU(12 2) -
-                      WRK-RECE62C-TENSU(12 2)
-             IF  WRK-RECE62C-TENSU(11 2)  >=   WRK-RECE62G-TENSU(12 2)
+                      RECE62-TENSU(12 2)  -  RECE6C-TENSU(12 2)
+             COMPUTE  RECE6G-TENSU(12 2) =
+                      RECE6G-TENSU(12 2) -
+                      RECE6C-TENSU(12 2)
+             IF  RECE6C-TENSU(11 2)  >=   RECE6G-TENSU(12 2)
                COMPUTE  RECE62-TENSU(11 2)  =
-                        RECE62-TENSU(11 2)  -  WRK-RECE62G-TENSU(12 2)
+                        RECE62-TENSU(11 2)  -  RECE6G-TENSU(12 2)
              ELSE
                COMPUTE  RECE62-TENSU(11 2)  =
-                        RECE62-TENSU(11 2)  -  WRK-RECE62C-TENSU(11 2)
-               COMPUTE  WRK-RECE62G-TENSU(12 2) =
-                        WRK-RECE62G-TENSU(12 2) -
-                        WRK-RECE62C-TENSU(11 2)
-               IF  WRK-RECE62C-TENSU(10 2)  >=   WRK-RECE62G-TENSU(12 2)
+                        RECE62-TENSU(11 2)  -  RECE6C-TENSU(11 2)
+               COMPUTE  RECE6G-TENSU(12 2) =
+                        RECE6G-TENSU(12 2) -
+                        RECE6C-TENSU(11 2)
+               IF  RECE6C-TENSU(10 2)  >=   RECE6G-TENSU(12 2)
                  COMPUTE  RECE62-TENSU(10 2)  =
-                          RECE62-TENSU(10 2)  -  WRK-RECE62G-TENSU(12 2)
+                          RECE62-TENSU(10 2)  -  RECE6G-TENSU(12 2)
                ELSE
                  COMPUTE  RECE62-TENSU(10 2)  =
-                          RECE62-TENSU(10 2)  -  WRK-RECE62C-TENSU(10 2)
+                          RECE62-TENSU(10 2)  -  RECE6C-TENSU(10 2)
                END-IF
              END-IF
            END-IF
-           IF   WRK-RECE62C-TENSU(12 3)  >=  WRK-RECE62G-TENSU(12 3)
+           IF   RECE6C-TENSU(12 3)  >=  RECE6G-TENSU(12 3)
              COMPUTE  RECE62-TENSU(12 3)  =
-                      RECE62-TENSU(12 3)  -  WRK-RECE62G-TENSU(12 3)
+                      RECE62-TENSU(12 3)  -  RECE6G-TENSU(12 3)
            ELSE
              COMPUTE  RECE62-TENSU(12 3)  =
-                      RECE62-TENSU(12 3)  -  WRK-RECE62C-TENSU(12 3)
-             COMPUTE  WRK-RECE62G-TENSU(12 3) =
-                      WRK-RECE62G-TENSU(12 3) -
-                      WRK-RECE62C-TENSU(12 3)
-             IF  WRK-RECE62C-TENSU(11 3)  >=   WRK-RECE62G-TENSU(12 3)
+                      RECE62-TENSU(12 3)  -  RECE6C-TENSU(12 3)
+             COMPUTE  RECE6G-TENSU(12 3) =
+                      RECE6G-TENSU(12 3) -
+                      RECE6C-TENSU(12 3)
+             IF  RECE6C-TENSU(11 3)  >=   RECE6G-TENSU(12 3)
                COMPUTE  RECE62-TENSU(11 3)  =
-                        RECE62-TENSU(11 3)  -  WRK-RECE62G-TENSU(12 3)
+                        RECE62-TENSU(11 3)  -  RECE6G-TENSU(12 3)
              ELSE
                COMPUTE  RECE62-TENSU(11 3)  =
-                        RECE62-TENSU(11 3)  -  WRK-RECE62C-TENSU(11 3)
-               COMPUTE  WRK-RECE62G-TENSU(12 3) =
-                        WRK-RECE62G-TENSU(12 3) -
-                        WRK-RECE62C-TENSU(11 3)
-               IF  WRK-RECE62C-TENSU(10 3)  >=   WRK-RECE62G-TENSU(12 3)
+                        RECE62-TENSU(11 3)  -  RECE6C-TENSU(11 3)
+               COMPUTE  RECE6G-TENSU(12 3) =
+                        RECE6G-TENSU(12 3) -
+                        RECE6C-TENSU(11 3)
+               IF  RECE6C-TENSU(10 3)  >=   RECE6G-TENSU(12 3)
                  COMPUTE  RECE62-TENSU(10 3)  =
-                          RECE62-TENSU(10 3)  -  WRK-RECE62G-TENSU(12 3)
+                          RECE62-TENSU(10 3)  -  RECE6G-TENSU(12 3)
                ELSE
                  COMPUTE  RECE62-TENSU(10 3)  =
-                          RECE62-TENSU(10 3)  -  WRK-RECE62C-TENSU(10 3)
+                          RECE62-TENSU(10 3)  -  RECE6C-TENSU(10 3)
                END-IF
              END-IF
            END-IF
-           IF   WRK-RECE62C-TENSU(12 4)  >=  WRK-RECE62G-TENSU(12 4)
+           IF   RECE6C-TENSU(12 4)  >=  RECE6G-TENSU(12 4)
              COMPUTE  RECE62-TENSU(12 4)  =
-                      RECE62-TENSU(12 4)  -  WRK-RECE62G-TENSU(12 4)
+                      RECE62-TENSU(12 4)  -  RECE6G-TENSU(12 4)
            ELSE
              COMPUTE  RECE62-TENSU(12 4)  =
-                      RECE62-TENSU(12 4)  -  WRK-RECE62C-TENSU(12 4)
-             COMPUTE  WRK-RECE62G-TENSU(12 4) =
-                      WRK-RECE62G-TENSU(12 4) -
-                      WRK-RECE62C-TENSU(12 4)
-             IF  WRK-RECE62C-TENSU(11 4)  >=   WRK-RECE62G-TENSU(12 4)
+                      RECE62-TENSU(12 4)  -  RECE6C-TENSU(12 4)
+             COMPUTE  RECE6G-TENSU(12 4) =
+                      RECE6G-TENSU(12 4) -
+                      RECE6C-TENSU(12 4)
+             IF  RECE6C-TENSU(11 4)  >=   RECE6G-TENSU(12 4)
                COMPUTE  RECE62-TENSU(11 4)  =
-                        RECE62-TENSU(11 4)  -  WRK-RECE62G-TENSU(12 4)
+                        RECE62-TENSU(11 4)  -  RECE6G-TENSU(12 4)
              ELSE
                COMPUTE  RECE62-TENSU(11 4)  =
-                        RECE62-TENSU(11 4)  -  WRK-RECE62C-TENSU(11 4)
-               COMPUTE  WRK-RECE62G-TENSU(12 4) =
-                        WRK-RECE62G-TENSU(12 4) -
-                        WRK-RECE62C-TENSU(11 4)
-               IF  WRK-RECE62C-TENSU(10 4)  >=   WRK-RECE62G-TENSU(12 4)
+                        RECE62-TENSU(11 4)  -  RECE6C-TENSU(11 4)
+               COMPUTE  RECE6G-TENSU(12 4) =
+                        RECE6G-TENSU(12 4) -
+                        RECE6C-TENSU(11 4)
+               IF  RECE6C-TENSU(10 4)  >=   RECE6G-TENSU(12 4)
                  COMPUTE  RECE62-TENSU(10 4)  =
-                          RECE62-TENSU(10 4)  -  WRK-RECE62G-TENSU(12 4)
+                          RECE62-TENSU(10 4)  -  RECE6G-TENSU(12 4)
                ELSE
                  COMPUTE  RECE62-TENSU(10 4)  =
-                          RECE62-TENSU(10 4)  -  WRK-RECE62C-TENSU(10 4)
+                          RECE62-TENSU(10 4)  -  RECE6C-TENSU(10 4)
                END-IF
              END-IF
            END-IF
@@ -27524,7 +27523,7 @@
        2106-RECESKYKBN-HENSYU-SEC      SECTION.
       *
       *    初期化
-           MOVE    RECE62-REC     TO  WRK-RECE62-REC
+           MOVE    RECE62-REC     TO  RECE6W-REC
            INITIALIZE                 RECE62-KOHINF-AREA
                                       RECE62-HKNCOMBIINF-AREA
                                       RECE62-JNISSUINF-AREA
@@ -27533,8 +27532,8 @@
                                       RECE62-SHOKUJIINF-AREA
                                       RECE62-SHOKUJIINF2-AREA
                                       RECE62-FUKUSHIFLG-SKJINF-AREA
-                                      RECE62-FUKUSHIFLG-SKJIPAINF-AREA
-                                      RECE62-FUKUSHIFLG-SKJSEIINF-AREA
+                                      RECE62-FUKUSHIFLG-SKJIPA-AREA
+                                      RECE62-FUKUSHIFLG-SKJSEI-AREA
                                       RECE62-ETC-KOH-G
                                       RECE62-HENTOTALTENINF-AREA
                                       RECE62-HENSHOKUJIINF-AREA
@@ -27556,46 +27555,46 @@
            END-PERFORM
       *
       *    主保険情報のみ編集
-           MOVE    WRK-RECE62-JNISSU        (1)
+           MOVE    RECE6W-JNISSU        (1)
                                        TO  RECE62-JNISSU        (1)
-           MOVE    WRK-RECE62-TOTALTEN      (1)
+           MOVE    RECE6W-TOTALTEN      (1)
                                        TO  RECE62-TOTALTEN      (1)
-           MOVE    WRK-RECE62-FTNMONEY      (1)
+           MOVE    RECE6W-FTNMONEY      (1)
                                        TO  RECE62-FTNMONEY      (1)
-           MOVE    WRK-RECE62-FTNMONEY-FTN  (1)
+           MOVE    RECE6W-FTNMONEY-FTN  (1)
                                        TO  RECE62-FTNMONEY-FTN  (1)
-           MOVE    WRK-RECE62-FTNMONEY-KOJ  (1)
+           MOVE    RECE6W-FTNMONEY-KOJ  (1)
                                        TO  RECE62-FTNMONEY-KOJ  (1)
-           MOVE    WRK-RECE62-HENTOTALTEN   (1)
+           MOVE    RECE6W-HENTOTALTEN   (1)
                                        TO  RECE62-HENTOTALTEN   (1)
-           MOVE    WRK-RECE62-HENSHOKUJIRYOYOHI(1)
+           MOVE    RECE6W-HENSHOKUJIRYOYOHI(1)
                                  TO  RECE62-HENSHOKUJIRYOYOHI   (1)
-           MOVE    WRK-RECE62-SHOKUJIINF    (1)
+           MOVE    RECE6W-SHOKUJIINF    (1)
                                        TO  RECE62-SHOKUJIINF    (1)
-           MOVE    WRK-RECE62-SHOKUJIINF2   (1)
+           MOVE    RECE6W-SHOKUJIINF2   (1)
                                        TO  RECE62-SHOKUJIINF2   (1)
-           MOVE    WRK-RECE62-NYUKHNKEI2    (1)
+           MOVE    RECE6W-NYUKHNKEI2    (1)
                                        TO  RECE62-NYUKHNKEI2    (1)
-           MOVE    WRK-RECE62-NYUTOKKEI2    (1)
+           MOVE    RECE6W-NYUTOKKEI2    (1)
                                        TO  RECE62-NYUTOKKEI2    (1)
-           MOVE    WRK-RECE62-KISAIFLG      (1)
+           MOVE    RECE6W-KISAIFLG      (1)
                                        TO  RECE62-KISAIFLG      (1)
-           MOVE    WRK-RECE62-ZEROKISAIFLG  (1)
+           MOVE    RECE6W-ZEROKISAIFLG  (1)
                                        TO  RECE62-ZEROKISAIFLG  (1)
-           MOVE    WRK-RECE62-ETCKISAIFLGINF(1)
+           MOVE    RECE6W-ETCKISAIFLGINF(1)
                                        TO  RECE62-ETCKISAIFLGINF(1)
-           MOVE    WRK-RECE62-FUKUSHIFLG(1)
+           MOVE    RECE6W-FUKUSHIFLG(1)
                                        TO  RECE62-FUKUSHIFLG(1)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
-               MOVE    WRK-RECE62-TENSU (IDX 1)
+               MOVE    RECE6W-TENSU (IDX 1)
                                            TO  RECE62-TENSU (IDX 1)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
-               MOVE    WRK-RECE62-NYUKHNKEIINF (IDX 1)
+               MOVE    RECE6W-NYUKHNKEIINF (IDX 1)
                                        TO  RECE62-NYUKHNKEIINF (IDX 1)
-               MOVE    WRK-RECE62-NYUTOKKEIINF (IDX 1)
+               MOVE    RECE6W-NYUTOKKEIINF (IDX 1)
                                        TO  RECE62-NYUTOKKEIINF (IDX 1)
            END-PERFORM
       *
@@ -27607,96 +27606,96 @@
                                            IDZX
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       4
-               IF      WRK-RECE62-KOHNUM (IDX) NOT =   SPACE
+               IF      RECE6W-KOHNUM (IDX) NOT =   SPACE
                    COMPUTE IDXX    =   IDX +   1
-                   EVALUATE    WRK-RECE62-RECESKYKBN (IDX)
+                   EVALUATE    RECE6W-RECESKYKBN (IDX)
                        WHEN    SPACE
                            ADD     1       TO  IDY
-                           MOVE    WRK-RECE62-KOHINF (IDX)
+                           MOVE    RECE6W-KOHINF (IDX)
                                            TO  RECE62-KOHINF (IDY)
-                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJ (IDX)
+                           MOVE    RECE6W-FUKUSHIFLG-SKJ (IDX)
                                            TO  RECE62-FUKUSHIFLG-SKJ
                                                              (IDY)
-                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJIPA (IDX)
+                           MOVE    RECE6W-FUKUSHIFLG-SKJIPA (IDX)
                                         TO  RECE62-FUKUSHIFLG-SKJIPA
                                                              (IDY)
-                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJSEI (IDX)
+                           MOVE    RECE6W-FUKUSHIFLG-SKJSEI (IDX)
                                         TO  RECE62-FUKUSHIFLG-SKJSEI
                                                              (IDY)
-                           MOVE    WRK-RECE62-TEISYOTOKU2(IDX)
+                           MOVE    RECE6W-TEISYOTOKU2(IDX)
                                         TO  RECE62-TEISYOTOKU2(IDY)
                            COMPUTE IDYX    =   IDY +   1
-                           MOVE    WRK-RECE62-JNISSU      (IDXX)
+                           MOVE    RECE6W-JNISSU      (IDXX)
                                            TO  RECE62-JNISSU      (IDYX)
-                           MOVE    WRK-RECE62-TOTALTEN    (IDXX)
+                           MOVE    RECE6W-TOTALTEN    (IDXX)
                                            TO  RECE62-TOTALTEN    (IDYX)
-                           MOVE    WRK-RECE62-FTNMONEY    (IDXX)
+                           MOVE    RECE6W-FTNMONEY    (IDXX)
                                            TO  RECE62-FTNMONEY    (IDYX)
-                           MOVE    WRK-RECE62-FTNMONEY-FTN(IDXX)
+                           MOVE    RECE6W-FTNMONEY-FTN(IDXX)
                                            TO  RECE62-FTNMONEY-FTN(IDYX)
-                           MOVE    WRK-RECE62-FTNMONEY-KOJ(IDXX)
+                           MOVE    RECE6W-FTNMONEY-KOJ(IDXX)
                                            TO  RECE62-FTNMONEY-KOJ(IDYX)
-                           MOVE    WRK-RECE62-SHOKUJIINF  (IDXX)
+                           MOVE    RECE6W-SHOKUJIINF  (IDXX)
                                            TO  RECE62-SHOKUJIINF  (IDYX)
-                           MOVE    WRK-RECE62-SHOKUJIINF2 (IDXX)
+                           MOVE    RECE6W-SHOKUJIINF2 (IDXX)
                                            TO  RECE62-SHOKUJIINF2 (IDYX)
-                           MOVE    WRK-RECE62-NYUKHNKEI2  (IDXX)
+                           MOVE    RECE6W-NYUKHNKEI2  (IDXX)
                                            TO  RECE62-NYUKHNKEI2  (IDYX)
-                           MOVE    WRK-RECE62-NYUTOKKEI2  (IDXX)
+                           MOVE    RECE6W-NYUTOKKEI2  (IDXX)
                                            TO  RECE62-NYUTOKKEI2  (IDYX)
-                           MOVE    WRK-RECE62-HENTOTALTEN (IDXX)
+                           MOVE    RECE6W-HENTOTALTEN (IDXX)
                                            TO  RECE62-HENTOTALTEN (IDYX)
-                           MOVE    WRK-RECE62-HENSHOKUJIRYOYOHI(IDXX)
+                           MOVE    RECE6W-HENSHOKUJIRYOYOHI(IDXX)
                                      TO  RECE62-HENSHOKUJIRYOYOHI (IDYX)
                            PERFORM VARYING IDX1    FROM    1   BY  1
                                    UNTIL   IDX1    >       30
-                               MOVE    WRK-RECE62-TENSU (IDX1 IDXX)
+                               MOVE    RECE6W-TENSU (IDX1 IDXX)
                                            TO  RECE62-TENSU (IDX1 IDYX)
                            END-PERFORM
                            PERFORM VARYING IDX1    FROM    1   BY  1
                                    UNTIL   IDX1    >       10
                                MOVE
-                                   WRK-RECE62-NYUKHNKEIINF (IDX1 IDXX)
+                                   RECE6W-NYUKHNKEIINF (IDX1 IDXX)
                                            TO  RECE62-NYUKHNKEIINF
                                                            (IDX1 IDYX)
                                MOVE
-                                   WRK-RECE62-NYUTOKKEIINF (IDX1 IDXX)
+                                   RECE6W-NYUTOKKEIINF (IDX1 IDXX)
                                        TO  RECE62-NYUTOKKEIINF
                                                            (IDX1 IDYX)
                            END-PERFORM
-                           MOVE    WRK-RECE62-KISAIFLG (IDXX)
+                           MOVE    RECE6W-KISAIFLG (IDXX)
                                            TO  RECE62-KISAIFLG (IDYX)
-                           MOVE    WRK-RECE62-ZEROKISAIFLG (IDXX)
+                           MOVE    RECE6W-ZEROKISAIFLG (IDXX)
                                            TO  RECE62-ZEROKISAIFLG(IDYX)
-                           MOVE    WRK-RECE62-ETCKISAIFLGINF(IDXX)
+                           MOVE    RECE6W-ETCKISAIFLGINF(IDXX)
                                            TO  RECE62-ETCKISAIFLGINF
                                                                (IDYX)
-                           MOVE    WRK-RECE62-FUKUSHIFLG(IDXX)
+                           MOVE    RECE6W-FUKUSHIFLG(IDXX)
                                         TO  RECE62-FUKUSHIFLG(IDYX)
                        WHEN    "4"
                            ADD     1       TO  IDZX
-                           MOVE    WRK-RECE62-KOHNUM (IDX)
+                           MOVE    RECE6W-KOHNUM (IDX)
                                            TO  RECE62-ETC-KOHNUM (IDZX)
-                           MOVE    WRK-RECE62-KOHFTNJANUM (IDX)
+                           MOVE    RECE6W-KOHFTNJANUM (IDX)
                                            TO  RECE62-ETC-KOHFTNJANUM
                                                                  (IDZX)
-                           MOVE    WRK-RECE62-JNISSU   (IDXX)
+                           MOVE    RECE6W-JNISSU   (IDXX)
                                            TO  RECE62-ETC-JNISSU (IDZX)
-                           MOVE    WRK-RECE62-TOTALTEN (IDXX)
+                           MOVE    RECE6W-TOTALTEN (IDXX)
                                            TO RECE62-ETC-TOTALTEN(IDZX)
-                           MOVE    WRK-RECE62-FTNMONEY (IDXX)
+                           MOVE    RECE6W-FTNMONEY (IDXX)
                                            TO RECE62-ETC-FTNMONEY(IDZX)
-                           MOVE    WRK-RECE62-FTNMONEY-FTN (IDXX)
+                           MOVE    RECE6W-FTNMONEY-FTN (IDXX)
                                        TO RECE62-ETC-FTNMONEY-FTN(IDZX)
-                           MOVE    WRK-RECE62-FTNMONEY-KOJ (IDXX)
+                           MOVE    RECE6W-FTNMONEY-KOJ (IDXX)
                                        TO RECE62-ETC-FTNMONEY-KOJ(IDZX)
-                           MOVE    WRK-RECE62-SHOKUJINISSU   (IDXX)
+                           MOVE    RECE6W-SHOKUJINISSU   (IDXX)
                                            TO  RECE62-ETC-SHOKUJINISSU
                                                                  (IDZX)
-                           MOVE    WRK-RECE62-SHOKUJIRYOYOHI (IDXX)
+                           MOVE    RECE6W-SHOKUJIRYOYOHI (IDXX)
                                            TO RECE62-ETC-SHOKUJIRYOYOHI
                                                                  (IDZX)
-                           MOVE    WRK-RECE62-SHOKUJIFTN (IDXX)
+                           MOVE    RECE6W-SHOKUJIFTN (IDXX)
                                            TO RECE62-ETC-SHOKUJIFTN
                                                                  (IDZX)
                    END-EVALUATE
@@ -27706,22 +27705,22 @@
       *    保険組合せ番号情報
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       10
-               IF     WRK-RECE62-HKNCOMBI (IDX)    NOT =   ZERO
-                   MOVE    WRK-RECE62-HKNCOMBI (IDX)
+               IF     RECE6W-HKNCOMBI (IDX)    NOT =   ZERO
+                   MOVE    RECE6W-HKNCOMBI (IDX)
                                            TO  RECE62-HKNCOMBI (IDX)
-                   MOVE    WRK-RECE62-HKNNUMHC (IDX)
+                   MOVE    RECE6W-HKNNUMHC (IDX)
                                            TO  RECE62-HKNNUMHC (IDX)
                    PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL   IDY     >       4
-                       IF     WRK-RECE62-KOHNUMHC (IDX IDY)
+                       IF     RECE6W-KOHNUMHC (IDX IDY)
                                            NOT =   SPACE
                            PERFORM VARYING IDXX    FROM    1   BY  1
                                    UNTIL   IDXX    >       4
-                               IF   (WRK-RECE62-KOHNUMHC (IDX IDY)   =
+                               IF   (RECE6W-KOHNUMHC (IDX IDY)   =
                                                   RECE62-KOHNUM (IDXX))
-                               AND  (WRK-RECE62-KOHIDHC  (IDX IDY)   =
+                               AND  (RECE6W-KOHIDHC  (IDX IDY)   =
                                                   RECE62-KOHID  (IDXX))
-                                   MOVE    WRK-RECE62-KOHNUMHCINF
+                                   MOVE    RECE6W-KOHNUMHCINF
                                                          (IDX IDY)
                                                    TO
                                            RECE62-KOHNUMHCINF(IDX IDY)

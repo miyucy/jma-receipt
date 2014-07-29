@@ -664,6 +664,8 @@
       *
       *  04.08.01    NACL-ÌçÏÆ    13/01/22  Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë£±£°²óÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
+      *  04.08.03    NACL-ÌçÏÆ    14/07/29  £³£²Ê¸»ú°Ê¾å¤ÎÊ¸»úÎó½¤Àµ
+      *                                     ¡Ê¥³¥ó¥Ñ¥¤¥ë»þ¤Î¥ï¡¼¥Ë¥ó¥°½¤Àµ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1144,23 +1146,23 @@
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¼ýÇ¼¥Ç¡¼¥¿ÂàÈò¡Ê¸øÈñÊ»ÍÑÊ¬¡Ë
            03  WRK-SYUNOU-GENBUTU70-TABLE.
              05  WRK-SYUNOU-GENBUTU70-OCC                OCCURS  10.
-                 07  WRK-SYUNOU-GENBUTU70-HKNCOMBINUM    PIC  X(04).
-                 07  WRK-SYUNOU-GENBUTU70-TOTAL-HKNTEN   PIC  9(07).
-                 07  WRK-SYUNOU-GENBUTU70-SYUHKNNUM      PIC  X(03).
-                 07  WRK-SYUNOU-GENBUTU70-KOH1HKNNUM     PIC  X(03).
-                 07  WRK-SYUNOU-GENBUTU70-KOH1COMPFTN    PIC  9(07).
-                 07  WRK-SYUNOU-GENBUTU70-KOH2HKNNUM     PIC  X(03).
-                 07  WRK-SYUNOU-GENBUTU70-KOH2COMPFTN    PIC  9(07).
-                 07  WRK-SYUNOU-GENBUTU70-KOH3HKNNUM     PIC  X(03).
-                 07  WRK-SYUNOU-GENBUTU70-KOH3COMPFTN    PIC  9(07).
-                 07  WRK-SYUNOU-GENBUTU70-KOH4HKNNUM     PIC  X(03).
-                 07  WRK-SYUNOU-GENBUTU70-KOH4COMPFTN    PIC  9(07).
-                 07  WRK-SYUNOU-GENBUTU70-GASSANFLG      PIC  9(01).
-                 07  WRK-SYUNOU-GENBUTU70-HANTEIFLG      PIC  9(01).
+                 07  WRK-SYUNOU-GEN70-HKNCOMBINUM        PIC  X(04).
+                 07  WRK-SYUNOU-GEN70-TOTAL-HKNTEN       PIC  9(07).
+                 07  WRK-SYUNOU-GEN70-SYUHKNNUM          PIC  X(03).
+                 07  WRK-SYUNOU-GEN70-KOH1HKNNUM         PIC  X(03).
+                 07  WRK-SYUNOU-GEN70-KOH1COMPFTN        PIC  9(07).
+                 07  WRK-SYUNOU-GEN70-KOH2HKNNUM         PIC  X(03).
+                 07  WRK-SYUNOU-GEN70-KOH2COMPFTN        PIC  9(07).
+                 07  WRK-SYUNOU-GEN70-KOH3HKNNUM         PIC  X(03).
+                 07  WRK-SYUNOU-GEN70-KOH3COMPFTN        PIC  9(07).
+                 07  WRK-SYUNOU-GEN70-KOH4HKNNUM         PIC  X(03).
+                 07  WRK-SYUNOU-GEN70-KOH4COMPFTN        PIC  9(07).
+                 07  WRK-SYUNOU-GEN70-GASSANFLG          PIC  9(01).
+                 07  WRK-SYUNOU-GEN70-HANTEIFLG          PIC  9(01).
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¼ýÇ¼¥Ç¡¼¥¿ÂàÈò¡Ê¼çÊÝ¸±Ã±ÆÈÊ¬¡Ë
            03  WRK-SYUNOU-GENBUTU70T-TABLE.
-                 07  WRK-SYUNOU-GENBUTU70T-TOTAL-HKNTEN  PIC  9(07).
-                 07  WRK-SYUNOU-GENBUTU70T-HANTEIFLG     PIC  9(01).
+                 07  WRK-SYUNOU-GEN70T-TOTAL-HKNTEN      PIC  9(07).
+                 07  WRK-SYUNOU-GEN70T-HANTEIFLG         PIC  9(01).
       *
        01  WRK-SYUNOU-CYOKI-AREA.
            03  WRK-SYUNOU-CYOKI-TABLE.
@@ -2376,13 +2378,14 @@
       *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯
            COPY    "CPTTNS.INC".
       *
-       01  WRK-RECE02-REC. 
+      *    £Ò£Å£Ã£Å£°£²¤Î¥ï¡¼¥¯¥ì¥³¡¼¥É
+       01  RECE2W-REC.
            COPY    "CPRCF002.INC"  REPLACING  //RECE02//
-                                   BY         //WRK-RECE02//.
+                                   BY         //RECE2W//.
       *
-       01  WRK-RECE02G-REC. 
+       01  RECE2G-REC.
            COPY    "CPRCF002.INC"  REPLACING  //RECE02//
-                                   BY         //WRK-RECE02G//.
+                                   BY         //RECE2G//.
       *
        01  LNK-ORCS02-REC.
            COPY  "CPORCS02.INC".
@@ -2964,7 +2967,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            INITIALIZE                   TBL-TOKUSYU-KEISAN
       *
-           INITIALIZE                   WRK-RECE02G-REC
+           INITIALIZE                   RECE2G-REC
       *
            INITIALIZE                   TBL-HKNCOMBI2
       *
@@ -3173,7 +3176,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            END-IF
       *
            PERFORM          2101-KOREISYA-KOHI-SEC
-           PERFORM          211A-ZENKOKUKOHI-NISYU-CHECK-SEC
+           PERFORM          211A-ZENKOKUKOHI-NISYU-CHK-SEC
            IF  ( RECE02-ZAITAKU    =    "1"  OR  "2"    )
            OR  ( FLG-TOKU75        =     1  OR  2  OR 3 )
              PERFORM        2102-KOREISYA-CHECK-SEC
@@ -3274,7 +3277,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            IF  (RECE02-SRYYM     >=    "201204")
            AND (RECE02-ZAITAKU    =    "2"     )
-               PERFORM    211S-GENBUTU70-KOGAKU-GASSAN-CHECK-SEC
+               PERFORM    211S-GENBUTU70-GASSAN-CHK-SEC
            END-IF
            MOVE      ZERO       TO   FLG-CYOKI-CHECK
            MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNTEN
@@ -5783,7 +5786,7 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
       *****************************************************************
       *    Á´¹ñ¸øÈñ£²¼ï¥Á¥§¥Ã¥¯
       *****************************************************************
-       211A-ZENKOKUKOHI-NISYU-CHECK-SEC               SECTION.
+       211A-ZENKOKUKOHI-NISYU-CHK-SEC               SECTION.
       *
            IF     (RECE02-SRYYM          >=  "200804")
            AND    (RECE02-HKNNUM      NOT =  SPACE   )
@@ -6273,7 +6276,7 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
            END-IF
       *
            .
-       211A-ZENKOKUKOHI-NISYU-CHECK-EXT.
+       211A-ZENKOKUKOHI-NISYU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8738,7 +8741,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE  ZERO  TO   FLG-HENSYU-ARI
                                MOVE  ZERO  TO   FLG-ZAITAKU-CHECK
                                IF  ACCT-JIHOKBN  =  SPACE
-                                PERFORM 21042-RECE02-TOTALTEN-HENSYU-SEC
+                                PERFORM 21042-RECE02-TOTALTEN-HEN-SEC
                                END-IF
                                PERFORM 21043-RECE04-TENSOU-SEC
                                PERFORM 21044-RECE05-HENSYU-SEC
@@ -8997,7 +9000,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤Î¹àÌÜÅ¾Á÷£²¡Ê£Æ£°£°£²¡Ë:¥È¡¼¥¿¥ëÅÀÊÔ½¸
       *****************************************************************
-       21042-RECE02-TOTALTEN-HENSYU-SEC                SECTION.               
+       21042-RECE02-TOTALTEN-HEN-SEC                SECTION.               
       *
       ***  IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
            IF    (RECE02-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
@@ -9006,11 +9009,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    CONTINUE
                ELSE
                 IF         ACCT-ZAIKBN        =    2
-                   COMPUTE  WRK-RECE02G-TOTALTEN(1) =
-                            WRK-RECE02G-TOTALTEN(1) +
+                   COMPUTE  RECE2G-TOTALTEN(1) =
+                            RECE2G-TOTALTEN(1) +
                            (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
-                   COMPUTE  WRK-RECE02G-HENTOTALTEN(1) =
-                            WRK-RECE02G-HENTOTALTEN(1) +
+                   COMPUTE  RECE2G-HENTOTALTEN(1) =
+                            RECE2G-HENTOTALTEN(1) +
                            (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
                 ELSE
                  IF       (ACCT-SRYCDTOTAL    =    630010002)
@@ -9063,14 +9066,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      CONTINUE
                   ELSE
                    IF          ACCT-ZAIKBN        =    2
-                     COMPUTE  WRK-RECE02G-HENTOTALTEN(KH-IDX) =
-                              WRK-RECE02G-HENTOTALTEN(KH-IDX) +
+                     COMPUTE  RECE2G-HENTOTALTEN(KH-IDX) =
+                              RECE2G-HENTOTALTEN(KH-IDX) +
                              (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
                      IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                          CONTINUE
                      ELSE
-                         COMPUTE  WRK-RECE02G-TOTALTEN(KH-IDX) =
-                                  WRK-RECE02G-TOTALTEN(KH-IDX) +
+                         COMPUTE  RECE2G-TOTALTEN(KH-IDX) =
+                                  RECE2G-TOTALTEN(KH-IDX) +
                                  (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
                      END-IF
                    ELSE
@@ -9107,7 +9110,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
            .
-       21042-RECE02-TOTALTEN-HENSYU-EXT.
+       21042-RECE02-TOTALTEN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9822,7 +9825,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2104411-RECE05-TENSOU-COMCNT-HEN-SEC
+                  PERFORM  2104411-RECE05-COMCNT-HEN-SEC
                ELSE
                   IF   RECE04-SRYKBN      =     "50"
                      MOVE   "1"   TO    RECE04-FLG-SHUJUTU-COMMENT
@@ -10039,7 +10042,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
                   IF  RECE05-SRYSURYO(IDX4)  NOT = ZERO
-                    PERFORM  2104413-RECE05-TENSOU-SURYO-HEN-SEC
+                    PERFORM  2104413-RECE05-SURYO-HEN-SEC
       *
                     MOVE    SPACE      TO  RECE05-NAME(IDX4)
                     MOVE    SPACE      TO  RECE05-INPUTCOMENT(IDX4)
@@ -10248,7 +10251,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 2104412-RECE05-TENSOU-TANKA-HEN-SEC
+                       PERFORM 2104412-RECE05-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE05-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -10450,7 +10453,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *****************************************************************
       *    ¥ì¥»¥×¥È¥³¥á¥ó¥È¥Õ¥é¥°ÊÔ½¸½èÍý
       *****************************************************************
-       2104411-RECE05-TENSOU-COMCNT-HEN-SEC               SECTION.
+       2104411-RECE05-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE04-SRYKBN      =     "11"
       *       ½é¿ÇÎÁ»»Äê²Ê¡§
@@ -11335,17 +11338,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            END-IF
       *
            .
-       2104411-RECE05-TENSOU-COMCNT-HEN-EXT.
+       2104411-RECE05-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    »ÀÁÇ¤ÎÃ±²ÁÊÔ½¸½èÍý
       *****************************************************************
-       2104412-RECE05-TENSOU-TANKA-HEN-SEC     SECTION.
-      *
-      ***  IF      TNS-TEN         =   ZERO
-      ***      GO  TO  2104412-RECE05-TENSOU-TANKA-HEN-EXT  
-      ***  END-IF
+       2104412-RECE05-TANKA-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       * 
@@ -11405,13 +11404,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            END-IF                             
       *
            .
-       2104412-RECE05-TENSOU-TANKA-HEN-EXT.
+       2104412-RECE05-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    »ÄÎÌÇÑ´þ¤Î¿ôÎÌÊÔ½¸½èÍý
       *****************************************************************
-       2104413-RECE05-TENSOU-SURYO-HEN-SEC     SECTION.
+       2104413-RECE05-SURYO-HEN-SEC     SECTION.
       *
            MOVE    SPACE           TO  WRK-SURYO-X
            MOVE    ZERO            TO  WRK-SURYOST
@@ -11525,7 +11524,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            END-STRING
       *
            .
-       2104413-RECE05-TENSOU-SURYO-HEN-EXT.
+       2104413-RECE05-SURYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12796,23 +12795,23 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE   ZERO       TO    RECE02-KHNTEN(2)
                        MOVE   1          TO    FLG-KHNTEN2
                        IF    BUN-IDX        =   1
-                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX)  =
-                                       WRK-RECE02G-TENSU(2 BUN-IDX)  +
+                            COMPUTE    RECE2G-TENSU(2 BUN-IDX)  =
+                                       RECE2G-TENSU(2 BUN-IDX)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX2       =   2
-                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX2)  =
-                                       WRK-RECE02G-TENSU(2 BUN-IDX2)  +
+                            COMPUTE    RECE2G-TENSU(2 BUN-IDX2)  =
+                                       RECE2G-TENSU(2 BUN-IDX2)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX3       =   3
-                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX3)  =
-                                       WRK-RECE02G-TENSU(2 BUN-IDX3)  +
+                            COMPUTE    RECE2G-TENSU(2 BUN-IDX3)  =
+                                       RECE2G-TENSU(2 BUN-IDX3)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX4       =   4
-                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX4)  =
-                                       WRK-RECE02G-TENSU(2 BUN-IDX4)  +
+                            COMPUTE    RECE2G-TENSU(2 BUN-IDX4)  =
+                                       RECE2G-TENSU(2 BUN-IDX4)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                      END-IF
@@ -12821,23 +12820,23 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                WHEN    "13"
                  IF  ACCT-ZAIKBN   =    2
                    IF    BUN-IDX        =   1
-                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX)  =
-                                  WRK-RECE02G-TENSU(7 BUN-IDX)  +
+                       COMPUTE    RECE2G-TENSU(7 BUN-IDX)  =
+                                  RECE2G-TENSU(7 BUN-IDX)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
-                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX2)  =
-                                  WRK-RECE02G-TENSU(7 BUN-IDX2)  +
+                       COMPUTE    RECE2G-TENSU(7 BUN-IDX2)  =
+                                  RECE2G-TENSU(7 BUN-IDX2)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
-                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX3)  =
-                                  WRK-RECE02G-TENSU(7 BUN-IDX3)  +
+                       COMPUTE    RECE2G-TENSU(7 BUN-IDX3)  =
+                                  RECE2G-TENSU(7 BUN-IDX3)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
-                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX4)  =
-                                  WRK-RECE02G-TENSU(7 BUN-IDX4)  +
+                       COMPUTE    RECE2G-TENSU(7 BUN-IDX4)  =
+                                  RECE2G-TENSU(7 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -12866,23 +12865,23 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
                    IF    BUN-IDX        =   1
-                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX)  =
-                                  WRK-RECE02G-TENSU(12 BUN-IDX)  +
+                       COMPUTE    RECE2G-TENSU(12 BUN-IDX)  =
+                                  RECE2G-TENSU(12 BUN-IDX)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
-                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX2)  =
-                                  WRK-RECE02G-TENSU(12 BUN-IDX2)  +
+                       COMPUTE    RECE2G-TENSU(12 BUN-IDX2)  =
+                                  RECE2G-TENSU(12 BUN-IDX2)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
-                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX3)  =
-                                  WRK-RECE02G-TENSU(12 BUN-IDX3)  +
+                       COMPUTE    RECE2G-TENSU(12 BUN-IDX3)  =
+                                  RECE2G-TENSU(12 BUN-IDX3)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
-                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX4)  =
-                                  WRK-RECE02G-TENSU(12 BUN-IDX4)  +
+                       COMPUTE    RECE2G-TENSU(12 BUN-IDX4)  =
+                                  RECE2G-TENSU(12 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -14144,7 +14143,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ê¹â³ÛÎÅÍÜÈñ¹ç»»ÂÐ¾Ý¥Á¥§¥Ã¥¯¡Ë
       *****************************************************************
-       211S-GENBUTU70-KOGAKU-GASSAN-CHECK-SEC                SECTION.
+       211S-GENBUTU70-GASSAN-CHK-SEC                SECTION.
       *
            INITIALIZE                        SYUNOU-REC
            MOVE    RECE02-HOSPNUM       TO   SYU-HOSPNUM
@@ -14168,7 +14167,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
                    IF  (SYU-DENPJTIKBN         NOT =  "3")
                    AND (SYU-TOTAL-HKNTEN       NOT = ZERO)
                    AND (RECE02-DAISANFLG(IDX1) NOT =   1 )
-                     PERFORM 211S1-GENBUTU70-KOGAKU-GASSAN-HENSYU-SEC
+                     PERFORM 211S1-GENBUTU70-GASSAN-HEN-SEC
                    END-IF
                    MOVE    10           TO   IDX1
                  END-IF
@@ -14182,16 +14181,16 @@ grpsys           PERFORM 900-DBSELECT-SEC
            MOVE    "key26"              TO   MCP-PATHNAME
            PERFORM  900-CLOSE-SEC
       *
-           PERFORM  211S2-GENBUTU70-KOGAKU-GASSAN-HANTEI-SEC
+           PERFORM  211S2-GENBUTU70-GASSAN-HAN-SEC
       *
            .
-       211S-GENBUTU70-KOGAKU-GASSAN-CHECK-EXT.
+       211S-GENBUTU70-GASSAN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ê¹â³ÛÎÅÍÜÈñ¹ç»»ÂÐ¾Ý¥Á¥§¥Ã¥¯¡ËÊÔ½¸
       *****************************************************************
-       211S1-GENBUTU70-KOGAKU-GASSAN-HENSYU-SEC              SECTION.
+       211S1-GENBUTU70-GASSAN-HEN-SEC              SECTION.
       *
            IF  (SYU-SYUHKNNUM   NOT = SPACE)
            AND (RECE02-HKNNUM   NOT = SPACE)
@@ -14200,108 +14199,108 @@ grpsys           PERFORM 900-DBSELECT-SEC
              AND   (SYU-KOH3HKNNUM = SPACE)
              AND   (SYU-KOH4HKNNUM = SPACE)
                ADD   SYU-TOTAL-HKNTEN  TO
-                         WRK-SYUNOU-GENBUTU70T-TOTAL-HKNTEN
+                         WRK-SYUNOU-GEN70T-TOTAL-HKNTEN
              ELSE
                MOVE  SYU-HKNCOMBINUM   TO
-                         WRK-SYUNOU-GENBUTU70-HKNCOMBINUM(IDX1)
+                         WRK-SYUNOU-GEN70-HKNCOMBINUM(IDX1)
                ADD   SYU-TOTAL-HKNTEN  TO
-                         WRK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX1)
+                         WRK-SYUNOU-GEN70-TOTAL-HKNTEN(IDX1)
                MOVE  SYU-SYUHKNNUM     TO
-                         WRK-SYUNOU-GENBUTU70-SYUHKNNUM(IDX1)
+                         WRK-SYUNOU-GEN70-SYUHKNNUM(IDX1)
                MOVE  SYU-KOH1HKNNUM    TO
-                         WRK-SYUNOU-GENBUTU70-KOH1HKNNUM(IDX1)
+                         WRK-SYUNOU-GEN70-KOH1HKNNUM(IDX1)
                ADD   SYU-KOH1COMPFTN   TO
-                         WRK-SYUNOU-GENBUTU70-KOH1COMPFTN(IDX1)
+                         WRK-SYUNOU-GEN70-KOH1COMPFTN(IDX1)
                MOVE  SYU-KOH2HKNNUM    TO
-                         WRK-SYUNOU-GENBUTU70-KOH2HKNNUM(IDX1)
+                         WRK-SYUNOU-GEN70-KOH2HKNNUM(IDX1)
                ADD   SYU-KOH2COMPFTN   TO
-                         WRK-SYUNOU-GENBUTU70-KOH2COMPFTN(IDX1)
+                         WRK-SYUNOU-GEN70-KOH2COMPFTN(IDX1)
                MOVE  SYU-KOH3HKNNUM    TO
-                         WRK-SYUNOU-GENBUTU70-KOH3HKNNUM(IDX1)
+                         WRK-SYUNOU-GEN70-KOH3HKNNUM(IDX1)
                ADD   SYU-KOH3COMPFTN   TO
-                         WRK-SYUNOU-GENBUTU70-KOH3COMPFTN(IDX1)
+                         WRK-SYUNOU-GEN70-KOH3COMPFTN(IDX1)
                MOVE  SYU-KOH4HKNNUM    TO
-                         WRK-SYUNOU-GENBUTU70-KOH4HKNNUM(IDX1)
+                         WRK-SYUNOU-GEN70-KOH4HKNNUM(IDX1)
                ADD   SYU-KOH4COMPFTN   TO
-                         WRK-SYUNOU-GENBUTU70-KOH4COMPFTN(IDX1)
+                         WRK-SYUNOU-GEN70-KOH4COMPFTN(IDX1)
                IF    SYU-SKJ-FTNGAKU(3)  =  9
                   MOVE    9            TO
-                         WRK-SYUNOU-GENBUTU70-GASSANFLG(IDX1)
+                         WRK-SYUNOU-GEN70-GASSANFLG(IDX1)
                END-IF
              END-IF
            END-IF
       *
            .
-       211S1-GENBUTU70-KOGAKU-GASSAN-HENSYU-EXT.
+       211S1-GENBUTU70-GASSAN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ê¹â³ÛÎÅÍÜÈñ¹ç»»ÂÐ¾Ý¥Á¥§¥Ã¥¯¡ËÈ½Äê
       *****************************************************************
-       211S2-GENBUTU70-KOGAKU-GASSAN-HANTEI-SEC              SECTION.
+       211S2-GENBUTU70-GASSAN-HAN-SEC              SECTION.
       *
       *    ¼çÊÝ¸±Ã±ÆÈÊ¬¤Î·×»»
-           COMPUTE  WRK-FTNKEI = WRK-SYUNOU-GENBUTU70T-TOTAL-HKNTEN
+           COMPUTE  WRK-FTNKEI = WRK-SYUNOU-GEN70T-TOTAL-HKNTEN
                                * 10
                                * RECE02-KYURATE
                                / 100
            IF    FLG-TOKU75  =  3
              IF  WRK-FTNKEI >= 10500
-               MOVE    1    TO    WRK-SYUNOU-GENBUTU70T-HANTEIFLG
+               MOVE    1    TO    WRK-SYUNOU-GEN70T-HANTEIFLG
              END-IF
            ELSE
              IF  WRK-FTNKEI >= 21000
-               MOVE    1    TO    WRK-SYUNOU-GENBUTU70T-HANTEIFLG
+               MOVE    1    TO    WRK-SYUNOU-GEN70T-HANTEIFLG
              END-IF
            END-IF
       *
       *    ¸øÈñÊ»ÍÑÊ¬¤Î·×»»
            PERFORM   VARYING   IDX14   FROM   1   BY   1
                       UNTIL    IDX14     >   10
-             IF   WRK-SYUNOU-GENBUTU70-HKNCOMBINUM(IDX14)  NOT = SPACE
-               IF  (WRK-SYUNOU-GENBUTU70-KOH1HKNNUM(IDX14) =
-                                                     "972" OR "974")
-               AND (WRK-SYUNOU-GENBUTU70-KOH2HKNNUM(IDX14) =  SPACE)
-               AND (WRK-SYUNOU-GENBUTU70-KOH3HKNNUM(IDX14) =  SPACE)
-               AND (WRK-SYUNOU-GENBUTU70-KOH4HKNNUM(IDX14) =  SPACE)
+             IF   WRK-SYUNOU-GEN70-HKNCOMBINUM(IDX14)  NOT = SPACE
+               IF  (WRK-SYUNOU-GEN70-KOH1HKNNUM(IDX14) =
+                                                 "972" OR "974")
+               AND (WRK-SYUNOU-GEN70-KOH2HKNNUM(IDX14) =  SPACE)
+               AND (WRK-SYUNOU-GEN70-KOH3HKNNUM(IDX14) =  SPACE)
+               AND (WRK-SYUNOU-GEN70-KOH4HKNNUM(IDX14) =  SPACE)
                  CONTINUE
                ELSE
                  COMPUTE  WRK-FTNKEI =
-                            WRK-SYUNOU-GENBUTU70-TOTAL-HKNTEN(IDX14)
+                            WRK-SYUNOU-GEN70-TOTAL-HKNTEN(IDX14)
                                      * 10
                                      * RECE02-KYURATE
                                      / 100
-                 IF ((WRK-SYUNOU-GENBUTU70-KOH1HKNNUM(IDX14)
+                 IF ((WRK-SYUNOU-GEN70-KOH1HKNNUM(IDX14)
                                          NOT = SPACE          ) AND
-                     (WRK-SYUNOU-GENBUTU70-KOH1HKNNUM(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH1HKNNUM(IDX14)
                                          NOT = "972" AND "974") AND
-                     (WRK-SYUNOU-GENBUTU70-KOH1COMPFTN(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH1COMPFTN(IDX14)
                                          NOT = ZERO           ))
-                 OR ((WRK-SYUNOU-GENBUTU70-KOH2HKNNUM(IDX14)
+                 OR ((WRK-SYUNOU-GEN70-KOH2HKNNUM(IDX14)
                                          NOT = SPACE          ) AND
-                     (WRK-SYUNOU-GENBUTU70-KOH2HKNNUM(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH2HKNNUM(IDX14)
                                          NOT = "972" AND "974") AND
-                     (WRK-SYUNOU-GENBUTU70-KOH2COMPFTN(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH2COMPFTN(IDX14)
                                          NOT = ZERO           ))
-                 OR ((WRK-SYUNOU-GENBUTU70-KOH3HKNNUM(IDX14)
+                 OR ((WRK-SYUNOU-GEN70-KOH3HKNNUM(IDX14)
                                          NOT = SPACE          ) AND
-                     (WRK-SYUNOU-GENBUTU70-KOH3HKNNUM(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH3HKNNUM(IDX14)
                                          NOT = "972" AND "974") AND
-                     (WRK-SYUNOU-GENBUTU70-KOH3COMPFTN(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH3COMPFTN(IDX14)
                                          NOT = ZERO           ))
-                 OR ((WRK-SYUNOU-GENBUTU70-KOH4HKNNUM(IDX14)
+                 OR ((WRK-SYUNOU-GEN70-KOH4HKNNUM(IDX14)
                                          NOT = SPACE          ) AND
-                     (WRK-SYUNOU-GENBUTU70-KOH4HKNNUM(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH4HKNNUM(IDX14)
                                          NOT = "972" AND "974") AND
-                     (WRK-SYUNOU-GENBUTU70-KOH4COMPFTN(IDX14)
+                     (WRK-SYUNOU-GEN70-KOH4COMPFTN(IDX14)
                                          NOT = ZERO           ))
                    IF  FLG-TOKU75  =  3
                     IF  WRK-FTNKEI >= 10500
-                      MOVE  1  TO WRK-SYUNOU-GENBUTU70-HANTEIFLG(IDX14)
+                      MOVE  1  TO WRK-SYUNOU-GEN70-HANTEIFLG(IDX14)
                     END-IF
                    ELSE
                     IF  WRK-FTNKEI >= 21000
-                      MOVE  1  TO WRK-SYUNOU-GENBUTU70-HANTEIFLG(IDX14)
+                      MOVE  1  TO WRK-SYUNOU-GEN70-HANTEIFLG(IDX14)
                     END-IF
                    END-IF
                  END-IF
@@ -14310,7 +14309,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
            .
-       211S2-GENBUTU70-KOGAKU-GASSAN-HANTEI-EXT.
+       211S2-GENBUTU70-GASSAN-HAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -15435,7 +15434,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               WRK-KOH-GAI
                                               WRK-KOH-GAI2
                  MOVE   1                TO   FLG-JYOGENKBN
-                 IF ((WRK-SYUNOU-GENBUTU70T-HANTEIFLG  =  1) AND
+                 IF ((WRK-SYUNOU-GEN70T-HANTEIFLG      =  1) AND
                      (RECE02-SRYYM     >= "201204"         ))
                  OR ( RECE02-SRYYM     <= "201203"          )
                      MOVE      1         TO   FLG-GENBUTU-TAISYOOK
@@ -15449,9 +15448,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
              ADD        SYU-TOTAL-HKNTEN TO   WRK-JYOGENKBN-TEN6
            ELSE
              MOVE      1      TO    FLG-HOKENICHIBU
-             IF ((WRK-SYUNOU-GENBUTU70-HANTEIFLG(IDX1) = 1) AND
+             IF ((WRK-SYUNOU-GEN70-HANTEIFLG(IDX1) = 1    ) AND
                  (RECE02-SRYYM     >= "201204"            ))
-             OR ((WRK-SYUNOU-GENBUTU70-GASSANFLG(IDX1) = 9) AND
+             OR ((WRK-SYUNOU-GEN70-GASSANFLG(IDX1) = 9    ) AND
                  (RECE02-SRYYM     >= "201204"            ))
              OR ((SYU-KOH-HKNNUM(1) = "972" OR "974"      ) AND
                  (SYU-KOH-HKNNUM(2) = SPACE               ) AND
@@ -15637,8 +15636,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          END-IF
                        END-IF
                        PERFORM   2105217-TOKUSITU-HENSYU2-SEC
-                       IF ((WRK-SYUNOU-GENBUTU70-HANTEIFLG(IDX1)
-                                                             = 1) AND
+                       IF ((WRK-SYUNOU-GEN70-HANTEIFLG(IDX1) = 1) AND
                            (RECE02-SRYYM     >= "201204"        ))
                        OR ( RECE02-SRYYM     <= "201203"         )
                            MOVE       1    TO   FLG-HOKENICHIBU5
@@ -17180,7 +17178,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     (TBL-TOKATUKAIFLG(KH-IDX - 1)   =  1         )))
               OR  (  TBL-HKNFTNDATA-FLG(KH-IDX - 1) =  1           )
                 IF  ((RECE02-ZAITAKU                 =  "2") AND
-                     (WRK-SYUNOU-GENBUTU70-HANTEIFLG(IDX1)
+                     (WRK-SYUNOU-GEN70-HANTEIFLG(IDX1)
                                                      = ZERO) AND
                      (TBL-HKNFTNDATA-JGNXXX(KH-IDX - 1)
                                                  NOT = ZERO) AND
@@ -18110,9 +18108,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      FLG-JYOGENKBN   =   1
                 MOVE     WRK-JYOGENKBN-TEN  TO  WRK-JYOGENKBN-TEN9
                 IF   FLG-ZEROKOGAITO   =   1
-                  PERFORM  21098X-SYUHKN-JYOHEN-KEISAN2-SEC
+                  PERFORM  21098X-SYUHKN-JYOHEN2-SEC
                 ELSE
-                  PERFORM  21098-SYUHKN-JYOHEN-KEISAN-SEC
+                  PERFORM  21098-SYUHKN-JYOHEN-SEC
                 END-IF
       *
       **>       IF   WK-GENGAKUKBN    NOT =   ZERO
@@ -18297,7 +18295,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             WRK-JYOGENKBN-TEN4 +
                             WRK-JYOGENKBN-TEN5 +
                             WRK-JYOGENKBN-TEN2
-                    PERFORM  21098-SYUHKN-JYOHEN-KEISAN-SEC
+                    PERFORM  21098-SYUHKN-JYOHEN-SEC
                     IF  WRK-KINGAKU-GENBUTU3 < WRK-FTNKEI5
                     AND WRK-JYOGENKBN-TEN2   = ZERO
                         MOVE   ZERO   TO   WRK-CHK-KEIKASOCHI1
@@ -18354,7 +18352,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 / 10
                   COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 * 10
                   MOVE  WRK-TAIHI-TOTALTEN TO  WRK-JYOGENKBN-TEN9
-                  PERFORM  21098-SYUHKN-JYOHEN-KEISAN-SEC
+                  PERFORM  21098-SYUHKN-JYOHEN-SEC
                   IF WRK-KINGAKU-GENBUTU3 > RECE02-FTNMONEY(2)
                     COMPUTE  WRK-CHK-KOKIGAK9      =
                              WRK-KINGAKU-GENBUTU3  -
@@ -18548,9 +18546,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF      FLG-JYOGENKBN   =   1
                 IF   FLG-ZEROKOGAITO   =   1
-                  PERFORM  21098X-SYUHKN-JYOHEN-KEISAN2-SEC
+                  PERFORM  21098X-SYUHKN-JYOHEN2-SEC
                 ELSE
-                  PERFORM  21098-SYUHKN-JYOHEN-KEISAN-SEC
+                  PERFORM  21098-SYUHKN-JYOHEN-SEC
                 END-IF
       **>       IF   WK-GENGAKUKBN    NOT =   ZERO
       **>       AND  WK-GENGAKUKBN-KEISAN =   ZERO
@@ -18791,7 +18789,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 / 10
                      COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 * 10
       *
-                     PERFORM  21098-SYUHKN-JYOHEN-KEISAN-SEC
+                     PERFORM  21098-SYUHKN-JYOHEN-SEC
       *
                      IF  WRK-KINGAKU-GENBUTU3 < WRK-FTNKEI5
                      AND WRK-JYOGENKBN-TEN2   = ZERO
@@ -18848,7 +18846,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 / 10
                      COMPUTE WRK-FTNKEI6 = WRK-FTNKEI6 * 10
       *
-                     PERFORM  21098-SYUHKN-JYOHEN-KEISAN-SEC
+                     PERFORM  21098-SYUHKN-JYOHEN-SEC
       *
                      IF WRK-KINGAKU-GENBUTU3 > RECE02-FTNMONEY(2)
                        COMPUTE  WRK-CHK-KOKIGAK9      =
@@ -19007,7 +19005,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              END-IF
            END-IF
       *
-           PERFORM  2109A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-SEC
+           PERFORM  2109A-CHIHO-ICHIBUFTN-HEN-SEC
       *
            MOVE    999999999   TO   WRK-FTNMONEY-MAE
            PERFORM  VARYING  KOHFTN-IDX  FROM  1  BY  1
@@ -19046,7 +19044,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    ELSE
                      IF   TBL-HKNFTNDATA-FLG(KOHFTN-IDX)  =  1
                        PERFORM  21095-KOH-ICHIBUFTN-HENSYU-SEC
-                       PERFORM  2109A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-SEC
+                       PERFORM  2109A-CHIHO-ICHIBUFTN-HEN-SEC
                      END-IF
                    END-IF
                 END-IF
@@ -19798,7 +19796,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
             END-EVALUATE
       *
       *     ÊÝ¸±Íó¤Î³ç¸ÌºÆ·Ç¡Ê²¼¡Ë¶â³Û²Ã»»
-            PERFORM       21099-SAIKEI-KINGAKU-KASAN-SEC
+            PERFORM       21099-SAIKEIKIN-KASAN-SEC
       *
            ELSE
       *
@@ -21078,7 +21076,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    ¼çÊÝ¸±¤Î¾å¸Â¶â³Û·×»»
       *****************************************************************
-       21098-SYUHKN-JYOHEN-KEISAN-SEC               SECTION.
+       21098-SYUHKN-JYOHEN-SEC               SECTION.
       *
            MOVE     ZERO     TO   WRK-KINGAKU-GENBUTU3
            MOVE     ZERO     TO   WRK-CHIHOU-KIN3
@@ -21202,13 +21200,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-EVALUATE
       *
            .
-       21098-SYUHKN-JYOHEN-KEISAN-EXT.
+       21098-SYUHKN-JYOHEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    ¼çÊÝ¸±¤Î¾å¸Â¶â³Û·×»»¡Ê£°£±¸ø¡Ë
       *****************************************************************
-       21098X-SYUHKN-JYOHEN-KEISAN2-SEC               SECTION.
+       21098X-SYUHKN-JYOHEN2-SEC               SECTION.
       *
            MOVE     ZERO     TO   WRK-KINGAKU-GENBUTU3
            MOVE     ZERO     TO   WRK-CHIHOU-KIN3
@@ -21251,13 +21249,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-EVALUATE
       *
            .
-       21098X-SYUHKN-JYOHEN-KEISAN2-EXT.
+       21098X-SYUHKN-JYOHEN2-EXT.
            EXIT.
       *
       *****************************************************************
       *    ÊÝ¸±Íó¤Î³ç¸ÌºÆ·Ç¡Ê²¼¡Ë¶â³Û²Ã»»
       *****************************************************************
-       21099-SAIKEI-KINGAKU-KASAN-SEC               SECTION.
+       21099-SAIKEIKIN-KASAN-SEC               SECTION.
       *
            EVALUATE    FLG-ZENKOKUKOHI-NISYU5
              WHEN          2
@@ -21279,7 +21277,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (  RECE02-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
                      (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
                      (  WRK-TAIHI-TOTALTEN =  RECE02-HENTOTALTEN(4)))
-                    PERFORM       210991-SAIKEI-KINGAKU-KASAN2-SEC
+                    PERFORM       210991-SAIKEIKIN-KASAN2-SEC
                  END-IF
                END-IF
              WHEN          3
@@ -21290,7 +21288,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (  RECE02-KOHNUM(2)(1:1) >=  "1" AND <= "8"   ) AND
                      (  TBL-TOKATUKAIFLG(2)    =  ZERO             ) AND
                      (  WRK-TAIHI-TOTALTEN =  RECE02-HENTOTALTEN(3)))
-                    PERFORM       210991-SAIKEI-KINGAKU-KASAN2-SEC
+                    PERFORM       210991-SAIKEIKIN-KASAN2-SEC
                  END-IF
                END-IF
              WHEN          4
@@ -21306,19 +21304,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (  RECE02-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
                      (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
                      (  WRK-TAIHI-TOTALTEN =  RECE02-HENTOTALTEN(4)))
-                    PERFORM       210991-SAIKEI-KINGAKU-KASAN2-SEC
+                    PERFORM       210991-SAIKEIKIN-KASAN2-SEC
                  END-IF
                END-IF
            END-EVALUATE
       *
            .
-       21099-SAIKEI-KINGAKU-KASAN-EXT.
+       21099-SAIKEIKIN-KASAN-EXT.
            EXIT.
       *
       *****************************************************************
       *    ÊÝ¸±Íó¤Î³ç¸ÌºÆ·Ç¡Ê²¼¡Ë¶â³Û²Ã»»
       *****************************************************************
-       210991-SAIKEI-KINGAKU-KASAN2-SEC               SECTION.
+       210991-SAIKEIKIN-KASAN2-SEC               SECTION.
       *
            IF   FLG-KOH  =   2
              COMPUTE  WRK-CHK-KOKIGAK8  =  RECE02-FTNMONEY(2)
@@ -21340,13 +21338,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            .
-       210991-SAIKEI-KINGAKU-KASAN2-EXT.
+       210991-SAIKEIKIN-KASAN2-EXT.
            EXIT.
       *
       *****************************************************************
       *    Á´¹ñ¸øÈñÊ»ÍÑ»þ¤ÎÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âÊÔ½¸
       *****************************************************************
-       2109A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-SEC               SECTION.
+       2109A-CHIHO-ICHIBUFTN-HEN-SEC               SECTION.
       *
            IF  (((RECE02-KOHNUM(1)(1:1) = "0"            ) AND
                  (RECE02-KOHNUM(1)  NOT = "012" AND "025"))  OR
@@ -21393,7 +21391,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            .
-       2109A-CHIHOKOHI-ICHIBUFUTAN-HENSYU-EXT.
+       2109A-CHIHO-ICHIBUFTN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -22016,104 +22014,104 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
        211H-GENTEN-HENSYU-SEC      SECTION.
       *
       *    ºÆ¿Ç¤Î¥ì¥»ÅÀ¿ô¤ÎÊÔ½¸¡Ê¸ºÅÀ¡Ë
-           IF   RECE02-TENSU(2 1)  >=  WRK-RECE02G-TENSU(2 1)
+           IF   RECE02-TENSU(2 1)  >=  RECE2G-TENSU(2 1)
              COMPUTE  RECE02-TENSU(2 1)  =
-                      RECE02-TENSU(2 1)  -  WRK-RECE02G-TENSU(2 1)
+                      RECE02-TENSU(2 1)  -  RECE2G-TENSU(2 1)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(2 1)
            END-IF
-           IF   RECE02-TENSU(2 2)  >=  WRK-RECE02G-TENSU(2 2)
+           IF   RECE02-TENSU(2 2)  >=  RECE2G-TENSU(2 2)
              COMPUTE  RECE02-TENSU(2 2)  =
-                      RECE02-TENSU(2 2)  -  WRK-RECE02G-TENSU(2 2)
+                      RECE02-TENSU(2 2)  -  RECE2G-TENSU(2 2)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(2 2)
            END-IF
-           IF   RECE02-TENSU(2 3)  >=  WRK-RECE02G-TENSU(2 3)
+           IF   RECE02-TENSU(2 3)  >=  RECE2G-TENSU(2 3)
              COMPUTE  RECE02-TENSU(2 3)  =
-                      RECE02-TENSU(2 3)  -  WRK-RECE02G-TENSU(2 3)
+                      RECE02-TENSU(2 3)  -  RECE2G-TENSU(2 3)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(2 3)
            END-IF
-           IF   RECE02-TENSU(2 4)  >=  WRK-RECE02G-TENSU(2 4)
+           IF   RECE02-TENSU(2 4)  >=  RECE2G-TENSU(2 4)
              COMPUTE  RECE02-TENSU(2 4)  =
-                      RECE02-TENSU(2 4)  -  WRK-RECE02G-TENSU(2 4)
+                      RECE02-TENSU(2 4)  -  RECE2G-TENSU(2 4)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(2 4)
            END-IF
       *
       *    »ØÆ³¤Î¥ì¥»ÅÀ¿ô¤ÎÊÔ½¸¡Ê¸ºÅÀ¡Ë
-           IF   RECE02-TENSU(7 1)  >=  WRK-RECE02G-TENSU(7 1)
+           IF   RECE02-TENSU(7 1)  >=  RECE2G-TENSU(7 1)
              COMPUTE  RECE02-TENSU(7 1)  =
-                      RECE02-TENSU(7 1)  -  WRK-RECE02G-TENSU(7 1)
+                      RECE02-TENSU(7 1)  -  RECE2G-TENSU(7 1)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(7 1)
            END-IF
-           IF   RECE02-TENSU(7 2)  >=  WRK-RECE02G-TENSU(7 2)
+           IF   RECE02-TENSU(7 2)  >=  RECE2G-TENSU(7 2)
              COMPUTE  RECE02-TENSU(7 2)  =
-                      RECE02-TENSU(7 2)  -  WRK-RECE02G-TENSU(7 2)
+                      RECE02-TENSU(7 2)  -  RECE2G-TENSU(7 2)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(7 2)
            END-IF
-           IF   RECE02-TENSU(7 3)  >=  WRK-RECE02G-TENSU(7 3)
+           IF   RECE02-TENSU(7 3)  >=  RECE2G-TENSU(7 3)
              COMPUTE  RECE02-TENSU(7 3)  =
-                      RECE02-TENSU(7 3)  -  WRK-RECE02G-TENSU(7 3)
+                      RECE02-TENSU(7 3)  -  RECE2G-TENSU(7 3)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(7 3)
            END-IF
-           IF   RECE02-TENSU(7 4)  >=  WRK-RECE02G-TENSU(7 4)
+           IF   RECE02-TENSU(7 4)  >=  RECE2G-TENSU(7 4)
              COMPUTE  RECE02-TENSU(7 4)  =
-                      RECE02-TENSU(7 4)  -  WRK-RECE02G-TENSU(7 4)
+                      RECE02-TENSU(7 4)  -  RECE2G-TENSU(7 4)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(7 4)
            END-IF
       *
       *    ºßÂð¤Î¥ì¥»ÅÀ¿ô¤ÎÊÔ½¸¡Ê¸ºÅÀ¡Ë
-           IF   RECE02-TENSU(12 1)  >=  WRK-RECE02G-TENSU(12 1)
+           IF   RECE02-TENSU(12 1)  >=  RECE2G-TENSU(12 1)
              COMPUTE  RECE02-TENSU(12 1)  =
-                      RECE02-TENSU(12 1)  -  WRK-RECE02G-TENSU(12 1)
+                      RECE02-TENSU(12 1)  -  RECE2G-TENSU(12 1)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(12 1)
            END-IF
-           IF   RECE02-TENSU(12 2)  >=  WRK-RECE02G-TENSU(12 2)
+           IF   RECE02-TENSU(12 2)  >=  RECE2G-TENSU(12 2)
              COMPUTE  RECE02-TENSU(12 2)  =
-                      RECE02-TENSU(12 2)  -  WRK-RECE02G-TENSU(12 2)
+                      RECE02-TENSU(12 2)  -  RECE2G-TENSU(12 2)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(12 2)
            END-IF
-           IF   RECE02-TENSU(12 3)  >=  WRK-RECE02G-TENSU(12 3)
+           IF   RECE02-TENSU(12 3)  >=  RECE2G-TENSU(12 3)
              COMPUTE  RECE02-TENSU(12 3)  =
-                      RECE02-TENSU(12 3)  -  WRK-RECE02G-TENSU(12 3)
+                      RECE02-TENSU(12 3)  -  RECE2G-TENSU(12 3)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(12 3)
            END-IF
-           IF   RECE02-TENSU(12 4)  >=  WRK-RECE02G-TENSU(12 4)
+           IF   RECE02-TENSU(12 4)  >=  RECE2G-TENSU(12 4)
              COMPUTE  RECE02-TENSU(12 4)  =
-                      RECE02-TENSU(12 4)  -  WRK-RECE02G-TENSU(12 4)
+                      RECE02-TENSU(12 4)  -  RECE2G-TENSU(12 4)
            ELSE
              MOVE     ZERO    TO   RECE02-TENSU(12 4)
            END-IF
       *
       *    ¹ç·×ÅÀ¿ô¤ÎÊÔ½¸¡Ê¸ºÅÀ¡Ë
            COMPUTE  RECE02-TOTALTEN(1)    =
-                    RECE02-TOTALTEN(1)    -  WRK-RECE02G-TOTALTEN(1)
+                    RECE02-TOTALTEN(1)    -  RECE2G-TOTALTEN(1)
            COMPUTE  RECE02-HENTOTALTEN(1) =
-                    RECE02-HENTOTALTEN(1) -  WRK-RECE02G-HENTOTALTEN(1)
+                    RECE02-HENTOTALTEN(1) -  RECE2G-HENTOTALTEN(1)
            COMPUTE  RECE02-TOTALTEN(2)    =
-                    RECE02-TOTALTEN(2)    -  WRK-RECE02G-TOTALTEN(2)
+                    RECE02-TOTALTEN(2)    -  RECE2G-TOTALTEN(2)
            COMPUTE  RECE02-HENTOTALTEN(2) =
-                    RECE02-HENTOTALTEN(2) -  WRK-RECE02G-HENTOTALTEN(2)
+                    RECE02-HENTOTALTEN(2) -  RECE2G-HENTOTALTEN(2)
            COMPUTE  RECE02-TOTALTEN(3)    =
-                    RECE02-TOTALTEN(3)    -  WRK-RECE02G-TOTALTEN(3)
+                    RECE02-TOTALTEN(3)    -  RECE2G-TOTALTEN(3)
            COMPUTE  RECE02-HENTOTALTEN(3) =
-                    RECE02-HENTOTALTEN(3) -  WRK-RECE02G-HENTOTALTEN(3)
+                    RECE02-HENTOTALTEN(3) -  RECE2G-HENTOTALTEN(3)
            COMPUTE  RECE02-TOTALTEN(4)    =
-                    RECE02-TOTALTEN(4)    -  WRK-RECE02G-TOTALTEN(4)
+                    RECE02-TOTALTEN(4)    -  RECE2G-TOTALTEN(4)
            COMPUTE  RECE02-HENTOTALTEN(4) =
-                    RECE02-HENTOTALTEN(4) -  WRK-RECE02G-HENTOTALTEN(4)
+                    RECE02-HENTOTALTEN(4) -  RECE2G-HENTOTALTEN(4)
            COMPUTE  RECE02-TOTALTEN(5)    =
-                    RECE02-TOTALTEN(5)    -  WRK-RECE02G-TOTALTEN(5)
+                    RECE02-TOTALTEN(5)    -  RECE2G-TOTALTEN(5)
            COMPUTE  RECE02-HENTOTALTEN(5) =
-                    RECE02-HENTOTALTEN(5) -  WRK-RECE02G-HENTOTALTEN(5)
+                    RECE02-HENTOTALTEN(5) -  RECE2G-HENTOTALTEN(5)
       *
            .
        211H-GENTEN-HENSYU-EXT.
@@ -22681,7 +22679,7 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
        2112-RECESKYKBN-HENSYU-SEC      SECTION.
       *
       *    ½é´ü²½
-           MOVE    RECE02-REC           TO  WRK-RECE02-REC
+           MOVE    RECE02-REC           TO  RECE2W-REC
            INITIALIZE                       RECE02-KOHINF-AREA
                                             RECE02-HKNCOMBIINF-AREA
                                             RECE02-JNISSUINF-AREA
@@ -22701,31 +22699,31 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
            END-PERFORM
       *
       *    ¼çÊÝ¸±¾ðÊó¤Î¤ßÊÔ½¸
-           MOVE    WRK-RECE02-JNISSU   (1)
+           MOVE    RECE2W-JNISSU   (1)
                                        TO  RECE02-JNISSU  (1)
-           MOVE    WRK-RECE02-TOTALTEN (1)
+           MOVE    RECE2W-TOTALTEN (1)
                                        TO  RECE02-TOTALTEN(1)
-           MOVE    WRK-RECE02-FTNMONEY (1)
+           MOVE    RECE2W-FTNMONEY (1)
                                        TO  RECE02-FTNMONEY(1)
-           MOVE    WRK-RECE02-FTNMONEY-FTN (1)
+           MOVE    RECE2W-FTNMONEY-FTN (1)
                                        TO  RECE02-FTNMONEY-FTN(1)
-           MOVE    WRK-RECE02-FTNMONEY-KOJ (1)
+           MOVE    RECE2W-FTNMONEY-KOJ (1)
                                        TO  RECE02-FTNMONEY-KOJ(1)
-           MOVE    WRK-RECE02-YKZFTN   (1)
+           MOVE    RECE2W-YKZFTN   (1)
                                        TO  RECE02-YKZFTN  (1)
-           MOVE    WRK-RECE02-HENTOTALTEN (1)
+           MOVE    RECE2W-HENTOTALTEN (1)
                                        TO  RECE02-HENTOTALTEN (1)
-           MOVE    WRK-RECE02-KISAIFLG (1)
+           MOVE    RECE2W-KISAIFLG (1)
                                        TO  RECE02-KISAIFLG (1)
-           MOVE    WRK-RECE02-ZEROKISAIFLG (1)
+           MOVE    RECE2W-ZEROKISAIFLG (1)
                                        TO  RECE02-ZEROKISAIFLG (1)
-           MOVE    WRK-RECE02-ETCKISAIFLGINF(1)
+           MOVE    RECE2W-ETCKISAIFLGINF(1)
                                        TO  RECE02-ETCKISAIFLGINF(1)
-           MOVE    WRK-RECE02-FUKUSHIFLG(1)
+           MOVE    RECE2W-FUKUSHIFLG(1)
                                        TO  RECE02-FUKUSHIFLG(1)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       50
-               MOVE    WRK-RECE02-TENSU (IDX 1)
+               MOVE    RECE2W-TENSU (IDX 1)
                                            TO  RECE02-TENSU (IDX 1)
            END-PERFORM
       *
@@ -22738,63 +22736,63 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
            MOVE    1                   TO  IDX2  
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       4
-               IF      WRK-RECE02-KOHNUM (IDX) NOT =   SPACE
+               IF      RECE2W-KOHNUM (IDX) NOT =   SPACE
                    COMPUTE IDXX    =   IDX +   1
-                   EVALUATE    WRK-RECE02-RECESKYKBN (IDX)
+                   EVALUATE    RECE2W-RECESKYKBN (IDX)
                        WHEN    SPACE
                            ADD     1       TO  IDY
                                                IDX2
-                           MOVE    WRK-RECE02-KOHINF (IDX)
+                           MOVE    RECE2W-KOHINF (IDX)
                                            TO  RECE02-KOHINF (IDY)
-                           MOVE    WRK-RECE02-TEISYOTOKU2(IDX)
+                           MOVE    RECE2W-TEISYOTOKU2(IDX)
                                            TO  RECE02-TEISYOTOKU2(IDY)
                            COMPUTE IDYX    =   IDY +   1
-                           MOVE    WRK-RECE02-JNISSU   (IDXX)
+                           MOVE    RECE2W-JNISSU   (IDXX)
                                            TO  RECE02-JNISSU  (IDYX)
-                           MOVE    WRK-RECE02-TOTALTEN (IDXX)
+                           MOVE    RECE2W-TOTALTEN (IDXX)
                                            TO  RECE02-TOTALTEN(IDYX)
-                           MOVE    WRK-RECE02-FTNMONEY (IDXX)
+                           MOVE    RECE2W-FTNMONEY (IDXX)
                                            TO  RECE02-FTNMONEY(IDYX)
-                           MOVE    WRK-RECE02-FTNMONEY-FTN (IDXX)
+                           MOVE    RECE2W-FTNMONEY-FTN (IDXX)
                                            TO  RECE02-FTNMONEY-FTN(IDYX)
-                           MOVE    WRK-RECE02-FTNMONEY-KOJ (IDXX)
+                           MOVE    RECE2W-FTNMONEY-KOJ (IDXX)
                                            TO  RECE02-FTNMONEY-KOJ(IDYX)
-                           MOVE    WRK-RECE02-YKZFTN   (IDXX)
+                           MOVE    RECE2W-YKZFTN   (IDXX)
                                            TO  RECE02-YKZFTN  (IDYX)
                            PERFORM VARYING IDX1    FROM    1   BY  1
                                    UNTIL   IDX1    >       50
-                               MOVE    WRK-RECE02-TENSU (IDX1 IDXX)
+                               MOVE    RECE2W-TENSU (IDX1 IDXX)
                                            TO  RECE02-TENSU (IDX1 IDX2)
                            END-PERFORM
-                           MOVE    WRK-RECE02-HENTOTALTEN (IDXX)
+                           MOVE    RECE2W-HENTOTALTEN (IDXX)
                                            TO  RECE02-HENTOTALTEN (IDX2)
-                           MOVE    WRK-RECE02-KISAIFLG (IDXX)
+                           MOVE    RECE2W-KISAIFLG (IDXX)
                                            TO  RECE02-KISAIFLG (IDX2)
-                           MOVE    WRK-RECE02-ZEROKISAIFLG (IDXX)
+                           MOVE    RECE2W-ZEROKISAIFLG (IDXX)
                                            TO  RECE02-ZEROKISAIFLG(IDX2)
-                           MOVE    WRK-RECE02-ETCKISAIFLGINF(IDXX)
+                           MOVE    RECE2W-ETCKISAIFLGINF(IDXX)
                                            TO  RECE02-ETCKISAIFLGINF
                                                                (IDX2)
-                           MOVE    WRK-RECE02-FUKUSHIFLG(IDXX)
+                           MOVE    RECE2W-FUKUSHIFLG(IDXX)
                                            TO  RECE02-FUKUSHIFLG(IDX2)
                        WHEN    "4"
                            ADD     1       TO  IDZX
-                           MOVE    WRK-RECE02-KOHNUM (IDX)
+                           MOVE    RECE2W-KOHNUM (IDX)
                                            TO  RECE02-ETC-KOHNUM (IDZX)
-                           MOVE    WRK-RECE02-KOHFTNJANUM (IDX)
+                           MOVE    RECE2W-KOHFTNJANUM (IDX)
                                            TO  RECE02-ETC-KOHFTNJANUM
                                                                  (IDZX)
-                           MOVE    WRK-RECE02-JNISSU   (IDXX)
+                           MOVE    RECE2W-JNISSU   (IDXX)
                                            TO  RECE02-ETC-JNISSU (IDZX)
-                           MOVE    WRK-RECE02-TOTALTEN (IDXX)
+                           MOVE    RECE2W-TOTALTEN (IDXX)
                                            TO RECE02-ETC-TOTALTEN(IDZX)
-                           MOVE    WRK-RECE02-FTNMONEY (IDXX)
+                           MOVE    RECE2W-FTNMONEY (IDXX)
                                            TO RECE02-ETC-FTNMONEY(IDZX)
-                           MOVE    WRK-RECE02-FTNMONEY-FTN (IDXX)
+                           MOVE    RECE2W-FTNMONEY-FTN (IDXX)
                                        TO RECE02-ETC-FTNMONEY-FTN(IDZX)
-                           MOVE    WRK-RECE02-FTNMONEY-KOJ (IDXX)
+                           MOVE    RECE2W-FTNMONEY-KOJ (IDXX)
                                        TO RECE02-ETC-FTNMONEY-KOJ(IDZX)
-                           MOVE    WRK-RECE02-YKZFTN   (IDXX)
+                           MOVE    RECE2W-YKZFTN   (IDXX)
                                            TO  RECE02-ETC-YKZFTN (IDZX)
                    END-EVALUATE
                END-IF
@@ -22803,22 +22801,22 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
       *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¾ðÊó
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       10
-               IF     WRK-RECE02-HKNCOMBI (IDX)    NOT =   ZERO
-                   MOVE    WRK-RECE02-HKNCOMBI (IDX)
+               IF     RECE2W-HKNCOMBI (IDX)    NOT =   ZERO
+                   MOVE    RECE2W-HKNCOMBI (IDX)
                                            TO  RECE02-HKNCOMBI (IDX)
-                   MOVE    WRK-RECE02-HKNNUMHC (IDX)
+                   MOVE    RECE2W-HKNNUMHC (IDX)
                                            TO  RECE02-HKNNUMHC (IDX)
                    PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL   IDY     >       4
-                       IF     WRK-RECE02-KOHNUMHC (IDX IDY)
+                       IF     RECE2W-KOHNUMHC (IDX IDY)
                                            NOT =   SPACE
                            PERFORM VARYING IDXX    FROM    1   BY  1
                                    UNTIL   IDXX    >       4
-                               IF   (WRK-RECE02-KOHNUMHC (IDX IDY)   =
+                               IF   (RECE2W-KOHNUMHC (IDX IDY)   =
                                                   RECE02-KOHNUM (IDXX))
-                               AND  (WRK-RECE02-KOHIDHC  (IDX IDY)   =
+                               AND  (RECE2W-KOHIDHC  (IDX IDY)   =
                                                   RECE02-KOHID  (IDXX))
-                                   MOVE    WRK-RECE02-KOHNUMHCINF
+                                   MOVE    RECE2W-KOHNUMHCINF
                                                          (IDX IDY)
                                                    TO
                                            RECE02-KOHNUMHCINF(IDX IDY)

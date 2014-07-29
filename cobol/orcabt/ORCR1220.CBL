@@ -5577,7 +5577,7 @@
                    MOVE   "190162070"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                END-EVALUATE
                IF   SYUKEI-IDX = 31 OR 32 OR 35 OR 36
-                   PERFORM  2102094-NYUINACCT-HEN-TAIN2-SEC
+                   PERFORM  2102094-NYUINACCT-HEN-TAIN3-SEC
                END-IF
              WHEN     27
              WHEN     28
@@ -5607,7 +5607,7 @@
                    MOVE   "190162170"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                END-EVALUATE
                IF   SYUKEI-IDX = 39 OR 40 OR 43 OR 44
-                   PERFORM  2102094-NYUINACCT-HEN-TAIN2-SEC
+                   PERFORM  2102094-NYUINACCT-HEN-TAIN3-SEC
                END-IF
            END-EVALUATE
            .
@@ -5618,7 +5618,7 @@
       **************************************************************
       *    他医療機関受診時の診療行為コード取得２
       **************************************************************
-       2102094-NYUINACCT-HEN-TAIN2-SEC           SECTION.
+       2102094-NYUINACCT-HEN-TAIN3-SEC           SECTION.
       *
            EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
       *      特定入院基本料
@@ -5647,7 +5647,7 @@
            END-EVALUATE
            .
       *
-       2102094-NYUINACCT-HEN-TAIN2-EXT.
+       2102094-NYUINACCT-HEN-TAIN3-EXT.
            EXIT.
       *
       *****************************************************************

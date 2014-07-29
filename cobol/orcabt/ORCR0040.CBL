@@ -156,6 +156,8 @@
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.03    NACL-門脇    14/07/29  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3945,7 +3947,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    21   TO  IDC1
                MOVE    27   TO  IDC2
                MOVE    33   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
       **>      COMPUTE WRK-ZAINUM    =  99998000
                COMPUTE WRK-ZAINUM    =  99980000
                                      + (IDX16 + (IDX14 * 31))
@@ -3957,7 +3959,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    29   TO  IDC1
                MOVE    35   TO  IDC2
                MOVE    41   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
       **>        COMPUTE WRK-ZAINUM    =  99998200 + IDX14
                  COMPUTE WRK-ZAINUM    =  99980200 + IDX14
@@ -3976,7 +3978,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    21  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "脳血管疾患等リハ：手術　　　年　　月　　日"
@@ -3984,7 +3986,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    23  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE
@@ -3993,7 +3995,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    29  TO  IDC1
                    MOVE    35  TO  IDC2
                    MOVE    41  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
       **>        COMPUTE WRK-ZAINUM    =  99998400 + IDX14
@@ -4013,7 +4015,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    18  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "運動器リハ：手術　　　年　　月　　日"
@@ -4021,7 +4023,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
                    MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    20  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "運動器リハ：急性増悪　　　年　　月　　日"
@@ -4029,7 +4031,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    23  TO  IDC1
                    MOVE    29  TO  IDC2
                    MOVE    35  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
       **>        COMPUTE WRK-ZAINUM    =  99998600 + IDX14
@@ -4047,7 +4049,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    23   TO  IDC1
                MOVE    29   TO  IDC2
                MOVE    35   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
       **>        COMPUTE WRK-ZAINUM    =  99998800 + IDX14
                  COMPUTE WRK-ZAINUM    =  99980800 + IDX14
@@ -4064,7 +4066,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
       **>        COMPUTE WRK-ZAINUM    =  99999000 + IDX14
                  COMPUTE WRK-ZAINUM    =  99981000 + IDX14
@@ -4083,7 +4085,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    19  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "難病患者リハ：手術　　　年　　月　　日"
@@ -4091,7 +4093,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
                    MOVE    33  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    21  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "難病患者リハ：急性増悪　　　年　　月　　日"
@@ -4099,7 +4101,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
                    MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
       **>        COMPUTE WRK-ZAINUM    =  99999200 + IDX14
@@ -4117,7 +4119,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
                MOVE    37   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
       **>        COMPUTE WRK-ZAINUM    =  99999400 + IDX14
                  COMPUTE WRK-ZAINUM    =  99981400 + IDX14
@@ -4216,7 +4218,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    43   TO  IDC1
                MOVE    49   TO  IDC2
                MOVE    55   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99982000 + IDX23
                ELSE
@@ -4234,7 +4236,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    39  TO  IDC1
                    MOVE    45  TO  IDC2
                    MOVE    51  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    28  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "（第三者行為）"
@@ -4244,7 +4246,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    39  TO  IDC1
                    MOVE    45  TO  IDC2
                    MOVE    51  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    30  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "（第三者行為）"
@@ -4255,7 +4257,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    43  TO  IDC1
                    MOVE    49  TO  IDC2
                    MOVE    55  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99982000 + IDX23
@@ -4274,7 +4276,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    33  TO  IDC1
                    MOVE    39  TO  IDC2
                    MOVE    45  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    25  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "（第三者行為）"
@@ -4284,7 +4286,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    33  TO  IDC1
                    MOVE    39  TO  IDC2
                    MOVE    45  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    27  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "（第三者行為）"
@@ -4294,7 +4296,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    37  TO  IDC1
                    MOVE    43  TO  IDC2
                    MOVE    49  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99982000 + IDX23
@@ -4311,7 +4313,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    37   TO  IDC1
                MOVE    43   TO  IDC2
                MOVE    49   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99982000 + IDX23
                ELSE
@@ -4327,7 +4329,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    39   TO  IDC1
                MOVE    45   TO  IDC2
                MOVE    51   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99982000 + IDX23
                ELSE
@@ -4345,7 +4347,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    35  TO  IDC1
                    MOVE    41  TO  IDC2
                    MOVE    47  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    26  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "（第三者行為）"
@@ -4355,7 +4357,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    35  TO  IDC1
                    MOVE    41  TO  IDC2
                    MOVE    47  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    28  TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
                    MOVE    "（第三者行為）"
@@ -4365,7 +4367,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    MOVE    39  TO  IDC1
                    MOVE    45  TO  IDC2
                    MOVE    51  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99982000 + IDX23
@@ -4382,7 +4384,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                MOVE    39   TO  IDC1
                MOVE    45   TO  IDC2
                MOVE    51   TO  IDC3
-               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
+               PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99982000 + IDX23
                ELSE
@@ -4458,7 +4460,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
       *****************************************************************
       *    発症日のコメント編集（年月日）
       *****************************************************************
-       200111-HASSYO-COMMENT-HIZUKE-SEC          SECTION.
+       200111-HASSYO-COMMENT-DATE-SEC          SECTION.
       *
            INITIALIZE                         STS-AREA-DAY
            INITIALIZE                         LNK-DAY2-AREA
@@ -4499,7 +4501,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
            END-IF
       *
            .
-       200111-HASSYO-COMMENT-HIZUKE-EXT.
+       200111-HASSYO-COMMENT-DATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4638,7 +4640,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                OR    ( FLG-KYUSEI-COMMENT2 =   1 )
       *
                      IF   SANTEI-DAY(IDX3)  NOT =  ZERO
-                       PERFORM  200111-RIHA-SANTEIPLUS-HANTEI-SEC
+                       PERFORM  200111-RIHA-SANTEIPLUS-SEC
                      END-IF
       *
                      IF  (SANTEI-DAY(IDX3)  NOT =  ZERO)
@@ -4773,7 +4775,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    リハビリ・算定履歴付加判定
       *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
       *****************************************************************
-       200111-RIHA-SANTEIPLUS-HANTEI-SEC          SECTION.
+       200111-RIHA-SANTEIPLUS-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-SANTEIPLUS-HANTEI
       *
@@ -4806,7 +4808,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
            .
-       200111-RIHA-SANTEIPLUS-HANTEI-EXT.
+       200111-RIHA-SANTEIPLUS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7932,7 +7934,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
            END-IF
       *
            IF      WRK-RIHAIGAKU-SANTEI-FLG  NOT = SPACE
-             PERFORM    20011-RIHAIGAKU-DUMMY-COMMENT-SEC
+             PERFORM    20011-RIHAIGAKU-DUMMY-COM-SEC
            ELSE
              PERFORM    200111-SRYACTINF-HENSYU-SEC
            END-IF
@@ -7944,7 +7946,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
       *****************************************************************
       *    リハビリ医学管理料のコメント編集（リハ実施日）
       *****************************************************************
-       20011-RIHAIGAKU-DUMMY-COMMENT-SEC          SECTION.
+       20011-RIHAIGAKU-DUMMY-COM-SEC          SECTION.
       *
            INITIALIZE             TBL-SANTEI-DAY
       *
@@ -7979,7 +7981,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
            PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       20011-RIHAIGAKU-DUMMY-COMMENT-EXT.
+       20011-RIHAIGAKU-DUMMY-COM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9003,7 +9005,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
              COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
                                    *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              MOVE    "円×" TO  WK-FREE-NAME3(WRK-KETA:4)
              COMPUTE  WRK-KETA   =  WRK-KETA   +  4
@@ -9013,7 +9015,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                              = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
                              *   1000
       *
-             PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+             PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              IF    TBL-KASAN-SRYSURYO  =  ZERO
                 MOVE    "Ｌ×１．３）" TO  WK-FREE-NAME3(WRK-KETA:12)
@@ -9034,7 +9036,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                              = (TBL-KASAN-SRYSURYO -  WRK-KEISAN)
                              *   1000
       *
-                PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                 MOVE    "）" TO  WK-FREE-NAME3(WRK-KETA:2)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -9059,7 +9061,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
               COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
               MOVE     ZERO       TO   WRK-KEISAN2
       *
-              PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+              PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
               MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -9078,7 +9080,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                   COMPUTE  WRK-KEISAN =  (WRK-KEISAN4  /  10)  +  0.5
                   MOVE     ZERO       TO   WRK-KEISAN2
       *
-                  PERFORM  2501111-SANSO-FREE-COMMENT-SUCHI-SEC
+                  PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
                   MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
@@ -9116,7 +9118,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
       *****************************************************************
       *    酸素計算式・数値編集
       *****************************************************************
-       2501111-SANSO-FREE-COMMENT-SUCHI-SEC          SECTION.
+       2501111-SANSO-FREE-COM-NUM-SEC          SECTION.
       *
            IF    WRK-KEISAN  NOT  =  ZERO
                PERFORM   VARYING   IDX4    FROM   1   BY   1
@@ -9180,7 +9182,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
            END-IF
       *
            .
-       2501111-SANSO-FREE-COMMENT-SUCHI-EXT.
+       2501111-SANSO-FREE-COM-NUM-EXT.
            EXIT.
       *
       *****************************************************************

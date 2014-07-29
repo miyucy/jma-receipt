@@ -116,6 +116,9 @@
       *  04.07.03    NACL-門脇    14/03/28  平成２６年４月改正対応
       *  04.07.04    NACL-門脇    14/04/08  平成２６年４月改正対応
       *  04.07.05    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
+      *
+      *  04.08.01    NACL-門脇    14/07/29  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
       *
@@ -2832,7 +2835,7 @@
       ***                                           -  WRK-KHNTEN
       *                       看護比率基準未達時の入院基本点数の取得
                               IF    RECE62-SRYYM  <=  "201203"
-                               PERFORM 20011231-GAIHAKU-NYUINKHN-SET-SEC
+                               PERFORM 20011231-GAIHAKU-NYUINKHN-SEC
                               END-IF
                               IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
@@ -2982,7 +2985,7 @@
       **************************************************************
       *    外泊時の入院基本料取得
       **************************************************************
-       20011231-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+       20011231-GAIHAKU-NYUINKHN-SEC           SECTION.
       *
            EVALUATE  TNS-SRYCD
                WHEN  "190078210"
@@ -3157,7 +3160,7 @@
            END-IF
       *
            .
-       20011231-GAIHAKU-NYUINKHN-SET-EXT.
+       20011231-GAIHAKU-NYUINKHN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4012,7 +4015,7 @@
                       AND ((WRK-DAY2(IDY)         =    ZERO ) OR
                            (WRK-DAY2(IDY)        >=     4   ))
                            PERFORM 500-KUMIAWASE-HANBETU-SEC
-                           PERFORM 2001153-RECE62-TENSOU9-RYOYO-SEC
+                           PERFORM 2001153-RECE62-TENSOU9-RYO-SEC
                       END-IF
                       MOVE    10    TO     IDX1
                    END-IF
@@ -4301,7 +4304,7 @@
       *****************************************************************
       *    療養担当手当転送
       *****************************************************************
-       2001153-RECE62-TENSOU9-RYOYO-SEC               SECTION.
+       2001153-RECE62-TENSOU9-RYO-SEC               SECTION.
       *
       ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
            IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
@@ -4357,7 +4360,7 @@
            END-PERFORM
       *
            .
-       2001153-RECE62-TENSOU9-RYOYO-EXT.
+       2001153-RECE62-TENSOU9-RYO-EXT.
            EXIT.
       *
       *****************************************************************

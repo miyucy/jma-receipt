@@ -46,6 +46,8 @@
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -394,7 +396,7 @@
                MOVE    RECE64-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
                IF       RECE64-SRYKBN  =  "60" OR "64" OR "99"
-                   PERFORM   2101-RECE65-SRYSYUKBN-HENSYU-SEC
+                   PERFORM   2101-RECE65-SRYSYUKBN-HEN-SEC
                END-IF
       *
                INITIALIZE          WRK-COM-AREA
@@ -523,7 +525,7 @@
       *****************************************************************
       *    診療種別区分取得
       *****************************************************************
-       2101-RECE65-SRYSYUKBN-HENSYU-SEC         SECTION.
+       2101-RECE65-SRYSYUKBN-HEN-SEC         SECTION.
       *
            INITIALIZE                           RECE65-REC
            MOVE    RECE62-KEY           TO      RECE65-KEY1
@@ -547,7 +549,7 @@
            END-PERFORM
       *
            .
-       2101-RECE65-SRYSYUKBN-HENSYU-EXT.
+       2101-RECE65-SRYSYUKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************

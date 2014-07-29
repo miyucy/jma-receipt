@@ -139,6 +139,10 @@
       *                                     フラグ追加
       *  04.07.09    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
       *                                     算定フラグ追加
+      *  04.08.01    NACL-門脇    14/07/29  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
+      *                                     RECE62-FUKUSHIFLG-SKJIPA-AREA
+      *                                     RECE62-FUKUSHIFLG-SKJSEI-AREA
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -687,11 +691,11 @@
                05  RECE62-FUKUSHIFLG-SKJ  PIC  X(01)   OCCURS 4.
       *
       *レセ電用：食事療養（一般）編集情報
-           03  RECE62-FUKUSHIFLG-SKJIPAINF-AREA.
+           03  RECE62-FUKUSHIFLG-SKJIPA-AREA.
                05  RECE62-FUKUSHIFLG-SKJIPA
                                           PIC  X(01)   OCCURS 4.
       *レセ電用：食事療養（生活）編集情報
-           03  RECE62-FUKUSHIFLG-SKJSEIINF-AREA.
+           03  RECE62-FUKUSHIFLG-SKJSEI-AREA.
                05  RECE62-FUKUSHIFLG-SKJSEI
                                           PIC  X(01)   OCCURS 4.
       *

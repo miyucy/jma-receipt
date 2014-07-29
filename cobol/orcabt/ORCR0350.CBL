@@ -7573,7 +7573,7 @@
            IF      RECE62-SRYYM    >=  WRK-CONS-SRYYM-200804
                IF    ( IDZ1                =   3     )
                    MOVE    "97"        TO  WRK-RECE641-SRYKBN
-      ***          MOVE    RECE62-FUKUSHIFLG-SKJIPAINF-AREA
+      ***          MOVE    RECE62-FUKUSHIFLG-SKJIPA-AREA
       ***                              TO  WRK-FUKUSHIFLG-SKJINF-AREA
                    PERFORM VARYING IDZ7  FROM  1  BY  1
                             UNTIL  IDZ7   >    4
@@ -7587,7 +7587,7 @@
                    END-PERFORM
                ELSE
                    IF    ( IDZ1            >   3     )
-      ***              MOVE    RECE62-FUKUSHIFLG-SKJSEIINF-AREA
+      ***              MOVE    RECE62-FUKUSHIFLG-SKJSEI-AREA
       ***                              TO  WRK-FUKUSHIFLG-SKJINF-AREA
                        MOVE    "97"    TO  WRK-RECE641-SRYKBN
                        PERFORM VARYING IDZ7  FROM  1  BY  1
@@ -7746,7 +7746,7 @@
                    END-IF
                ELSE
                    IF    ( IDZ1                =   3     )
-                   AND   ( RECE62-FUKUSHIFLG-SKJIPAINF-AREA
+                   AND   ( RECE62-FUKUSHIFLG-SKJIPA-AREA
                                            NOT =   SPACE )
                        EVALUATE    WRK-FTNKBN
                            WHEN    "2"
@@ -7855,7 +7855,7 @@
                        END-IF
                    END-IF
                    IF    ( IDZ1              >  3      )
-                   AND   ( RECE62-FUKUSHIFLG-SKJSEIINF-AREA
+                   AND   ( RECE62-FUKUSHIFLG-SKJSEI-AREA
                                          NOT =   SPACE )
                        EVALUATE    WRK-FTNKBN
                            WHEN    "2"
