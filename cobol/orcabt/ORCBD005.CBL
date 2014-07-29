@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-太田    03/04/25  病棟・病室名の編集を追加
       *  03.05.01    NACL-森脇    07/06/11  グループ診療対応
+      *  04.08.01    NACL-森脇    14/07/28  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,13 +89,19 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01//
                                    BY          //ORCBD005//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-START---
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
       *
       *    エラーファイル 名称領域 
 grpsys*DD  COPY    "CPCOMMONDAT2.INC"
 grpsys*DD                          REPLACING   //RECE01PARA//
 grpsys*DD                          BY          //RECEERR//.
 grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
            COPY    "HCM08V02.INC"  REPLACING   //HCM08V02//
                                    BY          //HCM08//.
@@ -143,7 +150,9 @@ grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
            03  WRK-PARA-SHELLID    PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM    PIC 9(02).
-grpsys     03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-START---
+grpsys*     03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-DENPPRTYMD PIC X(08).
            03  WRK-PARA-SYORI-KBN  PIC X(01).
            03  WRK-PARA-SORTKBN    PIC X(01).
@@ -327,6 +336,11 @@ grpsys         05  WRK-NAI-HOSPNUM     PIC 9(02).
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -367,6 +381,9 @@ grpsys         05  WRK-NAI-HOSPNUM     PIC 9(02).
            INITIALIZE                  WRK-AREA
            INITIALIZE                  KEY-AREA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -417,6 +434,19 @@ grpsys*DD                          TO  RECEERR-TERMID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  ORCBD005PARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM     TO  ORCBD005PARA-HOSPNUM
+      *
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    ORCBD005PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ORCBD005PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

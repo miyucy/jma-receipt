@@ -34,6 +34,7 @@
       * 00.00.04     NACL-森脇    03/12/11  処理区分表示修正
       * 03.00.00     NACL-太田    06/05/23  並び順に伝票番号順を追加
       * 03.05.01     NACL-森脇    07/06/08  グループ診療対応
+      * 04.08.01     NACL-森脇    14/07/28  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -60,6 +61,9 @@ grpsys*DD                          REPLACING   //RECE01PARA//
 grpsys*DD                          BY          //RECEERR//.
 grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *----(00.00.03)--UPD-START---
       *     COPY    "HCM07.INC".
            COPY    "HCM07V02.INC"  REPLACING   //HCM07V02//
@@ -107,7 +111,9 @@ grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
            03  WRK-PARA-SHELLID    PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM    PIC 9(02).
-grpsys     03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-START---
+grpsys*     03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-DENPPRTYMD PIC X(08).
       *----(00.00.03)--ADD-START---
            03  WRK-PARA-SYORIKBN   PIC X(01).
@@ -263,6 +269,11 @@ grpsys     03  RECEERR             PIC X(100).
       *    文字列変換
            COPY    "CPORCXKANACONV.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -304,6 +315,9 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
            INITIALIZE                  KEY-AREA
 grpsys     INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -349,6 +363,14 @@ grpsys                                 SPA-AREA
 grpsys*DD  MOVE    "RECEERR"       TO  RECEERR-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID
 grpsys*DD                          TO  RECEERR-TERMID
+      *
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

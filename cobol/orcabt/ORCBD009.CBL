@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07/06/04  グループ診療対応
+      *  04.08.01    NACL-森脇    14/07/29  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -78,6 +79,10 @@
                                    REPLACING  //RECE01//
                                    BY         //BD009//.
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    帳票領域
            COPY    "HCM45.INC".
       *
@@ -123,7 +128,9 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  RECEERR             PIC X(100).
+      *----(04.08.01)--UPD-START---
            03  WRK-PARA-UKESTYMD   PIC X(08).
            03  WRK-PARA-UKEEDYMD   PIC X(08).
            03  WRK-PARA-SYORIKBN   PIC X(01).
@@ -219,6 +226,11 @@
       *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -261,6 +273,9 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -302,6 +317,17 @@
            MOVE    "BD009ZZ"       TO  BD009PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BD009PARA-TERMID
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    BD009PARA-BASENAME  TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  BD009PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            MOVE    ZERO            TO  WRK-ITEM-SIZE
            MOVE    SPACE           TO  WRK-ITEM
