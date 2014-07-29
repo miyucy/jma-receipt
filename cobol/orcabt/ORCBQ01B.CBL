@@ -40,7 +40,7 @@
                                    FILE    STATUS  IS  STS-BQ01.
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
