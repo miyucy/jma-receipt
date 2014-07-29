@@ -17,7 +17,4 @@
       ********************************************************************
        01  QSUB01-LNK.
            03  QSUB01-KBN              PIC X(01).
-           03  QSUB01-TERMID           PIC X(64).
-           03  QSUB01-SPA-AREA.
-               05  QSUB01-SPA-OCC      OCCURS  10.
-                   07  QSUB01-SPA      PIC X(50000).
+           03  QSUB01-SPA-AREA         PIC X(600000).

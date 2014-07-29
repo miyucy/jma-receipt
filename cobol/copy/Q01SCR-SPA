@@ -329,20 +329,17 @@
                                13  SPA-GMN-Q01-UBYOMEIMEI  PIC X(20).
       *                    病名分類区分状態
                            11  SPA-GMN-Q01-UBYOMEI-STATE
-                                                       PIC S9(9)
-                                                       BINARY.
+                                                       PIC S9(9).
       *                    病名ラジオボタン（自院）
                            11  SPA-GMN-Q01-RDBYOMEI-U  PIC X.
       *                    病名ラジオボタン状態（自院）
                            11  SPA-GMN-Q01-RDBYOMEI-U-STATE
-                                                       PIC S9(9)
-                                                       BINARY.
+                                                       PIC S9(9).
       *                    病名ラジオボタン（全体）
                            11  SPA-GMN-Q01-RDBYOMEI-A  PIC X.
       *                    病名ラジオボタン状態（全体）
                            11  SPA-GMN-Q01-RDBYOMEI-A-STATE
-                                                       PIC S9(9)
-                                                       BINARY.
+                                                       PIC S9(9).
       *                    病名検索
                            11  SPA-GMN-Q01-BYOMEISEL   PIC X(80).
       *                    病名コード
@@ -836,11 +833,9 @@
                    07  SPA-GMN-Q02-AREA.
       *
       *                前頁ボタンステータス
-                       09  SPA-GMN-Q02-B06-STATE       PIC S9(9)
-                                                       BINARY.
+                       09  SPA-GMN-Q02-B06-STATE       PIC S9(9).
       *                次頁ボタンステータス
-                       09  SPA-GMN-Q02-B07-STATE       PIC S9(9)
-                                                       BINARY.
+                       09  SPA-GMN-Q02-B07-STATE       PIC S9(9).
       *                表題
                        09  SPA-GMN-Q02-HYODAI          PIC X(100).
       *                条件上段
@@ -1111,8 +1106,7 @@
                    07  SPA-GMN-Q100-LBLFILENAME        PIC X(14).
       *            ファイル名
                    07  SPA-GMN-Q100-FILENAME           PIC X(100).
-                   07  SPA-GMN-Q100-FILENAME-STATE     PIC S9(9)
-                                                       BINARY.
+                   07  SPA-GMN-Q100-FILENAME-STATE     PIC S9(9).
       *            件数（ページ数）ラベル
                    07  SPA-GMN-Q100-LBLNUMSEL          PIC X(10).
       *            開始件数（ページ数）
@@ -1130,8 +1124,7 @@
                        09  SPA-GMN-Q100-FILE           PIC X(01).
                        09  SPA-GMN-Q100-F1             PIC X(01).
                        09  SPA-GMN-Q100-FILEMEI        PIC X(20).
-                   07  SPA-GMN-Q100-FILE-STATE         PIC S9(9)
-                                                       BINARY.
+                   07  SPA-GMN-Q100-FILE-STATE         PIC S9(9).
       *            文字コード
                    07  SPA-GMN-Q100-CDKBNLST           OCCURS  6.
                        09  SPA-GMN-Q100-CDKBNL         PIC X(01).
@@ -1143,8 +1136,7 @@
                        09  SPA-GMN-Q100-CDKBN          PIC X(01).
                        09  SPA-GMN-Q100-F1             PIC X(01).
                        09  SPA-GMN-Q100-CDKBNMEI       PIC X(20).
-                   07  SPA-GMN-Q100-CDKBN-STATE        PIC S9(9)
-                                                       BINARY.
+                   07  SPA-GMN-Q100-CDKBN-STATE        PIC S9(9).
       *            クライアント保存可否フラグ
                    07  SPA-Q100-CLIENT-SAVE            PIC X(01).
       *

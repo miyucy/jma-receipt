@@ -34,33 +34,15 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    £Ó£Ð£Á¥Ç¡¼¥¿
-           SELECT  SPA-FILE        ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SPA.
-      *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    £Ó£Ð£Á¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
-       FD  SPA-FILE.
-       01  SPA-DATA-REC            PIC X(50000).
       *
        WORKING-STORAGE             SECTION.
       *
-      * £Ó£Ð£Á¥Ç¡¼¥¿
-       01  FILE-NAME1.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
-           03  FILLER              PIC X(06)   VALUE   "Q02SPA".
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(04)   VALUE   ".TXT".
-      *
-      *    ¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
-       01  STS-AREA.
-           03  STS-SPA             PIC X(02).
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
-           03  FLG-SPA-READ        PIC 9(01).
+           03  FLG-SPATMP          PIC 9(01).
            03  FLG-END             PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -69,10 +51,20 @@
            03  IDX2                PIC 9(04).
       *
       *****************************************************************
+      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *****************************************************************
+      *
+      *    £Ó£Ð£Á°ì»þ¥Æ¡¼¥Ö¥ë
+       01  SPATMP-REC.
+           COPY    "CPSPA-TMP.INC".
+      *
+           COPY    "MCPDATA2.INC".
+      *
+           COPY    "MCPAREA".
+      *
+      *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëºï½ü¥Ñ¥é¥á¥¿
-           COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -80,23 +72,18 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPQSUB01.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
-           QSUB01-LNK.
+           QSUB01-LNK
+           SPA-AREA.
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    QSUB01-TERMID   TO  FILE-TERMID1
-      *
            IF  ( QSUB01-KBN        =   "I" )
                PERFORM 100-SPA-INPUT-SEC
-      *        ¥Õ¥¡¥¤¥ëºï½ü
-               MOVE    ZERO        TO  IF-RESULT
-               MOVE    FILE-NAME1  TO  IF-FILENAME
-               CALL    "orcfiledel"    USING
-                                       ORCSFDELAREA
            ELSE
                PERFORM 200-SPA-OUTPUT-SEC
            END-IF
@@ -109,28 +96,13 @@
       *****************************************************************
        100-SPA-INPUT-SEC               SECTION.
       *
-           MOVE    ZERO        TO  FLG-SPA-READ
-           MOVE    SPACE       TO  QSUB01-SPA-AREA
+           PERFORM 900-SPATMP-KEY-SEL-SEC
+           MOVE    SPATMP-DATA-REC TO  QSUB01-SPA-AREA
       *
-           OPEN    INPUT           SPA-FILE
-           IF      STS-SPA         NOT =   ZERO
-               MOVE    1       TO  FLG-SPA-READ
-           END-IF
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   ( IDX1              >   10 )
-                OR     ( FLG-SPA-READ  NOT =   ZERO )
-      *
-               READ    SPA-FILE
-               AT  END
-                   MOVE    1               TO  FLG-SPA-READ
-               NOT AT  END
-                   MOVE    SPA-DATA-REC    TO  QSUB01-SPA (IDX1)
-               END-READ
-      *
-           END-PERFORM
-      *
-           CLOSE   SPA-FILE
+           MOVE    SPATMP-REC      TO  MCPDATA2-REC
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBDELETE-SEC
       *
            .
        100-SPA-INPUT-EXT.
@@ -141,35 +113,124 @@
       *****************************************************************
        200-SPA-OUTPUT-SEC              SECTION.
       *
-           MOVE    ZERO        TO  FLG-SPA-READ
-      *
-           OPEN    OUTPUT          SPA-FILE
-           IF      STS-SPA         NOT =   ZERO
-               GO  TO              200-SPA-OUTPUT-EXT
-           END-IF
-      *
-           PERFORM VARYING IDX1    FROM    10  BY  -1
-               UNTIL  ( QSUB01-SPA (IDX1)
-                                   NOT =   SPACE )
-                   OR ( IDX1           <   1 )
-      *
-               CONTINUE
-      *
-           END-PERFORM
-      *
-           IF    ( IDX1               >=   ZERO )
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL   ( IDX2              >   IDX1 )
-      *
-                   MOVE    QSUB01-SPA (IDX2)   TO  SPA-DATA-REC
-      *
-                   WRITE   SPA-DATA-REC
-      *
-               END-PERFORM
-           END-IF
-      *
-           CLOSE   SPA-FILE
+           INITIALIZE                  SPATMP-REC
+           MOVE    SPA-HOSPNUM     TO  SPATMP-HOSPNUM
+           MOVE    "Q02"           TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID      TO  SPATMP-TERMID
+           MOVE    1               TO  SPATMP-EDANUM
+           MOVE    QSUB01-SPA-AREA TO  SPATMP-DATA-REC
+           MOVE    SPATMP-REC      TO  MCPDATA2-REC
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBINSERT-SEC
       *
            .
        200-SPA-OUTPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    °ì»þÊÝÂ¸¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *****************************************************************
+       900-SPATMP-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SPATMP
+      *
+           INITIALIZE                  SPATMP-REC
+           MOVE    SPA-HOSPNUM     TO  SPATMP-HOSPNUM
+           MOVE    "Q02"           TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID      TO  SPATMP-TERMID
+           MOVE    1               TO  SPATMP-EDANUM
+           MOVE    SPATMP-REC      TO  MCPDATA2-REC
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBSELECT-SEC
+           IF    ( FLG-SPATMP      =   ZERO )
+               MOVE    MCPDATA2-REC TO SPATMP-REC
+           ELSE
+               MOVE    1           TO  FLG-SPATMP
+               INITIALIZE              SPATMP-REC
+           END-IF
+      *
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SPATMP-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¸¡º÷½èÍý
+      *****************************************************************
+       920-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 920-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       920-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       920-DBCLOSECURSOR-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *****************************************************************
+       920-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý
+      *****************************************************************
+       920-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ï£Ò£Ã£Ó£Ð£Á£Ô£Í£Ð¸Æ½Ð½èÍý
+      *****************************************************************
+       920-ORCDBSPATMP-SEC                SECTION.
+      *
+           CALL    "ORCDBSPATMP"       USING
+                                       MCPAREA
+                                       MCPDATA2-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       920-ORCDBSPATMP-EXT.
            EXIT.

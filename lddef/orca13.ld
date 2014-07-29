@@ -57,6 +57,7 @@ db	{
         tbl_file_info; 
         tbl_ptsrh; 
         tbl_ptinf; 
+        tbl_spa_tmp; 
 };
 
 /* #include "orcadb.inc" */

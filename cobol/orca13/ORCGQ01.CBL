@@ -745,7 +745,7 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SPA-Q01
+           MOVE    SPACE               TO  SPA-Q01FREE
            INITIALIZE                      SPA-Q01
       *
            MOVE    SPACE               TO  SPA-Q01KYOUTU

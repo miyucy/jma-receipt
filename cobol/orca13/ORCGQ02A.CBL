@@ -431,7 +431,6 @@
       *
       *        ¬‡»Ú§∑§∆§™§§§ø£”£–£¡§Œ∆‚Õ∆§Ú∏µ§ÀÃ·§π
                INITIALIZE                  QSUB01-LNK
-               MOVE    SPA-TERMID      TO  QSUB01-TERMID
                MOVE    "I"             TO  QSUB01-KBN
                CALL    "ORCGQSUB01"    USING   QSUB01-LNK
       *
@@ -1667,11 +1666,11 @@
       *
       *    £”£–£¡§Œ∆‚Õ∆§Ú¬‡»Ú
            INITIALIZE                  QSUB01-LNK
-           MOVE    SPA-TERMID          TO  QSUB01-TERMID
            MOVE    "O"                 TO  QSUB01-KBN
            MOVE    SPA-Q01FREE         TO  QSUB01-SPA-AREA
-      *
-           CALL "ORCGQSUB01"           USING   QSUB01-LNK
+           CALL    "ORCGQSUB01"        USING
+                                       QSUB01-LNK
+                                       SPA-AREA
       *
            INITIALIZE                  SPA-KYOTUKEY
       *
