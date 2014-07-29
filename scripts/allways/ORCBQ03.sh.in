@@ -38,7 +38,7 @@ echo "${PARA_FILE_FULL}" >> $LOG
 
 killtree(){
   local children=$(pgrep -P $1 2>/dev/null)
-  for ${child} in ${children} ; do
+  for child in ${children} ; do
     killtree ${child}
   done
   kill -9 $1
