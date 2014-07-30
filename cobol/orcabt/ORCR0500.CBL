@@ -132,6 +132,8 @@
       *  04.07.01    NACL-藤原    13/09/20  第三者行為対応
       *  04.07.02    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
       *                                     様式追加対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,7 +142,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
@@ -179,11 +181,13 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *    印刷用データ 名称領域 
-           COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+           COPY    "CPCOMMONPRT.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -463,6 +467,8 @@ grpsys     COPY    "COMMON-SPA".
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -530,6 +536,12 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            CALL    "ORCSENCODING"          USING
@@ -558,6 +570,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  HC01PARA-HOSPNUM
                MOVE    LNK-PRTKANRI-TERMID TO  HC01PARA-TERMID
                MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
                MOVE    1                   TO  HC01PARA-CNT
+      *
+               INITIALIZE                      SGETTEMP-AREA
+               MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+               CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+               MOVE   SGETTEMP-ST          TO  ASGNPARA-ST
            END-IF
            .
        100-INIT-EXT.
@@ -684,7 +702,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
       *
                MOVE    SPACE           TO  SHELLTBL
                MOVE    "HCALL_prv.sh"  TO  SHELLTBL-NAME
-               MOVE    HC01PARA        TO  SHELLTBL-ARG1
+               MOVE    ASGNPARA (ASGNPARA-ST:)
+                                       TO  SHELLTBL-ARG1
                MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
                MOVE    SHELLTBL        TO  MCPDATA-REC
