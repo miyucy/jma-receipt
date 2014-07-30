@@ -31,15 +31,18 @@ fi
 
         LOG_FILE="/var/log/jma-receipt/${7}orcbi201.log"
 
-        echo "arg2   = [" ${2}   "]" >$LOG_FILE
-        echo "arg11  = [" ${11}  "]" >>$LOG_FILE
-        echo "arg12  = [" ${12}  "]" >>$LOG_FILE
+PARA_FILE_BASE=$3
+PARA_FILE_FULL=${MCP_TEMPDIR}/${3}
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBI201 -parameter $3,$4,$5,$6,$7,$8,${11},${13},${14},${15} >> $LOG_FILE 2>&1
+WKCSV_FILE_BASE=${15}
+WKCSV_FILE_FULL=${MCP_TEMPDIR}/${WKCSV_FILE_BASE}
+
+
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBI201 -parameter ${PARA_FILE_BASE},$4,$5,$6,$7,$8,${11},${13},${14},${WKCSV_FILE_BASE} >> $LOG_FILE 2>&1
 
 ##      ＣＳＶファイル作成
         if  [ $1 -eq "0" ]; then
-            if  [ -e ${15} ]; then
+            if  [ -e ${WKCSV_FILE_FULL} ]; then
                 awk ' {
                 #     行頭の空白を取り除く
                       sub(/^ */,"");
@@ -50,26 +53,26 @@ fi
                 #     カンマの前の空白を取り除く
                       gsub(/ *,/,",");
                       print $0
-                }'  ${15} > ${2}.tmp
+                }'  ${WKCSV_FILE_FULL} > ${2}.tmp
 
                 if   [ ${11} = '1' ]; then
 #                   クライアント保存のとき固定ファイルに文字コード変換（ＥＵＣからＳ−ｊｉｓ）
                     if  [ ${12} = '2' ]; then
-                        nkf -s -Lw ${2}.tmp > ${15}
+                        nkf -s -Lw ${2}.tmp > ${WKCSV_FILE_FULL}
                         rm  ${2}.tmp
                     else 
-                        mv  ${2}.tmp ${15}
+                        mv  ${2}.tmp ${WKCSV_FILE_FULL}
                     fi
                 else
                     mv  ${2}.tmp $2
-                    rm  ${15}
+                    rm  ${WKCSV_FILE_FULL}
                 fi 
             fi
         fi
 
 ##      パラメータファイル削除
-        if  [ -e $3 ]; then
-            rm  $3
+        if  [ -e ${PARA_FILE_FULL} ]; then
+            rm  ${PARA_FILE_FULL}
         fi
 
        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$9${10},$7 >> $LOG_FILE 2>&1

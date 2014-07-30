@@ -26,10 +26,17 @@ GZ=${LOG}.gz
 #        $6  期間終了日
 #-------------------------------------------#
 
+killtree(){
+  local children=$(pgrep -P $1 2>/dev/null)
+  for child in ${children} ; do
+    killtree ${child}
+  done
+  kill -9 $1
+}
 
 for p in $(pgrep -u orca -f "$0 $1" ) ; do
   if [ $p -ne $$ ]; then
-    pkill -P $p
+    killtree $p
   fi
 done
 

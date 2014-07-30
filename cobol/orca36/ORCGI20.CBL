@@ -44,7 +44,7 @@
        FILE-CONTROL.
       *
       *    パラメータファイル
-           SELECT  BI201-FILE   ASSIGN  PRFNAME
+           SELECT  BI201-FILE      ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  SEQUENTIAL.
       *
        DATA                    DIVISION.
@@ -71,6 +71,8 @@
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //PRFNAME//.
+      *
+           COPY    "CPASGNPARA.INC".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -249,8 +251,6 @@
        01  CONST-AREA.
            03  CONST-NAME-MAX          PIC 9(02)  VALUE 15.
            03  CONST-GMN-MAX           PIC 9(05)  VALUE 200.
-           03  CONST-SHELNAME          PIC X(100)
-               VALUE   "scripts/allways/orcbi201.sh".
            03  CONST-LINE              PIC 9(05)  VALUE   30.
            03  CONST-JOBID             PIC 9(07)
                VALUE   1.
@@ -341,6 +341,9 @@
       *
       *    保険組合せ取得処理
            COPY    "CPORCSHKNSET.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *     
            COPY    "ORCA-DBMETA".
       *
@@ -510,6 +513,14 @@
            MOVE    1                   TO  PRFNAME-SYOKBN1
            MOVE    SPA-TERMID          TO  PRFNAME-TERMID
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    PRFNAME-BASENAME    TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASGNPARA
+           MOVE    SGETTEMP-ST         TO  ASGNPARA-ST
+      *
            PERFORM 800-MCNDATE-SEC
       *
            OPEN    OUTPUT              BI201-FILE
@@ -575,11 +586,7 @@
            MOVE    SPACE           TO  SHELLTBL
            INITIALIZE                  SHELLTBL
       *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    CONST-SHELNAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "orcbi201.sh"   TO  SHELLTBL-NAME
       *
            MOVE    SPA-I20-I22-PROC-FLG
                                    TO  SHELLTBL-ARG1
@@ -592,8 +599,9 @@
                MOVE    SPA-I20-I22-FILENAME
                                        TO  SHELLTBL-ARG2
            END-IF
-           MOVE    PRFNAME         TO  SHELLTBL-ARG3
-           MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG4
+           MOVE    ASGNPARA (ASGNPARA-ST:)
+                                   TO  SHELLTBL-ARG3
+           MOVE    SPA-TERMID      TO  SHELLTBL-ARG4
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
            MOVE    SPA-GMN-SELHMS  TO  SHELLTBL-ARG6
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
@@ -608,8 +616,7 @@
            MOVE    WRK-FILENM-FOLDER
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
-           STRING   "/tmp/"                DELIMITED  BY  SIZE
-                    WRK-FILENM             DELIMITED  BY  SPACE
+           STRING   WRK-FILENM             DELIMITED  BY  SPACE
                     SPA-TERMID             DELIMITED  BY  SIZE
                     ".wk"                  DELIMITED  BY  SIZE
                                            INTO  SHELLTBL-ARG15
@@ -618,7 +625,7 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC

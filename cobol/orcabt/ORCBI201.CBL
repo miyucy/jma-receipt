@@ -42,7 +42,7 @@
                                    FILE    STATUS  IS  STS-BI201.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-PRT.
@@ -90,11 +90,15 @@
                                        BY         //WKBI201//.
       *
       *
-       01  ASSIGN-NAME-AREA.
-      *        パラメータファイル名
-           03  PRFNAME                 PIC X(200).
-      *        ＣＳＶファイル名
-           03  CSVNAME                 PIC X(200).
+           COPY    "CPASGNPARA.INC".
+      *
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
+                                   BY         //PRFNAME//.
+      *
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
+                                   BY         //CSVNAME//.
       *
       *    ステータス領域
        01  STS-AREA.
@@ -308,6 +312,9 @@
       *    保険組合せ取得処理
            COPY    "CPORCSHKNSET.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -375,8 +382,12 @@
       *
            PERFORM 900-JOB-STEP-START-SEC
       *
-           MOVE    WRK-PARA-PAFNAME
-                                   TO  PRFNAME
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    WRK-PARA-PAFNAME    TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  PRFNAME
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BI201-FILE
@@ -389,7 +400,13 @@
            CLOSE   BI201-FILE
       *
            IF          WKBI201-PROC-FLG    =   ZERO
-               MOVE    WRK-PARA-CSVFILENM      TO  CSVNAME
+               INITIALIZE                  SGETTEMP-AREA
+               MOVE    WRK-PARA-CSVFILENM
+                                       TO  SGETTEMP-BASENAMES (1)
+               CALL    "ORCSGETTEMP"   USING
+                                       SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  CSVNAME
       *
                OPEN    OUTPUT              CSV-FILE
            ELSE
@@ -399,6 +416,15 @@
                MOVE    WRK-PARA-TERMID     TO  HC01PARA-TERMID
                MOVE    WRK-PARA-SYSTIME    TO  HC01PARA-SYOHMS
                MOVE    1                   TO  HC01PARA-CNT
+      *
+               INITIALIZE                  SGETTEMP-AREA
+               MOVE    HC01PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (1)
+               CALL    "ORCSGETTEMP"   USING
+                                       SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASGNPARA
+               MOVE    SGETTEMP-ST     TO  ASGNPARA-ST
       *
                OPEN    OUTPUT              PRT-FILE
       *
@@ -504,19 +530,14 @@
                CLOSE   PRT-FILE
       *
                MOVE    SPACE           TO  SHELLTBL
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "scripts/daily/HCALL2.sh"
-                                       TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING
-                                           ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+               MOVE    "HCALL2.sh"     TO  SHELLTBL-NAME
       *
-               MOVE    HC01PARA        TO  SHELLTBL-ARG1
+               MOVE    ASGNPARA (ASGNPARA-ST:)
+                                       TO  SHELLTBL-ARG1
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG2
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "shell"         TO  MCP-PATHNAME
+               MOVE    "daily"         TO  MCP-PATHNAME
                MOVE    "SHELL"         TO  MCP-FUNC
                CALL    "ORCDBMAIN"         USING
                                            MCPAREA
