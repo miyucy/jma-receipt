@@ -145,11 +145,6 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
       *
-       01  WRK-SHELL-NAME.
-           05  FILLER              PIC X(16) VALUE
-                                             "scripts/monthly/".
-           05  WRK-SHELL-SHELL     PIC X(20).
-      *
        01  SRTSYU-AREA.
            03  SRTSYU-MAX                          PIC 9(05).
            03  SRTSYU-OCC                          OCCURS  3001.
@@ -1681,12 +1676,7 @@
            MOVE    3                   TO  TEIKIERR-SYOKBN1
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "teiki2.sh"         TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    "teiki2.sh"         TO  SHELLTBL-NAME
       *
            MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1718,7 +1708,7 @@
            MOVE    CONST-SHELLID       TO  SHELLTBL-ARG16
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG17
            MOVE    SPA-STAFFCD         TO  SHELLTBL-ARG18
-           MOVE    TEIKIERR            TO  SHELLTBL-ARG19
+           MOVE    TEIKIERR-BASENAME   TO  SHELLTBL-ARG19
            MOVE    SPA-GMN-O03-PTINFREFKBN
                                        TO  SHELLTBL-ARG20(1:1)
            MOVE    SPA-GMN-O03-SKYPRTKBN
@@ -1737,7 +1727,7 @@
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "monthly"           TO  MCP-PATHNAME
            MOVE    "SHELL"             TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA

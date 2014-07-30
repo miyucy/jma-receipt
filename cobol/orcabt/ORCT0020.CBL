@@ -51,9 +51,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //TEIKIERR//.
+           COPY    "CPASGNPARA.INC"        REPLACING  //ASGNPARA//
+                                           BY         //TEIKIERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -286,6 +285,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    一時ディレクトリ編集サブ
+           COPY    "CPORCSGETTEMP.INC".
+      *
       ****************************************************************
        LINKAGE                         SECTION.
       *
@@ -380,7 +382,11 @@
       *
            MOVE    ZERO                TO  FLG-END
       *
-           MOVE    TEIKI2P-ERRFILE     TO  TEIKIERR
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TEIKI2P-ERRFILE     TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  TEIKIERR
       *
       *    定期請求情報
            INITIALIZE                      SYS-5010-REC
