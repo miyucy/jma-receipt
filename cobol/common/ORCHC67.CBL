@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,7 +36,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -52,6 +54,9 @@
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -196,6 +201,10 @@
       *    予約票パラメタ
            COPY    "CPORCHC67.INC".
       *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -321,6 +330,14 @@
       *
            ADD     1                   TO  WRK-PAGE-CNT
            MOVE    WRK-PAGE-CNT        TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
       *
            .
@@ -342,7 +359,8 @@
            MOVE   "HC01.sh"           TO  MKPRT-ID
            MOVE   "HCM67.red"         TO  MKPRT-DIA
            MOVE   SPACE               TO  MKPRT-DEF
-           MOVE   HC01PARA            TO  MKPRT-DAT
+      **** MOVE   HC01PARA            TO  MKPRT-DAT
+           MOVE   ASGNPARA            TO  MKPRT-DAT
            MOVE   SYS-1031-PRTNM(17)  TO  MKPRT-PRTNM
            MOVE   "予約票"            TO  MKPRT-INFO
            CALL   "ORCSMKPRT1"        USING
