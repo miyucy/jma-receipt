@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.00    NACL-多々納  13/07/XX  電子版お薬手帳アプリ連携対応他
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
       *
@@ -51,8 +52,12 @@
        WORKING-STORAGE             SECTION.
       *
       *    ファイル指定領域
-       01  FILE-NAME1.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+       01  FILE-NAME1              PIC X(1024).
+       01  FILE-NAME2              PIC X(1024).
+      *
+      *    ファイル指定領域
+       01  FILE-NAME1-PARA.
+      **** 03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-FORM-ID1       PIC X(05)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
@@ -60,8 +65,8 @@
            03  FILLER              PIC X(01)   VALUE   ".".
            03  FILE-SYOHMS1        PIC 9(08)   VALUE   ZERO.
            03  FILLER              PIC X(07)   VALUE   ".qr.dat".
-       01  FILE-NAME2.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+       01  FILE-NAME2-PARA.
+      **** 03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-FORM-ID2       PIC X(05)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
@@ -162,6 +167,10 @@
       *    お薬手帳データ制御サブパラメタ
            COPY    "CPORCSMNOTE.INC".
       *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -197,6 +206,14 @@
            MOVE    ORCSQRCSV62-FORM-ID TO  FILE-FORM-ID1
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    ORCSQRCSV62-SYSTIME TO  FILE-SYOHMS1
+      *ver.4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    FILE-NAME1-PARA     TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)
+                                       TO  FILE-NAME1
       *
            OPEN    OUTPUT              QRCSV-FILE
            IF      STS-FILE1       NOT =   ZERO
@@ -236,7 +253,9 @@
                MOVE    "2"                 TO  SMNOTE-CODE-TYPE
                MOVE    "お薬手帳"          TO  SMNOTE-TITLE
                MOVE    "MNOTE"             TO  SMNOTE-TBL-KEY
-               MOVE    FILE-NAME1          TO  SMNOTE-CSVFILE
+      *v4.8
+      ******** MOVE    FILE-NAME1          TO  SMNOTE-CSVFILE
+               MOVE    FILE-NAME1-PARA     TO  SMNOTE-CSVFILE
                MOVE    ORCSQRCSV62-CNT     TO  SMNOTE-RENNUM
                MOVE    ORCSQRCSV62-DRCD    TO  SMNOTE-DRCD
       *        データバージョン
@@ -411,6 +430,14 @@
            MOVE    ORCSQRCSV62-FORM-ID TO  FILE-FORM-ID2
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            MOVE    ORCSQRCSV62-SYSTIME TO  FILE-SYOHMS2
+      *ver.4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    FILE-NAME2-PARA     TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)
+                                       TO  FILE-NAME2
+      *
            MOVE    FILE-NAME2          TO  QREN-QRFILENAME
       *!!  MOVE    "L"                 TO  QREN-SL-OPTION
            MOVE    "M"                 TO  QREN-SL-OPTION

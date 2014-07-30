@@ -33,6 +33,7 @@
       *  04.07.00    NACL-多々納  12/09/03  ＱＲコード対応
       *                                     商品名コード対応
       *  04.08.00    NACL-多々納  13/07/XX  電子版お薬手帳アプリ連携対応他
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -41,7 +42,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -56,6 +58,9 @@
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    帳票領域
            COPY    "HCM62.INC".
@@ -213,8 +218,8 @@
       *
       *H24.9
       *    ＱＲ位置
-       01  QR-FILE-NAME.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+       01  QR-FILE-NAME-PARA.
+      *****03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  QR-FILE-HOSPNUM     PIC 9(02)   VALUE   ZERO.
            03  QR-FILE-FORM-ID     PIC X(05)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
@@ -224,6 +229,8 @@
            03  FILLER              PIC X(04)   VALUE   ".qr_".
            03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
            03  FILLER              PIC X(04)   VALUE   ".png".
+      *v4.8
+       01  QR-FILE-NAME            PIC X(1024).
       *
        01  KUHAKU-FILE-NAME        PIC X(512).
       *    空白の画像
@@ -314,6 +321,11 @@
       **** COPY    "CPORCSFILEENCODE.INC".
       *    ディレクトリ作成パラメタ
       **** COPY    "CPORCSMKDIR.INC".
+      *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -1103,6 +1115,15 @@
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    ORCHC62-CNT     TO  HC01PARA-CNT(1:3)
            MOVE    CNT-PAGE        TO  HC01PARA-CNT(4:3)
+      *
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
@@ -1117,7 +1138,8 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCM62.red"     TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-           MOVE    HC01PARA        TO  MKPRT-DAT
+      *****MOVE    HC01PARA        TO  MKPRT-DAT
+           MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(16)
                                    TO  MKPRT-PRTNM
            MOVE   "お薬手帳"       TO  MKPRT-INFO
@@ -1346,6 +1368,15 @@
                    MOVE    SPA-TERMID          TO  QR-FILE-TERMID
                    MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
                    MOVE    WRK-FILE-CNT        TO  QR-FILE-ID
+      *
+      *v4.8
+      *            一時ファイル名取得
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    QR-FILE-NAME-PARA   TO  SGETTEMP-BASENAME
+                   CALL    "ORCSGETTEMP"       USING
+                                                   SGETTEMP-AREA
+                   MOVE    SGETTEMP-FULLNAME   TO  QR-FILE-NAME
+      *
       *            ファイル存在チェック
                    INITIALIZE                      ORCSFILECHKAREA
                    MOVE    QR-FILE-NAME        TO  FILECHK-NAME
@@ -1417,6 +1448,14 @@
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    ORCHC62-CNT     TO  HC01PARA-CNT(1:3)
            MOVE    CNT-PAGE        TO  HC01PARA-CNT(4:3)
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
@@ -1431,7 +1470,8 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCM62Q.red"    TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-           MOVE    HC01PARA        TO  MKPRT-DAT
+     ***** MOVE    HC01PARA        TO  MKPRT-DAT
+           MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(16)
                                    TO  MKPRT-PRTNM
            MOVE   "お薬手帳"       TO  MKPRT-INFO
