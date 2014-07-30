@@ -25,6 +25,7 @@
       *
        01  ORCSFILECHKAREA.
       *    ファイル名
-           03  FILECHK-NAME                PIC X(256).
+      **** 03  FILECHK-NAME                PIC X(256).
+           03  FILECHK-NAME                PIC X(1024).
       *    復帰コード （０：存在あり、１：中身なし、２：存在なし）
            03  FILECHK-RC                  PIC 9(01).

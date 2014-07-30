@@ -37,6 +37,7 @@
       *  04.06.00    NACL-多々納  12/09/27  医師コード等編集対応
       *  04.07.00    NACL-多々納  13/03/27  一般名例外テーブル期間対応
       *  04.07.00    NACL-多々納  14/05/XX  内服１回量対応
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
       *
@@ -60,8 +61,12 @@
        WORKING-STORAGE             SECTION.
       *
       *    ファイル指定領域
-       01  FILE-NAME1.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+       01  FILE-NAME1              PIC X(1024).
+       01  FILE-NAME2              PIC X(1024).
+      *
+      *    ファイル指定領域
+       01  FILE-NAME1-PARA.
+      *****03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-FORM-ID1       PIC X(04)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
@@ -69,8 +74,9 @@
            03  FILLER              PIC X(01)   VALUE   ".".
            03  FILE-SYOHMS1        PIC 9(08)   VALUE   ZERO.
            03  FILLER              PIC X(07)   VALUE   ".qr.dat".
-       01  FILE-NAME2.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+      *
+       01  FILE-NAME2-PARA.
+      *****03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-FORM-ID2       PIC X(04)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
@@ -78,6 +84,7 @@
            03  FILLER              PIC X(01)   VALUE   ".".
            03  FILE-SYOHMS2        PIC 9(08)   VALUE   ZERO.
            03  FILLER              PIC X(07)   VALUE   ".qr.png".
+      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-FILE1           PIC X(02).
@@ -198,6 +205,10 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
+      *
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -233,6 +244,15 @@
            MOVE    "HC2Q"              TO  FILE-FORM-ID1
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    ORCSQRCSV-SYSTIME   TO  FILE-SYOHMS1
+      *ver.4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    FILE-NAME1-PARA     TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)
+                                       TO  FILE-NAME1
+      *
            OPEN    OUTPUT              QRCSV-FILE
            IF      STS-FILE1       NOT =   ZERO
                MOVE    9               TO  ORCSQRCSV-ERRCD
@@ -707,6 +727,14 @@
            MOVE    "HC2Q"              TO  FILE-FORM-ID2
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            MOVE    ORCSQRCSV-SYSTIME   TO  FILE-SYOHMS2
+      *ver.4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    FILE-NAME2-PARA     TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)
+                                       TO  FILE-NAME2
+      *
            MOVE    FILE-NAME2          TO  QREN-QRFILENAME
            MOVE    "L"                 TO  QREN-SL-OPTION
            MOVE    "1"                 TO  QREN-SS-OPTION

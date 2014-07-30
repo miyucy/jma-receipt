@@ -62,6 +62,7 @@
       *  04.07.00    NACL=多々納  11/06/XX  病名なし処理区分対応
       *  04.07.00    NACL=多々納  11/08/03  主病区分、全公費編集対応
       *  04.07.00    NACL-多々納  13/10/07  第三者行為対応
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,7 +71,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE       ASSIGN  HC01PARA
+           SELECT  PRT-FILE       ASSIGN   ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -81,8 +82,12 @@
        01  PRT-REC                 PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
+      *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    カルテ
            COPY    "HCM01.INC"     REPLACING   //HCM01//
@@ -389,6 +394,9 @@
       *
       *    病名編集サブ
            COPY    "CPORCSMKBYOMEI.INC".
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -654,7 +662,9 @@
            MOVE   "HC01.sh"           TO  MKPRT-ID
            MOVE   "HCM01.red"         TO  MKPRT-DIA
            MOVE   SPACE               TO  MKPRT-DEF
-           MOVE   HC01PARA            TO  MKPRT-DAT
+      *v4.8
+      **** MOVE   HC01PARA            TO  MKPRT-DAT
+           MOVE   ASGNPARA            TO  MKPRT-DAT
            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
@@ -677,6 +687,13 @@
                MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
                ADD     1                   TO  WRK-PAGE
                MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *v4.8
+      *        一時ファイル名取得
+               INITIALIZE                      SGETTEMP-AREA
+               MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+               CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
                OPEN    INPUT               PRT-FILE
                IF      STS-PARA        NOT =   ZERO
@@ -726,7 +743,9 @@
            MOVE   "HC01.sh"           TO  MKPRT-ID
            MOVE   "HCM011.red"        TO  MKPRT-DIA
            MOVE   SPACE               TO  MKPRT-DEF
-           MOVE   HC01PARA            TO  MKPRT-DAT
+      *v4.8
+      **** MOVE   HC01PARA            TO  MKPRT-DAT
+           MOVE   ASGNPARA            TO  MKPRT-DAT
            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA

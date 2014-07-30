@@ -82,7 +82,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -96,6 +97,9 @@
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -450,7 +454,7 @@
            03  COM-MAX                     PIC 9(04).
       *
       *    ＱＲ位置
-       01  QR-FILE-NAME.
+       01  QR-FILE-NAME-PARA.
            03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  QR-FILE-HOSPNUM     PIC 9(02)   VALUE   ZERO.
            03  QR-FILE-FORM-ID     PIC X(04)   VALUE   SPACE.
@@ -461,6 +465,9 @@
            03  FILLER              PIC X(04)   VALUE   ".qr_".
            03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
            03  FILLER              PIC X(04)   VALUE   ".png".
+      *v4.8
+      *    ファイル指定領域
+       01  QR-FILE-NAME              PIC X(1024).
       *
        01  KUHAKU-FILE-NAME        PIC X(512).
       *    空白の画像
@@ -621,6 +628,9 @@
       *
       *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -767,6 +777,13 @@
       *
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
            OPEN    OUTPUT               PRT-FILE
       *
@@ -793,6 +810,13 @@
                COMPUTE WRK-SYS-TIME        =   SYS-TIME
                                            +   WRK-FILE-CNT2
                MOVE    WRK-SYS-TIME        TO  HC01PARA-SYOHMS
+      *v4.8
+      *        一時ファイル名取得
+               INITIALIZE                      SGETTEMP-AREA
+               MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+               CALL    "ORCSGETTEMP"       USING
+                                               SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
                OPEN    INPUT               PRT-FILE
                IF      STS-PARA        NOT =   ZERO
@@ -827,7 +851,8 @@
                 MOVE   "HC02QV01.red"      TO  MKPRT-DIA
             END-IF
             MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
+      ******MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(2)   TO  MKPRT-PRTNM
       *---(04.03.00) LINE ADD START ------------------------------------
       *    退院時院外処方せん（入院）
@@ -1881,6 +1906,13 @@
                    MOVE    SPA-TERMID          TO  QR-FILE-TERMID
                    MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
                    MOVE    WRK-FILE-CNT        TO  QR-FILE-ID
+      *ver.4.8
+      *    一時ファイル名取得
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    QR-FILE-NAME-PARA   TO  SGETTEMP-BASENAME
+                   CALL    "ORCSGETTEMP"       USING
+                                               SGETTEMP-AREA
+                   MOVE    SGETTEMP-FULLNAME   TO  QR-FILE-NAME
       *            ファイル存在チェック
                    INITIALIZE                      ORCSFILECHKAREA
                    MOVE    QR-FILE-NAME        TO  FILECHK-NAME

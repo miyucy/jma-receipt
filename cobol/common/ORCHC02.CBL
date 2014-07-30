@@ -82,7 +82,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -96,6 +97,9 @@
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -451,23 +455,23 @@
            03  COM-MAX                     PIC 9(04).
       *
       *    ＱＲ位置
-       01  QR-FILE-NAME.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
-           03  QR-FILE-HOSPNUM     PIC 9(02)   VALUE   ZERO.
-           03  QR-FILE-FORM-ID     PIC X(04)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ".".
-           03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ".".
-           03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
-           03  FILLER              PIC X(04)   VALUE   ".qr_".
-           03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
-           03  FILLER              PIC X(04)   VALUE   ".png".
+      *01  QR-FILE-NAME.
+      *    03  FILLER              PIC X(05)   VALUE   "/tmp/".
+      *    03  QR-FILE-HOSPNUM     PIC 9(02)   VALUE   ZERO.
+      *    03  QR-FILE-FORM-ID     PIC X(04)   VALUE   SPACE.
+      *    03  FILLER              PIC X(01)   VALUE   ".".
+      *    03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
+      *    03  FILLER              PIC X(01)   VALUE   ".".
+      *    03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
+      *    03  FILLER              PIC X(04)   VALUE   ".qr_".
+      *    03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
+      *    03  FILLER              PIC X(04)   VALUE   ".png".
       *
-       01  KUHAKU-FILE-NAME        PIC X(512).
+      *01  KUHAKU-FILE-NAME        PIC X(512).
       *    空白の画像
-       01  KUHAKU-NAME.
-           03  FILLER          PIC X(05)   VALUE   "data/".
-           03  FILLER          PIC X(15)   VALUE   "transparent.jpg".
+      *01  KUHAKU-NAME.
+      *    03  FILLER          PIC X(05)   VALUE   "data/".
+      **** 03  FILLER          PIC X(15)   VALUE   "transparent.jpg".
       *
       *    プログラムオプションパラメタ
        01  PARA-AREA.
@@ -616,12 +620,15 @@
       *    ＱＲデータ作成サブパラメタ
            COPY    "CPORCSQRCSV.INC".
       *    ファイルデイレクトリ位置指定サブ
-           COPY    "CPMKPASS.INC".
+      *    COPY    "CPMKPASS.INC".
       *    ファイル存在チェック
-           COPY    "CPORCSFILECHK.INC".
+      ***  COPY    "CPORCSFILECHK.INC".
       *
       *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -768,6 +775,13 @@
       *
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
            OPEN    OUTPUT               PRT-FILE
       *
@@ -794,6 +808,13 @@
                COMPUTE WRK-SYS-TIME        =   SYS-TIME
                                            +   WRK-FILE-CNT2
                MOVE    WRK-SYS-TIME        TO  HC01PARA-SYOHMS
+      *v4.8
+      *        一時ファイル名取得
+               INITIALIZE                      SGETTEMP-AREA
+               MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+               CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
                OPEN    INPUT               PRT-FILE
                IF      STS-PARA        NOT =   ZERO
@@ -828,7 +849,9 @@
                 MOVE   "HC02V01.red"       TO  MKPRT-DIA
             END-IF
             MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
+      *v4.8
+      ****  MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(2)   TO  MKPRT-PRTNM
       *---(04.03.00) LINE ADD START ------------------------------------
       *    退院時院外処方せん（入院）
@@ -2012,11 +2035,11 @@
            MOVE    WRK-ZENKAKU-G(1:14) TO  WRK-HOSPCD-J
       *
       *    ＱＲ空白画像位置
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    KUHAKU-NAME         TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING
-                                       ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  KUHAKU-FILE-NAME
+      *    INITIALIZE                  ORCSMKPASSAREA
+      *    MOVE    KUHAKU-NAME         TO  MKPASS-IN-01
+      *    CALL    "ORCSMKPASS"        USING
+      *                                ORCSMKPASSAREA
+      **** MOVE    MKPASS-OT-01        TO  KUHAKU-FILE-NAME
            .
        100-SYORI-EXT.
            EXIT.
