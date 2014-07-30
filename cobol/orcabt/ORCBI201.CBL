@@ -407,6 +407,7 @@
                                        SGETTEMP-AREA
                MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  CSVNAME
+               MOVE    SGETTEMP-ST     TO  CSVNAME-ST
       *
                OPEN    OUTPUT              CSV-FILE
            ELSE
@@ -580,7 +581,7 @@
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
                MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
-               MOVE    WRK-PARA-CSVFILENM(6:)
+               MOVE    CSVNAME (CSVNAME-ST:)
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM-FOLDER
                                        TO  SFILESV-TO-FOLDER(WRK-RENNUM)
