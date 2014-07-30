@@ -21,13 +21,16 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-多々納  14/07/30  一時ディレクトリ対応
       ************************************************************
       *
        01  ORCSQRENCODEAREA.
       *      入力ファイル名
-           03  QREN-FILENAME           PIC X(256).
+      **** 03  QREN-FILENAME           PIC X(256).
+           03  QREN-FILENAME           PIC X(1024).
       *      ＱＲ画像ファイル名
-           03  QREN-QRFILENAME         PIC X(256).
+      **** 03  QREN-QRFILENAME         PIC X(256).
+           03  QREN-QRFILENAME         PIC X(1024).
       *      QRENCODE -l オプション(L)
            03  QREN-SL-OPTION          PIC X(01).
       *      QRENCODE -s オプション(1)
