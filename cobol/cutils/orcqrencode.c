@@ -32,8 +32,8 @@ exit
 
 /*
  *	struct qrencode_ctx;
- *		char infile[256];		INPUT FILENAME 
- *		char qrfile[256];		OUTPUT FILENAME
+ *		char infile[1024];		INPUT FILENAME 
+ *		char qrfile[1024];		OUTPUT FILENAME
  *		char opt_level;			ERROR CORRECTION LEVEL
  *		char opt_pixel;			PIXEL per dot
  *		char opt_margin;		SYMBOL MARGIN
@@ -48,8 +48,8 @@ exit
 
 #define	MAX_DATA_SIZE	7090 * 16
 
-#define	SIZE_INFILE			256
-#define SIZE_QRFILE			256
+#define	SIZE_INFILE			1024
+#define SIZE_QRFILE			1024
 #define SIZE_LEVEL			1
 #define SIZE_PIXEL			1
 #define SIZE_MARGIN			1
