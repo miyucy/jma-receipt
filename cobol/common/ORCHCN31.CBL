@@ -31,6 +31,7 @@
       * 04.05.01     NACL-森脇     09/11/20  在宅・コメント対応
       * 04.05.02     NACL-森脇     10/01/26  コメント２、単位対応
       * 04.06.00     NACL-多々納   11/02/28  用法コメント対応
+      * 04.08.00     NACL-多々納   14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,7 +40,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -54,6 +56,9 @@
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    帳票領域
            COPY    "HCN301.INC".
@@ -279,6 +284,11 @@
            COPY    "CPORCSPRGOPTION.INC".
       *
            COPY    "CPORCHCN30.INC".
+      *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -1470,6 +1480,14 @@
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE        TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
@@ -1511,7 +1529,8 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCN301.red"    TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-           MOVE    HC01PARA        TO  MKPRT-DAT
+      *****MOVE    HC01PARA        TO  MKPRT-DAT
+           MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(10)
                                    TO  MKPRT-PRTNM
            MOVE   "お薬情報"       TO  MKPRT-INFO

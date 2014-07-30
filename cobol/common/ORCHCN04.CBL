@@ -45,6 +45,7 @@
       *  04.07.00    NACL-多々納  11/12/22  商品名コード単価対応
       *  04.07.00    NACL-多々納  14/02/13  労災金額％加算対応
       *  04.07.00    NACL-多々納  14/03/XX  平成２６年４月改正対応
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,7 +54,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -69,6 +71,9 @@
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -448,6 +453,10 @@
       *    請求期間編集サブ
            COPY    "CPORCHCN03S03.INC".
       *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
            COPY    "MCPAREA".
       *
       *****************************************************************
@@ -700,6 +709,14 @@
       *
            ADD     1                   TO  WRK-PAGE-CNT
            MOVE    WRK-PAGE-CNT        TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
       *
            .
@@ -721,7 +738,8 @@
            MOVE   "HC01.sh"           TO  MKPRT-ID
            MOVE   "HCN04.red"         TO  MKPRT-DIA
            MOVE   SPACE               TO  MKPRT-DEF
-           MOVE   HC01PARA            TO  MKPRT-DAT
+      *****MOVE   HC01PARA            TO  MKPRT-DAT
+           MOVE   ASGNPARA            TO  MKPRT-DAT
            MOVE   SYS-1034-PRTNM(09)  TO  MKPRT-PRTNM
            MOVE   "入院診療費明細書"  TO  MKPRT-INFO
            CALL   "ORCSMKPRT1"        USING
