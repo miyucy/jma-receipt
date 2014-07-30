@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCBDELETE.
+       PROGRAM-ID.             ORCBDELMNOTE.
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¤ªÌô¼êÄ¢¥Ç¡¼¥¿´ÉÍý
@@ -49,10 +49,12 @@
       *    ºî¶ÈÎÎ°è
        01  WRK-AREA.
            03  WRK-MNOTE-DELYMD    PIC X(08).
-           03  WRK-TBL-KEY         PIC X(08).
            03  WRK-DELYMD          PIC X(08).
       *
            COPY    "COMMON-SPA".
+      *
+           COPY    "CPASGNPARA.INC"    REPLACING   //ASGNPARA//
+                                       BY          //ASS-SAVE//.
       *
        01  CONST-AREA.
            03  CONST-MNOTE         PIC X(08)   VALUE "MNOTE".
@@ -79,6 +81,9 @@
       *    ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    ¤ªÌô¼êÄ¢À©¸æ¥µ¥Ö
+           COPY    "CPORCSMNOTE.INC".
       *
       *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
            COPY    "CPORCSMCNDATE.INC".
@@ -124,9 +129,34 @@
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
+                                       ORCSMNOTEAREA
+                                       ASS-SAVE
       *
            UNSTRING    COMMAND-PARAM   DELIMITED   BY  ","
-           INTO                        SPA-HOSPNUM
+           INTO                        SPA-TERMID
+                                       SPA-HOSPNUM
+                                       SMNOTE-MODE
+                                       SMNOTE-TBL-KEY
+                                       SMNOTE-RENNUM
+                                       SMNOTE-TBL-GROUP
+                                       SMNOTE-SHORI-RENNUM
+                                       SMNOTE-SHELLID
+                                       SMNOTE-SRYYM
+                                       SMNOTE-SRYYMD
+                                       SMNOTE-PUTFLG
+                                       SMNOTE-NYUGAIKBN
+                                       SMNOTE-PTID
+                                       SMNOTE-DRCD
+                                       SMNOTE-TO-FOLDER
+                                       SMNOTE-TO-DATA
+                                       SMNOTE-CODE-TYPE
+                                       SMNOTE-TITLE
+                                       ASS-SAVE
+                                       SMNOTE-TBL-UUID
+                                       SMNOTE-GYOUMU-CD
+                                       SMNOTE-LOCATION-CD
+                                       SMNOTE-DATA-VERSION
+                                       SPA-OPID
            END-UNSTRING
       *
            PERFORM 100-DBOPEN-SEC
@@ -149,8 +179,15 @@
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN TO  WRK-MNOTE-DELYMD
       *
-           PERFORM 900-MNOTE-H-KEY8-SEL-SEC
-           IF    ( FLG-MNOTE-H     =   ZERO )
+           PERFORM 900-MNOTE-H-KEY10-SEL-SEC
+           IF    ( MNOTE-H-HOSPNUM     =   SPA-HOSPNUM )
+            AND  ( MNOTE-H-TBL-KEY     =   SMNOTE-TBL-KEY )
+            AND  ( MNOTE-H-RENNUM      =   SMNOTE-RENNUM )
+            AND  ( MNOTE-H-TBL-GROUP   =   SMNOTE-TBL-GROUP )
+            AND  ( MNOTE-H-TBL-UUID    =   SMNOTE-TBL-UUID )
+            AND  ( MNOTE-H-SHORI-RENNUM =  SMNOTE-SHORI-RENNUM )
+               CONTINUE
+           ELSE
                MOVE    1           TO  FLG-END
            END-IF
       *
@@ -163,10 +200,6 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-               DISPLAY "DELETE MNOTE   (BEFORE "
-                        WRK-MNOTE-DELYMD ")"
-      *
-               MOVE    CONST-MNOTE     TO  WRK-TBL-KEY
                MOVE    WRK-MNOTE-DELYMD TO  WRK-DELYMD
                PERFORM 2001-MNOTE-DEL-SEC
       *
@@ -181,7 +214,7 @@
       *
            INITIALIZE                      MNOTE-H-REC
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
-           MOVE    WRK-TBL-KEY         TO  MNOTE-H-TBL-KEY
+           MOVE    SMNOTE-TBL-KEY      TO  MNOTE-H-TBL-KEY
            MOVE    WRK-DELYMD          TO  MNOTE-H-SRYYMD
            MOVE    MNOTE-H-REC         TO  MCPDATA-REC
            MOVE    "tbl_mnote_h"       TO  MCP-TABLE
@@ -190,7 +223,7 @@
       *
            INITIALIZE                      MNOTE-B-REC
            MOVE    SPA-HOSPNUM         TO  MNOTE-B-HOSPNUM
-           MOVE    WRK-TBL-KEY         TO  MNOTE-B-TBL-KEY
+           MOVE    SMNOTE-TBL-KEY      TO  MNOTE-B-TBL-KEY
            MOVE    WRK-DELYMD          TO  MNOTE-B-SRYYMD
            MOVE    MNOTE-B-REC         TO  MCPDATA-REC
            MOVE    "tbl_mnote_b"       TO  MCP-TABLE
@@ -239,20 +272,20 @@
       *****************************************************************
       *    Åý·×£Ã£Ó£Ö³ÊÇ¼´ÉÍý¸¡º÷½èÍý
       *****************************************************************
-       900-MNOTE-H-KEY8-SEL-SEC        SECTION.
+       900-MNOTE-H-KEY10-SEL-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-MNOTE-H
       *
            INITIALIZE                      MNOTE-H-REC
       *
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
-           MOVE    WRK-TBL-KEY         TO  MNOTE-H-TBL-KEY
+           MOVE    SMNOTE-TBL-KEY      TO  MNOTE-H-TBL-KEY
            MOVE    SPA-SRYYMD          TO  MNOTE-H-CREYMD
            MOVE    MNOTE-H-REC         TO  MCPDATA-REC
            MOVE    "tbl_mnote_h"       TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF    ( FLG-MNOTE-H         =   ZERO )
+           IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  MNOTE-H-REC
            ELSE
                MOVE    1               TO  FLG-MNOTE-H
@@ -260,12 +293,12 @@
            END-IF
       *
            MOVE    "tbl_mnote_h"       TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       900-MNOTE-H-KEY8-SEL-EXT.
+       900-MNOTE-H-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý

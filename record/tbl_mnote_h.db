@@ -167,3 +167,16 @@ path	del3 {
 	};
 };
 
+path	key10		{ 	
+	DBSELECT	{
+		DECLARE tbl_mnote_h_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_mnote_h
+	    	    WHERE 	HOSPNUM	= :HOSPNUM
+                    AND      TBL_KEY    =   :TBL_KEY
+                    AND	   ( TRIM(:CREYMD) =   '' OR CREYMD = :CREYMD )
+                    AND	   ( :PTID	       =   0  OR PTID   = :PTID )
+                    ORDER BY  TBL_GROUP,TBL_UUID,RENNUM,SHORI_RENNUM
+		;
+	};
+};
