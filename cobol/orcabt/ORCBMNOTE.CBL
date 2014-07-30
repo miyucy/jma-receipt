@@ -47,8 +47,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
-       01  ASS-AREA.
-           03  ASS-SAVE            PIC X(255).
+           COPY    "CPASGNPARA.INC"    REPLACING   //ASGNPARA//
+                                       BY          //ASS-SAVE//.
       *
        01  STS-AREA.
            03  STS-SAVE            PIC X(02).
@@ -77,6 +77,9 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *
@@ -110,11 +113,11 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE              ASS-AREA
-                                   STS-AREA
+           INITIALIZE              STS-AREA
                                    FLG-AREA
                                    SPA-AREA
                                    ORCSMNOTEAREA
+                                   ASS-SAVE
       *
            UNSTRING    COMMAND-PARAM   DELIMITED   BY  ","
            INTO                        SPA-TERMID
@@ -144,6 +147,13 @@
            END-UNSTRING
       *
            PERFORM 100-DBOPEN-SEC
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    ASS-SAVE            TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASS-SAVE
       *
            .
        100-INIT-EXT.

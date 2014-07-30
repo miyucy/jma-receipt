@@ -43,8 +43,8 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-MNOTE-H     PIC 9(01).
-           03  FLG-MNOTE-B     PIC 9(01).
+           03  FLG-MNOTE-H         PIC 9(01).
+           03  FLG-MNOTE-B         PIC 9(01).
       *
       *    ºî¶ÈÎÎ°è
        01  WRK-AREA.
@@ -105,7 +105,9 @@
       *
            PERFORM 100-INIT-SEC
       *
-           PERFORM 200-MAIN-SEC
+           IF    ( FLG-END         =   ZERO )
+               PERFORM 200-MAIN-SEC
+           END-IF
       *
            PERFORM 300-END-SEC
       *
@@ -133,6 +135,8 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           MOVE    SMCNDATE-YMD    TO  SPA-SRYYMD
+      *
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY6-AREA
            MOVE    "61"            TO  LNK-DAY6-IRAI
@@ -144,6 +148,11 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN TO  WRK-MNOTE-DELYMD
+      *
+           PERFORM 900-MNOTE-H-KEY8-SEL-SEC
+           IF    ( FLG-MNOTE-H     =   ZERO )
+               MOVE    1           TO  FLG-END
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -226,6 +235,37 @@
       *
            .
        900-SYSKANRI-KEY10-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    Åý·×£Ã£Ó£Ö³ÊÇ¼´ÉÍý¸¡º÷½èÍý
+      *****************************************************************
+       900-MNOTE-H-KEY8-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-MNOTE-H
+      *
+           INITIALIZE                      MNOTE-H-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
+           MOVE    WRK-TBL-KEY         TO  MNOTE-H-TBL-KEY
+           MOVE    SPA-SRYYMD          TO  MNOTE-H-CREYMD
+           MOVE    MNOTE-H-REC         TO  MCPDATA-REC
+           MOVE    "tbl_mnote_h"       TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( FLG-MNOTE-H         =   ZERO )
+               MOVE    MCPDATA-REC     TO  MNOTE-H-REC
+           ELSE
+               MOVE    1               TO  FLG-MNOTE-H
+               INITIALIZE                  MNOTE-H-REC
+           END-IF
+      *
+           MOVE    "tbl_mnote_h"       TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-MNOTE-H-KEY8-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
