@@ -262,6 +262,8 @@
       *  04.07.08    NACL-藤原    14/04/30  治験が複数あるときの対応
       *  04.04.09    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
       *                                     マル長のときも対象とする
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -330,32 +332,32 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE01//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE01PARA//.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE02//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE02PARA//.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE09//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE09PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE11//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE11PARA//.
       *
       *     入退院履歴情報ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE12//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE12PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
+      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE01                              PIC X(02).
@@ -552,9 +554,10 @@
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    初回番号(最新の入院歴分)                                                                 
        01  WRK-SHONUM                  PIC 9(03).                     
@@ -568,13 +571,13 @@
        01  WRK-SEIHO-RECE01-AREA.
            02  WRK-SEIHO-RECE01-REC    OCCURS  50. 
            COPY    "CPRCF001.INC"      REPLACING  //RECE01-//
-                                       BY         //WRK-SEIHO-RECE01-//.
+                                       BY         //WRK-SEH-01-//.
            02  WRK-SEIHO-RECE01-PRTFLG PIC 9(01)  OCCURS  50.
            02  WRK-SEIHO-RECE01-MAX    PIC 9(03).
       *
            02  WRK-KOH-RECE01-REC. 
            COPY    "CPRCF001.INC"      REPLACING  //RECE01-//
-                                       BY         //WRK-KOH-RECE01-//.
+                                       BY         //WRK-KOH-01-//.
       *
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
@@ -976,6 +979,8 @@
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -1139,38 +1144,69 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE090"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE110"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    "RECE120"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE09PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE11PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE12PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ >       2
                    OR      FLG-END     =   1
       *
                IF      IDZ             =   1               
       *    レセプト処理
-                   MOVE    "RECE010"           TO  RECE01PARA-FILE-ID
-                   MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
-                   MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
-                   MOVE    "RECE110"           TO  RECE11PARA-FILE-ID
-                   MOVE    "RECE120"           TO  RECE12PARA-FILE-ID
-                   MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    "RECE010"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(1)
+                   MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(2)
                ELSE
       *    請求書処理
-                   MOVE    "RECE01X"           TO  RECE01PARA-FILE-ID
-                   MOVE    "RECE02X"           TO  RECE02PARA-FILE-ID
-      *-->         MOVE    WRK-CONS-TERMID     TO  RECE02PARA-TERMID
-                   IF      WRK-PARA-SHELLID    =   "RECEPTX"
-                     MOVE    WRK-PARA-TERMID   TO  RECE02PARA-TERMID
-                   ELSE
-                     MOVE    WRK-CONS-TERMID   TO  RECE02PARA-TERMID
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    "RECE01X"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(1)
+                   MOVE    "RECE02X"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       MOVE    WRK-CONS-TERMID     TO
+                                                   RECEDAT1PARA-TERMID
                    END-IF
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(2)
                END-IF
-               MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
-               MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
-               MOVE    WRK-PARA-TERMID     TO  RECE11PARA-TERMID
-               MOVE    WRK-PARA-TERMID     TO  RECE12PARA-TERMID
-grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
-                                               RECE02PARA-HOSPNUM
-                                               RECE09PARA-HOSPNUM
-                                               RECE11PARA-HOSPNUM
-                                               RECE12PARA-HOSPNUM
+               CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAMES (1)
+                                           TO  RECE01PARA
+               MOVE    SGETTEMP-FULLNAMES (2)
+                                           TO  RECE02PARA
       *
                PERFORM 200-HENSYU-SEC
       *        
@@ -1429,12 +1465,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                            UNTIL   IDXX    >       WRK-SEIHO-RECE01-MAX
       *              分割区分毎にまとめる
                      IF      RECE01-RECEIPT-KBN    =
-                                   WRK-SEIHO-RECE01-RECEIPT-KBN (IDXX)
+                                   WRK-SEH-01-RECEIPT-KBN (IDXX)
                        PERFORM VARYING IDYY    FROM    1   BY  1
                                UNTIL   IDYY    >       10
                                OR      RECE01-KOHID-O (IDYY)
                                                =       ZERO
-                           IF      WRK-SEIHO-RECE01-KOHID-O (IDXX 1)
+                           IF      WRK-SEH-01-KOHID-O (IDXX 1)
                                        =   RECE01-KOHID-O (IDYY)
                                MOVE    1           TO
                                            WRK-SEIHO-RECE01-PRTFLG(IDXX)
@@ -1444,21 +1480,21 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                    IF      RECE01-HKNCOMBI-O (IDZZ)
                                                =   ZERO
                                        MOVE
-                                           WRK-SEIHO-RECE01-HKNCOMBI-TBL
+                                           WRK-SEH-01-HKNCOMBI-TBL
                                                               (IDXX 1)
                                                            TO
                                                RECE01-HKNCOMBI-TBL(IDZZ)
                                    END-IF
                                    IF      RECE01-HKNCOMBI-O (IDZZ)
                                                =
-                                             WRK-SEIHO-RECE01-HKNCOMBI-O
+                                             WRK-SEH-01-HKNCOMBI-O
                                                               (IDXX 1)
                                        MOVE    10          TO  IDZZ
                                    END-IF
                                END-PERFORM    
                                PERFORM VARYING IDVV    FROM    1   BY  1
                                        UNTIL   IDVV    >       20
-                                       OR      WRK-SEIHO-RECE01-SRYKA
+                                       OR      WRK-SEH-01-SRYKA
                                                           (IDXX IDVV)
                                                        =   SPACE
                                    PERFORM VARYING IDZZ    FROM    1
@@ -1467,14 +1503,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                        IF      RECE01-SRYKA (IDZZ)
                                                    =   SPACE
                                            MOVE
-                                               WRK-SEIHO-RECE01-SRYKA
+                                               WRK-SEH-01-SRYKA
                                                              (IDXX IDVV)
                                                            TO
                                                    RECE01-SRYKA (IDZZ)
                                        END-IF
                                        IF      RECE01-SRYKA (IDZZ)
                                                    =
-                                             WRK-SEIHO-RECE01-SRYKA
+                                             WRK-SEH-01-SRYKA
                                                              (IDXX IDVV)
                                            MOVE    20          TO  IDZZ
                                        END-IF
@@ -4725,7 +4761,7 @@ grpsys     MOVE    RECE02-KEY          TO  RECE12-KEY1
       *    主保険とのまとめがなく生保、中国残留邦人等、自立支援以外との
       *    公費単独の場合
            IF    ( WRK-SEIHO-FLG           =   ZERO )
-           AND   (  WRK-KOH-RECE01-HOSPNUM >   ZERO )
+           AND   (  WRK-KOH-01-HOSPNUM     >   ZERO )
                MOVE    WRK-KOH-RECE01-REC  TO  RECE01-REC
       *        ファイル編集処理
                PERFORM 2101-RECE02-HENSYU-SEC
@@ -4816,7 +4852,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -4826,7 +4863,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            STRING  "ORCR0020 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -4912,6 +4950,18 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            .
        300-TERM-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    患者保険情報読込
       *****************************************************************

@@ -201,6 +201,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -299,37 +300,34 @@
            COPY    "CPCOMMONSHELL.INC".
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE01//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE01PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE02X//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE02XPARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE031//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE031PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE061//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE061PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE09//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE09PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE11//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE11PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE12//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE12PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *****COPY    "HCM11V01.INC"  REPLACING  //HCM11V01//
       *****COPY    "HCM11V02.INC"  REPLACING  //HCM11V02//
@@ -773,9 +771,10 @@
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -1310,6 +1309,8 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -1425,37 +1426,59 @@
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           MOVE    "RECE020"           TO  RECE01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
-      *
-           MOVE    "RECE02X"           TO  RECE02XPARA-FILE-ID
-           IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               MOVE    WRK-PARA-TERMID TO  RECE02XPARA-TERMID
-           ELSE
-               MOVE    WRK-CONS-TERMID TO  RECE02XPARA-TERMID
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE02X"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-CONS-TERMID     TO  RECEDAT1PARA-TERMID
            END-IF
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE02XPARA-HOSPNUM
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    "RECE031"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           MOVE    "RECE061"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    "RECE090"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           MOVE    "RECE110"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (7)
+           MOVE    "RECE120"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (8)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE01PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE02XPARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE031PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE061PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE09PARA
+           MOVE    SGETTEMP-FULLNAMES (7)
+                                       TO  RECE11PARA
+           MOVE    SGETTEMP-FULLNAMES (8)
+                                       TO  RECE12PARA
       *
-           MOVE    "RECE031"           TO  RECE031PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE031PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE031PARA-HOSPNUM
-      *
-           MOVE    "RECE061"           TO  RECE061PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE061PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE061PARA-HOSPNUM
-      *
-           MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE09PARA-HOSPNUM
-      *
-           MOVE    "RECE110"           TO  RECE11PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE11PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE11PARA-HOSPNUM
-      *
-           MOVE    "RECE120"           TO  RECE12PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE12PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE12PARA-HOSPNUM
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            OPEN    I-O                 RECE02-FILE
            IF      STS-RECE02          =   "00"
@@ -2585,7 +2608,7 @@
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
       *    帳票編集<公費３、公費４、適用欄上段コメント>処理
-           PERFORM 380-HC101-TEKIYOU-COMMENT-HEN-SEC
+           PERFORM 380-HC101-TEKIYOU-COM-HEN-SEC
       *
       *    帳票編集<入退院履歴>処理
            IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
@@ -7029,7 +7052,7 @@
       *****************************************************************
       *    帳票編集<公費３、公費４、適用欄上段コメント>処理
       *****************************************************************
-       380-HC101-TEKIYOU-COMMENT-HEN-SEC      SECTION.
+       380-HC101-TEKIYOU-COM-HEN-SEC      SECTION.
       *
       *    公費３、公費４
            IF    ( RECE02-KOHNUM (3)   =   SPACE )
@@ -7785,7 +7808,7 @@
            END-IF
       *
            .
-       380-HC101-TEKIYOU-COMMENT-HEN-EXT.
+       380-HC101-TEKIYOU-COM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9923,7 +9946,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -9933,7 +9957,8 @@
            STRING  "ORCR0105 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -11141,6 +11166,17 @@
            .
       *
        30011-MISEIKYU-FLG-03-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

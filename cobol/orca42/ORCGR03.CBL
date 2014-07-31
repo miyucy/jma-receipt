@@ -2647,7 +2647,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        WHEN    "1"
                        WHEN    "2"
                        WHEN    "7"
-                           MOVE    ERRFLPARA-OLD        TO  RECEERR
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                             MOVE    ERRFLPARA-OLD        TO  RECEERR
+                           END-IF
                    END-EVALUATE
                    DISPLAY "RECERR=" RECEERR
       *?? 
@@ -2877,8 +2879,10 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        WHEN    "1"
                        WHEN    "2"
                        WHEN    "7"
-                           MOVE    ERRFLPARA-OLD
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    ERRFLPARA-OLD
                                            TO  SHELLTBL-ARG4
+                           END-IF
                    END-EVALUATE
       *??
                    MOVE    WRK-CONS-JOB-JOBID

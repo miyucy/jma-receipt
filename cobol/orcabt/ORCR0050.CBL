@@ -79,6 +79,8 @@
       *  04.07.01    NACL-藤原    13/07/01  レセ電請求時の受付エラー分の
       *                                     自費レセプト対象の有無設定
       *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -122,17 +124,19 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE01//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE01PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE03//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE03PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -176,11 +180,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PTBYO-BYOMEIMOJI
                                    PIC 9(03).
       *
-           03  WRK-RECEERR         PIC X(200). 
-           03  WRK-ERRMSG          PIC X(300).
-           03  WRK-MCP-RC          PIC 9(9).
-      *                             
-           03  WRK-MCP-TABLE       PIC X(64).
+            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
        01  KEY-AREA.
@@ -188,6 +188,20 @@ grpsys     COPY    "COMMON-SPA".
                05  KEY-N-SRYYMD    PIC 9(08).
            03  KEY-OLD.
                05  KEY-O-SRYYMD    PIC 9(08).
+      *
+       01  WRK-ERRMSG-AREA.
+           03  WRK-RECEERR         PIC X(200). 
+           03  WRK-ERRMSG          PIC X(300).
+           03  WRK-MCP-RC          PIC 9(9).
+           03  WRK-ERR-FILE-STS    PIC X(02).
+           03  WRK-ERR-FILE-MSG    PIC X(100).
+           03  WRK-ERR-FILE-MSG1   PIC X(17).
+           03  WRK-ERR-FLG         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -227,6 +241,8 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    拡張漢字チェックサブ
            COPY    "CPORCSKANACHK2.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -278,16 +294,26 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    "RECE020"           TO  RECE01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE030"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE01PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE03PARA
       *
-           MOVE    "RECE030"           TO  RECE03PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE03PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE03PARA-HOSPNUM
-      *
-           OPEN    OUTPUT              RECE03-FILE
-           CLOSE                       RECE03-FILE
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -305,6 +331,19 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF    
       *
            OPEN    I-O                 RECE02-FILE    
+           IF      STS-RECE02          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERRMSG-AREA
+               INITIALIZE                      WRK-ERRMSG-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE01PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE02          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           OPEN    OUTPUT              RECE03-FILE
+           CLOSE                       RECE03-FILE
            OPEN    I-O                 RECE03-FILE
       *     
       *    レセプト編集区分情報
@@ -414,6 +453,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF      RECE02-ERR-ERRKBN   =   ZERO 
                        MOVE    10                  TO  RECE02-ERR-ERRKBN
                        REWRITE                         RECE02-REC
+      *
+                       IF      STS-RECE02          =   "00"
+                           CONTINUE
+                       ELSE
+                           MOVE    SPACE           TO  WRK-ERRMSG-AREA
+                           INITIALIZE                  WRK-ERRMSG-AREA
+      *
+                           MOVE    4               TO  WRK-ERR-FLG
+                           MOVE    RECE01PARA      TO  WRK-ERR-FILE-NM
+                           MOVE    STS-RECE02      TO  WRK-ERR-FILE-STS
+                           PERFORM 500-FILE-ERR-ABORT-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -485,6 +536,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        INTO    WRK-RECEERR
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
+               STRING  "ORCR0050 "         DELIMITED  BY  SIZE
+                       WRK-RECEERR         DELIMITED  BY  SPACE
+                       LOW-VALUE           DELIMITED  BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING
                PERFORM 500-COBABORT-SEC
            END-IF
       *
@@ -758,10 +814,85 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  RECE03-HOSOKU-COMMENT
       *
            WRITE   RECE03-REC
+      *
+           IF      STS-RECE03          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERRMSG-AREA
+               INITIALIZE                      WRK-ERRMSG-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE03PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE03          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-OUT
                                            CNT-RECE-OUT   
            .
        20011-RECE03-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0055 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -793,23 +924,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    エラー時終了処理
-      *****************************************************************
-       500-COBABORT-SEC                SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ERRMSG
-           STRING  "ORCR0050 "         DELIMITED  BY  SIZE
-                   WRK-RECEERR         DELIMITED  BY  SIZE
-                   LOW-VALUE           DELIMITED  BY  SIZE
-                                       INTO    WRK-ERRMSG
-           END-STRING
-           CALL    "cobabort"          USING   WRK-ERRMSG
-      *
-           .
-       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -881,6 +995,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者病名マスタ　ＲＥＡＤ
       *****************************************************************
        900-PTBYO-READ-SEC         SECTION.
@@ -905,6 +1030,17 @@ grpsys     PERFORM 900-DBFETCH-SEC
                AT  END
                    MOVE    1           TO  FLG-END
                NOT AT  END
+                   IF      STS-RECE02          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERRMSG-AREA
+                       INITIALIZE                      WRK-ERRMSG-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE01PARA          TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE02          TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    ADD     1           TO  CNT-IN
                                            CNT-IN-CANCEL
       *

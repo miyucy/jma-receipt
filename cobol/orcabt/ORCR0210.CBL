@@ -35,6 +35,8 @@
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *                                     広域連合対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,17 +85,19 @@ grpsys     COPY    "COMMON-SPA".
       *
       *     レセプト明細ファイル 名称領域 
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE03//.
+            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE03PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE039//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE039PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -150,6 +154,8 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPORCSLNK.INC".
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -233,13 +239,26 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  WRK-PARA-KOUIKIRECEKBN 
            DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
       *
-           MOVE    "RECE031"           TO  RECE03PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE03PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE03PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE031"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE039"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE03PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE039PARA
       *
-           MOVE    "RECE039"           TO  RECE039PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE039PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE039PARA-HOSPNUM
+      **   MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            OPEN    OUTPUT              RECE039-FILE
            CLOSE                       RECE039-FILE
@@ -319,6 +338,17 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCR0210 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

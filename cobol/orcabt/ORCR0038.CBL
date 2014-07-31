@@ -58,6 +58,7 @@
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.03    NACL-門脇    14/07/29  ３２文字以上の文字列修正
       *                                     （コンパイル時のワーニング修正）
+      *  04.08.04    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -125,29 +126,28 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE02//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE02PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE04//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE04PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE05//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE05PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE042//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE042PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE04W//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE04WPARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -229,6 +229,8 @@ grpsys     COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -279,25 +281,45 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE02PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE040"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    "RECE050"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           MOVE    "RECE042"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    "RECE04W"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE02PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE04PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE05PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE042PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE04WPARA
       *
-           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE04PARA-HOSPNUM
+      **   MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
-           MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE05PARA-HOSPNUM
-      *
-           MOVE    "RECE042"           TO  RECE042PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE042PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE042PARA-HOSPNUM
-      *
-           MOVE    "RECE04W"           TO  RECE04WPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE04WPARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE04WPARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ＤＢオープン処理
@@ -795,6 +817,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCR0038 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -4364,7 +4364,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        WHEN    "1"
                        WHEN    "2"
                        WHEN    "7"
+                 IF      SPA-R01-NYUGAIKBN   =   "1"
                    MOVE    ERRFLPARA-OLD        TO  RECEERR
+                 END-IF
                END-EVALUATE
            DISPLAY "RECERR=" RECEERR
       *?? 
@@ -4596,8 +4598,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    "1"
                        WHEN    "2"
                        WHEN    "7"
-                   MOVE    ERRFLPARA-OLD
-                                           TO  SHELLTBL-ARG4
+                 IF      SPA-R01-NYUGAIKBN   =   "1"
+                   MOVE    ERRFLPARA-OLD   TO  SHELLTBL-ARG4
+                 END-IF
                END-EVALUATE
            DISPLAY "SHELLTBL-ARG4=" SHELLTBL-ARG4
       *??

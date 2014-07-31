@@ -79,6 +79,8 @@
       *                                       場合薬剤器材の点数を引く
       *              NACL-伊藤    14/07/16  行為明細点数、出来高点数
       *                                       端数処理
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -146,23 +148,25 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE02//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE04//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE05//.
+            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE02PARA//.
+      *
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE04PARA//.
+      *
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE05PARA//.
+      *
       *     順序番号情報ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE900//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE900PARA//.
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -742,10 +746,6 @@
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
                                    BY         //WRK-RECE05//.
       *
-       01  WRK-TAIHI-RECE04-REC.
-           COPY    "CPRCF004.INC"  REPLACING //RECE04//
-                                   BY         //WRK-TAIHI-RECE04//.
-      *
       *    画像診断用退避エリア
        01  WRK-721-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
@@ -758,185 +758,15 @@
                                    BY         //WRK-700-RECE05//.
        01  WRK-SRYKBN70-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
-                                   BY         //WRK-SRYKBN70-RECE05//.
+                                   BY         //WRK-SRY70-RE05//.
       *    生体検査・加算用退避エリア
        01  WRK-KASAN-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
-                                   BY         //WRK-KASAN-RECE05//.
+                                   BY         //WRK-KASAN-RE05//.
       *    生体検査・逓減用退避エリア
        01  WRK-TEIGEN-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
-                                   BY         //WRK-TEIGEN-RECE05//.
-      *
-      *    検体検査用退避エリア
-       01  TBL-KENTAI-RECE04-AREA.
-         02  TBL-KENTAI-RECE04-REC  OCCURS  100.
-      *
-           COPY    "CPRCF004.INC"  REPLACING  //RECE04//
-                                    BY          //TBL-KENTAI-RECE04//.
-      *
-           03  TBL-KENTAI-RECE05-REC        OCCURS  50.
-               05  TBL-KENTAI-RECE05-SRYACTINF.
-      *            診療コード
-                   07  TBL-KENTAI-RECE05-SRYCD           PIC  X(09).
-      *            診療種別区分
-                   07  TBL-KENTAI-RECE05-SRYSYUKBN       PIC  X(03).
-      *            数量
-                   07  TBL-KENTAI-RECE05-SRYSURYO      PIC  9(05)V9(05).
-      *            回数
-                   07  TBL-KENTAI-RECE05-SRYKAISU        PIC  9(03).
-      *            単位コード
-                   07  TBL-KENTAI-RECE05-TANICD          PIC  9(03).
-      *            単位名称有効桁数
-                   07  TBL-KENTAI-RECE05-TANIMOJISU      PIC  9(01).
-      *            単位名称
-                   07  TBL-KENTAI-RECE05-TANINAME        PIC  X(24).
-      *            点数識別区分
-                   07  TBL-KENTAI-RECE05-TENSIKIBETU     PIC  9(01).
-      *            点数
-                   07  TBL-KENTAI-RECE05-TEN            PIC 9(09)V9(02).
-      *            明細請求フラグ
-                   07  TBL-KENTAI-RECE05-MEISKYFLG       PIC  X(01).
-      *            自動算定区分
-                   07  TBL-KENTAI-RECE05-AUTOKBN         PIC  X(01).
-      *            名称入力番号
-                   07  TBL-KENTAI-RECE05-INPUTNUM        PIC  9(03).
-      *            点数欄集計先識別
-                   07  TBL-KENTAI-RECE05-TENTTLKBN       PIC  9(03).
-      *            データ区分
-                   07  TBL-KENTAI-RECE05-DATAKBN         PIC  9(01).
-      *            包括対象検査
-                   07  TBL-KENTAI-RECE05-HOUKNSKBN       PIC  9(02).
-      *            検査等実施判断
-                   07  TBL-KENTAI-RECE05-KNSJISKBN       PIC  9(01).
-      *            検査等実施判断グループ
-                   07  TBL-KENTAI-RECE05-KNSJISGRPKBN    PIC  9(02).
-      *            各種番号等
-                   07  TBL-KENTAI-RECE05-CDKBNINF.
-                       09  TBL-KENTAI-RECE05-CDKBN-KBN   PIC  X(01).
-                       09  TBL-KENTAI-RECE05-CDKBN-SYO   PIC  9(01).
-                       09  TBL-KENTAI-RECE05-CDKBN-BU    PIC  9(02).
-                       09  TBL-KENTAI-RECE05-CDKBN-KBNNUM     PIC 9(03).
-                       09  TBL-KENTAI-RECE05-CDKBN-KBNNUM-EDA PIC 9(02).
-                       09  TBL-KENTAI-RECE05-CDKBN-KOUBAN     PIC 9(02).
-                       09  TBL-KENTAI-RECE05-KOUHYOJYUNNUM    PIC 9(09).
-      *            告示等識別区分１
-                   07  TBL-KENTAI-RECE05-KOKUJISKBKBN1   PIC  9(01).
-      *            告示等識別区分２
-                   07  TBL-KENTAI-RECE05-KOKUJISKBKBN2   PIC  9(01).
-      *            通則加算対象外区分
-                   07  TBL-KENTAI-RECE05-TUSOKUGAIKBN    PIC  9(01).
-      *            時間外加算区分
-                   07  TBL-KENTAI-RECE05-TIMEKSNKBN      PIC  9(01).
-      *            きざみ値計算識別
-                   07  TBL-KENTAI-RECE05-KZMCOMPSIKIBETU PIC  9(01).
-      *            注加算コード
-                   07  TBL-KENTAI-RECE05-CHUKSNINF.
-      *                コード
-                       09  TBL-KENTAI-RECE05-CHUKSNCD    PIC  X(04).
-      *                通番
-                       09  TBL-KENTAI-RECE05-CHUKSNTUBAN PIC  X(01).
-      *            検体検査コメント
-                   07  TBL-KENTAI-RECE05-KENTAICOMMENT   PIC  9(01).
-      *            入力コメント
-                   07  TBL-KENTAI-RECE05-INPUTCOMENT     PIC  X(80). 
-      *        名称情報
-               05  TBL-KENTAI-RECE05-NAMEINF.
-      *            漢字有効桁数
-                   07  TBL-KENTAI-RECE05-YUKOKETA        PIC  9(03).
-      *            漢字名称
-                   07  TBL-KENTAI-RECE05-NAME            PIC  X(200).
-      *
-           03  TBL-KENTAI-SRYCD-MAX
-                                   PIC 9(02).
-      *
-         02  TBL-KENTAI-RECE04-MAX PIC 9(03).
-         02  TBL-KENTAI-RECE05-MAX PIC 9(03).
-      *
-      *    検査（判断料）用退避エリア
-       01  TBL-KENSA-RECE04-AREA.
-         02  TBL-KENSA-RECE04-REC  OCCURS  100.
-      *
-           COPY    "CPRCF004.INC"  REPLACING  //RECE04//
-                                    BY          //TBL-KENSA-RECE04//.
-      *
-           03  TBL-KENSA-RECE05-REC        OCCURS  50.
-               05  TBL-KENSA-RECE05-SRYACTINF.
-      *            診療コード
-                   07  TBL-KENSA-RECE05-SRYCD           PIC  X(09).
-      *            診療種別区分
-                   07  TBL-KENSA-RECE05-SRYSYUKBN       PIC  X(03).
-      *            数量
-                   07  TBL-KENSA-RECE05-SRYSURYO      PIC  9(05)V9(05).
-      *            回数
-                   07  TBL-KENSA-RECE05-SRYKAISU        PIC  9(03).
-      *            単位コード
-                   07  TBL-KENSA-RECE05-TANICD          PIC  9(03).
-      *            単位名称有効桁数
-                   07  TBL-KENSA-RECE05-TANIMOJISU      PIC  9(01).
-      *            単位名称
-                   07  TBL-KENSA-RECE05-TANINAME        PIC  X(24).
-      *            点数識別区分
-                   07  TBL-KENSA-RECE05-TENSIKIBETU     PIC  9(01).
-      *            点数
-                   07  TBL-KENSA-RECE05-TEN            PIC 9(09)V9(02).
-      *            明細請求フラグ
-                   07  TBL-KENSA-RECE05-MEISKYFLG       PIC  X(01).
-      *            自動算定区分
-                   07  TBL-KENSA-RECE05-AUTOKBN         PIC  X(01).
-      *            名称入力番号
-                   07  TBL-KENSA-RECE05-INPUTNUM        PIC  9(03).
-      *            点数欄集計先識別
-                   07  TBL-KENSA-RECE05-TENTTLKBN       PIC  9(03).
-      *            データ区分
-                   07  TBL-KENSA-RECE05-DATAKBN         PIC  9(01).
-      *            包括対象検査
-                   07  TBL-KENSA-RECE05-HOUKNSKBN       PIC  9(02).
-      *            検査等実施判断
-                   07  TBL-KENSA-RECE05-KNSJISKBN       PIC  9(01).
-      *            検査等実施判断グループ
-                   07  TBL-KENSA-RECE05-KNSJISGRPKBN    PIC  9(02).
-      *            各種番号等
-                   07  TBL-KENSA-RECE05-CDKBNINF.
-                       09  TBL-KENSA-RECE05-CDKBN-KBN   PIC  X(01).
-                       09  TBL-KENSA-RECE05-CDKBN-SYO   PIC  9(01).
-                       09  TBL-KENSA-RECE05-CDKBN-BU    PIC  9(02).
-                       09  TBL-KENSA-RECE05-CDKBN-KBNNUM     PIC 9(03).
-                       09  TBL-KENSA-RECE05-CDKBN-KBNNUM-EDA PIC 9(02).
-                       09  TBL-KENSA-RECE05-CDKBN-KOUBAN     PIC 9(02).
-                       09  TBL-KENSA-RECE05-KOUHYOJYUNNUM    PIC 9(09).
-      *            告示等識別区分１
-                   07  TBL-KENSA-RECE05-KOKUJISKBKBN1   PIC  9(01).
-      *            告示等識別区分２
-                   07  TBL-KENSA-RECE05-KOKUJISKBKBN2   PIC  9(01).
-      *            通則加算対象外区分
-                   07  TBL-KENSA-RECE05-TUSOKUGAIKBN    PIC  9(01).
-      *            時間外加算区分
-                   07  TBL-KENSA-RECE05-TIMEKSNKBN      PIC  9(01).
-      *            きざみ値計算識別
-                   07  TBL-KENSA-RECE05-KZMCOMPSIKIBETU PIC  9(01).
-      *            注加算コード
-                   07  TBL-KENSA-RECE05-CHUKSNINF.
-      *                コード
-                       09  TBL-KENSA-RECE05-CHUKSNCD    PIC  X(04).
-      *                通番
-                       09  TBL-KENSA-RECE05-CHUKSNTUBAN PIC  X(01).
-      *            検体検査コメント
-                   07  TBL-KENSA-RECE05-KENTAICOMMENT   PIC  9(01).
-      *            入力コメント
-                   07  TBL-KENSA-RECE05-INPUTCOMENT     PIC  X(80). 
-      *        名称情報
-               05  TBL-KENSA-RECE05-NAMEINF.
-      *            漢字有効桁数
-                   07  TBL-KENSA-RECE05-YUKOKETA        PIC  9(03).
-      *            漢字名称
-                   07  TBL-KENSA-RECE05-NAME            PIC  X(200).
-      *
-           03  TBL-KENSA-SRYCD-MAX
-                                  PIC 9(02).
-      *
-         02  TBL-KENSA-RECE04-MAX PIC 9(03).
-         02  TBL-KENSA-RECE05-MAX PIC 9(03).
+                                   BY         //WRK-TEIGEN-RE5//.
       *
        01  WRK-CONS-AREA.
       *    日計表レコード記載の条件点数
@@ -1229,9 +1059,10 @@
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
@@ -1321,6 +1152,8 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -1387,18 +1220,38 @@
       *
            PERFORM 110-PTNUM-KETA-SEC
       *
-           MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE02PARA-HOSPNUM
-           MOVE    "RECE041"           TO  RECE04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE04PARA-HOSPNUM
-           MOVE    "RECE051"           TO  RECE05PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE05PARA-HOSPNUM
-           MOVE    "RECE900"           TO  RECE900PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE900PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE900PARA-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE041"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    "RECE051"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE02PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE04PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE05PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE900PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            OPEN    I-O                 RECE02-FILE
            IF      STS-RECE02          =   "00"
@@ -1731,8 +1584,6 @@
                                                    FLG-TOKUTEINYUIN
                    MOVE    SPACE               TO  WRK-COM-SRYKBN
                                                    WRK-COM-FTNKBN
-                   INITIALIZE                 TBL-KENTAI-RECE04-AREA
-                                              TBL-KENSA-RECE04-AREA
       *
                    MOVE    ZERO               TO  WRK-RENNUM-E
                                                   WRK-RENNUM-F 
@@ -4722,7 +4573,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -4732,7 +4584,8 @@
            STRING  "ORCRDPC10"             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -4981,6 +4834,17 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            INITIALIZE                      WRK-HENSYU-AREA
            .
        5005-NUM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
