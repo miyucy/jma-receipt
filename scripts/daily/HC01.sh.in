@@ -17,8 +17,7 @@ mv ${PRT_FILE}.tmp ${PRT_FILE}
 
 LAYEROPTION=""
 [[ $(cat ${PRT_FILE}) =~ MonpeLayerIn(.*)MonpeLayerOut ]]
-
-if [ -e "${BASH_REMATCH[0]}" ]; then
+if [ -n "${BASH_REMATCH[0]}" ]; then
   LAYEROPTION=$(echo "${BASH_REMATCH[1]}" | sed -e "s/ *-L */,/g" | sed -e "s/,/-H /")
   sed -i -e "s/${BASH_REMATCH[0]}/$(printf %-$(expr length "${BASH_REMATCH[0]}")s ' ')/"  ${PRT_FILE}
 fi
