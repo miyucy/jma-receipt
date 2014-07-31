@@ -482,9 +482,9 @@
       *
       *        ¬‡»Ú§∑§∆§™§§§ø£”£–£¡§Œ∆‚Õ∆§Ú∏µ§ÀÃ·§π
                INITIALIZE                  I2SUB01-LNK
-               MOVE    SPA-TERMID      TO  I2SUB01-TERMID
                MOVE    "I"             TO  I2SUB01-KBN
                CALL    "ORCGI2SUB01"   USING   I2SUB01-LNK
+                                               SPA-AREA
       *
                MOVE    I2SUB01-SCRSPA-AREA
                                        TO  SPA-I2FREE
@@ -673,6 +673,7 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           MOVE    SPACE       TO  SPA-I2FREE
            INITIALIZE              SPA-I20-AREA
                                    SPA-I2KYOUTU
       *
@@ -2173,12 +2174,12 @@
       *
       *    £”£–£¡§Œ∆‚Õ∆§Ú¬‡»Ú
            INITIALIZE                  I2SUB01-LNK
-           MOVE    SPA-TERMID          TO  I2SUB01-TERMID
            MOVE    "O"                 TO  I2SUB01-KBN
            MOVE    SPA-I2FREE          TO  I2SUB01-SCRSPA-AREA
            MOVE    SPA-I2KYOUTU        TO  I2SUB01-COMMON
       *
            CALL    "ORCGI2SUB01"       USING   I2SUB01-LNK
+                                               SPA-AREA
       *
       *    ∆˛¬‡±°≈–œø≤ËÃÃ§ÿ¡´∞‹§π§Î
            MOVE    "I20"               TO  SPA-MOTOPG

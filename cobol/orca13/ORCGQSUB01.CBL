@@ -114,10 +114,9 @@
        200-SPA-OUTPUT-SEC              SECTION.
       *
            INITIALIZE                  SPATMP-REC
-           MOVE    SPA-HOSPNUM     TO  SPATMP-HOSPNUM
-           MOVE    "Q02"           TO  SPATMP-GYOUMUID
-           MOVE    SPA-TERMID      TO  SPATMP-TERMID
-           MOVE    1               TO  SPATMP-EDANUM
+      *
+           PERFORM 9001-SPATMP-KEY-EDIT-SEC
+      *
            MOVE    QSUB01-SPA-AREA TO  SPATMP-DATA-REC
            MOVE    SPATMP-REC      TO  MCPDATA2-REC
            MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
@@ -135,10 +134,9 @@
            MOVE    ZERO            TO  FLG-SPATMP
       *
            INITIALIZE                  SPATMP-REC
-           MOVE    SPA-HOSPNUM     TO  SPATMP-HOSPNUM
-           MOVE    "Q02"           TO  SPATMP-GYOUMUID
-           MOVE    SPA-TERMID      TO  SPATMP-TERMID
-           MOVE    1               TO  SPATMP-EDANUM
+      *
+           PERFORM 9001-SPATMP-KEY-EDIT-SEC
+      *
            MOVE    SPATMP-REC      TO  MCPDATA2-REC
            MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -156,6 +154,20 @@
       *
            .
        900-SPATMP-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    一時保存テーブル検索条件編集処理
+      *****************************************************************
+       9001-SPATMP-KEY-EDIT-SEC        SECTION.
+      *
+           MOVE    SPA-HOSPNUM     TO  SPATMP-HOSPNUM
+           MOVE    "Q02"           TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID      TO  SPATMP-TERMID
+           MOVE    "SCREEN"        TO  SPATMP-FILEMEI
+           MOVE    1               TO  SPATMP-EDANUM
+      *
+           .
+       9001-SPATMP-KEY-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

@@ -220,8 +220,7 @@
                05  SPA-GMN-I22-LBLFILENAME     PIC X(14).
       *        ファイル名
                05  SPA-GMN-I22-FILENAME        PIC X(100).
-               05  SPA-GMN-I22-FILENAME-STATE  PIC S9(9)
-                                                   BINARY.
+               05  SPA-GMN-I22-FILENAME-STATE  PIC S9(9).
       *        件数（ページ数）ラベル
                05  SPA-GMN-I22-LBLNUMSEL       PIC X(10).
       *        開始件数（ページ数）
@@ -239,8 +238,7 @@
                    07  SPA-GMN-I22-FILE        PIC X(01).
                    07  SPA-GMN-I22-F1          PIC X(01).
                    07  SPA-GMN-I22-FILEMEI     PIC X(20).
-               05  SPA-GMN-I22-FILE-STATE      PIC S9(9)
-                                                   BINARY.
+               05  SPA-GMN-I22-FILE-STATE      PIC S9(9).
       *            文字コード
                05  SPA-GMN-I22-CDKBNLST        OCCURS  6.
                    07  SPA-GMN-I22-CDKBNL      PIC X(01).
@@ -252,8 +250,7 @@
                    07  SPA-GMN-I22-CDKBN       PIC X(01).
                    07  SPA-GMN-I22-F1          PIC X(01).
                    07  SPA-GMN-I22-CDKBNMEI    PIC X(20).
-               05  SPA-GMN-I22-CDKBN-STATE     PIC S9(9)
-                                                       BINARY.
+               05  SPA-GMN-I22-CDKBN-STATE     PIC S9(9).
       *        クライアント保存可否フラグ
                05  SPA-I22-CLIENT-SAVE         PIC X(01).
       *

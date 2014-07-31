@@ -43,6 +43,7 @@ db	{
 	tbl_ptsrh;
 	tbl_tnkrrk;
 	tbl_tsyrrk;
+	tbl_spa_tmp;
 };
 
 /* #include "orcadb.inc" */

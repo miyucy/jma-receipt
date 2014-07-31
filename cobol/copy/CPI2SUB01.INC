@@ -17,9 +17,6 @@
       ********************************************************************
        01  I2SUB01-LNK.
            03  I2SUB01-KBN             PIC X(01).
-           03  I2SUB01-TERMID          PIC X(64).
-           03  I2SUB01-SCRSPA-AREA.
-               05  I2SUB01-SCRSPA-OCC  OCCURS  10.
-                   07  I2SUB01-SCRSPA  PIC X(50000).
+           03  I2SUB01-SCRSPA-AREA     PIC X(500000).
            03  I2SUB01-COMMON-AREA.
                05  I2SUB01-COMMON      PIC X(10000).
