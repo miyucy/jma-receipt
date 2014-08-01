@@ -66,7 +66,7 @@
                                    BY         //HCM402//.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
       *    中間ファイルファイル名称領域 
@@ -215,6 +215,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -230,7 +233,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -300,6 +303,15 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
            MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    DTCHK004PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (1)
+      *
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  DTCHK004PARA-FULLNAME
       *
       *    データチェック２機能情報
            PERFORM 1001-SYS1101-GET-SEC

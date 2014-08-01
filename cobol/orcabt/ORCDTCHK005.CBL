@@ -113,7 +113,7 @@
        WORKING-STORAGE                 SECTION.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
       *    中間ファイルファイル名称領域 
@@ -200,6 +200,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -216,7 +219,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -301,6 +304,31 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSANTEIPARA-HOSPNUM
            MOVE    "DCSANTEI"          TO  DTCHKSANTEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSANTEIPARA-TERMID
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    DTCHK002PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (1)
+           MOVE    DTCHK006NPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (2)
+           MOVE    DTCHK006GPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (3)
+           MOVE    DTCHKSRYPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (4)
+           MOVE    DTCHKSANTEIPARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (5)
+      *
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  DTCHK002PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  DTCHK006NPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  DTCHK006GPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  DTCHKSRYPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  DTCHKSANTEIPARA-FULLNAME
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC

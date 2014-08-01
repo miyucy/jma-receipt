@@ -59,7 +59,7 @@
        WORKING-STORAGE                 SECTION.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
       *    中間ファイルファイル名称領域 
@@ -127,6 +127,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -142,7 +145,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -211,6 +214,15 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK002PARA-HOSPNUM
            MOVE    "DTCHK002"          TO  DTCHK002PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK002PARA-TERMID
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    DTCHK002PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES (1)
+      *
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  DTCHK002PARA-FULLNAME
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC

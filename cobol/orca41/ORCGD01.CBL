@@ -1050,75 +1050,77 @@
       *    ファイルデイレクトリ位置指定
            MOVE    "orcbsd01.sh"           TO  SHELLTBL-NAME
       *
-           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG1
+           MOVE    MCP-TENANT              TO  SHELLTBL-ARG1
+      *
+           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG2
            MOVE    LNK-PRTKANRI-RENNUM
-                                           TO  SHELLTBL-ARG2
-           MOVE    LNK-PRTKANRI-TBL-KEY
                                            TO  SHELLTBL-ARG3
-           MOVE    LNK-PRTKANRI-TBL-GROUP
+           MOVE    LNK-PRTKANRI-TBL-KEY
                                            TO  SHELLTBL-ARG4
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP
                                            TO  SHELLTBL-ARG5
-           MOVE    LNK-PRTKANRI-SRYYM
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                            TO  SHELLTBL-ARG6
-           MOVE    LNK-PRTKANRI-SKYYMD
+           MOVE    LNK-PRTKANRI-SRYYM
                                            TO  SHELLTBL-ARG7
-           MOVE    LNK-PRTKANRI-SHELLID
+           MOVE    LNK-PRTKANRI-SKYYMD
                                            TO  SHELLTBL-ARG8
-           MOVE    LNK-PRTKANRI-PRIORITY
+           MOVE    LNK-PRTKANRI-SHELLID
                                            TO  SHELLTBL-ARG9
-           MOVE    LNK-PRTKANRI-TERMID
+           MOVE    LNK-PRTKANRI-PRIORITY
                                            TO  SHELLTBL-ARG10
-           MOVE    LNK-PRTKANRI-OPID
+           MOVE    LNK-PRTKANRI-TERMID
                                            TO  SHELLTBL-ARG11
-           MOVE    LNK-PRTKANRI-PRTNM
+           MOVE    LNK-PRTKANRI-OPID
                                            TO  SHELLTBL-ARG12
+           MOVE    LNK-PRTKANRI-PRTNM
+                                           TO  SHELLTBL-ARG13
       *
            MOVE    CONST-JOB-JOBID
-                                           TO  SHELLTBL-ARG13
-           MOVE    CONST-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
-           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG15
+           MOVE    CONST-JOB-SHELLID
+                                           TO  SHELLTBL-ARG15
+           MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG16
       *
-           MOVE    DTCHKERR                TO  SHELLTBL-ARG16
+           MOVE    DTCHKERR-BASENAME       TO  SHELLTBL-ARG17
       *
-           MOVE    ORCBSD01-IKTKBT         TO  SHELLTBL-ARG17
+           MOVE    ORCBSD01-IKTKBT         TO  SHELLTBL-ARG18
       *
-           MOVE    ORCBSD01-SRYYM          TO  SHELLTBL-ARG18
+           MOVE    ORCBSD01-SRYYM          TO  SHELLTBL-ARG19
       *
-           MOVE    ORCBSD01-NYUGAIKBN      TO  SHELLTBL-ARG19
+           MOVE    ORCBSD01-NYUGAIKBN      TO  SHELLTBL-ARG20
       *
-           MOVE    ORCBSD01-CHKKBN-G       TO  SHELLTBL-ARG20
+           MOVE    ORCBSD01-CHKKBN-G       TO  SHELLTBL-ARG21
       *
-           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SHELLTBL-ARG21
+           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SHELLTBL-ARG22
       *
-           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SHELLTBL-ARG22
+           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SHELLTBL-ARG23
       *
-           MOVE    ORCBSD01-RSIPROCKBN     TO  SHELLTBL-ARG23
+           MOVE    ORCBSD01-RSIPROCKBN     TO  SHELLTBL-ARG24
       *
-           MOVE    ORCBSD01-JBIPROCKBN     TO  SHELLTBL-ARG24
+           MOVE    ORCBSD01-JBIPROCKBN     TO  SHELLTBL-ARG25
       *
-           MOVE    ORCBSD01-JIHIPROCKBN    TO  SHELLTBL-ARG25
+           MOVE    ORCBSD01-JIHIPROCKBN    TO  SHELLTBL-ARG26
       *
-           MOVE    ORCBSD01-INGAIPROCKBN   TO  SHELLTBL-ARG26
+           MOVE    ORCBSD01-INGAIPROCKBN   TO  SHELLTBL-ARG27
       *
-           MOVE    ORCBSD01-PRTSRTKBN      TO  SHELLTBL-ARG27
+           MOVE    ORCBSD01-PRTSRTKBN      TO  SHELLTBL-ARG28
       *
-           MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG28
+           MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG29
       *
-           MOVE    ORCBSD01-SRYYMDKBN      TO  SHELLTBL-ARG29
+           MOVE    ORCBSD01-SRYYMDKBN      TO  SHELLTBL-ARG30
       *
-           MOVE    ORCBSD01-STSRYYMD       TO  SHELLTBL-ARG30
+           MOVE    ORCBSD01-STSRYYMD       TO  SHELLTBL-ARG31
       *
-           MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG31
+           MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG32
       *
-           MOVE    ORCBSD01-KGIPROCKBN     TO  SHELLTBL-ARG32
+           MOVE    ORCBSD01-KGIPROCKBN     TO  SHELLTBL-ARG33
       *
-           MOVE    ORCBSD01-KOUKIPROCKBN   TO  SHELLTBL-ARG33
+           MOVE    ORCBSD01-KOUKIPROCKBN   TO  SHELLTBL-ARG34
       *
-           MOVE    ORCBSD01-CHIKENPROCKBN  TO  SHELLTBL-ARG34
+           MOVE    ORCBSD01-CHIKENPROCKBN  TO  SHELLTBL-ARG35
       *
-           MOVE    ORCBSD01-DAISANPROCKBN  TO  SHELLTBL-ARG35
+           MOVE    ORCBSD01-DAISANPROCKBN  TO  SHELLTBL-ARG36
       *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
@@ -1176,7 +1178,7 @@
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *
-               MOVE    DTCHKERR            TO  SHELLTBL-ARG12
+               MOVE    DTCHKERR-BASENAME   TO  SHELLTBL-ARG12
                MOVE    CONST-JOB-JOBID     TO  SHELLTBL-ARG13
                MOVE    CONST-JOB-SHELLID
                                            TO  SHELLTBL-ARG14

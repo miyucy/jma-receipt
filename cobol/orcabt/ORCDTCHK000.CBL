@@ -43,7 +43,7 @@
        01  DTCHK-RC                    PIC S9(09).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
       *    パラメタ領域
@@ -73,6 +73,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -209,6 +212,11 @@
            IF      LNK-PRTKANRI-TBL-KEY  NOT = "RECEPTX"
                    PERFORM 100-DBOPEN-SEC
            END-IF
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    DTCHKERRPARA        TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  DTCHKERRPARA
       *
            .
        100-INIT-EXT.

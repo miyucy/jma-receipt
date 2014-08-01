@@ -3947,12 +3947,12 @@
        800-SAVE-D04SPA-SEC         SECTION.
       *
            INITIALIZE                  DSUB01-LNK
-           MOVE    SPA-TERMID          TO  DSUB01-TERMID
            MOVE    "O"                 TO  DSUB01-KBN
            MOVE    SPA-D04             TO  DSUB01-SCRSPA-AREA
            MOVE    SPA-D01KYOUTU       TO  DSUB01-COMMON
       *
            CALL    "ORCGDSUB01"        USING   DSUB01-LNK
+                                               SPA-AREA
       *
            .
       *
@@ -3966,8 +3966,9 @@
            INITIALIZE                  DSUB01-LNK
            MOVE    SPA-TERMID      TO  DSUB01-TERMID
            MOVE    "I"             TO  DSUB01-KBN
-           CALL    "ORCGDSUB01"    USING   DSUB01-LNK
       *
+           CALL    "ORCGDSUB01"        USING   DSUB01-LNK
+                                               SPA-AREA
            .
       *
        800-LOAD-D04SPA-EXT.

@@ -11,68 +11,73 @@ fi
 
 #-------------------------------------------#
 #    データチェク処理
-#        $1    医療機関番号
-#        $2-${12} 印刷ＤＢ用固定引数
-#        ${13} ジョブＩＤ
-#        ${14} シェルＩＤ
-#        ${15} 医療機関番号
-#        ${16} エラーファイル名 
-#        ${17} 一括・個別区分
-#        ${18} 診療年月
-#        ${19} 入外区分
-#        ${20} チェック区分×５０
-#        ${21} 社保の処理区分
-#        ${22} 国保の処理区分
-#        ${23} 労災の処理区分
-#        ${24} 自賠責の処理区分
-#        ${25} 自費保険の処理区分
-#        ${26} 院外処方の処理区分
-#        ${27} 印刷順
-#        ${28} 患者別リストの作成区分
-#        ${29} 診療日指定区分
-#        ${30} 診療日指定開始日
-#        ${31} 診療日指定終了日
-#        ${32} 公害保険の処理区分
-#        ${33} 後期高齢者の処理区分
-#        ${34} 治験の処理区分
-#        ${35} 第三者行為の処理区分
+#        $1    テナント番号
+#        $2    医療機関番号
+#        $3-${13} 印刷ＤＢ用固定引数
+#        ${14} ジョブＩＤ
+#        ${15} シェルＩＤ
+#        ${16} 医療機関番号
+#        ${17} エラーファイル名 
+#        ${18} 一括・個別区分
+#        ${19} 診療年月
+#        ${20} 入外区分
+#        ${21} チェック区分×５０
+#        ${22} 社保の処理区分
+#        ${23} 国保の処理区分
+#        ${24} 労災の処理区分
+#        ${25} 自賠責の処理区分
+#        ${26} 自費保険の処理区分
+#        ${27} 院外処方の処理区分
+#        ${28} 印刷順
+#        ${29} 患者別リストの作成区分
+#        ${30} 診療日指定区分
+#        ${31} 診療日指定開始日
+#        ${32} 診療日指定終了日
+#        ${33} 公害保険の処理区分
+#        ${34} 後期高齢者の処理区分
+#        ${35} 治験の処理区分
+#        ${36} 第三者行為の処理区分
 #-------------------------------------------#
 
-OLDLOG=/home/orca/orcbsd01.log
-LOGFILE="/var/log/jma-receipt/${15}orcb041.log"
+LOGFILE="/var/log/jma-receipt/${16}orcb041.log"
 
-for p in $(pgrep -u orca -f "$0 $1" ) ; do
+killtree(){
+  local children=$(pgrep -P $1 2>/dev/null)
+  for child in ${children} ; do
+    killtree ${child}
+  done
+  kill -9 $1
+}
+
+for p in $(pgrep -f "$0 $1 $2" ) ; do
   if [ $p -ne $$ ]; then
-    pkill -P $p
+    killtree $p
   fi
 done
 
-
-##      旧ログファイルを削除
-        if  [ -e $OLDLOG ]; then
-            rm  $OLDLOG
-        fi
+ERR_FILE_BASE=${17}
+ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
 
 
 ##      エラーファイル削除
-        if  [ -e ${16} ]; then
-            rm  ${16}
+        if  [ -e ${ERR_FILE_FULL} ]; then
+            rm  ${ERR_FILE_FULL}
         fi
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCDTCHK000 -parameter "$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},${27},${28},${29},${30},${31},${32},${33},${34},${35}"   > $LOGFILE 2>&1
-        if  [ -e ${16} ]; then
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCDTCHK000 -parameter "$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},${27},${28},${29},${30},${31},${32},${33},${34},${35},${36}"   > $LOGFILE 2>&1
+        if  [ -e ${ERR_FILE_FULL} ]; then
             exit
         fi
 
-if [ $(pgrep -fn "$0 $1") -eq $$ ] ; then
+if [ $(pgrep -fn "$0 $1 $2") -eq $$ ] ; then
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${15}
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${16}
 
 ##      作業ファイル削除
-        rm /tmp/${15}00DTCHK*.dat
-        rm /tmp/${15}00DCACCT*.dat
-        rm /tmp/${15}00DCSRY*.dat
-        rm /tmp/${15}00DCSANTEI*.dat
+        rm ${MCP_TEMPDIR}/${16}00DTCHK*
+        rm ${MCP_TEMPDIR}/${16}00DCACCT*
+        rm ${MCP_TEMPDIR}/${16}00DCSRY*
+        rm ${MCP_TEMPDIR}/${16}00DCSANTEI*
 fi
 
 exit

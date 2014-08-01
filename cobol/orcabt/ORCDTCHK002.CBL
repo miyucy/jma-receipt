@@ -215,7 +215,7 @@
            COPY    "HCM401.INC".
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
       *    中間ファイルファイル名称領域 
@@ -256,6 +256,7 @@
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSANTEIPARA//.
+           COPY    "CPASGNPARA.INC".
       *
       *    データチェック共通コピー句
            COPY    "CPDTCHKCOMMON.INC".
@@ -1275,6 +1276,9 @@
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //LNK-COMB-//.
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -1290,7 +1294,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -1372,50 +1376,86 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHKACCTPARA-HOSPNUM
            MOVE    "DCACCT00"          TO  DTCHKACCTPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKACCTPARA-TERMID
+           MOVE    DTCHKACCTPARA-BASENAME  TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA                TO  DTCHKACCTPARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSRYPARA-HOSPNUM
            MOVE    "DCSRY000"          TO  DTCHKSRYPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRYPARA-TERMID
+           MOVE    DTCHKSRYPARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHKSRYPARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSANTEIPARA-HOSPNUM
            MOVE    "DCSANTEI"          TO  DTCHKSANTEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSANTEIPARA-TERMID
+           MOVE    DTCHKSANTEIPARA-BASENAME    TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHKSANTEIPARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK003PARA-HOSPNUM
            MOVE    "DTCHK003"          TO  DTCHK003PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK003PARA-TERMID
+           MOVE    DTCHK003PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK003PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
            MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
+           MOVE    DTCHK004PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK004PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK008PARA-HOSPNUM
            MOVE    "DTCHK008"          TO  DTCHK008PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK008PARA-TERMID
+           MOVE    DTCHK008PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK008PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK009PARA-HOSPNUM
            MOVE    "DTCHK009"          TO  DTCHK009PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK009PARA-TERMID
+           MOVE    DTCHK009PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK009PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK010PARA-HOSPNUM
            MOVE    "DTCHK010"          TO  DTCHK010PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK010PARA-TERMID
+           MOVE    DTCHK010PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK010PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK011PARA-HOSPNUM
            MOVE    "DTCHK011"          TO  DTCHK011PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK011PARA-TERMID
+           MOVE    DTCHK011PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK011PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK012PARA-HOSPNUM
            MOVE    "DTCHK012"          TO  DTCHK012PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK012PARA-TERMID
+           MOVE    DTCHK012PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK012PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK013PARA-HOSPNUM
            MOVE    "DTCHK013"          TO  DTCHK013PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK013PARA-TERMID
+           MOVE    DTCHK013PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK013PARA-FULLNAME
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK018PARA-HOSPNUM
            MOVE    "DTCHK018"          TO  DTCHK018PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK018PARA-TERMID
+           MOVE    DTCHK018PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK018PARA-FULLNAME
       *
            OPEN    INPUT               DCACCT-FILE
                                        DCSRY-FILE
@@ -14173,6 +14213,19 @@
       *
            .
        80011-TMPSND-EDIT-EXT.
+            EXIT.
+      *****************************************************************
+      *    一時ファイル名取得
+      *****************************************************************
+       800-ORCSGETTEMP-SEC             SECTION.
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    ASGNPARA        TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME TO ASGNPARA
+      *
+           .
+       800-ORCSGETTEMP-EXT.
             EXIT.
       *****************************************************************
       *    対象患者ファイル読込処理
