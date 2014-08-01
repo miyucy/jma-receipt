@@ -1,6 +1,6 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "euc-jisx0213"
+Encoding.default_external = "ascii-8bit" if defined?(Encoding) && Encoding.respond_to?("default_external")
 
 require 'find'
 
