@@ -2958,9 +2958,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
                       UNTIL  (IDX-HKNCOMBI         >  10)    OR
                              (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                  (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                               (IDX-HKNCOMBI)    =   TBL-HKNCOMBI(IDX1)
                              MOVE   1    TO   FLG-HKNCOMBI-MATCH
                              PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
@@ -2989,7 +2989,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     END-PERFORM
                     IF      FLG-HKNCOMBI-MATCH   =   ZERO
                         MOVE  TBL-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                                       (IDX-HKNCOMBI)
                         MOVE  TBL-NYUINKA(IDX1)    TO
                               LNK-ORCHCN33SUB-NYUINKA
@@ -3030,9 +3030,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
                       UNTIL  (IDX-HKNCOMBI         >  10)    OR
                              (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                  (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                               (IDX-HKNCOMBI)    =   
                                    LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
                              MOVE   1    TO   FLG-HKNCOMBI-MATCH
@@ -3068,7 +3068,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     IF      FLG-HKNCOMBI-MATCH   =   ZERO
                       IF LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1) NOT = ZERO
                         MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                                       (IDX-HKNCOMBI)
                         MOVE  TBL-NYUINKA(IDX1)    TO
                               LNK-ORCHCN33SUB-NYUINKA
@@ -3087,7 +3087,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (1)
       *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 1)
       *     DISPLAY   "ÅÀ¿ô£±¡¡£± = "
@@ -3097,7 +3097,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     DISPLAY   "ÅÀ¿ô£±¡¡£² = "
       *                LNK-ORCHCN33SUB-TENSU (1 2)
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (2)
       *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 1)
       *     DISPLAY   "ÅÀ¿ô£²¡¡£± = "
@@ -3123,9 +3123,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
                       UNTIL  (IDX-HKNCOMBI         >  10)    OR
                              (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                  (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                               (IDX-HKNCOMBI)    =   TBL-HKNCOMBI(IDX1)
                              MOVE   1    TO   FLG-HKNCOMBI-MATCH
                              PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
@@ -3160,7 +3160,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     IF      FLG-HKNCOMBI-MATCH   =   ZERO
                       IF  TBL-HKNCOMBI(IDX1)   NOT =   ZERO
                         MOVE  TBL-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                                       (IDX-HKNCOMBI)
                         MOVE  TBL-NYUINKA(IDX1)    TO
                               LNK-ORCHCN33SUB-NYUINKA
@@ -3205,9 +3205,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
                       UNTIL  (IDX-HKNCOMBI         >  10)    OR
                              (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                  (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                               (IDX-HKNCOMBI)    =   
                                    LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
                              MOVE   1    TO   FLG-HKNCOMBI-MATCH
@@ -3243,7 +3243,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     IF      FLG-HKNCOMBI-MATCH   =   ZERO
                       IF LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1) NOT = ZERO
                         MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                                       (IDX-HKNCOMBI)
                         MOVE  TBL-NYUINKA(IDX1)    TO
                               LNK-ORCHCN33SUB-NYUINKA
@@ -3262,7 +3262,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (1)
       *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 1)
       *     DISPLAY   "³«»ÏÆü£±¡¡£± = "
@@ -3280,7 +3280,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     DISPLAY   "Æü¿ô£±¡¡£² = "
       *                LNK-ORCHCN33SUB-DAY (1 2)
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (2)
       *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 1)
       *     DISPLAY   "³«»ÏÆü£²¡¡£± = "

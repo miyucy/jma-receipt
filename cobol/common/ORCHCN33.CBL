@@ -34,6 +34,7 @@
       *  04.07.00    NACL-多々納  12/09/25  プログラムオプション保険対応
       *  04.07.01    NACL-門脇    13/09/30  自賠責（第三者行為）対応
       *  04.07.00    NACL-多々納  14/02/13  労災金額％加算対応
+      *  04.08.00    NACL-多々納  14/08/01  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -42,7 +43,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE       ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -56,6 +58,10 @@
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
+      *
       *    カルテ３号様式（入院）
            COPY    "HCM33N.INC".
       *
@@ -367,6 +373,10 @@
       *
       *    入院会計取得パラメタ
            COPY    "CPORCHCN33SUB.INC".
+      *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -1957,6 +1967,15 @@
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
       *    印刷用データ出力
            MOVE    HCM33N               TO  PRT-REC
@@ -1968,7 +1987,8 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HCM33N.red"        TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
+      ******MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(04)  TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
@@ -2116,6 +2136,14 @@
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
       *    印刷用データ出力
            MOVE    HCM331N              TO  PRT-REC
@@ -2125,9 +2153,10 @@
       *
            INITIALIZE                  ORCSMKPRTAREA
            MOVE   "HC01.sh"            TO  MKPRT-ID
-           MOVE   "HCM331N.red"         TO  MKPRT-DIA
+           MOVE   "HCM331N.red"        TO  MKPRT-DIA
            MOVE   SPACE                TO  MKPRT-DEF
-           MOVE   HC01PARA             TO  MKPRT-DAT
+      **** MOVE   HC01PARA             TO  MKPRT-DAT
+           MOVE   ASGNPARA             TO  MKPRT-DAT
            MOVE   SYS-1034-PRTNM(05)   TO  MKPRT-PRTNM
            IF     SYS-1034-PRTNM(05)   =   SPACE
                 MOVE   SYS-1034-PRTNM(04)  TO  MKPRT-PRTNM

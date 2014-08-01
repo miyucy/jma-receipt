@@ -508,7 +508,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
       *    レセプト別集計
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       10
-                   OR      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (IDX1)
+                   OR      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (IDX1)
                                            =   ZERO
                PERFORM VARYING IDY1    FROM    1   BY  1
                        UNTIL   IDY1    >       100
@@ -518,7 +518,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
                            UNTIL   IDY2    >       10
                            OR      LNK-SYUBETU-HKNCOMBI (IDY1 IDY2)
                                                    =   ZERO
-                       IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                       IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                                         (IDX1)
                                    =   LNK-SYUBETU-HKNCOMBI (IDY1 IDY2)
                            PERFORM 20031-ORCHCN33SUB-SYUKEI-SEC
@@ -556,12 +556,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
                                                        (IDY1 IDY3 IDY4)
                                                    =   ZERO
                                MOVE
-                                   LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                                   LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                                        (IDX1)
                                            TO  LNK-SYUACC-IO-HKNCOMBI
                                                         (IDY1 IDY3 IDY4)
                            END-IF
-                           IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                           IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
                                                        (IDX1)
                                            =   LNK-SYUACC-IO-HKNCOMBI
                                                         (IDY1 IDY3 IDY4)

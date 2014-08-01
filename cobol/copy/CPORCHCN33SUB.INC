@@ -58,7 +58,7 @@
       * ›∏±¡»πÁ§ª ÷µ—•∆°º•÷•Î
                05  LNK-ORCHCN33SUB-HENKYAKU-TBL2     OCCURS  10.
       * ›∏±¡»πÁ§ª»÷πÊ
-                   07  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM  PIC 9(04).
+                   07  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM  PIC 9(04).
       *ø«Œ≈≤  ÷µ—•∆°º•÷•Î
                    07  LNK-ORCHCN33SUB-HENKYAKU-TBL3     OCCURS  50.
       *ø«Œ≈≤ 
