@@ -1013,21 +1013,6 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ＤＢオープン処理
-               PERFORM 100-DBOPEN-SEC
-      *
-      *        ステップ管理開始処理
-               MOVE    "STS"               TO  SJOBKANRI-MODE
-               INITIALIZE                      JOBKANRI-REC
-               MOVE    "ORCR1050"          TO  JOB-PGID
-               MOVE    "摘要欄編集"        TO  JOB-SHELLMSG
-               PERFORM 900-CALL-ORCSJOB-SEC
-      *
-      *        処理中止設定処理
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF
-      *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
@@ -1051,6 +1036,21 @@
            MOVE    TEMPFLPARA          TO  RECE140PARA
       *
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *        ＤＢオープン処理
+               PERFORM 100-DBOPEN-SEC
+      *
+      *        ステップ管理開始処理
+               MOVE    "STS"               TO  SJOBKANRI-MODE
+               INITIALIZE                      JOBKANRI-REC
+               MOVE    "ORCR1050"          TO  JOB-PGID
+               MOVE    "摘要欄編集"        TO  JOB-SHELLMSG
+               PERFORM 900-CALL-ORCSJOB-SEC
+      *
+      *        処理中止設定処理
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
       *
            OPEN    I-O                 RECE100-FILE
            IF      STS-RECE100         =   "00"
