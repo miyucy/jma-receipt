@@ -118,7 +118,7 @@
        FILE-CONTROL.
       *
       *    請求書用パラメタファイル
-           SELECT  BS01-FILE   ASSIGN  PRFNAME
+           SELECT  BS01-FILE   ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  SEQUENTIAL.
       *
        DATA                        DIVISION.
@@ -135,6 +135,7 @@
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //PRFNAME//.
+           COPY    "CPASGNPARA.INC".
       *
       *    エラーファイル 名称領域
            COPY    "CPERRFL.INC".
@@ -574,10 +575,6 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-       01  SHELL-AREA.
-           03  SHELL-NAME                      PIC X(26)   VALUE
-               "scripts/allways/orcbs01.sh".
-      *
        01  CONST-AREA.
            03  CONST-PROC-G.
                05  CONST-PROC-NYUKIN          PIC X(02) VALUE "05".
@@ -762,6 +759,9 @@
          02  LNKSMEI-OCC           OCCURS    99.
            COPY "CPSYUMEI.INC"     REPLACING //SMEI-//
                                    BY        //LNKSMEI-//.
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
        01  UIDIO-AREA.
            03  C-RET                   PIC X(2).
@@ -1130,6 +1130,12 @@
            MOVE    1               TO  PRFNAME-SYOKBN1
            MOVE    SPA-NAI-UID     TO  PRFNAME-TERMID
       *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    PRFNAME-BASENAME TO SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME TO ASGNPARA
+           MOVE    SGETTEMP-ST       TO ASGNPARA-ST
+      *
            OPEN    OUTPUT          BS01-FILE
       *
            MOVE    SPA-NAI-GYOUMUID
@@ -1159,7 +1165,8 @@
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
            MOVE    SPA-GMN-PTNUM       TO  SHELLTBL-ARG2
            MOVE    SPA-OPID            TO  SHELLTBL-ARG3
-           MOVE    PRFNAME             TO  SHELLTBL-ARG4
+           MOVE    ASGNPARA(ASGNPARA-ST:)
+                                       TO  SHELLTBL-ARG4
            MOVE    SPA-NAI-FILEMEI-YMD TO  SHELLTBL-ARG5
            MOVE    SPA-NAI-FILEMEI-HMS TO  SHELLTBL-ARG6
            MOVE    SHELLTBL            TO  MCPDATA-REC
@@ -2074,12 +2081,7 @@
                MOVE    99999               TO  WRK-EDPAGE
       *
                MOVE    SPACE               TO  SHELLTBL
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "/scripts/allways/print_prv.sh"
-                                           TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+               MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
                MOVE    SPACE               TO  LNK-PRTKANRI-AREA
                INITIALIZE                      LNK-PRTKANRI-AREA
                MOVE    CONST-PRTKANRI-TBL-KEY
@@ -2111,7 +2113,7 @@
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *
-               MOVE    ERRFLPARA           TO  SHELLTBL-ARG12
+               MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
                MOVE    CNT-JOBID           TO  SHELLTBL-ARG13
                MOVE    CONST-JOB-SHELLID   TO  SHELLTBL-ARG14
                MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
@@ -2130,7 +2132,7 @@
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "shell"             TO  MCP-PATHNAME
+               MOVE    "allways"           TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
@@ -2242,9 +2244,7 @@
            MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
-           MOVE    SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "orcbs01.sh"    TO  SHELLTBL-NAME
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -2271,7 +2271,8 @@
            MOVE    CNT-JOBID       TO  SHELLTBL-ARG12
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
-           MOVE    ERRFLPARA       TO  SHELLTBL-ARG14
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG14
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
            MOVE    WRK-PGTYPE (IDX2)
                                    TO  SHELLTBL-ARG16
@@ -2300,7 +2301,7 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA

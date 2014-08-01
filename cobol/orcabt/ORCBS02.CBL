@@ -51,8 +51,8 @@
        WORKING-STORAGE                     SECTION.
       *
       *    パラメータファイル名
-           COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLPARA//
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
                                    BY         //PRFNAME//.
       *
       *    フラグ
@@ -91,6 +91,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -136,6 +139,12 @@
                                        WRK-YMD
                                        WRK-HMS
            END-UNSTRING
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    PRFNAME         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  PRFNAME
       *
            .
        100-INIT-EXT.
