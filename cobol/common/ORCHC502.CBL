@@ -32,6 +32,7 @@
       * 03.05.00     NACL-多々納  07/05/22  再印刷処理追加
       * 04.01.00     NACL-多々納  07/11/22  器材商品名コード対応
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      * 04.08.00     NACL-多々納  14/08/01  一時ディレクトリ対応
       *****************************************************************
       *
       *
@@ -41,7 +42,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -55,6 +57,10 @@
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -231,15 +237,15 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *    医療機関情報−基本情報 
-           COPY    "CPSK1001.INC".
+      **   COPY    "CPSK1001.INC".
       *    医療機関情報−所在地、連絡先 
-           COPY    "CPSK1002.INC".
+      **** COPY    "CPSK1002.INC".
       *
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1010.INC".
       *    処方箋ＧＥ表示
-           COPY    "CPSK1030.INC".
+      ***  COPY    "CPSK1030.INC".
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1034.INC".
       *    入院指示せん設定情報
@@ -288,6 +294,10 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
            COPY    "MCPAREA".
       *    ＤＢ検索
@@ -1216,6 +1226,15 @@
       *    変更★★★★★★
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT               PRT-FILE
       *
            .
@@ -1236,7 +1255,8 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HC502.red"         TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
+      ***** MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(7)   TO  MKPRT-PRTNM
             MOVE   "注射処方箋"        TO  MKPRT-INFO
             CALL   "ORCSMKPRT1"        USING

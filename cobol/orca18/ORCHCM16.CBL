@@ -31,6 +31,7 @@
       *                                     出力先を予約一覧（７）へ
       * 01.00.01     NACL-多々納  05/12/07  MONFUNC対応
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.08.00    NACL-多々納  14/08/01  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,7 +40,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       
       *
@@ -54,6 +56,10 @@
       *
       *    印刷データ名称領域
            COPY    "CPCOMMONPRT.INC".
+      *
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    ステータス領域
        01  STS-AREA.
@@ -139,6 +145,10 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -324,6 +334,14 @@
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE        TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
            WRITE   HCM16
            CLOSE                       PRT-FILE
@@ -332,7 +350,8 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCM16.red"     TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-           MOVE    HC01PARA        TO  MKPRT-DAT
+      *****MOVE    HC01PARA        TO  MKPRT-DAT
+           MOVE    ASGNPARA        TO  MKPRT-DAT
       *****MOVE    SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
            MOVE    SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
            CALL    "ORCSMKPRT"         USING

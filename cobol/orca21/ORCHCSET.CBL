@@ -38,6 +38,7 @@
       *  04.05.00    NACL-多々納  09/06/XX  撮影料等の数量ゼロ対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力他対応・レイアウト変更
       *  04.06.00    NACL-多々納  11/02/22  用法コメント対応
+      *  04.08.00    NACL-多々納  14/08/01  一時ディレクトリ対応
       *****************************************************************
       *
       *
@@ -47,7 +48,8 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -61,12 +63,10 @@
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
-      *    シェル用領域
-      **** COPY    "CPCOMMONSHELL.INC".
       *
-      *    シェル用領域
-      *    COPY    "CPSHELLTBL.INC".
-      *****COPY    "ORCA-DBPATH".
+      *v4.8
+      *    一時デイレクトリ領域 
+           COPY    "CPASGNPARA.INC".
       *
       *    帳票
            COPY    "HCPOM2.INC".
@@ -362,9 +362,11 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *01  MCPDATA-REC                 PIC X(5000).
+      *v4.8
+      *    一時ファイル名取得
+           COPY    "CPORCSGETTEMP.INC".
+      *
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -449,6 +451,14 @@
       *
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *v4.8
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
       *
            .
@@ -470,7 +480,8 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HCPOM2.red"        TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
+      ***** MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
             MOVE   "セット登録一覧"    TO  MKPRT-INFO
             CALL   "ORCSMKPRT"         USING
