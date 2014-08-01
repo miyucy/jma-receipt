@@ -1440,6 +1440,7 @@
                MOVE    SPA-TERMID      TO  I0SUB01-TERMID
                MOVE    "I"             TO  I0SUB01-KBN
                CALL    "ORCGI0SUB01"   USING   I0SUB01-LNK
+                                               SPA-AREA
       *
                MOVE    I0SUB01-SCRSPA-AREA
                                        TO  SPA-I0FREE
@@ -1451,6 +1452,7 @@
                MOVE    SPA-TERMID      TO  I0SUB01-TERMID
                MOVE    "I"             TO  I0SUB01-KBN
                CALL    "ORCGI0SUB01"   USING   I0SUB01-LNK
+                                               SPA-AREA
       *
                MOVE    I0SUB01-SCRSPA-AREA
                                        TO  SPA-I0FREE
@@ -1476,6 +1478,7 @@
                MOVE    SPA-TERMID      TO  I0SUB01-TERMID
                MOVE    "I"             TO  I0SUB01-KBN
                CALL    "ORCGI0SUB01"   USING   I0SUB01-LNK
+                                               SPA-AREA
       *
                MOVE    I0SUB01-SCRSPA-AREA
                                        TO  SPA-I0FREE
@@ -8395,6 +8398,7 @@
            MOVE    SPA-I0KYOUTU        TO  I0SUB01-COMMON
       *
            CALL    "ORCGI0SUB01"       USING   I0SUB01-LNK
+                                               SPA-AREA
       *
            MOVE    "I01"               TO  SPA-MOTOPG
            MOVE    "I01"               TO  SPA-MOTOPG2
@@ -9046,7 +9050,8 @@
            MOVE    SPA-I0FREE          TO  I0SUB01-SCRSPA-AREA
            MOVE    SPA-I0KYOUTU        TO  I0SUB01-COMMON
       *
-           CALL    "ORCGI0SUB01"       USING   I0SUB01-LNK
+           CALL    "ORCGI0SUB01"   USING   I0SUB01-LNK
+                                           SPA-AREA
       *
       *    入院会計照会へ遷移する
            MOVE    "I01"               TO  SPA-MOTOPG
@@ -9102,7 +9107,8 @@
                MOVE    SPA-I0FREE          TO  I0SUB01-SCRSPA-AREA
                MOVE    SPA-I0KYOUTU        TO  I0SUB01-COMMON
       *
-               CALL    "ORCGI0SUB01"       USING   I0SUB01-LNK
+               CALL    "ORCGI0SUB01"   USING   I0SUB01-LNK
+                                               SPA-AREA
       *
       *        出産一時金画面へ遷移する
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -9135,6 +9141,7 @@
            MOVE    SPA-I0KYOUTU        TO  I0SUB01-COMMON
       *
            CALL    "ORCGI0SUB01"       USING   I0SUB01-LNK
+                                               SPA-AREA
       *
       *    収納登録へ遷移する
            MOVE    "I01"               TO  SPA-MOTOPG

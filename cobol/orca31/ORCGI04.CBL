@@ -4686,6 +4686,7 @@
            MOVE    SPA-I0KYOUTU        TO  I0SUB01-COMMON
       *
            CALL    "ORCGI0SUB01"       USING   I0SUB01-LNK
+                                               SPA-AREA
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
            MOVE    "S02"               TO  MCP-WINDOW
