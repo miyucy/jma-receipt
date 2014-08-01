@@ -219,8 +219,10 @@
       *  04.07.05    NACL-門脇    14/04/08  長期の特記事項重複修正
       *  04.07.06    NACL-藤原    14/03/30  平成２６年４月改正対応
       *  04.07.07    NACL-藤原    14/04/30  治験が複数あるときの対応
-      *  04.04.08    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
+      *  04.07.08    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
       *                                     マル長のときも対象とする
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -298,33 +300,32 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE61//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE61PARA//.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE62//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE62PARA//.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE69//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE69PARA//.
       *
       *     入退院履歴情報ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE68//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE68PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE67//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE67PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
+      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE61                              PIC X(02).
@@ -484,9 +485,10 @@
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
@@ -520,13 +522,13 @@
        01  WRK-SEIHO-RECE61-AREA.
            02  WRK-SEIHO-RECE61-REC    OCCURS  50. 
            COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
-                                       BY         //WRK-SEIHO-RECE61-//.
+                                       BY         //WRK-SEH-61-//.
            02  WRK-SEIHO-RECE61-PRTFLG PIC 9(01)  OCCURS  50.
            02  WRK-SEIHO-RECE61-MAX    PIC 9(03).
       *
            02  WRK-KOH-RECE61-REC. 
            COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
-                                       BY         //WRK-KOH-RECE61-//.
+                                       BY         //WRK-KOH-61-//.
       *
       *    ワーク保険履歴
        01  TABLE-RECE69-AREA.
@@ -675,6 +677,8 @@
        01  ORCSDRCDGETAREA.
            COPY    "CPORCSDRCDGET.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -723,6 +727,33 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE680"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE690"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    "RECE670"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE68PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE69PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE67PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -905,38 +936,43 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ >       2
                    OR      FLG-END     =   1
       *
                IF      IDZ             =   1               
       *    レセプト処理
-                   MOVE    "RECE610"           TO  RECE61PARA-FILE-ID
-                   MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
-                   MOVE    "RECE680"           TO  RECE68PARA-FILE-ID
-                   MOVE    "RECE690"           TO  RECE69PARA-FILE-ID
-                   MOVE    "RECE670"           TO  RECE67PARA-FILE-ID
-                   MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    "RECE610"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(1)
+                   MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(2)
                ELSE
       *    請求書処理
-                   MOVE    "RECE61X"           TO  RECE61PARA-FILE-ID
-                   MOVE    "RECE62X"           TO  RECE62PARA-FILE-ID
-      *->          MOVE    WRK-CONS-TERMID     TO  RECE62PARA-TERMID
-                   IF      WRK-PARA-SHELLID    =   "RECEPTX"
-                       MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
-                   ELSE
-                       MOVE    WRK-CONS-TERMID     TO  RECE62PARA-TERMID
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    "RECE61X"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(1)
+                   MOVE    "RECE62X"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       MOVE    WRK-CONS-TERMID     TO
+                                                   RECEDAT1PARA-TERMID
                    END-IF
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAMES(2)
                END-IF
-               MOVE    WRK-PARA-TERMID     TO  RECE61PARA-TERMID
-               MOVE    WRK-PARA-TERMID     TO  RECE68PARA-TERMID
-               MOVE    WRK-PARA-TERMID     TO  RECE69PARA-TERMID
-               MOVE    WRK-PARA-TERMID     TO  RECE67PARA-TERMID
-               MOVE    WRK-PARA-HOSPNUM    TO  RECE61PARA-HOSPNUM
-                                               RECE62PARA-HOSPNUM
-                                               RECE68PARA-HOSPNUM
-                                               RECE69PARA-HOSPNUM
-                                               RECE67PARA-HOSPNUM
+               CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAMES (1)
+                                           TO  RECE61PARA
+               MOVE    SGETTEMP-FULLNAMES (2)
+                                           TO  RECE62PARA
       *
                PERFORM 200-HENSYU-SEC
       *        
@@ -1196,12 +1232,12 @@
                            UNTIL   IDXX    >       WRK-SEIHO-RECE61-MAX
       *              分割区分毎にまとめる
                      IF      RECE61-RECEIPT-KBN    =
-                                   WRK-SEIHO-RECE61-RECEIPT-KBN (IDXX)
+                                   WRK-SEH-61-RECEIPT-KBN (IDXX)
                        PERFORM VARYING IDYY    FROM    1   BY  1
                                UNTIL   IDYY    >       10
                                OR      RECE61-KOHID-O (IDYY)
                                                =       ZERO
-                           IF      WRK-SEIHO-RECE61-KOHID-O (IDXX 1)
+                           IF      WRK-SEH-61-KOHID-O (IDXX 1)
                                        =   RECE61-KOHID-O (IDYY)
                                MOVE    1           TO
                                            WRK-SEIHO-RECE61-PRTFLG(IDXX)
@@ -1211,14 +1247,14 @@
                                    IF      RECE61-HKNCOMBI-O (IDZZ)
                                                =   ZERO
                                        MOVE
-                                           WRK-SEIHO-RECE61-HKNCOMBI-TBL
+                                           WRK-SEH-61-HKNCOMBI-TBL
                                                               (IDXX 1)
                                                            TO
                                                RECE61-HKNCOMBI-TBL(IDZZ)
                                    END-IF
                                    IF      RECE61-HKNCOMBI-O (IDZZ)
                                                =
-                                             WRK-SEIHO-RECE61-HKNCOMBI-O
+                                             WRK-SEH-61-HKNCOMBI-O
                                                               (IDXX 1)
                                        MOVE    10          TO  IDZZ
                                    END-IF
@@ -3999,7 +4035,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
       *    主保険とのまとめがなく生保、中国残留邦人等、自立支援以外との
       *    公費単独の場合
            IF    ( WRK-SEIHO-FLG           =   ZERO )
-           AND   (  WRK-KOH-RECE61-HOSPNUM >   ZERO )
+           AND   (  WRK-KOH-61-HOSPNUM >   ZERO )
                MOVE    WRK-KOH-RECE61-REC  TO  RECE61-REC
       *        ファイル編集処理
                PERFORM 2101-RECE62-HENSYU-SEC
@@ -4090,7 +4126,8 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -4100,7 +4137,8 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
            STRING  "ORCR0620 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -4186,6 +4224,18 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
            .
        300-TERM-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    患者保険情報読込
       *****************************************************************

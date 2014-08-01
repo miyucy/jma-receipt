@@ -603,16 +603,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE           TO  RECEERR
            MOVE    SGETTEMP-FULLNAME
                                    TO  RECEERR
-      *??
-           EVALUATE    LINK-HKNKBN
-               WHEN    "0"
-                IF       LINK-NYUGAIKBN =   "1"
-                   MOVE    SPACE               TO  RECEERR
-                   MOVE    ERRFLPARA-OLD        TO  RECEERR
-                END-IF
-           END-EVALUATE
-           DISPLAY "RECERR=" RECEERR
-      *?? 
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -648,14 +638,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE 
            MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG4
-      *??
-           EVALUATE    LINK-HKNKBN
-               WHEN    "0"
-                 IF       LINK-NYUGAIKBN =   "1"
-                   MOVE    ERRFLPARA-OLD   TO  SHELLTBL-ARG4
-                 END-IF
-           END-EVALUATE
-      *??
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID

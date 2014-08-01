@@ -119,6 +119,7 @@
       *
       *  04.08.01    NACL-門脇    14/07/29  ３２文字以上の文字列修正
       *                                     （コンパイル時のワーニング修正）
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
       *
@@ -149,14 +150,16 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE62//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE62PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -459,6 +462,8 @@
       *    栄養管理経過措置入院料コード取得サブ
            COPY    "CPORCSEIYOUKKS.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -507,6 +512,12 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -917,19 +928,25 @@
       *
                IF      IDZ             =   1               
       *    レセプト処理
-                   MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
-                   MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAME
                ELSE
       *    請求書処理
-                   MOVE    "RECE62X"           TO  RECE62PARA-FILE-ID
-      *->          MOVE    WRK-CONS-TERMID     TO  RECE62PARA-TERMID
-                   IF      WRK-PARA-SHELLID    =   "RECEPTX"
-                       MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
-                   ELSE
-                       MOVE    WRK-CONS-TERMID     TO  RECE62PARA-TERMID
+                   INITIALIZE                      SGETTEMP-AREA
+                   MOVE    "RECE62X"           TO  RECEDAT1PARA-FILE-ID
+                   PERFORM 800-FILENM-SET-SEC
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       MOVE    WRK-CONS-TERMID     TO
+                                                   RECEDAT1PARA-TERMID
                    END-IF
+                   MOVE    RECEDAT1PARA-BASENAME
+                                               TO  SGETTEMP-BASENAME
                END-IF
-               MOVE    WRK-PARA-HOSPNUM    TO   RECE62PARA-HOSPNUM
+               CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME   TO  RECE62PARA
       *
                PERFORM 2001-HENSYU-SEC
                IF      WRK-PARA-SHELLID    =   "RECEPTX"
@@ -5207,6 +5224,17 @@
       *
            .
        5001-KUMIAWASE-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

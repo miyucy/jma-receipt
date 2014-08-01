@@ -209,7 +209,7 @@
                                                    PIC  X(01).
                    07  SPA-NAI-2008-HKNJANUM-PRTJYUN
                                                    PIC  X(01).
-                   07  SPA-NAI-2008-RECESYUBETU-PRTJYUN
+                   07  SPA-NAI-2008-SYUBETU-PRTJYUN
                                                    PIC  X(01).
                    07  SPA-NAI-2008-HKNJANUM       PIC  X(08).
                    07  SPA-NAI-2008-HKNJANUM-PRTKBN
@@ -328,24 +328,24 @@
                    07  SPA-NAI-R04-WIDGET          PIC X(08). 
                    07  SPA-NAI-R04-2005-ROUPRTNM   PIC X(16).
                    07  SPA-NAI-R04-2005-JBAIPRTNM  PIC X(16).
-                   07  SPA-NAI-R04-2005-KOUGAIPRTNM
+                   07  SPA-NAI-R04-2005-KOUGAIPRT
                                                    PIC X(16).
-                   07  SPA-NAI-R04-2005-ROUPRTNM-NEXT
+                   07  SPA-NAI-R04-2005-ROUPRTNM-NE
                                                    PIC X(16).
-                   07  SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                   07  SPA-NAI-R04-2005-JBAIPRTNM-NE
                                                    PIC X(16).
-                   07  SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                   07  SPA-NAI-R04-2005-KOUGAIPRT-NE
                                                    PIC X(16).
                    07  SPA-NAI-R04-2005-ROUPRTNM-N PIC X(16).
                    07  SPA-NAI-R04-2005-JBAIPRTNM-N
                                                    PIC X(16).
-                   07  SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                   07  SPA-NAI-R04-2005-KOUGAIPRT-N
                                                    PIC X(16).
-                   07  SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+                   07  SPA-NAI-R04-2005-ROUPRTNM-NE-N
                                                    PIC X(16).
-                   07  SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                   07  SPA-NAI-R04-2005-JBAIPRTNM-NE-N
                                                    PIC X(16).
-                   07  SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                   07  SPA-NAI-R04-2005-KOUGAIPRT-NE-N
                                                    PIC X(16).
                    07  SPA-NAI-R04-TBL.
                        09  SPA-NAI-R04-TBL-G       OCCURS  25.

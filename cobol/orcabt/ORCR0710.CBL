@@ -172,6 +172,8 @@
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *  04.07.02    NACL-藤原    14/03/31  リアルタイムプレビュー時の修正
       *                                     公費請求書分の処理をしない
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -276,40 +278,35 @@
            COPY    "CPCOMMONSHELL.INC".
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE62//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE62PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE62X//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE62XPARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE63//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE63PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE66//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE66PARA//.
       *
       *     入退院履歴情報ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE68//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE68PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE69//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE69PARA//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE67//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE67PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
       *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *       
       ***  COPY    "HCN06.INC"     REPLACING  //HCN06//
       ***  COPY    "HCN06V01.INC"  REPLACING  //HCN06V01//
@@ -1057,6 +1054,8 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1164,38 +1163,57 @@
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE62PARA-HOSPNUM
-      *
-           MOVE    "RECE62X"           TO  RECE62XPARA-FILE-ID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE62XPARA-HOSPNUM
-      *->  MOVE    WRK-CONS-TERMID     TO  RECE62XPARA-TERMID
-           IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               MOVE    WRK-PARA-TERMID TO  RECE62XPARA-TERMID
-           ELSE
-               MOVE    WRK-CONS-TERMID TO  RECE62XPARA-TERMID
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE62X"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-CONS-TERMID     TO  RECEDAT1PARA-TERMID
            END-IF
-      *
-           MOVE    "RECE631"           TO  RECE63PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE63PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE63PARA-HOSPNUM
-      *
-           MOVE    "RECE661"           TO  RECE66PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE66PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE66PARA-HOSPNUM
-      *
-           MOVE    "RECE680"           TO  RECE68PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE68PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE68PARA-HOSPNUM
-      *
-           MOVE    "RECE690"           TO  RECE69PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE69PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE69PARA-HOSPNUM
-      *
-           MOVE    "RECE670"           TO  RECE67PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE67PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE67PARA-HOSPNUM
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    "RECE631"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           MOVE    "RECE661"          TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    "RECE680"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           MOVE    "RECE690"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (7)
+           MOVE    "RECE670"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (8)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE62PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE62XPARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE63PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE66PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE68PARA
+           MOVE    SGETTEMP-FULLNAMES (7)
+                                       TO  RECE69PARA
+           MOVE    SGETTEMP-FULLNAMES (8)
+                                       TO  RECE67PARA
       *
            OPEN    INPUT               RECE62-FILE
            IF  STS-RECE62          NOT =   ZERO
@@ -7752,6 +7770,17 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

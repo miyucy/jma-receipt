@@ -235,7 +235,7 @@
                    07  SPA-NAI-200501-RECEIPT-MAKE-KBN
                                                    PIC X(01).
                    07  SPA-NAI-200505-HKNJANUM     PIC X(08).
-                   07  SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                   07  SPA-NAI-200501-INSPECT-INCLUDE
                                                    PIC X(01).
                    07  SPA-NAI-9101-COOPBASE       PIC X(01).
                    07  SPA-NAI-9102-EFOUT          PIC X(01).
@@ -831,7 +831,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                    TO  SPA-NAI-200501-INSPECT-ZERO-KBN
            MOVE    SYS-200501-INSPECT-INCLUDE-KBN
                                    TO
-                                   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                                   SPA-NAI-200501-INSPECT-INCLUDE
            MOVE    SYS-200501-RECEIPT-MAKE-KBN
                                    TO  SPA-NAI-200501-RECEIPT-MAKE-KBN
            EVALUATE    SPA-NAI-200501-RECEIPT-MAKE-KBN
@@ -1124,7 +1124,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                                        SPA-NAI-200501-INSPECT-ZERO-KBN
            MOVE    SPA-R01-INSPECT-INCLUDE-KBN
                                        TO
-                                   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                                   SPA-NAI-200501-INSPECT-INCLUDE
       *
            MOVE    SPA-R01-SYOKBN      TO  SPA-GMN-SYOKBN
            EVALUATE    SPA-GMN-SYOKBN
@@ -1135,7 +1135,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                      CONTINUE
                    ELSE
                      EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
-                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE
                        WHEN    "1"     ALSO     "0"
                            MOVE    "０爬给锐淡很肋年"
                                                TO  SPA-GMN-PRTKBN-LABEL
@@ -1488,7 +1488,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            ELSE
                IF    ( SPA-GMN-PRTKBN      =   "2" )
                    EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
-                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE
                        WHEN    "1"    ALSO    "0"
                            MOVE    "０爬给锐淡很肋年"
                                                TO  SPA-GMN-PRTKBN-LABEL
@@ -2641,18 +2641,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                            ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
                                                INTO        RECEERR
                    END-STRING
-      *??
-                   EVALUATE    SPA-R01-RECEKBN
-                       WHEN    "0"
-                       WHEN    "1"
-                       WHEN    "2"
-                       WHEN    "7"
-                           IF      SPA-GMN-NYUGAIKBN   =   "1"
-                             MOVE    ERRFLPARA-OLD        TO  RECEERR
-                           END-IF
-                   END-EVALUATE
-                   DISPLAY "RECERR=" RECEERR
-      *?? 
       *
                    OPEN    OUTPUT   RECEERR-FILE
                    CLOSE   RECEERR-FILE
@@ -2873,18 +2861,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    MOVE    SPA-R01-RECEKBN TO  SHELLTBL-ARG3
                    MOVE    ERRFLPARA-BASENAME
                                            TO  SHELLTBL-ARG4
-      *??
-                   EVALUATE    SPA-R01-RECEKBN
-                       WHEN    "0"
-                       WHEN    "1"
-                       WHEN    "2"
-                       WHEN    "7"
-                           IF      SPA-GMN-NYUGAIKBN   =   "1"
-                               MOVE    ERRFLPARA-OLD
-                                           TO  SHELLTBL-ARG4
-                           END-IF
-                   END-EVALUATE
-      *??
                    MOVE    WRK-CONS-JOB-JOBID
                                            TO  SHELLTBL-ARG5
                    MOVE    WRK-CONS-JOB-SHELLID
@@ -3098,7 +3074,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
                                                "2" OR  "7"    )
                    EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
-                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE
                        WHEN    "1" ALSO    "0"
                            MOVE    "3"             TO  SPA-R01-PRTKBN
                        WHEN    "0" ALSO    "1"
@@ -3108,7 +3084,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    END-EVALUATE
                ELSE
                    EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
-                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE
                        WHEN    ANY ALSO    "1"
                            MOVE    "4"             TO  SPA-R01-PRTKBN
                    END-EVALUATE
@@ -3133,7 +3109,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                        TO  SPA-R01-AUTODSPKBN
            MOVE    SPA-NAI-200501-INSPECT-ZERO-KBN
                                        TO  SPA-R01-INSPECT-ZERO-KBN
-           MOVE    SPA-NAI-200501-INSPECT-INCLUDE-KBN
+           MOVE    SPA-NAI-200501-INSPECT-INCLUDE
                                        TO  SPA-R01-INSPECT-INCLUDE-KBN
       *
            MOVE    SPA-R01KYOUTU       TO  SPA-WORK

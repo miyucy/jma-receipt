@@ -988,12 +988,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
                    PERFORM UNTIL   SPA-NAI-R01-2002-INDEX
                                            >=  SPA-NAI-R01-2002-MAX
                            OR      SPA-RIDCD   NOT =   SPACE
-                       PERFORM 4801-ZENKAI-HYOUJI-SYSKANRI-CHECK-SEC
+                       PERFORM 4801-ZENKAI-SYSKANRI-CHECK-SEC
                    END-PERFORM    
       *
                    IF      SPA-RIDCD       =   SPACE
       *                前回データ対象編集処理
-                       PERFORM 4802-ZENKAI-HYOUJI-SYSKANRI-HENSYU-SEC   
+                       PERFORM 4802-ZENKAI-SYSKANRI-HEN-SEC   
                    END-IF
                WHEN    OTHER
                    INITIALIZE                  SPA-RID1-AREA
@@ -1337,7 +1337,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            TO  QTORMAIN-AREA
                        MOVE    QTORMAIN-AREA
                                            TO
-                                       SPA-NAI-R01-BTPARA-QTORMAIN-AREA
+                                       SPA-NAI-R01-BTPARA-QTORMAIN-AR
                        MOVE    QTORM-SRYYM TO  WRK-SYMD (1:6)
                        MOVE    "01"        TO  WRK-SYMD (7:2) 
                        PERFORM 5002-HIZUKE-HEN-SEC
@@ -1376,7 +1376,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            TO  QTORSUB-AREA
                        MOVE    QTORSUB-AREA
                                            TO
-                                   SPA-NAI-R01-BTPARA-TQTORSUB-AREA(IDX)
+                                   SPA-NAI-R01-BTPARA-TQTORSUB-AR(IDX)
                        INITIALIZE                  ORCSPTIDAREA
 grpsys                 MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
                        MOVE    QTORS-PTID      TO  SPTID-PTID
@@ -1504,7 +1504,7 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    ZERO            TO  SPA-NAI-R01-SELNO
       *
       *    レセプト連携データ（主）
-           MOVE    SPA-NAI-R01-BTPARA-QTORMAIN-AREA
+           MOVE    SPA-NAI-R01-BTPARA-QTORMAIN-AR
                                            TO  QTORMAIN-AREA
       *
            MOVE    ZERO                TO  IDY
@@ -1512,7 +1512,7 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   SPA-NAI-R01-BTPARA-MAX
       *        レセプト連携データ（患者情報）
-               MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
+               MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AR (IDX)
                                            TO  QTORSUB-AREA
       *
       *        対象データか判定
@@ -1762,7 +1762,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
       *
                MOVE    QTORSUB-AREA
                                    TO
-                                   SPA-NAI-R01-BTPARA-TQTORSUB-AREA(IDX)
+                                   SPA-NAI-R01-BTPARA-TQTORSUB-AR(IDX)
       *
                MOVE    "tbl_syuka"     TO  MCP-TABLE
                MOVE    "key14"         TO  MCP-PATHNAME
@@ -1823,7 +1823,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                                        NOT =   1 )
                    CONTINUE
                ELSE
-                   MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
+                   MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AR (IDX)
                                            TO  QTORSUB-AREA
       *
                    ADD     1               TO  IDY
@@ -3288,7 +3288,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM UNTIL   SPA-NAI-R01-2002-INDEX
                                                >=  SPA-NAI-R01-2002-MAX
                        OR      SPA-RIDCD   NOT =   SPACE
-                   PERFORM 4801-ZENKAI-HYOUJI-SYSKANRI-CHECK-SEC
+                   PERFORM 4801-ZENKAI-SYSKANRI-CHECK-SEC
                END-PERFORM    
       *
                IF      SPA-RIDCD       NOT =   SPACE
@@ -3299,7 +3299,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****END-IF
       *
       *    前回データ対象編集処理
-           PERFORM 4802-ZENKAI-HYOUJI-SYSKANRI-HENSYU-SEC   
+           PERFORM 4802-ZENKAI-SYSKANRI-HEN-SEC   
           .
        480-ZENKAI-HYOUJI-EXT.
            EXIT.
@@ -3307,7 +3307,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    前回データ請求データ存在チェック処理
       *****************************************************************
-       4801-ZENKAI-HYOUJI-SYSKANRI-CHECK-SEC             SECTION.
+       4801-ZENKAI-SYSKANRI-CHECK-SEC             SECTION.
       *
            ADD     1                TO  SPA-NAI-R01-2002-INDEX
       *
@@ -3404,13 +3404,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPACE               TO  SPA-ERRCD
            .
-       4801-ZENKAI-HYOUJI-SYSKANRI-CHECK-EXT.
+       4801-ZENKAI-SYSKANRI-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
       *    前回データ対象編集処理
       *****************************************************************
-       4802-ZENKAI-HYOUJI-SYSKANRI-HENSYU-SEC             SECTION.
+       4802-ZENKAI-SYSKANRI-HEN-SEC             SECTION.
       *
            MOVE    ZERO                TO  SPA-GMN-R01-MAX
                                            SPA-GMN-R01-DELETE-MAX   
@@ -3494,7 +3494,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    3                   TO  SPA-GMN-R01-CUR 
       *
           .
-       4802-ZENKAI-HYOUJI-SYSKANRI-HYOUJI-EXT.
+       4802-ZENKAI-SYSKANRI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4308,7 +4308,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                                TO  BTPARA-INFO-PARA(9:)
                WHEN    "4"
                    MOVE    "04"                TO  BTPARA-INFO-KBN
-                   MOVE    SPA-NAI-R01-BTPARA-QTORMAIN-AREA
+                   MOVE    SPA-NAI-R01-BTPARA-QTORMAIN-AR
                                                TO  QTORMAIN-AREA
                    MOVE    QTORM-SRYYM         TO  BTPARA-INFO-PARA(1:)
                WHEN    "5"
@@ -4358,18 +4358,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
                                        INTO        RECEERR
            END-STRING
-      *??
-                   EVALUATE    SPA-R01-RECEKBN
-                       WHEN    "0"
-                       WHEN    "1"
-                       WHEN    "2"
-                       WHEN    "7"
-                 IF      SPA-R01-NYUGAIKBN   =   "1"
-                   MOVE    ERRFLPARA-OLD        TO  RECEERR
-                 END-IF
-               END-EVALUATE
-           DISPLAY "RECERR=" RECEERR
-      *?? 
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -4592,18 +4580,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPA-R01-RECEKBN TO  SHELLTBL-ARG3
            MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG4
-      *??
-                   EVALUATE    SPA-R01-RECEKBN
-                       WHEN    "0"
-                       WHEN    "1"
-                       WHEN    "2"
-                       WHEN    "7"
-                 IF      SPA-R01-NYUGAIKBN   =   "1"
-                   MOVE    ERRFLPARA-OLD   TO  SHELLTBL-ARG4
-                 END-IF
-               END-EVALUATE
-           DISPLAY "SHELLTBL-ARG4=" SHELLTBL-ARG4
-      *??
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID
@@ -4767,7 +4743,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-NAI-R01-BTPARA-MAX
                IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)   =   ZERO
-                   MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
+                   MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AR (IDX)
                                            TO  QTORSUB-AREA
       *
                    INITIALIZE                  SYUKA-REC

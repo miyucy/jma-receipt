@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,8 +49,7 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
       *
       *    ステータス領域
@@ -218,11 +218,11 @@
       *    入院履歴退避用ワーク
        01  WK-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"     REPLACING
-                                //PTNYUINRRK-// BY //WK-PTNYUINRRK-//.
+                                //PTNYUINRRK-// BY //WK-PTNYUIN-//.
       *    入院履歴退避用ワーク
        01  WWK-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"     REPLACING
-                                //PTNYUINRRK-// BY //WWK-PTNYUINRRK-//.
+                                //PTNYUINRRK-// BY //WWK-PTNYU-//.
       *    特定入院期間算定用ワーク
        01  WRK-SCNYUACCT-AREA.
            03  WRK-SCNYUACCT-KAGENCD-TBL         OCCURS  7.
@@ -351,6 +351,8 @@
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -411,6 +413,12 @@
                                        RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO   SPA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE

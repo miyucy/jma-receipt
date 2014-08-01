@@ -1306,7 +1306,7 @@ grpsys     COPY    "COMMON-SPA".
          02  TBL-KENSA-RECE04-REC  OCCURS  100.
       *
            COPY    "CPRCF0041.INC"  REPLACING  //RECE041//
-                                    BY         //WRK-KENSA-R4//.
+                                    BY         //TBL-KENSA-R4//.
       *
            03  TBL-KENSA-RECE05-REC        OCCURS  50.
                05  TBL-KENSA-RE05-KEY.
@@ -1321,7 +1321,7 @@ grpsys     COPY    "COMMON-SPA".
                    07  TBL-KENSA-RE05-HOJOKBN         PIC X(01).
                    07  TBL-KENSA-RE05-KOHID           PIC 9(10).
                    07  TBL-KENSA-RE05-TEKSTYMD        PIC X(08). 
-                   07  TBL-KENSA-RECE05-RECEIPT-KBN   PIC X(10).                    
+                   07  TBL-KENSA-RE05-RECEIPT-KBN     PIC X(10).                    
                    07  TBL-KENSA-RE05-ZAINUM          PIC 9(08).
                    07  TBL-KENSA-RE05-RENNUM          PIC 9(02).
               05  TBL-KENSA-RE05-SHORI-RENNUM         PIC 9(01).
@@ -1741,8 +1741,6 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    "ORCR0300"      TO  JOB-PGID
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
-           PERFORM 110-SYSKANRI-HENSYU-SEC
-      *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
            MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
@@ -1799,6 +1797,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  RECE055PARA
       *
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
+           PERFORM 110-SYSKANRI-HENSYU-SEC
       *
            OPEN    I-O                 RECE02-FILE  
            IF      STS-RECE02          =   "00"
@@ -6262,7 +6262,7 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
       *
            PERFORM VARYING IDZ3 FROM    1   BY  1
                    UNTIL   IDZ3 >   TBL-KENSA-RECE04-MAX
-               IF      WRK-KENSA-R4-ZAIKAISU (IDZ3)
+               IF      TBL-KENSA-R4-ZAIKAISU (IDZ3)
                                            >   0
       *            負担区分編集処理
                    MOVE    TBL-KENSA-RECE04-REC (IDZ3)

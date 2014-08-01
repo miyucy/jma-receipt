@@ -621,9 +621,9 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-JBAIPRTNM
                                    TO  SPA-NAI-R04-2005-JBAIPRTNM
            MOVE    SYS-2005-ROUPRTNM-NEXT
-                                   TO  SPA-NAI-R04-2005-ROUPRTNM-NEXT
+                                   TO  SPA-NAI-R04-2005-ROUPRTNM-NE
            MOVE    SYS-2005-JBAIPRTNM-NEXT
-                                   TO  SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                                   TO  SPA-NAI-R04-2005-JBAIPRTNM-NE
            IF      SYS-2005-ROUPRTNM-N =   SPACE
                MOVE   SYS-2005-ROUPRTNM    TO  SYS-2005-ROUPRTNM-N
            END-IF
@@ -645,20 +645,20 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-JBAIPRTNM-N
                                        TO  SPA-NAI-R04-2005-JBAIPRTNM-N
            MOVE    SYS-2005-ROUPRTNM-NEXT-N
-                                   TO  SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+                                   TO  SPA-NAI-R04-2005-ROUPRTNM-NE-N
            MOVE    SYS-2005-JBAIPRTNM-NEXT-N
-                                   TO  SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
-           MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-R04-2005-KOUGAIPRTNM
+                                   TO  SPA-NAI-R04-2005-JBAIPRTNM-NE-N
+           MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-R04-2005-KOUGAIPRT
            MOVE    SYS-2005-SYAPRTNM-NEXT
-                                   TO  SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                                   TO  SPA-NAI-R04-2005-KOUGAIPRT-NE
            IF      SYS-2005-SYAPRTNM-N  =   SPACE
                    MOVE   SYS-2005-SYAPRTNM
-                                   TO  SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                   TO  SPA-NAI-R04-2005-KOUGAIPRT-N
            END-IF
            IF      SYS-2005-SYAPRTNM-NEXT-N  =   SPACE
                    MOVE   SYS-2005-SYAPRTNM-NEXT
                                    TO
-                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                                   SPA-NAI-R04-2005-KOUGAIPRT-NE-N
            END-IF
       *
       *    ½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾³ä¤êÅö¤Æ¾ðÊóÊÔ½¸
@@ -700,61 +700,61 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
                                        TO  SPA-NAI-R04-2005-JBAIPRTNM-N
            END-IF                                              
       *    Ï«ºÒ°õºþÀè¡ÊÂ³»æ¡Ë
-           IF      SPA-NAI-R04-2005-ROUPRTNM-NEXT
+           IF      SPA-NAI-R04-2005-ROUPRTNM-NE
                                        =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO
-                                       SPA-NAI-R04-2005-ROUPRTNM-NEXT
+                                       SPA-NAI-R04-2005-ROUPRTNM-NE
            END-IF                                              
-           IF      SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+           IF      SPA-NAI-R04-2005-ROUPRTNM-NE-N
                                        =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO
-                                       SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+                                       SPA-NAI-R04-2005-ROUPRTNM-NE-N
            END-IF                                              
       *    ¼«ÇåÀÕ°õºþÀè¡ÊÂ³»æ¡Ë
-           IF      SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+           IF      SPA-NAI-R04-2005-JBAIPRTNM-NE
                                        =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO
-                                       SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                                       SPA-NAI-R04-2005-JBAIPRTNM-NE
            END-IF                                              
-           IF      SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+           IF      SPA-NAI-R04-2005-JBAIPRTNM-NE-N
                                        =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO
-                                       SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                                       SPA-NAI-R04-2005-JBAIPRTNM-NE-N
            END-IF
       *    ¸ø³²°õºþÀè
-           IF      SPA-NAI-R04-2005-KOUGAIPRTNM
+           IF      SPA-NAI-R04-2005-KOUGAIPRT
                                        =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO
-                                      SPA-NAI-R04-2005-KOUGAIPRTNM
+                                      SPA-NAI-R04-2005-KOUGAIPRT
            END-IF                                              
-           IF      SPA-NAI-R04-2005-KOUGAIPRTNM-N
+           IF      SPA-NAI-R04-2005-KOUGAIPRT-N
                                        =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO
-                                      SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                      SPA-NAI-R04-2005-KOUGAIPRT-N
            END-IF                                              
       *    ¸ø³²°õºþÀè¡ÊÂ³»æ¡Ë
-           IF      SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+           IF      SPA-NAI-R04-2005-KOUGAIPRT-NE
                                        =   SPACE
-               IF      SPA-NAI-R04-2005-KOUGAIPRTNM
+               IF      SPA-NAI-R04-2005-KOUGAIPRT
                                            =   SPACE
                    MOVE    SYS-1031-PRTNM (4)  TO
-                                       SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                                       SPA-NAI-R04-2005-KOUGAIPRT-NE
                ELSE                                              
-                   MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM
+                   MOVE    SPA-NAI-R04-2005-KOUGAIPRT
                                                TO
-                                       SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                                       SPA-NAI-R04-2005-KOUGAIPRT-NE
                END-IF
            END-IF                                              
-           IF      SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+           IF      SPA-NAI-R04-2005-KOUGAIPRT-NE-N
                                        =   SPACE
-               IF      SPA-NAI-R04-2005-KOUGAIPRTNM-N
+               IF      SPA-NAI-R04-2005-KOUGAIPRT-N
                                            =   SPACE
                    MOVE    SYS-1031-PRTNM (4)  TO
-                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                                   SPA-NAI-R04-2005-KOUGAIPRT-NE-N
                ELSE                                              
-                   MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                   MOVE    SPA-NAI-R04-2005-KOUGAIPRT-N
                                                TO
-                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                                   SPA-NAI-R04-2005-KOUGAIPRT-NE-N
                END-IF
            END-IF                                              
       *
@@ -1058,15 +1058,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                    SPA-NAI-R04-2005-JBAIPRTNM
                                    SPA-NAI-R04-2005-ROUPRTNM-N
                                    SPA-NAI-R04-2005-JBAIPRTNM-N
-                                   SPA-NAI-R04-2005-KOUGAIPRTNM
-                                   SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                   SPA-NAI-R04-2005-KOUGAIPRT
+                                   SPA-NAI-R04-2005-KOUGAIPRT-N
                MOVE    SPA-R01-PRTNM-NMEI  TO
-                                   SPA-NAI-R04-2005-ROUPRTNM-NEXT
-                                   SPA-NAI-R04-2005-JBAIPRTNM-NEXT
-                                   SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
-                                   SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
-                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
-                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                                   SPA-NAI-R04-2005-ROUPRTNM-NE
+                                   SPA-NAI-R04-2005-JBAIPRTNM-NE
+                                   SPA-NAI-R04-2005-ROUPRTNM-NE-N
+                                   SPA-NAI-R04-2005-JBAIPRTNM-NE-N
+                                   SPA-NAI-R04-2005-KOUGAIPRT-NE
+                                   SPA-NAI-R04-2005-KOUGAIPRT-NE-N
            END-IF
       *
            MOVE    SPACE           TO  SPA-RID1-FLG
@@ -2005,19 +2005,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    WHEN    "3"
                        MOVE    SPA-NAI-R04-2005-ROUPRTNM-N
                                                TO  SHELLTBL-ARG11
-                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NE-N
                                                TO  SHELLTBL-ARG24
                    WHEN    "4"
                    WHEN    "5"
                    WHEN    "8"
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM-N
                                                TO  SHELLTBL-ARG11
-                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NE-N
                                                TO  SHELLTBL-ARG24
                    WHEN    "6"
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT-N
                                                TO  SHELLTBL-ARG11
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT-NE-N
                                                TO  SHELLTBL-ARG24
                END-EVALUATE
            ELSE
@@ -2025,19 +2025,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    WHEN    "3"
                        MOVE    SPA-NAI-R04-2005-ROUPRTNM
                                                TO  SHELLTBL-ARG11
-                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NEXT
+                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NE
                                                TO  SHELLTBL-ARG24
                    WHEN    "4"
                    WHEN    "5"
                    WHEN    "8"
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM
                                                TO  SHELLTBL-ARG11
-                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NE
                                                TO  SHELLTBL-ARG24
                    WHEN    "6"
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT
                                                TO  SHELLTBL-ARG11
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT-NE
                                                TO  SHELLTBL-ARG24
                END-EVALUATE
            END-IF
@@ -2248,19 +2248,19 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    "3"
                        MOVE    SPA-NAI-R04-2005-ROUPRTNM-N
                                                TO  SPA-R01-PRTNMMEI
-                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NE-N
                                                TO  SPA-R01-PRTNM-NMEI
                    WHEN    "4"
                    WHEN    "5"
                    WHEN    "8"
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM-N
                                                TO  SPA-R01-PRTNMMEI
-                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NE-N
                                                TO  SPA-R01-PRTNM-NMEI
                    WHEN    "6"
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT-N
                                                TO  SPA-R01-PRTNMMEI
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT-NE-N
                                                TO  SPA-R01-PRTNM-NMEI
                END-EVALUATE
            ELSE
@@ -2268,19 +2268,19 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    "3"
                        MOVE    SPA-NAI-R04-2005-ROUPRTNM
                                                TO  SPA-R01-PRTNMMEI
-                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NEXT
+                       MOVE    SPA-NAI-R04-2005-ROUPRTNM-NE
                                                TO  SPA-R01-PRTNM-NMEI
                    WHEN    "4"
                    WHEN    "5"
                    WHEN    "8"
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM
                                                TO  SPA-R01-PRTNMMEI
-                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                       MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NE
                                                TO  SPA-R01-PRTNM-NMEI
                    WHEN    "6"
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT
                                                TO  SPA-R01-PRTNMMEI
-                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRT-NE
                                                TO  SPA-R01-PRTNM-NMEI
                END-EVALUATE
            END-IF

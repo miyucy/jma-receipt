@@ -39,20 +39,6 @@ fi
 #        $20 業務区分
 #            0:レセプト 1:会計照会 2:入院会計照会 3:診療行為
 #-------------------------------------------#
-##      エラーファイル削除
-	echo $#
-	echo "echo " $4
-        if  [ -e $4 ]; then
-            rm  $4
-        fi
-        if  [ -e /home/orca/recept9.log ]; then
-            rm  /home/orca/recept9.log
-        fi
-        
-
-        rm  -f /var/tmp/RECE6*
-        
-        rm  -f /tmp/${16}00RECE6*
 
         if [ ${2} -eq  '1' ]; then
             if [ ${18} -eq  '9' ]; then
@@ -92,75 +78,80 @@ fi
         echo "arg18 = [" ${18} "]" >>$LOG_FILE
         echo "arg19 = [" ${19} "]" >>$LOG_FILE
 
+##      エラーファイル削除
+	echo "errfile = [" ${MCP_TEMPDIR}/${4}  "]" >> $LOG_FILE
+        rm  -f ${MCP_TEMPDIR}/${4}
+        
+        rm  -f ${MCP_TEMPDIR}/${16}00RECE6*
+
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0600 -parameter $1$2$3$5$6,${18},${16},${4}    >> $LOG_FILE 2>&1
 	
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit  
         else 
             $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0610 -parameter $1$2$3$5$6,${18},${16},${4}    >> $LOG_FILE 2>&1
 	fi
 
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit  
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0620 -parameter $1$3$5$6,${16},${4}      >> $LOG_FILE 2>&1
         fi
 
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0630 -parameter $1$5$6,${16},${4}        >> $LOG_FILE 2>&1
         fi
  
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
 	   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0640 -parameter $1$5$6,${18},${16},${4}   >> $LOG_FILE 2>&1
         fi
  
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0650 -parameter $1$5$6,${16},${4}        >> $LOG_FILE 2>&1
         fi
-
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0655 -parameter $1$5$6,${16},${4}        >> $LOG_FILE 2>&1
         fi
 
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
     	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0660 -parameter $1$5$6,${16},${4}        >> $LOG_FILE 2>&1
         fi
  
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0670 -parameter $1$5$6,${16},${4}        >> $LOG_FILE 2>&1
         fi
 
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
            exit 
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0680 -parameter $1$5$6,${16},${4}        >> $LOG_FILE 2>&1
         fi
  
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0690 -parameter $1$5$6,${18},${16},${4}        >> $LOG_FILE 2>&1
         fi
  
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0700 -parameter $1$5$6,${16},${4}        >> $LOG_FILE 2>&1
         fi
  
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
            if  [ $7 != 'NOPG' ]; then
@@ -170,7 +161,7 @@ fi
         fi
 
  
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else 
             if  [ $8 -ge '200804' ]; then
@@ -184,7 +175,7 @@ fi
                     else
                         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0720 -parameter $9${10}$1$2$3$8$5$6,${16},${4}    >> $LOG_FILE 2>&1
                     fi
-                    if  [ -e $4 ]; then
+                    if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                         exit 
                     else
                         if  [ ${11} -eq '40' ] && [ $8 -lt '200610' ]; then
@@ -195,12 +186,12 @@ fi
 ##
 ##                  レセ個別作成 
                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0710 -parameter $9${10}$1$2$3$8$5$6,${16},${4}    >> $LOG_FILE 2>&1
-                    if  [ -e $4 ]; then
+                    if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                         exit 
                     else
                         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0720 -parameter $9${10}$1$2$3$8$5$6,${16},${4}    >> $LOG_FILE 2>&1
 	            fi
-                    if  [ -e $4 ]; then
+                    if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                         exit 
                     else
                         if  [ ${14} -eq '40' ]; then
@@ -212,13 +203,13 @@ fi
         fi
 
 ##
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else
             if  [ ${18} -eq '8' ];then
 ##            ＥＦファイル作成
               $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0250 -parameter $1,$3,${12},${13},$5,$6,${16},${4} >> $LOG_FILE 2>&1
-              if  [ -e $4 ]; then
+              if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                   exit 
               fi
               $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRDPC10 -parameter $1,$3,${12},${13},$5,$6,${16},${9},${10},${4} >> $LOG_FILE 2>&1
@@ -230,12 +221,12 @@ fi
                     echo "no1"
                 else
                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0250 -parameter $1,$3,${12},${13},$5,$6,${16},${4} >> $LOG_FILE 2>&1
-                    if  [ -e $4 ]; then
+                    if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                         exit 
                     fi
 
                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0260 -parameter $1,$3,${12},${13},$5,$6,${16},${4} >> $LOG_FILE 2>&1
-                    if  [ -e $4 ]; then
+                    if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                         exit 
                     fi
                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0350 -parameter $1,$3,${12},${13},$5,$6,${16},${9},${10},${18},${4} >> $LOG_FILE 2>&1
@@ -244,7 +235,7 @@ fi
             fi
         fi
         
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else
             if  [ ${2} -eq '1' ];then
@@ -255,12 +246,12 @@ fi
 	fi
 
         
-        if  [ -e $4 ]; then
+        if  [ -e ${MCP_TEMPDIR}/${4} ]; then
             exit 
         else
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$5$6,${16} >> $LOG_FILE 2>&1
         
-            rm  -f /tmp/${16}00RECE6*
+            rm  -f ${MCP_TEMPDIR}/${16}00RECE6*
 	fi
 	
         exit 

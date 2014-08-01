@@ -1026,6 +1026,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -1145,31 +1152,25 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
            MOVE    "RECE090"           TO  RECEDAT1PARA-FILE-ID
            PERFORM 800-FILENM-SET-SEC
            MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
+                                       TO  SGETTEMP-BASENAMES  (1)
            MOVE    "RECE110"           TO  RECEDAT1PARA-FILE-ID
            PERFORM 800-FILENM-SET-SEC
            MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
+                                       TO  SGETTEMP-BASENAMES  (2)
            MOVE    "RECE120"           TO  RECEDAT1PARA-FILE-ID
            PERFORM 800-FILENM-SET-SEC
            MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
+                                       TO  SGETTEMP-BASENAMES  (3)
            CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
            MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
                                        TO  RECE09PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
+           MOVE    SGETTEMP-FULLNAMES (2)
                                        TO  RECE11PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
+           MOVE    SGETTEMP-FULLNAMES (3)
                                        TO  RECE12PARA
-      *
-           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ >       2

@@ -72,6 +72,8 @@
       *                                       点数マスタのDPCKBNを設定
       *              NACL-伊藤    14/07/16  行為明細点数、出来高点数
       *                                       端数処理
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,16 +118,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE900-KEY
                                    FILE    STATUS  IS  STS-RECE900.
-      *    ＤＰＣ（Ｅ）
-           SELECT  DPCE-FILE       ASSIGN  DPCE
-                                   ORGANIZATION    IS  LINE
-                                                       SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DPCE.
-      *    ＤＰＣ（Ｆ）
-           SELECT  DPCF-FILE       ASSIGN  DPCF
-                                   ORGANIZATION    IS  LINE
-                                                       SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DPCF.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -162,14 +154,6 @@
        01  RECE900-REC. 
            COPY    "CPRCF900.INC".
       *
-      *    ＤＰＣ（Ｅ）
-       FD  DPCE-FILE.
-       01  DPCE-REC                PIC X(2500).
-      *
-      *    ＤＰＣ（Ｆ）
-       FD  DPCF-FILE.
-       01  DPCF-REC                PIC X(2500).
-      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
@@ -177,30 +161,32 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE62//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE64//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE65//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE69//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE62PARA//.
+      *
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE64PARA//.
+      *
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE65PARA//.
+      *
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE69PARA//.
+      *
       *     入退院履歴情報ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE68//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE68PARA//.
+      *
       *     順序番号情報ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE900//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE900PARA//.
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"
-                                   REPLACING  //ERRFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
+      *
+      *    ファイル名取得
+           COPY    "CPRECEDAT1.INC".
+           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -211,8 +197,6 @@
            03  STS-RECE68              PIC X(02).
            03  STS-RECE69              PIC X(02).
            03  STS-RECE900             PIC X(02).
-           03  STS-DPCE                PIC X(02).
-           03  STS-DPCF                PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
        01  FLG-AREA.
@@ -791,10 +775,6 @@
            COPY    "CPRCF065.INC"  REPLACING  //RECE65//
                                    BY         //WRK-RECE65//.
       *
-       01  WRK-TAIHI-RECE641-REC.
-           COPY    "CPRCF0641.INC"  REPLACING //RECE641//
-                                   BY         //WRK-TAIHI-RECE641//.
-      *
       *    画像診断用退避エリア
        01  WRK-721-RECE65-REC.
            COPY    "CPRCF065.INC"  REPLACING  //RECE65//
@@ -807,185 +787,15 @@
                                    BY         //WRK-700-RECE65//.
        01  WRK-SRYKBN70-RECE65-REC.
            COPY    "CPRCF065.INC"  REPLACING  //RECE65//
-                                   BY         //WRK-SRYKBN70-RECE65//.
+                                   BY         //WRK-SRY70-RE65//.
       *    生体検査・加算用退避エリア
        01  WRK-KASAN-RECE65-REC.
            COPY    "CPRCF065.INC"  REPLACING  //RECE65//
-                                   BY         //WRK-KASAN-RECE65//.
+                                   BY         //WRK-KASAN-RE65//.
       *    生体検査・逓減用退避エリア
        01  WRK-TEIGEN-RECE65-REC.
            COPY    "CPRCF065.INC"  REPLACING  //RECE65//
-                                   BY         //WRK-TEIGEN-RECE65//.
-      *
-      *    検体検査用退避エリア
-       01  TBL-KENTAI-RECE64-AREA.
-         02  TBL-KENTAI-RECE64-REC  OCCURS  100.
-      *
-           COPY    "CPRCF0641.INC"  REPLACING  //RECE641//
-                                    BY          //TBL-KENTAI-RECE64//.
-      *
-           03  TBL-KENTAI-RECE65-REC        OCCURS  50.
-               05  TBL-KENTAI-RECE65-SRYACTINF.
-      *            診療コード
-                   07  TBL-KENTAI-RECE65-SRYCD           PIC  X(09).
-      *            診療種別区分
-                   07  TBL-KENTAI-RECE65-SRYSYUKBN       PIC  X(03).
-      *            数量
-                   07  TBL-KENTAI-RECE65-SRYSURYO      PIC  9(05)V9(05).
-      *            回数
-                   07  TBL-KENTAI-RECE65-SRYKAISU        PIC  9(03).
-      *            単位コード
-                   07  TBL-KENTAI-RECE65-TANICD          PIC  9(03).
-      *            単位名称有効桁数
-                   07  TBL-KENTAI-RECE65-TANIMOJISU      PIC  9(01).
-      *            単位名称
-                   07  TBL-KENTAI-RECE65-TANINAME        PIC  X(24).
-      *            点数識別区分
-                   07  TBL-KENTAI-RECE65-TENSIKIBETU     PIC  9(01).
-      *            点数
-                   07  TBL-KENTAI-RECE65-TEN            PIC 9(09)V9(02).
-      *            明細請求フラグ
-                   07  TBL-KENTAI-RECE65-MEISKYFLG       PIC  X(01).
-      *            自動算定区分
-                   07  TBL-KENTAI-RECE65-AUTOKBN         PIC  X(01).
-      *            名称入力番号
-                   07  TBL-KENTAI-RECE65-INPUTNUM        PIC  9(03).
-      *            点数欄集計先識別
-                   07  TBL-KENTAI-RECE65-TENTTLKBN       PIC  9(03).
-      *            データ区分
-                   07  TBL-KENTAI-RECE65-DATAKBN         PIC  9(01).
-      *            包括対象検査
-                   07  TBL-KENTAI-RECE65-HOUKNSKBN       PIC  9(02).
-      *            検査等実施判断
-                   07  TBL-KENTAI-RECE65-KNSJISKBN       PIC  9(01).
-      *            検査等実施判断グループ
-                   07  TBL-KENTAI-RECE65-KNSJISGRPKBN    PIC  9(02).
-      *            各種番号等
-                   07  TBL-KENTAI-RECE65-CDKBNINF.
-                       09  TBL-KENTAI-RECE65-CDKBN-KBN   PIC  X(01).
-                       09  TBL-KENTAI-RECE65-CDKBN-SYO   PIC  9(01).
-                       09  TBL-KENTAI-RECE65-CDKBN-BU    PIC  9(02).
-                       09  TBL-KENTAI-RECE65-CDKBN-KBNNUM     PIC 9(03).
-                       09  TBL-KENTAI-RECE65-CDKBN-KBNNUM-EDA PIC 9(02).
-                       09  TBL-KENTAI-RECE65-CDKBN-KOUBAN     PIC 9(02).
-                       09  TBL-KENTAI-RECE65-KOUHYOJYUNNUM    PIC 9(09).
-      *            告示等識別区分１
-                   07  TBL-KENTAI-RECE65-KOKUJISKBKBN1   PIC  9(01).
-      *            告示等識別区分２
-                   07  TBL-KENTAI-RECE65-KOKUJISKBKBN2   PIC  9(01).
-      *            通則加算対象外区分
-                   07  TBL-KENTAI-RECE65-TUSOKUGAIKBN    PIC  9(01).
-      *            時間外加算区分
-                   07  TBL-KENTAI-RECE65-TIMEKSNKBN      PIC  9(01).
-      *            きざみ値計算識別
-                   07  TBL-KENTAI-RECE65-KZMCOMPSIKIBETU PIC  9(01).
-      *            注加算コード
-                   07  TBL-KENTAI-RECE65-CHUKSNINF.
-      *                コード
-                       09  TBL-KENTAI-RECE65-CHUKSNCD    PIC  X(04).
-      *                通番
-                       09  TBL-KENTAI-RECE65-CHUKSNTUBAN PIC  X(01).
-      *            検体検査コメント
-                   07  TBL-KENTAI-RECE65-KENTAICOMMENT   PIC  9(01).
-      *            入力コメント
-                   07  TBL-KENTAI-RECE65-INPUTCOMENT     PIC  X(80). 
-      *        名称情報
-               05  TBL-KENTAI-RECE65-NAMEINF.
-      *            漢字有効桁数
-                   07  TBL-KENTAI-RECE65-YUKOKETA        PIC  9(03).
-      *            漢字名称
-                   07  TBL-KENTAI-RECE65-NAME            PIC  X(200).
-      *
-           03  TBL-KENTAI-SRYCD-MAX
-                                   PIC 9(02).
-      *
-         02  TBL-KENTAI-RECE64-MAX PIC 9(03).
-         02  TBL-KENTAI-RECE65-MAX PIC 9(03).
-      *
-      *    検査（判断料）用退避エリア
-       01  TBL-KENSA-RECE64-AREA.
-         02  TBL-KENSA-RECE64-REC  OCCURS  100.
-      *
-           COPY    "CPRCF0641.INC"  REPLACING  //RECE641//
-                                    BY          //TBL-KENSA-RECE64//.
-      *
-           03  TBL-KENSA-RECE65-REC        OCCURS  50.
-               05  TBL-KENSA-RECE65-SRYACTINF.
-      *            診療コード
-                   07  TBL-KENSA-RECE65-SRYCD           PIC  X(09).
-      *            診療種別区分
-                   07  TBL-KENSA-RECE65-SRYSYUKBN       PIC  X(03).
-      *            数量
-                   07  TBL-KENSA-RECE65-SRYSURYO      PIC  9(05)V9(05).
-      *            回数
-                   07  TBL-KENSA-RECE65-SRYKAISU        PIC  9(03).
-      *            単位コード
-                   07  TBL-KENSA-RECE65-TANICD          PIC  9(03).
-      *            単位名称有効桁数
-                   07  TBL-KENSA-RECE65-TANIMOJISU      PIC  9(01).
-      *            単位名称
-                   07  TBL-KENSA-RECE65-TANINAME        PIC  X(24).
-      *            点数識別区分
-                   07  TBL-KENSA-RECE65-TENSIKIBETU     PIC  9(01).
-      *            点数
-                   07  TBL-KENSA-RECE65-TEN            PIC 9(09)V9(02).
-      *            明細請求フラグ
-                   07  TBL-KENSA-RECE65-MEISKYFLG       PIC  X(01).
-      *            自動算定区分
-                   07  TBL-KENSA-RECE65-AUTOKBN         PIC  X(01).
-      *            名称入力番号
-                   07  TBL-KENSA-RECE65-INPUTNUM        PIC  9(03).
-      *            点数欄集計先識別
-                   07  TBL-KENSA-RECE65-TENTTLKBN       PIC  9(03).
-      *            データ区分
-                   07  TBL-KENSA-RECE65-DATAKBN         PIC  9(01).
-      *            包括対象検査
-                   07  TBL-KENSA-RECE65-HOUKNSKBN       PIC  9(02).
-      *            検査等実施判断
-                   07  TBL-KENSA-RECE65-KNSJISKBN       PIC  9(01).
-      *            検査等実施判断グループ
-                   07  TBL-KENSA-RECE65-KNSJISGRPKBN    PIC  9(02).
-      *            各種番号等
-                   07  TBL-KENSA-RECE65-CDKBNINF.
-                       09  TBL-KENSA-RECE65-CDKBN-KBN   PIC  X(01).
-                       09  TBL-KENSA-RECE65-CDKBN-SYO   PIC  9(01).
-                       09  TBL-KENSA-RECE65-CDKBN-BU    PIC  9(02).
-                       09  TBL-KENSA-RECE65-CDKBN-KBNNUM     PIC 9(03).
-                       09  TBL-KENSA-RECE65-CDKBN-KBNNUM-EDA PIC 9(02).
-                       09  TBL-KENSA-RECE65-CDKBN-KOUBAN     PIC 9(02).
-                       09  TBL-KENSA-RECE65-KOUHYOJYUNNUM    PIC 9(09).
-      *            告示等識別区分１
-                   07  TBL-KENSA-RECE65-KOKUJISKBKBN1   PIC  9(01).
-      *            告示等識別区分２
-                   07  TBL-KENSA-RECE65-KOKUJISKBKBN2   PIC  9(01).
-      *            通則加算対象外区分
-                   07  TBL-KENSA-RECE65-TUSOKUGAIKBN    PIC  9(01).
-      *            時間外加算区分
-                   07  TBL-KENSA-RECE65-TIMEKSNKBN      PIC  9(01).
-      *            きざみ値計算識別
-                   07  TBL-KENSA-RECE65-KZMCOMPSIKIBETU PIC  9(01).
-      *            注加算コード
-                   07  TBL-KENSA-RECE65-CHUKSNINF.
-      *                コード
-                       09  TBL-KENSA-RECE65-CHUKSNCD    PIC  X(04).
-      *                通番
-                       09  TBL-KENSA-RECE65-CHUKSNTUBAN PIC  X(01).
-      *            検体検査コメント
-                   07  TBL-KENSA-RECE65-KENTAICOMMENT   PIC  9(01).
-      *            入力コメント
-                   07  TBL-KENSA-RECE65-INPUTCOMENT     PIC  X(80). 
-      *        名称情報
-               05  TBL-KENSA-RECE65-NAMEINF.
-      *            漢字有効桁数
-                   07  TBL-KENSA-RECE65-YUKOKETA        PIC  9(03).
-      *            漢字名称
-                   07  TBL-KENSA-RECE65-NAME            PIC  X(200).
-      *
-           03  TBL-KENSA-SRYCD-MAX
-                                  PIC 9(02).
-      *
-         02  TBL-KENSA-RECE64-MAX PIC 9(03).
-         02  TBL-KENSA-RECE65-MAX PIC 9(03).
+                                   BY         //WRK-TEIGEN-RE5//.
       *
        01  WRK-CONS-AREA.
       *    日計表レコード記載の条件点数
@@ -1278,9 +1088,10 @@
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
@@ -1358,7 +1169,9 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
+       *
+           COPY    "CPORCSGETTEMP.INC".
+     *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -1412,6 +1225,51 @@
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            PERFORM 100-DBOPEN-SEC
       *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    "RECE649"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    "RECE651"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           MOVE    "RECE690"          TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (5)
+           MOVE    "RECE680"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
+           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (7)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECE62PARA
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  RECE64PARA
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  RECE65PARA
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                       TO  RECE69PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE68PARA
+           MOVE    SGETTEMP-FULLNAMES (7)
+                                       TO  RECE900PARA
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1423,25 +1281,6 @@
            PERFORM 110-SYSKANRI-HENSYU-SEC
       *
            PERFORM 110-PTNUM-KETA-SEC
-      *
-           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE62PARA-HOSPNUM
-           MOVE    "RECE649"           TO  RECE64PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE64PARA-HOSPNUM
-           MOVE    "RECE651"           TO  RECE65PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE65PARA-HOSPNUM
-           MOVE    "RECE690"           TO  RECE69PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE69PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE69PARA-HOSPNUM
-           MOVE    "RECE680"           TO  RECE68PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE68PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE68PARA-HOSPNUM
-           MOVE    "RECE900"           TO  RECE900PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE900PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE900PARA-HOSPNUM
       *
            OPEN    I-O                 RECE62-FILE
            IF      STS-RECE62          =   "00"
@@ -1481,8 +1320,6 @@
       *
            OPEN    INPUT               RECE69-FILE
            OPEN    INPUT               RECE68-FILE
-           OPEN    OUTPUT              DPCE-FILE
-           OPEN    OUTPUT              DPCF-FILE
       *
            OPEN    OUTPUT              RECE900-FILE
            CLOSE                       RECE900-FILE
@@ -1799,8 +1636,6 @@
                                                    FLG-TOKUTEINYUIN
                    MOVE    SPACE               TO  WRK-COM-SRYKBN
                                                    WRK-COM-FTNKBN
-                   INITIALIZE                 TBL-KENTAI-RECE64-AREA
-                                              TBL-KENSA-RECE64-AREA
       *
                    MOVE    ZERO               TO  WRK-RENNUM-E
                                                   WRK-RENNUM-F 
@@ -2083,7 +1918,7 @@
        2007-HENSYU-SEC              SECTION.
       *
       *    入退院履歴編集処理
-           PERFORM 20079-HC101-NYUTAI-RIREKI-HEN-SEC
+           PERFORM 20079-NYUTAI-RIREKI-HEN-SEC
       *
       *    摘要情報
            INITIALIZE                      RECE641-REC
@@ -2149,7 +1984,7 @@
       *****************************************************************
       *    入退院履歴編集処理
       *****************************************************************
-       20079-HC101-NYUTAI-RIREKI-HEN-SEC      SECTION.
+       20079-NYUTAI-RIREKI-HEN-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-NYUTAI-RIREKI
            MOVE    ZERO                TO  WRK-NYUINCHUKBN
@@ -2208,7 +2043,7 @@
                         ADD  1                TO  IDX
                         IF   IDX              >   10
                              DISPLAY "テーブルオーバー WRK-NYUIN-RIREKI"
-                             GO  TO   20079-HC101-NYUTAI-RIREKI-HEN-EXT
+                             GO  TO   20079-NYUTAI-RIREKI-HEN-EXT
                         END-IF
                         MOVE RECE68-NYUINYMD  TO
                                         WRK-NYUIN-RIREKI-NYUINYMD (IDX)
@@ -2227,7 +2062,7 @@
                PERFORM 900-RECE68-NEXT-SEC
            END-PERFORM
            .
-       20079-HC101-NYUTAI-RIREKI-HEN-EXT.
+       20079-NYUTAI-RIREKI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4791,8 +4626,6 @@
                    RECE65-FILE
                    RECE69-FILE
                    RECE68-FILE
-                   DPCE-FILE
-                   DPCF-FILE
                    RECE900-FILE
       *
       *    ステップ管理終了処理
@@ -4894,7 +4727,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -4904,7 +4738,8 @@
            STRING  "ORCRDPC10"             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -5153,6 +4988,17 @@
            INITIALIZE                      WRK-HENSYU-AREA
            .
        5005-NUM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一時ファイル名取得処理
+      *****************************************************************
+       800-FILENM-SET-SEC        SECTION.
+      *
+           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
+           .
+       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

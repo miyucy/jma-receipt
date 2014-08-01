@@ -173,10 +173,10 @@
       *直接請求する健康保険組合（社保）
            05  SPA-R01-RECE07-HKNJANUM-SYAHO-T.
       *直接請求する健康保険組合設定の有無（８：有　９：無）
-               07  SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+               07  SPA-R01-RECE07-HKNJANUM-SRT
                                            PIC  X(01).
       *直接請求する健康保険組合設定の有無
-               07  SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+               07  SPA-R01-RECE07-HKNJANUM-MAX
                                            PIC  9(02).
       *直接請求する健康保険組合の保険者番号
                07  SPA-R01-RECE07-HKNJANUM-SYAHO

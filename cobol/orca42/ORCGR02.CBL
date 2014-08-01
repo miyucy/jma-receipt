@@ -791,7 +791,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  SYS-2008-HOSPNUM
                                        SPA-NAI-2008-HKNJANUM-PRTJYUN
                        MOVE    SYS-2008-RECESYUBETU-PRTJYUN
                                                TO
-                                       SPA-NAI-2008-RECESYUBETU-PRTJYUN
+                                       SPA-NAI-2008-SYUBETU-PRTJYUN
                        MOVE    SYS-2008-HKNJANUM-PRTKBN
                                                TO
                                        SPA-NAI-2008-HKNJANUM-PRTKBN
@@ -1937,12 +1937,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      WRK-TEISYUTUSAKI    =   "1"
                PERFORM VARYING IDYY    FROM    1   BY  1
                        UNTIL   IDYY    >
-                                       SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                                       SPA-R01-RECE07-HKNJANUM-MAX
                    IF      IDW             =   1
                        MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
                                                    TO
                                            SPA-NAI-THKNJANUM-SYAHO (IDW)
-                       IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                       IF      SPA-R01-RECE07-HKNJANUM-SRT
                                                    =   "8"
                            MOVE    "直接請求する保険者以外"
                                                        TO
@@ -2119,7 +2119,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    1               TO  IDW
                    MOVE    2               TO  IDX
                WHEN    "2"                 ALSO    "06"
-                   IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                   IF      SPA-R01-RECE07-HKNJANUM-SRT
                                                =   "9"
                        MOVE    1                   TO  IDW
                        IF      SPA-R01-NYUGAIKBN   =   "1"
@@ -2905,12 +2905,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            PERFORM VARYING IDYY    FROM    1   BY  1
-                   UNTIL   IDYY    >   SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                   UNTIL   IDYY    >   SPA-R01-RECE07-HKNJANUM-MAX
                IF      IDW             =   1
                    MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
                                                TO
                                            SPA-NAI-THKNJANUM-SYAHO (IDW)
-                   IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                   IF      SPA-R01-RECE07-HKNJANUM-SRT
                                                =   "8"
                        MOVE    "直接請求する保険者以外"
                                                    TO
@@ -5536,7 +5536,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                IF      SPA-GMN-PRTJYUN =   "03"    OR  "04"
                    MOVE    1               TO  WRK-PAGE-MAX
                ELSE
-                   MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                   MOVE    SPA-R01-RECE07-HKNJANUM-MAX
                                            TO  WRK-PAGE-MAX
                END-IF
                PERFORM VARYING IDW     FROM    1   BY  1
@@ -5843,18 +5843,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    編綴順指定
            IF      SPA-GMN-PRTJYUN1    =   "06"
-               COMPUTE IDWW    =   SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+               COMPUTE IDWW    =   SPA-R01-RECE07-HKNJANUM-MAX
                                +   1
                MOVE    "2"              TO  WRK-TEISYUTUSAKI
                IF      SPA-NAI-2008-HYOUJI =   1
                    PERFORM 4503-RECEPRT-INPUT-HENSYU-SEC
                ELSE
-                   PERFORM 4503-RECEPRT-INPUT-SYOSAI-HENSYU-SEC
+                   PERFORM 4503-RECEPRT-INPUT-SYOSAI-SEC
                END-IF
            ELSE
       *        国保対象頁設定
                IF    ( SPA-GMN-PRTJYUN     =   "03"   OR  "04" )
-               OR    ( SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+               OR    ( SPA-R01-RECE07-HKNJANUM-SRT
                                            =   "9"             )
                    IF    ( SPA-GMN-PRTJYUN1    =   "01"   OR  "02"   OR
                                                    "09"   OR  "10"     )
@@ -5865,7 +5865,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        MOVE    1               TO  IDW
                    END-IF
                ELSE
-                   COMPUTE IDW =   SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                   COMPUTE IDW =   SPA-R01-RECE07-HKNJANUM-MAX
                                +   1
                END-IF
       *
@@ -5909,7 +5909,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****    IF      SPA-NAI-2008-HYOUJI =   1
       *****        PERFORM 4503-RECEPRT-INPUT-HENSYU-SEC
       *****    ELSE
-      *****        PERFORM 4503-RECEPRT-INPUT-SYOSAI-HENSYU-SEC
+      *****        PERFORM 4503-RECEPRT-INPUT-SYOSAI-SEC
       *****    END-IF
       *****ELSE
       *        広域連合対象頁設定
@@ -6034,7 +6034,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            IF    ( WRK-TEISYUTUSAKI    =   "1" )
-           AND   ( SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+           AND   ( SPA-R01-RECE07-HKNJANUM-SRT
                                        =   "8" ) 
                MOVE    SPA-NAI-THKNJANUM-SYAHO (IDW)
                                            TO  WRK-RECE09-HKNJANUM
@@ -6145,7 +6145,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        MOVE    WRK-SRT-LAST    TO  WRK-RECE09-SRT-LAST
                        MOVE    "%"             TO  WRK-RECE09-KOUGAKU
                                                    WRK-RECE09-CHOUKI
-                       IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                       IF      SPA-R01-RECE07-HKNJANUM-SRT
                                                =   "8" 
                            MOVE    SPA-NAI-THKNJANUM-SYAHO (IDW)
                                                TO  WRK-RECE09-HKNJANUM
@@ -6417,7 +6417,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    編綴詳細設定出力処理（国保のみ）
       *****************************************************************
-       4503-RECEPRT-INPUT-SYOSAI-HENSYU-SEC       SECTION.
+       4503-RECEPRT-INPUT-SYOSAI-SEC       SECTION.
       *
       *    県内・県外の括りで出力
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -6509,9 +6509,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 45031-RECEPRT-HENSYU-SEC
            END-PERFORM
            .
-       4503-RECEPRT-INPUT-SYOUSAI-HENSYU-EXT.
+       4503-RECEPRT-INPUT-SYOSAI-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    編綴編集処理
@@ -6747,7 +6746,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO  R05-HKN-PRTJYUN
            END-EVALUATE
       *
-           EVALUATE    SPA-NAI-2008-RECESYUBETU-PRTJYUN
+           EVALUATE    SPA-NAI-2008-SYUBETU-PRTJYUN
                WHEN    "1"
                    MOVE    "国保一般・老人保健・退職国保"
                                            TO  R05-REC-PRTJYUN

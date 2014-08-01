@@ -135,12 +135,12 @@
                    07  SPA-NAI-R01-PRTKBN-FLG      PIC 9(01).
       *                     
                    07  SPA-NAI-R01-BTPARA-AREA.
-                       09  SPA-NAI-R01-BTPARA-QTORMAIN-AREA
+                       09  SPA-NAI-R01-BTPARA-QTORMAIN-AR
                                                    PIC X(100).
                        09  SPA-NAI-R01-BTPARA-SRYYMH
                                                    PIC X(07).
                        09  SPA-NAI-R01-BTPARA-TBL-G    OCCURS   500.
-                           11  SPA-NAI-R01-BTPARA-TQTORSUB-AREA
+                           11  SPA-NAI-R01-BTPARA-TQTORSUB-AR
                                                    PIC X(100).
                            11  SPA-NAI-R01-BTPARA-TPTNUM
                                                    PIC X(20).
