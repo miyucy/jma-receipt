@@ -277,7 +277,7 @@
                                            TO  MKPRT-INFO
                MOVE   IN01-PRTID           TO  MKPRT-DIA
                MOVE   SPACE                TO  MKPRT-DEF
-               MOVE   HC03TEMP             TO  MKPRT-DAT
+               MOVE   ASGN0002             TO  MKPRT-DAT
                MOVE   IN01-PRTNM           TO  MKPRT-PRTNM
                IF  (  IN01-SITEKBN     =   "1" )
                    CALL   "ORCSMKPRT1"        USING

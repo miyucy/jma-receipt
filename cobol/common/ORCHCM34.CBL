@@ -60,7 +60,7 @@
                                    FILE    STATUS  IS  STS-HCM34F02.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
@@ -105,18 +105,17 @@
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *
       *    処理対象患者ファイル
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01PARA//
                                            BY          //HCM34F01//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    処理対象患者ファイル
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01PARA//
                                            BY          //HCM34F02//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCM341V01.INC"
                    REPLACING   //HCM341V01//  BY //HCM341//.
@@ -963,6 +962,9 @@
       *    病名編集
            COPY    "CPORCSMKBYOMEI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -1047,13 +1049,24 @@
       *
            MOVE    ORCHCM34-PRTAREA    TO  ORCSPRTAREA
       *
+           INITIALIZE                      HCM34F01
            MOVE    SPA-HOSPNUM         TO  HCM34F01-HOSPNUM
            MOVE    "HCM3401"           TO  HCM34F01-FILE-ID
            MOVE     SPRT-TERMID        TO  HCM34F01-TERMID
       *
+           INITIALIZE                      HCM34F02
            MOVE    SPA-HOSPNUM         TO  HCM34F02-HOSPNUM
            MOVE    "HCM3402"           TO  HCM34F02-FILE-ID
            MOVE    SPRT-TERMID         TO  HCM34F02-TERMID
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HCM34F01-BASENAME   TO  SGETTEMP-BASENAMES (1)
+           MOVE    HCM34F02-BASENAME   TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  HCM34F01-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  HCM34F02-FULLNAME
       *
            INITIALIZE                  HCM341
            INITIALIZE                  TCOMBI-AREA
@@ -6791,12 +6804,12 @@
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
-           COMPUTE HC01PARA-CNT    =   HC01PARA-CNT    *   10
-           IF    ( ORCHCM34-KBN        =   "1" )
-               COMPUTE HC01PARA-CNT    =   HC01PARA-CNT    +   1
-           ELSE
-               COMPUTE HC01PARA-CNT    =   HC01PARA-CNT    +   2
-           END-IF
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
       *    印刷用データ出力
            MOVE    HCM341             TO  PRT-REC
@@ -6810,7 +6823,7 @@
            MOVE   SPACE               TO  MKPRT-DEF
            MOVE   HC01PARA            TO  MKPRT-DAT
       *    ■暫定
-           MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+           MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
                                       SPA-AREA
@@ -6832,7 +6845,13 @@
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
-           OPEN    OUTPUT              PRT-FILE
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
+           OPEN    OUTPUT                 PRT-FILE
       *    印刷用データ出力
            MOVE    HCM342             TO  PRT-REC
            WRITE   PRT-REC
@@ -6845,7 +6864,7 @@
            MOVE   SPACE               TO  MKPRT-DEF
            MOVE   HC01PARA            TO  MKPRT-DAT
       *    ■暫定
-           MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+           MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
                                       SPA-AREA

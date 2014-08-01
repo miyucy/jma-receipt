@@ -139,6 +139,9 @@
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
       *
@@ -205,10 +208,17 @@
       *    患者番号読み込み
            PERFORM 900-PTNUM-KEY-SEL-SEC
       *
+           INITIALIZE                      HCM50F01-BASENAME
            MOVE    SPA-HOSPNUM         TO  HCM50F01-HOSPNUM
            MOVE    "HCM50F01"          TO  HCM50F01-FILE-ID
            MOVE    1                   TO  HCM50F01-SYOKBN1
            MOVE    SPA-TERMID          TO  HCM50F01-TERMID
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HCM50F01-BASENAME   TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  HCM50F01-FULLNAME
       *
            OPEN    OUTPUT  HCM50SRY-FILE
            CLOSE   HCM50SRY-FILE

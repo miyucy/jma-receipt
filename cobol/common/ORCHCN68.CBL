@@ -35,7 +35,7 @@
        FILE-CONTROL.
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -50,6 +50,7 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *
       *    Ä¢É¼ÎÎ°è
            COPY    "HCN68.INC".
@@ -121,6 +122,9 @@
       *
       *    °õºþ¥Ñ¥é¥á¥¿
            COPY    "CPORCSMKPRT.INC".
+      *
+      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+           COPY    "CPORCSGETTEMP.INC".
       *
            COPY    "CPORCHCN68.INC".
            COPY    "CPORCHCN68S01.INC".
@@ -502,6 +506,13 @@
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SMCNDATE-HMS    TO  HC01PARA-SYOHMS
            MOVE    ORCHCN68-CNT    TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA        TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
@@ -516,7 +527,7 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCN68.red"     TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-           MOVE    HC01PARA        TO  MKPRT-DAT
+           MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1034-PRTNM(14)
                                    TO  MKPRT-PRTNM
            MOVE   "°åÎÅ¶èÊ¬¡¦£Á£Ä£ÌÉ¾²ÁÉ¼"
@@ -652,6 +663,13 @@
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SMCNDATE-HMS    TO  HC01PARA-SYOHMS
            MOVE    ORCHCN68-CNT    TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA        TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
@@ -666,7 +684,7 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCN69.red"     TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-           MOVE    HC01PARA        TO  MKPRT-DAT
+           MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1034-PRTNM(14)
                                    TO  MKPRT-PRTNM
            MOVE   "°åÎÅ¶èÊ¬¡¦£Á£Ä£ÌÉ¾²ÁÉ¼"

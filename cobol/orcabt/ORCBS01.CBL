@@ -36,7 +36,7 @@
        FILE-CONTROL.
       *
       *    エラーファイル
-           SELECT  ORCBS01ERR-FILE ASSIGN  WRK-PARA-ERRFILE
+           SELECT  ORCBS01ERR-FILE ASSIGN  ERRPARA
                                    FILE    STATUS  IS  STS-ORCBS01ERR.
       *
        DATA                                DIVISION.
@@ -46,6 +46,9 @@
        01  ORCBS01ERR-REC                  PIC X(200).
       *
        WORKING-STORAGE                     SECTION.
+      *
+           COPY    "CPRECEERR.INC" REPLACING   //RECEERR//
+                                   BY          //ERRPARA//.
       *
       *    ステータス領域
        01  STS-AREA.
@@ -67,7 +70,6 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                  PIC 9(07).
            03  WRK-PARA-SHELLID                PIC X(08).
-           03  WRK-PARA-ERRFILE                PIC X(100).
            03  WRK-PARA-HOSPNUM                PIC 9(02).
            03  WRK-PARA-PGTYPE                 PIC X(20).
            03  WRK-PARA-PGNAME                 PIC X(20).
@@ -133,6 +135,9 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -185,7 +190,7 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-ERRFILE
+                                       ERRPARA
                                        WRK-PARA-HOSPNUM
                                        WRK-PARA-PGTYPE
                                        WRK-PARA-PGNAME
@@ -199,6 +204,7 @@
                                        ORCHCM31-NYUGAI
                                        WRK-PARA-JIHSUMKBN
                                        ORCHCM31-SUMKBN
+           END-UNSTRING
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -254,6 +260,13 @@
                MOVE    "支払証明書"
                                    TO  WRK-JOBTITLE
            END-EVALUATE
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    ERRPARA         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  ERRPARA
       *
            PERFORM 1001-ORCSPRTAREA-SEC
       *

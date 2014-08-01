@@ -36,7 +36,7 @@
        FILE-CONTROL.
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Õ¥¡¥¤¥ë
-           SELECT  HCM50SRY-FILE   ASSIGN   WRK-HCM50F01
+           SELECT  HCM50SRY-FILE   ASSIGN   HCM50F01
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  HCM50SRY-ISM-KEY
@@ -50,6 +50,9 @@
            COPY "CPORCHCM50SRY.INC".
       *
        WORKING-STORAGE                 SECTION.
+      *
+           COPY    "CPASGNPARA.INC"    REPLACING   //ASGNPARA//
+                                       BY          //HCM50F01//.
       *
        01  STS-AREA.
            03  STS-HCM50F01            PIC X(02).
@@ -78,7 +81,6 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-HCM50F01            PIC X(255).
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC X(06).
                05  WRK-SRYDD           PIC 9(02).
@@ -187,7 +189,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  TTNS-AREA
       *
-           MOVE    HCM50S01-HCM50F01   TO  WRK-HCM50F01
+           MOVE    HCM50S01-HCM50F01   TO  HCM50F01
       *
            .
        100-INIT-EXT.

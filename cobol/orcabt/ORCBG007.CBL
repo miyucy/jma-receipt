@@ -1347,6 +1347,7 @@ grpsys     END-UNSTRING
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    CNT-JOB-UPDCNT  TO  JOB-UPDCNT
+      *     
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC

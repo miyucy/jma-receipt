@@ -32,4 +32,4 @@
                05  HCM50S01-SRYYMD         PIC  X(08).
                05  HCM50S01-STYMD          PIC  X(08).
                05  HCM50S01-EDYMD          PIC  X(08).
-               05  HCM50S01-HCM50F01       PIC  X(255).
+               05  HCM50S01-HCM50F01       PIC  X(1024).

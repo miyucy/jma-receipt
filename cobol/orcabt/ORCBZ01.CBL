@@ -49,6 +49,8 @@
       *
            COPY    "HCM68.INC".
       *
+           COPY    "CPRECEERR.INC".
+      *
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -71,7 +73,6 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYMD     PIC X(08).
       *
       *    一時領域
@@ -106,6 +107,9 @@
       *
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -148,6 +152,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
+           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -171,6 +176,13 @@
            END-UNSTRING
       *
            PERFORM 1001-SPA-AREA-SET-SEC
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE

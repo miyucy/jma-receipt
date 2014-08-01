@@ -34,26 +34,13 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS IS  STS-RECEERR.
-      *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *
-      *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200).
-      *
       *
        WORKING-STORAGE             SECTION.
       *
       *    帳票
            COPY    "HCM68.INC".
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -159,7 +146,6 @@
        100-INIT-SEC                    SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  CNT-AREA

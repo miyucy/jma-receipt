@@ -114,10 +114,6 @@
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
-       01  SHELL-AREA.
-           03  SHELL-NAME                      PIC X(25)   VALUE
-               "scripts/daily/execoprg.sh".
-      *
        01  WRK-AREA.
            03  WRK-ERR-CUR                     PIC 9(03).
            03  WRK-PRTKANRI-RENNUM             PIC 9(04).
@@ -1896,12 +1892,7 @@
                                            TO  LNK-PRTKANRI-PRTNM
       *
                    MOVE    SPACE           TO  SHELLTBL
-      *************MOVE    SHELL-NAME      TO  SHELLTBL-NAME
-      *            ファイルデイレクトリ位置指定
-                   INITIALIZE              ORCSMKPASSAREA
-                   MOVE    SHELL-NAME      TO  MKPASS-IN-01
-                   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-                   MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+                   MOVE    "execoprg.sh"   TO  SHELLTBL-NAME
                    MOVE    LNK-PRTKANRI-RENNUM
                                            TO  SHELLTBL-ARG1
                    MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1952,7 +1943,7 @@
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
-                   MOVE    "shell"         TO  MCP-PATHNAME
+                   MOVE    "daily"         TO  MCP-PATHNAME
                    CALL  "ORCDBMAIN"           USING
                                                MCPAREA
                                                MCPDATA-REC
@@ -1986,14 +1977,9 @@
                MOVE    99999               TO  WRK-EDPAGE
       *
                MOVE    SPACE               TO  SHELLTBL
-      *****    MOVE    "/usr/local/orca/scripts/allways/print.sh"
-      *****                            TO  SHELLTBL-NAME
       *        ファイルデイレクトリ位置指定
                INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "/scripts/allways/print_prv.sh"
-                                           TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+               MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
                MOVE    SPACE               TO  LNK-PRTKANRI-AREA
                INITIALIZE                      LNK-PRTKANRI-AREA
                MOVE    WRK-CONS-PRTKANRI-TBL-KEY
@@ -2047,7 +2033,7 @@
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "shell"             TO  MCP-PATHNAME
+               MOVE    "allways"           TO  MCP-PATHNAME
                CALL  "ORCDBMAIN"           USING
                                            MCPAREA
                                            MCPDATA-REC
