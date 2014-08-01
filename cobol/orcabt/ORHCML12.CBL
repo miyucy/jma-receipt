@@ -39,9 +39,12 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *----(04.08.01)--UPD-START---
       *    エラーファイル
-           SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
+      *     SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
+           SELECT  TENSUERR-FILE   ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-TENSUERR.
+      *----(04.08.01)--UPD-END-----
       *    ＣＳＶファイル
            SELECT  TENSUCSV-FILE   ASSIGN  TENSUCSV
                                    ORGANIZATION    IS  LINE
@@ -96,7 +99,7 @@
       *    COPY    "ORCA-DBPATH".
       *----(04.08.01)--ADD-START---
            COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+      *----(04.08.01)--ADD-END----- 
       *     
            COPY    "HCML01.INC".
       *
