@@ -31,6 +31,7 @@
       *  01.00.02    NACL-森脇    06/07/27  フラグ追加、MONFUNC対応
       *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
       *  04.03.01    NACL-森脇    08/06/13  ＣＳＶファイル出力対応
+      *  04.08.01    NACL-森脇    14/08/01  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,9 +39,12 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *----(04.08.01)--UPD-START---
       *    エラーファイル
-           SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
+      *     SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
+           SELECT  TENSUERR-FILE   ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-TENSUERR.
+      *----(04.08.01)--UPD-END-----
       *    ＣＳＶファイル
            SELECT  TENSUCSV-FILE   ASSIGN  TENSUCSV
                                    ORGANIZATION    IS  LINE
@@ -97,6 +101,9 @@
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *     
            COPY    "HCML07.INC".
       *
@@ -133,7 +140,9 @@
            03  WRK-PARA-FILE       PIC X(1).
            03  WRK-PARA-CSVDIR     PIC X(100).
            03  WRK-PARA-CSVFILE    PIC X(100).
-           03  TENSUERR            PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  TENSUERR            PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  TENSUCSV            PIC X(100).
       *
        01  INEX-AREA.
@@ -225,6 +234,11 @@
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -258,6 +272,9 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -277,7 +294,10 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-AREA
                                                WRK-PARA-HOSPNUM
-                                               TENSUERR
+      *----(04.08.01)--UPD-START---
+      *                                         TENSUERR
+                                               RECEERR
+      *----(04.08.01)--UPD-END-----
                                                WRK-PARA-CSVKBN
                                                WRK-PARA-FILE
                                                WRK-PARA-CSVDIR
@@ -308,6 +328,14 @@
            MOVE    WRK-LNKYMD       TO  WRK-MAE-INPUT
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-OUT-INPUT    TO  WRK-MSTYMDH
+      *
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
