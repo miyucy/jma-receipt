@@ -24,26 +24,23 @@ JOBID=${3}
 SHELLID=$(printf "%-8s" ${4})
 HOSPNUM=${5}
 
+# MCP_TEMPDIRをTMPDIRとする
+TMPDIR=${MCP_TEMPDIR}
+
 MEDPHOTOPATH="${MSTSRVPATH}/siori/image"
-MEDPHOTODIR="/tmp/medphoto"
-MEDPHOTOTEMP="$MEDPHOTODIR"/${HOSPNUM}
+MEDIMAGEDIR="${MCP_TEMPDIR}/medimage"
 
 # 画像ファイル格納ディレクトリの作成
 
-if ! [ -d $MEDPHOTODIR ]; then
-  mkdir $MEDPHOTODIR
-fi
-if ! [ -d $MEDPHOTOTEMP ]; then
-  mkdir $MEDPHOTOTEMP
+if ! [ -d ${MEDIMAGEDIR} ]; then
+  mkdir ${MEDIMAGEDIR}
 fi
 
 # 取り込む前にレコードを削除
 
 TEMP=$(mktemp)
 trap "rm -f ${TEMP}" EXIT
-echo "delete from tbl_yakujyo_temp where termid='${TERMID}' and hospnum=${HOSPNUM};" > ${TEMP}.wk
-mksqldata.rb ${TEMP}.wk ${TEMP}
-rm -f ${TEMP}.wk
+echo "delete from tbl_yakujyo_temp where termid='${TERMID}' and hospnum=${HOSPNUM};" > ${TEMP}
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
           -parameter ${HOSPNUM},${TEMP}
@@ -67,7 +64,7 @@ delete_pgpass
 
 for file in $FLIST
 do
-  wget -q -O ${MEDPHOTOTEMP}/${file} ${MEDPHOTOPATH}/${file}
+  wget -q -O ${MEDIMAGEDIR}/${file} ${MEDPHOTOPATH}/${file}
 done
 
 MSG="参照処理が終了しました"

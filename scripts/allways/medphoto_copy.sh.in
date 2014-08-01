@@ -9,8 +9,6 @@ fi
 
 . $JMARECEIPT_ENV
 
-MEDPHOTOTEMP="/tmp/medphoto/"$6
-
 #-------------------------------------------#
 #    薬剤情報マスタ医薬品写真複写処理
 #        
@@ -25,6 +23,9 @@ MEDPHOTOTEMP="/tmp/medphoto/"$6
 #       複写元ファイルの場所は環境変数より
 #        $MEDPHOTOTEMP
 #-------------------------------------------#
+
+MEDPHOTOTEMP="${MCP_TEMPDIR}/medphoto/"$6
+
 # 複写元ファイルの存在チェック
 
 if ! [ -d $3 ]; then

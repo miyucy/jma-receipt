@@ -177,6 +177,7 @@
       *----(04.07.01)--ADD-START---------------------------------------
       *     03  WRK-CONS-KARI        PIC X(05)   VALUE  "/tmp/".
       *----(04.07.01)--ADD-END-----------------------------------------
+           03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
       *
       *    文字数多い場合の変換領域
        01  WRK-KANACONV-AREA.
@@ -189,6 +190,11 @@
            03 WRK-KANACONV-INDATA      PIC X(4000).
            03 WRK-KANACONV-OUTDATA     PIC X(4000).
       *
+       01  ORCSMIAREA.
+           03  ORCSMI-SRYCD        PIC X(09).
+           03  ORCSMI-IMAGEKBN     PIC 9(01).
+           03  ORCSMI-TEMPDIR      PIC X(1024).
+           03  ORCSMI-FILENAME     PIC X(128).
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -463,19 +469,28 @@
       *
            MOVE    2               TO  SPA-GMN-CUR
       *
+      *ito delete start
       *    デフォルト画像フォルダーセット
-           PERFORM 900-SYS1030-READ-SEC
-           IF      SYS-1030-GAZOFOLDER =   SPACE
-               MOVE    SPACE       TO  SPA-GMN-FOLDER
-               STRING  WRK-CONS-PASS   DELIMITED BY SIZE
-                       SPA-HOSPNUM     DELIMITED BY SIZE
-                       "/"             DELIMITED BY SIZE
-                               INTO    SPA-GMN-FOLDER
-               END-STRING
-           ELSE
-               MOVE    SYS-1030-GAZOFOLDER
-                                       TO  SPA-GMN-FOLDER
-           END-IF
+      *     PERFORM 900-SYS1030-READ-SEC
+      *     IF      SYS-1030-GAZOFOLDER =   SPACE
+      *         MOVE    SPACE       TO  SPA-GMN-FOLDER
+      *         STRING  WRK-CONS-PASS   DELIMITED BY SIZE
+      *                 SPA-HOSPNUM     DELIMITED BY SIZE
+      *                 "/"             DELIMITED BY SIZE
+      *                         INTO    SPA-GMN-FOLDER
+      *         END-STRING
+      *     ELSE
+      *         MOVE    SYS-1030-GAZOFOLDER
+      *                                 TO  SPA-GMN-FOLDER
+      *     END-IF
+      *ito delete end
+           MOVE    SPACE               TO  SPA-GMN-FOLDER
+           STRING  MCP-TEMPDIR         DELIMITED BY SPACE
+                   "/"                 DELIMITED BY SIZE
+                   WRK-CONS-MEDIMGDIR  DELIMITED BY SIZE
+                   "/"                 DELIMITED BY SIZE
+                   INTO    SPA-GMN-FOLDER
+           END-STRING
            . 
       *
        31O-SPASET-EXT.
@@ -487,7 +502,7 @@
        320-N22-SET-SEC             SECTION.
       *
            IF      SPA-N22-FLG     =   "OK"
-               MOVE    SPACE           TO  SPA-N22-FLG
+      *ito del  MOVE    SPACE           TO  SPA-N22-FLG
                MOVE    10              TO  SPA-GMN-CUR
       *        写真があればセット
                PERFORM 430-GAZOCHK-HENSYU-SEC
@@ -1185,6 +1200,16 @@
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
+      *ito add start
+           IF      SPA-N22-FLG NOT =   "OK"
+               INITIALIZE  ORCSMIAREA
+               MOVE    SPA-NAI-SRYCD   TO  ORCSMI-SRYCD
+               MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+               MOVE    SPA-GMN-PHOTO   TO  ORCSMI-FILENAME
+               CALL    "ORCSMILOAD"    USING   ORCSMIAREA
+                                               SPA-AREA
+           END-IF
+      *ito add end
       *    末尾文字編集
            MOVE    SPA-GMN-PHOTO   TO  WRK-NAIYOU
            PERFORM 430-KANACHK-HENSYU-SEC
@@ -1257,21 +1282,30 @@
                MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
            END-IF
       *
+      *ito delete start
       *    画像ファイル存在チェック
-           PERFORM 431-GAZO-FILE-CHK
+      *     PERFORM 431-GAZO-FILE-CHK
       *
-           IF      FLG-OK          =   1
-               MOVE    "0014"          TO  SPA-ERRCD
-               MOVE    10              TO  SPA-GMN-CUR
-               MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
-               GO  TO  430-GAZOCHK-HENSYU-EXT
-           END-IF
+      *     IF      FLG-OK          =   1
+      *         MOVE    "0014"          TO  SPA-ERRCD
+      *         MOVE    10              TO  SPA-GMN-CUR
+      *         MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+      *         GO  TO  430-GAZOCHK-HENSYU-EXT
+      *     END-IF
+      *ito delete end
       *
       *    画像イメージを表示
            MOVE    "BLOBIMPORT"    TO  MCP-FUNC
            MOVE    "blob"          TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
+      *ito update start
+      *     MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
+           MOVE    SPACE           TO  ORCA-BLOB-FILE
+           STRING  SPA-GMN-FOLDER  DELIMITED   BY  SPACE
+                   SPA-GMN-PHOTO   DELIMITED   BY  SPACE
+               INTO    ORCA-BLOB-FILE
+           END-STRING
+      *ito update end
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        ORCA-BLOB
@@ -1375,17 +1409,22 @@
       *****************************************************************
        431-GAZO-SET-SEC            SECTION.
       *
-           IF      SPA-GMN-PHOTO   NOT =   SPACE
+      *ito delete start
+      *     PERFORM 430-GAZOCHK-HENSYU-SEC
+      *     GO  TO  431-GAZO-SET-EXT
+      *
+      *     IF      SPA-GMN-PHOTO   NOT =   SPACE
       *        パス名をフォルダ名とファイル名に分ける
-               PERFORM 431-GAZO-PATH-CHK-SEC
-               IF      FLG-OK          =   ZERO
-                   MOVE    SPACE           TO  SPA-GMN-PHOTO
-                   STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
-                           WRK-FILEMEI         DELIMITED  BY  SPACE
-                                       INTO    SPA-GMN-PHOTO
-                   END-STRING
-               END-IF
-           END-IF
+      *         PERFORM 431-GAZO-PATH-CHK-SEC
+      *         IF      FLG-OK          =   ZERO
+      *             MOVE    SPACE           TO  SPA-GMN-PHOTO
+      *             STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
+      *                     WRK-FILEMEI         DELIMITED  BY  SPACE
+      *                                 INTO    SPA-GMN-PHOTO
+      *             END-STRING
+      *         END-IF
+      *     END-IF
+      *ito delete end
       *
            PERFORM 430-GAZOCHK-HENSYU-SEC
       *
@@ -1912,6 +1951,9 @@ grpsys     CALL    "ORCDBMAIN"         USING
        480-TOUROKU-SEC             SECTION.
       *
            PERFORM 430-TEXTCHK-SEC
+      *ito ddd start
+           MOVE    SPACE               TO  SPA-N22-FLG
+      *ito add end
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  480-TOUROKU-EXT
@@ -2039,10 +2081,34 @@ grpsys     CALL    "ORCDBMAIN"         USING
                GO  TO  481-KOUSHIN-EXT
            END-IF
       *
+      *ito add start
+           PERFORM 482-GAZOCOPY-SEC
+      *ito add end
+      *
            PERFORM 490-SYORILIST-SET-SEC
       *
            .
        481-KOUSHIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像コピー
+      *****************************************************************
+       482-GAZOCOPY-SEC            SECTION.
+      *
+           IF      SPA-GMN-PHOTO   =   SPACE
+               GO  TO  482-GAZOCOPY-SEC-EXT
+           END-IF
+      *
+           INITIALIZE  ORCSMIAREA
+           MOVE    SPA-NAI-SRYCD   TO  ORCSMI-SRYCD
+           MOVE    SPA-N22-GAZO    TO  ORCSMI-IMAGEKBN
+           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+           MOVE    SPA-GMN-PHOTO   TO  ORCSMI-FILENAME
+           CALL    "ORCSMISAVE"    USING   ORCSMIAREA
+                                           SPA-AREA
+           .
+       482-GAZOCOPY-SEC-EXT.
            EXIT.
       *
       *****************************************************************

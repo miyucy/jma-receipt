@@ -32,7 +32,8 @@ CODE3=${8}
 CODE4=${9}
 CODE5=${10}
 
-WORKDIR=/tmp
+# MCP_TEMPDIRをTMPDIRとする
+TMPDIR=${MCP_TEMPDIR}
 
 LOG="$LOGDIR"/${HOSPNUM}master_get.log
 
@@ -51,7 +52,7 @@ jobend() {
 rm -f ${LOG}
 
 # disk space check
-VOLSIZE=`df -m ${WORKDIR} | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
+VOLSIZE=`df -m ${MCP_TEMPDIR} | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
 echo "${VOLSIZE}"
 echo "${MINSIZE}"
 if [ -z "$MINSIZE" ]; then
@@ -79,7 +80,7 @@ case "${MASTERID}" in
 esac
 
 echomsg "${MSTURL}/${FILENAME}.p7m" ${LOG}
-LOGMSG=`orcadt_verify.rb --dir ${WORKDIR} --cacert ${CACERTFILE} ${MSTURL}/${FILENAME}.p7m 2>&1`
+LOGMSG=`orcadt_verify.rb --dir ${MCP_TEMPDIR} --cacert ${CACERTFILE} ${MSTURL}/${FILENAME}.p7m 2>&1`
 RESULT=`echo "$LOGMSG" | head -1`
 if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
   echomsg "${LOGMSG}" ${LOG} 
@@ -90,21 +91,18 @@ creymd=`date +'%Y%m%d'`
 sed -e "s/:HOSPNUM:/${HOSPNUM}/g" \
     -e "s/:TERMID:/${TERMID}/g" \
     -e "s/:CREYMD:/${creymd}/g" \
-    ${WORKDIR}/${FILENAME} > ${WORKDIR}/${FILENAME}.wk
-rm -f ${WORKDIR}/${FILENAME}
-
-mksqldata.rb ${WORKDIR}/${FILENAME}.wk ${WORKDIR}/${FILENAME}.sql
-rm -f ${WORKDIR}/${FILENAME}.wk
+    ${MCP_TEMPDIR}/${FILENAME} > ${MCP_TEMPDIR}/${FILENAME}.sql
+rm -f ${MCP_TEMPDIR}/${FILENAME}
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
-          -parameter ${HOSPNUM},${WORKDIR}/${FILENAME}.sql 2>&1 >> ${LOG}
+          -parameter ${HOSPNUM},${MCP_TEMPDIR}/${FILENAME}.sql 2>&1 >> ${LOG}
 if [ $? -ne 0 ] ; then 
-  rm -f ${WORKDIR}/${FILENAME}.sql
+  rm -f ${MCP_TEMPDIR}/${FILENAME}.sql
   ERRMSG="マスター登録処理でエラーが発生しました"
   jobend 99 9903 ${HOSPNUM} "${JOBID}" "${SHELLID}" "${ERRMSG}" ${LOG}
 fi
 
-rm -f ${WORKDIR}/${FILENAME}.sql
+rm -f ${MCP_TEMPDIR}/${FILENAME}.sql
 
 MSG="マスター取得処理が終了しました"
 if [ "${MASTERID}" = "SIORI" ] ; then

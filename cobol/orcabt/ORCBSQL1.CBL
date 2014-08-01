@@ -47,7 +47,6 @@
       *    入力：ＳＱＬ更新データ
        FD  IN-FILE.
        01  IN-REC.
-           03  IN-LEN                  PIC 9(05).
            03  IN-SQL                  PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
@@ -88,6 +87,7 @@
                05  WRK-PARA-SQLFILE            PIC X(256).
            03  WRK-IN                  PIC X(01).
            03  WRK-RC                  PIC S9(9)   BINARY.
+           03  WRK-IN-LEN              PIC 9(05).
       *
       *****************************************************************
       *    ファイル定義
@@ -221,13 +221,13 @@
                    IF      CNT-SQL-LINE        =   ZERO
                        MOVE    CNT-IN              TO  CNT-SQL-LINE
                    END-IF
-                   IF      IN-SQL(IN-LEN:1)    =   ";"
+                   IF      IN-SQL(WRK-IN-LEN:1)    =   ";"
                        MOVE    1                   TO  FLG-SQL-END
                    END-IF
                    MOVE    IN-SQL              TO  W-SQLSTR(W-MOVP:)
                    COMPUTE W-MOVP              =   W-MOVP
-                                               +   IN-LEN
-                   IF     (IN-SQL(IN-LEN:1)    NOT =   ",")  AND
+                                               +   WRK-IN-LEN
+                   IF     (IN-SQL(WRK-IN-LEN:1)    NOT =   ",")  AND
                           (FLG-SQL-END             =   ZERO)
                        MOVE    X"0a"               TO  W-SQLSTR(W-MOVP:)
                        COMPUTE W-MOVP              =   W-MOVP  +  1
@@ -257,12 +257,16 @@
       *****************************************************************
        900-IN-READ-SEC                 SECTION.
       *
+           MOVE    ZERO                TO  WRK-IN-LEN
            READ    IN-FILE
                AT  END
                    MOVE    1                   TO  FLG-IN
                NOT AT  END
                    MOVE    ZERO                TO  FLG-IN
                    ADD     1                   TO  CNT-IN
+                   MOVE    FUNCTION    BYTE-LENGTH (
+                           FUNCTION    TRIM ( IN-SQL ))
+                                               TO  WRK-IN-LEN
            END-READ
            .
        900-IN-READ-EXT.

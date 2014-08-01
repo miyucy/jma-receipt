@@ -37,6 +37,7 @@ db	{
 	tbl_yakujyo_temp;
 	tbl_jobkanri;
 	tbl_syskanri;
+	tbl_med_image;
 };
 
  db	"shell"	{

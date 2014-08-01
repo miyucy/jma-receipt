@@ -85,7 +85,6 @@
       *
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(13)  VALUE "siori_pull.sh".
-           03  SHELL-NAME2         PIC X(16)  VALUE "medphoto_copy.sh".
       *----(04.08.01)--UPD-START---
       * 01  WRK-FILE-AREA.
       *     03  WRK-FILE-FOLDER     PIC X(14)  VALUE "/tmp/medphoto/".
@@ -96,6 +95,7 @@
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "YKJMST".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
+           03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -484,55 +484,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO  TO  400-GAZOCOPY-SEC-EXT
            END-EVALUATE
       *
-           INITIALIZE                  WRK-GAZOFILE
-           STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
-                   SPA-N22-KENCD       DELIMITED  BY  SIZE
-                   "-"                 DELIMITED  BY  SIZE
-                   WRK-GAZO            DELIMITED  BY  SPACE
-                               INTO    WRK-GAZOFILE
-           END-STRING
-      *
-           MOVE    WRK-GAZOFILE    TO  SPA-GMN-PHOTO
-      *
-           IF      SPA-GMN-PHOTO   =   SPACE
-               GO  TO  400-GAZOCOPY-SEC-EXT
-           END-IF
-      *
-           MOVE    4               TO  WRK-CONS-JOB-JOBID
-           PERFORM 820-JOBKANRI-READ-SEC
-      *
-           IF      SKBN-RUN        =   "RUN"
-               MOVE    "処理中です"    TO  SPA-N22-MESSAGE
-               MOVE    "blue"          TO  SPA-N22-MESSAGE-STYLE
-               GO  TO  400-GAZOCOPY-SEC-EXT
-           END-IF
-      *
-      *    ジョブ管理削除
-           PERFORM 820-JOBKANRI-DEL-SEC
-      *
-      *    ジョブ管理作成
-           PERFORM 820-JOBKANRI-JBS-SEC
-      *
-      *    プログラム更新処理
-           MOVE    SPACE           TO  SHELLTBL
-           MOVE    SHELL-NAME2     TO  SHELLTBL-NAME
-           MOVE    SPA-N22-KENCD   TO  SHELLTBL-ARG1
-           MOVE    WRK-GAZO        TO  SHELLTBL-ARG2
-           MOVE    SPA-GMN-FOLDER  TO  SHELLTBL-ARG3
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG4
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-ARG5
-grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG6
-      *
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "allways"       TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
+           MOVE    WRK-GAZO        TO  SPA-GMN-PHOTO
            .
        400-GAZOCOPY-SEC-EXT.
            EXIT.
@@ -816,11 +768,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-GAZO        TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
                                        SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  WRK-GAZOFILE
       *----(04.08.01)-ADD-END-----
       *----(04.08.01)-UPD-START---
-      *     INITIALIZE                  WRK-GAZOFILE
+           INITIALIZE                  WRK-GAZOFILE
+           STRING  SGETTEMP-TEMPDIR    DELIMITED BY SPACE
+                   "/"                 DELIMITED BY SIZE
+                   WRK-CONS-MEDIMGDIR  DELIMITED BY SIZE
+                   "/"                 DELIMITED BY SIZE
+                   WRK-GAZO            DELIMITED BY SPACE
+                   INTO    WRK-GAZOFILE
+           END-STRING
       *     STRING  WRK-FILE-FOLDER     DELIMITED BY SIZE
       *             SPA-HOSPNUM         DELIMITED BY SIZE
       *             "/"                 DELIMITED BY SIZE
