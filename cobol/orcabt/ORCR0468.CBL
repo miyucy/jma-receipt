@@ -268,6 +268,10 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+      *    ファイルＯＰＥＮ処理
+      *
+           PERFORM 110-FILE-OPEN-SEC
+      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 120-DBOPEN-SEC
       *
@@ -281,10 +285,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
-      *
-      *    ファイルＯＰＥＮ処理
-      *
-           PERFORM 110-FILE-OPEN-SEC
       *
            PERFORM 990-RECE41-READ-SEC
            .
