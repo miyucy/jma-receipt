@@ -44,8 +44,7 @@
        01  LNK-TIMEOFDAY       PIC X(100).
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *    カウント領域
        01  FLG-AREA.
@@ -63,7 +62,7 @@
       *    一時領域
       *
        01  WRK-AREA.
-           03  WRK-ARG                                 PIC X(512).
+           03  WRK-ARG                                 PIC X(4096).
            03  WRK-SRYYMD.
                05  WRK-SRYYM                           PIC X(06).
                05  WRK-SRYDD                           PIC X(02).
@@ -194,6 +193,8 @@
                                        FLG-AREA
                                        SPA-AREA
                                        WRK-PARA
+      *
+           MOVE    SPACE           TO  RECEERR
       *
       *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
@@ -367,12 +368,7 @@
       *
                MOVE    SPACE               TO  SHELLTBL
       *
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "/scripts/allways/print_prv.sh"
-                                           TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+               MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
                DISPLAY "shell = "  SHELLTBL-NAME
       *        MOVE    SPACE               TO  LNK-PRTKANRI-AREA
       *        INITIALIZE                      LNK-PRTKANRI-AREA
@@ -417,7 +413,7 @@
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "shell"             TO  MCP-PATHNAME
+               MOVE    "allways"           TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC

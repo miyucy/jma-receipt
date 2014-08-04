@@ -15,9 +15,13 @@ fi
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
-	echo "echo " ${16}
-        if  [ -e ${16} ]; then
-            rm  ${16}
+
+ERR_FILE_BASE=${16}
+ERR_FILE_FULL=${MCP_TEMPDIR}/${16}
+
+	echo "ERR FILE:" ${ERR_FILE_FULL}
+        if  [ -e ${ERR_FILE_FULL} ]; then
+            rm  ${ERR_FILE_FULL}
         fi
         
            LOG_FILE="/var/log/jma-receipt/${1}dtckmain.log"
@@ -27,8 +31,8 @@ fi
 	    echo 'end dtckmain' `date` >> $LOG_FILE
 	
 #------> ${10} =  termid
-        rm  /tmp/${1}00DC*${10}*
-        rm  /tmp/${1}00DTC*${10}*
+        rm  ${MCP_TEMPDIR}/${1}00DC*${10}*
+        rm  ${MCP_TEMPDIR}/${1}00DTC*${10}*
 #
 #
             exit 
