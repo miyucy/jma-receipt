@@ -76,6 +76,7 @@
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,8 +98,11 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
+                                   BY          //RECEERR//.
+      *
+      *    エラーファイル名称領域 
+           COPY    "CPERRFL.INC".
       *
       *    帳票出力用パラメタ  
        01  WRK-RECE09-REC. 
@@ -1767,9 +1771,15 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    印刷処理
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            MOVE    SPACE               TO  SHELLTBL
            MOVE    "recept7.sh"        TO  SHELLTBL-NAME
@@ -1788,7 +1798,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            ELSE
                MOVE    "2"             TO  SHELLTBL-ARG5
            END-IF    
-           MOVE    RECEERR             TO  SHELLTBL-ARG6
+           MOVE    ERRFLPARA-BASENAME
+                                       TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY      TO  SHELLTBL-ARG7 
            MOVE    "00000"         TO  SHELLTBL-ARG8
            MOVE    "99999"         TO  SHELLTBL-ARG9
@@ -1973,9 +1984,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                END-IF     
            END-IF
       *
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -1995,7 +2012,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG3 
            MOVE    "0"                 TO  SHELLTBL-ARG4
            MOVE    "0"                 TO  SHELLTBL-ARG5
-           MOVE    RECEERR             TO  SHELLTBL-ARG6
+           MOVE    ERRFLPARA-BASENAME
+                                       TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY      TO  SHELLTBL-ARG7 
            MOVE    WRK-RECE09-STDATA   TO  SHELLTBL-ARG8
            MOVE    WRK-RECE09-EDDATA   TO  SHELLTBL-ARG9
