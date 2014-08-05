@@ -652,6 +652,7 @@
       *                                     なった場合の対応
       *  04.07.29    NACL-門脇    14/07/28  マル長患者で、月途中に公費が追加と
       *                                     なった場合の対応修正
+      *  04.07.30    NACL-門脇    14/07/31  第三者行為の現物給付対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-門脇    14/07/29  ３２文字以上の文字列修正
@@ -870,6 +871,7 @@
            03  FLG-SKJ-HANTEI2                         PIC 9(01).
            03  FLG-KIN-OKIKAE                          PIC 9(01).
            03  FLG-KIN-OKIKAE2                         PIC 9(01).
+           03  FLG-KIN-OKIKAE3                         PIC 9(01).
            03  FLG-HENSYU-NG                           PIC 9(01).
            03  FLG-HENSYU-NG2                          PIC 9(01).
            03  FLG-HENSYU-ARI                          PIC 9(01).
@@ -881,6 +883,7 @@
            03  FLG-DAISAN-ARI                          PIC 9(01).
            03  FLG-CYOKI-HENSYU                        PIC 9(01).
            03  FLG-CYOKI-HENSYU2                       PIC 9(01).
+           03  FLG-DAISAN-GENBUTU                      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -966,6 +969,7 @@
            03  IDX13                                   PIC 9(03).
            03  IDX16                                   PIC 9(03).
            03  IDX18                                   PIC 9(03).
+           03  IDX23                                   PIC 9(03).
            03  IDX-SAI                                 PIC 9(03).
       *
            03  IDA                 PIC 9(04).
@@ -1798,9 +1802,11 @@
            03  WRK-TAIHI-OKIKAE                PIC 9(01).
            03  WRK-TAIHI-ZAINUM2               PIC 9(08).
            03  WRK-TAIHI-OKIKAE2               PIC 9(01).
+           03  WRK-TAIHI-ZAINUM3               PIC 9(08).
       *
            03  WRK-TAIHI-TOTALTEN              PIC 9(08).
            03  WRK-DAISAN-FTNMONEY             PIC 9(08).
+           03  WRK-DAISAN-FTNMONEY3            PIC 9(08).
            03  WRK-DAISAN-DAISANKBN            PIC X(01).
       *
        01  WRK-ERR-AREA.
@@ -3179,6 +3185,7 @@
            MOVE      ZERO      TO   WRK-TAIHI-OKIKAE
            MOVE      ZERO      TO   WRK-TAIHI-ZAINUM2
            MOVE      ZERO      TO   WRK-TAIHI-OKIKAE2
+           MOVE      ZERO      TO   WRK-TAIHI-ZAINUM3
       *
            MOVE    123456789   TO   RECE62-YOBIETC(12)
            MOVE    123456789   TO   RECE62-YOBIETC(13)
@@ -3188,20 +3195,8 @@
            MOVE    123456789   TO   RECE62-YOBIETC(17)
            MOVE    123456789   TO   RECE62-YOBIETC(18)
       *
-           PERFORM        211B-DAISAN-CHECK-SEC
-           IF   RECE62-DAISAN-GAITO   =   1
-             IF   RECE62-KOUREI  =  "1"
-               MOVE    1       TO   RECE62-DAISAN-KOUREI
-             END-IF
-             MOVE      SPACE   TO   RECE62-KOUREI
-           END-IF
-      *
            PERFORM        2118-ETCKISAIFLGINF-HENSYU-SEC
            PERFORM        2119-HOTEIGAI-HENSYU-SEC
-      *
-           IF   RECE62-DAISAN-GAITO   NOT =   1
-             PERFORM      2110-GENGAKU-HANTEI-SEC
-           END-IF
       *
            PERFORM        2111-TENTEKIMATOME-HENSYU-SEC
       *
@@ -3636,29 +3631,6 @@
                END-IF
            END-IF
       *
-           IF   RECE62-DAISAN-GAITO   =   1  OR  2
-              MOVE     13     TO     FLG-TOKKI
-              PERFORM  21013-TOKKI-HENSYU-SEC
-      *
-              COMPUTE  WRK-DAISAN-FTNMONEY  =  RECE62-DAISAN-TOTALTEN
-                                            *  10
-                                            *  RECE62-KYURATE
-                                            /  100
-              IF   WRK-DAISAN-DAISANKBN  =  "1"
-                COMPUTE  WRK-DAISAN-FTNMONEY  =
-                         WRK-DAISAN-FTNMONEY  +  5
-                COMPUTE  WRK-DAISAN-FTNMONEY  =
-                         WRK-DAISAN-FTNMONEY  /  10
-                COMPUTE  WRK-DAISAN-FTNMONEY  =
-                         WRK-DAISAN-FTNMONEY  *  10
-              END-IF
-              MOVE   WRK-DAISAN-FTNMONEY  TO  RECE62-DAISAN-FTNMONEY
-              IF  (RECE62-KOUREI         =  "1" OR "2")
-              OR  (RECE62-DAISAN-KOUREI  =   1        )
-                ADD  WRK-DAISAN-FTNMONEY  TO  RECE62-FTNMONEY(1)
-              END-IF
-           END-IF
-      *
            IF   FLG-ZENKI-TOKUREI  =   1
               MOVE      1     TO     RECE62-RJNGAIKOHFTN(2)
            END-IF
@@ -3692,6 +3664,70 @@
                    MOVE    1    TO   RECE62-SKYTENFLG
                END-IF
              END-PERFORM
+           END-IF
+      *
+      *    第三者行為の一部負担金編集
+           IF   RECE62-DAISAN-GAITO   =   1  OR  2
+      *
+              IF    RECE62-DAISAN-CHIKAN   =   1
+                COMPUTE  WRK-DAISAN-FTNMONEY3    =
+                         RECE62-DAISAN-TOTALTEN  *
+                         10
+                IF  WRK-DAISAN-FTNMONEY3 < RECE62-DAISAN-FTNMONEY
+                  MOVE   WRK-DAISAN-FTNMONEY3   TO
+                                           RECE62-DAISAN-FTNMONEY
+                END-IF
+              END-IF
+      *
+              IF    RECE62-DAISAN-TOKKI    =   ZERO
+                MOVE     13     TO     FLG-TOKKI
+                PERFORM  21013-TOKKI-HENSYU-SEC
+              END-IF
+      *
+              EVALUATE  RECE62-DAISAN-GENBUTU-GAITO
+                WHEN      ZERO
+                  IF    RECE62-DAISAN-CHIKAN  =  ZERO
+                    COMPUTE  WRK-DAISAN-FTNMONEY     =
+                             RECE62-DAISAN-TOTALTEN  *
+                             10                      *
+                             RECE62-KYURATE          /
+                             100
+                    IF  WRK-DAISAN-DAISANKBN  =  "1"
+                      COMPUTE  WRK-DAISAN-FTNMONEY  =
+                               WRK-DAISAN-FTNMONEY  +  5
+                      COMPUTE  WRK-DAISAN-FTNMONEY  =
+                               WRK-DAISAN-FTNMONEY  /  10
+                      COMPUTE  WRK-DAISAN-FTNMONEY  =
+                               WRK-DAISAN-FTNMONEY  *  10
+                    END-IF
+                    MOVE   WRK-DAISAN-FTNMONEY     TO
+                                              RECE62-DAISAN-FTNMONEY
+                  END-IF
+                  IF  (RECE62-KOUREI         =  "1" OR "2")
+                  OR  (RECE62-DAISAN-KOUREI  =   1        )
+                    ADD    RECE62-DAISAN-FTNMONEY  TO
+                                              RECE62-FTNMONEY(1)
+                  END-IF
+                WHEN       1
+                  IF    RECE62-DAISAN-CHIKAN  =  ZERO
+                    PERFORM    211B2-DAISAN-CHECK3-SEC
+                    MOVE   WRK-DAISAN-FTNMONEY     TO
+                                              RECE62-DAISAN-FTNMONEY
+                  END-IF
+                  IF RECE62-SKYIRYO-ICHIBUFTN >= RECE62-DAISAN-FTNMONEY
+                    COMPUTE  RECE62-SKYIRYO-ICHIBUFTN  =
+                             RECE62-SKYIRYO-ICHIBUFTN  -
+                             RECE62-DAISAN-FTNMONEY
+                  ELSE
+                    DISPLAY  "??? RECE62-DAISAN-FTNMONEY="
+                              RECE62-DAISAN-FTNMONEY
+                    DISPLAY  "??? RECE62-SKYIRYO-ICHIBUFTN="
+                              RECE62-SKYIRYO-ICHIBUFTN
+      *???          MOVE     RECE62-SKYIRYO-ICHIBUFTN
+      *???                          TO  RECE62-DAISAN-FTNMONEY
+      *???          MOVE     ZERO   TO  RECE62-SKYIRYO-ICHIBUFTN
+                  END-IF
+              END-EVALUATE
            END-IF
       *
       *    第三者行為の院外処方の有無チェック
@@ -3837,6 +3873,69 @@
       *
            END-IF
       *
+      ***********
+      *
+      *    現物給付計算対象かチェック
+      *    全ての収納が現物給付計算されているかチェック
+           MOVE     ZERO       TO     FLG-DAISAN-GENBUTU
+           IF    RECE62-DAISAN-GENBUTU-GAITO   =   1
+      *
+             IF    RECE62-KOUREI    NOT =  SPACE
+               PERFORM  VARYING  IDX16   FROM    1   BY  1
+                         UNTIL  (IDX16                   >   10 )
+                           OR   (RECE62-HKNCOMBI(IDX16)  =  ZERO)
+                           OR   (FLG-DAISAN-GENBUTU      =   1  )
+                 IF     RECE62-DAISANFLG(IDX16)   =   1
+                   INITIALIZE                       SYUNOU-REC
+                   MOVE  RECE62-HOSPNUM         TO  SYU-HOSPNUM
+                   MOVE  RECE62-NYUGAIKBN       TO  SYU-NYUGAIKBN
+                   MOVE  RECE62-PTID            TO  SYU-PTID
+                   MOVE  RECE62-SRYYM           TO  SYU-SRYYMD(1:6)
+                   MOVE  "__"                   TO  SYU-SRYYMD(7:2)
+                   MOVE  RECE62-HKNCOMBI(IDX16) TO  SYU-HKNCOMBINUM
+                   MOVE  SYUNOU-REC             TO  MCPDATA-REC
+                   MOVE  "tbl_syunou"           TO  MCP-TABLE
+                   MOVE  "key19"                TO  MCP-PATHNAME
+                   PERFORM 900-DBSELECT-SEC
+                   IF    MCP-RC   =   ZERO
+                     MOVE    "tbl_syunou"       TO  MCP-TABLE
+                     MOVE    "key19"            TO  MCP-PATHNAME
+                     PERFORM  900-SYUNOU-READ-SEC
+                     PERFORM  UNTIL  (FLG-SYUNOU  =  1)
+                       IF    SYU-DENPJTIKBN    NOT =  "3"
+                         IF  SYU-TOTAL-HKNTEN  NOT = ZERO
+                         AND SYU-SKJ-FTNGAKU(2)    = ZERO
+                           MOVE     1           TO  FLG-DAISAN-GENBUTU
+                           MOVE   IDX16         TO  IDX23
+                         END-IF
+                       END-IF
+                       MOVE    "tbl_syunou"     TO  MCP-TABLE
+                       MOVE    "key19"          TO  MCP-PATHNAME
+                       PERFORM  900-SYUNOU-READ-SEC
+                     END-PERFORM
+                   END-IF
+                   MOVE      "tbl_syunou"       TO  MCP-TABLE
+                   MOVE      "key19"            TO  MCP-PATHNAME
+                   PERFORM    900-CLOSE-SEC
+                 END-IF
+               END-PERFORM
+               IF   FLG-DAISAN-GENBUTU   =   1
+                 MOVE     ZERO       TO     RECE62-DAISAN-GENBUTU-GAITO
+                 IF    RECE62-DAISAN-GENBUTUFLG(IDX23) = ZERO
+                  DISPLAY "現物給付対象未登録の第三者行為有"
+                 ELSE
+                  DISPLAY "現物給付対象登録後の診療訂正再登録未実施分有"
+                 END-IF
+                 DISPLAY  "HKNCOMBI=" RECE62-HKNCOMBI(IDX23)
+                 DISPLAY  "DAISAN-GENBUTUFLG="
+                                      RECE62-DAISAN-GENBUTUFLG(IDX23)
+               END-IF
+             ELSE
+                 MOVE     ZERO       TO     RECE62-DAISAN-GENBUTU-GAITO
+             END-IF
+      *
+           END-IF
+      *
            .
        211B-DAISAN-CHECK-EXT.
            EXIT.
@@ -3881,6 +3980,59 @@
       *
            .
        211B1-DAISAN-CHECK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    第三者行為の一部負担金計算＜現物給付＞
+      *****************************************************************
+       211B2-DAISAN-CHECK3-SEC      SECTION.
+      *
+           MOVE     ZERO     TO    WRK-DAISAN-FTNMONEY
+      *
+           PERFORM  VARYING  IDX16   FROM    1   BY  1
+                     UNTIL  (IDX16                   >   10 )
+                       OR   (RECE62-HKNCOMBI(IDX16)  =  ZERO)
+      *
+             IF     RECE62-DAISANFLG(IDX16)   =   1
+      *
+               INITIALIZE                       SYUNOU-REC
+               MOVE  RECE62-HOSPNUM         TO  SYU-HOSPNUM
+               MOVE  RECE62-NYUGAIKBN       TO  SYU-NYUGAIKBN
+               MOVE  RECE62-PTID            TO  SYU-PTID
+               MOVE  RECE62-SRYYM           TO  SYU-SRYYMD(1:6)
+               MOVE  "__"                   TO  SYU-SRYYMD(7:2)
+               MOVE  RECE62-HKNCOMBI(IDX16) TO  SYU-HKNCOMBINUM
+               MOVE  SYUNOU-REC             TO  MCPDATA-REC
+               MOVE  "tbl_syunou"           TO  MCP-TABLE
+               MOVE  "key19"                TO  MCP-PATHNAME
+               PERFORM 900-DBSELECT-SEC
+               IF    MCP-RC   =   ZERO
+                 MOVE    "tbl_syunou"       TO  MCP-TABLE
+                 MOVE    "key19"            TO  MCP-PATHNAME
+                 PERFORM  900-SYUNOU-READ-SEC
+                 PERFORM  UNTIL  (FLG-SYUNOU  =  1)
+                   IF    SYU-DENPJTIKBN    NOT =  "3"
+                     IF  SYU-TOTAL-HKNTEN  NOT = ZERO
+                       COMPUTE  WRK-DAISAN-FTNMONEY =
+                                WRK-DAISAN-FTNMONEY +
+                                SYU-SYUCOMPFTN
+                     END-IF
+                   END-IF
+                   MOVE    "tbl_syunou"     TO  MCP-TABLE
+                   MOVE    "key19"          TO  MCP-PATHNAME
+                   PERFORM  900-SYUNOU-READ-SEC
+                 END-PERFORM
+               END-IF
+               MOVE      "tbl_syunou"       TO  MCP-TABLE
+               MOVE      "key19"            TO  MCP-PATHNAME
+               PERFORM    900-CLOSE-SEC
+      *
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+       211B2-DAISAN-CHECK3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6270,6 +6422,7 @@
                                MOVE   ZERO   TO   WRK-SETCOM-JIDO2
                                MOVE   ZERO   TO   FLG-KIN-OKIKAE
                                MOVE   ZERO   TO   FLG-KIN-OKIKAE2
+                               MOVE   ZERO   TO   FLG-KIN-OKIKAE3
                                MOVE   ZERO   TO   FLG-HENSYU-NG
                                MOVE   ZERO   TO   FLG-HENSYU-NG2
                                MOVE   ZERO   TO   FLG-HENSYU-ARI
@@ -6341,6 +6494,7 @@
                                       MOVE   ZERO   TO  WRK-SETCOM-JIDO2
                                       MOVE   ZERO   TO   FLG-KIN-OKIKAE
                                       MOVE   ZERO   TO   FLG-KIN-OKIKAE2
+                                      MOVE   ZERO   TO   FLG-KIN-OKIKAE3
                                       MOVE   ZERO   TO   FLG-HENSYU-NG
                                       MOVE   ZERO   TO   FLG-HENSYU-NG2
                                       MOVE   ZERO   TO   FLG-HENSYU-ARI
@@ -6628,6 +6782,14 @@
                   MOVE    1     TO    FLG-HENSYU-NG
                END-IF
             END-IF
+             IF      SRY-SRYCD(IDX2)   =  "099999922"
+               IF    (ACCT-JIHOKBN            =   SPACE)
+               AND   (RECE62-DAISANFLG(IDX1)  =    1   )
+                  MOVE    1     TO    FLG-KIN-OKIKAE3
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
+             END-IF
             IF       SRY-SRYCD(IDX2)(1:5)  =
                      "09960" OR "09970" OR "09980"
                   MOVE    1     TO    FLG-HENSYU-NG
@@ -6682,6 +6844,7 @@
                     (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
             OR     ( FLG-KIN-OKIKAE    NOT =  ZERO         )
             OR     ( FLG-KIN-OKIKAE2   NOT =  ZERO         )
+            OR     ( FLG-KIN-OKIKAE3   NOT =  ZERO         )
             OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
             OR     ( FLG-HENSYU-NG2    NOT =  ZERO         )
             OR     ( SRY-SRYCD(IDX2)       =
@@ -6788,6 +6951,7 @@
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
               OR     ( FLG-KIN-OKIKAE    NOT =  ZERO         )
               OR     ( FLG-KIN-OKIKAE2   NOT =  ZERO         )
+              OR     ( FLG-KIN-OKIKAE3   NOT =  ZERO         )
               OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
               OR     ( FLG-HENSYU-NG2    NOT =  ZERO         )
               OR     ( SRY-SRYCD(IDX2)       =
@@ -6823,6 +6987,18 @@
                      CONTINUE
                    ELSE
                      PERFORM   2101215-ICHIBUCOM-HENSYU2-SEC
+                   END-IF
+                 END-IF
+               END-IF
+               IF   FLG-KIN-OKIKAE3  NOT =  ZERO
+                 IF  WRK-TAIHI-ZAINUM3 =  ZERO
+                   MOVE   ACCT-ZAINUM     TO   WRK-TAIHI-ZAINUM3
+                 END-IF
+                 IF  ACCT-ZAINUM  =  WRK-TAIHI-ZAINUM3
+                   IF  SRY-SRYCD(IDX2) = "099999922"
+                     CONTINUE
+                   ELSE
+                     PERFORM   2101215-ICHIBUCOM-HENSYU3-SEC
                    END-IF
                  END-IF
                END-IF
@@ -8602,6 +8778,87 @@
       *
            .
        2101215-ICHIBUCOM-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    【レセプト】（第三者行為）一部負担金金額置換コメント編集
+      *****************************************************************
+       2101215-ICHIBUCOM-HENSYU3-SEC     SECTION.
+      *
+           MOVE    SPACE                  TO  WRK-INPUTCOMENT
+           MOVE    SPACE                  TO  WRK-INPUTCOMENT2
+           MOVE    ZERO                   TO  WRK-INPUTCOMENT-KIN
+           MOVE    SPACE                  TO  WRK-INPUTCOMENT-KIN2
+      *
+           IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                  (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
+           AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
+      *
+             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
+             MOVE    SRY-PTID             TO  PTCOM-PTID
+             MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
+             MOVE    SRY-SRYCD    (IDX2)  TO  PTCOM-SRYCD
+             MOVE    SRY-INPUTNUM (IDX2)  TO  PTCOM-RENNUM
+             PERFORM 950-PTCOM-READ-SEC
+             MOVE    PTCOM-INPUTCOMENT    TO  WRK-INPUTCOMENT
+      *
+             IF  WRK-INPUTCOMENT(1:12)  =  "一部負担額："
+               MOVE  WRK-INPUTCOMENT(13:14)
+                                          TO  WRK-INPUTCOMENT2
+               IF  WRK-INPUTCOMENT2 = "　　　　　　　" OR SPACE
+                 CONTINUE
+               ELSE
+                 PERFORM VARYING IDW7 FROM  1  BY  2
+                          UNTIL  IDW7   >  14
+                   COMPUTE  IDW8 = (IDW7 + 1) / 2
+                   EVALUATE  WRK-INPUTCOMENT2(IDW7:2)
+                     WHEN     "０"
+                        MOVE   "0"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "１"
+                        MOVE   "1"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "２"
+                        MOVE   "2"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "３"
+                        MOVE   "3"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "４"
+                        MOVE   "4"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "５"
+                        MOVE   "5"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "６"
+                        MOVE   "6"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "７"
+                        MOVE   "7"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "８"
+                        MOVE   "8"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "９"
+                        MOVE   "9"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     OTHER
+                        MOVE    14  TO  IDW7
+                   END-EVALUATE
+                 END-PERFORM
+                 IF  WRK-INPUTCOMENT-KIN2-T NOT = SPACE
+                   MOVE    8    TO   IDW8
+                   PERFORM VARYING IDW7 FROM  7  BY -1
+                            UNTIL  IDW7   <   1
+                     IF  WRK-INPUTCOMENT-KIN2-T(IDW7:1) = SPACE
+                        CONTINUE
+                     ELSE
+                        COMPUTE  IDW8 = IDW8 - 1
+                        MOVE  WRK-INPUTCOMENT-KIN2-T(IDW7:1)
+                                TO   WRK-INPUTCOMENT-KIN-T(IDW8:1)
+                     END-IF
+                   END-PERFORM
+                   MOVE    1    TO   RECE62-DAISAN-CHIKAN
+                   MOVE  WRK-INPUTCOMENT-KIN
+                                TO   RECE62-DAISAN-FTNMONEY
+                 END-IF
+               END-IF
+             END-IF
+      *
+           END-IF
+      *
+           .
+       2101215-ICHIBUCOM-HENSYU3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -16161,9 +16418,7 @@
               END-IF
            END-IF
       *
-           IF   RECE62-DAISAN-GAITO   NOT =   1
-             PERFORM       2104E-TOKUSITU-HANTEI-SEC
-           END-IF
+           PERFORM         2104E-TOKUSITU-HANTEI-SEC
       *
            IF    RECE62-KOUREI    =    "1"  OR  "2"
               IF    RECE62-KOUREI    =    "1"
@@ -16173,12 +16428,28 @@
               END-IF
            END-IF
       *
+           PERFORM         211B-DAISAN-CHECK-SEC
+           IF   RECE62-DAISAN-GAITO          =   1
+           AND  RECE62-DAISAN-GENBUTU-GAITO  =  ZERO
+             IF   RECE62-KOUREI  =  "1"
+               MOVE    1       TO   RECE62-DAISAN-KOUREI
+             END-IF
+             MOVE      SPACE   TO   RECE62-KOUREI
+           END-IF
+      *
+           IF   RECE62-DAISAN-GAITO  =   1
+             CONTINUE
+           ELSE
+             PERFORM       2110-GENGAKU-HANTEI-SEC
+           END-IF
+      *
            IF   (IDZ                       =     1   )
            AND  (RECE62-SRYYM             >= "201204")
-           AND  (RECE62-DAISAN-GAITO   NOT =     1   )
               IF   (RECE62-HKNNUM       =   SPACE                  )
               OR   (RECE62-HKNNUM(1:2)  =   "98" OR "90" OR "91"   )
               OR   (RECE62-HKNNUM       =   "068" OR "069" OR "040")
+              OR   ((RECE62-DAISAN-GAITO          =   1           ) AND
+                    (RECE62-DAISAN-GENBUTU-GAITO  =  ZERO         ))
                  CONTINUE
               ELSE
                  PERFORM   2104J-ZEROKOGAITO-CHECK-SEC
@@ -16202,7 +16473,10 @@
              END-IF
            END-IF
       *
-           IF   RECE62-DAISAN-GAITO   NOT =   1
+           IF   RECE62-DAISAN-GAITO          =   1
+           AND  RECE62-DAISAN-GENBUTU-GAITO  =  ZERO
+             CONTINUE
+           ELSE
              PERFORM       2104D-TOKU75-HANTEI-SEC
            END-IF
       *
@@ -16346,22 +16620,26 @@
                    PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL   IDX1    >       10
                            OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      SYU-HKNCOMBINUM   =
-                                                RECE62-HKNCOMBI (IDX1)
-                           IF  SYU-DENPJTIKBN    NOT =  "3"
-                             IF  (SYU-TOTAL-HKNTEN    NOT = ZERO)
-                             OR  (SYU-SYUSKJ-RYOYOHI  NOT = ZERO)
-                             OR  (SYU-KOH1SKJ-RYOYOHI NOT = ZERO)
-                              IF  RECE62-DAISANFLG(IDX1)  NOT =  1
-                                PERFORM 21044-RECE62-FTN-HENSYU-SEC
-                              ELSE
-                                PERFORM 2104K-RECE62-FTN-HENSYU-XXX-SEC
-                              END-IF
-                             END-IF
-                             MOVE   1   TO   FLG-SYUNOU-ARI
-                           END-IF
-                           MOVE    10              TO  IDX1
+                     IF    SYU-HKNCOMBINUM  =  RECE62-HKNCOMBI(IDX1)
+                       IF  SYU-DENPJTIKBN    NOT =  "3"
+                        IF  (SYU-TOTAL-HKNTEN    NOT = ZERO)
+                        OR  (SYU-SYUSKJ-RYOYOHI  NOT = ZERO)
+                        OR  (SYU-KOH1SKJ-RYOYOHI NOT = ZERO)
+                         IF  RECE62-DAISANFLG(IDX1) =  1
+                          IF   (RECE62-DAISAN-GAITO    =   1 OR 2)
+                          AND  (RECE62-DAISAN-GENBUTU-GAITO  =  1)
+                            PERFORM 21044-RECE62-FTN-HENSYU-SEC
+                          ELSE
+                            PERFORM 2104K-RECE62-FTN-HENSYU-XXX-SEC
+                          END-IF
+                         ELSE
+                            PERFORM 21044-RECE62-FTN-HENSYU-SEC
+                         END-IF
+                        END-IF
+                        MOVE    1           TO   FLG-SYUNOU-ARI
                        END-IF
+                       MOVE    10           TO  IDX1
+                     END-IF
                    END-PERFORM          
                    MOVE    "tbl_syunou"     TO   MCP-TABLE
                    MOVE    "key17"          TO   MCP-PATHNAME
@@ -17325,14 +17603,14 @@
               MOVE    1     TO   FLG-GENMEN-ARI
            ELSE
               MOVE    1     TO   FLG-GENMEN-NASI
-              ADD   SYU-HKNTEKMONEY
-                            TO   WRK-GENMEN-NASI-KIN
-              ADD   SYU-KOH-FTN
-                            TO   WRK-GENMEN-NASI-KIN
-              ADD   SYU-SKYMONEY-SKJ
-                            TO   WRK-GENMEN-NASI-SKJ
-              ADD   SYU-SKYMONEY-LIFE
-                            TO   WRK-GENMEN-NASI-SKJ
+              IF     SYU-KOH-HKNNUM(1) = "970"
+                ADD   SYU-SYUCOMPFTN     TO   WRK-GENMEN-NASI-KIN
+              ELSE
+                ADD   SYU-HKNTEKMONEY    TO   WRK-GENMEN-NASI-KIN
+                ADD   SYU-KOH-FTN        TO   WRK-GENMEN-NASI-KIN
+              END-IF
+              ADD     SYU-SKYMONEY-SKJ   TO   WRK-GENMEN-NASI-SKJ
+              ADD     SYU-SKYMONEY-LIFE  TO   WRK-GENMEN-NASI-SKJ
            END-IF
       *
            IF   (FLG-SAIGAI-TAISYO  =  1    )
@@ -17765,11 +18043,12 @@
       ***    COMPUTE  WRK-FTNKEI-Z = WRK-FTNKEI-Z * 10
       ***  END-IF
       *
-           IF   ( SYU-KOH-FTN         =   ZERO   )                 
-           AND  ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027"  )        
-           AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )                 
-           AND  ( SYU-KOH-HKNNUM(3)   =   SPACE  )                 
-           AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )                 
+           IF  (( SYU-KOH-FTN         =   ZERO          ) AND
+                ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027") AND
+                ( SYU-KOH-HKNNUM(2)   =   SPACE         ) AND
+                ( SYU-KOH-HKNNUM(3)   =   SPACE         ) AND
+                ( SYU-KOH-HKNNUM(4)   =   SPACE         ))
+           OR  (  SYU-KOH-HKNNUM(1)   =   "970"          )
              IF   FLG-WRKFILE-CLEAR   =   ZERO
                MOVE    1      TO    FLG-HOKENICHIBU-SYU
                IF    RECE62-RJNHKNNUM    NOT =    SPACE            
@@ -18002,11 +18281,12 @@
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
            END-IF
       *
-           IF   ( SYU-KOH-FTN         =   ZERO   )
-           AND  ( SYU-KOH-HKNNUM(1)   =   SPACE  )
-           AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )
-           AND  ( SYU-KOH-HKNNUM(3)   =   SPACE  )
-           AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )
+           IF  (( SYU-KOH-FTN         =   ZERO  ) AND
+                ( SYU-KOH-HKNNUM(1)   =   SPACE ) AND
+                ( SYU-KOH-HKNNUM(2)   =   SPACE ) AND
+                ( SYU-KOH-HKNNUM(3)   =   SPACE ) AND
+                ( SYU-KOH-HKNNUM(4)   =   SPACE ))
+           OR  (  SYU-KOH-HKNNUM(1)   =   "970"  )
              IF   FLG-WRKFILE-CLEAR   =   ZERO
                  MOVE      1             TO   FLG-HOKENICHIBU-SYU
                  ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)
@@ -20772,22 +21052,30 @@
       *
                 ADD    WRK-SKY-KEISAN   TO   WRK-SKY-ICHIBUFTN
       *
-                COMPUTE  WRK-SKY-KEISAN  =   SYU-HKNTEKMONEY
-                                         +   SYU-KOH-FTN
+                IF     SYU-KOH-HKNNUM(1) = "970"
+                  COMPUTE  WRK-SKY-KEISAN  =   SYU-SYUCOMPFTN
+                ELSE
+                  COMPUTE  WRK-SKY-KEISAN  =   SYU-HKNTEKMONEY
+                                           +   SYU-KOH-FTN
+                END-IF
                 ADD    WRK-SKY-KEISAN   TO   WRK-SKY-FTNMONEY
       *
-                ADD    SYU-HKNTEKMONEY  TO   RECE62-SKYIRYO-ICHIBUFTN
-                ADD    SYU-KOH-FTN      TO   RECE62-SKYIRYO-ICHIBUFTN
+                IF     SYU-KOH-HKNNUM(1) = "970"
+                  ADD  SYU-SYUCOMPFTN   TO   RECE62-SKYIRYO-ICHIBUFTN
+                ELSE
+                  ADD  SYU-HKNTEKMONEY  TO   RECE62-SKYIRYO-ICHIBUFTN
+                  ADD  SYU-KOH-FTN      TO   RECE62-SKYIRYO-ICHIBUFTN
+                END-IF
               END-IF
       *
               COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
                                        *  10
               ADD      WRK-SKY-KEISAN   TO   WRK-SKY-ZENGAKU
       *
-              IF  (SYU-KOH-HKNNUM(1) = SPACE)
-              AND (SYU-KOH-HKNNUM(2) = SPACE)
-              AND (SYU-KOH-HKNNUM(3) = SPACE)
-              AND (SYU-KOH-HKNNUM(4) = SPACE)
+              IF  (SYU-KOH-HKNNUM(1) = SPACE OR "970")
+              AND (SYU-KOH-HKNNUM(2) = SPACE         )
+              AND (SYU-KOH-HKNNUM(3) = SPACE         )
+              AND (SYU-KOH-HKNNUM(4) = SPACE         )
                 CONTINUE
               ELSE
                 COMPUTE   WRK-SKY-KEISAN =  SYU-TOTAL-HKNTEN
@@ -22084,8 +22372,13 @@
       *     請求点数から第三者行為の点数を差し引く
       *
            MOVE     RECE62-TOTALTEN(1)   TO   WRK-TAIHI-TOTALTEN
-           COMPUTE  WRK-TAIHI-TOTALTEN = WRK-TAIHI-TOTALTEN
-                                       - RECE62-DAISAN-TOTALTEN
+           IF   (RECE62-DAISAN-GAITO    =   1 OR 2)
+           AND  (RECE62-DAISAN-GENBUTU-GAITO  =  1)
+             CONTINUE
+           ELSE
+             COMPUTE  WRK-TAIHI-TOTALTEN = WRK-TAIHI-TOTALTEN
+                                         - RECE62-DAISAN-TOTALTEN
+           END-IF
       *
            IF   FLG-ZEROKOGAITO   =   1
               IF   (RECE62-KOUREI    =  "1" OR "2")

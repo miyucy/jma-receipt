@@ -253,6 +253,7 @@
       *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜ½¤Àµ
       *  04.07.17    NACL-ÌçÏÆ    14/06/17  ±ÉÍÜ´ÉÍýÂÎÀ©¸º»»µ¬Äê³ºÅöÂÐ±þ
       *  04.07.18    NACL-ÌçÏÆ    14/07/31  ±ÉÍÜ´ÉÍýÂÎÀ©¸º»»µ¬Äê³ºÅöÂÐ±þ
+      *  04.07.19    NACL-ÌçÏÆ    14/07/31  Âè»°¼Ô¹Ô°Ù¤Î¸½ÊªµëÉÕÂÐ±þ
       *
       *  04.08.01    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
       *  04.08.02    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
@@ -439,6 +440,8 @@
            03  FLG-HENSYU-NG                           PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
            03  FLG-HENSYU-OK                           PIC 9(01).
+           03  FLG-DAISAN-GENBUTU                      PIC 9(01).
+           03  FLG-KIN-OKIKAE                          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -482,6 +485,8 @@
            03  IDW4                                    PIC 9(03).
            03  IDW5                                    PIC 9(03).
            03  IDW6                                    PIC 9(03).
+           03  IDW7                                    PIC 9(03).
+           03  IDW8                                    PIC 9(03).
            03  ID1                                     PIC 9(03).
            03  ID2                                     PIC 9(03).
            03  ID3                                     PIC 9(03).
@@ -833,6 +838,7 @@
       *
            03  WRK-CHECK-SRYCD                 PIC X(09).
       *
+           03  WRK-DAISAN-FTNMONEY             PIC 9(08).
            03  WRK-DAISAN-DAISANKBN            PIC X(01).
       *
            03  WRK-S1                          PIC 9(03).
@@ -840,6 +846,15 @@
            03  WRK-S3                          PIC 9V99999.
            03  WRK-S4                          PIC 9V99.
            03  WRK-S5                          PIC 9V99.
+      *
+           03  WRK-TAIHI-ZAINUM                PIC 9(08).
+      *
+           03  WRK-INPUTCOMENT                 PIC X(80).
+           03  WRK-INPUTCOMENT2                PIC X(14).
+           03  WRK-INPUTCOMENT-KIN-T.
+               05  WRK-INPUTCOMENT-KIN         PIC 9(07).
+           03  WRK-INPUTCOMENT-KIN2-T.
+               05  WRK-INPUTCOMENT-KIN2        PIC X(07).
       *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR                         PIC X(200).
@@ -2195,6 +2210,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            INITIALIZE          WRK-RECE82G-REC
            INITIALIZE          WRK-RECE82C-REC
       *
+           MOVE   ZERO   TO    WRK-TAIHI-ZAINUM
+      *
            PERFORM    290-TENTEKIMATOME-HENSYU-SEC
       *
            PERFORM    220-RECE84-HENSYU-SEC
@@ -2380,6 +2397,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE   ZERO   TO   FLG-SETCOM
                        MOVE   ZERO   TO   WRK-SETCOM-JIDO
                        MOVE   ZERO   TO   WRK-SETCOM-JIDO2
+                       MOVE   ZERO   TO   FLG-KIN-OKIKAE
                        IF  (ACCT-SRYKBN     = "97"     )
                        AND (ACCT-SRYCDTOTAL = 197000470
                                            OR 197001570
@@ -2467,6 +2485,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  MOVE   ZERO   TO   FLG-SETCOM
                                  MOVE   ZERO   TO   WRK-SETCOM-JIDO
                                  MOVE   ZERO   TO   WRK-SETCOM-JIDO2
+                                 MOVE   ZERO   TO   FLG-KIN-OKIKAE
                                  IF    ACCT-SRYKBN  =
                                        "60" OR "64" OR "80"
                                    PERFORM 2203-SINRYO-CHECK-SEC
@@ -2775,6 +2794,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                              -  1
             END-IF
       *
+            IF       SRY-SRYCD(IDX2)  =  "099999922"
+               IF     ACCT-JIHOKBN     =   SPACE
+                  MOVE    1     TO    FLG-KIN-OKIKAE
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
+            END-IF
+      *
             IF       SRY-SRYCD(IDX2)(1:5)  =
                      "09960" OR "09970" OR "09980"
                   MOVE    1     TO    FLG-HENSYU-NG
@@ -2807,6 +2834,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
                     (ACCT-YKZTEN           =  ZERO        ) AND
                     (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
+            OR     ( FLG-KIN-OKIKAE    NOT =  ZERO         )
             OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
             OR     ( SRY-SRYCD(IDX2)       =
                      "099209902" OR "099209903" OR
@@ -2883,6 +2911,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
+              OR     ( FLG-KIN-OKIKAE    NOT =  ZERO         )
               OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
               OR     ( SRY-SRYCD(IDX2)       =
                        "099209902" OR "099209903" OR
@@ -2897,7 +2926,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        "099830101"                           )
               OR     ( SRY-SRYCD(IDX2)       =  "099509901"  )
       *
-               CONTINUE
+               IF   FLG-KIN-OKIKAE   NOT =  ZERO
+                 IF  WRK-TAIHI-ZAINUM  =  ZERO
+                   MOVE   ACCT-ZAINUM     TO   WRK-TAIHI-ZAINUM
+                 END-IF
+                 IF  ACCT-ZAINUM  =  WRK-TAIHI-ZAINUM
+                   IF  SRY-SRYCD(IDX2) = "099999922"
+                     CONTINUE
+                   ELSE
+                     PERFORM   220218-ICHIBUCOM-HENSYU-SEC
+                   END-IF
+                 END-IF
+               END-IF
       *
               ELSE
       *
@@ -5196,6 +5236,87 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *
            .
        220217-TENTEKI-CDKBN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¡Ú¥ì¥»¥×¥È¡Û¡ÊÂè»°¼Ô¹Ô°Ù¡Ë°ìÉôÉéÃ´¶â¶â³ÛÃÖ´¹¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       220218-ICHIBUCOM-HENSYU-SEC     SECTION.
+      *
+           MOVE    SPACE                  TO  WRK-INPUTCOMENT
+           MOVE    SPACE                  TO  WRK-INPUTCOMENT2
+           MOVE    ZERO                   TO  WRK-INPUTCOMENT-KIN
+           MOVE    SPACE                  TO  WRK-INPUTCOMENT-KIN2
+      *
+           IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                  (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
+           AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
+      *
+             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
+             MOVE    SRY-PTID             TO  PTCOM-PTID
+             MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
+             MOVE    SRY-SRYCD    (IDX2)  TO  PTCOM-SRYCD
+             MOVE    SRY-INPUTNUM (IDX2)  TO  PTCOM-RENNUM
+             PERFORM 900-PTCOM-READ-SEC
+             MOVE    PTCOM-INPUTCOMENT    TO  WRK-INPUTCOMENT
+      *
+             IF  WRK-INPUTCOMENT(1:12)  =  "°ìÉôÉéÃ´³Û¡§"
+               MOVE  WRK-INPUTCOMENT(13:14)
+                                          TO  WRK-INPUTCOMENT2
+               IF  WRK-INPUTCOMENT2 = "¡¡¡¡¡¡¡¡¡¡¡¡¡¡" OR SPACE
+                 CONTINUE
+               ELSE
+                 PERFORM VARYING IDW7 FROM  1  BY  2
+                          UNTIL  IDW7   >  14
+                   COMPUTE  IDW8 = (IDW7 + 1) / 2
+                   EVALUATE  WRK-INPUTCOMENT2(IDW7:2)
+                     WHEN     "£°"
+                        MOVE   "0"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£±"
+                        MOVE   "1"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£²"
+                        MOVE   "2"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£³"
+                        MOVE   "3"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£´"
+                        MOVE   "4"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£µ"
+                        MOVE   "5"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£¶"
+                        MOVE   "6"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£·"
+                        MOVE   "7"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£¸"
+                        MOVE   "8"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     "£¹"
+                        MOVE   "9"  TO  WRK-INPUTCOMENT-KIN2-T(IDW8:1)
+                     WHEN     OTHER
+                        MOVE    14  TO  IDW7
+                   END-EVALUATE
+                 END-PERFORM
+                 IF  WRK-INPUTCOMENT-KIN2-T NOT = SPACE
+                   MOVE    8    TO   IDW8
+                   PERFORM VARYING IDW7 FROM  7  BY -1
+                            UNTIL  IDW7   <   1
+                     IF  WRK-INPUTCOMENT-KIN2-T(IDW7:1) = SPACE
+                        CONTINUE
+                     ELSE
+                        COMPUTE  IDW8 = IDW8 - 1
+                        MOVE  WRK-INPUTCOMENT-KIN2-T(IDW7:1)
+                                TO   WRK-INPUTCOMENT-KIN-T(IDW8:1)
+                     END-IF
+                   END-PERFORM
+                   MOVE    1    TO   RECE82-DAISAN-CHIKAN
+                   MOVE  WRK-INPUTCOMENT-KIN
+                                TO   RECE82-FTNMONEY
+                 END-IF
+               END-IF
+             END-IF
+      *
+           END-IF
+      *
+           .
+       220218-ICHIBUCOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12741,20 +12862,40 @@ grpsys     PERFORM  900-DBSELECT-SEC
                          RECE82-KINGAKU-JYU(27)  +
                          RECE82-KINGAKU-JYU(28)   
       *
-               IF   RECE82-TOTALKIN-JYU  NOT =  ZERO
-               AND  RECE82-FTNRATE       NOT =  ZERO
-                 COMPUTE RECE82-FTNMONEY = RECE82-TOTALKIN-JYU
-                                         * RECE82-FTNRATE
-                                         / 100
+               IF    RECE82-DAISAN-CHIKAN   =   1
+                 IF  RECE82-TOTALKIN-JYU < RECE82-FTNMONEY
+                   MOVE   RECE82-TOTALKIN-JYU   TO
+                                           RECE82-FTNMONEY
+                 END-IF
                END-IF
-               IF   WRK-DAISAN-DAISANKBN  =  "1"
-                 COMPUTE  RECE82-FTNMONEY  =
-                          RECE82-FTNMONEY  +  5
-                 COMPUTE  RECE82-FTNMONEY  =
-                          RECE82-FTNMONEY  /  10
-                 COMPUTE  RECE82-FTNMONEY  =
-                          RECE82-FTNMONEY  *  10
-               END-IF
+      *
+      *        Âè»°¼Ô¹Ô°Ù¤Î¸½ÊªµëÉÕÈ½Äê
+               PERFORM   2802-DAISAN-GENBUTU-HANTEI-SEC
+      *
+               EVALUATE  RECE82-DAISAN-GENBUTU-GAITO
+                 WHEN      ZERO
+                   IF    RECE82-DAISAN-CHIKAN   =  ZERO
+                     IF   RECE82-TOTALKIN-JYU  NOT =  ZERO
+                     AND  RECE82-FTNRATE       NOT =  ZERO
+                       COMPUTE RECE82-FTNMONEY = RECE82-TOTALKIN-JYU
+                                               * RECE82-FTNRATE
+                                               / 100
+                     END-IF
+                     IF   WRK-DAISAN-DAISANKBN  =  "1"
+                       COMPUTE  RECE82-FTNMONEY  =
+                                RECE82-FTNMONEY  +  5
+                       COMPUTE  RECE82-FTNMONEY  =
+                                RECE82-FTNMONEY  /  10
+                       COMPUTE  RECE82-FTNMONEY  =
+                                RECE82-FTNMONEY  *  10
+                     END-IF
+                   END-IF
+                 WHEN       1
+                   IF    RECE82-DAISAN-CHIKAN   =  ZERO
+                     PERFORM     2801-DAISAN-CHECK-SEC
+                     MOVE    WRK-DAISAN-FTNMONEY   TO  RECE82-FTNMONEY
+                   END-IF
+               END-EVALUATE
                COMPUTE   RECE82-SKYMONEY = RECE82-TOTALKIN-JYU
                                          - RECE82-FTNMONEY
       *
@@ -12781,6 +12922,100 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
            .
        280-RECE82-REWRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Âè»°¼Ô¹Ô°Ù¤Î°ìÉôÉéÃ´¶â·×»»¡ã¸½ÊªµëÉÕ¡ä
+      *****************************************************************
+       2801-DAISAN-CHECK-SEC      SECTION.
+      *
+           MOVE     ZERO     TO    WRK-DAISAN-FTNMONEY
+      *
+           INITIALIZE                       SYUNOU-REC
+           MOVE  RECE82-HOSPNUM         TO  SYU-HOSPNUM
+           MOVE  RECE82-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE  RECE82-PTID            TO  SYU-PTID
+           MOVE  RECE82-SRYYM           TO  SYU-SRYYMD(1:6)
+           MOVE  "__"                   TO  SYU-SRYYMD(7:2)
+           MOVE  RECE82-HKNCOMBI        TO  SYU-HKNCOMBINUM
+           MOVE  SYUNOU-REC             TO  MCPDATA-REC
+           MOVE  "tbl_syunou"           TO  MCP-TABLE
+           MOVE  "key19"                TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF    MCP-RC   =   ZERO
+             MOVE    "tbl_syunou"       TO  MCP-TABLE
+             MOVE    "key19"            TO  MCP-PATHNAME
+             PERFORM  900-SYUNOU-READ-SEC
+             PERFORM  UNTIL  (FLG-SYUNOU  =  1)
+               IF    SYU-DENPJTIKBN    NOT =  "3"
+                 IF  SYU-TOTAL-HKNTEN  NOT = ZERO
+                   COMPUTE  WRK-DAISAN-FTNMONEY  =
+                            WRK-DAISAN-FTNMONEY  +
+                            SYU-SYUCOMPFTN
+                 END-IF
+               END-IF
+               MOVE    "tbl_syunou"     TO  MCP-TABLE
+               MOVE    "key19"          TO  MCP-PATHNAME
+               PERFORM  900-SYUNOU-READ-SEC
+             END-PERFORM
+           END-IF
+           MOVE      "tbl_syunou"       TO  MCP-TABLE
+           MOVE      "key19"            TO  MCP-PATHNAME
+           PERFORM    900-CLOSE-SEC
+      *
+           .
+       2801-DAISAN-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Âè»°¼Ô¹Ô°Ù¤Î¸½ÊªµëÉÕÈ½Äê
+      *****************************************************************
+       2802-DAISAN-GENBUTU-HANTEI-SEC      SECTION.
+      *
+      *    ¸½ÊªµëÉÕ·×»»ÂÐ¾Ý¤«¥Á¥§¥Ã¥¯
+      *    Á´¤Æ¤Î¼ýÇ¼¤¬¸½ÊªµëÉÕ·×»»¤µ¤ì¤Æ¤¤¤ë¤«¥Á¥§¥Ã¥¯
+           MOVE     ZERO       TO     FLG-DAISAN-GENBUTU
+           IF    RECE82-DAISAN-GENBUTU-GAITO   =   1
+      *
+             INITIALIZE                       SYUNOU-REC
+             MOVE  RECE82-HOSPNUM         TO  SYU-HOSPNUM
+             MOVE  RECE82-NYUGAIKBN       TO  SYU-NYUGAIKBN
+             MOVE  RECE82-PTID            TO  SYU-PTID
+             MOVE  RECE82-SRYYM           TO  SYU-SRYYMD(1:6)
+             MOVE  "__"                   TO  SYU-SRYYMD(7:2)
+             MOVE  RECE82-HKNCOMBI        TO  SYU-HKNCOMBINUM
+             MOVE  SYUNOU-REC             TO  MCPDATA-REC
+             MOVE  "tbl_syunou"           TO  MCP-TABLE
+             MOVE  "key19"                TO  MCP-PATHNAME
+             PERFORM 900-DBSELECT-SEC
+             IF    MCP-RC   =   ZERO
+               MOVE    "tbl_syunou"       TO  MCP-TABLE
+               MOVE    "key19"            TO  MCP-PATHNAME
+               PERFORM  900-SYUNOU-READ-SEC
+               PERFORM  UNTIL  (FLG-SYUNOU  =  1)
+                 IF    SYU-DENPJTIKBN    NOT =  "3"
+                   IF  SYU-TOTAL-HKNTEN  NOT = ZERO
+                   AND SYU-SKJ-FTNGAKU(2)    = ZERO
+                     MOVE     1           TO  FLG-DAISAN-GENBUTU
+                   END-IF
+                 END-IF
+                 MOVE    "tbl_syunou"     TO  MCP-TABLE
+                 MOVE    "key19"          TO  MCP-PATHNAME
+                 PERFORM  900-SYUNOU-READ-SEC
+               END-PERFORM
+             END-IF
+             MOVE      "tbl_syunou"       TO  MCP-TABLE
+             MOVE      "key19"            TO  MCP-PATHNAME
+             PERFORM    900-CLOSE-SEC
+      *
+             IF   FLG-DAISAN-GENBUTU    =   1
+               MOVE     ZERO       TO     RECE82-DAISAN-GENBUTU-GAITO
+             END-IF
+      *
+           END-IF
+      *
+           .
+       2802-DAISAN-GENBUTU-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************

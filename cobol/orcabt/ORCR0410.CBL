@@ -113,6 +113,7 @@
       *  04.07.12    NACL-門脇    14/05/08  労災レセ「新継再別」記載修正
       *  04.07.13    NACL-門脇    14/05/27  第三者行為の給付割合の設定
       *                                     （社保前期高齢２割）
+      *  04.07.14    NACL-門脇    14/07/31  第三者行為の現物給付対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
@@ -1044,6 +1045,14 @@ grpsys         PERFORM 900-DBSELECT-SEC
                         MOVE   PTRSI-JIBAISEIKBN
                                                 TO  RECE41-SEIKYUKBN
                         MOVE   PTRSI-SYOCD      TO  RECE41-SYOCD
+      *
+                        IF     RECE41-SRYYM   >=  "201204"
+                          CONTINUE
+      *                   現物給付対象とする
+      *???                IF     PTRSI-&&&&&  =  "?"
+      *???                  MOVE   1   TO   RECE41-DAISAN-GENBUTU-GAITO
+      *???                END-IF
+                        END-IF
                    END-IF
                END-IF
       *    END-IF

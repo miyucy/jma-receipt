@@ -160,6 +160,7 @@
       *  04.07.09    NACL-門脇    14/06/17  栄養管理体制減算規定該当対応
       *  04.07.10    NACL-門脇    14/07/17  マル長患者で、月途中に公費が追加と
       *                                     なった場合の対応
+      *  04.07.11    NACL-門脇    14/07/31  第三者行為の現物給付対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2025,6 +2026,11 @@
                       END-EVALUATE
                   END-IF
                 END-IF
+              END-IF
+      *
+      *       第三者行為分の計算優先順位を下げる
+              IF  WRK-HANBETU-KOH1HKNNUM(IDX) = "970"
+                  MOVE    "1"   TO  WRK-HANBETU-DAISANFLG(IDX)
               END-IF
       *
            END-PERFORM.
