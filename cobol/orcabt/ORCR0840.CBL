@@ -1376,13 +1376,14 @@
       *
            COPY    "COMMON-SPA".
       *
-       01  WRK-RECE82G-REC. 
+      *    ＲＥＣＥ８２のワークレコード
+       01  WRK-RECE8G-REC. 
            COPY    "CPRCF082.INC"  REPLACING  //RECE82//
-                                   BY         //WRK-RECE82G//.
+                                   BY         //WRK-RECE8G//.
       *
-       01  WRK-RECE82C-REC. 
+       01  WRK-RECE8C-REC. 
            COPY    "CPRCF082.INC"  REPLACING  //RECE82//
-                                   BY         //WRK-RECE82C//.
+                                   BY         //WRK-RECE8C//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2207,8 +2208,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE   ZERO   TO    WRK-ZAITENNASHI
       *
-           INITIALIZE          WRK-RECE82G-REC
-           INITIALIZE          WRK-RECE82C-REC
+           INITIALIZE          WRK-RECE8G-REC
+           INITIALIZE          WRK-RECE8C-REC
       *
            MOVE   ZERO   TO    WRK-TAIHI-ZAINUM
       *
@@ -5550,8 +5551,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                    (TNS-TEN   *   ACCT-ZAIKAISU)
                    ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE82G-TENSU(2)  =
-                                    WRK-RECE82G-TENSU(2)  +
+                         COMPUTE    WRK-RECE8G-TENSU(2)  =
+                                    WRK-RECE8G-TENSU(2)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE82-TENSU(2)  =
@@ -5562,8 +5563,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE82G-TENSU(3)  =
-                              WRK-RECE82G-TENSU(3)  +
+                   COMPUTE    WRK-RECE8G-TENSU(3)  =
+                              WRK-RECE8G-TENSU(3)  +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    COMPUTE    RECE82-TENSU(3)  =
@@ -5641,8 +5642,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU(10)  =
                              RECE82-TENSU(10)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(10)  =
-                             WRK-RECE82C-TENSU(10)  +
+                   COMPUTE   WRK-RECE8C-TENSU(10)  =
+                             WRK-RECE8C-TENSU(10)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
       *    静脈内注射のレセ点数欄の編集
                WHEN    "32"
@@ -5650,22 +5651,22 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU(11)  =
                              RECE82-TENSU(11)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(11)  =
-                             WRK-RECE82C-TENSU(11)  +
+                   COMPUTE   WRK-RECE8C-TENSU(11)  =
+                             WRK-RECE8C-TENSU(11)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE   WRK-RECE82G-TENSU(12)  =
-                             WRK-RECE82G-TENSU(12)  +
+                   COMPUTE   WRK-RECE8G-TENSU(12)  =
+                             WRK-RECE8G-TENSU(12)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    ADD    WK-ZAIKAISU    TO   RECE82-KAISU(12)
                    COMPUTE   RECE82-TENSU(12)  =
                              RECE82-TENSU(12)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(12)  =
-                             WRK-RECE82C-TENSU(12)  +
+                   COMPUTE   WRK-RECE8C-TENSU(12)  =
+                             WRK-RECE8C-TENSU(12)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  END-IF
       *    処置のレセ点数欄の編集
@@ -5964,8 +5965,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                      END-IF
                    ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE82G-TENSU(2)  =
-                                    WRK-RECE82G-TENSU(2)  +
+                         COMPUTE    WRK-RECE8G-TENSU(2)  =
+                                    WRK-RECE8G-TENSU(2)  +
                                    (WK-ZAITEN *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE82-TENSU(2)  =
@@ -5977,8 +5978,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                WHEN    "14"
                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE82G-TENSU(21) =
-                              WRK-RECE82G-TENSU(21) +
+                   COMPUTE    WRK-RECE8G-TENSU(21) =
+                              WRK-RECE8G-TENSU(21) +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    COMPUTE    RECE82-TENSU(21)  =
@@ -5991,8 +5992,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                  END-IF
                 ELSE
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE82G-TENSU(22) =
-                              WRK-RECE82G-TENSU(22) +
+                   COMPUTE    WRK-RECE8G-TENSU(22) =
+                              WRK-RECE8G-TENSU(22) +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    EVALUATE  WRK-PARA-JIBAIPRTKBN
@@ -6126,8 +6127,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU-YAK(12)  =
                              RECE82-TENSU-YAK(12)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU-YAK(12)  =
-                             WRK-RECE82C-TENSU-YAK(12)  +
+                   COMPUTE   WRK-RECE8C-TENSU-YAK(12)  =
+                             WRK-RECE8C-TENSU-YAK(12)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  ELSE
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(12)
@@ -6137,8 +6138,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU-YAK(13)  =
                              RECE82-TENSU-YAK(13)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU-YAK(13)  =
-                             WRK-RECE82C-TENSU-YAK(13)  +
+                   COMPUTE   WRK-RECE8C-TENSU-YAK(13)  =
+                             WRK-RECE8C-TENSU-YAK(13)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  END-IF
       *    静脈内注射のレセ点数欄の編集
@@ -6151,8 +6152,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU-YAK(12)  =
                              RECE82-TENSU-YAK(12)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU-YAK(12)  =
-                             WRK-RECE82C-TENSU-YAK(12)  +
+                   COMPUTE   WRK-RECE8C-TENSU-YAK(12)  =
+                             WRK-RECE8C-TENSU-YAK(12)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  ELSE
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(12)
@@ -6162,16 +6163,16 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU-YAK(13)  =
                              RECE82-TENSU-YAK(13)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU-YAK(13)  =
-                             WRK-RECE82C-TENSU-YAK(13)  +
+                   COMPUTE   WRK-RECE8C-TENSU-YAK(13)  =
+                             WRK-RECE8C-TENSU-YAK(13)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  END-IF
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
                 IF   WRK-PARA-JIBAIPRTKBN  =  "2"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE   WRK-RECE82G-TENSU-YAK(12)  =
-                             WRK-RECE82G-TENSU-YAK(12)  +
+                   COMPUTE   WRK-RECE8G-TENSU-YAK(12)  =
+                             WRK-RECE8G-TENSU-YAK(12)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(11)
@@ -6181,14 +6182,14 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU-YAK(12)  =
                              RECE82-TENSU-YAK(12)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU-YAK(12)  =
-                             WRK-RECE82C-TENSU-YAK(12)  +
+                   COMPUTE   WRK-RECE8C-TENSU-YAK(12)  =
+                             WRK-RECE8C-TENSU-YAK(12)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  END-IF
                 ELSE
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE   WRK-RECE82G-TENSU-YAK(13)  =
-                             WRK-RECE82G-TENSU-YAK(13)  +
+                   COMPUTE   WRK-RECE8G-TENSU-YAK(13)  =
+                             WRK-RECE8G-TENSU-YAK(13)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(12)
@@ -6198,8 +6199,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU-YAK(13)  =
                              RECE82-TENSU-YAK(13)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU-YAK(13)  =
-                             WRK-RECE82C-TENSU-YAK(13)  +
+                   COMPUTE   WRK-RECE8C-TENSU-YAK(13)  =
+                             WRK-RECE8C-TENSU-YAK(13)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  END-IF
                 END-IF
@@ -6816,8 +6817,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                    (TNS-TEN   *   ACCT-ZAIKAISU)
                    ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE82G-TENSU(2)  =
-                                    WRK-RECE82G-TENSU(2)  +
+                         COMPUTE    WRK-RECE8G-TENSU(2)  =
+                                    WRK-RECE8G-TENSU(2)  +
                                    (WK-ZAITEN *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE82-TENSU(2)  =
@@ -6830,8 +6831,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    END-IF                   
                  ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE82G-TENSU(2)  =
-                                    WRK-RECE82G-TENSU(2)  +
+                         COMPUTE    WRK-RECE8G-TENSU(2)  =
+                                    WRK-RECE8G-TENSU(2)  +
                                    (WK-ZAITEN *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE82-TENSU(2)  =
@@ -6847,12 +6848,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                  IF  ACCT-ZAIKBN   =    2
                    EVALUATE  WRK-PARA-JIBAIPRTKBN
                      WHEN      "0"
-                       COMPUTE    WRK-RECE82G-TENSU(28) =
-                                  WRK-RECE82G-TENSU(28) +
+                       COMPUTE    WRK-RECE8G-TENSU(28) =
+                                  WRK-RECE8G-TENSU(28) +
                                  (WK-ZAITEN     *   WK-ZAIKAISU)
                      WHEN      "1"
-                       COMPUTE    WRK-RECE82G-TENSU(27) =
-                                  WRK-RECE82G-TENSU(27) +
+                       COMPUTE    WRK-RECE8G-TENSU(27) =
+                                  WRK-RECE8G-TENSU(27) +
                                  (WK-ZAITEN     *   WK-ZAIKAISU)
                    END-EVALUATE
                  ELSE
@@ -7033,8 +7034,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   TBL-YKZTEN-JI(11)  =
                              TBL-YKZTEN-JI(11)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(11)  =
-                             WRK-RECE82C-TENSU(11)  +
+                   COMPUTE   WRK-RECE8C-TENSU(11)  =
+                             WRK-RECE8C-TENSU(11)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                    COMPUTE   TBL-YKZTEN-JI-C(11)  =
                              TBL-YKZTEN-JI-C(11)  +
@@ -7054,8 +7055,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   TBL-YKZTEN-JI(12)  =
                              TBL-YKZTEN-JI(12)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(12)  =
-                             WRK-RECE82C-TENSU(12)  +
+                   COMPUTE   WRK-RECE8C-TENSU(12)  =
+                             WRK-RECE8C-TENSU(12)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                    COMPUTE   TBL-YKZTEN-JI-C(12)  =
                              TBL-YKZTEN-JI-C(12)  +
@@ -7063,8 +7064,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE   WRK-RECE82G-TENSU(13)   =
-                             WRK-RECE82G-TENSU(13)   +
+                   COMPUTE   WRK-RECE8G-TENSU(13)   =
+                             WRK-RECE8G-TENSU(13)   +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(13)
@@ -7080,8 +7081,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   TBL-YKZTEN-JI(13)  =
                              TBL-YKZTEN-JI(13)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(13)  =
-                             WRK-RECE82C-TENSU(13)  +
+                   COMPUTE   WRK-RECE8C-TENSU(13)  =
+                             WRK-RECE8C-TENSU(13)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                    COMPUTE   TBL-YKZTEN-JI-C(13)  =
                              TBL-YKZTEN-JI-C(13)  +
@@ -7475,8 +7476,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          CONTINUE
                    ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE82G-TENSU(9)  =
-                                    WRK-RECE82G-TENSU(9)  +
+                         COMPUTE    WRK-RECE8G-TENSU(9)  =
+                                    WRK-RECE8G-TENSU(9)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE82-TENSU(9)   =
@@ -7487,8 +7488,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE82G-TENSU(14) =
-                              WRK-RECE82G-TENSU(14) +
+                   COMPUTE    WRK-RECE8G-TENSU(14) =
+                              WRK-RECE8G-TENSU(14) +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
@@ -7633,8 +7634,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU(25)  =
                              RECE82-TENSU(25)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(25)  =
-                             WRK-RECE82C-TENSU(25)  +
+                   COMPUTE   WRK-RECE8C-TENSU(25)  =
+                             WRK-RECE8C-TENSU(25)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
       *    静脈内注射のレセ点数欄の編集
                WHEN    "32"
@@ -7642,22 +7643,22 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                    COMPUTE   RECE82-TENSU(26)  =
                              RECE82-TENSU(26)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(26)  =
-                             WRK-RECE82C-TENSU(26)  +
+                   COMPUTE   WRK-RECE8C-TENSU(26)  =
+                             WRK-RECE8C-TENSU(26)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE   WRK-RECE82G-TENSU(27)   =
-                             WRK-RECE82G-TENSU(27)   +
+                   COMPUTE   WRK-RECE8G-TENSU(27)   =
+                             WRK-RECE8G-TENSU(27)   +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(27)
                    COMPUTE   RECE82-TENSU(27)  =
                              RECE82-TENSU(27)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
-                   COMPUTE   WRK-RECE82C-TENSU(27)  =
-                             WRK-RECE82C-TENSU(27)  +
+                   COMPUTE   WRK-RECE8C-TENSU(27)  =
+                             WRK-RECE8C-TENSU(27)  +
                             (WK-YKZTEN2  *   WK-ZAIKAISU)
                  END-IF
       *    処置のレセ点数欄の編集
@@ -11119,8 +11120,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
              COMPUTE   RECE82-TENSU(12)  =
                        RECE82-TENSU(12)  +
                        (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-             COMPUTE   WRK-RECE82C-TENSU(12)  =
-                       WRK-RECE82C-TENSU(12)  +
+             COMPUTE   WRK-RECE8C-TENSU(12)  =
+                       WRK-RECE8C-TENSU(12)  +
                        (RECE84-YKZTEN  *  RECE84-ZAIKAISU)
             WHEN       "4"
                 EVALUATE  WRK-PARA-RECEKBN
@@ -11137,8 +11138,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        COMPUTE   RECE82-TENSU-YAK(12)  =
                                  RECE82-TENSU-YAK(12)  +
                                  (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-                       COMPUTE   WRK-RECE82C-TENSU-YAK(12)  =
-                                 WRK-RECE82C-TENSU-YAK(12)  +
+                       COMPUTE   WRK-RECE8C-TENSU-YAK(12)  =
+                                 WRK-RECE8C-TENSU-YAK(12)  +
                                  (RECE84-YKZTEN  *  RECE84-ZAIKAISU)
                     END-IF
                    ELSE
@@ -11152,8 +11153,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        COMPUTE   RECE82-TENSU-YAK(13)  =
                                  RECE82-TENSU-YAK(13)  +
                                  (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-                       COMPUTE   WRK-RECE82C-TENSU-YAK(13)  =
-                                 WRK-RECE82C-TENSU-YAK(13)  +
+                       COMPUTE   WRK-RECE8C-TENSU-YAK(13)  =
+                                 WRK-RECE8C-TENSU-YAK(13)  +
                                  (RECE84-YKZTEN  *  RECE84-ZAIKAISU)
                     END-IF
                    END-IF
@@ -11175,8 +11176,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        COMPUTE   TBL-YKZTEN-JI(13) =
                                  TBL-YKZTEN-JI(13) +
                                  (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-                       COMPUTE   WRK-RECE82C-TENSU(13)  =
-                                 WRK-RECE82C-TENSU(13)  +
+                       COMPUTE   WRK-RECE8C-TENSU(13)  =
+                                 WRK-RECE8C-TENSU(13)  +
                                  (RECE84-YKZTEN  *  RECE84-ZAIKAISU)
                        COMPUTE   TBL-YKZTEN-JI-C(13)  =
                                  TBL-YKZTEN-JI-C(13)  +
@@ -11189,8 +11190,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
              COMPUTE   RECE82-TENSU(27)  =
                        RECE82-TENSU(27)  +
                        (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-             COMPUTE   WRK-RECE82C-TENSU(27)  =
-                       WRK-RECE82C-TENSU(27)  +
+             COMPUTE   WRK-RECE8C-TENSU(27)  =
+                       WRK-RECE8C-TENSU(27)  +
                        (RECE84-YKZTEN  *  RECE84-ZAIKAISU)
             WHEN       "6"
              ADD   RECE84-ZAIKAISU    TO   RECE82-KAISU(13)
@@ -11209,8 +11210,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 COMPUTE   TBL-YKZTEN-JI(13) =
                           TBL-YKZTEN-JI(13) +
                           (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-                COMPUTE   WRK-RECE82C-TENSU(13)  =
-                          WRK-RECE82C-TENSU(13)  +
+                COMPUTE   WRK-RECE8C-TENSU(13)  =
+                          WRK-RECE8C-TENSU(13)  +
                           (RECE84-YKZTEN  *  RECE84-ZAIKAISU)
                 COMPUTE   TBL-YKZTEN-JI-C(13)  =
                           TBL-YKZTEN-JI-C(13)  +
@@ -12027,42 +12028,42 @@ grpsys     PERFORM  900-DBSELECT-SEC
            EVALUATE   RECE82-HKNKBN
              WHEN       "1"
              WHEN       "2"
-               IF   RECE82-TENSU(2)   >=  WRK-RECE82G-TENSU(2)
+               IF   RECE82-TENSU(2)   >=  WRK-RECE8G-TENSU(2)
                  COMPUTE  RECE82-TENSU(2)   =
-                          RECE82-TENSU(2)   -  WRK-RECE82G-TENSU(2)
+                          RECE82-TENSU(2)   -  WRK-RECE8G-TENSU(2)
                ELSE
                  MOVE     ZERO    TO   RECE82-TENSU(2)
                END-IF
-               IF   RECE82-TENSU(3)   >=  WRK-RECE82G-TENSU(3)
+               IF   RECE82-TENSU(3)   >=  WRK-RECE8G-TENSU(3)
                  COMPUTE  RECE82-TENSU(3)   =
-                          RECE82-TENSU(3)   -  WRK-RECE82G-TENSU(3)
+                          RECE82-TENSU(3)   -  WRK-RECE8G-TENSU(3)
                ELSE
                  MOVE     ZERO    TO   RECE82-TENSU(3)
                END-IF
-               IF   WRK-RECE82C-TENSU(12)  >=  WRK-RECE82G-TENSU(12)
+               IF   WRK-RECE8C-TENSU(12)  >=  WRK-RECE8G-TENSU(12)
                  COMPUTE  RECE82-TENSU(12)  =
-                          RECE82-TENSU(12)  -  WRK-RECE82G-TENSU(12)
+                          RECE82-TENSU(12)  -  WRK-RECE8G-TENSU(12)
                ELSE
                  COMPUTE  RECE82-TENSU(12)  =
-                          RECE82-TENSU(12)  -  WRK-RECE82C-TENSU(12)
-                 COMPUTE  WRK-RECE82G-TENSU(12) =
-                          WRK-RECE82G-TENSU(12) -
-                          WRK-RECE82C-TENSU(12)
-                 IF  WRK-RECE82C-TENSU(11)  >=   WRK-RECE82G-TENSU(12)
+                          RECE82-TENSU(12)  -  WRK-RECE8C-TENSU(12)
+                 COMPUTE  WRK-RECE8G-TENSU(12) =
+                          WRK-RECE8G-TENSU(12) -
+                          WRK-RECE8C-TENSU(12)
+                 IF  WRK-RECE8C-TENSU(11)  >=   WRK-RECE8G-TENSU(12)
                    COMPUTE  RECE82-TENSU(11)  =
-                            RECE82-TENSU(11)  -  WRK-RECE82G-TENSU(12)
+                            RECE82-TENSU(11)  -  WRK-RECE8G-TENSU(12)
                  ELSE
                    COMPUTE  RECE82-TENSU(11)  =
-                            RECE82-TENSU(11)  -  WRK-RECE82C-TENSU(11)
-                   COMPUTE  WRK-RECE82G-TENSU(12) =
-                            WRK-RECE82G-TENSU(12) -
-                            WRK-RECE82C-TENSU(11)
-                   IF  WRK-RECE82C-TENSU(10)  >=   WRK-RECE82G-TENSU(12)
+                            RECE82-TENSU(11)  -  WRK-RECE8C-TENSU(11)
+                   COMPUTE  WRK-RECE8G-TENSU(12) =
+                            WRK-RECE8G-TENSU(12) -
+                            WRK-RECE8C-TENSU(11)
+                   IF  WRK-RECE8C-TENSU(10)  >=   WRK-RECE8G-TENSU(12)
                      COMPUTE  RECE82-TENSU(10)  =
-                              RECE82-TENSU(10)  -  WRK-RECE82G-TENSU(12)
+                              RECE82-TENSU(10)  -  WRK-RECE8G-TENSU(12)
                    ELSE
                      COMPUTE  RECE82-TENSU(10)  =
-                              RECE82-TENSU(10)  -  WRK-RECE82C-TENSU(10)
+                              RECE82-TENSU(10)  -  WRK-RECE8C-TENSU(10)
                    END-IF
                  END-IF
                END-IF
@@ -12070,194 +12071,194 @@ grpsys     PERFORM  900-DBSELECT-SEC
                EVALUATE  WRK-PARA-RECEKBN
                 WHEN      "4"
                  IF   WRK-PARA-JIBAIPRTKBN  =  "2"
-                  IF   RECE82-TENSU(2)   >=  WRK-RECE82G-TENSU(2)
+                  IF   RECE82-TENSU(2)   >=  WRK-RECE8G-TENSU(2)
                     COMPUTE  RECE82-TENSU(2)   =
-                             RECE82-TENSU(2)   -  WRK-RECE82G-TENSU(2)
+                             RECE82-TENSU(2)   -  WRK-RECE8G-TENSU(2)
                   ELSE
                     MOVE     ZERO    TO   RECE82-TENSU(2)
                   END-IF
-                  IF   RECE82-TENSU(21)  >=  WRK-RECE82G-TENSU(21)
+                  IF   RECE82-TENSU(21)  >=  WRK-RECE8G-TENSU(21)
                     COMPUTE  RECE82-TENSU(21)  =
-                             RECE82-TENSU(21)  -  WRK-RECE82G-TENSU(21)
+                             RECE82-TENSU(21)  -  WRK-RECE8G-TENSU(21)
                   ELSE
                     MOVE     ZERO    TO   RECE82-TENSU(21)
                   END-IF
-                  IF   WRK-RECE82C-TENSU-YAK(12)  >=
-                                              WRK-RECE82G-TENSU-YAK(12)
+                  IF   WRK-RECE8C-TENSU-YAK(12)  >=
+                                              WRK-RECE8G-TENSU-YAK(12)
                     COMPUTE  RECE82-TENSU-YAK(12)  =
                              RECE82-TENSU-YAK(12)  -
-                             WRK-RECE82G-TENSU-YAK(12)
+                             WRK-RECE8G-TENSU-YAK(12)
                   ELSE
                     COMPUTE  RECE82-TENSU-YAK(12)  =
                              RECE82-TENSU-YAK(12)  -
-                             WRK-RECE82C-TENSU-YAK(12)
+                             WRK-RECE8C-TENSU-YAK(12)
                   END-IF
                  ELSE
-                  IF   RECE82-TENSU(2)   >=  WRK-RECE82G-TENSU(2)
+                  IF   RECE82-TENSU(2)   >=  WRK-RECE8G-TENSU(2)
                     COMPUTE  RECE82-TENSU(2)   =
-                             RECE82-TENSU(2)   -  WRK-RECE82G-TENSU(2)
+                             RECE82-TENSU(2)   -  WRK-RECE8G-TENSU(2)
                   ELSE
                     MOVE     ZERO    TO   RECE82-TENSU(2)
                   END-IF
-                  IF   RECE82-TENSU(22)  >=  WRK-RECE82G-TENSU(22)
+                  IF   RECE82-TENSU(22)  >=  WRK-RECE8G-TENSU(22)
                     COMPUTE  RECE82-TENSU(22)  =
-                             RECE82-TENSU(22)  -  WRK-RECE82G-TENSU(22)
+                             RECE82-TENSU(22)  -  WRK-RECE8G-TENSU(22)
                   ELSE
                     MOVE     ZERO    TO   RECE82-TENSU(22)
                   END-IF
-                  IF   WRK-RECE82C-TENSU-YAK(13)  >=
-                                              WRK-RECE82G-TENSU-YAK(13)
+                  IF   WRK-RECE8C-TENSU-YAK(13)  >=
+                                              WRK-RECE8G-TENSU-YAK(13)
                     COMPUTE  RECE82-TENSU-YAK(13)  =
                              RECE82-TENSU-YAK(13)  -
-                             WRK-RECE82G-TENSU-YAK(13)
+                             WRK-RECE8G-TENSU-YAK(13)
                   ELSE
                     COMPUTE  RECE82-TENSU-YAK(13)  =
                              RECE82-TENSU-YAK(13)  -
-                             WRK-RECE82C-TENSU-YAK(13)
+                             WRK-RECE8C-TENSU-YAK(13)
                   END-IF
                  END-IF
                 WHEN      "5"
-                  IF   RECE82-TENSU(2)   >=  WRK-RECE82G-TENSU(2)
+                  IF   RECE82-TENSU(2)   >=  WRK-RECE8G-TENSU(2)
                     COMPUTE  RECE82-TENSU(2)   =
-                             RECE82-TENSU(2)   -  WRK-RECE82G-TENSU(2)
+                             RECE82-TENSU(2)   -  WRK-RECE8G-TENSU(2)
                   ELSE
                     MOVE     ZERO    TO   RECE82-TENSU(2)
                   END-IF
-                  IF   RECE82-TENSU(27)  >=  WRK-RECE82G-TENSU(27)
+                  IF   RECE82-TENSU(27)  >=  WRK-RECE8G-TENSU(27)
                     COMPUTE  RECE82-TENSU(27)  =
-                             RECE82-TENSU(27)  -  WRK-RECE82G-TENSU(27)
+                             RECE82-TENSU(27)  -  WRK-RECE8G-TENSU(27)
                   ELSE
                     MOVE     ZERO    TO   RECE82-TENSU(27)
                   END-IF
-                  IF   RECE82-TENSU(28)  >=  WRK-RECE82G-TENSU(28)
+                  IF   RECE82-TENSU(28)  >=  WRK-RECE8G-TENSU(28)
                     COMPUTE  RECE82-TENSU(28)  =
-                             RECE82-TENSU(28)  -  WRK-RECE82G-TENSU(28)
+                             RECE82-TENSU(28)  -  WRK-RECE8G-TENSU(28)
                   ELSE
                     MOVE     ZERO    TO   RECE82-TENSU(28)
                   END-IF
-                  MOVE   WRK-RECE82G-TENSU(13)  TO   WRK-GENTEN-YKZTEN
-                  IF   WRK-RECE82C-TENSU(13)  >=  WRK-RECE82G-TENSU(13)
+                  MOVE   WRK-RECE8G-TENSU(13)  TO   WRK-GENTEN-YKZTEN
+                  IF   WRK-RECE8C-TENSU(13)  >=  WRK-RECE8G-TENSU(13)
                     COMPUTE  RECE82-TENSU(13)  =
-                             RECE82-TENSU(13)  -  WRK-RECE82G-TENSU(13)
+                             RECE82-TENSU(13)  -  WRK-RECE8G-TENSU(13)
                   ELSE
                     COMPUTE  RECE82-TENSU(13)  =
-                             RECE82-TENSU(13)  -  WRK-RECE82C-TENSU(13)
-                    COMPUTE  WRK-RECE82G-TENSU(13) =
-                             WRK-RECE82G-TENSU(13) -
-                             WRK-RECE82C-TENSU(13)
-                    IF  WRK-RECE82C-TENSU(12)  >= WRK-RECE82G-TENSU(13)
+                             RECE82-TENSU(13)  -  WRK-RECE8C-TENSU(13)
+                    COMPUTE  WRK-RECE8G-TENSU(13) =
+                             WRK-RECE8G-TENSU(13) -
+                             WRK-RECE8C-TENSU(13)
+                    IF  WRK-RECE8C-TENSU(12)  >= WRK-RECE8G-TENSU(13)
                       COMPUTE  RECE82-TENSU(12)  =
                                RECE82-TENSU(12)  -
-                               WRK-RECE82G-TENSU(13)
+                               WRK-RECE8G-TENSU(13)
                     ELSE
                       COMPUTE  RECE82-TENSU(12)  =
                                RECE82-TENSU(12)  -
-                               WRK-RECE82C-TENSU(12)
-                      COMPUTE  WRK-RECE82G-TENSU(13) =
-                               WRK-RECE82G-TENSU(13) -
-                               WRK-RECE82C-TENSU(12)
-                      IF  WRK-RECE82C-TENSU(11)  >=
-                                                  WRK-RECE82G-TENSU(13)
+                               WRK-RECE8C-TENSU(12)
+                      COMPUTE  WRK-RECE8G-TENSU(13) =
+                               WRK-RECE8G-TENSU(13) -
+                               WRK-RECE8C-TENSU(12)
+                      IF  WRK-RECE8C-TENSU(11)  >=
+                                                  WRK-RECE8G-TENSU(13)
                         COMPUTE  RECE82-TENSU(11)  =
                                  RECE82-TENSU(11)  -
-                                 WRK-RECE82G-TENSU(13)
+                                 WRK-RECE8G-TENSU(13)
                       ELSE
                         COMPUTE  RECE82-TENSU(11)  =
                                  RECE82-TENSU(11)  -
-                                 WRK-RECE82C-TENSU(11)
+                                 WRK-RECE8C-TENSU(11)
                       END-IF
                     END-IF
                   END-IF
                END-EVALUATE
              WHEN       "5"
-               IF   RECE82-TENSU(9)   >=  WRK-RECE82G-TENSU(9)
+               IF   RECE82-TENSU(9)   >=  WRK-RECE8G-TENSU(9)
                  COMPUTE  RECE82-TENSU(9)   =
-                          RECE82-TENSU(9)   -  WRK-RECE82G-TENSU(9)
+                          RECE82-TENSU(9)   -  WRK-RECE8G-TENSU(9)
                ELSE
                  MOVE     ZERO    TO   RECE82-TENSU(9)
                END-IF
-               IF   RECE82-TENSU(14)  >=  WRK-RECE82G-TENSU(14)
+               IF   RECE82-TENSU(14)  >=  WRK-RECE8G-TENSU(14)
                  COMPUTE  RECE82-TENSU(14)  =
-                          RECE82-TENSU(14)  -  WRK-RECE82G-TENSU(14)
+                          RECE82-TENSU(14)  -  WRK-RECE8G-TENSU(14)
                ELSE
                  MOVE     ZERO    TO   RECE82-TENSU(14)
                END-IF
-               IF   WRK-RECE82C-TENSU(27)  >=  WRK-RECE82G-TENSU(27)
+               IF   WRK-RECE8C-TENSU(27)  >=  WRK-RECE8G-TENSU(27)
                  COMPUTE  RECE82-TENSU(27)  =
-                          RECE82-TENSU(27)  -  WRK-RECE82G-TENSU(27)
+                          RECE82-TENSU(27)  -  WRK-RECE8G-TENSU(27)
                ELSE
                  COMPUTE  RECE82-TENSU(27)  =
-                          RECE82-TENSU(27)  -  WRK-RECE82C-TENSU(27)
-                 COMPUTE  WRK-RECE82G-TENSU(27) =
-                          WRK-RECE82G-TENSU(27) -
-                          WRK-RECE82C-TENSU(27)
-                 IF  WRK-RECE82C-TENSU(26)  >=   WRK-RECE82G-TENSU(27)
+                          RECE82-TENSU(27)  -  WRK-RECE8C-TENSU(27)
+                 COMPUTE  WRK-RECE8G-TENSU(27) =
+                          WRK-RECE8G-TENSU(27) -
+                          WRK-RECE8C-TENSU(27)
+                 IF  WRK-RECE8C-TENSU(26)  >=   WRK-RECE8G-TENSU(27)
                    COMPUTE  RECE82-TENSU(26)  =
-                            RECE82-TENSU(26)  -  WRK-RECE82G-TENSU(27)
+                            RECE82-TENSU(26)  -  WRK-RECE8G-TENSU(27)
                  ELSE
                    COMPUTE  RECE82-TENSU(26)  =
-                            RECE82-TENSU(26)  -  WRK-RECE82C-TENSU(26)
-                   COMPUTE  WRK-RECE82G-TENSU(27) =
-                            WRK-RECE82G-TENSU(27) -
-                            WRK-RECE82C-TENSU(26)
-                   IF  WRK-RECE82C-TENSU(25)  >=   WRK-RECE82G-TENSU(27)
+                            RECE82-TENSU(26)  -  WRK-RECE8C-TENSU(26)
+                   COMPUTE  WRK-RECE8G-TENSU(27) =
+                            WRK-RECE8G-TENSU(27) -
+                            WRK-RECE8C-TENSU(26)
+                   IF  WRK-RECE8C-TENSU(25)  >=   WRK-RECE8G-TENSU(27)
                      COMPUTE  RECE82-TENSU(25)  =
-                              RECE82-TENSU(25)  -  WRK-RECE82G-TENSU(27)
+                              RECE82-TENSU(25)  -  WRK-RECE8G-TENSU(27)
                    ELSE
                      COMPUTE  RECE82-TENSU(25)  =
-                              RECE82-TENSU(25)  -  WRK-RECE82C-TENSU(25)
+                              RECE82-TENSU(25)  -  WRK-RECE8C-TENSU(25)
                    END-IF
                  END-IF
                END-IF
              WHEN       "6"
-               IF   RECE82-TENSU(2)   >=  WRK-RECE82G-TENSU(2)
+               IF   RECE82-TENSU(2)   >=  WRK-RECE8G-TENSU(2)
                  COMPUTE  RECE82-TENSU(2)   =
-                          RECE82-TENSU(2)   -  WRK-RECE82G-TENSU(2)
+                          RECE82-TENSU(2)   -  WRK-RECE8G-TENSU(2)
                ELSE
                  MOVE     ZERO    TO   RECE82-TENSU(2)
                END-IF
-               IF   RECE82-TENSU(27)  >=  WRK-RECE82G-TENSU(27)
+               IF   RECE82-TENSU(27)  >=  WRK-RECE8G-TENSU(27)
                  COMPUTE  RECE82-TENSU(27)  =
-                          RECE82-TENSU(27)  -  WRK-RECE82G-TENSU(27)
+                          RECE82-TENSU(27)  -  WRK-RECE8G-TENSU(27)
                ELSE
                  MOVE     ZERO    TO   RECE82-TENSU(27)
                END-IF
-               IF   RECE82-TENSU(28)  >=  WRK-RECE82G-TENSU(28)
+               IF   RECE82-TENSU(28)  >=  WRK-RECE8G-TENSU(28)
                  COMPUTE  RECE82-TENSU(28)  =
-                          RECE82-TENSU(28)  -  WRK-RECE82G-TENSU(28)
+                          RECE82-TENSU(28)  -  WRK-RECE8G-TENSU(28)
                ELSE
                  MOVE     ZERO    TO   RECE82-TENSU(28)
                END-IF
-               MOVE   WRK-RECE82G-TENSU(13)  TO   WRK-GENTEN-YKZTEN
-               IF   WRK-RECE82C-TENSU(13)  >=  WRK-RECE82G-TENSU(13)
+               MOVE   WRK-RECE8G-TENSU(13)  TO   WRK-GENTEN-YKZTEN
+               IF   WRK-RECE8C-TENSU(13)  >=  WRK-RECE8G-TENSU(13)
                  COMPUTE  RECE82-TENSU(13)  =
-                          RECE82-TENSU(13)  -  WRK-RECE82G-TENSU(13)
+                          RECE82-TENSU(13)  -  WRK-RECE8G-TENSU(13)
                ELSE
                  COMPUTE  RECE82-TENSU(13)  =
-                          RECE82-TENSU(13)  -  WRK-RECE82C-TENSU(13)
-                 COMPUTE  WRK-RECE82G-TENSU(13) =
-                          WRK-RECE82G-TENSU(13) -
-                          WRK-RECE82C-TENSU(13)
-                 IF  WRK-RECE82C-TENSU(12)  >= WRK-RECE82G-TENSU(13)
+                          RECE82-TENSU(13)  -  WRK-RECE8C-TENSU(13)
+                 COMPUTE  WRK-RECE8G-TENSU(13) =
+                          WRK-RECE8G-TENSU(13) -
+                          WRK-RECE8C-TENSU(13)
+                 IF  WRK-RECE8C-TENSU(12)  >= WRK-RECE8G-TENSU(13)
                    COMPUTE  RECE82-TENSU(12)  =
                             RECE82-TENSU(12)  -
-                            WRK-RECE82G-TENSU(13)
+                            WRK-RECE8G-TENSU(13)
                  ELSE
                    COMPUTE  RECE82-TENSU(12)  =
                             RECE82-TENSU(12)  -
-                            WRK-RECE82C-TENSU(12)
-                   COMPUTE  WRK-RECE82G-TENSU(13) =
-                            WRK-RECE82G-TENSU(13) -
-                            WRK-RECE82C-TENSU(12)
-                   IF  WRK-RECE82C-TENSU(11)  >=
-                                               WRK-RECE82G-TENSU(13)
+                            WRK-RECE8C-TENSU(12)
+                   COMPUTE  WRK-RECE8G-TENSU(13) =
+                            WRK-RECE8G-TENSU(13) -
+                            WRK-RECE8C-TENSU(12)
+                   IF  WRK-RECE8C-TENSU(11)  >=
+                                               WRK-RECE8G-TENSU(13)
                      COMPUTE  RECE82-TENSU(11)  =
                               RECE82-TENSU(11)  -
-                              WRK-RECE82G-TENSU(13)
+                              WRK-RECE8G-TENSU(13)
                    ELSE
                      COMPUTE  RECE82-TENSU(11)  =
                               RECE82-TENSU(11)  -
-                              WRK-RECE82C-TENSU(11)
+                              WRK-RECE8C-TENSU(11)
                    END-IF
                  END-IF
                END-IF
@@ -12422,21 +12423,21 @@ grpsys     PERFORM  900-DBSELECT-SEC
                                           +  WRK-SYUTEN-JI
                                           +  WRK-YKZTEN-JI
       *
-               IF   TBL-SYUTEN-JI(2)   >=  WRK-RECE82G-TENSU(2)
+               IF   TBL-SYUTEN-JI(2)   >=  WRK-RECE8G-TENSU(2)
                  COMPUTE  TBL-SYUTEN-JI(2)  =
-                          TBL-SYUTEN-JI(2)  -  WRK-RECE82G-TENSU(2)
+                          TBL-SYUTEN-JI(2)  -  WRK-RECE8G-TENSU(2)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(2)
                END-IF
-               IF   TBL-SYUTEN-JI(27)  >=  WRK-RECE82G-TENSU(27)
+               IF   TBL-SYUTEN-JI(27)  >=  WRK-RECE8G-TENSU(27)
                  COMPUTE  TBL-SYUTEN-JI(27) =
-                          TBL-SYUTEN-JI(27) -  WRK-RECE82G-TENSU(27)
+                          TBL-SYUTEN-JI(27) -  WRK-RECE8G-TENSU(27)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(27)
                END-IF
-               IF   TBL-SYUTEN-JI(28)  >=  WRK-RECE82G-TENSU(28)
+               IF   TBL-SYUTEN-JI(28)  >=  WRK-RECE8G-TENSU(28)
                  COMPUTE  TBL-SYUTEN-JI(28) =
-                          TBL-SYUTEN-JI(28) -  WRK-RECE82G-TENSU(28)
+                          TBL-SYUTEN-JI(28) -  WRK-RECE8G-TENSU(28)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(28)
                END-IF
@@ -12715,21 +12716,21 @@ grpsys     PERFORM  900-DBSELECT-SEC
                                           +  WRK-SYUTEN-JI
                                           +  WRK-YKZTEN-JI
       *
-               IF   TBL-SYUTEN-JI(2)   >=  WRK-RECE82G-TENSU(2)
+               IF   TBL-SYUTEN-JI(2)   >=  WRK-RECE8G-TENSU(2)
                  COMPUTE  TBL-SYUTEN-JI(2)  =
-                          TBL-SYUTEN-JI(2)  -  WRK-RECE82G-TENSU(2)
+                          TBL-SYUTEN-JI(2)  -  WRK-RECE8G-TENSU(2)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(2)
                END-IF
-               IF   TBL-SYUTEN-JI(27)  >=  WRK-RECE82G-TENSU(27)
+               IF   TBL-SYUTEN-JI(27)  >=  WRK-RECE8G-TENSU(27)
                  COMPUTE  TBL-SYUTEN-JI(27) =
-                          TBL-SYUTEN-JI(27) -  WRK-RECE82G-TENSU(27)
+                          TBL-SYUTEN-JI(27) -  WRK-RECE8G-TENSU(27)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(27)
                END-IF
-               IF   TBL-SYUTEN-JI(28)  >=  WRK-RECE82G-TENSU(28)
+               IF   TBL-SYUTEN-JI(28)  >=  WRK-RECE8G-TENSU(28)
                  COMPUTE  TBL-SYUTEN-JI(28) =
-                          TBL-SYUTEN-JI(28) -  WRK-RECE82G-TENSU(28)
+                          TBL-SYUTEN-JI(28) -  WRK-RECE8G-TENSU(28)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(28)
                END-IF

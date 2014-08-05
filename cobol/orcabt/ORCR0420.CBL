@@ -1440,9 +1440,10 @@
       *
            COPY    "COMMON-SPA".
       *
-       01  WRK-RECE41G-REC. 
+      *    ＲＥＣＥ４１のワークレコード
+       01  WRK-RECE4G-REC. 
            COPY    "CPRCF041.INC"  REPLACING  //RECE41//
-                                   BY         //WRK-RECE41G//.
+                                   BY         //WRK-RECE4G//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1901,7 +1902,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
                  MOVE   0.99999  TO  WRK-S3
            END-EVALUATE
       *
-           INITIALIZE                   WRK-RECE41G-REC
+           INITIALIZE                   WRK-RECE4G-REC
       *
            MOVE       ZERO       TO     WRK-ZAITENNASHI
       *
@@ -5977,8 +5978,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         IF   ACCT-ZAIKBN     =  2
                            MOVE   ZERO         TO   RECE41-KHNTEN(2)
                            MOVE   1            TO   FLG-KHNTEN2
-                           COMPUTE    WRK-RECE41G-TENSU(2)  =
-                                      WRK-RECE41G-TENSU(2)  +
+                           COMPUTE    WRK-RECE4G-TENSU(2)  =
+                                      WRK-RECE4G-TENSU(2)  +
                                      (WK-ZAITEN   *   WK-ZAIKAISU)
                         END-IF
                  END-EVALUATE
@@ -6005,8 +6006,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE41G-TENSU(7)  =
-                                    WRK-RECE41G-TENSU(7)  +
+                         COMPUTE    WRK-RECE4G-TENSU(7)  =
+                                    WRK-RECE4G-TENSU(7)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE41-TENSU(7)  =
@@ -6019,8 +6020,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE41G-TENSU(12)  =
-                              WRK-RECE41G-TENSU(12)  +
+                   COMPUTE    WRK-RECE4G-TENSU(12)  =
+                              WRK-RECE4G-TENSU(12)  +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
@@ -6556,16 +6557,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *      （その他）
                    WHEN  OTHER 
                      IF   ACCT-ZAIKBN     =  2
-                        COMPUTE WRK-RECE41G-TENSU(3)  =
-                                WRK-RECE41G-TENSU(3)  +
+                        COMPUTE WRK-RECE4G-TENSU(3)  =
+                                WRK-RECE4G-TENSU(3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                      END-IF
                  END-EVALUATE
       *    指導のレセ点数欄の編集
                WHEN    "13"
                    IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE41G-TENSU(5)  =
-                                    WRK-RECE41G-TENSU(5)  +
+                         COMPUTE    WRK-RECE4G-TENSU(5)  =
+                                    WRK-RECE4G-TENSU(5)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                    ELSE
                          COMPUTE    RECE41-TENSU(5)  =
@@ -6576,8 +6577,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE41G-TENSU(6)  =
-                              WRK-RECE41G-TENSU(6)  +
+                   COMPUTE    WRK-RECE4G-TENSU(6)  =
+                              WRK-RECE4G-TENSU(6)  +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
@@ -6997,8 +6998,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                         END-IF
                         IF   ACCT-ZAIKBN     =  2
-                           COMPUTE    WRK-RECE41G-TENSU(7)  =
-                                      WRK-RECE41G-TENSU(7)  +
+                           COMPUTE    WRK-RECE4G-TENSU(7)  =
+                                      WRK-RECE4G-TENSU(7)  +
                                      (WK-ZAITEN   *   WK-ZAIKAISU)
                         END-IF
                  END-EVALUATE
@@ -7025,8 +7026,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE41G-TENSU(6)  =
-                                    WRK-RECE41G-TENSU(6)  +
+                         COMPUTE    WRK-RECE4G-TENSU(6)  =
+                                    WRK-RECE4G-TENSU(6)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE41-TENSU(6)  =
@@ -7039,8 +7040,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE41G-TENSU(7)  =
-                              WRK-RECE41G-TENSU(7)  +
+                   COMPUTE    WRK-RECE4G-TENSU(7)  =
+                              WRK-RECE4G-TENSU(7)  +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
@@ -7996,8 +7997,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                               MOVE   ZERO    TO    RECE41-KHNTEN(2)
                               MOVE   1       TO    FLG-KHNTEN2-JI2
                            END-IF
-                           COMPUTE    WRK-RECE41G-TENSU(2)  =
-                                      WRK-RECE41G-TENSU(2)  +
+                           COMPUTE    WRK-RECE4G-TENSU(2)  =
+                                      WRK-RECE4G-TENSU(2)  +
                                      (WK-ZAITEN   *   WK-ZAIKAISU)
                         END-IF
                    END-EVALUATE
@@ -8163,8 +8164,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                               MOVE   ZERO    TO    RECE41-KHNTEN(2)
                               MOVE   1       TO    FLG-KHNTEN2-JI2
                            END-IF
-                           COMPUTE    WRK-RECE41G-TENSU(2)  =
-                                      WRK-RECE41G-TENSU(2)  +
+                           COMPUTE    WRK-RECE4G-TENSU(2)  =
+                                      WRK-RECE4G-TENSU(2)  +
                                      (WK-ZAITEN   *   WK-ZAIKAISU)
                         END-IF
                    END-EVALUATE
@@ -8193,8 +8194,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                        ELSE
                          IF   ACCT-ZAIKBN     =  2
-                             COMPUTE    WRK-RECE41G-TENSU(7)  =
-                                        WRK-RECE41G-TENSU(7)  +
+                             COMPUTE    WRK-RECE4G-TENSU(7)  =
+                                        WRK-RECE4G-TENSU(7)  +
                                        (WK-ZAITEN   *   WK-ZAIKAISU)
                          ELSE
                              COMPUTE    RECE41-TENSU(7)   =
@@ -8208,8 +8209,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      END-IF
                  ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE41G-TENSU(7)  =
-                                    WRK-RECE41G-TENSU(7)  +
+                         COMPUTE    WRK-RECE4G-TENSU(7)  =
+                                    WRK-RECE4G-TENSU(7)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE41-TENSU(7)   =
@@ -8223,8 +8224,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE41G-TENSU(8)  =
-                              WRK-RECE41G-TENSU(8)  +
+                   COMPUTE    WRK-RECE4G-TENSU(8)  =
+                              WRK-RECE4G-TENSU(8)  +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
@@ -9095,8 +9096,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         IF   ACCT-ZAIKBN     =  2
                            MOVE   ZERO    TO    RECE41-KHNTEN(3)
                            MOVE   1       TO    FLG-KHNTEN3-KO
-                           COMPUTE    WRK-RECE41G-TENSU(3)  =
-                                      WRK-RECE41G-TENSU(3)  +
+                           COMPUTE    WRK-RECE4G-TENSU(3)  =
+                                      WRK-RECE4G-TENSU(3)  +
                                      (WK-ZAITEN   *   WK-ZAIKAISU)
                         END-IF
                    END-EVALUATE
@@ -9116,8 +9117,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                          CONTINUE
                    ELSE
                      IF   ACCT-ZAIKBN     =  2
-                         COMPUTE    WRK-RECE41G-TENSU(9)  =
-                                    WRK-RECE41G-TENSU(9)  +
+                         COMPUTE    WRK-RECE4G-TENSU(9)  =
+                                    WRK-RECE4G-TENSU(9)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                      ELSE
                          COMPUTE    RECE41-TENSU(9)   =
@@ -9128,8 +9129,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   COMPUTE    WRK-RECE41G-TENSU(14)  =
-                              WRK-RECE41G-TENSU(14)  +
+                   COMPUTE    WRK-RECE4G-TENSU(14)  =
+                              WRK-RECE4G-TENSU(14)  +
                              (WK-ZAITEN   *   WK-ZAIKAISU)
                  ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
@@ -10435,57 +10436,57 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2107-GENTEN-HENSYU-SEC      SECTION.
       *
-           IF   RECE41-TENSU(2)  >=  WRK-RECE41G-TENSU(2)
+           IF   RECE41-TENSU(2)  >=  WRK-RECE4G-TENSU(2)
              COMPUTE  RECE41-TENSU(2)  =
-                      RECE41-TENSU(2)  -  WRK-RECE41G-TENSU(2)
+                      RECE41-TENSU(2)  -  WRK-RECE4G-TENSU(2)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(2)
            END-IF
-           IF   RECE41-TENSU(3)  >=  WRK-RECE41G-TENSU(3)
+           IF   RECE41-TENSU(3)  >=  WRK-RECE4G-TENSU(3)
              COMPUTE  RECE41-TENSU(3)  =
-                      RECE41-TENSU(3)  -  WRK-RECE41G-TENSU(3)
+                      RECE41-TENSU(3)  -  WRK-RECE4G-TENSU(3)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(3)
            END-IF
-           IF   RECE41-TENSU(5)  >=  WRK-RECE41G-TENSU(5)
+           IF   RECE41-TENSU(5)  >=  WRK-RECE4G-TENSU(5)
              COMPUTE  RECE41-TENSU(5)  =
-                      RECE41-TENSU(5)  -  WRK-RECE41G-TENSU(5)
+                      RECE41-TENSU(5)  -  WRK-RECE4G-TENSU(5)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(5)
            END-IF
-           IF   RECE41-TENSU(6)  >=  WRK-RECE41G-TENSU(6)
+           IF   RECE41-TENSU(6)  >=  WRK-RECE4G-TENSU(6)
              COMPUTE  RECE41-TENSU(6)  =
-                      RECE41-TENSU(6)  -  WRK-RECE41G-TENSU(6)
+                      RECE41-TENSU(6)  -  WRK-RECE4G-TENSU(6)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(6)
            END-IF
-           IF   RECE41-TENSU(7)  >=  WRK-RECE41G-TENSU(7)
+           IF   RECE41-TENSU(7)  >=  WRK-RECE4G-TENSU(7)
              COMPUTE  RECE41-TENSU(7)  =
-                      RECE41-TENSU(7)  -  WRK-RECE41G-TENSU(7)
+                      RECE41-TENSU(7)  -  WRK-RECE4G-TENSU(7)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(7)
            END-IF
-           IF   RECE41-TENSU(8)  >=  WRK-RECE41G-TENSU(8)
+           IF   RECE41-TENSU(8)  >=  WRK-RECE4G-TENSU(8)
              COMPUTE  RECE41-TENSU(8)  =
-                      RECE41-TENSU(8)  -  WRK-RECE41G-TENSU(8)
+                      RECE41-TENSU(8)  -  WRK-RECE4G-TENSU(8)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(8)
            END-IF
-           IF   RECE41-TENSU(9)  >=  WRK-RECE41G-TENSU(9)
+           IF   RECE41-TENSU(9)  >=  WRK-RECE4G-TENSU(9)
              COMPUTE  RECE41-TENSU(9)  =
-                      RECE41-TENSU(9)  -  WRK-RECE41G-TENSU(9)
+                      RECE41-TENSU(9)  -  WRK-RECE4G-TENSU(9)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(9)
            END-IF
-           IF   RECE41-TENSU(12) >=  WRK-RECE41G-TENSU(12)
+           IF   RECE41-TENSU(12) >=  WRK-RECE4G-TENSU(12)
              COMPUTE  RECE41-TENSU(12) =
-                      RECE41-TENSU(12) -  WRK-RECE41G-TENSU(12)
+                      RECE41-TENSU(12) -  WRK-RECE4G-TENSU(12)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(12)
            END-IF
-           IF   RECE41-TENSU(14) >=  WRK-RECE41G-TENSU(14)
+           IF   RECE41-TENSU(14) >=  WRK-RECE4G-TENSU(14)
              COMPUTE  RECE41-TENSU(14) =
-                      RECE41-TENSU(14) -  WRK-RECE41G-TENSU(14)
+                      RECE41-TENSU(14) -  WRK-RECE4G-TENSU(14)
            ELSE
              MOVE     ZERO    TO   RECE41-TENSU(14)
            END-IF
@@ -10493,15 +10494,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    合計点数の編集
            IF   RECE41-HKNKBN     NOT  =   "4" AND "6"
               COMPUTE  RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                        -  WRK-RECE41G-TENSU(2)
-                                        -  WRK-RECE41G-TENSU(3)
-                                        -  WRK-RECE41G-TENSU(5)
-                                        -  WRK-RECE41G-TENSU(6)
-                                        -  WRK-RECE41G-TENSU(7)
-                                        -  WRK-RECE41G-TENSU(8)
-                                        -  WRK-RECE41G-TENSU(9)
-                                        -  WRK-RECE41G-TENSU(12)
-                                        -  WRK-RECE41G-TENSU(14)
+                                        -  WRK-RECE4G-TENSU(2)
+                                        -  WRK-RECE4G-TENSU(3)
+                                        -  WRK-RECE4G-TENSU(5)
+                                        -  WRK-RECE4G-TENSU(6)
+                                        -  WRK-RECE4G-TENSU(7)
+                                        -  WRK-RECE4G-TENSU(8)
+                                        -  WRK-RECE4G-TENSU(9)
+                                        -  WRK-RECE4G-TENSU(12)
+                                        -  WRK-RECE4G-TENSU(14)
            END-IF
       *
            .
@@ -10570,15 +10571,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *          減点編集
                  COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                            -  WRK-RECE41G-TENSU(2)
-                                            -  WRK-RECE41G-TENSU(3)
-                                            -  WRK-RECE41G-TENSU(5)
-                                            -  WRK-RECE41G-TENSU(6)
-                                            -  WRK-RECE41G-TENSU(7)
-                                            -  WRK-RECE41G-TENSU(8)
-                                            -  WRK-RECE41G-TENSU(9)
-                                            -  WRK-RECE41G-TENSU(12)
-                                            -  WRK-RECE41G-TENSU(14)
+                                            -  WRK-RECE4G-TENSU(2)
+                                            -  WRK-RECE4G-TENSU(3)
+                                            -  WRK-RECE4G-TENSU(5)
+                                            -  WRK-RECE4G-TENSU(6)
+                                            -  WRK-RECE4G-TENSU(7)
+                                            -  WRK-RECE4G-TENSU(8)
+                                            -  WRK-RECE4G-TENSU(9)
+                                            -  WRK-RECE4G-TENSU(12)
+                                            -  WRK-RECE4G-TENSU(14)
       *
                  COMPUTE   RECE41-TOTALKIN   =
                     (RECE41-TOTALTEN  *  RECE41-TANKA  *  WRK-KSNRATE)
@@ -10640,15 +10641,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *          減点編集
                  COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                            -  WRK-RECE41G-TENSU(2)
-                                            -  WRK-RECE41G-TENSU(3)
-                                            -  WRK-RECE41G-TENSU(5)
-                                            -  WRK-RECE41G-TENSU(6)
-                                            -  WRK-RECE41G-TENSU(7)
-                                            -  WRK-RECE41G-TENSU(8)
-                                            -  WRK-RECE41G-TENSU(9)
-                                            -  WRK-RECE41G-TENSU(12)
-                                            -  WRK-RECE41G-TENSU(14)
+                                            -  WRK-RECE4G-TENSU(2)
+                                            -  WRK-RECE4G-TENSU(3)
+                                            -  WRK-RECE4G-TENSU(5)
+                                            -  WRK-RECE4G-TENSU(6)
+                                            -  WRK-RECE4G-TENSU(7)
+                                            -  WRK-RECE4G-TENSU(8)
+                                            -  WRK-RECE4G-TENSU(9)
+                                            -  WRK-RECE4G-TENSU(12)
+                                            -  WRK-RECE4G-TENSU(14)
       *
                  COMPUTE   RECE41-TOTALKIN   =
                     (RECE41-TOTALTEN  *  RECE41-TANKA  *  WRK-KSNRATE)
@@ -10734,41 +10735,41 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
       *        減点編集
                COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                          -  WRK-RECE41G-TENSU(2)
-                                          -  WRK-RECE41G-TENSU(3)
-                                          -  WRK-RECE41G-TENSU(5)
-                                          -  WRK-RECE41G-TENSU(6)
-                                          -  WRK-RECE41G-TENSU(7)
-                                          -  WRK-RECE41G-TENSU(8)
-                                          -  WRK-RECE41G-TENSU(9)
-                                          -  WRK-RECE41G-TENSU(12)
-                                          -  WRK-RECE41G-TENSU(14)
+                                          -  WRK-RECE4G-TENSU(2)
+                                          -  WRK-RECE4G-TENSU(3)
+                                          -  WRK-RECE4G-TENSU(5)
+                                          -  WRK-RECE4G-TENSU(6)
+                                          -  WRK-RECE4G-TENSU(7)
+                                          -  WRK-RECE4G-TENSU(8)
+                                          -  WRK-RECE4G-TENSU(9)
+                                          -  WRK-RECE4G-TENSU(12)
+                                          -  WRK-RECE4G-TENSU(14)
                COMPUTE   WRK-SYUTEN-JI    =  WRK-SYUTEN-JI
-                                          -  WRK-RECE41G-TENSU(2)
-                                          -  WRK-RECE41G-TENSU(3)
-                                          -  WRK-RECE41G-TENSU(5)
-                                          -  WRK-RECE41G-TENSU(6)
-                                          -  WRK-RECE41G-TENSU(7)
-                                          -  WRK-RECE41G-TENSU(8)
-                                          -  WRK-RECE41G-TENSU(9)
-                                          -  WRK-RECE41G-TENSU(12)
-                                          -  WRK-RECE41G-TENSU(14)
+                                          -  WRK-RECE4G-TENSU(2)
+                                          -  WRK-RECE4G-TENSU(3)
+                                          -  WRK-RECE4G-TENSU(5)
+                                          -  WRK-RECE4G-TENSU(6)
+                                          -  WRK-RECE4G-TENSU(7)
+                                          -  WRK-RECE4G-TENSU(8)
+                                          -  WRK-RECE4G-TENSU(9)
+                                          -  WRK-RECE4G-TENSU(12)
+                                          -  WRK-RECE4G-TENSU(14)
       *
-               IF   TBL-SYUTEN-JI(2)  >=  WRK-RECE41G-TENSU(2)
+               IF   TBL-SYUTEN-JI(2)  >=  WRK-RECE4G-TENSU(2)
                  COMPUTE  TBL-SYUTEN-JI(2) =
-                          TBL-SYUTEN-JI(2) -  WRK-RECE41G-TENSU(2)
+                          TBL-SYUTEN-JI(2) -  WRK-RECE4G-TENSU(2)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(2)
                END-IF
-               IF   TBL-SYUTEN-JI(7)  >=  WRK-RECE41G-TENSU(7)
+               IF   TBL-SYUTEN-JI(7)  >=  WRK-RECE4G-TENSU(7)
                  COMPUTE  TBL-SYUTEN-JI(7) =
-                          TBL-SYUTEN-JI(7) -  WRK-RECE41G-TENSU(7)
+                          TBL-SYUTEN-JI(7) -  WRK-RECE4G-TENSU(7)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(7)
                END-IF
-               IF   TBL-SYUTEN-JI(8)  >=  WRK-RECE41G-TENSU(8)
+               IF   TBL-SYUTEN-JI(8)  >=  WRK-RECE4G-TENSU(8)
                  COMPUTE  TBL-SYUTEN-JI(8) =
-                          TBL-SYUTEN-JI(8) -  WRK-RECE41G-TENSU(8)
+                          TBL-SYUTEN-JI(8) -  WRK-RECE4G-TENSU(8)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(8)
                END-IF
@@ -10936,41 +10937,41 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
       *        減点編集
                COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
-                                          -  WRK-RECE41G-TENSU(2)
-                                          -  WRK-RECE41G-TENSU(3)
-                                          -  WRK-RECE41G-TENSU(5)
-                                          -  WRK-RECE41G-TENSU(6)
-                                          -  WRK-RECE41G-TENSU(7)
-                                          -  WRK-RECE41G-TENSU(8)
-                                          -  WRK-RECE41G-TENSU(9)
-                                          -  WRK-RECE41G-TENSU(12)
-                                          -  WRK-RECE41G-TENSU(14)
+                                          -  WRK-RECE4G-TENSU(2)
+                                          -  WRK-RECE4G-TENSU(3)
+                                          -  WRK-RECE4G-TENSU(5)
+                                          -  WRK-RECE4G-TENSU(6)
+                                          -  WRK-RECE4G-TENSU(7)
+                                          -  WRK-RECE4G-TENSU(8)
+                                          -  WRK-RECE4G-TENSU(9)
+                                          -  WRK-RECE4G-TENSU(12)
+                                          -  WRK-RECE4G-TENSU(14)
                COMPUTE   WRK-SYUTEN-JI    =  WRK-SYUTEN-JI
-                                          -  WRK-RECE41G-TENSU(2)
-                                          -  WRK-RECE41G-TENSU(3)
-                                          -  WRK-RECE41G-TENSU(5)
-                                          -  WRK-RECE41G-TENSU(6)
-                                          -  WRK-RECE41G-TENSU(7)
-                                          -  WRK-RECE41G-TENSU(8)
-                                          -  WRK-RECE41G-TENSU(9)
-                                          -  WRK-RECE41G-TENSU(12)
-                                          -  WRK-RECE41G-TENSU(14)
+                                          -  WRK-RECE4G-TENSU(2)
+                                          -  WRK-RECE4G-TENSU(3)
+                                          -  WRK-RECE4G-TENSU(5)
+                                          -  WRK-RECE4G-TENSU(6)
+                                          -  WRK-RECE4G-TENSU(7)
+                                          -  WRK-RECE4G-TENSU(8)
+                                          -  WRK-RECE4G-TENSU(9)
+                                          -  WRK-RECE4G-TENSU(12)
+                                          -  WRK-RECE4G-TENSU(14)
       *
-               IF   TBL-SYUTEN-JI(2)  >=  WRK-RECE41G-TENSU(2)
+               IF   TBL-SYUTEN-JI(2)  >=  WRK-RECE4G-TENSU(2)
                  COMPUTE  TBL-SYUTEN-JI(2) =
-                          TBL-SYUTEN-JI(2) -  WRK-RECE41G-TENSU(2)
+                          TBL-SYUTEN-JI(2) -  WRK-RECE4G-TENSU(2)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(2)
                END-IF
-               IF   TBL-SYUTEN-JI(7)  >=  WRK-RECE41G-TENSU(7)
+               IF   TBL-SYUTEN-JI(7)  >=  WRK-RECE4G-TENSU(7)
                  COMPUTE  TBL-SYUTEN-JI(7) =
-                          TBL-SYUTEN-JI(7) -  WRK-RECE41G-TENSU(7)
+                          TBL-SYUTEN-JI(7) -  WRK-RECE4G-TENSU(7)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(7)
                END-IF
-               IF   TBL-SYUTEN-JI(8)  >=  WRK-RECE41G-TENSU(8)
+               IF   TBL-SYUTEN-JI(8)  >=  WRK-RECE4G-TENSU(8)
                  COMPUTE  TBL-SYUTEN-JI(8) =
-                          TBL-SYUTEN-JI(8) -  WRK-RECE41G-TENSU(8)
+                          TBL-SYUTEN-JI(8) -  WRK-RECE4G-TENSU(8)
                ELSE
                  MOVE     ZERO    TO   TBL-SYUTEN-JI(8)
                END-IF
