@@ -592,9 +592,9 @@
                                    BY         //WRK-RECE12//.
       *
       *    ¥ï¡¼¥¯Æþ±¡ÍúÎò
-       01  WRK-PTNYUINRRK-REC.
+       01  WRK-PTNRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                       BY         //WRK-PTNYUINRRK-//.
+                                       BY         //WRK-PTNRRK-//.
       *
       *    ¥ï¡¼¥¯ÊÝ¸±ÍúÎò
        01  TABLE-RECE09-AREA.
@@ -4677,11 +4677,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó¤ÎÍúÎò
            IF      FLG-RECE12          =   1                            
-               MOVE    PTNYUINRRK-REC  TO  WRK-PTNYUINRRK-REC
+               MOVE    PTNYUINRRK-REC  TO  WRK-PTNRRK-REC
                INITIALIZE                  PTNYUINRRK-REC
 grpsys         MOVE    RECE01-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
                MOVE    RECE01-PTID     TO  PTNYUINRRK-PTID
-               MOVE    WRK-PTNYUINRRK-SHONUM
+               MOVE    WRK-PTNRRK-SHONUM
                                        TO  PTNYUINRRK-SHONUM
                MOVE    RECE01-SRYYM    TO  PTNYUINRRK-NYUINYMD (1:6)
                MOVE    "31"            TO  PTNYUINRRK-NYUINYMD (7:2)

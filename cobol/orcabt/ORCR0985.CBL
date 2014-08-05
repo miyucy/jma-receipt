@@ -742,10 +742,9 @@
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //WRK-RECE85//.
       *
-      *01  WRK-TAIHI-RECE84-REC.
-      *    COPY    "CPRCF0841.INC"  REPLACING //RECE841//
-      *                            BY         //WRK-TAIHI-RECE84//.
-       01  WRK-TAIHI-RECE84-REC                PIC X(2000).
+       01  WRK-TAIHI-RECE84-REC.
+           COPY    "CPRCF0841.INC"  REPLACING //RECE841//
+                                   BY         //WRK-TAIHI4//.
       *
       *    ²èÁü¿ÇÃÇÍÑÂàÈò¥¨¥ê¥¢
       *    »£±ÆÎÁÂàÈò
@@ -761,43 +760,34 @@
                                    BY         //WRK-700-RECE85//.
       *    »£±ÆÎÁÂàÈò¡ÊÆ±»þ»£±Æ¡Ë
        01  FLG-SRYSYUKBN721-DOUJI             PIC 9(01).
-      *01  WRK-721-DOUJI-RECE85-REC.
-      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-      *                            BY         //WRK-721-DOUJI-RECE85//.
-       01  WRK-721-DOUJI-RECE85-REC           PIC X(5000).
+       01  WRK-721-DOUJI-RECE85-REC.
+           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+                                   BY         //WRK-721-DOU85//.
        01  WRK-700-DOUJI-RECE85-AREA.
            02  WRK-SRYSYUKBN700-DOUJI-MAX     PIC 9(01).
            02  FLG-SRYSYUKBN700-DOUJI         PIC 9(01)  OCCURS  5.
-      *    02  WRK-700-DOUJI-RECE85-REC                  OCCURS  5.
-      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-      *                            BY         //WRK-700-DOUJI-RECE85//.
-           02  WRK-700-DOUJI-RECE85-REC       PIC X(5000)
-                                                         OCCURS  5.
+           02  WRK-700-DOUJI-RECE85-REC                  OCCURS  5.
+           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+                                   BY         //WRK-700-DOU85//.
       *    ´ÖÀÜ»£±Æ¤Î£µ£°¡óÄþ¸º
-      *01  WRK-SRYKBN70-RECE85-REC.
-      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-      *                            BY         //WRK-SRYKBN70-RECE85//.
-       01  WRK-SRYKBN70-RECE85-REC            PIC X(5000).
+       01  WRK-SRYKBN70-RECE85-REC.
+           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+                                   BY         //WRK-SRY70-RE85//.
       *    À¸ÂÎ¸¡ºº¡¦²Ã»»ÍÑÂàÈò¥¨¥ê¥¢
-      *01  WRK-KASAN-RECE85-REC.
-      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-      *                            BY         //WRK-KASAN-RECE85//.
-       01  WRK-KASAN-RECE85-REC               PIC X(5000).
+       01  WRK-KASAN-RECE85-REC.
+           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+                                   BY         //WRK-KASAN-RE85//.
       *    À¸ÂÎ¸¡ºº¡¦Äþ¸ºÍÑÂàÈò¥¨¥ê¥¢
-      *01  WRK-TEIGEN-RECE85-REC.
-      *    COPY    "CPRCF085.INC"  REPLACING  //RECE85//
-      *                            BY         //WRK-TEIGEN-RECE85//.
-       01  WRK-TEIGEN-RECE85-REC              PIC X(5000).
+       01  WRK-TEIGEN-RECE85-REC.
+           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+                                   BY         //WRK-TEIGE-RE85//.
       *
       *    ¸¡ºº¡ÊÈ½ÃÇÎÁ¡ËÍÑÂàÈò¥¨¥ê¥¢
        01  TBL-KENSA-RECE84-AREA.
-      *  02  TBL-KENSA-RECE84-REC  OCCURS  100.
+         02  TBL-KENSA-RECE84-REC  OCCURS  100.
       *
-      *    COPY    "CPRCF0841.INC"  REPLACING  //RECE841//
-      *                             BY         //TBL-KENSA-RECE84//.
-         02  TBL-KENSA-RECE84-OCC  OCCURS  100.
-           03  TBL-KENSA-RECE84-REC           PIC X(2000).
-           03  TBL-KENSA-RECE84-ZAIKAISU      PIC 9(04).
+           COPY    "CPRCF0841.INC"  REPLACING  //RECE841//
+                                    BY          //TBL-KENSA4//.
       *
            03  TBL-KENSA-RECE85-REC        OCCURS  50.
                05  TBL-KENSA-RECE85-KEY.
@@ -2396,8 +2386,6 @@
            IF     ( RECE84-KNSJISKBN   =   2 )
                ADD     1               TO  TBL-KENSA-RECE84-MAX
                MOVE    RECE84-REC      TO  TBL-KENSA-RECE84-REC
-                                           (TBL-KENSA-RECE84-MAX)
-               MOVE    RECE84-ZAIKAISU TO  TBL-KENSA-RECE84-ZAIKAISU
                                            (TBL-KENSA-RECE84-MAX)
            END-IF
            MOVE    ZERO                 TO  TBL-KENSA-RECE85-MAX
@@ -4800,7 +4788,7 @@
       *
            PERFORM VARYING IDZ3 FROM    1   BY  1
                    UNTIL   IDZ3 >   TBL-KENSA-RECE84-MAX
-               IF      TBL-KENSA-RECE84-ZAIKAISU (IDZ3)
+               IF      TBL-KENSA4-ZAIKAISU (IDZ3)
                                            >   0
                    MOVE    TBL-KENSA-RECE84-REC (IDZ3)
                                                TO  RECE84-REC
