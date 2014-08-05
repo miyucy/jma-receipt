@@ -43,11 +43,6 @@
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
       *
-           SELECT  PREVIEW-FILE    ASSIGN
-                                         "/etc/jma-receipt/preview.env"
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PREVIEW.
-      *
        DATA                        DIVISION.
        FILE                        SECTION.
        FD  PRT-FILE.
@@ -68,12 +63,6 @@
              05  PRT-TBL-UUID        PIC X(36).
            03  PRT-PRTDATA         PIC X(20000).
       *
-006900*    入力ＰＳ環境ファイル
-       FD  PREVIEW-FILE.
-       01  PREVIEW-RECORD.
-           03  PREVIEW-ENV      PIC X(200).
-      *
-      *
        WORKING-STORAGE             SECTION.
 grpsys*
 grpsys COPY    "COMMON-SPA".
@@ -93,7 +82,6 @@ grpsys COPY    "COMMON-SPA".
        01  STS-AREA.
            03  STS-PRT             PIC X(02).
            03  STS-PS              PIC X(02).
-           03  STS-PREVIEW         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -114,12 +102,8 @@ grpsys COPY    "COMMON-SPA".
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-PATH            PIC X(64).
-      *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
-      *
-           03  WRK-MCP-PATH        PIC X(64).
       *
       *  01.01.02  ADD START
            03  WRK-FILENAME        PIC X(200).
@@ -133,6 +117,10 @@ grpsys COPY    "COMMON-SPA".
          01  WRK-PARA.
            03  PARA-FILENM         PIC X(200).
            03  WRK-PARA-HOSPNUM    PIC X(02).
+      *
+      *    一時ディレクトリ名
+           03  WRK-SGETTEMP-TEMPDIR
+                                   PIC X(1024).
       *
        01  WRK-TBL-GROUP.
            03  WK-TBL-G           PIC  X(14) OCCURS 5.
@@ -229,6 +217,9 @@ grpsys COPY    "COMMON-SPA".
                                        SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  PRT-FILE-ID
+      *
+           MOVE    SGETTEMP-TEMPDIR    TO  WRK-SGETTEMP-TEMPDIR
+      *
            OPEN    INPUT               PRT-FILE
            IF      STS-PRT             NOT =   ZERO
                DISPLAY "PRT-FILE OPEN ERR=" STS-PRT 
@@ -494,7 +485,7 @@ grpsys         MOVE    PRTDATA-HOSPNUM     TO  PREVIEW-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *   プレビュー管理DBの履歴削除 
+      *   プレビュー管理DBの履歴削除
       *****************************************************************
        900-PRV-RRKDEL-SEC              SECTION.
       *
@@ -514,96 +505,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    "tbl_prvkanri"  TO  MCP-TABLE
            MOVE    "del12"         TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           OPEN    INPUT      PREVIEW-FILE
-           IF      STS-PREVIEW         =   ZERO
-                   PERFORM 900-IN-READ-SEC
-                   CLOSE   PREVIEW-FILE
-           ELSE
-                   MOVE    1              TO  FLG-IN
-           END-IF
-           MOVE    SPACE               TO  SPA-NAI-ENV
-           IF      FLG-IN      =   ZERO
-                   STRING  PREVIEW-ENV         DELIMITED  BY  SPACE
-                           "/"                 DELIMITED  BY  SPACE
-                                       INTO    SPA-NAI-ENV
-                   END-STRING
-           ELSE
-                   MOVE "/tmp/"
-                               TO  SPA-NAI-ENV
-           END-IF
-           MOVE "/tmp/"                TO  SPA-NAI-ENV
-      *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >       10
-              IF  (WK-TBL-G(5)         NOT  =  SPACE)
-               IF (WK-TBL-G(5)         NOT  =  WRK-PRT-TBL-GROUP)
-              DISPLAY  "wk-tbl-g (1) " WK-TBL-G(5) 
-                   MOVE  SPACE         TO  WRK-FILENAME
-                   STRING
-                      "/var/lib/jma-receipt/orca_ps/"
-                                          DELIMITED  BY  SPACE
-                      SPA-HOSPNUM         DELIMITED  BY  SPACE
-                      WRK-PRT-TBL-KEY
-                                          DELIMITED  BY  SPACE
-                      IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(5)         DELIMITED  BY  SPACE
-                      "*"                 DELIMITED  BY  SPACE
-                                          INTO   WRK-FILENAME
-                   END-STRING
-                   MOVE    ZERO            TO  IF-RESULT
-                   MOVE    WRK-FILENAME
-                                           TO  IF-FILENAME
-                   MOVE  SPACE         TO  WRK-FILENAME1
-                   STRING
-                      SPA-NAI-ENV         DELIMITED  BY  SPACE
-                      SPA-HOSPNUM         DELIMITED  BY  SPACE
-                      WRK-PRT-TBL-KEY
-                                          DELIMITED  BY  SPACE
-                      IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(5)         DELIMITED  BY  SPACE
-                      "*"                 DELIMITED  BY  SPACE
-                                          INTO   WRK-FILENAME1
-                   END-STRING
-               MOVE    SPACE           TO  SHELLTBL
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE              ORCSMKPASSAREA
-               MOVE    "scripts/allways/orc_file_del.sh"
-                                       TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-      *
-               MOVE    WRK-FILENAME    TO  SHELLTBL-ARG1
-               MOVE    WRK-FILENAME1   TO  SHELLTBL-ARG2
-               MOVE    SHELLTBL        TO  MCPDATA-REC
-               MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "shell"         TO  MCP-PATHNAME
-grpsys         PERFORM 900-ORCDBMAIN-SEC
-               END-IF
-              END-IF
-           END-PERFORM
            .
        900-PRV-RRKDEL-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    PS環境ファイル読込み処理
-      *****************************************************************
-       900-IN-READ-SEC          SECTION.
-      *
-          READ    PREVIEW-FILE
-              AT  END
-                  MOVE    1               TO  FLG-IN
-              NOT AT  END
-                  MOVE    ZERO            TO  FLG-IN
-          END-READ
-      *
-          .
-       900-IN-READ-EXT.
-          EXIT.
-      *
-
       *****************************************************************
       *    印刷データ読込
       *****************************************************************

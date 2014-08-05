@@ -36,6 +36,8 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-竹田    07/05/09  オンライン再印刷対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -47,22 +49,12 @@
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
-           SELECT  PREVIEW-FILE    ASSIGN
-                                         "/etc/jma-receipt/preview.env"
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PREVIEW.
-      *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
-      *
-      *    入力ＰＳ環境ファイル
-       FD  PREVIEW-FILE.
-       01  PREVIEW-RECORD.
-           03  PREVIEW-ENV      PIC X(200).
       *
        WORKING-STORAGE             SECTION.
 grpsys*
@@ -106,7 +98,6 @@ grpsys COPY    "COMMON-SPA".
        01  STS-AREA.
            03  STS-PRT             PIC X(02).
            03  STS-RECEERR         PIC X(02).
-           03  STS-PREVIEW         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -141,6 +132,10 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-FILENAME        PIC X(200). 
            03  WRK-FILENAME1       PIC X(200). 
            03  SPA-NAI-ENV         PIC X(200). 
+      *
+      *    一時ディレクトリ名
+           03  WRK-SGETTEMP-TEMPDIR
+                                   PIC X(1024).
       *
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
@@ -192,6 +187,9 @@ grpsys COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -259,6 +257,14 @@ grpsys COPY    "COMMON-SPA".
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE    SGETTEMP-TEMPDIR    TO  WRK-SGETTEMP-TEMPDIR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -440,8 +446,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *  01.01.02  SATRT
            MOVE WRK-PARA-PRTFLG                TO  PRT-PRTKBN
            MOVE    ZERO                        TO  CNT-KETA
-           MOVE    "/var/lib/jma-receipt/orca_ps/"        
-                                               TO  PRT-PSFILE-FOLDER
+      *****MOVE    "/var/lib/jma-receipt/orca_ps/"        
+           MOVE    WRK-SGETTEMP-TEMPDIR        TO  PRT-PSFILE-FOLDER
            MOVE    LNK-PRTKANRI-TBL-KEY        TO  PRT-PSFILE-TBL-KEY
            MOVE    PRTDATA-RENNUM              TO  PRT-PSFILE-RENNUM
            MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRT-PSFILE-GROUP 
@@ -734,96 +740,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    "tbl_prvkanri"  TO  MCP-TABLE
            MOVE    "del12"         TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           OPEN    INPUT      PREVIEW-FILE
-           IF      STS-PREVIEW         =   ZERO
-                   PERFORM 900-IN-READ-SEC
-                   CLOSE   PREVIEW-FILE
-           ELSE
-                   MOVE    1              TO  FLG-IN
-           END-IF
-           MOVE    SPACE               TO  SPA-NAI-ENV
-           IF      FLG-IN      =   ZERO
-                   STRING  PREVIEW-ENV         DELIMITED  BY  SPACE
-                           "/"                 DELIMITED  BY  SPACE
-                                       INTO    SPA-NAI-ENV
-                   END-STRING
-           ELSE
-                   MOVE "/tmp/"
-                               TO  SPA-NAI-ENV
-           END-IF
-           MOVE "/tmp/"                TO  SPA-NAI-ENV
-      *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >       10
-      *      PERFORM VARYING   IDZ     FROM    1   BY  1
-      *                UNTIL       IDZ     >        5
-              IF  (WK-TBL-G(5)       NOT  =  SPACE)
-               IF (WK-TBL-G(5)       NOT  =  LNK-PRTKANRI-TBL-GROUP)
-                   MOVE  SPACE         TO  WRK-FILENAME
-                   STRING
-                      "/var/lib/jma-receipt/orca_ps/"
-                                          DELIMITED  BY  SPACE
-                      SPA-HOSPNUM         DELIMITED  BY  SPACE
-                      LNK-PRTKANRI-TBL-KEY
-                                          DELIMITED  BY  SPACE
-                      IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(5)         DELIMITED  BY  SPACE
-                      "*"                 DELIMITED  BY  SPACE
-                                          INTO   WRK-FILENAME
-                   END-STRING
-                   MOVE    ZERO            TO  IF-RESULT
-                   MOVE    WRK-FILENAME
-                                           TO  IF-FILENAME
-                   MOVE  SPACE         TO  WRK-FILENAME1
-                   STRING
-                      SPA-NAI-ENV         DELIMITED  BY  SPACE
-                      SPA-HOSPNUM         DELIMITED  BY  SPACE
-                      LNK-PRTKANRI-TBL-KEY
-                                          DELIMITED  BY  SPACE
-                      IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(5)         DELIMITED  BY  SPACE
-                      "*"                 DELIMITED  BY  SPACE
-                                          INTO   WRK-FILENAME1
-                   END-STRING
-               MOVE    SPACE           TO  SHELLTBL
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE              ORCSMKPASSAREA
-               MOVE    "scripts/allways/orc_file_del.sh"
-                                       TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-      *
-               MOVE    WRK-FILENAME    TO  SHELLTBL-ARG1
-               MOVE    WRK-FILENAME1   TO  SHELLTBL-ARG2
-               MOVE    SHELLTBL        TO  MCPDATA-REC
-               MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "shell"         TO  MCP-PATHNAME
-grpsys         PERFORM 900-ORCDBMAIN-SEC
-               END-IF
-              END-IF
-      *      END-PERFORM
-           END-PERFORM
            .
        900-PRV-RRKDEL-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    PS環境ファイル読込み処理
-      *****************************************************************
-       900-IN-READ-SEC          SECTION.
-      *
-          READ    PREVIEW-FILE
-              AT  END
-                  MOVE    1               TO  FLG-IN
-              NOT AT  END
-                  MOVE    ZERO            TO  FLG-IN
-          END-READ
-      *
-          .
-       900-IN-READ-EXT.
-          EXIT.
       *
       *****************************************************************
       *     印刷管理ＤＢ読み込み

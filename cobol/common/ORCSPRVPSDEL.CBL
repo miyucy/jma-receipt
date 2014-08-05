@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  労災・自賠責処理追加                                            
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -145,6 +147,8 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *???
@@ -196,6 +200,13 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
                                        LINK-ERRCD
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           CALL    "ORCSGETTEMP"   USING
+                                   SGETTEMP-AREA
+      *??
+          DISPLAY "SGETTEMP-TEMPDIR="  SGETTEMP-TEMPDIR
+      *??
       *    前回処理データ削除処理
            PERFORM 1002-PRVDATA-DEL-SEC
       *
@@ -362,7 +373,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    psファイルクリア
-           MOVE "/var/lib/jma-receipt/orca_ps/"   
+      *****MOVE "/var/lib/jma-receipt/orca_ps/"
+           MOVE    SGETTEMP-TEMPDIR
                                        TO  WRK-PSFILE-FOLDER
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  WRK-PSFILE-TBL-KEY

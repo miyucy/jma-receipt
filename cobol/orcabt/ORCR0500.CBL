@@ -238,6 +238,9 @@ grpsys     COPY    "COMMON-SPA".
                    07  WRK-HEN-RENNUM2 PIC ZZZ9.
                    07  WRK-HEN-FL2     PIC X(01).
       *
+      *    一時ディレクトリ名
+           03  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
+      *
            03  WRK-PARA.
                05  WRK-PARA-JOBID                PIC 9(07).
                05  WRK-PARA-SHELLID              PIC X(08).
@@ -542,6 +545,8 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SPACE               TO  RECEERR
            MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *
+           MOVE    SGETTEMP-TEMPDIR    TO  WRK-SGETTEMP-TEMPDIR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            CALL    "ORCSENCODING"          USING
@@ -808,7 +813,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    "1"                 TO  PRT-SITEKBN
            MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
-           MOVE    "/var/lib/jma-receipt/orca_ps/"
+      **** MOVE    "/var/lib/jma-receipt/orca_ps/"
+           MOVE    WRK-SGETTEMP-TEMPDIR
                                        TO  PRT-OUT
            MOVE    LNK-PRTKANRI-TBL-KEY
                                        TO  PRT-TBL-KEY
