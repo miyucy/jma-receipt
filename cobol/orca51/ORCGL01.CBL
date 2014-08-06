@@ -85,7 +85,6 @@
            03  FLG-ERR                         PIC 9(01).
            03  FLG-TOUKEIMEMO                  PIC 9(01).
            03  FLG-FIXED                       PIC 9(01).
-           03  FLG-CLIENT-OK                   PIC 9(01).
            03  FLG-UPDATE                      PIC 9(01).
       *
       *    フラグ領域
@@ -321,7 +320,6 @@
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
-           COPY    "LDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -359,11 +357,6 @@
       *    画面遷移がない時、画面表示へ
            IF    ( FLG-END         =   ZERO )
                PERFORM 500-SET-SCREEN
-           END-IF
-      *
-      *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    SPA-L01KYOUTU   TO  SPA-WORK
@@ -550,29 +543,6 @@
        310-SPASET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    クライアント印刷画面処理 take
-      *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
-      *
-      *    印刷ダミー処理
-      *    IF     (SPA-CLIENT-PRT-FLG   =   1  )
-      *        MOVE    "99"                TO  SPA-PRT-FLG
-      *        CALL    "ORCHCDUMMY"    USING   SPA-AREA
-      *        MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
-      *    END-IF
-      *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_LDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           DISPLAY "SPA-SAKIPG = " SPA-SAKIPG
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
       *
       *****************************************************************
       *    パラメータ初期設定処理
@@ -1858,12 +1828,6 @@
            MOVE    SYS-TIME            TO
                                    WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
-      *    クライアント印刷前処理 take
-           IF     ( SPA-LID1-FLG        =  "OK" )
-             AND  ( SPA-CLIENT-PRT-FLG  =  2)
-               INITIALIZE                  ORCSPRTCTRLAREA 
-           END-IF
-      *
            PERFORM VARYING IDY FROM    1       BY  1
                    UNTIL ( IDY             >   WRK-CONS-LINE-MAX )
                    OR    ( SPA-ERRCD   NOT =   SPACE )
@@ -1948,18 +1912,6 @@
                                                MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      * ------------> クライアント印刷対応 take
-                  DISPLAY "SPA-CLIENT-PRT-FLG = " SPA-CLIENT-PRT-FLG
-                  DISPLAY "SHELLTBL-ARG16 = " SHELLTBL-ARG16
-                  DISPLAY "L01-CHK-LABEL = " L01-CHK-LABEL(IDY)
-                  ADD     1                TO  IDW
-      *           MOVE    L01-CHK-LABEL(IDY)   TO
-                  MOVE    "日次統計"       TO 
-                                           ORCSPRTCTRL-TITLE-I(1)
-                  MOVE    LNK-PRTKANRI-TBL-KEY TO
-                                           ORCSPRTCTRL-TBL-KEY(1)
-                  MOVE    LNK-PRTKANRI-TBL-GROUP TO
-                                           ORCSPRTCTRL-TBL-GROUP(1)
       *
                END-IF
            END-PERFORM
@@ -2030,6 +1982,8 @@
                  END-IF
                END-EVALUATE
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+               MOVE    SPA-CLIENT-SHOWDIALOG
+                                           TO  SHELLTBL-ARG22
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
@@ -2038,21 +1992,6 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
-           END-IF
-      *
-      *    クライアント印刷前処理 take
-           IF     ( SPA-LID1-FLG        =  "OK" )
-             AND  ( SPA-CLIENT-PRT-FLG  =  2)
-      *    クライアント印刷制御情報取得サブ
-               MOVE    SPACE             TO  LDMY01-PANDAPRINT1
-               MOVE    1                 TO  ORCSPRTCTRL-BATCH-FLG
-      *        INITIALIZE                ORCSPRTCTRLAREA
-               CALL    "ORCSPRTCTRL"     USING   SPA-AREA
-                                                 ORCSPRTCTRLAREA
-                                                 MCPAREA
-               MOVE    ORCSPRTCTRL-OUT   TO  LDMY01-PANDAPRINT1
-      *
-               MOVE    1                 TO  FLG-CLIENT-OK
            END-IF
       *
       *    ＪＯＢＩＤ更新処理

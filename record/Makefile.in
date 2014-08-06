@@ -457,7 +457,6 @@ RECORD_files = \
 	system01lstv2.rec \
 	L06.rec \
 	patientmodv2.rec \
-	_LDMY01.rec \
 	acceptmodv2.rec \
 	appointmodv2.rec \
 	medicatonmodv2.rec \

@@ -25,7 +25,6 @@ bind	"G100"		"OpenCOBOL"	"ORCGG100";
 bind	"GERR"		"OpenCOBOL"	"ORCGGERR";
 bind	"GID1"		"OpenCOBOL"	"ORCGGID1";
 bind	"GID2"		"OpenCOBOL"	"ORCGGID2";
-bind	"_LDMY01"	"OpenCOBOL"	"ORCGLDMY01";
 
 multiplex_group	orca51;
 
@@ -54,7 +53,6 @@ data	{
 		GERR;
 		GID1;
 		GID2;
-		_LDMY01;
 	};
 };
 
