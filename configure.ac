@@ -180,6 +180,7 @@ do
     copygen_command=$d/bin/copygen
     fdw_command=$d/bin/fdw
     dbsync_command=$d/bin/dbsync
+    monupload_command=$d/bin/monupload
     break
   fi
 done
@@ -190,6 +191,7 @@ if test x$dbstub_command != x; then
   COPYGEN=$copygen_command
   FDW=$fdw_command
   DBSYNC=$dbsync_command
+  MONUPLOAD=$monupload_command
 else
   AC_MSG_RESULT(no)
   AC_MSG_ERROR(MONTSUQI(panda) not found.)
@@ -199,6 +201,7 @@ AC_SUBST(DBSTUB)
 AC_SUBST(COPYGEN)
 AC_SUBST(FDW)
 AC_SUBST(DBSYNC)
+AC_SUBST(MONUPLOAD)
 dnl Checks for libraries.
 
 dnl Checks for header files.

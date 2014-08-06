@@ -39,7 +39,7 @@
       *    印刷用データ
            SELECT  PRT-IN-FILE     ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-IN.
-           SELECT  PRT-OUT-FILE    ASSIGN  PRTOUTPARA
+           SELECT  PRT-OUT-FILE    ASSIGN  HOUTPARA
                                    FILE    STATUS  IS  STS-OUT.
       *
        DATA                    DIVISION.
@@ -54,21 +54,16 @@
            03  PRT-OUT-PRTDATA     PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
+      *
        01  PRTOUTPARA.
-           03  PRTOUTPARA-OLD.
-               05  FILLER                  PIC  X(09) VALUE "/var/tmp/".
-               05  PRTOUTPARA-BASENAME.
-                   07  PRTOUTPARA-FORM-ID  PIC  X(04).
-                   07  FILLER              PIC  X(01) VALUE ".".
-                   07  PRTOUTPARA-UUID     PIC  X(31).
-                   07  FILLER              PIC  X(01) VALUE ".".
-                   07  PRTOUTPARA-SYOHMS   PIC  9(08).
-                   07  FILLER              PIC  X(01) VALUE ".".
-                   07  PRTOUTPARA-CNT      PIC  9(06).
-                   07  FILLER              PIC  X(04) VALUE ".dat".
-               05  FILLER                  PIC  X(959) VALUE SPACE.
-           03  PRTOUTPARA-R REDEFINES      PRTOUTPARA-OLD.
-               05  PRTOUTPARA-FULLNAME     PIC  X(1024).
+           03  PRTOUTPARA-FORM-ID  PIC  X(04).
+           03  FILLER              PIC  X(01) VALUE ".".
+           03  PRTOUTPARA-UUID     PIC  X(31).
+           03  FILLER              PIC  X(01) VALUE ".".
+           03  PRTOUTPARA-SYOHMS   PIC  9(08).
+           03  FILLER              PIC  X(01) VALUE ".".
+           03  PRTOUTPARA-CNT      PIC  9(06).
+           03  FILLER              PIC  X(04) VALUE ".dat".
       *
        01  STS-AREA.
            03  STS-IN              PIC X(02).
@@ -84,6 +79,8 @@
            COPY    "CPCOMMONPRT.INC"       REPLACING   //HC01PARA//
                                            BY          //HC99PARA//.
            COPY    "CPASGNPARA.INC".
+           COPY    "CPASGNPARA.INC"       REPLACING    //ASGNPARA//
+                                           BY          //HOUTPARA//.
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -104,7 +101,7 @@
                                    PIC 9(01).
            03  WRK-PRT-CNT         PIC 9(04).
            03  WRK-PRT-FLG         PIC 9(02).
-           03  WRK-PRT-OUT-ST      PIC 9(05).
+           03  WRK-PRTDATA         PIC X(20000).
       *
       *    デイレクトリ位置
        01  SHELL-NAME.
@@ -213,25 +210,27 @@
            MOVE    ASGNPARA (ASGNPARA-ST:)
                                    TO  HC01PARA-BASENAME
       *
-           PERFORM 200-MON-PRINT-SEC
-      *
-      *    再印刷書き出しの判定
-           IF      SPA-PRT-FLG     =   SPACE
-               CONTINUE
-           ELSE
-               PERFORM 300-REPRINT-SEC
-             IF    SPA-CLIENT-PRT-FLG  =   1
-               IF  MKPRT-DIA           =  "ORCDUMMMY.red"
-               PERFORM 301-ALLPRINT-SEC
-             DISPLAY "ダミー印刷が来た!! " SPA-PRT-FLG " " HC01PARA
+           IF    ( SPA-CLIENT-PRT-FLG  =  3 )
                PERFORM 301-CLIENTPRINT-SEC
+           ELSE
+      *
+               OPEN    INPUT           PRT-IN-FILE
+               IF    ( STS-IN      NOT =   ZERO )
+                   DISPLAY "INPUT OPEN ERR"
+               ELSE
+                   READ    PRT-IN-FILE
+                   MOVE    PRT-IN-REC  TO WRK-PRTDATA
                END-IF
-      *        PERFORM 301-CLIENTPRINT-SEC
-      *        IF  SPA-CLIENT-TEMP-FLG =   2
-                   PERFORM 302-PRTDBINSERT-SEC
-                   MOVE  ZERO          TO  SPA-CLIENT-TEMP-FLG
-      *        END-IF
-             END-IF
+               CLOSE   PRT-IN-FILE
+      *
+               IF    ( SPA-CLIENT-PRT-FLG  NOT =  1 )
+                   PERFORM 200-MON-PRINT-SEC
+               END-IF
+      *
+      *        再印刷書き出しの判定
+               IF    ( SPA-PRT-FLG     NOT =   SPACE )
+                   PERFORM 300-REPRINT-SEC
+               END-IF
            END-IF
       *
            .
@@ -244,9 +243,6 @@
       *****************************************************************
        200-MON-PRINT-SEC            SECTION.
       *
-           IF      SPA-CLIENT-PRT-FLG  =  1
-               GO            TO        200-MON-PRINT-EXT
-           END-IF
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
       *    ＳＨＥＬＬ名
@@ -363,39 +359,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        300-REPRINT-SEC                 SECTION.
       *
-           OPEN    INPUT               PRT-IN-FILE
-           IF        ( STS-IN     NOT  =   ZERO )
-                   DISPLAY "INPUT OPEN ERR"
-           ELSE
-               INITIALIZE   PRT-IN-REC
-               INITIALIZE                  SGETTEMP-AREA
-               MOVE    MKPRT-DAT       TO  SGETTEMP-BASENAMES (1)
-               CALL    "ORCSGETTEMP"   USING
-                                       SGETTEMP-AREA
-               MOVE    SGETTEMP-FULLNAMES (1) (SGETTEMP-ST:)
+           MOVE    MKPRT-DAT (ASGNPARA-ST:)
                                        TO  HC99PARA-BASENAME
       *
-               READ PRT-IN-FILE
-               MOVE HC99PARA-FORM-ID   TO PRTOUTPARA-FORM-ID
-               MOVE SPA-PRT-UUID       TO PRTOUTPARA-UUID
-               MOVE HC99PARA-SYOHMS    TO PRTOUTPARA-SYOHMS
-               MOVE HC99PARA-CNT       TO PRTOUTPARA-CNT
+           MOVE HC99PARA-FORM-ID       TO  PRTOUTPARA-FORM-ID
+           MOVE SPA-PRT-UUID           TO  PRTOUTPARA-UUID
+           MOVE HC99PARA-SYOHMS        TO  PRTOUTPARA-SYOHMS
+           MOVE HC99PARA-CNT           TO  PRTOUTPARA-CNT
       *
-               INITIALIZE                 SGETTEMP-AREA
-               MOVE    PRTOUTPARA-BASENAME
-                                       TO SGETTEMP-BASENAMES (1)
-               CALL    "ORCSGETTEMP"      USING
-                                          SGETTEMP-AREA
-               MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO PRTOUTPARA-FULLNAME
-               MOVE    SGETTEMP-ST     TO WRK-PRT-OUT-ST
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    PRTOUTPARA
+                                       TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO HOUTPARA
+           MOVE    SGETTEMP-ST         TO HOUTPARA-ST
       *
-               OPEN OUTPUT             PRT-OUT-FILE
-               MOVE PRT-IN-REC         TO PRT-OUT-REC
-               WRITE    PRT-OUT-REC
-               CLOSE PRT-IN-FILE PRT-OUT-FILE
-      * ---> クライアント印刷の場合は、ここで入力ファイル削除
-           END-IF
+           OPEN    OUTPUT                 PRT-OUT-FILE
+           MOVE    WRK-PRTDATA         TO PRT-OUT-REC
+           WRITE   PRT-OUT-REC
+           CLOSE   PRT-OUT-FILE
       *
            INITIALIZE                  LNK-PRTKANRI-AREA
       *    ファイルデイレクトリ位置指定
@@ -465,10 +449,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    DEF
            MOVE    MKPRT-PRTNM     TO  SHELLTBL-ARG20
       *    データ内容
-           MOVE    PRTOUTPARA (WRK-PRT-OUT-ST:)
+           MOVE    HOUTPARA (HOUTPARA-ST:)
                                    TO  SHELLTBL-ARG21
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG22
-
+      *
+           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
+            AND  ( SPA-CLIENT-TEMP-FLG =   2 )
+               MOVE    "D"         TO  SHELLTBL-ARG23
+           END-IF
+           MOVE    MKPRT-DAT (ASGNPARA-ST:)
+                                   TO  SHELLTBL-ARG24
       *
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -485,112 +475,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    編集処理
       *****************************************************************
-       301-ALLPRINT-SEC         SECTION.
-           DISPLAY "301-ALLPRINT-SEC start"
-      *
-           MOVE    SPA-HOSPNUM         TO  PRTCTRL-HOSPNUM
-           MOVE    SPA-TERMID          TO  PRTCTRL-TERMID
-           MOVE    "ONLINE"            TO  PRTCTRL-TBL-KEY
-           MOVE    1                   TO  PRTCTRL-RENNUM
-           MOVE    SPA-PRT-GROUP       TO  PRTCTRL-TBL-GROUP
-           MOVE    SPA-PRT-UUID        TO  PRTCTRL-TBL-UUID
-      *
-           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
-           PERFORM 900-DBSELECT-SEC
-      *
-           IF      MCP-RC              =   ZERO
-               PERFORM 910-PRTCTRL-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PRTCTRL
-           END-IF
-      *
-           PERFORM UNTIL   (FLG-PRTCTRL    =   1  ) 
-             MOVE    SPACE               TO  SHELLTBL
-             MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
-      *     
-             MOVE    SPACE               TO  LNK-PRTKANRI-AREA
-             INITIALIZE                      LNK-PRTKANRI-AREA
-             MOVE    1                   TO  LNK-PRTKANRI-RENNUM
-             MOVE    "ONLINE"            TO  LNK-PRTKANRI-TBL-KEY
-             DISPLAY "clie SPA-PRT-GROUP = " SPA-PRT-GROUP
-             MOVE    SPA-PRT-GROUP       TO  LNK-PRTKANRI-TBL-GROUP
-             MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
-                                           LNK-PRTKANRI-SRYYM
-             MOVE    1                   TO  LNK-PRTKANRI-PRIORITY
-             MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
-             MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
-             MOVE    SPA-PRT-UUID        TO  LNK-PRTKANRI-TBL-UUID
-             MOVE    SPA-PRT-FLG         TO  LNK-PRTKANRI-SHORI-RENNUM
-             MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
-             MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
-             MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  SHELLTBL-ARG2     
-             MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SHELLTBL-ARG3       
-             MOVE    PRTCTRL-SHORI-RENNUM
-                                       TO  SHELLTBL-ARG4       
-             MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
-             MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
-             MOVE    LNK-PRTKANRI-SHELLID
-                                       TO  SHELLTBL-ARG7       
-             MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SHELLTBL-ARG8      
-             MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
-             MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
-             MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
-      *                 
-             MOVE    "K03DUMMY"        TO  SHELLTBL-ARG12
-             MOVE    "0000000"         TO  SHELLTBL-ARG13
-             MOVE    "REPRINT"         TO  SHELLTBL-ARG14
-             MOVE    "00001"           TO  SHELLTBL-ARG15
-             MOVE    "99999"           TO  SHELLTBL-ARG16
-             MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG18
-             MOVE    LNK-PRTKANRI-TBL-UUID 
-                                       TO  SHELLTBL-ARG19      
-             MOVE    LNK-PRTKANRI-GYOUMU-CD
-                                       TO  SHELLTBL-ARG20      
-             MOVE    "5"               TO  SHELLTBL-ARG17
-             MOVE    PRTCTRL-DNAME     TO  SHELLTBL-ARG21
-             MOVE    SHELLTBL          TO  MCPDATA-REC
-             MOVE    "SHELL"             TO  MCP-FUNC
-             MOVE    "shell"             TO  MCP-TABLE
-             MOVE    "allways"           TO  MCP-PATHNAME
-      *    PERFORM 900-ORCDBMAIN-SEC
-             MOVE    SHELLTBL        TO  MCPDATA-REC
-             MOVE    "SHELL"         TO  MCP-FUNC
-             MOVE    "shell"             TO  MCP-TABLE
-             MOVE    "allways"           TO  MCP-PATHNAME
-grpsys       CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-             PERFORM 910-PRTCTRL-READ-SEC
-           END-PERFORM 
-      *
-           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
-           PERFORM 900-DBCLOSE-SEC
-      *
-           .
-       301-ALLPRINT-EXT.
-           EXIT.
-      *****************************************************************
-      *    編集処理
-      *****************************************************************
        301-CLIENTPRINT-SEC         SECTION.
       *
-           DISPLAY "301-CLIENTPRINT-SEC start"
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
-      *     
+           MOVE    "client_print.sh"   TO  SHELLTBL-NAME
+      *
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
+      *
            MOVE    1                   TO  LNK-PRTKANRI-RENNUM
            MOVE    "ONLINE"            TO  LNK-PRTKANRI-TBL-KEY
-           DISPLAY "clie SPA-PRT-GROUP = " SPA-PRT-GROUP
            MOVE    SPA-PRT-GROUP       TO  LNK-PRTKANRI-TBL-GROUP
            MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
                                            LNK-PRTKANRI-SRYYM
@@ -599,219 +493,37 @@ grpsys       CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
            MOVE    SPA-PRT-UUID        TO  LNK-PRTKANRI-TBL-UUID
            MOVE    SPA-PRT-FLG         TO  LNK-PRTKANRI-SHORI-RENNUM
-           MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
-           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
+           MOVE    "client_print.sh"   TO  LNK-PRTKANRI-SHELLID
+      *
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
            MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  SHELLTBL-ARG2     
+                                       TO  SHELLTBL-ARG2
            MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SHELLTBL-ARG3       
+                                       TO  SHELLTBL-ARG3
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SHELLTBL-ARG4       
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
+                                       TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
            MOVE    LNK-PRTKANRI-SHELLID
-                                       TO  SHELLTBL-ARG7       
+                                       TO  SHELLTBL-ARG7
            MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SHELLTBL-ARG8      
-           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
-           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
-      *                 
-           MOVE    "K03DUMMY"          TO  SHELLTBL-ARG12
-           MOVE    "0000000"           TO  SHELLTBL-ARG13
-           MOVE    "REPRINT"           TO  SHELLTBL-ARG14
-           MOVE    "00001"             TO  SHELLTBL-ARG15
-           MOVE    "99999"             TO  SHELLTBL-ARG16
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
-           MOVE    LNK-PRTKANRI-TBL-UUID 
-                                       TO  SHELLTBL-ARG19      
-           MOVE    LNK-PRTKANRI-GYOUMU-CD
-                                       TO  SHELLTBL-ARG20      
-           MOVE    "5"                 TO  SHELLTBL-ARG17
-           MOVE    ASGNPARA(ASGNPARA-ST:)
-                                       TO  SHELLTBL-ARG21
+                                       TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
+           MOVE    LNK-PRTKANRI-TBL-UUID
+                                       TO  SHELLTBL-ARG12
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG13
+           MOVE    SPA-CLIENT-SHOWDIALOG
+                                       TO  SHELLTBL-ARG14
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "allways"           TO  MCP-PATHNAME
-      *    PERFORM 900-ORCDBMAIN-SEC
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "allways"           TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *
       *
            .
        301-CLIENTPRINT-EXT.
            EXIT.
-      *****************************************************************
-      *     印刷制御ＤＢ書き込み
-      *****************************************************************
-       302-PRTDBINSERT-SEC         SECTION.
-      *
-           INITIALIZE        PRTCTRL-REC
-           ADD 1                       TO  WRK-PRT-CNT
-           IF  SPA-PRT-FLG             IS  NUMERIC
-               MOVE  SPA-PRT-FLG       TO  WRK-PRT-FLG
-           ELSE
-               MOVE  ZERO              TO  WRK-PRT-FLG
-           END-IF
-           DISPLAY "---------------- ORCSMKPRT1 DBINSERT --"
-           DISPLAY "SPA-PRT-UUID = " SPA-PRT-UUID
-           DISPLAY "WRK-PRT-FLG  = " WRK-PRT-FLG
-           DISPLAY "WRK-PRT-CNT  = " WRK-PRT-CNT
-           MOVE    SPA-HOSPNUM         TO  PRTCTRL-HOSPNUM
-           MOVE    SPA-TERMID          TO  PRTCTRL-TERMID
-           MOVE    "ONLINE"            TO  PRTCTRL-TBL-KEY
-           MOVE    1                   TO  PRTCTRL-RENNUM
-           MOVE    SPA-PRT-GROUP       TO  PRTCTRL-TBL-GROUP
-           MOVE    SPA-PRT-UUID        TO  PRTCTRL-TBL-UUID
-           MOVE    SPA-CLIENT-TEMP-FLG TO  PRTCTRL-DATA-KBN
-           MOVE    WRK-PRT-FLG         TO  PRTCTRL-SHORI-RENNUM
-           MOVE    WRK-PRT-CNT         TO  PRTCTRL-PAGE
-           MOVE    MKPRT-DAT (ASGNPARA-ST:)
-                                        TO  PRTCTRL-DNAME
-           PERFORM 900-PRTCTRL-READ-SEC
-           IF      FLG-PRTCTRL         =   1
-               PERFORM 900-PRTCTRL-INSERT-SEC
-           END-IF
-           .
-       302-PRTDBINSERT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     印刷管理ＤＢ書き込み
-      *****************************************************************
-       900-PRTCTRL-READ-SEC            SECTION.
-      *
-           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
-           PERFORM 900-DBSELECT-SEC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PRTCTRL-REC
-               MOVE    ZERO                TO  FLG-PRTCTRL
-           ELSE
-               MOVE    1                   TO  FLG-PRTCTRL
-           END-IF
-      *
-           IF      FLG-PRTCTRL         =   ZERO
-               MOVE    "tbl_prtctrl"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    PRTCTRL-REC         TO  MCPDATA-REC
-               PERFORM 900-DBFETCH-SEC
-      *
-             IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PRTCTRL-REC
-               MOVE    ZERO                TO  FLG-PRTCTRL
-             ELSE
-               MOVE    1                   TO  FLG-PRTCTRL
-             END-IF
-           END-IF
-      *
-           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
-           PERFORM 900-DBCLOSE-SEC
-           .
-       900-PRTCTRL-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     印刷管理ＤＢ書き込み
-      *****************************************************************
-       910-PRTCTRL-READ-SEC            SECTION.
-      *
-           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
-           PERFORM 900-DBFETCH-SEC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PRTCTRL-REC
-               MOVE    ZERO                TO  FLG-PRTCTRL
-           ELSE
-               MOVE    1                   TO  FLG-PRTCTRL
-           END-IF
-      *
-           .
-       910-PRTCTRL-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     印刷管理ＤＢ書き込み
-      *****************************************************************
-       900-PRTCTRL-INSERT-SEC            SECTION.
-      *
-           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
-           PERFORM 900-DBINSERT-SEC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PRTCTRL-REC
-               MOVE    ZERO                TO  FLG-PRTCTRL
-           ELSE
-               MOVE    1                   TO  FLG-PRTCTRL
-           END-IF
-           .
-       900-PRTCTRL-INSERT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブル追加処理
-      *****************************************************************
-       900-DBINSERT-SEC                SECTION.
-      *
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       900-DBINSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブルセレクト処理
-      *****************************************************************
-       900-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       900-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブルセレクト処理
-      *****************************************************************
-       900-DBFETCH-SEC                SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       900-DBFETCH-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブルCLOSE処理
-      *****************************************************************
-       900-DBCLOSE-SEC                SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       900-DBCLOSE-EXT.
-           EXIT.
-

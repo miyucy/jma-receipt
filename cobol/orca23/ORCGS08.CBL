@@ -65,7 +65,6 @@
            03  FLG-KYUSEIRRK               PIC 9(01).
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-SAIKEISAN               PIC 9(01).
-           03  FLG-CLIENT-OK               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -188,7 +187,6 @@
            COPY    "SID2.INC".
            COPY    "SID3.INC".
            COPY    "SID4.INC".
-           COPY    "SDMY01.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -228,11 +226,6 @@
            IF  FLG-END   =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF.
-      *
-      *    クライアント印刷
-           IF    ( FLG-CLIENT-OK   =   1 )
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -2880,37 +2873,15 @@
        520-SIDSET-EXT.
            EXIT.
       *****************************************************************
-      *    クライアント印刷画面処理
-      *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
-      *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_SDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
-      *****************************************************************
       *    クライアント印刷前　処理
       *****************************************************************
        800-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                      SDMY01
-           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
-      *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                          ORCSPRTCTRLAREA
-           MOVE    "分娩費用明細書"    TO  ORCSPRTCTRL-TITLE-I(01)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
-      *
-           MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
        800-CLIENT-PRT-EXT.

@@ -445,7 +445,6 @@ RECORD_files = \
 	_UDMY01.rec \
 	S10.rec \
 	W122.rec \
-	_SDMY01.rec \
 	medicalgetv2.rec \
 	patientgetv2.rec \
 	acceptlstv2.rec \

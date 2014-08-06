@@ -114,6 +114,7 @@ grpsys COPY    "COMMON-SPA".
            03  FLG-PRTKANRI        PIC 9(01).
            03  FLG-PRVKANRI        PIC 9(01).
            03  FLG-NODATA          PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
       *  01.01.02  ADD START 
       *    添字領域
@@ -154,12 +155,16 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-EDPAGE     PIC 9(05).
            03  WRK-PARA-PRTFLG     PIC X(01).
            03  WRK-PARA-HOSPNUM    PIC X(02).
+           03  WRK-PARA-SHOWDIALOG PIC X(01).
       *
       *    印刷用コンスタント領域 
            COPY    "CPPRTCONST.INC".          
       *
            COPY    "CPSHELLTBL.INC".
-      *     
+      *
+       01  TPRT-REC.
+           COPY    "CPPRTKANRI.INC"        REPLACING  //PRTKANRI//
+                                           BY         //TPRT//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -250,6 +255,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  CNT-AREA
                                        SPA-AREA
                                        RECEERR
+                                       TPRT-REC
       *
            ACCEPT  SYS-TIME            FROM    TIME     
       *
@@ -270,13 +276,23 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-SHELLID
                                                WRK-PARA-STPAGE
                                                WRK-PARA-EDPAGE
-                                               WRK-PARA-PRTFLG     
+                                               WRK-PARA-PRTFLG
                                                WRK-PARA-HOSPNUM
                                                LNK-PRTKANRI-TBL-UUID
                                                LNK-PRTKANRI-GYOUMU-CD
                                                WRK-FILENAME2
+                                               WRK-PARA-SHOWDIALOG
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SPA-SYSYMD
+      *
+           MOVE    WRK-PARA-SHOWDIALOG TO  SPA-CLIENT-SHOWDIALOG
+           IF    ( SPA-CLIENT-SHOWDIALOG   =   "1" )
+               CONTINUE
+           ELSE
+               MOVE    ZERO            TO  SPA-CLIENT-SHOWDIALOG
+           END-IF
+      *
            IF      LNK-PRTKANRI-GYOUMU-CD NOT NUMERIC
                    MOVE  ZERO          TO
                                        LNK-PRTKANRI-GYOUMU-CD
@@ -307,6 +323,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    印刷管理ＤＢ読み込み処理
            PERFORM 900-PRTKANRI-SELECT-SEC
+           IF    ( FLG-PRTKANRI    =   ZERO )
+               MOVE    PRTKANRI-REC    TO  TPRT-REC
+           END-IF
       *
       *    プレビュー用前処理
            MOVE    ZERO            TO  WRK-MOJISU
@@ -315,29 +334,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    WRK-PARA-EDPAGE     NOT =   99999
                PERFORM 900-PRVKANRI-SELECT1-SEC
              END-IF
-           END-IF
-      *
-           IF      FLG-END             =   1
-                IF  WRK-PARA-PRTFLG     =  "5"
-                 AND (LNK-PRTKANRI-TBL-KEY NOT = "ONLINE")
-                 DISPLAY "------------- ORCBPRT1 start ----------------"
-                 DISPLAY "WRK-PARA-PRTFLG = " WRK-PARA-PRTFLG
-                 DISPLAY "------------- ORCBPRT1 end   ----------------"
-                 MOVE    SPACE           TO  SHELLTBL
-                 MOVE    "orc_print_dmy.sh"  TO  SHELLTBL-NAME
-                 MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
-grpsys           MOVE    LNK-PRTKANRI-TBL-KEY    TO  SHELLTBL-ARG2
-                 MOVE    LNK-PRTKANRI-TBL-GROUP  TO  SHELLTBL-ARG3
-                 MOVE    LNK-PRTKANRI-SHORI-RENNUM   TO  SHELLTBL-ARG4
-                 MOVE    WRK-PARA-HOSPNUM    TO  SHELLTBL-ARG5
-                 MOVE    "88888"             TO  SHELLTBL-ARG6
-                 MOVE    "88888"             TO  SHELLTBL-ARG7
-                 MOVE    SHELLTBL        TO  MCPDATA-REC
-                 MOVE    "SHELL"         TO  MCP-FUNC
-                 MOVE    "shell"         TO  MCP-TABLE
-                 MOVE    "allways"       TO  MCP-PATHNAME
-grpsys           PERFORM 900-ORCDBMAIN-SEC
-              END-IF
            END-IF
       *
            .
@@ -383,8 +379,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
-               PERFORM 2003-PRTKANRI-UPD-SEC
+               IF    ( TPRT-PRTFLG    =    "D" )
+                   PERFORM 2003-PRTKANRI-DEL-SEC
+               ELSE
+                   PERFORM 2003-PRTKANRI-UPD-SEC
+               END-IF
+      *
                PERFORM 900-PRTKANRI-FET-SEC
+      *
            END-PERFORM                                
       *
            CLOSE                       PRT-FILE
@@ -405,52 +407,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
 grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
                MOVE    WRK-FILENAME2   TO  SHELLTBL-ARG4
+               IF    ( WRK-PARA-PRTFLG     =  "5" )
+                   MOVE    TPRT-TITLE  TO  SHELLTBL-ARG5
+                   MOVE    SPA-CLIENT-SHOWDIALOG
+                                       TO  SHELLTBL-ARG6
+               END-IF
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
                MOVE    "daily"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
-      * クライアント印刷処理
-               IF  WRK-PARA-PRTFLG     =  "5"
-                 AND (LNK-PRTKANRI-TBL-KEY NOT = "ONLINE")
-               DISPLAY "------------- ORCBPRT1 start ----------------"
-               DISPLAY "WRK-PARA-PRTFLG = " WRK-PARA-PRTFLG
-               DISPLAY "------------- ORCBPRT1 end   ----------------"
-                 MOVE    SPACE           TO  SHELLTBL
-                 MOVE    "orc_print_dmy.sh"  TO  SHELLTBL-NAME
-                 MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
-grpsys           MOVE    LNK-PRTKANRI-TBL-KEY    TO  SHELLTBL-ARG2
-                 MOVE    LNK-PRTKANRI-TBL-GROUP  TO  SHELLTBL-ARG3
-                 MOVE    LNK-PRTKANRI-SHORI-RENNUM   TO  SHELLTBL-ARG4
-                 MOVE    WRK-PARA-HOSPNUM    TO  SHELLTBL-ARG5
-                 MOVE    "99999"             TO  SHELLTBL-ARG6
-                 MOVE    "99999"             TO  SHELLTBL-ARG7
-                 MOVE    SHELLTBL        TO  MCPDATA-REC
-                 MOVE    "SHELL"         TO  MCP-FUNC
-                 MOVE    "shell"         TO  MCP-TABLE
-                 MOVE    "allways"       TO  MCP-PATHNAME
-grpsys           PERFORM 900-ORCDBMAIN-SEC
-               END-IF
-             ELSE
-                IF  WRK-PARA-PRTFLG     =  "5"
-                 DISPLAY "------------- ORCBPRT1 start ----------------"
-                 DISPLAY "WRK-PARA-PRTFLG = " WRK-PARA-PRTFLG
-                 DISPLAY "------------- ORCBPRT1 end   ----------------"
-                 MOVE    SPACE           TO  SHELLTBL
-                 MOVE    "orc_print_dmy.sh"  TO  SHELLTBL-NAME
-                 MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
-grpsys           MOVE    LNK-PRTKANRI-TBL-KEY    TO  SHELLTBL-ARG2
-                 MOVE    LNK-PRTKANRI-TBL-GROUP  TO  SHELLTBL-ARG3
-                 MOVE    LNK-PRTKANRI-SHORI-RENNUM   TO  SHELLTBL-ARG4
-                 MOVE    WRK-PARA-HOSPNUM    TO  SHELLTBL-ARG5
-                 MOVE    "88888"             TO  SHELLTBL-ARG6
-                 MOVE    "88888"             TO  SHELLTBL-ARG7
-                 MOVE    SHELLTBL        TO  MCPDATA-REC
-                 MOVE    "SHELL"         TO  MCP-FUNC
-                 MOVE    "shell"         TO  MCP-TABLE
-                 MOVE    "allways"       TO  MCP-PATHNAME
-grpsys           PERFORM 900-ORCDBMAIN-SEC
-              END-IF
            END-IF                                                
       *
            MOVE    1                   TO  FLG-END     
@@ -531,7 +497,11 @@ grpsys           PERFORM 900-ORCDBMAIN-SEC
       *
            ADD     1                   TO  CNT-OUT     
       *
-           PERFORM 2002-PRTDATA-UPD-SEC
+           IF    ( TPRT-PRTFLG    =    "D" )
+               PERFORM 2002-PRTDATA-DEL-SEC
+           ELSE
+               PERFORM 2002-PRTDATA-UPD-SEC
+           END-IF
            .
        2001-PRTDATA-PRINT-EXT.
            EXIT.
@@ -605,7 +575,29 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 500-ERR-HENSYU-SEC
           END-IF    
            .
-       2001-PRTDATA-UPD-EXT.
+       2002-PRTDATA-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    印刷ＤＢ削除処理
+      *****************************************************************
+       2002-PRTDATA-DEL-SEC            SECTION.
+      *
+           MOVE    PRTDATA-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           IF      MCP-RC             =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "印刷ＤＢの更新でエラーになりました"
+                                          TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+          END-IF    
+           .
+       2002-PRTDATA-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -629,6 +621,26 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF    
            .
        2003-PRTKANRI-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷管理削除処理
+      *****************************************************************
+       2003-PRTKANRI-DEL-SEC          SECTION.
+      *
+           MOVE    PRTKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC               =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "印刷管理ＤＢの更新でエラーになりました"
+                                        TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF    
+           .
+       2003-PRTKANRI-DEL-EXT.
            EXIT.
       *
       *****************************************************************

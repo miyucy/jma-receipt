@@ -395,7 +395,6 @@
            03  FLG-GENBUTU2        PIC 9(01).
            03  FLG-GENBUTU3        PIC 9(01).
            03  FLG-GENBUTU4        PIC 9(01).
-           03  FLG-CLIENT-OK       PIC 9(01).
            03  FLG-S10-CHK         PIC 9(01).
       *
       *    添字領域
@@ -564,6 +563,7 @@
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
+      *
       *    プレビュー用情報
            COPY    "CPXC01LNK.INC".
       *
@@ -799,7 +799,6 @@
            COPY    "SID2.INC".
            COPY    "SID3.INC".
            COPY    "SID4.INC".
-           COPY    "SDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -838,11 +837,6 @@
       *    画面遷移がない時、画面表示へ
            IF    ( FLG-END             =   ZERO )
               PERFORM 500-SET-SCREEN
-           END-IF
-      *
-      *    クライアント印刷
-           IF    ( FLG-CLIENT-OK   =   1 )
-               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
@@ -2062,11 +2056,6 @@
       *    帳票発行プログラム名取得
            PERFORM 3401-PGNAME-SHIHARAI-SEC
       *
-      *    クライアント印刷情報編集
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-               PERFORM 801-CLIENT-PRT-SEC
-           END-IF
-      *
            PERFORM VARYING IDX2 FROM   1   BY  1
                    UNTIL ( IDX2 >      3 )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
@@ -2135,6 +2124,8 @@
                    END-IF
                END-EVALUATE
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+               MOVE    SPA-CLIENT-SHOWDIALOG
+                                           TO  SHELLTBL-ARG22
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
@@ -4723,8 +4714,6 @@
       *    再発行処理
       **************************************************************
        420-SAIHAKKOU-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CLIENT-OK
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
@@ -8683,21 +8672,6 @@
            .
        520-SID4SET-EXT.
            EXIT.
-      *****************************************************************
-      *    クライアント印刷画面処理
-      *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
-      *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_SDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
       **************************************************************
       *    分娩チェック
       **************************************************************
@@ -8955,21 +8929,11 @@
       *****************************************************************
        800-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                      SDMY01
-           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
-      *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                          ORCSPRTCTRLAREA
-           MOVE    "外来請求書兼領収書"    TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "外来診療費明細書"      TO  ORCSPRTCTRL-TITLE-I(02)
-           MOVE    "入院請求書兼領収書"    TO  ORCSPRTCTRL-TITLE-I(03)
-           MOVE    "入院診療費明細書"      TO  ORCSPRTCTRL-TITLE-I(04)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
-      *
-           MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
        800-CLIENT-PRT-EXT.
@@ -8987,34 +8951,6 @@
       *
            .
        800-CLIENT-DUMMY-PRT-EXT.
-           EXIT.
-      *****************************************************************
-      *    クライアント印刷前　処理（バッチ帳票）
-      *****************************************************************
-       801-CLIENT-PRT-SEC         SECTION.
-      *
-           INITIALIZE                      SDMY01
-           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
-      *
-      *    クライアント印刷制御情報取得サブ
-           INITIALIZE                      ORCSPRTCTRLAREA
-           MOVE    CONST-PRTKANRI-TBL-KEY
-                                       TO  ORCSPRTCTRL-TBL-KEY (1)
-           MOVE    ZERO                TO  ORCSPRTCTRL-RENNUM  (1)
-           MOVE    CONST-PRTKANRI-TBL-GROUP
-                                       TO  ORCSPRTCTRL-TBL-GROUP  (1)
-           MOVE    ZERO                TO  ORCSPRTCTRL-SHORI-RENNUM  (1)
-           MOVE    1                   TO  ORCSPRTCTRL-BATCH-FLG
-           MOVE    "支払証明書"        TO  ORCSPRTCTRL-TITLE-I(01)
-           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCTRLAREA
-                                               MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
-      *
-           MOVE    1                   TO  FLG-CLIENT-OK
-      *
-           .
-       801-CLIENT-PRT-EXT.
            EXIT.
       **************************************************************
       *    収納マスター検索処理（一括再計算）

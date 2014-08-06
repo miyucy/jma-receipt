@@ -116,6 +116,7 @@ shell_sources = \
 	allways/store_mnote.sh.in \
 	tools/run_renkei_data_2.sh.in \
 	allways/jmamr.sh.in \
+	allways/client_print.sh.in \
 
 ruby_sources = \
 	daily/print-data.rb.in \

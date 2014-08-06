@@ -9,7 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 export HOME=/home/orca
-export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$PATH
+export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$(dirname ${MONUPLOAD}):$PATH
 
 #----------------------------------------------------------------------#
 #       引数	
@@ -17,6 +17,8 @@ export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$PATH
 #       2:HOSPNUM
 #       3:エンコーディング(1:EUC-JP/2:UTF8/3:OTHER)
 #       4:DATAファイル名称(オリジナル)
+#       5:帳票表題（クライアント印刷用）
+#       6:ダイアログ表示区分（1:ダイアログ表示　クライアント印刷用）
 #----------------------------------------------------------------------#
 
 echo	`date`
@@ -28,7 +30,10 @@ PRT_FILE_FULL=${MCP_TEMPDIR}/${PRT_FILE_BASE}
 ORG_FILE_BASE=$4
 ORG_FILE_FULL=${MCP_TEMPDIR}/${ORG_FILE_BASE}
 
-print_parent_prv.rb ${PRT_FILE_FULL} ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} ${PATCHFORMDIR}
+REPORT_TITLE=""
+[ -n "$5" ] && REPORT_TITLE=$(echo $5 | nkf -w)
+
+print_parent_prv.rb ${PRT_FILE_FULL} ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} ${PATCHFORMDIR} ${MCP_TEMPDIR} "${REPORT_TITLE}" "$6"
 if	[ $?  -eq  0 ]; then
        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2
 fi

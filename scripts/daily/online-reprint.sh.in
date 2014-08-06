@@ -34,13 +34,17 @@ fi
 #        $20 PARA-CNT
 #        $21 DATASETNAME
 #        $22 TITLE
+#        $23 再印刷データを作成しない帳票区分 （該当する場合"D")
+#        $24 ORGNAME
 #            END
 #-------------------------------------------#
 ##      エラーファイル削除
     echo $0 $@ > /tmp/onreprint.log
 
 DATASETNAME=${MCP_TEMPDIR}/${21}
+ORGNAME=${MCP_TEMPDIR}/${24}
 echo DATASETNAME[${DATASETNAME}]
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBONPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22}, >>/tmp/onreprint.log
-	rm ${DATASETNAME}
-        exit
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBONPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23}, >>/tmp/onreprint.log
+	[ -e  ${DATASETNAME} ] && rm ${DATASETNAME}
+	[ -e  ${ORGNAME} ] && rm ${ORGNAME}
+	exit

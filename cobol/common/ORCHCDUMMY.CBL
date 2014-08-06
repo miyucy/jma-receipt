@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-太田    14/08/05  4.8クライアント印刷対応
       *****************************************************************
       *
       *
@@ -35,45 +36,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
-                                   FILE    STATUS  IS  STS-PARA.
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    印刷用データ
-       FD  PRT-FILE.
-       01  PRT-REC.
-           03  HCMDY-01            PIC X(512).
-      *
        WORKING-STORAGE             SECTION.
-      *
-      *     印刷用データ 名称領域 
-           COPY    "CPCOMMONPRT.INC".
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-PARA            PIC X(02).
-      *
-      *    フラグ領域
-       01  FLG-AREA.
-           03  FLG-END             PIC 9(01).
-      *
-      *    添字領域
-       01  IDX-AREA.
-           03  IDX                 PIC 9(04).
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-TIME            PIC 9(08).
-      *
-      *    一時領域
-       01  WRK-AREA.
-      *
-           03  WRK-PAGE            PIC 9(03).
-           03  WRK-FILE-CNT            PIC 9(02).
-           03  WRK-FILE-CNT2           PIC 9(02).
-           03  WRK-SYS-TIME            PIC 9(08).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -82,13 +48,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *   日付変換サブ
-           COPY    "CPORCSDAY.INC".
-           COPY    "CPORCSLNK.INC".
-      *
-      *    全角チェックパラメタ
-           COPY    "CPORCSKANACHK.INC".
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
@@ -112,67 +71,26 @@
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       000-PROC-SEC                SECTION.
+       000-PROC-SEC                    SECTION.
       *
+           MOVE    3                   TO  SPA-CLIENT-PRT-FLG
       *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  IDX-AREA
-           INITIALIZE                  STS-AREA
-           INITIALIZE                  WRK-AREA
+           INITIALIZE                  ORCSMKPRTAREA
+           MOVE    "HC01.sh"           TO  MKPRT-ID
+           MOVE    "ORCDUMMMY.red"     TO  MKPRT-DIA
+           MOVE    SPACE               TO  MKPRT-DEF
+           MOVE    "DUMMY"             TO  MKPRT-DAT
+           MOVE    "DUMMY"             TO  MKPRT-PRTNM
+           CALL    "ORCSMKPRT1"        USING
+                                       ORCSMKPRTAREA
+                                       SPA-AREA
       *
-      *    ファイル名編集処理
-           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
-           MOVE    "HCDM"              TO  HC01PARA-FORM-ID
-           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
-           MOVE    WRK-PAGE            TO  HC01PARA-CNT
-      *
-           ACCEPT  SYS-TIME            FROM    TIME
-           COMPUTE WRK-SYS-TIME        =   SYS-TIME
-                                       +   WRK-FILE-CNT2
-           MOVE    WRK-SYS-TIME        TO  HC01PARA-SYOHMS
-           OPEN    OUTPUT               PRT-FILE
-           MOVE   "aaaa"               TO  HCMDY-01
-      *     印刷用データ出力
-           WRITE   PRT-REC
-           CLOSE                       PRT-FILE
-      *
-      *    処方内容編集
-           PERFORM 400-PRINT-SEC
            MOVE    2                   TO  SPA-CLIENT-PRT-FLG
+           MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
       *
            .
        000-PROC-EXT.
            EXIT    PROGRAM
            .
       *
-      *
-      *****************************************************************
-      *    帳票印刷処理
-      *****************************************************************
-       400-PRINT-SEC                SECTION.
-      *
-      *
-            INITIALIZE                 ORCSMKPRTAREA
-            MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "ORCDUMMMY.red"     TO  MKPRT-DIA
-            MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   "DUMMY"             TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
-                                       ORCSMKPRTAREA
-                                       SPA-AREA
-      *
-           .
-       400-PRINT-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    終了　　処理
-      *****************************************************************
-       300-END-SEC                 SECTION.
-      *
-           .
-       300-END-EXT.
-           EXIT.
       *

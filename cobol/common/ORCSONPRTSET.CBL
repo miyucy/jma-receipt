@@ -37,35 +37,6 @@
        DATA                    DIVISION.
        WORKING-STORAGE         SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
-      *
-       01  FLG-AREA.
-           03  FLG-END                                 PIC 9(01).
-           03  FLG-JOBKANRI                            PIC 9(01).
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
-       01  CNT-AREA.
-           03  CNT-IN                                  PIC 9(06).
-      *
-       01  INDEX-AREA.
-           03  IDX                                     PIC 9(03). 
-      *
-      *    ¥·¥¹¥Æ¥àÎÎ°è
-       01  SYS-AREA.
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  SYS-TIME.
-               05  SYS-THH         PIC 9(02).
-               05  SYS-TMM         PIC 9(02).
-               05  SYS-TSS         PIC 9(02).
-               05  SYS-TDD         PIC 9(02).
-      *
-       01  WRK-AREA.
-           03  WRK-SYSYMD.
-               05  WRK-SYSYY           PIC 9(04).
-               05  WRK-SYSMM           PIC 9(02).  
-               05  WRK-SYSDD           PIC 9(02).  
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
@@ -74,6 +45,8 @@
            03  C-RET   PIC X(2).
            03  C-UID   PIC X(36).
        01  ST          PIC 9(2).
+      *
+       COPY    "CPORCSMCNDATE.INC".
       *
       **************************************************************************
       *
@@ -90,22 +63,11 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *???
            DISPLAY "ORCSONPRTSET ST ="
-      *???     
-           INITIALIZE                  CNT-AREA
-                                       WRK-AREA
-      *    °õºþDB¤ÎGROUP key ÍÑ
-           ACCEPT  SYS-YMD         FROM    DATE
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-           MOVE    SYS-MM              TO  WRK-SYSMM
-           MOVE    SYS-DD              TO  WRK-SYSDD
-           ACCEPT  SYS-TIME            FROM    TIME
-           MOVE    SPACE               TO  SPA-PRT-GROUP            
-           MOVE    WRK-SYSYMD          TO
-                                   SPA-PRT-GROUP (1:8)
-           MOVE    SYS-TIME            TO
-                                   SPA-PRT-GROUP (9:)
+      *
+           CALL    "ORCSMCNDATE"       USING ORCSMCNDATEAREA
+           MOVE    SMCNDATE-YMD    TO  SPA-PRT-GROUP (1:8)
+           MOVE    SMCNDATE-HMS    TO  SPA-PRT-GROUP (9:)
       *
       * UUID GET
            INITIALIZE     UIDIO-AREA.
