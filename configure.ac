@@ -59,6 +59,10 @@ PKG_CHECK_MODULES(xml2,
 [
 	libxml-2.0 >= 2.6.27
 ])
+PKG_CHECK_MODULES(uuid,
+[
+	uuid >= 2.20.0
+])
 
 AC_SEARCH_LIBS([crypt],[crypt])
 

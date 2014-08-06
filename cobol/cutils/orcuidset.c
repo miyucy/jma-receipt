@@ -1,12 +1,16 @@
-/*
- orca
-      uid set proc by using uuidgen command
-      gcc -fPIC -shared orcuidset.c -o liborcuidset.so
-*/
+#if 0
+#!/bin/bash
+src=$0
+obj=${src%.*}
+gcc -g -Wl,--no-as-needed `pkg-config --cflags --libs uuid` -o $obj $src
+$obj
+exit
+#endif
 
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
+#include	<uuid/uuid.h>
 
 /* Áë¸ý´Ø¿ô */
 extern void orcuidset(int hWnd, char *arg) ;
@@ -20,29 +24,23 @@ struct str_chardata_contact
 
 void orcuidset(int hWhd, char *arg)
 {
-	char buf[256] ;
 	struct str_chardata_contact	*lt_contact ;
-
-	FILE* pipe = popen("uuidgen -t", "r") ;
-	fgets(buf, sizeof(buf), pipe ) ; 
-	pclose(pipe) ;
+	uuid_t u;
 
 	lt_contact = (struct str_chardata_contact *)arg ;
-	if(buf[0] == ' '){
-		lt_contact->retcd[0] = '-' ;
-		lt_contact->retcd[1] = '1' ;
-		return ;
-	}
-	strncpy(lt_contact->str_uid, buf, 36) ;
+	uuid_generate(u);
+	uuid_unparse(u,lt_contact->str_uid);
+
 	lt_contact->retcd[0] = '0' ;
 	lt_contact->retcd[1] = '0' ;
 	return ;
 }
-/*
+
 int main(void)
 {
-	char	lt_contact[256] ;
-	uidset( 0, lt_contact) ;
+	char lt_contact[256];
+
+	memset(lt_contact,0,sizeof(lt_contact));
+	orcuidset(0, lt_contact) ;
 	printf("ret = %s\n",lt_contact);
 }
-*/
