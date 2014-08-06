@@ -753,8 +753,8 @@ when    '5'     # PSファイル出力の指示
 	end
 		PDF_File=BS_File + ".pdf"
 		system("pdftk #{Print_Area.join(' ')} cat output #{PDF_File}" )
-		system("echo monupload -t report -T 'test' #{monupload_options} #{PDF_File}" )
-		system("monupload -t report -T 'test' #{monupload_options} #{PDF_File}" )
+		system("echo monupload -t report -T \"#{report_title}\" #{monupload_options} #{PDF_File}" )
+		system("monupload -t report -T \"#{report_title}\" #{monupload_options} #{PDF_File}" )
 		File.delete(PDF_File)
 	end
 	puts '[end ' + `date` + ']'
