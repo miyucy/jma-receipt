@@ -46,23 +46,11 @@
        CONFIGURATION                             SECTION.
        INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
-           SELECT  SAVESPA-FILE    ASSIGN         ASSID01
-                                   ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SAVESPA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
-       FD  SAVESPA-FILE.
-           COPY  "ORCA-SPA"            REPLACING   //SPA//
-                                       BY          //SAVESPA//.
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY  "CPCOMMONDAT3.INC"    REPLACING   //TMPFLPARA//
-                                       BY          //ASSID01//.
-      *
-       01  STS-AREA.
-           03  STS-SAVESPA             PIC X(02).
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -105,7 +93,7 @@
                            11  SPA-GMN-PREFNUMMEIL     PIC X(20).
                    07  SPA-GMN-MESSAGE-STYLE   PIC X(20).
                    07  SPA-GMN-MESSAGE         PIC X(100).
-                   07  SPA-GMN-DURATION        PIC S9(09) BINARY.
+                   07  SPA-GMN-DURATION        PIC S9(09).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-HKNNUM             PIC X(03).
@@ -133,6 +121,7 @@
            03  FLG-KOUSIN                         PIC 9(01).
            03  FLG-OK                             PIC 9(01).
            03  FLG-SYSKANRI                       PIC 9(01).
+           03  FLG-SPATMP                         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -174,6 +163,7 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+           03  WRK-FILEMEI         PIC X(20).
       *
        01  SHELL-AREA.
            03  SHELL-NAME          PIC X(13)  VALUE
@@ -201,12 +191,13 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    £Ó£Ð£Á°ì»þ¥Æ¡¼¥Ö¥ë
+       01  SPATMP-REC.
+           COPY    "CPSPA-TMP.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
-      *
-      *    ¥Õ¥¡¥¤¥ëºï½ü¥Ñ¥é¥á¥¿
-           COPY    "CPORCSFDEL.INC".
       *
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
@@ -219,6 +210,7 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
+           COPY    "MCPDATA2.INC".
       *
       *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
            COPY    "CPORCSJOBKANRI.INC".
@@ -342,19 +334,7 @@
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                IF    ( SPA-MOTOPG      =   "W01" )
-                   MOVE    SPA-HOSPNUM         TO  ASSID01-HOSPNUM
-                   MOVE    "ORCA104_"          TO  ASSID01-FILE-ID
-                   MOVE    SPA-TERMID          TO  ASSID01-TERMID
-                   OPEN    INPUT               SAVESPA-FILE
-                   READ    SAVESPA-FILE
-                   MOVE    SAVESPA-COMMON      TO  SPA-AREA
-                   MOVE    SPA-WORK            TO  SPA-V01KYOUTU
-                   MOVE    SAVESPA-FREE        TO  SPA-V01
-                   CLOSE   SAVESPA-FILE
-                   MOVE    ZERO        TO      IF-RESULT
-                   MOVE    ASSID01     TO      IF-FILENAME
-                   CALL    "orcfiledel"    USING
-                                           ORCSFDELAREA
+                   PERFORM 800-SPA-INPUT-SEC
                    GO  TO  300-SCREEN-EXT
                END-IF
            END-IF
@@ -1278,19 +1258,7 @@
            MOVE    "W01"               TO  SPA-SAKIPG
            MOVE    "V01"               TO  SPA-MOTOPG
       *
-           MOVE    SPA-HOSPNUM         TO  ASSID01-HOSPNUM
-           MOVE    "ORCA104_"          TO  ASSID01-FILE-ID
-           MOVE    SPA-TERMID          TO  ASSID01-TERMID
-      *
-           OPEN    OUTPUT              SAVESPA-FILE
-      *
-           INITIALIZE                  SAVESPAAREA
-           MOVE    SPA-V01KYOUTU   TO  SPA-WORK
-           MOVE    SPA-AREA        TO  SAVESPA-COMMON
-           MOVE    SPA-V01         TO  SAVESPA-FREE
-           WRITE   SAVESPAAREA
-      *
-           CLOSE   SAVESPA-FILE
+           PERFORM 800-SPA-OUTPUT-SEC
       *
            MOVE    SPACE               TO  LINKAREA
       *
@@ -1602,6 +1570,81 @@
            EXIT.
       *
       *****************************************************************
+      *    £Ó£Ã£Ò£Ó£Ð£ÁÆÉ¹þ½èÍý
+      *****************************************************************
+       800-SPA-INPUT-SEC               SECTION.
+      *
+           MOVE    "SCREEN"        TO  WRK-FILEMEI
+           PERFORM 8001-SPA-INPUT-SEC
+      *
+           MOVE    "COMMON"        TO  WRK-FILEMEI
+           PERFORM 8001-SPA-INPUT-SEC
+      *
+           .
+       800-SPA-INPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ó£Ã£Ò£Ó£Ð£ÁÆÉ¹þ½èÍý
+      *****************************************************************
+       8001-SPA-INPUT-SEC               SECTION.
+      *
+           PERFORM 900-SPATMP-KEY-SEL-SEC
+           IF    ( WRK-FILEMEI     =   "SCREEN" )
+               MOVE    SPATMP-DATA-REC
+                                   TO  SPA-V01
+           ELSE
+               MOVE    SPATMP-DATA-REC
+                                   TO  SPA-V01KYOUTU
+           END-IF
+      *
+           MOVE    SPATMP-REC      TO  MCPDATA2-REC
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBDELETE-SEC
+      *
+           .
+       8001-SPA-INPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ó£Ã£Ò£Ó£Ð£Á½ÐÎÏ½èÍý
+      *****************************************************************
+       800-SPA-OUTPUT-SEC              SECTION.
+      *
+           MOVE    "SCREEN"        TO  WRK-FILEMEI
+           PERFORM 8001-SPA-OUTPUT-SEC
+      *
+           MOVE    "COMMON"        TO  WRK-FILEMEI
+           PERFORM 8001-SPA-OUTPUT-SEC
+      *
+           .
+       800-SPA-OUTPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ó£Ã£Ò£Ó£Ð£Á½ÐÎÏ½èÍý
+      *****************************************************************
+       8001-SPA-OUTPUT-SEC             SECTION.
+      *
+           INITIALIZE                  SPATMP-REC
+      *
+           PERFORM 9001-SPATMP-KEY-EDIT-SEC
+      *
+           IF    ( WRK-FILEMEI     =   "SCREEN" )
+               MOVE    SPA-V01
+                                   TO  SPATMP-DATA-REC
+           ELSE
+               MOVE    SPA-V01KYOUTU
+                                   TO  SPATMP-DATA-REC
+           END-IF
+      *
+           MOVE    SPATMP-REC      TO  MCPDATA2-REC
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBINSERT-SEC
+      *
+           .
+       8001-SPA-OUTPUT-EXT.
+           EXIT.
+      *****************************************************************
       *    ¥¸¥ç¥Ö´ÉÍýÆÉ¹þ
       *****************************************************************
        820-JOBKANRI-READ-SEC       SECTION.
@@ -1801,6 +1844,49 @@
            EXIT.
       *
       *****************************************************************
+      *    °ì»þÊÝÂ¸¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *****************************************************************
+       900-SPATMP-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SPATMP
+      *
+           INITIALIZE                  SPATMP-REC
+      *
+           PERFORM 9001-SPATMP-KEY-EDIT-SEC
+      *
+           MOVE    SPATMP-REC      TO  MCPDATA2-REC
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBSELECT-SEC
+           IF    ( FLG-SPATMP      =   ZERO )
+               MOVE    MCPDATA2-REC TO SPATMP-REC
+           ELSE
+               MOVE    1           TO  FLG-SPATMP
+               INITIALIZE              SPATMP-REC
+           END-IF
+      *
+           MOVE    "tbl_spa_tmp"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 920-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SPATMP-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    °ì»þÊÝÂ¸¥Æ¡¼¥Ö¥ë¸¡º÷¾ò·ïÊÔ½¸½èÍý
+      *****************************************************************
+       9001-SPATMP-KEY-EDIT-SEC        SECTION.
+      *
+           MOVE    SPA-HOSPNUM     TO  SPATMP-HOSPNUM
+           MOVE    "V01"           TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID      TO  SPATMP-TERMID
+           MOVE    WRK-FILEMEI     TO  SPATMP-FILEMEI
+           MOVE    1               TO  SPATMP-EDANUM
+      *
+           .
+       9001-SPATMP-KEY-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý
       *****************************************************************
        900-PUT-WINDOW              SECTION.
@@ -1815,3 +1901,80 @@
        900-PUT-WINDOW-EXT.
            EXIT.
 
+      *****************************************************************
+      *    £Ä£Â¸¡º÷½èÍý
+      *****************************************************************
+       920-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 920-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       920-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       920-DBCLOSECURSOR-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *****************************************************************
+       920-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý
+      *****************************************************************
+       920-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           PERFORM 920-ORCDBSPATMP-SEC
+      *
+           .
+      *
+       920-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ï£Ò£Ã£Ó£Ð£Á£Ô£Í£Ð¸Æ½Ð½èÍý
+      *****************************************************************
+       920-ORCDBSPATMP-SEC                SECTION.
+      *
+           CALL    "ORCDBSPATMP"       USING
+                                       MCPAREA
+                                       MCPDATA2-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       920-ORCDBSPATMP-EXT.
+           EXIT.
