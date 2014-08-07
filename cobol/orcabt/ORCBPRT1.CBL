@@ -139,7 +139,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *  01.01.02  ADD START 
            03  WRK-FILENAME        PIC X(8). 
-           03  WRK-FILENAME2       PIC X(256). 
+           03  WRK-NONE            PIC X(256). 
       *  01.01.02  ADD END   
            03  WRK-ENCODING        PIC X(01).
            03  WRK-ENCODING9       REDEFINES WRK-ENCODING
@@ -281,7 +281,7 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-HOSPNUM
                                                LNK-PRTKANRI-TBL-UUID
                                                LNK-PRTKANRI-GYOUMU-CD
-                                               WRK-FILENAME2
+                                               WRK-NONE
                                                WRK-PARA-SHOWDIALOG
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -425,7 +425,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                        TO  SHELLTBL-ARG1
 grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
-               MOVE    WRK-FILENAME2   TO  SHELLTBL-ARG4
+               MOVE    SPACE           TO  SHELLTBL-ARG4
                IF    ( WRK-PARA-PRTFLG     =  "5" )
                    MOVE    TPRT-TITLE  TO  SHELLTBL-ARG5
                    MOVE    SPA-CLIENT-SHOWDIALOG

@@ -16,7 +16,7 @@ export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$(dir
 #       1:DATAファイル名称
 #       2:HOSPNUM
 #       3:エンコーディング(1:EUC-JP/2:UTF8/3:OTHER)
-#       4:DATAファイル名称(オリジナル)
+#       4:none
 #       5:帳票表題（クライアント印刷用）
 #       6:ダイアログ表示区分（1:ダイアログ表示　クライアント印刷用）
 #----------------------------------------------------------------------#
@@ -27,9 +27,6 @@ echo $#
 PRT_FILE_BASE=$1
 PRT_FILE_FULL=${MCP_TEMPDIR}/${PRT_FILE_BASE}
 
-ORG_FILE_BASE=$4
-ORG_FILE_FULL=${MCP_TEMPDIR}/${ORG_FILE_BASE}
-
 REPORT_TITLE=""
 [ -n "$5" ] && REPORT_TITLE=$(echo $5 | nkf -w)
 
@@ -38,24 +35,11 @@ if	[ $?  -eq  0 ]; then
        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2
 fi
 
-rm -f ${PRT_FILE_FULL}
+#------ お薬手帳、処方せんQRイメージ削除
+#       （一時ディレクトリに作成されたpngファイルを削除）
+grep -Eo "${MCP_TEMPDIR}/([0-9a-zA-Z]|\.|\-|\_)+\.png" ${PRT_FILE_FULL} | xargs -r rm -f
 
-if [ -z "${ORG_FILE_BASE}" ]  ; then
-	echo "HCALL end"
-	exit
-fi
-
-if [ $dirname(${ORG_FILE_FULL}) = ${MCP_TEMPDIR} ] ; then
-#------ 処方せんQRイメージ削除
-	if      [[ ${ORG_FILE_FULL} =~ ^${MCP_TEMPDIR}/..HC2Q ]]   ;then
-		grep -Eo "${MCP_TEMPDIR}.*\.png" ${ORG_FILE_FULL} | sed -e "s/ \+/ /" | xargs rm -f
-	fi
-	if      [[ ${ORG_FILE_FULL} =~ ^${MCP_TEMPDIR}/..HC62 ]]   ;then
-                LDATA=`ls \`echo ${ORG_FILE_FULL} | sed 's/[[:digit:]]*\.dat$//g'\`* | sort -r | head -n 1`
-		grep -Eo "${MCP_TEMPDIR}.*\.png" ${LDATA} | sed -e "s/ \+/ /" | xargs rm -f
-	fi
-	rm ${ORG_FILE_FULL:0:$(expr ${#ORG_FILE_FULL} - 10 )}*
-	rm ${PRT_FILE_FULL:0:$(expr ${#PRT_FILE_FULL} - 10 )}*
-fi
+[ -e ${PRT_FILE_FULL} ] && rm ${PRT_FILE_FULL}
 
 	echo	`date`
+	echo "HCALL end"
