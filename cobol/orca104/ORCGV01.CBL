@@ -135,6 +135,7 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
+           03  WRK-FILEMEI         PIC X(20).
            03  WRK-PATH-TABLE      PIC X(64).
            03  WRK-PATH-PATHNAME   PIC X(64).
            03  WRK-VIDMSG          PIC X(70). 
@@ -163,7 +164,6 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
-           03  WRK-FILEMEI         PIC X(20).
       *
        01  SHELL-AREA.
            03  SHELL-NAME          PIC X(13)  VALUE
