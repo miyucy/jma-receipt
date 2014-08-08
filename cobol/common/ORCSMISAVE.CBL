@@ -34,13 +34,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    イメージデータ
+      *    イメージデータファイル
            SELECT  IMAGE-FILE      ASSIGN  IMAGE-FILENAME
                                    FILE    STATUS  IS  STS-IMAGE.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
+      *    イメージデータファイル
        FD  IMAGE-FILE.
        01  IMAGE-REC               PIC X(500000).
       *
@@ -55,12 +56,19 @@
            03  FLG-OPEN            PIC 9(01).
            03  FLG-MEDIMAGE        PIC 9(01).
       *
+      *    イメージデータファイル名
        01  IMAGE-FILENAME          PIC X(256).
+      *
+      *    コマンド
        01  COMMAND                 PIC X(512).
+      *
+      *    返却値
        01  RESULT                  PIC S9(09).
       *
+      *    画像ファイルフォルダ名
        01  WRK-CONS-AREA.
            03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -74,11 +82,13 @@
       *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
+      *
        01  MCPDATA.
            03  MCPREC              PIC X(510000).
       *
       ****************************************************************
        LINKAGE                     SECTION.
+      *
        01  ORCSMIAREA.
            03  ORCSMI-SRYCD        PIC X(09).
            03  ORCSMI-IMAGEKBN     PIC 9(01).
@@ -86,9 +96,10 @@
            03  ORCSMI-FILENAME     PIC X(128).
            COPY    "COMMON-SPA".
       *
-       PROCEDURE                   DIVISION    USING
-           ORCSMIAREA
-           SPA-AREA
+       PROCEDURE                   DIVISION
+                                       USING
+                                       ORCSMIAREA
+                                       SPA-AREA
            .
       *****************************************************************
       *    主処理
@@ -109,18 +120,20 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE  STS-AREA
-           INITIALIZE  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  FLG-AREA
       *
-           MOVE    SPACE               TO  IMAGE-FILENAME
+      *    イメージデータファイル名
+           MOVE    SPACE           TO  IMAGE-FILENAME
            STRING  ORCSMI-TEMPDIR      DELIMITED BY SPACE
                    "/"                 DELIMITED BY SIZE
                    ORCSMI-SRYCD        DELIMITED BY SPACE
                    ".txt"              DELIMITED BY SIZE
-                   INTO    IMAGE-FILENAME
+                               INTO    IMAGE-FILENAME
            END-STRING
       *
-           MOVE    LOW-VALUE           TO  COMMAND
+      *    画像ファイルからイメージデータ作成コマンド
+           MOVE    LOW-VALUE       TO  COMMAND
            STRING  "base64 "           DELIMITED BY SIZE
                    ORCSMI-TEMPDIR      DELIMITED BY SPACE
                    "/"                 DELIMITED BY SIZE
@@ -129,26 +142,29 @@
                    ORCSMI-FILENAME     DELIMITED BY SPACE
                    " > "               DELIMITED BY SIZE
                    IMAGE-FILENAME      DELIMITED BY SPACE
-                   INTO    COMMAND
+                               INTO    COMMAND
            END-STRING
+      *    コマンド実行
+           CALL    "system"            USING
+                                       COMMAND
+                                       RETURNING   RESULT
       *
-           CALL    "system"        USING   COMMAND
-                                   RETURNING   RESULT
            IF      RESULT          NOT =   ZERO
                DISPLAY "base64 RC:[ " RESULT " ]"
                MOVE    1                   TO  FLG-END
            ELSE
-               OPEN    INPUT   IMAGE-FILE
+      *        イメージデータファイル読み込み
+               OPEN    INPUT               IMAGE-FILE
                IF      STS-IMAGE       NOT =   ZERO
                    DISPLAY "ORCSMISAVE IMAGE FILE OPEN ERROR"
-                   MOVE    1                   TO  FLG-END
+                   MOVE    1               TO  FLG-END
                ELSE
                    READ    IMAGE-FILE
                        AT  END
-                           MOVE    1                   TO  FLG-END
+                           MOVE    1               TO  FLG-END
                    END-READ
                END-IF
-               MOVE    1                   TO  FLG-OPEN
+               MOVE    1               TO  FLG-OPEN
            END-IF
            .
        100-INIT-EXT.
@@ -159,20 +175,23 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           PERFORM 900-MEDIMAGE-CHECK-SEC
+      *    イメージデータ読み込み
+           PERFORM 900-MEDIMAGE-READ-SEC
       *
-           INITIALIZE  MEDIMAGE-REC
-           MOVE    SPA-HOSPNUM         TO  MEDIMG-HOSPNUM
-           MOVE    ORCSMI-SRYCD        TO  MEDIMG-SRYCD
-           MOVE    ORCSMI-IMAGEKBN     TO  MEDIMG-IMAGEKBN
-           MOVE    IMAGE-REC           TO  MEDIMG-IMAGEDATA
-           MOVE    SPA-OPID            TO  MEDIMG-OPID
-           MOVE    SPA-SYSYMD          TO  MEDIMG-UPYMD
-           MOVE    MEDIMAGE-REC        TO  MCPREC
+           INITIALIZE                  MEDIMAGE-REC
+           MOVE    SPA-HOSPNUM     TO  MEDIMG-HOSPNUM
+           MOVE    ORCSMI-SRYCD    TO  MEDIMG-SRYCD
+           MOVE    ORCSMI-IMAGEKBN TO  MEDIMG-IMAGEKBN
+           MOVE    IMAGE-REC       TO  MEDIMG-IMAGEDATA
+           MOVE    SPA-OPID        TO  MEDIMG-OPID
+           MOVE    SPA-SYSYMD      TO  MEDIMG-UPYMD
+           MOVE    MEDIMAGE-REC    TO  MCPREC
       *
            IF      FLG-MEDIMAGE        =   ZERO
+      *        イメージデータ更新
                PERFORM 900-MEDIMAGE-UPD-SEC
            ELSE
+      *        イメージデータ追加
                PERFORM 900-MEDIMAGE-INS-SEC
            END-IF
       *
@@ -190,70 +209,76 @@
                CLOSE   IMAGE-FILE
            END-IF
       *
-           MOVE    LOW-VALUE           TO  COMMAND
+      *    イメージデータファイル削除コマンド
+           MOVE    LOW-VALUE       TO  COMMAND
            STRING  "rm -f "            DELIMITED BY SIZE
                    IMAGE-FILENAME      DELIMITED BY SPACE
-                   INTO    COMMAND
+                               INTO    COMMAND
            END-STRING
-      *
-           CALL    "system"        USING   COMMAND
-                                   RETURNING   RESULT
+      *    コマンド実行
+           CALL    "system"            USING
+                                       COMMAND
+                                       RETURNING   RESULT
            .
        300-TERM-EXT.
            EXIT.
       *
       *****************************************************************
-      *    イメージ抽出  処理
+      *    イメージデータ読み込み  処理
       *****************************************************************
-       900-MEDIMAGE-CHECK-SEC      SECTION.
+       900-MEDIMAGE-READ-SEC       SECTION.
       *
-           INITIALIZE  MEDIMAGE-REC
-           MOVE    SPA-HOSPNUM         TO  MEDIMG-HOSPNUM
-           MOVE    ORCSMI-SRYCD        TO  MEDIMG-SRYCD
-           MOVE    MEDIMAGE-REC        TO  MCPREC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_med_image"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING   MCPAREA
+           INITIALIZE                  MEDIMAGE-REC
+           MOVE    SPA-HOSPNUM     TO  MEDIMG-HOSPNUM
+           MOVE    ORCSMI-SRYCD    TO  MEDIMG-SRYCD
+           MOVE    MEDIMAGE-REC    TO  MCPREC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_med_image" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPREC
+                                       SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_med_image" TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
                                            MCPREC
                                            SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_med_image"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"       USING   MCPAREA
-                                               MCPREC
-                                               SPA-AREA
                IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-MEDIMAGE
+                   MOVE    ZERO            TO  FLG-MEDIMAGE
                ELSE
-                   MOVE    1                   TO  FLG-MEDIMAGE
+                   MOVE    1               TO  FLG-MEDIMAGE
                END-IF
            ELSE
-               MOVE    1                   TO  FLG-MEDIMAGE
+               MOVE    1               TO  FLG-MEDIMAGE
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_med_image"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING   MCPAREA
-                                           MCPREC
-                                           SPA-AREA
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_med_image" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPREC
+                                       SPA-AREA
            .
-       900-MEDIMAGE-CHECK-EXT.
+       900-MEDIMAGE-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    イメージ追加  処理
+      *    イメージデータ追加  処理
       *****************************************************************
        900-MEDIMAGE-INS-SEC        SECTION.
       *
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_med_image"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING   MCPAREA
-                                           MCPREC
-                                           SPA-AREA
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           MOVE    "tbl_med_image" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPREC
+                                       SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSMISAVE INSERT ERROR :"  MCP-RC "."
            END-IF
@@ -262,16 +287,17 @@
            EXIT.
       *
       *****************************************************************
-      *    イメージ更新  処理
+      *    イメージデータ更新  処理
       *****************************************************************
        900-MEDIMAGE-UPD-SEC        SECTION.
       *
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_med_image"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING   MCPAREA
-                                           MCPREC
-                                           SPA-AREA
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           MOVE    "tbl_med_image" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPREC
+                                       SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSMISAVE UPDATE ERROR :"  MCP-RC "."
            END-IF
