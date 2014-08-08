@@ -30,6 +30,8 @@
       *  00.00.01    NACL-森脇    06/09/28  条件なしの処理
       *  03.05.01    NACL-森脇    07/05/30  グループ診療対応
       *  04.01.01    NACL-森脇    08/01/16  文字数増
+      *  04.08.01    NACL-森脇    14/07/30  一時ファイルディレクトリ設定
+      *  04.08.02    NACL-森脇    14/08/08  画像イメージ作成機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,7 +40,10 @@
        FILE-CONTROL.
       *
 006900*    エラーファイル
-           SELECT  YKJMERR-FILE        ASSIGN  YKJMERR
+      *----(04.08.01)--UPD-START---
+      *     SELECT  YKJMERR-FILE        ASSIGN  YKJMERR
+           SELECT  YKJMERR-FILE        ASSIGN  RECEERR
+      *----(04.08.01)--UPD-END-----
                                        FILE    STATUS  IS  STS-YKJMERR.
       *
        DATA                    DIVISION.
@@ -54,6 +59,10 @@
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
+      *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
            COPY    "HCM61.INC".
       *
@@ -111,7 +120,9 @@
            03  WRK-PARA-NAME           PIC X(10).
            03  WRK-PARA-SRYCD          PIC X(09).
            03  WRK-PARA-INPUTCD        PIC X(10).
-           03  YKJMERR                 PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  YKJMERR                 PIC X(100).
+      *----(04.08.01)--UPD-END-----
       *
       *    一時領域
        01  WRK-AREA.
@@ -170,6 +181,21 @@
            03  FILLER                  PIC X(15)   VALUE
                                                    "transparent.jpg".
       *
+      *----(04.08.02)--ADD-START---
+       01  FILE-IMAGE              PIC X(512).
+      *
+       01  WRK-CONS-AREA.
+      *    画像ファイルフォルダ名
+           03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
+      *
+      *    画像イメージ作成パラメタ
+       01  ORCSMIAREA.
+           03  ORCSMI-SRYCD        PIC X(09).
+           03  ORCSMI-IMAGEKBN     PIC 9(01).
+           03  ORCSMI-TEMPDIR      PIC X(1024).
+           03  ORCSMI-FILENAME     PIC X(128).
+      *----(04.08.02)--ADD-END-----
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -214,6 +240,11 @@
       *
       *    全角変換サブ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -261,6 +292,9 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -286,7 +320,10 @@
                                        WRK-PARA-NAME
                                        WRK-PARA-SRYCD
                                        WRK-PARA-INPUTCD
-                                       YKJMERR
+      *----(04.08.01)--UPD-START---
+                                       RECEERR
+      *                                 YKJMERR
+      *----(04.08.01)--UPD-END-----
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -311,6 +348,13 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  FILE-NAME
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            .
        100-INIT-EXT.
@@ -381,14 +425,35 @@
       *
       *    画像編集
            IF      YAKUJYO-PHOTO   NOT =   SPACE
+      *----(04.08.02)--ADD-START---
+      *        データからイメージファイル作成
+               INITIALIZE                  ORCSMIAREA
+               MOVE    YAKUJYO-SRYCD   TO  ORCSMI-SRYCD
+               MOVE    SGETTEMP-TEMPDIR
+                                       TO  ORCSMI-TEMPDIR
+               MOVE    YAKUJYO-PHOTO   TO  ORCSMI-FILENAME
+               CALL    "ORCSMILOAD"        USING
+                                           ORCSMIAREA
+                                           SPA-AREA
+      *
+               MOVE    SPACE           TO  FILE-IMAGE
+               STRING  SGETTEMP-TEMPDIR    DELIMITED BY SPACE
+                       WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
+                       "/"                 DELIMITED BY SIZE
+                       YAKUJYO-PHOTO       DELIMITED BY SPACE
+                                   INTO    FILE-IMAGE
+               END-STRING
+      *----(04.08.02)--ADD-END-----
+      *----(04.08.02)--UPD-START---
       *        ファイル存在チェック
                INITIALIZE                  ORCSFILECHKAREA
-               MOVE    YAKUJYO-PHOTO   TO  FILECHK-NAME
+               MOVE    FILE-IMAGE      TO  FILECHK-NAME
                CALL    "ORCSFILECHK"       USING
                                            ORCSFILECHKAREA
                IF      FILECHK-RC      =   ZERO
-                   MOVE  YAKUJYO-PHOTO     TO  WRK-YKJ-GAZO
+                   MOVE    FILE-IMAGE      TO  WRK-YKJ-GAZO
                END-IF
+      *----(04.08.02)--UPD-END-----
            END-IF
       *
       *    形状編集
