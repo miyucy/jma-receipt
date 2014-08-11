@@ -57,7 +57,7 @@
                   09  ICINFRES-GENMEN                  PIC X(10).
                   09  ICINFRES-CHOSEI1                 PIC X(10).
                   09  ICINFRES-CHOSEI2                 PIC X(10).
-                07  ICINFRES-AC-POINT-INFRESORMATION.
+                07  ICINFRES-AC-POINT-INFORMATION.
                   09  ICINFRES-TOTAL-TEN               PIC X(10).
                   09  ICINFRES-SRYITEM-OCC             OCCURS 16.
                     11  ICINFRES-SRYITEM-KBN           PIC X(03).
