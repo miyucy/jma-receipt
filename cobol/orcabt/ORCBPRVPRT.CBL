@@ -49,10 +49,8 @@
        01  RECEERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *    エラーファイル 名称領域 
-      *    COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
-      *                                BY         //RECEERR//.
-      *    03  FILLER                  PIC X(20)   VALUE   ".dat".
+      *
+           COPY    "CPRECEERR.INC".
       *
       *    一覧
            COPY    "HCMSL80.INC".
@@ -107,7 +105,6 @@
       *    03  WRK-PARA-HOSPID         PIC X(24).
            03  WRK-PARA-HOSPNUM        PIC X(02).
            03  WRK-PARA-LSTYMD         PIC X(08).
-           03  RECEERR                 PIC X(200).
       *
       *    一時領域
        01  WRK-AREA.
@@ -272,6 +269,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK2.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -320,6 +320,8 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -361,6 +363,12 @@
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
                                        SPA-AREA
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
            INITIALIZE                  SPA-AREA
       *

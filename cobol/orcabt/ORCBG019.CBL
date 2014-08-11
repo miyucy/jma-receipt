@@ -55,6 +55,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPRECEERR.INC".
+      *
            COPY    "HCPOM.INC".
       *
       *    ¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
@@ -81,7 +83,6 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
       *
       *    °ì»þÎÎ°è
@@ -179,6 +180,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
       *
@@ -224,6 +228,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -255,6 +261,12 @@
                                     TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
       *    ¿ÇÎÅÇ¯·îÊÔ½¸
            MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD (1:6)

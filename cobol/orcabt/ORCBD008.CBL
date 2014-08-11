@@ -84,6 +84,8 @@
                                    REPLACING  //RECE01//
                                    BY         //BD00801//.
       *
+           COPY    "CPRECEERR.INC".
+      *
       *----(04.02.01)--UPD-START---
       *     COPY    "HCM41V01.INC"  REPLACING  //HCM41V01//
            COPY    "HCM41V02.INC"  REPLACING  //HCM41V02//
@@ -184,7 +186,6 @@
            03  CONST-H200401           PIC X(08)   VALUE   "20080401".
       *----(04.02.01)--ADD-END-----
       *
-       01  RECEERR                     PIC X(100).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -238,6 +239,9 @@
            COPY    "CPORCSLNK.INC".
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -326,6 +330,16 @@
                                    TO  BD00801PARA-TERMID
       *
            MOVE    WRK-PARA-RECEERR TO RECEERR
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BD00801PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BD00801PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEERR
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

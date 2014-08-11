@@ -65,7 +65,8 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01//
                                    BY          //TMP01//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
+           COPY    "CPRECEERR.INC".
       *
        01  STS-AREA.
            03  STS-TMP01                    PIC X(02).
@@ -105,7 +106,6 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-PTNUM          PIC X(20).
       *
@@ -147,6 +147,9 @@
       *
       *    マシン日付
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -191,6 +194,8 @@
                                        WRK-AREA
                                        SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -219,6 +224,16 @@
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  TMP01PARA-TERMID
            MOVE    SPA-HOSPNUM     TO  TMP01PARA-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    TMP01PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  TMP01PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE

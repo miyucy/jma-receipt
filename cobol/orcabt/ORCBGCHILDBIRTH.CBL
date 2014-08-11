@@ -79,7 +79,9 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BUNBENUPD//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+                                   BY         //BUNBENERR//.
       *
       *    請求書
            COPY    "HCN61V01.INC"  REPLACING  //HCN61V01//
@@ -160,7 +162,6 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  BUNBENERR           PIC X(100).
            03  WRK-PARA-SKYYM      PIC X(06).
            03  WRK-PARA-TEISYUTUBIKBN
                                    PIC X(01).
@@ -346,6 +347,9 @@
       *    県名取得パラメタ
            COPY    "CPORCSPREF.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -390,6 +394,8 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+      *
+           INITIALIZE                  BUNBENERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -466,6 +472,16 @@
                                    TO  BUNBENUPD-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  BUNBENUPD-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BUNBENUPD-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    BUNBENERR       TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BUNBENUPD-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  BUNBENERR
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA

@@ -72,6 +72,8 @@
            COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01//
                                            BY          //BX0301//.
       *
+           COPY    "CPRECEERR.INC".
+      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
@@ -102,7 +104,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(200).
            03  WRK-PARA-KJNYMD                     PIC X(08).
       *
       *    一時領域
@@ -223,6 +224,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -270,6 +274,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -315,6 +321,15 @@
            MOVE    "BX03001"           TO  BX0301PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  BX0301PARA-TERMID
       *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BX0301PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BX0301PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEERR
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM

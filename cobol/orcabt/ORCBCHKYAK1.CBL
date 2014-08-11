@@ -87,13 +87,13 @@
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //BCHKYAK101//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    並べ替えファイル
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //BCHKYAK102//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
+      *
+           COPY    "CPRECEERR.INC".
       *
       *    ステータス領域
        01  STS-AREA.
@@ -138,7 +138,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(100).
            03  WRK-PARA-DUMMY                      PIC X(1)
                                                    OCCURS 9.
            03  WRK-PARA-CLEAR                      PIC X(6).
@@ -262,6 +261,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -312,6 +314,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  KEY-AREA
            INITIALIZE                  SPA-AREA
+      *
+           INITIALIZE                  RECEERR
       *
            INITIALIZE                  WRK-PARA
       *
@@ -368,6 +372,20 @@
            MOVE    WRK-PARA-HOSPNUM    TO  BCHKYAK102PARA-HOSPNUM
            MOVE    "BCHKK02"           TO  BCHKYAK102PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  BCHKYAK102PARA-TERMID
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BCHKYAK101PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    BCHKYAK102PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (2)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (3)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BCHKYAK101PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  BCHKYAK102PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                   TO  RECEERR
       *
            OPEN    OUTPUT              SRYCD-FILE
            CLOSE   SRYCD-FILE

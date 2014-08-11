@@ -48,13 +48,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    エラーファイル 名称領域 
-      **     COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01PARA//
-      **                                     BY          //RECEERR//.
-      **     03  FILLER                      PIC X(04)   VALUE   ".dat".
+           COPY    "CPRECEERR.INC".
+      *
       *    ステータス領域
-      *
-      *
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
       *
@@ -91,7 +87,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-KBN                        PIC X(01).
       *
@@ -147,6 +142,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -195,6 +193,8 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+      *
+           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -245,8 +245,11 @@
       *
            PERFORM   900-CALL-ORCSJOB-SEC
       *
-      **     MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-      **     MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA

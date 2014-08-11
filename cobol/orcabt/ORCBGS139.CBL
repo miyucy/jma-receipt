@@ -91,11 +91,17 @@
            COPY  "HCGS139GV02.INC" REPLACING  //HCGS139GV02//
                                    BY         //HCGS139G//.
       *
-       01  ASS-AREA.
-           03  ASS-BGSSKY          PIC X(255).
-           03  ASS-BGSKOH          PIC X(255).
-           03  ASS-BGSETC          PIC X(255).
-           03  ASS-BGS100ERR       PIC X(255).
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSSKY//.
+      *
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSKOH//.
+      *
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSETC//.
+      *
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGS100ERR//.
       *
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).
@@ -1423,7 +1429,7 @@
                MOVE    "1"         TO  WRK-NYUGAIKBN
                MOVE    "入院"      TO  WRK-NYUGAIKBNMEI
            ELSE
-               MOVE    ""          TO  WRK-NYUGAIKBN
+               MOVE    " "         TO  WRK-NYUGAIKBN
                MOVE    "入院・外来　総計"
                                    TO  WRK-NYUGAIKBNMEI
            END-IF

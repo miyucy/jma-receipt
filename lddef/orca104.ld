@@ -57,6 +57,7 @@ db	{
 	tbl_jobkanri;
 	tbl_syskanri;
 	tbl_help;
+	tbl_spa_tmp;
 };
 
  db	"shell"	{

@@ -48,13 +48,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    エラーファイル 名称領域 
-grpsys*DD  COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01PARA//
-grpsys*DD                                  BY          //RECEERR//.
-grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
+           COPY    "CPRECEERR.INC".
+      *
       *    ステータス領域
-      *
-      *
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
       *
@@ -91,7 +87,6 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
            03  WRK-PARA-SHELLID                    PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID                     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
-grpsys     03  RECEERR                             PIC X(100).
       *     03  WRK-PARA-SRYYM                      PIC X(06).
       *
       *    一時領域
@@ -130,6 +125,8 @@ grpsys     03  RECEERR                             PIC X(100).
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -180,6 +177,8 @@ grpsys     03  RECEERR                             PIC X(100).
            INITIALIZE                  CNT-AREA
 grpsys     INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            INITIALIZE                  PARA-AREA
@@ -219,8 +218,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                                            JOBKANRI-REC
 grpsys                                     SPA-AREA
       *
-grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
            .
        100-INIT-EXT.

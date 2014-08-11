@@ -64,9 +64,10 @@
            COPY  "HCGS121GV02.INC" REPLACING  //HCGS121GV02//
                                    BY         //HCGS121G//.
       *
-       01  ASS-AREA.
-           03  ASS-BGSMEI          PIC X(255).
-           03  ASS-BGS100ERR       PIC X(255).
+           COPY  "CPASGNPARA.INC"  REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSMEI//.
+           COPY  "CPASGNPARA.INC"  REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGS100ERR//.
       *
        01  STS-AREA.
            03  STS-BGSMEI          PIC X(02).

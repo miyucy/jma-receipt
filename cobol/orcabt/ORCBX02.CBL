@@ -73,6 +73,9 @@
            COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01//
                                            BY          //BX0202//.
       *
+           COPY    "CPRECEERR.INC".
+      *
+      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
@@ -106,7 +109,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(200).
            03  WRK-PARA-CHKMORE                    PIC X(01).
            03  WRK-PARA-MOREKIKAN                  PIC 9(05).
            03  WRK-PARA-MORERANGE-G.
@@ -218,6 +220,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -265,6 +270,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SORTKEY-AREA
            INITIALIZE                  SPA-AREA
+      *
+           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -324,6 +331,17 @@
            MOVE    SPA-HOSPNUM         TO  BX0202PARA-HOSPNUM
            MOVE    "BX02002"           TO  BX0202PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  BX0202PARA-TERMID
+      *
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BX0202PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BX0202PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEERR
       *
            INITIALIZE                  SS004-AREA
            MOVE    WRK-PARA-CHKMORE    TO  SS004-SRYCDKBN

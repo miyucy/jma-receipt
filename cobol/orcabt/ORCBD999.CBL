@@ -79,6 +79,10 @@
                                    REPLACING  //RECE01//
                                    BY         //BD00801//.
       *
+           COPY    "CPRECEERR.INC"
+                                   REPLACING  //RECEERR//
+                                   BY         //TOUKEIERR//.
+      *
            COPY    "HCM41V02.INC"  REPLACING  //HCM41V02//
                                    BY         //HCM41//.
       *
@@ -279,8 +283,6 @@
            03  CONST-H200401           PIC X(08)   VALUE   "20080401".
       *----(04.02.01)--ADD-END-----
       *
-       01  TOUKEIERR                     PIC X(100).
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -337,6 +339,9 @@
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -378,6 +383,8 @@
            INITIALIZE                  SUM-AREA
            INITIALIZE                  SPA-AREA
                                        WRK-PARA
+      *
+           INITIALIZE                  TOUKEIERR
       *
            INITIALIZE                  WRK-HENSYU-AREA
            MOVE    ZERO            TO  WRK-NUM    
@@ -426,6 +433,16 @@
                                    TO  BD00801PARA-TERMID
       *
            MOVE    WRK-PARA-TOUKEIERR TO TOUKEIERR
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BD00801PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    TOUKEIERR       TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BD00801PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  TOUKEIERR
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

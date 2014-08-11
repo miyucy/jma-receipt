@@ -83,6 +83,8 @@
       **     03  FILLER                      PIC X(04)   VALUE   ".dat".
       *    ステータス領域
       *
+           COPY    "CPRECEERR.INC".
+      *
       *    一覧
            COPY    "HCMSL55.INC".
       *
@@ -151,7 +153,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
       *
       *    一時領域
@@ -428,6 +429,9 @@
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -476,6 +480,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            INITIALIZE                  PARA-AREA
@@ -513,6 +519,12 @@
       *
       **     MOVE    "RECEERR"           TO  RECEERR-FILE-ID
       **     MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA

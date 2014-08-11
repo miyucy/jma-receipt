@@ -83,6 +83,8 @@
                                    REPLACING   //RECE01//
                                    BY          //BD01004//.
       *
+           COPY    "CPRECEERR.INC".
+      *
            COPY    "HCM51V03.INC"  REPLACING   //HCM51V03//
                                    BY          //HCM51//.
            COPY    "HCM51V02.INC".
@@ -393,8 +395,6 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "公害".
       *
-       01  RECEERR                         PIC X(100).
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -477,6 +477,9 @@
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -556,6 +559,22 @@
                                    TO  BD01004PARA-TERMID
       *
            MOVE    SBD010-ERRFLPARA TO RECEERR
+      *
+
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BD01003PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    BD01004PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (2)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (3)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BD01003PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  BD01004PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                   TO  RECEERR
       *
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYSYMD
       *

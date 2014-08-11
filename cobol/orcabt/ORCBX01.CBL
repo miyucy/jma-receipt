@@ -37,7 +37,7 @@
        FILE-CONTROL.
       *
 006900*    エラーファイル
-           SELECT  CHKMERR-FILE    ASSIGN  WRK-PARA-CHKMERR
+           SELECT  CHKMERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-CHKMERR.
       *
        DATA                    DIVISION.
@@ -48,6 +48,8 @@
        01  CHKMERR-REC                             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "CPRECEERR.INC".
       *
       *    ステータス領域
        01  STS-AREA.
@@ -83,7 +85,6 @@
            03  WRK-PARA-SRTKBN                     PIC X(01).
            03  WRK-PARA-STSRYCD                    PIC X(09).
            03  WRK-PARA-EDSRYCD                    PIC X(09).
-           03  WRK-PARA-CHKMERR                    PIC X(50).
            03  WRK-PARA-KJNYMD                     PIC X(08).
       *
       *    一時領域
@@ -129,6 +130,9 @@
       *
       *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -177,6 +181,8 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            INITIALIZE                  WRK-PARA
@@ -200,7 +206,7 @@
                                        WRK-PARA-SRTKBN
                                        WRK-PARA-STSRYCD
                                        WRK-PARA-EDSRYCD
-                                       WRK-PARA-CHKMERR
+                                       RECEERR
                                        WRK-PARA-KJNYMD
            END-UNSTRING
       *
@@ -254,6 +260,12 @@
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
                                            SPA-AREA
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR TO SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
       *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC

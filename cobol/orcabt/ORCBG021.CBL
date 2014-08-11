@@ -60,6 +60,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPRECEERR.INC".
+      *
            COPY    "HCMSL55.INC".
       *
            COPY    "HCMSL80.INC".
@@ -102,7 +104,6 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
            03  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
@@ -360,6 +361,9 @@
       *   画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -405,6 +409,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -445,6 +451,12 @@
                                    TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
       *    診療年月編集
            IF      WRK-PARA-SRYYM  =   "999999" 

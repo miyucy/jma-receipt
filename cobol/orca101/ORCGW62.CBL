@@ -36,24 +36,11 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    エラーファイル
-           SELECT  TESTERR-FILE    ASSIGN  TESTERR
-                                   FILE    STATUS  IS  STS-TESTERR.
-      *
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-       FD  TESTERR-FILE.
-       01  TESTERR-REC             PIC X(200).
-      *
        WORKING-STORAGE             SECTION.
-      *
-      *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //TESTERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -68,10 +55,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-TESTERR         PIC X(02).
       *
       *    システム領域
        01  SYS-AREA.
@@ -94,8 +77,6 @@
        01  WRK-AREA.
            03  WRK-WIDGET          PIC X(64).
            03  WRK-WIDMSG          PIC X(70).
-      *
-           03  WRK-TESTERR         PIC X(200).
       *
            03  WRK-PRTNUM          PIC X(17).
            03  WRK-PRTNAME-G.
@@ -678,20 +659,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO            TO  WRK-CONS-JOB-JOBID
            MOVE    SPACE           TO  WRK-CONS-PREVIEW-TBL-GROUP
       *
-           MOVE    "TESTERR"       TO  TESTERR-FILE-ID
-           MOVE    SPA-TERMID      TO  TESTERR-TERMID
-      *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
            MOVE    SPACE           TO  SHELLTBL
       *
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    "scripts/allways/preprint.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING
-                                       ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "preprint.sh"   TO  SHELLTBL-NAME
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
            MOVE    WRK-CONS-PREVIEW-TBL-KEY
@@ -731,7 +703,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG11
       *
-           MOVE    TESTERR         TO  SHELLTBL-ARG12
+           MOVE    SPACE           TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
@@ -751,7 +723,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA

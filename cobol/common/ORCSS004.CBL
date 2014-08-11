@@ -60,11 +60,13 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "CPCOMMONDAT5.INC"  REPLACING
-                                       //TEIKI01// BY //SS00401//.
+           COPY    "CPCOMMONDAT5.INC".
       *
-           COPY    "CPCOMMONDAT5.INC"  REPLACING
-                                       //TEIKI01// BY //SS00402//.
+           COPY    "CPASGNPARA.INC"    REPLACING
+                                       //ASGN// BY //SS00401//.
+      *
+           COPY    "CPASGNPARA.INC"    REPLACING
+                                       //ASGN// BY //SS00402//.
       *
        01  STS-AREA.
            03  STS-SS00401                     PIC X(02).
@@ -132,6 +134,9 @@
            03  C-UID                   PIC X(36).
        01  ST                          PIC 9(2).
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -178,17 +183,28 @@
            CALL    "orcuidset"         USING
                                        ST
                                        UIDIO-AREA
-           MOVE    SPA-HOSPNUM         TO  SS00401PARA-HOSPNUM
-           MOVE    "SS004001"          TO  SS00401PARA-FILE-ID
-           MOVE    C-UID               TO  SS00401PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  TEIKI01PARA-HOSPNUM
+           MOVE    "SS004001"          TO  TEIKI01PARA-FILE-ID
+           MOVE    C-UID               TO  TEIKI01PARA-TERMID
+           MOVE    TEIKI01PARA-BASENAME TO SS00401PARA
       *
            INITIALIZE                  UIDIO-AREA
            CALL    "orcuidset"         USING
                                        ST
                                        UIDIO-AREA
-           MOVE    SPA-HOSPNUM         TO  SS00402PARA-HOSPNUM
-           MOVE    "SS004TNS"          TO  SS00402PARA-FILE-ID
-           MOVE    C-UID               TO  SS00402PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  TEIKI01PARA-HOSPNUM
+           MOVE    "SS004TNS"          TO  TEIKI01PARA-FILE-ID
+           MOVE    C-UID               TO  TEIKI01PARA-TERMID
+           MOVE    TEIKI01PARA-BASENAME TO SS00402PARA
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    SS00401PARA     TO  SGETTEMP-BASENAMES (1)
+           MOVE    SS00402PARA     TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  SS00401PARA
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  SS00402PARA
       *
            OPEN    OUTPUT              SS00401-FILE
            CLOSE   SS00401-FILE

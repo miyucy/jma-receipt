@@ -86,6 +86,9 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -177,6 +180,28 @@
       *
            MOVE    5                   TO  TMPFLPARA-SYOKBN2
            MOVE    TMPFLPARA           TO  BGS100P-MEIFNAME
+      *
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE   BGS100P-SKYFNAME     TO  SGETTEMP-BASENAMES (1)
+           MOVE   BGS100P-KOHFNAME     TO  SGETTEMP-BASENAMES (2)
+           MOVE   BGS100P-HKNJAFNAME   TO  SGETTEMP-BASENAMES (3)
+           MOVE   BGS100P-ETCFNAME     TO  SGETTEMP-BASENAMES (4)
+           MOVE   BGS100P-MEIFNAME     TO  SGETTEMP-BASENAMES (5)
+           MOVE   BGS100P-ERRFNAME     TO  SGETTEMP-BASENAMES (6)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BGS100P-SKYFNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  BGS100P-KOHFNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                   TO  BGS100P-HKNJAFNAME
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                   TO  BGS100P-ETCFNAME
+           MOVE    SGETTEMP-FULLNAMES (5)
+                                   TO  BGS100P-MEIFNAME
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                   TO  BGS100P-ERRFNAME
       *
            EVALUATE    BGS100P-FORMKBN
            WHEN    "1"

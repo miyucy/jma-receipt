@@ -35,7 +35,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -50,6 +50,7 @@
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *
       *    帳票領域
            COPY    "HCN63.INC".
@@ -140,6 +141,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
@@ -440,6 +444,13 @@
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    1               TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA        TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  ASGNPARA
+      *
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
@@ -454,7 +465,7 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCN63.red"     TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-           MOVE    HC01PARA        TO  MKPRT-DAT
+           MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1034-PRTNM(13)
                                    TO  MKPRT-PRTNM
            MOVE   "分娩費用明細書" TO  MKPRT-INFO

@@ -63,7 +63,8 @@
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //BPTNUMCHG//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
+      *
+           COPY    "CPRECEERR.INC".
       *
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
@@ -109,7 +110,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(100).
            03  WRK-PARA-KBN                        PIC X(01).
       *
       *    一時領域
@@ -188,6 +188,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -235,6 +238,8 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+      *
+           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -293,9 +298,15 @@
            MOVE    "BCHKS01"           TO  BPTNUMCHGPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  BPTNUMCHGPARA-TERMID
       *
-      *
-      **     MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-      **     MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BPTNUMCHGPARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BPTNUMCHGPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEERR
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA

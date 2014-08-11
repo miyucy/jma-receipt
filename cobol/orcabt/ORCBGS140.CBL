@@ -103,12 +103,20 @@
            COPY  "HCGS140G1.INC".
            COPY  "HCGS140G2.INC".
       *
-       01  ASS-AREA.
-           03  ASS-BGSSKY          PIC X(255).
-           03  ASS-BGSKOH          PIC X(255).
-           03  ASS-BGSHKNJA        PIC X(255).
-           03  ASS-BGSETC          PIC X(255).
-           03  ASS-BGS100ERR       PIC X(255).
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSSKY//.
+      *
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSKOH//.
+      *
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSHKNJA//.
+      *
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGSETC//.
+      *
+           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
+                                   BY         //ASS-BGS100ERR//.
       *
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).

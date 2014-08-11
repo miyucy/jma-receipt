@@ -27,18 +27,18 @@
            03  BGS100P-SHELLID         PIC X(08).
            03  BGS100P-MEISAI          PIC 9(01).
            03  BGS100P-HOSPNUM         PIC 9(02).
-           03  BGS100P-ERRFNAME        PIC X(255).
+           03  BGS100P-ERRFNAME        PIC X(1024).
            03  BGS100P-FORMKBN         PIC X(1).
            03  BGS100P-SRYYM           PIC X(6).
            03  BGS100P-SRYYMD          PIC X(8).
            03  BGS100P-NYUGAIKBN       PIC X(1).
-           03  BGS100P-SKYFNAME        PIC X(255).
-           03  BGS100P-KOHFNAME        PIC X(255).
-           03  BGS100P-HKNJAFNAME      PIC X(255).
-           03  BGS100P-ETCFNAME        PIC X(255).
-           03  BGS100P-MEIFNAME        PIC X(255).
-           03  BGS100P-CSVDIR          PIC X(255).
-           03  BGS100P-CSVFNAME        PIC X(255).
+           03  BGS100P-SKYFNAME        PIC X(1024).
+           03  BGS100P-KOHFNAME        PIC X(1024).
+           03  BGS100P-HKNJAFNAME      PIC X(1024).
+           03  BGS100P-ETCFNAME        PIC X(1024).
+           03  BGS100P-MEIFNAME        PIC X(1024).
+           03  BGS100P-CSVDIR          PIC X(1024).
+           03  BGS100P-CSVFNAME        PIC X(1024).
            03  BGS100P-SHELLMSG        PIC X(100).
            03  BGS100P-SYAHO           PIC 9(01).
            03  BGS100P-KOKUHO          PIC 9(01).

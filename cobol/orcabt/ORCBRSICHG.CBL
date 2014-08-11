@@ -47,6 +47,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPRECEERR.INC".
+      *
       *    帳票
            COPY    "HCPOM2.INC".
       *
@@ -103,7 +105,6 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SYORIKBN       PIC X(01).
       *
       *    一時領域
@@ -357,6 +358,9 @@
       *    ファイル削除パラメタ
       *    COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -403,6 +407,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  SPA-AREA
+           INITIALIZE                  RECEERR
            MOVE    ZERO            TO  CNT-AREA
       *
            MOVE    SPACE               TO  HCPOM2
@@ -448,6 +453,13 @@
                                            JOBKANRI-REC
                                            SPA-AREA
       *
+       *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
+     *
       *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
       *

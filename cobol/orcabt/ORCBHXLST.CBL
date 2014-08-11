@@ -49,6 +49,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPRECEERR.INC".
+      *
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
@@ -71,7 +73,6 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM         PIC 9(02).
-           03  RECEERR                 PIC X(100).
            03  WRK-PARA-CHKKBN         PIC X(01).
            03  WRK-PARA-SRYCD          PIC X(09).
            03  WRK-PARA-SRYCD-END      PIC X(09).
@@ -126,6 +127,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -169,6 +173,9 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
+      *
+           INITIALIZE                  RECEERR
+      *
            MOVE    ZERO            TO  CNT-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -206,6 +213,12 @@
                                        TO  JOB-SHELLMSG
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            PERFORM 800-ORCSJOB-SEC
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
            .
        100-INIT-EXT.

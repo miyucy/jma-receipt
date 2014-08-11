@@ -47,7 +47,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
@@ -79,10 +79,10 @@ grpsys COPY    "COMMON-SPA".
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+           COPY    "CPASGNPARA.INC".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -164,6 +164,9 @@ grpsys COPY    "COMMON-SPA".
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -202,6 +205,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
                                        SPA-AREA
+                                       RECEERR
       *
            ACCEPT  SYS-TIME            FROM    TIME     
       *
@@ -259,6 +263,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    1               TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  ASGNPARA
+           MOVE    SGETTEMP-ST     TO  ASGNPARA-ST
+      *
            OPEN    OUTPUT              PRT-FILE
       *
            PERFORM                     UNTIL   FLG-PRTKANRI =   1
@@ -287,19 +301,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            AND     FLG-ERR             =   ZERO 
       *
                MOVE    SPACE           TO  SHELLTBL
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE              ORCSMKPASSAREA
-               MOVE    "scripts/daily/HCALL2.sh"
-                                       TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+               MOVE    "HCALL2.sh"     TO  SHELLTBL-NAME
       *         
-               MOVE    HC01PARA        TO  SHELLTBL-ARG1
+               MOVE    ASGNPARA (ASGNPARA-ST:)
+                                       TO  SHELLTBL-ARG1
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG2
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "shell"         TO  MCP-PATHNAME
+               MOVE    "daily"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF                                                
       *

@@ -47,11 +47,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    エラーファイル 名称領域 
-      **     COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01PARA//
-      **                                     BY          //RECEERR//.
-      **     03  FILLER                      PIC X(04)   VALUE   ".dat".
-      *    ステータス領域
+      *
+           COPY    "CPRECEERR.INC".
       *
       *    一覧
            COPY    "HCMSL55.INC".
@@ -100,7 +97,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(100).
            03  WRK-PARA-SYORIKBN                   PIC X(01).
            03  WRK-PARA-COPYHOSPNUM                PIC 9(02).
       *
@@ -212,6 +208,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -262,6 +261,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            INITIALIZE                  PARA-AREA
@@ -287,6 +288,12 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO   SPA-HOSPNUM
       *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
+      *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
@@ -302,13 +309,20 @@
                       MOVE    "マスタ複写（入力セット）"
                                        TO  JOB-SHELLMSG
                   WHEN    OTHER
-                      MOVE    "処理区分が誤りです"
-                                       TO  WRK-RECEERR
-                      PERFORM 500-ERR-HENSYU-SEC
-                      MOVE    1        TO  FLG-INIT-CHK
+                      MOVE    "マスタ複写"
+                                       TO  JOB-SHELLMSG
               END-EVALUATE
       *
            PERFORM   900-CALL-ORCSJOB-SEC
+      *
+           IF    ( WRK-PARA-SYORIKBN   =   "1" OR "2" OR "3" )
+               CONTINUE
+           ELSE
+               MOVE    "処理区分が誤りです"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1               TO  FLG-INIT-CHK
+           END-IF
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA

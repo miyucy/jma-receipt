@@ -142,8 +142,8 @@
            COPY    "CMJOBNAME.INC".
            COPY    "CPLOCKCONST.INC".
       *
-       01  ASS-AREA.
-           03  ASS-CSVDATA         PIC X(255).
+           COPY    "CPASGNPARA.INC"        REPLACING   //ASGNPARA//
+                                           BY          //ASS-CSVDATA//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -310,6 +310,9 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1551,6 +1554,12 @@
                    END-STRING
                END-IF
       *
+               INITIALIZE                  SGETTEMP-AREA
+               MOVE    ASS-CSVDATA     TO  SGETTEMP-BASENAME
+               CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME
+                                       TO  ASS-CSVDATA
+      *
                OPEN    OUTPUT          CSVDATA-FILE
       *
                PERFORM 900-MNOTE-B-KEY2-SEL-SEC
@@ -1624,6 +1633,12 @@
                INTO    ASS-CSVDATA
                END-STRING
            END-IF
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    ASS-CSVDATA     TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  ASS-CSVDATA
       *
            OPEN    OUTPUT          CSVDATA-FILE
            MOVE    SPACE           TO  CSVDATA-REC
@@ -1725,6 +1740,12 @@
                    INTO    ASS-CSVDATA
                    END-STRING
                END-IF
+      *
+               INITIALIZE                  SGETTEMP-AREA
+               MOVE    ASS-CSVDATA     TO  SGETTEMP-BASENAME
+               CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME
+                                       TO  ASS-CSVDATA
       *
                OPEN    OUTPUT          CSVDATA-FILE
       *

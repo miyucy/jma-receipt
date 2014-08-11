@@ -53,6 +53,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+                                   BY         //BUNBENERR//.
+      *
            COPY    "HCMSL55.INC".
       *
       *    ¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
@@ -106,7 +109,6 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  BUNBENERR           PIC X(100).
            03  WRK-PARA-SKYYM      PIC X(06).
            03  WRK-PARA-SKYKBN     PIC X(01).
       *
@@ -244,6 +246,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
       *
@@ -289,6 +294,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
            MOVE    LOW-VALUE       TO  KEY-AREA
+      *
+           INITIALIZE                  BUNBENERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -340,6 +347,12 @@
                                    TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BUNBENERR       TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BUNBENERR
       *
       *    ÀÁµáÇ¯·îÊÔ½¸
            IF      WRK-PARA-SKYYM  =   "000000"

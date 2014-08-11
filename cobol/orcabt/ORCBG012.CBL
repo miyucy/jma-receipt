@@ -136,14 +136,9 @@
       *    調整金情報ソートファイル
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
-grpsys*DD                                  BY          //ORCBG012SRT//.
                                            BY          //BG012SRT//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
-      *    エラーファイル 名称領域 
-grpsys*DD  COPY    "CPCOMMONDAT2.INC"      REPLACING  //RECE01PARA//
-grpsys*DD                                  BY         //RECEERR//.
-grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
+           COPY    "CPRECEERR.INC".
       *
       *    印刷用領域
            COPY    "HCM42V01.INC"          REPLACING  //HCM42V01//
@@ -184,7 +179,6 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
            03  WRK-PARA-SHELLID                    PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID                     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
-grpsys     03  RECEERR                             PIC X(100).
            03  WRK-PARA-KKNKBN                     PIC X(01).
            03  WRK-PARA-KKNSTYM                    PIC X(06).
            03  WRK-PARA-KKNEDYM                    PIC X(06).
@@ -319,6 +313,9 @@ grpsys     03  RECEERR                             PIC X(100).
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -374,6 +371,8 @@ grpsys     03  RECEERR                             PIC X(100).
            INITIALIZE                  ERR-EDIT-AREA
 grpsys     INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  RECEERR
+      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -427,14 +426,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                                            JOBKANRI-REC
 grpsys                                     SPA-AREA
       *
-grpsys*DD  MOVE    "BG012SR"           TO  ORCBG012SRTPARA-FILE-ID
-grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  ORCBG012SRTPARA-TERMID
 grpsys     MOVE    "BG01201"          TO  BG012SRTPARA-FILE-ID
 grpsys     MOVE    LNK-PRTKANRI-TERMID TO  BG012SRTPARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
       *
-grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    BG012SRTPARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  BG012SRTPARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEERR
       *
            MOVE    ZERO                TO  FLG-END
       *
