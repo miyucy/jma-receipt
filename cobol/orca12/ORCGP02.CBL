@@ -255,11 +255,6 @@
       *　　（帳票プログラム）
            COPY    "CPSK1032.INC".
       *
-      *    受付
-      *01  UKETUKE-REC.
-      *    COPY    "CPUKETUKE.INC".
-      *
-      *
       *    患者番号変換マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
@@ -268,211 +263,19 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    保険組み合わせ
-      *01  HKNCOMBI-REC.
-      *    COPY    "CPHKNCOMBI.INC".
-      *
-      *    保険マスタ
-      *01  PTHKNINF-REC.
-      *    COPY    "CPPTHKNINF.INC".
-      *
-      *    公費マスタ
-      *01  PTKOHINF-REC.
-      *    COPY    "CPPTKOHINF.INC".
-      *
-      *    旧姓履歴
-      *01  KYUSEIRRK-REC.
-      *    COPY    "CPKYUSEIRRK.INC".
-      *
-      *    低所得
-      *01  TSYRRK-REC.
-      *    COPY    "CPTSYRRK.INC".
-      *
-      *    年金
-      *01  TNKRRK-REC.
-      *    COPY    "CPTNKRRK.INC".
-      *
-      *    紹介履歴
-      *01  SYKRRK-REC.
-      *    COPY    "CPSYKRRK.INC".
-      *
-      *    診療行為マスタ−
-      *01  SRYACT-REC.
-      *    COPY    "CPSRYACT.INC".
-      *
-      *    ワーク診療行為マスタ−
-      *01  WKSRYACT-REC.
-      *    COPY    "CPWKSRYACT.INC".
-      *
-      *    診療会計マスタ−
-      *01  SRYACCT-REC.
-      *    COPY    "CPSRYACCT.INC".
-      *
-      *    診療会計附加情報マスタ−
-      *01  SRYACCTPLUS-REC.
-      *    COPY    "CPSRYACCTPLUS.INC".
-      *
-      *    患者コメント
-      *01  PTCOM-REC.
-      *    COPY    "CPPTCOM.INC".
-      *
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
-      *
-      *    診療科履歴
-      *01  SRYKARRK-REC.
-      *    COPY    "CPSRYKARRK.INC".
-      *
-      *    算定履歴
-      *01  SANTEI-REC.
-      *    COPY    "CPSANTEI.INC".
-      *
-      *    算定履歴
-      *01  SANTEIPLUS-REC.
-      *    COPY    "CPSANTEIPLUS.INC".
-      *
-      *    収納マスタワーク
-      *01  SYUNOU-REC.
-      *    COPY    "CPSYUNOU.INC".
-      *
-      *    収納明細
-      *01  SYUMEI-REC.
-      *    COPY    "CPSYUMEI.INC".
-      *
-      *    患者病名
-      *01  PTBYOMEI-REC.
-      *    COPY    "CPPTBYOMEI.INC".
-      *
-      *    予約マスター
-      *01  YYK-REC.
-      *    COPY    "CPYYK.INC".
-      *
-      *    予約マスター保存
-      *01  WRK-YYK-REC.
-      *    COPY    "CPYYK.INC"       REPLACING
-      *                              //YYK-// BY //WRK-YYK-//.
-      *    予約メモマスター
-      *01  YYKCOM-REC.
-      *    COPY    "CPYYKCOM.INC".
-      *
-      *    レセプトコメント
-      *01  RECECOM-REC.
-      *    COPY    "CPRECECOM.INC".
-      *
-      *
-      *    請求管理
-      *    COPY    "CPRCF010.INC".
-      *
-      *    患者労災保険情報
-      *01  PTRSIINF-REC.
-      *    COPY    "CPPTRSIINF.INC".
-      *
-      *    月代り受給者番号
-      *01  MONTHLYNUM-REC.
-      *    COPY    "CPMONTHLYNUM.INC".
-      *
-      *    患者入院履歴
-      *01  PTNYUINRRK-REC.
-      *    COPY    "CPPTNYUINRRK.INC".
-      *
-      *    患者他院歴付加情報
-      *01  PTTAINFUKA-REC.
-      *    COPY    "CPPTTAINFUKA.INC".
-      *
-      *    入院診療行為マスター
-      *01  NYUINACT-REC.
-      *    COPY    "CPNYUINACT.INC".
-      *
-      *    入院診療会計マスタ−
-      *01  NYUINACCT-REC.
-      *    COPY    "CPNYUINACCT.INC".
-      *
-      *    患者定期請求履歴
-      *01  PTTEIKIRRK-REC.
-      *    COPY    "CPPTTEIKIRRK.INC".
-      *
-      *    地方公費請求書
-      *    COPY    "CPKOHSKY.INC".
-      *
-      *    患者禁忌薬剤マスタ
-      *01  PTKINKI-REC.
-      *    COPY    "CPPTKINKI.INC".
-      *
-      *    患者特記事項マスタ
-      *01  PTTOKKI-REC.
-      *    COPY    "CPPTTOKKI.INC".
-      *
-      *    患者公費負担額
-      *01  PTKOHFTNETC-REC.
-      *    COPY    "CPPTKOHFTNETC.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
-      *    公費負担額
-      *01  PTKOHFTN-REC.
-      *    COPY    "CPPTKOHFTN.INC".
-      *
-      *    日別収納マスタ
-      *01  SYUDAY-REC.
-      *    COPY    "CPSYUDAY.INC".
-      *
-      *    レセプト電算マスター 
-      *    COPY    "CPRECEDEN.INC".
-      *
-      *    手術歴レセプトコメントマスター
-      *01  OPECOM-REC.
-      *    COPY    "CPOPECOM.INC".
-      *
-      *    収納合計マスタ−
-      *01  SYUTTL-REC.
-      *    COPY    "CPSYUTOTAL.INC".
-      *
-      *    主科テーブル
-      *01  SYUKA-REC.
-      *    COPY    "CPSYUKA.INC".
-      *
-      *    療養レセプトコメントマスタ
-      *01  RYOCOM-REC.
-      *    COPY    "CPRYOCOM.INC".
-      *
-      *    収納履歴マスタ
-      *01  SYURRK-REC.
-      *    COPY    "CPSYURRK.INC".
       *
       *    QRコード(被保険者証)（使用なし）
        01  QRCDHKN-REC.
            COPY    "CPQRCDHKN.INC".
       *
-      *    患者メモ
-      *01  PTMEMOINF-REC.
-      *    COPY    "CPPTMEMOINF.INC".
-      *
-      *    入院診療行為照会テーブル
-      *01  NSRYSRH-REC.
-      *    COPY    "CPNSRYSRH.INC".
-      *
-      *    入院履歴照会テーブル
-      *01  NRRKSRH-REC.
-      *    COPY    "CPNRRKSRH.INC".
-      *
-      *    分娩管理テーブル
-      *01  BUNBEN-REC.
-      *    COPY    "CPBUNBEN.INC".
-      *
-      *    同一患者識別テーブル
-      *01  PTSAME-REC.
-      *    COPY    "CPPTSAME.INC".
-      *
-      *    同一患者識別テーブル
-      *01  HZN-PTSAME-REC.
-      *    COPY    "CPPTSAME.INC"      REPLACING
-      *                                //PTSAME-// BY //HZN-PTSAME-//.
-      *
-      *    チェック例外テーブル
-      *    COPY    "CPCHKREIGAI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -613,9 +416,9 @@
            END-IF
       *
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    SPA-P02KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -3115,17 +2918,17 @@
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-           INITIALIZE                  PDMY01
-           MOVE    SPACE               TO  PDMY01-PANDAPRINT1
+      *    INITIALIZE                  PDMY01
+      *    MOVE    SPACE               TO  PDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
+      *    MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  PDMY01-PANDAPRINT1
+      *    MOVE    ORCSPRTCTRL-OUT     TO  PDMY01-PANDAPRINT1
       *
       *    再印刷指示なし
            MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
@@ -3138,18 +2941,18 @@
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
+      *600-CLIENT-DMY-SEC              SECTION.
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_PDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    "_PDMY01"           TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
+      *    PERFORM 900-PUT-WINDOW
       *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
+      *    .
+      *600-CLIENT-DMY-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    基本画面のカルテ出力処理

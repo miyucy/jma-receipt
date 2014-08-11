@@ -29,7 +29,6 @@ bind	"P02H"		"OpenCOBOL"	"ORCGP02H";
 bind	"P02T"		"OpenCOBOL"	"ORCGP02T";
 bind	"PERR"		"OpenCOBOL"	"ORCGPERR";
 bind	"PID1"		"OpenCOBOL"	"ORCGPID1";
-bind	"_PDMY01"	"OpenCOBOL"	"ORCGPDMY01";
 bindapi "patientmod"    "OpenCOBOL"	"ORAPI012S1"; 
 bindapi "patientmodv2"  "OpenCOBOL"	"ORAPI012S1V2"; 
 
@@ -65,7 +64,6 @@ data	{
 		P02T;
 		PERR;
 		PID1;
-		_PDMY01;
 		patientmod;
 		patientmodv2;
 	};
