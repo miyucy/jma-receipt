@@ -391,6 +391,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    INTO    MKPASS-IN-02
            END-STRING
            CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           INITIALIZE                      SHELLTBL
+      *
            MOVE    "online-reprint.sh"
                                    TO  SHELLTBL-NAME
            MOVE    1               TO  LNK-PRTKANRI-RENNUM
@@ -456,6 +460,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( SPA-CLIENT-PRT-FLG  =   1 )
             AND  ( SPA-CLIENT-TEMP-FLG =   2 )
                MOVE    "D"         TO  SHELLTBL-ARG23
+           ELSE
+               MOVE    "1"         TO  SHELLTBL-ARG23
            END-IF
            MOVE    MKPRT-DAT (ASGNPARA-ST:)
                                    TO  SHELLTBL-ARG24
