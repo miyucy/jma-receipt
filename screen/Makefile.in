@@ -422,8 +422,6 @@ SCREEN_screen = \
 	P02T.glade \
 	W68.glade \
 	SID4.glade \
-	_KDMY01.glade \
-	_KADMY01.glade \
 	_UDMY01.glade \
 	S10.glade \
 	W122.glade \

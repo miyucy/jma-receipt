@@ -64,6 +64,7 @@
       *                                     （一般名記載編集）
       *  04.07.00    NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
       *  04.08.00    NACL-多々納  14/05/XX  一時保存データ対応
+      *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -314,7 +315,7 @@
       *    感染症削除
            03  FLG-INFEC-DLT           PIC 9(01).
       *    クライアント印刷有
-           03  FLG-CLIENT-OK           PIC 9(01).
+      **** 03  FLG-CLIENT-OK           PIC 9(01).
       *H24.4
            03  FLG-GENERICNAME         PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
@@ -879,9 +880,9 @@
            END-IF
       *
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -6370,20 +6371,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                  KDMY01
-           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      **   INITIALIZE                  KDMY01
+      **   MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
-           MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
+      **   MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
+      **   MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
+      ***  MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
-           MOVE    1                   TO  FLG-CLIENT-OK
+      ***  MOVE    1                   TO  FLG-CLIENT-OK
            .
        4901-CLIENT-PRT-EXT.
            EXIT.
@@ -6391,18 +6392,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
+      *600-CLIENT-DMY-SEC              SECTION.
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
       *
-           MOVE    "_KDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "_KDMY01"           TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
+      *    PERFORM 900-PUT-WINDOW
+      *    .
+      *600-CLIENT-DMY-EXT.
+      ***  EXIT.
       *
       *H24.4
       *****************************************************************

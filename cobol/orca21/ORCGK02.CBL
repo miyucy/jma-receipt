@@ -108,6 +108,7 @@
       *  04.08.00    NACL-多々納  14/02/XX  行挿入・カーソル移動位置変更
       *  04.08.00    NACL-多々納  14/03/19  .123 処理対応他
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
+      *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1186,9 +1187,9 @@
            END-IF
       *
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    "K02"           TO  SPA-HZN-MOTOPG
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
@@ -10350,18 +10351,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "01"                TO  SPA-PRT-FLG
            MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *
-           INITIALIZE                  KDMY01
-           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *    INITIALIZE                  KDMY01
+      *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(01)
+      **** MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(01)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
+      *    MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
-           MOVE    1                   TO  FLG-CLIENT-OK
+      *    MOVE    1                   TO  FLG-CLIENT-OK
            .
        41241-SYOHOU-CLIENTPRT-EXT.
            EXIT.
@@ -12231,20 +12232,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                  KDMY01
-           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *    INITIALIZE                  KDMY01
+      *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(02)
-           MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(03)
+      *    MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(02)
+      *    MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
+      **   MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
-           MOVE    1                   TO  FLG-CLIENT-OK
+      **   MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
        4901-CLIENT-PRT-EXT.
@@ -12253,18 +12254,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
+      *600-CLIENT-DMY-SEC              SECTION.
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_KDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    "_KDMY01"           TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
+      *    PERFORM 900-PUT-WINDOW
       *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
+      *    .
+      *600-CLIENT-DMY-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    ユーザプログラム起動処理
@@ -12976,6 +12977,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *@
       *            包括行
                    IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)
+                      OR  (SPA-COM-HOUKATU-ERR (WRK-IDX) NOT =   ZERO)
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
                            MOVE    CL-BLUE        TO
@@ -13472,6 +13474,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *@
       *    包括剤
            IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)   OR
+                 ( SPA-COM-HOUKATU-ERR (WRK-IDX) NOT =   ZERO)   OR
                  ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
               AND (SPA-HKNCOMBINUM           NOT =   "9999" ))
      *******  MOVE    "blue"         TO  K02-SURYO-FGCOLOR(IDX)

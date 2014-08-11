@@ -37,6 +37,7 @@
       *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *  04.08.00    NACL-多々納  13/07/XX  院外投薬のみ対象対応
       *  04.07.00    NACL-多々納  13/08/01  手帳ＣＳＶ対応
+      *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -572,7 +573,6 @@
            COPY    "KAERR.INC".
            COPY    "KAID1.INC".
            COPY    "KAID2.INC".
-           COPY    "KADMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -620,9 +620,9 @@
            END-IF
       *
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    SPA-KA01KYOUTU      TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2416,18 +2416,18 @@
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                  KADMY01
-           MOVE    SPACE               TO  KADMY01-PANDAPRINT1
+      *    INITIALIZE                  KADMY01
+      *    MOVE    SPACE               TO  KADMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(02)
-           MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(03)
+      *    MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(02)
+      *    MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KADMY01-PANDAPRINT1
+      *****MOVE    ORCSPRTCTRL-OUT     TO  KADMY01-PANDAPRINT1
       *    再印刷指示なし
            MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            MOVE    1                   TO  FLG-CLIENT-OK
@@ -2439,18 +2439,18 @@
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
+      *600-CLIENT-DMY-SEC              SECTION.
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_KADMY01"          TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    "_KADMY01"          TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
+      *    PERFORM 900-PUT-WINDOW
       *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
+      *    .
+      *600-CLIENT-DMY-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    確認画面（ＫＡＩＤ２）ＯＫ処理

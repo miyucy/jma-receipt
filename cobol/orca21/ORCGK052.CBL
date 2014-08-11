@@ -62,7 +62,7 @@
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-INPUTSET        PIC 9(01).
       *    クライアント印刷有
-           03  FLG-CLIENT-OK       PIC 9(01).
+      **** 03  FLG-CLIENT-OK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -212,9 +212,9 @@
            END-IF
       *
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -564,7 +564,6 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
-           MOVE    ZERO                TO  FLG-CLIENT-OK
       *
            IF     (SPA-CLIENT-PRT-FLG  =   2      )
       *        印刷制御情報取得サブ
@@ -596,7 +595,6 @@
                                                ORCHCSETAREA
       *
            IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *??  IF      (FLG-CLIENT-OK =   1  )
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
@@ -612,17 +610,17 @@
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                  KDMY01
-           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      ***  INITIALIZE                  KDMY01
+      **** MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "セット一覧表"      TO  ORCSPRTCTRL-TITLE-I(01)
+      *****MOVE    "セット一覧表"      TO  ORCSPRTCTRL-TITLE-I(01)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
+      *****MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
-           MOVE    1                   TO  FLG-CLIENT-OK
+      **** MOVE    1                   TO  FLG-CLIENT-OK
            .
        4901-CLIENT-PRT-EXT.
            EXIT.
@@ -630,18 +628,18 @@
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
+      *600-CLIENT-DMY-SEC              SECTION.
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
       *
-           MOVE    "_KDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "_KDMY01"           TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
+      *    PERFORM 900-PUT-WINDOW
+      *    .
+      *600-CLIENT-DMY-EXT.
+      *    EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************

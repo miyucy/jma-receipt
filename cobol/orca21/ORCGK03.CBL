@@ -169,7 +169,7 @@
       *    ´¶À÷¾Éºï½ü
            03  FLG-INFEC-DLT           PIC 9(01).
       *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÍ­
-           03  FLG-CLIENT-OK           PIC 9(01).
+      **** 03  FLG-CLIENT-OK           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -585,9 +585,9 @@
            END-IF
       *
       *    ¥¯¥é¥¤¥¢¥ó¥È°õºþ
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -6308,7 +6308,6 @@
       *****************************************************************
        45009-PRINT-SEC              SECTION.
       *
-           MOVE    ZERO                TO  FLG-CLIENT-OK
       *    Ä¢É¼¥×¥í¥°¥é¥à¼èÆÀ
            PERFORM 4901-PRINT-PG-SEC
       *
@@ -6631,23 +6630,23 @@
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                  KDMY01
-           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *    INITIALIZE                  KDMY01
+      *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *
       *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ¾ðÊó¼èÆÀ¥µ¥Ö
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "½èÊýäµ"            TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "ÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  ORCSPRTCTRL-TITLE-I(02)
-           MOVE    "¤ªÌô¾ðÊó"          TO  ORCSPRTCTRL-TITLE-I(03)
-           MOVE    "¿ÇÎÅÈñÌÀºÙ½ñ"      TO  ORCSPRTCTRL-TITLE-I(04)
-           MOVE    "¤ªÌô¼êÄ¢"          TO  ORCSPRTCTRL-TITLE-I(05)
-           MOVE    "Í½ÌóÉ¼"            TO  ORCSPRTCTRL-TITLE-I(06)
+      *    MOVE    "½èÊýäµ"            TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "ÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  ORCSPRTCTRL-TITLE-I(02)
+      *    MOVE    "¤ªÌô¾ðÊó"          TO  ORCSPRTCTRL-TITLE-I(03)
+      *    MOVE    "¿ÇÎÅÈñÌÀºÙ½ñ"      TO  ORCSPRTCTRL-TITLE-I(04)
+      *    MOVE    "¤ªÌô¼êÄ¢"          TO  ORCSPRTCTRL-TITLE-I(05)
+      *    MOVE    "Í½ÌóÉ¼"            TO  ORCSPRTCTRL-TITLE-I(06)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
+      *****MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
-           MOVE    1                   TO  FLG-CLIENT-OK
+      *****MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
        4901-CLIENT-PRT-EXT.
@@ -6656,18 +6655,18 @@
       *****************************************************************
       *    ¥¯¥é¥¤¥¢¥ó¥È°õºþ²èÌÌ½èÍý
       *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
+      *600-CLIENT-DMY-SEC              SECTION.
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_KDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    "_KDMY01"           TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
+      *    PERFORM 900-PUT-WINDOW
       *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
+      *    .
+      *600-CLIENT-DMY-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    ´¶À÷¾ÉÁ÷¿®½èÍý

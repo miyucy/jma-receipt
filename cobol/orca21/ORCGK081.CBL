@@ -32,6 +32,7 @@
       *  04.03.00    NACL-多々納  08/06/XX  ドクター表示件数変更
       *  04.03.00    NACL-多々納  08/10/09  ユーザプログラム対応
       *  04.07.00    NACL-多々納  12/01/12  クライアント印刷対応
+      *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -241,9 +242,9 @@
            END-IF
       *
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    SPA-K081        TO  SPA-ETCKYOUTU-AREA
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
@@ -1503,17 +1504,17 @@
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-           INITIALIZE                  KDMY01
-           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *    INITIALIZE                  KDMY01
+      *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
-           MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
+      ***  MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
+      ***  MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
+      **** MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
            .
@@ -1523,18 +1524,18 @@
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
+      *600-CLIENT-DMY-SEC              SECTION.
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
       *
-           MOVE    "_KDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "_KDMY01"           TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
+      *    PERFORM 900-PUT-WINDOW
+      *    .
+      *600-CLIENT-DMY-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    元の画面へ

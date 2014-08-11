@@ -35,6 +35,7 @@
       *  04.07.00    NACL-多々納  12/01/10  クライアント印刷対応
       *  04.07.00    NACL-多々納  12/09/03  在宅器材・商品名対応
       *  04.07.00    NACL-多々納  13/07/XX  ＱＲ患者個別設定対応
+      *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -456,7 +457,6 @@
            COPY    "KAERR.INC".
            COPY    "KAID1.INC".
            COPY    "KAID2.INC".
-           COPY    "KADMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -503,9 +503,9 @@
            END-IF
       *
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
+      *    IF      FLG-CLIENT-OK       =   1
+      *        PERFORM 600-CLIENT-DMY-SEC
+      *    END-IF
       *
            MOVE    SPA-KA01KYOUTU      TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2342,39 +2342,19 @@
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-           INITIALIZE                  KADMY01
-           MOVE    SPACE               TO  KADMY01-PANDAPRINT1
-      *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
-           MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(03)
+      *    MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
+      *    MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  KADMY01-PANDAPRINT1
       *
-           MOVE    1                   TO  FLG-CLIENT-OK
+      **   MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
        4901-CLIENT-PRT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント印刷画面処理
-      *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
-      *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_KADMY01"          TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           .
-       600-CLIENT-DMY-EXT.
            EXIT.
       *
       *****************************************************************
