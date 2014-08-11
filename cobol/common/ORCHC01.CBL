@@ -666,6 +666,8 @@
       **** MOVE   HC01PARA            TO  MKPRT-DAT
            MOVE   ASGNPARA            TO  MKPRT-DAT
            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+           MOVE   "壳闻峡∈カルテ１规绘∷"
+                                      TO  MKPRT-INFO
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
                                       SPA-AREA
@@ -747,6 +749,8 @@
       **** MOVE   HC01PARA            TO  MKPRT-DAT
            MOVE   ASGNPARA            TO  MKPRT-DAT
            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+           MOVE   "壳闻峡∈カルテ１规绘∷"
+                                      TO  MKPRT-INFO
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
                                       SPA-AREA

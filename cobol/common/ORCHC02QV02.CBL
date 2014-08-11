@@ -913,6 +913,7 @@
                 MOVE   SYS-1034-PRTNM(12)  TO  MKPRT-PRTNM
             END-IF
       *---(04.03.00) LINE ADD START ------------------------------------
+            MOVE   "処方せん"          TO  MKPRT-INFO
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
