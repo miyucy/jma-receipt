@@ -31,6 +31,7 @@
       *  04.05.02    NACL-森脇     10/01/26  コメント２、単位対応
       *  04.06.00    NACL-多々納   11/02/28  用法コメント対応
       *  04.08.00    NACL-多々納   14/07/30  一時ディレクトリ対応
+      *  04.08.01    NACL-森脇     14/08/11  画像イメージ作成機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -222,6 +223,21 @@
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
       *
+      *----(04.08.01)--ADD-START---
+       01  FILE-IMAGE              PIC X(512).
+      *
+       01  WRK-CONS-AREA.
+      *    画像ファイルフォルダ名
+           03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
+      *
+      *    画像イメージ作成パラメタ
+       01  ORCSMIAREA.
+           03  ORCSMI-SRYCD        PIC X(09).
+           03  ORCSMI-IMAGEKBN     PIC 9(01).
+           03  ORCSMI-TEMPDIR      PIC X(1024).
+           03  ORCSMI-FILENAME     PIC X(128).
+      *----(04.08.01)--ADD-END-----
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -356,6 +372,14 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  FILE-NAME
+      *
+      *----(04.08.01)--ADD-START---
+      *    一時ファイル名取得
+           INITIALIZE                      SGETTEMP-AREA
+           CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *----(04.08.01)--ADD-END-----
       *
       *    プログラムオプション設定
            INITIALIZE                  PARA-AREA
@@ -668,14 +692,37 @@
       *
       *    画像が存在すればセットする
            IF      YAKUJYO-PHOTO   NOT =   SPACE
+      *----(04.08.01)--ADD-START---
+      *        データからイメージファイル作成
+               INITIALIZE                  ORCSMIAREA
+               MOVE    YAKUJYO-SRYCD   TO  ORCSMI-SRYCD
+               MOVE    SGETTEMP-TEMPDIR
+                                       TO  ORCSMI-TEMPDIR
+               MOVE    YAKUJYO-PHOTO   TO  ORCSMI-FILENAME
+               CALL    "ORCSMILOAD"        USING
+                                           ORCSMIAREA
+                                           SPA-AREA
+      *
+               MOVE    SPACE           TO  FILE-IMAGE
+               STRING  SGETTEMP-TEMPDIR    DELIMITED BY SPACE
+                       WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
+                       "/"                 DELIMITED BY SIZE
+                       YAKUJYO-PHOTO       DELIMITED BY SPACE
+                                   INTO    FILE-IMAGE
+               END-STRING
+      *----(04.08.01)--ADD-END-----
+      *----(04.08.01)--UPD-START---
                INITIALIZE                  ORCSFILECHKAREA
-               MOVE    YAKUJYO-PHOTO   TO  FILECHK-NAME
+      *         MOVE    YAKUJYO-PHOTO   TO  FILECHK-NAME
+               MOVE    FILE-IMAGE      TO  FILECHK-NAME
                CALL    "ORCSFILECHK"       USING
                                            ORCSFILECHKAREA
                IF      FILECHK-RC      =   ZERO
-                   MOVE    YAKUJYO-PHOTO   TO  WRK-YKJ-GAZO
+      *             MOVE    YAKUJYO-PHOTO   TO  WRK-YKJ-GAZO
+                   MOVE    FILE-IMAGE      TO  WRK-YKJ-GAZO
                    MOVE    1               TO  FLG-OK
                END-IF
+      *----(04.08.01)--UPD-END-----
            END-IF
       *
            IF      FLG-OK          =   ZERO
