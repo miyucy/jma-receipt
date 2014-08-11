@@ -260,6 +260,7 @@ path	key11		{
                     AND	     CREYMD	=   :CREYMD
 					AND	     SHORI_RENNUM <> 99
 					AND      PRTNM        <> 'DUMMY'
+					AND      PRTFLG        <> 'D'
                     ORDER BY  TBL_GROUP desc,TBL_UUID,RENNUM,SHORI_RENNUM
 		;
 	};
@@ -276,6 +277,7 @@ path	key12		{
 		    AND	     GYOUMU_CD  =   :GYOUMU_CD
 					AND	     SHORI_RENNUM <> 99
 					AND      PRTNM        <> 'DUMMY'
+					AND      PRTFLG        <> 'D'
                     ORDER BY  TBL_GROUP desc,TBL_UUID,RENNUM,SHORI_RENNUM
 		;
 	};
@@ -290,6 +292,7 @@ path	key13		{
                     AND    TBL_KEY    =   :TBL_KEY
 					AND	     SHORI_RENNUM <> 99
 					AND      PRTNM        <> 'DUMMY'
+					AND      PRTFLG        <> 'D'
                     ORDER BY  TBL_GROUP desc,RENNUM,SHORI_RENNUM
 		;
 	};

@@ -132,6 +132,7 @@ grpsys     COPY    "COMMON-SPA".
                CALL   "ORCSMKPRT1"     USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
+               MOVE  ZERO              TO  SPA-CLIENT-TEMP-FLG
                EXIT    PROGRAM
            END-IF
            INITIALIZE                  IDX-AREA
