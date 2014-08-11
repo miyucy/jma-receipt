@@ -60,6 +60,7 @@ cleanup () {
 
 
 [ -e ${ERR_FILE_OLD} ] && rm  ${ERR_FILE_OLD} 
+[ -e ${ERR_FILE_FULL} ] && rm  ${ERR_FILE_FULL} 
 
 echo $#
 
