@@ -3009,6 +3009,8 @@
       *    クライアント印刷
            IF      FLG-CLIENT-OK       =   1
                MOVE    "01"                TO  SPA-PRT-FLG
+      *        再印刷指示なし
+               MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            END-IF
       *
            CALL    WRK-KARUTE-PG       USING  SPA-AREA

@@ -590,6 +590,8 @@
            MOVE    SPA-K052-NAI-KEIKAYMD   TO  HCSET-KEIKAYMD
       *
            MOVE    "01"                TO  SPA-PRT-FLG
+      *    ºÆ°õºþ¤Ê¤·
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *
            CALL    "ORCHCSET"          USING   SPA-AREA
                                                ORCHCSETAREA
@@ -598,6 +600,7 @@
       *        °õºþ¥À¥ß¡¼½èÍý
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
+               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
            MOVE    SPACE               TO  SPA-PRT-FLG
       *

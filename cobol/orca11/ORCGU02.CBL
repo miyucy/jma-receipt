@@ -530,7 +530,6 @@
            COPY    "U02X.INC".
            COPY    "U2ERR.INC".
            COPY    "U2ID1.INC".
-           COPY    "UDMY01.INC".
            COPY    "CPAPIMOD.INC".
            COPY    "CPAPIMODV2.INC".
       *
@@ -4648,6 +4647,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *        クライアント印刷あり
                IF    ( SPA-CLIENT-PRT-FLG  =   1  )
                    MOVE    "01"            TO  SPA-PRT-FLG
+                   MOVE    2               TO  SPA-CLIENT-TEMP-FLG
                END-IF
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
                MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
@@ -4713,16 +4713,13 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-           INITIALIZE                  UDMY01
-           MOVE    SPACE               TO  UDMY01-PANDAPRINT1
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
-           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
+      *    MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
+      *    MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  UDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
            .
@@ -4741,12 +4738,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
       *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_UDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *    MOVE    "_UDMY01"           TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW
+      **   PERFORM 900-PUT-WINDOW
       *
            .
        600-CLIENT-DMY-EXT.
