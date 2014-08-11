@@ -12,28 +12,38 @@ if [ `whoami` != "${ORCAUSER}" ]; then
   exit 1
 fi
 
-#-------------------------------------------#
-#  ユーザ認証をアプリケーション側で行うため
-#  glauthで使用していたパスワードファイルから
-#  ユーザ名とパスワードを抜き出しテーブルへ
-#  格納する
-#-------------------------------------------#
+if [ $# -ne 1 ]; then
+  echo "ユーザーを指定してください。"
+  exit 1
+fi
 
-PASSWDFILE=${SYSCONFDIR}/passwd
+USERID=${1}
+
 COB_LIBRARY_PATH="$PATCHLIBDIR":"$ORCALIBDIR":"$PANDALIB"
 export COB_LIBRARY_PATH
-PWDCSQL="select count(*) from tbl_passwd;"
+PWDCSQL="select count(*) from tbl_passwd where userid='${USERID}';"
+PWDPSQL="select password from tbl_passwd where userid='${USERID}';"
 
 # tbl_passwdのレコード有無チェック
 create_pgpass
 PWDC=`psql ${DBCONNOPTION} -At -c "${PWDCSQL}" ${DBNAME}`
 RC=$?
-if [ $RC -ne 0 ] ;then
+if [ ${RC} -ne 0 ] ;then
   echo "ERROR: tbl_passwd を読めませんでした。"
   exit 1
 fi
-if [ ${PWDC} -ne "0" ]; then
-  echo "パスワード設定処理 ... 設定済のため処理は中止します。"
+if [ ${PWDC} -eq "0" ]; then
+  echo "パスワード設定処理 ... 指定したユーザーは登録されていません。処理は中止します。"
+  exit 0
+fi
+PWDP=`psql ${DBCONNOPTION} -At -c "${PWDPSQL}" ${DBNAME}`
+RC=$?
+if [ ${RC} -ne 0 ] ;then
+  echo "ERROR: tbl_passwd を読めませんでした。"
+  exit 1
+fi
+if [ -z ${PWDP} ]; then
+  echo "パスワード設定処理 ... 指定したユーザーは登録されていません。処理は中止します。"
   exit 0
 fi
 
@@ -46,8 +56,11 @@ input_password() {
   do
     stty -echo
     echo
-    echo "ormasterのパスワードを設定します(8文字以上16文字以内)"
-    echo -n "パスワード: "
+    echo "${USERID}のパスワードを設定します(8文字以上16文字以内)"
+    echo -n "現在のパスワード: "
+    read PWD0
+    echo
+    echo -n "新しいパスワード: "
     read PWD1
     echo
     echo -n "パスワード確認: "
@@ -72,37 +85,29 @@ input_password() {
   return
 }
 
-TEMP1=$(mktemp)
-# passwdファイルが存在しない場合はormasterのパスワードを設定
-if ! [ -e ${PASSWDFILE} ]; then
-  input_password
-  NPASS=`md5pass ${PWD1}`
-  echo "ormaster:${NPASS}:" > ${TEMP1}
-else
-  cp -p ${PASSWDFILE} ${TEMP1}
+input_password
+
+export PASSWORD1="${PWD0}"
+export PASSWORD2="${PWDP}"
+
+trap "unset PASSWORD1; unset PASSWORD2" EXIT
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBAUTH
+if [ $? -ne 0 ] ; then 
+  echo "現在のパスワードが不一致です。"
+  exit 1
 fi
 
 # passwdファイルからSQL文を作成
-TEMP2=$(mktemp)
+TEMP1=$(mktemp)
 export TEMP1
-export TEMP2
-trap "rm -f ${TEMP1}; rm -f ${TEMP2}" EXIT
+trap "rm -f ${TEMP1}" EXIT
 
-%RUBY% <<RUBY_END
-  fi = open(ENV['TEMP1'])
-  fo = open(ENV['TEMP2'], 'w')
-
-  while l = fi.gets
-    pwary = l.chomp.split(":")
-    fo.puts "INSERT INTO tbl_passwd (userid, password) VALUES ('#{pwary[0]}', '#{pwary[1]}');"
-  end
-
-  fo.close
-  fi.close
-RUBY_END
+NPASS=`md5pass ${PWD1}`
+echo "DELETE FROM tbl_passwd WHERE userid='${USERID}';" > ${TEMP1}
+echo "INSERT INTO tbl_passwd (userid, password) VALUES ('${USERID}', '${NPASS}');" >> ${TEMP1}
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
-          -parameter "00,${TEMP2}"
+          -parameter "00,${TEMP1}"
 if [ $? -ne 0 ] ; then 
   echo "パスワード設定処理 ... テーブル格納処理でエラーが発生しました。"
   exit 1
