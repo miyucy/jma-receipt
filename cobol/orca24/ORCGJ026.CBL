@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  05/11/30  MONFUNC 対応
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 04.07.00     NACL-多々納  12/09/25  プログラムオプション保険対応
+      * 04.08.00     NACL-多々納  14/08/12  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,6 +110,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -199,6 +203,7 @@
            IF      SPA-MOTOPG          =   "JERR"
       *H24.9
                IF      WRK-ERRCD           =   "9001"
+                                           OR  "9002"
       *            プログラムオプションとのエラー
                    MOVE    SPACE               TO  WRK-ERRCD
                    MOVE    10                  TO  SPA-GMN-CUR
@@ -588,10 +593,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
+      *ver.4.8
+      *    クライアント印刷
+           IF      SPA-CLIENT-PRT-FLG  =   2
+      *        クライアント印刷制御情報取得処理
+               PERFORM 23010-CLIENT-PRT-SEC
+           END-IF
+      *
            IF      SPA-GMN-NYUGAIKBN    =   "2"
                PERFORM 23011-PRINT-GAIRAI-SEC
            ELSE
                PERFORM 23012-PRINT-NYUIN-SEC
+           END-IF
+      *
+      *ver.4.8
+      *    クライアント印刷
+           IF     (SPA-CLIENT-PRT-FLG   =   1     )
+             AND  (SPA-ERRCD            =   SPACE )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -601,6 +623,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        2301-PRINT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       23010-CLIENT-PRT-SEC         SECTION.
+      *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCTRLAREA
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCTRLAREA
+                                               MCPAREA
+           .
+       23010-CLIENT-PRT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -656,6 +695,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1030-KARUTE3KBN
                                        TO  ORCHC33-KARUTE3KBN
       *
+           MOVE    "01"                TO  SPA-PRT-FLG
+      *
            CALL    WRK-PRINT-PG        USING
                                        SPA-AREA
                                        ORCHC33AREA
@@ -666,6 +707,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      ORCHC33-RC          =   8
       *        プログラムオプションと保険選択のエラー
                MOVE    "9001"              TO  SPA-ERRCD
+           END-IF
+      *v4.8
+      *    印刷なし
+           IF      ORCHC33-RC          =   1
+               MOVE    "9002"              TO  SPA-ERRCD
            END-IF
       *
            .
@@ -723,6 +769,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1030-KARUTE3KBN
                                        TO  ORCHC33-KARUTE3KBN
       *
+           MOVE    "01"                TO  SPA-PRT-FLG
+      *
            CALL    WRK-PRINT-PG        USING
                                        SPA-AREA
                                        ORCHC33AREA
@@ -733,6 +781,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      ORCHC33-RC          =   8
       *        プログラムオプションと保険選択のエラー
                MOVE    "9001"              TO  SPA-ERRCD
+           END-IF
+      *v4.8
+      *    印刷なし
+           IF      ORCHC33-RC          =   1
+               MOVE    "9002"              TO  SPA-ERRCD
            END-IF
       *
            .
@@ -807,6 +860,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "9002"
+                   MOVE    "印刷対象がありませんでした。"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  JERR

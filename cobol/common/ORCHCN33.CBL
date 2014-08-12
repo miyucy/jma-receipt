@@ -411,6 +411,13 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
+      *v4.8
+           IF     (CNT-PAGE            =   ZERO )
+              AND (ORCHC33-RC          =   ZERO )
+      *        印刷なし
+               MOVE    1                   TO  ORCHC33-RC
+           END-IF
+      *
            .
        000-PROC-EXT.
            EXIT    PROGRAM
@@ -1951,6 +1958,9 @@
                WHEN    "2"
                    PERFORM 20032-HCN33-BAT-SEC
            END-EVALUATE
+      *
+      *v4.8
+           ADD     1                   TO  CNT-PAGE
            .
        2003-HCN33-PRINT-EXT.
            EXIT.
@@ -1990,6 +2000,7 @@
       ******MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(04)  TO  MKPRT-PRTNM
+            MOVE   "カルテ３号紙"      TO  MKPRT-INFO
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
@@ -2137,6 +2148,7 @@
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
       *v4.8
+           ADD     1                   TO  CNT-PAGE
       *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    HC01PARA            TO  SGETTEMP-BASENAME
@@ -2161,6 +2173,7 @@
            IF     SYS-1034-PRTNM(05)   =   SPACE
                 MOVE   SYS-1034-PRTNM(04)  TO  MKPRT-PRTNM
            END-IF
+           MOVE   "カルテ３号紙（追記）"   TO  MKPRT-INFO
            CALL   "ORCSMKPRT"          USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
