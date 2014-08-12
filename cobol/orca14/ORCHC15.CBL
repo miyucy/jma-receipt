@@ -295,6 +295,7 @@
       **** MOVE    HC01PARA            TO  MKPRT-DAT
            MOVE    ASGNPARA            TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(19)  TO  MKPRT-PRTNM
+           MOVE    "Í½Ìó´µ¼Ô°ìÍ÷"      TO  MKPRT-INFO
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA

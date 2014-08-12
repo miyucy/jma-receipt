@@ -475,7 +475,6 @@ RECORD_files = \
     hsconfwardv2.rec \
 	tmedicalgetv2.rec \
 	insprogetv2.rec \
-	_YDMY01.rec \
     hsmealv2.rec \
     hsptevalv2.rec \
     hsptinfv2.rec \

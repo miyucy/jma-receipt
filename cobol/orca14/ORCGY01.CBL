@@ -366,7 +366,6 @@
            COPY    "YID1.INC".
            COPY    "APPOINTMOD.INC".
            COPY    "CPAPIMODV2.INC".
-           COPY    "YDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -405,13 +404,6 @@
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
-      *
-      *----(04.08.00)--ADD-START---
-      *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
-      *----(04.08.00)--ADD-END-----
       *
            MOVE    SPA-Y01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -3925,12 +3917,10 @@
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-      *----(04.08.00)--ADD-START---
            IF      SPA-CLIENT-PRT-FLG  =   2
       *        クライアント印刷制御情報取得サブ
                PERFORM 4901-CLIENT-PRT-SEC
            END-IF
-      *----(04.08.00)--ADD-END-----
       *
       *    予約票出力
            INITIALIZE                      ORCSPRTNMAREA
@@ -3956,30 +3946,21 @@
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-NAME        TO  SPA-NAME
                MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+      *
                MOVE    "01"                TO  SPA-PRT-FLG
       *
-      *----(04.08.00)--ADD-START---
-               MOVE    ORCHC67AREA     TO  ONPRTDATA-DATA
+               MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
                CALL    WRK-YYKHYO-PG       USING
                                            SPA-AREA
                                            ONPRTDATA
-      *----(04.08.00)--ADD-END-----
-      *----(04.08.00)--UPD-START---
-      *         MOVE    WRK-YYKHYO-PG       TO  ONPRTDATA-PGID
-      *         MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
-      *         CALL    "ORCHCOMMON"        USING
-      *                                     SPA-AREA
-      *                                     ONPRTDATA
-      *----(04.08.00)--UPD-END-----
            END-IF
       *
-      *----(04.08.00)--ADD-START---
            IF      (SPA-CLIENT-PRT-FLG =   1  )
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
+               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
-      *----(04.08.00)--ADD-END-----
       *
            MOVE    HZN-SPA-AREA        TO  SPA-AREA
           .
@@ -4397,46 +4378,22 @@
        210-BACK-EXT.
            EXIT.
       *
-      *----(04.08.00)--ADD-START---
       *****************************************************************
       *    クライアント印刷前　処理
       *****************************************************************
        4901-CLIENT-PRT-SEC          SECTION.
       *
-           INITIALIZE                  YDMY01
-           MOVE    SPACE               TO  YDMY01-PANDAPRINT1
-      *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-           MOVE    "予約票"            TO  ORCSPRTCTRL-TITLE-I(01)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCTRL-OUT     TO  YDMY01-PANDAPRINT1
       *
-           MOVE    1                   TO  FLG-CLIENT-OK
-      *
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            .
        4901-CLIENT-PRT-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    クライアント印刷画面処理
-      *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
-      *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_YDMY01"           TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           .
-       600-CLIENT-DMY-EXT.
-           EXIT.
-      *
-      *----(04.08.00)--ADD-END-----
       *****************************************************************
       *    自画面編集処理
       *****************************************************************

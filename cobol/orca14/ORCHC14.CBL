@@ -271,19 +271,24 @@
       *
            PERFORM 400-SYOKI-PRINT-SEC
       *
-      *　　印刷用データ出力
+      *    印刷用データ出力
            WRITE   HC14
       *
-            CLOSE                       PRT-FILE
+           CLOSE                       PRT-FILE
       *
-            INITIALIZE                 ORCSMKPRTAREA
-            MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HC14.red"          TO  MKPRT-DIA
-            MOVE   SPACE               TO  MKPRT-DEF
-      ***** MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   ASGNPARA            TO  MKPRT-DAT
-            MOVE   SYS-1031-PRTNM(18)  TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
+           INITIALIZE                  ORCSMKPRTAREA
+           MOVE   "HC01.sh"            TO  MKPRT-ID
+           MOVE   "HC14.red"           TO  MKPRT-DIA
+           MOVE   SPACE                TO  MKPRT-DEF
+      *****MOVE   HC01PARA             TO  MKPRT-DAT
+           MOVE   ASGNPARA             TO  MKPRT-DAT
+           MOVE   SYS-1031-PRTNM(18)   TO  MKPRT-PRTNM
+           IF      ORCHC14-KBN         =   "1"
+               MOVE    "予約一覧表"        TO  MKPRT-INFO
+           ELSE
+               MOVE    "未院一覧表"        TO  MKPRT-INFO
+           END-IF
+           CALL   "ORCSMKPRT"          USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *
