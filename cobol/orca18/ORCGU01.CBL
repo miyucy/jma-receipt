@@ -38,6 +38,7 @@
       *  03.04.00    NACL−多々納 07/01/12  受付一覧年齢追加
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  04.05.00    NACL-多々納  09/06/03  400行対応
+      *  04.08.00    NACL-多々納  14/08/12  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -306,6 +307,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
       *
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
@@ -965,11 +969,42 @@
       *****************************************************************
        800-PRINT-SYORI-SEC              SECTION.
       *
+      *
+           IF      SPA-CLIENT-PRT-FLG  =   2
+      *        クライアント印刷制御情報取得処理
+               PERFORM 8001-CLIENT-PRT-SEC
+           END-IF
+           MOVE    "01"                TO  SPA-PRT-FLG
+      *
            CALL    "ORCHCM16"          USING
                                        SPA-AREA
       *
+      *    クライアント印刷
+           IF     (SPA-CLIENT-PRT-FLG   =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+      *
            .
        800-PRINT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       8001-CLIENT-PRT-SEC         SECTION.
+      *
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCTRLAREA
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCTRLAREA
+                                               MCPAREA
+      *
+           .
+       8001-CLIENT-PRT-EXT.
            EXIT.
       *****************************************************************
       *    受付一覧更新処理

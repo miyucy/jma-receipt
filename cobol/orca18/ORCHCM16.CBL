@@ -354,6 +354,7 @@
            MOVE    ASGNPARA        TO  MKPRT-DAT
       *****MOVE    SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
            MOVE    SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
+           MOVE    "受付一覧"          TO  MKPRT-INFO
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
