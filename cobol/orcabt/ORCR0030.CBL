@@ -662,6 +662,7 @@
       *  04.07.26    NACL-門脇    14/07/28  マル長患者で、月途中に公費が追加と
       *                                     なった場合の対応修正
       *  04.07.27    NACL-門脇    14/07/31  第三者行為の現物給付対応
+      *  04.07.28    NACL-門脇    14/08/11  ７５歳以上の海外居住者２割対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -3050,6 +3051,8 @@ grpsys           PERFORM 900-DBSELECT-SEC
            MOVE      ZERO       TO      FLG-GENMEN-ARI
            MOVE      ZERO       TO      FLG-GENMEN-NASI
            MOVE      ZERO       TO      WRK-GENMEN-NASI-KIN
+      *
+           MOVE      ZERO       TO      FLG-KOKI-HIGAITO
       *
            MOVE      ZERO       TO      WRK-CYOKI-JGNGAK
       *
@@ -6526,7 +6529,6 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                CONTINUE
              ELSE
                IF   RECE02-KOUREI-HANTEIFLG   =   "1"
-                 MOVE    ZERO                TO  FLG-KOKI-HIGAITO
                  INITIALIZE                      PTKOHINF-REC
                  MOVE    RECE02-HOSPNUM      TO  PTKOH-HOSPNUM
                  MOVE    RECE02-PTID         TO  PTKOH-PTID
@@ -15654,7 +15656,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             (RECE02-KYURATE  =  20      )) OR
                            ((RECE02-SRYYM   >=  "201405") AND
                             (RECE02-KYURATE  =  20      ) AND
-                            (RECE02-BIRTHDAY <  19440402)))
+                            (RECE02-BIRTHDAY <  19440402) AND
+                            (FLG-KOKI-HIGAITO  =  ZERO  )))
                      AND  (( SYU-KOH-HKNNUM(1) = "974"   ) OR
                            ( SYU-KOH-HKNNUM(2) = "974"   ) OR
                            ( SYU-KOH-HKNNUM(3) = "974"   ) OR
@@ -16277,7 +16280,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     (RECE02-KYURATE  =  20      )) OR
                    ((RECE02-SRYYM   >=  "201405") AND
                     (RECE02-KYURATE  =  20      ) AND
-                    (RECE02-BIRTHDAY <  19440402))    )
+                    (RECE02-BIRTHDAY <  19440402) AND
+                    (FLG-KOKI-HIGAITO  =   ZERO ))    )
              AND  (  RECE02-RJNGENMENKBN  =  SPACE    )
                  IF    RECE02-SRYYM   >=  "200610"
                    IF  FLG-TOKU75 = 1 OR 2
@@ -20984,7 +20988,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        (RECE02-KYURATE  =  20      )) OR
                       ((RECE02-SRYYM   >=  "201405") AND
                        (RECE02-KYURATE  =  20      ) AND
-                       (RECE02-BIRTHDAY <  19440402))    )
+                       (RECE02-BIRTHDAY <  19440402) AND
+                       (FLG-KOKI-HIGAITO  =   ZERO ))    )
                 AND  (  RECE02-RJNGENMENKBN  =  SPACE    )
                   IF    RECE02-SRYYM   >=  "200610"
                     IF  FLG-TOKU75 = 1 OR 2
@@ -21465,7 +21470,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (RECE02-KYURATE  =  20      ))
                 OR  ((RECE02-SRYYM   >=  "201405") AND
                      (RECE02-KYURATE  =  20      ) AND
-                     (RECE02-BIRTHDAY <  19440402))
+                     (RECE02-BIRTHDAY <  19440402) AND
+                     (FLG-KOKI-HIGAITO  =   ZERO ))
                   IF  FLG-TOKU75 = 1 OR 2
                      MOVE  22200   TO   WRK-KINGAKU-GENBUTU3
                   ELSE
