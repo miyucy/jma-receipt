@@ -16,7 +16,8 @@ fi
 #------------------------------------
 
 HOSPNUM=$1
-ERRFILE=$3
+ERR_FILE_BASE=$(basename $3)
+ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
 JOBID=$4
 SHELLID=$(printf "%-8s" $5)
 
@@ -125,7 +126,7 @@ if [ -z "$MINSIZE" ]; then
 fi
 if [ $VOLSIZE -lt $MINSIZE ]; then
     ERRMSG="The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8101,${HOSPNUM},${ERRFILE},,${ERRMSG}"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8101,${HOSPNUM},${ERR_FILE_BASE},,${ERRMSG}"
     echo "${ERRMSG}"
     exit 99
 fi
@@ -141,8 +142,8 @@ fi
 echo ${MSTDIR}
 echo ${UPDFILE}
 
-if [ -e ${ERRFILE} ] ; then
-    rm ${ERRFILE}
+if [ -e ${ERR_FILE_FULL} ] ; then
+    rm ${ERR_FILE_FULL}
 fi
 
 if [ -e ${PRFFILE} ] ; then
@@ -166,8 +167,8 @@ fi
 
 cd ${MASTERDIR}/${HOSPNUM}/${MSTDIR}
 
-${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},${HOSPNUM},${ERRFILE},ＤＢレコード管理情報を取得しています,"
-if [  -e ${ERRFILE} ] ; then
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},${HOSPNUM},${ERR_FILE_BASE},ＤＢレコード管理情報を取得しています,"
+if [  -e ${ERR_FILE_FULL} ] ; then
     cleanup
     exit 99
 fi
@@ -178,7 +179,7 @@ if  [ ${OFFLINE} = "offline" ]; then
 	echo "DBレコード管理情報を複写しました"
     else
 	echo "DBレコード管理情報がありませんでした"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},${ERRFILE},,ＤＢレコード管理情報がありませんでした"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},${ERR_FILE_BASE},,ＤＢレコード管理情報がありませんでした"
 	cleanup
 	exit 99
     fi
@@ -191,7 +192,7 @@ else
     else
         echo "${LOGMSG}"
 	echo "センタからのＤＢレコード管理情報のダウンロードに失敗しました"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERRFILE},,${RESULT}"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERR_FILE_BASE},,${RESULT}"
 	cleanup
         exit 99
     fi
@@ -201,7 +202,7 @@ fi
 ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST1 -parameter "${HOSPNUM}$2${MSTDIR}"
 if [ $? -ne 0 ]	; then
     echo "ダウンロードファイル生成に失敗しました"
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERRFILE},,ダウンロードファイル生成に失敗しました"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERR_FILE_BASE},,ダウンロードファイル生成に失敗しました"
     cleanup
     exit 99
 fi
@@ -211,7 +212,7 @@ if [ -s ${UPDFILE} ] ; then
     echo "更新用ダウンロードファイルの作成が終了しました"
 else
     echo "更新用ダウンロードファイルは作成されませんでした"
-    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERRFILE},,"
+    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERR_FILE_BASE},,"
     cleanup
     exit 0
 fi
@@ -223,8 +224,8 @@ MSTSEQ=0
 for UPD in ${UPDLIST}
 do
     MSTSEQ=$(expr ${MSTSEQ} + 1)
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},更新データを取得しています $(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT}),"
-    if [  -e ${ERRFILE} ] ; then
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERR_FILE_BASE},更新データを取得しています $(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT}),"
+    if [  -e ${ERR_FILE_FULL} ] ; then
 	cleanup
 	exit 99
     fi
@@ -234,7 +235,7 @@ do
 	    echo ${UPD:35:${LEN}} "複写が終了しました"
 	else
 	    echo ${UPD:35:${LEN}} "複写に失敗しました"
-	    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,${HOSPNUM},${ERRFILE},,複写に失敗しました"
+	    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,${HOSPNUM},${ERR_FILE_BASE},,複写に失敗しました"
 	    cleanup
 	    exit 99
 	fi
@@ -246,7 +247,7 @@ do
 	else
             echo "${LOGMSG}"
 	    echo ${UPD:35:${LEN}} "ダウンロードに失敗しました"
-	    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0006,${HOSPNUM},${ERRFILE},,${RESULT}"
+	    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0006,${HOSPNUM},${ERR_FILE_BASE},,${RESULT}"
 	    cleanup
 	    exit 99
 	fi
@@ -261,7 +262,7 @@ do
 	echo ${UPD} "解凍処理が終了しました"
     else
 	echo ${UPD} "解凍処理に失敗しました"
-	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERRFILE},,解凍処理に失敗しました"
+	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERR_FILE_BASE},,解凍処理に失敗しました"
 	cleanup
 	exit 99
     fi
@@ -281,14 +282,14 @@ do
     MSTCNTMSG=$(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})
     echo ${UPD1} "DB更新"
 #ダウンロードファイル生成
-    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST2 -parameter "${HOSPNUM}${MSTDIR}${UPD1}*****************************************************,$(printf "%06d" ${MSTCOUNT}),$(printf "%06d" ${MSTSEQ}),${MSTCNTMSG},${COUNT},${ERRFILE},${JOBID},${SHELLID},${PRFFILE}"
+    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST2 -parameter "${HOSPNUM}${MSTDIR}${UPD1}*****************************************************,$(printf "%06d" ${MSTCOUNT}),$(printf "%06d" ${MSTSEQ}),${MSTCNTMSG},${COUNT},${ERR_FILE_BASE},${JOBID},${SHELLID},${PRFFILE}"
 	if [ $? -ne 0 ]	; then
     	echo "処理が中止されました"
-    	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0004,${HOSPNUM},${ERRFILE},,処理が中止されました"
+    	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0004,${HOSPNUM},${ERR_FILE_BASE},,処理が中止されました"
     	cleanup
     	exit 99
 	fi
-    if [  -e ${ERRFILE} ] ; then
+    if [  -e ${ERR_FILE_FULL} ] ; then
 		cleanup
 		exit 99
     fi
@@ -296,6 +297,6 @@ done
 
 echo  "全ての処理が完了しました"
 cleanup
-${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},,マスタ更新処理が終了しました"
+${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERR_FILE_BASE},,マスタ更新処理が終了しました"
 
 exit 0

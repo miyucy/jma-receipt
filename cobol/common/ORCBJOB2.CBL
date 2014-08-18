@@ -35,7 +35,7 @@
        FILE-CONTROL.
       *
       *    エラーファイル
-           SELECT  MSTERR-FILE     ASSIGN  WRK-PARA-ERRFILE
+           SELECT  MSTERR-FILE     ASSIGN  RECEERR
                                    FILE    STATUS IS  STS-MSTERR.
       *
        DATA                    DIVISION.
@@ -47,6 +47,8 @@
        WORKING-STORAGE         SECTION.
 grpsys*
 grpsys COPY    "COMMON-SPA".
+grpsys*
+       COPY    "CPRECEERR.INC".
       *
        01  STS-AREA.
            03  STS-MSTERR              PIC X(02).
@@ -93,6 +95,9 @@ grpsys COPY    "COMMON-SPA".
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -129,10 +134,12 @@ grpsys COPY    "COMMON-SPA".
                                        WRK-AREA
                                        WRK-PARA-AREA
       *
+           MOVE    SPACE           TO  RECEERR
+      *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
-                                               WRK-PARA-ERRFILE
+                                               RECEERR
                                                WRK-PARA-SHELLMSG
                                                WRK-PARA-YOBI
            END-UNSTRING
@@ -140,6 +147,12 @@ grpsys COPY    "COMMON-SPA".
       *
            DISPLAY "ORCBJOB=" WRK-PARA-MODE "##"
       *
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *

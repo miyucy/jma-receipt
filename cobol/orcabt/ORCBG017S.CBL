@@ -513,7 +513,7 @@
            INITIALIZE                      SGETTEMP-AREA
            MOVE    BG0171-BASENAME     TO  SGETTEMP-BASENAMES (1)
            MOVE    BG0172-BASENAME     TO  SGETTEMP-BASENAMES (2)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (3)
+           MOVE    RECEERRX            TO  SGETTEMP-BASENAMES (3)
            CALL    "ORCSGETTEMP"       USING
                                        SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAMES (1)

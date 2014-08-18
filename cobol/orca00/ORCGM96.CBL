@@ -59,6 +59,11 @@
       *    エラーファイル 名称領域
            COPY    "CPERRFL.INC".
       *
+           COPY    "CPASGNPARA.INC"     REPLACING //ASGNPARA//
+                                        BY        //MNTERRFL//.
+           COPY    "CPASGNPARA.INC"     REPLACING //ASGNPARA//
+                                        BY        //MLIERRFL//.
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *    スパ領域
@@ -89,8 +94,6 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
-           03  WRK-MNTERRFL        PIC X(255).
-           03  WRK-MLIERRFL        PIC X(255).
            03  WRK-MIDCD           PIC X(04).
            03  WRK-MSG             PIC X(200).
       *
@@ -127,6 +130,9 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ管理
        01  DBKANRI-REC.
@@ -1072,10 +1078,21 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    "ORMNTERR"          TO  ERRFLPARA-FILE-ID
            MOVE    1                   TO  ERRFLPARA-SYOKBN1
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
-           MOVE    ERRFLPARA           TO  WRK-MNTERRFL
+           MOVE    ERRFLPARA           TO  MNTERRFL
       *
            MOVE    "ORMLIERR"          TO  ERRFLPARA-FILE-ID
-           MOVE    ERRFLPARA           TO  WRK-MLIERRFL
+           MOVE    ERRFLPARA           TO  MLIERRFL
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    MNTERRFL            TO  SGETTEMP-BASENAMES (1)
+           MOVE    MLIERRFL            TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING     SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  MNTERRFL
+           MOVE    SGETTEMP-ST         TO  MNTERRFL-ST
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  MLIERRFL
+           MOVE    SGETTEMP-ST         TO  MLIERRFL-ST
       *
       *    最新情報編集
            MOVE    ZERO                TO  FLG-INIT
@@ -1088,11 +1105,13 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    SPA-SUPERVISOR       TO  SHELLTBL-ARG2
            MOVE    SPA-HOSPID           TO  SHELLTBL-ARG3
       *
-           MOVE    WRK-MNTERRFL         TO  SHELLTBL-ARG4
+           MOVE    MNTERRFL (MNTERRFL-ST:)
+                                        TO  SHELLTBL-ARG4
            MOVE    CONST-MNTJOBID       TO  SHELLTBL-ARG5
            MOVE    CONST-MNTSHELLID     TO  SHELLTBL-ARG6
       *
-           MOVE    WRK-MLIERRFL         TO  SHELLTBL-ARG7
+           MOVE    MLIERRFL (MLIERRFL-ST:)
+                                        TO  SHELLTBL-ARG7
            MOVE    CONST-MLIJOBID       TO  SHELLTBL-ARG8
            MOVE    CONST-MLISHELLID     TO  SHELLTBL-ARG9
       *

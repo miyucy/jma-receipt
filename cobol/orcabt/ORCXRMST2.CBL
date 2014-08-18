@@ -46,7 +46,7 @@
                                    FILE    STATUS  IS  STS-IN.
       *
       *    エラーファイル
-           SELECT  MSTERR-FILE     ASSIGN  PARA-ERRFILE
+           SELECT  MSTERR-FILE     ASSIGN  RECEERR
                                    FILE    STATUS IS  STS-MSTERR.
       *
       *    ＰＲＦファイル（マスタデータ別）
@@ -82,6 +82,8 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
            COPY    "HCMSL55.INC".
+      *
+           COPY    "CPRECEERR.INC".
       *
        01  PGEXIST01                   PIC X(256).
       *    ファイル指定領域
@@ -215,6 +217,9 @@ grpsys     COPY    "COMMON-SPA".
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -256,6 +261,8 @@ grpsys     COPY    "COMMON-SPA".
                                        SPA-AREA
                                        PARA-AREA
       *
+           MOVE    SPACE           TO  RECEERR
+      *
            UNSTRING    PARA-REC    DELIMITED   BY  ","
            INTO                    PARA-MAIN
                                    PARA-MSTCOUNT
@@ -273,6 +280,12 @@ grpsys     COPY    "COMMON-SPA".
            PERFORM 800-MCNDATE-SEC
       *
            PERFORM 100-DBOPEN-SEC
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    PARA-ERRFILE    TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC

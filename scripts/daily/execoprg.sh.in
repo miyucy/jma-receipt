@@ -71,7 +71,7 @@ if  [ -e ${ERR_FILE_FULL} ]; then
 	exit
 fi
 if  [ -e ${ERR_FILE_OLD} ]; then
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "$(printf '%-18s9999' JBE${12}${13}),${HOSPNUM},${ERR_FILE_OLD},,エラーファイルの出力先を変更してください"
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "$(printf '%-18s9999' JBE${12}${13}),${HOSPNUM},,,エラーファイルの出力先を変更してください"
     exit
 fi
     
