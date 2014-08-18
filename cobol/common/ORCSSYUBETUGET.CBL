@@ -41,6 +41,7 @@
       *
       *  04.07.01    NACL-Æ£¸¶    14/03/30  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *  04.07.02    NACL-Æ£¸¶    14/05/20  Âè»°¼Ô¹Ô°ÙÂÐ±þ
+      *  04.07.03    NACL-Æ£¸¶    14/08/18  £·£µºÐ°Ê¾å¤Î³¤³°µï½»¼Ô£²³äÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1659,7 +1660,9 @@
                    MOVE    1117     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1119     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1117     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1674,7 +1677,9 @@
                    MOVE    1118     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1110     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1118     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1738,7 +1743,9 @@
                    MOVE    1127     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1129     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1127     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1753,7 +1760,9 @@
                    MOVE    1128     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1120     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1128     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1817,7 +1826,9 @@
                    MOVE    1137     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1139     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1137     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1832,7 +1843,9 @@
                    MOVE    1138     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1130     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1138     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1896,7 +1909,9 @@
                    MOVE    1147     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  3
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1149     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1147     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1911,7 +1926,9 @@
                    MOVE    1148     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  3
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1140     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1148     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1975,7 +1992,9 @@
                    MOVE    1157     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  4
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1159     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1157     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1990,7 +2009,9 @@
                    MOVE    1158     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  4
-                   IF      LNK-SYUBETUGET-BIRTHDAY <   19440402
+                   IF    ( LNK-SYUBETUGET-BIRTHDAY <   19440402 )
+                   AND   ( LNK-SYUBETUGET-RJNPAYKBN
+                                                   =   "99"     )
                        MOVE    1150     TO  LNK-SYUBETUGET-RECESYUBETU
                    ELSE
                        MOVE    1158     TO  LNK-SYUBETUGET-RECESYUBETU

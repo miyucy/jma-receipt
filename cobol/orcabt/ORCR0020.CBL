@@ -263,6 +263,7 @@
       *  04.07.09    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
       *                                     マル長のときも対象とする
       *  04.07.10    NACL-門脇    14/07/31  第三者行為の現物給付対応
+      *  04.07.11    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
@@ -2912,6 +2913,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
       *
       *    平成２０年４月改正以降の種別設定
            IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-200804
+      *
                INITIALIZE                  ORCSSYUBETUGETAREA
                MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
                MOVE    RECE01-NYUGAIKBN
@@ -2952,6 +2954,57 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                    MOVE    SPACE       TO  LNK-SYUBETUGET-HKN-HOJOKBN
                END-IF
                MOVE    RECE02-BIRTHDAY TO  LNK-SYUBETUGET-BIRTHDAY
+      *
+      *        国保のとき９７７の公費の有無
+               IF    ( LNK-SYUBETUGET-BIRTHDAY
+                                           <   19440402 )
+               AND   ( LNK-SYUBETUGET-HKNNUM
+                                           =   "060"    )
+               AND   ( LNK-SYUBETUGET-SRYYM
+                                           >   "201404" )
+                   MOVE    "99"                TO
+                                               LNK-SYUBETUGET-RJNPAYKBN
+      *
+                   MOVE    LNK-SYUBETUGET-SRYYM
+                                               TO  WRK-SRYYYMM
+                   IF      RECE02-TEKSTYMD (1:6)
+                                               >=  RECE01-SRYYM
+                       MOVE  RECE02-TEKSTYMD (7:2) TO  WRK-SRYDD
+                   ELSE
+                       MOVE  01                    TO  WRK-SRYDD
+                   END-IF
+      *
+                   INITIALIZE                      PTKOHINF-REC
+                   MOVE    RECE01-HOSPNUM      TO  PTKOH-HOSPNUM
+                   MOVE    RECE01-PTID         TO  PTKOH-PTID
+                   MOVE    "977"               TO  PTKOH-KOHNUM
+                   MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
+                   PERFORM 900-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                       MOVE    "key4"              TO  MCP-PATHNAME
+                       PERFORM PTKOHINF-READ-SEC
+                       PERFORM UNTIL   FLG-PTKOHINF    =   1
+                           IF    ( PTKOH-TEKSTYMD  <=  WRK-SRYYMD     )
+                           AND   ( WRK-SRYYMD      <=  PTKOH-TEKEDYMD )
+                           AND   ( PTKOH-SAKJOKBN  =   SPACE           )
+                               MOVE    SPACE           TO
+                                               LNK-SYUBETUGET-RJNPAYKBN
+                               MOVE    1               TO  FLG-PTKOHINF
+                           ELSE
+                               MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+                               MOVE    "key4"          TO  MCP-PATHNAME
+                               PERFORM  PTKOHINF-READ-SEC
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+                   PERFORM  900-CLOSE-SEC
+               END-IF
+      *
                CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
                MOVE    LNK-SYUBETUGET-RECESYUBETU
