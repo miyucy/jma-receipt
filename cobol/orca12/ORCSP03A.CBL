@@ -960,8 +960,8 @@
                CONTINUE
            ELSE
                IF      (FLG-RJNCHK2        =   1   )
-                  AND ((SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-75 ) OR
-                       (SPA-SYSYMD         >=  SPA-BYMD-75 ))
+                  AND ((SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-75-2 ) OR
+                       (SPA-SYSYMD         >=  SPA-BYMD-75-2 ))
                    IF      (SPA-NAI-HTEKSTYMD  >=  "20140501")
                        OR ((SPA-NAI-HTEKSTYMD  =   SPACE     ) AND
                            (SPA-SYSYMD         >=  "20140501"))
@@ -1324,7 +1324,8 @@
                AND   (SPA-NAI-KTEKEDYMD(IDX)   >=  SPA-NAI-HTEKEDYMD)
                    MOVE    1                   TO  FLG-RJNCHK
                END-IF
-              IF     (SPA-GMN-KOHNUM (IDX)     =   "977" ) 
+      *H26.8
+               IF     (SPA-GMN-KOHNUM (IDX)    =   "977" ) 
                AND   (SPA-NAI-KTEKSTYMD(IDX)   <=  SPA-NAI-HTEKSTYMD)
                AND   (SPA-NAI-KTEKEDYMD(IDX)   >=  SPA-NAI-HTEKEDYMD)
                    MOVE    1                   TO  FLG-RJNCHK2

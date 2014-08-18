@@ -1229,7 +1229,7 @@
                IF      (SPA-PTHKN-TEKSTYMD(IDX) >=  "20140501")
                    AND (SPA-PTHKN-HKNNUM(IDX)(1:1)
                                              NOT =  "9"       )
-                   AND (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-75)
+                   AND (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-75-2)
       *            ¹âÎð¼ÔÈó³ºÅöÈ½Äê
                    PERFORM 310111-HIGAITOU-CHK-SEC
                    IF      FLG-RJNCHK5          =   1
@@ -1384,6 +1384,7 @@
            .
        3100-HKNTBL-KBNHEN-EXT.
            EXIT.
+      *H26.8
       ****************************************************************
       *    ¹âÎðÈó³ºÅöÈ½Äê½èÍý
       ****************************************************************
@@ -1914,7 +1915,7 @@
                MOVE    1                   TO  FLG-RJN-02
            END-IF
            IF      (FLG-RJNCHK5        =   1  )
-               AND (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-75)
+               AND (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-75-2)
                AND (SPA-NAI-HTEKSTYMD  >=  "20140501")
                AND (SPA-GMN-HKNNUM(1:1) NOT =  "9"       )
                MOVE    1                   TO  FLG-RJN-02
@@ -5846,7 +5847,7 @@
                END-IF
            END-PERFORM
       *!!
-      *H26.8   ¸øÈñ¤òÀè¤Ë
+      *H26.8   ÊÝ¸±¤ò¸å
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-PTHKN-MAX
                IF     (SPA-PTHKN-TEKSTYMD (IDX)    <=  SPA-SYSYMD ) AND
@@ -6087,9 +6088,9 @@
       *H26.8
       *    ¹âÎð¼ÔÈó³ºÅö¤âÉéÃ´³ä¹çÊÑ¹¹
            IF      FLG-RJN-02          =   ZERO
-               IF     (SPA-PTHKN-TEKSTYMD (IDX)   >=  SPA-BYMD-75)
-                  OR ((SPA-SYSYMD                 >=  SPA-BYMD-75 ) AND
-                      (SPA-PTHKN-TEKEDYMD (IDX)   >=  SPA-BYMD-75))
+               IF     (SPA-PTHKN-TEKSTYMD (IDX)   >=  SPA-BYMD-75-2)
+                  OR ((SPA-SYSYMD                 >=  SPA-BYMD-75-2) AND
+                      (SPA-PTHKN-TEKEDYMD (IDX)   >=  SPA-BYMD-75-2))
                    IF     (FLG-RJNCHK5         =   1   )
                        MOVE    2               TO  FLG-RJN-02
                    END-IF
