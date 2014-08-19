@@ -1,6 +1,6 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "euc-jisx0213"
+Encoding.default_external = "utf-8" if defined?(Encoding) && Encoding.respond_to?("default_external")
 
 begin
   require "monthly/rosai_receden"
@@ -8,8 +8,12 @@ begin
   require "monthly/rosai_receden_error"
   require "date"
   require "nkf"
-  require "jcode"
   require "json"
+
+  if RUBY_VERSION < '1.9.0' then
+    require "jcode"
+  end
+
 rescue LoadError => err
     STDERR.puts "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     open(@errlog,"w"){|f|
@@ -18,9 +22,9 @@ rescue LoadError => err
     raise "#{err.message}\n#{err.backtrace.join("\n")}"
 end
 
-
-$KCODE = "UTF-8"
-
+if RUBY_VERSION < '1.9.0' then
+   $KCODE = "UTF-8"
+end
 
 class DBMAIN
 
@@ -82,7 +86,7 @@ class KsnSort
     @khn_exists = false
     @tsusoku_exists = false
     @chuksncd = 0
-    @chuksntsuban = 0
+    @chuksntsuban = ''
   end
 
   def clear
@@ -908,12 +912,12 @@ class Receden_check < Receden_common
                         @errors.push("46410",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
                       when tbl_tensu["CHUKSNCD"].to_i != ksnsort.chuksncd
                         @errors.push("46411",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
-                      when tbl_tensu["CHUKSNTSUBAN"].to_i == ksnsort.chuksntsuban
+                      when tbl_tensu["CHUKSNTSUBAN"].strip == ksnsort.chuksntsuban
                         @errors.push("46120",rece,zai,"CHUKSNTSUBAN",nil,tbl_tensu["NAME"])
-                      when tbl_tensu["CHUKSNTSUBAN"].to_i < ksnsort.chuksntsuban
+                      when tbl_tensu["CHUKSNTSUBAN"].strip < ksnsort.chuksntsuban
                         @errors.push("46410",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
                       else
-                        ksnsort.chuksntsuban = tbl_tensu["CHUKSNTSUBAN"].to_i
+                        ksnsort.chuksntsuban = tbl_tensu["CHUKSNTSUBAN"].strip
                       end
                     end
                   end
@@ -923,21 +927,21 @@ class Receden_check < Receden_common
                     @errors.push("44350",rece,zai,nil,nil,tbl_tensu["NAME"])
                   end
                 end
-                if tbl_tensu["SRYKBN"] == "11" && tbl_tensu["KOKUJISKBKBN2"] == "1"
+                if tbl_tensu["SRYKBN"] == "11" && tbl_tensu["KOKUJISKBKBN2"].to_i == 1
                   if rr["SHINKEIKBN"].value != "1"
                     @errors.push("40070",rece,rr,"SHINKEIKBN")
                   end
                 end
-                if tbl_tensu["NYUTENTTLKBN"].to_i == 240  && tbl_tensu["KOKUJISKBKBN2"] == "1"
+                if tbl_tensu["NYUTENTTLKBN"].to_i == 240  && tbl_tensu["KOKUJISKBKBN2"].to_i = 1
                   chozai_kaisu += zai["KAISU"].value.to_i
                 end
                 case rs["HOSPKBN"].value
                 when "1","2"
-                  if tbl_tensu["HOSPSRYKBN"] == "2"
+                  if tbl_tensu["HOSPSRYKBN"].to_i == 2
                     @errors.push("44240",rece,zai,"SRYCD",nil,"#{tbl_tensu["NAME"]}")
                   end
                 when "3"
-                  if tbl_tensu["HOSPSRYKBN"] == "1"
+                  if tbl_tensu["HOSPSRYKBN"].to_i == 1
                     @errors.push("46030",rece,zai,"SRYCD",nil,"#{tbl_tensu["NAME"]}")
                   end
                 end
@@ -1409,7 +1413,6 @@ class Receden_check < Receden_common
       check_rr(r,rece)
       check_sy_tekiyo(r,rece)
       check_sj(r,rece)
-
 
     }
   end
