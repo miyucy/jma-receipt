@@ -343,6 +343,83 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           IF    ( WRK-PARA-PRTFLG     NOT =  "5" )
+               PERFORM 2001-COMMON-PRINT-SEC
+           ELSE
+               PERFORM 2001-CLIENT-PRINT-SEC
+           END-IF
+      *
+           MOVE    1                   TO  FLG-END     
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþ°Ê³°¤Î°õºþ½èÍý
+      *****************************************************************
+       2001-COMMON-PRINT-SEC           SECTION.
+      *
+      *    °õºþÍÑ¥Õ¥¡¥¤¥ëºîÀ®
+           MOVE    "HC99"          TO  HC01PARA-FORM-ID
+grpsys     MOVE    WRK-PARA-HOSPNUM
+                                   TO  HC01PARA-HOSPNUM
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  HC01PARA-TERMID
+           MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
+           MOVE    1               TO  HC01PARA-CNT
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA-BASENAME
+                                   TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  ASGNPARA
+           MOVE    SGETTEMP-ST     TO  ASGNPARA-ST
+      *
+           OPEN    OUTPUT              PRT-FILE
+      *
+           PERFORM                     UNTIL   FLG-PRTKANRI =   1
+                                       OR      FLG-END      =   1   
+      *
+               MOVE    PRTKANRI-REC    TO  TPRT-REC
+      *
+               MOVE    ZERO            TO  CNT-GROUP
+      *
+      *        °õºþ£Ä£ÂÊÔ½¸½èÍý
+               PERFORM 900-PRTDATA-SELECT-SEC
+               PERFORM                     UNTIL   FLG-PRTDATA  =   1
+                                           OR      FLG-END      =   1
+                   PERFORM 2001-PRTDATA-PRINT-SEC
+                   PERFORM 900-PRTDATA-FET-SEC
+               END-PERFORM    
+      *
+               MOVE    "tbl_prtdata"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
+               IF    ( TPRT-PRTFLG    =    "D" )
+                   PERFORM 2003-PRTKANRI-DEL-SEC
+               ELSE
+                   PERFORM 2003-PRTKANRI-UPD-SEC
+               END-IF
+      *
+               PERFORM 900-PRTKANRI-FET-SEC
+      *
+           END-PERFORM
+      *
+           CLOSE   PRT-FILE
+      *
+           PERFORM 210-PRINT-SEC
+      *
+           .
+       2001-COMMON-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþ½èÍý
+      *****************************************************************
+       2001-CLIENT-PRINT-SEC           SECTION.
+      *
       *    °õºþÍÑ¥Õ¥¡¥¤¥ëºîÀ®
            MOVE    "HC99"          TO  HC01PARA-FORM-ID
 grpsys     MOVE    WRK-PARA-HOSPNUM
@@ -397,14 +474,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                PERFORM 900-PRTKANRI-FET-SEC
       *
            END-PERFORM                                
-      *     
       *
-           MOVE    1                   TO  FLG-END     
            .
-       200-MAIN-EXT.
+       2001-CLIENT-PRINT-EXT.
            EXIT.
-      *
-      *
       *****************************************************************
       *    °õºþ½èÍý
       *****************************************************************
