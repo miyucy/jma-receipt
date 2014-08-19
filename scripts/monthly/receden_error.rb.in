@@ -1,11 +1,13 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "euc-jisx0213"
+Encoding.default_external = "utf-8" if defined?(Encoding) && Encoding.respond_to?("default_external")
 
 require "monthly/receden_common"
 require "nkf"
 
-$KCODE = "UTF-8"
+if RUBY_VERSION < '1.9.0' then
+   $KCODE = "UTF-8"
+end
 
 class Receden_error < Receden_common
 

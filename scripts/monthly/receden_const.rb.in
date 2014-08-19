@@ -1,8 +1,10 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "euc-jisx0213"
+Encoding.default_external = "utf-8" if defined?(Encoding) && Encoding.respond_to?("default_external")
 
-$KCODE = "UTF-8"
+if RUBY_VERSION < '1.9.0' then
+   $KCODE = "UTF-8"
+end
 
 N            = 0
 NUMERIC      = 0
