@@ -28,6 +28,7 @@
       *  00.00.01    NACL-森脇     順番並び替え(廃止)
       *  00.00.02    NACL-森脇     CSV出力対応
       *  04.02.01    NACL-森脇     08/03/04  疾患区分変更
+      *  04.08.01    NACL-森脇     14/08/19  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -36,8 +37,11 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+      *----(04.08.01)--UPD-START---
+      *     SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
+      *----(04.08.01)--UPD-END-----
       *    エラーファイル
            SELECT  ML09ERR-FILE    ASSIGN  ML09ERR
                                    FILE    STATUS  IS  STS-ML09ERR.
@@ -85,6 +89,9 @@
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
+      *----(04.08.01)--ADD-START---
+           COPY    "CPASGNPARA.INC".
+      *----(04.08.01)--ADD-END-----
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //ML09ERR//.
@@ -182,6 +189,9 @@
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
+      *----(04.08.01)--ADD-START---
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -470,6 +480,13 @@
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *----(04.08.01)--ADD-END-----
            OPEN    OUTPUT              PRT-FILE
            WRITE   HCML09
            CLOSE                       PRT-FILE
@@ -478,7 +495,10 @@
            MOVE   "HC01.sh"           TO  MKPRT-ID
            MOVE   "HCML09.red"        TO  MKPRT-DIA
            MOVE   SPACE               TO  MKPRT-DEF
-           MOVE   HC01PARA            TO  MKPRT-DAT
+      *----(04.08.01)--UPD-START---
+      *     MOVE   HC01PARA            TO  MKPRT-DAT
+           MOVE   ASGNPARA            TO  MKPRT-DAT
+      *----(04.08.01)--UPD-END-----
            MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
