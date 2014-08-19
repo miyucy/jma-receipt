@@ -1,4 +1,4 @@
-sql_execute {
+exec_sql {
 	SQL		          dbcode(20000),virtual;
 	};
 
