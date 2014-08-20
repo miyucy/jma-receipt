@@ -31,6 +31,7 @@
       *  03.04.01    NACL-¿¹ÏÆ    06/11/29  ¥Ñ¥é¥á¥¿ÊÑ¹¹
       *  03.05.00    NACL-¿¹ÏÆ    07/11/05  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.02.01    NACL-¿¹ÏÆ    08/04/16  Ê¿À®£²£°Ç¯£´·î²þÀµ
+      *  04.08.01    NACL-¿¹ÏÆ    14/08/20  °ì»þ¥Õ¥¡¥¤¥ë¥Ç¥£¥ì¥¯¥È¥êÀßÄê
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,8 +40,11 @@
        FILE-CONTROL.
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
-           SELECT  PRT-FILE            ASSIGN  HC01PARA
+      *----(04.08.01)--UPD-START---
+      *     SELECT  PRT-FILE            ASSIGN  HC01PARA
+           SELECT  PRT-FILE            ASSIGN  ASGNPARA
                                        FILE    STATUS  IS  STS-PARA.
+      *----(04.08.01)--UPD-END-----
       *
        DATA                    DIVISION.
        FILE                        SECTION.
@@ -53,6 +57,9 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
+      *----(04.08.01)--ADD-START---
+           COPY    "CPASGNPARA.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -120,6 +127,9 @@
       *
       *    °õºþ¥Ñ¥é¥á¥¿
            COPY    "CPORCSMKPRT.INC".
+      *----(04.08.01)--ADD-START---
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -480,6 +490,13 @@
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *----(04.08.01)--ADD-END-----
            OPEN    OUTPUT              PRT-FILE
            WRITE   HCMC001
            CLOSE                       PRT-FILE
@@ -488,7 +505,10 @@
            MOVE    "HC01.sh"           TO  MKPRT-ID
            MOVE    "HCMC001.red"       TO  MKPRT-DIA
            MOVE    SPACE               TO  MKPRT-DEF
-           MOVE    HC01PARA            TO  MKPRT-DAT
+      *----(04.08.01)--UPD-START---
+      *     MOVE    HC01PARA            TO  MKPRT-DAT
+           MOVE    ASGNPARA            TO  MKPRT-DAT
+      *----(04.08.01)--UPD-END-----
            MOVE    PARA-SYAPRTNM       TO  MKPRT-PRTNM
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
