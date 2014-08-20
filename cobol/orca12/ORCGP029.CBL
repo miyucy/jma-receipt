@@ -878,7 +878,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "9000"          TO  SPA-ERRCD
            END-IF
            .
-       210-PTPUBLIC-SYORI-EXT.
+       2101-PTPUBLIC-INS-EXT.
            EXIT.
       *****************************************************************
       *    患者地域連携データ更新処理
@@ -1571,7 +1571,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-     *
+      *
+      *H26.8   ドクター・診療内容を変更した場合
+           IF      FLG-YYK             =   ZERO
+               IF     (YYK-PTID        NOT =   ZERO )
+                AND   (YYK-PTID        NOT =   UKE-PTID)
+                   MOVE    1               TO  FLG-YYK
+               END-IF
+           END-IF
+      *
            IF      FLG-YYK             =   ZERO
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
@@ -1614,7 +1622,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            .
-       240-UKETUKE-SYORI-EXT.
+       2401-YYK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
