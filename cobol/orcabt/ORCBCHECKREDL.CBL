@@ -47,6 +47,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPRECEERR.INC".
+      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -64,13 +66,13 @@
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "COMMON-SPA".
-     *
-        01  WRK-PARA.
-           03  RECEERR             PIC X(100).
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -104,6 +106,12 @@
            INITIALIZE                  SPA-AREA
       *
            MOVE    COMMAND-PARAM       TO  RECEERR
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *

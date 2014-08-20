@@ -55,6 +55,12 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPRECEERR.INC"     REPLACING   //RECEERR//
+                                       BY          //MNTERRFL//.
+      *
+           COPY    "CPASGNPARA.INC"    REPLACING   //ASGNPARA//
+                                       BY          //HOSPIDFL//.
+      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -80,8 +86,6 @@
      *
         01  WRK-PARA.
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  MNTERRFL            PIC X(100).
-           03  HOSPIDFL            PIC X(100).
       *
        01  CONST-AREA.
            03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
@@ -110,6 +114,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -157,6 +164,9 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
+           INITIALIZE                  MNTERRFL
+                                       HOSPIDFL
+      *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                INTO    WRK-PARA-HOSPNUM
                                        MNTERRFL
@@ -165,6 +175,15 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    "T"                 TO  SPA-SUPERVISOR
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    MNTERRFL        TO  SGETTEMP-BASENAMES (1)
+           MOVE    HOSPIDFL        TO  SGETTEMP-BASENAMES (2)
+           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  MNTERRFL
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  HOSPIDFL
       *
            PERFORM 100-DBOPEN-SEC
       *
