@@ -49,6 +49,7 @@
       *  04.01.01    NACL-森脇    08/01/17  器材商品追加
       *  04.02.01    NACL-森脇    08/03/13  病理診療追加
       *  04.03.01    NACL-森脇    08/06/13  ＣＳＶ出力対応
+      *  04.08.01    NACL-森脇    14/08/21  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -216,6 +217,10 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    連絡　領域
@@ -1478,6 +1483,13 @@
            MOVE    "OR102ERR"          TO  TENSUERR-FILE-ID
            MOVE    SPA-TERMID          TO  TENSUERR-TERMID
            MOVE    SPA-HOSPNUM         TO  TENSUERR-HOSPNUM
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TENSUERR            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  TENSUERR
+      *----(04.08.01)--ADD-END-----
       *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
