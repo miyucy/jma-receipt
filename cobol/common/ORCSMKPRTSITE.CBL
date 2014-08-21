@@ -36,16 +36,8 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    印刷用データ
-           SELECT  PRT-IN-FILE     ASSIGN  HC01PARA
-                                   FILE    STATUS  IS  STS-IN.
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
-      *    印刷用データ
-       FD  PRT-IN-FILE.
-       01  PRT-IN-REC.
-           03  PRT-IN-PRTDATA      PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -71,11 +63,11 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-DIA             PIC X(10).
-           03  WRK-SHELLTBL-NAME   PIC X(200).
            03  WRK-SHELLTBL-ARG1   PIC X(200).
            03  WRK-ENCODING        PIC X(01).
            03  WRK-ENCODING9       REDEFINES WRK-ENCODING
                                    PIC 9(01).
+           03  WRK-MKPRT-ST        PIC 9(05).
       *
       *    デイレクトリ位置
        01  SHELL-NAME.
@@ -114,6 +106,9 @@
       *
            COPY    "MCPAREA".
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -138,6 +133,7 @@ grpsys     COPY    "COMMON-SPA".
                CALL   "ORCSMKPRTSITE1"     USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
+               MOVE  ZERO              TO  SPA-CLIENT-TEMP-FLG
                EXIT    PROGRAM
            END-IF
            INITIALIZE                  IDX-AREA
@@ -149,34 +145,7 @@ grpsys     COPY    "COMMON-SPA".
                                        SPA-AREA
            MOVE    SPA-ENCODING    TO  WRK-ENCODING9
       *
-      *    帳票名からＤＩＡかＭＯＮＰＥを設定する
-           MOVE    SPACE               TO  WRK-DIA
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   50
-               IF      MKPRT-DIA(IDX:1)    =   "."
-                   MOVE    1               TO  FLG-OK
-               ELSE
-                   IF     (MKPRT-DIA(IDX:1)    NOT =   SPACE) AND
-                          (FLG-OK              =   1        )
-                       ADD     1               TO  IDY
-                       MOVE    MKPRT-DIA(IDX:1)    TO  WRK-DIA (IDY:)
-                   END-IF
-               END-IF
-               IF      MKPRT-DIA(IDX:1)    =   SPACE
-                   MOVE    50              TO  IDX
-               END-IF
-           END-PERFORM
-           EVALUATE    WRK-DIA(1:3)
-               WHEN    "dia"
-      *            ｄａｉ
-                   PERFORM 100-DIA-PRINT-SEC
-               WHEN    "red"
-      *            ＭＯＮＰＥ
-                   PERFORM 200-MON-PRINT-SEC
-               WHEN    OTHER
-                   MOVE    99              TO  MKPRT-RC
-           END-EVALUATE
+           PERFORM 200-MON-PRINT-SEC
       *
            .
        000-PROC-EXT.
@@ -186,102 +155,13 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
       *    編集処理
       *****************************************************************
-       100-DIA-PRINT-SEC            SECTION.
-      *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-      *    ＳＨＥＬＬ名
-           STRING  SHELL-NAME          DELIMITED  BY  SPACE
-                   MKPRT-ID            DELIMITED  BY  SPACE
-                                       INTO    MKPASS-IN-01
-           END-STRING
-      *    帳票名
-           MOVE    SHELL-DIA           TO  MKPASS-IN-02
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  WRK-SHELLTBL-NAME
-           MOVE    MKPASS-OT-02        TO  WRK-SHELLTBL-ARG1
-      *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-      *    ＦＯＲＭ
-           STRING  SHELL-FORM          DELIMITED  BY  SPACE
-                   MKPRT-DIA           DELIMITED  BY  SPACE
-                                       INTO    MKPASS-IN-03
-           END-STRING
-      *    DEF名
-           STRING  SHELL-RECORD        DELIMITED  BY  SPACE
-                   MKPRT-DEF           DELIMITED  BY  SPACE
-                                       INTO    MKPASS-IN-04
-           END-STRING
-           CALL    "ORCSMKPASSSITE"     USING   ORCSMKPASSAREA
-      *
-      *    SHELL
-           MOVE    SPACE               TO  SHELLTBL
-           INITIALIZE                      SHELLTBL
-      *
-           MOVE    WRK-SHELLTBL-NAME   TO  SHELLTBL-NAME
-      *    DIA
-           MOVE    WRK-SHELLTBL-ARG1   TO  SHELLTBL-ARG1
-      *    FORM
-           MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
-      *    DEF
-           MOVE    MKPASS-OT-04        TO  SHELLTBL-ARG3
-      *    データ内容
-           MOVE    MKPRT-DAT           TO  SHELLTBL-ARG4
-      *    印刷位置
-           MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
-      *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
-      *
-           .
-       100-DIA-PRINT-EXT.
-           EXIT.
-      *****************************************************************
-      *    編集処理
-      *****************************************************************
        200-MON-PRINT-SEC            SECTION.
       *
-      *
-           IF    ( SPA-ENCODING     =  2 )
-               MOVE    MKPRT-DAT            TO  HC01PARA
-               OPEN    INPUT                    PRT-IN-FILE
-               IF        ( STS-IN   NOT  =   ZERO )
-                   DISPLAY "INPUT OPEN ERR [" HC01PARA "]"
-               ELSE
-                   INITIALIZE                   PRT-IN-REC
-                   READ PRT-IN-FILE
-                   INITIALIZE                   SFIXREDDATA-AREA
-                   MOVE    "2"              TO  SFIXREDDATA-SITEKBN
-                   MOVE    MKPRT-DIA        TO  SFIXREDDATA-FORMID
-                   MOVE    PRT-IN-REC       TO  SFIXREDDATA-DATA
-                   CALL    "ORCSFIXREDDATA"     USING
-                                                SFIXREDDATA-AREA
-                                                SPA-AREA
-                   CLOSE   PRT-IN-FILE
-                   OPEN    OUTPUT               PRT-IN-FILE
-                   MOVE    SFIXREDDATA-DATA TO  PRT-IN-REC
-                   WRITE   PRT-IN-REC
-                   CLOSE   PRT-IN-FILE
-               END-IF
-           END-IF
-      *
-      *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-      *    ＳＨＥＬＬ名
-           STRING  SHELL-NAME          DELIMITED  BY  SPACE
-                   MKPRT-ID            DELIMITED  BY  SPACE
-                                       INTO    MKPASS-IN-01
-           END-STRING
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  WRK-SHELLTBL-NAME
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    MKPRT-DAT       TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-ST     TO  WRK-MKPRT-ST
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -289,11 +169,6 @@ grpsys                            SPA-AREA
            STRING  SHELL-FORM          DELIMITED  BY  SPACE
                    MKPRT-DIA           DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-03
-           END-STRING
-      *    DEF名
-           STRING  SHELL-RECORD        DELIMITED  BY  SPACE
-                   MKPRT-DEF           DELIMITED  BY  SPACE
-                                       INTO    MKPASS-IN-04
            END-STRING
            CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
       *
@@ -303,7 +178,7 @@ grpsys                            SPA-AREA
            MOVE    SPACE               TO  SHELLTBL
            INITIALIZE                      SHELLTBL
       *
-           MOVE    WRK-SHELLTBL-NAME   TO  SHELLTBL-NAME
+           MOVE    MKPRT-ID           TO  SHELLTBL-NAME
       *    MONP
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
       *    FROM
@@ -311,7 +186,8 @@ grpsys                            SPA-AREA
       *    DEF
            MOVE    "DUMMY"             TO  SHELLTBL-ARG3
       *    データ内容
-           MOVE    MKPRT-DAT           TO  SHELLTBL-ARG4
+           MOVE    MKPRT-DAT (WRK-MKPRT-ST:)
+                                       TO  SHELLTBL-ARG4
       *    印刷位置
            MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
       *    オフセット
@@ -324,7 +200,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "daily"             TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
 grpsys                            SPA-AREA
