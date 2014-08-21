@@ -28,6 +28,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       *  03.05.01    NACL-森脇     07/05/30  グループ診療対応
       *  03.05.02    NACL-森脇     07/07/03  確認リスト追加
+      *  04.08.01    NACL-森脇     14/08/21  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -198,6 +199,10 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *----(-4.08.01)--ADD-START---
+       COPY    "CPORCSGETTEMP.INC".
+      *----(-4.08.01)--ADD-END-----
       *
       *****************************************************************
       *    連絡　領域
@@ -1109,6 +1114,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "OR107ERR"          TO  YKJMERR-FILE-ID
            MOVE    SPA-TERMID          TO  YKJMERR-TERMID
            MOVE    SPA-HOSPNUM         TO  YKJMERR-HOSPNUM
+      *
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    YKJMERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  YKJMERR
+      *----(04.08.01)--ADD-END-----
       *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
