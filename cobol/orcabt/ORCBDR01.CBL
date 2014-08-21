@@ -26,7 +26,8 @@
       *  09/03/02    NACL-森脇     新規作成
       *****************************************************************
       *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
+      * Maj/Min/Rev  修正者        日付      内容
+      *  04.08.01    NACL-森脇     14/08/21  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -47,6 +48,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
@@ -66,7 +71,9 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
-           03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  RECEERR                 PIC X(100).
+      *----(04.08.01)--UPD-END-----
            03  WRK-PARA-DENPPRTYMD     PIC X(08).
       *
       *    一時領域
@@ -114,6 +121,10 @@
       *
            COPY    "COMMON-SPA".
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -151,6 +162,9 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -187,6 +201,14 @@
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
                                        SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
