@@ -110,6 +110,9 @@
       *  04.07.05    NACL-門脇    14/05/07  在宅の回数記載対応
       *  04.07.06    NACL-門脇    14/05/23  「精神科を初めて受診した日」コメント
       *                                     の自動記載に関する修正
+      *  04.07.07    NACL-藤原    14/08/19  患者コメントの入力コメントの
+      *                                     改行コードチェック
+      *                                     エラー時処理終了
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -300,9 +303,8 @@
            03  IDX21                                   PIC 9(03).
            03  IDX22                                   PIC 9(02).
       *
-      *    パス名領域
-           03  WRK-MCP-TABLE       PIC X(64).
-           03  WRK-MCP-PATHNAME    PIC X(64).
+           03 IDZ1                                     PIC 9(02).
+           03 IDZ2                                     PIC 9(02).
       *
       *    剤情報退避領域
        01  WK-ZAIKAISU                                 PIC S9(07).
@@ -372,8 +374,6 @@
            03  WRK-STIDX                               PIC 9(02).
            03  WRK-EDIDX                               PIC 9(02).
       *
-           03  WRK-RECEERR                             PIC X(200).
-      *
            03  WRK-TANICD                              PIC 9(03).
            03  WRK-TANIMOJISU                          PIC 9(01).
            03  WRK-TANINAME                            PIC X(24).
@@ -434,6 +434,12 @@
            03  WRK-TOTALTEN2                   PIC 9(08).
       *
            03  WRK-SURYOU-COUNT                PIC 9(09).
+      *
+           03  WRK-COL                         PIC 9(03).
+      *
+      *    パス名領域
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
       *---------------------------------------------------------------
       *  回数減算用退避領域
@@ -1026,6 +1032,9 @@
        01  TBL-SUJI-X-R        REDEFINES   TBL-SUJI-AREA-X.
            03  TBL-SUJI-X      PIC X(01)   OCCURS   10.
       *
+      *    改行コード
+       01  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
+      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -1040,6 +1049,21 @@
        01  WRK-RECE100G-REC. 
            COPY    "CPRCF100.INC"  REPLACING  //RECE100//
                                    BY         //WRK-RECE100G//.
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1PARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -5106,6 +5130,62 @@ grpsys         PERFORM 900-DBFETCH-SEC
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
+           IF      FLG-PTCOM           =   ZERO
+               IF      PTCOM-INPUTCOMENT   NOT =   SPACE
+                   MOVE    ZERO            TO  WRK-COL
+                                               IDZ1
+                                               IDZ2 
+                   INSPECT PTCOM-INPUTCOMENT   TALLYING    WRK-COL
+                                               FOR ALL WRK-CONS-RETURN
+                   IF      WRK-COL         >   ZERO
+                       DISPLAY "PTCOM=" PTCOM-KEY
+                       PERFORM VARYING IDZ1    FROM    1   BY  1
+                               UNTIL   IDZ1    >       80
+                           IF      PTCOM-INPUTCOMENT(IDZ1:1)
+                                               =   WRK-CONS-RETURN
+                               COMPUTE IDZ2    =   IDZ1    -   1
+                               MOVE    80      TO  IDZ1
+                           END-IF
+                       END-PERFORM
+      *
+                       CALL    "coblog" USING   "ptcom returncd err"
+                       MOVE    SPACE               TO  WRK-RECEERR
+                       MOVE    SPACE               TO  WRK-ERRMSG
+                       STRING
+                        "コメント文字コード不正　患者番号="
+                                                   DELIMITED  BY  SIZE
+                               RECE100-PTNUM       DELIMITED  BY  SPACE
+                               "　診療区分="       DELIMITED  BY  SIZE
+                               SRY-SRYKBN          DELIMITED  BY  SPACE
+                                                   INTO    WRK-ERRMSG
+                       END-STRING
+                       IF      IDZ2        >   1    
+                           STRING   WRK-ERRMSG     DELIMITED  BY  SPACE
+                                   "　コメント="   DELIMITED  BY  SIZE
+                                   PTCOM-INPUTCOMENT(1:IDZ2)
+                                                   DELIMITED  BY  SPACE
+                                                   INTO    WRK-RECEERR
+                           END-STRING
+                       ELSE
+                           STRING   WRK-ERRMSG     DELIMITED  BY  SPACE
+                                    "　コメント="  DELIMITED  BY  SIZE
+                                    PTCOM-SRYCD    DELIMITED  BY  SPACE
+                                                   INTO    WRK-RECEERR
+                           END-STRING
+                       END-IF
+                       PERFORM 500-ERR-HENSYU-SEC
+      *
+                       MOVE    SPACE               TO  WRK-ERRMSG
+                       STRING  "ORCR1010 "         DELIMITED  BY  SIZE
+                               WRK-RECEERR         DELIMITED  BY  SIZE
+                               LOW-VALUE           DELIMITED  BY  SIZE
+                                                   INTO    WRK-ERRMSG
+                       END-STRING
+                       PERFORM 500-COBABORT-SEC
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
        950-PTCOM-READ-EXT.
            EXIT.
@@ -5358,6 +5438,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
