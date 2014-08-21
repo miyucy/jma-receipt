@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      *  04.08.01    NACL-森脇     14/08/21  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,9 +47,12 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TNSCHK2-KEY
                                    FILE    STATUS  IS  STS-TNSCHK2.
+      *----(04.08.01)--UPD-START---
       *    エラーファイル
-           SELECT  YKJMERR-FILE    ASSIGN  YKJMERR
+      *     SELECT  YKJMERR-FILE    ASSIGN  YKJMERR
+           SELECT  YKJMERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-YKJMERR.
+      *----(04.08.01)--UPD-END-----
       *
        DATA                    DIVISION.
        FILE                        SECTION.
@@ -78,6 +82,10 @@
       *
            COPY    "HCM47.INC".
            COPY    "HCMSL80.INC".
+      *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPRECEERR.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *    ステータス領域
        01  STS-AREA.
@@ -122,9 +130,11 @@
            03  WRK-PARA-CYU            PIC X(01).
            03  WRK-PARA-PRT            PIC X(01).
            03  WRK-PARA-SYU            PIC X(01).
-           03  YKJMERR                 PIC X(100).
-           03  TNSCHK                  PIC X(100).
-           03  TNSCHK2                 PIC X(100).
+      *----(04.08.01)--UPD-START---
+      *     03  YKJMERR                 PIC X(100).
+           03  TNSCHK                  PIC X(200).
+           03  TNSCHK2                 PIC X(200).
+      *----(04.08.01)--UPD-END-----
       *
       *    一時領域
        01  WRK-AREA.
@@ -242,6 +252,10 @@
       *    点数チェックサブプロ
            COPY    "CPORCSS004.INC".
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -282,6 +296,9 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -305,7 +322,10 @@
                                        WRK-PARA-CYU
                                        WRK-PARA-PRT
                                        WRK-PARA-SYU
-                                       YKJMERR
+      *----(04.08.01)--UPD-START---
+      *                                 YKJMERR
+                                       RECEERR
+      *----(04.08.01)--UPD-END-----
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -332,6 +352,13 @@
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
                                            SPA-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *----(04.08.01)--ADD-END-----
       *
            .
        100-INIT-EXT.
