@@ -1421,6 +1421,12 @@ class Receden_check < Receden_common
 
     @hospnum,@recefile,@infile,@outfile,@errlog,@skykbn,@check_level=_param.split(",")
 
+    mcp_tempdir=ENV['MCP_TEMPDIR']
+
+    @infile=mcp_tempdir + "/" + @infile
+    @outfile=mcp_tempdir + "/" + @outfile
+    @errlog=mcp_tempdir + "/" + @errlog
+
     db = DBMAIN.new
     db.exec("DBOPEN")
     db.exec("DBSTART")
