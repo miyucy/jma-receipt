@@ -23,6 +23,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SGETTEMP-AREA.
+      *    ミドルウェア
+           03  SGETTEMP-MW                 PIC 9(01).
       *    入力引数
       *    ファイル名（パス無し）
            03  SGETTEMP-BASENAME           PIC X(1024).
@@ -38,4 +40,3 @@
                05  SGETTEMP-FULLNAME       PIC X(1024).
                05  SGETTEMP-FULLNAMES-OCC  OCCURS 10.
                    07  SGETTEMP-FULLNAMES  PIC X(1024).
-

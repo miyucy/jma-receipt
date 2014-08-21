@@ -41,6 +41,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "ENUM-VALUE".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
@@ -179,6 +181,17 @@
       *    マスターメニュー処理
       *****************************************************************
        100-SPA-INIT-SEC                SECTION.
+      *
+      *    ミドルウェア
+           EVALUATE    MCP-MIDDLEWARE-NAME
+           WHEN    "panda"
+               MOVE    SPA-PANDA       TO  SPA-MW
+           WHEN    "ginbee"
+               MOVE    SPA-GINBEE      TO  SPA-MW
+      *    取得できない場合はpandaとみなす
+           WHEN    OTHER
+               MOVE    SPA-PANDA       TO  SPA-MW
+           END-EVALUATE
       *
       *    端末ＩＤ
            MOVE    MCP-TERM            TO  SPA-TERMID

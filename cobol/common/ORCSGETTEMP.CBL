@@ -37,6 +37,8 @@
        FILE                                SECTION.
        WORKING-STORAGE                     SECTION.
       *
+           COPY    "ENUM-VALUE".
+      *
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
       *
@@ -83,10 +85,25 @@
                                            WRK-AREA
       *
            MOVE      SPACE             TO  MCP-TEMPDIR
+                                           MCP-MIDDLEWARE-NAME
                                            WRK-ORCA-TEMPDIR
                                            SGETTEMP-FULLNAME-AREA
       *
-           ACCEPT   MCP-TEMPDIR      FROM ENVIRONMENT  "MCP_TEMPDIR"
+           ACCEPT   MCP-TEMPDIR  FROM ENVIRONMENT  "MCP_TEMPDIR"
+      *
+           ACCEPT   MCP-MIDDLEWARE-NAME
+                                 FROM ENVIRONMENT  "MCP_MIDDLEWARE_NAME"
+      *
+      *    ミドルウェア
+           EVALUATE    MCP-MIDDLEWARE-NAME
+           WHEN    "panda"
+               MOVE    SPA-PANDA       TO  SGETTEMP-MW
+           WHEN    "ginbee"
+               MOVE    SPA-GINBEE      TO  SGETTEMP-MW
+      *    取得できない場合はpandaとみなす
+           WHEN    OTHER
+               MOVE    SPA-PANDA       TO  SGETTEMP-MW
+           END-EVALUATE
       *
            MOVE   1                    TO  WRK-POINTER-PATH
       *

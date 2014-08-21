@@ -46,3 +46,6 @@
              03  MCP-CTL-CHANGE     PIC S9(9)   BINARY  VALUE   4 .
              03  MCP-CTL-JOIN       PIC S9(9)   BINARY  VALUE   5 .
              03  MCP-CTL-END        PIC S9(9)   BINARY  VALUE   6 .
+           02  SPA-MIDDLEWARE-ID.
+             03  SPA-PANDA       PIC S9(9)   BINARY  VALUE   0 .
+             03  SPA-GINBEE      PIC S9(9)   BINARY  VALUE   1 .

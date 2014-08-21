@@ -302,8 +302,10 @@
              03  SPA-CLIENT-SHOWDIALOG     PIC 9(01).
       *クライアント印刷後遷移
              03  SPA-PUTTYPE               PIC X(08).
+      *ミドルウェア
+             03  SPA-MW                    PIC 9(01).
       *
-      *ここまで 1,036 bytes
+      *ここまで 1,048 bytes
       *
       *----(01.00.02) LINE UPD START ----------------------------------
       *******03  SPA-WORK                  PIC X(2460).
@@ -320,6 +322,6 @@
       *****  03  SPA-WORK                  PIC X(19027).
       ****   03  SPA-WORK                  PIC X(18964).
       *****  03  SPA-WORK                  PIC X(18961).
-             03  SPA-WORK                  PIC X(18953).
+             03  SPA-WORK                  PIC X(18952).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *
