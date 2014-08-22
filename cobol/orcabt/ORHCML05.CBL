@@ -41,12 +41,9 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *----(04.08.01)--UPD-START---
       *    エラーファイル
-      *     SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
-           SELECT  TENSUERR-FILE   ASSIGN  RECEERR
+           SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
                                    FILE    STATUS  IS  STS-TENSUERR.
-      *----(04.08.01)--UPD-END-----
       *    ＣＳＶファイル
            SELECT  TENSUCSV-FILE   ASSIGN  TENSUCSV
                                    ORGANIZATION    IS  LINE
@@ -76,7 +73,9 @@
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
       *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
+      *    エラーファイル 名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //TENSUERR//.
       *----(04.08.01)--ADD-END-----
       *     
            COPY    "HCML06.INC".
@@ -239,9 +238,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
            INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -261,10 +257,7 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-AREA
                                                WRK-PARA-HOSPNUM
-      *----(04.08.01)--UPD-START---
-      *                                         TENSUERR
-                                               RECEERR
-      *----(04.08.01)--UPD-END-----
+                                               TENSUERR
                                                WRK-PARA-CSVKBN
                                                WRK-PARA-FILE
                                                WRK-PARA-CSVDIR
@@ -295,10 +288,10 @@
       *
       *----(04.08.01)--ADD-START---
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+           MOVE    TENSUERR            TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  TENSUERR
       *----(04.08.01)--ADD-END-----
       *     
       *    パラメタ編集処理
