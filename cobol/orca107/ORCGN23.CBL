@@ -200,10 +200,6 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *----(-4.08.01)--ADD-START---
-       COPY    "CPORCSGETTEMP.INC".
-      *----(-4.08.01)--ADD-END-----
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -1115,14 +1111,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-TERMID          TO  YKJMERR-TERMID
            MOVE    SPA-HOSPNUM         TO  YKJMERR-HOSPNUM
       *
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    YKJMERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  YKJMERR
-      *----(04.08.01)--ADD-END-----
-      *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
@@ -1205,7 +1193,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *
-               MOVE    YKJMERR             TO  SHELLTBL-ARG12
+      *----(04.08.01)--UPD-START---
+      *         MOVE    YKJMERR             TO  SHELLTBL-ARG12
+               MOVE    YKJMERR-BASENAME    TO  SHELLTBL-ARG12
+      *----(04.08.01)--UPD-END-----
                MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
                MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
