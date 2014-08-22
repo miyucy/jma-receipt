@@ -1484,11 +1484,11 @@
            MOVE    SPA-TERMID          TO  TENSUERR-TERMID
            MOVE    SPA-HOSPNUM         TO  TENSUERR-HOSPNUM
       *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TENSUERR            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  TENSUERR
+      *     INITIALIZE                      SGETTEMP-AREA
+      *     MOVE    TENSUERR-BASENAME   TO  SGETTEMP-BASENAME
+      *     CALL    "ORCSGETTEMP"           USING
+      *                                     SGETTEMP-AREA
+      *     MOVE    SGETTEMP-FULLNAME   TO  TENSUERR
       *----(04.08.01)--ADD-END-----
       *
       *    出力先プリンタ名割り当て情報編集
@@ -1850,7 +1850,11 @@
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *                 
-               MOVE    TENSUERR            TO  SHELLTBL-ARG12
+      *----(04.08.01)--UPD-START---
+      *         MOVE    TENSUERR            TO  SHELLTBL-ARG12
+               DISPLAY "TENSUERR-BASENAME=" TENSUERR-BASENAME
+               MOVE    TENSUERR-BASENAME   TO  SHELLTBL-ARG12
+      *----(04.08.01)--UPD-END-----
                MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
                MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
