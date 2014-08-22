@@ -310,7 +310,7 @@
       *
       *----(04.08.01)--ADD-START---
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    TENSUERR            TO  SGETTEMP-BASENAME
+           MOVE    TENSUERR-BASENAME   TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"           USING
                                            SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAME   TO  TENSUERR
