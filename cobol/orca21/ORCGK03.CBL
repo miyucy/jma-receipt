@@ -3588,6 +3588,8 @@
                    MOVE    "B05"             TO  MCP-WIDGET
                WHEN    31
                    MOVE    "B06"             TO  MCP-WIDGET
+               WHEN    91
+                   MOVE    "B01"             TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -6098,14 +6100,16 @@
                                        ORCSCGAIRAIAREA
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
       *
-      *TEST
+      *
       *    伝票番号を編集する
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-SYUNOU-MAX ) OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               MOVE    ORCSCGAIRAI-SYUNOU-REC (IDX)
+           IF     (SPA-ERRCD           =   SPACE )
+             OR   (SPA-ERRCD(1:1)      =   "K"   )
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   SPA-SYUNOU-MAX )
+                   MOVE    ORCSCGAIRAI-SYUNOU-REC (IDX)
                                        TO  SPA-SYUNOU-REC(IDX)
-           END-PERFORM
+               END-PERFORM
+           END-IF
       *
       *    警告エラー
            IF      SPA-ERRCD           =   SPACE
@@ -6114,6 +6118,11 @@
                    MOVE    "K001"          TO  SPA-ERRCD
                    MOVE    1               TO  SPA-KEI-FLG
                 END-IF
+          END-IF
+      *H26.8
+      *    外用回数エラー、戻るへ
+           IF      SPA-ERRCD           =   "0052"
+               MOVE    91              TO  SPA-GMN-CUR
            END-IF
            .
        450012-GAIRAI-CALL-EXT.
@@ -6537,11 +6546,6 @@
                MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
                CALL    WRK-YYKHYO-PG       USING   SPA-AREA
                                                    ONPRTDATA
-      ******   MOVE    WRK-YYKHYO-PG       TO  ONPRTDATA-PGID
-      *        MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
-      *        CALL    "ORCHCOMMON"        USING
-      *                                    SPA-AREA
-      ****                                 ONPRTDATA
            END-IF
       *
            IF      (SPA-CLIENT-PRT-FLG =   1  )
@@ -7267,6 +7271,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
       *D           MOVE    SPACE           TO  SPA-ERRMSG2
                    MOVE    SPA-ERRCD       TO  SPA-ERRMSG2
+      *H26.8
+               WHEN    "0052"
+                   STRING  "外用薬剤の回数が１回以上になります。"
+                           "同じ剤は回数をまとめて入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE

@@ -48,6 +48,7 @@
       *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *  04.08.00    NACL-多々納  13/07/XX  第三者行為対応
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
+      *  04.08.00    NACL-多々納  14/08/22  外用薬剤回数チェック対応
       *****************************************************************
       *
       *
@@ -299,25 +300,6 @@
                    07  WRK-ACTP-ZAINUM     PIC 9(08)   OCCURS   50.
                05  IDX-GEN                 PIC 9(04).
                05  IDX-GEN2                PIC 9(04).
-      *
-      *    診療行為内容比較用テーブル
-      *01  TBL-AREA.
-      *    03  TBL-MAE-AREA.
-      *        05  TBL-MAE-REC     OCCURS   50.
-      *            07  TBL-MAE-SRYCD       PIC  X(09).
-      *            07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
-      *            07  TBL-MAE-SRYKAISU    PIC  9(03).
-      *            07  TBL-MAE-INPUTCOMENT PIC  X(40).
-      *            07  TBL-MAE-ATAI-G.
-      *                09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
-      *    03  TBL-ATO-AREA.
-      *        05  TBL-ATO-REC     OCCURS   50.
-      *            07  TBL-ATO-SRYCD       PIC  X(09).
-      *            07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
-      *            07  TBL-ATO-SRYKAISU    PIC  9(03).
-      *            07  TBL-ATO-INPUTCOMENT PIC  X(40).
-      *            07  TBL-ATO-ATAI-G.
-      ***              09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
       *
       *    剤テーブル領域
        01  WRK-TBL-ZAINUM-AREA.
@@ -3694,6 +3676,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        MOVE    4                   TO  IDX1
       **** END-IF
            ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (IDX1 IDX-2)
+      *
+      *TEST
+      *H26.8
+      *    外用で回数１以上はエラー
+           IF     (ACCT-SRYKBN         =   "23" )
+             AND  (WRK-SYUTEN1         =   ZERO )
+             AND  (WRK-SRYKAISUKEI     =   1    )
+             AND  (ACCT-DAY  (IDX1 IDX-2)  >   1)
+      *v4.7 は集計以外
+      **     AND  (WRK-JYURRK-RENNUM       <   4 )
+               MOVE    "0052"          TO  SPA-ERRCD
+           END-IF
+      *TEST
+      *
       *    剤回数編集
            PERFORM 450140-ZAIKAISU-HEN-SEC
            .
@@ -3705,9 +3701,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        450140-ZAIKAISU-HEN-SEC          SECTION.
       *
-      **** COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (2 IDX-2)
-      *                                +   ACCT-DAY (3 IDX-2)
-      ****                             +   ACCT-DAY (4 IDX-2)
            MOVE    ZERO                TO  ACCT-DAY (1 IDX-2)
            PERFORM VARYING     IDX-A   FROM    2   BY  1
                    UNTIL       IDX-A   >   10

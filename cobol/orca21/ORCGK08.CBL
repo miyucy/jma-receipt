@@ -7311,6 +7311,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO  SPA-ERRMSG
                    END-STRING
       *!
+      *TEST
+               WHEN    "0052"
+                   STRING  "外用薬剤の回数が１回以上になります。"
+                           "同じ剤は回数をまとめて入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *!
                WHEN    "9001"
                    MOVE    "プレビューができない保険組合せです。"
                                        TO  SPA-ERRMSG
