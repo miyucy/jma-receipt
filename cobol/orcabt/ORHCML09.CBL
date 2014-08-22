@@ -268,6 +268,13 @@
            MOVE    "ML09ERR"           TO  ML09ERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  ML09ERR-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  ML09ERR-HOSPNUM
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    ML09ERR-BASENAME    TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ML09ERR
+      *----(04.08.01)--ADD-END-----
 
            MOVE    "userbyol"          TO  USERCSV-FILE-ID
            MOVE    SPA-HOSPNUM         TO  USERCSV-HOSPNUM
