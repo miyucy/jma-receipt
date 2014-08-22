@@ -47,12 +47,9 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TNSCHK2-KEY
                                    FILE    STATUS  IS  STS-TNSCHK2.
-      *----(04.08.01)--UPD-START---
       *    エラーファイル
-      *     SELECT  YKJMERR-FILE    ASSIGN  YKJMERR
-           SELECT  YKJMERR-FILE    ASSIGN  RECEERR
+           SELECT  YKJMERR-FILE    ASSIGN  YKJMERR
                                    FILE    STATUS  IS  STS-YKJMERR.
-      *----(04.08.01)--UPD-END-----
       *
        DATA                    DIVISION.
        FILE                        SECTION.
@@ -84,7 +81,15 @@
            COPY    "HCMSL80.INC".
       *
       *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
+      *    エラーファイル 名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //YKJMERR//.
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
+                                   BY         //TNSCHK//.
+           COPY    "CPASGNPARA.INC"
+                                   REPLACING  //ASGNPARA//
+                                   BY         //TNSCHK2//.
       *----(04.08.01)--ADD-END-----
       *
       *    ステータス領域
@@ -132,8 +137,8 @@
            03  WRK-PARA-SYU            PIC X(01).
       *----(04.08.01)--UPD-START---
       *     03  YKJMERR                 PIC X(100).
-           03  TNSCHK                  PIC X(200).
-           03  TNSCHK2                 PIC X(200).
+      *     03  TNSCHK                  PIC X(200).
+      *     03  TNSCHK2                 PIC X(200).
       *----(04.08.01)--UPD-END-----
       *
       *    一時領域
@@ -296,9 +301,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -322,10 +324,7 @@
                                        WRK-PARA-CYU
                                        WRK-PARA-PRT
                                        WRK-PARA-SYU
-      *----(04.08.01)--UPD-START---
-      *                                 YKJMERR
-                                       RECEERR
-      *----(04.08.01)--UPD-END-----
+                                       YKJMERR
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -354,10 +353,10 @@
                                            SPA-AREA
       *----(04.08.01)--ADD-START---
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+           MOVE    YKJMERR-BASENAME    TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  YKJMERR
       *----(04.08.01)--ADD-END-----
       *
            .
@@ -426,6 +425,7 @@
                    "2"                 DELIMITED  BY  SIZE
                               INTO     TNSCHK2
            END-STRING
+           DISPLAY "SS004-FILENAME=" SS004-FILENAME
       *
            OPEN    OUTPUT              TNSCHK2-FILE
            CLOSE                       TNSCHK2-FILE

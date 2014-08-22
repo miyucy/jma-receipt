@@ -40,10 +40,7 @@
        FILE-CONTROL.
       *
 006900*    エラーファイル
-      *----(04.08.01)--UPD-START---
-      *     SELECT  YKJMERR-FILE        ASSIGN  YKJMERR
-           SELECT  YKJMERR-FILE        ASSIGN  RECEERR
-      *----(04.08.01)--UPD-END-----
+           SELECT  YKJMERR-FILE        ASSIGN  YKJMERR
                                        FILE    STATUS  IS  STS-YKJMERR.
       *
        DATA                    DIVISION.
@@ -61,7 +58,9 @@
       *    COPY    "ORCA-DBPATH".
       *
       *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
+      *    エラーファイル 名称領域
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //YKJMERR//.
       *----(04.08.01)--ADD-END-----
       *
            COPY    "HCM61.INC".
@@ -292,9 +291,6 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -320,10 +316,7 @@
                                        WRK-PARA-NAME
                                        WRK-PARA-SRYCD
                                        WRK-PARA-INPUTCD
-      *----(04.08.01)--UPD-START---
-                                       RECEERR
-      *                                 YKJMERR
-      *----(04.08.01)--UPD-END-----
+                                       YKJMERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -350,10 +343,10 @@
            MOVE    MKPASS-OT-01    TO  FILE-NAME
       *----(04.08.01)--ADD-START---
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+           MOVE    YKJMERR-BASENAME    TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING
+                                           SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  YKJMERR
       *----(04.08.01)--ADD-END-----
       *
            .
