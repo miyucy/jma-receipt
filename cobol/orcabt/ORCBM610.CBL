@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -56,9 +57,14 @@
        WORKING-STORAGE             SECTION.
       *
        COPY    "COMMON-SPA".
+      *
       *    ＥＦファイル名称領域 
-       01  EFFILEPARA.
-           03  FILLER                  PIC X(05)   VALUE   "/tmp/".
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //EFFILEPARA//.
+      *
+      *01  CSVPARA.
+      *****03  FILLER              PIC X(05) VALUE "/tmp/".
+       01  EFFILEPARA-BASENAME.
            03  EFFILEPARA-HOSPNUM      PIC 9(02).
            03  FILLER                  PIC X(04)   VALUE   "DPC_".
            03  EFFILEPARA-FILENM-1     PIC X(01).
@@ -68,8 +74,7 @@
            03  FILLER                  PIC X(04)   VALUE   ".txt".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"       REPLACING   //ERRFLPARA//
-                                       BY          //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
        01  STS-AREA.
            03  STS-EFFILE              PIC X(02).
@@ -112,8 +117,10 @@
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPRECEDAT1.INC"    REPLACING   //RECEDAT1PARA//
-                                       BY          //WRK-ERR-FILE-NM//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *
+       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -135,6 +142,8 @@
       *
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -173,6 +182,7 @@
                                    FLG-AREA
                                    STS-AREA
                                    SPA-AREA
+           INITIALIZE              RECEERR
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -196,6 +206,15 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
+      *
+           MOVE   SGETTEMP-TEMPDIR TO  WRK-SGETTEMP-TEMPDIR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -277,6 +296,13 @@
                    MOVE    "g"         TO  EFFILEPARA-NYUGAIKBN
            END-EVALUATE
            MOVE    WRK-PARA-HOSPCD TO  EFFILEPARA-FILENM-2
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    EFFILEPARA-BASENAME
+                                   TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  EFFILEPARA
       *??
            DISPLAY "PARA=" EFFILEPARA "#"
       *??
@@ -378,7 +404,10 @@
                                    TO  SFILESV-SRYYM    (1)
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  SFILESV-SKYYMD   (1)
-           MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
+      *****MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
+      *****                                             (1)
+           MOVE    WRK-SGETTEMP-TEMPDIR
+                                   TO  SFILESV-FOR-FOLDER
                                                         (1)
            IF      WRK-PARA-DATAKBN    =   "5"
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE

@@ -52,6 +52,8 @@
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -75,8 +77,7 @@ grpsys*
 grpsys COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *****COPY    "HCM05.INC"     REPLACING  //HCM05//
       *****COPY    "HCM05V01.INC"  REPLACING  //HCM05V01//
@@ -196,6 +197,8 @@ grpsys COPY    "COMMON-SPA".
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".          
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -255,6 +258,13 @@ grpsys COPY    "COMMON-SPA".
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE

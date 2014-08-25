@@ -32,6 +32,8 @@
       *                                     の履歴作成
       *
       *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -53,8 +55,11 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
+                                   BY          //RECEERR//.
+      *
+      *    エラーファイル名称領域 
+           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -706,10 +711,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-TERMID      TO  JOB-TERMID                        
            PERFORM 900-CALL-ORCSJOB-SEC
       *
-           MOVE    WRK-CONS-FILE-ID
-                                   TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID      TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
+      *
            MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
@@ -738,7 +749,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  SHELLTBL-ARG10
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG11
-           MOVE    RECEERR         TO  SHELLTBL-ARG12
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG12
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

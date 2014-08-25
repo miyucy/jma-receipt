@@ -182,6 +182,7 @@
       *  04.07.15    NACL-Æ£¸¶    14/04/22  £Å£Æ¥Õ¥¡¥¤¥ëºîÀ®ÂÐ±þ
       *
       *  04.08.01    NACL-¿¹ÏÆ    13/04/12  ¥·¥¹¥Æ¥à£Ä£ÂÂÐ±þ
+      *  04.08.02    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -203,8 +204,10 @@
        WORKING-STORAGE             SECTION.
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
+                                   BY          //RECEERR//.
+      *
+           COPY    "CPERRFL.INC".
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -710,6 +713,9 @@
       *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý
       *****************************************************************
        310-SPASET-SEC              SECTION.
+      *??
+           DISPLAY "MCP-MIDDLEWARE-NAME=" MCP-MIDDLEWARE-NAME
+      *??
       *
            INITIALIZE              SPA-T01FREE
       *
@@ -1920,9 +1926,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        3201-RECEDEN-NEXT-SEC       SECTION.
       *
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
       *    ¹ñÊÝ¿ÇÎÅÊó½·ÀÁµá½ñ°õºþ¶èÊ¬
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -1983,7 +1995,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  SHELLTBL-ARG2
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG3         
-           MOVE    RECEERR         TO  SHELLTBL-ARG4
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG4
       *ip¥¢¥É¥ì¥¹¼èÆÀ
            PERFORM 900-SYSTEM-GET-SEC
            MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG5
@@ -2017,9 +2030,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *      
            MOVE    SPA-LNK-PRTKANRI-AREA
                                    TO  LNK-PRTKANRI-AREA
@@ -2282,10 +2301,15 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-      *****MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    WRK-CONS-TERMID     TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
       *    °õºþ£Ä£Â¤Î£Ë£Å£ÙÍÑ     
            MOVE    WRK-SYSYMD          TO
@@ -2390,7 +2414,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG13         
 grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
-                   MOVE    RECEERR         TO  SHELLTBL-ARG15
+                   MOVE    ERRFLPARA-BASENAME
+                                           TO  SHELLTBL-ARG15
                    MOVE    "1"             TO  SHELLTBL-ARG16
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
@@ -2453,7 +2478,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
-               MOVE    RECEERR             TO  SHELLTBL-ARG12
+               MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
                MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
                MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
@@ -2564,10 +2589,15 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
-           MOVE    WRK-CONS-FILE-ID
-                                   TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID      TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
            MOVE    SPACE           TO  SHELLTBL
            MOVE    "recept60.sh"   TO  SHELLTBL-NAME
       *     
@@ -2591,7 +2621,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  SHELLTBL-ARG10
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG11
-           MOVE    RECEERR         TO  SHELLTBL-ARG12
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG12
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                                INTO    SHELLTBL-ARG13
@@ -3729,10 +3760,15 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-      *****MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    WRK-CONS-TERMID     TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
       *    ¹ñÊÝ¿ÇÎÅÊó½·ÀÁµá½ñ°õºþ¶èÊ¬
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -3985,7 +4021,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG13         
 grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
-                   MOVE    RECEERR         TO  SHELLTBL-ARG15
+                   MOVE    ERRFLPARA-BASENAME
+                                           TO  SHELLTBL-ARG15
                    MOVE    "0"             TO  SHELLTBL-ARG16
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
@@ -4049,7 +4086,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
-               MOVE    RECEERR             TO  SHELLTBL-ARG12
+               MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
                MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
                MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
@@ -4091,8 +4128,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
        45013-SOKATU-SYORI-SEC       SECTION.
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *                                 
-      *    MOVE    RECEERR             TO  SHELL-ERRFILE
       *             
            MOVE    SPACE           TO  SHELLTBL
            MOVE    "recept3.sh"    TO  SHELLTBL-NAME
@@ -4193,7 +4228,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                                    TO  SHELLTBL-ARG16
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG17         
-           MOVE    RECEERR         TO  SHELLTBL-ARG18
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG18
            MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG19
            IF      SPA-BEDSU       =   ZERO
                MOVE    "2"             TO  SHELLTBL-ARG20
@@ -4351,7 +4387,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            MOVE    WRK-SHELL-RECEKBN
                                    TO  SHELLTBL-ARG14
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
-           MOVE    RECEERR         TO  SHELLTBL-ARG16
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG16
            MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG17
            IF      SPA-3004-CHKFLG (IDX 2)
                                        =   "T"
@@ -4537,7 +4574,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *             
-           MOVE    RECEERR             TO  SHELLTBL-ARG12
+           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
@@ -4638,7 +4675,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
-           MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG15
            MOVE    WRK-SHELL-RECEKBN
                                    TO  SHELLTBL-ARG16
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -4717,7 +4755,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
-           MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG15
            MOVE    SPA-NAI-4100-KGISKYKBN
                                    TO  SHELLTBL-ARG16
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -4795,7 +4834,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
-           MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG15
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -5291,9 +5331,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
       *    ¹ñÊÝ¿ÇÎÅÊó½·ÀÁµá½ñ°õºþ¶èÊ¬
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -5409,7 +5455,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                    TO  SHELLTBL-ARG14
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG15         
-           MOVE    RECEERR         TO  SHELLTBL-ARG16
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG16
            MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
       *ip¥¢¥É¥ì¥¹¼èÆÀ
            PERFORM 900-SYSTEM-GET-SEC
@@ -5586,9 +5633,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            MOVE    SPACE               TO  SYS-2005-REC 
            INITIALIZE                      SYS-2005-REC
@@ -5695,7 +5748,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                    TO  SHELLTBL-ARG14
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG15         
-           MOVE    RECEERR         TO  SHELLTBL-ARG16
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG16
            MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
       *ip¥¢¥É¥ì¥¹¼èÆÀ
            PERFORM 900-SYSTEM-GET-SEC
@@ -5849,9 +5903,15 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            INITIALIZE                  SPA-T01-TBL-GROUP
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -5941,7 +6001,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG12
                                            TO  SHELLTBL-ARG13
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14         
-                   MOVE    RECEERR         TO  SHELLTBL-ARG15
+                   MOVE    ERRFLPARA-BASENAME
+                                           TO  SHELLTBL-ARG15
                    IF       SPA-TIDCD      =   "1011"
                        MOVE    "1"             TO  SHELLTBL-ARG16
                    ELSE
@@ -5984,7 +6045,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SPA-SYSYMD          TO  WRK-SHELL-SYSYMD    
                    MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG1
                    MOVE    WRK-SHELL-RECEKBN   TO  SHELLTBL-ARG2
-                   MOVE    RECEERR             TO  SHELLTBL-ARG3
+                   MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG3
 grpsys             MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG4
                    MOVE    SPA-TERMID          TO  SHELLTBL-ARG5
                    MOVE    SHELLTBL            TO  MCPDATA-REC

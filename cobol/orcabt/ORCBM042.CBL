@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-藤原    13/05/07  公務災害を対象外とする
       *  04.07.02    NACL-藤原    13/09/27  ￥マークの変更
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,11 +68,9 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM72V01.INC"  REPLACING  //HCM72V01//
                                    BY         //HCM72//.
@@ -204,9 +204,10 @@
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
       *    エラーファイル名称領域
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -278,6 +279,8 @@
       *    県名取得パラメタ
            COPY    "CPORCSPREF.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -316,6 +319,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
                                        SPA-AREA
+           INITIALIZE                  RECEERR
            MOVE    LOW-VALUE       TO  KEY-AREA    
       *
            PERFORM 100-DBOPEN-SEC
@@ -352,6 +356,19 @@
                                    TO  RECEUPD-TERMID
            MOVE    WRK-PARA-HOSPNUM
                                    TO  RECEUPD-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECEUPD-BASENAME
+                                   TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEUPD
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)
@@ -897,7 +914,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -907,7 +925,8 @@
            STRING  "ORCBM042 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

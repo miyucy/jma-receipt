@@ -72,6 +72,8 @@
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *  04.07.02    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,11 +111,9 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM2WV01.INC"  REPLACING  //HCM2WV01//
                                    BY         //HCM2W//.
@@ -180,9 +180,6 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
       *
-           03  WRK-RECEERR         PIC X(200). 
-           03  WRK-ERRMSG          PIC X(300). 
-      *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
@@ -215,6 +212,18 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-HOSPADRS2       PIC X(50).
       *
            03  WRK-MEISYO          PIC X(44).
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
       *
        01  WRK-2007-AREA.
            03  WRK-2007-TBL        OCCURS  100.
@@ -353,6 +362,8 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -392,6 +403,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  SUM-AREA
                                        SPA-AREA
                                        WRK-PARA
+           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -431,6 +443,16 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  RECEUPD-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  RECEUPD-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECEUPD-BASENAME    TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEUPD
       *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)
@@ -2137,12 +2159,34 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+      *
+               STRING  "ＤＢ読み込みエラー　TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+      *
+               STRING  "ORCBM029 select err TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " PATHNAME="        DELIMITED   BY  SIZE
+                       MCP-PATHNAME        DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                       LOW-VALUE           DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING
+               CALL    "cobabort"          USING   WRK-ERRMSG
            END-IF
            .
        900-DBSELECT-EXT.

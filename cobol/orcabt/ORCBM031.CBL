@@ -51,6 +51,8 @@
       *                                     読み飛ばす
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,11 +90,9 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *****COPY    "HCM2Q.INC".
       *****COPY    "HCM2QV01.INC"  REPLACING  //HCM2QV01//
@@ -136,7 +136,6 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-HOSPNUM    PIC 9(02).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-ERRFILE    PIC X(50).
       *
       *    一時領域
        01  WRK-AREA.
@@ -279,6 +278,8 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -358,6 +359,17 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  RECEUPD-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  RECEUPD-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECEUPD-BASENAME
+                                   TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEUPD
       *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)

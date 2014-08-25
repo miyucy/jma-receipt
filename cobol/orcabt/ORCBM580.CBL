@@ -34,6 +34,8 @@
       *                                     HO,KOレコード編集
       *  00.00.00    NACL-伊藤    14. 7. 7  C1レコード編集
       *  00.00.00    NACL-伊藤    14. 7. 8  SYレコード編集
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,9 +66,12 @@
       *
        COPY    "COMMON-SPA".
       *    レセプト電算ファイル 名称領域
-       01  RECE30PARA.
-           03  FILLER              PIC X(05)   VALUE
-                                               "/tmp/".
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE30PARA//.
+      *01  RECE30PARA.
+      *****03  FILLER              PIC X(05)   VALUE 
+      *****                                    "/tmp/".
+       01  RECE30PARA-BASENAME.
            03  RECE30PARA-HOSPNUM  PIC 9(02).
            03  RECE30PARA-FILENM   PIC X(07)   VALUE
                                                "RECEDEN".
@@ -78,9 +83,8 @@
            03  RECE30PARA-CREHMS   PIC X(06).
            03  FILLER              PIC X(04)   VALUE   ".txt".
       *
-      *    エラーファイル 名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+      *    エラーファイル 名称領域 
+           COPY    "CPRECEERR.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -190,8 +194,8 @@
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
       *    エラーファイル名称領域
-           COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
-                                       BY         //WRK-ERR-FILE-NM//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
       *
       *    医療機関情報ワーク
            COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
@@ -290,6 +294,8 @@
       *    負担区分コード取得サブ
            COPY    "CPORCSGETFTNKBN.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -352,6 +358,13 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -821,6 +834,13 @@
                                    TO  RECE30PARA-CREYMD
            MOVE    LNK-PRTKANRI-TBL-GROUP (9:6)
                                    TO  RECE30PARA-CREHMS
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECE30PARA-BASENAME
+                                       TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  RECE30PARA
+      *
       *??
            DISPLAY "PARA=" RECE30PARA "#"
       *??

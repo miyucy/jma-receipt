@@ -64,6 +64,8 @@
       *                                     備考欄の記載等追加
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,8 +87,7 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *****COPY    "HCM2K.INC".
       *****COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
@@ -327,7 +328,7 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //LNK-RECEERR//.
       *
       ******************************************************************
@@ -361,7 +362,6 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-SEC                SECTION.
       *
            DISPLAY "*** ORCBM027 START ***"
-      * 
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA

@@ -45,6 +45,8 @@
       *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *  04.07.02    NACL-藤原    13/10/07  労災レセ電データチェック機能
       *                                     対応
+      *
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -59,8 +61,11 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
+                                   BY          //RECEERR//.
+      *
+      *    エラーファイル名称領域 
+           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -769,9 +774,15 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-TERMID      TO  JOB-TERMID
            PERFORM 900-CALL-ORCSJOB-SEC
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *      
            MOVE    SPA-LNK-PRTKANRI-AREA
                                    TO  LNK-PRTKANRI-AREA
@@ -848,7 +859,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *             
-           MOVE    RECEERR             TO  SHELLTBL-ARG12
+           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
            MOVE    SPA-T01-JOB-JOBID   TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
@@ -943,7 +954,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "blob"              TO  MCP-TABLE
                IF      SPA-GMN-DATAKBN     =   "6"
-                   STRING  "/tmp/"             DELIMITED  BY  SIZE
+      ************ STRING  "/tmp/"             DELIMITED  BY  SIZE
+                   STRING  MCP-TEMPDIR         DELIMITED  BY  SPACE
+                           "/"                 DELIMITED  BY  SIZE
                            SPA-HOSPNUM         DELIMITED  BY  SIZE
                            SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
                                                DELIMITED  BY  SPACE
@@ -951,7 +964,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                                INTO  ORCA-BLOB-FILE
                    END-STRING
                ELSE
-                   STRING  "/tmp/"             DELIMITED  BY  SIZE
+      ************ STRING  "/tmp/"             DELIMITED  BY  SIZE
+                   STRING  MCP-TEMPDIR         DELIMITED  BY  SPACE
+                           "/"                 DELIMITED  BY  SIZE
                            SPA-HOSPNUM         DELIMITED  BY  SIZE
                            SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
                                                DELIMITED  BY  SPACE

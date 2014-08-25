@@ -18,21 +18,21 @@ fi
 #        $4 HOSPNUM
 #        $5 端末ＩＤ　Ｘ（３２） 
 #-------------------------------------------#
-##      エラーファイル削除
-	echo $#
-	echo "echo " $3
-        if  [ -e $3 ]; then
-            rm  $3
-        fi
 
-        LOG_FILE="/var/log/jma-receipt/${4}sokatsu${2}.log"
+    LOG_FILE="/var/log/jma-receipt/${4}sokatsu${2}.log"
+
+    echo "arg3 =  [" ${3} "]"  > $LOG_FILE
+
+##  エラーファイル削除
+    echo "errfile = [" ${MCP_TEMPDIR}/${3}  "]" >> $LOG_FILE
+    rm  -f ${MCP_TEMPDIR}/${3}
         
 ##      決定通知書（社保）
         if  [ $2 = '1' ]; then
-       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM020 -parameter $1$5,${4},${3} > $LOG_FILE 2>&1
+       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM020 -parameter $1$5,${4},${3} >> $LOG_FILE 2>&1
        	fi    
 
 ##      決定通知書（国保）
         if  [ $2 = '2' ]; then
-       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM021 -parameter $1$5,${4},${3} > $LOG_FILE 2>&1
+       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM021 -parameter $1$5,${4},${3} >> $LOG_FILE 2>&1
        	fi    

@@ -32,6 +32,8 @@
       *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
       *                                     ０８（老健）のレセプト対応
       *                                     receipt_kbn 追加 
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,6 +53,8 @@
        01  RECEERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM37V01.INC"  REPLACING  //HCM37V01//
                                    BY         //HCM37//.
@@ -94,7 +98,6 @@
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
-           05  RECEERR                 PIC X(100).
       *
       *    一時領域
        01  WRK-AREA.
@@ -235,6 +238,8 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -307,6 +312,13 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE

@@ -41,6 +41,8 @@
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -62,8 +64,7 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM3AV02.INC"  REPLACING  //HCM3AV02//
                                    BY         //HCM3A//.
@@ -320,7 +321,7 @@
            COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //LNK-RECEERR//.
       *
       ******************************************************************

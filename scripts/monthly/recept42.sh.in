@@ -25,15 +25,6 @@ fi
 #            1:履歴保存する
 #-------------------------------------------#
 
-    rennum=0
-
-##  エラーファイル削除
-	echo $#
-	echo "echo " ${16}
-    if  [ -e ${16} ]; then
-        rm ${16}
-    fi
-
     LOG_FILE="/var/log/jma-receipt/${20}recept42.log"
 
     echo "arg5 =  [" ${5} "]"  >$LOG_FILE
@@ -45,6 +36,12 @@ fi
     echo "arg20 = [" ${20} "]" >>$LOG_FILE
     echo "arg24 = [" ${24} "]" >>$LOG_FILE
 
+    rennum=0
+
+##      エラーファイル削除
+	echo "errfile = [" ${MCP_TEMPDIR}/${16}  "]" >> $LOG_FILE
+        rm  -f ${MCP_TEMPDIR}/${16}
+
 #   一時請求
     RECEFILE1="E"
     RECEFILE2="F"
@@ -55,22 +52,19 @@ fi
     rm  ${13}${20}${RECEFILE1}n*.txt
     rm  ${13}${20}${RECEFILE2}g*.txt
     rm  ${13}${20}${RECEFILE2}n*.txt
-    rm  /tmp/${20}${RECEFILE9}*.txt
-
-#    rm -fr "/tmp/${20}Rousai_"*
-#    rm -fr "/tmp/${20}TRousai_"*
+    rm ${MCP_TEMPDIR}/${20}${RECEFILE9}*.txt
 
 
 #   ＥＦファイル作成
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM610 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${19},${17},${20},${16} >> $LOG_FILE 2>&1
-    if  [ -e ${16} ]; then
+    if  [ -e ${MCP_TEMPDIR}/${16} ]; then
         echo "--- BM610 err file exist ---" >> $LOG_FILE 2>&1
         exit 
     fi
 
 #   一時フォルダ作成
     EF_FILE_FOLDER="${20}_EF_FILE_${5}"
-    OUT_FOLDER="/tmp/$EF_FILE_FOLDER/"
+    OUT_FOLDER="${MCP_TEMPDIR}/$EF_FILE_FOLDER/"
 
     echo "--- rm out folder [" ${OUT_FOLDER} "]" >>$LOG_FILE
     rm -fr ${OUT_FOLDER}
@@ -98,28 +92,29 @@ fi
 #   漢字コード変換
     echo "ファイルの処理(sjis変換)"
 
-   all=`ls  /tmp/${20}${RECEFILE9}*${12}.txt`
-#    all=`ls  /tmp/${20}${RECEFILE9}*.txt`
+    cd  ${MCP_TEMPDIR}/
+    all=`ls  ${20}${RECEFILE9}*${12}.txt`
+#   all=`ls  ${MCP_TEMPDIR}/${20}${RECEFILE9}*.txt`
     echo "--- all [" ${20}${RECEFILE9} "]" >>$LOG_FILE
 
     for f in $all ; do
         echo "f= " $f >> $LOG_FILE 2>&1
-        echo "mm = " ${f:11:21} >> $LOG_FILE 2>&1
+        echo "mm = " ${f:6:21} >> $LOG_FILE 2>&1
 
 #       システム管理場所出力のとき
         if  [ ${17} -eq '4' ]; then
-            echo "nkf " ${13}${20}${f:11:21} >> $LOG_FILE 2>&1
-            nkf -s -Lw $f > ${13}${20}${f:11:21}
-#           chmod -R g+r ${13}${20}${f:11:21}
+            echo "nkf " ${13}${20}${f:6:21} >> $LOG_FILE 2>&1
+            nkf -s -Lw $f > ${13}${20}${f:6:21}
+#           chmod -R g+r ${13}${20}${f:6:21}
         else
-            echo "nkf " ${OUT_FOLDER}${f:11:21} >> $LOG_FILE 2>&1
-            nkf -s -Lw $f > ${OUT_FOLDER}${f:11:21}
+            echo "nkf " ${OUT_FOLDER}${f:6:21} >> $LOG_FILE 2>&1
+            nkf -s -Lw $f > ${OUT_FOLDER}${f:6:21}
         fi
     done
 
 #   クライアント保存
     if  [ ${17} -eq '5' ]; then
-        cd  /tmp/
+        cd  ${MCP_TEMPDIR}/
         echo "--- zip name [" ${EF_FILE_FOLDER}.zip "]" >>$LOG_FILE
         rm  ${EF_FILE_FOLDER}.zip
         zip -r ${EF_FILE_FOLDER}.zip ${EF_FILE_FOLDER}/

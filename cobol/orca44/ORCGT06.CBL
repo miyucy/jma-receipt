@@ -63,6 +63,7 @@
       *  04.07.06    NACL-藤原    13/10/07  労災レセ電対応
       *
       *  04.08.01    NACL-森脇    13/04/12  システムＤＢ対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -84,8 +85,10 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
+                                   BY          //RECEERR//.
+      *
+           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -100,9 +103,6 @@
            COPY    "CPORCSPRTLNK.INC"
                                    REPLACING  //LNK-//
                                    BY         //SPA-LNK-//.
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -298,7 +298,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1031.INC".
-      *
+      *700-EXPORT-SEC
            COPY    "CPSK3003.INC".
       *
            COPY    "CPSK2005.INC".
@@ -1145,9 +1145,15 @@
       *****************************************************************
        3201-RECEDEN-NEXT-SEC       SECTION.
       *
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
       *    国保診療報酬請求書印刷区分
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -1208,7 +1214,8 @@
                                    TO  SHELLTBL-ARG2
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG3         
-           MOVE    RECEERR         TO  SHELLTBL-ARG4
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG4
       *    ipアドレス取得
            PERFORM 900-SYSTEM-GET-SEC
            MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG5
@@ -1243,9 +1250,15 @@
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *      
            MOVE    SPA-LNK-PRTKANRI-AREA
                                    TO  LNK-PRTKANRI-AREA
@@ -4612,9 +4625,15 @@
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
            MOVE    SPACE               TO  SYS-2005-REC 
            INITIALIZE                      SYS-2005-REC
@@ -4718,7 +4737,8 @@
                                    TO  SHELLTBL-ARG18
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG19         
-           MOVE    RECEERR         TO  SHELLTBL-ARG20
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG20
            MOVE    SPA-GMN-T98-DATAKBN
                                    TO  SHELLTBL-ARG21
       *ipアドレス取得
@@ -4893,7 +4913,7 @@
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *             
-           MOVE    RECEERR             TO  SHELLTBL-ARG12
+           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14

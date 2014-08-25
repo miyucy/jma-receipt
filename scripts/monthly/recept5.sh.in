@@ -9,8 +9,6 @@ fi
 
 . $JMARECEIPT_ENV
 
-
-RENNUM=0
 #-------------------------------------------#
 #    未請求一覧作成
 #        $1-${11} 印刷ＤＢ用固定引数
@@ -20,24 +18,26 @@ RENNUM=0
 #        ${15} エラーファイル名 
 #        ${16} 帳票区分 1:チェックリスト 2:主科未設定リスト 
 #-------------------------------------------#
-##      エラーファイル削除
-	echo $#
-	echo "echo " ${15}
-        if  [ -e ${15} ]; then
-            rm  ${15}
-        fi
 
-        rm -f /home/orca/recept5.log
-        LOG_FILE="/var/log/jma-receipt/${12}recept5.log"
+     RENNUM=0
+
+     LOG_FILE="/var/log/jma-receipt/${12}recept5.log"
+
+    echo "arg15 =  [" ${15} "]"  > $LOG_FILE
+    echo "arg16 =  [" ${16} "]"  >> $LOG_FILE
+
+##  エラーファイル削除
+    echo "errfile = [" ${MCP_TEMPDIR}/${15}  "]" >> $LOG_FILE
+    rm  -f ${MCP_TEMPDIR}/${15}
 
 ##      未請求一覧
         RENNUM=$(expr $RENNUM + 1) 
         if  [ ${16} -eq '1' ]; then
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM005 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} > $LOG_FILE 2>&1
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM005 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} >> $LOG_FILE 2>&1
         else
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM006 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} > $LOG_FILE 2>&1
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM006 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} >> $LOG_FILE 2>&1
         fi
-        if  [ -e ${15} ]; then
+        if  [ -e ${MCP_TEMPDIR}/${15} ]; then
             exit
         fi
        

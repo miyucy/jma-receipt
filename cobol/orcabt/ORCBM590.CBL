@@ -34,6 +34,8 @@
       *                                     HO,KOレコード編集
       *  00.00.00    NACL-伊藤    14. 6.20  C1レコード編集
       *  00.00.00    NACL-伊藤    14. 7. 8  SYレコード編集
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -65,9 +67,12 @@
        COPY    "COMMON-SPA".
       *
       *    レセプト電算ファイル 名称領域
-       01  RECE30PARA.
-           03  FILLER              PIC X(05)   VALUE
-                                               "/tmp/".
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE30PARA//.
+      *01  RECE30PARA.
+      *****03  FILLER              PIC X(05)   VALUE
+      *****                                    "/tmp/".
+       01  RECE30PARA-BASENAME.
            03  RECE30PARA-HOSPNUM  PIC 9(02).
            03  RECE30PARA-FILENM   PIC X(07)   VALUE
                                                "RECEDEN".
@@ -80,8 +85,7 @@
            03  FILLER              PIC X(04)   VALUE   ".txt".
       *
       *    エラーファイル 名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -203,14 +207,14 @@
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
       *    エラーファイル名称領域
-           COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
-                                       BY         //WRK-ERR-FILE-NM//.
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
       *
       *    医療機関情報ワーク
            COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
-                                       BY         //WRK-SYS-1001//.
+                                       BY         //WRK-S-1001//.
            COPY    "CPSK1002.INC"      REPLACING  //SYS-1002//
-                                       BY         //WRK-SYS-1002//.
+                                       BY         //WRK-S-1002//.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG             PIC 9(08).
@@ -302,6 +306,8 @@
       *    負担区分コード取得サブ
            COPY    "CPORCSGETFTNKBN.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -310,7 +316,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(1000).
+           02  FILLER      PIC X(400).
       ****************************************************************
        PROCEDURE                   DIVISION
                USING
@@ -365,6 +371,13 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -451,8 +464,8 @@
            END-IF
       *
            IF      FLG-END             =   ZERO
-               MOVE    SYS-1001-HOSPNAME   TO  WRK-SYS-1001-HOSPNAME
-               MOVE    SYS-1002-TEL        TO  WRK-SYS-1002-TEL
+               MOVE    SYS-1001-HOSPNAME   TO  WRK-S-1001-HOSPNAME
+               MOVE    SYS-1002-TEL        TO  WRK-S-1002-TEL
       *        医療機関編集情報
                PERFORM 900-1900-READ-SEC
            END-IF
@@ -815,6 +828,12 @@
                                    TO  RECE30PARA-CREYMD
            MOVE    LNK-PRTKANRI-TBL-GROUP (9:6)
                                    TO  RECE30PARA-CREHMS
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECE30PARA-BASENAME
+                                       TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"           USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  RECE30PARA
       *??
            DISPLAY "PARA=" RECE30PARA "#"
       *??
@@ -866,7 +885,7 @@
       *
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-           MOVE    WRK-SYS-1001-HOSPNAME
+           MOVE    WRK-S-1001-HOSPNAME
                                        TO  WRK-DATA
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -879,7 +898,7 @@
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-           MOVE    WRK-SYS-1002-TEL    TO  WRK-DATA
+           MOVE    WRK-S-1002-TEL      TO  WRK-DATA
            MOVE    15                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1813,7 +1832,7 @@
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1901-REC
-               MOVE    SYS-1901-HOSPNAME1  TO  WRK-SYS-1001-HOSPNAME
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-S-1001-HOSPNAME
            ELSE
                INITIALIZE                      SYS-1901-REC
            END-IF
@@ -1842,7 +1861,7 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1902-REC
                IF      SYS-1902-TEL    NOT =   SPACE
-                   MOVE    SYS-1902-TEL        TO  WRK-SYS-1002-TEL
+                   MOVE    SYS-1902-TEL        TO  WRK-S-1002-TEL
                END-IF
            ELSE
                INITIALIZE                      SYS-1902-REC
@@ -1983,8 +2002,30 @@
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+      *
+               STRING  "ＤＢ読み込みエラー　TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+      *
+               STRING  "ORCBM590 select err TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " PATHNAME="        DELIMITED   BY  SIZE
+                       MCP-PATHNAME        DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                       LOW-VALUE           DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING
+               CALL    "cobabort"          USING   WRK-ERRMSG
            END-IF
            .
        900-DBSELECT-EXT.

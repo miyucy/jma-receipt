@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,11 +65,9 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM2QV02.INC"  REPLACING  //HCM2QV02//
                                    BY         //HCM2Q//.
@@ -107,7 +106,6 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-ERRFILE    PIC X(50).
       *
       *    一時領域
        01  WRK-AREA.
@@ -239,6 +237,8 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -316,6 +316,17 @@
                                    TO  RECEUPD-TERMID
            MOVE    WRK-PARA-HOSPNUM
                                    TO  RECEUPD-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECEUPD-BASENAME
+                                   TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  RECEUPD
       *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)

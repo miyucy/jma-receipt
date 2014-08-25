@@ -43,7 +43,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
+           SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
       *    エラーファイル
@@ -69,9 +69,10 @@ grpsys COPY    "COMMON-SPA".
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *
+           COPY    "CPASGNPARA.INC".
+      *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
       *    スパ領域
        01  STS-AREA.
@@ -202,6 +203,8 @@ grpsys COPY    "COMMON-SPA".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -673,6 +676,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  HC01PARA-HOSPNUM
            MOVE    SMCNDATE-HMS        TO  HC01PARA-SYOHMS
            MOVE    WRK-HC01PARA-CNT    TO  HC01PARA-CNT
       *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    HC01PARA-BASENAME   TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
            OPEN    OUTPUT  PRT-FILE
            WRITE   HC27
            CLOSE                       PRT-FILE
@@ -681,7 +689,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  HC01PARA-HOSPNUM
             MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HC27.red"          TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
-            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(5)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA

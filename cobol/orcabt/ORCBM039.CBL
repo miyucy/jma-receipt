@@ -32,6 +32,8 @@
       *                                     平成２４年４月分以降はまとめる
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,8 +55,7 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM3E.INC".
            COPY    "HCM3F.INC".
@@ -104,9 +105,6 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
       *
-           03  WRK-RECEERR         PIC X(200). 
-           03  WRK-ERRMSG          PIC X(300). 
-      *
            03  WRK-KOHNUM9         PIC ZZ9.
            03  WRK-NISSUZ          PIC ZZZZZZ.
            03  WRK-KENSUZ          PIC ZZZZZZ.
@@ -127,6 +125,18 @@
            03  WRK-HOSPADRS-R      REDEFINES   WRK-HOSPADRS.
                05  WRK-HOSPADRS1   PIC X(50).
                05  WRK-HOSPADRS2   PIC X(50).
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -247,8 +257,9 @@
            COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //LNK-RECEERR//.
+      *
       *
       ******************************************************************
       *
@@ -1074,8 +1085,30 @@ grpsys         PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+      *
+               STRING  "ＤＢ読み込みエラー　TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+      *
+               STRING  "ORCBM039 select err TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " PATHNAME="        DELIMITED   BY  SIZE
+                       MCP-PATHNAME        DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                       LOW-VALUE           DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING
+               CALL    "cobabort"          USING   WRK-ERRMSG
            END-IF
            .
        900-DBSELECT-EXT.

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,7 +36,7 @@
        FILE-CONTROL.
       *
       *    チェック結果ファイル
-           SELECT  IN01-FILE       ASSIGN  LNK-PARA-CHKERRFILE
+           SELECT  IN01-FILE       ASSIGN  CHKERRFILE
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN01.
       *
@@ -94,9 +95,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *    チェック結果ファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //CHKERRFILE//.
+      *    チェック結果ソートファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ASS02//.
+      *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING   //ERRFLPARA//
-                                   BY          //CHECKERR//.
+           COPY    "CPRECEERR.INC"  REPLACING  //RECEERR//
+                                    BY         //CHECKERR//.
       *
       *    ファイルステータス
        01  STS-AREA.
@@ -160,7 +168,7 @@
            03  WRK-PAGE                    PIC ZZZZZ9.
            03  WRK-TAGFL1                  PIC X.
            03  WRK-TAGFL2                  PIC X.
-           03  WRK-ASS02                   PIC X(100).
+      *****03  WRK-ASS02                   PIC X(100).
            03  WRK-RENBAN                  PIC ZZZZ9.
            03  WRK-RECENUM                 PIC X(06).
            03  WRK-LINE                    PIC Z(6)9.
@@ -181,7 +189,9 @@
            03  WRK-ERR-FILE-MSG            PIC X(100).
            03  WRK-ERR-FILE-MSG1           PIC X(17).
            03  WRK-ERR-FLG                 PIC 9(01).
-           03  WRK-ERR-FILE-NM             PIC X(100).
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    日付編集用ワーク
        01  WRK-HEN-AREA.
@@ -253,6 +263,8 @@
            COPY    "CPORCSMCNDATE.INC".
            COPY    "CPORCSKANACHK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -267,7 +279,7 @@
        LINKAGE                     SECTION.
       *
        01  COMMAND-PARAM.
-           02  FILLER                  PIC X(1000).
+           02  FILLER                  PIC X(400).
       *
       ******************************************************************
       *
@@ -331,6 +343,24 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    CHECKERR        TO  SGETTEMP-BASENAMES (1)
+           MOVE    LNK-PARA-CHKERRFILE
+                                   TO  SGETTEMP-BASENAMES (2)
+           STRING  LNK-PARA-CHKERRFILE         DELIMITED BY SPACE
+                   ".SRT"                      DELIMITED BY SIZE
+                                       INTO    SGETTEMP-BASENAMES (3)
+           END-STRING
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  CHECKERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  CHECKERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                   TO  CHKERRFILE
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                   TO  WRK-ASS02
+      *
+           MOVE   SGETTEMP-ST      TO  WRK-SGETTEMP-ST
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -352,10 +382,6 @@
            END-EVALUATE
            PERFORM 900-CALL-ORCSJOB-SEC
       *
-           STRING  LNK-PARA-CHKERRFILE     DELIMITED BY SPACE
-                   ".SRT"                  DELIMITED BY SIZE
-           INTO    WRK-ASS02
-           END-STRING
       *
            MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
@@ -417,7 +443,7 @@
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
                MOVE    1                   TO  WRK-ERR-FLG
-               MOVE    LNK-PARA-CHKERRFILE TO  WRK-ERR-FILE-NM
+               MOVE    CHKERRFILE          TO  WRK-ERR-FILE-NM
                MOVE    STS-IN01            TO  WRK-ERR-FILE-STS
                PERFORM 500-FILE-ERR-ABORT-SEC
            END-IF
@@ -1191,7 +1217,8 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-CHECKERR
@@ -1201,7 +1228,8 @@
            STRING  "ORCBM560 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

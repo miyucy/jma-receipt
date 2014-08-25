@@ -53,6 +53,8 @@
       *
       *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -72,11 +74,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *----(04.02.02)--UPD-START---
       *    エラーファイル 名称領域 
-      *     COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-      *                             BY         //RECEERR//.
-      *----(04.02.02)--UPD-END-----
+           COPY    "CPRECEERR.INC".
       *
       *----(04.02.02)--UPD-START---
            COPY    "HCM37V01.INC"  REPLACING  //HCM37V01//
@@ -123,9 +122,6 @@
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
-      *----(04.02.01)--ADD-START---
-           05  RECEERR                 PIC X(100).
-      *----(04.02.01)--ADD-END-----
            05  WRK-PARA-HKNJANUM       PIC X(08).
       *
       *    一時領域
@@ -273,6 +269,8 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -346,6 +344,13 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE                  SGETTEMP-AREA
+           MOVE    RECEERR         TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SPACE           TO  RECEERR
+           MOVE    SGETTEMP-FULLNAME
+                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE

@@ -40,6 +40,8 @@
       *
       *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *  04.07.02    NACL-藤原    13/10/07  労災レセ電対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -70,8 +72,10 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
+                                   BY          //RECEERR//.
+      *
+           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -144,8 +148,8 @@
                05  WRK-SEIKYU-SKYYM    PIC X(05).
                05  WRK-SEIKYU-SRYYM    PIC X(05).
       *
-       01  ASS-AREA.
-           03  ASS-PARA                PIC X(256).
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //ASS-PARA//.
       *    カウンタ
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(05).
@@ -208,9 +212,6 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *                             
@@ -789,19 +790,26 @@
                        MOVE    "RRECEC.HEN"        TO  WRK-FILENM 
                END-EVALUATE
                MOVE    IDY                 TO  WRK-INDEX-9
-               STRING  "/tmp/"             DELIMITED   BY  SIZE
-                       SPA-HOSPNUM         DELIMITED   BY  SIZE
+               STRING  SPA-HOSPNUM         DELIMITED   BY  SIZE
                        WRK-INDEX           DELIMITED   BY  SIZE
                        WRK-FILENM          DELIMITED   BY  SPACE
-                                   INTO    SPA-NAI-T05-SAVE-NAME (IDY)
+                                   INTO    SPA-NAI-T05-SAVE-BASENAME
+                                                                 (IDY)
                END-STRING
            ELSE
-               STRING  "/tmp/"             DELIMITED   BY  SIZE
-                       "RI"                DELIMITED   BY  SIZE
+               STRING  "RI"                DELIMITED   BY  SIZE
                        WRK-FILENM (3:)     DELIMITED   BY  SPACE
-                                   INTO    SPA-NAI-T05-SAVE-NAME (IDY)
+                                   INTO    SPA-NAI-T05-SAVE-BASENAME
+                                                                 (IDY)
                END-STRING
            END-IF
+      *
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   SPA-NAI-T05-SAVE-BASENAME (IDY)
+                                       DELIMITED   BY  SPACE
+                               INTO    SPA-NAI-T05-SAVE-NAME (IDY)
+           END-STRING
       *??
            DISPLAY "NAME=" IDY "#" SPA-NAI-T05-SAVE-NAME (IDY)
       *??
@@ -1792,7 +1800,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            CALL    "ORCSGDAY"      USING
                                                    ORCSGDAYAREA
                            IF      SGDAY-RC        =   ZERO
-                               MOVE    SGDAY-SDAY (1:6)    TO
+                               MOVE    SGDAY-OTDAY(1:6)    TO
                                                SPA-GMN-T05-TSRYYM (IDY)
                                MOVE    SGDAY-SDAY (1:6)    TO
                                                SPA-NAI-T05-TSRYYM (IDY)
@@ -2160,35 +2168,37 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      SPA-NAI-T05-TDB (IDX)
                                        =   SPACE
                    ADD     1           TO  TBL-SAVE-MAX
-                   MOVE    SPA-NAI-T05-SAVE-NAME(IDX)
+                   MOVE    SPA-NAI-T05-SAVE-BASENAME(IDX)
                                        TO  TBL-SAVE-NAME (TBL-SAVE-MAX) 
                END-IF
            END-PERFORM
       *
       *    エラーファイル名設定     
-           MOVE    WRK-CONS-FILE-ID
-                                   TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID      TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
       *
       *    ジョブ開始セット処理
            MOVE    ZERO            TO  WRK-CONS-JOB-JOBID     
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *             
            MOVE    SPACE           TO  SHELLTBL
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    "scripts/monthly/receipt_export.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING
-                                   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "receipt_export.sh"
+                                   TO  SHELLTBL-NAME
       *                                 
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG2
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG3
-           MOVE    RECEERR         TO  SHELLTBL-ARG4
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG4
            MOVE    TBL-SAVE-NAME (1)
                                    TO  SHELLTBL-ARG5
            MOVE    TBL-SAVE-NAME (2)
@@ -2233,7 +2243,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
       *    ＪＯＢＩＤ更新処理

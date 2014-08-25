@@ -29,16 +29,12 @@ fi
 #            1:履歴保存する
 #        ${16} 提出先（出産育児一時金）
 #-------------------------------------------#
-#
-##      エラーファイル削除
-        rm -f ${12}
 
         LOG_FILE="/var/log/jma-receipt/${1}recept60.log"
-        FILE_1="/tmp/"${1}"TIHOUKOUHI01.txt"
-        FILE_2=${13}${1}${8}
-        FILE_3="/tmp/"${1}${8}
 
-        rm -f $LOG_FILE
+        FILE_1=${MCP_TEMPDIR}/${1}"TIHOUKOUHI01.txt"
+        FILE_2=${13}${1}${8}
+        FILE_3=${MCP_TEMPDIR}/${1}${8}
 
         echo "arg1  = [" ${1} "]"   >$LOG_FILE
         echo "arg2  = [" ${2} "]"   >>$LOG_FILE
@@ -53,6 +49,10 @@ fi
         echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
         echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
         echo "file3= [" $FILE_3 "]"  >> $LOG_FILE
+
+##      エラーファイル削除
+	echo "errfile = [" ${MCP_TEMPDIR}/${18}  "]" >> $LOG_FILE
+        rm  -f ${MCP_TEMPDIR}/${18}
 
 #       該当ファイル削除
 	rm -f $FILE_2

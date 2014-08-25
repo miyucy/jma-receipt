@@ -77,6 +77,8 @@
       *  04.07.04    NACL-藤原    13/02/07  労災レセ電対応
       *  04.07.05    NACL-藤原    13/12/09  医療情報連携基盤対応
       *  04.07.06    NACL-藤原    14/04/22  ＥＦファイル作成対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -473,7 +475,9 @@
       *
                    07  SPA-NAI-T05-DATALST         OCCURS  50.
                        09  SPA-NAI-T05-TSRYYM      PIC 9(6).
-                       09  SPA-NAI-T05-SAVE-NAME   PIC X(200).
+                       09  SPA-NAI-T05-SAVE-NAME   PIC X(1024).
+                       09  SPA-NAI-T05-SAVE-BASENAME
+                                                   PIC X(200).
                        09  SPA-NAI-T05-ERR-MSG     PIC X(200).
                        09  SPA-NAI-T05-TFILENM     PIC X(200).
                        09  SPA-NAI-T05-TFLG3       PIC X(01).
