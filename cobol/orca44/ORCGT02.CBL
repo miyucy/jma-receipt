@@ -40,22 +40,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS  IS  STS-RECEERR.
-      *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200). 
-      *
        WORKING-STORAGE             SECTION.
-      *
-      *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -67,10 +55,6 @@
            COPY    "T01SCR-SPA".
       *
            COPY    "ENUM-VALUE".
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
