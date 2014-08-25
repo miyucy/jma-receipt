@@ -41,6 +41,7 @@
       * 01.00.06     ひさなが     03/05/12  入院関連テーブルの追加
       * 01.00.07     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
       * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
+      * 04.08.01     NACL-森脇    14/08/25  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -63,13 +64,15 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *----(04.08.01)--UPD-START---
       *    ＣＳＶ作成条件用ファイル 名称領域
 grpsys*DD  COPY    "CPCOMMONDAT4.INC"
 grpsys*DD                          REPLACING  //ORCGD//
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //EIE00//.
-grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
+grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(04.08.01)--UPD-END-----
       *
       *    抽出項目用ファイル 名称領域
        01  EIE01PARA.
@@ -178,6 +181,9 @@ grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY  "CPSTGTSCM.INC".
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    連絡　領域
@@ -992,6 +998,17 @@ grpsys*DD  MOVE    "ORCE00.CNV"            TO  EIE00PARA-FILE.
 grpsys     MOVE    "ORCGE00"         TO  EIE00PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE00PARA-HOSPNUM.
 grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    EIE00PARA-BASENAME
+                                       TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    ALL SPACE           TO  EIE00PARA-FULLNAME
+           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
+                   ".dat"              DELIMITED  BY    SIZE
+                                       INTO       EIE00PARA-FULLNAME.
+      *----(04.08.01)--ADD-END-----
            MOVE    1                       TO  IDX1.
       *修正/*開始*03.06.05*********************************************
            MOVE    "F"                     TO  SPA-GMN-CHKBTN01.

@@ -39,7 +39,7 @@
       *                                     月代り受給者番号の追加
       * 01.00.05     ひさなが     03/05/12  入院関連テーブルの追加
       * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
-      * 04.08.01     NACL-森脇    14/08/22  一時ファイルディレクトリ設定
+      * 04.08.01     NACL-森脇    14/08/25  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -898,14 +898,18 @@ grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
 grpsys     MOVE    "ORCGF00"         TO  FIF00PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  FIF00PARA-HOSPNUM.
 grpsys     MOVE    SPA-TERMID        TO  FIF00PARA-TERMID.
-           MOVE    1                 TO  SPA-GMN-CUR.
       *----(04.08.01)--ADD-START---
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    FIF00PARA-BASENAME  TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  FIF00PARA-FULLNAME
+           MOVE    FIF00PARA-BASENAME
+                                       TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    ALL SPACE           TO  FIF00PARA-FULLNAME
+           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
+                   ".dat"              DELIMITED  BY    SIZE
+                                       INTO       FIF00PARA-FULLNAME.
       *----(04.08.01)--ADD-END-----
+           MOVE    1                 TO  SPA-GMN-CUR.
       *
            OPEN    INPUT                   FIF00-FILE.
       *

@@ -35,6 +35,7 @@
       * 01.00.05     ¤Ò¤µ¤Ê¤¬     03/05/21  ¿ÇÎÅÇ¯·îÀßÄê»þ¤ÎÈ½Äê½çÊÑ¹¹
       * 01.00.06     ¤Ò¤µ¤Ê¤¬     03/06/05  ´µ¼Ô£É£ÄÃÖ´¹¥á¥Ã¥»¡¼¥¸¤ÎÄÉ²Ã
       * 03.05.01     NACL-¿¹ÏÆ    07/06/11  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 04.08.01     NACL-¿¹ÏÆ    14/08/25  °ì»þ¥Õ¥¡¥¤¥ë¥Ç¥£¥ì¥¯¥È¥êÀßÄê
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -70,13 +71,14 @@
       *
        COPY    "COMMON-SPA".
       *
+      *----(04.08.01)--UPD-START---
       *    £Ã£Ó£ÖºîÀ®¾ò·ïÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
 grpsys*DD  COPY    "CPCOMMONDAT4.INC"
 grpsys*DD                          REPLACING  //ORCGD//
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //EIE00//.
-grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
+grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    £Ã£Ó£ÖºîÀ®¾ò·ï£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
 grpsys*DD  COPY    "CPCOMMONDAT4.INC"
@@ -85,7 +87,8 @@ grpsys*DD                          BY         //EIE01//.
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //EIE01//.
-grpsys     03  EIE01PARA-FILE      PIC X(23).
+grpsys*     03  EIE01PARA-FILE      PIC X(23).
+      *----(04.08.01)--UPD-END-----
       *
       *    £Ã£Ó£Ö£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
        01  EIECSPARA.
@@ -186,6 +189,9 @@ grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPSHELLTBL.INC".
       *
+      *----(04.08.01)--ADD-START---
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -243,6 +249,7 @@ grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
       *****************************************************************
        000-DBOPEN-SEC                  SECTION.
       *
+           DISPLAY "e03START-------------------"
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
@@ -298,6 +305,17 @@ grpsys*DD  MOVE    "ORCE00.CNV"    TO  EIE00PARA-FILE
 grpsys     MOVE    "ORCGE00"         TO  EIE00PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE00PARA-HOSPNUM.
 grpsys     MOVE    WRK-PARA-TERMID   TO  EIE00PARA-TERMID.
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    EIE00PARA-BASENAME
+                                       TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    ALL SPACE           TO  EIE00PARA-FULLNAME
+           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
+                   ".dat"              DELIMITED  BY    SIZE
+                                       INTO       EIE00PARA-FULLNAME.
+      *----(04.08.01)--ADD-END-----
       *
            MOVE    SPACE           TO  WK-TBL1.
            MOVE    1               TO  IDX1.
@@ -405,10 +423,24 @@ grpsys     MOVE    WRK-PARA-TERMID   TO  EIE00PARA-TERMID.
 grpsys     MOVE    "ORCGE01"         TO  EIE01PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE01PARA-HOSPNUM.
 grpsys     MOVE    WRK-PARA-TERMID   TO  EIE01PARA-TERMID.
-           MOVE    ALL SPACE           TO  EIE01PARA-FILE.
-           STRING  WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    EIE01PARA-BASENAME
+                                       TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"       USING
+                                       SGETTEMP-AREA
+           MOVE    ALL SPACE           TO  EIE01PARA-FULLNAME
+           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
+                   WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
                    ".SLT"              DELIMITED  BY    SIZE
-                                       INTO       EIE01PARA-FILE.
+                                       INTO       EIE01PARA-FULLNAME.
+      *----(04.08.01)--ADD-END-----
+      *----(04.08.01)--UPD-START---
+      *     MOVE    ALL SPACE           TO  EIE01PARA-FILE.
+      *     STRING  WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
+      *             ".SLT"              DELIMITED  BY    SIZE
+      *                                 INTO       EIE01PARA-FILE.
+      *----(04.08.01)--UPD-END-----
            MOVE    SPACE               TO  EIECSPARA-FILE-ID.
            MOVE    SPACE               TO  WK-TABLE.
            MOVE    SPACE               TO  WK-PATHNAME.
