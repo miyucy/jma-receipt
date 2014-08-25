@@ -27,30 +27,27 @@ fi
 #        ${14} SHELLID
 #        ${15} ERRFILENM
 #        ${16} ファイル出力先区分（診療）
-#        ${17} ファイル出力先区分（病名）
 #        ${18} 端末ｉｐアドレス
 #        ${19} HOSPNUM
 #        ${20} FILENM1 FOLDER
 #-------------------------------------------#
-##      エラーファイル削除
-	echo $#
-        if  [ -e ${15} ]; then
-            rm  ${15}
-        fi
 
         LOG_FILE="/var/log/jma-receipt/${19}toukei2.log"
-        
-        rm  -f /var/tmp/TOKEI1*
-        rm  -f /var/tmp/toukei11.dat
-
-        rm  -f /tmp/${19}TOKEI1*
 
         echo "arg7  = [" ${7}  "]" >$LOG_FILE
         echo "arg8  = [" ${8}  "]" >>$LOG_FILE
         echo "arg12 = [" ${12} "]" >>$LOG_FILE
+        echo "arg15 = [" ${15} "]" >>$LOG_FILE
         echo "arg16 = [" ${16} "]" >>$LOG_FILE
-        echo "arg17 = [" ${17} "]" >>$LOG_FILE
         echo "arg18 = [" ${18} "]" >>$LOG_FILE
+        echo "arg19 = [" ${19} "]" >>$LOG_FILE
+        echo "arg20 = [" ${20} "]" >>$LOG_FILE
+
+##      エラーファイル削除
+	echo "errfile = [" ${MCP_TEMPDIR}/${15}  "]" >> $LOG_FILE
+        rm  -f ${MCP_TEMPDIR}/${15}
+
+        rm  -f ${MCP_TEMPDIR}/${19}TOKEI1*
         
         if  [ ${6} -eq '2' ]; then
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT110 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${19},${15} >> $LOG_FILE 2>&1
@@ -58,40 +55,36 @@ fi
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT120 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${19},${15} >> $LOG_FILE 2>&1
         fi
         
-        if  [ -e ${15} ]; then
+        if  [ -e ${MCP_TEMPDIR}/${15} ]; then
             exit 
         else
 	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT130 -parameter $1,${11},${13},${14},${19},${15},${7},${16},${20} >> $LOG_FILE 2>&1
 	    fi
 
-        if  [ -e ${15} ]; then
+        if  [ -e ${MCP_TEMPDIR}/${15} ]; then
             exit 
         fi
 
 #       漢字コード変換（ＥＵＣからシフトＪＩＳ）
 
         if  [ ${12} -eq '2' ]; then
-            nkf -s -Lw /tmp/${19}toukei11.dat > /tmp/$7
+            echo "--- nkf  [" ${MCP_TEMPDIR}/${19}toukei11.dat "=>" ${MCP_TEMPDIR}/$7 "]" >>$LOG_FILE
+            nkf -s -Lw ${MCP_TEMPDIR}/${19}toukei11.dat > ${MCP_TEMPDIR}/$7
         else
-            cp  /tmp/${19}toukei11.dat /tmp/$7 
+            echo "--- cp   [" ${MCP_TEMPDIR}/${19}toukei11.dat "=>" ${MCP_TEMPDIR}/$7 "]" >>$LOG_FILE
+            cp  ${MCP_TEMPDIR}/${19}toukei11.dat ${MCP_TEMPDIR}/$7 
         fi
 #
     FDDHOST=`echo ${18}|tr \[\] "  "`
         if   [ ${16} != '6' ]; then
          case ${16} in
-                  1) 	$FDW -host $FDDHOST -command fd-write.sh /tmp/$7 $7
+                  3) 	$FDW -host $FDDHOST -command user1-write.sh ${MCP_TEMPDIR}/$7 $7
 			RC=$?
                         ;;
-                  2) 	$FDW -host $FDDHOST -command mo-write.sh /tmp/$7 $7
+                  4) 	$FDW -host $FDDHOST -command user2-write.sh ${MCP_TEMPDIR}/$7 $7
 			RC=$?
                         ;;
-                  3) 	$FDW -host $FDDHOST -command user1-write.sh /tmp/$7 $7
-			RC=$?
-                        ;;
-                  4) 	$FDW -host $FDDHOST -command user2-write.sh /tmp/$7 $7
-			RC=$?
-                        ;;
-                  5) 	$FDW -host $FDDHOST -command user3-write.sh /tmp/$7 $7
+                  5) 	$FDW -host $FDDHOST -command user3-write.sh ${MCP_TEMPDIR}/$7 $7
 			RC=$?
                         ;;
          esac

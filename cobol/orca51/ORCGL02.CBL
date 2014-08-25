@@ -37,6 +37,8 @@
       *  04.05.01    NACL-藤原    10/03/23  ＨＯＳＴ名取得方法の変更
       *
       *  04.07.01    NACL-藤原    12/10/31  ファイル出力先のデフォルト変更
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,21 +66,11 @@
       *    画面用ＳＰＡ
            COPY    "L01SCR-SPA".
       *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
-      *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-TOUKEIERR       PIC X(02).
-      *
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-ERR             PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -86,22 +78,6 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
-      *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-TIME.
-               05  SYS-THH         PIC 9(02).
-               05  SYS-TMM         PIC 9(02).
-               05  SYS-TSS         PIC 9(02).
-               05  SYS-TDD         PIC 9(02).
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  WRK-SYSYMD.
-               05  WRK-SYSYY       PIC 9(04).
-               05  WRK-SYSMM       PIC 9(02).
-               05  WRK-SYSDD       PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -121,12 +97,8 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-HENFLG          PIC 9(01).    
       *     
-           03  WRK-SHELL-ARG1.
-             05  WRK-SHELL-SRYYM   PIC  X(06).
-             05  WRK-SHELL-TERMID  PIC  X(16).
-             05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *    入力項目名
-           03  WRK-MCP-WIDGET          PIC X(64).
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
            03  WRK-FILENM-AREA.
                07  WRK-FILENM1     PIC X(150).
@@ -149,11 +121,6 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
-      *                             
-       01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(14) VALUE
-                                             "scripts/daily/".
-           05  WRK-SHELL-SHELL    PIC X(20).         
       *              
       *
        01  WRK-CONS-AREA.
@@ -313,13 +280,6 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
-               IF      SPA-LIDCD       NOT =   SPACE
-                   EVALUATE    SPA-LIDCD
-                       WHEN    "2001"
-                           PERFORM 520-GIDSET-SEC
-                           GO  TO  100-INIT-EXT
-                   END-EVALUATE
-               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -406,29 +366,25 @@
            CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
                                                SPA-AREA
       *
-           MOVE    "1"             TO  SPA-GMN-L02-FILE1L        (1)
-           MOVE    "フロッピィ"    TO  SPA-GMN-L02-FILE1MEIL     (1)
-           MOVE    "2"             TO  SPA-GMN-L02-FILE1L        (2)
-           MOVE    "ＭＯ"          TO  SPA-GMN-L02-FILE1MEIL     (2)
-           MOVE    "3"             TO  SPA-GMN-L02-FILE1L        (3)
+           MOVE    "3"             TO  SPA-GMN-L02-FILE1L        (1)
            MOVE    "ユーザー指定場所１"
-                                   TO  SPA-GMN-L02-FILE1MEIL     (3)
-           MOVE    "4"             TO  SPA-GMN-L02-FILE1L        (4)
+                                   TO  SPA-GMN-L02-FILE1MEIL     (1)
+           MOVE    "4"             TO  SPA-GMN-L02-FILE1L        (2)
            MOVE    "ユーザー指定場所２"
-                                   TO  SPA-GMN-L02-FILE1MEIL     (4)
-           MOVE    "5"             TO  SPA-GMN-L02-FILE1L        (5)
+                                   TO  SPA-GMN-L02-FILE1MEIL     (2)
+           MOVE    "5"             TO  SPA-GMN-L02-FILE1L        (3)
            MOVE    "ユーザー指定場所３"
-                                   TO  SPA-GMN-L02-FILE1MEIL     (5)
-           MOVE    5               TO  SPA-GMN-L02-FILE1-MAX
+                                   TO  SPA-GMN-L02-FILE1MEIL     (3)
+           MOVE    3               TO  SPA-GMN-L02-FILE1-MAX
            IF      SCLIENTSV-CLIENT-SAVE
                                    =   "1"
-               MOVE    "6"             TO  SPA-GMN-L02-FILE1L    (6)
+               MOVE    "6"             TO  SPA-GMN-L02-FILE1L    (4)
                MOVE    "クライアント保存"
-                                       TO  SPA-GMN-L02-FILE1MEIL (6)
-               MOVE    6               TO  SPA-GMN-L02-FILE1-MAX
+                                       TO  SPA-GMN-L02-FILE1MEIL (4)
+               MOVE    4               TO  SPA-GMN-L02-FILE1-MAX
            END-IF
       *
-           MOVE    SPA-GMN-L02-FILE1LST (3)
+           MOVE    SPA-GMN-L02-FILE1LST (1)
                                    TO  SPA-GMN-L02-FILE1-G
       *
            MOVE    "T"             TO  SPA-GMN-L02-KOJINKBN1-VALUE
@@ -456,22 +412,9 @@
       *                ジョブ管理チェック処理
                        PERFORM 4501-JOBKANRI-CHK-SEC
                        IF      SPA-ERRCD      =   SPACE
-                           IF      SPA-GMN-L02-FILE1   =   "1" OR  "2"
-                               MOVE    SPACE           TO  SPA-LID1-FLG
-                               MOVE    "2001"          TO  SPA-LIDCD
-                               GO  TO  330-LID1-SET-EXT
-                           ELSE
-                               PERFORM 500-KAKUTEI-SEC
-                               GO  TO  330-LID1-SET-EXT
-                           END-IF    
-                       END-IF
-                   WHEN    "2001"
-      *                ジョブ管理チェック処理
-                       PERFORM 4501-JOBKANRI-CHK-SEC
-                       IF      SPA-ERRCD      =   SPACE
                            PERFORM 500-KAKUTEI-SEC
                            GO  TO  330-LID1-SET-EXT
-                       END-IF    
+                       END-IF
                END-EVALUATE
            END-IF
       *
@@ -678,7 +621,7 @@
        41023-FILE1-CHK-SEC           SECTION.
       *
            IF      SPA-GMN-L02-FILE1     =   SPACE
-               MOVE    SPA-GMN-L02-FILE1LST (3)
+               MOVE    SPA-GMN-L02-FILE1LST (1)
                                            TO  SPA-GMN-L02-FILE1-G
            ELSE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -692,7 +635,7 @@
                    END-IF
                END-PERFORM        
                IF      SPA-GMN-L02-FILE1MEI    =   SPACE  
-                   MOVE    SPA-GMN-L02-FILE1LST (3)
+                   MOVE    SPA-GMN-L02-FILE1LST (1)
                                                TO  SPA-GMN-L02-FILE1-G
                END-IF
            END-IF
@@ -896,7 +839,7 @@
            END-IF
            IF      WRK-FILENM1         =   SPACE
                MOVE    "/home/orca/"        TO  WRK-FILENM1-FOLDER
-               MOVE    SPA-GMN-L02-FILENM1     TO  WRK-FILENM1
+               MOVE    SPA-GMN-L02-FILENM1  TO  WRK-FILENM1
            END-IF             
       *
       *    ジョブ開始セット
@@ -947,13 +890,8 @@
            ELSE
                MOVE   SPACE        TO  SYS-1001-REC
            END-IF
-      *    ファイルデイレクトリ位置指定
-           MOVE    "toukei2.sh"    TO  WRK-SHELL-SHELL
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *     
+           MOVE    "toukei2.sh"    TO  SHELLTBL-NAME
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
            MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
            MOVE     SYS-1001-HOSPCD
@@ -980,7 +918,8 @@
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG14
-           MOVE    ERRFLPARA       TO  SHELLTBL-ARG15
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG15
            MOVE    SPA-GMN-L02-FILE1   TO  SHELLTBL-ARG16
       *****MOVE    SPA-GMN-L02-FILE2   TO  SHELLTBL-ARG17
       *    ipアドレス取得
@@ -993,7 +932,7 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "daily"         TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1370,9 +1309,6 @@
                                                  DELIMITED  BY  SIZE 
                                                  INTO  WRK-LIDMSG
                    END-STRING
-               WHEN    "2001"
-                   MOVE    "媒体をドライブにセットして下さい"
-                                       TO  WRK-LIDMSG
                WHEN    "6666"
                    MOVE    "統計データ作成中です"
                                        TO  WRK-LIDMSG

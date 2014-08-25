@@ -33,37 +33,36 @@ fi
 #        ${20} FILENM1 FOLDER
 #        ${21} FILENM2 FOLDER
 #-------------------------------------------#
-##      エラーファイル削除
-	echo $#
-        if  [ -e ${15} ]; then
-            rm  ${15}
-        fi
 
         LOG_FILE="/var/log/jma-receipt/${19}toukei1.log"
-        
-        rm  -f /var/tmp/TOKEI0*
-        rm  -f /var/tmp/toukei01.dat
-        rm  -f /var/tmp/toukei02.dat
-
-        rm  -f /tmp/${19}TOKEI0*
 
         echo "arg7  = [" ${7}  "]" >$LOG_FILE
         echo "arg8  = [" ${8}  "]" >>$LOG_FILE
         echo "arg12 = [" ${12} "]" >>$LOG_FILE
+        echo "arg15 = [" ${15} "]" >>$LOG_FILE
         echo "arg16 = [" ${16} "]" >>$LOG_FILE
         echo "arg17 = [" ${17} "]" >>$LOG_FILE
         echo "arg18 = [" ${18} "]" >>$LOG_FILE
+        echo "arg19 = [" ${19} "]" >>$LOG_FILE
+        echo "arg20 = [" ${20} "]" >>$LOG_FILE
+        echo "arg21 = [" ${21} "]" >>$LOG_FILE
+
+##      エラーファイル削除
+	echo "errfile = [" ${MCP_TEMPDIR}/${15}  "]" >> $LOG_FILE
+        rm  -f ${MCP_TEMPDIR}/${15}
+
+        rm  -f ${MCP_TEMPDIR}/${19}TOKEI0*
 
         
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT010 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${19},${15} >> $LOG_FILE 2>&1
         
-        if  [ -e ${15} ]; then
+        if  [ -e ${MCP_TEMPDIR}/${15} ]; then
             exit 
         else
 	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $2,$3,$5,$1,$9,${11},${13},${14},${19},${15},${7},${8},${16},${17},${20},${21} >> $LOG_FILE 2>&1
 	fi
 
-        if  [ -e ${15} ]; then
+        if  [ -e ${MCP_TEMPDIR}/${15} ]; then
             exit 
 	fi
 
@@ -71,36 +70,30 @@ fi
 
         if  [ ${12} -eq '2' ]; then
             if   [ ${9} != '2' ]; then
-                nkf -s -Lw /tmp/${19}toukei01.dat > /tmp/$7
+                nkf -s -Lw ${MCP_TEMPDIR}/${19}toukei01.dat > ${MCP_TEMPDIR}/$7
             fi 
             if   [ ${9} != '1' ]; then
-                nkf -s -Lw /tmp/${19}toukei02.dat > /tmp/$8
+                nkf -s -Lw ${MCP_TEMPDIR}/${19}toukei02.dat > ${MCP_TEMPDIR}/$8
             fi 
         else
             if   [ ${9} != '2' ]; then
-                cp  /tmp/${19}toukei01.dat /tmp/$7
+                cp  ${MCP_TEMPDIR}/${19}toukei01.dat ${MCP_TEMPDIR}/$7
             fi 
             if   [ ${9} != '1' ]; then
-                cp  /tmp/${19}toukei02.dat /tmp/$8
+                cp  ${MCP_TEMPDIR}/${19}toukei02.dat ${MCP_TEMPDIR}/$8
             fi
         fi
 #
     FDDHOST=`echo ${18}|tr \[\] "  "`
         if   ( [ ${9} != '2' ] && [ ${16} != '6' ] ); then
              case ${16} in
-                  1) 	$FDW -host $FDDHOST -command fd-write.sh /tmp/$7 $7
+                  3) 	$FDW -host $FDDHOST -command user1-write.sh${MCP_TEMPDIR}/$7 $7
 			RC=$?
                         ;;
-                  2) 	$FDW -host $FDDHOST -command mo-write.sh /tmp/$7 $7
+                  4) 	$FDW -host $FDDHOST -command user2-write.sh ${MCP_TEMPDIR}/$7 $7
 			RC=$?
                         ;;
-                  3) 	$FDW -host $FDDHOST -command user1-write.sh /tmp/$7 $7
-			RC=$?
-                        ;;
-                  4) 	$FDW -host $FDDHOST -command user2-write.sh /tmp/$7 $7
-			RC=$?
-                        ;;
-                  5) 	$FDW -host $FDDHOST -command user3-write.sh /tmp/$7 $7
+                  5) 	$FDW -host $FDDHOST -command user3-write.sh ${MCP_TEMPDIR}/$7 $7
 			RC=$?
                         ;;
              esac
@@ -112,19 +105,13 @@ fi
         fi         
         if   ( [ ${9} != '1' ] && [ ${17} != '6' ] ); then
              case ${17} in
-                  1) 	$FDW -host $FDDHOST -command fd-write.sh /tmp/$8 $8
+                  3) 	$FDW -host $FDDHOST -command user1-write.sh ${MCP_TEMPDIR}/$8 $8
 			RC=$?
                         ;;
-                  2) 	$FDW -host $FDDHOST -command mo-write.sh /tmp/$8 $8
+                  4) 	$FDW -host $FDDHOST -command user2-write.sh ${MCP_TEMPDIR}/$8 $8
 			RC=$?
                         ;;
-                  3) 	$FDW -host $FDDHOST -command user1-write.sh /tmp/$8 $8
-			RC=$?
-                        ;;
-                  4) 	$FDW -host $FDDHOST -command user2-write.sh /tmp/$8 $8
-			RC=$?
-                        ;;
-                  5) 	$FDW -host $FDDHOST -command user3-write.sh /tmp/$8 $8
+                  5) 	$FDW -host $FDDHOST -command user3-write.sh ${MCP_TEMPDIR}/$8 $8
 			RC=$?
                         ;;
              esac

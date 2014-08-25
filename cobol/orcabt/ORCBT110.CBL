@@ -50,6 +50,8 @@
       *
       *  04.07.01    NACL-藤原    14/03/30  平成２６年４月改正対応
       *  04.07.02    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,7 +87,7 @@
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI04PARA//.
       *
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //TOUKEIERR//.
       *
       *    フラグ領域
@@ -352,6 +354,8 @@
       *    レセプト種別返却サブ
            COPY    "CPORCSSYUBETUGET.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -404,6 +408,21 @@
                                                TOUKEIERR
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
+           MOVE    TOUKEI04PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  TOUKEIERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  TOUKEIERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  TOUKEI04PARA-FULLNAME
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -570,10 +589,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *
-           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
       *
            OPEN    OUTPUT              TOUKEI04-FILE
            CLOSE                       TOUKEI04-FILE

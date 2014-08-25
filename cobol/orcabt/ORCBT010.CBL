@@ -125,6 +125,8 @@
       *  04.07.04    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
       *                                     マル長のときも対象とする
       *  04.07.05    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -196,7 +198,7 @@
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI03PARA//.
       *
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //TOUKEIERR//.
       *
       *    フラグ領域
@@ -600,6 +602,8 @@
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -608,7 +612,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(1000).
+           02  FILLER      PIC X(400).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -655,6 +659,37 @@
                                                TOUKEIERR
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           MOVE    "TOKEI010"          TO  TOUKEI01PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI01PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01PARA-HOSPNUM
+      *
+           MOVE    "TOKEI020"          TO  TOUKEI02PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI02PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
+      *
+           MOVE    "TOKEI030"          TO  TOUKEI03PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
+           MOVE    TOUKEI01PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           MOVE    TOUKEI02PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (3)
+           MOVE    TOUKEI03PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (4)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  TOUKEIERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  TOUKEIERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  TOUKEI01PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (3)
+                                       TO  TOUKEI02PARA-FULLNAME
+           MOVE    SGETTEMP-FULLNAMES (4)
+                                       TO  TOUKEI03PARA-FULLNAME
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -778,18 +813,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *
-           MOVE    "TOKEI010"          TO  TOUKEI01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI01PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01PARA-HOSPNUM
-      *
-           MOVE    "TOKEI020"          TO  TOUKEI02PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI02PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
-      *
-           MOVE    "TOKEI030"          TO  TOUKEI03PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *
            OPEN    OUTPUT              TOUKEI01-FILE
            CLOSE                       TOUKEI01-FILE
