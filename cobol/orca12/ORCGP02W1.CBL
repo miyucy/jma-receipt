@@ -1394,10 +1394,9 @@
            MOVE    ZERO                TO  FLG-RJNCHK5
            PERFORM VARYING     IDXK    FROM    1   BY  1
                    UNTIL      (IDXK    >   SPA-PTKOH-MAX   )
-                         OR   (FLG-RJNCHK5     =   1       )
       *        ¹âÎð¼ÔÈó³ºÅö
                IF     (SPA-PTKOH-TEKSTYMD (IDXK)  <=
-                                               SPA-PTHKN-TEKSTYMD(IDX))
+                                               SPA-PTHKN-TEKEDYMD(IDX))
                  AND  (SPA-PTKOH-TEKEDYMD (IDXK)  >=
                                                SPA-PTHKN-TEKSTYMD(IDX))
                  AND  (SPA-PTKOH-SAKJOKBN (IDXK) NOT =  "1"        )
@@ -5789,7 +5788,7 @@
       *                MOVE    1               TO  FLG-HKNCHK2
       *            END-IF
       *        END-IF
-      **** END-PERFORM
+      *****END-PERFORM
       *
       *    ¸øÈñ
            MOVE    ZERO                TO  SPA-KOH-IDX2
@@ -6289,8 +6288,6 @@
                         END-IF
                    END-IF
            END-EVALUATE
-      *TEST
-           DISPLAY "4103311-HKNKBN-CHK-EXT FLG-RJNERR:"  FLG-RJNERR
       *
            .
        4103311-HKNKBN-CHK-EXT.
