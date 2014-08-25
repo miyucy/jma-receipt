@@ -26,24 +26,63 @@
             03  M01-FIXED1.
               04  M01-B08-LABEL     PIC X(10).
               04  M01-STATE-G.
-                05  M01-G11-STATE   PIC S9(09) BINARY.
-                05  M01-G12-STATE   PIC S9(09) BINARY.
-                05  M01-G13-STATE   PIC S9(09) BINARY.
-                05  M01-G14-STATE   PIC S9(09) BINARY.
-                05  M01-G21-STATE   PIC S9(09) BINARY.
-                05  M01-G22-STATE   PIC S9(09) BINARY.
-                05  M01-G23-STATE   PIC S9(09) BINARY.
-                05  M01-G24-STATE   PIC S9(09) BINARY.
-                05  M01-G41-STATE   PIC S9(09) BINARY.
-                05  M01-G42-STATE   PIC S9(09) BINARY.
-                05  M01-G43-STATE   PIC S9(09) BINARY.
-                05  M01-G44-STATE   PIC S9(09) BINARY.
-                05  M01-G51-STATE   PIC S9(09) BINARY.
-                05  M01-G52-STATE   PIC S9(09) BINARY.
-                05  M01-G71-STATE   PIC S9(09) BINARY.
-                05  M01-G82-STATE   PIC S9(09) BINARY.
-                05  M01-G91-STATE   PIC S9(09) BINARY.
-                05  M01-G92-STATE   PIC S9(09) BINARY.
+                05  M01-G11-G.
+                  06  M01-G11-VISIBLE PIC X(01).
+                  06  M01-G11-STATE   PIC S9(09) BINARY.
+                05  M01-G12-G.
+                  06  M01-G12-VISIBLE PIC X(01).
+                  06  M01-G12-STATE   PIC S9(09) BINARY.
+                05  M01-G13-G.
+                  06  M01-G13-VISIBLE PIC X(01).
+                  06  M01-G13-STATE   PIC S9(09) BINARY.
+                05  M01-G14-G.
+                  06  M01-G14-VISIBLE PIC X(01).
+                  06  M01-G14-STATE   PIC S9(09) BINARY.
+                05  M01-G21-G.
+                  06  M01-G21-VISIBLE PIC X(01).
+                  06  M01-G21-STATE   PIC S9(09) BINARY.
+                05  M01-G22-G.
+                  06  M01-G22-VISIBLE PIC X(01).
+                  06  M01-G22-STATE   PIC S9(09) BINARY.
+                05  M01-G23-G.
+                  06  M01-G23-VISIBLE PIC X(01).
+                  06  M01-G23-STATE   PIC S9(09) BINARY.
+                05  M01-G24-G.
+                  06  M01-G24-VISIBLE PIC X(01).
+                  06  M01-G24-STATE   PIC S9(09) BINARY.
+                05  M01-G41-G.
+                  06  M01-G41-VISIBLE PIC X(01).
+                  06  M01-G41-STATE   PIC S9(09) BINARY.
+                05  M01-G42-G.
+                  06  M01-G42-VISIBLE PIC X(01).
+                  06  M01-G42-STATE   PIC S9(09) BINARY.
+                05  M01-G43-G.
+                  06  M01-G43-VISIBLE PIC X(01).
+                  06  M01-G43-STATE   PIC S9(09) BINARY.
+                05  M01-G44-G.
+                  06  M01-G44-VISIBLE PIC X(01).
+                  06  M01-G44-STATE   PIC S9(09) BINARY.
+                05  M01-G51-G.
+                  06  M01-G51-VISIBLE PIC X(01).
+                  06  M01-G51-STATE   PIC S9(09) BINARY.
+                05  M01-G52-G.
+                  06  M01-G52-VISIBLE PIC X(01).
+                  06  M01-G52-STATE   PIC S9(09) BINARY.
+                05  M01-G71-G.
+                  06  M01-G71-VISIBLE PIC X(01).
+                  06  M01-G71-STATE   PIC S9(09) BINARY.
+                05  M01-G82-G.
+                  06  M01-G82-VISIBLE PIC X(01).
+                  06  M01-G82-STATE   PIC S9(09) BINARY.
+                05  M01-G91-G.
+                  06  M01-G91-VISIBLE PIC X(01).
+                  06  M01-G91-STATE   PIC S9(09) BINARY.
+                05  M01-G92-G.
+                  06  M01-G92-VISIBLE PIC X(01).
+                  06  M01-G92-STATE   PIC S9(09) BINARY.
               04  M01-STATE-R       REDEFINES  M01-STATE-G.
-                05  M01-STATE-O     PIC S9(09) BINARY  OCCURS  18.
+                05  M01-STATE-OCC   OCCURS 18.
+                  06  M01-VISIBLE-O   PIC X(1).
+                  06  M01-STATE-O     PIC S9(09) BINARY.
+              04  M01-FR6-VISIBLE     PIC X(1).
               04  M01-SELNUM  PIC 9(2).

@@ -6,76 +6,103 @@ M01N {
       label varchar(10);
     };
     G11 {
+      visible bool;
       state int;
     };
     G12 {
+      visible bool;
       state int;
     };
     G13 {
+      visible bool;
       state int;
     };
     G14 {
+      visible bool;
       state int;
     };
     G21 {
+      visible bool;
       state int;
     };
     G22 {
+      visible bool;
       state int;
     };
     G23 {
+      visible bool;
       state int;
     };
     G24 {
+      visible bool;
       state int;
     };
     G31 {
+      visible bool;
       state int;
     };
     G32 {
+      visible bool;
       state int;
     };
     G33 {
+      visible bool;
       state int;
     };
     G34 {
+      visible bool;
       state int;
     };
     G35 {
+      visible bool;
       state int;
     };
     G36 {
+      visible bool;
       state int;
     };
     G41 {
+      visible bool;
       state int;
     };
     G42 {
+      visible bool;
       state int;
     };
     G43 {
+      visible bool;
       state int;
     };
     G44 {
+      visible bool;
       state int;
     };
     G51 {
+      visible bool;
       state int;
     };
     G52 {
+      visible bool;
       state int;
     };
     G71 {
+      visible bool;
       state int;
     };
     G82 {
+      visible bool;
       state int;
     };
     G91 {
+      visible bool;
       state int;
     };
     G92 {
+      visible bool;
       state int;
+    };
+    fr6 {
+      visible bool;
     };
     SELNUM {
       numdata number(2);

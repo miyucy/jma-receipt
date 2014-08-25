@@ -1,6 +1,11 @@
         02  M96.
     ******* 02  M96-FIXED3.
+              03  M96-B02-VISIBLE     PIC X(01).
+              03  M96-B09-VISIBLE     PIC X(01).
+              03  M96-B10-VISIBLE     PIC X(01).
               03  M96-B10-STATE       PIC S9(9)   BINARY.
+              03  M96-B11-VISIBLE     PIC X(01).
+              03  M96-B12-VISIBLE     PIC X(01).
               03  M96-LIST1.
                 04  M96-LIST1-COUNT   PIC S9(9)   BINARY.
                 04  M96-LIST1-ROW PIC S9(9)   BINARY.

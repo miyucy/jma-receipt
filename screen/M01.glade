@@ -734,15 +734,6 @@
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator4</name>
-      <x>136</x>
-      <y>112</y>
-      <width>360</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
       <name>hseparator8</name>
       <x>520</x>
       <y>112</y>
@@ -776,95 +767,11 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label43</name>
-      <x>40</x>
-      <y>112</y>
-      <width>96</width>
-      <height>16</height>
-      <label>保険請求業務</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator3</name>
       <x>8</x>
       <y>112</y>
       <width>24</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label44</name>
-      <x>40</x>
-      <y>216</y>
-      <width>120</width>
-      <height>16</height>
-      <label>外部情報処理業務</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator5</name>
-      <x>8</x>
-      <y>216</y>
-      <width>24</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator10</name>
-      <x>168</x>
-      <y>216</y>
-      <width>80</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator12</name>
-      <x>256</x>
-      <y>216</y>
-      <width>16</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label47</name>
-      <x>280</x>
-      <y>216</y>
-      <width>160</width>
-      <height>16</height>
-      <label>データバックアップ業務</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator13</name>
-      <x>448</x>
-      <y>216</y>
-      <width>48</width>
       <height>16</height>
     </widget>
 
@@ -903,21 +810,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaHTML</class>
-      <name>pandahtml1</name>
-      <x>8</x>
-      <y>280</y>
-      <width>1008</width>
-      <height>404</height>
-      <signal>
-	<name>activate</name>
-	<handler>open_browser</handler>
-	<last_modification_time>Thu, 07 Feb 2002 04:07:26 GMT</last_modification_time>
-      </signal>
-      <uri>http://www.orca.med.or.jp/info/index.html</uri>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>G92</name>
       <x>776</x>
@@ -949,6 +841,130 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaHTML</class>
+      <name>pandahtml1</name>
+      <x>8</x>
+      <y>280</y>
+      <width>1008</width>
+      <height>404</height>
+      <signal>
+	<name>activate</name>
+	<handler>open_browser</handler>
+	<last_modification_time>Thu, 07 Feb 2002 04:07:26 GMT</last_modification_time>
+      </signal>
+      <uri>http://www.orca.med.or.jp/info/index.html</uri>
+    </widget>
+
+    <widget>
+      <class>GtkFrame</class>
+      <name>fr6</name>
+      <x>0</x>
+      <y>214</y>
+      <width>504</width>
+      <height>24</height>
+      <label_xalign>0</label_xalign>
+      <shadow_type>GTK_SHADOW_NONE</shadow_type>
+
+      <widget>
+	<class>GtkFixed</class>
+	<name>fixed3</name>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label44</name>
+	  <x>38</x>
+	  <y>0</y>
+	  <width>120</width>
+	  <height>16</height>
+	  <label>外部情報処理業務</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator12</name>
+	  <x>254</x>
+	  <y>0</y>
+	  <width>16</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label47</name>
+	  <x>278</x>
+	  <y>0</y>
+	  <width>160</width>
+	  <height>16</height>
+	  <label>データバックアップ業務</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator13</name>
+	  <x>446</x>
+	  <y>0</y>
+	  <width>48</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator10</name>
+	  <x>166</x>
+	  <y>0</y>
+	  <width>80</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator5</name>
+	  <x>6</x>
+	  <y>0</y>
+	  <width>24</width>
+	  <height>16</height>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label43</name>
+      <x>40</x>
+      <y>112</y>
+      <width>96</width>
+      <height>16</height>
+      <label>保険請求業務</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator4</name>
+      <x>136</x>
+      <y>112</y>
+      <width>360</width>
+      <height>16</height>
     </widget>
   </widget>
 </widget>

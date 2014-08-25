@@ -29,6 +29,7 @@
                   06  M00-G01-STATE   PIC S9(9)   BINARY.
                 05  M00-G03.
                   06  M00-G03-STATE   PIC S9(9)   BINARY.
+                  06  M00-G03-VISIBLE PIC X(1).
               04  M00-STATE-R       REDEFINES  M00-STATE-G.
                 05  M00-STATE-O     PIC S9(09) BINARY  OCCURS  2.
               04  M00-SELNUM.
@@ -58,6 +59,7 @@
                 05  M00-B09-LABEL      PIC X(10).
                 05  M00-B09-STATE      PIC S9(9)   BINARY.
               04  M00-B10-G.
+                05  M00-B10-LABEL      PIC X(10).
                 05  M00-B10-STATE      PIC S9(9)   BINARY.
               04  M00-B11-G.
                 05  M00-B11-LABEL      PIC X(10).

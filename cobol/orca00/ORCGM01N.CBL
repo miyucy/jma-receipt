@@ -900,11 +900,15 @@
       *----(01.00.04) LINE DEL END   ----------------------------------
       * データ出力
                WHEN    "71"
+                 IF      SPA-MW          NOT =   SPA-PANDA
+                       MOVE    "0001"          TO  SPA-ERRCD
+                 ELSE
                    IF      SYS-1010-GSRAUTH(41:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "E01"           TO  SPA-SAKIPG
                    END-IF
+                 END-IF
       * センターバックアップ
                WHEN    "81"
                    IF      SYS-1010-GSRAUTH(46:1)    =  "0"
@@ -914,6 +918,9 @@
                    END-IF
       * 外部媒体
                WHEN    "82"
+                 IF      SPA-MW          NOT =   SPA-PANDA
+                       MOVE    "0001"          TO  SPA-ERRCD
+                 ELSE
                    IF      SYS-1010-GSRAUTH(47:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
@@ -929,6 +936,7 @@
                            MOVE    "F01"           TO  SPA-SAKIPG
                        END-IF
                    END-IF
+                 END-IF
       * マスタ登録処理
                WHEN    "91"
                    IF      SYS-1010-GSRAUTH(51:1)    =  "0"
@@ -1324,8 +1332,11 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       24 
                MOVE    WIDGET-INSENSITIVE      TO  M01N-STATE-O (IDX)
+               MOVE    "T"                     TO  M01N-VISIBLE-O (IDX)
            END-PERFORM
       *----(01.02.07) LINE UPD END   ----------------------------------
+      *
+           MOVE    "T"                         TO  M01N-FR6-VISIBLE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -1447,6 +1458,12 @@
                        MOVE    WIDGET-NORMAL      TO  M01N-G92-STATE
                    END-IF
                END-IF
+           END-IF
+      *
+           IF    ( SPA-MW          NOT =   SPA-PANDA )
+               MOVE    "F"             TO  M01N-G71-VISIBLE
+                                           M01N-G82-VISIBLE
+                                           M01N-FR6-VISIBLE
            END-IF
       *
            .

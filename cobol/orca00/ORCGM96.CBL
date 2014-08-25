@@ -1322,8 +1322,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(03.04.01)--ADD-END-----
       *
            MOVE    WIDGET-INSENSITIVE      TO  M96-B10-STATE
+      *
+           MOVE    "T"                     TO  M96-B02-VISIBLE
+                                               M96-B09-VISIBLE
+                                               M96-B10-VISIBLE
+                                               M96-B11-VISIBLE
+                                               M96-B12-VISIBLE
+      *
            IF    ( SPA-NAI-CANCEL          =   1 )
                MOVE    WIDGET-NORMAL       TO  M96-B10-STATE
+           END-IF
+      *
+           IF    ( SPA-MW              NOT =   SPA-PANDA )
+               MOVE    "F"                 TO  M96-B02-VISIBLE
+                                               M96-B09-VISIBLE
+                                               M96-B10-VISIBLE
+                                               M96-B11-VISIBLE
+                                               M96-B12-VISIBLE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC

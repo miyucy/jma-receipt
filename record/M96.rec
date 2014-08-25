@@ -1,7 +1,20 @@
 M96 {
   fixed3 {
+    B02 {
+      visible bool;
+    };
+    B09 {
+      visible bool;
+    };
     B10 {
+      visible bool;
       state int;
+    };
+    B11 {
+      visible bool;
+    };
+    B12 {
+      visible bool;
     };
     LIST1 {
       count int;

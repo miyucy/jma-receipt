@@ -1255,7 +1255,9 @@
                    PERFORM 490-KT01-SEC
       *        LOGIN情報画面
                WHEN    "CLICKED"       ALSO    "B10"
-                   PERFORM 470-MLOG-SEC
+                   IF    ( SPA-MW    = SPA-PANDA )
+                       PERFORM 470-MLOG-SEC
+                   END-IF
       *!!!!!!!
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
@@ -1327,6 +1329,9 @@
       *----(01.02.16)--UPD-START---
       *        プログラム更新処理
                WHEN    "03"
+                 IF  ( SPA-MW              NOT =   SPA-PANDA )
+                       MOVE    "0001"          TO  SPA-ERRCD
+                 ELSE
                    IF    ( SPA-SUPERVISOR          =   "T" )
                    AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
                        AND     SYS-1010-GSRAUTH(3:1)    =  "1"
@@ -1334,6 +1339,7 @@
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
+                 END-IF 
       *----(01.02.16)--UPD-END-----
       *        点数改正処理
       *        WHEN    "04"
@@ -1818,6 +1824,8 @@
            MOVE    WIDGET-NORMAL           TO  M00-B10-STATE
            MOVE    WIDGET-NORMAL           TO  M00-B11-STATE
       *
+           MOVE    "T"                     TO  M00-G03-VISIBLE
+      *
            IF      SYS-1010-GSRAUTH(1:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
            END-IF
@@ -1828,10 +1836,21 @@
                MOVE    WIDGET-NORMAL       TO  M00-G03-STATE
            END-IF
       *----(01.02.16)--UPD-END-----
+      *
+           IF    ( SPA-MW             NOT =   SPA-PANDA )
+               MOVE    "F"                TO  M00-G03-VISIBLE
+           END-IF
+      *
            IF      SYS-1010-GSRAUTH(5:1)    =  "1"
                MOVE    "（まとめ）"       TO  M00-B09-LABEL
            ELSE
                MOVE    SPACE              TO  M00-B09-LABEL
+           END-IF
+      *
+           IF    ( SPA-MW                 =   SPA-PANDA )
+               MOVE    "ユーザ管理"       TO  M00-B10-LABEL
+           ELSE
+               MOVE    SPACE              TO  M00-B10-LABEL
            END-IF
       *
            IF    ( SPA-NAI-REDL           =   1 )

@@ -866,11 +866,15 @@
       *----(01.00.04) LINE DEL END   ----------------------------------
       * データ出力
                WHEN    "71"
+                 IF      SPA-MW          NOT =   SPA-PANDA
+                       MOVE    "0001"          TO  SPA-ERRCD
+                 ELSE
                    IF      SYS-1010-GSRAUTH(41:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "E01"           TO  SPA-SAKIPG
                    END-IF
+                 END-IF
       * センターバックアップ
                WHEN    "81"
                    IF      SYS-1010-GSRAUTH(46:1)    =  "0"
@@ -880,6 +884,9 @@
                    END-IF
       * 外部媒体
                WHEN    "82"
+                 IF      SPA-MW          NOT =   SPA-PANDA
+                       MOVE    "0001"          TO  SPA-ERRCD
+                 ELSE
                    IF      SYS-1010-GSRAUTH(47:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
@@ -895,6 +902,7 @@
                            MOVE    "F01"           TO  SPA-SAKIPG
                        END-IF
                    END-IF
+                 END-IF
       * マスタ登録処理
                WHEN    "91"
                    IF      SYS-1010-GSRAUTH(51:1)    =  "0"
@@ -1318,7 +1326,10 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       18
                MOVE    WIDGET-INSENSITIVE      TO  M01-STATE-O (IDX)
+               MOVE    "T"                     TO  M01-VISIBLE-O (IDX)
            END-PERFORM
+      *
+           MOVE    "T"                         TO  M01-FR6-VISIBLE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -1418,6 +1429,13 @@
                    END-IF
                END-IF
            END-IF
+      *
+           IF    ( SPA-MW          NOT =   SPA-PANDA )
+               MOVE    "F"             TO  M01-G71-VISIBLE
+                                           M01-G82-VISIBLE
+                                           M01-FR6-VISIBLE
+           END-IF
+      *
       *
       *2001.8.7 強制プロテクト（ＰＧ未作成）
       **     MOVE    WIDGET-INSENSITIVE      TO  M01-G13-STATE
