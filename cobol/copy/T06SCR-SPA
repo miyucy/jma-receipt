@@ -60,7 +60,7 @@
                            11  SPA-GMN-T06-K-TUCNT     PIC 9(03).
                            11  SPA-GMN-T06-K-TSKYYMD   PIC X(09).
                            11  SPA-GMN-T06-K-TSCNT     PIC 9(02).
-                           11  SPA-GMN-T06-K-TNOSEND-PATIENT-CNT
+                           11  SPA-GMN-T06-K-TNOSEND-PAT-CNT
                                                        PIC 9(05).
                            11  SPA-GMN-T06-K-TSEND-TOTAL-CNT
                                                        PIC 9(05).
@@ -213,13 +213,13 @@
                                                        PIC X(10).
       *
                05  SPA-NAI-T06-1031-PRTNM      PIC X(16). 
-               05  SPA-NAI-T06-200501-RECEDEN-LST1KBN
+               05  SPA-T06-2005-RECEDEN-LST1KBN
                                                PIC X(01).
-               05  SPA-NAI-T06-200501-RECEDEN-RIREKIKBN
+               05  SPA-T06-2005-RECEDEN-RIREKIKBN
                                                PIC X(01).
-               05  SPA-NAI-T06-200501-RECEDEN-DISASTER
+               05  SPA-T06-2005-RECEDEN-DISASTER
                                                PIC X(01).
-               05  SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+               05  SPA-T06-2005-RECEDEN-CHK-KBN
                                                PIC X(01).
       *
                05  SPA-NAI-T06-2009-SYUKA-SYAHO
@@ -229,7 +229,7 @@
                05  SPA-NAI-T06-2009-SYUKA-KOUIKI
                                                PIC X(01).
       *
-               05  SPA-NAI-T06-DIRECT-HKNJANUM-AREA.
+               05  SPA-NAI-T06-DIRECT-HKNJA-AREA.
                    07  SPA-NAI-T06-DIRECT-HKNJANUM-G.
                         09  SPA-NAI-T06-DIRECT-HKNJANUM
                                                PIC X(08).
@@ -297,7 +297,7 @@
                        09  SPA-NAI-T09-TCREYMD         PIC 9(08).
                        09  SPA-NAI-T09-TKANANAME       PIC X(40).
                        09  SPA-NAI-T09-RECE10-THKNNUM  PIC X(03).
-                       09  SPA-NAI-T09-RECE10-THENREI-SIJI-FLG
+                       09  SPA-NAI-T09-RECE10-THENREI-SIJI
                                                        PIC 9(01).
                        09  SPA-NAI-T09-RECE10-THKNJANUM-S
                                                        PIC X(08).
@@ -313,7 +313,7 @@
                                                            PIC X(01).
                            11  SPA-NAI-T09-RECE10-TPTID    PIC 9(10).
                            11  SPA-NAI-T09-RECE10-TRECEKA  PIC X(02).
-                           11  SPA-NAI-T09-RECE10-TTEISYUTUSAKI
+                           11  SPA-NAI-T09-RECE10-TTEISYUTUSA
                                                            PIC 9(01).
                            11  SPA-NAI-T09-RECE10-TRECESYUBETU
                                                            PIC X(04).

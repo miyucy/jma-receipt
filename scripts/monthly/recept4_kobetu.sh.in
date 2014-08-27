@@ -49,7 +49,6 @@ fi
     echo "arg19 = [" ${19} "]" >>$LOG_FILE
     echo "arg20 = [" ${20} "]" >>$LOG_FILE
     echo "arg21 = [" ${21} "]" >>$LOG_FILE
-    echo "arg22 = [" ${22} "]" >>$LOG_FILE
     echo "arg23 = [" ${23} "]" >>$LOG_FILE
     echo "arg24 = [" ${24} "]" >>$LOG_FILE
     echo "arg25 = [" ${25} "]" >>$LOG_FILE
@@ -241,43 +240,7 @@ fi
 	    fi
     done
 
-#   先頭ファイルのみ処理 
-
-    if  [ -e ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE ]; then
-        echo "--- RECEIPTC.UKE exist ---" >>$LOG_FILE
-    fi
-    FDDHOST=`echo ${22}|tr \[\] "  "`
-    echo "FDDHOST = " $FDDHOST
 ##
-		    echo "先頭ファイルの処理(fdw処理)" ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE
-##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}
-##    exit 
-##
-    if  [ ${21} -eq '1' ]; then
-        echo "--- fdw-> fd start ---" >>$LOG_FILE
-	$FDW -host $FDDHOST -command fd-write.sh ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE ${RECEFILE1}.UKE
-	RC=$?
-        echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
-	if  [ $RC -ne '0' ]; then
-	    ERRCD='0000'$RC
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
-        echo "--- fdw-> fd err   ---" >>$LOG_FILE
-            exit
-	fi
-    fi
-
-    if  [ ${21} -eq '2' ]; then
-        echo "--- fdw-> mo start ---" >>$LOG_FILE
-	$FDW -host $FDDHOST -command mo-write.sh ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE ${RECEFILE1}.UKE
-	RC=$?
-        echo "--- fdw-> mo end   ---[" $RC  "]" >>$LOG_FILE
-	if  [ $RC -ne '0' ]; then
-	    ERRCD='0000'$RC
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
-            echo "--- fdw-> mo err   ---" >>$LOG_FILE
-            exit
-	fi
-    fi
 
 #   システム管理場所出力のとき
     if  [ ${21} -eq '3' ]|| [ ${21} -eq '4' ]; then

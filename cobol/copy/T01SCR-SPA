@@ -262,7 +262,7 @@
                05  SPA-NAI-200501-RECEDEN-LST1KBN  PIC X(01).
                05  SPA-NAI-200501-RECEDEN-LST2KBN  PIC X(01).
                05  SPA-NAI-200501-RECEDEN-DATAKBN  PIC X(01).
-               05  SPA-NAI-200501-RECEDEN-RIREKIKBN
+               05  SPA-NAI-200501-RECEDEN-RIREKIKB
                                                    PIC X(01).
                05  SPA-NAI-200501-RECEDEN-DISASTER PIC X(01).
                05  SPA-NAI-200501-RECEDEN-CHK-KBN  PIC X(01).

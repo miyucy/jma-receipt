@@ -40,7 +40,6 @@ fi
         echo "arg2  = [" ${2} "]"   >>$LOG_FILE
         echo "arg6  = [" ${6} "]"   >>$LOG_FILE
         echo "arg8  = [" ${8} "]"   >>$LOG_FILE
-        echo "arg9  = [" ${9} "]"   >>$LOG_FILE
         echo "arg13 = [" ${13} "]"  >>$LOG_FILE
         echo "arg14 = [" ${14} "]"  >>$LOG_FILE
         echo "arg15 = [" ${15} "]"  >>$LOG_FILE
@@ -92,34 +91,6 @@ fi
             fi
         fi
          
-#
-        FDDHOST=`echo ${9}|tr \[\] "  "`
-        if  [ ${6} -eq '1' ]; then
-            echo "--- fdw-> fd start ---" >>$LOG_FILE
-            $FDW -host $FDDHOST -command fd-write.sh $FILE_2 ${8}
-            RC=$?
-            echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
-            if  [ $RC -ne '0' ]; then
-                ERRCD='0000'$RC
-                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE 2>&1
-                echo "--- fdw-> fd err   ---" >>$LOG_FILE
-                exit
-	    fi
-        fi
-
-        if  [ ${6} -eq '2' ]; then
-            echo "--- fdw-> mo start ---" >>$LOG_FILE
-            $FDW -host $FDDHOST -command mo-write.sh $FILE_2 ${8}
-            RC=$?
-            echo "--- fdw-> mo end   ---[" $RC  "]" >>$LOG_FILE
-            if  [ $RC -ne '0' ]; then
-                ERRCD='0000'$RC
-                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE 2>&1
-                echo "--- fdw-> mo err   ---" >>$LOG_FILE
-                exit
-            fi
-        fi         
-
 #       システム管理場所出力のとき
         if  [ ${6} -eq '3' ]|| [ ${6} -eq '4' ]; then
 #           履歴保存先のフォルダへファイル作成

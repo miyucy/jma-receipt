@@ -64,6 +64,7 @@
       *
       *  04.08.01    NACL-森脇    13/04/12  システムＤＢ対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -481,9 +482,6 @@
                        WHEN    "1006"
                        WHEN    "1011"
                        WHEN    "1012"
-                       WHEN    "2001"
-                       WHEN    "2003"
-                       WHEN    "2007"
                            PERFORM 520-TIDSET-SEC
                            GO  TO  100-INIT-EXT
                    END-EVALUATE
@@ -597,7 +595,7 @@
       *    直接請求する保険者番号                                             
            MOVE    SPA-T01-DIRECT-HKNJANUM-AREA
                                        TO
-                                       SPA-NAI-T06-DIRECT-HKNJANUM-AREA
+                                       SPA-NAI-T06-DIRECT-HKNJA-AREA
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -701,13 +699,13 @@
            END-IF
            MOVE    SYS-200501-RECEDEN-LST1KBN
                                        TO
-                                   SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                   SPA-T06-2005-RECEDEN-LST1KBN
            MOVE    SYS-200501-RECEDEN-RIREKIKBN
                                        TO
-                                   SPA-NAI-T06-200501-RECEDEN-RIREKIKBN
+                                   SPA-T06-2005-RECEDEN-RIREKIKBN
            MOVE    SYS-200501-RECEDEN-DISASTER
                                        TO
-                                   SPA-NAI-T06-200501-RECEDEN-DISASTER
+                                   SPA-T06-2005-RECEDEN-DISASTER
       *
       *    レセプト編集区分情報（主科情報）
            MOVE    SPACE               TO  SYS-2009-REC
@@ -809,7 +807,7 @@
       *
       *    レセ電データチェック 
            MOVE    SPA-T01-RECEDEN-CHK TO
-                                   SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                   SPA-T06-2005-RECEDEN-CHK-KBN
       *
       *    管理情報編集処理
            PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
@@ -884,7 +882,7 @@
                MOVE    ONRECE-K-SCNT   TO  SPA-GMN-T06-K-TSCNT   (IDX)
                MOVE    ONRECE-K-NOSEND-PATIENT-CNT
                                        TO
-                               SPA-GMN-T06-K-TNOSEND-PATIENT-CNT (IDX)
+                               SPA-GMN-T06-K-TNOSEND-PAT-CNT     (IDX)
                MOVE    ONRECE-K-SEND-TOTAL-CNT
                                        TO
                                SPA-GMN-T06-K-TSEND-TOTAL-CNT     (IDX)
@@ -1084,44 +1082,6 @@
       *****************************************************************
        320-T99-SET-SEC            SECTION.
       *
-      *    レセ電作成時にフロッピー出力の場合
-           IF      SPA-T01-SYORIFLG    =   1
-               IF      SPA-GMN-T98-DATAKBN     =   "1"
-      *            作成済枚数のチェック
-                   INITIALIZE                      BTPARA-REC
-                   MOVE    WRK-CONS-JOB-SHELLID
-                                               TO  BTPARA-SHELLID
-                   MOVE    WRK-CONS-BTPARA-SCRIPTID
-                                               TO  BTPARA-SCRIPTID
-                   MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
-                   MOVE    BTPARA-REC          TO  MCPDATA-REC
-                   PERFORM 900-BTPARA-READ-SEC
-                   IF      FLG-BTPARA          =   ZERO
-                       MOVE    BTPARA-INFO-PARA    TO
-                                                   WRK-BTPARA-INFO-PARA
-                       MOVE    WRK-BTPARA-EDNO     TO  SPA-T01-EDNO
-                       IF      WRK-BTPARA-EDNO NOT =   WRK-BTPARA-WRNO
-                           MOVE    "2003"              TO  SPA-TIDCD
-                           GO  TO  320-T99-SET-EXT
-      ***                 ELSE
-      ****                    印刷処理
-      ***                     IF      SPA-RECEDEN-FLG     =   "OK"
-      ***                         PERFORM 3202-PRINT-SEC
-      ***                         GO  TO  320-T99-SET-EXT
-      ***                     END-IF       
-                       END-IF
-                   ELSE
-                       MOVE    "1005"              TO  SPA-ERRCD
-                   END-IF
-      ***         ELSE
-      ****            印刷処理
-      ***             IF      SPA-RECEDEN-FLG     =   "OK"
-      ***                 PERFORM 3202-PRINT-SEC
-      ***                 GO  TO  320-T99-SET-EXT
-      ***             END-IF
-               END-IF
-           END-IF
-      *
            IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
                MOVE    1                   TO  SPA-NAI-T06-SYORIFLG
            ELSE
@@ -1139,109 +1099,6 @@
            .
        320-T99-SET-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    レセ電複数枚処理
-      *****************************************************************
-       3201-RECEDEN-NEXT-SEC       SECTION.
-      *
-           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
-           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
-           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
-           MOVE    SPACE               TO  RECEERR
-           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE
-                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
-                                       INTO        RECEERR
-           END-STRING
-      *
-      *    国保診療報酬請求書印刷区分
-           MOVE    SPACE               TO  SYS-2005-REC 
-           INITIALIZE                      SYS-2005-REC
-           MOVE    "2005"              TO  SYS-2005-KANRICD
-           MOVE    "*"                 TO  SYS-2005-KBNCD
-           MOVE    SPA-NAI-T06-SRYYM-H TO  SYS-2005-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-2005-STYUKYMD (7:2)
-           MOVE    SYS-2005-STYUKYMD   TO  SYS-2005-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
-           MOVE    SYS-2005-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-2005-REC
-           ELSE
-               INITIALIZE                      SYS-2005-REC
-           END-IF
-           IF      SYS-2005-RECEDENOUT  =   SPACE
-               MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
-           END-IF    
-           IF      SPA-GMN-T98-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
-               MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
-           END-IF
-      *
-      *    レセ電作成枚数
-           ADD     1               TO  SPA-T01-WRNO
-      *
-           PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *
-      *    ステップ管理開始処理
-           MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           INITIALIZE              ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
-           MOVE    SPA-T01-WRNO    TO  WRK-WRNO-X
-           MOVE    WRK-WRNO-X      TO  KANACHK-MAE-INPUT
-           MOVE    4               TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           STRING   KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                       DELIMITED  BY  SIZE
-                    "枚目レセ電ファイル作成"
-                                       DELIMITED  BY  SIZE
-                                   INTO  JOB-SHELLMSG
-           END-STRING
-           PERFORM 900-CALL-ORCSJOB-SEC
-      *             
-           MOVE    SPACE           TO  SHELLTBL
-           MOVE    "recept4_fd.sh" TO  SHELLTBL-NAME
-           STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
-                   "/"                 DELIMITED  BY  SIZE
-                               INTO    SHELLTBL-ARG1
-           END-STRING
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG2
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-ARG3         
-           MOVE    ERRFLPARA-BASENAME
-                                   TO  SHELLTBL-ARG4
-      *    ipアドレス取得
-           PERFORM 900-SYSTEM-GET-SEC
-           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG5
-           MOVE    SPA-T01-WRNO    TO  SHELLTBL-ARG6
-           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
-           MOVE    SPA-GMN-T98-PRTKBN
-                                   TO  SHELLTBL-ARG8
-      *
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "monthly"       TO  MCP-PATHNAME
-           PERFORM 900-ORCDBMAIN-SEC
-      *
-      *    ＪＯＢＩＤ更新処理
-      *
-           PERFORM 45012-JOBID-UPD-SEC
-      *
-           MOVE    1                   TO  SPA-T01-SYORIFLG
-      *     
-      *    情報確認画面を表示                                                   
-           PERFORM 490-KAKUNIN-SEC
-      *
-           .
-       3201-RECEDEN-NEXT-EXT.
-           EXIT. 
       *
       *****************************************************************
       *    レセ電処理後の印刷処理
@@ -1423,28 +1280,12 @@
       *                点検レセ０点公費記載の請求管理のチェック処理
                        PERFORM 3104-SEIKYU-CHECK-SEC
                        MOVE    2               TO  SPA-GMN-T06-CUR
-                   WHEN    "2001"
-      *                ジョブ管理チェック処理
-                       PERFORM 4501-JOBKANRI-CHK-SEC
-                       IF      SPA-ERRCD       =   SPACE
-                           PERFORM 460-RECEDEN-SEC
-                           GO  TO  330-TID1-SET-EXT
-                       END-IF
-                   WHEN    "2003"
-                       PERFORM 3201-RECEDEN-NEXT-SEC
-                       GO  TO  330-TID1-SET-EXT
                    WHEN    "1004"
                    WHEN    "1010"
                        PERFORM 480-ZENKAI-HYOUJI-SEC
                END-EVALUATE
            ELSE        
                EVALUATE    SPA-TIDCD
-                   WHEN    "2003"
-                       MOVE    "2007"          TO  SPA-TIDCD
-                       GO  TO  330-TID1-SET-EXT
-                   WHEN    "2007"
-                       MOVE    "2003"          TO  SPA-TIDCD
-                       GO  TO  330-TID1-SET-EXT
                    WHEN    "1009"
                        EVALUATE    SPA-T01-WIDGET
                            WHEN    "SRYYM_H"
@@ -1577,7 +1418,7 @@
                        END-IF
                        MOVE    SPA-NAI-T09-RECE10-THKNNUM  (IDY)
                                                TO  RECE10-HKNNUM
-                       MOVE    SPA-NAI-T09-RECE10-THENREI-SIJI-FLG(IDY)
+                       MOVE    SPA-NAI-T09-RECE10-THENREI-SIJI(IDY)
                                                TO
                                                RECE10-HENREI-SIJI-FLG
                        IF      RECE10-TEISYUTUSAKI =   "3"
@@ -1629,14 +1470,8 @@
                PERFORM 4501-JOBKANRI-CHK-SEC
                IF      SPA-ERRCD       =   SPACE
                    MOVE    SPA-TID1-FLG    TO  SPA-RECEDEN-FLG 
-                   IF      SPA-GMN-T98-DATAKBN     =   "1" OR  "2"
-                       MOVE    SPACE           TO  SPA-TID1-FLG
-                       MOVE    "2001"          TO  SPA-TIDCD
-                       GO  TO  350-T98-SET-EXT
-                   ELSE
-                       PERFORM 460-RECEDEN-SEC
-                       GO  TO  350-T98-SET-EXT
-                   END-IF
+                   PERFORM 460-RECEDEN-SEC
+                   GO  TO  350-T98-SET-EXT
                END-IF
            END-IF
       *
@@ -2189,7 +2024,7 @@
                                OR          IDX            >=  20
                    MOVE    MCPDATA-REC         TO  RECE10-REC
       *            災害対応（未確定分をレセ電データに記録するか）
-                   IF    (  SPA-NAI-T06-200501-RECEDEN-DISASTER
+                   IF    (  SPA-T06-2005-RECEDEN-DISASTER
                                                =   "0"              )
                    AND   ( RECE10-ETC-YKZFTN (1)
                                                =   6   OR  7  OR  8 )
@@ -2786,7 +2621,7 @@
                            OR          IDX            >=  20
                MOVE    MCPDATA-REC         TO  RECE10-REC
       *        災害対応（未確定分をレセ電データに記録するか）
-               IF    (  SPA-NAI-T06-200501-RECEDEN-DISASTER
+               IF    (  SPA-T06-2005-RECEDEN-DISASTER
                                            =   "0"              )
                AND   ( RECE10-ETC-YKZFTN (1)
                                            =   6   OR  7  OR  8 )
@@ -2932,7 +2767,7 @@
            MOVE    RECE10-HKNNUM   TO  SPA-NAI-T09-RECE10-THKNNUM (IDX)
            MOVE    RECE10-HENREI-SIJI-FLG
                                    TO
-                                   SPA-NAI-T09-RECE10-THENREI-SIJI-FLG
+                                   SPA-NAI-T09-RECE10-THENREI-SIJI
                                                                   (IDX)
            IF      RECE10-TEISYUTUSAKI =   "3"
                MOVE    RECE10-SYOKAIFLG    TO
@@ -4126,7 +3961,7 @@
                    MOVE    "1"             TO  SPA-GMN-T06-R-TERR  (IDX)
                ELSE
       *          災害対応（未確定分をレセ電データに記録するか）
-                 IF    (  SPA-NAI-T06-200501-RECEDEN-DISASTER
+                 IF    (  SPA-T06-2005-RECEDEN-DISASTER
                                                =   "0"              )
                  AND   ( RECE10-ETC-YKZFTN (1)
                                                =   6   OR  7  OR  8 )
@@ -4726,7 +4561,7 @@
                                    TO  SHELLTBL-ARG12
            MOVE    ONRECE-K-RENNUM TO  SHELLTBL-ARG13
       *               
-           IF      SPA-GMN-T98-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
+           IF      SPA-GMN-T98-DATAKBN  =  "5" OR  "6"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
@@ -4742,14 +4577,14 @@
            MOVE    SPA-GMN-T98-DATAKBN
                                    TO  SHELLTBL-ARG21
       *ipアドレス取得
-           PERFORM 900-SYSTEM-GET-SEC
-           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG22
+      *****PERFORM 900-SYSTEM-GET-SEC
+      *****MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG22
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG23
            MOVE    SPA-GMN-T98-PRTKBN
                                    TO  SHELLTBL-ARG24
-           MOVE    SPA-NAI-T06-200501-RECEDEN-LST1KBN
+           MOVE    SPA-T06-2005-RECEDEN-LST1KBN
                                    TO  SHELLTBL-ARG25
-           MOVE    SPA-NAI-T06-200501-RECEDEN-RIREKIKBN
+           MOVE    SPA-T06-2005-RECEDEN-RIREKIKBN
                                    TO  SHELLTBL-ARG26
            MOVE    "99999999"      TO  SHELLTBL-ARG27
            IF      SPA-NAI-T06-DIRECT-HKNJANUM
@@ -4761,7 +4596,7 @@
                                    <   201204
                MOVE    "0"             TO  SHELLTBL-ARG28
            ELSE
-               MOVE    SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+               MOVE    SPA-T06-2005-RECEDEN-CHK-KBN
                                        TO  SHELLTBL-ARG28
            END-IF
            MOVE    SPA-T01-NYUGAIKBN
@@ -5051,13 +4886,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
            ELSE                                        
                MOVE    "B11"               TO  MCP-WIDGET
-      *        レセ電作成時にフロッピー出力の場合は戻るは押下できない
-               IF    ( SPA-GMN-T98-DATAKBN =   "1" )
-               AND   ( SPA-T01-SYORIFLG    =   1   )
-                   MOVE    WIDGET-INSENSITIVE  TO  T99-B01-STATE
-               ELSE
-                   MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
-               END-IF
+               MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
            END-IF                                 
       *
       *
@@ -5516,7 +5345,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SPA-GMN-T06-K-TSCNT   (IDX)
                                            TO  WRK-Z9
                MOVE    WRK-Z9              TO  T06-KANRI-TSCNT    (IDX)
-               MOVE    SPA-GMN-T06-K-TNOSEND-PATIENT-CNT   (IDX)
+               MOVE    SPA-GMN-T06-K-TNOSEND-PAT-CNT   (IDX)
                                            TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9             TO  
                                    T06-KANRI-TNOSEND-PATIENT-CNT  (IDX)
@@ -6007,27 +5836,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-TIDMSG
                    END-STRING
-               WHEN    "2001"
-                   MOVE    "媒体をドライブにセットして下さい"
-                                       TO  WRK-TIDMSG
-               WHEN    "2003"
-                   COMPUTE WRK-WRNO    =   SPA-T01-WRNO +   1
-                   MOVE    WRK-WRNO        TO  WRK-MSG1-WRNO
-                   MOVE    SPA-T01-EDNO    TO  WRK-MSG1-EDNO
-                   STRING   WRK-MSG1       DELIMITED  BY  SIZE
-                            "枚目のフロッピィの書き込みを行います。"
-                                           DELIMITED  BY  SIZE
-                            "媒体をドライブにセットして下さい"
-                                           DELIMITED  BY  SIZE
-                                           INTO  WRK-TIDMSG
-                   END-STRING
-               WHEN    "2007"
-                   STRING   "フロッピィへの書き込み処理が途中ですが"
-                                       DELIMITED  BY  SIZE
-                            "終了してよろしいですか"
-                                       DELIMITED  BY  SIZE
-                                       INTO    WRK-TIDMSG
-                   END-STRING
                WHEN    "6666"
                    MOVE    "レセ電データ作成処理中です"  TO  WRK-TIDMSG
            END-EVALUATE
@@ -6355,50 +6163,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
       *
            .
        900-MONTHLYNUM-READ-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    パラメタ読込
-      *****************************************************************
-       900-BTPARA-READ-SEC         SECTION.
-      *
-           MOVE    "tbl_btpara"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_btpara"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 900-BTPARA-READ-N-SEC
-           ELSE
-               MOVE    1                   TO  FLG-BTPARA
-               INITIALIZE                      BTPARA-REC
-           END-IF
-      *
-           MOVE    "tbl_btpara"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       900-BTPARA-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    パラメタ読込
-      *****************************************************************
-       900-BTPARA-READ-N-SEC          SECTION.
-      *
-           PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  BTPARA-REC
-               MOVE    ZERO                TO  FLG-BTPARA
-           ELSE
-               MOVE    1                   TO  FLG-BTPARA
-               INITIALIZE                      BTPARA-REC
-           END-IF
-      *
-           .
-       900-BTPARA-READ-N-EXT.
            EXIT.
       *
       *****************************************************************

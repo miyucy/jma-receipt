@@ -42,6 +42,8 @@
       *  04.07.03    NACL-藤原    13/11/01  労災レセ電データチェック機能
       *                                     対応
       *  04.07.04    NACL-藤原    13/12/09  医療情報連携基盤対応
+      *
+      *  04.08.01    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -224,7 +226,7 @@
            END-IF 
            IF      SYS-200501-RECEDEN-DATAKBN
                                        =   SPACE
-               MOVE    "1"                 TO
+               MOVE    "4"                 TO
                                            SYS-200501-RECEDEN-DATAKBN
            END-IF 
       *
@@ -236,14 +238,10 @@
            MOVE    ZERO            TO  IDX
            IF      SPA-GMN-T06-TEISYUTUSAKI4
                                    =   "F"
-               MOVE    "1"             TO  SPA-GMN-T98-DATAKBNL    (1)
-               MOVE    "フロッピィ"    TO  SPA-GMN-T98-DATAKBNMEIL (1)
-               MOVE    "2"             TO  SPA-GMN-T98-DATAKBNL    (2)
-               MOVE    "ＭＯ"          TO  SPA-GMN-T98-DATAKBNMEIL (2)
-               MOVE    "3"             TO  SPA-GMN-T98-DATAKBNL    (3)
+               MOVE    "3"             TO  SPA-GMN-T98-DATAKBNL    (1)
                MOVE    "システム管理設定場所（フロッピィ用）"
-                                       TO  SPA-GMN-T98-DATAKBNMEIL (3)
-               MOVE    3               TO  IDX
+                                       TO  SPA-GMN-T98-DATAKBNMEIL (1)
+               MOVE    1               TO  IDX
            END-IF
            ADD     1               TO  IDX
            MOVE    "4"             TO  SPA-GMN-T98-DATAKBNL    (IDX)
@@ -301,6 +299,11 @@
                MOVE    "4"                 TO  SPA-GMN-T98-DATAKBN
            END-IF
            PERFORM 41021-DATAKBN-CHK-SEC                                 
+           IF    ( SYS-200501-RECEDEN-DATAKBN
+                                       =   "1" OR  "2" )
+           AND   ( SPA-T01-PRTKBN  NOT =   "6" OR  "7" )
+               MOVE    SPACE           TO  SPA-GMN-T98-DATAKBN-G
+           END-IF
       *
            MOVE    1               TO  SPA-GMN-T98-CUR
            .
@@ -435,13 +438,13 @@
                    MOVE    SPA-GMN-T98-DATAKBNLST (1)
                                            TO  SPA-GMN-T98-DATAKBN-G
                ELSE
-                   MOVE    SPA-GMN-T98-DATAKBNLST (4)
+                   MOVE    SPA-GMN-T98-DATAKBNLST (2)
                                            TO  SPA-GMN-T98-DATAKBN-G
                END-IF
            END-IF
       *
            IF      SPA-T01-PRTKBN      =   "6" OR  "7"
-               MOVE    SPA-GMN-T98-DATAKBNLST (4)
+               MOVE    SPA-GMN-T98-DATAKBNLST (2)
                                            TO  SPA-GMN-T98-DATAKBN-G
            END-IF
            .
@@ -583,7 +586,7 @@
            IF      SPA-GMN-T06-TEISYUTUSAKI4
                                        =   "T"
       *        労災のとき
-               IF  ( ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+               IF  ( ( SPA-T06-2005-RECEDEN-CHK-KBN
                                                =   "1"    )    AND
                      ( SPA-NAI-T06-SRYYM-H     >=  201307 )        )
                    STRING   WRK-TIDMSG         DELIMITED  BY  SPACE
@@ -603,19 +606,19 @@
              IF      SPA-T01-PRTKBN    =   "6" OR  "7"
                  MOVE    WRK-TIDMSG          TO  T98-ID1MSG
              ELSE
-               IF  (   SPA-NAI-T06-200501-RECEDEN-LST1KBN
+               IF  (   SPA-T06-2005-RECEDEN-LST1KBN
                                                =   "1"             )
-               OR  ( ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+               OR  ( ( SPA-T06-2005-RECEDEN-CHK-KBN
                                                =   "1"    )    AND
                     ( SPA-NAI-T06-SRYYM-H     >=  201204 )        )
                    MOVE    SPACE           TO  WRK-TIDMSG1
                                                WRK-TIDCD-MSG
       *
-                   IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                   IF      SPA-T06-2005-RECEDEN-LST1KBN
                                                =   "1"
                        MOVE    "、症状詳記"      TO  WRK-TIDMSG1
                    END-IF
-                   IF    ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                   IF    ( SPA-T06-2005-RECEDEN-CHK-KBN
                                                =   "1"    )
                    AND   ( SPA-NAI-T06-SRYYM-H >=  201204 )
                        STRING  WRK-TIDMSG1     DELIMITED  BY  SPACE
