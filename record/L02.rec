@@ -1,5 +1,8 @@
 L02 {
   fixed6 {
+    B12 {
+      state int;
+    };
     SRYYMD {
       textdata varchar(10);
     };

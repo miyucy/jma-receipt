@@ -39,6 +39,7 @@
       *  04.07.01    NACL-藤原    12/10/31  ファイル出力先のデフォルト変更
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -102,8 +103,8 @@
       *
            03  WRK-FILENM-AREA.
                07  WRK-FILENM1     PIC X(150).
-               07  WRK-FILENM1-FOLDER 
-                                   PIC X(150).
+      *********07  WRK-FILENM1-FOLDER 
+      *********                    PIC X(150).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -182,6 +183,7 @@
       *
       *    ユーザー情報取得
            COPY    "CPORCSLDUSER.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -366,26 +368,16 @@
            CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
                                                SPA-AREA
       *
-           MOVE    "3"             TO  SPA-GMN-L02-FILE1L        (1)
-           MOVE    "ユーザー指定場所１"
-                                   TO  SPA-GMN-L02-FILE1MEIL     (1)
-           MOVE    "4"             TO  SPA-GMN-L02-FILE1L        (2)
-           MOVE    "ユーザー指定場所２"
-                                   TO  SPA-GMN-L02-FILE1MEIL     (2)
-           MOVE    "5"             TO  SPA-GMN-L02-FILE1L        (3)
-           MOVE    "ユーザー指定場所３"
-                                   TO  SPA-GMN-L02-FILE1MEIL     (3)
-           MOVE    3               TO  SPA-GMN-L02-FILE1-MAX
            IF      SCLIENTSV-CLIENT-SAVE
                                    =   "1"
-               MOVE    "6"             TO  SPA-GMN-L02-FILE1L    (4)
+               MOVE    "6"             TO  SPA-GMN-L02-FILE1L    (1)
                MOVE    "クライアント保存"
-                                       TO  SPA-GMN-L02-FILE1MEIL (4)
-               MOVE    4               TO  SPA-GMN-L02-FILE1-MAX
-           END-IF
+                                       TO  SPA-GMN-L02-FILE1MEIL (1)
+               MOVE    1               TO  SPA-GMN-L02-FILE1-MAX
       *
-           MOVE    SPA-GMN-L02-FILE1LST (1)
-                                   TO  SPA-GMN-L02-FILE1-G
+               MOVE    SPA-GMN-L02-FILE1LST (1)
+                                       TO  SPA-GMN-L02-FILE1-G
+           END-IF
       *
            MOVE    "T"             TO  SPA-GMN-L02-KOJINKBN1-VALUE
            MOVE    "F"             TO  SPA-GMN-L02-KOJINKBN2-VALUE
@@ -620,6 +612,14 @@
       *****************************************************************
        41023-FILE1-CHK-SEC           SECTION.
       *
+           IF      SPA-GMN-L02-FILE1-MAX
+                                       =   ZERO
+               MOVE    "0010"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-L02-CUR
+               GO  TO  41023-FILE1-CHK-EXT
+           END-IF
+      *
+      *
            IF      SPA-GMN-L02-FILE1     =   SPACE
                MOVE    SPA-GMN-L02-FILE1LST (1)
                                            TO  SPA-GMN-L02-FILE1-G
@@ -828,8 +828,8 @@
                        UNTIL   IDX <       1
                    IF      ( SPA-GMN-L02-FILENM1 (IDX:1)
                                                =   "/" )
-                       MOVE    SPA-GMN-L02-FILENM1 (1:IDX)
-                                               TO  WRK-FILENM1-FOLDER
+      *****************MOVE    SPA-GMN-L02-FILENM1 (1:IDX)
+      *****************                        TO  WRK-FILENM1-FOLDER
                        COMPUTE IDY =   IDX     +   1
                        MOVE    SPA-GMN-L02-FILENM1 (IDY:)
                                                TO  WRK-FILENM1
@@ -838,7 +838,7 @@
                END-PERFORM
            END-IF
            IF      WRK-FILENM1         =   SPACE
-               MOVE    "/home/orca/"        TO  WRK-FILENM1-FOLDER
+      *********MOVE    "/home/orca/"        TO  WRK-FILENM1-FOLDER
                MOVE    SPA-GMN-L02-FILENM1  TO  WRK-FILENM1
            END-IF             
       *
@@ -923,11 +923,11 @@
            MOVE    SPA-GMN-L02-FILE1   TO  SHELLTBL-ARG16
       *****MOVE    SPA-GMN-L02-FILE2   TO  SHELLTBL-ARG17
       *    ipアドレス取得
-           PERFORM 900-SYSTEM-GET-SEC
-           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG18
+      *****PERFORM 900-SYSTEM-GET-SEC
+      *****MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG18
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG19
-           MOVE    WRK-FILENM1-FOLDER
-                                   TO  SHELLTBL-ARG20
+      **** MOVE    WRK-FILENM1-FOLDER
+      ****                         TO  SHELLTBL-ARG20
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1189,6 +1189,13 @@
            END-PERFORM
            MOVE    SPA-GMN-L02-FILE1-MAX   TO  L02-FILE1-COUNT
       *
+           IF      SPA-GMN-L02-FILE1-MAX
+                                       =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  L02-B12-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  L02-B12-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1256,6 +1263,7 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -1271,6 +1279,13 @@
                             "、”：”、”￥”が入力してあります"
                                                      DELIMITED  BY  SIZE
                                                      INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0010"
+                   STRING   "システム管理のクライアント保存"
+                                                   DELIMITED  BY  SIZE
+                            "の指定を有効にして下さい"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "7777"
                    MOVE    WRK-TOUKEIERR               TO  SPA-ERRMSG

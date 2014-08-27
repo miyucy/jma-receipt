@@ -28,10 +28,9 @@ fi
 #        ${15} ERRFILENM
 #        ${16} ファイル出力先区分（診療）
 #        ${17} ファイル出力先区分（病名）
-#        ${18} 端末ｉｐアドレス
 #        ${19} HOSPNUM
-#        ${20} FILENM1 FOLDER
-#        ${21} FILENM2 FOLDER
+#        ${20} FILENM1 FOLDER（未使用）
+#        ${21} FILENM2 FOLDER（未使用）
 #-------------------------------------------#
 
         LOG_FILE="/var/log/jma-receipt/${19}toukei1.log"
@@ -42,10 +41,7 @@ fi
         echo "arg15 = [" ${15} "]" >>$LOG_FILE
         echo "arg16 = [" ${16} "]" >>$LOG_FILE
         echo "arg17 = [" ${17} "]" >>$LOG_FILE
-        echo "arg18 = [" ${18} "]" >>$LOG_FILE
         echo "arg19 = [" ${19} "]" >>$LOG_FILE
-        echo "arg20 = [" ${20} "]" >>$LOG_FILE
-        echo "arg21 = [" ${21} "]" >>$LOG_FILE
 
 ##      エラーファイル削除
 	echo "errfile = [" ${MCP_TEMPDIR}/${15}  "]" >> $LOG_FILE
@@ -70,57 +66,23 @@ fi
 
         if  [ ${12} -eq '2' ]; then
             if   [ ${9} != '2' ]; then
+                echo "--- nkf  [" ${MCP_TEMPDIR}/${19}toukei01.dat "=>" ${MCP_TEMPDIR}/$7 "]" >>$LOG_FILE
                 nkf -s -Lw ${MCP_TEMPDIR}/${19}toukei01.dat > ${MCP_TEMPDIR}/$7
             fi 
             if   [ ${9} != '1' ]; then
+                echo "--- nkf  [" ${MCP_TEMPDIR}/${19}toukei02.dat "=>" ${MCP_TEMPDIR}/$8 "]" >>$LOG_FILE
                 nkf -s -Lw ${MCP_TEMPDIR}/${19}toukei02.dat > ${MCP_TEMPDIR}/$8
             fi 
         else
             if   [ ${9} != '2' ]; then
+                echo "--- cp  [" ${MCP_TEMPDIR}/${19}toukei01.dat "=>" ${MCP_TEMPDIR}/$7 "]" >>$LOG_FILE
                 cp  ${MCP_TEMPDIR}/${19}toukei01.dat ${MCP_TEMPDIR}/$7
             fi 
             if   [ ${9} != '1' ]; then
+                echo "--- cp  [" ${MCP_TEMPDIR}/${19}toukei02.dat "=>" ${MCP_TEMPDIR}/$8 "]" >>$LOG_FILE
                 cp  ${MCP_TEMPDIR}/${19}toukei02.dat ${MCP_TEMPDIR}/$8
             fi
         fi
-#
-    FDDHOST=`echo ${18}|tr \[\] "  "`
-        if   ( [ ${9} != '2' ] && [ ${16} != '6' ] ); then
-             case ${16} in
-                  3) 	$FDW -host $FDDHOST -command user1-write.sh${MCP_TEMPDIR}/$7 $7
-			RC=$?
-                        ;;
-                  4) 	$FDW -host $FDDHOST -command user2-write.sh ${MCP_TEMPDIR}/$7 $7
-			RC=$?
-                        ;;
-                  5) 	$FDW -host $FDDHOST -command user3-write.sh ${MCP_TEMPDIR}/$7 $7
-			RC=$?
-                        ;;
-             esac
-	     if  [ $RC -ne '0' ]; then
-		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4},${19} >> $LOG_FILE 2>&1
-		exit
-	     fi
-        fi         
-        if   ( [ ${9} != '1' ] && [ ${17} != '6' ] ); then
-             case ${17} in
-                  3) 	$FDW -host $FDDHOST -command user1-write.sh ${MCP_TEMPDIR}/$8 $8
-			RC=$?
-                        ;;
-                  4) 	$FDW -host $FDDHOST -command user2-write.sh ${MCP_TEMPDIR}/$8 $8
-			RC=$?
-                        ;;
-                  5) 	$FDW -host $FDDHOST -command user3-write.sh ${MCP_TEMPDIR}/$8 $8
-			RC=$?
-                        ;;
-             esac
-	     if  [ $RC -ne '0' ]; then
-		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4},${19} >> $LOG_FILE 2>&1
-		exit
-	     fi
-        fi         
 
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${19} >> $LOG_FILE 2>&1
 

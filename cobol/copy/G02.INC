@@ -1,4 +1,5 @@
           02  G02.
+              03  G02-B12-STATE   PIC S9(9)   BINARY.
               03  G02-SRYYM.
                 04  G02-VALUE   PIC X(7).
               03  G02-FILE1-COMBO.

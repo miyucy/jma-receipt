@@ -1,4 +1,5 @@
           02  L02.
+              03  L02-B12-STATE   PIC S9(9)   BINARY.
               03  L02-SRYYMD.
                 04  L02-VALUE   PIC X(10).
               03  L02-FILE1-COMBO.
