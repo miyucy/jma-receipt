@@ -13440,8 +13440,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                         END-IF
       *ver.4.7
                    ELSE
+      *H26.10
+      *                ©гне©м©Т╧Г╥в
+                       IF      SPA-COM-INPUTCD (WRK-IDX)
+                                                   =   "099140012"
+                           MOVE    " X "               TO  WRK-KAKERU
+                       ELSE
+      *!! 
                        MOVE    SPACE               TO  WRK-KAISU-H
                        MOVE    SPACE               TO  WRK-KAKERU
+      *!! 
+                       END-IF
                    END-IF
                ELSE
                    MOVE    " X "               TO  WRK-KAKERU

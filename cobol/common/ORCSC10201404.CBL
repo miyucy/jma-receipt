@@ -1003,6 +1003,12 @@
                MOVE    "0008"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-MAX)
            END-IF
+      *H26.10
+      *    ©гне©м©Т╧Г╥в
+           IF     WRK-COM-INPUTCD (IDX-MAX)   =   "099140012"
+               MOVE    SPACE           TO  WRK-ERRCD
+               MOVE    SPACE           TO  WRK-COM-CUR (IDX-MAX)
+           END-IF
            .
        10012-KAISU-CHK-EXT.
            EXIT.

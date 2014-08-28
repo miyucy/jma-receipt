@@ -926,6 +926,9 @@
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1" ) OR
                           (SPA-GMN-INPUTCD(IDX - 1 )(1:1)  =  "#"
                                                            OR "$")
+      *H26.10
+                       OR (SPA-COM-INPUTCD(IDX - 1)
+                                               =   "099140012" )
       *                薬剤料逓減の時、内服薬剤とする
                        IF      SPA-COM-INPUTCD (IDX)   =   "820000047"
                            MOVE    "21"            TO  SPA-COM-SRYKBN
@@ -1864,7 +1867,10 @@
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1")
                        OR (SPA-GMN-INPUTCD(IDX - 1 )(1:1)
                                                        =   "#"
-                                                       OR  "$" ))
+                                                       OR  "$" )
+      *H26.10
+                       OR (SPA-COM-INPUTCD(IDX - 1)
+                                               =   "099140012" ))
                        MOVE    "99"            TO  SPA-COM-SRYKBN(IDX)
                        MOVE    "990"           TO  SPA-COM-SRYSYUKBN
                                                                  (IDX)
@@ -1875,14 +1881,6 @@
                                                TO  SPA-COM-ZAIEND(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
-      *                診療種別入力
-      *                 IF      WRK-SRYSYUKBN   NOT =   SPACE
-      *                     MOVE    WRK-SRYSYUKBN
-      *                                             TO  SPA-COM-SRYSYUKBN
-      *                                                          (IDX)
-      *                     MOVE    SPACE           TO  SPA-COM-ZAIEND
-      *                                                          (IDX)
-      **                 END-IF
                    END-IF
       *        フリーの時、点数マスタより、決定
                WHEN    OTHER
@@ -1957,6 +1955,23 @@
                        WHEN    "099140001"
       *                在宅患者共同開始日
                        WHEN    "099140004"
+                           MOVE    "14"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "140"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                    １剤１明細とする
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                                  (IDX)
+                           MOVE    1               TO  FLG-ZAI
+      *H26.10
+      *                訪問診療に掛かる記録書
+                       WHEN    "099140011"
+                           MOVE    "14"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "140"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                診療人数合計
+                       WHEN    "099140012"
                            MOVE    "14"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "140"           TO  SPA-COM-SRYSYUKBN
