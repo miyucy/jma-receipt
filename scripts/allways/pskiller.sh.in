@@ -1,0 +1,54 @@
+#!/bin/bash
+
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
+fi
+. $JMARECEIPT_ENV
+
+#-------------------------------------#
+# ${1} 終了プロセスＩＤ 
+# ${2} シグナル名（TERM） 
+# ${3} プロセス起動日時分:YYYYMMDDHHMM
+#-------------------------------------#
+
+ppidlstartcheck() {
+  local PID=`expr ${1} \* 1`
+  local LSTART=`ps -o lstart --no-headers -p ${PID}`
+  local START1=$(date --date="${LSTART}" +'%Y%m%d%H%M')
+  local START2=$(date --date="${LSTART}" -d '1 min' +'%Y%m%d%H%M')
+  local START3=$(date --date="${LSTART}" -d '1 min ago' +'%Y%m%d%H%M')
+  if ! [ "${START1}" = "${3}" -o \
+         "${START2}" = "${3}" -o \
+         "${START3}" = "${3}" ]; then
+    echo "ppid lstart Unmatched."
+    exit 1
+  fi
+}
+
+pskilltree() {
+  local P_PID=`expr ${1} \* 1`
+  local K_SIG=${2:-TERM}
+  local P_USR=`ps -o user --no-headers -p ${P_PID}`
+  if [ "${P_USR}" = "${ORCAUSER}" ]; then
+    kill -STOP ${P_PID}
+    for C_PID in $(ps -o pid --no-headers --ppid ${P_PID}); do
+      pskilltree ${C_PID} ${K_SIG}
+    done
+    kill -${K_SIG} ${P_PID}
+    kill -CONT ${P_PID}
+  fi
+}
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $(basename $0) <pid> [signal] [lstart]"
+  exit 1
+fi
+
+if ! [ -z ${3} ]; then
+  ppidlstartcheck $@
+fi
+pskilltree $@
+
+exit 0

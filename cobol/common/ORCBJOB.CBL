@@ -64,6 +64,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-SHELLID          PIC X(08).
            03  WRK-PARA-ERRCD            PIC X(04).
 grpsys 01  WRK-PARA-HOSPNUM              PIC 9(02).
+       01  WRK-PARA-PID                  PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -127,8 +128,16 @@ grpsys 01  WRK-PARA-HOSPNUM              PIC 9(02).
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
+                                               WRK-PARA-PID
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           IF      WRK-PARA-MODE   =   "PID"   OR  "PPD"
+               IF      WRK-PARA-PID    NOT NUMERIC
+                   MOVE    ZERO                TO  WRK-PARA-PID
+               END-IF
+           ELSE
+               MOVE    ZERO                TO  WRK-PARA-PID
+           END-IF
       *???
            DISPLAY "ORCBJOB=" WRK-PARA-MODE "##"
       *???          
@@ -187,6 +196,19 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           IF      WRK-PARA-MODE   =   "PID"
+               MOVE    WRK-PARA-PID    TO  JOB-PID1
+           ELSE
+               IF      WRK-PARA-MODE   =   "PPD"
+                   MOVE    WRK-PARA-PID    TO  JOB-PID2
+               END-IF
+           END-IF
+      *ito debug start
+           DISPLAY "JOB-JOBID:  [ " JOB-JOBID " ]"
+           DISPLAY "JOB-SHELLID:[ " JOB-SHELLID " ]"
+           DISPLAY "JOB-PID1:   [ " JOB-PID1 " ]"
+           DISPLAY "JOB-PID2:   [ " JOB-PID2 " ]"
+      *ito debug end
 grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 

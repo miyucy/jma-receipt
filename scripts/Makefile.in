@@ -96,6 +96,7 @@ utf8_shell_sources = \
 	allways/log_shell.sh.in \
 	monthly/recept42.sh.in \
 	allways/mask.sh.in \
+	allways/pskiller.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \

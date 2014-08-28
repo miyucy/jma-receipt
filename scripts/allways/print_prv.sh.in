@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV" ; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 #if ! test -d /var/tmp/.orca_ps ; then
 #    mkdir /var/tmp/.orca_ps
@@ -28,6 +26,14 @@ fi
 #        ${22} クライアント印刷ダイアログ表示
 #-------------------------------------------#
 #
+termtrap () {
+  echo "term trap in ${0}."
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${18}
+  exit 1
+}
+
+trap 'termtrap' TERM
+
 ERR_FILE_BASE=${12}
 ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
 
