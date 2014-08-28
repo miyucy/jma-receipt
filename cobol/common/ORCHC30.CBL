@@ -1590,9 +1590,13 @@
            MOVE    SYS-1031-PRTNM(8)
                                    TO  MKPRT-PRTNM
            MOVE   "お薬情報"       TO  MKPRT-INFO
-           CALL   "ORCSMKPRT1"         USING
+      *----(04.08.01)--UPD-START---
+      *    再印刷しない
+      *     CALL   "ORCSMKPRT1"         USING
+           CALL   "ORCSMKPRT"          USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
+      *----(04.08.01)--UPD-END-----
       *
            .
        400-PRT-WRITE-EXT.
