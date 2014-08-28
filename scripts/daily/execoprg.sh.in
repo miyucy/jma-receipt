@@ -8,7 +8,7 @@ fi
 . $JMARECEIPT_ENV
 
 trap "cleanup" EXIT
-trap 'termtrap' TERM
+trap 'termtrap "$@"' TERM
 
 
 #-------------------------------------------#

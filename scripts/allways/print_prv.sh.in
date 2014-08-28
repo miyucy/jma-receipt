@@ -28,11 +28,15 @@ fi
 #
 termtrap () {
   echo "term trap in ${0}."
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${18}
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${13}${14},${18}"
   exit 1
 }
 
-trap 'termtrap' TERM
+trap 'termtrap "$@"' TERM
+
+PID=`printf "%05d" $$`
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "PID${13}${14},${18},${PID}"
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "PPD${13}${14},${18},${R_PID}"
 
 ERR_FILE_BASE=${12}
 ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
