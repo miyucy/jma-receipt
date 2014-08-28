@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -57,16 +58,19 @@
        WORKING-STORAGE             SECTION.
       *
       *    ＣＳＶデータ
-       01  CSVPARA.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //CSVPARA//.
+      *01  CSVPARA.
+      *****03  FILLER              PIC X(05)   VALUE   "/tmp/".
+       01  CSVPARA-BASENAME.
            03  CSVPARA-HOSPNUM     PIC 9(02).
            03  FILLER              PIC X(06)   VALUE 
                                                        "PUTCSV".
            03  CSVPARA-RENNUM      PIC 9(02)   VALUE   1.
            03  FILLER              PIC X(04)   VALUE   ".txt".
       *
-           COPY    "CPERRFL.INC"   REPLACING   //ERRFLPARA//
-                                   BY          //CSVERR//.
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+                                   BY         //CSVERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -130,6 +134,8 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -184,6 +190,16 @@
                                    TO  SPA-HOSPNUM
       *
            MOVE    SPA-HOSPNUM     TO  CSVPARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    CSVERR              TO  SGETTEMP-BASENAMES  (1)
+           MOVE    CSVPARA-BASENAME    TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  CSVERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  CSVERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  CSVPARA
       *
            PERFORM 100-DBOPEN-SEC
       *

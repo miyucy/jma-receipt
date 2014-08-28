@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.00    NACL-竹田    10/11/25  クライアント保存拡張対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -343,7 +345,11 @@
                                    TO  SPA-SFILESV-TITLE     (IDX)
            MOVE    SPA-GMN-TKENSU     (SPA-NAI-SELNUM)
                                    TO  SPA-SFILESV-CNT-ALL   (IDX)
-           MOVE    "/tmp/"         TO  SPA-SFILESV-FOR-FOLDER(IDX)
+      *****MOVE    "/tmp/"         TO  SPA-SFILESV-FOR-FOLDER(IDX)
+           STRING  MCP-TEMPDIR         DELIMITED  BY  SPACE
+                   "/"                 DELIMITED  BY  SIZE
+                                   INTO    SPA-SFILESV-FOR-FOLDER (IDX)
+           END-STRING 
            STRING  SPA-HOSPNUM             DELIMITED  BY  SIZE  
                    SPA-NAI-XG02-TO-DATA    DELIMITED  BY  SPACE
                                    INTO  SPA-SFILESV-FOR-DATA  (IDX)

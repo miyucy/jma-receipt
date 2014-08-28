@@ -30,6 +30,8 @@
       *  04.05.01    NACL-藤原    10/03/23  ＨＯＳＴ名取得方法の変更
       *
       *  04.07.01    NACL-藤原    14/03/24  スクリプト起動パスサーチ対応
+      *
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -551,7 +553,8 @@
                                    TO  SHELLTBL-ARG10
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG11
-           MOVE    TOUKEICSVERR    TO  SHELLTBL-ARG12
+           MOVE    TOUKEICSVERR-BASENAME
+                                   TO  SHELLTBL-ARG12
            MOVE    SPA-GMN-XG02-FILENAME
                                    TO  SHELLTBL-ARG13
            MOVE    SPA-GMN-XG02-CDKBN

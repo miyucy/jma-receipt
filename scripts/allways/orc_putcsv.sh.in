@@ -27,16 +27,15 @@ fi
 #        ${14} コード区分（1:EUC 2:S-jis）
 #        ${15} TITLE
 #-------------------------------------------#
-#
-##      エラーファイル削除
-        rm -f ${12}
 
         LOG_FILE="/var/log/jma-receipt/${1}orcputcsv.log"
-        FILE_1="/tmp/"${1}"PUTCSV01.txt"
-#       FILE_2=${13}${1}${8}
-        FILE_3="/tmp/"${1}${8}
+#
+##      エラーファイル削除
+        echo "errfile = [" ${MCP_TEMPDIR}/${12}  "]" >> $LOG_FILE
+        rm  -f ${MCP_TEMPDIR}/${12}
 
-        rm -f $LOG_FILE
+        FILE_1=${MCP_TEMPDIR}/${1}"PUTCSV01.txt"
+        FILE_3=${MCP_TEMPDIR}/${1}${8}
 
         echo "arg6  = [" ${6} "]"   >$LOG_FILE
         echo "arg7  = [" ${7} "]"   >>$LOG_FILE
@@ -46,16 +45,14 @@ fi
         echo "arg14 = [" ${14} "]"  >>$LOG_FILE
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
         echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
-#       echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
         echo "file3= [" $FILE_3 "]"  >> $LOG_FILE
 
 #       該当ファイル削除
-#	rm -f $FILE_2
 	rm -f $FILE_1
 	rm -f $FILE_3
 
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUTCSV -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${15},${12} >> $LOG_FILE 2>&1
-        if  [ -e ${12} ]; then
+        if  [ -e ${MCP_TEMPDIR}/${12} ]; then
             exit
         fi
 
