@@ -427,31 +427,31 @@
                     06  W12-KOUIKIKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KOUIKIKBNLST
                             PIC X(34)   OCCURS  4 TIMES.
-                  05  W12-KIGO-DELIMITER-FLG-COMBO.
-                    06  W12-KIGO-DELIMITER-FLG.
+                  05  W12-KIGO-DELI-FLG-COMBO.
+                    06  W12-KIGO-DELI-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-KIGO-DELIMITER-FLG-COUNT PIC S9(9)   BINARY.
-                    06  W12-KIGO-DELIMITER-FLGLST
+                    06  W12-KIGO-DELI-FLG-COUNT PIC S9(9)   BINARY.
+                    06  W12-KIGO-DELI-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  W12-KIGO-DELIMITER-HKNJANUM-FLG-COMBO.
-                    06  W12-KIGO-DELIMITER-HKNJANUM-FLG.
+                  05  W12-KIGO-DELI-HKNJA-FLG-COMBO.
+                    06  W12-KIGO-DELI-HKNJA-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-KIGO-DELIMITER-HKNJANUM-FLG-COUNT
+                    06  W12-KIGO-DELI-HKNJA-FLG-COUNT
                                                      PIC S9(9)   BINARY.
-                    06  W12-KIGO-DELIMITER-HKNJANUM-FLGLST
+                    06  W12-KIGO-DELI-HKNJA-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  W12-NUM-DELIMITER-FLG-COMBO.
-                    06  W12-NUM-DELIMITER-FLG.
+                  05  W12-NUM-DELI-FLG-COMBO.
+                    06  W12-NUM-DELI-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-NUM-DELIMITER-FLG-COUNT  PIC S9(9)   BINARY.
-                    06  W12-NUM-DELIMITER-FLGLST
+                    06  W12-NUM-DELI-FLG-COUNT  PIC S9(9)   BINARY.
+                    06  W12-NUM-DELI-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  W12-NUM-DELIMITER-HKNJANUM-FLG-COMBO.
-                    06  W12-NUM-DELIMITER-HKNJANUM-FLG.
+                  05  W12-NUM-DELI-HKNJA-FLG-COMBO.
+                    06  W12-NUM-DELI-HKNJA-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-NUM-DELIMITER-HKNJANUM-FLG-COUNT
+                    06  W12-NUM-DELI-HKNJA-FLG-COUNT
                                                     PIC S9(9)   BINARY.
-                    06  W12-NUM-DELIMITER-HKNJANUM-FLGLST
+                    06  W12-NUM-DELI-HKNJA-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
                 04  W12-FI26.
                   05  W12-PREFKBN-PRTJYUN-COMBO.
