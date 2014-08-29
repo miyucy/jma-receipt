@@ -1,14 +1,15 @@
 #!/bin/bash
 
-JMARECEIPT_ENV="@jma-receipt-env@"
-if [ ! -f ${JMARECEIPT_ENV} ]; then
-    echo "${JMARECEIPT_ENV} does not found."
-    exit 1
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
 fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
 . $JMARECEIPT_ENV
 
 trap "cleanup" EXIT
-trap 'termtrap "$@"' TERM
 
 
 #-------------------------------------------#
@@ -51,20 +52,12 @@ esac
 
 LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb${LD}.log
 
+
+
 cleanup () {
    echo
 }
 
-termtrap () {
-  echo "term trap in ${0}."
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${12}${13},${14}" >> $LOGFILE 2>&1
-  cleanup
-  exit 1
-}
-
-PID=`printf "%05d" $$`
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "PID${12}${13},${14},${PID}" > $LOGFILE 2>&1
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "PPD${12}${13},${14},${R_PID}" >> $LOGFILE 2>&1
 
 [ -e ${ERR_FILE_OLD} ] && rm  ${ERR_FILE_OLD} 
 [ -e ${ERR_FILE_FULL} ] && rm  ${ERR_FILE_FULL} 
@@ -73,7 +66,7 @@ echo $#
 
 
 RENNUM=$(expr $RENNUM + 1) 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBLMAIN -parameter "${16},$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${ERR_FILE_OLD},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},"  >> $LOGFILE 2>&1
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBLMAIN -parameter "${16},$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${ERR_FILE_OLD},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},"  > $LOGFILE 2>&1
 if  [ -e ${ERR_FILE_FULL} ]; then
 	exit
 fi

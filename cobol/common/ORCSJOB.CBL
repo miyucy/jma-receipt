@@ -196,13 +196,6 @@ grpsys         SPA-AREA
                        PERFORM 210-CANCEL2-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
-               WHEN    "PID"
-               WHEN    "PPD"
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
-                       PERFORM 220-PIDSET-SEC
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                WHEN    OTHER
                        MOVE  10            TO  SJOBKANRI-RETURN  
                        MOVE  1             TO  FLG-END
@@ -278,8 +271,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            END-IF
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
-           MOVE    ZERO                TO  WRK-JOB-PID1
-           MOVE    ZERO                TO  WRK-JOB-PID2
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
@@ -570,8 +561,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
            MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
-           MOVE    ZERO                TO  WRK-JOB-PID1
-           MOVE    ZERO                TO  WRK-JOB-PID2
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
@@ -607,8 +596,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
            MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
-           MOVE    ZERO                TO  WRK-JOB-PID1
-           MOVE    ZERO                TO  WRK-JOB-PID2
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
@@ -626,51 +613,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        210-CANCEL2-EXT.
            EXIT.
       * 
-      *****************************************************************
-      *    プロセスＩＤセット　処理
-      *****************************************************************
-       220-PIDSET-SEC              SECTION.
-      *
-      *    レコード存在チェック
-           MOVE    JOBKANRI-REC        TO  MCPDATA-REC
-           PERFORM 910-JOBKANRI-INV2-SEC
-           IF       FLG-JOBKANRI       NOT  =  ZERO
-               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
-               GO    TO                220-PIDSET-EXT
-           END-IF
-      *
-      *    レコード更新
-           IF      SJOBKANRI-MODE      =   "PID"
-               MOVE    JOB-PID1            TO  WRK-JOB-PID1
-               IF      JOB-PID1            NOT NUMERIC
-                   MOVE    ZERO                TO   WRK-JOB-PID1
-               END-IF
-           END-IF
-           IF      SJOBKANRI-MODE      =   "PPD"
-               MOVE    JOB-PID2            TO  WRK-JOB-PID2
-               IF      JOB-PID2            NOT NUMERIC
-                   MOVE    ZERO                TO   WRK-JOB-PID2
-               END-IF
-           END-IF
-           MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
-      *ito debug start
-           DISPLAY "WRK-JOB-PID1:[ " WRK-JOB-PID1 " ]"
-           DISPLAY "WRK-JOB-PID2:[ " WRK-JOB-PID2 " ]"
-      *ito debug end
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
-           PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC     =   ZERO
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
-           ELSE
-               DISPLAY "UPDATE ERR KEY = [" MCP-RC JOB-SHELLID "]"   
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
-           END-IF
-           .
-       220-PIDSET-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    システム日付編集処理
       *****************************************************************

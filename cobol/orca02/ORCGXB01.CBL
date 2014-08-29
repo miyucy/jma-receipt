@@ -78,8 +78,6 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK1-ZZ             PIC ZZZ9.
            03  WRK-JOBNAME         PIC X(38).
-           03  WRK-JOBCNT          PIC 9(04).
-           03  WRK-KILLPID         PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -96,8 +94,6 @@
            03  WRK-ENDTIME         PIC X(08).
            03  WRK-STEPSTARTTIME   PIC X(08).
            03  WRK-STEPENDTIME     PIC X(08).
-       01  SHELL-AREA.
-           03  SHELL-NAME          PIC X(11)   VALUE   "pskiller.sh".
       *
       *****************************************************************
       *    連絡　領域
@@ -106,8 +102,6 @@
       *    日付サブルーチン領域
            COPY  "CPORCSDAY.INC".
            COPY  "CPORCSLNK.INC".
-      *
-           COPY    "CPSHELLTBL.INC".
       *
       *    ジョブ管理
        01  JOBKANRI-REC.
@@ -607,8 +601,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2013-JOBKANRI-DELETE-SEC       SECTION.
       *
-           MOVE    ZERO               TO  WRK-JOBCNT
-           MOVE    ZERO               TO  WRK-KILLPID
            PERFORM VARYING     IDX    FROM    1   BY  1
                    UNTIL       IDX    >   SPA-GMN-MAX
                IF  SPA-KBN-SHELLID   =  SPA-GMN-SHELLID (IDX)
@@ -690,12 +682,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                (WRK-STEPENDTIME     NOT =
                                          SPA-GMN-STEPENDTIME (IDX))
                                MOVE    "0004"         TO  SPA-ERRCD
-                           ELSE
-                               COMPUTE WRK-JOBCNT     =   WRK-JOBCNT
-                                                      +   1
-                               IF      JOB-PID2   NOT =   ZERO
-                                   MOVE    JOB-PID2   TO  WRK-KILLPID
-                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -706,18 +692,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM.
       *    ジョブ管理削除 JOBID で DEL 指定   SHELLID で ALL 指定
            IF  SPA-ERRCD   NOT =   "0004"
-      *        強制終了
-               IF     (WRK-JOBCNT          =   1)      AND
-                      (JOB-PID1        NOT =   ZERO)
-                   MOVE    JOB-PID1            TO  WRK-KILLPID
-               END-IF
-               IF      WRK-KILLPID     NOT =   ZERO
-      *ito debug start
-                 DISPLAY "pskiller pid:[ " WRK-KILLPID " ]"
-      *ito debug end
-                       PERFORM 20131-PID-KILL-SEC
-               END-IF
-      *
                INITIALIZE                      JOBKANRI-REC
                MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
                MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
@@ -733,31 +707,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF.
       *
        2013-JOBKANRI-DELETE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    プロセスＩＤ強制終了　処理
-      *****************************************************************
-       20131-PID-KILL-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  SHELLTBL
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    WRK-KILLPID         TO  SHELLTBL-ARG1
-           MOVE    "TERM"              TO  SHELLTBL-ARG2
-           STRING  JOB-STARTYMD    DELIMITED   BY  SPACE
-                   JOB-STARTTIME (1:4)
-                                   DELIMITED   BY  SIZE
-               INTO    SHELLTBL-ARG3
-           END-STRING
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "allways"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           .
-       20131-PID-KILL-EXT.
            EXIT.
       *
       *****************************************************************
