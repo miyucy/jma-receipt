@@ -1509,7 +1509,7 @@
                    MOVE    SPACE           TO  SPA-JIDCD
       *            診療内容変更の確認
                    IF      SPA-JID1-FLG        =   "OK"
-                       PERFORM 410171-NYUGAIKBN-CHANGE-SEC
+                       PERFORM 410171-NYUGAIKBN-CHG-SEC
                        MOVE    1                  TO  SPA-GMN-CUR
                    ELSE
                        MOVE    SPA-J02-SRYYMDW(1:6)  TO  SPA-GMN-SRYYM
@@ -1520,7 +1520,7 @@
                    MOVE    SPACE           TO  SPA-JIDCD
       *            保険組合せ確認
                    IF      SPA-JID1-FLG        =   "OK"
-                       PERFORM 410171-NYUGAIKBN-CHANGE-SEC
+                       PERFORM 410171-NYUGAIKBN-CHG-SEC
                        IF      SPA-GMN-MAX         =   ZERO
                            MOVE    10              TO  SPA-GMN-CUR
                        END-IF
@@ -1533,7 +1533,7 @@
                    MOVE    SPACE           TO  SPA-JIDCD
       *            入外区分
                    IF      SPA-JID1-FLG        =   "OK"
-                       PERFORM 410171-NYUGAIKBN-CHANGE-SEC
+                       PERFORM 410171-NYUGAIKBN-CHG-SEC
                        IF      SPA-GMN-MAX         =   ZERO
                            MOVE    10              TO  SPA-GMN-CUR
                        END-IF
@@ -3322,6 +3322,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SRY-AUTOKBN (IDZ)   =   "3"         )
                MOVE    2                   TO  SPA-NAI-ZAITENFLG (IDX)
            END-IF
+      *H26.10
+      *    向精神薬剤逓減の対象（精減）
+           IF     (SRY-SRYCD  (IDZ)    =   "820000166" )  AND
+                  (SRY-SRYKBN          =   "21"
+                                       OR  "22"
+                                       OR  "23"        )  AND
+                  (SRY-AUTOKBN (IDZ)   =   "3"         )
+               MOVE    2                   TO  SPA-NAI-ZAITENFLG (IDX)
+           END-IF
+      *
       *    算定履歴情報（剤内の最初に対象となるもの）
            IF     (TNS-SRYCD(1:1)      =   "1"  )  AND
                   (TNS-DATAKBN         =   "1"  )  AND
@@ -7847,7 +7857,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      SPA-UPDFLG          =   SPACE
-               PERFORM 410171-NYUGAIKBN-CHANGE-SEC
+               PERFORM 410171-NYUGAIKBN-CHG-SEC
                IF      SPA-GMN-MAX         =   ZERO
                    MOVE    10                  TO  SPA-GMN-CUR
                END-IF
@@ -7894,7 +7904,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      SPA-UPDFLG          =   SPACE
-               PERFORM 410171-NYUGAIKBN-CHANGE-SEC
+               PERFORM 410171-NYUGAIKBN-CHG-SEC
            ELSE
                MOVE    "0112"              TO  SPA-JIDCD
                MOVE    4                   TO  SPA-J025-SYORI
@@ -7907,7 +7917,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    入外区分変更処理
       *****************************************************************
-       410171-NYUGAIKBN-CHANGE-SEC     SECTION.
+       410171-NYUGAIKBN-CHG-SEC     SECTION.
       *
       *    現在表示されている内容を更新する
       *    診療会計マスター更新
@@ -7919,20 +7929,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       (FLG-END             =   1     )
                    CONTINUE
                ELSE
-                   PERFORM 410171-NYUGAIKBN-CHANGE-SYORI-SEC
+                   PERFORM 410171-NYUGAIKBN-CHG-SYORI-SEC
                END-IF
            ELSE
-               PERFORM 410171-NYUGAIKBN-CHANGE-SYORI-SEC
+               PERFORM 410171-NYUGAIKBN-CHG-SYORI-SEC
            END-IF
       *
            .
-       410171-NYUGAIKBN-CHANGE-EXT.
+       410171-NYUGAIKBN-CHG-EXT.
            EXIT.
       *
       *****************************************************************
       *    入外区分変更処理
       *****************************************************************
-       410171-NYUGAIKBN-CHANGE-SYORI-SEC     SECTION.
+       410171-NYUGAIKBN-CHG-SYORI-SEC     SECTION.
       *
            IF      SPA-GMN-NYUGAIKBN   =   SPA-NYUGAIKBN
                MOVE    ZERO                TO  FLG-NYUGAICHG
@@ -8000,7 +8010,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            .
-       410171-NYUGAIKBN-CHANGE-SYORI-EXT.
+       410171-NYUGAIKBN-CHG-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8035,7 +8045,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      SPA-UPDFLG          =   SPACE
-               PERFORM 410171-NYUGAIKBN-CHANGE-SEC
+               PERFORM 410171-NYUGAIKBN-CHG-SEC
            ELSE
                MOVE    "0110"              TO  SPA-JIDCD
                MOVE    4                   TO  SPA-J025-SYORI
@@ -8913,7 +8923,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        =   1
                                        OR  2       )  AND
                   (SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
-                                       =   "21" )
+                                       =   "21"
+                                       OR  "22"
+                                       OR  "23"    )
                MOVE    "0027"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
@@ -12756,7 +12768,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 410161-HENSRYYMD-SYORI-SEC
                WHEN    4
       *            その他変更
-                   PERFORM 410171-NYUGAIKBN-CHANGE-SYORI-SEC
+                   PERFORM 410171-NYUGAIKBN-CHG-SYORI-SEC
                WHEN    5
       *            剤変更へ
                    PERFORM 4201-ZAIHENKOU-SYORI1-SEC
@@ -14299,7 +14311,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0027"
-                   STRING  "対象の剤は内服薬剤料逓減に関する剤です。"
+      *H26.10      STRING  "対象の剤は内服薬剤料逓減に関する剤です。"
+                   STRING  "対象の剤は薬剤料逓減に関する剤です。"
                            "剤変更はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-ERRMSG

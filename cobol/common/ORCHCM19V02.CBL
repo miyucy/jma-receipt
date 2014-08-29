@@ -3106,6 +3106,12 @@
            MOVE    WRK-SRY-SRYCD (IDXA)    TO  WRK-SRYCD
            MOVE    WRK-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
+      *H26.10
+      *    減点は対象外
+           IF      TNS-TENSIKIBETU     =   7
+               GO      TO    31032-TENSU-HENSYU-EXT
+           END-IF
+      *
       *    内容
            IF      WRK-SRYCD  (1:1)   =   "6"
       *H25.4
@@ -3225,13 +3231,13 @@
       *    内容編集
            PERFORM 31031-NAIYOU-HENSYU-SEC
       *
-      *    ＱＲデータ用
-           IF      WRK-SRYCD           =   "820000047"
+      ***  ＱＲデータ用
+      *    IF      WRK-SRYCD           =   "820000047"
       *        （減）は対象外
-               CONTINUE
-           ELSE
-               PERFORM 310329-QR-MEISEI-HEN-SEC
-           END-IF
+      *        CONTINUE
+      *    ELSE
+      *        PERFORM 310329-QR-MEISEI-HEN-SEC
+      **** END-IF
            .
        31032-TENSU-HENSYU-EXT.
            EXIT.

@@ -270,9 +270,11 @@
       *!!
       *    ¿ÇÎÅ¹Ô°ÙÉí²Ã¾ðÊóÀßÄê¡Ê²ÊËè¡Ë
            03  WRK-ACTP-AREA.
-               05  WRK-ACTP-ZAINUM-G       OCCURS   10.
+               05  WRK-ACTP-ZAINUM-G       OCCURS   20.
                    07  WRK-ACTP-SRYKA      PIC X(02).
                    07  WRK-ACTP-HKNCOMBI   PIC X(04).
+      *H26.10      ¿ÇÎÅ¶èÊ¬Ëè
+                   07  WRK-ACTP-SRYKBN     PIC X(02).
                    07  WRK-ACTP-MAX        PIC 9(04).
                    07  WRK-ACTP-ZAINUM     PIC 9(08)   OCCURS   50.
                05  IDX-GEN                 PIC 9(04).
@@ -306,10 +308,18 @@
       *
       *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó¥Þ¥¹¥¿¡Ý¡ÊÆâÉþÄþ¸º¡Ë
        01  TBL-SRYACCTPLUS-AREA.
-           02  TBL-SRYACCTPLUS-REC   OCCURS   10.
+           02  TBL-SRYACCTPLUS-REC   OCCURS   20.
            COPY    "CPSRYACCTPLUS.INC"  REPLACING
                                      //ACCTP-// BY //TBL-ACCTP-//.
            03  TBL-ACCTP-HKNCOMBI      PIC X(04).
+           03  TBL-ACCTP-SRYKBN        PIC X(02).
+      *
+      *H26.10
+      * ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¸º»»¥³¡¼¥É
+       01  CONS-TAZAI-SRYCD        PIC X(09)   VALUE    "630010005".
+      * ¡ÊÀº¸º¡Ë
+       01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
+      *
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -2931,6 +2941,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       AND (LNK-WKSRY-SRYKBN (IDX)      =   "21"  )
                        MOVE    1               TO  FLG-GEN-ARI
                    END-IF
+      *H26.10
+      *            ¸þÀº¿ÀÌôÂ¿ºÞÄþ¸º¤Î¸º¤ÎÍ­ÌµÈ½Äê
+                   IF     (LNK-WKSRY-SRYCD (IDX IDY)
+                                                   =   CONS-SGEN-SRYCD)
+                      AND (LNK-WKSRY-SRYKBN (IDX)  =   "21"
+                                                   OR  "22"
+                                                   OR  "23"     )
+                       MOVE    1               TO  FLG-GEN-ARI
+                   END-IF
                END-PERFORM
            END-PERFORM
       *
@@ -3003,7 +3022,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
       *    ÆâÉþÄþ¸º¤ÎºÞ¥Á¥§¥Ã¥¯
            IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "21" )  AND
+                  (LNK-WKSRY-SRYKBN    (1) =   "21"
+                                           OR  "22"
+                                           OR  "23" )  AND
                   (LNK-WKSRYP-TEI-NKBN (1) =   2    )
                PERFORM 45015-TEIGEN-CHK-SEC
            END-IF
@@ -3019,28 +3040,34 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÆâÉþÄþ¸º½èÍý
            IF      FLG-GEN-ARI         =   1
                PERFORM VARYING IDX-GEN2    FROM    1   BY  1
-                       UNTIL   IDX-GEN2    >   10
+                       UNTIL   IDX-GEN2    >   20
                    IF      WRK-ACTP-SRYKA(IDX-GEN2)    =   SPACE
                        MOVE    LNK-WKSRY-SRYKA(01)
                                            TO  WRK-ACTP-SRYKA(IDX-GEN2)
                        MOVE    LNK-WKSRY-HKNCOMBI(01)
                                            TO  WRK-ACTP-HKNCOMBI
                                                             (IDX-GEN2)
+      *H26.10
+                       MOVE    LNK-WKSRY-SRYKBN(01)
+                                           TO  WRK-ACTP-SRYKBN
+                                                            (IDX-GEN2)
                    END-IF
                    IF     (WRK-ACTP-SRYKA(IDX-GEN2)
                                            =   LNK-WKSRY-SRYKA(01) )
                      AND  (WRK-ACTP-HKNCOMBI(IDX-GEN2)
                                            =   LNK-WKSRY-HKNCOMBI(01))
+      *H26.10
+                     AND  (WRK-ACTP-SRYKBN  (IDX-GEN2)
+                                           =   LNK-WKSRY-SRYKBN  (01))
                        ADD     1           TO  WRK-ACTP-MAX (IDX-GEN2)
                        MOVE    WRK-ACTP-MAX (IDX-GEN2) 
                                            TO  IDX-GEN
                        IF      IDX-GEN     >   50
                            MOVE    50                  TO  IDX-GEN
                        END-IF
-      **********   END-IF
-                   MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
+                       MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
                                                      (IDX-GEN2 IDX-GEN)
-                   MOVE    10              TO  IDX-GEN2
+                       MOVE    20              TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-IF
@@ -3165,7 +3192,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                               (FLG-ERR         =   1 )
                    MOVE    ZERO                TO  FLG-ERR2
                    PERFORM VARYING IDX-GEN5    FROM    1   BY  1
-                           UNTIL  (IDX-GEN5    >   10   )  OR
+                           UNTIL  (IDX-GEN5    >   20   )  OR
                                   (WRK-ACTP-SRYKA(IDX-GEN5)
                                                =   SPACE  )  OR
                                   (FLG-ERR2    =   1      )
@@ -3173,6 +3200,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            =   WRK-ACTP-SRYKA(IDX-GEN5))
                          AND  (LNK-WKSRY-HKNCOMBI (01)
                                            =   WRK-ACTP-HKNCOMBI
+                                                            (IDX-GEN5))
+                         AND  (LNK-WKSRY-SRYKBN   (01)
+                                           =   WRK-ACTP-SRYKBN
                                                             (IDX-GEN5))
                            PERFORM VARYING IDX-GEN6    FROM    1   BY  1
                                    UNTIL  (IDX-GEN6    >   50  )  OR

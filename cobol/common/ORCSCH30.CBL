@@ -80,6 +80,8 @@
            03  FLG-YKJOKUKBN       PIC 9(01).
            03  FLG-INNAI           PIC 9(01).
       *
+           03  FLG-NO              PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -193,6 +195,12 @@
       *
            03  TBL-SRY-MAX                 PIC 9(03).
       *
+      *H26.10
+      * 向精神薬多剤投与減算コード
+       01  CONS-TAZAI-SRYCD        PIC X(09)   VALUE    "630010005".
+      * （精減）
+       01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -294,30 +302,30 @@
            END-EVALUATE
       *
       *TEST
-           DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
-           DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
-           PERFORM VARYING    IDX   FROM    1  BY  1
-                   UNTIL      IDX   >  ORCHC30-MAX
-             DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
-                     ",ORCHC30-SURYO:" ORCHC30-SURYO (IDX)
-                     ",ORCHC30-KANSURYO:" ORCHC30-KANSURYO (IDX)
-                     ",ORCHC30-ZAIKBN:" ORCHC30-ZAIKBN (IDX)
-                     ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
-                     ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
-                     ",2:" ORCHC30-YOURYOU (IDX 2)
-                     ",3:" ORCHC30-YOURYOU (IDX 3)
-                     ",4:" ORCHC30-YOURYOU (IDX 4)
-                     ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
-             DISPLAY "ORCHC30-YSRYCD-NAME:"  ORCHC30-YSRYCD-NAME (IDX)
-             DISPLAY "ORCHC30-YOHOU-NAME:"  ORCHC30-YOHOU-NAME (IDX 1)
-                     ",CD:" ORCHC30-YOHOU (IDX 1)
-             DISPLAY "ORCHC30-COMMENT1:"  ORCHC30-COMMENT-CD (IDX 1)
-                        "," ORCHC30-COMMENT-MEI (IDX 1)
+      *    DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
+      *    DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
+      *    PERFORM VARYING    IDX   FROM    1  BY  1
+      *            UNTIL      IDX   >  ORCHC30-MAX
+      *      DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
+      *              ",ORCHC30-SURYO:" ORCHC30-SURYO (IDX)
+      *              ",ORCHC30-KANSURYO:" ORCHC30-KANSURYO (IDX)
+      *              ",ORCHC30-ZAIKBN:" ORCHC30-ZAIKBN (IDX)
+      *              ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
+      *              ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
+      *              ",2:" ORCHC30-YOURYOU (IDX 2)
+      *              ",3:" ORCHC30-YOURYOU (IDX 3)
+      *              ",4:" ORCHC30-YOURYOU (IDX 4)
+      *              ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
+      *      DISPLAY "ORCHC30-YSRYCD-NAME:"  ORCHC30-YSRYCD-NAME (IDX)
+      *      DISPLAY "ORCHC30-YOHOU-NAME:"  ORCHC30-YOHOU-NAME (IDX 1)
+      *              ",CD:" ORCHC30-YOHOU (IDX 1)
+      *      DISPLAY "ORCHC30-COMMENT1:"  ORCHC30-COMMENT-CD (IDX 1)
+      *                 "," ORCHC30-COMMENT-MEI (IDX 1)
       *      IF      ORCHC30-COMMENT-CD (IDX 2) NOT =   SPACE
       *      DISPLAY "ORCHC30-COMMENT2:"  ORCHC30-COMMENT-CD (IDX 2)
       *                 "," ORCHC30-COMMENT-MEI (IDX 2)
       *      END-IF
-           END-PERFORM 
+      *    END-PERFORM 
       *TEST
       *
       *    印刷処理へ
@@ -653,13 +661,25 @@
                    PERFORM VARYING     IDXA    FROM    1   BY  1
                            UNTIL      (IDXA    >   5   )  OR
                                       (SRY-SRYCD (IDXA)   =   SPACE)
+                       MOVE    ZERO                TO  FLG-NO
                        IF      SRY-SRYCD (IDXA)(1:1)      =   "6"
-                           MOVE    1                   TO  FLG-OK
+      *                    点数マスタを検索
+                           MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
+                           IF      TNS-TENSIKIBETU     =   7
+      *                        減点は対象外
+                               MOVE    1               TO  FLG-NO
+                           ELSE
+                               MOVE    1               TO  FLG-OK
+                           END-IF
                        END-IF
-                       IF      SRY-SRYCD (IDXA)    =   "630010002"
+                       IF     (SRY-SRYCD (IDXA)    =   "630010002"
                                                    OR  "630010004"
       *H25.4               （減）対象外
                                                    OR  "820000047"
+      *H26.10               (精減）
+                                                   OR  CONS-SGEN-SRYCD)
+                       OR     (FLG-NO              =   1           )
                            CONTINUE
                        ELSE
                            ADD     1               TO  IDX
@@ -755,7 +775,8 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      ACCT-ZAIKBN         =   1
+           IF     (ACCT-ZAIKBN         =   1  )
+              OR  (FLG-OK              =   ZERO )
       *        薬評は対象外
                MOVE    ZERO                TO  FLG-OK
            ELSE
@@ -1276,10 +1297,23 @@
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   5   )  OR
                               (WKSRY-SRYCD (IDXA)  =   SPACE)
+      *H26.10
+               MOVE    ZERO            TO  FLG-NO
+               IF     (WKSRY-SRYCD (IDXA)(1:1) =   "6" )
+      *            点数マスタを検索
+                   MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+                   IF      TNS-TENSIKIBETU     =   7
+      *                減点は対象外
+                       MOVE    1               TO  FLG-NO
+                   END-IF
+               END-IF
                IF     (WKSRY-SRYCD (IDXA)      =   "630010002" )
                  OR   (WKSRY-SRYCD (IDXA)(1:4)     =   "0086" )
       *          （減）は対象外
                  OR   (WKSRY-SRYCD (IDXA)      =   "820000047" )
+                 OR   (WKSRY-SRYCD (IDXA)      =   CONS-SGEN-SRYCD)
+                 OR   (FLG-NO                  =   1           )
                    CONTINUE
                ELSE
                    ADD    1                        TO  IDX
@@ -1358,6 +1392,7 @@
       *    診療会計よりテーブル編集処理
       *****************************************************************
        3001-TBLSET-SEC         SECTION.
+      *
       *    薬剤編集
            IF      ORCSCH30-SRYCD(IDT IDXA)(1:1)   =   "6"
                ADD     1               TO  IDX-S

@@ -3022,6 +3022,29 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
+      *H26.10　改正から
+               WHEN    "0250"
+                   STRING  "向精神薬多剤投与ではありません。"
+                           "処方せん料を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K251"
+                   STRING  "警告！"
+                           "向精神薬多剤投与となります。"
+                           "処方せん料を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K265"
+                   STRING  "警告！"
+                           "向精神薬多剤投与となります。"
+                           "精神科継続外来支援・指導料は算定できません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *==
+      *
                WHEN    "1316"
                    MOVE    "初診料への自動変更はできません。"
                                        TO  SPA-ERRMSG

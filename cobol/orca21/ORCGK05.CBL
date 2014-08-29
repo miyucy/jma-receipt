@@ -6843,6 +6843,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE               TO  WRK-KAKERU
            ELSE
                IF      SPA-GMN-KEI   (WRK-IDX) =   ZERO
+      *H26.10
+      *           ©гне©м©Т╧Г╥в
+                  AND (SPA-COM-INPUTCD (WRK-IDX)
+                                               NOT =   "099140012" )
+      *
                    MOVE    SPACE               TO  WRK-KAISU-H
                    MOVE    SPACE               TO  WRK-KAKERU
                ELSE

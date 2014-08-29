@@ -1898,7 +1898,8 @@
       *            猴近できるかの冉年∈负∷滦据嘲
                    IF     (LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "3" ) AND
                           (LNK-WKSRY-INPUTCD (IDX IDZ)
-                                                   =   "820000047")
+                                                   =   "820000047"
+                                                   OR  "820000166")
                        MOVE    ZERO                TO  SPA-NAI-JIDFLG
                                                               (IDX-NAI)
                    END-IF

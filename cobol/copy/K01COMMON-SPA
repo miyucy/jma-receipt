@@ -649,6 +649,13 @@
       *H26.4
       *    画面最大行数
            03  SPA-GMLINCNT            PIC 9(02).
+      *
+      *ver.4.8
+      *H26.10
+      *    抗精神薬多剤投与確認
+           03  SPA-PSYCHO-CHK          PIC  9(01).
+           03  SPA-PSYCHO-OK           PIC  9(01).
+      *(4.7　は予備使用）
       *    予備
            03  SPA-K01-YOBI            PIC X(10).
       *

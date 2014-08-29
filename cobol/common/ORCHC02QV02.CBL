@@ -83,6 +83,7 @@
       * 04.07.00     NACL-多々納  13/10/08  第三者行為対応
       * 04.07.00     NACL-多々納  14/06/XX  外用薬（臨時投薬）対応
       * 04.08.00     NACL-多々納  14/07/30  一時ディレクトリ対応
+      * 04.07.00     NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *****************************************************************
       *
       *
@@ -3205,6 +3206,12 @@
            MOVE    WRK-SRY-SRYCD (IDXA)    TO  WRK-SRYCD
            MOVE    WRK-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
+      *H26.10
+      *    減点は対象外
+           IF      TNS-TENSIKIBETU     =   7
+               GO      TO    31032-TENSU-HENSYU-EXT
+           END-IF
+      *
       *    内容
            IF      WRK-SRYCD  (1:1)   =   "6"
       *H25.4
@@ -3326,6 +3333,7 @@
       *
       *    ＱＲデータ用
            IF      WRK-SRYCD           =   "820000047"
+                                       OR  "820000166"
       *        （減）は対象外
                CONTINUE
            ELSE

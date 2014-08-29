@@ -1720,6 +1720,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO            TO  SPA-TOKUTEIFLG
                    MOVE    ZERO            TO  SPA-NAIFUKU-CHK
                    MOVE    ZERO            TO  SPA-NAIFUKU-OK
+      *H26.10      ¸þÀº¿ÀÌôÂ¿ºÞ
+                   MOVE    ZERO            TO  SPA-PSYCHO-OK
+                   MOVE    ZERO            TO  SPA-PSYCHO-CHK
+      *
                    MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
                    MOVE    ZERO            TO  SPA-CHOZAI-CHK
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
@@ -3179,6 +3183,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE    1                TO  SPA-NAIFUKU-OK
                    ELSE
                       MOVE    ZERO             TO  SPA-NAIFUKU-OK
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    SPACE               TO  SPA-KID1-FLG
+      *            ²èÌÌÀ©¸æ
+                   MOVE    "JOIN"              TO  WRK-PUTTYPE
+                   PERFORM 41002-KOUSIN-SYORI-SEC
+      *H26.10
+      *        ¸þÀº¿ÀÌôºÞÂ¿ºÞÅêÍ¿
+               WHEN    "2006"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                      MOVE    1                TO  SPA-PSYCHO-OK
+                   ELSE
+                      MOVE    ZERO             TO  SPA-PSYCHO-OK
                    END-IF
                    MOVE    SPACE               TO  SPA-KIDCD
                    MOVE    SPACE               TO  SPA-KID1-FLG
@@ -9384,51 +9402,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Â¾ÊÝ¸±¤Ç»»ÄêºÑ¤ÎÊÝ¸±ÊÔ½¸½èÍý
-      *****************************************************************
-       5201-SYOHOU-HKN-SEC              SECTION.
-      *
-           IF      SPA-SYOHO-HKN       =   SPACE
-               MOVE    SPACE               TO  SPA-SYOHO-HKNMEI
-           ELSE
-               MOVE    SPACE               TO  SPA-SYOHO-HKNMEI
-               PERFORM VARYING     IDX-HKN FROM    1   BY  1
-                       UNTIL       IDX-HKN >   15
-                   IF      SPA-SYOHO-HKN   =   SPA-GMN-THKNCOMBINUM
-                                                              (IDX-HKN)
-                       MOVE    SPA-GMN-THKNCOMBIMEI (IDX-HKN)
-                                           TO  SPA-SYOHO-HKNMEI
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-           IF       SPA-ERRCD      NOT =   SPACE
-               MOVE    SPA-SCR-REC         TO  MAE-SCR-REC
-               INITIALIZE                  SPA-SCR-REC
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX         >   SPA-MAX-LINE )   OR
-                                 ((MAE-GMN-INPUTCD (IDX) =   SPACE )
-                              AND (MAE-COM-INPUTCD (IDX) =   SPACE ))
-      *            ¡Ê¸º¡Ëºï½ü
-                   IF     (MAE-COM-SRYKBN (IDX)    =   "21" )  AND
-                          (MAE-COM-AUTOKBN(IDX)    =   "3" )
-                       CONTINUE
-                   ELSE
-                       ADD     1                   TO  SPA-GMN-MAX
-                       MOVE    MAE-GMN-TBL (IDX)   TO  SPA-GMN-TBL
-                                                          (SPA-GMN-MAX)
-                       IF     (SPA-COM-KZMFLG (IDX)     =   "1"  ) AND
-                              (LNK-ORCSC-KEI-IDX        =   IDX  )
-                           MOVE    SPA-GMN-MAX     TO  LNK-ORCSC-KEI-IDX
-                       END-IF
-                   END-IF
-               END-PERFORM
-           END-IF
-           .
-       5201-SYOHOU-HKN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        5109-HKTSANTEI-CHK-SEC              SECTION.
@@ -10335,6 +10308,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        °õºþ¥À¥ß¡¼½èÍý
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
+               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
       *
            .
@@ -10350,9 +10324,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "01"                TO  SPA-PRT-FLG
            MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-      *
-      *    INITIALIZE                  KDMY01
-      *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *
       *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ¾ðÊó¼èÆÀ¥µ¥Ö
            INITIALIZE                  ORCSPRTCTRLAREA
@@ -12187,6 +12158,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        °õºþ¥À¥ß¡¼½èÍý
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
+               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
       *
            MOVE    SPACE               TO  SPA-KID1-FLG
@@ -14044,6 +14016,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H26.10¡¡²þÀµ
+               WHEN    "2006"
+                   STRING  "¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¤È¤Ê¤ê¤Þ¤¹¡£"
+                           "Äþ¸º¤·¤Þ¤¹¤«¡©"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+      ***
       *ver.4.7
       *
                WHEN    "0140"
@@ -14150,6 +14130,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
                WHEN    "2004"
                WHEN    "2005"
+               WHEN    "2006"
                    MOVE    "£Î£Ï"            TO  KID1-B01
            END-EVALUATE
       *

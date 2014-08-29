@@ -4272,8 +4272,47 @@
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
       *
+      *H26.10 ¤«¤é
+      *    Àº¿À²Ê·ÑÂ³³°Íè»Ù±ç
+           IF      SPA-SRYYMD          >=  "20141001"
+      *        ¸þÀº¿ÀÌôÂ¿ºÞÄþ¸º¤¢¤ê¤Î»þ¡¢¥Á¥§¥Ã¥¯
+               IF      SPA-PSYCHO-OK       =   1
+                   PERFORM 3001-SEISINSYORI-SEC
+               END-IF
+           END-IF
+      *
            .
        300-AUTO-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Àº¿À²Ê·ÑÂ³³°Íè»Ù±ç»»Äê¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       3001-SEISINSYORI-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE      )  OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+               IF     (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+                   CONTINUE
+               ELSE
+      *            Àº¿À²Ê·ÑÂ³³°Íè»Ù±ç¡¦»ØÆ³ÎÁ
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   "180031410"
+                       IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
+                              (LNK-ORCSC-KEI-IDX        =   ZERO )
+                           MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                           (IDX-Z)
+                           MOVE    "K265"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       3001-SEISINSYORI-EXT.
            EXIT.
       *****************************************************************
       *    »»ÄêÎò¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß

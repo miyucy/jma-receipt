@@ -1525,6 +1525,20 @@
                OR      (SRY-SRYCD (1)  =  "630010004")
                    MOVE    1                   TO  FLG-SRYACT
                END-IF
+      *
+      *H26.10
+               IF     (FLG-SRYACT      =   ZERO )
+                 AND  (SRY-SRYCD (1)(1:1)  =   "6"  )
+                   MOVE    SRY-SRYCD (1)   TO  TNS-SRYCD
+                   MOVE    JYURRK-SRYYMD   TO  TNS-YUKOSTYMD
+                   MOVE    JYURRK-SRYYMD   TO  TNS-YUKOEDYMD
+                   PERFORM 910-TENSU-READ-SEC
+      *            ¸ºÅÀ¤ÏÂÐ¾Ý³°
+                   IF      TNS-TENSIKIBETU     =   7
+                       MOVE    1                   TO  FLG-SRYACT
+                   END-IF
+               END-IF
+      *
            ELSE
                MOVE    1                   TO  FLG-SRYACT
            END-IF

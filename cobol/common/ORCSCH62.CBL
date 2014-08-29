@@ -72,6 +72,8 @@
            03  FLG-ZAITAKU-ARI     PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
            03  FLG-YKJOKUKBN       PIC 9(01).
+      *H26.10
+           03  FLG-NO              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -780,7 +782,6 @@
       *****************************************************************
        2002-SRYACT-SYORI-SEC      SECTION.
       *
-      *
            INITIALIZE                  SRYACT-REC
            MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
@@ -1062,6 +1063,17 @@
                    MOVE    WRK-SRY-SRYCD(IDXA)     TO  WRK-SHO-SRYCD
                END-IF
       *
+      *H26.10
+               MOVE    ZERO            TO  FLG-NO
+               IF     (WRK-SRY-SRYCD (IDXA)(1:1) =   "6" )
+      *            点数マスタを検索
+                   MOVE    WRK-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+                   IF      TNS-TENSIKIBETU     =   7
+      *                減点は対象外
+                       MOVE    1               TO  FLG-NO
+                   END-IF
+               END-IF
       *        薬剤・器材・用法・コメントのみ
                IF     (WRK-SRY-SRYCD (IDXA)(1:1)   =   "6"
                                                    OR  "7"
@@ -1072,6 +1084,9 @@
                    IF     (WRK-SRY-SRYCD (IDXA)    =   "630010002" )
                      OR   (WRK-SRY-SRYCD (IDXA)    =   "630010004" )
                      OR   (WRK-SRY-SRYCD (IDXA)(1:4)   =   "0086"  )
+      *H26.10        （精減）
+                     OR   (WRK-SRY-SRYCD (IDXA)    =   "820000166" )
+                     OR   (FLG-NO                  =   1   )
                        CONTINUE
                    ELSE
                        ADD     1               TO  IDX-T3
