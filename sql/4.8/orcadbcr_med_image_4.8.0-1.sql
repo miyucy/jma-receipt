@@ -14,4 +14,4 @@ CREATE TABLE tbl_med_image (
 );
 
 ALTER TABLE ONLY tbl_med_image
-    ADD CONSTRAINT tbl_med_image_key PRIMARY KEY (HOSPNUM,SRYCD);
+    ADD CONSTRAINT tbl_med_image_primary_key PRIMARY KEY (HOSPNUM,SRYCD);
