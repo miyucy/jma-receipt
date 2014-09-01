@@ -171,6 +171,7 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/08/26  fdd 廃止に伴う対応
+      *  04.08.03    NACL-藤原    14/08/28  ４．８ミドル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1646,6 +1647,8 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
+           03  IDXX                PIC 9(04).
+      *
       *    一時領域
       *
        01  WRK-AREA.
@@ -2208,22 +2211,33 @@
                                                                      (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-RIREKIKBN-MAX 
       *     
-           MOVE    "3"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (1)
-           MOVE    "システム管理設定場所（フロッピィ用）"
+           MOVE    ZERO                TO  IDXX
+           IF      SPA-MW              =   SPA-PANDA
+               ADD     1                   TO  IDXX
+               MOVE    "3"                 TO  SPA-GMN-RECEDEN-DATAKBNL
+                                                                 (IDXX)
+               MOVE    "システム管理設定場所（フロッピィ用）"
                                        TO  SPA-GMN-RECEDEN-DATAKBNMEIL
-                                                                     (1)
-           MOVE    "4"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (2)
-           MOVE    "システム管理設定場所（ＭＯ用）"
+                                                                 (IDXX)
+               ADD     1                   TO  IDXX
+               MOVE    "4"                 TO  SPA-GMN-RECEDEN-DATAKBNL
+                                                                 (IDXX)
+               MOVE    "システム管理設定場所（ＭＯ用）"
                                        TO  SPA-GMN-RECEDEN-DATAKBNMEIL
-                                                                     (2)
-           MOVE    "5"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (3)
+                                                                 (IDXX)
+           END-IF
+           ADD     1                   TO  IDXX
+           MOVE    "5"                 TO  SPA-GMN-RECEDEN-DATAKBNL
+                                                                 (IDXX)
            MOVE    "クライアント保存"  TO  SPA-GMN-RECEDEN-DATAKBNMEIL
-                                                                     (3)
-           MOVE    "6"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (4)
+                                                                 (IDXX)
+           ADD     1                   TO  IDXX
+           MOVE    "6"                 TO  SPA-GMN-RECEDEN-DATAKBNL
+                                                                 (IDXX)
            MOVE    "クライアント保存（ＣＤ−Ｒ用）"
                                        TO  SPA-GMN-RECEDEN-DATAKBNMEIL
-                                                                     (4)
-           MOVE    4                   TO  SPA-GMN-RECEDEN-DATAKBN-MAX
+                                                                 (IDXX)
+           MOVE    IDXX                TO  SPA-GMN-RECEDEN-DATAKBN-MAX
       *     
            MOVE    "0"                 TO  SPA-GMN-RECEDEN-DISASTERL (1)
            MOVE    "記録しない"        TO  SPA-GMN-RECEDEN-DISASTERMEIL
@@ -3057,6 +3071,9 @@
                END-PERFORM
       *
                MOVE    SYS-2005-RECEDENOUT TO  SPA-GMN-RECEDENOUT
+               IF      SPA-MW              =   SPA-GINBEE
+                   MOVE    SPACE               TO  SPA-GMN-RECEDENOUT
+               END-IF
       *         
                MOVE    SYS-2005-KKHOCRKBN  TO  SPA-GMN-KKHOCRKBN
                PERFORM VARYING IDY FROM    1   BY  1
@@ -4505,20 +4522,35 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SPA-GMN-RECEDEN-LST2KBNLST (1)
                                            TO  SPA-GMN-RECEDEN-LST2KBN-G
            END-IF                                              
-           IF     SPA-GMN-RECEDEN-RIREKIKBN
-                                       =   SPACE
+           IF      SPA-MW              =   SPA-GINBEE
                MOVE    SPA-GMN-RECEDEN-RIREKIKBNLST (1)
                                            TO
                                            SPA-GMN-RECEDEN-RIREKIKBN-G
+           ELSE
+               IF     SPA-GMN-RECEDEN-RIREKIKBN
+                                           =   SPACE
+                   MOVE    SPA-GMN-RECEDEN-RIREKIKBNLST (1)
+                                           TO
+                                           SPA-GMN-RECEDEN-RIREKIKBN-G
+               END-IF
            END-IF                                              
-           IF     SPA-GMN-RECEDEN-DATAKBN
-                                       =   SPACE
-               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (2)
+           IF      SPA-MW              =   SPA-GINBEE
+               IF     SPA-GMN-RECEDEN-DATAKBN
+                                           =   "5" OR  "6"
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE           TO  SPA-GMN-RECEDEN-DATAKBN-G
+               END-IF
+           ELSE
+               IF     SPA-GMN-RECEDEN-DATAKBN
+                                           =   SPACE
+                   MOVE    SPA-GMN-RECEDEN-DATAKBNLST (2)
                                            TO  SPA-GMN-RECEDEN-DATAKBN-G
-           END-IF                                              
-           IF     SPA-200501-RECEDEN-DATAKBN
+               END-IF
+               IF     SPA-200501-RECEDEN-DATAKBN
                                        =   "1" OR "2"
-               MOVE    SPACE               TO  SPA-GMN-RECEDEN-DATAKBN-G
+                   MOVE    SPACE           TO  SPA-GMN-RECEDEN-DATAKBN-G
+               END-IF                                              
            END-IF                                              
            IF     SPA-GMN-RECEDEN-DISASTER
                                        =   SPACE
@@ -7801,19 +7833,41 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4169-RECEDEN-DATAKBN-CHK-SEC       SECTION.
       *
-           IF    ( SPA-GMN-RECEDEN-DATAKBN  =   SPACE      )
-           AND   ( SPA-200501-RECEDEN-DATAKBN
-                                            =   "1" OR "2" )
-               MOVE    SPACE           TO SPA-200501-RECEDEN-DATAKBN
-               MOVE   "0123"           TO  SPA-ERRCD
-                   MOVE    115         TO  SPA-GMN-CUR
-               GO  TO  4169-RECEDEN-DATAKBN-CHK-EXT
-           END-IF
+           IF      SPA-GMN-RECEDEN-DATAKBN =   SPACE
+               IF      SPA-MW                  =   SPA-GINBEE
+                   IF      SPA-200501-RECEDEN-DATAKBN
+                                                   =   "5" OR "6"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE       TO
+                                           SPA-200501-RECEDEN-DATAKBN
+                       MOVE   "0123"       TO  SPA-ERRCD
+                       MOVE    115         TO  SPA-GMN-CUR
+                       GO  TO  4169-RECEDEN-DATAKBN-CHK-EXT
+                   END-IF
+               ELSE
+                   IF      SPA-200501-RECEDEN-DATAKBN
+                                                   =   "1" OR "2"
+                       MOVE    SPACE       TO
+                                           SPA-200501-RECEDEN-DATAKBN
+                       MOVE   "0123"       TO  SPA-ERRCD
+                       MOVE    115         TO  SPA-GMN-CUR
+                       GO  TO  4169-RECEDEN-DATAKBN-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF    
       *
            IF      SPA-GMN-RECEDEN-DATAKBN  =   SPACE
-               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (2)
+               IF      SPA-MW                  =   SPA-GINBEE
+                   MOVE    SPA-GMN-RECEDEN-DATAKBNLST (1)
                                        TO  SPA-GMN-RECEDEN-DATAKBN-G
+                   MOVE    SPACE       TO  SPA-GMN-RECEDEN-DATAKBN-G
+               ELSE
+                   MOVE    SPA-GMN-RECEDEN-DATAKBNLST (2)
+                                       TO  SPA-GMN-RECEDEN-DATAKBN-G
+               END-IF
            ELSE
+               MOVE    SPACE           TO  SPA-GMN-RECEDEN-DATAKBNMEI
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-RECEDEN-DATAKBN-MAX
                    IF      SPA-GMN-RECEDEN-DATAKBN
@@ -7824,11 +7878,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
+           END-IF    
       *     
-               IF      SPA-GMN-RECEDEN-DATAKBNMEI   =   SPACE
-                   MOVE    115                     TO  SPA-GMN-CUR
-                   MOVE    "0107"                  TO  SPA-ERRCD
-               END-IF
+           IF      SPA-GMN-RECEDEN-DATAKBNMEI   =   SPACE
+               MOVE    115                     TO  SPA-GMN-CUR
+               MOVE    "0107"                  TO  SPA-ERRCD
            END-IF    
            .
        4169-RECEDEN-DATAKBN-CHK-EXT.
@@ -10734,6 +10788,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  W12-HKNJANUMLIST-ROW
            END-IF
       *
+           MOVE    WIDGET-NORMAL   TO  W12-RECEDENOUT-STATE
+                                       W12-RECEDEN-RIREKI-STATE
+           IF      SPA-MW          =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W12-RECEDENOUT-STATE
+                                           W12-RECEDEN-RIREKI-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -11791,7 +11853,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KOUIKIRECEKBN"
                    MOVE    306         TO  SPA-GMN-CUR
                WHEN    "ROURECEKBN"
-                   MOVE    102         TO  SPA-GMN-CUR
+                   IF    ( SPA-MW         NOT =   SPA-PANDA )
+                       MOVE    103         TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    102         TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "RECEDENOUT"
                    MOVE    103         TO  SPA-GMN-CUR
                WHEN    "RECECOMKBN"
@@ -11813,7 +11879,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "RECEDEN_LST1KBN"
                    MOVE    113         TO  SPA-GMN-CUR
                WHEN    "RECEDEN_LST2KBN"
-                   MOVE    114         TO  SPA-GMN-CUR
+                   IF    ( SPA-MW         NOT =   SPA-PANDA )
+                       MOVE    115         TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    114         TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "RECEDEN_RIREKIKBN"
                    MOVE    115         TO  SPA-GMN-CUR
                WHEN    "RECEDEN_DATAKBN"
