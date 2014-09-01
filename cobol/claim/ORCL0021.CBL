@@ -1169,6 +1169,8 @@
                    ELSE
       *                ¡Ê¸º¡Ë¤òºï½ü
                        IF      SRY-SRYCD (IDXA)    =   "820000047"
+      *H26.10            (Àº¸º¡Ë
+                                                   OR  "820000166"
                            CONTINUE
                        ELSE
                            ADD     1               TO  IDX-IJ
@@ -1475,7 +1477,9 @@
                WHEN    "6"
                WHEN    "7"
       *             ÌôºÞÎÁÄþ¸º¤Î»þ¡¢ÅÀ¿ô¤ò¡Ý¤È¤¹¤ë
-                   IF      SRY-SRYCD (IDXA)    =   "630010002"
+                   IF     (SRY-SRYCD (IDXA)    =   "630010002")
+      *H26.10          ¸ºÅÀ
+                      OR  (TNS-TENSIKIBETU     =   7          )
       *                ¿ÇÎÅ¥³¡¼¥É
                        MOVE    SRY-SRYCD(IDXA)     TO  TBL-IJICD
                                                        (IDX-LF IDX-IJ)
@@ -1489,22 +1493,6 @@
                        MOVE    "2"                 TO  TBL-SRYSYUBETSU
                                                        (IDX-LF IDX-IJ)
       *
-      *                COMPUTE TBL-TENNSUALL (IDX-LF)
-      *                                       =   TBL-TENNSUALL (IDX-LF)
-      *                                        *   -1
-      *                COMPUTE TBL-GINGAKUALL (IDX-LF)
-      *                                        =   TBL-GINGAKUALL
-      *                                                        (IDX-LF)
-      *                                        *   -1
-      *                 COMPUTE TBL-YAKUZAI (IDX-LF)
-      *                                        =   TBL-YAKUZAI (IDX-LF)
-      *                                        *   -1
-      *                 COMPUTE TBL-SYUGI (IDX-LF)
-      *                                        =   TBL-SYUGI (IDX-LF)
-      *                                        *   -1
-      *                 COMPUTE TBL-ZAIRYOU (IDX-LF)
-      *                                        =   TBL-ZAIRYOU (IDX-LF)
-      ****                                     *   -1
                         MOVE    ZERO        TO  TBL-SURYO
                                                        (IDX-LF IDX-IJ)
                         MOVE    SPACE       TO  TBL-SURYOCD

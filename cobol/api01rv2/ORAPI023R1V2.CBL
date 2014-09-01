@@ -1678,6 +1678,14 @@
                    ELSE
                       MOVE    ZERO             TO  SPA-NAIFUKU-OK
                    END-IF
+      *H26.10
+      *        ¸þÀº¿ÀÌôºÞÂ¿ºÞÅêÍ¿
+               WHEN    "2006"
+                   IF      SPA-KID1-FLG        =   "OK"
+                      MOVE    1                TO  SPA-PSYCHO-OK
+                   ELSE
+                      MOVE    ZERO             TO  SPA-PSYCHO-OK
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-KIDCD

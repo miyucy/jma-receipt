@@ -34,6 +34,7 @@
       *  04.06.00    NACL-多々納  10/08/12  診療科変更対応
       *  04.06.00    NACL-多々納  11/02/16  用法コメント対応
       *  04.08.00    NACL-多々納  14/05/29  一時ファイル変更
+      *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1390,6 +1391,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO            TO  SPA-TOKUTEIFLG
                    MOVE    ZERO            TO  SPA-NAIFUKU-CHK
                    MOVE    ZERO            TO  SPA-NAIFUKU-OK
+      *H26.10
+                   MOVE    ZERO            TO  SPA-PSYCHO-OK
+                   MOVE    ZERO            TO  SPA-PSYCHO-CHK
                    MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
                    MOVE    ZERO            TO  SPA-CHOZAI-CHK
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
@@ -1867,6 +1871,21 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            画面制御
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
+      *H26.10
+      *        向精神薬剤多剤投与
+               WHEN    "2006"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                      MOVE    1                TO  SPA-PSYCHO-OK
+                   ELSE
+                      MOVE    ZERO             TO  SPA-PSYCHO-OK
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    SPACE               TO  SPA-KID1-FLG
+      *            画面制御
+                   MOVE    "JOIN"              TO  WRK-PUTTYPE
+                   PERFORM 41002-KOUSIN-SYORI-SEC
+      *
       *        クリア確認チェック
                WHEN    "0125"
                    IF      SPA-KID1-FLG        =   "OK"
@@ -9005,8 +9024,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                         END-IF
       *ver.4.7
                    ELSE
+      *H26.10
+      *                診療人数合計
+                       IF      SPA-COM-INPUTCD (WRK-IDX)
+                                                   =   "099140012"
+                           MOVE    " X "               TO  WRK-KAKERU
+                       ELSE
+      *!! 
                        MOVE    SPACE               TO  WRK-KAISU-H
                        MOVE    SPACE               TO  WRK-KAKERU
+      *!! 
+                       END-IF
                    END-IF
                ELSE
                    MOVE    " X "               TO  WRK-KAKERU
@@ -9493,6 +9521,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-KIDMSG
                    END-STRING
       *ver.4.7
+      *H26.10　改正
+               WHEN    "2006"
+                   STRING  "向精神薬多剤投与となります。"
+                           "逓減しますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
       *!!
                WHEN    OTHER
                    MOVE    SPA-KIDCD
@@ -9519,6 +9554,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
                WHEN    "2004"
                WHEN    "2005"
+               WHEN    "2006"
                    MOVE    "ＮＯ"            TO  KTID1-B01
            END-EVALUATE
       *
