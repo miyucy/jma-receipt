@@ -64,6 +64,7 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  13/07/XX  Âè»°¼Ô¹Ô°ÙÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/06/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -1377,13 +1378,18 @@
       *        ºßÁí¿Ç»»Äê½ªÎ»
                                            OR  "099140001"
                                            OR  "099140004" )
+      *H26.10  ºßÂðË¬Ìä¿ÇÎÅÂ¾
+            OR    (SPA-COM-INPUTCD(IDX)    =   "099140011"
+                                           OR  "099140012" )
                MOVE    1               TO  FLG-HASSYO
            ELSE
                IF      FLG-HASSYO          =   1
                    IF     (SPA-COM-SRYKBN(IDX)
                                        =   SPA-COM-SRYKBN(IDX - 1)) AND
-                          (SPA-COM-INPUTCD(IDX)(1:1)
-                                               =   "8"  )
+                         ((SPA-COM-INPUTCD(IDX)(1:1)
+                                               =   "8"  )  OR
+                          (SPA-COM-INPUTCD(IDX)(1:3)
+                                               =   "008"  ))
                        CONTINUE
                    ELSE
                        MOVE    ZERO            TO  FLG-HASSYO

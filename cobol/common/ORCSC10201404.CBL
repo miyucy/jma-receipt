@@ -74,6 +74,7 @@
       * 04.08.00     NACL-多々納  13/03/XX  労災コードレセ電コード対応
       * 04.08.00     NACL-多々納  13/09/XX  労災同日再診コード追加対応
       * 04.08.00     NACL-多々納  14/03/XX  Ｈ２６年４月改正対応
+      * 04.07.00     NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1005,9 +1006,9 @@
            END-IF
       *H26.10
       *    診療人数合計
-           IF     WRK-COM-INPUTCD (IDX-MAX)   =   "099140012"
+           IF     WRK-COM-INPUTCD (IDX-SYU)   =   "099140012"
                MOVE    SPACE           TO  WRK-ERRCD
-               MOVE    SPACE           TO  WRK-COM-CUR (IDX-MAX)
+               MOVE    SPACE           TO  WRK-COM-CUR (IDX-SYU)
            END-IF
            .
        10012-KAISU-CHK-EXT.
@@ -4479,6 +4480,13 @@
                        MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                    END-IF
+      *H26.10
+      *        診療人数合計を手技とする
+               WHEN    "099140012"
+                   IF      IDX-SYU             =   ZERO
+                       MOVE    IDX-Z               TO  IDX-SYU
+                   END-IF
+      *
                END-EVALUATE
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
