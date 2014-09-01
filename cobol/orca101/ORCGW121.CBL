@@ -430,9 +430,9 @@
                                    PIC X(02).
                    07  WRK-GMN-BODYLIST-KOHLIST.
                        09  WRK-GMN-BODYLIST-KOHLIST-TBL OCCURS  30.
-                           11  WRK-GMN-BODYLIST-KOHLIST-THKNNUM
+                           11  WRK-GMN-BODYLIST-KOHLIST-THKNNM
                                                PIC X(03).
-                           11  WRK-GMN-BODYLIST-KOHLIST-TSEIDONAME
+                           11  WRK-GMN-BODYLIST-KOHLIST-TSEINM
                                                PIC X(20).
                            11  WRK-GMN-BODYLIST-KOHLIST-TJYUN
                                                PIC X(01).

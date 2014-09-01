@@ -982,7 +982,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    負担者番号
-           PERFORM 41021-FTNJANUMKBN-JYOKEN-CHK-SEC
+           PERFORM 41021-FTNJANUMKB-JYOKEN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1046,22 +1046,22 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    適用欄上段コメント
-           PERFORM 41021-TEKIYOU-COMMENT1-CHK-SEC
+           PERFORM 41021-TEKIYOU-COM1-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    適用欄上段コメントレセ電編集区分
-           PERFORM 41021-TEKIYOU-COMMENT1KBN-CHK-SEC
+           PERFORM 41021-TEKIYOU-COM1KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    適用欄下段コメント
-           PERFORM 41021-TEKIYOU-COMMENT2-CHK-SEC
+           PERFORM 41021-TEKIYOU-COM2-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    適用欄下段コメントレセ電編集区分
-           PERFORM 41021-TEKIYOU-COMMENT2KBN-CHK-SEC
+           PERFORM 41021-TEKIYOU-COM2KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1082,17 +1082,17 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    レセ電・負担者番号記載区分
-           PERFORM 41021-RECEDEN-FTNJANUMKBN-CHK-SEC
+           PERFORM 41021-RECEDEN-FTNJAKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    レセ電・負担者番号
-           PERFORM 41021-RECEDEN-FTNJANUM-CHK-SEC
+           PERFORM 41021-RECEDEN-FTNJA-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    レセ電・受給者番号記載区分
-           PERFORM 41021-RECEDEN-JKYSNUMKBN-CHK-SEC
+           PERFORM 41021-RECEDEN-JKYSNUMKB-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1201,11 +1201,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO
                                            SPA-GMN-FTNJANUMKBN-JYOKEN
                                            WRK-KBN
-               PERFORM 5001-FTNJANUMKBN-JYOKEN-HENSYU-SEC
+               PERFORM 5001-FTNJANUMKB-JYOKEN-HEN-SEC
                MOVE    WRK-KBNMEI          TO
                                            SPA-GMN-FTNJANUMKBN-JYOKENMEI
-      *           MOVE    SPA-NAI-C02-SELNO   TO  C02-BYO-ROW
-
+      *
                MOVE    SYS-2006-FTNJANUM-JYOKEN
                                            TO  SPA-GMN-FTNJANUM-JYOKEN
       *
@@ -1235,7 +1234,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    SYS-2006-FTNJANUMKBN
                                            TO  SPA-GMN-FTNJANUMKBN
                                                WRK-KBN
-               PERFORM 5001-FTNJANUMKBN-HENSYU-SEC
+               PERFORM 5001-FTNJANUMKB-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO  SPA-GMN-FTNJANUMKBNMEI
       *
                MOVE    SYS-2006-FTNJANUM   TO  SPA-GMN-FTNJANUM
@@ -1255,7 +1254,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    SYS-2006-RECEDEN-KORECKBN
                                            TO  SPA-GMN-RECEDEN-KORECKBN
                                                WRK-KBN
-               PERFORM 5001-RECEDEN-KORECKBN-HENSYU-SEC
+               PERFORM 5001-RECEDEN-KORECKB-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO
                                            SPA-GMN-RECEDEN-KORECKBNMEI
       *
@@ -1263,7 +1262,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO
                                            SPA-GMN-RECEDEN-FTNJANUMKBN
                                            WRK-KBN
-               PERFORM 5001-FTNJANUMKBN-HENSYU-SEC
+               PERFORM 5001-FTNJANUMKB-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO
                                        SPA-GMN-RECEDEN-FTNJANUMKBNMEI
       *
@@ -1285,7 +1284,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO
                                            SPA-GMN-TEKIYOU-COMMENT1KBN
                                            WRK-KBN
-               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
+               PERFORM 5001-TEKIYOU-COM1KBN-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO
                                        SPA-GMN-TEKIYOU-COMMENT1KBNMEI
       *
@@ -1296,7 +1295,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO
                                            SPA-GMN-TEKIYOU-COMMENT2KBN
                                            WRK-KBN
-               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
+               PERFORM 5001-TEKIYOU-COM1KBN-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO
                                        SPA-GMN-TEKIYOU-COMMENT2KBNMEI
       *
@@ -1566,7 +1565,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    負担者番号区分入力処理
       *****************************************************************
-       41021-FTNJANUMKBN-JYOKEN-CHK-SEC      SECTION.
+       41021-FTNJANUMKB-JYOKEN-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-FTNJANUMKBN-JYOKEN
                                        =   SPACE
@@ -1575,7 +1574,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    SPA-GMN-FTNJANUMKBN-JYOKEN
                                            TO  WRK-KBN
-               PERFORM 5001-FTNJANUMKBN-JYOKEN-HENSYU-SEC
+               PERFORM 5001-FTNJANUMKB-JYOKEN-HEN-SEC
                IF      WRK-KBNMEI          =   SPACE
                    MOVE    "0024"              TO  SPA-ERRCD
                ELSE
@@ -1602,7 +1601,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       41021-FTNJANUMKBN-JYOKEN-CHK-EXT.
+       41021-FTNJANUMKB-JYOKEN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1853,7 +1852,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                                SPA-GMN-FTNJANUM
            ELSE
                MOVE    SPA-GMN-FTNJANUMKBN TO  WRK-KBN
-               PERFORM 5001-FTNJANUMKBN-HENSYU-SEC
+               PERFORM 5001-FTNJANUMKB-HENSYU-SEC
                IF      WRK-KBNMEI          =   SPACE
                    MOVE    "0016"              TO  SPA-ERRCD
                ELSE
@@ -1948,7 +1947,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    適用欄上段コメント入力処理
       *****************************************************************
-       41021-TEKIYOU-COMMENT1-CHK-SEC      SECTION.
+       41021-TEKIYOU-COM1-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-TEKIYOU-COMMENT1    =   SPACE
                MOVE    SPACE               TO
@@ -1993,13 +1992,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       41021-TEKIYOU-COMMENT1-CHK-EXT.
+       41021-TEKIYOU-COM1-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    適用欄上段コメントレセ電編集区分入力処理
       *****************************************************************
-       41021-TEKIYOU-COMMENT1KBN-CHK-SEC      SECTION.
+       41021-TEKIYOU-COM1KBN-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-TEKIYOU-COMMENT1KBN =   SPACE
                MOVE    SPACE               TO
@@ -2007,7 +2006,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    SPA-GMN-TEKIYOU-COMMENT1KBN
                                            TO  WRK-KBN
-               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
+               PERFORM 5001-TEKIYOU-COM1KBN-HENSYU-SEC
                IF      WRK-KBNMEI          =   SPACE
                    MOVE    "0027"              TO  SPA-ERRCD
                ELSE
@@ -2025,13 +2024,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       41021-TEKIYOU-COMMENT1KBN-CHK-EXT.
+       41021-TEKIYOU-COM1KBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    適用欄下段コメント入力処理
       *****************************************************************
-       41021-TEKIYOU-COMMENT2-CHK-SEC      SECTION.
+       41021-TEKIYOU-COM2-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-TEKIYOU-COMMENT2    =   SPACE
                MOVE    SPACE               TO
@@ -2076,13 +2075,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       41021-TEKIYOU-COMMENT2-CHK-EXT.
+       41021-TEKIYOU-COM2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    適用欄下段コメントレセ電編集区分入力処理
       *****************************************************************
-       41021-TEKIYOU-COMMENT2KBN-CHK-SEC      SECTION.
+       41021-TEKIYOU-COM2KBN-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-TEKIYOU-COMMENT2KBN =   SPACE
                MOVE    SPACE               TO
@@ -2090,7 +2089,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    SPA-GMN-TEKIYOU-COMMENT2KBN
                                            TO  WRK-KBN
-               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
+               PERFORM 5001-TEKIYOU-COM1KBN-HENSYU-SEC
                IF      WRK-KBNMEI          =   SPACE
                    MOVE    "0029"              TO  SPA-ERRCD
                ELSE
@@ -2108,7 +2107,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       41021-TEKIYOU-COMMENT2KBN-CHK-EXT.
+       41021-TEKIYOU-COM2KBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2183,7 +2182,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    SPA-GMN-RECEDEN-KORECKBN
                                        TO  WRK-KBN
-               PERFORM 5001-RECEDEN-KORECKBN-HENSYU-SEC
+               PERFORM 5001-RECEDEN-KORECKB-HENSYU-SEC
                IF      WRK-KBNMEI          =   SPACE
                    MOVE    "0013"              TO  SPA-ERRCD
                ELSE
@@ -2220,7 +2219,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    レセ電：負担者番号記載区分入力処理
       *****************************************************************
-       41021-RECEDEN-FTNJANUMKBN-CHK-SEC      SECTION.
+       41021-RECEDEN-FTNJAKBN-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-RECEDEN-FTNJANUMKBN 
                                        =   SPACE
@@ -2229,7 +2228,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    SPA-GMN-RECEDEN-FTNJANUMKBN
                                        TO  WRK-KBN
-               PERFORM 5001-FTNJANUMKBN-HENSYU-SEC
+               PERFORM 5001-FTNJANUMKB-HENSYU-SEC
                IF      WRK-KBNMEI      =   SPACE
                    MOVE    "0020"          TO  SPA-ERRCD
                ELSE
@@ -2257,26 +2256,26 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       41021-RECEDEN-FTNJANUMKBN-CHK-EXT.
+       41021-RECEDEN-FTNJAKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセ電：負担者番号記載入力処理
       *****************************************************************
-       41021-RECEDEN-FTNJANUM-CHK-SEC      SECTION.
+       41021-RECEDEN-FTNJA-CHK-SEC      SECTION.
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    104                 TO  SPA-GMN-CUR
            END-IF
       *
            .
-       41021-RECEDEN-FTNJANUM-CHK-EXT.
+       41021-RECEDEN-FTNJA-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセ電：受給者番号記載区分入力処理
       *****************************************************************
-       41021-RECEDEN-JKYSNUMKBN-CHK-SEC      SECTION.
+       41021-RECEDEN-JKYSNUMKB-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-RECEDEN-JKYSNUMKBN  
                                        =   SPACE
@@ -2311,7 +2310,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       41021-RECEDEN-JKYSNUMKBN-CHK-EXT.
+       41021-RECEDEN-JKYSNUMKB-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3450,7 +3449,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    負担者番号編集処理
       *****************************************************************
-       5001-FTNJANUMKBN-JYOKEN-HENSYU-SEC  SECTION.
+       5001-FTNJANUMKB-JYOKEN-HEN-SEC  SECTION.
       * 
            MOVE    SPACE               TO  WRK-KBNMEI
       *     
@@ -3469,7 +3468,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       5001-FTNJANUMKBN-JYOKEN-HENSYU-EXT.
+       5001-FTNJANUMKB-JYOKEN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3575,7 +3574,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    レセ電：公費レコード区分編集処理
       *****************************************************************
-       5001-RECEDEN-KORECKBN-HENSYU-SEC    SECTION.
+       5001-RECEDEN-KORECKB-HENSYU-SEC    SECTION.
       * 
            MOVE    SPACE               TO  WRK-KBNMEI
       *     
@@ -3594,13 +3593,13 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       5001-RECEDEN-KORECKBN-HENSYU-EXT.
+       5001-RECEDEN-KORECKB-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    負担者番号記載区分編集処理
       *****************************************************************
-       5001-FTNJANUMKBN-HENSYU-SEC   SECTION.
+       5001-FTNJANUMKB-HENSYU-SEC   SECTION.
       * 
            MOVE    SPACE               TO  WRK-KBNMEI
       *     
@@ -3619,7 +3618,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       5001-FTNJANUMKBN-HENSYU-EXT.
+       5001-FTNJANUMKB-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3650,7 +3649,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    適用欄コメントレセ電編集区分編集処理
       *****************************************************************
-       5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC    SECTION.
+       5001-TEKIYOU-COM1KBN-HENSYU-SEC    SECTION.
       * 
            MOVE    SPACE               TO  WRK-KBNMEI
       *     
@@ -3669,7 +3668,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            .
-       5001-TEKIYOU-COMMENT1KBN-HENSYU-EXT.
+       5001-TEKIYOU-COM1KBN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
