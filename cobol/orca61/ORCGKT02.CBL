@@ -2296,6 +2296,16 @@
       *
       *    行為名称
            MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO2(IDG)
+      *
+      *TEST
+      *TEST
+      *H26.10
+      *    在宅　診療人数合計　再編集
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099140012"
+                PERFORM 31001214-ZAICOM-MEISYO-SEC
+           END-IF
+      *TEST
+      *TEST
       *    薬剤服用コメントの時、再編集
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:3)  =   "001"
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
@@ -2895,6 +2905,48 @@
            EXIT.
       *
       *H24.4
+      *
+      *H26.10
+      *****************************************************************
+      *    在宅　診療人数合計　再編集処理
+      *****************************************************************
+       31001214-ZAICOM-MEISYO-SEC            SECTION.
+      *
+      *    回数を合計人数
+           MOVE    WRK-SRYKAISUKEI     TO  WRK-KAISU
+           MOVE    ZERO                TO  IDK2
+           MOVE    SPACE               TO  WRK-KAISU-H
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   3
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                           TO  WRK-KAISU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+           STRING  TNS-NAME            DELIMITED  BY  SPACE
+                   "　　　　【"        DELIMITED  BY  SIZE
+                   WRK-DAY             DELIMITED  BY  SPACE
+                   "日（"              DELIMITED  BY  SIZE
+                   WRK-KAISU-H         DELIMITED  BY  SPACE
+                   "人）"              DELIMITED  BY  SIZE
+                   "】"                DELIMITED  BY  SIZE
+                                               INTO    WRK-MEISYO
+           END-STRING
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MEISYO          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-TMEISYO2(IDG)
+      *
+           .
+       31001214-ZAICOM-MEISYO-EXT.
+           EXIT.
+      *H26.10
+      *
       *
       *****************************************************************
       *    数量表示用編集処理

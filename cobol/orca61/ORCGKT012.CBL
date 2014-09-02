@@ -281,6 +281,8 @@
                05  WRK-GOKEI-Z2    PIC ZZZ,ZZZ,ZZZ.
       *
            03  WRK-PATH                    PIC X(64).
+      *H26.10
+           03  WRK-DAY                 PIC X(02).
       *
       *    コラムリスト位置
            03  WRK-KT012-RRKLIST-ROW     PIC S9(09).
@@ -957,12 +959,12 @@
       *
            MOVE    1                   TO  SPA-KT012GMN-CUR
       *
-           MOVE    KT012-SELNUM          TO  SPA-KT012-SELNUM
+           MOVE    KT012-SELNUM        TO  SPA-KT012-SELNUM
            MOVE    ZERO                TO  SPA-KT012-DOSELNUM
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-KT012GMN-MAX1
               IF      SPA-KT012GMN-NO (IDX)      =   SPA-KT012-SELNUM
-                  MOVE    IDX                  TO  SPA-KT012-DOSELNUM
+                  MOVE    IDX                    TO  SPA-KT012-DOSELNUM
                   MOVE    SPA-KT012GMN-MAX1      TO  IDX
               END-IF
            END-PERFORM
@@ -1003,7 +1005,7 @@
                MOVE    WRK-DOSELNUM        TO  SPA-KT012-DOSELNUM
            END-IF
       *
-           IF      SPA-KT012-DOSELNUM    <   01   OR
+           IF      SPA-KT012-DOSELNUM  <   01   OR
                                        >   SPA-KT012GMN-MAX1
                CONTINUE
            ELSE
@@ -1432,7 +1434,7 @@
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-KT012GMN-MAX1     >   ZERO
                    MOVE    1                   TO  SPA-KT012-DOSELNUM
-                   MOVE    SPA-KT012GMN-NO(1)    TO  SPA-KT012-SELNUM
+                   MOVE    SPA-KT012GMN-NO(1)  TO  SPA-KT012-SELNUM
       *            診察内容編集
                    PERFORM 4101-JYURRK-HEN-SEC
                ELSE
@@ -1713,7 +1715,7 @@
            INITIALIZE                  SRYACT-REC
            MOVE    JYURRK-HOSPNUM      TO  SRY-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  SRY-NYUGAIKBN
-           MOVE    SPA-KT012-PTID        TO  SRY-PTID
+           MOVE    SPA-KT012-PTID      TO  SRY-PTID
            MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
            MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
            MOVE    JYURRK-ZAINUM(IDX-R)
@@ -2302,6 +2304,12 @@
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
+      *
+      *H26.10
+      *    在宅　診療人数合計　再編集
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099140012"
+                PERFORM 31001214-ZAICOM-MEISYO-SEC
+           END-IF
       *!
       *    後発医薬品変更再編集
            IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099209903"
@@ -2667,6 +2675,49 @@
            .
        3005-INPUT-MEISYO4-EXT.
            EXIT.
+      *
+      *H26.10
+      *****************************************************************
+      *    在宅　診療人数合計　再編集処理
+      *****************************************************************
+       31001214-ZAICOM-MEISYO-SEC            SECTION.
+      *
+      *    回数を合計人数
+           MOVE    WRK-SRYKAISUKEI     TO  WRK-KAISU
+           MOVE    ZERO                TO  IDK2
+           MOVE    SPACE               TO  WRK-KAISU-H
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   8
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                           TO  WRK-KAISU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPA-KT012NAI-RRKYMD(SPA-KT012-DOSELNUM)(7:2)
+                                       TO  WRK-DAY
+           MOVE    SPACE               TO  WRK-MEISYO
+           STRING  TNS-NAME            DELIMITED  BY  SPACE
+                   "　　　　【"        DELIMITED  BY  SIZE
+                   WRK-DAY             DELIMITED  BY  SPACE
+                   "日（"              DELIMITED  BY  SIZE
+                   WRK-KAISU-H         DELIMITED  BY  SPACE
+                   "人）"              DELIMITED  BY  SIZE
+                   "】"                DELIMITED  BY  SIZE
+                                               INTO    WRK-MEISYO
+           END-STRING
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MEISYO          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-TMEISYO2(IDG)
+      *
+           .
+       31001214-ZAICOM-MEISYO-EXT.
+           EXIT.
+      *H26.10
       *
       *****************************************************************
       *    数量表示用編集処理
@@ -3104,9 +3155,9 @@
                MOVE    ZERO                TO  SPA-KT012-RRK-NEXT
                PERFORM 3101-JYURRK-DBHEN-SEC
       *
-               IF      SPA-KT012GMN-MAX1     >   ZERO
+               IF      SPA-KT012GMN-MAX1   >   ZERO
                    MOVE    1                   TO  SPA-KT012-DOSELNUM
-                   MOVE    SPA-KT012GMN-NO(1)    TO  SPA-KT012-SELNUM
+                   MOVE    SPA-KT012GMN-NO(1)  TO  SPA-KT012-SELNUM
       *            診察内容編集
                    PERFORM 4101-JYURRK-HEN-SEC
                ELSE
@@ -3401,7 +3452,7 @@
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-KT012GMN-MAX1
-               MOVE    SPA-KT012GMN-NO  (IDX)    TO  WRK-ZZZ
+               MOVE    SPA-KT012GMN-NO  (IDX)  TO  WRK-ZZZ
                MOVE    WRK-ZZZ                 TO  KT012-NO  (IDX)
                MOVE    SPA-KT012GMN-RRKYMD (IDX) TO  KT012-RRKYMD(IDX)
                MOVE    SPA-KT012GMN-RRKSRYKA (IDX)

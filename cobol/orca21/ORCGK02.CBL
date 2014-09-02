@@ -7837,7 +7837,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  WRK-IN-IDX
            END-IF
            IF      WRK-IN-IDX          =   ZERO
-      *******  MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
                MOVE    WRK-MAX-IDX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
@@ -7886,6 +7885,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPACE                TO  SPA-ERRCD
                END-IF
            END-IF
+      *
+      *TEST
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
                IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)
@@ -12946,6 +12947,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-MEISYO-G(WRK-IDX)
                                                TO  K02-MEISYO(IDX)
                    PERFORM 5002-SURYO-HEN-SEC
+      *H26.10
+      *            診療人数合計
+                   IF      SPA-COM-INPUTCD (WRK-IDX)
+                                               =   "099140012"
+                       PERFORM 50021-MEISYOHEN-SEC
+                   END-IF
       *@
       *            包括行
                    IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)
@@ -13464,6 +13471,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        5002-SURYO-HEN-EXT.
            EXIT.
+      *TEST
+      *H26.10
+      *****************************************************************
+      *    診療人数合計編集処理
+      *****************************************************************
+       50021-MEISYOHEN-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO-G
+           STRING  SPA-COM-NAME (WRK-IDX)  DELIMITED  BY  SPACE
+                   "　　　【"              DELIMITED  BY  SIZE
+                   SPA-SRYYMD (7:2)        DELIMITED  BY  SPACE
+                   "日（"
+                   WRK-KAISU-H             DELIMITED  BY  SPACE
+                   "人）】"                DELIMITED  BY  SIZE
+                   INTO                    WRK-MEISYO
+           END-STRING
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MEISYO          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-MEISYO
+      *
+           MOVE    WRK-MEISYO-G        TO  K02-MEISYO(IDX)
+           .
+       50021-MEISYOHEN-SEC-EXT.
+           EXIT.
+      *TEST
+      *TEST
       *
       *****************************************************************
       *    リハビリ・患者情報編集処理
@@ -13482,13 +13519,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            禁忌
                    MOVE    1              TO  IDY2
                WHEN    "3"
-      *            禁忌
+      *            アレルギー
                    MOVE    2              TO  IDY2
                WHEN    "4"
-      *            禁忌
+      *            感染症
                    MOVE    3              TO  IDY2
                WHEN    "5"
-      *            禁忌
+      *            コメント
                    MOVE    4              TO  IDY2
                END-EVALUATE
       *

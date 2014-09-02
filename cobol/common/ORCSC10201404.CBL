@@ -1009,6 +1009,7 @@
            IF     WRK-COM-INPUTCD (IDX-SYU)   =   "099140012"
                MOVE    SPACE           TO  WRK-ERRCD
                MOVE    SPACE           TO  WRK-COM-CUR (IDX-SYU)
+               MOVE    SPACE           TO  WRK-COM-CUR (IDX-MAX)
            END-IF
            .
        10012-KAISU-CHK-EXT.
