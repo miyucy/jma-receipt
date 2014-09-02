@@ -3503,14 +3503,13 @@
            EVALUATE    TRUE
            WHEN  ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H261001 )
             AND  ( SPA-GMN-W20-SBT        =   "01" OR "06" )
-           WHEN  ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H260401 )
-            AND  ( SPA-GMN-W20-SBT        =   "01" )
-            AND  ( SPA-NAI-W20-NYUKHNKBN  =   79 )
            WHEN  ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H241001 )
             AND  ( SPA-GMN-W20-SBT        =   "01" )
             AND  ( SPA-NAI-W20-NYUKHNKBN  =   56 OR 57 )
       *
-               MOVE    1           TO  FLG-RYOYOSANTEI
+               IF    ( SPA-NAI-W20-NYUKHNKBN  NOT =   79 )
+                   MOVE    1       TO  FLG-RYOYOSANTEI
+               END-IF
       *
            END-EVALUATE
       *
