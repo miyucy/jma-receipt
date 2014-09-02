@@ -38,6 +38,7 @@
                   05  W06-CHK33.
                     06  W06-CHK33-VALUE   PIC X.
                     06  W06-CHK33-STATE   PIC S9(9)   BINARY.
+                    06  W06-CHK33-LABEL   PIC X(20).
                   05  W06-CHK36.
                     06  W06-CHK36-VALUE   PIC X.
                     06  W06-CHK36-STATE   PIC S9(9)   BINARY.
@@ -119,9 +120,11 @@
                   05  W06-CHK16.
                     06  W06-CHK16-VALUE   PIC X.
                     06  W06-CHK16-STATE   PIC S9(9)   BINARY.
+                    06  W06-CHK16-LABEL   PIC X(20).
                   05  W06-CHK17.
                     06  W06-CHK17-VALUE   PIC X.
                     06  W06-CHK17-STATE   PIC S9(9)   BINARY.
+                    06  W06-CHK17-LABEL   PIC X(20).
                   05  W06-CHK26.
                     06  W06-CHK26-VALUE   PIC X.
                     06  W06-CHK26-STATE   PIC S9(9)   BINARY.
@@ -196,12 +199,14 @@
                   05  W06-USER-KANRI-COMB.
                     06  W06-USER-KANRI.
                       07  W06-VALUE   PIC X(40).
+                    06  W06-USER-KANRI-STATE   PIC S9(9)   BINARY.
                     06  W06-USER-KANRI-COUNT   PIC S9(9)   BINARY.
                     06  W06-USER-KANRI-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
                   05  W06-CLIENT-PRT-COMB.
                     06  W06-CLIENT-PRT.
                       07  W06-VALUE   PIC X(40).
+                    06  W06-CLIENT-PRT-STATE   PIC S9(9)   BINARY.
                     06  W06-CLIENT-PRT-COUNT   PIC S9(9)   BINARY.
                     06  W06-CLIENT-PRT-ITEM
                             PIC X(40)   OCCURS  2 TIMES.

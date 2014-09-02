@@ -53,6 +53,7 @@ W06 {
         CHK33 {
           isactive bool;
           state int;
+          label varchar(20);
         };
         CHK36 {
           isactive bool;
@@ -161,10 +162,12 @@ W06 {
         CHK16 {
           isactive bool;
           state int;
+          label varchar(20);
         };
         CHK17 {
           isactive bool;
           state int;
+          label varchar(20);
         };
         CHK26 {
           isactive bool;
@@ -257,6 +260,7 @@ W06 {
           USER_KANRI {
             textdata varchar(40);
           };
+          state int;
           count int;
             item varchar(40)[5];
         };
@@ -264,6 +268,7 @@ W06 {
           CLIENT_PRT {
             textdata varchar(40);
           };
+          state int;
           count int;
             item varchar(40)[2];
         };

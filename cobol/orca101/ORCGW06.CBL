@@ -59,6 +59,7 @@
       * 04.07.01     NACL-太田    13/07/22  ＩＣカードリーダ／ライタ設定追加
       * 04.08.00     NACL-森脇    13/04/03  パスワード追加
       * 04.07.00     NACL-多々納  14/02/10  入力スクロール行数対応他
+      * 04.08.01     NACL-森脇    14/09/02  GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1386,7 +1387,13 @@
            INITIALIZE                      SYS-1010-REC
            PERFORM 320-SPASET-GSRAUTH-SEC
       *
-           MOVE    "0"                 TO  SPA-GMN-CLIENT-SAVE
+      *----(04.08.01)--UPD-START---
+           IF      SPA-MW      =   SPA-GINBEE
+               MOVE    "1"                 TO  SPA-GMN-CLIENT-SAVE
+           ELSE
+               MOVE    "0"                 TO  SPA-GMN-CLIENT-SAVE
+           END-IF
+      *----(04.08.01)--UPD-END-----
            MOVE    "0"                 TO  SPA-GMN-USER-KANRI
            MOVE    "0"                 TO  SPA-GMN-CLIENT-PRT
            MOVE    "0"                 TO  SPA-GMN-DIALOGFLG
@@ -1623,9 +1630,15 @@
                END-PERFORM
            END-IF
       *
+      *----(04.08.01)--UPD-START---
            IF    ( SPA-GMN-CLIENT-SAVE =   SPACE )
-               MOVE    "0"             TO  SPA-GMN-CLIENT-SAVE
+               IF      SPA-MW      =   SPA-GINBEE
+                   MOVE    "1"                 TO  SPA-GMN-CLIENT-SAVE
+               ELSE
+                   MOVE    "0"                 TO  SPA-GMN-CLIENT-SAVE
+               END-IF
            END-IF
+      *----(04.08.01)--UPD-END-----
            IF    ( SPA-GMN-USER-KANRI  =   SPACE )
                MOVE    "0"             TO  SPA-GMN-USER-KANRI
            END-IF
@@ -2094,7 +2107,6 @@
                    UNTIL       IDX     >   CONST-GRPHOSP-MAX
                MOVE    W06-GRPUSERID(IDX)  TO  SPA-GMN-GRPUSERID(IDX)
            END-PERFORM
-      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -4664,7 +4676,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            PERFORM 5001-MAPCUR-SEC
-      *
            .
        500-GMNHEN-EXT.
            EXIT.
@@ -4826,6 +4837,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    W06-CHK33-STATE
                END-IF
            END-IF
+      *
+      *----(04.08.01)--ADD-START---
+           IF      SPA-MW      =   SPA-GINBEE
+               MOVE    SPACE               TO  W06-CHK33-LABEL
+               MOVE    SPACE               TO  W06-CHK16-LABEL
+               MOVE    SPACE               TO  W06-CHK17-LABEL
+      *        ユーザーログイン権限「表示しない」に設定
+               MOVE    SPA-GMN-USER-KANRI-LST(1)
+                                           TO  W06-USER-KANRI
+      *        クライアント印刷可否「する」に設定
+               MOVE    SPA-GMN-CLIENT-PRT-LST(2)
+                                           TO  W06-CLIENT-PRT
+               MOVE    WIDGET-INSENSITIVE  TO  W06-USER-KANRI-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  W06-CLIENT-PRT-STATE
+           ELSE
+               MOVE    "プログラム更新"    TO  W06-CHK33-LABEL
+               MOVE    "データ出力"        TO  W06-CHK16-LABEL
+               MOVE    "外部媒体"          TO  W06-CHK17-LABEL
+               MOVE    WIDGET-NORMAL       TO  W06-USER-KANRI-STATE
+               MOVE    WIDGET-NORMAL       TO  W06-CLIENT-PRT-STATE
+           END-IF
+      *----(04.08.01)--ADD-END-----
            .
        51O-GSRAUTH-EXT.
            EXIT.
