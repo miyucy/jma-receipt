@@ -124,7 +124,6 @@
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
            COPY    "XAID2.INC".
-           COPY    "XADMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

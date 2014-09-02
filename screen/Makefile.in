@@ -429,7 +429,6 @@ SCREEN_screen = \
 	G07.glade \
 	L100.glade \
 	G100.glade \
-	_XADMY01.glade \
 	X07.glade \
 	I411.glade \
 	W36.glade \

@@ -463,7 +463,6 @@ RECORD_files = \
 	G100.rec \
 	medicalmod.rec \
 	medicalmodv2.rec \
-	_XADMY01.rec \
 	X07.rec \
 	I411.rec \
 	appointlst2v2.rec \

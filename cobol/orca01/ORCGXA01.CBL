@@ -126,7 +126,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-LIST-ROW        PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
-           03  FLG-CLIENT-OK       PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -285,7 +284,6 @@
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
            COPY    "XAID2.INC".
-           COPY    "XADMY01.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -330,11 +328,6 @@
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-XA01        TO  SPA-FREE
       *
-      *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               PERFORM 600-CLIENT-DMY-SEC
-           END-IF
-      *
            .
            EXIT    PROGRAM.
            .
@@ -371,23 +364,6 @@
            MOVE    1                   TO  FLG-END
            .
        100-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント印刷画面処理 take
-      *****************************************************************
-       600-CLIENT-DMY-SEC              SECTION.
-      *
-           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-           MOVE    "_XADMY01"          TO  MCP-WINDOW
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           DISPLAY "SPA-SAKIPG = " SPA-SAKIPG
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           .
-       600-CLIENT-DMY-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1519,55 +1495,13 @@
                  END-IF
            END-EVALUATE
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+           MOVE    SPA-CLIENT-SHOWDIALOG
+                                       TO  SHELLTBL-ARG22
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "allways"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
-      *
-      *    クライアント印刷設定
-           IF     ( SPA-XAID1-FLG       =  "OK" )
-             AND  ( SPA-CLIENT-PRT-FLG  =  2)
-      *
-               MOVE    SPACE            TO WRK-TITLE
-               PERFORM VARYING IDL FROM 1  BY  1
-                       UNTIL ( IDL             >  SPA-GMN-MAX )
-                        OR   ( WRK-TITLE   NOT =  SPACE )
-                   IF    ( LNK-PRTKANRI-TBL-GROUP
-                               =    SPA-NAI-TTBL-GROUP (IDL))
-                    AND  ( LNK-PRTKANRI-RENNUM
-                               =  ZERO OR  SPA-GMN-TRENNUM (IDL))
-                    AND  ( LNK-PRTKANRI-SHORI-RENNUM
-                               =  ZERO OR  SPA-GMN-TSHORI-RENNUM (IDL))
-                       MOVE    SPA-GMN-TPRT-TITLE (IDL)
-                                        TO WRK-TITLE
-                   END-IF
-               END-PERFORM
-      *
-      *    クライアント印刷制御情報取得サブ
-               MOVE    SPACE             TO  XADMY01-PANDAPRINT1
-               INITIALIZE                ORCSPRTCTRLAREA
-               MOVE    1                 TO  ORCSPRTCTRL-BATCH-FLG
-               MOVE    WRK-TITLE            TO
-                                         ORCSPRTCTRL-TITLE-I(1)
-               MOVE    LNK-PRTKANRI-RENNUM TO
-                                         ORCSPRTCTRL-RENNUM(1)
-               MOVE    LNK-PRTKANRI-TBL-KEY TO
-                                         ORCSPRTCTRL-TBL-KEY(1)
-               MOVE    LNK-PRTKANRI-TBL-GROUP TO
-                                         ORCSPRTCTRL-TBL-GROUP(1)
-               MOVE    LNK-PRTKANRI-SHORI-RENNUM TO
-                                         ORCSPRTCTRL-SHORI-RENNUM(1)
-               MOVE    SPA-GMN-STPAGE    TO   ORCSPRTCTRL-STPAGE (1)
-               MOVE    SPA-GMN-EDPAGE    TO   ORCSPRTCTRL-EDPAGE (1)
-               CALL    "ORCSPRTCTRL"     USING   SPA-AREA
-                                                 ORCSPRTCTRLAREA
-                                                 MCPAREA
-               MOVE    ORCSPRTCTRL-OUT   TO  XADMY01-PANDAPRINT1
-      *
-               MOVE    1                 TO  FLG-CLIENT-OK
-           END-IF
-      *
       *
       *    ＪＯＢＩＤ更新処理
       *
