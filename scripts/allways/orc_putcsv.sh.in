@@ -19,7 +19,6 @@ fi
 #        ${6} 保存場所
 #        ${7} TO-FOLDER
 #        ${8} TO-DATA
-#        ${9} 端末ｉｐアドレス
 #        ${10} ジョブＩＤ
 #        ${11} シェルＩＤ
 #        ${12} エラーファイル名 
@@ -40,7 +39,6 @@ fi
         echo "arg6  = [" ${6} "]"   >$LOG_FILE
         echo "arg7  = [" ${7} "]"   >>$LOG_FILE
         echo "arg8  = [" ${8} "]"   >>$LOG_FILE
-        echo "arg9  = [" ${9} "]"   >>$LOG_FILE
         echo "arg13 = [" ${13} "]"  >>$LOG_FILE
         echo "arg14 = [" ${14} "]"  >>$LOG_FILE
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE

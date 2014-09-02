@@ -539,16 +539,18 @@
            ELSE
                MOVE    SPA-GMN-XG02-FILE   TO  SHELLTBL-ARG6
            END-IF
-           STRING  SPA-NAI-XG02-TO-FOLDER
-                                       DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE 
-                                       INTO  SHELLTBL-ARG7
-           END-STRING
+           IF      SPA-GMN-XG02-FILE   =   SPACE
+               STRING  SPA-NAI-XG02-TO-FOLDER
+                                           DELIMITED   BY  SPACE
+                       "/"                 DELIMITED   BY  SIZE 
+                                           INTO  SHELLTBL-ARG7
+               END-STRING
+           END-IF
            MOVE    SPA-NAI-XG02-TO-DATA
                                        TO  SHELLTBL-ARG8
       *    ipアドレス取得
-           PERFORM 900-SYSTEM-GET-SEC
-           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG9
+      *****PERFORM 900-SYSTEM-GET-SEC
+      *****MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG9
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG10
            MOVE    WRK-CONS-JOB-SHELLID

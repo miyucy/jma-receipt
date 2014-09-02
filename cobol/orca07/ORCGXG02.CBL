@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.03    NACL-藤原    14/08/28  ４．８ミドル対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -242,6 +243,11 @@
                MOVE    "クライアント保存"
                                        TO  SPA-GMN-XG02-FILEMEIL(1)
                MOVE    1               TO  SPA-GMN-XG02-FILE-MAX
+       *
+               IF      SPA-MW              =   SPA-GINBEE
+                   MOVE    SPA-GMN-XG02-FILELST (1)
+                                           TO  SPA-GMN-XG02-FILE-G
+               END-IF 
            END-IF
            MOVE    "1"             TO  SPA-GMN-XG02-CDKBNL   (1)
            MOVE    "ＥＵＣ"        TO  SPA-GMN-XG02-CDKBNMEIL(1)
@@ -295,13 +301,22 @@
                MOVE    SPA-NAI-TTO-DATA  (SPA-NAI-SELNUM)
                                        TO  WRK-TO-DATA1
            END-IF
-           STRING   WRK-TO-FOLDER          DELIMITED   BY  SPACE
-                    "/"                    DELIMITED   BY  SIZE
-                    WRK-TO-DATA1           DELIMITED   BY  SPACE
-                    WRK-TO-FILENO          DELIMITED   BY  SPACE
-                    WRK-TO-DATA2           DELIMITED   BY  SPACE
+      *
+           IF      SPA-MW          =   SPA-GINBEE
+               STRING   WRK-TO-DATA1       DELIMITED   BY  SPACE
+                        WRK-TO-FILENO      DELIMITED   BY  SPACE
+                        WRK-TO-DATA2       DELIMITED   BY  SPACE
                                            INTO    SPA-NAI-XG02-FILENAME
-           END-STRING
+               END-STRING
+           ELSE
+               STRING   WRK-TO-FOLDER      DELIMITED   BY  SPACE
+                        "/"                DELIMITED   BY  SIZE
+                        WRK-TO-DATA1       DELIMITED   BY  SPACE
+                        WRK-TO-FILENO      DELIMITED   BY  SPACE
+                        WRK-TO-DATA2       DELIMITED   BY  SPACE
+                                           INTO    SPA-NAI-XG02-FILENAME
+               END-STRING
+           END-IF
            MOVE    SPA-NAI-XG02-FILENAME
                                    TO  SPA-GMN-XG02-FILENAME
       *
@@ -448,6 +463,7 @@
            .
        4102-KIHON-CHK-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ファイル名チェック
       *****************************************************************
@@ -467,6 +483,14 @@
                        MOVE    1                   TO  SPA-GMN-XG02-CUR
                        MOVE    100                 TO  IDX2
                    END-IF
+                   IF      SPA-MW          =   SPA-GINBEE
+                       IF        SPA-GMN-XG02-FILENAME (IDX2:1)
+                                               =   "/"
+                           MOVE    "1006"          TO  SPA-ERRCD
+                           MOVE    1               TO  SPA-GMN-XG02-CUR
+                           MOVE    100             TO  IDX2
+                       END-IF
+                   END-IF
                END-PERFORM        
            END-IF
            .
@@ -478,6 +502,15 @@
       *****************************************************************
        41022-FILE-CHK-SEC          SECTION.
       *
+           IF      SPA-MW          =   SPA-GINBEE
+               IF      SPA-GMN-XG02-FILE-MAX
+                                       =   ZERO
+                   MOVE    "1005"          TO  SPA-ERRCD
+                   MOVE    2               TO  SPA-GMN-XG02-CUR
+                   GO  TO  41022-FILE-CHK-EXT
+               END-IF
+           END-IF
+      *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-XG02-FILE-MAX
                IF        SPA-GMN-XG02-FILE
@@ -487,10 +520,16 @@
                    MOVE    SPA-GMN-XG02-FILE-MAX
                                            TO  IDX2
                END-IF
-           END-PERFORM        
-           IF      SPA-GMN-XG02-CDKBNMEI
+           END-PERFORM
+      *
+           IF      SPA-GMN-XG02-FILEMEI
                                    =   SPACE  
-               MOVE    SPACE           TO  SPA-GMN-XG02-CDKBN-G
+               IF      SPA-MW          =   SPA-GINBEE
+                   MOVE    SPA-GMN-XG02-FILELST (1)
+                                           TO  SPA-GMN-XG02-FILE-G
+               ELSE
+                   MOVE    SPACE           TO  SPA-GMN-XG02-FILE-G
+               END-IF
            END-IF
            .
        41022-FILE-CHK-EXT.
@@ -640,10 +679,10 @@
            MOVE    1               TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  490-KAKUTEI-EXT
+               GO  TO  490-KAKUTEI-CHECK-EXT
            END-IF
            IF    ( SPA-XGIDCD      NOT =   SPACE )
-               GO  TO  490-KAKUTEI-EXT
+               GO  TO  490-KAKUTEI-CHECK-EXT
            END-IF
       *
       *    確定処理
@@ -776,19 +815,32 @@
            MOVE    SPACE           TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
-           WHEN    "1001"
-           WHEN    "1002"
-               MOVE    "出力ファイル名が入力されていません"
-                                       TO  SPA-ERRMSG
-           WHEN    "1003"
-               MOVE    "格納場所が入力されていません"
-                                       TO  SPA-ERRMSG
-           WHEN    "1004"
-               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
-                        "”：”、”￥”が入力してあります"
-                                             DELIMITED  BY  SIZE
-                                             INTO  SPA-ERRMSG
-               END-STRING
+               WHEN    "1001"
+               WHEN    "1002"
+                   MOVE    "出力ファイル名が入力されていません"
+                                                   TO  SPA-ERRMSG
+               WHEN    "1003"
+                   MOVE    "格納場所が入力されていません"
+                                                   TO  SPA-ERRMSG
+               WHEN    "1004"
+                   STRING   "出力ファイル名に"     DELIMITED   BY  SIZE
+                            "”：”、”￥”が入力してあります"
+                                                   DELIMITED   BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1005"
+                   STRING   "システム管理のクライアント保存"
+                                                   DELIMITED   BY  SIZE
+                            "の指定を有効にして下さい"
+                                                   DELIMITED   BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1006"
+                   STRING   "出力ファイル名に”／”" DELIMITED  BY  SIZE
+                            "、”：”、”￥”が入力してあります"
+                                                     DELIMITED  BY  SIZE
+                                                     INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE           TO  XGERR
