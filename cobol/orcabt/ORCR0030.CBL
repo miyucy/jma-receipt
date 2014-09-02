@@ -667,6 +667,7 @@
       *                                     改行コードチェック
       *                                     エラー時処理終了
       *  04.07.30    NACL-門脇    14/08/29  島根・奈良県地方公費対応
+      *  04.07.31    NACL-門脇    14/09/01  訪問診療にかかる記録書コメント対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -9897,10 +9898,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN        =     "14"  )
-               AND   ( RECE04-ZAITEN     =     ZERO  )
-               AND   ( ACCT-ZAIKBN   NOT =     1     )
-               AND   ( ACCT-JIHOKBN      =     SPACE )
+               IF      SRY-SRYCD(IDX2)     =   "099140011"
+                      MOVE     "1"        TO    RECE04-HOMONCOMFLG
+               END-IF
+               IF      SRY-SRYCD(IDX2)     =   "099140012"
+                      MOVE     "2"        TO    RECE04-HOMONCOMFLG
+               END-IF
+               IF      RECE04-HOMONCOMFLG  =   "2"
+                      MOVE     "1"        TO    RECE02-COMCNTFLG
+                      MOVE     "1"        TO    RECE05-RECEDENFLG(IDX4)
+                      MOVE     "1"        TO    RECE05-RECEPTFLG(IDX4)
+               END-IF
+      *
+               IF    ( SRY-SRYKBN          =     "14"  )
+               AND   ( RECE04-ZAITEN       =     ZERO  )
+               AND   ( ACCT-ZAIKBN     NOT =     1     )
+               AND   ( ACCT-JIHOKBN        =     SPACE )
+               AND   ( RECE04-HOMONCOMFLG  =     SPACE )
                   IF     RECE04-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE04-TOYAKUFLG
                   ELSE

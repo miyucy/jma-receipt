@@ -257,6 +257,7 @@
       *  04.07.20    NACL-藤原    14/08/19  患者コメントの入力コメントの
       *                                     改行コードチェック
       *                                     エラー時処理終了
+      *  04.07.21    NACL-門脇    14/09/01  訪問診療にかかる記録書コメント対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
@@ -2820,6 +2821,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
             END-IF
             IF       SRY-SRYCD(IDX2)   =  "099140004" OR "099830102"
                                                       OR "099400001"
+                  MOVE    1     TO    FLG-HENSYU-NG
+            END-IF
+            IF       SRY-SRYCD(IDX2)   =  "099140011" OR "099140012"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
       *

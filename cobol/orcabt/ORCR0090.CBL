@@ -257,6 +257,7 @@
       *                                     種別不明レセ対応
       *                                     コメントのチェックを自費分は
       *                                     対象としない
+      *  04.07.05    NACL-門脇    14/09/01  訪問診療にかかる記録書コメント対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -4921,6 +4922,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
              OR ( RECE04-SAFLG   NOT =   SPACE                )
              OR ( RECE04-TOYAKUFLG   =   "2" OR "4"           )
              OR ( RECE04-ZAIKBN      =    1                   )
+             OR ( RECE04-HOMONCOMFLG NOT = SPACE              )
                   GO  TO  440-TNSKAI-SET-EXT
              END-IF
            END-IF
@@ -4992,10 +4994,14 @@ grpsys         PERFORM 900-DBSELECT-SEC
                  OR       (WRK-ZAIW-SRYCD1(1:3)  =   "059"       )
                  OR       (RECE04-SAFLG     NOT  =   SPACE       )
                  OR       (RECE04-ZAIKBN         =    1          )
+                 OR       (RECE04-HOMONCOMFLG
+                                            NOT  =   SPACE       )
                      MOVE    ALL "9"            TO
                                             WRK-ZAIW-CDKBN-AREA
                      IF   (RECE04-SAFLG     NOT  =   SPACE)
                      OR   (RECE04-ZAIKBN         =    1   )
+                     OR   (RECE04-HOMONCOMFLG
+                                            NOT  =   SPACE)
                          MOVE    999999999   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      ELSE
                        IF    WRK-ZAIW-SRYCD1(1:1)  =   "6"
