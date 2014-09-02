@@ -58,7 +58,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/07/04  ½èÊý¤»¤óÎÁÈ½ÄêÍÑË¡ÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/08/10  ¥µ¥ó¥×¥ëÌô¡Ê¥µ¡ËÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  14/06/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
+      *  04.07.00    NACL-Â¿¡¹Ç¼  14/09/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -205,9 +205,6 @@
       *
            03  IDXW                PIC 9(04).
       *
-      *TEST
-           03  IDX-PS              PIC 9(04).
-      *TEST
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
@@ -451,13 +448,6 @@
       *
       *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
            COPY    "K01COMMON-SPA".
-      *
-      *TEST
-      *TEST
-      *    ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
-      *    COPY    "CPORCSPSYCHO.INC".
-      *TEST
-      *TEST
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -1504,13 +1494,6 @@
            MOVE    ZERO                TO  WRK-UGAI-YAK
            MOVE    ZERO                TO  WRK-UGAI-IGAI
            MOVE    ZERO                TO  IDX-UGAI
-      *TEST
-      *TEST
-      *    ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¥Á¥§¥Ã¥¯
-      *    INITIALIZE                  ORCSPSYCHOAREA
-      *    MOVE    ZERO                TO  IDX-PS
-      *TEST
-      *TEST
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
@@ -2330,10 +2313,6 @@
                    PERFORM 300301-YOUHO-HENSUB-SEC
                END-IF
            END-PERFORM
-      *TEST
-      *    DISPLAY "WRK-ZAICNT2-AL:" WRK-ZAICNT2-AL
-      *          ",WRK-ZAICNT-AL:"  WRK-ZAICNT-AL
-      *TEST
            .
        30030-YOUHOU-HEN-EXT.
            EXIT.
