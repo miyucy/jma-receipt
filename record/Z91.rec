@@ -1,5 +1,8 @@
 Z91 {
   fixed2 {
+    B11 {
+      state int;
+    };
     SRYCHK {
       isactive bool;
     };

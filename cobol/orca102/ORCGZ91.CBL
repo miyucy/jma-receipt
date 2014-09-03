@@ -50,6 +50,7 @@
       *  04.02.01    NACL-森脇    08/03/13  病理診療追加
       *  04.03.01    NACL-森脇    08/06/13  ＣＳＶ出力対応
       *  04.08.01    NACL-森脇    14/08/21  一時ファイルディレクトリ設定
+      *                           14/09/03  GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -197,6 +198,10 @@
       *
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
+      *----(04.08.01)--ADD-START---
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
+      *----(04.08.01)--ADD-END-----
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -460,10 +465,18 @@
       *
            MOVE    1               TO  SPA-Z91-GMN-CUR
       *
+      *----(04.08.01)--ADD-START---
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"          USING
+                                           ORCSCLIENTSVAREA
+                                           SPA-AREA
+           MOVE    SCLIENTSV-CLIENT-SAVE
+                                       TO  SPA-Z100-CLIENT-SAVE
+      *----(04.08.01)--ADD-END-----
            .
        310-SPASET-EXT.
            EXIT.
-      *
       *****************************************************************
       *    確認画面ＯＫ処理
       *****************************************************************
@@ -2298,7 +2311,20 @@
                                                Z91-IYKCHK6-STATE
                                                Z91-IYKCHK7-STATE
            END-IF
-      *             
+      *----(04.08.01)--ADD-START---
+      *    GINBEEのとき
+           IF      SPA-MW      =   SPA-GINBEE
+      *        クライアント保存可能であればＣＳＶボタン活性化
+               IF      SPA-Z100-CLIENT-SAVE    =   "1"
+                   MOVE    WIDGET-NORMAL       TO  Z91-B11-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  Z91-B11-STATE
+               END-IF
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  Z91-B11-STATE
+           END-IF
+      *----(04.08.01)--ADD-END-----
+      *
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
            .
@@ -2479,37 +2505,6 @@
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
-      *****************************************************************
-      * 530-ZIDSET2-SEC              SECTION.
-      *
-      *     MOVE    SPACE               TO  WRK-ZIDMSG
-      *
-      *     EVALUATE    SPA-ZIDCD2
-      *         WHEN    "8888"
-      *             MOVE    "印刷が終了しました"        TO  WRK-ZIDMSG
-      *     END-EVALUATE
-      *
-      *     MOVE    SPACE                TO  ZID2
-      *     MOVE    SPA-ZIDCD2           TO  ZID2-ID1CODE
-      *     MOVE    WRK-ZIDMSG           TO  ZID2-ID1MSG
-      *     MOVE    "B12"                TO  MCP-WIDGET
-      *
-      *     MOVE    "Z91"                TO  SPA-MOTOPG
-      *     MOVE    "RID2"               TO  SPA-SAKIPG
-      *
-      *     MOVE    "NEW"                TO  MCP-PUTTYPE
-      *     MOVE    "ZID2"               TO  MCP-WINDOW
-      *
-      *     PERFORM 900-PUT-WINDOW
-      *
-      *     MOVE    1                    TO  FLG-END              
-      *
-      *     .
-      * 530-ZIDSET2-EXT.
-      *     EXIT.
-      *
-      *****************************************************************
       *    ガイドメッセージ表示
       *****************************************************************
        540-ZID3SET-SEC                 SECTION.
@@ -2543,10 +2538,6 @@
            .
        540-ZID3SET-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    日付変換　処理
-      *****************************************************************
       *
       *****************************************************************
       *   和暦年月日→西暦年月日（機能１２）

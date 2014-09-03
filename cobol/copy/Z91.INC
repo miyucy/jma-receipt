@@ -17,6 +17,8 @@
       ********************************************************************
           03  Z91.
                 04  Z91-FIXED2.
+                    05  Z91-B11.
+                        07  Z91-B11-STATE      PIC S9(9)   BINARY.
                     05  Z91-SRYCHK             PIC X.
                     05  Z91-SRY                PIC X        OCCURS  2.
                     05  Z91-SRYSTRCOMBO.

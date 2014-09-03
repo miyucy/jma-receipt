@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      *  04.08.01    NACL-森脇     14/09/03  GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -223,15 +224,25 @@
            MOVE    "3001"                  TO  SPA-Z100-CD
            MOVE    "ＣＳＶ出力を開始します"
                                            TO  SPA-Z100-MSG
+      *----(04.08.01)--UPD-START---
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       8
                MOVE    SPACE       TO  SPA-Z100-FILENAME(IDX)
                IF      SPA-CSV-CHK(IDX)   =   "T"
-                   STRING  "/tmp/OUTPUT"      DELIMITED SIZE
-                           IDX                DELIMITED SIZE
-                           ".csv"             DELIMITED SIZE
-                                        INTO  SPA-Z100-FILENAME(IDX)
-                   END-STRING
+      *            GINBEEのとき
+                   IF      SPA-MW      =   SPA-GINBEE
+                       STRING  "OUTPUT"           DELIMITED SIZE
+                               IDX                DELIMITED SIZE
+                               ".csv"             DELIMITED SIZE
+                                            INTO  SPA-Z100-FILENAME(IDX)
+                       END-STRING
+                   ELSE
+                       STRING  "/tmp/OUTPUT"      DELIMITED SIZE
+                               IDX                DELIMITED SIZE
+                               ".csv"             DELIMITED SIZE
+                                            INTO  SPA-Z100-FILENAME(IDX)
+                       END-STRING
+                   END-IF
                    MOVE    WIDGET-NORMAL
                                        TO  SPA-Z100-FILENAME-STATE(IDX)
                ELSE
@@ -239,7 +250,14 @@
                                        TO  SPA-Z100-FILENAME-STATE(IDX)
                END-IF
            END-PERFORM
-      *
+      *----(04.08.01)--UPD-END-----
+      *----(04.08.01)--ADD-START---
+      *    GINBEEのとき
+           IF      SPA-MW      =   SPA-GINBEE
+               MOVE    SPA-Z100-FILELST(1)     TO  SPA-Z100-FILE-G
+               MOVE    SPA-Z100-CDKBNLST(1)    TO  SPA-Z100-CDKBN-G
+           END-IF
+      *----(04.08.01)--ADD-END-----
            .
        300-SCREEN-EXT.
            EXIT.
@@ -344,6 +362,7 @@
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *
+      *----(04.08.01)--UPD-START---
       *****************************************************************
       *    ファイル名チェック
       *****************************************************************
@@ -370,11 +389,22 @@
                            ELSE
                                IF      SPA-Z100-FILENAME(IDX)(IDX2:1)
                                                            =   "/"
-                                   MOVE    IDX2            TO  WRK-NUM
+      *                            GINBEEのとき
+                                   IF      SPA-MW      =   SPA-GINBEE
+                                       MOVE    "1005"  TO  SPA-ERRCD
+                                       MOVE    IDX     TO  SPA-Z100-CUR
+                                   ELSE
+                                       MOVE    IDX2    TO  WRK-NUM
+                                   END-IF
                                END-IF
                            END-IF
                        END-PERFORM
-                       IF      SPA-ERRCD       =   SPACE
+                   END-IF
+                   IF      SPA-ERRCD       =   SPACE
+      *                GINBEEのとき
+                       IF      SPA-MW      =   SPA-GINBEE
+                           CONTINUE
+                       ELSE
                            IF      WRK-NUM     NOT =   ZERO
                                MOVE    SPA-Z100-FILENAME(IDX)(1:WRK-NUM)
                                                TO  SPA-CSV-DIRNAME(IDX)
@@ -394,16 +424,16 @@
                                                    DELIMITED  BY  SPACE
                                    INTO   SPA-Z100-FILENAME(IDX)
                            END-STRING
-                           PERFORM VARYING IDX2    FROM    1   BY  1
-                                   UNTIL   IDX2    >=      IDX
-                                   OR      SPA-ERRCD       NOT =   SPACE
-                               IF      SPA-Z100-FILENAME(IDX2)
-                                           =   SPA-Z100-FILENAME(IDX)
-                                   MOVE    "1002"      TO  SPA-ERRCD
-                                   MOVE    IDX         TO  SPA-Z100-CUR
-                               END-IF
-                           END-PERFORM
                        END-IF
+                       PERFORM VARYING IDX2    FROM    1   BY  1
+                               UNTIL   IDX2    >=      IDX
+                               OR      SPA-ERRCD       NOT =   SPACE
+                           IF      SPA-Z100-FILENAME(IDX2)
+                                       =   SPA-Z100-FILENAME(IDX)
+                               MOVE    "1002"      TO  SPA-ERRCD
+                               MOVE    IDX         TO  SPA-Z100-CUR
+                           END-IF
+                       END-PERFORM
                    END-IF
                END-IF
            END-PERFORM
@@ -411,6 +441,7 @@
            .
        4100-FILENAME-CHK-EXT.
            EXIT.
+      *----(04.08.01)--UPD-END-----
       *****************************************************************
       *    出力先チェック処理
       *****************************************************************
@@ -418,7 +449,15 @@
       *
            IF      SPA-Z100-CLIENT-SAVE    =   "1"
                IF      SPA-Z100-FILE       =   SPACE
-                   MOVE    SPACE               TO  SPA-Z100-CDKBN-G
+      *----(04.08.01)--UPD-START---
+      *            GINBEEのとき
+                   IF      SPA-MW      =   SPA-GINBEE
+                       MOVE    SPA-Z100-FILELST(1)
+                                               TO  SPA-Z100-FILE-G
+                   ELSE
+                       MOVE    SPACE           TO  SPA-Z100-CDKBN-G
+                   END-IF
+      *----(04.08.01)--UPD-END-----
                ELSE
                    PERFORM VARYING IDX2 FROM    1   BY  1
                            UNTIL   IDX2 >       SPA-Z100-FILE-MAX
@@ -699,6 +738,11 @@
                                            DELIMITED  BY  SIZE
                                            INTO  SPA-ERRMSG
                END-STRING
+      *----(04.08.01)--ADD-START---
+           WHEN    "1005"
+               MOVE    "出力ファイル名に／は入力できません"
+                                       TO  SPA-ERRMSG
+      *----(04.08.01)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE                TO  ZERR
