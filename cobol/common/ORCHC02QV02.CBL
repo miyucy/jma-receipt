@@ -3093,7 +3093,6 @@
            MOVE    ZERO                TO  FLG-FUKACHK
            MOVE    ZERO                TO  FLG-FUKACHK2
       *
-      *
            COMPUTE IDXF2               =   IDXA    +   1
            PERFORM VARYING     IDXF    FROM    IDXF2   BY  1
                    UNTIL      (IDXF    >   WRK-SRY-MAX   )   OR
@@ -3949,7 +3948,6 @@
                PERFORM 2009-HENKAN-SEC
                MOVE    WRK-ZENKAKU-G(1:22) TO  WRK-SURYO-N22
            END-IF
-      *
            .
        100112-SURYO-HEN05-EXT.
            EXIT.

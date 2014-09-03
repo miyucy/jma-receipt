@@ -7271,7 +7271,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
       *D           MOVE    SPACE           TO  SPA-ERRMSG2
                    MOVE    SPA-ERRCD       TO  SPA-ERRMSG2
-      *H26.8
+      *H26.10
                WHEN    "0052"
                    STRING  "外用薬剤の回数が１回以上になります。"
                            "同じ剤は回数をまとめて入力して下さい。"

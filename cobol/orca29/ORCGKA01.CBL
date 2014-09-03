@@ -429,6 +429,9 @@
       *   明細最大数
        01  MAX-LINE                PIC 9(04)   VALUE   400.
       *  
+      * （精減）
+       01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -4132,6 +4135,8 @@
                                                    =   ZERO )  OR
                               (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                                    =   "820000047"
+      *H26.10 (精減）
+                                                   OR  CONS-SGEN-SRYCD
                                                    OR  "099209902" )
                            CONTINUE
                        ELSE
@@ -4292,6 +4297,8 @@
                                                    =   ZERO )  OR
                               (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                                    =   "820000047"
+      *H26.10 (精減）
+                                                   OR  CONS-SGEN-SRYCD
                                                    OR  "099209902" )
                            CONTINUE
                        ELSE

@@ -49,6 +49,7 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  13/07/XX  Âè»°¼Ô¹Ô°ÙÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/05/27  °ì»þ¥Õ¥¡¥¤¥ëÊÑ¹¹
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/08/22  ³°ÍÑÌôºÞ²ó¿ô¥Á¥§¥Ã¥¯ÂÐ±þ
+      *  04.08.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -293,7 +294,7 @@
            03  WRK-HZN-SRYKA           PIC X(02).
       *    ¿ÇÎÅ¹Ô°ÙÉí²Ã¾ðÊóÀßÄê¡Ê²ÊËè¡Ë
            03  WRK-ACTP-AREA.
-               05  WRK-ACTP-ZAINUM-G       OCCURS   20.
+               05  WRK-ACTP-ZAINUM-G       OCCURS   30.
                    07  WRK-ACTP-SRYKA      PIC X(02).
                    07  WRK-ACTP-HKNCOMBI   PIC X(04).
       *H26.10      ¿ÇÎÅ¶èÊ¬Ëè
@@ -312,7 +313,7 @@
       *
       *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó¥Þ¥¹¥¿¡Ý¡ÊÆâÉþÄþ¸º¡Ë
        01  TBL-SRYACCTPLUS-AREA.
-           02  TBL-SRYACCTPLUS-REC   OCCURS   20.
+           02  TBL-SRYACCTPLUS-REC   OCCURS   30.
            COPY    "CPSRYACCTPLUS.INC"  REPLACING
                                      //ACCTP-// BY //TBL-ACCTP-//.
            03  TBL-ACCTP-HKNCOMBI      PIC X(04).
@@ -3377,7 +3378,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÆâÉþÄþ¸º½èÍý
            IF      FLG-GEN-ARI         =   1
                PERFORM VARYING IDX-GEN2    FROM    1   BY  1
-                       UNTIL   IDX-GEN2    >   20
+                       UNTIL   IDX-GEN2    >   30
                    IF      WRK-ACTP-SRYKA(IDX-GEN2)    =   SPACE
                        MOVE    LNK-WKSRY-SRYKA(01)
                                            TO  WRK-ACTP-SRYKA(IDX-GEN2)
@@ -3404,7 +3405,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                        MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
                                                     (IDX-GEN2 IDX-GEN)
-                       MOVE    20              TO  IDX-GEN2
+                       MOVE    30              TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-IF
@@ -3531,7 +3532,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                               (FLG-ERR         =   1 )
                    MOVE    ZERO                TO  FLG-ERR2
                    PERFORM VARYING IDX-GEN5    FROM    1   BY  1
-                           UNTIL  (IDX-GEN5    >   20   )  OR
+                           UNTIL  (IDX-GEN5    >   30   )  OR
                                   (WRK-ACTP-SRYKA(IDX-GEN5)
                                                =   SPACE  )  OR
                                   (FLG-ERR2    =   1      )
@@ -4117,7 +4118,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾ÝºÞÈÖ¹æ
            IF      LNK-WKSRYP-TEI-NKBN (1) =   2
                PERFORM VARYING     IDW     FROM    1   BY  1
-                       UNTIL       IDW     >   20
+                       UNTIL       IDW     >   30
                    IF      TBL-ACCTP-HOSPNUM (IDW)  =   ZERO
                        MOVE    SRYACCTPLUS-REC
                                            TO  TBL-SRYACCTPLUS-REC(IDW)
@@ -4125,7 +4126,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  TBL-ACCTP-HKNCOMBI (IDW)
                        MOVE    ACCT-SRYKBN
                                            TO  TBL-ACCTP-SRYKBN   (IDW)
-                       MOVE    20          TO  IDW
+                       MOVE    30          TO  IDW
                    END-IF
                END-PERFORM
            ELSE
@@ -4141,13 +4142,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4504-SRYACCTPLUS-GENINS-SEC              SECTION.
       *
            PERFORM VARYING     IDW     FROM    1   BY  1
-                   UNTIL      (IDW     >   20   )   OR
+                   UNTIL      (IDW     >   30   )   OR
                               (TBL-ACCTP-HOSPNUM (IDW)  =   ZERO )
                MOVE    TBL-SRYACCTPLUS-REC(IDW)    TO  SRYACCTPLUS-REC
                INITIALIZE                  ACCTP-GRP-ZAINUM-G
                MOVE    ZERO                TO  IDW2
                PERFORM VARYING     IDX-GEN2    FROM    1   BY  1
-                       UNTIL      (IDX-GEN2    >   20   )   OR
+                       UNTIL      (IDX-GEN2    >   30   )   OR
                                   (WRK-ACTP-SRYKA(IDX-GEN2)
                                               =   SPACE)
                    IF     (ACCTP-SRYKA        =    WRK-ACTP-SRYKA
@@ -4176,7 +4177,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      IDW2                >   ZERO
                            PERFORM 4503-SRYACCTPLUS-INS-SEC
                        END-IF
-                       MOVE    20             TO  IDX-GEN2
+                       MOVE    30             TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-PERFORM

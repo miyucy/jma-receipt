@@ -1972,16 +1972,32 @@
       *H26.10
       *                À¨Ã‰ø«Œ≈§À≥›§´§Îµ≠œøΩÒ
                        WHEN    "099140011"
-                           MOVE    "14"            TO  SPA-COM-SRYKBN
+                           MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
-                           MOVE    "140"           TO  SPA-COM-SRYSYUKBN
+      *                    1π‘¡∞§¨ø«Œ≈ºÔ Ã∞ ≥∞
+                           IF     (IDX             >   1  )  AND
+                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
+                                                   =   ".990"
+                                                   OR  ".991" )
+                               CONTINUE
+                           ELSE
+                               MOVE    "991"       TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
+                           END-IF
       *                ø«Œ≈øÕøÙπÁ∑◊
                        WHEN    "099140012"
-                           MOVE    "14"            TO  SPA-COM-SRYKBN
+                           MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
-                           MOVE    "140"           TO  SPA-COM-SRYSYUKBN
+      *                    1π‘¡∞§¨ø«Œ≈ºÔ Ã∞ ≥∞
+                           IF     (IDX             >   1  )  AND
+                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
+                                                   =   ".990"
+                                                   OR  ".991" )
+                               CONTINUE
+                           ELSE
+                               MOVE    "991"       TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
+                           END-IF
       *                    £±∫ﬁ£±Ã¿∫Ÿ§»§π§Î
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)

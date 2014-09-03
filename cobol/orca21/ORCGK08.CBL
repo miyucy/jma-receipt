@@ -1899,6 +1899,7 @@
                    IF     (LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "3" ) AND
                           (LNK-WKSRY-INPUTCD (IDX IDZ)
                                                    =   "820000047"
+      *H26.10
                                                    OR  "820000166")
                        MOVE    ZERO                TO  SPA-NAI-JIDFLG
                                                               (IDX-NAI)
@@ -5155,6 +5156,12 @@
            IF      LNK-WKSRY-SRYCD (IDX 01)    =   "630010002"
                GO      TO      45052-JIBAI-SYORI-EXT
            END-IF
+      *H26.10
+      *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
+           IF     (LNK-WKSRY-SRYCD (IDX 01)(1:1)   =   "6" )
+             AND  (LNK-WKSRYP-PLUSKBN (01)     =   1   )
+               GO      TO      45052-JIBAI-SYORI-EXT
+           END-IF
       *
       *    ²èÁü¿ÇÃÇ¤Î»þ¡¢¥Õ¥£¥ë¥àÅÀ¿ô¤òÂÐ¾Ý³°¤È¤¹¤ë
            IF      LNK-WKSRY-SRYKBN (IDX)  =   "70"
@@ -5228,10 +5235,6 @@
       *        ¡ó²Ã»»¤¢¤ê¤Ï¡¢ºÞÅÀ¿ô¤òÂÐ¾Ý¤È¤¹¤ë
                ADD     LNK-WKSRY-SYUTEN1 (IDX) TO  WRK-SYUTEN1
                MOVE    ZERO                TO  FLG-RSIFLG
-      *TEST
-            DISPLAY "IDX:" IDX ",SRYKBN:"  LNK-WKSRY-SRYKBN (IDX)
-                 ",WRK-SYUTEN1:" WRK-SYUTEN1
-      *TEST
            END-IF
            MOVE    TNSWK-TENSU-REC     TO  TNS-TENSU-REC
            .
@@ -5247,6 +5250,12 @@
       *
       *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
            IF      LNK-WKSRY-SRYCD (IDX 01)    =   "630010002"
+               GO      TO      45052-KOGAI-SYORI-EXT
+           END-IF
+      *H26.10
+      *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
+           IF     (LNK-WKSRY-SRYCD (IDX 01)(1:1)   =   "6" )
+             AND  (LNK-WKSRYP-PLUSKBN (01)     =   1  )
                GO      TO      45052-KOGAI-SYORI-EXT
            END-IF
       *

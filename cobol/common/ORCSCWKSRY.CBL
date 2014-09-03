@@ -4308,6 +4308,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
                        IF      ORCSCWKSRY-KSN-SRYCD (IDX)
                                                      =   "630010002"
+      *H26.10                  ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿
                                                  OR  CONS-TAZAI-SRYCD
                            COMPUTE SUM-SYU-HKNTEN (04)
                                                =   SUM-SYU-HKNTEN(04)
@@ -4518,6 +4519,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
            IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   "630010002"
+      *H26.10      ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿
                                                OR  CONS-TAZAI-SRYCD
                MOVE    1                   TO  WKSRYP-PLUSKBN
       *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý

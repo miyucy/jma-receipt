@@ -3203,6 +3203,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            画面制御
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
+      *
       *        クリア確認チェック
                WHEN    "0125"
                    IF      SPA-KID1-FLG        =   "OK"
@@ -12075,8 +12076,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-COM-SRYSYUKBN(IDX)  =  "212"  OR
                                                   "222"  OR
                                                   "232"  OR
-                                                  "292"  OR
-                                                  "295"
+                                                  "292"
+      *            外用臨時
+                                               OR "295"
                    MOVE    1               TO  FLG-SYOHOU-ARI
                END-IF
       *        在宅注射院外処方
@@ -12956,6 +12958,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *@
       *            包括行
                    IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)
+      *H26.10 （包括エラー分も）
                       OR  (SPA-COM-HOUKATU-ERR (WRK-IDX) NOT =   ZERO)
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
