@@ -375,9 +375,6 @@
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
-      *    クライアント保存可否情報取得サブ
-           COPY    "CPORCSCLIENTSV.INC".
-      *
       *    ユーザー情報取得
            COPY    "CPORCSLDUSER.INC".
       *
