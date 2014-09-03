@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    14/08/28  ４．８ミドル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,6 +41,8 @@
        01  FLG-AREA.
            03  FLG-SYSKANRI            PIC 9(01). 
            03  FLG-OK                  PIC 9(01). 
+      *
+           COPY    "ENUM-VALUE".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -128,7 +131,11 @@
       *
            IF      SYS-1010-CLIENT-SAVE
                                        =   SPACE
-               MOVE    "0"                 TO  SYS-1010-CLIENT-SAVE
+               IF      SPA-MW          =   SPA-GINBEE
+                   MOVE    "1"                 TO  SYS-1010-CLIENT-SAVE
+               ELSE
+                   MOVE    "0"                 TO  SYS-1010-CLIENT-SAVE
+               END-IF 
            END-IF
            MOVE    SYS-1010-CLIENT-SAVE
                                        TO  SCLIENTSV-CLIENT-SAVE
