@@ -9898,23 +9898,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
-               IF      SRY-SRYCD(IDX2)     =   "099140011"
-                      MOVE     "1"        TO    RECE04-HOMONCOMFLG
-               END-IF
-               IF      SRY-SRYCD(IDX2)     =   "099140012"
-                      MOVE     "2"        TO    RECE04-HOMONCOMFLG
-               END-IF
-               IF      RECE04-HOMONCOMFLG  =   "2"
-                      MOVE     "1"        TO    RECE02-COMCNTFLG
-                      MOVE     "1"        TO    RECE05-RECEDENFLG(IDX4)
-                      MOVE     "1"        TO    RECE05-RECEPTFLG(IDX4)
-               END-IF
-      *
-               IF    ( SRY-SRYKBN          =     "14"  )
-               AND   ( RECE04-ZAITEN       =     ZERO  )
-               AND   ( ACCT-ZAIKBN     NOT =     1     )
-               AND   ( ACCT-JIHOKBN        =     SPACE )
-               AND   ( RECE04-HOMONCOMFLG  =     SPACE )
+               IF    ( SRY-SRYKBN        =     "14"  )
+               AND   ( RECE04-ZAITEN     =     ZERO  )
+               AND   ( ACCT-ZAIKBN   NOT =     1     )
+               AND   ( ACCT-JIHOKBN      =     SPACE )
                   IF     RECE04-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE04-TOYAKUFLG
                   ELSE
@@ -9946,6 +9933,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       CONTINUE
                   ELSE
                       MOVE      1         TO    WRK-DAISAN-INGAI(IDX1)
+                  END-IF
+               END-IF
+      *
+               IF      SRY-SRYKBN   =   "99"
+                  IF      SRY-SRYCD(IDX2)     =   "099140011"
+                      MOVE     "1"        TO    RECE04-HOMONCOMFLG
+                      MOVE  "810000001"   TO    RECE05-SRYCD(IDX4)
+                  END-IF
+                  IF      SRY-SRYCD(IDX2)     =   "099140012"
+                      MOVE     "2"        TO    RECE04-HOMONCOMFLG
+                      MOVE  "810000001"   TO    RECE05-SRYCD(IDX4)
+                  END-IF
+                  IF      RECE04-HOMONCOMFLG  =   "2"
+                      MOVE     "1"        TO    RECE02-COMCNTFLG
+                      MOVE     "1"        TO    RECE05-RECEDENFLG(IDX4)
+                      MOVE     "1"        TO    RECE05-RECEPTFLG(IDX4)
                   END-IF
                END-IF
       *

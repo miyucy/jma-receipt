@@ -4994,14 +4994,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
                  OR       (WRK-ZAIW-SRYCD1(1:3)  =   "059"       )
                  OR       (RECE04-SAFLG     NOT  =   SPACE       )
                  OR       (RECE04-ZAIKBN         =    1          )
-                 OR       (RECE04-HOMONCOMFLG
-                                            NOT  =   SPACE       )
                      MOVE    ALL "9"            TO
                                             WRK-ZAIW-CDKBN-AREA
                      IF   (RECE04-SAFLG     NOT  =   SPACE)
                      OR   (RECE04-ZAIKBN         =    1   )
-                     OR   (RECE04-HOMONCOMFLG
-                                            NOT  =   SPACE)
                          MOVE    999999999   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      ELSE
                        IF    WRK-ZAIW-SRYCD1(1:1)  =   "6"

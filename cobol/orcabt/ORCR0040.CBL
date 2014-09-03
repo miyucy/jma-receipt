@@ -1371,17 +1371,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                       IF  RECE04-FLG-OSIN-COMMENT      =  "2"
                         MOVE  1  TO  FLG-OSIN-HENSYU
                       END-IF
-      *            （訪問診療にかかる記録書コメントに関する編集）
-                      IF  RECE04-HOMONCOMFLG           =  "2"
-                        PERFORM  VARYING   IDX1  FROM  1  BY  1
-                                  UNTIL    IDX1  >   31
-                            IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE  1  TO  TBL-HOMONCOM-SETFLG
-                              ADD  RECE04-KAISU(1 IDX1)  TO
-                                           TBL-HOMONCOM-NINZU(IDX1)
-                            END-IF
-                        END-PERFORM
-                      END-IF
                    WHEN      "40"
       *            （人工腎臓のカウント）
                       IF  RECE04-JINKOJIN-COMMENT     =  "1"
@@ -1429,6 +1418,18 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                       END-IF
                       IF  RECE04-SESSYOKU-COMMENT   =  "1"
                         MOVE    9    TO    TBL-HASSYO-SESSYOKU-FLG
+                      END-IF
+                   WHEN      "99"
+      *            （訪問診療にかかる記録書コメントに関する編集）
+                      IF  RECE04-HOMONCOMFLG           =  "2"
+                        PERFORM  VARYING   IDX1  FROM  1  BY  1
+                                  UNTIL    IDX1  >   31
+                            IF   RECE04-KAISU(1 IDX1)  NOT = ZERO
+                              MOVE  1  TO  TBL-HOMONCOM-SETFLG
+                              ADD  RECE04-KAISU(1 IDX1)  TO
+                                           TBL-HOMONCOM-NINZU(IDX1)
+                            END-IF
+                        END-PERFORM
                       END-IF
                END-EVALUATE
       *
@@ -1581,10 +1582,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *************** IF   FLG-COMMENT  =  ZERO
       ***************   PERFORM    2001-ZAIRIHA-HANTEI-SEC
       *************** END-IF
-      *             (訪問診療にかかる記録書コメント（日・人数）のセット）
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-HOMONCOM-HANTEI-SEC
-                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE04-TENSOU-SEC
                       END-IF
@@ -1668,6 +1665,15 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                             PERFORM   2099-RECE04-TENSOU-SEC
+                      END-IF
+                   WHEN      "99"
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *             (訪問診療にかかる記録書コメント（日・人数）のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-HOMONCOM-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE04-TENSOU-SEC
                       END-IF
                    WHEN   OTHER
                       PERFORM    2099-RECE04-TENSOU-SEC
