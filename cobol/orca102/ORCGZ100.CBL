@@ -403,7 +403,9 @@
                    IF      SPA-ERRCD       =   SPACE
       *                GINBEE¤Î¤È¤­
                        IF      SPA-MW      =   SPA-GINBEE
-                           CONTINUE
+                           MOVE    SPACE   TO  SPA-CSV-DIRNAME(IDX)
+                           MOVE    SPA-Z100-FILENAME(IDX)
+                                           TO  SPA-CSV-FILENAME(IDX)
                        ELSE
                            IF      WRK-NUM     NOT =   ZERO
                                MOVE    SPA-Z100-FILENAME(IDX)(1:WRK-NUM)

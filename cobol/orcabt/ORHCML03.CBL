@@ -167,8 +167,8 @@
            03  WRK-PARA-CSVFILE    PIC X(100).
       *----(04.08.01)--UPD-START---
       *     03  TENSUERR            PIC X(100).
+           03  TENSUCSV            PIC X(1024).
       *----(04.08.01)--UPD-END-----
-           03  TENSUCSV            PIC X(100).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -287,6 +287,10 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
            INITIALIZE                  SUM-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  TENSUERR
+           INITIALIZE                  TENSUCSV
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -403,11 +407,13 @@
       *****************************************************************
        300-CSV-SEC                 SECTION.
       *
-           STRING  "/tmp/"             DELIMITED SIZE
+      *----(04.08.01)--UPD-START---
+           STRING  SGETTEMP-TEMPDIR    DELIMITED SPACE
                    WRK-PARA-CSVFILE    DELIMITED SPACE
                    ".wk"               DELIMITED SIZE
                                INTO    TENSUCSV
            END-STRING
+      *----(04.08.01)--UPD-END-----
       *
       *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë¤ò³«¤¯
            OPEN    OUTPUT              TENSUCSV-FILE
@@ -661,7 +667,10 @@
            MOVE    "tensu.sh"          TO  SFILESV-SHELLID(1)
            MOVE    1                   TO  SFILESV-SHORI-RENNUM(1)
            MOVE    LNK-PRTKANRI-RENNUM TO  SFILESV-RENNUM(1)
-           MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
+      *----(04.08.01)--UPD-START---
+      *     MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
+           MOVE    SGETTEMP-TEMPDIR    TO  SFILESV-FOR-FOLDER(1)
+      *----(04.08.01)--UPD-END-----
            STRING  WRK-PARA-CSVFILE        DELIMITED  BY  SPACE
                    ".wk"                   DELIMITED  BY  SIZE
                                    INTO    SFILESV-FOR-DATA (1)

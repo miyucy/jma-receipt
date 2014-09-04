@@ -40,7 +40,7 @@ RENNUM=0
         fi
 #       ＣＳＶ出力指定のとき
         if   [ ${18} = '1' ]; then
-            if  [ -e /tmp/${22}.wk ]; then
+            if  [ -e ${MCP_TEMPDIR}/${22}.wk ]; then
                 awk ' {
                 #     行頭の空白を取り除く
                       sub(/^ */,"");
@@ -51,18 +51,18 @@ RENNUM=0
                 #     カンマの前の空白を取り除く
                       gsub(/ *,/,",");
                       print $0
-                }'  /tmp/${22}.wk > ${21}${22}.tmp
+                }'  ${MCP_TEMPDIR}/${22}.wk > ${MCP_TEMPDIR}/${22}.tmp
             fi
             if   [ ${19} = '1' ]; then
 #               クライアント保存のとき固定ファイルに文字コード変換（ＥＵＣからＳ−ｊｉｓ）
                 if  [ ${20} = '2' ]; then
-                    nkf -s -Lw ${21}${22}.tmp > /tmp/${22}.wk
-                    rm  ${21}${22}.tmp
+                    nkf -s -Lw ${MCP_TEMPDIR}/${22}.tmp > ${MCP_TEMPDIR}/${22}.wk
+                    rm  ${MCP_TEMPDIR}/${22}.tmp
                 else
-                    mv  ${21}${22}.tmp /tmp/${22}.wk
+                    mv  ${MCP_TEMPDIR}/${22}.tmp ${MCP_TEMPDIR}/${22}.wk
                 fi
             else
-                mv  ${21}${22}.tmp ${21}${22}
+                mv  ${MCP_TEMPDIR}/${22}.tmp ${MCP_TEMPDIR}/${22}
             fi 
         fi 
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13},${17}

@@ -137,8 +137,8 @@
            03  WRK-PARA-CSVFILE    PIC X(100).
       *----(04.08.01)--UPD-START---
       *     03  TENSUERR            PIC X(100).
+           03  TENSUCSV            PIC X(1024).
       *----(04.08.01)--UPD-END-----
-           03  TENSUCSV            PIC X(100).
       *
        01  IDX-AREA.
            03  IDX                 PIC 9(02).
@@ -265,6 +265,10 @@
            INITIALIZE                  SUM-AREA
            INITIALIZE                  SPA-AREA
            INITIALIZE                  IDX-AREA
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                  TENSUERR
+           INITIALIZE                  TENSUCSV
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -380,11 +384,14 @@
       *****************************************************************
        300-CSV-SEC                 SECTION.
       *
-           STRING  "/tmp/"             DELIMITED SIZE
+      *----(04.08.01)--UPD-START---
+      *     STRING  "/tmp/"             DELIMITED SIZE
+           STRING  SGETTEMP-TEMPDIR    DELIMITED SPACE
                    WRK-PARA-CSVFILE    DELIMITED SPACE
                    ".wk"               DELIMITED SIZE
                                INTO    TENSUCSV
            END-STRING
+      *----(04.08.01)--UPD-END-----
       *
       *    ＣＳＶファイルを開く
            OPEN    OUTPUT              TENSUCSV-FILE
@@ -641,11 +648,14 @@
            MOVE    "tensu.sh"          TO  SFILESV-SHELLID(1)
            MOVE    1                   TO  SFILESV-SHORI-RENNUM(1)
            MOVE    LNK-PRTKANRI-RENNUM TO  SFILESV-RENNUM(1)
-           MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
+      *----(04.08.01)--UPD-START---
+      *     MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
+           MOVE    SGETTEMP-TEMPDIR    TO  SFILESV-FOR-FOLDER(1)
            STRING  WRK-PARA-CSVFILE        DELIMITED  BY  SPACE
                    ".wk"                   DELIMITED  BY  SIZE
                                    INTO    SFILESV-FOR-DATA (1)
            END-STRING
+      *----(04.08.01)--UPD-END-----
            MOVE    WRK-PARA-CSVDIR     TO  SFILESV-TO-FOLDER(1)
            MOVE    WRK-PARA-CSVFILE    TO  SFILESV-TO-DATA(1)
            MOVE    SUM-KENSU           TO  SFILESV-CNT-ALL(1)
