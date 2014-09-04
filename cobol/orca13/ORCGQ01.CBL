@@ -467,6 +467,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
+      *
        01 UIDIO-AREA.
            03  C-RET                   PIC X(2).
            03  C-UID                   PIC X(36).
@@ -750,6 +753,14 @@
       *
            MOVE    SPACE               TO  SPA-Q01KYOUTU
            INITIALIZE                      SPA-Q01KYOUTU
+      *
+      *
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"  USING   ORCSCLIENTSVAREA
+                                           SPA-AREA
+           MOVE    SCLIENTSV-CLIENT-SAVE
+                                       TO  SPA-Q01-CLIENT-SAVE
       *
       *    タブページ番号
            MOVE    ZERO                TO  SPA-GMN-Q01-PAGENO

@@ -395,6 +395,7 @@
                                    SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  PRFNAME
+           MOVE    SGETTEMP-TEMPDIR    TO  MCP-TEMPDIR
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BQ01-FILE
@@ -595,9 +596,9 @@
                MOVE    WRK-PARA-SYSTIME
                                        TO  SFILESV-SRYYM (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
-               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
+               MOVE    MCP-TEMPDIR     TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
-               MOVE    WRK-PARA-CSVFILENM (6:)
+               MOVE    WRK-PARA-CSVFILENM
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM-FOLDER
                                        TO  SFILESV-TO-FOLDER(WRK-RENNUM)

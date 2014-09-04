@@ -608,6 +608,8 @@
       *
            CLOSE   BQ01-FILE
       *
+           MOVE    SPA-GMN-Q02-SELHMS
+                                   TO  SPA-Q97-SELHMS
            MOVE    ZERO            TO  SPA-Q97-FILESV-CHK-FLG
       *
            MOVE    SPACE           TO  WRK-FILENM-AREA
@@ -666,7 +668,7 @@
                                    TO  SHELLTBL-ARG3
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG4
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
-           MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG6
+           MOVE    SPA-Q97-SELHMS  TO  SHELLTBL-ARG6
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
            MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG8
            MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
@@ -679,7 +681,7 @@
            MOVE    WRK-FILENM-FOLDER
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
-           STRING  WRK-FILENM             DELIMITED  BY  SPACE
+           STRING  "Q02.csv."          DELIMITED  BY  SIZE
                    SPA-TERMID             DELIMITED  BY  SIZE
                    ".wk"                  DELIMITED  BY  SIZE
                                            INTO  SHELLTBL-ARG15
@@ -2311,6 +2313,11 @@
                                                Q02B-B09S-STATE
                                                Q02B-B11-STATE
                                                Q02B-B12-STATE
+           END-IF
+      *
+           IF  ( SPA-MW                    =   SPA-GINBEE )
+            AND( SPA-Q01-CLIENT-SAVE   NOT =   "1" )
+               MOVE    WIDGET-INSENSITIVE  TO  Q02B-B11-STATE
            END-IF
       *
            IF  ( SPA-GMN-Q02-MODE          =   ZERO )

@@ -1137,8 +1137,6 @@
                        09  SPA-GMN-Q100-F1             PIC X(01).
                        09  SPA-GMN-Q100-CDKBNMEI       PIC X(20).
                    07  SPA-GMN-Q100-CDKBN-STATE        PIC S9(9).
-      *            クライアント保存可否フラグ
-                   07  SPA-Q100-CLIENT-SAVE            PIC X(01).
       *
       *    Ｑ９７
            03  SPA-Q97-AREA.
@@ -1156,6 +1154,9 @@
                    07  SPA-SFILESV-MAX                 PIC 9(03).
       *
            03  SPA-Q01KYOUTU.
+      *
+               05  SPA-Q01-CLIENT-SAVE                 PIC X(1).
+      *
       *        Q01←→Q02遷移情報
                05  SPA-Q01-Q02-SENI-AREA.
                    07  SPA-Q01-SAKIPG                  PIC X(10).
