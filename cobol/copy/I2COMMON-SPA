@@ -26,6 +26,8 @@
       *
        01  SPA-I2KYOUTU.
       *
+           05  SPA-I20-CLIENT-SAVE          PIC X(01).
+      *
       *警告メッセージ
            05  SPA-I2IDCD                   PIC X(04).
       *警告画面より

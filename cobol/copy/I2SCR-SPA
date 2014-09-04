@@ -251,8 +251,6 @@
                    07  SPA-GMN-I22-F1          PIC X(01).
                    07  SPA-GMN-I22-CDKBNMEI    PIC X(20).
                05  SPA-GMN-I22-CDKBN-STATE     PIC S9(9).
-      *        クライアント保存可否フラグ
-               05  SPA-I22-CLIENT-SAVE         PIC X(01).
       *
            03  SPA-I23-AREA.
                05  SPA-SFILESV-AREA.

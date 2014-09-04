@@ -344,6 +344,9 @@
       *
       *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
+      *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
       *     
            COPY    "ORCA-DBMETA".
       *
@@ -616,7 +619,7 @@
            MOVE    WRK-FILENM-FOLDER
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
-           STRING   WRK-FILENM             DELIMITED  BY  SPACE
+           STRING  "I20.csv."              DELIMITED  BY  SIZE
                     SPA-TERMID             DELIMITED  BY  SIZE
                     ".wk"                  DELIMITED  BY  SIZE
                                            INTO  SHELLTBL-ARG15
@@ -676,6 +679,13 @@
            MOVE    SPACE       TO  SPA-I2FREE
            INITIALIZE              SPA-I20-AREA
                                    SPA-I2KYOUTU
+      *
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"  USING   ORCSCLIENTSVAREA
+                                           SPA-AREA
+           MOVE    SCLIENTSV-CLIENT-SAVE
+                                       TO  SPA-I20-CLIENT-SAVE
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-HMS    TO  SPA-GMN-SELHMS
@@ -3587,6 +3597,11 @@
            ELSE
                MOVE    WIDGET-NORMAL       TO  I20-B10-STATE
                                                I20-B11-STATE
+           END-IF
+      *
+           IF  ( SPA-MW                    =   SPA-GINBEE )
+            AND( SPA-I20-CLIENT-SAVE   NOT =   "1" )
+               MOVE    WIDGET-INSENSITIVE  TO  I20-B10-STATE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC

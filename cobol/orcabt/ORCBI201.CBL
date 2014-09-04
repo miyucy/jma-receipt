@@ -388,6 +388,7 @@
                                    SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  PRFNAME
+           MOVE    SGETTEMP-TEMPDIR    TO  MCP-TEMPDIR
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BI201-FILE
@@ -579,9 +580,9 @@
                MOVE    1               TO  SFILESV-SHORI-RENNUM
                                                             (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
-               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
+               MOVE    MCP-TEMPDIR     TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
-               MOVE    CSVNAME (CSVNAME-ST:)
+               MOVE    WRK-PARA-CSVFILENM
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM-FOLDER
                                        TO  SFILESV-TO-FOLDER(WRK-RENNUM)

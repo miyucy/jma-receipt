@@ -88,9 +88,6 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *    クライアント保存可否情報取得サブ
-           COPY    "CPORCSCLIENTSV.INC".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -195,13 +192,7 @@
            IF  ( SPA-I20-I22-PROC-FLG     =   ZERO )
       *        ＣＳＶ出力処理
       *
-      *        クライアント保存可否情報取得サブ
-               INITIALIZE                      ORCSCLIENTSVAREA
-               CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
-                                                   SPA-AREA
-               MOVE    SCLIENTSV-CLIENT-SAVE
-                                           TO  SPA-I22-CLIENT-SAVE
-               IF      SPA-I22-CLIENT-SAVE
+               IF      SPA-I20-CLIENT-SAVE
                                        =   "1"
                    MOVE    "1"             TO  SPA-GMN-I22-FILEL   (1)
                    MOVE    "クライアント保存"
@@ -215,6 +206,15 @@
                    MOVE    "Ｓ−ｊｉｓ"    TO  SPA-GMN-I22-CDKBNMEIL(2)
                    MOVE    2               TO  SPA-GMN-I22-CDKBN-MAX
                    MOVE    WIDGET-NORMAL   TO  SPA-GMN-I22-CDKBN-STATE
+      *
+      *
+                   IF    ( SPA-MW          =   SPA-GINBEE )
+                       MOVE    SPA-GMN-I22-FILELST (1)
+                                           TO  SPA-GMN-I22-FILE-G
+                       MOVE    SPA-GMN-I22-CDKBNLST (1)
+                                           TO  SPA-GMN-I22-CDKBN-G
+                   END-IF
+      *
                ELSE
                    MOVE    WIDGET-INSENSITIVE
                                            TO  SPA-GMN-I22-FILE-STATE
@@ -226,8 +226,13 @@
                                        TO  SPA-GMN-I22-MSG
                MOVE    "出力ファイル名"
                                        TO  SPA-GMN-I22-LBLFILENAME
-               MOVE    "/tmp/OUTPUT.csv"
+               IF    ( SPA-MW          =   SPA-GINBEE )
+                   MOVE    "OUTPUT.csv"
                                        TO  SPA-GMN-I22-FILENAME
+               ELSE
+                   MOVE    "/tmp/OUTPUT.csv"
+                                       TO  SPA-GMN-I22-FILENAME
+               END-IF
                MOVE    WIDGET-NORMAL   TO  SPA-GMN-I22-FILENAME-STATE
                MOVE    "件数指定"      TO  SPA-GMN-I22-LBLNUMSEL
            ELSE
@@ -376,11 +381,20 @@
                        UNTIL   IDX2    >       100
                        OR      SPA-GMN-I22-FILENAME (IDX2:1)
                                            =   SPACE
-                   IF        SPA-GMN-I22-FILENAME (IDX2:1)
+                   IF    ( SPA-MW      =   SPA-GINBEE )
+                       IF        SPA-GMN-I22-FILENAME (IDX2:1)
+                                               =   "\" OR  ":" OR "/"
+                           MOVE    "1006"      TO  SPA-ERRCD
+                           MOVE    1           TO  SPA-GMN-I22-CUR
+                           MOVE    100         TO  IDX2
+                       END-IF
+                   ELSE
+                       IF        SPA-GMN-I22-FILENAME (IDX2:1)
                                                =   "\" OR  ":" 
-                       MOVE    "1004"              TO  SPA-ERRCD
-                       MOVE    1                   TO  SPA-GMN-I22-CUR
-                       MOVE    100                 TO  IDX2
+                           MOVE    "1004"      TO  SPA-ERRCD
+                           MOVE    1           TO  SPA-GMN-I22-CUR
+                           MOVE    100         TO  IDX2
+                       END-IF
                    END-IF
                END-PERFORM        
            END-IF
@@ -442,7 +456,7 @@
       *****************************************************************
        4100-FILE-CHK-SEC           SECTION.
       *
-           IF      SPA-I22-CLIENT-SAVE    =   "1"
+           IF      SPA-I20-CLIENT-SAVE    =   "1"
                IF      SPA-GMN-I22-FILE       =   SPACE
                    MOVE    SPACE               TO  SPA-GMN-I22-CDKBN-G
                ELSE
@@ -471,7 +485,7 @@
       *****************************************************************
        4100-CDKBN-CHK-SEC           SECTION.
       *
-           IF      SPA-I22-CLIENT-SAVE    =   "1"
+           IF      SPA-I20-CLIENT-SAVE    =   "1"
                IF      SPA-GMN-I22-CDKBN      =   SPACE
                    IF      SPA-GMN-I22-FILE       =   "1"
                        MOVE    SPA-GMN-I22-CDKBNLST (1)
@@ -774,7 +788,7 @@
       *    次カーソル位置を設定
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "EDNUM"
-               IF      SPA-I22-CLIENT-SAVE    =   "1"
+               IF      SPA-I20-CLIENT-SAVE    =   "1"
                    MOVE    005         TO  SPA-GMN-I22-CUR
                ELSE
                    MOVE    004         TO  SPA-GMN-I22-CUR
@@ -815,7 +829,13 @@
                                        TO  SPA-ERRMSG
            WHEN    "1004"
                STRING   "出力ファイル名に" DELIMITED  BY  SIZE
-                        "”：”、”￥”が入力してあります"
+                        "：￥が入力されています"
+                                             DELIMITED  BY  SIZE
+                                             INTO  SPA-ERRMSG
+               END-STRING
+           WHEN    "1006"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "：￥／が入力されています"
                                              DELIMITED  BY  SIZE
                                              INTO  SPA-ERRMSG
                END-STRING
