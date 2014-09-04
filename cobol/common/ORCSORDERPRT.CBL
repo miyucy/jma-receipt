@@ -36,7 +36,6 @@
       *  04.04.00    NACL-多々納  08/12/22  出来高算定コード対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値数量追加対応
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
-      *  04.08.00    NACL-多々納  14/05/XX  一時保存データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,34 +44,34 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
+           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+                                   ORGANIZATION    IS  SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDANUM          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(60000).
+       FD  PARA-FILE.
+       01  PARA-REC.
+           03  PARA-KEY.
+               05  PARA-FILEMEI         PIC X(08).
+               05  PARA-EDANUM          PIC 9(03).
+           03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
-      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+       01  FILE-NAME2.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-      *01  STS-AREA.
-      *    03  STS-PARA            PIC X(02).
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -155,12 +154,6 @@
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
-      *v4.8
-      *    パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC". 
-      *
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -188,14 +181,11 @@
            COPY    "ORCA-SPA".
       *
       *    診療行為入力項目変換パラメタ（回数の設定に使用）
-      *    COPY    "CPORCSC97.INC".
+           COPY    "CPORCSC97.INC".
       *
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
-      *01  SPA-SCR-REC.
-      *    COPY    "CPK02SPASCR.INC".
-      *H25.12 変更
-      *    一括日変換パラメタ
-           COPY    "CPORCSNDAYCHG.INC".
+       01  SPA-SCR-REC.
+           COPY    "CPK02SPASCR.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -220,7 +210,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-      *****INITIALIZE                  STS-AREA
+           INITIALIZE                  STS-AREA
            INITIALIZE                  LNK-ORDERPRT-RCD
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -338,12 +328,10 @@
                IF      (LNK-WKSRY-SRYSYUKBN(1) =   "212"
                                                OR  "222"
                                                OR  "232"
-                                               OR  "148"
-                                               OR  "149"
-      *H26.4       臨時
                                                OR  "292"
-                                               OR  "298"
-                                               OR  "295")
+                                               OR  "295"
+                                               OR  "148"
+                                               OR  "149")
                    CONTINUE
                ELSE
                    MOVE     1                  TO  FLG-SYORI
@@ -380,13 +368,6 @@
            IF      LNK-WKSRY-ZAIKBN  (1)   =   2
                MOVE    ZERO                TO  FLG-SYORI
            END-IF
-      *H28.9
-      *    持参薬は対象外
-           IF      LNK-WKSRY-ZAIKBN  (1)   =   3
-                                           OR  4
-               MOVE    ZERO                TO  FLG-SYORI
-           END-IF
-      *TEST
       *
            IF      FLG-SYORI           =   ZERO
                CONTINUE
@@ -481,46 +462,35 @@
       *****************************************************************
        10021-KAISUU-SYORI-SEC              SECTION.
       *
-      *    INITIALIZE                  ORCSC97AREA
-      *    MOVE    SPACE               TO  SPA-SCR-REC
+           INITIALIZE                  ORCSC97AREA
+           MOVE    SPACE               TO  SPA-SCR-REC
       *    ＰＧ名
-      *    MOVE    "K02N"              TO  LNK-SC97-PG
-      *    MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
-      *                                TO  LNK-SC97-INPUTCD
-      *    CALL    "ORCSC97"           USING
-      *                                SPA-AREA
-      *                                ORCSC97AREA
-      *                                SPA-SCR-REC
-      *
-           INITIALIZE                      ORCSNDAYCHGAREA
-           MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
+           MOVE    "K02N"              TO  LNK-SC97-PG
            MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
-                                       TO  ORCSNDAYCHG-INPUTCD
-           MOVE    54                  TO  ORCSNDAYCHG-KETA
-           CALL    "ORCSNDAYCHG"       USING
+                                       TO  LNK-SC97-INPUTCD
+           CALL    "ORCSC97"           USING
                                        SPA-AREA
-                                       ORCSNDAYCHGAREA
-           MOVE    ORCSNDAYCHG-ERRCD   TO  SPA-ERRCD
+                                       ORCSC97AREA
+                                       SPA-SCR-REC
       *
       *    回数
-           IF      ORCSNDAYCHG-KAISU   =   ZERO
-               MOVE    1               TO  ORCSNDAYCHG-KAISU
+           IF      LNK-SC97-KAISU      =   ZERO
+               MOVE    1               TO  LNK-SC97-KAISU
            END-IF
       *    外用薬の時、回数は１回とする
            IF      LNK-WKSRY-SRYKBN (01)   =   "23"
-               MOVE    1               TO  ORCSNDAYCHG-KAISU
+               MOVE    1               TO  LNK-SC97-KAISU
            END-IF
-      *
            MOVE    ZERO                TO  IDX-KAI1
            MOVE    ZERO                TO  IDX-KAI2
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >   10   )  OR
                               (IDX-KAI1    >   ZERO )
-               IF      TBL-KAISU (IDX2)    =   ZERO
-                   MOVE    IDX2                TO  IDX-KAI1
-                   MOVE    ORCSNDAYCHG-KAISU   TO  TBL-KAISU (IDX-KAI1)
+               IF      TBL-KAISU (IDX2)     =   ZERO
+                   MOVE    IDX2            TO  IDX-KAI1
+                   MOVE    LNK-SC97-KAISU  TO  TBL-KAISU (IDX-KAI1)
                ELSE
-                   IF       ORCSNDAYCHG-KAISU  =   TBL-KAISU (IDX2)
+                   IF       LNK-SC97-KAISU     =   TBL-KAISU (IDX2)
                        MOVE    IDX2            TO  IDX-KAI1
                    END-IF
                END-IF
@@ -530,7 +500,7 @@
            MOVE    ZERO                TO  FLG-DAY
            PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
                    UNTIL       IDX-KAI2    >   31
-               IF      ORCSNDAYCHG-NYU-DAY (IDX-KAI2) NOT =   ZERO
+               IF      LNK-SC97-NYU-DAY (IDX-KAI2) NOT =   ZERO
                    MOVE    1               TO  TBL-DAY
                                                    (IDX-KAI1 IDX-KAI2)
                    MOVE    1               TO  FLG-DAY
@@ -1043,38 +1013,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
       *
-      **   MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *    OPEN    INPUT               PARA-FILE
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+           OPEN    INPUT               PARA-FILE
       *
-      *    IF      STS-PARA           =  ZERO
-      *        PERFORM 980-PARA-READ-SEC
-      *    ELSE
-      *        MOVE    1               TO  FLG-PARA 
-      **** END-IF
-      *ver.4.8
-           MOVE    SPACE               TO  PARA-REC
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "K02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-      *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PARA-REC
-               MOVE    ZERO                TO  FLG-PARA
+           IF      STS-PARA           =  ZERO
+               PERFORM 980-PARA-READ-SEC
            ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1                   TO  FLG-PARA
+               MOVE    1               TO  FLG-PARA 
            END-IF
-      *
            PERFORM
                UNTIL   FLG-PARA            =   1
-               IF     (PARA-DATA-REC   NOT =   SPACE      )
+               IF     (PARA-FILEMEI        =   "WKSRYACT" )  AND
+                      (PARA-DATA-REC   NOT =   SPACE      )
                    MOVE    PARA-DATA-REC   TO  WKSRYACT-REC
       *            剤毎に保存する
                    IF     (LNK-WKSRYACT-MAX   >    ZERO  )  AND
@@ -1093,19 +1044,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                       (LNK-WKSRYACT-MAX)
                    END-IF
                END-IF
-      *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+               PERFORM 980-PARA-READ-SEC
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
       *    剤毎に保存する
            IF      LNK-WKSRYACT-MAX   >    ZERO
                PERFORM 1001-ORDERPRT-SYORI-SEC
            END-IF
+      *
+           CLOSE                       PARA-FILE
       *
            .
        200-PARA-SYORI-EXT.
@@ -1175,25 +1122,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-TENSU-READ-EXT.
            EXIT.
-      *v.4.8
-      *****************************************************************
-      *    パラメタ情報読み込み
-      *****************************************************************
-       990-PARA-READ-SEC        SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PARA-REC
-               MOVE    ZERO            TO  FLG-PARA
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-      *
-           .
-       990-PARA-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
@@ -1240,6 +1168,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタデータ順読み
+      *****************************************************************
+       980-PARA-READ-SEC         SECTION.
+      *
+           READ    PARA-FILE 
+               AT  END
+                   MOVE    1           TO  FLG-PARA
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-PARA
+           END-READ
+      *
+           .
+       980-PARA-READ-EXT.
            EXIT.
       *
       *
