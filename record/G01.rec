@@ -1,9 +1,15 @@
 G01 {
   fixed {
+    B04 {
+      state int;
+    };
     B06 {
       state int;
     };
     B07 {
+      state int;
+    };
+    B10 {
       state int;
     };
     MARKHISSU {

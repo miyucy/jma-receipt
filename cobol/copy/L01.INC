@@ -16,10 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
            02  L01.
+              03  L01-B04.
+                04  L01-B04-STATE     PIC S9(9)   BINARY.
               03  L01-B06.
                 04  L01-B06-STATE     PIC S9(9)   BINARY.
               03  L01-B07.
                 04  L01-B07-STATE     PIC S9(9)   BINARY.
+              03  L01-B10.
+                04  L01-B10-STATE     PIC S9(9)   BINARY.
               03  L01-MARKHISSU-G.
                 04  L01-MARKHISSU-STYLE
                                       PIC X(20).

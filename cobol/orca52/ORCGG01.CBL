@@ -48,6 +48,8 @@
       *  03.05.00    NACL-太田    07/05/28  グループ診療対応
       *
       *  04.05.01    NACL-藤原    09/10/01  統計ＣＳＶ出力対応
+      *
+      *  04.08.01    NACL-藤原    14/08/28  ４．８ミドル対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -284,6 +286,9 @@
       *    ユーザー情報取得
            COPY    "CPORCSLDUSER.INC".
       *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -517,6 +522,13 @@
       *
       *    パラメータ初期設定
            PERFORM 3101-PARA-SYOKI-SEC
+      *
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
+                                               SPA-AREA
+           MOVE    SCLIENTSV-CLIENT-SAVE
+                                       TO  SPA-NAI-G01-CLIENT-SAVE
       *
            IF    ( SPA-GMN-G01-MAX         =   ZERO )
                MOVE    1                   TO  SPA-GMN-G01-MAXPAGE
@@ -2680,6 +2692,15 @@
                MOVE    WIDGET-INSENSITIVE  TO  G01-B07-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  G01-B07-STATE
+           END-IF
+      *
+           MOVE    WIDGET-NORMAL       TO  G01-B04-STATE
+                                           G01-B10-STATE
+           IF    ( SPA-MW              =   SPA-GINBEE )
+           AND   ( SPA-NAI-G01-CLIENT-SAVE
+                                       =   "0"        )
+               MOVE    WIDGET-INSENSITIVE  TO  G01-B04-STATE
+                                               G01-B10-STATE
            END-IF
       *
       *    カーソル位置
