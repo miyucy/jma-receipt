@@ -44,6 +44,7 @@
       *  04.07.04    NACL-藤原    13/12/09  医療情報連携基盤対応
       *
       *  04.08.01    NACL-藤原    14/08/26  fdd 廃止に伴う対応
+      *  04.08.02    NACL-藤原    14/08/28  ４．８ミドル対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -235,19 +236,21 @@
            CALL    "ORCSCLIENTSV"  USING   ORCSCLIENTSVAREA
                                            SPA-AREA
       *
-           MOVE    ZERO            TO  IDX
-           IF      SPA-GMN-T06-TEISYUTUSAKI4
+           MOVE    ZERO                TO  IDX
+           IF      SPA-MW              =   SPA-PANDA
+               IF      SPA-GMN-T06-TEISYUTUSAKI4
                                    =   "F"
-               MOVE    "3"             TO  SPA-GMN-T98-DATAKBNL    (1)
-               MOVE    "システム管理設定場所（フロッピィ用）"
-                                       TO  SPA-GMN-T98-DATAKBNMEIL (1)
-               MOVE    1               TO  IDX
+                   MOVE    "3"             TO  SPA-GMN-T98-DATAKBNL (1)
+                   MOVE    "システム管理設定場所（フロッピィ用）"
+                                       TO  SPA-GMN-T98-DATAKBNMEIL  (1)
+                   MOVE    1               TO  IDX
+               END-IF
+               ADD     1               TO  IDX
+               MOVE    "4"             TO  SPA-GMN-T98-DATAKBNL    (IDX)
+               MOVE    "システム管理設定場所（ＭＯ用）"
+                                       TO  SPA-GMN-T98-DATAKBNMEIL (IDX)
+               MOVE    IDX             TO  SPA-GMN-T98-DATAKBN-MAX
            END-IF
-           ADD     1               TO  IDX
-           MOVE    "4"             TO  SPA-GMN-T98-DATAKBNL    (IDX)
-           MOVE    "システム管理設定場所（ＭＯ用）"
-                                   TO  SPA-GMN-T98-DATAKBNMEIL (IDX)
-           MOVE    IDX             TO  SPA-GMN-T98-DATAKBN-MAX
            IF      SCLIENTSV-CLIENT-SAVE
                                    =   "1"
                ADD     1               TO  IDX
@@ -418,7 +421,16 @@
        41021-DATAKBN-CHK-SEC            SECTION.
       *
            IF      SPA-GMN-T98-DATAKBN =   SPACE
-               MOVE    SPACE               TO  SPA-GMN-T98-DATAKBN-G
+               IF      SPA-MW              =   SPA-GINBEE
+                   IF      SPA-GMN-T98-DATAKBN-MAX >   ZERO
+                       MOVE    "0017"              TO  SPA-ERRCD
+                       MOVE    2                   TO  SPA-GMN-T98-CUR
+                       GO  TO  41021-DATAKBN-CHK-EXT
+                   END-IF
+               ELSE
+                   MOVE    SPA-GMN-T98-DATAKBNLST (2)
+                                               TO  SPA-GMN-T98-DATAKBN-G
+               END-IF
            ELSE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-T98-DATAKBN-MAX
@@ -432,19 +444,19 @@
                END-PERFORM
            END-IF
       *
-           IF      SPA-GMN-T98-DATAKBNMEI  =   SPACE  
+           IF      SPA-GMN-T98-DATAKBNMEI  =   SPACE
                IF      SPA-GMN-T06-TEISYUTUSAKI4
                                        =   "T"
                    MOVE    SPA-GMN-T98-DATAKBNLST (1)
                                            TO  SPA-GMN-T98-DATAKBN-G
                ELSE
-                   MOVE    SPA-GMN-T98-DATAKBNLST (2)
+                   MOVE    SPA-GMN-T98-DATAKBNLST (4)
                                            TO  SPA-GMN-T98-DATAKBN-G
                END-IF
            END-IF
       *
            IF      SPA-T01-PRTKBN      =   "6" OR  "7"
-               MOVE    SPA-GMN-T98-DATAKBNLST (2)
+               MOVE    SPA-GMN-T98-DATAKBNLST (4)
                                            TO  SPA-GMN-T98-DATAKBN-G
            END-IF
            .
@@ -719,6 +731,9 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
+               WHEN    "0017"
+                   MOVE    "ファイル出力先入力エラー" 
+                                       TO  SPA-ERRMSG
                WHEN    "9999"
                    MOVE    SPACE       TO  SPA-ERRMSG
            END-EVALUATE
