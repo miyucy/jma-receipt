@@ -5,7 +5,6 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  02.00.00    NACL-多々納  04/03/19  改正対応
-      *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       ************************************************************
        01  CPJIDOTBL.
            02  JIDOTBL-T.
@@ -105,17 +104,11 @@
       *　調剤料（麻・向・覚・毒）（入院）
                05  FILLER              PIC  X(9)   VALUE   "120000410" .
       *
-      *H26.10
-      * 向精神薬多剤投与減算コード
-               05  FILLSER             PIC  X(9)   VALUE   "630010005".
-      *　（精減）
-               05  FILLER              PIC  X(9)   VALUE   "820000166" .
-      *
            02  JIDOTBL-R  REDEFINES   JIDOTBL-T.
       *******03  JIDOTBL-TX           OCCURS  38.
       *******03  JIDOTBL-TX           OCCURS  42.
       ****** 03  JIDOTBL-TX           OCCURS  39.
-             03  JIDOTBL-TX           OCCURS  44.
+             03  JIDOTBL-TX           OCCURS  42.
                05  JIDOTBL-CODE        PIC  X(9).
-       01  JIDO-MAX                PIC 9(04)   VALUE   44.
+       01  JIDO-MAX                PIC 9(04)   VALUE   42.
       *

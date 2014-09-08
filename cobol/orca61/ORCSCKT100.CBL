@@ -2569,7 +2569,7 @@
            INITIALIZE                  ORCSC00AREA
            MOVE    "3"                 TO  LNK-ORCSC-KBN
            PERFORM 520-ALL-CHEK-SEC
-      *TEST
+      *
       *H26.10
       *    （減）の自動発生行は削除
            IF     (SPA-ERRCD       NOT =   SPACE )

@@ -9115,7 +9115,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        50021-MEISYOHEN-EXT.
            EXIT.
       *TEST
-      *TEST
+      *
       *
       *****************************************************************
       *    リハビリ・患者情報編集処理

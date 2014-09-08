@@ -2298,14 +2298,13 @@
            MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO2(IDG)
       *
       *TEST
-      *TEST
       *H26.10
       *    ºßÂð¡¡¿ÇÎÅ¿Í¿ô¹ç·×¡¡ºÆÊÔ½¸
            IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099140012"
                 PERFORM 31001214-ZAICOM-MEISYO-SEC
            END-IF
       *TEST
-      *TEST
+      *
       *    ÌôºÞÉþÍÑ¥³¥á¥ó¥È¤Î»þ¡¢ºÆÊÔ½¸
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:3)  =   "001"
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
@@ -4811,6 +4810,12 @@
            IF      LNK-WKSRY-SRYCD (IDX 01)    =   "630010002"
                GO      TO      45052-JIBAI-SYORI-EXT
            END-IF
+      *H26.10
+      *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
+           IF     (LNK-WKSRY-SRYCD (IDX 01)(1:1)   =   "6" )
+             AND  (LNK-WKSRYP-PLUSKBN (01)     =   1   )
+               GO      TO      45052-JIBAI-SYORI-EXT
+           END-IF
       *
       *    ²èÁü¿ÇÃÇ¤Î»þ¡¢¥Õ¥£¥ë¥àÅÀ¿ô¤òÂÐ¾Ý³°¤È¤¹¤ë
            IF      LNK-WKSRY-SRYKBN (IDX)  =   "70"
@@ -4867,6 +4872,12 @@
       *
       *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
            IF      LNK-WKSRY-SRYCD (IDX 01)    =   "630010002"
+               GO      TO      45052-KOGAI-SYORI-EXT
+           END-IF
+      *H26.10
+      *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
+           IF     (LNK-WKSRY-SRYCD (IDX 01)(1:1)   =   "6" )
+             AND  (LNK-WKSRYP-PLUSKBN (01)     =   1   )
                GO      TO      45052-KOGAI-SYORI-EXT
            END-IF
       *

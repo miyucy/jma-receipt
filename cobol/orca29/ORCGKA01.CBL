@@ -1720,7 +1720,8 @@
                   (ACCT-ZAITEN         >   ZERO )  AND
                   (FLG-YAKUZAI         =   1    )  AND
                  ((WKSRY-SRYSYUKBN     =   SPACE   )  OR
-                  (WKSRY-SRYSYUKBN(3:1)    =   "0" ))
+                  (WKSRY-SRYSYUKBN(3:1)    =   "0" )  OR
+                  (WKSRY-SRYSYUKBN         =   "293"))
                MOVE    WKSRY-SRYKBN        TO  WKSRY-UPHMS(1:2)
                MOVE    "1"                 TO  WKSRY-UPHMS(3:1)
                MOVE    1                   TO  FLG-INNAI

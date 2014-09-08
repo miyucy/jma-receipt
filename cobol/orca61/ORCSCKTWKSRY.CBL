@@ -4005,6 +4005,7 @@
       *                ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
                        IF      ORCSCWKSRY-KSN-SRYCD (IDX)
                                                =   "630010002"
+      *H26.10
                                                OR  CONS-TAZAI-SRYCD
                            COMPUTE SUM-SYU-HKNTEN (04)
                                                =   SUM-SYU-HKNTEN(04)

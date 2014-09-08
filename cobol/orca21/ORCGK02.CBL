@@ -13499,6 +13499,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    KANACHK-OUT-INPUT   TO  WRK-MEISYO
       *
            MOVE    WRK-MEISYO-G        TO  K02-MEISYO(IDX)
+           MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G(WRK-IDX)
            .
        50021-MEISYOHEN-SEC-EXT.
            EXIT.
