@@ -155,6 +155,7 @@
       *  04.07.03    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
       *                                     追加対応
       *  04.07.04    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *  04.07.05    NACL-門脇    14/09/01  平成２６年１０月改正対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -781,10 +782,13 @@
       *    寝たきり老人在宅総合診療科算定終了
            03  FILLER          PIC X(09)   VALUE   "099140001".
       *
-       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   59.
+      *    処方料（向精神薬多剤投与）
+           03  FILLER          PIC X(09)   VALUE   "120003610".
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   59.
+       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   60.
+      *
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   60.
       *
       *    固定値
        01  CONST-AREA.
@@ -798,6 +802,8 @@
                                PIC X(04)   VALUE   "分画".
       *    薬剤料逓減
            03  CONS-TEIGEN     PIC X(09)   VALUE   "630010002".
+      *    薬剤料逓減（８０／１００）（向精神薬多剤投与）
+           03  CONS-TEIGEN2    PIC X(09)   VALUE   "630010005".
       *    包括点数の治験減点分
            03  CONS-GENTEN     PIC X(09)   VALUE   "199000210".
       *---- (01.00.05) LINE ADD START --------------------------------
@@ -1587,6 +1593,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *---- (01.00.05) LINE ADD END --------------------------------
       *
                        IF      RECE45-SRYCD(IDX) =   CONS-TEIGEN
+                                                 OR  CONS-TEIGEN2
                                                  OR  CONS-GENTEN
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF 
@@ -3769,7 +3776,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                        "120002910" OR "120003010" OR
                                        "120002470" OR "120002570" OR
                                        "120003270" OR "120003470" OR
-                                       "120003570"
+                                       "120003570" OR "120003710"
                        MOVE   ZERO   TO   RECE46-SYOHOUFLG
                  ELSE
                        MOVE    1     TO   RECE46-SYOHOUFLG

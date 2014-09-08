@@ -35,6 +35,7 @@
       *                                     Ë¡¤ÎÊÑ¹¹
       *                                     ´Á»ú¥â¡¼¥É¤Î·ÑÂ³¤¹¤ë¥¹¥Ú¡¼¥¹
       *                                     ¤Îµ­Ï¿ÊýË¡¤ÎÊÑ¹¹
+      *  04.07.04    NACL-ÌçÏÆ    14/09/01  Ê¿À®£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *
       *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    14/07/23  £³£²Ê¸»ú°Ê¾å¤ÎÊ¸»úÎó½¤Àµ
@@ -870,6 +871,8 @@
            03  WRK-KAIGYO             PIC X(01)   VALUE   X"0D".
       *    ÌôºÞÎÁÄþ¸º
            03  WRK-CONS-TEIGEN        PIC X(09)   VALUE   "630010002".
+      *    ÌôºÞÎÁÄþ¸º¡Ê£¸£°¡¿£±£°£°¡Ë¡Ê¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¡Ë
+           03  WRK-CONS-TEIGEN2       PIC X(09)   VALUE   "630010005".
       *
       *    ºÆ¿Ç¤Î»þ´Ö²Ã»»
            03  WRK-CONS-JIKANGAI-TABLE. 
@@ -2880,6 +2883,7 @@
        200711-YKZ-TAIHI-SEC          SECTION.
       *
            IF      RECE45-SRYCD (IDX)  =   WRK-CONS-TEIGEN
+                                       OR  WRK-CONS-TEIGEN2
                CONTINUE
            ELSE
                IF    ( RECE44-YKZTEN    =   ZERO  )
@@ -2893,6 +2897,7 @@
            IF      WRK-TBLMAX6         =   1
                IF      RECE45-SRYCD (IDX)
                                        =   WRK-CONS-TEIGEN
+                                       OR  WRK-CONS-TEIGEN2
                    MOVE    1               TO  FLG-TEIGEN
                END-IF
            END-IF
@@ -3902,6 +3907,7 @@
       *    »ÈÍÑÎÌ
            IF      TBL-ZAIW-SRYCD (1 IDX)
                                        =   WRK-CONS-TEIGEN
+                                       OR  WRK-CONS-TEIGEN2
                CONTINUE
            ELSE
                IF      TBL-ZAIW-SRYSURYO (1 IDX) >   ZERO
@@ -3916,6 +3922,7 @@
            IF      IDX                 =   WRK-TBLMAX6
                IF      TBL-ZAIW-SRYCD (1 IDX)
                                        =   WRK-CONS-TEIGEN
+                                       OR  WRK-CONS-TEIGEN2
                    MOVE    RECE44-ZAITEN      TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
                ELSE

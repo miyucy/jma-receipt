@@ -1323,7 +1323,6 @@
                   MOVE     ZERO          TO  ACCTP-PLUSKBN
               END-IF
       *
-      *
               MOVE    ACCT-SRYKBN    TO  TBL-SRYKBN(IDX1)
               MOVE    ACCT-ZAINUM    TO  TBL-ZAIBAN(IDX1)
               MOVE    ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD)
@@ -1332,11 +1331,8 @@
                    MOVE  ACCT-ZAITEN TO  TBL-GENTEN(IDX1)
                    MOVE  ACCT-ZAIKBN TO  TBL-ZAIKBN(IDX1)
               ELSE
-                IF ((ACCT-SRYCDTOTAL =    630010002)   AND
-                    (ACCT-MEISAISU   =    1))
       *H26.10   マイナス判定
-                OR  (ACCTP-PLUSKBN   =   1  )
-      *
+                IF   ACCTP-PLUSKBN     =    1
                    COMPUTE   TBL-ZAITEN(IDX1)  =  TBL-ZAITEN(IDX1) +
                                                 (ACCT-ZAITEN * -1)
                 ELSE
@@ -1344,11 +1340,9 @@
                 END-IF
               END-IF
               IF   (   ACCT-SRYKBN       =   "95"  OR  "96"   )         
-              OR   ((  ACCT-SRYCDTOTAL   =    630010002      )  AND     
-                    (  ACCT-MEISAISU     =    1              ))         
               OR   (   ACCT-ZAIKBN       =    2               )
       *H26.10   マイナス判定
-              OR  (    ACCTP-PLUSKBN   =   1  )
+              OR   (   ACCTP-PLUSKBN     =    1               )
                  CONTINUE                                               
               ELSE                                                      
                  COMPUTE  TBL-SYUTEN(IDX1)  =  ACCT-SYUTEN1

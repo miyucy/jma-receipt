@@ -39,6 +39,7 @@
       *  04.07.05    NACL-門脇    14/05/08  救急医療管理加算の算定日記載
       *                                     やめる
       *  04.07.06    NACL-門脇    14/07/08  明細が５０を超える場合の対応
+      *  04.07.07    NACL-門脇    14/09/01  平成２６年１０月改正対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
@@ -741,8 +742,9 @@
        01  TBL-YAKUTEI-INF.
            03  TBL-YT1-OCC                      OCCURS 100.
              05  TBL-YT1-KEY.
+               07  TBL-YT1-SRYKBN               PIC X(02).
                07  TBL-YT1-JIHOKBN              PIC X(01).
-               07  TBL-YT1-SRYKA                PIC X(02).
+      ***      07  TBL-YT1-SRYKA                PIC X(02).
              05  TBL-YT1-RECE44-REC             PIC X(2000).
              05  TBL-YT1-HIKAKU.
                07  TBL-YT1-ZAITEN               PIC 9(08).
@@ -750,6 +752,7 @@
                07  TBL-YT1-SURYOUTOTAL          PIC 9(07)V9(05).
                07  TBL-YT1-RUIKEITOTAL          PIC 9(13)V9(05).
                07  TBL-YT1-RUIKEITOTAL2         PIC 9(13)V9(05).
+               07  TBL-YT1-RUIKEITOTAL3         PIC 9(13)V9(05).
                07  TBL-YT1-MEISAISU             PIC 9(04).
              05  TBL-YT1-RECE44-DAY-AREA.
                07  TBL-YT1-OCC2                 OCCURS  31.
@@ -758,10 +761,9 @@
              05  TBL-YT1-FLG                    PIC 9(01).
       *
       *    並び替え用
-       01  WRK-YAKUTEI-DATA                     PIC X(2915).
+       01  WRK-YAKUTEI-DATA                     PIC X(2933).
       *
        01  WRK-TAIHI-YT1-KEY                    PIC X(03).
-       01  WRK-TAIHI-YT1-KEY3                   PIC X(01).
        01  WRK-YAKUTEI-ZAINUM                   PIC 9(08).
        01  WRK-YAKUTEI-ZAINUM2                  PIC 9(08).
       *
@@ -789,6 +791,7 @@
                    09  TBL-YT2Y1-SURYOUTOTAL      PIC 9(07)V9(05).
                    09  TBL-YT2Y1-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT2Y1-RUIKEITOTAL2     PIC 9(13)V9(05).
+                   09  TBL-YT2Y1-RUIKEITOTAL3     PIC 9(13)V9(05).
                    09  TBL-YT2Y1-MEISAISU         PIC 9(04).
                06  TBL-YT2Y2-OCC                  OCCURS   4.
                  07  TBL-YT2Y2-HIKAKU.
@@ -797,6 +800,7 @@
                    09  TBL-YT2Y2-SURYOUTOTAL      PIC 9(07)V9(05).
                    09  TBL-YT2Y2-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT2Y2-RUIKEITOTAL2     PIC 9(13)V9(05).
+                   09  TBL-YT2Y2-RUIKEITOTAL3     PIC 9(13)V9(05).
                    09  TBL-YT2Y2-MEISAISU         PIC 9(04).
       *
       *    薬剤逓減情報（まとめ用の編集テーブル）
@@ -823,6 +827,7 @@
                    09  TBL-YT3Y1-SURYOUTOTAL      PIC 9(07)V9(05).
                    09  TBL-YT3Y1-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT3Y1-RUIKEITOTAL2     PIC 9(13)V9(05).
+                   09  TBL-YT3Y1-RUIKEITOTAL3     PIC 9(13)V9(05).
                    09  TBL-YT3Y1-MEISAISU         PIC 9(04).
                06  TBL-YT3Y2-OCC                  OCCURS   4.
                  07  TBL-YT3Y2-HIKAKU.
@@ -831,6 +836,7 @@
                    09  TBL-YT3Y2-SURYOUTOTAL      PIC 9(07)V9(05).
                    09  TBL-YT3Y2-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT3Y2-RUIKEITOTAL2     PIC 9(13)V9(05).
+                   09  TBL-YT3Y2-RUIKEITOTAL3     PIC 9(13)V9(05).
                    09  TBL-YT3Y2-MEISAISU         PIC 9(04).
       *
       *    酸素 
@@ -1661,6 +1667,8 @@
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "21"
+                   WHEN      "22"
+                   WHEN      "23"
                       IF   RECE44-COMCDFLG   =   "3"
                         PERFORM    2001-YAKUTEI-HENSYU-SEC
                       ELSE
@@ -1877,6 +1885,8 @@
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "21"
+                   WHEN      "22"
+                   WHEN      "23"
                       IF   RECE44-COMCDFLG   =   "3"
                         PERFORM    2001-YAKUTEI-HENSYU-SEC
                       ELSE
@@ -7496,8 +7506,9 @@
            ADD       1        TO         IDX6
       *
            IF    IDX6    <=    100
+             MOVE    RECE44-SRYKBN       TO   TBL-YT1-SRYKBN(IDX6)
              MOVE    RECE44-JIHOKBN      TO   TBL-YT1-JIHOKBN(IDX6)
-             MOVE    RECE44-SRYKA        TO   TBL-YT1-SRYKA(IDX6)
+      ***    MOVE    RECE44-SRYKA        TO   TBL-YT1-SRYKA(IDX6)
       *
              MOVE    RECE44-REC          TO   TBL-YT1-RECE44-REC(IDX6)
       *
@@ -7506,6 +7517,7 @@
              MOVE    RECE44-SURYOUTOTAL  TO   TBL-YT1-SURYOUTOTAL(IDX6)
              MOVE    RECE44-RUIKEITOTAL  TO   TBL-YT1-RUIKEITOTAL(IDX6)
              MOVE    ZERO                TO   TBL-YT1-RUIKEITOTAL2(IDX6)
+             MOVE    ZERO                TO   TBL-YT1-RUIKEITOTAL3(IDX6)
              MOVE    RECE44-MEISAISU     TO   TBL-YT1-MEISAISU(IDX6)
       *
              PERFORM   VARYING   IDX7    FROM   2   BY   1
@@ -7522,7 +7534,7 @@
       *
              END-PERFORM
       *
-             IF      RECE44-SRYCDTOTAL  =   630010002
+             IF      RECE44-SRYCDTOTAL  =   630010002  OR  630010005
                   MOVE      2      TO     TBL-YT1-FLG(IDX6)
              ELSE
                   MOVE      1      TO     TBL-YT1-FLG(IDX6)
@@ -7722,7 +7734,6 @@
            INITIALIZE                   TBL-YAKUTEI-INF2
            INITIALIZE                   TBL-YAKUTEI-INF3
            MOVE       SPACE     TO      WRK-TAIHI-YT1-KEY
-           MOVE       SPACE     TO      WRK-TAIHI-YT1-KEY3
       *
            MOVE       ZERO      TO      IDX11
       *
@@ -7734,15 +7745,12 @@
       *
                  IF   WRK-TAIHI-YT1-KEY  NOT =  SPACE
                    PERFORM   2401-YAKUTEI-MATOME-SEC
-                   IF  TBL-YT1-JIHOKBN(IDX6)  NOT = WRK-TAIHI-YT1-KEY3
-                       PERFORM 2402-YAKUTEI-WRITE-SEC
-                       INITIALIZE                  TBL-YAKUTEI-INF3
-                   END-IF
+                   PERFORM   2402-YAKUTEI-WRITE-SEC
+                   INITIALIZE                      TBL-YAKUTEI-INF3
                  END-IF
       *
                  INITIALIZE                        TBL-YAKUTEI-INF2
                  MOVE   TBL-YT1-KEY(IDX6)      TO  WRK-TAIHI-YT1-KEY
-                 MOVE   TBL-YT1-JIHOKBN(IDX6)  TO  WRK-TAIHI-YT1-KEY3
       *
               END-IF
       *
@@ -7781,6 +7789,12 @@
                              MOVE    WRK-RUIKEITOTAL
                                 TO  TBL-YT2Y1-RUIKEITOTAL2
                                                        (IDX7 IDX8 IDX9)
+                             COMPUTE WRK-RUIKEITOTAL  =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-SURYOUTOTAL(IDX6)
+                             MOVE    WRK-RUIKEITOTAL
+                                TO  TBL-YT2Y1-RUIKEITOTAL3
+                                                       (IDX7 IDX8 IDX9)
       *
                              ADD    TBL-YT1-ZAITEN(IDX6)
                                 TO  TBL-YT2Y1-ZAITEN(IDX7 IDX8 26)
@@ -7796,6 +7810,11 @@
                                      TBL-YT1-SURYOUTOTAL(IDX6)
                              ADD     WRK-RUIKEITOTAL
                                 TO  TBL-YT2Y1-RUIKEITOTAL2(IDX7 IDX8 26)
+                             COMPUTE WRK-RUIKEITOTAL  =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-SURYOUTOTAL(IDX6)
+                             ADD     WRK-RUIKEITOTAL
+                                TO  TBL-YT2Y1-RUIKEITOTAL3(IDX7 IDX8 26)
                              ADD    TBL-YT1-MEISAISU(IDX6)
                                 TO  TBL-YT2Y1-MEISAISU(IDX7 IDX8 26)
       *
@@ -7841,6 +7860,12 @@
                              MOVE    WRK-RUIKEITOTAL
                                 TO  TBL-YT2Y2-RUIKEITOTAL2
                                                        (IDX7 IDX8 IDX9)
+                             COMPUTE WRK-RUIKEITOTAL  =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-SURYOUTOTAL(IDX6)
+                             MOVE    WRK-RUIKEITOTAL
+                                TO  TBL-YT2Y2-RUIKEITOTAL3
+                                                       (IDX7 IDX8 IDX9)
       *
                              ADD    TBL-YT1-ZAITEN(IDX6)
                                 TO  TBL-YT2Y2-ZAITEN(IDX7 IDX8 4)
@@ -7856,6 +7881,11 @@
                                      TBL-YT1-SURYOUTOTAL(IDX6)
                              ADD     WRK-RUIKEITOTAL
                                 TO  TBL-YT2Y2-RUIKEITOTAL2(IDX7 IDX8 4)
+                             COMPUTE WRK-RUIKEITOTAL  =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-SURYOUTOTAL(IDX6)
+                             ADD     WRK-RUIKEITOTAL
+                                TO  TBL-YT2Y2-RUIKEITOTAL3(IDX7 IDX8 4)
                              ADD    TBL-YT1-MEISAISU(IDX6)
                                 TO  TBL-YT2Y2-MEISAISU(IDX7 IDX8 4)
       *

@@ -123,6 +123,7 @@
       *                                     改行コードチェック
       *                                     エラー時処理終了
       *  04.07.12    NACL-門脇    14/09/01  訪問診療にかかる記録書コメント対応
+      *  04.07.13    NACL-門脇    14/09/01  平成２６年１０月改正対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
@@ -2108,7 +2109,7 @@
                END-IF
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
-               AND   ( RECE220-ZAITEN     =     ZERO        )
+               AND   ( RECE220-ZAITEN    =     ZERO         )
                AND   ( ACCT-ZAIKBN   NOT =     1            )
                AND   ( ACCT-JIHOKBN      =     SPACE        )
                   IF     RECE220-SAFLG   NOT =  SPACE
@@ -2117,7 +2118,8 @@
                     IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
                     OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
                         IF   SRY-SRYSYUKBN  =  "212" OR "292" OR
-                                               "222" OR "232"
+                                               "222" OR "232" OR
+                                               "295"
                           IF   RECE220-TOYAKUFLG = SPACE
                             MOVE   "2"    TO    RECE220-TOYAKUFLG
                           END-IF

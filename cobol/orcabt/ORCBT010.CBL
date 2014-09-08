@@ -125,6 +125,7 @@
       *  04.07.04    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
       *                                     マル長のときも対象とする
       *  04.07.05    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
+      *  04.07.06    NACL-門脇    14/09/01  平成２６年１０月改正対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
@@ -464,6 +465,8 @@
            03  WRK-CONS-SRYCD2         PIC X(09)   VALUE   "630010002".
       *    包括点数の治験減点分
            03  WRK-CONS-SRYCD3         PIC X(09)   VALUE   "199000210".
+      *    薬剤料逓減（８０／１００）（向精神薬多剤投与）
+           03  WRK-CONS-SRYCD4         PIC X(09)   VALUE   "630010005".
       *
       *    疑い
            03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "の疑い".
@@ -3342,6 +3345,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      SRY-SRYCD    (IDX2) =   WRK-CONS-SRYCD1
                                            OR  WRK-CONS-SRYCD2
                                            OR  WRK-CONS-SRYCD3
+                                           OR  WRK-CONS-SRYCD4
                    COMPUTE TOUKEI02-ZAITEN     =   TOUKEI02-ZAITEN *
                                                    (-1)
                    IF      SRY-SRYCD    (IDX2) =   WRK-CONS-SRYCD1
