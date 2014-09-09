@@ -165,6 +165,10 @@
            03  FILLER              PIC X(30)   VALUE
                "scripts/claim/HL01.sh".
       *
+      *v4.8
+      *    画面非表示
+           COPY    "ENUM-VALUE".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1615,6 +1619,12 @@
       *****************************************************************
        4905-CLAIM-CHK-SEC               SECTION.
       *
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               GO      TO      4905-CLAIM-CHK-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-CLAIM
            MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
       *    ＣＬＡＩＭ接続判定
@@ -1795,6 +1805,12 @@
       *    ユーザプログラム起動処理
       *****************************************************************
        4907-USERPG-SEC                 SECTION.
+      *
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               GO      TO      4907-USERPG-EXT
+           END-IF
       *
            EVALUATE    FLG-USERPG
                WHEN    1

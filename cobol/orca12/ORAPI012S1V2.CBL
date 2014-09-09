@@ -186,6 +186,10 @@
            03  FILLER              PIC X(30)   VALUE
                "scripts/claim/HL01.sh".
       *
+      *v4.8
+      *    画面非表示
+           COPY    "ENUM-VALUE".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -2461,6 +2465,9 @@
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
+      *H26.8
+      *    テスト患者番号区分
+           MOVE    "0"                 TO  PTINF-TSTPTNUMKBN
       *    明細編集
            PERFORM 20023-PTINF-HENSYU-SEC
       *
@@ -3592,6 +3599,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4905-CLAIM-CHK-SEC               SECTION.
       *
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               GO      TO      4905-CLAIM-CHK-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-CLAIM
            MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
       *    ＣＬＡＩＭ接続判定
@@ -3757,6 +3770,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ユーザプログラム起動処理
       *****************************************************************
        4907-USERPG-SEC                 SECTION.
+      *
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               GO      TO      4907-USERPG-EXT
+           END-IF
+      *
       *
            EVALUATE    FLG-USERPG
                WHEN    1
