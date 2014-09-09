@@ -85,6 +85,8 @@
       *  平成２６年度改定対応
       *              NACL-小豆沢  14/09/03  向精神薬多剤投与の薬剤料逓減
       *                                     対応
+      *              NACL-小豆沢  14/09/09  出来高・包括フラグの"6"を
+      *                                     "1"とするよう修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4395,6 +4397,9 @@
                PERFORM 5005-NUM-HENSYU-SEC
            END-IF
       *出来高・包括フラグ
+           IF      WRK-FEDT-HOUKATU-FLG   =    "6"
+               MOVE   "1"              TO  WRK-FEDT-HOUKATU-FLG
+           END-IF
            MOVE    WRK-FEDT-HOUKATU-FLG
                                        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
