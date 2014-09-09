@@ -263,6 +263,7 @@
                 04  K03-NYUMISYU-STYLE   PIC X(20).
                 04  K03-NYUMISYU-VALUE   PIC X(40).
               03  K03-USERPG-COMB.
+                04  K03-USERPG-STATE   PIC S9(9)   BINARY.
                 04  K03-USERPG.
                   05  K03-VALUE   PIC X(20).
                 04  K03-USERPG-COUNT   PIC S9(9)   BINARY.

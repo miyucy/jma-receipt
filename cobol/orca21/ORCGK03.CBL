@@ -1178,7 +1178,19 @@
       *    診療費明細書発行区分設定
            PERFORM 3105-MEIPRTFLG-SET-SEC
       *
+      *ver.4.7
+      *    患者個別設定検索
+           PERFORM 3108-PTCONF-SET-SEC
+      *
       *    ユーザプログラム起動初期
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               INITIALIZE                  SPA-NAI-GYOUMU-FLG
+               INITIALIZE                  SPA-NAI-GYOUMU-ARI
+               GO      TO      310-SPA-SET-EXT
+           END-IF
+      *
            INITIALIZE                      ORCSUSERCHKAREA
            MOVE    "K03"               TO  ORCSUSERCHK-GMNPG
            MOVE    "1"                 TO  ORCSUSERCHK-SYORI
@@ -1204,9 +1216,6 @@
                MOVE    SPA-GMN-USERPG-LIST(1)  TO  SPA-GMN-USERPG-G
            END-IF
       *
-      *ver.4.7
-      *    患者個別設定検索
-           PERFORM 3108-PTCONF-SET-SEC
             .
        310-SPA-SET-EXT.
            EXIT.
@@ -3524,6 +3533,13 @@
       *
            MOVE    WIDGET-NORMAL       TO  K03-B10-STATE
            MOVE    WIDGET-NORMAL       TO  K03-B03-STATE
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE  TO  K03-USERPG-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  K03-USERPG-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.
@@ -5223,6 +5239,7 @@
        440-USERPG-CHK-SEC              SECTION.
       *
            IF      SPA-GMN-USERPG      =   SPACE
+            AND   (SPA-USERPG-MAX      >   ZERO  )
                MOVE    "0"                 TO  SPA-GMN-USERPG
            END-IF
       *
@@ -5238,9 +5255,10 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-CHK               =   ZERO
-               MOVE    "0027"            TO  SPA-ERRCD
-               MOVE    15                TO  SPA-GMN-CUR
+           IF     (FLG-CHK             =   ZERO )
+            AND   (SPA-USERPG-MAX      >   ZERO )
+               MOVE    "0027"              TO  SPA-ERRCD
+               MOVE    15                  TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -5676,7 +5694,13 @@
                END-IF
            END-IF
       *    ＣＬＡＩＭ接続チェック処理
-           PERFORM 4905-CLAIM-CHK-SEC
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    ZERO                TO  FLG-CLAIM
+           ELSE
+               PERFORM 4905-CLAIM-CHK-SEC
+           END-IF
            IF      FLG-CLAIM           =   2
                 GO      TO      450-TOROKU-EXT
            END-IF
@@ -6916,6 +6940,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ユーザプログラム起動処理
       *****************************************************************
        4907-USERPG-SEC  SECTION.
+      *
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               GO      TO      4907-USERPG-EXT
+           END-IF
       *
            EVALUATE    SPA-USERPG-FLG
                WHEN    1

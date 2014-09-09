@@ -3276,6 +3276,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        30021-SYUNOU-NYU-SYORI-SEC          SECTION.
       *
+      *    保険毎テーブルクリア
+           INITIALIZE                  SPA-TBL-HKNCOMBI-AREA
+      *
            MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
            MOVE    SPA-SRYKA           TO  WRK-SRYKA
            MOVE    SPA-DRCD            TO  WRK-DRCD

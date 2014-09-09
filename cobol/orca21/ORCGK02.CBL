@@ -14219,7 +14219,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-KIDCD2          TO  KID2-ID2CODE
            MOVE    WRK-KIDMSG          TO  KID2-ID2MSG
       *    ユーザプログラム起動初期表示
-           PERFORM 5301-USERPG-SET-SEC
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE  TO  KID2-USERPG-STATE
+           ELSE
+               PERFORM 5301-USERPG-SET-SEC
+           END-IF
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *
@@ -14273,6 +14279,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  KID2-USERPG-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-USERPG-MAX      TO  KID2-USERPG-COUNT
+      *
+           MOVE    WIDGET-NORMAL       TO  KID2-USERPG-STATE
             .
        5301-USERPG-SET-EXT.
            EXIT.

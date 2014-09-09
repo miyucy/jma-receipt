@@ -22,6 +22,7 @@
               03  KID2-ID2MSG.
                 04  KID2-VALUE  PIC X(100).
               03  KID2-USERPG-COMB.
+                04  KID2-USERPG-STATE   PIC S9(9)   BINARY.
                 04  KID2-USERPG.
                   05  KID2-VALUE  PIC X(20).
                 04  KID2-USERPG-COUNT  PIC S9(9)   BINARY.

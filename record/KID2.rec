@@ -7,6 +7,7 @@ KID2 {
       textdata varchar(100);
     };
     USERPG_COMB {
+      state int;
       USERPG {
         textdata varchar(20);
       };

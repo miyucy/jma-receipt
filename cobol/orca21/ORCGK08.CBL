@@ -1224,7 +1224,13 @@
       *
            IF      SPA-NYUGAIKBN       =   "1"
       *        ユーザプログラム起動初期
-               PERFORM 3101-USERPG-SET-SEC
+      *v4.8
+      *    ginbee対応
+               IF      SPA-MW              =   SPA-GINBEE
+                   MOVE    ZERO                TO  SPA-USERPG-MAX
+               ELSE
+                   PERFORM 3101-USERPG-SET-SEC
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-USERPG-MAX
            END-IF

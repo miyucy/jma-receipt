@@ -371,6 +371,7 @@ K03 {
       textdata varchar(40);
     };
     USERPG_COMB {
+      state int;
       USERPG {
         textdata varchar(20);
       };

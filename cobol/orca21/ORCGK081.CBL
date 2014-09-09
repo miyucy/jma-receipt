@@ -551,7 +551,12 @@
       *
       *    ユーザプログラム起動初期処理
            IF      SPA-ETC-MOTOPG      =   "K02N"
-               PERFORM 3101-USERPG-SET-SEC
+      *v4.8
+               IF      SPA-MW              =   SPA-GINBEE
+                   INITIALIZE                  SPA-K081GMN-USERPG-AREA
+               ELSE
+                   PERFORM 3101-USERPG-SET-SEC
+               END-IF
            ELSE
                INITIALIZE                  SPA-K081GMN-USERPG-AREA
            END-IF
@@ -1694,6 +1699,14 @@
            END-PERFORM
            MOVE    SPA-K081GMN-USERPG-MAX  TO  K081-USERPG-COUNT
            MOVE    SPA-K081GMN-USERPG-G    TO  K081-USERPG
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE  TO  K081-USERPG-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  K081-USERPG-STATE
+           END-IF
+      *
       *
            PERFORM 5001-MAPCUR-SEC
            .

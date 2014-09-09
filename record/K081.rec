@@ -101,6 +101,7 @@ K081 {
         item varchar(12)[2];
     };
     USERPG_COMB {
+      state int;
       USERPG {
         textdata varchar(30);
       };
