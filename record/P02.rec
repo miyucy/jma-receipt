@@ -445,6 +445,7 @@ P02 {
             item varchar(23)[99];
         };
         P02_USERPG_COB {
+          state int;
           P02_USERPG {
             textdata varchar(20);
           };

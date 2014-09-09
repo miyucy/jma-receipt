@@ -1178,6 +1178,14 @@
            MOVE    SPA-GMN-SYOHOLST (1)    TO  SPA-GMN-SYOHO-G
       *
       *    ユーザプログラム起動初期
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    SPACE               TO  SPA-NAI-GYOUMU-FLG
+               MOVE    ZERO                TO  SPA-NAI-GYOUMU-ARI
+               GO      TO      310-SPASET-EXT
+           END-IF
+      *
            INITIALIZE                      ORCSUSERCHKAREA
            MOVE    "U02"               TO  ORCSUSERCHK-GMNPG
            MOVE    "1"                 TO  ORCSUSERCHK-SYORI
@@ -1188,7 +1196,7 @@
            MOVE    ORCSUSERCHK-GYOUMU-ARI  TO  SPA-NAI-GYOUMU-ARI
       *
            MOVE    "0 Ｕ・Ｐ指示なし"      TO  SPA-GMN-USERPGLST (1)
-           IF      SPA-NAI-GYOUMU-ARI  =   "1"
+           IF      SPA-NAI-GYOUMU-ARI  =   1
       *        実行するプログラムがある時
                MOVE    "1 Ｕ・Ｐ指示あり"  TO  SPA-GMN-USERPGLST (2)
                MOVE    2                   TO  SPA-USERPG-MAX
@@ -2926,6 +2934,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                END-IF
            END-PERFORM
            IF      FLG-HENFLG          =   ZERO
+              AND  SPA-USERPG-MAX      >   ZERO
                MOVE    "0029"              TO  SPA-ERRCD
                MOVE    10                  TO  SPA-GMN-CUR
            END-IF
@@ -4526,12 +4535,21 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-IF
       *
       *    ＣＬＡＩＭ接続チェック処理
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    ZERO                TO  FLG-CLAIM
+           ELSE
+      *
            IF      SPA-GMN-PTNUM       =   SPACE
       *        新規患者はなし
                MOVE    ZERO                TO  FLG-CLAIM
            ELSE
                PERFORM 4905-CLAIM-CHK-SEC
            END-IF
+      *
+           END-IF
+      *
            IF      FLG-CLAIM       =   2 
                GO      TO      490-TOUROKU-EXT
            END-IF
@@ -4615,8 +4633,14 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-IF
       *
       *    ユーザプログラム起動
-           IF      SPA-GMN-PTNUM   NOT =   SPACE
-               PERFORM 4907-USERPG-SEC
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               CONTINUE
+           ELSE
+               IF      SPA-GMN-PTNUM   NOT =   SPACE
+                   PERFORM 4907-USERPG-SEC
+               END-IF
            END-IF
            IF      FLG-END             =   ZERO
       *
@@ -4711,6 +4735,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        4951-CLIENT-PRT-SEC         SECTION.
       *
+      *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
       *    クライアント印刷制御情報取得サブ
@@ -5433,7 +5458,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ユーザプログラム実行画面表示へ
                PERFORM 49071-XD01-SYORI-SEC
            ELSE
-               IF      SPA-NAI-GYOUMU-ARI  =   "1"
+               IF      SPA-NAI-GYOUMU-ARI  =   1
       *            起動するユーザプログラムある時、実行
                    INITIALIZE                      ORCSUSERCHKAREA
                    MOVE    "U02"               TO  ORCSUSERCHK-GMNPG
@@ -6667,6 +6692,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****END-IF
       *    患者メモ
            MOVE    WIDGET-NORMAL       TO  U02-B10S-STATE
+      *v4.8
+      *    ユーザプログラム
+           MOVE    WIDGET-NORMAL       TO  U02-USERPG-STATE
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE  TO  U02-USERPG-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.

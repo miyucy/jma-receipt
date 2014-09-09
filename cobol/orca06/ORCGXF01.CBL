@@ -474,12 +474,18 @@
       *    受付中
            PERFORM 30011-UKETUKE-HEN-SEC
       *    ＣＬＡＩＭ接続判定
-           PERFORM 31002-SYS900-READ-SEC
-           IF      SYS-9000-SETUZOKU   =   ZERO
-                                       OR  SPACE
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
                MOVE    ZERO            TO  SPA-CLAIM-FLG
            ELSE
-               MOVE    1               TO  SPA-CLAIM-FLG
+               PERFORM 31002-SYS900-READ-SEC
+               IF      SYS-9000-SETUZOKU   =   ZERO
+                                       OR  SPACE
+                   MOVE    ZERO            TO  SPA-CLAIM-FLG
+               ELSE
+                   MOVE    1               TO  SPA-CLAIM-FLG
+               END-IF
            END-IF
       *
            PERFORM 310-SPA-SET-SEC
@@ -2418,7 +2424,7 @@
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-XF01
-     *
+      *
            MOVE    "XF01"              TO  SPA-MOTOPG
            MOVE    "XF01X"             TO  SPA-SAKIPG
       *    カーソル移動

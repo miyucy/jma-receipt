@@ -344,6 +344,7 @@
                     06  P02-P02-NYUKIN-ITEM
                             PIC X(23)   OCCURS  99 TIMES.
                   05  P02-P02-USERPG-COB.
+                    06  P02-P02-USERPG-STATE   PIC S9(9)   BINARY.
                     06  P02-P02-USERPG.
                       07  P02-VALUE   PIC X(20).
                     06  P02-P02-USERPG-COUNT   PIC S9(9)   BINARY.

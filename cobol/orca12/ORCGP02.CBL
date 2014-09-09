@@ -2638,8 +2638,14 @@
            END-IF
       *
       *    ユーザプログラム起動
-           MOVE    2                   TO  FLG-USERPG
-           PERFORM 4907-USERPG-SEC
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               CONTINUE
+           ELSE
+               MOVE    2                   TO  FLG-USERPG
+               PERFORM 4907-USERPG-SEC
+           END-IF
            IF      FLG-END             =   1
                GO      TO      4991-DELETE-SYORI-EXT
            END-IF
@@ -2734,7 +2740,14 @@
       *
       *    ＣＬＡＩＭ接続チェック処理
            MOVE    ZERO                TO  FLG-CLAIM
-           PERFORM 4905-CLAIM-CHK-SEC
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               INITIALIZE                  SPA-P02X-AREA
+           ELSE
+               PERFORM 4905-CLAIM-CHK-SEC
+           END-IF
+      *
            IF      FLG-CLAIM           =   2
                CONTINUE
            ELSE
@@ -3091,8 +3104,15 @@
                END-IF
            END-IF
       *    ユーザプログラム起動
-           MOVE    1                   TO  FLG-USERPG
-           PERFORM 4907-USERPG-SEC
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               CONTINUE
+           ELSE
+               MOVE    1                   TO  FLG-USERPG
+               PERFORM 4907-USERPG-SEC
+           END-IF
+      *
            IF      FLG-END             =   1
                MOVE    ZERO                TO  SPA-KEI-FLG
                GO      TO      49021-KOUSIN-AFTER-EXT

@@ -1350,6 +1350,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    2                   TO  SPA-SYOHOU-MAX
       *
       *    ユーザプログラム起動初期
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               INITIALIZE                      SPA-NAI-GYOUMU-FLG
+               INITIALIZE                      SPA-NAI-GYOUMU-ARI
+           ELSE
+      *
            INITIALIZE                      ORCSUSERCHKAREA
            MOVE    "P02"               TO  ORCSUSERCHK-GMNPG
            MOVE    "1"                 TO  ORCSUSERCHK-SYORI
@@ -1373,6 +1380,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        実行するプログラムがない時
                MOVE    1                   TO  SPA-USERPG-MAX
                MOVE    SPA-GMN-USERPG-LST (1)  TO  SPA-GMN-USERPG-G
+           END-IF
+      *
            END-IF
       *
       *    請求書発行区分
@@ -3452,6 +3461,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE  TO  P02-B05S-STATE
                MOVE    WIDGET-INSENSITIVE  TO  P02-B04-STATE
                MOVE    WIDGET-INSENSITIVE  TO  P02-B03S-STATE
+           END-IF
+      *v4.8
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-P02-USERPG-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  P02-P02-USERPG-STATE
            END-IF
            .
        200-P02-SET-EXT.

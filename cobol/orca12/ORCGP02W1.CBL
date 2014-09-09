@@ -4428,6 +4428,7 @@
                END-IF
            END-PERFORM
            IF      FLG-CHK             =   ZERO
+             AND   SPA-USERPG-MAX      >   ZERO
                MOVE    "0901"              TO  SPA-ERRCD
                MOVE    70                  TO  SPA-GMN-CUR
            END-IF
