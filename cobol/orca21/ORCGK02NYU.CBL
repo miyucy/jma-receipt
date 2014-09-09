@@ -2661,7 +2661,7 @@
                MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
                MOVE    "K02"               TO  SPATMP-GYOUMUID
                MOVE    SPA-TERMID          TO  SPATMP-TERMID
-               MOVE    "K01PARA"           TO  SPATMP-FILEMEI
+               MOVE    "K01KYOUTU"         TO  SPATMP-FILEMEI
                MOVE    1                   TO  SPATMP-EDANUM
                PERFORM 9100-SPATMP-KEYREAD-SEC
                IF      FLG-SPATMP          =   ZERO
