@@ -72,19 +72,21 @@
          02  HCM34ACCT-DAT.
            COPY    "CPSRYACCT.INC"         REPLACING   //ACCT-//
                                            BY          //HCM34ACCT-//.
-           03  HCM34ACCT-RUIKEITOTAL               PIC 9(15).
-           03  HCM34ACCT-RUIKEITOTAL2              PIC 9(15).
-           03  HCM34ACCT-JIHIMONEYTOTAL            PIC 9(07).
-           03  HCM34ACCT-SRT-SRYCD                 PIC X(09).
-           03  HCM34ACCT-SRT-SRYSYUKBN             PIC X(03).
-           03  HCM34ACCT-SRT-SRYCOMMENT            PIC 9(01).
-           03  HCM34ACCT-ACCTKBN                   PIC X(01).
-           03  HCM34ACCT-ZAISKBKBN                 PIC X(01).
-           03  HCM34ACCT-PRIORITY                  PIC 9(03).
-           03  HCM34ACCT-PRIORITY2                 PIC 9(03).
-           03  HCM34ACCT-PRIORITY3                 PIC 9(03).
-           03  HCM34ACCT-TNSTEN                    PIC 9(10).
-           03  HCM34ACCT-SRYSTATUS                 PIC 9(01).
+           03  HCM34ACCT-DATPLUS.
+               05  HCM34ACCT-RUIKEITOTAL           PIC 9(15).
+               05  HCM34ACCT-RUIKEITOTAL2          PIC 9(15).
+               05  HCM34ACCT-JIHIMONEYTOTAL        PIC 9(07).
+               05  HCM34ACCT-SRT-SRYCD             PIC X(09).
+               05  HCM34ACCT-SRT-SRYSYUKBN         PIC X(03).
+               05  HCM34ACCT-SRT-SRYCOMMENT        PIC 9(01).
+               05  HCM34ACCT-ACCTKBN               PIC X(01).
+               05  HCM34ACCT-ZAISKBKBN             PIC X(01).
+               05  HCM34ACCT-PRIORITY              PIC 9(03).
+               05  HCM34ACCT-PRIORITY2             PIC 9(03).
+               05  HCM34ACCT-PRIORITY3             PIC 9(03).
+               05  HCM34ACCT-TNSTEN                PIC 9(10).
+               05  HCM34ACCT-SRYSTATUS             PIC 9(01).
+               05  HCM34ACCT-MINUS                 PIC 9(01).
       *
       *    診療行為ファイル
        FD  HCM34SRY-FILE.
@@ -802,6 +804,7 @@
                03 WKACCT-PRIORITY3        PIC 9(03).
                03 WKACCT-TNSTEN           PIC 9(10).
                03 WKACCT-SRYSTATUS        PIC 9(01).
+               03 WKACCT-MINUS            PIC 9(01).
       *
       *    保険組合せ
        01  TBLCOMBI-AREA.
@@ -2960,6 +2963,7 @@
                END-IF
       *
                MOVE    SRYACCT-REC     TO  HCM34ACCT-DAT
+               INITIALIZE                  HCM34ACCT-DATPLUS
       *
                MOVE    WRK-RUIKEITOTAL TO  HCM34ACCT-RUIKEITOTAL
                MOVE    WRK-RUIKEITOTAL2 TO  HCM34ACCT-RUIKEITOTAL2
@@ -2989,6 +2993,7 @@
                                            HCM34ACCT-PRIORITY3
                MOVE    WRK-TNSTEN      TO  HCM34ACCT-TNSTEN
                MOVE    FLG-SRYSTATUS   TO  HCM34ACCT-SRYSTATUS
+               MOVE    FLG-MINUS       TO  HCM34ACCT-MINUS
       *
                WRITE   HCM34ACCT-REC
       *
@@ -3383,6 +3388,7 @@
       *
            MOVE    ZERO                TO  FLG-YAKUSOKU
                                            FLG-SRYSTATUS
+                                           FLG-MINUS
       *
            MOVE    SPACE               TO  WRK-SRYCD
                                            WRK-SRYSYUKBN
@@ -3425,6 +3431,10 @@
                        COMPUTE WRK-TNSTEN
                            =   WRK-TNSTEN   +   TNS-TEN
       *
+                       IF    ( TNS-TENSIKIBETU  =  7 )
+                           MOVE    1       TO  FLG-MINUS
+                       END-IF
+      *
                       MOVE     SRY-SRYCD(IDX20) TO  WRK-SRYCD-9
                       MOVE     SRY-SRYSURYO(IDX20)
                                                 TO  WRK-SURYO
@@ -3454,8 +3464,13 @@
            IF    ( FLG-SRYSTATUS   =   ZERO )
                IF    ( ACCT-ZAITEN =   ZERO )
                 AND  ( WRK-TNSTEN  =   ZERO )
+                AND  ( FLG-MINUS   =   ZERO )
                    MOVE    2       TO  FLG-SRYSTATUS
                END-IF
+           END-IF
+      *
+           IF    ( FLG-MINUS       =   1 )
+               MOVE    ZERO        TO  FLG-SRYSTATUS
            END-IF
       *
            .
@@ -3589,6 +3604,8 @@
                                        TO  WRK-ZAISKBKBN
            MOVE    WKACCT-SRYSTATUS (IDX11)
                                        TO  FLG-SRYSTATUS
+           MOVE    WKACCT-MINUS (IDX11)
+                                       TO  FLG-MINUS
       *
            MOVE    1                   TO  FLG-EDIT
       *
@@ -3605,7 +3622,6 @@
       *
            MOVE    ZERO                TO  CNT-HOUSRYACT
            MOVE    ZERO                TO  FLG-SRYACT-HEN5
-           MOVE    ZERO                TO  FLG-MINUS
            MOVE    ZERO                TO  FLG-TAJYUSHIN
            MOVE    ZERO                TO  FLG-RSIJBI-AREA-HEN
            MOVE    ZERO                TO  FLG-JIBAI
@@ -5627,6 +5643,7 @@
            END-PERFORM
       *
            MOVE    SRYACCT-REC         TO  HCM34ACCT-DAT
+           INITIALIZE                      HCM34ACCT-DATPLUS
       *
            MOVE    WRK-RUIKEITOTAL     TO  HCM34ACCT-RUIKEITOTAL
            MOVE    WRK-RUIKEITOTAL2    TO  HCM34ACCT-RUIKEITOTAL2

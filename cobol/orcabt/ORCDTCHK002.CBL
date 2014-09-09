@@ -3399,6 +3399,11 @@
       *
            MOVE    1               TO  FLG-TAISYO-SRY
       *
+           DISPLAY "DCSRY-SRYCD [" DCSRY-SRYCD "]"
+                   "DCACCT-SRYKBN[" DCACCT-SRYKBN "]"
+                   "DCACCT-ZAITEN[" DCACCT-ZAITEN "]"
+                   "DCACCT-MINUS[" DCACCT-MINUS "]"
+      *
       *    薬剤の場合、院外処方の処理対象チェックを行う
            EVALUATE    TRUE
            WHEN  ( DCSRY-SRYSYUKBN     =   "213" OR "223" OR "233" )
@@ -3408,6 +3413,7 @@
       *        院外処方を含まない
                WHEN    ZERO
                    IF    ( DCACCT-SRYKBN(1:1)    =   "2"  )
+                    AND  ( DCACCT-MINUS          =   ZERO )
                     AND  ( DCACCT-ZAITEN         =   ZERO )
                        MOVE    ZERO    TO  FLG-TAISYO-SRY
                    END-IF
@@ -3420,8 +3426,10 @@
       *        院外処方のみ
                WHEN    "2"
                    IF   (  DCACCT-SRYKBN(1:1)    =   "2"   )
-                    AND (  DCACCT-ZAITEN     NOT =   ZERO  )
-                       MOVE    ZERO    TO  FLG-TAISYO-SRY
+                       IF    ( DCACCT-ZAITEN NOT =   ZERO  )
+                        OR   ( DCACCT-MINUS  NOT =   ZERO  )
+                           MOVE    ZERO    TO  FLG-TAISYO-SRY
+                       END-IF
                    END-IF
                    IF    ( DCACCT-SRYKBN         =   "14"   )
                     AND  ( DCSRY-SRYSYUKBN   NOT =   "148" )
@@ -3433,6 +3441,7 @@
            IF    ( DCACCT-SRYKBN           =   "21" OR "22" OR "23" )
             AND  ( DCSRY-SRYSYUKBN(3:1)    NOT =   "3" )
             AND  ( DCACCT-ZAITEN           =   ZERO )
+            AND  ( DCACCT-MINUS            =   ZERO )
                MOVE                1       TO  FLG-INGAISYOHOU
            END-IF
       *
