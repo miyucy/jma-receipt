@@ -62,7 +62,8 @@ RENNUM=0
                     mv  ${MCP_TEMPDIR}/${22}.tmp ${MCP_TEMPDIR}/${22}.wk
                 fi
             else
-                mv  ${MCP_TEMPDIR}/${22}.tmp ${MCP_TEMPDIR}/${22}
+                mv  ${MCP_TEMPDIR}/${22}.tmp ${21}/${22}
+                rm  ${MCP_TEMPDIR}/${22}.wk
             fi 
         fi 
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13},${17}
