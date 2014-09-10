@@ -22601,6 +22601,7 @@
                  WHEN       1           ALSO     ZERO
                    MOVE    WRK-KINGAKU-GENBUTU3 TO  WRK-CHK-KINGAKU
                  WHEN       ANY         ALSO     1
+                   MOVE    WRK-KINGAKU-GENBUTU3 TO  WRK-CHK-KINGAKU
                    IF  FLG-KOHYONKAIME = 1
                     IF  FLG-TOKU75 = 3
                      MOVE  12300                TO  WRK-CHK-KINGAKU2
