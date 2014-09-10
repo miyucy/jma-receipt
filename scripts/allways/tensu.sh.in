@@ -62,6 +62,10 @@ RENNUM=0
                     mv  ${MCP_TEMPDIR}/${22}.tmp ${MCP_TEMPDIR}/${22}.wk
                 fi
             else
+#           ディレクトリがない場合は作成する
+                if ! [ -d ${21} ]; then
+                    mkdir ${21}
+                fi
                 mv  ${MCP_TEMPDIR}/${22}.tmp ${21}/${22}
                 rm  ${MCP_TEMPDIR}/${22}.wk
             fi 
