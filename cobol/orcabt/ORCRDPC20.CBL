@@ -87,6 +87,10 @@
       *                                     対応
       *              NACL-小豆沢  14/09/09  出来高・包括フラグの"6"を
       *                                     "1"とするよう修正
+      *              NACL-小豆沢  14/09/10  Ｅファイル編集処理
+      *                                     包括分は行為点数、行為薬剤料、
+      *                                     行為材料料にゼロ点をセット
+      *                                     する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4259,7 +4263,11 @@
       **     MOVE    8                   TO  WRK-NAGASA
       **     PERFORM 5005-NUM-HENSYU-SEC
       *行為点数
-           MOVE    WRK-FEDT-ZAITEN     TO  WRK-NUM
+           IF      WRK-FEDT-HOUKATU-FLG   =    "6"
+               MOVE    ZERO            TO  WRK-NUM
+           ELSE
+               MOVE    WRK-FEDT-ZAITEN TO  WRK-NUM
+           END-IF
            MOVE    WRK-NUM-X (3:8)     TO  WRK-DATA
            IF      WRK-FEDT-ZAITEN     <  0
                MOVE   "-"              TO  WRK-DATA (1:1)
@@ -4272,7 +4280,11 @@
       **     MOVE    8                   TO  WRK-NAGASA
       **     PERFORM 5005-NUM-HENSYU-SEC
       *行為薬剤料
-           MOVE    WRK-FEDT-YKZTEN     TO  WRK-NUM
+           IF      WRK-FEDT-HOUKATU-FLG   =    "6"
+               MOVE    ZERO            TO  WRK-NUM
+           ELSE
+               MOVE    WRK-FEDT-YKZTEN TO  WRK-NUM
+           END-IF
            MOVE    WRK-NUM-X (3:8)     TO  WRK-DATA
            IF      WRK-FEDT-YKZTEN     <  0
                MOVE   "-"              TO  WRK-DATA (1:1)
@@ -4280,8 +4292,12 @@
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *行為材料料
-           MOVE    WRK-FEDT-KIZAITEN   TO  WRK-TENSU
-           MOVE    WRK-TENSU           TO  WRK-NUM
+           IF      WRK-FEDT-HOUKATU-FLG   =    "6"
+               MOVE    ZERO            TO  WRK-NUM
+           ELSE
+               MOVE    WRK-FEDT-KIZAITEN  TO  WRK-TENSU
+               MOVE    WRK-TENSU          TO  WRK-NUM
+           END-IF
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *円・点区分
