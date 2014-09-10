@@ -407,9 +407,11 @@ I04 {
     CMB_USERPG {
       USERPG {
         textdata varchar(22);
+      	state int;
       };
-      count int;
+        count int;
         item varchar(22)[2];
+      	state int;
     };
     LBLSKYINF {
       textdata varchar(50);

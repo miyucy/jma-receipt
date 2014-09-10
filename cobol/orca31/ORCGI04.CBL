@@ -2542,13 +2542,17 @@
            END-PERFORM
       *
       *    ユーザープログラム
-           MOVE    SPA-GMN-I04-USERPG      TO  I04-USERPG
-           MOVE    SPA-GMN-I04-USERPG-CNT  TO  I04-USERPG-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   SPA-GMN-I04-USERPG-CNT   )
-               MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
-                                           TO  I04-USERPG-ITM (IDX1)
-           END-PERFORM
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-I04-USERPG      TO  I04-USERPG
+               MOVE    SPA-GMN-I04-USERPG-CNT  TO  I04-USERPG-CNT
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL     ( IDX1    >   SPA-GMN-I04-USERPG-CNT   )
+                   MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
+                                               TO  I04-USERPG-ITM (IDX1)
+               END-PERFORM
+           END-IF
       *!!
       *    院外処方せん印刷
            MOVE    SPA-GMN-I04-SHOHOU      TO  I04-SHOHOSEN
@@ -2783,6 +2787,8 @@
            MOVE    WIDGET-NORMAL   TO  I04-CHOSEI-STT (1)
                                        I04-CHOSEI-STT (2)
                                        I04-NYUKIN-STT
+                                       I04-USERPG-STT
+                                       I04-USERPG-ITM-STT
       *
            IF    ( SPA-GMN-I04-HKNCOMBILST-SEL =   ZERO )
                    MOVE    WIDGET-INSENSITIVE
@@ -2797,6 +2803,12 @@
                    MOVE    WIDGET-INSENSITIVE
                                    TO  I04-NYUKIN-STT
                END-IF
+           END-IF
+      *
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  I04-USERPG-STT
+                                       I04-USERPG-ITM-STT
            END-IF
       *
            .
@@ -2834,7 +2846,12 @@
            WHEN    006
                MOVE    "SRYPRTOUT"     TO  MCP-WIDGET
            WHEN    008
-               MOVE    "USERPG"        TO  MCP-WIDGET
+               IF    ( I04-USERPG-STT
+                                   =   WIDGET-NORMAL )
+                   MOVE    "USERPG"    TO  MCP-WIDGET
+               ELSE
+                   MOVE    "B12"       TO  MCP-WIDGET
+               END-IF
            WHEN    009
                MOVE    "SHOHOSEN"        TO  MCP-WIDGET
            WHEN    010
@@ -3147,8 +3164,12 @@
            END-IF
       *
       *    ユーザープログラムチェック処理
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4100-USERPG-CHK-SEC
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4100-USERPG-CHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -6616,6 +6637,20 @@
       *****************************************************************
        4801-USERPG-SEC                 SECTION.
       *
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               PERFORM 48011-USERPG-SEC
+           END-IF
+      *
+           .
+       4801-USERPG-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザプログラム起動処理
+      *****************************************************************
+       48011-USERPG-SEC                SECTION.
+      *
            MOVE    SPA-I01-I04-SYORIKBN
                                        TO  WRK-99
            MOVE    WRK-99              TO  SPA-SYORI-FLG
@@ -6671,7 +6706,7 @@
            END-IF
       *
            .
-       4801-USERPG-EXT.
+       48011-USERPG-EXT.
            EXIT.
       *****************************************************************
       *    ユーザプログラム実行画面表示処理

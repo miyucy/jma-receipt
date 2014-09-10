@@ -303,8 +303,10 @@
               03  I04-CMB-USERPG.
                 04  I04-USERPG.
                   05  I04-VALUE   PIC X(22).
-                04  I04-USERPG-CNT   PIC S9(9)   BINARY.
+                04  I04-USERPG-STT    PIC S9(9)   BINARY.
+                04  I04-USERPG-CNT    PIC S9(9)   BINARY.
                 04  I04-USERPG-ITM    PIC X(22)   OCCURS  2 TIMES.
+                04  I04-USERPG-ITM-STT PIC S9(9)   BINARY.
               03  I04-LBLSKYINF   PIC X(50).
               03  I04-LBLINFO-G.
                 04  I04-LBLINFO-STYLE

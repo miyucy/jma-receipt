@@ -3026,9 +3026,13 @@
            END-IF
       *
       *    ユーザー起動プログラムチェック処理
-           PERFORM 4101-USERPG-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               PERFORM 4101-USERPG-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
            END-IF
       *
       *    分娩区分チェック
@@ -9521,7 +9525,11 @@
            MOVE SPA-GMN-I01-PTNUM  TO  SPA-LAST-PTNUM
       *
       *    ユーザープログラム
-           PERFORM 4801-USERPG-SEC
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               PERFORM 4801-USERPG-SEC
+           END-IF
       *
       *    画面を更新後の内容で再表示
            PERFORM 4100-PTNUM-CHK-SEC
@@ -19345,13 +19353,17 @@
            END-PERFORM
       *
       *    ユーザープログラム
-           MOVE    SPA-GMN-I01-USERPG      TO  I01-USERPG
-           MOVE    SPA-GMN-I01-USERPG-CNT  TO  I01-USERPG-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   SPA-GMN-I01-USERPG-CNT   )
-               MOVE    SPA-GMN-I01-USERPG-ITM (IDX1)
-                                           TO  I01-USERPG-ITM (IDX1)
-           END-PERFORM
+           IF    ( SPA-MW              =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-I01-USERPG      TO  I01-USERPG
+               MOVE    SPA-GMN-I01-USERPG-CNT  TO  I01-USERPG-CNT
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL     ( IDX1    >   SPA-GMN-I01-USERPG-CNT   )
+                   MOVE    SPA-GMN-I01-USERPG-ITM (IDX1)
+                                               TO  I01-USERPG-ITM (IDX1)
+               END-PERFORM
+           END-IF
       *
                MOVE    "分娩区分"               TO  I01-LBL-BUNBENKBN
            PERFORM 41011-BUNBEN-NYUIN-CHK-SEC
@@ -19748,6 +19760,11 @@
                MOVE    WIDGET-NORMAL       TO  I01-B05-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  I01-B05-STATE
+           END-IF
+      *
+           IF    ( SPA-MW              =   SPA-GINBEE )
+               MOVE    WIDGET-INSENSITIVE  TO  I01-USERPG-STT
+                                               I01-USERPG-ITM-STT
            END-IF
       *
            .
