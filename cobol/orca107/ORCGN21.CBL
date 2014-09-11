@@ -185,11 +185,7 @@
            03  WRK-KANACONV-OUTDATA    PIC X(4000).
       *
       *    画像イメージ作成パラメタ
-       01  ORCSMIAREA.
-           03  ORCSMI-SRYCD        PIC X(09).
-           03  ORCSMI-IMAGEKBN     PIC 9(01).
-           03  ORCSMI-TEMPDIR      PIC X(1024).
-           03  ORCSMI-FILENAME     PIC X(128).
+           COPY    "CPORCSMIAREA.INC".
       *
       *****************************************************************
       *    ファイルレイアウト

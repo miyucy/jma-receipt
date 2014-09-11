@@ -18,7 +18,8 @@ shell_sources = \
 	jma-receipt-program-upgrade.sh.in \
 	orcvt_exec.sh.in \
 	create_dbgroup.sh.in \
-	passwd_store.sh.in
+	passwd_store.sh.in \
+	medphoto_store.sh.in
 
 ruby_sources = \
 	orcvt_euc.rb.in \

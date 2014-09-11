@@ -89,11 +89,7 @@
       ****************************************************************
        LINKAGE                     SECTION.
       *
-       01  ORCSMIAREA.
-           03  ORCSMI-SRYCD        PIC X(09).
-           03  ORCSMI-IMAGEKBN     PIC 9(01).
-           03  ORCSMI-TEMPDIR      PIC X(1024).
-           03  ORCSMI-FILENAME     PIC X(128).
+           COPY    "CPORCSMIAREA.INC".
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION
@@ -151,13 +147,15 @@
       *
            IF      RESULT          NOT =   ZERO
                DISPLAY "base64 RC:[ " RESULT " ]"
+               MOVE    1                   TO  ORCSMI-RETCD
                MOVE    1                   TO  FLG-END
            ELSE
       *        イメージデータファイル読み込み
                OPEN    INPUT               IMAGE-FILE
                IF      STS-IMAGE       NOT =   ZERO
                    DISPLAY "ORCSMISAVE IMAGE FILE OPEN ERROR"
-                   MOVE    1               TO  FLG-END
+                   MOVE    1                   TO  ORCSMI-RETCD
+                   MOVE    1                   TO  FLG-END
                ELSE
                    READ    IMAGE-FILE
                        AT  END
@@ -281,6 +279,7 @@
                                        SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSMISAVE INSERT ERROR :"  MCP-RC "."
+               MOVE    1                   TO  ORCSMI-RETCD
            END-IF
            .
        900-MEDIMAGE-INS-EXT.
@@ -300,6 +299,7 @@
                                        SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSMISAVE UPDATE ERROR :"  MCP-RC "."
+               MOVE    1                   TO  ORCSMI-RETCD
            END-IF
            .
        900-MEDIMAGE-UPD-EXT.

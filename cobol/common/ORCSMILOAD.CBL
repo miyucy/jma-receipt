@@ -89,11 +89,7 @@
       ****************************************************************
        LINKAGE                     SECTION.
       *
-       01  ORCSMIAREA.
-           03  ORCSMI-SRYCD        PIC X(09).
-           03  ORCSMI-IMAGEKBN     PIC 9(01).
-           03  ORCSMI-TEMPDIR      PIC X(1024).
-           03  ORCSMI-FILENAME     PIC X(128).
+           COPY    "CPORCSMIAREA.INC".
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION
@@ -150,13 +146,14 @@
                OPEN    OUTPUT                  IMAGE-FILE
                IF      STS-IMAGE       NOT =   ZERO
                    DISPLAY "ORCSMILOAD IMAGE FILE OPEN ERROR"
-                   MOVE    1               TO  FLG-END
+                   MOVE    1                   TO  ORCSMI-RETCD
+                   MOVE    1                   TO  FLG-END
                    GO  TO  200-MAIN-EXT
                ELSE
                    MOVE    MEDIMG-IMAGEDATA
                                            TO  IMAGE-REC
-                   WRITE                       IMAGE-REC
-                   CLOSE                       IMAGE-FILE
+                   WRITE   IMAGE-REC
+                   CLOSE   IMAGE-FILE
                END-IF
       *
       *        画像ファイルフォルダ作成コマンド
@@ -174,6 +171,7 @@
       *
                IF      RESULT          NOT =   ZERO
                    DISPLAY "mkdir RC:[ " RESULT " ]"
+                   MOVE    1                   TO  ORCSMI-RETCD
                ELSE
       *            イメージデータから画像ファイル作成コマンド
                    MOVE    LOW-VALUE       TO  COMMAND
@@ -194,6 +192,7 @@
       *
                    IF      RESULT          NOT =   ZERO
                        DISPLAY "base64 RC:[ " RESULT " ]"
+                       MOVE    1                   TO  ORCSMI-RETCD
                    END-IF
                END-IF
            END-IF

@@ -796,6 +796,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ファイル存在チェック
            INITIALIZE                  ORCSFILECHKAREA
            MOVE    WRK-GAZOFILE    TO  FILECHK-NAME
+      *ito debug start
+           DISPLAY "ORCSFILECHK FILECHK-NAME [ " FILECHK-NAME " ]"
+      *ito debug end
            CALL    "ORCSFILECHK"       USING
                                        ORCSFILECHKAREA
            IF      FILECHK-RC      NOT =   0
