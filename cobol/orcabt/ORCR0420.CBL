@@ -271,6 +271,9 @@
       *                                     エラー時処理終了
       *  04.07.18    NACL-門脇    14/09/01  訪問診療にかかる記録書コメント対応
       *  04.07.19    NACL-門脇    14/09/01  平成２６年１０月改正対応
+      *  04.07.20    NACL-門脇    14/09/11  摘要欄に印字しない診療行為コードの
+      *                                     データ区分２、かつ、診療区分が点数
+      *                                     マスタの診療区分と異なる場合の対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -3185,6 +3188,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       MOVE   203      TO  RECE45-CDKBN-KBNNUM(IDX4)
                       MOVE   99       TO  RECE45-CDKBN-KOUBAN(IDX4)
                END-IF
+      *
+               MOVE   TNS-SRYKBN      TO  RECE45-TNSSRYKBN(IDX4)
       *
                IF    (TNS-SRYCD       =  "170022290")
                AND   (RECE41-SRYYM   >=  "201004"   )
