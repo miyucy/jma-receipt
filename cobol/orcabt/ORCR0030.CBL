@@ -669,6 +669,8 @@
       *  04.07.30    NACL-門脇    14/08/29  島根・奈良県地方公費対応
       *  04.07.31    NACL-門脇    14/09/01  訪問診療にかかる記録書コメント対応
       *  04.07.32    NACL-門脇    14/09/01  平成２６年１０月改正対応
+      *  04.07.33    NACL-門脇    14/09/10  感３７の２（０１０）の一部負担金
+      *                                     記載対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -19696,6 +19698,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   IF  FTN-KOH-XX3   NOT =   ZERO
                     MOVE   FTN-KOH-XX3   TO  RECE02-ZAITAKU-SAIKEI2
+                    IF  (FLG-KOH           =   2   )
+                    AND (RECE02-KOHNUM(2)  =  "010")
+                      COMPUTE WRK-CYOKI-KEISAN3 = RECE02-FTNMONEY(1)
+                                                - FTN-KOH-XX3
+                      ADD WRK-CYOKI-KEISAN3 TO RECE02-FTNMONEY(3)
+                                               RECE02-FTNMONEY-KOJ(3)
+                    END-IF
                   ELSE
                    IF FTN-KOH-XX4   NOT =   ZERO
                     MOVE   FTN-KOH-XX4   TO  RECE02-ZAITAKU-SAIKEI2
