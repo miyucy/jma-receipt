@@ -60,6 +60,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/06/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     Êñ³ç¥¨¥é¡¼Ê¬ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -786,7 +787,8 @@
       *            À¸³è½¬´·ÉÂ»ØÆ³´ÉÍýÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
                           (SPA-SEIKATU-ARI2    NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-203   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-203   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-203       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -796,7 +798,8 @@
                    END-IF
       *            ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
                    IF      (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO)
-                       IF      SPA-HKTSANTEI-202   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-202   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-202       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -808,7 +811,8 @@
       *            ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-204   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-204   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-204       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -819,7 +823,8 @@
       *            ÆÃÄê»ÜÀßÆþµï»þÅù°å³Ø´ÉÍýÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )  OR
                           (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-205   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-205   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-205       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -830,7 +835,8 @@
       *            ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-ZAIMATU-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIMATU-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-206   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-206   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-206       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -3033,34 +3039,39 @@
       *            À¸³è½¬´·ÉÂ»ØÆ³´ÉÍýÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
                           (SPA-SEIKATU-ARI2    NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-203   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-203   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-203       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
                    IF      (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO)
-                       IF      SPA-HKTSANTEI-202   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-202   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-202       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-204   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-204   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-204       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            ÆÃÄê»ÜÀßÆþµï»þÅù°å³Ø´ÉÍýÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )  OR
                           (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-205   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-205   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-205       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
                    IF     (SPA-ZAIMATU-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIMATU-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-206  NOT  =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-206   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-206       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
@@ -3486,6 +3497,13 @@
            MOVE    ZERO                TO  FLG-SYOHORYO
       *
       *H26.10
+      *    ±¡Æâ½èÊý¤¬¤Ê¤±¤ì¤ÐÂÐ¾Ý³°
+           IF     (FLG-NAIYAK          =   ZERO )  AND
+                  (FLG-TONPUK          =   ZERO )  AND
+                  (FLG-GAIYAK          =   ZERO )
+               GO      TO      3002-INNAI-SYORI-EXT
+           END-IF
+      *
       *    ±¡Æâ½èÊý¤Î¤ß¤Î»þ
            IF     (FLG-NAIYAK2         =   1    )
              OR   (FLG-TONPUK2         =   1    )
@@ -3504,7 +3522,7 @@
       *H26.10
       *
       *H26.4
-      *    ÃÏ°èÊñ³ç¿ÇÎÅ»»Äê»þ¡¡Äþ¸º¤Ê¤·
+      *    ÃÏ°èÊñ³ç¿ÇÎÅ»»Äê»þ¡¡ÆâÉþÄþ¸º¤Ê¤·
            IF      FLG-CHKCARKSN       =   1
                IF      WRK-ZAICNT      >=  7
                    MOVE    6               TO  WRK-ZAICNT

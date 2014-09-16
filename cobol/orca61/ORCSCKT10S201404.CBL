@@ -2726,7 +2726,8 @@
            IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
                   (SPA-SEIKATU-ARI2    NOT =   ZERO )
       *        Êñ³ç¿ÇÎÅ¤Ï¥Á¥§¥Ã¥¯¤Ê¤·
-               IF    ( SPA-HKTSANTEI-203   =   ZERO  )
+               IF    ( SPA-HKTSANTEI-203   =   ZERO
+                                           OR  2    )
                AND   ( SPA-ERRCD           =   SPACE )
                    PERFORM 5022-SEIKATU-CHK-SEC
                END-IF
@@ -2736,7 +2737,8 @@
            IF     (SPA-ZAIMATU-ARI     NOT =   ZERO )  OR
                   (SPA-ZAIMATU-ARI2    NOT =   ZERO )
       *        Êñ³ç¿ÇÎÅ¤Ï¥Á¥§¥Ã¥¯¤Ê¤·
-               IF    ( SPA-HKTSANTEI-206   =   ZERO  )
+               IF    ( SPA-HKTSANTEI-206   =   ZERO 
+                                           OR  2     )
                AND   ( SPA-ERRCD           =   SPACE )
       *
                    PERFORM 5022-ZAIMATU-CHK-SEC
@@ -2747,7 +2749,8 @@
            IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )
              OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
       *        Êñ³ç¿ÇÎÅ¤Ï¥Á¥§¥Ã¥¯¤Ê¤·
-               IF    ( SPA-HKTSANTEI-204   =   ZERO  )
+               IF    ( SPA-HKTSANTEI-204   =   ZERO
+                                           OR  2     )
                AND   ( SPA-ERRCD           =   SPACE )
                    PERFORM 5022-ZAIKANRI-CHK-SEC
                END-IF
@@ -2765,7 +2768,8 @@
            IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )
              OR   (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
       *        Êñ³ç¿ÇÎÅ¤Ï¥Á¥§¥Ã¥¯¤Ê¤·
-               IF    ( SPA-HKTSANTEI-205   =   ZERO  )
+               IF    ( SPA-HKTSANTEI-205   =   ZERO
+                                           OR  2     )
                AND   ( SPA-ERRCD           =   SPACE )
                    PERFORM 5022-IGAKUKAN-CHK-SEC
                END-IF
@@ -2876,6 +2880,7 @@
                        WHEN    "23"
       *                Êñ³ç¿ÇÎÅ°Ê³°
                        IF      SPA-HKTSANTEI-202   =   ZERO
+                                                     OR  2
       *                    ±¡Æâ»þ¤Î¿ÇÎÅ¼ïÊÌÊÑ¹¹
                            PERFORM 50192-SRYSYUKBN-CHK-SEC
       *
@@ -3196,8 +3201,10 @@
                    WHEN    "31"
                    WHEN    "32"
                    WHEN    "33"
-                       MOVE    "0068"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                       IF      SPA-HKTSANTEI-203   =   ZERO
+                           MOVE    "0068"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                       END-IF
                    WHEN    "21"
                    WHEN    "22"
                    WHEN    "23"
@@ -3402,8 +3409,11 @@
                            CONTINUE
                        WHEN    OTHER
       *                    »»Äê¥¨¥é¡¼
-                           MOVE    "1401"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                           IF      SPA-HKTSANTEI-206   =   ZERO 
+                               MOVE    "1401"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                                 (IDX)
+                           END-IF
                    END-EVALUATE
                END-IF
             END-IF

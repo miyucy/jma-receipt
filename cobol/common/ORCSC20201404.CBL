@@ -59,6 +59,7 @@
       *  04.07.00    NACL-多々納  12/08/10  サンプル薬（サ）対応
       *  04.07.00    NACL-多々納  14/03/XX  Ｈ２６年４月改正対応
       *  04.07.00    NACL-多々納  14/09/XX  外用薬（臨時投薬）対応
+      *  04.07.00    NACL-多々納  14/09/XX  包括エラー分対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -715,7 +716,8 @@
       *            生活習慣病指導管理料チェック
                    IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
                           (SPA-SEIKATU-ARI2    NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-203   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-203   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-203       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -725,7 +727,8 @@
                    END-IF
       *            小児科外来診察料チェック
                    IF      (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO)
-                       IF      SPA-HKTSANTEI-202   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-202   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-202       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -737,7 +740,8 @@
       *            在宅時医学総合管理料チェック
                    IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-204   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-204   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-204       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -748,7 +752,8 @@
       *            特定施設入居時等医学管理料チェック
                    IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )  OR
                           (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-205   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-205   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-205       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -759,7 +764,8 @@
       *            在宅末期医療総合診察料チェック
                    IF     (SPA-ZAIMATU-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIMATU-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-206   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-206   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-206       =   1
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -2868,34 +2874,39 @@
       *            生活習慣病指導管理料チェック
                    IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
                           (SPA-SEIKATU-ARI2    NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-203   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-203   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-203       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            小児科外来診察料チェック
                    IF      (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO)
-                       IF      SPA-HKTSANTEI-202   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-202   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-202       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            在宅時医学総合管理料チェック
                    IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-204   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-204   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-204       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            特定施設入居時等医学管理料チェック
                    IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )  OR
                           (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-205   NOT =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-205   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-205       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
       *            在宅末期医療総合診察料チェック
                    IF     (SPA-ZAIMATU-ARI    NOT =   ZERO )  OR
                           (SPA-ZAIMATU-ARI2   NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-206  NOT  =   ZERO
+      *H26.10          IF      SPA-HKTSANTEI-206   NOT =   ZERO
+                       IF      SPA-HKTSANTEI-206       =   1
                            MOVE    1               TO  FLG-SYOHO-CHK
                        END-IF
                    END-IF
@@ -3280,6 +3291,14 @@
        3002-INNAI-SYORI-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOHORYO
+      *H26.10
+      *    院内処方がなければ対象外
+           IF     (FLG-NAIYAK          =   ZERO )  AND
+                  (FLG-TONPUK          =   ZERO )  AND
+                  (FLG-GAIYAK          =   ZERO )
+               GO      TO      3002-INNAI-SYORI-EXT
+           END-IF
+      *
       *H26.4
       *    地域包括診療算定時　逓減なし
            IF      FLG-CHKCARKSN       =   1

@@ -32,6 +32,7 @@
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/06/XX  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/07/XX  »þ´Ö³°¶ÛµÞ±¡Æâ¥Á¥§¥Ã¥¯ÄÉ²Ã
       * 04.08.00     NACL-Â¿¡¹Ç¼  14/03/XX  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/09/XX  Êñ³ç»»Äê¥¨¥é¡¼ÂÐ±þ
       *****************************************************************
       *
       *
@@ -964,22 +965,37 @@
       *                ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ
                        IF      SYS-1014-KBNCD      =   "202"
                            MOVE    1               TO  SPA-HKTSANTEI-202
+      *H26.9
+                           MOVE    SYS-1014-SANTEI-HOU
+                                                   TO  SPA-HKTSANTEI-202
                        END-IF
       *                À¸³è½¬´·ÉÂ´ÉÍýÎÁ
                        IF      SYS-1014-KBNCD      =   "203"
-                           MOVE    1               TO  SPA-HKTSANTEI-203
+      *                    MOVE    1               TO  SPA-HKTSANTEI-203
+      *H26.9
+                           MOVE    SYS-1014-SANTEI-HOU
+                                                   TO  SPA-HKTSANTEI-203
                        END-IF
       *                ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ
                        IF      SYS-1014-KBNCD      =   "204"
-                           MOVE    1               TO  SPA-HKTSANTEI-204
+      *                    MOVE    1               TO  SPA-HKTSANTEI-204
+      *H26.9
+                           MOVE    SYS-1014-SANTEI-HOU
+                                                   TO  SPA-HKTSANTEI-204
                        END-IF
       *                ÆÃÄê»ÜÀßÆþµï»þÅù°å³Ø´ÉÍýÎÁ
                        IF      SYS-1014-KBNCD      =   "205"
-                           MOVE    1               TO  SPA-HKTSANTEI-205
+      *                    MOVE    1               TO  SPA-HKTSANTEI-205
+      *H26.9
+                           MOVE    SYS-1014-SANTEI-HOU
+                                                   TO  SPA-HKTSANTEI-205
                        END-IF
       *                ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ
                        IF      SYS-1014-KBNCD      =   "206"
-                           MOVE    1               TO  SPA-HKTSANTEI-206
+      *                    MOVE    1               TO  SPA-HKTSANTEI-206
+      *H26.9
+                           MOVE    SYS-1014-SANTEI-HOU
+                                                   TO  SPA-HKTSANTEI-206
                        END-IF
                    END-IF
                END-IF
