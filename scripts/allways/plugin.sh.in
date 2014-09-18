@@ -23,7 +23,7 @@ JPPINFO=${SYSCONFDIR}/jppinfo.list
 PKGLIST=/var/tmp/pluginlist
 
 list4cobol () {
-  ${PLUGIN_SHELL} -c ${JPPINFO} list4cobol > ${PKGLIST}
+  ${PLUGIN_SHELL} -c ${JPPINFO} list4cobol | nkf -e > ${PKGLIST}
 }
 
 echo $JPPINFO
