@@ -5237,8 +5237,6 @@
                   (SPA-SEIKATU-ARI2    NOT =   ZERO )
       *        包括診療はチェックなし
                IF      SPA-HKTSANTEI-203   =   ZERO
-      *H26.10          包括エラーは投薬チェック
-                                           OR  2
       *
                PERFORM 5022-SEIKATU-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
@@ -5253,7 +5251,6 @@
                   (SPA-ZAIMATU-ARI2    NOT =   ZERO )
       *        包括診療はチェックなし
                IF      SPA-HKTSANTEI-206   =   ZERO
-                                           OR  2
       *
                PERFORM 5022-ZAIMATU-CHK-SEC
       *
@@ -5265,7 +5262,6 @@
              OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
       *        包括診療はチェックなし
                IF      SPA-HKTSANTEI-204   =   ZERO
-                                           OR  2
       *
                PERFORM 5022-ZAIKANRI-CHK-SEC
       *
@@ -5284,7 +5280,6 @@
              OR   (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
       *        包括診療はチェックなし
                IF      SPA-HKTSANTEI-205   =   ZERO
-                                           OR  2
       *
                PERFORM 5022-IGAKUKAN-CHK-SEC
       *
@@ -5397,7 +5392,6 @@
                        WHEN    "22"
                        WHEN    "23"
                          IF      SPA-HKTSANTEI-202   =   ZERO
-                                                     OR  2
       *
       *                    院内時の診療種別変更
                            PERFORM 50192-SRYSYUKBN-CHK-SEC
@@ -5634,13 +5628,12 @@
       *        検査、投薬、注射は算定できない
                EVALUATE    SPA-COM-SRYKBN(IDX)
                    WHEN    "60"
+                   WHEN    "64"
                    WHEN    "31"
                    WHEN    "32"
                    WHEN    "33"
-                       IF      SPA-HKTSANTEI-203   =   ZERO
-                           MOVE    "0068"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR (IDX)
-                       END-IF
+                       MOVE    "0068"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR (IDX)
                    WHEN    "21"
                    WHEN    "22"
                    WHEN    "23"
@@ -5845,11 +5838,9 @@
                            CONTINUE
                        WHEN    OTHER
       *                    算定エラー
-                           IF      SPA-HKTSANTEI-206   =   ZERO
-                               MOVE    "1421"          TO  SPA-ERRCD
-                               MOVE    "1"             TO  SPA-COM-CUR
+                           MOVE    "1421"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR
                                                                 (IDX)
-                           END-IF
                    END-EVALUATE
                END-IF
             END-IF
