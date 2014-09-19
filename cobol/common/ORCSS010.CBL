@@ -219,6 +219,39 @@
       *
            PERFORM 800-MCNDATE-SEC
       *
+           PERFORM 900-NYUINACCT-KEY54-SEL-SEC
+      *
+           INITIALIZE  NRRKSRH-REC
+           MOVE    SPA-HOSPNUM     TO  NRRKSRH-HOSPNUM
+           MOVE    SS010-PTID      TO  NRRKSRH-PTID
+           MOVE    NACCT-SRYYM     TO  NRRKSRH-SRYYMD
+           MOVE    "31"            TO  NRRKSRH-SRYYMD (7:)
+           MOVE    NRRKSRH-REC     TO  MCPDATA-REC
+           MOVE    "tbl_nrrksrh"   TO  MCP-TABLE
+           MOVE    "del3"          TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    6           TO  SS010-RC
+               PERFORM 990-EXIT-PROGRAM-SEC
+           END-IF
+      *
+           INITIALIZE                  NSRYSRH-REC
+           MOVE    SPA-HOSPNUM     TO  NSRYSRH-HOSPNUM
+           MOVE    SS010-PTID      TO  NSRYSRH-PTID
+           MOVE    NACCT-SRYYM     TO  NSRYSRH-SRYYM
+           MOVE    NSRYSRH-REC     TO  MCPDATA-REC
+           MOVE    "tbl_nsrysrh"   TO  MCP-TABLE
+           MOVE    "del3"          TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    7           TO  SS010-RC
+               PERFORM 990-EXIT-PROGRAM-SEC
+           END-IF
+      *
            INITIALIZE  NRRKSRH-REC
            MOVE    SPA-HOSPNUM     TO  NRRKSRH-HOSPNUM
            MOVE    SS010-PTID      TO  NRRKSRH-PTID
@@ -744,6 +777,36 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY54-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+           INITIALIZE                  NYUINACCT-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    SS010-PTID          TO  NACCT-PTID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-NYUINACCT-KEY54-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院会計検索処理(KEY17)
