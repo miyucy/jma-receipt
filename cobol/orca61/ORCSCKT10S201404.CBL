@@ -3193,6 +3193,7 @@
       *        検査、投薬、注射は算定できない
                EVALUATE    SPA-COM-SRYKBN(IDX)
                    WHEN    "60"
+                   WHEN    "64"
                    WHEN    "31"
                    WHEN    "32"
                    WHEN    "33"

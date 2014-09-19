@@ -63,6 +63,10 @@
            03  IDY1                PIC 9(04).
            03  IDY2                PIC 9(04).
       *
+           03  IDK                 PIC 9(04).
+           03  IDM1                PIC 9(04).
+           03  IDM2                PIC 9(04).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYCNT              PIC 9(04).
@@ -97,7 +101,15 @@
       *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
-           03  WRK-KEICD               PIC X(02).
+           03  WRK-KEICD-G.
+               05  WRK-KEICD           PIC X(02)   OCCURS   5.
+      *
+           03  WRK-ERRCD-1             PIC X(02).
+           03  WRK-ERRMSG-1            PIC X(100).
+           03  WRK-ERRCD-2             PIC X(02).
+           03  WRK-ERRMSG-2            PIC X(100).
+           03  WRK-BYO-IDX             PIC 9(02).
+      *
       *    ユーザプログラム
            03  WRK-PTID                PIC X(10).
            03  WRK-RENNUM              PIC 9(02).
@@ -108,6 +120,10 @@
            03  WRK-MCP-WINDOW          PIC X(62).
       *
            03  WRK-OPID                PIC X(16).
+      *
+      *    保険組合せ内容
+           03  WRK-HKNNUM              PIC X(03).
+           03  WRK-RSI-HKNKBN          PIC X(01).
       *
        01  WRK-XML-AREA.
            03  WRK-PERFORM-DATE        PIC X(10).
@@ -138,15 +154,20 @@
            03  WRK-LEN                 PIC 9(04).
       *
       *    claim連携リターンエリア
-       01  WRK-ERROR-AREA.
-           03  WRK-KBN-CODE            PIC X(01).
-           03  WRK-KBN-CODE2           PIC X(01).
-           03  WRK-KBN-V2              PIC X(01).
-           03  WRK-ERR-CODE            PIC 9(02).
-           03  WRK-ERR-MSG             PIC X(100).
-           03  WRK-OUT-HKNCOMBI        PIC X(04).
-           03  WRK-OUT-CNT1            PIC 9(04).
-           03  WRK-OUT-CNT2            PIC 9(04).
+      *01  WRK-ERROR-AREA.
+      *    03  WRK-KBN-CODE            PIC X(01).
+      *    03  WRK-KBN-CODE2           PIC X(01).
+      *    03  WRK-KBN-V2              PIC X(01).
+      *    03  WRK-ERR-CODE            PIC 9(02).
+      *    03  WRK-ERR-MSG             PIC X(100).
+      *    03  WRK-OUT-HKNCOMBI        PIC X(04).
+      *    03  WRK-OUT-CNT1            PIC 9(04).
+      *    03  WRK-OUT-CNT2            PIC 9(04).
+      *!
+      *H26.8
+      *    claim連携サブリターンエリア
+           COPY    "CPORCL0031.INC".
+      *!
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -300,6 +321,9 @@
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-MEDICALRES
+      *
+           INITIALIZE                  LNK-ORCL0031AREA
+      *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -358,7 +382,7 @@
       *
            MOVE    ZERO                TO  MDCRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
-           MOVE    SPACE               TO  WRK-KEICD
+           MOVE    SPACE               TO  WRK-KEICD-G
       *
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    APILST-CLASS
@@ -379,6 +403,7 @@
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
+               MOVE    SPACE               TO  WRK-KEICD-G
       *TEST!!
       *        PERFORM 890-ERRCD-MSG-SEC
       *        DISPLAY "必須項目チェックエラー "    WRK-ERRCD
@@ -470,19 +495,19 @@
        300-APTXMLMAKE-SEC   SECTION.
       *
       *    エラーメッセージ編集
-           IF      WRK-ERRCD           =   SPACE
-               IF      FLG-SYORI           =   1
-                   MOVE    WRK-KEICD           TO  WRK-ERRCD
-               END-IF
-           END-IF
+      *    IF      WRK-ERRCD           =   SPACE
+      *        IF      FLG-SYORI           =   1
+      **           MOVE    WRK-KEICD           TO  WRK-ERRCD
+      *        END-IF
+      **** END-IF
            IF      WRK-ERRCD           =   SPACE
       *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    1
                        MOVE    "登録処理終了"
                                            TO  MDCRES-API-RESULT-MSG
-                       IF     (WRK-OUT-CNT1        =   ZERO )
-                         AND  (WRK-OUT-CNT2        >   ZERO )
+                       IF     (LNK-OUT-CNT1        =   ZERO )
+                         AND  (LNK-OUT-CNT2        >   ZERO )
                            MOVE    "病名登録処理終了"
                                            TO  MDCRES-API-RESULT-MSG
                        END-IF
@@ -501,6 +526,10 @@
                MOVE    WRK-ERRCD           TO  MDCRES-API-RESULT
                MOVE    WRK-ERRMSG          TO  MDCRES-API-RESULT-MSG
            END-IF
+      *!!!!
+      *    各エラー、ワーニング編集
+           PERFORM 3001-WAINGMSG-HEN-SEC
+      *!!!! 
       *
            IF      APILST-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
@@ -552,6 +581,72 @@
       *
           .
        300-APTXMLMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    各エラー、ワーニング編集
+      *****************************************************************
+       3001-WAINGMSG-HEN-SEC        SECTION.
+      *
+      *    中途データ
+           IF      WRK-ERRCD-1      NOT =   SPACE
+               MOVE    WRK-ERRCD-1         TO  MDCRES-MEDI-RESULT
+               MOVE    WRK-ERRMSG-1        TO  MDCRES-MEDI-RESULT-MSG
+           END-IF
+           MOVE    ZERO                TO  IDM1
+           PERFORM VARYING     IDK     FROM    1   BY  1
+                   UNTIL      (IDK     >   5   )   OR
+                              (WRK-KEICD (IDK) =   SPACE)
+               MOVE    WRK-KEICD (IDK)     TO  WRK-ERRCD
+      *        エラー・警告メッセージ
+               PERFORM 890-ERRCD-MSG-SEC
+               ADD     1                   TO  IDM1
+               MOVE    WRK-ERRCD           TO  MDCRES-MED-IWARNING
+                                                               (IDM1)
+               MOVE    WRK-ERRMSG          TO  MDCRES-MED-IWARNING-MSG
+                                                               (IDM1)
+           END-PERFORM
+           PERFORM VARYING     IDK     FROM    1   BY  1
+                   UNTIL      (IDK     >   50  )   OR
+                              (LNK-KEI1-CODE(IDK) =   SPACE)
+                          OR  (IDM1    >   50  )
+               MOVE    LNK-KEI1-CODE(IDK)  TO  WRK-ERRCD
+               MOVE    LNK-KEI1-MSG (IDK)  TO  WRK-ERRMSG
+               IF      WRK-ERRMSG          =   SPACE
+      *        エラー・警告メッセージ
+                   PERFORM 890-ERRCD-MSG-SEC
+               END-IF
+               ADD     1                   TO  IDM1
+               MOVE    WRK-ERRCD           TO  MDCRES-MED-IWARNING
+                                                               (IDM1)
+               MOVE    WRK-ERRMSG          TO  MDCRES-MED-IWARNING-MSG
+                                                               (IDM1)
+           END-PERFORM
+      *
+      *    病名
+           IF      WRK-ERRCD-2      NOT =   SPACE
+               MOVE    WRK-ERRCD-2         TO  MDCRES-DIA-RESULT
+               MOVE    WRK-ERRMSG-2        TO  MDCRES-DIA-RESULT-MSG
+           END-IF
+           MOVE    ZERO                TO  IDM2
+           PERFORM VARYING     IDK     FROM    1   BY  1
+                   UNTIL      (IDK     >   50  )   OR
+                              (LNK-KEI2-CODE(IDK) =   SPACE)
+                          OR  (IDM2    >   50  )
+               MOVE    LNK-KEI2-CODE(IDK)  TO  WRK-ERRCD
+               MOVE    LNK-KEI2-MSG (IDK)  TO  WRK-ERRMSG
+               IF      WRK-ERRMSG          =   SPACE
+      *        エラー・警告メッセージ
+                   PERFORM 890-ERRCD-MSG-SEC
+               END-IF
+               ADD     1                   TO  IDM2
+               MOVE    WRK-ERRCD           TO  MDCRES-DIA-WARNING
+                                                               (IDM2)
+               MOVE    WRK-ERRMSG          TO  MDCRES-DIA-WARNING-MSG
+                                                               (IDM2)
+           END-PERFORM
+          .
+       3001-WAINGMSG-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -713,7 +808,8 @@
                MOVE    SMCNDATE-YMD        TO  WRK-PERFORM-YMD
                MOVE    MDCRES-INFORMATION-DATE
                                            TO  MDCRES-PERFORM-DATE
-               MOVE    "K1"                TO  WRK-KEICD
+               ADD     1                   TO  IDK
+               MOVE    "K1"                TO  WRK-KEICD(IDK)
            END-IF
       *    診療日をシステム日付へ
            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
@@ -958,6 +1054,7 @@
            PERFORM 990-LOCK-IN-SEC
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "90"            TO  WRK-ERRCD
+               MOVE    SPACE           TO  WRK-KEICD-G
                GO      TO      2002-WKSRYACT-ADD-EXT
            END-IF
       *
@@ -1078,6 +1175,8 @@
                        UNTIL    (IDY           >   50)
       *                     置換えは病名なし
                             OR  (FLG-SYORI     =   3 )
+      *                     エラー終了
+                            OR  (WRK-ERRCD NOT =   SPACE)
                MOVE    MDCREQ-DIAGNOSIS-NUMBER(IDY)
                                            TO  LF04-SND-SPICOD1(IDY)
                MOVE    MDCREQ-DIAGNOSIS-NAME (IDY)
@@ -1150,6 +1249,11 @@
                MOVE    MDCREQ-DIAGNOSIS-END-DATE(IDY)
                                            TO  WRK-END-DATE
                PERFORM 200211-BYOMEI-YMD-SEC
+      *!!!
+               IF      WRK-ERRCD       NOT =   SPACE
+                   MOVE    IDY             TO  WRK-BYO-IDX
+               END-IF
+      *!!!
                MOVE    WRK-START-DATE      TO  LF04-SND-SKNSTARTDATE
                                                              (IDY)
                MOVE    WRK-END-DATE        TO  LF04-SND-SKNENDDATE(IDY)
@@ -1183,49 +1287,117 @@
            END-PERFORM
       *
            IF      WRK-ERRCD       NOT =   SPACE
+               MOVE    SPACE           TO  WRK-KEICD-G
                GO      TO      20021-CLAIM-CALL-EXT
            END-IF
       *
-           INITIALIZE                  WRK-ERROR-AREA
-           MOVE    "1"                 TO  WRK-KBN-CODE
+           INITIALIZE                  LNK-ORCL0031AREA
+           MOVE    "1"                 TO  LNK-KBN-CODE
       *    診療行為なし
            IF     (CNT-SRYCNT          =   ZERO )
-               MOVE    "1"                 TO  WRK-KBN-CODE2
+               MOVE    "1"                 TO  LNK-KBN-CODE2
            END-IF
       *    V2区分
-           MOVE    "1"                 TO  WRK-KBN-V2
+           MOVE    "1"                 TO  LNK-KBN-V2
            CALL    "ORCL0031"          USING LF04-REC
-                                             WRK-ERROR-AREA
+                                             LNK-ORCL0031AREA
       *
-           IF      WRK-OUT-HKNCOMBI    NOT =   ZERO
+           IF      LNK-OUT-HKNCOMBI    NOT =   ZERO
       *        対象保険組合せ情報編集
                PERFORM 200210-HKNCOMBI-HEN-SEC
            END-IF
-           IF      WRK-ERR-CODE    NOT =   ZERO
-      ******** MOVE    WRK-ERR-CODE        TO  WRK-ERRCD
-               MOVE    "80"                TO  WRK-ERRCD
-               MOVE    WRK-ERR-MSG         TO  WRK-ERRMSG
-           ELSE
-               IF     (WRK-OUT-HKNCOMBI    =   ZERO
-                                           OR  SPACE )
-               AND    (CNT-SRYCNT          >   ZERO )
-                   MOVE    "K2"                TO  WRK-KEICD
+      *!!!
+      *    中途データエラー
+           IF      LNK-ERR1-CODE   NOT =   SPACE
+               IF      CNT-BYOCNT          =   ZERO
+                   MOVE    LNK-ERR1-CODE       TO  WRK-ERRCD
+                   MOVE    "80"                TO  WRK-ERRCD
+                   MOVE    LNK-ERR1-MSG        TO  WRK-ERRMSG
+               ELSE
+                   MOVE    LNK-ERR1-CODE       TO  WRK-ERRCD-1
+                   MOVE    "80"                TO  WRK-ERRCD-1
+                   MOVE    LNK-ERR1-MSG        TO  WRK-ERRMSG-1
                END-IF
-               IF     (CNT-SRYCNT          >   ZERO )  AND
-                      (WRK-OUT-CNT1        =   ZERO )
-                   MOVE    "20"                TO  WRK-ERRCD
+           END-IF
+           IF      LNK-ERR2-CODE   NOT =   SPACE
+               IF      CNT-SRYCNT          =   ZERO
+                   MOVE    LNK-ERR2-CODE       TO  WRK-ERRCD
+                   MOVE    "80"                TO  WRK-ERRCD
+                   MOVE    LNK-ERR2-MSG        TO  WRK-ERRMSG
+               ELSE
+                   MOVE    LNK-ERR2-CODE       TO  WRK-ERRCD-2
+                   MOVE    "80"                TO  WRK-ERRCD-2
+                   MOVE    LNK-ERR2-MSG        TO  WRK-ERRMSG-2
                END-IF
-               IF     (CNT-BYOCNT          >   ZERO )  AND
-                      (WRK-OUT-CNT2        =   ZERO )
-                   MOVE    "21"                TO  WRK-ERRCD
-               END-IF
+           END-IF
+           IF      WRK-ERRCD           =   SPACE
+      *        対象なし
                IF     (CNT-SRYCNT          =   ZERO )  AND
                       (CNT-BYOCNT          =   ZERO )
                    MOVE    "22"                TO  WRK-ERRCD
                END-IF
+      *        中途データ・病名
+               IF      (CNT-SRYCNT         >   ZERO )
+                 AND   (CNT-BYOCNT         >   ZERO )
+                   IF      (LNK-OUT-CNT1       >   ZERO)
+                       AND (LNK-OUT-CNT2       =   ZERO)
+      *                中途データ登録
+                       MOVE    "21"            TO  WRK-ERRCD
+                       STRING  "中途データ登録処理終了。"
+                               "病名の登録ができませんでした。"
+                                               INTO  WRK-ERRMSG
+                       END-STRING
+                   END-IF
+                   IF      (LNK-OUT-CNT1       =   ZERO)
+                       AND (LNK-OUT-CNT2       >   ZERO)
+      *                中途データ登録
+                       STRING  "病名登録処理終了。"
+                               "中途データが登録できませんでした。"
+                                               INTO  WRK-ERRMSG
+                       END-STRING
+                       MOVE    "20"            TO  WRK-ERRCD
+                   END-IF
+               END-IF
+               IF     (LNK-OUT-HKNCOMBI    =   ZERO
+                                           OR  SPACE )
+               AND    (LNK-OUT-CNT1        >   ZERO )
+                   ADD     1                   TO  IDK
+                   MOVE    "K2"                TO  WRK-KEICD(IDK)
+               END-IF
            END-IF
       *
-           IF      WRK-OUT-CNT1        =   ZERO
+      *    診療行為ありの時、入外区分判定
+           IF     (CNT-SRYCNT          >   ZERO )
+               PERFORM 200219-NYUGAIKBN-CHK-SEC
+           END-IF
+      *
+      *!!!!!!!!!!!!!!!!!!!!!
+      *    IF      WRK-ERR-CODE    NOT =   ZERO
+      ******** MOVE    WRK-ERR-CODE        TO  WRK-ERRCD
+      *        MOVE    "80"                TO  WRK-ERRCD
+      *        MOVE    WRK-ERR-MSG         TO  WRK-ERRMSG
+      *    ELSE
+      *        IF     (WRK-OUT-HKNCOMBI    =   ZERO
+      *                                    OR  SPACE )
+      *        AND    (CNT-SRYCNT          >   ZERO )
+      *            MOVE    "K2"                TO  WRK-KEICD
+      *        END-IF
+      *        IF     (CNT-SRYCNT          >   ZERO )  AND
+      *               (WRK-OUT-CNT1        =   ZERO )
+      *            MOVE    "20"                TO  WRK-ERRCD
+      *        END-IF
+      *        IF     (CNT-BYOCNT          >   ZERO )  AND
+      *               (WRK-OUT-CNT2        =   ZERO )
+      *            MOVE    "21"                TO  WRK-ERRCD
+      *        END-IF
+      *        IF     (CNT-SRYCNT          =   ZERO )  AND
+      *               (CNT-BYOCNT          =   ZERO )
+      *            MOVE    "22"                TO  WRK-ERRCD
+      *        END-IF
+      *    END-IF
+      *!!!!!!!!!!!!!!!!!!!!!
+      *
+           IF      LNK-OUT-CNT1        =   ZERO
       *        中途終了データ登録なしは、ＵＩＤのクリア
                MOVE    SPACE           TO  MDCRES-MEDICAL-UID
            END-IF
@@ -1307,7 +1479,7 @@
       *    診療科
            MOVE    WRK-SRYKA           TO  ORCSAPIHKN-SRYKA
       *    保険組合せ
-           MOVE    WRK-OUT-HKNCOMBI    TO  ORCSAPIHKN-IN-HKNCOMBI
+           MOVE    LNK-OUT-HKNCOMBI    TO  ORCSAPIHKN-IN-HKNCOMBI
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
@@ -1317,7 +1489,7 @@
                    UNTIL      (IDX     >   20  )
                          OR   (ORCSAPIHKN-THKNCOMBI (IDX)
                                            =   SPACE  )
-               IF      ORCSAPIHKN-THKNCOMBI (IDX)  =   WRK-OUT-HKNCOMBI
+               IF      ORCSAPIHKN-THKNCOMBI (IDX)  =   LNK-OUT-HKNCOMBI
                    PERFORM 2002101-HKNHEN-TBL-SEC
                    MOVE    20                  TO  IDX
                END-IF
@@ -1408,6 +1580,9 @@
                                                              (IDY2)
            END-PERFORM
       *
+      *    労災区分
+           MOVE    ORCSAPIHKN-RSI-HKNKBN (IDX) TO  WRK-RSI-HKNKBN
+           MOVE    ORCSAPIHKN-HKNNUM (IDX)     TO  WRK-HKNNUM
            .
        2002101-HKNHENSYU-EXT.
            EXIT.
@@ -1472,6 +1647,66 @@
            EXIT.
       *
       *****************************************************************
+      *    入外区分判定処理
+      *****************************************************************
+       200219-NYUGAIKBN-CHK-SEC        SECTION.
+      *
+      *    入院履歴検索
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+           MOVE    SPA-SYSYMD          TO  PTNYUINRRK-NYUINYMD
+           MOVE    SPA-SYSYMD          TO  PTNYUINRRK-TAIINYMD
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+                   MOVE    ZERO            TO  FLG-PTNYUINRRK
+               ELSE
+                   INITIALIZE                  PTNYUINRRK-REC
+                   MOVE    1               TO  FLG-PTNYUINRRK
+               END-IF
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1                   TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-PTNYUINRRK      =   ZERO
+      *        入院中
+               IF     (SPA-NYUGAIKBN       =   "2" )
+                 AND  (SPA-SYSYMD      NOT =   PTNYUINRRK-NYUINYMD)
+                 AND  (SPA-SYSYMD      NOT =   PTNYUINRRK-TAIINYMD)
+      *            外来は、自費・アフターケア以外を警告
+                   IF     (WRK-HKNNUM (1:2)    =   "98" )
+                    OR   ((WRK-HKNNUM          =   "971")  AND
+                          (WRK-RSI-HKNKBN      =   "3"  ))
+                       CONTINUE
+                   ELSE
+                       ADD     1                   TO  IDK
+                       MOVE    "K4"                TO  WRK-KEICD(IDK)
+                   END-IF
+               END-IF
+           ELSE
+      *        入院中以外
+               IF      SPA-NYUGAIKBN       =   "1"
+                   ADD     1                   TO  IDK
+                   MOVE    "K5"                TO  WRK-KEICD(IDK)
+               END-IF
+           END-IF
+           .
+       200219-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    中途終了データ削除処理
       *****************************************************************
        2003-WKSRYACT-DEL-SEC        SECTION.
@@ -1483,6 +1718,7 @@
            PERFORM 990-LOCK-IN-SEC
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "90"            TO  WRK-ERRCD
+               MOVE    SPACE           TO  WRK-KEICD-G
                GO      TO      2003-WKSRYACT-DEL-EXT
            END-IF
       *
@@ -1623,6 +1859,7 @@
                CONTINUE
            ELSE
                MOVE    "05"            TO  WRK-ERRCD
+               MOVE    SPACE           TO  WRK-KEICD-G
                GO      TO      2004-WKSRYACT-UPD-EXT
            END-IF
       *
@@ -1630,6 +1867,7 @@
            PERFORM 990-LOCK-IN-SEC
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "90"            TO  WRK-ERRCD
+               MOVE    SPACE           TO  WRK-KEICD-G
                GO      TO      2004-WKSRYACT-UPD-EXT
            END-IF
       *
@@ -1707,25 +1945,25 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "患者番号未設定"
+               MOVE    "患者番号が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "02"
-               MOVE    "診療科未設定"
+               MOVE    "診療科が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "03"
-               MOVE    "ドクター未設定"
+               MOVE    "ドクターが未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "04"
-               MOVE    "ＵＩＤ未設定"
+               MOVE    "ＵＩＤが未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "05"
                MOVE    "置換処理は、入院のみ可能です"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "該当患者番号なし"
+               MOVE    "患者番号に該当する患者が存在しません"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "診療日設定誤り"
+               MOVE    "診療日が暦日ではありません"
                                                TO  WRK-ERRMSG
            WHEN    "13"
                MOVE    "診療科が存在しません"
@@ -1734,14 +1972,50 @@
                MOVE    "ドクターが存在しません"
                                                TO  WRK-ERRMSG
            WHEN    "17"
-               MOVE    "病名開始日付が暦日エラーです。"
+      **       MOVE    "病名開始日付が暦日エラーです。"
+      **                                       TO  WRK-ERRMSG
+               IF      WRK-BYO-IDX             >   ZERO
+                   STRING  "病名開始日付が暦日エラーです。"
+                           "　（"
+                           WRK-BYO-IDX
+                           "列）"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+                   END-STRING
+               ELSE
+                   MOVE    "病名開始日付が暦日エラーです。"
                                                TO  WRK-ERRMSG
+               END-IF
            WHEN    "18"
-               MOVE    "病名転帰日付が暦日エラーです。"
+      **       MOVE    "病名転帰日付が暦日エラーです。"
+      **                                       TO  WRK-ERRMSG
+               IF      WRK-BYO-IDX             >   ZERO
+                   STRING  "病名転帰日付が暦日エラーです。"
+                           "　（"
+                           WRK-BYO-IDX
+                           "行目）"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+                   END-STRING
+               ELSE
+                   MOVE    "病名転帰日付が暦日エラーです。"
                                                TO  WRK-ERRMSG
+               END-IF
            WHEN    "19"
-               MOVE    "病名開始日付＞転帰日付です。"
+      **       MOVE    "病名開始日付＞転帰日付です。"
+      **                                       TO  WRK-ERRMSG
+               IF      WRK-BYO-IDX             >   ZERO
+                   STRING  "病名開始日付＞転帰日付です。"
+                           "　（"
+                           WRK-BYO-IDX
+                           "行目）"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+                   END-STRING
+               ELSE
+                   MOVE    "病名開始日付＞転帰日付です。"
                                                TO  WRK-ERRMSG
+               END-IF
            WHEN    "20"
                MOVE    "中途終了データの登録ができません"
                                                TO  WRK-ERRMSG
@@ -1781,11 +2055,23 @@
                                                TO  WRK-ERRMSG
       *警告
            WHEN    "K1"
-               MOVE    "診療日を設定しました"
+               MOVE    "診療日を設定しました。"
                                                TO  WRK-ERRMSG
            WHEN    "K2"
-               MOVE    "保険組合せをゼロで登録しました"
+               MOVE    "保険組合せをゼロで登録しました。"
                                                TO  WRK-ERRMSG
+           WHEN    "K4"
+               STRING  "入院期間中です。"
+                       "外来で展開できない保険組合せです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "K5"
+               STRING  "入院中ではありません。"
+                       "入院で展開できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
       *共通エラー
            WHEN    "89"
       *        ORCSCOMMON のエラー

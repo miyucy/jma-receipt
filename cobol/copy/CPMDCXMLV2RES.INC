@@ -28,11 +28,17 @@
             02  MDCRES-MODE                PIC S9(9)   BINARY.
             02  MDCRES-RECORDNAME          PIC X(128).
             02  MDCRES-MEDICALRES.
+      *       実施日
               03  MDCRES-INFORMATION-DATE  PIC X(10).
+      *       実施時間
               03  MDCRES-INFORMATION-TIME  PIC X(8).
+      *       返却コード
               03  MDCRES-API-RESULT        PIC X(2).
+      *       返却メッセージ
               03  MDCRES-API-RESULT-MSG    PIC X(100).
+      *
               03  MDCRES-RESKEY            PIC X(100).
+      *       診療日付
               03  MDCRES-PERFORM-DATE      PIC X(10).
               03  MDCRES-PERFORM-TIME      PIC X(8).
       *       UID
@@ -97,4 +103,30 @@
                       07  MDCRES-INSURANCE-START-DATE    PIC X(10).
       *               有効終了日
                       07  MDCRES-INSURANCE-END-DATE      PIC X(10).
+      *H26.8
+      *       中途データメッセージ
+              03  MDCRES-MEDICAL-MSG1-G.
+      *           エラーコード
+                  05  MDCRES-MEDI-RESULT        PIC X(2).
+      *           エラーメッセージ
+                  05  MDCRES-MEDI-RESULT-MSG    PIC X(100).
+      *           中途データワーニングメッセージ
+                  05  MDCRES-MEDI-WARNING-TBL   OCCURS  50.
+      *               ワーニングコード
+                      07  MDCRES-MED-IWARNING        PIC X(02).
+      *               ワーニングメッセージ
+                      07  MDCRES-MED-IWARNING-MSG    PIC X(100).
+      *       病名メッセージ
+              03  MDCRES-DIAGNOSIS-MSG-G.
+      *           エラーコード
+                  05  MDCRES-DIA-RESULT         PIC X(02).
+      *           エラーメッセージ
+                  05  MDCRES-DIA-RESULT-MSG     PIC X(100).
+      *           病名ワーニングメッセージ
+                  05  MDCRES-DIA-WARNING-TBL    OCCURS  50.
+      *               ワーニングコード
+                      07  MDCRES-DIA-WARNING        PIC X(02).
+      *               ワーニングメッセージ
+                      07  MDCRES-DIA-WARNING-MSG    PIC X(100).
+      *!!!
       *
