@@ -4751,6 +4751,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    収納更新チェック
            PERFORM 3104-SYUNOU-CHECK-SEC
       *
+      *    入院料包括診療チェック処理
+           PERFORM 30091-HKTCD-CHK-SEC
+      *
            IF      SPA-GMN-MAX         =   ZERO
                MOVE    6                   TO  SPA-GMN-CUR
            ELSE
