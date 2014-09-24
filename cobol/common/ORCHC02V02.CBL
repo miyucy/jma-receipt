@@ -4137,14 +4137,16 @@
                IF     (WRK-SRYSYUKBN       =   "211"
                                            OR  "221"
                                            OR  "231"
-                                           OR  "291" )
+                                           OR  "291"
+                                           OR  "294" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
       *        院外処方
                IF     (WRK-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
-                                           OR  "292" )
+                                           OR  "292"
+                                           OR  "295" )
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
@@ -4160,14 +4162,16 @@
                IF     (WRK-SRYSYUKBN       =   "211"
                                            OR  "221"
                                            OR  "231"
-                                           OR  "291" )
+                                           OR  "291"
+                                           OR  "294" )
                    MOVE    1               TO  FLG-OK2
                END-IF
       *        院外処方
                IF     (WRK-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
-                                           OR  "292" )
+                                           OR  "292"
+                                           OR  "295" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
            END-IF
