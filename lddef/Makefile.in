@@ -45,7 +45,8 @@ LDFILE = \
 	orca33.ld \
 	orca34.ld \
 	orca36.ld \
-	api01rv2.ld
+	api01rv2.ld \
+	orca901.ld
 
 BDFILE = \
 	orcabt.bd

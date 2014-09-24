@@ -70,6 +70,7 @@
       *  04.06.02    NACL-伊藤    11/05/19  感染症参加送信
       *  04.06.00    NACL-多々納  12/03/26  平成２４年４月改正対応
       *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
+      *  04.08.00    NACL-伊藤    14/09/24  プログラム更新を別LDへ移動
       *****************************************************************
       *
       *
@@ -277,9 +278,9 @@
            COPY    "M01.INC".
            COPY    "M01N.INC".
            COPY    "M02.INC". 
+           COPY    "M03.INC". 
            COPY    "M95.INC".
            COPY    "M96.INC".
-           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
@@ -478,7 +479,7 @@
            MOVE    SPACE               TO  WRK-MOTOPG
            IF      SPA-MOTOPG          =   "M01"  OR  "M01N"
                                        OR  "M95"  OR  "MVER"
-                                       OR  "KT01" OR  "M97"
+                                       OR  "KT01"
                                        OR  "M98"
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
            END-IF
@@ -499,8 +500,6 @@
                                        OR  "KT01"
                                        OR  "MLOG"
                                        OR  "M98"
-      *H25.9
-                                       OR  "M97"
                                        OR  "MDAS"
                MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
@@ -1335,7 +1334,7 @@
                    IF    ( SPA-SUPERVISOR          =   "T" )
                    AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
                        AND     SYS-1010-GSRAUTH(3:1)    =  "1"
-                       MOVE    "M97"           TO  SPA-SAKIPG
+                       MOVE    "M03"           TO  SPA-SAKIPG
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
@@ -1371,8 +1370,6 @@
                IF      SPA-SAKIPG      NOT =  SPACE
                    EVALUATE    SPA-SAKIPG
                        WHEN    "M01"
-      *----(01.02.16)--ADD-START---
-                       WHEN    "M97"
                            CONTINUE
                        WHEN    OTHER
                            INITIALIZE                  LINKAREA

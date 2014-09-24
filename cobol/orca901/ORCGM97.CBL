@@ -68,7 +68,7 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *    スパ領域
-           COPY    "M00COMMON-SPA".
+           COPY    "M901COMMON-SPA".
       *
       *    画面用ＳＰＡ
        01  SPA-M97.
@@ -200,25 +200,9 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "M00.INC".
-           COPY    "M01.INC".
-           COPY    "M01N.INC".
-           COPY    "M02.INC".
-           COPY    "M95.INC".
-           COPY    "M96.INC".
            COPY    "M97.INC".
-           COPY    "MERR.INC".
-           COPY    "MID1.INC".
-           COPY    "MVER.INC".
-           COPY    "M98.INC".
-           COPY    "MUID.INC".
-           COPY    "M99.INC".
-           COPY    "MID2.INC".
-           COPY    "MDAS.INC".
-           COPY    "MLOG.INC".
-           COPY    "MINF.INC".
-           COPY    "MPRT.INC".
-      *
+           COPY    "MMERR.INC".
+           COPY    "MMID1.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -231,7 +215,7 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
+           MOVE    SPA-WORK        TO  SPA-M901KYOUTU
            MOVE    SPA-FREE        TO  SPA-M97
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -253,7 +237,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-M00KYOUTU   TO  SPA-WORK
+           MOVE    SPA-M901KYOUTU  TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-M97         TO  SPA-FREE
       *
@@ -270,7 +254,7 @@
            INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
-           IF      SPA-MOTOPG      =   "MERR"
+           IF      SPA-MOTOPG      =   "MMERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -363,7 +347,7 @@
            PERFORM 820-JOBKANRI-READ2-SEC
       *
       *    IF      SKBN-RUN   =   "RUN"
-      *        MOVE    "0301"          TO  SPA-MIDCD
+      *        MOVE    "0301"          TO  SPA-MMIDCD
       *        PERFORM 520-MIDSET-SEC
       *    ELSE
                PERFORM 830-GAMENN-SET6-SEC
@@ -385,15 +369,15 @@
       *
       *    確認画面ＯＫ処理
            EVALUATE    SPA-MOTOPG
-               WHEN    "MID1"
+               WHEN    "MMID1"
                    PERFORM 320-MID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
       *
-           MOVE    SPACE           TO  SPA-MID1-FLG
-           MOVE    SPACE           TO  SPA-MIDCD
+           MOVE    SPACE           TO  SPA-MMID1-FLG
+           MOVE    SPACE           TO  SPA-MMIDCD
       *
            .
        300-SCREEN-EXT.
@@ -437,20 +421,20 @@
       *****************************************************************
        320-MID1-SET-SEC            SECTION.
       *
-           EVALUATE    SPA-MIDCD
+           EVALUATE    SPA-MMIDCD
                WHEN    "0200"
-                   IF      SPA-MID1-FLG    =   "OK"
+                   IF      SPA-MMID1-FLG   =   "OK"
       *            確認処理
                        PERFORM 420-SENDALL-SEC
                    END-IF
                WHEN    "0201"
-                   IF      SPA-MID1-FLG    =   "OK"
+                   IF      SPA-MMID1-FLG   =   "OK"
       *            確認処理
                        PERFORM 410-KAKUNIN-SEC
                        GO  TO  320-MID1-SET-EXT
                    END-IF
                WHEN    "0202"
-                   IF      SPA-MID1-FLG    =   "OK"
+                   IF      SPA-MMID1-FLG   =   "OK"
                        PERFORM 820-JOBKANRI-READ3-SEC
                        IF      MST-RUN         =   "RUN"
                            MOVE    "0501"          TO  SPA-ERRCD
@@ -461,23 +445,23 @@
                    END-IF
                WHEN    "0204"
                WHEN    "0206"
-                   IF      SPA-MID1-FLG    =   "OK"
+                   IF      SPA-MMID1-FLG   =   "OK"
       *                削除処理
                        PERFORM 820-JOBKANRI-DEL-SEC
                        PERFORM 400-JYOKYO-SET-SEC
                    END-IF
                WHEN    "0205"
-                   IF      SPA-MID1-FLG    =   "OK"
+                   IF      SPA-MMID1-FLG   =   "OK"
       *            チェック処理
                        PERFORM 400-CHECK-SEC
                    END-IF
                WHEN    "0301"
-                   IF      SPA-MID1-FLG    =   "OK"
+                   IF      SPA-MMID1-FLG   =   "OK"
       *                戻る処理
                        PERFORM 830-GAMENN-SET6-SEC
                    END-IF
       ***      WHEN    "0401"
-      ***          IF      SPA-MID1-FLG    =   "OK"
+      ***          IF      SPA-MMID1-FLG   =   "OK"
       *            更新処理
       ***              PERFORM 420-RESTART-SEC
       ***          END-IF
@@ -485,8 +469,8 @@
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
-           MOVE    SPACE           TO  SPA-MID1-FLG
-           MOVE    SPACE           TO  SPA-MIDCD
+           MOVE    SPACE           TO  SPA-MMID1-FLG
+           MOVE    SPACE           TO  SPA-MMIDCD
            .
       *
        320-MID1-SET-EXT.
@@ -507,7 +491,7 @@
                MOVE    "0203"          TO  SPA-ERRCD
                PERFORM 510-ERRSET-SEC
            ELSE
-               MOVE    "0205"          TO  SPA-MIDCD
+               MOVE    "0205"          TO  SPA-MMIDCD
                PERFORM 520-MIDSET-SEC
            END-IF
            .
@@ -724,7 +708,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *           MOVE    "プログラム更新は異常終了しました。"
       *                                   TO  SPA-GMN-MSG
       *           MOVE    "red"           TO  SPA-GMN-MSG-STYLE
-      ***         MOVE    "0401"          TO  SPA-MIDCD
+      ***         MOVE    "0401"          TO  SPA-MMIDCD
       ***         PERFORM 520-MIDSET-SEC
       ***    END-IF
       ***  END-IF
@@ -786,9 +770,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 820-JOBKANRI-READ2-SEC
       *
            IF      SKBN-RUN        =   "RUN"
-               MOVE    "0206"          TO  SPA-MIDCD
+               MOVE    "0206"          TO  SPA-MMIDCD
            ELSE
-               MOVE    "0204"          TO  SPA-MIDCD
+               MOVE    "0204"          TO  SPA-MMIDCD
            END-IF
            PERFORM 520-MIDSET-SEC
            .
@@ -801,7 +785,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        410-SENDKAKUNIN-SEC         SECTION.
       *
-           MOVE    "0200"          TO  SPA-MIDCD
+           MOVE    "0200"          TO  SPA-MMIDCD
            PERFORM 520-MIDSET-SEC
            .
       *
@@ -824,7 +808,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 410-KAKUNIN-SEC
            ELSE
                MOVE    SLDUSER-MAX     TO  CNT-TERMID
-               MOVE    "0201"          TO  SPA-MIDCD
+               MOVE    "0201"          TO  SPA-MMIDCD
                PERFORM 520-MIDSET-SEC
            END-IF
       *
@@ -852,7 +836,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "0501"          TO  SPA-ERRCD
                    PERFORM 510-ERRSET-SEC
                ELSE
-                   MOVE    "0202"          TO  SPA-MIDCD
+                   MOVE    "0202"          TO  SPA-MMIDCD
                    PERFORM 520-MIDSET-SEC
                END-IF
            END-IF
@@ -1000,7 +984,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-MIDCD       NOT =   SPACE
+           IF      SPA-MMIDCD      NOT =   SPACE
                PERFORM 520-MIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
@@ -1113,9 +1097,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO            TO  M97-DURATION
       *----(03.04.01)--ADD-END-----
       *
-           MOVE    SPACE           TO  MERR
-           MOVE    SPA-ERRCD       TO  MERR-ERRCODE
-           MOVE    SPA-ERRMSG      TO  MERR-ERRMSG
+           MOVE    SPACE           TO  MMERR
+           MOVE    SPA-ERRCD       TO  MMERR-ERRCODE
+           MOVE    SPA-ERRMSG      TO  MMERR-ERRMSG
       *
            PERFORM 830-GAMENN-SET4-SEC
            .
@@ -1128,7 +1112,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        520-MIDSET-SEC              SECTION.
       *
-           EVALUATE    SPA-MIDCD
+           EVALUATE    SPA-MMIDCD
                WHEN    "0200"
                MOVE
               "プログラム更新処理の一斉通知を行います。よろしいですか？"
@@ -1161,12 +1145,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       ***      MOVE "再起動しますので端末を切断します。よろしいですか？"
       ***                                  TO  WRK-MIDMSG
                WHEN    OTHER
-                   MOVE    SPA-MIDCD       TO  WRK-MIDMSG
+                   MOVE    SPA-MMIDCD      TO  WRK-MIDMSG
            END-EVALUATE
       *
-           MOVE    SPACE               TO  MID1
-           MOVE    SPA-MIDCD           TO  MID1-ID1CODE
-           MOVE    WRK-MIDMSG          TO  MID1-ID1MSG
+           MOVE    SPACE               TO  MMID1
+           MOVE    SPA-MMIDCD          TO  MMID1-ID1CODE
+           MOVE    WRK-MIDMSG          TO  MMID1-ID1MSG
       *
            PERFORM 830-GAMENN-SET5-SEC
       *
@@ -1342,9 +1326,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "B01"           TO  MCP-WIDGET
            MOVE    "M97"           TO  SPA-MOTOPG
-           MOVE    "MERR"          TO  SPA-SAKIPG
+           MOVE    "MMERR"         TO  SPA-SAKIPG
            MOVE    "NEW"           TO  MCP-PUTTYPE
-           MOVE    "MERR"          TO  MCP-WINDOW
+           MOVE    "MMERR"         TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1360,9 +1344,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "B12"           TO  MCP-WIDGET
            MOVE    "M97"           TO  SPA-MOTOPG
-           MOVE    "MID1"          TO  SPA-SAKIPG
+           MOVE    "MMID1"         TO  SPA-SAKIPG
            MOVE    "NEW"           TO  MCP-PUTTYPE
-           MOVE    "MID1"          TO  MCP-WINDOW
+           MOVE    "MMID1"         TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1376,9 +1360,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        830-GAMENN-SET6-SEC         SECTION.
       *
-           MOVE    "M00"           TO  SPA-SAKIPG
+           MOVE    "M03"           TO  SPA-SAKIPG
            MOVE    "M97"           TO  SPA-MOTOPG
-           MOVE    "M00"           TO  MCP-WINDOW
+           MOVE    "M03"           TO  MCP-WINDOW
            MOVE    "JOIN"          TO  MCP-PUTTYPE
       *
            PERFORM 900-PUT-WINDOW

@@ -487,6 +487,9 @@ RECORD_files = \
 	hsacctmodv2.rec \
 	hsptinfmodv2.rec \
     hsptevalmodv2.rec \
+	M03.rec \
+	MMERR.rec \
+	MMID1.rec \
 
 DEF_files = \
 

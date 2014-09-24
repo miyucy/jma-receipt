@@ -1,0 +1,10 @@
+M03 {
+  fixed1 {
+    G03 {
+      state int;
+    };
+    SELNUM {
+      numdata number(3);
+    };
+  };
+};

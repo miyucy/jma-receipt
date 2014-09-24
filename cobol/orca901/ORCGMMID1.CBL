@@ -16,20 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGMVER.
+       PROGRAM-ID.                 ORCGMMID1.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : メニュー
-      *  コンポーネント名  : 情報（ＭＶＥＲ）
+      *  サブシステム名    : 業務選択
+      *  コンポーネント名  : 確認画面１（ＭＩＤ１）
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  作成日付    作業者        記述
+      *  14/09/24    NACL−伊藤     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
-      *  01.02.02    MCC-多々納   02/02/22  MID1の追加
-      *  01.02.03    NACL-伊藤    04/02/05  M97の追加
-      *  01.02.04    NACL-伊藤    06/02/22  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -45,6 +42,7 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+           COPY    "M901COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -54,42 +52,26 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    ＤＢ検索
-           COPY    "MCPDATA.INC".
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-           COPY    MCPAREA.
+           COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "M00.INC".
-           COPY    "M01.INC".
-           COPY    "M01N.INC".
-           COPY    "M02.INC". 
-           COPY    "M03.INC". 
-           COPY    "M95.INC".
-           COPY    "M96.INC".
-           COPY    "MERR.INC".
-           COPY    "MID1.INC".
-           COPY    "MVER.INC".
-           COPY    "M98.INC".
-           COPY    "MUID.INC".
-           COPY    "M99.INC".
-           COPY    "MID2.INC".
-           COPY    "MDAS.INC".
-           COPY    "MLOG.INC".
-           COPY    "MINF.INC".
-           COPY    "MPRT.INC".
+           COPY    "M97.INC".
+           COPY    "MMERR.INC".
+           COPY    "MMID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -103,15 +85,17 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-M901KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+           MOVE    SPA-M901KYOUTU  TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -125,18 +109,38 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE           TO  SPA-MMID1-FLG
+                   PERFORM 210-BACK
+      *        登録
+               WHEN    "CLICKED"       ALSO    "B12"
+                   MOVE    "OK"            TO  SPA-MMID1-FLG
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "MVER"              TO  SPA-MOTOPG
-     *
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "MMID1"             TO  SPA-MOTOPG
+      *
+      *****MOVE    "BACK"              TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
-
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END

@@ -16,20 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGMVER.
+       PROGRAM-ID.                 ORCGMMERR.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : メニュー
-      *  コンポーネント名  : 情報（ＭＶＥＲ）
+      *  サブシステム名    : 病名
+      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  作成日付    作業者        記述
+      *  14/09/24    NACL−伊藤     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
-      *  01.02.02    MCC-多々納   02/02/22  MID1の追加
-      *  01.02.03    NACL-伊藤    04/02/05  M97の追加
-      *  01.02.04    NACL-伊藤    06/02/22  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -72,24 +69,9 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "M00.INC".
-           COPY    "M01.INC".
-           COPY    "M01N.INC".
-           COPY    "M02.INC". 
-           COPY    "M03.INC". 
-           COPY    "M95.INC".
-           COPY    "M96.INC".
-           COPY    "MERR.INC".
-           COPY    "MID1.INC".
-           COPY    "MVER.INC".
-           COPY    "M98.INC".
-           COPY    "MUID.INC".
-           COPY    "M99.INC".
-           COPY    "MID2.INC".
-           COPY    "MDAS.INC".
-           COPY    "MLOG.INC".
-           COPY    "MINF.INC".
-           COPY    "MPRT.INC".
+           COPY    "M97.INC".
+           COPY    "MMERR.INC".
+           COPY    "MMID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -131,12 +113,12 @@
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "MVER"              TO  SPA-MOTOPG
+           MOVE    "MMERR"             TO  SPA-MOTOPG
      *
+     ***** MOVE    "BACK"              TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
-
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
@@ -150,7 +132,7 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE    "PUTWINDOW"         TO  MCP-FUNC
+           MOVE    "PUTWINDOW"         TO  MCP-FUNC.
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC

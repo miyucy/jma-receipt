@@ -166,9 +166,9 @@
            COPY    "M01.INC".
            COPY    "M01N.INC".
            COPY    "M02.INC". 
+           COPY    "M03.INC". 
            COPY    "M95.INC".
            COPY    "M96.INC".
-           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".

@@ -16,28 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCGM02.
+       PROGRAM-ID.             ORCGM03.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 業務選択
-      *  コンポーネント名  : 業務選択（Ｍ０２）
+      *  コンポーネント名  : 業務選択（Ｍ０３）
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  14/09/12    NACL−伊藤    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    MCC-藤原     01/09/04  105 保険者マスタの追加      
-      *  01.01.01    MCC-多々納   01/09/20  JOINの修正      
-      *  01.01.02    MCC-藤原     01/09/27  MVERの追加  
-      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
-      *  01.02.02    MCC-多々納   02/02/22  MID1の追加
-      *  01.02.03    MCC-太田     02/06/20  106 人名辞書マスタの追加
-      *  01.02.04    NACL-森脇    02/07/30  107 薬剤情報マスタの追加
-      *  01.02.05    NACL-伊藤    04/02/05  M97の追加
-      *  01.02.06    NACL-森脇    04/08/04  108 住所マスタの追加
-      *  01.02.07    NACL-多々納  05/01/21  109 ヘルプマスタ追加
-      *  01.02.08    NACL-伊藤    06/02/22  MONFUNC 対応
-      *  04.05.00    NACL-多々納  10/02/05  プラグイン画面追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,8 +46,8 @@
       *   
            COPY    "ENUM-VALUE".
       *
-       01  SPA-M02.
-           03  SPA-M02-AREA.
+       01  SPA-M03.
+           03  SPA-M03-AREA.
                05  SPA-CTLSEQ          PIC 9(02).
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(02).
@@ -140,8 +128,7 @@
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *****COPY    "MCPAREA.INC".
-           COPY    MCPAREA.
+           COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
            COPY    "LINKAREA".
@@ -180,7 +167,7 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-M00KYOUTU
            MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
-           MOVE    SPA-FREE        TO  SPA-M02
+           MOVE    SPA-FREE        TO  SPA-M03
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -204,7 +191,7 @@
            MOVE    SYS-1010-REC    TO  SPA-SYS-1010-REC
            MOVE    SPA-M00KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-M02         TO  SPA-FREE
+           MOVE    SPA-M03         TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -233,7 +220,7 @@
       *
       *****MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    SPACE               TO  MCP-PUTTYPE.
-           MOVE    "M02    "           TO  MCP-WINDOW.
+           MOVE    "M03    "           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -247,12 +234,11 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           INITIALIZE              SPA-M02-AREA
+           INITIALIZE              SPA-M03-AREA
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                PERFORM 320-SYS-1010-SPASET-SEC
-               PERFORM 321-SYS-2009-SPASET-SEC
            END-IF
       *
            PERFORM 310-SPASET-SEC
@@ -286,31 +272,6 @@
                    MOVE    MCPDATA-REC       TO  SYS-1001-REC
       *            病院種別
                    MOVE    SYS-1001-HOSPSBT  TO  SPA-HOSPSBT
-      *
-      *            データ作成フラグ
-                   IF     (SYS-1001-DATACREATEFLG  =   SPACE )  OR
-                          (SYS-1001-DATACREATEFLG  NOT NUMERIC)
-                       MOVE    ZERO          TO  SPA-DATACREATEFLG
-                   ELSE
-                       MOVE    SYS-1001-DATACREATEFLG
-                                             TO  SPA-DATACREATEFLG
-                   END-IF
-      *            データ提出方法区分
-                   IF     (SYS-1001-DATATEISYUTUKBN  =   SPACE )  OR
-                          (SYS-1001-DATATEISYUTUKBN  NOT NUMERIC)
-                       MOVE    ZERO          TO  SPA-DATATEISYUTUKBN
-                   ELSE
-                       MOVE    SYS-1001-DATATEISYUTUKBN
-                                             TO  SPA-DATATEISYUTUKBN
-                   END-IF
-      *            データ感染症区分
-                   IF     (SYS-1001-DATAINFECTIONKBN  =   SPACE )  OR
-                          (SYS-1001-DATAINFECTIONKBN  NOT NUMERIC)
-                       MOVE    ZERO          TO  SPA-DATAINFECTIONKBN
-                   ELSE
-                       MOVE    SYS-1001-DATAINFECTIONKBN
-                                             TO  SPA-DATAINFECTIONKBN
-                   END-IF
                ELSE
                    INITIALIZE              SYS-1001-REC
                END-IF
@@ -328,7 +289,6 @@
       *    スパ初期編集処理
       *****************************************************************
        320-SYS-1010-SPASET-SEC              SECTION.
-      *
       *
       *    職員情報
            MOVE    SPACE               TO  SYS-1010-REC
@@ -389,57 +349,8 @@
                                            SYS-1010-GSRAUTH(47:1)
       *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *
-      *TEST ヘルプを追加するまで
-      ***     MOVE    "1"                  TO SYS-1010-GSRAUTH(69:1)
-      *TEST ヘルプを追加するまで
-      *****MOVE    SYS-1010-REC         TO  SPA-WORK   
            .
        320-SYS-1010-SPASET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    スパ初期編集処理
-      *****************************************************************
-       321-SYS-2009-SPASET-SEC           SECTION.
-      *
-      *    主科設定情報
-           INITIALIZE                      SPA-SYUKA-INFO
-           MOVE    SPACE               TO  SYS-2009-REC
-           INITIALIZE                  SYS-2009-REC
-           MOVE    "2009"              TO  SYS-2009-KANRICD
-           MOVE    "*"                 TO  SYS-2009-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-2009-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-2009-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
-           MOVE    SYS-2009-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-2009-REC
-                   MOVE    SYS-2009-SYUKA-KBN  TO  SPA-SYUKA-KBN
-                   MOVE    SYS-2009-SYUKA-NYUIN
-                                               TO  SPA-SYUKA-NYUIN
-                   MOVE    SYS-2009-SYUKA-GAIRAI
-                                               TO  SPA-SYUKA-GAIRAI
-                   MOVE    SYS-2009-SYUKA-MODE TO  SPA-SYUKA-MODE
-                   MOVE    SYS-2009-SYUKA-SELECT
-                                               TO  SPA-SYUKA-SELECT
-               ELSE
-                   MOVE    "0"                 TO  SPA-SYUKA-KBN
-               END-IF
-           ELSE
-               MOVE    "0"                 TO  SPA-SYUKA-KBN
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       321-SYS-2009-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -478,7 +389,7 @@
       *****************************************************************
        4101-KEY-ENT-SEC            SECTION.
       *
-           MOVE    M02-SELNUM       TO  SPA-GMN-GSEL
+           MOVE    M03-SELNUM       TO  SPA-GMN-GSEL
       *
            IF      SPA-GMN-GSEL    NOT =   ZERO
                IF      SYS-1010-GSRAUTH(1:1)     =  "0"
@@ -513,96 +424,68 @@
       *
           MOVE    SPACE               TO  SPA-SAKIPG
           EVALUATE    WRK-GNO
-      * システム管理マスタ
-               WHEN    "101"
+      * プログラム更新
+               WHEN    "03"
                    IF      SYS-1010-GSRAUTH(61:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
-                       MOVE    "W01"           TO  SPA-SAKIPG
+                       MOVE    "M97"           TO  SPA-SAKIPG
                    END-IF
-      * 点数マスタ
-               WHEN    "102"
-                   IF      SYS-1010-GSRAUTH(62:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "Z01"           TO  SPA-SAKIPG
-                   END-IF
-      * チェックマスタ
-               WHEN    "103"
-                   IF      SYS-1010-GSRAUTH(63:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "X01"           TO  SPA-SAKIPG
-                   END-IF
-      * 保険番号マスタ
-               WHEN    "104"
-                   IF      SYS-1010-GSRAUTH(64:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "V01"           TO  SPA-SAKIPG
-                   END-IF
-      * 保険者マスタ
-               WHEN    "105"
-                   IF      SYS-1010-GSRAUTH(65:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "N01"           TO  SPA-SAKIPG
-                   END-IF
-      * 人名辞書マスタ
-               WHEN    "106"
-                   IF      SYS-1010-GSRAUTH(66:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "N11"           TO  SPA-SAKIPG
-                   END-IF
-      *----(01.02.04)----START-----------------
-      * 薬剤情報マスタ
-               WHEN    "107"
-                   IF      SYS-1010-GSRAUTH(67:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "N21"           TO  SPA-SAKIPG
-                   END-IF
-      *----(01.02.04)----END-------------------
-      *----(01.02.06)----START-----------------
-      * 住所マスタ
-               WHEN    "108"
-                   IF      SYS-1010-GSRAUTH(68:1)    =  "0" OR SPACE
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "N31"           TO  SPA-SAKIPG
-                   END-IF
-      *----(01.02.06)----END-------------------
-      * ヘルプマスタ
-               WHEN    "109"
-                   IF      SYS-1010-GSRAUTH(69:1)    =  "0" OR SPACE
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "N41"           TO  SPA-SAKIPG
-                   END-IF
-      *        プラグイン処理
-               WHEN    "201"
-                   IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-                   AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-                   AND   ( SPA-SUPERVISOR          =   "T" )
-                       MOVE    "M80"           TO  SPA-SAKIPG
-                   ELSE
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   END-IF 
-              WHEN    OTHER
-                   MOVE    "0001"          TO  SPA-ERRCD
-           END-EVALUATE.
+      * マスタ更新
+      *         WHEN    "92"
+      *             IF      SYS-1010-GSRAUTH(52:1)    =  "0"
+      *                 MOVE    "0002"          TO  SPA-ERRCD
+      *             ELSE
+      **                管理者権限フラグ
+      *                 IF      SYS-1010-KANRIAUTHFLG  =   "T"
+      *                     MOVE    "M96"           TO  SPA-SAKIPG
+      *                 ELSE
+      *                     MOVE    "0002"          TO  SPA-ERRCD
+      *                 END-IF
+      *             END-IF
+      * プラグイン処理
+      *         WHEN    "201"
+      *             IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+      *             AND   ( SYS-1010-GSRAUTH(3:1)   =   "1" )
+      *             AND   ( SPA-SUPERVISOR          =   "T" )
+      *                 MOVE    "M80"           TO  SPA-SAKIPG
+      *             ELSE
+      *                 MOVE    "0002"          TO  SPA-ERRCD
+      *             END-IF 
+      *        WHEN    OTHER
+      *             MOVE    "0001"          TO  SPA-ERRCD
+      *     END-EVALUATE.
       *
       *
            IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                  LINKAREA
-      *
+               MOVE    SPACE               TO  SPA-MOTOPG2
+               MOVE    "M03"               TO  SPA-MOTOPG
                IF      SPA-SAKIPG      NOT =  SPACE
-                   MOVE    SPACE               TO  SPA-MOTOPG2
-                   MOVE    "M02"               TO  SPA-MOTOPG
+                   INITIALIZE                  LINKAREA
                    MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
-                   MOVE   "CHANGE"             TO  MCP-PUTTYPE
+      *             IF  SPA-SAKIPG   =   "M96"
+      **
+      *                 MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+      *                 MOVE    SPA-AREA            TO  SPA-COMMON
+      **
+      *                 MOVE     "LINK"             TO  MCP-STATUS
+      *                 MOVE     SPACE              TO  MCP-EVENT
+      *                 CALL     "ORCGM96"          USING
+      *                                             MCPAREA
+      *                                             SPAAREA
+      *                                             LINKAREA
+      *                                             SCRAREA
+      *                 MOVE    SPA-FREE            TO  SPA-M01
+      **
+      *                 MOVE    SPA-COMMON          TO  SPA-AREA
+      *                 MOVE    SPA-WORK            TO  SPA-M00KYOUTU
+      **
+      *                 MOVE    "M96"               TO  SPA-MOTOPG2
+      *                 MOVE     "NEW"              TO  MCP-PUTTYPE
+      *             ELSE
+                       MOVE     "CHANGE"           TO  MCP-PUTTYPE
+      *             END-IF
                    MOVE   SPA-SAKIPG           TO  MCP-WINDOW
       *
                    PERFORM 900-PUT-WINDOW
@@ -620,11 +503,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M01"               TO  SPA-SAKIPG
-           MOVE    "M02"               TO  SPA-MOTOPG
+           MOVE    "M00"               TO  SPA-SAKIPG
+           MOVE    "M03"               TO  SPA-MOTOPG
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE    "M01"               TO  MCP-WINDOW
+           MOVE    "M00"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -649,10 +532,10 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "M02    "           TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "M03    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -663,12 +546,12 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           INITIALIZE                  M02
+           INITIALIZE                  M03
       *      *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
            ELSE
-               MOVE    SPA-GMN-GSEL        TO  M02-SELNUM
+               MOVE    SPA-GMN-GSEL        TO  M03-SELNUM
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -687,60 +570,28 @@
       *----(01.02.06)----START-----------------
       *    PERFORM VARYING IDX FROM    1   BY  1
       *            UNTIL   IDX >       10
-      *        MOVE    WIDGET-INSENSITIVE      TO  M02-STATE-O (IDX)
+      *        MOVE    WIDGET-INSENSITIVE      TO  M03-STATE-O (IDX)
       *    END-PERFORM           
       *----(01.02.06)----END-------------------
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G101-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G102-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G103-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G104-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G105-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G106-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G107-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G108-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G109-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G201-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M03-G03-STATE
+      *     MOVE    WIDGET-INSENSITIVE      TO  M03-G201-STATE
+      *     MOVE    WIDGET-INSENSITIVE      TO  M03-G92-STATE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
            ELSE 
-               IF      SYS-1010-GSRAUTH(61:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G101-STATE
+               IF      SYS-1010-GSRAUTH(3:1)   =   "1"
+                   MOVE    WIDGET-NORMAL       TO  M03-G03-STATE
                END-IF
-               IF      SYS-1010-GSRAUTH(62:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G102-STATE
-               END-IF
-               IF      SYS-1010-GSRAUTH(63:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G103-STATE
-               END-IF
-               IF      SYS-1010-GSRAUTH(64:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G104-STATE
-               END-IF
-               IF      SYS-1010-GSRAUTH(65:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G105-STATE
-               END-IF
-               IF      SYS-1010-GSRAUTH(66:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G106-STATE
-               END-IF
-      *----(01.02.04)----START-----------------
-               IF      SYS-1010-GSRAUTH(67:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G107-STATE
-               END-IF
-      *----(01.02.04)----END-------------------
-      *----(01.02.06)----START-----------------
-               IF      SYS-1010-GSRAUTH(68:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G108-STATE
-               END-IF
-      *----(01.02.06)----END-------------------
-               IF      SYS-1010-GSRAUTH(69:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M02-G109-STATE
-               END-IF
-      *        プラグイン処理
-               IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-               AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-               AND   ( SPA-SUPERVISOR          =   "T" )
-                   MOVE    WIDGET-NORMAL      TO  M02-G201-STATE
-               END-IF
+      *         IF      SYS-1010-GSRAUTH(52:1)  =   "1"
+      *             MOVE    WIDGET-NORMAL       TO  M03-G92-STATE
+      *         END-IF
+      **        プラグイン処理
+      *         IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+      *         AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
+      *         AND   ( SPA-SUPERVISOR          =   "T" )
+      *             MOVE    WIDGET-NORMAL      TO  M03-G201-STATE
+      *         END-IF
            END-IF
            .
        51O-GSRAUTH-EXT.
@@ -779,7 +630,7 @@
            MOVE    SPA-ERRMSG           TO  MERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
-           MOVE    "M02"                TO  SPA-MOTOPG
+           MOVE    "M03"                TO  SPA-MOTOPG
            MOVE    "MERR"               TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE
@@ -788,7 +639,6 @@
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                    TO  FLG-END              
-      *
       *
            .
        510-ERRSET-EXT.
