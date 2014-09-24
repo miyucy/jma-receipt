@@ -4362,15 +4362,15 @@
            IF   LNK-S02-KOUREI-NYUIN-KBN      =   "1"
                 CONTINUE
            ELSE
-            IF   COMB-HKNNUM      NOT =  SPACE
-            AND  COMB-KOH1HKNNUM      =  SPACE
-            AND  COMB-KOH2HKNNUM      =  SPACE
-            AND  COMB-KOH3HKNNUM      =  SPACE
-            AND  COMB-KOH4HKNNUM      =  SPACE
+            IF   (COMB-HKNNUM      NOT =  SPACE         )
+            AND  (COMB-KOH1HKNNUM      =  SPACE OR "970")
+            AND  (COMB-KOH2HKNNUM      =  SPACE         )
+            AND  (COMB-KOH3HKNNUM      =  SPACE         )
+            AND  (COMB-KOH4HKNNUM      =  SPACE         )
               IF  (COMB-SYU-HKNKOHSBTKBN   =  "8" OR "9"  )
               OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
                                 OR "068" OR "069" OR "040")
-      ********OR  (COMB-KOH1HKNNUM  =  "970"              )
+              OR  (COMB-KOH1HKNNUM         =  "970"       )
                 CONTINUE
               ELSE
                 INITIALIZE                       PTKOHINF-REC
@@ -4863,7 +4863,8 @@
                  IF  (COMB-SYU-HKNKOHSBTKBN =  "8" OR "9"    )
                  OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
                                    OR "068" OR "069" OR "040")
-      ***********OR  (COMB-KOH1HKNNUM  =  "970"              )
+                 OR  ((COMB-KOH1HKNNUM      =  "970"        ) AND
+                      (FLG-DAISAN-GENBUTU   =   ZERO        ))
                    CONTINUE
                  ELSE
                    INITIALIZE                        PTKOHINF-REC
@@ -23192,6 +23193,12 @@
                 END-IF
                 MOVE    "1"                  TO   WK-NYUSKJRYYKBN
            END-IF.
+           IF  (COMB-KOHHKNNUM(KOH-IDX)  =  "970")
+           AND (LNK-SYU-PTFTNRATE        =  ZERO )
+                IF   WK-1001-DAISANKBN   =  "2"
+                  MOVE  "2"                  TO   HKN-RECEFTNDSPKBN
+                END-IF
+           END-IF.
       *
            IF  (KOH-IDX                  =    1           )
            AND (COMB-KOHHKNNUM(KOH-IDX)  =  "010" OR "021")
@@ -25282,6 +25289,14 @@
                  END-IF
       *
                END-IF
+           END-IF.
+      *
+           IF   (WK-NYUKFTNRATE           =   ZERO )
+           AND  (COMB-KOHHKNNUM(KOH-IDX)  =   "970")
+           AND  (HKN-RECEFTNDSPKBN        =   "2"  )
+             IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
+               MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
+             END-IF
            END-IF.
       *
            IF  (LNK-SYU-SYUHKNNUM     NOT =   SPACE)
@@ -29169,6 +29184,10 @@
            AND  FLG-KOUGAKUCYO-GEN70   NOT =     1
            AND  COMB-SYU-HKNKOHSBTKBN  NOT =    "9"
       *
+             IF  (COMB-KOH1HKNNUM       = "970")
+             AND (WK-1001-DAISANKBN     = "2"  )
+                 CONTINUE
+             ELSE
                  COMPUTE   LNK-SYU-SYUCOMPFTN  =
                            LNK-SYU-SYUCOMPFTN  +  5
                  COMPUTE   WK-FTN      =
@@ -29177,6 +29196,7 @@
                            WK-FTN   *  10
                  COMPUTE   LNK-SYU-SYUCOMPTOTAL =
                            LNK-SYU-SYUCOMPFTN
+             END-IF
       *
            END-IF.
       *

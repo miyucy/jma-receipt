@@ -17662,12 +17662,14 @@
               MOVE    1     TO   FLG-GENMEN-NASI
               IF     SYU-KOH-HKNNUM(1) = "970"
                 ADD   SYU-SYUCOMPFTN     TO   WRK-GENMEN-NASI-KIN
+                ADD   SYU-KOH1SKJ-FTN-RECE
+                                         TO   WRK-GENMEN-NASI-SKJ
               ELSE
                 ADD   SYU-HKNTEKMONEY    TO   WRK-GENMEN-NASI-KIN
                 ADD   SYU-KOH-FTN        TO   WRK-GENMEN-NASI-KIN
+                ADD   SYU-SKYMONEY-SKJ   TO   WRK-GENMEN-NASI-SKJ
+                ADD   SYU-SKYMONEY-LIFE  TO   WRK-GENMEN-NASI-SKJ
               END-IF
-              ADD     SYU-SKYMONEY-SKJ   TO   WRK-GENMEN-NASI-SKJ
-              ADD     SYU-SKYMONEY-LIFE  TO   WRK-GENMEN-NASI-SKJ
            END-IF
       *
            IF   (FLG-SAIGAI-TAISYO  =  1    )
@@ -17869,6 +17871,11 @@
       *    （第三者行為）
       *****************************************************************
        2104K-RECE62-FTN-HENSYU-XXX-SEC               SECTION.
+      *
+           MOVE  1                  TO   FLG-GENMEN-NASI
+           ADD   SYU-SYUCOMPFTN     TO   WRK-GENMEN-NASI-KIN
+           ADD   SYU-KOH1SKJ-FTN-RECE
+                                    TO   WRK-GENMEN-NASI-SKJ
       *
       *  （１）（１００％−負担割合）計算分は、医保分の保険者負担に集計
       *  （２）残りは、自賠責の保険者負担に集計

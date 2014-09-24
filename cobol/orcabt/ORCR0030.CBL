@@ -15463,6 +15463,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        21054-RECE02-HENSYU3-XXX-SEC               SECTION.
       *
+           MOVE  1                  TO   FLG-GENMEN-NASI
+           ADD   SYU-SYUCOMPFTN     TO   WRK-GENMEN-NASI-KIN
+      *
       *  ° £±°À° £±£∞£∞°Û°›…È√¥≥‰πÁ°À ¨§œ°¢∞Â › ¨§Œ ›∏±º‘…È√¥§ÀΩ∏∑◊
       *  ° £≤°À…È√¥≥‰πÁ ¨§œ°¢º´«Â¿’§Œ ›∏±º‘…È√¥§ÀΩ∏∑◊
       *
