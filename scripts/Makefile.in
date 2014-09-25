@@ -118,11 +118,7 @@ shell_sources = \
 	daily/execoprg.sh.in \
 
 ruby_sources = \
-	daily/print-data.rb.in \
-	daily/print-data_prv.rb.in \
 	daily/print_parent2.rb.in \
-	daily/print_parent.rb.in \
-	daily/orcred2ps.rb.in \
 	daily/print_parent_prv.rb.in \
 	daily/apslib.rb.in \
 	daily/monlib.rb.in \
@@ -137,7 +133,6 @@ ruby_sources = \
 	monthly/lib/orcadas/utils.rb.in \
 	allways/program_upgrade_patchmd5.rb.in \
 	allways/program_upgrade_verify.rb.in \
-	daily/monpeps.rb.in \
 	daily/das-upload2.rb.in \
 	allways/mksqldata.rb.in \
 	tools/orcred2textview.rb.in \
