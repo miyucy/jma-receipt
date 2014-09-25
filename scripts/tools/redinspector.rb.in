@@ -1,9 +1,7 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "euc-jisx0213"
 
 require "zlib"
-require "iconv"
 
 def read_red(path)
   Zlib::GzipReader.open(path){|gz|
@@ -17,14 +15,14 @@ def check_red(file)
   redin = read_red(file)
   redin.gsub!(/&#10;/,"\n")
   redin.gsub!(/&#([0-9]+);/){[$1.to_i.to_s(16)].pack("H*")}
-  Iconv.open("utf8","euc-jp") {|i|
-    i.iconv(redin)
+  redin.split(/\n/).each.with_index(1){|s,i|
+    begin
+      s.encode('utf-8','euc-jp')
+    rescue Encoding::InvalidByteSequenceError
+      STDERR.puts "---- ERROR #{file} line:#{i}"
+      exit 1
+    end
   }
-rescue Iconv::Failure => ex
-  a =  ex.success.split("\n")
-  b = a[-1].size
-  STDERR.puts "---- ERROR #{file} line:#{a.size} pos:#{b}"
-  exit 1
 end
 
 ARGV.each{|file|

@@ -1,8 +1,7 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "euc-jisx0213"
+Encoding.default_external = "utf-8"
 
-$KCODE="UTF8"
 
 require 'nkf'
 require 'zlib'
