@@ -1,6 +1,5 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "euc-jisx0213"
 
 # claim client script
 #   args  0:[server ip or hostname] 

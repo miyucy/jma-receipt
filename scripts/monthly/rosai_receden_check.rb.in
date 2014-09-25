@@ -1,6 +1,5 @@
 #!%RUBY%
 # coding : utf-8
-Encoding.default_external = "utf-8" if defined?(Encoding) && Encoding.respond_to?("default_external")
 
 begin
   require "monthly/rosai_receden"
@@ -10,10 +9,6 @@ begin
   require "nkf"
   require "json"
 
-  if RUBY_VERSION < '1.9.0' then
-    require "jcode"
-  end
-
 rescue LoadError => err
     STDERR.puts "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     open(@errlog,"w"){|f|
@@ -22,9 +17,6 @@ rescue LoadError => err
     raise "#{err.message}\n#{err.backtrace.join("\n")}"
 end
 
-if RUBY_VERSION < '1.9.0' then
-   $KCODE = "UTF-8"
-end
 
 class DBMAIN
 

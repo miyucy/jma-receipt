@@ -1,6 +1,5 @@
 #!%RUBY%
 # coding : euc-jp
-Encoding.default_external = "euc-jisx0213"
 
 # XMLfile j-code convert scirpt
 #     args 0:in_file

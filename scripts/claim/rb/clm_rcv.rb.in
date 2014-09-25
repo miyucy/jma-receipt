@@ -1,6 +1,5 @@
 #!%RUBY%
 # coding : euc-jp
-Encoding.default_external = "euc-jisx0213"
 
 # claim test Rcv server script
 #   args  0:[port]

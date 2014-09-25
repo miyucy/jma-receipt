@@ -1,6 +1,5 @@
 #!%RUBY%
 # coding : euc-jp
-Encoding.default_external = "euc-jisx0213"
 require "jcode"
 
 # È¾³Ñ±Ñ¿ô»úµ­¹æ -> Á´³ÑÊÑ´¹(EUC) script for ORCA

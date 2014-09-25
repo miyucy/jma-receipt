@@ -1,7 +1,5 @@
 #!%RUBY%
 # coding : euc-jp
-Encoding.default_external = "euc-jisx0213"
-
 
 
 # Claim既存形式→新形式変換コンバータ
