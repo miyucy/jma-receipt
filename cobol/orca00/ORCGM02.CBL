@@ -38,6 +38,7 @@
       *  01.02.07    NACL-多々納  05/01/21  109 ヘルプマスタ追加
       *  01.02.08    NACL-伊藤    06/02/22  MONFUNC 対応
       *  04.05.00    NACL-多々納  10/02/05  プラグイン画面追加
+      *  04.08.00    NACL-伊藤    14/09/26  プラグインを別メニューへ移動
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -580,15 +581,6 @@
                    ELSE
                        MOVE    "N41"           TO  SPA-SAKIPG
                    END-IF
-      *        プラグイン処理
-               WHEN    "201"
-                   IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-                   AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-                   AND   ( SPA-SUPERVISOR          =   "T" )
-                       MOVE    "M80"           TO  SPA-SAKIPG
-                   ELSE
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   END-IF 
               WHEN    OTHER
                    MOVE    "0001"          TO  SPA-ERRCD
            END-EVALUATE.
@@ -699,7 +691,6 @@
            MOVE    WIDGET-INSENSITIVE      TO  M02-G107-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M02-G108-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M02-G109-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M02-G201-STATE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -734,12 +725,6 @@
       *----(01.02.06)----END-------------------
                IF      SYS-1010-GSRAUTH(69:1)   =  "1"
                    MOVE    WIDGET-NORMAL      TO  M02-G109-STATE
-               END-IF
-      *        プラグイン処理
-               IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-               AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-               AND   ( SPA-SUPERVISOR          =   "T" )
-                   MOVE    WIDGET-NORMAL      TO  M02-G201-STATE
                END-IF
            END-IF
            .

@@ -18,4 +18,4 @@
         02  MMID1.
           03  MMID1-FIXED1.
             04  MMID1-ID1CODE  PIC X(11).
-            04  MMID1-ID1MSG   PIC X(71).
+            04  MMID1-ID1MSG   PIC X(80).

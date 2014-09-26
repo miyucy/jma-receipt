@@ -23,10 +23,9 @@
       ************************************************************
       *
        01  SPA-M901KYOUTU.
-           03  SPA-MMID1-AREA.
       *警告メッセージ
-               05  SPA-MMIDCD              PIC  X(04).
+           03  SPA-MMID1CD                 PIC  X(04).
+           03  SPA-MMID1MSG                PIC  X(100).
       *警告画面より
-               05  SPA-MMID1-AREA.
-                   07  SPA-MMID1-FLG       PIC  X(02).
+           03  SPA-MMID1-FLG               PIC  X(02).
       *

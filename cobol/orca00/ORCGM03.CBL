@@ -425,6 +425,7 @@
           MOVE    SPACE               TO  SPA-SAKIPG
           EVALUATE    WRK-GNO
       * プログラム更新
+               WHEN    "003"
                WHEN    "03"
                    IF      SYS-1010-GSRAUTH(61:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -444,18 +445,17 @@
       *                 END-IF
       *             END-IF
       * プラグイン処理
-      *         WHEN    "201"
-      *             IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-      *             AND   ( SYS-1010-GSRAUTH(3:1)   =   "1" )
-      *             AND   ( SPA-SUPERVISOR          =   "T" )
-      *                 MOVE    "M80"           TO  SPA-SAKIPG
-      *             ELSE
-      *                 MOVE    "0002"          TO  SPA-ERRCD
-      *             END-IF 
-      *        WHEN    OTHER
-      *             MOVE    "0001"          TO  SPA-ERRCD
-      *     END-EVALUATE.
-      *
+               WHEN    "201"
+                   IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+                   AND   ( SYS-1010-GSRAUTH(3:1)   =   "1" )
+                   AND   ( SPA-SUPERVISOR          =   "T" )
+                       MOVE    "M80"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   END-IF 
+              WHEN    OTHER
+                   MOVE    "0001"          TO  SPA-ERRCD
+           END-EVALUATE
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPACE               TO  SPA-MOTOPG2
@@ -574,7 +574,7 @@
       *    END-PERFORM           
       *----(01.02.06)----END-------------------
            MOVE    WIDGET-INSENSITIVE      TO  M03-G03-STATE
-      *     MOVE    WIDGET-INSENSITIVE      TO  M03-G201-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M03-G201-STATE
       *     MOVE    WIDGET-INSENSITIVE      TO  M03-G92-STATE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
@@ -586,12 +586,12 @@
       *         IF      SYS-1010-GSRAUTH(52:1)  =   "1"
       *             MOVE    WIDGET-NORMAL       TO  M03-G92-STATE
       *         END-IF
-      **        プラグイン処理
-      *         IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-      *         AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-      *         AND   ( SPA-SUPERVISOR          =   "T" )
-      *             MOVE    WIDGET-NORMAL      TO  M03-G201-STATE
-      *         END-IF
+      *        プラグイン処理
+               IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+               AND   ( SYS-1010-GSRAUTH(3:1)   =   "1" )
+               AND   ( SPA-SUPERVISOR          =   "T" )
+                   MOVE    WIDGET-NORMAL      TO  M03-G201-STATE
+               END-IF
            END-IF
            .
        51O-GSRAUTH-EXT.

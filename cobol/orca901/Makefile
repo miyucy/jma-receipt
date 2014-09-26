@@ -1,4 +1,5 @@
 SRCS = ORCGM97.CBL \
+       ORCGM80.CBL \
        ORCGMMERR.CBL \
        ORCGMMID1.CBL \
 

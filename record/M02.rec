@@ -27,9 +27,6 @@ M02 {
     G109 {
       state int;
     };
-    G201 {
-      state int;
-    };
     SELNUM {
       numdata number(3);
     };

@@ -12,7 +12,6 @@ SUBDIRS = \
 	orca04 \
 	orca06 \
 	orca07 \
-	orca08 \
 	orca11 \
 	orca12 \
 	orca13 \

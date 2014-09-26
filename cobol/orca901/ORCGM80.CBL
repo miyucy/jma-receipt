@@ -68,8 +68,7 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
-      *
-           COPY    "M80COMMON-SPA".
+           COPY    "M901COMMON-SPA".
       *
       *    画面スパ領域
        01  SPA-M80.
@@ -239,8 +238,9 @@
       *
        01  SCRAREA.
            COPY    "M80.INC".
-           COPY    "M80ERR.INC".
-           COPY    "M80ID1.INC".
+           COPY    "M97.INC".
+           COPY    "MMERR.INC".
+           COPY    "MMID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -258,7 +258,7 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-M80KYOUTU
+           MOVE    SPA-WORK        TO  SPA-M901KYOUTU
            MOVE    SPA-FREE        TO  SPA-M80
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -281,7 +281,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-M80KYOUTU   TO  SPA-WORK
+           MOVE    SPA-M901KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-M80         TO  SPA-FREE
       *
@@ -295,7 +295,7 @@
        100-INIT-SEC                SECTION.
       *
       *    エラー画面より
-           IF      SPA-MOTOPG          =   "M80ERR"
+           IF      SPA-MOTOPG          =   "MMERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -332,9 +332,9 @@
       *
       *    内部画面より
            EVALUATE    SPA-MOTOPG
-               WHEN    "M80ID1"
+               WHEN    "MMID1"
       *            確認画面より
-                   PERFORM 3002-M80ID1-SET-SEC
+                   PERFORM 3002-MMID1-SET-SEC
                WHEN    OTHER
                    PERFORM 3001-SPA-SET-SEC
            END-EVALUATE
@@ -349,7 +349,7 @@
        3001-SPA-SET-SEC            SECTION.
       *
            INITIALIZE                  SPA-M80
-           INITIALIZE                  SPA-M80KYOUTU
+           INITIALIZE                  SPA-M901KYOUTU
       *    一覧更新
            PERFORM 404-LIST-INIT-SEC
       *
@@ -362,12 +362,12 @@
       *****************************************************************
       *    確認画面（ＸＤＩＤ１）ＯＫ処理
       *****************************************************************
-       3002-M80ID1-SET-SEC         SECTION.
+       3002-MMID1-SET-SEC          SECTION.
       *
-           EVALUATE    SPA-M80ID1CD
+           EVALUATE    SPA-MMID1CD
       *        インストール
                WHEN    "0101"
-                   IF      SPA-M80ID1-FLG      =   "OK"
+                   IF      SPA-MMID1-FLG       =   "OK"
                        MOVE    "install+enable"   TO  WRK-COMMAND
                        PERFORM 4010-SHELL-SYORI-SEC
                    ELSE
@@ -375,7 +375,7 @@
                    END-IF
       *        アンインストール
                WHEN    "0102"
-                   IF      SPA-M80ID1-FLG      =   "OK"
+                   IF      SPA-MMID1-FLG       =   "OK"
                        MOVE    "uninstall" TO  WRK-COMMAND
                        PERFORM 4010-SHELL-SYORI-SEC
                    ELSE
@@ -383,7 +383,7 @@
                    END-IF
       *        アップグレード
                WHEN    "0105"
-                   IF      SPA-M80ID1-FLG      =   "OK"
+                   IF      SPA-MMID1-FLG       =   "OK"
                        IF      SPA-NAI-LINK        =   2
                            MOVE    "upgrade2"      TO  WRK-COMMAND
                        ELSE
@@ -395,13 +395,13 @@
                    END-IF
            END-EVALUATE
       *
-           MOVE    SPACE           TO  SPA-M80ID1CD
+           MOVE    SPACE           TO  SPA-MMID1CD
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
            END-IF
       *
            .
-       3002-M80ID1-SET-EXT.
+       3002-MMID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -473,7 +473,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M02"               TO  SPA-SAKIPG
+           MOVE    "M03"               TO  SPA-SAKIPG
            MOVE    "M80"               TO  SPA-MOTOPG
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
@@ -1205,9 +1205,9 @@
            IF      SPA-ERRCD           =   SPACE
                EVALUATE    SPA-NAI-LINK
                    WHEN    1
-                       MOVE    "0101"              TO  SPA-M80ID1CD
+                       MOVE    "0101"              TO  SPA-MMID1CD
                    WHEN    2
-                       MOVE    "0102"              TO  SPA-M80ID1CD
+                       MOVE    "0102"              TO  SPA-MMID1CD
                END-EVALUATE
            END-IF
            .
@@ -1218,7 +1218,7 @@
       *****************************************************************
        410-UPGRADE-SEC             SECTION.
       *
-           MOVE    "0105"              TO  SPA-M80ID1CD
+           MOVE    "0105"              TO  SPA-MMID1CD
            .
        410-UPGRADE-EXT.
            EXIT.
@@ -1268,8 +1268,8 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-M80ID1CD    NOT =   SPACE
-               PERFORM 520-M80IDSET-SEC
+           IF      SPA-MMID1CD     NOT =   SPACE
+               PERFORM 520-MMIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
@@ -1465,16 +1465,16 @@
                    MOVE    SPA-ERRCD       TO  SPA-ERRMSG
            END-EVALUATE
       *
-           MOVE    SPACE           TO  M80ERR
-           MOVE    SPA-ERRCD       TO  M80ERR-ERRCODE
-           MOVE    SPA-ERRMSG      TO  M80ERR-ERRMSG
+           MOVE    SPACE           TO  MMERR
+           MOVE    SPA-ERRCD       TO  MMERR-ERRCODE
+           MOVE    SPA-ERRMSG      TO  MMERR-ERRMSG
            MOVE    "B01"           TO  MCP-WIDGET
       *
            MOVE    "M80"           TO  SPA-MOTOPG
-           MOVE    "M80ERR"        TO  SPA-SAKIPG
+           MOVE    "MMERR"         TO  SPA-SAKIPG
       *
            MOVE    "NEW"           TO  MCP-PUTTYPE
-           MOVE    "M80ERR"        TO  MCP-WINDOW
+           MOVE    "MMERR"         TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1487,49 +1487,49 @@
       *****************************************************************
       *    確認メッセージ表示理
       *****************************************************************
-       520-M80IDSET-SEC            SECTION.
+       520-MMIDSET-SEC             SECTION.
       *
-           MOVE    SPACE           TO  M80ID1
+           MOVE    SPACE           TO  MMID1
       *
-           EVALUATE    SPA-M80ID1CD
+           EVALUATE    SPA-MMID1CD
                WHEN    "0101"
                    STRING  "選択したパッケージを組み込みます。"
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
-                                       INTO    M80ID1-ID1MSG
+                                       INTO    MMID1-ID1MSG
                    END-STRING
                WHEN    "0102"
                    STRING  "選択したパッケージを削除します。"
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
-                                       INTO    M80ID1-ID1MSG
+                                       INTO    MMID1-ID1MSG
                    END-STRING
                WHEN    "0105"
                    STRING  "パッケージを更新します。"
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
-                                       INTO    M80ID1-ID1MSG
+                                       INTO    MMID1-ID1MSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    SPA-M80ID1CD    TO  M80ID1-ID1MSG
+                   MOVE    SPA-MMID1CD     TO  MMID1-ID1MSG
            END-EVALUATE
       *
-           MOVE    SPA-M80ID1CD    TO  M80ID1-ID1CODE
-           MOVE    SPACE           TO  SPA-M80ID1-FLG
+           MOVE    SPA-MMID1CD     TO  MMID1-ID1CODE
+           MOVE    SPACE           TO  SPA-MMID1-FLG
       *
            MOVE    "B12"           TO  MCP-WIDGET
       *
            MOVE    "M80"           TO  SPA-MOTOPG
-           MOVE    "M80ID1"        TO  SPA-SAKIPG
+           MOVE    "MMID1"         TO  SPA-SAKIPG
       *
            MOVE    "NEW"           TO  MCP-PUTTYPE
-           MOVE    "M80ID1"        TO  MCP-WINDOW
+           MOVE    "MMID1"         TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
            MOVE    1               TO  FLG-END
       *
            .
-       520-M80IDSET-EXT.
+       520-MMIDSET-EXT.
            EXIT.
       *
       *****************************************************************

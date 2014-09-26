@@ -41,7 +41,5 @@
                 04  M02-G108-STATE   PIC S9(9)   BINARY.
               03  M02-G109.
                 04  M02-G109-STATE   PIC S9(9)   BINARY.
-              03  M02-G201.
-                04  M02-G201-STATE   PIC S9(9)   BINARY.
               03  M02-SELNUM.
                 04  M02-VALUE   PIC S9(3).

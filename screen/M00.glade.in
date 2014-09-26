@@ -359,7 +359,7 @@
     <widget>
       <class>GtkButton</class>
       <name>G03</name>
-      <x>264</x>
+      <x>536</x>
       <y>24</y>
       <width>224</width>
       <height>28</height>

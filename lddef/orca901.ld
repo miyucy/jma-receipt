@@ -4,6 +4,7 @@ arraysize	20;
 textsize	400;
 
 bind	""		"OpenCOBOL"	"ORCGM97";
+bind	"M80"		"OpenCOBOL"	"ORCGM80";
 bind	"M97"		"OpenCOBOL"	"ORCGM97";
 bind	"MMERR"		"OpenCOBOL"	"ORCGMMERR";
 bind	"MMID1"		"OpenCOBOL"	"ORCGMMID1";
@@ -14,6 +15,7 @@ multiplex_group	orca901;
 data	{
 	spa	orcaspa;
 	window	{
+                M80;
                 M97;
                 MMERR;
                 MMID1;
