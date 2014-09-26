@@ -43,6 +43,7 @@
       *                                     保険者番号欄へ記載する
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.02    NACL-藤原    14/09/26  システム管理対象月設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,6 +169,7 @@
            03  WRK-PARA-TEISYUTUSAKI
                                    PIC X(01).
            03  WRK-PARA-PRTKBN     PIC X(01).
+           03  WRK-PARA-SYSYM      PIC X(06).
       *
       *    一時領域
        01  WRK-AREA.
@@ -361,7 +363,7 @@
        LINKAGE                     SECTION.
       *
        01  COMMAND-PARAM.
-           02  FILLER                  PIC X(1000).
+           02  FILLER                  PIC X(400).
       *
       ******************************************************************
       *
@@ -419,12 +421,14 @@
                                        WRK-PARA-TEISYUTUBIKBN
                                        WRK-PARA-TEISYUTUSAKI
                                        WRK-PARA-PRTKBN
+                                       WRK-PARA-SYSYM
            END-UNSTRING
       *
            DISPLAY "SKYYM        =" WRK-PARA-SKYYM
            DISPLAY "TEISYUTUBIKBN=" WRK-PARA-TEISYUTUBIKBN
            DISPLAY "TEISYUTUSAKI =" WRK-PARA-TEISYUTUSAKI
            DISPLAY "PRTKBN       =" WRK-PARA-PRTKBN
+           DISPLAY "SYSYM        =" WRK-PARA-SYSYM
       *
            MOVE    WRK-PARA-HOSPNUM
                                    TO  SPA-HOSPNUM
@@ -542,6 +546,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *    システム管理情報取得 
       *****************************************************************
        1001-SYSKANRI-HENSYU-SEC      SECTION.
+      *
+           IF      WRK-PARA-SYSYM NOT =   SPACE
+               MOVE     WRK-PARA-SYSYM    TO  WRK-SYMD (1:6)
+               DISPLAY "SYSYM --> SYMD=" WRK-SYMD
+           END-IF
       *
            INITIALIZE                  SYS-1001-REC
            MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
@@ -709,13 +718,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
                IF      FLG-END         =   1
       *            ＣＳＶ（データレコード）編集処理
-                   PERFORM 2001-CSV-DATA-7111-RECORD-HENSYU-SEC
+                   PERFORM 2001-CSV-DATA-7111-RECORD-SEC
       *
       *            ＣＳＶ（コントロールレコード）編集処理
-                   PERFORM 2001-CSV-CONTROL-RECORD-HENSYU-SEC
+                   PERFORM 2001-CSV-CONTROL-RECORD-SEC
       *
       *            ＣＳＶ（エンドレコード）編集処理
-                   PERFORM 2001-CSV-END-RECORD-HENSYU-SEC
+                   PERFORM 2001-CSV-END-RECORD-SEC
       *
       *            集計票、送付書編集処理
                    PERFORM 2005-HKNJANUM-PRINT-SEC
@@ -907,7 +916,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                                SUM-MONEY    (2)
       *
       *        ＣＳＶ（データレコード）編集処理
-               PERFORM 2001-CSV-DATA-7121-RECORD-HENSYU-SEC
+               PERFORM 2001-CSV-DATA-7121-RECORD-SEC
       *
       *        更新用ファイル出力処理
                PERFORM 230-UPD-FILE-HENSYU-SEC
@@ -1594,7 +1603,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *****************************************************************
       *    ＣＳＶ（コントロールレコード）編集処理
       *****************************************************************
-       2001-CSV-CONTROL-RECORD-HENSYU-SEC                SECTION.
+       2001-CSV-CONTROL-RECORD-SEC                SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
@@ -1665,13 +1674,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    1               TO  WRK-SCSVINFO-SEQ-NO
            PERFORM 500-CSVINFO-SEC
            .
-       2001-CSV-CONTROL-RECORD-HENSYU-EXT.
+       2001-CSV-CONTROL-RECORD-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＣＳＶ（データレコード・請求書情報）編集処理
       *****************************************************************
-       2001-CSV-DATA-7111-RECORD-HENSYU-SEC SECTION.
+       2001-CSV-DATA-7111-RECORD-SEC SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
@@ -1742,13 +1751,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            ADD     1               TO  SUM-RECORD-CNT
            .
-       2001-CSV-DATA-7111-RECORD-HENSYU-EXT.
+       2001-CSV-DATA-7111-RECORD-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＣＳＶ（データレコード・申請受取請求書情報）編集処理
       *****************************************************************
-       2001-CSV-DATA-7121-RECORD-HENSYU-SEC SECTION.
+       2001-CSV-DATA-7121-RECORD-SEC SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
@@ -1900,13 +1909,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            ADD     1               TO  SUM-RECORD-CNT
            .
-       2001-CSV-DATA-7121-RECORD-HENSYU-EXT.
+       2001-CSV-DATA-7121-RECORD-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＣＳＶ（エンドレコード）編集処理
       *****************************************************************
-       2001-CSV-END-RECORD-HENSYU-SEC                SECTION.
+       2001-CSV-END-RECORD-SEC                SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
@@ -1933,7 +1942,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    WRK-SEQ-NO      TO  WRK-SCSVINFO-SEQ-NO
            PERFORM 500-CSVINFO-SEC
            .
-       2001-CSV-END-RECORD-HENSYU-EXT.
+       2001-CSV-END-RECORD-EXT.
            EXIT.
       *
       *****************************************************************
