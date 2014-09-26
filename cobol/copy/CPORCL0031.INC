@@ -29,24 +29,6 @@
            03  LNK-KBN-CODE2           PIC X(01).
       *    APIバージョン（1:ver.2)
            03  LNK-KBN-V2              PIC X(01).
-      *    中途データ処理　返却
-           03  LNK-OUT01-AREA.
-      *        エラーコード
-               05  LNK-ERR1-CODE            PIC X(02).
-               05  LNK-ERR1-MSG             PIC X(100).
-               05  LNK-KEI1-TBL-G           OCCURS   50.
-      *        警告
-                   07  LNK-KEI1-CODE            PIC X(02).
-                   07  LNK-KEI1-MSG             PIC X(100).
-      *    病名処理　返却
-           03  LNK-OUT02-AREA.
-      *        エラーコード
-               05  LNK-ERR2-CODE            PIC X(02).
-               05  LNK-ERR2-MSG             PIC X(100).
-               05  LNK-KEI2-TBL-G           OCCURS   50.
-      *        警告
-                   07  LNK-KEI2-CODE            PIC X(02).
-                   07  LNK-KEI2-MSG             PIC X(100).
       *
       *    保険組合せ番号
            03  LNK-OUT-HKNCOMBI        PIC X(04).
@@ -54,5 +36,36 @@
            03  LNK-OUT-CNT1            PIC 9(04).
       *    病名登録件数
            03  LNK-OUT-CNT2            PIC 9(04).
+      *
+      *    中途データ処理　返却
+           03  LNK-OUT01-AREA.
+      *        エラーコード
+               05  LNK-ERR1-CODE            PIC X(02).
+               05  LNK-ERR1-MSG             PIC X(100).
+               05  LNK-MEDI-TBL-G           OCCURS   50.
+      *        警告
+                   07  LNK-MEDI-CODE            PIC X(02).
+                   07  LNK-MEDI-MSG             PIC X(100).
+                   07  LNK-MEDI-POSITION        PIC 9(02).
+                   07  LNK-MEDI-ITEM            PIC 9(02).
+                   07  LNK-MEDI-SRYCD           PIC X(09).
+      *    病名処理　返却
+           03  LNK-OUT02-AREA.
+      *        エラーコード
+               05  LNK-ERR2-CODE            PIC X(02).
+               05  LNK-ERR2-MSG             PIC X(100).
+               05  LNK-DIAG-TBL-G           OCCURS   50.
+      *            警告コード
+                   07  LNK-DIAG-WARNING         PIC X(02).
+      *            メッセージ
+                   07  LNK-DIAG-MSG             PIC X(100).
+      *            行番号
+                   07  LNK-DIAG-POSITION        PIC 9(02).
+      *            病名
+                   07  LNK-DIAG-NAME            PIC X(80).
+      *            病名コード
+                   07  LNK-DIAG-CODE            PIC X(50).
+      *            移行(廃止)
+                   07  LNK-DIAG-CHAINGE         PIC X(02).
       *
       *

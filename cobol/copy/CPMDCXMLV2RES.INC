@@ -116,17 +116,30 @@
                       07  MDCRES-MED-IWARNING        PIC X(02).
       *               ワーニングメッセージ
                       07  MDCRES-MED-IWARNING-MSG    PIC X(100).
-      *       病名メッセージ
+      *               ワーニング剤番
+                      07  MDCRES-MED-POSITION        PIC X(02).
+      *               ワーニング行番号
+                      07  MDCRES-MED-ITEM-POSITION   PIC X(02).
+      *               ワーニングコード
+                      07  MDCRES-MED-CODE            PIC X(09).
+      *      病名メッセージ
               03  MDCRES-DIAGNOSIS-MSG-G.
       *           エラーコード
-                  05  MDCRES-DIA-RESULT         PIC X(02).
+                  05  MDCRES-DIAG-RESULT         PIC X(02).
       *           エラーメッセージ
-                  05  MDCRES-DIA-RESULT-MSG     PIC X(100).
+                  05  MDCRES-DIAG-RESULT-MSG     PIC X(100).
       *           病名ワーニングメッセージ
-                  05  MDCRES-DIA-WARNING-TBL    OCCURS  50.
+                  05  MDCRES-DIAG-WARNING-TBL    OCCURS  50.
       *               ワーニングコード
-                      07  MDCRES-DIA-WARNING        PIC X(02).
+                      07  MDCRES-DIAG-WARNING        PIC X(02).
       *               ワーニングメッセージ
-                      07  MDCRES-DIA-WARNING-MSG    PIC X(100).
+                      07  MDCRES-DIAG-WARNING-MSG    PIC X(100).
+      *               行番号
+                      07  MDCRES-DIAG-ITEM-POSITION  PIC X(02).
+      *               病名
+                      07  MDCRES-DIAG-NAME           PIC X(80).
+      *               病名コード
+                      07  MDCRES-DIAG-CODE           PIC X(50).
+      *               移行(廃止)
+                      07  MDCRES-DIAG-CHAINGE        PIC X(02).
       *!!!
-      *

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  13/08/XX  病名補足コメント追加対応
+      *  04.07.00    NACL-多々納  14/10/XX  詳細メッセージ追加等対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -49,6 +50,7 @@
            03  FLG-PTINF               PIC 9(01).
            03  FLG-WKSRYACT            PIC 9(01).
            03  FLG-PTNYUINRRK          PIC 9(01).
+           03  FLG-HKNNUM              PIC 9(01).
       *
            03  FLG-SYORI               PIC 9(01).
            03  FLG-CHKWK               PIC 9(01).
@@ -254,6 +256,10 @@
       *    入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *
+      *    保険番号
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
       *
       *　　（ＣＬＡＩＭ接続）
       *    COPY    "CPSK9000.INC".
@@ -608,10 +614,10 @@
            END-PERFORM
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL      (IDK     >   50  )   OR
-                              (LNK-KEI1-CODE(IDK) =   SPACE)
+                              (LNK-MEDI-CODE(IDK) =   SPACE)
                           OR  (IDM1    >   50  )
-               MOVE    LNK-KEI1-CODE(IDK)  TO  WRK-ERRCD
-               MOVE    LNK-KEI1-MSG (IDK)  TO  WRK-ERRMSG
+               MOVE    LNK-MEDI-CODE(IDK)  TO  WRK-ERRCD
+               MOVE    LNK-MEDI-MSG (IDK)  TO  WRK-ERRMSG
                IF      WRK-ERRMSG          =   SPACE
       *        エラー・警告メッセージ
                    PERFORM 890-ERRCD-MSG-SEC
@@ -621,29 +627,54 @@
                                                                (IDM1)
                MOVE    WRK-ERRMSG          TO  MDCRES-MED-IWARNING-MSG
                                                                (IDM1)
+               IF      LNK-MEDI-POSITION (IDK) NOT =   ZERO
+                   MOVE    LNK-MEDI-POSITION (IDK)
+                                           TO  MDCRES-MED-POSITION
+                                                               (IDM1)
+               END-IF
+               IF      LNK-MEDI-ITEM  (IDK)    NOT =   ZERO
+                   MOVE    LNK-MEDI-ITEM (IDK)
+                                           TO  MDCRES-MED-ITEM-POSITION
+                                                               (IDM1)
+               END-IF
+               MOVE    LNK-MEDI-SRYCD (IDK)
+                                           TO  MDCRES-MED-CODE
+                                                               (IDM1)
            END-PERFORM
       *
       *    病名
            IF      WRK-ERRCD-2      NOT =   SPACE
-               MOVE    WRK-ERRCD-2         TO  MDCRES-DIA-RESULT
-               MOVE    WRK-ERRMSG-2        TO  MDCRES-DIA-RESULT-MSG
+               MOVE    WRK-ERRCD-2         TO  MDCRES-DIAG-RESULT
+               MOVE    WRK-ERRMSG-2        TO  MDCRES-DIAG-RESULT-MSG
            END-IF
            MOVE    ZERO                TO  IDM2
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL      (IDK     >   50  )   OR
-                              (LNK-KEI2-CODE(IDK) =   SPACE)
+                              (LNK-DIAG-WARNING(IDK) =   SPACE)
                           OR  (IDM2    >   50  )
-               MOVE    LNK-KEI2-CODE(IDK)  TO  WRK-ERRCD
-               MOVE    LNK-KEI2-MSG (IDK)  TO  WRK-ERRMSG
+               MOVE    LNK-DIAG-WARNING (IDK)  TO  WRK-ERRCD
+               MOVE    LNK-DIAG-MSG     (IDK)  TO  WRK-ERRMSG
                IF      WRK-ERRMSG          =   SPACE
       *        エラー・警告メッセージ
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
                ADD     1                   TO  IDM2
-               MOVE    WRK-ERRCD           TO  MDCRES-DIA-WARNING
+               MOVE    WRK-ERRCD           TO  MDCRES-DIAG-WARNING
                                                                (IDM2)
-               MOVE    WRK-ERRMSG          TO  MDCRES-DIA-WARNING-MSG
+               MOVE    WRK-ERRMSG          TO  MDCRES-DIAG-WARNING-MSG
                                                                (IDM2)
+               IF      LNK-DIAG-POSITION  (IDK)    NOT =   ZERO
+                   MOVE    LNK-DIAG-POSITION  (IDK)
+                                           TO  MDCRES-DIAG-ITEM-POSITION
+                                                               (IDM1)
+               END-IF
+               MOVE    LNK-DIAG-NAME (IDK)
+                                           TO  MDCRES-DIAG-NAME (IDM1)
+               MOVE    LNK-DIAG-CODE (IDK)
+                                           TO  MDCRES-DIAG-CODE (IDM1)
+               MOVE    LNK-DIAG-CHAINGE (IDK)
+                                           TO  MDCRES-DIAG-CHAINGE
+                                                                (IDM1)
            END-PERFORM
           .
        3001-WAINGMSG-HEN-EXT.
@@ -1131,6 +1162,12 @@
            PERFORM 2001-HKNNUM-SET-SEC
            PERFORM     VARYING   IDY   FROM    1   BY  1
                        UNTIL    (IDY           >   4)
+      *
+      *        名称なしの時、公費種類から名称設定
+               IF     (MDCREQ-INSURANCE-NAME (IDY)     =   SPACE )
+                  AND (MDCREQ-INSURANCE-CLASS(IDY) NOT =   SPACE )
+                   PERFORM 2002-KOHNUM-SET-SEC
+               END-IF
                MOVE    MDCREQ-INSURANCE-NAME (IDY)
                                        TO  LF04-HKNKOH-PROVIDER(1 IDY)
                MOVE    MDCREQ-PROVIDER-NUMBER (IDY)
@@ -1465,6 +1502,42 @@
       *
            .
        2001-HKNNUM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費種類名称変換処理
+      *****************************************************************
+       2002-KOHNUM-SET-SEC     SECTION.
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    MDCREQ-INSURANCE-CLASS(IDY)
+                                       TO  HKN-HKNNUM
+           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 950-HKNNUM-READ-SEC
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-HKNNUM          =   ZERO
+               MOVE    HKN-TANSEIDONAME    TO
+                                           MDCREQ-INSURANCE-NAME (IDY)
+           END-IF
+      *
+           .
+       2002-KOHNUM-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2250,6 +2323,24 @@
       *
            .
        940-WKSRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスタ読込
+      *****************************************************************
+       950-HKNNUM-READ-SEC          SECTION.
+      *
+           PERFORM  910-DBFETCH-SEC 
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+               MOVE    ZERO            TO  FLG-HKNNUM
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           .
+       950-HKNNUM-READ-EXT.
            EXIT.
       *
       *

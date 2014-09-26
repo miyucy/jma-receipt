@@ -3005,57 +3005,47 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      IDE1                >   50
                GO      TO      400-ERRHENSYU-EXT
            END-IF
-           MOVE    WRK-ERRCD           TO  LNK-KEI1-CODE (IDE1)
-           MOVE    SPACE               TO  WRK-MSG1
-           MOVE    IDX1                TO  WRK-HEN1
-           MOVE    IDX2                TO  WRK-HEN2
-      *
-           IF      WRK-ERRCD           =   "M6"
-               STRING  "　コード："
-                   LF04-SRYCD (IDX1)(1:3)
-                   "　（"
-                   WRK-HEN1
-                   "剤目）"        DELIMITED  BY  SIZE
-                                           INTO  WRK-MSG1
-               END-STRING
-           ELSE
-               STRING  "　コード："
-                   WRK-SRYCD
-                   "　（"
-                   WRK-HEN1
-                   "剤　"
-                   WRK-HEN2
-                   "行目）"        DELIMITED  BY  SIZE
-                                           INTO  WRK-MSG1
-               END-STRING
+           MOVE    WRK-ERRCD           TO  LNK-MEDI-CODE (IDE1)
+           MOVE    IDX1                TO  LNK-MEDI-POSITION (IDE1)
+           IF      WRK-ERRCD       NOT =   "M6"
+               MOVE    IDX2                TO  LNK-MEDI-ITEM (IDE1)
            END-IF
+      *
+           MOVE    SPACE               TO  WRK-MSG1
+           IF      WRK-ERRCD           =   "M6"
+               MOVE    LF04-SRYCD (IDX1)(1:3)  TO  LNK-MEDI-SRYCD(IDE1)
+           ELSE
+               MOVE    WRK-SRYCD           TO  LNK-MEDI-SRYCD(IDE1)
+           END-IF
+      *
            EVALUATE    WRK-ERRCD
                WHEN    "M6"
                    STRING  "診療種別区分がありません。"
-                           WRK-MSG1        DELIMITED  BY  SIZE
-                                           INTO  LNK-KEI1-MSG (IDE1)
+                                           DELIMITED  BY  SIZE
+                                           INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
                WHEN    "M1"
                    STRING  "点数マスタに登録がありません。"
-                           WRK-MSG1        DELIMITED  BY  SIZE
-                                           INTO  LNK-KEI1-MSG (IDE1)
+                                           DELIMITED  BY  SIZE
+                                           INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
                WHEN    "M2"
                    STRING  "セットテーブルに登録がありません。"
-                           WRK-MSG1        DELIMITED  BY  SIZE
-                                           INTO  LNK-KEI1-MSG (IDE1)
+                                           DELIMITED  BY  SIZE
+                                           INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
                WHEN    "M3"
                    STRING  "名称の全角変換エラーです。"
-                           WRK-MSG1        DELIMITED  BY  SIZE
-                                           INTO  LNK-KEI1-MSG (IDE1)
+                                           DELIMITED  BY  SIZE
+                                           INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
                WHEN    "M4"
                    STRING  "入力対象外のコードです。"
-                           WRK-MSG1        DELIMITED  BY  SIZE
-                                           INTO  LNK-KEI1-MSG (IDE1)
+                                           DELIMITED  BY  SIZE
+                                           INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
            END-EVALUATE
+      *
            .
        400-ERRHENSYU-EXT.
            EXIT.
