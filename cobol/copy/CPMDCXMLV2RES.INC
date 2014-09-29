@@ -141,5 +141,5 @@
       *               病名コード
                       07  MDCRES-DIAG-CODE           PIC X(50).
       *               移行(廃止)
-                      07  MDCRES-DIAG-CHAINGE        PIC X(02).
+                      07  MDCRES-DIAG-CHANGE         PIC X(02).
       *!!!

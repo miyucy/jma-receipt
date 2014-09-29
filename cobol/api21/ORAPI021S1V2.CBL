@@ -672,8 +672,8 @@
                                            TO  MDCRES-DIAG-NAME (IDM1)
                MOVE    LNK-DIAG-CODE (IDK)
                                            TO  MDCRES-DIAG-CODE (IDM1)
-               MOVE    LNK-DIAG-CHAINGE (IDK)
-                                           TO  MDCRES-DIAG-CHAINGE
+               MOVE    LNK-DIAG-CHANGE (IDK)
+                                           TO  MDCRES-DIAG-CHANGE
                                                                 (IDM1)
            END-PERFORM
           .

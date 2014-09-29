@@ -69,7 +69,7 @@ xml_medicalv2res {
        		 Disease_Warning_Item_Position  varchar(2);
        		 Disease_Warning_Name		varchar(80);
        		 Disease_Warning_Code		varchar(50);
-       		 Disease_Warning_Chainge	varchar(2);
+       		 Disease_Warning_Change 	varchar(2);
             	} [50];
         };
    	};

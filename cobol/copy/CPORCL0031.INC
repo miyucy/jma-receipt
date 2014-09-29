@@ -66,6 +66,6 @@
       *            病名コード
                    07  LNK-DIAG-CODE            PIC X(50).
       *            移行(廃止)
-                   07  LNK-DIAG-CHAINGE         PIC X(02).
+                   07  LNK-DIAG-CHANGE          PIC X(02).
       *
       *
