@@ -1831,11 +1831,10 @@
                 MOVE    "key"           TO   MCP-PATHNAME
                 PERFORM  PTRSIINF-READ-SEC
                 IF    FLG-PTRSIINF     =  ZERO
-                  CONTINUE
       *           現物給付対象とする
-      *???        IF     PTRSI-&&&&&  =  "?"
-      *???           MOVE     1         TO   FLG-DAISAN-GENBUTU
-      *???        END-IF
+                  IF     PTRSI-DAISAN-GENBTKBN  =  "2"
+                     MOVE     1         TO   FLG-DAISAN-GENBUTU
+                  END-IF
                 END-IF
               END-IF
               MOVE    "tbl_ptrsiinf"    TO   MCP-TABLE

@@ -3133,7 +3133,7 @@
                                   TO    S02-LBLMSG(1:56)
        MOVE "¡ú¡ú"                TO    S02-LBLMSG(57:)
                WHEN       2
-                 MOVE    "blue"   TO    S02-LBLMSG-STYLE
+                 MOVE    "red"    TO    S02-LBLMSG-STYLE
        MOVE "¡ú¡ú¡¡¡Ú¹âÎð¼Ô¸½ÊªµëÉÕ¡Û°ì³çºÆ·×»»¤ò¹Ô¤Ã¤Æ¤¯¤À¤µ¤¤¡¡¡ú¡ú"
                                   TO    S02-LBLMSG
                WHEN       4

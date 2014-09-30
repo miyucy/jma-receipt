@@ -2509,7 +2509,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
              END-IF
       *
              IF       SRY-SRYCD(IDX2)  =  "099999922"
-               IF     ACCT-JIHOKBN     =   SPACE
+               IF    (ACCT-JIHOKBN     =   SPACE)
+               AND   (RECE41-HKNKBN    =   "6"  )
                   MOVE    1     TO    FLG-KIN-OKIKAE
                ELSE
                   MOVE    1     TO    FLG-HENSYU-NG

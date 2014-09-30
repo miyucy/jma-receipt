@@ -2676,18 +2676,17 @@ grpsys             PERFORM 900-DBSELECT-SEC
              MOVE    "key"           TO   MCP-PATHNAME
              PERFORM  PTRSIINF-READ-SEC
              IF    FLG-PTRSIINF     =  ZERO
-               CONTINUE
       *        現物給付対象とする
-      *???     IF     RECE01-SRYYM   >=  "201204"
-      *???       IF   PTRSI-&&&&&     =  "?"
-      *???         MOVE   1   TO   RECE02-DAISAN-GENBUTUFLG(IDX)
-      *???         MOVE   1   TO   RECE02-DAISAN-GENBUTU-GAITO
-      *???       END-IF
-      *???     END-IF
+               IF     RECE01-SRYYM   >=  "201204"
+                 IF   PTRSI-DAISAN-GENBTKBN  =  "2"
+                   MOVE   1   TO   RECE02-DAISAN-GENBUTUFLG(IDX)
+                   MOVE   1   TO   RECE02-DAISAN-GENBUTU-GAITO
+                 END-IF
+               END-IF
       *        特記事項「１０第三」記載しない
-      *???     IF     PTRSI-#####     =  "?"
-      *???         MOVE   1   TO   RECE02-DAISAN-TOKKI
-      *???     END-IF
+               IF     PTRSI-DAISAN-TOKKIKBN  =  "2"
+                   MOVE   1   TO   RECE02-DAISAN-TOKKI
+               END-IF
              END-IF
            END-IF
            MOVE    "tbl_ptrsiinf"    TO   MCP-TABLE

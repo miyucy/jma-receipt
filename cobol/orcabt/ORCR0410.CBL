@@ -1049,11 +1049,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
                         MOVE   PTRSI-SYOCD      TO  RECE41-SYOCD
       *
                         IF     RECE41-SRYYM   >=  "201204"
-                          CONTINUE
       *                   現物給付対象とする
-      *???                IF     PTRSI-&&&&&  =  "?"
-      *???                  MOVE   1   TO   RECE41-DAISAN-GENBUTU-GAITO
-      *???                END-IF
+                          IF     PTRSI-DAISAN-GENBTKBN  =  "2"
+                            MOVE   1   TO   RECE41-DAISAN-GENBUTU-GAITO
+                          END-IF
                         END-IF
                    END-IF
                END-IF

@@ -1391,11 +1391,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE   PTRSI-SYOCD          TO  WRK-RECE82-SYOCD
       *
            IF     WRK-RECE82-SRYYM   >=  "201204"
-             CONTINUE
       *      現物給付対象とする
-      *???   IF     PTRSI-&&&&&  =  "?"
-      *???     MOVE   1   TO   WRK-RECE82-DAISAN-GENBUTU-GAITO
-      *???   END-IF
+             IF     PTRSI-DAISAN-GENBTKBN  =  "2"
+               MOVE   1   TO   WRK-RECE82-DAISAN-GENBUTU-GAITO
+             END-IF
            END-IF
       *
       *    点数単価
