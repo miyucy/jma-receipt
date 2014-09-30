@@ -666,15 +666,15 @@
                IF      LNK-DIAG-POSITION  (IDK)    NOT =   ZERO
                    MOVE    LNK-DIAG-POSITION  (IDK)
                                            TO  MDCRES-DIAG-ITEM-POSITION
-                                                               (IDM1)
+                                                               (IDM2)
                END-IF
                MOVE    LNK-DIAG-NAME (IDK)
-                                           TO  MDCRES-DIAG-NAME (IDM1)
+                                           TO  MDCRES-DIAG-NAME (IDM2)
                MOVE    LNK-DIAG-CODE (IDK)
-                                           TO  MDCRES-DIAG-CODE (IDM1)
+                                           TO  MDCRES-DIAG-CODE (IDM2)
                MOVE    LNK-DIAG-CHANGE (IDK)
                                            TO  MDCRES-DIAG-CHANGE
-                                                                (IDM1)
+                                                                (IDM2)
            END-PERFORM
           .
        3001-WAINGMSG-HEN-EXT.
