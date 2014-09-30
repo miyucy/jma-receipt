@@ -144,6 +144,25 @@ if $0 == __FILE__
       manager.upgrade
     when "upgrade2"
       parse_package_list(ARGV).each{|p| manager.upgrade2(p[0],p[1])}
+    when "check"
+      install_error,link_error = manager.check
+      unless install_error.empty? || link_error.empty?
+        puts "error"
+        puts "= install error list"
+        install_error.each do |c|
+          puts "#{c[:name]}-#{c[:version]}"
+        end
+        puts "= linke error list"
+        link_error.each do |c|
+          puts "#{c[:name]}-#{c[:version]}"
+        end
+        exit 1
+      end
+      puts "ok"
+    when "restore"
+      manager.restore
+    when "force_restore"
+      manager.force_restore
     when "list"
       yaml = YAML.dump(manager.list(ARGV[0]))
       puts yaml
