@@ -109,6 +109,59 @@ module JMA::Plugin
       }
     end
 
+    def check
+      install_error =[]
+      link_error = []
+      lock {
+        @log.info("check")
+        @db.list_installed.each{ |c|
+          unless @store.install?(c[:name],c[:version])
+            install_error << c
+          end
+        }
+        @db.list_linked.each{ |c|
+          link_error << c unless @store.link?(c[:name],c[:version])
+        }
+      }
+      [install_error,link_error]
+    end
+
+    def restore
+      lock {
+        @log.info("restore")
+        @db.list_installed.each{ |c|
+          n = c[:name]
+          v = c[:version]
+          unless @store.install?(n,v)
+            package_path = download_package(n,v,c[:url])
+            @store.install(n,v,package_path,"restore")
+          end
+        }
+        @db.list_linked.each{ |c|
+          n = c[:name]
+          v = c[:version]
+          unless @store.link?(n,v)
+            @store.link(n,v,"restore")
+          end
+        }
+      }
+    end
+
+    def force_restore
+      lock {
+        @log.info("force_restore")
+        @db.list_installed.each{ |c|
+          n = c[:name]
+          v = c[:version]
+          package_path = download_package(n,v,c[:url])
+          @store.install(n,v,package_path,"force_restore")
+        }
+        @db.list_linked.each{ |c|
+          @store.link(c[:name],c[:version],"force_restore",true)
+        }
+      }
+    end
+
     def list_upgrade
       upgradable = []
       all = @db.list

@@ -55,6 +55,131 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
     )
   end
 
+  def test_check
+    assert_nothing_raised{
+      @manager.update
+    }
+    assert_nothing_raised{
+      @manager.install("foo","1.1")
+      @manager.install("bar","1.0")
+      @manager.link("bar","1.0")
+    }
+    assert_equal([[],[]],@manager.check)
+  end
+
+  def test_check_install
+    assert_nothing_raised{
+      @manager.update
+    }
+    assert_nothing_raised{
+      @manager.install("foo","1.1")
+      @manager.install("bar","1.0")
+      @manager.link("bar","1.0")
+    }
+    FileUtils.rm_rf(File.join(@root,"foo-1.1"))
+    ie,le = @manager.check
+    ie2 = ie.map do |c| "#{c[:name]}-#{c[:version]}" end
+    assert_equal(["foo-1.1"],ie2)
+    assert(le.empty?)
+  end
+
+  def test_check_link
+    assert_nothing_raised{
+      @manager.update
+    }
+    assert_nothing_raised{
+      @manager.install("foo","1.1")
+      @manager.link("foo","1.1")
+      @manager.install("bar","1.0")
+      @manager.link("bar","1.0")
+    }
+    FileUtils.rm_rf(File.join(@root,"foo-1.1",".linked"))
+    ie,le = @manager.check
+    assert(ie.empty?)
+    le2 = le.map do |c| "#{c[:name]}-#{c[:version]}" end
+    assert_equal(["foo-1.1"],le2)
+  end
+
+  def test_restore_unnecessary
+    assert_nothing_raised{
+      @manager.update
+    }
+    assert_nothing_raised{
+      @manager.install("foo","1.1")
+      @manager.link("foo","1.1")
+      @manager.install("bar","1.0")
+      @manager.link("bar","1.0")
+    }
+    assert_nothing_raised{
+      @manager.restore
+    }
+    assert_equal(true,Dir.exist?(File.join(@root,"foo-1.1")))
+    assert_equal(true,File.exist?(File.join(@root,"foo-1.1",".linked")))
+    assert_equal(true,Dir.exist?(File.join(@root,"bar-1.0")))
+    assert_equal(true,File.exist?(File.join(@root,"bar-1.0",".linked")))
+  end
+
+  def test_restore
+    assert_nothing_raised{
+      @manager.update
+    }
+    assert_nothing_raised{
+      @manager.install("foo","1.1")
+      @manager.link("foo","1.1")
+      @manager.install("bar","1.0")
+      @manager.link("bar","1.0")
+    }
+    FileUtils.rm_rf(File.join(@root,"foo-1.1"))
+    FileUtils.rm_rf(File.join(@root,"bar-1.0",".linked"))
+    assert_nothing_raised{
+      @manager.restore
+    }
+    assert_equal(true,Dir.exist?(File.join(@root,"foo-1.1")))
+    assert_equal(true,File.exist?(File.join(@root,"foo-1.1",".linked")))
+    assert_equal(true,Dir.exist?(File.join(@root,"bar-1.0")))
+    assert_equal(true,File.exist?(File.join(@root,"bar-1.0",".linked")))
+  end
+
+  def test_force_restore_unnecessary
+    assert_nothing_raised{
+      @manager.update
+    }
+    assert_nothing_raised{
+      @manager.install("foo","1.1")
+      @manager.link("foo","1.1")
+      @manager.install("bar","1.0")
+      @manager.link("bar","1.0")
+    }
+    assert_nothing_raised{
+      @manager.force_restore
+    }
+    assert_equal(true,Dir.exist?(File.join(@root,"foo-1.1")))
+    assert_equal(true,File.exist?(File.join(@root,"foo-1.1",".linked")))
+    assert_equal(true,Dir.exist?(File.join(@root,"bar-1.0")))
+    assert_equal(true,File.exist?(File.join(@root,"bar-1.0",".linked")))
+  end
+
+  def test_force_restore
+    assert_nothing_raised{
+      @manager.update
+    }
+    assert_nothing_raised{
+      @manager.install("foo","1.1")
+      @manager.link("foo","1.1")
+      @manager.install("bar","1.0")
+      @manager.link("bar","1.0")
+    }
+    FileUtils.rm_rf(File.join(@root,"foo-1.1"))
+    FileUtils.rm_rf(File.join(@root,"bar-1.0",".linked"))
+    assert_nothing_raised{
+      @manager.force_restore
+    }
+    assert_equal(true,Dir.exist?(File.join(@root,"foo-1.1")))
+    assert_equal(true,File.exist?(File.join(@root,"foo-1.1",".linked")))
+    assert_equal(true,Dir.exist?(File.join(@root,"bar-1.0")))
+    assert_equal(true,File.exist?(File.join(@root,"bar-1.0",".linked")))
+  end
+
   def test_install
     assert_nothing_raised{
       @manager.update

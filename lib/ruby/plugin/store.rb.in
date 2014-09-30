@@ -37,6 +37,11 @@ module JMA::Plugin
       @cachedir = FileUtils.mkdir_p(File.join(@root,"cache"))
     end
 
+    def install?(name,version)
+      storedir = File.join(@root,"#{name}-#{version}") 
+      Dir.exist?(storedir)
+    end
+
     def install(name,version,path,action)
       @log.debug("install #{name}-#{version}")
       begin
@@ -50,6 +55,7 @@ module JMA::Plugin
         end
 
         storedir = File.join(@root,"#{name}-#{version}") 
+        FileUtils.rm_rf(storedir)
         # for ruby-1.8.5 FileUtils#mv bug
         #FileUtils.move(tmpstoredir,storedir)
         FileUtils.cp_r(tmpstoredir,@root)
@@ -103,8 +109,13 @@ module JMA::Plugin
       end
       @log.debug("uninstall #{name}-#{version} end")
     end
+
+    def link?(name,version)
+      dotlinked = File.join(@root,"#{name}-#{version}",".linked")
+      File.exist?(dotlinked) 
+    end
  
-    def link(name,version,action)
+    def link(name,version,action,force=false)
       @log.debug("link #{name}-#{version}")
       begin
         storedir = File.join(@root,"#{name}-#{version}") 
@@ -112,7 +123,9 @@ module JMA::Plugin
         link = File.join(storedir,"meta","link")
         raise "link file not found:#{link}" unless File.exist?(link)
         dotlinked = File.join(storedir,".linked")
-        raise "#{name}-#{version} already linked" if File.exist?(dotlinked)
+        if !force && File.exist?(dotlinked) 
+          raise "#{name}-#{version} already linked"
+        end
         list = YAML.load(File.read(link))
         prelink = File.join(storedir,"meta","prelink")
         if File.exist?(prelink)
