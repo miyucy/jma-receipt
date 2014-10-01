@@ -1435,9 +1435,9 @@
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   PTNYUINRRK-TOKUTEI-NYUIN
-                             TO  LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+                             TO  LNK-TOKNYUIN2-TOKUTEI-NYUIN
            IF    LNK-AKYUSEI-RC          =   1
-              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)
+              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-FLG(1)
            END-IF
       *    療養病棟（病床）入院のフラグセット
            INITIALIZE                      SYS-5001-REC
@@ -1459,7 +1459,7 @@
                IF    FLG-SYSKANRI      =   ZERO
                    IF    SYS-5001-BTU-SBT    =   "04"  OR  "09"
                        MOVE    "1"     TO
-                                  LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(2)
+                                  LNK-TOKNYUIN2-TOKUBETSU-FLG(2)
                    END-IF
                END-IF
            END-IF

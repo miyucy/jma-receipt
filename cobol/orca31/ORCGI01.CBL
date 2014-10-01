@@ -11764,7 +11764,7 @@
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   PTNYUINRRK-TOKUTEI-NYUIN
-                             TO  LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+                             TO  LNK-TOKNYUIN2-TOKUTEI-NYUIN
            CALL  "ORCSTOKNYUIN2"     USING  ORCSTOKNYUIN2-AREA
                                             SPA-AREA
            DISPLAY  "LNK-TOKNYUIN2-RC = " LNK-TOKNYUIN2-RC
@@ -13767,10 +13767,10 @@
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   PTNYUINRRK-TOKUTEI-NYUIN
-                             TO  LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+                             TO  LNK-TOKNYUIN2-TOKUTEI-NYUIN
            IF    (LNK-AKYUSEI-RC        =   1)           AND
                  (SPA-NAI-I01-TAIINYMD  >=   "20120401")
-              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)
+              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-FLG(1)
            END-IF
            CALL  "ORCSTOKNYUIN2"     USING  ORCSTOKNYUIN2-AREA
                                             SPA-AREA
@@ -15330,10 +15330,10 @@
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   PTNYUINRRK-TOKUTEI-NYUIN
-                             TO  LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+                             TO  LNK-TOKNYUIN2-TOKUTEI-NYUIN
            IF    (LNK-AKYUSEI-RC        =   1)           AND
                  (SPA-NAI-I01-IDOYMD    >=   "20120401")
-              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)
+              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-FLG(1)
            END-IF
            CALL  "ORCSTOKNYUIN2"     USING  ORCSTOKNYUIN2-AREA
                                             SPA-AREA
@@ -16931,7 +16931,7 @@
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   PTNYUINRRK-TOKUTEI-NYUIN
-                             TO  LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+                             TO  LNK-TOKNYUIN2-TOKUTEI-NYUIN
            CALL  "ORCSTOKNYUIN2"     USING  ORCSTOKNYUIN2-AREA
                                             SPA-AREA
            IF     LNK-TOKNYUIN2-RC      =   ZERO
