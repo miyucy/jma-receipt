@@ -259,9 +259,9 @@
            03  WRK-DOU-PTNYUINRRK-TENNYUYMD  PIC X(08).
            03  WRK-DOU-TENNYUYMD             PIC X(08).
            03  FLG-JIINRRK                   PIC 9(01).
-       01  WRK-PTNYUINRRK-REC.
+       01  WRK-PTNYU-REC.
            COPY  "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                            BY  //WRK-PTNYUINRRK-//.
+                                            BY  //WRK-PTNYU-//.
       *
       *    食堂加算設定用の退避領域
        01   WRK-SHOKUDOU                   PIC 9(02).
@@ -605,7 +605,7 @@
            MOVE   LNK-PTNYUINRRK-TENNYUYMD
                                        TO  WRK-DOU-PTNYUINRRK-TENNYUYMD
       *    入院履歴の退避
-           MOVE   LNK-PTNYUINRRK-REC   TO  WRK-PTNYUINRRK-REC
+           MOVE   LNK-PTNYUINRRK-REC   TO  WRK-PTNYU-REC
       *    最終入院履歴が自院歴かを判定する
            MOVE    ZERO                TO  FLG-JIINRRK
            INITIALIZE  PTNYUINRRK-REC
@@ -636,7 +636,7 @@
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *    入院履歴の復元
-           MOVE    WRK-PTNYUINRRK-REC  TO  LNK-PTNYUINRRK-REC
+           MOVE    WRK-PTNYU-REC       TO  LNK-PTNYUINRRK-REC
       *    前歴が自院歴（同日退院分）の場合、入院会計作成日を１日ずらす
            IF     FLG-JIINRRK    =     1
                INITIALIZE                  STS-AREA-DAY
