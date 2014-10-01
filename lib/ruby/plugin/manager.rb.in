@@ -154,10 +154,10 @@ module JMA::Plugin
           n = c[:name]
           v = c[:version]
           package_path = download_package(n,v,c[:url])
-          @store.install(n,v,package_path,"force_restore")
+          @store.install(n,v,package_path,"restore")
         }
         @db.list_linked.each{ |c|
-          @store.link(c[:name],c[:version],"force_restore",true)
+          @store.link(c[:name],c[:version],"restore",true)
         }
       }
     end
