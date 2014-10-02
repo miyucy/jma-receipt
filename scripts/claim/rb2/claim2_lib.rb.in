@@ -23,19 +23,19 @@
 def item_trim(word)
 	# 行頭・行末・項目間の空白除去
 	while  /^\s+?/ =~ word
-		word.gsub! /^\s+?/ , ''
+		word.gsub!(/^\s+?/ , '')
 	end
 	while  /\s+?\n/ =~ word
-		word.gsub! /\s+?\n/ , "\n"
+		word.gsub!(/\s+?\n/ , "\n")
 	end
 	while  /\s+?$/ =~ word
-		word.gsub! /\s+?$/ , ''
+		word.gsub!(/\s+?$/ , '')
 	end
 	while  /,[^\S\n]+?/ =~ word
-		word.gsub! /,[^\S\n]+?/ , ','
+		word.gsub!(/,[^\S\n]+?/ , ',')
 	end
 	while  /\s+?,/ =~ word
-		word.gsub! /\s+?,/ , ","
+		word.gsub!(/\s+?,/ , ",")
 	end
 	return word
 end
@@ -54,20 +54,17 @@ end
 def record_del_comment_space(word)
 	# コメントの削除
 	while  /#[^\n]+?\n/ =~ word
-#	while  /#[\s\S]*?\n/ =~ word
-		word.gsub! /#[^\n]+?\n/ , "\n"
-#		word.gsub! /#[\s\S]*?\n/ , "\n"
-#		word.gsub! /#[\s\S]*?\n/ , ''
+		word.gsub!(/#[^\n]+?\n/ , "\n")
 	end
 	# コメントのみの削除 (2003/12/5追加)
 	while  /^\s*?#[^\n]*?\n/ =~ word
-		word.gsub! /^\s*?#[^\n]*?\n/ , "\n"
+		word.gsub!(/^\s*?#[^\n]*?\n/ , "\n")
 	end
 	# ファイル末コメントの削除
-	word.gsub! /#[^\n]+?$/, ''
+	word.gsub!(/#[^\n]+?$/, '')
 	# 空白行の削除処理
 	while  /^\s*?\n/ =~ word
-		word.gsub! /^\s*?\n/ , ''
+		word.gsub!(/^\s*?\n/ , '')
 	end
 	# 行頭・行末・項目間の空白除去
 	item_trim word
@@ -93,7 +90,6 @@ def repeat_extend_proc(in_data)
 	w_data1 = []	# 配列化データ領域
 	w_data2 = ''	# 一時的な文字列領域
 	w_data3 = []
-	w_data4 = ''
 
 	repeat_indexname1 = []	# Repeat定義の識別名のみを格納する場所（あとでfor文で使用）
 	repeat_indexname2 = []	# Repeat定義の識別名のみを格納するスタック領域（ワーク用）
@@ -314,7 +310,7 @@ def basehierarchy_extend_proc(in_data)
 			elsif w_str1 =~ /^\s*?([^\/][\s\S]*?)$/
 				now_hierarchy += '/' + $1.strip
 			end
-			now_hierarchy.gsub! /\/$/, ''		# 末尾に「/」を付けていたら、はずす
+			now_hierarchy.gsub!(/\/$/, '')		# 末尾に「/」を付けていたら、はずす
 		elsif w_data1[x] =~ /^\s*?\$BaseEnd(\_[0-9]+?)\s*?$/i
 			# BaseEnd定義
 #			base_indexname1.pop
@@ -452,7 +448,6 @@ def hierarchy_add_startpoint_proc(in_data)
 
 	h_data1 = []
 	w_idx1 = 0
-	w_idx2 = 0
 	w_str1 = ''	# 対象行の前後の空白を除いた文字列
 	w_str2 = ''	# 上記変数の中のうち、１文字目の文字
 	w_str3 = ''	# XMLパス部分の文字列
@@ -558,11 +553,11 @@ def realize_topline(soc_line)
 		# 行頭に識別情報が格納されてある
 
 		# =の前後の空白を取り除く
-		w_line1.gsub! /\s+?\=\s+?/, '='
+		w_line1.gsub!(/\s+?\=\s+?/, '=')
 
 		# 各定義にダブルクォーテーションがない場合、ダブルクォーテーションを加える
-		w_line1.gsub! /(\=)([^\"\s]+?)(\s)/, '\1"\2"\3'	# 通常のダブルクォーテーションセット対応
-		w_line1.gsub! /(\=)([^\"\s]+?)$/, '\1"\2"'		# 行末のダブルクォーテーションセット対応
+		w_line1.gsub!(/(\=)([^\"\s]+?)(\s)/, '\1"\2"\3')	# 通常のダブルクォーテーションセット対応
+		w_line1.gsub!(/(\=)([^\"\s]+?)$/, '\1"\2"')		# 行末のダブルクォーテーションセット対応
 
 		# type定義の取得
 		if w_line1 =~ /\s+?type\=\"([^\"]*?)\"/i
@@ -635,11 +630,11 @@ def realize_topline(soc_line)
 		character_code = 0	# 文字コード [3]
 
 		# =の前後の空白を取り除く
-		w_line1.gsub! /\s+?\=\s+?/, '='
+		w_line1.gsub!(/\s+?\=\s+?/, '=')
 
 		# 各定義にダブルクォーテーションがない場合、ダブルクォーテーションを加える
-		w_line1.gsub! /(\=)([^\"\s]+?)(\s)/, '\1"\2"\3'	# 通常のダブルクォーテーションセット対応
-		w_line1.gsub! /(\=)([^\"\s]+?)$/, '\1"\2"'		# 行末のダブルクォーテーションセット対応
+		w_line1.gsub!(/(\=)([^\"\s]+?)(\s)/, '\1"\2"\3')	# 通常のダブルクォーテーションセット対応
+		w_line1.gsub!(/(\=)([^\"\s]+?)$/, '\1"\2"')		# 行末のダブルクォーテーションセット対応
 
 		# encoding定義の取得
 		if w_line1 =~ /\s+?encoding\=\"([^\"]*?)\"/i

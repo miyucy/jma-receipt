@@ -106,7 +106,7 @@ end
 		hir_data1 = fp_sh.read
 	end
 
-	hir_head1 = hir_data1.sub /\A([\s\S]*?)\n[\s\S]*?\Z/, '\1'
+	hir_head1 = hir_data1.sub(/\A([\s\S]*?)\n[\s\S]*?\Z/, '\1')
 #	puts hir_head1
 
 	# 階層定義ファイル形式の判定

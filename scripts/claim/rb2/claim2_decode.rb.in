@@ -317,7 +317,7 @@ class Xml_baselist
 		w_xml_path1 = ''	# XMLパススタックを文字列に変換した内容を格納する場所
 		w_xml_path2 = []	# 子XMLリストに渡すXMLパス配列
 		attr_tag = ''
-		reg_flg = 0		# 正規表現フラグ(0 = 正規表現ではない, 1 = 正規表現である)
+		#reg_flg = 0		# 正規表現フラグ(0 = 正規表現ではない, 1 = 正規表現である)
 		ret_data = []
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
@@ -473,10 +473,8 @@ class Xml_baselist
 						#   かならず最後の配列から実行すること
 					end
 				end
-
 			end
-
-    	end
+		end
 	end
 
 
@@ -499,9 +497,8 @@ class Xml_baselist
 			@xmllist = []
 			# カウンタのクリア
 			@list_value = 0
-    	end
-    end
-
+		end
+	end
 
 	# ------------------------------------------------------------
 	# オブジェクト外からのデータメンバーへのアクセスを可能にする
@@ -1256,7 +1253,7 @@ class Xml_listdata
 	#   引数を階層情報からXMLリストオブジェクトに変えること。
 	# 相対パスは変換できません
 	def exec_LineTargetDefinition(hierarcy_data)
-		ret_data = nil ; h_data = ''
+		#ret_data = nil ; h_data = ''
 		define_startline = '' ; define_symbol = '' ; define_param = ''
 		define_endline = ''
 
@@ -1308,7 +1305,7 @@ class Xml_listdata
 				w_arg2[w_idx2].strip!
 			end
 			base_hierarcy = w_arg1[2]			# 基準階層の取得
-			mean_decision = '='					# 判定方法（現在、「=」で固定）
+			#mean_decision = '='					# 判定方法（現在、「=」で固定）
 			decision_hierarcy = w_arg2[0]		# 判定階層
 			decision_value = w_arg2[1]			# 判定内容
 			if decision_value[0, 1] == "\"" and decision_value[-1, 1] == "\""
@@ -1393,14 +1390,14 @@ class Xml_listdata
 
 #				h_name2 = exchange_hierarcy_name(1, base_hierarcy)		# 基準階層を、変換する
 				# 基準階層を、正規表現で指定できるように変換する
-				h_name2 = Regexp.quote(base_hierarcy).gsub /\\\[x\\\]/i, '\[[0-9]+?\]'
+				h_name2 = Regexp.quote(base_hierarcy).gsub(/\\\[x\\\]/i, '\[[0-9]+?\]')
 
 				# 同じものが見つかった場合、基準階層の抽象表現を、実表現に変換する
 				if h_name1 =~ /(#{h_name2})/
 					# 基準階層の正規表現と判定階層が一致した
 					h_name3 = $1	# 基準階層の実階層名の取得
 					# 基準階層名と実階層名の置換処理
-					define_after.gsub! /#{Regexp.quote(base_hierarcy)}/, h_name3
+					define_after.gsub!(/#{Regexp.quote(base_hierarcy)}/, h_name3)
 					# 全体に対しての置換処理(ここが、実置換処理である)
 #					h_data1.gsub! /#{Regexp.quote(define_before)}/, define_after
 #					h_data1.gsub! Regexp.quote(define_before), define_after
@@ -1478,7 +1475,7 @@ class Xml_listdata
 			end
 			r2_data = r1_data[0]
 			w_hname = Regexp.quote(w_hname)	# 正規表現に使える形式に変換
-			h_data1.gsub! /#{w_hname}/, r2_data[0]	# 置換処理
+			h_data1.gsub!(/#{w_hname}/, r2_data[0])	# 置換処理
 		end
 
 
@@ -1549,7 +1546,7 @@ class Xml_listdata
 				h_data0 = Kconv::tosjis(hierarcy_data)
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
-					h_data0.gsub! /([^\x0d])\x0a/, '\1'+"\x0d\x0a"
+					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	2
@@ -1560,7 +1557,7 @@ class Xml_listdata
 				h_data0 = Kconv::toeuc(hierarcy_data)
 				# 改行コードの変換 (windowsでは不要だが、debian側では必要)
 				while	h_data0 =~ /\x0d\x0a/
-					h_data0.gsub! /\x0d\x0a/, "\x0a"
+					h_data0.gsub!(/\x0d\x0a/, "\x0a")
 				end
 			when	'2'
 				# 変換後の文字コードはシフトJISコード
@@ -1578,7 +1575,7 @@ class Xml_listdata
 				h_data0 = Kconv::tosjis(Uconv.u8toeuc(hierarcy_data))
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
-					h_data0.gsub! /([^\x0d])\x0a/, '\1'+"\x0d\x0a"
+					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	4
@@ -1592,7 +1589,7 @@ class Xml_listdata
 				h_data0 = Kconv::tosjis(hierarcy_data)
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
-					h_data0.gsub! /([^\x0d])\x0a/, '\1'+"\x0d\x0a"
+					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		end
@@ -1603,10 +1600,10 @@ class Xml_listdata
 
 		# 「=」の前後の空白を除去
 		while  /\=[^\S\n]+?/ =~ h_data1
-			h_data1.gsub! /\=[^\S\n]+?/ , '='
+			h_data1.gsub!(/\=[^\S\n]+?/ , '=')
 		end
 		while  /\s+?\=/ =~ h_data1
-			h_data1.gsub! /\s+?\=/ , '='
+			h_data1.gsub!(/\s+?\=/ , '=')
 		end
 
 		# LineTarget処理
@@ -1631,8 +1628,7 @@ class Xml_listdata
 				# $2 = バイト数
 				xml_path1 = $1
 				seq_byte1 = $2
-#				seq_byte1.gsub /^([0-9]*?)[^0-9]??\S*?$/, '\1'	# 書式が変わっても大丈夫なように先手をうつ
-				seq_byte1.gsub! /^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1'	# 書式が変わっても大丈夫なように先手をうつ
+				seq_byte1.gsub!(/^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1')	# 書式が変わっても大丈夫なように先手をうつ
 				ret_data.push [xml_path1, Integer(seq_byte1)]
 			else
 				raise '階層情報の中に、不正な記述を発見しました。(ほぼ' + String(w_idx1) + '行目付近)' + "\n" + '[' + h_data_ex1 + ']'
@@ -1812,7 +1808,7 @@ class Xml_listdata
 				h_data0 = Kconv::tosjis(hierarcy_data)
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
-					h_data0.gsub! /([^\x0d])\x0a/, '\1'+"\x0d\x0a"
+					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	2
@@ -1823,7 +1819,7 @@ class Xml_listdata
 				h_data0 = Kconv::toeuc(hierarcy_data)
 				# 改行コードの変換 (windowsでは不要だが、debian側では必要)
 				while	h_data0 =~ /\x0d\x0a/
-					h_data0.gsub! /\x0d\x0a/, "\x0a"
+					h_data0.gsub!(/\x0d\x0a/, "\x0a")
 				end
 			when	'2'
 				# 変換後の文字コードはシフトJISコード
@@ -1841,7 +1837,7 @@ class Xml_listdata
 				h_data0 = Kconv::tosjis(Uconv.u8toeuc(hierarcy_data))
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
-					h_data0.gsub! /([^\x0d])\x0a/, '\1'+"\x0d\x0a"
+					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	4
@@ -1855,7 +1851,7 @@ class Xml_listdata
 				h_data0 = Kconv::tosjis(hierarcy_data)
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
-					h_data0.gsub! /([^\x0d])\x0a/, '\1'+"\x0d\x0a"
+					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		end
@@ -1866,10 +1862,10 @@ class Xml_listdata
 
 		# 「=」の前後の空白を除去
 		while  /\=[^\S\n]+?/ =~ h_data1
-			h_data1.gsub! /\=[^\S\n]+?/ , '='
+			h_data1.gsub!(/\=[^\S\n]+?/ , '=')
 		end
 		while  /\s+?\=/ =~ h_data1
-			h_data1.gsub! /\s+?\=/ , '='
+			h_data1.gsub!(/\s+?\=/ , '=')
 		end
 
 		# LineTarget処理
@@ -1901,8 +1897,7 @@ class Xml_listdata
 				# $2 = バイト数
 				xml_path1 = $1
 				seq_byte1 = $2
-#				seq_byte1.gsub /^([0-9]*?)[^0-9]??\S*?$/, '\1'	# 書式が変わっても大丈夫なように先手をうつ
-				seq_byte1.gsub! /^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1'	# 書式が変わっても大丈夫なように先手をうつ
+				seq_byte1.gsub!(/^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1')	# 書式が変わっても大丈夫なように先手をうつ
 				seq_byte2 = Integer(seq_byte1)
 
 				# 空白項目の場合は、階層データリストには何もセットしない
