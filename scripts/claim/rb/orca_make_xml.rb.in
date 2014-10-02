@@ -131,7 +131,7 @@ def conversion_seq_to_xml(template, seq, layout, debug_mode)
 		if cdata!=nil
 #			while  /#{cdata[0]}/ =~ xml
 			if cdata[1] != ''
-				xml.gsub! /#{cdata[0]}/, cdata[1]
+				xml.gsub!(/#{cdata[0]}/, cdata[1])
 				# **********
 				deb_counter += 1	# カウンタのカウントアップ
 				# **********
@@ -152,32 +152,32 @@ def conversion_seq_to_xml(template, seq, layout, debug_mode)
 
 	# コメントの削除処理
 	while  /^\s*<!--[\s\S]*?-->\s*\n/ =~ xml
-		xml.gsub! /^\s*<!--[\s\S]*?-->\s*\n/ , ''
+		xml.gsub!(/^\s*<!--[\s\S]*?-->\s*\n/ , '')
 	end
 
 
 	# 空白行の削除処理
 	while  /^\s*?\n/ =~ xml
-		xml.gsub! /^\s*?\n/ , ''
+		xml.gsub!(/^\s*?\n/ , '')
 	end
 
 	while  /\n\s*?\n/ =~ xml
-		xml.gsub! /\n\s*?\n/ , "\n"
+		xml.gsub!(/\n\s*?\n/ , "\n")
 	end
 
 
 	# タブを半角空白4文字に変換
 	while  /#{"\t"}/ =~ xml
-		xml.gsub! /#{"\t"}/ , '    '
+		xml.gsub!(/#{"\t"}/ , '    ')
 	end
 
 	# del %______%
 
-	xml.gsub! /%(.)+?%/ , ''
+	xml.gsub!(/%(.)+?%/ , '')
 
 	# 空白のエレメントの削除処理
 	while  /^\s*<([\w:]+)[^>]*>\s*<\/\1>\s*\n/ =~ xml
-		xml.gsub! /^\s*<([\w:]+)[^>]*>\s*<\/\1>\s*\n/ , ''
+		xml.gsub!(/^\s*<([\w:]+)[^>]*>\s*<\/\1>\s*\n/ , '')
 	end
 
 
