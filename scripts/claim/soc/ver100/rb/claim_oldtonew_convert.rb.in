@@ -179,15 +179,15 @@ def	def_convert_proc(in_data)
 	w_line1 = []	# 行単位で配列に分けたものを入れる領域
 	w_line2 = []	# 項目単位で配列に分けたものを入れる領域
 	w_line3 = ''	# 行末コメントを除いた文字列の格納領域
-	w_str1 = ''
+	#w_str1 = ''
 	w_str2 = ''
 	w_str3 = ''
 	w_str4 = ''
 
 	w_comment1 = ''		# 行末コメントの格納領域
 
-	w_idx1 = 0
-	w_idx2 = 0
+	#w_idx1 = 0
+	#w_idx2 = 0
 
 
 	w_line1 = in_data.split("\n")		# 改行で配列に分ける
@@ -278,8 +278,8 @@ def	def_convert_proc(in_data)
 					# $4 = バイト数(前の空白を含む)
 				w_str2 = $1 + $2 + ','
 				w_str3 = $4
-				w_str3.gsub! /^([^,]*?),/, '\1'	# 後ろのコンマ削除は、２回繰り返す(空欄の場合があるので)
-				w_str3.gsub! /^([^,]*?),/, '\1'
+				w_str3.gsub!(/^([^,]*?),/, '\1')	# 後ろのコンマ削除は、２回繰り返す(空欄の場合があるので)
+				w_str3.gsub!(/^([^,]*?),/, '\1')
 				w_line1[w_idx1] = w_str2 + w_str3 + w_comment1
 			else
 				# ６番目の項目に何か入っている場合等は、属性のパラメータである
@@ -292,8 +292,8 @@ def	def_convert_proc(in_data)
 				w_str2 = $1 + $2 + ','
 				w_str3 = $4 + ','
 				w_str4 = $5
-				w_str4.gsub! /^([^,]*?),/, '\1'	# 後ろのコンマ削除は、２回繰り返す(空欄の場合があるので)
-				w_str4.gsub! /^([^,]*?),/, '\1'
+				w_str4.gsub!(/^([^,]*?),/, '\1')	# 後ろのコンマ削除は、２回繰り返す(空欄の場合があるので)
+				w_str4.gsub!(/^([^,]*?),/, '\1')
 				w_line1[w_idx1] = w_str2 + w_str3 + w_str4 + w_comment1
 #				w_line1[w_idx1] = $1 + $2 + ',' + $4 + ',' + $5 + w_comment1
 			end
@@ -335,15 +335,15 @@ def defdata_expand_equal(in_def)
 
 	out_def = ''
 
-	w_idx1 = 0
-	w_idx2 = 0
-	w_idx3 = 0
+	#w_idx1 = 0
+	#w_idx2 = 0
+	#w_idx3 = 0
 	w_line1 = ''
 	w_line2 = []
 	w_line3 = []
 	w_line4 = ''
 
-	w_ary1 = []
+	#w_ary1 = []
 
 	equal_stack = []		# equalデータスタック 1配列に[パラメータ名, 中に入れる内容]が入る
 
@@ -403,9 +403,9 @@ def defdata_expand_equal(in_def)
 				# 見つかったら、パラメータの展開をし、変換フラグをセットする
 				w_len1 = 0
 				w_idx4 = 0
-				w_idx5 = 0
-				w_idx6 = 0
-				w_idx7 = 0
+				#w_idx5 = 0
+				#w_idx6 = 0
+				#w_idx7 = 0
 				w_item1 = []
 				w_str1 = ''
 				w_str2 = ''
@@ -547,7 +547,7 @@ def defdata_expand_equal(in_def)
 					if w_line2[2] !~ /^\s*?[0-9]+?\s*?$/
 						# 数字以外が入っている
 #						w_line2[2].gsub! /#{w_line3[0]}/, w_line3[1]
-						w_line2[2].gsub! /#{Regexp.quote(w_line3[0])}/, w_line3[1]
+						w_line2[2].gsub!(/#{Regexp.quote(w_line3[0])}/, w_line3[1])
 						chg_flg3 = 1	# 変更フラグのセット
 #						if w_line2[2] =~ /^\s*?[^0-9\+\-\*\/\(\)]+?\s*?$/
 						if w_line2[2] !~ /^\s*?[0-9\+\-\*\/\(\)]+?\s*?$/
@@ -560,7 +560,7 @@ def defdata_expand_equal(in_def)
 					if w_line2[3] !~ /^\s*?[0-9]+?\s*?$/
 #					if w_line2[3] =~ /^\s*?[^0-9]+?\s*?$/
 						# 数字以外が入っている
-						w_line2[3].gsub! /#{Regexp.quote(w_line3[0])}/, w_line3[1]
+						w_line2[3].gsub!(/#{Regexp.quote(w_line3[0])}/, w_line3[1])
 #						w_line2[3].gsub! /#{w_line3[0]}/, w_line3[1]
 						chg_flg3 = 1	# 変更フラグのセット
 #						if w_line2[3] =~ /^\s*?[^0-9\+\-\*\/\(\)]+?\s*?$/
@@ -672,10 +672,10 @@ def	hierarchy_convert_proc(in_def, in_hirlnk)
 
 	# 独自表記形式のものを、XMLパス形式への変換
 	w_hirlnk1 = in_hirlnk
-	w_hirlnk1.gsub! /~/, '/'
-	w_hirlnk1.gsub! /!/, '@'
-	w_hirlnk1.gsub! /\(/, '['
-	w_hirlnk1.gsub! /\)/, ']'
+	w_hirlnk1.gsub!(/~/, '/')
+	w_hirlnk1.gsub!(/!/, '@')
+	w_hirlnk1.gsub!(/\(/, '[')
+	w_hirlnk1.gsub!(/\)/, ']')
 
 	# defデータのequal定義を展開する
 	w_def1 = defdata_expand_equal(in_def)
