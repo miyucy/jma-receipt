@@ -64,7 +64,7 @@ class XmlJCnv
 #     @in_code = nil         ; @from = "" ; @to = ""
       @in_code = "UTF-8"     ; @from = "u8"
       @head = '<?xml version ="1.0" encoding="UTF-8" ?>'
-	end
+    end
   end
 
   def ersub
@@ -77,13 +77,13 @@ class XmlJCnv
   end
 
   def cvt
-    open(@fpn,"rb") do |@f|
-      @head = @f.gets ; chkhd ; @lct = 1
+    open(@fpn,"rb") do |f|
+      @head = f.gets ; chkhd ; @lct = 1
       @mes = "file:[" + @fpn + "] cmd:[" + @from + @to + "] mode:[" + @md + "]"
       $stderr.puts @mes
       @head.sub!(/#{@in_code}/i, @out_code) if @in_code
       puts @head 
-      while @buf = @f.gets
+      while @buf = f.gets
         @lct += 1
         case @from
         when "u8"

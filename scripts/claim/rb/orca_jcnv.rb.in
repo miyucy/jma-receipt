@@ -169,7 +169,7 @@ $stderr.puts '[xml_code_conversion] Start'			if @jcnv_debug == 1
 
 
 	# １行目のencodeの変換
-	word2 = in_word.sub	/#{before_word}/i, after_word
+	word2 = in_word.sub(/#{before_word}/i, after_word)
 
 
 	# 文字コードの変換メイン処理
@@ -358,9 +358,9 @@ $stderr.puts '[word_code_conversion] Start'			if @jcnv_debug == 1
 			# 何もしない
 			word2 = word1
 		when	2	# 改行後のコードは、Machintosh系改行コード(CR(0xd)のみ)
-			word2 = word1.gsub /\xa/, "\xd"
+			word2 = word1.gsub(/\xa/, "\xd")
 		when	3	# 改行後のコードは、Windows系改行コード(CR(0xd)+LF(0xa))
-			word2 = word1.gsub /\xa/, "\xd\xa"
+			word2 = word1.gsub(/\xa/, "\xd\xa")
 		else
 			ret = [-4, nil, '変換後改行コードの指定が不正です(linefeed_code = [' + String(linefeed_code) + '])']
 			return ret
@@ -368,12 +368,12 @@ $stderr.puts '[word_code_conversion] Start'			if @jcnv_debug == 1
 	when	2	# 改行前のコードは、Machintosh系改行コード(CR(0xd)のみ)
 		case	linefeed_code
 		when	1	# 改行後のコードは、UNIX系改行コード(LF(0xa)のみ)
-			word2 = word1.gsub /\xd/, "\xa"
+			word2 = word1.gsub(/\xd/, "\xa")
 		when	2	# 改行後のコードは、Machintosh系改行コード(CR(0xd)のみ)
 			# 何もしない
 			word2 = word1
 		when	3	# 改行後のコードは、Windows系改行コード(CR(0xd)+LF(0xa))
-			word2 = word1.gsub /\xd/, "\xd\xa"
+			word2 = word1.gsub(/\xd/, "\xd\xa")
 		else
 			ret = [-4, nil, '変換後改行コードの指定が不正です(linefeed_code = [' + String(linefeed_code) + '])']
 			return ret
@@ -381,9 +381,9 @@ $stderr.puts '[word_code_conversion] Start'			if @jcnv_debug == 1
 	when	3	# 改行前のコードは、Windows系改行コード(CR(0xd)+LF(0xa))
 		case	linefeed_code
 		when	1	# 改行後のコードは、UNIX系改行コード(LF(0xa)のみ)
-			word2 = word1.gsub /\xd\xa/, "\xa"
+			word2 = word1.gsub(/\xd\xa/, "\xa")
 		when	2	# 改行後のコードは、Machintosh系改行コード(CR(0xd)のみ)
-			word2 = word1.gsub /\xd\xa/, "\xd"
+			word2 = word1.gsub(/\xd\xa/, "\xd")
 		when	3	# 改行後のコードは、Windows系改行コード(CR(0xd)+LF(0xa))
 			# 何もしない
 			word2 = word1

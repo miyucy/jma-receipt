@@ -27,19 +27,19 @@
 def item_trim(word)
 	# 行頭・行末・項目間の空白除去
 	while  /^\s+?/ =~ word
-		word.gsub! /^\s+?/ , ''
+		word.gsub!(/^\s+?/ , '')
 	end
 	while  /\s+?\n/ =~ word
-		word.gsub! /\s+?\n/ , "\n"
+		word.gsub!(/\s+?\n/ , "\n")
 	end
 	while  /\s+?$/ =~ word
-		word.gsub! /\s+?$/ , ''
+		word.gsub!(/\s+?$/ , '')
 	end
 	while  /,[^\S\n]+?/ =~ word
-		word.gsub! /,[^\S\n]+?/ , ','
+		word.gsub!(/,[^\S\n]+?/ , ',')
 	end
 	while  /\s+?,/ =~ word
-		word.gsub! /\s+?,/ , ","
+		word.gsub!(/\s+?,/ , ",")
 	end
 end
 
@@ -52,12 +52,11 @@ end
 def record_del_comment_space(word)
 	# コメントの削除
 	while  /#[\s\S]*?\n/ =~ word
-		word.gsub! /#[\s\S]*?\n/ , "\n"
-#		word.gsub! /#[\s\S]*?\n/ , ''
+		word.gsub!(/#[\s\S]*?\n/ , "\n")
 	end
 	# 空白行の削除処理
 	while  /^\s*?\n/ =~ word
-		word.gsub! /^\s*?\n/ , ''
+		word.gsub!(/^\s*?\n/ , '')
 	end
 	# 行頭・行末・項目間の空白除去
 	item_trim word
@@ -141,7 +140,7 @@ def macro_get_equal_data(layout)
 	wd1 = wd1+"\n"
 	# マクロ以外の削除
 	begin
-		wd1.gsub! /(?!^.*?,equal,)^.*?\n/ , ''
+		wd1.gsub!(/(?!^.*?,equal,)^.*?\n/ , '')
 	end  while  /(?!^.*?,equal,)^.*?\n/ =~ wd1
 
 # [文字列][,][equal][,][内容][#文字列][\n]
@@ -280,7 +279,7 @@ def macro_execute_equal(layout)
 # #			end
 #			wx1=[]
 #		end
-		layout.gsub! /^.+?equal.+?\n/, ''
+		layout.gsub!(/^.+?equal.+?\n/, '')
 
 		# **********
 		$stderr.puts 'complete'
@@ -361,8 +360,8 @@ def get_layout_seqitem(layout, rdata, item_l)
 			when	'nowdate2'		# 今日の日付のセット(パターン2)
 			when	'const'			# 固定データのセット
 				if param2a!=nil
-					param2a.gsub! /^\"/, ''
-					param2a.gsub! /\"$/, ''
+					param2a.gsub!(/^\"/, '')
+					param2a.gsub!(/\"$/, '')
 					ret[idx1] = param2a
 				end
 #			else			# 素直に項目のセット
@@ -385,8 +384,8 @@ def get_layout_seqitem(layout, rdata, item_l)
 				item_trim wd2
 				if sp==0 and wbyte==0
 					# 開始位置・バイト数とも０なので、挿入情報をそのままセット
-					ins.gsub! /^\"/, ''
-					ins.gsub! /\"$/, ''
+					ins.gsub!(/^\"/, '')
+					ins.gsub!(/\"$/, '')
 					ret[idx1] = ins
 				else
 					if ins==nil or ins==''
@@ -394,8 +393,8 @@ def get_layout_seqitem(layout, rdata, item_l)
 						ret[idx1] = wd2
 					else
 #						$stderr.puts "["+ins+"]"
-						ins.gsub! /^\"/, ''
-						ins.gsub! /\"$/, ''
+						ins.gsub!(/^\"/, '')
+						ins.gsub!(/\"$/, '')
 #						$stderr.puts "["+ins+"]"
 						if nil == ins.index('%s')
 							# %sが含まれていないが、挿入情報は入っている(前にセット)
@@ -503,22 +502,20 @@ def macro_execute_ifdefl(layout, rdata)
 # 			# 置換元を、正規表現で支障のない形に直す
  			w_arg1 = [['\(', '\\('], ['\)', '\\)'], ['\+', '\\\+'], ['\*', '\\\*'], ['\/', '\\/'], ['\"', '\\"']]
  			w_arg1.each do |e|
- 				wd1[0].gsub! /#{e[0]}/, e[1]
+ 				wd1[0].gsub!(/#{e[0]}/, e[1])
  			end
 			# 実際の項目内容の置換処理
 			if wflg1 == 1
 				# 内容を有効にする
-#				rec_layout.gsub! wd1[0], wd1[3]
-				rec_layout.gsub! /#{wd1[0]}/, wd1[3]
+				rec_layout.gsub!(/#{wd1[0]}/, wd1[3])
 			else
 				# 内容を無効にする
 				wd5 = ''
 				# 領域の複製を作成し、置換後の内容を作成する
 				wd5 = wd1[3].clone
-				wd5.gsub! /^([^\s,]*?),.*?$/, '\1,const,'
+				wd5.gsub!(/^([^\s,]*?),.*?$/, '\1,const,')
 				# 実際の置換処理
-				rec_layout.gsub! /#{wd1[0]}/, wd5
-# 				rec_layout.gsub! /#{wd1[0]}/, ''
+				rec_layout.gsub!(/#{wd1[0]}/, wd5)
 				wd5 = ''
 			end
 		else
@@ -570,8 +567,8 @@ def get_record_data(line_ldata, rdata)
 			ret = [wd1[0], '']
 		else
 			wd2 = wd1[2]
-			wd2.gsub! /^\"/, ''
-			wd2.gsub! /\"$/, ''
+			wd2.gsub!(/^\"/, '')
+			wd2.gsub!(/\"$/, '')
 			ret = [wd1[0], wd2]
 		end
 #	else			# 素直に項目のセット
@@ -604,8 +601,8 @@ def get_record_data(line_ldata, rdata)
 			item_trim wd2
 			if sp==0 and wbyte==0
 				# 開始位置・バイト数とも０なので、挿入情報をそのままセット
-				ins.gsub! /^\"/, ''
-				ins.gsub! /\"$/, ''
+				ins.gsub!(/^\"/, '')
+				ins.gsub!(/\"$/, '')
 				ret = [param, ins]
 			else
 				if ins==nil or ins==''
@@ -613,8 +610,8 @@ def get_record_data(line_ldata, rdata)
 					ret = [param, wd2]
 				else
 #					$stderr.puts "["+ins+"]"
-					ins.gsub! /^\"/, ''
-					ins.gsub! /\"$/, ''
+					ins.gsub!(/^\"/, '')
+					ins.gsub!(/\"$/, '')
 #					$stderr.puts "["+ins+"]"
 					if nil == ins.index('%s')
 						# %sが含まれていないが、挿入情報は入っている(前にセット)
