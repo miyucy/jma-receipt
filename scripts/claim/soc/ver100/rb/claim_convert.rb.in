@@ -379,13 +379,13 @@ def def_conversion_proc_a(in_data)
 			end
 			w_data2 = []
 			# ----------------------------------------
-			case	(w_data1[0].gsub /\s*?\#[\S\s]*?$/, '')
+			case	(w_data1[0].gsub(/\s*?\#[\S\s]*?$/, ''))
 #			case	w_data1[0]
 			when	'$define'
 				#define文である
 				w_data2.push w_data1[1]
 				w_data2.push 'equal'
-				w_str1 = w_data1[2].gsub /\s*?\#[\S\s]*?$/, ''
+				w_str1 = w_data1[2].gsub(/\s*?\#[\S\s]*?$/, '')
 				w_data2.push w_str1
 #				w_data2.push w_data1[2]
 			# --------------------
@@ -393,13 +393,13 @@ def def_conversion_proc_a(in_data)
 				# const文である
 				w_data2.push w_data1[1]
 				w_data2.push 'const'
-				w_str1 = w_data1[2].gsub /\s*?\#[\S\s]*?$/, ''
+				w_str1 = w_data1[2].gsub(/\s*?\#[\S\s]*?$/, '')
 				w_data2.push w_str1
 #				w_data2.push w_data1[2]
 			# --------------------
 			when	'$nowdate'
 				# nowdate文である
-				w_str1 = w_data1[2].gsub /\s*?\#[\S\s]*?$/, ''
+				w_str1 = w_data1[2].gsub(/\s*?\#[\S\s]*?$/, '')
 				case	w_str1
 #				case	w_data1[2]
 				when	'%Y-%m-%d'
@@ -429,7 +429,7 @@ def def_conversion_proc_a(in_data)
 						w_data2.push w_data1[lcnt1]
 					else
 						# 一番最後の引数である
-						w_data2.push((w_data1[lcnt1].gsub /\s*?\#[\S\s]*?$/, ''))
+						w_data2.push((w_data1[lcnt1].gsub(/\s*?\#[\S\s]*?$/, '')))
 					end
 				end
 			# --------------------
@@ -447,7 +447,7 @@ def def_conversion_proc_a(in_data)
 					w_data2.push w_data1[0]
 					w_data2.push '0'
 					w_data2.push String(offset_count1)
-					w_str1 = w_data1[1].gsub /\s*?\#[\S\s]*?$/, ''
+					w_str1 = w_data1[1].gsub(/\s*?\#[\S\s]*?$/, '')
 					w_data2.push w_str1
 					offset_count1 += Integer(w_str1)
 #					w_data2.push w_data1[1]
@@ -457,10 +457,10 @@ def def_conversion_proc_a(in_data)
 					w_data2.push w_data1[0]
 					w_data2.push '0'
 					w_data2.push String(offset_count1)
-					w_str1 = w_data1[1].gsub /\s*?\#[\S\s]*?$/, ''
+					w_str1 = w_data1[1].gsub(/\s*?\#[\S\s]*?$/, '')
 					w_data2.push w_str1
 					w_data2.push ''
-					w_str2 = w_data1[2].gsub /\s*?\#[\S\s]*?$/, ''
+					w_str2 = w_data1[2].gsub(/\s*?\#[\S\s]*?$/, '')
 					w_data2.push w_str2
 #					w_data2.push w_data1[2]
 					offset_count1 += Integer(w_str1)
@@ -603,7 +603,7 @@ def basehierarchy_extend_proc(in_data)
 			elsif w_str1 =~ /^\s*?([^\/][\s\S]*?)$/
 				now_hierarchy += '/' + $1.strip
 			end
-			now_hierarchy.gsub! /\/$/, ''		# 末尾に「/」を付けていたら、はずす
+			now_hierarchy.gsub!(/\/$/, '')		# 末尾に「/」を付けていたら、はずす
 		elsif w_data1[x] =~ /^\s*?\$BaseEnd(\_[0-9]+?)\s*?$/i
 			# BaseEnd定義
 #			base_indexname1.pop
@@ -715,11 +715,11 @@ def hierarchy_conversion_proc_ver200(in_data)
 
 
 	w_data1 = ''
-	w_data2 = []
+	#w_data2 = []
 
-	w_str1 = []
-	w_str2 = []
-	w_str3 = ''
+	#w_str1 = []
+	#w_str2 = []
+	#w_str3 = ''
 
 
 	# 階層データのbase定義処理
@@ -813,16 +813,16 @@ end
 #    備考
 def hierarchy_save_proc_ver200(in_data, hir_filename)
 
-	def_data = []		# defファイルに出力するデータ
+	#def_data = []		# defファイルに出力するデータ
 	hir_data = []		# 階層パラメータリンクファイルに出力するデータ
 	# ※高速化のため、上記を配列化(1時間の処理が16秒に短縮...)
-	param_num = 0		# パラメータ名で使用する番号の初期化
-	offset_count = 0	# バイト数からオフセットを計算する
+	#param_num = 0		# パラメータ名で使用する番号の初期化
+	#offset_count = 0	# バイト数からオフセットを計算する
 	w_data1 = []
 	w_data2 = []
-	w_data3 = []
+	#w_data3 = []
 	w_str1 = ''
-	w_str2 = ''
+	#w_str2 = ''
 
 
 	w_data1 = in_data.split("\n")
@@ -833,7 +833,7 @@ def hierarchy_save_proc_ver200(in_data, hir_filename)
 	if w_data1[0] =~ /\A\s*?\#\$([\s\S]+?)$/
 		# 先頭行に表記が見つかった
 		w_str1 = $1
-		w_str1.gsub! /(\S)\s+?(\=)\s+?(\S)/, '\1\2\3'
+		w_str1.gsub!(/(\S)\s+?(\=)\s+?(\S)/, '\1\2\3')
 		if w_str1 =~ /type=hierarchy/i
 			w_data1[0] = '#$ type=hierarchy-execute version=2.0 encoding=EUC-JP'
 		else
@@ -855,21 +855,21 @@ def hierarchy_save_proc_ver200(in_data, hir_filename)
 		if w_data1[i] =~ /^[\s]*?\$LineTargetStart/i
 			# $LineTargetStart定義である
 			# 先頭の空白をなくす
-			w_data1[i].gsub! /^\s*?([^\s])/, '\1'
+			w_data1[i].gsub!(/^\s*?([^\s])/, '\1')
 			# 「,」前後の空白をなくす
-			w_data1[i].gsub! /([^\s])\s*?(\,)\s*?([^\s])/, '\1\2\3'
+			w_data1[i].gsub!(/([^\s])\s*?(\,)\s*?([^\s])/, '\1\2\3')
 			# 「=」の前後の空白をなくす
-			w_data1[i].gsub! /([^\s])\s*?(\=)\s*?([^\s])/, '\1\2\3'
+			w_data1[i].gsub!(/([^\s])\s*?(\=)\s*?([^\s])/, '\1\2\3')
 		elsif w_data1[i] =~ /^(\s*?\$LineTargetEnd)/i
 			# $LineTargetEnd定義である
 			# 先頭の空白をなくす
-			w_data1[i].gsub! /^\s*?([^\s])/, '\1'
+			w_data1[i].gsub!(/^\s*?([^\s])/, '\1')
 			# 「,」前後の空白をなくす
-			w_data1[i].gsub! /([^\s])\s*?(\,)\s*?([^\s])/, '\1\2\3'
+			w_data1[i].gsub!(/([^\s])\s*?(\,)\s*?([^\s])/, '\1\2\3')
 		elsif w_data1[i] =~ /^\s*?\$/
 			# $定義である
 			# 先頭の空白をなくす
-			w_data1[i].gsub! /^\s*?([^\s])/, '\1'
+			w_data1[i].gsub!(/^\s*?([^\s])/, '\1')
 		elsif w_data1[i] =~ /^\s*?\#/
 			# 「#」コメントである
 			if i > 0
@@ -883,12 +883,12 @@ def hierarchy_save_proc_ver200(in_data, hir_filename)
 		else
 			# パラメータである
 			# 先頭の空白をなくす
-			w_data1[i].gsub! /^\s*?([^\s])/, '\1'
+			w_data1[i].gsub!(/^\s*?([^\s])/, '\1')
 			# 「=」の前後の空白をなくす
-			w_data1[i].gsub! /([^\s])\s*?(\=)\s*?([^\s])/, '\1\2\3'
+			w_data1[i].gsub!(/([^\s])\s*?(\=)\s*?([^\s])/, '\1\2\3')
 			# 右辺の「,」以降をなくす
-			w_data1[i].gsub! /^([^\,]+?)\,[\s\S]*?$/, '\1'
-			w_data1[i].gsub! /([^\S])\s$/, '\1'
+			w_data1[i].gsub!(/^([^\,]+?)\,[\s\S]*?$/, '\1')
+			w_data1[i].gsub!(/([^\S])\s$/, '\1')
 		end
 	end
 
@@ -1049,7 +1049,7 @@ def hierarchy_conversion_proc_a(in_data)
 
 	# 行頭に空白があれば、空白を削除する
 	w_data2.each_index do |i|
-		w_data2[i].gsub! /^\s+?([^\s])/, '\1'
+		w_data2[i].gsub!(/^\s+?([^\s])/, '\1')
 	end
 
 
@@ -1060,10 +1060,10 @@ def hierarchy_conversion_proc_a(in_data)
 
 	# 通常のデータを「/タグ名[配列番号]/タグ名[配列番号]@属性名」から
 	#   「~タグ名(配列番号)~タグ名(配列番号)!属性名」に変換する
-	w_data1.gsub! /\//, '~'
-	w_data1.gsub! /\@/, '!'
-	w_data1.gsub! /\[/, '('
-	w_data1.gsub! /\]/, ')'
+	w_data1.gsub!(/\//, '~')
+	w_data1.gsub!(/\@/, '!')
+	w_data1.gsub!(/\[/, '(')
+	w_data1.gsub!(/\]/, ')')
 
 
 	return w_data1
@@ -1093,7 +1093,7 @@ def hierarchy_save_proc_a(in_data, hir_filename, def_filename)
 	w_data2 = []
 	w_data3 = []
 	w_str1 = ''
-	w_str2 = ''
+	#w_str2 = ''
 
 
 	w_data1 = in_data.split("\n")
