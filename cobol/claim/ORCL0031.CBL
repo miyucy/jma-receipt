@@ -481,6 +481,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  IDX-AREA
       *D   DISPLAY "LF04-PTID1 = " "[" LF04-PTID1 "]"
       *D   DISPLAY "LF04-PERFORM-TIME = " "[" LF04-PERFORM-TIME "]"
       *
