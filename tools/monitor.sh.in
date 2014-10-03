@@ -56,6 +56,11 @@ COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$SITELIBDIR"
 
 ####################################################################
 
+if test -x /usr/local/bin/monsetup; then
+    PANDA_BIN_DIR=/usr/local/bin
+else
+    PANDA_BIN_DIR=/usr/lib/panda/bin
+fi
 if test -x /usr/local/sbin/aps; then
     PANDA_SERVER_DIR=/usr/local/sbin
 else
@@ -131,6 +136,13 @@ function server_exit() {
 }
 
 ####################################################################
+
+if test -x $PANDA_BIN_DIR/monsetup ; then
+    if ! $PANDA_BIN_DIR/monsetup -dir $DIRECTORY ; then
+	echo "monsetup failed"
+	exit 9
+    fi
+fi
 
 for i in "$ORCA_DIR"/cobol/*; do
     if [ -d $i ] && [ $i != "CVS" ] ; then
