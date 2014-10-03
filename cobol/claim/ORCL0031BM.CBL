@@ -781,6 +781,13 @@
            DISPLAY " diagnosis connectname ="  WRK-BYOMEI
            DISPLAY " diagnosis check flag  ="  FLG-BYOMEI-CHK
       *
+      *    病名が空白のとき
+           IF      WRK-BYOMEI          =   SPACE
+               MOVE    "E03"               TO  WRK-DIAG-WARNING
+               PERFORM 500-WARNING-HENSYU-SEC
+               GO  TO  200612-BYOMEI-HEN-EXT
+           END-IF
+      *
       *    病名コードがエラー又は未コード化傷病名コードのとき
       *    疾患名から単独使用禁止の病名チェック
            IF      FLG-BYOMEI-CHK      =   1   OR  5
@@ -2324,6 +2331,9 @@
                                                DELIMITED   BY  SIZE 
                                        INTO    LNK-DIAG-MSG (CNT-DIAG)
                    END-STRING
+               WHEN    "E03"
+                   MOVE    "コード不正です"
+                                       TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W01"
                    MOVE    "廃止・移行・推奨あり"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
