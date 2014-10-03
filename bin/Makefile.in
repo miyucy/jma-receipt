@@ -22,6 +22,7 @@ shell_sources = \
 	medphoto_store.sh.in
 
 ruby_sources = \
+	jma-receipt-plugin-db-convert.rb.in \
 	orcvt_euc.rb.in \
 	orcvt_euc_kananame.rb.in \
 	convu8.rb.in
