@@ -103,8 +103,9 @@
       *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
+           03  WRK-WERRCD              PIC X(03).
            03  WRK-KEICD-G.
-               05  WRK-KEICD           PIC X(02)   OCCURS   5.
+               05  WRK-KEICD           PIC X(03)   OCCURS   5.
       *
            03  WRK-ERRCD-1             PIC X(02).
            03  WRK-ERRMSG-1            PIC X(100).
@@ -388,6 +389,7 @@
       *
            MOVE    ZERO                TO  MDCRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    SPACE               TO  WRK-WERRCD
            MOVE    SPACE               TO  WRK-KEICD-G
       *
            MOVE    ZERO                TO  FLG-SYORI
@@ -603,42 +605,42 @@
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL      (IDK     >   5   )   OR
                               (WRK-KEICD (IDK) =   SPACE)
-               MOVE    WRK-KEICD (IDK)     TO  WRK-ERRCD
+               MOVE    WRK-KEICD (IDK)     TO  WRK-WERRCD
       *        エラー・警告メッセージ
-               PERFORM 890-ERRCD-MSG-SEC
+               PERFORM 891-WARNING-MSG-SEC
                ADD     1                   TO  IDM1
-               MOVE    WRK-ERRCD           TO  MDCRES-MED-IWARNING
+               MOVE    WRK-WERRCD          TO  MDCRES-MEDI-WARNING
                                                                (IDM1)
-               MOVE    WRK-ERRMSG          TO  MDCRES-MED-IWARNING-MSG
+               MOVE    WRK-ERRMSG          TO  MDCRES-MEDI-WARNING-MSG
                                                                (IDM1)
            END-PERFORM
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL      (IDK     >   50  )   OR
                               (LNK-MEDI-CODE(IDK) =   SPACE)
                           OR  (IDM1    >   50  )
-               MOVE    LNK-MEDI-CODE(IDK)  TO  WRK-ERRCD
+               MOVE    LNK-MEDI-CODE(IDK)  TO  WRK-WERRCD
                MOVE    LNK-MEDI-MSG (IDK)  TO  WRK-ERRMSG
                IF      WRK-ERRMSG          =   SPACE
       *        エラー・警告メッセージ
-                   PERFORM 890-ERRCD-MSG-SEC
+                   PERFORM 891-WARNING-MSG-SEC
                END-IF
                ADD     1                   TO  IDM1
-               MOVE    WRK-ERRCD           TO  MDCRES-MED-IWARNING
+               MOVE    WRK-WERRCD          TO  MDCRES-MEDI-WARNING
                                                                (IDM1)
-               MOVE    WRK-ERRMSG          TO  MDCRES-MED-IWARNING-MSG
+               MOVE    WRK-ERRMSG          TO  MDCRES-MEDI-WARNING-MSG
                                                                (IDM1)
                IF      LNK-MEDI-POSITION (IDK) NOT =   ZERO
                    MOVE    LNK-MEDI-POSITION (IDK)
-                                           TO  MDCRES-MED-POSITION
+                                           TO  MDCRES-MEDI-POSITION
                                                                (IDM1)
                END-IF
                IF      LNK-MEDI-ITEM  (IDK)    NOT =   ZERO
                    MOVE    LNK-MEDI-ITEM (IDK)
-                                           TO  MDCRES-MED-ITEM-POSITION
+                                           TO  MDCRES-MEDI-ITEM-POSITION
                                                                (IDM1)
                END-IF
                MOVE    LNK-MEDI-SRYCD (IDK)
-                                           TO  MDCRES-MED-CODE
+                                           TO  MDCRES-MEDI-CODE
                                                                (IDM1)
            END-PERFORM
       *
@@ -649,17 +651,17 @@
            END-IF
            MOVE    ZERO                TO  IDM2
            PERFORM VARYING     IDK     FROM    1   BY  1
-                   UNTIL      (IDK     >   50  )   OR
-                              (LNK-DIAG-WARNING(IDK) =   SPACE)
+                   UNTIL      (IDK     >   50  )
+                          OR  (LNK-DIAG-WARNING(IDK) =   SPACE)
                           OR  (IDM2    >   50  )
-               MOVE    LNK-DIAG-WARNING (IDK)  TO  WRK-ERRCD
+               MOVE    LNK-DIAG-WARNING (IDK)  TO  WRK-WERRCD
                MOVE    LNK-DIAG-MSG     (IDK)  TO  WRK-ERRMSG
                IF      WRK-ERRMSG          =   SPACE
-      *        エラー・警告メッセージ
-                   PERFORM 890-ERRCD-MSG-SEC
+      *        警告メッセージ
+                   PERFORM 891-WARNING-MSG-SEC
                END-IF
                ADD     1                   TO  IDM2
-               MOVE    WRK-ERRCD           TO  MDCRES-DIAG-WARNING
+               MOVE    WRK-WERRCD          TO  MDCRES-DIAG-WARNING
                                                                (IDM2)
                MOVE    WRK-ERRMSG          TO  MDCRES-DIAG-WARNING-MSG
                                                                (IDM2)
@@ -840,7 +842,7 @@
                MOVE    MDCRES-INFORMATION-DATE
                                            TO  MDCRES-PERFORM-DATE
                ADD     1                   TO  IDK
-               MOVE    "K1"                TO  WRK-KEICD(IDK)
+               MOVE    "W01"               TO  WRK-KEICD(IDK)
            END-IF
       *    診療日をシステム日付へ
            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
@@ -1399,7 +1401,7 @@
                                            OR  SPACE )
                AND    (LNK-OUT-CNT1        >   ZERO )
                    ADD     1                   TO  IDK
-                   MOVE    "K2"                TO  WRK-KEICD(IDK)
+                   MOVE    "W02"               TO  WRK-KEICD(IDK)
                END-IF
            END-IF
       *
@@ -1765,14 +1767,14 @@
                        CONTINUE
                    ELSE
                        ADD     1                   TO  IDK
-                       MOVE    "K4"                TO  WRK-KEICD(IDK)
+                       MOVE    "W04"               TO  WRK-KEICD(IDK)
                    END-IF
                END-IF
            ELSE
       *        入院中以外
                IF      SPA-NYUGAIKBN       =   "1"
                    ADD     1                   TO  IDK
-                   MOVE    "K5"                TO  WRK-KEICD(IDK)
+                   MOVE    "W05"               TO  WRK-KEICD(IDK)
                END-IF
            END-IF
            .
@@ -2126,25 +2128,6 @@
            WHEN    "34"
                MOVE    "中途終了データ削除エラー"
                                                TO  WRK-ERRMSG
-      *警告
-           WHEN    "K1"
-               MOVE    "診療日を設定しました。"
-                                               TO  WRK-ERRMSG
-           WHEN    "K2"
-               MOVE    "保険組合せをゼロで登録しました。"
-                                               TO  WRK-ERRMSG
-           WHEN    "K4"
-               STRING  "入院期間中です。"
-                       "外来で展開できない保険組合せです。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "K5"
-               STRING  "入院中ではありません。"
-                       "入院で展開できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
       *共通エラー
            WHEN    "89"
       *        ORCSCOMMON のエラー
@@ -2187,6 +2170,36 @@
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       891-WARNING-MSG-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           EVALUATE    WRK-WERRCD
+      *警告
+           WHEN    "W01"
+               MOVE    "診療日を設定しました。"
+                                               TO  WRK-ERRMSG
+           WHEN    "W02"
+               MOVE    "保険組合せをゼロで登録しました。"
+                                               TO  WRK-ERRMSG
+           WHEN    "W04"
+               STRING  "入院期間中です。"
+                       "外来で展開できない保険組合せです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "W05"
+               STRING  "入院中ではありません。"
+                       "入院で展開できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           END-EVALUATE
+           .
+       891-WARNING-MSG-EXT.
            EXIT.
       *
       *****************************************************************

@@ -250,7 +250,7 @@
            03  WRK-INPUTCD         PIC X(50).
       *
       *H26.10
-           03  WRK-ERRCD           PIC X(02).
+           03  WRK-ERRCD           PIC X(03).
            03  WRK-MSG1            PIC X(80).
            03  WRK-HEN1            PIC Z9.
            03  WRK-HEN2            PIC Z9.
@@ -1506,7 +1506,7 @@
            IF      WRK-SRYSYUKBN       =   SPACE
                MOVE    LF04-SRYCD (IDX1)(1:2)  TO  WRK-SRYKBN
       *        診療種別なし
-               MOVE    "M6"                TO  WRK-ERRCD
+               MOVE    "M06"               TO  WRK-ERRCD
                PERFORM 400-ERRHENSYU-SEC
            END-IF
       *
@@ -1554,7 +1554,7 @@
       *            対象外の時、コードをクリアする
                    IF      FLG-CHK             =   1
       *                警告メッセージ
-                       MOVE    "M4"                TO  WRK-ERRCD
+                       MOVE    "M04"               TO  WRK-ERRCD
                        PERFORM 400-ERRHENSYU-SEC
       *!!
                        MOVE    SPACE           TO  LF04-IJICD(IDX1 IDX2)
@@ -1579,7 +1579,7 @@
                            PERFORM 2009-INPUTSET-CHK-SEC
                        ELSE
       *                    警告メッセージ
-                           MOVE    "M1"                TO  WRK-ERRCD
+                           MOVE    "M01"               TO  WRK-ERRCD
                            PERFORM 400-ERRHENSYU-SEC
                        END-IF
       *!
@@ -2143,7 +2143,7 @@
                                                        (TBL-MAX IDX-S)
       *!!!!!!!!!!
                ELSE
-                   MOVE    "M3"            TO  WRK-ERRCD
+                   MOVE    "M03"            TO  WRK-ERRCD
                    PERFORM 400-ERRHENSYU-SEC
       *!!!!!!!!!!
                END-IF
@@ -2988,7 +2988,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    警告メッセージ
            IF      FLG-INPUTSET        =   1
-               MOVE    "M2"                TO  WRK-ERRCD
+               MOVE    "M02"               TO  WRK-ERRCD
                PERFORM 400-ERRHENSYU-SEC
            END-IF
       *
@@ -3008,39 +3008,39 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    WRK-ERRCD           TO  LNK-MEDI-CODE (IDE1)
            MOVE    IDX1                TO  LNK-MEDI-POSITION (IDE1)
-           IF      WRK-ERRCD       NOT =   "M6"
+           IF      WRK-ERRCD       NOT =   "M06"
                MOVE    IDX2                TO  LNK-MEDI-ITEM (IDE1)
            END-IF
       *
            MOVE    SPACE               TO  WRK-MSG1
-           IF      WRK-ERRCD           =   "M6"
+           IF      WRK-ERRCD           =   "M06"
                MOVE    LF04-SRYCD (IDX1)(1:3)  TO  LNK-MEDI-SRYCD(IDE1)
            ELSE
                MOVE    WRK-SRYCD           TO  LNK-MEDI-SRYCD(IDE1)
            END-IF
       *
            EVALUATE    WRK-ERRCD
-               WHEN    "M6"
+               WHEN    "M06"
                    STRING  "診療種別区分がありません。"
                                            DELIMITED  BY  SIZE
                                            INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
-               WHEN    "M1"
+               WHEN    "M01"
                    STRING  "点数マスタに登録がありません。"
                                            DELIMITED  BY  SIZE
                                            INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
-               WHEN    "M2"
+               WHEN    "M02"
                    STRING  "セットテーブルに登録がありません。"
                                            DELIMITED  BY  SIZE
                                            INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
-               WHEN    "M3"
+               WHEN    "M03"
                    STRING  "名称の全角変換エラーです。"
                                            DELIMITED  BY  SIZE
                                            INTO  LNK-MEDI-MSG (IDE1)
                    END-STRING
-               WHEN    "M4"
+               WHEN    "M04"
                    STRING  "入力対象外のコードです。"
                                            DELIMITED  BY  SIZE
                                            INTO  LNK-MEDI-MSG (IDE1)

@@ -44,7 +44,7 @@
                05  LNK-ERR1-MSG             PIC X(100).
                05  LNK-MEDI-TBL-G           OCCURS   50.
       *        警告
-                   07  LNK-MEDI-CODE            PIC X(02).
+                   07  LNK-MEDI-CODE            PIC X(03).
                    07  LNK-MEDI-MSG             PIC X(100).
                    07  LNK-MEDI-POSITION        PIC 9(02).
                    07  LNK-MEDI-ITEM            PIC 9(02).
@@ -56,7 +56,7 @@
                05  LNK-ERR2-MSG             PIC X(100).
                05  LNK-DIAG-TBL-G           OCCURS   50.
       *            警告コード
-                   07  LNK-DIAG-WARNING         PIC X(02).
+                   07  LNK-DIAG-WARNING         PIC X(03).
       *            メッセージ
                    07  LNK-DIAG-MSG             PIC X(100).
       *            行番号

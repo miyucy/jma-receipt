@@ -113,15 +113,15 @@
       *           中途データワーニングメッセージ
                   05  MDCRES-MEDI-WARNING-TBL   OCCURS  50.
       *               ワーニングコード
-                      07  MDCRES-MED-IWARNING        PIC X(02).
+                      07  MDCRES-MEDI-WARNING        PIC X(03).
       *               ワーニングメッセージ
-                      07  MDCRES-MED-IWARNING-MSG    PIC X(100).
+                      07  MDCRES-MEDI-WARNING-MSG    PIC X(100).
       *               ワーニング剤番
-                      07  MDCRES-MED-POSITION        PIC X(02).
+                      07  MDCRES-MEDI-POSITION       PIC X(02).
       *               ワーニング行番号
-                      07  MDCRES-MED-ITEM-POSITION   PIC X(02).
+                      07  MDCRES-MEDI-ITEM-POSITION  PIC X(02).
       *               ワーニングコード
-                      07  MDCRES-MED-CODE            PIC X(09).
+                      07  MDCRES-MEDI-CODE           PIC X(09).
       *      病名メッセージ
               03  MDCRES-DIAGNOSIS-MSG-G.
       *           エラーコード
@@ -131,7 +131,7 @@
       *           病名ワーニングメッセージ
                   05  MDCRES-DIAG-WARNING-TBL    OCCURS  50.
       *               ワーニングコード
-                      07  MDCRES-DIAG-WARNING        PIC X(02).
+                      07  MDCRES-DIAG-WARNING        PIC X(03).
       *               ワーニングメッセージ
                       07  MDCRES-DIAG-WARNING-MSG    PIC X(100).
       *               行番号
