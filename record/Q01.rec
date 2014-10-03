@@ -17,10 +17,10 @@ Q01 {
     };
     CMB_SELPATTERN {
       SELPATTERN {
-        textdata varchar(33);
+        textdata varchar(103);
       };
       count int;
-        item varchar(33)[50];
+        item varchar(103)[50];
     };
     STSRYYMD {
       textdata varchar(10);
@@ -92,8 +92,15 @@ Q01 {
           count int;
             item varchar(10)[2];
         };
-        CHKTSTPT {
-          isactive bool;
+    	LBLTSTPT {
+      		textdata varchar(20);
+    	};
+        CMB_TSTPT {
+          TSTPT	{
+            textdata varchar(32);
+          };
+          count int;
+            item varchar(32)[5];
         };
         POST1 {
           textdata varchar(7);

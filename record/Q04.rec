@@ -3,11 +3,11 @@ Q04 {
     TITLE {
       textdata varchar(20);
     };
-    NAME {
-      textdata varchar(30);
-    };
     TITLEKBN {
       isactive bool;
+    };
+    NAME {
+      textdata varchar(100);
     };
   };
 };
