@@ -12079,6 +12079,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                   "292"
       *            ³°ÍÑÎ×»þ
                                                OR "295"
+      *            ÆÜÉþÎ×»þ
+                                               OR "298"
                    MOVE    1               TO  FLG-SYOHOU-ARI
                END-IF
       *        ºßÂðÃí¼Í±¡³°½èÊý

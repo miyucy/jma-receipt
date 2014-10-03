@@ -342,6 +342,7 @@
                                                OR  "149"
       *H26.4       Î×»þ
                                                OR  "292"
+                                               OR  "298"
                                                OR  "295")
                    CONTINUE
                ELSE

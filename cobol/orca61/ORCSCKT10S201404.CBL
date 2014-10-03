@@ -2883,20 +2883,18 @@
                            IF    ((SPA-INGAIKBN        =   "1"  ) AND
                                   (SPA-COM-SRYSYUKBN(IDX)
                                                        =   "210" OR
-                                                           "212" OR
                                                            "220" OR
-                                                           "222" OR
                                                            "230" OR
-                                                           "232" OR
                                                            "290" OR
-                                                           "292" OR
                                                            "293" OR
+                                                           "296" OR
                                                            SPACE )) OR
                                  ( SPA-COM-SRYSYUKBN(IDX)
                                                        =   "212" OR
                                                            "222" OR
                                                            "232" OR
                                                            "292" OR
+                                                           "298" OR
                                                            "295" )
                                CONTINUE
                            ELSE
@@ -3124,20 +3122,18 @@
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
                                                    =   "210" OR
-                                                       "212" OR
                                                        "220" OR
-                                                       "222" OR
                                                        "230" OR
-                                                       "232" OR
                                                        "290" OR
-                                                       "292" OR
                                                        "293" OR
+                                                       "296" OR
                                                        SPACE  ))  OR
                              ( SPA-COM-SRYSYUKBN(IDX)
                                                    =   "212" OR
                                                        "222" OR
                                                        "232" OR
                                                        "292" OR
+                                                       "298" OR
                                                        "295"  )
       *!!                  院外処方箋を交付しない場合の時、エラー
       *                    IF      SPA-ROUMANSEI-ARI   =   2
@@ -3193,7 +3189,6 @@
       *        検査、投薬、注射は算定できない
                EVALUATE    SPA-COM-SRYKBN(IDX)
                    WHEN    "60"
-                   WHEN    "64"
                    WHEN    "31"
                    WHEN    "32"
                    WHEN    "33"
@@ -3208,20 +3203,18 @@
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
                                                    =   "210" OR
-                                                       "212" OR
                                                        "220" OR
-                                                       "222" OR
                                                        "230" OR
-                                                       "232" OR
                                                        "290" OR
-                                                       "292" OR
                                                        "293" OR
+                                                       "296" OR
                                                        SPACE  ))  OR
                              ( SPA-COM-SRYSYUKBN(IDX)
                                                    =   "212" OR
                                                        "222" OR
                                                        "232" OR
                                                        "292" OR
+                                                       "298" OR
                                                        "295"  )
       *!!                  院外処方箋を交付しない場合の時、エラー
       *                    IF     (SPA-SEIKATU-ARI     =   2 )  OR
@@ -3285,20 +3278,18 @@
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
                                                    =   "210" OR
-                                                       "212" OR
                                                        "220" OR
-                                                       "222" OR
                                                        "230" OR
-                                                       "232" OR
                                                        "290" OR
-                                                       "292" OR
                                                        "293" OR
+                                                       "296" OR
                                                        SPACE  ))  OR
                              ( SPA-COM-SRYSYUKBN(IDX)
                                                    =   "212" OR
                                                        "222" OR
                                                        "232" OR
                                                        "292" OR
+                                                       "298" OR
                                                        "295"  )
       *!!                  院外処方箋を交付しない場合の時、エラー
       *                    IF     (SPA-SEIKATU-ARI     =   2 )  OR
@@ -3370,20 +3361,18 @@
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
                                                    =   "210" OR
-                                                       "212" OR
                                                        "220" OR
-                                                       "222" OR
                                                        "230" OR
-                                                       "232" OR
                                                        "290" OR
-                                                       "292" OR
                                                        "293" OR
+                                                       "296" OR
                                                        SPACE  ))  OR
                              ( SPA-COM-SRYSYUKBN(IDX)
                                                    =   "212" OR
                                                        "222" OR
                                                        "232" OR
                                                        "292" OR
+                                                       "298" OR
                                                        "295"  )
                            CONTINUE
                        ELSE
@@ -3534,20 +3523,18 @@
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
                                                    =   "210" OR
-                                                       "212" OR
                                                        "220" OR
-                                                       "222" OR
                                                        "230" OR
-                                                       "232" OR
                                                        "290" OR
-                                                       "292" OR
                                                        "293" OR
+                                                       "296" OR
                                                        SPACE  ))  OR
                              ( SPA-COM-SRYSYUKBN(IDX)
                                                    =   "212" OR
                                                        "222" OR
                                                        "232" OR
                                                        "292" OR
+                                                       "298" OR
                                                        "295"  )
                            CONTINUE
                        ELSE

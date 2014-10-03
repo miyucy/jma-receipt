@@ -1720,8 +1720,7 @@
                   (ACCT-ZAITEN         >   ZERO )  AND
                   (FLG-YAKUZAI         =   1    )  AND
                  ((WKSRY-SRYSYUKBN     =   SPACE   )  OR
-                  (WKSRY-SRYSYUKBN(3:1)    =   "0" )  OR
-                  (WKSRY-SRYSYUKBN         =   "293"))
+                  (WKSRY-SRYSYUKBN(3:1)    =   "0" ))
                MOVE    WKSRY-SRYKBN        TO  WKSRY-UPHMS(1:2)
                MOVE    "1"                 TO  WKSRY-UPHMS(3:1)
                MOVE    1                   TO  FLG-INNAI
@@ -1731,6 +1730,7 @@
                                        OR  "231"
                                        OR  "291"
                                        OR  "294"
+                                       OR  "297"
                                        OR  "141"
                                        OR  "142")
             OR   ((WKSRY-SRYSYUKBN     =   "140") AND
@@ -1744,6 +1744,7 @@
                                        OR  "232"
                                        OR  "292"
                                        OR  "295"
+                                       OR  "298"
                                        OR  "148"
                                        OR  "149")
                MOVE    "1"                     TO  SPA-NAI-INNAI
@@ -3959,6 +3960,7 @@
                                                OR  "213"
                                                OR  "223"
                                                OR  "233"
+                                               OR  "297"
                                                OR  "294" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
@@ -4107,6 +4109,7 @@
                                                OR  "213"
                                                OR  "223"
                                                OR  "233"
+                                               OR  "297"
                                                OR  "294" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
@@ -4269,6 +4272,7 @@
                                                OR  "213"
                                                OR  "223"
                                                OR  "233"
+                                               OR  "297"
                                                OR  "294" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF

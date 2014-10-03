@@ -84,6 +84,7 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/06/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  14/07/30  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/10/02  ÆÜÉþ¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
       *****************************************************************
       *
       *
@@ -1244,6 +1245,7 @@
       *        Ï·¿ÍÊÝ¸±
                EVALUATE    COMB-HKNNUM
                    WHEN    "060"
+                   WHEN    "068"
       *                ¹ñÊÝ
                        EVALUATE    COMB-HOJOKBN
                            WHEN    "1"
@@ -2712,6 +2714,7 @@
                                                    "221"  OR
                                                    "231"  OR
                                                    "291"  OR
+                                                   "297"  OR
                                                    "294" )
       *                ±¡Æâ½èÊý¼ïÊÌ
                        MOVE    1               TO  FLG-TAIGAI
@@ -2730,6 +2733,7 @@
                                                    "222"  OR
                                                    "232"  OR
                                                    "292"  OR
+                                                   "298"  OR
                                                    "295")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -2748,7 +2752,8 @@
                   OR  (WRK-SRYSYUKBN(3:1)  =   "0"   )
       *H26.4
       *           ³°ÍÑÎ×»þÅêÌô
-                  OR  (WRK-SRYSYUKBN       =   "293"  ))
+                  OR  (WRK-SRYSYUKBN       =   "293"  )
+                  OR  (WRK-SRYSYUKBN       =   "296"  ))
                    IF     (FLG-SYOHO-IN        =   2    )
       *                ºÞÅÀ¿ô¥¼¥í¤Ç±¡Æâ½èÊý°õºþ
                        IF     (ACCT-ZAITEN         =   ZERO )
@@ -4236,6 +4241,7 @@
                                            OR  "221"
                                            OR  "231"
                                            OR  "291"
+                                           OR  "297"
                                            OR  "294" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
@@ -4244,6 +4250,7 @@
                                            OR  "222"
                                            OR  "232"
                                            OR  "292"
+                                           OR  "298"
                                            OR  "295" )
                    MOVE    1               TO  FLG-OK2
                END-IF
@@ -4261,6 +4268,7 @@
                                            OR  "221"
                                            OR  "231"
                                            OR  "291"
+                                           OR  "297"
                                            OR  "294" )
                    MOVE    1               TO  FLG-OK2
                END-IF
@@ -4269,6 +4277,7 @@
                                            OR  "222"
                                            OR  "232"
                                            OR  "292"
+                                           OR  "298"
                                            OR  "295" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF

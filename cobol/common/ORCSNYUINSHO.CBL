@@ -397,6 +397,7 @@
                                            OR  "149"
       *H26.4   外用（臨時）
                                            OR  "295"
+                                           OR  "298"
                    MOVE    1               TO  FLG-YAKU-ARI
                END-IF
            END-IF
@@ -536,6 +537,7 @@
                                            OR  "982"
       *H26.4   外用（臨時）
                                            OR  "295"
+                                           OR  "298"
                    MOVE    1               TO  FLG-YAKU-ARI
                END-IF
            END-IF

@@ -81,6 +81,7 @@
       * 04.08.00     NACL-多々納  13/03/18  一般名記載ログ出力対応
       * 04.07.00     NACL-多々納  13/10/08  第三者行為対応
       * 04.08.00     NACL-多々納  14/07/30  一時ディレクトリ対応
+      * 04.07.00     NACL-多々納  14/10/02  頓服（臨時投薬）対応
       *****************************************************************
       *
       *
@@ -2620,6 +2621,7 @@
                                                    "221"  OR
                                                    "231"  OR
                                                    "291"  OR
+                                                   "297"  OR
                                                    "294" )
       *                院内処方種別
                        MOVE    1               TO  FLG-TAIGAI
@@ -2638,6 +2640,7 @@
                                                    "222"  OR
                                                    "232"  OR
                                                    "292"  OR
+                                                   "298"  OR
                                                    "295")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -2655,7 +2658,8 @@
                AND   ((WRK-SRYSYUKBN       =   SPACE )
                   OR  (WRK-SRYSYUKBN(3:1)  =   "0"   )
       *H26.4      外用（臨時）
-                  OR  (WRK-SRYSYUKBN       =   "293" ))
+                  OR  (WRK-SRYSYUKBN       =   "293" )
+                  OR  (WRK-SRYSYUKBN       =   "296" ))
                    IF     (FLG-SYOHO-IN        =   2    )
       *                剤点数ゼロで院内処方印刷
                        IF     (ACCT-ZAITEN         =   ZERO )
@@ -4137,6 +4141,7 @@
                                            OR  "221"
                                            OR  "231"
                                            OR  "291"
+                                           OR  "297"
                                            OR  "294" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF
@@ -4145,6 +4150,7 @@
                                            OR  "222"
                                            OR  "232"
                                            OR  "292"
+                                           OR  "298"
                                            OR  "295" )
                    MOVE    1               TO  FLG-OK2
                END-IF
@@ -4162,6 +4168,7 @@
                                            OR  "221"
                                            OR  "231"
                                            OR  "291"
+                                           OR  "297"
                                            OR  "294" )
                    MOVE    1               TO  FLG-OK2
                END-IF
@@ -4170,6 +4177,7 @@
                                            OR  "222"
                                            OR  "232"
                                            OR  "292"
+                                           OR  "298"
                                            OR  "295" )
                    MOVE    ZERO            TO  FLG-OK2
                END-IF

@@ -61,6 +61,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/06/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     Êñ³ç¥¨¥é¡¼Ê¬ÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/10/02  ÆÜÉþ¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1152,13 +1153,15 @@
                                                    "222"  OR
                                                    "232"  OR
                                                    "292"  OR
-                                                   "295" )  OR
+                                                   "295"  OR
+                                                   "298" )  OR
                  ((LNK-ORCSC-INGAIKBN          =   "1"   ) AND
                   (WRK-CHK-SRYSYUKBN           =   "210"  OR
                                                    "220"  OR
                                                    "230"  OR
                                                    "293"  OR
-                                                   "290" ))  OR
+                                                   "290"  OR
+                                                   "296" ))  OR
                  ( WRK-CHK-SRYSYUKBN           =   "213"  OR
                                                    "223"  OR
                                                    "233" ) 
@@ -1219,12 +1222,10 @@
                    (WRK-COM-SRYKBN (IDX-Z)     =   "21" )
       *        ±¡³°ÆâÉþÅêÌô
                IF    (WRK-COM-SRYSYUKBN(IDX-Z) =   "212"
-                                               OR  "292"
-                                               OR  "295" )  OR
+                                               OR  "292" )  OR
                     ((WRK-COM-SRYSYUKBN(IDX-Z)  =   SPACE
                                                 OR  "210"
-                                                OR  "290"
-                                                OR  "293" ) AND
+                                                OR  "290" ) AND
                      (LNK-ORCSC-INGAIKBN       =   "1"   ))
       *            °ìÈÌÌ¾µ­ºÜÍ­Ìµ
                    MOVE    ZERO                TO  FLG-CHK-P
@@ -1633,6 +1634,7 @@
                    WHEN    "292"
                        MOVE     1              TO  FLG-NAIYAK2
                    WHEN    "221"
+                   WHEN    "297"
                        MOVE     1              TO  FLG-TONPUK
                        IF      WRK-NAI-HKNCOMBI    =   SPACE
                            MOVE    WRK-COM-HKNCOMBI (IDX)
@@ -1641,6 +1643,7 @@
                                                    TO  WRK-NAI-CHIKENKBN
                        END-IF
                    WHEN    "222"
+                   WHEN    "298"
                        MOVE     1              TO  FLG-TONPUK2
                    WHEN    "231"
                    WHEN    "294"
@@ -1762,7 +1765,7 @@
                                                    "120001710"  )
                    MOVE    IDX                 TO  IDX-CHOKI
                END-IF
-      *TEST
+      *
       *H26.10
       *        ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿½èÊý¤»¤óÎÁ
                IF      WRK-COM-INPUTCD (IDX)   =   CONS-TAZAI-SYOSEN
@@ -1782,12 +1785,11 @@
                 AND   (SPA-NYUGAIKBN           =   "2"  )
                    PERFORM 30002-PSYCHO-HEN-SEC
                END-IF
-      *TEST
-      *TEST
+      *
       *
             END-IF
            END-PERFORM
-      *???
+      *
       *H26.4
       *    ³°Íè¤Î¤¦¤¬¤¤Ìô¤Î¤ß¤Î¥Á¥§¥Ã¥¯
            IF     (WRK-UGAI-YAK        >   ZERO )
@@ -1870,13 +1872,16 @@
                        MOVE    "212"          TO  WRK-CHK-SRYSYUKBN
                    WHEN    "290" 
                        MOVE    "292"          TO  WRK-CHK-SRYSYUKBN
-                   WHEN    "220" 
+                   WHEN    "220"
                        MOVE    "222"          TO  WRK-CHK-SRYSYUKBN
                    WHEN    "230" 
                        MOVE    "232"          TO  WRK-CHK-SRYSYUKBN
       *H26.4
                    WHEN    "293"
                        MOVE    "295"          TO  WRK-CHK-SRYSYUKBN
+      *H26.10      ÆÜÉþÎ×»þ
+                   WHEN    "296"
+                       MOVE    "298"          TO  WRK-CHK-SRYSYUKBN
                END-EVALUATE
            ELSE
                EVALUATE    WRK-CHK-SRYSYUKBN
@@ -1891,6 +1896,9 @@
       *H26.4
                    WHEN    "293"
                        MOVE    "294"          TO  WRK-CHK-SRYSYUKBN
+      *H26.10      ÆÜÉþÎ×»þ
+                   WHEN    "296"
+                       MOVE    "297"          TO  WRK-CHK-SRYSYUKBN
                END-EVALUATE
            END-IF
           .
@@ -2524,10 +2532,6 @@
                    PERFORM 300301-YOUHO-HENSUB-SEC
                END-IF
            END-PERFORM
-      *TEST
-      *    DISPLAY "WRK-ZAICNT2-AL:" WRK-ZAICNT2-AL
-      *          ",WRK-ZAICNT-AL:"  WRK-ZAICNT-AL
-      *TEST
            .
        30030-YOUHOU-HEN-EXT.
            EXIT.
@@ -2690,6 +2694,7 @@
                    WHEN    "231"
                    WHEN    "291"
                    WHEN    "294"
+                   WHEN    "297"
       *            ÆâÉþ¡¡ËãÆÇ¶èÊ¬È½Äê
                       IF      WRK-COM-MADOKUKBN (IDX) NOT =   ZERO
                            MOVE    1           TO  FLG-MADOKU
@@ -2716,6 +2721,7 @@
                    WHEN    "232"
                    WHEN    "292"
                    WHEN    "295"
+                   WHEN    "298"
       *                ±¡³°½èÊý¡¡°ìÈÌÌ¾µ­ºÜÈ½Äê
                        MOVE    ZERO                TO  FLG-CHK-P
       ***************  IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
@@ -2768,6 +2774,13 @@
                IF      (WRK-CHK-SRYSYUKBN       =   "293"
                                                 OR  "294"
                                                 OR  "295")
+                   MOVE    ZERO                TO  FLG-NAIFUKU
+               END-IF
+      *H26.10
+      *        ÆÜÉþ¡ÊÎ×»þ¡Ë¤ÏÂÐ¾Ý³°
+               IF      (WRK-CHK-SRYSYUKBN       =   "296"
+                                                OR  "297"
+                                                OR  "298")
                    MOVE    ZERO                TO  FLG-NAIFUKU
                END-IF
            ELSE
@@ -4473,7 +4486,8 @@
                                            OR  "291"
                                            OR  "221"
                                            OR  "231"
-                                           OR  "294" )
+                                           OR  "294"
+                                           OR  "297" )
                    MOVE    1               TO  FLG-NAIFUKU
       *            ÌôºÞÎÁÄþ¸º¥Á¥§¥Ã¥¯½èÍý
                    PERFORM 300110-GENTUIKA-CHK-SEC
@@ -4486,6 +4500,7 @@
                    EVALUATE    WRK-CHK-SRYSYUKBN
       *            ÆÜÉþ
                    WHEN    "221"
+                   WHEN    "297"
                        PERFORM 30022-TAZAI22-GENCHK-SEC
       *            ³°ÍÑ
                    WHEN    "231"
