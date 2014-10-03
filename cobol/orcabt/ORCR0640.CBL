@@ -7129,7 +7129,7 @@
                     OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
                         IF   SRY-SRYSYUKBN  =  "212" OR "292" OR
                                                "222" OR "232" OR
-                                               "295"
+                                               "295" OR "298"
                           IF   RECE64-TOYAKUFLG = SPACE
                             MOVE   "2"    TO    RECE64-TOYAKUFLG
                           END-IF

@@ -9903,7 +9903,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
                         IF   SRY-SRYSYUKBN  =  "212" OR "292" OR
                                                "222" OR "232" OR
-                                               "295"
+                                               "295" OR "298"
                           IF   RECE04-TOYAKUFLG = SPACE
                             MOVE   "2"    TO    RECE04-TOYAKUFLG
                           END-IF
