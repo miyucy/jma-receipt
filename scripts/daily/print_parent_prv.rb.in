@@ -151,16 +151,16 @@ temp_file = data_file + '.tmp'
 
 # ファイル名の前後の「'」「"」を取り除く処理
 def filename_change(name)
-	filename_change = name.gsub /\A[\'\"]([\s\S]*?)[\'\"][\s]*?\z/, '\1'
+	return name.gsub(/\A[\'\"]([\s\S]*?)[\'\"][\s]*?\z/, '\1')
 end
 
 
 # ファイル名に空白がある場合、前後に「"」をセットする処理
 def filename_unchange(name)
 	if name =~ / /
-		filename_unchange = "\"" + name + "\""
+		return "\"" + name + "\""
 	else
-		filename_unchange = name
+		return name
 	end
 end
 
@@ -756,7 +756,7 @@ when    '5'     # PSファイル出力の指示
 		system("echo monupload -t report -T \"#{report_title}\" #{monupload_options} #{PDF_File}" )
 		system("monupload -t report -T \"#{report_title}\" #{monupload_options} #{PDF_File}" )
 		File.delete(PDF_File)
-	end
+end
 	puts '[end ' + `date` + ']'
 # ============================================================
 
