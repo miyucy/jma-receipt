@@ -623,7 +623,9 @@ path	tmpkey	{
 		FROM   tbl_chksnd
 		WHERE  HOSPNUM	  = :HOSPNUM
 		;
+	};
 		
+	DBCREATEINDEX	{
 		CREATE INDEX idx_chksnd_tmp ON pg_temp.tbl_chksnd (SRYCD)
 		;
 	};

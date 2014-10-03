@@ -1362,11 +1362,18 @@
                                        SPA-AREA
       *
            CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
            MOVE    SPA-HOSPNUM     TO  CHKSND-HOSPNUM
            MOVE    CHKSND-REC      TO  MCPDATA-REC
            MOVE    "tbl_chksnd"    TO  MCP-TABLE
            MOVE    "tmpkey"        TO  MCP-PATHNAME
            PERFORM 910-DBCREATE-SEC
+      *
+           MOVE    CHKSND-REC      TO  MCPDATA-REC
+           MOVE    "tbl_chksnd"    TO  MCP-TABLE
+           MOVE    "tmpkey"        TO  MCP-PATHNAME
+           PERFORM 910-DBCREATEINDEX-SEC
+      *
            CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
       *
            MOVE    ZERO                TO  FLG-END
@@ -16269,6 +16276,21 @@
            .
       *
        910-DBCREATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ã£Ò£Å£Á£Ô£Å£É£Î£Ä£Å£Ø½èÍý
+      *****************************************************************
+       910-DBCREATEINDEX-SEC           SECTION.
+      *
+           MOVE    "DBCREATEINDEX"     TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBCREATEINDEX-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â£Ä£Ò£Ï£Ð½èÍý
