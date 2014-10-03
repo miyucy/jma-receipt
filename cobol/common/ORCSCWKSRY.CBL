@@ -3686,6 +3686,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                     自費の診療種別のもの
           IF     (SPA-COM-INPUTCD(IDX)(1:3)   =   "095"  OR  "096")  OR
                  (SPA-COM-SRYSYUKBN (IDX)     =   "950"  OR  "960")
+      *H26.10
+            OR   (SPA-COM-SRYSYUKBN (IDX)     =   "961"           )
+      *
                PERFORM 45011-TGMONEY-SET-SEC
                GO      TO      4501-SEIKYU-KEI-EXT
            END-IF
@@ -3819,6 +3822,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-EVALUATE
       *        消費税あり
                WHEN    "960"
+      *H26.10      追加
+               WHEN    "961"
+      *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-1-TAX
@@ -3893,6 +3899,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 450111-TGMONEY-SEC
       *        消費税あり
                WHEN    "960"
+      *H26.10      追加
+               WHEN    "961"
+      *
                    PERFORM 450111-TGMONEY-TAX-SEC
            END-EVALUATE
            .
