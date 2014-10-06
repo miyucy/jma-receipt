@@ -40,11 +40,35 @@ def convert_database(dbpath)
   begin
     db = SQLite3::Database.new(dbpath)
     db.type_translation = true
-    rows = db.execute("SELECT name,version,description,vendor,date,url,install,link,available from control;")
+    sql = <<-EOS
+      SELECT 
+        name,
+        version,
+        description,
+        vendor,
+        date,
+        url,
+        install,
+        link,
+        available 
+      FROM control;
+    EOS
+    rows = db.execute(sql)
     rows.each do |row|
       row[4] = "#{$1}-#{$2}-#{$3}" if %r|(\d{4})(\d{2})(\d{2})| =~ row[4]
-      uuid = SecureRandom.uuid
-      sql = "INSERT INTO tbl_plugin VALUES ('#{uuid}','#{row[0]}','#{row[1]}','','#{row[3]}','#{row[4]}','#{row[5]}','#{row[6]}','#{row[7]}','#{row[8]}');"
+      sql = <<-EOS
+        INSERT INTO tbl_plugin 
+        VALUES (
+          '#{row[0]}',
+          '#{row[1]}',
+          '',
+          '#{row[3]}',
+          '#{row[4]}',
+          '#{row[5]}',
+          '#{row[6]}',
+          '#{row[7]}',
+          '#{row[8]}');
+      EOS
       STDERR.puts sql
       monsql(sql)
     end
