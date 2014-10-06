@@ -1,5 +1,4 @@
 CREATE TABLE tbl_plugin (
-  id varchar(64) primary key,
   name varchar(256) not null,
   version varchar(256) not null,
   description varchar(1024),
@@ -8,5 +7,6 @@ CREATE TABLE tbl_plugin (
   url varchar(512) not null,
   install boolean not null,
   link boolean not null,
-  available boolean not null
+  available boolean not null,
+  PRIMARY KEY(name,version)
 );
