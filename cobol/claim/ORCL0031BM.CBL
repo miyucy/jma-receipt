@@ -604,6 +604,15 @@
       *
            MOVE    WRK-BYOMEICD-G  TO  WRK-SPICOD-G
       *
+      *    補足コメントチェック
+           IF    ( LNK-KBN-V2          =   "1" )
+           AND   ( LNK-KBN-CODE        =   "1" )
+               PERFORM 2006128-HOSOKU-COMMENT-CHK-SEC
+      *****    IF      WRK-DIAG-WARNING    NOT =   SPACE
+      *****        GO  TO  200611-BYOMEICD-CHK-EXT
+      *****    END-IF 
+           END-IF
+      *
            IF      FLG-BYOMEI-CHK      =   1
                GO  TO  200611-BYOMEICD-CHK-EXT
            END-IF 
@@ -709,33 +718,36 @@
                 END-IF
            END-IF 
       *
-      *    単独使用禁止の病名チェック
-           IF      FLG-BYOMEI-CHK      =   ZERO
-               MOVE    ZERO                TO  WRK-TANDOKUKBN
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       6
-                       OR      WRK-TBYOMEICD (IDY) =   SPACE
-                   IF      WRK-TTANDOKUKBN (IDY)   =   ZERO
-                       MOVE    1                   TO  WRK-TANDOKUKBN
-                   END-IF
-               END-PERFORM
-      *
-               IF      WRK-TANDOKUKBN      =   ZERO
-                   IF    ( LNK-KBN-V2          =   "1" )
-                   AND   ( LNK-KBN-CODE        =   "1" )
-                       IF     ( LF04-HOSOKUCD-G (IDX)  =   SPACE )
-                       AND    ( LF04-HOSOKU-COMMENT (IDX)
-                                                       =   SPACE )
-                           MOVE    2               TO  FLG-BYOMEI-CHK
+      *    単独使用禁止の病名チェック（補足コメントエラー以外）
+           IF    ( FLG-HOSOKU-CHK      =   2     )
+           AND   ( WRK-HOSOKU-COMMENT  =   SPACE )
+               CONTINUE
+           ELSE
+               IF      FLG-BYOMEI-CHK      =   ZERO
+                   MOVE    ZERO                TO  WRK-TANDOKUKBN
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       6
+                           OR      WRK-TBYOMEICD (IDY) =   SPACE
+                       IF      WRK-TTANDOKUKBN (IDY)   =   ZERO
+                           MOVE    1               TO  WRK-TANDOKUKBN
                        END-IF
-                   ELSE
-                       MOVE    2                   TO  FLG-BYOMEI-CHK
-                   END-IF
-               END-IF
+                   END-PERFORM
       *
-               IF      FLG-BYOMEI-CHK          =   2
-                   MOVE    "W02"               TO  WRK-DIAG-WARNING
-                   PERFORM 500-WARNING-HENSYU-SEC
+                   IF      WRK-TANDOKUKBN      =   ZERO
+                       IF    ( LNK-KBN-V2          =   "1" )
+                       AND   ( LNK-KBN-CODE        =   "1" )
+                           IF      WRK-HOSOKU-COMMENT  =   SPACE
+                               MOVE    2           TO  FLG-BYOMEI-CHK
+                           END-IF
+                       ELSE
+                           MOVE    2           TO  FLG-BYOMEI-CHK
+                       END-IF
+                   END-IF
+      *
+                   IF      FLG-BYOMEI-CHK      =   2
+                       MOVE    "W02"               TO  WRK-DIAG-WARNING
+                       PERFORM 500-WARNING-HENSYU-SEC
+                   END-IF
                END-IF
            END-IF
       *           
@@ -788,6 +800,17 @@
                GO  TO  200612-BYOMEI-HEN-EXT
            END-IF
       *
+      *    補足コメントコードがエラーのとき
+           IF    ( LNK-KBN-V2          =   "1" )
+           AND   ( LNK-KBN-CODE        =   "1" )
+               IF    ( FLG-HOSOKU-CHK      =   2     )
+               AND   ( WRK-HOSOKU-COMMENT  =   SPACE )
+                   MOVE    "E04"               TO  WRK-DIAG-WARNING
+                   PERFORM 500-WARNING-HENSYU-SEC
+                   GO  TO  200612-BYOMEI-HEN-EXT
+               END-IF 
+           END-IF
+      *
       *    病名コードがエラー又は未コード化傷病名コードのとき
       *    疾患名から単独使用禁止の病名チェック
            IF      FLG-BYOMEI-CHK      =   1   OR  5
@@ -805,9 +828,7 @@
                IF      LNK-BYO-TANDOKUKBN-ERR  =   1
                    IF    ( LNK-KBN-V2          =   "1" )
                    AND   ( LNK-KBN-CODE        =   "1" )
-                       IF     ( LF04-HOSOKUCD-G (IDX)  =   SPACE )
-                       AND    ( LF04-HOSOKU-COMMENT (IDX)
-                                                       =   SPACE )
+                       IF      WRK-HOSOKU-COMMENT  =   SPACE
                            MOVE    2               TO  FLG-BYOMEI-CHK
                        END-IF
                    ELSE
@@ -860,12 +881,6 @@
                    MOVE    "？？？？？"        TO  WRK-BYOMEI
                    PERFORM 500-WARNING-HENSYU-SEC
                END-IF
-           END-IF
-      *
-      *    補足コメントチェック
-           IF    ( LNK-KBN-V2          =   "1" )
-           AND   ( LNK-KBN-CODE        =   "1" )
-               PERFORM 2006128-HOSOKU-COMMENT-CHK-SEC
            END-IF
       *
       *    疾患開始日
@@ -2074,12 +2089,12 @@
       *****************************************************************
        2006128-HOSOKU-COMMENT-CHK-SEC  SECTION.
       *
-           MOVE    SPACE               TO  WRK-HOSOKU-COMMENT
-      *
            DISPLAY " disease_sname ="  LF04-HOSOKU-COMMENT (IDX)
       *
-           IF      LF04-HOSOKUCD-G (IDX) =   SPACE
+           MOVE    SPACE               TO  WRK-HOSOKU-COMMENT
+           MOVE    ZERO                TO  FLG-HOSOKU-CHK
       *
+           IF      LF04-HOSOKUCD-G (IDX) =   SPACE
                MOVE    LF04-HOSOKU-COMMENT (IDX)
                                              TO  WRK-HOSOKU-COMMENT
            ELSE
@@ -2095,12 +2110,12 @@
                    MOVE    LF04-HOSOKUCD (IDX IDY)
                                            TO  WRK-THOSOKUCD (IDY)
                END-PERFORM
-      *     
+      *
       *        補足コメントコードチェック
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       3
                        OR      WRK-THOSOKUCD (IDY) =   SPACE
-      *
+                       OR      FLG-HOSOKU-CHK      =   2
                    MOVE    ZERO                TO  FLG-HOSOKU-CHK
       *
       *            病名コードの長さチェック
@@ -2134,11 +2149,12 @@
                        PERFORM 900-BYOMEI-READ-SEC
                        IF      FLG-BYOMEI          =   ZERO  
                            MOVE    BYO-BYOMEI      TO
-                                               WRK-THOSOKU-COMMENT (IDY)
+                                           WRK-THOSOKU-COMMENT (IDY)
+                       ELSE
+                           MOVE    1               TO  FLG-HOSOKU-CHK
                        END-IF
                    END-IF
-                   IF    ( FLG-HOSOKU-CHK      =   1 )
-                   OR    ( FLG-BYOMEI          =   1 )
+                   IF      FLG-HOSOKU-CHK      =   1
       *                自院病名チェック
                        INITIALIZE              USERBYOMEI-REC
                        MOVE    WRK-THOSOKUCD (IDY)
@@ -2147,21 +2163,30 @@
                        IF      FLG-USERBYOMEI  =   ZERO
                            MOVE    USBYO-BYOMEI    TO
                                                WRK-THOSOKU-COMMENT (IDY)
+                           MOVE    ZERO            TO  FLG-HOSOKU-CHK
+                       ELSE
+                           MOVE    2               TO  FLG-HOSOKU-CHK
+                           INITIALIZE                  WRK-HOSOKU-TBL
                        END-IF
                    END-IF
                END-PERFORM
-      *           
-      *       補足コメントを組み立てる
+      *
+      *        補足コメントを組み立てる
                MOVE    SPACE                   TO  WRK-HOSOKU-COMMENT
-               STRING  WRK-THOSOKU-COMMENT (1)     DELIMITED   BY  SPACE
-                       WRK-THOSOKU-COMMENT (2)     DELIMITED   BY  SPACE
-                       WRK-THOSOKU-COMMENT (3)     DELIMITED   BY  SPACE
+               IF      FLG-HOSOKU-CHK      =   ZERO
+                   STRING  WRK-THOSOKU-COMMENT (1) DELIMITED   BY  SPACE
+                           WRK-THOSOKU-COMMENT (2) DELIMITED   BY  SPACE
+                           WRK-THOSOKU-COMMENT (3) DELIMITED   BY  SPACE
                                            INTO    WRK-HOSOKU-COMMENT
-               END-STRING
+                   END-STRING
+               ELSE
+                   MOVE    LF04-HOSOKU-COMMENT (IDX)
+                                               TO  WRK-HOSOKU-COMMENT
+               END-IF
            END-IF
       *
       *    全角チェック
-           IF      WRK-HOSOKU-COMMENT  NOT =   SPACE    
+           IF      WRK-HOSOKU-COMMENT  NOT =   SPACE
                INITIALIZE                      ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI 
                MOVE    WRK-HOSOKU-COMMENT  TO  KANACHK-MAE-INPUT
@@ -2171,31 +2196,47 @@
                    MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
                                                TO  WRK-HOSOKU-COMMENT
                ELSE
-                   MOVE    "？？？？？"        TO  WRK-HOSOKU-COMMENT
-      *
                    MOVE    "W05"                TO  WRK-DIAG-WARNING
+               END-IF
+      *
+               IF  WRK-DIAG-WARNING        =   SPACE
+      *            改行コードチェック
+                   MOVE    ZERO                TO  WRK-COL
+                   INSPECT WRK-HOSOKU-COMMENT  TALLYING    WRK-COL
+                                               FOR ALL WRK-CONS-RETURN
+                   IF      WRK-COL             >   ZERO
+                       MOVE    "W06"               TO  WRK-DIAG-WARNING
+                   END-IF
+               END-IF
+      *
+               IF  WRK-DIAG-WARNING    NOT =   SPACE
+                   MOVE    "？？？？？"        TO  WRK-HOSOKU-COMMENT
                    PERFORM 500-WARNING-HENSYU-SEC
                END-IF
            END-IF
       *
       *    前後の（）をはずす
-           MOVE    SPACE               TO  WRK-HOSOKU-COMMENT1
-           COMPUTE IDY     =   KANACHK-MAX     -   1
-           IF      WRK-HOSOKU-COMMENT (IDY:2)
-                                           =   "）"
-               COMPUTE IDZ     =   KANACHK-MAX     -   2
-               MOVE    WRK-HOSOKU-COMMENT (1:IDZ)
+           IF      WRK-HOSOKU-COMMENT  NOT =   SPACE    
+               MOVE    SPACE               TO  WRK-HOSOKU-COMMENT1
+               COMPUTE IDY     =   KANACHK-MAX     -   1
+               IF      WRK-HOSOKU-COMMENT (IDY:2)
+                                               =   "）"
+                   COMPUTE IDZ     =   KANACHK-MAX     -   2
+                   MOVE    WRK-HOSOKU-COMMENT (1:IDZ)
                                                TO  WRK-HOSOKU-COMMENT1
-               MOVE    WRK-HOSOKU-COMMENT1     TO  WRK-HOSOKU-COMMENT
-           END-IF
-           MOVE    SPACE               TO  WRK-HOSOKU-COMMENT1
-           IF      WRK-HOSOKU-COMMENT (1:2)
-                                           =   "（"
-               MOVE    WRK-HOSOKU-COMMENT (3:) TO  WRK-HOSOKU-COMMENT1
-               MOVE    WRK-HOSOKU-COMMENT1     TO  WRK-HOSOKU-COMMENT
-           END-IF
+                   MOVE    WRK-HOSOKU-COMMENT1 TO  WRK-HOSOKU-COMMENT
+               END-IF
+               MOVE    SPACE               TO  WRK-HOSOKU-COMMENT1
+               IF      WRK-HOSOKU-COMMENT (1:2)
+                                               =   "（"
+                   MOVE    WRK-HOSOKU-COMMENT (3:)
+                                               TO  WRK-HOSOKU-COMMENT1
+                   MOVE    WRK-HOSOKU-COMMENT1 TO  WRK-HOSOKU-COMMENT
+               END-IF
+           END-IF 
       *
            DISPLAY " diagnosis supplement ="  WRK-HOSOKU-COMMENT
+      *
            .
        2006128-HOSOKU-COMMENT-CHK-EXT.
            EXIT.
@@ -2321,18 +2362,21 @@
                WHEN    "E01"
                    STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYYMD      DELIMITED   BY  SPACE
-                           "に存在します"      DELIMITED   BY  SIZE 
+                           "に存在します。転帰日等を確認して下さい"
+                                               DELIMITED   BY  SIZE 
                                        INTO    LNK-DIAG-MSG (CNT-DIAG)
                    END-STRING
                WHEN    "E02"
                    STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYYMD      DELIMITED   BY  SPACE
-                           "に存在します。転帰日等を確認して下さい"
-                                               DELIMITED   BY  SIZE 
+                           "に存在します"      DELIMITED   BY  SIZE 
                                        INTO    LNK-DIAG-MSG (CNT-DIAG)
                    END-STRING
                WHEN    "E03"
                    MOVE    "コード不正です"
+                                       TO  LNK-DIAG-MSG    (CNT-DIAG)
+               WHEN    "E04"
+                   MOVE    "補足コメントコード不正です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W01"
                    MOVE    "廃止・移行・推奨あり"
@@ -2349,7 +2393,10 @@
                    MOVE    "改行コードが存在します"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W05"
-                   MOVE    "補足コメントが全角チェックエラーです"
+                   MOVE    "補足コメントが全角チェックエラー"
+                                       TO  LNK-DIAG-MSG    (CNT-DIAG)
+               WHEN    "W06"
+                   MOVE    "補足コメントに改行コードが存在します"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
            END-EVALUATE
            EVALUATE    WRK-DIAG-WARNING
