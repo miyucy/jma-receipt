@@ -29,7 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-多々納  10/01/XX  治験対応
       *  04.07.00    NACL-多々納  11/11/XX  同日再入院対応
-      *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
       *****************************************************************
       *
       *
@@ -105,10 +104,6 @@
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-DRCD                PIC X(05).
            03  WRK-INPUTCOMENT         PIC X(80).
-      *
-           03  WRK-INPUTCHI-G.
-               05  WRK-INPUTCHI        PIC  X(08)  OCCURS  5.
-      *
            03  WRK-ZAIKAISU            PIC 9(05).
       *    同日再入院日
            03  WRK-DDAY                PIC 9(02).
@@ -136,10 +131,6 @@
                    07  TBL-SHO-SRYKAISU        PIC 9(03).
                    07  TBL-SHO-INPUTNUM        PIC 9(03).
                    07  TBL-SHO-INPUTCOMENT     PIC X(80).
-      *H30.4       入力値
-                   07  TBL-SHO-INPUTCHI-G.
-                       09  TBL-SHO-INPUTCHI    PIC  X(08)
-                                                    OCCURS  5.
            03  TBL-IDX                     PIC 9(04).
       *
       *    診療行為マスター
@@ -343,11 +334,6 @@
                END-IF
       *        薬評・器評対象外
                IF      ACCT-ZAIKBN         =   1
-                   MOVE    ZERO            TO  WRK-ZAIKAISU
-               END-IF
-      *H28.9   持参薬　対象外
-               IF      ACCT-ZAIKBN         =   3
-                                           OR  4
                    MOVE    ZERO            TO  WRK-ZAIKAISU
                END-IF
                IF      WRK-ZAIKAISU        >   ZERO
@@ -637,9 +623,6 @@
                        PERFORM 20031-PTCOM-SET-SEC
                        MOVE    WRK-INPUTCOMENT TO  TBL-SHO-INPUTCOMENT
                                                       (TBL-IDX IDX-T)
-      *H30.4           入力値
-                       MOVE    WRK-INPUTCHI-G  TO  TBL-SHO-INPUTCHI-G
-                                                      (TBL-IDX IDX-T)
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -662,10 +645,8 @@
            PERFORM 950-PTCOM-READ-SEC
            IF      FLG-PTCOM           =   ZERO
                MOVE    PTCOM-INPUTCOMENT   TO  WRK-INPUTCOMENT
-               MOVE    PTCOM-INPUTCHI-AREA TO  WRK-INPUTCHI-G
            ELSE
                MOVE    SPACE               TO  WRK-INPUTCOMENT
-               MOVE    SPACE               TO  WRK-INPUTCHI-G
            END-IF
            .
        20031-PTCOM-SET-EXT.
@@ -721,9 +702,6 @@
                                                              (IDX1 IDX3)
                MOVE    TBL-SHO-INPUTCOMENT (TBL-IDX IDX-T)
                                            TO  ORCHC19-INPUTCOMENT
-                                                             (IDX1 IDX3)
-               MOVE    TBL-SHO-INPUTCHI-G (TBL-IDX IDX-T)
-                                           TO  ORCHC19-INPUTCHI-G
                                                              (IDX1 IDX3)
            END-PERFORM
            .
