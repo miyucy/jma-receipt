@@ -3,7 +3,7 @@ CREATE TABLE tbl_plugin (
   version varchar(256) not null,
   description varchar(1024),
   vendor varchar(256) not null,
-  create_date date not null,
+  date date not null,
   url varchar(512) not null,
   intall varchar(8) not null,
   link varchar(8) not null,
