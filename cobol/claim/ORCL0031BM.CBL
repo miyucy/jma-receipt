@@ -1362,30 +1362,39 @@
                ADD     1                   TO  CNT-OUT
       *
                MOVE    SPACE               TO  WRK-DIAG-CHANGE
-               IF      PTBYO-BYOMEIHENFLG  =   SPACE
-                   INITIALIZE                  BYOMEI-REC
-                   MOVE    PTBYO-KHNBYOMEICD   TO  BYO-BYOMEICD
-                   PERFORM 900-BYOMEI-READ-SEC
-                   IF      BYO-IKOSAKICD   NOT =   SPACE
-                       MOVE    "01"            TO  WRK-DIAG-CHANGE
-                   ELSE    
-                       IF      BYO-HAISIYMD    =   ALL "9" OR  SPACE
-                          CONTINUE
-                       ELSE
-                           MOVE    "02"        TO  WRK-DIAG-CHANGE
-                           INITIALIZE              SYNONYM-REC
-                           MOVE    PTBYO-BYOMEI
-                                               TO  SYNONYM-BYOMEI
-                           PERFORM 5001-SYNONYM-CHK-SEC
-                           IF      FLG-SYNONYM =   ZERO
-                               MOVE    "03"        TO  WRK-DIAG-CHANGE
+               IF      PTBYO-KHNBYOMEICD   =   WRK-CONS-BYOMEICD
+                   INITIALIZE                  SYNONYM-REC
+                   MOVE    PTBYO-BYOMEI        TO  SYNONYM-BYOMEI
+                   PERFORM 5001-SYNONYM-CHK-SEC
+                   IF      FLG-SYNONYM         =   ZERO
+                       MOVE    "03"                TO  WRK-DIAG-CHANGE
+                   END-IF
+               ELSE
+                   IF      PTBYO-BYOMEIHENFLG  =   SPACE
+                       INITIALIZE                  BYOMEI-REC
+                       MOVE    PTBYO-KHNBYOMEICD   TO  BYO-BYOMEICD
+                       PERFORM 900-BYOMEI-READ-SEC
+                       IF      BYO-IKOSAKICD   NOT =   SPACE
+                           MOVE    "01"            TO  WRK-DIAG-CHANGE
+                       ELSE    
+                           IF      BYO-HAISIYMD    =   ALL "9" OR  SPACE
+                              CONTINUE
+                           ELSE
+                               MOVE    "02"        TO  WRK-DIAG-CHANGE
+                               INITIALIZE              SYNONYM-REC
+                               MOVE    PTBYO-BYOMEI
+                                                   TO  SYNONYM-BYOMEI
+                               PERFORM 5001-SYNONYM-CHK-SEC
+                               IF      FLG-SYNONYM =   ZERO
+                                   MOVE    "03"    TO  WRK-DIAG-CHANGE
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
-                   IF     WRK-DIAG-CHANGE  NOT =   SPACE
-                       MOVE    "W01"               TO  WRK-DIAG-WARNING
-                       PERFORM 500-WARNING-HENSYU-SEC
-                   END-IF
+               END-IF      
+               IF     WRK-DIAG-CHANGE  NOT =   SPACE
+                   MOVE    "W01"               TO  WRK-DIAG-WARNING
+                   PERFORM 500-WARNING-HENSYU-SEC
                END-IF
            END-IF
            .
