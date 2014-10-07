@@ -2289,8 +2289,8 @@
                    CONTINUE
                ELSE
                    EVALUATE    TRUE
-                       WHEN    WRK-BYOYMD  =   PTBYO-SRYYMD
-                           MOVE    2               TO  FLG-DABURI-CHK
+      *****           WHEN    WRK-BYOYMD  =   PTBYO-SRYYMD
+      *****                MOVE    2               TO  FLG-DABURI-CHK
                        WHEN    WRK-BYOYMD  <   PTBYO-SRYYMD
                            IF      WRK-TENKIYMD    =   SPACE
                                MOVE    1       TO  FLG-DABURI-CHK
@@ -2315,7 +2315,7 @@
                        IF      PTBYO-HKNCOMBI      >   ZERO
                            MOVE    ZERO            TO  FLG-DABURI-CHK
                        ELSE
-                           MOVE    WRK-BYOYMD      TO  WRK-SYMD
+                           MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
                            PERFORM 5002-HIZUKE-HEN-SEC
                            MOVE    LNK-DAY2-EDTYMD3
                                                    TO  WRK-ERR-SRYYMD
