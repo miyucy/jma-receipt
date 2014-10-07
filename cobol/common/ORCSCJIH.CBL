@@ -509,9 +509,21 @@
       *        ¶â³Û
                WHEN    1
       *            ¾ÃÈñÀÇ·×»»
+                   IF      (WRK-COM-SRYSYUKBN(IDX-Z)  =   "961")
+      *H26.10          Ã±²Á¡ß¿ôÎÌ¡¡¤ËÀÇ
+                       COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN
+                                                            (IDX-Z)
+                                               *   WRK-COM-SURYO(IDX-Z)
+                       PERFORM 10021-ZEIKEISEN-SEC
+                       COMPUTE WRK-KINGAK-9    =   WRK-TANKA
+                                               +   0.5
+                       MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
+                   ELSE
+      *
                    IF      (SPA-SRYYMD     >=  "20070401" )  AND
                            (WRK-COM-SRYKBN(IDX-Z)  =   "96")
-                       MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-KISOTEN
+                       MOVE    WRK-COM-KISOTEN (IDX-Z)
+                                                   TO  WRK-KISOTEN
                        PERFORM 10021-ZEIKEISEN-SEC
                    ELSE
                        MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-TANKA
@@ -523,6 +535,8 @@
                                                *   WRK-COM-SURYO(IDX-Z)
                                                +   0.5
                        MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
+                   END-IF
+      *
                    END-IF
       *        ÅÀ¿ô
                WHEN    3
