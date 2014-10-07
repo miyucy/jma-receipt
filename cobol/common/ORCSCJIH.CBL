@@ -367,14 +367,27 @@
       *
       *H26.10
       *    ¶â³Û¡÷¡¡¤Ç¾ÃÈñÀÇ·×»»
-           IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
-                                                   "096" ) AND
-                  (WRK-COM-SRYSYUKBN(IDX-Z)    =   "960" ) AND
-                  (WRK-COM-KISOTEN(IDX-Z)      =   ZERO  ) AND
-                  (WRK-COM-KEIFLG   (IDX-Z)    =   "1"   ) AND
-                  (WRK-COM-JIHIMONEY(IDX-Z)    >   ZERO  ) AND
-                  (WRK-COM-AUTOFLG2 (IDX-Z)    =   "1"   )
-               PERFORM 100211-JIHI-KEISAN-SEC
+           IF     (WRK-COM-AUTOFLG2 (IDX-Z)    =   "1"   )
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
+                                                       "096" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX-Z)    =   "960" ) AND
+                      (WRK-COM-KISOTEN(IDX-Z)      =   ZERO  ) AND
+                      (WRK-COM-KEIFLG   (IDX-Z)    =   "1"   ) AND
+                      (WRK-COM-JIHIMONEY(IDX-Z)    >   ZERO  )
+                   PERFORM 100211-JIHI-KEISAN-SEC
+               ELSE
+      *            ¡÷¤Îºï½ü
+                   MOVE    SPACE           TO  WRK-COM-AUTOFLG2 (IDX-Z)
+      *            É½¼¨
+                   INITIALIZE                  ORCSC94AREA
+                   MOVE    "1"                 TO  LNK-SC94-KBN
+                   MOVE    "K02"               TO  LNK-SC94-PG
+                   MOVE    IDX-Z               TO  LNK-SC94-IDX
+                   CALL    "ORCSC94"           USING
+                                               ORCSC94AREA
+                                               WRK-SCR-REC
+                                               SPA-AREA
+               END-IF
            END-IF
       *
       *

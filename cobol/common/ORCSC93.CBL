@@ -739,9 +739,8 @@
                    MOVE    SPACE               TO  SPA-COM-ZAIEND (IDX)
       *            自費の時、回数入力まで自費とする
                    IF      WRK-SRYSYUKBN       =   "950"  OR  "960"
-      *TEST
+      *H25.10
                                                           OR  "961"
-      *TEST
                        MOVE    1                   TO  FLG-JIHI
                    ELSE
                        MOVE    ZERO                TO  FLG-JIHI
@@ -2327,9 +2326,9 @@
            IF      SPA-COM-SRYSYUKBN (IDX) =   "960"  OR
                                                "950"  OR
                                                SPACE
-      *TEST
+      *H26.10
                                            OR  "961"
-      *TEST
+      *
                MOVE    SPA-COM-TNSSRYSYUKBN(IDX)
                                            TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    SPACE               TO  SPA-COM-KEIFLG    (IDX)

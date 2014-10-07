@@ -1246,7 +1246,7 @@
                EVALUATE    COMB-HKNNUM
                    WHEN    "060"
                    WHEN    "068"
-      *                国保
+      *                国保・特別療養費
                        EVALUATE    COMB-HOJOKBN
                            WHEN    "1"
                                MOVE    1           TO  FLG-RJNHKN

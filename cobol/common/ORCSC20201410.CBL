@@ -61,7 +61,7 @@
       *  04.07.00    NACL-多々納  14/06/XX  外用薬（臨時投薬）対応
       *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *                                     包括エラー分対応
-      * 04.07.00     NACL-多々納  14/10/02  頓服（臨時投薬）対応
+      *  04.07.00    NACL-多々納  14/10/07  頓服（臨時投薬）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -515,12 +515,8 @@
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
-      *TEST
-      *TEST
       *    向精神薬多剤投与チェックパラメタ
            COPY    "CPORCSPSYCHO.INC".
-      *TEST
-      *TEST
       *
       *****************************************************************
       *    連絡　領域
@@ -1529,6 +1525,11 @@
                PERFORM 3000-JIDOU-SYORI-SEC
            END-PERFORM
       *
+           IF      LNK-ORCSC-PG        =   "K02"
+                                       OR  "KT01"
+               MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           END-IF
            .
        300-AUTO-SYORI-EXT.
            EXIT.
@@ -1837,11 +1838,11 @@
                END-IF
            END-IF
       *
-           IF      LNK-ORCSC-PG        =   "K02"
-                                       OR  "KT01"
-               MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
-               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-           END-IF
+      *    IF      LNK-ORCSC-PG        =   "K02"
+      *                                OR  "KT01"
+      *        MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
+      *        MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *    END-IF
       *
            .
        3000-JIDOU-SYORI-EXT.
@@ -2408,8 +2409,7 @@
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-CHOKI)
                END-IF
            END-IF
-      *TEST
-      *TEST
+      *
       *H26.10
       *    向精神薬多剤投与処方せん料のチェック
            IF     (SPA-ERRCD           =   SPACE )
@@ -2451,11 +2451,11 @@
       *TEST
       *TEST
       *
-           IF      LNK-ORCSC-PG        =   "K02"
-                                       OR  "KT01"
-               MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
-               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-           END-IF
+      *    IF      LNK-ORCSC-PG        =   "K02"
+      *                                OR  "KT01"
+      *        MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
+      *        MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *    END-IF
       *
            .
        3003-CHEK-SYORI-EXT.
@@ -3910,7 +3910,7 @@
                    MOVE    1               TO  SPA-SYOHOU-CHK
       *??          MOVE    "K023"          TO  SPA-ERRCD
                END-IF
-               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      **       MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            END-IF
            .
        30024-SYOHOUSEN-CHK-EXT.
@@ -4943,7 +4943,7 @@
                    END-IF
                END-IF
            END-IF
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      ***  MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
        300211-CHOZAI-CHK-EXT.

@@ -1192,7 +1192,8 @@
       *        œ∑øÕ ›∏±
                EVALUATE    COMB-HKNNUM
                    WHEN    "060"
-      *                πÒ ›
+                   WHEN    "068"
+      *                πÒ ›°¶∆√ ÃŒ≈Õ‹»Ò
                        EVALUATE    COMB-HOJOKBN
                            WHEN    "1"
                                MOVE    1           TO  FLG-RJNHKN
