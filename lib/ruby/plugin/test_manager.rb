@@ -11,6 +11,10 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
   JMA::Plugin::TAR_COMMAND = "tar"
 
   def setup
+    ENV['LDDIRECTORY'] = './data/directory'
+
+    `psql testplugin -c "delete from tbl_plugin;"`
+
     `gpg --import --allow-secret-key-import data/test.gpg`
 
     @root = File.expand_path(File.join(File.dirname(__FILE__),"store"))
@@ -190,7 +194,7 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
     }
     assert_equal(
       [["bar","1.0"],["foo","1.1"]], 
-      @manager.list.sort!{|a,b| a[:name] <=> b[:name]}.select{|c| c[:install]=="TRUE"}.map{|c| [c[:name],c[:version]] }
+      @manager.list("install").map do |c| [c[:name],c[:version]] end
     )
   end
 
@@ -214,7 +218,7 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
     }
     assert_equal(
       [["bar","1.0"],["foo","1.2"]], 
-      @manager.list.sort!{|a,b| a[:name] <=> b[:name]}.select{|c| c[:install]=="TRUE"}.map{|c| [c[:name],c[:version]] }
+      @manager.list("install").map do |c| [c[:name],c[:version]] end
     )
     assert(@manager.info("foo","1.2")[:link])
   end
@@ -231,7 +235,7 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
     }
     assert_equal(
       [["bar","1.0"],["foo","1.1"]], 
-      @manager.list.sort!{|a,b| a[:name] <=> b[:name]}.select{|c| c[:install]=="TRUE"}.map{|c| [c[:name],c[:version]] }
+      @manager.list('install').map{|c| [c[:name],c[:version]] }
     )
   end
 
@@ -258,7 +262,7 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
     }
     assert_equal(
       [["bar","1.0"]],
-      @manager.list.sort!{|a,b| a[:name] <=> b[:name]}.select{|c| c[:install]=="TRUE"}.map{|c| [c[:name],c[:version]] }
+      @manager.list('install').map{|c| [c[:name],c[:version]] }
     )
     assert_equal(false,File.exist?(File.join(@linkprefix,"foo-1.1.txt")))
   end
@@ -281,7 +285,7 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
     }
     assert_equal(
       [["bar","1.0"]],
-      @manager.list.sort!{|a,b| a[:name] <=> b[:name]}.select{|c| c[:install]=="TRUE"}.map{|c| [c[:name],c[:version]] }
+      @manager.list('install').map{|c| [c[:name],c[:version]] }
     )
   end
 
@@ -298,9 +302,9 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
     }
     assert_equal(
       [["foo","1.1"]], 
-      @manager.list.sort!{|a,b| a[:name] <=> b[:name]}.select{|c| c[:link]=="TRUE"}.map{|c| [c[:name],c[:version]] }
+      @manager.list('enable').map{|c| [c[:name],c[:version]] }
     )
-    assert(@manager.list.detect{|c| c[:link]=="TRUE" && c[:name]=="foo" && c[:version]=="1.1"})
+    assert(@manager.list('enable').detect{|c| c[:name]=="foo" && c[:version]=="1.1"})
     assert_equal(true,File.exist?(File.join(@linkprefix,"foo-1.1.txt")))
   end
 
@@ -424,10 +428,10 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
       @manager.upgrade
     }
     assert_equal(
-      [["bar","1.0"],["foo","1.2"]], 
-      @manager.list.sort!{|a,b| a[:name] <=> b[:name]}.select{|c| c[:install]=="TRUE"}.map{|c| [c[:name],c[:version]] }
+      [['bar','1.0'],['foo','1.2']], 
+      @manager.list('install').map do |c| [c[:name],c[:version]] end
     )
-    assert_equal(true,File.exist?(File.join(@linkprefix,"foo-1.2.txt")))
+    assert_equal(true,File.exist?(File.join(@linkprefix,'foo-1.2.txt')))
   end
 
   def test_search
@@ -488,8 +492,8 @@ class JMA::Plugin::ManagerTest < Test::Unit::TestCase
       @manager.link("foo","1.1")
     }
     assert_nothing_raised{
-      pp @manager.info("foo","1.1")
-      pp @manager.info("bar","1.0")
+      @manager.info("foo","1.1")
+      @manager.info("bar","1.0")
     }
   end
 end

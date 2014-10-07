@@ -6,14 +6,15 @@ class JMA::Plugin::DBTest < Test::Unit::TestCase
   include JMA::Plugin
 
   def setup
-    @db = DB.new(":memory:")
+    ENV['LDDIRECTORY'] = './data/directory'
+    @db = DB.new
+    @db.clear
   end
 
   def teardown
   end
 
   def test_initialize
-    assert_equal(JMA::Plugin::VERSION, @db.version)
     assert_equal([],@db.list)
   end
 
@@ -31,18 +32,19 @@ class JMA::Plugin::DBTest < Test::Unit::TestCase
 
   def test_insert_ng_no_name
     control = {:name2 => "foo", :version => "1.0", :vendor =>"test", :date => "20090101", :url => "file:///test"}
-    assert_raise(SQLite3::ConstraintException) {
+    assert_nothing_raised {
       @db.insert(control)
     }
+    assert_equal([], @db.list)
   end
 
 
   def test_insert_ng_no_version
     control = {:name => "foo", :version2 => "1.0", :vendor =>"test", :date => "20090101", :url => "file:///test"}
-    assert_raise(SQLite3::ConstraintException) {
-      @db.insert(control)
+    assert_nothing_raised {
       @db.insert(control)
     }
+    assert_equal([], @db.list)
   end
 
   def test_insert_full_ok
@@ -51,8 +53,10 @@ class JMA::Plugin::DBTest < Test::Unit::TestCase
     :version: "1.0"
     :description: test plugin
     :vendor: test@example.com
-    :date: "20090101"
+    :date: "2009-01-01"
     :url: "file:///test"
+    :install: "FALSE"
+    :link: "FALSE"
     :available: "TRUE"
     EOS
 
@@ -61,9 +65,6 @@ class JMA::Plugin::DBTest < Test::Unit::TestCase
     }
     assert_equal(["foo"], @db.list.map{|c| c[:name]})
     control_new = @db.get_control(control[:name],control[:version])
-    control[:install] = "FALSE"
-    control[:link] = "FALSE"
-    control[:id] = control_new[:id]
     assert_equal(control,control_new)
   end
 
@@ -84,6 +85,7 @@ class JMA::Plugin::DBTest < Test::Unit::TestCase
       @db.insert(control)
     }
     assert_nothing_raised {
+      @db.install("foo","1.0")
       @db.link("foo","1.0")
     }
     assert_nothing_raised {

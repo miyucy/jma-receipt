@@ -20,7 +20,7 @@ module JMA::Plugin
       @log = config[:log] || defaultlog
       @config = config
       @store = JMA::Plugin::Store.new(@config)
-      @db = JMA::Plugin::DB.new(File.join(@config[:root],"package.db"))
+      @db = JMA::Plugin::DB.new
     end
 
     def update
@@ -52,7 +52,7 @@ module JMA::Plugin
         }
         #get not installed
         provided_list.each{|pc|
-          @db.insert(pc) unless @db.id(pc[:name],pc[:version])
+          @db.insert(pc) unless @db.get_control(pc[:name],pc[:version])
         }
         @db.delete_unavailable
       }
@@ -206,8 +206,8 @@ module JMA::Plugin
       control = @db.get_control(name,version)
       raise "#{name}-#{version} is not in the list " unless control
       ret[:control] = control
-      ret[:file] = @store.list_file(name,version) if control[:install] == "TRUE"
-      ret[:link] = @store.list_link(name,version) if control[:link] == "TRUE"
+      ret[:file] = @store.list_file(name,version) if @db.install?(name,version)
+      ret[:link] = @store.list_link(name,version) if @db.link?(name,version)
       return ret
     end
 
@@ -218,10 +218,10 @@ module JMA::Plugin
       unless control
         raise "#{name}-#{version} is not in the list"
       end
-      if control[:install] == "TRUE"
+      if @db.install?(name,version)
         raise "#{name}-#{version} already installed" 
       end
-      unless control[:available] == "TRUE"
+      unless @db.available?(name,version)
         raise "#{name}-#{version} unavailable" 
       end
       package_path = download_package(control[:name],control[:version],control[:url])
@@ -230,8 +230,8 @@ module JMA::Plugin
       unless old.empty?
         old.each {|o|
           @log.info("uninstall old version ... #{o[:name]}-#{o[:version]}")
+          do_link = @db.link?(o[:name],o[:version])
           _uninstall(o[:name],o[:version],action) #rescue nil
-          do_link = o[:link] == "TRUE"
         }
       end
       @store.install(name,version,package_path,action)

@@ -1,152 +1,291 @@
-require "sqlite3"
-require "yaml"
-require "plugin"
+require 'yaml'
+require 'plugin'
+require 'json'
+require 'pp'
 
 module JMA::Plugin
+
+=begin
+REATE TABLE tbl_plugin_meta (
+  name varchar(64) not null,
+  val  varchar(256) not null
+);
+REATE TABLE tbl_plugin (
+  name varchar(256) not null,
+  version varchar(256) not null,
+  description varchar(1024),
+  vendor varchar(256) not null,
+  date date not null,
+  url varchar(512) not null,
+  intall varchar(8) not null,
+  link varchar(8) not null,
+  available varchar(8) not null,
+  PRIMARY KEY(name,version)
+);
+=end
+
   class DB
-    def initialize(dbpath)
-      @db = SQLite3::Database.new(dbpath)
-      @db.type_translation = true
-      tables = @db.execute("SELECT tbl_name FROM sqlite_master WHERE TYPE=?", "table").flatten
-      create_table unless tables.include?("system")
-    end
+    def initialize
+      @monsql_cmd = ENV['MONSQL'] || "/usr/lib/panda/bin/monsql"
+      @directory = ENV['LDDIRECTORY'] || "/usr/lib/jma-receipt/lddef/directory"
 
-    def create_table
-      @db.execute_batch(<<-SQL,JMA::Plugin::VERSION)
-        CREATE TABLE system(version TEXT NOT NULL);
-        CREATE TABLE control(
-          id           INTEGER PRIMARY KEY,
-          name         TEXT NOT NULL,
-          version      TEXT NOT NULL, 
-          description  TEXT, 
-          vendor       TEXT NOT NULL,
-          date         TEXT NOT NULL,
-          url          TEXT NOT NULL,
-          install      TEXT NOT NULL,
-          link         TEXT NOT NULL,
-          available    TEXT NOT NULL 
-        );
-      SQL
-      @db.execute("INSERT INTO system VALUES (?);",JMA::Plugin::VERSION)
-    end
-
-    def version
-      return @db.get_first_row("SELECT version FROM system;")[0]
-    end
-
-    def insert(control)
-      @db.transaction {
-        ids = @db.execute("SELECT id FROM control WHERE name=? AND version=?;",
-          control[:name],
-          control[:version])
-        return unless ids.empty?
-        @db.execute("INSERT INTO control (name,version,description,vendor,date,url,install,link,available) VALUES(?,?,?,?,?,?,?,?,?);",
-          control[:name],
-          control[:version],
-          control[:description],
-          control[:vendor],
-          control[:date],
-          control[:url],
-          "FALSE", #install
-          "FALSE", #link
-          "TRUE"   #available
-        )
-      }
-    end
-
-    def id(name,version)
-      ret = @db.execute("SELECT id FROM control WHERE name=? AND version=?;", name,version)
-      return ret ? ret[0] : nil
-    end
-
-    def available(name,version)
-      _id = id(name,version)
-      @db.transaction {
-        @db.execute("UPDATE control SET available=? WHERE id=?;","TRUE",_id)
-      }
-    end
-
-    def disavailable(name,version)
-      _id = id(name,version)
-      @db.transaction {
-        @db.execute("UPDATE control SET available=? WHERE id=?;","FALSE",_id)
-      }
-    end
-
-    def delete_unavailable
-      @db.transaction {
-        @db.execute("DELETE FROM control WHERE available=? AND install=?;","FALSE","FALSE")
-      }
-    end
-
-    def install(name,version)
-      _id = id(name,version)
-      list = @db.execute("SELECT id FROM control WHERE name = (SELECT name FROM control WHERE id=?) AND install='TRUE';",_id)
+      sql = <<-EOS
+        SELECT val FROM tbl_plugin_meta
+        WHERE
+          name = 'version';
+      EOS
+      list = monsql(sql)
       if list.empty?
-        @db.execute("UPDATE control SET install=? WHERE id=?;","TRUE",_id)
+        monsql("INSERT INTO tbl_plugin_meta VALUES ('version','1.0.0');")
+      else
+        val = list[0]["val"]
+        unless val == '1.0.0'
+          raise "invalid tbl_plugin_meta version:#{list[0]}"
+        end
       end
     end
 
+    def insert(c)
+      sql = <<-EOS
+        SELECT name FROM tbl_plugin 
+        WHERE
+          name    = '#{c[:name]}' AND
+          version = '#{c[:version]}' ;
+      EOS
+      list = monsql(sql)
+      return unless list.empty?
+
+      [:name,:version,:vendor,:date,:url].each do |k|
+        return unless c[k]
+        return if c[k].empty?
+      end
+
+      date = c[:date]
+      date = "#{$1}-#{$2}-#{$3}" if %r|(\d{4})(\d{2})(\d{2})| =~ date
+      sql = <<-EOS
+        INSERT INTO tbl_plugin 
+        VALUES (
+          '#{c[:name]}',
+          '#{c[:version]}',
+          '#{c[:description]}',
+          '#{c[:vendor]}',
+          '#{date}',
+          '#{c[:url]}',
+          'FALSE',
+          'FALSE',
+          'TRUE'
+        );
+      EOS
+      monsql(sql)
+    end
+
+    def available(name,version)
+      sql = <<-EOS
+        UPDATE tbl_plugin SET 
+          available = 'TRUE'
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      monsql(sql)
+    end
+
+    def disavailable(name,version)
+      sql = <<-EOS
+        UPDATE tbl_plugin SET 
+          available = 'FALSE'
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      monsql(sql)
+    end
+
+    def available?(name,version)
+      sql = <<-EOS
+        SELECT available FROM tbl_plugin
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      list = monsql(sql)
+      return false unless list
+      return false if list.empty?
+      return false unless /^[Tt]/ =~ list[0]['available']
+      return true
+    end
+
+    def delete_unavailable
+      sql = <<-EOS
+        DELETE FROM tbl_plugin 
+        WHERE 
+          available = 'FALSE' AND
+          install   = 'FALSE';
+      EOS
+      monsql(sql)
+    end
+
+    def install(name,version)
+      sql = <<-EOS
+        UPDATE tbl_plugin
+        SET
+          install = 'TRUE'
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      monsql(sql)
+    end
+
     def uninstall(name,version)
-      _id = id(name,version)
-      @db.execute("UPDATE control SET link=?,install=? WHERE id=?;","FALSE","FALSE",_id)
+      sql = <<-EOS
+        UPDATE tbl_plugin
+        SET
+          install = 'FALSE',
+          link    = 'FALSE'
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      monsql(sql)
     end
 
     def install?(name,version)
-      c = get_control(name,version)
-      return c[:install] == "TRUE"
+      sql = <<-EOS
+        SELECT install FROM tbl_plugin
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      list = monsql(sql)
+      return false unless list
+      return false if list.empty?
+      return false unless /^[Tt]/ =~ list[0]['install']
+      return true
     end
 
     def link(name,version)
-      _id = id(name,version)
-      installed = @db.execute("SELECT install FROM control WHERE id=?;",_id)
-      return if installed == "FALSE"
-      list = @db.execute("SELECT id FROM control WHERE name = (SELECT name FROM control WHERE id=?) AND link='TRUE';",_id)
-      return unless list.empty?
-      @db.execute("UPDATE control SET link=? WHERE id=?;","TRUE",_id)
+      sql = <<-EOS
+        UPDATE tbl_plugin
+        SET
+          link    = 'TRUE'
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      monsql(sql)
     end
 
     def unlink(name,version)
-      _id = id(name,version)
-      @db.execute("UPDATE control SET link=? WHERE id=?;","FALSE",_id)
+      sql = <<-EOS
+        UPDATE tbl_plugin
+        SET
+          link    = 'FALSE'
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      monsql(sql)
     end
 
     def link?(name,version)
-      c = get_control(name,version)
-      return c[:link] == "TRUE"
+      sql = <<-EOS
+        SELECT link FROM tbl_plugin
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      list = monsql(sql)
+      return false unless list
+      return false if list.empty?
+      return false unless /^[Tt]/ =~ list[0]['link']
+      return true
+    end
+
+    def list2control(l)
+      l.map do |c|
+        cc = {}
+        c.each do |k,v| cc[k.intern] = v end
+        cc
+      end
     end
 
     def get_control(name,version)
-      keys = [:id, :name,:version,:description,:vendor,:date,:url,:install,:link,:available]
-      vals = @db.execute("SELECT * FROM control WHERE name=? AND version=?;",name,version).flatten
-      return nil if vals.empty?
-      list = keys.zip(vals)
-      return  Hash[*list.flatten]
+      sql = <<-EOS
+        SELECT * FROM tbl_plugin
+        WHERE
+          name    = '#{name}' AND
+          version = '#{version}';
+      EOS
+      l = monsql(sql)
+      return nil unless list
+      return nil if list.empty?
+      list2control(l)[0]
     end
 
     def list
-      keys = @db.execute("SELECT name,version FROM control;")
-      ret = keys.map{ |k| get_control(k[0],k[1])}
-      ret.sort!{|a,b| 
-        "#{a[:name]}-#{a[:version]}" <=> "#{b[:name]}-#{b[:version]}"
-      }
-      return ret
+      sql = <<-EOS
+        SELECT * FROM tbl_plugin
+        ORDER BY name,version;
+      EOS
+      l = monsql(sql)
+      list2control(l)
     end
 
     def list_available
-      return list.select{|c| c[:available] == "TRUE"}
+      sql = <<-EOS
+        SELECT * FROM tbl_plugin
+        WHERE
+          available = 'TRUE'
+        ORDER BY name,version;
+      EOS
+      l = monsql(sql)
+      list2control(l)
     end
 
     def list_installed
-      return list.select{|c| c[:install] == "TRUE"}
+      sql = <<-EOS
+        SELECT * FROM tbl_plugin
+        WHERE
+          install = 'TRUE'
+        ORDER BY name,version;
+      EOS
+      l = monsql(sql)
+      list2control(l)
     end
 
     def list_linked
-      return list.select{|c| c[:link] == "TRUE"}
+      sql = <<-EOS
+        SELECT * FROM tbl_plugin
+        WHERE
+          link = 'TRUE'
+        ORDER BY name,version;
+      EOS
+      l = monsql(sql)
+      list2control(l)
     end
 
     def list_vendor(name)
-      return list.select{|c| c[:vendor] == name}
+      sql = <<-EOS
+        SELECT * FROM tbl_plugin
+        WHERE
+          vendor = '#{name}'
+        ORDER BY name,version;
+      EOS
+      l = monsql(sql)
+      list2control(l)
+    end
+
+    def clear
+      monsql('DELETE FROM tbl_plugin;')
+    end
+
+    private
+
+    def monsql(command)
+      json = `#{@monsql_cmd} -r -c "#{command}" -o JSON -dir #{@directory}`
+      raise "monsql error:#{command}" unless $?.exitstatus == 0
+      JSON.parse(json)
     end
 
   end
