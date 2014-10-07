@@ -5,7 +5,7 @@ CREATE TABLE tbl_plugin (
   vendor varchar(256) not null,
   date date not null,
   url varchar(512) not null,
-  intall varchar(8) not null,
+  install varchar(8) not null,
   link varchar(8) not null,
   available varchar(8) not null,
   PRIMARY KEY(name,version)
