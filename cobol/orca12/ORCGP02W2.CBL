@@ -122,8 +122,10 @@
       *  04.07.03    NACL-門脇    14/05/08  053児童保護と地方公費の
       *                                     保険組合せ作成
       *  04.07.04    NACL-門脇    14/05/16  地公等の下船後の短縮制度名修正
-      *  04.07.05    NACL-門脇    13/08/04  更生と特定負無の保険組合せ作成
-      *  04.07.06    NACL-門脇    13/08/08  特定負有と特定負有の保険組合せ作成
+      *  04.07.05    NACL-門脇    14/08/04  更生と特定負無の保険組合せ作成
+      *  04.07.06    NACL-門脇    14/08/08  特定負有と特定負有の保険組合せ作成
+      *  04.07.07    NACL-門脇    14/10/07  011結核入院と地方公費の
+      *                                     保険組合せ作成
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4692,30 +4694,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF    FLG-HANTEI   =    1
-             IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                  (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "021"))
-             OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "021" )
-                IF  (WRK-GAI-KBN (1)         =   "2")  AND
-                    (WRK-GAI-KBN (2)         =   "2")  AND
-                    (WRK-GAI-KBN (3)         =   "2")  AND
-                    (WRK-NYU-KBN (1)         =   "0")  AND
-                    (WRK-NYU-KBN (2)         =   "0")  AND
-                    (WRK-NYU-KBN (3)         =   "0")
-                   MOVE    "3"            TO  WRK-FTN-FLG
-                END-IF
-             END-IF
-             IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                  (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "020"))
-             OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "020" )
-                IF  (WRK-GAI-KBN (1)         =   "0")  AND
-                    (WRK-GAI-KBN (2)         =   "0")  AND
-                    (WRK-GAI-KBN (3)         =   "0")  AND
-                    (WRK-NYU-KBN (1)         =   "2")  AND
-                    (WRK-NYU-KBN (2)         =   "2")  AND
-                    (WRK-NYU-KBN (3)         =   "2")
-                   MOVE    "3"            TO  WRK-FTN-FLG
-                END-IF
-             END-IF
              IF   SPA-PREFNUM  =  42
                IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
                     (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "186"))
@@ -4723,15 +4701,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "3"            TO  WRK-FTN-FLG
                END-IF
              END-IF
-             IF    ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                    (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
-             OR    ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
-             OR    ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                    (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "019"))
-             OR    ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "019" )
-             OR    ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                    (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "053"))
-             OR    ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "053" )
+      *
+             IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
+                  (WRK-KCOMB-KOH2HKNNUM (IDX2)
+                        = "021" OR "020" OR "091" OR "019" OR
+                          "053" OR "011"                      ))
+             OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)
+                        = "021" OR "020" OR "091" OR "019" OR
+                          "053" OR "011"                       )
                    MOVE    "3"            TO  WRK-FTN-FLG
              END-IF
            END-IF
