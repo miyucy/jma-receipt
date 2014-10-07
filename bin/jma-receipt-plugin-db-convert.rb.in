@@ -31,10 +31,12 @@ def converted?
   !ret.empty?
 end
 
-def convert_database(dbpath)
-  if converted?
-    STDERR.puts "already converted; exit"
-    exit 0
+def convert_database(dbpath,force)
+  unless force
+    if converted?
+      STDERR.puts "already converted; exit"
+      exit 0
+    end
   end
 
   begin
@@ -76,9 +78,14 @@ def convert_database(dbpath)
     STDERR.puts "old db error dbfile:#{dbpath}"
     STDERR.puts ex.backtrace
   end
-  monsql("INSERT INTO tbl_plugin_meta VALUES('convert','done')")
+  unless converted?
+    monsql("INSERT INTO tbl_plugin_meta VALUES('convert','done')")
+  end
 end
+
+force = false
+ARGV.each do |a| force = true if a == '-f' end
 
 dbpath = ENV['PACKAGEDB'] || "/var/lib/jma-receipt/plugin/package.db"
 STDERR.puts dbpath
-convert_database(dbpath)
+convert_database(dbpath,force)
