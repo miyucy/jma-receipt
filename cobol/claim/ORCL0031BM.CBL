@@ -102,6 +102,7 @@
       *    0:正常 1:エラー  2:単独病名エラー
       *    3:コード順エラー 4:修飾語のみ
       *    5:未コード化傷病名コード
+      *    6:単独病名エラー（病名）
       *    9:同一病名重複
            03  FLG-BYOMEI-CHK      PIC 9(01). 
            03  FLG-BYOMEI-DELETE   PIC 9(01). 
@@ -829,17 +830,17 @@
                    IF    ( LNK-KBN-V2          =   "1" )
                    AND   ( LNK-KBN-CODE        =   "1" )
                        IF      WRK-HOSOKU-COMMENT  =   SPACE
-                           MOVE    2               TO  FLG-BYOMEI-CHK
+                           MOVE    6               TO  FLG-BYOMEI-CHK
                        END-IF
                    ELSE
-                       MOVE    2                   TO  FLG-BYOMEI-CHK
+                       MOVE    6                   TO  FLG-BYOMEI-CHK
                    END-IF
                END-IF
       *
-               IF      FLG-BYOMEI-CHK          =   2
+               IF      FLG-BYOMEI-CHK          =   6
                    MOVE    "W02"               TO  WRK-DIAG-WARNING
                    PERFORM 500-WARNING-HENSYU-SEC
-       *
+      *
                    STRING  "＊"                DELIMITED   BY  SIZE
                            LNK-BYO-BYOMEI      DELIMITED   BY  SPACE
                                                INTO    WRK-BYOMEI
@@ -1133,7 +1134,7 @@
                            PERFORM 2006123-KOUSIN-01-SEC
                        END-IF
                    ELSE
-                       IF      WRK-PTBYO-SRYKA-SRYKA   =   SPACE
+                       IF      WRK-PTBYO-SRYKA-RENNUM  =   ZERO
                            MOVE    WRK-PTBYOMEI-REC    TO  PTBYOMEI-REC
                        ELSE
                            MOVE    WRK-PTBYOMEI-SRYKA-REC
@@ -1425,7 +1426,7 @@
            END-IF
       *
       *    疾患コードがエラー又は未コード化傷病名コード以外のとき
-           IF      FLG-BYOMEI-CHK      NOT =   1   AND 5
+           IF      FLG-BYOMEI-CHK      NOT =   1   AND 5   AND 6
                MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       6
@@ -1577,19 +1578,22 @@
       *        病名文字数
                MOVE    LNK-BYO-BYOMEIMOJI  TO  PTBYO-BYOMEIMOJI
       *        病名
-      *********IF    ( LNK-BYO-BYOMEICD-ERR    =   1  )
-      *********OR    ( LNK-BYO-TANDOKUKBN-ERR  =   1  )
-      *********単独病名・修飾語コードのみのとき
+               MOVE    LNK-BYO-BYOMEI      TO  PTBYO-BYOMEI
                IF      LNK-BYO-TANDOKUKBN-ERR  =   1
-      *        単独病名のみのとき
-                   STRING  "＊"                DELIMITED   BY  SIZE
-                           LNK-BYO-BYOMEI      DELIMITED   BY  SPACE
+      *            単独病名のとき
+                   IF    ( LNK-KBN-V2              =   "1"   )
+                   AND   ( LNK-KBN-CODE            =   "1"   )
+                   AND   ( PTBYO-HOSOKU-COMMENT
+                                               NOT =   SPACE )
+                       CONTINUE
+                   ELSE
+                       STRING  "＊"            DELIMITED   BY  SIZE
+                               LNK-BYO-BYOMEI  DELIMITED   BY  SPACE
                                                INTO    PTBYO-BYOMEI
-                   END-STRING
-                   COMPUTE PTBYO-BYOMEIMOJI    =   PTBYO-BYOMEIMOJI
-                                               +   2
-               ELSE
-                   MOVE    LNK-BYO-BYOMEI      TO  PTBYO-BYOMEI
+                       END-STRING
+                       COMPUTE PTBYO-BYOMEIMOJI    =   PTBYO-BYOMEIMOJI
+                                                       +   2
+                   END-IF
                END-IF
       *        病名編集フラグ
                IF    ( LNK-BYO-BYOMEICD-ERR    =   1  )
@@ -1652,7 +1656,7 @@
                                            PTBYO-KHNBUICD-G
       *
       *    疾患コードがエラー又は未コード化傷病名コード以外のとき
-           IF      FLG-BYOMEI-CHK      NOT =   1   AND 5
+           IF      FLG-BYOMEI-CHK      NOT =   1   AND 5 AND 6
                MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       6
@@ -2424,21 +2428,37 @@
                            MOVE    PTBYO-BYOMEICD (IDXX) (4:)
                                                    TO  WRK-BYOMEICD
                        END-IF
-                       STRING  WRK-DIAG-CODE   DELIMITED  BY  SPACE
-                               WRK-BYOMEICD    DELIMITED  BY  SPACE
+                       IF      IDXX                =   1
+                           MOVE    WRK-BYOMEICD        TO
+                                               LNK-DIAG-CODE (CNT-DIAG)
+                       ELSE
+                           STRING  WRK-DIAG-CODE   DELIMITED  BY  SPACE
+                                   "."
+                                   WRK-BYOMEICD    DELIMITED  BY  SPACE
                                        INTO    LNK-DIAG-CODE (CNT-DIAG)
-                       END-STRING
+                           END-STRING
+                       END-IF
                    END-PERFORM
                WHEN    OTHER
-                   STRING  WRK-TSPICOD (1)     DELIMITED  BY  SPACE
-                           WRK-TSPICOD (2)     DELIMITED  BY  SPACE
-                           WRK-TSPICOD (3)     DELIMITED  BY  SPACE
-                           WRK-TSPICOD (4)     DELIMITED  BY  SPACE
-                           WRK-TSPICOD (5)     DELIMITED  BY  SPACE
-                           WRK-TSPICOD (6)     DELIMITED  BY  SPACE
-                           WRK-TSPICOD (7)     DELIMITED  BY  SPACE
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       7
+                           OR      WRK-TSPICOD (IDXX)   =   SPACE
+                       MOVE    LNK-DIAG-CODE (CNT-DIAG)
+                                                   TO  WRK-DIAG-CODE
+                       MOVE    SPACE               TO
+                                               LNK-DIAG-CODE (CNT-DIAG) 
+                       IF      IDXX                =   1
+                           MOVE    WRK-TSPICOD (IDXX)  TO
+                                               LNK-DIAG-CODE (CNT-DIAG)
+                       ELSE
+                           STRING  WRK-DIAG-CODE   DELIMITED  BY  SPACE
+                                   "."
+                                   WRK-TSPICOD (IDXX)
+                                                   DELIMITED  BY  SPACE
                                        INTO    LNK-DIAG-CODE (CNT-DIAG)
-                   END-STRING
+                           END-STRING
+                       END-IF
+                   END-PERFORM
            END-EVALUATE
       *
            IF      FLG-DIAG            =   9
