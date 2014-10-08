@@ -42,6 +42,7 @@
       *  04.05.00    NACL-多々納  10/05/12  Ａ５追加、複数まとめ対応他
       *  04.07.00    NACL-多々納  14/03/XX  平成２６年４月改正対応
       *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
+      *  04.07.00    NACL-多々納  14/10/08  コメント・自費ゼロ対象対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -130,6 +131,8 @@
            03  IDX-SYU             PIC 9(04).
            03  IDX-SYU2            PIC 9(04).
            03  IDX-SYUMAX          PIC 9(04).
+      *H26.10
+           03  IDXC                PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -238,6 +241,19 @@
       *    03  WRK-H-NAME-R             REDEFINES  WRK-H-NAME.
       *        05  WRK-H-NAME2-1           PIC X(68).
       *        05  WRK-H-NAME2-2           PIC X(32).
+      *H26.10
+      *    コメントコード範囲
+           03  WRK-COMMNT.
+               05  WRK-COM-STR         PIC X(09).
+               05  WRK-COM-FIL         PIC X(01).
+               05  WRK-COM-END         PIC X(09).
+      *
+      *H26.10
+       01  TBL-COM-HYOJI-AREA.
+           03  TBL-COM-HYOJI-OCC       OCCURS   5.
+               05  TBL-COM-STR             PIC X(09).
+               05  TBL-COM-END             PIC X(09).
+      *
       *
       *    帳票テーブル（Ａ４サイズ）
        01  TBL-MEISAI-AREA.
@@ -317,6 +333,19 @@
            03  PARA-CHUI-YUKOSTYMD     PIC X(08).
            03  PARA-CHUI-YUKOEDYMD     PIC X(08).
            03  PARA-CHUI               PIC X(100).
+      *
+      *H26.10
+      *    対象コメントコード
+           03  PARA-COM-HYOJI-G.
+               05  PARA-COM-HYOJI01        PIC X(20).
+               05  PARA-COM-HYOJI02        PIC X(20).
+               05  PARA-COM-HYOJI03        PIC X(20).
+               05  PARA-COM-HYOJI04        PIC X(20).
+               05  PARA-COM-HYOJI05        PIC X(20).
+           03  PARA-COM-HYOJI-G2       REDEFINES   PARA-COM-HYOJI-G.
+               05  PARA-COM-HYOJI          PIC X(20)  OCCURS  5.
+      *    自費対象
+           03  PARA-JIHIKBN            PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(100).
@@ -432,6 +461,7 @@
       *v4.8
       *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -579,6 +609,29 @@
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  PARA-CHUI
       *
+      *H26.10
+      *    対象コメントコード
+           MOVE    "COM_HYOUJI_1"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA            TO  PARA-COM-HYOJI01
+           MOVE    "COM_HYOUJI_2"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA            TO  PARA-COM-HYOJI02
+           MOVE    "COM_HYOUJI_3"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA            TO  PARA-COM-HYOJI03
+           MOVE    "COM_HYOUJI_4"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA            TO  PARA-COM-HYOJI04
+           MOVE    "COM_HYOUJI_5"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA            TO  PARA-COM-HYOJI05
+           MOVE    "JIHIKBN"           TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA            TO  PARA-JIHIKBN
+      *    コメント範囲編集
+           PERFORM 1001-COMHYOJI-HEN-SEC
+      *
            .
        100-OPTION-SELECT-EXT.
            EXIT.
@@ -601,6 +654,10 @@
                                            OR  "CHUI_YUKOEDYMD"
                    MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA
                END-IF
+      *H26.10
+               IF      WRK-PARA-NAME(1:3)  =   "COM"
+                   MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA
+               END-IF
            ELSE
       *
                INITIALIZE                  ORCSKANACHKAREA
@@ -613,6 +670,47 @@
            .
        1001-OPTION-CALL-EXT.
            EXIT.
+      *
+      *H26.10
+      *****************************************************************
+      *    対象コメントコード編集処理
+      *****************************************************************
+       1001-COMHYOJI-HEN-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  TBL-COM-HYOJI-AREA
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING    IDXC     FROM    1   BY  1
+                   UNTIL      IDXC     >   5
+               MOVE    PARA-COM-HYOJI (IDXC)   TO  WRK-COMMNT
+               PERFORM 10011-COMHYOJI-HENSYU-SEC
+           END-PERFORM
+           .
+       1001-COMHYOJI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    対象コメントコード編集処理
+      *****************************************************************
+       10011-COMHYOJI-HENSYU-SEC                SECTION.
+      *
+           IF     (WRK-COM-STR(1:1)    =   "8"  )
+               OR (WRK-COM-STR(1:3)    =   "008")
+               ADD     1                   TO  IDX
+               MOVE    WRK-COM-STR         TO  TBL-COM-STR (IDX)
+               IF     (WRK-COM-END(1:1)    =   "8"  )
+                   OR (WRK-COM-END(1:3)    =   "008")
+                   MOVE    WRK-COM-END         TO  TBL-COM-END (IDX)
+               ELSE
+                   MOVE    WRK-COM-STR         TO  TBL-COM-END (IDX)
+               END-IF
+               IF      TBL-COM-STR (IDX)   >   TBL-COM-END (IDX)
+                   MOVE    WRK-COM-STR         TO  TBL-COM-END (IDX)
+               END-IF
+           END-IF
+           .
+       10011-COMHYOJI-HENSYU-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    初期編集処理
       *****************************************************************
@@ -1522,6 +1620,16 @@
            INITIALIZE                  ORCHC04SUBAREA
            MOVE    WRK-KEY-DENPNUM     TO  ORCHC04SUB-DENPNUM
            MOVE    PARA-GOKEITANI      TO  ORCHC04SUB-GOKEITANI
+      *H26.10
+      *    コメント対象区分
+           IF      TBL-COM-STR (1) NOT =   SPACE
+               MOVE    "1"             TO  ORCHC04SUB-PARACOMKBN
+           END-IF
+      *    自費対象区分
+           IF      PARA-JIHIKBN        =   "1"
+               MOVE    "1"             TO  ORCHC04SUB-PARAJIHIKBN
+           END-IF
+      *
            CALL    "ORCHC04SUB"        USING
                                        SPA-AREA
                                        ORCHC04SUBAREA
@@ -1652,6 +1760,13 @@
       *****************************************************************
        3005-PRTTBL-HENSYU-SEC        SECTION.
       *
+      *
+      *H26.10
+      *    コメント対象区分
+           IF      TBL-COM-STR (1) NOT =   SPACE
+               PERFORM 30050-COMMNT-CHK-SEC
+           END-IF
+      *
            IF      PARA-FORM           =   "1"
       *        Ａ５サイズ
                PERFORM 30052-A5-PRTTBL-HENSYU-SEC
@@ -1670,6 +1785,9 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   ORCHC04SUB-TBL-MAX
+      *H26.10
+             IF      ORCHC04SUB-SRYCD (IDX)    NOT =   SPACE
+      *
                ADD     1                   TO  IDX-H
                IF      IDX-H               >=  LINE-MAX
                    MOVE    1                   TO  FLG-NEXT
@@ -1763,12 +1881,73 @@
                        ADD     1                   TO  IDX-H
                    END-IF
                END-IF
+      *H26.10
+             END-IF
+      *
            END-PERFORM
            MOVE    WRK-PAGE            TO  WRK-PAGE-MAX
       *
            .
        30051-PRTTBL-HENSYU-EXT.
            EXIT.
+      *
+      *H26.10
+      *****************************************************************
+      *    コメント判定追加処理
+      *****************************************************************
+       30050-COMMNT-CHK-SEC                  SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   ORCHC04SUB-TBL-MAX
+      *
+               IF     (ORCHC04SUB-SRYCD (IDX)(1:1) =   "8" )
+                  OR  (ORCHC04SUB-SRYCD (IDX)(1:3) =   "008")
+                   MOVE    ZERO                TO  FLG-OK
+                   PERFORM VARYING     IDXC    FROM    1   BY  1
+                           UNTIL      (IDXC    >   5 )
+                                OR    (TBL-COM-STR (IDXC)  =   SPACE)
+                                OR    (FLG-OK      =   1   )
+                       IF    (ORCHC04SUB-SRYCD (IDX)
+                                           >=  TBL-COM-STR (IDXC))
+                        AND  (ORCHC04SUB-SRYCD (IDX)
+                                           <=  TBL-COM-END (IDXC))
+                           MOVE    1           TO  FLG-OK
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-OK              =   ZERO
+      *                対象外
+                       IF     (ORCHC04SUB-ZAIEND (IDX) =   "1" )
+                       AND    (ORCHC04SUB-H-ZAIHEN(IDX)
+                                                   NOT =   "＊")
+      *                    剤の最後
+                           MOVE    ORCHC04SUB-H-KAISU (IDX)
+                                               TO  ORCHC04SUB-H-KAISU
+                                                             (IDX - 1)
+                           MOVE    ORCHC04SUB-H-TENSU (IDX)
+                                               TO  ORCHC04SUB-H-TENSU
+                                                             (IDX - 1)
+                           MOVE    "1"         TO  ORCHC04SUB-ZAIEND
+                                                             (IDX - 1)
+                       END-IF
+                       IF     (ORCHC04SUB-H-ZAIHEN(IDX)
+                                                       =   "＊")
+                       AND    (ORCHC04SUB-ZAIEND(IDX)  =   SPACE)
+      *                    剤の先頭
+                           MOVE    ORCHC04SUB-H-SRYKBN (IDX)
+                                               TO  ORCHC04SUB-H-SRYKBN
+                                                             (IDX + 1)
+                           MOVE    ORCHC04SUB-H-ZAIHEN (IDX)
+                                               TO  ORCHC04SUB-H-ZAIHEN
+                                                             (IDX + 1)
+                       END-IF
+                       MOVE    SPACE           TO ORCHC04SUB-SRYCD (IDX)
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       30050-COMMNT-CHK-EXT.
+           EXIT.
+      *TEST
       *
       *****************************************************************
       *    ページカウント処理
@@ -1889,6 +2068,16 @@
            INITIALIZE                  ORCHC04SUBAREA
            MOVE    WRK-KEY-DENPNUM     TO  ORCHC04SUB-DENPNUM
            MOVE    PARA-GOKEITANI      TO  ORCHC04SUB-GOKEITANI
+      *H26.10
+      *    コメント対象区分
+           IF      TBL-COM-STR (1) NOT =   SPACE
+               MOVE    "1"             TO  ORCHC04SUB-PARACOMKBN
+           END-IF
+      *    自費対象区分
+           IF      PARA-JIHIKBN        =   "1"
+               MOVE    "1"             TO  ORCHC04SUB-PARAJIHIKBN
+           END-IF
+      *
            CALL    "ORCHC04SUB"        USING
                                        SPA-AREA
                                        ORCHC04SUBAREA
@@ -1928,6 +2117,9 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   ORCHC04SUB-TBL-MAX
+      *H26.10
+             IF      ORCHC04SUB-SRYCD (IDX)    NOT =   SPACE
+      *
                ADD     1                   TO  IDX-H
                IF      IDX-H               >=  LINE-MAX2
                    MOVE    1                   TO  FLG-NEXT
@@ -1993,6 +2185,9 @@
                        ADD     1                   TO  IDX-H
                    END-IF
                END-IF
+      *H26.10
+             END-IF
+      *
            END-PERFORM
            MOVE    WRK-PAGE            TO  WRK-PAGE-MAX
       *
