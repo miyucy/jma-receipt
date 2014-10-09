@@ -103,7 +103,7 @@
            03  FILLER              PIC X(23)   VALUE
                '"CertificateCAFile" => '.
            03  FILLER             PIC X(39)   VALUE
-               '"/etc/ssl/certs/orca-project-ca-1.crt",'.
+               '"/etc/ssl/certs/orca-project-ca-2.crt",'.
        01  WRK-DATA-REC5.
            03  FILLER              PIC X(17)   VALUE
                '"HospitalID" => "'.

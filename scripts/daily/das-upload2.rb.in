@@ -15,7 +15,7 @@ module OrcaDAS
       @config = {
         "Host" => "https://orca-das.orca.med.or.jp",
         "PathInf" => "/realtime_infection/upload.cgi",
-        "CertificateCAFile" => "/etc/ssl/certs/orca-project-ca-1.crt",
+        "CertificateCAFile" => "/etc/ssl/certs/orca-project-ca-2.crt",
         "User" => "0000102",
         "Password" => "Xinfection"
       }
