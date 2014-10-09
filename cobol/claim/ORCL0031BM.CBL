@@ -1359,7 +1359,8 @@
            IF      MCP-RC          NOT =   ZERO 
                DISPLAY "INS PTBYOMEI-KEY =>" PTBYO-KEY  "."
                MOVE    "11"                TO  LNK-ERR2-CODE
-               MOVE    "全ての病名の更新に失敗しました"
+               MOVE
+                   "全ての病名の更新に失敗しました（追加時にエラー）"
                                            TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -1857,7 +1858,8 @@
            IF      MCP-RC      NOT =   ZERO 
                DISPLAY "UPD PTBYOMEI-KEY =>" PTBYO-KEY  "."
                MOVE    "12"                TO  LNK-ERR2-CODE
-               MOVE    "全ての病名の更新に失敗しました"
+               MOVE
+                   "全ての病名の更新に失敗しました（更新時にエラー）"
                                            TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -2007,7 +2009,8 @@
            IF      MCP-RC      NOT =   ZERO 
                DISPLAY "UPD PTBYOMEI-KEY =>" PTBYO-KEY  "."
                MOVE    "13"                TO  LNK-ERR2-CODE
-               MOVE    "全ての病名の更新に失敗しました"
+               MOVE
+              "全ての病名の更新に失敗しました（入外区分更新時にエラー）"
                                            TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -2377,7 +2380,7 @@
                WHEN    "E01"
                    STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYYMD      DELIMITED   BY  SPACE
-                           "に存在します。転帰日等を確認して下さい"
+                           "に存在します（転帰日等を確認して下さい）"
                                                DELIMITED   BY  SIZE 
                                        INTO    LNK-DIAG-MSG (CNT-DIAG)
                    END-STRING
