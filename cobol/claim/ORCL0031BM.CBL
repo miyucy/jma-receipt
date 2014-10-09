@@ -445,10 +445,12 @@
            EVALUATE    FLG-DIAG
                WHEN    1
                    MOVE    "01"                TO  LNK-ERR2-CODE
-                   MOVE    "警告あり"          TO  LNK-ERR2-MSG
+                   MOVE    "警告がある病名が存在します"
+                                               TO  LNK-ERR2-MSG
                WHEN    9
                    MOVE    "02"                TO  LNK-ERR2-CODE
-                   MOVE    "エラーあり"        TO  LNK-ERR2-MSG
+                   MOVE    "登録出来ない病名が存在します"
+                                               TO  LNK-ERR2-MSG
            END-EVALUATE
            .
        200-MAIN-EXT.
@@ -1357,7 +1359,7 @@
            IF      MCP-RC          NOT =   ZERO 
                DISPLAY "INS PTBYOMEI-KEY =>" PTBYO-KEY  "."
                MOVE    "11"                TO  LNK-ERR2-CODE
-               MOVE    "患者病名登録エラー"
+               MOVE    "全ての病名の更新に失敗しました"
                                            TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -1854,8 +1856,8 @@
                                                SPA-AREA
            IF      MCP-RC      NOT =   ZERO 
                DISPLAY "UPD PTBYOMEI-KEY =>" PTBYO-KEY  "."
-               MOVE    "12"                  TO  LNK-ERR2-CODE
-               MOVE    "患者病名更新エラー"
+               MOVE    "12"                TO  LNK-ERR2-CODE
+               MOVE    "全ての病名の更新に失敗しました"
                                            TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -2005,7 +2007,7 @@
            IF      MCP-RC      NOT =   ZERO 
                DISPLAY "UPD PTBYOMEI-KEY =>" PTBYO-KEY  "."
                MOVE    "13"                TO  LNK-ERR2-CODE
-               MOVE    "患者病名入外区分更新エラー"
+               MOVE    "全ての病名の更新に失敗しました"
                                            TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -2386,13 +2388,13 @@
                                        INTO    LNK-DIAG-MSG (CNT-DIAG)
                    END-STRING
                WHEN    "E03"
-                   MOVE    "コード不正です"
+                   MOVE    "病名コード不正です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "E04"
                    MOVE    "補足コメントコード不正です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W01"
-                   MOVE    "廃止・移行・推奨あり"
+                   MOVE    "廃止・移行先・推奨のある病名が存在します"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                    MOVE    WRK-DIAG-CHANGE
                                        TO  LNK-DIAG-CHANGE (CNT-DIAG)
@@ -2400,13 +2402,15 @@
                    MOVE    "単独使用禁止病名です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W03"
-                   MOVE    "全角チェックエラー"
+                   MOVE
+                   "全角チェックでエラーとなる文字が病名に存在します"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W04"
-                   MOVE    "改行コードが存在します"
+                   MOVE    "病名に改行コードが存在します"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W05"
-                   MOVE    "補足コメントが全角チェックエラー"
+                   MOVE
+              "全角チェックでエラーとなる文字が補足コメントに存在します"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W06"
                    MOVE    "補足コメントに改行コードが存在します"
