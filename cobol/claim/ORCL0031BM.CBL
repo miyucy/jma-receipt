@@ -2388,10 +2388,10 @@
                                        INTO    LNK-DIAG-MSG (CNT-DIAG)
                    END-STRING
                WHEN    "E03"
-                   MOVE    "病名コード不正です"
+                   MOVE    "病名コードが不正です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "E04"
-                   MOVE    "補足コメントコード不正です"
+                   MOVE    "補足コメントコードが不正です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "W01"
                    MOVE    "廃止・移行先・推奨のある病名が存在します"
