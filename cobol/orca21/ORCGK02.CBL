@@ -109,6 +109,7 @@
       *  04.08.00    NACL-多々納  14/03/19  .123 処理対応他
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
+      *  04.07.00    NACL-多々納  14/10/09  患者登録戻り処理変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6566,6 +6567,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *!!!!!!!!!!!!!!!!!!
       *!!!!!!!!!!!!!!!!!!
+      *** 以下　処理なし
+           GO      TO  41011-KOUI-ALLHEN-EXT
+      *
       *!!連続挿入　ver.4.8は新しいSPAを追加。SPA-SYOKI-XXX は流用）
            IF     (SPA-ERRCD           =   SPACE )
             AND   (SPA-KIDCD           =   SPACE )
@@ -7075,6 +7079,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1               TO  FLG-INS
       *!!!!!!!!!!!!!!!!!!!
       *!!!!!!!!!!!!!!!!!!
+      *H26.10  以下　処理なし
+      *
+                   GO  TO                  41011-KOUI-HEN2-EXT
+      *
       *            連続挿入
       *               (SPA-SYOKAIXXXX　は流用　4.8　ではSPAを追加）
                    IF     (SPA-SYOKAI-IDX      =   ZERO )
