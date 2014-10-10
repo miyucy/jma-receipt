@@ -203,6 +203,8 @@
            03  WRK-ERR-SRYYMD      PIC X(22).
            03  WRK-ERR-SRYKA       PIC X(20).
       *
+           03  WRK-CHK-SRYKA       PIC X(02).
+      *
            03  WRK-COL             PIC 9(03).
       *
       *    傷病名編集フラグ（疑い）
@@ -284,6 +286,8 @@
       *
       *    ＣＬＡＩＭ接続情報
            COPY    "CPSK9000.INC".
+      *
+           COPY    "CPSK1005.INC".
       *
       *    病名マスタ−
        01  BYOMEI-REC.
@@ -2265,6 +2269,8 @@
        2009-BYOMEI-DABURI-CHK-SEC  SECTION.
       *
            MOVE    SPACE           TO  WRK-ERR-SRYYMD
+                                       WRK-ERR-SRYKA
+                                       WRK-CHK-SRYKA
       *
            IF      FLG-BYOMEI-DELETE   =   1
                GO  TO  2009-BYOMEI-DABURI-CHK-EXT
@@ -2357,10 +2363,139 @@
       *
                IF      FLG-DABURI-CHK      =   1
                    MOVE    "E01"               TO  WRK-DIAG-WARNING
-               ELSE
-                   MOVE    "E02"               TO  WRK-DIAG-WARNING
+      *********ELSE
+      *********    MOVE    "E02"               TO  WRK-DIAG-WARNING
                END-IF 
                PERFORM 500-WARNING-HENSYU-SEC
+               GO  TO 2009-BYOMEI-DABURI-CHK-EXT
+           END-IF
+      *
+      *    同期・集約フラグの設定がないとき
+           IF    ( SYS-9000-BYOMEI-SYU-FLG
+                                        =   SPACE )
+           AND   ( SYS-9000-BYOMEI-DOUKI-FLG
+                                        =   SPACE )
+               GO  TO 2009-BYOMEI-DABURI-CHK-EXT
+           END-IF
+      *
+      *    他診療科の同一病名の警告チェック
+           INITIALIZE                      PTBYOMEI-REC
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+           MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
+           MOVE    WRK-PTID            TO  PTBYO-PTID
+           MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+           MOVE    WRK-HOSOKU-COMMENT  TO  PTBYO-HOSOKU-COMMENT
+           MOVE    WRK-NYUGAIKBN       TO  PTBYO-NYUGAIKBN
+           IF      WRK-NYUGAIKBN       =   SPACE
+               MOVE    "key42"             TO  WRK-PTBYO-MCP-PATHNAME
+           ELSE
+               MOVE    "key43"             TO  WRK-PTBYO-MCP-PATHNAME
+           END-IF
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    WRK-PTBYO-MCP-PATHNAME
+                                       TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               MOVE    WRK-PTBYO-MCP-PATHNAME
+                                           TO  MCP-PATHNAME
+               PERFORM 900-PTBYO-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+           END-IF
+      *
+           PERFORM               UNTIL   FLG-PTBYOMEI    =   1
+                                 OR      FLG-DABURI-CHK  >   0
+               IF      CHK-PTBYO-SRYYMD    =   PTBYO-SRYYMD
+               AND     CHK-PTBYO-SRYKA     =   PTBYO-SRYKA
+               AND     CHK-PTBYO-RENNUM    =   PTBYO-RENNUM
+                   CONTINUE
+               ELSE
+                   EVALUATE    TRUE
+                       WHEN    WRK-BYOYMD  =   PTBYO-SRYYMD
+      *****************    MOVE    1               TO  FLG-DABURI-CHK
+                           MOVE    PTBYO-SRYKA     TO  WRK-CHK-SRYKA
+                       WHEN    WRK-BYOYMD  <   PTBYO-SRYYMD
+                           IF      WRK-TENKIYMD    =   SPACE
+                               MOVE    1       TO  FLG-DABURI-CHK
+                           ELSE
+                               IF     WRK-TENKIYMD
+                                                   >   PTBYO-SRYYMD
+                                   MOVE    1       TO  FLG-DABURI-CHK
+                               END-IF
+                           END-IF
+                       WHEN    WRK-BYOYMD  >   PTBYO-SRYYMD
+                           IF      PTBYO-TENKIYMD  =   SPACE
+                               MOVE    1       TO  FLG-DABURI-CHK
+                           ELSE
+                               IF      WRK-BYOYMD  <   PTBYO-TENKIYMD
+                                   MOVE    1       TO  FLG-DABURI-CHK
+                               END-IF
+                           END-IF
+                   END-EVALUATE
+      *
+                   IF      FLG-DABURI-CHK      >   0
+      *                同一病名における保険限定の重複チェック
+                       IF      PTBYO-HKNCOMBI      >   ZERO
+                           MOVE    ZERO            TO  FLG-DABURI-CHK
+                       ELSE
+                           IF    ( SYS-9000-BYOMEI-SYU-FLG
+                                                       =   "1"   )
+                           AND   ( SYS-9000-BYOMEI-DOUKI-FLG
+                                                       =   SPACE )
+                           AND   ( PTBYO-SRYKA     NOT =
+                                                   WRK-CHK-SRYKA )
+      *                        集約フラグのみ設定時に最小診療科でないとき
+      *                        はエラーとしない
+                               MOVE    ZERO            TO
+                                                       FLG-DABURI-CHK
+                           ELSE
+                               MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
+                               PERFORM 5002-HIZUKE-HEN-SEC
+                               MOVE    LNK-DAY2-EDTYMD3
+                                                       TO
+                                                       WRK-ERR-SRYYMD
+                               PERFORM 5001-SRYKA-HENSYU-SEC
+                               MOVE    SYS-1005-SRYKANAME1
+                                                       TO  WRK-ERR-SRYKA
+                           END-IF 
+                       END-IF
+                   END-IF
+               END-IF
+      *
+      *        最小診療科の設定
+               IF      WRK-BYOYMD          =   PTBYO-SRYYMD
+                   MOVE    PTBYO-SRYKA         TO  WRK-CHK-SRYKA
+               END-IF
+      *
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               MOVE    WRK-PTBYO-MCP-PATHNAME
+                                           TO  MCP-PATHNAME
+               PERFORM 900-PTBYO-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    WRK-PTBYO-MCP-PATHNAME
+                                       TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-DABURI-CHK      >   0
+               IF      SYS-9000-BYOMEI-DOUKI-FLG
+                                           =   "1"
+                   MOVE    9                   TO  FLG-BYOMEI-CHK
+                   MOVE    "E07"               TO  WRK-DIAG-WARNING
+                   PERFORM 500-WARNING-HENSYU-SEC
+                   GO  TO 2009-BYOMEI-DABURI-CHK-EXT
+               END-IF
+               IF      SYS-9000-BYOMEI-SYU-FLG
+                                           =   "1"
+                   MOVE    9                   TO  FLG-BYOMEI-CHK
+                   MOVE    "E07"               TO  WRK-DIAG-WARNING
+                   PERFORM 500-WARNING-HENSYU-SEC
+                   GO  TO 2009-BYOMEI-DABURI-CHK-EXT
+               END-IF
            END-IF
            .
        2009-BYOMEI-DABURI-CHK-EXT.
@@ -2396,6 +2531,14 @@
                WHEN    "E04"
                    MOVE    "補足コメントコードが不正です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
+               WHEN    "E07"
+                   STRING  "同名の病名が"      DELIMITED   BY  SIZE 
+                           WRK-ERR-SRYKA       DELIMITED   BY  SPACE
+                           "に"                DELIMITED   BY  SIZE 
+                           WRK-ERR-SRYYMD      DELIMITED   BY  SPACE
+                           "に存在します"      DELIMITED   BY  SIZE 
+                                       INTO    LNK-DIAG-MSG (CNT-DIAG)
+                   END-STRING
                WHEN    "W01"
                    MOVE    "廃止・移行先・推奨のある病名が存在します"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
@@ -2531,6 +2674,45 @@
       *
            .
        5002-HIZUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科編集処理
+      *****************************************************************
+       5001-SRYKA-HENSYU-SEC       SECTION.
+      * 
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                      SYS-1005-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    PTBYO-SRYKA         TO  SYS-1005-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1005-REC
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+           ELSE
+               INITIALIZE                  SYS-1005-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       5001-SRYKA-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
