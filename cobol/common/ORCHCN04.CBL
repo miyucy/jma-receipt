@@ -109,6 +109,7 @@
            03  FLG-RSIKIN          PIC 9(01).
       *
            03  FLG-HIZUKECHK       PIC 9(01).
+      *H26.10
            03  FLG-JEND            PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -130,11 +131,12 @@
            03  IDXM                PIC 9(04).
            03  IDXJ                PIC 9(04).
            03  IDXM2               PIC 9(04).
-           03  IDXC                PIC 9(04).
-           03  IDXJ2               PIC 9(04).
       *
            03  IDX-STR             PIC 9(02).
            03  IDX-END             PIC 9(02).
+      *H26.10
+           03  IDXC                PIC 9(04).
+           03  IDXJ2               PIC 9(04).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -1786,6 +1788,7 @@
                    MOVE    WRK-KAISU       TO  TBL-JIHI-KAISU(IDX-JIHI)
                    MOVE    WRK-SRYSYUKBN   TO  TBL-JIHI-SRYSYUKBN
                                                             (IDX-JIHI)
+      *H26.10
                    MOVE    WRK-ZAINUM      TO  TBL-JIHI-ZAINUM
                                                             (IDX-JIHI)
                    MOVE    TBL-SRYCD (IDXJ)
@@ -2648,6 +2651,7 @@
                        END-IF
                    END-IF
                END-PERFORM
+      *
       *        Ä¢É¼°õºþÊÔ½¸
                PERFORM 2005-PRINT-SYORI-SEC
            END-PERFORM

@@ -428,7 +428,7 @@
                05  TBL-Y2-KAISU            PIC 9(03).
                05  TBL-Y2-KINPUTCHI-G.
                    07  TBL-Y2-KATAI        PIC X(08)  OCCURS  5.
-               05  TBL-Y2-ZAI-REC          OCCURS   50.
+               05  TBL-Y2-ZAI-REC          OCCURS   200.
                    07  TBL-Y2-SRYCD        PIC X(09).
                    07  TBL-Y2-KISOTEN      PIC 9(08)V99.
                    07  TBL-Y2-SURYO        PIC 9(05)V9(05).
@@ -2495,6 +2495,7 @@
                                    UNTIL     (IDG5    >   50  )
                                      OR   (TBL-YOUHO-SRYCD (IDG2 IDG5)
                                                       =   SPACE )
+                                     OR   (IDG3       >=  200 )
                                 ADD     1               TO  IDG3
                                 MOVE    TBL-YOUHO-ZAI-OCCURS (IDG2 IDG5)
                                                 TO  TBL-Y2-ZAI-REC(IDG3)
@@ -2517,6 +2518,7 @@
                                    UNTIL     (IDG5    >   50  )
                                      OR   (TBL-YOUHO-SRYCD (IDG2 IDG5)
                                                       =   SPACE )
+                                     OR   (IDG3       >=  200 )
                                 ADD     1               TO  IDG3
                                 MOVE    TBL-YOUHO-ZAI-OCCURS (IDG2 IDG5)
                                                 TO  TBL-Y2-ZAI-REC(IDG3)
@@ -2546,7 +2548,7 @@
            MOVE    ZERO            TO  WRK-ZAITEN
            MOVE    ZERO            TO  WRK-ZAITEN-G
            PERFORM VARYING    IDG3     FROM    1   BY  1
-                   UNTIL     (IDG3    >   50  )
+                   UNTIL     (IDG3    >   200 )
                          OR  (TBL-Y2-SRYCD (IDG3)  =   SPACE )
            IF      TBL-Y2-SRYCD (IDG3)(1:1)    =   "6"
       *        剤数加算
@@ -3207,14 +3209,6 @@
                END-IF
       *
            END-IF
-      *TEST
-           DISPLAY "FLG-SYOHO-CHK:" FLG-SYOHO-CHK
-                 ",IDX-SYOHOU:" IDX-SYOHOU
-                 ",FLG-SYOHOSENN:" FLG-SYOHOSENN
-                 ",FLG-TAZAI-ARI:" FLG-TAZAI-ARI
-                 ",LNK-ORCSC-KIDCD:" LNK-ORCSC-KIDCD
-                 ",SPA-ERRCDD:" SPA-ERRCD
-      *TEST
       *
       *    主科の時のみ行う
       *****IF     (IDX-KA          NOT =   1  )  OR
