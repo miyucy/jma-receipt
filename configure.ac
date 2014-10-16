@@ -153,8 +153,8 @@ AC_ARG_WITH(open-cobol-exec-prefix,
 	  COBOLFLAGS="-m -dynamic -fixed -fimplicit-init -std=cobol85 -Wall "
   	  EXEC_COBOLFLAGS="-x -dynamic -fixed -std=cobol85 -Wall "
 	  if test "x$enable_debug" = "xyes"; then
-	    COBOLFLAGS="${COBOLFLAGS} -g -debug -fdebugging-line -fsource-location "
-	    EXEC_COBOLFLAGS="${EXEC_COBOLFLAGS} -g -debug -fdebugging-line "
+	    COBOLFLAGS="${COBOLFLAGS} -debug -fdebugging-line -fsource-location "
+	    EXEC_COBOLFLAGS="${EXEC_COBOLFLAGS} -debug -fdebugging-line "
 	  fi
       fi
   else
