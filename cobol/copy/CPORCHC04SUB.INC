@@ -22,7 +22,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.00    NACL-多々納  14/10/XX  コメントコード対象等追加
+      *  04.07.00    NACL-多々納  14/10/14  コメントコード対象等追加
       ************************************************************
       *
        01  ORCHC04SUBAREA.
@@ -37,16 +37,7 @@
            03  ORCHC04SUB-PARACOMKBN   PIC X(01).
       *    保険外対象（１：対象）
            03  ORCHC04SUB-PARAJIHIKBN  PIC X(01).
-      *    API返却用
-           03  ORCHC04SUB-APIKBN       PIC X(01).
       *出力
-           03  ORCHC04SUB-INFO-AREA.
-               05  ORCHC04SUB-SRYYMD           PIC X(08).
-               05  ORCHC04SUB-SRYYMDMEI        PIC X(22).
-               05  ORCHC04SUB-SRYKA            PIC X(02).
-               05  ORCHC04SUB-SRYKAMEI         PIC X(30).
-               05  ORCHC04SUB-HKNCOMBI         PIC X(04).
-               05  ORCHC04SUB-HKNCOMBIMEI      PIC X(40).
       *    印刷内容
            03  ORCHC04SUB-LIST-AREA.
                05  ORCHC04SUB-HEN-G    OCCURS   800.
