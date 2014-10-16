@@ -1197,11 +1197,11 @@
       *        対象保険組合せ情報編集
                PERFORM 200210-HKNCOMBI-HEN-SEC
            END-IF
-           IF      LNK-ERR1-CODE   NOT =   ZERO
+           IF      LNK-ERR1-CODE   NOT =   SPACE
                MOVE    "80"                TO  WRK-ERRCD
                MOVE    LNK-ERR1-MSG        TO  WRK-ERRMSG
            ELSE
-               IF      LNK-ERR2-CODE   NOT =   ZERO
+               IF      LNK-ERR2-CODE   NOT =   SPACE
                    MOVE    "80"                TO  WRK-ERRCD
                    MOVE    LNK-ERR2-MSG        TO  WRK-ERRMSG
                END-IF
