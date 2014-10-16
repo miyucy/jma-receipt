@@ -58,12 +58,17 @@ def convert_database(dbpath,force)
     rows = db.execute(sql)
     rows.each do |row|
       row[4] = "#{$1}-#{$2}-#{$3}" if %r|(\d{4})(\d{2})(\d{2})| =~ row[4]
+      begin
+        row[2].encode!('utf-8','euc-jp')
+      rescue Exception
+        row[2] = ''
+      end
       sql = <<-EOS
         INSERT INTO tbl_plugin 
         VALUES (
           '#{row[0]}',
           '#{row[1]}',
-          '',
+          '#{row[2]}',
           '#{row[3]}',
           '#{row[4]}',
           '#{row[5]}',
