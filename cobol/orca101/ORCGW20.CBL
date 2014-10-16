@@ -3477,8 +3477,6 @@
            PERFORM 42011-RYOYOSANTEI-CHK-SEC
            EVALUATE    TRUE
            WHEN  ( FLG-RYOYOSANTEI =   1 )
-           WHEN  ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H240401 )
-            AND  ( SPA-GMN-W20-SBT        =   "08" OR "09" )
                MOVE    SPA-GMN-W20-RYOYOKBN
                                        TO  SYS-5001-CRYOYOKBN
            WHEN    OTHER
@@ -3510,7 +3508,9 @@
                IF    ( SPA-NAI-W20-NYUKHNKBN  NOT =   79 )
                    MOVE    1       TO  FLG-RYOYOSANTEI
                END-IF
-      *
+           WHEN  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H240401 )
+            AND  ( SPA-GMN-W20-SBT          =  "08" OR "09" )
+                   MOVE    1       TO  FLG-RYOYOSANTEI
            END-EVALUATE
       *
            .
@@ -4830,68 +4830,11 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H240401 )
-               EVALUATE    SPA-GMN-W20-SBT
-               WHEN    "08"
-                   MOVE    "0"    TO  SPA-GMN-W20-RYOYOKBNL  (1)
-                   MOVE    "陵高换年しない"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (1)
-      *
-                   MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL  (2)
-                   MOVE    "陵高换年する"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (2)
-                   MOVE    2      TO  SPA-GMN-W20-RYOYOKBN-MAX
-               WHEN    "09"
-                   EVALUATE    TRUE
-                   WHEN    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H260401 )
-                       MOVE    "0"    TO  SPA-GMN-W20-RYOYOKBNL (1)
-                       MOVE    "陵高换年しない"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (1)
-      *
-                       MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL (2)
-                       MOVE    "陵高换年する∈壳１∷"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (2)
-      *
-                       MOVE    "2"    TO  SPA-GMN-W20-RYOYOKBNL (3)
-                       MOVE    "陵高换年する∈壳２∷"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (3)
-      *
-                       MOVE    "3"    TO  SPA-GMN-W20-RYOYOKBNL (4)
-                       MOVE    "陵高换年する∈壳３∷" 
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (4)
-      *
-                       MOVE    "4"    TO  SPA-GMN-W20-RYOYOKBNL (5)
-                       MOVE    "陵高换年する∈壳４∷"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (5)
-      *
-                       MOVE    "5"    TO  SPA-GMN-W20-RYOYOKBNL (6)
-                       MOVE    "陵高换年する∈壳５∷"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (6)
-      *
-                       MOVE    "6"    TO  SPA-GMN-W20-RYOYOKBNL (7)
-                       MOVE    "陵高换年する∈壳６∷" 
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (7)
-                       MOVE    7      TO  SPA-GMN-W20-RYOYOKBN-MAX
-                   WHEN    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H240401 )
-                       MOVE    "0"    TO  SPA-GMN-W20-RYOYOKBNL (1)
-                       MOVE    "陵高换年しない"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (1)
-      *
-                       MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL (2)
-                       MOVE    "陵高换年する∈壳１∷"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (2)
-      *
-                       MOVE    "2"    TO  SPA-GMN-W20-RYOYOKBNL (3)
-                       MOVE    "陵高换年する∈壳２∷"
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (3)
-      *
-                       MOVE    "3"    TO  SPA-GMN-W20-RYOYOKBNL (4)
-                       MOVE    "陵高换年する∈壳３∷" 
-                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (4)
-      *
-                       MOVE    4      TO  SPA-GMN-W20-RYOYOKBN-MAX
-                   END-EVALUATE
-               END-EVALUATE
+           PERFORM 42011-RYOYOSANTEI-CHK-SEC
+           IF    ( FLG-RYOYOSANTEI =   1 )
+               IF    ( SPA-GMN-W20-SBT         =   "08" OR "09" )
+                   PERFORM 4100-RYOYOKBN-CMB-EDT-SEC
+               END-IF
            END-IF
       *
            .
@@ -5145,19 +5088,85 @@
       *****************************************************************
        4100-RYOYOKBN-CMB-EDT-SEC       SECTION.
       *
-           INITIALIZE                  SPA-GMN-W20-RYOYOKBNLST-G
+           IF    ( SPA-GMN-W20-SBT     =   "08" OR "09" )
+               EVALUATE    SPA-GMN-W20-SBT
+               WHEN    "08"
+                   MOVE    "0"    TO  SPA-GMN-W20-RYOYOKBNL  (1)
+                   MOVE    "陵高换年しない"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (1)
       *
-           MOVE    "0"            TO   SPA-GMN-W20-RYOYOKBNL  (1)
-           MOVE    "办忍陕棚掐薄答塑瘟を换年"
-                                  TO   SPA-GMN-W20-RYOYOKBNMEIL (1)
+                   MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL  (2)
+                   MOVE    "陵高换年する"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (2)
+                   MOVE    2      TO  SPA-GMN-W20-RYOYOKBN-MAX
+               WHEN    "09"
+                   EVALUATE    TRUE
+                   WHEN    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H260401 )
+                       MOVE    "0"    TO  SPA-GMN-W20-RYOYOKBNL (1)
+                       MOVE    "陵高换年しない"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (1)
       *
-           MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL  (2)
-           MOVE    "闻蛙陕棚掐薄答塑瘟１の毋により换年"
-                                  TO   SPA-GMN-W20-RYOYOKBNMEIL (2)
-           MOVE    2              TO   SPA-GMN-W20-RYOYOKBN-MAX
+                       MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL (2)
+                       MOVE    "陵高换年する∈壳１∷"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (2)
+      *
+                       MOVE    "2"    TO  SPA-GMN-W20-RYOYOKBNL (3)
+                       MOVE    "陵高换年する∈壳２∷"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (3)
+      *
+                       MOVE    "3"    TO  SPA-GMN-W20-RYOYOKBNL (4)
+                       MOVE    "陵高换年する∈壳３∷" 
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (4)
+      *
+                       MOVE    "4"    TO  SPA-GMN-W20-RYOYOKBNL (5)
+                       MOVE    "陵高换年する∈壳４∷"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (5)
+      *
+                       MOVE    "5"    TO  SPA-GMN-W20-RYOYOKBNL (6)
+                       MOVE    "陵高换年する∈壳５∷"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (6)
+      *
+                       MOVE    "6"    TO  SPA-GMN-W20-RYOYOKBNL (7)
+                       MOVE    "陵高换年する∈壳６∷" 
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (7)
+                       MOVE    7      TO  SPA-GMN-W20-RYOYOKBN-MAX
+                   WHEN    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H240401 )
+                       MOVE    "0"    TO  SPA-GMN-W20-RYOYOKBNL (1)
+                       MOVE    "陵高换年しない"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (1)
+      *
+                       MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL (2)
+                       MOVE    "陵高换年する∈壳１∷"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (2)
+      *
+                       MOVE    "2"    TO  SPA-GMN-W20-RYOYOKBNL (3)
+                       MOVE    "陵高换年する∈壳２∷"
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (3)
+      *
+                       MOVE    "3"    TO  SPA-GMN-W20-RYOYOKBNL (4)
+                       MOVE    "陵高换年する∈壳３∷" 
+                                  TO  SPA-GMN-W20-RYOYOKBNMEIL (4)
+      *
+                       MOVE    4      TO  SPA-GMN-W20-RYOYOKBN-MAX
+                   END-EVALUATE
+               END-EVALUATE
+           ELSE
+      *
+               INITIALIZE                  SPA-GMN-W20-RYOYOKBNLST-G
+      *
+               MOVE    "0"            TO   SPA-GMN-W20-RYOYOKBNL  (1)
+               MOVE    "办忍陕棚掐薄答塑瘟を换年"
+                                      TO   SPA-GMN-W20-RYOYOKBNMEIL (1)
+      *
+               MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL  (2)
+               MOVE    "闻蛙陕棚掐薄答塑瘟１の毋により换年"
+                                      TO   SPA-GMN-W20-RYOYOKBNMEIL (2)
+               MOVE    2              TO   SPA-GMN-W20-RYOYOKBN-MAX
+      *
+           END-IF
       *
            MOVE    SPA-GMN-W20-RYOYOKBNLST (1)
-                                  TO   SPA-GMN-W20-RYOYOKBN-G
+                                      TO   SPA-GMN-W20-RYOYOKBN-G
       *
            .
        4100-RYOYOKBN-CMB-EDT-EXT.
@@ -8968,12 +8977,11 @@
       *    闻蛙陕棚掐薄答塑瘟换年惰尸
            PERFORM 42011-RYOYOSANTEI-CHK-SEC
            IF    ( FLG-RYOYOSANTEI =   1 )
-               MOVE    "９０泣亩えの换年" TO W20-LBLRYOYOKBN
-           END-IF
-      *
-           IF    ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H240401 )
-            AND  ( SPA-GMN-W20-SBT          =  "08" OR "09" )
-               MOVE    "办忍ˇ闻蛙陵高换年" TO W20-LBLRYOYOKBN
+               IF   ( SPA-GMN-W20-SBT      =  "08" OR "09" )
+                   MOVE    "办忍ˇ闻蛙陵高换年"    TO W20-LBLRYOYOKBN
+               ELSE
+                   MOVE    "９０泣亩えの换年"      TO W20-LBLRYOYOKBN
+               END-IF
            END-IF
       *
            MOVE    SPA-GMN-W20-RYOYOKBN-G
