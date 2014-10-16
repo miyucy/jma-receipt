@@ -36,6 +36,7 @@
       *                                     漢字モードの継続するスペース
       *                                     の記録方法の変更
       *  04.07.04    NACL-門脇    14/09/01  平成２６年１０月改正対応
+      *  04.07.05    NACL-門脇    14/10/15  療養期間の記載修正
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
@@ -1723,22 +1724,24 @@
                    MOVE    RECE41-RYOEDYMD (7:2)
                                                TO  IDX6
                END-IF    
-      ***      PERFORM VARYING IDX4    FROM    IDX5    BY  1
-      ***              UNTIL   IDX4    >       IDX6
-      ***          IF    ( RECE41-NYUINBITBL(IDX4) =  SPACE )
-      ***          OR    ( RECE41-JNISSUTBL (IDX4) =  "1"   )
-      ***              MOVE    IDX4                TO  WRK-RYOSTYMD-DD
-      ***              MOVE    IDX6                TO  IDX4
-      ***          END-IF
-      ***      END-PERFORM
-      ***      PERFORM VARYING IDX4    FROM    IDX6    BY  -1
-      ***              UNTIL   IDX4    <       IDX5
-      ***          IF    ( RECE41-NYUINBITBL(IDX4) =   SPACE )
-      ***          OR    ( RECE41-JNISSUTBL (IDX4) =   "1"   )
-      ***              MOVE    IDX4                TO  WRK-RYOEDYMD-DD
-      ***              MOVE    IDX5                TO  IDX4
-      ***          END-IF
-      ***      END-PERFORM
+               IF    RECE41-NYUINFLG  =  1
+                 PERFORM VARYING IDX4    FROM    IDX5    BY  1
+                         UNTIL   IDX4    >       IDX6
+                     IF    ( RECE41-NYUINBITBL(IDX4) =  SPACE )
+                     OR    ( RECE41-JNISSUTBL (IDX4) =  "1"   )
+                         MOVE    IDX4          TO  WRK-RYOSTYMD-DD
+                         MOVE    IDX6          TO  IDX4
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING IDX4    FROM    IDX6    BY  -1
+                         UNTIL   IDX4    <       IDX5
+                     IF    ( RECE41-NYUINBITBL(IDX4) =   SPACE )
+                     OR    ( RECE41-JNISSUTBL (IDX4) =   "1"   )
+                         MOVE    IDX4          TO  WRK-RYOEDYMD-DD
+                         MOVE    IDX5          TO  IDX4
+                     END-IF
+                 END-PERFORM
+               END-IF
            END-IF
       *
       *    療養期間−初日
