@@ -2619,7 +2619,8 @@
                        MOVE    1                   TO  FLG-DIAG
                    WHEN    "E"
                        MOVE    9                   TO  FLG-DIAG
-           END-EVALUATE
+               END-EVALUATE
+           END-IF
            MOVE    SPACE               TO  WRK-DIAG-AREA
            .
        500-WARNING-HENSYU-EXT.
