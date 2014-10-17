@@ -82,6 +82,7 @@
       *              NACL-小豆沢  14/09/19  Ｆファイル編集処理
       *                                     栄養管理体制減算をマイナス
       *                                     記録する
+      *              NACL-伊藤    14/10/17  レセプト科区分クリア漏れ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2898,6 +2899,7 @@
            MOVE    RECE641-SRYYM       TO  WRK-FEDT-SRYYM
       *    WRK-FEDT-DD はすでにセット済み
       *レセプト科区分
+           MOVE    SPACE               TO  WRK-FEDT-RECESRYKA
            PERFORM VARYING SYSKAN-IDX2 FROM  1  BY  1
                    UNTIL   SYSKAN-IDX2 >   TBL-SRYKA-MAX
              IF    RECE641-SRYKA       =   TBL-SRYKA (SYSKAN-IDX2)
@@ -3538,6 +3540,7 @@
       ****      MOVE    "0"                TO  WRK-FEDT-HOUKATU-FLG
       **** END-IF
       *レセプト科区分
+           MOVE    SPACE               TO  WRK-FEDT-RECESRYKA
            PERFORM VARYING SYSKAN-IDX2 FROM  1  BY  1
                    UNTIL   SYSKAN-IDX2 >   TBL-SRYKA-MAX
              IF    RECE641-SRYKA       =   TBL-SRYKA (SYSKAN-IDX2)
@@ -3717,6 +3720,7 @@
            MOVE    RECE641-SRYYM       TO  WRK-FEDT-SRYYM
       *    WRK-FEDT-DD はすでにセット済み
       *レセプト科区分
+           MOVE    SPACE               TO  WRK-FEDT-RECESRYKA
            PERFORM VARYING SYSKAN-IDX2 FROM  1  BY  1
                    UNTIL   SYSKAN-IDX2 >   TBL-SRYKA-MAX
              IF    RECE641-SRYKA       =   TBL-SRYKA (SYSKAN-IDX2)
@@ -4119,6 +4123,7 @@
            MOVE    RECE62-SRYYM       TO  WRK-FEDT-SRYYM
       *    WRK-FEDT-DD はすでにセット済み
       *レセプト科区分
+           MOVE    SPACE               TO  WRK-FEDT-RECESRYKA
            PERFORM VARYING SYSKAN-IDX2 FROM  1  BY  1
                    UNTIL   SYSKAN-IDX2 >   TBL-SRYKA-MAX
              IF    LNK-DPCNYUIN-SRYKA (IDZ1 IDZ2)
