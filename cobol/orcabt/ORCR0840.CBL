@@ -259,6 +259,7 @@
       *                                     エラー時処理終了
       *  04.07.21    NACL-門脇    14/09/01  訪問診療にかかる記録書コメント対応
       *  04.07.22    NACL-門脇    14/09/01  平成２６年１０月改正対応
+      *  04.07.23    NACL-門脇    14/10/17  点滴の診療科編集対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
@@ -617,6 +618,7 @@
                                                        OCCURS   20.
       *
                05  WRK-TENTEKI2-T-AREA                 OCCURS   31.
+                 06  WRK-TENTEKI2-T-SRYKA              PIC X(02).
                  06  WRK-TENTEKI2-T-MEISAISU           PIC 9(03).
                  06  WRK-TENTEKI2-T-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-T-SRYCDTOTAL         PIC 9(13).
@@ -631,6 +633,7 @@
                05  WRK-TENTEKI2-T-ERRCD                PIC 9(01).
       *
                05  WRK-TENTEKI2-C-AREA                 OCCURS   31.
+                 06  WRK-TENTEKI2-C-SRYKA              PIC X(02).
                  06  WRK-TENTEKI2-C-MEISAISU           PIC 9(03).
                  06  WRK-TENTEKI2-C-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-C-SRYCDTOTAL         PIC 9(13).
@@ -651,6 +654,7 @@
                05  WRK-ORCSTEN-COM-MEI                 PIC X(80).
            03  WRK-ORCSTEN-T2                          OCCURS   31.
                05  WRK-ORCSTEN-DAY                     PIC 9(03).
+               05  WRK-ORCSTEN-KIZ-SRYKA               PIC X(02).
            03  WRK-ORCSTEN-ZAIKAISU                    PIC 9(04).
       *
        01  WRK-CHUKSNSRYCD-TABLE.
@@ -9612,7 +9616,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
            MOVE    "4"                  TO  RECE84-ZAISKBKBN
            MOVE    RECE82-PTNUM         TO  RECE84-PTNUM
       *
-           MOVE    SPACE                TO  RECE84-SRYKA
+           MOVE    "00"                 TO  RECE84-SRYKA
            MOVE    RECE82-HKNCOMBI      TO  RECE84-HKNCOMBI
            MOVE    SPACE                TO  RECE84-JIHOKBN
       *
@@ -9763,7 +9767,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
            MOVE    "4"                  TO  RECE84-ZAISKBKBN
            MOVE    RECE82-PTNUM         TO  RECE84-PTNUM
       *
-           MOVE    SPACE                TO  RECE84-SRYKA
+           MOVE    "00"                 TO  RECE84-SRYKA
            MOVE    RECE82-HKNCOMBI      TO  RECE84-HKNCOMBI
            MOVE    SPACE                TO  RECE84-JIHOKBN
       *
@@ -9985,7 +9989,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    IDX7                 TO  RECE85-RENNUM
            MOVE    RECE82-PTNUM         TO  RECE85-PTNUM
       *
-           MOVE    SPACE                TO  RECE85-SRYKA
+           MOVE    "00"                 TO  RECE85-SRYKA
            MOVE    "97"                 TO  RECE85-SRYKBN
            MOVE    "970"                TO  RECE85-SRYSYUKBN
            MOVE    ZERO                 TO  RECE85-JIHIMONEY
@@ -10131,7 +10135,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    IDX7                 TO  RECE85-RENNUM
            MOVE    RECE82-PTNUM         TO  RECE85-PTNUM
       *
-           MOVE    SPACE                TO  RECE85-SRYKA
+           MOVE    "00"                 TO  RECE85-SRYKA
            MOVE    "97"                 TO  RECE85-SRYKBN
            MOVE    "970"                TO  RECE85-SRYSYUKBN
            MOVE    ZERO                 TO  RECE85-JIHIMONEY
@@ -10358,6 +10362,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       WRK-ORCSTEN-DAY  (IDX5)
                           ADD   ORCSTEN-KIZ-DAY  (IDY IDX5)  TO
                                       WRK-ORCSTEN-ZAIKAISU
+                          MOVE  ORCSTEN-KIZ-SRYKA(IDY IDX5)  TO
+                                      WRK-ORCSTEN-KIZ-SRYKA(IDX5)
                        END-PERFORM
       *
                        PERFORM   2401-RECE84-TENSOU3-SEC
@@ -10441,7 +10447,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPACE                TO      RECE84-ZAISKBKBN
            MOVE    RECE82-PTNUM         TO      RECE84-PTNUM
       *
-           MOVE    "00"                 TO      RECE84-SRYKA
+           IF    FLG-SIKIBETU  =  1
+             MOVE  ORCSTEN-YK-SRYKA(IDY)
+                                        TO      RECE84-SRYKA
+           ELSE
+             PERFORM  VARYING  IDX2  FROM  1  BY  1
+                       UNTIL   IDX2   >   31
+               IF   WRK-ORCSTEN-DAY(IDX2)  NOT =   ZERO
+                  MOVE  WRK-ORCSTEN-KIZ-SRYKA(IDX2)
+                                        TO      RECE84-SRYKA
+                  MOVE  31              TO      IDX2
+               END-IF
+             END-PERFORM
+           END-IF
+      *
            MOVE    RECE82-HKNCOMBI      TO      RECE84-HKNCOMBI
            MOVE    SPACE                TO      RECE84-JIHOKBN
            IF    FLG-SIKIBETU  =  1
@@ -10517,7 +10536,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPACE                TO      RECE84-ZAISKBKBN
            MOVE    RECE82-PTNUM         TO      RECE84-PTNUM
       *
-           MOVE    "00"                 TO      RECE84-SRYKA
+           IF    FLG-SIKIBETU  =  3
+             MOVE  WRK-TENTEKI2-T-SRYKA(IDY)
+                                        TO      RECE84-SRYKA
+           ELSE
+             MOVE  WRK-TENTEKI2-C-SRYKA(IDY)
+                                        TO      RECE84-SRYKA
+           END-IF
+      *
            MOVE    RECE82-HKNCOMBI      TO      RECE84-HKNCOMBI
            MOVE    SPACE                TO      RECE84-JIHOKBN
            IF    FLG-SIKIBETU  =  3
@@ -10581,7 +10607,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
               MOVE    WRK-RENNUM           TO   RECE85-RENNUM
               MOVE    RECE82-PTNUM         TO   RECE85-PTNUM
       *
-              MOVE    "00"                 TO   RECE85-SRYKA
+              MOVE    RECE84-SRYKA         TO   RECE85-SRYKA
               MOVE    "33"                 TO   RECE85-SRYKBN
               MOVE    "330"                TO   RECE85-SRYSYUKBN
               MOVE    ZERO                 TO   RECE85-JIHIMONEY
@@ -10941,7 +10967,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-RENNUM           TO   RECE85-RENNUM
            MOVE    RECE82-PTNUM         TO   RECE85-PTNUM
       *
-           MOVE    "00"                 TO   RECE85-SRYKA
+           MOVE    RECE84-SRYKA         TO   RECE85-SRYKA
            MOVE    "33"                 TO   RECE85-SRYKBN
            IF    FLG-SIKIBETU  =  3
               MOVE    "330"             TO   RECE85-SRYSYUKBN
