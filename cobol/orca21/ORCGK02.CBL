@@ -110,6 +110,7 @@
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *  04.07.00    NACL-多々納  14/10/09  患者登録戻り処理変更
+      *  04.08.00    NACL-多々納  14/10/23  連続挿入対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -357,6 +358,7 @@
            03  FLG-INPUT-NASI2         PIC 9(01).
            03  FLG-F6                  PIC 9(01).
            03  FLG-F7                  PIC 9(01).
+           03  FLG-INSEND              PIC 9(01).
       *!!!!!!!!!!!!!!!!!!
       *
       *    添字領域
@@ -6555,6 +6557,45 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    画面→ＳＰＡ編集処理
            PERFORM 410110-INPUT-GMNSET-SEC
       *
+      *!!!!!!!!!!!!!!!!!!
+      *!!!!!!!!!!!!!!!!!!
+      *!!  連続挿入
+           IF     (FLG-INPUT-NASI2      =   1  )  AND
+                  (SPA-RENZ-FLG         =   1  )
+               MOVE    ZERO                TO  SPA-RENZ-FLG
+               MOVE    ZERO                TO  FLG-INSEND
+               PERFORM VARYING     IDX     FROM   1    BY  1
+                       UNTIL     ( IDX     >   SPA-MAX-LINE)
+                           OR    ( FLG-INSEND  =   1       )
+                   IF     (SPA-COM-GMNINS (IDX)    =   "1" )
+                   AND    (SPA-GMN-INPUTCD (IDX)   =  SPA-RENZ-INPUT)
+                       MOVE    1                   TO  FLG-INSEND
+                       IF      SPA-GMN-INPUTCD (IDX - 1)
+                                              NOT  =   SPACE
+                           MOVE    IDX                 TO  SPA-GMN-IDX
+                           MOVE    1                   TO  WRK-INSCNT
+                           PERFORM 41014-GYOINSN-SEC
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "3"             TO  SPA-COM-CUR
+                                                       (SPA-GMN-IDX)
+                               ADD     1               TO  SPA-GMN-IDX
+                               MOVE    1               TO  SPA-RENZ-FLG
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      SPA-RENZ-FLG        =   ZERO
+                   MOVE    SPACE           TO  SPA-RENZ-INPUT
+                   PERFORM VARYING     IDX     FROM   1    BY  1
+                           UNTIL     ( IDX     >   SPA-MAX-LINE)
+                       MOVE    SPACE           TO  SPA-COM-GMNINS (IDX)
+                   END-PERFORM
+               ELSE
+                   GO      TO  41011-KOUI-ALLHEN-EXT
+               END-IF
+           END-IF
+      *!!!!!!!!!!!!!!!!!!
+      *
            IF      FLG-INPUT-NASI      =   1
       *        空白行をなくす
                PERFORM 420-SYOKYO-SEC
@@ -6565,55 +6606,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  FLG-FUKU
                PERFORM 410112-KOUI-SPACHK-SEC
            END-IF
-      *!!!!!!!!!!!!!!!!!!
-      *!!!!!!!!!!!!!!!!!!
-      *** 以下　処理なし
-           GO      TO  41011-KOUI-ALLHEN-EXT
-      *
-      *!!連続挿入　ver.4.8は新しいSPAを追加。SPA-SYOKI-XXX は流用）
-           IF     (SPA-ERRCD           =   SPACE )
-            AND   (SPA-KIDCD           =   SPACE )
-            AND   (FLG-END             =   ZERO  )
-            AND   (FLG-INPUT-NASI2     =   1     )
-               IF     (SPA-SYOKAI-YMD(1:3)     =   "INS" )
-                   IF    (SPA-SYOKAI-SRYCD     =   SPA-COM-INPUTCD
-                                                   (SPA-SYOKAI-IDX))
-                      OR (SPA-SYOKAI-SRYCD     =   SPA-GMN-INPUTCD
-                                             (SPA-SYOKAI-IDX)(1:9))
-                       CONTINUE
-                   ELSE
-                       MOVE    ZERO            TO  SPA-SYOKAI-IDX
-                       MOVE    SPACE           TO  SPA-SYOKAI-SRYCD
-                       MOVE    SPACE           TO  SPA-SYOKAI-YMD
-                   END-IF
-               END-IF
-               IF     (SPA-SYOKAI-YMD(1:3)     =   "INS" )
-                   MOVE    SPA-SYOKAI-IDX      TO  SPA-GMN-IDX
-                   MOVE    1                   TO  WRK-INSCNT
-                   PERFORM 41014-GYOINSN-SEC
-                   MOVE    ZERO                TO  SPA-SYOKAI-IDX
-                   MOVE    SPACE               TO  SPA-SYOKAI-SRYCD
-                   MOVE    SPACE               TO  SPA-SYOKAI-YMD
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    "INS"           TO  SPA-SYOKAI-YMD
-                       MOVE    "3"             TO  SPA-COM-CUR
-                                                       (SPA-GMN-IDX)
-                       ADD     1               TO  SPA-GMN-IDX
-                       MOVE    SPA-GMN-IDX     TO  SPA-SYOKAI-IDX
-                       MOVE    1               TO  FLG-INS
-                       IF      SPA-COM-INPUTCD (SPA-GMN-IDX)
-                                               =   SPACE
-                           MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
-                                                         (1:9)
-                                               TO  SPA-SYOKAI-SRYCD
-                       ELSE
-                           MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)
-                                               TO  SPA-SYOKAI-SRYCD
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *!!!!!!!!!!!!!!!!!!
       *
            .
        41011-KOUI-ALLHEN-EXT.
@@ -7060,8 +7052,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-HEN-INPUTCD
                MOVE    WRK-HEN-INPUTCD
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
-      *
-      *!!!!!!!!!!!!!!!!!!
+      *H25.4
                MOVE    SPACE           TO  SPA-COM-IN4 (SPA-GMN-IDX)
       *        挿入行数
                MOVE    LNK-SC97-INSCNT TO  WRK-INSCNT
@@ -7077,33 +7068,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                    ADD     1               TO  SPA-GMN-IDX
                    MOVE    1               TO  FLG-INS
-      *!!!!!!!!!!!!!!!!!!!
-      *!!!!!!!!!!!!!!!!!!
-      *H26.10  以下　処理なし
-      *
-                   GO  TO                  41011-KOUI-HEN2-EXT
-      *
+      *!!!!!!!!!!!!!!
       *            連続挿入
-      *               (SPA-SYOKAIXXXX　は流用　4.8　ではSPAを追加）
-                   IF     (SPA-SYOKAI-IDX      =   ZERO )
+                   IF     (SPA-RENZ-FLG        =   ZERO )
                    AND    (LNK-SC97-INSREN     =   1    )
-                       MOVE    "INS"           TO  SPA-SYOKAI-YMD
-                       MOVE    SPA-GMN-IDX     TO  SPA-SYOKAI-IDX
-                       IF      SPA-COM-INPUTCD (SPA-GMN-IDX)
-                                               =   SPACE
-                           MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
-                                                         (1:9)
-                                               TO  SPA-SYOKAI-SRYCD
-                       ELSE
-                           MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)
-                                               TO  SPA-SYOKAI-SRYCD
-                       END-IF
-                       IF      SPA-SYOKAI-SRYCD    =   SPACE
-                           MOVE    SPACE       TO  SPA-SYOKAI-YMD
-                           MOVE    ZERO        TO  SPA-SYOKAI-IDX
-                       END-IF
+                       MOVE    1               TO  SPA-RENZ-FLG
+                       MOVE    "1"             TO  SPA-COM-GMNINS
+                                                      (SPA-GMN-IDX)
+                       MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                               TO  SPA-RENZ-INPUT
                    END-IF
-      *!!!!!!!!!!!!!!!!!!
+      *!!!!!!!!!!!!!!
       *
                END-IF
                GO  TO                  41011-KOUI-HEN2-EXT
@@ -12803,7 +12778,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *
       *    画面カーソル位置決定（警告はエラーの次に）
            MOVE    ZERO                TO  SPA-MAP-IDX
            IF      WRK-MAP-CUR         =   ZERO
@@ -13665,6 +13639,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *TEST
                    MOVE    2               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
+      *TEST
+      *      DISPLAY "SPA-GMN-CUR:"  SPA-GMN-CUR
+      *          ",WRK-IDX2 :" WRK-IDX2 
+      *          ",K02-PANDATABLE1-TROW:"  K02-PANDATABLE1-TROW
+      *TEST
       *
       *            エラー位置の背景色
                    IF     (SPA-ERRCD       =   SPACE )

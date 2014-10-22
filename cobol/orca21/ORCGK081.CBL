@@ -127,7 +127,7 @@
       *    ´µ¼ÔÆþ±¡ÍúÎò¥ï¡¼¥¯
        01  HZN-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING
-                               //PTNYUINRRK-// BY //HZN-PTNYUINRRK-//.
+                               //PTNYUINRRK-// BY //HZN-PTNRRK-//.
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -508,16 +508,16 @@
            MOVE    ZERO                TO  SPA-K081-DRCD-MAX
            INITIALIZE                  SPA-K081GMN-DRCDLST-G
            IF      FLG-OK              =   1
-               IF      HZN-PTNYUINRRK-DRCD1    NOT =   SPACE
-                   MOVE    HZN-PTNYUINRRK-DRCD1(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNRRK-DRCD1    NOT =   SPACE
+                   MOVE    HZN-PTNRRK-DRCD1(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      HZN-PTNYUINRRK-DRCD2    NOT =   SPACE
-                   MOVE    HZN-PTNYUINRRK-DRCD2(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNRRK-DRCD2    NOT =   SPACE
+                   MOVE    HZN-PTNRRK-DRCD2(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      HZN-PTNYUINRRK-DRCD3    NOT =   SPACE
-                   MOVE    HZN-PTNYUINRRK-DRCD3(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNRRK-DRCD3    NOT =   SPACE
+                   MOVE    HZN-PTNRRK-DRCD3(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
            END-IF

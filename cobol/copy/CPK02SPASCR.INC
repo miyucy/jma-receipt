@@ -462,6 +462,8 @@
                        09  SPA-COM-KINKSTYMD           PIC X(08).
                        09  SPA-COM-TOUYOYMD            PIC X(08).
                        09  SPA-COM-PTKINKICD           PIC 9(01).
+      *v4.8  連続行挿入用
+                       09  SPA-COM-GMNINS              PIC X(01).
       *ver.4.7 から予備
                        09  SPA-COM-YOBI1               PIC X(10).
                        09  SPA-COM-YOBI2               PIC X(10).

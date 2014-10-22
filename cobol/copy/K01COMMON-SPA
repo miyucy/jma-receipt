@@ -655,9 +655,15 @@
       *    抗精神薬多剤投与確認
            03  SPA-PSYCHO-CHK          PIC  9(01).
            03  SPA-PSYCHO-OK           PIC  9(01).
+      *
       *(4.7　は予備使用）
       *    予備
            03  SPA-K01-YOBI            PIC X(10).
+      *!!!!!
+      *4.8
+      *連続挿入
+           03  SPA-RENZ-FLG            PIC 9(01).
+           03  SPA-RENZ-INPUT          PIC X(54).
       *
       *ヘルプ・発行指示共通
            03  SPA-ETCKYOUTU-AREA           PIC X(7500).
