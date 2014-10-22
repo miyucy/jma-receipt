@@ -5134,6 +5134,10 @@
                    ADD     1               TO  SPA-GMN-IDX
                    MOVE    1               TO  FLG-INS
       *!!!!!!!!!!!!!!!!!!
+      *!!!!!!!!!!!!!!!!!!
+      *H26.10  以下　処理なし
+      *
+                   GO  TO                  41011-KOUI-HEN2-EXT
       *            連続挿入
       *               (SPA-SYOKAIXXXX　は流用　4.8　ではSPAを追加）
                    IF     (SPA-SYOKAI-IDX      =   ZERO )
