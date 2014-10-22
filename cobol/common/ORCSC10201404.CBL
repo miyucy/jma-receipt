@@ -74,7 +74,6 @@
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/03/XX  Ï«ºÒ¥³¡¼¥É¥ì¥»ÅÅ¥³¡¼¥ÉÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/09/XX  Ï«ºÒÆ±ÆüºÆ¿Ç¥³¡¼¥ÉÄÉ²ÃÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1003,13 +1002,6 @@
            ELSE
                MOVE    "0008"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-MAX)
-           END-IF
-      *H26.10
-      *    ¿ÇÎÅ¿Í¿ô¹ç·×
-           IF     WRK-COM-INPUTCD (IDX-SYU)   =   "099140012"
-               MOVE    SPACE           TO  WRK-ERRCD
-               MOVE    SPACE           TO  WRK-COM-CUR (IDX-SYU)
-               MOVE    SPACE           TO  WRK-COM-CUR (IDX-MAX)
            END-IF
            .
        10012-KAISU-CHK-EXT.
@@ -4481,13 +4473,6 @@
                        MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                    END-IF
-      *H26.10
-      *        ¿ÇÎÅ¿Í¿ô¹ç·×¤ò¼êµ»¤È¤¹¤ë
-               WHEN    "099140012"
-                   IF      IDX-SYU             =   ZERO
-                       MOVE    IDX-Z               TO  IDX-SYU
-                   END-IF
-      *
                END-EVALUATE
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
@@ -6258,7 +6243,6 @@
       *
            IF     (SPA-HKNKBN          =   1   )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-      *****    PERFORM 200111-RSI-GAIKASAN-SEC
       *        Ï«ºÒ¤Î³°Íè´ÉÍý²Ã»»
                MOVE    TBLRG-SRYCD         TO  WRK-SRYCD
            ELSE
@@ -7271,15 +7255,6 @@
            IF      FLG-ARI             =   1
                GO      TO      2911-SINSATU-CHK-SYORI-EXT
            END-IF
-      *
-      *    Ï«ºÒÊÝ¸±¤Î³°Íè´ÉÍý²Ã»»¤ÎÈ½Äê
-      *    SET     TBL-RSI             TO  1
-      *    SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
-      *       AT   END
-      *            MOVE    ZERO                TO  FLG-ARI
-      *        WHEN    WRK-COM-INPUTCD(IDX)    =   TBLR-SRYCD (TBL-RSI)
-      *            MOVE    1                   TO  FLG-ARI
-      ***  END-SEARCH
       *
       *    Ï«ºÒÊÝ¸±¤Î³°Íè´ÉÍý²Ã»»¤ÎÈ½Äê
            IF      WRK-COM-INPUTCD(IDX-Z)  =   TBLRG-SRYCD
