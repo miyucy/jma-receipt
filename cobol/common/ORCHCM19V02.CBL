@@ -81,7 +81,9 @@
       * 04.08.00     NACL-多々納  13/03/18  一般名記載ログ出力対応
       * 04.07.00     NACL-多々納  13/10/08  第三者行為対応
       * 04.08.00     NACL-多々納  14/07/30  一時ディレクトリ対応
-      * 04.07.00     NACL-多々納  14/10/02  頓服（臨時投薬）対応
+      * 04.07.00     NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
+      * 04.07.00     NACL-多々納  14/09/XX  外用薬（臨時投薬）対応
+      * 04.07.00     NACL-多々納  14/10/07  頓服薬（臨時投薬）対応
       * 04.07.00     NACL-多々納  14/10/20  公費備考編集個別対応
       *****************************************************************
       *
@@ -1302,7 +1304,7 @@
                    MOVE    "1"                 TO  WRK-BIKOU-FTN
                WHEN    2
                    IF     (SPA-SRYYMD          >=  "20140501" )
-      *H26.8 ***     AND  (PTINF-BIRTHDAY      >=  "19440402" )
+      *H26.8 **      AND  (PTINF-BIRTHDAY      >=  "19440402" )
                        MOVE    "（高一）"          TO  WRK-BIKOU
                        MOVE    "1"                 TO  WRK-BIKOU-FTN
                    ELSE
@@ -1655,10 +1657,10 @@
       *
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM19-HOSPADRS
-           INSPECT HCM19-HOSPADRS       REPLACING ALL "  " BY "　"
+           INSPECT HCM19-HOSPADRS      REPLACING ALL "  " BY "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM19-HOSPNAME
-           INSPECT HCM19-HOSPNAME       REPLACING ALL "  " BY "　"
+           INSPECT HCM19-HOSPNAME      REPLACING ALL "  " BY "　"
       *    医療機関ＴＥＬ
            MOVE    WRK-HOSPTEL         TO  HCM19-HOSPTEL
       *    ドクター
@@ -2723,7 +2725,8 @@
                                            OR  "23" )
                AND   ((WRK-SRYSYUKBN       =   SPACE )
                   OR  (WRK-SRYSYUKBN(3:1)  =   "0"   )
-      *H26.4      外用（臨時）
+      *H26.10
+      *           外用臨時投薬
                   OR  (WRK-SRYSYUKBN       =   "293" )
                   OR  (WRK-SRYSYUKBN       =   "296" ))
                    IF     (FLG-SYOHO-IN        =   2    )
@@ -3118,7 +3121,6 @@
            .
        310391-FUKACHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    後発医薬品へ変更不可編集処理
       *****************************************************************
@@ -3213,8 +3215,8 @@
       *
       *        システム管理の後発品変更不可の判定
                IF      FLG-FUKACHK         =   2
-      ****         先発品のみは、変更不可記載なし
-      ****         IF     (TNS-KOUHATUKBN      =   ZERO )
+      ***          先発品のみは、変更不可記載なし
+      ***          IF     (TNS-KOUHATUKBN      =   ZERO )
       *            先発品も変更不可とする
                    IF     (TNSP-IPN-KISAIKBN   =   1    )
                      OR   (TNSP-IPN-KISAIKBN   =   3    )
@@ -3303,6 +3305,7 @@
       *
       ***  ＱＲデータ用
       *    IF      WRK-SRYCD           =   "820000047"
+      *                                OR  "820000166"
       *        （減）は対象外
       *        CONTINUE
       *    ELSE
@@ -3834,7 +3837,6 @@
            END-IF
            COMPUTE WRK-SURYO2          =   WRK-KANZANCHI
                                        *   WRK-SURYO
-      *
            MOVE    SPACE               TO  WRK-SURYO-X
            IF      WRK-SURYO2-S2(4:2)  =   ZERO
       *        小数点３桁まで

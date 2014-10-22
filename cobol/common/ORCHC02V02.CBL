@@ -2725,9 +2725,10 @@
                                            OR  "23" )
                AND   ((WRK-SRYSYUKBN       =   SPACE )
                   OR  (WRK-SRYSYUKBN(3:1)  =   "0"   )
-      *H26.4      外用（臨時）
-                  OR  (WRK-SRYSYUKBN       =   "293" )
-                  OR  (WRK-SRYSYUKBN       =   "296" ))
+      *H26.10
+      *           外用臨時投薬
+                  OR  (WRK-SRYSYUKBN       =   "293"  )
+                  OR  (WRK-SRYSYUKBN       =   "296"  ))
                    IF     (FLG-SYOHO-IN        =   2    )
       *                剤点数ゼロで院内処方印刷
                        IF     (ACCT-ZAITEN         =   ZERO )
@@ -3066,7 +3067,6 @@
            MOVE    ZERO                TO  FLG-FUKACHK
            MOVE    ZERO                TO  FLG-FUKACHK2
       *
-      *
            COMPUTE IDXF2               =   IDXA    +   1
            PERFORM VARYING     IDXF    FROM    IDXF2   BY  1
                    UNTIL      (IDXF    >   WRK-SRY-MAX   )   OR
@@ -3121,7 +3121,6 @@
            .
        310391-FUKACHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    後発医薬品へ変更不可編集処理
       *****************************************************************
@@ -3306,6 +3305,7 @@
       *
       **** ＱＲデータ用
       *    IF      WRK-SRYCD           =   "820000047"
+      *                                OR  "820000166"
       *        （減）は対象外
       *        CONTINUE
       *    ELSE
