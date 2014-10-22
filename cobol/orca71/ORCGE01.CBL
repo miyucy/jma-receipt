@@ -1007,7 +1007,8 @@ grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
            MOVE    ALL SPACE           TO  EIE00PARA-FULLNAME
            STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
                    ".dat"              DELIMITED  BY    SIZE
-                                       INTO       EIE00PARA-FULLNAME.
+                                       INTO       EIE00PARA-FULLNAME
+           END-STRING.
       *----(04.08.01)--ADD-END-----
            MOVE    1                       TO  IDX1.
       *½¤Àµ/*³«»Ï*03.06.05*********************************************

@@ -296,6 +296,7 @@
                                                WRK-PARA-UKESTYMD
                                                WRK-PARA-UKEEDYMD
                                                WRK-PARA-SYORIKBN
+           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM TO SPA-HOSPNUM
       *

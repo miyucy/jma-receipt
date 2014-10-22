@@ -105,6 +105,7 @@
                                        SBD010-SUMKBN
                                        SBD010-MEISAIKBN
                                        SBD010-TOTALPRTKBN
+           END-UNSTRING
       *
            MOVE    "0"             TO  SBD010-SIMEKBN
       *

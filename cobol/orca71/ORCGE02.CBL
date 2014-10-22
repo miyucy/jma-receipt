@@ -1247,7 +1247,8 @@ grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
            MOVE    ALL SPACE           TO  EIE00PARA-FULLNAME
            STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
                    ".dat"              DELIMITED  BY    SIZE
-                                       INTO       EIE00PARA-FULLNAME.
+                                       INTO       EIE00PARA-FULLNAME
+           END-STRING.
       *----(04.08.01)--ADD-END-----
            MOVE    SPACE                 TO  WK-TBL1.
            MOVE    1                     TO  IDX1.
@@ -1362,7 +1363,8 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
            STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
                    WK-TBL-MSG (IDX1)   DELIMITED  BY    SPACE
                    ".SLT"              DELIMITED  BY    SIZE
-                                       INTO       EIE01PARA-FULLNAME.
+                                       INTO       EIE01PARA-FULLNAME
+           END-STRING.
       *----(04.08.01)--ADD-END-----
       *----(04.08.01)--UPD-START---
       *     MOVE    ALL SPACE            TO  EIE01PARA-FILE.
@@ -1597,7 +1599,8 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
            STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
                    WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
                    ".SLT"              DELIMITED  BY    SIZE
-                                       INTO       EIE01PARA-FULLNAME.
+                                       INTO       EIE01PARA-FULLNAME
+           END-STRING.
       *----(04.08.01)--ADD-END-----
       *----(04.08.01)--UPD-START---
       *     MOVE    ALL SPACE             TO  EIE01PARA-FILE.
@@ -1622,11 +1625,13 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
            STRING  "/tmp/"               DELIMITED  BY    SIZE
                    WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
                    ".TXT"                DELIMITED  BY    SIZE
-                                         INTO       SPA-GMN-FILE-ID.
+                                         INTO       SPA-GMN-FILE-ID
+           END-STRING.
            MOVE    ALL SPACE             TO  SPA-GMN-FILE-KEY.
            STRING  WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
                    "-ALL"                DELIMITED  BY    SIZE
-                                         INTO       SPA-GMN-FILE-KEY.
+                                         INTO       SPA-GMN-FILE-KEY
+           END-STRING.
       *
            IF    ( WK-TBL-MSG (IDX2)     =   "JYURRK-PRV" )
                MOVE    "JYURRK-PRV-ALL3" TO  SPA-GMN-FILE-KEY

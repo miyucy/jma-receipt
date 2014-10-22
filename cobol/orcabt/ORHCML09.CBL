@@ -249,6 +249,8 @@
                                            WRK-PARA-JOBID
                                            WRK-PARA-SHELLID
                                            WRK-PARA-STAFFCD
+           END-UNSTRING
+      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
       *

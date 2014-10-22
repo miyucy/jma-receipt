@@ -119,6 +119,7 @@
                                        RECEERR
                                        WRK-PARA-SYORIYMD
                                        WRK-PARA-SORTKBN
+           END-UNSTRING
       *
            .
        100-INIT-EXT.

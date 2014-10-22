@@ -907,7 +907,8 @@ grpsys     MOVE    SPA-TERMID        TO  FIF00PARA-TERMID.
            MOVE    ALL SPACE           TO  FIF00PARA-FULLNAME
            STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
                    ".dat"              DELIMITED  BY    SIZE
-                                       INTO       FIF00PARA-FULLNAME.
+                                       INTO       FIF00PARA-FULLNAME
+           END-STRING.
       *----(04.08.01)--ADD-END-----
            MOVE    1                 TO  SPA-GMN-CUR.
       *

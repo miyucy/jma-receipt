@@ -106,6 +106,7 @@
                                        WRK-PARA-SYORIYMD
                                        WRK-PARA-NYUGAIKBN
                                        WRK-PARA-SORTKBN
+           END-UNSTRING
       *
            .
        100-INIT-EXT.

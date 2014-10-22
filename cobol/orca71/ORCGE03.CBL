@@ -314,7 +314,8 @@ grpsys     MOVE    WRK-PARA-TERMID   TO  EIE00PARA-TERMID.
            MOVE    ALL SPACE           TO  EIE00PARA-FULLNAME
            STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
                    ".dat"              DELIMITED  BY    SIZE
-                                       INTO       EIE00PARA-FULLNAME.
+                                       INTO       EIE00PARA-FULLNAME
+           END-STRING.
       *----(04.08.01)--ADD-END-----
       *
            MOVE    SPACE           TO  WK-TBL1.
@@ -433,7 +434,8 @@ grpsys     MOVE    WRK-PARA-TERMID   TO  EIE01PARA-TERMID.
            STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
                    WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
                    ".SLT"              DELIMITED  BY    SIZE
-                                       INTO       EIE01PARA-FULLNAME.
+                                       INTO       EIE01PARA-FULLNAME
+           END-STRING.
       *----(04.08.01)--ADD-END-----
       *----(04.08.01)--UPD-START---
       *     MOVE    ALL SPACE           TO  EIE01PARA-FILE.

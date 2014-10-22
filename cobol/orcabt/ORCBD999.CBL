@@ -408,6 +408,8 @@
                                        WRK-PARA-SYORIYMD
                                        WRK-PARA-PRTKBN
                                        WRK-PARA-SORTKBN
+           END-UNSTRING
+      *
            MOVE    WRK-PARA-HOSPNUM TO SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
