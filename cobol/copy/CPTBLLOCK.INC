@@ -2,6 +2,7 @@
             02  LOCK-HOSPNUM PIC 9(2).
             02  LOCK-TERMID  PIC X(64).
             02  LOCK-OPID    PIC X(16).
+            02  LOCK-KARTE-UID  PIC X(36).
             02  LOCKTABLE.
               03  LOCK-LDNAME  PIC X(20)       OCCURS  50 TIMES.
               03  LOCK-PTID    PIC X(10)      OCCURS  50 TIMES.

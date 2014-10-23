@@ -3,6 +3,7 @@ tbl_lock	{
 #--> 端末ＩＤ
 	LOCK_TERMID		char(64);
 	LOCK_OPID		varchar(16);
+	KARTE_UID		varchar(36);
 	LOCKTABLE	{
 		LDNAME1		varchar(20);
 		LDNAME2		varchar(20);

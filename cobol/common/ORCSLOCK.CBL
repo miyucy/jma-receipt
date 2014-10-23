@@ -481,6 +481,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
                ACCEPT LOCK-STARTDATE(01)   FROM  DATE
                ACCEPT LOCK-STARTTIME(01)   FROM  TIME
 grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
+               MOVE  SLOCK-KARTE-UID   TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-INS-SEC
       *
@@ -515,6 +516,7 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                ACCEPT LOCK-STARTTIME(IDZ)   FROM  TIME
                MOVE  "1"                    TO    LOCK-FLG(IDZ)
 grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
+               MOVE  SLOCK-KARTE-UID        TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK               TO    MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
            END-IF
@@ -669,6 +671,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
       *    項目（日付、時間）
       *        DISPLAY  "RESET IDZ =  [" IDZ "]"
 grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
+               MOVE  SLOCK-KARTE-UID   TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
                IF      MCP-RC     =   ZERO
