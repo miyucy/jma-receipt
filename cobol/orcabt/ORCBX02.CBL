@@ -296,6 +296,7 @@
                                        WRK-PARA-MORERANGE-G
                                        WRK-PARA-SRTKBN
                                        WRK-PARA-KJNYMD
+           END-UNSTRING
       *
            DISPLAY "WRK-PARA-CHKMORE[" WRK-PARA-CHKMORE "]"
                    "MOREKIKAN[" WRK-PARA-MOREKIKAN "]"

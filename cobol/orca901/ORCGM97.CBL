@@ -1136,6 +1136,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                STRING "プログラムの適用状態をチェ"   DELIMITED BY SIZE
                       "ックします。よろしいですか？" DELIMITED BY SIZE
                                          INTO  WRK-MIDMSG
+               END-STRING
                WHEN    "0206"
                    MOVE    "処理中ですがジョブ管理を削除しますか？"
                                            TO  WRK-MIDMSG

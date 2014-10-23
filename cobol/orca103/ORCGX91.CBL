@@ -1630,6 +1630,7 @@
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
                                    "¡Û"            DELIMITED  BY  SIZE
                                                    INTO  WRK-SHORIERR
+                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX0
                        END-IF
                    END-IF

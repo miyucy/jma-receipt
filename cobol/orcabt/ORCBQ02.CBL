@@ -264,6 +264,7 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-BTPARA-SHELLID
+           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  SPA-TERMID
@@ -311,6 +312,7 @@
       *
       *    パラメータファイル読み込み
            READ    BQ01-FILE
+           END-READ
       *
            MOVE    BQ01                TO  WKBQ01
       *

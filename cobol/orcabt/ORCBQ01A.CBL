@@ -375,6 +375,7 @@
       *
       *    パラメータファイル読み込み
            READ    BQ01-FILE
+           END-READ
       *
            MOVE    BQ01                TO  WKBQ01
       *

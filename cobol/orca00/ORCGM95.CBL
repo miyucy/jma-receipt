@@ -2251,6 +2251,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                            "これ以上登録できません。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0110"
                    MOVE    "本院・分院機能が有効な場合に設定可能です。"
                                                TO  SPA-ERRMSG
@@ -2351,6 +2352,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                            "設定されていません"
                                                DELIMITED   BY  SIZE
                                                INTO  MID2-ID1MSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-MIDCD
                                        TO  MID2-ID1MSG

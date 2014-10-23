@@ -507,6 +507,7 @@
                                            WRK-MSG3
                                            WRK-MSG4
                                            WRK-MSG5
+           END-UNSTRING
            MOVE    WRK-MSG4            TO  SPA-NAI-PROCESST-N(IDX)
            MOVE    SLDUSER-TOTAL-PROC(IDX)
                                        TO  SPA-NAI-TOTALT-N(IDX)
@@ -520,6 +521,7 @@
                                            WRK-MSG3
                                            WRK-MSG4
                                            WRK-MSG5
+           END-UNSTRING
            MOVE    WRK-MSG4        TO  SPA-NAI-LOGIN-N(IDX)
       *
            .

@@ -707,6 +707,7 @@
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
                                    "¡Û"            DELIMITED  BY  SIZE 
                                                    INTO  WRK-RECEERR
+                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF    
@@ -914,6 +915,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "¡Û"         DELIMITED  BY  SIZE      
                                                    INTO  MERR-ERRMSG
+                               END-STRING
                            END-IF                          
                        END-IF    
                    END-IF

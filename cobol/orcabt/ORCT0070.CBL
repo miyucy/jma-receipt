@@ -231,6 +231,7 @@
                                        TEIKI3P-KBT
                                        TEIKI3P-SKYSTYMD
                                        TEIKI3P-SKYEDYMD
+           END-UNSTRING
       *
            MOVE    TEIKI3P-HOSPNUM     TO  SPA-HOSPNUM
       *

@@ -3990,6 +3990,7 @@
                        "入院料を算定してください。"
                                     DELIMITED  BY  SIZE
                INTO    SPA-GMN-I01-LBLINFO
+               END-STRING
                                    END-IF
                                  END-IF
                                  MOVE    "tbl_nyuinacct"

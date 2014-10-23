@@ -331,6 +331,7 @@
                                                TEIKI1P-KBT
                                                TEIKI1P-JOBYMD
                                                TEIKI1P-JOBHMS
+           END-UNSTRING
       *
            MOVE    TEIKI1P-HOSPNUM     TO  SPA-HOSPNUM
       *

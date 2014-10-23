@@ -566,6 +566,7 @@
                                        WRK-PARA-SRYYMD
                                        WRK-PARA-SYORIKBN
                                        WRK-PARA-PRTKBN1
+           END-UNSTRING
       *
            IF      WRK-PARA-SYORIKBN   =   SPACE
                MOVE    "0"             TO  WRK-PARA-SYORIKBN

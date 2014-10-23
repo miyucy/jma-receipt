@@ -197,6 +197,7 @@
                                        WRK-PARA-CHKKBN
                                        WRK-PARA-SRYCD
                                        WRK-PARA-SRYCD-END
+           END-UNSTRING
       *
       *    初期値セット
            PERFORM 110-SYOKI-SET-SEC

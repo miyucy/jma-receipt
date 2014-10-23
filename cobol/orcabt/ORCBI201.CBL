@@ -395,6 +395,7 @@
       *
       *    パラメータファイル読み込み
            READ    BI201-FILE
+           END-READ
       *
            MOVE    BI201           TO  WKBI201
       *

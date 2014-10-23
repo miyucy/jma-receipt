@@ -2831,6 +2831,7 @@
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "¡Û"         DELIMITED  BY  SIZE
                                                    INTO  S99-MSG
+                               END-STRING
                            END-IF
                        END-IF
                        MOVE    IDX2             TO  S99-COUNT

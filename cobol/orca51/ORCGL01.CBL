@@ -1445,6 +1445,7 @@
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
                                    "¡Û"            DELIMITED  BY  SIZE
                                                    INTO  WRK-RECEERR
+                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF
@@ -2557,6 +2558,7 @@
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "¡Û"         DELIMITED  BY  SIZE
                                                    INTO  L99-MSG
+                               END-STRING
                            END-IF
                        END-IF
                        MOVE    IDX             TO  L99-COUNT

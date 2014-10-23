@@ -147,6 +147,7 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                TEIKI1P-ERRFILE
+           END-UNSTRING
       *
            INITIALIZE                  SGETTEMP-AREA
       *
@@ -176,6 +177,7 @@
            OPEN    INPUT   TEIKIERR-FILE
            IF    ( STS-TEIKIERR    =   ZERO )
                READ    TEIKIERR-FILE
+               END-READ
       *
       *        ジョブ管理開始処理
                INITIALIZE                  JOBKANRI-REC

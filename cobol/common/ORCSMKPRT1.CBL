@@ -219,6 +219,7 @@
                    DISPLAY "INPUT OPEN ERR"
                ELSE
                    READ    PRT-IN-FILE
+                   END-READ
                    MOVE    PRT-IN-REC  TO WRK-PRTDATA
                END-IF
                CLOSE   PRT-IN-FILE
