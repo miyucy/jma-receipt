@@ -278,6 +278,7 @@
                                        WRK-PARA-SRYKA
                                        WRK-PARA-BYOMEIFLG
                                        WRK-PARA-KBT
+           END-UNSTRING
       *    £Ó£Ð£ÁÀßÄê
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *

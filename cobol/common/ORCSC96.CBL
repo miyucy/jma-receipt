@@ -1859,6 +1859,7 @@
                            "剤を分けて入力して下さい"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0260"
                    STRING  "組織診断料を算定できる検査を入力して"
                            "下さい。"

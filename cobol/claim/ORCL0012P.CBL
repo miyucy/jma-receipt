@@ -131,6 +131,7 @@
                                             WRK-PARA-HKNCOMBI
                                             WRK-PARA-RC
                                             WRK-PARA-SYSYMD
+           END-UNSTRING
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"

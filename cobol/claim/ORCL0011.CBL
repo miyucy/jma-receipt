@@ -875,6 +875,7 @@
                        "　"                DELIMITED   BY  SIZE
                        PTINF-HOME-BANTI    DELIMITED   BY  SPACE
                                        INTO    WRK-LF01-HOME-ADRS
+               END-STRING
            END-IF 
       *
       *
@@ -891,6 +892,7 @@
                      "　"                DELIMITED   BY  SIZE
                      PTINF-RENRAKU-BANTI DELIMITED   BY  SPACE
                                      INTO    WRK-LF01-RENRAKU-ADRS
+             END-STRING
            END-IF 
       *
            IF       PTINF-HOME-TEL1      NOT =  SPACE
@@ -913,6 +915,7 @@
                      "　"                DELIMITED   BY  SIZE
                      PTINF-OFFICE-BANTI  DELIMITED   BY  SPACE
                                      INTO    WRK-LF01-OFFICE-ADRS
+             END-STRING
              END-IF 
       *
       *
@@ -929,6 +932,7 @@
                      "　"                DELIMITED   BY  SIZE
                      PTINF-KISEI-BANTI   DELIMITED   BY  SPACE
                                      INTO    WRK-LF01-KISEI-ADRS
+             END-STRING
            END-IF
       *                
            IF      PTINF-DEATHKBN  =   "1"

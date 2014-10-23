@@ -158,6 +158,7 @@
                                             WRK-PARA-DRCD
                                             WRK-PARA-DENPNUM
                                             WRK-PARA-SYORIFLG
+           END-UNSTRING
       *
       *
       *???

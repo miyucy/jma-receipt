@@ -2835,6 +2835,7 @@
                    WRK-TSURYO
                    "¡Ë"                DELIMITED  BY  SPACE
                                        INTO    SPA-GMN-TSURYOU4 (IDG)
+           END-STRING
       *
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "¡¡"
            INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "¡¡"

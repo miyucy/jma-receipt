@@ -2873,10 +2873,12 @@
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "（自院）"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
+               END-STRING
            ELSE
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "（全体）"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
+               END-STRING
            END-IF
       *
            .

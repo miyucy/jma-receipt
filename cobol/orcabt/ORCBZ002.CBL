@@ -242,6 +242,7 @@
                                        WRK-PARA-SRYKA
                                        WRK-PARA-NYUGAIKBN
                                        WRK-PARA-PTNUM
+           END-UNSTRING
       *
       *    £Ó£Ð£ÁÀßÄê
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM

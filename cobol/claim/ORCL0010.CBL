@@ -151,6 +151,7 @@
                                             WRK-PARA-RENNUM
                                             WRK-PARA-SYSYMD
                                             WRK-PARA-MEMO
+           END-UNSTRING
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"

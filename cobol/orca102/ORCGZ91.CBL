@@ -1255,8 +1255,9 @@
                            MOVE    SPACE           TO  WRK-SHORIERR
                            STRING  "½èÍýÃæ¤Ç¤¹¡Ú"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "¡Û"            DELIMITED  BY  SIZE      
+                                   "¡Û"            DELIMITED  BY  SIZE
                                                    INTO  WRK-SHORIERR
+                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF    
@@ -2137,6 +2138,7 @@
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "¡Û"         DELIMITED  BY  SIZE
                                                    INTO  Z97-MSG
+                               END-STRING
                            END-IF                          
                        END-IF    
                        MOVE    IDX                     TO  Z97-COUNT    

@@ -1811,6 +1811,7 @@
                            WRK-NYUINKAMEI3  DELIMITED BY SPACE
                            "¡Û"
                   INTO     SPA-GMN-NYUINKA
+                  END-STRING
               ELSE
                   STRING   "¡Ú"
                            WRK-NYUINKAMEI1  DELIMITED BY SPACE
@@ -1822,6 +1823,7 @@
                            "Åù"            DELIMITED BY SIZE
                            "¡Û"
                   INTO     SPA-GMN-NYUINKA
+                  END-STRING
               END-IF
            END-IF
       *     DISPLAY  "SPA-GMN-NYUINKA = " SPA-GMN-NYUINKA

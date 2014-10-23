@@ -646,6 +646,7 @@
                                        RECEERR
                                        WRK-PARA-SYORIKBN
                                        WRK-PARA-SRYYMD
+           END-UNSTRING
       *
       *    £Ó£Ð£ÁÀßÄê
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM

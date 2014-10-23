@@ -240,6 +240,7 @@
                                        RECEERR
                                        WRK-PARA-PTNUM
                                        WRK-PARA-PTNUM-END
+           END-UNSTRING
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM

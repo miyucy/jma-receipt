@@ -429,6 +429,7 @@
                                        WRK-PARA-HOSPNUM
                                        RECEERR
                                        WRK-PARA-SYORIKBN
+           END-UNSTRING
       *
       *    £Ó£Ð£ÁÀßÄê
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM

@@ -300,6 +300,7 @@
                                        WRK-PARA-HOSPNUM
                                        RECEERR
                                        WRK-PARA-SRYYMD
+           END-UNSTRING
       *
       *    £Ó£Ð£ÁÀßÄê
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
