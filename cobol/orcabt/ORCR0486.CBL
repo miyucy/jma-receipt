@@ -1068,6 +1068,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                     " "            DELIMITED   BY  SIZE
                     RECE41-RECEKA  DELIMITED   BY  SPACE
                                    INTO    HC23-PTNUM
+           END-STRING
       *
            EVALUATE    WRK-PARA-RECEKBN
                WHEN    "8"

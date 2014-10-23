@@ -1315,7 +1315,8 @@
            STRING   RECE41-PTNUM   DELIMITED   BY  SPACE
                     " "            DELIMITED   BY  SIZE
                     RECE41-RECEKA  DELIMITED   BY  SPACE
-                                   INTO    HC22-PTNUM         
+                                   INTO    HC22-PTNUM
+           END-STRING
       *    指定病院等の番号
            MOVE    SYS-4001-RSIIRYOCDN TO  HC22-RSIIRYOCD
       *    病院等の名称
@@ -1550,7 +1551,8 @@
                     RECE41-RECEKA  DELIMITED   BY  SPACE
                     "-"            DELIMITED   BY  SIZE
                     CNT-PAGE (3:1) DELIMITED   BY  SIZE
-                                   INTO    HC24-PTNUM         
+                                   INTO    HC24-PTNUM
+           END-STRING
       *    指定病院等の番号
            MOVE    SYS-4001-RSIIRYOCDN TO  HC24-HOSPNUM
       *    病院等の名称

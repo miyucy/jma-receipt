@@ -289,6 +289,7 @@
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "¡Û"         DELIMITED  BY  SIZE      
                                                    INTO  XA99-MSG
+                               END-STRING
                            END-IF                          
                        END-IF    
                        MOVE    IDX                     TO  XA99-COUNT    

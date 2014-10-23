@@ -1142,7 +1142,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            STRING   RECE41-PTNUM   DELIMITED   BY  SPACE
                     " "            DELIMITED   BY  SIZE
                     RECE41-RECEKA  DELIMITED   BY  SPACE
-                                   INTO    HC18-PTNUM         
+                                   INTO    HC18-PTNUM
+           END-STRING
       *    健康管理手帳番号
            MOVE    RECE41-KOFUNUM      TO  HC18-KOFUNUM
       *    診察年月日
@@ -1225,7 +1226,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                     RECE41-RECEKA  DELIMITED   BY  SPACE
                     "-"            DELIMITED   BY  SIZE
                     CNT-PAGE (3:1) DELIMITED   BY  SIZE
-                                   INTO    HC20-PTNUM         
+                                   INTO    HC20-PTNUM
+           END-STRING
       *    指定病院等の番号
            MOVE    SYS-4001-RSIIRYOCDN TO  HC20-RISIRYOCD
       *    病院等の名称

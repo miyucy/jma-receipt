@@ -684,6 +684,7 @@
                                                    DELIMITED  BY  ","
                                                    INTO    WRK-SIKIBETU
                                                            WRK-DATA
+                           END-UNSTRING
                            INITIALIZE              ORCSNUMAREA
                            MOVE    WRK-SIKIBETU    TO  SNUM-INX
                            CALL    "ORCSNUM"       USING

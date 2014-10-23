@@ -8569,6 +8569,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                STRING   WRK-CHAR-N      DELIMITED  BY  SPACE
                         "Ê¬²è"          DELIMITED  BY  SIZE
                                         INTO  WRK-BUNKAKU-N
+               END-STRING
                COMPUTE WRK-BUNKAKUKETA   =   WRK-CHAR-N-CNT  +  4
       *
                COMPUTE WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1) =

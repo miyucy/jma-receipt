@@ -246,6 +246,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "¡Û"         DELIMITED  BY  SIZE      
                                                    INTO  XC99-MSG
+                               END-STRING
                            END-IF                          
                        END-IF    
                        MOVE    IDX                     TO  XC99-COUNT    

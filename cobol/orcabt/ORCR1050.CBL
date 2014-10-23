@@ -3218,6 +3218,7 @@
            STRING  WRK-CHAR-N      DELIMITED BY  SPACE
                    "Ê¬²è"          DELIMITED  BY  SIZE
                                    INTO  WRK-BUNKAKU-N
+           END-STRING
            COMPUTE WRK-BUNKAKUKETA =   WRK-CHAR-N-CNT  +  4
       *
            .

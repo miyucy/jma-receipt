@@ -1846,6 +1846,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
                                    "¡Û"            DELIMITED  BY  SIZE      
                                                    INTO  WRK-XA02ERR
+                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF    
@@ -2181,6 +2182,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "¡Û"         DELIMITED  BY  SIZE      
                                                    INTO  XA99-MSG
+                               END-STRING
                            END-IF                          
                        END-IF    
                        MOVE    IDX                     TO  XA99-COUNT    

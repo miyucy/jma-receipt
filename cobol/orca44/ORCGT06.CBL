@@ -4196,6 +4196,7 @@
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
                                    "¡Û"            DELIMITED  BY  SIZE      
                                                    INTO  WRK-RECEERR
+                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF    
@@ -4222,6 +4223,7 @@
                                JOB-SHELLMSG      DELIMITED  BY  SPACE
                                "¡Û"              DELIMITED  BY  SIZE      
                                                  INTO  WRK-RECEERR
+                       END-STRING
                    END-IF
                END-IF    
            END-IF    

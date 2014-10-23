@@ -1778,6 +1778,7 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
                            "）"                DELIMITED   BY  SIZE
                                                INTO
                                                SPA-GMN-C02-KOHIDL (IDX)
+                   END-STRING
                END-IF
       *
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
@@ -12930,7 +12931,8 @@ grpsys                                          SPA-AREA
                    STRING   WRK-TANDOKUKBN-BYOMEI  DELIMITED  BY  SPACE
                            "は単独使用禁止の病名です"
                                                    DELIMITED  BY  SIZE
-                                                   INTO    SPA-ERRMSG 
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0077"
                    MOVE
               "病名コードが２２個以上になりますので、編集病名とします。"

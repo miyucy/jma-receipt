@@ -1163,7 +1163,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            STRING   RECE41-PTNUM   DELIMITED   BY  SPACE
                     " "            DELIMITED   BY  SIZE
                     RECE41-RECEKA  DELIMITED   BY  SPACE
-                                   INTO    HC23-PTNUM         
+                                   INTO    HC23-PTNUM
+           END-STRING
       *    ¥«¥Ê»áÌ¾
            MOVE    RECE41-KANANAME     TO  HC23-KANANAME
       *    »áÌ¾

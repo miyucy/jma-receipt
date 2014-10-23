@@ -303,7 +303,8 @@
            STRING
                WRK-JOBNAME                      DELIMITED  BY  SPACE
                "を削除します。よろしいですか？" DELIMITED  BY  SIZE
-                                                INTO XBID-IDMSG.
+                                                INTO XBID-IDMSG
+           END-STRING
       *
            PERFORM VARYING     IDX    FROM    1   BY  1
                    UNTIL       IDX    >   SPA-GMN-MAX
@@ -405,6 +406,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    WRK-JOBNAME                      DELIMITED  BY  SPACE
                    "を削除します。よろしいですか？" DELIMITED  BY  SIZE
                                                     INTO XBID-IDMSG
+               END-STRING
            END-IF.
       *
            MOVE    "B01"                TO  MCP-WIDGET.
