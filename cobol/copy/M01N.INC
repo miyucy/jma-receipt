@@ -95,11 +95,11 @@
                 05  M01N-G91-G.
                   06  M01N-G91-VISIBLE     PIC X(01).
                   06  M01N-G91-STATE       PIC S9(09) BINARY.
-                05  M01N-G92-G.
-                  06  M01N-G92-VISIBLE     PIC X(01).
-                  06  M01N-G92-STATE       PIC S9(09) BINARY.
+      *          05  M01N-G92-G.
+      *            06  M01N-G92-VISIBLE     PIC X(01).
+      *            06  M01N-G92-STATE       PIC S9(09) BINARY.
               04  M01N-STATE-R       REDEFINES  M01N-STATE-G.
-                05  M01N-STATE-OCC   OCCURS     24.
+                05  M01N-STATE-OCC   OCCURS     23.
                   06  M01N-VISIBLE-O      PIC X(01).
                   06  M01N-STATE-O        PIC S9(09) BINARY.
               04  M01N-FR6-VISIBLE     PIC X(1).

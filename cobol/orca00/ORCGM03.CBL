@@ -140,7 +140,6 @@
            COPY    "M02.INC". 
            COPY    "M03.INC". 
            COPY    "M95.INC".
-           COPY    "M96.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
@@ -433,17 +432,18 @@
                        MOVE    "M97"           TO  SPA-SAKIPG
                    END-IF
       * マスタ更新
-      *         WHEN    "92"
-      *             IF      SYS-1010-GSRAUTH(52:1)    =  "0"
-      *                 MOVE    "0002"          TO  SPA-ERRCD
-      *             ELSE
-      **                管理者権限フラグ
-      *                 IF      SYS-1010-KANRIAUTHFLG  =   "T"
-      *                     MOVE    "M96"           TO  SPA-SAKIPG
-      *                 ELSE
-      *                     MOVE    "0002"          TO  SPA-ERRCD
-      *                 END-IF
-      *             END-IF
+               WHEN    "092"
+               WHEN    "92"
+                   IF      SYS-1010-GSRAUTH(52:1)    =  "0"
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+      *                管理者権限フラグ
+                       IF      SYS-1010-KANRIAUTHFLG  =   "T"
+                           MOVE    "M96"           TO  SPA-SAKIPG
+                       ELSE
+                           MOVE    "0002"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
       * プラグイン処理
                WHEN    "201"
                    IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
@@ -575,7 +575,7 @@
       *----(01.02.06)----END-------------------
            MOVE    WIDGET-INSENSITIVE      TO  M03-G03-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M03-G201-STATE
-      *     MOVE    WIDGET-INSENSITIVE      TO  M03-G92-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M03-G92-STATE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -583,9 +583,9 @@
                IF      SYS-1010-GSRAUTH(3:1)   =   "1"
                    MOVE    WIDGET-NORMAL       TO  M03-G03-STATE
                END-IF
-      *         IF      SYS-1010-GSRAUTH(52:1)  =   "1"
-      *             MOVE    WIDGET-NORMAL       TO  M03-G92-STATE
-      *         END-IF
+               IF      SYS-1010-GSRAUTH(52:1)  =   "1"
+                   MOVE    WIDGET-NORMAL       TO  M03-G92-STATE
+               END-IF
       *        プラグイン処理
                IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
                AND   ( SYS-1010-GSRAUTH(3:1)   =   "1" )

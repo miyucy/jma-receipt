@@ -23,6 +23,8 @@
      ****** 03  M03-FIXED1.
               03  M03-G03.
                 04  M03-G03-STATE    PIC S9(9)   BINARY.
+              03  M03-G92.
+                04  M03-G92-STATE    PIC S9(9)   BINARY.
               03  M03-G201.
                 04  M03-G201-STATE   PIC S9(9)   BINARY.
               03  M03-SELNUM.

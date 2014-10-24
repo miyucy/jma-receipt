@@ -3,6 +3,9 @@ M03 {
     G03 {
       state int;
     };
+    G92 {
+      state int;
+    };
     G201 {
       state int;
     };

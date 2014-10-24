@@ -6,7 +6,6 @@ SRCS = ORCGM00.CBL \
        ORCGMID1.CBL \
        ORCGMERR.CBL \
        ORCGMVER.CBL \
-       ORCGM96.CBL \
        ORCGM98.CBL \
        ORCGMUID.CBL \
        ORCGM99.CBL \

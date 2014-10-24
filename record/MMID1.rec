@@ -4,7 +4,7 @@ MMID1 {
       textdata char(11);
     };
     ID1MSG {
-      textdata char(71);
+      textdata char(80);
     };
   };
 };
