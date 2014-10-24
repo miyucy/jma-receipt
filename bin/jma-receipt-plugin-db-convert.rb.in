@@ -12,7 +12,7 @@ STDERR.puts @directory
 
 def monsql(command)
   STDERR.puts command
-  json = `#{@monsql_cmd} -r -c "#{command}" -o JSON -dir #{@directory}`
+  json = `#{@monsql_cmd} -c "#{command}" -o JSON -dir #{@directory}`
   status = $?
   ret = nil
   begin

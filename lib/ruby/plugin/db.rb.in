@@ -283,7 +283,7 @@ REATE TABLE tbl_plugin (
     private
 
     def monsql(command)
-      json = `#{@monsql_cmd} -r -c "#{command}" -o JSON -dir #{@directory}`
+      json = `#{@monsql_cmd} -c "#{command}" -o JSON -dir #{@directory}`
       raise "monsql error:#{command}" unless $?.exitstatus == 0
       JSON.parse(json)
     end
