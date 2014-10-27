@@ -440,21 +440,21 @@ grpsys                                         SPA-AREA
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M01"               TO  SPA-SAKIPG.
-           MOVE    SPACE               TO  SPA-MOTOPG2.
-           MOVE    "F01"               TO  SPA-MOTOPG.
+           MOVE    "M03"               TO  SPA-SAKIPG
+           MOVE    SPACE               TO  SPA-MOTOPG2
+           MOVE    "F01"               TO  SPA-MOTOPG
       *
-           MOVE    SPACE               TO  LINKAREA. 
-           INITIALIZE                  SPA-KYOTUKEY.
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
+           MOVE    SPACE               TO  LINKAREA 
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW.
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
-      *
+           MOVE    1                   TO  FLG-END
+           .
        210-BACK-EXT.
            EXIT.
       *

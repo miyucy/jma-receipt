@@ -864,51 +864,51 @@
       *****             END-IF
       *----(01.00.04) LINE DEL END   ----------------------------------
       * データ出力
-               WHEN    "71"
-                 IF      SPA-MW          NOT =   SPA-PANDA
-                       MOVE    "0001"          TO  SPA-ERRCD
-                 ELSE
-                   IF      SYS-1010-GSRAUTH(41:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "E01"           TO  SPA-SAKIPG
-                   END-IF
-                 END-IF
+      *         WHEN    "71"
+      *           IF      SPA-MW          NOT =   SPA-PANDA
+      *                 MOVE    "0001"          TO  SPA-ERRCD
+      *           ELSE
+      *             IF      SYS-1010-GSRAUTH(41:1)    =  "0"
+      *                 MOVE    "0002"          TO  SPA-ERRCD
+      *             ELSE
+      *                 MOVE    "E01"           TO  SPA-SAKIPG
+      *             END-IF
+      *           END-IF
       * センターバックアップ
-               WHEN    "81"
-                   IF      SYS-1010-GSRAUTH(46:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "M81"           TO  SPA-SAKIPG
-                   END-IF
+      *         WHEN    "81"
+      *             IF      SYS-1010-GSRAUTH(46:1)    =  "0"
+      *                 MOVE    "0002"          TO  SPA-ERRCD
+      *             ELSE
+      *                 MOVE    "M81"           TO  SPA-SAKIPG
+      *             END-IF
       * 外部媒体
-               WHEN    "82"
-                 IF      SPA-MW          NOT =   SPA-PANDA
-                       MOVE    "0001"          TO  SPA-ERRCD
-                 ELSE
-                   IF      SYS-1010-GSRAUTH(47:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-      *                グループ診療の場合
-                       IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
-      *                    スーパーバイザーであれば活性
-                           IF      SPA-SUPERVISOR      =   "T"
-                               MOVE    "F01"           TO  SPA-SAKIPG
-                           ELSE
-                               MOVE    "0002"          TO  SPA-ERRCD
-                           END-IF
-                       ELSE
-                           MOVE    "F01"           TO  SPA-SAKIPG
-                       END-IF
-                   END-IF
-                 END-IF
+      *         WHEN    "82"
+      *           IF      SPA-MW          NOT =   SPA-PANDA
+      *                 MOVE    "0001"          TO  SPA-ERRCD
+      *           ELSE
+      *             IF      SYS-1010-GSRAUTH(47:1)    =  "0"
+      *                 MOVE    "0002"          TO  SPA-ERRCD
+      *             ELSE
+      **                グループ診療の場合
+      *                 IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
+      **                    スーパーバイザーであれば活性
+      *                     IF      SPA-SUPERVISOR      =   "T"
+      *                         MOVE    "F01"           TO  SPA-SAKIPG
+      *                     ELSE
+      *                         MOVE    "0002"          TO  SPA-ERRCD
+      *                     END-IF
+      *                 ELSE
+      *                     MOVE    "F01"           TO  SPA-SAKIPG
+      *                 END-IF
+      *             END-IF
+      *           END-IF
       * マスタ登録処理
-               WHEN    "91"
-                   IF      SYS-1010-GSRAUTH(51:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "M02"           TO  SPA-SAKIPG
-                   END-IF
+      *         WHEN    "91"
+      *             IF      SYS-1010-GSRAUTH(51:1)    =  "0"
+      *                 MOVE    "0002"          TO  SPA-ERRCD
+      *             ELSE
+      *                 MOVE    "M02"           TO  SPA-SAKIPG
+      *             END-IF
       * マスタ更新処理
       *         WHEN    "92"
       *             IF      SYS-1010-GSRAUTH(52:1)    =  "0"
@@ -1323,12 +1323,12 @@
        510-GSRAUTH-SEC             SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       17
+                   UNTIL   IDX >       14
                MOVE    WIDGET-INSENSITIVE      TO  M01-STATE-O (IDX)
                MOVE    "T"                     TO  M01-VISIBLE-O (IDX)
            END-PERFORM
       *
-           MOVE    "T"                         TO  M01-FR6-VISIBLE
+      *     MOVE    "T"                         TO  M01-FR6-VISIBLE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -1397,30 +1397,30 @@
       ***         END-IF
       *----(01.00.04) LINE DEL START ----------------------------------
       *
-               IF      SYS-1010-GSRAUTH(41:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M01-G71-STATE
-               END-IF
+      *         IF      SYS-1010-GSRAUTH(41:1)   =  "1"
+      *             MOVE    WIDGET-NORMAL      TO  M01-G71-STATE
+      *         END-IF
       *
       ******   IF      SYS-1010-GSRAUTH(46:1)   =  "1"
       *            MOVE    WIDGET-NORMAL      TO  M01-G81-STATE
       ******   END-IF
       *        グループ診療の場合
-               IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
-      *            スーパーバイザーであれば活性
-                   IF      SPA-SUPERVISOR      =   "T"
-                       IF      SYS-1010-GSRAUTH(47:1)   =  "1"
-                           MOVE    WIDGET-NORMAL      TO  M01-G82-STATE
-                       END-IF
-                   END-IF
-               ELSE
-                   IF      SYS-1010-GSRAUTH(47:1)   =  "1"
-                       MOVE    WIDGET-NORMAL      TO  M01-G82-STATE
-                   END-IF
-               END-IF
+      *         IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
+      **            スーパーバイザーであれば活性
+      *             IF      SPA-SUPERVISOR      =   "T"
+      *                 IF      SYS-1010-GSRAUTH(47:1)   =  "1"
+      *                     MOVE    WIDGET-NORMAL      TO  M01-G82-STATE
+      *                 END-IF
+      *             END-IF
+      *         ELSE
+      *             IF      SYS-1010-GSRAUTH(47:1)   =  "1"
+      *                 MOVE    WIDGET-NORMAL      TO  M01-G82-STATE
+      *             END-IF
+      *         END-IF
       *
-               IF      SYS-1010-GSRAUTH(51:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M01-G91-STATE
-               END-IF
+      *         IF      SYS-1010-GSRAUTH(51:1)   =  "1"
+      *             MOVE    WIDGET-NORMAL      TO  M01-G91-STATE
+      *         END-IF
       *         IF      SYS-1010-GSRAUTH(52:1)   =  "1"
       **             管理者権限フラグ
       *             IF      SYS-1010-KANRIAUTHFLG  =   "T"
@@ -1429,11 +1429,11 @@
       *         END-IF
            END-IF
       *
-           IF    ( SPA-MW          NOT =   SPA-PANDA )
-               MOVE    "F"             TO  M01-G71-VISIBLE
-                                           M01-G82-VISIBLE
-                                           M01-FR6-VISIBLE
-           END-IF
+      *     IF    ( SPA-MW          NOT =   SPA-PANDA )
+      *         MOVE    "F"             TO  M01-G71-VISIBLE
+      *                                     M01-G82-VISIBLE
+      *                                     M01-FR6-VISIBLE
+      *     END-IF
       *
       *
       *2001.8.7 強制プロテクト（ＰＧ未作成）

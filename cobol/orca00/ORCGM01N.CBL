@@ -1329,13 +1329,13 @@
       *
       *----(01.02.07) LINE UPD START ----------------------------------
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       23 
+                   UNTIL   IDX >       20 
                MOVE    WIDGET-INSENSITIVE      TO  M01N-STATE-O (IDX)
                MOVE    "T"                     TO  M01N-VISIBLE-O (IDX)
            END-PERFORM
       *----(01.02.07) LINE UPD END   ----------------------------------
       *
-           MOVE    "T"                         TO  M01N-FR6-VISIBLE
+      *     MOVE    "T"                         TO  M01N-FR6-VISIBLE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -1427,30 +1427,30 @@
       ***         END-IF
       *----(01.00.04) LINE DEL START ----------------------------------
       *
-               IF      SYS-1010-GSRAUTH(41:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M01N-G71-STATE
-               END-IF
+      *         IF      SYS-1010-GSRAUTH(41:1)   =  "1"
+      *             MOVE    WIDGET-NORMAL      TO  M01N-G71-STATE
+      *         END-IF
       *
       ****     IF      SYS-1010-GSRAUTH(46:1)   =  "1"
       *            MOVE    WIDGET-NORMAL      TO  M01N-G81-STATE
       *****    END-IF
       *        グループ診療の場合
-               IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
-      *            スーパーバイザーであれば活性
-                   IF      SPA-SUPERVISOR      =   "T"
-                       IF      SYS-1010-GSRAUTH(47:1)   =  "1"
-                           MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
-                       END-IF
-                   END-IF
-               ELSE
-                   IF      SYS-1010-GSRAUTH(47:1)   =  "1"
-                       MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
-                   END-IF
-               END-IF
-      *
-               IF      SYS-1010-GSRAUTH(51:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M01N-G91-STATE
-               END-IF
+      *         IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
+      **            スーパーバイザーであれば活性
+      *             IF      SPA-SUPERVISOR      =   "T"
+      *                 IF      SYS-1010-GSRAUTH(47:1)   =  "1"
+      *                     MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
+      *                 END-IF
+      *             END-IF
+      *         ELSE
+      *             IF      SYS-1010-GSRAUTH(47:1)   =  "1"
+      *                 MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
+      *             END-IF
+      *         END-IF
+      **
+      *         IF      SYS-1010-GSRAUTH(51:1)   =  "1"
+      *             MOVE    WIDGET-NORMAL      TO  M01N-G91-STATE
+      *         END-IF
       *         IF      SYS-1010-GSRAUTH(52:1)   =  "1"
       **             管理者権限フラグ
       *             IF      SYS-1010-KANRIAUTHFLG  =   "T"
@@ -1459,11 +1459,11 @@
       *         END-IF
            END-IF
       *
-           IF    ( SPA-MW          NOT =   SPA-PANDA )
-               MOVE    "F"             TO  M01N-G71-VISIBLE
-                                           M01N-G82-VISIBLE
-                                           M01N-FR6-VISIBLE
-           END-IF
+      *     IF    ( SPA-MW          NOT =   SPA-PANDA )
+      *         MOVE    "F"             TO  M01N-G71-VISIBLE
+      *                                     M01N-G82-VISIBLE
+      *                                     M01N-FR6-VISIBLE
+      *     END-IF
       *
            .
        51O-GSRAUTH-EXT.
