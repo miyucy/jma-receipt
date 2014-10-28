@@ -13,4 +13,4 @@ CREATE TABLE tbl_ptconf (
 
 
 ALTER TABLE ONLY tbl_ptconf
-    ADD CONSTRAINT tbl_tbl_ptconf_primary_key PRIMARY KEY (hospnum,ptid,ckey);
+    ADD CONSTRAINT tbl_ptconf_primary_key PRIMARY KEY (hospnum,ptid,ckey);
