@@ -499,6 +499,10 @@
                05  WRK-HAS-MM         PIC 9(02).
                05  WRK-HAS-DD         PIC 9(02).
       *
+           03  WRK-ERRFLG             PIC X(01).
+           03  WRK-ERRFLG2            PIC X(01).
+      *
+      *
            03  WRK-ORC-DBPATH          PIC X(64).
       *
            03  WRK-MCP-PATH.
@@ -8168,14 +8172,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
+           MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    SPACE               TO  WRK-ERRFLG2
            PERFORM
-               UNTIL      (FLG-SRYACCT     =   1   )  OR
-                          (SPA-ERRCD   NOT =   SPACE)
+               UNTIL      (FLG-SRYACCT     =   1   )
+                     OR   (SPA-ERRCD   NOT =   SPACE)
       *        ¼õ¿ÇÍúÎò¤ËÂ¸ºß¤·¤Ê¤¤¤³¤È
+               MOVE    SPACE               TO  WRK-ERRFLG
                PERFORM 420012-JYURRKDEL-CHK-SEC
-               IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-ERRCD           =   SPACE )
+                 AND  (WRK-ERRFLG          =   SPACE )
       *            ¿ÇÎÅ¹Ô°Ùºï½ü
                    PERFORM 420011-SRYACT-DEL-SEC
+                   MOVE    "1"                 TO  WRK-ERRFLG2
                END-IF
       *
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -8186,6 +8195,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key39"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *H26.11
+           IF     (SPA-ERRCD           =   SPACE )
+              AND (WRK-ERRCD       NOT =   SPACE )
+               MOVE    WRK-ERRCD           TO  SPA-ERRCD
+           END-IF
       *
       *    Æþ±¡¤Î»þ¡¢¼õ¿ÇÍúÎò¤Îºï½ü
            IF      SPA-GMN-NYUGAIKBN   =   "1"
@@ -8208,8 +8223,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *
-           IF      SPA-ERRCD           =   SPACE
-              AND  SPA-JIDCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE
+              AND  SPA-JIDCD           =   SPACE )
+            OR   ((WRK-ERRCD       NOT =   SPACE    ) AND
+                  (SPA-ERRCD           =   WRK-ERRCD) AND
+                  (WRK-ERRFLG2         =   "1"      ))
       *        ÊÝÂ¸ÍÑ¥Ñ¥é¥á¥¿ºîÀ®
                PERFORM 4201-SRYACCT-PARA-SEC
                MOVE    1                   TO  SPA-GMN-PAGE
@@ -8254,7 +8272,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-JYURRK          =   ZERO
-               MOVE    "1009"          TO  SPA-ERRCD
+      ******   MOVE    "1009"          TO  SPA-ERRCD
+               MOVE    "1009"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-ERRFLG
            END-IF
       *
            .
@@ -10467,6 +10487,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
                    END-IF
       *ver.4.7
+      *
+      *H26.11
+               ELSE
+      *            ²ó¿ô¥¼¥í¤Ç¼õ¿ÇÍúÎò¤ËÂ¸ºß¤¹¤ë»þ¡¢ºï½ü
+                   IF     (SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
+                                           =   ZERO  )  AND
+                          (SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX)
+                                           =   ZERO  )
+                       PERFORM 41012203-RRKZAINUM-DEL-SEC
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -10495,6 +10525,49 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            .
        41012202-JYURRK-ZAINUM-EXT.
+           EXIT.
+      *
+      *H26.11
+      *****************************************************************
+      *    ¼õ¿ÇÍúÎòºÞÈÖ¹æºï½ü½èÍý
+      *****************************************************************
+       41012203-RRKZAINUM-DEL-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  IDX-RRK2
+           MOVE    ZERO            TO  IDX-RRK3
+           MOVE    ZERO            TO  IDR6
+           PERFORM VARYING IDR5    FROM    IDX-RRK   BY   1
+                   UNTIL  (IDR5        >   SPA-RRK-MAX )  OR
+                          (IDX-RRK2    >   ZERO        )
+               IF     (SPA-RRK-RRKYMD(IDX-RRK)
+                                           =   SPA-RRK-RRKYMD(IDR5)) AND
+                      (SPA-RRK-SRYKA   (IDR5)
+                                           =   SPA-NAIGMN-SRYKA  ) AND
+                      (SPA-RRK-HKNCOMBI(IDR5)
+                                           =   SPA-GMN-HKNCOMBI )
+                   MOVE    SPA-RRK-RENNUM (IDR5)   TO  WRK-REN
+                   ADD     1                       TO  WRK-REN
+                   IF      WRK-REN             =   IDR4
+                       MOVE    IDR5            TO  IDX-RRK2
+                       PERFORM 41012202-JYURRK-ZAINUM-SEC
+      *                ºÞÈÖ¹æÂ¸ºßÈ½Äê
+                       IF      WRK-IDR         >   ZERO
+      *                    ºÞºï½ü
+                           MOVE    ZERO            TO  SPA-RRK-ZAINUM
+                                                 (IDX-RRK2 WRK-IDR)
+                           MOVE    SPACE           TO  SPA-RRK-SRYKBN
+                                                 (IDX-RRK2 WRK-IDR)
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF      SPA-RRK-RRKYMD(IDX-RRK)
+                                           NOT =   SPA-RRK-RRKYMD(IDR5)
+                   MOVE    SPA-RRK-MAX     TO  IDR5
+               END-IF
+           END-PERFORM
+           .
+       41012203-RRKZAINUM-DEL-EXT.
            EXIT.
       *
       *****************************************************************
