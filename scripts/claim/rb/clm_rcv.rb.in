@@ -24,7 +24,7 @@ $DEBUG = false
 Dir.chdir(File.dirname(__FILE__))
 
 require 'socket'
-require 'xml_valid.rb'
+require_relative 'xml_valid.rb'
 
 $default_port = "8210"
 
