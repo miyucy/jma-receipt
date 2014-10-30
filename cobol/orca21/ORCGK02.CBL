@@ -13293,7 +13293,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-POPUP-ICON      TO  K02-POPUP-ICON
            MOVE    SPA-GMN-POPUP-TIMEOUT   TO  K02-POPUP-TIMEOUT
            IF      SPA-GMN-POPUP-SUMMARY   NOT = SPACE
-               INITIALIZE SPA-GMN-POPUP-STATUS
+      *!!!
+               IF      SPA-KIDCD           =   SPACE
+                   INITIALIZE SPA-GMN-POPUP-STATUS
+               END-IF
+      *
            END-IF
       *
       *    非活性処理
@@ -13639,11 +13643,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *TEST
                    MOVE    2               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
-      *TEST
-      *      DISPLAY "SPA-GMN-CUR:"  SPA-GMN-CUR
-      *          ",WRK-IDX2 :" WRK-IDX2 
-      *          ",K02-PANDATABLE1-TROW:"  K02-PANDATABLE1-TROW
-      *TEST
       *
       *            エラー位置の背景色
                    IF     (SPA-ERRCD       =   SPACE )
