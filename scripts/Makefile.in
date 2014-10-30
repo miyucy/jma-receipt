@@ -162,8 +162,6 @@ claim_sources = \
 	claim/rb2/claim2_decode.rb.in \
 	claim/rb2/claim2_lib.rb.in \
 	claim/rb2/hircnv.rb.in \
-	claim/soc/ver100/rb/claim_convert.rb.in \
-	claim/soc/ver100/rb/claim_oldtonew_convert.rb.in
 
 claim_data = \
 	claim/def/orca_layout_accounting.def \
@@ -240,7 +238,6 @@ filecheck:
 	-name "rb2" -o \
 	-name "template" -o \
 	-name "soc" -o \
-	-name "ver100" -o \
 	-name "lib" -o \
 	-name "orcadas" -o \
 	-printf "file\t%f\n") \
