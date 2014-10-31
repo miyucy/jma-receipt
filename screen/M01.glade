@@ -679,6 +679,60 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>G71</name>
+      <x>24</x>
+      <y>240</y>
+      <width>224</width>
+      <height>28</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 09 Apr 2001 07:39:23 GMT</last_modification_time>
+      </signal>
+      <label>　71　データ出力　　　　　　　</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>G82</name>
+      <x>264</x>
+      <y>240</y>
+      <width>224</width>
+      <height>28</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 09 Apr 2001 07:39:07 GMT</last_modification_time>
+      </signal>
+      <label>　82　外部媒体　　　　　　　　</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>G91</name>
+      <x>536</x>
+      <y>240</y>
+      <width>224</width>
+      <height>28</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 24 Feb 2001 06:19:04 GMT</last_modification_time>
+      </signal>
+      <label>　91　マスタ登録　　　　　　　</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator8</name>
       <x>520</x>
@@ -722,6 +776,40 @@
     </widget>
 
     <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator14</name>
+      <x>520</x>
+      <y>216</y>
+      <width>24</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label48</name>
+      <x>552</x>
+      <y>216</y>
+      <width>120</width>
+      <height>16</height>
+      <label>メンテナンス業務</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator15</name>
+      <x>680</x>
+      <y>216</y>
+      <width>328</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label41</name>
       <x>630</x>
@@ -741,15 +829,99 @@
       <class>GtkPandaHTML</class>
       <name>pandahtml1</name>
       <x>8</x>
-      <y>220</y>
+      <y>280</y>
       <width>1008</width>
-      <height>464</height>
+      <height>404</height>
       <signal>
 	<name>activate</name>
 	<handler>open_browser</handler>
 	<last_modification_time>Thu, 07 Feb 2002 04:07:26 GMT</last_modification_time>
       </signal>
       <uri>http://www.orca.med.or.jp/info/index.html</uri>
+    </widget>
+
+    <widget>
+      <class>GtkFrame</class>
+      <name>fr6</name>
+      <x>0</x>
+      <y>214</y>
+      <width>504</width>
+      <height>24</height>
+      <label_xalign>0</label_xalign>
+      <shadow_type>GTK_SHADOW_NONE</shadow_type>
+
+      <widget>
+	<class>GtkFixed</class>
+	<name>fixed3</name>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label44</name>
+	  <x>38</x>
+	  <y>0</y>
+	  <width>120</width>
+	  <height>16</height>
+	  <label>外部情報処理業務</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator12</name>
+	  <x>254</x>
+	  <y>0</y>
+	  <width>16</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label47</name>
+	  <x>278</x>
+	  <y>0</y>
+	  <width>160</width>
+	  <height>16</height>
+	  <label>データバックアップ業務</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator13</name>
+	  <x>446</x>
+	  <y>0</y>
+	  <width>48</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator10</name>
+	  <x>166</x>
+	  <y>0</y>
+	  <width>80</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator5</name>
+	  <x>6</x>
+	  <y>0</y>
+	  <width>24</width>
+	  <height>16</height>
+	</widget>
+      </widget>
     </widget>
 
     <widget>

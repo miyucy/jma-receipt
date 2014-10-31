@@ -380,13 +380,13 @@
       *
       *2001.9.27 強制プロテクト（ＰＧ未作成）
       **** MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
-      *     MOVE    "0"                 TO  SYS-1010-GSRAUTH(4:1)
-      *                                     SYS-1010-GSRAUTH(18:1)
-      *                                     SYS-1010-GSRAUTH(26:1)
-      *                                     SYS-1010-GSRAUTH(32:1)
-      *                                     SYS-1010-GSRAUTH(41:1)
-      *                                     SYS-1010-GSRAUTH(46:1)
-      *                                     SYS-1010-GSRAUTH(47:1)
+           MOVE    "0"                 TO  SYS-1010-GSRAUTH(4:1)
+                                           SYS-1010-GSRAUTH(18:1)
+                                           SYS-1010-GSRAUTH(26:1)
+                                           SYS-1010-GSRAUTH(32:1)
+                                           SYS-1010-GSRAUTH(41:1)
+                                           SYS-1010-GSRAUTH(46:1)
+                                           SYS-1010-GSRAUTH(47:1)
       *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *
       *TEST ヘルプを追加するまで
@@ -611,11 +611,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M03"               TO  SPA-SAKIPG
+           MOVE    "M01"               TO  SPA-SAKIPG
            MOVE    "M02"               TO  SPA-MOTOPG
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE    "M03"               TO  MCP-WINDOW
+           MOVE    "M01"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *

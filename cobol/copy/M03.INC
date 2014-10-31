@@ -27,15 +27,5 @@
                 04  M03-G92-STATE    PIC S9(9)   BINARY.
               03  M03-G201.
                 04  M03-G201-STATE   PIC S9(9)   BINARY.
-              03  M03-G71-G.
-                04  M03-G71-VISIBLE  PIC X(01).
-                04  M03-G71-STATE    PIC S9(09)  BINARY.
-              03  M03-G82-G.
-                04  M03-G82-VISIBLE  PIC X(01).
-                04  M03-G82-STATE    PIC S9(09)  BINARY.
-              03  M03-G91-G.
-                04  M03-G91-VISIBLE  PIC X(01).
-                04  M03-G91-STATE    PIC S9(09)  BINARY.
-              03  M03-FR6-VISIBLE  PIC X(1).
               03  M03-SELNUM.
                 04  M03-VALUE   PIC S9(3).

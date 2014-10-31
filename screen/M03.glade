@@ -354,7 +354,7 @@
       <class>GtkButton</class>
       <name>G03</name>
       <x>32</x>
-      <y>152</y>
+      <y>40</y>
       <width>224</width>
       <height>28</height>
       <can_focus>True</can_focus>
@@ -372,7 +372,7 @@
       <class>GtkButton</class>
       <name>G92</name>
       <x>32</x>
-      <y>208</y>
+      <y>96</y>
       <width>224</width>
       <height>28</height>
       <can_focus>True</can_focus>
@@ -390,7 +390,7 @@
       <class>GtkButton</class>
       <name>G201</name>
       <x>32</x>
-      <y>264</y>
+      <y>152</y>
       <width>224</width>
       <height>28</height>
       <can_focus>True</can_focus>
@@ -401,60 +401,6 @@
 	<last_modification_time>Sat, 24 Feb 2001 06:18:47 GMT</last_modification_time>
       </signal>
       <label>　201　プラグイン　　　　　　　</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>G71</name>
-      <x>320</x>
-      <y>40</y>
-      <width>224</width>
-      <height>28</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 09 Apr 2001 07:39:23 GMT</last_modification_time>
-      </signal>
-      <label>　71　データ出力　　　　　　　</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>G82</name>
-      <x>608</x>
-      <y>40</y>
-      <width>224</width>
-      <height>28</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 09 Apr 2001 07:39:07 GMT</last_modification_time>
-      </signal>
-      <label>　82　外部媒体　　　　　　　　</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>G91</name>
-      <x>32</x>
-      <y>40</y>
-      <width>224</width>
-      <height>28</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 24 Feb 2001 06:19:04 GMT</last_modification_time>
-      </signal>
-      <label>　91　マスタ登録　　　　　　　</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -482,89 +428,6 @@
       <format>ZZZ</format>
     </widget>
 
-    <widget>
-      <class>GtkFrame</class>
-      <name>fr6</name>
-      <x>296</x>
-      <y>14</y>
-      <width>552</width>
-      <height>24</height>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_NONE</shadow_type>
-
-      <widget>
-	<class>GtkFixed</class>
-	<name>fixed3</name>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label44</name>
-	  <x>38</x>
-	  <y>0</y>
-	  <width>120</width>
-	  <height>16</height>
-	  <label>外部情報処理業務</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator12</name>
-	  <x>302</x>
-	  <y>0</y>
-	  <width>16</width>
-	  <height>16</height>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label47</name>
-	  <x>326</x>
-	  <y>0</y>
-	  <width>160</width>
-	  <height>16</height>
-	  <label>データバックアップ業務</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator13</name>
-	  <x>494</x>
-	  <y>0</y>
-	  <width>48</width>
-	  <height>16</height>
-	</widget>
-
-	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator10</name>
-	  <x>166</x>
-	  <y>0</y>
-	  <width>80</width>
-	  <height>16</height>
-	</widget>
-
-	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator5</name>
-	  <x>6</x>
-	  <y>0</y>
-	  <width>24</width>
-	  <height>16</height>
-	</widget>
-      </widget>
-    </widget>
   </widget>
 </widget>
 

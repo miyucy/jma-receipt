@@ -9,21 +9,6 @@ M03 {
     G201 {
       state int;
     };
-    G71 {
-      visible bool;
-      state int;
-    };
-    G82 {
-      visible bool;
-      state int;
-    };
-    G91 {
-      visible bool;
-      state int;
-    };
-    fr6 {
-      visible bool;
-    };
     SELNUM {
       numdata number(3);
     };

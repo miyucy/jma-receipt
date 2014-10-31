@@ -486,21 +486,21 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M03"               TO  SPA-SAKIPG
-           MOVE    SPACE               TO  SPA-MOTOPG2
-           MOVE    "E01"               TO  SPA-MOTOPG
+           MOVE    "M01"               TO  SPA-SAKIPG.
+           MOVE    SPACE               TO  SPA-MOTOPG2.
+           MOVE    "E01"               TO  SPA-MOTOPG.
       *
-           INITIALIZE                      LINKAREA 
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+           INITIALIZE                      LINKAREA. 
+           INITIALIZE                  SPA-KYOTUKEY.
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
       *
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW.
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
       *
-           PERFORM 900-PUT-WINDOW
+           PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END
-           .
+           MOVE    1                   TO  FLG-END.
+      *
        210-BACK-EXT.
            EXIT.
       *
