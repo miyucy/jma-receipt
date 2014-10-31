@@ -1195,10 +1195,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2001-BACK-SYORI-SEC             SECTION.
       *
-           IF      SPA-NAI-MOTOPG(1:3) =   "M03"
+           IF      SPA-NAI-MOTOPG(1:3) =   "M01"
                MOVE    SPA-NAI-MOTOPG      TO  SPA-SAKIPG
            ELSE
-               MOVE    "M03"               TO  SPA-SAKIPG
+               MOVE    "M01"               TO  SPA-SAKIPG
            END-IF
       *
            MOVE    "M96"               TO  SPA-MOTOPG

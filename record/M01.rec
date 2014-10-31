@@ -73,6 +73,10 @@ M01 {
       visible bool;
       state int;
     };
+    G92 {
+      visible bool;
+      state int;
+    };
     fr6 {
       visible bool;
     };

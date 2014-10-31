@@ -910,21 +910,21 @@
                        MOVE    "M02"           TO  SPA-SAKIPG
                    END-IF
       * マスタ更新処理
-      *         WHEN    "92"
-      *             IF      SYS-1010-GSRAUTH(52:1)    =  "0"
-      *                 MOVE    "0002"          TO  SPA-ERRCD
-      *             ELSE
-      **                管理者権限フラグ
-      *                 IF      SYS-1010-KANRIAUTHFLG  =   "T"
-      **修正*************************************************************
-      **                     PERFORM 4201-GYOUMU92-SYORI-SEC
-      **                     GO      TO      420-GYOMU-START-EXT
-      *                     MOVE    "M96"           TO  SPA-SAKIPG
-      **修正*************************************************************
-      *                 ELSE
-      *                     MOVE    "0002"          TO  SPA-ERRCD
-      *                 END-IF
-      *             END-IF
+               WHEN    "92"
+                   IF      SYS-1010-GSRAUTH(52:1)    =  "0"
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+      *                管理者権限フラグ
+                       IF      SYS-1010-KANRIAUTHFLG  =   "T"
+      *修正*************************************************************
+      *                     PERFORM 4201-GYOUMU92-SYORI-SEC
+      *                     GO      TO      420-GYOMU-START-EXT
+                           MOVE    "M96"           TO  SPA-SAKIPG
+      *修正*************************************************************
+                       ELSE
+                           MOVE    "0002"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
       *----(01.00.04) LINE DEL START ----------------------------------
       * 緊急情報処理
       ***         WHEN    "I1"
@@ -1323,7 +1323,7 @@
        510-GSRAUTH-SEC             SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       17
+                   UNTIL   IDX >       18
                MOVE    WIDGET-INSENSITIVE      TO  M01-STATE-O (IDX)
                MOVE    "T"                     TO  M01-VISIBLE-O (IDX)
            END-PERFORM
@@ -1421,12 +1421,12 @@
                IF      SYS-1010-GSRAUTH(51:1)   =  "1"
                    MOVE    WIDGET-NORMAL      TO  M01-G91-STATE
                END-IF
-      *         IF      SYS-1010-GSRAUTH(52:1)   =  "1"
-      **             管理者権限フラグ
-      *             IF      SYS-1010-KANRIAUTHFLG  =   "T"
-      *                 MOVE    WIDGET-NORMAL      TO  M01-G92-STATE
-      *             END-IF
-      *         END-IF
+               IF      SYS-1010-GSRAUTH(52:1)   =  "1"
+      *             管理者権限フラグ
+                   IF      SYS-1010-KANRIAUTHFLG  =   "T"
+                       MOVE    WIDGET-NORMAL      TO  M01-G92-STATE
+                   END-IF
+               END-IF
            END-IF
       *
            IF    ( SPA-MW          NOT =   SPA-PANDA )
