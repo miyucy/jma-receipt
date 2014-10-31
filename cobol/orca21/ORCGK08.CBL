@@ -4939,6 +4939,8 @@
                       (LNK-WKSRY-HKNCOMBI(IDX) NOT =   SYU-HKNCOMBINUM)
                   OR  ((SYU-SRYKA              NOT =   ZERO  )  AND
                       (LNK-WKSRY-SRYKA   (IDX) NOT =   SYU-SRYKA  ))
+      *           包括剤の設定
+                  OR  (LNK-WKSRY-CONTKBN (IDX)     =   "H"   )
                    CONTINUE
                ELSE
       *            自賠責の時、技術点を集計する
