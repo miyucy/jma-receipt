@@ -56,10 +56,6 @@
            03  IDXM                            PIC 9(05).
       *
        01  WRK-AREA.
-           03  WRK-FILEMEI.
-               05  WRK-FILEMEI-YMD             PIC X(08).
-               05  WRK-FILEMEI-HMS             PIC X(06).
-               05  WRK-FILEMEI-CD              PIC X(06).
            03  WRK-KBNCD                       PIC X(08).
            03  WRK-FORM-PG                     PIC X(32).
            03  WRK-KAKO-NYUKIN                 PIC S9(10).
@@ -93,13 +89,6 @@
        01  SYURRK-REC.
            COPY    "CPSYURRK.INC".
       *
-      *    パラメタテーブル	
-       01  PARA-REC.
-           COPY    "CPPARA.INC".
-      *
-           COPY    "CPSYUPARA01.INC".
-           COPY    "CPSYUPARA02.INC".
-      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -116,9 +105,6 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
-      *
-      *    外来請求書兼領収書サブ
-           COPY    "CPORCHC03S02.INC".
       *
       *    未収金編集サブ
        01  LNKSYU-AREA.
@@ -241,21 +227,19 @@
        2001-SKYPRT-EDIT-SEC        SECTION.
       *
            IF    ( SSUB03-SKYPRT       =   SPACE )
-               IF    ( PTINF-SKYPRTFLG =   "0" OR "8" OR "9" OR "A" )
+               IF    ( PTINF-SKYPRTFLG =   "0" )
                    MOVE    "0"         TO  SSUB03-SKYPRT
                END-IF
            END-IF
       *
            IF    ( SSUB03-SKYPRT       =   SPACE )
                IF    ( SPA-NYUGAIKBN   =   "1" )
-                   IF    ( SYS-1039-SKYPRTNKBN NOT =   SPACE )
-                       MOVE    SYS-1039-SKYPRTNKBN
-                                       TO  SSUB03-SKYPRT
+                   IF    ( SYS-1039-SKYPRTNKBN =   "1" )
+                       MOVE    "1"     TO  SSUB03-SKYPRT
                    END-IF
                ELSE
-                   IF    ( SYS-1039-SKYPRTGKBN NOT =   SPACE )
-                       MOVE    SYS-1039-SKYPRTGKBN
-                                       TO  SSUB03-SKYPRT
+                   IF    ( SYS-1039-SKYPRTGKBN =   "1" )
+                       MOVE    "1"     TO  SSUB03-SKYPRT
                    END-IF
                END-IF
       *
@@ -263,20 +247,12 @@
       *
            IF    ( SSUB03-SKYPRT       =   SPACE )
                IF    ( SPA-NYUGAIKBN   =   "1" )
-                   IF    ( SYS-5000-SKYPRTKBN  NOT =   SPACE )
-                       IF    ( SYS-5000-SKYPRTKBN  =   "1" OR  "2" )
-                           MOVE    "1"     TO  SSUB03-SKYPRT
-                       END-IF
-                   ELSE
-                       MOVE    "0"         TO  SSUB03-SKYPRT
+                   IF    ( SYS-5000-SKYPRTKBN  =   "1" OR  "2" )
+                       MOVE    "1"     TO  SSUB03-SKYPRT
                    END-IF
                ELSE
-                   IF    ( SYS-1001-SKYPRTFLG  NOT =   SPACE )
-                       IF    ( SYS-1001-SKYPRTFLG      =   "1" OR  "2" )
-                           MOVE    "1"     TO  SSUB03-SKYPRT
-                       END-IF
-                   ELSE
-                       MOVE    "0"         TO  SSUB03-SKYPRT
+                   IF    ( SYS-1001-SKYPRTFLG  =   "1" OR  "2" )
+                       MOVE    "1"     TO  SSUB03-SKYPRT
                    END-IF
                END-IF
            END-IF
@@ -301,14 +277,12 @@
       *
            IF    ( SSUB03-SRYPRT   =   SPACE )
                IF    ( SPA-NYUGAIKBN   =   "1" )
-                   IF    ( SYS-1039-SRYPRTNKBN NOT =   SPACE )
-                       MOVE    SYS-1039-SRYPRTNKBN
-                                       TO  SSUB03-SRYPRT
+                   IF    ( SYS-1039-SRYPRTNKBN =   "1" )
+                       MOVE    "1"     TO  SSUB03-SRYPRT
                    END-IF
                ELSE
-                   IF    ( SYS-1039-SRYPRTGKBN NOT =   SPACE )
-                       MOVE    SYS-1039-SRYPRTGKBN
-                                       TO  SSUB03-SRYPRT
+                   IF    ( SYS-1039-SRYPRTGKBN =   "1" )
+                       MOVE    "1"     TO  SSUB03-SRYPRT
                    END-IF
                END-IF
            END-IF
@@ -492,6 +466,17 @@
            MOVE    "ORCHC03"           TO  WRK-FORM-PG
            PERFORM 800-ORCSPRTNM-SEC
       *
+           INITIALIZE      ORCHC03AREA
+           MOVE   SPA-S01-DENPNUM      TO  ORCHC03-DENPNUM
+           MOVE   WRK-SKYPRT-SKYMONEY  TO  ORCHC03-SEIKYU
+           IF   ( WRK-KAKO-NYUKIN      >   ZERO )
+               CONTINUE
+           ELSE
+               MOVE   WRK-SKYPRT-TAX-SAI
+                                       TO  ORCHC03-SEIKYU-TAX-SAI
+           END-IF
+           MOVE   WRK-SKYPRT-NYUKIN    TO  ORCHC03-NYUKIN
+      *
            PERFORM 900-SYUNOU-KEY-SEL-SEC
       *
            INITIALIZE                  SMISYU-AREA
@@ -503,195 +488,54 @@
                                        SMISYU-AREA
                                        SPA-AREA
       *
-      *
-           INITIALIZE                  SYUPARA01-AREA
-                                       SYUPARA02-AREA
-      *
-           MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
-           MOVE    WRK-SKYPRT-SKYMONEY TO  SYUPARA01-SEIKYU
-           IF   ( WRK-KAKO-NYUKIN      >   ZERO )
-               CONTINUE
-           ELSE
-               MOVE   WRK-SKYPRT-TAX-SAI
-                                       TO  SYUPARA01-SEIKYU-TAX-SAI
-           END-IF
-           MOVE    WRK-SKYPRT-NYUKIN   TO  SYUPARA01-NYUKIN
-      *
-           MOVE    SMISYU-NYUIN        TO  SYUPARA01-NYU-MISYU
-           MOVE    SMISYU-GAIRAI       TO  SYUPARA01-GAI-MISYU
-           MOVE    SMISYU-GAIRAI-P     TO  SYUPARA01-GAI-MISYU-P
-           MOVE    SMISYU-GAIRAI-M     TO  SYUPARA01-GAI-MISYU-M
-      *
-           MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
-           MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
-           MOVE    3                   TO  SYUPARA01-HAKKOFLG
-           MOVE    9                   TO  SYUPARA01-SKYSUMFLG
-           MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
-      *
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    SPA-S01-GYOUMUID    TO  PARA-GYOUMUID
-           MOVE    SPA-S01-UID         TO  PARA-TERMID
-           MOVE    "00101"             TO  WRK-FILEMEI-CD
-           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
-           MOVE    1                   TO  PARA-EDANUM
-      *
-           IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+           IF    ( SYS-1039-S03SKYMISYUPRTKBN  =   "0" )
                CONTINUE
            ELSE
       *
-               COMPUTE SYUPARA01-GAI-MISYU
-                   =   SYUPARA01-GAI-MISYU
-                   - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+               COMPUTE ORCHC03-ZENMISYU-2
+                   =   SMISYU-GAIRAI-P
       *
-               IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
-                   COMPUTE SYUPARA01-GAI-MISYU-M
-                       =   SYUPARA01-GAI-MISYU-M
-                       - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+               COMPUTE ORCHC03-KANYUKIN
+                   =   SMISYU-GAIRAI-M     *   -1
+      *
+               COMPUTE ORCHC03-ZENMISYU
+                   =   SMISYU-GAIRAI
+      *
+               IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+                   CONTINUE
                ELSE
-                   COMPUTE SYUPARA01-GAI-MISYU-P
-                       =   SYUPARA01-GAI-MISYU-P
-                       - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   COMPUTE ORCHC03-ZENMISYU
+                       =   ORCHC03-ZENMISYU
+                       - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+      *
+                   IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
+                       COMPUTE ORCHC03-KANYUKIN
+                           =   ORCHC03-KANYUKIN
+                           - ( SYU-NYUKIN-TOTAL    -   SYU-SKYMONEY )
+                   ELSE
+                       COMPUTE ORCHC03-ZENMISYU-2
+                           =   ORCHC03-ZENMISYU-2
+                           - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   END-IF
+               END-IF
+      *
+               IF    ( ORCHC03-ZENMISYU    <   ZERO )
+                   MOVE    ORCHC03-ZENMISYU
+                                       TO  ORCHC03-HENKIN
+                   MOVE    ZERO        TO  ORCHC03-ZENMISYU
                END-IF
            END-IF
       *
-           PERFORM 200121-SYUPARA02-HEN-SEC
-      *
-           IF    ( SYS-1039-S03SKYMISYUPRTKBN  =   "0" )
-               MOVE    ZERO            TO  SYUPARA01-NYU-MISYU
-                                           SYUPARA01-GAI-MISYU
-                                           SYUPARA01-GAI-MISYU-P
-                                           SYUPARA01-GAI-MISYU-M
-           END-IF
-      *
-           COMPUTE SYUPARA01-ZENMISYU
-               =   SYUPARA01-GAI-MISYU
-      *
-           IF    ( SYUPARA01-ZENMISYU  <   ZERO )
-               MOVE    SYUPARA01-ZENMISYU
-                                       TO  SYUPARA01-HENKIN
-                   MOVE    ZERO        TO  SYUPARA01-ZENMISYU
-           END-IF
-      *
-           MOVE    SYUPARA01-GAI-MISYU-P
-                                       TO  SYUPARA01-ZENMISYU-2
-      *
-           COMPUTE SYUPARA01-KANYUKIN
-               =   SYUPARA01-GAI-MISYU-M     *   -1
-      *
-           PERFORM 200121-SYUPARA01-HEN-SEC
-      *
-           PERFORM 200121-ORCHC03S02-SEC
-      *
-           INITIALIZE                      ORCHC03AREA
-           MOVE    SPA-S01-DENPNUM     TO  ORCHC03-DENPNUM
-           MOVE    SYUPARA01-SEIKYU    TO  ORCHC03-SEIKYU
-           MOVE    SYUPARA01-SEIKYU-TAX-SAI
-                                       TO  ORCHC03-SEIKYU-TAX-SAI
-           MOVE    SYUPARA01-NYUKIN    TO  ORCHC03-NYUKIN
-      *
-           MOVE    SYUPARA01-ZENMISYU-2 TO ORCHC03-ZENMISYU-2
-           MOVE    SYUPARA01-KANYUKIN  TO  ORCHC03-KANYUKIN
-           MOVE    SYUPARA01-ZENMISYU  TO  ORCHC03-ZENMISYU
-           MOVE    SYUPARA01-HENKIN    TO  ORCHC03-HENKIN
-      *
-           MOVE    3                   TO  ORCHC03-HAKKOFLG
-           MOVE    1                   TO  ORCHC03-PARAFLG
-           MOVE    SSUB03-DENPEDANUM   TO  ORCHC03-DENPEDANUM
-           MOVE    3                   TO  ORCHC03-MOTOID
-           MOVE    "01"                TO  SPA-PRT-FLG
-           MOVE    SPA-S01-GYOUMUID    TO  ORCHC03-PARA-GYOUMUID
-           MOVE    SPA-S01-UID         TO  ORCHC03-PARA-TERMID
-           MOVE    "00102"             TO  WRK-FILEMEI-CD
-           MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
-           CALL    WRK-FORM-PG USING       SPA-AREA
+           MOVE   3                    TO  ORCHC03-HAKKOFLG
+           MOVE   SSUB03-DENPEDANUM    TO  ORCHC03-DENPEDANUM
+           MOVE   3                    TO  ORCHC03-MOTOID
+           MOVE  "01"                  TO  SPA-PRT-FLG
+           CALL  WRK-FORM-PG       USING   SPA-AREA
                                            ORCHC03AREA
            MOVE  SPACE                 TO  SPA-PRT-FLG
       *
-           MOVE    "001%"              TO  WRK-FILEMEI-CD
-           PERFORM 200121-DELETE-PARA-SEC
-      *
            .
        20012-SKYPRT-PRINT-EXT.
-           EXIT.
-      **************************************************************
-      *    請求書用パラメタテーブル編集処理
-      **************************************************************
-       200121-SYUPARA02-HEN-SEC        SECTION.
-      *
-           COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
-      *
-           INITIALIZE                  SYUPARA02-AREA
-           MOVE    SYU-DENPNUM     TO  SYUPARA02-DENPNUM
-           MOVE    SYU-NYUKIN-TOTAL TO  SYUPARA02-NYUKIN
-           MOVE    SYUPARA02-AREA  TO  PARA-DATA-REC
-           MOVE    PARA-REC        TO  MCPDATA-REC
-           MOVE    "tbl_para"      TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBINSERT-SEC
-      *
-           .
-       200121-SYUPARA02-HEN-EXT.
-           EXIT.
-      **************************************************************
-      *    請求書用パラメタテーブル編集処理
-      **************************************************************
-       200121-SYUPARA01-HEN-SEC        SECTION.
-      *
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    SPA-S01-GYOUMUID    TO  PARA-GYOUMUID
-           MOVE    SPA-S01-UID         TO  PARA-TERMID
-           MOVE    "00101"             TO  WRK-FILEMEI-CD
-           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
-           MOVE    1                   TO  PARA-EDANUM
-           MOVE    SYUPARA01-AREA      TO  PARA-DATA-REC
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-      *
-           PERFORM 910-DBINSERT-SEC
-      *
-           .
-       200121-SYUPARA01-HEN-EXT.
-           EXIT.
-      **************************************************************
-      *    請求書編集サブ呼出処理
-      **************************************************************
-       200121-ORCHC03S02-SEC           SECTION.
-      *
-           INITIALIZE                      ORCHC03S02AREA
-           MOVE    SPA-HOSPNUM         TO  ORCHC03S02-HOSPNUM
-           MOVE    SPA-S01-GYOUMUID    TO  ORCHC03S02-GYOUMUID
-           MOVE    SPA-S01-UID         TO  ORCHC03S02-TERMID
-           MOVE    "00101"             TO  WRK-FILEMEI-CD
-           MOVE    WRK-FILEMEI         TO  ORCHC03S02-FILEMEI
-           CALL    "ORCHC03S02"    USING   SPA-AREA
-                                           ORCHC03S02AREA
-      *
-           .
-       200121-ORCHC03S02-EXT.
-           EXIT.
-      *************************************************************
-      *    パラメタ削除処理
-      *************************************************************
-       200121-DELETE-PARA-SEC            SECTION.
-      *
-           INITIALIZE                  PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    SPA-S01-GYOUMUID    TO  PARA-GYOUMUID
-           MOVE    SPA-S01-UID         TO  PARA-TERMID
-           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "del11"             TO  MCP-PATHNAME
-           PERFORM 910-DBDELETE-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    "4000"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       200121-DELETE-PARA-EXT.
            EXIT.
       *************************************************************
       *    診療費明細書印刷処理（入院）
