@@ -1453,7 +1453,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN28-AGREEMENT-LST(2)
            MOVE    2                   TO  SPA-GMN28-AGREEMENT-MAX
       *    日医データフォーマット区分
-           MOVE    "1 Ver.?.?"
+           MOVE    "1 Ver.0.9"
                                        TO  SPA-GMN28-JMAMRVER-LST(1)
            MOVE    1                   TO  SPA-GMN28-JMAMRVER-MAX
       *ver.4.7
