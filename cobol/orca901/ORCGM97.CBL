@@ -295,6 +295,9 @@
       *        情報削除
                WHEN    "CLICKED"   ALSO    "B02"
                    PERFORM 410-JOBDEL-SEC
+      *        プラグイン
+               WHEN    "CLICKED"   ALSO    "B04"
+                   PERFORM 410-PLUGIN-SEC
       *        一斉通知
                WHEN    "CLICKED"   ALSO    "B05"
                    PERFORM 410-SENDKAKUNIN-SEC
@@ -780,6 +783,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
       *
        410-JOBDEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プラグイン
+      *****************************************************************
+       410-PLUGIN-SEC              SECTION.
+      *
+           MOVE    "M80"               TO  SPA-SAKIPG
+           MOVE    "M97"               TO  SPA-MOTOPG
+           MOVE    "M80"               TO  MCP-WINDOW
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       410-PLUGIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1363,9 +1383,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        830-GAMENN-SET6-SEC         SECTION.
       *
-           MOVE    "M03"           TO  SPA-SAKIPG
+           MOVE    "M00"           TO  SPA-SAKIPG
            MOVE    "M97"           TO  SPA-MOTOPG
-           MOVE    "M03"           TO  MCP-WINDOW
+           MOVE    "M00"           TO  MCP-WINDOW
            MOVE    "JOIN"          TO  MCP-PUTTYPE
       *
            PERFORM 900-PUT-WINDOW

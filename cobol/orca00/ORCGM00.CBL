@@ -278,7 +278,6 @@
            COPY    "M01.INC".
            COPY    "M01N.INC".
            COPY    "M02.INC". 
-           COPY    "M03.INC". 
            COPY    "M95.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
@@ -1333,7 +1332,7 @@
                    IF    ( SPA-SUPERVISOR          =   "T" )
                    AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
                        AND     SYS-1010-GSRAUTH(3:1)    =  "1"
-                       MOVE    "M03"           TO  SPA-SAKIPG
+                       MOVE    "M97"           TO  SPA-SAKIPG
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 

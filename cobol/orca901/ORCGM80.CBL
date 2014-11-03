@@ -474,7 +474,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M03"               TO  SPA-SAKIPG
+           MOVE    "M97"               TO  SPA-SAKIPG
            MOVE    "M80"               TO  SPA-MOTOPG
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU

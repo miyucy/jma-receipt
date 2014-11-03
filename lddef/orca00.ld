@@ -8,7 +8,6 @@ bind	"M00"		"OpenCOBOL"	"ORCGM00";
 bind	"M01"		"OpenCOBOL"	"ORCGM01";
 bind	"M01N"		"OpenCOBOL"	"ORCGM01N";
 bind	"M02"		"OpenCOBOL"	"ORCGM02";
-bind	"M03"		"OpenCOBOL"	"ORCGM03";
 bind	"M95"		"OpenCOBOL"	"ORCGM95";
 bind	"MERR"		"OpenCOBOL"	"ORCGMERR";
 bind	"MID1"		"OpenCOBOL"	"ORCGMID1";
@@ -32,7 +31,6 @@ data	{
 		M01;
 		M01N;
                 M02;
-                M03;
                 M95;
                 MERR;
                 MID1;

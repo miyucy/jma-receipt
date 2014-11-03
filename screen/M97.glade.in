@@ -130,7 +130,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:36 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>プラグイン</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
