@@ -112,12 +112,15 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-TBL-DBRVERSION1 PIC X(64).
                05  WRK-TBL-UPDATE-FLG  PIC X(01).
       *
-       01  WRK-HOMEDIR.
-           03  FILLER                  PIC X(28)  VALUE
+           03  WRK-HOMEDIR             PIC X(128).
+      *
+       01  CONST-AREA.
+           03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
-           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
-           03  FILLER                  PIC X(01)  VALUE "/".
-           03  WRK-HOMEDIR-DBFILE      PIC X(13).
+      *
+           COPY    "ENUM-VALUE".
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -175,6 +178,9 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    PARA-SUPERVISOR TO  SPA-SUPERVISOR
       *
+           INITIALIZE                      SGETTEMP-AREA
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
            IF      MCP-RC      NOT =   ZERO
@@ -212,12 +218,18 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
-           MOVE    PARA-HOSPNUM        TO  WRK-HOMEDIR-HOSPNUM
-           MOVE    PARA-DBFILE         TO  WRK-HOMEDIR-DBFILE
+           IF      SGETTEMP-MW         =   SPA-PANDA
+               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
+           ELSE
+               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
+           END-IF
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   PARA-HOSPNUM        DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
+                   PARA-DBFILE         DELIMITED  BY  SPACE
                    "/ORCADBR-LI.DAT"   DELIMITED  BY  SIZE
                                        INTO    ASS-IN
            END-STRING
@@ -225,6 +237,9 @@ grpsys     COPY    "COMMON-SPA".
       *    出力ーファイル
            MOVE    SPACE               TO  ASS-OUT
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   PARA-HOSPNUM        DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
+                   PARA-DBFILE         DELIMITED  BY  SPACE
                    "/ORCADBR.OUT"      DELIMITED  BY  SIZE
                                        INTO    ASS-OUT
            END-STRING

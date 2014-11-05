@@ -149,6 +149,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-X-3                 PIC X(03). 
            03  WRK-9-3-R               REDEFINES  WRK-X-3. 
                05  WRK-9-3                 PIC 9(03). 
+           03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -212,11 +213,9 @@ grpsys     COPY    "COMMON-SPA".
            03  TNSWK-V05-AREA-02       PIC X(206).
       *---(04.06.00) LINE ADD START -------------------------------------
       *
-       01  WRK-HOMEDIR.
-           03  FILLER                  PIC X(28)  VALUE
+       01  CONST-AREA.
+           03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
-           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
-           03  FILLER                  PIC X(01)  VALUE "/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -224,6 +223,9 @@ grpsys     COPY    "COMMON-SPA".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
+           COPY    "ENUM-VALUE".
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    ファイル定義
@@ -334,22 +336,33 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
+           IF      SGETTEMP-MW         =   SPA-PANDA
+               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
+           ELSE
+               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
+           END-IF
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   LNK-DBFILE         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
                    "/"                 DELIMITED  BY  SIZE
-                   LNK-UPFILE         DELIMITED  BY  SPACE
+                   LNK-DBFILE          DELIMITED  BY  SPACE
+                   "/"                 DELIMITED  BY  SIZE
+                   LNK-UPFILE          DELIMITED  BY  SPACE
                                        INTO    ASS-IN
            END-STRING
       *
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
-                   LNK-UPFILE         DELIMITED  BY  SPACE
+                   LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
                                        INTO    ASS-ERR
            END-STRING
@@ -357,8 +370,10 @@ grpsys     COPY    "COMMON-SPA".
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
-                   LNK-UPFILE         DELIMITED  BY  SPACE
+                   LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
                                        INTO    ASS-PLF
            END-STRING

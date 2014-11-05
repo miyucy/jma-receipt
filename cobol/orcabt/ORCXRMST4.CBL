@@ -46,7 +46,7 @@
                                    FILE    STATUS IS  STS-MSTERR.
       *
       *    £Ð£Ò£Æ¥Õ¥¡¥¤¥ë¡Ê¥Þ¥¹¥¿¥Ç¡¼¥¿ÊÌ¡Ë
-           SELECT  MSTPRF-FILE     ASSIGN  WRK-MSTPRFFILE
+           SELECT  MSTPRF-FILE     ASSIGN  MSTPRFFILE
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS IS  STS-MSTPRFFILE.
       *
@@ -83,7 +83,9 @@ grpsys     COPY    "COMMON-SPA".
       *
            COPY    "CPRECEERR.INC".
       *
-       01  PGEXIST01                   PIC X(256).
+       01  ASS-AREA.
+           03  PGEXIST01               PIC X(256).
+           03  MSTPRFFILE              PIC X(256).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -115,10 +117,10 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-UPFILE              PIC X(100).
            03  WRK-UPFILE2             PIC X(100).
            03  WRK-MSTERR              PIC X(200).
-           03  WRK-MSTPRFFILE          PIC X(100).
            03  WRK-MSTNAME             PIC X(60).
            03  WRK-ZZZZZ9              PIC ZZZZZ9.
       *
+           03  WRK-HOMEDIR             PIC  X(128).
       *
        01  PARA-AREA.
            03  PARA-MAIN.
@@ -198,12 +200,14 @@ grpsys     COPY    "COMMON-SPA".
       *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
            COPY    "CPORCSGETTEMP.INC".
       *
+           COPY    "ENUM-VALUE".
+      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
        LINKAGE                     SECTION.
       *
-       01  PARA-REC                PIC   X(500).
+       01  PARA-REC                PIC   X(1000).
       *
        PROCEDURE                       DIVISION
            USING
@@ -262,6 +266,12 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SGETTEMP-FULLNAMES (1)
                                    TO  RECEERR
       *
+           IF      SGETTEMP-MW         =   SPA-PANDA
+               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
+           ELSE
+               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
+           END-IF
+      *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    PARA-HOSPNUM    TO  JOB-HOSPNUM
@@ -318,13 +328,13 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SPACE               TO  WRK-UPFILE2
            MOVE    WRK-UPFILE(IDY:)    TO  WRK-UPFILE2
       *
-           MOVE    SPACE               TO  WRK-MSTPRFFILE
-           STRING  CONST-HOMEDIR       DELIMITED  BY  SPACE
+           MOVE    SPACE               TO  MSTPRFFILE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
                    "/orca-mstlog/"     DELIMITED  BY  SIZE
                    WRK-UPFILE2         DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
-           INTO    WRK-MSTPRFFILE
+               INTO    MSTPRFFILE
            END-STRING
       *
            .

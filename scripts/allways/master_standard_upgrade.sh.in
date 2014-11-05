@@ -25,9 +25,12 @@ MSTDIR=orca-$(date +%Y%m%d)
 
 UPDKANRIFILE=info/ORCADBR-3.DAT
 
+if [ "${MCP_MIDDLEWARE_NAME}" = "ginbee" ]; then
+  MASTERDIR="${MCP_TEMPDIR}"
+fi
 UPDFILE=${MASTERDIR}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
-PRFFILE=/tmp/MSTMNT.PRF.$$
+PRFFILE=${MCP_TEMPDIR}/MSTMNT.PRF.$$
 
 orcawget () {
 #受信ファイル削除

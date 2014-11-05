@@ -23,15 +23,18 @@ JOBID=$5
 SHELLID=$(printf "%-8s" $6)
 
 MSTDIR=lics-$(date +%Y%m%d)
-WGETRCFL=/tmp/.wgetrc.license-master
+WGETRCFL=${MCP_TEMPDIR}/.wgetrc.license-master
 LIUPWD=$3
 
 KANRIFILE=ORCADBR-LI.DAT
 UPDKANRIFILE=info/${KANRIFILE}
 
+if [ "${MCP_MIDDLEWARE_NAME}" = "ginbee" ]; then
+  MASTERDIR="${MCP_TEMPDIR}"
+fi
 UPDFILE=${MASTERDIR}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
-PRFFILE=/tmp/MSTMLI.PRF.$$
+PRFFILE=${MCP_TEMPDIR}/MSTMLI.PRF.$$
 
 
 orcawget () {
