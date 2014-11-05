@@ -51,13 +51,14 @@
       * 04.04.00     NACL-√›≈ƒ°°  09/02/25  ∏¯≥≤¬–±˛
       * 04.05.00     NACL-¬ø°π«º  10/01/15  º£∏≥°¶≥»ƒ•¥¡ª˙¬–±˛
       * 04.05.00     NACL-¬ø°π«º  10/03/XX   ø¿Æ£≤£≤«Ø£¥∑Ó≤˛¿µ¬–±˛
+      * 04.07.00     NACL-¬ø°π«º  14/11/XX  ∏¯»ÒSORT«—ªﬂ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    
+      *
       **** SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
       *                            ORGANIZATION    IS  INDEXED
       *                            ACCESS  MODE    IS  DYNAMIC
@@ -693,7 +694,7 @@
       *
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+               MOVE    SYSKANRI-REC        TO  SYS-9000-REC
            ELSE
                INITIALIZE                      SYS-9000-REC
            END-IF
@@ -772,7 +773,7 @@
       *
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1005-REC
       *        •Ï•ª≈≈ø«Œ≈≤ 
                IF      SYS-1005-RECESRYKA  =   SPACE
                    MOVE    "XX"                TO  WRK-SRYKA
@@ -971,7 +972,7 @@
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME  TO  WRK-LF01-SRYNAME
                                            WRK-LF01-CRE001-DPERTNAME
                                            WRK-LF01-CRE301-DPERTNAME
@@ -1302,7 +1303,7 @@
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1002-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1002-REC
            ELSE
                INITIALIZE                  SYS-1002-REC
            END-IF
@@ -1317,7 +1318,7 @@
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
       ******** EVALUATE    SYS-1001-HOSPSBT    ALSO    WRK-SYOSIN
       *            WHEN    "1"                 ALSO    1
       *                MOVE    "111000110"     TO  WRK-LF01-IJICD
@@ -1494,7 +1495,7 @@
       *
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
            ELSE
                INITIALIZE                      SYS-1010-REC
            END-IF
@@ -1640,6 +1641,20 @@
                MOVE    COMB-KOH-GAIJGNKBN (IDZ)
                                            TO  WRK-GAIJGNKBN-O (IDZ)
            END-PERFORM
+      *
+      *H26.11   ¬§”¬ÿ§®§Ú«—ªﬂ§π§Î
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL      (IDZ         >   4 )
+               IF      WRK-KOHID-O (IDZ)   >   ZERO
+                   ADD     1                   TO  TBL-MAX
+                   MOVE    WRK-KOHI-TBL (IDZ)  TO  WRK-KOHI-TBL-X
+                                                           (TBL-MAX)
+               END-IF
+           END-PERFORM
+      *****
+           GO  TO  20012-KOHID-HENSYU-EXT
+      *
+      *****
       *
       *    Õ•¿ËΩÁ∞Ã§À ¬§Ÿ¬ÿ§®
            PERFORM VARYING IDZ FROM    1   BY  1
@@ -2572,6 +2587,7 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI

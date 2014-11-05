@@ -552,7 +552,14 @@
            END-IF
       *
       *    出力編集
-           PERFORM 290-HKNCOMBI-OUTHENSYU-SEC
+           IF     (ORCSAPIHKN-KBN      =   "2" )
+      *        該当保険組合せ編集
+               PERFORM 291-HKNCOMBI-ONLYHEN-SEC
+           ELSE
+      *        全保険組合せ出力編集
+               PERFORM 290-HKNCOMBI-OUTHENSYU-SEC
+           END-IF
+      *
       *    新規登録時、保険組合せ対象外の公費
            IF      ORCSAPIHKN-KBN2     =   "1"
                PERFORM 299-PTKOHINF-OUTHEN-SEC
@@ -985,6 +992,27 @@
            .
        290-HKNCOMBI-OUTHENSYU-EXT.
            EXIT.
+      *****************************************************************
+      *    該当保険組合せ情報編集処理
+      *****************************************************************
+       291-HKNCOMBI-ONLYHEN-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX-TBL
+           MOVE    ZERO                TO  FLG-COMBIOK
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   IDX-MAX )
+                          OR  (FLG-COMBIOK =   1   )
+               IF      TBL-COMB-HKNCOMBINUM (IDX)
+                                           =   ORCSAPIHKN-OT-HKNCOMBI
+                   MOVE    1               TO  IDXH
+                   PERFORM 2901-HKNCOMBI-HEN-SEC
+                   MOVE    1               TO  FLG-COMBIOK
+               END-IF
+           END-PERFORM
+           .
+       291-HKNCOMBI-ONLYHEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    保険組合せ編集処理
@@ -1285,7 +1313,14 @@
       *        公費名称
                MOVE    TBL-COMB-KOH-TANSEIDONAME  (IDX IDZ)
                                            TO  WRK-KOHNUMMEI-I (IDZ)
+      *H26.11
+      *        並び替え廃止
+               MOVE    WRK-KOH-I-TBL (IDZ) TO  WRK-KOH-O-TBL (IDZ)
            END-PERFORM
+      *H26.11
+      *    並び替え廃止（以下なし）
+           GO      TO      29011-KOHID-HENSYU-EXT
+      *
       *
       *    優先順位に並べ替え
            MOVE    ZERO                TO  IDX-KOH
