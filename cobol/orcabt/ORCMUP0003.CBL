@@ -33,6 +33,7 @@
       *                                     対応
       * 04.07.00     NACL-伊藤    14/03/06  点数マスタレイアウト変更
       *                                     対応
+      * 04.08.00     NACL-森脇    14/11/05  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -149,6 +150,9 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-X-3                 PIC X(03). 
            03  WRK-9-3-R               REDEFINES  WRK-X-3. 
                05  WRK-9-3                 PIC 9(03). 
+      *----(04.08.00)--ADD-START----
+           03  WRK-HOMEDIR             PIC X(128).
+      *----(04.08.00)--ADD-END------
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -212,11 +216,15 @@ grpsys     COPY    "COMMON-SPA".
            03  TNSWK-V05-AREA-02       PIC X(206).
       *---(04.06.00) LINE ADD START -------------------------------------
       *
-       01  WRK-HOMEDIR.
-           03  FILLER                  PIC X(28)  VALUE
+      *----(04.08.00)--UPD-START---
+      * 01  WRK-HOMEDIR.
+      *     03  FILLER                  PIC X(28)  VALUE
+       01  CONST-AREA.
+           03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
-           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
-           03  FILLER                  PIC X(01)  VALUE "/".
+      *     03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+      *     03  FILLER                  PIC X(01)  VALUE "/".
+      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -224,6 +232,11 @@ grpsys     COPY    "COMMON-SPA".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
+      *----(04.08.00)--ADD-START---
+           COPY    "ENUM-VALUE".
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.00)--ADD-END-----
       *
       *****************************************************************
       *    ファイル定義
@@ -329,16 +342,27 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-EXT.
            EXIT.
       *
+      *----(04.08.00)--UPD-START---
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
+      *     MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
+           IF      SGETTEMP-MW         =   SPA-PANDA
+               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
+           ELSE
+               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
+           END-IF
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE         DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE         DELIMITED  BY  SPACE
@@ -348,6 +372,8 @@ grpsys     COPY    "COMMON-SPA".
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE         DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -357,6 +383,8 @@ grpsys     COPY    "COMMON-SPA".
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE         DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
@@ -371,7 +399,7 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
-      *
+      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    メイン処理
       *****************************************************************

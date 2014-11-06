@@ -33,6 +33,7 @@
       *                                     対応
       * 04.07.00     NACL-伊藤    14/03/06  点数マスタレイアウト変更
       *                                     対応
+      * 04.08.00     NACL-森脇    14/11/05  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -149,7 +150,9 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-X-3                 PIC X(03). 
            03  WRK-9-3-R               REDEFINES  WRK-X-3. 
                05  WRK-9-3                 PIC 9(03). 
+      *----(04.08.00)--ADD-START----
            03  WRK-HOMEDIR             PIC X(128).
+      *----(04.08.00)--ADD-END------
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -213,9 +216,15 @@ grpsys     COPY    "COMMON-SPA".
            03  TNSWK-V05-AREA-02       PIC X(206).
       *---(04.06.00) LINE ADD START -------------------------------------
       *
+      *----(04.08.00)--UPD-START---
+      * 01  WRK-HOMEDIR.
+      *     03  FILLER                  PIC X(28)  VALUE
        01  CONST-AREA.
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
+      *     03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+      *     03  FILLER                  PIC X(01)  VALUE "/".
+      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -331,11 +340,13 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-EXT.
            EXIT.
       *
+      *----(04.08.00)--UPD-START---
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
+      *     MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
            INITIALIZE                      SGETTEMP-AREA
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
       *
@@ -386,7 +397,7 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
-      *
+      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    メイン処理
       *****************************************************************

@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-森脇    14/11/06  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -133,6 +134,9 @@
            03  WRK-ERRCD               PIC 9(01).
       *
            03  WRK-IN                  PIC X(01).
+      *----(04.08.00)--ADD-START----
+           03  WRK-HOMEDIR             PIC X(128).
+      *----(04.08.00)--ADD-END------
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -156,14 +160,23 @@
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  WRK-RYAKUSHO            PIC X(20).
       *
-       01  WRK-HOMEDIR.
-           03  FILLER                  PIC X(28)  VALUE
+      *----(04.08.00)--UPD-START---
+      * 01  WRK-HOMEDIR.
+      *     03  FILLER                  PIC X(28)  VALUE
+       01  CONST-AREA.
+           03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
-           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
-           03  FILLER                  PIC X(01)  VALUE "/".
+      *     03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+      *     03  FILLER                  PIC X(01)  VALUE "/".
+      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    ファイル定義
       *****************************************************************
+      *----(04.08.00)--ADD-START---
+           COPY    "ENUM-VALUE".
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.00)--ADD-END-----
       *
        01  RYAKUSHOWK-REC.
            03  RYAKUSHOWK-SYORIKBN     PIC X(01).
@@ -255,17 +268,27 @@
            .
        100-INIT-EXT.
            EXIT.
-      *
+      *----(04.08.00)--UPD-START---
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
-           MOVE    SPA-HOSPNUM     TO  WRK-HOMEDIR-HOSPNUM
+      *     MOVE    SPA-HOSPNUM     TO  WRK-HOMEDIR-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
+           IF      SGETTEMP-MW         =   SPA-PANDA
+               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
+           ELSE
+               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
+           END-IF
       *
       *    入力ファイル
            MOVE    SPACE           TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
@@ -275,6 +298,8 @@
       *    エラーファイル
            MOVE    SPACE           TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -284,6 +309,8 @@
       *    プルーフファイル
            MOVE    SPACE           TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
@@ -293,7 +320,7 @@
            .
        101-ASSIN-GET-EXT.
            EXIT.
-      *
+      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    メイン処理
       *****************************************************************
