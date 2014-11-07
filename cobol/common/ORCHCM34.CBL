@@ -3672,7 +3672,7 @@
                    MOVE    1           TO  FLG-ROSAI
                END-IF
       *
-               IF   ( ACCT-SRYKBN      =   "11" OR "12" OR "13" )
+               IF   ( ACCT-SRYKBN      =   "11" OR "12" OR "13" OR "80")
                    MOVE    1           TO  FLG-RSIJBI-AREA-HEN
                END-IF
       *
@@ -4023,7 +4023,8 @@
                                                            (RSIJBI-MAX)
            MOVE    TNS-NAME                TO  RSIJBI-NAME (RSIJBI-MAX)
       *
-           IF    ( TNS-TENSIKIBETU     =   1 )
+           IF    ( TNS-SRYCD (1:3)     =   "101" )
+            AND  ( TNS-TENSIKIBETU     =   1 )
                COMPUTE RSIJBI-KINGAKU  =   RSIJBI-KINGAKU + TNS-TEN
                COMPUTE RSIJBI-TEN      =   RSIJBI-TEN - ( TNS-TEN / 10 )
       *
