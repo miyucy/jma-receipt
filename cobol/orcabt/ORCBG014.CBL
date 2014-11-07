@@ -49,6 +49,7 @@
       *  04.07.02    NACL-森脇     13/06/14  在総診区分分類なし追加   
       *  04.08.00    NACL-森脇     14/05/01  平成２６年４月改正
       *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
+      *  04.08.02    NACL-森脇     14/11/07  公費と医保の併用（単独入力分）追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,7 +112,7 @@
       *        HKNKBN      保険区分    1:医保、2:老人、3:公費
       *        SYUBETUKBN  種別区分
       *                    社保  医保  1:７０歳以上一般・低所得、2:７０歳以上７割、3:本人、4:家族、5:６歳
-      *                          公費  1:公費と公費の併用、2:公費単独
+      *                          公費  1:公費と公費の併用、2:公費単独、3:公費と医保の併用
       *                    国保  一般  1:７０歳以上一般・低所得、2:７０歳以上７割、3:一般、4:６歳
       *                          退職  5:本人、8:被扶養者、9:６歳
       *                    広域連合    1:後期高齢者９割、2:後期高齢者７割
@@ -1623,7 +1624,14 @@
       *
       *    レセプト種別区分分類
            IF          RECE10-HKNNUM       NOT =   SPACE
-               GO  TO  220-KOH-SYAHO-SYUKEI-ATO-EXT
+      *----(04.08.02)--UPD-START---
+               IF          RECE10-TOTALTEN(1)  =   RECE10-TOTALTEN(2)
+                   GO  TO  220-KOH-SYAHO-SYUKEI-ATO-EXT
+               ELSE
+      *            公費と医保の併用
+                   MOVE    "3"             TO  WRK-SYUBETUKBN
+               END-IF
+      *----(04.08.02)--UPD-END-----
            ELSE
                IF      RECE10-KOHNUM(2)    NOT =   SPACE
       *            公費と公費の併用欄
@@ -3519,6 +3527,11 @@
                    MOVE    "＊公費と公費の併用"    TO  WRK-PRT-LINE
                WHEN    "1" ALSO    "3" ALSO    "2" ALSO    ANY
                    MOVE    "＊公費単独"            TO  WRK-PRT-LINE
+      *----(04.08.02)--ADD-START---
+               WHEN    "1" ALSO    "3" ALSO    "3" ALSO    ANY
+                   MOVE    "＊公費と医保の併用（単独入力分）"
+                                                   TO  WRK-PRT-LINE
+      *----(04.08.02)--ADD-END-----
                WHEN    "2" ALSO    "1" ALSO    "1" ALSO    ANY
                WHEN    "3" ALSO    "1" ALSO    "1" ALSO    ANY
                    MOVE    "＊一般（７０歳以上一般・低所得）"
