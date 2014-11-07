@@ -170,7 +170,7 @@ grpsys     COPY    "COMMON-SPA".
       *----(04.08.00)--UPD-START---
       * 01  WRK-HOMEDIR.
       *     03  FILLER                  PIC X(28)  VALUE
-       01  CONST-AREA.
+       01  CONST-AREA2.
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *     03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
