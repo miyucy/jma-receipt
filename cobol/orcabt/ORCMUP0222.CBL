@@ -28,7 +28,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.08.00     NACL-森脇    14/11/06  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -135,9 +134,7 @@
       *
            03  WRK-TABLE               PIC X(20).
            03  WRK-PATHNAME            PIC X(05).
-      *----(04.08.00)--ADD-START----
            03  WRK-HOMEDIR             PIC X(128).
-      *----(04.08.00)--ADD-END------
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -159,15 +156,9 @@
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  WRK-SYORIKBN            PIC X(01).
       *
-      *----(04.08.00)--UPD-START---
-      * 01  WRK-HOMEDIR.
-      *     03  FILLER                  PIC X(28)  VALUE
        01  CONST-AREA.
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
-      *     03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
-      *     03  FILLER                  PIC X(01)  VALUE "/".
-      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -212,11 +203,9 @@
        01  ETENSU5-REC.
            COPY    "CPETENSU5.INC".
       *
-      *----(04.08.00)--ADD-START---
            COPY    "ENUM-VALUE".
       *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.00)--ADD-END-----
       *
       *    ジョブ管理情報
        01  JOBKANRI-REC.
@@ -296,13 +285,11 @@
            .
        100-INIT-EXT.
            EXIT.
-      *----(04.08.00)--UPD-START---
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
-      *     MOVE    SPA-HOSPNUM     TO  WRK-HOMEDIR-HOSPNUM
            INITIALIZE                      SGETTEMP-AREA
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
       *
@@ -348,7 +335,6 @@
            .
        101-ASSIN-GET-EXT.
            EXIT.
-      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    メイン処理
       *****************************************************************

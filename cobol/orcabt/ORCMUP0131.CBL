@@ -30,7 +30,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
       * 04.04.00     NACL-太田    09/03/27  ２重追加チェック修正
-      * 04.08.00     NACL-森脇    14/11/06  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -121,9 +120,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-ERRCD               PIC 9(01).
       *
            03  WRK-IN                  PIC X(01).
-      *----(04.08.00)--ADD-START----
            03  WRK-HOMEDIR             PIC X(128).
-      *----(04.08.00)--ADD-END------
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -151,23 +148,16 @@ grpsys     COPY    "COMMON-SPA".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  WRK-SRYCD               PIC X(09).
       *
-      *----(04.08.00)--UPD-START---
-      * 01  WRK-HOMEDIR.
-      *     03  FILLER                  PIC X(28)  VALUE
        01  CONST-AREA.
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
-      *     03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
-      *     03  FILLER                  PIC X(01)  VALUE "/".
-      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    ファイル定義
       *****************************************************************
-      *----(04.08.00)--ADD-START---
+      *
            COPY    "ENUM-VALUE".
       *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.00)--ADD-END-----
       *
       *    包括チェックマスタ
        01  HKTSANTEI-REC.
@@ -252,13 +242,11 @@ grpsys     COPY    "COMMON-SPA".
            .
        100-INIT-EXT.
            EXIT.
-      *----(04.08.00)--UPD-START---
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
-      *     MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
            INITIALIZE                      SGETTEMP-AREA
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
       *
@@ -303,7 +291,6 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
-      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    メイン処理
       *****************************************************************
