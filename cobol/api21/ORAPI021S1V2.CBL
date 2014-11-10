@@ -58,6 +58,8 @@
            03  FLG-CHKWK               PIC 9(01).
            03  FLG-DOUJITU             PIC 9(01).
       *
+           03  FLG-WKSRYACT-INS        PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
@@ -1147,8 +1149,8 @@
            PERFORM 200211-UID-GET-SEC
       *
       *H26.11
-           IF      APILST-CLASS        =   "04"
-      *        追加（外来）は決定済み
+           IF      FLG-WKSRYACT-INS    =   1
+      *        追加は決定済み
                CONTINUE
            ELSE
       *        保険組合せの決定
@@ -1366,7 +1368,7 @@
       *H26.11
       *    保険組合せ
            MOVE    WRK-HKNCOMBI        TO  LNK-IN-HKNCOMBI
-           IF      APILST-CLASS        =   "04"
+           IF      FLG-WKSRYACT-INS    =   1
       *        追加（外来）
                MOVE    "1"                 TO  LNK-ADDKBN
       *        追加開始の剤番号
@@ -2097,6 +2099,15 @@
       *
       *    ワーク診療行為削除処理
            PERFORM 20031-WKSRYACT-DEL-SEC
+      *H26.11 
+      *    外来は、追加処理を行う
+           IF      MDCREQ-OUTPATIENT-CLASS =  "I"
+               CONTINUE
+           ELSE
+      *        ワーク診療行為追加チェック処理
+               PERFORM 20051-WKSRYACT-CHK-SEC
+           END-IF
+      *
       *    診療行為登録処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20021-CLAIM-CALL-SEC
@@ -2152,6 +2163,8 @@
       *****************************************************************
        20051-WKSRYACT-CHK-SEC        SECTION.
       *
+      *    外来追加処理
+           MOVE    1                   TO  FLG-WKSRYACT-INS
       *    保険組合せの決定
            PERFORM 200215-HKNCOMBI-SET-SEC
       *
@@ -2201,6 +2214,7 @@
                    PERFORM 200511-WKSRYACT-ZAINUM-SEC
                END-IF
            END-IF
+      *
            .
        20051-WKSRYACT-CHK-EXT.
            EXIT.
