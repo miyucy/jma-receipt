@@ -338,7 +338,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
-           STRING  WRK-HOMEDIR         DELIMITED  BY  SIZE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
                    "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
