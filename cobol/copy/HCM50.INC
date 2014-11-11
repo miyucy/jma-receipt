@@ -23,7 +23,7 @@
                         PIC X(10).
             02  HCM50-NAIYO-TBL
                                         OCCURS 70 TIMES.
-              03  HCM50-SRYYMD-OLD
+              03  HCM50-SRYYMD
                         PIC X(12).
               03  HCM50-SRYKBN
                         PIC X(10).
@@ -43,15 +43,7 @@
                         PIC X(40).
             02  HCM50-IRYOTEL
                         PIC X(15).
-            02  HCM50-IRYOMEI-OLD
-                        PIC X(60).
-            02  HCM50-IRYOADRS-OLD
-                        PIC X(100).
-            02  HCM50-LOPTION
-                        PIC X(500).
             02  HCM50-IRYOMEI
-                        PIC X(80)       OCCURS 2 TIMES.
+                        PIC X(60).
             02  HCM50-IRYOADRS
-                        PIC X(100)      OCCURS 2 TIMES.
-            02  HCM50-SRYYMD
-                        PIC X(22)       OCCURS 70 TIMES.
+                        PIC X(100).
