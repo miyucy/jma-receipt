@@ -30,6 +30,7 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/07/24  Ï«ºÒ¶èÊ¬ÄÉ²ÃÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  13/11/01  ÊÝ¸±ÁÈ¹ç¤»£²£°·ï°Ê¾åÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/03/XX  Á°´ü¹âÎð¼Ô£²³äÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/11/XX  ÊÝ¸±³ÎÇ§ÆüÉÕÂÐ±þ
       *****************************************************************
       *
       *
@@ -244,7 +245,7 @@
       *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSKANACHK.INC".
       *    Ç¯Îð¡¦ÉéÃ´³ä¹ç¥µ¥Ö
-           COPY    "CPORCSAGECHK.INC".
+      ***  COPY    "CPORCSAGECHK.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -1024,6 +1025,9 @@
                                                                (IDXH)
            MOVE    TBL-COMB-HKNNUM (IDX)
                                        TO  ORCSAPIHKN-HKNNUM (IDXH)
+      *    ÊÝ¸±£É£Ä
+           MOVE    TBL-COMB-HKNID  (IDX)
+                                       TO  ORCSAPIHKN-NAI-HKNID (IDXH)
       *    ¼çÊÝ¸±¡ÝÃ»½ÌÀ©ÅÙÌ¾
            MOVE    TBL-COMB-SYU-TANSEIDONAME (IDX)
                                        TO  ORCSAPIHKN-HKNNUM-NAME
@@ -1077,6 +1081,18 @@
                    MOVE    TBL-PTHKN-SKKGETYMD (IDH)
                                            TO  ORCSAPIHKN-NAI-SKKGETYMD
                                                                 (IDXH)
+      *H26.11
+      *            ³ÎÇ§ÆüÉÕ
+                   IF      TBL-PTHKN-KAKUNINYMD(IDH) NOT =   SPACE
+                       MOVE    TBL-PTHKN-KAKUNINYMD(IDH) TO  WRK-SYMD
+                       PERFORM 800-DAYHEN01-SEC
+                       MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KAKUNINYMD
+                                                                (IDXH)
+                   END-IF
+                   MOVE    TBL-PTHKN-KAKUNINYMD (IDH)
+                                           TO  ORCSAPIHKN-NAI-KAKUNINYMD
+                                                                (IDXH)
+      *
                    MOVE    IDH-MAX         TO  IDH
                END-IF
            END-PERFORM
@@ -1317,6 +1333,9 @@
       *        ÊÂ¤ÓÂØ¤¨ÇÑ»ß
                MOVE    WRK-KOH-I-TBL (IDZ) TO  WRK-KOH-O-TBL (IDZ)
            END-PERFORM
+      *
+      *
+      *
       *H26.11
       *    ÊÂ¤ÓÂØ¤¨ÇÑ»ß¡Ê°Ê²¼¤Ê¤·¡Ë
            GO      TO      29011-KOHID-HENSYU-EXT
@@ -1384,6 +1403,10 @@
                    UNTIL      (IDH     >   IDK-MAX )
       *        ¸øÈñ¾ðÊó
                IF      WRK-KOHID-O (IDY)   =   TBL-PTKOH-KOHID (IDH)
+      *            ¸øÈñ£É£Ä
+                   MOVE    TBL-PTKOH-KOHID (IDH)
+                                           TO  ORCSAPIHKN-NAI-KOHID
+                                                            (IDXH IDY)
       *            ¸øÈñ¤Î¼ïÎà
                    MOVE    TBL-PTKOH-KOHNUM (IDH)
                                            TO  ORCSAPIHKN-KOHNUM
@@ -1517,6 +1540,10 @@
                    MOVE    ALL "¡ö"        TO  ORCSAPIHKN-HKNNUM-NAME
                                                                  (IDX)
                    MOVE    1               TO  IDY
+      *            ¸øÈñ£É£Ä
+                   MOVE    TBL-PTKOH-KOHID (IDH)
+                                           TO  ORCSAPIHKN-NAI-KOHID
+                                                            (IDX IDY)
       *            ¸øÈñ¤Î¼ïÎà
                    MOVE    TBL-PTKOH-KOHNUM (IDH)
                                            TO  ORCSAPIHKN-KOHNUM
