@@ -60,6 +60,7 @@
       * 04.08.00     NACL-森脇    13/04/03  パスワード追加
       * 04.07.00     NACL-多々納  14/02/10  入力スクロール行数対応他
       * 04.08.01     NACL-森脇    14/09/02  GINBEE対応
+      * 04.08.02     NACL-森脇    14/11/13  OPID変更時対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3927,6 +3928,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 4905-SYSUSER-UPD-SEC
            END-IF
            IF     (SPA-ERRCD           =   SPACE )  AND
+           
                   (SPA-GMN-PASSWORD1   NOT =   SPACE  )
       *        パスワード更新処理
                PERFORM 4905-PASSWD-UPD-SEC
@@ -4277,6 +4279,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1002"              TO  SPA-ERRCD
                    DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
                END-IF
+      *----(04.08.02)--ADD-START---
+      *        パスワードを削除
+               INITIALIZE                  PASSWD-REC
+               MOVE    WRK-MAE-USERID  TO  PASSWD-USERID
+               MOVE    PASSWD-REC      TO  MCPDATA-REC
+               MOVE    "tbl_passwd"    TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *----(04.08.02)--ADD-END-----
            END-IF
       *
       *    新規追加
@@ -4313,8 +4328,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
       *
                IF      MCP-RC              NOT =   ZERO 
-                    MOVE    "1002"              TO  SPA-ERRCD
-                   DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
+                   MOVE    "1001"              TO  SPA-ERRCD
+                   DISPLAY "W06 DB INS ERR USERID-KEY =>" SYSUSER-USERID
                END-IF
            END-IF
           .
