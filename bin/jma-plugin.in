@@ -1,4 +1,7 @@
 #!%RUBY%
+#coding:utf-8
+
+Encoding.default_external=Encoding::UTF_8
 
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__),"..","lib","ruby")))
 
