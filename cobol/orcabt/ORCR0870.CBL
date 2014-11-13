@@ -124,6 +124,7 @@
       *  04.07.08    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
       *                                     コメント自動記載修正
       *  04.07.09    NACL-門脇    14/07/08  明細が５０を超える場合の対応
+      *  04.07.10    NACL-門脇    14/11/12  画像診断フイルム分画数対応修正
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
@@ -9069,10 +9070,14 @@ grpsys       PERFORM 900-DBSELECT-SEC
            PERFORM   VARYING   IDX20   FROM    1   BY  1
                       UNTIL    IDX20     >     3
               IF  WRK-CHAR-X(IDX20:1)  IS   NUMERIC
-                 MOVE   WRK-CHAR-X(IDX20:1)
+                 IF   WRK-CHAR-X(IDX20:1) = "0"
+                   MOVE   "０"      TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                 ELSE
+                   MOVE   WRK-CHAR-X(IDX20:1)
                                     TO  IDX21
-                 MOVE   TBL-DAY(IDX21)(3:2)
+                   MOVE   TBL-DAY(IDX21)(3:2)
                                     TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                 END-IF
                  ADD    2           TO  WRK-CHAR-IDX
                                         WRK-CHAR-N-CNT
               END-IF
