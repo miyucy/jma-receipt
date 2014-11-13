@@ -290,8 +290,7 @@ module JMA::Plugin
         lock_file.flock(File::LOCK_EX)
         yield
       rescue Exception => ex
-        @log.error("error:#{ex}")
-        #puts ex.backtrace
+        @log.error(ex)
         raise ex
       ensure
         lock_file.close
