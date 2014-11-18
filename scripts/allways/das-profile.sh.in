@@ -45,7 +45,7 @@ fi
 
 # delete login check log
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-          -parameter "das-profile,D,,,,,$HOSPNUM" 2>&1 | tee -a $LOGFILE
+          -parameter "das-profile,D,,,,$HOSPNUM," 2>&1 | tee -a $LOGFILE
 
 export CLIENT_CONFIG_FILE
 export CSV_PROFILE
@@ -70,14 +70,14 @@ if [ -e $FILE_PROFILE ]; then
               -parameter "R,${HOSPNUM},${HOSPID},000,,," \
               2>&1 | tee -a $LOGFILE
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-              -parameter "das-profile,2,0,,000,Upload success,$HOSPNUM" \
+              -parameter "das-profile,2,0,,000,$HOSPNUM,Upload success" \
               2>&1 | tee -a $LOGFILE
   else
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
               -parameter "R,${HOSPNUM},${HOSPID},${RESULT:0:3},,," \
               2>&1 | tee -a $LOGFILE
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-              -parameter "das-profile,2,1,,${RESULT:0:3},${RESULT:4:200},$HOSPNUM" \
+              -parameter "das-profile,2,1,,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}" \
               2>&1 | tee -a $LOGFILE
     echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
   fi

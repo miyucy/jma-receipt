@@ -10,15 +10,34 @@ fi
 HOSPNUM=$1
 HOSPID=$2
 
-export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.d/das-upload${HOSPNUM}.conf"
-if [ ! -f $CLIENT_CONFIG_FILE ]; then
-    exit
-fi
-export DAS_CHECK_HOSPID=$HOSPID
-
 FILE_PREFIX="collect-"
-UPLOAD_COMMAND=`dirname $0`/das-upload.rb
-LOGFILE=$LOGDIR/"$HOSPNUM"datacollect1.log
+if [ -e ${PATCHSCRIPTSDIR}/monthly/das-upload.rb ]; then 
+  UPLOAD_COMMAND=$PATCHSCRIPTSDIR/monthly/das-upload.rb
+else
+  UPLOAD_COMMAND=$SCRIPTSDIR/monthly/das-upload.rb
+fi
+LOGFILE=${LOGDIR}/${HOSPNUM}datacollect1.log
+
+if [ -e ${PATCHLIBDIR}/etc/das-upload.conf ]; then 
+  DASCONF_HEAD="${PATCHLIBDIR}/etc/das-upload.conf"
+else
+  DASCONF_HEAD="${SYSCONFDIR}/das-upload.conf"
+fi
+
+DASCONFIG=${MCP_TEMPDIR}/das-upload$$.conf
+CLIENT_CONFIG_FILE="${DASCONFIG}"
+DAS_CHECK_HOSPID=$HOSPID
+
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
+          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD}," \
+          2>&1 | tee $LOGFILE
+
+if [ ! -f ${CLIENT_CONFIG_FILE} ]; then
+  exit
+fi
+
+export CLIENT_CONFIG_FILE
+export DAS_CHECK_HOSPID
 
 for file in `ls "$DASDIR"/"$HOSPNUM"/"$FILE_PREFIX"*tar.gz 2>/dev/null`
 do
@@ -27,16 +46,22 @@ do
   RESULT=`$UPLOAD_COMMAND -t $file 2>&1|head -1`
   if [ "UP $file" = "$RESULT" ]; then
      echo "000" $RESULT
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","0",$OBJECTYYM,"000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
+     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
+               -parameter "das-upload,2,0,$OBJECTYYM,000,$HOSPNUM,Upload success" \
+               2>&1 | tee -a $LOGFILE
      rm $file
   else
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","1",$OBJECTYYM,"${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
-     echo "${RESULT:0:3}","${RESULT:4}"
+     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
+               -parameter "das-upload,2,1,$OBJECTYYM,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}" \
+               2>&1 | tee -a $LOGFILE
+     echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
   fi
   sleep 1
 done
 
 if [ x$UPTARGEFILE != "x1" ]; then
   RESULT="900 No file"
-  echo "${RESULT:0:3}","${RESULT:4}"
+  echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
 fi
+
+exit

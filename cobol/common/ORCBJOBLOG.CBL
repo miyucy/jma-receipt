@@ -101,8 +101,8 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-RESULT
                                                WRK-PARA-OBJECTYYM
                                                WRK-PARA-ERRCD
-                                               WRK-PARA-MSG
                                                WRK-PARA-HOSPNUM
+                                               WRK-PARA-MSG
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            PERFORM 500-SYSYMD-HENSYU-SEC

@@ -33,11 +33,15 @@ do
     if [ "UP $file" = "$RESULT" ]; then
        echo "000" $RESULT | tee -a $LOGFILE
        if [ ${KIDONO} -eq 1 ]; then 
-         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-infec2","2","0",$OBJECTDATE,"000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
+         ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
+                   -parameter "das-infec2,2,0,$OBJECTDATE,000,$HOSPNUM,Upload success" \
+                   2>&1 | tee -a $LOGFILE
        fi
        rm $file
     else
-       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-infec2","2","1",$OBJECTDATE,"${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
+       ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
+                 -parameter "das-infec2,2,1,$OBJECTDATE,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}" \
+                 2>&1 | tee -a $LOGFILE
        echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
     fi
   fi
