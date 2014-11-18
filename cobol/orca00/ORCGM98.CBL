@@ -34,26 +34,12 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    データ
-           SELECT  USER-FILE       ASSIGN  FILE-NAME
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DATA.
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
-      *
-      *    データ
-       FD  USER-FILE.
-       01  USER-REC                     PIC X(600).
       *
        WORKING-STORAGE             SECTION.
       *
       * データ領域
-       01  FILE-NAME.
-           03  FILLER              PIC X(40)   VALUE
-           "/etc/jma-receipt/das-upload.d/das-upload".
-           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
-           03  FILLER              PIC X(05)   VALUE   ".conf".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -95,14 +81,6 @@
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *   
            COPY    "CMJOBNAME.INC".
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-RECEERR         PIC X(02).
-           03  STS-DATA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -176,11 +154,6 @@
        01  WRK-ROW.
            05  WRK-LIST-ROW        PIC S9(9)   BINARY.
       *                             
-       01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(16) VALUE
-                                             "scripts/monthly/".
-           05  WRK-SHELL-SHELL    PIC X(20).         
-      *
            COPY    "CPSHELLTBL.INC".
       *     
        01  WRK-CONS-AREA.
@@ -796,18 +769,14 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "das-upload.sh"     TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    "das-upload.sh"     TO  SHELLTBL-NAME
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG2
       *     
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"
-                                       TO  MCP-PATHNAME
+           MOVE    "monthly"           TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -1056,8 +1025,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE                TO  SPA-MIDCD
            MOVE    SPACE                TO  MUID
       *
-           PERFORM 4902-MUID-SET-SEC
-      *
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-M01             TO  SPA-FREE
@@ -1086,67 +1053,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    1                    TO  FLG-END
            .
        4901-MUID-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    設定内容セット処理
-      *****************************************************************
-       4902-MUID-SET-SEC               SECTION.
-      *
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
-           MOVE    SPA-HOSPID          TO  SPA-MUID-HOSPID
-           MOVE    SPA-MUID-HOSPID     TO  MUID-HOSPID
-           MOVE    SPA-SYSYMDWH        TO  SPA-MUID-SINSEIYMD
-           MOVE    SPA-MUID-SINSEIYMD  TO  MUID-SINSEIYMD
-      *
-           OPEN    INPUT               USER-FILE
-           IF      STS-DATA        NOT =   ZERO
-               GO      TO      4902-MUID-SET-EXT
-           END-IF
-           PERFORM 900-IN-USER-SEC
-           PERFORM UNTIL    FLG-USER   =   1
-             IF    ( USER-REC(2:4)     =   "User" )
-             AND   ( USER-REC(11:1)    =   '"' )
-                 MOVE    SPACE               TO  WRK-STR-G
-                 MOVE    ZERO                TO  IXZ
-                 PERFORM VARYING  IXY  FROM  12  BY  1
-                         UNTIL    IXY  >     30
-                   IF    USER-REC(IXY:1)     =   '"'
-                       MOVE    30            TO  IXY
-                       MOVE    WRK-STR-G(1:IXZ)
-                                             TO  SPA-MUID-USER
-                       MOVE    SPA-MUID-USER TO  MUID-USER
-                   ELSE
-                       COMPUTE IXZ           =   IXZ  +  1
-                       MOVE    USER-REC(IXY:1)
-                                             TO  WRK-STR(IXZ)
-                   END-IF
-                 END-PERFORM
-             END-IF
-             IF    ( USER-REC(2:8)     =   "Password" )
-             AND   ( USER-REC(15:1)    =   '"' )
-                 MOVE    SPACE               TO  WRK-STR-G
-                 MOVE    ZERO                TO  IXZ
-                 PERFORM VARYING  IXY  FROM  16  BY  1
-                         UNTIL    IXY  >     30
-                   IF    USER-REC(IXY:1)     =   '"'
-                       MOVE    30            TO  IXY
-                       MOVE    WRK-STR-G(1:IXZ)
-                                             TO  SPA-MUID-PASSWORD
-                       MOVE    SPA-MUID-PASSWORD
-                                             TO  MUID-PASSWORD
-                   ELSE
-                       COMPUTE IXZ           =   IXZ  +  1
-                       MOVE    USER-REC(IXY:1)
-                                             TO  WRK-STR(IXZ)
-                   END-IF
-                 END-PERFORM
-             END-IF
-             PERFORM 900-IN-USER-SEC
-           END-PERFORM
-           CLOSE                       USER-FILE
-           .
-       4902-MUID-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1455,21 +1361,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            .
        900-SYSKANRI-INV-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    データファイル読込み処理
-      *****************************************************************
-       900-IN-USER-SEC                 SECTION.
-      *
-          READ    USER-FILE
-              AT  END
-                  MOVE    1               TO  FLG-USER
-              NOT AT  END
-                  MOVE    ZERO            TO  FLG-USER
-          END-READ
-          .
-       900-IN-USER-EXT.
-          EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理

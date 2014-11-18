@@ -190,4 +190,5 @@ db	{
 	tbl_nyuincdchg;
 	tbl_spa_tmp;
 	tbl_med_image;
+	tbl_das_conf;
 };

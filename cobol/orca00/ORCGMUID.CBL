@@ -34,26 +34,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    データ
-           SELECT  USER-FILE       ASSIGN  FILE-NAME
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DATA.
-      *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    データ
-       FD  USER-FILE.
-       01  USER-REC                PIC X(600).
-      *
        WORKING-STORAGE             SECTION.
-      *
-      * データ領域
-       01  FILE-NAME.
-           03  FILLER              PIC X(40)   VALUE
-           "/etc/jma-receipt/das-upload.d/das-upload".
-           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
-           03  FILLER              PIC X(05)   VALUE   ".conf".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -63,14 +47,11 @@
            COPY    "M01SCR-SPA".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-DATA            PIC X(02).
-      *
-      *    フラグ領域
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
            03  FLG-END             PIC 9(01).
            03  FLG-USER            PIC 9(01).
+           03  FLG-DASCONFIG       PIC 9(01).
            03  FLG-JOBLOG          PIC 9(01).
            03  FLG-ADRS            PIC 9(01).
       *
@@ -82,175 +63,6 @@
        01  WRK-AREA.
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-BEDSU           PIC 9(04).
-           03  WRK-STR-EDIT        PIC X(50).
-      *
-       01  WRK-DATA-REC1.
-           03  FILLER              PIC X(11)   VALUE
-               'config = {'.
-       01  WRK-DATA-REC2.
-           03  FILLER             PIC X(45)   VALUE
-               '"Host" => "https://orca-das.orca.med.or.jp",'.
-       01  WRK-DATA-REC3.
-           03  FILLER              PIC X(33)   VALUE
-               '"Path" => "/orca_das/upload.cgi",'.
-       01  WRK-DATA-REC32.
-           03  FILLER              PIC X(40)   VALUE
-               '"PathProf" => "/das_profile/upload.cgi",'.
-       01  WRK-DATA-REC33.
-           03  FILLER              PIC X(37)   VALUE
-               '"PathInf" => "/infection/upload.cgi",'.
-       01  WRK-DATA-REC4.
-           03  FILLER              PIC X(23)   VALUE
-               '"CertificateCAFile" => '.
-           03  FILLER             PIC X(39)   VALUE
-               '"/etc/ssl/certs/orca-project-ca-2.crt",'.
-       01  WRK-DATA-REC5.
-           03  FILLER              PIC X(17)   VALUE
-               '"HospitalID" => "'.
-       01  WRK-DATA-REC52.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC6.
-           03  FILLER              PIC X(21)   VALUE
-               '"ApplicationDay" => "'.
-       01  WRK-DATA-REC62.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC7.
-           03  FILLER              PIC X(20)   VALUE
-               '"ClerkNameKana" => "'.
-       01  WRK-DATA-REC72.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC8.
-           03  FILLER              PIC X(16)   VALUE
-               '"ClerkName" => "'.
-       01  WRK-DATA-REC82.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC9.
-           03  FILLER              PIC X(17)   VALUE
-               '"ClerkEmail" => "'.
-       01  WRK-DATA-REC92.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC10.
-           03  FILLER              PIC X(20)   VALUE
-               '"HospitalClass" => "'.
-       01  WRK-DATA-REC102.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC11.
-           03  FILLER              PIC X(22)   VALUE
-               '"GeneralHospital" => "'.
-       01  WRK-DATA-REC112.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC12.
-           03  FILLER              PIC X(21)   VALUE
-               '"SickbedGeneral" => "'.
-       01  WRK-DATA-REC122.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC13.
-           03  FILLER              PIC X(26)   VALUE
-               '"SickbedMedTreatment" => "'.
-       01  WRK-DATA-REC132.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC14.
-           03  FILLER              PIC X(20)   VALUE
-               '"SickbedMental" => "'.
-       01  WRK-DATA-REC142.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC15.
-           03  FILLER              PIC X(26)   VALUE
-               '"SickbedTuberculosis" => "'.
-       01  WRK-DATA-REC152.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC16.
-           03  FILLER              PIC X(19)   VALUE
-               '"SickbedTotal" => "'.
-       01  WRK-DATA-REC162.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC17.
-           03  FILLER              PIC X(20)   VALUE
-               '"MainlyInstall" => "'.
-       01  WRK-DATA-REC172.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC18.
-           03  FILLER              PIC X(26)   VALUE
-               '"MainlyMedDepartment" => "'.
-       01  WRK-DATA-REC182.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC19.
-           03  FILLER              PIC X(19)   VALUE
-               '"CommunityMed" => "'.
-       01  WRK-DATA-REC192.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC20.
-           03  FILLER              PIC X(10)   VALUE
-               '"DPC" => "'.
-       01  WRK-DATA-REC202.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC21.
-           03  FILLER              PIC X(18)   VALUE
-               '"HomeMedCare" => "'.
-       01  WRK-DATA-REC212.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC22.
-           03  FILLER              PIC X(18)   VALUE
-               '"OpeningTime" => "'.
-       01  WRK-DATA-REC222.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC23.
-           03  FILLER              PIC X(15)   VALUE
-               '"Postcode" => "'.
-       01  WRK-DATA-REC232.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC24.
-           03  FILLER              PIC X(11)   VALUE
-               '"User" => "'.
-       01  WRK-DATA-REC242.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC25.
-           03  FILLER              PIC X(15)   VALUE
-               '"Password" => "'.
-       01  WRK-DATA-REC252.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC26.
-           03  FILLER              PIC X(16)   VALUE
-               '"Agreement" => "'.
-       01  WRK-DATA-REC262.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC27.
-           03  FILLER              PIC X(17)   VALUE
-               '"SendResult" => "'.
-       01  WRK-DATA-REC272.
-           03  FILLER              PIC X(02)   VALUE
-               '",'.
-       01  WRK-DATA-REC28.
-           03  FILLER              PIC X(15)   VALUE
-               '"SendDate" => "'.
-       01  WRK-DATA-REC282.
-           03  FILLER              PIC X(01)   VALUE
-               '"'.
-       01  WRK-DATA-REC29.
-           03  FILLER              PIC X(11)   VALUE
-               "}".
       *
        01  WRK-CONS-AREA.
       *    ジョブ管理ＤＢのキー値  
@@ -259,8 +71,7 @@
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
       *
        01  SHELL-AREA.
-           05  SHELL-NAME          PIC X(32) VALUE
-                                  "scripts/allways/das-profile.sh".
+           05  SHELL-NAME          PIC X(14)   VALUE   "das-profile.sh".
       *
       *    レセ電診療科コードテーブル
            COPY    "CMRECEDENSRYKACD.INC".
@@ -268,6 +79,10 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    定点設定
+       01  DASCF-REC.
+           COPY    "CPDASCONF.INC".
       *
       *    ジョブログ
        01  JOBLOG-REC.
@@ -279,7 +94,6 @@
       *
       *    シェル起動
            COPY    "CPSHELLTBL.INC".
-           COPY    "CPMKPASS.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -321,7 +135,6 @@
            COPY    "MINF.INC".
            COPY    "MPRT.INC".
       *
-      *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
@@ -336,7 +149,6 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
-           INITIALIZE                  STS-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-M00KYOUTU
@@ -428,13 +240,10 @@
            INITIALIZE                  SPA-MUID-AREA
            MOVE    1               TO  SPA-MUID-CUR
       *
-      *    申請データがあればセットする
-           MOVE    SPA-HOSPNUM     TO  FILE-HOSPNUM
-           OPEN    INPUT               USER-FILE
-           IF      STS-DATA            =   ZERO
-               PERFORM 3120-TXT-DATA-IN-SEC
+           PERFORM 900-DASCONFIG-READ-SEC
+           IF      FLG-DASCONFIG       =   ZERO
+               PERFORM 3120-CONFIG-SPA-SET-SEC
            END-IF
-           CLOSE                       USER-FILE
       *
            MOVE    SPA-HOSPID      TO  SPA-MUID-HOSPID
            MOVE    SPA-SYSYMDWH    TO  SPA-MUID-SINSEIYMD
@@ -494,131 +303,31 @@
            EXIT.
       *
       *****************************************************************
-      *    申請データセット処理
+      *    申請データＳＰＡセット処理
       *****************************************************************
-       3120-TXT-DATA-IN-SEC        SECTION.
+       3120-CONFIG-SPA-SET-SEC         SECTION.
       *
-           MOVE    ZERO            TO  FLG-USER
-           MOVE    SPACE           TO  USER-REC
-           PERFORM UNTIL   FLG-USER    =   1
-               READ    USER-FILE       NEXT
-                   AT  END
-                       MOVE    1           TO  FLG-USER
-                   NOT AT  END
-                       IF      USER-REC(1:17)  =   WRK-DATA-REC5
-                           UNSTRING  USER-REC(18:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-HOSPID
-                           END-UNSTRING
-                           IF      SPA-HOSPID  NOT =   SPA-MUID-HOSPID
-                               MOVE    1       TO  FLG-USER
-                           END-IF
-                       END-IF
-                       IF      USER-REC(1:20)  =   WRK-DATA-REC7
-                           UNSTRING  USER-REC(21:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-KANANAME
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:16)  =   WRK-DATA-REC8
-                           UNSTRING  USER-REC(17:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-NAME
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:17)  =   WRK-DATA-REC9
-                           UNSTRING  USER-REC(18:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-EMAIL
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:20)  =   WRK-DATA-REC10
-                           UNSTRING  USER-REC(21:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-HOSPSBT
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:22)  =   WRK-DATA-REC11
-                           UNSTRING  USER-REC(23:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-HOSPSBT1
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:21)  =   WRK-DATA-REC12
-                           UNSTRING  USER-REC(22:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-BEDSUIPPAN
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:26)  =   WRK-DATA-REC13
-                           UNSTRING  USER-REC(27:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-BEDSURYOYO
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:20)  =   WRK-DATA-REC14
-                           UNSTRING  USER-REC(21:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-BEDSUSEISIN
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:26)  =   WRK-DATA-REC15
-                           UNSTRING  USER-REC(27:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-BEDSUKEKKAKU
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:19)  =   WRK-DATA-REC16
-                           UNSTRING  USER-REC(20:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-BEDSU
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:20)  =   WRK-DATA-REC17
-                           UNSTRING  USER-REC(21:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-SETTI
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:26)  =   WRK-DATA-REC18
-                           UNSTRING  USER-REC(27:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-SYUKA
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:19)  =   WRK-DATA-REC19
-                           UNSTRING  USER-REC(20:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-CIIKI
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:10)  =   WRK-DATA-REC20
-                           UNSTRING  USER-REC(11:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-DPCKBN
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:18)  =   WRK-DATA-REC21
-                           UNSTRING  USER-REC(19:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-ZAITAKU
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:18)  =   WRK-DATA-REC22
-                           UNSTRING  USER-REC(19:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-KAIINYM
-                           END-UNSTRING
-                           PERFORM 4102-KAIINYM-CHK-SEC
-                       END-IF
-                       IF      USER-REC(1:15)  =   WRK-DATA-REC23
-                           UNSTRING  USER-REC(16:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-POST
-                           END-UNSTRING
-                           PERFORM 4102-POST-CHK-SEC
-                       END-IF
-                       IF      USER-REC(1:11)  =   WRK-DATA-REC24
-                           UNSTRING  USER-REC(12:) DELIMITED  BY  '",'
-                                             INTO  SPA-MUID-USER
-                           END-UNSTRING
-                       END-IF
-                       IF      USER-REC(1:15)  =   WRK-DATA-REC25
-                           UNSTRING  USER-REC(16:) DELIMITED  BY  '",'
-                                             INTO  WRK-STR-EDIT
-                           END-UNSTRING
-                           UNSTRING  WRK-STR-EDIT
-                                             DELIMITED  BY  '"'
-                                             INTO  SPA-MUID-PASSWORD
-                           END-UNSTRING
-                       END-IF
-               END-READ
-           END-PERFORM
-      *
+           MOVE    DASCF-KANANAME      TO  SPA-MUID-KANANAME
+           MOVE    DASCF-NAME          TO  SPA-MUID-NAME
+           MOVE    DASCF-EMAIL         TO  SPA-MUID-EMAIL
+           MOVE    DASCF-HOSPSBT1      TO  SPA-MUID-HOSPSBT
+           MOVE    DASCF-HOSPSBT2      TO  SPA-MUID-HOSPSBT1
+           MOVE    DASCF-BEDSUIPPAN    TO  SPA-MUID-BEDSUIPPAN
+           MOVE    DASCF-BEDSURYOYO    TO  SPA-MUID-BEDSURYOYO
+           MOVE    DASCF-BEDSUSEISIN   TO  SPA-MUID-BEDSUSEISIN
+           MOVE    DASCF-BEDSUKEKKAKU  TO  SPA-MUID-BEDSUKEKKAKU
+           MOVE    DASCF-BEDSU         TO  SPA-MUID-BEDSU
+           MOVE    DASCF-SETTI         TO  SPA-MUID-SETTI
+           MOVE    DASCF-SYUKA         TO  SPA-MUID-SYUKA
+           MOVE    DASCF-CHIIKI        TO  SPA-MUID-CIIKI
+           MOVE    DASCF-DPCKBN        TO  SPA-MUID-DPCKBN
+           MOVE    DASCF-ZAITAKU       TO  SPA-MUID-ZAITAKU
+           MOVE    DASCF-KAIINYM       TO  SPA-MUID-KAIINYM
+           MOVE    DASCF-POST          TO  SPA-MUID-POST
+           MOVE    DASCF-USERID        TO  SPA-MUID-USER
+           MOVE    DASCF-PASSWORD      TO  SPA-MUID-PASSWORD
            .
-       3120-TXT-DATA-IN-EXT.
+       3120-CONFIG-SPA-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -626,17 +335,10 @@
       *****************************************************************
        320-MID1-SET-SEC            SECTION.
       *
-           MOVE    SPACE           TO  SPA-MIDCD
+           MOVE    SPACE               TO  SPA-MIDCD
            IF      SPA-MID1-FLG        =   "OK"
       *        申請データを出力する
-               MOVE    SPA-HOSPNUM     TO  FILE-HOSPNUM
-               OPEN    OUTPUT              USER-FILE
-               IF      STS-DATA        NOT =   ZERO
-                   MOVE    "9000"          TO  SPA-ERRCD
-               ELSE
-                   PERFORM 2120-TXT-DATA-OUT-SEC
-               END-IF
-               CLOSE                       USER-FILE
+               PERFORM 2120-DASCONFIG-WRITE-SEC
       *        シェルを起動する
                IF      SPA-ERRCD           =   SPACE
                    PERFORM 212-SHELL-OUT-SEC
@@ -1438,278 +1140,60 @@
       *****************************************************************
       *    データ出力処理
       *****************************************************************
-       2120-TXT-DATA-OUT-SEC       SECTION.
+       2120-DASCONFIG-WRITE-SEC        SECTION.
       *
-           MOVE    SPACE           TO  USER-REC
-           MOVE    WRK-DATA-REC1   TO  USER-REC
-           PERFORM 21201-DATA-WRITE-SEC
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-DATA-REC2   TO  USER-REC
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-DATA-REC3   TO  USER-REC
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-DATA-REC32  TO  USER-REC
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-DATA-REC33  TO  USER-REC
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-DATA-REC4   TO  USER-REC
-               PERFORM 21201-DATA-WRITE-SEC
+           IF      FLG-DASCONFIG       =   ZERO
+               INITIALIZE                      DASCF-REC
+               MOVE    SPA-HOSPNUM         TO  DASCF-HOSPNUM
+               MOVE    DASCF-REC           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_das_conf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC5           DELIMITED  BY  SIZE
-                       SPA-MUID-HOSPID         DELIMITED  BY  SPACE
-                       WRK-DATA-REC52          DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
+           INITIALIZE                      DASCF-REC
+           MOVE    SPA-HOSPNUM         TO  DASCF-HOSPNUM
+           MOVE    SPA-MUID-NAI-SINSEIYMD
+                                       TO  DASCF-SINSEIYMD
+           MOVE    SPA-MUID-KANANAME   TO  DASCF-KANANAME
+           MOVE    SPA-MUID-NAME       TO  DASCF-NAME
+           MOVE    SPA-MUID-EMAIL      TO  DASCF-EMAIL
+           MOVE    SPA-MUID-HOSPSBT    TO  DASCF-HOSPSBT1
+           MOVE    SPA-MUID-HOSPSBT1   TO  DASCF-HOSPSBT2
+           MOVE    SPA-MUID-BEDSUIPPAN TO  DASCF-BEDSUIPPAN
+           MOVE    SPA-MUID-BEDSURYOYO TO  DASCF-BEDSURYOYO
+           MOVE    SPA-MUID-BEDSUSEISIN
+                                       TO  DASCF-BEDSUSEISIN
+           MOVE    SPA-MUID-BEDSUKEKKAKU
+                                       TO  DASCF-BEDSUKEKKAKU
+           MOVE    SPA-MUID-BEDSU      TO  DASCF-BEDSU
+           MOVE    SPA-MUID-SETTI      TO  DASCF-SETTI
+           MOVE    SPA-MUID-SYUKA      TO  DASCF-SYUKA
+           MOVE    SPA-MUID-CIIKI      TO  DASCF-CHIIKI
+           MOVE    SPA-MUID-DPCKBN     TO  DASCF-DPCKBN
+           MOVE    SPA-MUID-ZAITAKU    TO  DASCF-ZAITAKU
+           MOVE    SPA-MUID-NAI-KAIINYM
+                                       TO  DASCF-KAIINYM
+           MOVE    SPA-MUID-POST       TO  DASCF-POST
+           MOVE    SPA-MUID-USER       TO  DASCF-USERID
+           MOVE    SPA-MUID-PASSWORD   TO  DASCF-PASSWORD
+           MOVE    "1"                 TO  DASCF-AGREEMENT
+           MOVE    SPA-SYSYMD          TO  DASCF-CREYMD
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC6           DELIMITED  BY  SIZE
-                       SPA-MUID-NAI-SINSEIYMD  DELIMITED  BY  SPACE
-                       WRK-DATA-REC62          DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC7           DELIMITED  BY  SIZE
-                       SPA-MUID-KANANAME       DELIMITED  BY  SPACE
-                       WRK-DATA-REC72          DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC8           DELIMITED  BY  SIZE
-                       SPA-MUID-NAME           DELIMITED  BY  SPACE
-                       WRK-DATA-REC82          DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC9           DELIMITED  BY  SIZE
-                       SPA-MUID-EMAIL          DELIMITED  BY  SPACE
-                       WRK-DATA-REC92          DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC10          DELIMITED  BY  SIZE
-                       SPA-MUID-HOSPSBT        DELIMITED  BY  SPACE
-                       WRK-DATA-REC102         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC11          DELIMITED  BY  SIZE
-                       SPA-MUID-HOSPSBT1       DELIMITED  BY  SPACE
-                       WRK-DATA-REC112         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC12          DELIMITED  BY  SIZE
-                       SPA-MUID-BEDSUIPPAN     DELIMITED  BY  SPACE
-                       WRK-DATA-REC122         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC13          DELIMITED  BY  SIZE
-                       SPA-MUID-BEDSURYOYO     DELIMITED  BY  SPACE
-                       WRK-DATA-REC132         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC14          DELIMITED  BY  SIZE
-                       SPA-MUID-BEDSUSEISIN    DELIMITED  BY  SPACE
-                       WRK-DATA-REC142         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC15          DELIMITED  BY  SIZE
-                       SPA-MUID-BEDSUKEKKAKU   DELIMITED  BY  SPACE
-                       WRK-DATA-REC152         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC16          DELIMITED  BY  SIZE
-                       SPA-MUID-BEDSU          DELIMITED  BY  SPACE
-                       WRK-DATA-REC162         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC17          DELIMITED  BY  SIZE
-                       SPA-MUID-SETTI          DELIMITED  BY  SPACE
-                       WRK-DATA-REC172         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC18          DELIMITED  BY  SIZE
-                       SPA-MUID-SYUKA          DELIMITED  BY  SPACE
-                       WRK-DATA-REC182         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC19          DELIMITED  BY  SIZE
-                       SPA-MUID-CIIKI          DELIMITED  BY  SPACE
-                       WRK-DATA-REC192         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC20          DELIMITED  BY  SIZE
-                       SPA-MUID-DPCKBN         DELIMITED  BY  SPACE
-                       WRK-DATA-REC202         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC21          DELIMITED  BY  SIZE
-                       SPA-MUID-ZAITAKU        DELIMITED  BY  SPACE
-                       WRK-DATA-REC212         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC22          DELIMITED  BY  SIZE
-                       SPA-MUID-NAI-KAIINYM    DELIMITED  BY  SPACE
-                       WRK-DATA-REC222         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC23          DELIMITED  BY  SIZE
-                       SPA-MUID-POST           DELIMITED  BY  SPACE
-                       WRK-DATA-REC232         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC24          DELIMITED  BY  SIZE
-                       SPA-MUID-USER           DELIMITED  BY  SPACE
-                       WRK-DATA-REC242         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC25          DELIMITED  BY  SIZE
-                       SPA-MUID-PASSWORD       DELIMITED  BY  SPACE
-                       WRK-DATA-REC252         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC26          DELIMITED  BY  SIZE
-                       "1"                     DELIMITED  BY  SPACE
-                       WRK-DATA-REC262         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-      *ここから下の項目はスクリプトでセットするらしい
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC27          DELIMITED  BY  SIZE
-                       WRK-DATA-REC272         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    SPACE               TO  USER-REC
-               STRING  WRK-DATA-REC28          DELIMITED  BY  SIZE
-                       WRK-DATA-REC282         DELIMITED  BY  SIZE
-                                         INTO  USER-REC
-               END-STRING
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-DATA-REC29      TO  USER-REC
-               PERFORM 21201-DATA-WRITE-SEC
-           END-IF
-      *
+           MOVE    DASCF-REC           TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_das_conf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
-       2120-TXT-DATA-OUT-EXT.
+       2120-DASCONFIG-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1719,25 +1203,14 @@
       *
       *    シェル起動処理
            MOVE    SPACE           TO  SHELLTBL
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    SHELL-NAME      TO  MKPASS-IN-01
-      *     MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
-      *     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
-      *     MOVE    WRK-CONS-JOB-JOBID
-      *                             TO  SHELLTBL-ARG3
-      *     MOVE    WRK-CONS-JOB-SHELLID
-      *                             TO  SHELLTBL-ARG4
-      *     MOVE    SPA-HOSPID      TO  SHELLTBL-ARG5
-      *     MOVE    1               TO  SHELLTBL-ARG6
+           MOVE    SHELL-NAME      TO  SHELLTBL-NAME
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
            MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
-           CALL    "ORCSMKPASS"        USING
-                                       ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1751,20 +1224,6 @@
       *
            .
        212-SHELL-OUT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    出力処理
-      *****************************************************************
-       21201-DATA-WRITE-SEC        SECTION.
-      *
-           WRITE                       USER-REC
-           IF      STS-DATA        NOT =   ZERO
-               MOVE    "9001"          TO  SPA-ERRCD
-           END-IF
-     *
-           .
-       21201-DATA-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2136,6 +1595,50 @@
       *
            .
        520-MIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    定点設定読込
+      *****************************************************************
+       900-DASCONFIG-READ-SEC          SECTION.
+      *
+           INITIALIZE                      DASCF-REC
+           MOVE    SPA-HOSPNUM         TO  DASCF-HOSPNUM
+           MOVE    DASCF-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_das_conf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "tbl_das_conf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-DASCONFIG
+                   MOVE    MCPDATA-REC         TO  DASCF-REC
+               ELSE
+                   MOVE    1                   TO  FLG-DASCONFIG
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-DASCONFIG
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_das_conf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           .
+       900-DASCONFIG-READ-EXT.
            EXIT.
       *
       *****************************************************************

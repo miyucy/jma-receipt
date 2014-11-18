@@ -65,6 +65,7 @@ db	{
 	tbl_prtctrl;
 	tbl_prtkanri;
 	tbl_prtdata;
+	tbl_das_conf;
 };
 
 /* #include "orcadb.inc" */

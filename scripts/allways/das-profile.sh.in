@@ -10,45 +10,55 @@ fi
 HOSPNUM=$1
 HOSPID=$2
 
-export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.d/das-upload${HOSPNUM}.conf"
-if [ ! -f $CLIENT_CONFIG_FILE ]; then
-    exit
+PROFILE_COMMAND=das-profile.rb
+if [ -e ${PATCHSCRIPTSDIR}/monthly/das-upload.rb ]; then 
+  UPLOAD_COMMAND=$PATCHSCRIPTSDIR/monthly/das-upload.rb
+else
+  UPLOAD_COMMAND=$SCRIPTSDIR/monthly/das-upload.rb
 fi
 
-export DAS_CHECK_HOSPID=$HOSPID
+FILE_PROFILE=${DASDIR}/${HOSPNUM}/profile.tar.gz
+CSV_PROFILE=${MCP_TEMPDIR}/profile.csv
+LOGFILE=${LOGDIR}/${HOSPNUM}das-profile.log
 
-FILE_PROFILE=$DASDIR/$HOSPNUM/profile.tar.gz
-export CSV_PROFILE=/tmp/profile.csv
-PROFILE_COMMAND=`dirname $0`/das-profile.rb
-UPLOAD_COMMAND=$SCRIPTSDIR/monthly/das-upload.rb
-LOGFILE=$LOGDIR/"$HOSPNUM"das-profile.log
+if [ -e ${PATCHLIBDIR}/etc/das-upload.conf ]; then 
+  DASCONF_HEAD="${PATCHLIBDIR}/etc/das-upload.conf"
+else
+  DASCONF_HEAD="${SYSCONFDIR}/das-upload.conf"
+fi
 
-DATE=$(date +'%Y%m%d')
+DASCONFIG=${MCP_TEMPDIR}/das-upload$$.conf
+CLIENT_CONFIG_FILE="${DASCONFIG}"
+DAS_CHECK_HOSPID=${HOSPID}
 
-confupdate (){
-  TEMP=$(mktemp)
-  cat $CLIENT_CONFIG_FILE | \
-  sed -e '/"SendResult"/c\"SendResult" => "@RESULT@",' | \
-  sed -e '/"SendDate"/c\"SendDate" => "@DATE@"' | \
-  sed -e "s/@RESULT@/$1/" | \
-  sed -e "s/@DATE@/$DATE/" > $TEMP
-  mv $TEMP $CLIENT_CONFIG_FILE
-}
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
+          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD}," \
+          2>&1 | tee $LOGFILE
 
-if ! [ -d $DASDIR/${HOSPNUM} ]; then 
-  mkdir $DASDIR/${HOSPNUM}
+if [ ! -f ${CLIENT_CONFIG_FILE} ]; then
+  exit
+fi
+
+if ! [ -d ${DASDIR}/${HOSPNUM} ]; then 
+  mkdir ${DASDIR}/${HOSPNUM}
 fi
 
 # delete login check log
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-profile","D",,,,,$HOSPNUM 2>&1 | tee $LOGFILE
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
+          -parameter "das-profile,D,,,,,$HOSPNUM" 2>&1 | tee -a $LOGFILE
+
+export CLIENT_CONFIG_FILE
+export CSV_PROFILE
 
 RESULT=`$PROFILE_COMMAND 2>&1 | tee -a $LOGFILE`
 if [ -e $CSV_PROFILE ]; then
-  tar cvzf $FILE_PROFILE -C/tmp profile.csv
+  tar cvzf $FILE_PROFILE -C${MCP_TEMPDIR} profile.csv
   rm -f $CSV_PROFILE
 else
   echo "$CSV_PROFILE not found" | tee -a $LOGFILE
 fi
+
+export DAS_CHECK_HOSPID
 
 if [ -e $FILE_PROFILE ]; then
   UPTARGEFILE=1
@@ -56,18 +66,30 @@ if [ -e $FILE_PROFILE ]; then
   echo ${RESULT} | tee -a $LOGFILE
   if [ "UP $FILE_PROFILE" = "$RESULT" ]; then
     echo "000" $RESULT
-    confupdate 000
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-profile","2","0","","000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
+              -parameter "R,${HOSPNUM},${HOSPID},000,,," \
+              2>&1 | tee -a $LOGFILE
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
+              -parameter "das-profile,2,0,,000,Upload success,$HOSPNUM" \
+              2>&1 | tee -a $LOGFILE
   else
-    confupdate ${RESULT:0:3}
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-profile","2","1","","${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
-    echo "${RESULT:0:3}","${RESULT:4}"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
+              -parameter "R,${HOSPNUM},${HOSPID},${RESULT:0:3},,," \
+              2>&1 | tee -a $LOGFILE
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
+              -parameter "das-profile,2,1,,${RESULT:0:3},${RESULT:4:200},$HOSPNUM" \
+              2>&1 | tee -a $LOGFILE
+    echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
   fi
   rm $FILE_PROFILE
 fi
 
 if [ x$UPTARGEFILE != "x1" ]; then
   RESULT="900 No file"
-  confupdate ${RESULT:0:3}
+  ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
+            -parameter "R,${HOSPNUM},${HOSPID},${RESULT:0:3},,," \
+            2>&1 | tee -a $LOGFILE
   echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
 fi
+
+exit

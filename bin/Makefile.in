@@ -19,7 +19,8 @@ shell_sources = \
 	orcvt_exec.sh.in \
 	create_dbgroup.sh.in \
 	passwd_store.sh.in \
-	medphoto_store.sh.in
+	medphoto_store.sh.in \
+	dasconf_store.sh.in
 
 ruby_sources = \
 	jma-receipt-plugin-db-convert.rb.in \

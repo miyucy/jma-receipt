@@ -11,7 +11,8 @@ ETC_files = \
 	jma-receipt.conf \
 	jma-receipt-crontab \
 	ORCADC.PARA \
-	jppinfo.list
+	jppinfo.list \
+	das-upload.conf
 
 DBGROUP_files = dbgroup.inc 
 

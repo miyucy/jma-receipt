@@ -314,8 +314,9 @@ bind    "ORCRDPC10"     "OpenCOBOL";
 bind    "ORCRDPC20"     "OpenCOBOL";
 bind    "ORCBM610"      "OpenCOBOL";
 bind    "ORCBCLPRT"      "OpenCOBOL";
-bind    "ORCBNOMIMISV"      "OpenCOBOL";
+bind    "ORCBNOMIMISV"  "OpenCOBOL";
 bind    "ORCBAUTH"      "OpenCOBOL";
+bind    "ORCBDASCONF"   "OpenCOBOL";
 
 #include "orcadb.inc"
 db "shell" {

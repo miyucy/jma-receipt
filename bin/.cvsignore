@@ -16,4 +16,5 @@ create_dbgroup.sh
 passwd_store.sh
 jma-passwd
 medphoto_store.sh
+dasconf_store.sh
 *.rb
