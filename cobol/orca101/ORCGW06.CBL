@@ -61,6 +61,7 @@
       * 04.07.00     NACL-多々納  14/02/10  入力スクロール行数対応他
       * 04.08.01     NACL-森脇    14/09/02  GINBEE対応
       * 04.08.02     NACL-森脇    14/11/13  OPID変更時対応
+      * 04.08.03     NACL-森脇    14/11/19  パスワード削除処理対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3276,6 +3277,11 @@
            MOVE    W06-PASSWORD2   TO  SPA-GMN-PASSWORD2
       *
            IF      SPA-GMN-PASSWORD1   NOT =   SPACE
+      *----(04.08.03)--ADD-START---
+      *        パスワード削除するときは再入力チェックを行わない
+               IF    ( SPA-GMN-PASSWORD1(1:2)  NOT =   "/d" )  AND
+                     ( SPA-GMN-PASSWORD1(1:2)  NOT =   "/D" )
+      *----(04.08.03)--ADD-END-----
                IF      SPA-GMN-PASSWORD2   =   SPACE
                    MOVE    "0033"          TO  SPA-ERRCD
                    MOVE    82              TO  SPA-GMN-CUR
@@ -3285,6 +3291,9 @@
                        MOVE    82              TO  SPA-GMN-CUR
                    END-IF
                END-IF
+      *----(04.08.03)--ADD-START---
+               END-IF
+      *----(04.08.03)--ADD-END-----
            ELSE
                MOVE    SPACE           TO  SPA-GMN-PASSWORD2
            END-IF
@@ -4341,6 +4350,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4905-PASSWD-UPD-SEC         SECTION.
       *
+      *----(04.08.03)--ADD-START---
+      *    パスワード削除のときは更新しない
+           IF    ( SPA-GMN-PASSWORD1(1:2)  =   "/d" )  OR
+                 ( SPA-GMN-PASSWORD1(1:2)  =   "/D" )
+      *        パスワードを削除
+               INITIALIZE                  PASSWD-REC
+               MOVE    SPA-GMN-USERID  TO  PASSWD-USERID
+               MOVE    PASSWD-REC      TO  MCPDATA-REC
+               MOVE    "tbl_passwd"    TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+               GO  TO  4905-PASSWD-UPD-EXT
+           END-IF
+      *----(04.08.03)--ADD-END-----
+      *
            MOVE    SPACE           TO  WRK-PASSWORD
       *
            INITIALIZE                  ORCSAUTHAREA
@@ -5048,6 +5076,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                      TO  WRK-WIDMSG
                WHEN    "1002"
                    MOVE    "職員情報を更新します"    TO  WRK-WIDMSG
+      *----(04.08.03)--ADD-START---
+                   IF    ( SPA-GMN-PASSWORD1(1:2)  =   "/d" )  OR
+                         ( SPA-GMN-PASSWORD1(1:2)  =   "/D" )
+                       MOVE    "職員情報を更新します（パスワード削除）"
+                                                     TO  WRK-WIDMSG
+                   END-IF
+      *----(04.08.03)--ADD-END-----
                WHEN    "1003"
                    MOVE    "職員情報を削除します"    TO  WRK-WIDMSG
                WHEN    "1004"
