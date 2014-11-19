@@ -19,11 +19,17 @@ fi
 
 DASCONFDIR=${SYSCONFDIR}/das-upload.d
 
+if ! [ -d ${DASCONFDIR} ]; then
+  echo "定点調査申請情報設定処理 ... ${DASCONFDIR} が存在しません。"
+  exit 0
+fi
+
 COB_LIBRARY_PATH="$PATCHLIBDIR":"$ORCALIBDIR":"$PANDALIB"
 export COB_LIBRARY_PATH
 
 create_pgpass
-for f in `ls ${DASCONFDIR}`; do
+for fn in `ls ${DASCONFDIR}/das-upload*.conf`; do
+  f=`basename ${fn}`
   hospnum=${f:10:2}
   # 該当医療機関のtbl_das_confのレコード有無チェック
   DASCSQL="select count(*) from tbl_das_conf where hospnum=${hospnum};"
@@ -40,6 +46,9 @@ for f in `ls ${DASCONFDIR}`; do
     # das-uploadxx.conf -> tbl_das_conf
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
               -parameter "T,${hospnum},,,${DASCONFDIR}/${f},,"
+    if [ $? -eq 0 ]; then
+      echo "定点調査申請情報設定処理 ... 医療機関識別番号[${hospnum}]を取り込みました。"
+    fi
   fi
 done
 delete_pgpass
