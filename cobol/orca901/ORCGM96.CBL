@@ -1457,7 +1457,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1               TO  JOB-JOBID
            MOVE    "PRGMNT"        TO  JOB-SHELLID
       *
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+      *    プログラム更新処理はHOSPNUM=1のみ実行
+      **** MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           MOVE    1                   TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
