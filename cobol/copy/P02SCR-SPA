@@ -296,7 +296,6 @@
                        09  SPA-GMN-KOH-TBL         OCCURS   3.
                            11  SPA-GMN-KOHNUM-G.
                                13  SPA-GMN-KOHNUM      PIC X(03).
-      ************************ 13  SPA-GMN-H1          PIC X(01).
                                13  SPA-GMN-KOHKBN      PIC X(01).
                                13  SPA-GMN-KOHNUMMEI   PIC X(16).
       *
@@ -392,7 +391,6 @@
       ******************** 11  SPA-GMN-KOHNUMLST       OCCURS 50.
                            11  SPA-GMN-KOHNUMLST       OCCURS 200.
                                13  SPA-GMN-KOHNUML     PIC X(03).
-      ************************ 13  SPA-GMM-HL1         PIC X(01).
                                13  SPA-GMN-KOHKBNL     PIC X(01).
                                13  SPA-GMN-KOHNUMMEIL  PIC X(16).
                        09  SPA-GMN-KOHMAX              PIC 9(04).
@@ -563,7 +561,7 @@
                        09  SPA-PTKOH-JYOGENKBN         PIC X(01).
       *
                        09  SPA-PTKOH-SINKIKBN          PIC X(01).
-                       09  SPA-PTKOH-KOHNUM-MEI        PIC X(10).
+                       09  SPA-PTKOH-KOHNUM-MEI        PIC X(20).
                        09  SPA-PTKOH-TEKSTYMDW         PIC X(09).
                        09  SPA-PTKOH-TEKEDYMDW         PIC X(09).
                        09  SPA-PTKOH-KAKUNINYMDW       PIC X(09).

@@ -224,6 +224,9 @@
       *ver.4.8
       *労災レセ電対応あり
                05  SPA-ROURECEKBN             PIC 9(01).
+      *ver.4.8
+      *    電子点数表チェック区分
+               05  SPA-ETENSU-CHK          PIC  9(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
@@ -655,6 +658,9 @@
       *    抗精神薬多剤投与確認
            03  SPA-PSYCHO-CHK          PIC  9(01).
            03  SPA-PSYCHO-OK           PIC  9(01).
+      *ver.4.8
+      *    一般・銘柄名記載（処方毎）
+           03  SPA-INGIKSN-KBN         PIC  9(01).
       *
       *(4.7　は予備使用）
       *    予備
