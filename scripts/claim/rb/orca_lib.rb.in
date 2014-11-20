@@ -378,7 +378,7 @@ def get_layout_seqitem(layout, rdata, item_l)
 				wbyte = Integer(wd1[1])		# 文字バイト数
 				sp = Integer(sp)
 				ins = wd1[2]		# 挿入情報
-				wd2 = rdata[sp, wbyte]	# 指定された文字の抽出
+        wd2 = rdata.byteslice(sp, wbyte)# 指定された文字の抽出
 				wd2=''		if wd2==nil		# 抽出した文字がnilなら、空白文字にする
 				# 前後の空白の削除
 				item_trim wd2
@@ -593,7 +593,7 @@ def get_record_data(line_ldata, rdata)
 			wbyte = Integer(wd1[3])	# 文字バイト数(WordBytevalue)
 			ins = String(wd1[4])	# 挿入情報
 			atr = String(wd1[5])	# 属性名
-			wd2 = rdata[sp, wbyte]	# 指定された文字の抽出
+      wd2 = rdata.byteslice(sp, wbyte)# 指定された文字の抽出
 			wd2=''		if wd2==nil
 			ins=''		if ins==nil
 			atr=''		if atr==nil
