@@ -75,7 +75,7 @@ if __FILE__ == $0
 	# 別モジュール取り込み処理
 
 
-	require 'claim2_lib'
+	require_relative 'claim2_lib'
 
 end
 

@@ -24,8 +24,7 @@
 
 
 # 共通ライブラリの取り込み
-require 'orca_lib.rb'
-
+require_relative 'orca_lib.rb'
 
 
 if __FILE__ == $0

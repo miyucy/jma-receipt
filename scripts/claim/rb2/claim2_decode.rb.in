@@ -125,7 +125,7 @@ if __FILE__ == $0
 end
 
 
-require 'claim2_lib'
+require_relative 'claim2_lib'
 require 'xmlparser'
 require 'kconv'
 require 'uconv'
