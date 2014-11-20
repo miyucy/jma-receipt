@@ -2311,6 +2311,19 @@
                PERFORM 4100-USERID-CHK-SEC
            END-IF
       *
+      *----(04.8.03)--ADD-START---
+           IF      SPA-ERRCD           =   SPACE
+      *        スーパーユーザーはパスワード削除できない
+               IF    ( SPA-GMN-PASSWORD1(1:2)  =   "/d" )  OR
+                     ( SPA-GMN-PASSWORD1(1:2)  =   "/D" )
+                   IF      SPA-NAI-SUPERVISOR  =   "T"
+                       MOVE    "0035"          TO  SPA-ERRCD
+                       MOVE    81              TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *----(04.8.03)--ADD-END-----
+      *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4112-KANANAME-CHK-SEC
            END-IF
@@ -5025,6 +5038,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0034"
                    MOVE    "再入力されたパスワードが異なります"
+                                               TO  SPA-ERRMSG
+               WHEN    "0035"
+                   MOVE    "システム管理者のパスワードは削除できません"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
