@@ -1,0 +1,32 @@
+monbatch_log {
+	id			varchar(37);
+	pgid		integer;
+	rc			integer;
+	message		varchar(512);
+	starttime	varchar(64);
+	endtime		varchar(64);
+	tenant		integer;
+	name		varchar(256);
+	comment		varchar(512);
+	extra 		varchar(512);
+	exwindow	varchar(256);
+	exwidget	varchar(256);
+	exevent		varchar(256);
+	exterm		varchar(256);
+	exuser		varchar(256);
+	exhost		varchar(256);
+	exec_record varchar(1024);
+);
+
+primary	{
+    id;
+};
+
+path	all		{
+	DBSELECT	{
+		DECLARE monbatch_log_all_csr CURSOR FOR
+		SELECT *
+		FROM monbatch
+		;
+	};
+};

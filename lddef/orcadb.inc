@@ -191,4 +191,5 @@ db	{
 	tbl_spa_tmp;
 	tbl_med_image;
 	tbl_das_conf;
+	monbatch_log;
 };
