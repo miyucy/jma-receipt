@@ -304,10 +304,12 @@
              03  SPA-PUTTYPE               PIC X(08).
       *ミドルウェア
              03  SPA-MW                    PIC 9(01).
+      *API処理フラグ
+             03  SPA-API-FLG               PIC 9(01).
       *パッチ用
              03  SPA-PATCH                 PIC X(20).
       *
-      *ここまで 1,048 bytes
+      *ここまで 1,069 bytes
       *
       *----(01.00.02) LINE UPD START ----------------------------------
       *******03  SPA-WORK                  PIC X(2460).
@@ -324,6 +326,6 @@
       *****  03  SPA-WORK                  PIC X(19027).
       ****   03  SPA-WORK                  PIC X(18964).
       *****  03  SPA-WORK                  PIC X(18961).
-             03  SPA-WORK                  PIC X(18932).
+             03  SPA-WORK                  PIC X(18931).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *
