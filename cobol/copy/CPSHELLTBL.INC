@@ -17,6 +17,15 @@
       ********************************************************************
         01  SHELLTBL.
             02  SHELLTBL-NAME   PIC X(200).
+            02  SHELLTBL-ID     PIC X(64).
+            02  SHELLTBL-COMMENT PIC X(200).
+            02  SHELLTBL-EXTRA.
+               03  SHELLTBL-JOB-KEY.
+                   05  SHELLTBL-JOBID      PIC  9(07).
+                   05  SHELLTBL-SHELLID    PIC  X(08).
+                   05  SHELLTBL-RUN-OPID   PIC  X(16).
+               03  SHELLTBL-EXTRA-VALUE    PIC  X(481).
+            02  SHELLTBL-PGID   PIC S9(09) BINARY.
             02  SHELLTBL-ARG1   PIC X(150).
             02  SHELLTBL-ARG2   PIC X(150).
             02  SHELLTBL-ARG3   PIC X(150).
