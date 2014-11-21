@@ -11066,6 +11066,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    00              TO  SPA-GMN-CUR
            END-IF
       *
+      *    ROW が優先される為、クリア
+           MOVE    ZERO                TO  K02N-PANDATABLE1-TROW
+           MOVE    ZERO                TO  K02N-PANDATABLE1-TCOLUMN
+      *
            EVALUATE    SPA-GMN-CUR
                WHEN    09
                    MOVE    "B07"           TO  MCP-WIDGET
