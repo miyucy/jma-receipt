@@ -730,7 +730,8 @@
            PERFORM 410-INPUT-CHK-SEC
       *
            IF    ( SPA-ERRCD   =   SPACE )
-               IF    ( SPA-GMN-SELNUM  =   ZERO )
+               IF    ( SPA-GMN-JOBLIST-SEL  =   ZERO )
+                OR   ( SPA-NAI-SHELLID =   SPACE )
                    MOVE    "1101"  TO  SPA-ERRCD
                    MOVE    1       TO  SPA-GMN-CUR
                END-IF
@@ -753,6 +754,9 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 42012-DELETE-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
                MOVE    SPA-NAI-SHELLID TO  WRK-DEL-SHELLID
       *
                MOVE    1               TO  FLG-JOBLIST-ROW
@@ -792,11 +796,15 @@
            PERFORM 900-MONBATCH-SEL-SEC
       *
            PERFORM UNTIL ( FLG-MONBATCH    NOT =   ZERO )
+                    OR   ( SPA-ERRCD       NOT =   SPACE )
       *
                IF    ( SHELLTBL-SHELLID    =   SPA-NAI-SHELLID )
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    LOW-VALUE       TO  MCP-PATHNAME
                    PERFORM 910-DBDELETE-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "1103"      TO  SPA-ERRCD
+                   END-IF
                END-IF
       *
                PERFORM 900-MONBATCH-FET-SEC
@@ -1006,6 +1014,7 @@
                MOVE    "選択番号を入力してください" 
                                        TO  SPA-ERRMSG
            WHEN    "1102"
+           WHEN    "1103"
                MOVE    "処理が実行中の為、削除できません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
