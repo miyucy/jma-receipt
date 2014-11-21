@@ -316,6 +316,10 @@
                    MOVE    1                   TO  FLG-PTMEMOINF
                ELSE
                    MOVE    PTMEMOINF-SYSYMD    TO  WRK-MEMO-YMD
+                   IF      PTMEMOINF-SYSYMD    <   SPA-SYSYMD
+      *                システム日付より前で終了
+                       MOVE    1               TO  FLG-PTMEMOINF
+                   END-IF
                END-IF
                IF      FLG-PTMEMOINF       =   ZERO
                    MOVE    "key3"              TO  MCP-PATHNAME
