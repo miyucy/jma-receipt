@@ -1201,7 +1201,6 @@
            MOVE    ZERO                TO  FLG-MONBATCH
       *
            INITIALIZE                      SHELLTBL
-           MOVE    1                   TO  SHELLTBL-TENANT
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    LOW-VALUE           TO  MCP-PATHNAME

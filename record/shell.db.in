@@ -5,7 +5,6 @@ shell	{
 	groupname   varchar(64);
 	extra		varchar(512);
 	pgid 		int;
-	tenant		int;
 	starttime	varchar(32);
 	arg1		varchar(150);
 	arg2		varchar(150);
