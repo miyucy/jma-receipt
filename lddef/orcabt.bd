@@ -1,7 +1,7 @@
 name	orcabt;
 
 arraysize	20;
-textsize	400;
+textsize	512;
 
 handler "RubyExec" {
         class "Exec";

@@ -16,23 +16,26 @@
       * 113-8621, Japan.
       ********************************************************************
         02  XB01.
-              03  XB01-SELNO.
-                04  XB01-VALUE             PIC 9(4).
+              03  XB01-B02-LABEL            PIC X(10).
+              03  XB01-LBLMSG01-STYLE       PIC X(20).
+              03  XB01-LBLMSG01             PIC X(40).
+              03  XB01-SELNUM               PIC 9(4).
               03  XB01-SCROLLEDWINDOW2.
-                04  XB01-LIST.
-                  05  XB01-COUNT           PIC S9(9)   BINARY.
-                  05  XB01-ROW             PIC S9(9)   BINARY.
-                  05  XB01-ROWATTR         PIC S9(9)   BINARY.
-                  05  XB01-ITEM            OCCURS  100 TIMES.
-                    07  XB01-NO            PIC X(4).
-                    07  XB01-JOBNAME       PIC X(40).
-                    07  XB01-JOBID         PIC X(4).
-                    07  XB01-SHELLID       PIC X(9).
-                    07  XB01-STARTYMD      PIC X(9).
-                    07  XB01-STARTTIME     PIC X(8).
-                    07  XB01-ENDYMD        PIC X(9).
-                    07  XB01-ENDTIME       PIC X(8).
-                    07  XB01-STEPSTARTTIME PIC X(8).
-                    07  XB01-STEPENDTIME   PIC X(8).
-                    07  XB01-ERRCD         PIC X(4).
-                  05  XB01-SELECT          PIC X   OCCURS  100 TIMES.
+                04  XB01-JOBLIST.
+                  05  XB01-JOBLIST-COUNT    PIC S9(9)   BINARY.
+                  05  XB01-JOBLIST-ROW      PIC S9(9)   BINARY.
+                  05  XB01-JOBLIST-ROWATTR  PIC S9(9)   BINARY.
+                  05  XB01-JOBLIST-ITEM     OCCURS  100 TIMES.
+                    07  XB01-TNO            PIC X(4).
+                    07  XB01-TJOBNAME       PIC X(40).
+                    07  XB01-TJOBID         PIC X(7).
+                    07  XB01-TSHELLID       PIC X(8).
+                    07  XB01-TSTYMD         PIC X(9).
+                    07  XB01-TSTHMS         PIC X(8).
+                    07  XB01-TEDYMD         PIC X(9).
+                    07  XB01-TEDHMS         PIC X(8).
+                    07  XB01-TSTEPSTHMS     PIC X(8).
+                    07  XB01-TSTEPEDHMS     PIC X(8).
+                    07  XB01-TERRCD         PIC X(4).
+                  05  XB01-JOBLIST-SELECT   PIC X   OCCURS  100 TIMES.
+              04  XB01-DURATION             PIC S9(09) BINARY.

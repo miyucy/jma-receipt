@@ -1,18 +1,25 @@
 XB01 {
   fixed3 {
-    SELNO {
+    B02 {
+      label varchar(10);
+    };
+    LBLMSG01 {
+      style varchar(20);
+      textdata varchar(40);
+    };
+    SELNUM {
       numdata number(4);
     };
     scrolledwindow2 {
-      LIST {
+      JOBLIST {
         count int;
         row int;
         rowattr int;
           item {
             column1 varchar(4);
             column2 varchar(40);
-            column3 varchar(4);
-            column4 varchar(9);
+            column3 varchar(7);
+            column4 varchar(8);
             column5 varchar(9);
             column6 varchar(8);
             column7 varchar(9);
@@ -23,6 +30,9 @@ XB01 {
           }[100];
           selectdata bool[100];
       };
+    };
+    pandatimer1 {
+      duration int;
     };
   };
 };

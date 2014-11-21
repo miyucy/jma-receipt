@@ -159,3 +159,15 @@ path	abort	{
  		;
 	};
 };
+
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_jobkanri_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jobkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			ORDER   BY SHELLID,JOBID
+		;
+	};
+};
+

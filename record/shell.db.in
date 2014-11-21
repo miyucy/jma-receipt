@@ -2,8 +2,11 @@ shell	{
 	name		varchar(200);
 	id   		varchar(64);
 	comment 	varchar(200);
+	groupname   varchar(64);
 	extra		varchar(512);
 	pgid 		int;
+	tenant		int;
+	starttime	varchar(32);
 	arg1		varchar(150);
 	arg2		varchar(150);
 	arg3		varchar(150);
