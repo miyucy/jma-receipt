@@ -18,7 +18,7 @@
   <class>GtkWindow</class>
   <name>XC99</name>
   <x>320</x>
-  <y>550</y>
+  <y>540</y>
   <width>700</width>
   <height>200</height>
   <signal>
