@@ -306,6 +306,7 @@
                    07  SPA-MAE-STYUKYMD       PIC X(08).
                    07  SPA-MAE-EDYUKYMD       PIC X(08).
                    07  SPA-NAI-KEIFLG         PIC 9(01).
+                   07  SPA-NAI-PASSWD         PIC 9(01).
       *
       *----(04.07.01)--ADD-START---
       *        変更項目領域
@@ -2167,6 +2168,12 @@
                                            TO  SPA-MAE-GRPUSERID(IDX)
            END-PERFORM
       *
+           PERFORM 900-PASSWD-READ-SEC
+           IF      FLG-PASSWD          =   ZERO
+               MOVE    1                   TO  SPA-NAI-PASSWD
+           ELSE
+               MOVE    ZERO                TO  SPA-NAI-PASSWD
+           END-IF
            .
        4101-HENKOU-SET-EXT.
            EXIT.
@@ -2316,12 +2323,14 @@
       *        スーパーユーザーはパスワード削除できない
                IF    ( SPA-GMN-PASSWORD1(1:2)  =   "/d" )  OR
                      ( SPA-GMN-PASSWORD1(1:2)  =   "/D" )
-                   IF      SPA-NAI-SUPERVISOR  =   "T"
+                   IF     (SPA-NAI-SUPERVISOR  =   "T")  OR
+                          (SPA-NAI-KANRIAUTHFLG    =   "T")
                        MOVE    "0035"          TO  SPA-ERRCD
                        MOVE    81              TO  SPA-GMN-CUR
                    END-IF
                END-IF
            END-IF
+      *
       *----(04.8.03)--ADD-END-----
       *
            IF      SPA-ERRCD           =   SPACE
@@ -2410,6 +2419,19 @@
                PERFORM 4122-GRPUSERID-CHK-SEC
            END-PERFORM
       *
+      *    基本チェックの最後にチェックする
+           IF      SPA-ERRCD           =   SPACE
+               IF    ((SPA-GMN-USERID  NOT =   SPA-MAE-USERID) AND
+                      (SPA-GMN-PASSWORD1   =   SPACE)  AND
+                      (SPA-NAI-KANRIAUTHFLG    =   "T")  AND
+                      (MCP-WIDGET      NOT =   "USERID"))    OR
+                     ((SPA-GMN-PASSWORD1   =   SPACE)  AND
+                      (SPA-NAI-KANRIAUTHFLG    =   "T")  AND
+                      (SPA-NAI-PASSWD          =   ZERO))
+                       MOVE    "0036"          TO  SPA-ERRCD
+                       MOVE    81              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
            .
        4102-KIHON-CHK-EXT.
            EXIT.
@@ -4395,42 +4417,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                 MOVE    AUTH-PASSWORD2      TO  WRK-PASSWORD
            END-IF
       *
-           MOVE    ZERO            TO  FLG-PASSWD
-      *
-           INITIALIZE                  PASSWD-REC
-           MOVE    SPA-GMN-USERID  TO  PASSWD-USERID
-           MOVE    PASSWD-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_passwd"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           IF      MCP-RC          =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "tbl_passwd"    TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-               IF      MCP-RC              =   ZERO
-                   MOVE   ZERO             TO  FLG-PASSWD
-               ELSE
-                   MOVE    1               TO  FLG-PASSWD
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PASSWD
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_passwd"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           PERFORM 900-PASSWD-READ-SEC
       *
            IF      FLG-PASSWD      =   ZERO
                INITIALIZE                  PASSWD-REC
@@ -5040,7 +5027,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "再入力されたパスワードが異なります"
                                                TO  SPA-ERRMSG
                WHEN    "0035"
-                   MOVE    "システム管理者のパスワードは削除できません"
+                   MOVE    "管理者のパスワードは削除できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE    "管理者はパスワードが必須です"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
@@ -5520,6 +5510,51 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        900-SYSUSER-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム基本読込処理
+      *****************************************************************
+       900-PASSWD-READ-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PASSWD
+      *
+           INITIALIZE                  PASSWD-REC
+           MOVE    SPA-GMN-USERID  TO  PASSWD-USERID
+           MOVE    PASSWD-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_passwd"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_passwd"    TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+               IF      MCP-RC              =   ZERO
+                   MOVE   ZERO             TO  FLG-PASSWD
+               ELSE
+                   MOVE    1               TO  FLG-PASSWD
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PASSWD
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_passwd"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           .
+       900-PASSWD-READ-EXT.
            EXIT.
       *
       *****************************************************************
