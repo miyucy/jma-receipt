@@ -43,7 +43,9 @@
       *
       *    イメージデータファイル
        FD  IMAGE-FILE.
-       01  IMAGE-REC               PIC X(500000).
+       01  IMAGE-REC.
+           03  IMAGE-REC-1         PIC X(500000).
+           03  IMAGE-REC-2         PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -64,6 +66,7 @@
       *
       *    返却値
        01  RESULT                  PIC S9(09).
+       01  FILESIZE                PIC 9(09).
       *
       *    画像ファイルフォルダ名
        01  WRK-CONS-AREA.
@@ -157,12 +160,23 @@
                    MOVE    1                   TO  ORCSMI-RETCD
                    MOVE    1                   TO  FLG-END
                ELSE
+                   MOVE    LOW-VALUE           TO  IMAGE-REC
                    READ    IMAGE-FILE
                        AT  END
                            MOVE    1               TO  FLG-END
                    END-READ
+                   IF      IMAGE-REC-2 (1:10)  NOT =   LOW-VALUE
+                       DISPLAY "ORCSMISAVE IMAGE FILE SIZE OVER"
+                       MOVE    2                   TO  ORCSMI-RETCD
+                       MOVE    1                   TO  FLG-END
+                   END-IF
                END-IF
                MOVE    1               TO  FLG-OPEN
+           END-IF
+      *
+      *    ファイルサイズチェックの判定
+           IF      ORCSMI-SRYCD        =   "misizechk"
+               MOVE    1                   TO  FLG-END
            END-IF
            .
        100-INIT-EXT.
@@ -180,7 +194,7 @@
            MOVE    SPA-HOSPNUM     TO  MEDIMG-HOSPNUM
            MOVE    ORCSMI-SRYCD    TO  MEDIMG-SRYCD
            MOVE    ORCSMI-IMAGEKBN TO  MEDIMG-IMAGEKBN
-           MOVE    IMAGE-REC       TO  MEDIMG-IMAGEDATA
+           MOVE    IMAGE-REC-1     TO  MEDIMG-IMAGEDATA
            MOVE    SPA-OPID        TO  MEDIMG-OPID
            MOVE    SPA-SYSYMD      TO  MEDIMG-UPYMD
            MOVE    MEDIMAGE-REC    TO  MCPREC

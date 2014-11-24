@@ -374,7 +374,11 @@
                        ELSE
                            COMPUTE CNT-ERR             =   CNT-ERR
                                                        +   1
-                           MOVE    1                   TO  FLG-ERR
+                           IF      ORCSMI-RETCD        =   2
+                               MOVE    4                   TO  FLG-ERR
+                           ELSE
+                               MOVE    1                   TO  FLG-ERR
+                           END-IF
                            PERFORM 800-PROOF-SEC
                        END-IF
                    ELSE
@@ -496,7 +500,7 @@
            EXIT.
       *
       *****************************************************************
-      *    システム基本マスター次読込
+      *    プルーフ出力
       *****************************************************************
        800-PROOF-SEC               SECTION.
       *
@@ -519,6 +523,14 @@
                WHEN    3
                    STRING  "image file not found," DELIMITED BY SIZE
                            YAKUJYO-PHOTO           DELIMITED BY SPACE
+                                               INTO  WRK-COMMENT
+                   END-STRING
+               WHEN    4
+                   STRING  "ORCSMISAVE ERROR " DELIMITED BY SIZE
+                           "SIZE OVER,"        DELIMITED BY SIZE
+                           ORCSMI-RETCD        DELIMITED BY SIZE
+                           ",FILE,"            DELIMITED BY SIZE
+                           ORCSMI-FILENAME     DELIMITED BY SPACE
                                                INTO  WRK-COMMENT
                    END-STRING
            END-EVALUATE

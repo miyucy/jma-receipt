@@ -476,7 +476,6 @@
        320-N22-SET-SEC             SECTION.
       *
            IF      SPA-N22-FLG     =   "OK"
-      *ito del  MOVE    SPACE           TO  SPA-N22-FLG
                MOVE    10              TO  SPA-GMN-CUR
       *        写真があればセット
                PERFORM 430-GAZOCHK-HENSYU-SEC
@@ -1222,6 +1221,21 @@
                                                MCPAREA
                                                ORCA-BLOB
                                                SPA-AREA
+      *
+                   INITIALIZE                  ORCSMIAREA
+                   MOVE    "misizechk"     TO  ORCSMI-SRYCD
+                   MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+                   MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
+                   CALL    "ORCSMISAVE"        USING
+                                               ORCSMIAREA
+                                               SPA-AREA
+                   IF      ORCSMI-RETCD    NOT =   ZERO
+                       MOVE    SPACE               TO  SPA-N21FIL-PHOTO
+                       MOVE    LOW-VALUE           TO  SPA-N21FIL-OBJECT
+                       MOVE    N21-PHOTO           TO  SPA-GMN-PHOTO
+                       MOVE    "0022"              TO  SPA-ERRCD
+                       GO  TO  430-GAZOCHK-HENSYU-EXT
+                   END-IF
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-N21FIL-PHOTO
@@ -1877,9 +1891,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *
       *    入力チェック
            PERFORM 430-TEXTCHK-SEC
-      *ito ddd start
            MOVE    SPACE               TO  SPA-N22-FLG
-      *ito add end
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  480-TOUROKU-EXT
@@ -2003,7 +2015,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    "key"           TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC
+                                       MEDIMAGE-REC
                                        SPA-AREA
            .
        482-GAZODEL-SEC-EXT.
@@ -2453,6 +2465,9 @@ grpsys     CALL    "ORCDBMAIN"         USING
                             "/0090）"                DELIMITED BY SIZE
                                            INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0022"
+                   MOVE    "画像ファイルのサイズが超過しています"
+                                           TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "登録できませんでした"
                                            TO  SPA-ERRMSG

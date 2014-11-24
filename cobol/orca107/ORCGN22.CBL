@@ -421,7 +421,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    IDX             TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9       TO  SPA-N22-TNO(IDX)
                MOVE    TEMP-YJCD       TO  SPA-N22-TYJCD(IDX)
-      *ito         MOVE    TEMP-MAKE-COMPANY   TO  SPA-N22-TMAKER(IDX)
+      *         MOVE    TEMP-MAKE-COMPANY   TO  SPA-N22-TMAKER(IDX)
                MOVE    TEMP-NAME       TO  SPA-N22-TMAKER(IDX)
                MOVE    TEMP-SALE-COMPANY   TO  SPA-N22-TSELLER(IDX)
                MOVE    TEMP-EFFECT     TO  SPA-N22-TEFFECT(IDX)
@@ -796,9 +796,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ファイル存在チェック
            INITIALIZE                  ORCSFILECHKAREA
            MOVE    WRK-GAZOFILE    TO  FILECHK-NAME
-      *ito debug start
-           DISPLAY "ORCSFILECHK FILECHK-NAME [ " FILECHK-NAME " ]"
-      *ito debug end
            CALL    "ORCSFILECHK"       USING
                                        ORCSFILECHKAREA
            IF      FILECHK-RC      NOT =   0
