@@ -529,8 +529,8 @@
                    STRING  "ORCSMISAVE ERROR " DELIMITED BY SIZE
                            "SIZE OVER,"        DELIMITED BY SIZE
                            ORCSMI-RETCD        DELIMITED BY SIZE
-                           ",FILE,"            DELIMITED BY SIZE
-                           ORCSMI-FILENAME     DELIMITED BY SPACE
+                           ","                 DELIMITED BY SIZE
+                           YAKUJYO-PHOTO       DELIMITED BY SPACE
                                                INTO  WRK-COMMENT
                    END-STRING
            END-EVALUATE
