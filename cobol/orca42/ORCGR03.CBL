@@ -2959,6 +2959,13 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                            END-IF
                    END-EVALUATE
+                   DISPLAY "====  TEST DISPLAY ==============="
+                   DISPLAY "SHELLTBL-NAME = " SHELLTBL-NAME
+                   DISPLAY "====  TEST SET ==============="
+                   MOVE     SPA-HOSPNUM    TO   SHELLTBL-HOSPNUM
+                   MOVE     SHELLTBL-ARG5  TO   SHELLTBL-JOBID
+                   MOVE     SHELLTBL-ARG6  TO   SHELLTBL-SHELLID
+      *
                    MOVE    SPA-R01-PRTKBN  TO  SHELLTBL-ARG18
                    MOVE    "0"             TO  SHELLTBL-ARG19
                                                SHELLTBL-ARG20
