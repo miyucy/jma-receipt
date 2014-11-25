@@ -157,6 +157,7 @@ def checkdb(dbconnoption, dbname, toeuc, lcheck)
   elsif encoding == "EUC_JP"
     iconv = Iconv.new("ISO-2022-JP", "EUC-JP")
     IO.popen("pg_dump #{dbconnoption} #{dbname}", "r+") {|pipe|
+      pipe.set_encoding("EUC-JP")
       while line = pipe.gets
         if /^COPY (\S+)/ =~ line
           table_name = $1
