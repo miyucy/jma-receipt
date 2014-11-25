@@ -203,6 +203,13 @@
                     06  W06-USER-KANRI-COUNT   PIC S9(9)   BINARY.
                     06  W06-USER-KANRI-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W06-PRTCONF-COMB.
+                    06  W06-PRTCONF.
+                      07  W06-VALUE   PIC X(40).
+                    06  W06-PRTCONF-STATE   PIC S9(9)   BINARY.
+                    06  W06-PRTCONF-COUNT   PIC S9(9)   BINARY.
+                    06  W06-PRTCONF-ITEM
+                            PIC X(40)   OCCURS  2 TIMES.
                   05  W06-CLIENT-PRT-COMB.
                     06  W06-CLIENT-PRT.
                       07  W06-VALUE   PIC X(40).

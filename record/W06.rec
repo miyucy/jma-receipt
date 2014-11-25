@@ -264,6 +264,14 @@ W06 {
           count int;
             item varchar(40)[5];
         };
+        PRTCONF_COMB {
+          PRTCONF {
+            textdata varchar(40);
+          };
+          state int;
+          count int;
+            item varchar(40)[2];
+        };
         CLIENT_PRT_COMB {
           CLIENT_PRT {
             textdata varchar(40);
