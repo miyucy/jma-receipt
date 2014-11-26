@@ -41,11 +41,17 @@ case "${COMMAND}" in
     ${PLUGIN_SHELL} -c ${JPPINFO} list
     list4cobol
     ;;
-  install|uninstall|enable|disable|upgrade2)
+  install|uninstall|enable|disable|upgrade2|restore|force_restore)
     ${PLUGIN_SHELL} -c ${JPPINFO} ${COMMAND} ${PACKAGE}-${VERSION}
     list4cobol
     ;;
   install+enable)
+    ${PLUGIN_SHELL} -c ${JPPINFO} install ${PACKAGE}-${VERSION}
+    ${PLUGIN_SHELL} -c ${JPPINFO} enable  ${PACKAGE}-${VERSION}
+    list4cobol
+    ;;
+  reinstall)
+    ${PLUGIN_SHELL} -c ${JPPINFO} uninstall ${PACKAGE}-${VERSION}
     ${PLUGIN_SHELL} -c ${JPPINFO} install ${PACKAGE}-${VERSION}
     ${PLUGIN_SHELL} -c ${JPPINFO} enable  ${PACKAGE}-${VERSION}
     list4cobol

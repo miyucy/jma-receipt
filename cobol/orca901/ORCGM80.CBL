@@ -394,6 +394,14 @@
                    ELSE
                        MOVE    1           TO  SPA-GMN-CUR
                    END-IF
+      *        強制インストール
+               WHEN    "0111"
+                   IF      SPA-MMID1-FLG       =   "OK"
+                       MOVE    "reinstall"         TO  WRK-COMMAND
+                       PERFORM 4010-SHELL-SYORI-SEC
+                   ELSE
+                       MOVE    1           TO  SPA-GMN-CUR
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-MMID1CD
@@ -1206,7 +1214,13 @@
            IF      SPA-ERRCD           =   SPACE
                EVALUATE    SPA-NAI-LINK
                    WHEN    1
-                       MOVE    "0101"              TO  SPA-MMID1CD
+                       IF     (SPA-NAI-VERSION     NOT =   SPACE)  AND
+                              (SPA-NAI-VERSION     =
+                                                   SPA-NAI-VERSION2)
+                           MOVE    "0111"              TO  SPA-MMID1CD
+                       ELSE
+                           MOVE    "0101"              TO  SPA-MMID1CD
+                       END-IF
                    WHEN    2
                        MOVE    "0102"              TO  SPA-MMID1CD
                END-EVALUATE
@@ -1494,6 +1508,7 @@
       *
            EVALUATE    SPA-MMID1CD
                WHEN    "0101"
+               WHEN    "0111"
                    STRING  "選択したパッケージを組み込みます。"
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
