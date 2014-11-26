@@ -14,8 +14,8 @@ fi
 
 create_pgpass
 if [ $DBENCODING = "UTF-8" ] || [ $DBENCODING = "UTF8" ] || [ $DBENCODING = "utf-8" ] || [ $DBENCODING = "utf8" ] ; then
-    %RUBY% "$BINDIR"/convu8.rb ${DBCONNOPTION} -u ${CHECKMODE}
+    %RUBY% -W0 "$BINDIR"/convu8.rb ${DBCONNOPTION} -u ${CHECKMODE}
 else
-    %RUBY% "$BINDIR"/convu8.rb ${DBCONNOPTION} -e ${CHECKMODE}
+    %RUBY% -W0 "$BINDIR"/convu8.rb ${DBCONNOPTION} -e ${CHECKMODE}
 fi
 delete_pgpass
