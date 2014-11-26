@@ -19,10 +19,11 @@ JMAMRVER=$5
 DRCD=$6
 OPID=$7
 
-TEMP=$(mktemp)
+TEMP=$(mktemp -p ${MCP_TEMPDIR})
+BASENAME=$(basename ${TEMP})
 # store_mnote.sh でファイル削除
 
-PARAM="${HOSPNUM},${PTID},${NYUGAI},${SRYYMD},${JMAMRVER},${DRCD},${OPID},${TEMP},"
+PARAM="${HOSPNUM},${PTID},${NYUGAI},${SRYYMD},${JMAMRVER},${DRCD},${OPID},${BASENAME},"
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBMRCSV -parameter "${PARAM}"
 

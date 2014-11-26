@@ -62,7 +62,7 @@
        FILE-CONTROL.
       *
       *    診療情報データ
-           SELECT  MRCSV-FILE      ASSIGN  PARA-TEMP
+           SELECT  MRCSV-FILE      ASSIGN  ASS-MRCSV
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-FILE.
       *
@@ -74,6 +74,9 @@
        01  MRCSV-REC               PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "CPASGNPARA.INC"    REPLACING   //ASGNPARA//
+                                       BY          //ASS-MRCSV//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -335,6 +338,8 @@
       *    お薬手帳データ制御サブパラメタ
            COPY    "CPORCSMNOTE.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
@@ -376,6 +381,7 @@
            INITIALIZE  CNT-AREA
            INITIALIZE  WRK-AREA
            INITIALIZE  SPA-AREA
+           INITIALIZE  ASS-MRCSV
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    SPA-HOSPNUM
@@ -395,6 +401,13 @@
            ACCEPT  SYS-TIME        FROM    TIME
       *
            PERFORM 100-DBOPEN-SEC
+      *
+           INITIALIZE  SGETTEMP-AREA
+           MOVE    PARA-TEMP           TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASS-MRCSV
+      *
       *    ファイルＯＰＥＮ
            OPEN    OUTPUT  MRCSV-FILE
       *
