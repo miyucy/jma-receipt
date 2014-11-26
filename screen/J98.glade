@@ -13,8 +13,8 @@
 <widget>
   <class>GtkWindow</class>
   <name>J98</name>
-  <x>240</x>
-  <y>150</y>
+  <x>216</x>
+  <y>126</y>
   <width>780</width>
   <height>590</height>
   <signal>
