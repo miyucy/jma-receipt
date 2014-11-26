@@ -54,6 +54,8 @@
       *    Ä¢É¼
            COPY    "HCPOM2.INC".
       *
+           COPY    "CPRECEERR.INC".
+      *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
@@ -91,7 +93,6 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYMD         PIC X(08).
       *
       *    °ì»þÎÎ°è
@@ -231,6 +232,8 @@
       *    ¥ª¥ó¥é¥¤¥óÄ¢É¼Ì¾¡¦½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾¼èÆÀ¥Ñ¥é
            COPY    "CPORCSPRTNM.INC".
       *
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
       *    £Ä£Â¸¡º÷
@@ -282,6 +285,7 @@
            INITIALIZE                  LST-PRT-BODY
            INITIALIZE                  LST-PRT-BODYN
            MOVE    ZERO            TO  CNT-AREA
+           INITIALIZE                  RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                        INTO            LNK-PRTKANRI-RENNUM
@@ -304,6 +308,12 @@
       *
       *    £Ó£Ð£ÁÀßÄê
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           INITIALIZE  SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *

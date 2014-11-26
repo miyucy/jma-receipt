@@ -111,9 +111,6 @@
            03  W-SQLSTR                PIC X(20000).
            03  W-MOVP                  PIC 9(06).
       *
-       01  CONST-AREA.
-           03  CONST-SQL-MAXLEN        PIC 9(06)  VALUE  20000.
-      *
        01  SYS-DATE.
            03  SYS-YY                  PIC 9(02).
            03  SYS-MM                  PIC 9(02).
@@ -133,6 +130,7 @@
            03  WRK-ERRCD               PIC 9(01).
       *
            03  WRK-IN                  PIC X(01).
+           03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -154,11 +152,10 @@
            03  FILLER                  PIC X(06)   VALUE   " line ".
            03  WRK-ERR-MSG             PIC X(09).
       *
-       01  WRK-HOMEDIR.
-           03  FILLER                  PIC X(28)  VALUE
+       01  CONST-AREA.
+           03  CONST-SQL-MAXLEN        PIC 9(06)  VALUE  20000.
+           03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
-           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
-           03  FILLER                  PIC X(01)  VALUE "/".
       *
       *    拡張文字対応
            COPY    "CPORCSSTRING.INC".
@@ -170,6 +167,10 @@
       *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+           COPY    "ENUM-VALUE".
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -252,11 +253,20 @@
       *****************************************************************
        101-ASSIN-GET-SEC               SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
+           INITIALIZE                      SGETTEMP-AREA
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+      *
+           IF      SGETTEMP-MW         =   SPA-PANDA
+               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
+           ELSE
+               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
+           END-IF
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
@@ -266,6 +276,8 @@
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -275,6 +287,8 @@
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
