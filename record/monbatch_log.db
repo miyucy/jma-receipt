@@ -15,7 +15,7 @@ monbatch_log {
 	exterm		varchar(256);
 	exuser		varchar(256);
 	exhost		varchar(256);
-	exec_record varchar(1024);
+	exec_record varchar(8192);
 );
 
 primary	{

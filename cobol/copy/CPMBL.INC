@@ -38,4 +38,5 @@
             03  MBL-EXTERM             PIC X(256).
             03  MBL-EXUSER             PIC X(256).
             03  MBL-EXHOST             PIC X(256).
-            03  MBL-EXEC-RECORD        PIC X(1024).
+            03  MBL-EXEC-RECORD        PIC X(8192).
+
