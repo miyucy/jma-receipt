@@ -1201,6 +1201,7 @@
            MOVE    ZERO                TO  FLG-MONBATCH
       *
            INITIALIZE                      SHELLTBL
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    LOW-VALUE           TO  MCP-PATHNAME
@@ -1234,9 +1235,9 @@
       *
                    MOVE    1           TO  FLG-LOOPEND
       *
-      *            IF    ( SHELLTBL-HOSPNUM    NOT =  SPA-HOSPNUM )
-      *                MOVE    ZERO    TO  FLG-LOOPEND
-      *            END-IF
+                   IF    ( SHELLTBL-HOSPNUM    NOT =  SPA-HOSPNUM )
+                       MOVE    ZERO    TO  FLG-LOOPEND
+                   END-IF
       *
                    IF    ( SHELLTBL-SHELLID    =  SPA-JOB-SHELLID )
                     OR  (( SPA-JOB-SHELLID     =  "SOKATU" )
