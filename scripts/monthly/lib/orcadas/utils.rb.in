@@ -10,7 +10,7 @@ module OrcaDAS
     def load_config
       path = CLIENT_CONFIG_FILE
       if File.file?(path)
-        Module.new.module_eval File.open(path).read
+        Module.new.module_eval File.read(path,:encoding => Encoding::EUC_JP)
       end
     end
   end
