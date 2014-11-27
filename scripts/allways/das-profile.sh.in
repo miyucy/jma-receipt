@@ -47,6 +47,8 @@ fi
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
           -parameter "das-profile,D,,,,$HOSPNUM," 2>&1 | tee -a $LOGFILE
 
+trap "rm -f ${DASCONFIG}" EXIT
+
 export CLIENT_CONFIG_FILE
 export CSV_PROFILE
 

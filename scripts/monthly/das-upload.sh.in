@@ -36,6 +36,8 @@ if [ ! -f ${CLIENT_CONFIG_FILE} ]; then
   exit
 fi
 
+trap "rm -f ${DASCONFIG}" EXIT
+
 export CLIENT_CONFIG_FILE
 export DAS_CHECK_HOSPID
 
