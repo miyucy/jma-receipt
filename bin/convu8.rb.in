@@ -209,6 +209,7 @@ def dump_restore(dbconnoption, oldname, newname)
     restore = IO.popen("psql #{dbconnoption} --set ON_ERROR_STOP=on #{newname}", "w")
     IO.popen("pg_dump #{dbconnoption} -EUTF-8 #{oldname}", "r+") {|pipe|
       while line = pipe.gets
+        next if line =~ /^COMMENT ON EXTENSION plpgsql IS /
         # UTF-8(MS) → UTF-8(JISX0213)
         UTF8MJ.each {|i,j|
           line.gsub!(Regexp.new(j),i)
@@ -233,6 +234,7 @@ def dump_restore_utf8ms(dbconnoption, oldname, newname)
     restore = IO.popen("psql #{dbconnoption} --set ON_ERROR_STOP=on #{newname}", "w")
     IO.popen("pg_dump #{dbconnoption} -EUTF-8 #{oldname}", "r+") {|pipe|
       while line = pipe.gets
+        next if line =~ /^COMMENT ON EXTENSION plpgsql IS /
         # UTF-8(JISX0213) → UTF-8(MS)
         UTF8MJ.each {|i,j|
           line.gsub!(Regexp.new(i),j)
