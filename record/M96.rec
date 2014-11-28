@@ -3,8 +3,8 @@ M96 {
     B02 {
       visible bool;
     };
-    B05 {
-      label varchar(10);
+    B09 {
+      visible bool;
     };
     B10 {
       visible bool;
