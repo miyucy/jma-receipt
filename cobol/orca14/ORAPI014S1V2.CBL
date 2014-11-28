@@ -290,13 +290,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APIMOD-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-APTXMLMAKE-SEC
       *
            DISPLAY   "***************"
            DISPLAY   "* appoint end  *"
@@ -334,7 +329,6 @@
            MOVE    WRK-HEN-TIME        TO  APNTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -424,8 +418,6 @@
            IF      APIMOD-BODY         NOT =   LOW-VALUE
                DISPLAY "APNTRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
-           INITIALIZE                      XML-APPOINTREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_appointv2req"  TO  MCP-TABLE
@@ -939,10 +931,6 @@
                MOVE    SYSKANRI-REC        TO  SYS-1010-REC
                MOVE    SYS-1010-NAME       TO  WRK-DRCD-NAME
            ELSE
-               MOVE    "14"                TO  WRK-ERRCD
-           END-IF
-      *
-           IF      WRK-DRCD (1:1)  NOT =   "1"
                MOVE    "14"                TO  WRK-ERRCD
            END-IF
       *
