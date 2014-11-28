@@ -117,7 +117,3 @@
                         PIC X(100).
             02  HCM03V02B-FUTAN
                         PIC X(10).
-            02  HCM03V02B-KANANAME2
-                        PIC X(50).
-            02  HCM03V02B-KNJNAMW2
-                        PIC X(50).
