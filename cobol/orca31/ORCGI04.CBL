@@ -123,7 +123,6 @@
            03  IDX5                PIC 9(05).
            03  IDX6                PIC 9(05).
            03  IDX7                PIC 9(05).
-           03  IDX8                PIC 9(05).
            03  IDX-M               PIC 9(05).
            03  IDX-MAX             PIC 9(05).
            03  IDX-G               PIC 9(05).
@@ -236,7 +235,7 @@
            03  WRK-EDYMD                   PIC X(08).
            03  WRK-CHOSEITTL               PIC  S9(08).
            03  WRK-CHOSEI                  PIC  S9(08).
-           03  WRK-BASE-MONEY              PIC  S9(08).
+           03  WRK-SKYPRTFLG               PIC  9(01).
       *!!
       *I041用
            03  IDX-D                    PIC 9(04).
@@ -271,28 +270,23 @@
            03  CONST-EDIT-TEIKI            PIC 9(01)   VALUE   1.
            03  CONST-BFSYU-MAX             PIC 9(05)   VALUE   400.
            03  CONST-PRTDEF-G.
-               05  CONST-PRTDEF0       PIC X(09)   VALUE   "000000000".
-               05  CONST-PRTDEF1       PIC X(09)   VALUE   "111111111".
-               05  CONST-PRTDEF2       PIC X(09)   VALUE   "222222222".
-               05  CONST-PRTDEF3       PIC X(09)   VALUE   "311110000".
-               05  CONST-PRTDEF4       PIC X(09)   VALUE   "410101010".
-               05  CONST-PRTDEF5       PIC X(09)   VALUE   "520202020".
-               05  CONST-PRTDEF6       PIC X(09)   VALUE   "610100000".
-               05  CONST-PRTDEF7       PIC X(09)   VALUE   "721212121".
-               05  CONST-PRTDEF8       PIC X(09)   VALUE   "801010101".
-               05  CONST-PRTDEF9       PIC X(09)   VALUE   "902020202".
-               05  CONST-PRTDEFA       PIC X(09)   VALUE   "A01010000".
+               05  CONST-PRTDEF0       PIC X(08)   VALUE   "00000000".
+               05  CONST-PRTDEF1       PIC X(08)   VALUE   "11111111".
+               05  CONST-PRTDEF2       PIC X(08)   VALUE   "22222222".
+               05  CONST-PRTDEF3       PIC X(08)   VALUE   "11110000".
+               05  CONST-PRTDEF4       PIC X(08)   VALUE   "10101010".
+               05  CONST-PRTDEF5       PIC X(08)   VALUE   "20202020".
+               05  CONST-PRTDEF6       PIC X(08)   VALUE   "10100000".
+               05  CONST-PRTDEF7       PIC X(08)   VALUE   "21212121".
            03  CONST-PRTDEF-R  REDEFINES   CONST-PRTDEF-G.
       *        0〜7 患者登録業務の請求書発行区分
-               05  CONST-PRTDEF-OCC            OCCURS  11.
-                   07  CONST-PRTDEF-PRTFLG     PIC  X(01).
+               05  CONST-PRTDEF-OCC            OCCURS  8.
       *            (1):新規 (2)：訂正時
                    07  CONST-PRTDEF-OCC2       OCCURS  2.
       *            (1):請求額>0 (2)：請求額=0
                        09  CONST-PRTDEF-OCC3   OCCURS  2.
                            11  CONST-SKYPRTOUT PIC X(01).
                            11  CONST-SRYPRTOUT PIC X(01).
-           03  CONST-PRTDEF-MAX                PIC 9(05)   VALUE   11.
       *
        01  WRK-ROW-AREA.
            03  WRK-HKNCOMBILST-ROW         PIC S9(9)   BINARY.
@@ -523,9 +517,6 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
@@ -565,9 +556,6 @@
       *
       *    請求書兼領収書まとめサブ
            COPY    "CPORCHCN03S02.INC".
-      *
-      *    入退院登録PUSH通知
-           COPY    "CPORCSI03.INC".
       *
        01  UIDIO-AREA.
            03  C-RET                   PIC X(2).
@@ -886,19 +874,13 @@
            MOVE    SYS-5000-SRYPRTKBN
                                    TO  SPA-GMN-I04-SRYPRTOUT
       *
-           MOVE    ZERO            TO  IDX1
-           PERFORM VARYING IDX8    FROM    1   BY  1
-                   UNTIL ( IDX8    >   CONST-PRTDEF-MAX )
-                    OR   ( IDX1    >   ZERO )
+           IF    ( SPA-NAI-I04-PTSKYPRT   >=  "0" )
+            AND  ( SPA-NAI-I04-PTSKYPRT   <=  "7" )
       *
-               IF    ( CONST-PRTDEF-PRTFLG (IDX8)
-                                   =   SPA-NAI-I04-PTSKYPRT )
-                   MOVE    IDX8    TO  IDX1
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( IDX1        NOT =  ZERO )
+               MOVE    SPA-NAI-I04-PTSKYPRT
+                                   TO  WRK-SKYPRTFLG
+               COMPUTE IDX1
+                   =   WRK-SKYPRTFLG   +   1
       *
                IF    ( SPA-I01-I04-PROCKBN         =   "2" )
                 AND  ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
@@ -2106,7 +2088,6 @@
       *
            MOVE    SPACE               TO  I04
       *
-           INITIALIZE                      I04
            EVALUATE    FLG-HKNCOMBILST-ROW
            WHEN    1
                MOVE    ZERO            TO  I04-HKNCOMBILST-ROW
@@ -2562,13 +2543,17 @@
            END-PERFORM
       *
       *    ユーザープログラム
-           MOVE    SPA-GMN-I04-USERPG      TO  I04-USERPG
-           MOVE    SPA-GMN-I04-USERPG-CNT  TO  I04-USERPG-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   SPA-GMN-I04-USERPG-CNT   )
-               MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
-                                           TO  I04-USERPG-ITM (IDX1)
-           END-PERFORM
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-I04-USERPG      TO  I04-USERPG
+               MOVE    SPA-GMN-I04-USERPG-CNT  TO  I04-USERPG-CNT
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL     ( IDX1    >   SPA-GMN-I04-USERPG-CNT   )
+                   MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
+                                               TO  I04-USERPG-ITM (IDX1)
+               END-PERFORM
+           END-IF
       *!!
       *    院外処方せん印刷
            MOVE    SPA-GMN-I04-SHOHOU      TO  I04-SHOHOSEN
@@ -2750,15 +2735,6 @@
                WHEN    "7"
                    MOVE    "【請求書必要（請求あり）（明細書必要）】"
                                    TO  I04-LBLINFO2
-               WHEN    "8"
-                   MOVE    "【請求書不要・明細書必要】"
-                                   TO  I04-LBLINFO2
-               WHEN    "9"
-                   MOVE    "【請求書不要・明細書必要（請求あり）】"
-                                   TO  I04-LBLINFO2
-               WHEN    "A"
-                   MOVE    "【請求書不要・明細書必要（訂正時なし）】"
-                                   TO  I04-LBLINFO2
                END-EVALUATE
       *
            MOVE    "black"         TO  I04-LBLGENMEN-STYLE
@@ -2828,6 +2804,12 @@
                    MOVE    WIDGET-INSENSITIVE
                                    TO  I04-NYUKIN-STT
                END-IF
+           END-IF
+      *
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  I04-USERPG-STT
+                                       I04-USERPG-ITM-STT
            END-IF
       *
            .
@@ -3183,8 +3165,12 @@
            END-IF
       *
       *    ユーザープログラムチェック処理
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4100-USERPG-CHK-SEC
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4100-USERPG-CHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -3234,17 +3220,17 @@
                MOVE    WRK-Z9          TO  SPA-GMN-I04-CHOSEI-X (IDXC)
       *
       *        合計額がゼロ以下の時、発行なしとする
-      *        EVALUATE    WRK-MCP-WIDGET
+               EVALUATE    WRK-MCP-WIDGET
       *        調整金
-      *        WHEN    "CHOSEI1"
-      *        WHEN    "CHOSEI2"
-      *            IF    ( SPA-GMN-I04-SEIGOK  <=  ZERO )
-      *                MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
-      *                                        TO  SPA-GMN-I04-SKYPRTOUT
-      *                MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
-      *                                        TO  SPA-GMN-I04-SRYPRTOUT
-      *            END-IF
-      *        END-EVALUATE
+               WHEN    "CHOSEI1"
+               WHEN    "CHOSEI2"
+                   IF    ( SPA-GMN-I04-SEIGOK  <=  ZERO )
+                       MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
+                                               TO  SPA-GMN-I04-SKYPRTOUT
+                       MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
+                                               TO  SPA-GMN-I04-SRYPRTOUT
+                   END-IF
+               END-EVALUATE
            END-IF
       *
       *    今回請求額がゼロ以上であること
@@ -4789,9 +4775,6 @@
       *        ユーザープログラム
                PERFORM 4801-USERPG-SEC
       *
-      *        PUSH通知
-               PERFORM 4801-PUSH-HOSPITAL-STAY-SEC
-      *
                IF    ( FLG-END         =   ZERO )
                    IF    ( SPA-I01-I04-BUNBENFTN-FLG   =   1 )
                        PERFORM 220-S08-SENI-SEC
@@ -4807,7 +4790,7 @@
        4501-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    登録処理 （退院再計算）
+      *    登録処理 （退院登録）
       *****************************************************************
        4502-TOUROKU-SEC            SECTION.
       *
@@ -5117,9 +5100,6 @@
       *
       *    ユーザープログラム
            PERFORM 4801-USERPG-SEC
-      *
-      *    PUSH通知
-           PERFORM 4801-PUSH-HOSPITAL-STAY-SEC
       *
            IF    ( FLG-END         =   ZERO )
                IF    ( SPA-I01-I04-BUNBENFTN-FLG   =   1 )
@@ -5462,8 +5442,6 @@
       *
            IF    ( SPA-I0-SYUNOU-UPDFLG (IDX-SYU)  =   ZERO )
             AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
-               CONTINUE
-           ELSE
                MOVE    SMCNDATE-YMD
                                    TO  SYU-CREYMD
            END-IF
@@ -5775,19 +5753,6 @@
        4801-BUNBEN-UPD-SEC          SECTION.
       *
            PERFORM 900-BUNBEN-KEY3-SEL-SEC
-           IF    ( BUNBEN-UPDKBN    =  ZERO )
-               PERFORM 48011-BUNBEN-UPD-SEC
-           ELSE
-               PERFORM 4802-BUNBEN-UPD-SEC
-           END-IF
-      *
-           .
-       4801-BUNBEN-UPD-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩管理テーブル更新処理
-      *****************************************************************
-       48011-BUNBEN-UPD-SEC          SECTION.
       *
            PERFORM 800-ORCSBUNBENFTN-SEC
       *
@@ -5824,7 +5789,7 @@
            END-IF
       *
            .
-       48011-BUNBEN-UPD-EXT.
+       4801-BUNBEN-UPD-EXT.
            EXIT.
       *****************************************************************
       *    分娩管理テーブル更新処理
@@ -5863,9 +5828,7 @@
            MOVE    BUNBEN-ZAIWEEK      TO  LNKBUNBEN-ZAIWEEK
            MOVE    BUNBEN-SIZANKBN     TO  LNKBUNBEN-SIZANKBN
            MOVE    BUNBEN-BIRTHCNT     TO  LNKBUNBEN-BIRTHCNT
-           IF    ( BUNBEN-NYUIN-DAY    NOT =   ZERO )
-               MOVE    BUNBEN-NYUIN-DAY TO LNKBUNBEN-NYUIN-DAY
-           END-IF
+           MOVE    BUNBEN-NYUIN-DAY    TO  LNKBUNBEN-NYUIN-DAY
            MOVE    BUNBEN-SANKAKBN     TO  LNKBUNBEN-SANKAKBN
            MOVE    BUNBEN-BIKOU        TO  LNKBUNBEN-BIKOU
            MOVE    "1"                 TO  LNKBUNBEN-UPDKBN
@@ -5874,29 +5837,20 @@
       *
            MOVE    LNKBUNBEN-REC       TO  BUNBEN-REC
       *
-           MOVE    ZERO                TO  WRK-BASE-MONEY
            IF    ( BUNBEN-RIYOUKBN     =   "1" )
-               EVALUATE    TRUE
-               WHEN  ( SYS-1001-SANKANUM   =   ZERO )
-               WHEN  ( BUNBEN-ZAIWEEK      <   22 )
-               WHEN  ( BUNBEN-SANKAKBN     =   "2" OR "3" )
+               IF    ( SYS-1001-SANKANUM   NOT =   ZERO )
+                AND  ( BUNBEN-ZAIWEEK      >=   22 )
+                   COMPUTE BUNBEN-DAIRI-MONEY
+                       =   420000      *   BUNBEN-BIRTHCNT
+               ELSE
                    EVALUATE   TRUE
                    WHEN    ( BUNBEN-BIRTHDAY  >= CONST-H270101 )
-                       MOVE    404000  TO  WRK-BASE-MONEY
+                       COMPUTE BUNBEN-DAIRI-MONEY
+                           =   404000      *   BUNBEN-BIRTHCNT
                    WHEN    OTHER
-                       MOVE    390000  TO  WRK-BASE-MONEY
+                       COMPUTE BUNBEN-DAIRI-MONEY
+                           =   390000      *   BUNBEN-BIRTHCNT
                    END-EVALUATE
-               WHEN    OTHER
-                   MOVE    420000      TO  WRK-BASE-MONEY
-               END-EVALUATE
-      *
-               IF    ( BUNBEN-SANKAKBN =   "3" )
-                   COMPUTE BUNBEN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   BUNBEN-BIRTHCNT
-                       +   LNKBUNBEN-SNK-MONEY
-               ELSE
-                   COMPUTE BUNBEN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   BUNBEN-BIRTHCNT
                END-IF
       *
                IF    ( BUNBEN-DAIRI-MONEY  >   BUNBEN-NINPUFTN-MONEY )
@@ -6179,14 +6133,6 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-             OR  ( SPA-PRTCONF         =   "1" )
-               INITIALIZE                  ORCSPRTCTRLAREA
-               CALL    "ORCSPRTCTRL"       USING
-                                           SPA-AREA
-                                           ORCSPRTCTRLAREA
-                                           MCPAREA
-           END-IF
       *
            PERFORM 900-PTINF-KEY-SEL-SEC
       *
@@ -6224,12 +6170,6 @@
                PERFORM 451-SHOHOSEN-PRINT-SEC
            END-IF
       *!!
-           IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        印刷ダミー処理
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"    USING   SPA-AREA
-           END-IF
-      *
            .
        451-PRTOUT-EXT.
            EXIT.
@@ -6704,7 +6644,11 @@
       *****************************************************************
        4801-USERPG-SEC                 SECTION.
       *
-           PERFORM 48011-USERPG-SEC
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               PERFORM 48011-USERPG-SEC
+           END-IF
       *
            .
        4801-USERPG-EXT.
@@ -6804,28 +6748,6 @@
       *
            .
        48011-XD01-SENI-EXT.
-           EXIT.
-      *****************************************************************
-      *    PUSH通知処理
-      *****************************************************************
-       4801-PUSH-HOSPITAL-STAY-SEC         SECTION.
-      *
-           INITIALIZE                      SI03-AREA
-      *
-           MOVE    SPA-I01-I04-SYORIKBN
-                                       TO  SI03-REQNUM
-           MOVE    SPA-GMN-I01-PTNUM   TO  SI03-PTNUM
-           MOVE    WKPTNYUINRRK-NYUINYMD TO  SI03-NYUINYMD
-           IF    ( WKPTNYUINRRK-TAIINYMD NOT =   "99999999" )
-               MOVE    WKPTNYUINRRK-TAIINYMD
-                                       TO  SI03-TAIINYMD
-           END-IF
-           CALL    "ORCSI03"           USING
-                                       SI03-AREA
-                                       SPA-AREA
-      *
-           .
-       4801-PUSH-HOSPITAL-STAY-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理
@@ -6944,7 +6866,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  I0ID1
-           INITIALIZE                      I0ID1
            MOVE    SPA-I0IDCD          TO  I0ID1-ID1CODE
            MOVE    WRK-I0IDMSG         TO  I0ID1-ID1MSG
       *
