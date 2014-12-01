@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.08.00    NACL-多々納  16/12/XX  指導料等自動算定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -768,41 +767,34 @@
                                                TO  SPA-ERRMSG
       *    連絡先
                WHEN    "2101"
-      *****        MOVE    "連絡先名称は全角で入力して下さい"
-                   MOVE    "連絡先名称入力エラーです"
+                   MOVE    "連絡先名称は全角で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2102"
-      ****         MOVE    "続柄は全角で入力して下さい"
-                   MOVE    "続柄入力エラーです"
+                   MOVE    "続柄は全角で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2103"
                    MOVE    "連絡先郵便番号はありません"
                                                TO  SPA-ERRMSG
                WHEN    "2104"
-      ****         MOVE    "連絡先住所は全角で入力して下さい"
-                   MOVE    "連絡先住所入力エラーです"
+                   MOVE    "連絡先住所は全角で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2105"
-      ****         MOVE    "勤務先名称は全角で入力して下さい"
-                   MOVE    "勤務先名称入力エラーです"
+                   MOVE    "勤務先名称は全角で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2106"
                    MOVE    "勤務先郵便番号はありません"
                                                TO  SPA-ERRMSG
                WHEN    "2107"
-      *****        MOVE    "勤務先住所は全角で入力して下さい"
-                   MOVE    "勤務先住所入力エラーです"
+                   MOVE    "勤務先住所は全角で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2108"
-      ****         MOVE    "帰省先名称は全角で入力して下さい"
-                   MOVE    "帰省先名称入力エラーです"
+                   MOVE    "帰省先名称は全角で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "2109"
                    MOVE    "帰省先郵便番号はありません"
                                                TO  SPA-ERRMSG
                WHEN    "2110"
-      ****         MOVE    "帰省先住所は全角で入力して下さい"
-                   MOVE    "帰省先住所入力エラーです"
+                   MOVE    "帰省先住所は全角で入力して下さい"
                                                TO  SPA-ERRMSG
       *ver.4.7
                WHEN    "2111"
@@ -955,7 +947,7 @@
                                                TO  SPA-ERRMSG
                WHEN    "2407"
       ************ MOVE    "老齢福祉年金開始日がエラーです"
-                   MOVE    "低所得者１の認定開始日がエラーです"
+                   MOVE    "低所得者１の認定終了日がエラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2408"
       *************MOVE    "老齢福祉年金終了日がエラーです"
@@ -1029,16 +1021,6 @@
                WHEN    "2423"
                    STRING  "標準負担額減額開始日≦長期入院該当年月日で"
                            "入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "2424"
-                   STRING  "低所得者２ 境界層該当入力エラー"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "2425"
-                   STRING  "低所得者１ 境界層該当入力エラー"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
@@ -1201,12 +1183,6 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
-               WHEN    "2616"
-                   STRING  "この特記事項の開始は"
-                           "平成２８年４月からです。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "2620"
                    STRING  "特記事項は５０件までの登録です。"
                            "これ以上追加できません。"
@@ -1285,18 +1261,6 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
-               WHEN    "2643"
-                   STRING  "レセプト分割は５０件登録済みです。"
-                           "これ以上登録できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2644"
-                   STRING  "同月のレセプト分割は１０件までです。"
-                           "これ以上登録できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
       *
       *        個別設定
                WHEN    "2801"
@@ -1372,83 +1336,6 @@
                    END-STRING
                WHEN    "2824"
                    STRING  "選択番号を入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-      *H28.12
-               WHEN    "2840"
-                   STRING  "選択番号がありません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2841"
-                   STRING  "ＩＤ識別は半角入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2842"
-                   STRING  "個人番号エラーです。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2843"
-                   STRING  "備考エラーです。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2844"
-                   STRING  "ＩＤ識別を入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2845"
-                   STRING  "個人番号を入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2846"
-                   STRING  "ＩＤ識別が重複しています。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2847"
-                   STRING  "個人番号情報は２０件登録済みです。"
-                           "これ以上登録できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-      *
-               WHEN    "2850"
-                   STRING  "点数マスタに存在しません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2851"
-                   STRING  "設定できないコードです。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2852"
-                   STRING  "システム日付で有効期間外です。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K285"
-                   STRING  "警告！"
-                           "システム日付で有効期間外です。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-      *H30.4
-               WHEN    "2853"
-                   STRING  "性別が男性です。"
-                           "妊婦の設定は解除しました。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K287"
-                   STRING  "警告！"
-                           "１６歳未満です。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING

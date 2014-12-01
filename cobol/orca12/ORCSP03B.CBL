@@ -50,7 +50,6 @@
       * 04.07.00     NACL-多々納  12/11/16  長期高額療養重複不可
       * 04.07.00     NACL-多々納  13/11/13  生活保護重複警告対応
       * 04.07.00     NACL-多々納  14/12/XX  難病等対応、公費名称編集修正
-      * 04.08.00     NACL-多々納  16/02/XX  京都府　京都子重複可対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1747,7 +1746,7 @@
                END-IF
            END-IF
       *
-           .
+          .
        4912-JKYSNUM-CHECK-EXT.
            EXIT.
       *****************************************************************
@@ -1788,18 +1787,11 @@
                ELSE
                    MOVE    SPA-NAI-KTEKEDYMD(IDX-K) TO  WRK-YMDS2
                END-IF
-      *        誕生日より前はゼロ
-               IF      WRK-YYS2           <   WRK-YYS1
-                   MOVE    ZERO           TO  WRK-NENREI-YY
-               ELSE
-      *
                COMPUTE   WRK-NENREI-YY    =   WRK-YYS2
                                           -   WRK-YYS1
                IF  WRK-YMDS1 (5:4)        >   WRK-YMDS2 (5:4)
                    COMPUTE WRK-NENREI-YY  =   WRK-NENREI-YY
                                           -   1
-               END-IF
-      *
                END-IF
       *
                IF  ( WRK-NENREI-YY         <   WRK-STYEAR )  OR
@@ -2051,11 +2043,6 @@
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
                END-IF
-      *APIV3対応
-               IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                      (SPA-PIDCD       NOT =   SPACE )
-                   MOVE    IDX-K           TO  SPA-KOH-ERRIDX
-               END-IF
            END-PERFORM
       *
            .
@@ -2096,20 +2083,11 @@
       *H25.7
       *                第三者行為
                           OR  (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
-      *H27.1
-      *                難病
-                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
       *H26.11
       *                小児特定　Ｈ２６．１２まで
                           OR ((SPA-GMN-KOHNUM(IDX-K)   =   "052" ) AND
                               (SPA-NAI-KTEKSTYMD (IDX-K)
-                                                       <=  "20141231"))
-      *H28.2
-      *                京都府　京都子　H25.9.1から
-                          OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND
-                              (SPA-PREFNUM             =   26    ) AND
-                              (SPA-NAI-KTEKSTYMD (IDX-K)
-                                                       >=  "20130901")))
+                                                       <=  "20141231")))
                            CONTINUE
                        ELSE
       *
@@ -2265,15 +2243,6 @@
                               (SPA-PREFNUM             =   01    ))
       *H25.7              第三者行為
                          OR   (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
-      *H27.1             難病
-                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
-      *H28.2
-      *                京都府　京都子　H25.9.1から
-                          OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND
-                              (SPA-PREFNUM             =   26    ) AND
-                              (SPA-NAI-KTEKSTYMD (IDX-K)
-                                                       >=  "20130901"))
-      *
                              MOVE    ZERO              TO  FLG-CHK
                        END-IF
                    END-IF

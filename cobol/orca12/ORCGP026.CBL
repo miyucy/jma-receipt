@@ -31,7 +31,6 @@
       *  04.05.00    NACL-多々納  09/07/28  Ｈ２１年１０月対応
       *  04.07.00    NACL-多々納  12/12/25  レセプト分割対応
       *  04.07.00    NACL-多々納  14/12/XX  Ｈ２７年０１月対応
-      *  04.08.00    NACL-多々納  15/11/XX  レセプト分割５０件他対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,8 +139,6 @@
            03  WRK-CHK-HKNCOMBI        PIC X(04).
            03  WRK-HKNDELFLG           PIC X(01).
       *
-           03  WRK-TUKICNT             PIC 9(03).
-      *
       *    対象保険組合せチェック
            03  WRK-HDHKNLST-TBL.
                05  WRK-HDHKNLST-OCC         OCCURS  2.
@@ -211,14 +208,13 @@
            03  FILLER              PIC X(15)   VALUE   "34 ３４多エ".
            03  FILLER              PIC X(15)   VALUE   "35 ３５多オ".
            03  FILLER              PIC X(15)   VALUE   "36 ３６加治".
-           03  FILLER              PIC X(15)   VALUE   "37 ３７申出".
        01  TBL-TOKKI-AREA-R        REDEFINES   TBL-TOKKI-AREA.
       **** 03  TBL-TOKKI-OCC       OCCURS   23.
-           03  TBL-TOKKI-OCC       OCCURS   35.
+           03  TBL-TOKKI-OCC       OCCURS   34.
                05  TBL-TOKK-CD     PIC X(02).
                05  TBL-TOKK-K      PIC X(01).
                05  TBL-TOKK-NAIYO  PIC X(12).
-       01  TBL-TOKK-MAX            PIC 9(02)   VALUE   35.
+       01  TBL-TOKK-MAX            PIC 9(02)   VALUE   34.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -467,9 +463,6 @@
       *
            INITIALIZE                  SPA-GMN26-HDLIST-TBL
            INITIALIZE                  SPA-GMN26-HDHKNLST-TBL
-      *
-           MOVE    1                   TO  SPA-NAI26-INIT
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX     >   50 )
                    OR        ( IDX     >   WRK-HDI-MAX )
@@ -1001,16 +994,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  SPA-GMN26-HDLSTMAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >=  50
+                   UNTIL       IDX     >=  20
               IF     (SPA-GMN26-THDSRYYM (IDX)  =   SPACE )
-                 AND (IDX              <   50   )
+                 AND (IDX              <   20   )
                    MOVE    SPA-GMN26-HDLIST-OCC (IDX + 1)
                                        TO  SPA-GMN26-HDLIST-OCC(IDX)
                    INITIALIZE              SPA-GMN26-HDLIST-OCC(IDX + 1)
               END-IF
            END-PERFORM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   50
+                   UNTIL       IDX     >   20
               IF     (SPA-GMN26-THDSRYYM (IDX)   NOT =   SPACE )
                    ADD     1               TO  SPA-GMN26-HDLSTMAX
                    MOVE    SPA-GMN26-HDLSTMAX
@@ -1050,7 +1043,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN26-HDSELNUM  =   ZERO
                    IF      SPA-GMN26-HDLSTMAX  >=  50
-                       MOVE    "2643"          TO  SPA-ERRCD
+                       MOVE    "2636"          TO  SPA-ERRCD
                    ELSE
                        ADD     1               TO  SPA-GMN26-HDLSTMAX
                        MOVE    SPA-GMN26-HDLSTMAX  TO  IDX
@@ -1894,16 +1887,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    申出　平成２８年４月から
-           IF     (SPA-GMN26-CD        =   "37"  )
-           AND    (SPA-ERRCD           =   SPACE )
-           AND    (SPA-NAI26-STYM  NOT =   ZERO  )
-               IF      SPA-NAI26-STYM      <   "201604"
-                   MOVE    "2616"              TO  SPA-ERRCD
-                   MOVE    05                  TO  SPA-GMN26-CUR
-               END-IF
-           END-IF
-      *
            .
        41012-STYM-CHK-EXT.
            EXIT.
@@ -2047,11 +2030,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        重複チェック
                PERFORM 411001-JYUFUKU-CHK02-SEC
            END-IF
-      *H27.11
-           IF      SPA-ERRCD           =   SPACE
-      *        月１０件チェック
-               PERFORM 411002-TUKICNT-CHK-SEC
-           END-IF
            .
        4110-TOUROKU-CHK02-EXT.
            EXIT.
@@ -2083,32 +2061,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            .
        411001-JYUFUKU-CHK02-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    レセ分割テーブルの重複チェック処理
-      ****************************************************************
-       411002-TUKICNT-CHK-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  WRK-TUKICNT
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN26-HDLSTMAX )
-               IF     (SPA-NAI26-HDSRYYM   =   SPA-NAI26-THDSRYYM
-                                                             (IDX))
-                   IF     (SPA-GMN26-HDSELNUM  NOT =   ZERO )
-                     AND  (SPA-GMN26-HDSELNUM      =   IDX  )
-                       CONTINUE
-                   ELSE
-                       ADD     1               TO  WRK-TUKICNT
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      WRK-TUKICNT         >=  10
-               MOVE    "2644"          TO  SPA-ERRCD
-               MOVE    21              TO  SPA-GMN26-CUR
-            END-IF
-           .
-       411002-TUKICNT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2717,12 +2669,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (WRK-SRT-HKNNUM  NOT =   SPACE)
                MOVE    2               TO  FLG-HKNOK
            END-IF
-      *H27.11
-      *    公費単独もすべて対象
-      *    IF      FLG-HKNOK           =   ZERO
-      *        MOVE    1               TO  FLG-HKNCOMBI-ERR
-      *    END-IF
       *
+           IF      FLG-HKNOK           =   ZERO
+               MOVE    1               TO  FLG-HKNCOMBI-ERR
+           END-IF
       *
            .
        410131-KOHONLY-CHK-EXT.

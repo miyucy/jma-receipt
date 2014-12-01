@@ -45,11 +45,8 @@
       *                                     ¸øÈñÉéÃ´³ÛÌ¤ÆþÎÏ·Ù¹ðÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  11/11/07  ÃÏÊý¸øÈñÉéÃ´³ÛÊÑ¹¹ÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/06/04  ¸øÈñÉéÃ´³Û¾å¸Â·ï¿ôÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  14/12/XX  ÆñÉÂÅùÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  16/05/31  ¸¶Çú°ìÈÌÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  16/11/15  HAORIÂ¾ÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  17/05/XX  ¶­³¦ÁØ³ºÅöÂÐ±þ
-      ****************************************************************
+      * 04.07.00     NACL-Â¿¡¹Ç¼  14/12/XX  ÆñÉÂÅùÂÐ±þ
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
@@ -84,7 +81,6 @@
       *
            03  FLG-PTKOHFTNETC     PIC 9(01).
            03  FLG-ENDYMD          PIC 9(01).
-           03  FLG-CHKNO           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -163,9 +159,6 @@
                05  WRK-FTNEDYY         PIC 9(04).
                05  WRK-FTNEDMM         PIC 9(02).
                05  WRK-FTNEDDD         PIC 9(02).
-      *H29.6
-           03  WRK-KYOUKAI             PIC X(01).
-           03  WRK-KYOUKAI-MEI         PIC X(20).
       *
       *    Ç§ÄêÈÏ°Ï°ìÍ÷É½¼¨
        01  TBL-HKNTEKKBN-AREA.
@@ -314,7 +307,6 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
@@ -526,16 +518,6 @@
                PERFORM 41002-HKNTEKKBN-HEN-SEC
                MOVE    WRK-HKNTEKKBN-MEI       TO  SPA-GMN24-TSYLHKNKBN
                                                                 (IDX)
-      *H29.6
-      *        ¶­³¦ÁØ³ºÅö¶èÊ¬
-               IF      LNK-TSY-KYOUKAISOUKBN (IDX) =   SPACE
-                   MOVE    "0"         TO  LNK-TSY-KYOUKAISOUKBN (IDX)
-               END-IF
-               MOVE    LNK-TSY-KYOUKAISOUKBN (IDX)
-                                       TO  SPA-NAI24-TSYLKYOUKAI(IDX)
-               MOVE    LNK-TSY-KYOUKAISOUKBN (IDX) TO  WRK-KYOUKAI
-               PERFORM 41003-KYOUKAI-HEN-SEC
-               MOVE    WRK-KYOUKAI-MEI TO  SPA-GMN24-TSYLKYOUKAI(IDX)
            END-PERFORM
       *
       *    Ç¯¶âÊÔ½¸
@@ -593,16 +575,6 @@
                PERFORM 41002-HKNTEKKBN-HEN-SEC
                MOVE    WRK-HKNTEKKBN-MEI       TO  SPA-GMN24-TNKLHKNKBN
                                                                 (IDX)
-      *H29.6
-      *        ¶­³¦ÁØ³ºÅö¶èÊ¬
-               IF      LNK-TNK-KYOUKAISOUKBN (IDX) =   SPACE
-                   MOVE    "0"         TO  LNK-TNK-KYOUKAISOUKBN (IDX)
-               END-IF
-               MOVE    LNK-TNK-KYOUKAISOUKBN (IDX)
-                                       TO  SPA-NAI24-TNKLKYOUKAI(IDX)
-               MOVE    LNK-TNK-KYOUKAISOUKBN (IDX) TO  WRK-KYOUKAI
-               PERFORM 41003-KYOUKAI-HEN-SEC
-               MOVE    WRK-KYOUKAI-MEI TO  SPA-GMN24-TNKLKYOUKAI(IDX)
            END-PERFORM
       *
       *    Á°²ó¤ÎÁªÂòÈÖ¹æ¤ÏÈ¿±Ç¤µ¤»¤Ê¤¤
@@ -614,7 +586,6 @@
            IF      (SPA-GMN24-FTNSELNUM    =   ZERO )  AND
                    (SPA-MAE24-FTNSELNUM    =   ZERO )  AND
                    (SPA-FTN1-MAX           >   ZERO )
-      *
                PERFORM 3102-KOHFTN-HEN-SEC
            END-IF
            IF      (SPA-GMN24-FTNSELNUM    =   ZERO )  AND
@@ -623,7 +594,7 @@
                MOVE    1                   TO  SPA-NAI24-INIT2
            END-IF
       *    ¸«½Ð¤·ÊÑ¹¹
-      *    PERFORM 3101-KOH-MEISAI-SEC
+           PERFORM 3101-KOH-MEISAI-SEC
       *
            .
        310-SPASET-EXT.
@@ -636,9 +607,6 @@
       *
       *    ÆÃÄê¤Î¼õµë¼ÔÈÖ¹æÊÔ½¸
            MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
-      *H28.11
-           MOVE    ZERO                TO  SPA-NAI24-FTNSYORI
-      *
            IF      SPA-GMN24-FTNSELNUM >   ZERO
                IF      (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "051" 
@@ -661,9 +629,6 @@
                                            =   "052" ) AND
                        (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            <=  "20141231" ))
-      *H27.1         ÆñÉÂ
-                 OR   ( SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "054"     )
       *
                    MOVE    "¼õµë¼ÔÈÖ¹æ¡§"      TO  SPA-GMN24-JKYSNUM
                    MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
@@ -682,8 +647,6 @@
                                            >=   "20060401"  )
                    MOVE    "Æþ³°¾å¸Â³Û"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "Â¾°ìÉôÉéÃ´Îß·×"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      Â¾°ìÉôÉéÃ´Í­
-                   MOVE    1                    TO  SPA-NAI24-FTNSYORI
                ELSE
                    MOVE    "³°Íè¾å¸Â³Û"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "Æþ±¡¾å¸Â³Û"         TO  SPA-GMN24-FTNMSG2
@@ -695,8 +658,6 @@
                                            >=   "20061001"  )
                    MOVE    "³°Íè¸º³Û¡Ê¡ó¡Ë"     TO  SPA-GMN24-FTNMSG1
                    MOVE    "Æþ±¡¸º³Û¡Ê¡ó¡Ë"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      ¡ó¸º³Û
-                   MOVE    2                    TO  SPA-NAI24-FTNSYORI
                END-IF
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "961"   )  AND
@@ -721,8 +682,6 @@
                                            >=   "20061001"  )
                    MOVE    "Æþ³°¾å¸Â³Û"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "Â¾°ìÉôÉéÃ´Îß·×"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      Â¾°ìÉôÉéÃ´Í­
-                   MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-IF
       *H26.12
       *        ÆñÉÂ¡¦¾®»ùÆÃÄê(H27.1¤«¤é¡ËÌ¾¾Î
@@ -733,19 +692,6 @@
                                            >=   "20150101"  ))
                    MOVE    "Æþ³°¾å¸Â³Û"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "Â¾°ìÉôÉéÃ´Îß·×"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      Â¾°ìÉôÉéÃ´Í­
-                   MOVE    1                    TO  SPA-NAI24-FTNSYORI
-               END-IF
-      *H28.6
-      *        ¸¶Çú°ìÈÌ
-               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "019"   )  AND
-                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                           >=   "20160401"  )
-                   MOVE    "³°ÍèÉéÃ´¡Ê¡ó¡Ë"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "Æþ±¡ÉéÃ´¡Ê¡ó¡Ë"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      ¡ó¸º³Û
-                   MOVE    2                    TO  SPA-NAI24-FTNSYORI
                END-IF
       *ver.4.7
       *        ÃÏÊý¸øÈñ¤ÎÀßÄê
@@ -756,8 +702,6 @@
                WHEN    "2"
                    MOVE    "Æþ³°¾å¸Â³Û"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "Â¾°ìÉôÉéÃ´Îß·×"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      Â¾°ìÉôÉéÃ´Í­
-                   MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-EVALUATE
            END-IF
       *
@@ -783,23 +727,6 @@
        41002-HKNTEKKBN-HEN-EXT.
            EXIT.
       *
-      *
-      *****************************************************************
-      *    ¶­³¦ÁØ³ºÅö¶èÊ¬ÊÔ½¸½èÍý
-      *****************************************************************
-       41003-KYOUKAI-HEN-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  WRK-KYOUKAI-MEI
-           EVALUATE    WRK-KYOUKAI
-               WHEN    "0"
-                   MOVE    "¶­³¦ÁØÈó³ºÅö"  TO  WRK-KYOUKAI-MEI
-               WHEN    "1"
-                   MOVE    "¶­³¦ÁØ³ºÅö"    TO  WRK-KYOUKAI-MEI
-           END-EVALUATE
-           .
-       41003-KYOUKAI-HEN-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    ¸øÈñÉéÃ´½é´üÊÔ½¸½èÍý
       *****************************************************************
@@ -819,28 +746,6 @@
            END-IF
            MOVE    1                   TO  SPA-GMN24-FTNSELNUM
            MOVE    SPA-GMN24-FTNSELNUM TO  SPA-MAE24-FTNSELNUM
-      *
-           INITIALIZE                  SPA-GMN24-KOHFTNTBL2
-           MOVE    1                   TO  SPA-NAI24-INIT2
-      *    ¸«½Ð¤·ÊÑ¹¹
-           PERFORM 3101-KOH-MEISAI-SEC
-      *    ÂÐ¾Ý¤Î¥Ç¡¼¥¿¤ò¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸¤¹¤ë
-           PERFORM 31022-KOHFTN-SPAHENSYU-SEC
-      *
-           IF      SPA-FTN2-MAX        =   ZERO
-               MOVE    ZERO                TO  SPA-GMN24-FTNSELNUM
-               MOVE    ZERO                TO  SPA-NAI24-FTNSELNUM
-               MOVE    ZERO                TO  SPA-MAE24-FTNSELNUM
-           END-IF
-      *
-           .
-       3102-KOHFTN-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñÉéÃ´ÊÔ½¸Äê½èÍý
-      *****************************************************************
-       31022-KOHFTN-SPAHENSYU-SEC          SECTION.
       *
       *    ÂÐ¾Ý¤Î¥Ç¡¼¥¿¤ò¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸¤¹¤ë
            INITIALIZE                      PARA-REC
@@ -865,6 +770,8 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  WRK-PARA-EDANUM
            MOVE    SPACE               TO  LNK-PTKOHFTN-AREA
+           INITIALIZE                  SPA-GMN24-KOHFTNTBL2
+           MOVE    1                   TO  SPA-NAI24-INIT2
            PERFORM
                UNTIL   FLG-PARA            =   1
                MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
@@ -909,35 +816,37 @@
                MOVE    PTKOHFTN-TERMID(1:1)    TO  SPA-NAI24-TFTNETCKBN
                                                                   (IDX)
                IF     (PTKOHFTN-TERMID(1:1)    =   SPACE )
-      *H28.11 ÀßÄê¶èÊ¬È½Äê¤Ø
-      *            IF     (SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
-      *                                        =   "015"
-      *                                        OR  "016"
-      *                                        OR  "021"
-      *                                        OR  "038"    )
+                   IF     (SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
+                                               =   "015"
+                                               OR  "016"
+                                               OR  "021"
+                                               OR  "038"    )
       *H26.12
       *                ÆñÉÂ¡¦¾®»ùÆÃÄê¡ÊH26.1¤«¤é¡Ë
-      *              OR  ((SPA-NAI24-KOHNUM  (WRK-FTN1-IDX)
-      *                                        =   "052"
-      *                                        OR  "054"   )  AND
-      *                   (SPA-NAI24-TKOHSTYMD (WRK-FTN1-IDX)
-      *                                        >=  "20150101" ))
+                     OR  ((SPA-NAI24-KOHNUM  (WRK-FTN1-IDX)
+                                               =   "052"
+                                               OR  "054"   )  AND
+                          (SPA-NAI24-TKOHSTYMD (WRK-FTN1-IDX)
+                                               >=  "20150101" ))
       ***            OR  ((SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
       *                                        =   "281" ) AND
       ***                 (SPA-PREFNUM         =    07   ))
       *              ÃÏÊý¸øÈñ¤ÎÂÐ¾Ý
-      *              OR   (SPA-NAI24-TJYOGENKBN (WRK-FTN1-IDX)
-      *********                                =   "2"    )
-      *H28.11
-      *            Â¾°ìÉôÉéÃ´¤¢¤ê
-                   IF      SPA-NAI24-FTNSYORI  =   1
+                     OR   (SPA-NAI24-TJYOGENKBN (WRK-FTN1-IDX)
+                                               =   "2"    )
                        PERFORM 31021-PTKOHFTNETC-HEN-SEC
                    END-IF
                END-IF
            END-PERFORM
       *
+           IF      SPA-FTN2-MAX        =   ZERO
+               MOVE    ZERO                TO  SPA-GMN24-FTNSELNUM
+               MOVE    ZERO                TO  SPA-NAI24-FTNSELNUM
+               MOVE    ZERO                TO  SPA-MAE24-FTNSELNUM
+           END-IF
+      *
            .
-       31022-KOHFTN-SPAHENSYU-EXT.
+       3102-KOHFTN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1007,14 +916,11 @@
                WHEN    03
                    MOVE    "P024_TSYEDYMD"      TO  MCP-WIDGET
                WHEN    04
-                   MOVE    "P024_TSYSKJGNSTYMD" TO  MCP-WIDGET
+                   MOVE    "P024_TSYSKJGNSTYMD"      TO  MCP-WIDGET
                WHEN    05
                    MOVE    "P024_TSYTEKK"      TO  MCP-WIDGET
                WHEN    06
                    MOVE    "P024_TSYNINSTYMD"   TO  MCP-WIDGET
-      *        ¶­³¦ÁØ³ºÅö
-               WHEN    07
-                   MOVE    "P024_TSYKYOUKAI"    TO  MCP-WIDGET
                WHEN    08
                    MOVE    "BT1"                TO  MCP-WIDGET
                WHEN    09
@@ -1032,8 +938,6 @@
                    MOVE    "P024_TNKTEKK"      TO  MCP-WIDGET
                WHEN    15
                    MOVE    "P024_TNKNINSTYMD"   TO  MCP-WIDGET
-               WHEN    16
-                   MOVE    "P024_TNKKYOUKAI"    TO  MCP-WIDGET
                WHEN    18
                    MOVE    "BN1"                TO  MCP-WIDGET
                WHEN    19
@@ -1078,14 +982,11 @@
       *D           MOVE    4           TO  SPA-GMN24-CUR
                    MOVE    5           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYSKJGNSTYMD"
-      ***          MOVE    8            TO  SPA-GMN24-CUR
-                   MOVE    7            TO  SPA-GMN24-CUR
+                   MOVE    8            TO  SPA-GMN24-CUR
                WHEN    "P024_TSYTEKK"
                    MOVE    6           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYNINSTYMD"
                    MOVE    4           TO  SPA-GMN24-CUR
-               WHEN    "P024_TSYKYOUKAI"
-                   MOVE    8           TO  SPA-GMN24-CUR
       *
                WHEN    "P024_TNKLIST"
                    MOVE    11          TO  SPA-GMN24-CUR
@@ -1097,14 +998,11 @@
       *D           MOVE    13          TO  SPA-GMN24-CUR
                    MOVE    14          TO  SPA-GMN24-CUR
                WHEN    "P024_FUKUSHI"
-      *D           MOVE    18          TO  SPA-GMN24-CUR
-                   MOVE    16          TO  SPA-GMN24-CUR
+                   MOVE    18          TO  SPA-GMN24-CUR
                WHEN    "P024_TNKTEKK"
                    MOVE    15          TO  SPA-GMN24-CUR
                WHEN    "P024_TNKNINSTYMD"
                    MOVE    13          TO  SPA-GMN24-CUR
-               WHEN    "P024_TNKKYOUKAI"
-                   MOVE    18          TO  SPA-GMN24-CUR
       *        ¸øÈñÉéÃ´
                WHEN    "P024_FTNSELNUM"
                    MOVE    31          TO  SPA-GMN24-CUR
@@ -1164,10 +1062,6 @@
       *    Â¾°ìÉôÉéÃ´ÆþÎÏ
                WHEN    "CLICKED"       ALSO    "BF4"
                    PERFORM 418-KOHFTN-P02K-SEC
-      *H28.11
-      *HAORIÂÐ±þ
-               WHEN    "CLICKED"       ALSO    "APIV3"
-                   PERFORM 2009-API-SYORI-SEC
       *
       *     °Ê³°¤Ï¥¨¥é¡¼
                WHEN    "CLICKED"       ALSO     ANY
@@ -1226,13 +1120,6 @@
            MOVE    SPA-GMN24-TSYTEKKBN TO  WRK-HKNTEKKBN
            PERFORM 41002-HKNTEKKBN-HEN-SEC
            MOVE    WRK-HKNTEKKBN-MEI   TO  SPA-GMN24-TSYLHKNKBN (IDX)
-      *H29.6
-      *    ¶­³¦ÁØ³ºÅö¶èÊ¬
-           MOVE    SPA-GMN24-TSYKYOUKAI
-                                       TO  SPA-NAI24-TSYLKYOUKAI(IDX)
-           MOVE    SPA-GMN24-TSYKYOUKAI    TO  WRK-KYOUKAI
-           PERFORM 41003-KYOUKAI-HEN-SEC
-           MOVE    WRK-KYOUKAI-MEI     TO  SPA-GMN24-TSYLKYOUKAI(IDX)
       *
            INITIALIZE                  SPA-GMN24-TSYS-AREA
       *
@@ -1317,14 +1204,6 @@
            MOVE    SPA-GMN24-TNKTEKKBN TO  WRK-HKNTEKKBN
            PERFORM 41002-HKNTEKKBN-HEN-SEC
            MOVE    WRK-HKNTEKKBN-MEI   TO  SPA-GMN24-TNKLHKNKBN (IDX)
-      *H29.6
-      *    ¶­³¦ÁØ³ºÅö¶èÊ¬
-           MOVE    SPA-GMN24-TNKKYOUKAI
-                                       TO  SPA-NAI24-TNKLKYOUKAI(IDX)
-           MOVE    SPA-GMN24-TNKKYOUKAI    TO  WRK-KYOUKAI
-           PERFORM 41003-KYOUKAI-HEN-SEC
-           MOVE    WRK-KYOUKAI-MEI TO  SPA-GMN24-TNKLKYOUKAI(IDX)
-      *
       *
            INITIALIZE                  SPA-GMN24-TNK-AREA
       *
@@ -1551,29 +1430,24 @@
            INITIALIZE                  SPA-GMN24-FTN-AREA2
       *    ÂÐ¾Ý¤Î¸øÈñ¤Ç¤¢¤ë¤³¤È
            IF      (SPA-NAI24-FTNSELNUM >   ZERO   )
-      *
-      *H28.11 ÀßÄê¶èÊ¬È½Äê¤Ø
-      *        IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-      *                                    =   "015"
-      *                                    OR  "016"
-      *                                    OR  "021"
-      *                                    OR  "038"    )
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "015"
+                                           OR  "016"
+                                           OR  "021"
+                                           OR  "038"    )
       *H26.12
       *            ÆñÉÂ¡¦¾®»ùÆÃÄê¡ÊH26.1¤«¤é¡Ë
-      *          OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-      *                                    =   "052"
-      *                                    OR  "054"   )  AND
-      *               (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-      *                                    >=  "20150101" ))
+                 OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "052"
+                                           OR  "054"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=  "20150101" ))
       ***        OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "281" ) AND
       ***             (SPA-PREFNUM         =    07   ))
       *          ÃÏÊý¸øÈñ¤ÎÂÐ¾Ý
-      *          OR   (SPA-NAI24-TJYOGENKBN (SPA-NAI24-FTNSELNUM)
-      *                                    =   "2"    )
-      *H28.11
-      *        Â¾°ìÉôÉéÃ´¤¢¤ê
-               IF      SPA-NAI24-FTNSYORI  =   1
+                 OR   (SPA-NAI24-TJYOGENKBN (SPA-NAI24-FTNSELNUM)
+                                           =   "2"    )
                    CONTINUE
                ELSE
                    MOVE    "2440"              TO  SPA-ERRCD
@@ -1592,9 +1466,7 @@
                MOVE    SPACE               TO  WRK-FTNEDYMD
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   SPA-FTN2-MAX
-      *
                    IF      SPA-NAI24-TFTNEDYMD (IDX)   >   WRK-FTNEDYMD
-                    AND   (SPA-NAI24-FTNDELKBN2(IDX)  =   SPACE )
                        MOVE    IDX                 TO  IDX-F
                        MOVE    SPA-NAI24-TFTNEDYMD (IDX)
                                                    TO  WRK-FTNEDYMD
@@ -1728,29 +1600,25 @@
       *
       *    ÂÐ¾Ý¤Î¸øÈñ¤Ç¤¢¤ë¤³¤È
            IF      (SPA-NAI24-FTNSELNUM >   ZERO   )
-      *H28.11 ÀßÄê¶èÊ¬È½Äê¤Ø
-      *        IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-      *                                    =   "015"
-      *                                    OR  "016"
-      *                                    OR  "021"
-      *                                    OR  "038"    )
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "015"
+                                           OR  "016"
+                                           OR  "021"
+                                           OR  "038"    )
       *H26.12
       *            ÆñÉÂ¡¦¾®»ùÆÃÄê¡ÊH26.1¤«¤é¡Ë
-      *          OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-      *                                    =   "052"
-      *                                    OR  "054"   )  AND
-      *               (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-      *                                    >=  "20150101" ))
+                 OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "052"
+                                           OR  "054"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=  "20150101" ))
       *
       **         OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "281" ) AND
       **              (SPA-PREFNUM         =    07   ))
       *            ÃÏÊý¸øÈñ¤ÎÂÐ¾ÝÊ¬
-      *          OR   (SPA-NAI24-TJYOGENKBN (SPA-NAI24-FTNSELNUM)
-      *****                                =   "2"    )
-      *H28.11
-      *        Â¾°ìÉôÉéÃ´¤¢¤ê
-               IF      SPA-NAI24-FTNSYORI  =   1
+                 OR   (SPA-NAI24-TJYOGENKBN (SPA-NAI24-FTNSELNUM)
+                                           =   "2"    )
                    CONTINUE
                ELSE
                    MOVE    "2445"              TO  SPA-ERRCD
@@ -1830,7 +1698,7 @@
       *            ÉéÃ´Îß·×
                    ADD     SPA-GMN24-TNYUJGNGAK (IDK)
                                                TO  SPA-P02K-TNYUJGNGAK
-                   IF      SPA-NAI24-TFTNETCKBN (IDK)
+                   IF      SPA-NAI24-TFTNETCKBN (IDX)
                                            NOT =   "0"
                        MOVE    "1"             TO  SPA-P02K-FTNRUIKBN
                    END-IF
@@ -1857,7 +1725,7 @@
       *                ÉéÃ´Îß·×
                        ADD     SPA-GMN24-TNYUJGNGAK (IDK)
                                                TO  SPA-P02K-TNYUJGNGAK
-                       IF      SPA-NAI24-TFTNETCKBN (IDK)
+                       IF      SPA-NAI24-TFTNETCKBN (IDX)
                                                NOT =   "0"
                            MOVE    "1"         TO  SPA-P02K-FTNRUIKBN
                        END-IF
@@ -2060,8 +1928,6 @@
                                    NOT =   LNK-TSY-SKJNINSTYMD(IDX))
                        OR  ( SPA-NAI24-TSYLHKNKBN(IDX)
                                    NOT =   LNK-TSY-HKNTEKKBN(IDX))
-                       OR  ( SPA-NAI24-TSYLKYOUKAI(IDX)
-                                   NOT =   LNK-TSY-KYOUKAISOUKBN(IDX))
                            MOVE    SPA-SYSYMD  TO  LNK-TSY-UPYMD  (IDX)
                            MOVE    SPA-GMN24-TSYDPSTYMD (IDX)
                                            TO  LNK-TSY-NINSTYMD   (IDX)
@@ -2075,10 +1941,6 @@
       *                    ÊÝ¸±Å¬ÍÑ¶èÊ¬
                            MOVE    SPA-NAI24-TSYLHKNKBN (IDX)
                                            TO  LNK-TSY-HKNTEKKBN   (IDX)
-      *                    ¶­³¦ÁØ³ºÅö¶èÊ¬
-                           MOVE    SPA-NAI24-TSYLKYOUKAI (IDX)
-                                           TO  LNK-TSY-KYOUKAISOUKBN
-                                                                  (IDX)
                        END-IF
                    END-IF
                    MOVE    IDX             TO  IDY
@@ -2101,16 +1963,12 @@
                        MOVE    SPA-TERMID      TO  LNK-TSY-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TSY-CREYMD (IDY)
       *                ¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
-                       MOVE    SPA-NAI24-TSYLNINYMD (IDX)
+                       MOVE    SPA-NAI24-TSYLNINYMD (IDY)
                                                TO  LNK-TSY-SKJNINSTYMD
                                                                   (IDY)
       *                ÊÝ¸±Å¬ÍÑ¶èÊ¬
-                       MOVE    SPA-NAI24-TSYLHKNKBN (IDX)
+                       MOVE    SPA-NAI24-TSYLHKNKBN (IDY)
                                                TO  LNK-TSY-HKNTEKKBN
-                                                                  (IDY)
-      *                ¶­³¦ÁØ³ºÅö¶èÊ¬
-                       MOVE    SPA-NAI24-TSYLKYOUKAI (IDX)
-                                               TO  LNK-TSY-KYOUKAISOUKBN
                                                                   (IDY)
                        PERFORM 510-PARA-TSYRRK-OUT-SEC
                    END-IF
@@ -2229,8 +2087,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                    NOT =   LNK-TNK-SKJNINSTYMD(IDX))
                        OR  ( SPA-NAI24-TNKLHKNKBN(IDX)
                                    NOT =   LNK-TNK-HKNTEKKBN(IDX))
-                       OR  ( SPA-NAI24-TNKLKYOUKAI(IDX)
-                                   NOT =   LNK-TNK-KYOUKAISOUKBN(IDX))
                          MOVE    SPA-SYSYMD  TO  LNK-TNK-UPYMD (IDX)
                          MOVE    SPA-GMN24-TNKDPSTYMD (IDX)
                                            TO  LNK-TNK-STYMD   (IDX)
@@ -2241,10 +2097,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  LNK-TNK-SKJNINSTYMD(IDX)
                          MOVE    SPA-NAI24-TNKLHKNKBN (IDX)
                                            TO  LNK-TNK-HKNTEKKBN  (IDX)
-      *                  ¶­³¦ÁØ³ºÅö¶èÊ¬
-                         MOVE    SPA-NAI24-TNKLKYOUKAI (IDX)
-                                           TO  LNK-TNK-KYOUKAISOUKBN
-                                                                (IDX)
       *
                        END-IF
       *                ¹âÎð¼ÔÊ¡»ã
@@ -2275,17 +2127,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPA-TERMID      TO  LNK-TNK-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TNK-CREYMD (IDY)
       *                ¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
-                       MOVE    SPA-NAI24-TNKLNINYMD (IDX)
+                       MOVE    SPA-NAI24-TNKLNINYMD (IDY)
                                                TO  LNK-TNK-SKJNINSTYMD
                                                                   (IDY)
       *                ÊÝ¸±Å¬ÍÑ¶èÊ¬
-                       MOVE    SPA-NAI24-TNKLHKNKBN (IDX)
+                       MOVE    SPA-NAI24-TNKLHKNKBN (IDY)
                                                TO  LNK-TNK-HKNTEKKBN
                                                                   (IDY)
-      *                ¶­³¦ÁØ³ºÅö¶èÊ¬
-                       MOVE    SPA-NAI24-TNKLKYOUKAI (IDX)
-                                           TO  LNK-TNK-KYOUKAISOUKBN
-                                                                (IDY)
                        PERFORM 510-PARA-TNKRRK-OUT-SEC
                    END-IF
                END-IF
@@ -2385,30 +2233,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   SPA-FTN1-MAX  )
                          OR   (SPA-ERRCD   NOT =   SPACE )
-             MOVE    ZERO              TO  FLG-CHKNO
       *      ¾å¸Â³Û¤¬É¬¿Ü¤Ç¤Ê¤¤¤â¤Î(·ë£³£µ¡¢À¸ÊÝ¡¢Àº¿ÀÆþ±¡¡¢»ÄÎ±Ë®¿Í¡Ë
-             IF     (SPA-NAI24-KOHNUM (IDX2)   =   "011"
+             IF      SPA-NAI24-KOHNUM (IDX2)   =   "011"
                                                OR  "012"
                                                OR  "020"
-                                               OR  "025" )
-      *H28.6
-                OR  (SPA-NAI24-KOHNUM (IDX2)   =   "019" )
-               MOVE    1                   TO  FLG-CHKNO
-             END-IF
-      *H27.7
-             IF     (SPA-NAI24-KOHNUM    (IDX2)   =   "964"     )
-               AND  (SPA-NAI24-TKOHSTYMD (IDX2)   >=  "20150101")
-               EVALUATE    SPA-NAI24-TJKYSNUM (IDX2)(1:2)
-                   WHEN    "¥¢"
-                   WHEN    "¥¤"
-                   WHEN    "¥¦"
-                   WHEN    "¥¨"
-                   WHEN    "¥ª"
-                       MOVE    1                   TO  FLG-CHKNO
-               END-EVALUATE
-             END-IF
-      *
-             IF      FLG-CHKNO         =   ZERO
+                                               OR  "025"
+               CONTINUE
+             ELSE
       *        ÅöÆüÍ­¸ú¤Ê¸øÈñ¤Î¤ßÈ½Äê
                IF     (SPA-NAI24-TKOHSTYMD (IDX2)  <=  SPA-SYSYMD )
                  AND  (SPA-NAI24-TKOHEDYMD (IDX2)  >=  SPA-SYSYMD )
@@ -2683,7 +2514,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
            MOVE    SPACE               TO  SPA-GMN24-FTNMSG1
            MOVE    SPACE               TO  SPA-GMN24-FTNMSG2
-           MOVE    ZERO                TO  SPA-NAI24-FTNSYORI
       *
            MOVE    ZERO                TO  WRK-FTN1-IDX
            IF      SPA-GMN24-FTNSELNUM =   ZERO
@@ -2715,8 +2545,98 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 3101-KOH-MEISAI-SEC
       *
       *    ÂÐ¾Ý¤Î¥Ç¡¼¥¿¤ò¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸¤¹¤ë
-           PERFORM 31022-KOHFTN-SPAHENSYU-SEC
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
       *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-PARA-EDANUM
+           MOVE    SPACE               TO  LNK-PTKOHFTN-AREA
+           PERFORM
+               UNTIL   FLG-PARA            =   1
+               MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
+      *        ¸øÈñ£É£Ä¤ÎÆ±¤¸¤â¤Î¤òÂÐ¾Ý¤È¤¹¤ë
+               IF      PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
+                                                        (WRK-FTN1-IDX)
+                   ADD     1                   TO  IDX
+                   IF      IDX                 <=  MAX-KOHFTN
+                       MOVE    PARA-DATA-REC   TO  LNK-PTKOHFTN-REC
+                                                             (IDX)
+                       MOVE    IDX             TO  SPA-FTN2-MAX
+                   END-IF
+               END-IF
+      *
+               MOVE    PARA-EDANUM         TO  WRK-PARA-EDANUM
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    ²èÌÌ¥Æ¡¼¥Ö¥ë¤ØÊÔ½¸¤¹¤ë
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FTN2-MAX
+               MOVE    LNK-PTKOHFTN-REC (IDX)  TO  PTKOHFTN-REC
+      *
+               MOVE    PTKOHFTN-RENNUM     TO  SPA-NAI24-TRENNUM  (IDX)
+               MOVE    PTKOHFTN-TEKSTYMD   TO  SPA-NAI24-TFTNSTYMD(IDX)
+               MOVE    PTKOHFTN-TEKEDYMD   TO  SPA-NAI24-TFTNEDYMD (IDX)
+               MOVE    PTKOHFTN-GAIJGNGAK  TO  SPA-GMN24-TGAIJGNGAK(IDX)
+               MOVE    PTKOHFTN-NYUJGNGAK  TO  SPA-GMN24-TNYUJGNGAK(IDX)
+      *
+               MOVE    PTKOHFTN-TEKSTYMD   TO  WRK-SYMD
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNSTYMD(IDX)
+               MOVE    PTKOHFTN-TEKEDYMD   TO  WRK-SYMD
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNEDYMD(IDX)
+      *
+               MOVE    PTKOHFTN-TERMID(1:1)    TO  SPA-NAI24-TFTNETCKBN
+                                                                  (IDX)
+               IF     (PTKOHFTN-TERMID(1:1)    =   SPACE )
+                   IF     (SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
+                                               =   "015"
+                                               OR  "016"
+                                               OR  "021"
+                                               OR  "038"    )
+      *H26.12
+      *              ÆñÉÂ¡¦¾®»ùÆÃÄê¡ÊH26.1¤«¤é¡Ë
+                     OR  ((SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
+                                               =   "052"
+                                               OR  "054"   )  AND
+                          (SPA-NAI24-TKOHSTYMD (WRK-FTN1-IDX)
+                                               >=  "20150101" ))
+      *
+      *ver.4.7
+      ****           OR  ((SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
+      **                                       =   "281" ) AND
+      ***                 (SPA-PREFNUM         =    07   ))
+      *              ÃÏÊý¸øÈñ¤ÎÂÐ¾Ý
+                     OR   (SPA-NAI24-TJYOGENKBN (WRK-FTN1-IDX)
+                                               =   "2"    )
+                       PERFORM 31021-PTKOHFTNETC-HEN-SEC
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
       *    £±·ï¤â¤Ê¤¤¤È¤­¡¢¸øÈñ¤ÎÆâÍÆ¤ò½é´üÉ½¼¨
            IF      SPA-FTN2-MAX        =   ZERO
                MOVE    SPA-GMN24-TKOHSTYMD (WRK-FTN1-IDX)
@@ -3171,7 +3091,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    P02-P024-TSYSKJGNSTYMD  TO  SPA-GMN24-TSYSKJGNSTYMDW
            MOVE    P02-P024-TSYNINSTYMD    TO  SPA-GMN24-TSYNINSTYMD
            MOVE    P02-P024-TSYTEKK        TO  SPA-GMN24-TSYTEKKBN-G
-           MOVE    P02-P024-TSYKYOUKAI     TO  SPA-GMN24-TSYKYOUKAI-G
       *
       *    ÄãÇ¯¶â¡¡ÁªÂòÈÖ¹æ
            IF      P02-P024-TNKSELNUM  =   SPA-MAE24-TNKSELNUM
@@ -3184,8 +3103,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    P02-P024-TNKEDYMD   TO  SPA-GMN24-TNKEDYMDW
            MOVE    P02-P024-FUKUSHI    TO  SPA-GMN24-FUKUSHI-G
            MOVE    P02-P024-TNKNINSTYMD    TO  SPA-GMN24-TNKNINSTYMD
-           MOVE    P02-P024-TNKTEKK    TO  SPA-GMN24-TNKTEKKBN-G
-           MOVE    P02-P024-TNKKYOUKAI TO  SPA-GMN24-TNKKYOUKAI-G
+           MOVE    P02-P024-TNKTEKK        TO  SPA-GMN24-TNKTEKKBN-G
       *
       *    ¸øÈñÉéÃ´¶â¡¡ÁªÂòÈÖ¹æ
       *****MOVE    P02-P024-FTNSELNUM2 TO  SPA-GMN24-FTNSELNUM2
@@ -3225,12 +3143,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYSKJGNSTYMD-SEC
            END-IF
-      *H29.6
-      *    ¶­³¦ÁØ³ºÅö
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 41012-TSYKYOUKAI-SEC
-           END-IF
-      *
       *    ÄãÇ¯¶â¡¡ÁªÂòÈÖ¹æ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-NENINSELNUM-SEC
@@ -3254,11 +3166,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÄãÇ¯¶â¹âÎðÊ¡»ãÇ¯¶â
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-FUKUSHI-SEC
-           END-IF
-      *H29.6
-      *    ¶­³¦ÁØ³ºÅö
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 41012-TNKKYOUKAI-SEC
            END-IF
       *
       *    ¸øÈñÉéÃ´ ³«»ÏÆü
@@ -3330,7 +3237,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE            TO  SPA-GMN24-TSYSKJGNSTYMD
                MOVE    SPACE            TO  SPA-GMN24-TSYNINSTYMD
                MOVE    SPACE            TO  SPA-GMN24-TSYTEKKBN-G
-               MOVE    SPACE            TO  SPA-GMN24-TSYKYOUKAI-G
            ELSE
                MOVE    SPA-GMN24-TSYSELNUM     TO  SPA-MAE24-TSYSELNUM
       *
@@ -3351,14 +3257,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE            TO  SPA-GMN24-TSYTEKKBN-G
                MOVE    SPA-NAI24-TSYLHKNKBN (WRK-N-IDX)
                                         TO  SPA-GMN24-TSYTEKKBN
-      *        ¶­³¦ÁØ³ºÅö
-               MOVE    SPACE            TO  SPA-GMN24-TSYKYOUKAI-G
-               MOVE    SPA-NAI24-TSYLKYOUKAI (WRK-N-IDX)
-                                        TO  SPA-GMN24-TSYKYOUKAI
-               IF      SPA-GMN24-TSYKYOUKAI =  SPACE
-                   MOVE    ZERO         TO  SPA-GMN24-TSYKYOUKAI
-               END-IF
-               PERFORM 41012-TSYKYOUKAI-SEC
            END-IF
            .
        41012-TSYSELNUM-EXT.
@@ -3550,49 +3448,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        41012-TSYSKJGNSTYMD-EXT.
            EXIT.
-      *
-      *H29.6
-      *****************************************************************
-      *    Äã½êÆÀ¼Ô¡¿¶­³¦ÁØ³ºÅö
-      *****************************************************************
-       41012-TSYKYOUKAI-SEC           SECTION.
-      *
-      *    Ç§ÄêÆü¤«¤éÇ§ÄêÈÏ°Ï¤ÎÆþÎÏ¤Ç½é´üÉ½¼¨
-           IF     (SPA-GMN24-TSYEDYMDW    NOT =   SPACE )
-             AND  (SPA-GMN24-TSYSTYMDW    NOT =   SPACE )
-             AND  (SPA-GMN24-TSYTEKKBN    NOT =   SPACE )
-               IF      SPA-GMN24-TSYKYOUKAI   =   SPACE
-                   MOVE    SPA-GMN24-TSYKYOUKAI-LST(1)
-                                            TO  SPA-GMN24-TSYKYOUKAI-G
-               END-IF
-           END-IF
-      *
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDF     FROM    1   BY  1
-                   UNTIL      (IDF     >   SPA-GMN24-TSYKYOUKAI-MAX)
-                           OR (FLG-OK  =   1    )
-               IF      SPA-GMN24-TSYKYOUKAI
-                                       =   SPA-GMN24-TSYKYOUKAI-LST(IDF)
-                                                              (1:1)
-                   MOVE    SPA-GMN24-TSYKYOUKAI-LST(IDF)
-                                            TO  SPA-GMN24-TSYKYOUKAI-G
-                   MOVE    1                TO  FLG-OK
-               END-IF
-           END-PERFORM
-      *
-           IF      SPA-GMN24-TSYKYOUKAI    =   SPACE
-               CONTINUE
-           ELSE
-               IF      FLG-OK              =   ZERO
-                   MOVE    "2424"              TO  SPA-ERRCD
-                   MOVE    7                   TO  SPA-GMN24-CUR
-               END-IF
-           END-IF
-      *
-           .
-       41012-TSYKYOUKAI-EXT.
-           EXIT.
       *****************************************************************
       *    Ç¯¶â¡¿ÁªÂòÈÖ¹æ 
       *****************************************************************
@@ -3641,7 +3496,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE            TO  SPA-GMN24-FUKUSHI-G
                MOVE    SPACE            TO  SPA-GMN24-TNKNINSTYMD
                MOVE    SPACE            TO  SPA-GMN24-TNKTEKKBN-G
-               MOVE    SPACE            TO  SPA-GMN24-TNKKYOUKAI-G
            ELSE
                MOVE    SPA-GMN24-TNKSELNUM TO  SPA-MAE24-TNKSELNUM
                MOVE  SPA-GMN24-TNKDPSTYMDW (WRK-N-IDX)
@@ -3661,14 +3515,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE            TO  SPA-GMN24-TNKTEKKBN-G
                MOVE  SPA-NAI24-TNKLHKNKBN (WRK-N-IDX)
                                         TO  SPA-GMN24-TNKTEKKBN
-      *        ¶­³¦ÁØ³ºÅö
-               MOVE    SPACE            TO  SPA-GMN24-TNKKYOUKAI-G
-               MOVE    SPA-NAI24-TNKLKYOUKAI (WRK-N-IDX)
-                                        TO  SPA-GMN24-TNKKYOUKAI
-               IF      SPA-GMN24-TNKKYOUKAI =  SPACE
-                   MOVE    ZERO         TO  SPA-GMN24-TNKKYOUKAI
-               END-IF
-               PERFORM 41012-TNKKYOUKAI-SEC
            END-IF
            .
        41012-NENINSELNUM-EXT.
@@ -3839,48 +3685,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41012-TNKNINYMD-EXT.
            EXIT.
       *
-      *H29.6
-      *****************************************************************
-      *    Äã½êÆÀ¼Ô¡¿¶­³¦ÁØ³ºÅö
-      *****************************************************************
-       41012-TNKKYOUKAI-SEC           SECTION.
-      *
-      *    Ç§ÄêÆü¤«¤éÇ§ÄêÈÏ°Ï¤ÎÆþÎÏ¤Ç½é´üÉ½¼¨
-           IF     (SPA-GMN24-TNKEDYMDW    NOT =   SPACE )
-             AND  (SPA-GMN24-TNKSTYMDW    NOT =   SPACE )
-             AND  (SPA-GMN24-TNKTEKKBN    NOT =   SPACE )
-               IF      SPA-GMN24-TNKKYOUKAI   =   SPACE
-                   MOVE    SPA-GMN24-TNKKYOUKAI-LST(1)
-                                            TO  SPA-GMN24-TNKKYOUKAI-G
-               END-IF
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDF     FROM    1   BY  1
-                   UNTIL       IDF     >   SPA-GMN24-TNKKYOUKAI-MAX
-               IF      SPA-GMN24-TNKKYOUKAI
-                                       =   SPA-GMN24-TNKKYOUKAI-LST(IDF)
-                                                              (1:1)
-                   MOVE    SPA-GMN24-TNKKYOUKAI-LST(IDF)
-                                            TO  SPA-GMN24-TNKKYOUKAI-G
-                   MOVE    1                TO  FLG-OK
-                   MOVE    SPA-GMN24-TNKKYOUKAI-MAX   TO  IDF
-               END-IF
-           END-PERFORM
-      *
-           IF      SPA-GMN24-TNKKYOUKAI    =   SPACE
-               CONTINUE
-           ELSE
-               IF      FLG-OK              =   ZERO
-                   MOVE    "2425"              TO  SPA-ERRCD
-                   MOVE    16                  TO  SPA-GMN24-CUR
-               END-IF
-           END-IF
-      *
-           .
-       41012-TNKKYOUKAI-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    ¸øÈñÉéÃ´¡¿³«»ÏÇ¯·îÆü
       *****************************************************************
@@ -4016,9 +3820,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-Z7           TO  SPA-GMN24-GAIJGNGAK
       *        ¸º³Û³ä¹ç¤Î»þ¡¢£±£°£°¤Þ¤Ç
                IF     (SPA-NAI24-FTNSELNUM >   ZERO  )
-      *H28.11    AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-      *                                    =   "960"   )
-                 AND  (SPA-NAI24-FTNSYORI  =   2       )
+                 AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "960"   )
                    IF      SPA-NAI24-GAIJGNGAK  >=  ZERO
                                            AND  <=  100
                        CONTINUE
@@ -4054,9 +3857,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-Z7           TO  SPA-GMN24-NYUJGNGAK
       *        ¸º³Û³ä¹ç¤Î»þ¡¢£±£°£°¤Þ¤Ç
                IF     (SPA-NAI24-FTNSELNUM >   ZERO  )
-      *H28.11    AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-      *                                    =   "960"   )
-                 AND  (SPA-NAI24-FTNSYORI  =   2       )
+                 AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "960"   )
                    IF      SPA-NAI24-NYUJGNGAK  >=  ZERO
                                            AND  <=  100
                        CONTINUE
@@ -4125,13 +3927,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    5                   TO  SPA-GMN24-CUR
                GO      TO      41091-SYOTOKU-CHK-EXT
            END-IF
-      *    ¶­³¦ÁØ³ºÅö
-           IF      SPA-GMN24-TSYKYOUKAI    =   SPACE
-      *        ½é´üÉ½¼¨¤òÀßÄê
-               MOVE    "2424"              TO  SPA-ERRCD
-               MOVE    7                   TO  SPA-GMN24-CUR
-               GO      TO      41091-SYOTOKU-CHK-EXT
-           END-IF
       *
            INITIALIZE                  WRK-NAIBU-IDX-AREA
            MOVE    SPA-NAI24-TSYSELNUM TO  WRK-G-IDX
@@ -4181,13 +3976,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    13                  TO  SPA-GMN24-CUR
                GO      TO      41092-RFUKUSI-CHK-EXT
            END-IF
-      *    ¶­³¦ÁØ³ºÅö
-           IF      SPA-GMN24-TNKKYOUKAI    =   SPACE
-               MOVE    "2425"              TO  SPA-ERRCD
-               MOVE    16                  TO  SPA-GMN24-CUR
-               GO      TO      41092-RFUKUSI-CHK-EXT
-           END-IF
-      *
       *
       *    É½¼¨ÌÀºÙÃæ¤ËÆ±³«»ÏÆü¤¬Â¸ºß¤·¤Ê¤¤¤³¤È
            INITIALIZE                  WRK-NAIBU-IDX-AREA
@@ -4312,52 +4100,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        41093-KOHFTN-CHK-EXT.
-           EXIT.
-      *
-      *H28.11
-      *HAORIÂÐ±þ
-      *****************************************************************
-      *    HAORI¡¡ÂÐ±þ½èÍý
-      *****************************************************************
-       2009-API-SYORI-SEC             SECTION.
-      *
-           EVALUATE    SPA-MCP-WIDGET
-           WHEN    "01"
-      *    ¸«½Ð¤·ÊÔ½¸¤Î¤ß
-      *        ¸«½Ð¤·ÊÑ¹¹
-               PERFORM 3101-KOH-MEISAI-SEC
-           WHEN    "02"
-      *    ¸øÈñ£É£ÄÁªÂò
-               INITIALIZE                  SPA-GMN24-KOHFTNTBL2
-               MOVE    1                   TO  SPA-NAI24-INIT2
-               MOVE    SPA-NAI24-FTNSELNUM TO  WRK-FTN1-IDX
-      *        ¸«½Ð¤·ÊÑ¹¹
-               PERFORM 3101-KOH-MEISAI-SEC
-      *        ÂÐ¾Ý¤Î¥Ç¡¼¥¿¤ò¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸¤¹¤ë
-               PERFORM 31022-KOHFTN-SPAHENSYU-SEC
-           WHEN    "03"
-      *    ¸øÈñÉéÃ´¥Á¥§¥Ã¥¯
-      *        ¸øÈñÉéÃ´ ³«»ÏÆü
-               PERFORM 41031-FTNSTYMD-SEC
-      *        ¸øÈñÉéÃ´ ½ªÎ»Æü
-               IF      SPA-ERRCD           =   SPACE
-      *           ¸øÈñÉéÃ´½é´üÊÔ½¸½èÍý
-                  PERFORM 41031-FTNEDYMD-SEC
-               END-IF
-      *        ¸øÈñÉéÃ´ ³°Íè¾å¸Â³Û
-               IF      SPA-ERRCD           =   SPACE
-                   PERFORM 41031-GAIJGNGAK-SEC
-               END-IF
-      *        ¸øÈñÉéÃ´ Æþ±¡¾å¸Â³Û
-               IF      SPA-ERRCD           =   SPACE
-                   PERFORM 41032-NYUJGNGAK-SEC
-               END-IF
-           WHEN    "04"
-      *    Â¾°ìÉôÉéÃ´ÁªÂò
-               PERFORM 4181-P02K-SYORI-SEC
-           END-EVALUATE
-           .
-       2009-API-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
