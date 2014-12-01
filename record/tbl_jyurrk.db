@@ -1226,3 +1226,39 @@ path	key59 {
 	};
 };
 
+path    del3    {
+        DBDELETE        {
+                DELETE
+                FROM tbl_jyurrk
+                        WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   RENNUM      =   :RENNUM
+			AND   DOUJI_RENNUM =  :DOUJI_RENNUM
+                	AND   KAIKEI_RENNUM = :KAIKEI_RENNUM
+		;
+	};
+};
+
+path	key60	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key60_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+                        AND   SRYYMD      <=  :SRYYMD
+                        AND   EDANUM      =    1
+			ORDER   BY        SRYYMD  DESC,
+                                          DENPNUM,
+			                  RENNUM,
+			                  DOUJI_RENNUM,
+			                  EDANUM
+		;
+	};
+};
+
+
