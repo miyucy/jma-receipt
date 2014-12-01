@@ -9,6 +9,8 @@ fi
 
 . $JMARECEIPT_ENV
 
+trap "cleanup" EXIT
+
 #-------------------------------------------#
 #    定期請求データ作成
 #
@@ -32,8 +34,8 @@ fi
 
 export ORCA_TEMPDIR=orcb033-$$
 HOSPNUM=$9
-LOG_FILE=/var/log/jma-receipt/${HOSPNUM}orcb033.log
-[ -e ${LOG_FILE} ] && rm ${LOG_FILE}
+LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb033.log
+echo $LOGFILE
 
 ERR_FILE_BASE=$(basename ${10})
 ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
@@ -43,38 +45,35 @@ cleanup () {
 	rm -f ${MCP_TEMPDIR}/${HOSPNUM}00TEIKI*
 }
 
-trap "cleanup" 1 2 3 15 
-
-
 [ -e ${ERR_FILE_FULL} ] && rm  ${ERR_FILE_FULL} 
 
 BATCH_PARAM=$1,$2,$3,$4,$5,$6,$7,$8,$9,${ERR_FILE_BASE},${11},${12},${13}
 
 ##   -- ORCT0010 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0010 -parameter "${BATCH_PARAM}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0010 -parameter "${BATCH_PARAM}" > $LOGFILE 2>&1
         if  [ -e ${ERR_FILE_FULL} ]; then
             exit  
         fi
 
 ##   -- ORCT0030 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0030 -parameter "${BATCH_PARAM}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0030 -parameter "${BATCH_PARAM}" >>  $LOGFILE 2>&1
         if  [ -e ${ERR_FILE_FULL} ]; then
             exit  
         fi 
 
 ##   -- ORCT0060 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0060 -parameter "${BATCH_PARAM}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0060 -parameter "${BATCH_PARAM}" >>  $LOGFILE 2>&1
         if  [ -e ${ERR_FILE_FULL} ]; then
             exit  
         fi 
 
 ##   -- ORCT0040 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0040 -parameter "${BATCH_PARAM}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0040 -parameter "${BATCH_PARAM}" >>  $LOGFILE 2>&1
         if  [ -e ${ERR_FILE_FULL} ]; then
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$9,$7,$8,${ERR_FILE_BASE}"
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$9,$7,$8,${ERR_FILE_BASE}" >>  $LOGFILE 2>&1
             exit  
         fi 
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$7$8,$9
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$7$8,$9 >>  $LOGFILE 2>&1
 
         exit

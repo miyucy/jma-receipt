@@ -199,7 +199,6 @@
                05  WRK-CMB-ITM         PIC X(200).
            03  WRK-PNT                 PIC 9(03).
            03  WRK-LSTKBT              PIC X(06).
-           03  WRK-MOTOPG              PIC X(08).
       *
        01  WRK-SHELL-NAME.
            05  FILLER                  PIC X(16) VALUE
@@ -403,7 +402,6 @@
       *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
-               MOVE    SPA-MOTOPG      TO  WRK-MOTOPG
       *
       *        元の画面へ戻す
                IF      SPA-MOTOPG      =   "XB01" OR "XA01"
@@ -414,7 +412,6 @@
                END-IF
       *         
                MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
-               MOVE    WRK-MOTOPG          TO  SPA-MOTOPG
       *
                INITIALIZE              SPA-O01KYOUTU
            END-IF
@@ -1918,7 +1915,6 @@
       *
            MOVE    SPACE               TO  O01
       *
-           INITIALIZE                      O01
            MOVE    SPA-GMN-PRTKBN-G    TO  O01-PRTKBN
            MOVE    SPA-GMN-PRTKBN-MAX  TO  O01-PRTKBN-COUNT
            PERFORM VARYING IDX2    FROM    1   BY  1
@@ -2181,7 +2177,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  OID1
-           INITIALIZE                       OID1
            MOVE    SPA-OIDCD            TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG           TO  OID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2214,7 +2209,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  OID2
-           INITIALIZE                      OID2
            MOVE    SPA-OIDCD2          TO  OID2-ID1CODE
            MOVE    WRK-OIDMSG          TO  OID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

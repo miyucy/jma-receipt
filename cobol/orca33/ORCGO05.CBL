@@ -451,10 +451,8 @@
                MOVE    SPA-NAI-KBT         TO  WRK-NUMX
                MOVE    KKN-KIKAN    (WRK-NUM9)
                                            TO  SPA-GMN-KIKAN
-               MOVE    KKN-SKYSTYMD (WRK-NUM9)
-                                           TO  SPA-NAI-SKYSTYMD
-               MOVE    KKN-SKYEDYMD (WRK-NUM9)
-                                           TO  SPA-NAI-SKYEDYMD
+               MOVE    KKN-SKYSTYMD (IDX1) TO  SPA-NAI-SKYSTYMD
+               MOVE    KKN-SKYEDYMD (IDX1) TO  SPA-NAI-SKYEDYMD
                MOVE    KKN-GETUMATU (WRK-NUM9)
                                            TO  SPA-NAI-GETUMATU
            END-IF
@@ -862,7 +860,6 @@
       *
            MOVE    SPACE               TO  O05
       *
-           INITIALIZE                      O05
            MOVE    SPA-GMN-KBT         TO  O05-KBT
            MOVE    SPA-GMN-KIKAN       TO  O05-KIKAN
       *
@@ -976,7 +973,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  OID1
-           INITIALIZE                       OID1
            MOVE    SPA-OIDCD            TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG           TO  OID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
