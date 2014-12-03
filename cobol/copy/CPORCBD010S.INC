@@ -23,7 +23,7 @@
            03  SBD010-JOBID            PIC 9(07).
            03  SBD010-SHELLID          PIC X(08).
            03  SBD010-HOSPNUM          PIC 9(02).
-           03  SBD010-ERRFLPARA        PIC X(100).
+           03  SBD010-ERRFLPARA        PIC X(1024).
            03  SBD010-SIMEKBN          PIC X(01).
            03  SBD010-SRYYMD           PIC X(08).
            03  SBD010-EDSRYYMD         PIC X(08).
