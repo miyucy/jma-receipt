@@ -271,14 +271,9 @@
                CONTINUE
            ELSE
                IF    ( LINKAREA        NOT =   SPACE )
-                   INITIALIZE              SPA-XB01-AREA
-                                           SPA-XB01KYOUTU
                    MOVE    LNK-KYOUTU  TO  SPA-KYOUTU
+                   INITIALIZE              SPA-XB01KYOUTU
                    MOVE    SPA-MOTOPG  TO  SPA-XB01-MOTOPG
-                   IF      SPA-XB01-MOTOPG     =   "XA01"  OR  "XG01"
-                                               OR  "XG04"
-                       MOVE    SPA-WORK        TO  SPA-XB01-LN-MOTOPG
-                   END-IF
                END-IF
            END-IF
       *
@@ -714,10 +709,6 @@
            MOVE    SPA-XB01-MOTOPG     TO  SPA-SAKIPG
            MOVE    "XB01"              TO  SPA-MOTOPG
       *
-           IF      SPA-XB01-MOTOPG     =   "XA01"  OR  "XG01"
-                                       OR  "XG04"
-               MOVE    SPA-XB01-LN-MOTOPG  TO  SPA-WORK
-           END-IF
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
@@ -738,9 +729,9 @@
       *    入力チェック
            PERFORM 410-INPUT-CHK-SEC
       *
-      *    IF    ( SPA-ERRCD   =   SPACE )
-      *        PERFORM 4201-RUNNING-JOB-CHK-SEC
-      *    END-IF
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4201-RUNNING-JOB-CHK-SEC
+           END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
                IF    ( SPA-GMN-JOBLIST-SEL  =   ZERO )
@@ -763,9 +754,9 @@
       *****************************************************************
        4201-DELETE-SEC                 SECTION.
       *
-      *    IF    ( SPA-ERRCD   =   SPACE )
-      *        PERFORM 4201-RUNNING-JOB-CHK-SEC
-      *    END-IF
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4201-RUNNING-JOB-CHK-SEC
+           END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 42011-DELETE-SEC
@@ -821,9 +812,9 @@
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    LOW-VALUE       TO  MCP-PATHNAME
                    PERFORM 910-DBDELETE-SEC
-      *            IF    ( MCP-RC          NOT =   ZERO )
-      *                MOVE    "1103"      TO  SPA-ERRCD
-      *            END-IF
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "1103"      TO  SPA-ERRCD
+                   END-IF
                END-IF
       *
                PERFORM 900-MONBATCH-FET-SEC
@@ -872,7 +863,6 @@
       *
                    IF    ( JOB-SHELLID =   SPA-NAI-SHELLID )
                     AND  ( JOB-STOPFLG =   3 )
-                    AND  ( JOB-ENDYMD  =   SPACE )
                        MOVE    "1104"  TO  SPA-ERRCD
                    END-IF
       *
