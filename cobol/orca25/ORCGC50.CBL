@@ -34,8 +34,6 @@
       *  04.06.00    NACL-多々納  10/10/01  コメント文字　３０００、
       *                                     連番対応他
       *  04.07.00    NACL-多々納  13/09/XX  第三者行為対応
-      *  04.07.00    NACL-多々納  15/07/XX  診療科・保険組合せ件数追加
-      *  04.08.00    NACL-多々納  16/01/27  文字数確認追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -164,7 +162,7 @@
       *
       *    保険組合せワーク
            03  WRK-GMN-HKNCOMB-COMB.
-               05  WRK-GMN-HKN-LIST    OCCURS  50.
+               05  WRK-GMN-HKN-LIST    OCCURS  30.
                    07  WRK-GMN-THKNCOMBINUM    PIC X(04).
                    07  WRK-GMN-THKNCOMBY1      PIC X(01).
                    07  WRK-GMN-THKNCOMBIMEI    PIC X(100).
@@ -182,7 +180,6 @@
                    07  WRK-SEL         PIC 9(01).
       *
            03  WRK-MOJI-MAX            PIC 9(04).
-      *
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -681,7 +678,7 @@
            MOVE    ZERO                TO  IDH
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
-                              (IDH     >=  50              )
+                              (IDH     >=  30              )
                ADD     1                   TO  IDH
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                            TO  SPA-GMN-THKNCOMBINUM
@@ -830,7 +827,7 @@
            END-IF
            PERFORM
                    UNTIL      (FLG-SYSKANRI   =   1    )
-                       OR     (SPA-GMN-SRYKAMAX   >=  100 )
+                       OR     (SPA-GMN-SRYKAMAX   >=  41 )
                ADD     1                   TO  SPA-GMN-SRYKAMAX
       *
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
@@ -1677,7 +1674,6 @@
            MOVE    SPACE               TO  C50
       *
       *    コラムリストの位置指定
-           INITIALIZE                      C50
            MOVE    ZERO                TO  C50-RECE-ROW
            MOVE    ZERO                TO  C50-RECE-ROWATTR
            IF      WRK-C50-RECE-ROW    NOT =   ZERO
@@ -2010,9 +2006,6 @@
            MOVE    C50-COMMENT         TO  SPA-GMN-COMMENT
            MOVE    ZERO                TO  FLG-BUNREI
            PERFORM 800-COMMENT-CHK-SEC
-           IF      KANACHK-MAX         >   2400
-               MOVE    "0090"              TO  SPA-ERRCD
-           END-IF
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-PTID        =   ZERO
                    MOVE    7                   TO  SPA-GMN-CUR
@@ -2606,11 +2599,6 @@
       *    コメント
            MOVE    ZERO                TO  FLG-BUNREI
            PERFORM 800-COMMENT-CHK-SEC
-           IF      KANACHK-MAX         >   2400
-               MOVE    "0090"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-CUR
-           END-IF
-      *
       *    複写年月
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-COPYYM     =   SPACE
@@ -2809,15 +2797,6 @@
                   (SPA-C50IDCD         =   SPACE )  AND
                   (SPA-GMN-COMMENT     =   SPACE )
                PERFORM 2124-UPDATE-CHK1-SEC
-           END-IF
-      *
-      *H28.1
-           IF      SPA-ERRCD           =   SPACE
-      *        選択番号は１件
-               IF      SPA-GMN-SELNUM-MAX  >  1
-                   MOVE    "0036"              TO  SPA-ERRCD
-                   MOVE    13                  TO  SPA-GMN-CUR
-               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -3935,8 +3914,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-BUNREI          =   1
                MOVE    800                 TO  WRK-MOJI-MAX
            ELSE
-      *!!      MOVE    2400                TO  WRK-MOJI-MAX
-               MOVE    2420                TO  WRK-MOJI-MAX
+               MOVE    2400                TO  WRK-MOJI-MAX
            END-IF
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    WRK-MOJI-MAX        TO  KANACONV-LEN
@@ -4532,10 +4510,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                     (SPA-COMMENT-MAX)
                MOVE    RECECOM-RENNUM      TO  SPA-GMN-TRENNUM
                                                     (SPA-COMMENT-MAX)
-      *H29.5   コメント文字数で変換
-               PERFORM 21031-RECCOMMENT-HEN-SEC
-      **       MOVE    RECECOM-COMMENT     TO  SPA-GMN-TCOMMENT
-      **                                            (SPA-COMMENT-MAX)
+               MOVE    RECECOM-COMMENT     TO  SPA-GMN-TCOMMENT
+                                                    (SPA-COMMENT-MAX)
                MOVE    "tbl_rececom"       TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 920-RECECOM-READ-SEC
@@ -4561,32 +4537,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        2103-RECECOM-HEN-EXT.
-           EXIT.
-      *H29.5
-      *****************************************************************
-      *    コメントチェック処理
-      *****************************************************************
-       21031-RECCOMMENT-HEN-SEC                   SECTION.
-      *
-           INITIALIZE                  ORCXKANACONVAREA
-           MOVE    100                 TO  KANACONV-LEN
-           MOVE    5000                TO  KANACONV-STLEN
-           MOVE    0                   TO  KANACONV-CONV-FLAG
-           MOVE    0                   TO  KANACONV-CHAR-TYPE
-           MOVE    RECECOM-COMMENT     TO  KANACONV-INDATA
-           CALL    "kanaconv"          USING ORCXKANACONVAREA
-           IF     (KANACONV-RETURN     =   ZERO )
-               MOVE    KANACONV-OUTDATA
-                                       TO  SPA-GMN-TCOMMENT
-                                                    (SPA-COMMENT-MAX)
-           ELSE
-               MOVE    KANACONV-OUTDATA
-                                       TO  SPA-GMN-TCOMMENT
-                                                    (SPA-COMMENT-MAX)
-           END-IF
-           .
-      *
-       21031-RECCOMMENT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4648,9 +4598,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    RECECOM-COMMENT     TO  SPA-GMN-COMMENT
            MOVE    ZERO                TO  SPA-NAI-COMMAX
-      *H28.1
-           MOVE    ZERO                TO  FLG-BUNREI
-           PERFORM 800-COMMENT-CHK-SEC
       *
            MOVE    1                   TO  SPA-GMN-CUR
            .
@@ -4890,10 +4837,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "選択番号が有りません"
                                        TO  SPA-ERRMSG
                WHEN    "0036"
-                   STRING  "選択番号が複数選択されています。"
-                           "削除のみ可能です。"
-                                       INTO    SPA-ERRMSG
-                   END-STRING
+                   MOVE    "選択番号が複数選択されています。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "削除のみ可能です。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "0004"
                    MOVE    "文例登録番号エラー"
                                        TO  SPA-ERRMSG
@@ -4917,10 +4864,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0010"
-                   STRING  "文例の最大登録番号が９９９です。"
-                           "これ以上自動追加できません。"
-                                       INTO    SPA-ERRMSG
-                   END-STRING
+                   MOVE    "文例の最大登録番号が９９９です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "これ以上自動追加できません。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "0011"
                    MOVE
                    "患者が選択されてません。文例の処理しかできません"
@@ -4943,6 +4890,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                WHEN    "0031"
                    MOVE    "複写月数は１２までです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE    "複写開始年月が未入力です。"
                                        TO  SPA-ERRMSG
                WHEN    "0032"
                    MOVE    "複写開始年月が未入力です。"
@@ -4981,14 +4931,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING  "警告！！"
                            "文例は４００文字までの登録です。"
                            "４００文字以上は登録時に削除します。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0090"
-                   STRING  SPA-NAI-COMMAX
-                           "文字となります。"
-                           "2400文字（全角1200文字）以内に"
-                           "文字数を減らして下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -5122,7 +5064,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-C50ID1-FLG
       *
            MOVE    SPACE               TO  C50ID1
-           INITIALIZE                      C50ID1
            MOVE    SPA-C50IDCD         TO  C50ID1-ID1CODE
            MOVE    WRK-C50IDMSG        TO  C50ID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
