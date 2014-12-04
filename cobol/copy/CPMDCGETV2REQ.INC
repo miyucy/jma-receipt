@@ -19,7 +19,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.07.00     NACL-多々納  14/12/XX  診療月数対応
-      * 05.00.00     NACL-多々納  17/08/XX  伝票番号追加対応
       *****************************************************************
       ******************************************************************
       *    ＡＰＩリクエスト診療行為情報取得 (xml2)
@@ -31,12 +30,12 @@
             02  MDCREQ-MODE              PIC S9(9)   BINARY.
             02  MDCREQ-RECORDNAME        PIC X(128).
             02  MDCREQ-MEDICALREQ.
-      *       入外区分（Ｉ：入院）
-              03  MDCREQ-INOUT-CLASS       PIC X(1).
       *       患者番号
               03  MDCREQ-PATIENTID         PIC X(20).
       *       診療日付
               03  MDCREQ-PERFORM-DATE      PIC X(10).
+      *       入外区分（１：入院）
+      ****    03  MDCREQ-OUTPATIENT-CLASS  PIC X(1).
       *       診療月数
               03  MDCREQ-FOR-MONTHS        PIC X(02).
       *
@@ -69,9 +68,4 @@
                     06  MDCREQ-PROVIDER-NUMBER       PIC X(08).
       *             受給者番号
                     06  MDCREQ-RECIPIENT-NUMBER      PIC X(20).
-      *         伝票番号
-                04  MDCREQ-INVOICD-NUMBER    PIC X(07).
-      *H30.1
-      *         レセ電移行分対象
-                04  MDCREQ-CONTAIN-MIGRATION     PIC X(05).
       *
