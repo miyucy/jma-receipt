@@ -110,15 +110,10 @@
       *                                     改ページするよう修正
       *  04.07.07    NACL-門脇    14/10/15  療養期間の記載修正
       *  04.07.08    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *  04.07.09    NACL-門脇    15/03/09  症状詳記９０の対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
-      *
-      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
-      *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -516,13 +511,6 @@
            03  WRK-KGK2            PIC ZZ.
            03  WRK-RECEKAISU       PIC ZZZ.
       *
-       01  WRK-ERR-MSG-AREA.
-           03  WRK-ERR-MSG-1.
-               05  FILLER          PIC X(50)   VALUE
-               "★★０５９で始まる「その他材料コード」が使用されて". 
-               05  FILLER          PIC X(10)   VALUE
-               "います★★". 
-      *
        01  WRK-CONS-AREA.    
       *    改行コード
            03  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
@@ -579,11 +567,9 @@
            03  FILLER              PIC X(52)   VALUE
                "【廃用症候群に係る評価表】".
            03  FILLER              PIC X(52)   VALUE
-               "【上記以外の診療報酬明細書】".
-           03  FILLER              PIC X(52)   VALUE
                "【医薬品医療機器等法に規定する治験に係る治験概要】".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
-           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   12.
+           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   11.
       *
       *     
            COPY    "ORCA-DBMETA".
@@ -856,11 +842,6 @@
            OPEN    OUTPUT              RECEYMD-FILE     
       *
            MOVE    ZERO                TO  WRK-RECENUM
-      *
-      *    診療情報システム用のとき処理終了
-           IF      WRK-PARA-PRTKBN     =   "B"
-               MOVE    2                   TO  FLG-STS
-           END-IF
       *
            IF      FLG-STS             =   ZERO
               PERFORM 990-RECE41-READ-SEC
@@ -1534,14 +1515,6 @@
                MOVE   RECE41-SYOCD         TO  HC22-SYOCD
            END-IF     
       *
-      *    レセプト種別不明のときは原因を編集する
-           IF      CNT-PAGE            =   1
-               IF    ( RECE41-RECESYUBETU  =    ZERO )
-               OR    ( RECE41-ERR-ERRKBN   >    ZERO )
-                   PERFORM 3101-FUMEI-HENSYU-SEC
-               END-IF
-           END-IF
-      *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN NOT =   "1"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
@@ -1558,22 +1531,7 @@
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    レセプト種別不明のとき不明の原因を編集処理
-      *****************************************************************
-       3101-FUMEI-HENSYU-SEC           SECTION.
-      *
-           EVALUATE    RECE41-ERR-ERRKBN
-               WHEN    15
-                   MOVE    WRK-ERR-MSG-1   TO   HC22-HEAD (2)
-           END-EVALUATE
-           INSPECT HC22-HEAD-G REPLACING   ALL "  "    BY  "　"
-      *
-           .
-       3101-FUMEI-HENSYU-EXT.
-           EXIT.
-      *
+      *     
       *****************************************************************
       *    帳票編集<続紙ヘッダー部>処理
       *****************************************************************
@@ -2323,9 +2281,9 @@
            MOVE    "key9"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *     
-      *    症状詳記コメント（５０、５１、５２、９０）
+      *    症状詳記コメント（５０、５１、５２）     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
-           MOVE    "key23"             TO  WRK-MCP-PATHNAME
+           MOVE    "key12"             TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
            .
        360-HC101-COMMENT-HEN-EXT.
@@ -2414,7 +2372,7 @@
                            MOVE    TBL-RECECOM-NAME (8)
                                                    TO  WRK-RECECOM-NAME
                        ELSE
-                           MOVE    TBL-RECECOM-NAME (12)
+                           MOVE    TBL-RECECOM-NAME (11)
                                                    TO  WRK-RECECOM-NAME
                        END-IF
                    WHEN    "51"
@@ -2424,10 +2382,6 @@
                    WHEN    "52"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
                        MOVE    TBL-RECECOM-NAME (10)
-                                               TO  WRK-RECECOM-NAME
-                   WHEN    "90"
-                       MOVE    1               TO  FLG-RECECOM-SJKBN
-                       MOVE    TBL-RECECOM-NAME (11)
                                                TO  WRK-RECECOM-NAME
                END-EVALUATE
            END-IF
@@ -2779,9 +2733,8 @@
            MOVE    RECE41-TEKSTYMD     TO  RECE08-TEKSTYMD
            MOVE    "3"                 TO  RECE08-TEISYUTUSAKI
       *****IF      RECE41-PTNUM        =   SPACE
-           IF      RECE41-ERR-ERRKBN   >    ZERO
-               MOVE    ZERO                TO  RECE08-RECESYUBETU
-           ELSE
+      *         MOVE    ZERO                TO  RECE08-RECESYUBETU
+      *     ELSE      
                IF      TBL-RECE-RENNUM (IDXY)  =   1                                 
                    MOVE    RECE41-RECESYUBETU  TO  RECE08-RECESYUBETU
                ELSE
@@ -2789,7 +2742,7 @@
                    MOVE    "3"                 TO  RECE08-RECESYUBETU
                                                                 (4:1)
                END-IF                                                         
-           END-IF
+      *****END-IF    
            MOVE    RECE41-PTNUM        TO  RECE08-PTNUM
            PERFORM VARYING IDX FROM    20  BY  -1
                    UNTIL   IDX <       1
@@ -3018,7 +2971,6 @@
       *    テスト患者、レセプト種別不明のとき更新しない
            IF    ( RECE41-TSTPTNUMKBN  =   "1"  )
            OR    ( RECE41-RECESYUBETU  =   ZERO )
-           OR    ( RECE41-ERR-ERRKBN   >   ZERO )
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
       *          
@@ -3347,32 +3299,6 @@
       *    データ削除処理
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
-      *
-      *    診療情報システム用のとき
-           IF      WRK-PARA-PRTKBN     =   "B"
-               IF      WRK-PARA-SYOKBN     =   "1"
-      *            レセ電
-                   INITIALIZE                  RECEDEN-REC
-                   MOVE    WRK-PARA-HOSPNUM    TO  RECEDEN-HOSPNUM
-      *********    MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-      *********    MOVE    3                   TO  RECEDEN-TEISYUTUSAKI
-                   MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-                   MOVE    "del1"              TO  MCP-PATHNAME
-                   PERFORM 900-ORCDBMAIN-SEC
-                   IF      MCP-RC           NOT =   ZERO
-                       DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
-                               " MCP-RC=" MCP-RC
-                       MOVE
-                   "診療情報システム用削除処理でエラーとなりました"
-                                               TO    WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                   END-IF
-               END-IF
-               GO  TO  5001-DB-DELETE-EXT
-           END-IF
       *
            IF      WRK-PARA-SYOKBN     =   "1"
       *        削除処理（一括分）
@@ -3833,7 +3759,6 @@ grpsys                     PERFORM 900-ORCDBMAIN-SEC
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    CNT-OUT         TO  JOB-UPDCNT
-               MOVE    CNT-RECE41      TO  JOB-UPDCNT1
                PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *

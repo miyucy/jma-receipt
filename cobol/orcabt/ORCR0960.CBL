@@ -73,15 +73,10 @@
       *  04.07.06    NACL-門脇    14/10/02  摘要欄の最終行まで記載してから
       *                                     改ページするよう修正
       *  04.07.07    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *  04.07.08    NACL-門脇    15/06/23  食事回数記載修正
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
-      *
-      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
-      *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -514,17 +509,9 @@
            03  WRK-KGK9            PIC ZZ,ZZZ,ZZ9.
            03  WRK-KGK4            PIC ZZ,ZZZ,ZZZ.
            03  WRK-KGK2            PIC ZZ.
-           03  WRK-KGK22           PIC Z9.
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-RECEKAISU       PIC ZZZ.
            03  WRK-KINGAKUZ9       PIC Z,ZZZ,ZZZ.
-      *
-       01  WRK-ERR-MSG-AREA.
-           03  WRK-ERR-MSG-1.
-               05  FILLER          PIC X(50)   VALUE
-               "★★０５９で始まる「その他材料コード」が使用されて". 
-               05  FILLER          PIC X(10)   VALUE
-               "います★★". 
       *
        01  WRK-CONS-AREA.    
       *    改行コード
@@ -867,11 +854,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECEYMD-HOSPNUM
            OPEN    OUTPUT              RECEYMD-FILE     
       *
            MOVE    ZERO                TO  WRK-RECENUM
-      *
-      *    診療情報システム用のとき処理終了
-           IF      WRK-PARA-PRTKBN     =   "B"
-               MOVE    2                   TO  FLG-STS
-           END-IF
       *
            IF      FLG-STS             =   ZERO
               PERFORM 990-RECE82-READ-SEC
@@ -1474,14 +1456,6 @@ grpsys        PERFORM 900-DBSELECT-SEC
                MOVE   RECE82-SYOCD         TO  HCN50-SYOCD
            END-IF     
       *
-      *    レセプト種別不明のときは原因を編集する
-           IF      CNT-PAGE            =   1
-               IF    ( RECE82-RECESYUBETU  =    ZERO )
-               OR    ( RECE82-ERR-ERRKBN   >    ZERO )
-                   PERFORM 3101-FUMEI-HENSYU-SEC
-               END-IF
-           END-IF
-      *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN NOT =   "1"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
@@ -1497,21 +1471,6 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
            .
        20021-HEAD-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト種別不明のとき不明の原因を編集処理
-      *****************************************************************
-       3101-FUMEI-HENSYU-SEC           SECTION.
-      *
-           EVALUATE    RECE82-ERR-ERRKBN
-               WHEN    15
-                   MOVE    WRK-ERR-MSG-1   TO   HCN50-HEAD (2)
-           END-EVALUATE
-           INSPECT HCN50-HEAD-G REPLACING  ALL "  "    BY  "　"
-      *
-           .
-       3101-FUMEI-HENSYU-EXT.
            EXIT.
       *     
       *****************************************************************
@@ -2142,11 +2101,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
       *    食事療養（日）          
-           IF   RECE82-SHOKUJITOTALKIN  >  0
-             MOVE  RECE82-SHOKUJITOTALDAY
-                                     TO  WRK-KGK22
-             MOVE  WRK-KGK22         TO  HCN50-SYONISSU
-           END-IF
+           MOVE    RECE82-SHOKUJITOTALDAY
+                                     TO  WRK-KGK2
+           MOVE    WRK-KGK2          TO  HCN50-SYONISSU
       *
       *    食事療養（ハ）          
            MOVE    RECE82-SHOKUJITOTALKIN
@@ -3067,17 +3024,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            MOVE    "00"                TO  RECE08-PREFNUM
            MOVE    RECE82-TEKSTYMD     TO  RECE08-TEKSTYMD
            MOVE    "3"                 TO  RECE08-TEISYUTUSAKI
-           IF      RECE82-ERR-ERRKBN   >    ZERO
-               MOVE    ZERO                TO  RECE08-RECESYUBETU
+           IF      TBL-RECE-RENNUM (IDXY)  =   1                                 
+               MOVE    RECE82-RECESYUBETU  TO  RECE08-RECESYUBETU
            ELSE
-               IF      TBL-RECE-RENNUM (IDXY)  =   1
-                   MOVE    RECE82-RECESYUBETU  TO  RECE08-RECESYUBETU
-               ELSE
-                   MOVE    RECE82-RECESYUBETU  TO  RECE08-RECESYUBETU
-                   MOVE    "3"                 TO  RECE08-RECESYUBETU
-                                                                (4:1)
-               END-IF
-           END-IF
+               MOVE    RECE82-RECESYUBETU  TO  RECE08-RECESYUBETU
+               MOVE    "3"                 TO  RECE08-RECESYUBETU
+                                                            (4:1)
+           END-IF                                                         
            MOVE    RECE82-PTNUM        TO  RECE08-PTNUM
            PERFORM VARYING IDX FROM    20  BY  -1
                    UNTIL   IDX <       1
@@ -3288,7 +3241,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    テスト患者、レセプト種別不明のとき更新しない
            IF    ( RECE82-TSTPTNUMKBN  =   "1"  )
            OR    ( RECE82-RECESYUBETU  =   ZERO )
-           OR    ( RECE82-ERR-ERRKBN   >   ZERO )
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
       *          
@@ -3610,32 +3562,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
       *
-      *    診療情報システム用のとき
-           IF      WRK-PARA-PRTKBN     =   "B"
-               IF      WRK-PARA-SYOKBN     =   "1"
-      *            レセ電
-                   INITIALIZE                  RECEDEN-REC
-                   MOVE    WRK-PARA-HOSPNUM    TO  RECEDEN-HOSPNUM
-      *********    MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-      *********    MOVE    3                   TO  RECEDEN-TEISYUTUSAKI
-                   MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-                   MOVE    "del1"              TO  MCP-PATHNAME
-                   PERFORM 900-ORCDBMAIN-SEC
-                   IF      MCP-RC           NOT =   ZERO
-                       DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
-                               " MCP-RC=" MCP-RC
-                       MOVE
-                   "診療情報システム用削除処理でエラーとなりました"
-                                               TO    WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                   END-IF      
-               END-IF
-               GO  TO  5001-DB-DELETE-EXT
-           END-IF
-      *
            IF      WRK-PARA-SYOKBN     =   "1"
       *        請求管理削除処理（一括分）
                INITIALIZE                      RECE10-REC
@@ -3895,7 +3821,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    CNT-OUT         TO  JOB-UPDCNT
-               MOVE    CNT-RECE82      TO  JOB-UPDCNT1
                PERFORM   900-CALL-ORCSJOB-SEC
            END-IF
       *
