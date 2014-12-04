@@ -8350,6 +8350,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO      TO      4101125-SYOSIN-CHK-EXT
                END-IF
       *
+      *H27.1   ÂÅ·ëÎ¨£µ³ä°Ê²¼¡¡£È£²£·.£±¤«¤é
+               IF      (SPA-COM-INPUTCD(SPA-GMN-IDX) =  "111012710")
+                  AND  (SGDAY-SDAY             <   "20150101" )
+                   MOVE    "1104"              TO  SPA-ERRCD
+                   GO      TO      4101125-SYOSIN-CHK-EXT
+               END-IF
+      *
                IF      SGDAY-SDAY          >   SPA-SRYYMD 
                    MOVE    "1101"              TO  SPA-ERRCD
                ELSE
@@ -12653,6 +12660,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 530-KID2SET-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
+      *
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "K02    "           TO  MCP-WINDOW.

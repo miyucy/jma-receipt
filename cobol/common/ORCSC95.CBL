@@ -3806,60 +3806,6 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
       *!
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê°åÎÅµ¡´Ø¾ðÊó¡Ë
-      *    MOVE    SPACE               TO  SYS-1001-REC
-      *    INITIALIZE                  SYS-1001-REC
-      *    MOVE    "1001"              TO  SYS-1001-KANRICD
-      *    MOVE    "*"                 TO  SYS-1001-KBNCD
-      *    MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
-      *    MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
-      *    MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-      *    MOVE    SYS-1001-REC        TO  MCPDATA-REC
-      *
-      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
-      *    MOVE    "key10"             TO  MCP-PATHNAME
-      *    PERFORM 910-DBSELECT-SEC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "key10"             TO  MCP-PATHNAME
-      *        PERFORM 900-SYSKANRI-READ-SEC
-      *    ELSE
-      *        MOVE    SPACE               TO  SYS-1001-REC
-      *        INITIALIZE                  SYS-1001-REC
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1001-REC
-      *        ÉÂ±¡¼ïÊÌ
-      *        MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
-      *        IF      SPA-BEDKBN          =   ZERO
-      *            CONTINUE
-      *        ELSE
-      *        ÉÂ¾²¿ô
-      *            MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
-      *        ÉÂ¾²¿ô¡Ê°ìÈÌ¡Ë
-      *            IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
-      *                   (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
-      *                MOVE    ZERO                TO  SPA-BEDSUIPN
-      *            ELSE
-      *                MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
-      *            END-IF
-      *        END-IF
-      *        ¾ÃÈñÀÇÃ¼¿ôÀßÄê
-      *        MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
-      *    ELSE
-      *        MOVE    SPACE                   TO  SPA-TAX-HASU-KBN
-      *    END-IF
-      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
-      *    MOVE    "key10"             TO  MCP-PATHNAME
-      *    PERFORM 990-DBCLOSE-SEC
-      *
-      *    »ÜÀß´ð½à¸¡º÷
-      *    PERFORM 1009-SISETU-KIJUN-SEC
-      *    ¤½¤ÎÂ¾¥·¥¹¥Æ¥à´ÉÍý
-      *    PERFORM 3009-SYSKANRI-SAISET-SEC
-      *    Êñ³ç¿ÇÎÅ¹Ô°Ù»»Äê
-      *    PERFORM 10010-HKTSANTEI-SEC
-      *
       *    ´µ¼Ô¾ðÊó¤ÎºÆ¥»¥Ã¥È
            PERFORM 1001-SPA-JYUSIN-SEC
       *
@@ -3875,6 +3821,7 @@
            MOVE    WRK-SYOSINYMD1      TO  SPA-SYOYMD-OLD
       *    ºÇ½é¤Î½é¿Ç»»ÄêÆü
            MOVE    WRK-SYOSINYMDS      TO  SPA-SYOYMD1
+      *
       *£È£²£°¡¥£´¤ÎÏ«ºÒ½é¿Ç²þÀµÂÐ±þ
       *    ½é¿Ç¿Ç»»ÄêÆü¡ä£È£²£°¡¥£´¡¥£±
            MOVE    SPACE               TO  SPA-SYOYMD-RSI
@@ -3992,6 +3939,22 @@
                IF     (WRK-SYO-YMD1    =   SPACE        )
                OR     (WRK-YMDS-1      <   WRK-SYO-YMD1 )
                   MOVE    WRK-YMDS-1      TO  WRK-SYO-YMD1
+               END-IF
+           END-IF
+      *
+      *H27.1 
+      *    ½é¿ÇÎÁ¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
+           IF      SPA-SRYYMD          >=  "20150101"
+               MOVE    "111012710"         TO  WRK-SRYCD
+               PERFORM 30091-SANTEI-CHK-SEC
+               IF      WRK-YMDS        NOT =   SPACE
+                   IF      WRK-YMDS        >   WRK-SYO-YMD
+                       MOVE    WRK-YMDS        TO  WRK-SYO-YMD
+                   END-IF
+                   IF     (WRK-SYO-YMD1    =   SPACE        )
+                   OR     (WRK-YMDS-1      <   WRK-SYO-YMD1 )
+                      MOVE    WRK-YMDS-1      TO  WRK-SYO-YMD1
+                   END-IF
                END-IF
            END-IF
       *
@@ -4185,6 +4148,7 @@
            END-IF
       *H25.4   ¾Ò²ð¤Ê¤·
       *    Æ±Æü½é¿Ç¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë¡Ê£È£²£µ¡¥£´¤«¤é¡Ë
+      *    ¡ÊH27.1¡¡½é¿Ç¡ÊÆ±°ìÆü£²²ÊÌÜ ¸ºÅÀµ¬Äê³ºÅö¡Ë
            MOVE    "111012610"         TO  WRK-SRYCD
            PERFORM 30091-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD1      =   SPACE  )  OR

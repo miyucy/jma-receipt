@@ -74,6 +74,7 @@
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/03/XX  Ï«ºÒ¥³¡¼¥É¥ì¥»ÅÅ¥³¡¼¥ÉÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/09/XX  Ï«ºÒÆ±ÆüºÆ¿Ç¥³¡¼¥ÉÄÉ²ÃÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  14/12/XX  £È£²£·Ç¯£±·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -444,40 +445,38 @@
       *H25.4 ¤«¤é
       *    ½é¿ÇÎÁ¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë
            03  FILLER              PIC X(14)   VALUE   "110F 111012510".
-      *    Æ±Æü½é¿Ç¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë
+      *    Æ±Æü½é¿Ç¡ÊÆ±°ìÆü£²²ÊÌÜ¡¦¸ºÅÀµ¬Äê³ºÅö¤Î¾ì¹ç¡Ë¡Ê¶¦ÄÌ¡Ë
            03  FILLER              PIC X(14)   VALUE   "110FD111012610".
       *    ³°Íè¿ÇÎÅÎÁ¡ÊÂ¾°åÎÅµ¡´Ø¤Ø¾Ò²ð¡Ë
            03  FILLER              PIC X(14)   VALUE   "311  112016310".
-      *    ³°Íè¿ÇÎÅÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡Ë¡ÊÂ¾°åÎÅµ¡´Ø¤Ø¾Ò²ð¡Ë
+      *    ³°Íè¿ÇÎÅÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡¦¸ºÅÀµ¬Äê³ºÅö¤Î¾ì¹ç¡Ë¡Ê¶¦ÄÌ¡Ë
            03  FILLER              PIC X(14)   VALUE   "310KD112016410".
       *    Æ±Æü³°Íè¿ÇÎÅÎÁ¡ÊÂ¾°åÎÅµ¡´Ø¤Ø¾Ò²ð¡Ë
            03  FILLER              PIC X(14)   VALUE   "311D 112016550".
       *
-      *H27.4 ¤«¤é¤ÎÍ½Äê
+      *H27.1 ¤«¤é
       *    ½é¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "120F 111012710".
+           03  FILLER              PIC X(14)   VALUE   "120F 111012710".
       *    ºÆ¿ÇÎÁ¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "120  112016610".
+           03  FILLER              PIC X(14)   VALUE   "120  112016610".
       *    ÅÅÏÃÅùºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "120T 112016750".
+           03  FILLER              PIC X(14)   VALUE   "120T 112016750".
       *    Æ±ÆüºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "120D 112016850".
+           03  FILLER              PIC X(14)   VALUE   "120D 112016850".
       *    Æ±ÆüÅÅÏÃÅùºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "120S 112016950".
-      *    ºÆ¿ÇÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡¦ÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "120KD112017010".
-      *    ÅÅÏÃÅùºÆ¿Ç¡ÊÆ±°ìÆü£²²ÊÌÜ¡¦ÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "120JD112017150".
+           03  FILLER              PIC X(14)   VALUE   "120S 112016950".
+      *    ºÆ¿ÇÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡¦¸ºÅÀµ¬Äê³ºÅö¤Î¾ì¹ç¡Ë
+           03  FILLER              PIC X(14)   VALUE   "120KD112017010".
+      *    ÅÅÏÃÅùºÆ¿Ç¡ÊÆ±°ìÆü£²²ÊÌÜ¡¦¸ºÅÀµ¬Äê³ºÅö¤Î¾ì¹ç¡Ë
+           03  FILLER              PIC X(14)   VALUE   "120JD112017150".
       *    ³°Íè¿ÇÎÅÎÁ¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "321  112017310".
+           03  FILLER              PIC X(14)   VALUE   "321  112017310".
       *    Æ±Æü³°Íè¿ÇÎÅÎÁ¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *    03  FILLER              PIC X(14)   VALUE   "321D 112017450".
-      *??* ³°Íè¿ÇÎÅÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡Ë¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-      *??* 03  FILLER              PIC X(14)   VALUE   "320KD112016410".
+           03  FILLER              PIC X(14)   VALUE   "321D 112017450".
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
-           03  TBL-SINSATU-OCC         OCCURS  20    INDEXED  TBL-IDX.
-      *??  03  TBL-SINSATU-OCC         OCCURS  29    INDEXED  TBL-IDX.
+      **   03  TBL-SINSATU-OCC         OCCURS  20    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  29    INDEXED  TBL-IDX.
       *        £±¡§°ìÈÌ¡¢£²¡§¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡¢£³¡§³°Íè¿ÇÎÅÎÁ
                05  TBL-KAISU           PIC 9(01).
       *        £±:¾Ò²ð¤Ê¤·¡¢£²¡§ÂÅ·ëÎ¨£µ³ä°Ê²¼
@@ -1089,6 +1088,8 @@
                    PERFORM 100111-HOUMON-CHK-SEC
       *        ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ
                WHEN    SPA-ZAIMATU-ARI NOT =   ZERO
+      *H26.12
+                  OR  (SPA-ZAIMATU-ARI2    =   1   )
                    PERFORM 100111-HOUMON-CHK-SEC
       *
       *        ³«Êü·¿ÉÂ±¡¶¦Æ±»ØÆ³ÎÁ¡Ê£±¡ËÅù¤ÎÈ½Äê
@@ -1912,6 +1913,8 @@
       *H25.4   ¾Ò²ð¤Ê¤·
                WHEN    "111012510"
                WHEN    "111012610"
+      *H27.1   ÂÅ·ëÎ¨???
+               WHEN    "111012710"
       *            ¼õ¿ÇÍúÎòÈ½Äê
                    PERFORM 100131-RSIJYURRKCHK-SEC
            END-EVALUATE
@@ -5581,6 +5584,15 @@
       *
       *    ¿Ç»¡ÎÁ¤ÎÈ½Äê
            PERFORM 2001-SINSATU-CHK-SEC
+      *
+      *H27.1
+      *    ÂÅ·ëÎ¨£µ³ä°Ê²¼¤Î¥Á¥§¥Ã¥¯
+           IF     (FLG-TBL             =   1    )
+             AND  (SPA-ERRCD           =   SPACE)
+             AND  (SPA-SRYYMD          >=  "20150101" )
+               PERFORM 20012-DAKETU-CHK-SEC
+           END-IF
+      *
       *H25.9
            IF     (FLG-TBL             =   ZERO )
              AND  (SPA-ERRCD           =   SPACE )
@@ -5730,6 +5742,42 @@
       *
            .
        20001-SINSATURYOCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÂÅ·ëÎ¨¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       20012-DAKETU-CHK-SEC               SECTION.
+      *
+           IF      WRK-ETCKBN          =   "2"
+      *        ÂÅ·ëÎ¨£µ³ä°Ê²¼¤Î¥³¡¼¥É¤òÂÐ¾Ý¤Ç¤Ê¤¤»þ¤ËÆþÎÏ
+               IF      SPA-DAKT50-KBN  NOT =   1
+                   MOVE    "K111"          TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        ¾Ò²ð¾õ¤Ê¤·¤Ï¥Á¥§¥Ã¥¯¤Ê¤·
+               IF     (WRK-ETCKBN          =   "1")
+      *????????? AND  (WRK-KBN2            =   "D")   *??£²²ÊÌÜ¤Î¤ß¡©
+                   CONTINUE
+               ELSE
+                   IF      SPA-DAKT50-KBN      =   1
+                       MOVE    "K112"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD       NOT =   SPACE )
+               IF     (WRK-COM-KZMFLG (IDX-Z)
+                                           =   SPACE ) AND
+                      (LNK-ORCSC-KEI-IDX   =   ZERO )
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-CUR    (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+               ELSE
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       20012-DAKETU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æ±Æü½é¿Ç¥Á¥§¥Ã¥¯½èÍý
