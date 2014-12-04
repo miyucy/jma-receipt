@@ -2052,6 +2052,8 @@
                        WHEN    "099110001"
       *                紹介状なし追加
                        WHEN    "111012510"
+      *H27.1           妥結率５割以下
+                       WHEN    "111012710"
                            MOVE    1             TO  FLG-SYOSIN-OK
                    END-EVALUATE
            END-IF
