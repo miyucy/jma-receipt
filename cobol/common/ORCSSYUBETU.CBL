@@ -1,4 +1,4 @@
-       *******************************************************************
+      *******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -117,15 +117,6 @@
       *
       *  04.07.01    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
       *  04.07.02    NACL-藤原    14/12/05  平成２７年１月改正対応
-      *  04.07.03    NACL-藤原    14/12/08  月途中に公費の負担者番号等の
-      *                                     変更があった場合の記載対応
-      *                                     法別番号、適用開始日の順とする
-      *
-      *  04.08.01    NACL-藤原    15/10/08  複数枚レセプト分割対応
-      *                                     公費単独の２回以上の分割対応
-      *  04.08.02    NACL-藤原    15/12/22  施設入所時の分割対応
-      *  04.08.03    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
-      *                                     レセプトの分割対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -210,8 +201,6 @@
       *
            03  WRK-SEIHO-FLG           PIC 9(01).
       *
-           03  WRK-RECEIPT-KBN         PIC X(10).
-      *
       *    年齢
            03  WRK-NENREI              PIC 9(03).
       *    後期高齢者非該当フラグ
@@ -248,25 +237,14 @@
                                        PIC  X(01).
                    07  WRK-KOHTEKSTYMD-O
                                        PIC  X(08).
-                   07  WRK-KOHHBTNUM-O PIC  X(02).
-                   07  WRK-KOHFTNJANUM-O
-                                       PIC  X(08).
-                   07  WRK-KOHJKYSNUM-O
-                                       PIC  X(20).
            03  WRK-KOHI.
                05  WRK-KOHID           PIC  9(10).
                05  WRK-KOHHKNNUM       PIC  X(03).
                05  WRK-KOHPAYKBN       PIC  X(02).
                05  WRK-RECESKYKBN      PIC  X(01).
                05  WRK-KOHTEKSTYMD     PIC  X(08).
-               05  WRK-KOHHBTNUM       PIC  X(02).
-               05  WRK-KOHFTNJANUM     PIC  X(08).
-               05  WRK-KOHJKYSNUM      PIC  X(20).
       *
            03  TBL-MAX                 PIC 9(03).
-      *
-           03  ST-IDX                  PIC 9(03).
-      ***  03  ED-IDX                  PIC 9(03).
       *
       *    請求区分別公費情報（１：レセプト　２：請求書）
            03  WRK-SEIKYUKBN-KOHI-AREA.
@@ -276,11 +254,8 @@
                        09  WRK-SEIKYU-KOHHKNNUM  PIC  X(03).
                        09  WRK-SEIKYU-KOHPAYKBN  PIC  X(02).
                        09  WRK-SEIKYU-RECESKYKBN PIC  X(01).
-                       09  WRK-SEIKYU-TEKSTYMD   PIC  X(08).
-                       09  WRK-SEIKYU-KOHHBTNUM  PIC  X(02).
-                       09  WRK-SEIKYU-KOHFTNJANUM
+                       09  WRK-SEIKYU-KOHTEKSTYMD
                                                  PIC  X(08).
-                       09  WRK-SEIKYU-KOHJKYSNUM PIC  X(20).
       *
        01  WK-RECESYUBETU-AREA.
            03  WK-KOKUHO               PIC X(01).
@@ -422,8 +397,6 @@
            03  TBL-RECE61-KOH-AREA     OCCURS  10. 
       *       公費−法別番号
                05  TBL-RECE61-KOHHBTNUM    PIC X(02).
-      *    処理区分
-           03  TBL-RECE61-SYOKBN       PIC X(01).
       *     
        01  WRK-SEIHO-RECE61-REC. 
            COPY    "CPRCF061.INC"  REPLACING  //RECE61//
@@ -487,7 +460,6 @@
       *****************************************************************
       *     
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
       *     
       *    県内扱い保険者情報
            COPY    "CPSK1033.INC".
@@ -675,29 +647,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
                MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
            END-IF
       * 
-           INITIALIZE                  SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-SYUBETU-SRYYM   TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-200501-REC
-           ELSE    
-               MOVE    SPACE           TO  SYS-200501-REC
-           END-IF
-           IF      SYS-200501-DISASTER-RECEIPT
-                                   =   SPACE
-               MOVE    ZERO            TO  SYS-200501-DISASTER-RECEIPT
-           END-IF
-      *??
-           display
-          "SYS-200501-DISASTER-RECEIPT=" SYS-200501-DISASTER-RECEIPT
-      *??
-      *
       *    県内扱い保険者情報（福岡のみ）
            IF    ( LNK-SYUBETU-PREFNUM =   "40"                  )
            AND   ( LNK-SYUBETU-SRYYM   <=  WRK-CONS-SRYYM-200609 )
@@ -949,9 +898,6 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >       10
                        OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
-                   MOVE    SPACE               TO  WRK-ERR-AREA
-                   INITIALIZE                      WRK-ERR-AREA
-      *
                    MOVE    WRK-HKNCOMBI-REC (IDX2)
                                                TO  HKNCOMBI-REC    
                    PERFORM 20019-FILE-SYORI-SEC
@@ -1565,40 +1511,6 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
                END-PERFORM
            END-IF
       *
-      *    災害該当の有無（平成２８年１０月以降）
-           IF    ( SYS-200501-DISASTER-RECEIPT
-                                           =   "1"     )
-           AND   ( WRK-RECE61-SRYYM        >=   201610 )
-               IF    ( WRK-RECE61-RECEIPT-KBN (5:1)
-                                               =   SPACE )
-               AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
-                   PERFORM VARYING IDXX    FROM    1   BY  1
-                           UNTIL   IDXX    >       TBL-PTKOHINF-MAX
-                       IF    ( TBL-PTKOH-TEKSTYMD (IDXX)
-                                           <=  COMB-TEKSTYMD           )
-                       AND   ( COMB-TEKEDYMD
-                                           <=  TBL-PTKOH-TEKEDYMD(IDXX))
-                           IF      TBL-PTKOH-KOHNUM (IDXX)
-                                               =   "959"
-                               IF      WRK-RECE61-HKNNUM   =   SPACE
-                                   IF        TBL-PTKOH-FTNJANUM
-                                                        (IDXX) (1:1)
-                                                               =   "1"
-                                       MOVE    "1"         TO
-                                           WRK-RECE61-RECEIPT-KBN (5:1)
-                                   END-IF
-                               ELSE
-                                   MOVE    "1"         TO
-                                           WRK-RECE61-RECEIPT-KBN (5:1)
-                               END-IF
-                               MOVE    TBL-PTKOHINF-MAX
-                                                   TO  IDXX
-                           END-IF
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-IF
-      *
       *    患者レセプト分割情報の有無
            IF    ( WRK-RECE61-RECEIPT-KBN (2:3)
                                            =   SPACE )
@@ -1649,9 +1561,6 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
                    END-PERFORM
                END-PERFORM
            END-IF
-      *??
-           DISPLAY "WRK-RECE61-RECEIPT-KBN=" WRK-RECE61-RECEIPT-KBN "#"
-      *??
       *
       *    地方公費のみの場合は出力しない
            IF    ( WRK-RECE61-HKNNUM      =   SPACE )
@@ -2157,42 +2066,8 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
       *********    MOVE    4               TO  LNK-SYUBETU-RC
                    CONTINUE 
                ELSE
-                   MOVE    ZERO            TO  IDZZ
-      *
-                   IF    ( TBL-PT-HDIST-DAY-MAX
-                                           =   ZERO )
-                   AND   ( TBL-PTKOHINF-MAX
-                                           =   ZERO )
-                       MOVE    1               TO  ST-IDX
-                       MOVE    SPACE           TO  WRK-RECEIPT-KBN
-      *                出力処理
-                       PERFORM 3001-RECESYUBETU-HENSYU-SEC
-                   ELSE
-                       MOVE    ZERO            TO  ST-IDX
-                       PERFORM         UNTIL   ST-IDX  =   999
-                           MOVE    SPACE           TO  WRK-RECEIPT-KBN
-                           MOVE    ZERO            TO  ST-IDX
-                           PERFORM VARYING IDXX    FROM    1   BY  1
-                                   UNTIL   IDXX    >       100
-                                   OR      TBL-RECE61-HOSPNUM (IDXX)
-                                                   =   ZERO
-                               IF      TBL-RECE61-SYOKBN (IDXX)
-                                                   =   SPACE
-                                   MOVE    TBL-RECE61-RECEIPT-KBN (IDXX)
-                                                   TO  WRK-RECEIPT-KBN
-                                   MOVE    IDXX    TO  ST-IDX
-                                   MOVE    100     TO  IDXX
-                               END-IF 
-                           END-PERFORM
-      *
-                           IF      ST-IDX          >   ZERO
-      *                        出力処理
-                               PERFORM 3001-RECESYUBETU-HENSYU-SEC
-                           ELSE
-                               MOVE    999             TO  ST-IDX
-                           END-IF
-                       END-PERFORM
-                   END-IF
+      *            出力処理
+                   PERFORM   3001-RECESYUBETU-HENSYU-SEC
                END-IF
            END-IF
       *
@@ -2206,16 +2081,17 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
        3001-RECESYUBETU-HENSYU-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-SEIHO
+                                           IDZZ
            INITIALIZE                      TBL-SEIHO-RECE61-AREA
                                            WRK-KOH-RECE61-REC
       *
            MOVE    ZERO                TO  WRK-SEIHO-FLG
+      *
       *    公費単独の退避（生保、中国残留邦人等、自立支援）
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
 grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                    OR      FLG-SEIHO                  =   1
-             IF      WRK-RECEIPT-KBN   =   TBL-RECE61-RECEIPT-KBN (IDXX)
                MOVE    TBL-RECE61-OCC (IDXX)   TO  WRK-RECE61-REC
       *
       *        公費単独の場合（精神入院、心身喪失以外）
@@ -2301,7 +2177,6 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                        END-IF
                    END-IF
                END-IF
-             END-IF
            END-PERFORM
       *
            IF      FLG-SEIHO           =   1
@@ -2312,7 +2187,6 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
 grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
-             IF      WRK-RECEIPT-KBN   =   TBL-RECE61-RECEIPT-KBN (IDXX)
                MOVE    TBL-RECE61-OCC (IDXX)   TO  WRK-RECE61-REC
       *
                MOVE    ZERO            TO  FLG-WRITE 
@@ -2454,9 +2328,6 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *            レセプト情報設定処理
                    PERFORM 30011-SYUBETUGET-CALL-SEC
                END-IF
-      *
-               MOVE    "1"                  TO  TBL-RECE61-SYOKBN (IDXX) 
-             END-IF
            END-PERFORM
       *
       *    公費単独レセの出力処理
@@ -2861,58 +2732,11 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    施設入所、災害該当情報処理
+      *    施設入所情報処理
       *****************************************************************
        500-SISETU-HENSYU-SEC             SECTION.
       *
            INITIALIZE                      TABLE-PTKOHINF-AREA
-      *
-      *    ９５９（災害該当）
-           IF    ( SYS-200501-DISASTER-RECEIPT
-                                           =   "1"     )
-           AND   ( LNK-SYUBETU-SRYYM       >=   201610 )
-               INITIALIZE                      PTKOHINF-REC
-               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-               MOVE    LNK-SYUBETU-PTID    TO  PTKOH-PTID
-               MOVE    "959"               TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 900-PTKOHINF-READ-N-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-PTKOHINF  
-               END-IF
-               PERFORM     UNTIL   FLG-PTKOHINF    =   1
-                           OR      TBL-PTKOHINF-MAX
-                                                   >=  100
-                   IF    ( PTKOH-SAKJOKBN      =   SPACE      )
-                   AND   ( PTKOH-TEKSTYMD      >=  "20161001" )
-                       ADD     1               TO  TBL-PTKOHINF-MAX
-                       MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
-                                                   (TBL-PTKOHINF-MAX)
-      *
-                       DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
-                           " KOHNUM="
-                                   TBL-PTKOH-KOHNUM   (TBL-PTKOHINF-MAX)
-                           " ST="  TBL-PTKOH-TEKSTYMD (TBL-PTKOHINF-MAX)
-                           " ED="  TBL-PTKOH-TEKEDYMD (TBL-PTKOHINF-MAX)
-                   END-IF
-      *
-                   MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                   MOVE    "key4"           TO  MCP-PATHNAME
-                   PERFORM  900-PTKOHINF-READ-N-SEC
-               END-PERFORM
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-           END-IF
-      *??
-           DISPLAY "TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX 
-      *??
       *
       *    入院外のみ対象
            IF      LNK-SYUBETU-NYUGAIKBN   =   "1"

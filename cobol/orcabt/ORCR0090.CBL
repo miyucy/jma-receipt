@@ -264,36 +264,10 @@
       *                                     ¥Þ¥¹¥¿¤Î¿ÇÎÅ¶èÊ¬¤È°Û¤Ê¤ë¾ì¹ç¤ÎÂÐ±þ
       *  04.07.08    NACL-ÌçÏÆ    14/11/12  ²èÁü¿ÇÃÇ¥Õ¥¤¥ë¥àÊ¬²è¿ôÂÐ±þ½¤Àµ
       *  04.07.09    NACL-Æ£¸¶    14/12/05  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
-      *  04.07.10    NACL-ÌçÏÆ    14/12/15  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
-      *                                     ¡Ê½éºÆ¿ÇÎÁ¡¦ÄãÂÅ·ëÎ¨ÂÐ±þ¡Ë
-      *  04.07.11    NACL-ÌçÏÆ    14/12/24  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
-      *                                     ¡Ê½éºÆ¿ÇÎÁ¡¦ÄãÂÅ·ëÎ¨ÂÐ±þ¡Ë
-      *  04.07.12    NACL-ÌçÏÆ    15/03/16  Ê¿À®£²£·Ç¯£´·î²þÀµÂÐ±þ
       *
       *  04.08.01    NACL-ÌçÏÆ    13/01/22  Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë£±£°²óÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
       *  04.08.03    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
-      *  04.08.04    NACL-ÌçÏÆ    15/12/02  £°ÅÀÃÏ°è¸øÈñµ­ºÜÂÐ±þ
-      *  04.08.05    NACL-ÌçÏÆ    16/01/12  ÅÀ¸¡ÍÑ¥ì¥»¥×¥È±¡³°½èÊý°ìÈÌÌ¾µ­ºÜÂÐ±þ
-      *  04.08.06    NACL-ÌçÏÆ    16/03/28  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.07    NACL-Æ£¸¶    16/05/02  ¥ì¥»ÅÅÀÁµá»þ¤Î¼õÉÕ¥¨¥é¡¼Ê¬¤Î
-      *                                     ¼ïÊÌÉÔÌÀ¥ì¥»ÂÐ±þ
-      *                                     ¥³¥á¥ó¥È¤Î¥Á¥§¥Ã¥¯¤ò¿ÇÎÅ¶èÊ¬£¹£¸¡¢
-      *                                     ±¡³°¼¾ÉÛÌô£·£°ËçÄ¶ÍýÍ³¥³¥á¥ó¥È¤Ï
-      *                                     ÂÐ¾Ý¤È¤·¤Ê¤¤
-      *  04.08.08    NACL-Æ£¸¶    16/09/06  ¥ì¥»ÅÅÀÁµá»þ¤Î¼õÉÕ¥¨¥é¡¼Ê¬¤Î
-      *                                     ¼ïÊÌÉÔÌÀ¥ì¥»ÂÐ±þ
-      *                                     »ÄÎ±Ë¡¿ÍÅù¤ÎÉéÃ´¼ÔÈÖ¹æ¡¢¼õµë¼ÔÈÖ¹æ¤Ê¤·
-      *  04.08.09    NACL-ÌçÏÆ    16/09/20  £±£µ±ß°Ê²¼ÌôºÞ¤ÎÄó½ÐÍÑ¥ì¥»¥×¥Èµ­ºÜ
-      *                                     ¡Êµ­Ï¿¡ËÂÐ±þ
-      *  04.08.10    NACL-ÌçÏÆ    16/11/07  £±£µ±ß°Ê²¼ÌôºÞ¤ÎÄó½ÐÍÑ¥ì¥»¥×¥Èµ­ºÜ
-      *                                     ¡Êµ­Ï¿¡ËÂÐ±þ½¤Àµ
-      *  04.08.11    NACL-ÌçÏÆ    17/10/18  Æþ±¡ÎÁ¤È°Û¤Ê¤ëÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
-      *                                     ¤Ç¤Î¿©»ö»»ÄêÂÐ±þ
-      *  04.08.12    NACL-ÌçÏÆ    17/12/13  Êñ³çÅÀ¿ô¤Î¸ø³²Êä½þË¡¸ºÅÀÊ¬¤Î¥Þ¥¤¥Ê¥¹
-      *                                     É½¼¨ÂÐ±þ
-      *  04.08.13    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.14    NACL-ÌçÏÆ    18/03/29  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -746,11 +720,9 @@
                 "¥¦¥¤¥ë¥¹¹³ÂÎ²ÁÀºÌ©Â¬Äê".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "·ìÞùÃÁÇòÌÈ±Ö³ØÅª¸¡ºº".                        
-                05  FILLER                 PIC X(50)   VALUE
-                "°­À­¼ðáç°äÅÁ»Ò¸¡ºº".
             03  WRK-CONS-KENSACOMMENT-R    REDEFINES
                                            WRK-CONS-KENSACOMMENT-G.
-                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  12.
+                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  11.
       *³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»»»ÄêÆü¥Æ¡¼¥Ö¥ë
        01  WRK-KENTAIKASAN-TABLE.
            03  WRK-KENTAIKASAN             PIC 9(01)
@@ -869,22 +841,14 @@
       *
        01  TBL-ZAI-MAX         PIC  9(03)  VALUE   100.              
       *
-      *    ½é¿Ç¡¦ºÆ¿Ç¤ÎºÞ¤Þ¤È¤á¾ðÊó
-       01  TBL-SORT11-INF.
-         02    TBL-SORT11-OCC              OCCURS  50.
-           03  TBL-SORT11-FLG              PIC  9(01).
-           03  TBL-SORT11-TEN              PIC  9(07).
-           03  TBL-SORT11-OCC2             OCCURS   5.
-               05  TBL-SORT11-ZAIKAISU     PIC  9(04).
-               05  TBL-SORT11-HKNCOMBI     PIC  9(04).
-      *
-       01  TBL-SORT12-INF.
-         02    TBL-SORT12-OCC              OCCURS  50.
-           03  TBL-SORT12-FLG              PIC  9(01).
-           03  TBL-SORT12-TEN              PIC  9(07).
-           03  TBL-SORT12-OCC2             OCCURS   5.
-               05  TBL-SORT12-ZAIKAISU     PIC  9(04).
-               05  TBL-SORT12-HKNCOMBI     PIC  9(04).
+      *    ÅÅ»Ò²½²Ã»»Åù¾ðÊó
+       01  TBL-DENSHI-INF.
+         02    TBL-DENSHI-OCC              OCCURS  13.
+           03  TBL-DENSHI-FLG              PIC  9(01).
+           03  TBL-DENSHI-TEN              PIC  9(07).
+           03  TBL-DENSHI-OCC2             OCCURS   5.
+               05  TBL-DENSHI-ZAIKAISU     PIC  9(04).
+               05  TBL-DENSHI-HKNCOMBI     PIC  9(04).
       *
       *   ÆüËÜ¸ì¿ô»ú
        01  TBL-SUJI-AREA.
@@ -937,6 +901,8 @@
            03  FILLER          PIC X(09)   VALUE   "112001110".
       *    »þ´Ö³°¡ÊºÆ¿Ç¡Ë
            03  FILLER          PIC X(09)   VALUE   "112701010".
+      ***  »þ´Ö³°ÆÃÎã¡ÊºÆ¿Ç¡Ë
+      ***  03  FILLER          PIC X(09)   VALUE   "112701310".
       *    µÙ¿Ç¡ÊºÆ¿Ç¡Ë
            03  FILLER          PIC X(09)   VALUE   "112001210".
       *    µÙÆü¡ÊºÆ¿Ç¡Ë
@@ -945,6 +911,10 @@
            03  FILLER          PIC X(09)   VALUE   "112001310".
       *    ¿¼Ìë¡ÊºÆ¿Ç¡Ë
            03  FILLER          PIC X(09)   VALUE   "112701210".
+      *    ·ÑÂ³´ÉÍý²Ã»»
+      ***  03  FILLER          PIC X(09)   VALUE   "112007170".
+      *    ·ÑÂ³´ÉÍý²Ã»»
+      ***  03  FILLER          PIC X(09)   VALUE   "112702270".
       *    ½èÊýÎÁ¡Ê£·¼ïÎà°Ê¾å¡Ë
            03  FILLER          PIC X(09)   VALUE   "120002610".
       *    ½èÊýÎÁ¡Ê¤½¤ÎÂ¾¡Ë
@@ -967,6 +937,12 @@
            03  FILLER          PIC X(09)   VALUE   "120000410".
       *    Ä´ºÞÎÁ¡ÊËã¡¦¸þ¡¦³Ð¡¦ÆÇ¡Ë¡ÊÆþ±¡³°¡Ë
            03  FILLER          PIC X(09)   VALUE   "120000110".
+      *    ¼ÂÆü¿ô»»Äê
+           03  FILLER          PIC X(09)   VALUE   "099409901".
+      *    ½é¿ÇÎÁ¥À¥ß¡¼
+           03  FILLER          PIC X(09)   VALUE   "099110001".
+      *    ºÆ¿ÇÎÁ¥À¥ß¡¼
+           03  FILLER          PIC X(09)   VALUE   "099120001".
       *    ½é¿ÇÎÁ»»Äê²Ê¡§
            03  FILLER          PIC X(09)   VALUE   "830000020".
       *    ºÆ¿ÇÎÁ»»Äê²Ê¡§
@@ -987,65 +963,46 @@
            03  FILLER          PIC X(09)   VALUE   "112008350".
       *    Ï·¿ÍÆ±ÆüºÆ¿Ç¡ÊÉÂ±¡¡Ë(£±²óÌÜ¡Ë
            03  FILLER          PIC X(09)   VALUE   "112703050".
+      *    °é»ù±ÉÍÜ»ØÆ³²Ã»»¡Ê£Ä£Õ£Í£Í£Ù¡Ë
+           03  FILLER          PIC X(09)   VALUE   "099114001".
       *    ºÆ¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°¡Ë²Ã»»
            03  FILLER          PIC X(09)   VALUE   "112014770".
       *    ºÆ¿Ç¡ÊÆýÍÄ»ùµÙÆü¡Ë²Ã»»
            03  FILLER          PIC X(09)   VALUE   "112014870".
       *    ºÆ¿Ç¡ÊÆýÍÄ»ù¿¼Ìë¡Ë²Ã»»
            03  FILLER          PIC X(09)   VALUE   "112014970".
+      *    ¼ÂÆü¿ô¸º»»
+           03  FILLER          PIC X(09)   VALUE   "099409903".
+      *    ºß°åÁí¡¦ºß°åÁí´É¡Ê£Ä£Õ£Í£Í£Ù¡Ë
+           03  FILLER          PIC X(09)   VALUE   "099140003".
       *    ½èÊý¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  FILLER          PIC X(09)   VALUE   "120002170".
-      *    ½èÊýÎÁ¡Ê¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¡Ë
-           03  FILLER          PIC X(09)   VALUE   "120003610".
-      *    ½èÊýÎÁ¡Ê¾Ò²ðÎ¨¤¬Äã¤¤ÂçÉÂ±¡£³£°Æü°Ê¾åÅêÌô¸º»»¡Ë
-           03  FILLER          PIC X(09)   VALUE   "120003870".
+      ***  ½èÊý¤»¤ó¡ÊÆýÍÄ»ù¡Ë²Ã»»
+      ***  03  FILLER          PIC X(09)   VALUE   "120002470".
       *
-      *    ºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112016610".
-      *    ÅÅÏÃÅùºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112016750".
-      *    Æ±ÆüºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112016850".
-      *    Æ±ÆüÅÅÏÃÅùºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112016950".
-      *
+      *    ºÆ¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
+           03  FILLER          PIC X(09)   VALUE   "112015570".
       *    »þ´Ö³°ÆÃÎã¡ÊºÆ¿Ç¡Ë
            03  FILLER          PIC X(09)   VALUE   "112001410".
-      *    ºÆ¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»
-           03  FILLER          PIC X(09)   VALUE   "112015070".
       *    ¾®»ù²ÊºÆ¿Ç¡ÊÆýÍÄ»ùÌë´Ö¡Ë²Ã»»¡Ê£¶ºÐÌ¤Ëþ¡Ë
            03  FILLER          PIC X(09)   VALUE   "112014170".
       *    ¾®»ù²ÊºÆ¿Ç¡ÊÆýÍÄ»ùµÙÆü¡Ë²Ã»»¡Ê£¶ºÐÌ¤Ëþ¡Ë
            03  FILLER          PIC X(09)   VALUE   "112014270".
       *    ¾®»ù²ÊºÆ¿Ç¡ÊÆýÍÄ»ù¿¼Ìë¡Ë²Ã»»¡Ê£¶ºÐÌ¤Ëþ¡Ë
            03  FILLER          PIC X(09)   VALUE   "112014370".
-      *    ºÆ¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
-           03  FILLER          PIC X(09)   VALUE   "112015570".
-      *    »þ´Ö³°ÂÐ±þ²Ã»»£±
-           03  FILLER          PIC X(09)   VALUE   "112016070".
+      *    ºÆ¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»
+           03  FILLER          PIC X(09)   VALUE   "112015070".
       *    ÃÏ°è°åÎÅ¹×¸¥²Ã»»
            03  FILLER          PIC X(09)   VALUE   "112015670".
-      *    »þ´Ö³°ÂÐ±þ²Ã»»£³
-           03  FILLER          PIC X(09)   VALUE   "112016170".
       *    ÌÀºÙ½ñÈ¯¹ÔÂÎÀ©Åù²Ã»»
            03  FILLER          PIC X(09)   VALUE   "112015770".
       *    ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
            03  FILLER          PIC X(09)   VALUE   "112017270".
-      *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
-           03  FILLER          PIC X(09)   VALUE   "112017570".
+      *    »þ´Ö³°ÂÐ±þ²Ã»»£±
+           03  FILLER          PIC X(09)   VALUE   "112016070".
+      *    »þ´Ö³°ÂÐ±þ²Ã»»£³
+           03  FILLER          PIC X(09)   VALUE   "112016170".
       *
-      *    ¼ÂÆü¿ô»»Äê
-           03  FILLER          PIC X(09)   VALUE   "099409901".
-      *    ½é¿ÇÎÁ¥À¥ß¡¼
-           03  FILLER          PIC X(09)   VALUE   "099110001".
-      *    ºÆ¿ÇÎÁ¥À¥ß¡¼
-           03  FILLER          PIC X(09)   VALUE   "099120001".
-      *    °é»ù±ÉÍÜ»ØÆ³²Ã»»¡Ê£Ä£Õ£Í£Í£Ù¡Ë
-           03  FILLER          PIC X(09)   VALUE   "099114001".
-      *    ¼ÂÆü¿ô¸º»»
-           03  FILLER          PIC X(09)   VALUE   "099409903".
-      *    ºß°åÁí¡¦ºß°åÁí´É¡Ê£Ä£Õ£Í£Í£Ù¡Ë
-           03  FILLER          PIC X(09)   VALUE   "099140003".
       *    ¿Ç»¡ÎÁÌ¤»»Äê°·¤¤
            03  FILLER          PIC X(09)   VALUE   "099409905".
       *    »þ´Ö³°¼õ¿Ç
@@ -1053,10 +1010,13 @@
       *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê»»Äê½ªÎ»
            03  FILLER          PIC X(09)   VALUE   "099140001".
       *
-       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   77.
+      *    ½èÊýÎÁ¡Ê¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¡Ë
+           03  FILLER          PIC X(09)   VALUE   "120003610".
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   77.
+       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   71.
+      *
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   71.
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -1077,14 +1037,8 @@
            03  CONS-TEIGEN     PIC X(09)   VALUE   "630010002".
       *    ÌôºÞÎÁÄþ¸º¡Ê£¸£°¡¿£±£°£°¡Ë¡Ê¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¡Ë
            03  CONS-TEIGEN2    PIC X(09)   VALUE   "630010005".
-      *    ÌôºÞÎÁÄþ¸º¡Ê£¶£°¡¿£±£°£°¡Ë¡Ê¾Ò²ðÎ¨¤¬Äã¤¤ÂçÉÂ±¡£³£°Æü°Ê¾åÅêÌô¡Ë
-           03  CONS-TEIGEN3    PIC X(09)   VALUE   "630010006".
-      *    ÌôºÞÎÁ¸ºÅÀ¡Ê¼¾ÉÛÌôÌôºÞÎÁ¾å¸ÂÄ¶¡Ë
-           03  CONS-TEIGEN4    PIC X(09)   VALUE   "630010007".
       *    Êñ³çÅÀ¿ô¤Î¼£¸³¸ºÅÀÊ¬
            03  CONS-GENTEN     PIC X(09)   VALUE   "199000210".
-      *    Êñ³çÅÀ¿ô¤Î¸ø³²Êä½þË¡¸ºÅÀÊ¬
-           03  CONS-GENTEN2    PIC X(09)   VALUE   "199000410".
       *---- (01.00.05) LINE ADD START --------------------------------
       *¥Õ¥ê¡¼¥³¥á¥ó¥È
       *    ÅÅÏÃºÆ¿Ç¡Ê¡¡²ó¡Ë
@@ -1121,73 +1075,103 @@
            03  CONS-JYOMYAKU   PIC X(09)   VALUE   "130003510".
       *    ¡Ê¥µ¡Ë
            03  CONS-RINYAK     PIC X(09)   VALUE   "820000046".
-      *
-      *½é¿Ç²Ã»»
+      *½é¿Ç²Ã»»     
       *    ½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
-           03  WRK-CONS-SYOSIN1    PIC X(09)  VALUE "111003770".
+           03  WRK-CONS-SYOSIN-KASAN1  PIC X(09)   VALUE 
+                                                   "111003770".                
       *    Ï·¿Í½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
-           03  WRK-CONS-SYOSIN2    PIC X(09)  VALUE "111700470".
+           03  WRK-CONS-SYOSIN-KASAN2  PIC X(09)   VALUE 
+                                                   "111700470".
+      ***  ½é¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
+      ***  03  WRK-CONS-SYOSIN-KASAN3  PIC X(09)   VALUE 
+      ***                                          "111000370".
+      ***  ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
+      ***  03  WRK-CONS-SYOSIN-KASAN4  PIC X(09)   VALUE 
+      ***                                          "111000470".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê½é¿Ç»þ¿ÇÎÅ»þ¤Î¾Ò²ð´µ¼Ô¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN5    PIC X(09)  VALUE "111010370".
+           03  WRK-CONS-SYOSIN-KASAN5  PIC X(09)   VALUE 
+                                                   "111010370".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£³¡Ë
-           03  WRK-CONS-SYOSIN6    PIC X(09)  VALUE "111010870".
+           03  WRK-CONS-SYOSIN-KASAN6  PIC X(09)   VALUE 
+                                                   "111010870".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£´¡Ë
-           03  WRK-CONS-SYOSIN7    PIC X(09)  VALUE "111010970".
+           03  WRK-CONS-SYOSIN-KASAN7  PIC X(09)   VALUE 
+                                                   "111010970".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£µ¡Ë
-           03  WRK-CONS-SYOSIN8    PIC X(09)  VALUE "111011070".
+           03  WRK-CONS-SYOSIN-KASAN8  PIC X(09)   VALUE 
+                                                   "111011070".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£¶¡Ë
-           03  WRK-CONS-SYOSIN9    PIC X(09)  VALUE "111011170".
+           03  WRK-CONS-SYOSIN-KASAN9  PIC X(09)   VALUE 
+                                                   "111011170".
       *    ¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN10   PIC X(09)  VALUE "111011270".
+           03  WRK-CONS-SYOSIN-KASAN10 PIC X(09)   VALUE 
+                                                   "111011270".
       *    ¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN11   PIC X(09)  VALUE "111011370".
+           03  WRK-CONS-SYOSIN-KASAN11 PIC X(09)   VALUE 
+                                                   "111011370".
       *    ¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN12   PIC X(09)  VALUE "111009970".
+           03  WRK-CONS-SYOSIN-KASAN12 PIC X(09)   VALUE 
+                                                   "111009970".
       *    ¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN13   PIC X(09)  VALUE "111010070".
+           03  WRK-CONS-SYOSIN-KASAN13 PIC X(09)   VALUE 
+                                                   "111010070".
       *    ¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN14   PIC X(09)  VALUE "111010170".
+           03  WRK-CONS-SYOSIN-KASAN14 PIC X(09)   VALUE 
+                                                   "111010170".
       *    ¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN15   PIC X(09)  VALUE "111010270".
+           03  WRK-CONS-SYOSIN-KASAN15 PIC X(09)   VALUE 
+                                                   "111010270".
       *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN16   PIC X(09)  VALUE "111702770".
+           03  WRK-CONS-SYOSIN-KASAN16 PIC X(09)   VALUE 
+                                                   "111702770".
       *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN17   PIC X(09)  VALUE "111702870".
+           03  WRK-CONS-SYOSIN-KASAN17 PIC X(09)   VALUE 
+                                                   "111702870".
       *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN18   PIC X(09)  VALUE "111702370".
+           03  WRK-CONS-SYOSIN-KASAN18 PIC X(09)   VALUE 
+                                                   "111702370".
       *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN19   PIC X(09)  VALUE "111702470".
+           03  WRK-CONS-SYOSIN-KASAN19 PIC X(09)   VALUE 
+                                                   "111702470".
       *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN20   PIC X(09)  VALUE "111702570".
+           03  WRK-CONS-SYOSIN-KASAN20 PIC X(09)   VALUE 
+                                                   "111702570".
       *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
-           03  WRK-CONS-SYOSIN21   PIC X(09)  VALUE "111702670".
+           03  WRK-CONS-SYOSIN-KASAN21 PIC X(09)   VALUE 
+                                                   "111702670".
       *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡ÊÌë´Ö¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN22   PIC X(09)  VALUE "111011570".
+           03  WRK-CONS-SYOSIN-KASAN22 PIC X(09)   VALUE 
+                                                   "111011570".
       *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡ÊµÙÆü¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN23   PIC X(09)  VALUE "111011670".
+           03  WRK-CONS-SYOSIN-KASAN23 PIC X(09)   VALUE 
+                                                   "111011670".
       *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë¡Ê¿¼Ìë¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN24   PIC X(09)  VALUE "111011770".
+           03  WRK-CONS-SYOSIN-KASAN24 PIC X(09)   VALUE 
+                                                   "111011770".
       *    ½é¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN25   PIC X(09)  VALUE "111000870".
+           03  WRK-CONS-SYOSIN-KASAN25 PIC X(09)   VALUE 
+                                                   "111000870".
       *    ¡ãÏ·¡ä½é¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN26   PIC X(09)  VALUE "111700870".
+           03  WRK-CONS-SYOSIN-KASAN26 PIC X(09)   VALUE 
+                                                   "111700870".
       *    ½é¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN27   PIC X(09)  VALUE "111012270".
+           03  WRK-CONS-SYOSIN-KASAN27 PIC X(09)   VALUE 
+                                                   "111012270".
       *    Æ±Æü½é¿Ç
-           03  WRK-CONS-SYOSIN28   PIC X(09)  VALUE "111011810".
-      *    ½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN30   PIC X(09)  VALUE "111012470".
-      *    ½é¿ÇÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡§¾Ò²ð¾õ¤Ê¤·¡Ë
-           03  WRK-CONS-SYOSIN32   PIC X(09)  VALUE "111012610".
-      *    ½é¿Ç¡ÊÆ±°ìÆüÊ£¿ô²Ê¼õ¿Ç»þ¤Î£²²ÊÌÜ¡¦ÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-           03  WRK-CONS-SYOSIN33   PIC X(09)  VALUE "111012810".
-      *
-      *    ½é¿Ç¡ÊÂ¾°åÎÅµ¡´Ø¤«¤é¤Î¾Ò²ð¾õ¤¬¤Ê¤¤´µ¼Ô¡Ë
-           03  WRK-CONS-SYOSIN101  PIC X(09)  VALUE "111012510".
-      *    ½é¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
-           03  WRK-CONS-SYOSIN102  PIC X(09)  VALUE "111012710".
+           03  WRK-CONS-SYOSIN-KASAN28 PIC X(09)   VALUE 
+                                                   "111011810".
       *    ÅÅ»Ò²½²Ã»»
-           03  WRK-CONS-SYOSIN103  PIC X(09)  VALUE "111012370".
+           03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
+                                                   "111012370".
+      *    ½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN30 PIC X(09)   VALUE 
+                                                   "111012470".
+      *    ½é¿ÇÎÁ¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë
+           03  WRK-CONS-SYOSIN-KASAN31 PIC X(09)   VALUE
+                                                   "111012510".
+      *    ½é¿ÇÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡§¾Ò²ð¾õ¤Ê¤·¡Ë
+           03  WRK-CONS-SYOSIN-KASAN32 PIC X(09)   VALUE 
+                                                   "111012610".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
@@ -1609,8 +1593,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                            WRK-MIN-KAISU-TABLE
                                            WRK-KENTAIKASAN-TABLE
       *
-           INITIALIZE                      TBL-SORT11-INF
-           INITIALIZE                      TBL-SORT12-INF
+           INITIALIZE                      TBL-DENSHI-INF
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»»»ÄêÆü¤ò³ÎÇ§
       ***  IF      RECE02-KENTAIKASANFLG     =   '1'
@@ -1701,20 +1684,19 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    PERFORM 2008-SYS2006-HENSYU-SEC
                END-IF
       *
-      *        À¸ÊÝ¡¦»ÄÎ±Ë¡¿ÍÅù¤ÎÉéÃ´¼ÔÈÖ¹æ¡¢¼õµë¼ÔÈÖ¹æ¤ÎÆþÎÏ¤¬¤Ê¤¤
-      *        »þ¤Î¥¨¥é¡¼ÀßÄê
+      *        À¸ÊÝ¤ÎÉéÃ´¼ÔÈÖ¹æ¡¢¼õµë¼ÔÈÖ¹æ¤ÎÆþÎÏ¤¬¤Ê¤¤»þ¤Î¥¨¥é¡¼ÀßÄê
       *        ºÒ³²³ºÅö¤Î¤È¤­¤Ï¥Á¥§¥Ã¥¯¤·¤Ê¤¤ 
                IF  (   ( SYS-200501-CHKKBN     =   "1"    )
                     OR ( SYS-200501-CHKKBN     =   "2" AND
                          RECE02-RECESYUBETU
                                            NOT =   "8888" ) )
-               AND (     RECE02-RJNGAIKOHFTN (1)
+               AND  (    RECE02-RJNGAIKOHFTN (1)
                                                =   0        )
                    PERFORM VARYING IDX6    FROM    1   BY  1
                            UNTIL   IDX6 >          4
                            OR      RECE02-KOHNUM(IDX6) =   SPACE
                            OR      RECE02-ERR-ERRKBN   >   ZERO 
-                       IF      RECE02-KOHNUM (IDX6)    =   "012"
+                       IF      RECE02-KOHNUM (IDX6)    =   "012"    
                            IF    ( RECE02-KOHFTNJANUM (IDX6)
                                                        =   SPACE )
                            OR    ( RECE02-KOHJKYSNUM (IDX6)
@@ -1722,29 +1704,15 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                MOVE    13      TO  RECE02-ERR-ERRKBN
                            END-IF
                        END-IF
-                       IF      RECE02-KOHNUM (IDX6)    =   "025"
-                           IF    ( RECE02-KOHFTNJANUM (IDX6)
-                                                       =   SPACE )
-                           OR    ( RECE02-KOHJKYSNUM (IDX6)
-                                                       =   SPACE )
-                               MOVE    14      TO  RECE02-ERR-ERRKBN
-                           END-IF
-                       END-IF
                    END-PERFORM
                END-IF                          
       *
-      *        ½é¿Ç¡¦ºÆ¿Ç¤ÎºÞ¤Þ¤È¤áÊÔ½¸
+      *        ÅÅ»Ò²½²Ã»»ÅùÊÔ½¸
                MOVE    ZERO      TO    FLG-TEIGEN
                PERFORM  VARYING  IDX6   FROM   1   BY  1
-                         UNTIL   IDX6    >    50
-                 IF      TBL-SORT11-FLG(IDX6)  =   1
-                   PERFORM 2010-SYOSAIMATOME-HENSYU1-SEC
-                 END-IF
-               END-PERFORM
-               PERFORM  VARYING  IDX6   FROM   1   BY  1
-                         UNTIL   IDX6    >    50
-                 IF      TBL-SORT12-FLG(IDX6)  =   1
-                   PERFORM 2010-SYOSAIMATOME-HENSYU2-SEC
+                         UNTIL   IDX6    >    13
+                 IF      TBL-DENSHI-FLG(IDX6)  =   1
+                   PERFORM 2010-DENSHI-HENSYU-SEC
                  END-IF
                END-PERFORM
       *
@@ -2017,12 +1985,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                      TO  TBL-ZAIW-SRYACTINF (IDY IDZ)
                        MOVE    RECE05-NAMEINF   (IDX)
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
-                       IF  RECE05-INGAIFLG-RECE(IDX) = "1"
-                         MOVE  RECE05-GENERICNAME(IDX)
-                                     TO  TBL-ZAIW-NAME(IDY IDZ)
-                         MOVE  RECE05-GENERICYUKOKETA(IDX)
-                                     TO  TBL-ZAIW-YUKOKETA(IDY IDZ)
-                       END-IF
                        MOVE    RECE05-RECEHENFLG(IDX)
                                      TO  TBL-ZAIW-RECEHENFLG(IDY IDZ)
                        MOVE    RECE05-SRYSYUKBN  TO
@@ -2118,10 +2080,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
                        IF      RECE05-SRYCD(IDX) =   CONS-TEIGEN
                                                  OR  CONS-TEIGEN2
-                                                 OR  CONS-TEIGEN3
-                                                 OR  CONS-TEIGEN4
                                                  OR  CONS-GENTEN
-                                                 OR  CONS-GENTEN2
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
                        IF     (RECE04-SRYKBN     =   "31" OR "32" )
@@ -2166,13 +2125,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *****************************************************************
        20021-DATA-CHK-SEC    SECTION.
       *
-      *    ¼«ÈñÊ¬¡¢½èÊý¤»¤óÈ÷¹ÍÍó¥³¥á¥ó¥È¤Ï¥Á¥§¥Ã¥¯¤·¤Ê¤¤
-           IF      RECE04-SRYKBN       =   "95"    OR  "96"    OR "98"
-               GO  TO  20021-DATA-CHK-EXT
-           END-IF
-      *
-      *    ±¡³°¼¾ÉÛÌô£·£°ËçÄ¶ÍýÍ³¥³¥á¥ó¥È¤Ï¥Á¥§¥Ã¥¯¤·¤Ê¤¤
-           IF      RECE04-SIPPUCOMFLG  =   "1"
+      *    ¼«ÈñÊ¬¤Ï¥Á¥§¥Ã¥¯¤·¤Ê¤¤
+           IF      RECE04-SRYKBN       =   "95"    OR  "96"
                GO  TO  20021-DATA-CHK-EXT
            END-IF
       * 
@@ -2340,35 +2294,36 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    ½é¿Ç²Ã»»¤Î»þ¤À¤±°õºþ¡Ü¸¡¿Ç
            IF   RECE04-JIHOKBN  =  SPACE
              IF  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                            =   WRK-CONS-SYOSIN1
-                                            OR  WRK-CONS-SYOSIN2
-                                            OR  WRK-CONS-SYOSIN5
-                                            OR  WRK-CONS-SYOSIN6
-                                            OR  WRK-CONS-SYOSIN7
-                                            OR  WRK-CONS-SYOSIN8
-                                            OR  WRK-CONS-SYOSIN9
-                                            OR  WRK-CONS-SYOSIN10
-                                            OR  WRK-CONS-SYOSIN11
-                                            OR  WRK-CONS-SYOSIN12
-                                            OR  WRK-CONS-SYOSIN13
-                                            OR  WRK-CONS-SYOSIN14
-                                            OR  WRK-CONS-SYOSIN15
-                                            OR  WRK-CONS-SYOSIN16
-                                            OR  WRK-CONS-SYOSIN17
-                                            OR  WRK-CONS-SYOSIN18
-                                            OR  WRK-CONS-SYOSIN19
-                                            OR  WRK-CONS-SYOSIN20
-                                            OR  WRK-CONS-SYOSIN21
-                                            OR  WRK-CONS-SYOSIN22
-                                            OR  WRK-CONS-SYOSIN23
-                                            OR  WRK-CONS-SYOSIN24
-                                            OR  WRK-CONS-SYOSIN25
-                                            OR  WRK-CONS-SYOSIN26
-                                            OR  WRK-CONS-SYOSIN27
-                                            OR  WRK-CONS-SYOSIN28
-                                            OR  WRK-CONS-SYOSIN30
-                                            OR  WRK-CONS-SYOSIN32
-                                            OR  WRK-CONS-SYOSIN33
+                                            =   WRK-CONS-SYOSIN-KASAN1
+                                            OR  WRK-CONS-SYOSIN-KASAN2
+                                            OR  WRK-CONS-SYOSIN-KASAN5
+                                            OR  WRK-CONS-SYOSIN-KASAN6
+                                            OR  WRK-CONS-SYOSIN-KASAN7
+                                            OR  WRK-CONS-SYOSIN-KASAN8
+                                            OR  WRK-CONS-SYOSIN-KASAN9
+                                            OR  WRK-CONS-SYOSIN-KASAN10
+                                            OR  WRK-CONS-SYOSIN-KASAN11
+                                            OR  WRK-CONS-SYOSIN-KASAN12
+                                            OR  WRK-CONS-SYOSIN-KASAN13
+                                            OR  WRK-CONS-SYOSIN-KASAN14
+                                            OR  WRK-CONS-SYOSIN-KASAN15
+                                            OR  WRK-CONS-SYOSIN-KASAN16
+                                            OR  WRK-CONS-SYOSIN-KASAN17
+                                            OR  WRK-CONS-SYOSIN-KASAN18
+                                            OR  WRK-CONS-SYOSIN-KASAN19
+                                            OR  WRK-CONS-SYOSIN-KASAN20
+                                            OR  WRK-CONS-SYOSIN-KASAN21
+                                            OR  WRK-CONS-SYOSIN-KASAN22
+                                            OR  WRK-CONS-SYOSIN-KASAN23
+                                            OR  WRK-CONS-SYOSIN-KASAN24
+                                            OR  WRK-CONS-SYOSIN-KASAN25
+                                            OR  WRK-CONS-SYOSIN-KASAN26
+                                            OR  WRK-CONS-SYOSIN-KASAN27
+                                            OR  WRK-CONS-SYOSIN-KASAN28
+      ***>                                  OR  WRK-CONS-SYOSIN-KASAN29
+                                            OR  WRK-CONS-SYOSIN-KASAN30
+                                            OR  WRK-CONS-SYOSIN-KASAN31
+                                            OR  WRK-CONS-SYOSIN-KASAN32
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -2394,25 +2349,14 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            IF   RECE04-JIHOKBN  =  SPACE
             IF TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) =
-                                            WRK-CONS-SYOSIN101  OR
-                                            WRK-CONS-SYOSIN102  OR
-                                            WRK-CONS-SYOSIN103
+                                            WRK-CONS-SYOSIN-KASAN29
       *
-               EVALUATE  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                 WHEN      WRK-CONS-SYOSIN103
-                     MOVE   1    TO   IDX6
-                 WHEN      WRK-CONS-SYOSIN101
-                     MOVE   2    TO   IDX6
-                 WHEN      WRK-CONS-SYOSIN102
-                     MOVE   3    TO   IDX6
-               END-EVALUATE
-      *
-               MOVE     1             TO  TBL-SORT11-FLG(IDX6)
+               MOVE     1              TO  TBL-DENSHI-FLG(1)
                MOVE  TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
-                                      TO  TBL-SORT11-TEN(IDX6)
+                                       TO  TBL-DENSHI-TEN(1)
                COMPUTE  IDX5  =  RECE04-KOHBUNRI + 1
-               ADD   RECE04-ZAIKAISU  TO  TBL-SORT11-ZAIKAISU(IDX6 IDX5)
-               MOVE  RECE04-HKNCOMBI  TO  TBL-SORT11-HKNCOMBI(IDX6 IDX5)
+               ADD   RECE04-ZAIKAISU   TO  TBL-DENSHI-ZAIKAISU(1 IDX5)
+               MOVE  RECE04-HKNCOMBI   TO  TBL-DENSHI-HKNCOMBI(1 IDX5)
       *
             END-IF
            END-IF
@@ -2588,56 +2532,38 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        =   "112015670"  OR  "112015770"  OR
                            "112017270"  OR
                            "112016070"  OR  "112016170"   ))
-            OR (( RECE02-SRYYM   >=  "201501"             ) AND
-                ( TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                       =   "112016610"  OR  "112016750"  OR
-                           "112016850"  OR  "112016950"   ))
-            OR (( RECE02-SRYYM   >=  "201604"             ) AND
-                ( TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                       =   "112017570"                    ))
       *
              EVALUATE   TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-               WHEN       "112016610"
-                  MOVE     1     TO     IDX6
-               WHEN       "112016750"
-                  MOVE     2     TO     IDX6
-               WHEN       "112016850"
-                  MOVE     3     TO     IDX6
-               WHEN       "112016950"
-                  MOVE     4     TO     IDX6
-      *
                WHEN       "112001410"
-                  MOVE     5     TO     IDX6
+                  MOVE     3     TO     IDX6
                WHEN       "112015070"
-                  MOVE     6     TO     IDX6
+                  MOVE     4     TO     IDX6
                WHEN       "112014170"
-                  MOVE     7     TO     IDX6
+                  MOVE     5     TO     IDX6
                WHEN       "112014270"
-                  MOVE     8     TO     IDX6
+                  MOVE     6     TO     IDX6
                WHEN       "112014370"
-                  MOVE     9     TO     IDX6
+                  MOVE     7     TO     IDX6
                WHEN       "112015570"
-                  MOVE    10     TO     IDX6
+                  MOVE     8     TO     IDX6
                WHEN       "112016070"
-                  MOVE    11     TO     IDX6
+                  MOVE     9     TO     IDX6
                WHEN       "112015670"
-                  MOVE    12     TO     IDX6
+                  MOVE    10     TO     IDX6
                WHEN       "112016170"
-                  MOVE    13     TO     IDX6
+                  MOVE    11     TO     IDX6
                WHEN       "112015770"
-                  MOVE    14     TO     IDX6
+                  MOVE    12     TO     IDX6
                WHEN       "112017270"
-                  MOVE    15     TO     IDX6
-               WHEN       "112017570"
-                  MOVE    16     TO     IDX6
+                  MOVE    13     TO     IDX6
              END-EVALUATE
       *
-             MOVE     1              TO  TBL-SORT12-FLG(IDX6)
+             MOVE     1              TO  TBL-DENSHI-FLG(IDX6)
              MOVE  TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
-                                     TO  TBL-SORT12-TEN(IDX6)
+                                     TO  TBL-DENSHI-TEN(IDX6)
              COMPUTE  IDX5  =  RECE04-KOHBUNRI + 1
-             ADD   RECE04-ZAIKAISU   TO  TBL-SORT12-ZAIKAISU(IDX6 IDX5)
-             MOVE  RECE04-HKNCOMBI   TO  TBL-SORT12-HKNCOMBI(IDX6 IDX5)
+             ADD   RECE04-ZAIKAISU   TO  TBL-DENSHI-ZAIKAISU(IDX6 IDX5)
+             MOVE  RECE04-HKNCOMBI   TO  TBL-DENSHI-HKNCOMBI(IDX6 IDX5)
       *
             END-IF
            END-IF
@@ -2923,10 +2849,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                ADD     1                  TO  WRK-ZAIWMAX (2)
                                               WRK-ZAIWMAX (6)
                MOVE    WRK-ZAIWMAX (2)    TO  IDZ   
-               IF      WRK-TNS-HOUKNSKBN  =   11
-                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
-                                          TO    TBL-ZAIW-NAME (2 IDZ)
-               ELSE
+               IF      WRK-TNS-HOUKNSKBN  <   11
                    STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
                                               DELIMITED  BY  SPACE
                            "¡Ê"               DELIMITED  BY  SIZE
@@ -2934,6 +2857,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
                            "¹àÌÜ¡Ë"           DELIMITED  BY  SIZE
                                           INTO    TBL-ZAIW-NAME (2 IDZ)
                    END-STRING
+               ELSE
+                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                          TO    TBL-ZAIW-NAME (2 IDZ)
                END-IF
                PERFORM VARYING IDX FROM   200 BY  -1
                        UNTIL   IDX <      1
@@ -3084,14 +3010,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *********ELSE    
                IF    ((RECE04-YKZTEN           =   ZERO) AND
                       (RECE04-JIHOKBN          =  SPACE) AND
-                      (RECE04-YKZKISAIFLG      =  SPACE) AND
                       (IDX1                    =   5   ))
                OR    ((RECE04-KIZAITEN         =   ZERO) AND
                       (RECE04-JIHOKBN          =  SPACE) AND
                       (IDX1                    =   4   ))
                OR    ((RECE04-HOKATU-YKZTEN    =   ZERO) AND
                       (RECE04-JIHOKBN      NOT =  SPACE) AND
-                      (RECE04-YKZKISAIFLG      =  SPACE) AND
                       (IDX1                    =   5   ))
                OR    ((RECE04-HOKATU-KIZAITEN  =   ZERO) AND
                       (RECE04-JIHOKBN      NOT =  SPACE) AND
@@ -3160,7 +3084,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
                AND    ( RECE04-JIHOKBN      =   SPACE)
                  IF     RECE04-YKZTEN       >   ZERO
-                 OR     RECE04-YKZKISAIFLG  =   "1"
       ***          IF      RECE04-SRYKBN     >=  "31"   
       *****************IF      RECE04-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -4321,22 +4244,28 @@ grpsys         PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ½é¿Ç¤ÎºÞ¤Þ¤È¤áÊÔ½¸
+      *    ÅÅ»Ò²½²Ã»»ÅùÊÔ½¸
       *****************************************************************
-       2010-SYOSAIMATOME-HENSYU1-SEC      SECTION.
+       2010-DENSHI-HENSYU-SEC      SECTION.
       *
            PERFORM   VARYING   IDX5   FROM    1   BY  1
                       UNTIL    IDX5    >      5
       *
-             IF  TBL-SORT11-ZAIKAISU(IDX6 IDX5)  NOT =  ZERO
+             IF  TBL-DENSHI-ZAIKAISU(IDX6 IDX5)  NOT =  ZERO
       *
                EVALUATE  IDX6
                  WHEN      1
                  WHEN      3
+                 WHEN      8
+                 WHEN      9
+                 WHEN     10
+                 WHEN     11
+                 WHEN     12
+                 WHEN     13
       *
                    MOVE    SPACE             TO  WRK-ZAI
-                   MOVE    TBL-SORT11-TEN(IDX6)  TO  WRK-ZAITENX
-                   MOVE    TBL-SORT11-ZAIKAISU(IDX6 IDX5)
+                   MOVE    TBL-DENSHI-TEN(IDX6)  TO  WRK-ZAITENX
+                   MOVE    TBL-DENSHI-ZAIKAISU(IDX6 IDX5)
                                                  TO  WRK-ZAIKAISUX
                    PERFORM 810-TENSUKAI-HEN-SEC
                    MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
@@ -4346,179 +4275,20 @@ grpsys         PERFORM 900-DBSELECT-SEC
                      WHEN      1
                        MOVE  "ÅÅ»Ò²½²Ã»»"    TO  WRK-ZAI-NAME(1:10)
                      WHEN      3
-                       MOVE  "½é¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë"
+                      IF   RECE02-SRYYM   >=  "201204"
+                       MOVE  "ºÆ¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»"
                                              TO  WRK-ZAI-NAME(1:22)
-                   END-EVALUATE
-      *
-                   MOVE    1                 TO  WRK-SET-LINENUM
-                   PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
-      *
-                 WHEN      2
-      *
-                   MOVE    SPACE             TO  WRK-ZAI
-                   MOVE    "¡ö"              TO  WRK-ZAI-MK
-                   EVALUATE  IDX6
-                     WHEN      2
-                      IF   RECE02-SRYYM   >=  "201604"
-                       MOVE  "½é¿Ç¡ÊÊ¸½ñ¤Ë¤è¤ë¾Ò²ð¤¬¤Ê¤¤´µ¼Ô¡Ë"
-                                             TO  WRK-ZAI-NAME(1:32)
                       ELSE
-                       MOVE  "½é¿Ç¡ÊÂ¾°åÎÅµ¡´Ø¤«¤é¤Î¾Ò²ð¾õ¤¬¤Ê¤¤´µ¼Ô¡Ë"
-                                             TO  WRK-ZAI-NAME(1:40)
+                       MOVE  "»þ´Ö³°ÆÃÎã¡ÊºÆ¿Ç¡Ë"
+                                             TO  WRK-ZAI-NAME(1:18)
                       END-IF
-                   END-EVALUATE
-      *
-                   MOVE    1                 TO  WRK-SET-LINENUM
-                   PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
-      *@
-                   MOVE    SPACE             TO  WRK-ZAI
-                   MOVE    TBL-SORT11-TEN(IDX6)  TO  WRK-ZAITENX
-                   MOVE    TBL-SORT11-ZAIKAISU(IDX6 IDX5)
-                                                 TO  WRK-ZAIKAISUX
-                   PERFORM 810-TENSUKAI-HEN-SEC
-                   MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
-      *
-                   MOVE    2                 TO  WRK-SET-LINENUM
-                   PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
-      *
-               END-EVALUATE
-      *
-             END-IF
-      *
-           END-PERFORM
-      *
-           .
-      *
-       2010-SYOSAIMATOME-HENSYU1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ½é¿Ç¤ÎºÞ¤Þ¤È¤á½ÐÎÏ
-      *****************************************************************
-       20101-SYOSAIMATOME-WRITE1-SEC      SECTION.
-      *
-           MOVE    SPACE             TO  RECE06-REC
-           INITIALIZE                    RECE06-REC
-           MOVE    RECE02-KEY        TO  RECE06-KEY
-      *
-           MOVE    WRK-SET-LINENUM   TO  RECE06-LINENUM
-      *
-           COMPUTE RECE06-KOHBUNRI     =   IDX5  -  1
-      *
-           EVALUATE  IDX6
-             WHEN     1
-               COMPUTE RECE06-ZAINUM   = 99992000 + IDX5
-             WHEN     2
-               COMPUTE RECE06-ZAINUM   = 99992010 + IDX5
-             WHEN     3
-               COMPUTE RECE06-ZAINUM   = 99992020 + IDX5
-           END-EVALUATE
-      *
-           MOVE    1                 TO  RECE06-ZAIMEISAISU
-           MOVE    RECE02-PTNUM      TO  RECE06-PTNUM
-           MOVE    SPACE             TO  RECE06-SRYKA
-           MOVE    WRK-ZAI           TO  RECE06-TEKIYO-INF
-      *
-           MOVE    "11"              TO  RECE06-SRYKBN
-      *
-           MOVE    99999999          TO  RECE06-ZAITEN
-           MOVE    ZERO              TO  RECE06-KNSJISKBN
-      *
-           IF      IDX6  =  1
-             MOVE    9               TO  RECE06-CDKBN-SYO
-             MOVE    99              TO  RECE06-CDKBN-BU
-             MOVE    "9"             TO  RECE06-CDKBN-KBN
-             MOVE    999             TO  RECE06-CDKBN-KBNNUM
-             MOVE    99              TO  RECE06-CDKBN-KBNNUM-EDA
-             MOVE    99              TO  RECE06-CDKBN-KOUBAN
-             MOVE    999999999       TO  RECE06-KOUHYOJUNNUM
-           END-IF
-      *
-           MOVE    SPACE             TO  RECE06-SAFLG
-           MOVE    ZERO              TO  RECE06-ZAIKBN
-           MOVE    SPACE             TO  RECE06-SRYSYUKBN
-           MOVE    ZERO              TO  RECE06-DAY
-      *
-           MOVE    TBL-SORT11-HKNCOMBI(IDX6 IDX5)
-                                     TO  RECE06-HKNCOMBI
-      *
-           MOVE    SPACE             TO  RECE06-JIHOKBN
-      *
-           WRITE   RECE06-REC
-      *
-           IF      STS-RECE06          =   "00"
-               ADD     1                   TO  CNT-RECE06
-           ELSE
-               DISPLAY "*** ORCR0090 RECE06 WRITE ERR  ***"
-               DISPLAY "*** RECE06-SRYKBN ***" RECE06-SRYKBN
-               DISPLAY "*** RECE06-ZAINUM ***" RECE06-ZAINUM
-               DISPLAY "<SYOSAIMATOME-WRITE1>"
-      *
-               MOVE    SPACE               TO  WRK-ERR-AREA
-               INITIALIZE                      WRK-ERR-AREA
-      *
-               MOVE    3                   TO  WRK-ERR-FLG
-               MOVE    RECE06PARA          TO  WRK-ERR-FILE-NM
-               MOVE    STS-RECE06          TO  WRK-ERR-FILE-STS
-               PERFORM 500-FILE-ERR-ABORT-SEC
-           END-IF
-      *
-           .
-      *
-       20101-SYOSAIMATOME-WRITE1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ºÆ¿Ç¤ÎºÞ¤Þ¤È¤áÊÔ½¸
-      *****************************************************************
-       2010-SYOSAIMATOME-HENSYU2-SEC      SECTION.
-      *
-           PERFORM   VARYING   IDX5   FROM    1   BY  1
-                      UNTIL    IDX5    >      5
-      *
-             IF  TBL-SORT12-ZAIKAISU(IDX6 IDX5)  NOT =  ZERO
-      *
-               EVALUATE  IDX6
-                 WHEN      1
-                 WHEN      2
-                 WHEN      3
-                 WHEN      4
-                 WHEN     10
-                 WHEN     11
-                 WHEN     12
-                 WHEN     13
-                 WHEN     14
-                 WHEN     15
-                 WHEN     16
-      *
-                   MOVE    SPACE             TO  WRK-ZAI
-                   MOVE    TBL-SORT12-TEN(IDX6)  TO  WRK-ZAITENX
-                   MOVE    TBL-SORT12-ZAIKAISU(IDX6 IDX5)
-                                                 TO  WRK-ZAIKAISUX
-                   PERFORM 810-TENSUKAI-HEN-SEC
-                   MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
-      *
-                   MOVE    "¡ö"              TO  WRK-ZAI-MK
-                   EVALUATE  IDX6
-                     WHEN      1
-                       MOVE  "ºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë"
-                                             TO  WRK-ZAI-NAME(1:22)
-                     WHEN      2
-                       MOVE  "ÅÅÏÃÅùºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë"
-                                             TO  WRK-ZAI-NAME(1:28)
-                     WHEN      3
-                       MOVE  "Æ±ÆüºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë"
-                                             TO  WRK-ZAI-NAME(1:26)
-                     WHEN      4
-                       MOVE  "Æ±ÆüÅÅÏÃÅùºÆ¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë"
-                                             TO  WRK-ZAI-NAME(1:32)
-                     WHEN     10
+                     WHEN      8
                        MOVE  "ºÆ¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»"
                                              TO  WRK-ZAI-NAME(1:24)
-                     WHEN     11
+                     WHEN      9
                        MOVE  "»þ´Ö³°ÂÐ±þ²Ã»»£±"
                                              TO  WRK-ZAI-NAME(1:16)
-                     WHEN     12
+                     WHEN     10
                       IF   RECE02-SRYYM   >=  "201204"
                        MOVE  "»þ´Ö³°ÂÐ±þ²Ã»»£²"
                                              TO  WRK-ZAI-NAME(1:16)
@@ -4526,111 +4296,54 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        MOVE  "ÃÏ°è°åÎÅ¹×¸¥²Ã»»"
                                              TO  WRK-ZAI-NAME(1:16)
                       END-IF
-                     WHEN     13
+                     WHEN     11
                        MOVE  "»þ´Ö³°ÂÐ±þ²Ã»»£³"
                                              TO  WRK-ZAI-NAME(1:16)
-                     WHEN     14
+                     WHEN     12
                        MOVE  "ÌÀºÙ½ñÈ¯¹ÔÂÎÀ©Åù²Ã»»"
                                              TO  WRK-ZAI-NAME(1:20)
-                     WHEN     15
+                     WHEN     13
                        MOVE  "ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»"
                                              TO  WRK-ZAI-NAME(1:16)
-                     WHEN     16
-                       MOVE  "Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»"
-                                             TO  WRK-ZAI-NAME(1:22)
                    END-EVALUATE
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
-                   PERFORM 20101-SYOSAIMATOME-WRITE2-SEC
+                   PERFORM 20101-DENSHI-WRITE-SEC
       *
+                 WHEN      4
+                 WHEN      5
                  WHEN      6
                  WHEN      7
-                 WHEN      8
-                 WHEN      9
       *
                    MOVE    SPACE             TO  WRK-ZAI
                    MOVE    "¡ö"              TO  WRK-ZAI-MK
                    EVALUATE  IDX6
-                     WHEN      6
+                     WHEN      4
                        MOVE  "ºÆ¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»"
                                              TO  WRK-ZAI-NAME(1:36)
-                       IF   RECE02-SRYYM   >=  "201604"
-                        MOVE "¡ÊÆþ±¡³°¡Ë"    TO  WRK-ZAI-NAME(37:10)
-                       END-IF
-                     WHEN      7
+                     WHEN      5
                        MOVE  "¾®»ù²ÊºÆ¿Ç¡ÊÆýÍÄ»ùÌë´Ö¡Ë²Ã»»¡Ê£¶ºÐÌ¤Ëþ¡Ë"
                                              TO  WRK-ZAI-NAME(1:40)
-                       IF   RECE02-SRYYM   >=  "201604"
-                        MOVE "¡ÊÆþ±¡³°¡Ë"    TO  WRK-ZAI-NAME(41:10)
-                       END-IF
-                     WHEN      8
+                     WHEN      6
                        MOVE  "¾®»ù²ÊºÆ¿Ç¡ÊÆýÍÄ»ùµÙÆü¡Ë²Ã»»¡Ê£¶ºÐÌ¤Ëþ¡Ë"
                                              TO  WRK-ZAI-NAME(1:40)
-                       IF   RECE02-SRYYM   >=  "201604"
-                        MOVE "¡ÊÆþ±¡³°¡Ë"    TO  WRK-ZAI-NAME(41:10)
-                       END-IF
-                     WHEN      9
+                     WHEN      7
                        MOVE  "¾®»ù²ÊºÆ¿Ç¡ÊÆýÍÄ»ù¿¼Ìë¡Ë²Ã»»¡Ê£¶ºÐÌ¤Ëþ¡Ë"
                                              TO  WRK-ZAI-NAME(1:40)
-                       IF   RECE02-SRYYM   >=  "201604"
-                        MOVE "¡ÊÆþ±¡³°¡Ë"    TO  WRK-ZAI-NAME(41:10)
-                       END-IF
                    END-EVALUATE
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
-                   PERFORM 20101-SYOSAIMATOME-WRITE2-SEC
+                   PERFORM 20101-DENSHI-WRITE-SEC
       *@
                    MOVE    SPACE             TO  WRK-ZAI
-                   MOVE    TBL-SORT12-TEN(IDX6)  TO  WRK-ZAITENX
-                   MOVE    TBL-SORT12-ZAIKAISU(IDX6 IDX5)
+                   MOVE    TBL-DENSHI-TEN(IDX6)  TO  WRK-ZAITENX
+                   MOVE    TBL-DENSHI-ZAIKAISU(IDX6 IDX5)
                                                  TO  WRK-ZAIKAISUX
                    PERFORM 810-TENSUKAI-HEN-SEC
                    MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
       *
                    MOVE    2                 TO  WRK-SET-LINENUM
-                   PERFORM 20101-SYOSAIMATOME-WRITE2-SEC
-      *
-                 WHEN      5
-      *
-                   IF   RECE02-SRYYM   >=  "201604"
-                     MOVE    SPACE             TO  WRK-ZAI
-                     MOVE    "¡ö"              TO  WRK-ZAI-MK
-                     MOVE    "ºÆ¿Ç¡Ê»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»"
-                                               TO  WRK-ZAI-NAME(1:30)
-                     MOVE    "¡ÊÆþ±¡³°¡Ë"      TO  WRK-ZAI-NAME(31:10)
-      *
-                     MOVE    1                 TO  WRK-SET-LINENUM
-                     PERFORM 20101-SYOSAIMATOME-WRITE2-SEC
-      *@
-                     MOVE    SPACE             TO  WRK-ZAI
-                     MOVE    TBL-SORT12-TEN(IDX6)  TO  WRK-ZAITENX
-                     MOVE    TBL-SORT12-ZAIKAISU(IDX6 IDX5)
-                                                   TO  WRK-ZAIKAISUX
-                     PERFORM 810-TENSUKAI-HEN-SEC
-                     MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
-      *
-                     MOVE    2                 TO  WRK-SET-LINENUM
-                     PERFORM 20101-SYOSAIMATOME-WRITE2-SEC
-                   ELSE
-                     MOVE    SPACE             TO  WRK-ZAI
-                     MOVE    TBL-SORT12-TEN(IDX6)  TO  WRK-ZAITENX
-                     MOVE    TBL-SORT12-ZAIKAISU(IDX6 IDX5)
-                                                   TO  WRK-ZAIKAISUX
-                     PERFORM 810-TENSUKAI-HEN-SEC
-                     MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
-      *
-                     MOVE    "¡ö"              TO  WRK-ZAI-MK
-                     IF   RECE02-SRYYM   >=  "201204"
-                       MOVE  "ºÆ¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»"
-                                               TO  WRK-ZAI-NAME(1:22)
-                     ELSE
-                       MOVE  "»þ´Ö³°ÆÃÎã¡ÊºÆ¿Ç¡Ë"
-                                               TO  WRK-ZAI-NAME(1:18)
-                     END-IF
-      *
-                     MOVE    1                 TO  WRK-SET-LINENUM
-                     PERFORM 20101-SYOSAIMATOME-WRITE2-SEC
-                   END-IF
+                   PERFORM 20101-DENSHI-WRITE-SEC
       *
                END-EVALUATE
       *
@@ -4640,13 +4353,13 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            .
       *
-       2010-SYOSAIMATOME-HENSYU2-EXT.
+       2010-DENSHI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ºÆ¿Ç¤ÎºÞ¤Þ¤È¤á½ÐÎÏ
+      *    ÅÅ»Ò²½²Ã»»Åù½ÐÎÏ
       *****************************************************************
-       20101-SYOSAIMATOME-WRITE2-SEC      SECTION.
+       20101-DENSHI-WRITE-SEC      SECTION.
       *
            MOVE    SPACE             TO  RECE06-REC
            INITIALIZE                    RECE06-REC
@@ -4658,37 +4371,29 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            EVALUATE  IDX6
              WHEN     1
-               COMPUTE RECE06-ZAINUM   = 99992500 + IDX5
-             WHEN     2
-               COMPUTE RECE06-ZAINUM   = 99992510 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994000 + IDX5
              WHEN     3
-               COMPUTE RECE06-ZAINUM   = 99992520 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994020 + IDX5
              WHEN     4
-               COMPUTE RECE06-ZAINUM   = 99992530 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994030 + IDX5
              WHEN     5
-               COMPUTE RECE06-ZAINUM   = 99992540 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994040 + IDX5
              WHEN     6
-               COMPUTE RECE06-ZAINUM   = 99992550 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994050 + IDX5
              WHEN     7
-               COMPUTE RECE06-ZAINUM   = 99992560 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994060 + IDX5
              WHEN     8
-               COMPUTE RECE06-ZAINUM   = 99992570 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994070 + IDX5
              WHEN     9
-               COMPUTE RECE06-ZAINUM   = 99992580 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994080 + IDX5
              WHEN    10
-               COMPUTE RECE06-ZAINUM   = 99992590 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994090 + IDX5
              WHEN    11
-               COMPUTE RECE06-ZAINUM   = 99992600 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994100 + IDX5
              WHEN    12
-               COMPUTE RECE06-ZAINUM   = 99992610 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994110 + IDX5
              WHEN    13
-               COMPUTE RECE06-ZAINUM   = 99992620 + IDX5
-             WHEN    14
-               COMPUTE RECE06-ZAINUM   = 99992630 + IDX5
-             WHEN    15
-               COMPUTE RECE06-ZAINUM   = 99992640 + IDX5
-             WHEN    16
-               COMPUTE RECE06-ZAINUM   = 99992650 + IDX5
+               COMPUTE RECE06-ZAINUM   = 99994120 + IDX5
            END-EVALUATE
       *
            MOVE    1                 TO  RECE06-ZAIMEISAISU
@@ -4696,29 +4401,40 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    SPACE             TO  RECE06-SRYKA
            MOVE    WRK-ZAI           TO  RECE06-TEKIYO-INF
       *
-           MOVE    "12"              TO  RECE06-SRYKBN
+           EVALUATE  IDX6
+             WHEN     1
+                MOVE    "11"         TO  RECE06-SRYKBN
+             WHEN     3
+             WHEN     4
+             WHEN     5
+             WHEN     6
+             WHEN     7
+             WHEN     8
+             WHEN     9
+             WHEN    10
+             WHEN    11
+             WHEN    12
+             WHEN    13
+                MOVE    "12"         TO  RECE06-SRYKBN
+           END-EVALUATE
       *
            MOVE    99999999          TO  RECE06-ZAITEN
            MOVE    ZERO              TO  RECE06-KNSJISKBN
       *
-           IF      IDX6  =  1 OR 2 OR 3 OR 4
-             CONTINUE
-           ELSE
-             MOVE    9               TO  RECE06-CDKBN-SYO
-             MOVE    99              TO  RECE06-CDKBN-BU
-             MOVE    "9"             TO  RECE06-CDKBN-KBN
-             MOVE    999             TO  RECE06-CDKBN-KBNNUM
-             MOVE    99              TO  RECE06-CDKBN-KBNNUM-EDA
-             MOVE    99              TO  RECE06-CDKBN-KOUBAN
-             MOVE    999999999       TO  RECE06-KOUHYOJUNNUM
-           END-IF
+           MOVE    9                 TO  RECE06-CDKBN-SYO
+           MOVE    99                TO  RECE06-CDKBN-BU
+           MOVE    "9"               TO  RECE06-CDKBN-KBN
+           MOVE    999               TO  RECE06-CDKBN-KBNNUM
+           MOVE    99                TO  RECE06-CDKBN-KBNNUM-EDA
+           MOVE    99                TO  RECE06-CDKBN-KOUBAN
+           MOVE    999999999         TO  RECE06-KOUHYOJUNNUM
       *
            MOVE    SPACE             TO  RECE06-SAFLG
            MOVE    ZERO              TO  RECE06-ZAIKBN
            MOVE    SPACE             TO  RECE06-SRYSYUKBN
            MOVE    ZERO              TO  RECE06-DAY
       *
-           MOVE    TBL-SORT12-HKNCOMBI(IDX6 IDX5)
+           MOVE    TBL-DENSHI-HKNCOMBI(IDX6 IDX5)
                                      TO  RECE06-HKNCOMBI
       *
            MOVE    SPACE             TO  RECE06-JIHOKBN
@@ -4726,13 +4442,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
            WRITE   RECE06-REC
       *
            IF      STS-RECE06          =   "00"
-               ADD     1                   TO  CNT-RECE06
+               CONTINUE
            ELSE
-               DISPLAY "*** ORCR0090 RECE06 WRITE ERR  ***"
-               DISPLAY "*** RECE06-SRYKBN ***" RECE06-SRYKBN
-               DISPLAY "*** RECE06-ZAINUM ***" RECE06-ZAINUM
-               DISPLAY "<SYOSAIMATOME-WRITE2>"
-      *
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
       *
@@ -4742,9 +4453,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
                PERFORM 500-FILE-ERR-ABORT-SEC
            END-IF
       *
+           ADD     1                 TO  CNT-RECE06
+      *
            .
       *
-       20101-SYOSAIMATOME-WRITE2-EXT.
+       20101-DENSHI-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5209,8 +4922,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
              OR ((FLG-COMMENT3       =    1                  ) AND
                  (RECE04-SRYKBN      NOT =  "11" AND "12"    ) AND
                  (RECE04-ZAITEN      =   ZERO                ) AND
-                 (RECE04-TOYAKUFLG   =   SPACE               ) AND
-                 (RECE04-YKZKISAIFLG =   SPACE               ))
+                 (RECE04-TOYAKUFLG   =   SPACE               ))
              OR ( RECE04-SAFLG   NOT =   SPACE                )
              OR ( RECE04-TOYAKUFLG   =   "2" OR "4"           )
              OR ( RECE04-ZAIKBN      =    1                   )
@@ -5380,29 +5092,14 @@ grpsys         PERFORM 900-DBSELECT-SEC
                END-EVALUATE
       *
                IF      RECE04-SRYKBN     =   "80"
-                 IF (WRK-ZAIW-SRYCD1 = "120002710" OR "120002810" OR
+                 IF  WRK-ZAIW-SRYCD1 = "120002710" OR "120002810" OR
                                        "120002910" OR "120003010" OR
                                        "120002470" OR "120002570" OR
                                        "120003270" OR "120003470" OR
-                                       "120003570" OR "120003710" OR
-                                       "120003970" OR "120004270" OR
-                                       "120004570"               )
-                 OR (RECE04-SIPPUCOMFLG  =   "1"                 )
-                 OR (RECE04-SIPPUFLG     =   "1"                 )
+                                       "120003570" OR "120003710"
                        MOVE   ZERO   TO   RECE06-SYOHOUFLG
                  ELSE
                        MOVE    1     TO   RECE06-SYOHOUFLG
-                 END-IF
-                 IF (RECE04-SIPPUCOMFLG  =   "1")
-                 OR (RECE04-SIPPUFLG     =   "1")
-                       MOVE    9     TO   RECE06-CDKBN-SYO
-                       MOVE    99    TO   RECE06-CDKBN-BU
-                       MOVE    "9"   TO   RECE06-CDKBN-KBN
-                       MOVE    999   TO   RECE06-CDKBN-KBNNUM
-                       MOVE    99    TO   RECE06-CDKBN-KBNNUM-EDA
-                       MOVE    99    TO   RECE06-CDKBN-KOUBAN
-                       MOVE    999999999
-                                     TO   RECE06-KOUHYOJUNNUM
                  END-IF
                END-IF
       *
@@ -5413,13 +5110,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                WRITE   RECE06-REC
       *
                IF      STS-RECE06          =   "00"
-                   ADD     1                   TO  CNT-RECE06
+                   CONTINUE
                ELSE
-                   DISPLAY "*** ORCR0090 RECE06 WRITE ERR  ***"
-                   DISPLAY "*** RECE06-SRYKBN ***" RECE06-SRYKBN
-                   DISPLAY "*** RECE06-ZAINUM ***" RECE06-ZAINUM
-                   MOVE    WRK-TBLMAX          TO  IDY
-      *
                    MOVE    SPACE               TO  WRK-ERR-AREA
                    INITIALIZE                      WRK-ERR-AREA
                    MOVE    3                   TO  WRK-ERR-FLG
@@ -5427,6 +5119,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    MOVE    STS-RECE06          TO  WRK-ERR-FILE-STS
                    PERFORM 500-FILE-ERR-ABORT-SEC
                END-IF
+      *
+               ADD     1             TO  CNT-RECE06
            END-PERFORM
       *     
            INITIALIZE                    TBL-ZAI-AREA
