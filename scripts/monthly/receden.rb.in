@@ -7,7 +7,7 @@ class Receden < Receden_common
 
   attr_reader :ir,:go,:receipt,:info
 
-  def initialize(receden_file,check_level)
+  def initialize(receden_file)
 
     @ir=Array.new
     @go=Array.new
@@ -58,7 +58,7 @@ class Receden < Receden_common
       }
     }
     block.each{|recedata|
-        @receipt << Recept.new(recedata,check_level,@info)
+        @receipt << Recept.new(recedata,@info)
     }
   end
 end
@@ -67,7 +67,7 @@ class Recept < Receden_common
 
   attr_reader :re,:ho,:ro,:ko,:kh,:sy,:tekiyo,:sj,:sai,:rows,:sbt,:tokki,:age
 
-  def initialize(recedata,check_level,info)
+  def initialize(recedata,info)
 
     @re=Array.new
     @ho=Array.new
@@ -147,7 +147,7 @@ class Recept < Receden_common
     end
 
     block.each{|zaidata|
-        @tekiyo << Tekiyo.new(zaidata,check_level,info)
+        @tekiyo << Tekiyo.new(zaidata,info)
     }
   end
 
@@ -158,31 +158,21 @@ class Tekiyo < Receden_common
 
   attr_reader :zai,:srykbn
 
-  def initialize(zaidata,check_level,info)
+  def initialize(zaidata,info)
 
     @zai=Array.new
     @srykbn=""
-    @hokatsu = false
-    @byoto_hokoku = false
 
     zaidata.each {|csv|
       case csv.rows[0]
       when "SI"
           @zai << csv_to_hash(info["SI"],csv)
-          if @zai.last["SRYCD"].byoto_hokoku?
-            @byoto_hokoku = true
-          end
       when "IY"
           @zai << csv_to_hash(info["IY"],csv)
       when "TO"
           @zai << csv_to_hash(info["TO"],csv)
       when "CO"
           @zai << csv_to_hash(info["CO"],csv)
-          if check_level != "1"
-            if @zai.last["SRYCD"].value == "810000001" && @zai.last["DATA"].value =~ /^(【包括診療】$|【持参薬】)/
-              @hokatsu = true
-            end
-          end
       when "NI"
           @zai << csv_to_hash(info["NI"],csv)
       end
@@ -193,13 +183,4 @@ class Tekiyo < Receden_common
     end
 
   end
-  
-  def hokatsu?
-   @hokatsu
-  end
-  
-  def byoto_hokoku?
-   @byoto_hokoku
-  end
-  
 end

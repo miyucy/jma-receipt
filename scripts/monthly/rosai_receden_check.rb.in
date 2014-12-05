@@ -18,6 +18,45 @@ rescue LoadError => err
     raise "#{err.message}\n#{err.backtrace.join("\n")}"
 end
 
+
+class DBMAIN
+
+   def initialize
+     @data  = nil
+     @mcpIn = {"db" => {}}
+     @mcpOut = {}
+     @rc = MCP_OK
+   end
+
+   def exec(_func, _table=nil ,_pathname= nil, _query=nil)
+
+     @mcpIn["func"] = _func
+     @mcpIn["db"]["table"]=_table
+     @mcpIn["db"]["pathname"]=_pathname
+     @rc,@mcpOut,@data = monfunc(@mcpIn.to_json,_query.to_json)
+     @mcpOut=JSON.parse(@mcpOut) unless @mcpOut.nil?
+     @data=JSON.parse(@data) unless @data.nil?
+   rescue
+     @rc = -99
+   ensure
+     return @rc
+   end
+
+   def rc
+     @rc
+   end
+
+   def data
+     @data
+   end
+
+   def [](name)
+     @data[name]
+   end
+
+end
+
+
 class Csvline
 
   def set_tbl_tensu(tbl_tensu)
@@ -58,7 +97,6 @@ class Receden_check < Receden_common
   end
 
   def select_tensu(hospnum,srycd,sryymd)
-
     ret=Hash.new
     sryymd=wtos(sryymd)
     if @cache_tensu.key?(srycd)
@@ -73,40 +111,43 @@ class Receden_check < Receden_common
     end
 
     if ret.empty?
-      sql="select * from tbl_tensu where HOSPNUM = #{hospnum} " +
-          "and SRYCD = '#{srycd}' and '#{sryymd}' between YUKOSTYMD and YUKOEDYMD"
-	  begin
-        data=JSON.load(`#{ENV['MONSQL']} -dir #{ENV['LDDIRECTORY']} -c "#{sql}"`)
-      rescue  => err
-        STDERR.puts err.message
-        data=nil
+      db = DBMAIN.new
+      query = {"HOSPNUM"   => hospnum,
+               "SRYCD"     => srycd,
+               "YUKOSTYMD" => sryymd,
+               "YUKOEDYMD" => sryymd,
+              }
+      db.exec("DBSELECT","tbl_tensu","key",query)
+      if db.rc == 0
+        db.exec("DBFETCH","tbl_tensu","key")
+        if db.rc == 0
+          ret = db.data
+          @cache_tensu[srycd] << db.data
+        end
       end
-      if data != nil && data.size > 0
-        ret = Hash[data[0].map{|k,v|[k.upcase , v]}]
-        @cache_tensu[srycd] << ret
-      end
+      db.exec("DBCLOSECURSOR","tbl_tensu","key")
     end
     return ret
 
   end
 
   def select_byomei(byomeicd)
-
     ret=Hash.new
     if @cache_byomei.key?(byomeicd)
       ret = @cache_byomei[byomeicd]
     else
-      sql = "select * from tbl_byomei where BYOMEICD = '#{byomeicd}' "
-	  begin
-        data=JSON.load(`#{ENV['MONSQL']} -dir #{ENV['LDDIRECTORY']} -c "#{sql}"`)
-      rescue  => err
-        STDERR.puts err.message
-        data=nil
+      db = DBMAIN.new
+      query = {"BYOMEICD"   => byomeicd,
+              }
+      db.exec("DBSELECT","tbl_byomei","key",query)
+      if db.rc == 0
+        db.exec("DBFETCH","tbl_byomei","key")
+        if db.rc == 0
+          ret = db.data
+          @cache_byomei[byomeicd] = db.data
+        end
       end
-      if data != nil && data.size > 0
-        ret = Hash[data[0].map{|k,v|[k.upcase , v]}]
-        @cache_byomei[byomeicd] = ret
-      end
+      db.exec("DBCLOSECURSOR","tbl_byomei","key")
     end
 
     return ret
@@ -128,18 +169,20 @@ class Receden_check < Receden_common
     end
 
     if ret.empty?
-      sql="select * from tbl_labor_sio where " +
-          "SYOCD = '#{syocd}' and '#{sryymd}' between YUKOSTYMD and YUKOEDYMD"
-      begin
-        data=JSON.load(`#{ENV['MONSQL']} -dir #{ENV['LDDIRECTORY']} -c "#{sql}"`)
-      rescue  => err
-        STDERR.puts err.message
-        data=nil
+      db = DBMAIN.new
+      query = {"SYOCD"     => syocd,
+               "YUKOSTYMD" => sryymd,
+               "YUKOEDYMD" => sryymd
+              }
+      db.exec("DBSELECT","tbl_labor_sio","key",query)
+      if db.rc == 0
+        db.exec("DBFETCH","tbl_labor_sio","key")
+        if db.rc == 0
+          ret = db.data
+          @cache_labor_sio[syocd] << db.data
+        end
       end
-      if data != nil && data.size > 0
-        ret = Hash[data[0].map{|k,v|[k.upcase , v]}]
-        @cache_labor_sio[syocd] << ret
-      end
+      db.exec("DBCLOSECURSOR","tbl_labor_sio","key")
     end
 
     return ret
@@ -666,7 +709,6 @@ class Receden_check < Receden_common
     if rece.sy.empty?
       @errors.push("25540",rece)
     else
-      byomei_tg_count = 0
       flg_sryymd_error = true
       rece.sy.each{|sy|
         if sy["SRYYMD"].wYmdtos != ""
@@ -699,10 +741,6 @@ class Receden_check < Receden_common
           tbl_byomei=select_byomei(sy["BYOMEICD"].value)
           if tbl_byomei.empty?
             @errors.push("32040",rece,sy,"BYOMEICD")
-          else
-            if tbl_byomei["HKNSKYKBN"].to_i  == 1
-              byomei_tg_count += 1
-            end
           end
         end
         if sy["SYUBYO"].value =~ /^(|01)$/
@@ -732,9 +770,6 @@ class Receden_check < Receden_common
       if flg_sryymd_error == true
         @errors.push("32060",rece,rece.sy.first,nil,nil,"傷病名レコード１件目　診療開始日［#{rece.sy.first["SRYYMD"].value}］")
       end
-      if rece.sy.size == byomei_tg_count
-        @errors.push("42220",rece,nil)
-      end
     end
 
 
@@ -746,11 +781,6 @@ class Receden_check < Receden_common
     chozai_kaisu=0
 
     rece.tekiyo.each{|tekiyo|
-
-      if tekiyo.hokatsu == true
-        next
-      end
-
       myzaikaisu=nil
       myreceline=0
       flg_plus  = false
@@ -856,12 +886,7 @@ class Receden_check < Receden_common
                     @errors.push("34900",rece,zai,nil,nil,myfooter)
                   end
 
-                  if flg_minus == false
-                    shokei_tensu   += zai["TEN"].value.to_i   * zai["KAISU"].value.to_i
-                  else
-                    shokei_tensu   -= zai["TEN"].value.to_i   * zai["KAISU"].value.to_i
-                  end
-
+                  shokei_tensu   += zai["TEN"].value.to_i   * zai["KAISU"].value.to_i
                   shokei_kingaku += zai["KINGAKU"].value.to_i * zai["KAISU"].value.to_i
 
                 end
@@ -877,7 +902,7 @@ class Receden_check < Receden_common
                     if tbl_tensu["CHUKSNCD"].to_i != 0
                       case
                       when ksnsort.khn_exists == false
-#                        @errors.push("46410",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
+                        @errors.push("46410",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
                       when tbl_tensu["CHUKSNCD"].to_i != ksnsort.chuksncd
                         @errors.push("46411",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
                       when tbl_tensu["CHUKSNTSUBAN"].strip == ksnsort.chuksntsuban
@@ -896,11 +921,11 @@ class Receden_check < Receden_common
                   end
                 end
                 if tbl_tensu["SRYKBN"] == "11" && tbl_tensu["KOKUJISKBKBN2"].to_i == 1
-                 if !(["1","3","7"].include?(rr["SHINKEIKBN"].value))
+                  if rr["SHINKEIKBN"].value != "1"
                     @errors.push("40070",rece,rr,"SHINKEIKBN")
                   end
                 end
-                if tbl_tensu["NYUTENTTLKBN"].to_i == 240  && tbl_tensu["KOKUJISKBKBN2"].to_i == 1
+                if tbl_tensu["NYUTENTTLKBN"].to_i == 240  && tbl_tensu["KOKUJISKBKBN2"].to_i = 1
                   chozai_kaisu += zai["KAISU"].value.to_i
                 end
                 case rs["HOSPKBN"].value
@@ -915,6 +940,11 @@ class Receden_check < Receden_common
                 end
               when  "IY"
 
+                case tbl_tensu["YKZKBN"].to_i
+                when 8,9
+                   @errors.push("23950",rece,zai,"SRYCD",nil,tbl_tensu["NAME"])
+                end
+
                 case tbl_tensu["TENSIKIBETU"].to_i
                 when 1
                  if zai["SURYO"].value.to_f == 0
@@ -922,11 +952,7 @@ class Receden_check < Receden_common
                  end
                 end
 
-                  if flg_minus == false
-                    shokei_tensu   += zai["TEN"].value.to_i   * zai["KAISU"].value.to_i
-                  else
-                    shokei_tensu   -= zai["TEN"].value.to_i   * zai["KAISU"].value.to_i
-                  end
+                shokei_tensu   += zai["TEN"].value.to_i   * zai["KAISU"].value.to_i
 
               when  "TO"
 
@@ -1054,7 +1080,7 @@ class Receden_check < Receden_common
                   if latest_sryymd[0,6] < wtos(rece.sryym)[0,6]
                     date_error["44510"] = true
                   end
-                  if rr["RYOSTYMD"].wYmdtos == mysryymd
+                  if rr["SHINKEIKBN"].value == "1" && rr["RYOSTYMD"].wYmdtos == mysryymd
                   else
                     date_error["46340"] = true
                   end
@@ -1111,12 +1137,12 @@ class Receden_check < Receden_common
               if flg_minus == true
                 if flg_plus == true
                   @errors.push("33190",rece,zai)
+                else
+                  if zai["TEN"].value.to_i == 0
+                    @errors.push("33060",rece,zai,"TEN",nil,tbl_tensu["NAME"])
+                  end
                 end
               end
-            end
-          else
-            if zai["RECID"].value == "IY" && tbl_tensu["TENSIKIBETU"].to_i == 7
-              @errors.push("33060",rece,zai,"TEN",nil,tbl_tensu["NAME"])
             end
           end
 
@@ -1171,8 +1197,8 @@ class Receden_check < Receden_common
           if flg_tensu_required == true
             if zai["RECID"].value == "RI"
               if @check_level == "1"
-                if zai["TEN"].value.strip.empty? && zai["KINGAKU"].value.strip.empty?
-                  @errors.push("38351",rece,zai,nil,nil,tbl_tensu["NAME"])
+                if zai["TEN"].value.to_i == 0 && zai["KINGAKU"].value.to_i == 0
+                  @errors.push("38350",rece,zai,nil,nil,tbl_tensu["NAME"])
                 end
                 if flg_kingaku_santei == true && zai["KINGAKU"].value.to_i == 0
                   @errors.push("38380",rece,zai,"KINGAKU",nil,tbl_tensu["NAME"])
@@ -1183,11 +1209,8 @@ class Receden_check < Receden_common
               end
             else
               if ( @check_level == "1" )
-                if zai["RECID"].value == "IY" && tbl_tensu["TENSIKIBETU"].to_i == 7
-                else
-                  if zai["TEN"].value.strip.empty?
-                    @errors.push("33071",rece,zai,"TEN",nil,tbl_tensu["NAME"])
-                  end
+                if zai["TEN"].value.to_i == 0
+                  @errors.push("33070",rece,zai,"TEN",nil,tbl_tensu["NAME"])
                 end
               end
             end
@@ -1397,16 +1420,22 @@ class Receden_check < Receden_common
     @outfile=mcp_tempdir + "/" + @outfile
     @errlog=mcp_tempdir + "/" + @errlog
 
+    db = DBMAIN.new
+    db.exec("DBOPEN")
+    db.exec("DBSTART")
     @info=Recinfo.new
     @errors=Receden_error.new(@recefile)
 
-    r=Receden.new(@infile,@check_level)
+    r=Receden.new(@infile)
     check_lv1(r)
     if @errors.empty?
       check_receipt(r)
     end
 
     @errors.write(@outfile)
+
+    db.exec("DBCOMMIT")
+    db.exec("DBDISCONNECT")
 
   rescue => err
     STDERR.puts "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
@@ -1417,6 +1446,3 @@ class Receden_check < Receden_common
   end
 
 end
-
-receden_check = Receden_check.new
-receden_check.main(ARGV.join(','))
