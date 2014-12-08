@@ -43,8 +43,6 @@
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.02    NACL-ÌçÏÆ    14/11/04  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
       *                                     ¡Ê£°£µ£´¡¢£°£µ£²ÂÐ±þ¡Ë
-      *  04.07.03    NACL-ÌçÏÆ    15/01/26  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
-      *                                     ¡ÊÅÔÆ»ÉÜ¸©ÆÈ¼«ÆñÉÂÂÐ±þ¡Ë
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -193,8 +191,6 @@
                    IF    LNK-ORCSJGNGET-SETKBN  NOT = ZERO
                      MOVE   LNK-ORCSJGNGET-SETKBN
                                       TO   LNK-ORCSJGNGET-TAISYOKBN
-                     MOVE   LNK-ORCSJGNGET-SETKBN2
-                                      TO   LNK-ORCSJGNGET-TEKIYOFLG
                    ELSE
                      MOVE       1     TO   LNK-ORCSJGNGET-TAISYOKBN
                    END-IF
@@ -1032,9 +1028,6 @@
                     ELSE
                          MOVE    2      TO   LNK-ORCSJGNGET-TAISYOKBN
                     END-IF
-                 WHEN      "3"
-                         MOVE    2      TO   LNK-ORCSJGNGET-TAISYOKBN
-                         MOVE    1      TO   LNK-ORCSJGNGET-TEKIYOFLG
                END-EVALUATE
                MOVE     "tbl_syskanri"  TO  MCP-TABLE
                MOVE     "key10"         TO  MCP-PATHNAME
