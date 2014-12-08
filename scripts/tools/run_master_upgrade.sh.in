@@ -7,6 +7,7 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
+LOGFILE="$LOGDIR"/${0%.sh}.log
 RUNDATE=$(date  '+%Y%m%d%H%M%S')
 FLG_TEMPDIR_GEN=0
 if [ -z "${MCP_TEMPDIR}" ]; then
@@ -15,7 +16,7 @@ if [ -z "${MCP_TEMPDIR}" ]; then
   FLG_TEMPDIR_GEN=1
 fi 
 
-export PATH=${PATCHSCRIPTSDIR}:${SCRIPTSDIR}:$PATH
+export PATH=${SITESCRIPTSDIR}/allways:${PATCHSCRIPTSDIR}/allways:${SCRIPTSDIR}/allways:$PATH
 export COB_LIBRARY_PATH=${PATCHLIBDIR}:${ORCALIBDIR}:/usr/lib/panda
 if [ `whoami` != "${ORCAUSER}" ]; then
     echo   "${ORCAUSER}ユーザーで実行してください。"
@@ -83,23 +84,19 @@ for hospnum in ${HNLIST} ; do
     exit 105
   fi
 
-  ACCESSKEY=`${MONSQL} -dir ${LDDIRECTORY} -c "select access_key_1 from tbl_access_key where hospnum=${HOSPNUM};" -o CSV2`
-
 export MON_BATCH_ID=$(uuidgen)
 export MON_BATCH_NAME="master_upgrade.sh"
 export MON_BATCH_GROUPNAME="${HOSPNUM}"
 export MON_BATCH_EXTRA="0000001MSTMNT"
-export MON_DIRECTORY_PATH="${LDDIRECTORY}"
 export MCP_TENANT=1
-export MCP_MIDDLEWARE_NAME="panda"
 
-  /usr/lib/panda/bin/monbatch  "execshell.sh \"allways\" \"master_upgrade.sh\"  \"${HOSPNUM}\" T \"${HOSPID}\" \"${MNTERRFS}\" 0000001 MSTMNT \"${MLIERRFS}\" 0000001 MSTMLI \"${ACCESSKEY}\""
+  /usr/lib/panda/bin/monbatch  -dir ${LDDIRECTORY} "master_upgrade.sh \"${HOSPNUM}\" T \"${HOSPID}\" \"${MNTERRFS}\" 0000001 MSTMNT \"${MLIERRFS}\" 0000001 MSTMLI"
   MSTMNT=$?
+  delete_tempdir 
   if [ ${MSTMNT} -ne 0 ] ; then
     exit ${MSTMNT}
   fi
 done
-delete_tempdir 
 delete_pgpass
 
 exit ${MSTMNT}
