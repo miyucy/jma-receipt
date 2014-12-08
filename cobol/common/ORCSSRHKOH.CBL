@@ -32,13 +32,6 @@
       *  04.05.02    NACL-門脇    12/05/16  愛知・三重県地方公費対応
       *  04.07.01    NACL-門脇    14/11/04  平成２７年１月改正対応
       *                                     （０５４、０５２対応）
-      *  04.07.02    NACL-門脇    15/01/26  平成２７年１月改正対応
-      *                                     （都道府県独自難病対応）
-      *  04.07.03    NACL-門脇    15/06/08  難病の実施機関番号追加対応（６０２）
-      *
-      *  04.08.01    NACL-門脇    15/10/21  現物給付対象外の低所得（食事）対応
-      *  04.08.02    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -62,30 +55,21 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-END                 PIC 9(01).
            03  FLG-HKNHIT              PIC 9(01).
-           03  FLG-KOH                 PIC 9(01).
-           03  FLG-OK                  PIC 9(01).
+           03  FLG-KOHNUM-G.
+               05  FLG-KOH051          PIC 9(01).
+               05  FLG-KOH052          PIC 9(01).
+               05  FLG-KOH054          PIC 9(01).
+               05  FLG-KOH091          PIC 9(01).
+               05  FLG-KOH151          PIC 9(01).
+               05  FLG-KOH152          PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
-           03  IDX1                    PIC 9(05).
-           03  IDX2                    PIC 9(05).
            03  IDX-KOH                 PIC 9(05).
            03  IDX-ZAI                 PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-HKNCOMBI            PIC X(04).
-           03  WRK-JGNGET-AREA.
-               04  WRK-JGNGET-OCC      OCCURS 4.
-                 05  WRK-JGNGET-TEKIYOFLG
-                                       PIC 9(01).
-      *
-           03  WRK-DAY-AREA.
-               04  WRK-DAY-OCC         OCCURS 31.
-                 05  WRK-DAY1          PIC 9(04).
-                 05  WRK-DAY5X.
-                   07  WRK-DAY5        PIC 9(04).
-                 05  WRK-DAY-MI        PIC X(01).
-           03  WRK-ZAISKBKBN           PIC X(01).
       *
        01  KEY-AREA.
            03  KEY-HKNNUM              PIC X(03).
@@ -111,19 +95,19 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    患者情報
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    診療会計
+      *    診療会計マスター
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    患者保険情報
+      *    患者保険マスタ
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    患者公費情報
+      *    患者公費マスタ
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
@@ -135,7 +119,7 @@
        01  NACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    システム管理
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1001.INC".
       *
@@ -147,12 +131,6 @@
            COPY    "CPORCSAGECHK.INC".
       *
            COPY    "CPORCSS009.INC".
-      *
-      *    公費月上限額取得サブ
-           COPY    "CPORCSJGNGET.INC".
-      *
-      *    入院料未算定日取得サブ
-           COPY    "CPORCSNYUINDAY.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -276,36 +254,34 @@
       *
            INITIALIZE                  TNCOMB-AREA
       *
-      ***  PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
       *
-      ***  INITIALIZE              SS009-AREA
-      ***  CALL    "ORCSS009"      USING
-      ***                          SS009-AREA
-      ***                          NACCT-REC
-      ***                          SPA-AREA
+           INITIALIZE              SS009-AREA
+           CALL    "ORCSS009"      USING
+                                   SS009-AREA
+                                   NACCT-REC
+                                   SPA-AREA
       *
-      ***  PERFORM VARYING IDX-ZAI FROM    1   BY  1
-      ***          UNTIL ( IDX-ZAI >   SS009-HENKYAKU-MAX )
+           PERFORM VARYING IDX-ZAI FROM    1   BY  1
+                   UNTIL ( IDX-ZAI >   SS009-HENKYAKU-MAX )
       *
-      ***      IF    ( SS009-ZAITEN(IDX-ZAI) *  SS009-ZAIKAISU(IDX-ZAI)
-      ***                          >   ZERO )
-      ***          PERFORM VARYING IDX0    FROM    1   BY  1
-      ***                  UNTIL ( IDX0    >   31 )
-      ***                   OR   ( SS009-HKNCOMBI(IDX-ZAI)
-      ***                                  =   TNCOMB-HKNCOMBI(IDX0))
+               IF    ( SS009-ZAITEN(IDX-ZAI) *  SS009-ZAIKAISU(IDX-ZAI)
+                                   >   ZERO )
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   31 )
+                            OR   ( SS009-HKNCOMBI(IDX-ZAI)
+                                           =   TNCOMB-HKNCOMBI(IDX0))
       *
-      ***              IF    ( IDX0      >   TNCOMB-MAX )
-      ***                  MOVE    IDX0  TO  TNCOMB-MAX
-      ***                  MOVE    SS009-HKNCOMBI(IDX-ZAI)
-      ***                                TO  TNCOMB-HKNCOMBI(TNCOMB-MAX)
-      ***                  MOVE    31    TO  IDX0
-      ***              END-IF
-      ***          END-PERFORM
-      ***      END-IF
+                       IF    ( IDX0      >   TNCOMB-MAX )
+                           MOVE    IDX0  TO  TNCOMB-MAX
+                           MOVE    SS009-HKNCOMBI(IDX-ZAI)
+                                         TO  TNCOMB-HKNCOMBI(TNCOMB-MAX)
+                           MOVE    31    TO  IDX0
+                       END-IF
+                   END-PERFORM
+               END-IF
       *
-      ***  END-PERFORM
-      *
-           PERFORM 2001-NACCTHKN-CHK2-SEC
+           END-PERFORM
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TNCOMB-MAX )
@@ -320,95 +296,18 @@
        2001-NACCTHKN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計チェック処理
-      *****************************************************************
-       2001-NACCTHKN-CHK2-SEC           SECTION.
-      *
-           INITIALIZE                  WRK-DAY-AREA
-      *
-      *    入院料
-           MOVE    "1"    TO   WRK-ZAISKBKBN
-           PERFORM 900-NYUINACCT-KEY17-SEL2-SEC
-           PERFORM UNTIL ( FLG-NACCT   NOT =   ZERO )
-             PERFORM   VARYING   IDX1    FROM    1   BY  1
-                        UNTIL    IDX1     >     31
-                IF     NACCT-DAY(IDX1) NOT =  ZERO 
-                  MOVE NACCT-DAY(IDX1)   TO  WRK-DAY1(IDX1)
-                END-IF
-             END-PERFORM
-             PERFORM 900-NYUINACCT-KEY17-FET2-SEC
-           END-PERFORM
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *    保険組み合わせ
-           MOVE    "5"    TO   WRK-ZAISKBKBN
-           PERFORM 900-NYUINACCT-KEY17-SEL2-SEC
-           PERFORM UNTIL ( FLG-NACCT   NOT =   ZERO )
-             PERFORM   VARYING   IDX1    FROM    1   BY  1
-                        UNTIL    IDX1     >     31
-                IF     NACCT-DAY(IDX1) NOT =  ZERO 
-                  MOVE NACCT-DAY(IDX1)   TO  WRK-DAY5(IDX1)
-                END-IF
-             END-PERFORM
-             PERFORM 900-NYUINACCT-KEY17-FET2-SEC
-           END-PERFORM
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *    入院料未算定日等の取得
-           INITIALIZE                      ORCSNYUINDAY-AREA
-           MOVE    SPA-HOSPNUM         TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    SSRHKOH-PTID        TO  LNK-NYUINDAY-PTID
-           MOVE    SSRHKOH-SRYYM       TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
-                                               SPA-AREA
-           IF      LNK-NYUINDAY-RC  =  ZERO
-                PERFORM   VARYING   IDX1    FROM    1   BY  1
-                           UNTIL    IDX1     >     31
-                   MOVE  LNK-NYUINDAY-KBN(IDX1)
-                                       TO  WRK-DAY-MI(IDX1)
-                END-PERFORM
-           END-IF
-      *
-      ***
-      *
-           PERFORM   VARYING   IDX1    FROM    1   BY  1
-                      UNTIL    IDX1     >     31
-              IF  ((WRK-DAY1(IDX1)  NOT = ZERO) AND
-                   (WRK-DAY5(IDX1)  NOT = ZERO))
-              OR  ((WRK-DAY-MI(IDX1)    = "1" ) AND
-                   (WRK-DAY5(IDX1)  NOT = ZERO))
-                MOVE     ZERO      TO   FLG-OK
-                PERFORM  VARYING  IDX2  FROM  1  BY  1
-                          UNTIL  (IDX2                     >  31  )
-                           OR    (TNCOMB-HKNCOMBI(IDX2)    = SPACE)
-                           OR    (FLG-OK                   =   1  )
-                  IF    WRK-DAY5X(IDX1) = TNCOMB-HKNCOMBI(IDX2)
-                    MOVE    1      TO   FLG-OK
-                  END-IF
-                END-PERFORM
-                IF    FLG-OK  =  ZERO
-                AND   IDX2   <=   31
-                  MOVE  WRK-DAY5X(IDX1) TO  TNCOMB-HKNCOMBI(IDX2)
-                  MOVE  IDX2            TO  TNCOMB-MAX
-                END-IF
-              END-IF
-           END-PERFORM
-      *
-           .
-       2001-NACCTHKN-CHK2-EXT.
-           EXIT.
-      *****************************************************************
       *    平成２１年５月改正対象公費存在チェック処理
       *****************************************************************
        2001-H2105KAISEI-CHK-SEC        SECTION.
       *
            PERFORM 800-HKNCOMBI-CHK-SEC
            IF    ( KEY-HKNNUM      =   COMB-HKNNUM )
-           AND   ( FLG-KOH         =   1           )
+            AND  (     FLG-KOH051  =   1
+                    OR FLG-KOH052  =   1
+                    OR FLG-KOH054  =   1
+                    OR FLG-KOH091  =   1
+                    OR FLG-KOH151  =   1
+                    OR FLG-KOH152  =   1           )
       *
                PERFORM 800-HOKEN-CHK-SEC
                PERFORM VARYING IDX-KOH FROM    1   BY  1
@@ -433,8 +332,7 @@
                        WHEN  ( TKOH-KOHNUM  (IDX-KOH)
                                            =   "054"          )
                         AND  ( TKOH-FTNJANUM(IDX-KOH) (5:3)
-                                           =   "601" OR "501"
-                                                     OR "602" )
+                                           =   "601" OR "501" )
                         AND  ( TKOH-FTNJANUM(IDX-KOH) (1:2)
                                            =   "54"           )
                        WHEN  ( TKOH-KOHNUM  (IDX-KOH)
@@ -467,8 +365,6 @@
                         AND  ( TKOH-FTNJANUM(IDX-KOH) (1:2)
                                            =   "52"           )
                         AND  ( SSRHKOH-SRYYM    >=   "201501" )
-                       WHEN  ( WRK-JGNGET-TEKIYOFLG(IDX-KOH)
-                                           =    1             )
                            IF    ( KEY-HKNNUM  =   "060" OR "039" )
                             OR   ( AGECHK-NENREI   >=    70 )
                                MOVE    1       TO  SSRHKOH-RC
@@ -480,6 +376,7 @@
                            END-IF
                        END-EVALUATE
                    END-IF
+
                END-PERFORM
            END-IF
       *
@@ -503,9 +400,7 @@
            INITIALIZE                  HKNCOMBI-REC
       *
            MOVE    ZERO            TO  FLG-HKNHIT
-                                       FLG-KOH
-      *
-           INITIALIZE                  WRK-JGNGET-AREA
+                                       FLG-KOHNUM-G
       *
            PERFORM 900-HKNCOMBI-KEY-SEL-SEC
            IF    ( COMB-HKNNUM     =   SPACE OR "971" OR "973" OR "975"
@@ -520,53 +415,27 @@
                    UNTIL ( IDX-KOH >   CONST-KOH-MAX )
                     OR   ( COMB-KOHHKNNUM (IDX-KOH)    =   SPACE )
       *
-               IF  IDX-KOH  =  1
-                 IF  ( COMB-KOHHKNNUM (IDX-KOH)    =   "051"
-                                                   OR  "052"
-                                                   OR  "091"    )
-                 OR  ((COMB-KOHHKNNUM (IDX-KOH)    =   "054"   ) AND
-                      (SSRHKOH-SRYYM              >=   "201501"))
-                 OR  ((SYS-1001-PREFNUM            =    13     ) AND
-                      (COMB-KOHHKNNUM (IDX-KOH)    =   "151"   ) AND
-                      (SSRHKOH-SRYYM              >=   "200905"))
-                 OR  ((SYS-1001-PREFNUM            =    23     ) AND
-                      (COMB-KOHHKNNUM (IDX-KOH)    =   "191"   ) AND
-                      (SSRHKOH-SRYYM              >=   "200910"))
-                 OR  ((SYS-1001-PREFNUM            =   23 OR 24) AND
-                      (COMB-KOHHKNNUM (IDX-KOH)    =   "152"   ) AND
-                      (SSRHKOH-SRYYM              >=   "201104"))
-                   MOVE    1       TO  FLG-KOH
-                 END-IF
-                 IF   (FLG-KOH                       =  ZERO         )
-                 AND  (COMB-KOHHKNNUM(IDX-KOH)(1:1) >= "1" AND <= "8")
-                   PERFORM  900-PTKOHINF-KEY-SEL-SEC
-                   INITIALIZE                  LNK-ORCSJGNGET-REC
-                   MOVE  SPA-HOSPNUM       TO  LNK-ORCSJGNGET-HOSPNUM
-                   MOVE  COMB-KOHHKNNUM(IDX-KOH)
-                                           TO  LNK-ORCSJGNGET-KOHHKNNUM
-                   MOVE  PTKOH-TEKSTYMD    TO  LNK-ORCSJGNGET-TEKSTYMD
-                   MOVE  SYS-1001-PREFNUM  TO  LNK-ORCSJGNGET-PREFNUM
-                   MOVE   "1"              TO  LNK-ORCSJGNGET-HENFLG
-                   CALL  "ORCSJGNGET"      USING
-                                           LNK-ORCSJGNGET-REC
-                                           SPA-AREA
-                   IF    LNK-ORCSJGNGET-RC   =   ZERO
-                     IF   (SSRHKOH-SRYYM            >=  "201501")
-                     AND  (LNK-ORCSJGNGET-TEKIYOFLG  =   1      )
-                       MOVE    1   TO  FLG-KOH
-                       MOVE    1   TO  WRK-JGNGET-TEKIYOFLG(IDX-KOH)
-                     END-IF
-                   END-IF
-                 END-IF
+               IF    ( COMB-KOHHKNNUM (IDX-KOH)    =   "051" )
+                   MOVE    1       TO  FLG-KOH051
                END-IF
-      *
-               IF  IDX-KOH  =  2
-                 IF  ( COMB-KOHHKNNUM (IDX-KOH)    =   "051"
-                                                   OR  "091"    )
-                 OR  ((COMB-KOHHKNNUM (IDX-KOH)    =   "054"   ) AND
-                      (SSRHKOH-SRYYM              >=   "201501"))
-                   MOVE    1       TO  FLG-KOH
-                 END-IF
+               IF    ( COMB-KOHHKNNUM (IDX-KOH)    =   "052" )
+                   MOVE    1       TO  FLG-KOH052
+               END-IF
+               IF    ( COMB-KOHHKNNUM (IDX-KOH)    =   "054"    )
+                AND  ( SSRHKOH-SRYYM              >=   "201501" )
+                   MOVE    1       TO  FLG-KOH054
+               END-IF
+               IF    ( COMB-KOHHKNNUM (IDX-KOH)    =   "091" )
+                   MOVE    1       TO  FLG-KOH091
+               END-IF
+               IF    ( SYS-1001-PREFNUM            =   13 )
+                AND  ( COMB-KOHHKNNUM (IDX-KOH)    =   "151" )
+                   MOVE    1       TO  FLG-KOH151
+               END-IF
+               IF    ( SYS-1001-PREFNUM            =   23 OR 24 )
+                AND  ( COMB-KOHHKNNUM (IDX-KOH)    =   "152"    )
+                AND  ( SSRHKOH-SRYYM              >=   "201104" )
+                   MOVE    1       TO  FLG-KOH152
                END-IF
       *
            END-PERFORM
@@ -602,11 +471,12 @@
        900-NYUINACCT-KEY17-SEL-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-NACCT
-      *
            INITIALIZE                      NACCT-REC
+      *
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SSRHKOH-PTID        TO  NACCT-PTID
            MOVE    SSRHKOH-SRYYM       TO  NACCT-SRYYM
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
            MOVE    NACCT-REC           TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -615,8 +485,8 @@
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  NACCT-REC
            ELSE
+               MOVE    ZERO            TO  FLG-NACCT
                INITIALIZE                  NACCT-REC
-               MOVE    1               TO  FLG-NACCT
            END-IF
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -625,52 +495,6 @@
       *
            .
        900-NYUINACCT-KEY17-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計検索処理
-      *****************************************************************
-       900-NYUINACCT-KEY17-SEL2-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-NACCT
-      *
-           INITIALIZE                      NACCT-REC
-           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    SSRHKOH-PTID        TO  NACCT-PTID
-           MOVE    SSRHKOH-SRYYM       TO  NACCT-SRYYM
-           MOVE    WRK-ZAISKBKBN       TO  NACCT-ZAISKBKBN
-           MOVE    NACCT-REC           TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NACCT-REC
-           ELSE
-               INITIALIZE                  NACCT-REC
-               MOVE    1               TO  FLG-NACCT
-           END-IF
-      *
-           .
-       900-NYUINACCT-KEY17-SEL2-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計FETCH処理
-      *****************************************************************
-       900-NYUINACCT-KEY17-FET2-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-NACCT
-      *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  NACCT-REC
-           ELSE
-               INITIALIZE                  NACCT-REC
-               MOVE    1               TO  FLG-NACCT
-           END-IF
-      *
-           .
-       900-NYUINACCT-KEY17-FET2-EXT.
            EXIT.
       *****************************************************************
       *    診療会計検索処理
