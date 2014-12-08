@@ -46,11 +46,6 @@
       *
       *  04.08.01    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *  04.08.02    NACL-藤原    14/08/28  ４．８ミドル対応
-      *  04.08.03    NACL-藤原    15/08/07  医療情報連携基盤のクライアン
-      *                                     ト保存対応
-      *  04.08.04    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -116,7 +111,22 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -289,9 +299,13 @@
       *
            MOVE    SYS-200501-RECEDEN-DATAKBN
                                        TO  SPA-GMN-T98-DATAKBN
+           IF      SPA-T01-PRTKBN      =   "6" OR  "7"
+               MOVE    "4"                 TO  SPA-GMN-T98-DATAKBN
+           END-IF
            PERFORM 41021-DATAKBN-CHK-SEC                                 
            IF    ( SYS-200501-RECEDEN-DATAKBN
                                        =   "1" OR  "2" )
+           AND   ( SPA-T01-PRTKBN  NOT =   "6" OR  "7" )
                MOVE    SPACE           TO  SPA-GMN-T98-DATAKBN-G
            END-IF
       *
@@ -434,33 +448,18 @@
       *
            IF    ( SPA-GMN-T98-DATAKBNMEI
                                        =   SPACE       )
-               IF      SPA-MW              =   SPA-GINBEE
-                   MOVE    SPA-GMN-T98-DATAKBNLST (1)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-               ELSE
-                   IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "F"
-                       MOVE    SPA-GMN-T98-DATAKBNLST (2)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-                   ELSE
-                       MOVE    SPA-GMN-T98-DATAKBNLST (1)
-                                               TO  SPA-GMN-T98-DATAKBN-G
+           OR    ( SPA-T01-PRTKBN      =   "6" OR  "7" )
+               MOVE    "4"                 TO  SPA-GMN-T98-DATAKBN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-T98-DATAKBN-MAX
+                   IF        SPA-GMN-T98-DATAKBN
+                                   =   SPA-GMN-T98-DATAKBNL (IDX)
+                       MOVE    SPA-GMN-T98-DATAKBNMEIL (IDX)
+                                           TO  SPA-GMN-T98-DATAKBNMEI
+                       MOVE    SPA-GMN-T98-DATAKBN-MAX
+                                           TO  IDX
                    END-IF
-               END-IF
-           END-IF
-      *
-           IF      SPA-GMN-T98-PRTKBN  =   "6" OR  "7" OR  "8"
-               IF      SPA-GMN-T98-DATAKBN     =   "4" OR  "5"
-                   CONTINUE
-               ELSE
-                   IF      SPA-MW              =   SPA-GINBEE
-                       MOVE    SPA-GMN-T98-DATAKBNLST (1)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-                   ELSE
-                       MOVE    SPA-GMN-T98-DATAKBNLST (2)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-                   END-IF
-               END-IF
+               END-PERFORM
            END-IF
            .
        41021-DATAKBN-CHK-EXT.
@@ -679,26 +678,6 @@
                                            TO  T98-PRTKBN-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-T98-PRTKBN-MAX  TO  T98-PRTKBN-COUNT
-      *
-           MOVE    "blue"              TO  T98-LABEL-STYLE
-           IF      SPA-T01-PRTKBN      =   "6" OR  "7"
-               CONTINUE
-           ELSE 
-               IF      SPA-GMN-T06-SRYYMKBN-MAX
-                                       >   ZERO
-                   STRING   "【"               DELIMITED   BY  SPACE
-                            SPA-NAI-T06-SRYYMKBN-ST-PRT
-                                           (SPA-NAI-T06-SRYYMKBN-SELNUM)
-                                               DELIMITED   BY  SPACE
-                            "〜"               DELIMITED   BY  SPACE
-                            SPA-NAI-T06-SRYYMKBN-ED-PRT
-                                           (SPA-NAI-T06-SRYYMKBN-SELNUM)
-                                               DELIMITED   BY  SPACE
-                            "】"               DELIMITED   BY  SPACE
-                                               INTO        T98-LABEL
-                   END-STRING
-               END-IF
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
