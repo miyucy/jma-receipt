@@ -370,6 +370,7 @@
            03  WRK-SPA-CHIIKKBN        PIC 9(01).
            03  WRK-SPA-MEISAKBN        PIC 9(01).
            03  WRK-SPA-INITAUTO-FLG    PIC X(01).
+           03  WRK-SPA-DAKT50-KBN      PIC 9(01).
       *H25.3
            03  WRK-SYOUKAI             PIC 9(01).
            03  FLG-SYOKAINASI          PIC 9(01).
@@ -810,13 +811,20 @@
                    MOVE    SPA-CHIIKKBN        TO  WRK-SPA-CHIIKKBN
                    MOVE    SPA-MEISAKBN        TO  WRK-SPA-MEISAKBN
                    MOVE    SPA-INITAUTO-FLG    TO  WRK-SPA-INITAUTO-FLG
+                   MOVE    SPA-DAKT50-KBN      TO  WRK-SPA-DAKT50-KBN
+               END-IF
+      *        会計照会はSPA-WORKに編集
+               IF     (LNK-ORCSC-PG        =   "J04" )
+                AND   (SPA-SRYYMD          >=  "20150101")
+                  MOVE    SPA-WORK(1:1)        TO  WRK-SPA-DAKT50-KBN
                END-IF
                INITIALIZE                      SPA-K01KYOUTU
       *ver.4.8
-      *        電話再診の加算発生用
+      *        電話再診の加算発生用他
                MOVE    WRK-SPA-CHIIKKBN    TO  SPA-CHIIKKBN
                MOVE    WRK-SPA-MEISAKBN    TO  SPA-MEISAKBN
                MOVE    WRK-SPA-INITAUTO-FLG    TO  SPA-INITAUTO-FLG
+               MOVE    WRK-SPA-DAKT50-KBN      TO  SPA-DAKT50-KBN
            END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
@@ -832,7 +840,6 @@
                WHEN    OTHER
                    MOVE    "1001"          TO  SPA-ERRCD
            END-EVALUATE
-      *
       *
            .
            EXIT    PROGRAM
@@ -1416,6 +1423,18 @@
                GO      TO      100114-SYUGISYORI-CHK-EXT
            END-IF
       *
+      *H27.1
+      *    妥結率５割以下のチェック
+           IF     (FLG-TBL             =   1    )
+             AND  (WRK-ERRCD           =   SPACE)
+             AND  (SPA-SRYYMD          >=  "20150101" )
+               PERFORM 20012-DAKETU-CHK-SEC
+               IF      WRK-ERRCD       NOT =   SPACE
+                   GO      TO      100114-SYUGISYORI-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *
            IF      WRK-KAISU       NOT =   ZERO
                MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
            END-IF
@@ -1785,7 +1804,44 @@
            .
        1001140-CHIKIJIKAN-SET-EXT.
            EXIT.
-      *???????????????????????????????????????
+      *
+      *
+      *****************************************************************
+      *    妥結率のチェック処理
+      *****************************************************************
+       20012-DAKETU-CHK-SEC               SECTION.
+      *
+           IF      WRK-ETCKBN          =   "2"
+      *        妥結率５割以下のコードを対象でない時に入力
+               IF      SPA-DAKT50-KBN  NOT =   1
+                   MOVE    "K111"          TO  WRK-ERRCD
+               END-IF
+           ELSE
+      *        紹介状なしはチェックなし
+               IF     (WRK-ETCKBN          =   "1")
+                   CONTINUE
+               ELSE
+                   IF      SPA-DAKT50-KBN      =   1
+                       MOVE    "K112"          TO  WRK-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+           IF     (WRK-ERRCD       NOT =   SPACE )
+               IF     (WRK-COM-KZMFLG (IDX-Z)
+                                           =   SPACE ) AND
+                      (LNK-ORCSC-KEI-IDX   =   ZERO )
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-CUR    (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+               ELSE
+                   MOVE    SPACE           TO  WRK-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       20012-DAKETU-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    行削除処理
       *****************************************************************
@@ -1913,7 +1969,7 @@
       *H25.4   紹介なし
                WHEN    "111012510"
                WHEN    "111012610"
-      *H27.1   妥結率???
+      *H27.1   妥結率
                WHEN    "111012710"
       *            受診履歴判定
                    PERFORM 100131-RSIJYURRKCHK-SEC
@@ -5585,14 +5641,6 @@
       *    診察料の判定
            PERFORM 2001-SINSATU-CHK-SEC
       *
-      *H27.1
-      *    妥結率５割以下のチェック
-           IF     (FLG-TBL             =   1    )
-             AND  (SPA-ERRCD           =   SPACE)
-             AND  (SPA-SRYYMD          >=  "20150101" )
-               PERFORM 20012-DAKETU-CHK-SEC
-           END-IF
-      *
       *H25.9
            IF     (FLG-TBL             =   ZERO )
              AND  (SPA-ERRCD           =   SPACE )
@@ -5742,42 +5790,6 @@
       *
            .
        20001-SINSATURYOCHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    妥結率のチェック処理
-      *****************************************************************
-       20012-DAKETU-CHK-SEC               SECTION.
-      *
-           IF      WRK-ETCKBN          =   "2"
-      *        妥結率５割以下のコードを対象でない時に入力
-               IF      SPA-DAKT50-KBN  NOT =   1
-                   MOVE    "K111"          TO  SPA-ERRCD
-               END-IF
-           ELSE
-      *        紹介状なしはチェックなし
-               IF     (WRK-ETCKBN          =   "1")
-      *????????? AND  (WRK-KBN2            =   "D")   *??２科目のみ？
-                   CONTINUE
-               ELSE
-                   IF      SPA-DAKT50-KBN      =   1
-                       MOVE    "K112"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF
-           IF     (SPA-ERRCD       NOT =   SPACE )
-               IF     (WRK-COM-KZMFLG (IDX-Z)
-                                           =   SPACE ) AND
-                      (LNK-ORCSC-KEI-IDX   =   ZERO )
-                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"             TO  WRK-COM-CUR    (IDX-Z)
-                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
-               ELSE
-                   MOVE    SPACE           TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-           .
-       20012-DAKETU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    同日初診チェック処理
