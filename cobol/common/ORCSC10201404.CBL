@@ -288,12 +288,12 @@
            03  WRK-KBN                 PIC X(01).
            03  WRK-KBN2                PIC X(01).
            03  WRK-ETCKBN              PIC X(01).
-           03  WRK-KAISU               PIC 9(04).
-           03  WRK-SAN-KAISU           PIC 9(04).
+           03  WRK-KAISU               PIC 9(01).
+      **** 03  WRK-SAN-KAISU           PIC 9(01).
            03  WRK-HOSPSBT             PIC 9(01).
            03  WRK-SINSATU-KBN         PIC X(01).
            03  WRK-SINSATU-KBN2        PIC X(01).
-           03  WRK-SINSATU-KAISU       PIC 9(01).
+      *****03  WRK-SINSATU-KAISU       PIC 9(01).
       *    ø«ª°Œ¡•¡•ß•√•ØÕ—
            03  WRK-KEICD               PIC X(04).
            03  WRK-KEICD-IDX           PIC 9(04).
@@ -876,7 +876,7 @@
            MOVE    ZERO                TO  IDX-SYU
            INITIALIZE                  WRK-AREA
            MOVE    SPACE               TO  WRK-NYU-SRYCD
-           MOVE    ZERO                TO  WRK-SINSATU-KAISU
+      *****MOVE    ZERO                TO  WRK-SINSATU-KAISU
       *
            MOVE    ZERO                TO  FLG-TIME-NYU
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
@@ -1424,8 +1424,11 @@
            END-IF
       *
       *H27.1
+      *  ø«Œ≈π‘∞Ÿ§œ¡¥¬Œ§«•¡•ß•√•Ø
       *    ¬≈∑ÎŒ®£µ≥‰∞ ≤º§Œ•¡•ß•√•Ø
-           IF     (FLG-TBL             =   1    )
+           IF     (LNK-ORCSC-PG        =   "J04"
+                                       OR  "KT01" )
+             AND  (FLG-TBL             =   1    )
              AND  (WRK-ERRCD           =   SPACE)
              AND  (SPA-SRYYMD          >=  "20150101" )
                PERFORM 20012-DAKETU-CHK-SEC
@@ -1435,9 +1438,9 @@
            END-IF
       *
       *
-           IF      WRK-KAISU       NOT =   ZERO
-               MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
-           END-IF
+      *    IF      WRK-KAISU       NOT =   ZERO
+      *        MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
+      *    END-IF
       *
       *    œ´∫“§Œø«ª°Œ¡§Œ»ΩƒÍ
            IF      SPA-HKNKBN          =   1
@@ -1817,8 +1820,9 @@
                    MOVE    "K111"          TO  WRK-ERRCD
                END-IF
            ELSE
-      *        æ“≤æı§ §∑§œ•¡•ß•√•Ø§ §∑
+      *        æ“≤æı§ §∑°¶æÆª˘≤ ≥∞ÕËø«Œ≈Œ¡§œ•¡•ß•√•Ø§ §∑
                IF     (WRK-ETCKBN          =   "1")
+                  OR  (WRK-KAISU           =   2  )
                    CONTINUE
                ELSE
                    IF      SPA-DAKT50-KBN      =   1
@@ -1827,12 +1831,12 @@
                END-IF
            END-IF
            IF     (WRK-ERRCD       NOT =   SPACE )
-               IF     (WRK-COM-KZMFLG (IDX-Z)
+               IF     (WRK-COM-KZMFLG2(IDX-Z)
                                            =   SPACE ) AND
                       (LNK-ORCSC-KEI-IDX   =   ZERO )
                    MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
                    MOVE    "1"             TO  WRK-COM-CUR    (IDX-Z)
-                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-KZMFLG2(IDX-Z)
                ELSE
                    MOVE    SPACE           TO  WRK-ERRCD
                END-IF
@@ -5641,6 +5645,19 @@
       *    ø«ª°Œ¡§Œ»ΩƒÍ
            PERFORM 2001-SINSATU-CHK-SEC
       *
+      *H27.1
+      *    ¬≈∑ÎŒ®£µ≥‰∞ ≤º§Œ•¡•ß•√•Ø
+           IF     (FLG-TBL             =   1    )
+             AND  (SPA-ERRCD           =   SPACE)
+             AND  (WRK-ERRCD           =   SPACE)
+             AND  (SPA-SRYYMD          >=  "20150101" )
+               PERFORM 20012-DAKETU-CHK-SEC
+               MOVE    WRK-ERRCD       TO  SPA-ERRCD
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      20001-SINSATURYOCHK-EXT
+               END-IF
+           END-IF
+      *
       *H25.9
            IF     (FLG-TBL             =   ZERO )
              AND  (SPA-ERRCD           =   SPACE )
@@ -5656,7 +5673,7 @@
       *        ø«ª°Œ¡§Œ£±§ƒÃ‹
                IF      IDX-SINSATU         =   ZERO
                    MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
-                   MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
+      ****         MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                    MOVE    WRK-KBN2        TO  WRK-SINSATU-KBN2
                    MOVE    IDX-Z           TO  IDX-SINSATU
                END-IF

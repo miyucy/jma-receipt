@@ -9833,6 +9833,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-SYSKANRI            =   ZERO
       *
+               MOVE    SPA-OPID                TO  SYS-OPID
+      *
                MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
       *
@@ -9856,6 +9858,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            ",MCP-RC:" MCP-RC 
                END-IF 
            ELSE
+               MOVE    SPA-OPID                TO  SYS-OPID
+      *
                MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
                                                    SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
