@@ -36,8 +36,6 @@
       *  04.05.00    NACL-多々納  09/11/XX  移行履歴、リハビリコメント登録対応、登録変更対応
       *  04.07.00    NACL-多々納  13/02/XX  労災レセ電コード対応(H25.7)
       *  04.07.00    NACL-多々納  13/07/XX  第三者行為対応
-      *  04.08.00    NACL-多々納  16/02/XX  初診料新規追加対応
-      *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,7 +68,6 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
-           03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-HEN             PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
@@ -145,14 +142,6 @@
            03  WRK-HKNKBN-MEI         PIC X(02).
            03  WRK-COMB-TEKSTYMD      PIC X(08).
            03  WRK-COMB-TEKEDYMD      PIC X(08).
-      *
-           03  WRK-LSTYMD             PIC X(08).
-           03  WRK-SANTEIYMD.
-               05  WRK-SANYM-X        PIC X(06).
-               05  WRK-SANDD          PIC X(02).
-      *
-           03  WRK-YUKOSTYMD           PIC X(08).
-      *
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -366,8 +355,7 @@
            END-IF
       *
            IF      FLG-END         =   ZERO
-      ***      MOVE    SPACE               TO  LINKAREA
-               MOVE    SPACE               TO  LNK-KYOUTU
+               MOVE    SPACE               TO  LINKAREA
       *
                MOVE    SPACE               TO  MCP-PUTTYPE
                MOVE    "K06    "           TO  MCP-WINDOW
@@ -385,8 +373,7 @@
        300-SCREEN-SEC              SECTION.
       *
       *
-      **** IF      LINKAREA        NOT =   SPACE
-           IF      LNK-KYOUTU      NOT =   SPACE
+           IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    SPACE               TO  SPA-KIDCD
            END-IF
@@ -1054,12 +1041,6 @@
                                        OR  "099800161"
                                        OR  "099800171"
                                        OR  "099800181"
-                                       OR  "099800191"
-                                       OR  "099800211"
-                                       OR  "099800221"
-                                       OR  "099800231"
-                                       OR  "099800241"
-                                       OR  "099800291"
                MOVE    1               TO  SPA-NAI-PLUSKBN
            ELSE
                MOVE    ZERO            TO  SPA-NAI-PLUSKBN
@@ -1280,8 +1261,6 @@
       *     (COPY に追加するのは、パッケージ対応で）
            IF      WRK-SRYCD           =   "099800181"
                                        OR  "099800182"
-      *H28.4
-             OR  (WRK-SRYCD(1:7)       =   "0998002"  )
       *        がん患者リハ開始日・終了日
                MOVE    1               TO  FLG-HKNSAN
            END-IF
@@ -1482,25 +1461,15 @@
       *    END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-           IF      SPA-K06-MOTOPG      =   "J02"
-      *        会計照会へ
-               MOVE    LNK-COMMON          TO  SPA-KYOUTU
-               MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
-               MOVE    "K06"               TO  SPA-MOTOPG
-               MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-           ELSE
-      *
            IF      SPA-MOTOPG2         =   "KT01"
       *        外来まとめへ
                MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
                MOVE    SPACE               TO  LINKAREA
-               MOVE    "K06"               TO  SPA-MOTOPG
                MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
                MOVE    SPACE               TO  SPA-MOTOPG2
            ELSE
+    ****       MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
                MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
-           END-IF
-      *
            END-IF
            MOVE    "K06"               TO  SPA-MOTOPG
       *
@@ -1898,24 +1867,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-GMN-SRYCD       =   SPACE )
                MOVE    "0008"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN-CUR
-           ELSE
-      *H28.2
-               IF      SPA-GMN-RENNUM       >   ZERO
-                   IF      SPA-GMN-SRYCD    NOT =   SPA-GMN-TSRYCD
-                                                       (SPA-GMN-RENNUM)
-                       MOVE    "0006"              TO  SPA-ERRCD
-                       MOVE    1                   TO  SPA-GMN-CUR
-                   END-IF
-               ELSE
-      *            新規は、点数マスタチェック存在チェック
-                   PERFORM 41021-SRYCD-HEN-SEC
-                   IF      FLG-TENSU       NOT =   ZERO
-                       MOVE    "0012"              TO  SPA-ERRCD
-                       MOVE    2                   TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
            END-IF
-      *
            IF     (SPA-ERRCD           =   SPACE )
       *        初回算定日チェック
                IF      SPA-GMN-MSANTEID    >   ZERO
@@ -1943,10 +1895,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 900-SANTEI-INV-SEC
                IF      FLG-SANTEI          =   1
                    CONTINUE
-      *            初診は警告
-                   IF     (SPA-KEIFLG3         =   ZERO )
-                       PERFORM 45012-SYOSIN-CHK-SEC
-                   END-IF
                ELSE
                    MOVE    "0010"              TO  SPA-ERRCD
                    MOVE    2                   TO  SPA-GMN-CUR
@@ -2003,105 +1951,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        45011-SANTEIPLUS-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    新規の初診料チェック処理
-      *****************************************************************
-       45012-SYOSIN-CHK-SEC                SECTION.
-      *
-      *    初診料のみ対象
-           IF      SPA-GMN-SRYCD       =   "111000110"
-                                       OR  "111700210"
-                                       OR  "111003610"
-                                       OR  "111700110"
-                                       OR  "113003510"
-                                       OR  "113003710"
-                                       OR  "101110010"
-                                       OR  "099110001"
-                                       OR  "111012510"
-                                       OR  "111012710"
-                                       OR  "113019710"
-                                       OR  "113019910"
-               CONTINUE
-           ELSE
-               GO      TO      45012-SYOSIN-CHK-EXT
-           END-IF
-      *    最終来院日
-           MOVE    SPACE               TO  SRYKARRK-REC
-           INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
-           MOVE    SPA-PTID            TO  KARRK-PTID
-      *
-           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
-           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srykarrk"      TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 975-SRYKARRK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYKARRK
-           END-IF
-           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      FLG-SRYKARRK        =   ZERO
-               MOVE    KARRK-LASTYMD       TO  WRK-LSTYMD
-           ELSE
-               MOVE    SPACE               TO  WRK-LSTYMD
-           END-IF
-      *    初診算定チェック
-           INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
-           MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE    "999999"            TO  SANTEI-SRYYM
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key11"             TO  MCP-PATHNAME
-               PERFORM 920-SANTEI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF
-           MOVE    SPACE               TO  WRK-SANTEIYMD
-           PERFORM
-                   UNTIL       (FLG-SANTEI     =   1    )
-      *        初回初診日
-               MOVE    SANTEI-SRYYM        TO  WRK-SANYM-X
-               MOVE    ZERO                TO  WRK-SANDD
-               PERFORM VARYING     IDX2    FROM    31  BY  -1
-                       UNTIL      (IDX2    <   1    )
-                   IF      SANTEI-DAY (IDX2)   >   ZERO
-                       MOVE    IDX2            TO  WRK-SANDD
-                       MOVE    1               TO  IDX2
-                   END-IF
-               END-PERFORM
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key11"             TO  MCP-PATHNAME
-               PERFORM 920-SANTEI-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    初診算定日登録あり
-           IF     (WRK-SANTEIYMD    NOT =   SPACE   )
-            AND   (WRK-SANYM-X         <=  SPA-NAI-SRYYM)
-               MOVE    "K035"          TO  SPA-ERRCD
-               MOVE    1               TO  SPA-KEIFLG3
-           ELSE
-               IF     (WRK-LSTYMD  NOT =   SPACE  )
-                 AND  (WRK-LSTYMD      <   WRK-SRYYMD )
-                   MOVE    "K036"              TO  SPA-ERRCD
-                   MOVE    1                   TO  SPA-KEIFLG3
-               END-IF
-           END-IF
-           .
-       45012-SYOSIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2305,8 +2154,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        OR  "111012510"
       *H27.1           妥結率５割以下
                                        OR  "111012710"
-                                       OR  "113019710"
-                                       OR  "113019910"
                CONTINUE
            ELSE
                GO      TO      4510-KARRK-UPD-EXT
@@ -2365,8 +2212,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        490-RRKTOUROKU-SEC             SECTION.
       *
       *    初期画面セット
-      *****MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    2                   TO  SPA-K061-GMN
            MOVE    "K06"               TO  SPA-MOTOPG
@@ -2393,8 +2239,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-      **** MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "K061"              TO  MCP-WINDOW
@@ -2419,8 +2264,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "K06"               TO  SPA-K062-MOTOPG
            MOVE    SPACE               TO  SPA-MOTOPG
       *    初期画面セット
-      **** MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2444,8 +2288,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-      **** MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "K062"              TO  MCP-WINDOW
@@ -2462,8 +2305,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4100-IKOUTOROKU-SEC             SECTION.
       *
       *    初期画面セット
-      *****MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    1                   TO  SPA-K061-GMN
            MOVE    "K06"               TO  SPA-MOTOPG
@@ -2490,8 +2332,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-      *****MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "K061"              TO  MCP-WINDOW
@@ -2568,8 +2409,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-      **** MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "K06    "           TO  MCP-WINDOW.
@@ -2586,7 +2426,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  K06
       *
-           INITIALIZE                      K06
            MOVE    SPA-GMN-PTNUM       TO  K06-PTNUM
            MOVE    SPA-GMN-SRYYM       TO  K06-SRYYM
            MOVE    SPA-GMN-KANANAME    TO  K06-KANANAME
@@ -2704,8 +2543,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "B03"        TO  MCP-WIDGET   
              WHEN    93
                     MOVE  "B04"        TO  MCP-WIDGET   
-             WHEN    94
-                    MOVE  "B10"        TO  MCP-WIDGET   
              WHEN    99
                     MOVE  "B12"        TO  MCP-WIDGET   
            END-EVALUATE
@@ -2838,18 +2675,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0034"
                    MOVE    "算定履歴が存在しません。更新できません。"
                                                        TO  SPA-ERRMSG
-      *H28.2
-               WHEN    "K035"
-                   STRING  "警告！"
-                           "既に初診料の登録があります。"
-                           "診療行為で登録して下さい。"
-                           DELIMITED   BY  SIZE        INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "K036"
-                   STRING  "警告！"
-                           "初診料算定日≦最終来院日で登録して下さい。"
-                           DELIMITED   BY  SIZE        INTO  SPA-ERRMSG
-                   END-STRING
       *H25.9
                WHEN    "1001"
                    MOVE    "更新処理でエラーになりました"
@@ -2921,7 +2746,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-KID1-FLG
       *
            MOVE    SPACE               TO  KID1
-           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *
@@ -2983,7 +2807,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
            MOVE    SPA-NAI-SRYYM       TO  TNS-YUKOEDYMD (1:6)
            MOVE    "01"                TO  TNS-YUKOEDYMD (7:2)
-           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
@@ -3033,8 +2856,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -3188,24 +3011,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-SANTEIPLUS-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療科歴データ主キー検索
-      *****************************************************************
-       975-SRYKARRK-READ-SEC           SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SRYKARRK-REC
-               MOVE    ZERO                TO  FLG-SRYKARRK
-           ELSE
-               MOVE    1                   TO  FLG-SRYKARRK
-               INITIALIZE                  SRYKARRK-REC
-           END-IF
-      *
-           .
-       975-SRYKARRK-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

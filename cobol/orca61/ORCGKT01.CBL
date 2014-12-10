@@ -35,8 +35,6 @@
       *  04.06.00    NACL-Â¿¡¹Ç¼  11/02/16  ÍÑË¡¥³¥á¥ó¥ÈÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/05/29  °ì»þ¥Õ¥¡¥¤¥ëÊÑ¹¹
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  16/05/XX  °ìÈÌÌ¾É½¼¨ÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  18/03/XX  £È£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -323,8 +321,6 @@
            03  FLG-SANTEI              PIC 9(01).
       *    °­À­¶èÊ¬Á°
            03  FLG-MAE-AKUSEI          PIC 9(01).
-      *
-           03  FLG-INGAI-ARI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1398,10 +1394,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *H26.10
                    MOVE    ZERO            TO  SPA-PSYCHO-OK
                    MOVE    ZERO            TO  SPA-PSYCHO-CHK
-      *H27.4
-                   MOVE    ZERO            TO  SPA-TEIGEN30-CHK
-                   MOVE    ZERO            TO  SPA-TEIGEN30-OK
-      *
                    MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
                    MOVE    ZERO            TO  SPA-CHOZAI-CHK
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
@@ -1413,8 +1405,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7     ¶ÛµÞ»þ´Ö³°³ÎÇ§
                    MOVE    ZERO            TO  SPA-KENJIKAN-CHK
                    MOVE    ZERO            TO  SPA-GAZJIKAN-CHK
-      *H28.9       Ç§ÃÎ¾ÉÃÏ°èÊñ³çÅêÌô³ÎÇ§
-                   MOVE    ZERO            TO  SPA-NINCHI-CHK
       *!!
       *            ºÇ¸å¤ÎÆü¤ò¿ÇÎÅÆü¤È¤¹¤ë
                    MOVE    SPA-NAI-SRYDD       TO  SPA-GMN-SRYDD
@@ -1895,20 +1885,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ²èÌÌÀ©¸æ
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
-      *H27.4
-      *        Äã¾Ò²ðÎ¨£³£°Æü°Ê¾åÅêÍ¿
-               WHEN    "2007"
-                   MOVE    SPACE               TO  SPA-KIDCD
-                   IF      SPA-KID1-FLG        =   "OK"
-                      MOVE    1                TO  SPA-TEIGEN30-OK
-                   ELSE
-                      MOVE    ZERO             TO  SPA-TEIGEN30-OK
-                   END-IF
-                   MOVE    SPACE               TO  SPA-KIDCD
-                   MOVE    SPACE               TO  SPA-KID1-FLG
-      *            ²èÌÌÀ©¸æ
-                   MOVE    "JOIN"              TO  WRK-PUTTYPE
-                   PERFORM 41002-KOUSIN-SYORI-SEC
       *
       *        ¥¯¥ê¥¢³ÎÇ§¥Á¥§¥Ã¥¯
                WHEN    "0125"
@@ -1990,10 +1966,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
-           IF      SPA-ERRCD           =   "9000"
-      *        DB¹¹¿·¥¨¥é¡¼
-               MOVE    1                   TO  FLG-END2
-           END-IF
       *
       *    ¿ÇÎÅ²ÊÍúÎò¹¹¿·
            INITIALIZE                  ORCSKARRKAREA
@@ -2002,9 +1974,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSKARRK"         USING
                                        ORCSKARRKAREA
                                        SPA-AREA
-           IF      SKARRK-RC       NOT =   ZERO
-               MOVE    1                   TO  FLG-END2
-           END-IF
            MOVE    SPA-SYOKAI-YMD      TO  SPA-SYOYMD
            MOVE    SPACE               TO  SPA-SYOSIN-YMD
            MOVE    SPACE               TO  SPA-SYOSIN-SRYCD
@@ -2392,9 +2361,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "ºÍ"                TO  WRK-NENREI-MEI
            END-IF
            MOVE    WRK-NENREI-G        TO  SPA-NENREI-HEN
-      *H28.4
-      *    Ì¤½¢³ØÁ°
-           MOVE    AGECHK-SYUGAKUKBN   TO  SPA-SYUGAKUKBN
       *
            .
        3102-AGECHK-HEN-EXT.
@@ -2493,7 +2459,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG7(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
@@ -4553,8 +4518,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ·Ù¹ð¥Õ¥é¥°¥¯¥ê¥¢
                    EVALUATE    SPA-ERRCD
                    WHEN    "K236"
-                   WHEN    "K111"
-                   WHEN    "K112"
                        MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                    WHEN    "K839"
                        MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
@@ -4564,8 +4527,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                    WHEN    "K122" 
                        MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
-                   WHEN    "K109" 
-                       MOVE    SPACE           TO  SPA-COM-KZMFLG7(IDX)
                    WHEN    "K227"
                        MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1
                                                                   (IDX)
@@ -4822,24 +4783,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 410-KT98-SYORI-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
-      *
-      *H28.5
-      *    ±¡³°ÅêÌôÌ¾¾ÎÊÑ´¹
-           IF     (LNK-SC97-INPUTCD(1:2)
-                                       =   "/G"
-                                       OR  "/g" )
-            AND   (LNK-SC97-INPUTCD(3:)    =   SPACE )
-            AND   (SPA-SRYYMD          >=  "20160401")
-               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
-                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
-               IF      SPA-GENERICFLG      =   "1"
-                   MOVE    "0"             TO  SPA-GENERICFLG
-               ELSE
-                   MOVE    "1"             TO  SPA-GENERICFLG
-               END-IF
-               GO      TO                  41011-KOUI-HEN2-EXT
-           END-IF
-      *
       *    £ÐÆþÎÏ¤Ê¤·
            IF      LNK-SC97-INPUTCD(1:1)
                                        =  "/"
@@ -5305,11 +5248,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        =   1     ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
-      *H30.4             Ê¬³äÄ´ºÞ¤Ê¤É
-                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
-                                                   =   "0992081" ) AND
-                              (SPA-COM-SURFLG (SPA-GMN-IDX)
-                                                       =   SPACE ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
@@ -5495,17 +5433,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î»þ¡¢Ç¯Îð¥¨¥é¡¼¤Ï¤½¤Î¤Þ¤Þ
-      *    IF     (SPA-SYONIKA-ARI3    NOT =   ZERO )   AND
-      *           (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)  =   "1" )
+           IF     (SPA-SYONIKA-ARI3    NOT =   ZERO )   AND
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)  =   "1" )
       *        ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ°Ê³°¤Ï¥¨¥é¡¼
-      *      AND  (SPA-COM-SRYKBN  (SPA-GMN-IDX)  =   "13"   )
-      *H28.5
-      *      AND  (SPA-COM-INPUTCD (SPA-GMN-IDX)
-      *                                    NOT =   "113018210")
-      *        IF      SPA-ERRCD           =   "0032"
-      *            MOVE    SPACE               TO  SPA-ERRCD
-      *        END-IF
-      *    END-IF
+             AND  (SPA-COM-SRYKBN  (SPA-GMN-IDX)  =   "13"   )
+               IF      SPA-ERRCD           =   "0032"
+                   MOVE    SPACE               TO  SPA-ERRCD
+               END-IF
+           END-IF
       *---(01.00.01) LINE ADD  START  ----
       *    ·Ù¹ðÈ½Äê
            IF      SPA-ERRCD(1:1)      =   "K"
@@ -5616,11 +5551,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
                                                =   "001" )
                  AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
-                   MOVE    1                   TO  FLG-IN1
-               END-IF
-      *H30.4   Ê¬³äÄ´ºÞ¤Ê¤É
-               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
-                                               =   "0992081" )
                    MOVE    1                   TO  FLG-IN1
                END-IF
       *
@@ -7410,11 +7340,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¥Á¥§¥Ã¥¯
            PERFORM 41011-KOUI-ALLHEN-SEC
-      *H28.6
-      *    ¿ôÎÌ¥¼¥í¤Ï£Ä£Ï¤Ø
-           IF      SPA-ERRCD           =   "A001"
-               MOVE    SPACE           TO  SPA-ERRCD
-           END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (FLG-END             =   1     )
                GO      TO      480-DOSYORI-EXT
@@ -8201,7 +8126,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1"                 TO  SPA-COM-KZMFLG4 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG5 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG6 (IDX2)
-               MOVE    "1"                 TO  SPA-COM-KZMFLG7 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KINKIFLG(IDX2)
                MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG(IDX2)
                MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG1(IDX2)
@@ -8373,9 +8297,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "LINK"              TO  MCP-STATUS
            MOVE    SPACE               TO  MCP-EVENT
-      *
-      *    ²èÌÌ£Ó£Ð£Á½ñ¹þ¤ß
-           PERFORM 1003-KT01SPA-OUT-SEC
       *
            CALL    "ORCGKT011"          USING
                                        MCPAREA
@@ -8767,9 +8688,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PAGE
-      *H29.1
-      *    ±¡³°ÅêÌô¤¢¤ê
-           MOVE    ZERO                TO  FLG-INGAI-ARI
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL      (WRK-IDX     >   SPA-MAX-LINE)  OR
@@ -8821,18 +8739,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 MOVE    ALL "="             TO  KT01-SURYO (IDX)
       *             END-IF
       *!
-               END-IF
-      *H29.1
-      *        ±¡³°ÅêÌô¤¢¤ê
-               IF      (SPA-COM-SRYSYUKBN(WRK-IDX) =   "212"
-                                                   OR  "292"
-                                                   OR  "222"
-                                                   OR  "298"
-                                                   OR  "232"
-                                                   OR  "148"
-                                                   OR  "295")
-                   OR (SPA-COM-INGAITEN (WRK-IDX)  NOT =   ZERO)
-                   MOVE    1               TO  FLG-INGAI-ARI
                END-IF
       *
            END-PERFORM
@@ -9043,35 +8949,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE               TO  KT01-GRPMEI-VALUE
            END-IF
       *
-      *H28.5
-      *    ½èÊýÌ¾ÀÚÂØ¤¨
-           IF     (SPA-GMN-PTNUM   NOT =   SPACE     )
-            AND   (SPA-SRYYMD          >=  "20160401")
-      *     ±¡³°ÅêÌô¤¬¤¢¤ë»þ
-            AND   (FLG-INGAI-ARI       =   1         )
-               IF      SPA-GENERICFLG      =   "1"
-                   MOVE    SPACE               TO  KT01-MODE2-STYLE
-                   MOVE    "(°ìÈÌÌ¾)"          TO  KT01-MODE2-VALUE
-               ELSE
-                   MOVE    SPACE               TO  KT01-MODE2-STYLE
-                   MOVE    "(ÌÃÊÁÌ¾)"          TO  KT01-MODE2-VALUE
-               END-IF
-           END-IF
-      *
-      *H30.4
-           IF     (SPA-SRYYMD          >=  "20180401")
-               IF     (SPA-NINPUKBN-ARI    =   1    )
-                   MOVE    "¡ÊÇ¥ÉØ¡Ë"      TO  KT01-MODE3-VALUE
-                   MOVE    "blue"          TO  KT01-MODE3-STYLE
-               ELSE
-      *            ¼êÆþÎÏ¤ÇÇ¥ÉØ
-                   IF     (SPA-NINPUKBN-IN     =   1    )
-                   MOVE    "¡ÊÇ¥ÉØ¡Ë"      TO  KT01-MODE3-VALUE
-                   MOVE    "black"         TO  KT01-MODE3-STYLE
-                   END-IF
-               END-IF
-           END-IF
-      *
       *    °å±¡Ì¾¾Î
       ***  MOVE    SPA-HOSPNAME        TO  KT01-TITLE
       *
@@ -9256,8 +9133,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX2    FROM    1   BY  1
-     *****         UNTIL       IDX2    >   5
-                   UNTIL       IDX2    >   6
+                   UNTIL       IDX2    >   5
                MOVE    ZERO                TO  IDY2
                EVALUATE    SPA-GMNHYOKBN (IDX2)
                WHEN    "1"
@@ -9275,10 +9151,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "5"
       *            ¶Ø´÷
                    MOVE    4              TO  IDY2
-      *H28.10
-               WHEN    "6"
-      *            ²ð¸î
-                   MOVE    6              TO  IDY2
                END-EVALUATE
       *
                EVALUATE    IDY2
@@ -9314,16 +9186,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                (IDY)
                        END-IF
                    END-PERFORM
-      *H28.10
-               WHEN    6
-      *            ²ð¸î¾ðÊó
-                   IF      (IDY                <   40 )
-                      AND  (SPA-GMN-YOUKAIGO   NOT =   SPACE)
-                       ADD     1               TO  IDY
-                       MOVE    SPA-GMN-YOUKAIGO
-                                                   TO  KT01-TABOO-ITEM
-                                                               (IDY)
-                   END-IF
                END-EVALUATE
            END-PERFORM
            .
@@ -9541,7 +9403,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        5101-KTERR2-SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  KTERR2
-           INITIALIZE                      KTERR2
            MOVE    SPA-ERRCD           TO  KTERR2-ERRCODE
            MOVE    SPA-ERRMSG2         TO  KTERR2-ERRMSG(1:80)
            MOVE    SPA-ERRMSG          TO  KTERR2-ERRMSG2
@@ -9719,13 +9580,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
-      *H27.4¡¡²þÀµ
-               WHEN    "2007"
-                   STRING  "£³£°Æü°Ê¾å¤ÎÅêÌô¤¬¤¢¤ê¤Þ¤¹¡£"
-                           "Äþ¸º¤·¤Þ¤¹¤«¡©"
-                                       DELIMITED   BY  SIZE
-                                       INTO    WRK-KIDMSG
-                   END-STRING
       *!!
                WHEN    OTHER
                    MOVE    SPA-KIDCD
@@ -9733,7 +9587,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KTID1
-           INITIALIZE                      KTID1
            MOVE    SPA-KIDCD           TO  KTID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KTID1-ID1MSG
       *
@@ -9754,7 +9607,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2004"
                WHEN    "2005"
                WHEN    "2006"
-               WHEN    "2007"
                    MOVE    "£Î£Ï"            TO  KTID1-B01
            END-EVALUATE
       *
@@ -9799,7 +9651,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KTID2
-           INITIALIZE                      KTID2
            MOVE    SPA-KTID2CD         TO  KTID2-ID1CODE
            MOVE    WRK-KIDMSG          TO  KTID2-ID1MSG
       *

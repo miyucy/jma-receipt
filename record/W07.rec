@@ -78,13 +78,6 @@ W07 {
         KIKAN {
           numdata number(2);
         };
-        KINKCHK_COMBO {
-          KINKCHK {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[3];
-        };
         GAIKANKBN_COMBO {
           GAIKANKBN {
             textdata varchar(32);
@@ -122,10 +115,10 @@ W07 {
         };
         JIKANTOKUNYU_COMB {
           JIKANTOKUNYU {
-            textdata varchar(30);
+            textdata varchar(12);
           };
           count int;
-            item varchar(30)[9];
+            item varchar(12)[2];
         };
         GAZOUKSN1_COMB {
           GAZOUKSN1 {
@@ -252,10 +245,10 @@ W07 {
         };
         BYOHYOKBN_COMB {
           BYOHYOKBN {
-            textdata varchar(40);
+            textdata varchar(12);
           };
           count int;
-            item varchar(40)[5];
+            item varchar(12)[2];
         };
         ZAIJUNKBN_COMB {
           ZAIJUNKBN {
@@ -285,13 +278,6 @@ W07 {
           count int;
             item varchar(12)[2];
         };
-        TEISHOHOU_COMB {
-          TEISHOHOU { #GtkPandaEntry
-            textdata varchar(12);
-          };
-          count int;
-          item varchar(12)[2];
-        };
         NYUKENSA_COMB {
           NYUKENSA {
             textdata varchar(12);
@@ -319,20 +305,6 @@ W07 {
           };
           count int;
             item varchar(30)[5];
-        };
-        TOUYOCHK_COMBO {
-          TOUYOCHK {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[5];
-        };
-        SHOHOU30CHK_COMB  {
-          SHOHOU30CHK {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[5];
         };
       };
       TAGNAME1 {
@@ -460,13 +432,6 @@ W07 {
           };
           count int;
             item varchar(28)[5];
-        };
-        HKNINITKBN_COMB {
-          HKNINITKBN {
-            textdata varchar(32);
-          };
-          count int;
-            item varchar(32)[5];
         };
       };
       TAGNAME2 {
@@ -599,13 +564,6 @@ W07 {
           count int;
             item varchar(40)[5];
         };
-        SIN20KSNKBN_COMB {
-          SIN20KSNKBN {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[5];
-        };
         YMDHENKBN_COMB {
           YMDHENKBN {
             textdata varchar(60);
@@ -643,13 +601,6 @@ W07 {
         };
         GMNHYOKBN5_COMB {
           GMNHYOKBN5 {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[10];
-        };
-        GMNHYOKBN6_COMB {
-          GMNHYOKBN6 {
             textdata varchar(40);
           };
           count int;
@@ -715,13 +666,6 @@ W07 {
           count int;
             item varchar(60)[5];
         };
-        SETALLKBN_COMB {
-          SETALLKBN {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[5];
-        };
       };
       TAGNAME3 {
         state int;
@@ -761,20 +705,6 @@ W07 {
           };
           count int;
             item varchar(40)[5];
-        };
-        S02MODE_COMBO {
-          S02MODE	{
-            textdata varchar(22);
-          };
-          count int;
-            item varchar(22)[5];
-        };
-        LBLS02LIMIT {
-      	  textdata varchar(30);
-        };
-        S02LIMIT {
-          visible bool;
-          numdata number(3);
         };
         S02SORTKBN_COMBO {
           S02SORTKBN {
@@ -852,7 +782,7 @@ W07 {
             state int;
           };
           count int;
-            item varchar(20)[4];
+            item varchar(20)[3];
           state int;
         };
         S04SUMKBN_COMBO {
@@ -871,15 +801,6 @@ W07 {
           };
           count int;
             item varchar(18)[2];
-          state int;
-        };
-        S04JIHIPRTKBN_COMBO {
-          S04JIHIPRTKBN {
-            textdata varchar(24);
-            state int;
-          };
-          count int;
-            item varchar(24)[5];
           state int;
         };
         S06SKYPRT_COMBO {
@@ -1067,13 +988,6 @@ W07 {
           count int;
             item varchar(12)[2];
         };
-        MSG5_DSPKBN_COMBO {
-          MSG5_DSPKBN {
-            textdata varchar(12);
-          };
-          count int;
-            item varchar(12)[2];
-        };
         SRYKA_DSPKBN_COMBO {
           SRYKA_DSPKBN {
             textdata varchar(40);
@@ -1194,13 +1108,6 @@ W07 {
           count int;
           item varchar(50)[5];
           DAKETUKBN { #GtkPandaEntry
-            textdata varchar(50);
-          };
-        };
-        TEIRITUKBN_COMB { #GtkPandaCombo
-          count int;
-          item varchar(50)[5];
-          TEIRITUKBN { #GtkPandaEntry
             textdata varchar(50);
           };
         };

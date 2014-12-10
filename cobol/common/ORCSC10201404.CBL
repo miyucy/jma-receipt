@@ -74,10 +74,7 @@
       * 04.08.00     NACL-多々納  13/03/XX  労災コードレセ電コード対応
       * 04.08.00     NACL-多々納  13/09/XX  労災同日再診コード追加対応
       * 04.08.00     NACL-多々納  14/03/XX  Ｈ２６年４月改正対応
-      * 04.08.00     NACL-多々納  14/12/12  Ｈ２７年１月改正対応
-      * 04.08.00     NACL-多々納  15/01/16  労災読み替え加算変換対応
-      * 04.08.00     NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
-      * 04.08.00     NACL-多々納  15/04/15  退院日の保険組合せ判定追加
+      * 04.08.00     NACL-多々納  14/12/XX  Ｈ２７年１月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -98,9 +95,6 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
-      *H27.4
-           03  FLG-NYUINACCT       PIC 9(01).
-           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-ARI             PIC 9(01).
            03  FLG-ARIOK           PIC 9(01).
@@ -389,11 +383,6 @@
            03  WRK-ZS-KBN                  PIC X(01).
            03  WRK-ZS-KBN2                 PIC X(01).
            03  WRK-KEY-KBN                 PIC X(01).
-      *
-      *H27.4
-      *    退院日の保険組合せ
-           03  WRK-NYU-DD              PIC 9(02).
-           03  WRK-NYU-HKNCOMBI        PIC 9(04).
       *
       *    保存用ＳＰＡ
        01  HZN-SCR-REC.
@@ -752,14 +741,6 @@
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *H27.4
-      *    入院会計マスタ−
-       01  NYUINACCT-REC.
-           COPY    "CPNYUINACCT.INC".
-      *    保険組合せ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -871,8 +852,7 @@
       *    チェック、自動算定
            PERFORM 1001-NAI-CHK-SEC
       *
-           IF     (IDX-MAX             =   ZERO )   OR
-                  (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
+           IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
                   (WRK-GMN-INPUTCD(IDX-MAX)
                                        =   SPACE )  OR
@@ -962,7 +942,6 @@
       *
       *    初診、再診、指導、在宅の時、回数は１のみ
            IF     (WRK-ERRCD           =   SPACE)
-              AND (IDX-MAX             >   ZERO )
                IF     (WRK-COM-SRYKBN (IDX-MAX)    =   "11"
                                                    OR  "12"
                                                    OR  "13"
@@ -1116,7 +1095,7 @@
                    PERFORM 100111-HOUMON-CHK-SEC
       *        在宅末期医療総合診察料
                WHEN    SPA-ZAIMATU-ARI NOT =   ZERO
-      *H26.12    （日毎）
+      *H26.12
                   OR  (SPA-ZAIMATU-ARI2    =   1   )
                    PERFORM 100111-HOUMON-CHK-SEC
       *
@@ -1149,10 +1128,9 @@
            EXIT.
       *
       *****************************************************************
-      *    診察料の判定処理
+      *    在宅診察料チェック処理
       *****************************************************************
        100110-SINSATU-CHK-SEC           SECTION.
-      *
       *    診察料セット
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
@@ -1523,8 +1501,6 @@
            IF     (LNK-ORCSC-TELSAI-ARI    =   1  )
       ***  AND    (LNK-ORCSC-PG        =   "K02"  )
                IF     (FLG-GAIRAI          =   1  )
-      *H27.8      地域包括診療加算
-                  OR  (FLG-CHKCARKSN       =   1  )
                    INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
                    INITIALIZE              WRK-COM-TBLREC(IDX-Z)
                    GO    TO      100114-SYUGISYORI-CHK-EXT
@@ -1558,19 +1534,6 @@
                END-IF
            END-IF
       *!!
-      *H27.8
-      *    小児科外来診療料算定時、再診の加算は削除
-           IF      LNK-ORCSC-SYONIKA-ARI   =   1
-               IF    ((FLG-GAIRAI          =   1  )  AND
-                      (LNK-ORCSC-PG        =   "K02"  ))
-                  OR  (FLG-CHIIKKBN        =   1  )
-                  OR  (FLG-MEISAKBN        =   1  )
-                  OR  (FLG-CHKCARKSN       =   1  )
-                  OR  (FLG-GAIRAI          =   1  )
-                   PERFORM 1001149-GYODEL-SEC
-                   GO    TO      100114-SYUGISYORI-CHK-EXT
-               END-IF
-           END-IF
       *
       *    外来管理加算・継続管理加算の剤は、１明細のみとする
            IF      WRK-KASAN-NASI      =   "1"
@@ -1845,7 +1808,7 @@
        1001140-CHIKIJIKAN-SET-EXT.
            EXIT.
       *
-      *H26.12
+      *
       *****************************************************************
       *    妥結率のチェック処理
       *****************************************************************
@@ -1867,17 +1830,6 @@
                    END-IF
                END-IF
            END-IF
-      *H27.4
-      *    低紹介率のチェック
-           IF     (WRK-ERRCD           =   SPACE )
-             AND  (SPA-SRYYMD          >=  "20150401" )
-             AND  (WRK-ETCKBN          =   "1"   )
-      *        設定なし
-               IF      SPA-TEIRITU-KBN     =   ZERO
-                   MOVE    "K116"          TO  WRK-ERRCD
-               END-IF
-           END-IF
-      *
            IF     (WRK-ERRCD       NOT =   SPACE )
                IF     (WRK-COM-KZMFLG2(IDX-Z)
                                            =   SPACE ) AND
@@ -1973,11 +1925,6 @@
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
       *
-      *H27.2から 外来管理加算の編集変更
-           IF      SPA-SRYYMD          >=  "20150201"
-               CONTINUE
-           ELSE
-      *
       *    労災保険の時、外来管理加算はエラーとする
            IF      WRK-KBN         =   "G"
                MOVE    "8001"          TO  WRK-ERRCD
@@ -1985,17 +1932,20 @@
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
       *
-           END-IF
-      *
       *    労災保険の外来管理加算の判定
            MOVE    ZERO                TO  FLG-GAIRAI
+      ***  SET     TBL-RSI             TO  1
+      *    SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
+      *       AT   END
+      *            MOVE    ZERO                TO  FLG-ARI
+      *            MOVE    SPACE               TO  WRK-KBN
+      *        WHEN    WRK-COM-INPUTCD(IDX-Z)  =   TBLR-SRYCD (TBL-RSI)
+      *            MOVE    1                   TO  FLG-ARI
+      *            MOVE    TBLR-KBN(TBL-RSI)   TO  WRK-KBN
+      **** END-SEARCH
       *    労災の外来管理加算点数セット
+      **** IF      WRK-KBN             =   "G"
            IF      WRK-COM-INPUTCD(IDX-Z)  =   TBLRG-SRYCD
-      *
-      *H27.2から 外来管理加算の編集変更
-              OR ((SPA-SRYYMD              >=  "20150201" )  AND
-                  (WRK-COM-INPUTCD(IDX-Z)  =   TBLG-SRYCD ))
-      *
                IF      SPA-RSI-HKNKBN      =   "3"
       *            アフターケアの時エラー
                    MOVE    "8007"          TO  WRK-ERRCD
@@ -2019,11 +1969,10 @@
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)
       *       初診料・同日初診
                WHEN    "111000110"
-      *H27.10  同一日２科目は算定可
-      *******  WHEN    "111011810"
+               WHEN    "111011810"
       *H25.4   紹介なし
                WHEN    "111012510"
-      *H27.10  WHEN    "111012610"
+               WHEN    "111012610"
       *H27.1   妥結率
                WHEN    "111012710"
       *            受診履歴判定
@@ -2256,19 +2205,6 @@
                IF     (WRK-COM-SRYSYUKBN (IDX-Z)  =   "130")
                 AND   (WRK-TIME-KBN1   =   "3"    )
                    GO      TO      1005-KASAN-CHK-EXT
-               END-IF
-           END-IF
-      *H28.1
-           IF      FLG-ARI             =   ZERO
-      *        初診・再診加算のみ
-               IF    ((WRK-COM-SRYSYUKBN (IDX-Z)   =   "114" )  AND
-                      (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "110" ))
-               OR    ((WRK-COM-SRYSYUKBN (IDX-Z)   =   "124" )  AND
-                      (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "120" ))
-               OR    ((WRK-COM-SRYSYUKBN (IDX-Z)   =   "133" )  AND
-                      (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "130" ))
-      *            加算
-                   MOVE    1                       TO  FLG-ARI
                END-IF
            END-IF
       *
@@ -4553,6 +4489,7 @@
       *****************************************************************
        10012-DUMMYSYORI-SEC          SECTION.
       *
+      *TEST
       *H24.4
       *    在宅判定
            IF      WRK-COM-SRYKBN (IDX-Z)  =   "14"
@@ -6676,11 +6613,6 @@
                            END-EVALUATE
                        END-IF
                    END-IF
-      *H27.4
-      *            退院日からの１カ月以内のエラーの保険判定
-                   IF     (SPA-ERRCD          =   "0120" )
-                       PERFORM 2303-TAIYMD-CHK-SEC
-                   END-IF
       *!!!
       *       初診算定日からの１ヵ月以内のエラーで、同日初診・退院以外
       *       労災・労災外の初診算定がある時
@@ -6767,68 +6699,6 @@
            .
        2302-ERRCHK-EXT.
            EXIT.
-      *H27.4
-      *****************************************************************
-      *    退院日の保険チェック処理
-      *****************************************************************
-       2303-TAIYMD-CHK-SEC                SECTION.
-      *
-      *    退院日の保険組合せ
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    SPA-PTID            TO  NACCT-PTID
-           MOVE    LNK-ORCSC-TAIINYMD(1:6)
-                                       TO  NACCT-SRYYM
-           MOVE    "5"                 TO  NACCT-ZAISKBKBN
-      *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key17"             TO  MCP-PATHNAME
-               PERFORM 900-NYUINACCT-READ-SEC
-           ELSE
-               INITIALIZE                  NYUINACCT-REC
-               MOVE    1               TO  FLG-NYUINACCT
-           END-IF
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           MOVE    ZERO                    TO  WRK-NYU-HKNCOMBI
-           IF      FLG-NYUINACCT       =   ZERO
-               MOVE    ZERO                    TO  WRK-NYU-HKNCOMBI
-               MOVE    LNK-ORCSC-TAIINYMD(7:2) TO  WRK-NYU-DD
-               MOVE    NACCT-DAY(WRK-NYU-DD)   TO  WRK-NYU-HKNCOMBI
-           END-IF
-      *
-           INITIALIZE                  HKNCOMBI-REC
-           IF      WRK-NYU-HKNCOMBI    NOT =   ZERO
-      *        保険組合せマスター検索
-               INITIALIZE                      HKNCOMBI-REC
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
-               MOVE    SPA-PTID            TO  COMB-PTID
-               MOVE    WRK-NYU-HKNCOMBI    TO  COMB-HKNCOMBINUM
-               PERFORM 910-HKNCOMBI-READ-SEC
-           END-IF
-      *    保険組合せが自費は警告へ
-           IF      COMB-HKNNUM(1:2)    =   "98"
-               MOVE    SPACE               TO  SPA-ERRCD
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
-                 AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
-                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"             TO  WRK-COM-KZMFLG  (IDX-Z)
-                   MOVE    "K022"          TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-           .
-       2303-TAIYMD-CHK-EXT.
-           EXIT.
-      *!!
       *****************************************************************
       *    入院中の回数チェック処理
       *****************************************************************
@@ -7163,31 +7033,8 @@
                IF      WRK-COM-KAISU (WRK-GAI-IDX)   >   1
                    MOVE    "0140"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (WRK-GAI-IDX)
-                   GO    TO      20011-RSIGAIKAN-SYORI-EXT
                END-IF
            END-IF
-      *
-      *!!!!!!!!!!!!!
-      *H27.2から外来管理加算の編集変更
-           IF      SPA-SRYYMD          >=  "20150201"
-      *
-      *    労災  外来管理加算変換
-               IF     (WRK-GAI-CNT         >=  1 )
-                 AND  (IDX-GAIKAN          >   ZERO )
-                 AND  (WRK-COM-INPUTCD (IDX-GAIKAN)  =  TBLG-SRYCD)
-      *            労災の外来管理加算へ
-                   MOVE    TBLRG-SRYCD         TO  WRK-SRYCD
-                   PERFORM 2001-GAIKASAN-CNG-SEC
-               END-IF
-               IF     (WRK-GAI-CNT         =   ZERO )
-                 AND  (IDX-GAIKAN          >   ZERO )
-                 AND  (WRK-COM-INPUTCD (IDX-GAIKAN)  =  TBLRG-SRYCD)
-      *            外来管理加算へ
-                   MOVE    TBLG-SRYCD          TO  WRK-SRYCD
-                   PERFORM 2001-GAIKASAN-CNG-SEC
-               END-IF
-           END-IF
-      *!!!!!!!!!!!!!
       *
            IF      WRK-GAI-CNT         >   1
       *        外来管理加算へ読み替える
@@ -7291,65 +7138,6 @@
            .
        20011-RSIGAIKAN-SYORI-EXT.
            EXIT.
-      *!!!!!!!!!!!!!
-      *H27.2 
-      *労災　外来管理加算変換
-      *****************************************************************
-      *    外来管理加算コード追加処理
-      *****************************************************************
-       2001-GAIKASAN-CNG-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  FLG-ARI
-      *
-           MOVE    ZERO                TO  FLG-ADD
-      *    点数マスタ編集・基本チェック
-           INITIALIZE                  ORCSC92AREA
-           MOVE    SPACE               TO  LNK-SC92-KBN
-           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
-           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
-           MOVE    IDX-GAIKAN          TO  LNK-SC92-GMN-IDX
-           MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
-           MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
-           MOVE    LNK-ORCSC-15MIMAN-ARI   TO  LNK-SC92-15MIMAN-ARI
-           MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
-           MOVE    LNK-ORCSC-LSTSRYKA  TO  LNK-SC92-LSTSRYKA
-           MOVE    LNK-ORCSC-LSTSRYKAMEI   TO  LNK-SC92-LSTSRYKAMEI
-           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
-           CALL    "ORCSC92"           USING
-                                       MCPAREA
-                                       ORCSC92AREA
-                                       WRK-SCR-REC
-                                       SPA-AREA
-      *
-      *    エラーの時、変更なし
-           IF     (SPA-ERRCD           NOT =   SPACE )  OR
-                  (LNK-SC92-ERRAREA    NOT =   SPACE )
-               GO      TO      2001-GAIKASAN-CNG-EXT
-           END-IF
-      *
-           MOVE    WRK-COM-SRYKBN (IDX-GAIKAN - 1)
-                                       TO  WRK-COM-SRYKBN(IDX-GAIKAN)
-           MOVE    SPACE               TO  WRK-GMN-SRYKBN(IDX-GAIKAN)
-           MOVE    WRK-COM-SRYSYUKBN (IDX-GAIKAN - 1)
-                                       TO  WRK-COM-SRYSYUKBN(IDX-GAIKAN)
-      *
-      *    自動追加分（入力時に追加）
-           MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-GAIKAN)
-           MOVE    "1"                 TO  WRK-COM-RSIFLG2 (IDX-GAIKAN)
-      *
-      *    画面再編集
-           INITIALIZE                  ORCSC94AREA
-           MOVE    "1"                 TO  LNK-SC94-KBN
-           MOVE    LNK-SC92-PG         TO  LNK-SC94-PG
-           MOVE    IDX-GAIKAN          TO  LNK-SC94-IDX
-           CALL    "ORCSC94"           USING
-                                       ORCSC94AREA
-                                       WRK-SCR-REC
-                                       SPA-AREA
-           .
-       2001-GAIKASAN-CNG-EXT.
-           EXIT.
-      *!!!!!!!!!!!!!
       *
       *****************************************************************
       *    注加算コードのチェック処理
@@ -7714,55 +7502,6 @@
       *
            .
        970-JYURRK-READ-EXT.
-           EXIT.
-      *
-      *H27.4
-      *****************************************************************
-      *    入院会計マスター次読込
-      *****************************************************************
-       900-NYUINACCT-READ-SEC       SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
-               MOVE    ZERO                TO  FLG-NYUINACCT
-           ELSE
-               INITIALIZE                      NYUINACCT-REC
-               MOVE    1                   TO  FLG-NYUINACCT
-           END-IF.
-      *
-       900-NYUINACCT-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せマスター読み込み
-      *****************************************************************
-       910-HKNCOMBI-READ-SEC         SECTION.
-      *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-                   MOVE    ZERO            TO  FLG-HKNCOMBI
-               ELSE
-                   MOVE    1               TO  FLG-HKNCOMBI
-                   INITIALIZE                  HKNCOMBI-REC
-               END-IF
-           ELSE
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       910-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

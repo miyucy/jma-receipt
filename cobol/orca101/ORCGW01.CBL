@@ -101,9 +101,6 @@
       *  04.08.00    NACL-多々納  13/12/09  9101 医療情報連携基盤情報
       *  04.08.01    NACL-森脇    14/06/16  期間変更不可チェックに排他制御追加
       *  04.07.00    NACL-多々納  14/12/08  点数算定基準追加
-      *  04.07.00    NACL-多々納  15/01/07  9103 処方せん連携基盤情報
-      *  04.08.02    NACL-森脇    15/08/28  1001 有効期間チェック
-      *  05.00.00    NACL-森脇    17/12/18  9104 医療情報代理機関情報
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -115,8 +112,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "ENUM-VALUE".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -238,9 +233,6 @@
                05  WRK-W01-MAE-KANRICD PIC X(04).
                05  WRK-W01-MAE-KBNCD   PIC X(08).
            03  WRK-SELNUM              PIC 9(03).
-      *----(04.08.01)--ADD-START---
-           03  WRK-STYUKYMD            PIC X(08).
-      *----(04.08.01)--ADD-END-----
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -373,7 +365,7 @@
       *外来のみ
        01  TBL-KANRICD-G-AREA.
            03  FILLER              PIC X(35)   VALUE
-               "8000 印刷データ等削除機能情報".
+               "8000 印刷データ削除機能情報".
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
@@ -381,25 +373,17 @@
            03  FILLER              PIC X(35)   VALUE
                "9102 ＥＦファイル作成".
            03  FILLER              PIC X(35)   VALUE
-               "9103 処方せんデータ連携情報".
-           03  FILLER              PIC X(35)   VALUE
-               "9104 医療情報代理機関情報".
-           03  FILLER              PIC X(35)   VALUE
                "9600 ＣＲＯＮ設定情報".
            03  FILLER              PIC X(35)   VALUE
                "9700 ユーザプログラム起動情報".
            03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
        01  TBL-KANRICD-G-AREAR         REDEFINES   TBL-KANRICD-G-AREA.
-      *    03  TBL-KANRICD-G-TBL           OCCURS   7.
-      *    03  TBL-KANRICD-G-TBL           OCCURS   8.
-           03  TBL-KANRICD-G-TBL           OCCURS   9.
+           03  TBL-KANRICD-G-TBL           OCCURS   7.
                05  TBL-KANRICD-G           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-G        PIC X(30).
-      *01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   7.
-      *01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   8.
-       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   9.
+       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   7.
       *
       *入院のみ
        01  TBL-KANRICD-N-AREA.
@@ -426,17 +410,13 @@
            03  FILLER              PIC X(35)   VALUE
                "5015 医療区分・ＡＤＬ点数情報".
            03  FILLER              PIC X(35)   VALUE
-               "8000 印刷データ等削除機能情報".
+               "8000 印刷データ削除機能情報".
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
                "9101 医療情報連携基盤情報".
            03  FILLER              PIC X(35)   VALUE
                "9102 ＥＦファイル作成".
-           03  FILLER              PIC X(35)   VALUE
-               "9103 処方せんデータ連携情報".
-           03  FILLER              PIC X(35)   VALUE
-               "9104 医療情報代理機関情報".
            03  FILLER              PIC X(35)   VALUE
                "9600 ＣＲＯＮ設定情報".
            03  FILLER              PIC X(35)   VALUE
@@ -445,15 +425,11 @@
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-      *    03  TBL-KANRICD-N-TBL           OCCURS   18.
-      *    03  TBL-KANRICD-N-TBL           OCCURS   19.
-           03  TBL-KANRICD-N-TBL           OCCURS   20.
+           03  TBL-KANRICD-N-TBL           OCCURS   18.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-      *01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   18.
-      *01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   19.
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   20.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   18.
       *
       *    他業務からシステム管理に遷移する場合の引継ぎパラメタ
            COPY    "CPLNKSYS.INC".
@@ -673,24 +649,16 @@
                        UNTIL      (IDX         >   TBL-KANRICDG-MAX) OR
                                   (IDX-MAX     >=  100  )
       *
-                   MOVE    1       TO  FLG-HIT
+                   MOVE    ZERO        TO  FLG-HIT
       *
-                   EVALUATE    TBL-KANRICD-G (IDX)
-                   WHEN    "9600"
+                   IF    ( TBL-KANRICD-G (IDX)  =   "9600" )
                        IF    ( SPA-HOSPNUM      =   1 )
                         AND  ( SPA-SUPERVISOR   =   "T" )
-                           CONTINUE
-                       ELSE
-                           MOVE    ZERO    TO  FLG-HIT
+                           MOVE    1       TO  FLG-HIT
                        END-IF
-                       IF    ( SPA-MW      =   SPA-GINBEE )
-                           MOVE    ZERO    TO  FLG-HIT
-                       END-IF
-                   WHEN    "9103"
-                       IF    ( SPA-MW      =   SPA-GINBEE )
-                           MOVE    ZERO    TO  FLG-HIT
-                       END-IF
-                   END-EVALUATE
+                   ELSE
+                           MOVE    1       TO  FLG-HIT
+                   END-IF
       *
                    IF    ( FLG-HIT         =   1 )
                        ADD     1               TO  IDX-MAX
@@ -711,25 +679,16 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   TBL-KANRICDN-MAX )  OR
                               (IDX-MAX     >=  100  )
+               MOVE    ZERO        TO  FLG-HIT
       *
-               MOVE    1          TO  FLG-HIT
-      *
-               EVALUATE    TBL-KANRICD-N (IDX)
-               WHEN    "9600"
+               IF    ( TBL-KANRICD-N (IDX)  =   "9600" )
                    IF    ( SPA-HOSPNUM      =   1 )
                     AND  ( SPA-SUPERVISOR   =   "T" )
-                       CONTINUE
-                   ELSE
-                       MOVE    ZERO        TO  FLG-HIT
+                       MOVE    1       TO  FLG-HIT
                    END-IF
-                   IF    ( SPA-MW      =   SPA-GINBEE )
-                       MOVE    ZERO    TO  FLG-HIT
-                   END-IF
-               WHEN    "9103"
-                   IF    ( SPA-MW      =   SPA-GINBEE )
-                       MOVE    ZERO    TO  FLG-HIT
-                   END-IF
-               END-EVALUATE
+               ELSE
+                       MOVE    1       TO  FLG-HIT
+               END-IF
       *
                IF    ( FLG-HIT         =   1 )
                    ADD     1                   TO  IDX-MAX
@@ -904,13 +863,6 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
-      *
-      *----(04.08.02)--ADD-START---
-           PERFORM 430-SYS1001-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  210-BACK-EXT
-           END-IF
-      *----(04.08.02)--ADD-END-----
       *
            IF    ( SPA-W01-MOTOPG  NOT =   SPACE )
                MOVE    SPA-W01-MOTOPG  TO  SPA-SAKIPG
@@ -2189,15 +2141,10 @@
                    MOVE    "W99"               TO  SPA-SAKIPG
       *        医療情報連携
                WHEN    "9101"
-      *        医療情報連携（処方）
-               WHEN    "9103"
                    MOVE    "W91"               TO  SPA-SAKIPG
       *        ＥＦファイル作成
                WHEN    "9102"
                    MOVE    "W92"               TO  SPA-SAKIPG
-      *        医療情報代理機関
-               WHEN    "9104"
-                   MOVE    "W93"               TO  SPA-SAKIPG
                WHEN    "9600"
                    MOVE    "W96"               TO  SPA-SAKIPG
                WHEN    "9700"
@@ -2297,12 +2244,8 @@
                WHEN    "9000"
       *        医療情報連携
                WHEN    "9101"
-      *        医療情報連携（処方）
-               WHEN    "9103"
       *        ＥＦファイル作成
                WHEN    "9102"
-      *        医療情報代理情報
-               WHEN    "9104"
       *----(04.08.01)--ADD-START---
       *        排他制御情報
                WHEN    "9800"
@@ -2312,20 +2255,7 @@
                           (SPA-NAI-EDYUKYMD    =   99999999)
                        CONTINUE
                    ELSE
-                       IF    ( SPA-GMN-KANRICD =   "9000" OR "9800" )
-                           IF    ( SPA-GMN-SELNUM      =   ZERO )
-                            OR  (( SPA-GMN-SELNUM NOT  =   ZERO )
-                             AND ( SPA-NAI-STYUKYMD
-                                           NOT =   SPA-NAI-TSTYUKYMD
-                                                     (SPA-GMN-SELNUM)
-                              OR   SPA-NAI-EDYUKYMD
-                                           NOT =   SPA-NAI-TEDYUKYMD
-                                                     (SPA-GMN-SELNUM)))
-                               MOVE    3       TO  SPA-GMN-CUR
-                               MOVE    "0021"  TO  SPA-ERRCD
-                               GO  TO  4101-KAKUTEI-CHK-EXT
-                           END-IF
-                       ELSE
+                       IF    (SPA-GMN-SELNUM   =   ZERO )
                            MOVE    3           TO  SPA-GMN-CUR
                            MOVE    "0021"      TO  SPA-ERRCD
                            GO  TO  4101-KAKUTEI-CHK-EXT
@@ -2400,11 +2330,7 @@
                                            >   SPA-NAI-EDYUKYMD )
                        CONTINUE
                    ELSE
-                       IF    ( SPA-GMN-KANRICD     =   "9000" OR "9800")
-                           CONTINUE
-                       ELSE
-                           MOVE    "0004"          TO  SPA-ERRCD 
-                       END-IF
+                       MOVE    "0004"              TO  SPA-ERRCD 
                    END-IF
       *************IF     (SPA-NAI-STYUKYMD
       *                                    >=  SPA-NAI-TSTYUKYMD (IDX))
@@ -2517,109 +2443,6 @@
            .
        420-W68-SENI-EXT.
            EXIT.
-      *----(04.08.02)--ADD-START---
-      *****************************************************************
-      *    システム管理基本情報有効期限チェック処理
-      *****************************************************************
-       430-SYS1001-CHK-SEC         SECTION.
-      *
-           MOVE    SPACE           TO  WRK-STYUKYMD
-           MOVE    SPACE           TO  SPA-ERRCD
-      *
-      *    当日有効レコードチェック
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    "1001"          TO  SYS-KANRICD
-           MOVE    "*"             TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
-           MOVE    SPA-SYSYMD      TO  SYS-EDYUKYMD
-           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    当日有効の存在エラー
-           IF      FLG-SYSKANRI    =   1
-               MOVE    "0025"          TO  SPA-ERRCD
-               GO  TO  430-SYS1001-CHK-EXT
-           END-IF
-      *
-      *    有効期限チェック
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    "1001"          TO  SYS-KANRICD
-           MOVE    "*%"            TO  SYS-KBNCD
-           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key4"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
-                   OR    ( SPA-ERRCD   NOT =   SPACE )
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-      *
-      *        有効開始日をチェック
-               IF      WRK-STYUKYMD    NOT =   SPACE
-      *            有効期限不連続エラー
-                   IF      SYS-STYUKYMD    NOT =   WRK-STYUKYMD
-                       MOVE    "0026"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-      *
-      *        次の有効開始日をセット
-               IF      SYS-EDYUKYMD    NOT =   "99999999"
-                   INITIALIZE                  STS-AREA-DAY
-                   INITIALIZE                  LNK-DAY6-AREA
-                   MOVE    "61"            TO  LNK-DAY6-IRAI
-                   MOVE    SYS-EDYUKYMD    TO  LNK-DAY6-KIJUN
-                   MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                   MOVE    1               TO  LNK-DAY6-ZOGEN
-                   CALL    "ORCSDAY"       USING
-                                           STS-AREA-DAY
-                                           LNK-DAY6-AREA
-                   MOVE    LNK-DAY6-KEISAN TO  WRK-STYUKYMD
-               END-IF
-      *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key4"          TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      SPA-ERRCD       =   SPACE
-      *        最終期間終了日エラー
-               IF       SYS-EDYUKYMD   NOT =   "99999999"
-                   MOVE    "0027"          TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-           .
-       430-SYS1001-CHK-EXT.
-           EXIT.
-      *----(04.08.02)--ADD-END-----
       *****************************************************************
       *    日付チェック・編集処理
       *****************************************************************
@@ -2701,7 +2524,6 @@
       *
            MOVE    SPACE               TO  W01
       *
-           INITIALIZE                      W01
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
                MOVE    SPA-GMN-TBANGO    (IDX) TO  W01-TSELNUM  (IDX)
@@ -2837,26 +2659,6 @@
                    MOVE    "１日で入力して下さい"     TO  SPA-ERRMSG
                WHEN    "0024"
                    MOVE    "末日で入力して下さい"     TO  SPA-ERRMSG
-      *----(04.08.02)--ADD-START---
-               WHEN    "0025"
-                   STRING  "「１００１　医療機関情報−基本」"
-                           "本日有効な情報が登録されていません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0026"
-                   STRING  "「１００１　医療機関情報−基本」"
-                           "情報が登録されていない期間があります。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0027"
-                   STRING  "「１００１　医療機関情報−基本」"
-                           "最終期間の終了日が正しくありません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING                                                    
-      *----(04.08.02)--ADD-END-----
                WHEN    "1016" 
                    STRING  "外来迅速検体検査設定は平成２０年４月１日"
                            "以降の開始日として下さい。"

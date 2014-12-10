@@ -124,22 +124,6 @@
       *  04.07.00    NACL-太田    12/07/04  再計算該当者チェック設定追加
       *  04.07.00    NACL-多々納  13/08/01  時間外緊急院内チェック区分追加
       *  04.07.00    NACL-多々納  14/12/08  点数算定基準追加
-      *  04.07.00    NACL-多々納  15/03/XX  低紹介率追加
-      *  04.07.00    NACL-多々納  15/06/11  保険初期表示区分追加
-      *
-      *  04.08.01    NACL-藤原    16/01/20  転帰区分の死亡変更時の患者
-      *                                     情報更新対応
-      *                                     死亡区分更新確認メッセージ表示
-      *                                     有無区分の追加
-      *  04.08.01    NACL-多々納  16/06/10  セット展開区分追加
-      *  04.08.01    NACL-太田    16/08/05  収納請求一覧初期表示追加
-      *  04.08.01    NACL-多々納  16/10/04  要介護情報表示区分追加
-      *  04.08.00    NACL-多々納  16/11/XX  投薬投与量チェック区分対応
-      *  04.08.00    NACL-多々納  16/12/XX  病名表示区分に追加対応
-      *  04.08.00    NACL-多々納  17/03/XX  訂正時の自動発生（処方料）追加
-      *  04.08.00    NACL-多々納  17/04/XX  投薬３０日超チェック追加
-      *  04.08.00    NACL-多々納  17/07/XX  心身療法２０未満加算区分追加
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -191,15 +175,7 @@
                        09  SPA-GMN-JIKANTOKU-NYU-G.
                            11  SPA-GMN-JIKANTOKU-NYU   PIC X(01).
                            11  SPA-GMN-FN              PIC X(01).
-      **                   11  SPA-GMN-JIKANTOKU-NYUMEI    PIC X(10).
-                           11  SPA-GMN-JIKANTOKU-NYUMEI    PIC X(28).
-      *H30.4
-      *                産婦人科特例対応
-                       09  SPA-GMN-JIKANTOKU-NYU-COMB.
-                           11  SPA-GMN-JIKANTOKU-NYU-LIST  PIC X(30)
-                                                       OCCURS   9.
-                       09  SPA-GMN-JIKANTOKU-MAX       PIC 9(02).
-      *
+                           11  SPA-GMN-JIKANTOKU-NYUMEI    PIC X(10).
       *                画像診断管理加算１
                        09  SPA-GMN-GAZOUKSN1-G.
                            11  SPA-GMN-GAZOUKSN1       PIC X(01).
@@ -224,16 +200,6 @@
                            11  SPA-GMN-TEISEITOKU       PIC X(01).
                            11  SPA-GMN-TEISEIH1         PIC X(01).
                            11  SPA-GMN-TEISEITOKUMEI    PIC X(10).
-      *H29.3
-      *                訂正時の展開（処方料）
-                       09  SPA-GMN-TEISHOHOU-G.
-                           11  SPA-GMN-TEISHOHOU        PIC X(01).
-                           11  SPA-GMN-TEISHOH1         PIC X(01).
-                           11  SPA-GMN-TEISHOHOU-MEI    PIC X(10).
-                       09  SPA-GMN-TEISHOHOU-COMB.
-                           11  SPA-GMN-TEISHOHOU-LIST    PIC X(12)
-                                                         OCCURS  2.
-                       09  SPA-TEISHOHOU-MAX             PIC 9(02).
       *
       *                外来管理加算チェック
                        09  SPA-GMN-GAIKANRIKBN-G.
@@ -303,16 +269,6 @@
                                                            OCCURS  2.
       *                相互作用チェック期間
                        09  SPA-GMN-LAST-KIKAN              PIC 9(02).
-      *H28.8
-      *        相互作用チェック区分
-                       09  SPA-GMN-KINKCHK-G.
-                           11  SPA-GMN-KINKCHK             PIC X(01).
-                           11  SPA-GMN-KINKCHK-F1          PIC X(01).
-                           11  SPA-GMN-KINKCHK-MEI         PIC X(38).
-                       09  SPA-GMN-KINKCHK-COMB.
-                           11  SPA-GMN-KINKCHK-LIST        PIC X(40)
-                                                           OCCURS  3.
-                       09  SPA-GMN-KINKCHK-MAX             PIC 9(02).
       *                診療行為クリア確認チェック
                        09  SPA-GMN-CLEARCHK-G.
                            11  SPA-GMN-CLEARCHK            PIC X(01).
@@ -351,11 +307,10 @@
                        09  SPA-GMN-BYOHYOKBN-G.
                            11  SPA-GMN-BYOHYOKBN           PIC X(01).
                            11  SPA-GMN-BYOHYOKBN-F1        PIC X(01).
-                           11  SPA-GMN-BYOHYOKBN-MEI       PIC X(38).
+                           11  SPA-GMN-BYOHYOKBN-MEI       PIC X(10).
                        09  SPA-GMN-BYOHYOKBN-COMB.
-                           11  SPA-GMN-BYOHYOKBN-LIST      PIC X(40)
-                                                           OCCURS  5.
-                       09  SPA-GMN-BYOHYOKBN-MAX           PIC 9(02).
+                           11  SPA-GMN-BYOHYOKBN-LIST      PIC X(12)
+                                                           OCCURS  2.
       *                剤登録順区分
                        09  SPA-GMN-ZAIJUNKBN-G.
                            11  SPA-GMN-ZAIJUNKBN           PIC X(01).
@@ -414,26 +369,6 @@
                            11  SPA-GMN-JGAIKEIKBN-LIST     PIC X(30)
                                                            OCCURS  5.
                        09  SPA-JGAIKEIKBN-MAX              PIC 9(02).
-      *H28.8
-      *                薬剤投与量チェック区分
-                       09  SPA-GMN-TOUYOCHK-G.
-                           11  SPA-GMN-TOUYOCHK            PIC X(01).
-                           11  SPA-GMN-TOUYOCHK-F1         PIC X(01).
-                           11  SPA-GMN-TOUYOCHK-MEI        PIC X(38).
-                       09  SPA-GMN-TOUYOCHK-COMB.
-                           11  SPA-GMN-TOUYOCHK-LIST       PIC X(40)
-                                                           OCCURS  5.
-                       09  SPA-GMN-TOUYOCHK-MAX            PIC 9(02).
-      *H29.4
-      *                投薬３０日超チェック区分
-                       09  SPA-GMN-SHOHOU30CHK-G.
-                           11  SPA-GMN-SHOHOU30CHK         PIC X(01).
-                           11  SPA-GMN-SHOHOU30CHK-F1      PIC X(01).
-                           11  SPA-GMN-SHOHOU30CHK-MEI     PIC X(38).
-                       09  SPA-GMN-SHOHOU30CHK-COMB.
-                           11  SPA-GMN-SHOHOU30CHK-LIST    PIC X(40)
-                                                           OCCURS  5.
-                       09  SPA-GMN-SHOHOU30CHK-MAX         PIC 9(02).
       *
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
@@ -586,16 +521,6 @@
                            11  SPA-GMN-KOHHBTKBN-LIST     PIC X(28)
                                                              OCCURS  5.
                        09  SPA-GMN-KOHHBTKBN-MAX          PIC 9(02).
-      *H27.6
-      *                保険初期表示区分
-                       09  SPA-GMN-HKNINITKBN-G.
-                           11  SPA-GMN-HKNINITKBN         PIC X(01).
-                           11  SPA-GMN-HKNINITKBN-F1      PIC X(01).
-                           11  SPA-GMN-HKNINITKBN-MEI     PIC X(30).
-                       09  SPA-GMN-HKNINITKBN-COMB.
-                           11  SPA-GMN-HKNINITKBN-LIST    PIC X(32)
-                                                             OCCURS  5.
-                       09  SPA-GMN-HKNINITKBN-MAX         PIC 9(02).
       *
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
@@ -766,20 +691,10 @@
                            11  SPA-GMN-SEI20KSNKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-SEI20KSNKBN-MAX   PIC 9(01).
-      *H29.7
-      *                心身療法２０未満加算区分
-                       09  SPA-GMN-SIN20KSNKBN-G.
-                           11  SPA-GMN-SIN20KSNKBN       PIC X(01).
-                           11  SPA-GMN-SIN20KSNKBN-F1    PIC X(01).
-                           11  SPA-GMN-SIN20KSNKBN-MEI   PIC X(58).
-                       09  SPA-GMN-SIN20KSNKBN-COMB.
-                           11  SPA-GMN-SIN20KSNKBN-LST   PIC X(60)
-                                                        OCCURS  5.
-                           11  SPA-GMN-SIN20KSNKBN-MAX   PIC 9(01).
       *
       *                リハビリ・患者情報表示区分
                        09  SPA-GMN-GMNHYOKBN-AREA.
-                           11  SPA-GMN-GMNHYOKBN-TBL     OCCURS   6.
+                           11  SPA-GMN-GMNHYOKBN-TBL     OCCURS   5.
                                13  SPA-GMN-GMNHYOKBN-G.
                                    14  SPA-GMN-GMNHYOKBN     PIC X(01).
                                    14  SPA-GMN-GMNHYOKBN-F1  PIC X(01).
@@ -854,17 +769,6 @@
                                                         OCCURS  5.
                            11  SPA-GMN-PRVLAYOUT038-MAX   PIC 9(02).
       *
-      *H28.6
-      *                セット展開表示
-                       09  SPA-GMN-SETALLKBN-G.
-                           11  SPA-GMN-SETALLKBN       PIC X(01).
-                           11  SPA-GMN-SETALLKBN-F1    PIC X(01).
-                           11  SPA-GMN-SETALLKBN-MEI   PIC X(38).
-                       09  SPA-GMN-SETALLKBN-COMB.
-                           11  SPA-GMN-SETALLKBN-LST   PIC X(40)
-                                                        OCCURS  5.
-                           11  SPA-GMN-SETALLKBN-MAX   PIC 9(02).
-      *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
                        09  SPA-GMN-SYUNYKNKNRKBN-G.
@@ -936,11 +840,6 @@
                            11  SPA-GMN-S04SYORIKBN        PIC X(01).
                            11  SPA-GMN-S04SYORIKBN-F1     PIC X(01).
                            11  SPA-GMN-S04SYORIKBNMEI     PIC X(16).
-      *                自費内訳明細書
-                       09  SPA-GMN-S04JIHIPRTKBN-G.
-                           11  SPA-GMN-S04JIHIPRTKBN        PIC X(01).
-                           11  SPA-GMN-S04JIHIPRTKBN-F1     PIC X(01).
-                           11  SPA-GMN-S04JIHIPRTKBNMEI     PIC X(22).
       *                一括入金画面請求書兼領収書発行
                        09  SPA-GMN-S06SKYPRT-G.
                            11  SPA-GMN-S06SKYPRT           PIC X(01).
@@ -972,11 +871,6 @@
                            11  SPA-GMN-TUKISUM             PIC X(01).
                            11  SPA-GMN-TUKISUM-F1          PIC X(01).
                            11  SPA-GMN-TUKISUMMEI          PIC X(38).
-                       09  SPA-GMN-S02MODE-G.
-                           11  SPA-GMN-S02MODE          PIC X(01).
-                           11  SPA-GMN-S02MODE-F1       PIC X(01).
-                           11  SPA-GMN-S02MODEMEI       PIC X(20).
-                       09  SPA-GMN-S02LIMIT             PIC 9(3).
                        09  SPA-GMN-S02SORTKBN-G.
                            11  SPA-GMN-S02SORTKBN          PIC X(01).
                            11  SPA-GMN-S02SORTKBN-F1       PIC X(01).
@@ -1113,12 +1007,6 @@
                                13  SPA-GMN-TUKISUML        PIC X(01).
                                13  SPA-GMN-TUKISUM-F1L     PIC X(01).
                                13  SPA-GMN-TUKISUMMEIL     PIC X(38).
-                       09  SPA-GMN-S02MODELST-G.
-                           11  SPA-GMN-S02MODE-MAX      PIC 9(03).
-                           11  SPA-GMN-S02MODELST       OCCURS  5.
-                               13  SPA-GMN-S02MODEL     PIC X(01).
-                               13  SPA-GMN-S02MODE-F1L  PIC X(01).
-                               13  SPA-GMN-S02MODEMEIL  PIC X(20).
                        09  SPA-GMN-S02SORTKBNLST-G.
                            11  SPA-GMN-S02SORTKBN-MAX      PIC 9(03).
                            11  SPA-GMN-S02SORTKBNLST       OCCURS  5.
@@ -1171,7 +1059,7 @@
                                13  SPA-GMN-S04KIKANMEIL    PIC X(08).
                        09  SPA-GMN-S04DSPLST-G.
                            11  SPA-GMN-S04DSP-MAX          PIC 9(03).
-                           11  SPA-GMN-S04DSPLST           OCCURS  4.
+                           11  SPA-GMN-S04DSPLST           OCCURS  3.
                                13  SPA-GMN-S04DSPL         PIC X(01).
                                13  SPA-GMN-S04DSP-F1L      PIC X(01).
                                13  SPA-GMN-S04DSPMEIL      PIC X(18).
@@ -1193,12 +1081,6 @@
                                13  SPA-GMN-MISYUKIKANKBNL PIC X(01).
                                13  SPA-GMN-MISYUKIKANKBN-F1L PIC X(01).
                                13  SPA-GMN-MISYUKIKANKBNMEIL PIC X(48).
-                       09  SPA-GMN-S04JIHIPRTKBNLST-G.
-                           11  SPA-GMN-S04JIHIPRTKBN-MAX      PIC 9(03).
-                           11  SPA-GMN-S04JIHIPRTKBNLST       OCCURS  3.
-                               13  SPA-GMN-S04JIHIPRTKBNL     PIC X(01).
-                               13  SPA-GMN-S04JIHIPRTKBN-F1L  PIC X(01).
-                               13  SPA-GMN-S04JIHIPRTKBNMEIL  PIC X(22).
                    07  SPA-GMN-PAGE5-AREA.
       *                病名機能情報
                        09  SPA-GMN-MSG1-DSPKBN-G.
@@ -1248,18 +1130,6 @@
                                13  SPA-GMN-MSG4-DSPKBNL    PIC X(01).
                                13  SPA-GMN-MSG4-DSPKBN-F1L PIC X(01).
                                13  SPA-GMN-MSG4-DSPKBNMEIL PIC X(10).
-      *
-                       09  SPA-GMN-MSG5-DSPKBN-G.
-                           11  SPA-GMN-MSG5-DSPKBN         PIC X(01).
-                           11  SPA-GMN-MSG5-DSPKBN-F1      PIC X(01).
-                           11  SPA-GMN-MSG5-DSPKBNMEI      PIC X(10).
-      *
-                       09  SPA-GMN-MSG5-DSPKBNLST-G.
-                           11  SPA-GMN-MSG5-DSPKBN-MAX     PIC 9(03).
-                           11  SPA-GMN-MSG5-DSPKBNLST      OCCURS  2.
-                               13  SPA-GMN-MSG5-DSPKBNL    PIC X(01).
-                               13  SPA-GMN-MSG5-DSPKBN-F1L PIC X(01).
-                               13  SPA-GMN-MSG5-DSPKBNMEIL PIC X(10).
       *
                        09  SPA-GMN-SRYKA-DSPKBN-G.
                            11  SPA-GMN-SRYKA-DSPKBN        PIC X(01).
@@ -1419,16 +1289,6 @@
                            11  SPA-GMN-DAKETUKBN-LIST     PIC X(50)
                                                           OCCURS  5.
                        09  SPA-GMN-DAKETUKBN-MAX          PIC 9(04).
-      *H27.4
-      *                低紹介率区分
-                       09  SPA-GMN-TEIRITUKBN-G.
-                           11  SPA-GMN-TEIRITUKBN         PIC X(01).
-                           11  SPA-GMN-TEIRIT-F1          PIC X(01).
-                           11  SPA-GMN-TEIRITUKBN-MEI     PIC X(48).
-                       09  SPA-GMN-TEIRITUKBN-COMB.
-                           11  SPA-GMN-TEIRITUKBN-LIST    PIC X(50)
-                                                          OCCURS  5.
-                       09  SPA-GMN-TEIRITUKBN-MAX         PIC 9(04).
       *
       *
                    07  SPA-GMN-DATALST        OCCURS  2.
@@ -1463,8 +1323,6 @@
                            11  SPA-NAI-JIKANCHK-SED.
                                13  SPA-NAI-JIKANSED-HH      PIC 9(02).
                                13  SPA-NAI-JIKANSED-MM      PIC 9(02).
-                   07  SPA-NAI-PAGE4-AREA.
-                       09  SPA-NAI-S02MODE-MAE              PIC X(01).
       *
            COPY    "ENUM-VALUE".
       *
@@ -1550,6 +1408,9 @@
       *
       *    予約機能情報
            COPY  "CPSK1045.INC".
+      *
+      *    点数算定基準情報
+           COPY  "CPSK1201.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1848,8 +1709,7 @@
            MOVE    "1 印字する"            TO  SPA-GMN-S04DSPLST(1)
            MOVE    "2 印字しない"          TO  SPA-GMN-S04DSPLST(2)
            MOVE    "3 医保分のみ印字する"  TO  SPA-GMN-S04DSPLST(3)
-           MOVE    "4 入金分のみ印字する"  TO  SPA-GMN-S04DSPLST(4)
-           MOVE    4                       TO  SPA-GMN-S04DSP-MAX
+           MOVE    3                       TO  SPA-GMN-S04DSP-MAX
       *
            MOVE    "1 支払額に含める"      TO  SPA-GMN-S04SUMKBNLST(1)
            MOVE    "2 支払額に含めない"    TO  SPA-GMN-S04SUMKBNLST(2)
@@ -1858,11 +1718,6 @@
            MOVE    "1 支払額に含める"      TO  SPA-GMN-S04SYORILST(1)
            MOVE    "2 支払額に含めない"    TO  SPA-GMN-S04SYORILST(2)
            MOVE    2                       TO  SPA-GMN-S04SYORI-MAX
-      *
-           MOVE    "0 発行しない"        TO  SPA-GMN-S04JIHIPRTKBNLST(1)
-           MOVE    "1 日別明細書"        TO  SPA-GMN-S04JIHIPRTKBNLST(2)
-           MOVE    "2 月別明細書"        TO  SPA-GMN-S04JIHIPRTKBNLST(3)
-           MOVE    3                     TO  SPA-GMN-S04JIHIPRTKBN-MAX
       *
            MOVE    "0 標準（行削除する）"
                                        TO  SPA-GMN-SURYOZERO-LIST(1)
@@ -1910,53 +1765,9 @@
            MOVE    "1 チェックする"
                                        TO  SPA-GMN-JGAIKEIKBN-LIST(2)
            MOVE    2                   TO  SPA-JGAIKEIKBN-MAX
-      *H28.8
-      *    相互作用チェック区分
-           MOVE    "0 相互作用・チェックマスタを対象"
-                                       TO  SPA-GMN-KINKCHK-LIST (1)
-           MOVE    "1 チェックマスタのみを対象"
-                                       TO  SPA-GMN-KINKCHK-LIST (2)
-           MOVE    2                   TO  SPA-GMN-KINKCHK-MAX
-      *
-      *H28.11
-      *    薬剤投与量チェック区分
-           MOVE    "0 在宅・投薬・注射を対象"
-                                       TO  SPA-GMN-TOUYOCHK-LIST (1)
-           MOVE    "1 すべてを対象"
-                                       TO  SPA-GMN-TOUYOCHK-LIST (2)
-           MOVE    2                   TO  SPA-GMN-TOUYOCHK-MAX
-      *H29.3
-      *    訂正時の展開（処方料）
-           MOVE    "0 展開しない"
-                                       TO  SPA-GMN-TEISHOHOU-LIST (1)
-           MOVE    "1 展開する"
-                                       TO  SPA-GMN-TEISHOHOU-LIST (2)
-           MOVE    2                   TO  SPA-TEISHOHOU-MAX
-      *H29.4
-      *    投薬３０日超チェック区分
-           MOVE    "0 チェックしない"
-                                       TO  SPA-GMN-SHOHOU30CHK-LIST (1)
-           MOVE    "1 チェックする"
-                                       TO  SPA-GMN-SHOHOU30CHK-LIST (2)
-           MOVE    2                   TO  SPA-GMN-SHOHOU30CHK-MAX
-      *H30.4
-      *    時間外加算特例 産婦人科特例対応
-           MOVE    "0 算定しない"      TO  SPA-GMN-JIKANTOKU-NYU-LIST(1)
-           MOVE    "1 算定する"        TO  SPA-GMN-JIKANTOKU-NYU-LIST(2)
-           MOVE    "2 算定する（小児科のみ）"
-                                       TO  SPA-GMN-JIKANTOKU-NYU-LIST(3)
-           MOVE    "3 算定する（産・産婦人科のみ）"
-                                       TO  SPA-GMN-JIKANTOKU-NYU-LIST(4)
-           MOVE    4                   TO  SPA-GMN-JIKANTOKU-MAX
-      *
-      *
       *    病名表示区分
            MOVE    "0 表示しない"      TO  SPA-GMN-BYOHYOKBN-LIST(1)
            MOVE    "1 表示する"        TO  SPA-GMN-BYOHYOKBN-LIST(2)
-      *H28.12
-           MOVE    "2 表示する（レセプト表示のみ）"
-                                       TO  SPA-GMN-BYOHYOKBN-LIST(3)
-           MOVE    3                   TO  SPA-GMN-BYOHYOKBN-MAX
       *    剤登録順区分
            MOVE    "0 診療区分順"      TO  SPA-GMN-ZAIJUNKBN-LIST(1)
            MOVE    "1 入力順"          TO  SPA-GMN-ZAIJUNKBN-LIST(2)
@@ -2061,14 +1872,6 @@
            MOVE    "1 自動表示する"
                                    TO  SPA-GMN-KOHHBTKBN-LIST (2)
            MOVE    2               TO  SPA-GMN-KOHHBTKBN-MAX 
-      *    保険初期表示区分
-           MOVE    "0 標準"
-                                   TO  SPA-GMN-HKNINITKBN-LIST (1)
-           MOVE    "1 自費以外"
-                                   TO  SPA-GMN-HKNINITKBN-LIST (2)
-           MOVE    "2 自費・労災・自賠責・治験以外"
-                                   TO  SPA-GMN-HKNINITKBN-LIST (3)
-           MOVE    3               TO  SPA-GMN-HKNINITKBN-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -2193,12 +1996,6 @@
            MOVE    "1 自動算定しない"
                                        TO  SPA-GMN-SEI20KSNKBN-LST(2)
            MOVE    2                   TO  SPA-GMN-SEI20KSNKBN-MAX
-      *H29.7
-      *    心身療法２０未満加算区分
-           MOVE    "0 自動算定する"    TO  SPA-GMN-SIN20KSNKBN-LST(1)
-           MOVE    "1 自動算定しない"
-                                       TO  SPA-GMN-SIN20KSNKBN-LST(2)
-           MOVE    2                   TO  SPA-GMN-SIN20KSNKBN-MAX
       *ver.4.7
       *    リハビリ・患者情報表示区分
            MOVE    "1"                 TO  SPA-GMN-GMNHYOKBNL (1)
@@ -2211,10 +2008,7 @@
            MOVE    "感染症"            TO  SPA-GMN-GMNHYOKBN-LST (4)
            MOVE    "5"                 TO  SPA-GMN-GMNHYOKBNL (5)
            MOVE    "コメント"          TO  SPA-GMN-GMNHYOKBN-LST (5)
-      *H28.10
-           MOVE    "6"                 TO  SPA-GMN-GMNHYOKBNL (6)
-           MOVE    "介護認定情報"      TO  SPA-GMN-GMNHYOKBN-LST (6)
-           MOVE    6                   TO  SPA-GMN-GMNHYOKBN-MAX
+           MOVE    5                   TO  SPA-GMN-GMNHYOKBN-MAX
       *    入力スクロール背景行区分
            MOVE    "0 行毎"            TO  SPA-GMN-BGLINEKBN-LST (1)
            MOVE    "1 剤毎"            TO  SPA-GMN-BGLINEKBN-LST (2)
@@ -2223,11 +2017,6 @@
            MOVE    "0 通常表示"        TO  SPA-GMN-PRVLAYOUT038-LST(1)
            MOVE    "1 一画面表示"      TO  SPA-GMN-PRVLAYOUT038-LST(2)
            MOVE    2                   TO  SPA-GMN-PRVLAYOUT038-MAX
-      *H28.6
-      *    セット内容展開表示
-           MOVE    "0 通常展開"        TO  SPA-GMN-SETALLKBN-LST(1)
-           MOVE    "1 全展開"          TO  SPA-GMN-SETALLKBN-LST(2)
-           MOVE    2                   TO  SPA-GMN-SETALLKBN-MAX
       *
       *    入金・返金額初期設定区分
            MOVE    "0 今回請求額のみ"  TO  SPA-GMN-NYKHNKKBN-LST(1)
@@ -2246,9 +2035,7 @@
       *    確認画面名称表示区分
            MOVE    "0 一般名表示"      TO  SPA-GMN-GENERICFLG-LST(1)
            MOVE    "1 銘柄名表示"      TO  SPA-GMN-GENERICFLG-LST(2)
-           MOVE    "2 一般名表示（全画面）"
-                                       TO  SPA-GMN-GENERICFLG-LST(3)
-           MOVE    3                   TO  SPA-GMN-GENERICFLG-MAX
+           MOVE    2                   TO  SPA-GMN-GENERICFLG-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -2320,12 +2107,11 @@
                                        TO  SPA-GMN-TUKISKYMISYUPRTLST(2)
            MOVE    2                   TO  SPA-GMN-TUKISKYMISYUPRT-MAX
       *
-           MOVE    "0 収納一覧（月）"  TO  SPA-GMN-S02MODELST  (1)
-           MOVE    "1 収納一覧（年）"  TO  SPA-GMN-S02MODELST (2)
-           MOVE    "2 収納一覧（全部）" TO SPA-GMN-S02MODELST (3)
-           MOVE    "3 未収一覧"        TO  SPA-GMN-S02MODELST (4)
-           MOVE    "4 入返金日"        TO  SPA-GMN-S02MODELST (5)
-           MOVE    5                   TO  SPA-GMN-S02MODE-MAX
+           MOVE    "0 伝票番号順"
+                                       TO  SPA-GMN-S02SORTKBNLST(1)
+           MOVE    "1 診療日順"
+                                       TO  SPA-GMN-S02SORTKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-S02SORTKBN-MAX
       *
            MOVE "0 しない"
                                        TO  SPA-GMN-SAIKEISANSKYCHKLST(1)
@@ -2366,10 +2152,6 @@
            MOVE    "0 表示しない"      TO  SPA-GMN-MSG4-DSPKBNLST(1)
            MOVE    "1 表示する"        TO  SPA-GMN-MSG4-DSPKBNLST(2)
            MOVE    2                   TO  SPA-GMN-MSG4-DSPKBN-MAX
-      *
-           MOVE    "0 表示する"        TO  SPA-GMN-MSG5-DSPKBNLST(1)
-           MOVE    "1 表示しない"      TO  SPA-GMN-MSG5-DSPKBNLST(2)
-           MOVE    2                   TO  SPA-GMN-MSG5-DSPKBN-MAX
       *
            MOVE    "0 標準（最終受診科、遷移時は選択診療科）"
                                        TO  SPA-GMN-SRYKA-DSPKBNLST(1)
@@ -2480,13 +2262,6 @@
            MOVE    "1 低妥結率である"
                                        TO  SPA-GMN-DAKETUKBN-LIST(2)
            MOVE    2                   TO  SPA-GMN-DAKETUKBN-MAX
-      *H27.4
-      *    低紹介率区分
-           MOVE    "0 低紹介率でない"
-                                       TO  SPA-GMN-TEIRITUKBN-LIST(1)
-           MOVE    "1 低紹介率である"
-                                       TO  SPA-GMN-TEIRITUKBN-LIST(2)
-           MOVE    2                   TO  SPA-GMN-TEIRITUKBN-MAX
       *
       *
       *ver.4.7
@@ -2683,10 +2458,6 @@
       *        訂正時の自動発生（入院）
                MOVE    SYS-1008-TEINYUAUTO-FLG
                                        TO  SPA-GMN-TEINYUAUTO
-      *H29.3
-      *        訂正時の自動発生（処方料）
-               MOVE    SYS-1008-TEISHOHOU-FLG
-                                       TO  SPA-GMN-TEISHOHOU
       *        病名からの自動発生
                MOVE    SYS-1008-BYOMEIAUTO-FLG
                                        TO  SPA-GMN-BYOMEIAUTO
@@ -2731,16 +2502,6 @@
                                            TO  SPA-NAI-JIKANCHK-SED(1)
                MOVE      SYS-1008-JIKANCHK-SED(2)
                                            TO  SPA-NAI-JIKANCHK-SED(2)
-      *H28.8
-      *        相互作用チェック区分
-               MOVE    SYS-1008-INTERACT-CHKKBN
-                                           TO  SPA-GMN-KINKCHK
-      *H28.11  薬剤投与量チェック区分
-               MOVE    SYS-1008-TOUYOCHK-FLG
-                                           TO  SPA-GMN-TOUYOCHK
-      *H29.4   投薬３０日超チェック区分
-               MOVE    SYS-1008-SHOHOU30CHK
-                                           TO  SPA-GMN-SHOHOU30CHK
            END-IF
       *    チェック除外時間
            PERFORM VARYING     IDT     FROM    1   BY  1
@@ -2836,22 +2597,19 @@
            END-IF
       *
       *    時間外加算特例乳幼児
-      *H30.4
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL   IDY         >   SPA-GMN-JIKANTOKU-MAX
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
                IF      SPA-GMN-JIKANTOKU-NYU
-                                       =   SPA-GMN-JIKANTOKU-NYU-LIST
-                                                (IDY)(1:1)
-                   MOVE    SPA-GMN-JIKANTOKU-NYU-LIST(IDY)
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
                                            TO SPA-GMN-JIKANTOKU-NYU-G
                    MOVE    1                   TO  FLG-OK
-                   MOVE    SPA-GMN-JIKANTOKU-MAX   TO  IDY
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-JIKANTOKU-NYU-LIST(01)
-                                       TO SPA-GMN-JIKANTOKU-NYU-G
+               MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-JIKANTOKU-NYU-G
            END-IF
       *
       *    画像診断管理加算
@@ -2918,25 +2676,6 @@
       *    初期値は’０’とする
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-TEISEITOKU-G
-           END-IF
-      *H29.3
-      *    訂正時の展開（処方料）
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL   IDY         >   SPA-TEISHOHOU-MAX
-               IF      SPA-GMN-TEISHOHOU
-                                       =   SPA-GMN-TEISHOHOU-LIST(IDY)
-                                                        (1:1)
-                   MOVE    SPA-GMN-TEISHOHOU-LIST(IDY)
-                                           TO SPA-GMN-TEISHOHOU-G
-                   MOVE    1               TO  FLG-OK
-                   MOVE    SPA-TEISHOHOU-MAX   TO  IDY
-               END-IF
-           END-PERFORM
-      *    初期値は’０’とする
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-TEISHOHOU-LIST(01)
-                                           TO SPA-GMN-TEISHOHOU-G
            END-IF
       *
       *    包括まとめ
@@ -3090,28 +2829,17 @@
            IF     SPA-GMN-BYOHYOKBN   =   SPACE
                MOVE    "1"             TO  SPA-GMN-BYOHYOKBN
            END-IF
-      *H28.12
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-BYOHYOKBN-MAX
-               IF      SPA-GMN-BYOHYOKBN
-                                       =    SPA-GMN-BYOHYOKBN-LIST
-                                                    (IDX)(1:1)
-                   MOVE    SPA-GMN-BYOHYOKBN-LIST(IDX)
-                                       TO  SPA-GMN-BYOHYOKBN-G
-                   MOVE    SPA-GMN-BYOHYOKBN-MAX   TO  IDX
-               END-IF
-           END-PERFORM
-      ***  EVALUATE    SPA-GMN-BYOHYOKBN
-      *         WHEN    "0"
-      *             MOVE    SPA-GMN-BYOHYOKBN-LIST(1)
-      *                                        TO  SPA-GMN-BYOHYOKBN-G
-      *         WHEN    "1"
-      *             MOVE    SPA-GMN-BYOHYOKBN-LIST(2)
-      *                                        TO  SPA-GMN-BYOHYOKBN-G
-      *         WHEN    OTHER
-      *             MOVE    SPA-GMN-BYOHYOKBN-LIST(2)
-      *                                        TO  SPA-GMN-BYOHYOKBN-G
-      **** END-EVALUATE
+           EVALUATE    SPA-GMN-BYOHYOKBN
+                WHEN    "0"
+                    MOVE    SPA-GMN-BYOHYOKBN-LIST(1)
+                                               TO  SPA-GMN-BYOHYOKBN-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-BYOHYOKBN-LIST(2)
+                                               TO  SPA-GMN-BYOHYOKBN-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-BYOHYOKBN-LIST(2)
+                                               TO  SPA-GMN-BYOHYOKBN-G
+           END-EVALUATE
       *    剤登録順区分
            IF     SPA-GMN-ZAIJUNKBN   =   SPACE
                MOVE    "0"             TO  SPA-GMN-ZAIJUNKBN
@@ -3202,46 +2930,6 @@
                    MOVE    SPA-GMN-DATA-MAX    TO  IDY
                END-IF
            END-PERFORM
-      *H28.8
-      *    相互作用チェック区分
-           EVALUATE    SPA-GMN-KINKCHK
-               WHEN    "1"
-                   MOVE    SPA-GMN-KINKCHK-LIST (2)
-                                           TO  SPA-GMN-KINKCHK-G
-               WHEN    OTHER
-                   MOVE    SPA-GMN-KINKCHK-LIST (1)
-                                           TO  SPA-GMN-KINKCHK-G
-           END-EVALUATE
-      *H28.11
-      *    薬剤投与量チェック区分
-           IF      SPA-GMN-TOUYOCHK     =   SPACE
-               MOVE    "0"              TO  SPA-GMN-TOUYOCHK
-           END-IF
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL   IDY         >   SPA-GMN-TOUYOCHK-MAX
-               IF      SPA-GMN-TOUYOCHK
-                                       =   SPA-GMN-TOUYOCHK-LIST(IDY)
-                                                              (1:1)
-                   MOVE    SPA-GMN-TOUYOCHK-LIST(IDY)
-                                               TO SPA-GMN-TOUYOCHK-G
-                   MOVE    SPA-GMN-TOUYOCHK-MAX    TO  IDY
-               END-IF
-           END-PERFORM
-      *H29.4
-      *    投薬３０日超チェック区分
-           IF      SPA-GMN-SHOHOU30CHK  =   SPACE
-               MOVE    "0"              TO  SPA-GMN-SHOHOU30CHK
-           END-IF
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL   IDY         >   SPA-GMN-SHOHOU30CHK-MAX
-               IF      SPA-GMN-SHOHOU30CHK
-                                       =   SPA-GMN-SHOHOU30CHK-LIST
-                                                        (IDY) (1:1)
-                   MOVE    SPA-GMN-SHOHOU30CHK-LIST(IDY)
-                                               TO SPA-GMN-SHOHOU30CHK-G
-                   MOVE    SPA-GMN-SHOHOU30CHK-MAX    TO  IDY
-               END-IF
-           END-PERFORM
       *
             MOVE    1                  TO  SPA-GMN-CUR
       *
@@ -3320,9 +3008,6 @@
       *        公費法別一覧表示区分
                MOVE    SYS-1017-KOHHBTKBN-FLG
                                        TO  SPA-GMN-KOHHBTKBN
-      *        保険初期表示区分
-               MOVE    SYS-1017-HKNINITKBN-FLG
-                                       TO  SPA-GMN-HKNINITKBN
            END-IF
       *
       *    初期設定
@@ -3574,23 +3259,6 @@
                MOVE    SPA-GMN-KOHHBTKBN-LIST(1)
                                            TO  SPA-GMN-KOHHBTKBN-G
            END-IF
-      *    保険初期表示区分
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-HKNINITKBN-MAX
-               IF      SPA-GMN-HKNINITKBN
-                                       =   SPA-GMN-HKNINITKBN-LIST
-                                                         (IDX)(1:1)
-                   MOVE    SPA-GMN-HKNINITKBN-LIST(IDX)
-                                           TO  SPA-GMN-HKNINITKBN-G
-                   MOVE    1               TO  FLG-OK
-                   MOVE    SPA-GMN-HKNINITKBN-MAX    TO  IDX
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-HKNINITKBN-LIST(1)
-                                           TO  SPA-GMN-HKNINITKBN-G
-           END-IF
       *
            MOVE    201                 TO  SPA-GMN-CUR
       *
@@ -3669,9 +3337,6 @@
            MOVE    SYS-1038-HAIKIKBN       TO  SPA-GMN-HAIKIKBN
       *    精神療法２０未満加算区分
            MOVE    SYS-1038-SEI20KSNKBN    TO  SPA-GMN-SEI20KSNKBN
-      *H29.7
-      *    心身療法２０未満加算区分
-           MOVE    SYS-1038-SIN20KSNKBN    TO  SPA-GMN-SIN20KSNKBN
       *    入金・返金額設定区分
            MOVE    SYS-1038-NYKHNKKBN      TO  SPA-GMN-NYKHNKKBN
       *    発行日変更区分
@@ -3682,29 +3347,15 @@
       *H24.12
       *    レセプトブレビューレイアウト
            MOVE    SYS-1038-PRVLAYOUT      TO  SPA-GMN-PRVLAYOUT038
-      *H28.6
-      *    セット展開表示
-           MOVE    SYS-1038-SETALLKBN      TO  SPA-GMN-SETALLKBN
       *
       *ver.4.7
       *    リハビリ・患者情報表示区分
            PERFORM VARYING     IDX     FROM   1   BY  1
-     ****          UNTIL       IDX     >   5
-                   UNTIL       IDX     >   6
-      *H28.10
-               IF      IDX             <=  5
-      *            リハビリ・患者情報・介護表示区分１〜５
-                   MOVE    SYS-1038-GMNHYOKBN (IDX)
+                   UNTIL       IDX     >   5
+               MOVE    SYS-1038-GMNHYOKBN (IDX)
                                            TO  SPA-NAI-GMNHYOKBN (IDX)
-               ELSE
-      *            リハビリ・患者情報・介護表示区分６
-                   MOVE    SYS-1038-GMNHYOKBN-6
-                                           TO  SPA-NAI-GMNHYOKBN (IDX)
-               END-IF
-      *******  IF      SYS-1038-GMNHYOKBN (IDX)
-      *        表示区分がすべて空白の時、初期設定
-               IF     (SYS-1038-GMNHYOKBN-G    =   SPACE )
-                  AND (SYS-1038-GMNHYOKBN-6    =   SPACE )
+               IF      SYS-1038-GMNHYOKBN (IDX)
+                                           =   SPACE
       *            初期設定
                    EVALUATE    IDX
                    WHEN    1
@@ -3717,8 +3368,6 @@
                        MOVE    "4"         TO  SPA-NAI-GMNHYOKBN (IDX)
                    WHEN    5
                        MOVE    "5"         TO  SPA-NAI-GMNHYOKBN (IDX)
-                   WHEN    6
-                       MOVE    "6"         TO  SPA-NAI-GMNHYOKBN (IDX)
                    END-EVALUATE
                END-IF
                MOVE    ZERO                TO  FLG-OK
@@ -3738,7 +3387,6 @@
                    MOVE    SPACE           TO  SPA-GMN-GMNHYOKBN-G (IDX)
                END-IF
            END-PERFORM
-      *
       *    入力スクロール背景色
            MOVE    SYS-1038-BGCOLORS       TO  SPA-GMN-BGCOLORS
            IF      SPA-GMN-BGCOLORS        =   SPACE
@@ -4073,23 +3721,6 @@
                MOVE    SPA-GMN-SEI20KSNKBN-LST (1)
                                        TO  SPA-GMN-SEI20KSNKBN-G
            END-IF
-      *    心身療法２０未満加算区分
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL  (IDY         >   SPA-GMN-SIN20KSNKBN-MAX )
-                       OR (FLG-OK      =   1       )
-               IF      SPA-GMN-SIN20KSNKBN
-                                       =   SPA-GMN-SIN20KSNKBN-LST (IDY)
-                                                             (1:1)
-                   MOVE    SPA-GMN-SIN20KSNKBN-LST (IDY)
-                                       TO  SPA-GMN-SIN20KSNKBN-G
-                   MOVE    1           TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-SIN20KSNKBN-LST (1)
-                                       TO  SPA-GMN-SIN20KSNKBN-G
-           END-IF
       *    入金・返金額設定区分
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -4176,24 +3807,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-PRVLAYOUT038-LST (1)
                                        TO  SPA-GMN-PRVLAYOUT038-G
-           END-IF
-      *H28.6
-      *    セット展開表示
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL  (IDY         >   SPA-GMN-SETALLKBN-MAX )
-                       OR (FLG-OK      =   1       )
-               IF      SPA-GMN-SETALLKBN
-                                       =   SPA-GMN-SETALLKBN-LST
-                                                       (IDY) (1:1)
-                   MOVE    SPA-GMN-SETALLKBN-LST (IDY)
-                                       TO  SPA-GMN-SETALLKBN-G
-                   MOVE    1           TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-SETALLKBN-LST (1)
-                                       TO  SPA-GMN-SETALLKBN-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -4318,28 +3931,9 @@
                                        TO  SPA-GMN-TUKISUM
            PERFORM 3101-TUKISUM-SYOKI-SEC
       *
-      *    請求一覧画面コラムリスト
-           MOVE    SYS-1039-S02MODE    TO  SPA-GMN-S02MODE
-           PERFORM 3101-S02MODE-SYOKI-SEC
-      *
-      *    IF    ( SYS-1039-S02LIMIT   IS  NOT NUMERIC )
-               MOVE    ZERO            TO  SPA-GMN-S02LIMIT
-      *    ELSE
-      *        MOVE    SYS-1039-S02LIMIT   TO  SPA-GMN-S02LIMIT
-      *    END-IF
-      *
       *    請求一覧画面並び順
-           PERFORM 3101-S02SORTKBNLST-SEC
-           EVALUATE    SYS-1039-S02SORTKBN
-           WHEN    "0"
-               MOVE    "0"             TO  SPA-GMN-S02SORTKBN
-           WHEN    "1"
-               MOVE    "2"             TO  SPA-GMN-S02SORTKBN
-           WHEN    "2"
-               MOVE    "1"             TO  SPA-GMN-S02SORTKBN
-           WHEN    "3"
-               MOVE    "3"             TO  SPA-GMN-S02SORTKBN
-           END-EVALUATE
+           MOVE    SYS-1039-S02SORTKBN
+                                       TO  SPA-GMN-S02SORTKBN
            PERFORM 3101-S02SORTKBN-SYOKI-SEC
       *
       *    再計算該当者チェック
@@ -4429,45 +4023,11 @@
       *    支払証明書印刷画面期間終了後の支払い
            MOVE    SYS-1039-S04SYORIKBN TO SPA-GMN-S04SYORIKBN
            PERFORM 4109-S04SYORIKBN-CHK-SEC
-      *    支払証明書印刷自費内訳明細書
-           MOVE    SYS-1039-S04JIHIPRTKBN TO SPA-GMN-S04JIHIPRTKBN
-           PERFORM 4109-S04JIHIPRTKBN-CHK-SEC
       *
            MOVE    49                 TO  SPA-GMN-CUR
       *
            . 
        310-SPASET-1039-EXT.
-           EXIT.
-      *****************************************************************
-      *    並び順ＳＰＡ画面編集処理
-      *****************************************************************
-       3101-S02SORTKBNLST-SEC          SECTION.
-      *
-           INITIALIZE                  SPA-GMN-S02SORTKBNLST-G
-      *
-           IF    ( SPA-GMN-S02MODE     =   "3" OR "4" )
-               MOVE    "0"             TO  SPA-GMN-S02SORTKBNL       (1)
-               MOVE    "発行日の古い順"
-                                       TO  SPA-GMN-S02SORTKBNMEIL    (1)
-               MOVE    "1"             TO  SPA-GMN-S02SORTKBNL       (2)
-               MOVE    "発行日の新しい順"
-                                       TO  SPA-GMN-S02SORTKBNMEIL    (2)
-           ELSE
-               MOVE    "0"             TO  SPA-GMN-S02SORTKBNL       (1)
-               MOVE    "伝票番号の小さい順"
-                                       TO  SPA-GMN-S02SORTKBNMEIL    (1)
-               MOVE    "1"             TO  SPA-GMN-S02SORTKBNL       (2)
-               MOVE    "伝票番号の大きい順"
-                                       TO  SPA-GMN-S02SORTKBNMEIL    (2)
-           END-IF
-           MOVE    "2"                 TO  SPA-GMN-S02SORTKBNL       (3)
-           MOVE    "診療日の古い順"    TO  SPA-GMN-S02SORTKBNMEIL    (3)
-           MOVE    "3"                 TO  SPA-GMN-S02SORTKBNL       (4)
-           MOVE    "診療日の新しい順"  TO  SPA-GMN-S02SORTKBNMEIL    (4)
-           MOVE    4                   TO  SPA-GMN-S02SORTKBN-MAX
-      *
-           .
-       3101-S02SORTKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    収納請求書兼領収書外来初期値設定処理
@@ -4812,31 +4372,6 @@
        3101-TUKISUM-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    請求一覧コラムリスト初期値設定処理
-      *****************************************************************
-       3101-S02MODE-SYOKI-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL   IDY         >   SPA-GMN-S02MODE-MAX
-               IF      SPA-GMN-S02MODE
-                                       =   SPA-GMN-S02MODEL(IDY)
-                   MOVE    SPA-GMN-S02MODELST(IDY)
-                                       TO  SPA-GMN-S02MODE-G
-                   MOVE    1           TO  FLG-OK
-                   MOVE    SPA-GMN-S02MODE-MAX
-                                       TO  IDY
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-S02MODELST (1)
-                                       TO  SPA-GMN-S02MODE-G
-           END-IF
-      *
-           . 
-       3101-S02MODE-SYOKI-EXT.
-           EXIT.
-      *****************************************************************
       *    請求一覧画面並び順初期値設定処理
       *****************************************************************
        3101-S02SORTKBN-SYOKI-SEC        SECTION.
@@ -5064,27 +4599,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-MSG4-DSPKBNLST (1)
                                        TO  SPA-GMN-MSG4-DSPKBN-G
-           END-IF
-      *
-      *    死亡区分更新確認メッセージ表示有無
-           MOVE    SYS-1042-MSG5-DSPKBN
-                                       TO  SPA-GMN-MSG5-DSPKBN
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL   IDY         >   SPA-GMN-MSG5-DSPKBN-MAX
-               IF      SPA-GMN-MSG5-DSPKBN
-                                       =   SPA-GMN-MSG5-DSPKBNL (IDY)
-                   MOVE    SPA-GMN-MSG5-DSPKBNLST(IDY)
-                                       TO  SPA-GMN-MSG5-DSPKBN-G
-                   MOVE    1           TO  FLG-OK
-                   MOVE    SPA-GMN-MSG5-DSPKBN-MAX
-                                       TO  IDY
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-MSG5-DSPKBNLST (1)
-                                       TO  SPA-GMN-MSG5-DSPKBN-G
            END-IF
       *
       *    診療科初期表示区分
@@ -5478,13 +4992,14 @@
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI    NOT =   ZERO
-               MOVE    SPACE               TO  SYSKANRI-REC
-               INITIALIZE                      SYSKANRI-REC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1201-REC
+           ELSE
+               INITIALIZE  SYS-1201-REC
            END-IF
       *
       *    妥結率区分
-           MOVE    SYS-KANRITBL(1:1)   TO  SPA-GMN-DAKETUKBN
+           MOVE    SYS-1201-DAKETUKBN  TO  SPA-GMN-DAKETUKBN
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -5502,40 +5017,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-DAKETUKBN-LIST (1)
                                        TO  SPA-GMN-DAKETUKBN-G
-           END-IF
-      *
-      *    低紹介率区分
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1202"              TO  SYS-KANRICD
-           MOVE    "A0000001"          TO  SYS-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI    NOT =   ZERO
-               MOVE    SPACE               TO  SYSKANRI-REC
-               INITIALIZE                      SYSKANRI-REC
-           END-IF
-           MOVE    SYS-KANRITBL(1:1)   TO  SPA-GMN-TEIRITUKBN
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY         FROM    1   BY  1
-                   UNTIL   IDY         >   SPA-GMN-TEIRITUKBN-MAX
-               IF      SPA-GMN-TEIRITUKBN
-                                       =   SPA-GMN-TEIRITUKBN-LIST(IDY)
-                                                             (1:1)
-                   MOVE    SPA-GMN-TEIRITUKBN-LIST(IDY)
-                                           TO  SPA-GMN-TEIRITUKBN-G
-                   MOVE    1               TO  FLG-OK
-                   MOVE    SPA-GMN-TEIRITUKBN-MAX
-                                           TO  IDY
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-TEIRITUKBN-LIST (1)
-                                       TO  SPA-GMN-TEIRITUKBN-G
            END-IF
       *
            MOVE    800                 TO  SPA-GMN-CUR
@@ -5640,8 +5121,6 @@
            MOVE    W07-TEISEITOKU      TO  SPA-GMN-TEISEITOKU-G
       *    訂正時の自動発生（入院）
            MOVE    W07-TEINYUAUTO      TO  SPA-GMN-TEINYUAUTO-G
-      *    訂正時の展開（処方料）
-           MOVE    W07-TEISHOHOU       TO  SPA-GMN-TEISHOHOU-G
       *    病名からの自動発生
            MOVE    W07-BYOMEIAUTO      TO  SPA-GMN-BYOMEIAUTO-G
       *    入院時初回加算の自動発生
@@ -5671,14 +5150,6 @@
       *
       *    チェック制御
            MOVE    W07-KIKAN           TO  SPA-GMN-INTERACT-KIKAN
-      *H28.8
-      *    相互作用チェック区分
-           MOVE    W07-KINKCHK         TO  SPA-GMN-KINKCHK-G
-      *H28.11
-           MOVE    W07-TOUYOCHK        TO  SPA-GMN-TOUYOCHK-G
-      *H29.4
-           MOVE    W07-SHOHOU30CHK     TO  SPA-GMN-SHOHOU30CHK-G
-      *
            MOVE    W07-GAIKANKBN       TO  SPA-GMN-GAIKANRIKBN-G
            MOVE    W07-GAIMOVE         TO  SPA-GMN-GAIMOVE-G
            MOVE    W07-SURYOZERO       TO  SPA-GMN-SURYOZERO-G
@@ -5713,7 +5184,6 @@
            MOVE    W07-KENMEIKBN       TO  SPA-GMN-KENMEIKBN-FLG-G
            MOVE    W07-TOWNNAME2KBN    TO  SPA-GMN-TOWNNAME2KBN-G
            MOVE    W07-KOHHBTKBN       TO  SPA-GMN-KOHHBTKBN-G
-           MOVE    W07-HKNINITKBN      TO  SPA-GMN-HKNINITKBN-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -5734,7 +5204,6 @@
            MOVE    W07-YKJOKUKBN       TO  SPA-GMN-YKJOKUKBN-G
            MOVE    W07-NYKHNKKBN       TO  SPA-GMN-NYKHNKKBN-G
            MOVE    W07-SEI20KSNKBN     TO  SPA-GMN-SEI20KSNKBN-G
-           MOVE    W07-SIN20KSNKBN     TO  SPA-GMN-SIN20KSNKBN-G
            MOVE    W07-YMDHENKBN       TO  SPA-GMN-YMDHENKBN-G
       *H24.4
       *    確認画面名称表示区分
@@ -5745,7 +5214,6 @@
            MOVE    W07-GMNHYOKBN3      TO  SPA-GMN-GMNHYOKBN-G (3)
            MOVE    W07-GMNHYOKBN4      TO  SPA-GMN-GMNHYOKBN-G (4)
            MOVE    W07-GMNHYOKBN5      TO  SPA-GMN-GMNHYOKBN-G (5)
-           MOVE    W07-GMNHYOKBN6      TO  SPA-GMN-GMNHYOKBN-G (6)
            MOVE    W07-BGCOLORS        TO  SPA-GMN-BGCOLORS
            MOVE    W07-BGLINEKBN       TO  SPA-GMN-BGLINEKBN-G
            MOVE    W07-BGCOLORSDAY     TO  SPA-GMN-BGCOLORSDAY
@@ -5761,7 +5229,6 @@
            MOVE    W07-ERRCOLORS       TO  SPA-GMN-ERRCOLORS
            MOVE    W07-KEICOLORS       TO  SPA-GMN-KEICOLORS
            MOVE    W07-PRVLAYOUT038    TO  SPA-GMN-PRVLAYOUT038-G
-           MOVE    W07-SETALLKBN       TO  SPA-GMN-SETALLKBN-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -5778,7 +5245,6 @@
            MOVE    W07-S04DSPKBN       TO  SPA-GMN-S04DSPKBN-G
            MOVE    W07-S04SUMKBN       TO  SPA-GMN-S04SUMKBN-G
            MOVE    W07-S04SYORIKBN     TO  SPA-GMN-S04SYORIKBN-G
-           MOVE    W07-S04JIHIPRTKBN   TO  SPA-GMN-S04JIHIPRTKBN-G
            MOVE    W07-S06SKYPRT       TO  SPA-GMN-S06SKYPRT-G
            MOVE    W07-S06SKYSUM       TO  SPA-GMN-S06SKYSUM-G
            MOVE    W07-S02SKYSAI       TO  SPA-GMN-S02SKYSAI-G
@@ -5786,8 +5252,6 @@
            MOVE    W07-TUKIGRP         TO  SPA-GMN-TUKIGRP-G
            MOVE    W07-TUKISKYMISYUPRT TO  SPA-GMN-TUKISKYMISYUPRT-G
            MOVE    W07-TUKISUM         TO  SPA-GMN-TUKISUM-G
-           MOVE    W07-S02MODE         TO  SPA-GMN-S02MODE-G
-           MOVE    W07-S02LIMIT        TO  SPA-GMN-S02LIMIT
            MOVE    W07-S02SORTKBN      TO  SPA-GMN-S02SORTKBN-G
            MOVE    W07-SAIKEISANSKYCHK TO  SPA-GMN-SAIKEISANSKYCHK-G
            MOVE    W07-IKTSORTKBN      TO  SPA-GMN-IKTSORTKBN-G
@@ -5815,7 +5279,6 @@
            MOVE    W07-MSG2-DSPKBN     TO  SPA-GMN-MSG2-DSPKBN-G
            MOVE    W07-MSG3-DSPKBN     TO  SPA-GMN-MSG3-DSPKBN-G
            MOVE    W07-MSG4-DSPKBN     TO  SPA-GMN-MSG4-DSPKBN-G
-           MOVE    W07-MSG5-DSPKBN     TO  SPA-GMN-MSG5-DSPKBN-G
            MOVE    W07-SRYKA-DSPKBN    TO  SPA-GMN-SRYKA-DSPKBN-G
            MOVE    W07-SYOKBN-DSPKBN   TO  SPA-GMN-SYOKBN-DSPKBN-G
            MOVE    W07-UTAGAIFLG-KBN   TO  SPA-GMN-UTAGAIFLG-KBN-G
@@ -5838,7 +5301,6 @@
       *
       *    点数算定基準情報
            MOVE    W07-DAKETUKBN       TO  SPA-GMN-DAKETUKBN-G
-           MOVE    W07-TEIRITUKBN      TO  SPA-GMN-TEIRITUKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -5915,11 +5377,6 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-TEINYUAUTO-CHK-SEC
                    END-IF
-      *H29.3
-      *            訂正時の展開（処方料）
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4103-TEISHOHOU-CHK-SEC
-                   END-IF
       *            相互作用チェック期間
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4100-KIKAN-CHK2-SEC
@@ -5968,16 +5425,6 @@
       *            時間外緊急院内チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-JGAIKEIKBN-CHK-SEC
-                   END-IF
-      *H28.11
-      *            薬剤投与量チェック
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4103-TOUYOCHK-CHK-SEC
-                   END-IF
-      *H29.4
-      *            投薬３０日超チェック区分
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4103-SHOHOU30CHK-CHK-SEC
                    END-IF
       *            包括入力チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -6064,10 +5511,6 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-KOHHBTKBN-FLG-SEC
                    END-IF
-      *            保険初期表示区分
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4107-HKNINITKBN-FLG-SEC
-                   END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
                    IF      SPA-ERRCD           =   SPACE
@@ -6114,17 +5557,9 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-SEI20KSNKBN-CHK-SEC
                    END-IF
-      *            心身療法２０未満加算区分
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4108-SIN20KSNKBN-CHK-SEC
-                   END-IF
       *            レセプトブレビューレイアウト
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-PRVLAYOUT038-CHK-SEC
-                   END-IF
-      *            セット展開表示
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4108-SETALLKBN-CHK-SEC
                    END-IF
       *            リハビリ・患者情報表示区分
                    IF      SPA-ERRCD           =   SPACE
@@ -6243,10 +5678,6 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-S04SYORIKBN-CHK-SEC
                    END-IF
-      *            支払証明書印刷画面自費内訳明細書チェック
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4109-S04JIHIPRTKBN-CHK-SEC
-                   END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
@@ -6282,14 +5713,6 @@
       *            月別請求書兼領収書集計区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-TUKISUM-CHK-SEC
-                   END-IF
-      *            請求一覧画コラムリストチェック
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4110-S02MODE-CHK-SEC
-                   END-IF
-      *            請求一覧画コラムリスト件数チェック
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4110-S02LIMIT-CHK-SEC
                    END-IF
       *            請求一覧画面並び順区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -6335,10 +5758,6 @@
       *            同一病名警告メッセージ表示有無チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4111-MSG4-DSPKBN-CHK-SEC
-                   END-IF
-      *            死亡区分更新確認メッセージ表示有無チェック
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4111-MSG5-DSPKBN-CHK-SEC
                    END-IF
       *            診療科初期表示区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -6407,10 +5826,6 @@
       *            妥結率区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4611-DAKETUKBN-CHK-SEC
-                   END-IF
-      *            低紹介率区分
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4611-TEIRITUKBN-CHK-SEC
                    END-IF
            END-EVALUATE
       *
@@ -6613,24 +6028,6 @@
       *****************************************************************
        4100-KIKAN-CHK2-SEC       SECTION.
       *
-      *H28.8
-      *    相互作用チェック区分
-           MOVE    ZERO                TO  FLG-OK
-      *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   SPA-GMN-KINKCHK-MAX
-               IF      SPA-GMN-KINKCHK     =   SPA-GMN-KINKCHK-LIST
-                                                         (IDY)(1:1)
-                   MOVE    SPA-GMN-KINKCHK-LIST (IDY)
-                                           TO  SPA-GMN-KINKCHK-G
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-      *
-           IF      FLG-OK              =   ZERO
-               MOVE    "0044"              TO  SPA-ERRCD
-               MOVE    35                  TO  SPA-GMN-CUR
-           END-IF
           .
        4100-KIKAN-CHK2-EXT.
            EXIT.
@@ -6825,35 +6222,8 @@
                MOVE    19                  TO  SPA-GMN-CUR
            END-IF
       *
-           .
+          .
        4103-TEISEITOKU-CHK-EXT.
-           EXIT.
-      *H29.3
-      *****************************************************************
-      *    訂正時の展開（処方料）チェック処理
-      *****************************************************************
-       4103-TEISHOHOU-CHK-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-      *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   SPA-TEISHOHOU-MAX)
-                           OR (FLG-OK      =   1   )
-               IF      SPA-GMN-TEISHOHOU  =   SPA-GMN-TEISHOHOU-LIST
-                                                         (IDY)(1:1)
-                   MOVE    SPA-GMN-TEISHOHOU-LIST (IDY)
-                                           TO  SPA-GMN-TEISHOHOU-G
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-      *
-           IF      FLG-OK              =   ZERO
-               MOVE    "0046"              TO  SPA-ERRCD
-               MOVE    36                  TO  SPA-GMN-CUR
-           END-IF
-      *
-           .
-       4103-TEISHOHOU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    検体検査加算自動発生チェック処理
@@ -6888,22 +6258,10 @@
       *
            MOVE    ZERO                TO  FLG-OK
       *
-      *    PERFORM VARYING     IDY     FROM    1   BY  1
-      *            UNTIL       IDY     >   SPA-GMN-DATA-MAX
-      *        IF      SPA-GMN-JIKANTOKU-NYU   =   SPA-GMN-DATAL(IDY)
-      *            MOVE    SPA-GMN-DATALST (IDY)
-      *                                    TO  SPA-GMN-JIKANTOKU-NYU-G
-      *            MOVE    1               TO  FLG-OK
-      *        END-IF
-      *    END-PERFORM
-      *
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   SPA-GMN-JIKANTOKU-MAX)
-                           OR (FLG-OK  =   1         )
-               IF      SPA-GMN-JIKANTOKU-NYU
-                                       =   SPA-GMN-JIKANTOKU-NYU-LIST
-                                                        (IDY)(1:1)
-                   MOVE    SPA-GMN-JIKANTOKU-NYU-LIST (IDY)
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-JIKANTOKU-NYU   =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
                                            TO  SPA-GMN-JIKANTOKU-NYU-G
                    MOVE    1               TO  FLG-OK
                END-IF
@@ -7172,8 +6530,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-JGAIKEIKBN-MAX )
-                          OR  (FLG-OK  =   1                  )
+                   UNTIL       IDX     >   SPA-JGAIKEIKBN-MAX
                IF      SPA-GMN-JGAIKEIKBN
                                       =   SPA-GMN-JGAIKEIKBN-LIST(IDX)
                                                                 (1:1)
@@ -7189,58 +6546,6 @@
       *
           .
        4103-JGAIKEIKBN-CHK-EXT.
-           EXIT.
-      *H28.11
-      *****************************************************************
-      *    薬剤投与量チェック処理
-      *****************************************************************
-       4103-TOUYOCHK-CHK-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-TOUYOCHK-MAX)
-                          OR  (FLG-OK  =   1                  )
-               IF      SPA-GMN-TOUYOCHK
-                                      =   SPA-GMN-TOUYOCHK-LIST(IDX)
-                                                                (1:1)
-                   MOVE    SPA-GMN-TOUYOCHK-LIST(IDX)
-                                          TO  SPA-GMN-TOUYOCHK-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    89              TO  SPA-GMN-CUR
-               MOVE    "0045"          TO  SPA-ERRCD
-           END-IF
-      *
-          .
-       4103-TOUYOCHK-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    投薬３０日超チェック区分処理
-      *****************************************************************
-       4103-SHOHOU30CHK-CHK-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-SHOHOU30CHK-MAX)
-                          OR  (FLG-OK  =   1                  )
-               IF      SPA-GMN-SHOHOU30CHK
-                                       =   SPA-GMN-SHOHOU30CHK-LIST
-                                                           (IDX)(1:1)
-                   MOVE    SPA-GMN-SHOHOU30CHK-LIST(IDX)
-                                          TO  SPA-GMN-SHOHOU30CHK-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    90              TO  SPA-GMN-CUR
-               MOVE    "0047"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       4103-SHOHOU30CHK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7585,7 +6890,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-BYOHYOKBN-MAX
+                   UNTIL       IDX     >   2
                IF      SPA-GMN-BYOHYOKBN
                                       =   SPA-GMN-BYOHYOKBN-LIST(IDX)
                                                                 (1:1)
@@ -8083,31 +7388,6 @@
        4107-KOHHBTKBN-FLG-EXT.
            EXIT.
       *****************************************************************
-      *    公費法別一覧表示区分チェック処理
-      *****************************************************************
-       4107-HKNINITKBN-FLG-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-HKNINITKBN-MAX) OR
-                              (FLG-OK  =   1    )
-               IF      SPA-GMN-HKNINITKBN
-                                       =   SPA-GMN-HKNINITKBN-LIST
-                                                          (IDX)(1:1)
-                   MOVE    SPA-GMN-HKNINITKBN-LIST(IDX)
-                                          TO  SPA-GMN-HKNINITKBN-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    219             TO  SPA-GMN-CUR
-               MOVE    "1019"          TO  SPA-ERRCD
-           END-IF
-      *
-          .
-       4107-HKNINITKBN-FLG-EXT.
-           EXIT.
-      *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
       *****************************************************************
        4108-SRYNYKNKNRKBN-CHK-SEC      SECTION.
@@ -8495,32 +7775,6 @@
            .
        4108-SEI20KSNKBN-CHK-EXT.
            EXIT.
-      *H29.7
-      *****************************************************************
-      *    心身療法２０未満加算区分チェック処理（診療行為機能情報）
-      *****************************************************************
-       4108-SIN20KSNKBN-CHK-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-SIN20KSNKBN-MAX)
-                       OR     (FLG-OK  =   1    ) 
-               IF      SPA-GMN-SIN20KSNKBN
-                                       =   SPA-GMN-SIN20KSNKBN-LST (IDX)
-                                                          (1:1)
-                   MOVE    SPA-GMN-SIN20KSNKBN-LST(IDX)
-                                          TO  SPA-GMN-SIN20KSNKBN-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    314             TO  SPA-GMN-CUR
-               MOVE    "2030"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       4108-SIN20KSNKBN-CHK-EXT.
-           EXIT.
       *****************************************************************
       *    レセプトブレビューレイアウトチェック処理（診療行為機能情報）
       *****************************************************************
@@ -8546,45 +7800,17 @@
            .
        4108-PRVLAYOUT038-CHK-EXT.
            EXIT.
-      *H28.6
-      *****************************************************************
-      *    セット展開表示チェック処理（診療行為機能情報）
-      *****************************************************************
-       4108-SETALLKBN-CHK-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-SETALLKBN-MAX)
-                       OR     (FLG-OK  =   1    ) 
-               IF      SPA-GMN-SETALLKBN
-                                       =   SPA-GMN-SETALLKBN-LST
-                                                      (IDX)(1:1)
-                   MOVE    SPA-GMN-SETALLKBN-LST(IDX)
-                                          TO  SPA-GMN-SETALLKBN-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    313             TO  SPA-GMN-CUR
-               MOVE    "2029"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       4108-SETALLKBN-CHK-EXT.
-           EXIT.
       *****************************************************************
       *    リハビリ・患者情報表示区分チェック処理（診療行為機能情報）
       *****************************************************************
        4108-GMNHYOKBN-CHK-SEC      SECTION.
       *
       *    空白を詰める
-      *H28.10  ５→６へ
            PERFORM VARYING     IDX     FROM    1   BY  1
-      ****         UNTIL      (IDX             >=  5    )
-                   UNTIL      (IDX             >=  6    )
+                   UNTIL      (IDX             >=  5    )
                IF     (SPA-GMN-GMNHYOKBN-G (IDX)   =   SPACE )
                    PERFORM VARYING     IDY     FROM    IDX BY  1
-                           UNTIL      (IDY             >   6    )
+                           UNTIL      (IDY             >   5    )
                        IF     (IDY             NOT =   IDX )
                        AND    (SPA-GMN-GMNHYOKBN-G (IDY)
                                                NOT =   SPACE )
@@ -8593,14 +7819,14 @@
                                                               (IDX)
                            MOVE    SPACE       TO  SPA-GMN-GMNHYOKBN-G
                                                               (IDY)
-                           MOVE    6           TO  IDY
+                           MOVE    5           TO  IDY
                        END-IF
                    END-PERFORM
                END-IF
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX             >   6    )
+                   UNTIL      (IDX             >   5    )
                        OR     (SPA-ERRCD   NOT =   SPACE )
                MOVE    ZERO                TO  FLG-OK
                IF      SPA-GMN-GMNHYOKBN-G (IDX)   =   SPACE
@@ -8630,9 +7856,6 @@
                        MOVE    333             TO  SPA-GMN-CUR
                    WHEN    5
                        MOVE    334             TO  SPA-GMN-CUR
-      *H28.10
-                   WHEN    6
-                       MOVE    349             TO  SPA-GMN-CUR
                    END-EVALUATE
                    MOVE    "2023"          TO  SPA-ERRCD
                END-IF
@@ -9169,51 +8392,6 @@
        4110-TUKISUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    請求一覧画コラムリストチェック
-      *****************************************************************
-       4110-S02MODE-CHK-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-S02MODE-MAX
-               IF      SPA-GMN-S02MODE
-                                       =   SPA-GMN-S02MODEL(IDX)
-                   MOVE    SPA-GMN-S02MODELST(IDX)
-                                          TO  SPA-GMN-S02MODE-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    SPA-GMN-S02MODELST(1)
-                                          TO  SPA-GMN-S02MODE-G
-           END-IF
-      *
-           EVALUATE    TRUE
-           WHEN  ( SPA-NAI-S02MODE-MAE =   SPACE )
-           WHEN  ( SPA-GMN-S02MODE NOT =   SPA-NAI-S02MODE-MAE )
-               PERFORM 3101-S02SORTKBNLST-SEC
-               MOVE    SPA-GMN-S02MODE TO  SPA-NAI-S02MODE-MAE
-           END-EVALUATE
-      *
-           .
-       4110-S02MODE-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    請求一覧画コラムリスト件数チェック
-      *****************************************************************
-       4110-S02LIMIT-CHK-SEC           SECTION.
-      *
-           IF    ( SPA-GMN-S02LIMIT    >=   ZERO)
-            AND  ( SPA-GMN-S02LIMIT    <=   500 )
-               CONTINUE
-           ELSE
-               MOVE    ZERO            TO   SPA-GMN-S02LIMIT
-           END-IF
-      *
-           .
-       4110-S02LIMIT-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    請求一覧画面並び順区分チェック
       *****************************************************************
        4110-S02SORTKBN-CHK-SEC      SECTION.
@@ -9545,16 +8723,12 @@
                                        TO  SPA-GMN-S04SUMKBN-G
                    MOVE    SPA-GMN-S04SYORILST (1)
                                        TO  SPA-GMN-S04SYORIKBN-G
-                   MOVE    SPA-GMN-S04JIHIPRTKBNLST(1)
-                                       TO  SPA-GMN-S04JIHIPRTKBN-G
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-S04SYORIKBN-G
                MOVE    SPACE           TO  SPA-GMN-S04SUMKBN-G
                MOVE    SPA-GMN-S04DSPLST(2)
                                        TO  SPA-GMN-S04DSPKBN-G
-               MOVE    SPA-GMN-S04JIHIPRTKBNLST(1)
-                                       TO  SPA-GMN-S04JIHIPRTKBN-G
            END-IF
       *
            .
@@ -9635,32 +8809,6 @@
       *
            .
        4109-S04SYORIKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    支払証明書印刷画面自費内訳明細書チェック
-      *****************************************************************
-       4109-S04JIHIPRTKBN-CHK-SEC     SECTION.
-      *
-           IF    ( SPA-GMN-S04KIKANKBN =   "1" )
-               MOVE    ZERO                TO  FLG-OK
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL     ( IDX   > SPA-GMN-S04JIHIPRTKBN-MAX )
-                        OR       ( FLG-OK  =   1 )
-                   IF    ( SPA-GMN-S04JIHIPRTKBN
-                                       =   SPA-GMN-S04JIHIPRTKBNL (IDX))
-                       MOVE    SPA-GMN-S04JIHIPRTKBNLST (IDX)
-                                       TO  SPA-GMN-S04JIHIPRTKBN-G
-                       MOVE    1       TO  FLG-OK
-                   END-IF
-               END-PERFORM
-               IF    ( FLG-OK              =   ZERO )
-                   MOVE    SPA-GMN-S04JIHIPRTKBNLST (1)
-                                       TO  SPA-GMN-S04JIHIPRTKBN-G
-               END-IF
-           END-IF
-      *
-           .
-       4109-S04JIHIPRTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    登録時刻チェック
@@ -9859,29 +9007,6 @@
       *
            .
        4111-MSG4-DSPKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    死亡区分更新確認メッセージ表示有無チェック処理（病名機能情報）
-      *****************************************************************
-       4111-MSG5-DSPKBN-CHK-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MSG5-DSPKBN-MAX
-               IF      SPA-GMN-MSG5-DSPKBN
-                                       =   SPA-GMN-MSG5-DSPKBNL (IDX)
-                   MOVE    SPA-GMN-MSG5-DSPKBNLST(IDX)
-                                          TO  SPA-GMN-MSG5-DSPKBN-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    508             TO  SPA-GMN-CUR
-               MOVE    "4009"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       4111-MSG5-DSPKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科初期表示区分チェック処理（病名機能情報）
@@ -10266,32 +9391,6 @@
            EXIT.
       *
       *****************************************************************
-      *    低紹介率区分チェック処理（点数算定基準情報）
-      *****************************************************************
-       4611-TEIRITUKBN-CHK-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-TEIRITUKBN-MAX )
-                          OR  (FLG-OK  =   1    )
-               IF      SPA-GMN-TEIRITUKBN
-                                       =   SPA-GMN-TEIRITUKBN-LIST(IDX)
-                                                             (1:1)
-                   MOVE    SPA-GMN-TEIRITUKBN-LIST(IDX)
-                                           TO  SPA-GMN-TEIRITUKBN-G
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    801             TO  SPA-GMN-CUR
-               MOVE    "8002"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       44611-TEIRITUKBN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -10607,15 +9706,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4033-DEL-1201-SEC           SECTION.
       *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1201"              TO  SYS-KANRICD
-           MOVE    "A0000001"          TO  SYS-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-      *
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-1201-REC
+           INITIALIZE                      SYS-1201-REC
+           MOVE    "1201"              TO  SYS-1201-KANRICD
+           MOVE    "A0000001"          TO  SYS-1201-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1201-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1201-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1201-HOSPNUM
+           MOVE    SYS-1201-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -10625,31 +9723,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "9001"              TO  SPA-ERRCD
-               DISPLAY "SYSKANRI-KEY =>" SYS-KEY 
-                       ",MCP-RC:" MCP-RC 
-               GO  TO  4033-DEL-1201-EXT
-           END-IF
-      *
-      *    低紹介率区分
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1202"              TO  SYS-KANRICD
-           MOVE    "A0000001"          TO  SYS-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-      *
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           IF      MCP-RC              NOT =   ZERO 
-               MOVE    "9001"              TO  SPA-ERRCD
-               DISPLAY "SYSKANRI-KEY =>" SYS-KEY 
+               DISPLAY "SYSKANRI-KEY =>" SYS-1201-KEY 
                        ",MCP-RC:" MCP-RC 
                GO  TO  4033-DEL-1201-EXT
            END-IF
@@ -10835,7 +9909,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1008-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1008-EDYUKYMD
            MOVE    SPA-GMN-INTERACT-KIKAN  TO  SYS-1008-INTERACT-KIKAN
-           MOVE    SPA-GMN-KINKCHK         TO  SYS-1008-INTERACT-CHKKBN
            MOVE    SPA-GMN-GAIKANRIKBN-CHK TO  SYS-1008-GAIKANRIKBN-CHK
            MOVE    SPA-GMN-DATA(7)         TO  SYS-1008-IKUJIEIYO-FLG
            MOVE    SPA-GMN-SRYKACD         TO  SYS-1008-IKUJIEIYO-SRYKA
@@ -10855,16 +9928,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    前回保険組合せ相違チェック
            MOVE    SPA-GMN-ZENHKNCHK       TO  SYS-1008-ZENHKNCHK-FLG
       *    手帳加算確認チェック
-           MOVE    SPA-GMN-TECHOKBN        TO  SYS-1008-TECHOKBN-FLG
+           MOVE    SPA-GMN-TECHOKBN       TO  SYS-1008-TECHOKBN-FLG
       *v4.8
       *    時間外緊急院内チェック
-           MOVE    SPA-GMN-JGAIKEIKBN      TO  SYS-1008-JGAIKEIKBN-FLG
-      *H28.11
-      *    薬剤投与量チェック区分
-           MOVE    SPA-GMN-TOUYOCHK        TO  SYS-1008-TOUYOCHK-FLG
-      *H29.4
-      *    投薬３０日超チェック区分
-           MOVE    SPA-GMN-SHOHOU30CHK     TO  SYS-1008-SHOHOU30CHK
+           MOVE    SPA-GMN-JGAIKEIKBN     TO  SYS-1008-JGAIKEIKBN-FLG
       *
       *    時間外加算特例乳幼児
            MOVE    SPA-GMN-JIKANTOKU-NYU   TO
@@ -10879,8 +9946,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-TEISEIAUTO      TO  SYS-1008-TEISEIAUTO-FLG
       *    訂正時の自動発生（特定疾患処方管理）
            MOVE    SPA-GMN-TEISEITOKU      TO  SYS-1008-TEISEITOKU-FLG
-      *    訂正時の展開（処方料）
-           MOVE    SPA-GMN-TEISHOHOU       TO  SYS-1008-TEISHOHOU-FLG
       *    病名表示区分
            MOVE    SPA-GMN-BYOHYOKBN       TO  SYS-1008-BYOHYOKBN-FLG
       *    剤登録順区分
@@ -10973,7 +10038,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-KENMEIKBN-FLG   TO  SYS-1017-KENMEIKBN-FLG
            MOVE    SPA-GMN-TOWNNAME2KBN    TO  SYS-1017-TOWNNAME2KBN-FLG
            MOVE    SPA-GMN-KOHHBTKBN       TO  SYS-1017-KOHHBTKBN-FLG
-           MOVE    SPA-GMN-HKNINITKBN      TO  SYS-1017-HKNINITKBN-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -11034,20 +10098,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-HAIKIKBN        TO  SYS-1038-HAIKIKBN
            MOVE    SPA-GMN-NYKHNKKBN       TO  SYS-1038-NYKHNKKBN
            MOVE    SPA-GMN-SEI20KSNKBN     TO  SYS-1038-SEI20KSNKBN
-      *H29.7
-      *    心身療法２０未満加算区分
-           MOVE    SPA-GMN-SIN20KSNKBN     TO  SYS-1038-SIN20KSNKBN
            MOVE    SPA-GMN-YMDHENKBN       TO  SYS-1038-YMDHENKBN
            MOVE    SPA-GMN-PRVLAYOUT038    TO  SYS-1038-PRVLAYOUT
-           MOVE    SPA-GMN-SETALLKBN       TO  SYS-1038-SETALLKBN
       *
            MOVE    SPA-NAI-GMNHYOKBN (1)   TO  SYS-1038-GMNHYOKBN (1)
            MOVE    SPA-NAI-GMNHYOKBN (2)   TO  SYS-1038-GMNHYOKBN (2)
            MOVE    SPA-NAI-GMNHYOKBN (3)   TO  SYS-1038-GMNHYOKBN (3)
            MOVE    SPA-NAI-GMNHYOKBN (4)   TO  SYS-1038-GMNHYOKBN (4)
            MOVE    SPA-NAI-GMNHYOKBN (5)   TO  SYS-1038-GMNHYOKBN (5)
-      *H28.10
-           MOVE    SPA-NAI-GMNHYOKBN (6)   TO  SYS-1038-GMNHYOKBN-6
       *
            IF      SPA-GMN-BGCOLORS        =   "#000000"
                MOVE    SPACE               TO  SYS-1038-BGCOLORS
@@ -11145,22 +10203,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-TUKISKYMISYUPRT
                                        TO SYS-1039-TUKISKYMISYUPRTKBN
            MOVE    SPA-GMN-TUKISUM         TO SYS-1039-TUKISUMKBN
-           MOVE    SPA-GMN-S02MODE
-                                       TO SYS-1039-S02MODE
-           MOVE    SPA-GMN-S02LIMIT
-                                       TO SYS-1039-S02LIMIT
-           EVALUATE    SPA-GMN-S02SORTKBN
-           WHEN    "0"
-               MOVE    "0"             TO  SYS-1039-S02SORTKBN
-           WHEN    "2"
-               MOVE    "1"             TO  SYS-1039-S02SORTKBN
-           WHEN    "1"
-               MOVE    "2"             TO  SYS-1039-S02SORTKBN
-           WHEN    "3"
-               MOVE    "3"             TO  SYS-1039-S02SORTKBN
-           WHEN    OTHER
-               MOVE    "0"             TO  SYS-1039-S02SORTKBN
-           END-EVALUATE
+           MOVE    SPA-GMN-S02SORTKBN
+                                       TO SYS-1039-S02SORTKBN
            MOVE    SPA-GMN-SAIKEISANSKYCHK
                                        TO SYS-1039-SAIKEISANSKYCHK
            MOVE    SPA-GMN-IKTSORTKBN
@@ -11199,7 +10243,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-S04KIKANKBN     TO  SYS-1039-S04KIKANKBN
            MOVE    SPA-GMN-S04DSPKBN       TO  SYS-1039-S04DSPKBN
            MOVE    SPA-GMN-S04SYORIKBN     TO  SYS-1039-S04SYORIKBN
-           MOVE    SPA-GMN-S04JIHIPRTKBN   TO  SYS-1039-S04JIHIPRTKBN
            MOVE    SPA-GMN-S04SUMKBN    TO  SYS-1039-S04SUMKBN
       *
            MOVE    SYS-1039-REC            TO  SYSKANRI-REC
@@ -11243,7 +10286,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MSG2-DSPKBN     TO  SYS-1042-MSG2-DSPKBN
            MOVE    SPA-GMN-MSG3-DSPKBN     TO  SYS-1042-MSG3-DSPKBN
            MOVE    SPA-GMN-MSG4-DSPKBN     TO  SYS-1042-MSG4-DSPKBN
-           MOVE    SPA-GMN-MSG5-DSPKBN     TO  SYS-1042-MSG5-DSPKBN
            MOVE    SPA-GMN-SRYKA-DSPKBN    TO  SYS-1042-SRYKA-DSPKBN
            MOVE    SPA-GMN-SYOKBN-DSPKBN   TO  SYS-1042-SYOKBN-DSPKBN
            MOVE    SPA-GMN-UTAGAIFLG-KBN   TO  SYS-1042-UTAGAIFLG-KBN
@@ -11355,54 +10397,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        493-KOUSHIN-1201-SEC        SECTION.
       *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1201"              TO  SYS-KANRICD
-           MOVE    "A0000001"          TO  SYS-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-1201-REC
+           INITIALIZE                      SYS-1201-REC
+           MOVE    "1201"              TO  SYS-1201-KANRICD
+           MOVE    "A0000001"          TO  SYS-1201-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1201-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1201-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1201-HOSPNUM
+           MOVE    SYS-1201-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        NOT =   ZERO
-               MOVE    SPACE               TO  SYSKANRI-REC
-               INITIALIZE                      SYSKANRI-REC
-               MOVE    "1201"              TO  SYS-KANRICD
-               MOVE    "A0000001"          TO  SYS-KBNCD
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1201-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-1201-REC
+               INITIALIZE                      SYS-1201-REC
+               MOVE    "1201"              TO  SYS-1201-KANRICD
+               MOVE    "A0000001"          TO  SYS-1201-KBNCD
            END-IF
       *
-           MOVE    SPA-W01-STYUKYMD        TO  SYS-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD        TO  SYS-EDYUKYMD
-      *    妥結率区分
-           MOVE    SPA-GMN-DAKETUKBN       TO  SYS-KANRITBL(1:1)
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-1201-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-1201-EDYUKYMD
+           MOVE    SPA-GMN-DAKETUKBN       TO  SYS-1201-DAKETUKBN
       *
-      *    ＤＢ更新処理
-           PERFORM 4910-DBKOUSIN-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      493-KOUSHIN-1201-EXT
-           END-IF
-      *
-      *    低紹介率区分
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1202"              TO  SYS-KANRICD
-           MOVE    "A0000001"          TO  SYS-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        NOT =   ZERO
-               MOVE    SPACE               TO  SYSKANRI-REC
-               INITIALIZE                      SYSKANRI-REC
-               MOVE    "1202"              TO  SYS-KANRICD
-               MOVE    "A0000001"          TO  SYS-KBNCD
-           END-IF
-      *
-           MOVE    SPA-W01-STYUKYMD        TO  SYS-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD        TO  SYS-EDYUKYMD
-      *    低紹介率区分
-           MOVE    SPA-GMN-TEIRITUKBN      TO  SYS-KANRITBL(1:1)
+           MOVE    SYS-1201-REC            TO  SYSKANRI-REC
       *
       *    ＤＢ更新処理
            PERFORM 4910-DBKOUSIN-SEC
@@ -11625,18 +10642,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    時間外加算特例乳幼児
            MOVE    SPA-GMN-JIKANTOKU-NYU-G TO  W07-JIKANTOKUNYU
-      *    PERFORM VARYING IDY     FROM    1   BY  1
-      *            UNTIL   IDY     >       SPA-GMN-DATA-MAX
-      *        MOVE    SPA-GMN-DATALST(IDY)
-      *                                TO  W07-JIKANTOKUNYU-ITEM(IDY)
-      *    END-PERFORM
-      ***  MOVE    SPA-GMN-DATA-MAX    TO  W07-JIKANTOKUNYU-COUNT
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       SPA-GMN-JIKANTOKU-MAX
-               MOVE    SPA-GMN-JIKANTOKU-NYU-LIST(IDY)
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
                                        TO  W07-JIKANTOKUNYU-ITEM(IDY)
            END-PERFORM
-           MOVE    SPA-GMN-JIKANTOKU-MAX    TO  W07-JIKANTOKUNYU-COUNT
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-JIKANTOKUNYU-COUNT
       *
       *    画像診断管理加算１（写真診断）
            MOVE    SPA-GMN-GAZOUKSN1-G TO  W07-GAZOUKSN1
@@ -11674,29 +10685,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-DATA-MAX    TO  W07-TEISEITOKU-COUNT
       *
-      *H29.3
-      *    訂正時の自動発生（特定疾患処方管理）
-           MOVE    SPA-GMN-TEISHOHOU-G    TO  W07-TEISHOHOU
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       SPA-TEISHOHOU-MAX
-               MOVE    SPA-GMN-TEISHOHOU-LIST(IDY)
-                                       TO  W07-TEISHOHOU-ITEM(IDY)
-           END-PERFORM
-           MOVE    SPA-TEISHOHOU-MAX   TO  W07-TEISHOHOU-COUNT
-      *
            MOVE  SPA-GMN-LAST-KIKAN    TO  W07-LASTKIKAN
       *
            MOVE  SPA-GMN-INTERACT-KIKAN    TO  W07-KIKAN
-      *H28.8
-      *    相互作用チェック区分
-           MOVE    SPA-GMN-KINKCHK-G   TO  W07-KINKCHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-KINKCHK-MAX
-               MOVE    SPA-GMN-KINKCHK-LIST (IDX)
-                                       TO  W07-KINKCHK-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-KINKCHK-MAX TO  W07-KINKCHK-COUNT
-      *
       *    外来管理加算チェック
            MOVE    SPA-GMN-GAIKANRIKBN-G   TO  W07-GAIKANKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -11775,24 +10766,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-JGAIKEIKBN-MAX  TO  W07-JGAIKEIKBN-COUNT
       *
-      *    薬剤投与量チェック区分
-           MOVE    SPA-GMN-TOUYOCHK-G  TO  W07-TOUYOCHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-TOUYOCHK-MAX
-               MOVE    SPA-GMN-TOUYOCHK-LIST (IDX)
-                                       TO  W07-TOUYOCHK-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-TOUYOCHK-MAX  TO  W07-TOUYOCHK-COUNT
-      *
-      *    投薬３０日超チェック
-           MOVE    SPA-GMN-SHOHOU30CHK-G     TO  W07-SHOHOU30CHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-SHOHOU30CHK-MAX
-               MOVE    SPA-GMN-SHOHOU30CHK-LIST (IDX)
-                                       TO  W07-SHOHOU30CHK-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-SHOHOU30CHK-MAX  TO  W07-SHOHOU30CHK-COUNT
-      *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -11804,11 +10777,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    病名表示区分
            MOVE    SPA-GMN-BYOHYOKBN-G TO  W07-BYOHYOKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-BYOHYOKBN-MAX
+                   UNTIL       IDX     >   2
                MOVE    SPA-GMN-BYOHYOKBN-LIST (IDX)
                                        TO  W07-BYOHYOKBN-ITEM(IDX)
            END-PERFORM
-           MOVE    SPA-GMN-BYOHYOKBN-MAX   TO  W07-BYOHYOKBN-COUNT
+           MOVE    2                   TO  W07-BYOHYOKBN-COUNT
       *    剤登録順区分
            MOVE    SPA-GMN-ZAIJUNKBN-G TO  W07-ZAIJUNKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -12037,14 +11010,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-KOHHBTKBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-KOHHBTKBN-MAX   TO  W07-KOHHBTKBN-COUNT
-      *    保険初期表示区分
-           MOVE    SPA-GMN-HKNINITKBN-G    TO  W07-HKNINITKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-HKNINITKBN-MAX
-               MOVE    SPA-GMN-HKNINITKBN-LIST (IDX)
-                                       TO  W07-HKNINITKBN-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-HKNINITKBN-MAX  TO  W07-HKNINITKBN-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -12193,16 +11158,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-SEI20KSNKBN-MAX
                                        TO  W07-SEI20KSNKBN-COUNT
-      *
-      *    心身療法２０未満加算区分（診療行為機能情報）
-           MOVE    SPA-GMN-SIN20KSNKBN-G   TO  W07-SIN20KSNKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-SIN20KSNKBN-MAX
-               MOVE    SPA-GMN-SIN20KSNKBN-LST (IDX)
-                                       TO  W07-SIN20KSNKBN-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-SIN20KSNKBN-MAX
-                                       TO  W07-SIN20KSNKBN-COUNT
       *    レセプトブレビューレイアウト（診療行為機能情報）
            MOVE    SPA-GMN-PRVLAYOUT038-G  TO  W07-PRVLAYOUT038
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -12212,17 +11167,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-PRVLAYOUT038-MAX
                                        TO  W07-PRVLAYOUT038-COUNT
-      *H28.6
-      *    セット展開表示（診療行為機能情報）
-           MOVE    SPA-GMN-SETALLKBN-G TO  W07-SETALLKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-SETALLKBN-MAX
-               MOVE    SPA-GMN-SETALLKBN-LST (IDX)
-                                       TO  W07-SETALLKBN-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-SETALLKBN-MAX
-                                       TO  W07-SETALLKBN-COUNT
-      *
       *    リハビリ・患者情報表示区分（診療行為機能情報）
            MOVE    SPA-GMN-GMNHYOKBN-G(1)  TO  W07-GMNHYOKBN1
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -12268,15 +11212,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-GMNHYOKBN-MAX
                                        TO  W07-GMNHYOKBN5-COUNT
-      *
-           MOVE    SPA-GMN-GMNHYOKBN-G(6)  TO  W07-GMNHYOKBN6
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-GMNHYOKBN-MAX
-               MOVE    SPA-GMN-GMNHYOKBN-LST (IDX)
-                                       TO  W07-GMNHYOKBN6-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-GMNHYOKBN-MAX
-                                       TO  W07-GMNHYOKBN6-COUNT
       *    入力スクロール背景色
            MOVE    SPA-GMN-BGCOLORS    TO  W07-BGCOLORS
       *    入力スクロール背景行区分
@@ -12432,20 +11367,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-TUKISUM-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-TUKISUM-MAX TO  W07-TUKISUM-COUNT
-      *
-      *    請求一覧画面コラムリスト
-           MOVE    SPA-GMN-S02MODE-G TO  W07-S02MODE
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-S02MODE-MAX
-               MOVE    SPA-GMN-S02MODELST (IDX)
-                                       TO  W07-S02MODE-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-S02MODE-MAX
-                                       TO  W07-S02MODE-COUNT
-      *
-      *    請求一覧画面コラムリスト件数
-           MOVE    "F"                 TO  W07-S02LIMIT-VISIBLE
-           MOVE    SPA-GMN-S02LIMIT    TO  W07-S02LIMIT
       *
       *    請求一覧画面並び順区分
            MOVE    SPA-GMN-S02SORTKBN-G TO  W07-S02SORTKBN
@@ -12607,16 +11528,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-S04SYORI-MAX
                                        TO  W07-S04SYORIKBN-COUNT
       *
-      *    支払証明書印刷画面自費内訳明細書
-           MOVE    SPA-GMN-S04JIHIPRTKBN-G TO  W07-S04JIHIPRTKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-S04JIHIPRTKBN-MAX
-               MOVE    SPA-GMN-S04JIHIPRTKBNLST (IDX)
-                                       TO  W07-S04JIHIPRTKBN-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-S04JIHIPRTKBN-MAX
-                                       TO  W07-S04JIHIPRTKBN-COUNT
-      *
       *    支払証明書印刷画面期間終了後の支払い
            MOVE    SPA-GMN-S04SUMKBN-G TO  W07-S04SUMKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -12695,16 +11606,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-MSG4-DSPKBN-MAX
                                        TO  W07-MSG4-DSPKBN-COUNT
-      *
-      *    死亡区分更新確認メッセージ表示有無区分（病名機能情報）
-           MOVE    SPA-GMN-MSG5-DSPKBN-G   TO  W07-MSG5-DSPKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MSG5-DSPKBN-MAX
-               MOVE    SPA-GMN-MSG5-DSPKBNLST (IDX)
-                                       TO  W07-MSG5-DSPKBN-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-MSG5-DSPKBN-MAX
-                                       TO  W07-MSG5-DSPKBN-COUNT
       *
       *    診療科初期表示区分（病名機能情報）
            MOVE    SPA-GMN-SRYKA-DSPKBN-G   TO  W07-SRYKA-DSPKBN
@@ -12841,15 +11742,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-DAKETUKBN-LIST (IDX)
                                       TO  W07-DAKETUKBN-ITEM(IDX)
            END-PERFORM
-           MOVE    SPA-GMN-DAKETUKBN-MAX   TO  W07-DAKETUKBN-COUNT
-      *    低紹介率区分
-           MOVE    SPA-GMN-TEIRITUKBN-G    TO  W07-TEIRITUKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-TEIRITUKBN-MAX
-               MOVE    SPA-GMN-TEIRITUKBN-LIST (IDX)
-                                      TO  W07-TEIRITUKBN-ITEM(IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-TEIRITUKBN-MAX TO  W07-TEIRITUKBN-COUNT
+           MOVE    SPA-GMN-DAKETUKBN-MAX    TO  W07-DAKETUKBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -12940,8 +11833,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            W07-S04SUMKBN-ITEM-STATE
                                            W07-S04DSPKBN-STATE
                                            W07-S04DSPKBN-ITEM-STATE
-                                           W07-S04JIHIPRTKBN-STATE
-                                           W07-S04JIHIPRTKBN-ITEM-STATE
            IF    ( SPA-GMN-S04KIKANKBN =   "2" )
                MOVE    WIDGET-INSENSITIVE
                                        TO  W07-S04SYORIKBN-STATE
@@ -12950,8 +11841,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            W07-S04SUMKBN-ITEM-STATE
                                            W07-S04DSPKBN-STATE
                                            W07-S04DSPKBN-ITEM-STATE
-                                           W07-S04JIHIPRTKBN-STATE
-                                           W07-S04JIHIPRTKBN-ITEM-STATE
            END-IF
       *
            .
@@ -13092,21 +11981,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0020"
                    MOVE    "外来初診・再診料区分エラー"
                                                        TO  SPA-ERRMSG
-      *H28.8
-               WHEN    "0044"
-                   MOVE    "相互作用チェック区分エラー"
-                                                       TO  SPA-ERRMSG
-      *H28.8
-               WHEN    "0045"
-                   MOVE    "薬剤投与量チェック区分エラー"
-                                                       TO  SPA-ERRMSG
-      *H29.3
-               WHEN    "0046"
-                   MOVE    "訂正時の展開（処方料）区分エラー"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0047"
-                   MOVE    "薬投３０日超チェック区分エラー"
-                                                       TO  SPA-ERRMSG
       *        
                WHEN    "1001"
                    MOVE    "カルテの病名対象区分がありません。"
@@ -13180,11 +12054,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED BY  SIZE
                                                        INTO  SPA-ERRMSG
                    END-STRING
-               WHEN    "1019"
-                   STRING  "保険初期表示区分がありません"
-                                                   DELIMITED BY  SIZE
-                                                       INTO  SPA-ERRMSG
-                   END-STRING
       *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -13252,9 +12121,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2020"
                    MOVE    "精神療法２０未満加算区分がありません。"
                                                        TO  SPA-ERRMSG
-               WHEN    "2030"
-                   MOVE    "心身療法２０未満加算区分がありません。"
-                                                       TO  SPA-ERRMSG
                WHEN    "2021"
                    MOVE    "発行日変更区分がありません。"
                                                        TO  SPA-ERRMSG
@@ -13285,11 +12151,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "2028"
                    STRING  "レセプトレイアウト区分がありません。"
-                                                   DELIMITED  BY  SIZE
-                                                   INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2029"
-                   STRING  "セット展開区分がありません。"
                                                    DELIMITED  BY  SIZE
                                                    INTO    SPA-ERRMSG
                    END-STRING
@@ -13335,10 +12196,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "4008"
                    MOVE    "疑いフラグ設定区分がありません。"
                                                        TO  SPA-ERRMSG
-               WHEN    "4009"
-                   MOVE
-                  "死亡区分更新確認メッセージ表示有無区分がありません。"
-                                                       TO  SPA-ERRMSG
       *        会計照会機能情報
                WHEN    "5001"
                    MOVE    "全科の表示順区分がありません。"
@@ -13377,9 +12234,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    "8001"
                    MOVE    "妥結率区分がありません。"
-                                                       TO  SPA-ERRMSG
-               WHEN    "8002"
-                   MOVE    "低紹介率区分がありません。"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "0099"
@@ -13472,7 +12326,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
-           INITIALIZE                      WID1
            MOVE    SPA-WIDCD           TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -13545,9 +12398,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    30
                    MOVE  "KIKAN"           TO   MCP-WIDGET
-      *H28.8
-               WHEN    35
-                   MOVE  "KINKCHK"         TO   MCP-WIDGET
                WHEN    31
                    MOVE  "GAIKANKBN"       TO   MCP-WIDGET
                WHEN    32
@@ -13556,9 +12406,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "SURYOZERO"       TO   MCP-WIDGET
                WHEN    34
                    MOVE  "CHOKICHK"        TO   MCP-WIDGET
-      *H29.3
-               WHEN    36
-                   MOVE  "TEISHOHOU"       TO   MCP-WIDGET
       *
                WHEN    81
                    MOVE  "CLEARCHK"        TO   MCP-WIDGET
@@ -13570,10 +12417,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "TECHOKBN"        TO   MCP-WIDGET
                WHEN    88
                    MOVE  "JGAIKEIKBN"      TO   MCP-WIDGET
-               WHEN    89
-                   MOVE  "TOUYOCHK"        TO   MCP-WIDGET
-               WHEN    90
-                   MOVE  "SHOHOU30CHK"     TO   MCP-WIDGET
                WHEN    84
                    MOVE  "HOUKATU"         TO   MCP-WIDGET
                WHEN    85
@@ -13652,8 +12495,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "TOWNNAME2KBN"    TO   MCP-WIDGET
                WHEN    218
                    MOVE  "KOHHBTKBN"       TO   MCP-WIDGET
-               WHEN    219
-                   MOVE  "HKNINITKBN"      TO   MCP-WIDGET
       *診療行為情報
                WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
@@ -13679,12 +12520,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "HAIKIKBN"        TO   MCP-WIDGET
                WHEN    310
                    MOVE  "SEI20KSNKBN"     TO   MCP-WIDGET
-               WHEN    314
-                   MOVE  "SIN20KSNKBN"     TO   MCP-WIDGET
                WHEN    312
                    MOVE  "PRVLAYOUT038"    TO   MCP-WIDGET
-               WHEN    313
-                   MOVE  "SETALLKBN"       TO   MCP-WIDGET
       *        請求選択
                WHEN    320
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -13714,9 +12551,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "GMNHYOKBN4"      TO   MCP-WIDGET
                WHEN    334
                    MOVE  "GMNHYOKBN5"      TO   MCP-WIDGET
-      *H28.10
-               WHEN    349
-                   MOVE  "GMNHYOKBN6"      TO   MCP-WIDGET
       *ver.4.7
                WHEN    335
                    MOVE  "BGCOLORSJ0"      TO   MCP-WIDGET
@@ -13836,12 +12670,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "MISYUKIKANKBN"  TO   MCP-WIDGET
                WHEN    433
                    MOVE  "SAIKEISANSKYCHK" TO   MCP-WIDGET
-               WHEN    434
-                   MOVE  "SAIKEISANSKYCHK" TO   MCP-WIDGET
-               WHEN    435
-                   MOVE  "S02MODE"         TO   MCP-WIDGET
-               WHEN    436
-                   MOVE  "S02LIMIT"        TO   MCP-WIDGET
       *病名・コメント情報
                WHEN    500
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -13859,8 +12687,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "SJKBN"           TO   MCP-WIDGET
                WHEN    507
                    MOVE  "UTAGAIFLG_KBN"   TO   MCP-WIDGET
-               WHEN    508
-                   MOVE  "MSG5_DSPKBN"     TO   MCP-WIDGET
       *会計照会情報
                WHEN    600
                    MOVE  "SRYKBN_FLG"      TO   MCP-WIDGET
@@ -13888,8 +12714,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *点数算定基準
                WHEN    800
                    MOVE  "DAKETUKBN"       TO   MCP-WIDGET
-               WHEN    801
-                   MOVE  "TEIRITUKBN"      TO   MCP-WIDGET
       *
                WHEN    999
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -13983,16 +12807,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "TEISEITOKU"
                    MOVE    20              TO  SPA-GMN-CUR
                WHEN    "TEINYUAUTO"
-      *********    MOVE    30              TO  SPA-GMN-CUR
-                   MOVE    36              TO  SPA-GMN-CUR
-      *H29.3
-               WHEN    "TEISHOHOU"
                    MOVE    30              TO  SPA-GMN-CUR
                WHEN    "KIKAN"
-     ******        MOVE    31              TO  SPA-GMN-CUR
-                   MOVE    35              TO  SPA-GMN-CUR
-      *H28.8
-               WHEN    "KINKCHK"
                    MOVE    31              TO  SPA-GMN-CUR
                WHEN    "GAIKANKBN"
                    MOVE    32              TO  SPA-GMN-CUR
@@ -14053,13 +12869,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    88              TO  SPA-GMN-CUR
       *
                WHEN    "JGAIKEIKBN"
-      *********    MOVE    84              TO  SPA-GMN-CUR
-                   MOVE    89              TO  SPA-GMN-CUR
-               WHEN    "TOUYOCHK"
-      *******      MOVE    84              TO  SPA-GMN-CUR
-                   MOVE    90              TO  SPA-GMN-CUR
-      *
-               WHEN    "SHOHOU30CHK"
                    MOVE    84              TO  SPA-GMN-CUR
       *
                WHEN    "HOUKATU"
@@ -14104,8 +12913,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "TOWNNAME2KBN"
                    MOVE    218              TO  SPA-GMN-CUR
                WHEN    "KOHHBTKBN"
-                   MOVE    219              TO  SPA-GMN-CUR
-               WHEN    "HKNINITKBN"
                    MOVE    999              TO  SPA-GMN-CUR
       *    診療行為情報
                WHEN    "DOSRYKBN_FLG"
@@ -14136,17 +12943,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SEI20KSNKBN"
       *ver.4.7     MOVE    320             TO  SPA-GMN-CUR
       *H24.12      MOVE    330             TO  SPA-GMN-CUR
-      ****         MOVE    312             TO  SPA-GMN-CUR
-                   MOVE    314             TO  SPA-GMN-CUR
-      *H29.7
-      *        心身療法
-               WHEN    "SIN20KSNKBN"
                    MOVE    312             TO  SPA-GMN-CUR
-      *
                WHEN    "PRVLAYOUT038"
-      *H28.6 ***   MOVE    330             TO  SPA-GMN-CUR
-                   MOVE    313             TO  SPA-GMN-CUR
-               WHEN    "SETALLKBN"
                    MOVE    330             TO  SPA-GMN-CUR
                WHEN    "GMNHYOKBN1"
                    MOVE    331             TO  SPA-GMN-CUR
@@ -14157,9 +12955,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "GMNHYOKBN4"
                    MOVE    334             TO  SPA-GMN-CUR
                WHEN    "GMNHYOKBN5"
-      *H29.10      MOVE    320             TO  SPA-GMN-CUR
-                   MOVE    349             TO  SPA-GMN-CUR
-               WHEN    "GMNHYOKBN6"
                    MOVE    320             TO  SPA-GMN-CUR
       *ver.4.7
                WHEN    "SRYNYKNKNRKBN"
@@ -14221,10 +13016,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "TUKISKYMISYUPRT"
                    MOVE    431             TO  SPA-GMN-CUR
                WHEN    "TUKISUM"
-                   MOVE    435             TO  SPA-GMN-CUR
-               WHEN    "S02MODE"
-      *            MOVE    436             TO  SPA-GMN-CUR
-      *        WHEN    "S02LIMIT"
                    MOVE    426             TO  SPA-GMN-CUR
                WHEN    "S02SORTKBN"
                    MOVE    433             TO  SPA-GMN-CUR
@@ -14269,12 +13060,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    42          TO  SPA-GMN-CUR
                    END-IF
                WHEN    "S04SYORIKBN"
-                   IF    ( SPA-GMN-S04KIKANKBN =   "1" )
-                       MOVE    434         TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    42          TO  SPA-GMN-CUR
-                   END-IF
-               WHEN    "S04JIHIPRTKBN"
                    MOVE    42              TO  SPA-GMN-CUR
                WHEN    "SYUNYKNKNRKBN"
                    MOVE    429             TO  SPA-GMN-CUR
@@ -14330,8 +13115,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "MSG3_DSPKBN"
                    MOVE    503             TO  SPA-GMN-CUR
                WHEN    "MSG4_DSPKBN"
-                   MOVE    508             TO  SPA-GMN-CUR
-               WHEN    "MSG5_DSPKBN"
                    MOVE    504             TO  SPA-GMN-CUR
                WHEN    "SRYKA_DSPKBN"
                    MOVE    505             TO  SPA-GMN-CUR
@@ -14368,8 +13151,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    999             TO  SPA-GMN-CUR
       *点数算定基準
                WHEN    "DAKETUKBN"
-                   MOVE    801             TO  SPA-GMN-CUR
-               WHEN    "TEIRITUKBN"
                    MOVE    999             TO  SPA-GMN-CUR
            END-EVALUATE
       *
