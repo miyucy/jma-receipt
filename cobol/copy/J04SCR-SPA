@@ -22,7 +22,6 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.08.00     NACL-多々納  13/06/XX  労災レセ電対応
-      * 04.08.00     NACL-多々納  16/02/XX  一般名表示対応
       ************************************************************
       *
        01  SPA-J04.
@@ -80,9 +79,6 @@
       *H27.1
       *        妥結率５割以下区分
                05  SPA-DAKT50-KBN          PIC 9(01).
-      *H28.11
-      *薬剤投与量チェック
-               05  SPA-TOUYOCHK-FLG           PIC X(01).
       *
       *        展開時の変更
                05  SPA-TENKAI-ERR          PIC 9(01).
@@ -127,7 +123,7 @@
       *        保険組合せ一覧
                05  SPA-HKNCOMBI-AREA.
                    07  SPA-GMN-HKNCOMBI-LISTG.
-                       09  SPA-GMN-HKN-LIST    OCCURS  40.
+                       09  SPA-GMN-HKN-LIST    OCCURS  20.
                            11  SPA-GMN-THKNCOMBINUM-G.
                                13  SPA-GMN-THKNCOMBINUM    PIC X(04).
                                13  SPA-GMN-THKNCOMBY1      PIC X(01).
@@ -186,10 +182,8 @@
                        11  SPA-J98-GMN-SRYCD      PIC X(09).
                        11  SPA-J98-GMN-NAME       PIC X(70).
                        11  SPA-J98-GMN-TANI       PIC X(10).
-                       11  SPA-J98-GMN-KISOTEN    PIC 9(07)V9(3).
+                       11  SPA-J98-GMN-KISOTEN    PIC 9(07)V99.
                        11  SPA-J98-GMN-SETCD      PIC X(10).
-      *H28.3
-                       11  SPA-J98-NAI-GECODE     PIC X(12).
       *
                        11  SPA-J98-NAI-NO         PIC 9(03).
       *        自院採用
