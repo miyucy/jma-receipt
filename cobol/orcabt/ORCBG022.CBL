@@ -28,8 +28,6 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
       * 04.08.00     NACL-Â¿¡¹Ç¼   14/07/17  °ì»þ¥Õ¥¡¥¤¥ëÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼   16/03/XX  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼   16/07/XX  Ã±·îÂÐ¾Ý¡¦´µ¼Ô¿ô½¸·×ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,11 +81,6 @@
            03  FLG-CNT-K2              PIC 9(01).
            03  FLG-CNT-K3              PIC 9(01).
            03  FLG-CNT-K4              PIC 9(01).
-      *H28.4
-      *    ¤¦¤ÄÌô¤¢¤ê
-           03  FLG-CNT-A3              PIC 9(01).
-      *    ¹³Àº¿ÀÌô¤¢¤ê
-           03  FLG-CNT-A4              PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -113,8 +106,6 @@
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *****03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
-      *H28.7
-           03  WRK-PARA-CSVKBN         PIC X(01).
            03  WRK-PARA-SYORIKBN       PIC X(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
@@ -130,11 +121,6 @@
            03  CNT-OUT-3-2             PIC 9(05).
            03  CNT-OUT-3-3             PIC 9(05).
            03  CNT-OUT-3-4             PIC 9(05).
-           03  CNT-OUT-3-8             PIC 9(05).
-      *
-           03  CNT-OUT-4               PIC 9(05).
-           03  CNT-OUT-4-3             PIC 9(05).
-           03  CNT-OUT-4-4             PIC 9(05).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -166,15 +152,6 @@
            03  WRK-SRY-YYMM.
                05  WRK-SRY-YY          PIC 9(04).
                05  WRK-SRY-MM          PIC 9(02).
-      *    ½èÍýÇ¯·î³«»ÏÆü¡Ê½èÍýÇ¯·î¡Ý£³·î¡Ë
-           03  WRK-STR-YMD.
-               05  WRK-STR-YY          PIC 9(04).
-               05  WRK-STR-MM          PIC 9(02).
-               05  WRK-STR-DD          PIC 9(02).
-           03  WRK-END-YMD.
-               05  WRK-END-YY          PIC 9(04).
-               05  WRK-END-MM          PIC 9(02).
-               05  WRK-END-DD          PIC 9(02).
       *
            03  WRK-KEY-AREA.
                05  WRK-KEY-PTID            PIC 9(10).
@@ -231,13 +208,11 @@
                05  FILLER              PIC X(02)   VALUE   SPACE.
                05  FILLER              PIC X(40)   VALUE
                    "¡ô¡ô¡¡¸þÀº¿ÀÌôÅêÍ¿´µ¼Ô°ìÍ÷¡¡¡ô¡ô".
-     ******    05  FILLER              PIC X(16)   VALUE   SPACE.
-               05  PRT-STRYM           PIC X(16).
-               05  FILLER              PIC X(02)   VALUE   "¡Á".
+               05  FILLER              PIC X(16)   VALUE   SPACE.
                05  PRT-SRYYM           PIC X(16).
                05  FILLER              PIC X(04)   VALUE
                    "Ê¬".
-               05  FILLER              PIC X(07)   VALUE   SPACE.
+               05  FILLER              PIC X(09)   VALUE   SPACE.
                05  PRT-SYSYMD          PIC X(10)   VALUE   SPACE.
                05  PRT-TIME            PIC X(07)   VALUE   SPACE.
                05  PRT-PAGE            PIC ZZZ9.
@@ -300,57 +275,27 @@
       *
            03  LST-PRT-FOOT-01.
                05  FILLER              PIC X(02)   VALUE   SPACE.
-               05  FILLER              PIC X(16)   VALUE
-                                                   "ÂÐ¾Ý´µ¼Ô¿ô(1)¡§".
+               05  FILLER              PIC X(12)   VALUE
+                                                   "ÂÐ¾Ý´µ¼Ô¿ô¡§".
                05  PRT-F-CNT1          PIC ZZZ9.
-               05  FILLER              PIC X(04)   VALUE   "Ì¾".
-      *
-           03  LST-PRT-FOOT-02.
-               05  FILLER              PIC X(04)   VALUE   SPACE.
-               05  FILLER              PIC X(32)   VALUE
-                                   "¹³¤¦¤ÄÌô¡¦¹³Àº¿ÀÉÂÌô´µ¼Ô¿ô(2)¡§".
-               05  PRT-F-CNT4          PIC ZZZ9.
-               05  FILLER              PIC X(06)   VALUE   "Ì¾".
-               05  FILLER              PIC X(15)   VALUE
-                                           "¡Î¹³¤¦¤ÄÌô(3)¡§".
-               05  PRT-F-CNT43         PIC ZZZ9.
-               05  FILLER              PIC X(04)   VALUE   "Ì¾¡¢".
-               05  FILLER              PIC X(15)   VALUE
-                                           "¹³Àº¿ÀÉÂÌô(4)¡§".
-               05  PRT-F-CNT44         PIC ZZZ9.
-               05  FILLER              PIC X(04)   VALUE   "Ì¾¡Ï".
-      *
-           03  LST-PRT-FOOT-03.
-               05  FILLER              PIC X(04)   VALUE   SPACE.
-               05  FILLER              PIC X(22)   VALUE
-                                           "Â¿ºÞÅêÍ¿Ìô´µ¼Ô¿ô(5)¡§".
+               05  FILLER              PIC X(20)   VALUE
+                                           "Ì¾¡¤Â¿ºÞÅêÍ¿´µ¼Ô¿ô¡§".
                05  PRT-F-CNT2          PIC ZZZ9.
-               05  FILLER              PIC X(04)   VALUE   "Ì¾".
-               05  FILLER              PIC X(16)   VALUE
-                                           "¡Ú ¹³ÉÔ°ÂÌô(6)¡§".
-               05  PRT-F-CNT31         PIC ZZZ9.
-               05  FILLER              PIC X(04)   VALUE   "Ì¾¡¢".
-               05  FILLER              PIC X(11)   VALUE
-                                           "¿çÌ²Ìô(7)¡§".
-               05  PRT-F-CNT32         PIC ZZZ9.
-               05  FILLER              PIC X(04)   VALUE   "Ì¾¡¢".
-               05  FILLER              PIC X(25)   VALUE
-                                       "¹³¤¦¤ÄÌô¡¦¹³Àº¿ÀÉÂÌô(8)¡§".
-               05  PRT-F-CNT38         PIC ZZZ9.
                05  FILLER              PIC X(02)   VALUE   "Ì¾".
-      *
-           03  LST-PRT-FOOT-04.
-               05  FILLER              PIC X(04)   VALUE   SPACE.
-               05  FILLER              PIC X(22)   VALUE   SPACE.
-               05  FILLER              PIC X(09)   VALUE   SPACE.
-               05  FILLER              PIC X(15)   VALUE
-                                           "¡Î¹³¤¦¤ÄÌô(9)¡§".
+               05  FILLER              PIC X(12)   VALUE
+                                           "¡Ê¹³ÉÔ°ÂÌô¡§".
+               05  PRT-F-CNT31         PIC ZZZ9.
+               05  FILLER              PIC X(02)   VALUE   ",".
+               05  FILLER              PIC X(08)   VALUE   "¿çÌ²Ìô¡§".
+               05  PRT-F-CNT32         PIC ZZZ9.
+               05  FILLER              PIC X(02)   VALUE   ",".
+               05  FILLER              PIC X(10)   VALUE   "¹³¤¦¤ÄÌô¡§".
                05  PRT-F-CNT33         PIC ZZZ9.
-               05  FILLER              PIC X(04)   VALUE   "Ì¾¡¢".
-               05  FILLER              PIC X(16)   VALUE
-                                           "¹³Àº¿ÀÉÂÌô(10)¡§".
+               05  FILLER              PIC X(02)   VALUE   ",".
+               05  FILLER              PIC X(12)   VALUE
+                                                   "¹³Àº¿ÀÉÂÌô¡§".
                05  PRT-F-CNT34         PIC ZZZ9.
-               05  FILLER              PIC X(06)   VALUE   "Ì¾¡Ï¡Û".
+               05  FILLER              PIC X(01)   VALUE   ")".
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -565,7 +510,6 @@
                                                WRK-PARA-HOSPNUM
                                                RECEERR
                                                WRK-PARA-SRYYM
-                                               WRK-PARA-CSVKBN
                                                WRK-PARA-SYORIKBN
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -653,42 +597,6 @@
                                        STS-AREA-DAY
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3(1:16)  TO  PRT-SRYYM
-      *H28.4
-      *    ³«»ÏÆü
-           IF      WRK-SRY-YYMM        >=  "201606"
-      *        H28.6 ¤«¤é¤ÏÁ°£³¥«·îÊ¬
-               IF      WRK-SRY-MM          <= 2
-                   COMPUTE WRK-STR-YY      =   WRK-SRY-YY  -  1
-                   COMPUTE WRK-STR-MM      =  (12  +  WRK-SRY-MM)
-                                           -   2
-               ELSE 
-                   MOVE    WRK-SRY-YY      TO  WRK-STR-YY
-                   COMPUTE WRK-STR-MM      =   WRK-SRY-MM  -  2
-               END-IF
-      *H28.7
-      *        ½èÍý¶èÊ¬È½Äê
-               IF       WRK-PARA-SYORIKBN      =   "1"
-      *            ½èÍý·îÊ¬¤Î¤ß
-                   MOVE    WRK-SRY-YY      TO  WRK-STR-YY
-                   MOVE    WRK-SRY-MM      TO  WRK-STR-MM
-               END-IF
-           ELSE
-               MOVE    WRK-SRY-YY      TO  WRK-STR-YY
-               MOVE    WRK-SRY-MM      TO  WRK-STR-MM
-           END-IF
-           MOVE    01                  TO  WRK-STR-DD
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY2-AREA
-           MOVE    "21"            TO  LNK-DAY2-IRAI
-           MOVE    WRK-STR-YMD     TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING
-                                       STS-AREA-DAY
-                                       LNK-DAY2-AREA
-           MOVE    LNK-DAY2-EDTYMD3(1:16)  TO  PRT-STRYM
-      *    ½èÍý½ªÎ»Ç¯·î
-           MOVE    WRK-SRY-YYMM        TO  WRK-END-YMD(1:6)
-           MOVE    31                  TO  WRK-END-DD
       *
       *    ¿ÇÎÅ²Ê¤ò£Ô£Â£Ì¤Ë¥»¥Ã¥È
            PERFORM 1101-SRYKA-TBLSET-SEC
@@ -752,21 +660,17 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
-      *    STRING  WRK-SRY-YYMM
-      *            "%"                 DELIMITED  BY  SIZE
-      *                INTO                JYURRK-SRYYMD
-      *    END-STRING
-      *H28.4
-           MOVE    WRK-STR-YMD         TO  JYURRK-SRYYMD
-           MOVE    WRK-END-YMD         TO  JYURRK-UPSRYYMD
+           STRING  WRK-SRY-YYMM
+                   "%"                 DELIMITED  BY  SIZE
+                       INTO                JYURRK-SRYYMD
+           END-STRING
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-     ***** MOVE    "key57"             TO  MCP-PATHNAME
-           MOVE    "key64"             TO  MCP-PATHNAME
+           MOVE    "key57"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "key64"             TO  MCP-PATHNAME
+               MOVE    "key57"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                INITIALIZE                  JYURRK-REC
@@ -800,11 +704,11 @@
                PERFORM 2001-JYURRK-HEN-SEC
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key64"             TO  MCP-PATHNAME
+               MOVE    "key57"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key64"             TO  MCP-PATHNAME
+           MOVE    "key57"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF    IDX-TBL           >   ZERO
@@ -837,7 +741,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   15  )
-                          OR  (JYURRK-ZAINUM (IDX) =   ZERO )
+                          AND (JYURRK-ZAINUM (IDX) =   ZERO )
                MOVE    SPACE               TO  SRYACT-REC
                INITIALIZE                  SRYACT-REC
                MOVE    JYURRK-HOSPNUM      TO  SRY-HOSPNUM
@@ -871,7 +775,6 @@
       *
                PERFORM
                        UNTIL   FLG-SRYACT      =   1
-      *
       *
                    PERFORM 20011-SRYACCT-CHK-SEC
       *            ÌôÉ¾¡¦¸ºÅÀÂÐ¾Ý³°
@@ -1170,7 +1073,7 @@
                    MOVE    LST-PRT-BODY-02     TO  HCMSL80-MOJI
                                                          (CNT-LINE)
       *
-                   IF      WRK-PARA-CSVKBN     =   "1"
+                   IF      WRK-PARA-SYORIKBN   =   "1"
       *                £Ã£Ó£Ö¥Ç¡¼¥¿½ÐÎÏ
                        PERFORM 500-CSV-SYORI-SEC
                    END-IF
@@ -1209,29 +1112,11 @@
            IF      ORCSPSYCHO-COUNT (2)    >=  3
                MOVE    1                   TO  FLG-CNT-K2
            END-IF
-      *£È28.4
-           IF      TBL-SRYYMD          <   "20160401"
-      *    £È28.3¤Þ¤Ç¡¡£´¼ïÎà°Ê¾å
-               IF      ORCSPSYCHO-COUNT (3)    >=  4
-                  MOVE    1                   TO  FLG-CNT-K3
-               END-IF
-               IF      ORCSPSYCHO-COUNT (4)    >=  4
-                   MOVE    1                   TO  FLG-CNT-K4
-               END-IF
-           ELSE
-      *    £È28.4¤«¤é¡¡£³¼ïÎà°Ê¾å
-               IF      ORCSPSYCHO-COUNT (3)    >=  3
-                   MOVE    1                   TO  FLG-CNT-K3
-               END-IF
-               IF      ORCSPSYCHO-COUNT (4)    >=  3
-                   MOVE    1                   TO  FLG-CNT-K4
-               END-IF
+           IF      ORCSPSYCHO-COUNT (3)    >=  4
+               MOVE    1                   TO  FLG-CNT-K3
            END-IF
-           IF      ORCSPSYCHO-COUNT (3)    >   ZERO
-               MOVE    1                   TO  FLG-CNT-A3
-           END-IF
-           IF      ORCSPSYCHO-COUNT (4)    >   ZERO
-               MOVE    1                   TO  FLG-CNT-A4
+           IF      ORCSPSYCHO-COUNT (4)    >=  4
+               MOVE    1                   TO  FLG-CNT-K4
            END-IF
            .
        20020-PRITN-SYORI-EXT.
@@ -1291,25 +1176,6 @@
            IF      FLG-CNT-K4          =   1
                ADD     1               TO  CNT-OUT-3-4
            END-IF
-      *H28.7
-      *    ¤¦¤Ä¡¦Àº¿À¤ÎÂ¿ºÞÅêÍ¿
-           IF     (FLG-CNT-K3          =   1 )
-              OR  (FLG-CNT-K4          =   1 )
-               ADD     1               TO  CNT-OUT-3-8
-           END-IF
-      *
-      *    ¤¦¤ÄÌô
-           IF      FLG-CNT-A3          =   1
-               ADD     1               TO  CNT-OUT-4-3
-           END-IF
-           IF      FLG-CNT-A4          =   1
-               ADD     1               TO  CNT-OUT-4-4
-           END-IF
-      *    ¤¦¤ÄÌô¡¦¹³Àº¿ÀÌô¤¢¤ê
-           IF     (FLG-CNT-A3          =   1 )
-              OR  (FLG-CNT-A4          =   1 )
-               ADD     1               TO  CNT-OUT-4
-           END-IF
       *
            MOVE    ZERO                TO  FLG-CNT-ARI
            MOVE    ZERO                TO  FLG-CNT-TAZAI
@@ -1317,9 +1183,6 @@
            MOVE    ZERO                TO  FLG-CNT-K2
            MOVE    ZERO                TO  FLG-CNT-K3
            MOVE    ZERO                TO  FLG-CNT-K4
-      *
-           MOVE    ZERO                TO  FLG-CNT-A3
-           MOVE    ZERO                TO  FLG-CNT-A4
       *
            .
        20029-CNT-SYORI-EXT.
@@ -1375,14 +1238,7 @@
            MOVE    CNT-OUT-3-2         TO  PRT-F-CNT32
            MOVE    CNT-OUT-3-3         TO  PRT-F-CNT33
            MOVE    CNT-OUT-3-4         TO  PRT-F-CNT34
-      *H28.7
-           MOVE    CNT-OUT-3-8         TO  PRT-F-CNT38
-      *H28.4
-           MOVE    CNT-OUT-4           TO  PRT-F-CNT4
-           MOVE    CNT-OUT-4-3         TO  PRT-F-CNT43
-           MOVE    CNT-OUT-4-4         TO  PRT-F-CNT44
-      *
-           IF     (CNT-LINE +  7 )     >   MAX-LINE
+           IF     (CNT-LINE +  3 )     >   MAX-LINE
                PERFORM 400-PRINT-SEC
                MOVE    ZERO            TO  CNT-LINE
                PERFORM 280-HEAD-HENSYU-SEC
@@ -1391,13 +1247,6 @@
            MOVE    ALL "-"             TO  HCMSL80-MOJI (CNT-LINE)
            ADD     2                   TO  CNT-LINE
            MOVE    LST-PRT-FOOT-01     TO  HCMSL80-MOJI (CNT-LINE)
-           ADD     1                   TO  CNT-LINE
-           MOVE    LST-PRT-FOOT-02     TO  HCMSL80-MOJI (CNT-LINE)
-      *H28.7
-           ADD     2                   TO  CNT-LINE
-           MOVE    LST-PRT-FOOT-03     TO  HCMSL80-MOJI (CNT-LINE)
-           ADD     1                   TO  CNT-LINE
-           MOVE    LST-PRT-FOOT-04     TO  HCMSL80-MOJI (CNT-LINE)
       *
            .
        2004-GOUKEI-HENSYU-EXT.
