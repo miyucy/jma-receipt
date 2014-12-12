@@ -22,7 +22,6 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  13/03/27  有効期間追加対応
-      *  04.07.00    NACL-多々納  15/06/22  Ｈ２７年６月分追加対応
       *****************************************************************
       *
        01  TBL-GENERIC-CODE-AREA.
@@ -253,30 +252,18 @@
            03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
       *H26.06
            03  FILLER  PIC X(25)   VALUE  "2649735S2261 2649735SAZZZ".
-           03  FILLER  PIC X(17)   VALUE  "00000000 20141211".
+           03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
            03  FILLER  PIC X(25)   VALUE  "2649735S3268 2649735SBZZZ".
-           03  FILLER  PIC X(17)   VALUE  "00000000 20141211".
+           03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
       *H26.12
            03  FILLER  PIC X(25)   VALUE  "2649731S1275 2649731SAZZZ".
-           03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
-      *H27.06
-           03  FILLER  PIC X(25)   VALUE  "2619702Q3240 2619702QAZZZ".
-           03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
-           03  FILLER  PIC X(25)   VALUE  "2649731S1283 2649731SAZZZ".
-           03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
-           03  FILLER  PIC X(25)   VALUE  "2649732S3078 2649732SAZZZ".
-           03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
-           03  FILLER  PIC X(25)   VALUE  "2649732S2063 2649732SBZZZ".
-           03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
-      *H27.12
-           03  FILLER  PIC X(25)   VALUE  "2649731S1291 2649731SAZZZ".
            03  FILLER  PIC X(17)   VALUE  "00000000 99999999".
       *
        01  TBL-GENERIC-CODE-AREA-R REDEFINES   TBL-GENERIC-CODE-AREA.
      ***** 03  TBL-GENERIC-OCC     OCCURS  59  INDEXED   TBL-GEN.
      ***** 03  TBL-GENERIC-OCC     OCCURS  61  INDEXED   TBL-GEN.
      ***** 03  TBL-GENERIC-OCC     OCCURS  64  INDEXED   TBL-GEN.
-           03  TBL-GENERIC-OCC     OCCURS  118 INDEXED   TBL-GEN.
+           03  TBL-GENERIC-OCC     OCCURS  113 INDEXED   TBL-GEN.
                05  TBL-YAKKAKJNCD          PIC X(12).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-GENERIC-CODE        PIC X(12).
