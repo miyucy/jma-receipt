@@ -119,20 +119,9 @@
       *  04.07.17    NACL-門脇    14/10/15  療養期間の記載修正
       *  04.07.18    NACL-門脇    14/12/15  平成２７年１月改正対応
       *                                     （初再診料・低妥結率対応）
-      *  04.07.19    NACL-門脇    15/01/15  外来管理加算（読み替え加算）
-      *                                     チェック
-      *  04.07.20    NACL-門脇    15/03/16  平成２７年４月改正対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    16/03/28  平成２８年４月改正対応
-      *  04.08.04    NACL-門脇    17/02/07  労災保険登録時の労働基準監督
-      *                                     署コードの編集方法変更に伴う修正
-      *  04.08.05    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
-      *  04.08.06    NACL-門脇    17/06/08  アフターケアの「前回の検査年月日」
-      *                                     の編集条件修正
-      *  04.08.07    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,7 +257,6 @@
            03  WRK-TAXKBN                              PIC  X(01).      
            03  WRK-KOTEIKBN                            PIC  X(01).
            03  WRK-JIBAIKBN                            PIC  X(01).
-           03  WRK-4001-JIBAIKBN                       PIC  X(01).
            03  WRK-SYUTENTANKA                         PIC  9(02).
            03  WRK-YKZTENTANKA                         PIC  9(02).
            03  WRK-KOMUKBN                             PIC  X(01).
@@ -447,8 +435,6 @@
                                PIC 9(06)   VALUE   200804.
            03  WRK-CONS-SRYYM-201109
                                PIC 9(06)   VALUE   201109.
-           03  WRK-CONS-SRYYM-201707
-                               PIC 9(06)   VALUE   201707.
       *
       *---------------------------------------------------------------
       *
@@ -777,7 +763,6 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                                                  TO    WRK-YKZTENTANKA
                       END-IF
                   END-IF
-                  MOVE   WRK-JIBAIKBN      TO  WRK-4001-JIBAIKBN
                   IF     SYS-4001-KOMUKBN  =    SPACE
                     MOVE "1"               TO    WRK-KOMUKBN
                   ELSE
@@ -805,8 +790,6 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                                            TO    WRK-KOMURSITANKAKBN
                   MOVE   SYS-4001-KOMURSITANKA-G
                                            TO    WRK-KOMURSITANKA-G
-      *
-                  DISPLAY "WRK-4001-JIBAIKBN=" WRK-4001-JIBAIKBN
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -902,17 +885,6 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *    編集処理
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
-      *
-      *    自賠責区分（患者別設定）
-           IF      RECE40-SRYYM        >=  WRK-CONS-SRYYM-201707
-               IF     WRK-PARA-RECEKBN     =   "8"
-                   CONTINUE
-               ELSE
-                   DISPLAY "RECE40-JIBAIKBN=" RECE40-JIBAIKBN
-                   MOVE    RECE40-JIBAIKBN     TO  WRK-JIBAIKBN
-               END-IF
-           END-IF
-           DISPLAY "WRK-JIBAIKBN=" WRK-JIBAIKBN
       *
       *    消費税計算の係数設定
            IF  RECE40-SRYYM >= "201404"
@@ -1331,8 +1303,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
              END-IF
            END-IF
       *
-           IF    RECE41-SYOCD            =   SPACE
-           AND   PTRSI-RYOSTYMD(1:6)    <=  "201403"
+           IF    RECE41-SYOCD  =  SPACE
              EVALUATE  RECE41-HKNKBN
                WHEN       "1"
                  MOVE    RECE41-KOFUNUM(1:5)
@@ -1866,14 +1837,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               OR "112016950"
                                               OR "112017010"
                                               OR "112017150"
-                                              OR "112017450"
-      *
-                                              OR "113018410"
-                                              OR "111012810"
-                                              OR "112017610"
-                                              OR "113024810"
-                                              OR "113025710"
-                                              OR "112023210"   )
+                                              OR "112017450"   )
                        OR  (( SRY-SRYCD(IDY) =  CONS-ROUSAI19 ) AND
                             ( RECE41-SRYYM  <=   "201306"     ))
                        OR  (( SRY-SRYCD(IDY) =  CONS-ROUSAI5
@@ -2325,8 +2289,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    ELSE
                      IF        ACCT-SRYCDTOTAL    =    630010002
                                                   OR   630010005
-                                                  OR   630010006
-                                                  OR   630010007
                          COMPUTE  TBL-YKZTEN-JI(ID1)  =
                                   TBL-YKZTEN-JI(ID1)  -
                                  ( WRK-ZAIKAISU-JI * ACCT-ZAITEN   )
@@ -2587,8 +2549,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  ELSE
                    IF        ACCT-SRYCDTOTAL    =    630010002
                                                 OR   630010005
-                                                OR   630010006
-                                                OR   630010007
                      COMPUTE  RECE41-TOTALTEN =  RECE41-TOTALTEN   -
                                                  (ACCT-ZAITEN    *  
                                                   ACCT-ZAIKAISU)
@@ -2651,24 +2611,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF    RECE41-GAITOKU-KAISU2  NOT  =  ZERO 
                   MOVE   "1"   TO     RECE41-GAITOKU-PRTKBN2
                   MOVE    26   TO     RECE41-GAITOKU-TEN2
-           END-IF
-      *
-      *    外来管理加算（読み替え加算）の算定チェック
-      *    （パッチ適用前の診療行為入力分で、未訂正分があるか）
-           IF   RECE41-SRYYM  >=  "201502"
-             PERFORM    VARYING   IDZ2   FROM   1    BY   1
-                         UNTIL    IDZ2     >    9
-                PERFORM    VARYING    IDZ    FROM    1   BY   1
-                            UNTIL     IDZ     >     31
-                  IF   ( TBL-GXXNISSU-DAY(IDZ2 IDZ)
-                                            =  SPACE )
-                  AND  ( TBL-G52NISSU-DAY(IDZ2 IDZ)
-                                        NOT =  SPACE )
-                       MOVE    1     TO    RECE41-YOBIETC(1)
-                       DISPLAY "<GAIKAN-CHECK> DAY=" IDZ
-                  END-IF
-                END-PERFORM
-             END-PERFORM
            END-IF
       *
       *    実日数から減する
@@ -2879,8 +2821,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                ELSE
                  IF        ACCT-SRYCDTOTAL    =    630010002
                                               OR   630010005
-                                              OR   630010006
-                                              OR   630010007
                    COMPUTE  RECE41-TOTALTEN =  RECE41-TOTALTEN   -
                                                (ACCT-ZAITEN    *  
                                                 WRK-ZAIKAISU)
@@ -2935,14 +2875,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    RECE40-HOSPNUM       TO      ACCT-HOSPNUM
            MOVE    RECE40-NYUGAIKBN     TO      ACCT-NYUGAIKBN
            MOVE    RECE40-PTID          TO      ACCT-PTID
+           MOVE    RECE40-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE40-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "tbl_sryacct"        TO      MCP-TABLE
-           MOVE    "key69"              TO      MCP-PATHNAME
+           MOVE    "key25"              TO      MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key69"             TO  MCP-PATHNAME
+               MOVE    "key25"             TO  MCP-PATHNAME
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL
                               FLG-SRYACCT        =    1
@@ -2959,13 +2900,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
       *                 
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key69"             TO  MCP-PATHNAME
+                   MOVE    "key25"             TO  MCP-PATHNAME
                    PERFORM   800-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key69"             TO  MCP-PATHNAME
+           MOVE    "key25"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
@@ -3571,11 +3512,9 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    ADD     1     TO    CNT-IN
                                        CNT-IN-CANCEL
       *
-                   PERFORM 910-SYSKANRI-HENSYU-SEC
-      *
                    DISPLAY "RECE40  PTID=" RECE40-PTID
-                           " SRYYM="       RECE40-SRYYM
-                           " JIBAIKBN="    WRK-JIBAIKBN
+      *
+                   PERFORM 910-SYSKANRI-HENSYU-SEC
       *
            END-READ
            .
@@ -3588,7 +3527,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
        910-SYSKANRI-HENSYU-SEC         SECTION.
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-              MOVE    WRK-4001-JIBAIKBN  TO  WRK-JIBAIKBN
+              CONTINUE
            ELSE
       *       医療機関ＩＤ編集
               MOVE  ZERO           TO  FLG-SET
