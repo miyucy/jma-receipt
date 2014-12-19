@@ -419,7 +419,20 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
+           COPY    "S10.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
+           COPY    "SID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -3098,7 +3111,6 @@
                    END-IF
                END-IF
       *
-               MOVE    SPA-OPID            TO  SYU-OPID
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
@@ -3153,11 +3165,6 @@
                COMPUTE SYUTTL-CHOSEI
                    =   SYUTTL-CHOSEI1
                    +   SYUTTL-CHOSEI2
-      *
-               MOVE    SPA-OPID            TO  SYUTTL-OPID
-               PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
       *
                MOVE    SYUTOTAL-REC        TO  MCPDATA-REC
                MOVE    "tbl_syutotal"      TO  MCP-TABLE
@@ -3295,7 +3302,6 @@
                    MOVE    "8"             TO  SMEI-JOUTAIKBN
                END-EVALUATE
       *
-               MOVE    SPA-OPID            TO  SMEI-OPID
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
                                                SMEI-UPYMD
@@ -3417,7 +3423,6 @@
                    END-IF
                END-EVALUATE
       *
-               MOVE    SPA-OPID            TO  SMEI-OPID
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
                MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
@@ -3779,7 +3784,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  SID1
-           INITIALIZE                       SID1
            MOVE    SPA-SIDCD            TO  SID1-ID1CODE
            MOVE    WRK-SIDMSG           TO  SID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

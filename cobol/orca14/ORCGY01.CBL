@@ -737,7 +737,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   99   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-1005-REC
       *
@@ -787,9 +787,7 @@
                    UNTIL       (IDX            >=  99   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-1010-REC
-               IF     (SYS-1010-KBNCD(1:1) =   "1"  )
-      *H27.12  ÈóÉ½¼¨
-                AND   (SYS-1010-HYOJIFLG   NOT =   "1" )
+               IF      SYS-1010-KBNCD(1:1) =   "1"
                    ADD     1                   TO  IDX
                    MOVE    SYS-1010-KBNCD(2:4)
                                                TO  SPA-GMN-DRCD
@@ -864,7 +862,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   99   )  OR
+                   UNTIL       (IDX            >   10   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-0051-REC
       *
@@ -3930,7 +3928,6 @@
            MOVE    "1"                 TO  ORCSPRTNM-KBN
            MOVE    "00000010"          TO  ORCSPRTNM-KBNCD
            MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            SPA-AREA
@@ -4844,7 +4841,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  YID1
-           INITIALIZE                       YID1
            MOVE    SPA-YID1CD           TO  YID1-ID1CODE
            MOVE    WRK-YID1MSG          TO  YID1-ID1MSG
            MOVE    "£Î£Ï"               TO  YID1-B01

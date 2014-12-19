@@ -266,7 +266,6 @@ grpsys COPY    "COMMON-SPA".
                    PRT-SHORI-RENNUM
                                    DELIMITED  BY  SPACE
                    PRT-PAGE        DELIMITED  BY  SPACE
-                   PRT-TBL-UUID    DELIMITED  BY  SPACE
                    ".pdf"          DELIMITED  BY  SIZE
                                    INTO   PS-FILE-ID
            END-STRING
@@ -399,15 +398,15 @@ grpsys     MOVE    PRTDATA-HOSPNUM     TO  PREVIEW-HOSPNUM
            IF      FLG-PREVIEW         =   ZERO  
                CONTINUE                   
            ELSE
-      *        IF      PRTDATA-TBL-KEY NOT =  "ONLINE"
-      *          PERFORM 900-PSFILE-READ-SEC
-      *          IF      ORCF-RET        NOT =   ZERO
-      *            DISPLAY "PS-FILE OPEN ERR=" STS-PS 
+               IF      PRTDATA-TBL-KEY NOT =  "ONLINE"
+                 PERFORM 900-PSFILE-READ-SEC
+                 IF      ORCF-RET        NOT =   ZERO
+                   DISPLAY "PS-FILE OPEN ERR=" STS-PS 
       * Why is this line ?
-      *            MOVE    1               TO  FLG-END 
-      *            GO  TO  200-MAIN-EXT
-      *          END-IF
-      *        END-IF
+                   MOVE    1               TO  FLG-END 
+                   GO  TO  200-MAIN-EXT
+                 END-IF
+               END-IF
       *        IF      FLG-PSFILE      =   1     
       *            DISPLAY "PS-FILE NOT DATA"
       *            MOVE    1               TO  FLG-END 

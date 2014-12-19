@@ -130,7 +130,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA24SCRAREA.INC".
+           COPY    "J02.INC".
+           COPY    "J021.INC".
+           COPY    "J022.INC".
+           COPY    "J025.INC".
+           COPY    "J026.INC".
+           COPY    "J03.INC".
+           COPY    "J04.INC".
+           COPY    "J041.INC".
+           COPY    "J042.INC".
+           COPY    "J98.INC".
+           COPY    "J99.INC".
+           COPY    "JERR.INC".
+           COPY    "JERR2.INC".
+           COPY    "JID1.INC".
+           COPY    "JID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -303,7 +317,6 @@
            MOVE    SPACE               TO  J026
       *
       *    ≤ËÃÃ ‘Ω∏
-           INITIALIZE                      J026
            MOVE    SPA-J026-GMN-MIDASI     TO  J026-MIDASI
       *
            MOVE    SPA-J026-GMN-STRDD      TO  J026-STRDD
@@ -893,7 +906,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-JID1-FLG
       *
            MOVE    SPACE               TO  JID1
-           INITIALIZE                      JID1
            MOVE    SPA-JIDCD           TO  JID1-ID1CODE
            MOVE    WRK-JIDMSG          TO  JID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
