@@ -10,7 +10,7 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ã‚ªãƒ³ãƒ©ã‚¤ãƒ³å¸³ç¥¨å†å°åˆ·ç”¨DBæ ¼ç´å‡¦ç†
+#    ¥ª¥ó¥é¥¤¥óÄ¢É¼ºÆ°õºþÍÑDB³ÊÇ¼½èÍý
 #        $1  RENNUM
 #        $2  TBL-KEY
 #        $3  TBL-GROUP
@@ -34,26 +34,12 @@ fi
 #        $20 PARA-CNT
 #        $21 DATASETNAME
 #        $22 TITLE
-#        $23 PRTFLGï¼ˆå†å°åˆ·ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ãªã„å ´åˆ"D")
-#        $24 ORGNAME
-#        $25 API-ID
+#        $23 PRTFLG¡ÊºÆ°õºþ¥Ç¡¼¥¿¤òºîÀ®¤·¤Ê¤¤¾ì¹ç"D")
 #            END
 #-------------------------------------------#
-##      ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
+##      ¥¨¥é¡¼¥Õ¥¡¥¤¥ëºï½ü
+	echo $0 $@ > /tmp/onreprint.log 
 
-DATASETNAME=${MCP_TEMPDIR}/${21}
-ORGNAME=${MCP_TEMPDIR}/${24}
-echo DATASETNAME[${DATASETNAME} ]
-
-# æ­£è¦è¡¨ç¾æ–‡å­—åˆ—ã¯ãƒ€ãƒ–ãƒ«ã‚¯ã‚©ãƒ¼ãƒˆã§æ‹¬ã‚‰ãªã„
-if [[ "$7" =~ ^API(|_01)$ ]]; then
-  shrink_rp.rb ${DATASETNAME}
-  nkf --ic=UTF8 --oc=eucJP-ms --overwrite ${DATASETNAME}
-fi
-
-[ "$7" == "API_01" ] && exit 
-
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBONPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23},${25},
-[ -e  ${DATASETNAME} ] && rm ${DATASETNAME}
-[ -e  ${ORGNAME} ] && rm ${ORGNAME}
-exit
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBONPRT -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23}, >>/tmp/onreprint.log
+	rm ${21}
+        exit

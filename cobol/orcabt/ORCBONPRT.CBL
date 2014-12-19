@@ -37,12 +37,9 @@
       *
       *    印刷用データ
            SELECT  PRT-FILE        ASSIGN  PRTOUTPARA
+      *                            ORGANIZATION    IS  LINE
+      *                                                SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
-      *
-      *    印刷用データ
-           SELECT  PRT2-FILE       ASSIGN  PRTOUTPARA
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PRT2.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -51,10 +48,6 @@
        FD  PRT-FILE.
        01  PRT-REC.
            03  PRT-PRTDATA         PIC X(20000).
-      *
-       FD  PRT2-FILE.
-       01  PRT2-REC.
-           03  PRT2-PRTDATA        PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -67,12 +60,10 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-PRT             PIC X(02).
-           03  STS-PRT2            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-PRT2            PIC 9(01).
            03  FLG-PRTKANRI        PIC 9(01).
       *
       *    カウント領域
@@ -84,10 +75,17 @@
        01  INDEX-AREA.
            03  IDX                     PIC 9(03). 
       *
-       COPY    "CPASGNPARA.INC"        REPLACING   //ASGNPARA//
-                                       BY          //PRTOUTPARA//.
       *
-      *
+       01  PRTOUTPARA.
+           03  FILLER                  PIC  X(09) VALUE "/var/tmp/".
+           03  PRTOUTPARA-FORM-ID      PIC  X(04).
+           03  FILLER                  PIC  X(01) VALUE ".".
+           03  PRTOUTPARA-UUID         PIC  X(31).
+           03  FILLER                  PIC  X(01) VALUE ".".
+           03  PRTOUTPARA-SYOHMS       PIC  9(08).
+           03  FILLER                  PIC  X(01) VALUE ".".
+           03  PRTOUTPARA-CNT          PIC  9(06).
+           03  FILLER                  PIC  X(04) VALUE ".dat".
       *    一時領域
        01  WRK-AREA.
       *
@@ -104,14 +102,13 @@
                    07  WRK-PARA-TITLE0           PIC X(40).
                    07  WRK-PARA-FORMID           PIC X(20).
                    07  WRK-PARA-SYOHMS           PIC X(06).
-                   07  WRK-PARA-TYPE             PIC X(16).
+                   07  WRK-PARA-PARA-CNT         PIC X(05).
                    07  WRK-PARA-DATASETNAME      PIC X(100).
                    07  WRK-PARA-TITLE            PIC X(40).
                    07  WRK-PARA-SRYYM            PIC X(06).
                    07  WRK-PARA-TERMID           PIC X(16).
                    07  WRK-PARA-HOSPNUM          PIC 9(02).
-                   07  WRK-PARA-TEMP-KBN         PIC X(01).
-                   07  WRK-PARA-API-ID           PIC X(20).
+                   07  WRK-PARA-PRTFLG           PIC X(01).
       *
            COPY    "CPORCSPRTLNK.INC".
       *
@@ -138,7 +135,7 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *    日付変換サブ
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
@@ -154,12 +151,10 @@
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       ****************************************************************
        LINKAGE                 SECTION.
-           COPY    "CPCOMMAND-PARAM.INC".
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(2000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -172,13 +167,8 @@
       *
            PERFORM 100-INIT-SEC
       *
-           IF    ( FLG-END         =   ZERO )
-               IF    ( LNK-PRTKANRI-SHELLID    =   "API" )
-                   PERFORM 201-MAIN-SEC
-               ELSE
-                   PERFORM 200-MAIN-SEC
-               END-IF
-           END-IF
+           PERFORM 200-MAIN-SEC
+                   UNTIL       FLG-END     =   1
       *
            PERFORM 300-END-SEC
       *
@@ -218,25 +208,15 @@
                                              WRK-PARA-TITLE0
                                              WRK-PARA-SYOHMS
                                              WRK-PARA-FORMID
-                                             WRK-PARA-TYPE
+                                             WRK-PARA-PARA-CNT
                                              WRK-PARA-DATASETNAME
                                              WRK-PARA-HOSPNUM
-                                             WRK-PARA-TEMP-KBN
-                                             WRK-PARA-API-ID
+                                             WRK-PARA-PRTFLG
            END-UNSTRING                                  
       *
            MOVE    WRK-PARA-HOSPNUM    TO    SPA-HOSPNUM 
       *
            PERFORM 100-DBOPEN-SEC
-      *
-      *    帳票印刷処理
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    WRK-PARA-DATASETNAME
-                                       TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  PRTOUTPARA
       *
            .
        100-INIT-EXT.
@@ -247,6 +227,9 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    帳票印刷処理
+           MOVE    WRK-PARA-DATASETNAME
+                                       TO  PRTOUTPARA
            OPEN    INPUT               PRT-FILE
            MOVE    SPACE               TO  PRT-PRTDATA
            IF        ( STS-PRT         =   ZERO )
@@ -258,61 +241,23 @@
            ELSE
                DISPLAY "INPUT FILE OPEN ERR"
            END-IF
-      *
-           MOVE    PRT-PRTDATA         TO  PRTDATA-PRTDATA
+      *     
            PERFORM 390-PRINT-OUT-SEC
       *
            CLOSE                       PRT-FILE
+           DISPLAY "FILE = "    WRK-PARA-DATASETNAME
+           MOVE    WRK-PARA-DATASETNAME
+                                       TO  PRTOUTPARA
            MOVE    1                   TO  FLG-END     
            .
        200-MAIN-EXT.
-           EXIT.
-      *****************************************************************
-      *    主　　処理（ＡＰＩ用）
-      *****************************************************************
-       201-MAIN-SEC                    SECTION.
-      *
-           OPEN    INPUT               PRT2-FILE
-           IF    ( STS-PRT2    NOT =   ZERO )
-               MOVE    1           TO  FLG-END
-           END-IF
-      *
-           PERFORM 900-PRTKANRI-KEY-SEL-SEC
-      *
-           PERFORM 900-PRT2-READ-SEC
-      *
-           MOVE    ZERO                TO  CNT-OUT
-      *
-           PERFORM UNTIL ( FLG-END     NOT =   ZERO )
-                    OR   ( FLG-PRT2    NOT =   ZERO )
-      *
-               COMPUTE CNT-OUT =   CNT-OUT +   1
-      *
-               IF    ( FLG-PRTKANRI    =   ZERO )
-                AND  ( CNT-OUT         =   1 )
-                   MOVE    ","             TO  PRTDATA-PRTDATA(1:1)
-                   MOVE    PRT2-PRTDATA    TO  PRTDATA-PRTDATA(2:)
-               ELSE
-                   MOVE    PRT2-PRTDATA    TO  PRTDATA-PRTDATA
-               END-IF
-               PERFORM 390-PRINT-OUT-SEC
-      *
-               PERFORM 900-PRT2-READ-SEC
-      *
-           END-PERFORM
-      *
-           CLOSE                       PRT2-FILE
-      *
-           MOVE    1                   TO  FLG-END
-           .
-       201-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
       *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC                SECTION.
-      *
+      *     
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
            MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
@@ -333,22 +278,20 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    WRK-PARA-FORMID     TO  SPRT-PRTID
-           MOVE    PRTDATA-PRTDATA     TO  SPRT-PRTDATA
+           MOVE    PRT-PRTDATA         TO  SPRT-PRTDATA
            MOVE    WRK-PARA-TITLE0     TO  SPRT-TITLE
-      *
+      *         
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
            MOVE    WRK-PARA-SITE-KBN   TO  SPRT-SITEKBN
-           IF    ( WRK-PARA-TEMP-KBN   =   "D" )
+           IF    ( WRK-PARA-PRTFLG     =   "D" )
                MOVE    "D"             TO  SPRT-PRTFLG
            ELSE
                MOVE    "1"             TO  SPRT-PRTFLG
            END-IF
       *    
            MOVE    WRK-PARA-PTID       TO  SPRT-PTID
-           MOVE    WRK-PARA-TYPE       TO  SPRT-DATA-TYPE
-           MOVE    WRK-PARA-API-ID     TO  SPRT-API-ID
       *
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
@@ -371,64 +314,13 @@
       *     
            PERFORM 900-DBDISCONNECT-SEC
       *
+           DISPLAY "*** ORC IN  "  CNT-IN
+           DISPLAY "*** ORC OUT "  CNT-OUT
            DISPLAY "*** ORCBONPRT END ***"
            .
        300-END-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    帳票データ読込処理
-      *****************************************************************
-       900-PRT2-READ-SEC               SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PRT2
-      *
-           READ    PRT2-FILE
-           AT  END
-               MOVE    1               TO  FLG-PRT2
-           END-READ
-      *
-           .
-       900-PRT2-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    印刷管理検索処理
-      *****************************************************************
-       900-PRTKANRI-KEY-SEL-SEC        SECTION.
-      *
-           INITIALIZE                      FLG-PRTKANRI
-      *
-           INITIALIZE                      PRTKANRI-REC
-           MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  PRTKANRI-TBL-KEY
-           MOVE    LNK-PRTKANRI-RENNUM TO  PRTKANRI-RENNUM
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  PRTKANRI-TBL-GROUP
-           MOVE    LNK-PRTKANRI-TBL-UUID
-                                       TO  PRTKANRI-TBL-UUID
-           MOVE    LNK-PRTKANRI-GYOUMU-CD
-                                       TO  PRTKANRI-GYOUMU-CD
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  PRTKANRI-SHORI-RENNUM
-           MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
-           MOVE    PRTKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PRTKANRI-REC
-           ELSE
-               MOVE    1               TO  FLG-PRTKANRI
-               INITIALIZE                  PRTKANRI-REC
-           END-IF
-      *
-           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-PRTKANRI-KEY-SEL-EXT.
-           EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
@@ -468,63 +360,4 @@
       *
            .
        900-DBDISCONNECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF    ( MCP-RC          =   ZERO )
-               PERFORM 910-DBFETCH-SEC
-           END-IF
-      *
-           .
-      *
-       910-DB-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ検索処理
-      *****************************************************************
-       911-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       910-DB-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       910-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       910-DBFETCH-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢクローズ処理
-      *****************************************************************
-       910-DBCLOSECURSOR-SEC                 SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       910-DBCLOSECURSOR-EXT.
            EXIT.

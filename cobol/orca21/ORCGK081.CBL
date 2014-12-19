@@ -32,8 +32,6 @@
       *  04.03.00    NACL-多々納  08/06/XX  ドクター表示件数変更
       *  04.03.00    NACL-多々納  08/10/09  ユーザプログラム対応
       *  04.07.00    NACL-多々納  12/01/12  クライアント印刷対応
-      *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
-      *  05.00.00    NACL-多々納  17/10/06  帳票API対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -128,14 +126,11 @@
       *    患者入院履歴ワーク
        01  HZN-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING
-                               //PTNYUINRRK-// BY //HZN-PTNRRK-//.
+                               //PTNYUINRRK-// BY //HZN-PTNYUINRRK-//.
       *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    マシン日付取得サブ
-           COPY    "CPORCSMCNDATE.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -246,9 +241,9 @@
            END-IF
       *
       *    クライアント印刷
-      *    IF      FLG-CLIENT-OK       =   1
-      *        PERFORM 600-CLIENT-DMY-SEC
-      *    END-IF
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
+           END-IF
       *
            MOVE    SPA-K081        TO  SPA-ETCKYOUTU-AREA
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
@@ -512,16 +507,16 @@
            MOVE    ZERO                TO  SPA-K081-DRCD-MAX
            INITIALIZE                  SPA-K081GMN-DRCDLST-G
            IF      FLG-OK              =   1
-               IF      HZN-PTNRRK-DRCD1    NOT =   SPACE
-                   MOVE    HZN-PTNRRK-DRCD1(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD1    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD1(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      HZN-PTNRRK-DRCD2    NOT =   SPACE
-                   MOVE    HZN-PTNRRK-DRCD2(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD2    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD2(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      HZN-PTNRRK-DRCD3    NOT =   SPACE
-                   MOVE    HZN-PTNRRK-DRCD3(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD3    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD3(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
            END-IF
@@ -555,12 +550,7 @@
       *
       *    ユーザプログラム起動初期処理
            IF      SPA-ETC-MOTOPG      =   "K02N"
-      *v4.8
-      *        IF      SPA-MW              =   SPA-GINBEE
-      *            INITIALIZE                  SPA-K081GMN-USERPG-AREA
-      *        ELSE
-                   PERFORM 3101-USERPG-SET-SEC
-      **       END-IF
+               PERFORM 3101-USERPG-SET-SEC
            ELSE
                INITIALIZE                  SPA-K081GMN-USERPG-AREA
            END-IF
@@ -1326,15 +1316,13 @@
            END-IF
            IF      SPA-ERRCD           =   SPACE
       *
-               IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-                 OR  ( SPA-PRTCONF         =   "1" )
+      *        再印刷なし
+      *        印刷制御情報取得サブ
+               CALL    "ORCSONPRTSET"  USING   SPA-AREA
+               IF      SPA-CLIENT-PRT-FLG  =   2
       *            クライアント印刷制御情報取得処理
                    PERFORM 4901-CLIENT-PRT-SEC
                END-IF
-      *
-               INITIALIZE              ORCSMCNDATEAREA
-               CALL    "ORCSMCNDATE"   USING
-                                       ORCSMCNDATEAREA
       *
                IF       SPA-K081GMN-SYOHOU     =   "1"
                    PERFORM 4401-HC501-PRINT-SEC
@@ -1421,8 +1409,6 @@
            MOVE    SPA-SRYYMD          TO  ORCHC501-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC501-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC501-SRYKA
-           MOVE    SMCNDATE-YMD        TO  ORCHC501-PRINTYMD
-           MOVE    SMCNDATE-HMS        TO  ORCHC501-PRINTHMS
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
                MOVE    "1"                 TO  ORCHC501-DRCD(1:1)
                MOVE    SPA-K081GMN-DRCD    TO  ORCHC501-DRCD(2:4)
@@ -1434,7 +1420,7 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-CLIENT-OK       =   1
+           IF      SPA-CLIENT-PRT-FLG     =   1
                MOVE    "01"                TO  SPA-PRT-FLG
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            END-IF
@@ -1456,8 +1442,6 @@
            MOVE    SPA-SRYYMD          TO  ORCHC502-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC502-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC502-SRYKA
-           MOVE    SMCNDATE-YMD        TO  ORCHC502-PRINTYMD
-           MOVE    SMCNDATE-HMS        TO  ORCHC502-PRINTHMS
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
                MOVE    "1"                 TO  ORCHC502-DRCD(1:1)
                MOVE    SPA-K081GMN-DRCD    TO  ORCHC502-DRCD(2:4)
@@ -1469,7 +1453,7 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-CLIENT-OK       =   1
+           IF      SPA-CLIENT-PRT-FLG     =   1
                MOVE    "02"                TO  SPA-PRT-FLG
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            END-IF
@@ -1491,8 +1475,6 @@
            MOVE    SPA-SRYYMD          TO  ORCHC503-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC503-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC503-SRYKA
-           MOVE    SMCNDATE-YMD        TO  ORCHC503-PRINTYMD
-           MOVE    SMCNDATE-HMS        TO  ORCHC503-PRINTHMS
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
                MOVE    "1"                 TO  ORCHC503-DRCD(1:1)
                MOVE    SPA-K081GMN-DRCD    TO  ORCHC503-DRCD(2:4)
@@ -1504,7 +1486,7 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-CLIENT-OK       =   1
+           IF      SPA-CLIENT-PRT-FLG     =   1
                MOVE    "03"                TO  SPA-PRT-FLG
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            END-IF
@@ -1520,21 +1502,18 @@
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-      * 再印刷なし
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-      *    INITIALIZE                  KDMY01
-      *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+           INITIALIZE                  KDMY01
+           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-      ***  MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
-      *    MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
-      ***  MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
+           MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
+           MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-      **** MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
            .
@@ -1544,18 +1523,18 @@
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-      *600-CLIENT-DMY-SEC              SECTION.
+       600-CLIENT-DMY-SEC              SECTION.
       *
-      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
       *
-      *    MOVE    "_KDMY01"           TO  MCP-WINDOW
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "_KDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-      *    PERFORM 900-PUT-WINDOW
-      *    .
-      *600-CLIENT-DMY-EXT.
-      *    EXIT.
+           PERFORM 900-PUT-WINDOW
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
       *
       *****************************************************************
       *    元の画面へ
@@ -1611,7 +1590,6 @@
       *
            MOVE    SPACE               TO  K081
       *
-           INITIALIZE                      K081
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K081-SYOHOU-MAX
                MOVE    SPA-K081GMN-SYOHOU-LST (IDX)
@@ -1715,14 +1693,6 @@
            END-PERFORM
            MOVE    SPA-K081GMN-USERPG-MAX  TO  K081-USERPG-COUNT
            MOVE    SPA-K081GMN-USERPG-G    TO  K081-USERPG
-      *v4.8
-      *    ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        MOVE    WIDGET-INSENSITIVE  TO  K081-USERPG-STATE
-      *    ELSE
-               MOVE    WIDGET-NORMAL       TO  K081-USERPG-STATE
-      **   END-IF
-      *
       *
            PERFORM 5001-MAPCUR-SEC
            .
