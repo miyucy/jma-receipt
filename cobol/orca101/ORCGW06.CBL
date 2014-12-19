@@ -3600,7 +3600,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *----(04.08.04)--ADD-START---
-           IF    ( SPA-ERRCD           =   SPACE )
+           IF      SPA-GMN-TBL-MAX     =   1
                PERFORM 4031-PRT-DEL-SEC
            END-IF
       *----(04.08.04)--ADD-END-----
@@ -3622,10 +3622,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
       *
-           IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"              TO  SPA-ERRCD
-               DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
-           END-IF
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1002"              TO  SPA-ERRCD
+                   DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
+               END-IF
       *
            END-IF
            IF      SPA-ERRCD           =   SPACE
@@ -3659,36 +3659,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    SPA-GMN-SYOKUKBN    TO  SYS-1031-KBNCD(1:1)
            MOVE    SPA-GMN-SYOKUCOD    TO  SYS-1031-KBNCD(2:4)
-           MOVE    SPA-MAE-STYUKYMD    TO  SYS-1031-STYUKYMD
-           MOVE    SPA-MAE-EDYUKYMD    TO  SYS-1031-EDYUKYMD
-      *
+           MOVE    "%"                 TO  SYS-1031-KBNCD(6:)
            MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"             USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 4031-PRT-DEL-SYORI-SEC
       *
            MOVE    SPACE               TO  SYS-1034-REC
            INITIALIZE                      SYS-1034-REC
            MOVE    "1034"              TO  SYS-1034-KANRICD
            MOVE    SPA-GMN-SYOKUKBN    TO  SYS-1034-KBNCD(1:1)
            MOVE    SPA-GMN-SYOKUCOD    TO  SYS-1034-KBNCD(2:4)
-           MOVE    SPA-MAE-STYUKYMD    TO  SYS-1034-STYUKYMD
-           MOVE    SPA-MAE-EDYUKYMD    TO  SYS-1034-EDYUKYMD
-      *
+           MOVE    "%"                 TO  SYS-1034-KBNCD(6:)
            MOVE    SPA-HOSPNUM         TO  SYS-1034-HOSPNUM
            MOVE    SYS-1034-REC        TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"             USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 4031-PRT-DEL-SYORI-SEC
       *
            MOVE    SPACE               TO  SYS-1032-REC
            INITIALIZE                      SYS-1032-REC
@@ -3696,40 +3680,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SYOKUKBN    TO  SYS-1032-KBNCD(1:1)
            MOVE    SPA-GMN-SYOKUCOD    TO  SYS-1032-KBNCD(2:4)
            MOVE    "%"                 TO  SYS-1032-KBNCD(6:)
-      *
            MOVE    SPA-HOSPNUM         TO  SYS-1032-HOSPNUM
            MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 990-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *
-           PERFORM UNTIL   FLG-SYSKANRI      =   1
-               MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *
-               MOVE    SYS-1032-REC        TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"             USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 990-SYSKANRI-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           PERFORM 4031-PRT-DEL-SYORI-SEC
      *
            MOVE    SPACE               TO  SYS-1035-REC
            INITIALIZE                      SYS-1035-REC
@@ -3737,9 +3690,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SYOKUKBN    TO  SYS-1035-KBNCD(1:1)
            MOVE    SPA-GMN-SYOKUCOD    TO  SYS-1035-KBNCD(2:4)
            MOVE    "%"                 TO  SYS-1035-KBNCD(6:)
-      *
            MOVE    SPA-HOSPNUM         TO  SYS-1035-HOSPNUM
            MOVE    SYS-1035-REC        TO  MCPDATA-REC
+           PERFORM 4031-PRT-DEL-SYORI-SEC
+           .
+       4031-PRT-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    削除処理（プリンタ設定）
+      *****************************************************************
+       4031-PRT-DEL-SYORI-SEC      SECTION.
+      *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -3751,10 +3712,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           PERFORM UNTIL   FLG-SYSKANRI      =   1
-               MOVE    MCPDATA-REC         TO  SYS-1035-REC
-      *
-               MOVE    SYS-1035-REC        TO  MCPDATA-REC
+           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -3762,7 +3720,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
@@ -3772,7 +3729,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
-       4031-PRT-DEL-EXT.
+       4031-PRT-DEL-SYORI-EXT.
            EXIT.
       *----(04.08.04)--ADD-END-----
       *****************************************************************
@@ -3965,26 +3922,35 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
            END-IF
+      *----(04.08.04)--UPD-START---
       *    期間重複チェック
-      *    IF     (SPA-GMN-SELNUM      =   ZERO  )  OR
-      *           (SPA-NAI-STYUKYMD    NOT =   SPA-MAE-STYUKYMD)
-      *******  MOVE    1               TO  SPA-GMN-SYORI
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   SPA-GMN-TBL-MAX )
-                              OR  (SPA-ERRCD   NOT =   SPACE )
-                   IF      SPA-GMN-SELNUM  NOT =   IDX
-                       IF     (SPA-NAI-TEDYUKYMD (IDX)
-                                           <   SPA-NAI-STYUKYMD )  OR
-                              (SPA-NAI-TSTYUKYMD (IDX)
-                                           >   SPA-NAI-EDYUKYMD )
-                           CONTINUE
-                       ELSE
-                           MOVE    "0020"           TO  SPA-ERRCD
-                           MOVE    3                TO  SPA-GMN-CUR
-                       END-IF
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL ( IDX     >   SPA-GMN-TBL-MAX )
+                   OR    ( SPA-ERRCD       NOT =   SPACE )
+               IF      SPA-GMN-SELNUM      =   IDX
+      *            選択された内容の開始日が変更された場合
+                   IF      SPA-NAI-STYUKYMD    =   SPA-NAI-TSTYUKYMD
+                                                               (IDX)
+                       MOVE    2           TO  SPA-GMN-SYORI
+                   ELSE
+                       MOVE    1           TO  SPA-GMN-SYORI
                    END-IF
-               END-PERFORM
-      **** END-IF
+               ELSE
+                   MOVE    1           TO  SPA-GMN-SYORI
+               END-IF
+               IF      SPA-GMN-SYORI   =   1
+                   IF     (SPA-NAI-TEDYUKYMD (IDX)
+                                       <   SPA-NAI-STYUKYMD )  OR
+                          (SPA-NAI-TSTYUKYMD (IDX)
+                                       >   SPA-NAI-EDYUKYMD )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0020"           TO  SPA-ERRCD
+                       MOVE    3                TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-PERFORM
+      *----(04.08.04)--UPD-END-----
       ***
       *    オペレータＩＤ
            IF     (SPA-GMN-USERID      =   SPACE )
