@@ -44,11 +44,6 @@
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *  04.07.02    NACL-藤原    14/09/26  システム管理対象月設定
-      *  04.07.03    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    17/02/15  直接支払制度の一部改正に伴う
-      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -224,7 +219,6 @@
                05  WRK-HOSPADRS1   PIC X(50).
                05  WRK-HOSPADRS2   PIC X(50).
            03  WRK-HOSPTEL         PIC X(15).
-           03  WRK-KAISETUNAME     PIC X(80).
       *
       *     右づめ編集用     
            03  WRK-HENKAN          PIC X(20).
@@ -303,7 +297,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
       *
        01  CSV-INFO-REC.
            COPY    "CPCSV-INFO.INC".
@@ -534,10 +527,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            END-IF
       *
            IF    ( WRK-PARA-TEISYUTUBIKBN
-                                   =   "2"      )
+                                   =   "2" )
            AND   ( WRK-PARA-TEISYUTUSAKI
-                                   =   "1"      )
-           AND   ( WRK-PARA-SKYYM  <   "201704" )
+                                   =   "1" )
                MOVE    "２５日請求時は社保のみは設定できません" 
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
@@ -605,8 +597,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            IF      FLG-END             =   ZERO
                MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-               MOVE    SYS-1001-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
                MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
                MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
       *        医療機関編集情報取得
@@ -631,18 +621,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
            END-IF
       *
-      *    社保分作成
-      *   （請求年月が２０１７年３月以前は２５日請求時は作成しない）
-           IF      WRK-PARA-TEISYUTUSAKI
-                                   =   "0" OR  "1"
-               IF    ( WRK-PARA-TEISYUTUBIKBN
-                                       =   "2"      )
-               AND   ( WRK-PARA-SKYYM  <   "201704" )
-                   CONTINUE
-               ELSE 
-                   MOVE    "1"             TO  WRK-TEISYUTUSAKI
-                   PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
-               END-IF
+      *    社保分作成（２５日請求時は作成しない）
+           IF    ( WRK-PARA-TEISYUTUSAKI
+                                   =   "0" OR  "1" )
+           AND   ( WRK-PARA-TEISYUTUBIKBN
+                                   =   "1"         )
+               MOVE    "1"             TO  WRK-TEISYUTUSAKI
+               PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
            END-IF
       *
            CLOSE   UPD-FILE
@@ -1336,7 +1321,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                INSPECT HCN64-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
       *        開設者
-               MOVE    WRK-KAISETUNAME TO  HCN64-KAISETUNAME
+               MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCN64-KAISETUNAME
       *
       *        電話番号
                MOVE    WRK-HOSPTEL     TO  HCN64-HOSPTEL
@@ -1428,7 +1414,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                INSPECT HCN65-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
       *        開設者
-               MOVE    WRK-KAISETUNAME TO  HCN65-KAISETUNAME
+               MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCN65-KAISETUNAME
       *
       *        電話番号
                MOVE    WRK-HOSPTEL     TO  HCN65-HOSPTEL
@@ -1635,12 +1622,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    WRK-TEISYUTUSAKI
                                        TO  WRK-DATA
            ELSE
-               IF      WRK-TEISYUTUSAKI    =   "2"
-                   MOVE    "3"             TO  WRK-DATA
-               ELSE
-                   MOVE    WRK-TEISYUTUSAKI
-                                           TO  WRK-DATA
-               END-IF
+               MOVE    "3"             TO  WRK-DATA
            END-IF 
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -2559,8 +2541,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                 END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -2623,33 +2603,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(4)
-                                   TO  SYS-1903-KBNCD
-           MOVE    WRK-SYMD        TO  SYS-1903-STYUKYMD
-                                       SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *****************************************************************

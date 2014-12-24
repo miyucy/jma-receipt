@@ -195,7 +195,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "L01.INC".
+           COPY    "L02.INC".
+           COPY    "L03.INC".
+           COPY    "L04.INC".
+           COPY    "L06.INC".
+           COPY    "L07.INC".
+           COPY    "L99.INC".
+           COPY    "L100.INC".
+           COPY    "LERR.INC".
+           COPY    "LID1.INC".
+           COPY    "LID2.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G03.INC".
+           COPY    "G05.INC".
+           COPY    "G07.INC".
+           COPY    "G99.INC".
+           COPY    "G100.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -361,9 +381,8 @@
       *
            MOVE    "T"             TO  SPA-GMN-L02-KOJINKBN1-VALUE
            MOVE    "F"             TO  SPA-GMN-L02-KOJINKBN2-VALUE
-           MOVE    "T"             TO  SPA-GMN-L02-CDKBN-VALUE (1)
-           MOVE    "F"             TO  SPA-GMN-L02-CDKBN-VALUE (2)
-           MOVE    "F"             TO  SPA-GMN-L02-CDKBN-VALUE (3)
+           MOVE    "T"             TO  SPA-GMN-L02-CDKBN1-VALUE
+           MOVE    "F"             TO  SPA-GMN-L02-CDKBN2-VALUE
       *
            MOVE    1               TO  SPA-GMN-L02-CUR
       *
@@ -451,7 +470,6 @@
       *    文字コード
                WHEN    "CLICKED"       ALSO    "CDKBN1"
                WHEN    "CLICKED"       ALSO    "CDKBN2"
-               WHEN    "CLICKED"       ALSO    "CDKBN3"
                    PERFORM 400-CDKBN-SEC
            END-EVALUATE
       *
@@ -734,9 +752,8 @@
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           MOVE    L02-CDKBN(1)    TO  SPA-GMN-L02-CDKBN-VALUE (1)
-           MOVE    L02-CDKBN(2)    TO  SPA-GMN-L02-CDKBN-VALUE (2)
-           MOVE    L02-CDKBN(3)    TO  SPA-GMN-L02-CDKBN-VALUE (3)
+           MOVE    L02-CDKBN1      TO  SPA-GMN-L02-CDKBN1-VALUE
+           MOVE    L02-CDKBN2      TO  SPA-GMN-L02-CDKBN2-VALUE
       *
            MOVE    1               TO  SPA-GMN-L02-CUR     
            .
@@ -898,16 +915,11 @@
                WHEN    SPA-GMN-L02-KOJINKBN2-VALUE =   "T"
                    MOVE    "2"         TO  SHELLTBL-ARG11
            END-EVALUATE
-           DISPLAY  SPA-GMN-L02-CDKBN-VALUE(1)
-                    " - " SPA-GMN-L02-CDKBN-VALUE(2)
-                    " - " SPA-GMN-L02-CDKBN-VALUE(3)
            EVALUATE    TRUE
-               WHEN    SPA-GMN-L02-CDKBN-VALUE (1) =   "T"
+               WHEN    SPA-GMN-L02-CDKBN1-VALUE    =   "T"
                    MOVE    "1"         TO  SHELLTBL-ARG12
-               WHEN    SPA-GMN-L02-CDKBN-VALUE (2) =   "T"
+               WHEN    SPA-GMN-L02-CDKBN2-VALUE    =   "T"
                    MOVE    "2"         TO  SHELLTBL-ARG12
-               WHEN    SPA-GMN-L02-CDKBN-VALUE (3) =   "T"
-                   MOVE    "3"         TO  SHELLTBL-ARG12
            END-EVALUATE
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG13
@@ -1159,15 +1171,13 @@
       *
            MOVE    SPACE               TO  L02
       *
-           INITIALIZE                      L02
            MOVE    SPA-GMN-L02-SRYYMD      TO  L02-SRYYMD
            MOVE    SPA-GMN-L02-FILENM1     TO  L02-FILENM1
       *
            MOVE    SPA-GMN-L02-KOJINKBN1-VALUE TO  L02-KOJINKBN1
            MOVE    SPA-GMN-L02-KOJINKBN2-VALUE TO  L02-KOJINKBN2
-           MOVE    SPA-GMN-L02-CDKBN-VALUE (1) TO  L02-CDKBN(1)
-           MOVE    SPA-GMN-L02-CDKBN-VALUE (2) TO  L02-CDKBN(2)
-           MOVE    SPA-GMN-L02-CDKBN-VALUE (3) TO  L02-CDKBN(3)
+           MOVE    SPA-GMN-L02-CDKBN1-VALUE    TO  L02-CDKBN1
+           MOVE    SPA-GMN-L02-CDKBN2-VALUE    TO  L02-CDKBN2
       *
            MOVE    SPA-GMN-L02-NYUGAIKBN-G     TO  L02-NYUGAIKBN
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1327,7 +1337,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  LID1
-           INITIALIZE                       LID1
            MOVE    SPA-LIDCD            TO  LID1-ID1CODE
            MOVE    WRK-LIDMSG           TO  LID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
