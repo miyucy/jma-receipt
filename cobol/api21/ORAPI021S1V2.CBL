@@ -31,8 +31,6 @@
       *  04.07.00    NACL-多々納  14/10/XX  詳細メッセージ追加等対応
       *  04.07.00    NACL-多々納  14/11/XX  保険組合せ設定対応
       *  04.07.00    NACL-多々納  14/11/XX  CLASS=4 外来追加対応他
-      *  04.08.00    NACL-多々納  15/12/01  保険組合せ番号送信追加
-      *  04.08.00    NACL-多々納  17/04/XX  内服１種類・継続コメント対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -197,9 +195,9 @@
            COPY    "CPORCSMCNDATE.INC".
       *
       *
-      ***  COPY    "CPORCXKANACONV.INC".
+           COPY    "CPORCXKANACONV.INC".
       *
-      ***  COPY    "CPORCSKANACHK.INC".
+           COPY    "CPORCSKANACHK.INC".
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -209,9 +207,6 @@
            COPY    "CPORCSLOCK.INC".
       *    ユーザプログラム起動チェックサブパラメタ
            COPY    "CPORCSUSERCHK.INC".
-      *
-      *    数字変換領域
-           COPY    "CPORCSNUM.INC".
       *
       *    API XML読み込み用定義体
            COPY    "CPMDCXMLV2REQ.INC".
@@ -321,14 +316,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-APTXMLMAKE-SEC
       *
            DISPLAY   "***************"
            DISPLAY   "* accept end  *"
@@ -369,7 +358,6 @@
            MOVE    WRK-HEN-TIME        TO  MDCRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -377,51 +365,6 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *
-      *    MOVE    SPACE               TO  SPA-MOTOPG
-      *    ＳＰＡ共通設定
-      *    INITIALIZE                  SYS-1010-REC
-      *    INITIALIZE                  ORCSCOMMONAREA
-      *    MOVE    "M00"               TO  ORCSCOMMON-PG
-      *    CALL    "ORCSCOMMON"        USING
-      *                                MCPAREA
-      *                                SPA-AREA
-      *                                ORCSCOMMONAREA
-      *                                SYS-1010-REC
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        MOVE   "89"             TO  WRK-ERRCD
-      *    END-IF
-      *
-           .
-       100-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＳＰＡ共通設定処理
-      *****************************************************************
-       1001-ORCSCOMMON-SEC           SECTION.
-      *
-      *    診療日チェック
-           MOVE    MDCREQ-PERFORM-DATE     TO  WRK-HEN-DATE
-           MOVE    MDCREQ-PERFORM-TIME     TO  WRK-HEN-TIME
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD                TO  WRK-PERFORM-YMD
-           MOVE    WRK-THMS                TO  WRK-PERFORM-TIME
-      *    未設定時はシステム情報設定
-           IF      WRK-PERFORM-YMD         =   SPACE
-               MOVE    SMCNDATE-YMD        TO  WRK-PERFORM-YMD
-           END-IF
-      *    診療日チェック
-           PERFORM 20011-PERFORM-CHK-SEC
-      *    診療日をシステム日付へ
-           IF      WRK-ERRCD           =   SPACE
-               MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
-           ELSE
-      *        エラーは他項目と同時
-               MOVE    SPACE               TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "API"               TO  SPA-MOTOPG
       *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
@@ -434,9 +377,9 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE   "89"             TO  WRK-ERRCD
            END-IF
-           MOVE    SPACE               TO  SPA-MOTOPG
+      *
            .
-       1001-ORCSCOMMON-EXT.
+       100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -446,11 +389,6 @@
       *
       *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      200-MAIN-EXT
-           END-IF
-      *    ＳＰＡ共通設定
-           PERFORM 1001-ORCSCOMMON-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
@@ -519,7 +457,6 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-MEDICALREQ
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_medicalv2req"  TO  MCP-TABLE
@@ -538,8 +475,6 @@
                MOVE   "97"             TO  WRK-ERRCD
                GO     TO   1000-APTXMLREAD-EXT
            END-IF
-      *
-           MOVE    SPACE               TO  APIREQ-PATIENTINFOREQ
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_medicalv2req"  TO  MCP-TABLE
@@ -1299,17 +1234,6 @@
       *                   銘柄名記載
                           MOVE    "91"         TO  LF04-SURYOCD(IDY IDZ)
                    END-EVALUATE
-      *H29.4
-      *            内服１種類区分
-                   IF      MDCREQ-NAIFKBN  (IDY IDZ) =   "1"
-                       MOVE    "1"             TO  LF04-NAIFKBN
-                                                            (IDY IDZ)
-                   END-IF
-      *            継続コメント指示区分
-                   IF      MDCREQ-CONTKBN  (IDY IDZ) =   "1"
-                       MOVE    "1"             TO  LF04-CONTKBN
-                                                            (IDY IDZ)
-                   END-IF
       *
                    IF      MDCREQ-PRSCRPT-CODE (IDY IDZ)   NOT =   SPACE
                        ADD     1               TO  CNT-SRYCNT
@@ -1703,8 +1627,6 @@
       *****************************************************************
        2002151-HKNCOMBI-CALL-SEC     SECTION.
       *
-           IF      MDCREQ-COMBINATION-NUMBER   =   SPACE
-      *
       *    保険組合せ編集処理
            INITIALIZE                      ORCSAPIHKNAREA
       *    保険組合せ決定
@@ -1721,7 +1643,7 @@
            MOVE    MDCREQ-MAIN-INSURANCE-NAME 
                                        TO  ORCSAPIHKN-IN-HKNNUM-NAME
       *    記号
-           MOVE    MDCREQ-MAIN-MARK    TO  ORCSAPIHKN-IN-MARK
+           MOVE    MDCREQ-MAIN-MARK  TO  ORCSAPIHKN-IN-MARK
       *    番号
            MOVE    MDCREQ-MAIN-NUMBER
                                        TO  ORCSAPIHKN-IN-NUMBER
@@ -1752,56 +1674,20 @@
                MOVE    MDCREQ-RECIPIENT-NUMBER (IDX)
                                        TO  ORCSAPIHKN-IN-JKYSNUM  (IDX)
            END-PERFORM
-      *
-           ELSE
-      *        保険組合せチェック
-               PERFORM 200311-HKNCOMBI-NUM-SEC
-      *        保険組合せ編集処理
-               INITIALIZE                      ORCSAPIHKNAREA
-               MOVE    "2"                 TO  ORCSAPIHKN-KBN
-               MOVE    SPACE               TO  ORCSAPIHKN-KBN2
-      *        診療科
-               MOVE    WRK-SRYKA           TO  ORCSAPIHKN-SRYKA
-               MOVE    WRK-HKNCOMBI        TO  ORCSAPIHKN-IN-HKNCOMBI
-           END-IF
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
-           IF     (ORCSAPIHKN-OT-HKNCOMBI  =   SPACE )
-      *        保険番号対象なし
-              OR  (ORCSAPIHKN-ERRCD        =   4     )
+           IF      ORCSAPIHKN-OT-HKNCOMBI  =   SPACE
                MOVE    ZERO                    TO  WRK-HKNCOMBI
            ELSE
                MOVE    ORCSAPIHKN-OT-HKNCOMBI  TO  WRK-HKNCOMBI
       *
-               MOVE    1                   TO  IDX
       *        出力領域保険情報編集
+               MOVE    1                   TO  IDX
                PERFORM 2002101-HKNHEN-TBL-SEC
            END-IF
            .
        2002151-HKNCOMBI-CALL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せ番号数値チェック
-      *****************************************************************
-       200311-HKNCOMBI-NUM-SEC          SECTION.
-      *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    MDCREQ-COMBINATION-NUMBER   TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN     NOT =   SPACE )   OR
-                  (SNUM-SYOKBN     NOT =   SPACE )
-      *        数値エラーはゼロ（送信なし）
-               MOVE    ZERO                TO  WRK-HKNCOMBI
-           ELSE
-               MOVE    SNUM-OUTEDT(12:4)   TO  WRK-HKNCOMBI
-           END-IF
-      *
-           .
-       200311-HKNCOMBI-NUM-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2002,11 +1888,11 @@
            MOVE    SPA-SYSYMD          TO  PTNYUINRRK-TAIINYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key11"             TO  MCP-PATHNAME
+               MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -2021,7 +1907,7 @@
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-PTNYUINRRK      =   ZERO
       *        入院中
