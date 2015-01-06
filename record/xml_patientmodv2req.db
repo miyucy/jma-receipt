@@ -61,10 +61,5 @@ xml_patientmodv2req {
                 	Certificate_ExpiredDate		varchar(10);
             	} [4];
         	};
-#---    Š³ÒŒÂ•Êî•ñ
-		Personally_Information	{
-#---            ”D•wİ’è
-        	    	Pregnant_Class			varchar(05);
-            	};
     	};
 };
