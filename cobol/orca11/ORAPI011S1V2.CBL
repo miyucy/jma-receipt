@@ -930,6 +930,10 @@
                MOVE    "14"                TO  WRK-ERRCD
            END-IF
       *
+           IF      WRK-DRCD (1:1)  NOT =   "1"
+               MOVE    "24"                TO  WRK-ERRCD
+           END-IF
+      *
            .
        20011-DRCD-CHK-EXT.
            EXIT.
@@ -2170,6 +2174,9 @@
                                                TO  WRK-ERRMSG
            WHEN    "23"
                MOVE    "保険情報と一致する保険組合せがありません"
+                                               TO  WRK-ERRMSG
+           WHEN    "24"
+               MOVE    "ドクターコードではありません"
                                                TO  WRK-ERRMSG
            WHEN    "50"
                STRING  "受付登録件数が上限以上となります。"

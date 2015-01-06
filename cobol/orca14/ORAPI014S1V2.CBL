@@ -934,6 +934,10 @@
                MOVE    "14"                TO  WRK-ERRCD
            END-IF
       *
+           IF      WRK-DRCD (1:1)  NOT =   "1"
+               MOVE    "24"                TO  WRK-ERRCD
+           END-IF
+      *
            .
        20011-DRCD-CHK-EXT.
            EXIT.
@@ -2107,6 +2111,9 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
+           WHEN    "24"
+               MOVE    "ドクターコードではありません"
+                                               TO  WRK-ERRMSG
            WHEN    "25"
                MOVE    "削除対象の予約レコードが存在しません"
                                                TO  WRK-ERRMSG

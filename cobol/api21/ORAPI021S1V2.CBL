@@ -1015,6 +1015,10 @@
                MOVE    "14"                TO  WRK-ERRCD
            END-IF
       *
+           IF      WRK-DRCD (1:1)  NOT =   "1"
+               MOVE    "25"                TO  WRK-ERRCD
+           END-IF
+      *
            .
        20011-DRCD-CHK-EXT.
            EXIT.
@@ -2409,6 +2413,9 @@
                                                TO  WRK-ERRMSG
            WHEN    "24"
                MOVE    "入院日付が入院日ではありません。"
+                                               TO  WRK-ERRMSG
+           WHEN    "25"
+               MOVE    "ドクターコードではありません"
                                                TO  WRK-ERRMSG
       *
            WHEN    "30"
