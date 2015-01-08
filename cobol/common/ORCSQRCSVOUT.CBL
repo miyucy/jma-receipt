@@ -272,8 +272,6 @@
                                            SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAMES(1)
                                        TO  FILE-NAME1
-           MOVE    FILE-NAME1-PARA
-                                       TO  FILE-NAME1
       *
            OPEN    OUTPUT              QRCSV-FILE
            IF      STS-FILE1       NOT =   ZERO
