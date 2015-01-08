@@ -396,14 +396,12 @@
            INITIALIZE                      ORCSFILEENCODEAREA
            MOVE    FILE-NAME1          TO  FLEN-INFILENAME
            MOVE    FILE-NAME2          TO  FLEN-OUTFILENAME
-           MOVE    "3"                 TO  FLEN-OPTION
+           MOVE    "1"                 TO  FLEN-OPTION
            CALL    "orcfileencode"     USING
                                            ORCSFILEENCODEAREA
            IF      FLEN-RET        NOT =   ZERO
                MOVE    9               TO  ORCSQRCSV-ERRCD
            END-IF
-      *TEST
-            DISPLAY "FILE-NAME2:" FILE-NAME2
       *
            .
        290-CSVOUT-SYORI-EXT.
