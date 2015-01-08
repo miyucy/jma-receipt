@@ -374,7 +374,7 @@
            03  FILLER              PIC X(35)   VALUE
                "9102 ＥＦファイル作成".
            03  FILLER              PIC X(35)   VALUE
-               "9103 処方せん連携基盤情報".
+               "9103 処方せんデータ連携情報".
            03  FILLER              PIC X(35)   VALUE
                "9600 ＣＲＯＮ設定情報".
            03  FILLER              PIC X(35)   VALUE
@@ -423,7 +423,7 @@
            03  FILLER              PIC X(35)   VALUE
                "9102 ＥＦファイル作成".
            03  FILLER              PIC X(35)   VALUE
-               "9103 処方せん連携基盤情報".
+               "9103 処方せんデータ連携情報".
            03  FILLER              PIC X(35)   VALUE
                "9600 ＣＲＯＮ設定情報".
            03  FILLER              PIC X(35)   VALUE

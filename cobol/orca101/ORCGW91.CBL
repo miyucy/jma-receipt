@@ -817,6 +817,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-FILE-DIR    TO  W91-FILEDIR
            MOVE    SPA-GMN-CHKSYREC    TO  W91-CHKSYREC
+           IF      SPA-W01-KANRICD         =   "9101"
+               MOVE    WIDGET-NORMAL       TO  W91-CHKSYREC-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  W91-CHKSYREC-STATE
+           END-IF
       *
            MOVE    SPA-GMN-LABEL1      TO  W91-LABEL1
            MOVE    SPA-GMN-LABEL2      TO  W91-LABEL2

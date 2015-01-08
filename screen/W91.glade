@@ -353,7 +353,7 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>FILEDIR</name>
-        <x>200</x>
+        <x>216</x>
         <y>116</y>
         <width>700</width>
         <height>24</height>
@@ -379,7 +379,7 @@
       <widget>
         <class>GtkPandaCombo</class>
         <name>COOPBASE_COMB</name>
-        <x>200</x>
+        <x>216</x>
         <y>64</y>
         <width>192</width>
         <height>24</height>
@@ -439,7 +439,7 @@
         <name>LABEL2</name>
         <x>36</x>
         <y>116</y>
-        <width>160</width>
+        <width>200</width>
         <height>24</height>
         <visible>True</visible>
         <sensitive>True</sensitive>

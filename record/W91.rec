@@ -23,6 +23,7 @@ W91 {
     };
     CHKSYREC {
       isactive bool;
+      state int;
     };
   };
 };

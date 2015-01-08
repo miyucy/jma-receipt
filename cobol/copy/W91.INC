@@ -19,3 +19,4 @@
                 05  W91-TEXTDATA    PIC X(50).
               04  W91-CHKSYREC.
                 06  W91-CHKSYREC-VALUE   PIC X.
+                06  W91-CHKSYREC-STATE   PIC S9(9)   BINARY.
