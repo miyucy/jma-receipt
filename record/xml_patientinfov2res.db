@@ -24,32 +24,6 @@ xml_patientinfov2res {
 			PhoneNumber1		varchar(15);
 			PhoneNumber2		varchar(15);
         	};
-#--- 勤務先
-		WorkPlace_Information	{
-			WholeName		varchar(50);
-			Address_ZipCode		varchar(07);
-			WholeAddress1		varchar(100);
-			WholeAddress2		varchar(100);
-			PhoneNumber		varchar(15);
-        	};
-#--- 連絡先
-		Contact_Information	{
-			WholeName		varchar(50);
-			Relationship 		varchar(30);
-			Address_ZipCode		varchar(07);
-			WholeAddress1		varchar(100);
-			WholeAddress2		varchar(100);
-			PhoneNumber1		varchar(15);
-			PhoneNumber2		varchar(15);
-        	};
-#--- 帰省先
-		Home2_Information	{
-			WholeName		varchar(50);
-			Address_ZipCode		varchar(07);
-			WholeAddress1		varchar(100);
-			WholeAddress2		varchar(100);
-			PhoneNumber		varchar(15);
-        	};
 		Contraindication1		varchar(200);
 		Contraindication2		varchar(200);
 		Allergy1			varchar(200);
@@ -58,37 +32,6 @@ xml_patientinfov2res {
 		Infection2			varchar(200);
 		Comment1			varchar(200);
 		Comment2			varchar(200);
-#-----> テスト患者区分
-		TestPatient_Flag		varchar(01);
-#-----> 死亡区分
-		Death_Flag			varchar(01);
-#-----> 職業
-		Occupation     			varchar(20);
-#-----> 通称名
-		NickName			varchar(50);
-#-----> 携帯電話番号
-		CellularNumber			varchar(15);
-#-----> ＦＡＸ番号
-		FaxNumber			varchar(15);
-#-----> 電子メールアドレス
-		EmailAddress			varchar(50);
-#---->  減免事由
-		Reduction_Reason		varchar(02);
-		Reduction_Reason_Name		varchar(20);
-#---->  割引率
-		Discount			varchar(02);
-		Discount_Name			varchar(14);
-#---->  状態１から３
-		Condition1			varchar(02);
-		Condition1_Name			varchar(20);
-		Condition2			varchar(02);
-		Condition2_Name			varchar(20);
-		Condition3			varchar(02);
-		Condition3_Name			varchar(20);
-#---   入金方法区分
-		Ic_Code				varchar(2);
-		Ic_Code_Name			varchar(20);
-#-----> 地域連携
 		Community_Cid			varchar(20);
 		Community_Cid_Agree		varchar(5);
 #-----> 初回来院日等
@@ -103,8 +46,6 @@ xml_patientinfov2res {
 #-----> 保険組合せ負担割合
 		InsuranceCombination_Rate_Admission	varchar(04);
 		InsuranceCombination_Rate_Outpatient	varchar(04);
-#-----> 保険組合せ非表示区分
-		Insurance_Nondisplay			varchar(01);
 #-----> 
 		InsuranceProvider_Class			varchar(03);
             	InsuranceProvider_Number		varchar(08);
@@ -141,7 +82,7 @@ xml_patientinfov2res {
 #-----> 	労働保険番号
 			Accident_Insurance_Number	varchar(14);
 #-----> 	年金証書番号
-			PensionCertificate_Number	varchar(09);
+			PensionCertificate_Number	varchar(08);
 #-----> 	災害区分名称
 			Accident_Class			varchar(20);
 #-----> 	労働基準監督署コード
@@ -172,7 +113,7 @@ xml_patientinfov2res {
 				D_WholeName		varchar(100);
 				};
 		};
-        	} [30];
+        	} [20];
 		Care_Information   {
 		Insurance     {
                 	InsuranceProvider_Number	varchar(06);
@@ -186,21 +127,11 @@ xml_patientinfov2res {
                 	Certification_Date		varchar(10);
                 	Certificate_StartDate		varchar(10);
                 	Certificate_ExpiredDate		varchar(10);
-	            	} [50];
+	            	} [10];
 		Community_Disease  {
 			Target_Disease			varchar(05);
 	            	} [4];
     		};
-#---            妊婦設定
-		Personally_Information	{
-            		Pregnant_Class			varchar(05);
-    		};
-#-----> 	個人番号情報
-		Individual_Number  {
-			In_Id			varchar(10);
-			In_Number		varchar(20);
-			In_Description		varchar(100);
-	            	} [20];
     	};
    	};
 };

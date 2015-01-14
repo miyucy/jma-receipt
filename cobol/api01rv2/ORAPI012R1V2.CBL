@@ -32,12 +32,6 @@
       * 04.07.00     NACL-多々納  14/05/13  介護情報他追加対応
       * 04.07.00     NACL-多々納  14/11/XX  初回最終来院日他追加対応
       * 04.07.00     NACL-多々納  15/01/XX  労災保険編集追加対応
-      * 04.08.00     NACL-多々納  16/10/XX  勤務先から帰省先を追加対応
-      * 04.08.00     NACL-多々納  16/12/22  患者個人番号追加対応
-      * 04.08.00     NACL-多々納  17/04/XX  入金方法、状態等追加
-      *                                     保険組合せ非表示追加
-      * 04.08.00     NACL-多々納  17/05/XX  テスト患者・死亡区分追加
-      * 04.08.00     NACL-多々納  18/03/XX  妊婦設定追加
       *****************************************************************
       *
        ENVIRONMENT           DIVISION.
@@ -63,7 +57,6 @@
            03  FLG-JYURRK              PIC 9(01).
            03  FLG-PTRSIINF            PIC 9(01).
            03  FLG-LABOR-SIO           PIC 9(01).
-           03  FLG-PTMYNUMBER          PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
@@ -110,10 +103,6 @@
            03  WRK-FTNRATE             PIC 9(02)V99.
            03  WRK-Z9                  PIC 9.ZZ.
            03  WRK-FTNRATEMEI          PIC X(04).
-      *    割引率
-           03  WRK-RATE-EDIT.
-               05  WRK-RATE-EDITZ      PIC ZZZZZZZ.
-               05  WRK-RATE-TANI       PIC X(04).
       *
        01  WRK-XML-AREA.
            03  WRK-PTNUM               PIC X(20).
@@ -156,14 +145,6 @@
            COPY  "CPSK1010.INC".
       *
            COPY  "CPSK4002.INC".
-      *    状態情報
-           COPY    "CPSK1018.INC".
-      *    減免事由情報
-           COPY    "CPSK1026.INC".
-      *    割引率情報
-           COPY    "CPSK1027.INC".
-      *    入金方法
-           COPY    "CPSK1041.INC".
       *
       *    患者マスタ−
        01  PTNUM-REC.
@@ -197,10 +178,6 @@
       *    労働基準監督署マスタ
        01  LABOR-SIO-REC.
            COPY    "CPLABOR-SIO.INC".
-      *
-      *    患者個人番号テーブル
-       01  PTMYNUMBER-REC.
-           COPY    "CPPTMYNUMBER.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -245,13 +222,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APIPTA-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-PTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-PTXMLMAKE-SEC
       *
            DISPLAY   "*******************"
            DISPLAY   "* patient res end *"
@@ -285,7 +257,6 @@
            MOVE    WRK-HEN-TIME        TO  PTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -420,133 +391,6 @@
       *    コメント
            MOVE    PTINF-COMMENT-1     TO  PTRES-COMMENT-1
            MOVE    PTINF-COMMENT-2     TO  PTRES-COMMENT-2
-      *H28.10
-      *    勤務先情報
-           MOVE    PTINF-OFFICE-NAME   TO  PTRES-OFFICE-NAME
-           MOVE    PTINF-OFFICE-POST   TO  PTRES-OFFICE-ZIP-CODE
-           MOVE    PTINF-OFFICE-ADRS   TO  PTRES-OFFICE-ADDRESSES1
-           MOVE    PTINF-OFFICE-BANTI  TO  PTRES-OFFICE-ADDRESSES2
-           MOVE    PTINF-OFFICE-TEL    TO  PTRES-OFFICE-HPONE
-      *    連絡先情報
-           MOVE    PTINF-RENRAKU-NAME  TO  PTRES-RENRAKU-NAME
-           MOVE    PTINF-RENRAKU-ZOKUGARA
-                                       TO  PTRES-RENRAKU-ZOKUGARA
-           MOVE    PTINF-RENRAKU-POST  TO  PTRES-RENRAKU-ZIP-CODE
-           MOVE    PTINF-RENRAKU-ADRS  TO  PTRES-RENRAKU-ADDRESSES1
-           MOVE    PTINF-RENRAKU-BANTI TO  PTRES-RENRAKU-ADDRESSES2
-           MOVE    PTINF-RENRAKU-TEL1  TO  PTRES-RENRAKU-HPONE1
-           MOVE    PTINF-RENRAKU-TEL2  TO  PTRES-RENRAKU-HPONE2
-      *    帰省先
-           MOVE    PTINF-KISEI-NAME    TO  PTRES-KISEI-NAME
-           MOVE    PTINF-KISEI-POST    TO  PTRES-KISEI-ZIP-CODE
-           MOVE    PTINF-KISEI-ADRS    TO  PTRES-KISEI-ADDRESSES1
-           MOVE    PTINF-KISEI-BANTI   TO  PTRES-KISEI-ADDRESSES2
-           MOVE    PTINF-KISEI-TEL     TO  PTRES-KISEI-HPONE
-      *H29.5
-      *    テスト患者番号区分
-           MOVE    PTINF-TSTPTNUMKBN   TO  PTMODRES-TEST-PATIENT
-           IF      PTINF-TSTPTNUMKBN   =   SPACE
-               MOVE    "0"                 TO  PTMODRES-TEST-PATIENT
-           END-IF
-      *    死亡区分
-           MOVE    PTINF-DEATHKBN      TO  PTMODRES-DEATHKBN
-      *H29.4
-      *    通称名
-           MOVE    PTINF-NICKNAME      TO  PTRES-NICKNAME
-      *    職業
-           MOVE    PTINF-JOB           TO  PTRES-JOB
-      *    ＦＡＸ番号
-           MOVE    PTINF-FAX           TO  PTRES-FAX
-      *    携帯
-           MOVE    PTINF-KEITAI-TEL    TO  PTRES-KEITAI-TEL
-      *    メール
-           MOVE    PTINF-EMAIL         TO  PTRES-EMAIL
-      *    減免事由
-           MOVE    PTINF-DISCOUNT-KBN  TO  PTRES-DISCOUNTKBN
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1026"              TO  SYS-KANRICD
-           MOVE    PTINF-DISCOUNT-KBN  TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           PERFORM 900-SYSKANRI-KEYREAD-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1026-REC
-               MOVE    SYS-1026-DISCOUNT-BODY
-                                           TO  PTRES-DISCOUNTKBN-NAME
-           END-IF
-      *    割引率
-           MOVE    PTINF-DISCOUNT      TO  PTRES-DISCOUNT
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1027"              TO  SYS-KANRICD
-           MOVE    PTINF-DISCOUNT      TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           PERFORM 900-SYSKANRI-KEYREAD-SEC
-      *
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1027-REC
-               MOVE    SPACE               TO  WRK-RATE-EDIT
-               MOVE    SYS-1027-DISCOUNT-RATE
-                                       TO  WRK-RATE-EDITZ
-               EVALUATE    SYS-1027-TEIRITU
-               WHEN    "0"
-                   MOVE    "該当なし"      TO  PTRES-DISCOUNT-NAME
-               WHEN    "1"
-                   MOVE    "(%)"           TO  WRK-RATE-TANI
-                   MOVE    WRK-RATE-EDIT   TO  PTRES-DISCOUNT-NAME
-               WHEN    "2"
-                   MOVE    "(円)"          TO  WRK-RATE-TANI
-                   MOVE    WRK-RATE-EDIT   TO  PTRES-DISCOUNT-NAME
-               END-EVALUATE
-           END-IF
-      *    状態１〜３
-           PERFORM VARYING   IDX       FROM    1   BY  1
-                   UNTIL    (IDX       >  3        )
-               INITIALIZE                      SYSKANRI-REC
-               EVALUATE    IDX
-               WHEN    1
-                   MOVE    "1018"              TO  SYS-KANRICD
-                   MOVE    PTINF-CONDITION-1   TO  SYS-KBNCD
-                   MOVE    PTINF-CONDITION-1   TO  PTRES-CONDITION-KBN
-                                                          (IDX)
-               WHEN    2
-                   MOVE    "1019"              TO  SYS-KANRICD
-                   MOVE    PTINF-CONDITION-2   TO  SYS-KBNCD
-                   MOVE    PTINF-CONDITION-2   TO  PTRES-CONDITION-KBN
-                                                          (IDX)
-               WHEN    3
-                   MOVE    "1020"              TO  SYS-KANRICD
-                   MOVE    PTINF-CONDITION-3   TO  SYS-KBNCD
-                   MOVE    PTINF-CONDITION-3   TO  PTRES-CONDITION-KBN
-                                                          (IDX)
-               END-EVALUATE
-               MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
-               MOVE    SPA-SYSYMD          TO  SYS-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-               PERFORM 900-SYSKANRI-KEYREAD-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    SYSKANRI-REC        TO  SYS-1018-REC
-                   MOVE    SYS-1018-CONDITION-BODY
-                                               TO  PTRES-CONDITION-NAME
-                                                           (IDX)
-               END-IF
-           END-PERFORM
-      *    入金方法
-           MOVE    PTINF-NYUKIN-HOHO   TO  PTRES-IC-CODE
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1041"              TO  SYS-KANRICD
-           MOVE    PTINF-NYUKIN-HOHO   TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           PERFORM 900-SYSKANRI-KEYREAD-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1041-REC
-               MOVE    SYS-1041-NYKN-TANNAME
-                                           TO  PTRES-IC-CODE-NAME
-           END-IF
       *
       *    保険種類変換処理
            PERFORM 200210-HKNCOMBI-HEN-SEC
@@ -566,9 +410,6 @@
       *H26.11
       *    最終来院日他編集
            PERFORM 20023-LASTYMDHEN-SEC
-      *H26.12
-      *    患者個人番号編集
-           PERFORM 20023-PTMYNUMBER-HEN-SEC
       *
            .
        2002-PTINF-HENSYU-EXT.
@@ -682,7 +523,7 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL      (FLG-PTCARE-NINTEI   =   1  )
-                          OR  (IDX                 >=  50 )
+                          OR  (IDX                 >=  10 )
                ADD     1                   TO  IDX
       *        要介護状態
                MOVE    PTCRNIN-CAREJOTAICD TO
@@ -797,36 +638,6 @@
                END-IF
            END-IF
       *
-      *H30.4
-      *    妊婦設定
-           INITIALIZE                  PTCONF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
-           MOVE    PTINF-PTID          TO  PTCONF-PTID
-           MOVE    "NINPUKBN"          TO  PTCONF-CKEY
-      *
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptconf"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 930-PTCONF-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTCONF
-               INITIALIZE                  PTCONF-REC
-           END-IF
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-PTCONF          =   ZERO
-               IF      PTCONF-CDATA(1:1)   =   "1"
-                   MOVE    "True"          TO  PTRES-NINPUKBN
-               END-IF
-           END-IF
-      *
            .
        20022-PTCONF-HEN-EXT.
            EXIT.
@@ -893,52 +704,6 @@
            .
        20023-LASTYMDHEN-EXT.
            EXIT.
-      *H26.12
-      *****************************************************************
-      *    患者個人番号編集処理
-      *****************************************************************
-       20023-PTMYNUMBER-HEN-SEC       SECTION.
-      *
-      *    地域包括診療対象疾病検索
-           INITIALIZE                  PTMYNUMBER-REC
-           MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
-           MOVE    PTINF-PTID          TO  PTMYNUM-PTID
-      *
-           MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 930-PTMYNUMBER-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTMYNUMBER
-               INITIALIZE                  PTMYNUMBER-REC
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL      (FLG-PTMYNUMBER      =   1  )
-                          OR  (IDX                 >=  20 )
-               ADD     1                   TO  IDX
-               MOVE    PTMYNUM-ID-KEY      TO  PTRES-ID-KEY
-                                                             (IDX)
-               MOVE    PTMYNUM-MY-NUMBER   TO  PTRES-MY-NUMBER
-                                                             (IDX)
-               MOVE    PTMYNUM-DESCRIPTION TO  PTRES-DESCRIPTION
-                                                             (IDX)
-      *
-               MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 930-PTMYNUMBER-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       20023-PTMYNUMBER-HEN-EXT.
-           EXIT.
       *
       *
       *****************************************************************
@@ -969,15 +734,7 @@
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "patientinfores"    TO  PTRES-RECORDNAME
-      *ver.5.0
-      **** MOVE    1                   TO  PTRES-MODE
-           MOVE    2                   TO  PTRES-MODE
-      *ver.5.0
-           IF      APIPTA-FORMAT      =   "json"
-               MOVE    3                   TO  PTRES-MODE
-               MOVE    "application/json"  TO  APIPTA-CONTENT-TYPE
-           END-IF
-      *
+           MOVE    1                   TO  PTRES-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTINFORES
@@ -1031,14 +788,13 @@
       *
       *    保険組合せ編集処理
            INITIALIZE                      ORCSAPIHKNAREA
-           MOVE    "1"                 TO  ORCSAPIHKN-KBN3
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
       *
       *    出力領域保険情報編集
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   30  )
+                   UNTIL      (IDX     >   20  )
                          OR   (ORCSAPIHKN-THKNCOMBI (IDX)
                                            =   SPACE  )
                PERFORM 2002101-HKNHEN-TBL-SEC
@@ -1097,22 +853,6 @@
       *H26.11
       *    保険組合せ負担割合
            PERFORM 20021011-HKNCOMBI-FTNHEN-SEC
-      *H29.4
-      *    保険組合せ非表示
-           EVALUATE    ORCSAPIHKN-HYOJIKBN (IDX)
-               WHEN    "2"
-      *            入院非表示
-                   MOVE    "I"         TO  PTRES-COMBINATION-HYOJI
-                                                            (IDX)
-               WHEN    "3"
-      *            外来非表示
-                   MOVE    "O"         TO  PTRES-COMBINATION-HYOJI
-                                                            (IDX)
-               WHEN    OTHER
-      *            非表示なし
-                   MOVE    "N"         TO  PTRES-COMBINATION-HYOJI
-                                                            (IDX)
-           END-EVALUATE
       *
       *    公費情報
            PERFORM VARYING     IDY2    FROM    1   BY  1
@@ -1703,25 +1443,6 @@
            .
        900-SYSKANRI-KEY10-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    患者個人番号情報データ読込処理
-      *****************************************************************
-       930-PTMYNUMBER-READ-SEC         SECTION.
-      *
-           PERFORM 910-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-PTMYNUMBER
-               MOVE    MCPDATA-REC         TO  PTMYNUMBER-REC
-           ELSE
-               MOVE    1                   TO  FLG-PTMYNUMBER
-               INITIALIZE                  PTMYNUMBER-REC
-           END-IF
-      *
-           .
-       930-PTMYNUMBER-READ-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    テーブル検索処理
