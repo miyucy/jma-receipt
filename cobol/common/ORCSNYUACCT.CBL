@@ -3652,6 +3652,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        40024-NYUINACCT-HEN-SEC          SECTION.
       *
+      *    短期滞在の算定済カウント
            IF     (NACCT-ZAISKBKBN     =   "1")   AND
                   (FLG-TANKI           =   1)
                PERFORM   210-TANKI-NISSU-SEC
@@ -3670,7 +3671,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE     ZERO        TO  NACCT-DAY (IDX-D)
                ELSE
                    MOVE    WRK-ACT-DAY  TO  NACCT-DAY (IDX-D)
-      *            短期滞在で入院登録時以外はゼロをセット
+      *            短期滞在で既に入院会計カレンダーの算定がある場合は
+      *            ゼロをセット
                    IF   (FLG-TANKI     =    1)   AND
                         (WRK-TANKI-NISSU  NOT =  ZERO) AND
                         (NACCT-ZAISKBKBN     =     "1")
