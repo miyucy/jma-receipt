@@ -12895,74 +12895,43 @@
                PERFORM   4801-TENROOM-EDIT-SEC
            END-IF
       *----入院年月日翌月分の入院会計再作成処理--------------------
-      *----短期滞在手術等基本料２及び３の場合は処理しないこと------
-           IF   (PTNYUINRRK-TOKUTEI-KBN   =   "3")   AND
-                (PTNYUINRRK-TOKUTEI-NYUIN =   "21" OR  "50"  OR
-                                              "52" OR  "53"  OR
-                                              "97" OR  "98"  OR
-                                              "99" OR  "9A"  OR
-                                              "9B" OR  "9C"  OR
-                                              "9D" OR  "9E"  OR
-                                              "9F" OR  "9G"  OR
-                                              "9H" OR  "9I"  OR
-                                              "9J" OR  "9K"  OR
-                                              "9L" OR  "9M"  OR
-                                              "9N" OR  "9O"  OR
-                                              "9P" OR  "9Q"  OR
-                                              "9R" OR  "9S"  OR
-                                              "9T" OR  "9U"  OR
-                                              "9V" OR  "9W"  OR
-                                              "9X" OR  "9Y"  OR
-                                              "9Z" OR  "A0"  OR
-                                              "A1" OR  "A2"  OR
-                                              "A3" OR  "A4"  OR
-                                              "A5" OR  "A6"  OR
-                                              "A7" OR  "A8"  OR
-                                              "A9" OR  "AA"  OR
-                                              "AB" OR  "AC"  OR
-                                              "AD" OR  "AE"  OR
-                                              "AF" OR  "AG"  OR
-                                              "AW" OR  "AX")
-             CONTINUE
-           ELSE
-             DISPLAY  "####  NYUIN-KAIKEI  SAI-SAKUSEI-SHORI ####"
-             DISPLAY  "LNK-SCNYUACCT-STSRYYMD = "
-                       LNK-SCNYUACCT-STSRYYMD
-             DISPLAY  "PTNYUINRRK-NYUINYMD = "
-                       PTNYUINRRK-NYUINYMD
-      *      会計作成用の年月算出（入院年月＋１月）
-             IF      FLG-SAI-SAKUSEI     =   1
-                 MOVE    PTNYUINRRK-NYUINYMD(1:6)  TO  WRK-SAI-SRYYM
-                 MOVE    WRK-SAI-I01-TOKNYUIN-CD   TO
-                                          SPA-GMN-I01-TOKNYUIN-CD
-             ELSE
-                 MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)  TO  WRK-SAI-SRYYM
-             END-IF
-             IF      WRK-SAI-SRYMR        =  12
-                 COMPUTE   WRK-SAI-SRYYR =   WRK-SAI-SRYYR + 1
-                 MOVE      1             TO  WRK-SAI-SRYMR
-             ELSE
-                 COMPUTE   WRK-SAI-SRYMR =   WRK-SAI-SRYMR + 1
-             END-IF
-             DISPLAY "WRK-SAI-SRYYM = " WRK-SAI-SRYYM
-             MOVE    WRK-SAI-SRYYM    TO  WRK-SANTEISTYMD(1:6)
-             MOVE    "01"             TO  WRK-SANTEISTYMD(7:2)
-             MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-IDOYMD
-             MOVE    WRK-SANTEISTYMD  TO  PTNYUINRRK-TENNYUYMD
-             MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-NYUINYMD
-             MOVE    1                TO  FLG-SAI-SAKUSEI2
-             PERFORM 4801-TENROOM-EDIT-SEC
-             IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
-                 MOVE    SPA-GMN-I01-TOKNYUIN-CD
-                                           TO   WRK-SAI-I01-TOKNYUIN-CD
-                 MOVE    SPACE             TO   SPA-GMN-I01-TOKNYUIN-CD
-                 MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
-                 MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
-                 MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
-                 MOVE    WRK-SANTEISTYMD   TO   SPA-NAI-I01-NYUINYMD
-                 PERFORM   4801-TENROOM-EDIT-SEC
-             END-IF
-           END-IF
+            DISPLAY  "####  NYUIN-KAIKEI  SAI-SAKUSEI-SHORI ####"
+            DISPLAY  "LNK-SCNYUACCT-STSRYYMD = "
+                      LNK-SCNYUACCT-STSRYYMD
+            DISPLAY  "PTNYUINRRK-NYUINYMD = "
+                      PTNYUINRRK-NYUINYMD
+      *     会計作成用の年月算出（入院年月＋１月）
+            IF      FLG-SAI-SAKUSEI     =   1
+                MOVE    PTNYUINRRK-NYUINYMD(1:6)  TO  WRK-SAI-SRYYM
+                MOVE    WRK-SAI-I01-TOKNYUIN-CD   TO
+                                         SPA-GMN-I01-TOKNYUIN-CD
+            ELSE
+                MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)  TO  WRK-SAI-SRYYM
+            END-IF
+            IF      WRK-SAI-SRYMR        =  12
+                COMPUTE   WRK-SAI-SRYYR =   WRK-SAI-SRYYR + 1
+                MOVE      1             TO  WRK-SAI-SRYMR
+            ELSE
+                COMPUTE   WRK-SAI-SRYMR =   WRK-SAI-SRYMR + 1
+            END-IF
+            DISPLAY "WRK-SAI-SRYYM = " WRK-SAI-SRYYM
+            MOVE    WRK-SAI-SRYYM    TO  WRK-SANTEISTYMD(1:6)
+            MOVE    "01"             TO  WRK-SANTEISTYMD(7:2)
+            MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-IDOYMD
+            MOVE    WRK-SANTEISTYMD  TO  PTNYUINRRK-TENNYUYMD
+            MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-NYUINYMD
+            MOVE    1                TO  FLG-SAI-SAKUSEI2
+            PERFORM 4801-TENROOM-EDIT-SEC
+            IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
+                MOVE    SPA-GMN-I01-TOKNYUIN-CD
+                                          TO   WRK-SAI-I01-TOKNYUIN-CD
+                MOVE    SPACE             TO   SPA-GMN-I01-TOKNYUIN-CD
+                MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
+                MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
+                MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
+                MOVE    WRK-SANTEISTYMD   TO   SPA-NAI-I01-NYUINYMD
+                PERFORM   4801-TENROOM-EDIT-SEC
+            END-IF
       *
            .
        4801-NYUKAIKEI-EDIT-EXT.
