@@ -3566,7 +3566,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        40024-NYUINACCT-HEN-SEC          SECTION.
       *
       *    回数セット
-           DISPLAY "FLG-TANKI-NASI ========== " FLG-TANKI-NASI
            MOVE    WRK-ACT-STYMD(7:2)  TO  IDX1
            MOVE    WRK-ACT-EDYMD(7:2)  TO  IDX2
            PERFORM VARYING     IDX-D   FROM    IDX1   BY  1
@@ -3579,6 +3578,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE     ZERO        TO  NACCT-DAY (IDX-D)
                ELSE
                    MOVE    WRK-ACT-DAY  TO  NACCT-DAY (IDX-D)
+      *            短期滞在で入院登録時以外はゼロをセット
+                   IF   (FLG-TANKI     =    1)   AND
+                        (LNK-SCNYUACCT-SYORI-KBN  NOT =  "1") AND
+                        (NACCT-ZAISKBKBN     =     "1")
+                      MOVE     ZERO        TO  NACCT-DAY (IDX-D)
+                   END-IF
                END-IF
            END-PERFORM
       *
