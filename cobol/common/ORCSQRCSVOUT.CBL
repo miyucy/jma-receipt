@@ -53,7 +53,6 @@
       *    ファイル指定領域
        01  FILE-NAME1              PIC X(1024).
        01  FILE-NAME2              PIC X(1024).
-      *
       *    ファイル指定領域
       *
        01  FILE-NAME1-PARA.
@@ -106,6 +105,8 @@
       *
            03  IDXF                PIC 9(04).
            03  IDXF2               PIC 9(04).
+           03  IDX-MAX             PIC 9(04).
+           03  IDS                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -164,13 +165,13 @@
       *
            03  WRK-DAYCNT              PIC 9(02).
       *
+           03  WRK-PTNUM               PIC X(15).
+           03  WRK-BIKO-FILE           PIC X(100).
+      *
       *    ＱＲテーブル
        01  TBL-QRCSV-AREA.
            03  TBL-QRCSV-REC.
                05  TBL-QRCSV-DATA        PIC X(140)  OCCURS  11.
-      *
-      *    ＱＲ作成用
-      *    COPY    "CPORCSQRENCODE.INC".
       *
       *    一般名例外コードテーブル
            COPY    "CMGENERICTBL.INC".
@@ -370,18 +371,47 @@
                                        ORCSMCNDATEAREA
            ACCEPT  SYS-TIME            FROM    TIME
       *
+      *    患者番号変換（６桁以下は６桁とする）
+           PERFORM VARYING    IDX      FROM    15  BY  -1
+                   UNTIL     (IDX      <   1    )
+                          OR (IDX-MAX  >   ZERO )
+               IF      ORCSQRCSV-PTNUM(IDX:1)  NOT =   SPACE
+                   MOVE    IDX             TO  IDX-MAX
+               END-IF
+           END-PERFORM
+           IF      IDX-MAX             <   6
+               MOVE    ZERO                TO  WRK-PTNUM
+               COMPUTE IDS                 =   6    -  IDX-MAX  +  1
+               MOVE    ORCSQRCSV-PTNUM (1:IDX-MAX)
+                                           TO  WRK-PTNUM(IDS:)
+           ELSE
+               MOVE    ORCSQRCSV-PTNUM     TO  WRK-PTNUM
+           END-IF
+      *
            MOVE    SPACE               TO  FILE-NAME2
            STRING  WRK-CSV-FILENAME
                    "/"
                    ORCSQRCSV-HOSPCD
                    "-"
-                   ORCSQRCSV-PTNUM
+                   WRK-PTNUM
                    "-"
                    SMCNDATE-YMD
                    SYS-TIME
                    ".qr.dat"
                                        DELIMITED  BY  SPACE
                                        INTO   FILE-NAME2
+           END-STRING
+      *    備考レコード用
+           MOVE    SPACE               TO  WRK-BIKO-FILE
+           STRING  ORCSQRCSV-HOSPCD
+                   "-"
+                   WRK-PTNUM
+                   "-"
+                   SMCNDATE-YMD
+                   SYS-TIME
+                   ".qr.dat"
+                                       DELIMITED  BY  SPACE
+                                       INTO   WRK-BIKO-FILE
            END-STRING
            .
        100-CVSFILE-HEN-EXT.
@@ -474,7 +504,7 @@
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "11"                TO  TBL-QRCSV-DATA (1)
       *    患者番号
-           MOVE    ORCSQRCSV-PTNUM     TO  TBL-QRCSV-DATA (2)
+           MOVE    WRK-PTNUM           TO  TBL-QRCSV-DATA (2)
       **   MOVE    ORCSQRCSV-NAME(1:40)
       **                               TO  TBL-QRCSV-DATA (3)
       *    拡張漢字変換
@@ -685,6 +715,15 @@
                MOVE    4                   TO  TBL-MAX
                PERFORM 400-DATAOUT-SEC
            END-PERFORM
+      *!!
+      *    連携用コード
+           MOVE    SPACE               TO  TBL-QRCSV-AREA
+           MOVE    "81"                TO  TBL-QRCSV-DATA (1)
+           MOVE    "999"               TO  TBL-QRCSV-DATA (2)
+           MOVE    "51"                TO  TBL-QRCSV-DATA (3)
+           MOVE    WRK-BIKO-FILE       TO  TBL-QRCSV-DATA (4)
+           MOVE    4                   TO  TBL-MAX
+           PERFORM 400-DATAOUT-SEC
       *
            .
        100-HEAD-SYORI-EXT.
@@ -1013,16 +1052,16 @@
                    END-IF
                END-PERFORM
            END-IF
+      *?
       **** 用法がなければ空白
-      *    IF      WRK-RP-11           =   ZERO
-      *        MOVE    SPACE               TO  TBL-QRCSV-AREA
-      *        MOVE    "111"               TO  TBL-QRCSV-DATA (1)
-      *        MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
-      *        MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
-      *        MOVE    "医師の指示通りに"  TO  TBL-QRCSV-DATA (5)
-      *        MOVE    6                   TO  TBL-MAX
-      *        PERFORM 400-DATAOUT-SEC
-      **** END-IF
+           IF      WRK-RP-11           =   ZERO
+               MOVE    SPACE               TO  TBL-QRCSV-AREA
+               MOVE    "111"               TO  TBL-QRCSV-DATA (1)
+               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+               MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
+               MOVE    7                   TO  TBL-MAX
+               PERFORM 400-DATAOUT-SEC
+           END-IF
            .
        2002-RP111-SYORI-EXT.
            EXIT.
@@ -1065,7 +1104,9 @@
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX2)
                                        TO  TBL-QRCSV-DATA (5)
       *    １日回数
-           MOVE    WRK-DAYCNT          TO  TBL-QRCSV-DATA (6)
+           MOVE    WRK-DAYCNT          TO  WRK-ZZZ
+           PERFORM 20011-SUJIHEN-SEC
+           MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (6)
            MOVE    7                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
            ADD     1                   TO  WRK-RP-11

@@ -994,10 +994,8 @@
                END-IF
       *H27.1
       *        CSV出力
-      *        医師・交付日未設定は作成なし
-               IF      (WRK-DRCD           =   SPACE )
-                   OR  (WRK-DRNAME         =   SPACE )
-                   OR  (WRK-KOFYMD         =   SPACE )
+      *        交付日未設定は作成なし
+               IF      (WRK-KOFYMD         =   SPACE )
       *            点数マスタなし
                    OR  (FLG-QRCHK          =   1     )
       *            院外処方のみ
