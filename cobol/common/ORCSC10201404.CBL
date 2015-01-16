@@ -75,7 +75,7 @@
       * 04.08.00     NACL-多々納  13/09/XX  労災同日再診コード追加対応
       * 04.08.00     NACL-多々納  14/03/XX  Ｈ２６年４月改正対応
       * 04.08.00     NACL-多々納  14/12/12  Ｈ２７年１月改正対応
-      * 04.08.00     NACL-多々納  14/12/XX  労災読み替え加算変換対応
+      * 04.08.00     NACL-多々納  15/01/16  労災読み替え加算変換対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1929,29 +1929,28 @@
       *H26.12
       *労災　読み替え加算対象外は健保コード
       *    労災保険の時、外来管理加算はエラーとする
-      **** IF      WRK-KBN         =   "G"
-      *        MOVE    "8001"          TO  WRK-ERRCD
-      *        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-      *        GO      TO      100111-KEIZOKU-CHK-EXT
-      **** END-IF
+      *H27.2から 外来管理加算の編集変更
+           IF      SPA-SRYYMD          >=  "20150201"
+               CONTINUE
+           ELSE
+      *
+           IF      WRK-KBN         =   "G"
+               MOVE    "8001"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+               GO      TO      100111-KEIZOKU-CHK-EXT
+           END-IF
+      *
+           END-IF
       *
       *    労災保険の外来管理加算の判定
            MOVE    ZERO                TO  FLG-GAIRAI
-      ***  SET     TBL-RSI             TO  1
-      *    SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
-      *       AT   END
-      *            MOVE    ZERO                TO  FLG-ARI
-      *            MOVE    SPACE               TO  WRK-KBN
-      *        WHEN    WRK-COM-INPUTCD(IDX-Z)  =   TBLR-SRYCD (TBL-RSI)
-      *            MOVE    1                   TO  FLG-ARI
-      *            MOVE    TBLR-KBN(TBL-RSI)   TO  WRK-KBN
-      **** END-SEARCH
       *    労災の外来管理加算点数セット
-      **** IF      WRK-KBN             =   "G"
            IF      WRK-COM-INPUTCD(IDX-Z)  =   TBLRG-SRYCD
-      *H26.12
-                                           OR  TBLG-SRYCD
-      *H26.12
+      *
+      *H27.2から 外来管理加算の編集変更
+              OR ((SPA-SRYYMD              >=  "20150201" )  AND
+                  (WRK-COM-INPUTCD(IDX-Z)  =   TBLG-SRYCD ))
+      *
                IF      SPA-RSI-HKNKBN      =   "3"
       *            アフターケアの時エラー
                    MOVE    "8007"          TO  WRK-ERRCD
@@ -4495,7 +4494,6 @@
       *****************************************************************
        10012-DUMMYSYORI-SEC          SECTION.
       *
-      *TEST
       *H24.4
       *    在宅判定
            IF      WRK-COM-SRYKBN (IDX-Z)  =   "14"
@@ -7044,21 +7042,24 @@
            END-IF
       *
       *!!!!!!!!!!!!!
-      *H26.12 
-      *労災　外来管理加算変換
-           IF     (WRK-GAI-CNT         >=  1 )
-             AND  (IDX-GAIKAN          >   ZERO )
-             AND  (WRK-COM-INPUTCD (IDX-GAIKAN)  =  TBLG-SRYCD)
-      *        労災の外来管理加算へ
-               MOVE    TBLRG-SRYCD         TO  WRK-SRYCD
-               PERFORM 2001-GAIKASAN-CNG-SEC
-           END-IF
-           IF     (WRK-GAI-CNT         =   ZERO )
-             AND  (IDX-GAIKAN          >   ZERO )
-             AND  (WRK-COM-INPUTCD (IDX-GAIKAN)  =  TBLRG-SRYCD)
-      *        外来管理加算へ
-               MOVE    TBLG-SRYCD          TO  WRK-SRYCD
-               PERFORM 2001-GAIKASAN-CNG-SEC
+      *H27.2から外来管理加算の編集変更
+           IF      SPA-SRYYMD          >=  "20150201"
+      *
+      *    労災  外来管理加算変換
+               IF     (WRK-GAI-CNT         >=  1 )
+                 AND  (IDX-GAIKAN          >   ZERO )
+                 AND  (WRK-COM-INPUTCD (IDX-GAIKAN)  =  TBLG-SRYCD)
+      *            労災の外来管理加算へ
+                   MOVE    TBLRG-SRYCD         TO  WRK-SRYCD
+                   PERFORM 2001-GAIKASAN-CNG-SEC
+               END-IF
+               IF     (WRK-GAI-CNT         =   ZERO )
+                 AND  (IDX-GAIKAN          >   ZERO )
+                 AND  (WRK-COM-INPUTCD (IDX-GAIKAN)  =  TBLRG-SRYCD)
+      *            外来管理加算へ
+                   MOVE    TBLG-SRYCD          TO  WRK-SRYCD
+                   PERFORM 2001-GAIKASAN-CNG-SEC
+               END-IF
            END-IF
       *!!!!!!!!!!!!!
       *
@@ -7165,7 +7166,7 @@
        20011-RSIGAIKAN-SYORI-EXT.
            EXIT.
       *!!!!!!!!!!!!!
-      *H26.12 
+      *H27.2 
       *労災　外来管理加算変換
       *****************************************************************
       *    外来管理加算コード追加処理
@@ -7173,11 +7174,6 @@
        2001-GAIKASAN-CNG-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-ARI
-      *TEST
-            DISPLAY "2001-GAIKASAN-CNG-SEC"
-               ",WRK-SRYCD:"  WRK-SRYCD
-      *TEST
-      *
       *
            MOVE    ZERO                TO  FLG-ADD
       *    点数マスタ編集・基本チェック
