@@ -72,12 +72,6 @@
       *  04.07.00    NACL-多々納  13/04/XX  労災レセ電コード変換対応
       *  04.07.00    NACL-多々納  13/10/XX  第三者行為対応
       *  04.08.00    NACL-多々納  14/05/XX  一時データ変更対応
-      *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
-      *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
-      *  04.08.00    NACL-多々納  16/06/XX  中心静脈（植入型カテーテル）対応
-      *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
-      *  04.08.00    NACL-多々納  16/10/XX  一括変更項目桁数対応
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -235,9 +229,6 @@
            03  FLG-NYUGAICHG       PIC 9(01).
       *H24.5
            03  FLG-JYURRK-OK       PIC 9(01).
-           03  FLG-SANTEIDATA      PIC 9(01).
-      *
-           03  FLG-HAORI           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -319,8 +310,6 @@
            03  IDX-C               PIC 9(04).
       *
            03  IDXD                PIC 9(04).
-      *!!!!!
-           03  IDX-GEN             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -528,9 +517,6 @@
       *    入院エラー
            03  WRK-NYUIN-ERR           PIC X(200).
            03  IDX-N2                  PIC 9(02).
-      *    入院エラー２
-           03  WRK-NYUIN-ERR2           PIC X(200).
-           03  IDX-N22                  PIC 9(02).
       *    受診履歴追加用
            03  WRK-RRK-HKNKBN          PIC X(01).
            03  WRK-RRK-RENNUM          PIC 9(01).
@@ -634,13 +620,13 @@
                    07  WRK-DAY         PIC 9(03).
                    07  WRK-DAYDEL      PIC 9(01).
            03  WRK-IKKATU-TBL.
-               05  WRK-IKKATU-OCC          OCCURS   99.
-                   07  WRK-KAISUT          PIC X(99).
-                   07  WRK-DAYG            OCCURS   99.
-                       09  WRK-DAY1            PIC X(99).
-                       09  WRK-DAY2            PIC X(99).
+               05  WRK-IKKATU-OCC          OCCURS   60.
+                   07  WRK-KAISUT          PIC X(60).
+                   07  WRK-DAYG            OCCURS   30.
+                       09  WRK-DAY1            PIC X(60).
+                       09  WRK-DAY2            PIC X(60).
            03  WRK-KAISU-9              PIC 9(03).
-           03  WRK-DAYG-9               OCCURS   99.
+           03  WRK-DAYG-9               OCCURS   30.
                05  WRK-DAY1-9               PIC 9(02).
                05  WRK-DAY2-9               PIC 9(02).
            03  WRK-IKKATUDAY            PIC 9(02).
@@ -651,7 +637,7 @@
            03  IDW4                     PIC 9(04).
            03  IDW5                     PIC 9(04).
            03  IDW9                     PIC 9(04).
-           03  WRK-HZNSU              PIC X(99).
+           03  WRK-HZNSU              PIC X(60).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -672,11 +658,6 @@
       *H25.7
       *    労災コード置換えテーブル 
            COPY   "CMRSICNGTBL.INC".
-      *H28.4
-      * 湿布薬（減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
-      *
-      *
       *
       *    受診履歴
        01  WRK-JYURRK-REC.
@@ -709,13 +690,9 @@
       *
            COPY    "CPSK0041.INC".
       *    会計照会機能情報
-           COPY    "CPSK1043.INC".
+           COPY  "CPSK1043.INC".
       * 
-           COPY    "CPSK1041.INC".
-      *
-           COPY    "CPSK1030.INC".
-      *
-           COPY    "CPSK1038.INC".
+           COPY  "CPSK1041.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -899,9 +876,6 @@
       *
       *****COPY    "ORCA-DBPATH".
       *
-      *    院外処方一般名編集パラメタ
-           COPY    "CPORCSGETGENERIC.INC".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -913,22 +887,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA24SCRAREA.INC".
-      *    COPY    "J02.INC".
-      *    COPY    "J021.INC".
-      *    COPY    "J022.INC".
-      *    COPY    "J025.INC".
-      *    COPY    "J026.INC".
-      *    COPY    "J03.INC".
-      *    COPY    "J04.INC".
-      *    COPY    "J041.INC".
-      *    COPY    "J042.INC".
-      *    COPY    "J98.INC".
-      *    COPY    "J99.INC".
-      *    COPY    "JERR.INC".
-      *    COPY    "JERR2.INC".
-      *    COPY    "JID1.INC".
-      *    COPY    "JID2.INC".
+           COPY    "J02.INC".
+           COPY    "J021.INC".
+           COPY    "J022.INC".
+           COPY    "J025.INC".
+           COPY    "J026.INC".
+           COPY    "J03.INC".
+           COPY    "J04.INC".
+           COPY    "J041.INC".
+           COPY    "J042.INC".
+           COPY    "J98.INC".
+           COPY    "J99.INC".
+           COPY    "JERR.INC".
+           COPY    "JERR2.INC".
+           COPY    "JID1.INC".
+           COPY    "JID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -959,12 +932,6 @@
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
-      *HAORI対応
-               WHEN    "API"           ALSO    ANY
-                   PERFORM 300-HAORI-SYORI-SEC
-      *            画面表示なし
-                   MOVE    1                   TO  FLG-END
-      *
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
@@ -981,9 +948,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-      *    IF      FLG-END2            =   ZERO
-      *        PERFORM 1003-J02SPA-OUT-SEC
-      *    END-IF
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-J02SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-J01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -1810,7 +1777,7 @@
            END-IF
            MOVE    ZERO                TO  SPA-SRYKA-MAX
            PERFORM VARYING     IDX     FROM    2   BY  1
-                   UNTIL       (IDX            >   100  )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
       *
@@ -1869,13 +1836,9 @@
       *    診療順
            PERFORM 3007-SRYKBN-FLG-HEN-SEC
       *
-      *H28.4
-      *     一般名記載設定処理
-           PERFORM 3008-GENERIC-HEN-SEC
-      *
            IF     (SPA-PTID            =   ZERO )  AND
                   (SPA-GMN-PTID        =   ZERO )
-               MOVE    00                  TO  SPA-GMN-CUR
+               MOVE    00              TO  SPA-GMN-CUR
            ELSE
                MOVE    1                   TO  SPA-GMN-CUR
                PERFORM 3000-PTID-INIT-SEC
@@ -1942,8 +1905,6 @@
       *    画面編集処理
       *****************************************************************
        3000-PTID-INIT-SEC                  SECTION.
-      *
-           MOVE    SPACE               TO  WRK-HZN-ERRCD
       *
       *    保険一覧編集
            PERFORM 3008-HKNCOMBI-HEN-SEC
@@ -2064,7 +2025,6 @@
            ELSE
                PERFORM 3106-PARA-DEL-SEC
            END-IF
-      *
       *
            IF     (SPA-MOTOPG2(1:3)    =   "K02" OR  "U02"  ) OR
                   (SPA-MOTOPG          =   "KT01"           )  OR
@@ -2227,53 +2187,6 @@
        3005-SRYKA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   一般名記載設定処理
-      *****************************************************************
-       3008-GENERIC-HEN-SEC             SECTION.
-      *
-      *    後発医薬品への変更可署名
-           MOVE    SPACE               TO  SYS-1030-REC
-           INITIALIZE                  SYS-1030-REC
-           MOVE    "1030"              TO  SYS-1030-KANRICD
-           MOVE    "*"                 TO  SYS-1030-KBNCD
-           MOVE    SPA-NAI-SRYYM       TO  SYS-1030-STYUKYMD(1:6)
-           MOVE    "01"                TO  SYS-1030-STYUKYMD(7:2)
-           MOVE    SYS-1030-STYUKYMD   TO  SYS-1030-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
-           MOVE    SYS-1030-REC        TO  SYSKANRI-REC
-           PERFORM 9001-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1030-REC
-               MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
-           ELSE
-               MOVE    "0"                 TO  SPA-KOUHATUKA
-           END-IF
-      *H28.4
-      *    一般名表示
-           MOVE    "0"                 TO  SPA-GENERICFLG
-           IF      SPA-NAI-SRYYM       >=  "201604"
-               MOVE    SPACE               TO  SYS-1038-REC
-               INITIALIZE                  SYS-1038-REC
-               MOVE    "1038"              TO  SYS-1038-KANRICD
-               MOVE    "*"                 TO  SYS-1038-KBNCD
-               MOVE    SPA-NAI-SRYYM       TO  SYS-1038-STYUKYMD(1:6)
-               MOVE    "01"                TO  SYS-1038-STYUKYMD(7:2)
-               MOVE    SYS-1038-STYUKYMD   TO  SYS-1038-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
-               MOVE    SYS-1038-REC        TO  SYSKANRI-REC
-               PERFORM 9001-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    SYSKANRI-REC        TO  SYS-1038-REC
-                   IF      SYS-1038-GENERICFLG     =   "2"
-                       MOVE    "1"                 TO  SPA-GENERICFLG
-                   END-IF
-               END-IF
-           END-IF
-      *
-           .
-       3008-GENERIC-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *   保険一覧編集処理
       *****************************************************************
        3008-HKNCOMBI-HEN-SEC             SECTION.
@@ -2305,7 +2218,7 @@
            MOVE    1                   TO  IDH
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
-                              (IDH     >=  40              )
+                              (IDH     >=  20              )
                ADD     1                   TO  IDH
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        TO  SPA-GMN-THKNCOMBINUM (IDH)
@@ -2742,7 +2655,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-JYURRK-ERR      =   1
                IF      SPA-ERRCD           =   SPACE
-                   MOVE    "0023"          TO  WRK-HZN-ERRCD
+                   MOVE    "0023"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -2985,21 +2898,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 990-DBCLOSE-SEC
            END-IF
       *
-      *H28.4
-      *    一般名称編集
-           INITIALIZE                  ORCSGETGENERICAREA
-           IF      (ACCT-SRYKBN        =   "14"
-                                       OR  "21"
-                                       OR  "22"
-                                       OR  "23" )
-              AND  (ACCT-ZAITEN        =   ZERO )
-              AND  (ACCT-HKNCOMBI  NOT =   "9999")
-              AND  (ACCT-SRYYM         >=  "201604")
-               PERFORM 31012-GENERIC-SEC
-           END-IF
-           MOVE    ZERO                TO  IDX-GEN
-      *
-      *
            ADD     1                   TO  IDG
            IF      IDG                 >   400
                GO      TO      3101-SRYACCT-SPA-EXT
@@ -3048,8 +2946,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-HOUKNS-IDX
            MOVE    SPACE               TO  WRK-HOUKNS-NAME
       *
-           MOVE    ZERO                TO  FLG-SANTEIDATA
-      *
            PERFORM UNTIL       FLG-SRYACT      =   1
       *
       *        剤内１行目
@@ -3084,7 +2980,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *!
       *    包括検査数
            IF      WRK-HOUKNS-CNT      >   1
-             AND  (IDG                 <=  400 )
                PERFORM 3009-INPUT-MEISYO-SEC
            END-IF
       *!
@@ -3130,32 +3025,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     一般名編集処理
-      *****************************************************************
-       31012-GENERIC-SEC        SECTION.
-      *
-           MOVE    ACCT-HOSPNUM        TO  ORCSGETGE-HOSPNUM
-           MOVE    ACCT-PTID           TO  ORCSGETGE-PTID
-           MOVE    ACCT-SRYYM          TO  ORCSGETGE-SRYYM
-           MOVE    ACCT-NYUGAIKBN      TO  ORCSGETGE-NYUGAIKBN
-           MOVE    ACCT-ZAINUM         TO  ORCSGETGE-ZAINUM
-           MOVE    SPA-KOUHATUKA       TO  ORCSGETGE-KOUHATUKA
-      *
-           CALL    "ORCSGETGENERIC"    USING   ORCSGETGENERICAREA
-                                               SPA-AREA
-      *    後発品変更不可（処方）あり
-           IF      ORCSGETGE-GENEFLG   =   "1"
-               MOVE    "1"             TO  SPA-NAI-GENEFLG (IDX)
-           END-IF
-      *    後発品変更可（処方）あり
-           IF      ORCSGETGE-GENEFLG   =   "2"
-               MOVE    "2"             TO  SPA-NAI-GENEFLG (IDX)
-           END-IF
-           .
-       31012-GENERIC-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *     包括検査数再編集処理
       *****************************************************************
        3009-INPUT-MEISYO-SEC        SECTION.
@@ -3182,10 +3051,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            (IDG3 + 1)
                    END-PERFORM
                    COMPUTE WRK-HOUKNS-IDX  =   WRK-HOUKNS-IDX  +  1
-                   IF      WRK-HOUKNS-IDX      <=   400
-                       INITIALIZE                  SPA-GMN-TBLREC
+                   INITIALIZE                  SPA-GMN-TBLREC
                                                         (WRK-HOUKNS-IDX)
-                   END-IF
                    ADD     1               TO  IDG
                END-IF
                IF      WRK-HOUKNS-IDX      <=   400
@@ -3232,7 +3099,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    包括分の名称編集
-           MOVE    SPACE               TO  WRK-SRYSYUMEI2
            IF      ACCT-JIHOKBN        =   "1"
                MOVE    SPACE               TO  WRK-SRYSYUMEI2
                IF      WRK-SRYSYUMEI(15:)  =   SPACE
@@ -3244,23 +3110,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-SRYSYUMEI2
                    END-STRING
                END-IF
-      *H28.9   MOVE    WRK-SRYSYUMEI2      TO  WRK-SRYSYUMEI
-           END-IF
-      *H28.9  持参薬
-           IF      ACCT-ZAIKBN         =   3
-                                       OR  4
-               MOVE    SPACE               TO  WRK-SRYSYUMEI2
-               IF      WRK-SRYSYUMEI(15:)  =   SPACE
-                   MOVE    WRK-SRYSYUMEI       TO  WRK-SRYSYUMEI2
-                   MOVE    "【持参薬】"        TO  WRK-SRYSYUMEI2(15:)
-               ELSE
-                   STRING  WRK-SRYSYUMEI       DELIMITED  BY  SPACE
-                           "【持参薬】"        DELIMITED  BY  SIZE
-                                       INTO    WRK-SRYSYUMEI2
-                   END-STRING
-               END-IF
-           END-IF
-           IF      WRK-SRYSYUMEI2  NOT =   SPACE
                MOVE    WRK-SRYSYUMEI2      TO  WRK-SRYSYUMEI
            END-IF
       *
@@ -3344,10 +3193,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      31012-ZAIMEI-HEN-EXT
            END-IF
       *
-      *H28.2
-           ADD     1                   TO  IDX-GEN
-      *H28.2
-      *
       *    約束セット編集
            IF      SRY-SRYCD (IDZ)(1:1)   =   "S"
                PERFORM 310120-YAKUSOKU-SET-SEC
@@ -3363,22 +3208,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    行為名称
            MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO (IDG)
-      *
-      *H28.5
-      *    一般名記載
-           IF     (ORCSGETGE-GENERICNAME(IDX-GEN)  NOT =   SPACE)
-              AND (ORCSGETGE-SRYCD(IDX-GEN)    =   SRY-SRYCD (IDZ))
-      *        【】の変更
-               IF      ORCSGETGE-GENERICNAME(IDX-GEN)(1:6)
-                                           =   "【般】"
-                   MOVE    "≪般≫"        TO
-                               ORCSGETGE-GENERICNAME(IDX-GEN)(1:6)
-               END-IF
-               MOVE    ORCSGETGE-GENERICNAME(IDX-GEN)
-                                       TO  SPA-GMN-GENENAME (IDG)
-           END-IF
-      *
-      *
       *    薬剤服用コメントの時、再編集
            IF      SRY-SRYCD (IDZ)(1:3)    =   "001"
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
@@ -3396,8 +3225,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SRY-SRYCD (IDZ)     =   "099209903"
                                        OR  "099209905"
                                        OR  "099209906"
-                                       OR  "099209907"
-                                       OR  "099209908"
                 PERFORM 3100122-KOUHATU-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO (IDG)
            END-IF
@@ -3418,28 +3245,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                           WRK-MEISYO       DELIMITED   BY  SIZE
                           INTO             SPA-GMN-TMEISYO (IDG)
                END-STRING
-      *H28.5
-      *
-               IF      SPA-GMN-GENENAME (IDG) NOT =   SPACE
-                   MOVE    SPA-GMN-GENENAME (IDG)   TO  WRK-MEISYO
-                   MOVE    SPACE               TO  SPA-GMN-GENENAME(IDG)
-                   STRING "＞"             DELIMITED   BY  SIZE
-                          WRK-MEISYO       DELIMITED   BY  SIZE
-                          INTO             SPA-GMN-GENENAME (IDG)
-                   END-STRING
-               END-IF
            END-IF
       *
       *    コメントの時、内容設定
            IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "8"  )  OR
                   (SRY-SRYCD  (IDZ)(1:3)   =   "008"))  AND
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
-               PERFORM 310122-KNJCOM-SET-SEC
-           END-IF
-      *H30.4
-      *    コメントの時、内容設定
-           IF     (SRY-SRYCD  (IDZ)(1:7)   =   "0992081" )
-             AND  (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF
       *
@@ -3526,23 +3337,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SRY-AUTOKBN (IDZ)   =   "3"         )
                MOVE    2                   TO  SPA-NAI-ZAITENFLG (IDX)
            END-IF
-      *H28.4
-      *    外用院内の湿布薬
-           IF     (SRY-SRYYM           >=  "201604" )
-              AND (SPA-NYUGAIKBN       =   "2"      )
-              AND (SRY-SRYKBN          =   "23"     )
-              AND (SRY-SRYCD (IDZ)     =   CONS-SPCM-SRYCD)
-              AND (SRY-AUTOKBN (IDZ)   =   "3"      )
-               MOVE    2                   TO  SPA-NAI-ZAITENFLG (IDX)
-           END-IF
       *
       *    算定履歴情報（剤内の最初に対象となるもの）
-      *H27.9       手技料を優先
            IF     (TNS-SRYCD(1:1)      =   "1"  )  AND
-                  (TNS-DATAKBN         =   "1"
-                                       OR  "2"  )  AND
-                  (FLG-SANTEIDATA      =   ZERO )  AND
-                  (TNS-SANTEIRRKKBN    NOT  =  ZERO )
+                  (TNS-DATAKBN         =   "1"  )  AND
+                  (TNS-SANTEIRRKKBN    NOT  =  ZERO )  AND
+                  (SPA-NAI-SANTEIRRKKBN(IDX)   =  ZERO )
                MOVE    TNS-SANTEIRRKKBN    TO  SPA-NAI-SANTEIRRKKBN(IDX)
                MOVE    TNS-JGNCNT          TO  SPA-NAI-JGNCNT    (IDX)
                MOVE    TNS-JGNCNT1D        TO  SPA-NAI-JGNCNT1D  (IDX)
@@ -3553,10 +3353,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TNS-HOUKNSKBN       TO  SPA-NAI-HOUKNSKBN (IDX)
       *        数量
                MOVE    SRY-SRYSURYO(IDZ)   TO  SPA-NAI-TSURYO (IDX)
-      *H27.9
-               IF      TNS-DATAKBN         =   "1"
-                   MOVE    1               TO  FLG-SANTEIDATA
-               END-IF
            END-IF
       *!!
       *    入院調剤料の自動発生分
@@ -3645,12 +3441,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "8"   ) OR
                   (SRY-SRYCD  (IDZ)(1:3)   =   "008" )) AND
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
-               PERFORM 310122-KNJCOM-SET-SEC
-           END-IF
-      *H30.4
-      *    コメントの時、内容設定
-           IF     (SRY-SRYCD  (IDZ)(1:7)   =   "0992081" )
-             AND  (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF
       *
@@ -3872,9 +3662,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-      *    画面ＳＰＡ書込み
-           PERFORM 1003-J02SPA-OUT-SEC
-      *
       *    コラムリスト位置保存
            IF      FLG-GMN-INIT        =   1
                MOVE    ZERO                TO  WRK-J02-DATALIST-ROW
@@ -4016,14 +3803,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
       *
                    MOVE    SPA-GMN-TMEISYO (IDX)   TO  J02-TMEISYO(IDX)
-      *H28.5
-      *            一般名
-                   IF     (SPA-GMN-GENENAME (IDX)  NOT =   SPACE)
-                    AND   (SPA-GENERICFLG          =   "1"  )
-                       MOVE    SPA-GMN-GENENAME (IDX)
-                                                   TO  J02-TMEISYO(IDX)
-                   END-IF
-      *
                    MOVE    SPA-GMN-TSURYO  (IDX)   TO  J02-TSURYO (IDX)
                    MOVE    SPA-GMN-TTENSU  (IDX)   TO  J02-TTENSU (IDX)
                    MOVE    SPA-GMN-THKNCOMBI(IDX)  TO  J02-THKNCOMBI
@@ -4338,10 +4117,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "CLICKED"       ALSO    "B08S"
                    PERFORM 4801-K06-SYORI-SEC
       *!!!
-      *H28.5
-      *        処方名変換
-               WHEN    "CLICKED"       ALSO    "B05S"
-                   PERFORM 440-GENERIC-HEN-SEC
            END-EVALUATE
       *
            .
@@ -5105,10 +4880,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    保険一覧編集
            PERFORM 3008-HKNCOMBI-HEN-SEC
       *
-      *H28.4
-      *    一般名記載設定処理
-           PERFORM 3008-GENERIC-HEN-SEC
-      *
       *    診療年月の末日算定
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
@@ -5162,7 +4933,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療会計マスターより編集をする
            PERFORM 410181-SRYACCT-HEN-SEC
-      *
       *
            IF      SPA-GMN-MAX         =   ZERO
                MOVE    7                   TO  SPA-GMN-CUR
@@ -5417,12 +5187,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            OR     ( SPA-NAI-SRYSYU (SPA-NAI-BANGO)
                                        =   "148"
                                        OR  "149" )
-               MOVE    ZERO                TO  SPA-NAI-HKTGAIFLG
-           END-IF
-      *H28.9
-      *    持参薬は対象外とする
-           IF     (SPA-NAI-ZAIKBN (SPA-NAI-BANGO)  =   3
-                                                   OR  4   )
                MOVE    ZERO                TO  SPA-NAI-HKTGAIFLG
            END-IF
       *
@@ -5960,8 +5724,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDW9
       *
            PERFORM VARYING    IDW5     FROM    1   BY  1
-      **********   UNTIL     (IDW5     >   20  )  OR
-                   UNTIL     (IDW5     >   99  )  OR
+                   UNTIL     (IDW5     >   20  )  OR
                              (SPA-ERRCD    NOT =   SPACE )
       *
                EVALUATE    SPA-GMN-IKKATU(IDW5:1)
@@ -6039,8 +5802,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM VARYING    IDW1     FROM    1   BY  1
-      ****         UNTIL     (IDW1     >   60  )  OR
-                   UNTIL     (IDW1     >   99  )  OR
+                   UNTIL     (IDW1     >   60  )  OR
                              (SPA-ERRCD    NOT =   SPACE ) OR
                             ((WRK-KAISUT(IDW1) =   SPACE )  AND
                              (WRK-DAY1  (IDW1 1) =   SPACE )  AND
@@ -6063,8 +5825,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
                PERFORM VARYING    IDW2     FROM    1   BY  1
-     ***               UNTIL     (IDW2     >   30  )  OR
-                       UNTIL     (IDW2     >   99  )  OR
+                       UNTIL     (IDW2     >   30  )  OR
                              (SPA-ERRCD    NOT =   SPACE ) OR
                             ((WRK-DAY1  (IDW1 IDW2) =   SPACE )  AND
                              (WRK-DAY2  (IDW1 IDW2) =   SPACE ))
@@ -8705,15 +8466,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
            END-SEARCH
-      *H28.4
-           IF     (WRK-SRYCD           =   "099800181"
-                                       OR  "099800182")
-              OR  (WRK-SRYCD(1:7)      =   "0998002"  )
-      *        早期・初期リハ開始日・終了日
-      *        がん患者リハ開始日・終了日
-               MOVE    1                   TO  FLG-HKNSAN
-           END-IF
-      *
+      *!!!!!!!!!!!!!! 
       *H25.7
       *    労災保険コード変更
            IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
@@ -9226,7 +8979,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0027"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
-      *
            IF      SPA-ERRCD           =   SPACE
                MOVE    "0104"              TO  SPA-JIDCD
            END-IF
@@ -9328,9 +9080,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-J02-HKNCOMBIMEI
       *    診療種別
            MOVE    SPA-GMN-SRYKBN      TO  SPA-GMN-SRYKBN-MAE
-      *H28.2
-      *    後発品変更不可（処方）あり
-           MOVE    SPA-NAI-GENEFLG (IDX)   TO  SPA-GENEFUKAFLG
       *
            END-IF
       *
@@ -10663,13 +10412,25 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            =   SPA-NAIGMN-SRYKA) AND
                               (SPA-RRK-HKNCOMBI(IDR5)
                                            =   SPA-GMN-HKNCOMBI )
-                           MOVE    SPA-RRK-RENNUM (IDR5)
+      *v4.8                IF      SPA-RRK-RENNUM (IDR5)   >   3
+      *                        MOVE    4               TO  WRK-REN
+      ****                 ELSE
+                               MOVE    SPA-RRK-RENNUM (IDR5)
                                                        TO  WRK-REN
-                           ADD     1               TO  WRK-REN
+                               ADD     1               TO  WRK-REN
+      ****                 END-IF
       *                    剤番号存在判定
                            IF      WRK-REN             =   IDR4
                                MOVE    IDR5            TO  IDX-RRK2
                                PERFORM 41012202-JYURRK-ZAINUM-SEC
+      *v4.8                    IF     (WRK-IDR         =   ZERO )
+      *                          AND  (IDR4            =   4    )
+      *                            連番が４で剤番号がない時、再度
+      *                            IF      IDX-RRK3        =   ZERO
+      *                                MOVE    IDR5        TO  IDX-RRK3
+      *                            END-IF
+      *                            MOVE    ZERO            TO  IDX-RRK2
+      ****                     END-IF
                            ELSE
                                IF      IDR6            =   ZERO
                                    MOVE    IDR5            TO  IDR6
@@ -10685,17 +10446,25 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
       *            入院対象の受診履歴がない時
                    IF     (IDX-RRK2            =   ZERO )
-                      AND (WRK-D-RENNUM    NOT =   ZERO )
+      *?????          AND (WRK-D-RENNUM    NOT =   ZERO )
                        CONTINUE
                    ELSE
+      *ver.4.7
       *
-                   IF      IDX-RRK2            =   ZERO
-                       MOVE    IDR6            TO  IDX-RRK2
-                   END-IF
-                   MOVE    SPA-RRK-RENNUM (IDX-RRK2)
+      *            IF      IDX-RRK2            =   ZERO
+      *                IF      IDX-RRK3        =   ZERO
+      *                    MOVE    IDR6            TO  IDX-RRK2
+      *                ELSE
+      *                    MOVE    IDX-RRK3        TO  IDX-RRK2
+      *                END-IF
+      *            END-IF
+      *v4.8        IF      SPA-RRK-RENNUM (IDX-RRK2)   >   3
+      *                MOVE    4               TO  WRK-REN
+      ****         ELSE
+                       MOVE    SPA-RRK-RENNUM (IDX-RRK2)
                                                TO  WRK-REN
-                   ADD     1                   TO  WRK-REN
-      *
+                       ADD     1               TO  WRK-REN
+      *****        END-IF
                    MOVE    SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
                                                TO  WRK-DAY-S
                    IF      IDR4            NOT =   WRK-REN
@@ -11503,7 +11272,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *
            IF      FLG-ERR             =   ZERO
                IF     (TBL-MAE-ZAINUM-AREA =   ZERO ) AND
                       (SPA-RRK-UPD (IDX)   =   SPACE)
@@ -11768,7 +11536,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
            MOVE    SPA-RRK-HKNCOMBI(IDX)
                                        TO  SYU-HKNCOMBINUM
-           MOVE    SPA-RRK-DRCD  (IDX) TO  SYU-DRCD-G
+           MOVE    SPA-RRK-DRCD  (IDX) TO  SYU-DRCD
       *    伝票番号発行日
            MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
       *    院外処方区分
@@ -12041,11 +11809,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *HAORI
-      *H29.2
-           IF      FLG-HAORI           =   1
-               GO    TO  49012-SYUNOU-SAIKEISAN-EXT
-           END-IF
       *
            IF     (SPA-ERRCD           =   SPACE) AND
                   (SPA-J025-MAX        >   ZERO )
@@ -12112,15 +11875,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            OR (SPA-ERRCD   NOT =   SPACE )
       *
                MOVE    TBL-SYUNOU-REC(IDX) TO  SYUNOU-REC
-      *
                ADD     1                   TO  SPA-J025-MAX
                IF      SPA-J025-MAX        <=  100
                    PERFORM 490122-J025-HENSYU-SEC
                END-IF
       *
       *        追加分
-      *H29.6   修正
-      *****    IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
+               IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
@@ -12137,8 +11898,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 990-DBCLOSE-SEC
-      *
-               IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
       *            新規分追加
                    PERFORM 4901219-SYUNOU-MEI-OUT-SEC
                END-IF
@@ -12293,13 +12052,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SYU-SKYMONEY        =   ZERO
                MOVE    SPACE               TO  SYU-DENPJTIKBN
            ELSE
-      ******   MOVE    "1"                 TO  SYU-DENPJTIKBN
-      *H29.6   未収判定
-               IF      SYU-SKYMONEY        <=  SYU-NYUKIN-TOTAL
-                   MOVE    "1"                 TO  SYU-DENPJTIKBN
-               ELSE
-                   MOVE    "2"                 TO  SYU-DENPJTIKBN
-               END-IF
+               MOVE    "1"                 TO  SYU-DENPJTIKBN
            END-IF
            IF      FLG-ERR             =   ZERO
       *        会計変更区分
@@ -12370,7 +12123,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
         4901291-SYUTOTAL-ERRUPD-SEC      SECTION.
       *
            INITIALIZE                  SYUTTL-REC
-           MOVE    SYU-HOSPNUM         TO  SYUTTL-HOSPNUM
+           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
@@ -13729,9 +13482,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  WRK-NYUIN-ERR
            MOVE    1                   TO  IDX-N
-      *H28.6
-           MOVE    SPACE               TO  WRK-NYUIN-ERR2
-           MOVE    1                   TO  IDX-N22
            PERFORM VARYING     IDX-N2  FROM    1   BY  1
                    UNTIL       IDX-N2  >   31
                IF      ORCSTEN-MIIVH-DAY (IDX-N2) =   1
@@ -13744,55 +13494,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            (IDX-N:2)
                    ADD     2               TO  IDX-N
                END-IF
-      *        重複
-               IF      ORCSTEN-MIIVH-DAY (IDX-N2) =   9
-                   IF      IDX-N22      >   1
-                       MOVE    ","         TO  WRK-NYUIN-ERR2
-                                                            (IDX-N22:1)
-                       ADD     1           TO  IDX-N22
-                   END-IF
-                   MOVE    IDX-N2          TO  WRK-NYUIN-ERR2
-                                                           (IDX-N22:2)
-                   ADD     2               TO  IDX-N22
-               END-IF
            END-PERFORM
-           IF     (WRK-NYUIN-ERR       =   SPACE )
-             AND  (WRK-NYUIN-ERR2      =   SPACE )
+           IF      WRK-NYUIN-ERR       =   SPACE
                GO      TO     420013-MIIVHDAY-HEN-EXT 
            END-IF
-      *
-           IF     (WRK-NYUIN-ERR   NOT =   SPACE )
+           ADD     1                   TO  IDX-D
+           MOVE    "中静未算定："      TO  SPA-GMN-NYUINMSG(IDX-D)
+           MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG(IDX-D)(13:)
+           IF     (WRK-NYUIN-ERR(39:)  NOT =   SPACE )  AND
+                  (IDX-D               <   2         )
                ADD     1                   TO  IDX-D
-               STRING  "中静未算定："
-                       WRK-NYUIN-ERR(1:38)  DELIMITED  BY  SIZE
-                       INTO                 SPA-GMN-NYUINMSG(IDX-D)
-               END-STRING
-               IF     (WRK-NYUIN-ERR(39:)  NOT =   SPACE )  AND
-                      (IDX-D               <   2         )
-                   ADD     1                   TO  IDX-D
-                   MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG
-                                                           (IDX-D)
-               END-IF
-      *
-               MOVE    "0056"              TO  SPA-ERRCD
+               MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG(IDX-D)
            END-IF
-      *
-           IF     (WRK-NYUIN-ERR2  NOT =   SPACE )
-              AND (IDX-D               <   2     )
-               ADD     1                    TO  IDX-D
-               STRING  "中静重算定："
-                       WRK-NYUIN-ERR2(1:38)  DELIMITED  BY  SIZE
-                       INTO                 SPA-GMN-NYUINMSG(IDX-D)
-               END-STRING
-               IF     (WRK-NYUIN-ERR2(39:)  NOT =   SPACE )  AND
-                      (IDX-D               <   2         )
-                   ADD     1                   TO  IDX-D
-                   MOVE    WRK-NYUIN-ERR2(39:) TO  SPA-GMN-NYUINMSG
-                                                           (IDX-D)
-               END-IF
-               MOVE    "0066"              TO  SPA-ERRCD
-           END-IF
-      *
+           MOVE    "0056"              TO  SPA-ERRCD
            MOVE    1                   TO  SPA-GMN-CUR
       *
            .
@@ -13971,31 +13685,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4110-CHOZAI-EXT.
            EXIT.
-      *
-      *H28.5
-      *****************************************************************
-      *    処方名変換処理
-      *****************************************************************
-       440-GENERIC-HEN-SEC             SECTION.
-      *
-      *    患者選択チェック
-           IF      SPA-GMN-PTID        =   ZERO
-               GO      TO       440-GENERIC-HEN-EXT
-           END-IF
-      *
-           IF      SPA-NAI-SRYYM       <   "201604"
-               MOVE    "0"             TO  SPA-GENERICFLG
-           ELSE
-               IF      SPA-GENERICFLG      =   "1"
-                   MOVE    "0"             TO  SPA-GENERICFLG
-               ELSE
-                   MOVE    "1"             TO  SPA-GENERICFLG
-               END-IF
-           END-IF
-           .
-       440-GENERIC-HEN-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    印刷処理
       *****************************************************************
@@ -14539,100 +14228,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        800-DAILYKEY-EXT.
            EXIT.
       *
-      *H29.2
-      *****************************************************************
-      *    HAORI対応処理
-      *****************************************************************
-       300-HAORI-SYORI-SEC             SECTION.
-      *
-           EVALUATE    MCP-EVENT
-               WHEN    "INIT"
-      *            初期編集
-                   PERFORM 3001-HAORI-INIT-SYORI-SEC
-               WHEN    "UPD"
-      *            保険組合せ一括変更処理
-                   PERFORM 3001-HORI-UPD-SYORI-SEC
-           END-EVALUATE
-           .
-       300-HAORI-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    （HAORI）初期編集処理
-      *****************************************************************
-       3001-HAORI-INIT-SYORI-SEC          SECTION.
-      *
-      *     診療年月の末日算定
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    SPA-NAI-SRYYM       TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI(7:2)    TO  SPA-SRYMATU
-      *
-      *    年齢計算（算定月の１日の年齢）
-           MOVE    SPA-NAI-SRYYM       TO  WRK-YMDS2(1:6)
-           MOVE    01                  TO  WRK-DDS2
-           PERFORM 30101-NENREI-SET-SEC
-      *    該当月で６歳になる時、年齢フラグを立てる
-           IF     (SPA-NAI-NENREI-YY   =   05  )  AND
-                  (SPA-NAI-NENREI-MM   =   11  )  AND
-                  (WRK-YMDS1(5:2)      =   WRK-YMDS2(5:2))
-               MOVE    1                   TO  SPA-FLG-NENREI
-           END-IF
-      *
-      *    Ｈ１４．１０時点で７０歳未満の時
-           IF     (SPA-NAI-SRYYM       >=  "200210"   )  AND
-                  (SPA-BIRTHDAY        >=  "19321001" )
-               MOVE    75                  TO  WRK-ROU-NEN
-           ELSE
-               MOVE    70                  TO  WRK-ROU-NEN
-           END-IF
-      *    該当月１日が７５歳以上の時、老人とする
-           IF      SPA-NAI-NENREI-YY   >=  WRK-ROU-NEN
-               MOVE    1                   TO  SPA-J02-ROUJIN
-           ELSE
-               MOVE    ZERO                TO  SPA-J02-ROUJIN
-           END-IF
-      *    入院期間
-           IF      SPA-BEDSU           >   ZERO
-               PERFORM 410101-NYUINRRK-CHK-SEC
-           END-IF
-           .
-       3001-HAORI-INIT-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    （HAORI）保険一括変更処理
-      *****************************************************************
-       3001-HORI-UPD-SYORI-SEC          SECTION.
-      *
-           MOVE    1               TO  FLG-HAORI
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-           IF      SPA-NYUGAIKBN       =   "2"
-               PERFORM 49012-SYUNOU-SAIKEISAN-SEC
-           END-IF
-           .
-       3001-HORI-UPD-SYORI-EXT.
-           EXIT.
-      *
-      *
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
            PERFORM 500-GMNHEN-SEC
-      *
-           IF     (SPA-ERRCD           =   SPACE )
-            AND   (WRK-HZN-ERRCD   NOT =   SPACE )
-               MOVE    WRK-HZN-ERRCD       TO  SPA-ERRCD
-           END-IF
-      *
       *    入院料算定なし
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-JIDCD           =   SPACE )
@@ -14819,14 +14420,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-ERRMSG
                    END-STRING
-      *H28.4
-               WHEN    "K037"
-                   STRING  "警告！"
-                           "対象の剤は湿布薬の院内投薬です。"
-                           "枚数が減点対象の時点数計算ができません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    WRK-ERRMSG
-                   END-STRING
                WHEN    "0028"
                    MOVE    "入院日です。外来での算定はできません。"
                                        TO  WRK-ERRMSG
@@ -14862,8 +14455,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG
                    MOVE    "訂正で点滴を修正して下さい。"
                                        TO  WRK-ERRMSG(35:)
-      *
-              WHEN    "0050"
+               WHEN    "0050"
                    MOVE    "点滴一括処理は入院の時のみ選択できます。"
                                        TO  WRK-ERRMSG
                WHEN    "0051"
@@ -14886,14 +14478,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0056"
                    MOVE    "中心静脈注射料が算定できる日があります。"
                                        TO  WRK-ERRMSG
-      *
-               WHEN    "0066"
-                   STRING  "中心静脈注射料が重複算定"
-                           "している日があります。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    WRK-ERRMSG
-                   END-STRING
-      *
                WHEN    "0057"
                    MOVE
                    "麻毒・生物学的製剤加算が算定できる日があります。"
@@ -15322,7 +14906,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-JID1-FLG
       *
            MOVE    SPACE               TO  JID1
-           INITIALIZE                      JID1
            MOVE    SPA-JIDCD           TO  JID1-ID1CODE
            MOVE    WRK-JIDMSG          TO  JID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -15352,7 +14935,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        520-JID2SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  JID2
-           INITIALIZE                      JID2
            EVALUATE    SPA-JIDCD2
                WHEN    "0115"
                    MOVE    "診療日の変更、または追加を選択して下さい。"
@@ -15507,8 +15089,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    WRK-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    WRK-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
