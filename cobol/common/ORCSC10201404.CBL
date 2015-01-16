@@ -1926,14 +1926,12 @@
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
       *
-      *H26.12
-      *労災　読み替え加算対象外は健保コード
-      *    労災保険の時、外来管理加算はエラーとする
       *H27.2から 外来管理加算の編集変更
            IF      SPA-SRYYMD          >=  "20150201"
                CONTINUE
            ELSE
       *
+      *    労災保険の時、外来管理加算はエラーとする
            IF      WRK-KBN         =   "G"
                MOVE    "8001"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
