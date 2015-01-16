@@ -75,24 +75,10 @@
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *  04.07.02    NACL-門脇    14/03/28  平成２６年４月改正対応
       *  04.07.03    NACL-藤原    14/07/11  医療情報連携基盤、ＥＦファイル作成対応
-      *  04.07.04    NACL-門脇    15/01/16  入院点滴：診療種別「．３４０」の
-      *                                     入力チェック対応
-      *  04.07.05    NACL-門脇    15/06/26  特別食加算の入力チェック対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    15/11/09  該当期間に１０超の保険組合せの
-      *                                     使用があるかチェック
-      *  04.08.04    NACL-門脇    16/02/29  平成２８年４月改正対応
-      *  04.08.05    NACL-門脇    17/04/06  入院期間外の入院診療行為入力
-      *                                     チェック
-      *  04.08.06    NACL-門脇    17/08/28  ７０歳未満の低１チェックと
-      *                                     システム管理５０００−「入院時
-      *                                     食事療養」の未設定チェック
-      *  04.08.07    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
-      *  05.00.01    NACL-伊藤    18/01/11  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -649,7 +635,7 @@
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9" OR
-                                               "8" OR  "B"
+                                               "8"
                    MOVE    "key60"             TO  WRK-SRYACCT-PATHNAME
                ELSE
                    MOVE    "key36"             TO  WRK-SRYACCT-PATHNAME
@@ -1363,38 +1349,6 @@
                     WHEN       27
                       MOVE "特定曜日入退院減算（外泊）の入力誤り"
                                           TO  ERR-ERRMSG
-                    WHEN       28
-                      MOVE "診療種別「．３４０」の診療行為入力確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       29
-                      MOVE "入院時食事療養（２）算定時に特別食加算有"
-                                          TO  ERR-ERRMSG
-                    WHEN       30
-                      MOVE "該当期間に１０超の保険組合せの使用有"
-                                          TO  ERR-ERRMSG
-                    WHEN       31
-                      MOVE "入院時生活療養（２）算定時に流動食有"
-                                          TO  ERR-ERRMSG
-                    WHEN       32
-                      MOVE "入院期間外の入院診療行為入力確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       33
-                      MOVE "入院基本設定「入院時食事療養」が未設定です"
-                                          TO  ERR-ERRMSG
-                    WHEN       34
-                      MOVE "適用できない低所得１の入力有"
-                                          TO  ERR-ERRMSG
-                    WHEN       35
-                      MOVE "食事保険指定コードの診療行為入力重複"
-                                          TO  ERR-ERRMSG
-                    WHEN       36
-                      MOVE "食事保険指定コードの入力日に食事の算定なし"
-                                          TO  ERR-ERRMSG
-      *
-                    WHEN      101
-                      MOVE "包括入院期間に算定できない入院料加算有"
-                                          TO  ERR-ERRMSG
-      *
                     WHEN      OTHER
                       MOVE "仮収納データの取得に失敗"
                                           TO  ERR-ERRMSG
@@ -1629,7 +1583,7 @@
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "B" 
+           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
                MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
            ELSE
                MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
@@ -1770,7 +1724,7 @@
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9"
-                                               OR  "8" OR  "B"
+                                               OR  "8"
                    MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
                ELSE
                    MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
@@ -2246,8 +2200,7 @@
        800-MISEIKYU-CHECK-SEC          SECTION.
       *
       *    ＥＦファイル作成、連係基盤用のとき未請求設定分も作成する
-      *    診療情報システムのとき未請求設定分も作成する
-           IF      WRK-PARA-PRTKBN     =   "9" OR  "8" OR  "B"
+           IF      WRK-PARA-PRTKBN     =   "9" OR  "8"
                INITIALIZE                      SYUKA-REC
                GO  TO  800-MISEIKYU-CHECK-EXT
            END-IF
