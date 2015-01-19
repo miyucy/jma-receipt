@@ -64,27 +64,12 @@
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
       *  04.07.03    NACL-門脇    14/03/28  平成２６年４月改正対応
-      *  04.07.04    NACL-門脇    15/01/16  入院点滴：診療種別「．３４０」の
-      *                                     入力チェック対応
-      *  04.07.05    NACL-門脇    15/06/26  特別食加算の入力チェック対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03    NACL-門脇    14/07/23  ３２文字以上の文字列修正
       *                                     （コンパイル時のワーニング修正）
-      *  04.08.04    NACL-門脇    15/11/09  該当期間に１０超の保険組合せの
-      *                                     使用があるかチェック
-      *  04.08.05    NACL-門脇    16/02/29  平成２８年４月改正対応
-      *  04.08.06    NACL-門脇    17/04/06  入院期間外の入院診療行為入力
-      *                                     チェック
-      *  04.08.07    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
-      *  04.08.08    NACL-門脇    17/08/28  ７０歳未満の低１チェックと
-      *                                     システム管理５０００−「入院時
-      *                                     食事療養」の未設定チェック
-      *  04.08.09    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -123,8 +108,6 @@
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-PTNYUINRRK                          PIC 9(01).
-           03  FLG-PTRSIINF                            PIC 9(01).
-      *
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-DATA                                PIC 9(01).
@@ -156,11 +139,6 @@
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  100.
                05  TBL-SYS1001                         PIC X(610).
-      *
-      *    労災自賠医療機関退避用領域
-       01  TBL-SYS4001-T.
-           03  TBL-SYS4001-OCC                         OCCURS  100.
-               05  TBL-SYS4001                         PIC X(610).
       *
       *    エラーメッセージ編集領域
        01  ERR-EDIT-AREA.
@@ -228,14 +206,7 @@
       *
            03  WRK-CONS-HKNNUM                         PIC X(03).
       *
-           03  WRK-JIBAIKBN                            PIC X(01).
-      *
            03  WRK-SRYACCT-PATHNAME                    PIC X(64).
-      *
-       01  WRK-CONS-AREA.
-           03  WRK-CONS-SRYYM-201707-X.
-               05  WRK-CONS-SRYYM-201707
-                                   PIC 9(06)   VALUE   201707.
       *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
@@ -258,9 +229,6 @@
            COPY    "CPSK2002.INC".
       *    患者番号構成情報
            COPY    "CPSK1009.INC".
-      *
-      *    労災自賠医療機関情報
-           COPY    "CPSK4001.INC".
       *
       *    診療会計
        01  SRYACCT-REC.
@@ -289,10 +257,6 @@
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *
-      *    患者労災保険情報
-       01  PTRSIINF-REC.
-           COPY    "CPPTRSIINF.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -502,80 +466,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                    MOVE    "患者番号構成管理情報が取得できませんでした"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
-               END-IF
-      *
-               IF      WRK-PARA-RECEKBN    =   "8"
-                   MOVE    "2"                 TO    WRK-JIBAIKBN
-               ELSE
-                 IF      WRK-PARA-SRYYM  NOT =   ZERO
-      *            システム管理マスタ（４００１）から自賠責区分取得
-                   INITIALIZE                       SYS-4001-REC
-                   MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
-                   MOVE    "4001"              TO  SYS-4001-KANRICD
-                   MOVE    "*"                 TO  SYS-4001-KBNCD
-                   MOVE    WRK-PARA-SRYYM      TO  SYS-4001-STYUKYMD
-                                                                   (1:6)
-                   MOVE    "01"                TO  SYS-4001-STYUKYMD
-                                                                   (7:2)
-                   MOVE    SYS-4001-STYUKYMD   TO  SYS-4001-EDYUKYMD
-                   MOVE    SYS-4001-REC        TO  MCPDATA-REC
-                   PERFORM 910-SYSKANRI-INV-SEC
-                   IF      FLG-SYSKANRI        =   ZERO
-                       MOVE    MCPDATA-REC         TO  SYS-4001-REC
-                       IF     SYS-4001-JIBAIKBN    =   SPACE
-                           MOVE    "1"                 TO  WRK-JIBAIKBN
-                       ELSE
-                           MOVE SYS-4001-JIBAIKBN      TO  WRK-JIBAIKBN
-                       END-IF
-      *
-                       DISPLAY "WRK-JIBAIKBN=" WRK-JIBAIKBN
-                   ELSE
-                       MOVE
-                          "労災自賠医療機関情報が取得できませんでした"
-                                                   TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       MOVE    1                   TO  FLG-END
-                   END-IF
-                 ELSE
-                   MOVE     ZERO               TO  SYSKAN-IDX
-                   MOVE     SPACE              TO  TBL-SYS4001-T
-                   INITIALIZE                      TBL-SYS4001-T
-      *
-                   INITIALIZE                      SYS-4001-REC
-                   MOVE    "4001"              TO  SYS-4001-KANRICD
-                   MOVE    "*"                 TO  SYS-4001-KBNCD
-                   MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
-                   MOVE    SYS-4001-REC        TO  MCPDATA-REC
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key8"              TO  MCP-PATHNAME
-                   PERFORM 900-DBSELECT-SEC
-                   IF      MCP-RC              =   ZERO
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "key8"              TO  MCP-PATHNAME
-                       PERFORM 900-SYSKANRI-READ-SEC
-                       PERFORM UNTIL ( FLG-SYSKANRI    =   1   )
-                               OR    ( SYSKAN-IDX      >=  100 )
-                           MOVE    MCPDATA-REC         TO  SYS-4001-REC
-                           ADD     1                   TO  SYSKAN-IDX
-                           MOVE    SYS-4001-REC        TO
-                                                TBL-SYS4001 (SYSKAN-IDX)
-      *
-                           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                           MOVE    "key8"              TO  MCP-PATHNAME
-                           PERFORM 900-SYSKANRI-READ-SEC
-                       END-PERFORM
-                   ELSE
-                       MOVE
-                           "労災自賠医療機関情報が取得できませんでした"
-                                                   TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       MOVE    1                   TO  FLG-END
-                   END-IF
-      *
-                   MOVE    "tbl_syskanri"       TO  MCP-TABLE
-                   MOVE    "key8"               TO  MCP-PATHNAME
-                   PERFORM 900-CLOSE-SEC
-                 END-IF
                END-IF
            END-IF
       *
@@ -902,26 +792,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                GO  TO  20011-SRYACCT-FILE-HENSYU-EXT
            END-IF
       *
-      *    新様式で健保準拠のときは処理しない
-           IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201707-X )
-           AND   ( WRK-PARA-RECEKBN    =   "4"                     )
-               INITIALIZE              PTRSIINF-REC
-               MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
-               MOVE    COMB-HKNID      TO  PTRSI-HKNID
-               MOVE    COMB-PTID       TO  PTRSI-PTID
-               MOVE    PTRSIINF-REC    TO  MCPDATA-REC
-               PERFORM 900-PTRSIINF-INV-SEC
-      *
-               DISPLAY " PTRSI-JIBAIKBN="   PTRSI-JIBAIKBN
-      *
-               IF      PTRSI-JIBAIKBN  =   SPACE   OR  "0"
-                   MOVE    WRK-JIBAIKBN    TO  PTRSI-JIBAIKBN
-               END-IF
-               IF      PTRSI-JIBAIKBN  =   "2"
-                   GO  TO  20011-SRYACCT-FILE-HENSYU-EXT
-               END-IF
-           END-IF
-      *
       *    仮収納作成 
            PERFORM 20011-HENSYU-SEC
       *
@@ -1118,26 +988,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    対象保険以外のとき処理しない
            IF      WRK-SYOKBN       =   "1"
                GO  TO  200122-NYUINACCT-HENSYU-EXT
-           END-IF
-      *
-      *    新様式で健保準拠のときは処理しない
-           IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201707-X )
-           AND   ( WRK-PARA-RECEKBN    =   "4"                     )
-               INITIALIZE              PTRSIINF-REC
-               MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
-               MOVE    COMB-HKNID      TO  PTRSI-HKNID
-               MOVE    COMB-PTID       TO  PTRSI-PTID
-               MOVE    PTRSIINF-REC    TO  MCPDATA-REC
-               PERFORM 900-PTRSIINF-INV-SEC
-      *
-               DISPLAY " PTRSI-JIBAIKBN="   PTRSI-JIBAIKBN
-      *
-               IF      PTRSI-JIBAIKBN  =   SPACE   OR  "0"
-                   MOVE    WRK-JIBAIKBN    TO  PTRSI-JIBAIKBN
-               END-IF
-               IF      PTRSI-JIBAIKBN  =   "2"
-                   GO  TO  200122-NYUINACCT-HENSYU-EXT
-               END-IF
            END-IF
       *
       *    仮収納作成 
@@ -1395,38 +1245,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                     WHEN       27
                       MOVE "特定曜日入退院減算（外泊）の入力誤り"
                                           TO  ERR-ERRMSG
-                    WHEN       28
-                      MOVE "診療種別「．３４０」の診療行為入力確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       29
-                      MOVE "入院時食事療養（２）算定時に特別食加算有"
-                                          TO  ERR-ERRMSG
-                    WHEN       30
-                      MOVE "該当期間に１０超の保険組合せの使用有"
-                                          TO  ERR-ERRMSG
-                    WHEN       31
-                      MOVE "入院時生活療養（２）算定時に流動食有"
-                                          TO  ERR-ERRMSG
-                    WHEN       32
-                      MOVE "入院期間外の入院診療行為入力確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       33
-                      MOVE "入院基本設定「入院時食事療養」が未設定です"
-                                          TO  ERR-ERRMSG
-                    WHEN       34
-                      MOVE "適用できない低所得１の入力有"
-                                          TO  ERR-ERRMSG
-                    WHEN       35
-                      MOVE "食事保険指定コードの診療行為入力重複"
-                                          TO  ERR-ERRMSG
-                    WHEN       36
-                      MOVE "食事保険指定コードの入力日に食事の算定なし"
-                                          TO  ERR-ERRMSG
-      *
-                    WHEN      101
-                      MOVE "包括入院期間に算定できない入院料加算有"
-                                          TO  ERR-ERRMSG
-      *
                     WHEN      OTHER
                       MOVE "仮収納データの取得に失敗"
                                           TO  ERR-ERRMSG
@@ -1594,80 +1412,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    診療年月の対象となるシス管理を取得（個別処理のみ）
-      *****************************************************************
-       20029-SYSKANRI-HENSYU-SEC       SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SET
-      *
-      *    該当診療年月の医療機関情報
-           PERFORM VARYING SYSKAN-IDX  FROM  1  BY  1
-                   UNTIL ( SYSKAN-IDX  >   100   )
-                   OR    ( TBL-SYS1001 (SYSKAN-IDX)
-                                       =   SPACE )
-                   OR    ( FLG-SET     =   1     )
-               MOVE    TBL-SYS1001 (SYSKAN-IDX)
-                                           TO  SYS-1001-REC
-               IF    ( SYS-1001-STYUKYMD   <=  WRK-SYS-SRYYMD    )
-               AND   ( WRK-SYS-SRYYMD      <=  SYS-1001-EDYUKYMD )
-                   MOVE     1                  TO  FLG-SET
-               END-IF
-           END-PERFORM
-           IF      FLG-SET         =   ZERO
-               STRING
-                   "医療機関情報が取得できませんでした。診療年月＝"
-                                           DELIMITED  BY  SIZE
-                    WRK-SYS-SRYYMD(1:6)    DELIMITED  BY  SIZE
-                                           INTO    WRK-RECEERR
-               END-STRING
-               MOVE    WRK-RECEERR     TO  WRK-ERRMSG
-               PERFORM 500-ERR-HENSYU-SEC
-               PERFORM 500-COBABORT-SEC
-           END-IF
-      *
-      *    該当診療年月の労災自賠医療機関情報
-           IF     WRK-PARA-RECEKBN     =   "8"
-               MOVE    "2"                 TO  WRK-JIBAIKBN
-           ELSE
-               MOVE    ZERO            TO  FLG-SET
-      *
-               PERFORM VARYING SYSKAN-IDX  FROM  1  BY  1
-                       UNTIL ( SYSKAN-IDX  >   100   )
-                       OR    ( TBL-SYS4001 (SYSKAN-IDX)
-                                           =   SPACE )
-                       OR    ( FLG-SET     =   1     )
-                   MOVE    TBL-SYS4001 (SYSKAN-IDX)
-                                               TO  SYS-4001-REC
-                   IF    ( SYS-4001-STYUKYMD   <=  WRK-SYS-SRYYMD    )
-                   AND   ( WRK-SYS-SRYYMD      <=  SYS-4001-EDYUKYMD )
-                       MOVE     1                  TO  FLG-SET
-                       IF      SYS-4001-JIBAIKBN   =   SPACE
-                           MOVE    "1"                 TO  WRK-JIBAIKBN
-                       ELSE
-                           MOVE    SYS-4001-JIBAIKBN   TO  WRK-JIBAIKBN
-                       END-IF
-                   END-IF
-               END-PERFORM
-               IF      FLG-SET         =   ZERO
-                   STRING
-               "労災自賠医療機関情報が取得できませんでした。診療年月＝"
-                                              DELIMITED  BY  SIZE 
-                       WRK-SYS-SRYYMD(1:6)    DELIMITED  BY  SIZE
-                                              INTO    WRK-RECEERR
-                   END-STRING
-                   MOVE    WRK-RECEERR     TO  WRK-ERRMSG
-                   PERFORM 500-ERR-HENSYU-SEC
-                   PERFORM 500-COBABORT-SEC
-               END-IF
-           END-IF
-      *
-           DISPLAY "WRK-JIBAIKBN=" WRK-JIBAIKBN
-           .
-      *
-       20029-SYSKANRI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    個別編集処理
       *****************************************************************
        20021-KOBETU-REAL-SEC              SECTION.
@@ -1680,9 +1424,28 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    " SRYYM="   SYS-2002-SRYYM 
       *
       *    該当診療年月の医療機関情報取得
+           MOVE  ZERO           TO  FLG-SET
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
            MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-           PERFORM 20029-SYSKANRI-HENSYU-SEC
+           PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                    UNTIL  ( SYSKAN-IDX              >  100  )
+                     OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
+                MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                    MOVE     1       TO    FLG-SET
+                END-IF
+           END-PERFORM
+           IF     FLG-SET              =   ZERO
+               STRING   "医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE
+                        SYS-2002-SRYYM     DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               GO       TO      20021-KOBETU-REAL-EXT
+           END-IF
       *
       *    患者情報取得
 grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
@@ -1791,9 +1554,30 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    " SRYYM="   SYS-2002-SRYYM
       *
       *    医療機関ＩＤ編集
+           MOVE  ZERO           TO  FLG-SET
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
            MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-           PERFORM 20029-SYSKANRI-HENSYU-SEC
+           PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                    UNTIL  ( SYSKAN-IDX              >  100  )
+                     OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
+      *
+                MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                    MOVE     1       TO    FLG-SET
+                END-IF
+      *
+           END-PERFORM
+           IF     FLG-SET  =  ZERO
+               STRING   "医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        SYS-2002-SRYYM     DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               GO       TO      20021-KOBETU-HENSYU-EXT
+           END-IF
       *
            MOVE    SPACE               TO  WRK-DATAKBN
       *
@@ -2536,41 +2320,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-SYUNOU-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者労災保険情報マスタ読込
-      *****************************************************************
-       900-PTRSIINF-INV-SEC         SECTION.
-      *
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-PTRSIINF
-                   MOVE    MCPDATA-REC         TO  PTRSIINF-REC
-                   IF      PTRSI-SAKUJOKBN     =   "1"
-                       MOVE    1               TO  FLG-PTRSIINF
-                   END-IF
-               ELSE
-                   MOVE    1                   TO  FLG-PTRSIINF
-                   INITIALIZE                      PTRSIINF-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-PTRSIINF
-               INITIALIZE                      PTRSIINF-REC
-           END-IF
-      *
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       900-PTRSIINF-INV-EXT.
            EXIT.
       *
       *****************************************************************
