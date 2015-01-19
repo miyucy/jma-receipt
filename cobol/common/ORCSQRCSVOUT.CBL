@@ -397,7 +397,7 @@
                    "-"
                    SMCNDATE-YMD
                    SYS-TIME
-                   ".qr.dat"
+                   "-qr.dat"
                                        DELIMITED  BY  SPACE
                                        INTO   FILE-NAME2
            END-STRING
@@ -409,7 +409,7 @@
                    "-"
                    SMCNDATE-YMD
                    SYS-TIME
-                   ".qr.dat"
+                   "-qr"
                                        DELIMITED  BY  SPACE
                                        INTO   WRK-BIKO-FILE
            END-STRING
@@ -1059,7 +1059,7 @@
                MOVE    "111"               TO  TBL-QRCSV-DATA (1)
                MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
                MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
-               MOVE    7                   TO  TBL-MAX
+               MOVE    6                   TO  TBL-MAX
                PERFORM 400-DATAOUT-SEC
            END-IF
            .
@@ -1107,7 +1107,7 @@
            MOVE    WRK-DAYCNT          TO  WRK-ZZZ
            PERFORM 20011-SUJIHEN-SEC
            MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (6)
-           MOVE    7                   TO  TBL-MAX
+           MOVE    6                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
            ADD     1                   TO  WRK-RP-11
       *

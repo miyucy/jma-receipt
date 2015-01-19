@@ -86,7 +86,7 @@
       * 04.07.00     NACL-多々納  14/09/XX  外用薬（臨時投薬）対応
       * 04.07.00     NACL-多々納  14/10/07  頓服薬（臨時投薬）対応
       * 04.07.00     NACL-多々納  14/10/20  公費備考編集個別対応
-      * 04.07.00     NACL-多々納  15/01/XX  ＣＳＶデータ出力対応
+      * 04.07.00     NACL-多々納  15/01/19  ＣＳＶデータ出力対応
       *****************************************************************
       *
       *
@@ -993,16 +993,19 @@
                    PERFORM 600-QRDATA-SYORI-SEC
                END-IF
       *H27.1
-      *        CSV出力
-      *        交付日未設定は作成なし
-               IF      (WRK-KOFYMD         =   SPACE )
-      *            点数マスタなし
-                   OR  (FLG-QRCHK          =   1     )
-      *            院外処方のみ
-                   OR  (FLG-SYOHO-IN   NOT =   1     )
-                   CONTINUE
-               ELSE
-                   PERFORM 610-CSVDATA-SYORI-SEC
+      *    CSV出力
+      *        院外の請求確認・中途・退院時処方せんのみ
+               IF      (ORCHC19-KBN        =   SPACE
+                                           OR  "4"
+                                           OR  "N"   )
+      *            交付日未設定は作成なし
+                   IF      (WRK-KOFYMD         =   SPACE )
+      *                点数マスタなし
+                       OR  (FLG-QRCHK          =   1     )
+                       CONTINUE
+                   ELSE
+                       PERFORM 610-CSVDATA-SYORI-SEC
+                   END-IF
                END-IF
       *
            END-IF
