@@ -513,26 +513,26 @@
            03  COM-MAX                     PIC 9(04).
       *
       *    ＱＲ位置
-       01  QR-FILE-NAME-PARA.
-      *****03  FILLER              PIC X(05)   VALUE   "/tmp/".
-           03  QR-FILE-HOSPNUM     PIC 9(02)   VALUE   ZERO.
-           03  QR-FILE-FORM-ID     PIC X(04)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ".".
-           03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ".".
-           03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
-           03  FILLER              PIC X(04)   VALUE   ".qr_".
-           03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
-           03  FILLER              PIC X(04)   VALUE   ".png".
+      *01  QR-FILE-NAME-PARA.
+      *    03  FILLER              PIC X(05)   VALUE   "/tmp/".
+      *    03  QR-FILE-HOSPNUM     PIC 9(02)   VALUE   ZERO.
+      *    03  QR-FILE-FORM-ID     PIC X(04)   VALUE   SPACE.
+      *    03  FILLER              PIC X(01)   VALUE   ".".
+      *    03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
+      *    03  FILLER              PIC X(01)   VALUE   ".".
+      *    03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
+      *    03  FILLER              PIC X(04)   VALUE   ".qr_".
+      *    03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
+      *    03  FILLER              PIC X(04)   VALUE   ".png".
       *v4.8
       *    ファイル指定領域
-       01  QR-FILE-NAME              PIC X(1024).
+      *01  QR-FILE-NAME              PIC X(1024).
       *
-       01  KUHAKU-FILE-NAME        PIC X(512).
+      *01  KUHAKU-FILE-NAME        PIC X(512).
       *    空白の画像
-       01  KUHAKU-NAME.
-           03  FILLER          PIC X(05)   VALUE   "data/".
-           03  FILLER          PIC X(15)   VALUE   "transparent.jpg".
+      *01  KUHAKU-NAME.
+      *    03  FILLER          PIC X(05)   VALUE   "data/".
+      *    03  FILLER          PIC X(15)   VALUE   "transparent.jpg".
       *
       *    プログラムオプションパラメタ
        01  PARA-AREA.
@@ -968,6 +968,7 @@
                PERFORM 2003-MAYAKU-HEN-SEC
            END-IF
       *ＱＲ対応
+           INITIALIZE                  OUT-ORCSQRCSVAREA
       *    ＱＲデータ出力処理（日数ゼロは対象外）
            IF      (ORCHC19-KBN        =   SPACE
                                        OR  "3"
@@ -993,22 +994,6 @@
       *        ELSE
       *            PERFORM 600-QRDATA-SYORI-SEC
       ******** END-IF
-      *H27.1
-      *    CSV出力
-      *        院外の請求確認・中途・退院時処方せんのみ
-               IF      (ORCHC19-KBN        =   SPACE
-                                           OR  "4"
-                                           OR  "N"   )
-      *            交付日未設定は作成なし
-                   IF      (WRK-KOFYMD         =   SPACE )
-      *                点数マスタなし
-                       OR  (FLG-QRCHK          =   1     )
-                       CONTINUE
-                   ELSE
-                       PERFORM 610-CSVDATA-SYORI-SEC
-                   END-IF
-               END-IF
-      *
            END-IF
            MOVE    ZERO                TO  WRK-FILE-CNT
       *
@@ -1048,6 +1033,21 @@
       *        帳票印刷処理
                PERFORM 400-PRINT-SEC
            END-PERFORM
+      *H27.1
+      *    CSV出力
+      *    院外の請求確認・中途・退院時処方せんのみ
+           IF      (ORCHC19-KBN        =   SPACE
+                                       OR  "4"
+                                       OR  "N"   )
+      *        交付日未設定は作成なし
+               IF      (WRK-KOFYMD         =   SPACE )
+      *            点数マスタなし
+                   OR  (FLG-QRCHK          =   1     )
+                   CONTINUE
+               ELSE
+                   PERFORM 610-CSVDATA-SYORI-SEC
+               END-IF
+           END-IF
       *
            .
        400-PRINT-SYORI-EXT.
