@@ -25,35 +25,5 @@ W91 {
       isactive bool;
       state int;
     };
-    CHKJIHI {
-      isactive bool;
-      state int;
-    };
-    CHKPTNUM {
-      isactive bool;
-      state int;
-    };
-    CHKSYBYO {
-      isactive bool;
-      state int;
-    };
-    CHKNMREC {
-      isactive bool;
-      state int;
-    };
-    COOPBASE2_COMB {
-      COOPBASE2 {
-        textdata varchar(20);
-      };
-      state int;
-      count int;
-        item varchar(20)[10];
-    };
-    LABEL3 {
-      state int;
-    };
-    LABEL4 {
-      state int;
-    };
   };
 };
