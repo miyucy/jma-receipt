@@ -14,7 +14,7 @@ KIDONO=${3}
 FILE_PREFIX="infection"
 UPLOAD_COMMAND=das-upload2.rb
 LOG=$LOGDIR/"$HOSPNUM"datainfection2.log
-LOG_FILE=$LOGDIR/"$HOSPNUM"datainfection2_real.log
+LOGFILE=$LOGDIR/"$HOSPNUM"datainfection2_real.log
 
 if [ x$MCP_TEMPDIR == "x" ];
 then
@@ -27,7 +27,7 @@ GZFILE=$CSVFILE.gz
 make_csv_file(){
   UPTARGEFILE=1
   
-  TIMESTAMP=`basename $file |sed -e "s/${FILE_PREFIX}.csv.\(.*\).gz/\1/"`
+  TIMESTAMP=`basename $1 |sed -e "s/${FILE_PREFIX}.csv.\(.*\).gz/\1/"`
   OBJECTDATE=${TIMESTAMP:8:6}
 
   zcat $file >> $CSVFILE
@@ -60,7 +60,7 @@ make_upload_file(){
   
   if [ x$UPTARGEFILE == "x" ]; then
     RESULT="900 No file"
-    echo "${RESULT:0:3}","${RESULT:4}"
+    echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
     exit 0
   fi
   gzip $CSVFILE
@@ -76,16 +76,14 @@ upload(){
   if [ -e $file ]; then
     RESULT=`$UPLOAD_COMMAND -i $file 2>&1|head -1`
     if [ "UP $file" = "$RESULT" ]; then
-       echo "000" $RESULT
+       echo "000" $RESULT | tee -a $LOGFILE
        if [ ${KIDONO} -eq 1 ]; then 
-         ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-                   -parameter "das-infec2,2,0,$OBJECTDATE,000,$HOSPNUM,Upload success"
+         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-infec2","2","0",$OBJECTDATE,"000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
        fi
        rm $file
     else
-       ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-                 -parameter "das-infec2,2,1,$OBJECTDATE,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}"
-       echo "${RESULT:0:3}","${RESULT:4}"
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-infec2","2","1",$OBJECTDATE,"${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
+       echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
        exit 1
     fi
   fi
@@ -121,7 +119,7 @@ DAS_UPLOAD2_LOCK="/var/lock/das_upload2_${MCP_TENANT}.lock"
   sleep $DAS_UPLOAD2_WAIT
   
   echo 'processing start'
-  rm -f $LOG_FILE
+  rm -f $LOGFILE
   get_file_count
   until [ $FCOUNT -eq 0 ]
   do
