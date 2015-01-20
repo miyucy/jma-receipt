@@ -1212,6 +1212,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  GID1
+           INITIALIZE                       GID1
            MOVE    SPA-GIDCD            TO  GID1-ID1CODE
            MOVE    WRK-GIDMSG           TO  GID1-ID1MSG
       *

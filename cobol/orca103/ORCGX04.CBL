@@ -5012,6 +5012,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  XID1
+           INITIALIZE                      XID1
            MOVE    SPA-XIDCD           TO  XID1-ID1CODE
            MOVE    WRK-XIDMSG          TO  XID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

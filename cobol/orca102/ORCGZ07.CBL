@@ -3126,6 +3126,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  ZID1
+           INITIALIZE                       ZID1
            MOVE    SPA-ZIDCD            TO  ZID1-ID1CODE
            MOVE    WRK-ZIDMSG           TO  ZID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -3157,6 +3158,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  ZID3
+           INITIALIZE                      ZID3
            MOVE    SPA-ZIDCD           TO  ZID3-ID1CODE
            MOVE    WRK-ZIDMSG          TO  ZID3-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

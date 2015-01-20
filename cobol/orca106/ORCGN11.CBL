@@ -1008,6 +1008,7 @@
            END-EVALUATE
       *
            MOVE    SPACE           TO  N11ID1
+           INITIALIZE                  N11ID1
            MOVE    SPA-N11IDCD     TO  N11ID1-ID1CODE
            MOVE    WRK-N11IDMSG    TO  N11ID1-ID1MSG
            MOVE    "B12"           TO  MCP-WIDGET

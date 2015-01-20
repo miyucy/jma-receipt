@@ -3808,6 +3808,7 @@
            MOVE    SPACE               TO  SPA-KID1-FLG
       *
            MOVE    SPACE               TO  KID1
+           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *

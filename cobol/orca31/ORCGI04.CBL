@@ -2091,6 +2091,7 @@
       *
            MOVE    SPACE               TO  I04
       *
+           INITIALIZE                      I04
            EVALUATE    FLG-HKNCOMBILST-ROW
            WHEN    1
                MOVE    ZERO            TO  I04-HKNCOMBILST-ROW
@@ -6883,6 +6884,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  I0ID1
+           INITIALIZE                      I0ID1
            MOVE    SPA-I0IDCD          TO  I0ID1-ID1CODE
            MOVE    WRK-I0IDMSG         TO  I0ID1-ID1MSG
       *

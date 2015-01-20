@@ -2497,6 +2497,7 @@
            INITIALIZE                  SPA-I49GMN-AREA
            MOVE    SPACE               TO  SPA-I49-DATA
            MOVE    SPACE               TO  I49
+           INITIALIZE                      I49
            MOVE    SPACE               TO  I49-PIN
            MOVE    SPACE               TO  I49-PED
       *
@@ -3481,6 +3482,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  I44
       *
+           INITIALIZE                      I44
            MOVE    ZERO                TO  IDX.
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1

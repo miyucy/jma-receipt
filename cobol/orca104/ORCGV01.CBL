@@ -1364,6 +1364,7 @@
       *
            MOVE    SPACE               TO  V01
       *
+           INITIALIZE                      V01
            MOVE    ZERO                TO  V01-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
@@ -1551,6 +1552,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  VID1
+           INITIALIZE                       VID1
            MOVE    SPA-VIDCD            TO  VID1-ID1CODE
            MOVE    WRK-VIDMSG           TO  VID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

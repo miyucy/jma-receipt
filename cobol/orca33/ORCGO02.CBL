@@ -2420,6 +2420,7 @@
       * 
            MOVE    SPACE               TO  O02
       *
+           INITIALIZE                      O02
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1                >   SPA-GMN-MAX
                IF    ( SPA-GMN-TRENNUM    (IDX1)   NOT =   ZERO )
@@ -2632,6 +2633,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  OID1
+           INITIALIZE                       OID1
            MOVE    SPA-OIDCD            TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG           TO  OID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2664,6 +2666,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  OID2
+           INITIALIZE                      OID2
            MOVE    SPA-OIDCD2          TO  OID2-ID1CODE
            MOVE    WRK-OIDMSG          TO  OID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

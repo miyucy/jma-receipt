@@ -4091,6 +4091,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  I5ID1
+           INITIALIZE                      I5ID1
            MOVE    SPA-I5IDCD          TO  I5ID1-ID1CODE
            MOVE    WRK-I5IDMSG         TO  I5ID1-ID1MSG
       *

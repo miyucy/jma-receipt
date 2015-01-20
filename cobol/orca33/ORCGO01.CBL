@@ -1915,6 +1915,7 @@
       *
            MOVE    SPACE               TO  O01
       *
+           INITIALIZE                      O01
            MOVE    SPA-GMN-PRTKBN-G    TO  O01-PRTKBN
            MOVE    SPA-GMN-PRTKBN-MAX  TO  O01-PRTKBN-COUNT
            PERFORM VARYING IDX2    FROM    1   BY  1
@@ -2177,6 +2178,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  OID1
+           INITIALIZE                       OID1
            MOVE    SPA-OIDCD            TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG           TO  OID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2209,6 +2211,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  OID2
+           INITIALIZE                      OID2
            MOVE    SPA-OIDCD2          TO  OID2-ID1CODE
            MOVE    WRK-OIDMSG          TO  OID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

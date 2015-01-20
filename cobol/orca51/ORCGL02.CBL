@@ -1171,6 +1171,7 @@
       *
            MOVE    SPACE               TO  L02
       *
+           INITIALIZE                      L02
            MOVE    SPA-GMN-L02-SRYYMD      TO  L02-SRYYMD
            MOVE    SPA-GMN-L02-FILENM1     TO  L02-FILENM1
       *
@@ -1337,6 +1338,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  LID1
+           INITIALIZE                       LID1
            MOVE    SPA-LIDCD            TO  LID1-ID1CODE
            MOVE    WRK-LIDMSG           TO  LID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

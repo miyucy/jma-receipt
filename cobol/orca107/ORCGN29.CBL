@@ -242,6 +242,7 @@
        490-KAKUNIN-SEC            SECTION.
       *     
            MOVE    SPACE               TO  N29
+           INITIALIZE                      N29
            MOVE    ZERO                TO  N29-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  N29-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE

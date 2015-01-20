@@ -2634,6 +2634,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  QID1
+           INITIALIZE                      QID1
            MOVE    SPA-QIDCD           TO  QID1-ID1CODE
            MOVE    WRK-QIDMSG          TO  QID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

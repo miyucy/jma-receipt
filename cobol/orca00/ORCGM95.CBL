@@ -2288,6 +2288,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        520-MIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  MID1
+           INITIALIZE                      MID1
            EVALUATE    SPA-MIDCD
                WHEN    "0102"
                    STRING  "表示されているすべての担当医を削除します。"
@@ -2340,6 +2341,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        520-MIDSET2-SEC             SECTION.
       *
            MOVE    SPACE               TO  MID2
+           INITIALIZE                      MID2
            EVALUATE    SPA-MIDCD
                WHEN    "0106"
                    MOVE    SPA-M95GMN-TAINNUM  TO  WRK-NUM-1-X

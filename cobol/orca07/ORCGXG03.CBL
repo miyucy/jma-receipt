@@ -2198,6 +2198,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  XGID1
+           INITIALIZE                       XGID1
            MOVE    SPA-XGIDCD           TO  XGID1-ID1CODE
            MOVE    WRK-XGIDMSG          TO  XGID1-ID1MSG
       *

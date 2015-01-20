@@ -4627,6 +4627,7 @@
       *
            MOVE    SPACE               TO  KA02
       *    コラムリストの位置指定
+           INITIALIZE                      KA02
            MOVE    ZERO                TO  KA02-RRKLIST-ROW
       **** MOVE    ZERO                TO  KA02-RRKLIST-ROWATTR
            MOVE    ZERO                TO  KA02-MEILIST-ROW
@@ -5035,6 +5036,7 @@
        520-KA02IDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  KAID1
+           INITIALIZE                      KAID1
            EVALUATE    SPA-KAID1CD
                WHEN    "0101"
                    STRING  "交付日で薬剤情報を印刷します。"
@@ -5092,6 +5094,7 @@
        530-KA02IDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  KAID2
+           INITIALIZE                      KAID2
            EVALUATE    SPA-KAID2CD
                WHEN    "0101"
                    STRING  "診療日を交付日として再印刷します。"

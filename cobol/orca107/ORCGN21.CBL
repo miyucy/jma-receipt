@@ -2299,6 +2299,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPACE           TO  N21
       *
       *    スクロール位置セット
+           INITIALIZE                  N21
            MOVE    WRK-ROW         TO  N21-ROW
            MOVE    ZERO            TO  N21-ROWATTR
       *
@@ -2522,6 +2523,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
            END-EVALUATE
       *
            MOVE    SPACE           TO  N21ID1
+           INITIALIZE                  N21ID1
            MOVE    SPA-N21IDCD     TO  N21ID1-ID1CODE
            MOVE    WRK-N21IDMSG    TO  N21ID1-ID1MSG
            MOVE    "B12"           TO  MCP-WIDGET

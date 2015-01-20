@@ -1177,6 +1177,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  MMID1
+           INITIALIZE                      MMID1
            MOVE    SPA-MMID1CD         TO  MMID1-ID1CODE
            MOVE    WRK-MIDMSG          TO  MMID1-ID1MSG
       *

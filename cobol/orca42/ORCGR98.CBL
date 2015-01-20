@@ -1796,6 +1796,7 @@ grpsys                         MOVE    SPA-HOSPNUM
       * 
            MOVE    SPACE               TO  R98
       *
+           INITIALIZE                      R98
            MOVE    SPA-GMN-SRYYMH      TO  R98-SRYYMH-VALUE
            MOVE    "blue"              TO  R98-SRYYMH-STYLE
                                            R98-HYOUJIKBN-STYLE
@@ -2040,6 +2041,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
+           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD

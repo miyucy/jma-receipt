@@ -390,6 +390,7 @@
       *
            MOVE    SPACE               TO  W201
       *    コラムリストの位置指定
+           INITIALIZE                      W201
            MOVE    ZERO                TO  W201-MEILIST-ROW
            IF      WRK-W201-ROW    NOT =   ZERO
                MOVE    WRK-W201-ROW    TO  W201-MEILIST-ROW 
@@ -1409,6 +1410,7 @@
           END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
+           INITIALIZE                      WID1
            MOVE    SPA-WIDCD           TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

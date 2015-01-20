@@ -1489,6 +1489,7 @@
       *
            MOVE    SPACE               TO  XD01
       *
+           INITIALIZE                      XD01
            MOVE    SPA-GMN-PTNUM       TO  XD01-PTNUM
            MOVE    SPA-GMN-NAME        TO  XD01-NAME
            MOVE    SPA-GMN-SEX         TO  XD01-SEX
@@ -1682,6 +1683,7 @@
        520-XD01IDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  XDID1
+           INITIALIZE                      XDID1
            EVALUATE    SPA-XDID1CD
                WHEN    "0101"
                    MOVE    "処理を実行します。よろしいですか？"

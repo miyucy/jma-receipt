@@ -1357,6 +1357,7 @@
       *
            MOVE    SPACE               TO  G02
       *
+           INITIALIZE                      G02
            MOVE    SPA-GMN-G02-SRYYM       TO  G02-SRYYM
            MOVE    SPA-GMN-G02-FILENM1     TO  G02-FILENM1
            MOVE    SPA-GMN-G02-FILENM2     TO  G02-FILENM2
@@ -1550,6 +1551,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  GID1
+           INITIALIZE                       GID1
            MOVE    SPA-GIDCD            TO  GID1-ID1CODE
            MOVE    WRK-GIDMSG           TO  GID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

@@ -3784,6 +3784,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  SID1
+           INITIALIZE                       SID1
            MOVE    SPA-SIDCD            TO  SID1-ID1CODE
            MOVE    WRK-SIDMSG           TO  SID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

@@ -3546,6 +3546,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  CID2
+           INITIALIZE                      CID2
            MOVE    WRK-CIDMSG          TO  CID2-MSG
            MOVE    SPA-C04-IKOMOTO-BYOMEICD
                                        TO  CID2-BYOMEICD1

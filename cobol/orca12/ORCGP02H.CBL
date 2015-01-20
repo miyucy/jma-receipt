@@ -623,6 +623,7 @@
       *                                TO  PID1-ID1MSG
       *    END-EVALUATE
       *
+           INITIALIZE                      PID1
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE

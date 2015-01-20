@@ -3456,6 +3456,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    SPACE               TO  R03
       *
+           INITIALIZE                      R03
            MOVE    SPA-GMN-SRYYM       TO  R03-SRYYM
       *
            MOVE    SPA-GMN-SYOKBN         TO  R03-SYOKBN-VALUE

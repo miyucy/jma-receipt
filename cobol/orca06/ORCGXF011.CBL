@@ -771,6 +771,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-XFID1-FLG
       *
            MOVE    SPACE               TO  XFID1
+           INITIALIZE                      XFID1
            MOVE    SPA-XFIDCD          TO  XFID1-ID1CODE
            MOVE    WRK-XF01IDMSG       TO  XFID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

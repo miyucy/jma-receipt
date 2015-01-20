@@ -2780,6 +2780,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
        520-TIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  TID1
+           INITIALIZE                       TID1
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            EVALUATE    SPA-TIDCD
                 WHEN    "1001"

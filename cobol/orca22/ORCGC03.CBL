@@ -4925,6 +4925,7 @@ grpsys                                         SPA-AREA
       *  
            MOVE    SPACE                TO  C09
       *
+           INITIALIZE                       C09
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
                    OR      SPA-NAI-C03-BYOMEICD (IDX)  =   SPACE
@@ -5886,6 +5887,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            MOVE    SPACE               TO  SPA-CID1-FLG
       *
            MOVE    SPACE               TO  CID1
+           INITIALIZE                      CID1
            EVALUATE    SPA-CIDCD
                WHEN    "0105"
                    MOVE    WRK-ERR-BYOMEI
@@ -5957,6 +5959,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            END-EVALUATE
       *
            MOVE    SPACE               TO  CID2
+           INITIALIZE                      CID2
            MOVE    WRK-CIDMSG          TO  CID2-MSG
            MOVE    SPA-C03-IKOMOTO-BYOMEICD
                                        TO  CID2-BYOMEICD1
@@ -5998,6 +6001,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            MOVE    SPACE               TO  SPA-CID3-FLG
       *
            MOVE    SPACE               TO  CID3
+           INITIALIZE                      CID3
            MOVE    SPA-CIDCD3          TO  CID3-ID1CODE
            MOVE    WRK-CIDMSG          TO  CID3-MSG
            MOVE    "F11:分類名のみ削除"  
@@ -6028,6 +6032,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            MOVE    SPACE               TO  SPA-CID4-FLG
       *
            MOVE    SPACE               TO  CID4
+           INITIALIZE                      CID4
            MOVE    SPA-CIDCD4          TO  CID4-ID1CODE
            EVALUATE    SPA-CIDCD4
                WHEN    "0103"
@@ -6068,6 +6073,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            MOVE    SPACE               TO  SPA-CID5-FLG
       *
            MOVE    SPACE               TO  CID5
+           INITIALIZE                      CID5
            MOVE    SPA-CIDCD5          TO  CID5-ID1CODE
            MOVE    WRK-CIDMSG          TO  CID5-MSG
            MOVE    "B01"               TO  MCP-WIDGET

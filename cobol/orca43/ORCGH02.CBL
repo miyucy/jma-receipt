@@ -1301,6 +1301,7 @@
        520-HIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  HID1
+           INITIALIZE                       HID1
            MOVE    SPA-HIDCD            TO  HID1-ID1CODE
       *
            EVALUATE    SPA-HIDCD

@@ -249,6 +249,7 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  X97
+           INITIALIZE                      X97
            MOVE    ZERO                TO  X97-COUNT
       *----(01.00.02)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  X97-B12-STATE

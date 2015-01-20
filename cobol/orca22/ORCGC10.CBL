@@ -2849,6 +2849,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
        500-GMNHEN-SEC              SECTION.
       * 
            MOVE    SPACE               TO  C10
+           INITIALIZE                      C10
            MOVE    SPA-GMN-C10-TENKIYMD       TO  C10-TENKIYMD
       *
            MOVE    SPA-GMN-C10-TENKIKBN-G TO  C10-TENKIKBN
@@ -3225,6 +3226,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPACE               TO  SPA-CID1-FLG
       *
            MOVE    SPACE               TO  CID1
+           INITIALIZE                      CID1
            MOVE    SPA-CIDCD           TO  CID1-ID1CODE
       *
            EVALUATE    SPA-CIDCD
@@ -3285,6 +3287,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPACE               TO  SPA-CID3-FLG
       *
            MOVE    SPACE               TO  CID3
+           INITIALIZE                      CID3
            MOVE    SPA-CIDCD3          TO  CID3-ID1CODE
            MOVE    WRK-CIDMSG          TO  CID3-MSG
            MOVE    "F11:ÁªÂò¤·¤¿¿ÇÎÅ²Ê¤Ë°ÜÆ°"  

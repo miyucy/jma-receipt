@@ -1597,6 +1597,7 @@
       *
            MOVE    SPACE               TO  K081
       *
+           INITIALIZE                      K081
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K081-SYOHOU-MAX
                MOVE    SPA-K081GMN-SYOHOU-LST (IDX)

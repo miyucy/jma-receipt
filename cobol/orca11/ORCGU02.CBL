@@ -6832,6 +6832,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  U2ID1
+           INITIALIZE                       U2ID1
            MOVE    SPA-U2ID1CD          TO  U2ID1-ID1CODE
            MOVE    WRK-U2ID1MSG         TO  U2ID1-ID1MSG
       *

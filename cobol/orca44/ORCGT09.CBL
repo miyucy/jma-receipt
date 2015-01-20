@@ -1265,6 +1265,7 @@
        520-TIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  TID1
+           INITIALIZE                      TID1
            MOVE    SPA-TIDCD           TO  TID1-ID1CODE
       *
            EVALUATE    SPA-TIDCD
@@ -1318,6 +1319,7 @@
        530-TID2SET-SEC              SECTION.
       *
            MOVE    SPACE                TO  TID2
+           INITIALIZE                       TID2
            MOVE    SPA-TIDCD            TO  TID2-ID1CODE
       *
            EVALUATE    SPA-TIDCD

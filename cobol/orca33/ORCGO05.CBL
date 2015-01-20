@@ -860,6 +860,7 @@
       *
            MOVE    SPACE               TO  O05
       *
+           INITIALIZE                      O05
            MOVE    SPA-GMN-KBT         TO  O05-KBT
            MOVE    SPA-GMN-KIKAN       TO  O05-KIKAN
       *
@@ -973,6 +974,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  OID1
+           INITIALIZE                       OID1
            MOVE    SPA-OIDCD            TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG           TO  OID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

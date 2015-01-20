@@ -1069,6 +1069,7 @@
       *
            MOVE    SPACE           TO  MID1
       *
+           INITIALIZE                  MID1
            MOVE    "1001"          TO  MID1-ID1CODE
            MOVE
            "申請情報（参加する）を登録（送信）しますか？"
@@ -1097,6 +1098,7 @@
       *
            MOVE    SPACE           TO  MID2
       *
+           INITIALIZE                  MID2
            MOVE    SPA-MIDCD       TO  MID2-ID1CODE
       *
            EVALUATE    SPA-MIDCD
@@ -1579,6 +1581,7 @@
       *
            MOVE    SPACE           TO  MID1
       *
+           INITIALIZE                  MID1
            MOVE    SPA-MIDCD       TO  MID1-ID1CODE
       *
            MOVE    "B12"           TO  MCP-WIDGET

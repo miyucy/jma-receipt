@@ -623,6 +623,7 @@
       *
            MOVE    SPACE               TO  K07
       *»»Äê¹àÌÜ
+           INITIALIZE                      K07
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K09GMN-MAX1
                MOVE    SPA-K09GMN-NO      (IDX)   TO  WRK-ZZ

@@ -4116,6 +4116,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  I4ID1
+           INITIALIZE                      I4ID1
            MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE
            MOVE    WRK-I4IDMSG         TO  I4ID1-ID1MSG
       *

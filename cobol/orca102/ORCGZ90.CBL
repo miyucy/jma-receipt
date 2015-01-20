@@ -492,6 +492,7 @@
            INITIALIZE                  SPA-Z98GMN-AREA
            MOVE    SPACE               TO  Z98
       *
+           INITIALIZE                      Z98
            MOVE   "NEW"                TO  MCP-PUTTYPE.
            MOVE   "Z98    "            TO  MCP-WINDOW.
       *
@@ -531,6 +532,7 @@
       *
            MOVE    SPACE               TO  Z90
       *
+           INITIALIZE                      Z90
            MOVE    SPA-Z01-SRYCD       TO  Z90-SRYCD
            MOVE    SPA-Z01-NAMEH       TO  Z90-SRYNAME
       *

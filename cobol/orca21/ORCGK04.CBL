@@ -556,6 +556,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            MOVE    SPACE               TO  K04
       *´µ¼Ô£É£Ä
+           INITIALIZE                      K04
            MOVE    SPA-PTNUM           TO  K04-PTNUM
       *´µ¼Ô¥«¥Ê»áÌ¾
            MOVE    SPA-KANANAME        TO  K04-KANANAME

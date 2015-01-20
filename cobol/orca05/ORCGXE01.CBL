@@ -1101,6 +1101,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  XE01
       *
+           INITIALIZE                      XE01
            MOVE    SPA-GMN-SIDO-KBN    TO  XE01-SEIDO-KBN
            MOVE    SPA-GMN-HKNNUM      TO  XE01-HKNNUM
            MOVE    SPA-GMN-KIGONUM     TO  XE01-KIGONUM

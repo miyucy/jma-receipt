@@ -1311,6 +1311,7 @@
            MOVE    SPACE           TO  M80
       *
       *    コラムリストの位置指定
+           INITIALIZE                  M80
            MOVE    ZERO            TO  M80-LIST-ROW
            IF      WRK-M80-LIST-ROW    NOT =   ZERO
                MOVE    WRK-M80-LIST-ROW    TO  M80-LIST-ROW
@@ -1506,6 +1507,7 @@
       *
            MOVE    SPACE           TO  MMID1
       *
+           INITIALIZE                  MMID1
            EVALUATE    SPA-MMID1CD
                WHEN    "0101"
                WHEN    "0111"

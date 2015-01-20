@@ -2357,6 +2357,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  OID1
+           INITIALIZE                      OID1
            MOVE    SPA-OIDCD           TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG          TO  OID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -2389,6 +2390,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  OID3
+           INITIALIZE                      OID3
            MOVE    SPA-OIDCD           TO  OID3-ID1CODE
            MOVE    WRK-OIDMSG          TO  OID3-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

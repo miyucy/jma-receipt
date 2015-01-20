@@ -804,6 +804,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-C50ID1-FLG
       *
            MOVE    SPACE               TO  C50ID1
+           INITIALIZE                      C50ID1
            MOVE    SPA-C50IDCD         TO  C50ID1-ID1CODE
            MOVE    WRK-C50IDMSG        TO  C50ID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

@@ -552,6 +552,7 @@
            END-IF
            MOVE    SPACE               TO  K021
       *
+           INITIALIZE                      K021
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K021-MAX
                MOVE    SPA-K021-TSEQNO (IDX)   TO  WRK-ZZ

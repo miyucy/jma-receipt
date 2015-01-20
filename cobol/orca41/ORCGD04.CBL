@@ -3895,6 +3895,7 @@
       *    END-EVALUATE
       *
            MOVE    SPACE               TO  DID1
+           INITIALIZE                      DID1
            MOVE    SPA-DIDCD           TO  DID1-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

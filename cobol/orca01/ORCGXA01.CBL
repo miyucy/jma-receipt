@@ -1603,6 +1603,7 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  XA99
+           INITIALIZE                      XA99
            MOVE    ZERO                TO  XA99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  XA99-B12-STATE
       *        
@@ -1952,6 +1953,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  XAID1
+           INITIALIZE                       XAID1
            MOVE    SPA-XAIDCD           TO  XAID1-ID1CODE
            MOVE    WRK-XAIDMSG          TO  XAID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -1988,6 +1990,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  XAID2
+           INITIALIZE                       XAID2
            MOVE    SPA-XAIDCD2          TO  XAID2-ID1CODE
            MOVE    WRK-XAIDMSG          TO  XAID2-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

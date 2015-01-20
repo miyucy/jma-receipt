@@ -4797,6 +4797,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            END-EVALUATE
       *
            MOVE    SPACE                TO  HID1
+           INITIALIZE                       HID1
            MOVE    SPA-HIDCD            TO  HID1-ID1CODE
            MOVE    WRK-HIDMSG           TO  HID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

@@ -1465,6 +1465,7 @@ grpsys                                       SPA-AREA
       *
            MOVE    SPACE               TO  C05
       *
+           INITIALIZE                      C05
            MOVE    SPA-GMN-C05-HENBYO      TO  C05-EDITBYOMEI
            MOVE    SPA-GMN-C05-BYOKEN      TO  C05-BYOMEIKEN
            MOVE    SPA-GMN-C05-SELNUM1     TO  C05-SELNUM1
@@ -1627,6 +1628,7 @@ grpsys                                       SPA-AREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  CID2
+           INITIALIZE                      CID2
            MOVE    WRK-CIDMSG          TO  CID2-MSG
            MOVE    SPA-C05-IKOMOTO-BYOMEICD
                                        TO  CID2-BYOMEICD1

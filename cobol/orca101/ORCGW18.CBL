@@ -1980,6 +1980,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
+           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2017,6 +2018,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID2
+           INITIALIZE                       WID2
            MOVE    SPA-WIDCD2           TO  WID2-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID2-ID1MSG
            MOVE    "¤¤¤¤¤¨"             TO  WID2-B01 

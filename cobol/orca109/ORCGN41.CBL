@@ -2481,6 +2481,7 @@
            MOVE    SPACE               TO  N41
       *
       *    コラムリストの位置指定
+           INITIALIZE                      N41
            MOVE    ZERO                TO  N41-HEADLIST-ROW
            MOVE    ZERO                TO  N41-HEADLIST-ROWATTR
            IF      WRK-N41-ROW     NOT =   ZERO
@@ -2882,6 +2883,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  N41ID1
+           INITIALIZE                      N41ID1
            MOVE    SPA-N41IDCD         TO  N41ID1-ID1CODE
            MOVE    WRK-N41IDMSG        TO  N41ID1-ID1MSG
       *

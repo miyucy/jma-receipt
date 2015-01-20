@@ -14906,6 +14906,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-JID1-FLG
       *
            MOVE    SPACE               TO  JID1
+           INITIALIZE                      JID1
            MOVE    SPA-JIDCD           TO  JID1-ID1CODE
            MOVE    WRK-JIDMSG          TO  JID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -14935,6 +14936,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        520-JID2SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  JID2
+           INITIALIZE                      JID2
            EVALUATE    SPA-JIDCD2
                WHEN    "0115"
                    MOVE    "診療日の変更、または追加を選択して下さい。"

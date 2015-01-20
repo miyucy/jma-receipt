@@ -9405,6 +9405,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        5101-KTERR2-SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  KTERR2
+           INITIALIZE                      KTERR2
            MOVE    SPA-ERRCD           TO  KTERR2-ERRCODE
            MOVE    SPA-ERRMSG2         TO  KTERR2-ERRMSG(1:80)
            MOVE    SPA-ERRMSG          TO  KTERR2-ERRMSG2
@@ -9589,6 +9590,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KTID1
+           INITIALIZE                      KTID1
            MOVE    SPA-KIDCD           TO  KTID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KTID1-ID1MSG
       *
@@ -9653,6 +9655,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KTID2
+           INITIALIZE                      KTID2
            MOVE    SPA-KTID2CD         TO  KTID2-ID1CODE
            MOVE    WRK-KIDMSG          TO  KTID2-ID1MSG
       *

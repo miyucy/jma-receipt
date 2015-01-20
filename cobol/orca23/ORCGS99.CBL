@@ -227,6 +227,7 @@
        490-KAKUNIN-SEC             SECTION.
       *     
            MOVE    SPACE               TO  S99
+           INITIALIZE                      S99
            MOVE    ZERO                TO  S99-COUNT
       *----(03.04.01)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  S99-B12-STATE

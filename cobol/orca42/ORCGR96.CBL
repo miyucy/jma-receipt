@@ -1952,6 +1952,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
+           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            MOVE    "£Î£Ï"               TO  RID1-B01-LABEL

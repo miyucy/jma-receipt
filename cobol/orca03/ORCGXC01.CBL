@@ -1897,6 +1897,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  XC01
       *
+           INITIALIZE                      XC01
            EVALUATE    FLG-GMN-INIT
            WHEN    1
                MOVE    ZERO            TO  XC01-ROW 

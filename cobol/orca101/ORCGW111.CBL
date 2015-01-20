@@ -315,6 +315,7 @@
       *
            MOVE    SPACE               TO  W111
       *    コラムリストの位置指定
+           INITIALIZE                      W111
            MOVE    ZERO                TO  W111-MEILIST-ROW
            IF      WRK-W111-ROW    NOT =   ZERO
                MOVE    WRK-W111-ROW    TO  W111-MEILIST-ROW 
@@ -1001,6 +1002,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
           END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
+           INITIALIZE                      WID1
            MOVE    SPA-WIDCD           TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

@@ -2053,6 +2053,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  NID1
+           INITIALIZE                       NID1
            MOVE    SPA-NIDCD            TO  NID1-ID1CODE
            MOVE    WRK-NIDMSG           TO  NID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

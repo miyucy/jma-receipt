@@ -406,6 +406,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  R99
+           INITIALIZE                      R99
                          
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE

@@ -6228,6 +6228,7 @@
        5101-KTERR2-SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  KTERR2
+           INITIALIZE                      KTERR2
            MOVE    SPA-ERRCD           TO  KTERR2-ERRCODE
            MOVE    SPA-ERRMSG          TO  KTERR2-ERRMSG
            MOVE    SPA-ERRMSG2         TO  KTERR2-ERRMSG2(1:80)
@@ -6277,6 +6278,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  KTID1
+           INITIALIZE                      KTID1
            MOVE    SPA-KIDCD           TO  KTID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KTID1-ID1MSG
       *

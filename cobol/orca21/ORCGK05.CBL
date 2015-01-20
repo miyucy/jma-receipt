@@ -3345,6 +3345,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  K99
       *
       *    画面カーソルセット処理
+           INITIALIZE                      K99
            MOVE    "PIN"               TO  MCP-WIDGET
       *
            MOVE    SPACE               TO  SPA-K99-DATA
@@ -5718,6 +5719,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  K051
       *
       *    画面編集
+           INITIALIZE                      K051
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
                MOVE    SPA-K051-INPUTCD   (IDX)
@@ -6501,6 +6503,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ALL "9"             TO  SPA-K052-INPUTCD2
       *
            MOVE    SPACE               TO  K052
+           INITIALIZE                      K052
            MOVE    SPA-K052-INPUTCD1   TO  K052-INPUTCD1
            MOVE    SPA-K052-INPUTCD2   TO  K052-INPUTCD2
       *
@@ -6973,6 +6976,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        5101-KERR2-SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  KERR2
+           INITIALIZE                      KERR2
            MOVE    SPA-ERRCD           TO  KERR2-ERRCODE
            MOVE    SPA-ERRMSG2         TO  KERR2-ERRMSG(1:80)
            MOVE    SPA-ERRMSG          TO  KERR2-ERRMSG2
@@ -7027,6 +7031,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KID1
+           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *

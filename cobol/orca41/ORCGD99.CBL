@@ -230,6 +230,7 @@
        490-KAKUNIN-SEC            SECTION.
       *     
            MOVE    SPACE               TO  D99
+           INITIALIZE                      D99
            MOVE    ZERO                TO  D99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  D99-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE

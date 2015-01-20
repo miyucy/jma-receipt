@@ -2507,6 +2507,7 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  D99
+           INITIALIZE                      D99
            MOVE    ZERO                TO  D99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  D99-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE
@@ -3325,6 +3326,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  DID1
+           INITIALIZE                      DID1
            MOVE    SPA-DIDCD           TO  DID1-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -3363,6 +3365,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  DID2
+           INITIALIZE                      DID2
            MOVE    SPA-DIDCD           TO  DID2-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

@@ -231,6 +231,7 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  I23
+           INITIALIZE                      I23
            MOVE    ZERO                TO  I23-COUNT
       *
            MOVE    5                   TO  I23-DURATION

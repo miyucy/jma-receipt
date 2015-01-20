@@ -533,6 +533,7 @@
            END-IF
            MOVE    SPACE               TO  KT011
       *
+           INITIALIZE                      KT011
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-KT011-MAX
                MOVE    SPA-KT011-TSEQNO (IDX)   TO  WRK-ZZ

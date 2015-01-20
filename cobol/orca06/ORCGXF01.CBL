@@ -2864,6 +2864,7 @@
            MOVE    SPACE               TO  SPA-XFID1-FLG
       *
            MOVE    SPACE               TO  XFID1
+           INITIALIZE                      XFID1
            MOVE    SPA-XFIDCD          TO  XFID1-ID1CODE
            MOVE    WRK-XFIDMSG         TO  XFID1-ID1MSG
       *
@@ -2911,6 +2912,7 @@
            MOVE    SPACE               TO  SPA-XFID2-FLG
       *
            MOVE    SPACE               TO  XFID2
+           INITIALIZE                      XFID2
            MOVE    SPA-XFIDCD2         TO  XFID2-ID2CODE
            MOVE    WRK-XFIDMSG         TO  XFID2-ID2MSG
       *

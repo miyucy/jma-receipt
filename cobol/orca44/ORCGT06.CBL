@@ -5840,6 +5840,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            END-EVALUATE
       *
            MOVE    SPACE               TO  TID1
+           INITIALIZE                      TID1
            MOVE    SPA-TIDCD           TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG          TO  TID1-ID1MSG
       *
@@ -5885,6 +5886,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SPACE               TO  WRK-TIDMSG
       *
            MOVE    SPACE                TO  TID2
+           INITIALIZE                       TID2
            MOVE    SPA-TIDCD            TO  TID2-ID1CODE
       *
            EVALUATE    SPA-TIDCD

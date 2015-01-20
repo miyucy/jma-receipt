@@ -1846,6 +1846,7 @@
            MOVE    SPACE               TO  SPA-CID4-FLG
       *
            MOVE    SPACE               TO  CID4
+           INITIALIZE                      CID4
            MOVE    SPA-CIDCD4          TO  CID4-ID1CODE
            EVALUATE    SPA-CIDCD4
                WHEN    "0101"

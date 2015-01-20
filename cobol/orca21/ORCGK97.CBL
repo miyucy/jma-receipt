@@ -357,6 +357,7 @@
       *
            MOVE    SPACE               TO  K97
       *    コラムリストの位置指定
+           INITIALIZE                      K97
            MOVE    ZERO                TO  K97-HKNCOMBI-ROW
            MOVE    ZERO                TO  K97-SRYKA-ROW
            MOVE    ZERO                TO  K97-DRCD-ROW

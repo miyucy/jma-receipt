@@ -192,6 +192,7 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  XC99
+           INITIALIZE                      XC99
            MOVE    ZERO                TO  XC99-COUNT
       *        
            MOVE    SPACE               TO  SYS-3003-REC 

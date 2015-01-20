@@ -1344,6 +1344,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  U1ID1
+           INITIALIZE                       U1ID1
            MOVE    SPA-U1IDCD           TO  U1ID1-ID1CODE
            MOVE    WRK-U1IDMSG          TO  U1ID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

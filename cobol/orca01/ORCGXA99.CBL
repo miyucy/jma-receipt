@@ -231,6 +231,7 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  XA99
+           INITIALIZE                      XA99
            MOVE    ZERO                TO  XA99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  XA99-B12-STATE
       *

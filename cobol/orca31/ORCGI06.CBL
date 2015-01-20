@@ -6391,6 +6391,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  I0ID1
+           INITIALIZE                      I0ID1
            MOVE    SPA-I0IDCD          TO  I0ID1-ID1CODE
            MOVE    WRK-I0IDMSG         TO  I0ID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

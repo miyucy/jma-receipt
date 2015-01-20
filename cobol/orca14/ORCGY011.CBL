@@ -940,6 +940,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  YID1
+           INITIALIZE                       YID1
            MOVE    SPA-YID1CD           TO  YID1-ID1CODE
            MOVE    WRK-YID1MSG          TO  YID1-ID1MSG
            MOVE    "╠сды"               TO  YID1-B01

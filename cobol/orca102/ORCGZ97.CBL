@@ -281,6 +281,7 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  Z97
+           INITIALIZE                      Z97
            MOVE    ZERO                TO  Z97-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  Z97-B12-STATE
       *

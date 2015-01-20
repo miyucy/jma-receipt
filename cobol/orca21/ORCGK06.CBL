@@ -2426,6 +2426,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  K06
       *
+           INITIALIZE                      K06
            MOVE    SPA-GMN-PTNUM       TO  K06-PTNUM
            MOVE    SPA-GMN-SRYYM       TO  K06-SRYYM
            MOVE    SPA-GMN-KANANAME    TO  K06-KANANAME
@@ -2746,6 +2747,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-KID1-FLG
       *
            MOVE    SPACE               TO  KID1
+           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *

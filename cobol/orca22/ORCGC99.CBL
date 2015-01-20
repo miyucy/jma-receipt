@@ -209,6 +209,7 @@
        490-KAKUNIN-SEC             SECTION.
       *
            MOVE    SPACE           TO  C99
+           INITIALIZE                  C99
            MOVE    ZERO            TO  C99-COUNT
       *
       *    ジョブ管理チェック処理

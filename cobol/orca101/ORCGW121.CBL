@@ -6077,6 +6077,7 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
        520-WIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  WID1
+           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
       *
            EVALUATE    SPA-WIDCD

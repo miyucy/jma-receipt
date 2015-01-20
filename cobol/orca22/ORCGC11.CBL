@@ -2176,6 +2176,7 @@ grpsys                                          SPA-AREA
            END-IF
       *
            MOVE    SPACE                   TO  C11
+           INITIALIZE                          C11
            MOVE    SPA-GMN-C11-PTNUM       TO  C11-PTNUM
            MOVE    SPA-GMN-C11-SYSYMD      TO  C11-SYSYMD
            MOVE    SPA-GMN-C11-KANANAME    TO  C11-KANANAME
@@ -2468,6 +2469,7 @@ grpsys                                          SPA-AREA
            MOVE    SPACE           TO  SPA-CID1-FLG
       *
            MOVE    SPACE           TO  CID1
+           INITIALIZE                  CID1
            MOVE    SPA-CIDCD       TO  CID1-ID1CODE
            MOVE    WRK-CIDMSG      TO  CID1-ID1MSG
            EVALUATE    SPA-CIDCD

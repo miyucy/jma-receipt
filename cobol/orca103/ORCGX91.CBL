@@ -2182,6 +2182,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  X97
+           INITIALIZE                      X97
            MOVE    ZERO                TO  X97-COUNT
       *----(02.00.06)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  X97-B12-STATE
@@ -2619,6 +2620,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  XID1
+           INITIALIZE                      XID1
            MOVE    SPA-XIDCD           TO  XID1-ID1CODE
            MOVE    WRK-XIDMSG          TO  XID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -2650,6 +2652,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  XID2
+           INITIALIZE                      XID2
            MOVE    SPA-XIDCD           TO  XID2-ID1CODE
            MOVE    WRK-XIDMSG          TO  XID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

@@ -2084,6 +2084,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  MID1
+           INITIALIZE                      MID1
            MOVE    SPA-MIDCD           TO  MID1-ID1CODE
            MOVE    WRK-MIDMSG          TO  MID1-ID1MSG
       *

@@ -785,6 +785,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  P02Q1
+           INITIALIZE                      P02Q1
            MOVE    SPA-P02Q1-QRHKNJANUM    TO  P02Q1-QR-HKNJANUM
            MOVE    SPA-P02Q1-QRHKNJANAME   TO  P02Q1-QR-HKNJANAME
            MOVE    SPA-P02Q1-QRHKNNUMMEI   TO  P02Q1-QR-HKNNUMMEI
@@ -1233,6 +1234,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPACE               TO  PID1
+           INITIALIZE                      PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
       *

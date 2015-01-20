@@ -3304,6 +3304,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  LID1
+           INITIALIZE                       LID1
            MOVE    SPA-LIDCD            TO  LID1-ID1CODE
            MOVE    WRK-LIDMSG           TO  LID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -3336,6 +3337,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  LID2
+           INITIALIZE                       LID2
            MOVE    SPA-LIDCD            TO  LID2-ID1CODE
            MOVE    WRK-LIDMSG           TO  LID2-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

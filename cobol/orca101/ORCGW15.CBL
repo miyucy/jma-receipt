@@ -635,6 +635,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  W15
       *
+           INITIALIZE                      W15
            PERFORM VARYING     IDX      FROM    1   BY  1
                    UNTIL       IDX      >       WRK-CONS-LINE-MAX 
                MOVE    SPA-GMN-HKNJAMEI   (IDX) TO  W15-HKNJAMEI (IDX)
@@ -769,6 +770,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
+           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

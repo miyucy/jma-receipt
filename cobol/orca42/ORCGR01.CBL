@@ -4783,6 +4783,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  R99
+           INITIALIZE                      R99
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE
            MOVE    "F12:°õ    ºþ"      TO  R99-B12-LABEL
@@ -5114,6 +5115,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       * 
            MOVE    SPACE               TO  R01
       *
+           INITIALIZE                      R01
            MOVE    SPA-GMN-R01-SYOKBN  TO  R01-SYOKBN
            MOVE    "red"               TO  R01-SYOKBN-STYLE
       *     
@@ -5612,6 +5614,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            MOVE    SPACE               TO  RID1
+           INITIALIZE                      RID1
            MOVE    SPA-RIDCD           TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG          TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD
@@ -5674,6 +5677,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID2
+           INITIALIZE                       RID2
            MOVE    SPA-RIDCD2           TO  RID2-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID2-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -5698,6 +5702,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        540-RIDSET4-SEC              SECTION.
       *
            MOVE    SPACE               TO  RID4
+           INITIALIZE                      RID4
            MOVE    SPA-RIDCD4          TO  RID4-ID1CODE
       *
            MOVE    SPACE               TO  WRK-RIDMSG

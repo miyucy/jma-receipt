@@ -1690,6 +1690,7 @@
        520-JIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  PID1
+           INITIALIZE                      PID1
            EVALUATE    SPA-PIDCD
                WHEN    "2401"
                    STRING  "今回入力分は反映されません。"

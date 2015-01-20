@@ -3547,6 +3547,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ≤ËÃÃ ‘Ω∏
            MOVE    SPACE               TO  Z90
+           INITIALIZE                      Z90
            MOVE    SPA-Z01-SRYCD       TO  Z90-SRYCD
            MOVE    SPA-Z01-NAMEH       TO  Z90-SRYNAME
            PERFORM VARYING  IDX    FROM  1  BY  1  
@@ -4985,6 +4986,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  ZID1
+           INITIALIZE                       ZID1
            MOVE    SPA-ZIDCD            TO  ZID1-ID1CODE
            MOVE    WRK-ZIDMSG           TO  ZID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

@@ -6756,6 +6756,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    SPACE               TO  R05
       *
+           INITIALIZE                      R05
            EVALUATE    SPA-NAI-2008-PREFKBN-PRTJYUN
                WHEN    "1"
                    MOVE    "∏©∆‚°¶∏©≥∞"    TO  R05-PR-PRTJYUN
@@ -6922,6 +6923,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 4901-PARA-HENSYU-SEC
       *
            MOVE    SPACE               TO  R99
+           INITIALIZE                      R99
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE
            MOVE    "black"             TO  R99-MSG-STYLE
@@ -8194,6 +8196,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
+           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            MOVE    "Ã·§Î"               TO  RID1-B01-LABEL
@@ -8229,6 +8232,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID3
+           INITIALIZE                       RID3
            MOVE    SPA-RIDCD3           TO  RID3-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID3-ID1MSG
            MOVE    "blue"               TO  RID3-LABEL-STYLE

@@ -1682,6 +1682,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  W03
       *
+           INITIALIZE                      W03
            COMPUTE IDY     =   SPA-GMN-PAGE    *   25
            COMPUTE IDZ     =   IDY             -   24
       *
@@ -1928,6 +1929,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
+           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

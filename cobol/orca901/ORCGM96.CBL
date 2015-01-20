@@ -1434,6 +1434,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        520-MIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  MMID1
+           INITIALIZE                      MMID1
            EVALUATE    SPA-MMID1CD
                WHEN    "0100"
                    MOVE

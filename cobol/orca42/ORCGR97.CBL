@@ -2411,6 +2411,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            PERFORM 45011-PARA-HENSYU-SEC
       *
            MOVE    SPACE               TO  R99
+           INITIALIZE                      R99
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE
            MOVE    "black"             TO  R99-MSG-STYLE
@@ -2576,6 +2577,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       * 
            MOVE    SPACE               TO  R97
       *
+           INITIALIZE                      R97
            MOVE    SPA-GMN-SRYYM       TO  R97-SRYYM
       *
            MOVE    SPA-GMN-NYUGAIKBN-G TO  R97-NYUGAIKBN
@@ -2889,6 +2891,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
+           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD

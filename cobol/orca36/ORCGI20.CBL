@@ -3461,6 +3461,7 @@
       * 
            MOVE    SPACE               TO  I20
       *
+           INITIALIZE                      I20
            IF    ( FLG-GMN-INIT        =   1 )
                MOVE    ZERO            TO  I20-ROW
                MOVE    ZERO            TO  I20-ROWATTR
@@ -3802,6 +3803,7 @@
            MOVE    SPACE               TO  SPA-I2ID1-FLG
       *
            MOVE    SPACE               TO  I2ID1
+           INITIALIZE                      I2ID1
            MOVE    SPA-I2IDCD          TO  I2ID1-ID1CODE
            MOVE    WRK-I2IDMSG         TO  I2ID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

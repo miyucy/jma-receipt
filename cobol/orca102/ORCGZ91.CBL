@@ -2077,6 +2077,7 @@
            MOVE    SPA-Z91-JOB-JOBID   TO  SPA-Z97-JOB-JOBID
       *
            MOVE    SPACE               TO  Z97
+           INITIALIZE                      Z97
            MOVE    ZERO                TO  Z97-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  Z97-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE
@@ -2221,6 +2222,7 @@
       *
            MOVE  SPACE              TO  Z91
       *
+           INITIALIZE                   Z91
            MOVE  SPA-GMN-MSTYMD     TO  Z91-MSTYMD
            MOVE  SPA-GMN-SRYCHK     TO  Z91-SRYCHK
            MOVE  SPA-GMN-TOKCHK     TO  Z91-TOKCHK
@@ -2488,6 +2490,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  ZID1
+           INITIALIZE                       ZID1
            MOVE    SPA-ZIDCD            TO  ZID1-ID1CODE
            MOVE    WRK-ZIDMSG           TO  ZID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2523,6 +2526,7 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  ZID3
+           INITIALIZE                      ZID3
            MOVE    SPA-ZIDCD           TO  ZID3-ID1CODE
            MOVE    WRK-ZIDMSG          TO  ZID3-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET

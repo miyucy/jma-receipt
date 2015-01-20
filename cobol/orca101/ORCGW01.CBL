@@ -2540,6 +2540,7 @@
       *
            MOVE    SPACE               TO  W01
       *
+           INITIALIZE                      W01
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
                MOVE    SPA-GMN-TBANGO    (IDX) TO  W01-TSELNUM  (IDX)
