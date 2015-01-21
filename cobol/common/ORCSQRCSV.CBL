@@ -38,9 +38,6 @@
       *  04.07.00    NACL-多々納  13/03/27  一般名例外テーブル期間対応
       *  04.07.00    NACL-多々納  14/05/XX  内服１回量対応
       *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
-      *  04.08.00    NACL-多々納  16/03/XX  最低薬価テーブル対応
-      *  04.08.00    NACL-多々納  16/04/XX  備考を２０へ
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       *****************************************************************
       *
       *
@@ -98,7 +95,6 @@
            03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-GENERICPRICE    PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
       *
@@ -199,10 +195,6 @@
       *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *H28.4
-      *    最低薬価マスタ
-       01  GENERICPRICE-REC.
-           COPY    "CPGENERICPRICE.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -285,13 +277,10 @@
            END-IF
       *
       *    ＱＲデータ削除
-           IF    ( SPA-API-FLG         =   ZERO )
-               MOVE    ZERO                TO  IF-RESULT
-               MOVE    FILE-NAME1          TO  IF-FILENAME
-               CALL    "orcfiledel"        USING
-                                           ORCSFDELAREA
-           END-IF
-      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
            .
        000-PROC-EXT.
            EXIT    PROGRAM
@@ -305,17 +294,6 @@
       *    バージョン情報
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "JAHIS2"            TO  TBL-QRCSV-DATA (1)
-           IF     (SPA-SRYYMD          >=  "20160401" )
-      *    残量確認指示
-            AND   (ORCSQRCSV-ZANSIJI   =   "1"
-                                       OR  "2"   )
-               MOVE    "JAHIS3"            TO  TBL-QRCSV-DATA (1)
-           END-IF
-      *H30.4
-           IF     (SPA-SRYYMD          >=  "20180401" )
-               MOVE    "JAHIS5"            TO  TBL-QRCSV-DATA (1)
-           END-IF
-      *
            MOVE    1                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *    医療機関コード
@@ -340,12 +318,6 @@
                MOVE    "3"                 TO  TBL-QRCSV-DATA (1)
                MOVE    ORCSQRCSV-HOSPTEL   TO  TBL-QRCSV-DATA (2)
                MOVE    2                   TO  TBL-MAX
-      *H30.4
-      *        FAX
-               IF      SPA-SRYYMD          >=  "20180401"
-                   MOVE    ORCSQRCSV-HOSPFAX    TO  TBL-QRCSV-DATA (3)
-                   MOVE    3                    TO  TBL-MAX
-               END-IF
                PERFORM 400-DATAOUT-SEC
            END-IF
       *    診療科
@@ -578,49 +550,15 @@
                MOVE    4                   TO  TBL-MAX
                PERFORM 400-DATAOUT-SEC
            END-IF
-      *H28.4
-      *    残量確認指示
-           IF      ORCSQRCSV-ZANSIJI   =   "1"
-                                       OR  "2"
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "62"                TO  TBL-QRCSV-DATA (1)
-      *        残量確認指示
-               MOVE    ORCSQRCSV-ZANSIJI   TO  TBL-QRCSV-DATA (2)
-               MOVE    2                   TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           END-IF
-      *H30.4
-      *    分割指示レコード
-           IF     (SPA-SRYYMD              >=  "20180401" )
-             AND  (ORCSQRCSV-BUNKATU-MAX   >   1         )
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "63"                TO  TBL-QRCSV-DATA (1)
-      *        分割回数
-               MOVE    ORCSQRCSV-BUNKATU-MAX
-                                           TO  TBL-QRCSV-DATA (2)
-      *        分割回
-               MOVE    ORCSQRCSV-BUNKATU-CNT
-                                           TO  TBL-QRCSV-DATA (3)
-               MOVE    3                   TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           END-IF
-      *
       *    備考レコード
            MOVE    ZERO                TO  IDX-B2
            PERFORM VARYING     IDX-B   FROM    1   BY  1
-                   UNTIL      (IDX-B   >   20  )
+                   UNTIL      (IDX-B   >   10  )
                            OR (ORCSQRCSV-BIKOU (IDX-B) =   SPACE)
                ADD     1                   TO  IDX-B2
                MOVE    SPACE               TO  TBL-QRCSV-AREA
                MOVE    "81"                TO  TBL-QRCSV-DATA (1)
-               MOVE    IDX-B2              TO  WRK-ZZZ
-               PERFORM 20011-SUJIHEN-SEC
-               MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (2)
-      *        種別
-               IF      ORCSQRCSV-BIKOU-KBN (IDX-B)  NOT =   SPACE
-                   MOVE    ORCSQRCSV-BIKOU-KBN (IDX-B)
-                                           TO  TBL-QRCSV-DATA (3)
-               END-IF
+               MOVE    IDX-B2              TO  TBL-QRCSV-DATA (2)
                MOVE    ORCSQRCSV-BIKOU (IDX-B)
                                            TO  TBL-QRCSV-DATA (4)
                MOVE    4                   TO  TBL-MAX
@@ -871,13 +809,6 @@
                IF      FLG-SYORI           =   1
       *            剤型レコード
                    PERFORM 2001-RP101-SEC
-      *H30.4
-      *            分割指示数量レコード
-                   IF     (SPA-SRYYMD          >=  "20180401" )
-                     AND  (ORCSQRCSV-GOKKAISU(IDX) >   ZERO   )
-                       PERFORM 2001-RP102-SEC
-                   END-IF
-      *
       *            用法レコード
                    PERFORM 2002-RP111-SYORI-SEC
       *
@@ -942,40 +873,12 @@
            MOVE    ORCSQRCSV-ZAIKATA (IDX)
                                        TO  TBL-QRCSV-DATA (3)
            MOVE    ORCSQRCSV-KAISU (IDX)   TO  WRK-ZZZ
-      *H30.4
-      *    分割指示の時は、総量
-           IF     (SPA-SRYYMD          >=  "20180401" )
-             AND  (ORCSQRCSV-GOKKAISU(IDX) >   ZERO   )
-               MOVE    ORCSQRCSV-GOKKAISU (IDX)    TO  WRK-ZZZ
-           END-IF
-      *
            PERFORM 20011-SUJIHEN-SEC
            MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (5)
            MOVE    5                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
            .
        2001-RP101-EXT.
-           EXIT.
-      *
-      *H30.4
-      *****************************************************************
-      *    分割指示数量レコード処理
-      *****************************************************************
-       2001-RP102-SEC            SECTION.
-      *
-           MOVE    SPACE               TO  TBL-QRCSV-AREA
-           MOVE    "102"               TO  TBL-QRCSV-DATA (1)
-           MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
-           MOVE    ORCSQRCSV-KAISU (IDX)   TO  WRK-ZZZ
-           PERFORM 20011-SUJIHEN-SEC
-           MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (3)
-           MOVE    ORCSQRCSV-GOKKAISU(IDX) TO  WRK-ZZZ
-           PERFORM 20011-SUJIHEN-SEC
-           MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (4)
-           MOVE    4                   TO  TBL-MAX
-           PERFORM 400-DATAOUT-SEC
-           .
-       2001-RP102-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1136,13 +1039,7 @@
       **       MOVE    ORCSQRCSV-YAKKAKJNCD(IDX IDX2)
       **                                   TO  TBL-QRCSV-DATA (6)
       *        一般名例外コード変換
-      *H28.4
-               IF      SPA-SRYYMD      <   "20160401"
-                   PERFORM 20039-GENERICCD-HEN-SEC
-               ELSE
-      *            最低薬価テーブルより
-                   PERFORM 20039-GENERICPRICE-HEN-SEC
-               END-IF
+               PERFORM 20039-GENERICCD-HEN-SEC
                MOVE    WRK-YAKKAKJNCD      TO  TBL-QRCSV-DATA (6)
            END-IF
       *
@@ -1202,54 +1099,6 @@
            END-IF
            .
        2003-RP201-EXT.
-           EXIT.
-      *
-      *H28.4
-      *****************************************************************
-      *    一般名例外コード変換処理
-      *****************************************************************
-       20039-GENERICPRICE-HEN-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  WRK-YAKKAKJNCD
-      *
-           MOVE    SPACE               TO  GENERICPRICE-REC
-           INITIALIZE                      GENERICPRICE-REC
-           MOVE    ORCSQRCSV-YAKKAKJNCD(IDX IDX2)
-                                       TO  GENERICPRICE-YAKKAKJNCD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
-           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_generic_price" TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  GENERICPRICE-REC
-      *            一般名コード
-                   MOVE    GENERICPRICE-GECODE TO  WRK-YAKKAKJNCD
-               ELSE
-                   INITIALIZE                  GENERICPRICE-REC
-                   MOVE    1                   TO  FLG-GENERICPRICE
-               END-IF
-           ELSE
-               INITIALIZE                  GENERICPRICE-REC
-               MOVE    1                   TO  FLG-GENERICPRICE
-           END-IF
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      WRK-YAKKAKJNCD      =   SPACE
-               STRING  ORCSQRCSV-YAKKAKJNCD(IDX IDX2)(1:9)
-                       "ZZZ"               DELIMITED  BY  SIZE
-                                           INTO    WRK-YAKKAKJNCD
-               END-STRING
-           END-IF
-           .
-       20039-GENERICPRICE-HEN-EXT.
            EXIT.
       *
       *****************************************************************
