@@ -98,90 +98,6 @@
       *                                     平成２６年１０月診療分からの
       *                                     包括分は出来高点数をセット
       *                                     する
-      *              NACL-小豆沢  15/01/22  Ｅファイル編集処理
-      *                                     療養担当手当の診療科が記録
-      *                                     されない不具合を修正
-      *              NACL-小豆沢  15/03/25  Ｆファイル編集処理
-      *                                     行為明細点数をきざみ点数を
-      *                                     加算した点数に修正
-      *              NACL-小豆沢  15/05/26  入院料Ｆファイル編集処理
-      *                                     ％減算は行為明細点数にゼロを
-      *                                     セットするよう修正
-      *              NACL-小豆沢  15/05/26  入院料Ｆファイル編集処理
-      *                                     平成２７年３月迄の外泊は１明細
-      *                                     平成２７年４月以降の外泊は２明細
-      *                                     記録に対応
-      *              NACL-小豆沢  15/06/10  入院料Ｆファイル編集処理
-      *                                     平成２７年４月以降は特定入院料
-      *                                     算定日の入院基本料等（診療行為
-      *                                     入力分)記録に対応
-      *              NACL-小豆沢  15/06/10  入院料ＥＦファイル編集処理
-      *                                     平成２７年４月以降は選定入院時
-      *                                     の外泊もレコード記録する対応
-      *              NACL-藤原    15/07/10  主科未設定のときエラーとする
-      *  04.08.01    NACL-藤原    15/08/24  公費のみの診療（医療保険のな
-      *                                     い診療）のＥＦ出力可否対応
-      *              NACL-小豆沢  15/10/13  退院時投薬コメント入力分でも
-      *                                     包括分の場合は出来高・包括
-      *                                     フラグに１をセットしない
-      *              NACL-伊藤    15/10/20  閉麻計算見直し
-      *              NACL-小豆沢  15/10/20  処置の出来高実績点数セット修正
-      *
-      *              NACL-小豆沢  16/07/04  平成２８年度対応
-      *                           16/07/07  入院料の包括対象か判定
-      *              NACL-小豆沢  16/08/01  医療区分、ＡＤＬ点数コメントの
-      *                                     記録対応（平成２８年１０月診療分から）
-      *              NACL-小豆沢  16/08/18  再診の時間外加算対応
-      *                                     RECE641-NYUSAIFLG="1"が対象
-      *                                     （平成２８年４月診療分から）
-      *              NACL-小豆沢  16/08/23  持参薬対応
-      *                                     F-12（使用量）、F-13（基準単位）、
-      *                                     F-18（出来高実績点数）はそのままセット。
-      *                                     E-11（行為点数）、E-12（行為薬剤料）は
-      *                                     ゼロをセット。
-      *                                     F-19(2)（持参薬区分）、F-19(3)（持参薬
-      *                                     処方区分）をセット。
-      *              NACL-小豆沢  16/09/05  退院時処方（複数薬剤入力時）
-      *                                     の記録修正
-      *              NACL-伊藤    16/10/18  閉麻計算見直し
-      *  05.00.00    NACL-小豆沢  17/03/06  未コード化特定器材コード廃止対応
-      *                                     平成２９年４月診療分から包括保険で
-      *                                     ０５９ｘｘｘｘｘｘの入力はエラーとする。
-      *                                     （点数がゼロ点以外の場合のみ）
-      *              NACL-小豆沢  17/03/16  医保以外で特定入院料を算定した場合に
-      *                                     入院会計から算定入院料を取得し、
-      *                                     F-19（行為明細区分情報）２桁目の
-      *                                     入院料包括項目区分を再セットする
-      *              NACL-小豆沢  17/03/21  特定入院料を算定した保険以外で診療行為
-      *                                     入力がある日に、包括入力分の入院料が
-      *                                     Ｆファイルに誤って記録されていたのを修正
-      *              NACL-小豆沢  17/03/29  上記３月２１日の修正と同様の入力パターン
-      *                                     で算定入院料が短期滞在の場合に包括入力分
-      *                                     の入院料がＥファイルとＦファイルに誤って
-      *                                     記録されていたのを修正（入院料未算定日）
-      *              NACL-小豆沢  17/04/10  上記３月２９日修正分は一旦保留とする
-      *              NACL-小豆沢  17/04/12  上記３月２９日修正分を再修正
-      *              NACL-小豆沢  17/04/13  請求点０点出力対応
-      *              NACL-小豆沢  17/04/13  請求点０点出力対応（システム予約コード
-      *                                     の入力が無くても作成できるよう修正）
-      *              NACL-小豆沢  17/04/21  不要な持参薬区分が記録されないよう対処
-      *              NACL-小豆沢  17/05/02  上記４月２１日修正を変更
-      *              NACL-小豆沢  17/05/09  医保以外で療養病棟入院基本料を算定した
-      *                                     場合に入院会計から算定入院料を取得し、
-      *                                     F-19（行為明細区分情報）２桁目の
-      *                                     入院料包括項目区分を再セットする
-      *                                     （17/03/16の修正に追加）
-      *              NACL-小豆沢  17/06/12  特定入院料を算定しないとした場合の
-      *                                     入院料（包括入力分）の記録方法変更
-      *              NACL-小豆沢  17/07/25  同日再入院日の入退院日記録修正
-      *              NACL-小豆沢  17/07/27  再診の時間外加算対応
-      *                                     RECE641-NYUSAIFLG="1"の時、
-      *                                     順序番号(E-6,F-6)の振り直し追加
-      *              NACL-小豆沢  17/08/17  生活療養標準負担額コード追加対応
-      *              NACL-小豆沢  17/09/07  同日再入院日の入退院日記録修正時の
-      *                                     不具合修正
-      *              NACL-小豆沢  17/09/08  きざみ計算の出来高実績点数端数処理追加
-      *              NACL-小豆沢  17/12/07  同日再入院の食事記録修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -345,12 +261,6 @@
            03  FLG-SRYACT              PIC 9(01).
            03  FLG-HOUKATU-RECE04      PIC 9(01).
            03  FLG-TOKUTEINYUIN        PIC 9(01).
-           03  FLG-TOKUTEINYUIN-SET    PIC 9(01).
-           03  FLG-ETENSU1             PIC 9(01).
-           03  FLG-ETENSU2             PIC 9(01).
-           03  FLG-NYUINACCT           PIC 9(01).
-           03  FLG-NYUINACT            PIC 9(01).
-           03  FLG-HOUKATU-SET         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -386,13 +296,11 @@
            03  IDZ4                    PIC 9(03).
            03  IDZ5                    PIC 9(03).
            03  IDZ6                    PIC 9(03).
-           03  IDZ7                    PIC 9(03).
            03  SYSKAN-IDX              PIC 9(03).
            03  SYSKAN-IDX2             PIC 9(03).
            03  II                      PIC 9(01).
            03  IJ                      PIC 9(02).
            03  IDX-HOUKATU             PIC 9(02).
-           03  IDX-COM                 PIC 9(03).
       *
        01  KEY-AREA                          VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -458,20 +366,6 @@
            03  WRK-COM-SRYKBN          PIC X(02).
            03  WRK-REC                 PIC X(2500).
            03  WRK-REC-LENGTH          PIC 9(04).
-      *    特定入院料算定時に包括される入院料（診療行為入力分）の退避用
-           03  WRK-REC-TAIHI-TABLE.
-            04  WRK-REC-TAIHI-TBL                 OCCURS 31.
-             05  WRK-TAIHI-RENNUM      PIC 9(04).
-             05  WRK-TAIHI-RENNUM-X    REDEFINES  WRK-TAIHI-RENNUM
-                                       PIC X(04).
-             05  WRK-TAIHI-MEISAI-RENNUM
-                                       PIC 9(03).
-             05  WRK-TAIHI-MEISAI-RENNUM-X  REDEFINES
-                 WRK-TAIHI-MEISAI-RENNUM
-                                       PIC X(03).
-             05  WRK-REC-LENGTH-XX     PIC 9(03)    OCCURS 10.
-             05  WRK-REC-XX            PIC X(500)   OCCURS 10.
-             05  WRK-FEDT-XX           PIC X(500)   OCCURS 10.
            03  WRK-HENSYU-AREA.
                05  WRK-DATA            PIC X(2400).
                05  WRK-NUM-X.
@@ -491,7 +385,6 @@
       *****03  WRK-RECENUM             PIC 9(06).
       *
            03  WRK-RENNUM-E            PIC 9(04).
-           03  WRK-RENNUM-E-TAIHI      PIC 9(04).
            03  WRK-RENNUM-F            PIC 9(04).
       *  WRK-RENNUM と WRK-MEISAI-RENNUM は桁数変更不可
            03  WRK-RENNUM              PIC 9(04).
@@ -503,11 +396,6 @@
            03  WRK-SJ-KBN              PIC X(02).
            03  WRK-RECECOM-SJKBN       PIC X(02).
            03  WRK-SJ-CHK              PIC 9(01).
-           03  WRK-TOTALTEN-X.
-               05  WRK-SRYYMD-X        PIC X(04).
-               05  WRK-RENNUM-X        PIC 9(04).
-           03  WRK-TOTALTEN            REDEFINES  WRK-TOTALTEN-X
-                                       PIC 9(08).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -519,9 +407,9 @@
       *    結核
            03  KEKIDX                  PIC 9(01).
       *
-           03  IDX1                    PIC 9(02).
-           03  IDX2                    PIC 9(02).
-           03  IDX3                    PIC 9(02).
+           03  IDX1                    PIC 9(01).
+           03  IDX2                    PIC 9(01).
+           03  IDX3                    PIC 9(01).
       *
       *    摘要レコード編集用
            03  WRK-ZAIWMAX             PIC 9(03).
@@ -574,7 +462,6 @@
            03  WRK-KZM-SURYO-R         REDEFINES  WRK-KZM-SURYO.
                05  WRK-KZM-SURYO-S1    PIC 9(05).
                05  WRK-KZM-SURYO-S2    PIC 9(05).
-           03  WRK-30M-SURYO           PIC 9(05)V9(5).
       *
       *    保険履歴編集（適用欄）
            03  WRK-HKN-RIREKI-AREA.
@@ -630,18 +517,6 @@
       *    データ識別番号への患者番号編集用
            03  WRK-ZEROKETA                    PIC 9(02).
            03  WRK-PTNUMKETA                   PIC 9(02).
-      *
-      *    包括項目区分編集用
-           03  WRK-HOUKATU-TBL.
-               05  WRK-HOUKATU-KBN             PIC X(01)  OCCURS  31.
-      *
-      *    電子点数表の退避用
-           03  WRK-ETENSU-TBL.
-               05  WRK-ETENSU1-H-GROUP1        PIC X(07)  OCCURS  31.
-      *
-      *    医保以外の特定入院料算定判定用
-           03  WRK-IHO-IGAI-TOKNYUINCD-TBL.
-               05  WRK-IHO-IGAI-TOKNYUINCD     PIC X(09)  OCCURS  31.
       *
       *    医薬品・特定器材用テーブル
        01  TBL-ZAIW-AREA.
@@ -814,9 +689,6 @@
                05  TBL-HEIMA-SURYO              PIC 9(08)V9(5).
                05  TBL-HEIMA-ZAN-SURYO          PIC 9(08)V9(5).
                05  TBL-HEIMA-COM-SURYO          PIC 9(08)V9(5).
-               05  TBL-HEIMA-30M-SURYO          PIC 9(08)V9(5).
-               05  TBL-HEIMA-30M-IDX            PIC 9(02).
-               05  TBL-HEIMA-30M-TMP            PIC 9(08)V9(5).
       *
       *    診療行為データ用テーブル（告示等識別区分による記録順）
        01  WRK-KOUI-TAIHI-AREA.
@@ -1143,102 +1015,39 @@
       *        標準負担額（低所得２・９０日超）
                05  WRK-CONS-HYOJYUN-FUTAN4
                                       PIC X(09)   VALUE   "197001010".
-      *        食事療養標準負担額（労災入院中）
+      *        生活療養・標準負担額
                05  WRK-CONS-HYOJYUN-FUTAN5
-                                      PIC X(09)   VALUE   "197001210".
-      *        生活療養環境療養標準負担額
-               05  WRK-CONS-HYOJYUN-FUTAN6
                                       PIC X(09)   VALUE   "197001910".
-      *        生活療養（１）食事療養標準負担額（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN7
+      *        生活療養（１）・標準負担額（一般）
+               05  WRK-CONS-HYOJYUN-FUTAN6
                                       PIC X(09)   VALUE   "197002010".
-      *        生活療養（２）食事療養標準負担額（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN8
+      *        生活療養（２）・標準負担額（一般）
+               05  WRK-CONS-HYOJYUN-FUTAN7
                                       PIC X(09)   VALUE   "197002110".
-      *        生活療養食事療養標準負担額（低２）
-               05  WRK-CONS-HYOJYUN-FUTAN9
+      *        生活療養・標準負担額（低２）
+               05  WRK-CONS-HYOJYUN-FUTAN8
                                       PIC X(09)   VALUE   "197002210".
-      *        生活療養食事療養標準負担額（低１）
-               05  WRK-CONS-HYOJYUN-FUTAN10
+      *        生活療養・標準負担額（低１）
+               05  WRK-CONS-HYOJYUN-FUTAN9
                                       PIC X(09)   VALUE   "197002310".
-      *        生活療養食事療養標準負担額（老人低１（老福以外））
-               05  WRK-CONS-HYOJYUN-FUTAN11
+      *        生活療養・標準負担額（老人低１（老福以外））
+               05  WRK-CONS-HYOJYUN-FUTAN10
                                       PIC X(09)   VALUE   "197002410".
-      *        生活療養食事療養標準負担額（老人低１（老福））
-               05  WRK-CONS-HYOJYUN-FUTAN12
+      *        生活療養・標準負担額（老人低１（老福））
+               05  WRK-CONS-HYOJYUN-FUTAN11
                                       PIC X(09)   VALUE   "197002510".
-      *        生活療養食事療養標準負担額（医療区分２・３）（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN13
+      *        生活療養・標準負担額（医療区分２・３）（一般）
+               05  WRK-CONS-HYOJYUN-FUTAN12
                                       PIC X(09)   VALUE   "197002710".
-      *        生活療養食事療養標準負担額（医療区分２・３）（低２・９０日以下）
-               05  WRK-CONS-HYOJYUN-FUTAN14
+      *        生活療養・標準負担額（医療区分２・３）（低２・９０日以下）
+               05  WRK-CONS-HYOJYUN-FUTAN13
                                       PIC X(09)   VALUE   "197002810".
-      *        生活療養食事療養標準負担額（医療区分２・３）（低２・９０日超）
-               05  WRK-CONS-HYOJYUN-FUTAN15
+      *        生活療養・標準負担額（医療区分２・３）（低２・９０日超）
+               05  WRK-CONS-HYOJYUN-FUTAN14
                                       PIC X(09)   VALUE   "197002910".
-      *        生活療養食事療養標準負担額（医療区分２・３）（低１）
-               05  WRK-CONS-HYOJYUN-FUTAN16
+      *        生活療養・標準負担額（医療区分２・３）（低１）
+               05  WRK-CONS-HYOJYUN-FUTAN15
                                       PIC X(09)   VALUE   "197003010".
-      *        平成２８年度改定の追加分
-      *        食事療養標準負担額（指定難病・小児慢性特定疾病患者）（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN17
-                                      PIC X(09)   VALUE   "197003310".
-      *        食事療養標準負担額（精神１年超）（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN18
-                                      PIC X(09)   VALUE   "197003410".
-      *        生活療養食事療養標準負担額（指定難病）（医療区分２・３）（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN19
-                                      PIC X(09)   VALUE   "197003610".
-      *        生活療養食事療養標準負担額（精神１年超・医療区分２・３）（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN20
-                                      PIC X(09)   VALUE   "197003710".
-      *        平成２９年１０月改定の追加分
-      *        生活療養環境療養標準負担額（医療区分２・３）
-               05  WRK-CONS-HYOJYUN-FUTAN21
-                                      PIC X(09)   VALUE   "197003810".
-      *        生活療養食事療養標準負担額（低）
-               05  WRK-CONS-HYOJYUN-FUTAN22
-                                      PIC X(09)   VALUE   "197003910".
-      *        生活療養食事療養標準負担額（境界層該当）（低）
-               05  WRK-CONS-HYOJYUN-FUTAN23
-                                      PIC X(09)   VALUE   "197004010".
-      *        生活療養食事療養標準負担額（境界層該当）（低１）
-               05  WRK-CONS-HYOJYUN-FUTAN24
-                                      PIC X(09)   VALUE   "197004110".
-      *        生活療養食事療養標準負担額（医療区分２・３）（低・９０日以下）
-               05  WRK-CONS-HYOJYUN-FUTAN25
-                                      PIC X(09)   VALUE   "197004210".
-      *        生活療養食事療養標準負担額（指定難病）（医療区分２・３）（低・９０日以下）
-               05  WRK-CONS-HYOJYUN-FUTAN26
-                                      PIC X(09)   VALUE   "197004310".
-      *        生活療養食事療養標準負担額（医療区分２・３）（低・９０日超）
-               05  WRK-CONS-HYOJYUN-FUTAN27
-                                      PIC X(09)   VALUE   "197004410".
-      *        生活療養食事療養標準負担額（指定難病）（医療区分２・３）（低・９０日超）
-               05  WRK-CONS-HYOJYUN-FUTAN28
-                                      PIC X(09)   VALUE   "197004510".
-      *        生活療養食事療養標準負担額（境界層該当）（医療区分２・３）（低）
-               05  WRK-CONS-HYOJYUN-FUTAN29
-                                      PIC X(09)   VALUE   "197004610".
-      *        生活療養食事療養標準負担額（指定難病）（医療区分２・３）（低２・９０日以下）
-               05  WRK-CONS-HYOJYUN-FUTAN30
-                                      PIC X(09)   VALUE   "197004710".
-      *        生活療養食事療養標準負担額（指定難病）（医療区分２・３）（低２・９０日超）
-               05  WRK-CONS-HYOJYUN-FUTAN31
-                                      PIC X(09)   VALUE   "197004810".
-      *        生活療養食事療養標準負担額（指定難病）（医療区分２・３）（低１）
-               05  WRK-CONS-HYOJYUN-FUTAN32
-                                      PIC X(09)   VALUE   "197004910".
-      *        生活療養食事療養標準負担額（境界層該当）（医療区分２・３）（低１）
-               05  WRK-CONS-HYOJYUN-FUTAN33
-                                      PIC X(09)   VALUE   "197005010".
-      *        平成３０年４月改定の追加分
-      *        生活療養（１）食事療養標準負担額（医療区分２・３）（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN34
-                                      PIC X(09)   VALUE   "197005110".
-      *        生活療養（２）食事療養標準負担額（医療区分２・３）（一般）
-               05  WRK-CONS-HYOJYUN-FUTAN35
-                                      PIC X(09)   VALUE   "197005210".
       *
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.
       *
@@ -1287,26 +1096,7 @@
            03  WRK-FEDT-HOUKATU-FLG    PIC X(01).
            03  WRK-FEDT-PREV-TEN       PIC 9(08).
            03  WRK-FEDT-PREV-TEN50     PIC 9(08).
-           03  WRK-FEDT-PREV-TEN54     PIC 9(08).
            03  WRK-FEDT-PREV-TEN721    PIC 9(08).
-           03  WRK-FEDT-JISANYAKKBN    PIC X(01).
-           03  WRK-FEDT-KOUI-MEISAI.
-             05  WRK-FEDT-KOUI-MEISAI1   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI2   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI3   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI4   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI5   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI6   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI7   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI8   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI9   PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI10  PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI11  PIC 9(01).
-             05  WRK-FEDT-KOUI-MEISAI12  PIC 9(01).
-      *
-      *    退院時処方退避ワーク
-       01  WRK-TAIIN-SHOHOU-AREA.
-           03  WRK-TAIIN-SHOHOU                    PIC X(01).
       *
       *    保険組み合わせ退避ワーク
        01  THKNCOMBI-AREA.
@@ -1385,31 +1175,12 @@
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    電子点数表　補助マスター
-       01  ETENSU1-REC.
-           COPY    "CPETENSU1.INC".
-      *
-      *    電子点数表　包括・被包括マスター
-       01  ETENSU2-REC.
-           COPY    "CPETENSU2.INC".
-      *
-      *    入院診療会計マスタ−
-       01  NYUINACCT-REC.
-           COPY    "CPNYUINACCT.INC".
-      *
-      *    入院診療行為マスター
-       01  NYUINACT-REC.
-           COPY    "CPNYUINACT.INC".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
       *
       *    入院会計作成用パラメタ
            COPY    "CPORCSDPCNYUIN.INC".
-      *
-      *    入院料未算定日取得サブ
-           COPY    "CPORCSNYUINDAY.INC".
       *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
@@ -1785,13 +1556,6 @@
            IF      SYS-9102-NUMBER     =   SPACE
                MOVE    "0"                 TO  SYS-9102-NUMBER
            END-IF
-           IF      SYS-9102-KOH-RECEIPT
-                                       =   SPACE
-               MOVE    "0"                 TO  SYS-9102-KOH-RECEIPT
-           END-IF
-      *
-           DISPLAY "SYS-9102-NUMBER     =" SYS-9102-NUMBER
-           DISPLAY "SYS-9102-KOH-RECEIPT=" SYS-9102-KOH-RECEIPT
            .
        110-SYSKANRI-HENSYU-EXT.
            EXIT.
@@ -1864,7 +1628,6 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *
       *    診療年月の末日の取得
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
@@ -1874,9 +1637,6 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
-      **     DISPLAY "============== ORCRDPC10 ===================="
-      **     DISPLAY "RECE62-PTNUM = " RECE62-PTNUM
-           
       *    患者保険組み合わせ取得処理
            PERFORM 2001-HKNCOMBI-GET-SEC
       *
@@ -1887,15 +1647,13 @@
                                                    NOT =   KEY-OLD1
       *
       *        入院会計取得処理（提出先別）
-      ****         PERFORM 2001-NYUINRYO-GET-SEC
+               PERFORM 2001-NYUINRYO-GET-SEC
       *
       *        診療年月・患者ID・レセ科・提出先別処理
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM                 UNTIL   FLG-END     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
       *
-      *            入院会計取得処理（提出先別）
-                   PERFORM 2001-NYUINRYO-GET-SEC
                    MOVE    ZERO                TO  WRK-RENNUM
                    MOVE    ZERO                TO  WRK-MEISAI-RENNUM
                    MOVE    SPACE               TO  WRK-FEDT-SRYKBN-SAVE
@@ -1906,11 +1664,7 @@
                                                    WRK-COM-FTNKBN
       *
                    MOVE    ZERO               TO  WRK-RENNUM-E
-                                                  WRK-RENNUM-E-TAIHI
                                                   WRK-RENNUM-F 
-                   MOVE    SPACE        TO    WRK-REC-TAIHI-TABLE
-                   INITIALIZE                 WRK-REC-TAIHI-TABLE
-                   MOVE    ZERO         TO    FLG-TOKUTEINYUIN-SET
       *
       *            実日数・合計点数等のＩＮＤＥＸ
                    MOVE    1                   TO  IDX1
@@ -2167,369 +1921,19 @@
       *
       *****************************************************************
       *    入院会計取得処理
-      *  （包括項目区分を判定する為のコード表用番号も取得を行う）
       *****************************************************************
        2001-NYUINRYO-GET-SEC           SECTION.
-      *
-           INITIALIZE                      WRK-HOUKATU-TBL
-           INITIALIZE                      WRK-ETENSU-TBL
-           INITIALIZE                      WRK-IHO-IGAI-TOKNYUINCD-TBL
       *
            INITIALIZE                      ORCSDPCNYUIN-AREA
            MOVE    RECE62-HOSPNUM      TO  LNK-DPCNYUIN-HOSPNUM
            MOVE    RECE62-PTID         TO  LNK-DPCNYUIN-PTID
            MOVE    RECE62-SRYYM        TO  LNK-DPCNYUIN-SANTEIYM
-           IF      RECE62-TEISYUTUSAKI =   "6"
-               MOVE    "3"                 TO  LNK-DPCNYUIN-HKNKBN
-           ELSE
-               MOVE    RECE62-TEISYUTUSAKI TO  LNK-DPCNYUIN-HKNKBN
-           END-IF
-           PERFORM VARYING IDX FROM    1   BY  1
-             UNTIL (IDX   >    10)    OR
-                     (RECE62-HKNCOMBI (IDX)  =   ZERO)
-               MOVE    RECE62-HKNCOMBI(IDX)   TO
-                                        LNK-DPCNYUIN-SET-HKNCOMBI(IDX)
-           END-PERFORM
-      *     DISPLAY "=========   ORCSDPCNYUIN CALL ========="
-      *     DISPLAY "LNK-DPCNYUIN-SET-HKNCOMBI(1) ="
-      *              LNK-DPCNYUIN-SET-HKNCOMBI(1)
-      *     DISPLAY "LNK-DPCNYUIN-SET-HKNCOMBI(2) ="
-      *              LNK-DPCNYUIN-SET-HKNCOMBI(2)
            CALL    "ORCSDPCNYUIN"      USING   ORCSDPCNYUIN-AREA
                                                SPA-AREA
            IF      LNK-DPCNYUIN-RC     NOT =   ZERO
                DISPLAY "ORCSDPCNYUIN ERROR PTID= " RECE62-PTID
                        " LNK-DPCNYUIN-RC=" LNK-DPCNYUIN-RC
-           ELSE
-               INITIALIZE                     ORCSNYUINDAY-AREA
-               MOVE    RECE62-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
-               MOVE    RECE62-PTID        TO  LNK-NYUINDAY-PTID
-               MOVE    RECE62-SRYYM       TO  LNK-NYUINDAY-SANTEIYM
-               CALL    "ORCSNYUINDAY"     USING   ORCSNYUINDAY-AREA
-                                                  SPA-AREA
            END-IF
-      *
-      *--- AZU-ADD START 2016.07.04
-      *    ＤＰＣに係る特定入院料等
-           PERFORM     VARYING   IDX   FROM  1  BY  1
-             UNTIL     IDX   >   31
-                IF   (LNK-DPCNYUIN-SRYCD(1 IDX 1)  NOT = SPACE)  OR
-                     (LNK-DPCNYUIN-SRYCD(2 IDX 1)  NOT = SPACE)  OR
-                     (LNK-NYUINDAY-TANKI-KBN(IDX)  NOT = SPACE)
-      *
-                    MOVE   "2"            TO   WRK-HOUKATU-KBN(IDX)
-      *
-                    IF  LNK-DPCNYUIN-SRYCD(2 IDX 1)  NOT = SPACE
-                       INITIALIZE                  TNS-TENSU-REC
-                       MOVE    LNK-DPCNYUIN-SRYCD(2 IDX 1)
-                                               TO  TNS-SRYCD
-                       PERFORM 900-TENSU-READ-SEC
-                       IF   TNS-CDKBN-KBN     =   "A"
-                         IF ((TNS-CDKBN-KBNNUM      =  300)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
-                            ((TNS-CDKBN-KBNNUM      =  302)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  303)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  303)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                            ((TNS-CDKBN-KBNNUM      =  305)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  307)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  400)   AND
-                             (TNS-CDKBN-KOUBAN      =  3))
-                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
-                         END-IF
-                       END-IF
-                    END-IF
-      *
-      *             補助マスターチェック用
-                    IF  LNK-NYUINDAY-TANKI3-KBN(IDX)   = "1"  OR  "2"
-                        MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
-                    END-IF
-                END-IF
-      *
-      *--- AZU-ADD START 2017.03.16
-      *         医保以外で特定入院料（又は療養病棟入院基本料）を算定して
-      *         いる場合を考慮してWRK-HOUKATU-KBN(IDX)が未セット日は入院
-      *         会計を再取得して再セット
-                IF    WRK-HOUKATU-KBN(IDX)          =   SPACE
-                   INITIALIZE                           NYUINACCT-REC
-                   MOVE  RECE62-HOSPNUM             TO  NACCT-HOSPNUM
-                   MOVE  RECE62-PTID                TO  NACCT-PTID
-                   MOVE  RECE62-SRYYM               TO  NACCT-SRYYM
-                   MOVE  "1"                        TO  NACCT-ZAISKBKBN
-                   MOVE  "tbl_nyuinacct"            TO  MCP-TABLE
-                   MOVE  "key35"                    TO  MCP-PATHNAME
-                   PERFORM 910-NYUINACCT-SELECT-SEC
-                   IF      FLG-NYUINACCT            =   ZERO
-                      MOVE    "tbl_nyuinacct"       TO  MCP-TABLE
-                      MOVE    "key35"               TO  MCP-PATHNAME
-                      PERFORM   910-NYUINACCT-READ-SEC
-                      PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
-                         IF   (NACCT-SRYKBN         =   "92")  AND
-                              (NACCT-DAY(IDX)       =   1)
-      *                     該当入院行為テーブルの読み込み
-                            PERFORM    210-NYUINACT-GET-SEC
-                            INITIALIZE                  TNS-TENSU-REC
-                            MOVE    NSRY-SRYCD(1)   TO  TNS-SRYCD
-                            PERFORM 900-TENSU-READ-SEC
-                            IF   TNS-CDKBN-KBN     =   "A"
-                              IF ((TNS-CDKBN-KBNNUM      =  300)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  302)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  303)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  303)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  305)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  307)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  400)   AND
-                                  (TNS-CDKBN-KOUBAN      =  3))
-                                     MOVE  "1" TO  WRK-HOUKATU-KBN(IDX)
-                              ELSE
-                                     MOVE  "2" TO  WRK-HOUKATU-KBN(IDX)
-                              END-IF
-                              MOVE  NSRY-SRYCD(1)   TO
-                                           WRK-IHO-IGAI-TOKNYUINCD(IDX)
-                            END-IF
-                         END-IF
-      *--- AZU-ADD START 2017.05.09
-                         IF   (NACCT-SRYKBN         =   "90")  AND
-                              (NACCT-DAY(IDX)       =   1)
-      *                     該当入院行為テーブルの読み込み
-                            PERFORM    210-NYUINACT-GET-SEC
-                            INITIALIZE                  TNS-TENSU-REC
-                            MOVE    NSRY-SRYCD(1)   TO  TNS-SRYCD
-                            PERFORM 900-TENSU-READ-SEC
-                            IF   TNS-CDKBN-KBN     =   "A"
-                              IF ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  1))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  2))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  3))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  9))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  10))   OR
-                                 ((TNS-CDKBN-KBNNUM      =  100)   AND
-                                  (TNS-CDKBN-KOUBAN      =  16))
-                                     MOVE  "2" TO  WRK-HOUKATU-KBN(IDX)
-                              END-IF
-                              MOVE  NSRY-SRYCD(1)   TO
-                                           WRK-IHO-IGAI-TOKNYUINCD(IDX)
-                            END-IF
-                         END-IF
-      *--- AZU-ADD END   2017.05.09
-                         MOVE    "tbl_nyuinacct"   TO  MCP-TABLE
-                         MOVE    "key35"           TO  MCP-PATHNAME
-                         PERFORM 910-NYUINACCT-READ-SEC
-                      END-PERFORM
-                   END-IF
-      *            入院会計クローズ
-                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                   MOVE    "key35"                 TO  MCP-PATHNAME
-                   PERFORM   900-CLOSE-SEC
-                END-IF
-      *--- AZU-ADD END   2017.03.16
-      *
-      *         入院料の包括グループ番号取得
-                IF    LNK-DPCNYUIN-SRYCD(1 IDX 1)  NOT = SPACE
-                    MOVE    SPACE           TO  ETENSU1-REC
-                    INITIALIZE                  ETENSU1-REC
-                    MOVE    LNK-DPCNYUIN-SRYCD(1 IDX 1)
-                                            TO  ETENSU1-SRYCD
-                    MOVE    RECE62-SRYYM    TO  ETENSU1-YUKOSTYMD(1:6)
-                    MOVE    "01"            TO  ETENSU1-YUKOSTYMD(7:2)
-                    MOVE    ETENSU1-YUKOSTYMD
-                                            TO  ETENSU1-YUKOEDYMD
-                    MOVE    ETENSU1-REC     TO  MCPDATA-REC
-                    MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                    MOVE    "key"           TO  MCP-PATHNAME
-                    PERFORM 900-DBSELECT-SEC
-                    IF      MCP-RC              =   ZERO
-                        MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                        MOVE    "key"           TO  MCP-PATHNAME
-                        PERFORM 900-ETENSU1-READ-SEC
-                        IF   FLG-ETENSU1        =   ZERO
-                            MOVE  ETENSU1-H-GROUP(1)
-                                                TO  WRK-ETENSU1-H-GROUP1
-                                                                 (IDX)
-                        END-IF
-                    ELSE
-                        MOVE    1               TO  FLG-ETENSU1
-                        INITIALIZE                  ETENSU1-REC
-                    END-IF
-                    MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-                    MOVE    "key"               TO  MCP-PATHNAME
-                    PERFORM 900-CLOSE-SEC
-                END-IF
-      *
-      *         特定入院料の包括グループ番号取得
-                IF    LNK-DPCNYUIN-SRYCD(2 IDX 1)  NOT = SPACE
-                    MOVE    SPACE           TO  ETENSU1-REC
-                    INITIALIZE                  ETENSU1-REC
-                    MOVE    LNK-DPCNYUIN-SRYCD(2 IDX 1)
-                                            TO  ETENSU1-SRYCD
-                    MOVE    RECE62-SRYYM    TO  ETENSU1-YUKOSTYMD(1:6)
-                    MOVE    "01"            TO  ETENSU1-YUKOSTYMD(7:2)
-                    MOVE    ETENSU1-YUKOSTYMD
-                                            TO  ETENSU1-YUKOEDYMD
-                    MOVE    ETENSU1-REC     TO  MCPDATA-REC
-                    MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                    MOVE    "key"           TO  MCP-PATHNAME
-                    PERFORM 900-DBSELECT-SEC
-                    IF      MCP-RC              =   ZERO
-                        MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                        MOVE    "key"           TO  MCP-PATHNAME
-                        PERFORM 900-ETENSU1-READ-SEC
-                        IF   FLG-ETENSU1        =   ZERO
-                            MOVE  ETENSU1-H-GROUP(1)
-                                                TO  WRK-ETENSU1-H-GROUP1
-                                                                 (IDX)
-                        END-IF
-                    ELSE
-                        MOVE    1               TO  FLG-ETENSU1
-                        INITIALIZE                  ETENSU1-REC
-                    END-IF
-                    MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-                    MOVE    "key"               TO  MCP-PATHNAME
-                    PERFORM 900-CLOSE-SEC
-                END-IF
-      *
-      *         短期滞在手術等基本料２の包括グループ番号取得
-                IF   (LNK-NYUINDAY-TANKI2-KBN(IDX)   = "1"  OR  "2") AND
-                     (LNK-NYUINDAY-TANKI3-KBN(IDX)   =  SPACE)
-                    MOVE    SPACE           TO  ETENSU1-REC
-                    INITIALIZE                  ETENSU1-REC
-                    MOVE    "190076810"     TO  ETENSU1-SRYCD
-                    MOVE    RECE62-SRYYM    TO  ETENSU1-YUKOSTYMD(1:6)
-                    MOVE    "01"            TO  ETENSU1-YUKOSTYMD(7:2)
-                    MOVE    ETENSU1-YUKOSTYMD
-                                            TO  ETENSU1-YUKOEDYMD
-                    MOVE    ETENSU1-REC     TO  MCPDATA-REC
-                    MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                    MOVE    "key"           TO  MCP-PATHNAME
-                    PERFORM 900-DBSELECT-SEC
-                    IF      MCP-RC              =   ZERO
-                        MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                        MOVE    "key"           TO  MCP-PATHNAME
-                        PERFORM 900-ETENSU1-READ-SEC
-                        IF   FLG-ETENSU1        =   ZERO
-                            MOVE  ETENSU1-H-GROUP(1)
-                                                TO  WRK-ETENSU1-H-GROUP1
-                                                                 (IDX)
-                        END-IF
-                    ELSE
-                        MOVE    1               TO  FLG-ETENSU1
-                        INITIALIZE                  ETENSU1-REC
-                    END-IF
-                    MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-                    MOVE    "key"               TO  MCP-PATHNAME
-                    PERFORM 900-CLOSE-SEC
-                END-IF
-      *
-      *         短期滞在手術等基本料３の包括グループ番号取得
-                IF   (LNK-NYUINDAY-TANKI2-KBN(IDX)   = "1"  OR  "2") AND
-                     (LNK-NYUINDAY-TANKI3-KBN(IDX)   = "1"  OR  "2")
-                    MOVE    SPACE           TO  ETENSU1-REC
-                    INITIALIZE                  ETENSU1-REC
-      *             グループ番号取得なので短手３のコードはなんでもよい
-                    MOVE    "190196410"     TO  ETENSU1-SRYCD
-                    MOVE    RECE62-SRYYM    TO  ETENSU1-YUKOSTYMD(1:6)
-                    MOVE    "01"            TO  ETENSU1-YUKOSTYMD(7:2)
-                    MOVE    ETENSU1-YUKOSTYMD
-                                            TO  ETENSU1-YUKOEDYMD
-                    MOVE    ETENSU1-REC     TO  MCPDATA-REC
-                    MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                    MOVE    "key"           TO  MCP-PATHNAME
-                    PERFORM 900-DBSELECT-SEC
-                    IF      MCP-RC              =   ZERO
-                        MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                        MOVE    "key"           TO  MCP-PATHNAME
-                        PERFORM 900-ETENSU1-READ-SEC
-                        IF   FLG-ETENSU1        =   ZERO
-                            MOVE  ETENSU1-H-GROUP(1)
-                                                TO  WRK-ETENSU1-H-GROUP1
-                                                                 (IDX)
-                        END-IF
-                    ELSE
-                        MOVE    1               TO  FLG-ETENSU1
-                        INITIALIZE                  ETENSU1-REC
-                    END-IF
-                    MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-                    MOVE    "key"               TO  MCP-PATHNAME
-                    PERFORM 900-CLOSE-SEC
-                END-IF
-      *
-      *--- AZU-ADD START 2017.03.16
-      *         特定入院料（医保以外で特定入院料算定時）の
-      *         包括グループ番号取得
-                IF   (LNK-DPCNYUIN-SRYCD(1 IDX 1)   = SPACE)  AND
-                     (LNK-DPCNYUIN-SRYCD(2 IDX 1)   = SPACE)  AND
-                     (LNK-NYUINDAY-TANKI-KBN(IDX)   = SPACE)  AND
-                     (WRK-IHO-IGAI-TOKNYUINCD(IDX)  NOT = SPACE)
-                    MOVE    SPACE           TO  ETENSU1-REC
-                    INITIALIZE                  ETENSU1-REC
-                    MOVE    WRK-IHO-IGAI-TOKNYUINCD(IDX)
-                                            TO  ETENSU1-SRYCD
-                    MOVE    RECE62-SRYYM    TO  ETENSU1-YUKOSTYMD(1:6)
-                    MOVE    "01"            TO  ETENSU1-YUKOSTYMD(7:2)
-                    MOVE    ETENSU1-YUKOSTYMD
-                                            TO  ETENSU1-YUKOEDYMD
-                    MOVE    ETENSU1-REC     TO  MCPDATA-REC
-                    MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                    MOVE    "key"           TO  MCP-PATHNAME
-                    PERFORM 900-DBSELECT-SEC
-                    IF      MCP-RC              =   ZERO
-                        MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                        MOVE    "key"           TO  MCP-PATHNAME
-                        PERFORM 900-ETENSU1-READ-SEC
-                        IF   FLG-ETENSU1        =   ZERO
-                            MOVE  ETENSU1-H-GROUP(1)
-                                                TO  WRK-ETENSU1-H-GROUP1
-                                                                 (IDX)
-                        END-IF
-                    ELSE
-                        MOVE    1               TO  FLG-ETENSU1
-                        INITIALIZE                  ETENSU1-REC
-                    END-IF
-                    MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-                    MOVE    "key"               TO  MCP-PATHNAME
-                    PERFORM 900-CLOSE-SEC
-                END-IF
-      *--- AZU-ADD END   2017.03.16
-      *
-           END-PERFORM
-      *--- AZU-ADD END   2016.07.04
-      *
-      *     DISPLAY "WRK-ETENSU1-H-GROUP1(1) = " WRK-ETENSU1-H-GROUP1(1)
-      *     DISPLAY "WRK-ETENSU1-H-GROUP1(2) = " WRK-ETENSU1-H-GROUP1(2)
-      *     DISPLAY "WRK-ETENSU1-H-GROUP1(3) = " WRK-ETENSU1-H-GROUP1(3)
-      *     DISPLAY "WRK-ETENSU1-H-GROUP1(4) = " WRK-ETENSU1-H-GROUP1(4)
-      *     DISPLAY "WRK-ETENSU1-H-GROUP1(5) = " WRK-ETENSU1-H-GROUP1(5)
-      *     DISPLAY "WRK-ETENSU1-H-GROUP1(6) = " WRK-ETENSU1-H-GROUP1(6)
            .
        2001-NYUINRYO-GET-EXT.
            EXIT.
@@ -2586,231 +1990,19 @@
                                          NOT =   RECE641-RECEIPT-KBN  )
                OR     ( RECE641-SRYKBN       >=  "90"                 )
       *
-               IF      RECE641-NYUSAIFLG  =   SPACE
-      *           明細テーブル退避処理
-                  PERFORM 20071-ZAI-TAIHI-SEC
-      *           摘要データ編集処理
-                  IF      FLG-END           =   ZERO
-                      PERFORM 20074-ZAI-KOUI-SORT-SEC
-                      PERFORM 20072-ZAI-HENSYU-SEC
+      *        明細テーブル退避処理
+               PERFORM 20071-ZAI-TAIHI-SEC
+      *        摘要データ編集処理
+               IF      FLG-END           =   ZERO
+                   PERFORM 20074-ZAI-KOUI-SORT-SEC
+                   PERFORM 20072-ZAI-HENSYU-SEC
       *
-                      PERFORM 990-RECE641-NEXT-SEC
-                  END-IF
-               END-IF
-           END-PERFORM
-      *
-      *   AZU-ADD START 2015.6.9
-           MOVE    0                   TO  FLG-END
-      *    摘要情報（包括入院分で特定入院料と重複する日）
-           INITIALIZE                      RECE641-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE641-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE641-PTID
-           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
-           MOVE    RECE62-KOHID-KEY    TO  RECE641-KOHID
-           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
-           MOVE    RECE62-RECEIPT-KBN  TO  RECE641-RECEIPT-KBN
-      *
-           START   RECE641-FILE
-               KEY IS    >=   RECE641-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE64
-               NOT INVALID
                    PERFORM 990-RECE641-NEXT-SEC
-           END-START
-           PERFORM
-               UNTIL  ( FLG-END              =   1                   )
-               OR     ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE641-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE641-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE641-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE641-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE641-HOJOKBN      )
-               OR     ( RECE62-KOHID-KEY NOT =   RECE641-KOHID        )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
-               OR     ( RECE62-RECEIPT-KBN
-                                         NOT =   RECE641-RECEIPT-KBN  )
-               OR     ( RECE641-SRYKBN       >=  "91"                 )
-      *
-               IF      (RECE641-SRYKBN   =   "90")   AND
-                       (RECE641-NYUSAIFLG  =  SPACE)
-      *            明細テーブル退避処理
-                   PERFORM 20071-ZAI-TAIHI-SEC
-      *            摘要データ編集処理
-                   IF      FLG-END           =   ZERO
-                       PERFORM 20074-ZAI-KOUI-SORT-SEC
-                       PERFORM 20072-ZAI-HENSYU-SEC
-      *                包括入院分
-      *                //入院料入力分の包括記録は、平成２９年３月分までは
-      *                //特定入院料の下に記録だが、平成２９年４月分からは
-      *                //短期滞在未算定日と同様の記録とする
-                       IF     RECE62-SRYYM   <=   "201703"
-                           PERFORM 20073-ZAI-HENSYU-SEC
-                       END-IF
-                   END-IF
-               END-IF
-      *   AZU-DEL START 2017.5.2
-      ****         MOVE    RECE641-REC      TO   WRK-RECE641-REC
-      *   AZU-DEL END   2017.5.2
-               PERFORM 990-RECE641-NEXT-SEC
-               IF      FLG-RECE64    =   1
-                   MOVE   1     TO   FLG-END
                END-IF
            END-PERFORM
-      *   AZU-ADD END 2015.6.9
       *
-      *    入院会計編集処理（入院料）
-      *   AZU-DEL START 2017.5.2
-      ***     MOVE    WRK-RECE641-REC    TO   RECE641-REC
-      *   AZU-DEL END 2017.5.2
+      *    入院会計編集処理
            PERFORM 20077-NYUIN-HENSYU-SEC
-      *
-      *   AZU-ADD START 2015.6.9
-           MOVE    0                   TO  FLG-END
-      *    摘要情報（包括入院分で短期滞在と重複しない日）
-           INITIALIZE                      RECE641-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE641-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE641-PTID
-           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
-           MOVE    RECE62-KOHID-KEY    TO  RECE641-KOHID
-           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
-           MOVE    RECE62-RECEIPT-KBN  TO  RECE641-RECEIPT-KBN
-      *
-           START   RECE641-FILE
-               KEY IS    >=   RECE641-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE64
-               NOT INVALID
-                   PERFORM 990-RECE641-NEXT-SEC
-           END-START
-           PERFORM
-               UNTIL  ( FLG-END              =   1                   )
-               OR     ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE641-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE641-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE641-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE641-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE641-HOJOKBN      )
-               OR     ( RECE62-KOHID-KEY NOT =   RECE641-KOHID        )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
-               OR     ( RECE62-RECEIPT-KBN
-                                         NOT =   RECE641-RECEIPT-KBN  )
-               OR     ( RECE641-SRYKBN       >=  "91"                 )
-      *
-               IF       RECE641-SRYKBN   =   "92"
-                        MOVE   1         TO   FLG-END
-               END-IF
-               IF      (FLG-END          =   0)   AND
-                       (RECE641-SRYKBN   =   "90") AND
-                       (RECE641-NYUSAIFLG =  SPACE)
-      *            明細テーブル退避処理
-                   PERFORM 20071-ZAI-TAIHI-SEC
-      *            摘要データ編集処理
-                   IF      FLG-END           =   ZERO
-                       PERFORM 20074-ZAI-KOUI-SORT-SEC
-                       PERFORM 20072-ZAI-HENSYU-SEC
-      *                包括入院分
-                       PERFORM 200731-ZAI-HENSYU-SEC
-      *
-                   END-IF
-               END-IF
-               PERFORM 990-RECE641-NEXT-SEC
-               IF      FLG-RECE64    =   1
-                  MOVE   1     TO   FLG-END
-               END-IF
-           END-PERFORM
-      *   AZU-END END 2015.6.9
-      *
-      *
-      *   AZU-ADD START 2016.8.18
-      *    摘要情報（再診の時間外加算等）
-           INITIALIZE                      RECE641-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE641-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE641-PTID
-           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
-           MOVE    RECE62-KOHID-KEY    TO  RECE641-KOHID
-           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
-           MOVE    RECE62-RECEIPT-KBN  TO  RECE641-RECEIPT-KBN
-      *
-           START   RECE641-FILE
-               KEY IS    >=   RECE641-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE64
-               NOT INVALID
-                   PERFORM 990-RECE641-NEXT-SEC
-           END-START
-           PERFORM
-               UNTIL  ( FLG-END              =   1                   )
-               OR     ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE641-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE641-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE641-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE641-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE641-HOJOKBN      )
-               OR     ( RECE62-KOHID-KEY NOT =   RECE641-KOHID        )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
-               OR     ( RECE62-RECEIPT-KBN
-                                         NOT =   RECE641-RECEIPT-KBN  )
-               OR     ( RECE641-SRYKBN       >=  "93"                 )
-      *
-               IF      (RECE641-SRYKBN     =   "90"  OR  "92")   AND
-                       (RECE641-NYUSAIFLG  =   "1")
-      *          明細テーブル退避処理
-                 PERFORM 20071-ZAI-TAIHI-SEC
-      *          摘要データ編集処理
-                 IF      FLG-END           =   ZERO
-                     PERFORM 20074-ZAI-KOUI-SORT-SEC
-                     PERFORM 20072-ZAI-HENSYU-SEC
-                 END-IF
-               END-IF
-               PERFORM 990-RECE641-NEXT-SEC
-           END-PERFORM
-      *   AZU-ADD END 2016.8.18
-      *
-      *    入院会計編集処理（食事等）
-           PERFORM 200771-NYUIN-HENSYU-SEC
-      *
            .
        2007-HENSYU-EXT.
            EXIT. 
@@ -2932,14 +2124,6 @@
                                            WRK-SRYCD71-MAX
                                            WRK-SRYCD72-MAX
                                            WRK-KOKUJISKBKBN1-KOUI-TEN
-           MOVE     SPACE              TO  WRK-TAIIN-SHOHOU
-      *
-      *    9999包括分剤は自保区分に１がセットされている
-           IF       RECE641-JIHOKBN        =   "1"
-               MOVE      "6"               TO  WRK-FEDT-HOUKATU-FLG
-           ELSE
-               MOVE      "0"               TO  WRK-FEDT-HOUKATU-FLG
-           END-IF
       *
            MOVE    RECE641-SRYKBN      TO  WRK-SRYKBN
       *
@@ -2985,30 +2169,24 @@
                OR     ( RECE641-ZAINUM     NOT =   RECE65-ZAINUM       )
       *
       *        9999包括分剤は自保区分に１がセットされている
-      **         IF       RECE641-JIHOKBN        =   "1"
-      **             MOVE      "6"               TO  WRK-FEDT-HOUKATU-FLG
-      **         ELSE
-      **             MOVE      "0"               TO  WRK-FEDT-HOUKATU-FLG
-      **         END-IF
+               IF       RECE641-JIHOKBN        =   "1"
+                   MOVE      "6"               TO  WRK-FEDT-HOUKATU-FLG
+               ELSE
+                   MOVE      "0"               TO  WRK-FEDT-HOUKATU-FLG
+               END-IF
       *
                PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX               >   5     )
                          OR      ( RECE65-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
       *
-      *         入院料はコメントのみ対象とする（包括分も対象とする）
+      *         入院料はコメントのみ対象とする
                 IF    ( RECE641-SRYKBN               >=  "90"      )
                 AND   ( RECE65-SRYCD (IDX) (1:1) NOT =   "8"   AND
                         RECE65-SRYCD (IDX) (1:3) NOT =   "008" AND
                         RECE65-SRYCD (IDX)       NOT =  "190128310" AND
                         RECE65-SRYCD (IDX)       NOT =  "190128410" AND
-                        RECE65-SRYCD (IDX)       NOT =  "190128570" AND
-      *   AZU-ADD START 2016.8.18
-                        RECE65-SRYCD (IDX) (1:3) NOT =  "112"       AND
-      *   AZU-ADD END   2016.8.18
-      *   AZU-ADD START 2015.6.8
-                        WRK-FEDT-HOUKATU-FLG     NOT =   "6")
-      *   AZU-ADD END   2015.6.8
+                        RECE65-SRYCD (IDX)       NOT =  "190128570")
                  CONTINUE
                 ELSE
       *
@@ -3025,30 +2203,6 @@
                        MOVE    RECE65-SRYCD (IDX)
                                                 TO  WRK-KIZAI-SRYCD
                        MOVE    "777770000"      TO  RECE65-SRYCD (IDX)
-                       IF      RECE65-SRYYM     >=  "201704"
-                           INITIALIZE                      TNS-TENSU-REC
-                           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-                           MOVE    WRK-KIZAI-SRYCD     TO  TNS-SRYCD
-                           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-                           PERFORM 900-TENSU-READ-SEC
-                           IF      FLG-TENSU     =   ZERO
-                             IF    TNS-TEN       =   ZERO
-                               CONTINUE
-                             ELSE
-                               STRING
-                                 "０５９で始まる「その他材料」コード"
-                                                    DELIMITED  BY  SIZE
-                                 "が使用されています　患者番号＝"
-                                                    DELIMITED  BY  SIZE
-                                 RECE62-PTNUM       DELIMITED  BY  SIZE
-                                              INTO  WRK-RECEERR
-                               END-STRING
-                               PERFORM 500-ERR-HENSYU-SEC
-                               MOVE   "tokutei-kizai err" TO  WRK-ERRMSG
-                               PERFORM 500-COBABORT-SEC
-                             END-IF
-                           END-IF
-                       END-IF
                    END-IF
       *
                    EVALUATE    RECE65-SRYCD (IDX) (1:1)
@@ -3062,17 +2216,7 @@
                                                = SYS-9102-SRYCD(1))
                            OR   (RECE65-SRYCD(IDX)
                                                = SYS-9102-SRYCD(2)))
-      *---AZU-MOD START 2016.07.04
-                            IF     RECE641-SRYYM     <   201604
-                              IF  WRK-FEDT-HOUKATU-FLG     NOT =   "6"
-                                MOVE  "1"      TO WRK-FEDT-HOUKATU-FLG
-                              END-IF
-                            ELSE
-                              IF  WRK-FEDT-HOUKATU-FLG     NOT =   "6"
-                                  MOVE  "1"     TO WRK-TAIIN-SHOHOU
-                              END-IF
-                            END-IF
-      *---AZU-MOD END   2016.07.04
+                               MOVE  "1"      TO WRK-FEDT-HOUKATU-FLG
       *            テーブルが３件なので繰り返しは保留にしIF文のみとした 
       *                        PERFORM VARYING TBL-TAITOYAKU-IDX
       *                            FROM  1  BY  1
@@ -3264,7 +2408,7 @@
                END-IF
            END-IF
            .
-       2007111-KOUI-TAIHI-HENSYU-EXT.
+       200711-KOUI-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3416,10 +2560,7 @@
       *
            IF      RECE641-SRYKBN       =   "50"    OR  "54"    OR
                                             "60"    OR  "40"    OR
-      *   AZU-MOD START 2015.6.8
-      **                                    "80"
-                                            "80"   OR  "90"
-      *   AZU-MOD END   2015.6.8
+                                            "80"
                CONTINUE
            ELSE
                GO  TO  20074-ZAI-KOUI-SORT-EXT
@@ -3583,13 +2724,11 @@
       *****************************************************************
        20072-ZAI-HENSYU-SEC          SECTION.
       *
-           IF     (RECE641-SRYKBN   >=   "90")   AND
-                  (RECE641-NYUSAIFLG  =  SPACE)
+           IF      RECE641-SRYKBN   >=   "90"
               GO  TO   20072-ZAI-HENSYU-EXT
            END-IF
       *
-           IF     (RECE641-SRYKBN  NOT =   WRK-FEDT-SRYKBN-SAVE) OR
-                  (RECE641-NYUSAIFLG   =   "1")
+           IF      RECE641-SRYKBN  NOT =   WRK-FEDT-SRYKBN-SAVE
       *    順序番号リセット
       *            順序番号の取り込み
                    INITIALIZE                        RECE900-REC
@@ -3716,235 +2855,12 @@
            EXIT.
       *
       *****************************************************************
-      *    摘要データ編集処理（包括入院分）
-      *****************************************************************
-       20073-ZAI-HENSYU-SEC          SECTION.
-      *
-           IF     (RECE641-SRYKBN    =   "90" )    AND
-                  (RECE641-JIHOKBN   =   "1")
-              CONTINUE
-           ELSE
-              GO  TO   20073-ZAI-HENSYU-EXT
-           END-IF
-      *
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       31
-      *    順序番号
-      ****             ADD     1           TO  WRK-RENNUM
-      *    行為明細番号リセット
-                   MOVE    ZERO        TO  WRK-MEISAI-RENNUM
-                   MOVE    IDXX        TO  WRK-FEDT-DD
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       WRK-TBLMAX1
-      *
-                     IF    RECE641-KAISU (1 IDXX)  NOT =  ZERO
-                           MOVE    ZERO     TO   WRK-FEDT-1ST-FLG
-                       EVALUATE    TBL-KOUI-SRYCD (IDX) (1:1)
-                           WHEN    "0"
-                           WHEN    "8"
-                               CONTINUE
-                           WHEN    OTHER
-                               IF   LNK-NYUINDAY-TANKI2-KBN(IDXX) =
-                                                            "1" OR "2"
-                                  CONTINUE
-                               ELSE
-                                  IF    (IDX               =  1)
-      *                               Ｅファイルは出力しない
-                                      PERFORM 200721-ZAI-E-HENSYU-SEC
-      **                                PERFORM 5001-FILE-WRITE-SEC
-                                  END-IF
-      *                           Ｆファイルも出力ぜず、ワーク退避のみ
-                                  MOVE   "92"   TO   WRK-FEDT-SRYKBN
-                                  PERFORM 200721-ZAI-F-HENSYU-SEC
-                                  MOVE   WRK-REC-LENGTH
-                                                  TO  WRK-REC-LENGTH-XX
-                                                             (IDXX IDX)
-                                  MOVE   WRK-REC     TO  WRK-REC-XX
-                                                          (IDXX IDX)
-                                  MOVE   WRK-FEDT-AREA
-                                                  TO    WRK-FEDT-XX
-                                                             (IDXX IDX)
-      **                          PERFORM 5001-FILE-F-WRITE-SEC
-      **                            MOVE   WRK-RENNUM-E   TO
-      **                                          WRK-RENNUM-E-TAIHI
-                               END-IF
-                       END-EVALUATE
-                     END-IF
-                   END-PERFORM
-      *
-           END-PERFORM
-      *
-      *    ======   TEST   DISPLAY ======
-      *     PERFORM VARYING IDXX    FROM    1   BY  1
-      *             UNTIL   IDXX    >       31
-      *       DISPLAY "IDXX = "IDXX
-      *       DISPLAY "WRK-REC-XX(IDXX 1) = " WRK-REC-XX(IDXX 1)
-      *       DISPLAY "WRK-FEDT-XX(IDXX 1) = " WRK-FEDT-XX(IDXX 1)
-      *       DISPLAY "WRK-REC-XX(IDXX 2) = " WRK-REC-XX(IDXX 2)
-      *       DISPLAY "WRK-FEDT-XX(IDXX 2) = " WRK-FEDT-XX(IDXX 2)
-      *     END-PERFORM
-           .
-       20073-ZAI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    摘要データ編集処理（包括入院分　短期滞在未算定日）
-      *****************************************************************
-       200731-ZAI-HENSYU-SEC          SECTION.
-      *
-           IF     (RECE641-SRYKBN    =   "90" )    AND
-                  (RECE641-JIHOKBN   =   "1")
-              CONTINUE
-           ELSE
-              GO  TO   200731-ZAI-HENSYU-EXT
-           END-IF
-      *
-      *--- AZU-ADD START 2017.04.12
-      *    短期滞在を算定したRECE62-FILE処理時だけ処理を行う
-           IF      RECE62-EF-NYUINDAY-TBL   NOT =   SPACE
-              CONTINUE
-           ELSE
-              GO  TO   200731-ZAI-HENSYU-EXT
-           END-IF
-      *--- AZU-ADD END   2017.04.12
-      *
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       31
-      *    順序番号
-      *****             ADD     1           TO  WRK-RENNUM
-      *    行為明細番号リセット
-                   MOVE    ZERO        TO  WRK-MEISAI-RENNUM
-                   MOVE    IDXX        TO  WRK-FEDT-DD
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       WRK-TBLMAX1
-      *
-                     IF    RECE641-KAISU (1 IDXX)  NOT =  ZERO
-                           MOVE    ZERO     TO   WRK-FEDT-1ST-FLG
-                       EVALUATE    TBL-KOUI-SRYCD (IDX) (1:1)
-                           WHEN    "0"
-                           WHEN    "8"
-                               CONTINUE
-                           WHEN    OTHER
-      *--- AZU-ADD END   2017.06.12
-      *                //入院料入力分の包括記録は、平成２９年３月分までは
-      *                //特定入院料の下に記録だが、平成２９年４月分からは
-      *                //短期滞在未算定日と同様の記録とする
-                             IF    RECE62-SRYYM   <=   "201703"
-                               IF   LNK-NYUINDAY-TANKI2-KBN(IDXX) =
-                                                            "1" OR "2"
-      ****                         ADD       1     TO   WRK-RENNUM
-                                  IF     (IDX               =  1)  AND
-                                         (WRK-FEDT-1ST-FLG  =  ZERO)
-                                      MOVE    1    TO   WRK-FEDT-1ST-FLG
-                                      MOVE    "92"  TO  RECE641-SRYKBN
-                                      IF     FLG-TOKUTEINYUIN-SET  =  0
-                                          MOVE    1    TO   WRK-RENNUM
-                                          MOVE    1    TO   
-                                                  FLG-TOKUTEINYUIN-SET
-                                      ELSE
-                                          ADD     1    TO   WRK-RENNUM
-                                      END-IF
-      *                                ADD   1  TO   WRK-RENNUM-E
-                                      PERFORM 200721-ZAI-E-HENSYU-SEC
-                                      PERFORM 5001-FILE-WRITE-SEC
-                                  END-IF
-      *                            DISPLAY  "###  F-SET"
-      *                            DISPLAY  "WRK-RENNUM = " WRK-RENNUM
-                                  MOVE   "92"   TO   WRK-FEDT-SRYKBN
-                                  PERFORM 200721-ZAI-F-HENSYU-SEC
-                                  PERFORM 5001-FILE-F-WRITE-SEC
-                               ELSE
-                                  CONTINUE
-                               END-IF
-                             ELSE
-                                  MOVE      1     TO   FLG-HOUKATU-SET
-      ****                        ADD       1     TO   WRK-RENNUM
-      *                           順序番号の取り込み
-                                  INITIALIZE        RECE900-REC
-                                  MOVE    RECE62-HOSPNUM   TO
-                                                       RECE900-HOSPNUM
-                                  MOVE    RECE62-SRYYM  TO
-                                                       RECE900-SRYYM
-                                  MOVE    RECE62-PTID      TO
-                                                       RECE900-PTID
-                                  MOVE    "90"     TO  RECE900-SRYKBN
-                                  PERFORM   900-RECE900-READ-SEC
-                                  IF      FLG-RECE900         =   1
-                                      MOVE    ZERO      TO  WRK-RENNUM
-                                  ELSE
-                                      MOVE    RECE900-RENNUM
-                                                        TO  WRK-RENNUM
-                                  END-IF
-                                  IF     (IDX               =  1)  AND
-                                         (WRK-FEDT-1ST-FLG  =  ZERO)
-                                      MOVE    1    TO   WRK-FEDT-1ST-FLG
-                                      MOVE    "90"  TO  RECE641-SRYKBN
-                                      IF     FLG-TOKUTEINYUIN-SET  =  0
-                                          MOVE    1    TO   WRK-RENNUM
-                                          MOVE    1    TO   
-                                                  FLG-TOKUTEINYUIN-SET
-                                      ELSE
-                                          ADD     1    TO   WRK-RENNUM
-                                      END-IF
-      *                                ADD   1  TO   WRK-RENNUM-E
-                                      PERFORM 200721-ZAI-E-HENSYU-SEC
-                                      PERFORM 5001-FILE-WRITE-SEC
-                                  END-IF
-      *                            DISPLAY  "###  F-SET"
-      *                            DISPLAY  "WRK-RENNUM = " WRK-RENNUM
-                                  MOVE   "90"   TO   WRK-FEDT-SRYKBN
-                                  PERFORM 200721-ZAI-F-HENSYU-SEC
-                                  PERFORM 5001-FILE-F-WRITE-SEC
-      *
-                                  MOVE    ZERO   TO   FLG-HOUKATU-SET
-      *
-      *                           順序番号ファイルの更新
-                                  INITIALIZE               RECE900-REC
-                                  MOVE    RECE62-HOSPNUM   TO
-                                                       RECE900-HOSPNUM
-                                  MOVE    RECE62-SRYYM     TO
-                                                       RECE900-SRYYM
-                                  MOVE    RECE62-PTID  TO 
-                                                       RECE900-PTID
-                                  MOVE    "90"     TO  RECE900-SRYKBN
-                                  PERFORM   900-RECE900-READ-SEC
-                                  IF      FLG-RECE900         =   1
-                                    MOVE    RECE62-HOSPNUM   TO
-                                                        RECE900-HOSPNUM
-                                    MOVE    RECE62-SRYYM  TO
-                                                        RECE900-SRYYM
-                                    MOVE    RECE62-PTID   TO
-                                                        RECE900-PTID
-                                    MOVE    "90"    TO  RECE900-SRYKBN
-                                    MOVE    WRK-RENNUM TO RECE900-RENNUM
-                                    WRITE      RECE900-REC
-                                  ELSE
-                                    MOVE    WRK-RENNUM TO RECE900-RENNUM
-                                    REWRITE    RECE900-REC
-                                  END-IF
-                             END-IF
-                       END-EVALUATE
-                     END-IF
-                   END-PERFORM
-      *
-      *--- AZU-ADD START 2017.03.29
-      *            一度セットした日は再セットを行わないよう区分を初期化
-      ****         MOVE   SPACE  TO  LNK-NYUINDAY-TANKI2-KBN(IDXX)
-      *--- AZU-ADD END 2017.03.29
-      *
-           END-PERFORM
-           .
-       200731-ZAI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    Ｅファイル＜診療明細情報＞：診療行為  編集処理
       *****************************************************************
        200721-ZAI-E-HENSYU-SEC       SECTION.
       *
            MOVE    ZERO                TO  WRK-FEDT-PREV-TEN
            MOVE    ZERO                TO  WRK-FEDT-PREV-TEN50
-           MOVE    ZERO                TO  WRK-FEDT-PREV-TEN54
            MOVE    ZERO                TO  WRK-FEDT-PREV-TEN721
            MOVE    "E"                 TO  WRK-FEDT-REC-FLG
            MOVE    ZERO                TO  WRK-FEDT-DEKIDAKA-SUM
@@ -3979,8 +2895,6 @@
            MOVE    RECE641-ZAITEN      TO  WRK-FEDT-ZAITEN
       *行為薬剤料
            MOVE    RECE641-YKZTEN      TO  WRK-FEDT-YKZTEN
-      *持参薬区分
-           MOVE    RECE641-JISANYAKKBN TO  WRK-FEDT-JISANYAKKBN
       *行為材料料
            MOVE    RECE641-KIZAITEN    TO  WRK-FEDT-KIZAITEN
            IF      RECE641-SRYKBN      =   "70"
@@ -4171,8 +3085,7 @@
                 IF    WRK-FEDT-SRYKBN          =  "70"
                 AND   WRK-FEDT-DEKIDAKA-SUM    >  ZERO
                 AND  (TBL-KOUI-SRYCD(IDX)  NOT =  "170017170"
-                                           AND    "170017270"
-                                           AND    "170034170")
+                                           AND    "170017270")
                    COMPUTE WRK-FEDT-DEKIDAKA-TEN
                                        =   RECE641-ZAITEN
                                        -   WRK-FEDT-DEKIDAKA-SUM
@@ -4181,45 +3094,19 @@
       *!                               =   RECE641-ZAITEN
       *!                               -   TBL-KOUI-TEN (IDX - 1)
                    IF  (TBL-KOUI-SRYCD(IDX) =   "170017170"
-                                            OR  "170017270"
-                                            OR  "170034170")
+                                            OR  "170017270")
                    AND (WRK-FEDT-PREV-TEN721 >  ZERO)
                        MOVE WRK-FEDT-PREV-TEN721
                                        TO   WRK-FEDT-PREV-TEN
                    END-IF
-      *閉麻年齢加算対応
-                   IF  (TBL-KOUI-SRYCD(IDX) =   "150231590"
-                                            OR  "150231690"
-                                            OR  "150265390"
-                                            OR  "150286690")
-                   AND (WRK-FEDT-PREV-TEN54 >   ZERO)
-                       COMPUTE WRK-FEDT-DEKIDAKA-TEN
-                                           =   WRK-FEDT-PREV-TEN54
-                                           *   TBL-KOUI-TEN (IDX)
-                                           /   100
-                                           +   0.5
-                       MOVE    ZERO        TO  WRK-FEDT-PREV-TEN54
-                   ELSE
-                       COMPUTE WRK-FEDT-DEKIDAKA-TEN
-                                           =   WRK-FEDT-PREV-TEN
-                                           *   TBL-KOUI-TEN (IDX)
-                                           /   100
-                                           +   0.5
-                   END-IF
-      *--- AZU-MOD START 2015.10.20
-      **             IF      WRK-FEDT-SRYKBN     NOT =  "50"
-      **                 MOVE    ZERO        TO  WRK-FEDT-PREV-TEN
-      **             END-IF
-                   IF      WRK-FEDT-SRYKBN     =  "40"
-                       COMPUTE WRK-FEDT-PREV-TEN = WRK-FEDT-PREV-TEN
-                                                +  WRK-FEDT-DEKIDAKA-TEN
-                   END-IF
-                   IF      WRK-FEDT-SRYKBN     =  "50"  OR  "40"
-                       CONTINUE
-                   ELSE
+                   COMPUTE WRK-FEDT-DEKIDAKA-TEN
+                                       =   WRK-FEDT-PREV-TEN
+                                       *   TBL-KOUI-TEN (IDX)
+                                       /   100
+                                       +   0.5
+                   IF      WRK-FEDT-SRYKBN     NOT =  "50"
                        MOVE    ZERO        TO  WRK-FEDT-PREV-TEN
                    END-IF
-      *--- AZU-MOD END 2015.10.20
                    MOVE    ZERO        TO  WRK-FEDT-PREV-TEN50
                    MOVE    ZERO        TO  WRK-FEDT-PREV-TEN721
                 END-IF
@@ -4273,27 +3160,11 @@
               END-IF
              END-IF
            END-IF
-      *    行為明細点数を再セット（きざみ）
-           IF     (TBL-KOUI-TENSIKIBETU (IDX)      =   3)  AND
-                  (TBL-KOUI-KZMCOMPSIKIBETU (IDX)  =   1)  AND
-                  (WRK-FEDT-MEISAI-TEN         NOT =
-                                               WRK-FEDT-DEKIDAKA-TEN)
-               MOVE    WRK-FEDT-DEKIDAKA-TEN
-                                       TO  WRK-FEDT-MEISAI-TEN
-           END-IF
       *出来高・包括フラグ
-      *---AZU-MOD START 2016.07.04
-           IF     RECE641-SRYYM     <   201604
-             IF      WRK-FEDT-HOUKATU-FLG    NOT =   "6"
-                  MOVE    TNS-DPCKBN          TO  WRK-FEDT-HOUKATU-FLG
-             END-IF
-           ELSE
-             IF      WRK-FEDT-HOUKATU-FLG    NOT =   "6"
-                  MOVE  "0"                   TO  WRK-FEDT-HOUKATU-FLG
-             END-IF
-             MOVE    TNS-DPCKBN          TO  WRK-FEDT-KOUI-MEISAI5
+           IF      WRK-FEDT-HOUKATU-FLG    NOT =   "6"
+      * 2014.5 MOVE    "0"                 TO  WRK-FEDT-HOUKATU-FLG
+               MOVE    TNS-DPCKBN          TO  WRK-FEDT-HOUKATU-FLG
            END-IF
-      *---AZU-MOD END   2016.07.04
       *使用量から出来高・包括フラグまで
            PERFORM 200799-ZAI-HENSYU-F-SEC
       *加算・減算のため行為点数を累積する
@@ -4316,11 +3187,6 @@
                                                =   WRK-FEDT-PREV-TEN721
                                                +   WRK-FEDT-DEKIDAKA-TEN
                    END-IF
-      *--- AZU-ADD START 2016.04.22
-                   IF    WRK-FEDT-SRYKBN       =  "50"
-                      MOVE WRK-FEDT-DEKIDAKA-TEN TO  WRK-FEDT-PREV-TEN50
-                   END-IF
-      *--- AZU-ADD END 2016.04.22
                ELSE
                    IF  TBL-KOUI-TENSIKIBETU (IDX)  =  6
                        COMPUTE WRK-FEDT-PREV-TEN
@@ -4329,18 +3195,9 @@
                                         /   100
                                         +   0.5
                    ELSE
-                       IF  TNS-MASUISKBKBN     NOT =   7
-                           COMPUTE WRK-FEDT-PREV-TEN   =
-                                   WRK-FEDT-PREV-TEN   +
-                                   TBL-KOUI-TEN (IDX)
-                           MOVE TBL-KOUI-TEN (IDX)     TO
-                                                   WRK-FEDT-PREV-TEN50
-                       ELSE
-      *閉麻年齢加算対応
-                           COMPUTE WRK-FEDT-PREV-TEN54 =
-                                   WRK-FEDT-PREV-TEN   +
-                                   TBL-KOUI-TEN (IDX)
-                       END-IF
+                       COMPUTE WRK-FEDT-PREV-TEN =  WRK-FEDT-PREV-TEN
+                                                 +  TBL-KOUI-TEN (IDX)
+                       MOVE TBL-KOUI-TEN (IDX) TO  WRK-FEDT-PREV-TEN50
                    END-IF
                END-IF
              END-IF
@@ -4429,65 +3286,57 @@
                COMPUTE TBL-HEIMA-TOT-SURYO  =  TBL-HEIMA-TOT-SURYO
                                             -  WRK-KZM-SURYO
              END-IF
-             MOVE    TBL-HEIMA-ZAN-SURYO (IDXW)
-                                       TO  TBL-HEIMA-30M-SURYO (IDXW)
            END-PERFORM
       *    30分以下を寄せ集め
-      *    数量の多い順になるのでここで多い順にインデックスを決定
-      *    TBL-HEIMA-30M-IDX()へ格納
-      *    一時使用の配列へ複写
-           PERFORM VARYING IDXW    FROM    1   BY  1
-                   UNTIL  (IDXW    >   TBL-HEIMA-MAX)
-               MOVE    TBL-HEIMA-30M-SURYO (IDXW)
-                                       TO  TBL-HEIMA-30M-TMP (IDXW)
-           END-PERFORM
-           PERFORM VARYING IDZ3    FROM    1   BY  1
-                   UNTIL  (IDZ3    >   TBL-HEIMA-MAX)
-               MOVE    ZERO                TO  WRK-30M-SURYO
-               PERFORM VARYING IDXW    FROM    1   BY  1
-                       UNTIL  (IDXW    >   TBL-HEIMA-MAX)
-                   IF     (TBL-HEIMA-30M-TMP (IDXW)  >
-                                               WRK-30M-SURYO)
-                       MOVE    IDXW    TO  TBL-HEIMA-30M-IDX (IDZ3)
-                       MOVE    TBL-HEIMA-30M-TMP (IDXW)
-                                       TO  WRK-30M-SURYO
-                   END-IF
-               END-PERFORM
-               MOVE    TBL-HEIMA-30M-IDX (IDZ3)    TO  IDXW
-               IF      IDXW                >   ZERO
-                   MOVE    ZERO            TO  TBL-HEIMA-30M-TMP (IDXW)
-               END-IF
-           END-PERFORM
-      *
-           MOVE    ZERO                TO  IDZ3
            PERFORM UNTIL   ( TBL-HEIMA-TOT-SURYO = ZERO )
              MOVE    ZERO              TO  WRK-HEIMA-IDX
              MOVE    ZERO              TO  WRK-KZM-SURYO
-             COMPUTE IDZ3              =   IDZ3    +   1
-             MOVE    TBL-HEIMA-30M-IDX (IDZ3)
-                                           TO  WRK-HEIMA-IDX
+             PERFORM VARYING IDXW FROM 1  BY  1
+                     UNTIL   ( IDXW > TBL-HEIMA-MAX )
+               IF    TBL-HEIMA-ZAN-SURYO (IDXW) >  WRK-KZM-SURYO
+                 MOVE    IDXW              TO  WRK-HEIMA-IDX
+                 MOVE    TBL-HEIMA-ZAN-SURYO (IDXW)
+                                           TO  WRK-KZM-SURYO
+               END-IF
+             END-PERFORM
              IF      WRK-HEIMA-IDX   NOT =   ZERO
-                 PERFORM VARYING IDXW FROM 1 BY 1
-                         UNTIL ( IDXW > TBL-HEIMA-MAX )
-                     MOVE    TBL-HEIMA-30M-IDX (IDXW)
-                                           TO  IDW
-                     IF      IDW           NOT =   ZERO
-                         COMPUTE WRK-KZM-SURYO =   WRK-KZM-SURYO
-                                               +   TBL-HEIMA-ZAN-SURYO
-                                                   (IDW)
-                         IF      WRK-KZM-SURYO >=  30
-                             COMPUTE TBL-HEIMA-ZAN-SURYO (IDW) =
-                                     WRK-KZM-SURYO -   30
-                             MOVE    30        TO  WRK-KZM-SURYO
-                         ELSE 
-                             MOVE    ZERO      TO  TBL-HEIMA-ZAN-SURYO
-                                                   (IDW)
-                             MOVE    ZERO      TO  TBL-HEIMA-30M-SURYO
-                                                   (IDW)
-                         END-IF
-                     END-IF
-                 END-PERFORM
+                   MOVE    TBL-HEIMA-ZAN-SURYO (WRK-HEIMA-IDX)
+                                          TO  WRK-KZM-SURYO
+                   MOVE    ZERO  TO  TBL-HEIMA-ZAN-SURYO (WRK-HEIMA-IDX)
              END-IF
+      **     DISPLAY " "
+      **     DISPLAY "WRK-HEIMA-IDX = " WRK-HEIMA-IDX
+             PERFORM VARYING IDXW FROM 1  BY  1
+                     UNTIL   ( IDXW > TBL-HEIMA-MAX )
+                        OR   ( WRK-HEIMA-IDX = ZERO )
+               IF      IDXW          NOT =   WRK-HEIMA-IDX
+                   MOVE    IDXW            TO  IDW
+                   PERFORM VARYING IDW0 FROM TBL-HEIMA-MAX  BY  -1
+                           UNTIL   ( IDW0 = 0 )
+                     IF    ( IDW0      NOT =   WRK-HEIMA-IDX ) AND
+                           ( IDW0      NOT =   IDXW )
+                       IF      TBL-HEIMA-ZAN-SURYO (IDW0)
+                                       =   TBL-HEIMA-ZAN-SURYO (IDXW)
+                         MOVE  IDW0        TO  IDW
+                         MOVE  1           TO  IDW0
+                       END-IF
+                     END-IF
+                   END-PERFORM
+      **     DISPLAY "IDW = " IDW
+                   COMPUTE WRK-HEIMA-SURYO =  30  -  WRK-KZM-SURYO
+                   IF      TBL-HEIMA-ZAN-SURYO (IDW) < WRK-HEIMA-SURYO
+                       COMPUTE WRK-KZM-SURYO =  WRK-KZM-SURYO
+                                         +  TBL-HEIMA-ZAN-SURYO (IDW)
+                       MOVE    ZERO      TO TBL-HEIMA-ZAN-SURYO (IDW)
+                   ELSE
+                       COMPUTE TBL-HEIMA-ZAN-SURYO (IDW)
+                                         =  TBL-HEIMA-ZAN-SURYO (IDW)
+                                         -  WRK-HEIMA-SURYO
+                       MOVE    30            TO WRK-KZM-SURYO
+                       MOVE    TBL-HEIMA-MAX TO IDXW
+                   END-IF
+               END-IF
+             END-PERFORM
              COMPUTE TBL-HEIMA-COM-SURYO (WRK-HEIMA-IDX)
                                  =  TBL-HEIMA-COM-SURYO (WRK-HEIMA-IDX)
                                  +  WRK-KZM-SURYO
@@ -4682,8 +3531,6 @@
            END-IF
       *行為薬剤料
            MOVE    RECE641-YKZTEN      TO  WRK-FEDT-YKZTEN
-      *持参薬区分
-           MOVE    RECE641-JISANYAKKBN TO  WRK-FEDT-JISANYAKKBN
       *行為材料料
            MOVE    RECE641-KIZAITEN    TO  WRK-FEDT-KIZAITEN
       *円・点区分
@@ -4873,8 +3720,6 @@
            END-IF
       *行為薬剤料
            MOVE    RECE641-YKZTEN      TO  WRK-FEDT-YKZTEN
-      *持参薬区分
-           MOVE    RECE641-JISANYAKKBN TO  WRK-FEDT-JISANYAKKBN
       *行為材料料
            MOVE    WRK-FEDT-ZAITEN     TO  WRK-FEDT-KIZAITEN
       *****MOVE    RECE641-KIZAITEN    TO  WRK-FEDT-KIZAITEN
@@ -5030,16 +3875,13 @@
            EXIT.
       *
       *****************************************************************
-      *    入院基本料・特定入院料
+      *    入院基本料・特定入院料・食事療養編集処理
       *****************************************************************
        20077-NYUIN-HENSYU-SEC           SECTION.
       *
-           MOVE           0        TO      FLG-TOKUTEINYUIN-SET
-           MOVE           SPACE    TO      WRK-TAIIN-SHOHOU
-      *
       *    入院料
            PERFORM VARYING IDZ1    FROM    1   BY  1
-                   UNTIL   IDZ1    >       2
+                   UNTIL   IDZ1    >       5
                PERFORM VARYING IDZ2    FROM    1   BY  1
                        UNTIL   IDZ2    >       31
       *****            OR      LNK-DPCNYUIN-HKNCOMBI (IDZ1 IDZ2)
@@ -5071,61 +3913,35 @@
                            WHEN    OTHER
                                IF    (  LNK-DPCNYUIN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
-                                         =   WRK-CONS-HYOJYUN-FUTAN1
-                                         OR  WRK-CONS-HYOJYUN-FUTAN2
-                                         OR  WRK-CONS-HYOJYUN-FUTAN3
-                                         OR  WRK-CONS-HYOJYUN-FUTAN4
-                                         OR  WRK-CONS-HYOJYUN-FUTAN5
-                                         OR  WRK-CONS-HYOJYUN-FUTAN6
-                                         OR  WRK-CONS-HYOJYUN-FUTAN7
-                                         OR  WRK-CONS-HYOJYUN-FUTAN8
-                                         OR  WRK-CONS-HYOJYUN-FUTAN9
-                                         OR  WRK-CONS-HYOJYUN-FUTAN10
-                                         OR  WRK-CONS-HYOJYUN-FUTAN11
-                                         OR  WRK-CONS-HYOJYUN-FUTAN12
-                                         OR  WRK-CONS-HYOJYUN-FUTAN13
-                                         OR  WRK-CONS-HYOJYUN-FUTAN14
-                                         OR  WRK-CONS-HYOJYUN-FUTAN15
-                                         OR  WRK-CONS-HYOJYUN-FUTAN16
-                                         OR  WRK-CONS-HYOJYUN-FUTAN17
-                                         OR  WRK-CONS-HYOJYUN-FUTAN18
-                                         OR  WRK-CONS-HYOJYUN-FUTAN19
-                                         OR  WRK-CONS-HYOJYUN-FUTAN20
-                                         OR  WRK-CONS-HYOJYUN-FUTAN21
-                                         OR  WRK-CONS-HYOJYUN-FUTAN22
-                                         OR  WRK-CONS-HYOJYUN-FUTAN23
-                                         OR  WRK-CONS-HYOJYUN-FUTAN24
-                                         OR  WRK-CONS-HYOJYUN-FUTAN25
-                                         OR  WRK-CONS-HYOJYUN-FUTAN26
-                                         OR  WRK-CONS-HYOJYUN-FUTAN27
-                                         OR  WRK-CONS-HYOJYUN-FUTAN28
-                                         OR  WRK-CONS-HYOJYUN-FUTAN29
-                                         OR  WRK-CONS-HYOJYUN-FUTAN30
-                                         OR  WRK-CONS-HYOJYUN-FUTAN31
-                                         OR  WRK-CONS-HYOJYUN-FUTAN32
-                                         OR  WRK-CONS-HYOJYUN-FUTAN33
-                                         OR  WRK-CONS-HYOJYUN-FUTAN34
-                                         OR  WRK-CONS-HYOJYUN-FUTAN35 )
+                                           =   WRK-CONS-HYOJYUN-FUTAN1
+                                           OR  WRK-CONS-HYOJYUN-FUTAN2
+                                           OR  WRK-CONS-HYOJYUN-FUTAN3
+                                           OR  WRK-CONS-HYOJYUN-FUTAN4
+                                           OR  WRK-CONS-HYOJYUN-FUTAN5
+                                           OR  WRK-CONS-HYOJYUN-FUTAN6
+                                           OR  WRK-CONS-HYOJYUN-FUTAN7
+                                           OR  WRK-CONS-HYOJYUN-FUTAN8
+                                           OR  WRK-CONS-HYOJYUN-FUTAN9
+                                           OR  WRK-CONS-HYOJYUN-FUTAN10
+                                           OR  WRK-CONS-HYOJYUN-FUTAN11
+                                           OR  WRK-CONS-HYOJYUN-FUTAN12
+                                           OR  WRK-CONS-HYOJYUN-FUTAN13
+                                           OR  WRK-CONS-HYOJYUN-FUTAN14
+                                           OR  WRK-CONS-HYOJYUN-FUTAN15)
                                    CONTINUE
                                ELSE
                                     IF    IDXZ       =  1
                                     OR    LNK-DPCNYUIN-SRYSKB
                                                        (IDZ1 IDZ2 IDXZ)
                                                      = "97"
-      *                                外泊の場合
-      *                                平成２７年３月迄は１明細の記録
-      *                                平成２７年４月以降は２明細での記録
-                                       IF (LNK-DPCNYUIN-SANTEIYM  <=
-                                                              "201503")
-                                         IF  LNK-DPCNYUIN-SRYCD
+      *                              外泊の場合(2行目のレコード)
+                                       IF  LNK-DPCNYUIN-SRYCD
                                                        (IDZ1 IDZ2 2)
                                                      = "190107290" OR
                                                        "190107390" OR
                                                        "190107490" OR
                                                        "190107590"
-      *                                    ２行目のレコード
                                            MOVE    2   TO  IDXZ
-                                         END-IF
                                        END-IF
                                        MOVE  IDZ2  TO  WRK-FEDT-DD
                                        PERFORM
@@ -5136,47 +3952,12 @@
                                     END-IF
                                     PERFORM
                                          200771-NYUIN-ZAI-F-HENSYU-SEC
-                                    IF   IDZ1      =    2
-                                         MOVE   1   TO
-                                                   FLG-TOKUTEINYUIN-SET
-                                    END-IF
                                     IF   WRK-REC-LENGTH  >  ZERO
                                          PERFORM 5001-FILE-F-WRITE-SEC
                                     END-IF
                                   END-IF
                        END-EVALUATE
                    END-PERFORM
-      *
-      *        AZU-ADD START 2015.6.9
-      *            特定入院料の時、退避しておいた出来高入院料を追加する
-                   IF  IDZ1   =   2
-                     IF   LNK-DPCNYUIN-MEISAISU (IDZ1 IDZ2)  NOT = ZERO
-                        PERFORM   VARYING   IDZ7  FROM  1  BY  1
-                          UNTIL   (IDZ7     >   10)   OR
-                                (WRK-REC-LENGTH-XX(IDZ2 IDZ7)  =  ZERO)
-                           IF    WRK-TAIHI-RENNUM(IDZ2)  NOT =  ZERO
-                             MOVE    WRK-REC-XX(IDZ2 IDZ7) 
-                                               TO   WRK-REC
-      *                      順序番号
-                             MOVE  WRK-TAIHI-RENNUM-X(IDZ2)
-                                               TO   WRK-REC(43:4)
-      *                      行為明細番号
-                             ADD   1             TO
-                                          WRK-TAIHI-MEISAI-RENNUM(IDZ1)
-                             MOVE    WRK-TAIHI-MEISAI-RENNUM-X(IDZ1)
-                                               TO   WRK-REC(48:3)
-      *
-                             MOVE    WRK-REC-LENGTH-XX(IDZ2 IDZ7)
-                                               TO  WRK-REC-LENGTH
-                             MOVE    WRK-FEDT-XX(IDZ2 IDZ7)
-                                               TO   WRK-FEDT-AREA
-                             PERFORM 5001-FILE-F-WRITE-SEC
-                           END-IF
-                        END-PERFORM
-                     END-IF
-                   END-IF
-      *        AZU-ADD END   2015.6.9
-      *
                END-PERFORM
       *
       *        差し込みコメント編集
@@ -5186,136 +3967,6 @@
            END-PERFORM
            .
        20077-NYUIN-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    食事療養編集処理
-      *****************************************************************
-       200771-NYUIN-HENSYU-SEC           SECTION.
-      *
-      *    入院料
-           PERFORM VARYING IDZ1    FROM    3   BY  1
-                   UNTIL   IDZ1    >       5
-               PERFORM VARYING IDZ2    FROM    1   BY  1
-                       UNTIL   IDZ2    >       40
-      *
-                   MOVE    ZERO                    TO  FLG-CHK
-      *
-                   PERFORM VARYING IDXZ    FROM    1   BY  1
-                           UNTIL   IDXZ    >       10
-                           OR      RECE62-HKNCOMBI (IDXZ)  =   ZERO
-                       IF      LNK-DPCNYUIN-HKNCOMBI (IDZ1 IDZ2)
-                                           =   RECE62-HKNCOMBI (IDXZ)
-                           MOVE    1                   TO  FLG-CHK
-                           MOVE    10                  TO  IDXZ
-                       END-IF
-                   END-PERFORM
-      *
-                   PERFORM VARYING IDXZ    FROM    1   BY  1
-                           UNTIL   IDXZ    >
-                                   LNK-DPCNYUIN-MEISAISU (IDZ1 IDZ2)
-                           OR      FLG-CHK =       ZERO
-      *
-                       MOVE    SPACE               TO  WRK-REC
-                       MOVE    ZERO                TO  WRK-REC-LENGTH
-      *
-                       EVALUATE    LNK-DPCNYUIN-RECSKB (IDZ1 IDZ2 IDXZ)
-                           WHEN    "CO"
-                               CONTINUE
-                           WHEN    OTHER
-                               IF    (  LNK-DPCNYUIN-SRYCD
-                                                       (IDZ1 IDZ2 IDXZ)
-                                         =   WRK-CONS-HYOJYUN-FUTAN1
-                                         OR  WRK-CONS-HYOJYUN-FUTAN2
-                                         OR  WRK-CONS-HYOJYUN-FUTAN3
-                                         OR  WRK-CONS-HYOJYUN-FUTAN4
-                                         OR  WRK-CONS-HYOJYUN-FUTAN5
-                                         OR  WRK-CONS-HYOJYUN-FUTAN6
-                                         OR  WRK-CONS-HYOJYUN-FUTAN7
-                                         OR  WRK-CONS-HYOJYUN-FUTAN8
-                                         OR  WRK-CONS-HYOJYUN-FUTAN9
-                                         OR  WRK-CONS-HYOJYUN-FUTAN10
-                                         OR  WRK-CONS-HYOJYUN-FUTAN11
-                                         OR  WRK-CONS-HYOJYUN-FUTAN12
-                                         OR  WRK-CONS-HYOJYUN-FUTAN13
-                                         OR  WRK-CONS-HYOJYUN-FUTAN14
-                                         OR  WRK-CONS-HYOJYUN-FUTAN15
-                                         OR  WRK-CONS-HYOJYUN-FUTAN16
-                                         OR  WRK-CONS-HYOJYUN-FUTAN17
-                                         OR  WRK-CONS-HYOJYUN-FUTAN18
-                                         OR  WRK-CONS-HYOJYUN-FUTAN19
-                                         OR  WRK-CONS-HYOJYUN-FUTAN20
-                                         OR  WRK-CONS-HYOJYUN-FUTAN21
-                                         OR  WRK-CONS-HYOJYUN-FUTAN22
-                                         OR  WRK-CONS-HYOJYUN-FUTAN23
-                                         OR  WRK-CONS-HYOJYUN-FUTAN24
-                                         OR  WRK-CONS-HYOJYUN-FUTAN25
-                                         OR  WRK-CONS-HYOJYUN-FUTAN26
-                                         OR  WRK-CONS-HYOJYUN-FUTAN27
-                                         OR  WRK-CONS-HYOJYUN-FUTAN28
-                                         OR  WRK-CONS-HYOJYUN-FUTAN29
-                                         OR  WRK-CONS-HYOJYUN-FUTAN30
-                                         OR  WRK-CONS-HYOJYUN-FUTAN31
-                                         OR  WRK-CONS-HYOJYUN-FUTAN32
-                                         OR  WRK-CONS-HYOJYUN-FUTAN33 )
-                                   CONTINUE
-                               ELSE
-                                    IF    IDXZ       =  1
-                                    OR    LNK-DPCNYUIN-SRYSKB
-                                                       (IDZ1 IDZ2 IDXZ)
-                                                     = "97"
-      *                                外泊の場合
-      *                                平成２７年３月迄は１明細の記録
-      *                                平成２７年４月以降は２明細での記録
-                                       IF (LNK-DPCNYUIN-SANTEIYM  <=
-                                                              "201503")
-                                         IF  LNK-DPCNYUIN-SRYCD
-                                                       (IDZ1 IDZ2 2)
-                                                     = "190107290" OR
-                                                       "190107390" OR
-                                                       "190107490" OR
-                                                       "190107590"
-      *                                    ２行目のレコード
-                                           MOVE    2   TO  IDXZ
-                                         END-IF
-                                       END-IF
-                                       MOVE  IDZ2  TO  WRK-FEDT-DD
-      *                                平成２９年１０月以降の食事は引数
-      *                                で返却された日付をセット
-                                       IF (LNK-DPCNYUIN-SANTEIYM >=
-                                                          "201710")  AND
-                                          (IDZ1   =   3  OR  4)      AND
-                                          (LNK-DPCNYUIN-DD
-                                                     (IDZ1 IDZ2)
-                                                     NOT =   ZERO)
-                                          MOVE  LNK-DPCNYUIN-DD
-                                                       (IDZ1 IDZ2)
-                                                        TO  WRK-FEDT-DD
-                                       END-IF
-                                       PERFORM
-                                         200771-NYUIN-ZAI-E-HENSYU-SEC
-                                       IF  WRK-REC-LENGTH  >  ZERO
-                                         PERFORM 5001-FILE-WRITE-SEC
-                                       END-IF
-                                    END-IF
-      *
-                                    PERFORM
-                                         200771-NYUIN-ZAI-F-HENSYU-SEC
-                                    IF   WRK-REC-LENGTH  >  ZERO
-                                         PERFORM 5001-FILE-F-WRITE-SEC
-                                    END-IF
-                               END-IF
-                       END-EVALUATE
-                   END-PERFORM
-               END-PERFORM
-      *
-      *        差し込みコメント編集
-               IF      IDZ1            <   3
-                  PERFORM 200771-NYUIN-COMMENT-HENSYU-SEC
-               END-IF
-           END-PERFORM
-           .
-       200771-NYUIN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5354,17 +4005,13 @@
                            END-IF
                    END-EVALUATE
       *
-                   IF    RECE641-NYUSAIFLG  =  SPACE
-      *              明細テーブル退避処理
-                     PERFORM 20071-ZAI-TAIHI-SEC
-      *              摘要データ編集処理
-                     IF      FLG-END           =   ZERO
-                         PERFORM 20072-ZAI-HENSYU-SEC
+      *            明細テーブル退避処理
+                   PERFORM 20071-ZAI-TAIHI-SEC
+      *            摘要データ編集処理
+                   IF      FLG-END           =   ZERO
+                       PERFORM 20072-ZAI-HENSYU-SEC
       *
-                         PERFORM 990-RECE641-NEXT-SEC
-                     END-IF
-                   ELSE
-                     PERFORM 990-RECE641-NEXT-SEC
+                       PERFORM 990-RECE641-NEXT-SEC
                    END-IF
            END-PERFORM
            .
@@ -5386,12 +4033,23 @@
                    MOVE    LNK-DPCNYUIN-PTID      TO  RECE900-PTID
                    MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
                                                   TO  RECE900-SRYKBN
+                   DISPLAY   "LNK-DPCNYUIN-HOSPNUM = "
+                              LNK-DPCNYUIN-HOSPNUM
+                   DISPLAY   "LNK-DPCNYUIN-SANTEIYM = "
+                              LNK-DPCNYUIN-SANTEIYM
+                   DISPLAY   "LNK-DPCNYUIN-PTID = "
+                              LNK-DPCNYUIN-PTID
+                   DISPLAY   "LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ) = "
+                              LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+                   DISPLAY   "900-RECE900-READ-SEC"
                    PERFORM   900-RECE900-READ-SEC
+                   DISPLAY "FLG-RECE900 = " FLG-RECE900
                    IF      FLG-RECE900         =   1
                        MOVE    ZERO             TO  WRK-RENNUM
                    ELSE
                        MOVE    RECE900-RENNUM   TO  WRK-RENNUM                       
                    END-IF
+                   DISPLAY "WRK-RENNUM = " WRK-RENNUM
                    MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
                                        TO  WRK-FEDT-SRYKBN-SAVE
            END-IF
@@ -5399,31 +4057,16 @@
            MOVE    "E"                 TO  WRK-FEDT-REC-FLG
       *退院年月日、入院年月日のセット
            PERFORM 200799-ZAI-HENSYU-0-SEC
-      *
-      *AZU-ADD START 2016.8.1
-      *Ｅファイルは医療区分、ＡＤＬ点数コメントを読み飛ばし
-      **     PERFORM    VARYING   IDX-COM   FROM  1  BY  1
-      **       UNTIL    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDX-COM) (1:1)
-      **                             NOT =  "8"
-      **           CONTINUE
-      **     END-PERFORM
-      *AZU-ADD END   2016.8.1
-      *
       *診療コード、名称、解釈番号編集のセット
            MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)
-                                     TO  WRK-FEDT-SRYCD
-      **     MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDX-COM)
-      **                                 TO  WRK-FEDT-SRYCD
+                                       TO  WRK-FEDT-SRYCD
            INITIALIZE                      TNS-TENSU-REC
            MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)
                                        TO  TNS-SRYCD
-      **   MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDX-COM)
-      **                               TO  TNS-SRYCD
            PERFORM 900-TENSU-READ-SEC
            MOVE    TNS-NAME            TO  WRK-FEDT-NAME
            MOVE    2                   TO  WRK-FEDT-KBNNUM-FLG
            IF      LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
-      **   IF      LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDX-COM)
                                        =   "97"
                MOVE    SPACE           TO  WRK-KBNNUM-EDIT
                MOVE    3               TO  WRK-FEDT-KBNNUM-FLG
@@ -5438,8 +4081,6 @@
            MOVE    LNK-DPCNYUIN-PTID      TO  RECE900-PTID
            MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
                                           TO  RECE900-SRYKBN
-      **   MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDX-COM)
-      **                                  TO  RECE900-SRYKBN
            PERFORM   900-RECE900-READ-SEC
            IF      FLG-RECE900         =   1
                MOVE    LNK-DPCNYUIN-HOSPNUM   TO  RECE900-HOSPNUM
@@ -5447,8 +4088,6 @@
                MOVE    LNK-DPCNYUIN-PTID      TO  RECE900-PTID
                MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
                                           TO  RECE900-SRYKBN
-      **       MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDX-COM)
-      **                                  TO  RECE900-SRYKBN
                MOVE    WRK-RENNUM  TO  RECE900-RENNUM
                WRITE      RECE900-REC
            ELSE
@@ -5468,16 +4107,12 @@
                                        TO  IDW
              MOVE  LNK-DPCNYUIN-TEN (IDZ1 IDZ2 IDW)
                                        TO  WRK-FEDT-ZAITEN
-             MOVE    SPACE           TO   RECE641-JIHOKBN
            ELSE
              MOVE  LNK-DPCNYUIN-TEN (IDZ1 IDZ2 IDXZ)
                                        TO  WRK-FEDT-ZAITEN
-             MOVE    SPACE           TO   RECE641-JIHOKBN
            END-IF
       *行為薬剤料
            MOVE    ZERO                TO  WRK-FEDT-YKZTEN
-      *持参薬区分
-           MOVE    SPACE               TO  WRK-FEDT-JISANYAKKBN
       *行為材料料
            MOVE    ZERO                TO  WRK-FEDT-KIZAITEN
       *円・点区分
@@ -5541,37 +4176,6 @@
            ELSE
                MOVE    "1"             TO  WRK-FEDT-BYOTOKBN
            END-IF
-      *平成２９年１０月以降の食事で同日再入院分の再セット
-           IF (LNK-DPCNYUIN-SANTEIYM >= "201710")  AND
-              (IDZ1   =   3  OR  4)   AND
-              (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 1)  =  "1")
-      *       レセプト科区分
-               MOVE    SPACE               TO  WRK-FEDT-RECESRYKA
-               PERFORM VARYING SYSKAN-IDX2 FROM  1  BY  1
-                 UNTIL   SYSKAN-IDX2 >   TBL-SRYKA-MAX
-                   IF    LNK-DPCNYUIN-SRYKA2(IDZ1 IDZ2)
-                                       =   TBL-SRYKA (SYSKAN-IDX2)
-                      MOVE    TBL-RECESRYKA (SYSKAN-IDX2)
-                                       TO  WRK-FEDT-RECESRYKA
-                     MOVE    TBL-SRYKA-MAX   TO  SYSKAN-IDX2
-                   END-IF
-               END-PERFORM
-      *        診療科区分
-               PERFORM 200721-SRYKAKBN-HENSYU-SEC
-      *        医師コード
-               MOVE    LNK-DPCNYUIN-DRCD2 (IDZ1 IDZ2)
-                                       TO  WRK-FEDT-DRCD
-      *        病棟コード
-               MOVE    LNK-DPCNYUIN-BTUNUM2 (IDZ1 IDZ2)
-                                       TO  WRK-FEDT-BYOTOCD
-      *        病棟区分
-               IF      LNK-DPCNYUIN-BTUKBN2 (IDZ1 IDZ2)
-                                           =   "01"
-                   MOVE    "0"             TO  WRK-FEDT-BYOTOKBN
-               ELSE
-                   MOVE    "1"             TO  WRK-FEDT-BYOTOKBN
-               END-IF
-           END-IF
       *入外区分
            MOVE    RECE62-NYUGAIKBN   TO  WRK-FEDT-NYUGAIKBN
       *行為点数から施設タイプまで
@@ -5595,18 +4199,11 @@
            PERFORM 900-TENSU-READ-SEC
            MOVE    TNS-NAME            TO  WRK-FEDT-NAME
            MOVE    2                   TO  WRK-FEDT-KBNNUM-FLG
-           IF      LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
-                                       =   "97"
-               MOVE    SPACE           TO  WRK-KBNNUM-EDIT
+      **** IF      LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+      ****                             =   "97"
+      ****     MOVE    SPACE           TO  WRK-KBNNUM-EDIT
                MOVE    3               TO  WRK-FEDT-KBNNUM-FLG
-           END-IF
-      *AZU-ADD START 2016.8.1
-      *医療区分、ＡＤＬ点数コメントは解釈番号をセットしない
-           IF      LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)(1:1)  =  "8"
-               MOVE    SPACE           TO  WRK-KBNNUM-EDIT
-               MOVE    3               TO  WRK-FEDT-KBNNUM-FLG
-           END-IF
-      *AZU-ADD END   2016.8.1
+      **** END-IF
       *退院年月日から順序番号まで
            PERFORM 200799-ZAI-HENSYU-1-SEC
       *行為明細番号から診療行為名称まで
@@ -5628,19 +4225,7 @@
                                        +   0.5
            ELSE
             IF     TNS-TENSIKIBETU     =   6
-      **        MOVE WRK-FEDT-ZAITEN     TO  WRK-FEDT-MEISAI-TEN
-      *       ％減算は行為明細点数にゼロをセットするよう修正
-      *       （但し、平成２７年３月迄の外泊コードは１明細での記録の為、
-      *         剤点セットのままとする）
-              IF   (LNK-DPCNYUIN-SANTEIYM   <=  "201503")   AND
-                   (TNS-SRYCD                =  "190107290" OR
-                                                "190107390" OR
-                                                "190107490" OR
-                                                "190107590")
-                 MOVE WRK-FEDT-ZAITEN  TO  WRK-FEDT-MEISAI-TEN
-              ELSE
-                  MOVE ZERO            TO  WRK-FEDT-MEISAI-TEN
-              END-IF
+              MOVE WRK-FEDT-ZAITEN     TO  WRK-FEDT-MEISAI-TEN
             ELSE
              IF    TNS-SRYKBN          =   "97"
                IF  WRK-FEDT-SRYSURYO   =   ZERO
@@ -5674,19 +4259,13 @@
            MOVE    ZERO                TO  WRK-FEDT-DEKIDAKA-SUB
            MOVE    WRK-FEDT-MEISAI-TEN TO  WRK-FEDT-DEKIDAKA-TEN
            IF      TNS-TENSIKIBETU     =  6
-      *        平成２７年３月迄の外泊は対象外
-               IF  (LNK-DPCNYUIN-SANTEIYM   <=  "201503")  AND
-                   (TNS-SRYCD           = "190107290" OR
-                                          "190107390" OR
-                                          "190107490" OR
-                                          "190107590")
+      *                              外泊の場合は対象外
+               IF  TNS-SRYCD           = "190107290" OR
+                                         "190107390" OR
+                                         "190107490" OR
+                                         "190107590"
                    CONTINUE
                ELSE
-      *AZU-ADD START 2015.6.10
-                   IF   LNK-DPCNYUIN-SENTEI-GAIHAKU(IDZ1 IDZ2 IDXZ) = 1
-                       MOVE    100     TO  TNS-TEN
-                   END-IF
-      *AZU-ADD END 2015.6.10
                    MOVE    1           TO  WRK-FEDT-DEKIDAKA-SUB
                    COMPUTE WRK-FEDT-DEKIDAKA-TEN
                                        =  (WRK-FEDT-PREV-TEN
@@ -5706,59 +4285,9 @@
                                            "190182690"
                MOVE    -40             TO  WRK-FEDT-DEKIDAKA-TEN
            END-IF
-      *
-      *    医療観察の減点記録
-           EVALUATE    TNS-SRYCD
-      *        未基準減算（病棟に掛かる基準を満たさない場合）
-               WHEN    "188000270"
-                   MOVE    -88         TO  WRK-FEDT-DEKIDAKA-TEN
-      *        未適合減算（入院決定日から９１日以上１年以内）
-               WHEN    "188000370"
-                   MOVE    -1170       TO  WRK-FEDT-DEKIDAKA-TEN
-      *        未適合減算（入院決定日から１年超）
-               WHEN    "188000470"
-                   MOVE    -1760       TO  WRK-FEDT-DEKIDAKA-TEN
-      *        観察回復期減算（算定開始日から２７１日以上）
-               WHEN    "188006570"
-                   IF    LNK-DPCNYUIN-SANTEIYM  <=  "201603"
-                      MOVE    -100     TO  WRK-FEDT-DEKIDAKA-TEN
-                   ELSE
-                      MOVE    -120     TO  WRK-FEDT-DEKIDAKA-TEN
-                   END-IF
-      *        観察回復期減算（算定開始日から１年９０日超）
-               WHEN    "188010170"
-                   MOVE    -220        TO  WRK-FEDT-DEKIDAKA-TEN
-      *        観察社会復帰期減算（算定開始日から１８１日以上１年以内）
-               WHEN    "188000770"
-                   MOVE    -310        TO  WRK-FEDT-DEKIDAKA-TEN
-      *        観察社会復帰期減算（算定開始日から１年超１年１８０日以内）
-               WHEN    "188000870"
-                   MOVE    -900        TO  WRK-FEDT-DEKIDAKA-TEN
-      *        観察社会復帰期減算（算定開始日から１８０超）
-               WHEN    "188005870"
-                   MOVE    -1400       TO  WRK-FEDT-DEKIDAKA-TEN
-      *        未経過減算（算定開始日から１年超、退院許可の申立て１８０日以内）
-               WHEN    "188000970"
-                   MOVE    -310        TO  WRK-FEDT-DEKIDAKA-TEN
-      *        未経過減算（算定開始日から１年１８０日超、退院許可申立１８０日以内）
-               WHEN    "188005970"
-                   MOVE    -900        TO  WRK-FEDT-DEKIDAKA-TEN
-      *        観察社会復帰期減算（開始から１８０日以内・遠隔地加算）
-               WHEN    "188009170"
-                   MOVE    -1400       TO  WRK-FEDT-DEKIDAKA-TEN
-      *        観察社会復帰期減算（開始から１年超１年１８０日超・遠隔地加算）
-               WHEN    "188009270"
-                   MOVE    -1900       TO  WRK-FEDT-DEKIDAKA-TEN
-           END-EVALUATE
       *出来高・包括フラグ
       * 2014.5 MOVE    "0"                 TO  WRK-FEDT-HOUKATU-FLG
-      *---AZU-MOD START 2016.07.04
-           IF     RECE641-SRYYM     <   201604
-                MOVE    TNS-DPCKBN  TO  WRK-FEDT-HOUKATU-FLG
-           ELSE
-                MOVE    TNS-DPCKBN  TO  WRK-FEDT-KOUI-MEISAI5
-           END-IF
-      *---AZU-MOD START 2016.07.04
+           MOVE    TNS-DPCKBN          TO  WRK-FEDT-HOUKATU-FLG
       **   SET     TBL-DPCDEKIDAKA-IDX TO  1
       **   SEARCH  TBL-DPCDEKIDAKA-OCC
       **                       VARYING TBL-DPCDEKIDAKA-IDX
@@ -5787,8 +4316,6 @@
            MOVE    ZERO                TO  FLG-DAYSET
            MOVE    RECE62-SRYYM        TO  WRK-EDYM
            MOVE    WRK-FEDT-DD         TO  WRK-EDDD
-           MOVE    SPACE               TO  WRK-FEDT-NYUINYMD
-                                           WRK-FEDT-TAIINYMD
            PERFORM VARYING IDW         FROM    1  BY  1
                    UNTIL  (IDW         >   10)
                       OR  (WRK-NYUIN-RIREKI-NYUINYMD (IDW)
@@ -5800,33 +4327,6 @@
                                        <=  WRK-EDYMD
               AND  WRK-NYUIN-RIREKI-TAIINYMD (IDW)
                                        >=  WRK-EDYMD
-      *同日再入院日の診療行為は次の入院履歴に変更する
-             IF (RECE62-PTID       =    RECE641-PTID)    AND
-                (RECE641-SRYSYUKBN   NOT =  SPACE)       AND
-                (RECE641-SRYSYUKBN   NOT =  "900")       AND
-                (RECE641-SRYSYUKBN   NOT =  "920")       AND
-                (RECE641-SRYSYUKBN   NOT =  "970")       AND
-                (RECE641-KAISU(1 WRK-EDDD)   NOT =  ZERO)  AND
-                (RECE641-KAISU(1 WRK-EDDD) = RECE641-KAISU(3 WRK-EDDD))
-                  IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE
-                      ADD    1     TO   IDW
-                  END-IF
-             END-IF
-      *同日再入院日の再入院時に算定した食事は次の入院履歴に変更する
-      **       DISPLAY "LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ) = "
-      **                LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)
-      **       DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ) = "
-      **                LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ)
-      **       DISPLAY "RECE641-SRYSYUKBN = " RECE641-SRYSYUKBN
-             IF (IDZ1              =    3  OR  4)        AND
-                (RECE62-PTID       =    RECE641-PTID)    AND
-                (LNK-DPCNYUIN-SANTEIYM  >=  "201710")    AND
-                (LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)(1:3) = "197")  AND
-                (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 1)  =  "1")
-                  IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE
-                      ADD    1     TO   IDW
-                  END-IF
-             END-IF
       *退院年月日
                IF (WRK-NYUIN-RIREKI-TAIINYMD (IDW)
                                        =   "99999999")  OR
@@ -5909,14 +4409,6 @@
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *順序番号
-      *AZU-ADD START 2015.6.10
-           IF    (RECE62-SRYYM <=     "201703")  AND
-                 (IDZ1        =       2)      AND
-                 (IDZ2        NOT =   ZERO)   AND
-                 (WRK-RENNUM  NOT =   ZERO)
-               MOVE  WRK-RENNUM        TO  WRK-TAIHI-RENNUM(IDZ2)
-           END-IF
-      *AZU-ADD END 2015.6.10
            MOVE    WRK-RENNUM          TO  WRK-DATA
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -5932,12 +4424,6 @@
       *行為明細番号（Ｆレコードのみ）
            IF      WRK-FEDT-REC-FLG    =   "F"
              ADD   1                   TO  WRK-MEISAI-RENNUM
-      *AZU-ADD START 2015.6.10
-             IF    IDZ1      =   2
-                 MOVE  WRK-MEISAI-RENNUM
-                                       TO  WRK-TAIHI-MEISAI-RENNUM(IDZ1)
-             END-IF
-      *AZU-ADD END 2015.6.10
              MOVE  WRK-MEISAI-RENNUM   TO  WRK-DATA
              MOVE  3                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
@@ -5999,13 +4485,6 @@
            ELSE
                MOVE    WRK-FEDT-ZAITEN TO  WRK-TENSU
            END-IF
-      *--- AZU-ADD START 2016.08.23
-      *    持参薬は行為点数にゼロをセット
-           IF    WRK-FEDT-JISANYAKKBN  = "1" OR "2" OR "3" OR "4" OR
-                                         "5" OR "6" OR "7" OR "8"
-                 MOVE     ZERO         TO  WRK-TENSU
-           END-IF
-      *--- AZU-ADD END 2016.08.23
            MOVE    WRK-TENSU           TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -6015,13 +4494,6 @@
            ELSE
                MOVE    WRK-FEDT-YKZTEN TO  WRK-TENSU
            END-IF
-      *--- AZU-ADD START 2016.08.23
-      *    持参薬は行為薬剤料にゼロをセット
-           IF    WRK-FEDT-JISANYAKKBN =  "1" OR "2" OR "3" OR "4" OR
-                                         "5" OR "6" OR "7" OR "8"
-                 MOVE     ZERO         TO  WRK-TENSU
-           END-IF
-      *--- AZU-ADD END 2016.08.23
            MOVE    WRK-TENSU           TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -6104,12 +4576,6 @@
              MOVE  ZERO                TO  WRK-NUM
            ELSE
              MOVE  WRK-FEDT-SRYSURYO   TO  WRK-SRYSURYO
-      *--- AZU-ADD START 2016.08.23
-      *      持参薬で使用量不明はゼロをセット
-             IF    WRK-FEDT-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
-                 MOVE     ZERO         TO  WRK-SRYSURYO
-             END-IF
-      *--- AZU-ADD END 2016.08.23
              MOVE  WRK-SRYSURYO        TO  WRK-NUM
            END-IF
            MOVE    11                  TO  WRK-NAGASA
@@ -6144,13 +4610,6 @@
                    MOVE    ZERO        TO  WRK-FEDT-DEKIDAKA-TEN
                 END-IF
            END-IF
-      *
-      *--- AZU-ADD START 2016.08.23
-      *    持参薬で使用量不明はゼロをセット
-           IF    WRK-FEDT-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
-               MOVE     ZERO         TO  WRK-FEDT-DEKIDAKA-TEN
-           END-IF
-      *--- AZU-ADD END 2016.08.23
            MOVE    WRK-FEDT-DEKIDAKA-TEN
                                        TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
@@ -6162,82 +4621,12 @@
            ELSE
                PERFORM 5005-NUM-HENSYU-SEC
            END-IF
-      *
-      *--- AZU-MOD START 2016.07.04
-           IF     RECE641-SRYYM     <   201604
-      *        出来高・包括フラグ
-      *         DISPLAY "HOUKATU-FLG SET"
-               MOVE    WRK-FEDT-HOUKATU-FLG
-                                           TO  WRK-DATA
-               MOVE    1                   TO  WRK-NAGASA
-               MOVE    1                   TO  WRK-END
-               PERFORM 5004-MOJI-HENSYU-SEC
-           ELSE
-      *        行為・明細区分情報
-      *         DISPLAY "KOUI-MEISAI SET"
-               IF     (WRK-FEDT-HOUKATU-FLG   =   "6")  AND
-                      (RECE641-JIHOKBN        =   "1")
-                  IF   WRK-HOUKATU-KBN(WRK-FEDT-DD)   =   "1"
-                     MOVE    1             TO  WRK-FEDT-KOUI-MEISAI2
-                  END-IF
-                  IF   WRK-HOUKATU-KBN(WRK-FEDT-DD)   =   "2"
-                     MOVE    2             TO  WRK-FEDT-KOUI-MEISAI2
-                  END-IF
-               ELSE
-                  MOVE    ZERO             TO  WRK-FEDT-KOUI-MEISAI2
-                  IF   WRK-TAIIN-SHOHOU    =    "1"
-                     MOVE    1             TO  WRK-FEDT-KOUI-MEISAI1
-                  END-IF
-               END-IF
-      *--- AZU-ADD START 2016.08.23
-      *        持参薬区分
-               IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "2" OR
-                                                     "3" OR "4" OR
-                                                     "5" OR "6" OR
-                                                     "7" OR "8"
-                  IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "2" OR
-                                                        "5" OR "6"
-                     MOVE    1             TO  WRK-FEDT-KOUI-MEISAI3
-                  END-IF
-                  IF     WRK-FEDT-JISANYAKKBN       =   "3" OR "4" OR
-                                                        "7" OR "8"
-                     MOVE    2             TO  WRK-FEDT-KOUI-MEISAI3
-                  END-IF
-               ELSE
-                  MOVE   ZERO              TO  WRK-FEDT-KOUI-MEISAI3
-               END-IF
-      *        持参薬処方区分
-               IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "2" OR
-                                                     "3" OR "4" OR
-                                                     "5" OR "6" OR
-                                                     "7" OR "8"
-                  IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "3" OR
-                                                        "5" OR "7"
-                     MOVE    1             TO  WRK-FEDT-KOUI-MEISAI4
-                  END-IF
-                  IF     WRK-FEDT-JISANYAKKBN       =   "2" OR "4" OR
-                                                        "6" OR "8"
-                     MOVE    2             TO  WRK-FEDT-KOUI-MEISAI4
-                  END-IF
-               ELSE
-                  MOVE   ZERO              TO  WRK-FEDT-KOUI-MEISAI4
-               END-IF
-      *--- AZU-ADD END   2016.08.23
-               MOVE    ZERO                TO  WRK-FEDT-KOUI-MEISAI6
-                                               WRK-FEDT-KOUI-MEISAI7
-                                               WRK-FEDT-KOUI-MEISAI8
-                                               WRK-FEDT-KOUI-MEISAI9
-                                               WRK-FEDT-KOUI-MEISAI10
-                                               WRK-FEDT-KOUI-MEISAI11
-                                               WRK-FEDT-KOUI-MEISAI12
-               MOVE    WRK-FEDT-KOUI-MEISAI
-                                           TO  WRK-DATA
-               MOVE    12                  TO  WRK-NAGASA
-               MOVE    1                   TO  WRK-END
-               PERFORM 5004-MOJI-HENSYU-SEC
-               MOVE    "000000000000"      TO  WRK-FEDT-KOUI-MEISAI
-           END-IF
-      *--- AZU-MOD END   2016.07.04
+      *出来高・包括フラグ
+           MOVE    WRK-FEDT-HOUKATU-FLG
+                                       TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END
+           PERFORM 5004-MOJI-HENSYU-SEC
            .
        200799-ZAI-HENSYU-F-EXT.
            EXIT.
@@ -6315,7 +4704,7 @@
                   (WRK-KZM-TEN2        >   ZERO )
                MOVE    WRK-KZM-TEN2    TO  WRK-FEDT-DEKIDAKA-TEN
            ELSE
-               COMPUTE    WRK-FEDT-DEKIDAKA-TEN   =  TNS-TEN  + 0.5
+               MOVE    TNS-TEN         TO  WRK-FEDT-DEKIDAKA-TEN
            END-IF
            .
        200799-KZM-DEKIDAKA-EXT.
@@ -6477,36 +4866,6 @@
            MOVE    WRK-RENNUM-E        TO  RECEDEN-RENNUM
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
       *
-      *    包括分判定用
-           MOVE    WRK-FEDT-SRYKBN     TO  RECEDEN-SJKBN
-           MOVE    WRK-FEDT-YMD (5:4)  TO  WRK-TOTALTEN-X (1:4)
-           MOVE    WRK-RENNUM          TO  WRK-TOTALTEN-X (5:4)
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    WRK-TOTALTEN        TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-           IF    ( SNUM-RC             =   ZERO  )
-           AND   ( SNUM-MINKBN         =   SPACE )
-           AND   ( SNUM-SYOKBN         =   SPACE )
-               MOVE    SNUM-OUTNUM         TO  RECEDEN-TOTALTEN
-           ELSE
-               DISPLAY "WRK-TOTALTEN-X=" WRK-TOTALTEN-X
-      *
-               STRING   "データの作成ができませんでした　患者番号＝"
-                                       DELIMITED  BY  SIZE
-                        RECE62-PTNUM   DELIMITED  BY  SIZE
-                                       INTO  WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               STRING  "ORCRDPC10 "    DELIMITED   BY  SIZE
-                       WRK-RECEERR     DELIMITED   BY  SPACE
-                       LOW-VALUE       DELIMITED   BY  SIZE
-                                       INTO    WRK-ERRMSG
-               END-STRING
-               PERFORM 500-COBABORT-SEC
-           END-IF
-      *
-      *
            PERFORM 50012-DBINSERT-SEC
       *
            ADD     1                   TO  CNT-OUT-E
@@ -6534,35 +4893,6 @@
            MOVE    "F"                 TO  RECEDEN-RECKBN
            MOVE    WRK-RENNUM-F        TO  RECEDEN-RENNUM
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
-      *
-      *    包括分判定用
-           MOVE    WRK-FEDT-SRYKBN     TO  RECEDEN-SJKBN
-           MOVE    WRK-FEDT-YMD (5:4)  TO  WRK-TOTALTEN-X (1:4)
-           MOVE    WRK-RENNUM          TO  WRK-TOTALTEN-X (5:4)
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    WRK-TOTALTEN        TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-           IF    ( SNUM-RC             =   ZERO  )
-           AND   ( SNUM-MINKBN         =   SPACE )
-           AND   ( SNUM-SYOKBN         =   SPACE )
-               MOVE    SNUM-OUTNUM         TO  RECEDEN-TOTALTEN
-           ELSE
-               DISPLAY "WRK-TOTALTEN-X=" WRK-TOTALTEN-X
-      *
-               STRING   "データの作成ができませんでした　患者番号＝"
-                                       DELIMITED  BY  SIZE
-                        RECE62-PTNUM   DELIMITED  BY  SIZE
-                                       INTO  WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               STRING  "ORCRDPC10 "    DELIMITED   BY  SIZE
-                       WRK-RECEERR     DELIMITED   BY  SPACE
-                       LOW-VALUE       DELIMITED   BY  SIZE
-                                       INTO    WRK-ERRMSG
-               END-STRING
-               PERFORM 500-COBABORT-SEC
-           END-IF
       *
            PERFORM 50012-DBINSERT-SEC
       *
@@ -7025,36 +5355,10 @@
                                    AND ( SYS-2009-SYUKA-SYAHO  = "1" ) )
                              OR  (     ( RECE62-TEISYUTUSAKI   = "2" )
                                    AND ( SYS-2009-SYUKA-KOKUHO = "1" ) )
-                             OR  (     ( RECE62-TEISYUTUSAKI   = "6" )
-                                   AND ( SYS-2009-SYUKA-KOUIKI = "1" ) )
-                                 STRING   "主科未設定　患者番号＝"
-                                                   DELIMITED  BY  SIZE
-                                           RECE62-PTNUM
-                                                   DELIMITED  BY  SIZE
-                                                   INTO  WRK-RECEERR
-                                 END-STRING
-                                 PERFORM 500-ERR-HENSYU-SEC
-                                 STRING  "ORCRDPC10 "
-                                                   DELIMITED   BY  SIZE
-                                         WRK-RECEERR
-                                                   DELIMITED   BY  SPACE
-                                         LOW-VALUE DELIMITED   BY  SIZE
-                                                   INTO    WRK-ERRMSG
-                                 END-STRING
-                                 PERFORM 500-COBABORT-SEC
+                               MOVE    2               TO  FLG-READ
                              END-IF
                            END-IF
                        END-IF
-      *
-      *                公費のみのレセプト出力可否のとき対象としない
-                       IF      FLG-READ            =   ZERO
-                           IF    ( SYS-9102-KOH-RECEIPT
-                                                       =   "1"  )
-                           AND   ( RECE62-RECESYUBETU (1:2)
-                                                       =   "12" )
-                               MOVE    2               TO  FLG-READ
-                           END-IF
-                       END-IF 
       *
                        IF      FLG-READ            =   ZERO
       *                    医療機関情報取得
@@ -7081,7 +5385,6 @@
       *
                            DISPLAY "RECE62  PTNUM = " RECE62-PTNUM
                                    "  PTID = " RECE62-PTID
-                                   "  RECESYUBETU = " RECE62-RECESYUBETU
                                    "  KEY = " RECE62-KEY
                        ELSE
                            MOVE    ZERO        TO  FLG-READ
@@ -7132,15 +5435,7 @@
                    MOVE    1         TO  FLG-RECE64
                NOT AT  END
                    IF      STS-RECE64          =   "00"
-      *--- AZU-ADD START 2016.08.23
-      *                持参薬の時は、自保区分をクリアする
-                       IF   (RECE641-SRYKBN  =  "21" OR "22" OR "23" OR
-                                                "14")   AND
-                            (RECE641-JIHOKBN =  "1")    AND
-                            (RECE641-ZAIKBN  =   3  OR  4)
-                            MOVE    SPACE    TO   RECE641-JIHOKBN
-                       END-IF
-      *--- AZU-ADD END   2016.08.23
+                       CONTINUE
                    ELSE
                        MOVE    SPACE               TO  WRK-ERR-AREA
                        INITIALIZE                      WRK-ERR-AREA
@@ -7308,11 +5603,6 @@
                END-IF
            END-PERFORM
       *
-      *    AZU-ADD START 2015.7.6
-               MOVE    1              TO  FLG-TOKUTEINYUIN
-      *    AZU-ADD END   2015.7.6
-      *
-      *
            IF      FLG-TOKUTEINYUIN    =   1
                    PERFORM 9999-HOUKATU-SAKUSEI-SEC
            END-IF
@@ -7443,7 +5733,7 @@
              MOVE    RECE62-SRYYM        TO  ACCT-SRYYM
              MOVE    RECE62-NYUGAIKBN    TO  ACCT-NYUGAIKBN
              MOVE    RECE62-PTID         TO  ACCT-PTID
-      *       DISPLAY "RECE62-SRYKA = " RECE62-SRYKA(IDX-HOUKATU)
+             DISPLAY "RECE62-SRYKA = " RECE62-SRYKA(IDX-HOUKATU)
              MOVE    RECE62-SRYKA(IDX-HOUKATU)
                                          TO  ACCT-SRYKA
              MOVE    9999                TO  ACCT-HKNCOMBI
@@ -7484,7 +5774,7 @@
       *
            PERFORM VARYING IJ  FROM  1  BY  1
                    UNTIL   IJ  >  31
-               IF      RECE62-EF-NYUINDAY-KBN(IJ)    =   SPACE
+               IF      RECE62-JNISSUTBL(IJ)    =   SPACE
                    COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
                                                -   ACCT-DAY(1 IJ)
                    MOVE    ZERO                TO  ACCT-DAY(1 IJ)
@@ -7493,89 +5783,6 @@
            IF      ACCT-ZAIKAISU       =   ZERO
                    GO      TO        9999-SRYACCT-HENSYU-EXT
            END-IF
-      *
-      *--- AZU-ADD START 2016.07.07
-      *    入院料の包括対象か判定
-      *    診療行為データ読み込み
-           INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  SRY-PTID
-           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryact"    TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-SRYACT-READ-SEC
-               IF      FLG-SRYACT      =   ZERO
-      **             DISPLAY "SRY-SRYCD(1)(1:1) = " SRY-SRYCD(1)
-                   IF   SRY-SRYCD(1)(1:1)   =    "1"
-                      PERFORM    VARYING   IDX  FROM 1  BY  1
-                        UNTIL     IDX  >  31
-      **                     DISPLAY "IDX = " IDX
-      **                     DISPLAY "WRK-ETENSU1-H-GROUP1= "
-      **                             WRK-ETENSU1-H-GROUP1(IDX)
-                           IF   WRK-ETENSU1-H-GROUP1(IDX)  NOT =  SPACE
-                              MOVE    SPACE           TO  ETENSU2-REC
-                              INITIALIZE                  ETENSU2-REC
-                              MOVE    WRK-ETENSU1-H-GROUP1(IDX)
-                                            TO  ETENSU2-H-GROUP
-                              MOVE    SRY-SRYCD(1)
-                                            TO  ETENSU2-SRYCD
-                              MOVE    SRY-SRYYM
-                                            TO  ETENSU2-YUKOSTYMD(1:6)
-                              MOVE    "01"  TO  ETENSU2-YUKOSTYMD(7:2)
-                              MOVE    ETENSU2-YUKOSTYMD
-                                            TO  ETENSU2-YUKOEDYMD
-                              MOVE    ETENSU2-REC
-                                            TO  MCPDATA-REC
-                              MOVE    "tbl_etensu_2"
-                                            TO  MCP-TABLE
-                              MOVE    "key" TO  MCP-PATHNAME
-                              PERFORM 900-DBSELECT-SEC
-                              IF      MCP-RC              =   ZERO
-                                 MOVE    "tbl_etensu_2" TO  MCP-TABLE
-                                 MOVE    "key"          TO  MCP-PATHNAME
-                                 PERFORM 900-ETENSU2-READ-SEC
-                                 IF   FLG-ETENSU2        =   ZERO
-                                     CONTINUE
-                                 ELSE
-                                     MOVE   ZERO  TO   ACCT-DAY(1 IDX)
-                                 END-IF
-                              ELSE
-                                 MOVE    1      TO  FLG-ETENSU2
-                                 INITIALIZE         ETENSU2-REC
-                              END-IF
-                              MOVE    "tbl_etensu_2"  TO  MCP-TABLE
-                              MOVE    "key"           TO  MCP-PATHNAME
-                              PERFORM 900-CLOSE-SEC
-                           END-IF
-                      END-PERFORM
-                   END-IF
-               END-IF
-           END-IF
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           MOVE    ZERO       TO   ACCT-ZAIKAISU
-           PERFORM VARYING IJ  FROM  1  BY  1
-                   UNTIL   IJ  >  31
-               IF      ACCT-DAY(1 IJ)   NOT =  ZERO
-                   COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
-                                               +   ACCT-DAY(1 IJ)
-               END-IF
-           END-PERFORM
-           IF      ACCT-ZAIKAISU       =   ZERO
-                   GO      TO        9999-SRYACCT-HENSYU-EXT
-           END-IF
-      *--- AZU-ADD END   2016.07.07
       *
            MOVE    ZERO                TO  FLG-HOUKATU-RECE04
       *
@@ -7938,140 +6145,6 @@
        900-SRYACT-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    補助マスターＲＥＡＤ
-      *****************************************************************
-       900-ETENSU1-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  ETENSU1-REC
-               MOVE    ZERO            TO  FLG-ETENSU1
-           ELSE
-               INITIALIZE                  ETENSU1-REC
-               MOVE    1               TO  FLG-ETENSU1
-           END-IF
-           .
-       900-ETENSU1-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    包括・被包括マスターＲＥＡＤ
-      *****************************************************************
-       900-ETENSU2-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  ETENSU2-REC
-               MOVE    ZERO            TO  FLG-ETENSU2
-           ELSE
-               INITIALIZE                  ETENSU2-REC
-               MOVE    1               TO  FLG-ETENSU2
-           END-IF
-           .
-       900-ETENSU2-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院会計マスター検索
-      *****************************************************************
-       910-NYUINACCT-SELECT-SEC        SECTION.
-      *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-NYUINACCT
-           ELSE
-               MOVE    1                  TO  FLG-NYUINACCT
-           END-IF
-      *
-           .
-       910-NYUINACCT-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院会計マスター読込
-      *****************************************************************
-       910-NYUINACCT-READ-SEC        SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  NYUINACCT-REC
-               MOVE    ZERO               TO  FLG-NYUINACCT
-           ELSE
-               INITIALIZE                     NYUINACCT-REC
-               MOVE    1                  TO  FLG-NYUINACCT
-           END-IF
-      *
-           .
-       910-NYUINACCT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院診療行為取得
-      *****************************************************************
-       210-NYUINACT-GET-SEC            SECTION.
-      *
-           INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPNUM       TO  NSRY-HOSPNUM
-           MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
-           MOVE    NACCT-PTID          TO  NSRY-PTID
-           MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
-           MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
-           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-NYUINACT-SELECT-SEC
-           IF      FLG-NYUINACT        =   ZERO
-               MOVE    "tbl_nyuinact"  TO  MCP-TABLE
-               MOVE    "key9"          TO  MCP-PATHNAME
-               PERFORM   910-NYUINACT-READ-SEC
-           END-IF
-      *
-      *    入院行為クローズ
-           MOVE     "tbl_nyuinact"     TO  MCP-TABLE
-           MOVE     "key9"             TO  MCP-PATHNAME
-           PERFORM   900-CLOSE-SEC
-      *
-           .
-       210-NYUINACT-GET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院診療行為マスター検索
-      *****************************************************************
-       910-NYUINACT-SELECT-SEC        SECTION.
-      *
-           MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-NYUINACT
-           ELSE
-               MOVE    1                  TO  FLG-NYUINACT
-           END-IF
-      *
-           .
-       910-NYUINACT-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院診療行為マスター読込
-      *****************************************************************
-       910-NYUINACT-READ-SEC         SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  NYUINACT-REC
-               MOVE    ZERO                TO  FLG-NYUINACT
-           ELSE
-               INITIALIZE                      NYUINACT-REC
-               MOVE    1                   TO  FLG-NYUINACT
-           END-IF
-      *
-           .
-       910-NYUINACT-READ-EXT.
-           EXIT.
       *
       *****************************************************************
       *    テーブルクローズ処理
