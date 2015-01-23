@@ -13,7 +13,6 @@ MUID.glade	orca00	(MUID)収集データアップロードユーザ設定
 MDAS.glade	orca00	(MDAS)参加同意
 MLOG.glade	orca00	(MLOG)ログインユーザ一覧
 MINF.glade	orca00	(MINF)ＯＲＣＡサーベイランス閲覧画面
-print	orca00
 
 XA01.glade	orca01	(XA01)再印刷選択画面
 XA02.glade	orca01	(XA02)再印刷選択画面（オンライン）
@@ -45,7 +44,6 @@ XF01X.glade	orca06	(XF01X)メモＣＬＡＩＭ送信選択サブ
 XG01.glade	orca07	(XG01)ＣＳＶ出力選択画面
 XG02.glade	orca07	(XG02)ＣＳＶ出力指示画面
 XG03.glade	orca07	(XG03)電子版お薬手帳データ送信画面
-XG04.glade	orca07	(XG04)ＣＳＶ出力選択画面
 XG99.glade	orca07	(XG99)処理結果
 XGERR.glade	orca07	(XGERR)エラー情報
 XGID1.glade	orca07	(XGID1)確認画面
@@ -92,7 +90,6 @@ Q02A.glade	orca13	(Q02A)患者照会−検索結果（点数情報）
 Q02B.glade	orca13	(Q02B)患者照会−検索結果（診療行為情報）
 Q03.glade	orca13	(Q03)他業務連携確認
 Q04.glade	orca13	(Q04)検索条件登録
-Q05.glade	orca13	(Q05)条件並び順変更画面
 Q96.glade	orca13	(Q96)診療行為一覧選択
 Q97.glade	orca13	(Q97)処理結果
 Q98.glade	orca13	(Q98)住所検索
@@ -114,7 +111,6 @@ appointmodv2	orca14
 
 U01.glade	orca18	(U01)受付一覧
 U012.glade	orca18	(U012)受付一覧−選択一覧
-UDR.glade	orca18	(UDR)診療科担当医選択
 U1ERR.glade	orca18	(U1ERR)エラー情報
 U1ID1.glade	orca18	(U1ID1)確認画面
 
@@ -126,8 +122,6 @@ K02.glade	orca21	(K02)診療行為入力−診療行為入力
 K02N.glade	orca21	(K02N)診療行為入力−入院診療行為入力
 K021.glade	orca21	(K021)診療行為−禁忌薬剤一覧
 K023.glade	orca21	(K023)診療行為−入力コード設定
-K024.glade	orca21	(K024)診療行為入力−電子お薬手帳連携
-K0241.glade	orca21	(K0241)診療行為入力−電子お薬手帳連携未設定一覧
 K03.glade	orca21	(K03)診療行為入力−請求確認
 K04.glade	orca21	(K04)診療行為入力−算定
 K05.glade	orca21	(K05)診療行為入力−行為セット入力
@@ -234,7 +228,6 @@ I49.glade	orca32	(I49)ｐカ入力
 I411.glade	orca32	(I411)入院会計照会−保険組合せ選択
 I4ERR.glade	orca32	(I4ERR)エラー情報
 I4ID1.glade	orca32	(I4ID1)確認画面
-I4ID2.glade	orca32	(I4ID2)確認画面
 
 O01.glade	orca33	(O01)患者請求−定期請求
 O02.glade	orca33	(O02)患者請求−個別指示
@@ -286,7 +279,6 @@ RID4.glade	orca42	(RID4)確認画面
 
 H01.glade	orca43	(H01)レセプト請求管理登録−手書き訂正入力
 H02.glade	orca43	(H02)返戻情報設定
-H03.glade	orca43	(H03)取込済み返戻データ一覧
 H99.glade	orca43	(H99)レセプト請求管理登録−レセプト検索
 HERR.glade	orca43	(HERR)エラー情報
 HID1.glade	orca43	(HID1)確認画面
@@ -358,7 +350,6 @@ W03.glade	orca101	(W03)システム管理情報−施設基準情報設定
 W04.glade	orca101	(W04)システム管理情報−患者番号構成管理設定
 W05.glade	orca101	(W05)システム管理情報−診療科目設定
 W06.glade	orca101	(W06)システム管理情報−職員情報設定
-W061.glade	orca101	(W061)職員登録−職員一覧
 W07.glade	orca101	(W07)システム管理情報−自動算定情報・チェック機能制御設定
 W08.glade	orca101	(W08)システム管理情報−レセプト種別情報設定
 W09.glade	orca101	(W09)システム管理情報−レセプト作成指示（印刷順）情報設定
@@ -370,8 +361,6 @@ W121.glade	orca101	(W121)編綴詳細設定
 W122.glade	orca101	(W122)公費記載設定
 W13.glade	orca101	(W13)システム管理情報−労災自賠医療機関情報設定
 W14.glade	orca101	(W14)システム管理情報−県単独情報設定
-W141.glade	orca101	(W141)レポジトリ登録
-W142.glade	orca101	(W142)レポジトリ一覧
 W15.glade	orca101	(W15)システム管理情報−県内扱い保険者情報
 W16.glade	orca101	(W16)システム管理情報−高額請求資料用薬剤分類情報設定
 W17.glade	orca101	(W17)システム管理情報−データチェック機能情報
@@ -394,7 +383,7 @@ W33.glade	orca101	(W33)システム管理情報−印刷情報削除設定
 W34.glade	orca101	(W34)システム管理情報−プログラムオプション設定
 W35.glade	orca101	(W35)システム管理情報−外来迅速検体検査設定
 W36.glade	orca101	(W36)システム管理情報−患者情報通知設定
-W37.glade	orca101	(W37)システム管理情報−短期滞在手術等基本料３情報
+W37.glade	orca101	(W37)システム管理情報−医療区分表示設定
 W60.glade	orca101	(W60)システム管理情報−データチェック機能情報２
 W61.glade	orca101	(W61)システム管理情報−レセプト特記事項編集情報設定
 W62.glade	orca101	(W62)印刷設定確認画面
@@ -406,7 +395,6 @@ W67.glade	orca101	(W67)システム管理情報−出産費用内訳明細情報
 W68.glade	orca101	(W68)システム管理情報−保険者付加情報
 W91.glade	orca101	(W91)システム管理情報−医療情報連携基盤情報
 W92.glade	orca101	(W92)システム管理情報−医療情報連携基盤情報
-W93.glade	orca101	(W93)システム管理情報−医療情報代理機関情報
 W96.glade	orca101	(W96)システム管理情報−CRON設定情報
 W98.glade	orca101	(W98)システム管理情報−排他情報設定
 W981.glade	orca101	(W981)システム管理情報−排他制御状態
@@ -424,7 +412,6 @@ Z05.glade	orca102	(Z05)点数マスタ設定−特定器材設定
 Z06.glade	orca102	(Z06)点数マスタ設定−用法コード設定
 Z07.glade	orca102	(Z07)自院コード期限切れ置換
 Z08.glade	orca102	(Z08)点数マスタ設定−器材商品名設定
-Z10.glade	orca102	(Z010)点数マスタ設定?ユーザ設定登録
 Z90.glade	orca102	(Z90)点数マスタ設定−老人一般コード振替設定
 Z91.glade	orca102	(Z91)点数マスター帳票出力設定
 Z97.glade	orca102	(Z97)処理結果
@@ -445,7 +432,6 @@ X04.glade	orca103	(X04)チェックマスタ設定−適用コード設定（病名）
 X05.glade	orca103	(X05)チェックマスタ設定−適用コード設定
 X06.glade	orca103	(X06)例外コード登録
 X07.glade	orca103	(X07)自院病名検索
-X08.glade	orca103	(X08)チェックマスタ設定−適用コード設定
 X91.glade	orca103	(X91)チェックマスタ−帳票出力設定
 X97.glade	orca103	(X97)処理結果
 X98.glade	orca103	(X98)診療行為一覧選択サブ
@@ -487,4 +473,3 @@ M96.glade	orca901	(M96)マスタ更新管理一覧
 M97.glade	orca901	(M97)プログラム更新管理一覧
 MMERR.glade	orca901	(MMERR)エラー情報
 MMID1.glade	orca901	(MMID1)確認画面
-MJOB.glade	orca901 (MJOB)バッチ処理ログ
