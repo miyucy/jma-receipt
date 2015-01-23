@@ -430,6 +430,7 @@
            OPEN    INPUT           ISAM-FILE
            IF  STS-ISAM        NOT =   ZERO
                MOVE    1           TO  FLG-ISAM
+               MOVE    1           TO  FLG-CHK
                DISPLAY "*(ORCVTPTBYOMEI)* ISAM-FILE OPN STS["
                                        STS-ISAM "]"
       *         労災ファイルがなくても処理続ける
