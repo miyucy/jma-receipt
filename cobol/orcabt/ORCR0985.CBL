@@ -34,6 +34,9 @@
       *                                     法の変更
       *                                     漢字モードの継続するスペース
       *                                     の記録方法の変更
+      *  04.07.03    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
+      *                                     を修正
+      *                                    （入院日と退院日が同じとき）
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
@@ -2241,8 +2244,10 @@
                    OR    ( RECE82-KEY   NOT =  RECE88-KEY1 )
       *
       *        再入院年月日か入院年月日
-               IF    ( RECE88-NYUINYMD     =   RECE82-NYUINYMD )
-               OR    ( WRK-NYUINCHUKBN     =   "1"             )
+               IF    (     RECE88-NYUINYMD =   RECE88-NYUINYMD
+                      AND  RECE88-NYUINYMD-SEQNO
+                                           =   0               )
+               OR    (     WRK-NYUINCHUKBN =   "1"             )
                    CONTINUE
                ELSE
                    MOVE    SPACE               TO  WRK-REC

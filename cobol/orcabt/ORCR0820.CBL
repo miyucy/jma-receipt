@@ -54,6 +54,9 @@
       *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
       *  04.07.04    NACL-門脇    14/05/08  労災レセ「新継再別」記載修正
       *  04.07.05    NACL-門脇    14/08/07  労災レセ「新継再別」記載修正
+      *  04.07.06    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
+      *                                     を修正
+      *                                    （入院日と退院日が同じとき）
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
@@ -718,6 +721,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE82-HKNID        TO  RECE88-HKNID
            MOVE    RECE82-TEKSTYMD     TO  RECE88-TEKSTYMD
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE88-NYUINYMD
+           IF      PTNYUINRRK-TAIINYMD =   "99999999"
+               MOVE    1                   TO  RECE88-NYUINYMD-SEQNO
+           ELSE
+               MOVE    ZERO                TO  RECE88-NYUINYMD-SEQNO
+           END-IF
            MOVE    RECE88-REC          TO  WRK-RECE88-REC          
            PERFORM 900-RECE88-READ-SEC
            IF      FLG-RECE88          =   1

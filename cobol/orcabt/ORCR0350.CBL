@@ -378,6 +378,9 @@
       *                                     の記録方法の変更
       *  04.07.09    NACL-藤原    14/09/24  全角の負担者番号、受給者番号の
       *                                     記録対応
+      *  04.07.10    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
+      *                                     を修正
+      *                                    （入院日と退院日が同じとき）
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/06/02  請求情報への更新日設定
@@ -4650,8 +4653,10 @@
                    OR    ( RECE62-KEY       NOT =  RECE68-KEY1         )
       *
       *        再入院年月日か入院年月日
-               IF    ( RECE68-NYUINYMD     =   RECE62-NYUINYMD )
-               OR    ( WRK-NYUINCHUKBN     =   "1"             )
+               IF    (     RECE68-NYUINYMD =   RECE62-NYUINYMD
+                      AND  RECE68-NYUINYMD-SEQNO
+                                           =   0               )
+               OR    (     WRK-NYUINCHUKBN =   "1"             )
                    CONTINUE
                ELSE
                    MOVE    SPACE               TO  WRK-REC
