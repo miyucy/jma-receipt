@@ -76,7 +76,7 @@ K02 {
         textdata varchar(16);
       };
       count int;
-        item varchar(16)[40];
+        item varchar(16)[99];
     };
     TABOOCOB {
       TABOO {

@@ -60,7 +60,7 @@
                 04  K02N-SRYKA.
                   05  K02N-VALUE  PIC X(16).
                 04  K02N-SRYKA-COUNT  PIC S9(9)   BINARY.
-                04  K02N-SRYKA-ITEM   PIC X(16)   OCCURS  40 TIMES.
+                04  K02N-SRYKA-ITEM   PIC X(16)   OCCURS  99 TIMES.
               03  K02N-TABOOCOB.
                 04  K02N-TABOO.
                   05  K02N-VALUE  PIC X(62).

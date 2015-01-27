@@ -29,8 +29,8 @@ K97 {
           item {
             column1 varchar(2);
             column2 varchar(12);
-          }[40];
-          selectdata bool[40];
+          }[99];
+          selectdata bool[99];
       };
     };
     scrolledwindow26 {

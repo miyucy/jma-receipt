@@ -21,11 +21,11 @@
                   05  K97-SRYKA-COUNT   PIC S9(9)   BINARY.
                   05  K97-SRYKA-ROW PIC S9(9)   BINARY.
                   05  K97-SRYKA-ROWATTR PIC S9(9)   BINARY.
-                  05  K97-SRYKA-ITEM        OCCURS  40 TIMES.
+                  05  K97-SRYKA-ITEM        OCCURS  99 TIMES.
                     06  K97-SRYKA   PIC X(2).
                     06  K97-SRYKAMEI PIC X(12).
                   05  K97-SRYKA-SELECT
-                          PIC X       OCCURS  40 TIMES.
+                          PIC X       OCCURS  99 TIMES.
               03  K97-SCROLLEDWINDOW26.
                 04  K97-HKNCOMBILST.
                   05  K97-HKNCOMBI-COUNT   PIC S9(9)   BINARY.

@@ -81,7 +81,7 @@
                   05  KT01-VALUE  PIC X(16).
                 04  KT01-SRYKA-COUNT  PIC S9(9)   BINARY.
                 04  KT01-SRYKA-ITEM
-                        PIC X(16)   OCCURS  40 TIMES.
+                        PIC X(16)   OCCURS  99 TIMES.
               03  KT01-DRNAME-COMB.
                 04  KT01-DRNAME.
                   05  KT01-VALUE  PIC X(29).

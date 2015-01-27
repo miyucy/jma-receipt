@@ -1777,7 +1777,7 @@
            END-IF
            MOVE    ZERO                TO  SPA-SRYKA-MAX
            PERFORM VARYING     IDX     FROM    2   BY  1
-                   UNTIL       (IDX            >   40   )  OR
+                   UNTIL       (IDX            >   100  )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
       *
