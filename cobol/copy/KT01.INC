@@ -52,7 +52,7 @@
                   05  KT01-VALUE  PIC X(65).
                 04  KT01-HKNCOMBI-COUNT  PIC S9(9)   BINARY.
                 04  KT01-HKNCOMBI-ITEM
-                        PIC X(65)   OCCURS  15 TIMES.
+                        PIC X(65)   OCCURS  30 TIMES.
               03  KT01-MODE.
                 04  KT01-VALUE  PIC X(10).
               03  KT01-SCROLLEDWINDOW2.

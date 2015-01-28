@@ -224,7 +224,7 @@ J02 {
         textdata varchar(65);
       };
       count int;
-        item varchar(65)[20];
+        item varchar(65)[40];
     };
     IKKATU {
       textdata varchar(20);

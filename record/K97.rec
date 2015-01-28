@@ -41,8 +41,8 @@ K97 {
           item {
             column1 varchar(4);
             column2 varchar(60);
-          }[15];
-          selectdata bool[15];
+          }[30];
+          selectdata bool[30];
       };
     };
   };

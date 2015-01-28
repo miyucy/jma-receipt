@@ -24,7 +24,7 @@ K02N {
         textdata varchar(65);
       };
       count int;
-        item varchar(65)[15];
+        item varchar(65)[30];
     };
     RATE {
       textdata varchar(6);

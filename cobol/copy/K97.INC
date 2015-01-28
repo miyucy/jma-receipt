@@ -31,8 +31,8 @@
                   05  K97-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
                   05  K97-HKNCOMBI-ROW PIC S9(9)   BINARY.
                   05  K97-HKNCOMBI-ROWATTR PIC S9(9)   BINARY.
-                  05  K97-HKNCOMBI-ITEM        OCCURS  15 TIMES.
+                  05  K97-HKNCOMBI-ITEM        OCCURS  30 TIMES.
                     06  K97-HKNCOMBI  PIC X(4).
                     06  K97-HKNCOMBIMEI  PIC X(60).
                   05  K97-HKNCOMBI-SELECT
-                          PIC X       OCCURS  15 TIMES.
+                          PIC X       OCCURS  30 TIMES.

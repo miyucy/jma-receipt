@@ -1905,7 +1905,7 @@
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )
-                           OR (IDX     >   15   )
+                           OR (IDX     >   30   )
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        TO  SPA-GMN-THKNCOMBINUM (IDX)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
@@ -2172,6 +2172,7 @@
                END-IF
            END-PERFORM
       *
+      *
            IF      FLG-HKNCOMBICHK     =   ZERO
       *        選択した保険がない場合、エラー
       *****    MOVE   "1034"               TO  SPA-ERRCD
@@ -2179,6 +2180,8 @@
            ELSE
       *        保険情報編集・年齢
                IF      LNK-SC95-KBN        =   "H"
+      *API対応
+                                           OR  "@"
                    PERFORM 4001-HKNCOMBI-HEN-SEC
                ELSE
                    MOVE    SPA-GMN-HKN-LIST (IDX)
@@ -5645,6 +5648,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 10011-JYURRK-SEC
       *    保険組合せ名称編集
            PERFORM 10013-HKNCOMBI-SEC
+      *
+      *    患者特記事項編集
+           PERFORM 1102-PTTOKKI-SET-SEC
       *
       *    初診日、最終診察日
            MOVE    SPACE               TO  SPA-SYOYMD 

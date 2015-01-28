@@ -37,7 +37,7 @@
                 04  K02N-HKNCOMBI.
                   05  K02N-VALUE  PIC X(65).
                 04  K02N-HKNCOMBI-COUNT  PIC S9(9)   BINARY.
-                04  K02N-HKNCOMBI-ITEM   PIC X(65)   OCCURS  15 TIMES.
+                04  K02N-HKNCOMBI-ITEM   PIC X(65)   OCCURS  30 TIMES.
               03  K02N-RATE.
                 04  K02N-VALUE  PIC X(6).
               03  K02N-BIRTHDAY.
