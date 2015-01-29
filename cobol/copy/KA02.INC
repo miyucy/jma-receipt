@@ -90,6 +90,3 @@
               03  KA02-B09S.
                 04  KA02-B09S-STATE  PIC S9(9)   BINARY.
                 04  KA02-B09S-LABEL  PIC X(10).
-              03  KA02-B05S.
-                04  KA02-B05S-STATE  PIC S9(9)   BINARY.
-                04  KA02-B05S-LABEL  PIC X(10).

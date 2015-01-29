@@ -22,7 +22,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-多々納   01/05/17  年齢計算追加
       * 01.00.02     MCC-多々納   02/04/25  労災追加
-      * 04.08.00     NACL-多々納  16/02/XX  一般名表示対応
       ************************************************************
       *
        01  SPA-J01KYOUTU.
@@ -79,12 +78,6 @@
       *選択対象剤番号
       *　老人区分
                05  SPA-ROUJIN          PIC  9(01).
-      *H28.2
-      *        後発医薬品への変更可署名
-               05  SPA-KOUHATUKA                 PIC X(01).
-      *        一般名表示
-               05  SPA-GENERICFLG                PIC X(01).
-      *
                05  SPA-ZAINUMSEL-AREA.
       *　診療区分
                    07  SPA-SRYKBN          PIC  X(02).
@@ -98,8 +91,6 @@
                    07  SPA-JIHOKBN          PIC  X(01).
       *　剤区分
                    07  SPA-ZAIKBN          PIC  9(03).
-      *H28.2       後発品変更不可あり
-                   07  SPA-GENEFUKAFLG     PIC  X(01).
       *  回数テーブル
                    07  SPA-SEL-DAY-G.
                        11  SPA-SEL-DAY     PIC 9(03)

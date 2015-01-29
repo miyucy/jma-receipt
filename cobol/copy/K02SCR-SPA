@@ -111,9 +111,6 @@
                05  SPA-GMN-RIHAYMD-TBL.
                    07  SPA-GMN-RIHAYMD           PIC X(62)
                                                  OCCURS   10.
-      *H28.10  要介護状態
-               05  SPA-GMN-YOUKAIGO              PIC X(62).
-      *
       *        病名内容
                05  SPA-GMN-BYOMEITBL.
                    07  SPA-GMN-BYOMEI-TBL        OCCURS  100.
@@ -234,7 +231,7 @@ ito   *
       *        リハビリ当月内回数集計
                05  SPA-RIGAKU-NCNT-AREA.
                    07  SPA-RIGAKU-INIT               PIC X(01).
-                   07  SPA-RIGAKU-REC                PIC X(1300).
+                   07  SPA-RIGAKU-REC                PIC X(699).
       *
       *        更新前確認チェック
                05  SPA-MAE-CHKTBL          OCCURS   10.
@@ -496,9 +493,6 @@ ito   *
       *
                05  SPA-K09-SELNUM                 PIC 9(04).
                05  SPA-K09-DOSELNUM               PIC 9(04).
-      *H28.5
-      *一般名表示区分
-               05  SPA-K09-GENERICFLG             PIC X(01).
       *
       *!!      グループ医療機関
                05  SPA-K09-GRPHOSPNUM-AREA.
@@ -578,14 +572,10 @@ ito   *
                        11  SPA-K98-GMN-SRYCD      PIC X(09).
                        11  SPA-K98-GMN-NAME       PIC X(70).
                        11  SPA-K98-GMN-TANI       PIC X(10).
-                       11  SPA-K98-GMN-KISOTEN    PIC 9(07)V9(3).
+                       11  SPA-K98-GMN-KISOTEN    PIC 9(07)V99.
                        11  SPA-K98-GMN-SETCD      PIC X(10).
-      *H28.3
-                       11  SPA-K98-NAI-GECODE     PIC X(12).
       *
                        11  SPA-K98-NAI-NO         PIC 9(03).
-      *H29.2
-                       11  SPA-K98-NAI-MASTER     PIC X(01).
       *        自院採用
                05  SPA-K98-JIIN-G.
                    07  SPA-K98-JIIN               PIC X(01).
@@ -725,54 +715,4 @@ ito   *
                        09  SPA-SEL-IDX               PIC  9(02).
                        09  SPA-SEL-RENNUM            PIC  9(01).
       *
-      *H28.12
-      *Ｋ０２４の画面スパ領域
-           03  SPA-K024-AREA.
-               05  SPA-K024-SEX        PIC X(01).
-               05  SPA-K024-CUR        PIC 9(02).
-               05  SPA-K024-PAGE       PIC 9(02).
-               05  SPA-K024-NEXT       PIC 9(01).
-               05  SPA-K024-LIST.
-                   07  SPA-K024-LIST-TBL       OCCURS   100.
-                       09  SPA-K024G-TNUM      PIC 9(03).
-                       09  SPA-K024G-TSRYYMD   PIC X(16).
-                       09  SPA-K024G-THOSPNAME PIC X(200).
-      *
-      *                医療機関コード
-                       09  SPA-K024-THOSPCD    PIC X(07).
-                       09  SPA-K024-TRENNUM    PIC 9(03).
-      *                調剤日
-                       09  SPA-K024-TSRYYMD    PIC X(08).
-                       09  SPA-K024-DATA-KEY   PIC 9(16).
-               05  SPA-K024-MAX        PIC 9(03).
-      *
-               05  SPA-K024-SELNUM     PIC 9(03).
-               05  SPA-K024-MIDASI     PIC X(40).
-               05  SPA-K024-OKSR-ARI   PIC 9(01).
-      *Ｋ０２４１の画面スパ領域
-           03  SPA-K0241-AREA.
-               05  SPA-K0241-CUR        PIC 9(02).
-               05  SPA-K0241-PAGE       PIC 9(02).
-               05  SPA-K0241-NEXT       PIC 9(01).
-               05  SPA-K0241-LIST.
-                   07  SPA-K0241-LIST-TBL      OCCURS   50.
-                       09  SPA-K0241-TNUM      PIC 9(03).
-                       09  SPA-K0241-TNAME     PIC X(100).
-                       09  SPA-K0241-TTOUYMD   PIC X(10).
-                       09  SPA-K0241-THOSPNAME PIC X(200).
-      *
-      *                医療機関コード
-                       09  SPA-K0241-THOSPCD    PIC X(07).
-      *                調剤日
-                       09  SPA-K0241-TSRYYMD    PIC X(08).
-      *                連番
-                       09  SPA-K0241-TRENNUM    PIC 9(03).
-      *                データキー
-                       09  SPA-K0241-DATA-KEY   PIC 9(16).
-               05  SPA-K0241-MAX        PIC 9(03).
-      *
-               05  SPA-K0241-SELNUM     PIC 9(03).
-               05  SPA-K0241-MIDASI     PIC X(80).
-               05  SPA-K0241-SYORI      PIC 9(01).
-               05  SPA-K0241-FUMEI      PIC 9(01).
       *
