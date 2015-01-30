@@ -712,7 +712,15 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
                GO  TO  210111-RECE88-WRITE-EXT
            END-IF
+      *??
+               DISPLAY "PTNYUINRRK-NYUINYMD=" PTNYUINRRK-NYUINYMD "#"
+                                              PTNYUINRRK-TAIINYMD "#"
+                                              PTNYUINRRK-NYUINCHUKBN "#"
+                                              PTNYUINRRK-SHONUM "#"
+      *??
       *
+      *
+           INITIALIZE                      RECE88-REC
            MOVE    RECE82-HOSPNUM      TO  RECE88-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE88-SRYYM
            MOVE    RECE82-NYUGAIKBN    TO  RECE88-NYUGAIKBN
@@ -721,10 +729,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE82-HKNID        TO  RECE88-HKNID
            MOVE    RECE82-TEKSTYMD     TO  RECE88-TEKSTYMD
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE88-NYUINYMD
-           IF      PTNYUINRRK-TAIINYMD =   "99999999"
-               MOVE    1                   TO  RECE88-NYUINYMD-SEQNO
-           ELSE
-               MOVE    ZERO                TO  RECE88-NYUINYMD-SEQNO
+           IF      PTNYUINRRK-NYUINYMD =   PTNYUINRRK-TAIINYMD
+               MOVE    0                   TO  RECE88-NYUINYMD-SEQNO
+           ELSE 
+               IF      PTNYUINRRK-TAIINYMD =   "99999999"
+                   MOVE    9                   TO  RECE88-NYUINYMD-SEQNO
+               ELSE
+                   MOVE    1                   TO  RECE88-NYUINYMD-SEQNO
+               END-IF
            END-IF
            MOVE    RECE88-REC          TO  WRK-RECE88-REC          
            PERFORM 900-RECE88-READ-SEC
@@ -733,6 +745,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    PTNYUINRRK-TAIINYMD TO  RECE88-TAIINYMD
                MOVE    PTNYUINRRK-NYUINCHUKBN
                                            TO  RECE88-NYUINCHUKBN
+      *        入院年月日と同じ初回番号のときのみセット
+               IF      PTNYUINRRK-SHONUM   =    WRK-SHONUM
+                   MOVE    WRK-SHONUM           TO  RECE88-SHONUM
+               END-IF
+      *??
+               DISPLAY "RECE88-NYUINYMD=" RECE88-NYUINYMD "#"
+                                          RECE88-NYUINYMD-SEQNO "#"
+                                          RECE88-TAIINYMD "#"
+                                          RECE88-SHONUM "#"
+                                          RECE88-NYUINCHUKBN "#"
+      *??
                WRITE   RECE88-REC
                ADD     1                   TO  CNT-RECE88
       *

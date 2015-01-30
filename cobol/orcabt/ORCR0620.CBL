@@ -4064,11 +4064,16 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
            INITIALIZE                      RECE68-REC
            MOVE    RECE62-KEY          TO  RECE68-KEY1
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE68-NYUINYMD
-           IF      PTNYUINRRK-TAIINYMD =   "99999999"
-               MOVE    1                   TO  RECE68-NYUINYMD-SEQNO
-           ELSE
-               MOVE    ZERO                TO  RECE68-NYUINYMD-SEQNO
+           IF      PTNYUINRRK-NYUINYMD =   PTNYUINRRK-TAIINYMD
+               MOVE    0                   TO  RECE68-NYUINYMD-SEQNO
+           ELSE 
+               IF      PTNYUINRRK-TAIINYMD =   "99999999"
+                   MOVE    9                   TO  RECE68-NYUINYMD-SEQNO
+               ELSE
+                   MOVE    1                   TO  RECE68-NYUINYMD-SEQNO
+               END-IF
            END-IF
+      *
            MOVE    RECE68-REC          TO  WRK-RECE68-REC
            PERFORM 900-RECE68-READ-SEC
            IF      FLG-RECE68          =   1

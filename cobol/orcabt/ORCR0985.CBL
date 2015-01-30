@@ -192,6 +192,7 @@
            03  FLG-TAISYO              PIC 9(01).
            03  FLG-RECECOM-XX          PIC 9(01).
            03  FLG-RECECOM-AA          PIC 9(01).
+           03  FLG-NYUINYMD            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2227,6 +2228,7 @@
       *
            MOVE    ZERO                TO  FLG-NYUTAI-RIREKI
                                            FLG-NYUIN-SRYCD
+                                           FLG-NYUINYMD
            MOVE    ZERO                TO  WRK-NYUINCHUKBN
       *          
            INITIALIZE                      RECE88-REC
@@ -2244,12 +2246,13 @@
                    OR    ( RECE82-KEY   NOT =  RECE88-KEY1 )
       *
       *        再入院年月日か入院年月日
-               IF    (     RECE88-NYUINYMD =   RECE88-NYUINYMD
-                      AND  RECE88-NYUINYMD-SEQNO
-                                           =   0               )
-               OR    (     WRK-NYUINCHUKBN =   "1"             )
+               IF    ( WRK-NYUINCHUKBN =   "1"             )
                    CONTINUE
                ELSE
+                 IF    ( RECE88-NYUINYMD =   RECE82-NYUINYMD )
+                 AND   ( FLG-NYUINYMD    =   ZERO            )
+                     MOVE    1               TO  FLG-NYUINYMD
+                 ELSE
                    MOVE    SPACE               TO  WRK-REC
                    MOVE    ZERO                TO  WRK-REC-LENGTH
       *
@@ -2293,6 +2296,7 @@
                    PERFORM 5004-MOJI-HENSYU-SEC  
       *
                    PERFORM 5001-FILE-WRITE-SEC
+                 END-IF
                END-IF
       *
       *        退院年月日                          
