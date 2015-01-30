@@ -102,9 +102,6 @@
                05  SPA-GMN-RIHAYMD-TBL.
                    07  SPA-GMN-RIHAYMD           PIC X(62)
                                                  OCCURS   10.
-      *H28.10  要介護状態
-               05  SPA-GMN-YOUKAIGO              PIC X(62).
-      *
       *        病名内容
                05  SPA-GMN-BYOMEITBL.
                    07  SPA-GMN-BYOMEI-TBL        OCCURS  100.
@@ -398,9 +395,6 @@
       *
                05  SPA-KT012-SELNUM                 PIC 9(04).
                05  SPA-KT012-DOSELNUM               PIC 9(04).
-      *H28.5
-      *一般名表示区分
-               05  SPA-KT012-GENERICFLG             PIC X(01).
       *
       *!!      グループ医療機関
                05  SPA-KT012-GRPHOSPNUM-AREA.
@@ -480,10 +474,8 @@
                        11  SPA-KT98-GMN-SRYCD      PIC X(09).
                        11  SPA-KT98-GMN-NAME       PIC X(70).
                        11  SPA-KT98-GMN-TANI       PIC X(10).
-                       11  SPA-KT98-GMN-KISOTEN    PIC 9(07)V9(3).
+                       11  SPA-KT98-GMN-KISOTEN    PIC 9(07)V99.
                        11  SPA-KT98-GMN-SETCD      PIC X(10).
-      *H28.3
-                       11  SPA-KT98-NAI-GECODE     PIC X(12).
       *
                        11  SPA-KT98-NAI-NO         PIC 9(03).
       *        自院採用
@@ -565,8 +557,6 @@
                            11  SPA-GMN-TK4         PIC X(02).
                            11  SPA-GMN-TSURYOU4    PIC X(30).
       *
-      *H28.5
-                       09  SPA-GMN-TGENENAME        PIC X(44).
       *
                        09  SPA-NAI-TBANGO        PIC  9(03).
                05  SPA-GMN-MAX2                  PIC 9(04).

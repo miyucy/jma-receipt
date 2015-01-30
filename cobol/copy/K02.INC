@@ -164,10 +164,4 @@
                 04  K02-DRCD-COUNT   PIC S9(9)   BINARY.
                 04  K02-DRCD-ITEM
                         PIC X(29)   OCCURS  99 TIMES.
-              03  K02-MODE2.
-                04  K02-MODE2-STYLE   PIC X(20).
-                04  K02-MODE2-VALUE   PIC X(10).
-              03  K02-MODE3.
-                04  K02-MODE3-STYLE   PIC X(20).
-                04  K02-MODE3-VALUE   PIC X(10).
 

@@ -21,7 +21,6 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  05.00.00    NACL-多々納  17/05/16  病棟番号追加
       ************************************************************
       *
        01  SPA-KA02.
@@ -160,8 +159,6 @@
       *            病棟・病室
                    07  SPA-NAI-BTUNAME         PIC X(20).
                    07  SPA-NAI-ROOMNO          PIC X(06).
-      *H29.5       病棟番号
-                   07  SPA-NAI-BTUNUM          PIC X(02).
       *
                    07  SPA-PRINT-SYORI         PIC 9(01).
                    07  SPA-SEL-SYORI           PIC 9(01).
@@ -188,11 +185,6 @@
                    07  SPA-MAE-KOUFUYMD        PIC X(08).
       *        内容変更用テーブル最大
                05  SPA-WKSRY-MAX               PIC 9(04).
-      *H28.5
-      *        一般名表示区分
-               05  SPA-NAI-GENERICFLG      PIC X(01).
-               05  SPA-NAI-KOUHATUKA       PIC X(01).
-      *
       *    選択剤内容
            03  SPA-PARA-WKSRY-TBL.
                05  SPA-PARA-MAX                 PIC 9(04).
