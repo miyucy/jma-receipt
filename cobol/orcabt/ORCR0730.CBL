@@ -208,6 +208,7 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-藤原    15/02/04  請求管理への公費情報の更新
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -10603,13 +10604,6 @@
                MOVE    ZERO                TO  RECE10-SKYYM
                                                RECE10-HENREIYM
                                                RECE10-TEISEIKBN
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                   MOVE    RECE62-KOHNUM (IDX) TO
-                                       RECE10-KOHNUM (IDX)
-                   MOVE    RECE62-KOHID  (IDX) TO
-                                       RECE10-KOHID  (IDX)
-               END-PERFORM
                MOVE    RECE62-HKNNUM   TO  RECE10-HKNNUM-S
                IF      RECE62-HKNJANUM-KEY =   SPACE
                    MOVE    ZERO            TO  RECE10-HKNJANUM-S
@@ -10635,6 +10629,14 @@
                MOVE    ZERO                TO  RECE10-UPDYMD
                                                RECE10-UPDHMS
            END-IF
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+               MOVE    RECE62-KOHNUM (IDX) TO
+                                       RECE10-KOHNUM (IDX)
+               MOVE    RECE62-KOHID  (IDX) TO
+                                       RECE10-KOHID  (IDX)
+           END-PERFORM
       *
            MOVE    RECE62-KIGO         TO  RECE10-KIGO
            MOVE    RECE62-NUM          TO  RECE10-NUM
