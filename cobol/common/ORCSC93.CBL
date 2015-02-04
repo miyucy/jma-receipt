@@ -65,6 +65,7 @@
       * 04.07.00     NACL-多々納  13/07/XX  第三者行為対応
       * 04.07.00     NACL-多々納  14/06/XX  外用薬（臨時投薬）対応
       * 04.07.00     NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
+      * 04.07.00     NACL-多々納  15/01/XX  一般・銘柄名処方毎の対応
       *****************************************************************
       *
       *
@@ -2092,6 +2093,25 @@
                            ELSE
                                MOVE    "2071"        TO  SPA-ERRCD
                            END-IF
+      *H27.1
+      *                後発医薬品への変更可（処方せん毎）
+                       WHEN    "099209910"
+      *                後発医薬品への変更不可（処方せん毎）
+                       WHEN    "099209911"
+                           MOVE    "98"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "980"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                    入院時は982 へ
+                           IF      SPA-NYUGAIKBN   =   "1"
+                               MOVE    "982"       TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+                           END-IF
+      *                    １剤１明細とする
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                                  (IDX)
+                           MOVE    1               TO  FLG-ZAI
+      *
       *                包括出来高算定（剤）
                        WHEN    "099999903"
                            IF     (IDX             >   ZERO )  AND

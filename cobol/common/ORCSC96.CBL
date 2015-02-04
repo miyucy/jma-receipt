@@ -2165,6 +2165,15 @@
                                            DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
+      *!!!
+      *H27.1
+               WHEN    "2072"
+                   STRING  "後発品変更不可（処方単位）・"
+                           "後発品変更可（処方単位）"
+                           "が重複します。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

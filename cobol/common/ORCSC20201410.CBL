@@ -62,6 +62,7 @@
       *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *                                     包括エラー分対応
       *  04.07.00    NACL-多々納  14/10/07  頓服（臨時投薬）対応
+      *  04.07.00    NACL-多々納  15/02/XX  後発品変更不可処方毎の対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -457,6 +458,7 @@
        01  CONS-RT80               PIC 9(02)   VALUE    80.
       * （精減）
        01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1227,7 +1229,15 @@
                    MOVE    ZERO                TO  FLG-CHK-P
       ************ IF     (WRK-COM-KOKUJISKBKBN2(IDX-Z)  =   9  )
                    IF     (WRK-COM-IPN-KISAIKBN (IDX-Z)  =   1  )
+      *H27.1           後発品変更可
+                     OR   (SPA-GENECHG-KBN             =   2   )
+      *
                        MOVE    1                   TO  FLG-CHK-P
+      *H27.1           後発品変更不可
+                       IF      SPA-GENECHG-KBN     =   1
+                           MOVE    ZERO                TO  FLG-CHK-P
+                       END-IF
+      *
                        IF      (WRK-COM-INPUTCD (IDX-Z + 1)
                                                    =   "099209907"
                                                    OR  "099209903"  )
@@ -1437,7 +1447,8 @@
       *????
       *H27.4 ??
       *        対象の初診・外来診療料判定
-      *        IF     (WRK-COM-SRYKBN (IDX)    =   "11"  OR
+      *        IF     (SPA-SRYYMD              >=  "20150401" )
+      *          AND  (WRK-COM-SRYKBN (IDX)    =   "11"  OR
       *                                            "12"  )
       *            IF      WRK-COM-INPUTCD (IDX)   =   CONS-CHK-SRYCD1
       *                                            OR  CONS-CHK-SRYCD2
@@ -1817,6 +1828,7 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 3003-CHEK-SYORI-SEC
            END-IF
+      *
            IF     (LNK-ORCSC-KIDCD     NOT =   SPACE )  OR
                   (SPA-ERRCD           NOT =   SPACE )
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -1837,12 +1849,6 @@
                    END-IF
                END-IF
            END-IF
-      *
-      *    IF      LNK-ORCSC-PG        =   "K02"
-      *                                OR  "KT01"
-      *        MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
-      *        MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-      *    END-IF
       *
            .
        3000-JIDOU-SYORI-EXT.
@@ -2728,7 +2734,15 @@
                        MOVE    ZERO                TO  FLG-CHK-P
       ***************  IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
                        IF     (WRK-COM-IPN-KISAIKBN (IDX)  =   1  )
+      *H27.1               後発品変更可
+                         OR   (SPA-GENECHG-KBN             =   2   )
+      *
                            MOVE    1                   TO  FLG-CHK-P
+      *H27.1               後発品変更不可
+                           IF      SPA-GENECHG-KBN     =   1
+                              MOVE    ZERO                TO  FLG-CHK-P
+                           END-IF
+      *
                            IF      (WRK-COM-INPUTCD (IDX + 1)
                                                    =   "099209907"
                                                    OR  "099209903"  )
