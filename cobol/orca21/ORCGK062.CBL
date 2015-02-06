@@ -955,6 +955,18 @@
                    MOVE    PTRSI-SHOBYOYMD     TO  WRK-COMB-TEKSTYMD
                END-IF
            END-IF
+      *
+      *    保険組合せ名は２０バイト
+           IF      WRK-HKNCOMBIMEI NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    WRK-HKNCOMBIMEI     TO  KANACHK-MAE-INPUT
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-HKNCOMBIMEI
+           END-IF
+      *
       *ver.4.7
       *    第三者行為
            IF      COMB-KOH1HKNNUM     =   "970"
