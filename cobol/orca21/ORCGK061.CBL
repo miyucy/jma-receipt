@@ -30,8 +30,6 @@
       *  04.07.00    NACL-多々納  11/08/XX  リハビリコメント終了日対応
       *  04.07.00    NACL-多々納  11/09/XX  精神科ケア開始日対応
       *  04.07.00    NACL-多々納  13/09/11  リハビリコメント削除対応
-      *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
-      *  04.08.00    NACL-多々納  16/10/31  HAORI対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -130,8 +128,6 @@
            03  WRK-DD                  PIC 9(02).
            03  WRK-LSTYMD              PIC X(08).
       *
-           03  WRK-YUKOSTYMD           PIC X(08).
-      *
            03  WRK-CNT                 PIC 9(03).
            03  WRK-CNT-SYOSIN          PIC 9(03).
       *
@@ -211,8 +207,6 @@
        01  TBL-IKOU-MAX                PIC 9(02)   VALUE   5.
       *
       *算定履歴作成
-      *!!!! (変更時は　ORAPI021R5V3 も変更すること）
-      *
        01  TBL-RRK-SRYCD-G.
       *    心大血管疾患リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800111".
@@ -246,26 +240,6 @@
            03  FILLER          PIC X(09)   VALUE  "099800181".
       *    がん患者リハビリ終了日
            03  FILLER          PIC X(09)   VALUE  "099800182".
-      *    廃用症候群リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800191".
-      *    廃用症候群リハビリ終了日
-           03  FILLER          PIC X(09)   VALUE  "099800192".
-      *    心大血管疾患　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800211".
-           03  FILLER          PIC X(09)   VALUE  SPACE.
-      *    脳血管疾患　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800221".
-           03  FILLER          PIC X(09)   VALUE  SPACE.
-      *    運動器　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800231".
-           03  FILLER          PIC X(09)   VALUE  SPACE.
-      *    呼吸器　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800241".
-           03  FILLER          PIC X(09)   VALUE  SPACE.
-      *    廃用症候群　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800291".
-           03  FILLER          PIC X(09)   VALUE  SPACE.
-      *
       *    他医院退院日
            03  FILLER          PIC X(09)   VALUE  "099999906".
            03  FILLER          PIC X(09)   VALUE  SPACE.
@@ -278,18 +252,15 @@
       *    通院・在宅精神療法開始日
            03  FILLER          PIC X(09)   VALUE  "099830102".
            03  FILLER          PIC X(09)   VALUE  SPACE.
-      *    依存症集団療法開始日
-           03  FILLER          PIC X(09)   VALUE  "099830103".
-           03  FILLER          PIC X(09)   VALUE  SPACE.
       *    磁気による刺激法開始日
            03  FILLER          PIC X(09)   VALUE  "099400001".
            03  FILLER          PIC X(09)   VALUE  SPACE.
       *
        01  TBL-RRK-SRYCD-GR    REDEFINES   TBL-RRK-SRYCD-G.
-           03  TBL-RRK-SRYCD-GT        OCCURS    20.
+           03  TBL-RRK-SRYCD-GT        OCCURS    13.
                05  TBL-RRK-SRYCD           PIC X(09).
                05  TBL-END-SRYCD           PIC X(09).
-       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   20.
+       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   13.
       *
       *
        01  WRK-MIDAIS-HEN.
@@ -440,7 +411,6 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-K06
@@ -516,15 +486,6 @@
                WHEN    "KID1"
       *            確認画面より
                    PERFORM 30010-KID1-SET-SEC
-      *
-      *API
-              WHEN    "APIV3"
-      *           算定履歴一覧のみ編集 
-      *           初回判定
-                   PERFORM 3101-RRK-HENSYU-SEC
-      *            リハビリ開始登録
-                   PERFORM 3103-RRKLIST-INIT2-SEC
-                   MOVE    1             TO  FLG-END
       *
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
@@ -1541,7 +1502,7 @@
                       (PTRSI-SHOBYOYMD         <   COMB-TEKSTYMD)
                    MOVE    PTRSI-SHOBYOYMD     TO  WRK-COMB-TEKSTYMD
                END-IF
-           END-IF
+          END-IF
            .
        31011-HKNCOMBI-SET-EXT.
            EXIT.
@@ -1923,9 +1884,6 @@
                                        OR  "111012510"
       *                妥結率５割以下
                                        OR  "111012710"
-      *H28.4           小児かかりつけ
-                                       OR  "113019710"
-                                       OR  "113019910"
                                                        )
                MOVE    "2"                 TO  SPA-K061-KBN2
            END-IF
@@ -1936,14 +1894,7 @@
                                        OR  "099800141"
                                        OR  "099800151"
                                        OR  "099800161"
-                                       OR  "099800171"
-                                       OR  "099800191" )
-      *      早期・初期リハビリ開始日
-             OR   (WRK-SRYCD           =   "099800211"
-                                       OR  "099800221"
-                                       OR  "099800231"
-                                       OR  "099800241"
-                                       OR  "099800291")
+                                       OR  "099800171" )
                MOVE    "1"                 TO  SPA-K061-KBN2
            END-IF
            .
@@ -2396,7 +2347,6 @@
       *     (COPY に追加するのは、パッケージ対応で）
            IF      WRK-SRYCD           =   "099800181"
                                        OR  "099800182"
-              OR  (WRK-SRYCD(1:7)      =   "0998002"  )
       *        がん患者リハ開始日・終了日
                MOVE    1               TO  FLG-HKNSAN
            END-IF
@@ -2811,7 +2761,6 @@
       *H25.9
            IF    (SPA-ERRCD            =   SPACE   )
             AND  (SPA-K061-SYORIKBN    NOT =   "P" )
-            AND  (SPA-K061-SELNUM     >   ZERO )
       *        更新チェック
                PERFORM 45011-KANREN-UPDCHK-SEC
            END-IF
@@ -3142,7 +3091,7 @@
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY "K061 INS SANTEIPLUS-KEY =>" SANTEIPLUS-KEY 
            END-IF
-           .
+          .
        45021-SANTEIPLUS-END-INS-EXT.
            EXIT.
       *****************************************************************
@@ -3949,8 +3898,6 @@
                MOVE    WRK-SRYYM           TO  TNS-YUKOSTYMD (1:6)
            END-IF
            MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
-      *
-           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
@@ -4001,9 +3948,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-      **** MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
