@@ -1468,6 +1468,14 @@
                          SPA-K06-MOTOPG
                  ",SPA-MOTOPG2:" SPA-MOTOPG2
       *
+           IF      SPA-K06-MOTOPG      =   "J02"
+      *        会計照会へ
+               MOVE    LNK-COMMON          TO  SPA-KYOUTU
+               MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
+               MOVE    "K06"               TO  SPA-MOTOPG
+               MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+           ELSE
+      *
            IF      SPA-MOTOPG2         =   "KT01"
       *        外来まとめへ
                MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
@@ -1476,15 +1484,9 @@
                MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
                MOVE    SPACE               TO  SPA-MOTOPG2
            ELSE
-    ****       MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
                MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
-               IF      SPA-K06-MOTOPG      =   "J02"
-      *            会計照会へ
-                   MOVE    LNK-COMMON          TO  SPA-KYOUTU
-                   MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
-                   MOVE    "K06"               TO  SPA-MOTOPG
-                   MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-               END-IF
+           END-IF
+      *
            END-IF
            MOVE    "K06"               TO  SPA-MOTOPG
       *
