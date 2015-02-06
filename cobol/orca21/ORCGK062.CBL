@@ -347,7 +347,8 @@
            END-IF
       *
            IF      FLG-END         =   ZERO
-               MOVE    SPACE               TO  LINKAREA
+      ******   MOVE    SPACE               TO  LINKAREA
+               MOVE    SPACE               TO  LNK-KYOUTU
       *
                MOVE    SPACE               TO  MCP-PUTTYPE
                MOVE    "K062   "           TO  MCP-WINDOW
@@ -1731,7 +1732,8 @@
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+      **** MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "K062"              TO  MCP-WINDOW.

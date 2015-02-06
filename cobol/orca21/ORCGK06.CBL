@@ -355,7 +355,8 @@
            END-IF
       *
            IF      FLG-END         =   ZERO
-               MOVE    SPACE               TO  LINKAREA
+      ***      MOVE    SPACE               TO  LINKAREA
+               MOVE    SPACE               TO  LNK-KYOUTU
       *
                MOVE    SPACE               TO  MCP-PUTTYPE
                MOVE    "K06    "           TO  MCP-WINDOW
@@ -373,7 +374,8 @@
        300-SCREEN-SEC              SECTION.
       *
       *
-           IF      LINKAREA        NOT =   SPACE
+      **** IF      LINKAREA        NOT =   SPACE
+           IF      LNK-KYOUTU      NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    SPACE               TO  SPA-KIDCD
            END-IF
@@ -1461,15 +1463,28 @@
       *    END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
+      *TEST
+           DISPLAY "K06 210-BACK SPA-K06-MOTOPG:"
+                         SPA-K06-MOTOPG
+                 ",SPA-MOTOPG2:" SPA-MOTOPG2
+      *
            IF      SPA-MOTOPG2         =   "KT01"
       *        外来まとめへ
                MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
                MOVE    SPACE               TO  LINKAREA
+               MOVE    "K06"               TO  SPA-MOTOPG
                MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
                MOVE    SPACE               TO  SPA-MOTOPG2
            ELSE
     ****       MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
                MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
+               IF      SPA-K06-MOTOPG      =   "J02"
+      *            会計照会へ
+                   MOVE    LNK-COMMON          TO  SPA-KYOUTU
+                   MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
+                   MOVE    "K06"               TO  SPA-MOTOPG
+                   MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+               END-IF
            END-IF
            MOVE    "K06"               TO  SPA-MOTOPG
       *
@@ -2212,7 +2227,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        490-RRKTOUROKU-SEC             SECTION.
       *
       *    初期画面セット
-           MOVE    SPACE               TO  LINKAREA
+      *****MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    2                   TO  SPA-K061-GMN
            MOVE    "K06"               TO  SPA-MOTOPG
@@ -2239,7 +2255,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-           MOVE    SPACE               TO  LINKAREA
+      **** MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "K061"              TO  MCP-WINDOW
@@ -2264,7 +2281,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "K06"               TO  SPA-K062-MOTOPG
            MOVE    SPACE               TO  SPA-MOTOPG
       *    初期画面セット
-           MOVE    SPACE               TO  LINKAREA
+      **** MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2288,7 +2306,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-           MOVE    SPACE               TO  LINKAREA
+      **** MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "K062"              TO  MCP-WINDOW
@@ -2305,7 +2324,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4100-IKOUTOROKU-SEC             SECTION.
       *
       *    初期画面セット
-           MOVE    SPACE               TO  LINKAREA
+      *****MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    1                   TO  SPA-K061-GMN
            MOVE    "K06"               TO  SPA-MOTOPG
@@ -2332,7 +2352,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-           MOVE    SPACE               TO  LINKAREA
+      *****MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "K061"              TO  MCP-WINDOW
@@ -2409,7 +2430,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-           MOVE    SPACE               TO  LINKAREA
+      **** MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "K06    "           TO  MCP-WINDOW.
