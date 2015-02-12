@@ -381,6 +381,7 @@
       *  04.07.10    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
       *                                     を修正
       *                                    （入院日と退院日が同じとき）
+      *  04.07.11    NACL-門脇    15/02/09  第三者行為のコメント編集条件修正
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/06/02  請求情報への更新日設定
@@ -4529,7 +4530,8 @@
            MOVE    "01"                TO  WRK-SRYKBN
       *
            MOVE    SPACE               TO  WRK-DISASTER-COMMENT
-           IF   RECE62-DAISAN-GAITO   =   1  OR  2  OR  4
+           IF  (RECE62-DAISAN-GAITO   =   1  OR  2  OR  4)
+           AND (RECE62-DAISAN-TOKKI   =   ZERO           )
                MOVE    RECE62-DAISAN-TOTALTEN  TO  WRK-FUTAN4
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
