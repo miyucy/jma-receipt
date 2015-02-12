@@ -241,8 +241,10 @@
       *
            IF    ( SODR-ORDERID        =   NORDERID-FOODID )
                MOVE    PTNYUINRRK-NYUINKA  TO  SODR-SRYKA
+                                               ITEM-NYUINKA
                MOVE    PTNYUINRRK-HKNCOMBINUM
                                            TO  SODR-HKNCOMBI
+                                               ITEM-HKNCOMBI
            END-IF
       *
            .
@@ -348,6 +350,7 @@
            COMPUTE CNT-NYUINKA  =   CNT-NYUINKA  +   1
       *
            IF    ( CNT-NYUINKA  =   1 )
+            AND  ( ITEM-NYUINKA =   SPACE )
       *
                MOVE    "1005"          TO  WRK-SYS-KANRICD
                MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
@@ -364,10 +367,6 @@
                    PERFORM 2100-ITEM-ERR-SET-SEC
                END-IF
       *
-           ELSE
-               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
-               MOVE    "0040"      TO  ERRCD-ERRCD
-               PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
            .
@@ -381,6 +380,7 @@
            COMPUTE CNT-HKNCOMBI  =   CNT-HKNCOMBI  +   1
       *
            IF    ( CNT-HKNCOMBI  =   1 )
+            AND  ( ITEM-HKNCOMBI =   ZERO )
       *
                MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
                                        TO  WRK-COMBI-HKNCOMBI
@@ -401,10 +401,6 @@
                        PERFORM 2100-ITEM-ERR-SET-SEC
                END-IF
       *
-           ELSE
-               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
-               MOVE    "0041"      TO  ERRCD-ERRCD
-               PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
            .
@@ -659,15 +655,8 @@
       *****************************************************************
        20021-NYUINKA-CHK-SEC           SECTION.
       *
-           IF    ( SODR-ORDERID        =   NORDERID-FNORLID
-                                        OR NORDERID-FSPCLID
-                                        OR NORDERID-FSELEID
-                                        OR NORDERID-FSPSLID
-                                        OR NORDERID-FSTOPID
-                                                            )
-               IF    ( ITEM-NYUINKA    =   SPACE )
-                   MOVE    "0002"          TO  ERRCD-ORDER
-               END-IF
+           IF    ( ITEM-NYUINKA    =   SPACE )
+               MOVE    "0002"          TO  ERRCD-ORDER
            END-IF
       *
            .
@@ -678,15 +667,8 @@
       *****************************************************************
        20021-HKNCOMBI-CHK-SEC          SECTION.
       *
-           IF    ( SODR-ORDERID        =   NORDERID-FNORLID
-                                        OR NORDERID-FSPCLID
-                                        OR NORDERID-FSELEID
-                                        OR NORDERID-FSPSLID
-                                        OR NORDERID-FSTOPID
-                                                            )
-               IF    ( ITEM-HKNCOMBI   =   ZERO )
-                   MOVE    "0005"          TO  ERRCD-ORDER
-               END-IF
+           IF    ( ITEM-HKNCOMBI   =   ZERO )
+               MOVE    "0005"          TO  ERRCD-ORDER
            END-IF
       *
            .
@@ -751,16 +733,8 @@
            MOVE    TRRK-REC        TO  PTNYUINRRK-REC
       *
       *    診療科と保険組合せの変更は不可
-           IF    ( SODR-ORDERID        =   NORDERID-FNORLID
-                                        OR NORDERID-FSPCLID
-                                        OR NORDERID-FSELEID
-                                        OR NORDERID-FSPSLID
-                                        OR NORDERID-FSTOPID
-                                                            )
-               IF    ( PTNYUINRRK-NYUINKA  NOT =   ITEM-NYUINKA )
-                   MOVE    "0069"      TO  ERRCD-ORDER
-                   GO  TO  20021-NYUINRRK-CHK-EXT
-               END-IF
+           IF    ( PTNYUINRRK-NYUINKA  NOT =   ITEM-NYUINKA )
+               MOVE    "0069"      TO  ERRCD-ORDER
            END-IF
       *
       *    IF    ( PTNYUINRRK-HKNCOMBINUM  NOT =   ITEM-HKNCOMBI )
@@ -851,16 +825,21 @@
            MOVE   SODR-KEYGENERATE     TO  ORDER-KEYGENERATE
       *
            MOVE   ERRCD-ORDER          TO  ORDER-ERRCD1
+           MOVE   ERRCD-ITEM           TO  ORDER-ERRCD2
       *
            IF    ( ERRCD-ITEM          =   SPACE )
             AND  ( ERRCD-ORDER         =   SPACE )
                MOVE    TRRK-RRKNUM     TO  ORDER-RRKNUM
                MOVE    TRRK-RRKEDANUM  TO  ORDER-RRKEDANUM
            ELSE
-               IF    ( WRK-DIALOG      =   ZERO )
-                   MOVE    2           TO  ORDER-STATUS
+               IF    ( SODR-KEYGENERATE    =   2 )
+                       MOVE    1       TO  ORDER-STATUS
                ELSE
-                   MOVE    5           TO  ORDER-STATUS
+                   IF    ( WRK-DIALOG      =   ZERO )
+                       MOVE    2       TO  ORDER-STATUS
+                   ELSE
+                       MOVE    5       TO  ORDER-STATUS
+                   END-IF
                END-IF
            END-IF
       *

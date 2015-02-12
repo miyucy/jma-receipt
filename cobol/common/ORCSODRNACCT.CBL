@@ -919,7 +919,9 @@
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     LNK-PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            MOVE  LNK-PTNYUINRRK-HOSPNUM   TO  SPA-HOSPNUM
            MOVE  LNK-PTNYUINRRK-PTID     TO  SPA-PTID
       *
@@ -1066,6 +1068,12 @@
                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                    END-EVALUATE
                END-IF
+           END-IF
+      *    入院カレンダー未設定の判定
+           IF     LNK-PTNYUINRRK-NYUCALKBN   =   "1"
+                  MOVE   1      TO  LNK-SCNYUACCT-NYUCAL-KBN
+           ELSE
+                  MOVE   ZERO   TO  LNK-SCNYUACCT-NYUCAL-KBN
            END-IF
            MOVE   LNK-PTNYUINRRK-BTUNUM
                                        TO  LNK-SCNYUACCT-BTU-NUM
@@ -2659,7 +2667,9 @@
       **                          TO  LNK-SCNYUACCT-MOTO-NYUINKA
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     LNK-PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            MOVE    LNK-PTNYUINRRK-HOSPNUM   TO  SPA-HOSPNUM
            MOVE    LNK-PTNYUINRRK-PTID     TO  SPA-PTID
       *
@@ -2808,6 +2818,12 @@
                END-IF
            END-IF
       *
+      *    入院カレンダー未設定の判定
+           IF     LNK-PTNYUINRRK-NYUCALKBN   =   "1"
+                  MOVE   1      TO  LNK-SCNYUACCT-NYUCAL-KBN
+           ELSE
+                  MOVE   ZERO   TO  LNK-SCNYUACCT-NYUCAL-KBN
+           END-IF
            MOVE   LNK-PTNYUINRRK-BTUNUM
                                        TO  LNK-SCNYUACCT-BTU-NUM
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
@@ -3930,12 +3946,6 @@
            IF     LNK-PTNYUINRRK-SENTEIKBN  =   "1"
                PERFORM 4801-SENTEI-SET-SEC
            END-IF
-      *    入院カレンダー未設定の判定
-           IF     LNK-PTNYUINRRK-NYUCALKBN   =   "1"
-                  MOVE   1      TO  LNK-SCNYUACCT-NYUCAL-KBN
-           ELSE
-                  MOVE   ZERO   TO  LNK-SCNYUACCT-NYUCAL-KBN
-           END-IF
       *
       *    有床診療所入院基本料の相互算定コード置き換え
            IF    (LNK-SCNYUACCT-STSRYYMD   >=   "20120401")  AND
@@ -4082,6 +4092,12 @@
                END-IF
            END-IF
       *
+      *    入院カレンダー未設定の判定
+           IF     LNK-PTNYUINRRK-NYUCALKBN   =   "1"
+                  MOVE   1      TO  LNK-SCNYUACCT-NYUCAL-KBN
+           ELSE
+                  MOVE   ZERO   TO  LNK-SCNYUACCT-NYUCAL-KBN
+           END-IF
            MOVE   LNK-PTNYUINRRK-BTUNUM   TO  LNK-SCNYUACCT-BTU-NUM
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
@@ -4814,7 +4830,7 @@
            MOVE   SPA-SRYKA            TO  WRK-TAIHI-SRYKA
            MOVE   "00"                 TO  SPA-SRYKA
       *    入院カレンダー未設定の判定
-           IF     PTNYUINRRK-NYUCALKBN   =   "1"
+           IF     LNK-PTNYUINRRK-NYUCALKBN   =   "1"
                   MOVE   1      TO  LNK-SCNYUACCT-NYUCAL-KBN
            ELSE
                   MOVE   ZERO   TO  LNK-SCNYUACCT-NYUCAL-KBN
@@ -6094,6 +6110,12 @@
            MOVE   WRK-HKNCOMBINUM9      TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
+      *    入院カレンダー未設定の判定
+           IF     LNK-PTNYUINRRK-NYUCALKBN   =   "1"
+                  MOVE   1      TO  LNK-SCNYUACCT-NYUCAL-KBN
+           ELSE
+                  MOVE   ZERO   TO  LNK-SCNYUACCT-NYUCAL-KBN
+           END-IF
            MOVE   LNK-PTNYUINRRK-BTUNUM TO  LNK-SCNYUACCT-BTU-NUM
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
