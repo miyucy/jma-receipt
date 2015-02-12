@@ -37,6 +37,8 @@
       *  04.07.03    NACL-Æ£¸¶    15/01/24  Æ±ÆüºÆÆþ±¡»þ¤ÎÆþÂà±¡ÍúÎò¤Îµ­Ï¿
       *                                     ¤ò½¤Àµ
       *                                    ¡ÊÆþ±¡Æü¤ÈÂà±¡Æü¤¬Æ±¤¸¤È¤­¡Ë
+      *  04.07.04    NACL-Æ£¸¶    15/02/12  ¹ð¼¨Åù¼±ÊÌ¶èÊ¬¤Ë¤è¤ëµ­Ï¿½ç¤ò½¤Àµ
+      *                                    ¡ÊÄÌÂ§²Ã»»ÂÐ¾Ý³°¡Ë
       *
       *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    14/07/23  £³£²Ê¸»ú°Ê¾å¤ÎÊ¸»úÎó½¤Àµ
@@ -623,7 +625,7 @@
       *
       *   
        01  WRK-KOUI-AREA.
-           03  WRK-KOUI-TABLE                   OCCURS  5.
+           03  WRK-KOUI-TABLE                   OCCURS  6.
                05  WRK-KOUI-TBLMAX              PIC 9(03).
                05  WRK-KOUI-REC                     OCCURS  100.
                    07  WRK-KOUI-KEY.
@@ -3386,6 +3388,7 @@
                        OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
                        OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
                        OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
+                       OR    ( WRK-KOUI-TBLMAX (6) >  ZERO )
                            PERFORM 200741-KASAN-HENSYU-SEC
                        END-IF
                        ADD     1           TO  IDY   
@@ -3411,6 +3414,7 @@
                                    OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
                                    OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
                                    OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
+                                   OR    ( WRK-KOUI-TBLMAX (6) >  ZERO )
                                        PERFORM 200741-KASAN-HENSYU-SEC
                                    END-IF
                                    MOVE    1               TO  IDZ  
@@ -3451,10 +3455,10 @@
                                            =   "5" OR  "6" )
                                        MOVE    ZERO        TO  IDZ
                                    ELSE
-                                       MOVE    4           TO  IDZ
+                                       MOVE    5           TO  IDZ
                                    END-IF  
                                WHEN    "8" 
-                                   MOVE    5           TO  IDZ
+                                   MOVE    6           TO  IDZ
                            END-EVALUATE
                            IF      IDZ         >   ZERO
                                ADD     1           TO
@@ -3475,6 +3479,7 @@
            OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
            OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
            OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
+           OR    ( WRK-KOUI-TBLMAX (6) >  ZERO )
                PERFORM 200741-KASAN-HENSYU-SEC
            END-IF
            .
@@ -3511,7 +3516,7 @@
            MOVE    ZERO            TO  WRK-KIHON-TIMEKSNKBN
       *
            PERFORM VARYING IDY1    FROM    1   BY  1
-                   UNTIL   IDY1    >       4
+                   UNTIL   IDY1    >       5
                MOVE    WRK-KOUI-TBLMAX (IDY1)  TO  IDYY
                PERFORM VARYING IDY2    FROM    1   BY  1
                        UNTIL   IDY2    >       IDYY
@@ -3552,7 +3557,7 @@
            END-PERFORM
       *
       *    Ï«ºÒÆÃÊÌ²Ã»»¹àÌÜ¤ÎÊÔ½¸
-           MOVE    5                       TO  IDY1
+           MOVE    6                       TO  IDY1
            MOVE    WRK-KOUI-TBLMAX (IDY1)  TO  IDYY
            PERFORM VARYING IDY2    FROM    1   BY  1
                    UNTIL   IDY2    >       IDYY
