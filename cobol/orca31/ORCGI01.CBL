@@ -958,7 +958,7 @@
                                //SPA-// BY //WRK-SPA-//.
       *
       *    Æþ±¡ÍúÎò¥ï¡¼¥¯
-       01  WkPTNYUIN-REC.
+       01  WKPTNYUIN-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING
                                //PTNYUINRRK-// BY //WKPTNYUIN-//.
       *
