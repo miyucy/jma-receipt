@@ -210,7 +210,6 @@
            COPY    "M97.INC".
            COPY    "MMERR.INC".
            COPY    "MMID1.INC".
-           COPY    "MJOB.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -798,10 +797,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "M80"               TO  SPA-SAKIPG
            MOVE    "M97"               TO  SPA-MOTOPG
-      *
-           MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-KYOUTU      TO  LNK-KYOUTU
-      *
            MOVE    "M80"               TO  MCP-WINDOW
            MOVE    "JOIN"              TO  MCP-PUTTYPE
       *
@@ -1182,7 +1177,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  MMID1
-           INITIALIZE                      MMID1
            MOVE    SPA-MMID1CD         TO  MMID1-ID1CODE
            MOVE    WRK-MIDMSG          TO  MMID1-ID1MSG
       *
