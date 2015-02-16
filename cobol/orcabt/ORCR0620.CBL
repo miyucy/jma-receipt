@@ -229,21 +229,8 @@
       *  04.07.13    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
       *                                     を修正
       *                                    （入院日と退院日が同じとき）
-      *  04.07.14    NACL-藤原    15/07/07  入退院履歴のからの診療科設定
-      *                                     に退院日、転出日を条件に追加
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    15/10/21  現物給付対象外の低所得（食事）対応
-      *  04.08.03    NACL-藤原    15/10/08  複数枚レセプト分割対応
-      *                                     公費単独の２回以上の分割対応
-      *  04.08.04    NACL-門脇    16/02/08  RECE62の予備項目使用分について、
-      *                                     個々に項目を設ける事に伴う修正
-      *  04.08.05    NACL-藤原    16/07/20  ＥＦファイル作成対応
-      *  04.08.06    NACL-藤原    17/03/31  同日再入院の入退院履歴のチェック
-      *  04.08.07    NACL-門脇    17/09/26  平成２９年１０月改正
-      *                                     （入院時生活療養の見直し）
-      *  04.08.08    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -374,8 +361,7 @@
            03  FLG-KYUSEIRRK                           PIC 9(01).
            03  FLG-PTTOKKI                             PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01). 
-           03  FLG-PTRSIINF                            PIC 9(01).
-      *
+      *   
            03  FLG-ARI                                 PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-ROUJINHOKEN                         PIC 9(01).
@@ -383,6 +369,7 @@
            03  FLG-SEIHO                               PIC 9(01).
            03  FLG-RIREKI-HEN                          PIC 9(01).
            03  FLG-BUNBEN-SET                          PIC 9(01).
+           03  FLG-PTRSIINF                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -395,15 +382,11 @@
       *
        01  KEY-AREA1                           VALUE   LOW-VALUE.
            03  KEY-NEW1.
-               05  KEY-NEW11.
-                   07  KEY-N-SRYYM                     PIC 9(06).
-                   07  KEY-N-PTID                      PIC 9(10).
-               05  KEY-N-RECEIPT-KBN                   PIC X(10).
+               05  KEY-N-SRYYM                         PIC 9(06).
+               05  KEY-N-PTID                          PIC 9(10).
            03  KEY-OLD1.
-               05  KEY-OLD11.
-                   07  KEY-O-SRYYM                     PIC 9(06).
-                   07  KEY-O-PTID                      PIC 9(10).
-               05  KEY-O-RECEIPT-KBN                   PIC X(10).
+               05  KEY-O-SRYYM                         PIC 9(06).
+               05  KEY-O-PTID                          PIC 9(10).
       *
       *    添字領域
        01  IDX-AREA.
@@ -428,7 +411,6 @@
            03  SYOTOKU-IDX                             PIC 9(02).
            03  SYOTOKU-IDX2                            PIC 9(02)
                                                        OCCURS 4.
-           03  SYOTOKU-IDX8                            PIC 9(02).
            03  SYOTOKU-IDX9                            PIC 9(02).
            03  SYOTOKU-IDX-ED                          PIC 9(02).
            03  KOHFTN-IDX                              PIC 9(02).
@@ -463,7 +445,6 @@
                05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
-           03  WRK-PARA-PRTKBN                         PIC X(01).
            03  WRK-PARA-HOSPNUM                        PIC  9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC  X(08).
@@ -755,14 +736,10 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
-                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           DISPLAY "WRK-PARA-HOSPNUM=" WRK-PARA-HOSPNUM
-           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
@@ -1069,74 +1046,66 @@
                INITIALIZE                  WRK-SEIHO-RECE61-AREA
                                            TABLE-RECE69-AREA
       *
-               MOVE    KEY-NEW11       TO  KEY-OLD11
+               MOVE    KEY-NEW1        TO  KEY-OLD1
                PERFORM         UNTIL   FLG-RECE61      =   1
                                OR      FLG-END         =   1 
-                               OR      KEY-NEW11   NOT =   KEY-OLD11
-                   MOVE    ZERO            TO  FLG-SEIHO
-                   INITIALIZE                  WRK-SEIHO-RECE61-AREA
+                               OR      KEY-NEW1    NOT =   KEY-OLD1
+      *            保険履歴情報編集処理
+                   IF      IDZ             =   1               
+                       PERFORM 230-RECE69-HENSYU-SEC
+                   END-IF
+      *            患者特記情報取得処理
+                   IF      IDZ             =   1               
+                       PERFORM 230-PTTOKKI-HENSYU-SEC
+                   END-IF
       *
-                   MOVE    KEY-NEW1        TO  KEY-OLD1
-                   PERFORM         UNTIL   FLG-RECE61      =   1
-                                   OR      FLG-END         =   1 
-                                   OR      KEY-NEW1    NOT =   KEY-OLD1
-                       IF      IDZ             =   1               
-      *                    保険履歴情報編集処理
-                           PERFORM 230-RECE69-HENSYU-SEC
-      *                    患者特記情報取得処理
-                           PERFORM 230-PTTOKKI-HENSYU-SEC
-                       END-IF
-      *
-      *                編集処理
-      *                処理区分（社保・国保）により読み飛ばす
-                       EVALUATE    WRK-PARA-RECEKBN
-                           WHEN    "0"
-                               PERFORM 210-HENSYU-SEC
-                           WHEN    "1"
-                               IF      RECE61-HKNNUM   NOT =
+      *            編集処理
+      *            処理区分（社保・国保）により読み飛ばす
+                   EVALUATE    WRK-PARA-RECEKBN
+                       WHEN    "0"
+                           PERFORM 210-HENSYU-SEC
+                       WHEN    "1"
+                           IF      RECE61-HKNNUM   NOT =
                                                        "060" AND "067"
                                                    AND "068" AND "069" 
                                                    AND "039" AND "040"    
-                                   PERFORM 210-HENSYU-SEC
-                               END-IF
-                           WHEN    "2"
-                               IF      RECE61-HKNNUM       =
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                       WHEN    "2"
+                           IF      RECE61-HKNNUM       =
                                                        "060" OR  "067"
                                                    OR  "068" OR  "069"
-                                   PERFORM 210-HENSYU-SEC
-                               END-IF
-                           WHEN    "7"
-                               IF      RECE61-HKNNUM       =
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                       WHEN    "7"
+                           IF      RECE61-HKNNUM       =
                                                        "039" OR  "040"
-                                   PERFORM 210-HENSYU-SEC
-                               END-IF
-                       END-EVALUATE
-      *
-                       PERFORM     RECE61-READ-SEC
-      *
-      *                処理中止設定処理
-                       IF      CNT-IN-CANCEL       =   50
-                           MOVE    ZERO                TO  CNT-IN-CANCEL
-                           PERFORM 500-CANCEL-HENSYU-SEC
-                       END-IF
-                   END-PERFORM
-      *
-                   IF      IDZ             =   1               
-      *                生保単独レセの出力処理
-                       IF    ( WRK-SEIHO-RECE61-MAX    >   ZERO )
-                       AND   ( FLG-END                 =   ZERO )
-                           IF      FLG-RECE61          =   ZERO
-                               MOVE    RECE61-REC  TO  WRK-RECE61-REC
+                               PERFORM 210-HENSYU-SEC
                            END-IF
-                           PERFORM 250-SEIHO-RECE61-WRITE-SEC
-                           IF      FLG-RECE61          =   ZERO
-                               MOVE    WRK-RECE61-REC  TO  RECE61-REC
-                           END-IF
-                       END-IF
+                   END-EVALUATE
+      *
+                   PERFORM     RECE61-READ-SEC
+      *
+      *            処理中止設定処理
+                   IF      CNT-IN-CANCEL       =   50
+                       MOVE    ZERO                TO  CNT-IN-CANCEL
+                       PERFORM 500-CANCEL-HENSYU-SEC
                    END-IF
                END-PERFORM
       *
                IF      IDZ             =   1               
+      *            生保単独レセの出力処理
+                   IF    ( WRK-SEIHO-RECE61-MAX    >   ZERO )
+                   AND   ( FLG-END                 =   ZERO )
+                       IF      FLG-RECE61          =   ZERO
+                           MOVE    RECE61-REC      TO  WRK-RECE61-REC
+                       END-IF
+                       PERFORM 250-SEIHO-RECE61-WRITE-SEC
+                       IF      FLG-RECE61          =   ZERO
+                           MOVE    WRK-RECE61-REC      TO  RECE61-REC
+                       END-IF
+                   END-IF
+      *
       *            保険履歴情報編集処理
                    PERFORM VARYING IDWW    FROM    1   BY  1
                            UNTIL   IDWW    >       100
@@ -1768,11 +1737,7 @@
            END-IF              
       *
       *    低所得情報編集
-           IF   RECE62-RECESYUBETU  =  "8888"  OR  "6666"
-             CONTINUE
-           ELSE
-             PERFORM   2101-TEISYOTOKU-HENSYU-SEC
-           END-IF
+           PERFORM   2101-TEISYOTOKU-HENSYU-SEC
       *
       *    高齢者判定フラグ
            IF     (( RECE62-AGE          >=  70      )   OR
@@ -1780,7 +1745,7 @@
                      RECE61-KOHID    NOT  =   ZERO   )   OR
                    ( FLG-ROUJINHOKEN      =   1      )   OR
                    ( RECE62-HKNNUM        =  "039"   ))
-           AND    (  RECE62-KOREIHIGAITO  =  ZERO     )
+           AND    (  RECE62-YOBIETC(8)    =  ZERO     )
                MOVE    "1"             TO  RECE62-KOUREI-HANTEIFLG
            END-IF
       *
@@ -1800,7 +1765,7 @@
       ***               RECE62-HKNNUM        =  "039"   )
                       ( FLG-ROUJINHOKEN      =   1      )   OR
                       ( RECE62-HKNNUM        =  "039"   ))
-                AND  (  RECE62-KOREIHIGAITO  =  ZERO     )
+                AND  (  RECE62-YOBIETC(8)    =  ZERO     )
                    MOVE     "1"     TO   RECE62-KOUREI
                 ELSE
                   IF  RECE62-SRYYM  >=  "200704"
@@ -2172,12 +2137,6 @@
            MOVE  RECE62-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
            MOVE  RECE62-PTID     TO  LNK-SYOTOKU-PTID
            MOVE  RECE62-SRYYM    TO  LNK-SYOTOKU-SRYYM
-           MOVE  "1"             TO  LNK-SYOTOKU-SKJCHKFLG
-           PERFORM  VARYING   SYOTOKU-IDX8   FROM   1   BY   1
-                     UNTIL    SYOTOKU-IDX8     >   10
-                MOVE  RECE62-HKNCOMBI(SYOTOKU-IDX8)
-                                 TO  LNK-SYOTOKU-HKNCOMBI(SYOTOKU-IDX8)
-           END-PERFORM
       *
            CALL    "ORCSSYOTOKU"   USING  ORCSSYOTOKUAREA
                                           SPA-AREA
@@ -2195,35 +2154,18 @@
                                  TO  RECE62-TEISYOTOKU2(KOHFTN-IDX)
                    END-IF
                 END-PERFORM
-      *
-                IF    RECE62-SRYYM        >=  "201501"
-                   IF    LNK-SYOTOKU-SKJIDX = ZERO
-                     MOVE  SPACE    TO  RECE62-TEISYOTOKU3
-                   ELSE
-                     MOVE  LNK-SYOTOKU-SKJKBN(LNK-SYOTOKU-SKJIDX)
-                                    TO  RECE62-TEISYOTOKU3
-                     MOVE  LNK-SYOTOKU-KKSKBN(LNK-SYOTOKU-SKJIDX)
-                                    TO  RECE62-TEISYOTOKU3-KKSKBN
-                   END-IF
-                ELSE
-                   MOVE  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
-                                    TO  RECE62-TEISYOTOKU3
-                   IF    (RECE62-TEISYOTOKU3  =   "2")
-                   AND   (SYOTOKU-IDX-ED  NOT =  ZERO)
-                     PERFORM VARYING SYOTOKU-IDX9 FROM SYOTOKU-IDX BY 1
-                              UNTIL  SYOTOKU-IDX9   >  SYOTOKU-IDX-ED
-                       IF  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX9) = "3"
-                         MOVE  "3"  TO  RECE62-TEISYOTOKU3
-                         MOVE   31  TO  SYOTOKU-IDX9
-                       END-IF
-                     END-PERFORM
-                   END-IF
+                MOVE  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
+                                 TO  RECE62-TEISYOTOKU3
+                IF    (RECE62-TEISYOTOKU3  =   "2")
+                AND   (SYOTOKU-IDX-ED  NOT =  ZERO)
+                  PERFORM VARYING SYOTOKU-IDX9 FROM SYOTOKU-IDX BY 1
+                           UNTIL  SYOTOKU-IDX9   >  SYOTOKU-IDX-ED
+                    IF  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX9) = "3"
+                      MOVE  "3"  TO  RECE62-TEISYOTOKU3
+                      MOVE   31  TO  SYOTOKU-IDX9
+                    END-IF
+                  END-PERFORM
                 END-IF
-                PERFORM VARYING SYOTOKU-IDX9 FROM 1 BY 1
-                         UNTIL  SYOTOKU-IDX9   > 31
-                   MOVE  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX9)
-                            TO  RECE62-TEISYOTOKU3-SKJKBN(SYOTOKU-IDX9)
-                END-PERFORM
            END-IF
       *
            .
@@ -2237,12 +2179,12 @@
       *
            IF    RECE62-AGE         >=    70
              IF  (RECE62-HKNNUM       =  SPACE OR "040" OR "039"
-                                               OR "068" OR "069")
+                                               OR "067" OR "069")
              OR  (RECE62-HKNNUM(1:2)  =   "98" OR  "90" OR  "91")
                 CONTINUE
              ELSE
-              IF ( RECE62-HKNNUM      = "060"           )
-              OR ((RECE62-HKNNUM  NOT = "060"          ) AND
+              IF ( RECE62-HKNNUM      = "060" OR  "068" )
+              OR ((RECE62-HKNNUM  NOT = "060" AND "068") AND
                   (RECE62-HOJOKBN     = SPACE          ))
                 MOVE      RECE61-SRYYM       TO   WRK-SRYYYMM
                 IF   RECE62-TEKSTYMD(1:6)  >=  RECE61-SRYYM
@@ -2267,7 +2209,7 @@
                     IF    (PTKOH-TEKSTYMD  <=  WRK-SRYYMD    )
                     AND   (WRK-SRYYMD      <=  PTKOH-TEKEDYMD)
                     AND   (PTKOH-SAKJOKBN   =  SPACE         )
-                       MOVE    1    TO   RECE62-KOREIHIGAITO
+                       MOVE    1    TO   RECE62-YOBIETC(8)
                        MOVE    1    TO   FLG-PTKOHINF
                     ELSE
                        MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
@@ -2551,7 +2493,7 @@
                                        LNK-SYUBETUGET-RECESKYKBN (IDX)
                    END-IF 
                END-PERFORM
-               IF      RECE62-KOREIHIGAITO  =   1
+               IF      RECE62-YOBIETC (8)  =   1
                    MOVE    SPACE       TO  LNK-SYUBETUGET-HKN-HOJOKBN
                END-IF
                MOVE    RECE62-BIRTHDAY TO  LNK-SYUBETUGET-BIRTHDAY
@@ -3800,10 +3742,8 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                    MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SRYYMD
                    MOVE    WRK-SRYDD           TO  IDX5
                END-IF
-      *        保険組合せのチェック
-      *       （会計に対象の組合せがないとき又はＥＦファイル作成時は全て）
-               IF    ( RECE61-DAY-AREA     =   ALL "0" )
-               OR    ( WRK-PARA-PRTKBN     =   "8"     )
+      *        保険組合せのチェック（会計に対象の組合せがないときは全て）
+               IF      RECE61-DAY-AREA     =   ALL "0"
                    MOVE    "1"   TO   RECE62-NYUINRYOFLG
                    PERFORM 2401-PTNYUINRRK-HENSYU-SEC
                ELSE
@@ -3811,8 +3751,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                            UNTIL   IDX >       IDX5
                        IF    ( IDX             =   IDX4 )
                        AND   ( RECE61-DOUJITSU-HKNCOMBI (IDX)
-                                               =
-                                               PTNYUINRRK-HKNCOMBINUM )
+                                               >   ZERO )
       *                    同日再入院のとき再入院分の保険組合せをチェック
                            PERFORM VARYING IDY FROM    1   BY  1
                                    UNTIL   IDY >       10
@@ -3825,7 +3764,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                                    MOVE   IDX5             TO  IDX
                                END-IF
                            END-PERFORM
-                       ELSE
+                       ELSE    
                            PERFORM VARYING IDY FROM    1   BY  1
                                    UNTIL   IDY >       10
                                    OR  RECE62-HKNCOMBI (IDY)   =   ZERO
@@ -3936,92 +3875,25 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
            PERFORM    24011-BYOTOKBN-SET-SEC
       *
       *    診療科情報のセット
-      *    退院日＜診療年月、転出日の前日＜診療年月のときはセットしない
-           IF    ( PTNYUINRRK-TENSTUYMD    =  PTNYUINRRK-TAIINYMD )
-           AND   ( PTNYUINRRK-TENNYUYMD    =  PTNYUINRRK-NYUINYMD )
-               IF      PTNYUINRRK-TAIINYMD (1:6)
-                                           >=  RECE62-SRYYM
-                   PERFORM VARYING IDW FROM    1   BY  1
-                           UNTIL   IDW >       20
-                           OR      PTNYUINRRK-NYUINKA
+           PERFORM VARYING IDW FROM    1   BY  1
+                   UNTIL   IDW >       20
+                   OR      PTNYUINRRK-NYUINKA
                                            =   RECE62-SRYKA (IDW)
-                       IF      RECE62-SRYKA (IDW)  =   SPACE  
-                           PERFORM VARYING IDXX    FROM    1   BY  1
-                                   UNTIL   IDXX    >       10
-                                   OR      RECE62-HKNCOMBI (IDXX)
+               IF      RECE62-SRYKA (IDW)  =   SPACE  
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       10
+                           OR      RECE62-HKNCOMBI (IDXX)
                                                    =   ZERO
-                               IF      RECE62-HKNCOMBI (IDXX)  =
+                       IF      RECE62-HKNCOMBI (IDXX)   =
                                                PTNYUINRRK-HKNCOMBINUM
-                                   MOVE    PTNYUINRRK-NYUINKA  
+                           MOVE    PTNYUINRRK-NYUINKA  
                                                TO  RECE62-SRYKA (IDW)
-                                   MOVE    10      TO  IDXX
-                               END-IF
-                           END-PERFORM
-                           MOVE    20          TO  IDW
+                           MOVE    10  TO  IDXX
                        END-IF
                    END-PERFORM
-               END-IF    
-           ELSE
-               IF      PTNYUINRRK-TENSTUYMD
-                                   NOT =   PTNYUINRRK-TAIINYMD
-                   INITIALIZE              STS-AREA-DAY
-                   INITIALIZE              LNK-DAY6-AREA
-                   MOVE    "61"            TO  LNK-DAY6-IRAI
-                   MOVE   PTNYUINRRK-TENSTUYMD
-                                           TO  LNK-DAY6-KIJUN
-                   MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                   MOVE    -1              TO  LNK-DAY6-ZOGEN
-                   CALL  "ORCSDAY"         USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-                   IF      LNK-DAY6-KEISAN (1:6)
-                                       >=  RECE62-SRYYM
-                     PERFORM VARYING IDW FROM    1   BY  1
-                           UNTIL   IDW >       20
-                           OR      PTNYUINRRK-NYUINKA
-                                           =   RECE62-SRYKA (IDW)
-                       IF      RECE62-SRYKA (IDW)  =   SPACE  
-                           PERFORM VARYING IDXX    FROM    1   BY  1
-                                   UNTIL   IDXX    >       10
-                                   OR      RECE62-HKNCOMBI (IDXX)
-                                                   =   ZERO
-                               IF      RECE62-HKNCOMBI (IDXX)  =
-                                               PTNYUINRRK-HKNCOMBINUM
-                                   MOVE    PTNYUINRRK-NYUINKA  
-                                               TO  RECE62-SRYKA (IDW)
-                                   MOVE    10      TO  IDXX
-                               END-IF
-                           END-PERFORM
-                           MOVE    20          TO  IDW
-                       END-IF
-                     END-PERFORM
-                   END-IF
+                   MOVE    20          TO  IDW
                END-IF
-               IF      PTNYUINRRK-TENNYUYMD
-                                   NOT =   PTNYUINRRK-NYUINYMD
-                   IF      PTNYUINRRK-TENNYUYMD (1:6)
-                                       <=  RECE62-SRYYM
-                     PERFORM VARYING IDW FROM    1   BY  1
-                           UNTIL   IDW >       20
-                           OR      PTNYUINRRK-NYUINKA
-                                           =   RECE62-SRYKA (IDW)
-                       IF      RECE62-SRYKA (IDW)  =   SPACE  
-                           PERFORM VARYING IDXX    FROM    1   BY  1
-                                   UNTIL   IDXX    >       10
-                                   OR      RECE62-HKNCOMBI (IDXX)
-                                                   =   ZERO
-                               IF      RECE62-HKNCOMBI (IDXX)  =
-                                               PTNYUINRRK-HKNCOMBINUM
-                                   MOVE    PTNYUINRRK-NYUINKA  
-                                               TO  RECE62-SRYKA (IDW)
-                                   MOVE    10      TO  IDXX
-                               END-IF
-                           END-PERFORM
-                           MOVE    20          TO  IDW
-                       END-IF
-                     END-PERFORM
-                   END-IF
-               END-IF
-           END-IF
+           END-PERFORM
       *
       *    入院年月日・最終科
            IF      RECE62-LASTSRYKA    =   SPACE
@@ -4884,12 +4756,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                  TO    KEY-N-PTID
                    MOVE    RECE61-SRYYM
                                  TO    KEY-N-SRYYM
-                   MOVE    RECE61-RECEIPT-KBN
-                                 TO    KEY-N-RECEIPT-KBN
      *
                    DISPLAY "RECE61 " IDZ " PTID=" RECE61-PTID 
-                                         " PTNUM=" RECE61-PTNUM
-                           " RECEIPT-KBN=" RECE61-RECEIPT-KBN
       *
                    IF      WRK-PARA-SRYYM  =  ZERO
       *                医療機関ＩＤ編集

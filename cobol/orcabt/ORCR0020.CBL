@@ -272,14 +272,6 @@
       *                                    ¡ÊÆþ±¡Æü¤ÈÂà±¡Æü¤¬Æ±¤¸¤È¤­¡Ë
       *
       *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
-      *  04.08.02    NACL-ÌçÏÆ    15/10/21  ¸½ÊªµëÉÕÂÐ¾Ý³°¤ÎÄã½êÆÀ¡Ê¿©»ö¡ËÂÐ±þ
-      *  04.08.03    NACL-Æ£¸¶    15/10/08  Ê£¿ôËç¥ì¥»¥×¥ÈÊ¬³äÂÐ±þ
-      *                                     ¸øÈñÃ±ÆÈ¤Î£²²ó°Ê¾å¤ÎÊ¬³äÂÐ±þ
-      *  04.08.04    NACL-ÌçÏÆ    16/02/08  RECE02¤ÎÍ½È÷¹àÌÜ»ÈÍÑÊ¬¤Ë¤Ä¤¤¤Æ¡¢
-      *                                     ¸Ä¡¹¤Ë¹àÌÜ¤òÀß¤±¤ë»ö¤ËÈ¼¤¦½¤Àµ
-      *  04.08.05    NACL-ÌçÏÆ    16/03/28  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.06    NACL-ÌçÏÆ    17/10/18  Æþ±¡ÎÁ¤È°Û¤Ê¤ëÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
-      *                                     ¤Ç¤Î¿©»ö»»ÄêÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -430,15 +422,11 @@
       *
        01  KEY-AREA1                           VALUE   LOW-VALUE.
            03  KEY-NEW1.
-               05  KEY-NEW11.
-                   07  KEY-N-SRYYM                     PIC 9(06).
-                   07  KEY-N-PTID                      PIC 9(10).
-               05  KEY-N-RECEIPT-KBN                   PIC X(10).
+               05  KEY-N-SRYYM                         PIC 9(06).
+               05  KEY-N-PTID                          PIC 9(10).
            03  KEY-OLD1.
-               05  KEY-OLD11.
-                   07  KEY-O-SRYYM                     PIC 9(06).
-                   07  KEY-O-PTID                      PIC 9(10).
-               05  KEY-O-RECEIPT-KBN                   PIC X(10).
+               05  KEY-O-SRYYM                         PIC 9(06).
+               05  KEY-O-PTID                          PIC 9(10).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -893,175 +881,6 @@
       *
        01  TBL-ZAITAKU5-MAX    PIC 9(02)   VALUE   39.
       *
-      *    ºßÁí¿Ç¥Æ¡¼¥Ö¥ë¡Ê£²£°£±£¶Ç¯£´·î¿ÇÎÅÊ¬¡Á¡Ë
-       01  TBL-ZAITAKU6-AREA.
-      *    ºß¤¬¤ó°åÁí¡Êºß»Ù¿ÇÅù¡Ë¡Ê½èÊý¤»¤ó¤¢¤ê¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114007610".
-      *    ºß¤¬¤ó°åÁí¡Êºß»Ù¿ÇÅù¡Ë¡Ê½èÊý¤»¤ó¤Ê¤·¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114007710".
-      *    ºß°åÁí¡¦ºß°åÁí´É¡Ê£Ä£Õ£Í£Í£Ù¡Ë
-           03  FILLER          PIC X(09)   VALUE   "099140003".
-      *
-      *    ºß¤¬¤ó°åÁí¡Êµ¡Ç½¶¯²½¤·¤¿ºß»Ù¿ÇÅù¡Ë¡ÊÉÂ¾²¤¢¤ê¡Ë¡Ê½èÊý¤»¤ó¤¢¤ê¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114019510".
-      *    ºß¤¬¤ó°åÁí¡Êµ¡Ç½¶¯²½¤·¤¿ºß»Ù¿ÇÅù¡Ë¡ÊÉÂ¾²¤¢¤ê¡Ë¡Ê½èÊý¤»¤ó¤Ê¤·¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114019610".
-      *    ºß¤¬¤ó°åÁí¡Êµ¡Ç½¶¯²½¤·¤¿ºß»Ù¿ÇÅù¡Ë¡ÊÉÂ¾²¤Ê¤·¡Ë¡Ê½èÊý¤»¤ó¤¢¤ê¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114019710".
-      *    ºß¤¬¤ó°åÁí¡Êµ¡Ç½¶¯²½¤·¤¿ºß»Ù¿ÇÅù¡Ë¡ÊÉÂ¾²¤Ê¤·¡Ë¡Ê½èÊý¤»¤ó¤Ê¤·¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114019810".
-      *
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114030710".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114030810".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114030910".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031010".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031110".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031210".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031310".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031410".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031510".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031610".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031710".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031810".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114031910".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032010".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032110".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032210".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032310".
-      *    ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032410".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032510".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032610".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032710".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032810".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114032910".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033010".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033110".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033210".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033310".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033410".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033510".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033610".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033710".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033810".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114033910".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114034010".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114034110".
-      *    ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114034210".
-      *
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114035510".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114035610".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114035710".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114035810".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114035910".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036010".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036110".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036210".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036310".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036410".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036510".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036610".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036710".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036810".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114036910".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037010".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037110".
-      *    »Ü°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037210".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037310".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037410".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037510".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037610".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037710".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037810".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114037910".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038010".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038110".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038210".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038310".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038410".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038510".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038610".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038710".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£±¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038810".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114038910".
-      *    »Ü°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
-           03  FILLER          PIC X(09)   VALUE   "114039010".
-      *
-       01  TBL-ZAITAKU6-R      REDEFINES   TBL-ZAITAKU6-AREA.
-            03  TBL-ZAITAKU6   PIC X(09)   OCCURS  79.
-      *
-       01  TBL-ZAITAKU6-MAX    PIC 9(02)   VALUE   79.
-      *
       *
            COPY    "MCPAREA".
       *
@@ -1463,74 +1282,66 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                INITIALIZE                  WRK-SEIHO-RECE01-AREA
                                            TABLE-RECE09-AREA
       *
-               MOVE    KEY-NEW11       TO  KEY-OLD11
+               MOVE    KEY-NEW1        TO  KEY-OLD1
                PERFORM         UNTIL   FLG-RECE01      =   1
                                OR      FLG-END         =   1 
-                               OR      KEY-NEW11   NOT =   KEY-OLD11
-                   MOVE    ZERO            TO  FLG-SEIHO
-                   INITIALIZE                  WRK-SEIHO-RECE01-AREA
-      *
-                   MOVE    KEY-NEW1        TO  KEY-OLD1
-                   PERFORM         UNTIL   FLG-RECE01      =   1
-                                   OR      FLG-END         =   1 
-                                   OR      KEY-NEW1    NOT =   KEY-OLD1
-                       IF      IDZ             =   1
-      *                    ÊÝ¸±ÍúÎò¾ðÊóÊÔ½¸½èÍý
-                           PERFORM 230-RECE09-HENSYU-SEC
-      *                    ´µ¼ÔÆÃµ­¾ðÊó¼èÆÀ½èÍý
-                           PERFORM 230-PTTOKKI-HENSYU-SEC
-                       END-IF
-      *
-      *                ÊÔ½¸½èÍý
-      *                ½èÍý¶èÊ¬¡Ê¼ÒÊÝ¡¦¹ñÊÝ¡Ë¤Ë¤è¤êÆÉ¤ßÈô¤Ð¤¹
-                       EVALUATE    WRK-PARA-RECEKBN
-                           WHEN    "0"
-                               PERFORM 210-HENSYU-SEC
-                           WHEN    "1"
-                               IF      RECE01-HKNNUM   NOT =
+                               OR      KEY-NEW1    NOT =   KEY-OLD1
+      *            ÊÝ¸±ÍúÎò¾ðÊóÊÔ½¸½èÍý
+                   IF      IDZ             =   1               
+                       PERFORM 230-RECE09-HENSYU-SEC
+                   END-IF
+      *            ´µ¼ÔÆÃµ­¾ðÊó¼èÆÀ½èÍý
+                   IF      IDZ             =   1               
+                       PERFORM 230-PTTOKKI-HENSYU-SEC
+                   END-IF
+      *            
+      *            ÊÔ½¸½èÍý
+      *            ½èÍý¶èÊ¬¡Ê¼ÒÊÝ¡¦¹ñÊÝ¡Ë¤Ë¤è¤êÆÉ¤ßÈô¤Ð¤¹
+                   EVALUATE    WRK-PARA-RECEKBN
+                       WHEN    "0"
+                           PERFORM 210-HENSYU-SEC
+                       WHEN    "1"
+                           IF      RECE01-HKNNUM   NOT =
                                                        "060" AND "067"
-                                                   AND "068" AND "069"
-                                                   AND "039" AND "040"
-                                   PERFORM 210-HENSYU-SEC
-                               END-IF
-                           WHEN    "2"
-                               IF      RECE01-HKNNUM       =
+                                                   AND "068" AND "069"    
+                                                   AND "039" AND "040"    
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                       WHEN    "2"
+                           IF      RECE01-HKNNUM       =
                                                        "060" OR  "067"
                                                    OR  "068" OR  "069"
-                                   PERFORM 210-HENSYU-SEC
-                               END-IF
-                           WHEN    "7"
-                               IF      RECE01-HKNNUM       =
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                       WHEN    "7"
+                           IF      RECE01-HKNNUM       =
                                                        "039" OR  "040"
-                                   PERFORM 210-HENSYU-SEC
-                               END-IF
-                       END-EVALUATE
-      *
-                       PERFORM     RECE01-READ-SEC
-      *
-      *                ½èÍýÃæ»ßÀßÄê½èÍý
-                       IF      CNT-IN-CANCEL       =   50
-                           MOVE    ZERO                TO  CNT-IN-CANCEL
-                           PERFORM 500-CANCEL-HENSYU-SEC
-                       END-IF
-                   END-PERFORM
-      *
-                   IF      IDZ             =   1               
-      *                À¸ÊÝÃ±ÆÈ¥ì¥»¤Î½ÐÎÏ½èÍý
-                       IF    ( WRK-SEIHO-RECE01-MAX    >   ZERO )
-                       AND   ( FLG-END                 =   ZERO )
-                           IF      FLG-RECE01          =   ZERO
-                               MOVE    RECE01-REC  TO  WRK-RECE01-REC
+                               PERFORM 210-HENSYU-SEC
                            END-IF
-                           PERFORM 250-SEIHO-RECE01-WRITE-SEC
-                           IF      FLG-RECE01          =   ZERO
-                               MOVE    WRK-RECE01-REC  TO  RECE01-REC
-                           END-IF
-                       END-IF
+                   END-EVALUATE
+      *
+                   PERFORM     RECE01-READ-SEC
+      *
+      *            ½èÍýÃæ»ßÀßÄê½èÍý
+                   IF      CNT-IN-CANCEL       =   50
+                       MOVE    ZERO                TO  CNT-IN-CANCEL
+                       PERFORM 500-CANCEL-HENSYU-SEC
                    END-IF
                END-PERFORM
       *
                IF      IDZ             =   1               
+      *            À¸ÊÝÃ±ÆÈ¥ì¥»¤Î½ÐÎÏ½èÍý
+                   IF    ( WRK-SEIHO-RECE01-MAX    >   ZERO )
+                   AND   ( FLG-END                 =   ZERO )
+                       IF      FLG-RECE01          =   ZERO
+                           MOVE    RECE01-REC      TO  WRK-RECE01-REC
+                       END-IF
+                       PERFORM 250-SEIHO-RECE01-WRITE-SEC
+                       IF      FLG-RECE01          =   ZERO
+                           MOVE    WRK-RECE01-REC      TO  RECE01-REC
+                       END-IF
+                   END-IF
+      *
       *            ÊÝ¸±ÍúÎò¾ðÊóÊÔ½¸½èÍý
                    PERFORM VARYING IDYY    FROM    1   BY  1
                            UNTIL   IDYY    >       100
@@ -2190,12 +2001,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF   RECE01-SRYYM    >=  "200210"
-      *      Äã½êÆÀ¾ðÊóÊÔ½¸
-             IF   RECE02-RECESYUBETU  =  "8888"  OR  "6666"
-               CONTINUE
-             ELSE
+      *        Äã½êÆÀ¾ðÊóÊÔ½¸
                PERFORM   2101-TEISYOTOKU-HENSYU-SEC
-             END-IF
            END-IF
       *
       *    ºßÁí¿Ç¥Õ¥é¥°¥»¥Ã¥È
@@ -2774,7 +2581,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
            MOVE  RECE02-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
            MOVE  RECE02-PTID     TO  LNK-SYOTOKU-PTID
            MOVE  RECE02-SRYYM    TO  LNK-SYOTOKU-SRYYM
-           MOVE  SPACE           TO  LNK-SYOTOKU-SKJCHKFLG
       *
            CALL    "ORCSSYOTOKU"   USING  ORCSSYOTOKUAREA
                                           SPA-AREA
@@ -2805,12 +2611,12 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
            IF    RECE02-AGE         >=    70
              IF  (RECE02-HKNNUM       =  SPACE OR "040" OR "039"
-                                               OR "068" OR "069")
+                                               OR "067" OR "069")
              OR  (RECE02-HKNNUM(1:2)  =   "98" OR  "90" OR  "91")
                 CONTINUE
              ELSE
-              IF ( RECE02-HKNNUM      = "060"           )
-              OR ((RECE02-HKNNUM  NOT = "060"          ) AND
+              IF ( RECE02-HKNNUM      = "060" OR  "068" )
+              OR ((RECE02-HKNNUM  NOT = "060" AND "068") AND
                   (RECE02-HOJOKBN     = SPACE          ))
                 MOVE      RECE01-SRYYM       TO   WRK-SRYYYMM
                 IF   RECE02-TEKSTYMD(1:6)  >=  RECE01-SRYYM
@@ -2835,7 +2641,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                     IF    (PTKOH-TEKSTYMD  <=  WRK-SRYYMD    )
                     AND   (WRK-SRYYMD      <=  PTKOH-TEKEDYMD)
                     AND   (PTKOH-SAKJOKBN   =  SPACE         )
-                       MOVE    1    TO   RECE02-KOREIHIGAITO
+                       MOVE    1    TO   RECE02-YOBIETC(8)
                        MOVE    1    TO   FLG-PTKOHINF
                     ELSE
                        MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
@@ -3150,7 +2956,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                                        LNK-SYUBETUGET-RECESKYKBN (IDX)
                    END-IF 
                END-PERFORM
-               IF      RECE02-KOREIHIGAITO  =   1
+               IF      RECE02-YOBIETC (8)  =   1
                    MOVE    SPACE       TO  LNK-SYUBETUGET-HKN-HOJOKBN
                END-IF
                MOVE    RECE02-BIRTHDAY TO  LNK-SYUBETUGET-BIRTHDAY
@@ -4007,7 +3813,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                      RECE01-KOHID    NOT  =   ZERO   )   OR
                    ( FLG-ROUJINHOKEN      =   1      )   OR
                    ( RECE02-HKNNUM        =  "039"   ))
-           AND    (  RECE02-KOREIHIGAITO  =  ZERO     )
+           AND    (  RECE02-YOBIETC(8)    =  ZERO     )
                MOVE    "1"             TO  RECE02-KOUREI-HANTEIFLG
            END-IF
       *
@@ -4034,7 +3840,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
       ***            RECE02-HKNNUM        =  "039"   )
                    ( FLG-ROUJINHOKEN      =   1      )   OR
                    ( RECE02-HKNNUM        =  "039"   ))
-           AND    (  RECE02-KOREIHIGAITO  =  ZERO     )
+           AND    (  RECE02-YOBIETC(8)    =  ZERO     )
                MOVE   1    TO   FLG-GENBUTU70
            ELSE
              IF  RECE01-SRYYM    >=  "200704"
@@ -4046,23 +3852,15 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
            END-IF
       *
            IF   RECE01-SRYYM    >=  "200210"
-            IF       RECE01-SRYYM    >=  "201604"
-                    PERFORM   VARYING   IDX3   FROM    1   BY   1
-                               UNTIL  ( IDX3   >   TBL-ZAITAKU6-MAX )
-                                 OR   ( WRK-ZAITAKU    =    "1"     )
-                       MOVE  TBL-ZAITAKU6(IDX3)  TO  WRK-ZAITAKU-SRYCD
-                       PERFORM  ZAITAKU-HENSYU-SEC
-                    END-PERFORM
-            ELSE
-             IF      RECE01-SRYYM    >=  "201404"
+            IF        RECE01-SRYYM    >=  "201404"
                     PERFORM   VARYING   IDX3   FROM    1   BY   1
                                UNTIL  ( IDX3   >   TBL-ZAITAKU5-MAX )
                                  OR   ( WRK-ZAITAKU    =    "1"     )
                        MOVE  TBL-ZAITAKU5(IDX3)  TO  WRK-ZAITAKU-SRYCD
                        PERFORM  ZAITAKU-HENSYU-SEC
                     END-PERFORM
-             ELSE
-              IF     RECE01-SRYYM    >=  "201204"
+            ELSE
+              IF      RECE01-SRYYM    >=  "201204"
                     PERFORM   VARYING   IDX3   FROM    1   BY   1
                                UNTIL  ( IDX3   >   TBL-ZAITAKU4-MAX )
                                  OR   ( WRK-ZAITAKU    =    "1"     )
@@ -4070,32 +3868,31 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                        PERFORM  ZAITAKU-HENSYU-SEC
                     END-PERFORM
               ELSE
-               IF    RECE01-SRYYM    >=  "200804"
+                IF    RECE01-SRYYM    >=  "200804"
                     PERFORM   VARYING   IDX3   FROM    1   BY   1
                                UNTIL  ( IDX3   >   TBL-ZAITAKU3-MAX )
                                  OR   ( WRK-ZAITAKU    =    "1"     )
                        MOVE  TBL-ZAITAKU3(IDX3)  TO  WRK-ZAITAKU-SRYCD
                        PERFORM  ZAITAKU-HENSYU-SEC
                     END-PERFORM
-               ELSE
-                IF   RECE01-SRYYM    >=  "200604"
+                ELSE
+                  IF  RECE01-SRYYM    >=  "200604"
                     PERFORM   VARYING   IDX3   FROM    1   BY   1
                                UNTIL  ( IDX3   >   TBL-ZAITAKU2-MAX )
                                  OR   ( WRK-ZAITAKU    =    "1"     )
                        MOVE  TBL-ZAITAKU2(IDX3)  TO  WRK-ZAITAKU-SRYCD
                        PERFORM  ZAITAKU-HENSYU-SEC
                     END-PERFORM
-                ELSE
+                  ELSE
                     PERFORM   VARYING   IDX3   FROM    1   BY   1
                                UNTIL  ( IDX3   >   TBL-ZAITAKU-MAX  )
                                  OR   ( WRK-ZAITAKU    =    "1"     )
                        MOVE  TBL-ZAITAKU(IDX3)   TO  WRK-ZAITAKU-SRYCD
                        PERFORM  ZAITAKU-HENSYU-SEC
                     END-PERFORM
+                  END-IF
                 END-IF
-               END-IF
               END-IF
-             END-IF
             END-IF
       *
             IF   ((WRK-ZAITAKU     =   "1"     ) AND
@@ -5082,7 +4879,6 @@ grpsys     MOVE    RECE02-KEY          TO  RECE12-KEY1
            AND   (  WRK-KOH-01-HOSPNUM     >   ZERO )
                MOVE    WRK-KOH-RECE01-REC  TO  RECE01-REC
       *        ¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
-               DISPLAY "SEH"
                PERFORM 2101-RECE02-HENSYU-SEC
            ELSE
                PERFORM VARYING IDXX    FROM    1   BY  1
@@ -5094,7 +4890,6 @@ grpsys     MOVE    RECE02-KEY          TO  RECE12-KEY1
                        MOVE    WRK-SEIHO-RECE01-REC (IDXX)
                                                TO  RECE01-REC
       *                ¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
-               DISPLAY "SEH"
                        PERFORM 2101-RECE02-HENSYU-SEC
                    END-IF
                END-PERFORM
@@ -5758,12 +5553,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                  TO    KEY-N-PTID
                    MOVE    RECE01-SRYYM
                                  TO    KEY-N-SRYYM
-                   MOVE    RECE01-RECEIPT-KBN
-                                 TO    KEY-N-RECEIPT-KBN
       *
-                   DISPLAY "RECE01 " IDZ " PTID=" RECE01-PTID 
-                                         " PTNUM=" RECE01-PTNUM 
-                           " RECEIPT-KBN=" RECE01-RECEIPT-KBN
+                   DISPLAY "RECE01 " IDZ " PTNUM=" RECE01-PTNUM
            END-READ
            .
        RECE01-READ-EXT.
