@@ -712,12 +712,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
                GO  TO  210111-RECE88-WRITE-EXT
            END-IF
-      *??
-               DISPLAY "PTNYUINRRK-NYUINYMD=" PTNYUINRRK-NYUINYMD "#"
-                                              PTNYUINRRK-TAIINYMD "#"
-                                              PTNYUINRRK-NYUINCHUKBN "#"
-                                              PTNYUINRRK-SHONUM "#"
-      *??
       *
       *
            INITIALIZE                      RECE88-REC
@@ -749,13 +743,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF      PTNYUINRRK-SHONUM   =    WRK-SHONUM
                    MOVE    WRK-SHONUM           TO  RECE88-SHONUM
                END-IF
-      *??
-               DISPLAY "RECE88-NYUINYMD=" RECE88-NYUINYMD "#"
-                                          RECE88-NYUINYMD-SEQNO "#"
-                                          RECE88-TAIINYMD "#"
-                                          RECE88-SHONUM "#"
-                                          RECE88-NYUINCHUKBN "#"
-      *??
                WRITE   RECE88-REC
                ADD     1                   TO  CNT-RECE88
       *

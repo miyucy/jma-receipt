@@ -1977,10 +1977,14 @@
       *
            MOVE    WRK-RECE200-KEY     TO  RECE250-KEY1
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE250-NYUINYMD
-           IF      PTNYUINRRK-TAIINYMD =   "99999999"
-               MOVE    1                   TO  RECE250-NYUINYMD-SEQNO
-           ELSE
-               MOVE    ZERO                TO  RECE250-NYUINYMD-SEQNO
+           IF      PTNYUINRRK-NYUINYMD =   PTNYUINRRK-TAIINYMD
+               MOVE    0                   TO  RECE250-NYUINYMD-SEQNO
+           ELSE 
+               IF      PTNYUINRRK-TAIINYMD =   "99999999"
+                   MOVE    9                   TO RECE250-NYUINYMD-SEQNO
+               ELSE
+                   MOVE    1                   TO RECE250-NYUINYMD-SEQNO
+               END-IF
            END-IF
            MOVE    RECE250-REC         TO  WRK-RECE250-REC          
            PERFORM 900-RECE250-READ-SEC
