@@ -3445,7 +3445,7 @@
            MOVE    "同一保険番号"  TO  SPA-GMN-JYUHENTAIKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-JYUHENTAIKBNL    (2)
-           MOVE    "1 同一法別番号" TO SPA-GMN-JYUHENTAIKBNMEIL (2)
+           MOVE    "同一法別番号"  TO SPA-GMN-JYUHENTAIKBNMEIL  (2)
       *
            MOVE    2               TO  SPA-GMN-JYUHENTAIKBN-MAX
       *
