@@ -36,6 +36,10 @@
       *  00.00.00    NACL-伊藤    14. 7. 8  SYレコード編集
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *
+      *  00.00.00    NACL-伊藤    15. 2.18  自費保険分を作成
+      *                                     地域連携IDが空白の場合は
+      *                                     患者番号を記録
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -98,6 +102,7 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RENKEI-TMP          PIC 9(01).
            03  FLG-PTPUBLIC            PIC 9(01).
+           03  FLG-PTNUM               PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-SRYACT              PIC 9(01).
@@ -194,6 +199,7 @@
            03  WRK-NYUTAIYMD.
                05  WRK-NYUINYMD        PIC X(07).
                05  WRK-TAIINYMD        PIC X(07).
+           03  WRK-RECESYUBETU         PIC X(04).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -265,6 +271,10 @@
       *    患者地域連携
        01  PTPUBLIC-REC.
            COPY    "CPPTNUM-PUBLIC.INC".
+      *
+      *    患者番号情報
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -568,15 +578,22 @@
                MOVE    RECEDEN-PTID        TO  SPA-PTID
       *        入退院日をレセプト共通レコードから取得
                MOVE    SPACE               TO  WRK-NYUTAIYMD
-               IF      WRK-PARA-NYUGAIKBN  =   "1"
-                   INITIALIZE  ORCSDIVCSV-AREA
-                   MOVE    RECEDEN-RECEDATA    TO  ORCSDIVCSV-REC
-      *            21請求情報に退院日がセットされているため
-                   MOVE    21                  TO  ORCSDIVCSV-ELE-C
-                   MOVE    ","                 TO  ORCSDIVCSV-DELI
-                   MOVE    ZERO                TO  ORCSDIVCSV-DQ
-                   CALL    "ORCSDIVCSV"     USING  ORCSDIVCSV-AREA
-                   IF      ORCSDIVCSV-RC       =   ZERO
+               INITIALIZE  ORCSDIVCSV-AREA
+               MOVE    RECEDEN-RECEDATA    TO  ORCSDIVCSV-REC
+      *        21請求情報に退院日がセットされているため
+               MOVE    21                  TO  ORCSDIVCSV-ELE-C
+               MOVE    ","                 TO  ORCSDIVCSV-DELI
+               MOVE    ZERO                TO  ORCSDIVCSV-DQ
+               CALL    "ORCSDIVCSV"     USING  ORCSDIVCSV-AREA
+               IF      ORCSDIVCSV-RC       =   ZERO
+                   IF      ORCSDIVCSV-D (3)
+                                           NOT =   SPACE
+                       MOVE    ORCSDIVCSV-D (3)
+                                               TO  WRK-RECESYUBETU
+                   ELSE
+                       MOVE    SPACE           TO  WRK-RECESYUBETU
+                   END-IF
+                   IF      WRK-PARA-NYUGAIKBN  =   "1"
                        IF      ORCSDIVCSV-D (9)
                                                NOT =   SPACE
                            MOVE    ORCSDIVCSV-D (9)    TO  WRK-NYUINYMD
@@ -608,6 +625,11 @@
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       TABLE-MAX
                    IF      TBL-RECEDATA (IDX) (1:2)    =   "RE"
+                       IF     (SYS-9101-JIHI           NOT =   "T")
+                         AND  (WRK-RECESYUBETU             =   "8888")
+      *                    自費保険分を作成しない場合はスキップ
+                           EXIT  PERFORM
+                       END-IF
       *                負担区分クリア
                        MOVE    SPACE               TO  WRK-FTNKBN
                        INITIALIZE  WRK-FTNKBN-TBL
@@ -921,8 +943,20 @@
            MOVE    "R1,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *
-           MOVE    PTPUBLIC-PATIENT-ID1
-                                       TO  WRK-DATA
+           MOVE    SPACE               TO  WRK-DATA
+           IF      PTPUBLIC-PATIENT-ID1
+                                   NOT =   SPACE
+               MOVE    PTPUBLIC-PATIENT-ID1
+                                           TO  WRK-DATA
+           ELSE
+               IF      SYS-9101-PTNUM      =   "T"
+      *            地域連携IDが空白の場合患者番号を記録
+                   PERFORM 900-PTNUM-READ-SEC
+                   IF      FLG-PTNUM           =   ZERO
+                       MOVE    PTNUM-PTNUM         TO  WRK-DATA
+                   END-IF
+               END-IF
+           END-IF
            MOVE    20                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
@@ -1921,6 +1955,42 @@
            PERFORM 900-CLOSE-SEC
            .
        900-PTPUBLIC-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号情報読込
+      *****************************************************************
+       900-PTNUM-READ-SEC          SECTION.
+      *
+           INITIALIZE  PTNUM-REC
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
+           MOVE    SPA-PTID            TO  PTNUM-PTID
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+      *
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-PTNUM
+                   MOVE    MCPDATA-REC         TO  PTNUM-REC
+               ELSE
+                   INITIALIZE  PTNUM-REC
+                   MOVE    1                   TO  FLG-PTNUM
+               END-IF
+           ELSE
+               INITIALIZE  PTNUM-REC
+               MOVE    1                   TO  FLG-PTNUM
+           END-IF
+      *
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+       900-PTNUM-READ-EXT.
            EXIT.
       *
       *****************************************************************
