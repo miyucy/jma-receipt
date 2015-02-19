@@ -520,7 +520,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>地域連携IDがない場合に患者番号を記録</label>
+        <label>地域連携IDが空白の場合に患者番号を記録</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>

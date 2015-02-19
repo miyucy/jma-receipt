@@ -102,7 +102,6 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RENKEI-TMP          PIC 9(01).
            03  FLG-PTPUBLIC            PIC 9(01).
-           03  FLG-PTNUM               PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-SRYACT              PIC 9(01).
@@ -200,6 +199,7 @@
                05  WRK-NYUINYMD        PIC X(07).
                05  WRK-TAIINYMD        PIC X(07).
            03  WRK-RECESYUBETU         PIC X(04).
+           03  WRK-PTNUM               PIC X(20).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -271,10 +271,6 @@
       *    患者地域連携
        01  PTPUBLIC-REC.
            COPY    "CPPTNUM-PUBLIC.INC".
-      *
-      *    患者番号情報
-       01  PTNUM-REC.
-           COPY    "CPPTNUM.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -578,6 +574,8 @@
                MOVE    RECEDEN-PTID        TO  SPA-PTID
       *        入退院日をレセプト共通レコードから取得
                MOVE    SPACE               TO  WRK-NYUTAIYMD
+               MOVE    SPACE               TO  WRK-RECESYUBETU
+               MOVE    SPACE               TO  WRK-PTNUM
                INITIALIZE  ORCSDIVCSV-AREA
                MOVE    RECEDEN-RECEDATA    TO  ORCSDIVCSV-REC
       *        21請求情報に退院日がセットされているため
@@ -590,8 +588,11 @@
                                            NOT =   SPACE
                        MOVE    ORCSDIVCSV-D (3)
                                                TO  WRK-RECESYUBETU
-                   ELSE
-                       MOVE    SPACE           TO  WRK-RECESYUBETU
+                   END-IF
+                   IF      ORCSDIVCSV-D (14)
+                                           NOT =   SPACE
+                       MOVE    ORCSDIVCSV-D (14)
+                                               TO  WRK-PTNUM
                    END-IF
                    IF      WRK-PARA-NYUGAIKBN  =   "1"
                        IF      ORCSDIVCSV-D (9)
@@ -951,10 +952,7 @@
            ELSE
                IF      SYS-9101-PTNUM      =   "T"
       *            地域連携IDが空白の場合患者番号を記録
-                   PERFORM 900-PTNUM-READ-SEC
-                   IF      FLG-PTNUM           =   ZERO
-                       MOVE    PTNUM-PTNUM         TO  WRK-DATA
-                   END-IF
+                   MOVE    WRK-PTNUM           TO  WRK-DATA
                END-IF
            END-IF
            MOVE    20                  TO  WRK-NAGASA
@@ -1955,42 +1953,6 @@
            PERFORM 900-CLOSE-SEC
            .
        900-PTPUBLIC-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者番号情報読込
-      *****************************************************************
-       900-PTNUM-READ-SEC          SECTION.
-      *
-           INITIALIZE  PTNUM-REC
-           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNUM-PTID
-           MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "tbl_ptnum"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptnum"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-PTNUM
-                   MOVE    MCPDATA-REC         TO  PTNUM-REC
-               ELSE
-                   INITIALIZE  PTNUM-REC
-                   MOVE    1                   TO  FLG-PTNUM
-               END-IF
-           ELSE
-               INITIALIZE  PTNUM-REC
-               MOVE    1                   TO  FLG-PTNUM
-           END-IF
-      *
-           MOVE    "tbl_ptnum"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-           .
-       900-PTNUM-READ-EXT.
            EXIT.
       *
       *****************************************************************
