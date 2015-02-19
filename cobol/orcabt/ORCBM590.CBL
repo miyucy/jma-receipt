@@ -40,13 +40,6 @@
       *  00.00.00    NACL-伊藤    15. 2.18  自費保険分を作成
       *                                     地域連携IDが空白の場合は
       *                                     患者番号を記録
-      *  04.08.06    NACL-藤原    15/08/07  医療情報連携基盤のクライアン
-      *                                     ト保存対応
-      *  04.08.07    NACL-伊藤    15.10.01  R1レコード編集
-      *                                     地域連携IDなしは対象とし、
-      *                                     同意なしは出力しない
-      *  05.00.00    NACL-森脇    17.02.09  傷病名称全記録
-      *  05.00.01    NACL-森脇    17/06/01  診療行為、医薬品レコード名称登録
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,9 +109,6 @@
            03  FLG-DATA                PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
            03  FLG-SRYKBN              PIC 9(01).
-      *----(05.00.01)--ADD-START---
-           03  FLG-TENSU               PIC 9(01).
-      *----(05.00.01)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
@@ -141,10 +131,6 @@
            03  IDZZ                    PIC 9(05).
            03  IDF                     PIC 9(05).
            03  IDF1                    PIC 9(05).
-      *----(05.00.00)--ADD-START---
-           03  IDX-B1                  PIC 9(05).
-           03  IDX-B2                  PIC 9(05).
-      *----(05.00.00)--ADD-END-----
       *
       *    一時領域
       *    パラメタエリア
@@ -214,10 +200,6 @@
                05  WRK-TAIINYMD        PIC X(07).
            03  WRK-RECESYUBETU         PIC X(04).
            03  WRK-PTNUM               PIC X(20).
-      *----(05.00.00)--ADD-START---
-           03  WRK-BYOMEICD-G.
-               05  WRK-BYOMEICD        PIC X(04)   OCCURS  20.
-      *----(05.00.00)--ADD-END-----
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -233,8 +215,6 @@
       *    エラーファイル名称領域
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *
-       01  WRK-SGETTEMP-TEMPDIR        PIC X(1024).
       *
       *    医療機関情報ワーク
            COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
@@ -307,10 +287,6 @@
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
-      *----(05.00.01)--ADD-START---
-      *    点数マスタ
-           COPY    "CPTENSU.INC".
-      *----(05.00.01)--ADD-END-----
       *
       *****************************************************************
       *    サブプロ用領域
@@ -337,14 +313,6 @@
            COPY    "CPORCSGETFTNKBN.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
-      *
-      *    クライアント保存ＤＢ制御サブ
-           COPY    "CPORCSFILESV.INC".
-      *
-      *----(05.00.00)--ADD-START---
-      *    病名検索
-           COPY    "CPORCSBYOMEI.INC".
-      *----(05.00.00)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -416,8 +384,6 @@
            MOVE    SPACE           TO  RECEERR
            MOVE    SGETTEMP-FULLNAME
                                    TO  RECEERR
-      *
-           MOVE   SGETTEMP-TEMPDIR TO  WRK-SGETTEMP-TEMPDIR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -678,9 +644,8 @@
       *                指定日より後の退院日はスキップする
                                IF     (PTPUBLIC-AGREEMENT
                                                NOT =   "1")  OR
-      *H27.10 地域連携IDは未設定でも対象とする
-      **                              (PTPUBLIC-PATIENT-ID1
-      **                                           =   SPACE)  OR
+                                      (PTPUBLIC-PATIENT-ID1
+                                                   =   SPACE)  OR
                                      ((WRK-PARA-NYUGAIKBN
                                                    =   "1")  AND
                                       (WRK-PARA-PRTKBN
@@ -1398,142 +1363,6 @@
        2002531-FIX-FTNKBN-EXT.
            EXIT.
       *
-      *----(05.00.00)--ADD-START---
-      *****************************************************************
-      *    病名編集処理
-      *****************************************************************
-       2002-BYOMEI-HENSYU-SEC      SECTION.
-      *
-           INITIALIZE                      ORCSDIVCSV-AREA
-           MOVE    RECEDEN-RECEDATA    TO  ORCSDIVCSV-REC
-           MOVE    8                   TO  ORCSDIVCSV-ELE-C
-           MOVE    ","                 TO  ORCSDIVCSV-DELI
-           MOVE    ZERO                TO  ORCSDIVCSV-DQ
-           CALL    "ORCSDIVCSV"            USING
-                                           ORCSDIVCSV-AREA
-      *    未コード化傷病名コードの場合は処理抜ける
-           IF      ORCSDIVCSV-RC       =   ZERO
-               IF      ORCSDIVCSV-D(2)     =   "0000999"
-                   GO  TO   2002-BYOMEI-HENSYU-EXT
-               ELSE
-                   MOVE    SPACE       TO  WRK-BYOMEICD-G
-                   MOVE    ORCSDIVCSV-D(5)
-                                       TO  WRK-BYOMEICD-G
-      *
-                   INITIALIZE              ORCSBYOMEIAREA
-                   MOVE    "2"         TO  LNK-BYO-SYORI
-      *
-                   MOVE    ZERO        TO  IDX-B2
-                   PERFORM VARYING IDX-B1  FROM    1   BY  1
-                           UNTIL ( IDX-B1  >       20 )
-                           OR    ( WRK-BYOMEICD(IDX-B1)    >=  "8000")
-                           OR    ( WRK-BYOMEICD(IDX-B1)    =   SPACE )
-                       COMPUTE IDX-B2  =   IDX-B2  +   1
-                       MOVE    SPACE   TO  LNK-BYO-TBYOMEICD(IDX-B2)
-                       STRING  "ZZZ"       DELIMITED BY SIZE
-                               WRK-BYOMEICD(IDX-B1)
-                                           DELIMITED BY SIZE
-                               INTO        LNK-BYO-TBYOMEICD(IDX-B2)
-                       END-STRING
-                   END-PERFORM
-      *
-                   COMPUTE IDX-B2  =   IDX-B2  +   1
-                   MOVE    ORCSDIVCSV-D(2)
-                                       TO  LNK-BYO-TBYOMEICD(IDX-B2)
-      *
-                   PERFORM VARYING IDX-B1  FROM    IDX-B1  BY  1
-                           UNTIL ( IDX-B1  >       20 )
-                           OR    ( WRK-BYOMEICD(IDX-B1)    >=  "9000")
-                           OR    ( WRK-BYOMEICD(IDX-B1)    =   SPACE )
-                       COMPUTE IDX-B2  =   IDX-B2  +   1
-                       MOVE    SPACE   TO  LNK-BYO-TBYOMEICD(IDX-B2)
-                       STRING  "ZZZ"       DELIMITED BY SIZE
-                               WRK-BYOMEICD(IDX-B1)
-                                           DELIMITED BY SIZE
-                               INTO        LNK-BYO-TBYOMEICD(IDX-B2)
-                       END-STRING
-                   END-PERFORM
-      *
-                   CALL    "ORCSBYOMEI"        USING
-                                               ORCSBYOMEIAREA
-                                               SPA-AREA
-      *            病名編集
-                   MOVE    LNK-BYO-BYOMEI  TO  ORCSDIVCSV-D(6)
-      *
-                   MOVE    SPACE           TO  WRK-REC
-                   STRING  ORCSDIVCSV-D(1)     DELIMITED   BY  SPACE
-                           ","                 DELIMITED   BY  SIZE
-                           ORCSDIVCSV-D(2)     DELIMITED   BY  SPACE
-                           ","                 DELIMITED   BY  SIZE
-                           ORCSDIVCSV-D(3)     DELIMITED   BY  SPACE
-                           ","                 DELIMITED   BY  SIZE
-                           ORCSDIVCSV-D(4)     DELIMITED   BY  SPACE
-                           ","                 DELIMITED   BY  SIZE
-                           ORCSDIVCSV-D(5)     DELIMITED   BY  SPACE
-                           ","                 DELIMITED   BY  SIZE
-                           ORCSDIVCSV-D(6)     DELIMITED   BY  SPACE
-                           ","                 DELIMITED   BY  SIZE
-                           ORCSDIVCSV-D(7)     DELIMITED   BY  SPACE
-                           ","                 DELIMITED   BY  SIZE
-                           ORCSDIVCSV-D(8)     DELIMITED   BY  SPACE
-                                                   INTO        WRK-REC
-                   END-STRING
-                   MOVE    WRK-REC         TO  RECEDEN-RECEDATA
-               END-IF
-           END-IF
-      *
-           .
-       2002-BYOMEI-HENSYU-EXT.
-           EXIT.
-      *----(05.00.00)--ADD-END-----
-      *----(05.00.01)--ADD-START---
-      *****************************************************************
-      *    名称編集処理
-      *****************************************************************
-       2002-NAME-HENSYU-SEC      SECTION.
-      *
-           INITIALIZE                      ORCSDIVCSV-AREA
-           MOVE    RECEDEN-RECEDATA    TO  ORCSDIVCSV-REC
-           MOVE    4                   TO  ORCSDIVCSV-ELE-C
-           MOVE    ","                 TO  ORCSDIVCSV-DELI
-           MOVE    ZERO                TO  ORCSDIVCSV-DQ
-           CALL    "ORCSDIVCSV"            USING
-                                           ORCSDIVCSV-AREA
-           IF      ORCSDIVCSV-RC       NOT =   ZERO
-               GO  TO  2002-NAME-HENSYU-EXT
-           END-IF
-      *
-           INITIALIZE                      TNS-TENSU-REC
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-           MOVE    LNK-PRTKANRI-SRYYM  TO  TNS-YUKOSTYMD (1:6)
-           MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
-           MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
-           MOVE    ORCSDIVCSV-D(4)     TO  TNS-SRYCD
-      *
-           PERFORM 900-TENSU-READ-SEC
-      *     IF      FLG-TENSU       =   ZERO
-               PERFORM VARYING WRK-REC-LENGTH  FROM    1  BY  1
-                       UNTIL ( WRK-REC-LENGTH  >   2500 )
-                       OR    ( RECEDEN-RECEDATA(WRK-REC-LENGTH:1)
-                                               =   WRK-KAIGYO )
-                   CONTINUE
-               END-PERFORM
-               COMPUTE WRK-REC-LENGTH  =   WRK-REC-LENGTH - 1
-               MOVE    SPACE           TO  WRK-REC
-               STRING  RECEDEN-RECEDATA(1:WRK-REC-LENGTH)
-                                       DELIMITED   BY  SIZE
-                       ","             DELIMITED   BY  SIZE
-                       TNS-NAME        DELIMITED   BY  SPACE
-                       WRK-KAIGYO      DELIMITED   BY  SIZE
-                                       INTO        WRK-REC
-               END-STRING
-               MOVE    WRK-REC         TO  RECEDEN-RECEDATA
-      *     END-IF
-      *
-           .
-       2002-NAME-HENSYU-EXT.
-           EXIT.
-      *----(05.00.01)--ADD-END-----
       *****************************************************************
       *    終了処理
       *****************************************************************
@@ -1552,11 +1381,6 @@
                MOVE    "処理対象のデータがありませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-           ELSE
-      *        ファイル保存情報更新
-               IF      WRK-PARA-DATAKBN    =   "5"
-                   PERFORM 3001-FILE-INFO-INSERT-SEC
-               END-IF
            END-IF
       *
       *    ステップ管理終了処理
@@ -1574,125 +1398,6 @@
            .
        300-TERM-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ファイル保存情報更新処理
-      *****************************************************************
-       3001-FILE-INFO-INSERT-SEC             SECTION.
-      *
-           INITIALIZE                  ORCSFILESVAREA
-           MOVE    "I"             TO  SFILESV-MODE
-           MOVE    WRK-PARA-SHELLID
-                                   TO  SFILESV-TBL-KEY
-           MOVE    "recept4.sh"    TO  SFILESV-SHELLID  (1)
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                   TO  SFILESV-SHORI-RENNUM
-                                                        (1)
-           MOVE    LNK-PRTKANRI-RENNUM
-                                   TO  SFILESV-RENNUM   (1)
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SFILESV-SRYYM    (1)
-           MOVE    LNK-PRTKANRI-SKYYMD
-                                   TO  SFILESV-SKYYMD   (1)
-      *****MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
-      *****                                             (1)
-           MOVE    WRK-SGETTEMP-TEMPDIR
-                                   TO  SFILESV-FOR-FOLDER
-                                                        (1)
-           IF      WRK-PARA-TEISYUTUSAKI   =   "1"
-               EVALUATE    WRK-PARA-NYUGAIKBN
-                 WHEN    "1"
-                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "RECEIPTCS2"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-FOR-DATA(1)
-                   END-STRING
-                   STRING  "RECEIPTCS2"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-TO-DATA (1)
-                   END-STRING
-               WHEN    "2"
-                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "RECEIPTCS1"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-FOR-DATA(1)
-                   END-STRING
-                   STRING  "RECEIPTCS1"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-TO-DATA (1)
-                   END-STRING
-               END-EVALUATE
-           ELSE
-               EVALUATE    WRK-PARA-NYUGAIKBN
-                 WHEN    "1"
-                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "RECEIPTCK2"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-FOR-DATA(1)
-                   END-STRING
-                   STRING  "RECEIPTCK2"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-TO-DATA (1)
-                   END-STRING
-                 WHEN    "2"
-                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "RECEIPTCK1"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-FOR-DATA(1)
-                   END-STRING
-                   STRING  "RECEIPTCK1"        DELIMITED  BY  SIZE
-                           LNK-PRTKANRI-TBL-GROUP
-                                               DELIMITED  BY  SIZE
-                           ".UKE"              DELIMITED  BY  SIZE
-                                               INTO  SFILESV-TO-DATA (1)
-                   END-STRING
-               END-EVALUATE
-           END-IF
-      *
-           MOVE    CNT-OUT         TO  SFILESV-CNT-ALL  (1)
-           IF      WRK-PARA-TEISYUTUSAKI   =   "1"
-               EVALUATE    WRK-PARA-NYUGAIKBN
-                   WHEN    "1"
-                       MOVE    "社保　連携ファイル作成（入院）"
-                                           TO  SFILESV-TITLE    (1)
-                   WHEN    "2"
-                       MOVE    "社保　連携ファイル作成（入院外）"
-                                           TO  SFILESV-TITLE    (1)
-               END-EVALUATE
-           ELSE
-               EVALUATE    WRK-PARA-NYUGAIKBN
-                   WHEN    "1"
-                       MOVE    "国保　連携ファイル作成（入院）"
-                                           TO  SFILESV-TITLE    (1)
-                   WHEN    "2"
-                       MOVE    "国保　連携ファイル作成（入院外）"
-                                           TO  SFILESV-TITLE    (1)
-               END-EVALUATE
-           END-IF
-      *
-           MOVE    "1"             TO  SFILESV-DATA-TYPE(1)
-      *
-           CALL    "ORCSFILESV"    USING
-                                       ORCSFILESVAREA
-                                       SPA-AREA
-           .
-       3001-FILE-INFO-INSERT-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    エラー出力処理
@@ -2037,13 +1742,7 @@
                    MOVE    WRK-REC         TO  RECEDEN-RECEDATA
                    MOVE    ZERO            TO  FLG-SRYKBN
                END-IF
-      *----(05.00.01)--ADD-START---
-               IF    ( SYS-9101-NMREC      =   "T" )
-                   IF    ( RECEDEN-RECEDATA (1:2)  =   "SI"  OR  "IY" )
-                       PERFORM 2002-NAME-HENSYU-SEC
-                   END-IF
-               END-IF
-      *----(05.00.01)--ADD-END-----
+      *
                EVALUATE    RECEDEN-RECEDATA (1:2)
                    WHEN    "RE"
                    WHEN    "HO"
@@ -2051,12 +1750,7 @@
                        CONTINUE
                    WHEN    "SY"
                        IF      SYS-9101-SYREC      =   "T"
-      *----(05.00.00)--ADD-START---
-                           IF      SYS-9101-SYBYO      =   "T"
-                               PERFORM 2002-BYOMEI-HENSYU-SEC
-                           END-IF
-      *                     CONTINUE
-      *----(05.00.00)--ADD-END-----
+                           CONTINUE
                        ELSE
                            GO  TO  900-RENKEI-TMP-READ-SEC
                        END-IF
@@ -2329,40 +2023,7 @@
            .
        900-PTCOM-READ-EXT.
            EXIT.
-      *----(05.00.01)--ADD-START---
-      *****************************************************************
-      *    点数マスタ読み込み
-      *****************************************************************
-       900-TENSU-READ-SEC          SECTION.
       *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-TENSU
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-               ELSE
-                   INITIALIZE                      TNS-TENSU-REC
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                      TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-           .
-       900-TENSU-READ-EXT.
-           EXIT.
-      *----(05.00.01)--ADD-END-----
       *****************************************************************
       *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
