@@ -67,12 +67,8 @@
       *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *  04.07.02    NACL-藤原    15/02/18  医療情報連携対応
       *                                     自費レセプトを対象とする
-      *  04.07.03    NACL-門脇    15/08/10  日別保険組合せ番号編集対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    16/08/23  持参薬対応
-      *  04.08.03    NACL-門脇    16/09/20  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -289,8 +285,6 @@
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           DISPLAY "WRK-PARA-PRTKBN=" WRK-PARA-PRTKBN
-      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -458,11 +452,6 @@
            MOVE    RECE64-ZAIKBN       TO  RECE641-ZAIKBN
            MOVE    RECE64-ACCTP-SYUGI-TBL-G
                                        TO  RECE641-ACCTP-SYUGI-TBL-G
-           MOVE    RECE64-HKNCOMBI-DAY-AREA
-                                       TO  RECE641-HKNCOMBI-DAY-AREA
-           MOVE    RECE64-NYUSAIFLG    TO  RECE641-NYUSAIFLG
-           MOVE    RECE64-YKZKISAIFLG  TO  RECE641-YKZKISAIFLG
-           MOVE    RECE64-JISANYAKKBN  TO  RECE641-JISANYAKKBN
       *
            WRITE   RECE641-REC
       *
@@ -734,18 +723,7 @@
                                    MOVE    1               TO  FLG-READ
                                END-IF
                            ELSE
-                               IF      WRK-PARA-PRTKBN =   "9"
-                                   IF    ( RECE64-JIHOKBN
-                                                       NOT =   SPACE )
-                                   AND   ( RECE64-ZAIKBN   =   3   OR
-                                                               4     )
-                                       CONTINUE
-                                   ELSE
-                                       MOVE    1           TO  FLG-READ
-                                   END-IF
-                               ELSE 
-                                   MOVE    1           TO  FLG-READ
-                               END-IF
+                               MOVE    1           TO  FLG-READ
                            END-IF
                        END-IF      
       *
@@ -755,8 +733,6 @@
       *
                            DISPLAY "RECE64  PTNUM=" RECE64-PTNUM
                                     " RECESYUBETU=" RECE64-RECESYUBETU
-                                    " " RECE64-JIHOKBN
-                                    " " RECE64-ZAIKBN
                        END-IF
                END-READ
            END-PERFORM
