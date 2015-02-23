@@ -9,7 +9,6 @@ bind	"M96"		"OpenCOBOL"	"ORCGM96";
 bind	"M97"		"OpenCOBOL"	"ORCGM97";
 bind	"MMERR"		"OpenCOBOL"	"ORCGMMERR";
 bind	"MMID1"		"OpenCOBOL"	"ORCGMMID1";
-bind	"MJOB"		"OpenCOBOL"	"ORCGMJOB";
 
 multiplex_group	orca901;
 
@@ -22,7 +21,6 @@ data	{
                 M97;
                 MMERR;
                 MMID1;
-                MJOB;
 	};
 };
 
@@ -32,9 +30,6 @@ db	{
 	tbl_sysuser;
 	tbl_dbkanri;
 	tbl_mstkanri;
-	tbl_access_key;
-	monbatch_log;
-	monbatch_clog;
 };
 
 /* #include "orcadb.inc" */
