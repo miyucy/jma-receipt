@@ -173,6 +173,7 @@
            03  WRK-TOKHIGAITO-G.
                05  WRK-TOKHIGAITO-CD       PIC X(09).
            03  WRK-STATE                   PIC S9(9).
+           03  WRK-SELNUMBER               PIC 9(9).
       *
        01  WRK-ROW-AREA.
            03  WRK-ALLIDOLST-ROW           PIC S9(9).
@@ -203,6 +204,7 @@
            03  CONST-HKNCOMBI-MAX          PIC 9(05)   VALUE 30.
            03  CONST-TOKNYUIN-MAX          PIC 9(05)   VALUE 100.
            03  CONST-ALLIDOLST-MAX         PIC 9(05)   VALUE 100.
+           03  CONST-ALLIDOLST-LIMIT       PIC 9(05)   VALUE 5000.
            03  CONST-PTIDOLST-MAX         PIC 9(05)   VALUE 50.
            03  CONST-ERRCD-MAX             PIC 9(05)   VALUE 10.
            03  CONST-ODRITEM-MAX           PIC 9(05)   VALUE 30.
@@ -2118,8 +2120,6 @@
       *
            PERFORM 900-ORDER-KEY8-SEL-SEC
       *
-      *    PERFORM 31011-ALLIDOLST-SKIP-SEC
-      *
            MOVE    ZERO            TO  IDX-MAX
       *
            PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
@@ -2208,7 +2208,9 @@
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
       *
-           IF    ( FLG-ORDER       =   ZERO )
+           IF    ( SPA-GMN-ALLIDOLST-PAGE  *   CONST-ALLIDOLST-MAX
+                                           <   CONST-ALLIDOLST-LIMIT )
+            AND  ( FLG-ORDER       =   ZERO )
                MOVE    1                   TO  SPA-GMN-ALLIDOLST-NEXT
            END-IF
       *
@@ -2216,27 +2218,35 @@
        3101-ALLIDOLST-EXT.
            EXIT.
       *****************************************************************
-      *    異動リスト読み飛ばし処理
+      *    異動リスト編集処理
       *****************************************************************
-       31011-ALLIDOLST-SKIP-SEC        SECTION.
+       3200-ALLIDOLST-SEC              SECTION.
       *
-           COMPUTE WRK-SKIP-MAX
-               =   CONST-ALLIDOLST-MAX
-               * ( SPA-GMN-ALLIDOLST-PAGE  -   1 )
+           MOVE    ZERO                TO  WRK-SELNUMBER
       *
-           MOVE    ZERO            TO  CNT-SKIP
+           IF    ( SPA-NAI-SELPTID     NOT =   ZERO )
+               IF    ( SPA-GMN-ALLIDOLST-SEL   NOT =   ZERO )
+                   PERFORM 900-ORDER-KEY9-SEL-SEC
+                   MOVE    ORDER-SELNUMBER TO  WRK-SELNUMBER
+               END-IF
+           END-IF
       *
-           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
-                    OR   ( CNT-SKIP       >=  WRK-SKIP-MAX )
+           PERFORM 220-CLEAR-SEC
       *
-               COMPUTE CNT-SKIP    =   CNT-SKIP    +   1
-      *
-               PERFORM 900-ORDER-KEY8-FET-SEC
-      *
-           END-PERFORM
+           IF    ( WRK-SELNUMBER   >   ZERO )
+            AND  ( WRK-SELNUMBER   <=  CONST-ALLIDOLST-LIMIT )
+               COMPUTE SPA-GMN-ALLIDOLST-PAGE
+                   =   WRK-SELNUMBER / CONST-ALLIDOLST-MAX + 1
+               PERFORM 3101-ALLIDOLST-SEC
+               MOVE    WRK-SELNUMBER   TO  I06-SELNUM
+               PERFORM 4100-SELNUM-CHK-SEC
+           ELSE
+               MOVE    1               TO  SPA-GMN-ALLIDOLST-PAGE
+               PERFORM 3101-ALLIDOLST-SEC
+           END-IF
       *
            .
-       31011-ALLIDOLST-SKIP-EXT.
+       3200-ALLIDOLST-EXT.
            EXIT.
       *****************************************************************
       *    異動リスト編集処理
@@ -2630,7 +2640,7 @@
       *
                INITIALIZE                  SPA-GMN-INPUT-AREA
                                            SPA-NAI-INPUT-AREA
-               PERFORM 3101-PTIDOLST-SEC
+      *         PERFORM 3101-PTIDOLST-SEC
       *
                MOVE    SODR-ERRCD        TO  ERR-ORDER-ERRCD
                MOVE    LNK-ODRITEM-REC   TO  ERR-ODRITEM-REC
@@ -2654,6 +2664,16 @@
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            MOVE    ORDER-ERRCD1    TO  ERR-ORDER-ERRCD
+           MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
+           IF    ( ORDER-KEYGENERATE   =   2 )
+               MOVE    "1"         TO  SPA-NAI-DTYPE
+           END-IF
+           IF    ( SPA-NAI-DTYPE       NOT =   CONST-DTYPE-API )
+            OR   ( WRK-ALLORDERID          =   NORDERID-NYUINID
+                                            OR NORDERID-IDOALLID )
+               MOVE    "1"         TO  SPA-NAI-INPUT-COMB-SRYKA
+           END-IF
+      *
       *
            PERFORM 900-ODRITEM-KEY4-SEL-SEC
       *
@@ -2675,7 +2695,7 @@
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           PERFORM 3101-PTIDOLST-SEC
+      *     PERFORM 3101-PTIDOLST-SEC
       *
            PERFORM 3101-ERRMSGLST-SEC
       *
@@ -2782,7 +2802,7 @@
       *
            PERFORM 410112-INPUT-AREA-HEN-SEC
       *
-           PERFORM 3101-PTIDOLST-SEC
+      *     PERFORM 3101-PTIDOLST-SEC
       *
            IF    ( SPA-NAI-STATUS-ORDER    =   ZERO )
                CONTINUE
@@ -3021,7 +3041,7 @@
                PERFORM 4101111-SAGAKU-HEN-SEC
       *
            WHEN    NCLAIMID-SENTEIKBNJMA
-               PERFORM 4101111-SAGAKU-HEN-SEC
+               PERFORM 4101111-SENTEIKBN-HEN-SEC
       *
            WHEN    NCLAIMID-DRJMA
                PERFORM 4101111-DR-HEN-SEC
@@ -3982,7 +4002,10 @@
       *
            PERFORM 4101-SELNUM-CHK-SEC
            IF    ( SPA-ERRCD       =   SPACE )
+            AND  ( SPA-GMN-SELNUM  NOT =   ZERO )
                MOVE    IDX-LST     TO  SPA-GMN-ALLIDOLST-SEL
+                                       I06-ALLIDOLST-ROW
+               MOVE    2           TO  FLG-ALLIDOLST-ROW
                PERFORM 41011-INPUT-AREA-HEN-SEC
                MOVE    ZERO        TO  SPA-GMN-CUR
            END-IF
@@ -4025,12 +4048,8 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
       *
-               PERFORM 220-CLEAR-SEC
+               PERFORM 3200-ALLIDOLST-SEC
       *
-               MOVE    1           TO  SPA-GMN-ALLIDOLST-PAGE
-      *
-      *        異動リスト編集処理
-               PERFORM 3101-ALLIDOLST-SEC
            ELSE
                MOVE    TSPA-I06    TO  SPA-I06
            END-IF
@@ -4173,6 +4192,18 @@
                PERFORM 4101-SELNUM-CHK-SEC
            END-IF
       *
+           IF    ( SPA-GMN-SELNUM  NOT =   ZERO )
+               PERFORM 41021-KIHON-CHK-SEC
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       41021-KIHON-CHK-SEC             SECTION.
+      *
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( SPA-GMN-BRMNUM      NOT =   SPACE )
                    PERFORM 4101-BRMNUM-CHK-SEC
@@ -4294,7 +4325,7 @@
            END-IF
       *
            .
-       4102-KIHON-CHK-EXT.
+       41021-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
       *    選択番号チェック
@@ -4302,8 +4333,7 @@
        4101-SELNUM-CHK-SEC             SECTION.
       *
            IF    ( SPA-GMN-SELNUM  =   ZERO )
-               MOVE    "1001"      TO  SPA-ERRCD
-               MOVE    1           TO  SPA-GMN-CUR
+               CONTINUE
            ELSE
                MOVE    ZERO        TO  IDX-LST
                PERFORM VARYING IDX3    FROM    1   BY  1
@@ -5715,17 +5745,14 @@
                    MOVE    SPA-GMN-TALLPTNUM (IDX-LST)
                                        TO  SPA-GMN-SELPTNUM
                    PERFORM 4100-SELPTNUM-CHK-SEC
-                   PERFORM 220-CLEAR-SEC
-                   MOVE    1           TO  SPA-GMN-ALLIDOLST-PAGE
-                   PERFORM 3101-ALLIDOLST-SEC
+                   PERFORM 3200-ALLIDOLST-SEC
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-SELPTNUM
                PERFORM 4100-SELPTNUM-CHK-SEC
-               PERFORM 220-CLEAR-SEC
-               MOVE    1               TO  SPA-GMN-ALLIDOLST-PAGE
-               PERFORM 3101-ALLIDOLST-SEC
+               PERFORM 3200-ALLIDOLST-SEC
            END-IF
+      *
       *
            .
        299-EDIT-SELPTNUM-EXT.
@@ -5746,16 +5773,12 @@
                END-IF
       *
                PERFORM 4100-SELUKEYMD-CHK-SEC
-               PERFORM 220-CLEAR-SEC
-               MOVE    1           TO  SPA-GMN-ALLIDOLST-PAGE
-               PERFORM 3101-ALLIDOLST-SEC
+               PERFORM 3200-ALLIDOLST-SEC
       *
            ELSE
                MOVE    SPACE           TO  SPA-GMN-SELUKEYMD
                PERFORM 4100-SELUKEYMD-CHK-SEC
-               PERFORM 220-CLEAR-SEC
-               MOVE    1               TO  SPA-GMN-ALLIDOLST-PAGE
-               PERFORM 3101-ALLIDOLST-SEC
+               PERFORM 3200-ALLIDOLST-SEC
            END-IF
       *
            .
@@ -5773,16 +5796,12 @@
                    MOVE    SPA-NAI-TALLIDOYMD (IDX-LST)
                                        TO  SPA-GMN-SELIDOYMD
                    PERFORM 4100-SELIDOYMD-CHK-SEC
-                   PERFORM 220-CLEAR-SEC
-                   MOVE    1           TO  SPA-GMN-ALLIDOLST-PAGE
-                   PERFORM 3101-ALLIDOLST-SEC
+                   PERFORM 3200-ALLIDOLST-SEC
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-SELIDOYMD
                PERFORM 4100-SELIDOYMD-CHK-SEC
-               PERFORM 220-CLEAR-SEC
-               MOVE    1               TO  SPA-GMN-ALLIDOLST-PAGE
-               PERFORM 3101-ALLIDOLST-SEC
+               PERFORM 3200-ALLIDOLST-SEC
            END-IF
       *
            .
@@ -6807,13 +6826,17 @@
       *
            INITIALIZE                  I06
       *
-           IF    ( FLG-ALLIDOLST-ROW   =   1 )
+           EVALUATE    FLG-ALLIDOLST-ROW
+           WHEN    1
                MOVE    ZERO                TO  I06-ALLIDOLST-ROW
                                                I06-ALLIDOLST-ROWATTR
-           ELSE
+           WHEN    2
+               MOVE    WRK-ALLIDOLST-ROW   TO  I06-ALLIDOLST-ROW
+               MOVE    2                   TO  I06-ALLIDOLST-ROWATTR
+           WHEN    OTHER
                MOVE    WRK-ALLIDOLST-ROW   TO  I06-ALLIDOLST-ROW
                MOVE    ZERO                TO  I06-ALLIDOLST-ROWATTR
-           END-IF
+           END-EVALUATE
       *
            IF    ( FLG-PTIDOLST-ROW   =   1 )
                MOVE    ZERO                TO  I06-PTIDOLST-ROW
@@ -7405,6 +7428,10 @@
            IF    ( SPA-NAI-SELUKEYMD   NOT =   SPACE )
                MOVE    WIDGET-NORMAL       TO  I06-B06-STATE
                                                I06-B07-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-ALLIDOLST-PAGE  >   1 )
+               MOVE    WIDGET-NORMAL       TO  I06-B06S-STATE
            END-IF
       *
            IF    ( SPA-GMN-ALLIDOLST-NEXT  =   1 )
@@ -8341,6 +8368,7 @@
            IF    ( SPA-GMN-SELSTS  =   "1" )
                MOVE    SPA-GMN-SELSTS
                                    TO  ORDER-SELSTATUS
+               MOVE    ZERO        TO  ORDER-STATUS
            END-IF
       *
            MOVE    SPA-GMN-SELSORT TO  ORDER-SELSORT
@@ -8384,6 +8412,49 @@
       *
            .
        900-ORDER-KEY8-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院オーダー検索
+      *****************************************************************
+       900-ORDER-KEY9-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-ORDER
+      *
+           MOVE    SPA-NAI-ORDER-DAT
+                                   TO  ORDER-REC
+      *
+           MOVE    SPA-HOSPNUM     TO  ORDER-HOSPNUM
+           MOVE    SPA-NAI-SELUKEYMD
+                                   TO  ORDER-UKEYMD
+           MOVE    SPA-NAI-SELIDOYMD
+                                   TO  ORDER-SRYYMD
+           MOVE    SPA-NAI-SELPTID TO  ORDER-PTID
+      *
+           IF    ( SPA-GMN-SELSTS  =   "1" )
+               MOVE    SPA-GMN-SELSTS
+                                   TO  ORDER-SELSTATUS
+               MOVE    ZERO        TO  ORDER-STATUS
+           END-IF
+      *
+           MOVE    SPA-GMN-SELSORT TO  ORDER-SELSORT
+      *
+           MOVE    ORDER-REC       TO  MCPDATA-REC
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  ORDER-REC
+           ELSE
+               INITIALIZE              ORDER-REC
+               MOVE    1           TO  FLG-ORDER
+           END-IF
+      *
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-ORDER-KEY9-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院オーダー検索(KEY4)

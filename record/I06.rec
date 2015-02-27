@@ -16,7 +16,7 @@ I06 {
       state int;
     };
     SELNUM {
-      numdata number(3);
+      numdata number(4);
     };
     SELUKEYMD {
       textdata varchar(10);

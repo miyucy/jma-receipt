@@ -22,7 +22,7 @@
               03  I06-B07-STATE                PIC S9(9)   BINARY.
               03  I06-B07S-STATE               PIC S9(9)   BINARY.
               03  I06-B12-STATE                PIC S9(9)   BINARY.
-              03  I06-SELNUM                   PIC S9(3).
+              03  I06-SELNUM                   PIC S9(4).
               03  I06-SELUKEYMD                PIC X(10).
               03  I06-SELIDOYMD                PIC X(10).
               03  I06-SELPTNUM                 PIC X(20).

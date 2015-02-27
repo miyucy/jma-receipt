@@ -54,3 +54,4 @@
            03  ORDER-SELLIMIT          PIC 9(05).
            03  ORDER-SELOFFSET         PIC 9(05).
            03  ORDER-SELSORT           PIC X(02).
+           03  ORDER-SELNUMBER         PIC 9(08).

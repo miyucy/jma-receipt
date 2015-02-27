@@ -113,7 +113,7 @@
                        09  SPA-GMN-SKJTIMEMEI      PIC X(08).
                    07  SPA-GMN-NISSU               PIC X(50).
                05  SPA-GMN-ALLIDOLIST-INPUT-AREA.
-                   07  SPA-GMN-SELNUM              PIC S9(3).
+                   07  SPA-GMN-SELNUM              PIC S9(4).
                    07  SPA-GMN-SELUKEYMD           PIC X(10).
                    07  SPA-GMN-SELIDOYMD           PIC X(10).
                    07  SPA-GMN-SELPTNUM            PIC X(20).

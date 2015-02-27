@@ -87,7 +87,7 @@
                    07  NORDERID-ALLDELNYUINMES1 PIC X(30)
                                            VALUE "入院取消（会計含む）".
                    07  NORDERID-ALLDELNYUINMES2 PIC X(20)
-                                           VALUE "入院・会計取消".
+                                           VALUE "入院取消（会計含む）".
       *
                05  NORDERID-NYUIN2-G.
                    07  NORDERID-NYUIN2CL1       PIC X(02) VALUE "XX".
