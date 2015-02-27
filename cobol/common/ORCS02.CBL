@@ -573,6 +573,7 @@
            03  FLG-KOMURSI             PIC 9(01).
            03  FLG-DAISAN-GENBUTU      PIC 9(01).
            03  FLG-ARI                 PIC 9(01).
+           03  FLG-CYOKEIKBN-N         PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -624,6 +625,7 @@
       *
                  06  WK-2010-ZENDAYKBN-N         PIC X(01).
                  06  WK-2010-KAICNTKBN-N         PIC X(01).
+                 06  WK-2010-CYOKEIKBN-N         PIC X(01).
       *
            03  WK-DAYTAIHI-FTNMONEY    PIC 9(07).
            03  WK-DAYTAIHI-COMPFTN     PIC 9(07).
@@ -1013,6 +1015,19 @@
                  06  WK-CHECK2010X-JYUHENKBN        PIC  X(01).
                  06  WK-CHECK2010X-HBTNUMIDX        PIC  9(01).
       *
+           03  WK-CYOKI-HIKAKU1        PIC 9(07).
+           03  WK-CYOKI-HIKAKU2        PIC 9(07).
+           03  WK-CYOKI-HIKAKU3        PIC 9(07).
+           03  WK-CYOKI-HIKAKU1-TAIHI  PIC 9(07).
+           03  WK-CYOKI-HIKAKU2-TAIHI  PIC 9(07).
+           03  WK-CYOKI-HIKAKU3-TAIHI  PIC 9(07).
+           03  WK-CYOKI-KEISAN1        PIC 9(07).
+           03  WK-CYOKI-KEISAN2        PIC 9(07).
+           03  WK-CYOKI-KEISAN3        PIC 9(07).
+           03  WK-CYOKI-HKNTEN-TBL.
+               05  WK-CYOKI-HKNTEN     PIC 9(07)  OCCURS  31.
+           03  WK-CYOKI-NYUKFTNRATE    PIC 9(03).
+      *
       *    公費の患者負担上限金額の退避用エリア
        01  HOKEN-MAX-AREA.
            03  MAX-KAI-KOHI1-M         PIC 9(05).
@@ -1296,6 +1311,9 @@
            03  IDX16                   PIC  9(03).
            03  IDX17                   PIC  9(03).
            03  IDX18                   PIC  9(03).
+           03  IDX19                   PIC  9(03).
+           03  IDX20                   PIC  9(03).
+           03  IDX21                   PIC  9(03).
            03  IDX-ST                  PIC  9(02)  VALUE  ZERO.
            03  IDX-ED                  PIC  9(02)  VALUE  ZERO.
            03  IDY                     PIC  9(02)  VALUE  ZERO.
@@ -11347,6 +11365,11 @@
                        MOVE    "1"    TO  WK-2010-ZENDAYKBN-N(IDX-CYO)
            END-EVALUATE
       *
+           EVALUATE  SYS-2010-CYOKEIKBN-N
+               WHEN       "1"
+                       MOVE    "1"    TO  WK-2010-CYOKEIKBN-N(IDX-CYO)
+           END-EVALUATE
+      *
            .
       *
        21131-SYSKAN2010-SET-EXT.
@@ -11957,6 +11980,11 @@
            IF   (WK-2010-KAICNTKBN-N(IDX-CYO)   NOT = SPACE)
            AND  (WK-2010-NYUKEIKBN-N(IDX-CYO)   NOT = SPACE)
                  MOVE    SPACE  TO  WK-2010-KAICNTKBN-N(IDX-CYO)
+           END-IF
+      *
+           IF   (WK-2010-CYOKEIKBN-N(IDX-CYO)   NOT = SPACE)
+           AND  (WK-2010-NYUKEIKBN-N(IDX-CYO)   NOT = SPACE)
+                 MOVE    SPACE  TO  WK-2010-CYOKEIKBN-N(IDX-CYO)
            END-IF
       *
            .
@@ -26956,6 +26984,28 @@
       ******************************************************************
        23071-DAYINF-SANTEI-SEC           SECTION.
       *
+           MOVE    LNK-S02-IDX    TO    IDX20.
+           MOVE    ZERO           TO    FLG-CYOKEIKBN-N.
+           IF     WK-2010-CYOKEIKBN-N(KOH-IDX)  =  "1"
+             EVALUATE   KOH-IDX
+               WHEN       1
+                 IF  (LNK-SYU-KOH-HKNNUM(2) = "972" OR "974")
+                 OR  (LNK-SYU-KOH-HKNNUM(3) = "972" OR "974")
+                 OR  (LNK-SYU-KOH-HKNNUM(4) = "972" OR "974")
+                    PERFORM    230711-ZANOKIKAE-HENSYU-SEC
+                 END-IF
+               WHEN       2
+                 IF  (LNK-SYU-KOH-HKNNUM(3) = "972" OR "974")
+                 OR  (LNK-SYU-KOH-HKNNUM(4) = "972" OR "974")
+                    PERFORM    230711-ZANOKIKAE-HENSYU-SEC
+                 END-IF
+               WHEN       3
+                 IF  (LNK-SYU-KOH-HKNNUM(4) = "972" OR "974")
+                    PERFORM    230711-ZANOKIKAE-HENSYU-SEC
+                 END-IF
+             END-EVALUATE
+           END-IF.
+      *
            MOVE       ZERO        TO       FLG-HIKOTEI.
            IF      WK-2010-DAYKEIKBN-N(KOH-IDX)  =  "1"
                  MOVE         1      TO      FLG-HIKOTEI
@@ -27012,6 +27062,10 @@
                          UNTIL    IDX2     >    31
       *
                IF    KOHI-TBL(IDX2 KOH-IDX)  =   9
+      *
+                 IF     FLG-CYOKEIKBN-N  NOT = ZERO
+                    PERFORM    230712-ZANOKIKAE-HENSYU2-SEC
+                 END-IF
       *
                  MOVE   99999    TO   WK-DAY-COMPFTN
       *
@@ -27361,6 +27415,273 @@
       *
        23071-DAYINF-SANTEI-EXT.
            EXIT.                                                        
+      *
+      ******************************************************************
+      *        日別収納算定（長期の残額置き換え）
+      ******************************************************************
+       230711-ZANOKIKAE-HENSYU-SEC           SECTION.
+      *
+           IF   LNK-SYU-KOH-HKNNUM(2) = "972" OR "974"
+             MOVE     2              TO  FLG-CYOKEIKBN-N
+           END-IF
+           IF   LNK-SYU-KOH-HKNNUM(3) = "972" OR "974"
+             MOVE     3              TO  FLG-CYOKEIKBN-N
+           END-IF
+           IF   LNK-SYU-KOH-HKNNUM(4) = "972" OR "974"
+             MOVE     4              TO  FLG-CYOKEIKBN-N
+           END-IF
+      *
+           INITIALIZE                    WK-CYOKI-HKNTEN-TBL
+           PERFORM  VARYING  IDX19  FROM  1  BY  1
+                     UNTIL  (IDX19                             >  10  )
+                      OR    (LNK-S02-DAYTEN-HKNCOMBINUM(IDX19) = SPACE)
+             IF    LNK-S02-DAYTEN-SRYYM(IDX19) = LNK-SYU-SRYYMD(1:6)
+      *        保険組合せマスタの検索
+               INITIALIZE                         WRK-HKNCOMBI-REC
+               MOVE    LNK-SYU-HOSPNUM    TO      WRK-COMB-HOSPNUM
+               MOVE    LNK-SYU-PTID       TO      WRK-COMB-PTID
+               MOVE    LNK-S02-DAYTEN-HKNCOMBINUM(IDX19)
+                                          TO      WRK-COMB-HKNCOMBINUM
+               MOVE    WRK-HKNCOMBI-REC   TO      MCPDATA-REC
+               MOVE    "DBSELECT"         TO      MCP-FUNC
+               MOVE    "tbl_hkncombi"     TO      MCP-TABLE
+               MOVE    "key"              TO      MCP-PATHNAME
+               CALL    "ORCDBMAIN"        USING   MCPAREA
+                                                  MCPDATA-REC
+                                                  SPA-AREA
+               IF      MCP-RC             =       ZERO
+                 MOVE     "tbl_hkncombi"  TO      MCP-TABLE
+                 MOVE     "key"           TO      MCP-PATHNAME
+                 PERFORM   HKNCOMBI-READ2-SEC
+               END-IF
+               MOVE    "tbl_hkncombi"     TO      MCP-TABLE
+               MOVE    "key"              TO      MCP-PATHNAME
+               PERFORM  DB-CLOSE-SEC
+      *
+               EVALUATE   FLG-CYOKEIKBN-N
+                 WHEN          2
+                   IF ((LNK-SYU-KOH2HKNNUM  =  WRK-COMB-KOH1HKNNUM) AND
+                       (COMB-KOH2ID         =  WRK-COMB-KOH1ID    ))
+                   OR ((LNK-SYU-KOH2HKNNUM  =  WRK-COMB-KOH2HKNNUM) AND
+                       (COMB-KOH2ID         =  WRK-COMB-KOH2ID    ))
+                   OR ((LNK-SYU-KOH2HKNNUM  =  WRK-COMB-KOH3HKNNUM) AND
+                       (COMB-KOH2ID         =  WRK-COMB-KOH3ID    ))
+                   OR ((LNK-SYU-KOH2HKNNUM  =  WRK-COMB-KOH4HKNNUM) AND
+                       (COMB-KOH2ID         =  WRK-COMB-KOH4ID    ))
+                     PERFORM  VARYING  IDX21  FROM  1  BY  1
+                               UNTIL   IDX21    >  31
+                       ADD  LNK-S02-DAYTEN-HKNTEN(IDX19 IDX21)
+                                           TO WK-CYOKI-HKNTEN(IDX21)
+                     END-PERFORM
+                     IF    LNK-S02-CYOKI-FLG(IDX19)  =  ZERO
+                       MOVE  1             TO LNK-S02-CYOKI-FLG (IDX19)
+                       MOVE ZAN-KOHI-T(2)  TO LNK-S02-CYOKI-ZAN1(IDX19)
+                       MOVE ZAN-KOHI-T2(2) TO LNK-S02-CYOKI-ZAN2(IDX19)
+                       MOVE ZAN-KOHI-T3(2) TO LNK-S02-CYOKI-ZAN3(IDX19)
+                     END-IF
+                   END-IF
+                 WHEN          3
+                   IF ((LNK-SYU-KOH3HKNNUM  =  WRK-COMB-KOH1HKNNUM) AND
+                       (COMB-KOH3ID         =  WRK-COMB-KOH1ID    ))
+                   OR ((LNK-SYU-KOH3HKNNUM  =  WRK-COMB-KOH2HKNNUM) AND
+                       (COMB-KOH3ID         =  WRK-COMB-KOH2ID    ))
+                   OR ((LNK-SYU-KOH3HKNNUM  =  WRK-COMB-KOH3HKNNUM) AND
+                       (COMB-KOH3ID         =  WRK-COMB-KOH3ID    ))
+                   OR ((LNK-SYU-KOH3HKNNUM  =  WRK-COMB-KOH4HKNNUM) AND
+                       (COMB-KOH3ID         =  WRK-COMB-KOH4ID    ))
+                     PERFORM  VARYING  IDX21  FROM  1  BY  1
+                               UNTIL   IDX21    >  31
+                       ADD  LNK-S02-DAYTEN-HKNTEN(IDX19 IDX21)
+                                           TO WK-CYOKI-HKNTEN(IDX21)
+                     END-PERFORM
+                     IF    LNK-S02-CYOKI-FLG(IDX19)  =  ZERO
+                       MOVE  1             TO LNK-S02-CYOKI-FLG (IDX19)
+                       MOVE ZAN-KOHI-T(3)  TO LNK-S02-CYOKI-ZAN1(IDX19)
+                       MOVE ZAN-KOHI-T2(3) TO LNK-S02-CYOKI-ZAN2(IDX19)
+                       MOVE ZAN-KOHI-T3(3) TO LNK-S02-CYOKI-ZAN3(IDX19)
+                     END-IF
+                   END-IF
+                 WHEN          4
+                   IF ((LNK-SYU-KOH4HKNNUM  =  WRK-COMB-KOH1HKNNUM) AND
+                       (COMB-KOH4ID         =  WRK-COMB-KOH1ID    ))
+                   OR ((LNK-SYU-KOH4HKNNUM  =  WRK-COMB-KOH2HKNNUM) AND
+                       (COMB-KOH4ID         =  WRK-COMB-KOH2ID    ))
+                   OR ((LNK-SYU-KOH4HKNNUM  =  WRK-COMB-KOH3HKNNUM) AND
+                       (COMB-KOH4ID         =  WRK-COMB-KOH3ID    ))
+                   OR ((LNK-SYU-KOH4HKNNUM  =  WRK-COMB-KOH4HKNNUM) AND
+                       (COMB-KOH4ID         =  WRK-COMB-KOH4ID    ))
+                     PERFORM  VARYING  IDX21  FROM  1  BY  1
+                               UNTIL   IDX21    >  31
+                       ADD  LNK-S02-DAYTEN-HKNTEN(IDX19 IDX21)
+                                           TO WK-CYOKI-HKNTEN(IDX21)
+                     END-PERFORM
+                     IF    LNK-S02-CYOKI-FLG(IDX19)  =  ZERO
+                       MOVE  1             TO LNK-S02-CYOKI-FLG (IDX19)
+                       MOVE ZAN-KOHI-T(4)  TO LNK-S02-CYOKI-ZAN1(IDX19)
+                       MOVE ZAN-KOHI-T2(4) TO LNK-S02-CYOKI-ZAN2(IDX19)
+                       MOVE ZAN-KOHI-T3(4) TO LNK-S02-CYOKI-ZAN3(IDX19)
+                     END-IF
+                   END-IF
+               END-EVALUATE
+             END-IF
+           END-PERFORM
+      *
+      *    前日までのマル長の一部負担金の残をセット
+           MOVE  LNK-S02-CYOKI-ZAN1(IDX20) TO WK-CYOKI-HIKAKU1
+                                              WK-CYOKI-HIKAKU1-TAIHI
+           MOVE  LNK-S02-CYOKI-ZAN2(IDX20) TO WK-CYOKI-HIKAKU2
+                                              WK-CYOKI-HIKAKU2-TAIHI
+           MOVE  LNK-S02-CYOKI-ZAN3(IDX20) TO WK-CYOKI-HIKAKU3
+                                              WK-CYOKI-HIKAKU3-TAIHI
+      *
+           .
+      *
+       230711-ZANOKIKAE-HENSYU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        日別収納算定（長期の残額置き換え）
+      ******************************************************************
+       230712-ZANOKIKAE-HENSYU2-SEC           SECTION.
+      *
+      *    同日に、同一地方公費含む違う保険組合せで入力が有る場合、
+      *    先に計算した保険組合せの同一地方公費の日の一部負担金を
+      *    前日までのマル長の一部負担金の残から差し引く
+           EVALUATE   KOH-IDX
+             WHEN        1
+               IF  WK-CYOKI-HIKAKU1  >  FTN-KOHI1-D(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU1  =  WK-CYOKI-HIKAKU1
+                                            -  FTN-KOHI1-D(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU1
+               END-IF
+               IF  WK-CYOKI-HIKAKU2  >  FTN-KOHI1-D2(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU2  =  WK-CYOKI-HIKAKU2
+                                            -  FTN-KOHI1-D2(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU2
+               END-IF
+               IF  WK-CYOKI-HIKAKU3  >  FTN-KOHI1-D3(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU3  =  WK-CYOKI-HIKAKU3
+                                            -  FTN-KOHI1-D3(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU3
+               END-IF
+             WHEN        2
+               IF  WK-CYOKI-HIKAKU1  >  FTN-KOHI2-D(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU1  =  WK-CYOKI-HIKAKU1
+                                            -  FTN-KOHI2-D(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU1
+               END-IF
+               IF  WK-CYOKI-HIKAKU2  >  FTN-KOHI2-D2(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU2  =  WK-CYOKI-HIKAKU2
+                                            -  FTN-KOHI2-D2(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU2
+               END-IF
+               IF  WK-CYOKI-HIKAKU3  >  FTN-KOHI2-D3(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU3  =  WK-CYOKI-HIKAKU3
+                                            -  FTN-KOHI2-D3(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU3
+               END-IF
+             WHEN        3
+               IF  WK-CYOKI-HIKAKU1  >  FTN-KOHI3-D(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU1  =  WK-CYOKI-HIKAKU1
+                                            -  FTN-KOHI3-D(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU1
+               END-IF
+               IF  WK-CYOKI-HIKAKU2  >  FTN-KOHI3-D2(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU2  =  WK-CYOKI-HIKAKU2
+                                            -  FTN-KOHI3-D2(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU2
+               END-IF
+               IF  WK-CYOKI-HIKAKU3  >  FTN-KOHI3-D3(IDX2)
+                 COMPUTE  WK-CYOKI-HIKAKU3  =  WK-CYOKI-HIKAKU3
+                                            -  FTN-KOHI3-D3(IDX2)
+               ELSE
+                 MOVE   ZERO   TO   WK-CYOKI-HIKAKU3
+               END-IF
+           END-EVALUATE
+      *
+      *    前日までのマル長の一部負担金の残と地方公費の日の残を比較
+           IF   WK-CYOKI-HIKAKU1  <  ZAN-KOHI-D(IDX2 KOH-IDX)
+             MOVE  WK-CYOKI-HIKAKU1  TO  ZAN-KOHI-D(IDX2 KOH-IDX)
+           END-IF
+           IF   WK-CYOKI-HIKAKU2  <  ZAN-KOHI-D2(IDX2 KOH-IDX)
+             MOVE  WK-CYOKI-HIKAKU2  TO  ZAN-KOHI-D2(IDX2 KOH-IDX)
+           END-IF
+           IF   WK-CYOKI-HIKAKU3  <  ZAN-KOHI-D3(IDX2 KOH-IDX)
+             MOVE  WK-CYOKI-HIKAKU3  TO  ZAN-KOHI-D3(IDX2 KOH-IDX)
+           END-IF
+      *
+      *    該当日のマル長の一部負担金を計算
+           IF   FLG-ZENKI-TOKUREI  =  1
+             IF  WK-1001-PREFNUM   =  27
+               MOVE   10                   TO   WK-CYOKI-NYUKFTNRATE
+             ELSE
+               MOVE   20                   TO   WK-CYOKI-NYUKFTNRATE
+             END-IF
+           ELSE
+               MOVE   WK-DAY-NYUKFTNRATE   TO   WK-CYOKI-NYUKFTNRATE
+           END-IF
+           COMPUTE  WK-CYOKI-KEISAN1  =  WK-CYOKI-HKNTEN(IDX2)
+                                      *  10
+                                      *  WK-CYOKI-NYUKFTNRATE
+                                      /  100
+           COMPUTE  WK-CYOKI-KEISAN1  =  WK-CYOKI-KEISAN1  +   5
+           COMPUTE  WK-CYOKI-KEISAN1  =  WK-CYOKI-KEISAN1  /  10
+           COMPUTE  WK-CYOKI-KEISAN1  =  WK-CYOKI-KEISAN1  *  10
+      *
+           COMPUTE  WK-CYOKI-KEISAN2  =  WK-CYOKI-HKNTEN(IDX2)
+                                      *  10
+                                      *  WK-CYOKI-NYUKFTNRATE
+                                      /  100
+           COMPUTE  WK-CYOKI-KEISAN2  =  WK-CYOKI-KEISAN2  +   5
+           COMPUTE  WK-CYOKI-KEISAN2  =  WK-CYOKI-KEISAN2  /  10
+           COMPUTE  WK-CYOKI-KEISAN2  =  WK-CYOKI-KEISAN2  *  10
+      *
+           COMPUTE  WK-CYOKI-KEISAN3  =  WK-CYOKI-HKNTEN(IDX2)
+                                      *  10
+                                      *  WK-CYOKI-NYUKFTNRATE
+                                      /  100
+      *
+      *    該当日のマル長の一部負担金を
+      *    前日までのマル長の一部負担金の残から差し引く
+           IF   WK-CYOKI-HIKAKU1-TAIHI  >  WK-CYOKI-KEISAN1
+               COMPUTE  WK-CYOKI-HIKAKU1-TAIHI  =
+                        WK-CYOKI-HIKAKU1-TAIHI  -
+                        WK-CYOKI-KEISAN1
+           ELSE
+               MOVE   ZERO    TO    WK-CYOKI-HIKAKU1-TAIHI
+           END-IF
+           MOVE   WK-CYOKI-HIKAKU1-TAIHI  TO  WK-CYOKI-HIKAKU1
+      *
+           IF   WK-CYOKI-HIKAKU2-TAIHI  >  WK-CYOKI-KEISAN2
+               COMPUTE  WK-CYOKI-HIKAKU2-TAIHI  =
+                        WK-CYOKI-HIKAKU2-TAIHI  -
+                        WK-CYOKI-KEISAN2
+           ELSE
+               MOVE   ZERO    TO    WK-CYOKI-HIKAKU2-TAIHI
+           END-IF
+           MOVE   WK-CYOKI-HIKAKU2-TAIHI  TO  WK-CYOKI-HIKAKU2
+      *
+           IF   WK-CYOKI-HIKAKU3-TAIHI  >  WK-CYOKI-KEISAN3
+               COMPUTE  WK-CYOKI-HIKAKU3-TAIHI  =
+                        WK-CYOKI-HIKAKU3-TAIHI  -
+                        WK-CYOKI-KEISAN3
+           ELSE
+               MOVE   ZERO    TO    WK-CYOKI-HIKAKU3-TAIHI
+           END-IF
+           MOVE   WK-CYOKI-HIKAKU3-TAIHI  TO  WK-CYOKI-HIKAKU3
+      *
+           .
+      *
+       230712-ZANOKIKAE-HENSYU2-EXT.
+           EXIT.
       *
       ******************************************************************
       *        特殊計算（限度を超えた場合、患者負担発生（全額））
@@ -28859,10 +29180,17 @@
        23079-TOKUSYU-SANTEI4-SEC           SECTION.
       *
            IF    FLG-ZENKI-TOKUREI  =  1
-             COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX)
-                                   =  WK-ZENGAKU  *  0.2
-             COMPUTE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
-                                   =  WK-ZENGAKU  *  0.2
+             IF   WK-1001-PREFNUM   =  27
+               COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                                     =  WK-ZENGAKU  *  0.1
+               COMPUTE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                     =  WK-ZENGAKU  *  0.1
+             ELSE
+               COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                                     =  WK-ZENGAKU  *  0.2
+               COMPUTE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                     =  WK-ZENGAKU  *  0.2
+             END-IF
            ELSE
              IF  COMB-HKNNUM        =  SPACE
                COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX)

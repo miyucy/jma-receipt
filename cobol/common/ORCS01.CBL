@@ -1020,21 +1020,21 @@
       *
            03  WK-HBTNUM-TBL.
                05  WK-HBTNUM-OCC                        OCCURS   4.
-                 06  WK-HBTNUM                          PIC  X(02).
+                 06  WK-HBTNUM                          PIC X(02).
       *
            03  WK-CHECK2010-TBL.
                05  WK-CHECK2010-OCC                     OCCURS 100.
-                 06  WK-CHECK2010-HKNCOMBINUM           PIC  X(04).
+                 06  WK-CHECK2010-HKNCOMBINUM           PIC X(04).
                  06  WK-CHECK2010-OCC2                  OCCURS   4.
-                   07  WK-CHECK2010-JYUHENKBN           PIC  X(01).
-                   07  WK-CHECK2010-JYUHEN-TAIKBN       PIC  X(01).
-                   07  WK-CHECK2010-HBTNUM              PIC  X(02).
-                   07  WK-CHECK2010-HBTNUM-NG           PIC  X(01).
+                   07  WK-CHECK2010-JYUHENKBN           PIC X(01).
+                   07  WK-CHECK2010-JYUHEN-TAIKBN       PIC X(01).
+                   07  WK-CHECK2010-HBTNUM              PIC X(02).
+                   07  WK-CHECK2010-HBTNUM-NG           PIC X(01).
       *
            03  WK-CHECK2010X-TBL.
                05  WK-CHECK2010X-OCC                    OCCURS   4.
-                 06  WK-CHECK2010X-JYUHENKBN            PIC  X(01).
-                 06  WK-CHECK2010X-HBTNUMIDX            PIC  9(01).
+                 06  WK-CHECK2010X-JYUHENKBN            PIC X(01).
+                 06  WK-CHECK2010X-HBTNUMIDX            PIC 9(01).
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â²ó¿ô¤È¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
