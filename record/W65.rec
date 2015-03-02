@@ -802,7 +802,7 @@ W65 {
             state int;
           };
           count int;
-            item varchar(40)[15];
+            item varchar(40)[10];
           state int;
         };
         CMB_JGNFTNKBN {
@@ -926,22 +926,6 @@ W65 {
         };
         CMB_INNAITAIKBN {
           INNAITAIKBN {
-            textdata varchar(40);
-            state int;
-          };
-          count int;
-            item varchar(40)[10];
-          state int;
-        };
-        CMB_JIRITUKBN {
-          JIRITUKBN {
-            textdata varchar(80);
-          };
-          count int;
-            item varchar(80)[10];
-        };
-        CMB_JIRITUTAIKBN {
-          JIRITUTAIKBN {
             textdata varchar(40);
             state int;
           };
@@ -1357,38 +1341,6 @@ W65 {
         };
         CMB_ZENDAYTAIKBNN {
           ZENDAYTAIKBNN {
-            textdata varchar(40);
-            state int;
-          };
-          count int;
-            item varchar(40)[10];
-          state int;
-        };
-        CMB_ZENKEI2KBNG {
-          ZENKEI2KBNG {
-            textdata varchar(80);
-          };
-          count int;
-            item varchar(80)[10];
-        };
-        CMB_ZENKEI2TAIKBNG {
-          ZENKEI2TAIKBNG {
-            textdata varchar(40);
-            state int;
-          };
-          count int;
-            item varchar(40)[10];
-          state int;
-        };
-        CMB_ZENDAY2KBNN {
-          ZENDAY2KBNN {
-            textdata varchar(80);
-          };
-          count int;
-            item varchar(80)[10];
-        };
-        CMB_ZENDAY2TAIKBNN {
-          ZENDAY2TAIKBNN {
             textdata varchar(40);
             state int;
           };
