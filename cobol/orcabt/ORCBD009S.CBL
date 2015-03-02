@@ -113,7 +113,6 @@
                                        BY         //SODRITEM-//.
       *
            COPY    "MCPDATA.INC".
-           COPY    "MCPAREA".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -126,6 +125,7 @@
            COPY    "CPORDER.INC"       REPLACING  //ORDER-//
                                        BY         //LNK-ORDER-//.
       *
+           COPY    "MCPAREA".
            COPY    "COMMON-SPA".
       *
       ******************************************************************
@@ -134,6 +134,7 @@
                                        USING
                                                ORCSBD009SAREA
                                                LNK-ORDER-REC
+                                               MCPAREA
                                                SPA-AREA.
       *
       *****************************************************************
@@ -240,6 +241,7 @@
            MOVE    LNK-ORDER-ORDERNUM  TO  SODR-ORDERNUM
            CALL    "ORCSODRS02"        USING   SODR-AREA
                                                SODRITEM-REC
+                                               MCPAREA
                                                SPA-AREA
            IF    ( SODR-ERRFLG NOT =   ZERO )
       *

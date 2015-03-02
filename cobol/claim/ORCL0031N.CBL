@@ -668,6 +668,7 @@
            IF    ( WRK-PGNAME      NOT =   SPACE )
                CALL    WRK-PGNAME      USING   SODR-AREA
                                                LNK-ODRITEM-REC
+                                               MCPAREA
                                                SPA-AREA
                IF    ( SODR-RC     NOT =   ZERO )
                    MOVE    1           TO  FLG-END

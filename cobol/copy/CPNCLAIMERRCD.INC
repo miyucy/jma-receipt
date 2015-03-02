@@ -653,6 +653,10 @@
                05                      PIC X(80)   VALUE
                    "入院加算の入力に誤りがあります".
       *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0160".
+               05                      PIC X(80)   VALUE
+                   "食事療養（２）で特別食は算定できません".
+      *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "8001".
                05                      PIC X(80)   VALUE
                    "入院日の入力に誤りがあります".
@@ -750,7 +754,7 @@
                    "処理終了".
       *
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  181.
+               05  NCLAIMERRCD-OCC     OCCURS  182.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   181.
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   182.

@@ -168,7 +168,6 @@
            COPY    "CPORCSLOCK.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "MCPAREA".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -182,14 +181,15 @@
            02  LNK-ODRITEM-OCC         OCCURS   30.
            COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
                                        BY         //LNK-ODRITEM-//.
+           COPY    "MCPAREA".
            COPY    "COMMON-SPA".
       *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
-                                       USING
-                                               SODR-AREA
+                                       USING   SODR-AREA
                                                LNK-ODRITEM-REC
+                                               MCPAREA
                                                SPA-AREA.
       *
       *****************************************************************
@@ -717,7 +717,7 @@
                    MOVE    MCPDATA-REC TO  SYS-5000-REC
                    IF    ( SYS-5000-SHOKUJIRYOYOCD
                                        =   CONST-SKJRYOYO2 )
-                       MOVE    "0136"  TO  ERRCD-ORDER
+                       MOVE    "0160"  TO  ERRCD-ORDER
                    END-IF
                END-IF
            END-IF
@@ -779,6 +779,7 @@
            CALL    "ORCSODRS01"        USING   SODR-AREA
                                                SODRS01-AREA
                                                LNK-ODRITEM-REC
+                                               MCPAREA
                                                SPA-AREA
            MOVE    SODRS01-RC      TO  FLG-END
       *

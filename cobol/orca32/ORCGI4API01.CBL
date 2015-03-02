@@ -574,6 +574,7 @@
       *
            CALL   "ORCSODR10"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )

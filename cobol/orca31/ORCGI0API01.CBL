@@ -1077,6 +1077,7 @@
       *
            CALL   "ORCSODR01"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
@@ -1109,6 +1110,7 @@
       *
            CALL   "ORCSODR02"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
@@ -1156,6 +1158,7 @@
       *
            CALL   "ORCSODR05"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
@@ -1184,6 +1187,7 @@
       *
            CALL   "ORCSODR07"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
@@ -1212,6 +1216,7 @@
       *
            CALL   "ORCSODR08"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
@@ -1305,6 +1310,7 @@
       *
            CALL   "ORCSODR06"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
@@ -1333,6 +1339,7 @@
       *
            CALL   "ORCSODR09"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )

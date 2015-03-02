@@ -2629,6 +2629,7 @@
                                    TO  SODR-ORDERNUM
            CALL    "ORCSODRS02"        USING   SODR-AREA
                                                LNK-ODRITEM-REC
+                                               MCPAREA
                                                SPA-AREA
            IF    ( SODR-ERRFLG NOT =   ZERO )
       *
@@ -5955,6 +5956,7 @@
       *
            CALL   "ORCSODR01"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6009,6 +6011,7 @@
       *
            CALL   "ORCSODR02"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6068,6 +6071,7 @@
       *
            CALL   "ORCSODR05"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6112,6 +6116,7 @@
       *
            CALL   "ORCSODR03"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6164,6 +6169,7 @@
       *
            CALL   "ORCSODR04"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6215,6 +6221,7 @@
       *
            CALL   "ORCSODR05"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6301,6 +6308,7 @@
       *
            CALL   "ORCSODR06"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6346,6 +6354,7 @@
       *
            CALL   "ORCSODR07"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6383,6 +6392,7 @@
       *
            CALL   "ORCSODR08"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
@@ -6420,6 +6430,7 @@
       *
            CALL   "ORCSODR09"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )

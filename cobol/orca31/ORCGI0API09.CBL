@@ -564,6 +564,7 @@
       *
            CALL   "ORCSODR03"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
@@ -606,6 +607,7 @@
       *
            CALL   "ORCSODR04"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
+                                           MCPAREA
                                            SPA-AREA
            EVALUATE    TRUE
            WHEN  ( SODR-RC         =   ZERO )
