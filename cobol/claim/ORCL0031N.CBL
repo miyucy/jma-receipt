@@ -111,7 +111,6 @@
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
-           03  CONST-H280401           PIC X(08)   VALUE "20160401".
            03  CONST-SRYTBLP-MAX       PIC 9(05)   VALUE   20.
            03  CONST-SRYTBLC-MAX       PIC 9(05)   VALUE   20.
       *
@@ -226,11 +225,6 @@
       *
            MOVE    SCL31N-HOSPNUM  TO  SPA-HOSPNUM
       *
-           PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-           MOVE    SMCNDATE-YMD        TO  WRK-UKEYMD
-           MOVE    SMCNDATE-TIME       TO  WRK-UKEHMS
-      *
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -240,8 +234,6 @@
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
       *
-           MOVE    MCP-USER        TO  SPA-OPID
-      *
            MOVE    ZERO            TO  FLG-END
            MOVE    ZERO            TO  WRK-ORDERNUM
       *
@@ -249,6 +241,10 @@
            IF    ( FLG-KARTE-KEY   =   9 )
                GO  TO  100-INIT-EXT
            END-IF
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  WRK-UKEYMD
+           MOVE    SMCNDATE-TIME       TO  WRK-UKEHMS
       *
            PERFORM 1001-KIHON-CHK-SEC
       *
@@ -470,7 +466,6 @@
                                                OR  NORDERID-FSELECL2
                                                OR  NORDERID-FSTOPCL2
                                                OR  NORDERID-FSPSLCL2
-                                               OR  NORDERID-FLIQUIDCL2
                                                                      )
                            COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
                            MOVE    LF04-IJICD (IDXA IDXB)
@@ -501,48 +496,35 @@
            IF    ( CNT-ORDER           <=  ZERO )
                MOVE    "0009"          TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
+               GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
-           IF    ( ERRCD-KHNERR         =  SPACE )
-               IF    ( CNT-IDOKBN          <=  ZERO )
-                   MOVE    "0008"          TO  ERRCD-KHNERR
-                   PERFORM 1001-KIHON-ERRSET-SEC
-               END-IF
+           IF    ( CNT-IDOKBN          <=  ZERO )
+               MOVE    "0008"          TO  ERRCD-KHNERR
+               PERFORM 1001-KIHON-ERRSET-SEC
+               GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
-           IF    ( ERRCD-KHNERR         =  SPACE )
-               IF    ( CNT-ORDER           >   1 )
-                   MOVE    "0011"          TO  ERRCD-KHNERR
-                   PERFORM 1001-KIHON-ERRSET-SEC
-               END-IF
+           IF    ( CNT-ORDER           >   1 )
+               MOVE    "0011"          TO  ERRCD-KHNERR
+               PERFORM 1001-KIHON-ERRSET-SEC
+               GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
-           IF    ( ERRCD-KHNERR         =  SPACE )
-               IF    ( CNT-IDOKBN          >   1 )
-                   MOVE    "0012"          TO  ERRCD-KHNERR
-                   PERFORM 1001-KIHON-ERRSET-SEC
-               END-IF
+           IF    ( CNT-IDOKBN          >   1 )
+               MOVE    "0012"          TO  ERRCD-KHNERR
+               PERFORM 1001-KIHON-ERRSET-SEC
+               GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
-           IF    ( ERRCD-KHNERR         =  SPACE )
-               IF    ( WRK-IDOKBN          =   NORDERID-FSELECL2
-                                           OR  NORDERID-FSPSLCL2
+           IF    ( WRK-IDOKBN          =   NORDERID-FSELECL2
+                                       OR  NORDERID-FSPSLCL2
                                                              )
-                   MOVE    "0135"          TO  ERRCD-KHNERR
-                   PERFORM 1001-KIHON-ERRSET-SEC
-               END-IF
+               MOVE    "0135"          TO  ERRCD-KHNERR
+               PERFORM 1001-KIHON-ERRSET-SEC
+               GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
-           IF    ( ERRCD-KHNERR         =  SPACE )
-               IF    ( SCL31N-SRYYMD      >=   CONST-H280401 )
-                   CONTINUE
-               ELSE
-                   IF    ( WRK-IDOKBN      =   NORDERID-FLIQUIDCL2 )
-                       MOVE    "0193"      TO  ERRCD-KHNERR
-                       PERFORM 1001-KIHON-ERRSET-SEC
-                   END-IF
-               END-IF
-           END-IF
       *
            .
        20011-NYUINIDOKBN-CHK-EXT.
@@ -655,7 +637,6 @@
            WHEN   NORDERID-FSELEID
            WHEN   NORDERID-FSTOPID
            WHEN   NORDERID-FSPSLID
-           WHEN   NORDERID-FLIQUIDID
       *
                PERFORM 20011-ORCSODR04-ITM-CHK-SEC
       *

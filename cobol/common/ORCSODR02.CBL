@@ -66,8 +66,6 @@
            03  FLG-HIT                 PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-NSRYSRH             PIC 9(01).
-           03  FLG-BUNBEN              PIC 9(01).
-           03  FLG-BUNBEN-NYUIN        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -123,7 +121,6 @@
            03  WRK-MCP-WINDOW          PIC X(64).
       *
        01  ITEM-AREA.
-           03  ITEM-FORCE-UPDATE       PIC X(5).
            03  ITEM-TAIINCD            PIC X(02).
            03  ITEM-NYUINKA            PIC X(02).
            03  ITEM-HKNCOMBI           PIC 9(04).
@@ -136,13 +133,9 @@
       *
        01  CONST-AREA.
            03  CONST-H180401           PIC X(08)   VALUE "20060401".
-           03  CONST-H211001           PIC X(08)   VALUE "20091001".
            03  CONST-SYU-MAX           PIC 9(05)   VALUE   10.
            03  CONST-JOB-SHELLID       PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID         PIC 9(07)   VALUE   1.
-           03  CONST-API               PIC 9(01)   VALUE   2.
-           03  CONST-TRUE              PIC X(05)   VALUE   "TRUE".
-           03  CONST-FALSE             PIC X(05)   VALUE   "FALSE".
       *
       *
       *    入院CLAIM項目IDコピー句
@@ -224,9 +217,6 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-       01  BUNBEN-REC.
-           COPY    "CPBUNBEN.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -281,23 +271,10 @@
       *    入院請求期間取得サブ
            COPY    "CPORCSS006.INC".
       *
-      *    分娩情報編集サブ
-           COPY    "CPORCSI02.INC".
-       01  SNRRK-AREA.
-           COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                       BY         //SNRRK-//.
-      *
-      *    入退院登録PUSH通知
-           COPY    "CPORCSI03.INC".
-      *
-      *
       *    排他制御
            COPY    "CPORCSLOCK.INC".
       *
            COPY    "MCPDATA.INC".
-      *
-      *    ユーザプログラム起動サブパラメタ
-           COPY    "CPORCSUSERCHK.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -377,15 +354,6 @@
                                                   ITEM-HKNCOMBI
            END-IF
       *
-           IF    ( ERRCD-ITEM-G    =   SPACE )
-               PERFORM 900-BUNBEN-KEY3-SEL-SEC
-               IF    ( FLG-BUNBEN  =   ZERO )
-                 AND ( BUNBEN-BUNBENKBN    =   "1" OR "2" )
-                 AND ( SODR-SRYYMD        >=   CONST-H211001 )
-                   MOVE    1           TO  FLG-BUNBEN-NYUIN
-               END-IF
-           END-IF
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -452,13 +420,6 @@
                END-PERFORM
       *
                IF    ( FLG-END  =   ZERO )
-                   IF    ( SODR-SRCKBN =   "1" OR "2" )
-                    AND  ( FLG-BUNBEN-NYUIN    NOT =   ZERO )
-                       PERFORM 2101-ORCSI02-CALL-SEC
-                   END-IF
-               END-IF
-      *
-               IF    ( FLG-END  =   ZERO )
                    IF    ( SODR-PROCKBN    =   "1" )
                        PERFORM 2101-ORDER-RECONF-SEC
                    END-IF
@@ -471,16 +432,6 @@
                        PERFORM 2101-ORDER-INSERT-SEC
                    END-IF
                END-IF
-      *
-               IF    ( FLG-END  =   ZERO )
-                   IF    ( SODR-KEYGENERATE
-                                           =   CONST-API )
-                       PERFORM 2101-USERPG-CALL-SEC
-      *
-                       PERFORM 2101-PUSHEVENT-SEC
-                   END-IF
-               END-IF
-      *
            ELSE
       *
                IF    ( SODR-PROCKBN    =   "1" OR "2" )
@@ -501,14 +452,10 @@
       *****************************************************************
        2001-INPUT-CHK-SEC              SECTION.
       *
-           MOVE    CONST-FALSE     TO  ITEM-FORCE-UPDATE
-      *
            PERFORM VARYING IDX-ODR    FROM    1   BY  1
                    UNTIL ( IDX-ODR    >   LNK-ODRITEM-MAX )
       *
                EVALUATE    LNK-ODRITEM-ITEMID (IDX-ODR)
-               WHEN    NCLAIMID-FORCE-UPDATEJMA
-                   PERFORM 20011-FORCE-UPDATE-CHK-SEC
                WHEN    NCLAIMID-TAIINCDJMA
                    PERFORM 20011-TAIINCD-CHK-SEC
                WHEN    NCLAIMID-NYUINKAJMA
@@ -521,25 +468,6 @@
       *
            .
        2001-INPUT-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    強制更新区分チェック処理
-      *****************************************************************
-       20011-FORCE-UPDATE-CHK-SEC      SECTION.
-      *
-           EVALUATE    FUNCTION UPPER-CASE(LNK-ODRITEM-ITEM(IDX-ODR))
-           WHEN    SPACE
-           WHEN    CONST-FALSE
-               MOVE    CONST-FALSE     TO  ITEM-FORCE-UPDATE
-           WHEN    CONST-TRUE
-               MOVE    CONST-TRUE      TO  ITEM-FORCE-UPDATE
-           WHEN    OTHER
-               MOVE    "0197"          TO  ERRCD-ERRCD
-               PERFORM 2100-ITEM-ERR-SET-SEC
-           END-EVALUATE
-      *
-           .
-       20011-FORCE-UPDATE-CHK-EXT.
            EXIT.
       *****************************************************************
       *    退院事由チェック処理
@@ -836,6 +764,21 @@
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
+      *    前回定期請求日の翌日（あるいは入院日）
+      *    〜算定開始日の翌月までの
+      *    日付が入力されていること
+           MOVE    WRK-SKYSTYMD        TO  WRK-KIJUNYMD
+           MOVE    "2"                 TO  WRK-ZOGENPTN
+           MOVE    1                   TO  WRK-ZOGEN
+           PERFORM 800-CALENDAR-SEC
+           IF    ( SODR-SRYYMD (1 : 6)
+                                   <= WRK-KEISANYMD (1 : 6) )
+               CONTINUE
+           ELSE
+               MOVE    "0055"      TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
+           END-IF
+      *
       *    月途中の定期請求終了後...(1)、
       *    定期請求区分を「2 月末時のみ請求」に変更された場合、
       *    (1)で作成された収納が未入金であること
@@ -881,76 +824,49 @@
                IF    ( PTTEIKIRRK-SKYEDYMD
                                        >=  SODR-SRYYMD )
                    MOVE    "0055"      TO  ERRCD-ORDER
-               ELSE
-                   MOVE    PTTEIKIRRK-SKYEDYMD
+                   GO  TO  20021-SKYSTYMD-GET-EXT
+               END-IF
+      *
+               MOVE    PTTEIKIRRK-SKYEDYMD
                                        TO  WRK-KIJUNYMD
-                   MOVE    "1"         TO  WRK-ZOGENPTN
-                   MOVE    1           TO  WRK-ZOGEN
-                   PERFORM 800-CALENDAR-SEC
-                   IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN   =   "2" )
-                       IF   ( PTNYUINRRK-NYUINYMD (1 : 6)
+               MOVE    "1"             TO  WRK-ZOGENPTN
+               MOVE    1               TO  WRK-ZOGEN
+               PERFORM 800-CALENDAR-SEC
+               IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN   =   "2" )
+                   IF   ( PTNYUINRRK-NYUINYMD (1 : 6)
                                        <   WRK-KEISANYMD    (1 : 6))
-                           MOVE    WRK-KEISANYMD (1 : 6)
-                                           TO  WRK-SKYSTYMD (1 : 6)
-                           MOVE    "01"    TO  WRK-SKYSTYMD (7 : 2)
-                       END-IF
-                   ELSE
+                       MOVE    WRK-KEISANYMD (1 : 6)
+                                       TO  WRK-SKYSTYMD (1 : 6)
+                       MOVE    "01"    TO  WRK-SKYSTYMD (7 : 2)
+                   END-IF
+               ELSE
                        MOVE    WRK-KEISANYMD
                                        TO  WRK-SKYSTYMD
-                   END-IF
-                   MOVE    1           TO  FLG-TEIKIARI
                END-IF
+      *
+               MOVE    1               TO  FLG-TEIKIARI
+      *
            END-IF
       *
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           IF    ( ERRCD-ORDER         =   SPACE )
-               IF    ( WRK-SKYSTYMD        =   SPACE )
-                   MOVE    PTNYUINRRK-NYUINYMD
+           IF    ( WRK-SKYSTYMD        =   SPACE )
+               MOVE    PTNYUINRRK-NYUINYMD
                                            TO  WRK-SKYSTYMD
-                   IF    ( WRK-SKYSTYMD    <   CONST-H180401 )
-                       IF    ( PTNYUINRRK-DOUJITSUKBN  =   "1" )
-                           MOVE    WRK-SKYSTYMD    TO  WRK-KIJUNYMD
-                           MOVE    "1"             TO  WRK-ZOGENPTN
-                           MOVE    1               TO  WRK-ZOGEN
-                           PERFORM 800-CALENDAR-SEC
-                           MOVE    WRK-KEISANYMD   TO  WRK-SKYSTYMD
-                       END-IF
-                   END-IF
-               END-IF
-      *
-      *        前回定期請求日の翌日（あるいは入院日）
-      *        〜 算定開始日の翌月までの
-      *        日付が入力されていること
-      *        強制更新="TRUE"の場合、定期請求未実施でも退院請求を
-      *        作成する
-               MOVE    SODR-SRYYMD         TO  WRK-KIJUNYMD
-               MOVE    "2"                 TO  WRK-ZOGENPTN
-               MOVE    -1                  TO  WRK-ZOGEN
-               PERFORM 800-CALENDAR-SEC
-               IF    ( WRK-KEISANYMD (1 : 6)   >   WRK-SKYSTYMD (1 : 6))
-                   IF    ( ITEM-FORCE-UPDATE   =   CONST-TRUE )
-      *
-                       MOVE    WRK-SKYSTYMD    TO  SODR-UNSKYSTYMD
-      *
-                       MOVE    WRK-KEISANYMD   TO  WRK-SKYSTYMD
-                       MOVE    "01"            TO  WRK-SKYSTYMD(7:2)
-      *
+               IF    ( WRK-SKYSTYMD    <   CONST-H180401 )
+                   IF    ( PTNYUINRRK-DOUJITSUKBN  =   "1" )
                        MOVE    WRK-SKYSTYMD    TO  WRK-KIJUNYMD
                        MOVE    "1"             TO  WRK-ZOGENPTN
-                       MOVE    -1              TO  WRK-ZOGEN
+                       MOVE    1               TO  WRK-ZOGEN
                        PERFORM 800-CALENDAR-SEC
-                       MOVE    WRK-KEISANYMD   TO  SODR-UNSKYEDYMD
-      *
-                   ELSE
-                       MOVE    "0198"          TO  ERRCD-ORDER
+                       MOVE    WRK-KEISANYMD   TO  WRK-SKYSTYMD
                    END-IF
                END-IF
            END-IF
       *
-           MOVE    WRK-SKYSTYMD            TO  SODR-SKYSTYMD
+           MOVE    WRK-SKYSTYMD                TO  SODR-SKYSTYMD
       *
            .
        20021-SKYSTYMD-GET-EXT.
@@ -1591,47 +1507,6 @@
        2101-ORDER-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ユーザプログラム実行処理
-      *****************************************************************
-       2101-USERPG-CALL-SEC            SECTION.
-      *
-           INITIALIZE                      ORCSUSERCHKAREA
-           MOVE    "I04"               TO  ORCSUSERCHK-GMNPG
-           MOVE    "2"                 TO  ORCSUSERCHK-SYORI
-           MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
-           MOVE    TRRK-TAIINYMD       TO  ORCSUSERCHK-SRYYMD
-           MOVE    SODR-PTID           TO  ORCSUSERCHK-PTID
-           MOVE    SODR-PTNUM          TO  ORCSUSERCHK-PTNUM
-           MOVE    TRRK-NYUINKA        TO  ORCSUSERCHK-SRYKA
-           MOVE    TRRK-HKNCOMBINUM    TO  ORCSUSERCHK-HKNCOMBI
-           MOVE    TRRK-DRCD1          TO  ORCSUSERCHK-DRCD
-           MOVE    02                  TO  ORCSUSERCHK-SYORI-FLG
-           CALL    "ORCSUSERCHK"           USING
-                                           ORCSUSERCHKAREA
-                                           SPA-AREA
-      *
-           .
-       2101-USERPG-CALL-EXT.
-           EXIT.
-      *****************************************************************
-      *    PUSH通知処理
-      *****************************************************************
-       2101-PUSHEVENT-SEC            SECTION.
-      *
-           INITIALIZE                      SI03-AREA
-      *
-           MOVE    "02"                TO  SI03-REQNUM
-           MOVE    SODR-PTNUM          TO  SI03-PTNUM
-           MOVE    TRRK-NYUINYMD       TO  SI03-NYUINYMD
-           MOVE    TRRK-TAIINYMD       TO  SI03-TAIINYMD
-           CALL    "ORCSI03"           USING
-                                       SI03-AREA
-                                       SPA-AREA
-      *
-           .
-       2101-PUSHEVENT-EXT.
-           EXIT.
-      *****************************************************************
       *    オーダ編集処理
       *****************************************************************
        21011-ORDER-HEN-SEC             SECTION.
@@ -2082,29 +1957,6 @@
        21021-DENPNUM-GET-EXT.
            EXIT.
       *****************************************************************
-      *    分娩管理更新処理
-      *****************************************************************
-       2101-ORCSI02-CALL-SEC           SECTION.
-      *
-           INITIALIZE                  SI02-AREA
-           MOVE    "4"             TO  SI02-REQID
-           MOVE    TRRK-REC        TO  SNRRK-AREA
-           CALL    "ORCSI02"       USING
-                                   SI02-AREA
-                                   SNRRK-AREA
-                                   MCPAREA
-                                   SPA-AREA
-           IF     ( SI02-RC        NOT =  ZERO )
-               DISPLAY "ORCSDR02 ERROR 021:BUNBEN UPDATE ERR"
-                       " PTID="        SODR-PTID
-                       " KARTE-KEY="   SODR-KARTE-KEY
-               MOVE    1               TO  FLG-END
-           END-IF
-      *
-           .
-       2101-ORCSI02-CALL-EXT.
-           EXIT.
-      *****************************************************************
       *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
@@ -2548,38 +2400,6 @@
        900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    分娩管理検索処理
-      *****************************************************************
-       900-BUNBEN-KEY3-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BUNBEN
-           INITIALIZE                  BUNBEN-REC
-      *
-           MOVE    SODR-HOSPNUM    TO  BUNBEN-HOSPNUM
-           MOVE    SODR-PTID       TO  BUNBEN-PTID
-           MOVE    "1"             TO  BUNBEN-NYUGAIKBN
-           MOVE    TRRK-RRKNUM     TO  BUNBEN-RRKNUM
-           MOVE    BUNBEN-REC      TO  MCPDATA-REC
-      *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  BUNBEN-REC
-           ELSE
-               INITIALIZE              BUNBEN-REC
-               MOVE    1           TO  FLG-BUNBEN
-           END-IF
-      *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-BUNBEN-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
@@ -2686,19 +2506,6 @@
            .
       *
        910-DBDELETE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＰＵＳＨＥＶＥＮＴ処理
-      *****************************************************************
-       910-PUSHEVENT-SEC               SECTION.
-      *
-           MOVE    "PUSHEVENT"         TO      MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-PUSHEVENT-EXT.
            EXIT.
       *****************************************************************
       *    排他制御処理（チェックのみ）

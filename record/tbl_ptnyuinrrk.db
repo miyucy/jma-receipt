@@ -12,12 +12,9 @@ tbl_ptnyuinrrk	{
 	TAIINYMD		char(8);
 	TAIINCD			char(2);
 	TOKUTEI_KBN		char(1);
-	TOKUTEI_NYUIN   char(2);
+	TOKUTEI_NYUIN		char(2);
 	TOKU_SANTEIYOUKENKBN		char(1);
-	KSNSRYCD1		 varchar(9);
-	KSNSRYCD2		 varchar(9);
-	KSNSRYCD3		 varchar(9);
-	RM_SAGAKU		 char(2);
+	RM_SAGAKU		char(2);
 	TEIKI_SEIKYUKBN		char(1);
 	KENSAKU_DISPKBN		char(1);
 	SHOKAIKBN		char(1);
@@ -38,9 +35,6 @@ tbl_ptnyuinrrk	{
 	DOUJITSUKBN		char(1);
 	MAXEDANUM		number(3,0);
 	SKJKBN			char(1);
-	SKJKBN_ASA	    varchar(1);
-	SKJKBN_HIRU		varchar(1);
-	SKJKBN_YU		varchar(1);
 	TIMEKBN_IN		char(1);
 	SENTEIKBN		char(1);
 	TAINRELKBN		char(1);
@@ -1143,151 +1137,4 @@ path	key64		{
 };
 
 
-path	key65		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key65_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE	    HOSPNUM     =   :HOSPNUM 
-			AND	    PTID        =   :PTID
-			AND	    SHONUM      =   :SHONUM
-                        AND       ((JTIKBN      =   '6')  OR
-                                   (JTIKBN      =   '5'   AND
-                                    TAINRELKBN  =   '1'))
-			ORDER BY RRKNUM,RRKEDANUM
-		;
-	};
-};
-
-path	key66		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key66_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE		HOSPNUM		=	:HOSPNUM
-			AND		RRKEDANUM	=	1
-			AND		TAIINYMD	<=	:NYUINYMD
-			AND		TAIINYMD	>=	:TAIINYMD
-			AND		JTIKBN		<>	'5'
-			AND		JTIKBN		<>	'6'
-			ORDER BY NYUINYMD,TAIINYMD
-		;
-	};
-};
-
-path	key67		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key67_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE	HOSPNUM      =   :HOSPNUM 
-			AND		PTID        =   :PTID
-			AND		RRKNUM      =   :RRKNUM
-			AND		JTIKBN		<>	'5'
-			AND		JTIKBN		<>	'6'
-			ORDER BY RRKEDANUM ASC
-		;
-	};
-};
-
-path	key68		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key68_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE	HOSPNUM         =   :HOSPNUM
-			AND	PTID            =   :PTID
-			AND	RRKEDANUM	=	1
-			AND	NYUINYMD	<=	:NYUINYMD
-			AND	TAIINYMD	>=	:TAIINYMD
-			AND	JTIKBN		<>	'5'
-			AND	JTIKBN		<>	'6'
-			ORDER BY NYUINYMD DESC
-		;
-	};
-};
-
-path	key69		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key69_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE	HOSPNUM      =   :HOSPNUM 
-			AND		PTID        =   :PTID
-			AND		RRKNUM      =   :RRKNUM
-			AND		JTIKBN		<>	'5'
-			AND		JTIKBN		<>	'6'
-			ORDER BY RRKEDANUM DESC
-		;
-	};
-};
-
-path	key70		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key70_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE	    HOSPNUM     =   :HOSPNUM 
-			AND	    PTID        =   :PTID
-			AND	    SHONUM      =   :SHONUM
-			AND	    JTIKBN	<>	'5'
-			AND	    JTIKBN	<>	'6'
-			ORDER BY RRKNUM,RRKEDANUM
-		;
-	};
-};
-
-path	key71		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key71_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE	    HOSPNUM     =   :HOSPNUM 
-			AND	    PTID        =   :PTID
-			AND	    SHONUM      =   :SHONUM
-			AND	    JTIKBN	<>	'5'
-			ORDER BY RRKNUM,RRKEDANUM
-		;
-	};
-};
-
-path	key72		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key72_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE   HOSPNUM      =   :HOSPNUM 
-			AND		PTID         =   :PTID
-			AND		NYUINYMD     =   :NYUINYMD
-			AND		TENNYUYMD    =   :TENNYUYMD
-			ORDER BY RRKEDANUM DESC
-		;
-	};
-};
-
-path	key73   { 	
-	DBSELECT	{
-		DECLARE tbl_ptnyuinrrk_key73_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptnyuinrrk
-			WHERE   HOSPNUM      =   :HOSPNUM 
-			AND		PTID         =   :PTID
-			AND		RRKNUM       =   :RRKNUM
-			AND		TENNYUYMD    <=  :TENNYUYMD
-			ORDER BY RRKEDANUM DESC
-		;
-	};
-};
-
-path	del3   { 	
-	DBDELETE	{
-		DELETE
-		FROM tbl_ptnyuinrrk
-			WHERE   HOSPNUM      =   :HOSPNUM 
-			AND		PTID         =   :PTID
-			AND		RRKNUM       =   :RRKNUM
-			AND		RRKEDANUM    >   :RRKEDANUM
-		;
-	};
-};
 

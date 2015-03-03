@@ -6,7 +6,6 @@ xml_hsptinfmodv2req {
 	private_objects {
 		Save_Request	varchar(1);
 		Request_Number	varchar(2);
-		Force_Update		varchar(5);
 		Patient_ID		varchar(20);
 		Admission_Date		varchar(10);
 		Update_Date			varchar(10);
@@ -21,7 +20,6 @@ xml_hsptinfmodv2req {
 		From_Nursing_Care	varchar(01);
 		Doctor_Code			varchar(05)[3];
 		HealthInsurance_Information  {
-			Insurance_Combination_Number	varchar(04);
 			InsuranceProvider_Class			varchar(03);
 			InsuranceProvider_Number		varchar(08);
 			InsuranceProvider_WholeName		varchar(20);
@@ -42,12 +40,9 @@ xml_hsptinfmodv2req {
 				Certificate_ExpiredDate		varchar(10);
 			}[4];
 		};
-		Hospital_Charge_Auto_Set		    varchar(01);
 		Hospital_Charge						varchar(09);
 		Hospital_Charge_NotApplicable		varchar(01);
 		Editing_Hospital_Charge				varchar(01);
-		Delivery							varchar(1);
-		Direct_Payment						varchar(1);
 		Additional_Hospital_Charge			varchar(09)[3];
 		Recurring_Billing					varchar(01);
 		Search_Function						varchar(01);

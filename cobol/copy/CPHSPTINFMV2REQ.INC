@@ -27,7 +27,6 @@
             03  HSPTINFMREQ-PRIVATE-OBJECTS.
               05  HSPTINFMREQ-SAVEREQ           PIC X(1).
               05  HSPTINFMREQ-REQNUM            PIC X(2).
-              05  HSPTINFMREQ-FORCE-UPDATE      PIC X(5).
               05  HSPTINFMREQ-PTNUM             PIC X(20).
               05  HSPTINFMREQ-NYUINYMD          PIC X(10).
               05  HSPTINFMREQ-IDOYMD            PIC X(10).
@@ -42,7 +41,6 @@
               05  HSPTINFMREQ-KAIGOKBN          PIC X(1).
               05  HSPTINFMREQ-DR                PIC X(5)    OCCURS  3.
               05  HSPTINFMREQ-HKNINF-AREA.
-                07  HSPTINFMREQ-HKNCOMBI        PIC X(4).
                 07  HSPTINFMREQ-HKNNUM          PIC X(3).
                 07  HSPTINFMREQ-HKNJANUM        PIC X(8).
                 07  HSPTINFMREQ-HKNJANAME       PIC X(20).
@@ -62,12 +60,9 @@
                       11  HSPTINFMREQ-JKYSNUM   PIC X(20).
                       11  HSPTINFMREQ-KTEKSTYMD PIC X(10).
                       11  HSPTINFMREQ-KTEKEDYMD PIC X(10).
-              05  HSPTINFMREQ-AUTOSET           PIC X(1).
               05  HSPTINFMREQ-KHNCD             PIC X(9).
               05  HSPTINFMREQ-TOKHIGAITOKBN     PIC X(1).
               05  HSPTINFMREQ-NACCTKBN          PIC X(1).
-              05  HSPTINFMREQ-BUNBENKBN         PIC X(1).
-              05  HSPTINFMREQ-RIYOUKBN          PIC X(1).
               05  HSPTINFMREQ-KSNCD             PIC X(9) OCCURS 3.
               05  HSPTINFMREQ-TEIKIKBN          PIC X(1).
               05  HSPTINFMREQ-DISPKBN           PIC X(1).

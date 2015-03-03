@@ -80,8 +80,6 @@
            03  FLG-RYOYOKHN                PIC 9(01).
            03  FLG-SKIP                    PIC 9(01).
            03  FLG-EDIT                    PIC 9(01).
-           03  FLG-BUNBENCHK               PIC 9(01).
-           03  FLG-BUNBEN                  PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -176,16 +174,6 @@
                05  WRK-TOKHIGAITO-CD       PIC X(09).
            03  WRK-STATE                   PIC S9(9).
            03  WRK-SELNUMBER               PIC 9(9).
-           03  WRK-BIRTHDAY.
-               05  WRK-BIRTHDAY-YY         PIC 9(04).
-               05  WRK-BIRTHDAY-MM         PIC 9(02).
-               05  WRK-BIRTHDAY-DD         PIC 9(02).
-           03  WRK-NOW.
-               05  WRK-NOW-YY              PIC 9(04).
-               05  WRK-NOW-MM              PIC 9(02).
-               05  WRK-NOW-DD              PIC 9(02).
-           03  WRK-AGE                     PIC S9(03).
-           03  WRK-BUNBENKBN               PIC X(01).
       *
        01  WRK-ROW-AREA.
            03  WRK-ALLIDOLST-ROW           PIC S9(9).
@@ -199,7 +187,6 @@
                05  ITEM-TOKNYUIN-NYUIN     PIC X(02).
       *
        01  CONST-AREA.
-           03  CONST-H280401               PIC X(08)   VALUE "20160401".
            03  CONST-H261001               PIC X(08)   VALUE "20141001".
            03  CONST-H260401               PIC X(08)   VALUE "20140401".
            03  CONST-H241001               PIC X(08)   VALUE "20141001".
@@ -210,7 +197,7 @@
            03  CONST-H180701               PIC X(08)   VALUE "20060701".
            03  CONST-ERRCD9001             PIC X(04)   VALUE "9001".
            03  CONST-BTUNAME-MAX           PIC 9(05)   VALUE 50.
-           03  CONST-SAGAKU-MAX            PIC 9(05)   VALUE 99.
+           03  CONST-SAGAKU-MAX            PIC 9(05)   VALUE 20.
            03  CONST-NYUINKA-MAX           PIC 9(05)   VALUE 99.
            03  CONST-TAIINCD-MAX           PIC 9(05)   VALUE 50.
            03  CONST-DR-MAX                PIC 9(05)   VALUE 99.
@@ -221,6 +208,215 @@
            03  CONST-PTIDOLST-MAX         PIC 9(05)   VALUE 50.
            03  CONST-ERRCD-MAX             PIC 9(05)   VALUE 10.
            03  CONST-ODRITEM-MAX           PIC 9(05)   VALUE 30.
+           03  CONST-TOK-LIFECD-G.
+               05  CONST-TOK-LIFECD-VAL.
+                   07  FILLER              PIC X(03)   VALUE   "213".
+                   07  FILLER              PIC X(03)   VALUE   "216".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "218".
+                   07  FILLER              PIC X(03)   VALUE   "219".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "220".
+                   07  FILLER              PIC X(03)   VALUE   "221".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "227".
+                   07  FILLER              PIC X(03)   VALUE   "228".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "229".
+                   07  FILLER              PIC X(03)   VALUE   "230".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "231".
+                   07  FILLER              PIC X(03)   VALUE   "232".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "302".
+                   07  FILLER              PIC X(03)   VALUE   "349".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "321".
+                   07  FILLER              PIC X(03)   VALUE   "350".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "325".
+                   07  FILLER              PIC X(03)   VALUE   "337".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "326".
+                   07  FILLER              PIC X(03)   VALUE   "338".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "327".
+                   07  FILLER              PIC X(03)   VALUE   "339".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "328".
+                   07  FILLER              PIC X(03)   VALUE   "340".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "329".
+                   07  FILLER              PIC X(03)   VALUE   "341".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "330".
+                   07  FILLER              PIC X(03)   VALUE   "342".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "331".
+                   07  FILLER              PIC X(03)   VALUE   "343".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "332".
+                   07  FILLER              PIC X(03)   VALUE   "344".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "333".
+                   07  FILLER              PIC X(03)   VALUE   "345".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "334".
+                   07  FILLER              PIC X(03)   VALUE   "346".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "335".
+                   07  FILLER              PIC X(03)   VALUE   "347".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "336".
+                   07  FILLER              PIC X(03)   VALUE   "348".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "323".
+                   07  FILLER              PIC X(03)   VALUE   "351".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "352".
+                   07  FILLER              PIC X(03)   VALUE   "353".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "363".
+                   07  FILLER              PIC X(03)   VALUE   "364".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "365".
+                   07  FILLER              PIC X(03)   VALUE   "366".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "367".
+                   07  FILLER              PIC X(03)   VALUE   "368".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "369".
+                   07  FILLER              PIC X(03)   VALUE   "370".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "371".
+                   07  FILLER              PIC X(03)   VALUE   "372".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "373".
+                   07  FILLER              PIC X(03)   VALUE   "374".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "375".
+                   07  FILLER              PIC X(03)   VALUE   "376".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "377".
+                   07  FILLER              PIC X(03)   VALUE   "378".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "379".
+                   07  FILLER              PIC X(03)   VALUE   "380".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "381".
+                   07  FILLER              PIC X(03)   VALUE   "382".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "383".
+                   07  FILLER              PIC X(03)   VALUE   "384".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "385".
+                   07  FILLER              PIC X(03)   VALUE   "386".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "387".
+                   07  FILLER              PIC X(03)   VALUE   "388".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "397".
+                   07  FILLER              PIC X(03)   VALUE   "398".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "399".
+                   07  FILLER              PIC X(03)   VALUE   "39A".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39B".
+                   07  FILLER              PIC X(03)   VALUE   "39C".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39D".
+                   07  FILLER              PIC X(03)   VALUE   "39E".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39F".
+                   07  FILLER              PIC X(03)   VALUE   "39G".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39H".
+                   07  FILLER              PIC X(03)   VALUE   "39I".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39J".
+                   07  FILLER              PIC X(03)   VALUE   "39K".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39L".
+                   07  FILLER              PIC X(03)   VALUE   "39M".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39N".
+                   07  FILLER              PIC X(03)   VALUE   "39O".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39P".
+                   07  FILLER              PIC X(03)   VALUE   "39Q".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39R".
+                   07  FILLER              PIC X(03)   VALUE   "39S".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39T".
+                   07  FILLER              PIC X(03)   VALUE   "39U".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39V".
+                   07  FILLER              PIC X(03)   VALUE   "39W".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39X".
+                   07  FILLER              PIC X(03)   VALUE   "39Y".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "39Z".
+                   07  FILLER              PIC X(03)   VALUE   "3A0".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3A1".
+                   07  FILLER              PIC X(03)   VALUE   "3A2".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3A3".
+                   07  FILLER              PIC X(03)   VALUE   "3A4".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3A5".
+                   07  FILLER              PIC X(03)   VALUE   "3A6".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3A7".
+                   07  FILLER              PIC X(03)   VALUE   "3A8".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3A9".
+                   07  FILLER              PIC X(03)   VALUE   "3AA".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AB".
+                   07  FILLER              PIC X(03)   VALUE   "3AC".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AD".
+                   07  FILLER              PIC X(03)   VALUE   "3AE".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AF".
+                   07  FILLER              PIC X(03)   VALUE   "3AG".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AL".
+                   07  FILLER              PIC X(03)   VALUE   "3AM".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AN".
+                   07  FILLER              PIC X(03)   VALUE   "3AO".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AP".
+                   07  FILLER              PIC X(03)   VALUE   "3AQ".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AW".
+                   07  FILLER              PIC X(03)   VALUE   "3AX".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3AR".
+                   07  FILLER              PIC X(03)   VALUE   "3AS".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "241".
+                   07  FILLER              PIC X(03)   VALUE   "242".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "243".
+                   07  FILLER              PIC X(03)   VALUE   "244".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "245".
+                   07  FILLER              PIC X(03)   VALUE   "246".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "247".
+                   07  FILLER              PIC X(03)   VALUE   "248".
+               05  CONST-TOK-LIFECD-R  REDEFINES   CONST-TOK-LIFECD-VAL.
+                   07  CONST-TOK-LIFECD-OCC    OCCURS  67.
+                       09  CONST-TOK-LIFECD-IPN
+                                           PIC X(03).
+                       09  CONST-TOK-LIFECD-LIFE
+                                           PIC X(03).
+               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   67.
            03  CONST-KANSATU               PIC X(02)   VALUE "10".
            03  CONST-DTYPE-API             PIC X(01)   VALUE "1".
       *
@@ -228,7 +424,6 @@
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
       *
-           COPY    "CPRYOYOCD.INC".
       *
       *    項目IDコピー句
            COPY    "CPNCLAIMID.INC".
@@ -304,9 +499,6 @@
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-       01  BUNBEN-REC.
-           COPY    "CPBUNBEN.INC".
-      *
       *    オーダーテーブル
        01  ORDER-REC.
            COPY    "CPORDER.INC".
@@ -361,9 +553,6 @@
       *
       *    入院料加算算定可否チェックサブ
            COPY    "CPORCSI01.INC".
-      *
-      *    入院料取得サブ
-           COPY "CPORCSNYUINRYO.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -545,12 +734,6 @@
       *    介護区分設定処理
            PERFORM 3101-KAIGOKBNLST-SET-SEC
       *
-      *    分娩区分設定処理
-           PERFORM 3101-BUNBENKBNLST-SET-SEC
-      *
-      *    直接利用制度利用区分設定処理
-           PERFORM 3101-RIYOUKBNLST-SET-SEC
-      *
       *    担当医設定処理
            PERFORM 3101-DRLST-SET-SEC
       *
@@ -613,7 +796,7 @@
                                                            (IDX-MAX)
                    MOVE    SYS-5002-KHNKBNCD
                                        TO  SPA-NAI-BTUDEF-BRMKHNKBNCD
-                                                             (IDX-MAX)
+                                                             (IDX-CMB)
                END-IF
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
@@ -878,45 +1061,6 @@
       *
            . 
        3101-TAIINCDLST-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩区分設定処理
-      *****************************************************************
-       3101-BUNBENKBNLST-SET-SEC       SECTION.
-      *
-           INITIALIZE                      SPA-GMN-BUNBENKBNLST-G
-      *
-           MOVE    3                   TO  SPA-GMN-BUNBENKBN-MAX
-      *
-           MOVE    "0"                 TO  SPA-GMN-BUNBENKBNL (01)
-           MOVE    "分娩入院でない"    TO  SPA-GMN-BUNBENKBNMEIL (01)
-      *
-           MOVE    "1"                 TO  SPA-GMN-BUNBENKBNL (02)
-           MOVE    "正常分娩"          TO  SPA-GMN-BUNBENKBNMEIL (02)
-      *
-           MOVE    "2"                 TO  SPA-GMN-BUNBENKBNL (03)
-           MOVE    "異常分娩"          TO  SPA-GMN-BUNBENKBNMEIL (03)
-      *
-           . 
-       3101-BUNBENKBNLST-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩区分設定処理
-      *****************************************************************
-       3101-RIYOUKBNLST-SET-SEC        SECTION.
-      *
-           INITIALIZE                      SPA-GMN-RIYOUKBNLST-G
-      *
-           MOVE    2                   TO  SPA-GMN-RIYOUKBN-MAX
-      *
-           MOVE    "0"                 TO  SPA-GMN-RIYOUKBNL (01)
-           MOVE    "利用しない"        TO  SPA-GMN-RIYOUKBNMEIL (01)
-      *
-           MOVE    "1"                 TO  SPA-GMN-RIYOUKBNL (02)
-           MOVE    "利用する"          TO  SPA-GMN-RIYOUKBNMEIL (02)
-      *
-           . 
-       3101-RIYOUKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    担当医設定処理
@@ -1223,7 +1367,11 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    MCPDATA-REC TO  SYS-5001-REC
       *
-           PERFORM 31010-TOKNYUINLST-SET-SEC
+           IF    ( SPA-NAI-BTU-SBT =   CONST-KANSATU )
+               PERFORM 31010-KANSATULST-SET-SEC
+           ELSE
+               PERFORM 31010-TOKNYUINLST-SET-SEC
+           END-IF
       *
            PERFORM 3101-TOKHIGAITOKBNLST-SET-SEC
       *
@@ -1235,70 +1383,660 @@
       *****************************************************************
        31010-TOKNYUINLST-SET-SEC       SECTION.
       *
-           INITIALIZE                  SNYUINRYO-AREA
-           MOVE    SPA-NAI-KJNYMD  TO  SNYUINRYO-SRYYMD
-           IF    ( SPA-NAI-ORDERID =   NORDERID-NYUINID )
-               MOVE    "01"        TO  SNYUINRYO-SYORIKBN
-           ELSE
-               MOVE    "08"        TO  SNYUINRYO-SYORIKBN
-           END-IF
-           MOVE    SPA-GMN-BTUNAME TO  SNYUINRYO-BTUNUM
-           MOVE    SPA-GMN-BRMNUM  TO  SNYUINRYO-BRMNUM
-           MOVE    SPA-GMN-HKNCOMBI TO SNYUINRYO-HKNCOMBI
+           IF    ( SPA-NAI-KJNYMD         >=   CONST-H180701 )
+            AND  ( SPA-NAI-BTU-SBT     =   "04" OR "09" )
       *
-           IF    ( SPA-NAI-ORDERID =   NORDERID-IDOBTUID
-                                    OR NORDERID-IDOBRMID
-                                    OR NORDERID-IDOKAID
-                                    OR NORDERID-IDOALLID )
-               CONTINUE
-           ELSE
-               IF    ( SPA-NAI-TOKCD-KBN   =   "2" OR "3" )
-                AND  ( SPA-GMN-BTUNAME     =   SPA-NAI-BTUNUM-MOT )
-                AND  ( SPA-GMN-BRMNUM      =   SPA-NAI-BRMNUM-MOT )
-                   MOVE    SPA-NAI-TOKCD-G
-                                   TO  SNYUINRYO-EXTRA-G
+               IF    ( SPA-NAI-BTU-SBT =   "04" )
+                   MOVE    1           TO  FLG-RYOYOKHN
+               ELSE
+                   MOVE    2           TO  FLG-RYOYOKHN
+               END-IF
+               PERFORM 410111-RYOYOKHN-EDIT-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-BTU-BTUTOK  NOT =   SPACE )
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-NAI-BTU-BTUTOK  =   "01" OR "02" OR "14"
+                                            OR "17" OR "26" )
+      *
+                   INITIALIZE ORCSAGECHKAREA
+                   MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
+                   MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
+                   MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
+                   MOVE    SPA-NAI-KJNYMD      TO  AGECHK-SRYYMD
+      *
+                   CALL    "ORCSAGECHK"    USING ORCSAGECHKAREA
+                                                 SPA-AREA
+                   IF    ( AGECHK-NENREI2-YY   <   15 )
+                       MOVE    "2"     TO  WRK-TOKNYUIN-KBN
+                       MOVE    SPA-NAI-BTU-BTUTOK
+                                       TO  WRK-TOKNYUIN-CD
+                       PERFORM 31011-TOKNYUINLST-SET-SEC
+                   END-IF
+               WHEN    OTHER
+                   MOVE    "2"     TO  WRK-TOKNYUIN-KBN
+                   MOVE    SPA-NAI-BTU-BTUTOK
+                                   TO  WRK-TOKNYUIN-CD
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
+               END-EVALUATE
+      *
+               IF   (  SPA-NAI-BTU-BTUTOK  =   "11" )
+                AND (  SPA-NAI-ORDERID NOT =   NORDERID-NYUINID )
+                   MOVE    "24"        TO  WRK-TOKNYUIN-CD
+                   MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
+               END-IF
+      *
+               IF   (  SPA-NAI-BTU-BTUTOK  =   "12" )
+                AND (  SPA-NAI-ORDERID NOT =   NORDERID-NYUINID )
+                       MOVE    "25"    TO  WRK-TOKNYUIN-CD
+                       MOVE    "2"     TO  WRK-TOKNYUIN-KBN
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
                END-IF
            END-IF
       *
-           MOVE    SPA-AREA        TO  WRK-SPA-AREA
-           MOVE    SPA-NAI-PTID    TO  WRK-SPA-PTID
-           CALL    "ORCSNYUINRYO"  USING
-                                   SNYUINRYO-AREA
-                                   WRK-SPA-AREA
-
+           IF    ( SPA-NAI-BTU-BRMTOK  NOT =   SPACE )
+               EVALUATE    TRUE
+               WHEN  ( SPA-NAI-BTU-BRMTOK  =   "02" )
       *
-           MOVE    SNYUINRYO-MAX   TO  SPA-GMN-TOKNYUIN-MAX
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SNYUINRYO-MAX )
+                   MOVE    "02"        TO  WRK-TOKNYUIN-CD
+                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
       *
-               MOVE    SNYUINRYO-NO (IDX0)
-                                   TO  SPA-GMN-TOKNYUINL (IDX0)
-               MOVE    SNYUINRYO-NAME (IDX0)
-                                   TO  SPA-GMN-TOKNYUINMEIL(IDX0)
-               MOVE    SNYUINRYO-NYUINRYO-KBN (IDX0)
-                                   TO  SPA-GMN-TOKNYUINL2-KBN (IDX0)
-               MOVE    SNYUINRYO-NYUINRYO-CD (IDX0)
-                                   TO  SPA-GMN-TOKNYUINL2-NYUIN
-                                                           (IDX0)
-               MOVE    SNYUINRYO-TYPE (IDX0)
-                                   TO  SPA-GMN-TOKNYUINL-NYUINRYOKBN
-                                                           (IDX0)
-               MOVE    SNYUINRYO-SRYCD(IDX0)
-                                   TO  SPA-GMN-TOKNYUINL-SRYCD
-                                                           (IDX0)
-               MOVE    SNYUINRYO-NASRYCD(IDX0)
-                                   TO  SPA-GMN-TOKNYUINL-NASRYCD
-                                                           (IDX0)
+                   MOVE    "23"        TO  WRK-TOKNYUIN-CD
+                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
+               WHEN    OTHER
+                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                   MOVE    SPA-NAI-BTU-BRMTOK
+                                       TO  WRK-TOKNYUIN-CD
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
+               END-EVALUATE
+           END-IF
       *
-           END-PERFORM
       *
-           MOVE    SNYUINRYO-SRYCDTTL
-                                   TO  SPA-GMN-TOKNYUIN-SRYCDTTL
-           MOVE    SNYUINRYO-SELECT
-                                   TO  SPA-NAI-SELNYUKHN
+           IF    ( SPA-NAI-KJNYMD     >=  CONST-H240401 )
+               EVALUATE  TRUE
+               WHEN  ( SPA-NAI-BTU-SBT  =   "08" )
+                AND  ( SYS-5001-CRYOYOKBN  =   "1" )
+                   MOVE    4         TO  FLG-RYOYOKHN
+                   PERFORM 410111-RYOYOKHN-EDIT-SEC
+               WHEN  ( SPA-NAI-BTU-SBT  =   "09" )
+                   MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                   EVALUATE    TRUE
+                   WHEN  ( SPA-NAI-KJNYMD >=  CONST-H260401 )
+                       EVALUATE    SYS-5001-CRYOYOKBN
+                       WHEN    "1"
+                           MOVE    "38"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       WHEN    "2"
+                           MOVE    "39"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       WHEN    "3"
+                           MOVE    "40"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       WHEN    "4"
+                           MOVE    "35"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       WHEN    "5"
+                           MOVE    "36"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       WHEN    "6"
+                           MOVE    "37"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       END-EVALUATE
+                   WHEN    OTHER
+                       EVALUATE    SYS-5001-CRYOYOKBN
+                       WHEN    "1"
+                           MOVE    "35"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       WHEN    "2"
+                           MOVE    "36"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       WHEN    "3"
+                           MOVE    "37"  TO  WRK-TOKNYUIN-CD
+                           PERFORM 31011-TOKNYUINLST-SET-SEC
+                       END-EVALUATE
+                   END-EVALUATE
+               WHEN  ( SYS-5001-BTU-TOKTEI-NYUIN
+                                     =  "33" OR "34" )
+                   MOVE    3         TO  FLG-RYOYOKHN
+                   PERFORM 410111-RYOYOKHN-EDIT-SEC
+               WHEN  ( SPA-NAI-BTU-SBT     =   "01" )
+                AND  ( SYS-5001-CRYOYOKBN  =   "1" )
+                   IF    ( SPA-NAI-KJNYMD >=  CONST-H240401 )
+                       MOVE    5         TO  FLG-RYOYOKHN
+                       PERFORM 410111-RYOYOKHN-EDIT-SEC
+                   END-IF
+               WHEN  ( SPA-NAI-BTU-SBT     =   "06" )
+                AND  ( SYS-5001-CRYOYOKBN  =   "1" )
+                   IF    ( SPA-NAI-KJNYMD >=  CONST-H261001 )
+                       MOVE    5         TO  FLG-RYOYOKHN
+                       PERFORM 410111-RYOYOKHN-EDIT-SEC
+                   END-IF
+               END-EVALUATE
+           END-IF
+      *
+      *    老人の場合、老人一般病棟特定入院基本料をコンボに設定
+      *    平成２２年４月から年齢要件廃止
+           PERFORM 31011-ROUJIN-CHK-SEC
+      *
+           MOVE    ZERO        TO  FLG-EDIT
+           IF  ( SPA-NAI-KJNYMD   >=  CONST-H220401 )
+      *
+               MOVE    1       TO  FLG-EDIT
+      *
+               IF    ( SPA-NAI-KJNYMD     >=  CONST-H240401 )
+                   IF    ( SPA-NAI-BTU-SBT  =   "01" OR "05" OR "06")
+                       IF    ( SYS-5001-BTU-TOKTEI-NYUIN
+                                           =   "33" OR "34" )
+                           MOVE    ZERO    TO  FLG-EDIT
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF  ( SPA-NAI-KJNYMD   >=  CONST-H241001 )
+                   IF    ( SPA-NAI-BTU-SBT =   "01" )
+                     AND ( SYS-5001-CRYOYOKBN  =   "1" )
+                           MOVE    ZERO    TO  FLG-EDIT
+                   END-IF
+               END-IF
+      *
+           ELSE
+               IF  ( FLG-RJN   =   1 )
+                   MOVE    1               TO  FLG-EDIT
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-EDIT            =   1 )
+               IF    ( SPA-NAI-KJNYMD     >=  CONST-H261001 )
+                   IF    ( SPA-NAI-BTU-SBT =   "05" )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-EDIT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF  ( FLG-EDIT  =   1 )
+               MOVE    "22"        TO  WRK-TOKNYUIN-CD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 31011-TOKNYUINLST-SET-SEC
+      *
+               MOVE    "24"        TO  WRK-TOKNYUIN-CD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 31011-TOKNYUINLST-SET-SEC
+           END-IF
+      *
+      *    短期滞在手術基本料をコンボに設定
+           MOVE    "21"        TO  WRK-TOKNYUIN-CD
+           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+           PERFORM 31011-TOKNYUINLST-SET-SEC
+      *
+           IF    ( SPA-NAI-KJNYMD   >=  CONST-H260401 )
+               PERFORM 310111-TANKI3-EDIT-SEC
+           ELSE
+               MOVE    "52"        TO  WRK-TOKNYUIN-CD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 31011-TOKNYUINLST-SET-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-TOKCD-KBN   =   "2" OR "3" )
+            AND  ( SPA-GMN-BTUNAME     =   SPA-NAI-BTUNUM-MOT )
+            AND  ( SPA-GMN-BRMNUM      =   SPA-NAI-BRMNUM-MOT )
+               MOVE    SPA-NAI-TOKCD-G TO  WRK-CMB-CD
+               PERFORM 4201-TOKNYUINLST-CHK-SEC
+               IF    ( WRK-CMB-ITM     =   SPACE )
+                   MOVE    SPA-NAI-TOKCD-G
+                                       TO  WRK-TOKNYUIN
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
+               END-IF
+           END-IF
       *
            . 
        31010-TOKNYUINLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    短期滞在手術等基本料３編集処理
+      *****************************************************************
+       310111-TANKI3-EDIT-SEC       SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "5003"          TO  SYS-KANRICD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5003-REC
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+               IF    ( SYS-5003-KBNCD  NOT =   "*" )
+                   MOVE    SYS-5003-TOKCD
+                                   TO  WRK-TOKNYUIN-CD
+                   MOVE    "3"     TO  WRK-TOKNYUIN-KBN
+                   PERFORM 31011-TOKNYUINLST-SET-SEC
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5003-REC
+      *
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       310111-TANKI3-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    療養病棟入院基本料編集処理
+      *****************************************************************
+       410111-RYOYOKHN-EDIT-SEC         SECTION.
+      *
+           MOVE    1               TO  SPA-NAI-SELNYUKHN
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "5111"          TO  SYS-KANRICD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY23-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+               MOVE    ZERO        TO  FLG-TARGET
+      *
+               IF    ( FLG-RYOYOKHN                =   1 )
+                AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
+                       IF    ( FLG-LIFE-RJN    =   ZERO OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                               =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       END-IF
+                       IF    ( FLG-LIFE-RJN    =   1    OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                           NOT =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       END-IF
+               END-IF
+      *
+               IF    ( FLG-RYOYOKHN                =   3 )
+                AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
+                  IF    ( SPA-NAI-KJNYMD          >=   CONST-H260401 )
+                          IF    ( SYS-5111-SEIKATU-RYOKBN
+                                              =   SPACE )
+                              MOVE    1   TO  FLG-TARGET
+                          END-IF
+                  ELSE
+                       IF    ( FLG-LIFE-RJN    =   ZERO OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                               =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       END-IF
+                       IF    ( FLG-LIFE-RJN    =   1    OR 2)
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                           NOT =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       END-IF
+                  END-IF
+               END-IF
+      *
+               IF    ( FLG-RYOYOKHN                =   5 )
+                AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
+                   IF    ( SYS-5111-SEIKATU-RYOKBN
+                                               =   SPACE )
+                       MOVE    1   TO  FLG-TARGET
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-RYOYOKHN                =   2 OR 4)
+                AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
+                   IF    ( FLG-LIFE-RJN        =   ZERO OR 2)
+                       IF    ( SYS-5111-SEIKATU-RYOKBN
+                                                   =   SPACE )
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
+                   END-IF
+                   IF    ( FLG-LIFE-RJN        =   1    OR 2)
+                       IF    ( SYS-5111-SEIKATU-RYOKBN
+                                               NOT =   SPACE )
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF    ( SPA-NAI-KJNYMD >=  CONST-H220401 )
+                   IF    ( SYS-5111-SRYCD
+                                       =   "099999953"
+                                        OR "099999954" )
+                           MOVE  ZERO  TO  FLG-TARGET
+                   END-IF
+                   IF   (( FLG-RYOYOKHN    =   1 )
+                    AND  ( SYS-5001-KHNSRYCD
+                                       =   SPACE
+                                  OR       "099999953"
+                                  OR       "190121310"
+                                  OR       "190121410"
+                                  OR       "190121510"
+                                  OR       "190121610"
+                                  OR       "190121710"
+                                  OR       "190131610"
+                                  OR       "190131810"
+                                  OR       "190132010"
+                                  OR       "190132210"
+                                  OR       "190121810" ))
+                    OR   ( FLG-RYOYOKHN    =   3 OR 5 )
+                       IF    ( SYS-5111-SRYCD
+                                       =   "190121310"
+                                  OR       "190121410"
+                                  OR       "190121510"
+                                  OR       "190121610"
+                                  OR       "190121710"
+                                  OR       "190131610"
+                                  OR       "190131810"
+                                  OR       "190132010"
+                                  OR       "190132210"
+                                  OR       "190123710"
+                                  OR       "190123810"
+                                  OR       "190123910"
+                                  OR       "190124010"
+                                  OR       "190124110"
+                                  OR       "190131710"
+                                  OR       "190131910"
+                                  OR       "190132110"
+                                  OR       "190132310"
+                                  OR       "190121810"
+                                  OR       "190124210" )
+                           CONTINUE
+                       ELSE
+                           MOVE  ZERO  TO  FLG-TARGET
+                       END-IF
+                   END-IF
+                   IF   (( FLG-RYOYOKHN    =   1 )
+                    AND  ( SYS-5001-KHNSRYCD
+                                       =   "099999954"
+                                  OR       "190132410"
+                                  OR       "190132610"
+                                  OR       "190132810"
+                                  OR       "190133010"
+                                  OR       "190133210"
+                                  OR       "190133410"
+                                  OR       "190133610"
+                                  OR       "190133810"
+                                  OR       "190134010"
+                                  OR       "190121810" ))
+                       IF    ( SYS-5111-SRYCD
+                                       =   "190132410"
+                                  OR       "190132610"
+                                  OR       "190132810"
+                                  OR       "190133010"
+                                  OR       "190133210"
+                                  OR       "190133410"
+                                  OR       "190133610"
+                                  OR       "190133810"
+                                  OR       "190134010"
+                                  OR       "190132510"
+                                  OR       "190132710"
+                                  OR       "190132910"
+                                  OR       "190133110"
+                                  OR       "190133310"
+                                  OR       "190133510"
+                                  OR       "190133710"
+                                  OR       "190133910"
+                                  OR       "190134110"
+                                  OR       "190121810"
+                                  OR       "190124210" )
+                           CONTINUE
+                       ELSE
+                           MOVE  ZERO  TO  FLG-TARGET
+                       END-IF
+                   END-IF
+                   IF   (  FLG-RYOYOKHN    =   3 OR 5 )
+                       IF    ( SYS-5111-SRYCD
+                                  =        "190121810"
+                                  OR       "190124210" )
+                           MOVE  ZERO  TO  FLG-TARGET
+                       END-IF
+                   END-IF
+                   IF   (  FLG-RYOYOKHN    =   4 )
+                       IF    ( SYS-5111-SRYCD
+                                  =        "190122510"
+                                  OR       "190124810" )
+                           MOVE  ZERO  TO  FLG-TARGET
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-TARGET  =   1 )
+      *
+                   MOVE    "3"             TO  WRK-TOKNYUIN-KBN
+                   MOVE    SYS-5111-KBNCD  TO  WRK-TOKNYUIN-CD
+                   PERFORM 310111-TOKNYUINLST-SET-SEC
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-KEY23-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+      *
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key23"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           . 
+       410111-RYOYOKHN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料設定処理
+      *****************************************************************
+       31011-TOKNYUINLST-SET-SEC       SECTION.
+      *
+           MOVE    WRK-TOKNYUIN    TO  WRK-CHKTOKNYUIN
+      *
+           IF    ( SPA-NAI-BTU-SBT  =  "04" OR "09" )
+               PERFORM VARYING IDX-LIFE    FROM    1   BY  1
+                           UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX)
+      *
+                   IF    ( FLG-LIFE-RJN =  1  OR  2 )
+                       IF    ( WRK-CHKTOKNYUIN =   CONST-TOK-LIFECD-IPN
+                                                             (IDX-LIFE))
+                           MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
+                                           TO  WRK-CHKTOKNYUIN
+                           MOVE    CONST-TOK-LIFECD-MAX
+                                           TO  IDX-LIFE
+                       END-IF
+                   ELSE
+                       IF    ( WRK-CHKTOKNYUIN =   CONST-TOK-LIFECD-LIFE
+                                                             (IDX-LIFE))
+                           MOVE    CONST-TOK-LIFECD-IPN (IDX-LIFE)
+                                           TO  WRK-CHKTOKNYUIN
+                           MOVE    CONST-TOK-LIFECD-MAX
+                                           TO  IDX-LIFE
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           IF    ( SPA-NAI-BTU-SBT  =  "04" OR "09" )
+            AND  ( FLG-LIFE-RJN     =  2 )
+               IF    ( WRK-CHKTOKNYUIN NOT =    WRK-TOKNYUIN )
+                   PERFORM 310111-TOKNYUINLST-SET-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    WRK-CHKTOKNYUIN TO  WRK-TOKNYUIN
+           PERFORM 310111-TOKNYUINLST-SET-SEC
+      *
+           . 
+       31011-TOKNYUINLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料設定処理
+      *****************************************************************
+       310111-TOKNYUINLST-SET-SEC      SECTION.
+      *
+           INITIALIZE                      WRK-TOK-G
+      *
+           IF    ( WRK-TOKNYUIN-KBN    =   "2" )
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "5110"          TO  SYS-KANRICD
+               MOVE    WRK-TOKNYUIN-CD TO  SYS-KBNCD
+               MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5110-REC
+               MOVE    SYS-5110-SRYCD  TO  WRK-TOK-SRYCD
+               MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
+                                       TO  WRK-TOK-NAME
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "5111"          TO  SYS-KANRICD
+               MOVE    WRK-TOKNYUIN-CD TO  SYS-KBNCD
+               MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+               MOVE    SYS-5111-SRYCD  TO  WRK-TOK-SRYCD
+               MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
+                                       TO  WRK-TOK-NAME
+               MOVE    SYS-5111-BRM-NYUINRYOKBN
+                                       TO  WRK-TOK-NYUINRYOKBN
+           END-IF
+      *
+           PERFORM 3101111-TOKNYUINLST-SET-SEC
+      *
+           . 
+       310111-TOKNYUINLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料設定処理
+      *****************************************************************
+       3101111-TOKNYUINLST-SET-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SKIP
+      *
+           IF    ( WRK-TOKNYUIN-KBN    =   "4" )
+               CONTINUE
+           ELSE
+               MOVE    WRK-TOK-SRYCD   TO  WRK-TNS-SRYCD
+               MOVE    SPA-NAI-KJNYMD  TO  WRK-TNS-KJNYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+                   IF    ( TNS-HOSPSRYKBN  =   0 )
+                    OR   ( TNS-HOSPSRYKBN  =   SPA-HOSPSBT )
+                       CONTINUE
+                   ELSE
+                       MOVE    1       TO  FLG-SKIP
+                   END-IF
+               ELSE
+                       MOVE    1       TO  FLG-SKIP
+               END-IF
+           END-IF
+      *
+           PERFORM VARYING IDX17   FROM    1   BY  1
+                   UNTIL ( IDX17   >   CONST-TOKNYUIN-MAX )
+                    OR   ( FLG-SKIP    =   1 )
+      *
+               IF    ( SPA-GMN-TOKNYUINL2 (IDX17)
+                                   =   WRK-TOKNYUIN )
+                   MOVE    1          TO  FLG-SKIP
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( CNT-MAX         >=  CONST-TOKNYUIN-MAX )
+            OR   ( FLG-SKIP         =   1 )
+               CONTINUE
+           ELSE
+               COMPUTE CNT-MAX =   CNT-MAX +   1
+               MOVE    CNT-MAX     TO  SPA-GMN-TOKNYUIN-MAX
+      *
+               MOVE    CNT-MAX     TO  WRK-99
+      *
+               MOVE    WRK-99      TO  SPA-GMN-TOKNYUINL   (CNT-MAX)
+               MOVE    WRK-TOKNYUIN-KBN
+                                   TO  SPA-GMN-TOKNYUINL2-KBN
+                                                           (CNT-MAX)
+               MOVE    WRK-TOKNYUIN-CD
+                                   TO  SPA-GMN-TOKNYUINL2-NYUIN
+                                                           (CNT-MAX)
+      *
+               MOVE    WRK-TOK-NAME
+                                   TO  SPA-GMN-TOKNYUINMEIL(CNT-MAX)
+               MOVE    WRK-TOK-NYUINRYOKBN
+                                   TO  SPA-GMN-TOKNYUINL-NYUINRYOKBN
+                                                           (CNT-MAX)
+               MOVE    WRK-TOK-SRYCD
+                                   TO  SPA-GMN-TOKNYUINL-SRYCD
+                                                           (CNT-MAX)
+               IF    ( WRK-TOKNYUIN-KBN    =    "2" OR "3" )
+                   PERFORM 800-TOKHIGAITO-CHK-SEC
+                   MOVE    WRK-TOKHIGAITO-CD
+                                   TO  SPA-GMN-TOKNYUINL-NASRYCD
+                                                           (CNT-MAX)
+               END-IF
+      *
+               IF  ( WRK-TOKNYUIN-KBN  =   "3" )
+                AND( WRK-TOKNYUIN-CD   =   "23" OR "49" OR "51")
+                   MOVE    TNS-NAME
+                                   TO  SPA-GMN-TOKNYUINMEIL   (CNT-MAX)
+               END-IF
+      *
+               IF    ( WRK-TOK-SRYCD   IS  NUMERIC )
+                   MOVE    WRK-TOK-SRYCD   TO  WRK-NUMSRYCD
+                   COMPUTE SPA-GMN-TOKNYUIN-SRYCDTTL
+                       =   SPA-GMN-TOKNYUIN-SRYCDTTL
+                       +   WRK-NUMSRYCD
+               END-IF
+           END-IF
+      *
+           . 
+       3101111-TOKNYUINLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    医療観察入院料コンボデータセット処理
+      *****************************************************************
+       31010-KANSATULST-SET-SEC    SECTION.
+      *
+           MOVE    1               TO  SPA-NAI-SELNYUKHN
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "5112"          TO  SYS-KANRICD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY15-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5112-REC
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+               INITIALIZE                      WRK-TOK-G
+      *
+               MOVE    SYS-5112-KANSATUMEI TO  WRK-TOK-NAME
+               MOVE    "4"                 TO  WRK-TOKNYUIN-KBN
+               MOVE    SYS-5112-KBNCD      TO  WRK-TOKNYUIN-CD
+               MOVE    ZERO                TO  WRK-TOK-SRYCD
+               MOVE    SYS-5112-KBNCD(1:2) TO  WRK-TOK-SRYCD(8:2)
+               PERFORM 3101111-TOKNYUINLST-SET-SEC
+      *
+               PERFORM 900-SYSKANRI-KEY15-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5112-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       31010-KANSATULST-SET-EXT.
            EXIT.
       *****************************************************************
       *    老人チェック処理
@@ -1451,7 +2189,7 @@
                MOVE    SPA-GMN-TALLERRCD (IDX-MAX)
                                        TO  SODRS03-ERRCD
                CALL    "ORCSODRS03"    USING
-                                       SODRS03-AREA
+                                       SODRS03-ERRCD
                MOVE    SODRS03-ERRCD   TO  SPA-GMN-TALLERRCD (IDX-MAX)
       *
                PERFORM 900-ORDER-KEY8-FET-SEC
@@ -1584,7 +2322,7 @@
                INITIALIZE                  SODRS03-AREA
                MOVE    ERR-ORDER-ERRCD TO  SODRS03-ERRCD
                CALL    "ORCSODRS03"    USING
-                                       SODRS03-AREA
+                                       SODRS03-ERRCD
                MOVE    SODRS03-ERRCD   TO  SPA-GMN-TERRCD (1)
                MOVE    SODRS03-ERRMSG  TO  SPA-GMN-TERRMSG(1)
                MOVE    1               TO  IDX-MAX
@@ -1608,7 +2346,7 @@
                        INITIALIZE              SODRS03-AREA
                        MOVE    ODRITEM-ERRCD   TO  SODRS03-ERRCD
                        CALL    "ORCSODRS03"    USING
-                                               SODRS03-AREA
+                                               SODRS03-ERRCD
                        MOVE    SODRS03-ERRCD
                                            TO  SPA-GMN-TERRCD (IDX-MAX)
                        MOVE    SODRS03-ERRMSG
@@ -1794,8 +2532,6 @@
            MOVE    I06-DISPKBN         TO  SPA-GMN-DISPKBN-G
            MOVE    I06-SKJTIME         TO  SPA-GMN-SKJTIME-G
            MOVE    I06-NISSU           TO  SPA-GMN-NISSU
-           MOVE    I06-BUNBENKBN       TO  SPA-GMN-BUNBENKBN-G
-           MOVE    I06-RIYOUKBN        TO  SPA-GMN-RIYOUKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1856,7 +2592,6 @@
                WHEN    NORDERID-FSELEID
                WHEN    NORDERID-FSTOPID
                WHEN    NORDERID-FSPSLID
-               WHEN    NORDERID-FLIQUIDID
                WHEN    NORDERID-IDODRID
                WHEN    NORDERID-IDOKAID
                WHEN    NORDERID-IDOBTUID
@@ -1869,9 +2604,6 @@
                WHEN    NORDERID-GPTSTID
                WHEN    NORDERID-FOODID
                WHEN    NORDERID-PTEVALID
-               WHEN    NORDERID-BUNBENID
-               WHEN    NORDERID-CRENACCTID
-               WHEN    NORDERID-SAGAKUID
                    PERFORM 41011-INPUT-AREA-HEN-SEC
                END-EVALUATE
            END-EVALUATE
@@ -1951,12 +2683,9 @@
                IF    ( ERR-ODRITEM-MAX   >=  CONST-ODRITEM-MAX )
                    CONTINUE
                ELSE
-                   IF    ( ODRITEM-ERRCD   NOT =   SPACE )
-                    AND  ( ODRITEM-ERRCD   NOT =   CONST-ERRCD9001 )
-                       COMPUTE ERR-ODRITEM-MAX =   ERR-ODRITEM-MAX + 1
-                       MOVE    ODRITEM-REC TO  ERR-ODRITEM-OCC
+                   COMPUTE ERR-ODRITEM-MAX =   ERR-ODRITEM-MAX   +   1
+                   MOVE    ODRITEM-REC TO  ERR-ODRITEM-OCC
                                                       (ERR-ODRITEM-MAX)
-                   END-IF
                END-IF
       *
                PERFORM 900-ODRITEM-KEY4-FET-SEC
@@ -2007,8 +2736,6 @@
                MOVE    "1"         TO  SPA-NAI-INPUT-COMB-SRYKA
            END-IF
       *
-           PERFORM 410111-INPUT-AREA-HEN-SEC
-      *
            PERFORM 900-ODRITEM-KEY4-SEL-SEC
       *
            PERFORM UNTIL ( FLG-ODRITEM     NOT =   ZERO )
@@ -2030,7 +2757,6 @@
                    WHEN    NORDERID-FSELEID
                    WHEN    NORDERID-FSTOPID
                    WHEN    NORDERID-FSPSLID
-                   WHEN    NORDERID-FLIQUIDID
                        PERFORM 410111-SYOKUJI-HEN-SEC
                    WHEN    NORDERID-IDODRID
                        PERFORM 410111-DOCTOR-HEN-SEC
@@ -2053,11 +2779,6 @@
                        PERFORM 410111-FOOD-HEN-SEC
                    WHEN    NORDERID-PTEVALID
                        PERFORM 410111-PTEVAL-HEN-SEC
-                   WHEN    NORDERID-BUNBENID
-                       PERFORM 410111-BUNBEN-HEN-SEC
-                   WHEN    NORDERID-CRENACCTID
-                   WHEN    NORDERID-SAGAKUID
-                       PERFORM 410111-OTHERS-HEN-SEC
                    END-EVALUATE
       *
                END-IF
@@ -2065,12 +2786,9 @@
                IF    ( ERR-ODRITEM-MAX      >=   CONST-ODRITEM-MAX )
                    CONTINUE
                ELSE
-                   IF    ( ODRITEM-ERRCD   NOT =   SPACE )
-                    AND  ( ODRITEM-ERRCD   NOT =   CONST-ERRCD9001 )
-                       COMPUTE ERR-ODRITEM-MAX =   ERR-ODRITEM-MAX + 1
-                       MOVE    ODRITEM-REC TO  ERR-ODRITEM-OCC
-                                                      (ERR-ODRITEM-MAX)
-                   END-IF
+                   COMPUTE ERR-ODRITEM-MAX   =   ERR-ODRITEM-MAX   +   1
+                   MOVE    ODRITEM-REC TO  ERR-ODRITEM-OCC
+                                                (ERR-ODRITEM-MAX)
                END-IF
       *
                PERFORM 900-ODRITEM-KEY4-FET-SEC
@@ -2097,12 +2815,13 @@
        41011-INPUT-AREA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    入力領域編集処理
+      *    入院時編集処理
       *****************************************************************
-       410111-INPUT-AREA-HEN-SEC       SECTION.
+       410111-NYUIN-HEN-SEC            SECTION.
       *
-           EVALUATE    WRK-ALLORDERID
-           WHEN    NORDERID-NYUINID
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
       *
                MOVE    ORDER-SRYYMD    TO  WRK-YMD
                PERFORM 800-SEIWA-HEN-SEC
@@ -2116,33 +2835,7 @@
                MOVE    "1"             TO  SPA-GMN-TEIKIKBN
                MOVE    "1"             TO  SPA-GMN-DISPKBN
       *
-           WHEN    NORDERID-TAIINID
-               MOVE    ORDER-SRYYMD    TO  WRK-YMD
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-SYMD        TO  SPA-NAI-TAIINYMD
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-TAIINYMD
-           WHEN    NORDERID-DELNYUINID
-           WHEN    NORDERID-ALLDELNYUINID
-               MOVE    ORDER-SRYYMD    TO  WRK-YMD
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
-           WHEN    NORDERID-CANTAIINID
-               MOVE    ORDER-SRYYMD    TO  WRK-YMD
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-SYMD        TO  SPA-NAI-TAIINYMD
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-TAIINYMD
-           END-EVALUATE
-      *
-           .
-       410111-INPUT-AREA-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院時編集処理
-      *****************************************************************
-       410111-NYUIN-HEN-SEC            SECTION.
-      *
-           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+           END-IF
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
@@ -2187,12 +2880,6 @@
            WHEN    NCLAIMID-DISPKBNJMA
                PERFORM 4101111-DISPKBN-HEN-SEC
       *
-           WHEN    NCLAIMID-BUNBENKBNJMA
-               PERFORM 4101111-BUNBENKBN-HEN-SEC
-      *
-           WHEN    NCLAIMID-RIYOUKBNJMA
-               PERFORM 4101111-RIYOUKBN-HEN-SEC
-      *
            END-EVALUATE
       *
            .
@@ -2204,6 +2891,13 @@
        410111-TAIIN-HEN-SEC            SECTION.
       *
            COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-SRYYMD    TO  WRK-YMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-TAIINYMD
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-TAIINYMD
+           END-IF
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
@@ -2236,12 +2930,6 @@
       *
            WHEN    NCLAIMID-DISPKBNJMA
                PERFORM 4101111-DISPKBN-HEN-SEC
-      *
-           WHEN    NCLAIMID-BUNBENKBNJMA
-               PERFORM 4101111-BUNBENKBN-HEN-SEC
-      *
-           WHEN    NCLAIMID-RIYOUKBNJMA
-               PERFORM 4101111-RIYOUKBN-HEN-SEC
       *
            END-EVALUATE
       *
@@ -2371,12 +3059,6 @@
            WHEN    NCLAIMID-KSNCDJMA
                PERFORM 4101111-KSNCD-HEN-SEC
       *
-           WHEN    NCLAIMID-BUNBENKBNJMA
-               PERFORM 4101111-BUNBENKBN-HEN-SEC
-      *
-           WHEN    NCLAIMID-RIYOUKBNJMA
-               PERFORM 4101111-RIYOUKBN-HEN-SEC
-      *
            END-EVALUATE
       *
            .
@@ -2388,6 +3070,15 @@
        410111-DELNYUIN-HEN-SEC         SECTION.
       *
            COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
+               IF    ( ORDER-KEYGENERATE   NOT =   2 )
+                   MOVE    ORDER-SRYYMD    TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
+                   MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
+               END-IF
+           END-IF
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
@@ -2455,30 +3146,6 @@
        410111-PTEVAL-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    出産育児一時金情報登録編集処理
-      *****************************************************************
-       410111-BUNBEN-HEN-SEC      SECTION.
-      *
-           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
-      *
-           PERFORM 410111-INPUT-COMMON-HEN-SEC
-      *
-           .
-       410111-BUNBEN-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    その他オーダー編集処理
-      *****************************************************************
-       410111-OTHERS-HEN-SEC      SECTION.
-      *
-           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
-      *
-           PERFORM 410111-INPUT-COMMON-HEN-SEC
-      *
-           .
-       410111-OTHERS-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *    共通入力項目編集処理
       *****************************************************************
        410111-INPUT-COMMON-HEN-SEC     SECTION.
@@ -2518,8 +3185,6 @@
                PERFORM 4101112-TOKNYUINMEI-HEN-SEC
                PERFORM 4101112-SENTEIKBN-HEN-SEC
                PERFORM 4101112-KAIGOKBN-HEN-SEC
-               PERFORM 4101112-RIYOUKBN-HEN-SEC
-               PERFORM 4101112-BUNBENKBN-HEN-SEC
                PERFORM 4101112-NACCTKBN-HEN-SEC
                PERFORM 4101112-KSNCD-HEN-SEC
                PERFORM 4101112-TEIKIKBN-HEN-SEC
@@ -2530,8 +3195,6 @@
                PERFORM 4101112-TAIINCDMEI-HEN-SEC
            WHEN    NORDERID-HENKOID
                PERFORM 4101112-DRMEI-HEN-SEC
-               PERFORM 4101112-RIYOUKBN-HEN-SEC
-               PERFORM 4101112-BUNBENKBN-HEN-SEC
                PERFORM 4101112-TEIKIKBN-HEN-SEC
                PERFORM 4101112-DISPKBN-HEN-SEC
       *
@@ -2544,7 +3207,6 @@
            WHEN    NORDERID-FSELEID
            WHEN    NORDERID-FSTOPID
            WHEN    NORDERID-FSPSLID
-           WHEN    NORDERID-FLIQUIDID
       *
                PERFORM 4101112-SKJTIME-HEN-SEC
            WHEN    NORDERID-IDODRID
@@ -2562,8 +3224,6 @@
                PERFORM 4101112-BTUNUM-HEN-SEC
                PERFORM 4101112-SAGAKUMEI-HEN-SEC
                PERFORM 4101112-SENTEIKBN-HEN-SEC
-               PERFORM 4101112-RIYOUKBN-HEN-SEC
-               PERFORM 4101112-BUNBENKBN-HEN-SEC
                PERFORM 4101112-DRMEI-HEN-SEC
                PERFORM 4101112-TOKNYUINMEI-HEN-SEC
                PERFORM 4101112-NACCTKBN-HEN-SEC
@@ -2575,9 +3235,6 @@
            WHEN    NORDERID-GPTSTID
            WHEN    NORDERID-FOODID
            WHEN    NORDERID-PTEVALID
-           WHEN    NORDERID-BUNBENID
-           WHEN    NORDERID-CRENACCTID
-           WHEN    NORDERID-SAGAKUID
                CONTINUE
            END-EVALUATE
       *
@@ -2847,30 +3504,6 @@
        4101111-DISPKBN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    分娩区分編集処理
-      *****************************************************************
-       4101111-BUNBENKBN-HEN-SEC       SECTION.
-      *
-           IF    ( ODRITEM-ITEM        NOT =   SPACE )
-               MOVE    ODRITEM-ITEM    TO  SPA-GMN-BUNBENKBN
-           END-IF
-      *
-           .
-       4101111-BUNBENKBN-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    直接支払制度利用区分編集処理
-      *****************************************************************
-       4101111-RIYOUKBN-HEN-SEC        SECTION.
-      *
-           IF    ( ODRITEM-ITEM        NOT =   SPACE )
-               MOVE    ODRITEM-ITEM    TO  SPA-GMN-RIYOUKBN
-           END-IF
-      *
-           .
-       4101111-RIYOUKBN-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *    初回編集処理
       *****************************************************************
        4101112-SHOKAI-HEN-SEC          SECTION.
@@ -3095,36 +3728,6 @@
        4101112-KAIGOKBN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    分娩区分編集処理
-      *****************************************************************
-       4101112-BUNBENKBN-HEN-SEC       SECTION.
-      *
-           PERFORM 3101-BUNBENKBNLST-SET-SEC
-           MOVE    SPA-GMN-BUNBENKBN   TO  WRK-CMB-CD
-           PERFORM 4200-BUNBENKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-BUNBENKBN-G
-           END-IF
-      *
-           .
-       4101112-BUNBENKBN-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    直接支払制度利用区分編集処理
-      *****************************************************************
-       4101112-RIYOUKBN-HEN-SEC       SECTION.
-      *
-           PERFORM 3101-RIYOUKBNLST-SET-SEC
-           MOVE    SPA-GMN-RIYOUKBN   TO  WRK-CMB-CD
-           PERFORM 4200-RIYOUKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-RIYOUKBN-G
-           END-IF
-      *
-           .
-       4101112-RIYOUKBN-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *    入院会計区分編集処理
       *****************************************************************
        4101112-NACCTKBN-HEN-SEC       SECTION.
@@ -3252,8 +3855,6 @@
       *
            MOVE    PTINF-NAME          TO  SPA-GMN-NAME
       *
-           MOVE    PTINF-SEX           TO  SPA-NAI-SEX
-      *
            EVALUATE    PTINF-SEX
            WHEN    "1"
                MOVE    "男"            TO  SPA-GMN-SEX
@@ -3335,12 +3936,6 @@
                                                TO  SPA-GMN-HHKNCOMBI
                        END-IF
                    END-IF
-      *
-                   PERFORM 900-BUNBEN-KEY3-SEL-SEC
-                   IF    ( FLG-BUNBEN           =  ZERO )
-                       MOVE    BUNBEN-BUNBENKBN TO SPA-NAI-BUNBENKBN
-                   END-IF
-      *
                END-IF
            END-IF
       *
@@ -3730,18 +4325,6 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-BUNBENKBN   NOT =   SPACE )
-                   PERFORM 4101-BUNBENKBN-CHK-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-RIYOUKBN    NOT =   SPACE )
-                   PERFORM 4101-RIYOUKBN-CHK-SEC
-               END-IF
-           END-IF
-      *
            .
        41021-KIHON-CHK-EXT.
            EXIT.
@@ -3779,12 +4362,6 @@
       *
            INITIALIZE                  WRK-BTUDEF-G
       *
-           IF    ( SPA-NAI-DIFF-INIT   =   SPACE )
-               MOVE    SPA-NAI-BRMNUM-MOT  TO  SPA-GMN-BRMNUM-ORG
-               MOVE    SPA-NAI-BTUNUM-MOT  TO  SPA-GMN-BTUNAME-ORG
-               MOVE    "1"             TO  SPA-NAI-DIFF-INIT
-           END-IF
-      *
            INITIALIZE              ORCSBRMNUMAREA
            MOVE    "1"             TO  SBRMNUM-IN-PROCKBN
            MOVE    SPA-GMN-BRMNUM  TO  SBRMNUM-IN-BRMNUM
@@ -3807,9 +4384,6 @@
                PERFORM 41011-BRMNUM-CHK-SEC
            END-IF
       *
-           MOVE    SPA-GMN-BRMNUM      TO  SPA-GMN-BRMNUM-ORG
-           MOVE    SPA-GMN-BTUNAME     TO  SPA-GMN-BTUNAME-ORG
-      *
            .
        4101-BRMNUM-CHK-EXT.
            EXIT.
@@ -3817,6 +4391,12 @@
       *    病室チェック
       *****************************************************************
        41011-BRMNUM-CHK-SEC            SECTION.
+      *
+           IF    ( SPA-GMN-BRMNUM-ORG  =   SPACE )
+            OR   ( SPA-GMN-BTUNAME-ORG =   SPACE )
+               MOVE    SPA-GMN-BRMNUM  TO  SPA-GMN-BRMNUM-ORG
+               MOVE    SPA-GMN-BTUNAME TO  SPA-GMN-BTUNAME-ORG
+           END-IF
       *
            PERFORM 3101-BTUNAMELST-SET-SEC
            MOVE    SPA-GMN-BTUNAME     TO  WRK-CMB-CD
@@ -3873,11 +4453,24 @@
       *
            PERFORM 3101-TOKNYUINLST-SET-SEC
            IF    ( WRK-MCP-WIDGET      NOT =  "B12" ) 
-               IF    ( SPA-GMN-BRMNUM-ORG  NOT =   SPA-GMN-BRMNUM )
-                OR   ( SPA-GMN-BTUNAME-ORG NOT =   SPA-GMN-BTUNAME )
-                       PERFORM 4101-TOKNYUIN-SYOKI-SEC
+               IF    ( SPA-NAI-BTU-SBT NOT =   "04" )
+                AND  ( SPA-NAI-BTU-SBT NOT =   "09" )
+                   INITIALIZE  SPA-GMN-TOKNYUIN-G
+                               SPA-NAI-TOKUTEI-G
+                               SPA-NAI-TOKSRYCD
+                               SPA-GMN-SNTNYUIN
+                               SPA-NAI-SNTSRYCD
+                               SPA-NAI-NATOKSRYCD
+               ELSE
+                   IF    ( SPA-GMN-BRMNUM-ORG  NOT =   SPA-GMN-BRMNUM )
+                    OR   ( SPA-GMN-BTUNAME-ORG NOT =   SPA-GMN-BTUNAME )
+                           PERFORM 4101-TOKNYUIN-SYOKI-SEC
+                   END-IF
                END-IF
            END-IF
+      *
+           MOVE    SPA-GMN-BRMNUM      TO  SPA-GMN-BRMNUM-ORG
+           MOVE    SPA-GMN-BTUNAME     TO  SPA-GMN-BTUNAME-ORG
       *
            .
        41011-BRMNUM-CHK-EXT.
@@ -4192,14 +4785,24 @@
                    UNTIL ( IDX-CMB     <   1 )
                     OR   ( SPA-GMN-TOKNYUIN-G NOT    =  SPACE )
       *
-               EVALUATE    TRUE
-               WHEN  ( SPA-GMN-TOKNYUINL2 (IDX-CMB) (1:1)  =   "2" )
-                AND  ( SPA-GMN-TOKNYUINL2 (IDX-CMB) (2:2)
-                                           =   SPA-NAI-BTU-BTUTOK  )
-               WHEN  ( SPA-GMN-TOKNYUINL2 (IDX-CMB) (1:1)  =   "3" )
-                AND  ( SPA-GMN-TOKNYUINL2 (IDX-CMB) (2:2)
-                                           =   SPA-NAI-BTU-BRMTOK )
+               IF    ( SPA-GMN-TOKNYUINL2-KBN (IDX-CMB) (1 : 1)
+                                   =   "1" OR  "2" OR  "3" )
       *
+                   MOVE    ZERO        TO  FLG-TARGET
+      *
+                   IF    ( SPA-GMN-TOKNYUINL2-KBN (IDX-CMB)
+                                   =  "3" )
+                       IF    ( SPA-GMN-TOKNYUINL-NYUINRYOKBN
+                                                  (IDX-CMB)
+                                   =   "01" )
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
+                   ELSE
+                           MOVE    1   TO  FLG-TARGET
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-TARGET      =   1 )
                    MOVE    SPA-GMN-TOKNYUINLST (IDX-CMB)
                                        TO  SPA-GMN-TOKNYUIN-G
                    MOVE    SPA-GMN-TOKNYUINL2 (IDX-CMB)
@@ -4208,7 +4811,7 @@
                                            TO  SPA-NAI-TOKSRYCD
                    MOVE    SPA-GMN-TOKNYUINL-NASRYCD (IDX-CMB)
                                            TO  SPA-NAI-NATOKSRYCD
-               END-EVALUATE
+               END-IF
       *
            END-PERFORM
       *
@@ -4221,15 +4824,13 @@
                        PERFORM 41011-TOKNYUIN-SYOKI-SEC
                    END-IF
                    PERFORM 4201-TOKNYUINLST-CHK-SEC
-                   IF    ( WRK-CMB-ITM NOT =   SPACE )
-                       MOVE    WRK-CMB-ITM TO  SPA-GMN-TOKNYUIN-G
-                       MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
-                                           TO  SPA-NAI-TOKUTEI-G
-                       MOVE    SPA-GMN-TOKNYUINL-SRYCD (WRK-CMB-IDX)
-                                           TO  SPA-NAI-TOKSRYCD
-                       MOVE    SPA-GMN-TOKNYUINL-NASRYCD (WRK-CMB-IDX)
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-TOKNYUIN-G
+                   MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
+                                       TO  SPA-NAI-TOKUTEI-G
+                   MOVE    SPA-GMN-TOKNYUINL-SRYCD (WRK-CMB-IDX)
+                                       TO  SPA-NAI-TOKSRYCD
+                   MOVE    SPA-GMN-TOKNYUINL-NASRYCD (WRK-CMB-IDX)
                                        TO  SPA-NAI-NATOKSRYCD
-                   END-IF
                END-IF
            END-IF
       *
@@ -4270,20 +4871,17 @@
       *****************************************************************
        41011-TOKNYUIN-SYOKI-SEC        SECTION.
       *
-           IF    ( SPA-NAI-BTU-SBT =   "04" OR "09" )
-               PERFORM 800-ROUJINAGE-CHK-SEC
-               IF    ( FLG-LIFE-RJN        =   1 OR 2 )
-                   PERFORM VARYING IDX10   FROM    1   BY  1
-                           UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
-                       IF    ( WRK-CMB-CD
-                                   =   CONST-TOK-LIFECD-IPN (IDX10))
-                           MOVE    CONST-TOK-LIFECD-LIFE (IDX10)
+           PERFORM 800-ROUJINAGE-CHK-SEC
+           IF    ( FLG-LIFE-RJN        =   1 )
+               PERFORM VARYING IDX10   FROM    1   BY  1
+                       UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
+                   IF    ( WRK-CMB-CD  =   CONST-TOK-LIFECD-IPN (IDX10))
+                       MOVE    CONST-TOK-LIFECD-LIFE (IDX10)
                                    TO  WRK-CMB-CD
-                           MOVE    CONST-TOK-LIFECD-MAX
+                       MOVE    CONST-TOK-LIFECD-MAX
                                    TO  IDX10
-                       END-IF
-                   END-PERFORM
-               END-IF
+                   END-IF
+               END-PERFORM
            END-IF
       *
            .
@@ -4431,98 +5029,6 @@
       *
            .
        4101-NISSU-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩区分チェック
-      *****************************************************************
-       4101-BUNBENKBN-CHK-SEC          SECTION.
-      *
-           PERFORM 41011-BUNBEN-NYUIN-CHK-SEC
-           IF    ( FLG-BUNBENCHK       =   1 )
-               MOVE    SPA-GMN-BUNBENKBN
-                                       TO  WRK-CMB-CD
-               PERFORM 4200-BUNBENKBNLST-CHK-SEC
-               IF    ( WRK-CMB-CD      =   SPACE )
-                   MOVE    "0036"      TO  SPA-ERRCD
-                   MOVE    33          TO  SPA-GMN-CUR
-               END-IF
-           ELSE
-                   MOVE    SPACE       TO  SPA-GMN-BUNBENKBN-G
-           END-IF
-      *
-           .
-       4101-BUNBENKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩入院チェック
-      *****************************************************************
-       41011-BUNBEN-NYUIN-CHK-SEC          SECTION.
-      *
-           MOVE    ZERO                    TO  FLG-BUNBENCHK
-      *
-           IF    ( SPA-NAI-PTID            =   ZERO )
-               CONTINUE
-           ELSE
-      *
-               INITIALIZE                  SYS-1005-REC
-               IF    ( SPA-GMN-NYUINKA     NOT =   SPACE )
-                   INITIALIZE                  SYSKANRI-REC
-                   MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-                   MOVE    "1005"          TO  SYS-KANRICD
-                   MOVE    SPA-GMN-NYUINKA TO  SYS-KBNCD
-                   MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
-                                               SYS-EDYUKYMD
-                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                   MOVE    SYSKANRI-REC    TO  SYS-1005-REC
-               END-IF
-      *
-               MOVE    ZERO                TO  WRK-AGE
-      *
-               MOVE    SPA-NAI-BIRTHDAY    TO  WRK-BIRTHDAY
-               MOVE    SPA-NAI-KJNYMD      TO  WRK-NOW
-               COMPUTE WRK-AGE         =   WRK-NOW-YY
-                                       -   WRK-BIRTHDAY-YY
-               IF    ( WRK-BIRTHDAY (5:4)  >   WRK-NOW (5:4) )
-                   COMPUTE WRK-AGE = WRK-AGE   -   1
-               END-IF
-      *
-               IF    ( SYS-1005-RECESRYKA  =   "23" OR "24" )
-                AND  ( SPA-NAI-SEX         =   "2" )
-                AND  ( WRK-AGE             >   10 )
-                   MOVE    1                   TO  FLG-BUNBENCHK
-               END-IF
-      *
-               IF    ( SPA-NAI-BUNBENKBN   NOT =   SPACE )
-                   MOVE    1               TO  FLG-BUNBENCHK
-               END-IF
-           END-IF
-      *
-           .
-       41011-BUNBEN-NYUIN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    直接支払制度利用区分チェック
-      *****************************************************************
-       4101-RIYOUKBN-CHK-SEC           SECTION.
-      *
-           MOVE    SPA-GMN-BUNBENKBN   TO  WRK-BUNBENKBN
-           IF    ( SPA-GMN-BUNBENKBN   =   SPACE  )
-               MOVE    SPA-NAI-BUNBENKBN   TO  WRK-BUNBENKBN
-           END-IF
-      *
-           IF    ( WRK-BUNBENKBN       =   "1" OR "2" )
-               MOVE    SPA-GMN-RIYOUKBN TO WRK-CMB-CD
-               PERFORM 4200-RIYOUKBNLST-CHK-SEC
-               IF    ( WRK-CMB-CD      =   SPACE )
-                   MOVE    "0037"      TO  SPA-ERRCD
-                   MOVE    34          TO  SPA-GMN-CUR
-               END-IF
-           ELSE
-               MOVE    SPACE           TO  SPA-GMN-RIYOUKBN-G
-           END-IF
-      *
-           .
-       4101-RIYOUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病棟名コンボチェック処理
@@ -5047,48 +5553,6 @@
        4200-DISPKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    分娩区分コンボチェック処理
-      *****************************************************************
-       4200-BUNBENKBNLST-CHK-SEC         SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-BUNBENKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-BUNBENKBNL (IDX-CMB)  =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-BUNBENKBNLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-BUNBENKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    直接支払制度利用区分コンボチェック処理
-      *****************************************************************
-       4200-RIYOUKBNLST-CHK-SEC         SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-RIYOUKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-RIYOUKBNL (IDX-CMB)  =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-RIYOUKBNLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-RIYOUKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -5373,7 +5837,6 @@
            WHEN    NORDERID-FSELEID
            WHEN    NORDERID-FSTOPID
            WHEN    NORDERID-FSPSLID
-           WHEN    NORDERID-FLIQUIDID
                PERFORM 2121-SYOKUJI-TOUROKU-SEC
            WHEN    NORDERID-IDODRID
                PERFORM 2121-DOCTOR-TOUROKU-SEC
@@ -5392,9 +5855,6 @@
            WHEN    NORDERID-GPTSTID
            WHEN    NORDERID-FOODID
            WHEN    NORDERID-PTEVALID
-           WHEN    NORDERID-BUNBENID
-           WHEN    NORDERID-CRENACCTID
-           WHEN    NORDERID-SAGAKUID
                CONTINUE
            END-EVALUATE
       *
@@ -5482,14 +5942,6 @@
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-DISPKBN-SET-SEC
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-BUNBENKBN-SET-SEC
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-RIYOUKBN-SET-SEC
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
@@ -5599,14 +6051,6 @@
            MOVE    ZERO                TO  IDX-ITM
       *
            MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-BUNBENKBN-SET-SEC
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-RIYOUKBN-SET-SEC
-           END-IF
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   3 )
@@ -5851,14 +6295,6 @@
                    PERFORM 2300-KSNCD-SET-SEC
                END-IF
            END-PERFORM
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-BUNBENKBN-SET-SEC
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-RIYOUKBN-SET-SEC
-           END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
@@ -6119,42 +6555,6 @@
       *
            .
        2300-KAIGOKBN-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩区分設定処理
-      *****************************************************************
-       2300-BUNBENKBN-SET-SEC      SECTION.
-      *
-           IF    ( SPA-GMN-BUNBENKBN   NOT =   SPACE )
-               PERFORM 2300-ODRITEM-COMMON-SET-SEC
-      *
-               MOVE    NCLAIMID-BUNBENKBNJMA
-                                   TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-      *
-               MOVE    SPA-GMN-BUNBENKBN
-                                   TO  LNK-ODRITEM-ITEM (IDX-ITM)
-           END-IF
-      *
-           .
-       2300-BUNBENKBN-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    直接支払制度利用区分設定処理
-      *****************************************************************
-       2300-RIYOUKBN-SET-SEC      SECTION.
-      *
-           IF    ( SPA-GMN-RIYOUKBN   NOT =   SPACE )
-               PERFORM 2300-ODRITEM-COMMON-SET-SEC
-      *
-               MOVE    NCLAIMID-RIYOUKBNJMA
-                                   TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-      *
-               MOVE    SPA-GMN-RIYOUKBN
-                                   TO  LNK-ODRITEM-ITEM (IDX-ITM)
-           END-IF
-      *
-           .
-       2300-RIYOUKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    担当医設定処理
@@ -6432,11 +6832,10 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE   I06-ALLIDOLST-ROW    TO  WRK-ALLIDOLST-ROW
-           MOVE   I06-PTIDOLST-ROW     TO  WRK-PTIDOLST-ROW
+           MOVE   I06-PTIDOLST-ROW    TO  WRK-PTIDOLST-ROW
            MOVE   I06-ERRMSGLST-ROW    TO  WRK-ERRMSGLST-ROW
       *
-           MOVE    SPACE               TO  I06
-           INITIALIZE                      I06
+           INITIALIZE                  I06
       *
            EVALUATE    FLG-ALLIDOLST-ROW
            WHEN    1
@@ -6592,36 +6991,6 @@
                MOVE    SPA-GMN-HKNCOMBILST (IDX-CMB)
                                        TO  I06-HKNCOMBI-ITEM (IDX-CMB)
            END-PERFORM
-      *
-           PERFORM 41011-BUNBEN-NYUIN-CHK-SEC
-           IF    ( FLG-BUNBENCHK           =   1 )
-      *
-      *        分娩入院
-               MOVE    SPA-GMN-BUNBENKBN-G     TO  I06-BUNBENKBN
-               MOVE    SPA-GMN-BUNBENKBN-MAX   TO  I06-BUNBENKBN-COUNT
-               PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL     ( IDX-CMB >       SPA-GMN-BUNBENKBN-MAX )
-                   MOVE    SPA-GMN-BUNBENKBNLST (IDX-CMB)
-                                       TO  I06-BUNBENKBN-ITEM (IDX-CMB)
-               END-PERFORM
-      *
-               MOVE    SPA-GMN-BUNBENKBN       TO  WRK-BUNBENKBN
-               IF    ( SPA-GMN-BUNBENKBN   =   SPACE  )
-                   MOVE    SPA-NAI-BUNBENKBN   TO  WRK-BUNBENKBN
-               END-IF
-      *
-               IF    ( WRK-BUNBENKBN       =   "1" OR "2" )
-      *
-      *            直接支払制度利用区分
-                   MOVE    SPA-GMN-RIYOUKBN      TO  I06-RIYOUKBN
-                   MOVE    SPA-GMN-RIYOUKBN-MAX  TO  I06-RIYOUKBN-COUNT
-                   PERFORM VARYING IDX-CMB FROM  1   BY  1
-                           UNTIL ( IDX-CMB >   SPA-GMN-RIYOUKBN-MAX )
-                       MOVE    SPA-GMN-RIYOUKBNLST (IDX-CMB)
-                                       TO  I06-RIYOUKBN-ITEM (IDX-CMB)
-                   END-PERFORM
-               END-IF
-           END-IF
       *
            MOVE    SPA-GMN-TOKNYUIN-G  TO  I06-TOKNYUIN
            MOVE    SPA-GMN-TOKNYUIN-MAX
@@ -6856,10 +7225,6 @@
                                                I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
                                                I06-NISSU-STATE
-                                               I06-BUNBENKBN-STATE
-                                               I06-BUNBENKBN-ITEM-STATE
-                                               I06-RIYOUKBN-STATE
-                                               I06-RIYOUKBN-ITEM-STATE
                                                I06-B06-STATE
                                                I06-B06S-STATE
                                                I06-B07-STATE
@@ -6913,10 +7278,6 @@
                                                I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
                                                I06-NISSU-STATE
-                                               I06-BUNBENKBN-STATE
-                                               I06-BUNBENKBN-ITEM-STATE
-                                               I06-RIYOUKBN-STATE
-                                               I06-RIYOUKBN-ITEM-STATE
                MOVE    WIDGET-INSENSITIVE  TO  I06-B12-STATE
            ELSE
                IF    ( SPA-NAI-STATUS-ORDER    =   "2" )
@@ -6970,9 +7331,6 @@
                           MOVE    WIDGET-NORMAL
                                            TO  I06-KAIGOKBN-ITEM-STATE
                        END-IF
-      *
-                       PERFORM 5001-GMNHEN-STATE-EDIT-SEC
-      *
                    WHEN    NORDERID-TAIINID
                        MOVE    WIDGET-NORMAL
                                            TO  I06-TAIINCD-STATE
@@ -6991,9 +7349,6 @@
                                                I06-DISPKBN-STATE
                                                I06-DISPKBN-ITEM-STATE
                                                I06-B12-STATE
-      *
-                       PERFORM 5001-GMNHEN-STATE-EDIT-SEC
-      *
                    WHEN    NORDERID-GAIHKID
                    WHEN    NORDERID-GBACKID
                        MOVE    WIDGET-NORMAL
@@ -7003,7 +7358,6 @@
                    WHEN    NORDERID-FSELEID
                    WHEN    NORDERID-FSTOPID
                    WHEN    NORDERID-FSPSLID
-                   WHEN    NORDERID-FLIQUIDID
                        MOVE    WIDGET-NORMAL
                                            TO  I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
@@ -7056,9 +7410,6 @@
                                                I06-KSNCD-ITEM-STATE (2)
                                                I06-KSNCD-STATE (3)
                                                I06-KSNCD-ITEM-STATE (3)
-      *
-                           PERFORM 5001-GMNHEN-STATE-EDIT-SEC
-      *
                        END-IF
                    WHEN    NORDERID-DELNYUINID
                    WHEN    NORDERID-ALLDELNYUINID
@@ -7069,9 +7420,6 @@
                    WHEN    NORDERID-GPTSTID
                    WHEN    NORDERID-FOODID
                    WHEN    NORDERID-PTEVALID
-                   WHEN    NORDERID-BUNBENID
-                   WHEN    NORDERID-CRENACCTID
-                   WHEN    NORDERID-SAGAKUID
                        CONTINUE
                    END-EVALUATE
       *
@@ -7103,24 +7451,6 @@
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    項目状態編集処理
-      *****************************************************************
-       5001-GMNHEN-STATE-EDIT-SEC      SECTION.
-      *
-           IF    ( I06-RIYOUKBN-COUNT  >   ZERO )
-               MOVE    WIDGET-NORMAL   TO  I06-RIYOUKBN-STATE
-                                           I06-RIYOUKBN-ITEM-STATE
-           END-IF
-      *
-           IF    ( I06-BUNBENKBN-COUNT >   ZERO )
-               MOVE    WIDGET-NORMAL   TO  I06-BUNBENKBN-STATE
-                                           I06-BUNBENKBN-ITEM-STATE
-           END-IF
-      *
-           .
-       5001-GMNHEN-STATE-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    カーソル位置処理
@@ -7197,10 +7527,6 @@
                MOVE    "TEIKIKBN"      TO  MCP-WIDGET
            WHEN    32
                MOVE    "DISPKBN"       TO  MCP-WIDGET
-           WHEN    33
-               MOVE    "BUNBENKBN"     TO  MCP-WIDGET
-           WHEN    34
-               MOVE    "RIYOUKBN"      TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -7256,10 +7582,6 @@
            WHEN    "DR3"
                MOVE    15              TO  SPA-GMN-CUR
            WHEN    "HKNCOMBI"
-               MOVE    33              TO  SPA-GMN-CUR
-           WHEN    "BUNBENKBN"
-               MOVE    34              TO  SPA-GMN-CUR
-           WHEN    "RIYOUKBN"
                MOVE    17              TO  SPA-GMN-CUR
            WHEN    "TOKNYUIN"
                MOVE    26              TO  SPA-GMN-CUR
@@ -7378,18 +7700,6 @@
       *
            IF    ( SPA-GMN-CUR         =   15 )
                IF    ( I06-HKNCOMBI-STATE  =   WIDGET-INSENSITIVE )
-                   MOVE    33          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR         =   33 )
-               IF    ( I06-BUNBENKBN-STATE =   WIDGET-INSENSITIVE )
-                   MOVE    34          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR         =   34 )
-               IF    ( I06-RIYOUKBN-STATE  =   WIDGET-INSENSITIVE )
                    MOVE    17          TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -7567,12 +7877,6 @@
            WHEN    "0035"
                MOVE    "検索時患者表示入力エラー" 
                                        TO  SPA-ERRMSG
-           WHEN    "0036"
-               MOVE    "分娩区分入力エラー" 
-                                       TO  SPA-ERRMSG
-           WHEN    "0037"
-               MOVE    "直接支払制度利用区分入力エラー" 
-                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "異動歴を選択してください"
                                        TO  SPA-ERRMSG
@@ -7668,8 +7972,6 @@
            MOVE    ZERO            TO  FLG-ROUJIN
                                        FLG-LIFE-RJN
       *
-           PERFORM 31011-ROUJIN-CHK-SEC
-      *
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
            MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
@@ -7690,13 +7992,11 @@
                EVALUATE    TRUE
                WHEN  ( SPA-NAI-KJNYMD         >=  CONST-H200401 )
                    IF    ( AGECHK-NENREI2-YY  >=  65 )
-                    OR   ( FLG-RJN             =  1 )
                        MOVE    1           TO  FLG-LIFE-RJN
                    END-IF
                WHEN  ( SPA-NAI-KJNYMD         >=  CONST-H181001 )
                    MOVE    FLG-ROUJIN      TO  FLG-LIFE-RJN
-                   IF    ( AGECHK-NENREI2-YY  >=  70 )
-                    OR   ( FLG-RJN             =  1 )
+                   IF    ( AGECHK-NENREI2-YY   >=  70 )
                        MOVE    1           TO  FLG-LIFE-RJN
                    END-IF
                END-EVALUATE
@@ -8605,39 +8905,6 @@
       *
            .
        900-SYSKANRI-KEY23-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩管理検索処理
-      *****************************************************************
-       900-BUNBEN-KEY3-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BUNBEN
-           INITIALIZE                  BUNBEN-REC
-      *
-           MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
-           MOVE    SPA-NAI-PTID    TO  BUNBEN-PTID
-           MOVE    "1"             TO  BUNBEN-NYUGAIKBN
-           MOVE    PTNYUINRRK-RRKNUM
-                                   TO  BUNBEN-RRKNUM
-           MOVE    BUNBEN-REC      TO  MCPDATA-REC
-      *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  BUNBEN-REC
-           ELSE
-               INITIALIZE              BUNBEN-REC
-               MOVE    1           TO  FLG-BUNBEN
-           END-IF
-      *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-BUNBEN-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

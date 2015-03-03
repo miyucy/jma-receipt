@@ -62,7 +62,6 @@
            03  IDXE                    PIC 9(05).
            03  IDX-ITM                 PIC 9(05).
            03  IDXS                    PIC 9(05).
-           03  IDX-LIFE                PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -101,47 +100,39 @@
            03  WRK-SNUM-OUTNUM         PIC 9(12).
            03  WRK-DENPNUM             PIC 9(07).
            03  WRK-KJNYMD              PIC X(08).
-           03  WRK-KHNCD               PIC X(09).
-           03  WRK-TOKNYUIN-G.
-               05  WRK-TOKNYUIN-KBN    PIC X(01).
-               05  WRK-TOKNYUIN-CD     PIC X(02).
       *
-       01  API-AREA.
-           03  API-ORDERID             PIC X(04).
-           03  API-SRYYMD              PIC X(08).
-           03  API-SAVEREQ             PIC X(01).
-           03  API-REQNUM              PIC X(02).
-           03  API-FORCE-UPDATE        PIC X(05).
-           03  API-NYUINYMD            PIC X(08).
-           03  API-IDOYMD              PIC X(08).
-           03  API-BTUNUM              PIC X(02).
-           03  API-BRMNUM              PIC X(06).
-           03  API-SENTEIKBN           PIC X(01).
-           03  API-SRYKA               PIC X(02).
-           03  API-SAGAKU              PIC X(07).
-           03  API-SAGAKUCD            PIC X(02).
-           03  API-DR                  PIC X(05)
+       01  REG-AREA.
+           03  REG-ORDERID             PIC X(04).
+           03  REG-SRYYMD              PIC X(08).
+           03  REG-SAVEREQ             PIC X(01).
+           03  REG-REQNUM              PIC X(02).
+           03  REG-NYUINYMD            PIC X(08).
+           03  REG-IDOYMD              PIC X(08).
+           03  REG-BTUNUM              PIC X(02).
+           03  REG-BRMNUM              PIC X(06).
+           03  REG-SENTEIKBN           PIC X(01).
+           03  REG-SRYKA               PIC X(02).
+           03  REG-SAGAKU              PIC X(07).
+           03  REG-SAGAKUCD            PIC X(02).
+           03  REG-DR                  PIC X(05)
                                        OCCURS   3.
-           03  API-SHOKAIYMD           PIC X(08).
-           03  API-KAIGOKBN            PIC X(01).
-           03  API-HKNCOMBI            PIC X(04).
-           03  API-AUTOSET             PIC X(01).
-           03  API-KHNCD               PIC X(09).
-           03  API-NYUINRYOCD          PIC X(03).
-           03  API-TOKHIGAITOKBN       PIC X(01).
-           03  API-NACCTKBN            PIC X(01).
-           03  API-BUNBENKBN           PIC X(01).
-           03  API-RIYOUKBN            PIC X(01).
-           03  API-KSNCD               PIC X(09)
+           03  REG-SHOKAIYMD           PIC X(08).
+           03  REG-KAIGOKBN            PIC X(01).
+           03  REG-HKNCOMBI            PIC X(04).
+           03  REG-KHNCD               PIC X(09).
+           03  REG-NYUINRYOCD          PIC X(03).
+           03  REG-TOKHIGAITOKBN       PIC X(01).
+           03  REG-NACCTKBN            PIC X(01).
+           03  REG-KSNCD               PIC X(09)
                                        OCCURS   3.
-           03  API-TEIKIKBN            PIC X(01).
-           03  API-DISPKBN             PIC X(01).
-           03  API-TAIINYMD            PIC X(08).
-           03  API-TENNYUYMD           PIC X(08).
-           03  API-TAIINCD             PIC X(02).
-           03  API-ERR-MAX             PIC 9(03).
-           03  API-ERR-OCC             OCCURS  10.
-               05  API-ERRCD           PIC X(04).
+           03  REG-TEIKIKBN            PIC X(01).
+           03  REG-DISPKBN             PIC X(01).
+           03  REG-TAIINYMD            PIC X(08).
+           03  REG-TENNYUYMD           PIC X(08).
+           03  REG-TAIINCD             PIC X(02).
+           03  REG-ERR-MAX             PIC 9(03).
+           03  REG-ERR-OCC             OCCURS  10.
+               05  REG-ERRCD           PIC X(04).
       *
        01  CONST-AREA.
            03  CONST-H240401           PIC X(08)   VALUE "20120401".
@@ -169,8 +160,6 @@
            COPY  "CPORDER.INC"         REPLACING  //ORDER-//
                                        BY         //TODR-//.
       *
-           COPY    "CPRYOYOCD.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -195,9 +184,6 @@
       *
       *    算定可能入院料取得
            COPY    "CPORCSNYUINRYO.INC".
-      *
-      *    入院オーダーエラーメッセージ取得
-           COPY    "CPORCSODRS03.INC".
       *
       *    入院異動チェックサブ
            COPY    "CPORCSODR.INC".
@@ -298,7 +284,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  API-AREA
+           INITIALIZE                  REG-AREA
            INITIALIZE                  SPA-AREA
            INITIALIZE                  TRRK-REC
            INITIALIZE                  TODR-REC
@@ -307,10 +293,10 @@
            PERFORM 100-INIT-SEC
       *
       *    主処理
-           IF    ( API-ERR-MAX         =   ZERO )
+           IF    ( REG-ERR-MAX         =   ZERO )
                PERFORM 200-MAIN-SEC
            ELSE
-               IF    ( API-SAVEREQ     =   "1" )
+               IF    ( REG-SAVEREQ     =   "1" )
                    PERFORM 290-ORDER-INSERT-SEC
                END-IF
            END-IF
@@ -348,7 +334,6 @@
                                        SUID-AREA
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -400,53 +385,53 @@
            EVALUATE    HSPTINFMREQ-REQNUM
            WHEN    "01"
                PERFORM 1001-NYUIN-SEC
-               MOVE    NORDERID-NYUINID    TO  API-ORDERID
-               MOVE    API-NYUINYMD        TO  API-SRYYMD
+               MOVE    NORDERID-NYUINID    TO  REG-ORDERID
+               MOVE    REG-NYUINYMD        TO  REG-SRYYMD
       *
            WHEN    "02"
                PERFORM 1001-TAIIN-SEC
-               MOVE    NORDERID-TAIINID    TO  API-ORDERID
-               MOVE    API-TAIINYMD        TO  API-SRYYMD
+               MOVE    NORDERID-TAIINID    TO  REG-ORDERID
+               MOVE    REG-TAIINYMD        TO  REG-SRYYMD
       *
            WHEN    "03"
                PERFORM 1001-HENKO-SEC
-               MOVE    NORDERID-HENKOID    TO  API-ORDERID
+               MOVE    NORDERID-HENKOID    TO  REG-ORDERID
                IF    ( TRRK-TENNYUYMD      =   SPACE )
                    MOVE    "99999999"      TO  TRRK-TENNYUYMD
                END-IF
-               MOVE    TRRK-TENNYUYMD      TO  API-SRYYMD
+               MOVE    TRRK-TENNYUYMD      TO  REG-SRYYMD
       *
            WHEN    "05"
            WHEN    "06"
                PERFORM 1001-NYUIN-TORIKESHI-SEC
                IF    ( HSPTINFMREQ-REQNUM  =   "05" )
-                   MOVE    NORDERID-DELNYUINID     TO  API-ORDERID
+                   MOVE    NORDERID-DELNYUINID     TO  REG-ORDERID
                ELSE
-                   MOVE    NORDERID-ALLDELNYUINID  TO  API-ORDERID
+                   MOVE    NORDERID-ALLDELNYUINID  TO  REG-ORDERID
                END-IF
-               MOVE    API-NYUINYMD        TO  API-SRYYMD
+               MOVE    REG-NYUINYMD        TO  REG-SRYYMD
       *
            WHEN    "07"
                PERFORM 1001-TAIIN-TORIKESHI-SEC
                MOVE    NORDERID-CANTAIINID
-                                           TO  API-ORDERID
+                                           TO  REG-ORDERID
                IF    ( TRRK-TAIINYMD       =   SPACE )
-                   MOVE    "99999999"      TO  API-SRYYMD
+                   MOVE    "99999999"      TO  REG-SRYYMD
                END-IF
-               MOVE    TRRK-TAIINYMD       TO  API-SRYYMD
+               MOVE    TRRK-TAIINYMD       TO  REG-SRYYMD
       *
            WHEN    "08"
                PERFORM 1001-IDO-SEC
-               MOVE    NORDERID-IDOALLID   TO  API-ORDERID
-               MOVE    API-IDOYMD          TO  API-SRYYMD
+               MOVE    NORDERID-IDOALLID   TO  REG-ORDERID
+               MOVE    REG-IDOYMD          TO  REG-SRYYMD
       *
            WHEN    "09"
                PERFORM 1001-IDO-TORIKESHI-SEC
-               MOVE    NORDERID-CANIDOID   TO  API-ORDERID
+               MOVE    NORDERID-CANIDOID   TO  REG-ORDERID
                IF    ( TRRK-TENNYUYMD      =   SPACE )
                    MOVE    "99999999"      TO  TRRK-TENNYUYMD
                END-IF
-               MOVE    TRRK-TENNYUYMD      TO  API-SRYYMD
+               MOVE    TRRK-TENNYUYMD      TO  REG-SRYYMD
       *
            WHEN    OTHER
                MOVE    "8003"          TO  WRK-ERRCD
@@ -462,9 +447,9 @@
       *****************************************************************
        1001-INIT-CHECK-SEC         SECTION.
       *
-           MOVE    HSPTINFMREQ-SAVEREQ TO  API-SAVEREQ
+           MOVE    HSPTINFMREQ-SAVEREQ TO  REG-SAVEREQ
       *
-           MOVE    HSPTINFMREQ-REQNUM  TO  API-REQNUM
+           MOVE    HSPTINFMREQ-REQNUM  TO  REG-REQNUM
       *
            PERFORM 10011-PTNUM-CHECK-SEC
       *
@@ -523,12 +508,12 @@
                    MOVE    "8001"     TO  WRK-ERRCD
                    PERFORM 990-ERROR-EDIT-SEC
                ELSE
-                   MOVE    WRK-SYMD   TO  API-NYUINYMD
+                   MOVE    WRK-SYMD   TO  REG-NYUINYMD
                END-IF
       *
                IF    (  HSPTINFMREQ-REQNUM      =   "01" )
-                   IF    (  API-NYUINYMD    NOT =   SPACE )
-                    AND  (  API-NYUINYMD  <   CONST-H240401 )
+                   IF    (  REG-NYUINYMD    NOT =   SPACE )
+                    AND  (  REG-NYUINYMD  <   CONST-H240401 )
                        MOVE    "8002"     TO  WRK-ERRCD
                        PERFORM 990-ERROR-EDIT-SEC
                    END-IF
@@ -552,7 +537,7 @@
                    IF    ( FLG-PTNYUINRRK      =   ZERO )
                        IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
                         AND  ( PTNYUINRRK-JTIKBN   NOT =   "6" )
-                        AND  ( PTNYUINRRK-NYUINYMD =   API-NYUINYMD )
+                        AND  ( PTNYUINRRK-NYUINYMD =   REG-NYUINYMD )
                            IF    ( PTNYUINRRK-RRKNUM
                                                NOT =   TRRK-RRKNUM )
                                MOVE    "8006"  TO  WRK-ERRCD
@@ -583,63 +568,50 @@
       *****************************************************************
        1001-NYUIN-SEC                  SECTION.
       *
-           MOVE    API-NYUINYMD        TO  WRK-KJNYMD
+           MOVE    HSPTINFMREQ-BTUNUM  TO  REG-BTUNUM
       *
-           MOVE    HSPTINFMREQ-BTUNUM  TO  API-BTUNUM
-      *
-           MOVE    HSPTINFMREQ-BRMNUM  TO  API-BRMNUM
+           MOVE    HSPTINFMREQ-BRMNUM  TO  REG-BRMNUM
       *
            PERFORM 10011-SAGAKU-CHECK-SEC
       *
            MOVE    HSPTINFMREQ-SENTEIKBN
-                                       TO  API-SENTEIKBN
+                                       TO  REG-SENTEIKBN
       *
            PERFORM VARYING  IDX0    FROM   1   BY  1
                   UNTIL  ( IDX0    >   3 )
                MOVE    HSPTINFMREQ-DR (IDX0)
-                                       TO  API-DR (IDX0)
+                                       TO  REG-DR (IDX0)
            END-PERFORM
       *
-           MOVE    HSPTINFMREQ-SRYKA   TO  API-SRYKA
+           MOVE    HSPTINFMREQ-SRYKA   TO  REG-SRYKA
       *
            MOVE    HSPTINFMREQ-SHOKAIYMD
                                        TO  WRK-DATE
            PERFORM 800-SYMD-SEC
-           MOVE    WRK-SYMD            TO  API-SHOKAIYMD
+           MOVE    WRK-SYMD            TO  REG-SHOKAIYMD
       *
-           MOVE    HSPTINFMREQ-KAIGOKBN TO API-KAIGOKBN
+           MOVE    HSPTINFMREQ-KAIGOKBN TO REG-KAIGOKBN
       *
-           IF    ( HSPTINFMREQ-HKNCOMBI    NOT =   SPACE )
-               MOVE    HSPTINFMREQ-HKNCOMBI
-                                       TO  API-HKNCOMBI
-           ELSE
-               PERFORM 10011-HOKEN-CHECK-SEC
-           END-IF
+           PERFORM 10011-HOKEN-CHECK-SEC
       *
-           MOVE    HSPTINFMREQ-AUTOSET TO  API-AUTOSET
-      *
-           IF    ( HSPTINFMREQ-AUTOSET     =   SPACE OR ZERO )
-            AND  ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
+           IF    ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
+               MOVE    REG-NYUINYMD    TO  WRK-KJNYMD
                PERFORM 10011-KHNCD-CHECK-SEC
            END-IF
       *
            MOVE    HSPTINFMREQ-TOKHIGAITOKBN
-                                       TO  API-TOKHIGAITOKBN
+                                       TO  REG-TOKHIGAITOKBN
            MOVE    HSPTINFMREQ-NACCTKBN
-                                       TO  API-NACCTKBN
-           MOVE    HSPTINFMREQ-BUNBENKBN
-                                       TO  API-BUNBENKBN
-           MOVE    HSPTINFMREQ-RIYOUKBN
-                                       TO  API-RIYOUKBN
+                                       TO  REG-NACCTKBN
       *
            PERFORM VARYING  IDX0    FROM   1   BY  1
                   UNTIL  ( IDX0    >   3 )
                MOVE    HSPTINFMREQ-KSNCD (IDX0)
-                                       TO  API-KSNCD (IDX0)
+                                       TO  REG-KSNCD (IDX0)
            END-PERFORM
       *
-           MOVE    HSPTINFMREQ-TEIKIKBN TO API-TEIKIKBN
-           MOVE    HSPTINFMREQ-DISPKBN TO  API-DISPKBN
+           MOVE    HSPTINFMREQ-TEIKIKBN TO REG-TEIKIKBN
+           MOVE    HSPTINFMREQ-DISPKBN TO  REG-DISPKBN
       *
            .
        1001-NYUIN-EXT.
@@ -649,12 +621,10 @@
       *****************************************************************
        1001-TAIIN-SEC                  SECTION.
       *
-           MOVE    HSPTINFMREQ-FORCE-UPDATE
-                                       TO  API-FORCE-UPDATE
       *
            PERFORM 10011-TAIINYMD-CHECK-SEC
       *
-           MOVE    HSPTINFMREQ-TAIINCD TO  API-TAIINCD
+           MOVE    HSPTINFMREQ-TAIINCD TO  REG-TAIINCD
       *
            .
        1001-TAIIN-EXT.
@@ -668,15 +638,11 @@
            PERFORM VARYING  IDX0    FROM   1   BY  1
                   UNTIL  ( IDX0    >   3 )
                MOVE    HSPTINFMREQ-DR (IDX0)
-                                       TO  API-DR (IDX0)
+                                       TO  REG-DR (IDX0)
            END-PERFORM
       *
-           MOVE    HSPTINFMREQ-BUNBENKBN
-                                       TO  API-BUNBENKBN
-           MOVE    HSPTINFMREQ-RIYOUKBN
-                                       TO  API-RIYOUKBN
-           MOVE    HSPTINFMREQ-TEIKIKBN TO API-TEIKIKBN
-           MOVE    HSPTINFMREQ-DISPKBN TO  API-DISPKBN
+           MOVE    HSPTINFMREQ-TEIKIKBN TO REG-TEIKIKBN
+           MOVE    HSPTINFMREQ-DISPKBN TO  REG-DISPKBN
       *
            .
        1001-HENKO-EXT.
@@ -708,56 +674,39 @@
       *
            PERFORM 10011-IDOYMD-CHECK-SEC
       *
-           MOVE    HSPTINFMREQ-FORCE-UPDATE
-                                        TO  API-FORCE-UPDATE
+           MOVE    HSPTINFMREQ-BTUNUM   TO  REG-BTUNUM
       *
-           MOVE    API-IDOYMD           TO  WRK-KJNYMD
-      *
-           MOVE    HSPTINFMREQ-BTUNUM   TO  API-BTUNUM
-      *
-           MOVE    HSPTINFMREQ-BRMNUM   TO  API-BRMNUM
+           MOVE    HSPTINFMREQ-BRMNUM   TO  REG-BRMNUM
       *
            PERFORM 10011-SAGAKU-CHECK-SEC
       *
            MOVE    HSPTINFMREQ-SENTEIKBN
-                                       TO  API-SENTEIKBN
+                                       TO  REG-SENTEIKBN
       *
            PERFORM VARYING  IDX0    FROM   1   BY  1
                   UNTIL  ( IDX0    >   3 )
                MOVE    HSPTINFMREQ-DR (IDX0)
-                                       TO  API-DR (IDX0)
+                                       TO  REG-DR (IDX0)
            END-PERFORM
       *
-           MOVE    HSPTINFMREQ-SRYKA    TO  API-SRYKA
+           MOVE    HSPTINFMREQ-SRYKA    TO  REG-SRYKA
       *
-           IF    ( HSPTINFMREQ-HKNCOMBI    NOT =   SPACE )
-               MOVE    HSPTINFMREQ-HKNCOMBI
-                                       TO  API-HKNCOMBI
-           ELSE
-               PERFORM 10011-HOKEN-CHECK-SEC
-           END-IF
+           PERFORM 10011-HOKEN-CHECK-SEC
       *
-      *
-           MOVE    HSPTINFMREQ-AUTOSET TO  API-AUTOSET
-      *
-           IF    ( HSPTINFMREQ-AUTOSET    =   SPACE OR ZERO )
-            AND  ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
+           IF    ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
+               MOVE    REG-IDOYMD      TO  WRK-KJNYMD
                PERFORM 10011-KHNCD-CHECK-SEC
            END-IF
       *
            MOVE    HSPTINFMREQ-TOKHIGAITOKBN
-                                       TO  API-TOKHIGAITOKBN
+                                       TO  REG-TOKHIGAITOKBN
            MOVE    HSPTINFMREQ-NACCTKBN
-                                       TO  API-NACCTKBN
-           MOVE    HSPTINFMREQ-BUNBENKBN
-                                       TO  API-BUNBENKBN
-           MOVE    HSPTINFMREQ-RIYOUKBN
-                                       TO  API-RIYOUKBN
+                                       TO  REG-NACCTKBN
       *
            PERFORM VARYING  IDX0    FROM   1   BY  1
                   UNTIL  ( IDX0    >   3 )
                MOVE    HSPTINFMREQ-KSNCD (IDX0)
-                                       TO  API-KSNCD (IDX0)
+                                       TO  REG-KSNCD (IDX0)
            END-PERFORM
       *
            .
@@ -777,7 +726,7 @@
       *****************************************************************
        10011-SAGAKU-CHECK-SEC          SECTION.
       *
-           MOVE    HSPTINFMREQ-SAGAKU   TO  API-SAGAKU
+           MOVE    HSPTINFMREQ-SAGAKU   TO  REG-SAGAKU
       *
            MOVE    HSPTINFMREQ-SAGAKU   TO  WRK-SNUM-INX
            PERFORM 800-ORCSNUM-SEC
@@ -786,18 +735,18 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
                MOVE    "5113"          TO  SYS-KANRICD
-               MOVE    WRK-KJNYMD      TO  SYS-STYUKYMD
+               MOVE    REG-NYUINYMD    TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
       *
                PERFORM 900-SYSKANRI-KEY2-SEL-SEC
                MOVE    SYSKANRI-REC    TO  SYS-5113-REC
       *
                PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-                        OR   ( API-SAGAKUCD    NOT =   SPACE )
+                        OR   ( REG-SAGAKUCD    NOT =   SPACE )
       *
                    IF    ( WRK-SAGAKU  =   SYS-5113-BRM-SAGAKU-NM )
                        MOVE    SYS-5113-KBNCD
-                                       TO  API-SAGAKUCD
+                                       TO  REG-SAGAKUCD
                    END-IF
       *
                    PERFORM 900-SYSKANRI-KEY2-FET-SEC
@@ -865,14 +814,14 @@
            END-PERFORM
       *
            MOVE    SPA-AREA            TO  TSPA-AREA
-           MOVE    WRK-KJNYMD          TO  TSPA-SYSYMD
+           MOVE    REG-NYUINYMD        TO  TSPA-SYSYMD
       *
            CALL    "ORCSAPIHKN"        USING
                                        TSPA-AREA
                                        ORCSAPIHKNAREA
       *
            MOVE    ORCSAPIHKN-OT-HKNCOMBI
-                                       TO  API-HKNCOMBI
+                                       TO  REG-HKNCOMBI
       *
            .
        10011-HOKEN-CHECK-EXT.
@@ -882,16 +831,6 @@
       *****************************************************************
        10011-KHNCD-CHECK-SEC           SECTION.
       *
-           INITIALIZE                      SNYUINRYO-AREA
-           MOVE    WRK-KJNYMD          TO  SNYUINRYO-SRYYMD
-           MOVE    HSPTINFMREQ-REQNUM  TO  SNYUINRYO-SYORIKBN
-           MOVE    API-BTUNUM          TO  SNYUINRYO-BTUNUM
-           MOVE    API-BRMNUM          TO  SNYUINRYO-BRMNUM
-           MOVE    API-HKNCOMBI        TO  SNYUINRYO-HKNCOMBI
-           CALL    "ORCSNYUINRYO"      USING
-                                       SNYUINRYO-AREA
-                                       SPA-AREA
-      *
            PERFORM 100111-KHNCD-CHECK-SEC
       *
            .
@@ -900,7 +839,7 @@
       *****************************************************************
       *    入院料チェック処理
       *****************************************************************
-       100111-KHNCD-CHECK-SEC          SECTION.
+       100111-KHNCD-CHECK-SEC           SECTION.
       *
            IF    ( HSPTINFMREQ-KHNCD (1:1) =   "4" )
             AND  ( HSPTINFMREQ-KHNCD (4:)  =   SPACE )
@@ -909,86 +848,49 @@
                                        TO  NYUINCDCHG-NYUINRYOCD
       *        ダミーのコードを設定
                MOVE    "188000000"     TO  NYUINCDCHG-SRYCD-AF
-               PERFORM 1001111-KHNCD-CHECK-SEC
            ELSE
-               MOVE    HSPTINFMREQ-KHNCD
-                                       TO  WRK-KHNCD
                PERFORM 900-NYUINCDCHG-KEY2-SEL-SEC
-               PERFORM 1001111-KHNCD-CHECK-SEC
-               IF    ( API-KHNCD                   =   SPACE )
-                AND  ( NYUINCDCHG-NYUINRYOCD   NOT =   SPACE )
-                   PERFORM 1001111-LIFE-CHECK-SEC
-                   IF    ( WRK-TOKNYUIN-G      NOT =   SPACE )
-                       PERFORM 900-NYUINCDCHG-KEY3-SEL-SEC
-                       PERFORM 1001111-KHNCD-CHECK-SEC
-                   END-IF
-               END-IF
-      *
            END-IF
       *
-           IF    ( SNYUINRYO-BTU-KHNSRYCD  NOT =   SPACE )
-            AND  ( SNYUINRYO-BTU-KHNSRYCD      =   API-KHNCD )
-               MOVE    SPACE           TO  API-NYUINRYOCD
-               MOVE    SPACE           TO  API-KHNCD
-           END-IF
-      *
-           .
-       100111-KHNCD-CHECK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院料チェック処理
-      *****************************************************************
-       1001111-KHNCD-CHECK-SEC             SECTION.
-      *
+           INITIALIZE                      SNYUINRYO-AREA
+           MOVE    WRK-KJNYMD          TO  SNYUINRYO-SRYYMD
+           MOVE    "01"                TO  SNYUINRYO-SYORIKBN
+           MOVE    REG-BTUNUM          TO  SNYUINRYO-BTUNUM
+           MOVE    REG-BRMNUM          TO  SNYUINRYO-BRMNUM
+           MOVE    REG-HKNCOMBI        TO  SNYUINRYO-HKNCOMBI
+           CALL    "ORCSNYUINRYO"      USING
+                                       SNYUINRYO-AREA
+                                       SPA-AREA
            IF    ( NYUINCDCHG-NYUINRYOCD
                                        NOT =   SPACE )
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   SNYUINRYO-MAX )
-                        OR   ( API-NYUINRYOCD
+                        OR   ( REG-NYUINRYOCD
                                    NOT =   SPACE )
                    IF    ( SNYUINRYO-NYUINRYO-G (IDX0)
                                        =   NYUINCDCHG-NYUINRYOCD )
                        MOVE    NYUINCDCHG-NYUINRYOCD
-                                       TO  API-NYUINRYOCD
+                                       TO  REG-NYUINRYOCD
                        MOVE    NYUINCDCHG-SRYCD-AF
-                                       TO  API-KHNCD
+                                       TO  REG-KHNCD
                    END-IF
                END-PERFORM
+      *
+      *    ELSE
+      *        IF    ( NYUINCDCHG-SRYCD-AF NOT =   SPACE )
+      *            MOVE    NYUINCDCHG-SRYCD-AF
+      *                                TO  REG-KHNCD
+      *        END-IF
+           END-IF
+      *
+           IF    ( SNYUINRYO-BTU-KHNSRYCD  NOT =   SPACE )
+            AND  ( SNYUINRYO-BTU-KHNSRYCD      =   REG-KHNCD )
+               MOVE    SPACE           TO  REG-NYUINRYOCD
+               MOVE    SPACE           TO  REG-KHNCD
            END-IF
       *
            .
-       1001111-KHNCD-CHECK-EXT.
-           EXIT.
-      *****************************************************************
-      *    生活療養コードチェック処理
-      *****************************************************************
-       1001111-LIFE-CHECK-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  WRK-TOKNYUIN-G
-      *
-           PERFORM VARYING IDX-LIFE    FROM    1   BY  1
-                   UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX )
-                     OR  ( WRK-TOKNYUIN-G  NOT =   SPACE )
-      *
-               EVALUATE    TRUE
-               WHEN  ( CONST-TOK-LIFECD-IPN (IDX-LIFE)
-                                       =   NYUINCDCHG-NYUINRYOCD )
-                   MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
-                                       TO  WRK-TOKNYUIN-G
-                   MOVE    CONST-TOK-LIFECD-MAX
-                                       TO  IDX-LIFE
-               WHEN  ( CONST-TOK-LIFECD-LIFE (IDX-LIFE)
-                                       =   NYUINCDCHG-NYUINRYOCD )
-                   MOVE    CONST-TOK-LIFECD-IPN (IDX-LIFE)
-                                       TO  WRK-TOKNYUIN-G
-                   MOVE    CONST-TOK-LIFECD-MAX
-                                       TO  IDX-LIFE
-               END-EVALUATE
-      *
-           END-PERFORM
-      *
-           .
-       1001111-LIFE-CHECK-EXT.
+       100111-KHNCD-CHECK-EXT.
            EXIT.
       *****************************************************************
       *    退院日チェック処理
@@ -1007,7 +909,7 @@
                    MOVE    "8009"      TO  WRK-ERRCD
                    PERFORM 990-ERROR-EDIT-SEC
                ELSE
-                   MOVE    WRK-SYMD    TO  API-TAIINYMD
+                   MOVE    WRK-SYMD    TO  REG-TAIINYMD
                END-IF
            END-IF
       *
@@ -1031,11 +933,11 @@
                    MOVE    "8007"      TO  WRK-ERRCD
                    PERFORM 990-ERROR-EDIT-SEC
                ELSE
-                   MOVE    WRK-SYMD    TO  API-IDOYMD
+                   MOVE    WRK-SYMD    TO  REG-IDOYMD
                END-IF
       *
-               IF    (  API-IDOYMD    NOT =   SPACE )
-                AND  (  API-IDOYMD   <   CONST-H240401 )
+               IF    (  REG-IDOYMD    NOT =   SPACE )
+                AND  (  REG-IDOYMD   <   CONST-H240401 )
                    MOVE    "8008"      TO  WRK-ERRCD
                    PERFORM 990-ERROR-EDIT-SEC
                END-IF
@@ -1099,13 +1001,13 @@
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-SAGAKU        NOT =   SPACE )
+               IF    ( REG-SAGAKU        NOT =   SPACE )
                    PERFORM 2300-SAGAKU-SET-SEC
                END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-SENTEIKBN     NOT =   SPACE )
+               IF    ( REG-SENTEIKBN     NOT =   SPACE )
                    PERFORM 2300-SENTEIKBN-SET-SEC
                END-IF
            END-IF
@@ -1118,19 +1020,13 @@
            END-PERFORM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-AUTOSET       NOT =   SPACE )
-                   PERFORM 2300-AUTOSET-SET-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-NYUINRYOCD    NOT =   SPACE )
+               IF    ( REG-NYUINRYOCD    NOT =   SPACE )
                    PERFORM 2300-TOKNYUIN-SET-SEC
                END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-TOKHIGAITOKBN
+               IF    ( REG-TOKHIGAITOKBN
                                          NOT =   SPACE )
                    PERFORM 2300-TOKHIGAITOKBN-SET-SEC
                END-IF
@@ -1145,46 +1041,34 @@
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-NACCTKBN        NOT =   SPACE )
+               IF    ( REG-NACCTKBN        NOT =   SPACE )
                    PERFORM 2300-NACCTKBN-SET-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-BUNBENKBN       NOT =   SPACE )
-                   PERFORM 2300-BUNBENKBN-SET-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-RIYOUKBN        NOT =   SPACE )
-                   PERFORM 2300-RIYOUKBN-SET-SEC
                END-IF
            END-IF
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   3 )
                IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-                   IF    ( API-KSNCD (IDX2)  NOT =   SPACE )
+                   IF    ( REG-KSNCD (IDX2)  NOT =   SPACE )
                        PERFORM 2300-KSNCD-SET-SEC
                    END-IF
                END-IF
            END-PERFORM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-TEIKIKBN      NOT =   SPACE )
+               IF    ( REG-TEIKIKBN      NOT =   SPACE )
                    PERFORM 2300-TEIKIKBN-SET-SEC
                END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-DISPKBN        NOT =   SPACE )
+               IF    ( REG-DISPKBN        NOT =   SPACE )
                    PERFORM 2300-DISPKBN-SET-SEC
                END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-KAIGOKBN      NOT =   SPACE )
+               IF    ( REG-KAIGOKBN      NOT =   SPACE )
                    PERFORM 2300-KAIGOKBN-SET-SEC
                END-IF
            END-IF
@@ -1217,10 +1101,6 @@
            PERFORM 2300-SODR-COMMON-SET-SEC
       *
            MOVE    ZERO                TO  IDX-ITM
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-FORCE-UPDATE-SET-SEC
-           END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-TAIINCD-SET-SEC
@@ -1263,25 +1143,13 @@
            END-PERFORM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-BUNBENKBN       NOT =   SPACE )
-                   PERFORM 2300-BUNBENKBN-SET-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-RIYOUKBN        NOT =   SPACE )
-                   PERFORM 2300-RIYOUKBN-SET-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-TEIKIKBN      NOT =   SPACE )
+               IF    ( REG-TEIKIKBN      NOT =   SPACE )
                    PERFORM 2300-TEIKIKBN-SET-SEC
                END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-DISPKBN        NOT =   SPACE )
+               IF    ( REG-DISPKBN        NOT =   SPACE )
                    PERFORM 2300-DISPKBN-SET-SEC
                END-IF
            END-IF
@@ -1374,10 +1242,6 @@
            MOVE    ZERO                TO  IDX-ITM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               PERFORM 2300-FORCE-UPDATE-SET-SEC
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-BTUNUM-SET-SEC
            END-IF
       *
@@ -1386,15 +1250,16 @@
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-SAGAKU        NOT =   SPACE )
+               IF    ( REG-SAGAKU        NOT =   SPACE )
                    PERFORM 2300-SAGAKU-SET-SEC
                END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-SENTEIKBN     NOT =   SPACE )
-                   PERFORM 2300-SENTEIKBN-SET-SEC
+               IF    ( REG-SENTEIKBN     =   SPACE )
+                   MOVE    TRRK-SENTEIKBN    TO  REG-SENTEIKBN
                END-IF
+               PERFORM 2300-SENTEIKBN-SET-SEC
            END-IF
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
@@ -1405,21 +1270,16 @@
            END-PERFORM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-AUTOSET       NOT =   SPACE )
-                   PERFORM 2300-AUTOSET-SET-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-NYUINRYOCD    NOT =   SPACE )
+               IF    ( REG-NYUINRYOCD    NOT =   SPACE )
                    PERFORM 2300-TOKNYUIN-SET-SEC
                END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-TOKHIGAITOKBN     NOT =   SPACE )
-                   PERFORM 2300-TOKHIGAITOKBN-SET-SEC
+               IF    ( REG-TOKHIGAITOKBN     =   SPACE )
+                   MOVE    "0"           TO  REG-TOKHIGAITOKBN
                END-IF
+               PERFORM 2300-TOKHIGAITOKBN-SET-SEC
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
@@ -1431,27 +1291,16 @@
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-NACCTKBN      NOT =   SPACE )
-                   PERFORM 2300-NACCTKBN-SET-SEC
+               IF    ( REG-NACCTKBN          =   SPACE )
+                   MOVE    TRRK-NYUCALKBN TO REG-NACCTKBN
                END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-BUNBENKBN       NOT =   SPACE )
-                   PERFORM 2300-BUNBENKBN-SET-SEC
-               END-IF
-           END-IF
-      *
-           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-               IF    ( API-RIYOUKBN        NOT =   SPACE )
-                   PERFORM 2300-RIYOUKBN-SET-SEC
-               END-IF
+               PERFORM 2300-NACCTKBN-SET-SEC
            END-IF
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   3 )
                IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
-                   IF    ( API-KSNCD (IDX2)  NOT =   SPACE )
+                   IF    ( REG-KSNCD (IDX2)  NOT =   SPACE )
                        PERFORM 2300-KSNCD-SET-SEC
                    END-IF
                END-IF
@@ -1507,20 +1356,6 @@
        2001-IDO-TORIKESHI-EXT.
            EXIT.
       *****************************************************************
-      *    強制更新設定処理
-      *****************************************************************
-       2300-FORCE-UPDATE-SET-SEC             SECTION.
-      *
-           PERFORM 2300-ODRITEM-COMMON-SET-SEC
-      *
-           MOVE    NCLAIMID-FORCE-UPDATEJMA
-                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-FORCE-UPDATE    TO  LNK-ODRITEM-ITEM (IDX-ITM)
-      *
-           .
-       2300-FORCE-UPDATE-SET-EXT.
-           EXIT.
-      *****************************************************************
       *    初回設定処理
       *****************************************************************
        2300-SHOKAI-SET-SEC             SECTION.
@@ -1530,9 +1365,9 @@
            MOVE    NCLAIMID-SHOKAIJMA
                                    TO  LNK-ODRITEM-ITEMID (IDX-ITM)
       *
-           IF    ( API-SHOKAIYMD   NOT =   SPACE )
+           IF    ( REG-SHOKAIYMD   NOT =   SPACE )
                MOVE    "01"        TO  LNK-ODRITEM-ITEM (IDX-ITM)
-               MOVE    API-SHOKAIYMD
+               MOVE    REG-SHOKAIYMD
                                    TO  LNK-ODRITEM-MEMO (IDX-ITM)
            END-IF
       *
@@ -1547,7 +1382,7 @@
            PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-BTUNUMJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-BTUNUM          TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-BTUNUM          TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-BTUNUM-SET-EXT.
@@ -1560,7 +1395,7 @@
            PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-BRMNUMJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-BRMNUM          TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-BRMNUM          TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-BRMNUM-SET-EXT.
@@ -1573,8 +1408,8 @@
            PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-SAGAKUJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-SAGAKUCD        TO  LNK-ODRITEM-ITEM (IDX-ITM)
-           MOVE    API-SAGAKU          TO  LNK-ODRITEM-MEMO (IDX-ITM)
+           MOVE    REG-SAGAKUCD        TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-SAGAKU          TO  LNK-ODRITEM-MEMO (IDX-ITM)
       *
            .
        2300-SAGAKU-SET-EXT.
@@ -1588,7 +1423,7 @@
       *
            MOVE    NCLAIMID-SENTEIKBNJMA 
                                        TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-SENTEIKBN       TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-SENTEIKBN       TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-SENTEIKBN-SET-EXT.
@@ -1602,32 +1437,19 @@
       *
            MOVE    NCLAIMID-DRJMA      TO  LNK-ODRITEM-ITEMID (IDX-ITM)
       *
-           IF    ( API-DR (IDX2)       NOT =   SPACE )
-               IF    ( API-DR (IDX2)(5:1)  =   SPACE )
+           IF    ( REG-DR (IDX2)       NOT =   SPACE )
+               IF    ( REG-DR (IDX2)(5:1)  =   SPACE )
                    MOVE    "1"     TO  LNK-ODRITEM-ITEM(IDX-ITM)(1:1)
-                   MOVE    API-DR (IDX2)
+                   MOVE    REG-DR (IDX2)
                                    TO  LNK-ODRITEM-ITEM(IDX-ITM)(2:)
                ELSE
-                   MOVE    API-DR (IDX2)
+                   MOVE    REG-DR (IDX2)
                                    TO  LNK-ODRITEM-ITEM(IDX-ITM)
                END-IF
            END-IF
       *
            .
        2300-DR-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院料初期値設定区分設定処理
-      *****************************************************************
-       2300-AUTOSET-SET-SEC           SECTION.
-      *
-           PERFORM 2300-ODRITEM-COMMON-SET-SEC
-      *
-           MOVE    NCLAIMID-AUTOSETJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-AUTOSET         TO  LNK-ODRITEM-ITEM (IDX-ITM)
-      *
-           .
-       2300-AUTOSET-SET-EXT.
            EXIT.
       *****************************************************************
       *    特定入院料設定処理
@@ -1637,8 +1459,8 @@
            PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-TOKNYUINJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-NYUINRYOCD       TO  LNK-ODRITEM-ITEM (IDX-ITM)
-           MOVE    API-KHNCD            TO  LNK-ODRITEM-MEMO (IDX-ITM)
+           MOVE    REG-NYUINRYOCD       TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-KHNCD            TO  LNK-ODRITEM-MEMO (IDX-ITM)
       *
            .
        2300-TOKNYUIN-SET-EXT.
@@ -1651,7 +1473,7 @@
            PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-NYUINKAJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-SRYKA            TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-SRYKA            TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-NYUINKA-SET-EXT.
@@ -1665,7 +1487,7 @@
       *
            MOVE    NCLAIMID-HKNCOMBIJMA
                                    TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-HKNCOMBI    TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-HKNCOMBI    TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-HKNCOMBI-SET-EXT.
@@ -1679,38 +1501,10 @@
       *
            MOVE    NCLAIMID-NACCTKBNJMA 
                                        TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-NACCTKBN        TO  LNK-ODRITEM-ITEM   (IDX-ITM)
+           MOVE    REG-NACCTKBN       TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-NACCTKBN-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩区分設定処理
-      *****************************************************************
-       2300-BUNBENKBN-SET-SEC          SECTION.
-      *
-           PERFORM 2300-ODRITEM-COMMON-SET-SEC
-      *
-           MOVE    NCLAIMID-BUNBENKBNJMA 
-                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-BUNBENKBN        TO  LNK-ODRITEM-ITEM   (IDX-ITM)
-      *
-           .
-       2300-BUNBENKBN-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    直接支払制度利用区分設定処理
-      *****************************************************************
-       2300-RIYOUKBN-SET-SEC          SECTION.
-      *
-           PERFORM 2300-ODRITEM-COMMON-SET-SEC
-      *
-           MOVE    NCLAIMID-RIYOUKBNJMA
-                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-RIYOUKBN        TO  LNK-ODRITEM-ITEM   (IDX-ITM)
-      *
-           .
-       2300-RIYOUKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    入院加算設定処理
@@ -1721,7 +1515,7 @@
       *
            MOVE    NCLAIMID-KSNCDJMA
                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-KSNCD (IDX2)   TO  LNK-ODRITEM-ITEM   (IDX-ITM)
+           MOVE    REG-KSNCD (IDX2)   TO  LNK-ODRITEM-ITEM   (IDX-ITM)
       *
            .
        2300-KSNCD-SET-EXT.
@@ -1735,7 +1529,7 @@
       *
            MOVE    NCLAIMID-TEIKIKBNJMA
                                    TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-TEIKIKBN    TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-TEIKIKBN    TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-TEIKIKBN-SET-EXT.
@@ -1749,7 +1543,7 @@
       *
            MOVE    NCLAIMID-DISPKBNJMA 
                                        TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-DISPKBN         TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-DISPKBN         TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-DISPKBN-SET-EXT.
@@ -1763,7 +1557,7 @@
       *
            MOVE    NCLAIMID-KAIGOKBNJMA
                                    TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-KAIGOKBN    TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-KAIGOKBN    TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-KAIGOKBN-SET-EXT.
@@ -1776,7 +1570,7 @@
            PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-TAIINCDJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-TAIINCD          TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-TAIINCD          TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-TAIINCD-SET-EXT.
@@ -1790,7 +1584,7 @@
       *
            MOVE    NCLAIMID-TOKHIGAITOKBNJMA
                                        TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-TOKHIGAITOKBN   TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    REG-TOKHIGAITOKBN   TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-TOKHIGAITOKBN-SET-EXT.
@@ -1806,18 +1600,18 @@
            MOVE    "1"                 TO  SODR-NYUGAIKBN
            MOVE    SPA-PTNUM           TO  SODR-PTNUM
            MOVE    SPA-PTID            TO  SODR-PTID
-           MOVE    API-SRYKA           TO  SODR-SRYKA
-           MOVE    API-HKNCOMBI        TO  SODR-HKNCOMBI
+           MOVE    REG-SRYKA           TO  SODR-SRYKA
+           MOVE    REG-HKNCOMBI        TO  SODR-HKNCOMBI
            MOVE    SMCNDATE-YMD        TO  SODR-UKEYMD
            MOVE    SMCNDATE-HMS        TO  SODR-UKEHMS
-           IF    ( API-SAVEREQ         =   "1" )
+           IF    ( REG-SAVEREQ         =   "1" )
                MOVE    "0"             TO  SODR-PROCKBN
            ELSE
                MOVE    "2"             TO  SODR-PROCKBN
            END-IF
            MOVE    2                   TO  SODR-KEYGENERATE
            MOVE    99                  TO  SODR-INF-DIALOG
-           MOVE    API-KHNCD           TO  SODR-KHNSRYCD
+           MOVE    REG-KHNCD           TO  SODR-KHNSRYCD
            MOVE    "1"                 TO  SODR-SRCKBN
       *
            MOVE    "api_"              TO  SODR-OPID
@@ -1825,8 +1619,8 @@
            MOVE    SMCNDATE-YMD        TO  SODR-UPYMD
            MOVE    SMCNDATE-HMS        TO  SODR-UPHMS
       *
-           MOVE    API-SRYYMD          TO  SODR-SRYYMD
-           MOVE    API-ORDERID         TO  SODR-ORDERID
+           MOVE    REG-SRYYMD          TO  SODR-SRYYMD
+           MOVE    REG-ORDERID         TO  SODR-ORDERID
       *
            .
        2300-SODR-COMMON-SET-EXT.
@@ -1878,7 +1672,7 @@
       *
            INITIALIZE                  SNINF01-AREA
            MOVE    SODR-RRKNUM     TO  SNINF01-IN-RRKNUM
-           IF    ( API-REQNUM      =   "09" )
+           IF    ( REG-REQNUM      =   "09" )
                MOVE    TRRK-TENNYUYMD
                                    TO  SNINF01-IN-KJNYMD
            END-IF
@@ -1905,7 +1699,7 @@
            MOVE    SNINF01-NYUINYMD (IDXA)
                                    TO  HSPTINFM01RES-NYUINYMD
       *
-           IF    ( API-REQNUM      =  "03" OR "08" OR "09" )
+           IF    ( REG-REQNUM      =  "03" OR "08" OR "09" )
                MOVE    SNINF01-IDOYMD (IDXA)
                                    TO  HSPTINFM01RES-IDOYMD
            END-IF
@@ -1995,7 +1789,7 @@
                                    TO HSPTINFM01RES-NYUINRYO-DATA
            MOVE    SNINF01-NYUINRYO-NAME (IDXA)
                                    TO HSPTINFM01RES-NYUINRYO-NAME
-           IF    ( API-REQNUM      =  "03" OR "08" OR "09" )
+           IF    ( REG-REQNUM      =  "03" OR "08" OR "09" )
                MOVE    SNINF01-IDONYUINRYO-LBL (IDXA)
                                    TO HSPTINFM01RES-IDONYUINRYO-LBL
                MOVE    SNINF01-IDONYUINRYO-DATA (IDXA)
@@ -2009,18 +1803,6 @@
                                    TO HSPTINFM01RES-NACCTKBN-DATA
            MOVE    SNINF01-NACCTKBN-NAME (IDXA)
                                    TO HSPTINFM01RES-NACCTKBN-NAME
-           MOVE    SNINF01-BUNBENKBN-LBL (IDXA)
-                                   TO HSPTINFM01RES-BUNBENKBN-LBL
-           MOVE    SNINF01-BUNBENKBN-DATA (IDXA)
-                                   TO HSPTINFM01RES-BUNBENKBN-DATA
-           MOVE    SNINF01-BUNBENKBN-NAME (IDXA)
-                                   TO HSPTINFM01RES-BUNBENKBN-NAME
-           MOVE    SNINF01-RIYOUKBN-LBL (IDXA)
-                                   TO HSPTINFM01RES-RIYOUKBN-LBL
-           MOVE    SNINF01-RIYOUKBN-DATA (IDXA)
-                                   TO HSPTINFM01RES-RIYOUKBN-DATA
-           MOVE    SNINF01-RIYOUKBN-NAME (IDXA)
-                                   TO HSPTINFM01RES-RIYOUKBN-NAME
            MOVE    SNINF01-TEIKIKBN-LBL (IDXA)
                                    TO HSPTINFM01RES-TEIKIKBN-LBL
            MOVE    SNINF01-TEIKIKBN-DATA (IDXA)
@@ -2049,19 +1831,9 @@
            PERFORM 800-DATE-SEC
            MOVE    WRK-DATE        TO  HSPTINFM02RES-SKYSTYMD
       *
-           MOVE    API-TAIINYMD    TO  WRK-SYMD
+           MOVE    REG-TAIINYMD    TO  WRK-SYMD
            PERFORM 800-DATE-SEC
            MOVE    WRK-DATE        TO  HSPTINFM02RES-SKYEDYMD
-      *
-           IF    ( SODR-UNSKYSTYMD NOT =   SPACE )
-               MOVE    SODR-UNSKYSTYMD TO  WRK-SYMD
-               PERFORM 800-DATE-SEC
-               MOVE    WRK-DATE        TO  HSPTINFM02RES-UNSKYSTYMD
-      *
-               MOVE    SODR-UNSKYEDYMD TO  WRK-SYMD
-               PERFORM 800-DATE-SEC
-               MOVE    WRK-DATE        TO  HSPTINFM02RES-UNSKYEDYMD
-           END-IF
       *
            MOVE    SPA-PTNUM       TO  HSPTINFM02RES-PTNUM
            MOVE    PTINF-NAME      TO  HSPTINFM02RES-NAME
@@ -2081,7 +1853,7 @@
            INITIALIZE                  SNINF02-AREA
       *
            MOVE    SODR-SKYSTYMD   TO  SNINF02-IN-SKYSTYMD
-           MOVE    API-TAIINYMD    TO  SNINF02-IN-SKYEDYMD
+           MOVE    REG-TAIINYMD    TO  SNINF02-IN-SKYEDYMD
       *
            PERFORM VARYING IDXS    FROM    1   BY  1
                    UNTIL ( IDXS    >   SODR-DENPNUM-MAX )
@@ -2210,14 +1982,14 @@
            MOVE    "1"                 TO  ORDER-NYUGAIKBN
            MOVE    SPA-PTNUM           TO  ORDER-PTNUM
            MOVE    SPA-PTID            TO  ORDER-PTID
-           MOVE    API-SRYYMD          TO  ORDER-SRYYMD
-           MOVE    API-HKNCOMBI        TO  ORDER-HKNCOMBI
+           MOVE    REG-SRYYMD          TO  ORDER-SRYYMD
+           MOVE    REG-HKNCOMBI        TO  ORDER-HKNCOMBI
            MOVE    SMCNDATE-YMD        TO  ORDER-UKEYMD
            MOVE    SMCNDATE-HMS        TO  ORDER-UKEHMS
-           MOVE    API-ORDERID         TO  ORDER-ORDERID
+           MOVE    REG-ORDERID         TO  ORDER-ORDERID
       *
-           MOVE    API-ERRCD (1)       TO  ORDER-ERRCD1
-      *    MOVE    API-ERRCD (2)       TO  ORDER-ERRCD2
+           MOVE    REG-ERRCD (1)       TO  ORDER-ERRCD1
+      *    MOVE    REG-ERRCD (2)       TO  ORDER-ERRCD2
       *
            MOVE    1                   TO  ORDER-STATUS
       *
@@ -2250,15 +2022,15 @@
            PERFORM 800-TIME-SEC
            MOVE    WRK-TIME        TO  HSPTINFM01RES-INFORMATION-TIME
       *
-           IF    ( API-ERR-MAX     =   ZERO )
-               MOVE    1           TO  API-ERR-MAX
-               MOVE    "0000"      TO  API-ERRCD (1)
+           IF    ( REG-ERR-MAX     =   ZERO )
+               MOVE    1           TO  REG-ERR-MAX
+               MOVE    "0000"      TO  REG-ERRCD (1)
            END-IF
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   API-ERR-MAX )
+                   UNTIL ( IDX1    >   REG-ERR-MAX )
       *
-               MOVE    API-ERRCD  (IDX1)
+               MOVE    REG-ERRCD  (IDX1)
                                        TO  WRK-ERRCD
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD
@@ -2409,12 +2181,16 @@
       *
            MOVE    SPACE               TO  WRK-ERRMSG
       *
-           INITIALIZE                      SODRS03-AREA
-           MOVE    WRK-ERRCD           TO  SODRS03-ERRCD
-           CALL    "ORCSODRS03"            USING
-                                           SODRS03-AREA
-           MOVE    SODRS03-ERRCD       TO  WRK-ERRCD
-           MOVE    SODRS03-ERRMSG      TO  WRK-ERRMSG
+           PERFORM VARYING IDXE    FROM   1   BY  1
+                   UNTIL ( IDXE    >   NCLAIMERRCD-MAX )
+                    OR   ( WRK-ERRMSG  NOT =   SPACE )
+      *
+               IF    ( NCLAIMERRCDL (IDXE) =   WRK-ERRCD )
+                   MOVE    NCLAIMERRCDLMEI  (IDXE)
+                                       TO  WRK-ERRMSG
+               END-IF
+      *
+           END-PERFORM
       *
            .
        890-ERRCD-MSG-EXT.
@@ -2430,7 +2206,6 @@
            END-IF
       *
            INITIALIZE                      XML-APIREQ
-                                           XML-HSPTINFMREQ
       * XML情報取り出し
            MOVE    "xml_hsptinfmodv2req"   TO  MCP-TABLE
            MOVE    "key"                TO  MCP-PATHNAME
@@ -2485,7 +2260,7 @@
                                TO  HSPTINFM02RES-INFORMATION-TIME
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   API-ERR-MAX )
+                   UNTIL ( IDX1    >   REG-ERR-MAX )
       *
                MOVE    HSPTINFM01RES-API-RESULT     (IDX1)
                                TO  HSPTINFM02RES-API-RESULT (IDX1)
@@ -2494,12 +2269,11 @@
       *
            END-PERFORM
       *
-           IF    ( HSPTINFMREQ-REQNUM      NOT =   SPACE )
-               MOVE    "リクエスト番号"
+           MOVE    "リクエスト番号"
                                TO  HSPTINFM01RES-REQNUM-LBL
-               MOVE    HSPTINFMREQ-REQNUM
+      *
+           MOVE    HSPTINFMREQ-REQNUM
                                TO  HSPTINFM01RES-REQNUM-DATA
-           END-IF
       *
            EVALUATE    HSPTINFMREQ-REQNUM
            WHEN    "01"
@@ -2775,7 +2549,7 @@
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    API-NYUINYMD        TO  PTNYUINRRK-NYUINYMD
+           MOVE    REG-NYUINYMD        TO  PTNYUINRRK-NYUINYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key39"              TO  MCP-PATHNAME
@@ -2803,8 +2577,8 @@
            MOVE    ZERO                TO  FLG-NYUINCDCHG
       *
            INITIALIZE                      NYUINCDCHG-REC
-           MOVE    WRK-KHNCD           TO  NYUINCDCHG-SRYCD-BF
-           MOVE    WRK-KJNYMD          TO  NYUINCDCHG-YUKOSTYMD
+           MOVE    HSPTINFMREQ-KHNCD   TO  NYUINCDCHG-SRYCD-BF
+           MOVE    REG-NYUINYMD        TO  NYUINCDCHG-YUKOSTYMD
                                            NYUINCDCHG-YUKOEDYMD
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
            MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
@@ -2824,36 +2598,6 @@
            .
       *
        900-NYUINCDCHG-KEY2-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院料置換検索処理
-      *****************************************************************
-       900-NYUINCDCHG-KEY3-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-NYUINCDCHG
-      *
-           INITIALIZE                      NYUINCDCHG-REC
-           MOVE    WRK-TOKNYUIN-G      TO  NYUINCDCHG-NYUINRYOCD
-           MOVE    WRK-KJNYMD          TO  NYUINCDCHG-YUKOSTYMD
-                                           NYUINCDCHG-YUKOEDYMD
-           MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
-           MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINCDCHG-REC
-           ELSE
-               MOVE    1               TO  FLG-NYUINCDCHG
-               INITIALIZE                  NYUINCDCHG-REC
-           END-IF
-      *
-           MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-NYUINCDCHG-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
       *    収納検索処理
@@ -3025,16 +2769,16 @@
       *****************************************************************
        990-ERROR-EDIT-SEC              SECTION.
       *
-           IF    ( API-ERR-MAX     <   CONST-ERR-MAX )
+           IF    ( REG-ERR-MAX     <   CONST-ERR-MAX )
       *
                PERFORM VARYING IDX8    FROM    1   BY  1
                        UNTIL ( IDX8    >   CONST-ERR-MAX )
-                        OR   ( API-ERRCD  (IDX8)
+                        OR   ( REG-ERRCD  (IDX8)
                                        =   WRK-ERRCD )
       *
-                   IF    ( API-ERRCD  (IDX8)   =   SPACE )
-                       MOVE    WRK-ERRCD       TO  API-ERRCD  (IDX8)
-                       MOVE    IDX8            TO  API-ERR-MAX
+                   IF    ( REG-ERRCD  (IDX8)   =   SPACE )
+                       MOVE    WRK-ERRCD       TO  REG-ERRCD  (IDX8)
+                       MOVE    IDX8            TO  REG-ERR-MAX
                        MOVE    CONST-ERR-MAX   TO  IDX8
                    END-IF
       *
@@ -3050,22 +2794,6 @@
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *
-           IF    ( WRK-ERRCD           =   "8099" )
-               MOVE    404             TO  I0API01-HTTPSTATUS
-           ELSE
-               PERFORM 9901-EXIT-PROGRAM-SEC
-           END-IF
-      *
-           EXIT PROGRAM
-      *
-           .
-       990-EXIT-PROGRAM-EXT.
-           EXIT.
-      *****************************************************************
-      *    プログラム終了処理（エラー時）
-      *****************************************************************
-       9901-EXIT-PROGRAM-SEC            SECTION.
-      *
            MOVE    SMCNDATE-YMD    TO  WRK-SYMD
            PERFORM 800-DATE-SEC
            MOVE    WRK-DATE        TO  HSPTINFM01RES-INFORMATION-DATE
@@ -3075,9 +2803,9 @@
            MOVE    WRK-TIME        TO  HSPTINFM01RES-INFORMATION-TIME
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   API-ERR-MAX )
+                   UNTIL ( IDX1    >   REG-ERR-MAX )
       *
-               MOVE    API-ERRCD  (IDX1)
+               MOVE    REG-ERRCD  (IDX1)
                                        TO  WRK-ERRCD
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD
@@ -3089,6 +2817,8 @@
       *
            PERFORM 900-XML-WRITE-SEC
       *
+           EXIT PROGRAM
+      *
            .
-       9901-EXIT-PROGRAM-EXT.
+       990-EXIT-PROGRAM-EXT.
            EXIT.

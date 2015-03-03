@@ -5,7 +5,7 @@ tbl_odritem {
 	ITEMNUM				number(2,0);
 	ITEMID				char(5);
 	ITEM 	  			varchar(10);
-	MEMO 	  			varchar(128);
+	MEMO 	  			varchar(80);
 	ERRCD				char(4);
 	STATUS				number(1,0);
 	TERMID   			varchar(16);
@@ -90,18 +90,3 @@ path	 all	{
 		;
 	};
 };
-
-path	del2 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_odritem
-			WHERE   (HOSPNUM,KARTE_KEY,ORDERNUM) in (
-         SELECT HOSPNUM,KARTE_KEY,ORDERNUM
-         FROM tbl_order
-         WHERE HOSPNUM       =  :HOSPNUM
-         AND   UKEYMD        <  :CREYMD
-		)
-        ;
-	};
-};
-

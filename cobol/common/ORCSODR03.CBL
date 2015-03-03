@@ -48,7 +48,6 @@
            03  FLG-NYUINACCT           PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-           03  FLG-NACCT-NOT-FOUND     PIC 9(01).
            03  FLG-END                 PIC 9(01).
       *
       *    カウント領域
@@ -63,38 +62,20 @@
            03  IDX2                    PIC 9(05).
            03  IDX3                    PIC 9(05).
            03  IDX4                    PIC 9(05).
-           03  IDXD                    PIC 9(05).
            03  IDX-ODR                    PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SYMD                PIC X(08).
-           03  WRK-ZOGENPTN            PIC X(01).
-           03  WRK-ZOGEN               PIC S9(05).
-           03  WRK-KEISANYMD           PIC X(08).
-           03  WRK-DOW                 PIC 9(01).
            03  WRK-COMBI-HKNCOMBI      PIC 9(04).
            03  WRK-SYS-KANRICD         PIC X(04).
            03  WRK-SYS-KBNCD           PIC X(08).
            03  WRK-DIALOG              PIC 9(02).
            03  WRK-MCP-WINDOW          PIC X(64).
-           03  WRK-STARTYMD            PIC X(08).
-           03  WRK-ENDYMD              PIC X(08).
-           03  WRK-SRYYMD.
-               05  WRK-SRYYM           PIC X(06).
-               05  WRK-SRYDD           PIC 9(02).
-           03  WRK-EOMYMD.
-               05  WRK-EOMYM           PIC X(06).
-               05  WRK-EOMDD           PIC 9(02).
-           03  WRK-ENDYM               PIC X(06).
-           03  WRK-LASTYM              PIC X(06).
-           03  WRK-NACCTYM             PIC X(06).
       *
        01  ITEM-AREA.
            03  ITEM-NYUINKA            PIC X(02).
            03  ITEM-HKNCOMBI           PIC 9(04).
-           03  ITEM-GAIHAKUKBN         PIC X(02).
-           03  ITEM-ENDYMD             PIC X(08).
+           03  ITEM-GAIHAKUKBN         PIC X(01).
       *
        01  ERRCD-AREA.
            03  ERRCD-ITEM-G.
@@ -152,15 +133,8 @@
       *    オーダー共通サブ
            COPY    "CPORCSODRS01.INC".
       *
-      *    オーダー入院会計作成サブ
-           COPY    "CPORCSODRS04.INC".
-      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-      *
-      *    日付変換サブ
-           COPY    "CPORCSDAY.INC".
-           COPY    "CPORCSLNK.INC".
       *
       *    入院会計作成サブ
            COPY    "CPORCSODRNACCT.INC".
@@ -249,52 +223,12 @@
                MOVE    PTNYUINRRK-HKNCOMBINUM
                                            TO  SODR-HKNCOMBI
                                                ITEM-HKNCOMBI
-               PERFORM 1001-NACCT-CHK-SEC
            END-IF
       *
            .
        100-INIT-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    入院会計チェック処理
-      *****************************************************************
-       1001-NACCT-CHK-SEC              SECTION.
-      *
-           MOVE    SPA-SYSYMD              TO  WRK-SYMD
-           MOVE    "2"                     TO  WRK-ZOGENPTN
-           MOVE    3                       TO  WRK-ZOGEN
-           PERFORM 800-CALENDAR-SEC
-           MOVE    WRK-KEISANYMD(1:6)      TO  WRK-ENDYM
-      *
-           MOVE    SPA-SYSYMD              TO  WRK-SYMD
-           MOVE    "2"                     TO  WRK-ZOGENPTN
-           MOVE    -1                      TO  WRK-ZOGEN
-           PERFORM 800-CALENDAR-SEC
-           MOVE    WRK-KEISANYMD(1:6)      TO  WRK-LASTYM
-      *
-           PERFORM 900-NYUINACCT-KEY58-SEL-SEC
-           IF    ( FLG-NYUINACCT           =   ZERO )
-               MOVE    NACCT-SRYYM         TO  WRK-NACCTYM
-               IF    ( SODR-ORDERID        =   NORDERID-GPTSTID )
-                AND  ( WRK-NACCTYM         <   SODR-SRYYMD (1:6))
-                   IF    ( PTNYUINRRK-TAIINYMD =   "99999999" )
-                       IF    ( WRK-NACCTYM <   WRK-LASTYM )
-                           MOVE    1           TO  FLG-NACCT-NOT-FOUND
-                       END-IF
-                   ELSE
-                       IF    ( WRK-NACCTYM <   PTNYUINRRK-TAIINYMD(1:6))
-                           MOVE    1           TO  FLG-NACCT-NOT-FOUND
-                       END-IF
-                   END-IF
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-NACCT-NOT-FOUND
-           END-IF
-      *
-           .
-       1001-NACCT-CHK-EXT.
-           EXIT.
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -359,8 +293,6 @@
                    PERFORM 20011-HKNCOMBI-CHK-SEC
                WHEN    NCLAIMID-GAIHAKUKBNJMA
                    PERFORM 20011-GAIHAKUKBN-CHK-SEC
-               WHEN    NCLAIMID-ENDYMDJMA
-                   PERFORM 20011-ENDYMD-CHK-SEC
                END-EVALUATE
       *
            END-PERFORM
@@ -444,17 +376,6 @@
        20011-GAIHAKUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    終了日チェック処理
-      *****************************************************************
-       20011-ENDYMD-CHK-SEC            SECTION.
-      *
-           MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
-                                   TO  ITEM-ENDYMD
-      *
-           .
-       20011-ENDYMD-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    項目未処理状態設定処理
       *****************************************************************
        2100-ITEM-UNPROCSTS-SET-SEC        SECTION.
@@ -505,13 +426,6 @@
            IF    ( ERRCD-ORDER     =   SPACE )
       *        入院会計チェック処理
                PERFORM 20021-NACCT-CHK-SEC
-           END-IF
-      *
-           IF    ( ERRCD-ORDER     =   SPACE )
-               IF    ( SODR-ORDERID    =   NORDERID-GPTSTID )
-      *            入院API外泊チェック処理
-                   PERFORM 20021-GPTSTID-CHK-SEC
-               END-IF
            END-IF
       *
            .
@@ -575,82 +489,13 @@
       *****************************************************************
        20021-NACCT-CHK-SEC             SECTION.
       *
-           IF    ( SODR-ORDERID        =   NORDERID-GPTSTID )
-            AND  ( WRK-NACCTYM         <   SODR-SRYYMD (1:6))
-               IF    ( FLG-NACCT-NOT-FOUND NOT =   ZERO )
-                   MOVE    "0076"      TO  ERRCD-ORDER
-               END-IF
-           ELSE
-               PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-               IF    ( FLG-NYUINACCT   NOT =   ZERO )
-                   MOVE    "0076"      TO  ERRCD-ORDER
-               END-IF
-           END-IF
-      *
-           IF    ( ERRCD-ORDER     =   SPACE )
-               IF    ( SODR-ORDERID        =   NORDERID-GPTSTID )
-                   IF    ( WRK-NACCTYM    >=   SODR-SRYYMD (1:6) )
-                       CONTINUE
-                   ELSE
-                       IF  ( SODR-SRYYMD (1:6)
-                                   >   WRK-ENDYM )
-                           MOVE    "0194"
-                                   TO  ERRCD-ORDER
-                       END-IF
-                   END-IF
-               END-IF
+           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+           IF    ( FLG-NYUINACCT   NOT =   ZERO )
+               MOVE    "0076"      TO  ERRCD-ORDER
            END-IF
       *
            .
        20021-NACCT-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院API外泊チェック処理
-      *****************************************************************
-       20021-GPTSTID-CHK-SEC             SECTION.
-      *
-           IF    ( ITEM-GAIHAKUKBN     =   "09" OR "13" )
-      *
-               MOVE    SODR-SRYYMD     TO  WRK-STARTYMD
-      *
-               MOVE    ITEM-ENDYMD     TO  WRK-ENDYMD
-               IF    ( WRK-ENDYMD      =   SPACE )
-                   MOVE    SODR-SRYYMD TO  WRK-ENDYMD
-               ELSE
-                   IF    ( WRK-ENDYMD  >   TRRK-TAIINYMD )
-                       MOVE    TRRK-TAIINYMD
-                                       TO  WRK-ENDYMD
-                   END-IF
-               END-IF
-      *
-               MOVE    SODR-SRYYMD(1:6) TO  WRK-SRYYM
-               MOVE    SODR-SRYYMD      TO  WRK-SYMD
-               PERFORM 800-EOM-SEC
-      *
-               PERFORM VARYING IDXD    FROM    1   BY  1
-                       UNTIL ( IDXD    >   31 )
-                        OR   ( ERRCD-ORDER     NOT =   SPACE )
-      *
-                   MOVE    IDXD        TO  WRK-SRYDD
-      *
-                   IF    ( WRK-SRYYMD  >=  WRK-STARTYMD)
-                    AND  ( WRK-SRYYMD  <=  WRK-ENDYMD  )
-                    AND  ( WRK-SRYYMD  <=  WRK-EOMYMD  )
-                       MOVE    WRK-SRYYMD  TO  WRK-SYMD
-                       PERFORM 800-DOW-SEC
-                       IF    ( WRK-DOW  =  1 OR 7 )
-                           CONTINUE
-                       ELSE
-                           MOVE    "0161"  TO  ERRCD-ORDER
-                       END-IF
-                   END-IF
-      *
-               END-PERFORM
-      *
-           END-IF
-      *
-           .
-       20021-GPTSTID-CHK-EXT.
            EXIT.
       *****************************************************************
       *    オーダー情報再編成処理
@@ -811,112 +656,22 @@
       *****************************************************************
        2101-ORCSODRNACCT-CALL-SEC      SECTION.
       *
-           IF    ( SODR-ORDERID    =   NORDERID-GPTSTID )
-               PERFORM 21011-CREATE-NACCT-SEC
-           END-IF
-      *
-           IF    ( FLG-END         =   ZERO )
-               PERFORM 21011-ORCSODRNACCT-CALL-SEC
-           END-IF
-      *
-           .
-       2101-ORCSODRNACCT-CALL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計作成処理
-      *****************************************************************
-       21011-CREATE-NACCT-SEC          SECTION.
-      *
-           IF    ( WRK-NACCTYM   >=    SODR-SRYYMD(1:6) )
-               CONTINUE
-           ELSE
-               INITIALIZE                      SODRS04-AREA
-               MOVE    WRK-NACCTYM         TO  WRK-SYMD
-               MOVE    "01"                TO  WRK-SYMD(7:2)
-               MOVE    "2"                 TO  WRK-ZOGENPTN
-               MOVE    1                   TO  WRK-ZOGEN
-               PERFORM 800-CALENDAR-SEC
-               MOVE    WRK-KEISANYMD (1:6) TO  SODRS04-STARTYM
-               MOVE    SODR-SRYYMD(1:6)    TO  SODRS04-ENDYM
-      *
-               CALL    "ORCSODRS04"            USING
-                                               SODR-AREA
-                                               SODRS04-AREA
-                                               TRRK-REC
-                                               SPA-AREA
-               IF    ( SODRS04-RC      NOT =   ZERO )
-                   MOVE    1               TO  FLG-END
-               END-IF
-           END-IF
-      *
-           .
-       21011-CREATE-NACCT-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計作成サブ呼出
-      *****************************************************************
-       21011-ORCSODRNACCT-CALL-SEC     SECTION.
-      *
            INITIALIZE                  SODRNACCT-AREA
            EVALUATE    SODR-ORDERID
            WHEN    NORDERID-GPTSTID
-               EVALUATE    ITEM-GAIHAKUKBN
-               WHEN    ZERO
+               IF    ( ITEM-GAIHAKUKBN    =   "0" )
                    MOVE    NORDERID-GBACKID
                                    TO  SODRNACCT-ORDERID
-               WHEN    "01"
+               ELSE
                    MOVE    NORDERID-GAIHKID
                                    TO  SODRNACCT-ORDERID
-               WHEN    "02"
-                   MOVE    NORDERID-GCUREID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "03"
-                   MOVE    NORDERID-GSENTID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "04"
-                   MOVE    NORDERID-TAIJUSHIN40ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "05"
-                   MOVE    NORDERID-TAIJUSHIN10ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "06"
-                   MOVE    NORDERID-TAIJUSHIN20ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "07"
-                   MOVE    NORDERID-TAIJUSHIN15ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "08"
-                   MOVE    NORDERID-JIKANGENID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "09"
-                   MOVE    NORDERID-YOBIGENID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "13"
-                   MOVE    NORDERID-YOBI2GENID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "14"
-                   MOVE    NORDERID-H30TAIJUSHIN5ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "15"
-                   MOVE    NORDERID-H30TAIJUSHIN35ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "16"
-                   MOVE    NORDERID-H30TAIJUSHIN15ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "17"
-                   MOVE    NORDERID-H30YOBIGENID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "99"
-                   MOVE    NORDERID-GCANCELID
-                                   TO  SODRNACCT-ORDERID
-               END-EVALUATE
+               END-IF
            WHEN    OTHER
                MOVE    SODR-ORDERID
                                    TO  SODRNACCT-ORDERID
            END-EVALUATE
            MOVE    ZERO            TO  SODRNACCT-NYUKBN
            MOVE    SODR-SRYYMD     TO  SODRNACCT-STARTYMD
-           MOVE    ITEM-ENDYMD     TO  SODRNACCT-ENDYMD
            MOVE    SODR-OPID       TO  SODRNACCT-OPID
            MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
            MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
@@ -931,7 +686,7 @@
            END-IF
       *
            .
-       21011-ORCSODRNACCT-CALL-EXT.
+       2101-ORCSODRNACCT-CALL-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -967,64 +722,6 @@
       *
            .
        300-END-EXT.
-           EXIT.
-      *****************************************************************
-      *    曜日取得処理(1:日曜日...7:土曜日）
-      *****************************************************************
-       800-DOW-SEC                     SECTION.
-      *
-           MOVE    ZERO            TO  WRK-DOW
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY3-AREA
-           MOVE    "31"            TO  LNK-DAY3-IRAI
-           MOVE    WRK-SYMD        TO  LNK-DAY3-YMD
-           CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                           LNK-DAY3-AREA
-           IF    ( LNK-DAY3-YOBI   =   7 )
-               COMPUTE WRK-DOW     =   1
-           ELSE
-               COMPUTE WRK-DOW     =   LNK-DAY3-YOBI + 1
-           END-IF
-      *
-           .
-       800-DOW-EXT.
-      *
-      *****************************************************************
-      *    月末日取得処理
-      *****************************************************************
-       800-EOM-SEC                     SECTION.
-      *
-           INITIALIZE                  WRK-EOMYMD
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY1-AREA
-           MOVE    "71"                TO   LNK-DAY7-IRAI
-           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                       LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EOMYMD
-      *
-           .
-       800-EOM-EXT.
-            EXIT.
-      *****************************************************************
-      *    カレンダー処理 (ZOGENPTN 1:Day/2:Month/3:Year)
-      *****************************************************************
-       800-CALENDAR-SEC                SECTION.
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    WRK-SYMD            TO  LNK-DAY6-KIJUN
-           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
-           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"               USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN     TO  WRK-KEISANYMD
-      *
-           .
-       800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴検索処理(KEY42)
@@ -1078,35 +775,6 @@
       *
            .
        900-NYUINACCT-KEY17-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計検索処理
-      *****************************************************************
-       900-NYUINACCT-KEY58-SEL-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-NYUINACCT
-      *
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    SODR-HOSPNUM        TO  NACCT-HOSPNUM
-           MOVE    SODR-PTID           TO  NACCT-PTID
-           MOVE    "99999999"          TO  NACCT-UPYMD
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key58"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
-           ELSE
-               MOVE    1               TO  FLG-NYUINACCT
-               INITIALIZE                  NYUINACCT-REC
-           END-IF
-      *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key58"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-NYUINACCT-KEY58-SEL-EXT.
            EXIT.
       *****************************************************************
       *    オーダー検索処理(KEY)
@@ -1227,7 +895,7 @@
       *
            .
       *
-       910-DBSELECT-EXT.
+       910-DB-SELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
