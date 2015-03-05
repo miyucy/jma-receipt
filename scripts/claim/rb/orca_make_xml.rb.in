@@ -87,8 +87,10 @@ def conversion_seq_to_xml(template, seq, layout, debug_mode)
 	deb_counter = 0		# デバッグ用カウンタ領域
 	# **********
 
-  seq_data = seq_data.encode("UTF-16BE", "EUC-JP", :invalid => :replace, :undef => :replace, :replace => '?').encode("EUC-JP")
-  xml = xml.encode("UTF-16BE", "EUC-JP", :invalid => :replace, :undef => :replace, :replace => '?').encode("EUC-JP")
+  unless RUBY_VERSION.to_s <= "1.8.7"
+    seq_data = seq_data.encode("UTF-16BE", "EUC-JP", :invalid => :replace, :undef => :replace, :replace => '?').encode("EUC-JP")
+    xml = xml.encode("UTF-16BE", "EUC-JP", :invalid => :replace, :undef => :replace, :replace => '?').encode("EUC-JP")
+  end
 
 	# シーケンシャルデータの改行を削除(複数レコードになった場合は、行別に改行削除)
 	begin

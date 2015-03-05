@@ -49,7 +49,7 @@ def pre_pro(xml_fl_path_name, dtd_fl_path_name, tmp_fl)
   
   ins_flg = false ; buf_out = ""
 
-  open(xml_fl_path_name, "r") do |f|
+  open(xml_fl_path_name, "rb") do |f|
     while buf = f.gets
       if( /^\s*?<\*?Mml/ =~ buf && ins_flg == false )
         buf_out = buf_out + doctype_line ; ins_flg = true 

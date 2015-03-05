@@ -544,10 +544,12 @@ def realize_topline(soc_line)
 	w_line4 = ''
 
 	w_line1 = soc_line.clone	# 作業領域にコピー
-	# UTF-8のヘッダを取り除く(リトルエンディアンには対応しない)
-	#if w_line1 =~ /^\xEF\xBB\xBF([\s\S]*?)$/
-	#	w_line1 = $1
-	#end
+  #if RUBY_VERSION.to_s <= "1.8.7"
+    # UTF-8のヘッダを取り除く(リトルエンディアンには対応しない)
+    #if w_line1 =~ /^\xEF\xBB\xBF([\s\S]*?)$/
+    #  w_line1 = $1
+    #end
+  #end
 
 	if w_line1 =~ /^\#\$/
 		# 行頭に識別情報が格納されてある

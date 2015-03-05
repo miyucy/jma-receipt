@@ -1,7 +1,6 @@
 #!%RUBY%
 # coding : euc-jp
 
-
 # Claim通信バージョン2
 # 受信XMLのシーケンシャルファイルへの変換処理
 
@@ -976,8 +975,8 @@ class Xml_listdata
 		when "JIS"
 			w_xml1 = Uconv::euctou8(Kconv::toeuc(w_xml1))
 		when "UTF-8"
-#			w_xml1 = w_xml1
-			w_xml1 = euctou8(Uconv.u8toeuc(w_xml1))
+			w_xml1 = w_xml1.encode("UTF-8", "UTF-8", :invalid => :replace)
+			#w_xml1 = euctou8(Uconv.u8toeuc(w_xml1))
 #			if w_xml1[0] != '<'
 #				w_xml1 = w_xml1[3 .. -1]		# ゴミが混じっていたら、取り除く
 #			end
@@ -1665,6 +1664,7 @@ class Xml_listdata
 		w_idx1 = 0
 		xml_data1 = ''
 		xml_size1 = 0
+		bytesliced_data = ''
 
 
 		# 「xmldata_setup」の実行チェック
@@ -1696,7 +1696,7 @@ class Xml_listdata
 
 			if xml_data1 != nil
 				# XMLデータが見つかった
-				xml_size1 = xml_data1.size	# 文字数の取得
+				xml_size1 = xml_data1.bytesize	# 文字数の取得
 				if xml_size1 < h_data1[1]
 					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数より小さい
 					ret_data.push xml_data1
@@ -1706,8 +1706,9 @@ class Xml_listdata
 				elsif xml_size1 > h_data1[1]
 					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数より大きい
 					$stderr.puts '該当文字は長すぎるので、値を切り捨てます' + "\n" + '切り捨て前[' + xml_data1 + ']'
-					ret_data.push xml_data1[0, h_data1[1]]	# 書き込める文字数のみ書き込み
-					$stderr.puts '切り捨て後[' + xml_data1[0, h_data1[1]] + ']'
+					bytesliced_data = xml_data1.dup.force_encoding("BINARY").slice(0, h_data1[1]).force_encoding("EUC-JP")
+					ret_data.push bytesliced_data	# 書き込める文字数のみ書き込み
+					$stderr.puts '切り捨て後[' + bytesliced_data  + ']'
 				else
 					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数と同じ
 					ret_data.push xml_data1	# そのまま文字列をセット
