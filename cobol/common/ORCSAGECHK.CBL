@@ -60,7 +60,6 @@
       * 04.08.00     NACL-多々納  13/07/XX  第三者行為対応
       * 04.08.00     NACL-多々納  14/03/XX  前期高齢者２割対応
       * 04.07.00     NACL-多々納  14/08/08  高齢非該当２割対応
-      * 04.08.00     NACL-多々納  17/05/XX  自賠責点数算定区分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -161,8 +160,6 @@
       *    共通領域
            COPY    "MCPAREA".
       *
-      *    システム管理マスタ
-           COPY    "CPSYSKANRI.INC".
       *    基本情報
            COPY    "CPSK1001.INC".
       *
@@ -809,15 +806,6 @@
                   (COMB-KOH4HKNNUM     =   "054" ))
                MOVE    1               TO  FLG-OK2
            END-IF
-      *H28.7
-      *    石綿のみの時
-           IF     (COMB-HKNNUM         =   SPACE )  AND
-                 ((COMB-KOH1HKNNUM     =   "066" )  OR
-                  (COMB-KOH2HKNNUM     =   "066" )  OR
-                  (COMB-KOH3HKNNUM     =   "066" )  OR
-                  (COMB-KOH4HKNNUM     =   "066" ))
-               MOVE    1               TO  FLG-OK2
-           END-IF
       *!!!!
       *    高齢者非該当あり
            IF      FLG-HI-ROUJIN2      =   1
@@ -1242,7 +1230,7 @@
                END-EVALUATE
            END-IF
       *
-      *H29.4
+      *    自賠責区分の判定
       *    システム管理検索（労災情報）
            MOVE    SPACE               TO  SYS-4001-REC
            INITIALIZE                  SYS-4001-REC
@@ -1251,29 +1239,30 @@
            MOVE    AGECHK-SRYYMD       TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
            MOVE    AGECHK-HOSPNUM      TO  SYS-4001-HOSPNUM
-           MOVE    SYS-4001-REC        TO  SYSKANRI-REC
-           PERFORM 900-SYSKANRI-KEY10-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-4001-REC
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
            ELSE
+               MOVE    SPACE               TO  SYS-4001-REC
                INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
-     *
-      *    自賠責点数区分の設定があれば優先
-           EVALUATE    PTRSI-JIBAIKBN
-               WHEN    "1"
-      *        労災準拠
-                   MOVE    2               TO  AGECHK-HKNKBN
-               WHEN    "2"
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
       *        健保準拠
+               IF      SYS-4001-JIBAIKBN       =   "2"
                    MOVE    4               TO  AGECHK-HKNKBN
-               WHEN    OTHER
-      *        システム管理準拠
-                   IF      SYS-4001-JIBAIKBN   =   "2"
-      *                健保準拠
-                       MOVE    4               TO  AGECHK-HKNKBN
-                   END-IF
-           END-EVALUATE
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            .
       *
        2002-JIBAI-FTNRATE-EXT.
@@ -1998,42 +1987,14 @@
        910-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理検索処理
-      *****************************************************************
-       900-SYSKANRI-KEY10-SEC         SECTION.
-      *
-           MOVE    AGECHK-HOSPNUM      TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       900-SYSKANRI-KEY10-EXT.
-           EXIT.
-      *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
-               INITIALIZE                  SYSKANRI-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
