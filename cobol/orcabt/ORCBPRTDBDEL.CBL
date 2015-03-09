@@ -28,14 +28,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.08.00    NACL-太田    15/03/06  入院オーダー追加
+      *  04.07.00    NACL-太田    15/03/06  入院オーダー追加
       *                                     印刷データ等削除機能情報
       *                                     の追加処理を追加
-      *  04.08.00    NACL-太田    16/11/30  MONBLOB削除機能追加
-      *
-      *  05.00.01    NACL-藤原    19/01/18  tbl_onrece_kanri tbl_onrece_body
-      *                                     の削除機能追加
-      *                                     （レセ電個別作成用のみ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -50,8 +45,6 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-ONRECE-K        PIC 9(01).
-           03  FLG-ONRECE-B        PIC 9(01).
       *
            03  FLG-SYS-8000-DLT    PIC 9(01).
       *
@@ -108,12 +101,6 @@
       *    入院オーダー項目
        01  ODRITEM-REC.
            COPY    "CPODRITEM.INC".
-      *
-       01  ONRECE-K-REC.
-           COPY    "CPONRECE-KANRI.INC".
-      *
-       01  ONRECE-B-REC.
-           COPY    "CPONRECE-BODY.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -356,12 +343,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    PRTDATA-REC     TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_prtdata"   TO  MCP-TABLE
-               MOVE    "delmb3"        TO  MCP-PATHNAME
-grpsys         PERFORM 900-ORCDBMAIN-SEC
-      *       
-               MOVE    PRTDATA-REC     TO  MCPDATA-REC
-               MOVE    "DBDELETE"      TO  MCP-FUNC
-               MOVE    "tbl_prtdata"   TO  MCP-TABLE
                MOVE    "del16"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
       *       
@@ -421,12 +402,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    PRTDATA-REC     TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_prtdata"   TO  MCP-TABLE
-               MOVE    "delmb4"        TO  MCP-PATHNAME
-grpsys         PERFORM 900-ORCDBMAIN-SEC
-      *
-               MOVE    PRTDATA-REC     TO  MCPDATA-REC
-               MOVE    "DBDELETE"      TO  MCP-FUNC
-               MOVE    "tbl_prtdata"   TO  MCP-TABLE
                MOVE    "del15"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
@@ -440,30 +415,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    "tbl_prvkanri"  TO  MCP-TABLE
                MOVE    "del15"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
-      *
-               INITIALIZE                  ONRECE-K-REC
-               MOVE    LNK-DAY6-KEISAN (1:6)
-                                       TO  ONRECE-K-SRYYM
-               MOVE    WRK-PARA-HOSPNUM
-                                       TO  ONRECE-K-HOSPNUM
-               MOVE    ONRECE-K-REC    TO  MCPDATA-REC
-               MOVE    "DBDELETE"      TO  MCP-FUNC
-               MOVE    "tbl_onrece_kanri"
-                                       TO  MCP-TABLE
-               MOVE    "del1"          TO  MCP-PATHNAME
-               PERFORM 900-ORCDBMAIN-SEC
-      *
-               INITIALIZE                  ONRECE-B-REC
-               MOVE    LNK-DAY6-KEISAN (1:6)
-                                       TO  ONRECE-B-SRYYM
-               MOVE    WRK-PARA-HOSPNUM
-                                       TO  ONRECE-B-HOSPNUM
-               MOVE    ONRECE-B-REC    TO  MCPDATA-REC
-               MOVE    "DBDELETE"      TO  MCP-FUNC
-               MOVE    "tbl_onrece_body"
-                                       TO  MCP-TABLE
-               MOVE    "del1"          TO  MCP-PATHNAME
-               PERFORM 900-ORCDBMAIN-SEC
            END-IF    
       *    
            PERFORM 900-DBCOMMIT-SEC
