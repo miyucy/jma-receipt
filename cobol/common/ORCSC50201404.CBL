@@ -45,6 +45,7 @@
       * 04.08.00     NACL-多々納  13/05/XX  労災レセ電用点数登録対応
       * 04.08.00     NACL-多々納  13/06/XX  自己血輸血６歳未満対応
       * 04.07.00     NACL-多々納  14/03/XX  Ｈ２６年４月改正追加
+      * 04.07.00     NACL-多々納  15/03/XX  Ｈ２７年４月改正追加
       *****************************************************************
       *
       *
@@ -148,14 +149,14 @@
       *
            03  WRK-SUM-AREA.
       *    点数計
-               05  WRK-SUM-TENSUKEI        PIC 9(08)V99.
+               05  WRK-SUM-TENSUKEI        PIC S9(08)V99.
       *    点数計（通則加算対象外計）
-               05  WRK-SUM-TENGAKEI        PIC 9(08)V99.
+               05  WRK-SUM-TENGAKEI        PIC S9(08)V99.
       *    点数計（人工心肺不使用加算計）
-               05  WRK-JIN-TENSUKEI        PIC 9(08)V99.
+               05  WRK-JIN-TENSUKEI        PIC S9(08)V99.
       *    労災点数
-               05  WRK-RSI-TENSUKEI        PIC 9(08)V99.
-               05  WRK-RSI-TENSUKEI2       PIC 9(08)V99.
+               05  WRK-RSI-TENSUKEI        PIC S9(08)V99.
+               05  WRK-RSI-TENSUKEI2       PIC S9(08)V99.
       *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
@@ -527,43 +528,28 @@
       *****************************************************************
        100111-KIJUNN-CHK-SEC           SECTION.
       *
-      *    手技の時、適合チェック
-           IF      WRK-COM-KIJUNTEIGENKBN (IDX-Z)  =   2  OR  3
-               PERFORM 1001111-SSTKIJUN-CHK-SEC
+      *H27.4
+           IF     (SPA-SRYYMD          >=  "20150401" )
+             AND  (WRK-COM-KIJUNTEIGENKBN (IDX-Z)  =   2  OR  3 )
       *        施設基準不適応
-               IF     (WRK-COM-KIJUNTEIGENKBN (IDX-Z)  =   2 )  OR
-                     ((WRK-COM-KIJUNTEIGENKBN (IDX-Z)  =   3   ) AND
-                      (LNK-ORCSC-NENREI-YY             =   ZERO))
+               PERFORM 1001111-SSTKIJUN-CHK-SEC
+      *        施設基準適応
+               IF      FLG-ERR             =   ZERO
                    MOVE    1                   TO  FLG-KIJUNN
-                   IF      FLG-ERR             =   ZERO
-      *                施設基準適応加算
-                       MOVE    "150304190"         TO  WRK-SRYCD
-                       MOVE    "150302090"         TO  WRK-SRYCD2
+               ELSE
+      *        施設基準不適応
+                   MOVE    2                   TO  FLG-KIJUNN
+      *            施設基準不適合（手術）
+                   MOVE    "150382490"         TO  WRK-SRYCD
+                   IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+                       COMPUTE IDX-S               =   IDX-Z  +  1
+                       MOVE    1                   TO  FLG-ARI
                    ELSE
-      *                施設基準不適合
-                       IF      WRK-COM-KIJUNCHK-FLG (IDX-Z)
-                                                   =   1
-      *                    施設基準でない時、３０％の逓減
-                           MOVE    "150302090"         TO  WRK-SRYCD
-                           MOVE    "150304190"         TO  WRK-SRYCD2
-                       ELSE
-      *                    施設基準の時、そのまま
-                           MOVE    SPACE               TO  WRK-SRYCD
-                           MOVE    SPACE               TO  WRK-SRYCD2
-                       END-IF
+                       MOVE    IDX-Z               TO  IDX-S
+                       MOVE    ZERO                TO  FLG-ARI
                    END-IF
-                   IF      WRK-SRYCD           =   SPACE
-                       GO      TO      100111-KIJUNN-CHK-EXT
-                   END-IF
-      *
-                   MOVE    IDX-Z               TO  IDX-S
-      *            自動発生位置決定
-                   MOVE    ZERO                TO  FLG-ARI
-                   PERFORM 1001112-KIJUNN-ICHI-SEC
                    IF      FLG-ARI         =   1
-                       MOVE    IDX-TUS         TO  IDX-T
-                   ELSE
-                       MOVE    IDX-TUS         TO  IDX-S
+                       MOVE    IDX-S           TO  IDX-T
                    END-IF
                    PERFORM 1002-KASAN-SET-SEC
                    IF      FLG-ADD         =   1
@@ -576,7 +562,6 @@
       *
       *    加算の時、対象の手技が有ること
            IF      WRK-COM-KIJUNTEIGENKBN (IDX-Z)  =   1
-                                                   OR  4
                MOVE    2               TO  WRK-COM-SANFLG (IDX-Z)
                IF      FLG-KIJUNN          =   ZERO
                    MOVE    "0173"          TO  SPA-ERRCD
@@ -1901,7 +1886,7 @@
                    MOVE    1               TO  WRK-COM-SANFLG (IDX)
                END-IF
       *施設基準逓減廃止により、手技料に逓減
-      *        ５０％減算は最後にする
+      *        ５０％減算は最初にする
                IF     (WRK-COM-DATAKBN    (IDX)    =   "2"  )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   6    )  AND
                       (WRK-COM-INPUTCD    (IDX)    =   "150268970")
@@ -1977,6 +1962,20 @@
                        END-IF
                    END-IF
                END-IF
+      *H27.4
+      *        施設基準逓減は、直前の手技料
+               IF     (WRK-COM-DATAKBN    (IDX)    =   "2"  )  AND
+                      (WRK-COM-TENSIKIBETU(IDX)    =   6    )  AND
+                      (WRK-COM-SANFLG     (IDX)    =   2    )
+                   COMPUTE WRK-TENSUKEI       =    WRK-COM-KISOTEN
+                                                               (IDX-ZS) 
+                                               *   WRK-COM-KISOTEN(IDX)
+                                               /   100
+                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      *            他の注加算の対象外とする
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENGAKEI-G
+               END-IF
+      *
            END-PERFORM
            IF      WRK-COM-INPUTCD(IDX-ZS)(1:3)    =   "101"
       *        労災コードの時、加算のみ算定
@@ -1993,98 +1992,9 @@
                                            -   WRK-TENGAKEI-G
                                            -   WRK-TENGAKEI-G2
            END-IF
-      *施設基準廃止　対象なし
-      *    自動加算の加算（施設基準）
-           MOVE    ZERO                TO  WRK-TENSUKEI-K
-           MOVE    ZERO                TO  WRK-TENSUKEI-G
-      *
-           PERFORM VARYING     IDX     FROM    IDX-ZS  BY  1
-                   UNTIL       IDX         >=  HZN-IDX
-      *        ％減算（施設基準）
-               IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
-                      (WRK-COM-INPUTCD(IDX)(1:3)   NOT =   "101" )  AND
-                      (WRK-COM-TENSIKIBETU(IDX)    =   6   )  AND
-                      (WRK-COM-SANFLG     (IDX)    =   2   )
-                   MOVE    ZERO                TO  WRK-TENSUKEI
-                   COMPUTE WRK-TENSUKEI        =   WRK-SUM-TENSUKEI
-                                               *   WRK-COM-KISOTEN(IDX)
-                                               /   100
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
-               END-IF
-      *
-      *        ％加算（施設基準）
-               IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
-                      (WRK-COM-INPUTCD(IDX)(1:3)   NOT =   "101" )  AND
-                      (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
-                      (WRK-COM-SANFLG     (IDX)    =   2   )
-                   MOVE    ZERO                TO  WRK-TENSUKEI
-                   COMPUTE WRK-TENSUKEI        =   WRK-SUM-TENSUKEI
-                                               *   WRK-COM-KISOTEN(IDX)
-                                               /   100
-                                               +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
-               END-IF
-           END-PERFORM
-      *
-           COMPUTE WRK-SUM-TENSUKEI    =   WRK-SUM-TENSUKEI
-                                       -   WRK-TENSUKEI-G
-                                       +   WRK-TENSUKEI-K
       *
            .
        1006-KASAN-SET-EXT.
-           EXIT.
-      *
-      *手技点数を逓減（以下廃止）
-      *****************************************************************
-      *    ２以上の手術の逓減計算処理
-      *****************************************************************
-       1008-HEIYOU-KEI-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  WRK-TENSUKEI-K
-           MOVE    ZERO                TO  WRK-TENSUKEI-G
-      *
-           PERFORM VARYING     IDX     FROM    IDX-ZS    BY  1
-                   UNTIL       IDX     >=  HZN-IDX
-               IF     (WRK-COM-TENSIKIBETU(IDX)    =   6   )  AND
-                      (WRK-COM-SANFLG     (IDX)    =   5   )
-                   MOVE    ZERO                TO  WRK-TENSUKEI
-                   COMPUTE WRK-TENSUKEI        =   WRK-SUM-TENSUKEI
-                                               *   WRK-COM-KISOTEN(IDX)
-                                               /   100
-                                               +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
-               END-IF
-           END-PERFORM
-      *
-           COMPUTE WRK-SUM-TENSUKEI    =   WRK-SUM-TENSUKEI
-                                       +   WRK-TENSUKEI-K
-                                       -   WRK-TENSUKEI-G
-      *
-           MOVE    ZERO                TO  WRK-TENSUKEI-G
-      *
-           IF      WRK-RSI-TENSUKEI    >   ZERO
-               PERFORM VARYING     IDX     FROM    IDX-ZS    BY  1
-                       UNTIL       IDX     >=  HZN-IDX
-                   IF     (WRK-COM-TENSIKIBETU(IDX)    =   6   )  AND
-                          (WRK-COM-SANFLG     (IDX)    =   5   )
-                       MOVE    ZERO            TO  WRK-TENSUKEI
-                       COMPUTE WRK-TENSUKEI    =   WRK-RSI-TENSUKEI
-                                               *   WRK-COM-KISOTEN(IDX)
-                                               /   100
-                                               +   0.5
-                       MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                       ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
-                   END-IF
-               END-PERFORM
-               COMPUTE WRK-RSI-TENSUKEI    =   WRK-RSI-TENSUKEI
-                                           -   WRK-TENSUKEI-G
-           END-IF
-      *
-           .
-       1008-HEIYOU-KEI-EXT.
            EXIT.
       *
       *****************************************************************
