@@ -23,9 +23,6 @@
       *  04.07.01    NACL-門脇    14/04/07  改正対応項目追加
       *  04.07.02    NACL-門脇    15/03/09  訪問診療にかかる記録書コメント
       *                                     フラグ追加
-      *  04.08.01    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.02    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
       ******************************************************************
       *01  RECE441-REC.
            03  RECE441-KEY.
@@ -104,12 +101,6 @@
                05  RECE441-GAZOGEN         PIC X(01).
       *訪問診療にかかる記録書コメントフラグ
                05  RECE441-HOMONCOMFLG     PIC X(01).
-      *院外湿布薬７０枚超理由コメントフラグ
-               05  RECE441-SIPPUCOMFLG     PIC X(01).
-      *湿布薬フラグ（１：院外分　２：院内分）
-               05  RECE441-SIPPUFLG        PIC X(01).
-      *１５円以下薬剤レセプト記載フラグ
-               05  RECE441-YKZKISAIFLG     PIC X(01).
       *
       *初診料算定科：
                05  RECE441-SYOSANTEIKA-COMMENT
@@ -144,17 +135,8 @@
       *リハビリ（摂食）
                05  RECE441-SESSYOKU-COMMENT
                                            PIC X(01).
-      *リハビリ（廃用症候群）
-               05  RECE441-HAIYO-COMMENT   PIC X(01).
       *介達牽引
                05  RECE441-KAITATU-COMMENT PIC X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-               05  RECE441-SINDAI9-COMMENT   PIC X(01).
-      *リハビリ加算（呼吸器）
-               05  RECE441-KOKYUKI9-COMMENT  PIC X(01).
-      *リハビリ加算（廃用症候群）
-               05  RECE441-HAIYO9-COMMENT    PIC X(01).
       *
       *慢性疼痛疾患管理料
                05  RECE441-FLG-SHIDOU-COMMENT
@@ -280,10 +262,6 @@
                05  RECE441-FLG-BOKOHO-COMMENT   PIC  X(01).
       *通院・在宅精神療法（２０歳未満）加算
                05  RECE441-FLG-TUINZAI-COMMENT  PIC  X(01).
-      *依存症集団療法
-               05  RECE441-FLG-IZONSYO-COMMENT  PIC  X(01).
-      *精神科重症患者早期集中支援管理料
-               05  RECE441-FLG-SEIJYU-COMMENT   PIC  X(01).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE441-ACCTP-SYUGI-TBL-G.

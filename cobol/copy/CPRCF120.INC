@@ -41,9 +41,6 @@
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.03    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.04    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
       ************************************************************
       *01  RECE120-REC.
            03  RECE120-KEY.
@@ -112,12 +109,6 @@
            03  RECE120-GAZOGEN             PIC X(01).
       *訪問診療にかかる記録書コメントフラグ
            03  RECE120-HOMONCOMFLG         PIC X(01).
-      *院外湿布薬７０枚超理由コメントフラグ
-           03  RECE120-SIPPUCOMFLG         PIC X(01).
-      *湿布薬フラグ（１：院外分　２：院内分）
-           03  RECE120-SIPPUFLG            PIC X(01).
-      *１５円以下薬剤レセプト記載フラグ
-           03  RECE120-YKZKISAIFLG         PIC X(01).
       *
       *初診料算定科：
            03  RECE120-SYOSANTEIKA-COMMENT PIC X(01).
@@ -145,17 +136,8 @@
            03  RECE120-SYOGAI-COMMENT      PIC X(01).
       *リハビリ（摂食）
            03  RECE120-SESSYOKU-COMMENT    PIC X(01).
-      *リハビリ（廃用症候群）
-           03  RECE120-HAIYO-COMMENT       PIC X(01).
       *介達牽引
            03  RECE120-KAITATU-COMMENT     PIC X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-           03  RECE120-SINDAI9-COMMENT     PIC X(01).
-      *リハビリ加算（呼吸器）
-           03  RECE120-KOKYUKI9-COMMENT    PIC X(01).
-      *リハビリ加算（廃用症候群）
-           03  RECE120-HAIYO9-COMMENT      PIC X(01).
       *
       *慢性疼痛疾患管理料
            03  RECE120-FLG-SHIDOU-COMMENT  PIC X(01).
@@ -245,10 +227,6 @@
            03  RECE120-FLG-BOKOHO-COMMENT  PIC  X(01).
       *通院・在宅精神療法（２０歳未満）加算
            03  RECE120-FLG-TUINZAI-COMMENT PIC  X(01).
-      *依存症集団療法
-           03  RECE120-FLG-IZONSYO-COMMENT PIC  X(01).
-      *精神科重症患者早期集中支援管理料
-           03  RECE120-FLG-SEIJYU-COMMENT  PIC  X(01).
       *
       *日数回数テーブル
            03  RECE120-DAY-AREA.
