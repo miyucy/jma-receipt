@@ -84,8 +84,6 @@
                                    REPLACING  //RECE01//
                                    BY         //BD00801//.
       *
-           COPY    "CPRECEERR.INC".
-      *
       *----(04.02.01)--UPD-START---
       *     COPY    "HCM41V01.INC"  REPLACING  //HCM41V01//
            COPY    "HCM41V02.INC"  REPLACING  //HCM41V02//
@@ -161,10 +159,6 @@
            03  WRK-Z8              PIC ZZZZZZZ9.
            03  WRK-Z9              PIC ZZZZZZZZ9.
            03  WRK-Z99             PIC --------9.
-           03  WRK-SHO             PIC 9(07).
-           03  WRK-HKNHASU         PIC 9(02).
-           03  WRK-JIHIHASU        PIC 9(02).
-           03  WRK-HASU            PIC S9(07).
       *
        01  SUM-AREA                            VALUE   ZERO.
            03  SUM-OCC             OCCURS  11.
@@ -190,6 +184,7 @@
            03  CONST-H200401           PIC X(08)   VALUE   "20080401".
       *----(04.02.01)--ADD-END-----
       *
+       01  RECEERR                     PIC X(100).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -243,9 +238,6 @@
            COPY    "CPORCSLNK.INC".
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -334,16 +326,6 @@
                                    TO  BD00801PARA-TERMID
       *
            MOVE    WRK-PARA-RECEERR TO RECEERR
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    BD00801PARA-BASENAME
-                                   TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  BD00801PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                   TO  RECEERR
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -694,28 +676,8 @@
                                                +   SYU-YKZ-FTN
                                                +   SYU-SKYMONEY-SKJ-KEI
                                                +   SYU-SKYMONEY-LIFE-KEI
-      *
-                           COMPUTE WRK-HASU
-                               =   SYU-SKYMONEY
-                               - ( WRK-MONEY   +   WRK-JIHI )
-      *
-                           DIVIDE  WRK-MONEY       BY 10
-                               GIVING  WRK-SHO REMAINDER WRK-HKNHASU
-      *
-                           DIVIDE  WRK-JIHI        BY 10
-                               GIVING  WRK-SHO REMAINDER WRK-JIHIHASU
-      *
-                           EVALUATE    TRUE
-                           WHEN    WRK-HKNHASU     =     ZERO
-                               COMPUTE WRK-JIHI
-                                   =   WRK-JIHI    +     WRK-HASU
-                           WHEN    WRK-JIHIHASU    =     ZERO
-                               COMPUTE WRK-MONEY
-                                   =   WRK-MONEY   +     WRK-HASU
-                           WHEN    OTHER
-                               COMPUTE WRK-JIHI
-                                   =   WRK-JIHI    +     WRK-HASU
-                           END-EVALUATE
+                           COMPUTE WRK-JIHI    =   SYU-SKYMONEY
+                                               -   WRK-MONEY
                        END-IF
                    END-IF
                END-IF
@@ -851,27 +813,8 @@
                                                +   SYU-YKZ-FTN
                                                +   SYU-SKYMONEY-SKJ-KEI
                                                +   SYU-SKYMONEY-LIFE-KEI
-                           COMPUTE WRK-HASU
-                               =   SYU-SKYMONEY
-                               - ( WRK-MONEY   +   WRK-JIHI )
-      *
-                           DIVIDE  WRK-MONEY       BY 10
-                               GIVING  WRK-SHO REMAINDER WRK-HKNHASU
-      *
-                           DIVIDE  WRK-JIHI        BY 10
-                               GIVING  WRK-SHO REMAINDER WRK-JIHIHASU
-      *
-                           EVALUATE    TRUE
-                           WHEN    WRK-HKNHASU     =     ZERO
-                               COMPUTE WRK-JIHI
-                                   =   WRK-JIHI    +     WRK-HASU
-                           WHEN    WRK-JIHIHASU    =     ZERO
-                               COMPUTE WRK-MONEY
-                                   =   WRK-MONEY   +     WRK-HASU
-                           WHEN    OTHER
-                               COMPUTE WRK-JIHI
-                                   =   WRK-JIHI    +     WRK-HASU
-                           END-EVALUATE
+                           COMPUTE WRK-JIHI    =   SYU-SKYMONEY
+                                               -   WRK-MONEY
                        END-IF
                    END-IF
                END-IF
