@@ -104,13 +104,6 @@
       *  00.00.00    NACL-小豆沢  14/02/27  有床診療所入院基本料１
       *                                     有床診療所入院基本料２
       *                                     有床診療所入院基本料３追加対応
-      *  05.00.00    NACL-太田    17/12/08  室料差額最大件数変更(30 -> 99)
-      *平成３０年４月改正対応
-      *  05.00.00    NACL-小豆沢  18/02/28  他医受診の追加
-      *  05.00.00    NACL-小豆沢  18/03/05  療養病棟の読み替えコード追加
-      *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
-      *  05.00.00    NACL-小豆沢  18/03/08  療養病棟入院料の名称読み替えは
-      *                                     平成３０年３月まで
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -295,8 +288,6 @@
       *    診療行為名称
            03  WRK-SRYSYUMEI       PIC X(40).
       *
-           03  WRK-Z99-X.
-               05  WRK-Z99         PIC Z99.
            03  WRK-ZZZZ-X.
                05  WRK-ZZZZ        PIC ZZZ.
            03  WRK-ZZ-X.
@@ -372,7 +363,7 @@
                05  WRK-KEI         PIC Z(07).
       *
            03  WRK-MEISYO          PIC X(40).
-           03  WRK-TUSAN           PIC S9(08).
+           03  WRK-TUSAN           PIC 9(08).
            03  WRK-MEISYO-G        PIC X(100).
       *    診療日
            03  WRK-SRYYM.
@@ -444,18 +435,6 @@
                05  WRK-NYUINKAMEI3     PIC X(08).
                05  WRK-NYUINKA-ETC     PIC X(01).
                05  WRK-NYUINKAMEI      PIC X(08).
-      *
-      *    ９１日超表示用
-           03  WRK-STUSAN-RRK-CNT              PIC 9(05).
-           03  WRK-STUSAN-RRK-OCC              OCCURS  50.
-               05  WRK-STUSAN-RRK-JTIKBN       PIC X(01).
-               05  WRK-STUSAN-RRK-TAINRELKBN   PIC X(01).
-               05  WRK-STUSAN-RRK-NYUINYMD     PIC X(08).
-               05  WRK-STUSAN-RRK-TAIINYMD     PIC X(08).
-               05  WRK-STUSAN-RRK-DJKBN        PIC X(01).
-      *        一般入院料で入院していた日数
-      *        （歴作成データの場合は対象日数）
-               05  WRK-STUSAN-RRK-NISSU        PIC 9(08).
       *
       *    回数一括変更用
        01  WRK-DAY-AREA.
@@ -694,9 +673,6 @@
       *    通算日数取得サブ
            COPY "CPORCSTUSAN.INC".
       *
-      *    通算日数チェックサブ
-           COPY "CPORCSTUSANCHK.INC".
-      *
       *    排他制御パラメタ
            COPY    "CPORCSLOCK.INC".
       *
@@ -736,15 +712,6 @@
       *
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
-      *
-      *    夜勤時間特別入院基本料コード取得サブ
-           COPY "CPORCSYAKINTOKU.INC".
-      *
-      *    看護職員数等入院基本料コード取得サブ
-           COPY "CPORCSKANGOCHG.INC".
-      *
-      *    入院時生活療養費負担額取得サブ
-           COPY    "CPORCSNYULIFE2.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -875,7 +842,7 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *        元画面表示
-               IF      WRK-MOTOPG          =   "Y01"  OR  "U01"
+               IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"
                                                       OR  "P97"
                                                       OR  "C50"
                                                       OR  "XC01"
@@ -1102,11 +1069,8 @@
                        PERFORM 410181-SRYYM-CHANGE-SEC
                        MOVE    1                    TO  SPA-GMN-CUR-41
                    ELSE
-      *                MOVE    SPA-I40-SRYYMDW(1:6) TO  SPA-GMN-SRYYM
-      *                MOVE    SPA-I40-SRYYMD(1:6)  TO  SPA-NAI-SRYYM
-      *H29.3
-                       MOVE    SPA-MAE-GMN-SRYYM    TO  SPA-GMN-SRYYM
-                       MOVE    SPA-MAE-NAI-SRYYM    TO  SPA-NAI-SRYYM
+                       MOVE    SPA-I40-SRYYMDW(1:6) TO  SPA-GMN-SRYYM
+                       MOVE    SPA-I40-SRYYMD(1:6)  TO  SPA-NAI-SRYYM
                        MOVE    1                    TO  SPA-GMN-CUR-41
                    END-IF
       *
@@ -1220,7 +1184,7 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM
-                   UNTIL       (IDX            >=  99)  OR
+                   UNTIL       (IDX            >=  30)  OR
                                (FLG-SYSKANRI   =   1)
                MOVE    MCPDATA-REC             TO  SYS-5113-REC
                ADD     1                       TO  IDX
@@ -1277,7 +1241,6 @@
       *
                MOVE    5                   TO  SPA-SAGAKU-MAX-41
            ELSE
-             IF   SPA-NAI-SRYYM       <=   "201603"
                MOVE    SPACE               TO  SPA-GMN-SAGAKUNO-41 (4)
                MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (4)
       *
@@ -1285,15 +1248,6 @@
                MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (5)
       *
                MOVE    3                   TO  SPA-SAGAKU-MAX-41
-             ELSE
-               MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (4)
-               MOVE    "流動食"            TO  SPA-GMN-SAGAKU-41   (4)
-      *
-               MOVE    SPACE               TO  SPA-GMN-SAGAKUNO-41 (5)
-               MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (5)
-      *
-               MOVE    4                   TO  SPA-SAGAKU-MAX-41
-             END-IF
            END-IF
       *
            .
@@ -1323,19 +1277,11 @@
            MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (3)
            MOVE    "選定入院中の外泊"  TO  SPA-GMN-SAGAKU-41   (3)
       *
-           IF       SPA-NAI-SRYYM      >=  "201604"
-             MOVE    "04"              TO  SPA-GMN-SAGAKUNO-41 (4)
-             MOVE    "他医療機関受診４０％減"
+           MOVE    "04"                TO  SPA-GMN-SAGAKUNO-41 (4)
+           MOVE    "他医療機関受診７０％減"
                                        TO  SPA-GMN-SAGAKU-41   (4)
       *
-             MOVE    4                   TO  SPA-SAGAKU-MAX-41
-           ELSE
-             MOVE    "04"              TO  SPA-GMN-SAGAKUNO-41 (4)
-             MOVE    "他医療機関受診７０％減"
-                                       TO  SPA-GMN-SAGAKU-41   (4)
-      *
-             MOVE    4                   TO  SPA-SAGAKU-MAX-41
-           END-IF
+           MOVE    4                   TO  SPA-SAGAKU-MAX-41
       *
            IF      (SPA-NAI-SRYYM      >=  "201004")   AND
                    (SPA-NAI-SRYYM      <=  "201203")
@@ -1346,41 +1292,7 @@
                MOVE    5                   TO  SPA-SAGAKU-MAX-41
            END-IF
       *
-           IF       SPA-NAI-SRYYM      >=  "201604"
-               MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
-               MOVE    "他医療機関受診１０％減"
-                                           TO  SPA-GMN-SAGAKU-41   (5)
-               MOVE    "06"                TO  SPA-GMN-SAGAKUNO-41 (6)
-               MOVE    "他医療機関受診２０％減"
-                                           TO  SPA-GMN-SAGAKU-41   (6)
-               MOVE    "08"                TO  SPA-GMN-SAGAKUNO-41 (7)
-               MOVE    "特定時間退院減算"  TO  SPA-GMN-SAGAKU-41   (7)
-               MOVE    "09"                TO  SPA-GMN-SAGAKUNO-41 (8)
-               MOVE    "特定曜日入退院減算"
-                                           TO  SPA-GMN-SAGAKU-41   (8)
-               MOVE    "13"                TO  SPA-GMN-SAGAKUNO-41 (9)
-               MOVE    "特定曜日＋他受１０％減"
-                                           TO  SPA-GMN-SAGAKU-41   (9)
-      *
-               MOVE    9                   TO  SPA-SAGAKU-MAX-41
-               IF       SPA-NAI-SRYYM      >=  "201804"
-                   MOVE    "14"            TO  SPA-GMN-SAGAKUNO-41 (10)
-                   MOVE    "他医療機関受診５％減"
-                                           TO  SPA-GMN-SAGAKU-41   (10)
-                   MOVE    "15"            TO  SPA-GMN-SAGAKUNO-41 (11)
-                   MOVE    "他医療機関受診３５％減"
-                                           TO  SPA-GMN-SAGAKU-41   (11)
-                   MOVE    "16"            TO  SPA-GMN-SAGAKUNO-41 (12)
-                   MOVE    "他医療機関受診１５％減"
-                                           TO  SPA-GMN-SAGAKU-41   (12)
-                   MOVE    "17"            TO  SPA-GMN-SAGAKUNO-41 (13)
-                   MOVE    "特定曜日＋他受５％減"
-                                           TO  SPA-GMN-SAGAKU-41   (13)
-      *
-                   MOVE    13              TO  SPA-SAGAKU-MAX-41
-               END-IF
-           ELSE
-             IF       SPA-NAI-SRYYM      >=  "201204"
+           IF       SPA-NAI-SRYYM      >=  "201204"
                MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
                MOVE    "他医療機関受診３０％減"
                                        TO  SPA-GMN-SAGAKU-41   (5)
@@ -1392,9 +1304,9 @@
                                        TO  SPA-GMN-SAGAKU-41   (7)
       *
                MOVE    7                   TO  SPA-SAGAKU-MAX-41
-             END-IF
+           END-IF
       *
-             IF       SPA-NAI-SRYYM      >=  "201210"
+           IF       SPA-NAI-SRYYM      >=  "201210"
                MOVE    "08"                TO  SPA-GMN-SAGAKUNO-41 (8)
                MOVE    "特定時間退院減算"
                                        TO  SPA-GMN-SAGAKU-41   (8)
@@ -1406,7 +1318,6 @@
                                        TO  SPA-GMN-SAGAKU-41   (10)
       *
                MOVE    10                  TO  SPA-SAGAKU-MAX-41
-             END-IF
            END-IF
       *
            .
@@ -1649,88 +1560,63 @@
        3103-PTNYUINRRK-HEN-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *   ９１日編集処理
       *****************************************************************
        3103-91DAYS-EDIT-SEC            SECTION.
       *
-      **     DISPLAY "3103-91DAYS-EDIT-SEC"
            MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
            IF    ( STUSAN-RRK-FLG-OVER NOT =   ZERO )
                MOVE    "********"  TO  SPA-GMN-IJYOU91
                GO  TO  3103-91DAYS-EDIT-EXT
            END-IF
       *
-      **     DISPLAY "STUSAN-KJNYMD = " STUSAN-KJNYMD
            MOVE    STUSAN-NISSU03  TO  WRK-TUSAN
-      **     DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
-      **     DISPLAY "STUSAN-RRK-CNT = " STUSAN-RRK-CNT
       *
-           MOVE    STUSAN-RRK-CNT  TO  WRK-STUSAN-RRK-CNT
            PERFORM VARYING IDX10   FROM    1   BY  1
                    UNTIL ( IDX10   >   STUSAN-RRK-CNT )
-               MOVE  STUSAN-RRK-OCC(IDX10)  TO WRK-STUSAN-RRK-OCC(IDX10)
-           END-PERFORM
-      *
-           PERFORM VARYING IDX10   FROM    1   BY  1
-                   UNTIL ( IDX10   >   WRK-STUSAN-RRK-CNT )
-      **         DISPLAY "IDX10 = " IDX10
-      **         DISPLAY "WRK-STUSAN-RRK-JTIKBN (IDX10) = "
-      **                  WRK-STUSAN-RRK-JTIKBN (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-TAINRELKBN (IDX10) = "
-      **                  WRK-STUSAN-RRK-TAINRELKBN (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-NYUINYMD (IDX10) = "
-      **                  WRK-STUSAN-RRK-NYUINYMD (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-TAIINYMD (IDX10) = "
-      **                  WRK-STUSAN-RRK-TAIINYMD (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-DJKBN (IDX10) = "
-      **                  WRK-STUSAN-RRK-DJKBN (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-NISSU (IDX10) = "
-      **                  WRK-STUSAN-RRK-NISSU (IDX10)
-               IF    ( WRK-STUSAN-RRK-JTIKBN (IDX10)
+               IF    ( STUSAN-RRK-JTIKBN (IDX10)
                                            NOT = "5" )
-                   IF (WRK-STUSAN-RRK-NYUINYMD (IDX10)  NOT =  SPACE)
-                        INITIALIZE                  ORCSTUSANAREA
-                        MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
-                        MOVE    SPA-PTID        TO  STUSAN-PTID
-                        MOVE    WRK-STUSAN-RRK-NYUINYMD (IDX10)
-                                                TO  STUSAN-KJNYMD
-                        CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                                        SPA-AREA
-      **                  DISPLAY "STUSAN-RC = " STUSAN-RC
-      **                  DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
+                   IF (STUSAN-RRK-NYUINYMD (IDX10)  NOT =  SPACE)  AND
+                      (STUSAN-RRK-NISSU (IDX10)    =   ZERO)   AND
+                      (STUSAN-RRK-DJKBN (IDX10)    =   SPACE)
+                           ADD   1    TO   STUSAN-RRK-NISSU (IDX10)
                    END-IF
       *
-                   IF    ( STUSAN-NISSU03  <    91 )
+                   IF   (STUSAN-RRK-TAIINYMD(IDX10)  NOT = "99999999")
+                    IF (STUSAN-RRK-NISSU (IDX10)    =   ZERO  OR  1)
+                      CONTINUE
+                    ELSE
+                     INITIALIZE                  STS-AREA-DAY
+                     INITIALIZE                  LNK-DAY5-AREA
+                     MOVE    "51"            TO  LNK-DAY5-IRAI
+                     MOVE    STUSAN-RRK-NYUINYMD (IDX10)
+                                             TO  LNK-DAY5-START
+                     MOVE    STUSAN-RRK-TAIINYMD (IDX10)
+                                             TO  LNK-DAY5-END
+                     CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                 LNK-DAY5-AREA
+                     MOVE    LNK-DAY5-NISSU2 TO  STUSAN-RRK-NISSU(IDX10)
+                    END-IF
+                   END-IF
+      *
+                   COMPUTE WRK-TUSAN
+                       =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
+                   IF    ( WRK-TUSAN  <    91 )
                        INITIALIZE                  STS-AREA-DAY
                        INITIALIZE                  LNK-DAY6-AREA
                        MOVE    "61"            TO  LNK-DAY6-IRAI
-                       MOVE    WRK-STUSAN-RRK-NYUINYMD (IDX10)
+                       MOVE    STUSAN-RRK-NYUINYMD (IDX10)
                                                TO  LNK-DAY6-KIJUN
                        MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
                        IF    ( STUSAN-RRK-DJKBN (IDX10) = SPACE OR "2" )
-      **                     DISPLAY "92 - STUSAN-NISSU03"
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   92   -          STUSAN-NISSU03
+                               =   91   -          WRK-TUSAN
                        ELSE
-      **                     DISPLAY "92 - STUSAN-NISSU03"
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   92   -          STUSAN-NISSU03
+                               =   92   -          WRK-TUSAN
                        END-IF
-      **                 DISPLAY "LNK-DAY6-KIJUN = " LNK-DAY6-KIJUN
-      **                 DISPLAY "LNK-DAY6-ZOGEN = " LNK-DAY6-ZOGEN
-      *AZU-ADD START
-                       IF     STUSAN-NISSU03   <=    ZERO
-                            MOVE   91     TO    LNK-DAY6-ZOGEN
-                       END-IF
-      *AZU-ADD END
-      *
-      *AZU-ADD START
-                       IF (STUSAN-RRK-CNT     =   1 )   AND
-                          (WRK-STUSAN-RRK-TAIINYMD (IDX10) = "99999999")
-                            MOVE   91     TO    LNK-DAY6-ZOGEN
-                       END-IF
-      *AZU-ADD END
                        CALL    "ORCSDAY"   USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                        MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
@@ -1742,41 +1628,10 @@
                        END-IF
                        PERFORM 41012-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
-                       MOVE    WRK-STUSAN-RRK-CNT  TO  IDX10
+                       MOVE    STUSAN-RRK-CNT  TO  IDX10
                    END-IF
                END-IF
            END-PERFORM
-      *    通算日数チェックサブ呼出
-           INITIALIZE                      ORCSTUSANCHKAREA
-grpsys     MOVE    SPA-HOSPNUM         TO  STUSANCHK-HOSPNUM
-           MOVE    PTNYUINRRK-PTID     TO  STUSANCHK-PTID
-           MOVE    PTNYUINRRK-NYUINYMD TO  STUSANCHK-NYUINYMD
-           IF    ( PTNYUINRRK-TAIINYMD >=  SPA-SYSYMD )
-               MOVE    SPA-SYSYMD      TO  STUSANCHK-KJNYMD
-           ELSE
-               MOVE    PTNYUINRRK-TAIINYMD
-                                       TO  STUSANCHK-KJNYMD
-           END-IF
-      *
-           MOVE    PTNYUINRRK-RRKNUM   TO  STUSANCHK-RRKNUM
-      *
-           CALL    "ORCSTUSANCHK"          USING
-                                           ORCSTUSANCHKAREA
-grpsys                                     SPA-AREA
-           IF    ( STUSANCHK-DAY-91   NOT =   SPACE )
-               DISPLAY "STUSANCHK-DAY-91 = " STUSANCHK-DAY-91
-               MOVE    STUSANCHK-DAY-91 TO  SPA-GMN-IJYOU91
-               MOVE    STUSANCHK-DAY-91 TO  WRK-SYMD
-               IF      SPA-SYSYMD   >=   SPA-GMN-IJYOU91
-                  MOVE  "red"      TO   SPA-GMN-IJYOU91-STYLE
-               ELSE
-                  MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
-               END-IF
-               PERFORM 41012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
-           END-IF
-      *
-      **     DISPLAY "3103-91DAYS-EDIT-EXT"
       *
            .
        3103-91DAYS-EDIT-EXT.
@@ -1786,30 +1641,16 @@ grpsys                                     SPA-AREA
       *****************************************************************
        3103-180DAYS-EDIT-SEC           SECTION.
       *
-           DISPLAY "3103-180DAYS-EDIT-SEC"
            IF    ( STUSAN-RRK-FLG-OVER NOT =   ZERO )
                MOVE    "********"  TO  SPA-GMN-IJYOU180
                GO  TO  3103-180DAYS-EDIT-EXT
            END-IF
       *
-      **     MOVE    STUSAN-NISSU04  TO  WRK-TUSAN
-      **     DISPLAY "STUSAN-NISSU01 = " STUSAN-NISSU01
-      **     DISPLAY "STUSAN-NISSU04 = " STUSAN-NISSU04
-           MOVE    STUSAN-NISSU02  TO  WRK-TUSAN
-           COMPUTE   WRK-TUSAN  =  WRK-TUSAN -   1
-      **     DISPLAY "STUSAN-NISSU02 = " STUSAN-NISSU02
-      **     DISPLAY "WRK-TUSAN = " WRK-TUSAN
+           MOVE    STUSAN-NISSU04  TO  WRK-TUSAN
       *
            PERFORM VARYING IDX10   FROM    1   BY  1
                    UNTIL ( IDX10   >   STUSAN-RRK-CNT )
                IF    WRK-TUSAN     NOT =    ZERO
-      **            DISPLAY "STUSAN-RRK-NISSU (IDX10) = "
-      **                     STUSAN-RRK-NISSU (IDX10)
-      *AZU-ADD START(2018/01/17)
-                  IF   STUSAN-RRK-NISSU (IDX10) =  ZERO
-                      MOVE  STUSAN-NISSU01 TO  STUSAN-RRK-NISSU (IDX10)
-                  END-IF
-      *AZU-ADD END(2018/01/17)
                   COMPUTE WRK-TUSAN
                        =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
                END-IF
@@ -1825,19 +1666,11 @@ grpsys                                     SPA-AREA
                        MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
                        IF    ( STUSAN-RRK-DJKBN (IDX10) = SPACE OR "2")
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   179   -         WRK-TUSAN
+                               =   180   -         WRK-TUSAN
                        ELSE
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   180   -         WRK-TUSAN
+                               =   181   -         WRK-TUSAN
                        END-IF
-      **                 DISPLAY "MAE WRK-TUSAN = " WRK-TUSAN
-      *AZU-ADD START
-                       IF     WRK-TUSAN   <=    ZERO
-                            MOVE   180      TO    LNK-DAY6-ZOGEN
-                       END-IF
-      *AZU-ADD END
-      **                 DISPLAY "ATO WRK-TUSAN = " WRK-TUSAN
-      **                 DISPLAY "LNK-DAY6-ZOGEN = "  LNK-DAY6-ZOGEN
                        CALL    "ORCSDAY"   USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                        MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU180
@@ -1848,36 +1681,6 @@ grpsys                                     SPA-AREA
                    MOVE    STUSAN-RRK-CNT      TO  IDX10
                END-IF
            END-PERFORM
-           DISPLAY "3103-180DAYS-EDIT-EXT"
-      *
-      *    通算日数チェックサブ呼出
-           INITIALIZE                      ORCSTUSANCHKAREA
-grpsys     MOVE    SPA-HOSPNUM         TO  STUSANCHK-HOSPNUM
-           MOVE    PTNYUINRRK-PTID     TO  STUSANCHK-PTID
-           MOVE    PTNYUINRRK-NYUINYMD TO  STUSANCHK-NYUINYMD
-           IF    ( PTNYUINRRK-TAIINYMD >=  SPA-SYSYMD )
-               MOVE    SPA-SYSYMD      TO  STUSANCHK-KJNYMD
-           ELSE
-               MOVE    PTNYUINRRK-TAIINYMD
-                                       TO  STUSANCHK-KJNYMD
-           END-IF
-      *
-           MOVE    PTNYUINRRK-RRKNUM   TO  STUSANCHK-RRKNUM
-      *
-           CALL    "ORCSTUSANCHK"          USING
-                                           ORCSTUSANCHKAREA
-grpsys                                     SPA-AREA
-           IF    ( STUSANCHK-DAY-180   NOT =   SPACE )
-             IF  ( STUSANCHK-DAY-180-STS   =   ZERO OR "2"  )
-               DISPLAY "STUSANCHK-DAY-180 = " STUSANCHK-DAY-180
-               MOVE    STUSANCHK-DAY-180 TO  SPA-GMN-IJYOU180
-               MOVE    STUSANCHK-DAY-180 TO  WRK-SYMD
-               PERFORM 41012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU180
-             ELSE
-               MOVE    "********"  TO  SPA-GMN-IJYOU180
-             END-IF
-           END-IF
       *
            .
        3103-180DAYS-EDIT-EXT.
@@ -2338,9 +2141,6 @@ grpsys                                     SPA-AREA
            MOVE    ZERO                TO  FLG-NYUINKHNRYO
            MOVE    ZERO                TO  SPA-TAIHI-HKN
            MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-ASA
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-HIRU
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-YORU
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDG
@@ -2507,12 +2307,6 @@ grpsys                                     SPA-AREA
                MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
-           MOVE    SPACE               TO  SPA-GMN-UPYMD
-      *
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-ASA
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-HIRU
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-YORU
-      *
            PERFORM UNTIL      (FLG-NYUINACCT     =   1)
       *
                ADD     1                   TO  IDX
@@ -2528,27 +2322,6 @@ grpsys                                     SPA-AREA
                                                         099999920
                                MOVE   NACCT-DAY(WRK-MATSUDD)
                                                   TO  SPA-TAIHI-SHOKUJI
-                           END-IF
-                           IF    NACCT-SRYCDTOTAL   =   099999918
-                               MOVE   NACCT-DAY(WRK-MATSUDD)
-                                             TO  SPA-TAIHI-SHOKUJI-ASA
-                           END-IF
-                           IF    NACCT-SRYCDTOTAL   =   099999919
-                               MOVE   NACCT-DAY(WRK-MATSUDD)
-                                             TO  SPA-TAIHI-SHOKUJI-HIRU
-                           END-IF
-                           IF    NACCT-SRYCDTOTAL   =   099999920
-                               MOVE   NACCT-DAY(WRK-MATSUDD)
-                                             TO  SPA-TAIHI-SHOKUJI-YORU
-                           END-IF
-      *                    食事剤の更新日を退避
-                           IF    NACCT-SRYCDTOTAL   =   099999918  OR
-                                                        099999919  OR
-                                                        099999920
-                               IF   SPA-GMN-UPYMD  <=   NACCT-UPYMD
-                                   MOVE   NACCT-UPYMD
-                                                  TO  SPA-GMN-UPYMD
-                               END-IF
                            END-IF
                        ELSE
       *                    食堂加算
@@ -3178,11 +2951,6 @@ grpsys                                     SPA-AREA
                    MOVE    SPA-NAI-DAY-41 (IDX IDK)
                                            TO  WRK-ZZ
                    MOVE    WRK-ZZ-X        TO  SPA-GMN-TDAY-41 (IDG IDK)
-                   IF   SPA-NAI-DAY-41 (IDX IDK)  >=  100
-                       MOVE    SPA-NAI-DAY-41 (IDX IDK)
-                                           TO  WRK-Z99
-                       MOVE    WRK-Z99-X   TO  SPA-GMN-TDAY-41 (IDG IDK)
-                   END-IF
                END-PERFORM
       *
                EVALUATE     SPA-NAI-TZAISKBKBN-41 (IDX)
@@ -3696,14 +3464,6 @@ grpsys                                     SPA-AREA
            MOVE    SPA-GMN-SYUBETSU5   TO  I41-SYUBETSU5.
            MOVE    SPA-GMN-SYUBETSU6   TO  I41-SYUBETSU6.
            MOVE    SPA-GMN-LASTNYUIN   TO  I41-LASTNYUIN.
-      *    食事更新日（改正作業中の為、更新日表示を保留とする）
-      **     MOVE    "blue"              TO  I41-UPYMD-STYLE.
-      **     IF      SPA-GMN-UPYMD       NOT =  SPACE
-      **         MOVE  "会計更新日"      TO  I41-UPYMD(1:10)
-      **         MOVE    SPA-GMN-UPYMD   TO  WRK-SYMD
-      **         PERFORM 41012-SEIWA-HEN-SEC
-      **         MOVE    WRK-HENYMDG     TO  I41-UPYMD(12:9)
-      **     END-IF
       *    保険組合せ
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-HKNCOMBI-MAX
@@ -3750,22 +3510,12 @@ grpsys                                     SPA-AREA
                    END-IF
                    MOVE    SPA-GMN-TMEISYO-41 (IDX)
                                                    TO  I41-TMEISYO(IDX)
-      **             DISPLAY "SPA-GMN-TMEISYO-41 (IDX) = "
-      **                      SPA-GMN-TMEISYO-41 (IDX)
                    MOVE    SPA-GMN-TTENSU-41  (IDX)
                                                    TO  I41-TTENSU (IDX)
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
-      **                 DISPLAY "IDY = " IDY
-      **                 DISPLAY "SPA-GMN-TDAY-41 (IDX IDY) = "
-      **                          SPA-GMN-TDAY-41 (IDX IDY)
-                       IF   SPA-GMN-TDAY-41 (IDX IDY)(3:1)  NOT =  SPACE
-                           MOVE    SPA-GMN-TDAY-41 (IDX IDY)(2:2)
+                       MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
                                                TO  I41-TDAY (IDX IDY)
-                       ELSE
-                           MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
-                                               TO  I41-TDAY (IDX IDY)
-                       END-IF
                    END-PERFORM
                END-IF
       *
@@ -3802,8 +3552,8 @@ grpsys                                     SPA-AREA
                END-EVALUATE
       *
                IF      SPA-GMN-DAY-41 (IDX)    >=  100
-                   MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-Z99
-                   MOVE    WRK-Z99-X               TO  I41-DAY (IDX)
+                   MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZZZ
+                   MOVE    WRK-ZZZZ-X              TO  I41-DAY (IDX)
                ELSE
                    MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
                    MOVE    WRK-ZZ-X              TO  I41-DAY (IDX)
@@ -4232,9 +3982,6 @@ grpsys                                     SPA-AREA
            END-IF
       *
            MOVE    07                  TO  SPA-GMN-CUR-41
-      *H29.3
-           MOVE    SPA-GMN-SRYYM       TO  SPA-MAE-GMN-SRYYM
-           MOVE    SPA-NAI-SRYYM       TO  SPA-MAE-NAI-SRYYM
       *
            MOVE    I41-SRYYM           TO  SPA-GMN-SRYYM
       *
@@ -4288,11 +4035,8 @@ grpsys                                     SPA-AREA
            IF      SPA-UPDFLG-41       =   "1"
                MOVE    SPA-NAI-SRYYM       TO  WRK-NAI-SRYYM
                MOVE    SPA-GMN-SRYYM       TO  WRK-GMN-SRYYM
-      **       MOVE    SPA-I40-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
-      **       MOVE    SPA-I40-SRYYMD(1:6)     TO  SPA-NAI-SRYYM
-      *H29.3
-               MOVE    SPA-MAE-GMN-SRYYM    TO  SPA-GMN-SRYYM
-               MOVE    SPA-MAE-NAI-SRYYM    TO  SPA-NAI-SRYYM
+               MOVE    SPA-I40-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
+               MOVE    SPA-I40-SRYYMD(1:6)     TO  SPA-NAI-SRYYM
                PERFORM 4901-NYUINACCT-UPD-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO       410181-SRYYM-CHANGE-EXT
@@ -4485,13 +4229,6 @@ grpsys                                     SPA-AREA
            END-IF
       *
       *    日付のチェック
-      *    入院時生活療養費の情報取得
-           INITIALIZE                      ORCSNYULIFE2-AREA
-           MOVE    SPA-HOSPNUM         TO  LNK-NYULIFE2-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  LNK-NYULIFE2-PTID
-           MOVE    SPA-NAI-SRYYM       TO  LNK-NYULIFE2-SANTEIYM
-           CALL    "ORCSNYULIFE2"   USING  ORCSNYULIFE2-AREA
-                                           SPA-AREA
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    ZERO                TO  WRK-IDX
            MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
@@ -4582,32 +4319,9 @@ grpsys                                     SPA-AREA
                    END-IF
       *
                    IF      SPA-CHK-SENTEI(IDX-D)   =   SPACE
-                      IF   SPA-NAI-SRYYM         <=    "201003"
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  1
-                                                           OR  2
-                                                           OR  3
-                                                           OR  4
-                               CONTINUE
-                           ELSE
-                               MOVE    "0035"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF     (SPA-NAI-SRYYM      >=    "201004") AND
-                             (SPA-NAI-SRYYM      <=    "201203")
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  1
-                                                           OR  2
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                               CONTINUE
-                           ELSE
-                               MOVE    "0035"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201204") AND
-                          (SPA-NAI-SRYYM         <=    "201209")
+                     IF      SPA-NAI-SRYYM         >=    "201204"
+                        IF  (SPA-NAI-SRYYM         >=    "201204") AND
+                            (SPA-NAI-SRYYM         <=    "201209")
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
@@ -4620,9 +4334,7 @@ grpsys                                     SPA-AREA
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
-                      END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201210") AND
-                          (SPA-NAI-SRYYM         <=    "201603")
+                        ELSE
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
@@ -4638,47 +4350,74 @@ grpsys                                     SPA-AREA
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
-                      END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201604") AND
-                          (SPA-NAI-SRYYM         <=    "201803")
+                        END-IF
+                     ELSE
+                        IF     (SPA-NAI-SRYYM      >=    "201004") AND
+                               (SPA-NAI-SRYYM      <=    "201203")
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
                                                            OR  3
                                                            OR  4
                                                            OR  5
-                                                           OR  6
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
                                CONTINUE
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
-                      END-IF
-                      IF      SPA-NAI-SRYYM         >=    "201804"
+                        ELSE
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
                                                            OR  3
                                                            OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
-                                                           OR 14
-                                                           OR 15
-                                                           OR 16
-                                                           OR 17
                                CONTINUE
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
-                      END-IF
+                        END-IF
+                     END-IF
                    ELSE
-      *               選定入院料算定日
-                      IF      SPA-NAI-SRYYM      <=    "201003"
+      *                選定入院料算定日
+                     IF      SPA-NAI-SRYYM         >=    "201204"
+                        IF  (SPA-NAI-SRYYM         >=    "201204") AND
+                            (SPA-NAI-SRYYM         <=    "201209")
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  7
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                        ELSE
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  7
+                                                           OR  8
+                                                           OR  9
+                                                           OR 13
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                        END-IF
+                     ELSE
+                        IF     (SPA-NAI-SRYYM      >=    "201004") AND
+                               (SPA-NAI-SRYYM      <=    "201203")
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                        ELSE
                            IF          SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  3
                                                            OR  4
@@ -4686,94 +4425,13 @@ grpsys                                     SPA-AREA
                            ELSE
                                MOVE    "0036"         TO  SPA-ERRCD
                            END-IF
-                      END-IF
-                      IF     (SPA-NAI-SRYYM      >=    "201004") AND
-                             (SPA-NAI-SRYYM      <=    "201203")
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201204") AND
-                          (SPA-NAI-SRYYM         <=    "201209")
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  7
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201210") AND
-                          (SPA-NAI-SRYYM         <=    "201603")
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  7
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201604") AND
-                          (SPA-NAI-SRYYM         <=    "201803")
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF   SPA-NAI-SRYYM         >=    "201804"
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
-                                                           OR 14
-                                                           OR 15
-                                                           OR 16
-                                                           OR 17
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
+                        END-IF
+                     END-IF
                    END-IF
       *
       *            特定曜日入退院減算の土日曜日チェック
                    IF     SPA-NAI-SRYYM      >=    "201210"
                      IF  SPA-GMN-DAY-41 (IDX-D)   =   9   OR  13
-                       IF   SPA-NAI-YOBI(IDX-D)   =  "6"  OR  "7"
-                           CONTINUE
-                       ELSE
-                           MOVE  "0055"           TO  SPA-ERRCD
-                       END-IF
-                     END-IF
-                   END-IF
-                   IF     SPA-NAI-SRYYM      >=    "201804"
-                     IF  SPA-GMN-DAY-41 (IDX-D)   =   17
                        IF   SPA-NAI-YOBI(IDX-D)   =  "6"  OR  "7"
                            CONTINUE
                        ELSE
@@ -4828,26 +4486,13 @@ grpsys                                     SPA-AREA
                            END-IF
                        END-IF
                    ELSE
-                       IF      SPA-NAI-SRYYM         <=  "201603"
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  1
-                                                           OR  2
-                               CONTINUE
-                           ELSE
-                               IF      SPA-ERRCD       =   SPACE
-                                   MOVE    "0049"         TO  SPA-ERRCD
-                               END-IF
-                           END-IF
+                       IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                       OR  1
+                                                       OR  2
+                           CONTINUE
                        ELSE
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  1
-                                                           OR  2
-                                                           OR  3
-                               CONTINUE
-                           ELSE
-                               IF      SPA-ERRCD       =   SPACE
-                                   MOVE    "0049"         TO  SPA-ERRCD
-                               END-IF
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0049"         TO  SPA-ERRCD
                            END-IF
                        END-IF
                    END-IF
@@ -4867,16 +4512,6 @@ grpsys                                     SPA-AREA
                                MOVE    "0039"         TO  SPA-ERRCD
                            END-IF
                         END-IF
-                   END-IF
-      *            入院時食事療養２で生活療養算定時は、流動食を入力不可とする
-                   IF      SPA-NAI-SRYYM         >=  "201604"
-                       IF  (LNK-NYULIFE2-KBN(IDX-D)      =  "1")   AND
-                           (LNK-NYULIFE2-SKJKBN(IDX-D)   =  "2")   AND
-                           (SPA-GMN-DAY-41 (IDX-D)       =   3)
-                           IF      SPA-ERRCD       =   SPACE
-                               MOVE    "0056"      TO  SPA-ERRCD
-                           END-IF
-                       END-IF
                    END-IF
       *        保険
                WHEN    "5"
@@ -5322,13 +4957,6 @@ grpsys                                     SPA-AREA
            END-PERFORM
       *
       *    日付のチェック
-      *    入院時生活療養費の情報取得
-           INITIALIZE                      ORCSNYULIFE2-AREA
-           MOVE    SPA-HOSPNUM         TO  LNK-NYULIFE2-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  LNK-NYULIFE2-PTID
-           MOVE    SPA-NAI-SRYYM       TO  LNK-NYULIFE2-SANTEIYM
-           CALL    "ORCSNYULIFE2"   USING  ORCSNYULIFE2-AREA
-                                           SPA-AREA
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    ZERO                TO  WRK-IDX
            MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
@@ -5396,23 +5024,6 @@ grpsys                                     SPA-AREA
                    END-PERFORM
                END-IF
            END-IF
-      *    入院時食事療養２で生活療養算定時は、流動食を入力不可とする
-           IF      SPA-NAI-SRYYM         >=  "201604"
-             IF   SPA-NAI-TZAISKBKBN-41(SPA-NAI-BANGO)  =  "4"
-               IF      SPA-5000-NACCT-SKJKBN  =   "2"
-                   PERFORM   VARYING   IDX   FROM   1   BY  1
-                             UNTIL     IDX   >   31
-                       IF   (LNK-NYULIFE2-KBN(IDX)      =  "1")   AND
-                            (LNK-NYULIFE2-SKJKBN(IDX)   =  "2")   AND
-                            (SPA-GMN-DAY-41 (IDX)       =   3)
-                           MOVE   "0056"     TO   SPA-ERRCD
-                           GO      TO      470-KAKUTEI-EXT
-                       END-IF
-                   END-PERFORM
-               END-IF
-             END-IF
-           END-IF
-      *
            IF      SPA-NAI-SRYYM       =   SPA-NAI-NYUINBI(1:6)
                MOVE    SPA-NAI-NYUINBI(7:2)    TO  IDX-D
       *
@@ -5534,13 +5145,12 @@ grpsys                                     SPA-AREA
            MOVE    "key"                   TO   MCP-PATHNAME
            PERFORM    990-DBCLOSE-SEC
       *
-      *    選定入院料（システム予約コード)
            IF     (SPA-GMN-TSRYCD (IDG)    =  "099999916")
-      *    短期滞在２（生活療養含む）
-      *    短期滞在３（生活療養含む）
-           OR    ((TNS-CDKBN-KBN     =   "A")   AND
-                  (TNS-CDKBN-KBNNUM  =   400)   AND
-                  (TNS-CDKBN-KOUBAN  =   2  OR 3))
+           OR     (TNS-NYUKHNKSNKBN        =
+      *                                        短期滞在２（生活療養含む）
+                                                  226   OR
+      *                                        短期滞在３（生活療養含む）
+                                                  240 )
       *    療養病床の判定
            OR     ((SPA-5000-RYOYODSPKBN    =    "1")
                                            AND
@@ -6719,7 +6329,6 @@ grpsys                                     SPA-AREA
       *    入院会計テーブル作成処理
            PERFORM 410191-NYUACCT-SAKUSEI-SEC
            IF      IPN-NYUKAIKEI-SAKUSEI-FLG   =   "1"
-               MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
                PERFORM 410191-IPNNYUACCT-SAKUSEI-SEC
            END-IF
       *
@@ -6784,6 +6393,76 @@ grpsys                                     SPA-AREA
            MOVE    SPA-NAI-SRYYM       TO  SYOKIKSN-IN-SANTEISTYMD(1:6)
            MOVE    "01"                TO  SYOKIKSN-IN-SANTEISTYMD(7:2)
       *
+      *    特定集中治療室管理料の場合は最長１４日間の算定の為、
+      *    次月の会計作成時は無条件に一般の入院料算定とする
+      *    以下の特定入院料も同様
+      *    救命救急入院料１
+      *    救命救急入院料２
+      *    一類感染症患者入院医療管理料
+      *    脳卒中ケアユニット入院医療管理料
+      *    救命救急入院料３（救命救急入院料）
+      *    救命救急入院料４（救命救急入院料）
+      *    特定集中治療室管理料２（特定集中治療室管理料）
+      *    小児特定集中治療室管理料
+      *    特定集中治療室管理料１（平成２６年改正）
+      *    特定集中治療室管理料２（特定集中治療室管理料）（平成２６年改正）
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "03" OR "04" OR "05" OR
+                                               "06" OR "07" OR "08" OR
+                                               "09" OR "14" OR "16" OR
+                                               "19" OR "55" OR
+                                               "57" OR "59" OR "91" OR
+                                               "AH" OR "AI"
+                   MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+               END-IF
+           END-IF
+      *
+      *    地域包括ケア病棟入院料（平成２６年改正）の算定日が６０日を
+      *    経過していた場合は一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "2"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN  =  "41" OR "42" OR "43"
+                                              OR "44" OR "45" OR "46"
+                                              OR "47" OR "48"
+                   IF   STUSAN-NISSU08   >=   60
+                       MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    地域包括ケア入院医療管理料（平成２６年改正）の算定日が６０日を
+      *    経過していた場合は一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN  = "AL" OR "AM" OR "AN" OR
+                                                "AO" OR "AP" OR "AQ" OR
+                                                "AR" OR "AS"
+                   IF   STUSAN-NISSU08   >=   60
+                       MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    特定一般病棟入院料（地域包括ケア入院医療管理１）（平成２６年改正）
+      *    特定一般病棟入院料（地域包括ケア入院医療管理２）（平成２６年改正）
+      *    の算定日が６０日を
+      *    経過していた場合は一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN  = "AU" OR "AV"
+                   IF   STUSAN-NISSU08   >=   60
+                       MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    広範囲熱傷特定集中治療室管理料の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "13"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
       *     DISPLAY "====AZU  KAIKEI-SAKUSEIL=================="
       *     DISPLAY "RRKNUM     = " PTNYUINRRK-RRKNUM
       *     DISPLAY "RRKEDANUM  = " PTNYUINRRK-RRKEDANUM
@@ -6791,7 +6470,6 @@ grpsys                                     SPA-AREA
       *     DISPLAY "TAIINYMD   = " PTNYUINRRK-TAIINYMD
       *     DISPLAY "TENNYUYMD  = " PTNYUINRRK-TENNYUYMD
       *     DISPLAY "TENSTUYMD  = " PTNYUINRRK-TENSTUYMD
-      *
       *    平成２４年３月３１日時点で亜急性期入院医療管理料１を算定
       *    している状態か判定するサブを呼び出し
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
@@ -6806,6 +6484,240 @@ grpsys                                     SPA-AREA
                END-IF
            END-IF
       *
+      *    亜急性期入院医療管理料１算定時に特定入院での算定日が６０日を
+      *    経過していた場合は一般の入院料算定とする
+      *    （平成２４年３月３１日までの入院分は９０日限度）
+           IF PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   = "18"
+                  IF   PTNYUINRRK-NYUINYMD   >=   "20120401"
+                      IF  STUSAN-NISSU08   >=   60
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                      END-IF
+                  ELSE
+                   IF    LNK-AKYUSEI-RC   =   1
+                      IF   STUSAN-NISSU08   >=   90
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                      END-IF
+                   ELSE
+                      IF   STUSAN-NISSU08   >=   60
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                      END-IF
+                   END-IF
+                  END-IF
+               END-IF
+           END-IF
+      *
+      *    亜急性期入院医療管理料２算定時に特定入院での算定日が６０日を
+      *    経過していた場合は一般の入院料算定とする
+      *    （経過措置により平成２４年３月３１日時点で亜急性期入院医療
+      *      管理料１を算定している場合は９０日限度とする対応追加）
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+             IF   PTNYUINRRK-TOKUTEI-NYUIN   = "54"
+               IF  PTNYUINRRK-NYUINYMD   >=   "20120401"
+                   IF   STUSAN-NISSU08   >=   60
+                       MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                   END-IF
+               ELSE
+                   IF    LNK-AKYUSEI-RC   =   1
+                      IF   STUSAN-NISSU08   >=   90
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                      END-IF
+                   ELSE
+                      IF   STUSAN-NISSU08   >=   60
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                      END-IF
+                   END-IF
+               END-IF
+             END-IF
+           END-IF
+      *
+      *    亜急性期入院医療管理料１（指定地域）の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "92"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    亜急性期入院医療管理料２（指定地域）の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "93"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    特定一般病棟入院料（亜急性期入院医療管理）の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "95"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    特定一般病棟入院料（亜急性期入院医療管理・リハビリ算定患者）の場合は
+      *    最長６０日間の算定の為、次月の会計作成時に６０日経過時は無条件に
+      *    一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "96"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    救命救急入院料３（広範囲熱傷特定集中治療）の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "56"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+           DISPLAY "ORCGI41"
+           DISPLAY "PTNYUINRRK-TOKUTEI-KBN = " PTNYUINRRK-TOKUTEI-KBN
+           DISPLAY "PTNYUINRRK-TOKUTEI-NYUIN= " PTNYUINRRK-TOKUTEI-NYUIN
+           DISPLAY "STUSAN-NISSU08 = " STUSAN-NISSU08
+      *    救命救急入院料４（広範囲熱傷特定集中治療）の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "58"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    特定集中治療室管理料２（広範囲熱傷特定集中治療）の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+      *    以下の特定入院料も同様
+      *    特定集中治療室管理料２（広範囲熱傷特定集中治療）（平成２６年改正）
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "60" OR "AT"
+                   IF       STUSAN-NISSU08  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    総合周産期特定集中治療室管理料（母体・胎児）算定時に特定入院での
+      *    算定日が１４日を経過していた場合は一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   = "11"
+                   IF   STUSAN-NISSU08   >=   14
+                       MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    ハイケアユニット入院医療管理料算定時に特定入院での算定日が２１日を
+      *    経過していた場合は一般の入院料算定とする
+      *    以下の特定入院料も同様
+      *    ハイケアユニット入院医療管理料１（平成２６年改正）
+      *    ハイケアユニット入院医療管理料２（平成２６年改正）
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   = "17" OR "AJ" OR "AK"
+                   IF   STUSAN-NISSU08   >=   21
+                       MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    以下の特定入院料は出生児体重より算定上限日数を判定し、
+      *    経過していた場合は一般の入院料算定とする
+      *    ・新生児特定集中治療室管理料１
+      *    ・新生児特定集中治療室管理料２
+      *    ・総合周産期特定集中治療室管理料（新生児）
+      *    ・新生児治療回復室入院医療管理料
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   = "10"  OR
+                                                 "61"  OR
+                                                 "12"  OR
+                                                 "62"
+      *          出生児体重の取得
+                 MOVE   SPACE                TO  PTCONF-REC
+                 INITIALIZE                      PTCONF-REC
+                 MOVE   PTNYUINRRK-HOSPNUM   TO  PTCONF-HOSPNUM
+                 MOVE   PTNYUINRRK-PTID      TO  PTCONF-PTID
+                 MOVE   "BIRTHWEIGHT"        TO  PTCONF-CKEY
+                 PERFORM 900-PTCONF-READ-SEC
+                 IF     FLG-PTCONF           =   ZERO
+                     MOVE   PTCONF-CDATA(1:4)  TO  WRK-WEIGHT
+                 ELSE
+                     MOVE   9999               TO  WRK-WEIGHT
+                 END-IF
+      *
+      *          新生児特定集中治療室管理料１
+      *          新生児特定集中治療室管理料２
+                 IF   PTNYUINRRK-TOKUTEI-NYUIN   = "10"  OR  "61"
+                    IF    WRK-WEIGHT     <   1000
+                       IF   STUSAN-NISSU08   >=   90
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                    IF   (WRK-WEIGHT     >=  1000)   AND
+                         (WRK-WEIGHT     <   1500)
+                       IF   STUSAN-NISSU08   >=   60
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                    IF    WRK-WEIGHT     >=  1500
+                       IF   STUSAN-NISSU08   >=   21
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                 END-IF
+      *
+      *          総合周産期特定集中治療室管理料（新生児）
+                 IF   PTNYUINRRK-TOKUTEI-NYUIN   = "12"
+                    IF    WRK-WEIGHT     <   1000
+                       IF   STUSAN-NISSU08   >=   90
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                    IF   (WRK-WEIGHT     >=  1000)   AND
+                         (WRK-WEIGHT     <   1500)
+                       IF   STUSAN-NISSU08   >=   60
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                    IF    WRK-WEIGHT     >=  1500
+                       IF   STUSAN-NISSU08   >=   21
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                 END-IF
+      *
+      *          新生児治療回復室入院医療管理料
+                 IF   PTNYUINRRK-TOKUTEI-NYUIN   = "62"
+                    IF    WRK-WEIGHT     <   1000
+                       IF   STUSAN-NISSU08   >=   120
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                    IF   (WRK-WEIGHT     >=  1000)   AND
+                         (WRK-WEIGHT     <   1500)
+                       IF   STUSAN-NISSU08   >=   90
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                    IF    WRK-WEIGHT     >=  1500
+                       IF   STUSAN-NISSU08   >=   30
+                          MOVE    SPACE   TO   WRK-TOKUTEI-NYUIN
+                       END-IF
+                    END-IF
+                 END-IF
+      *
+               END-IF
+           END-IF
       *
            IF      WRK-TOKUTEI-NYUIN           NOT =   SPACE
                PERFORM 4801-TOKTEI-NYUIN-SET-SEC
@@ -6817,18 +6729,6 @@ grpsys                                     SPA-AREA
       *        ・一般病棟特別入院基本料
       *        ・精神病棟１５対１入院基本料
       *        ・精神病棟特別入院基本料
-      *        以下入院料を追加（平成２８年改正で対応）
-      *        ・療養病棟・一般病棟７対１入院基本料
-      *        ・療養病棟・一般病棟１０対１入院基本料
-      *        ・療養病棟・一般病棟１３対１入院基本料
-      *        ・療養病棟・一般病棟１５対１入院基本料
-      *        以下入院料を追加（平成３０年改正で対応）
-      *        ・療養病棟・急性期一般入院料２
-      *        ・療養病棟・急性期一般入院料３
-      *        ・療養病棟・急性期一般入院料４
-      *        ・療養病棟・急性期一般入院料５
-      *        ・療養病棟・急性期一般入院料６
-      *        ・療養病棟・地域一般入院料１
                IF    SYOKIKSN-IN-KHNSRYCD   =   "190151910"   OR
                                                 "190152010"   OR
                                                 "099999950"   OR
@@ -6840,19 +6740,7 @@ grpsys                                     SPA-AREA
       *                                         特定入院料の算定要件外の算定
                                                 "190079010"   OR
                                                 "190083810"   OR
-                                                "190085010"   OR
-      *                                         平成２８年改正対応
-                                                "190198110"   OR
-                                                "190198210"   OR
-                                                "190198310"   OR
-                                                "190198410"   OR
-      *                                         平成３０年改正対応
-                                                "190201910"   OR
-                                                "190202010"   OR
-                                                "190202110"   OR
-                                                "190202210"   OR
-                                                "190202310"   OR
-                                                "190202410"
+                                                "190085010"
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
@@ -6959,7 +6847,6 @@ grpsys                                     SPA-AREA
                                         TO  LNK-TOKNYUIN2-SANTEIYMD
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
-           MOVE   PTNYUINRRK-SHONUM     TO  LNK-TOKNYUIN2-SHONUM
            MOVE   PTNYUINRRK-TOKUTEI-NYUIN
                              TO  LNK-TOKNYUIN2-TOKUTEI-NYUIN
            IF    LNK-AKYUSEI-RC          =   1
@@ -7004,18 +6891,6 @@ grpsys                                     SPA-AREA
                                           TO  IPN-NYUKAIKEI-SAKUSEI-FLG
               MOVE    LNK-TOKNYUIN2-IPN-KAIKEI-YMD
                                           TO  IPN-SANTEISTYMD
-           ELSE
-              IF   PTNYUINRRK-TOKUTEI-NYUIN  NOT =   SPACE
-                  IF   LNK-TOKNYUIN2-RC   =   1
-                       MOVE   SPACE    TO     WRK-TOKUTEI-NYUIN
-                                              SYOKIKSN-IN-KHNSRYCD
-                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
-                  END-IF
-                  MOVE    LNK-TOKNYUIN2-IPN-KAIKEI-FLG
-                                        TO  IPN-NYUKAIKEI-SAKUSEI-FLG
-                  MOVE    LNK-TOKNYUIN2-IPN-KAIKEI-YMD
-                                        TO  IPN-SANTEISTYMD
-              END-IF
            END-IF
       *
       *
@@ -7037,12 +6912,6 @@ grpsys                                     SPA-AREA
                    MOVE    LNK-SCNYUACCT-STSRYYMD
                                             TO  TNS-YUKOSTYMD
                                                 TNS-YUKOEDYMD
-      *            特定入院基本料（一般病棟入院基本料）はマスタが
-      *            平成２６年９月３０日までの為、参照時の日付を変更
-                   IF    LNK-SCNYUACCT-NYUKHN-SRYCD(1)  =  "190799410"
-                       MOVE    "20140930"   TO  TNS-YUKOSTYMD
-                                                TNS-YUKOEDYMD
-                   END-IF
                    MOVE    TNS-TENSU-REC    TO  MCPDATA-REC
                    MOVE    "tbl_tensu"      TO  MCP-TABLE
                    MOVE    "key"            TO  MCP-PATHNAME
@@ -7098,15 +6967,6 @@ grpsys                                     SPA-AREA
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   SPA-TAIHI-SHOKUJI    TO  LNK-SCNYUACCT-SHOKUJIKBN
-           IF     SYS-5000-SKJ-CREATEKBN   =   "1"
-               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   SPA-TAIHI-SHOKUJI-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   SPA-TAIHI-SHOKUJI-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   SPA-TAIHI-SHOKUJI-YORU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-           END-IF
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
@@ -7322,6 +7182,8 @@ grpsys                                     SPA-AREA
                END-IF
            END-IF
       *
+           DISPLAY "LNK-SCNYUACCT-STSRYYMD = "
+                    LNK-SCNYUACCT-STSRYYMD
            MOVE     PTNYUINRRK-BTUNUM  TO  LNK-SCNYUACCT-BTU-NUM
            CALL    "ORCSNYUACCT"       USING   SPA-AREA
                                                ORCSNYUACCT-AREA
@@ -7353,6 +7215,7 @@ grpsys                                     SPA-AREA
       *****************************************************************
        410191-IPNNYUACCT-SAKUSEI-SEC   SECTION.
       *
+      *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    IPN-SANTEISTYMD(1:6)  TO WRK-NAI-SRYYM-41(1:6)
       *
@@ -7463,15 +7326,6 @@ grpsys                                     SPA-AREA
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE    SPA-TAIHI-SHOKUJI   TO  LNK-SCNYUACCT-SHOKUJIKBN
-           IF     SYS-5000-SKJ-CREATEKBN   =   "1"
-               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   SPA-TAIHI-SHOKUJI-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   SPA-TAIHI-SHOKUJI-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   SPA-TAIHI-SHOKUJI-YORU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-           END-IF
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI           =    ZERO
@@ -7773,13 +7627,10 @@ grpsys                                     SPA-AREA
       *
       *****************************************************************
       *    夜勤時間超過減算コードへの置き換え処理
-      *    夜勤時間特別入院基本料コードへの置き換え処理
-      *    看護職員数等入院基本料コードへの置き換え処理
       *****************************************************************
        4801-YAKINGEN-CHG-SEC   SECTION.
       *
            IF    SYOKIKSN-IN-SANTEISTYMD   >=   "20140401"
-      *        夜勤時間超過減算入院料コード取得
                INITIALIZE    ORCSYAKINGEN-AREA
                MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
                                    TO    LNK-YAKINGEN-SANTEIYM
@@ -7791,36 +7642,6 @@ grpsys                                     SPA-AREA
                                                 SPA-AREA
                IF   LNK-YAKINGEN-RC     =       ZERO
                     MOVE LNK-YAKINGEN-CHGSRYCD
-                                   TO    SYOKIKSN-IN-KHNSRYCD
-               END-IF
-           END-IF
-           IF    SYOKIKSN-IN-SANTEISTYMD   >=   "20160401"
-      *        夜勤時間特別入院基本料コード取得
-               INITIALIZE    ORCSYAKINTOKU-AREA
-               MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
-                                   TO    LNK-YAKINTOKU-SANTEIYM
-               MOVE   SYS-5001-BTU-NUM
-                                   TO    LNK-YAKINTOKU-BTU-NUM
-               MOVE   SYOKIKSN-IN-KHNSRYCD
-                                   TO    LNK-YAKINTOKU-SRYCD
-               CALL   "ORCSYAKINTOKU"    USING  ORCSYAKINTOKU-AREA
-                                                SPA-AREA
-               IF   LNK-YAKINTOKU-RC     =       ZERO
-                    MOVE LNK-YAKINTOKU-CHGSRYCD
-                                   TO    SYOKIKSN-IN-KHNSRYCD
-               END-IF
-      *        看護職員数等入院基本料コード取得
-               INITIALIZE    ORCSKANGOCHG-AREA
-               MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
-                                   TO    LNK-KANGOCHG-SANTEIYM
-               MOVE   SYS-5001-BTU-NUM
-                                   TO    LNK-KANGOCHG-BTU-NUM
-               MOVE   SYOKIKSN-IN-KHNSRYCD
-                                   TO    LNK-KANGOCHG-SRYCD
-               CALL   "ORCSKANGOCHG"    USING   ORCSKANGOCHG-AREA
-                                                SPA-AREA
-               IF   LNK-KANGOCHG-RC     =       ZERO
-                    MOVE LNK-KANGOCHG-CHGSRYCD
                                    TO    SYOKIKSN-IN-KHNSRYCD
                END-IF
            END-IF
@@ -8206,7 +8027,7 @@ grpsys                                     SPA-AREA
                MOVE    SPA-NAI-SRYYM           TO  NACCT-SRYYM
                MOVE    SPA-NAI-SRYKBN-41 (IDX) TO  NACCT-SRYKBN
                MOVE    SPA-NAI-ZAINUM-41 (IDX) TO  NACCT-ZAINUM
-     *
+      *
                MOVE    NYUINACCT-REC           TO  MCPDATA-REC
                MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
@@ -9092,86 +8913,60 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "入力可能な区分は０、１のいずれかです。"
                                        TO  WRK-ERRMSG
                WHEN    "0035"
-                 IF   SPA-NAI-SRYYM     <=    "201003"
-                     MOVE  "外泊で入力可能な区分は０〜４のいずれかです"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "。"
-                                       TO  WRK-ERRMSG(43:2)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201004")   AND
-                     (SPA-NAI-SRYYM     <=    "201203")
-                     MOVE  "外泊で入力可能な区分は０〜５のいずれかです"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "。"
-                                       TO  WRK-ERRMSG(43:2)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201204")  AND
-                     (SPA-NAI-SRYYM     <=    "201209")
+                 IF   SPA-NAI-SRYYM     >=    "201204"
+                   IF  (SPA-NAI-SRYYM     >=    "201204")  AND
+                       (SPA-NAI-SRYYM     <=    "201209")
                      MOVE  "外泊で入力可能な区分は０〜７のいずれかです"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE  "。"
                                        TO  WRK-ERRMSG(43:2)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201210")  AND
-                     (SPA-NAI-SRYYM     <=    "201603")
+                   ELSE
                      MOVE  "外泊で入力可能な区分は０〜９、１３のいずれ"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE  "かです。"
                                        TO  WRK-ERRMSG(43:8)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201604")  AND
-                     (SPA-NAI-SRYYM     <=    "201803")
-                     MOVE  "外泊で入力可能な区分は０〜６、８、９、１３"
+                   END-IF
+                 ELSE
+                   IF  (SPA-NAI-SRYYM     >=    "201004")   AND
+                       (SPA-NAI-SRYYM     <=    "201203")
+                     MOVE  "外泊で入力可能な区分は０〜５のいずれかです"
                                        TO  WRK-ERRMSG(1:42)
-                     MOVE  "のいずれかです。"
-                                       TO  WRK-ERRMSG(43:16)
-                 END-IF
-                 IF   SPA-NAI-SRYYM     >=    "201804"
-                     MOVE  "外泊で入力可能な区分は０〜６、８、９、１３"
+                     MOVE  "。"
+                                       TO  WRK-ERRMSG(43:2)
+                   ELSE
+                     MOVE  "外泊で入力可能な区分は０〜４のいずれかです"
                                        TO  WRK-ERRMSG(1:42)
-                     MOVE  "〜１７のいずれかです。"
-                                       TO  WRK-ERRMSG(43:22)
+                     MOVE  "。"
+                                       TO  WRK-ERRMSG(43:2)
+                   END-IF
                  END-IF
                WHEN    "0036"
-                 IF   SPA-NAI-SRYYM     <=    "201003"
-                     MOVE  "選定入院料での入力可能な区分は０、３、４の"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "いずれかです。"
-                                       TO  WRK-ERRMSG(43:14)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201004")   AND
-                     (SPA-NAI-SRYYM     <=    "201203")
-                     MOVE  "選定入院料での入力可能な区分は０、３、４、"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "５のいずれかです。"
-                                       TO  WRK-ERRMSG(43:18)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201204")  AND
-                     (SPA-NAI-SRYYM     <=    "201209")
+                 IF   SPA-NAI-SRYYM     >=    "201204"
+                   IF  (SPA-NAI-SRYYM     >=    "201204")  AND
+                       (SPA-NAI-SRYYM     <=    "201209")
                      MOVE  "選定入院料で入力可能な区分は０、３〜７のい"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE    "ずれかです。"
                                        TO  WRK-ERRMSG(43:12)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201210")  AND
-                     (SPA-NAI-SRYYM     <=    "201603")
+                   ELSE
                      MOVE  "選定入院料で入力可能な区分は０、３〜９、１"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE    "３のいずれかです。"
                                        TO  WRK-ERRMSG(43:18)
-                 END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201604")  AND
-                     (SPA-NAI-SRYYM     <=    "201803")
-                     MOVE  "選定入院料で入力可能な区分は０、３〜６、８"
+                   END-IF
+                 ELSE
+                   IF  (SPA-NAI-SRYYM     >=    "201004")   AND
+                       (SPA-NAI-SRYYM     <=    "201203")
+                     MOVE  "選定入院料での入力可能な区分は０、３、４、"
                                        TO  WRK-ERRMSG(1:42)
-                     MOVE  "、９、１３のいずれかです。"
-                                       TO  WRK-ERRMSG(43:26)
-                 END-IF
-                 IF   SPA-NAI-SRYYM     >=    "201804"
-                     MOVE  "選定入院料で入力可能な区分は０、３〜６、８"
+                     MOVE  "５のいずれかです。"
+                                       TO  WRK-ERRMSG(43:18)
+                   ELSE
+                     MOVE  "選定入院料での入力可能な区分は０、３、４の"
                                        TO  WRK-ERRMSG(1:42)
-                     MOVE  "、９、１３〜１７のいずれかです。"
-                                       TO  WRK-ERRMSG(43:32)
+                     MOVE  "いずれかです。"
+                                       TO  WRK-ERRMSG(43:14)
+                   END-IF
                  END-IF
                WHEN    "0037"
                    MOVE    "入力された数字は室料差額番号として設定され"
@@ -9226,17 +9021,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "療養担当手当の設定はできません。"
                                        TO  WRK-ERRMSG(33:)
                WHEN    "0049"
-                 IF   SPA-NAI-SRYYM     <=    "201603"
                    MOVE    "食事での入力可能な区分は０、１、２"
                                        TO  WRK-ERRMSG(1:34)
                    MOVE    "のいずれかです。"
                                        TO  WRK-ERRMSG(35:16)
-                 ELSE
-                   MOVE    "食事での入力可能な区分は０、１、２、３"
-                                       TO  WRK-ERRMSG(1:38)
-                   MOVE    "のいずれかです。"
-                                       TO  WRK-ERRMSG(39:16)
-                 END-IF
                WHEN    "0050"
                    MOVE    "入院時食事療養２の算定中は２（特食"
                                        TO  WRK-ERRMSG(1:34)
@@ -9261,11 +9049,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG(1:42)
                    MOVE    "です。"
                                        TO  WRK-ERRMSG(43:6)
-               WHEN    "0056"
-                   MOVE    "入院時生活療養（２）の算定中は３（流動食）"
-                                       TO  WRK-ERRMSG(1:42)
-                   MOVE    "は算定できません。"
-                                       TO  WRK-ERRMSG(43:18)
       *ver.4.7
                WHEN    "0071"
                    STRING  "プレビューできる入院登録がありません。"
@@ -9646,8 +9429,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                           "食堂加算"           TO  TNS-NAME
                        END-EVALUATE
                      ELSE
-                       IF   WRK-SRYYMD(1:6)      <=  "201803"
-                        EVALUATE   TNS-SRYCD
+                       EVALUATE   TNS-SRYCD
                          WHEN   "190121310"
                            MOVE "療養病棟入院基本料１（Ａ）"
                                                TO  TNS-NAME
@@ -9803,14 +9585,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                          WHEN   "197000570"
                            MOVE
                           "食堂加算"           TO  TNS-NAME
-                        END-EVALUATE
-                       ELSE
-                        EVALUATE   TNS-SRYCD
-                         WHEN   "197000570"
-                           MOVE
-                          "食堂加算"           TO  TNS-NAME
-                        END-EVALUATE
-                       END-IF
+                       END-EVALUATE
                      END-IF
                    END-IF
                    MOVE    ZERO                TO  FLG-TENSU
