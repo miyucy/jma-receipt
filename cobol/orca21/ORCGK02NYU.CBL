@@ -178,7 +178,7 @@
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-PTNYUINRRK      PIC 9(01).
+      **   03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-SPATMP          PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
@@ -811,8 +811,8 @@
       *    COPY    "CPSANTEI.INC".
       *
       *    ´µ¼ÔÆþ±¡ÍúÎò
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
+      *01  PTNYUINRRK-REC.
+      *    COPY    "CPPTNYUINRRK.INC".
       *    ´µ¼ÔÆþ±¡ÍúÎò¥ï¡¼¥¯
       *01  HZN-PTNYUINRRK-REC.
       *    COPY    "CPPTNYUINRRK.INC"  REPLACING
@@ -11613,25 +11613,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       910-PTNYUINRRK-READ-SEC         SECTION.
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-               MOVE    ZERO            TO  FLG-PTNYUINRRK
-           ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1               TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           .
-       910-PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************

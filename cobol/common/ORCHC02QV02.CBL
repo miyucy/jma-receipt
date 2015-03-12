@@ -3127,6 +3127,8 @@
                   OR  (WRK-SRY-SRYCD (IDXA)      =   "630010004")
                   OR  (WRK-SRY-SRYCD (IDXA)(1:7) =   "0992000" )
                   OR  (WRK-SRY-SRYCD (IDXA)(1:7) =   "0999999" )
+      *H27.4
+                  OR  (WRK-SRY-SRYCD (IDXA)      =   "099200101")
                    CONTINUE
                ELSE
                    IF     (WRK-SRY-SRYCD (IDXA)(1:1)   =   "6"
@@ -4376,10 +4378,6 @@
                        END-IF
                    END-IF
                END-PERFORM
-      *TEST
-            DISPLAY "WRK-SRYKA:" WRK-SRYKA
-                    ",HKN:" WRK-HKNCOMBINUM
-                    ",FLG-ALLKISAI:" FLG-ALLKISAI
       *!!!!
       *        処方編集初期クリア処理（伝票毎）
                PERFORM 20031-WKSYOHOU-INIT-SEC
@@ -5448,10 +5446,6 @@
                        MOVE    ZERO            TO  TNSP-IPN-KISAIKBN
                    END-IF
                END-IF
-      *TEST
-            DISPLAY "SRYCD:"  TNS-SRYCD
-                  ",FLG-ALLKISAI:" FLG-ALLKISAI
-                  ",TNSP-IPN-KISAIKBN:" TNSP-IPN-KISAIKBN
       *
       *        一般名記載あり
                IF     (TNSP-IPN-KISAIKBN   =   1  )

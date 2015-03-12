@@ -1686,6 +1686,14 @@
                    ELSE
                       MOVE    ZERO             TO  SPA-PSYCHO-OK
                    END-IF
+      *H27.4
+      *        Äã¾Ò²ðÎ¨£³£°Æü°Ê¾åÅêÍ¿
+               WHEN    "2007"
+                   IF      SPA-KID1-FLG        =   "OK"
+                      MOVE    1                TO  SPA-TEIGEN30-OK
+                   ELSE
+                      MOVE    ZERO             TO  SPA-TEIGEN30-OK
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-KIDCD

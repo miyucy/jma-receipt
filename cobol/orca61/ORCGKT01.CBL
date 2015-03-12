@@ -1394,6 +1394,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *H26.10
                    MOVE    ZERO            TO  SPA-PSYCHO-OK
                    MOVE    ZERO            TO  SPA-PSYCHO-CHK
+      *H27.4
+                   MOVE    ZERO            TO  SPA-TEIGEN30-CHK
+                   MOVE    ZERO            TO  SPA-TEIGEN30-OK
+      *
                    MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
                    MOVE    ZERO            TO  SPA-CHOZAI-CHK
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
@@ -1879,6 +1883,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE    1                TO  SPA-PSYCHO-OK
                    ELSE
                       MOVE    ZERO             TO  SPA-PSYCHO-OK
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    SPACE               TO  SPA-KID1-FLG
+      *            ²èÌÌÀ©¸æ
+                   MOVE    "JOIN"              TO  WRK-PUTTYPE
+                   PERFORM 41002-KOUSIN-SYORI-SEC
+      *H27.4
+      *        Äã¾Ò²ðÎ¨£³£°Æü°Ê¾åÅêÍ¿
+               WHEN    "2007"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                      MOVE    1                TO  SPA-TEIGEN30-OK
+                   ELSE
+                      MOVE    ZERO             TO  SPA-TEIGEN30-OK
                    END-IF
                    MOVE    SPACE               TO  SPA-KIDCD
                    MOVE    SPACE               TO  SPA-KID1-FLG
@@ -9579,6 +9597,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *H26.10¡¡²þÀµ
                WHEN    "2006"
                    STRING  "¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¤È¤Ê¤ê¤Þ¤¹¡£"
+                           "Äþ¸º¤·¤Þ¤¹¤«¡©"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+      *H27.4¡¡²þÀµ
+               WHEN    "2007"
+                   STRING  "£³£°Æü°Ê¾å¤ÎÅêÌô¤¬¤¢¤ê¤Þ¤¹¡£"
                            "Äþ¸º¤·¤Þ¤¹¤«¡©"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG

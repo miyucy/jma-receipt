@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  15/01/XX  一般・銘柄名処方毎の対応
+      *  04.07.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2787,10 +2788,16 @@
                        UNTIL      (IDY     >   30   )  OR
                                   (IDX-S   >=  60   )
                    IF      LNK-ORCSC-SRYCD (IDX IDY)
-                                           NOT = SPACE
+                                           NOT =   SPACE
       *保留**********  PERFORM 3001-AUTOZAI-SYORI-SEC
                        PERFORM 3001-AUTOZAI-HEN-SEC
                    END-IF
+      *H27.4
+      *            複数加算対応
+                   IF      LNK-ORCSC-SRYSYUKBN (IDX IDY) =  "NET"
+                       PERFORM 3002-AUTOKSN-HEN-SEC
+                   END-IF
+      *
                END-PERFORM
            END-PERFORM
            MOVE    IDX-S               TO  WRK-KSN-IDX
@@ -2862,8 +2869,9 @@
            .
        300-TOUROKU-SYORI-EXT.
            EXIT.
+      *
       *****************************************************************
-      *    自動作成の診療行為編集処理
+      *    自動作成の診療行為編集処理 (未使用)
       *****************************************************************
        3001-AUTOZAI-SYORI-SEC                SECTION.
       *
@@ -3012,6 +3020,70 @@
            END-PERFORM
            .
        3001-AUTOZAI-HEN-EXT.
+           EXIT.
+      *H27.4
+      *****************************************************************
+      *    複数加算対応処理
+      *****************************************************************
+       3002-AUTOKSN-HEN-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-KSN-ZAIEND (IDX-S)
+      *    追加の加算
+           ADD     1                   TO  IDX-S
+           IF      IDX-S               <=  60
+               MOVE    WRK-ZAINUM          TO  WRK-KSN-ZAINUM
+                                                              (IDX-S)
+               MOVE    LNK-ORCSC-SRYCD-KS(IDX IDY)
+                                               TO  WRK-KSN-SRYCD
+                                                              (IDX-S)
+      *        コメントの入力値（算定日）
+               MOVE    LNK-ORCSC-ATAI-G  (IDX IDY)
+                                           TO  WRK-KSN-ATAI-G (IDX-S)
+      *        前行を複写
+               MOVE    WRK-KSN-HKNCOMBI  (IDX-S - 1)
+                                           TO  WRK-KSN-HKNCOMBI
+                                                              (IDX-S)
+               MOVE    WRK-KSN-CHIKENKBN (IDX-S - 1)
+                                           TO  WRK-KSN-CHIKENKBN
+                                                              (IDX-S)
+               MOVE    WRK-KSN-SRYKA     (IDX-S - 1)
+                                           TO  WRK-KSN-SRYKA (IDX-S)
+               MOVE    WRK-KSN-SRYSYUKBN (IDX-S - 1)
+                                           TO  WRK-KSN-SRYSYUKBN
+                                                             (IDX-S)
+               MOVE    WRK-KSN-SRYKBN    (IDX-S - 1)
+                                           TO  WRK-KSN-SRYKBN (IDX-S)
+               MOVE    WRK-KSN-AUTOKBN  (IDX-S - 1)
+                                           TO  WRK-KSN-AUTOKBN(IDX-S)
+               MOVE    WRK-KSN-HKTKBN  (IDX-S - 1)
+                                           TO  WRK-KSN-HKTKBN (IDX-S)
+      *
+               MOVE    LNK-ORCSC-TENSU-KS (IDX IDY)
+                                           TO  WRK-KSN-TENSU  (IDX-S)
+               MOVE    "1"                 TO  WRK-KSN-ZAIEND (IDX-S)
+           END-IF
+      *    回数（入院）（最終項目に設定）
+           PERFORM VARYING IDN1        FROM    1   BY  1
+                   UNTIL   (IDN1        >   5  )    OR
+                           (LNK-ORCSC-INPUTCD (IDX IDY IDN1)
+                                        =   SPACE)
+               MOVE    SPACE               TO  WRK-KSN-ZAIEND (IDX-S)
+               ADD     1                   TO  IDX-S
+               IF      IDX-S               <=  60
+                   MOVE    WRK-ZAINUM      TO  WRK-KSN-ZAINUM
+                                                              (IDX-S)
+                   MOVE    "1"             TO  WRK-KSN-ZAIEND (IDX-S)
+                   MOVE    LNK-ORCSC-SRYSYUKBN (IDX IDY)
+                                           TO  WRK-KSN-SRYSYUKBN
+                                                              (IDX-S)
+                   MOVE    LNK-ORCSC-SRYKBN    (IDX IDY)
+                                           TO  WRK-KSN-SRYKBN (IDX-S)
+                   MOVE    LNK-ORCSC-INPUTCD (IDX IDY IDN1)
+                                           TO  WRK-KSN-INPUTCD (IDX-S)
+               END-IF
+           END-PERFORM
+           .
+       3002-AUTOKSN-HEN-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

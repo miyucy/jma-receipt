@@ -340,6 +340,12 @@
       * ¡ÊÀº¸º¡Ë
        01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
       *
+      *H27.4
+      * Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»¥³¡¼¥É
+       01  CONS-TEIHP-SRYCD        PIC X(09)   VALUE    "630010006".
+      * ¡Ê¸º¡Ë¡ÊÆâÉþÄþ¸º¤ÈÆ±¤¸¡Ë
+       01  CONS-TGEN-SRYCD         PIC X(09)   VALUE    "820000047".
+      *
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -3140,6 +3146,8 @@
       *    ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
            IF     (SPA-COM-SRYKBN(IDW2)    =   "21" )  AND
                   (SPA-COM-INPUTCD(IDW2)   =   "820000047")
+      *H27.4
+            AND   (SPA-NAIFUKU-OK          =   1     )
                MOVE    1                   TO  WKSRYP-TEI-NKBN
            END-IF
       *H26.10
@@ -3149,6 +3157,15 @@
                                            OR  "23" )  AND
                   (SPA-COM-INPUTCD(IDW2)   =   CONS-SGEN-SRYCD )
                MOVE    1                   TO  WKSRYP-TEI-NKBN
+           END-IF
+      *H27.4
+      *    £³£°ÆüÅêÌôÄþ¸ºÂÐ¾Ý
+           IF     (SPA-COM-SRYKBN(IDW2)    =   "21"
+                                           OR  "22" )
+             AND  (SPA-COM-INPUTCD(IDW2)   =   CONS-TGEN-SRYCD )
+             AND  (SPA-TEIGEN30-OK         =   1    )
+             AND  (WRK-KAISUKEI            >=  30   )
+               MOVE    1                   TO  WKSRYP-TEI-NKBN30
            END-IF
       *
       *
@@ -4007,6 +4024,8 @@
                                                =   "630010002"
       *H26.10
                                                OR  CONS-TAZAI-SRYCD
+      *H27.4                   Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»¥³¡¼¥É
+                                                 OR  CONS-TEIHP-SRYCD
                            COMPUTE SUM-SYU-HKNTEN (04)
                                                =   SUM-SYU-HKNTEN(04)
                                                -   ORCSCWKSRY-KSN-TENSU
@@ -4217,6 +4236,16 @@
                MOVE    1                   TO  WKSRYP-PLUSKBN
       *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
                MOVE    2                   TO  WKSRYP-TEI-NKBN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *
+      *H27.4
+      *    Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»
+      *    ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
+           IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   CONS-TEIHP-SRYCD
+               MOVE    1                   TO  WKSRYP-PLUSKBN
+      *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
+               MOVE    2                   TO  WKSRYP-TEI-NKBN30
                MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
       *

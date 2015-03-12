@@ -338,6 +338,12 @@
       * ¡ÊÀº¸º¡Ë
        01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
       *
+      *H27.4
+      * Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»¥³¡¼¥É
+       01  CONS-TEIHP-SRYCD        PIC X(09)   VALUE    "630010006".
+      * ¡Ê¸º¡Ë¡ÊÆâÉþÄþ¸º¤ÈÆ±¤¸¡Ë
+       01  CONS-TGEN-SRYCD         PIC X(09)   VALUE    "820000047".
+      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -1622,6 +1628,15 @@
                END-IF
            END-IF
       *
+      *H27.4
+      *ÊÝÎ±
+      *    CLAIM¤Î¾¦ÉÊÌ¾¥³¡¼¥É¤Î¿ôÎÌÈ¿±Ç
+      *    IF      (SPA-COM-INPUTCD(IDX2)(1:3) =   "058" )
+      *       AND  (LNK-WKSRY-KARTE-FLG (IDX)  =   ZERO  )
+      *       AND  (LNK-WKSRY-TERMID (1)       =   "WKSRYACT")
+      *       AND  (LNK-WKSRY-SRYSURYO (IDX IDY)   >   1    )
+      *        MOVE    "1"                 TO  SPA-COM-SURFLG (IDX2)
+      *****END-IF
            .
        10020-SPA-HEN-EXT.
            EXIT.
@@ -2806,14 +2821,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        300-TOUROKU-PARA-SEC         SECTION.
       *
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *
-      *    OPEN    OUTPUT              PARA-FILE
-      *    IF      STS-PARA        NOT =  ZERO
-      *        DISPLAY "ORCSCWKSRY STS-PARA OPEN:"  STS-PARA  "]"
-      **** END-IF
-      *!!
       *    °ì»þ¥Ç¡¼¥¿ºï½ü
            PERFORM 3009-PARADELETE-SEC
       *
@@ -2832,7 +2839,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ¼«Æ°ºîÀ®¤Î¿ÇÎÅ¹Ô°ÙºîÀ®½èÍý
            PERFORM 3004-JIDOU-SAKU-SEC
-      *****CLOSE                       PARA-FILE
       *
       *    £Ó£Ð£ÁÊÝÂ¸¥Ñ¥é¥á¥¿¤òºîÀ®
            PERFORM 3001-PARAK02-SYORI-SEC
@@ -3135,6 +3141,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
            IF     (SPA-COM-SRYKBN(IDW2)    =   "21" )  AND
                   (SPA-COM-INPUTCD(IDW2)   =   "820000047")
+      *H27.4
+            AND   (SPA-NAIFUKU-OK          =   1     )
                MOVE    1                   TO  WKSRYP-TEI-NKBN
            END-IF
       *H26.10
@@ -3144,6 +3152,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            OR  "23" )  AND
                   (SPA-COM-INPUTCD(IDW2)   =   CONS-SGEN-SRYCD )
                MOVE    1                   TO  WKSRYP-TEI-NKBN
+           END-IF
+      *H27.4
+      *    £³£°ÆüÅêÌôÄþ¸ºÂÐ¾Ý
+           IF     (SPA-COM-SRYKBN(IDW2)    =   "21"
+                                           OR  "22" )
+             AND  (SPA-COM-INPUTCD(IDW2)   =   CONS-TGEN-SRYCD )
+             AND  (SPA-TEIGEN30-OK         =   1    )
+             AND  (WRK-KAISUKEI            >=  30   )
+               MOVE    1                   TO  WKSRYP-TEI-NKBN30
            END-IF
       *
            .
@@ -4321,6 +4338,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                      =   "630010002"
       *H26.10                  ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿
                                                  OR  CONS-TAZAI-SRYCD
+      *H27.4                   Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»¥³¡¼¥É
+                                                 OR  CONS-TEIHP-SRYCD
                            COMPUTE SUM-SYU-HKNTEN (04)
                                                =   SUM-SYU-HKNTEN(04)
                                                -   ORCSCWKSRY-KSN-TENSU
@@ -4535,6 +4554,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  WKSRYP-PLUSKBN
       *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
                MOVE    2                   TO  WKSRYP-TEI-NKBN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *
+      *H27.4
+      *    Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»
+      *    ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
+           IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   CONS-TEIHP-SRYCD
+               MOVE    1                   TO  WKSRYP-PLUSKBN
+      *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
+               MOVE    2                   TO  WKSRYP-TEI-NKBN30
                MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
       *
