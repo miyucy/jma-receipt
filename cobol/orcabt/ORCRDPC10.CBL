@@ -2128,6 +2128,13 @@
                                            WRK-SRYCD72-MAX
                                            WRK-KOKUJISKBKBN1-KOUI-TEN
       *
+      *    9999包括分剤は自保区分に１がセットされている
+           IF       RECE641-JIHOKBN        =   "1"
+               MOVE      "6"               TO  WRK-FEDT-HOUKATU-FLG
+           ELSE
+               MOVE      "0"               TO  WRK-FEDT-HOUKATU-FLG
+           END-IF
+      *
            MOVE    RECE641-SRYKBN      TO  WRK-SRYKBN
       *
            INITIALIZE                       RECE65-REC
@@ -2172,11 +2179,11 @@
                OR     ( RECE641-ZAINUM     NOT =   RECE65-ZAINUM       )
       *
       *        9999包括分剤は自保区分に１がセットされている
-               IF       RECE641-JIHOKBN        =   "1"
-                   MOVE      "6"               TO  WRK-FEDT-HOUKATU-FLG
-               ELSE
-                   MOVE      "0"               TO  WRK-FEDT-HOUKATU-FLG
-               END-IF
+      **         IF       RECE641-JIHOKBN        =   "1"
+      **             MOVE      "6"               TO  WRK-FEDT-HOUKATU-FLG
+      **         ELSE
+      **             MOVE      "0"               TO  WRK-FEDT-HOUKATU-FLG
+      **         END-IF
       *
                PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX               >   5     )
