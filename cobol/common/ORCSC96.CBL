@@ -485,6 +485,15 @@
                                        TO  SPA-ERRMSG
                    MOVE    "逓減・加算コードは入力できません"
                                        TO  SPA-ERRMSG(37:)
+      *H27.4
+                   IF      SPA-SRYYMD      >=  "20150401"
+                       MOVE    SPACE           TO  SPA-ERRMSG
+                       STRING  "施設基準不適合の手術ではありません。"
+                               "逓減コードは入力できません"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                       END-STRING
+                   END-IF
                WHEN    "0074"
                    MOVE
                "この種別は投薬料が算定できない時のみ入力できます。"

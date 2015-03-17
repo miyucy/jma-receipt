@@ -882,7 +882,16 @@
       *        最後の通則加算対象位置
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
                       (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =   "1" )
-                   MOVE    IDX1            TO  IDX-NEN
+      *H27.4
+      *            ％減算で前手技が通則外は対象外
+                   IF     (WRK-COM-DATAKBN (IDX1)  =   "2" )
+                      AND (WRK-COM-SANFLG  (IDX1)  =   2   )
+                      AND (WRK-COM-DATAKBN (IDX1 - 1)      =   "1" )
+                      AND (WRK-COM-TUSOKUGAIKBN(IDX1 - 1)  =   "1" )
+                       CONTINUE
+                   ELSE
+                       MOVE    IDX1            TO  IDX-NEN
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1145,7 +1154,16 @@
       *        最後の通加算対象位置
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
                       (WRK-COM-TUSOKUGAIKBN (IDX1) =   "0" )
-                   MOVE    IDX1            TO  IDX-TUS
+      *H27.4
+      *            ％減算で前手技が通則外は対象外
+                   IF     (WRK-COM-DATAKBN (IDX1)  =   "2" )
+                      AND (WRK-COM-SANFLG  (IDX1)  =   2   )
+                      AND (WRK-COM-DATAKBN (IDX1 - 1)      =   "1" )
+                      AND (WRK-COM-TUSOKUGAIKBN(IDX1 - 1)  =   "1" )
+                       CONTINUE
+                   ELSE
+                       MOVE    IDX1            TO  IDX-TUS
+                   END-IF
                END-IF
            END-PERFORM
       *

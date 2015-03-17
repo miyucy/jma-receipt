@@ -44,6 +44,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/04/03  £È£²£¶Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/05/27  °ì»þ¥Õ¥¡¥¤¥ëÊÑ¹¹
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *  04.07.00    NACL-Â¿¡¹Ç¼  15/03/XX  £È£²£·Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -136,6 +137,8 @@
            03  FLG-HEN-CHK2        PIC 9(01).
       *
            03  FLG-RSITEN          PIC 9(01).
+      *H27.4
+           03  FLG-TEIGEN30-ZAI    PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -3039,8 +3042,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  WKSRYACTPLUS-REC
            INITIALIZE                  WKSRYACTPLUS-REC
       *
+           MOVE    ZERO                TO  FLG-TEIGEN30-ZAI
+      *
            PERFORM VARYING     IDW2    FROM    IDW-STR   BY  1
                    UNTIL       IDW2    >   SPA-GMN-MAX
+      *H27.4
+      *        £³£°Æü¸ºÂÐ¾ÝÈ½Äê
+               IF     (SPA-COM-SRYKBN(IDW2)    =   "21"
+                                               OR  "22" )
+                 AND  (SPA-COM-INPUTCD(IDW2)(1:1)  =   "6" )
+                 AND  (SPA-COM-YOBI2 (IDW2)(1:1)   =   SPACE)
+                   MOVE    1                   TO  FLG-TEIGEN30-ZAI
+               END-IF
+      *
                IF      SPA-COM-ZAIEND(IDW2)    =   "1"
                    MOVE    IDW2                TO  IDW-END
                    MOVE    SPA-GMN-MAX         TO  IDW2
@@ -3160,6 +3174,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (SPA-COM-INPUTCD(IDW2)   =   CONS-TGEN-SRYCD )
              AND  (SPA-TEIGEN30-OK         =   1    )
              AND  (WRK-KAISUKEI            >=  30   )
+      *        ÂÐ¾Ý¤ÎºÞÈ½Äê
+             AND  (FLG-TEIGEN30-ZAI        =   1    )
                MOVE    1                   TO  WKSRYP-TEI-NKBN30
            END-IF
       *

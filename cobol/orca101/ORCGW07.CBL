@@ -10500,6 +10500,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    £Ä£Â¹¹¿·½èÍý
            PERFORM 4910-DBKOUSIN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      493-KOUSHIN-1201-EXT
+           END-IF
       *
       *    Äã¾Ò²ðÎ¨¶èÊ¬
            MOVE    SPACE               TO  SYSKANRI-REC

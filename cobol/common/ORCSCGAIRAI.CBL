@@ -3412,6 +3412,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *!!
       *    ÆâÉþÄþ¸º½èÍý
       *****IF      FLG-GEN-ARI         =   1
+      *H27.4
       *    ÆâÉþÄþ¸ºÂÐ¾ÝºÞ
            IF      LNK-WKSRYP-TEI-NKBN (1) =   1
                PERFORM VARYING IDX-GEN2    FROM    1   BY  1

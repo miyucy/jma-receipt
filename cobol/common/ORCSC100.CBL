@@ -27,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.00    NACL-多々納  15/01/XX  一般・銘柄名処方毎の対応
+      *  04.07.00    NACL-多々納  15/04/XX  一般・銘柄名処方毎の対応
       *  04.07.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
       *****************************************************************
       *
@@ -138,7 +138,7 @@
                    07  WRK-KYUSEI-ED       PIC X(01).
                05  WRK-TEIGEN-IN           PIC X(01).
       *!!!!!!!!!!!!!!!!!
-      *H27.1
+      *H27.4
       *    一般・銘柄名記載区分（処方毎）
            03  WRK-INGIKSN-KBN-G.
                05  WRK-INGIKSN-KBN-TBL      OCCURS   20.
@@ -455,7 +455,7 @@
       *    同日初診フラグ
            MOVE    ZERO                TO  WRK-DOUSIN
            MOVE    ZERO                TO  SPA-HKTSANTEI-08
-      *H27.1
+      *H27.4
       *    一般・銘柄処方毎処理
            INITIALIZE                      WRK-INGIKSN-KBN-G
       *
@@ -517,7 +517,7 @@
               AND (ORCSC100-INIT       =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
-      *H27.1
+      *H27.4
       *    後発品変更可・不可処方毎処理
            PERFORM 51019-INGIKSN-HEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE)
@@ -1303,7 +1303,7 @@
        51019-KYUSEI-EXT.
            EXIT.
       *!!!
-      *H27.1
+      *H27.4
       *****************************************************************
       *    後発品変更可・不可処方毎の処理
       *****************************************************************
@@ -1528,7 +1528,7 @@
                END-PERFORM
            END-IF
       *
-      *H27.1
+      *H27.4
       *    後発変更不可処方毎編集
            MOVE    ZERO                TO  SPA-GENECHG-KBN
            PERFORM VARYING IDX-M       FROM    1   BY  1

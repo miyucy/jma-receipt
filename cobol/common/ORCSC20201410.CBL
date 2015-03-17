@@ -62,8 +62,8 @@
       *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *                                     包括エラー分対応
       *  04.07.00    NACL-多々納  14/10/07  頓服（臨時投薬）対応
-      *  04.07.00    NACL-多々納  15/02/XX  後発品変更不可処方毎の対応
       *  04.07.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
+      *  04.07.00    NACL-多々納  15/04/XX  後発品変更不可処方毎の対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -219,12 +219,13 @@
       *H26.10
            03  IDX-PS              PIC 9(04).
            03  IDX-Z2              PIC 9(04).
-      *
+      *H27.3
            03  IDXS-2              PIC 9(04).
            03  IDX-STR             PIC 9(04).
            03  IDXG3               PIC 9(04).
            03  IDXG4               PIC 9(04).
            03  IDX-STRG            PIC 9(04).
+           03  IDX-GEN30           PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -345,7 +346,6 @@
            03  FLG-GEN30-K2             PIC 9(01).
            03  FLG-GEN30-PSY            PIC 9(01).
            03  FLG-GEN30-7GEN           PIC 9(01).
-           03  IDX-GEN30                PIC 9(04).
            03  FLG-YAKZ-ARI             PIC 9(01).
            03  WRK-IDXG3                PIC 9(04).
       *
@@ -1039,7 +1039,7 @@
                     MOVE    1              TO  FLG-ARI
                END-IF
            END-PERFORM
-      *
+      *H27.4
            IF      FLG-ARI             =   ZERO
                MOVE    ZERO                TO  IDX-T
                PERFORM VARYING     IDX1    FROM    IDX-S   BY  1
@@ -1320,11 +1320,11 @@
                    MOVE    ZERO                TO  FLG-CHK-P
       ************ IF     (WRK-COM-KOKUJISKBKBN2(IDX-Z)  =   9  )
                    IF     (WRK-COM-IPN-KISAIKBN (IDX-Z)  =   1  )
-      *H27.1           後発品変更可
+      *H27.4           後発品変更可
                      OR   (SPA-GENECHG-KBN             =   2   )
       *
                        MOVE    1                   TO  FLG-CHK-P
-      *H27.1           後発品変更不可
+      *H27.4           後発品変更不可
                        IF      SPA-GENECHG-KBN     =   1
                            MOVE    ZERO                TO  FLG-CHK-P
                        END-IF
@@ -1426,7 +1426,7 @@
            .
        1006-KASAN-SET-EXT.
            EXIT.
-      *
+      *H27.4
       *****************************************************************
       *    手技毎の計算処理
       *****************************************************************
@@ -1957,6 +1957,7 @@
       *
             END-IF
       *H27.4
+      *        剤開始位置設定
                IF      WRK-COM-ZAIEND (IDX)   =   "1"
                    MOVE    IDX                 TO  WRK-GEN30-STR
                END-IF
@@ -2931,11 +2932,11 @@
                        MOVE    ZERO                TO  FLG-CHK-P
       ***************  IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
                        IF     (WRK-COM-IPN-KISAIKBN (IDX)  =   1  )
-      *H27.1               後発品変更可
+      *H27.4               後発品変更可
                          OR   (SPA-GENECHG-KBN             =   2   )
       *
                            MOVE    1                   TO  FLG-CHK-P
-      *H27.1               後発品変更不可
+      *H27.4               後発品変更不可
                            IF      SPA-GENECHG-KBN     =   1
                               MOVE    ZERO                TO  FLG-CHK-P
                            END-IF
@@ -4765,6 +4766,7 @@
       *****************************************************************
        30011-GENTUIKA-SEC         SECTION.
       *
+      *H27.4
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    IDX-Z   BY  1
@@ -4781,7 +4783,7 @@
            MOVE    WRK-COM-SRYKBN (IDX)    TO  WRK-HEN-SRYKBN
            MOVE    WRK-COM-SRYSYUKBN(IDX)  TO  WRK-HEN-SRYSYUKBN
       *
-      *
+      *H27.4
            IF      FLG-ARI             =   1
                MOVE    IDX-T               TO  IDX-Z
            END-IF
@@ -5647,7 +5649,6 @@
                    END-IF
                END-IF
            END-IF
-      ***  MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
        300211-CHOZAI-CHK-EXT.
