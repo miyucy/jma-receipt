@@ -51,7 +51,6 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/08/22  ³°ÍÑÌôºÞ²ó¿ô¥Á¥§¥Ã¥¯ÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  15/03/XX  £È£²£·Ç¯£°£´·î²þÀµÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  18/03/XX  £È£³£°Ç¯£°£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -357,9 +356,6 @@
        01  CONS-TAZAI-SRYCD        PIC X(09)   VALUE    "630010005".
       * ¡ÊÀº¸º¡Ë
        01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
-      *H28.4
-      * ¡Ê¼¾ÉÛ¸º¡Ë
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -626,7 +622,7 @@
                    UNTIL      (IDH     >   15  )  OR
                               (SPA-TBL-HKNCOMBI(IDH)   =   SPACE)
                PERFORM VARYING     IDH2    FROM    1   BY  1
-                       UNTIL      (IDH2    >   10  )  OR
+                       UNTIL      (IDH2    >   15  )  OR
                                   (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                    MOVE    SPA-TBL-SRYKA(IDH IDH2) TO  WRK-SRYKA
                    PERFORM VARYING     IDH3    FROM    1   BY  1
@@ -667,7 +663,7 @@
                    MOVE    1                   TO  FLG-FUKU-FLG
                END-IF
                PERFORM VARYING     IDH2    FROM    1   BY  1
-                       UNTIL      (IDH2    >   10  )  OR
+                       UNTIL      (IDH2    >   15  )  OR
                                   (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                               OR  (SPA-ERRCD   NOT =   SPACE )
                    MOVE    SPA-TBL-SRYKA(IDH IDH2) TO  WRK-SRYKA
@@ -2190,7 +2186,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                OR (SPA-TBL-HKNCOMBI(IDH)   =   SPACE)
                                OR (FLG-SRYKA-OK   =   1  )
                    PERFORM VARYING     IDH2    FROM    1   BY  1
-                           UNTIL      (IDH2    >   10  )  OR
+                           UNTIL      (IDH2    >   15  )  OR
                                    (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                                    OR (FLG-SRYKA-OK   =   1  )
                        IF      SPA-TBL-SRYKA(IDH IDH2) =
@@ -3008,18 +3004,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN    "113003710"
                            MOVE    SYU-SRYYMD      TO
                                                    WRK-KARRK-SYOSINYMD2
-      *H28.4           ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅÎÁ
-                       WHEN    "113019710"
-                       WHEN    "113019910"
-                           MOVE    SYU-SRYYMD      TO
-                                                   WRK-KARRK-SYOSINYMD2
       *                Æ±Æü½é¿Ç
                        WHEN    "101110040"
                        WHEN    "111011810"
       *H25.4           ¾Ò²ð¤Ê¤·
                        WHEN    "111012610"
-      *H28.4           ÂÅ·ë£µ³ä°Ê²¼
-                       WHEN    "111012810"
                            IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"
                                MOVE    1               TO  FLG-DOUJITU
                            END-IF
@@ -3311,12 +3300,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       AND (LNK-WKSRY-SRYKBN (IDX)      =   "22"  )
                        MOVE    1               TO  FLG-GEN-ARI
                    END-IF
-      *H28.4       ¼¾ÉÛÌô¸ºÅÀ
-                   IF     (LNK-WKSRY-SRYCD (IDX IDY)
-                                                   =   CONS-SPCM-SRYCD)
-                      AND (LNK-WKSRY-SRYKBN (IDX)      =   "23"  )
-                       MOVE    1               TO  FLG-GEN-ARI
-                   END-IF
       *H26.10
       *            ¸þÀº¿ÀÌôÂ¿ºÞÄþ¸º¤Î¸º¤ÎÍ­ÌµÈ½Äê
                    IF     (LNK-WKSRY-SRYCD (IDX IDY)
@@ -3415,13 +3398,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (WRK-ZAINUM      NOT =   ZERO )  AND
                   (LNK-WKSRY-SRYKBN    (1) =   "21"
                                            OR  "22" )  AND
-                  (LNK-WKSRYP-TEI-NKBN30(1) =   2    )
-               PERFORM 45015-TEIGEN30-CHK-SEC
-           END-IF
-      *H28.4
-      *    ¼¾ÉÛ£·£°Ëç°Ê¾åÄþ¸º¤ÎºÞ¥Á¥§¥Ã¥¯
-           IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "23" )  AND
                   (LNK-WKSRYP-TEI-NKBN30(1) =   2    )
                PERFORM 45015-TEIGEN30-CHK-SEC
            END-IF
@@ -4010,9 +3986,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
-      *H30.4
-                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:7)
-                                                         =   "0992081")
       *               ÆþÎÏ¤¬¤¢¤ì¤ÐºîÀ®
                        IF      (LNK-WKSRY-INPUTCHI-G (IDX IDX-SIN)
                                                        =  SPACE ) AND
@@ -5785,8 +5758,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

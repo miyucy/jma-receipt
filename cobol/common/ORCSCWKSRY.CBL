@@ -45,13 +45,6 @@
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *  04.07.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
-      *  04.08.00    NACL-多々納  15/07/28  労災金額・点数編集変更
-      *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
-      *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
-      *  04.08.00    NACL-多々納  17/02/XX  在宅実績加算２削除対応
-      *  04.08.00    NACL-多々納  17/03/XX  Ｈ２９年４月改正対応他
-      *  04.08.00    NACL-多々納  17/05/XX  HAORI対応
-      *  04.08.00    NACL-多々納  17/03/XX  Ｈ３０年４月改正対応他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -146,8 +139,6 @@
            03  FLG-RSITEN          PIC 9(01).
       *H27.4
            03  FLG-TEIGEN30-ZAI    PIC 9(01).
-      *API(HAORI)
-           03  FLG-AUTONO          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -176,10 +167,6 @@
            03  IDX-STR                 PIC 9(04).
       *
            03  IDT                     PIC 9(04).
-      *H27.7
-           03  IDW2-H                  PIC 9(04).
-      *
-           03  IDHC                    PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -241,9 +228,6 @@
            03  WRK-YAKUHYO             PIC X(01).
            03  WRK-GENTEN              PIC X(01).
       *
-      *H28.9   持参薬
-           03  WRK-JISANYAKU           PIC X(01).
-      *
       *    労災施術加算等用
            03  WRK-ENTANKA             PIC S9(08).
            03  IDR-1                   PIC 9(04).
@@ -254,25 +238,6 @@
            03  WRK-TENSUKEI-K          PIC S9(08).
       *
            03  WRK-TIME-KBN2           PIC X(01).
-      *H29.2
-      *    在医総管判定
-           03  WRK-ZS-GRP                  PIC X(02).
-           03  WRK-ZS-KBN                  PIC X(01).
-           03  WRK-ZS-KBN2                 PIC X(01).
-      *
-           03  FLG-CHKAUTO                 PIC 9(01).
-           03  FLG-CHKEND                  PIC 9(01).
-           03  IDXZ                        PIC 9(04).
-           03  WRK-ZKS-GRP             PIC X(02).
-           03  WRK-ZKS-KBN             PIC X(01).
-      *H29.8
-           03  WRK-GRPCNT              PIC 9(03).
-           03  FLG-CHK01               PIC 9(01).
-      *
-      *    収納集計点数内容
-       01  TBL-K02SCR-AREA.
-           03  TBL-K02SCR-OCC          OCCURS   400.
-               05  TBL-SYU-TENSU       PIC 9(07).
       *
       *    集計収納請求内容
        01  WRK-SUM-AREA.
@@ -298,7 +263,7 @@
       *
       *
       *    時間外加算テーブル
-       01  TBL2-TIMEKSN-AREA.
+       01  TBL-TIMEKSN-AREA.
       *小児科外来診療科（初診）
       *    時間外
            03  FILLER              PIC X(12)   VALUE   "11 113009670".
@@ -359,22 +324,16 @@
       *    早朝加算
            03  FILLER              PIC X(12)   VALUE   "38 113017370".
       *
-       01  TBL2-TIMEKSN-AREA-R      REDEFINES   TBL2-TIMEKSN-AREA.
-           03  TBL2-TIMEKSN-OCC     OCCURS   27
-                                   INDEXED  TBL2-TIDX.
+       01  TBL-TIMEKSN-AREA-R      REDEFINES   TBL-TIMEKSN-AREA.
+           03  TBL-TIMEKSN-OCC     OCCURS   27
+                                   INDEXED  TBL-TIDX.
       *        1:初診、2：再診、3:地域包括診療料
-               05  TBL2-TM-KBN1         PIC X(01).
+               05  TBL-TM-KBN1         PIC X(01).
       *        1:時間外、2：休日、3:深夜、4:特定時間外、5:夜間、8:夜間・早朝
-               05  TBL2-TM-KBN2         PIC X(01).
-               05  TBL2-TM-YOBI         PIC X(01).
+               05  TBL-TM-KBN2         PIC X(01).
+               05  TBL-TM-YOBI         PIC X(01).
       *
-               05  TBL2-TM-SRYCD        PIC X(09).
-      *H28.4
-      *    時間外加算テーブル(H28.4分）
-           COPY     "CMTIMEKSN2016.INC".
-      *H30.4
-      *    時間外加算テーブル(H30.4分）
-           COPY     "CMTIMEKSN2018.INC".
+               05  TBL-TM-SRYCD        PIC X(09).
       *
       *H26.10
       * 向精神薬多剤投与減算コード
@@ -387,17 +346,6 @@
        01  CONS-TEIHP-SRYCD        PIC X(09)   VALUE    "630010006".
       * （減）（内服逓減と同じ）
        01  CONS-TGEN-SRYCD         PIC X(09)   VALUE    "820000047".
-      *
-      *H28.4
-      * 湿布薬枚数減算
-       01  CONS-SPGEN-SRYCD        PIC X(09)   VALUE    "630010007".
-      * 湿布薬（減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
-      *
-      *
-      *H29.2
-      *    在宅時医療総合管理料コードテーブル（H28.4分)
-           COPY     "CMZISOTBL2016.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -721,8 +669,8 @@
                    END-IF
       *            前回編集時、自動作成分は編集しない
                    IF      FLG-ZENKAI          =   1
-                       IF      LNK-WKSRY-AUTOKBN(IDX IDY)    =   "2"
-                                                             OR  "3"
+                       IF      LNK-WKSRY-AUTOKBN(IDX IDY)    =   "2" OR
+                                                                 "3"
                                                              OR  "4"
                                                              OR  "6"
                            MOVE    1               TO  FLG-HEN-CHK
@@ -809,25 +757,6 @@
                                                            OR "60"
                                                            OR "70")
                            MOVE    1               TO  FLG-AUTO-NASI
-                       END-IF
-                   END-IF
-      *!!!!
-      *H29.3
-      *            処方料を訂正時展開する
-                   IF     (SPA-SRYYMD              >=  "20160401")
-                     AND  (SPA-TEISHOHOU-FLG       =   "1"      )
-                     AND  (ORCSCWKSRY-SYORIFLG     =   ZERO     )
-                     AND  (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "3"   )
-                     AND  (LNK-WKSRY-SRYSYUKBN(IDX)    =  "250"
-                                                       OR "260" )
-      *
-                       IF      LNK-WKSRY-SRYCD (IDX IDY)
-                                                  =   "120000110"
-                           CONTINUE
-                       ELSE
-                           MOVE    ZERO           TO  FLG-HEN-CHK
-                           MOVE    SPACE          TO  LNK-WKSRY-AUTOKBN
-                                                            (IDX IDY)
                        END-IF
                    END-IF
       *
@@ -974,20 +903,6 @@
                    UNTIL      (IDX-1     >   SPA-MAX-LINE )  OR
                              ((SPA-GMN-INPUTCD(IDX-1) =   SPACE )
                           AND (SPA-COM-INPUTCD(IDX-1) =   SPACE ))
-      *
-      *H29.5
-      *API(HAORI)
-      *        HAORI　加算自動算定
-               IF      SPA-COM-KSNAUTO (IDX-1) =   "Y"
-      *            自動算定なし
-                   MOVE    1                   TO  FLG-AUTONO
-                   MOVE    SPACE               TO  SPA-COM-KSNAUTO
-                                                           (IDX-1)
-               ELSE
-                   MOVE    ZERO                TO  FLG-AUTONO
-               END-IF
-      *
-      *
                IF     (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "S" OR ".") OR
                       (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "S"       ) OR
                       (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "*"       ) OR
@@ -1038,12 +953,7 @@
       *H26.4
       *            精神通院の２０歳加算の自動発生なし
                    IF     (SPA-SRYYMD              >=  "20140401")
-      ******          AND (ORCSCWKSRY-SYORIFLG     =   ZERO      )
-      *H29.5
-      *API(HAORI)
-                      AND ((ORCSCWKSRY-SYORIFLG    =   ZERO    )
-                        OR (FLG-AUTONO             =   1       ))
-      *
+                      AND (ORCSCWKSRY-SYORIFLG     =   ZERO      )
                       AND (SPA-COM-CDKBN-KBN (IDX-1)   =   "I"  )
                       AND (SPA-COM-CDKBN-KBNNUM(IDX-1) =   "002")
                        IF      (SPA-COM-AUTOKBN(IDX-1) =  "2"   )
@@ -1054,38 +964,6 @@
                            MOVE    "1"            TO  SPA-COM-KSNAUTO
                                                              (IDX-1)
                        END-IF
-                   END-IF
-      *H29.7
-      *            心身療法の２０歳加算の自動発生なし(H29/7から）
-                   IF     (SPA-SRYYMD              >=  "20170701")
-                      AND ((ORCSCWKSRY-SYORIFLG    =   ZERO    )
-      *API(HAORI)
-                        OR (FLG-AUTONO             =   1       ))
-      *
-                      AND (SPA-COM-CDKBN-KBN (IDX-1)   =   "I"  )
-                      AND (SPA-COM-CDKBN-KBNNUM(IDX-1) =   "004")
-                       IF      (SPA-COM-AUTOKBN(IDX-1) =  "2"   )
-                           AND (SPA-COM-DATAKBN(IDX-1) =  "2"   )
-                           MOVE    SPACE          TO  SPA-COM-AUTOKBN
-                                                             (IDX-1)
-                       END-IF
-                       IF      (SPA-COM-DATAKBN(IDX-1) =  "1"   )
-                           MOVE    "1"            TO  SPA-COM-KSNAUTO
-                                                             (IDX-1)
-                       END-IF
-                   END-IF
-      *H29.2
-      *            在宅加算２の訂正時自動発生対応
-                   IF     (SPA-SRYYMD              >=  "20160401")
-                      AND (SPA-COM-CDKBN-KBN (IDX-1)   =   "C"  )
-                      AND (SPA-COM-CDKBN-KBNNUM(IDX-1) =   "002")
-      ****            AND (ORCSCWKSRY-SYORIFLG     =   ZERO      )
-      *H29.5
-      *API(HAORI)
-                      AND ((ORCSCWKSRY-SYORIFLG    =   ZERO    )
-                        OR (FLG-AUTONO             =   1       ))
-      *!!!!
-                       PERFORM 10026-ZAITAKU-AUTO-SEC
                    END-IF
       *
       *            回数の入力（外来のみ）
@@ -1359,81 +1237,6 @@
        10025-HAIKI-CHKI-EXT.
            EXIT.
       *
-      *H29.2
-      *****************************************************************
-      *    （在支診等以外）の加算処理
-      *****************************************************************
-       10026-ZAITAKU-AUTO-SEC              SECTION.
-      *
-      *    在宅時医学総合管理料等判定（在医総管・特医総管）
-           SET     TBL-ZSIDX           TO  1
-           SEARCH  TBL-ZISOSIN-OCC     VARYING   TBL-ZSIDX
-              AT   END
-                   MOVE    SPACE                   TO  WRK-ZS-KBN
-                   MOVE    SPACE                   TO  WRK-ZS-KBN2
-                   MOVE    SPACE                   TO  WRK-ZS-GRP
-               WHEN   (TBL-ZS-SRYCD (TBL-ZSIDX)
-                                           =   SPA-COM-INPUTCD (IDX-1)) 
-                   MOVE    TBL-ZS-GRP (TBL-ZSIDX)  TO  WRK-ZS-GRP
-                   MOVE    TBL-ZS-KBN (TBL-ZSIDX)  TO  WRK-ZS-KBN
-                   MOVE    TBL-ZS-KBN2(TBL-ZSIDX)  TO  WRK-ZS-KBN2
-           END-SEARCH
-      *
-           IF     (WRK-ZS-GRP(1:1)        =   "0"
-                                          OR  "1" )
-      *
-               MOVE    ZERO              TO  FLG-CHKEND
-               MOVE    ZERO              TO  FLG-CHKAUTO
-               PERFORM VARYING     IDX   FROM    IDX-1   BY  1
-                       UNTIL      (IDX   >   SPA-MAX-LINE )
-                           OR   ((SPA-COM-INPUTCD(IDX) =   SPACE) AND
-                                 (SPA-GMN-INPUTCD(IDX) =   SPACE))
-                           OR   ( FLG-CHKEND           =    1   )
-                   IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1"  )
-                      AND (SPA-COM-AUTOKBN(IDX)        =   "2"  )
-      *                在宅実績加算のチェック
-                       PERFORM 330811-ZISOKSN-CHK-SEC
-      *                在宅実績加算が自動発生分
-                       IF     (WRK-ZKS-GRP(1:1)    =   "0"
-                                                   OR  "1"    )
-                           MOVE    1               TO  FLG-CHKAUTO
-                       END-IF
-                   END-IF
-                   IF      SPA-COM-ZAIEND (IDX)     =   "1"
-                       MOVE    1                    TO  FLG-CHKEND
-                   END-IF
-               END-PERFORM
-               IF      FLG-CHKAUTO        =   1
-                   CONTINUE
-               ELSE
-      *            在宅実績加算が自動発生でない時自動発生なしとする
-                   MOVE    "1"             TO  SPA-COM-KSNAUTO(IDX-1)
-               END-IF
-           END-IF
-           .
-       10026-ZAITAKU-AUTO-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    在宅実績加算処理
-      *****************************************************************
-       330811-ZISOKSN-CHK-SEC         SECTION.
-      *
-           SET     TBL-ZKSIDX          TO  1
-           SEARCH  TBL-ZISOKSN-OCC     VARYING   TBL-ZKSIDX
-              AT   END
-                   MOVE    SPACE                   TO  WRK-ZKS-KBN
-                   MOVE    SPACE                   TO  WRK-ZKS-GRP
-              WHEN   (TBL-ZKS-SRYCD (TBL-ZKSIDX)
-                                       =   SPA-COM-INPUTCD
-                                                        (IDX))
-                   MOVE    TBL-ZKS-GRP (TBL-ZKSIDX) TO  WRK-ZKS-GRP
-                   MOVE    TBL-ZKS-KBN (TBL-ZKSIDX) TO  WRK-ZKS-KBN
-           END-SEARCH
-           .
-       330811-ZISOKSN-CHK-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    剤毎に剤点数を編集処理
       *****************************************************************
@@ -1670,15 +1473,6 @@
            IF      LNK-WKSRY-ZAIKBN  (IDX) =   2
                MOVE    "1"                 TO  SPA-COM-GENTEN  (IDX2)
            END-IF
-      *
-      *H28.9
-      *    持参薬
-           IF      LNK-WKSRY-ZAIKBN  (IDX) =   3
-               MOVE    "1"                 TO  SPA-COM-JISANYAKU(IDX2)
-           END-IF
-           IF      LNK-WKSRY-ZAIKBN  (IDX) =   4
-               MOVE    "2"                 TO  SPA-COM-JISANYAKU(IDX2)
-           END-IF
       *!!
            IF      LNK-WKSRY-INPUTCD (IDX IDY) =   SPACE
                MOVE    SPA-COM-INPUTCD (IDX2)
@@ -1735,20 +1529,6 @@
                    END-IF
                END-IF
            END-IF
-      *
-      *H29.5
-      *API(HAORI)
-      *    加算自動算定なし
-           IF     (SPA-API-FLG             =   1   )
-             AND  (SPA-COM-INPUTCD(IDX2)(1:1)
-                                           =   "1"  )
-               IF     (LNK-WKSRY-INPUTCOMENT(IDX IDY)   =   "Yes" )
-                   MOVE    "Y"             TO  SPA-COM-KSNAUTO(IDX2)
-               END-IF
-               MOVE    SPACE           TO  LNK-WKSRY-INPUTCOMENT
-                                                        (IDX IDY)
-           END-IF
-      *
       *
       *    金額入力時、金額へ
            IF      SPA-COM-INPUTCD(IDX2)(1:3)  =   "095"  OR  "096"
@@ -1851,6 +1631,15 @@
                END-IF
            END-IF
       *
+      *H27.4
+      *保留
+      *    CLAIMの商品名コードの数量反映
+      *    IF      (SPA-COM-INPUTCD(IDX2)(1:3) =   "058" )
+      *       AND  (LNK-WKSRY-KARTE-FLG (IDX)  =   ZERO  )
+      *       AND  (LNK-WKSRY-TERMID (1)       =   "WKSRYACT")
+      *       AND  (LNK-WKSRY-SRYSURYO (IDX IDY)   >   1    )
+      *        MOVE    "1"                 TO  SPA-COM-SURFLG (IDX2)
+      *****END-IF
            .
        10020-SPA-HEN-EXT.
            EXIT.
@@ -1888,13 +1677,6 @@
                  ((IDX2                >   ZERO  ) AND
                   (SPA-COM-SRYSYUKBN (IDX2)
                                        =   "731" ))
-               MOVE    1               TO  FLG-SYUBETU
-           END-IF
-      *H28.1
-      *    初再診加算
-           IF     LNK-WKSRY-SRYSYUKBN(IDX)     =   "114"
-                                               OR  "124"
-                                               OR  "133"
                MOVE    1               TO  FLG-SYUBETU
            END-IF
       *
@@ -2014,11 +1796,8 @@
                                                    "210" OR
                                                    "220" OR
                                                    "230" OR
-      *           頓服・外用（臨時投薬）追加
-                                                   "293" OR
-                                                   "296" OR
-                                                   "290" )
-            AND   (LNK-WKSRY-SRYKBN    (IDX)   =   "21" OR "22"
+                                                   "290" )  AND
+                  (LNK-WKSRY-SRYKBN    (IDX)   =   "21" OR "22"
                                                OR  "23" )
       *        薬評以外
              AND  (LNK-WKSRY-ZAIKBN (IDX)  NOT =   1     )
@@ -2095,51 +1874,6 @@
       *****************************************************************
        310119-SYONIKA-CHK-SEC                  SECTION.
       *
-      *H28.4 から
-           IF      SPA-SRYYMD          >=  "20160401"
-                                 AND   <   "20180401"
-      *        時間外加算検索
-               SET     TBL-TIDX            TO  1
-               SEARCH  TBL-TIMEKSN-OCC     VARYING   TBL-TIDX
-               AT  END
-                   MOVE    SPACE           TO  WRK-TIME-KBN2
-                WHEN   LNK-WKSRY-SRYCD (IDX IDY)
-                                           =   TBL-TM-SRYCD
-                                                      (TBL-TIDX)
-                   MOVE    TBL-TM-TIMKBN (TBL-TIDX)
-                                           TO  WRK-TIME-KBN2
-               END-SEARCH
-               GO      TO      310119-SYONIKA-CHK-EXT
-           END-IF
-      *H30.4 から
-           IF      SPA-SRYYMD          >=  "20180401"
-      *        時間外加算検索
-               SET     TBL-TIDX18            TO  1
-               SEARCH  TBL-TIMEKSN18-OCC     VARYING   TBL-TIDX18
-               AT  END
-                   MOVE    SPACE           TO  WRK-TIME-KBN2
-                WHEN   LNK-WKSRY-SRYCD (IDX IDY)
-                                           =   TBL-TM18-SRYCD
-                                                      (TBL-TIDX18)
-                   MOVE    TBL-TM18-TIMKBN (TBL-TIDX18)
-                                           TO  WRK-TIME-KBN2
-               END-SEARCH
-               IF      WRK-TIME-KBN2       =   SPACE
-      *            妊婦加算
-                   SET     TBL-NPIDX18         TO  1
-                   SEARCH  TBL-NINPUKSN18-OCC  VARYING   TBL-NPIDX18
-                   AT   END
-                       CONTINUE
-                    WHEN   LNK-WKSRY-SRYCD (IDX IDY)
-                                           =   TBL-NP18-SRYCD
-                                                      (TBL-NPIDX18)
-                       MOVE    TBL-NP18-TIMKBN (TBL-NPIDX18)
-                                           TO  WRK-TIME-KBN2
-                   END-SEARCH
-               END-IF
-               GO      TO      310119-SYONIKA-CHK-EXT
-           END-IF
-      *
       *    診察料検索
            SET     TBL-SYO             TO  1
            SEARCH  TBL-SYONIKA-OCC     VARYING   TBL-SYO
@@ -2158,14 +1892,14 @@
                GO      TO      310119-SYONIKA-CHK-EXT
            END-IF
       *    診察料検索
-           SET     TBL2-TIDX            TO  1
-           SEARCH  TBL2-TIMEKSN-OCC     VARYING   TBL2-TIDX
+           SET     TBL-TIDX            TO  1
+           SEARCH  TBL-TIMEKSN-OCC     VARYING   TBL-TIDX
                AT  END
                    MOVE    SPACE           TO  WRK-TIME-KBN2
                 WHEN   LNK-WKSRY-SRYCD (IDX IDY)
-                                           =   TBL2-TM-SRYCD
-                                                      (TBL2-TIDX)
-                   MOVE    TBL2-TM-KBN2 (TBL2-TIDX)
+                                           =   TBL-TM-SRYCD
+                                                      (TBL-TIDX)
+                   MOVE    TBL-TM-KBN2 (TBL-TIDX)
                                            TO  WRK-TIME-KBN2
            END-SEARCH
            .
@@ -2559,6 +2293,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
@@ -2649,8 +2384,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        OR  "002"
                                                        OR  "099")
                        IF      SPA-COM-INPUTCD(IDX)(1:7)   =   "0992000"
-      *H30.4
-                                                           OR  "0992081"
                            CONTINUE
                        ELSE
                            MOVE    ZERO          TO  SPA-COM-SURYO(IDX)
@@ -2737,9 +2470,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *               用法コメント
                       OR  (SPA-COM-INPUTCD(IDX)(1:3) =   "001"  AND
                            SPA-COM-YCOMKBN (IDX)      =   "1"   )
-      *H30.4
-      *               分割調剤など
-                      OR  (SPA-COM-INPUTCD(IDX)(1:7)  =   "0992081" )
       *
                        ADD     1                   TO  WRK-MEINUM
                        MOVE    WRK-MEINUM          TO  WKSRY-INPUTNUM
@@ -2778,15 +2508,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                   (IDY)
                                END-IF
                            END-IF
+      ******************** IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+      *                                                      OR  "84" )
+      *                       OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+      *                                                      OR  "0084")
+      *                        MOVE    SPA-GMN-MEISYO (IDX)
+      *                                           TO  WKSRY-INPUTCOMENT
+      *                                                           (IDY)
+      *                    ELSE
+      *                        MOVE    SPA-GMN-MEISYO-G (IDX)
+      *                                           TO  WKSRY-INPUTCOMENT
+      *                                                           (IDY)
+      ******************** END-IF
                        ELSE
                            IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
                                                              OR  "84")
                               OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
                                                              OR  "0084")
-      *H30.4
-      *                     分割調剤など
-                              OR  (SPA-COM-INPUTCD(IDX)(1:7)
-                                                       =   "0992081")
                                MOVE    SPA-GMN-MEISYO(IDX)
                                                   TO  WKSRY-INPUTCOMENT
                                                                   (IDY)
@@ -2819,26 +2557,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      SPA-COM-INPUTNAIF (IDX)     =   "1"
                        MOVE    "2"             TO  WKSRY-INPUTKBN(IDY)
                    END-IF
-      *!!!!
-      *APIV3
-      *            APIの時、一般名記載分編集
-                   IF     (FLG-SYORI           =   2  )
-      ********       AND  (SPA-TERMID(1:4)     =   "API+")
-                     AND  (SPA-API-FLG         =   1  )
-                     AND  (SPA-COM-INPUTCD (IDX)(1:1) =   "6" )
-                     AND  (SPA-COM-MEI-KBN(IDX)    =   "1"
-                                                   OR  "3"   )
-                       PERFORM 2002-API-GENEHENSYU-SEC
-                   END-IF
-      *H29.5
-      *            加算自動算定なし
-                   IF     (SPA-API-FLG         =   1  )
-                     AND  (SPA-COM-INPUTCD (IDX)(1:1)
-                                                   =   "1"     )
-                     AND  (SPA-COM-KSNAUTO(IDX)    =   "1"     )
-                       MOVE    "Yes"       TO  WKSRY-INPUTCOMENT (IDY)
-                   END-IF
-      *APIV3
       *!!!!
       *
                    MOVE    SPA-COM-KAISU  (IDX)   TO  WRK-KAISUKEI
@@ -2968,16 +2686,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-COM-GENTEN  (IDX)   =   "1"
                MOVE    2               TO  WKSRY-ZAIKBN
            END-IF
-      *
-      *H28.9
-      *    持参薬
-           IF      SPA-COM-JISANYAKU(IDX)  =   "1"
-               MOVE    3               TO  WKSRY-ZAIKBN
-           END-IF
-           IF      SPA-COM-JISANYAKU(IDX)  =   "2"
-               MOVE    4               TO  WKSRY-ZAIKBN
-           END-IF
-      *
       *@
       *    ドクター
            MOVE    SPA-DRCD            TO  WKSRY-DRCD
@@ -3121,9 +2829,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ＳＰＡ保存パラメタを作成
            PERFORM 3001-PARA-SYORI-SEC
-      *
-           INITIALIZE                  TBL-K02SCR-AREA
-      *
       *    負担金算定・収納マスタ処理 
            IF      SPA-NYUGAIKBN       =   "1"
                PERFORM 30021-SYUNOU-NYU-SYORI-SEC
@@ -3177,27 +2882,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        400-SENI-PARA-EXT.
            EXIT.
       *
-      *!!!!
-      *APIV3
-      *****************************************************************
-      *    API 般名記載分編集処理
-      *****************************************************************
-       2002-API-GENEHENSYU-SEC              SECTION.
-      *
-      *    入力コメントに一般名区分編集
-           IF      SPA-COM-MEI-KBN(IDX)    =   "1"
-               MOVE    "API+1"         TO  WKSRY-INPUTCOMENT (IDY)
-           END-IF
-           IF      SPA-COM-MEI-KBN(IDX)    =   "3"
-               MOVE    "API+3"         TO  WKSRY-INPUTCOMENT (IDY)
-           END-IF
-      *
-           .
-       2002-API-GENEHENSYU-EXT.
-           EXIT.
-      *APIV3
-      *!!!!
-      *
       *****************************************************************
       *    診療行為パラメタ出力処理
       *****************************************************************
@@ -3222,8 +2906,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-COM-HOUKATU-ZAI (IDX)   TO  WRK-HOUKATU-ZAI
            MOVE    SPA-COM-YAKUHYO     (IDX)   TO  WRK-YAKUHYO
            MOVE    SPA-COM-GENTEN      (IDX)   TO  WRK-GENTEN
-      *H28.9   持参薬
-           MOVE    SPA-COM-JISANYAKU  (IDX)   TO  WRK-JISANYAKU
            PERFORM 300211-WKSRYPARA-WRITE-SEC
       *
            IF      SPA-COM-ZAIEND(IDX) =   "1"
@@ -3285,14 +2967,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    減点
            IF      WRK-GENTEN          =   "1"
                MOVE    2               TO  WKSRY-ZAIKBN
-           END-IF
-      *H28.9
-      *    持参薬
-           IF      WRK-JISANYAKU       =   "1"
-               MOVE    3               TO  WKSRY-ZAIKBN
-           END-IF
-           IF      WRK-JISANYAKU       =   "2"
-               MOVE    4               TO  WKSRY-ZAIKBN
            END-IF
       *@
       *    ドクター
@@ -3365,7 +3039,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  IDW
            MOVE    ZERO                TO  IDW-END
-           MOVE    ZERO                TO  IDW2-H
            MOVE    SPACE               TO  WKSRYACTPLUS-REC
            INITIALIZE                  WKSRYACTPLUS-REC
       *
@@ -3394,18 +3067,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       IDW2    >   IDW-END
                PERFORM 30022-WKSRYACTPLUS-HEN-SEC
            END-PERFORM
-      *!!
-      *    労災円・点数の混在
-           IF     (WKSRYP-RSIKINGAKU   NOT =   ZERO )
-             AND  (WKSRYP-RSI-TENSU    NOT =   ZERO )
-               IF      IDW                 =   ZERO
-      *            明細がない時、１件目に点数のみ記載
-                   MOVE    1               TO  IDW
-                   MOVE    SPA-COM-INPUTCD(IDW2-H)
-                                               TO  WKSRYP-SRYCD (IDW)
-                   MOVE    WKSRYP-RSI-TENSU    TO  WKSRYP-SYUTEN (IDW)
-               END-IF
-           END-IF
            .
        30022-WKSRYACTPLUS-EXT.
            EXIT.
@@ -3421,16 +3082,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-COM-RSIKIN(IDW2)    TO  WKSRYP-RSIKINGAKU
                    MOVE    "1"              TO  WKSRYP-ADDKBN
                END-IF
-      *!!!!!!
-      *H27.7
-      *        剤の収納集計用点数
-               IF      TBL-SYU-TENSU (IDW2)    >   ZERO
-                   ADD     TBL-SYU-TENSU (IDW2)    TO  WKSRYP-RSI-TENSU
-                   IF      IDW2-H              =   ZERO
-                       MOVE    IDW2                TO  IDW2-H
-                   END-IF
-               END-IF
-      *!!!!!!
            ELSE
                MOVE    ZERO                 TO  WKSRYP-RSIKINGAKU
            END-IF
@@ -3445,18 +3096,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-COM-SYUFLG(IDW2)    =   1  )  AND
                   (SPA-COM-SYUTEN-M(IDW2)  NOT =  SPA-COM-SYUTEN1
                                                        (IDW-END))
-               IF     (SPA-HKNKBN              =   1     )
-                 AND  (SPA-COM-RSIKIN(IDW2)    >   ZERO  )
-      *            労災の円は対象外
-                   CONTINUE
-               ELSE
-      *
                MOVE    "1"                 TO  WKSRYP-ADDKBN
                ADD     1                   TO  IDW
-               IF      IDW                 >   5
-                   GO      TO      30022-WKSRYACTPLUS-HEN-EXT
-               END-IF
-      *
       *        開始手技コード
                MOVE    SPA-COM-INPUTCD(IDW2)   TO  WKSRYP-SRYCD (IDW)
       *        手技点数
@@ -3467,16 +3108,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COM-KIZTEN-M(IDW2)  TO  WKSRYP-KIZAITEN (IDW)
       *        フィルム点数
                MOVE    SPA-COM-FIRTEN-M(IDW2)  TO  WKSRYP-FIRTEN (IDW)
-      *
-               END-IF
            ELSE
       *        フィルム点数のみ
                IF      SPA-COM-FIRTEN-M(IDW2)  NOT =  ZERO
                    ADD     1                   TO  IDW
-                   IF      IDW                 >   5
-                       GO      TO      30022-WKSRYACTPLUS-HEN-EXT
-                   END-IF
-      *
                    MOVE    "1"                 TO  WKSRYP-ADDKBN
       *            その他器材点数（フィルム・酸素・窒素以外）
                    MOVE    SPA-COM-KIZTEN-M(IDW2)
@@ -3541,12 +3176,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (WRK-KAISUKEI            >=  30   )
       *        対象の剤判定
              AND  (FLG-TEIGEN30-ZAI        =   1    )
-               MOVE    1                   TO  WKSRYP-TEI-NKBN30
-           END-IF
-      *H28.4 
-      *    湿布薬７０枚以上逓減対象
-           IF     (SPA-COM-SRYKBN(IDW2)    =   "23" )  AND
-                  (SPA-COM-INPUTCD(IDW2)   =   CONS-SPCM-SRYCD )
                MOVE    1                   TO  WKSRYP-TEI-NKBN30
            END-IF
       *
@@ -3762,16 +3391,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "#"
                                                    OR  "$"
                    CONTINUE
-                   IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "#"
-                       MOVE    IDH1              TO  IDHC
-                   END-IF
                ELSE
                  IF      SPA-COM-HKNCOMBI(IDH1)  =   "9999"
                      MOVE    1                   TO  FLG-HKN999
                  ELSE
                    MOVE    SPA-COM-HKNCOMBI(IDH1)  TO  WRK-HKNCOMBI
-      *H29.8
-                   MOVE    ZERO                TO  FLG-CHK01
                    PERFORM VARYING     IDH     FROM    1   BY  1
                            UNTIL       IDH     >   15
                        IF      SPA-TBL-HKNCOMBI (IDH)  =   SPACE
@@ -3780,60 +3404,34 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                        IF      SPA-TBL-HKNCOMBI (IDH)   =   WRK-HKNCOMBI
                            MOVE    15              TO  IDH
-      *H29.8
-                           MOVE    1               TO  FLG-CHK01
                        END-IF
                    END-PERFORM
-      *H29.8
-      *            テーブルオーバーチェック
-                   IF      FLG-CHK01            =   ZERO
-                       MOVE    "1310"           TO  SPA-ERRCD
-                       MOVE    "1"              TO  SPA-COM-CUR (IDHC)
-                   END-IF
                  END-IF
                END-IF
            END-PERFORM
       *    包括保険は最後
            IF     (SPA-HKNCOMBINUM NOT =   "9999")  AND
                   (FLG-HKN999          =   1     )
-               MOVE    ZERO                TO  FLG-CHK01
                PERFORM VARYING     IDH     FROM    1   BY  1
                        UNTIL       IDH     >   15
                    IF      SPA-TBL-HKNCOMBI (IDH)  =   SPACE
                        MOVE    "9999"          TO  SPA-TBL-HKNCOMBI
                                                                  (IDH)
                        MOVE    15              TO  IDH
-                       MOVE    1               TO  FLG-CHK01
                    END-IF
                END-PERFORM
-      *H29.8
-      *        テーブルオーバーチェック
-               IF      FLG-CHK01            =   ZERO
-                   MOVE    "1310"           TO  SPA-ERRCD
-                   MOVE    "1"              TO  SPA-COM-CUR (IDHC)
-               END-IF
            END-IF
-      *
-      *    H29.8   SPA-SRYKA,HKNCOMBIは設定済み
-           MOVE    1                   TO  WRK-GRPCNT
       *
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH     >   15   )  OR
                               (SPA-TBL-HKNCOMBI(IDH)   =   SPACE )
-      *H29.8
-                          OR  (SPA-ERRCD   NOT =   SPACE )
                PERFORM VARYING     IDH1    FROM    1   BY  1
                        UNTIL      (IDH1    >   SPA-MAX-LINE  )  OR
                                  ((SPA-GMN-INPUTCD (IDH1)  =   SPACE )
                              AND  (SPA-COM-INPUTCD (IDH1)  =   SPACE ))
-      *H29.8
-                          OR  (SPA-ERRCD   NOT =   SPACE )
                  IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "#"
                                                      OR  "$"
                      CONTINUE
-                     IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "$"
-                         MOVE    IDH1              TO  IDHC
-                     END-IF
                  ELSE
                    IF     (SPA-COM-HKNCOMBI(IDH1)  =
                                                SPA-TBL-HKNCOMBI(IDH))
@@ -3841,15 +3439,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-SRYKA
                        MOVE    SPA-COM-DRCD (IDH1)
                                                    TO  WRK-DRCD
-      *H29.8
-                       MOVE    ZERO                TO  FLG-CHK01
                        PERFORM VARYING     IDH2    FROM    1   BY  1
                                UNTIL       IDH2    >   10
                            IF      SPA-TBL-SRYKA (IDH  IDH2)   =   SPACE
                                MOVE    WRK-SRYKA  TO  SPA-TBL-SRYKA
                                                              (IDH IDH2)
-      *H29.8
-                               ADD     1               TO  WRK-GRPCNT
                                IF      WRK-DRCD   NOT =   SPACE
                                    MOVE    "1"        TO  SPA-TBL-DRCD1
                                                              (IDH IDH2)
@@ -3860,15 +3454,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            IF      SPA-TBL-SRYKA (IDH  IDH2)
                                                        =   WRK-SRYKA
                                MOVE    10              TO  IDH2
-                               MOVE    1               TO  FLG-CHK01
                            END-IF
                        END-PERFORM
-      *H29.8
-                       IF      FLG-CHK01            =   ZERO
-                           MOVE    "1311"           TO  SPA-ERRCD
-                           MOVE    "1"              TO  SPA-COM-CUR
-                                                         (IDHC)
-                       END-IF
                    END-IF
                  END-IF
                END-PERFORM
@@ -3876,20 +3463,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-TBL-SRYKA(IDH 1)    =   SPACE
                    MOVE    SPA-SRYKA           TO  SPA-TBL-SRYKA(IDH 1)
                    MOVE    SPA-DRCD            TO  SPA-TBL-DRCD (IDH 1)
-      *H29.8
-                   ADD     1               TO  WRK-GRPCNT
                END-IF
            END-PERFORM
       *
-      *H29.8
-           IF      SPA-ERRCD           =   SPACE
-      *        組合せ最大１３件（合計を除く）
-               IF      WRK-GRPCNT      >   13
-                   MOVE    "1312"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  SPA-COM-CUR
-                                                      (IDHC)
-               END-IF
-           END-IF
            .
        45021-HKNCOMBI-SRYKA-EXT.
            EXIT.
@@ -4087,6 +3663,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 4504-JIDOUKEI-SEC
       *    各合計計算処理
            PERFORM 4506-TOTALKEI-SEC
+      *
+      *    MOVE    SPACE               TO  PARAF-REC
+      *    MOVE    "SYUNOU"            TO  PARAF-FILEMEI
+      *    ADD     1                   TO  WRK-PARAEDABAN
+      *    MOVE    WRK-PARAEDABAN      TO  PARAF-EDANUM
+      *    MOVE    SYUNOU-REC          TO  PARAF-DATA-REC
+      ***  WRITE   PARAF-REC
+      *TEST
+      *TEST
       *
            ADD     1                   TO  WRK-PARAEDABAN
       *    TBL_PARAに保存
@@ -4622,13 +4207,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO      TO      45011-RSI-SYUNOU-EXT
                END-IF
            END-IF
-      *H27.7
-      *    収納　円・点数
-           IF     (WRK-TENSU           >   ZERO)
-              AND (FLG-RSITEN          =   1  )
-               MOVE    WRK-TENSU           TO  TBL-SYU-TENSU (IDX)
-           END-IF
-      *H27.7
       *
            EVALUATE    SPA-COM-SRYKBN  (IDX)
       *        初診
@@ -4708,27 +4286,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "5"  )  AND
                       (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
-      *************％加算　円未満切り捨て
-      *            ％加算　円未満切り上げ（労災加算と合わせる）
+      *            ％加算　円未満切り捨て
                    MOVE    ZERO                TO  WRK-TENKEISAN
                    COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
                                            *   SPA-COM-KISOTEN (IDR-2)
                                            /   100
-                                           +   0.9
                    MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
                END-IF
-      *対象なし
-      *        IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "6"  )  AND
-      *               (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
+      *
+               IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "6"  )  AND
+                      (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
       *            ％減算　円未満切り捨て
-      *            MOVE    ZERO                TO  WRK-TENKEISAN
-      *            COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
-      *                                    *   SPA-COM-KISOTEN (IDR-2)
-      *                                    /   100
-      *            MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
-      *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
-      ***      END-IF
+                   MOVE    ZERO                TO  WRK-TENKEISAN
+                   COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
+                                           *   SPA-COM-KISOTEN (IDR-2)
+                                           /   100
+                   MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+               END-IF
                IF      (SPA-COM-ZAIEND (IDR-2)  =   "1" )
                    MOVE    SPA-GMN-MAX     TO  IDR-2
                END-IF
@@ -4780,8 +4356,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  OR  CONS-TAZAI-SRYCD
       *H27.4                   低紹介率病院　減算コード
                                                  OR  CONS-TEIHP-SRYCD
-      *H28.4                   湿布薬枚数　減点
-                                                 OR  CONS-SPGEN-SRYCD
                            COMPUTE SUM-SYU-HKNTEN (04)
                                                =   SUM-SYU-HKNTEN(04)
                                                -   ORCSCWKSRY-KSN-TENSU
@@ -4974,7 +4548,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       ******                                   TO  WRK-HOUKATU-ZAI
                    MOVE    SPACE               TO  WRK-YAKUHYO
                    MOVE    SPACE               TO  WRK-GENTEN
-                   MOVE    SPACE               TO  WRK-JISANYAKU
                    PERFORM 300211-WKSRYPARA-WRITE-SEC
                    ADD     1                   TO  WRK-ZAINUM
                    MOVE    ZERO                TO  IDY
@@ -5004,15 +4577,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    低紹介率病院　減算
       *    薬剤料逓減　を減算
            IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   CONS-TEIHP-SRYCD
-               MOVE    1                   TO  WKSRYP-PLUSKBN
-      *        内服７種類逓減対象
-               MOVE    2                   TO  WKSRYP-TEI-NKBN30
-               MOVE    "1"                 TO  WKSRYP-ADDKBN
-           END-IF
-      *
-      *H28.4
-      *    湿布薬減点
-           IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   CONS-SPGEN-SRYCD
                MOVE    1                   TO  WKSRYP-PLUSKBN
       *        内服７種類逓減対象
                MOVE    2                   TO  WKSRYP-TEI-NKBN30
@@ -5098,8 +4662,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -5183,6 +4747,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *980-PARA-READ-EXT.
       **** EXIT.
       *
+      *TEST
       *****************************************************************
       *    パラメタ情報読み込み
       *****************************************************************
@@ -5215,5 +4780,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-SPATMP-CALL-EXT.
            EXIT.
+      *TEST
       *
       *

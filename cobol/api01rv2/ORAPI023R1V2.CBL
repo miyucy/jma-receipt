@@ -469,13 +469,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST9-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-APTXMLMAKE-SEC
       *
            DISPLAY   "*******************"
            DISPLAY   "* acsimulate end  *"
@@ -513,7 +508,6 @@
            MOVE    WRK-HEN-TIME        TO  ACSRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -615,7 +609,6 @@
                DISPLAY "ACSRES-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-ACSIMULATEREQ
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_acsimulatev2req"  TO  MCP-TABLE
@@ -2005,12 +1998,6 @@
                        IF      LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   "099409907"
                            MOVE    "1"         TO  LNK-S01-JIKANGAI
-                       END-IF
-      *H30.1
-      *                第三者行為分計算優先フラグ
-                       IF      LNK-WKSRY-SRYCD(IDX IDS)
-                                                   =   "099999931"
-                           MOVE    "1"     TO  LNK-S01-DAISANYUSENFLG
                        END-IF
       *                初診料算定判定
                        PERFORM 450112-SYOSIN-CHK-SEC

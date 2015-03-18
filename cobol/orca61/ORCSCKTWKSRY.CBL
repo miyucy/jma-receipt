@@ -31,7 +31,6 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/05/29  °ì»þ¥Õ¥¡¥¤¥ëÊÑ¹¹
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  15/03/XX  £È£²£·Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  17/07/XX  ¿´¿ÈÎÅË¡£²£°Ì¤Ëþ²Ã»»Åùºï½üÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,8 +231,6 @@
            03  IDX-KAI             PIC 9(04).
       *
            03  IDX-ERR                 PIC 9(04).
-      *!!!
-           03  IDW2-H                  PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -312,23 +309,6 @@
            03  WRK-TENSUKEI-9          PIC S9(08).
            03  WRK-TENSUKEI-G          PIC S9(08).
            03  WRK-TENSUKEI-K          PIC S9(08).
-      *H29.2
-      *    ºß°åÁí´ÉÈ½Äê
-           03  WRK-ZS-GRP                  PIC X(02).
-           03  WRK-ZS-KBN                  PIC X(01).
-           03  WRK-ZS-KBN2                 PIC X(01).
-      *
-           03  FLG-CHKAUTO                 PIC 9(01).
-           03  FLG-CHKEND                  PIC 9(01).
-           03  IDXZ                        PIC 9(04).
-           03  WRK-ZKS-GRP             PIC X(02).
-           03  WRK-ZKS-KBN             PIC X(01).
-      *
-      *TEST
-      *    ¼ýÇ¼½¸·×ÅÀ¿ôÆâÍÆ
-       01  TBL-K02SCR-AREA.
-           03  TBL-K02SCR-OCC          OCCURS   400.
-               05  TBL-SYU-TENSU       PIC 9(07).
       *
       *    ½¸·×¼ýÇ¼ÀÁµáÆâÍÆ
        01  WRK-SUM-AREA.
@@ -367,17 +347,6 @@
        01  CONS-TEIHP-SRYCD        PIC X(09)   VALUE    "630010006".
       * ¡Ê¸º¡Ë¡ÊÆâÉþÄþ¸º¤ÈÆ±¤¸¡Ë
        01  CONS-TGEN-SRYCD         PIC X(09)   VALUE    "820000047".
-      *
-      *H28.4
-      * ¼¾ÉÛÌôËç¿ô¸º»»
-       01  CONS-SPGEN-SRYCD        PIC X(09)   VALUE    "630010007".
-      * ¼¾ÉÛÌô¡Ê¸º¡Ë
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
-      *
-      *
-      *H29.7
-      *    ºßÂð»þ°åÎÅÁí¹ç´ÉÍýÎÁ¥³¡¼¥É¥Æ¡¼¥Ö¥ë¡ÊH28.4Ê¬)
-           COPY     "CMZISOTBL2016.INC".
       *
       *
       *****************************************************************
@@ -656,10 +625,8 @@
       *            MOVE    ORCSCWKSRY-DAY      TO  WRK-DAY
       *            PERFORM 210-PARA-DEL-SEC
       *????    END-IF
-               IF      ORCSCWKSRY-DAY      >   ZERO
-                   MOVE    ZERO                TO  SPA-NAI-RRKDAY
+               MOVE    ZERO                TO  SPA-NAI-RRKDAY
                                                   (ORCSCWKSRY-DAY)
-               END-IF
            END-IF
            .
        1001-WKSRYACT-INIT-EXT.
@@ -897,46 +864,6 @@
                        PERFORM 10025-HAIKI-CHKI-SEC
                    END-IF
       *
-      *H29.7
-      *            Àº¿ÀÄÌ±¡¤Î£²£°ºÐ²Ã»»¤Î¼«Æ°È¯À¸¤Ê¤·
-                   IF     (SPA-SRYYMD              >=  "20140401")
-                      AND (ORCSCWKSRY-SYORIFLG     =   ZERO      )
-                      AND (SPA-COM-CDKBN-KBN (IDX-1)   =   "I"  )
-                      AND (SPA-COM-CDKBN-KBNNUM(IDX-1) =   "002")
-                       IF      (SPA-COM-AUTOKBN(IDX-1) =  "2"   )
-                           MOVE    SPACE          TO  SPA-COM-AUTOKBN
-                                                             (IDX-1)
-                       END-IF
-                       IF      (SPA-COM-DATAKBN(IDX-1) =  "1"   )
-                           MOVE    "1"            TO  SPA-COM-KSNAUTO
-                                                             (IDX-1)
-                       END-IF
-                   END-IF
-      *H29.7
-      *            ¿´¿ÈÎÅË¡¤Î£²£°ºÐ²Ã»»¤Î¼«Æ°È¯À¸¤Ê¤·(H29/7¤«¤é¡Ë
-                   IF     (SPA-SRYYMD              >=  "20170701")
-                      AND (ORCSCWKSRY-SYORIFLG      =   ZERO    )
-                      AND (SPA-COM-CDKBN-KBN (IDX-1)   =   "I"  )
-                      AND (SPA-COM-CDKBN-KBNNUM(IDX-1) =   "004")
-                       IF      (SPA-COM-AUTOKBN(IDX-1) =  "2"   )
-                           AND (SPA-COM-DATAKBN(IDX-1) =  "2"   )
-                           MOVE    SPACE          TO  SPA-COM-AUTOKBN
-                                                             (IDX-1)
-                       END-IF
-                       IF      (SPA-COM-DATAKBN(IDX-1) =  "1"   )
-                           MOVE    "1"            TO  SPA-COM-KSNAUTO
-                                                             (IDX-1)
-                       END-IF
-                   END-IF
-      *            ºßÂð²Ã»»£²¤ÎÄûÀµ»þ¼«Æ°È¯À¸ÂÐ±þ
-                   IF     (SPA-SRYYMD              >=  "20160401")
-                      AND (SPA-COM-CDKBN-KBN (IDX-1)   =   "C"  )
-                      AND (SPA-COM-CDKBN-KBNNUM(IDX-1) =   "002")
-                      AND (ORCSCWKSRY-SYORIFLG     =   ZERO      )
-                       PERFORM 10026-ZAITAKU-AUTO-SEC
-                   END-IF
-      *H29.7
-      *
       *            ²ó¿ô¤ÎÆþÎÏ¡Ê³°Íè¤Î¤ß¡Ë
                    IF     (SPA-NYUGAIKBN       =   "2" )  AND
                           (SPA-COM-KAIFLG (IDX-1)  =   "1" )
@@ -1159,83 +1086,6 @@
            .
        10025-HAIKI-CHKI-EXT.
            EXIT.
-      *
-      *!
-      *H29.7
-      *****************************************************************
-      *    ¡Êºß»Ù¿ÇÅù°Ê³°¡Ë¤Î²Ã»»½èÍý
-      *****************************************************************
-       10026-ZAITAKU-AUTO-SEC              SECTION.
-      *
-      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁÅùÈ½Äê¡Êºß°åÁí´É¡¦ÆÃ°åÁí´É¡Ë
-           SET     TBL-ZSIDX           TO  1
-           SEARCH  TBL-ZISOSIN-OCC     VARYING   TBL-ZSIDX
-              AT   END
-                   MOVE    SPACE                   TO  WRK-ZS-KBN
-                   MOVE    SPACE                   TO  WRK-ZS-KBN2
-                   MOVE    SPACE                   TO  WRK-ZS-GRP
-               WHEN   (TBL-ZS-SRYCD (TBL-ZSIDX)
-                                           =   SPA-COM-INPUTCD (IDX-1)) 
-                   MOVE    TBL-ZS-GRP (TBL-ZSIDX)  TO  WRK-ZS-GRP
-                   MOVE    TBL-ZS-KBN (TBL-ZSIDX)  TO  WRK-ZS-KBN
-                   MOVE    TBL-ZS-KBN2(TBL-ZSIDX)  TO  WRK-ZS-KBN2
-           END-SEARCH
-      *
-           IF     (WRK-ZS-GRP(1:1)        =   "0"
-                                          OR  "1" )
-      *
-               MOVE    ZERO              TO  FLG-CHKEND
-               MOVE    ZERO              TO  FLG-CHKAUTO
-               PERFORM VARYING     IDX   FROM    IDX-1   BY  1
-                       UNTIL      (IDX   >   SPA-MAX-LINE )
-                           OR   ((SPA-COM-INPUTCD(IDX) =   SPACE) AND
-                                 (SPA-GMN-INPUTCD(IDX) =   SPACE))
-                           OR   ( FLG-CHKEND           =    1   )
-                   IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1"  )
-                      AND (SPA-COM-AUTOKBN(IDX)        =   "2"  )
-      *                ºßÂð¼ÂÀÓ²Ã»»¤Î¥Á¥§¥Ã¥¯
-                       PERFORM 330811-ZISOKSN-CHK-SEC
-      *                ºßÂð¼ÂÀÓ²Ã»»¤¬¼«Æ°È¯À¸Ê¬
-                       IF     (WRK-ZKS-GRP(1:1)    =   "0"
-                                                   OR  "1"    )
-                           MOVE    1               TO  FLG-CHKAUTO
-                       END-IF
-                   END-IF
-                   IF      SPA-COM-ZAIEND (IDX)     =   "1"
-                       MOVE    1                    TO  FLG-CHKEND
-                   END-IF
-               END-PERFORM
-               IF      FLG-CHKAUTO        =   1
-                   CONTINUE
-               ELSE
-      *            ºßÂð¼ÂÀÓ²Ã»»¤¬¼«Æ°È¯À¸¤Ç¤Ê¤¤»þ¼«Æ°È¯À¸¤Ê¤·¤È¤¹¤ë
-                   MOVE    "1"             TO  SPA-COM-KSNAUTO(IDX-1)
-               END-IF
-           END-IF
-           .
-       10026-ZAITAKU-AUTO-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ºßÂð¼ÂÀÓ²Ã»»½èÍý
-      *****************************************************************
-       330811-ZISOKSN-CHK-SEC         SECTION.
-      *
-           SET     TBL-ZKSIDX          TO  1
-           SEARCH  TBL-ZISOKSN-OCC     VARYING   TBL-ZKSIDX
-              AT   END
-                   MOVE    SPACE                   TO  WRK-ZKS-KBN
-                   MOVE    SPACE                   TO  WRK-ZKS-GRP
-              WHEN   (TBL-ZKS-SRYCD (TBL-ZKSIDX)
-                                       =   SPA-COM-INPUTCD
-                                                        (IDX))
-                   MOVE    TBL-ZKS-GRP (TBL-ZKSIDX) TO  WRK-ZKS-GRP
-                   MOVE    TBL-ZKS-KBN (TBL-ZKSIDX) TO  WRK-ZKS-KBN
-           END-SEARCH
-           .
-       330811-ZISOKSN-CHK-EXT.
-           EXIT.
-      *!
       *
       *****************************************************************
       *    ºÞËè¤ËºÞÅÀ¿ô¤òÊÔ½¸½èÍý
@@ -1595,13 +1445,6 @@
                                        =   "731" ))
                MOVE    1               TO  FLG-SYUBETU
            END-IF
-      *H28.1
-      *    ½éºÆ¿Ç²Ã»»
-           IF     LNK-WKSRY-SRYSYUKBN(IDX)     =   "114"
-                                               OR  "124"
-                                               OR  "133"
-               MOVE    1               TO  FLG-SYUBETU
-           END-IF
       *
       *    ÄûÀµ¤Î»þ¡¢ºÆ¿ÇÎÁ»»Äê²Ê¤òºÆ¿Ç¤È¤¹¤ë
            IF     (LNK-WKSRY-SRYKBN    (IDX)       =   "12" AND
@@ -1925,12 +1768,7 @@
       *    ¿ÇÎÅÆü¤òÆü¤ËÀßÄê
            INITIALIZE                  SPA-COM-NYUIN-AREA (IDX-1)
       *    ÆüÉÕ
-      *
            MOVE    ORCSCWKSRY-DAY      TO  WRK-DAY
-           IF      ORCSCWKSRY-DAY      =   ZERO
-               MOVE    SPA-SRYYMD(7:2)     TO  WRK-DAY
-           END-IF
-      *
            MOVE    1                   TO  SPA-COM-NYUINDAY
                                            (IDX-1 WRK-DAY)
            ADD     1                   TO  SPA-COM-NYU-KAI
@@ -2795,8 +2633,6 @@
       *               ÍÑË¡¥³¥á¥ó¥È
                       OR  (SPA-COM-INPUTCD(IDX)(1:3) =   "001"  AND
                            SPA-COM-YCOMKBN(IDX)      =   1     )
-      *H30.4
-                      OR  (SPA-COM-INPUTCD(IDX)(1:7) =   "0992081")
       *
                        ADD     1                   TO  WRK-MEINUM
                        MOVE    WRK-MEINUM          TO  WKSRY-INPUTNUM
@@ -2840,9 +2676,6 @@
                                                              OR  "84")
                               OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
                                                              OR  "0084")
-      *H30.4
-                              OR  (SPA-COM-INPUTCD(IDX)(1:7)
-                                                       =   "0992081")
                                MOVE    SPA-GMN-MEISYO(IDX)
                                                   TO  WKSRY-INPUTCOMENT
                                                                   (IDY)
@@ -3238,18 +3071,6 @@
                    UNTIL       IDW2    >   IDW-END
                PERFORM 30022-WKSRYACTPLUS-HEN-SEC
            END-PERFORM
-      *!!
-      *    Ï«ºÒ±ß¡¦ÅÀ¿ô¤Îº®ºß
-           IF     (WKSRYP-RSIKINGAKU   NOT =   ZERO )
-             AND  (WKSRYP-RSI-TENSU    NOT =   ZERO )
-               IF      IDW                 =   ZERO
-      *            ÌÀºÙ¤¬¤Ê¤¤»þ¡¢£±·ïÌÜ¤ËÅÀ¿ô¤Î¤ßµ­ºÜ
-                   MOVE    1               TO  IDW
-                   MOVE    SPA-COM-INPUTCD(IDW2-H)
-                                               TO  WKSRYP-SRYCD (IDW)
-                   MOVE    WKSRYP-RSI-TENSU    TO  WKSRYP-SYUTEN (IDW)
-               END-IF
-           END-IF
            .
        30022-WKSRYACTPLUS-EXT.
            EXIT.
@@ -3265,16 +3086,6 @@
                    MOVE    SPA-COM-RSIKIN(IDW2)    TO  WKSRYP-RSIKINGAKU
                    MOVE    "1"              TO  WKSRYP-ADDKBN
                END-IF
-      *!!!!!!
-      *TEST
-      *        ºÞ¤Î¼ýÇ¼½¸·×ÍÑÅÀ¿ô
-               IF      TBL-SYU-TENSU (IDW2)    >   ZERO
-                   ADD     TBL-SYU-TENSU (IDW2)    TO  WKSRYP-RSI-TENSU
-                   IF      IDW2-H              =   ZERO
-                       MOVE    IDW2                TO  IDW2-H
-                   END-IF
-               END-IF
-      *!!!!!!
            ELSE
                MOVE    ZERO                 TO  WKSRYP-RSIKINGAKU
            END-IF
@@ -3372,12 +3183,6 @@
                MOVE    1                   TO  WKSRYP-TEI-NKBN30
            END-IF
       *
-      *H28.4
-      *    ¼¾ÉÛÌô£·£°Ëç°Ê¾åÄþ¸ºÂÐ¾Ý
-           IF     (SPA-COM-SRYKBN(IDW2)    =   "23" )  AND
-                  (SPA-COM-INPUTCD(IDW2)   =   CONS-SPCM-SRYCD )
-               MOVE    1                   TO  WKSRYP-TEI-NKBN
-           END-IF
       *
            .
        30022-WKSRYACTPLUS-HEN-EXT.
@@ -3553,8 +3358,6 @@
            MOVE    WRK-DRCD            TO  SYU-DRCD-G
       *    ¼ýÇ¼ÅÀ¿ô½¸·×
            INITIALIZE                  WRK-SUM-AREA
-      *TEST
-           INITIALIZE                  TBL-K02SCR-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
@@ -4090,13 +3893,6 @@
                END-IF
            END-IF
       *
-      *TEST
-      *    ¼ýÇ¼¡¡±ß¡¦ÅÀ¿ô
-           IF     (WRK-TENSU           >   ZERO)
-              AND (FLG-RSITEN          =   1  )
-               MOVE    WRK-TENSU           TO  TBL-SYU-TENSU (IDX)
-           END-IF
-      *TEST
       *
            EVALUATE    SPA-COM-SRYKBN  (IDX)
       *        ½é¿Ç
@@ -4175,28 +3971,25 @@
       *
                IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "5"  )  AND
                       (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
-      *************¡ó²Ã»»¡¡±ßÌ¤ËþÀÚ¤ê¼Î¤Æ
-      *            ¡ó²Ã»»¡¡±ßÌ¤ËþÀÚ¤ê¾å¤²¡ÊÏ«ºÒ²Ã»»¤È¹ç¤ï¤»¤ë¡Ë
+      *            ¡ó²Ã»»¡¡±ßÌ¤ËþÀÚ¤ê¼Î¤Æ
                    MOVE    ZERO                TO  WRK-TENKEISAN
                    COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
                                            *   SPA-COM-KISOTEN (IDR-2)
                                            /   100
-                                           +   0.9
                    MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
                END-IF
       *
-      *ÂÐ¾Ý¤Ê¤·
-      *        IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "6"  )  AND
-      *               (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
+               IF     (SPA-COM-TENSIKIBETU (IDR-2) =   "6"  )  AND
+                      (SPA-COM-INPUTCD(IDR-2)(1:3) =   "101")
       *            ¡ó¸º»»¡¡±ßÌ¤ËþÀÚ¤ê¼Î¤Æ
-      *            MOVE    ZERO                TO  WRK-TENKEISAN
-      *            COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
-      *                                    *   SPA-COM-KISOTEN (IDR-2)
-      *                                    /   100
-      *            MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
-      *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
-      ***      END-IF
+                   MOVE    ZERO                TO  WRK-TENKEISAN
+                   COMPUTE WRK-TENKEISAN   =   SPA-COM-TEN (IDX)
+                                           *   SPA-COM-KISOTEN (IDR-2)
+                                           /   100
+                   MOVE    WRK-TENKEISAN       TO  WRK-TENSUKEI-9
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+               END-IF
                IF      (SPA-COM-ZAIEND (IDR-2)  =   "1" )
                    MOVE    SPA-GMN-MAX     TO  IDR-2
                END-IF
@@ -4247,9 +4040,7 @@
       *H26.10
                                                OR  CONS-TAZAI-SRYCD
       *H27.4                   Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»¥³¡¼¥É
-                                               OR  CONS-TEIHP-SRYCD
-      *H28.4                   ¼¾ÉÛÌô¸º»»
-                                               OR  CONS-SPGEN-SRYCD
+                                                 OR  CONS-TEIHP-SRYCD
                            COMPUTE SUM-SYU-HKNTEN (04)
                                                =   SUM-SYU-HKNTEN(04)
                                                -   ORCSCWKSRY-KSN-TENSU
@@ -4473,15 +4264,6 @@
                MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
       *
-      *H28.4
-      *    ¼¾ÉÛÌô¸ºÅÀ
-           IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   CONS-SPGEN-SRYCD
-               MOVE    1                   TO  WKSRYP-PLUSKBN
-      *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
-               MOVE    2                   TO  WKSRYP-TEI-NKBN30
-               MOVE    "1"                 TO  WKSRYP-ADDKBN
-           END-IF
-      *
            .
        30041-WKSRYACTPLUS-EXT.
            EXIT.
@@ -4617,8 +4399,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
