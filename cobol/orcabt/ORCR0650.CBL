@@ -55,8 +55,6 @@
       *  04.07.03    NACL-門脇    15/03/17  請求点数０点公費レセ記載対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    16/02/08  RECE62の予備項目使用分について、
-      *                                     個々に項目を設ける事に伴う修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -572,6 +570,17 @@
                 MOVE    BUN-IDX     TO        KH-IDX
            END-IF
       *
+      ***  IF   (RECE62-SEIHOFLG                     =  "1" )
+      ***  AND  (KH-IDX                          NOT =  ZERO)
+      ***  AND  (RECE62-HENTOTALTEN(1)           NOT =  ZERO)
+      ***  AND  (RECE62-HENTOTALTEN(KH-IDX + 1)  NOT =  ZERO)
+      ***  AND  (RECE62-HENTOTALTEN(1) <
+      ***                     RECE62-HENTOTALTEN(KH-IDX + 1))
+      ***     IF   RECE62-HKNNUMHC(HC-IDX)  NOT = SPACE
+      ***       MOVE    ZERO        TO        KH-IDX
+      ***     END-IF
+      ***  END-IF
+      *
            IF    KH-IDX      NOT =   ZERO
                 IF  ( RECE64-KOHBUNRI  NOT =  ZERO )
                 OR  ( RECE62-SEIHOFLG      =  "1"  )
@@ -909,7 +918,7 @@
                                             -  1
                      MOVE     WRK-KOHBUNRI  TO   RECE64-KOHBUNRI
                      MOVE     1             TO   FLG-KOHBUNRI-OKIKAE2
-                     MOVE     1             TO   RECE62-KOHBUNRICHIKAN
+                     MOVE     1             TO   RECE62-YOBIETC(9)
                      MOVE     31            TO   IDX
                    END-IF
                END-PERFORM
