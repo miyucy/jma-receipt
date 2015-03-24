@@ -1408,6 +1408,7 @@
                                                              (IDX-SYU)
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100.00
+                                               +   0.5
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-GEN
                END-IF
@@ -5289,11 +5290,9 @@
                        MOVE    "1"             TO  WRK-COM-CUR (IDX)
                    END-IF
                    MOVE    1               TO  FLG-ZAI
-                END-IF
-             END-IF
-                IF      FLG-NAIFUKU     =   ZERO
-                   MOVE    1               TO  FLG-ZAI
-                END-IF
+               END-IF
+               MOVE    1               TO  FLG-ZAI
+               END-IF
       *
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
                    MOVE    ZERO            TO  FLG-ZAI
@@ -6498,6 +6497,7 @@
                                                       (02 IDXS-2)
                                            *  (TNS-TEN
                                            /   100.00  )
+                                           +   0.5
                MOVE    WRK-SANTEN-9        TO  WRK-SANTEN
                COMPUTE WRK-SANTEN-KEI      =   LNK-ORCSC-TENSU
                                                       (02 IDXS-2)
