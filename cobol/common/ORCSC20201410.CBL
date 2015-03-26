@@ -250,8 +250,10 @@
                05  WRK-TENSU-GAI       PIC 9(08)V9(2).
                05  WRK-TENSU-KEI       PIC 9(08)V9(2).
            03  WRK-TENSUKEI-9      PIC 9(08).
-           03  WRK-TENSUKEI-G      PIC 9(08).
-           03  WRK-TENSUKEI-GEN    PIC 9(08).
+      ***  03  WRK-TENSUKEI-G      PIC 9(08).
+      ***  03  WRK-TENSUKEI-GEN    PIC 9(08).
+           03  WRK-TENSUKEI-G      PIC 9(08)V99.
+           03  WRK-TENSUKEI-GEN    PIC 9(08)V99.
       *
            03  WRK-TEI-CNT         PIC 9(04).
       *
@@ -1050,7 +1052,7 @@
                            (WRK-COM-DATAKBN (IDX1)      =   "2" )
       *           ÄÌÂ§³°²Ã»»¤ÎÁ°
                      AND  ((WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =  "1" )  OR
-      *           »ÜÀß´ð½àÄþ¸º¤Î¸å
+      *           ¸º»»¤Î¸å
                            (WRK-COM-TENSIKIBETU(IDX1)   =   6   ))
                        MOVE    IDX1           TO  IDX-T
                    END-IF
@@ -1396,34 +1398,35 @@
                    COMPUTE WRK-TENSUKEI        =   WRK-TENSU-KEI
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
-                                               +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+      **                                       +   0.5
+      **           MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      **           ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+                   ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-G
                END-IF
       *        %¸º»»¡¡¡Ê¼êµ»ÎÁ¤ÎÅÀ¿ô¤ò½êÄêÅÀ¿ô¤È¤¹¤ë)
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   6   )
-      ***********  COMPUTE WRK-TENSUKEI        =   WRK-TENSU-KEI
                    COMPUTE WRK-TENSUKEI        =   WRK-COM-KISOTEN
                                                              (IDX-SYU)
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100.00
-                                               +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-GEN
+      **                                       +   0.5
+      **           MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      **           ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-GEN
+                   ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-GEN
                END-IF
            END-PERFORM
       *
-           COMPUTE LNK-SC90-TENSU      =   WRK-TENSU-KEI
+      *    COMPUTE LNK-SC90-TENSU      =   WRK-TENSU-KEI
+      *                                +   WRK-TENSU-GAI
+      *                                +   WRK-TENSUKEI-G
+      *                                -   WRK-TENSUKEI-GEN
+           COMPUTE LNK-SC90-TENSU      =  (WRK-TENSU-KEI
                                        +   WRK-TENSU-GAI
                                        +   WRK-TENSUKEI-G
-                                       -   WRK-TENSUKEI-GEN
+                                       -   WRK-TENSUKEI-GEN )
+                                       +   0.5
       *
-      *TEST
-      *    DISPLAY "S20 WRK-TENSU-KEI:" WRK-TENSU-KEI
-      *               ",WRK-TENSU-GAI:" WRK-TENSU-GAI
-      *               ",WRK-TENSUKEI-GEN:" WRK-TENSUKEI-GEN
-      *            ",LNK-SC90-TENSU:"  LNK-SC90-TENSU
            .
        1006-KASAN-SET-EXT.
            EXIT.
@@ -3726,6 +3729,7 @@
       *        £³£°Æü°Ê¾åÄþ¸º
                IF     (SPA-TEIGEN30-OK     =   1 )
                  AND  (FLG-GEN30-G         =   1 )
+                 AND  (FLG-SYOHOSENN       =   1 )
                    MOVE    CONS-TEIHP-SYOSEN   TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD2
                    PERFORM 30019-GEN30KSN-HENSYU-SEC
@@ -4080,6 +4084,7 @@
       *        £³£°Æü°Ê¾åÄþ¸º
                IF     (SPA-TEIGEN30-OK     =   1 )
                  AND  (FLG-GEN30-N         =   1 )
+                 AND  (FLG-SYOHORYO        =   1 )
                    MOVE    CONS-TEIHP-SYOHOU   TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD2
                    PERFORM 30019-GEN30KSN-HENSYU-SEC
@@ -6497,11 +6502,10 @@
                                                       (02 IDXS-2)
                                            *  (TNS-TEN
                                            /   100.00  )
-                                           +   0.5
-               MOVE    WRK-SANTEN-9        TO  WRK-SANTEN
-               COMPUTE WRK-SANTEN-KEI      =   LNK-ORCSC-TENSU
+               COMPUTE WRK-SANTEN-KEI      =  (LNK-ORCSC-TENSU
                                                       (02 IDXS-2)
-                                           -   WRK-SANTEN
+                                           -   WRK-SANTEN-9 )
+                                           +   0.5
       *        Äþ¸º¸å¤Î¼êµ»ÎÁÅÀ¿ô
                MOVE    WRK-SANTEN-KEI      TO  LNK-ORCSC-TENSU
                                                       (02 IDXS-2)

@@ -9636,6 +9636,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2004"
                WHEN    "2005"
                WHEN    "2006"
+               WHEN    "2007"
                    MOVE    "£Î£Ï"            TO  KTID1-B01
            END-EVALUATE
       *
