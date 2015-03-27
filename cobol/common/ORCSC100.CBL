@@ -521,6 +521,7 @@
       *    後発品変更可・不可処方毎処理
            PERFORM 51019-INGIKSN-HEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE)
+              AND (ORCSC100-INIT       =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
       *
