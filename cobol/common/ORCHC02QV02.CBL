@@ -87,7 +87,7 @@
       * 04.07.00     NACL-多々納  14/10/07  頓服薬（臨時投薬）対応
       * 04.07.00     NACL-多々納  14/10/20  公費備考編集個別対応
       * 04.07.00     NACL-多々納  15/01/19  ＣＳＶデータ出力対応
-      * 04.07.00     NACL-多々納  15/02/XX  後発変更不可処方毎対応
+      * 04.07.00     NACL-多々納  15/04/XX  後発変更不可処方毎対応
       *****************************************************************
       *
       *
@@ -193,7 +193,7 @@
            03  FLG-FUKACHK2            PIC 9(01).
       *    点数マスタなし
            03  FLG-QRCHK               PIC 9(01).
-      *V03
+      *H27.4
            03  FLG-ALLKISAI            PIC 9(01).
       *
       *    添字領域
@@ -245,7 +245,7 @@
            03  IDX-LG                  PIC 9(04).
       *H26.10
            03  IDP                     PIC 9(01).
-      *V03
+      *H27.4
            03  IDX-ALL                 PIC 9(04).
       *
       *    システム領域
@@ -480,11 +480,11 @@
       *
            03  WRK-SRY-MAX                 PIC 9(03).
       *
-      *V03
+      *H27.4
       *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       *    処方せん毎の内容テーブル
        01  WRK-SRYACT-ALL-AREA.
-           03  WRK-ALL-SRYACT-TBL          OCCURS   100.
+           03  WRK-ALL-SRYACT-TBLG         OCCURS   100.
              05  WRK-ALL-SRYKBN            PIC X(02).
              05  WRK-ALL-SRYSYUKBN         PIC X(03).
              05  WRK-ALL-KAISU             PIC 9(05).
@@ -2419,7 +2419,7 @@
            PERFORM
                UNTIL   FLG-JYURRK      =   1
                IF      WRK-DENPNUM     NOT =   JYURRK-DENPNUM
-      *V03
+      *H27.4
       *            伝票番号毎の印刷編集処理
                    PERFORM 2100-SYOHOU-SYORI-SEC
       *!!!!
@@ -2440,7 +2440,7 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key26"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *V03
+      *H27.4
       *    伝票番号毎の印刷編集処理
            PERFORM 2100-SYOHOU-SYORI-SEC
       *!!!!
@@ -2461,7 +2461,7 @@
            MOVE    JYURRK-DRCD         TO  WRK-DRCD
       *    共通クリア
            PERFORM 200211-KYOTU-INIT-SEC
-      *V03
+      *H27.4
            MOVE    ZERO                TO  FLG-ALLKISAI
            INITIALIZE                  WRK-SRYACT-ALL-AREA
            .
@@ -2508,7 +2508,7 @@
       *
       *    処方編集初期クリア処理
            PERFORM 200211-SYOHOU-INIT-SEC
-      *V03
+      *H27.4
            MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
       *
            PERFORM
@@ -2524,7 +2524,7 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *V03
+      *H27.4
       *    伝票番号毎の印刷編集処理
            PERFORM 2100-SYOHOU-SYORI-SEC
       *!!!!
@@ -2653,9 +2653,9 @@
                    UNTIL       FLG-JYURRK      =   1
       *
                IF      JYURRK-EDANUM       =   1
-      *V03         IF      IDX             >   ZERO
+      *H27.4       IF      IDX             >   ZERO
                    IF      WRK-ALL-MAX     >   ZERO
-      *V03
+      *H27.4
       *                伝票番号毎の印刷編集処理
                        PERFORM 2100-SYOHOU-SYORI-SEC
       *!!!!
@@ -2708,7 +2708,7 @@
                IF      WRK-PAGE-MAX        =   ZERO
                    MOVE    1                   TO  WRK-PAGE-MAX
                END-IF
-      *V03
+      *H27.4
       *        伝票番号毎の印刷編集処理
                PERFORM 2100-SYOHOU-SYORI-SEC
       *!!!!
@@ -2976,8 +2976,7 @@
            END-IF
            IF     (WRK-SRY-MAX         >   ZERO ) AND
                   (WRK-KAISU           >   ZERO )
-      *V03
-      *H27.2
+      *H27.4
       *        保存
                PERFORM 2100-SYOHOU-ALLHEN-SEC
       *        処方せん対象
@@ -3028,7 +3027,7 @@
        20021-SRYACCT-SYORI-EXT.
            EXIT.
       *
-      *V03
+      *H27.4
       *****************************************************************
       *    処方毎の印刷処理
       *****************************************************************
@@ -3380,7 +3379,7 @@
            IF     (FLG-FUKACHK         =   ZERO    )
               AND (FLG-FUKACHK2        =   ZERO    )
              AND ((SYS-1030-KOUHATUKA  =   "0"     )
-      *V03         後発品変更不可（処方）判定
+      *H27.4        後発品変更不可（処方）判定
                OR (FLG-ALLKISAI            =   1   ))
       *        後発品変更可（処方）判定
                IF      FLG-ALLKISAI        =   2
@@ -3469,6 +3468,14 @@
                IF      FLG-TENSU           =   1
                    MOVE    ZERO                TO  WRK-IPNMEI
                END-IF
+      *TEST
+           DISPLAY "WRK-SRYCD:"  WRK-SRYCD
+                ",NAME:"  TNS-NAME (1:10)
+           DISPLAY "WRK-SRYCD:"  WRK-SRYCD
+                 ",TNSP-IPN-KISAIKBN:" TNSP-IPN-KISAIKBN
+                 ",WRK-IPNMEI:" WRK-IPNMEI
+                 ",WRK-HEN-FUKA:" WRK-HEN-FUKA
+      *TEST
       *
                IF      TNSP-IPN-KISAIKBN   =   1
                                            OR  3
@@ -3490,11 +3497,15 @@
                                            OR  3  )
                    MOVE    ZERO                TO  TNSP-IPN-KISAIKBN
                END-IF
-      *V03     後発品変更不可（処方）はすべて銘柄名記載
+      *H27.4   後発品変更不可（処方）はすべて銘柄名記載
                IF     (FLG-ALLKISAI        =   1   )  AND
                       (TNSP-IPN-KISAIKBN   =   1
                                            OR  3  )
                    MOVE    ZERO                TO  TNSP-IPN-KISAIKBN
+      *            一般名記載ありを優先
+                   IF      WRK-IPNMEI          =   2
+                       MOVE    1               TO  TNSP-IPN-KISAIKBN
+                   END-IF
                END-IF
       *
       *        システム管理の後発品変更不可の判定
@@ -4221,7 +4232,8 @@
       *
            MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    SRY-PTID            TO  PTCOM-PTID
-           MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+      *****MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+           MOVE    WRK-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    WRK-SRY-SRYCD (IDXA)    TO  PTCOM-SRYCD
            MOVE    WRK-SRY-INPUTNUM(IDXA)  TO  PTCOM-RENNUM
       *    主キーで検索
@@ -4350,7 +4362,7 @@
                IF      WRK-SRYKA           =   SPACE
                    MOVE    1               TO  FLG-WKSRYEND
                END-IF
-      *V03
+      *H27.4
       *        後発品変更不可・可（処方毎）判定
                MOVE    ZERO            TO  FLG-ALLKISAI
                PERFORM VARYING     IDX-L   FROM    1   BY  1
@@ -4608,7 +4620,7 @@
       *
       *    処方編集初期クリア処理
            PERFORM 200411-SYOHOU-SPAINIT-SEC
-      *V03
+      *H27.4
       *    変更可・変更不可（処方毎）判定
            MOVE    ZERO            TO  FLG-ALLKISAI
            PERFORM VARYING     IDX-L   FROM    1   BY  1
@@ -4636,7 +4648,7 @@
                                                =   SPACE )
                    IF      ORCHC19-SRYCD (IDX-L IDX-L2)(1:4)
                                                =   "0086"
-      *V03
+      *H27.4
                        OR (ORCHC19-SRYCD (IDX-L IDX-L2)
                                                =   "099209910"
                                                OR  "099209911")
@@ -4743,7 +4755,7 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *V03
+      *H27.4
       *    伝票番号毎の印刷編集処理
            PERFORM 2100-SYOHOU-SYORI-SEC
       *!!!!
@@ -5425,11 +5437,11 @@
                IF     (TNSP-IPN-KISAIKBN       =   ZERO    )
       ********    AND (SYS-1030-KOUHATUKA      =   "1"     )
                  AND ((SYS-1030-KOUHATUKA      =   "1"     )
-      *V03         変更可（処方単位）
+      *H27.4       変更可（処方単位）
                    OR (FLG-ALLKISAI            =   2      ))
                   AND (TNS-KOUHATUKBN          =   1  OR  2
                                                OR  7       )
-      *V03         変更不可（処方単位）
+      *H27.4       変更不可（処方単位）
                    IF      FLG-ALLKISAI        =   1
                        CONTINUE
                    ELSE
@@ -5440,7 +5452,7 @@
       *
                END-IF
       *
-      *V03     銘柄名記載（処方）あり
+      *H27.4   銘柄名記載（処方）あり
                IF      TNSP-IPN-KISAIKBN   =   1
                    IF      FLG-ALLKISAI        =   1
                        MOVE    ZERO            TO  TNSP-IPN-KISAIKBN
