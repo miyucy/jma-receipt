@@ -3468,14 +3468,6 @@
                IF      FLG-TENSU           =   1
                    MOVE    ZERO                TO  WRK-IPNMEI
                END-IF
-      *TEST
-           DISPLAY "WRK-SRYCD:"  WRK-SRYCD
-                ",NAME:"  TNS-NAME (1:10)
-           DISPLAY "WRK-SRYCD:"  WRK-SRYCD
-                 ",TNSP-IPN-KISAIKBN:" TNSP-IPN-KISAIKBN
-                 ",WRK-IPNMEI:" WRK-IPNMEI
-                 ",WRK-HEN-FUKA:" WRK-HEN-FUKA
-      *TEST
       *
                IF      TNSP-IPN-KISAIKBN   =   1
                                            OR  3
@@ -4230,9 +4222,8 @@
       *****************************************************************
        31032-PTCOM-SET-SEC              SECTION.
       *
-           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
-           MOVE    SRY-PTID            TO  PTCOM-PTID
-      *****MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
+           MOVE    SPA-PTID            TO  PTCOM-PTID
            MOVE    WRK-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    WRK-SRY-SRYCD (IDXA)    TO  PTCOM-SRYCD
            MOVE    WRK-SRY-INPUTNUM(IDXA)  TO  PTCOM-RENNUM

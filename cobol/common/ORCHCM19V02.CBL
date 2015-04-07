@@ -4222,9 +4222,8 @@
       *****************************************************************
        31032-PTCOM-SET-SEC              SECTION.
       *
-           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
-           MOVE    SRY-PTID            TO  PTCOM-PTID
-     ***** MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
+           MOVE    SPA-PTID            TO  PTCOM-PTID
            MOVE    WRK-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    WRK-SRY-SRYCD (IDXA)    TO  PTCOM-SRYCD
            MOVE    WRK-SRY-INPUTNUM(IDXA)  TO  PTCOM-RENNUM

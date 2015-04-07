@@ -378,6 +378,7 @@
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-CHIKENKBN           PIC X(01).
+           03  WRK-GENECHG-KBN         PIC X(01).
       *    薬剤毎の保険
            03  WRK-HKNCOMBI-AREA.
                05  WRK-NAI-HKNCOMBI        PIC X(04).
@@ -428,6 +429,7 @@
                05  TBL-SRYKA           PIC X(02).
                05  TBL-HKNCOMBI        PIC X(04).
                05  TBL-CHIKENKBN       PIC X(01).
+               05  TBL-GENECHG         PIC X(01).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -1621,6 +1623,16 @@
                        END-IF
                        IF      TBL-SRYKA (IDX-KA)  =   WRK-COM-SRYKA
                                                                (IDX)
+      *H27.4           診療科毎に後発変更不可処方毎の設定
+                           EVALUATE    WRK-COM-INPUTCD (IDX)
+                           WHEN   "099209910"
+                               MOVE    "1"         TO  TBL-GENECHG
+                                                              (IDX-KA)
+                           WHEN   "099209911"
+                               MOVE    "2"         TO  TBL-GENECHG
+                                                              (IDX-KA)
+                           END-EVALUATE
+      *H27.4
                            MOVE    10              TO  IDX-KA
                        END-IF
                    END-PERFORM
@@ -1651,6 +1663,7 @@
                MOVE    TBL-SRYKA (IDX-KA)      TO  WRK-SRYKA
                MOVE    TBL-HKNCOMBI(IDX-KA)    TO  WRK-HKNCOMBI
                MOVE    TBL-CHIKENKBN(IDX-KA)   TO  WRK-CHIKENKBN
+               MOVE    TBL-GENECHG  (IDX-KA)   TO  WRK-GENECHG-KBN
       *
                MOVE    ZERO            TO  FLG-TOKUTEI
                PERFORM VARYING     IDX-KA2 FROM    1   BY  1
@@ -2937,11 +2950,11 @@
       ***************  IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
                        IF     (WRK-COM-IPN-KISAIKBN (IDX)  =   1  )
       *H27.4               後発品変更可
-                         OR   (SPA-GENECHG-KBN             =   2   )
+                         OR   (WRK-GENECHG-KBN             =   "2" )
       *
                            MOVE    1                   TO  FLG-CHK-P
       *H27.4               後発品変更不可
-                           IF      SPA-GENECHG-KBN     =   1
+                           IF      WRK-GENECHG-KBN     =   "1"
                               MOVE    ZERO                TO  FLG-CHK-P
                            END-IF
       *
