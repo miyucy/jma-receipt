@@ -71,6 +71,7 @@
       *
       *    カウント領域
        01  CNT-AREA.
+           03  CNT-IN              PIC 9(05).
            03  CNT-OUT             PIC 9(05).
            03  CNT-MOD             PIC 9(05).
            03  CNT-PAGE            PIC 9(05).
@@ -114,11 +115,13 @@
       *
            03  WRK-COL             PIC 9(03).
            03  WRK-Z9              PIC Z9.
-           03  WRK-LENGTH          PIC 9(03).
+           03  WRK-LENGTH          PIC 9(04).
       *
            03  WRK-EDYMD.
                05  WRK-EDYMD-FL    PIC X(06).
                05  WRK-EDYMD-DD    PIC 9(02).
+      *
+           03  WRK-SRYYM           PIC X(16).
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-TOKKI      PIC X(06)   VALUE   "【配】".
@@ -339,6 +342,7 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    LNK-DAY2-EDTYMD3(1:16)
                                    TO  H01-SRYYM
+                                       WRK-SRYYM
       *
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY7-AREA
@@ -475,7 +479,7 @@
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-AREA
       *
-           DISPLAY "PTTOKKI PTNUM=" SPTID-PTNUM
+           DISPLAY "PTNUM=" SPTID-PTNUM
       *
       *    受診履歴から保険組合せの取得
            INITIALIZE                      JYURRK-REC
@@ -489,7 +493,7 @@
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            PERFORM 900-JYURRK-READ-SEC
            IF      FLG-JYURRK       =   1
-               DISPLAY "JYURRK INVALID KEY=" JYURRK-KEY "#"
+               DISPLAY "JYURRK NOT FOUND KEY=" JYURRK-KEY "#"
                PERFORM 20011-RECECOM-PRINT-SEC
                GO  TO  2001-RECECOM-HENSYU-EXT
            END-IF
@@ -524,6 +528,8 @@
                                        FOR ALL     WRK-CONS-TOKKI
                IF      WRK-COL         >   ZERO
                    MOVE    1               TO  FLG-TOKKI
+                   DISPLAY "RECECOM found sryka="  RECECOM-SRYKA " " 
+                                                   RECECOM-RENNUM
                ELSE
       *            受診履歴と保険組合せでのレセコメント
                    IF      RECECOM-HKNCOMBI    =   JYURRK-HKNCOMBINUM
@@ -549,7 +555,6 @@
       *
       *   【配】のコメントがある場合は処理しない
            IF      FLG-TOKKI           =   1
-               DISPLAY "RECECOM FOUND"
                PERFORM 20011-RECECOM-PRINT-SEC
            ELSE
                IF      WRK-RECECOM-HOSPNUM (1) =   ZERO
@@ -565,8 +570,8 @@
                    MOVE    "00"                TO  RECECOM-SRYDD
                    MOVE    WRK-CONS-COMMENT    TO  RECECOM-COMMENT
                    MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
-                   MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      ***          MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+      ***          MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
                    MOVE    "BG001"             TO  RECECOM-TERMID
                    MOVE    RECECOM-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -574,6 +579,8 @@
                    MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 900-ORCDBMAIN-SEC
                    IF      MCP-RC              =   ZERO
+                       DISPLAY "RECECOM insert rennum="
+                                                       RECECOM-RENNUM
                        ADD     1                   TO  CNT-OUT
                        PERFORM 20011-RECECOM-PRINT-SEC
                    ELSE
@@ -624,11 +631,38 @@
                        MOVE    "key"               TO  MCP-PATHNAME
                        PERFORM 900-ORCDBMAIN-SEC
                        IF      MCP-RC              =   ZERO
+                           DISPLAY "RECECOM update rennum="
+                                                       RECECOM-RENNUM
                            ADD     1                   TO  CNT-MOD
                            PERFORM 20011-RECECOM-PRINT-SEC
                        ELSE
                            DISPLAY "RECECOM MCP-RC= "  MCP-RC
                            MOVE    "レセコメントに更新できませんでした"
+                                                       TO  WRK-RECEERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                       END-IF
+                   ELSE
+                       INITIALIZE                      RECECOM-REC
+                       MOVE    WRK-RECECOM-KEY (1) TO  RECECOM-KEY
+                       ADD     1                   TO  RECECOM-RENNUM
+                       MOVE    WRK-CONS-COMMENT    TO  RECECOM-COMMENT
+                       MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
+      ***              MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+      ***              MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+                       MOVE    "BG001"             TO  RECECOM-TERMID
+                       MOVE    RECECOM-REC         TO  MCPDATA-REC
+                       MOVE    "DBINSERT"          TO  MCP-FUNC
+                       MOVE    "tbl_rececom"       TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       PERFORM 900-ORCDBMAIN-SEC
+                       IF      MCP-RC              =   ZERO
+                           DISPLAY "RECECOM insert rennum="
+                                                       RECECOM-RENNUM
+                           ADD     1                   TO  CNT-OUT
+                           PERFORM 20011-RECECOM-PRINT-SEC
+                       ELSE
+                           DISPLAY "RECECOM MCP-RC= "  MCP-RC
+                           MOVE    "レセコメントに追加できませんでした"
                                                        TO  WRK-RECEERR
                            PERFORM 500-ERR-HENSYU-SEC
                        END-IF
@@ -727,8 +761,12 @@
                                        TO  SPRT-PRIORITY
            MOVE   "HCPOM.red"          TO  SPRT-PRTID
            MOVE    HCPOM               TO  SPRT-PRTDATA
-           MOVE    "回数コメント更新一覧"
-                                       TO  SPRT-TITLE
+           STRING  "回数コメント更新一覧（"
+                                       DELIMITED  BY  SIZE
+                   WRK-SRYYM           DELIMITED  BY  SIZE
+                   "分）"              DELIMITED  BY  SIZE
+                                       INTO  SPRT-TITLE
+           END-STRING
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
@@ -789,6 +827,7 @@ grpsys                                 SPA-AREA
       *****************************************************************
        300-END-SEC                 SECTION.
       *
+           DISPLAY "*** ORCBG023 IN   "  CNT-IN
            DISPLAY "*** ORCBG023 INS  "  CNT-OUT
            DISPLAY "*** ORCBG023 MOD  "  CNT-MOD
            DISPLAY "*** ORCBG023 PAGE "  CNT-PAGE
@@ -860,10 +899,10 @@ grpsys                                 SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTTOKKI
                MOVE    MCPDATA-REC         TO  PTTOKKI-REC
-               IF    ( PTTOKKI-STYM        <=   WRK-PARA-SRYYM )
-               AND   ( PTTOKKI-EDYM        >=   WRK-PARA-SRYYM )
+               IF    ( PTTOKKI-STYM        <=  WRK-PARA-SRYYM )
+               AND   ( PTTOKKI-EDYM        >=  WRK-PARA-SRYYM )
                AND   ( PTTOKKI-CD          =   "09"            )
-                   CONTINUE
+                   ADD     1                   TO  CNT-IN
                ELSE
                    GO  TO  900-PTTOKKI-READ-N-SEC
                END-IF
