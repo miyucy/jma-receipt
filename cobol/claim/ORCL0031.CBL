@@ -80,11 +80,6 @@
       *  04.07.05    NACL-多々納  14/09/XX  病名サブプロ対応他
       *  04.07.06    NACL-多々納  14/11/XX  保険組合せ・外来追加対応
       *                                     v2診療科レセ電廃止対応
-      *  04.08.00    NACL-多々納  16/03/28  Ｈ２８年４月改正対応
-      *  04.08.00    NACL-多々納  16/06/XX  自費金額対応
-      *                                     入院日付指定５０文字対応
-      *  04.08.00    NACL-多々納  17/04/XX  内服１種類・継続コメント対応
-      *  04.08.00    NACL-多々納  17/03/XX  Ｈ３０年４月改正対応他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -246,8 +241,6 @@
       *
            03  WRK-INPUTCD         PIC X(50).
       *
-           03  WRK-KINGAKU         PIC 9(07).
-      *
       *H26.10
            03  WRK-ERRCD           PIC X(03).
            03  WRK-MSG1            PIC X(80).
@@ -299,12 +292,6 @@
       *
       *    用法レセ電コード
            COPY    "CPCLAIM006.INC".
-      *H28.4
-      *    時間外加算テーブル(H28.4分）
-           COPY     "CMTIMEKSN2016.INC".
-      *H30.4
-      *    時間外加算テーブル(H30.4分）
-           COPY     "CMTIMEKSN2018.INC".
       *
       *H26.10
       * 向精神薬多剤投与処方せん料
@@ -325,12 +312,6 @@
       *
       * 処方料（乳幼児）加算
        01  CONS-KSN-SRYCD1         PIC X(09)   VALUE    "120002170".
-      *H28.4
-      * 湿布薬枚数減算
-       01  CONS-SPGEN-SRYCD        PIC X(09)   VALUE    "630010007".
-      * 湿布薬（減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1683,19 +1664,6 @@
                                                           (TBL-MAX))  OR
                           (WRK-SRYSYUKBN      =   SPACE            ))
                        CONTINUE
-      *H27.12
-      *                加算の診療種別区分
-                       IF     (WRK-SRYSYUKBN       =   "143"
-                                                   OR  "403"
-                                                   OR  "603"
-                                                   OR  "643"
-                                                   OR  "704" )
-                         AND  (WRK-SRYSYUKBN       =
-                                                   TBL-WKSRY-SRYSYUKBN
-                                                          (TBL-MAX))
-                           MOVE    1               TO  FLG-ZAIEND
-                       END-IF
-      *!!
                    ELSE
                        MOVE    1                   TO  FLG-ZAIEND
                    END-IF
@@ -1711,18 +1679,6 @@
        20029-JIKAN-HEN-SEC                SECTION.
       *
            MOVE    SPACE               TO  WRK-TIMEKBN
-      *H30.4 から
-           IF      SPA-SRYYMD          >=  "20180401"
-               PERFORM 200291-JIKAN208-HEN-SEC
-               GO      TO      20029-JIKAN-HEN-EXT
-           END-IF
-      *H28.4
-      *    時間外加算コード判定
-           IF      SPA-SRYYMD          >=  "20160401"
-               PERFORM 200291-JIKAN2016-HEN-SEC
-               GO      TO      20029-JIKAN-HEN-EXT
-           END-IF
-      *
       *    ６歳未満の乳幼児加算
            EVALUATE    WRK-SRYCD
       *        夜間（時間外）加算
@@ -1763,12 +1719,10 @@
                    MOVE    "5"                 TO  WRK-TIMEKBN
       *        休日加算
                WHEN    "113007170"
-      **           MOVE    "6"                 TO  WRK-TIMEKBN
-                   MOVE    "2"                 TO  WRK-TIMEKBN
+                   MOVE    "6"                 TO  WRK-TIMEKBN
       *        深夜加算
                WHEN    "113007270"
-      **           MOVE    "7"                 TO  WRK-TIMEKBN
-                   MOVE    "3"                 TO  WRK-TIMEKBN
+                   MOVE    "7"                 TO  WRK-TIMEKBN
       *        小児科外来診察料（再診）
       *        時間外加算
                WHEN    "113009770"
@@ -1778,10 +1732,10 @@
                    MOVE    "5"                 TO  WRK-TIMEKBN
       *        休日加算
                WHEN    "113007470"
-                   MOVE    "2"                 TO  WRK-TIMEKBN
+                   MOVE    "6"                 TO  WRK-TIMEKBN
       *        深夜加算
                WHEN    "113007570"
-                   MOVE    "3"                 TO  WRK-TIMEKBN
+                   MOVE    "7"                 TO  WRK-TIMEKBN
       *        小児科外来診察料（外来診察料）
       *        時間外加算
                WHEN    "113009870"
@@ -1791,10 +1745,10 @@
                    MOVE    "5"                 TO  WRK-TIMEKBN
       *        休日加算
                WHEN    "113007770"
-                   MOVE    "2"                 TO  WRK-TIMEKBN
+                   MOVE    "6"                 TO  WRK-TIMEKBN
       *        深夜加算
                WHEN    "113007870"
-                   MOVE    "3"                 TO  WRK-TIMEKBN
+                   MOVE    "7"                 TO  WRK-TIMEKBN
       *
                WHEN    OTHER
                    EVALUATE    TNS-TIMEKSNKBN
@@ -1816,68 +1770,6 @@
            .
        20029-JIKAN-HEN-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    時間外加算区分変更処理（２０１６年〜）
-      *****************************************************************
-       200291-JIKAN2016-HEN-SEC                SECTION.
-      *
-           MOVE    SPACE               TO  WRK-TIMEKBN
-      *
-           SET     TBL-TIDX            TO  1
-           SEARCH  TBL-TIMEKSN-OCC     VARYING   TBL-TIDX
-               AT  END
-                   MOVE    SPACE           TO  WRK-TIMEKBN
-                WHEN   WRK-SRYCD           =   TBL-TM-SRYCD
-                                                      (TBL-TIDX)
-                   MOVE    TBL-TM-TIMKBN (TBL-TIDX)
-                                           TO  WRK-TIMEKBN
-           END-SEARCH
-      *
-           .
-       200291-JIKAN2016-HEN-EXT.
-           EXIT.
-      *
-      *H30.4
-      *****************************************************************
-      *    時間外加算区分変更処理（２０１８年〜）
-      *****************************************************************
-       200291-JIKAN208-HEN-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-TIMEKBN
-      *
-           SET     TBL-TIDX18            TO  1
-           SEARCH  TBL-TIMEKSN18-OCC     VARYING   TBL-TIDX18
-               AT  END
-                   MOVE    SPACE           TO  WRK-TIMEKBN
-                WHEN   WRK-SRYCD           =   TBL-TM18-SRYCD
-                                                      (TBL-TIDX18)
-                   MOVE    TBL-TM18-TIMKBN (TBL-TIDX18)
-                                           TO  WRK-TIMEKBN
-           END-SEARCH
-           IF      WRK-TIMEKBN         =   SPACE
-      *        妊婦加算
-               SET     TBL-NPIDX18         TO  1
-               SEARCH  TBL-NINPUKSN18-OCC  VARYING   TBL-NPIDX18
-                   AT   END
-                       CONTINUE
-                    WHEN   WRK-SRYCD       =   TBL-NP18-SRYCD
-                                                      (TBL-NPIDX18)
-                       IF      TBL-NP18-TIMKBN (TBL-NPIDX18)
-                                               =   ZERO
-      *                    妊婦加算は対象外
-                           CONTINUE
-                       ELSE
-                           MOVE    TBL-NP18-TIMKBN (TBL-NPIDX18)
-                                               TO  WRK-TIMEKBN
-                       END-IF
-               END-SEARCH
-           END-IF
-      *
-           .
-       200291-JIKAN208-HEN-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    対象のコードチェック処理
@@ -1948,16 +1840,6 @@
                                        OR  CONS-TEIHP-SYOHOU
                                        OR  CONS-TEIHP-SRYCD
                                        OR  CONS-KSN-SRYCD1
-               MOVE    1               TO  FLG-CHK
-           END-IF
-      *H28.4
-      *    湿布薬減点 対応
-           IF      WRK-SRYCD           =   CONS-SPGEN-SRYCD
-                                       OR  CONS-SPCM-SRYCD
-               MOVE    1               TO  FLG-CHK
-           END-IF
-      *    一般名処方加算１（処方せん料）
-           IF      WRK-SRYCD           =   "120004270"
                MOVE    1               TO  FLG-CHK
            END-IF
       *
@@ -2205,22 +2087,12 @@
                    (TBL-WKSRY-SRYKBN (TBL-MAX)
                                        =   "11"  OR  "12"  OR "13") AND
                    (TNS-DATAKBN        =   "1"   )
-      *H28.8
-      *        時間外算定不可、入院時間外加算は対象外
-               IF      (TNS-TIMEKSNKBN     =   0  )
-                  OR   (TNS-NYUGAITEKKBN   =   1  )
-                   MOVE    LF04-IJICD(IDX1 IDX2)(1:9)
-                                           TO  TBL-WKSRY-INPUTCD
-                                              (TBL-MAX IDX-S)
-               ELSE
-      *
-                   MOVE    WRK-JIKAN       TO  TBL-WKSRY-INPUTCD
+               MOVE    WRK-JIKAN       TO  TBL-WKSRY-INPUTCD
                                              (TBL-MAX IDX-S)(1:1)
-                   MOVE    LF04-IJICD(IDX1 IDX2)(1:9)
-                                           TO  TBL-WKSRY-INPUTCD
+               MOVE    LF04-IJICD(IDX1 IDX2)(1:9)
+                                       TO  TBL-WKSRY-INPUTCD
                                              (TBL-MAX IDX-S)(3:)
-                   MOVE    SPACE           TO  WRK-JIKAN
-               END-IF
+               MOVE    SPACE           TO  WRK-JIKAN
            ELSE
                MOVE    LF04-IJICD(IDX1 IDX2)(1:9)
                                        TO  TBL-WKSRY-INPUTCD
@@ -2233,11 +2105,8 @@
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                        =   "0084"  ) OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                       =   "001"   )
-      *H30.4
-               OR (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
-                                       =   "0992081"))
-             AND  (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
+                                       =   "001"   ))  AND
+                  (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
                PERFORM 200321-INPUTCHI-HEN-SEC
                MOVE    1               TO  FLG-SURYO
            END-IF
@@ -2251,37 +2120,6 @@
                   (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
                PERFORM 200322-FIRUMU-HEN70-SEC
                MOVE    1               TO  FLG-SURYO
-           END-IF
-      *
-      *H28.6
-      *    自費金額入力対応
-           IF     (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                       =   "095"
-                                       OR  "096"  )
-             AND  (TNS-TEN             =   ZERO   )
-      *        数量を金額へ
-               MOVE    ZERO                TO  WRK-KINGAKU
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    LF04-SURYO (IDX1 IDX2)
-                                           TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF     (SNUM-RC         NOT =   ZERO  )   OR
-                      (SNUM-MINKBN         =   "1"   )   OR
-                      (SNUM-SEISUU         >   7     )
-                   MOVE    SNUM-OUTNUM         TO  WRK-KINGAKU
-               ELSE
-                   MOVE    SNUM-OUTNUM         TO  WRK-KINGAKU
-               END-IF
-      *        数量＝１はゼロ円とする
-               IF      WRK-KINGAKU         =   1
-                   MOVE    ZERO            TO  WRK-KINGAKU
-               END-IF
-               MOVE    WRK-KINGAKU     TO  TBL-WKSRY-JIHIMONEY
-                                                     (TBL-MAX IDX-S)
-               MOVE    1               TO  FLG-SURYO
-               MOVE    1               TO  TBL-WKSRY-SRYSURYO
-                                                     (TBL-MAX IDX-S)
            END-IF
       *
            IF      FLG-SURYO           =   ZERO
@@ -2306,21 +2144,6 @@
                END-IF
                MOVE    WRK-SURYO           TO  TBL-WKSRY-SRYSURYO
                                                      (TBL-MAX IDX-S)
-      *H29.7
-      *   API  撮影料の数量>1を反映
-               IF     (LNK-KBN-CODE        =   "1" )
-                  AND (LNK-KBN-V2          =   "1" )
-                   IF     (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:1)
-                                               =   "1")
-                     AND  (TNS-KZMCOMPSIKIBETU NOT =   ZERO )
-                     AND  (TNS-SRYSYUKBN       =   "721"
-                                               OR  "720"    )
-                     AND  (WRK-SURYO           >   1        )
-      *                数量入力あり
-                       MOVE    "S"             TO  TBL-WKSRY-AUTOKBN
-                                                     (TBL-MAX IDX-S)
-                   END-IF
-               END-IF
       *
            END-IF
       *    フリーコメントの内容
@@ -2394,29 +2217,6 @@
                                                        (TBL-MAX IDX-S)
       *H24.7
                MOVE    WRK-KAISU       TO  WRK-GAIYO-KAISU
-           END-IF
-      *H29.4
-      *API
-      *    内服１種類区分、継続コメント区分
-           IF     (LNK-KBN-CODE        =   "1" )
-             AND  (LNK-KBN-V2          =   "1" )
-      *        内服１種類区分
-               IF     (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:1)    =   "6")
-                  AND (TBL-WKSRY-SRYKBN(TBL-MAX)   =   "21"  )
-                  AND (LF04-NAIFKBN  (IDX1 IDX2)   =   "1"   )
-                   MOVE    "2"             TO  TBL-WKSRY-INPUTKBN
-                                                       (TBL-MAX IDX-S)
-               END-IF
-      *        継続指示区分
-               IF     (LF04-CONTKBN  (IDX1 IDX2)   =   "1"   )
-      *        継続コメント
-                 AND ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:1)
-                                                   =   "8"  )
-                   OR (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                                   =   "008"))
-                   MOVE    "1"             TO  TBL-WKSRY-INPUTKBN
-                                                       (TBL-MAX IDX-S)
-               END-IF
            END-IF
       *
       *H24.4
@@ -2791,12 +2591,10 @@
            INITIALIZE                      ORCSNDAYCHGAREA
            MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
            MOVE    WRK-INPUTCD         TO  ORCSNDAYCHG-INPUTCD
-     **    MOVE    22                  TO  ORCSNDAYCHG-KETA
-           MOVE    50                  TO  ORCSNDAYCHG-KETA
+           MOVE    22                  TO  ORCSNDAYCHG-KETA
            CALL    "ORCSNDAYCHG"       USING   SPA-AREA
                                                ORCSNDAYCHGAREA
            IF      ORCSNDAYCHG-ERRCD   =   "0001"
-      *H28.6   ５0文字までとする
       *        ２２文字オーバーはエラーとする
                MOVE    "*/99"              TO  WRK-INPUTCD
                MOVE    1                   TO  WRK-KAISU
