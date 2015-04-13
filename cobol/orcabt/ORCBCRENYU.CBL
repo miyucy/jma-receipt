@@ -28,8 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *平成３０年４月改正対応
-      *  05.00.00    NACL-小豆沢  18/03/05  療養病棟の読み替えコード追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,10 +166,6 @@
                                    PIC 9(04).
            03  WRK-TAIHI-SRYKA     PIC X(02).
            03  WRK-TAIHI-SHOKUJI   PIC 9(02).
-           03  WRK-SKJ-CREATEKBN   PIC X(01).
-           03  WRK-TAIHI-SHOKUJI-ASA   PIC 9(02).
-           03  WRK-TAIHI-SHOKUJI-HIRU  PIC 9(02).
-           03  WRK-TAIHI-SHOKUJI-YORU  PIC 9(02).
            03  WRK-TAIHI-SHOKUDOU  PIC 9(02).
            03  WRK-TAIHI-HKN       PIC 9(04).
            03  WRK-ZOGENPTN        PIC X(01).
@@ -357,12 +351,6 @@
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
       *
-      *    夜勤時間特別入院基本料コード取得サブ
-           COPY "CPORCSYAKINTOKU.INC".
-      *
-      *    看護職員数等入院基本料コード取得サブ
-           COPY "CPORCSKANGOCHG.INC".
-      *
            COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
@@ -529,37 +517,6 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    次月会計作成時の食事区分取得
-           MOVE    SPACE               TO  WRK-SKJ-CREATEKBN
-           INITIALIZE                      SYS-5000-REC
-           MOVE    "5000"              TO  SYS-5000-KANRICD
-           MOVE    "*"                 TO  SYS-5000-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  SYS-5000-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-5000-STYUKYMD (7:2)
-           MOVE    SYS-5000-STYUKYMD   TO  SYS-5000-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
-           MOVE    SYS-5000-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC     =    ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM   900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-5000-REC
-                   IF      SYS-5000-SKJ-CREATEKBN  =  "1"
-                       MOVE   "1"          TO  WRK-SKJ-CREATEKBN
-                   ELSE
-                       MOVE   "0"          TO  WRK-SKJ-CREATEKBN
-                   END-IF
-               END-IF
-           END-IF
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
       *    前月分会計取得用の年月算出
            MOVE    WRK-PARA-SRYYM      TO  WRK-CHK-SRYYM
            IF      WRK-CHK-SRYMR        =   1
@@ -690,9 +647,6 @@
        2001-NYUINACCT-MAECHK-SEC          SECTION.
       *
            MOVE    ZERO                TO  WRK-TAIHI-SHOKUJI
-           MOVE    ZERO                TO  WRK-TAIHI-SHOKUJI-ASA
-           MOVE    ZERO                TO  WRK-TAIHI-SHOKUJI-HIRU
-           MOVE    ZERO                TO  WRK-TAIHI-SHOKUJI-YORU
            MOVE    ZERO                TO  WRK-TAIHI-SHOKUDOU
            MOVE    ZERO                TO  WRK-TAIHI-HKN
       *
@@ -723,18 +677,6 @@
                                                     099999920
                            MOVE  NACCT-DAY(IDX-DAY)
                                             TO  WRK-TAIHI-SHOKUJI
-                       END-IF
-                       IF    NACCT-SRYCDTOTAL   =   099999918
-                          MOVE   NACCT-DAY(IDX-DAY)
-                                            TO  WRK-TAIHI-SHOKUJI-ASA
-                       END-IF
-                       IF    NACCT-SRYCDTOTAL   =   099999919
-                          MOVE   NACCT-DAY(IDX-DAY)
-                                            TO  WRK-TAIHI-SHOKUJI-HIRU
-                       END-IF
-                       IF    NACCT-SRYCDTOTAL   =   099999920
-                          MOVE   NACCT-DAY(IDX-DAY)
-                                            TO  WRK-TAIHI-SHOKUJI-YORU
                        END-IF
                    END-IF
       *            食堂加算
@@ -1085,18 +1027,6 @@
       *        ・一般病棟特別入院基本料
       *        ・精神病棟１５対１入院基本料
       *        ・精神病棟特別入院基本料
-      *        以下入院料を追加（平成２８年改正で対応）
-      *        ・療養病棟・一般病棟７対１入院基本料
-      *        ・療養病棟・一般病棟１０対１入院基本料
-      *        ・療養病棟・一般病棟１３対１入院基本料
-      *        ・療養病棟・一般病棟１５対１入院基本料
-      *        以下入院料を追加（平成３０年改正で対応）
-      *        ・療養病棟・急性期一般入院料２
-      *        ・療養病棟・急性期一般入院料３
-      *        ・療養病棟・急性期一般入院料４
-      *        ・療養病棟・急性期一般入院料５
-      *        ・療養病棟・急性期一般入院料６
-      *        ・療養病棟・地域一般入院料１
                IF    SYOKIKSN-IN-KHNSRYCD   =   "190151910"   OR
                                                 "190152010"   OR
                                                 "099999950"   OR
@@ -1108,19 +1038,7 @@
       *                                         特定入院料の算定要件外の算定
                                                 "190079010"   OR
                                                 "190083810"   OR
-                                                "190085010"   OR
-      *                                         平成２８年改正対応
-                                                "190198110"   OR
-                                                "190198210"   OR
-                                                "190198310"   OR
-                                                "190198410"   OR
-      *                                         平成３０年改正対応
-                                                "190201910"   OR
-                                                "190202010"   OR
-                                                "190202110"   OR
-                                                "190202210"   OR
-                                                "190202310"   OR
-                                                "190202410"
+                                                "190085010"
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
@@ -1305,12 +1223,6 @@
                    MOVE    LNK-SCNYUACCT-STSRYYMD
                                             TO  TNS-YUKOSTYMD
                                                 TNS-YUKOEDYMD
-      *            特定入院基本料（一般病棟入院基本料）はマスタが
-      *            平成２６年９月３０日までの為、参照時の日付を変更
-                   IF    LNK-SCNYUACCT-NYUKHN-SRYCD(1)  =  "190799410"
-                       MOVE    "20140930"   TO  TNS-YUKOSTYMD
-                                                TNS-YUKOEDYMD
-                   END-IF
                    MOVE    TNS-TENSU-REC    TO  MCPDATA-REC
                    MOVE    "tbl_tensu"      TO  MCP-TABLE
                    MOVE    "key"            TO  MCP-PATHNAME
@@ -1366,15 +1278,6 @@
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   WRK-TAIHI-SHOKUJI    TO  LNK-SCNYUACCT-SHOKUJIKBN
-           IF     WRK-SKJ-CREATEKBN   =   "1"
-               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   WRK-TAIHI-SHOKUJI-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   WRK-TAIHI-SHOKUJI-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   WRK-TAIHI-SHOKUJI-YORU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-           END-IF
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
@@ -1693,15 +1596,6 @@
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE    WRK-TAIHI-SHOKUJI   TO  LNK-SCNYUACCT-SHOKUJIKBN
-           IF     WRK-SKJ-CREATEKBN   =   "1"
-               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   WRK-TAIHI-SHOKUJI-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   WRK-TAIHI-SHOKUJI-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   WRK-TAIHI-SHOKUJI-YORU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-           END-IF
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI           =    ZERO
@@ -2018,13 +1912,10 @@
       *
       *****************************************************************
       *    夜勤時間超過減算コードへの置き換え処理
-      *    夜勤時間特別入院基本料コードへの置き換え処理
-      *    看護職員数等入院基本料コードへの置き換え処理
       *****************************************************************
        4801-YAKINGEN-CHG-SEC   SECTION.
       *
            IF    SYOKIKSN-IN-SANTEISTYMD   >=   "20140401"
-      *        夜勤時間超過減算入院料コード取得
                INITIALIZE    ORCSYAKINGEN-AREA
                MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
                                    TO    LNK-YAKINGEN-SANTEIYM
@@ -2036,36 +1927,6 @@
                                                 SPA-AREA
                IF   LNK-YAKINGEN-RC     =       ZERO
                     MOVE LNK-YAKINGEN-CHGSRYCD
-                                   TO    SYOKIKSN-IN-KHNSRYCD
-               END-IF
-           END-IF
-           IF    SYOKIKSN-IN-SANTEISTYMD   >=   "20160401"
-      *        夜勤時間特別入院基本料コード取得
-               INITIALIZE    ORCSYAKINTOKU-AREA
-               MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
-                                   TO    LNK-YAKINTOKU-SANTEIYM
-               MOVE   SYS-5001-BTU-NUM
-                                   TO    LNK-YAKINTOKU-BTU-NUM
-               MOVE   SYOKIKSN-IN-KHNSRYCD
-                                   TO    LNK-YAKINTOKU-SRYCD
-               CALL   "ORCSYAKINTOKU"    USING  ORCSYAKINTOKU-AREA
-                                                SPA-AREA
-               IF   LNK-YAKINTOKU-RC     =       ZERO
-                    MOVE LNK-YAKINTOKU-CHGSRYCD
-                                   TO    SYOKIKSN-IN-KHNSRYCD
-               END-IF
-      *        看護職員数等入院基本料コード取得
-               INITIALIZE    ORCSKANGOCHG-AREA
-               MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
-                                   TO    LNK-KANGOCHG-SANTEIYM
-               MOVE   SYS-5001-BTU-NUM
-                                   TO    LNK-KANGOCHG-BTU-NUM
-               MOVE   SYOKIKSN-IN-KHNSRYCD
-                                   TO    LNK-KANGOCHG-SRYCD
-               CALL   "ORCSKANGOCHG"    USING   ORCSKANGOCHG-AREA
-                                                SPA-AREA
-               IF   LNK-KANGOCHG-RC     =       ZERO
-                    MOVE LNK-KANGOCHG-CHGSRYCD
                                    TO    SYOKIKSN-IN-KHNSRYCD
                END-IF
            END-IF
