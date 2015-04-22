@@ -27,8 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.08.00    NACL-多々納  15/06/16  診療科表示件数対応
-      *  04.08.00    NACL-多々納  16/12/XX  受付順変更表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,14 +62,14 @@
            03  SPA-GMN-HEN-AREA.
       *        診療科
                05  SPA-GMN-SRYKA-LIST-G.
-                   07  SPA-GMN-SRYKA-LIST      OCCURS  100.
+                   07  SPA-GMN-SRYKA-LIST      OCCURS  40.
                        09  SPA-GMN-SRYKAL          PIC X(02).
                        09  SPA-GMN-SRYKAF1L        PIC X(01).
                        09  SPA-GMN-SRYKANAMEL      PIC X(16).
                    07  SPA-SRYKA-MAX           PIC 9(04).
                    07  SPA-NAI-SRYKA-LIST-G.
                        09  SPA-NAI-SRYKACHK        PIC X(01)
-                                                   OCCURS  100.
+                                                   OCCURS  40.
                05  SPA-GMN-SRYKA-G.
                    07  SPA-GMN-SRYKA              PIC X(02).
                    07  SPA-GMN-SRYKA1             PIC X(01).
@@ -133,9 +131,6 @@
                        09  SPA-NAI-DRCDADD         PIC X(01).
       *                送受信フラグ
                        09  SPA-NAI-SRFLG           PIC X(01).
-      *H28.12
-      *                変更フラグ
-                       09  SPA-GMN-HENFLG          PIC X(01).
                    07  SPA-GMN-MAX             PIC 9(03).
       *
       *    フラグ領域
@@ -238,9 +233,6 @@
                        09  WRK-NAI-DRCDADD         PIC X(01).
       *                送受信フラグ
                        09  WRK-NAI-SRFLG           PIC X(01).
-      *H28.12
-      *                変更フラグ
-                       09  WRK-NAI-HENFLG          PIC X(01).
       *    一覧表最大行数
        01  LINE-MAX                    PIC 9(03)   VALUE   400.
       *
@@ -337,7 +329,6 @@
        01  SCRAREA.
            COPY    "U01.INC".
            COPY    "U012.INC".
-           COPY    "UDR.INC".
            COPY    "U1ERR.INC". 
            COPY    "U1ID1.INC". 
       *
@@ -510,7 +501,7 @@
            MOVE    1                   TO  IDX
            MOVE    "00 全科"           TO  SPA-GMN-SRYKA-LIST (IDX)
            PERFORM 
-                   UNTIL       (IDX            >=  100  )  OR
+                   UNTIL       (IDX            >=  40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                ADD     1                     TO  IDX
@@ -1191,11 +1182,6 @@
            END-IF
       *    送受信フラグ
            MOVE    UKE-SRFLG           TO  SPA-NAI-SRFLG (IDX)
-      *H28.12
-      *    変更フラグ
-           IF      UKE-KAKREN (1:1)    =   "1"
-               MOVE    "1"                 TO  SPA-GMN-HENFLG(IDX)
-           END-IF
       *    時間編集
            MOVE    SPA-NAI-UKETIME(IDX)(1:2)
                                        TO  SPA-GMN-UKETIMEH(IDX)(2:2)
@@ -1706,12 +1692,6 @@
                                            TO  U012-LYYKTIME (IDX)
                MOVE    SPA-GMN-KAIKIMEH(IDX)
                                            TO  U012-LKAITIME (IDX)
-      *H28.12
-               IF      SPA-GMN-HENFLG (IDX)    =   "1"
-      *        変更済み
-                   MOVE    "*"             TO  U012-LUKETIME (IDX)
-                                                    (8:1)
-               END-IF
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  U012-LIST-COUNT
       *    次頁あり
@@ -1810,7 +1790,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  U1ID1
-           INITIALIZE                       U1ID1
            MOVE    SPA-U1IDCD           TO  U1ID1-ID1CODE
            MOVE    WRK-U1IDMSG          TO  U1ID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
