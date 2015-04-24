@@ -112,7 +112,6 @@
            03  FLG-JOBEND                          PIC 9(01).
            03  FLG-HKNKOHSEL                       PIC 9(01).
            03  FLG-GMN-INIT                        PIC 9(01).
-           03  FLG-PTPUBLIC                        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -144,7 +143,7 @@
            03  WRK-PTINF-BANTI-LEN                 PIC 9(05).
            03  WRK-SQL-PNT                         PIC 9(05).
            03  WRK-SQL                             PIC X(20000).
-           03  WRK-SQL-ORDER                       PIC X(500).
+           03  WRK-SQL-ORDER                       PIC X(20000).
            03  WRK-EDPTNUM                         PIC X(20).
            03  WRK-ZZZZ9                           PIC ZZZZ9.
            03  WRK-TOTAL                           PIC ZZZ,ZZZ,ZZ9.
@@ -183,7 +182,6 @@
                07  WRK-FILENM      PIC X(100).
                07  WRK-FILENM-FOLDER 
                                    PIC X(100).
-           03  WRK-MOTOPG                          PIC X(08).
       *
        01  WRK-ROW-AREA.
            03  WRK-KEKKALST-ROW                    PIC S9(9)   BINARY.
@@ -257,7 +255,7 @@
                VALUE   "ORCBQ01".
            03  CONST-BTPARA-SHELLID-LNK01          PIC X(08)
                VALUE   "ORCBQL01".
-           03  CONST-RECE-MAX      PIC 9(05)   VALUE 2000.
+           03  CONST-RECE-MAX      PIC 9(05)   VALUE 500.
            03  CONST-TOUKEI-MAX    PIC 9(05)   VALUE 9999.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE 200.
       *
@@ -287,10 +285,6 @@
       *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    ´µ¼ÔÃÏ°èÏ¢·È
-       01  PTPUBLIC-REC.
-           COPY    "CPPTNUM-PUBLIC.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -340,9 +334,6 @@
       *
       *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
            COPY    "CPORCSGETTEMP.INC".
-      *
-      *    ¥Ð¥Ã¥Á¥¸¥ç¥ÖÀ©¸æ
-           COPY    "CPORCSMONBATCH.INC".
       *     
            COPY    "ORCA-DBMETA".
       *
@@ -358,7 +349,19 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA13SCRAREA.INC".
+           COPY    "Q01.INC".
+           COPY    "Q02.INC".
+           COPY    "Q02A.INC".
+           COPY    "Q02B.INC".
+           COPY    "Q03.INC".
+           COPY    "Q04.INC".
+           COPY    "Q96.INC".
+           COPY    "Q97.INC".
+           COPY    "Q98.INC".
+           COPY    "Q99.INC".
+           COPY    "Q100.INC".
+           COPY    "QERR.INC".
+           COPY    "QID1.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -426,7 +429,7 @@
                END-IF
       **** »ÃÄê ****
       *
-               IF  ( SPA-ERRCD                 =   "1039" )
+               IF  ( SPA-ERRCD                 =   "9999" )
                    MOVE    "¸¡º÷¾ò·ï¤¬Â¿¤¹¤®¤Þ¤¹¡£"
                                    TO  SPA-GMN-Q02-TNAME (16)
                    MOVE    16      TO  SPA-GMN-Q02-KEKKA-MAX
@@ -459,7 +462,6 @@
            IF  ( LINKAREA      NOT =   SPACE )
       *
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-               MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *
                IF    ( SPA-MOTOPG  =           "P02"
                                            OR  "C02"
@@ -471,13 +473,7 @@
                    MOVE    "O"             TO  QSUB01-KBN
                    PERFORM 800-ORCGQSUB01-SEC
       *
-               ELSE
-                   MOVE    LNK-COMMON          TO  SPA-KYOUTU
-                   MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
                END-IF
-      *
-               MOVE    WRK-MOTOPG          TO  SPA-MOTOPG
-      *
            END-IF
       *
            IF  ( SPA-Q01-SAKIPG    NOT =   "Q02" )
@@ -504,16 +500,15 @@
                GO  TO      300-SCREEN-EXT
       *    ¾ðÊóºï½ü²èÌÌ
            WHEN    "XB01"
-               MOVE    LNK-COMMON          TO  SPA-KYOUTU
+               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
                GO  TO      300-SCREEN-EXT
       *    Í½ÌóÅÐÏ¿
            WHEN    "Y01"
       *    ¼õÉÕ°ìÍ÷
            WHEN    "U01"
-               MOVE    LNK-COMMON          TO  SPA-KYOUTU
+               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
-               GO  TO      300-SCREEN-EXT
       *    ´µ¼ÔÅÐÏ¿
            WHEN    "P02"
            WHEN    "C02"
@@ -919,18 +914,9 @@
            IF  ( WRK-STR-LEN       >    15000 )
       *
       *        £Ó£Ñ£Ì²òÀÏ¸Â³¦ÃÍ¥ª¡¼¥Ð¡¼
-               MOVE    "1039"      TO  SPA-ERRCD
+               MOVE    "9999"      TO  SPA-ERRCD
                MOVE    1           TO  SPA-GMN-Q02-MODE
            ELSE
-      *
-               INITIALIZE                  SMONBATCH-AREA
-               MOVE    "ORCBQ03"       TO  SMONBATCH-SHELLID
-               MOVE    SPA-TERMID      TO  SMONBATCH-TERMID
-               MOVE    SPA-OPID        TO  SMONBATCH-OPID
-               MOVE    "DEL"           TO  SMONBATCH-MODE
-               CALL    "ORCSMONBATCH"      USING
-                                           SMONBATCH-AREA
-                                           SPA-AREA
       *
                INITIALIZE              UIDIO-AREA
                CALL    "orcuidset"     USING
@@ -956,8 +942,6 @@
                OPEN    OUTPUT              BQ01-FILE
                INITIALIZE                  BQ01
                MOVE    QSUB02-SQL      TO  BQ01-SQL
-               MOVE    QSUB02-SQL-ORDER
-                                       TO  BQ01-SQL-ORDER
                MOVE    SPA-Q01KYOUTU   TO  BQ01-Q01KYOUTU
                WRITE   BQ01
                CLOSE   BQ01-FILE
@@ -966,11 +950,6 @@
                INITIALIZE                  SHELLTBL
       *
                MOVE    CONST-SHELNAME3 TO  SHELLTBL-NAME
-               MOVE    SPA-HOSPNUM     TO  SHELLTBL-HOSPNUM
-               MOVE    "ORCBQ03"       TO  SHELLTBL-SHELLID
-               MOVE    1               TO  SHELLTBL-JOBID
-               MOVE    SPA-OPID        TO  SHELLTBL-RUN-OPID
-               MOVE    SPA-TERMID      TO  SHELLTBL-TERMID
       *
                MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
                MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
@@ -978,8 +957,6 @@
                                        TO  SHELLTBL-ARG3
                MOVE    SMCNDATE-YMD    TO  SHELLTBL-ARG4
                MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG5
-               MOVE    SPA-OPID        TO  SHELLTBL-ARG6
-               MOVE    SPACE           TO  SHELLTBL-ARG7
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
@@ -1045,8 +1022,6 @@
                 OR     (   FLG-PTSRH   =   1   )
       *
                PERFORM 900-PTINF-KEY-SEL-SEC
-      *
-               PERFORM 900-PTNUM-PUBLIC-KEY-SEL-SEC
       *
       *        ÈÖ¹æ
                COMPUTE WRK-NUM     =   SPA-GMN-Q02-SKIP-KNS
@@ -1211,10 +1186,6 @@
                    WITH    POINTER WRK-STR-PNT
                    END-STRING
                END-IF
-      *
-      *        ÃÏ°èÏ¢·È£É£Ä
-               MOVE    PTPUBLIC-PATIENT-ID1
-                                   TO  SPA-GMN-Q02-TPATIENT-ID1(IDX-GMN)
       *
                MOVE    IDX-GMN     TO  SPA-GMN-Q02-KEKKA-MAX
       *
@@ -1854,6 +1825,7 @@
                            -   SPA-GMN-Q02-SKIP-KNS
       *
            IF  SPA-GMN-Q02-TPTNUM (IDX1)  =  SPACE
+               MOVE    "1002"          TO  SPA-ERRCD
                GO  TO  480-GYOUMU-SENI-EXT
            END-IF
       *
@@ -2426,9 +2398,6 @@
       *        ¿ÇÎÅÆâÍÆ
                MOVE    SPA-GMN-Q02-TSRYACT (IDX1)
                                    TO  Q02-KEKKALST-SRYACTNAIYO (IDX1)
-      *        ÃÏ°èÏ¢·È£É£Ä
-               MOVE    SPA-GMN-Q02-TPATIENT-ID1 (IDX1)
-                                   TO  Q02-KEKKALST-PATIENT-ID1 (IDX1)
       *
                IF      ( SPA-GMN-Q02-KEKKA-SEL =   IDX1 )
                    MOVE    "T"     TO  Q02-KEKKALST-SELECT (IDX1)
@@ -2546,6 +2515,9 @@
            WHEN    "1001"
                MOVE    "ÁªÂòÈÖ¹æ¤¬Ì¤ÆþÎÏ¤Ç¤¹"
                                        TO  SPA-ERRMSG
+           WHEN    "1003"
+               MOVE    "¸¡º÷ÂÐ¾Ý"
+                                       TO  SPA-ERRMSG
            WHEN    "7777"
                MOVE    WRK-SHORIERR    TO  SPA-ERRMSG
            END-EVALUATE
@@ -2582,7 +2554,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  QID1
-           INITIALIZE                      QID1
            MOVE    SPA-QIDCD           TO  QID1-ID1CODE
            MOVE    WRK-QIDMSG          TO  QID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -2834,34 +2805,6 @@
       *
            .
        900-PTINF-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    ´µ¼ÔÃÏ°èÏ¢·È¸¡º÷½èÍý
-      *****************************************************************
-       900-PTNUM-PUBLIC-KEY-SEL-SEC           SECTION.
-      *
-           MOVE    ZERO            TO  FLG-PTPUBLIC
-      *
-           INITIALIZE                  PTPUBLIC-REC
-           MOVE    SPA-HOSPNUM     TO  PTPUBLIC-HOSPNUM
-           MOVE    PTSRH-PTID      TO  PTPUBLIC-PTID
-           MOVE    PTPUBLIC-REC    TO  MCPDATA-REC
-           MOVE    "tbl_ptnum_public" TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  PTPUBLIC-REC
-           ELSE
-               INITIALIZE              PTPUBLIC-REC
-               MOVE    1           TO  FLG-PTPUBLIC
-           END-IF
-      *
-           MOVE    "tbl_ptnum_public" TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-PTNUM-PUBLIC-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ´µ¼Ô¾È²ñºï½ü½èÍý
