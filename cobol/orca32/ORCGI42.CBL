@@ -172,6 +172,7 @@
            03  FLG-NYUINACT        PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
       *
@@ -241,6 +242,8 @@
            03  WRK-ERRMSG          PIC X(40).
       *
            03  WRK-HKNCOMBI        PIC 9(04).
+      *
+           03  WRK-RSI-TENSU        PIC 9(08).
       *
       *    保険テーブル
        01  TBL-HKNCOMBI-AREA.
@@ -385,6 +388,10 @@
       *    入院行為マスタ−
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
+      *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *****************************************************************
       *    サブプロ用連絡領域
@@ -1709,9 +1716,26 @@
                          ((FLG-HKNKBN          =   1         )  AND
                           (ACCT-SRYKBN         =   "11"  OR   "12"
                                                OR  "13"  OR   "80" ))
-                       PERFORM 31092-SRYACCT-HEN-SEC
+      *!!!!!!!!!!!!!!  PERFORM 31092-SRYACCT-HEN-SEC
+                       IF      ACCT-ZAIREQFLG      =   "1"
+      *                    付加情報の労災金額判定
+                           PERFORM 950-SRYACCTPLUS-READ-SEC
+                           IF      ACCTP-RSIKINGAKU    >   ZERO
+                               PERFORM 310921-RSIKINGAKU-HEN-SEC
+                           ELSE
+                               PERFORM 31092-SRYACCT-HEN-SEC
+                           END-IF
+                       END-IF
                    ELSE
                        MOVE    ZERO                TO  FLG-GENZAN
+      *                減額判定
+                       IF      ACCT-ZAIREQFLG      =   "1"
+                           PERFORM 950-SRYACCTPLUS-READ-SEC
+                           IF      ACCTP-PLUSKBN       =   1
+                               MOVE    1               TO  FLG-GENZAN
+                           END-IF
+                       ELSE
+      *
       *!診療会計に減額フラグを追加するまで
       *                内服の逓減かどうかを判定する
                        IF      ACCT-SRYKBN         =   "21"
@@ -1720,6 +1744,9 @@
                                                    OR  "97"
                            PERFORM 31092-SRYACCT-HEN-SEC
                        END-IF
+      *!
+                       END-IF
+      *!
                        COMPUTE WRK-TENSU       =   ACCT-ZAITEN
                                                *   ACCT-ZAIKAISU
                        IF      ACCT-SRYKBN         =   "90"
@@ -2054,6 +2081,30 @@
       *
            .
        31092-SRYACCT-HEN-EXT.
+           EXIT.
+      *
+      *!!!
+      *****************************************************************
+      *   診療会計付加マスター労災金額編集処理
+      *****************************************************************
+       310921-RSIKINGAKU-HEN-SEC             SECTION.
+      *
+      *    労災金額集計
+           COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
+                                       +  (ACCTP-RSIKINGAKU
+                                       *   ACCT-ZAIKAISU )
+      *    点数混在の時
+           COMPUTE WRK-RSI-TENSU       =   ACCTP-RSIKINGAKU
+                                       /   10
+           IF      WRK-RSI-TENSU       <   ACCT-ZAITEN
+               COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
+                                       -   WRK-RSI-TENSU )
+                                       *   ACCT-ZAIKAISU
+               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                       +   WRK-TENSU
+           END-IF
+           .
+       310921-RSIKINGAKU-HEN-EXT.
            EXIT.
 088600*****************************************************************
 088700*    西暦和暦編集処理
@@ -2746,6 +2797,49 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスター読込（主キー）
+      *****************************************************************
+       950-SRYACCTPLUS-READ-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+           MOVE    1                   TO  ACCTP-RENNUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacctplus"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCTPLUS
+                   INITIALIZE                  SRYACCTPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+               INITIALIZE                  SRYACCTPLUS-REC
+           END-IF
+      *
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-SRYACCTPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
