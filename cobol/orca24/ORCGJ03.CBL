@@ -254,6 +254,8 @@
       *
            03  WRK-HKNCOMBI        PIC 9(04).
       *
+           03  WRK-RSI-TENSU        PIC 9(08).
+      *
       *    ÊÝ¸±¥Æ¡¼¥Ö¥ë
        01  TBL-HKNCOMBI-AREA.
            03  TBL-HKNCOMBI-OCC        OCCURS   20.
@@ -1806,7 +1808,17 @@
                          ((FLG-HKNKBN          =   1         )  AND
                           (ACCT-SRYKBN         =   "11"  OR   "12"
                                                OR  "13"  OR   "80" ))
-                       PERFORM 31092-SRYACCT-HEN-SEC
+                       IF      ACCT-ZAIREQFLG      =   "1"
+      *                    ÉÕ²Ã¾ðÊó¤ÎÏ«ºÒ¶â³ÛÈ½Äê
+                           PERFORM 950-SRYACCTPLUS-READ-SEC
+                           IF      ACCTP-RSIKINGAKU    >   ZERO
+                               PERFORM 310921-RSIKINGAKU-HEN-SEC
+                           ELSE
+                               PERFORM 31092-SRYACCT-HEN-SEC
+                           END-IF
+                       ELSE
+                           PERFORM 31092-SRYACCT-HEN-SEC
+                       END-IF
                    ELSE
                        MOVE    ZERO                TO  FLG-GENZAN
       *                ¸º³ÛÈ½Äê
@@ -2155,6 +2167,30 @@
       *
            .
        31092-SRYACCT-HEN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *   ¿ÇÎÅ²ñ·×ÉÕ²Ã¥Þ¥¹¥¿¡¼Ï«ºÒ¶â³ÛÊÔ½¸½èÍý
+      *****************************************************************
+       310921-RSIKINGAKU-HEN-SEC             SECTION.
+      *
+      *    Ï«ºÒ¶â³Û½¸·×
+           COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
+                                       +  (ACCTP-RSIKINGAKU
+                                       *   ACCT-ZAIKAISU )
+      *    ÅÀ¿ôº®ºß¤Î»þ
+           COMPUTE WRK-RSI-TENSU       =   ACCTP-RSIKINGAKU
+                                       /   10
+           IF      WRK-RSI-TENSU       <   ACCT-ZAITEN
+               COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
+                                       -   WRK-RSI-TENSU )
+                                       *   ACCT-ZAIKAISU
+               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                       +   WRK-TENSU
+           END-IF
+           .
+       310921-RSIKINGAKU-HEN-EXT.
            EXIT.
 088600*****************************************************************
 088700*    À¾ÎñÏÂÎñÊÔ½¸½èÍý
