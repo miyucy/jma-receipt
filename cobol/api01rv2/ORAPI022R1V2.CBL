@@ -28,11 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  13/07/24  保険病名フラグ追加対応
-      *
-      *  04.08.01    NACL-藤原    16/02/29  合併症に係わる情報追加対応
-      *                                     原疾患区分、合併症区分
-      *  04.08.02    NACL-藤原    16/09/08  全ての患者病名情報の取得対応
-      *  04.08.03    NACL-藤原    17/05/15  補足コメントコード返却対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -107,7 +102,6 @@
                05  WRK-BASE-YM          PIC X(06).
                05  WRK-BASE-DD          PIC X(02).
            03  WRK-PTNUM               PIC X(20).
-           03  WRK-SELECT-MODE         PIC X(03).
       *
       *
       *****************************************************************
@@ -327,7 +321,6 @@
            IF      APILST7-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_disease_infov2req" TO  MCP-TABLE
@@ -476,9 +469,6 @@
            IF     DISEREQ-BASE-DATE     =   LOW-VALUE
                MOVE  SPACE             TO  DISEREQ-BASE-DATE
            END-IF
-           IF     DISEREQ-SELECT-MODE   =   LOW-VALUE
-               MOVE  SPACE             TO  DISEREQ-SELECT-MODE
-           END-IF
       *
            .
        10001-XML-REMAKE-EXT.
@@ -523,13 +513,6 @@
                MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
                MOVE    DISERES-INFORMATION-DATE
                                            TO  DISEREQ-BASE-DATE
-           END-IF
-      *    出力設定
-           MOVE    DISEREQ-SELECT-MODE     TO  WRK-SELECT-MODE
-           IF      WRK-SELECT-MODE         =   "All"
-               CONTINUE
-           ELSE
-               MOVE    SPACE                   TO  WRK-SELECT-MODE
            END-IF
       *
       *    必須入力チェック
@@ -600,7 +583,7 @@
            EXIT.
       *
       *****************************************************************
-      *    患者病名編集処理
+      *    受診履歴編集処理
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
@@ -613,9 +596,6 @@
            MOVE    SPA-PTID            TO  SBYOINFO-PTID
       *    診療年月
            MOVE    WRK-BASE-YM         TO  SBYOINFO-SRYYM
-      *    出力設定
-           MOVE    WRK-SELECT-MODE     TO  SBYOINFO-SELECT-MODE
-      *
            CALL    "ORCSBYOINFO"   USING   ORCSBYOINFOAREA
                                            SPA-AREA
       *
@@ -629,12 +609,7 @@
       *
            IF      SBYOINFO-RC    NOT =   ZERO
       *        200件以上あり
-               MOVE    "True"             TO
-                                          DISERES-INFORMATION-OVERFLOW
                MOVE    "20"               TO  WRK-ERRCD
-           ELSE
-               MOVE    "False"           TO
-                                          DISERES-INFORMATION-OVERFLOW
            END-IF
       *
            IF      TBL-MAX             =   ZERO
@@ -757,20 +732,6 @@
       *    補足コメント
            MOVE    SBYOINFO-HOSOKU-COMMENT (IDX)
                                        TO  DISERES-SUPPLEMENT-NAME(IDX)
-      *    補足コメントコード
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
-                   OR      SBYOINFO-HOSOKUCD (IDX IDY)
-                                   =       SPACE
-               MOVE    SBYOINFO-HOSOKUCD (IDX IDY)
-                                           TO
-                                       DISERES-SUPPLEMENT-SINGLE-CODE
-                                                               (IDX IDY)
-               MOVE    SBYOINFO-HOSOKUCD-COMMENT (IDX IDY)
-                                           TO
-                                       DISERES-SUPPLEMENT-SINGLE-NAME
-                                                               (IDX IDY)
-           END-PERFORM
       *    カルテ病名
            MOVE    SBYOINFO-CHARTBYOMEI (IDX)
                                        TO  DISERES-KARTE-NAME (IDX)
@@ -793,20 +754,6 @@
                                                                   (IDX)
            ELSE
                MOVE    "False"         TO  DISERES-INSURANCE-DISEASE
-                                                                  (IDX)
-           END-IF
-      *    原疾患区分
-           IF      SBYOINFO-CLASS1(IDX) NOT =   ZERO
-               MOVE    SBYOINFO-CLASS1 (IDX)
-                                       TO
-                                   DISERES-CLASSIFICATION-NUMBER-MASTER
-                                                                 (IDX)
-           END-IF
-      *    合併症区分
-           IF      SBYOINFO-CLASS2(IDX) NOT =   ZERO
-               MOVE    SBYOINFO-CLASS2 (IDX)
-                                       TO
-                                   DISERES-CLASSIFICATION-NUMBER-SERVANT
                                                                   (IDX)
            END-IF
            .

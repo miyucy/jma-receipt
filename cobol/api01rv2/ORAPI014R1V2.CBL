@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 05.00.00     NACL-多々納  17/11/XX  予約ＩＤ追加対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -348,7 +347,6 @@
            IF      APILST1-BODY    NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_appointlstv2req"   TO  MCP-TABLE
@@ -765,8 +763,6 @@
                    MOVE    99          TO  IDK
                END-IF
            END-PERFORM
-      *    予約ＩＤ編集
-           MOVE    YYK-YYKID           TO  APLSTRES-APPOINT-ID(IDX)
       *    来院済み
            MOVE    YYK-RAIINZUMI       TO  APLSTRES-VISIT-INFO (IDX)
       *

@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 05.00.00     NACL-多々納  17/11/XX  予約ＩＤ追加対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -343,7 +342,6 @@
            IF      APILST8-BODY    NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_appointlst2v2req"  TO  MCP-TABLE
@@ -675,8 +673,6 @@
            PERFORM 200212-SRYKA-NAME-SEC
            MOVE    WRK-SRYKA-NAME      TO  APLST2RES-APPOINT-DEP-NAME
                                                                  (IDX)
-      *    予約ＩＤ編集
-           MOVE    YYK-YYKID           TO  APLST2RES-APPOINT-ID(IDX)
       *    来院済み
            MOVE    YYK-RAIINZUMI       TO  APLST2RES-VISIT-INFO (IDX)
       *

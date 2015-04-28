@@ -27,8 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.08.00     NACL-多々納  17/07/XX  同日再入院区分追加
-      *                                     HAORI展開中対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -110,7 +108,6 @@
                05  WRK-KEY-PTID        PIC 9(10).
                05  WRK-KEY-SRYKA       PIC X(02).
                05  WRK-KEY-HKNCOMBI    PIC X(04).
-               05  WRK-KEY-DOUJITSUKBN    PIC X(01).
       *
            03  WRK-PTID                PIC 9(10).
            03  WRK-PTNUM               PIC X(20).
@@ -347,7 +344,6 @@
            IF      APILST13-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_tmedicalgetv2req"   TO  MCP-TABLE
@@ -699,8 +695,6 @@
                IF     (WRK-KEY-PTID        =   WKSRY-PTID)
                  AND  (WRK-KEY-SRYKA       =   WKSRY-SRYKA)
                  AND  (WRK-KEY-HKNCOMBI    =   WKSRY-HKNCOMBI)
-      *H29.7
-                 AND  (WRK-KEY-DOUJITSUKBN =   WKSRY-DOUJITSUKBN)
                    MOVE    1               TO  FLG-CHK
                END-IF
       *
@@ -715,9 +709,6 @@
                        MOVE    WKSRY-PTID      TO  WRK-KEY-PTID
                        MOVE    WKSRY-SRYKA     TO  WRK-KEY-SRYKA
                        MOVE    WKSRY-HKNCOMBI  TO  WRK-KEY-HKNCOMBI
-      *H29.7
-                       MOVE    WKSRY-DOUJITSUKBN
-                                               TO  WRK-KEY-DOUJITSUKBN
                    END-IF
                END-IF
       *
@@ -813,19 +804,12 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-TIME        TO  TMDCRES-UPHMS  (IDX)
       *    更新中フラグ
-      **   IF      WKSRY-MOD-FLG   NOT =   ZERO
-           EVALUATE    WKSRY-MOD-FLG
-           WHEN    1
-           WHEN    9
-      *        展開中（オルカ）
+           IF      WKSRY-MOD-FLG   NOT =   ZERO
+      *        展開中
                MOVE    "1"              TO  TMDCRES-MODE-FLG (IDX)
-           WHEN    5
-      *        展開中（HAORI）
-               MOVE    "5"              TO  TMDCRES-MODE-FLG (IDX)
-           WHEN    0
+           ELSE
                MOVE    "0"              TO  TMDCRES-MODE-FLG (IDX)
-           END-EVALUATE
-      *
+           END-IF
       *    電子カルテフラグ
            IF      WKSRY-KARTE-FLG      =   1
       *        中途終了登録
@@ -836,9 +820,6 @@
            END-IF
       *    電子カルテキー（ＵＩＤ）
            MOVE    WKSRY-KARTE-KEY      TO  TMDCRES-MEDICAL-UID (IDX)
-      *H29.7
-      *    同日再入院区分
-           MOVE    WKSRY-DOUJITSUKBN    TO  TMDCRES-DOUJITSUKBN(IDX)
       *
            .
        20021-WKSRYACT-HENSYU-EXT.

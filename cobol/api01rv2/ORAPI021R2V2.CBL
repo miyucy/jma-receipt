@@ -27,8 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.08.00     NACL-多々納  17/04/04  最大件数を1000へ
-      * 05.00.00     NACL-多々納  19/12/07  患者情報更新日編集
+      *
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -49,7 +48,6 @@
            03  FLG-TEND                PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
-           03  FLG-PTNUM               PIC 9(01).
            03  FLG-JYURRK              PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-PTHKNINF            PIC 9(01).
@@ -190,10 +188,6 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    患者番号マスタ
-       01  PTNUM-REC.
-           COPY    "CPPTNUM.INC".
-      *
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
@@ -211,8 +205,6 @@
            COPY    "CPPTKOHINF.INC".
       *
            COPY    "MCPDATA.INC".
-      *
-           COPY    "MCPDATA3.INC".
       *
            COPY    "ORCA-BLOB".
       *****************************************************************
@@ -375,7 +367,6 @@
            IF      APILST10-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_visitptlstv2req"   TO  MCP-TABLE
@@ -475,8 +466,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  VIS01RES-MODE
            MOVE    "visitptlst01res"   TO  VIS01RES-RECORDNAME
-      *****CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-VISITPTLST01RES
                                        SPA-AREA
@@ -490,8 +480,7 @@
            MOVE    "xml_visitptlst01v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "visitptlst01res"   TO  VIS01RES-RECORDNAME
-      **** CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-VISITPTLST01RES
                                        SPA-AREA
@@ -504,8 +493,7 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_visitptlst01v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-      **** CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-VISITPTLST01RES
                                        SPA-AREA
@@ -545,8 +533,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  VIS02RES-MODE
            MOVE    "visitptlst02res"   TO  VIS02RES-RECORDNAME
-     ****  CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-VISITPTLST02RES
                                        SPA-AREA
@@ -560,8 +547,7 @@
            MOVE    "xml_visitptlst02v2res" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "visitptlst02res"   TO  VIS02RES-RECORDNAME
-      **** CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-VISITPTLST02RES
                                        SPA-AREA
@@ -574,8 +560,7 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_visitptlst02v2res" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-      *****CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-VISITPTLST02RES
                                        SPA-AREA
@@ -782,8 +767,7 @@
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  TBL-MAX
-      *H29.4       IF      TBL-MAX         >   500
-                   IF      TBL-MAX         >   1000
+                   IF      TBL-MAX         >   500
                        MOVE    "12"            TO  WRK-ERRCD
                    ELSE
       *                明細項目編集
@@ -847,7 +831,7 @@
            MOVE    JYURRK-DENPNUM      TO  VIS01RES-DENPNUM (IDX)
       *    診療科
            PERFORM 200212-SRYKAMEI-HEN-SEC
-           MOVE    JYURRK-SRYKA        TO  VIS01RES-DEP-CODE (IDX)
+           MOVE    WRK-SRYKA           TO  VIS01RES-DEP-CODE (IDX)
            MOVE    WRK-SRYKA-NAME      TO  VIS01RES-DEP-NAME (IDX)
       *    ドクター
            IF      JYURRK-DRCD     NOT =   ZERO
@@ -859,20 +843,6 @@
            MOVE    JYURRK-HKNCOMBINUM  TO  VIS01RES-COMBINATION-NUMBER
                                                                (IDX)
            PERFORM 200214-HKNCOMBI-HEN-SEC
-      *H29.4
-      *    更新日
-           MOVE    JYURRK-UPYMD        TO  WRK-SYMD
-           MOVE    JYURRK-UPHMS        TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  VIS01RES-UPDATE-DATE(IDX)
-           MOVE    WRK-HEN-TIME        TO  VIS01RES-UPDATE-TIME(IDX)
-      *H29.12
-      *    患者登録更新日
-           MOVE    PTNUM-UPYMD         TO  WRK-SYMD
-           MOVE    PTNUM-UPHMS         TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  VIS01RES-PTNUM-UPDATE(IDX)
-           MOVE    WRK-HEN-TIME        TO  VIS01RES-PTNUM-UPTIME(IDX)
            .
        20021-JYURRK-HENSYU-EXT.
            EXIT.
@@ -883,26 +853,13 @@
        200211-PTNUM-HEN-SEC     SECTION.
       *
       *    患者番号取得
-      *    INITIALIZE                  ORCSPTIDAREA
-      *    MOVE    JYURRK-HOSPNUM      TO  SPTID-HOSPNUM
-      *    MOVE    JYURRK-PTID         TO  SPTID-PTID
-      *    CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-      *                                        SPA-AREA
-      *    MOVE    SPTID-PTNUM         TO  WRK-PTNUM
-      *    IF      SPTID-RC        NOT =   ZERO
-      *        患者番号エラー
-      *        MOVE    ALL "*"             TO  WRK-PTNUM
-      *        MOVE    1                   TO  FLG-ERR
-      *****END-IF
-      *H29.12
-      *    患者番号検索
-           INITIALIZE                  PTNUM-REC
-           MOVE    JYURRK-HOSPNUM      TO  PTNUM-HOSPNUM
-           MOVE    JYURRK-PTID         TO  PTNUM-PTID
-           PERFORM 900-PTNUM-READ-SEC
-           IF      FLG-PTNUM           =   ZERO
-               MOVE    PTNUM-PTNUM         TO  WRK-PTNUM
-           ELSE
+           INITIALIZE                  ORCSPTIDAREA
+           MOVE    JYURRK-HOSPNUM      TO  SPTID-HOSPNUM
+           MOVE    JYURRK-PTID         TO  SPTID-PTID
+           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                               SPA-AREA
+           MOVE    SPTID-PTNUM         TO  WRK-PTNUM
+           IF      SPTID-RC        NOT =   ZERO
       *        患者番号エラー
                MOVE    ALL "*"             TO  WRK-PTNUM
                MOVE    1                   TO  FLG-ERR
@@ -962,7 +919,6 @@
                MOVE    JYURRK-DRCD        TO   WRK-DRCD
                PERFORM 2002131-DRCD-CHK-SEC
            ELSE
-               MOVE    JYURRK-DRCD        TO   WRK-DRCD
                MOVE    VIS01RES-DR-NAME (IDX-H)
                                            TO  WRK-DRCD-NAME
            END-IF
@@ -1245,8 +1201,7 @@
                MOVE    "診療科コード誤り"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-      *        MOVE    "対象が５００件以上存在します。"
-               MOVE    "対象が１０００件以上存在します。"
+               MOVE    "対象が５００件以上存在します。"
                                                TO  WRK-ERRMSG
            WHEN    "13"
                MOVE    "対象がありません"
@@ -1331,37 +1286,6 @@
       *
            .
        900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者基本情報取得
-      *****************************************************************
-       900-PTNUM-READ-SEC              SECTION.
-      *
-           MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_ptnum"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 910-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTNUM-REC
-                   MOVE    ZERO                TO  FLG-PTNUM
-               ELSE
-                   MOVE    1                   TO  FLG-PTNUM
-                   INITIALIZE                  PTNUM-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-PTNUM
-               INITIALIZE                  PTNUM-REC
-           END-IF
-           MOVE    "tbl_ptnum"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       900-PTNUM-READ-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴マスター読込

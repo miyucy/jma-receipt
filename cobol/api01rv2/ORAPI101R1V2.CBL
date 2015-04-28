@@ -346,7 +346,6 @@
            IF      APILST5-BODY        NOT =   LOW-VALUE
                DISPLAY "SYS01REQ-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_system01_managev2req"

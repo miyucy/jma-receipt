@@ -499,9 +499,6 @@
                                        =   "84"   )  OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                        =   "0084"  ) OR
-      *H30.4
-                  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
-                                       =   "0992081") OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
                                        =   "001"   ))  AND
                   (ORAPIWKSRY-PRSCRPT-NUMBER(IDY IDZ)
@@ -681,10 +678,7 @@
                        IF   ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                                =   "0084"   )  OR
                              (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                               =   "001"    )
-      *H30.4
-                         OR  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
-                                               =   "0992081" ))
+                                               =   "001"    ))
                         AND  (SNUM-SYOSUU      >   0        )
                            MOVE    WRK-INPUTCHI(IDX-I)
                                                TO  TBL-WKSRY-INPUTCHI
