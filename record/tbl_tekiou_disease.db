@@ -1,0 +1,50 @@
+tbl_tekiou_disease {
+	KONOCD		char(5);
+	BYOMEI		varchar(100);
+	BEFORE_BYOMEI	varchar(50);
+	AFTER_BYOMEI	varchar(50);
+	BYOMEICD	varchar(7);
+	BEFORE_BYOMEICD	varchar(4);
+	AFTER_BYOMEICD	varchar(4);
+	ICD		varchar(5);
+	KAITEIYM	varchar(6);
+	HOJYOKBN	number(2);
+	KONOMEINO	number(6);
+	CREYMD		varchar(8);
+	UPYMD		varchar(8);
+	UPHMS		varchar(6);
+};
+primary	{
+	KONOCD, BYOMEICD;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_tekiou_disease_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tekiou_disease
+			WHERE KONOCD	=	:KONOCD
+			AND   BYOMEICD  =	:BYOMEICD
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_tekiou_disease_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tekiou_disease
+			WHERE KONOCD	=	:KONOCD
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_tekiou_disease_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tekiou_disease
+		ORDER   BY  KONOCD, BYOMEI
+		;
+	};
+};

@@ -855,6 +855,8 @@ grpsys                                 SPA-AREA
            WHEN    "27"
                MOVE    "入院料置換マスタ"
                                                TO  WRK-MSTNAME
+           WHEN    "28"
+               MOVE    "医薬品傷病名マスタ"    TO  WRK-MSTNAME
            WHEN    OTHER
                MOVE    PARA-MASTER-KBN         TO  WRK-MSTNAME
            END-EVALUATE
