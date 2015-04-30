@@ -1,5 +1,5 @@
 tbl_tekiou_disease {
-	KONOCD		char(5);
+	KONOCD		varchar(5);
 	BYOMEI		varchar(100);
 	BEFORE_BYOMEI	varchar(50);
 	AFTER_BYOMEI	varchar(50);

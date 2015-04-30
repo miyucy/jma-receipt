@@ -5,8 +5,8 @@
 --
 
 CREATE TABLE tbl_tekiou_medicine (
-  SRYCD    character(9) NOT NULL,
-  KONOCD   character(5) NOT NULL,
+  SRYCD    character varying(9) NOT NULL,
+  KONOCD   character varying(5) NOT NULL,
   KAITEIYM character varying(6),
   CREYMD   character varying(8),
   UPYMD    character varying(8),

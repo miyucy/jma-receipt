@@ -1,6 +1,6 @@
 tbl_tekiou_medicine {
-	SRYCD		char(9);
-	KONOCD		char(5);
+	SRYCD		varchar(9);
+	KONOCD		varchar(5);
 	KAITEIYM	varchar(6);
 	CREYMD		varchar(8);
 	UPYMD		varchar(8);
