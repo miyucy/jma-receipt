@@ -50,7 +50,6 @@
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
-           03  IDX3                    PIC 9(05).
            03  IDXA                    PIC 9(05).
            03  IDXD                    PIC 9(05).
            03  IDXK                    PIC 9(05).
@@ -261,8 +260,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-HSMEALV2REQ
-                                       XML-HSMEALRES
+           INITIALIZE                  XML-HSMEALRES
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -559,30 +557,6 @@
                                    TO  HSMEALRES-SAGAKU-DATA (IDXD)
                MOVE    SNINF03-SAGAKU-NAME (IDXD)
                                    TO  HSMEALRES-SAGAKU-NAME (IDXD)
-      *
-               MOVE    SNINF03-NYUKHN-LBL (IDXD)
-                                   TO  HSMEALRES-NYUKHN-LBL (IDXD)
-               PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL ( IDX3    >   5 )
-                        OR   ( SNINF03-NYUKHN-DATA (IDXD IDX3)
-                                       =   SPACE )
-                   MOVE    SNINF03-NYUKHN-DATA (IDXD IDX3)
-                               TO  HSMEALRES-NYUKHN-DATA (IDXD IDX3)
-                   MOVE    SNINF03-NYUKHN-NAME (IDXD IDX3)
-                               TO  HSMEALRES-NYUKHN-NAME (IDXD IDX3)
-               END-PERFORM
-      *
-               PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL ( IDX3    >   20 )
-                        OR   ( SNINF03-NYUKSN-LBL (IDXD IDX3)
-                                       =   SPACE )
-                   MOVE    SNINF03-NYUKSN-LBL (IDXD IDX3)
-                               TO  HSMEALRES-NYUKSN-LBL (IDXD IDX3)
-                   MOVE    SNINF03-NYUKSN-DATA (IDXD IDX3)
-                               TO  HSMEALRES-NYUKSN-DATA (IDXD IDX3)
-                   MOVE    SNINF03-NYUKSN-NAME (IDXD IDX3)
-                               TO  HSMEALRES-NYUKSN-NAME (IDXD IDX3)
-               END-PERFORM
       *
            END-PERFORM
       *
