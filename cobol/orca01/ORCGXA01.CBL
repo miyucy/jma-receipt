@@ -99,16 +99,12 @@
                            11  SPA-GMN-EDPAGE      PIC 9(05).
       *                 
                05  SPA-NAI-AREA.
-                   07  SPA-NAI-BODY.
-                       09  SPA-NAI-SELNUM          PIC 9(03).      
-                       09  SPA-NAI-BODY1.
-                           11  SPA-NAI-API         PIC X(1).
+                   07  SPA-NAI-SELNUM              PIC 9(03).      
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-OCC             OCCURS  100.
                            11  SPA-NAI-TTBL-KEY    PIC X(08).
                            11  SPA-NAI-TTBL-GROUP  PIC X(14).
                            11  SPA-NAI-TPRTFLG     PIC X(01).
-                           11  SPA-NAI-TAPI        PIC X(1).
       *
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *
@@ -130,11 +126,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-LIST-ROW        PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
-           03  FLG-LOOPEND         PIC 9(01).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-MONPE           PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -175,8 +166,6 @@
            03  WRK-MOTOPG          PIC X(08).
            03  WRK-XA01-MOTOPG     PIC X(08).
            03  WRK-SELNUM          PIC 9(03). 
-           03  WRK-RENNUM          PIC 9(04).
-           03  WRK-SHORI-RENNUM    PIC 9(04).
       *
            03  WRK-ZZ              PIC ZZ9.
       *  
@@ -309,7 +298,6 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
       *
@@ -401,12 +389,14 @@
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               MOVE    LNK-SCRSPA          TO  SPA-WORK
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *
       *        元の画面へ戻す
                EVALUATE    WRK-MOTOPG
                WHEN    "XB01"
-                   MOVE    SPA-WORK        TO   WRK-XA01-MOTOPG
+                   MOVE    SPA-WORK        TO   SPA-XA01KYOUTU
+                   MOVE    SPA-XA01-MOTOPG TO   WRK-XA01-MOTOPG
                    INITIALIZE                   SPA-XA01-AREA
                                                 SPA-XA01KYOUTU
                    MOVE    WRK-XA01-MOTOPG TO   SPA-XA01-MOTOPG
@@ -426,10 +416,9 @@
       *
            INITIALIZE              SPA-XA01-AREA
                                    SPA-XA01KYOUTU
-      *
-           MOVE    WRK-MOTOPG      TO  SPA-XA01-MOTOPG
-      *
            PERFORM 310-SPASET-SEC
+      *
+           MOVE    WRK-MOTOPG              TO  SPA-XA01-MOTOPG
       *
            .
        300-SCREEN-EXT.
@@ -509,17 +498,6 @@
                                                 TO  SPA-GMN-TSHORI-TITLE
                                                            (IDX)
                    END-SEARCH
-      *
-      *                                                                                          
-                   IF    ( SPA-XA01-MOTOPG     =   "X91" )
-                    AND  ( SPA-PRT-GROUP   NOT =   SPACE )
-                       IF    ( PRTKANRI-TBL-GROUP
-                                               =   SPA-PRT-GROUP )
-                           MOVE    PRTKANRI-TBL-GROUP
-                                               TO  SPA-GMN-TBL-GROUP
-                       END-IF
-                   END-IF
-      *
                END-IF                                 
                MOVE    PRTKANRI-RENNUM     TO  SPA-GMN-TRENNUM    (IDX)
                MOVE    PRTKANRI-SHORI-RENNUM
@@ -531,9 +509,6 @@
                IF      SPA-NAI-TPRTFLG (IDX)   =   SPACE
                    MOVE    "未"            TO  SPA-GMN-TPRTFLG (IDX)
                END-IF    
-               IF    ( PRTKANRI-SHELLID    =   "API" OR "API_01" )
-                   MOVE    "1"             TO  SPA-NAI-TAPI       (IDX)
-               END-IF
       *                                                                                          
                PERFORM 900-PRTKANRI-FET-SEC
            END-PERFORM
@@ -545,12 +520,8 @@
            MOVE    IDX                 TO  SPA-GMN-MAX
       *                                 
            MOVE    1                   TO  FLG-LIST-ROW
-      *
-           IF    ( SPA-GMN-TBL-GROUP   =   SPACE )
-               MOVE    1               TO  SPA-GMN-CUR
-           ELSE
-               MOVE    99              TO  SPA-GMN-CUR
-           END-IF
+      *                                 
+           MOVE    1                   TO  SPA-GMN-CUR                                                 
            .
        310-SPASET-EXT.
            EXIT.
@@ -645,8 +616,9 @@
            MOVE    SPA-GMN-EDPAGE      TO  LNK-XC01-ED-PAGE
            MOVE    SPA-XA01-MOTOPG     TO  LNK-XC01-MOTOPG
            MOVE    SPACE               TO  LNK-XC01-MODE
-      *
+      *          
            MOVE    LNK-XC01-AREA       TO  SPA-WORK
+           MOVE    SPA-WORK            TO  LNK-SCRSPA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
@@ -765,10 +737,8 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
-           IF    ( SPA-NAI-API     NOT =   "1" )
-               MOVE    XA01-STPAGE         TO  SPA-GMN-STPAGE
-               MOVE    XA01-EDPAGE         TO  SPA-GMN-EDPAGE
-           END-IF
+           MOVE    XA01-STPAGE         TO  SPA-GMN-STPAGE
+           MOVE    XA01-EDPAGE         TO  SPA-GMN-EDPAGE
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -796,7 +766,7 @@
            MOVE    1                   TO  SPA-GMN-CUR
       *
            INITIALIZE                  SPA-GMN-BODY
-                                       SPA-NAI-BODY
+           MOVE    ZERO                TO  SPA-NAI-SELNUM
       *      
            MOVE    XA01-SELNUM         TO  SPA-GMN-SELNUM
       *     
@@ -831,9 +801,6 @@
                                                SPA-GMN-SHORI-RENNUM
            MOVE    1                           TO  SPA-GMN-STPAGE
            MOVE    SPA-GMN-TPAGE       (IDY)   TO  SPA-GMN-EDPAGE 
-           MOVE    SPA-NAI-TAPI (IDY)          TO  SPA-NAI-API
-           MOVE    SPA-NAI-TTBL-GROUP  (IDY)   TO  SPA-GMN-TBL-GROUP
-           
            .
        2011-SELECT-HENSYU-EXT.
            EXIT.
@@ -1251,22 +1218,11 @@
                MOVE    "1002"              TO  SPA-ERRCD
                GO  TO  430-DELETE-EXT
            END-IF
-      *
+      *         
            INITIALIZE                      PRTDATA-REC
            MOVE    SPA-WRK-TBL-KEY     TO  PRTDATA-TBL-KEY
            MOVE    SPA-GMN-TBL-GROUP   TO  PRTDATA-TBL-GROUP
            MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
-           MOVE    PRTDATA-REC         TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_prtdata"       TO  MCP-TABLE
-           MOVE    "delmb1"            TO  MCP-PATHNAME
-           PERFORM 900-ORCDBMAIN-SEC
-      *
-           IF      MCP-RC         NOT  =   ZERO
-               MOVE    "1006"              TO  SPA-ERRCD
-               GO  TO  430-DELETE-EXT
-           END-IF
-      *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_prtdata"       TO  MCP-TABLE
@@ -1300,7 +1256,8 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SPA-JOB-SHELLID
       *
-           MOVE    SPA-XA01-MOTOPG     TO  SPA-WORK
+           MOVE    SPA-XA01KYOUTU      TO  SPA-WORK
+           MOVE    SPA-WORK            TO  LNK-SCRSPA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -1649,7 +1606,6 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  XA99
-           INITIALIZE                      XA99
            MOVE    ZERO                TO  XA99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  XA99-B12-STATE
       *        
@@ -1694,10 +1650,8 @@
                        MOVE    JOB-ENDTIME(5:2)
                                                TO  WRK-SS
                        MOVE    WRK-HENTIME     TO  XA99-ENDTIME  (IDX)
-                       IF    ( JOB-UPDCNT  NOT =   ZERO )
-                           MOVE    JOB-UPDCNT      TO  WRK-PAGE
-                           MOVE    WRK-PAGE (5:6)  TO  XA99-PAGE (IDX)
-                       END-IF
+                       MOVE    JOB-UPDCNT      TO  WRK-PAGE
+                       MOVE    WRK-PAGE (5:6)  TO  XA99-PAGE     (IDX)
                        MOVE    JOB-YOBI        TO  XA99-ERRMSG   (IDX)
                        IF      JOB-ENDYMD      =   SPACE
                            MOVE    "処理中です"    TO  XA99-MSG
@@ -1830,10 +1784,8 @@
            MOVE    SPA-GMN-RENNUM      TO  XA01-RENNUM
            MOVE    SPA-GMN-SHORI-RENNUM 
                                        TO  XA01-SHORI-RENNUM
-           IF    ( SPA-NAI-API     NOT =   "1" )
-               MOVE    SPA-GMN-STPAGE  TO  XA01-STPAGE
-               MOVE    SPA-GMN-EDPAGE  TO  XA01-EDPAGE                            
-           END-IF
+           MOVE    SPA-GMN-STPAGE      TO  XA01-STPAGE
+           MOVE    SPA-GMN-EDPAGE      TO  XA01-EDPAGE                            
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-GMN-MAX
@@ -1845,10 +1797,8 @@
                MOVE    SPA-GMN-TSHORI-RENNUM(IDX)
                                                TO
                                                XA01-TSHORI-RENNUM (IDX)
-               IF    ( SPA-NAI-TAPI (IDX)   NOT =   "1" )
-                   MOVE    SPA-GMN-TPAGE     (IDX) TO  WRK-PAGE
-                   MOVE    WRK-PAGE(6:5)       TO  XA01-TPAGE     (IDX)
-               END-IF
+               MOVE    SPA-GMN-TPAGE     (IDX) TO  WRK-PAGE
+               MOVE    WRK-PAGE(6:5)           TO  XA01-TPAGE     (IDX)
                MOVE    SPA-GMN-TSRYYM    (IDX) TO  XA01-TSRYYM    (IDX)
                MOVE    SPA-GMN-TSKYYMD   (IDX) TO  XA01-TSKYYMD   (IDX)
                MOVE    SPA-GMN-TSHORI-TITLE (IDX)  TO
@@ -1944,8 +1894,6 @@
                    MOVE    "帳票管理ＤＢが削除できませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-               WHEN    "1003"
-               WHEN    "1006"
                    MOVE    "帳票ＤＢが削除できませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1004"
@@ -2007,7 +1955,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  XAID1
-           INITIALIZE                       XAID1
            MOVE    SPA-XAIDCD           TO  XAID1-ID1CODE
            MOVE    WRK-XAIDMSG          TO  XAID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2044,42 +1991,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  XAID2
-           INITIALIZE                       XAID2
-      *
-           MOVE    ZERO                 TO  CNT-MONPE
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX     >   SPA-GMN-MAX )
-      *
-               MOVE    ZERO            TO  WRK-RENNUM
-                                           WRK-SHORI-RENNUM
-               IF    ( SPA-GMN-RENNUM  NOT =   ZERO )
-                   MOVE    SPA-GMN-TRENNUM (IDX)
-                                       TO  WRK-RENNUM
-               END-IF
-      *
-               IF    ( SPA-GMN-SHORI-RENNUM
-                                       NOT =   ZERO )
-                   MOVE    SPA-GMN-TSHORI-RENNUM (IDX)
-                                       TO  WRK-SHORI-RENNUM
-               END-IF
-      *
-               IF    ( SPA-NAI-TTBL-GROUP (IDX)
-                                       =   SPA-GMN-TBL-GROUP )
-                 AND ( WRK-RENNUM  =   SPA-GMN-RENNUM )
-                 AND ( WRK-SHORI-RENNUM
-                                       =   SPA-GMN-SHORI-RENNUM )
-                 AND ( SPA-NAI-TAPI (IDX)    NOT =   "1" )
-                    COMPUTE CNT-MONPE = CNT-MONPE   +   1
-               END-IF
-           END-PERFORM
-      *
-           IF    ( CNT-MONPE        >   ZERO )
-               MOVE    "T"          TO  XAID2-B10-VISIBLE
-           ELSE
-               MOVE    "F"          TO  XAID2-B10-VISIBLE
-           END-IF
-      *
            MOVE    SPA-XAIDCD2          TO  XAID2-ID1CODE
            MOVE    WRK-XAIDMSG          TO  XAID2-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2138,36 +2049,16 @@
       *****************************************************************
        900-PRTKANRI-FET-SEC            SECTION.
       *
-           MOVE    ZERO                TO  FLG-LOOPEND
-      *
-           PERFORM UNTIL ( FLG-PRTKANRI    NOT =   ZERO )
-                    OR   ( FLG-LOOPEND     NOT =   ZERO )
-      *
-               MOVE    "tbl_prtkanri"      TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "key13"             TO  MCP-PATHNAME
                PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PRTKANRI-REC
-                   MOVE    ZERO            TO  FLG-PRTKANRI
-      *
-                   MOVE    1               TO  FLG-LOOPEND
-      *
-                   IF    ( SPA-XA01-MOTOPG     =   "X91" )
-                    AND  ( SPA-PRT-GROUP   NOT =   SPACE )
-                       IF    ( PRTKANRI-TBL-GROUP
-                                               =   SPA-PRT-GROUP )
-                           CONTINUE
-                       ELSE
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-               ELSE
-                   MOVE    1               TO  FLG-PRTKANRI
-               END-IF
-      *
-           END-PERFORM
-      *
+      *                                  
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PRTKANRI-REC
+               MOVE    ZERO                TO  FLG-PRTKANRI
+           ELSE
+               MOVE    1                   TO  FLG-PRTKANRI
+           END-IF
            .
        900-PRTKANRI-FET-EXT.
            EXIT.
