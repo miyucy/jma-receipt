@@ -56,18 +56,12 @@
       *
       *  04.07.01    NACL-門脇    15/04/27  特記事項０９施がある場合の
       *                                     【配】回数記載対応
-      *  04.07.02    NACL-門脇    15/08/11  特記事項０９施がある場合の
-      *                                     【配】回数記載対応修正
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.03    NACL-門脇    14/07/29  ３２文字以上の文字列修正
       *                                     （コンパイル時のワーニング修正）
       *  04.08.04    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.05    NACL-門脇    16/02/05  医保レセプト「他保険にて診察料算定
-      *                                     済」コメント不記載対応
-      *  04.08.06    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -447,8 +441,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU 
                    MOVE    RECE04-FLG-HOUTEN-COMMENT
                                       TO  RECE042-FLG-HOUTEN-COMMENT
-                   MOVE    RECE04-TAHOKENNGFLG
-                                      TO  RECE042-TAHOKENNGFLG
                    MOVE    RECE04-JIHOKBN      TO  RECE042-JIHOKBN
                    ADD     1                   TO  WRK-COMRENNUM
                    MOVE    WRK-COMRENNUM       TO  RECE042-COMRENNUM
@@ -478,8 +470,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU 
                    MOVE    RECE04-FLG-HOUTEN-COMMENT
                                       TO  RECE042-FLG-HOUTEN-COMMENT
-                   MOVE    RECE04-TAHOKENNGFLG
-                                      TO  RECE042-TAHOKENNGFLG
                    MOVE    RECE04-JIHOKBN      TO  RECE042-JIHOKBN
                    IF      RECE04-COMCDFLG   =   "1"
                      ADD     1                 TO  WRK-COMRENNUM
@@ -607,15 +597,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
       *
                IF   WRK-KOHBUNRI-MIN  >  RECE04-KOHBUNRI
-                 IF   RECE04-ZAITEN  NOT = ZERO
                    MOVE   RECE04-KOHBUNRI  TO  WRK-KOHBUNRI-MIN
-                 END-IF
                END-IF
       *
                IF   WRK-KOHBUNRI-MAX  <  RECE04-KOHBUNRI
-                 IF   RECE04-ZAITEN  NOT = ZERO
                    MOVE   RECE04-KOHBUNRI  TO  WRK-KOHBUNRI-MAX
-                 END-IF
                END-IF
       *
                PERFORM     900-RECE04-READ-SEC
@@ -697,15 +683,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                      IF  (RECE05-SRYCD(IDZ)(1:1)  =   "8"  )  OR
                          (RECE05-SRYCD(IDZ)(1:3)  =   "008")
-                       IF   (RECE05-RECEPTFLG(IDZ)   =  "1")
-                       AND  (RECE05-RECEDENFLG(IDZ)  =  "1")
-                         CONTINUE
-                       ELSE
                          ADD       1                 TO  IDZ2
                          IF   IDZ2  <=  10
                             MOVE   RECE05-NAME(IDZ)  TO  WRK-COM(IDZ2)
                          END-IF
-                       END-IF
                      END-IF
       *
                   END-PERFORM
@@ -958,7 +939,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU
            MOVE    RECE04-FLG-HOUTEN-COMMENT
                                        TO  RECE042-FLG-HOUTEN-COMMENT
-           MOVE    RECE04-TAHOKENNGFLG TO  RECE042-TAHOKENNGFLG
            MOVE    RECE04-JIHOKBN      TO  RECE042-JIHOKBN
            START   RECE042-FILE
                KEY IS    >=   RECE042-KEY
@@ -979,8 +959,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE04-MEISAISU     NOT =  RECE042-MEISAISU)     OR
                   (RECE04-FLG-HOUTEN-COMMENT
                                 NOT =  RECE042-FLG-HOUTEN-COMMENT)  OR
-                  (RECE04-TAHOKENNGFLG
-                                NOT =  RECE042-TAHOKENNGFLG)        OR
                   (RECE04-JIHOKBN      NOT =  RECE042-JIHOKBN)      OR
                   (FLG-RECE042             =  1)
       *
