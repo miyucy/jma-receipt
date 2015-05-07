@@ -49,11 +49,6 @@
       *
       *  04.06.01    NACL-Æ£¸¶    12/10/26  ÆÃµ­»ö¹à£°£·¡ÊÏ·Ê»¡ËµÚ¤Ó
       *                                     £°£¸¡ÊÏ··ò¡Ë¤Î¥ì¥»¥×¥ÈÂÐ±þ
-      *
-      *  04.07.01    NACL-Æ£¸¶    15/06/19  ¿ÇÎÅ²ÊÉ½¼¨·ï¿ô¤ÎÊÑ¹¹
-      *
-      *  04.08.01    NACL-Æ£¸¶    16/08/08  ºÒ³²³ºÅöÊ¬¡ÊÈó¸ºÌÈÂÐ¾Ý¤È¸ºÌÈÂÐ¾Ý¡Ë
-      *                                     ¥ì¥»¥×¥È¤ÎÊ¬³äÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,11 +115,11 @@
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-HYOUJIKBNMEI    PIC X(08).
       *
-                   07  SPA-GMN-SYUKALST            OCCURS  100.
+                   07  SPA-GMN-SYUKALST            OCCURS  42.
                        09  SPA-GMN-SYUKAL          PIC X(02).
                        09  SPA-GMN-C02-F1L         PIC X(01).
                        09  SPA-GMN-SYUKAMEIL       PIC X(20).
-                   07  SPA-GMN-SYUKA-MAX           PIC 9(03).
+                   07  SPA-GMN-SYUKA-MAX           PIC 9(02).
       *
                    07  SPA-GMN-SYUKA-TABLE.
                        09  SPA-GMN-SYUKA-TBL       OCCURS  500.
@@ -141,7 +136,6 @@
                            11  SPA-GMN-THOJOKBN    PIC X(20).
                            11  SPA-GMN-TRECEIPT-KBN
                                                    PIC X(04).
-                           11  SPA-GMN-TDISASTER   PIC X(02).
                            11  SPA-GMN-TSYUKA-AUTO PIC X(06).
                            11  SPA-GMN-TSYUKA-INPUT
                                                    PIC X(06).
@@ -189,7 +183,7 @@
                                                    PIC X(12).
       *
                05  SPA-NAI-AREA.
-                   07  SPA-NAI-SYUKALST            OCCURS  100.
+                   07  SPA-NAI-SYUKALST            OCCURS  42.
                        09  SPA-NAI-SYUKAMEIL       PIC X(12).
       *
                    07  SPA-NAI-SRYYM               PIC 9(06).
@@ -408,7 +402,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA42SCRAREA.INC".
+           COPY    "R01.INC".
+           COPY    "R02.INC".
+           COPY    "R03.INC".
+           COPY    "R04.INC".
+           COPY    "R05.INC".
+           COPY    "R06.INC".
+           COPY    "R96.INC".
+           COPY    "R97.INC".
+           COPY    "R98.INC".
+           COPY    "R99.INC".
+           COPY    "RERR.INC".
+           COPY    "RID1.INC".
+           COPY    "RID2.INC".
+           COPY    "RID3.INC".
+           COPY    "RID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -609,8 +617,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            END-IF 
       *
            MOVE    ZERO                TO  IDX
-           PERFORM         UNTIL     ( IDX            >=  99  )
-                           OR        ( FLG-SYSKANRI   =   1   )
+           PERFORM         UNTIL     ( IDX            >=  40 )
+                           OR        ( FLG-SYSKANRI   =   1  )
                ADD     1                     TO  IDX
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO
@@ -1018,10 +1026,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    WHEN    "2"
                        MOVE    "Ï··ò"  TO  SPA-GMN-TRECEIPT-KBN
                                                               (WRK-LINE)
-               END-EVALUATE
-               EVALUATE    LNK-SYUACC-IO-RECEIPT-KBN(IDX1) (5:1)
-                   WHEN    "1"
-                       MOVE    "ºÒ"    TO  SPA-GMN-TDISASTER  (WRK-LINE)
                END-EVALUATE
                MOVE    LNK-SYUACC-IO-SYUKA-AUTO (IDX1)
                                        TO  SPA-GMN-TSYUKA-AUTO(WRK-LINE)
@@ -2419,7 +2423,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            PERFORM 45011-PARA-HENSYU-SEC
       *
            MOVE    SPACE               TO  R99
-           INITIALIZE                      R99
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE
            MOVE    "black"             TO  R99-MSG-STYLE
@@ -2585,7 +2588,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       * 
            MOVE    SPACE               TO  R97
       *
-           INITIALIZE                      R97
            MOVE    SPA-GMN-SRYYM       TO  R97-SRYYM
       *
            MOVE    SPA-GMN-NYUGAIKBN-G TO  R97-NYUGAIKBN
@@ -2641,8 +2643,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  R97-SYUKA-THOJOKBN    (IDX)
                MOVE    SPA-GMN-TRECEIPT-KBN(IDX)
                                        TO  R97-SYUKA-TRECEIPT-KBN(IDX)
-               MOVE    SPA-GMN-TDISASTER   (IDX)
-                                       TO  R97-SYUKA-TDISASTER   (IDX)
                MOVE    SPA-GMN-TSYUKA-INPUT(IDX)
                                        TO  R97-SYUKA-TSYUKA-INPUT(IDX)
                MOVE    SPA-GMN-TSYUKA-AUTO (IDX)
@@ -2901,7 +2901,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
-           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD
