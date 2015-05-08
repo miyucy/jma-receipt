@@ -275,7 +275,7 @@
                                            SPA-XB01KYOUTU
                    MOVE    LNK-KYOUTU  TO  SPA-KYOUTU
                    MOVE    SPA-MOTOPG  TO  SPA-XB01-MOTOPG
-                   IF      SPA-XB01-MOTOPG     =   "XA01"
+                   IF      SPA-XB01-MOTOPG     =   "XA01"  OR  "XG01"
                        MOVE    SPA-WORK        TO  SPA-XB01-LN-MOTOPG
                    END-IF
                END-IF
@@ -713,7 +713,7 @@
            MOVE    SPA-XB01-MOTOPG     TO  SPA-SAKIPG
            MOVE    "XB01"              TO  SPA-MOTOPG
       *
-           IF      SPA-XB01-MOTOPG     =   "XA01"
+           IF      SPA-XB01-MOTOPG     =   "XA01"  OR  "XG01"
                MOVE    SPA-XB01-LN-MOTOPG  TO  SPA-WORK
            END-IF
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
