@@ -45,7 +45,6 @@
       *  01.00.10    NACL-太田    03/11/19  シェルパラメータの変更他
       *  01.00.11    NACL-森脇    04/07/29  直前ジョブ管理チェック
       *  03.05.00    NACL-太田    07/06/01  グループ診療対応
-      *  05.00.00    NACL-森脇    17/11/30  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -313,10 +312,6 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *----(05.00.00)--ADD-START---
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -1197,17 +1192,9 @@
                    MOVE    "3"             TO  SHELLTBL-ARG17
       *         WHEN    "NO"
       *             MOVE    "3"             TO  SHELLTBL-ARG17
-      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   IF      SPA-CLIENT-PRT-FLG  =  2
-                       MOVE    "5"         TO  SHELLTBL-ARG17
-                   ELSE
-                       MOVE    "2"         TO  SHELLTBL-ARG17
-                   END-IF
+                   MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-               MOVE    SPA-CLIENT-SHOWDIALOG
-                                           TO  SHELLTBL-ARG22
-      *----(05.00.00)--ADD-END-----
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
@@ -2523,7 +2510,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  D99
-           INITIALIZE                      D99
            MOVE    ZERO                TO  D99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  D99-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE
@@ -3342,7 +3328,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  DID1
-           INITIALIZE                      DID1
            MOVE    SPA-DIDCD           TO  DID1-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -3381,7 +3366,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  DID2
-           INITIALIZE                      DID2
            MOVE    SPA-DIDCD           TO  DID2-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
