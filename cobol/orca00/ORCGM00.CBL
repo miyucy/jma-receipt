@@ -586,10 +586,10 @@
       *    年度切替メッセージ
            MOVE    ORCSCOMMON-LABLMSG  TO  SPA-GMN-LBLMSG2
       *ver.4.7
-           IF      FLG-INIT            =   1
+      *****IF      FLG-INIT            =   1
       *        環境設定の初期表示で背景色を設定する
                PERFORM 3109-M95INIT-SEC
-           END-IF
+      *****END-IF
       *ver.4.7
       *
            MOVE    '1'                 TO  SPA-NOCHK-HOSPNUM
