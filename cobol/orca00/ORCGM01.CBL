@@ -462,9 +462,10 @@
        30012-PRTDEL-SYORI-SEC          SECTION.
       *
       *    °õºþºï½ü½èÍý
+           MOVE    "orc_cups_del.sh"   TO  SHELL-SHELL
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "orc_cups_del.sh"   TO  SHELLTBL-NAME
+           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
            MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
            MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
            MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
@@ -473,7 +474,7 @@
       *
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "allways"           TO  MCP-PATHNAME
+           MOVE    "shell"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
