@@ -44,9 +44,9 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>NAME</name>
-        <x>170</x>
-        <y>12</y>
-        <width>504</width>
+        <x>104</x>
+        <y>44</y>
+        <width>570</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -393,11 +393,27 @@
       </widget>
       <widget>
         <class>GtkPandaEntry</class>
-        <name>STYUKYMD</name>
-        <x>676</x>
-        <y>12</y>
-        <width>80</width>
+        <name>SRYCD</name>
+        <x>396</x>
+        <y>16</y>
+        <width>120</width>
         <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <editable>False</editable>
+        <text_max_length>9</text_max_length>
+        <text></text>
+        <input_mode>XIM</input_mode>
+        <xim_enabled>False</xim_enabled>
+      </widget>
+      <widget>
+        <class>GtkPandaEntry</class>
+        <name>STYUKYMD</name>
+        <x>588</x>
+        <y>16</y>
+        <width>85</width>
+        <height>25</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -410,10 +426,10 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>EDYUKYMD</name>
-        <x>778</x>
-        <y>12</y>
-        <width>80</width>
-        <height>24</height>
+        <x>720</x>
+        <y>16</y>
+        <width>85</width>
+        <height>25</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -426,8 +442,8 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>CHKKBN</name>
-        <x>8</x>
-        <y>12</y>
+        <x>104</x>
+        <y>16</y>
         <width>160</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -438,6 +454,24 @@
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>label161</name>
+        <x>12</x>
+        <y>16</y>
+        <width>92</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>チェック区分</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
       </widget>
       <widget>
         <class>GtkPandaEntry</class>
@@ -649,11 +683,29 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
-        <name>label163</name>
-        <x>754</x>
-        <y>12</y>
-        <width>24</width>
+        <name>label159</name>
+        <x>288</x>
+        <y>16</y>
+        <width>105</width>
         <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>診療行為コード</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>label163</name>
+        <x>676</x>
+        <y>16</y>
+        <width>40</width>
+        <height>25</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -690,7 +742,7 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>BYOSTATUS</name>
-        <x>292</x>
+        <x>386</x>
         <y>508</y>
         <width>94</width>
         <height>24</height>
@@ -718,7 +770,7 @@
         <name>SELNUM</name>
         <x>104</x>
         <y>508</y>
-        <width>188</width>
+        <width>282</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -818,10 +870,10 @@
       <widget>
         <class>GtkPandaCombo</class>
         <name>CMB_NYUGAIKBN</name>
-        <x>860</x>
-        <y>12</y>
-        <width>156</width>
-        <height>24</height>
+        <x>812</x>
+        <y>16</y>
+        <width>160</width>
+        <height>25</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -877,10 +929,28 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
+        <name>label162</name>
+        <x>528</x>
+        <y>16</y>
+        <width>60</width>
+        <height>25</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>有効期間</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
         <name>LBLREIGAIYKZ</name>
-        <x>778</x>
-        <y>36</y>
-        <width>236</width>
+        <x>748</x>
+        <y>44</y>
+        <width>200</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -890,6 +960,24 @@
         <xpad>0</xpad>
         <ypad>0</ypad>
         <label>例外薬剤の登録があります。</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>label160</name>
+        <x>12</x>
+        <y>44</y>
+        <width>92</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>漢字名称</label>
         <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
       </widget>
@@ -1206,9 +1294,9 @@
         <class>GtkScrolledWindow</class>
         <name>scrolledwindow1</name>
         <x>8</x>
-        <y>64</y>
+        <y>76</y>
         <width>484</width>
-        <height>436</height>
+        <height>428</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -1323,9 +1411,9 @@
         <class>GtkScrolledWindow</class>
         <name>scrolledwindow3</name>
         <x>548</x>
-        <y>64</y>
+        <y>76</y>
         <width>468</width>
-        <height>382</height>
+        <height>370</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -1527,7 +1615,7 @@
         <name>CMB_UTAGAIKBN</name>
         <x>104</x>
         <y>648</y>
-        <width>504</width>
+        <width>225</width>
         <height>25</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1544,7 +1632,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <text_max_length>80</text_max_length>
+          <text_max_length>32</text_max_length>
           <text>1 システム管理の設定に従う</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1709,6 +1797,24 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
+        <name>LBLSYSKANRI</name>
+        <x>336</x>
+        <y>648</y>
+        <width>185</width>
+        <height>25</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label></label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
         <name>LBLHOSOKU_JYKNKBN</name>
         <x>416</x>
         <y>620</y>
@@ -1758,80 +1864,6 @@
         <xpad>0</xpad>
         <ypad>0</ypad>
         <label>）</label>
-        <justify>GTK_JUSTIFY_LEFT</justify>
-        <wrap>False</wrap>
-      </widget>
-      <widget>
-        <class>GtkLabel</class>
-        <name>LBLTEKBYOKBN</name>
-        <x>8</x>
-        <y>36</y>
-        <width>260</width>
-        <height>24</height>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <xalign>0</xalign>
-        <yalign>0.5</yalign>
-        <xpad>0</xpad>
-        <ypad>0</ypad>
-        <label>適応病名マスタからの直接データチェック</label>
-        <justify>GTK_JUSTIFY_LEFT</justify>
-        <wrap>False</wrap>
-      </widget>
-      <widget>
-        <class>GtkPandaCombo</class>
-        <name>CMB_TEKBYOKBN</name>
-        <x>276</x>
-        <y>36</y>
-        <width>480</width>
-        <height>24</height>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <border_width>0</border_width>
-        <items></items>
-        <case_sensitive>False</case_sensitive>
-        <use_arrows>True</use_arrows>
-        <widget>
-          <class>GtkPandaEntry</class>
-          <child_name>GtkPandaCombo:entry</child_name>
-          <name>TEKBYOKBN</name>
-          <sensitive>True</sensitive>
-          <can_focus>True</can_focus>
-          <has_focus>False</has_focus>
-          <editable>True</editable>
-          <text_max_length>100</text_max_length>
-          <text>1 システム管理の設定に従う</text>
-          <input_mode>XIM</input_mode>
-          <xim_enabled>False</xim_enabled>
-          <signal>
-            <name>changed</name>
-            <handler>entry_changed</handler>
-            <data>CHANGED</data>
-          </signal>
-          <signal>
-            <name>activate</name>
-            <handler>send_event</handler>
-            <data>ACTIVATE</data>
-          </signal>
-        </widget>
-      </widget>
-      <widget>
-        <class>GtkLabel</class>
-        <name>LBLMSG01</name>
-        <x>390</x>
-        <y>508</y>
-        <width>124</width>
-        <height>24</height>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <xalign>0</xalign>
-        <yalign>0.5</yalign>
-        <xpad>0</xpad>
-        <ypad>0</ypad>
-        <label>適応病名</label>
         <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
       </widget>
