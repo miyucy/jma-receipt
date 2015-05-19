@@ -3,7 +3,6 @@ tbl_henrei_body	{
 	TEISYUTUSAKI		char(1);
 	TEISYUTUSAKI2		char(1);
 #---->  審査側が処理した年月(HIレコードの年月)
-	HOSPCD			char(7);
 	SYORIYM			char(6);
 	RECEIPT_NO		char(6);
 #---->  返戻レセ電は個人で複数件あるのでそのカウント
@@ -30,17 +29,25 @@ tbl_henrei_body	{
 	JKYNUM_3		varchar(7);
 	FTNNUM_4		varchar(8);
 	JKYNUM_4		varchar(7);
-	DISASTER		char(2);
 #---->  検索番号(再請求で使用する番号 HRレコードよりセット)
 	SEARCH_NO		varchar(30);
+#---->  確か西川さんが管理情報は振替しないとゆってたから
+#---->  これをインデックスで探すのもありか?
+#---->  RCレコードのデータ部よりセット…そもそもこれいるか?
 	CHECK_NO		varchar(100);
 	HR_CODE			char(5);
 	HR_MSG			varchar(1000);
 #---->  返戻レセ電データ(履歴管理ブロック部)
+#---->  ※値が空の場合もある("HR"レコードの次からここが埋まる)
+#---->    分ける必要がないか?(管理情報で対応?)
 	HENREI_INFO1		varchar(20);
 #---->  返戻レセ電データ(データ部)
 	HENREI_INFO2		varchar(3000);
 	ERRCD			char(3);
+#-----> 請求管理情報(紐付け用)  後9個設けよう
+#-----> ptnum,sryym 不正時(これだけでよいか いるか)
+#-----> sryym は受付エラーになるからありえん
+#---->  レセ電データを作成したかどうかのフラグ
 	S_SYORIYMD_1		char(8);
 	S_MAKE_FLG_1		number(1,0);
 	S_HENREIYM_1		char(6);
@@ -55,7 +62,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_1		char(8);
 	S_RECEIPT_KBN_1		char(10);
 	S_KIGO_1		varchar(40);
-	S_DISASTER_1		char(2);
 	S_SYORIYMD_2		char(8);
 	S_MAKE_FLG_2		number(1,0);
 	S_HENREIYM_2		char(6);
@@ -70,7 +76,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_2		char(8);
 	S_RECEIPT_KBN_2		char(10);
 	S_KIGO_2		varchar(40);
-	S_DISASTER_2		char(2);
 	S_SYORIYMD_3		char(8);
 	S_MAKE_FLG_3		number(1,0);
 	S_HENREIYM_3		char(6);
@@ -85,7 +90,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_3		char(8);
 	S_RECEIPT_KBN_3		char(10);
 	S_KIGO_3		varchar(40);
-	S_DISASTER_3		char(2);
 	S_SYORIYMD_4		char(8);
 	S_MAKE_FLG_4		number(1,0);
 	S_HENREIYM_4		char(6);
@@ -100,7 +104,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_4		char(8);
 	S_RECEIPT_KBN_4		char(10);
 	S_KIGO_4		varchar(40);
-	S_DISASTER_4		char(2);
 	S_SYORIYMD_5		char(8);
 	S_MAKE_FLG_5		number(1,0);
 	S_HENREIYM_5		char(6);
@@ -115,7 +118,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_5		char(8);
 	S_RECEIPT_KBN_5		char(10);
 	S_KIGO_5		varchar(40);
-	S_DISASTER_5		char(2);
 	S_SYORIYMD_6		char(8);
 	S_MAKE_FLG_6		number(1,0);
 	S_HENREIYM_6		char(6);
@@ -130,7 +132,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_6		char(8);
 	S_RECEIPT_KBN_6		char(10);
 	S_KIGO_6		varchar(40);
-	S_DISASTER_6		char(2);
 	S_SYORIYMD_7		char(8);
 	S_MAKE_FLG_7		number(1,0);
 	S_HENREIYM_7		char(6);
@@ -145,7 +146,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_7		char(8);
 	S_RECEIPT_KBN_7		char(10);
 	S_KIGO_7		varchar(40);
-	S_DISASTER_7		char(2);
 	S_SYORIYMD_8		char(8);
 	S_MAKE_FLG_8		number(1,0);
 	S_HENREIYM_8		char(6);
@@ -160,7 +160,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_8		char(8);
 	S_RECEIPT_KBN_8		char(10);
 	S_KIGO_8		varchar(40);
-	S_DISASTER_8		char(2);
 	S_SYORIYMD_9		char(8);
 	S_MAKE_FLG_9		number(1,0);
 	S_HENREIYM_9		char(6);
@@ -175,7 +174,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_9		char(8);
 	S_RECEIPT_KBN_9		char(10);
 	S_KIGO_9		varchar(40);
-	S_DISASTER_9		char(2);
 	S_SYORIYMD_10		char(8);
 	S_MAKE_FLG_10		number(1,0);
 	S_HENREIYM_10		char(6);
@@ -190,7 +188,6 @@ tbl_henrei_body	{
 	S_TEKSTYMD_10		char(8);
 	S_RECEIPT_KBN_10	char(10);
 	S_KIGO_10		varchar(40);
-	S_DISASTER_10		char(2);
 #-----> ここまで
 	TERMID			varchar(64);
 	OPID			varchar(16);
@@ -202,7 +199,7 @@ XXTEISYUTUSAKI                  char(1),virtual;
 };
 
 primary	{
-	HOSPNUM,TEISYUTUSAKI,TEISYUTUSAKI2,HOSPCD,SYORIYM,RECEIPT_NO,PT_RENNUM;
+	HOSPNUM,TEISYUTUSAKI,TEISYUTUSAKI2,SYORIYM,RECEIPT_NO,PT_RENNUM;
 };
 
 path    key             {
@@ -245,7 +242,6 @@ path    key3            {
                     AND   TEISYUTUSAKI    = :TEISYUTUSAKI
                     AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
                     AND   SYORIYM         = :SYORIYM
-                    AND   HOSPCD          = :HOSPCD
                     AND   RECEIPT_NO      = :RECEIPT_NO
                     AND   SELECT_FLG      = 1 
                     ORDER BY PT_RENNUM
@@ -271,7 +267,6 @@ path    upd1    {
                 S_TEKSTYMD_1     =   :S_TEKSTYMD_1,
                 S_RECEIPT_KBN_1  =   :S_RECEIPT_KBN_1,
                 S_KIGO_1         =   :S_KIGO_1,
-                S_DISASTER_1     =   :S_DISASTER_1,
                 S_SYORIYMD_2     =   :S_SYORIYMD_2,
                 S_MAKE_FLG_2     =   :S_MAKE_FLG_2,
                 S_HENREIYM_2     =   :S_HENREIYM_2,
@@ -286,7 +281,6 @@ path    upd1    {
                 S_TEKSTYMD_2     =   :S_TEKSTYMD_2,
                 S_RECEIPT_KBN_2  =   :S_RECEIPT_KBN_2,
                 S_KIGO_2         =   :S_KIGO_2,
-                S_DISASTER_2     =   :S_DISASTER_2,
                 S_SYORIYMD_3     =   :S_SYORIYMD_3,
                 S_MAKE_FLG_3     =   :S_MAKE_FLG_3,
                 S_HENREIYM_3     =   :S_HENREIYM_3,
@@ -301,7 +295,6 @@ path    upd1    {
                 S_TEKSTYMD_3     =   :S_TEKSTYMD_3,
                 S_RECEIPT_KBN_3  =   :S_RECEIPT_KBN_3,
                 S_KIGO_3         =   :S_KIGO_3,
-                S_DISASTER_3     =   :S_DISASTER_3,
                 S_SYORIYMD_4     =   :S_SYORIYMD_4,
                 S_MAKE_FLG_4     =   :S_MAKE_FLG_4,
                 S_HENREIYM_4     =   :S_HENREIYM_4,
@@ -316,7 +309,6 @@ path    upd1    {
                 S_TEKSTYMD_4     =   :S_TEKSTYMD_4,
                 S_RECEIPT_KBN_4  =   :S_RECEIPT_KBN_4,
                 S_KIGO_4         =   :S_KIGO_4,
-                S_DISASTER_4     =   :S_DISASTER_4,
                 S_SYORIYMD_5     =   :S_SYORIYMD_5,
                 S_MAKE_FLG_5     =   :S_MAKE_FLG_5,
                 S_HENREIYM_5     =   :S_HENREIYM_5,
@@ -331,7 +323,6 @@ path    upd1    {
                 S_TEKSTYMD_5     =   :S_TEKSTYMD_5,
                 S_RECEIPT_KBN_5  =   :S_RECEIPT_KBN_5,
                 S_KIGO_5         =   :S_KIGO_5,
-                S_DISASTER_5     =   :S_DISASTER_5,
                 S_SYORIYMD_6     =   :S_SYORIYMD_6,
                 S_MAKE_FLG_6     =   :S_MAKE_FLG_6,
                 S_HENREIYM_6     =   :S_HENREIYM_6,
@@ -346,7 +337,6 @@ path    upd1    {
                 S_TEKSTYMD_6     =   :S_TEKSTYMD_6,
                 S_RECEIPT_KBN_6  =   :S_RECEIPT_KBN_6,
                 S_KIGO_6         =   :S_KIGO_6,
-                S_DISASTER_6     =   :S_DISASTER_6,
                 S_SYORIYMD_7     =   :S_SYORIYMD_7,
                 S_MAKE_FLG_7     =   :S_MAKE_FLG_7,
                 S_HENREIYM_7     =   :S_HENREIYM_7,
@@ -361,7 +351,6 @@ path    upd1    {
                 S_TEKSTYMD_7     =   :S_TEKSTYMD_7,
                 S_RECEIPT_KBN_7  =   :S_RECEIPT_KBN_7,
                 S_KIGO_7         =   :S_KIGO_7,
-                S_DISASTER_7     =   :S_DISASTER_7,
                 S_SYORIYMD_8     =   :S_SYORIYMD_8,
                 S_MAKE_FLG_8     =   :S_MAKE_FLG_8,
                 S_HENREIYM_8     =   :S_HENREIYM_8,
@@ -376,7 +365,6 @@ path    upd1    {
                 S_TEKSTYMD_8     =   :S_TEKSTYMD_8,
                 S_RECEIPT_KBN_8  =   :S_RECEIPT_KBN_8,
                 S_KIGO_8         =   :S_KIGO_8,
-                S_DISASTER_8     =   :S_DISASTER_8,
                 S_SYORIYMD_9     =   :S_SYORIYMD_9,
                 S_MAKE_FLG_9     =   :S_MAKE_FLG_9,
                 S_HENREIYM_9     =   :S_HENREIYM_9,
@@ -391,7 +379,6 @@ path    upd1    {
                 S_TEKSTYMD_9     =   :S_TEKSTYMD_9,
                 S_RECEIPT_KBN_9  =   :S_RECEIPT_KBN_9,
                 S_KIGO_9         =   :S_KIGO_9,
-                S_DISASTER_9     =   :S_DISASTER_9,
                 S_SYORIYMD_10     =  :S_SYORIYMD_10,
                 S_MAKE_FLG_10     =  :S_MAKE_FLG_10,
                 S_HENREIYM_10     =  :S_HENREIYM_10,
@@ -406,7 +393,6 @@ path    upd1    {
                 S_TEKSTYMD_10     =  :S_TEKSTYMD_10,
                 S_RECEIPT_KBN_10  =  :S_RECEIPT_KBN_10,
                 S_KIGO_10         =  :S_KIGO_10,
-                S_DISASTER_10     =   :S_DISASTER_10,
                 UPYMD             =  :UPYMD,
                 UPHMS             =  :UPHMS
                 WHERE     HOSPNUM         = :HOSPNUM
@@ -414,7 +400,6 @@ path    upd1    {
                     AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
                     AND   SYORIYM         = :SYORIYM
                     AND   RECEIPT_NO      = :RECEIPT_NO
-                    AND HOSPCD            = :HOSPCD
                 ;
         };
 };
@@ -425,56 +410,7 @@ path    del1    {
                     AND   TEISYUTUSAKI    = :TEISYUTUSAKI
                     AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
                     AND   SYORIYM         = :SYORIYM
-                    AND   HOSPCD          = :HOSPCD
                 ;
         };
 };
 
-path    key4            {
-        DBSELECT        {
-                DECLARE tbl_henrei_body_key4_csr CURSOR FOR
-                SELECT *
-                FROM tbl_henrei_body
-                WHERE     HOSPNUM         = :HOSPNUM
-                    AND   TEISYUTUSAKI    = :TEISYUTUSAKI
-                    AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
-                    AND   SYORIYM         = :SYORIYM
-                    AND   HOSPCD          = :HOSPCD
-                    AND   PT_RENNUM       = 1
-                ORDER BY RECEIPT_NO
-                ;
-        };
-};
-
-path    key5            {
-        DBSELECT        {
-                DECLARE tbl_henrei_body_key5_csr CURSOR FOR
-                SELECT *
-                FROM tbl_henrei_body
-                WHERE     HOSPNUM         = :HOSPNUM
-                    AND   TEISYUTUSAKI    = :TEISYUTUSAKI
-                    AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
-                    AND   SYORIYM         = :SYORIYM
-                    AND   HOSPCD          = :HOSPCD
-                    AND   RECEIPT_NO      = :RECEIPT_NO
-                    AND   ERRCD           <> ''
-                    AND   SUBSTRING(HENREI_INFO2,1,2) <> 'HG'
-                ORDER BY PT_RENNUM
-                ;
-        };
-};
-
-path    key6            {
-        DBSELECT        {
-                DECLARE tbl_henrei_body_key6_csr CURSOR FOR
-                SELECT *
-                FROM tbl_henrei_body
-                WHERE     HOSPNUM         = :HOSPNUM
-                    AND   TEISYUTUSAKI    = :TEISYUTUSAKI
-                    AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
-                    AND   SYORIYM         = :SYORIYM
-                    AND   HOSPCD          = :HOSPCD
-                    AND   SUBSTRING(HENREI_INFO2,1,2) = 'HG'
-                ;
-        };
-};
