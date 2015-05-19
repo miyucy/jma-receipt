@@ -390,7 +390,26 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA102SCRAREA.INC".
+           COPY    "Z01.INC".
+           COPY    "Z02.INC".
+           COPY    "Z03.INC".
+           COPY    "Z04.INC".
+           COPY    "Z05.INC".
+           COPY    "Z06.INC".
+           COPY    "Z07.INC".
+           COPY    "Z08.INC".
+           COPY    "Z90.INC".
+           COPY    "Z91.INC".
+           COPY    "Z97.INC".
+           COPY    "Z98.INC".
+           COPY    "Z99.INC".
+           COPY    "ZERR.INC".
+           COPY    "ZID1.INC".
+           COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "CPAPIMOD.INC".
+           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1741,8 +1760,7 @@
                IF      SPA-Z98-GMN-SYORI3      =   "U6"
                    IF      TNS-SRYCD           >=  "099999911"
                        IF     (TNS-SRYCD           >=  "099999921"
-      *H29.10                                  AND <=  "099999929" )
-                                               AND <=  "099999949" )
+                                               AND <=  "099999929" )
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-CHK
@@ -2017,12 +2035,6 @@
       *    ÉÂ±¡¿ÇÎÅ½ê¶èÊ¬È½Äê
            IF      (TNS-HOSPSRYKBN     =   ZERO        )  OR
                    (TNS-HOSPSRYKBN     =   SPA-HOSPSBT )
-      *H30.4
-      *       Ã»´üÂÚºß¼ê½Ñ´ðËÜ£²¡ÊÉÂ±¡¡¦¿ÇÎÅ½ê¡Ë
-              OR   (TNS-HOSPSRYKBN     =   3   )
-      *       Ã»´üÂÚºß¼ê½Ñ´ðËÜ£³¡ÊÉÂ±¡¤Î¤ß¡Ë
-              OR  ((TNS-HOSPSRYKBN     =   4   )   AND
-                   (SPA-HOSPSBT        =   1   ))
                CONTINUE
            ELSE
                MOVE   1                TO  FLG-CHK
@@ -2226,26 +2238,6 @@
                                INTO        SPA-Z98-GMN-NAME(IDX)
                 END-STRING
            END-IF
-      *H29.3
-      *    ¸åÈ¯°åÌôÉÊºÆÊÔ½¸
-           IF     (TNS-SRYCD(1:1)      =   "6") AND
-                  (TNS-KOUHATUKBN      =   3  )
-                MOVE    SPACE              TO  SPA-Z98-GMN-NAME (IDX)
-                STRING  "¡ÚÀèÌµ²Ã¡Û"  DELIMITED   BY  SIZE
-                        TNS-NAME      DELIMITED   BY  SIZE
-                               INTO        SPA-Z98-GMN-NAME(IDX)
-                END-STRING
-           END-IF
-      *    ¸åÈ¯°åÌôÉÊºÆÊÔ½¸
-           IF     (TNS-SRYCD(1:1)      =   "6") AND
-                  (TNS-KOUHATUKBN      =   4  )
-                MOVE    SPACE              TO  SPA-Z98-GMN-NAME (IDX)
-                STRING  "¡Ú²Ã¡Û"      DELIMITED   BY  SIZE
-                        TNS-NAME      DELIMITED   BY  SIZE
-                               INTO        SPA-Z98-GMN-NAME(IDX)
-                END-STRING
-           END-IF
-      *
       *    Ìô²Á´ð½à¥³¡¼¥É
            IF      TNS-SRYCD (1:1)     =   "6"
       *        °ìÈÌÌ¾µ­ºÜ¶èÊ¬
@@ -2295,25 +2287,6 @@
                       TNS-NAME             DELIMITED   BY  SPACE
                       INTO                 SPA-Z98-GMN-NAME(IDX)
                END-STRING
-           END-IF
-      *
-      *H29.3
-      *    ´ïºàÊÌÉ½¶èÊ¬ÊÔ½¸
-           IF     (TNS-SRYCD(1:1)      =   "7" )
-             AND  (TNS-CDKBN-BU        =   "01"
-                                       OR  "08" )
-               MOVE    SPACE               TO  SPA-Z98-GMN-NAME (IDX)
-               IF      TNS-CDKBN-BU        =   "01"
-                   STRING  "¡Úºß¡Û"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 SPA-Z98-GMN-NAME(IDX)
-                   END-STRING
-               ELSE
-                   STRING  "¡ÚÄ´¡Û"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 SPA-Z98-GMN-NAME(IDX)
-                   END-STRING
-               END-IF
            END-IF
       *!!
       *H24.6
@@ -4504,8 +4477,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SYSYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SYSYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
