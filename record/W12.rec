@@ -208,50 +208,6 @@ W12 {
           textdata varchar(50);
         };
       };
-      fi32 {
-        HKN_RIREKI_COMBO {
-          HKN_RIREKI {
-            textdata varchar(22);
-          };
-          count int;
-            item varchar(22)[2];
-        };
-        GENBUTU_ICHIBU_COMBO {
-          GENBUTU_ICHIBU {
-            textdata varchar(38);
-          };
-          count int;
-            item varchar(38)[5];
-        };
-        COMPRESS_COMBO {
-          COMPRESS {
-            textdata varchar(30);
-          };
-          count int;
-            item varchar(30)[2];
-        };
-        DISASTER_RECEIPT_COMBO {
-          DISASTER_RECEIPT {
-            textdata varchar(20);
-          };
-          count int;
-            item varchar(20)[5];
-        };
-        YKZ_15_COMBO {
-          YKZ_15 {
-            textdata varchar(20);
-          };
-          count int;
-            item varchar(20)[5];
-        };
-        KOUHI_ICHIBU_COMBO {
-          KOUHI_ICHIBU {
-            textdata varchar(32);
-          };
-          count int;
-            item varchar(32)[5];
-        };
-      };
       fi30 {
         SYAPRTNM {
           textdata varchar(16);
@@ -438,27 +394,6 @@ W12 {
           count int;
             item varchar(24)[5];
         };
-        JIBAI_FRACTION_KBN1_COMBO {
-          JIBAI_FRACTION_KBN1 {
-            textdata varchar(38);
-          };
-          count int;
-            item varchar(38)[5];
-        };
-        JIBAI_FRACTION_KBN2_COMBO {
-          JIBAI_FRACTION_KBN2 {
-            textdata varchar(38);
-          };
-          count int;
-            item varchar(38)[5];
-        };
-        JIBAI_PDF_COMBO {
-          JIBAI_PDF {
-            textdata varchar(20);
-          };
-          count int;
-            item varchar(20)[2];
-        };
         ROUPRTNM {
           textdata varchar(16);
         };
@@ -562,13 +497,6 @@ W12 {
           };
           count int;
             item varchar(20)[2];
-        };
-        RECEDEN_LST2KBN_MEDIA_COMBO {
-          RECEDEN_LST2KBN_MEDIA {
-            textdata varchar(20);
-          };
-          count int;
-            item varchar(20)[5];
         };
         RECEDEN_RIREKI_COMBO {
           state int;
@@ -751,13 +679,6 @@ W12 {
           count int;
             item varchar(24)[2];
         };
-        DISASTER_SYAPRTKBN_COMBO {
-          DISASTER_SYAPRTKBN {
-            textdata varchar(32);
-          };
-          count int;
-            item varchar(32)[2];
-        };
         KKHPRTKBN_COMBO {
           KKHPRTKBN {
             textdata varchar(20);
@@ -771,20 +692,6 @@ W12 {
           };
           count int;
             item varchar(34)[5];
-        };
-        ROUSAIPRTKBN_COMBO {
-          ROUSAIPRTKBN {
-            textdata varchar(20);
-          };
-          count int;
-            item varchar(20)[2];
-        };
-        FRAME_ROUSAIPRTKBN_COMBO {
-          FRAME_ROUSAIPRTKBN {
-            textdata varchar(20);
-          };
-          count int;
-            item varchar(20)[2];
         };
       };
       fi27 {
@@ -862,17 +769,10 @@ W12 {
         };
         INSPECT_INCLUDE_COMBO {
           INSPECT_INCLUDE {
-            textdata varchar(32);
+            textdata varchar(24);
           };
           count int;
-            item varchar(32)[5];
-        };
-        INSPECT_GENERAL_COMBO {
-          INSPECT_GENERAL {
-            textdata varchar(30);
-          };
-          count int;
-            item varchar(30)[5];
+            item varchar(24)[5];
         };
         DRNAME_KSIKBN_COMBO {
           DRNAME_KSIKBN {
