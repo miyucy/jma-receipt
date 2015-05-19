@@ -136,7 +136,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "L01.INC".
+           COPY    "L02.INC".
+           COPY    "L03.INC".
+           COPY    "L04.INC".
+           COPY    "L06.INC".
+           COPY    "L07.INC".
+           COPY    "L99.INC".
+           COPY    "L100.INC".
+           COPY    "LERR.INC".
+           COPY    "LID1.INC".
+           COPY    "LID2.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G03.INC".
+           COPY    "G05.INC".
+           COPY    "G07.INC".
+           COPY    "G99.INC".
+           COPY    "G100.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -357,21 +377,26 @@
                            PERFORM 4902-FILE-INFO-CHK-SEC
                        ELSE
       *                    ファイルエントリ処理(クライアント保存)
-                           IF      SPA-SFILESV-MAX   >   SPA-SFILESV-IDX
-                               ADD     1   TO  SPA-SFILESV-IDX 
-                               PERFORM 3001-FILEENTRY-SEC
-                           ELSE
-                               IF      SPA-SFILESV-MAX NOT =   ZERO
-                                   MOVE    ZERO    TO  G99-DURATION
-                                   MOVE    ZERO    TO  SPA-SFILESV-IDX
-                               END-IF
-                           END-IF
+                           ADD     1               TO  SPA-SFILESV-IDX 
+                           PERFORM 3001-FILEENTRY-SEC
                        END-IF
                    END-IF
                END-IF    
            END-IF
       *
            IF    ( FLG-END             =   ZERO )
+      *
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   IF      SPA-SFILESV-MAX =   SPA-SFILESV-IDX
+                       ADD     1               TO  SPA-SFILESV-IDX 
+                   END-IF
+               ELSE
+                   IF      SPA-SFILESV-MAX NOT =   ZERO
+                       MOVE    ZERO            TO  G99-DURATION
+                   END-IF
+               END-IF
       *
                MOVE    "CURRENT"           TO  MCP-PUTTYPE
                MOVE    "G99    "           TO  MCP-WINDOW
