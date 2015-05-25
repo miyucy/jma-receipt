@@ -56,8 +56,6 @@
       * 04.03.02     NACL-森脇     08/12/04  薬剤情報複写機能追加
       * 04.07.01     NACL-森脇     14/04/02  画像表示方法変更
       * 04.08.01     NACL-森脇     14/08/07  画像イメージ作成機能追加
-      * 04.08.02     NACL-森脇     16/09/27  GINBEE(API)対応
-      * 05.00.00     NACL-森脇     17/02/10  自費薬剤登録対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -708,11 +706,8 @@
                    MOVE    SPA-GMN-KENCD   TO  WRK-NAME
                    PERFORM 800-TENSULIST-SET-SEC
                ELSE
-      *----(05.00.00)--UPD-START---
-      *             IF    ( KANACHK-MAX     =   9 ) AND
-      *                   ( SPA-GMN-KENCD(1:1)  =   "6" )
-                   IF    ( KANACHK-MAX     =   9 )
-      *----(05.00.00)--UPD-END-----
+                   IF    ( KANACHK-MAX     =   9 ) AND
+                         ( SPA-GMN-KENCD(1:1)  =   "6" )
                        MOVE    SPA-GMN-KENCD   TO  WRK-SRYCD
                        PERFORM 900-TENSU-READ-SEC
                        IF      FLG-TENSU       =   ZERO
@@ -1168,9 +1163,6 @@
       *****************************************************************
        430-GAZOCHK-HENSYU-SEC      SECTION.
       *
-           MOVE    SPACE           TO  SPA-N21FIL-PHOTO
-           MOVE    LOW-VALUE       TO  N21-PHOTOAREA
-      *
            IF      SPA-GMN-PHOTO   =   SPACE
                MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
@@ -1183,7 +1175,8 @@
       *
       *    カナチェック
            IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
-                 ( KANACHK-RC          NOT =   ZERO ) 
+                 ( KANACHK-RC          NOT =   ZERO )  OR
+                 ( KANACHK-RC2             =   7    )
                MOVE    "0003"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
                GO  TO  430-GAZOCHK-HENSYU-EXT
@@ -1200,18 +1193,64 @@
       *
       *    パス名をフォルダ名とファイル名に分ける
            PERFORM 431-GAZO-PATH-CHK-SEC
-      *
-      *    ファイル存在チェック
-           PERFORM 431-GAZO-FILE-CHK
-           IF      FLG-OK    =   1
-               MOVE    "0014"      TO  SPA-ERRCD
-               MOVE    10          TO  SPA-GMN-CUR
-               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
-               GO  TO  430-GAZOCHK-HENSYU-EXT
+           IF      FLG-OK          =   ZERO
+               MOVE    SPACE           TO  ORCA-BLOB-FILE
+               STRING  MCP-TEMPDIR         DELIMITED BY SPACE
+                       "/"                 DELIMITED BY SIZE
+                       WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
+                       "/"                 DELIMITED BY SIZE
+                       WRK-FILEMEI         DELIMITED BY SPACE
+                                   INTO    ORCA-BLOB-FILE
+               END-STRING
            END-IF
       *
-      *    画像ファイルを表示
-           PERFORM 500-GAZO-OBJECT-SEC
+           IF    ( SPA-N21FIL-PHOTO    NOT =   SPACE )
+      *        画像ファイルがない場合はファイル作成する
+      *         INITIALIZE                  ORCSFILECHKAREA
+      *         MOVE     ORCA-BLOB-FILE TO  FILECHK-NAME
+      *         CALL    "ORCSFILECHK"       USING
+      *                                     ORCSFILECHKAREA
+      *         IF      FILECHK-RC      NOT =   0
+                   MOVE    SPA-N21FIL-OBJECT
+                                       TO  ORCA-BLOB-OBJECT
+      *            画像イメージを表示
+                   MOVE    "BLOBEXPORT"    TO  MCP-FUNC
+                   MOVE    "blob"          TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               ORCA-BLOB
+                                               SPA-AREA
+      *
+                   INITIALIZE                  ORCSMIAREA
+                   MOVE    "misizechk"     TO  ORCSMI-SRYCD
+                   MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+                   MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
+                   CALL    "ORCSMISAVE"        USING
+                                               ORCSMIAREA
+                                               SPA-AREA
+                   IF      ORCSMI-RETCD    NOT =   ZERO
+                       MOVE    SPACE               TO  SPA-N21FIL-PHOTO
+                       MOVE    LOW-VALUE           TO  SPA-N21FIL-OBJECT
+                       MOVE    N21-PHOTO           TO  SPA-GMN-PHOTO
+                       MOVE    "0022"              TO  SPA-ERRCD
+                       GO  TO  430-GAZOCHK-HENSYU-EXT
+                   END-IF
+      *         END-IF
+           ELSE
+               MOVE    SPACE           TO  SPA-N21FIL-PHOTO
+               MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
+           END-IF
+      *
+      *    画像イメージを表示
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
            .
        430-GAZOCHK-HENSYU-EXT.
            EXIT.
@@ -1221,8 +1260,6 @@
       *****************************************************************
        431-GAZOCHK-SYOKI-SEC       SECTION.
       *
-           MOVE    LOW-VALUE       TO  N21-PHOTOAREA
-      *
            IF      SPA-GMN-PHOTO   =   SPACE
                MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  431-GAZOCHK-SYOKI-EXT
@@ -1230,6 +1267,16 @@
       *
       *    パス名をフォルダ名とファイル名に分ける
            PERFORM 431-GAZO-PATH-CHK-SEC
+           IF      FLG-OK          =   ZERO
+               MOVE    SPACE           TO  ORCA-BLOB-FILE
+               STRING  MCP-TEMPDIR         DELIMITED BY SPACE
+                       "/"                 DELIMITED BY SIZE
+                       WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
+                       "/"                 DELIMITED BY SIZE
+                       WRK-FILEMEI         DELIMITED BY SPACE
+                                   INTO    ORCA-BLOB-FILE
+               END-STRING
+           END-IF
       *
       *    データからイメージファイル作成
            INITIALIZE                  ORCSMIAREA
@@ -1239,37 +1286,18 @@
            CALL    "ORCSMILOAD"        USING
                                        ORCSMIAREA
                                        SPA-AREA
+      *
+      *    画像イメージを表示
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
            .
        431-GAZOCHK-SYOKI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画像ファイル存在チェック
-      *****************************************************************
-       431-GAZO-FILE-CHK           SECTION.
-      *
-           MOVE    SPACE           TO  ORCA-BLOB-FILE
-           STRING  MCP-TEMPDIR         DELIMITED BY SPACE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-FILEMEI         DELIMITED BY SPACE
-                               INTO    ORCA-BLOB-FILE
-           END-STRING
-      *
-           MOVE    ZERO            TO  FLG-OK
-      *
-      *    画像ファイルがない場合は処理抜ける
-           INITIALIZE                  ORCSFILECHKAREA
-           MOVE    ORCA-BLOB-FILE  TO  FILECHK-NAME
-           CALL    "ORCSFILECHK"       USING
-                                       ORCSFILECHKAREA
-           IF      FILECHK-RC      NOT =   0
-               MOVE    1               TO  FLG-OK
-           END-IF
-      *
-           .
-       431-GAZO-FILE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1664,16 +1692,6 @@
       *    画像処理
       *****************************************************************
        440-GAZOU-SEC               SECTION.
-      *
-           PERFORM 430-TEXTCHK-SEC
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               IF      SPA-ERRCD   =   "0014"
-                   MOVE    SPACE       TO  SPA-ERRCD
-               ELSE
-                   GO  TO  440-GAZOU-EXT
-               END-IF
-           END-IF
       *
            MOVE    SPA-N21KYOUTU   TO  SPA-WORK
            MOVE    SPA-N21SCRAREA  TO  SPA-FREE
@@ -2281,7 +2299,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPACE           TO  N21
       *
       *    スクロール位置セット
-           INITIALIZE                  N21
            MOVE    WRK-ROW         TO  N21-ROW
            MOVE    ZERO            TO  N21-ROWATTR
       *
@@ -2311,22 +2328,16 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPA-GMN-SHAPE       TO  N21-SHAPE
            MOVE    SPA-GMN-MARK        TO  N21-MARK
            MOVE    SPA-GMN-CAUTION     TO  N21-CAUTION
-      *
-           MOVE    LOW-VALUE           TO  N21-PHOTOAREA
+           MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
       *
       *    画像パス編集
-           PERFORM 431-GAZO-PATH-CHK-SEC
-           IF      FLG-OK      =   1
-               MOVE    WRK-PASSMEI     TO  N21-PHOTO
-           ELSE
-               MOVE    WRK-FILEMEI     TO  N21-PHOTO
-           END-IF
-      *
-      *    ファイル存在チェック
-           PERFORM 431-GAZO-FILE-CHK
-           IF      FLG-OK    =   0
-      *        画像イメージを表示
-               PERFORM 500-GAZO-OBJECT-SEC
+           IF      SPA-GMN-PHOTO   NOT =   SPACE
+               PERFORM 431-GAZO-PATH-CHK-SEC
+               IF      FLG-OK      =   1
+                   MOVE    WRK-PASSMEI     TO  N21-PHOTO
+               ELSE
+                   MOVE    WRK-FILEMEI     TO  N21-PHOTO
+               END-IF
            END-IF
       *
       *    参照ボタン非活性
@@ -2338,12 +2349,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    WIDGET-NORMAL       TO  N21-B09-STATE
                MOVE    WIDGET-NORMAL       TO  N21-B11-STATE
            END-IF
-      *
-      *----(05.00.00)--ADD-START---
-           IF        ( SPA-NAI-YAKKAKJNCD  =   SPACE )
-               MOVE    WIDGET-INSENSITIVE  TO  N21-B11-STATE
-           END-IF
-      *----(05.00.00)--ADD-END-----
       *
       *    複写ボタン非活性
            IF        ( SPA-GMN-JYOTAIFLG   =   ZERO )
@@ -2373,23 +2378,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
        500-GMNHEN-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    画像表示処理
-      *****************************************************************
-       500-GAZO-OBJECT-SEC         SECTION.
-      *
-      *    画像イメージを表示
-           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-           MOVE    "blob"          TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-           MOVE    ORCA-BLOB-OBJECT    TO  N21-PHOTOAREA
-           .
-       500-GAZO-OBJECT-EXT.
-           EXIT.
       *****************************************************************
       *    エラーメッセージ表示処理
       *****************************************************************
@@ -2534,7 +2522,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
            END-EVALUATE
       *
            MOVE    SPACE           TO  N21ID1
-           INITIALIZE                  N21ID1
            MOVE    SPA-N21IDCD     TO  N21ID1-ID1CODE
            MOVE    WRK-N21IDMSG    TO  N21ID1-ID1MSG
            MOVE    "B12"           TO  MCP-WIDGET
@@ -2654,27 +2641,14 @@ grpsys     CALL    "ORCDBMAIN"         USING
                                        ORCSADDSIGNAREA
            MOVE    SADDSIGN-STR    TO  TNS-NAME
                                        TNS-KANANAME
-      *----(05.00.00)--UPD-START---
-      *     MOVE    "key5"          TO  WRK-TNSPATH
-           MOVE    "key2"          TO  WRK-TNSPATH
-      *----(05.00.00)--UPD-END-----
+           MOVE    "key5"          TO  WRK-TNSPATH
            PERFORM 900-TENSU-SELECT-SEC
       *
       *    リストセット
            MOVE    ZERO            TO  IDX
            PERFORM UNTIL ( IDX     =    200 )
                    OR    ( FLG-TENSU    =   1 )
-      *----(05.00.00)--ADD-START---
-               EVALUATE    TNS-SRYCD
-                   WHEN    "600000000" THRU    "699999999"
-                   WHEN    "095210001" THRU    "095279999"
-                   WHEN    "096210001" THRU    "096279999"
-                       PERFORM 800-LIST-TENSU-SET-SEC
-               END-EVALUATE
-      *----(05.00.00)--ADD-END-----
-      *----(05.00.00)--UPD-START---
-      *         PERFORM 800-LIST-TENSU-SET-SEC
-      *----(05.00.00)--UPD-END-----
+               PERFORM 800-LIST-TENSU-SET-SEC
                PERFORM 900-TENSU-FETCH-SEC
            END-PERFORM
       *
@@ -2825,12 +2799,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                IF      MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-INPUTCD
                    MOVE    MCPDATA-REC     TO  INPUTCD-REC
-      *----(05.00.00)--UPD-START---
-      *             IF      ICD-SRYCD(1:1)  =   "6"
-                   EVALUATE    ICD-SRYCD
-                   WHEN    "600000000" THRU    "699999999"
-                   WHEN    "095210001" THRU    "095279999"
-                   WHEN    "096210001" THRU    "096279999"
+                   IF      ICD-SRYCD(1:1)  =   "6"
                        MOVE    1               TO  FLG-OK
       *                入力コード同一コードチェック
                        PERFORM VARYING IDY     FROM    1   BY  1
@@ -2840,8 +2809,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                                MOVE    ZERO        TO  FLG-OK
                            END-IF
                        END-PERFORM
-                   END-EVALUATE
-      *----(05.00.00)--UPD-END-----
+                   END-IF
                ELSE
                    MOVE    1               TO  FLG-INPUTCD
                    MOVE    1               TO  FLG-OK
@@ -2926,17 +2894,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    点数マスタ読み込み処理
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
-      *
-      *----(05.00.00)--ADD-START---
-           EVALUATE    WRK-SRYCD
-               WHEN    "600000000" THRU    "699999999"
-               WHEN    "095210001" THRU    "095279999"
-               WHEN    "096210001" THRU    "096279999"
-                   CONTINUE
-               WHEN    OTHER
-                   GO  TO  900-TENSU-READ-EXT
-           END-EVALUATE
-      *----(05.00.00)--ADD-END-----
       *
       *    点数マスタ読み込み
            INITIALIZE                  TNS-TENSU-REC
