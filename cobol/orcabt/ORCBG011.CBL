@@ -31,7 +31,6 @@
       * 01.00.02     NACL-森脇     04/01/06  期間表示変更
       * 01.00.03     NACL-森脇     04/10/22  CLOSE追加
       * 03.05.01     NACL-森脇     07/06/05  グループ診療対応
-      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,12 +74,7 @@
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //BG01101//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER                      PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    印刷用領域
            COPY    "HCM39.INC".
@@ -126,9 +120,7 @@
            03  WRK-PARA-JOBID              PIC 9(07).
            03  WRK-PARA-SHELLID            PIC X(08).
            03  WRK-PARA-HOSPNUM            PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR                     PIC X(100).
-      *----(04.08.01)--UPD-END-----
+           03  RECEERR                     PIC X(100).
            03  WRK-PARA-SITEIKBN           PIC X(01).
            03  WRK-PARA-YUKOSTRYM          PIC X(06).
            03  WRK-PARA-YUKOENDYM          PIC X(06).
@@ -319,6 +311,9 @@
       *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
+      *    会計カード編集サブ
+           COPY    "CPORCHCM34.INC".
+      *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
@@ -327,11 +322,6 @@
       *
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
-      *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -385,9 +375,6 @@
            INITIALIZE                  KEY-AREA
            INITIALIZE                  ERR-EDIT-AREA
            INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -454,18 +441,6 @@
            MOVE    "BG01101"           TO  BG01101PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  BG01101PARA-TERMID
            MOVE    SPA-HOSPNUM         TO  BG01101PARA-HOSPNUM
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG01101PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG01101PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
       *    パラメータチェック処理
            PERFORM 1001-PARA-CHK-SEC
