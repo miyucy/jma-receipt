@@ -565,7 +565,7 @@
            COPY    "CPORCSSYOTOKU.INC".
       *
       *    入院料未算定日取得サブ
-           COPY    "CPORCSNYUINDAY.INC".
+           COPY    "CPORCSNYUINDAY2.INC".
       *
       *    医療区分取得サブ
            COPY    "CPORCSS008.INC".
@@ -629,8 +629,7 @@
        100-PRM-CHK-SEC                     SECTION.
       *
       *    算定年月チェック
-           IF     (LNK-NYULIFE-SANTEIYM    =   SPACE)  OR
-                  (LNK-NYULIFE-SANTEIYM    >=  "201604")
+           IF      LNK-NYULIFE-SANTEIYM    =   SPACE
                MOVE    1               TO  LNK-NYULIFE-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
@@ -697,11 +696,11 @@
       *    該当日の食事が生活療養に該当するか判定（サブプロより取得）
            MOVE    ZERO                    TO  WRK-KYUKYU-DAY
            MOVE    SPACE                   TO  WRK-KYUKYU-YMD
-           INITIALIZE                          ORCSNYUINDAY-AREA
+           INITIALIZE                          ORCSNYUINDAY2-AREA
            MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-NYULIFE-PTID        TO  LNK-NYUINDAY-PTID
            MOVE    LNK-NYULIFE-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
+           CALL    "ORCSNYUINDAY2"     USING   ORCSNYUINDAY2-AREA
                                                SPA-AREA
            IF      LNK-NYUINDAY-RC         =   ZERO
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
@@ -1087,11 +1086,11 @@
       *
       *    短期滞在手術基本料２（短期滞在手術基本料３）の入院料未算定日
       *    について生活療養の該当日と軽減区分２の情報を取得（サブプロより取得）
-           INITIALIZE                          ORCSNYUINDAY-AREA
+           INITIALIZE                          ORCSNYUINDAY2-AREA
            MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-NYULIFE-PTID        TO  LNK-NYUINDAY-PTID
            MOVE    LNK-NYULIFE-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
+           CALL    "ORCSNYUINDAY2"     USING   ORCSNYUINDAY2-AREA
                                                SPA-AREA
            IF      LNK-NYUINDAY-RC         =   ZERO
                IF    LNK-NYUINDAY-TANKI2-TBL   NOT =    SPACE
@@ -1208,7 +1207,6 @@
                MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-SYOTOKU-HOSPNUM
                MOVE    LNK-NYULIFE-PTID        TO  LNK-SYOTOKU-PTID
                MOVE    LNK-NYULIFE-SANTEIYM    TO  LNK-SYOTOKU-SRYYM
-               MOVE    "1"                     TO  LNK-SYOTOKU-SKJCHKFLG
                CALL   "ORCSSYOTOKU"    USING    ORCSSYOTOKUAREA
                                                 SPA-AREA
                IF    LNK-SYOTOKU-RC    =        ZERO
