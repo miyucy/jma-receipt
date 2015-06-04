@@ -37,7 +37,6 @@
       * 04.07.01     NACL-門脇    13/09/30  自賠責（第三者行為）対応
       * 04.07.00     NACL-多々納  14/02/13  労災金額％加算対応
       * 04.08.00     NACL-多々納  14/07/30  一時ディレクトリ対応
-      * 05.00.00     NACL-太田    17/11/24  API対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -110,7 +109,6 @@
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(06).
            03  CNT-MEI             PIC 9(06).
-           03  CNT-API             PIC 9(06).
       *
       *    システム領域
        01  SYS-AREA.
@@ -167,13 +165,6 @@
       *
            03  WRK-SRYYMD              PIC X(08).
       *
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
-      *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
            03  WRK-Z88-X.
@@ -204,10 +195,6 @@
            03  WRK-ORC-DBPATH          PIC X(64).
            03  WRK-SRYKA-MEI           PIC X(20).
       *
-           03  WRK-SYMD.
-               05  WRK-SYY             PIC X(4).
-               05  WRK-SMM             PIC X(2).
-               05  WRK-SDD             PIC X(2).
            03  WRK-HEN-DAY.
                05  WRK-H-MM            PIC Z9.
                05  WRK-H-P             PIC X(01).
@@ -235,7 +222,6 @@
       *H24.9
            03  WRK-PARA-HKNNUM         PIC X(03).
            03  WRK-CHK-HKNCOMBI        PIC X(04).
-           03  WRK-ENDPAGE             PIC 9(03).
       *
       *    集計テーブル
        01  TBL-AREA.
@@ -307,27 +293,10 @@
       *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-HKNCOMBIKBN        PIC X(01).
-           03  PARA-API-DATA           PIC X(1).
-           03  PARA-API-CUSTOM-ID      PIC X(30).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
       *
-       01  API-AREA.
-           03  API-ROW.
-               05  API-SRYYMD.
-                   07  API-SRYYM       PIC X(06).
-                   07  API-SRYDD       PIC X(02).
-               05  API-NAIYO           PIC X(08)
-                                       OCCURS 10.
-               05  API-BIKOU           PIC X(08).
-               05  API-ENDPAGE-G.
-                   07  API-ENDPAGE     PIC ZZ9.
-               05  API-ENDLINE-G.
-                   07  API-ENDLINE     PIC Z9.
-      *
-       01  CONST-AREA.
-           03  CONST-API-BODY-MAX      PIC 9(05) VALUE 400.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -402,11 +371,6 @@
       *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    API対応
-      *    外来カルテ３号紙情報構造体
-           COPY    "CPFMKARTE3.INC".
-           COPY    "CPORCRPMAIN.INC".
-      *
       *一括用
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
@@ -470,7 +434,6 @@
            INITIALIZE                  TBL-AREA
            INITIALIZE                  TBL-HKNCOMBI-AREA
            INITIALIZE                  TBL-HEN-AREA
-           INITIALIZE                  FMKARTE3-REC
       *
            ACCEPT  SYS-TIME            FROM    TIME
            MOVE    ZERO                TO  WRK-PAGE
@@ -514,32 +477,6 @@
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-HKNCOMBIKBN
       *
-      *    ＡＰＩ返却データ（1:作成する 帳票印刷なし）
-           MOVE    "API_DATA"          TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           IF    ( WRK-PARA(1:1)       =   "1" )
-               MOVE    WRK-PARA(1:1)   TO  PARA-API-DATA
-           END-IF
-      *
-           IF     (PARA-API-DATA       =   "1"       )
-               CONTINUE
-           ELSE
-      *        API送信なし
-               MOVE    "0"             TO  PARA-API-DATA
-           END-IF
-      *
-      *    ＡＰＩカスタムＩＤ
-           MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA            TO  PARA-API-CUSTOM-ID
-      *
-      *    バッチは保険区分なし、ＡＰＩ処理なし
-           IF      ORCHC33-KBN         =   "2"
-               MOVE    "0"             TO  PARA-HKNCOMBIKBN
-               MOVE    "0"             TO  PARA-API-DATA
-               MOVE    SPACE           TO  PARA-API-CUSTOM-ID
-           END-IF
-      *
            .
        100-OPTION-SELECT-EXT.
            EXIT.
@@ -554,25 +491,10 @@
            CALL    "ORCSPRGOPTION"     USING   SPA-AREA
                                                ORCSPRGOPTIONAREA
            MOVE    SPACE               TO  WRK-PARA
-           EVALUATE    WRK-PARA-NAME
-           WHEN    "API_CUSTOM_ID"
-               MOVE    ORCSPRGOPTION-OT-PARA (1:30)
-                                       TO  WRK-PARA
-           WHEN    OTHER
-               IF      ORCSPRGOPTION-OT-TYPE   =   1
-      *            半角で１文字目を値とする
-                   MOVE    ORCSPRGOPTION-OT-PARA(1:1)
-                                       TO  WRK-PARA(1:1)
-               END-IF
-           END-EVALUATE
-      *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"             TO  KANACHK-SYORI
-           MOVE    WRK-PARA        TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT
-                                   TO  WRK-PARA
-      *
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
+           END-IF
            .
        1001-OPTION-CALL-EXT.
            EXIT.
@@ -776,10 +698,6 @@
       *
       *    最終印刷頁
            MOVE    ORCHC33-ENDPAGE     TO  ORCHC33-PAGE
-           IF    ( ORCHC33-ENDPAGE     =   ZERO )
-            AND  ( ORCHC33-ENDLINE     >   ZERO )
-               MOVE    1               TO  ORCHC33-PAGE
-           END-IF
       *    最終印行
            IF      ORCHC33-ENDLINE     =   ZERO
                MOVE    ZERO            TO  FLG-HC331
@@ -804,19 +722,13 @@
       *****************************************************************
        2001-HEAD-PRINT-SEC            SECTION.
       *
-           IF    ( PARA-API-DATA       =   "1" )
-      *       印刷処理
-              PERFORM 7009-API-CALLSYORI-SEC
-           ELSE
-      *
-      *       見出し編集
-              PERFORM 20031-HEAD-HEN-SEC
-      *       年度、ページクリア
-              MOVE    SPACE            TO  HCM33-PAGE
-              MOVE    SPACE            TO  HCM33-SRYYM
-      *       印刷処理
-              PERFORM 2003-HC33-PRINT-SEC
-           END-IF
+      *    見出し編集
+           PERFORM 20031-HEAD-HEN-SEC
+      *    年度、ページクリア
+           MOVE    SPACE               TO  HCM33-PAGE
+           MOVE    SPACE               TO  HCM33-SRYYM
+      *    印刷処理
+           PERFORM 2003-HC33-PRINT-SEC
            .
        2001-HEAD-PRINT-EXT.
            EXIT.
@@ -869,14 +781,8 @@
                END-IF
            END-PERFORM
       *
-           IF  PARA-API-DATA           =   "1"
-               IF      CNT-API         >   ZERO
-                   PERFORM 7009-API-CALLSYORI-SEC
-               END-IF
-           ELSE
-               IF      CNT-MEI             >   ZERO
-                   PERFORM 2003-HC33-PRINT-SEC
-               END-IF
+           IF      CNT-MEI             >   ZERO
+               PERFORM 2003-HC33-PRINT-SEC
            END-IF
       *
            .
@@ -1549,14 +1455,6 @@
       *        MOVE    ZERO                TO  CNT-MEI
       *****END-IF
       *
-      *H30.1
-      *    バッチ印刷の保険組合せ編集
-           IF     (ORCHC33-KBN         =   "2" )
-             AND  (CNT-MEI             <   40  )
-               PERFORM 200311-HKNSYUBETU-HEN-SEC
-               MOVE    WRK-HEN-HKNCOMBIMEI     TO  HCM33-HKNSYUBETU
-           END-IF
-      *
            PERFORM VARYING     IDX     FROM    ORCHC33-STRDD  BY  1
                    UNTIL       IDX     >   31
                MOVE    ZERO                TO  FLG-ARI
@@ -1628,11 +1526,6 @@
                    PERFORM 20023-HC33-DAYHEN-SEC
                END-IF
            END-PERFORM
-      *
-           IF     (PARA-API-DATA       =   "1" )
-               PERFORM 7003-API-TUKIKEI-SEC
-               GO  TO  2002-PRINT-SYORI-EXT
-           END-IF
       *
       *    月計印刷
            IF     (FLG-HC331           =   1   )  AND
@@ -1883,11 +1776,6 @@
       *    月点数合計
            ADD     WRK-GOK-ZAITEN      TO  WRK-TUK-ZAITEN
            ADD     WRK-GOK-RSI-MONEY   TO  WRK-TUK-RSI-MONEY
-      *
-           IF    ( PARA-API-DATA       =   "1" )
-               PERFORM 7002-API-BODY-SEC
-               GO  TO  20023-HC33-DAYHEN-EXT
-           END-IF
       *
       *    追加印刷
            IF     (FLG-HC331           =   1   )  AND
@@ -2233,18 +2121,6 @@
       *    期間
            MOVE    WRK-SRYYM-N         TO  HCM33-SRYYM
       *
-           PERFORM 200311-HKNSYUBETU-HEN-SEC
-      *
-           MOVE    WRK-HEN-HKNCOMBIMEI     TO  HCM33-HKNSYUBETU
-           .
-       20031-HEAD-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険名称編集処理
-      *****************************************************************
-       200311-HKNSYUBETU-HEN-SEC                SECTION.
-      *
       *    保険名称
            MOVE    SPACE               TO  WRK-HEN-HKNCOMBIMEI
            PERFORM VARYING     IDX-H   FROM    1   BY  1
@@ -2270,9 +2146,11 @@
                END-STRING
            END-PERFORM
       *
+           MOVE    WRK-HEN-HKNCOMBIMEI     TO  HCM33-HKNSYUBETU
            .
-       200311-HKNSYUBETU-HEN-EXT.
+       20031-HEAD-HEN-EXT.
            EXIT.
+      *
       *****************************************************************
       *    カルテ印刷処理
       *****************************************************************
@@ -2514,208 +2392,6 @@
       *
            .
        2004-HC331-PRINT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＡＰＩ見出し編集処理
-      *****************************************************************
-       7001-API-HEAD-HEN-SEC           SECTION.
-      *
-           INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
-           MOVE    ORCHC33-PTID    TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-      *
-           MOVE    "karte_no3"     TO  FMKARTE3-FORM-ID
-           MOVE    PARA-API-CUSTOM-ID 
-                                   TO  FMKARTE3-CUSTOM-ID
-           MOVE   SYS-1031-PRTNM(10)
-                                   TO  FMKARTE3-PRINTER
-           IF    ( SYS-1031-PRTNM(13)  NOT =   SPACE )
-               MOVE   SYS-1031-PRTNM(13)
-                                   TO  FMKARTE3-PRINTER-ZOKUSHI
-           ELSE
-               MOVE   SYS-1031-PRTNM(10)
-                                   TO  FMKARTE3-PRINTER-ZOKUSHI
-           END-IF
-      *
-           MOVE    ORCHC33-ENDPAGE TO  WRK-ENDPAGE
-           IF    ( ORCHC33-ENDLINE =   ZERO )
-               COMPUTE WRK-ENDPAGE
-                   =   ORCHC33-ENDPAGE     +   1
-           ELSE
-               IF    ( ORCHC33-ENDPAGE     =   ZERO )
-                   MOVE    1       TO  WRK-ENDPAGE
-               END-IF
-           END-IF
-           MOVE    WRK-ENDPAGE     TO  API-ENDPAGE
-           MOVE    API-ENDPAGE-G   TO  FMKARTE3-ENDPAGE
-      *
-           MOVE    ORCHC33-ENDLINE TO  API-ENDLINE
-           MOVE    API-ENDLINE-G   TO  FMKARTE3-ENDLINE
-      *
-           MOVE    ORCHC33-SRYYM   TO  WRK-SYMD
-           MOVE    "01"            TO  WRK-SYMD(7:)
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE(1:7)
-                                   TO  FMKARTE3-SRYYM
-      *
-           IF  ( ORCHC33-PRINT-FLG =   1 )
-               MOVE    "2"         TO  FMKARTE3-HAKKOKBN
-           ELSE
-               MOVE    "1"         TO  FMKARTE3-HAKKOKBN
-           END-IF
-      *
-           IF    ( ORCHC33-SRYKA   =   SPACE OR ZERO )
-               CONTINUE
-           ELSE
-               MOVE    ORCHC33-SRYKA
-                                   TO  FMKARTE3-SRYKA
-           END-IF
-      *
-           MOVE    WRK-SRYKA-MEI   TO  FMKARTE3-SRYKANAME
-      *
-           PERFORM 200311-HKNSYUBETU-HEN-SEC
-           MOVE    WRK-HEN-HKNCOMBIMEI
-                                   TO  FMKARTE3-HKNSYUBETU
-      *
-           MOVE    ORCHC33-PTNUM   TO  FMKARTE3-PTNUM
-           MOVE    PTINF-NAME      TO  FMKARTE3-NAME
-           MOVE    PTINF-KANANAME  TO  FMKARTE3-KANANAME
-           MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE    TO  FMKARTE3-BIRTHDAY
-           MOVE    PTINF-SEX       TO  FMKARTE3-SEX
-      *
-           .
-       7001-API-HEAD-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＡＰＩ明細編集処理
-      *****************************************************************
-       7002-API-BODY-SEC               SECTION.
-      *
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL       IDX1    >   IDX-MAX
-      *
-               INITIALIZE                  API-AREA
-      *
-               MOVE    WRK-SRYYM       TO  API-SRYYM
-               MOVE    WRK-DAY         TO  API-SRYDD
-      *
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL       IDX2    >   10
-                   MOVE    TBL-NAIYO (IDX1 IDX2)
-                                       TO  API-NAIYO (IDX2)
-               END-PERFORM
-               MOVE    TBL-MEISYO (IDX1)
-                                       TO  API-BIKOU
-               PERFORM 70021-API-BODY-SEC
-      *
-           END-PERFORM
-      *
-           .
-       7002-API-BODY-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＡＰＩ明細編集処理
-      *****************************************************************
-       70021-API-BODY-SEC              SECTION.
-      *
-           IF    ( CNT-API         <   CONST-API-BODY-MAX )
-      *
-               COMPUTE CNT-API =   CNT-API     +   1
-      *
-               MOVE    API-SRYYMD      TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  FMKARTE3-SRYYMD(CNT-API)
-      *
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL       IDX2    >   10
-                   MOVE    API-NAIYO (IDX2)
-                                       TO  FMKARTE3-NAIYO(CNT-API IDX2)
-               END-PERFORM
-               MOVE    API-BIKOU       TO  FMKARTE3-BIKOU (CNT-API)
-      *
-           END-IF
-      *
-           .
-       70021-API-BODY-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＡＰＩ明細編集処理
-      *****************************************************************
-       7003-API-TUKIKEI-SEC               SECTION.
-      *
-           INITIALIZE                      API-AREA
-      *
-           MOVE    "合計"              TO  API-BIKOU
-           MOVE    WRK-TUK-ZAITEN      TO  WRK-Z89
-           MOVE    WRK-Z89             TO  API-NAIYO (8)
-           MOVE    WRK-TUK-SKYMONEY    TO  WRK-Z79S
-           MOVE    WRK-Z79S            TO  API-NAIYO (9)
-           MOVE    WRK-TUK-JIHIKEI     TO  WRK-Z79S
-           MOVE    WRK-Z79S            TO  API-NAIYO (10)
-           PERFORM 70021-API-BODY-SEC
-      *
-           IF      WRK-TUK-RSI-MONEY   NOT =   ZERO
-      *
-               INITIALIZE                      API-AREA
-               MOVE    "※労・自"          TO  API-BIKOU
-               MOVE    WRK-TUK-RSI-MONEY   TO  WRK-Z89
-               MOVE    WRK-Z89             TO  API-NAIYO (8)
-               MOVE    "*"                 TO  API-NAIYO (8) (1:1)
-               PERFORM 70021-API-BODY-SEC
-           END-IF
-      *
-           .
-       7003-API-TUKIKEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＡＰＩ送信処理
-      *****************************************************************
-       7009-API-CALLSYORI-SEC         SECTION.
-      *
-           PERFORM 7001-API-HEAD-HEN-SEC
-      *
-           INITIALIZE                      RPMAIN-AREA
-           MOVE    FMKARTE3-FORM-ID    TO  RPMAIN-ID
-           MOVE    FMKARTE3-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "カルテ３号紙"      TO  RPMAIN-TITLE
-           MOVE    "fm_karte_no3"      TO  MCP-TABLE
-           MOVE    FMKARTE3-DATA       TO  RPMAIN-DATA
-           CALL    "ORCRPMAIN"         USING
-                                       MCPAREA
-                                       RPMAIN-AREA
-                                       SPA-AREA
-      *
-           MOVE    1                   TO   CNT-PAGE
-      *
-           .
-       7009-API-CALLSYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    日付編集処理(API）
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE           TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYY             TO  WRK-HEN-YY
-               MOVE    WRK-SMM             TO  WRK-HEN-MM
-               MOVE    WRK-SDD             TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-      *
-           .
-       801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
       *    患者マスター読み込み
