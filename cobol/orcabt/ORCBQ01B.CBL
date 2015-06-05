@@ -60,7 +60,13 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-           COPY    "CPPRTALL.INC".
+       01  PRT-REC.
+           03  PRT-PRTID               PIC X(30).
+           03  PRT-PRTNM               PIC X(20).
+           03  PRT-OFFSET-X            PIC X(05).
+           03  PRT-OFFSET-Y            PIC X(05).
+           03  PRT-SITEKBN             PIC X(01).
+           03  PRT-PRTDATA             PIC X(20000).
       *
       *    ＣＳＶファイル
        FD  CSV-FILE.
@@ -210,7 +216,6 @@
                05  WRK-NISSU-MES                       PIC X(200).
                05  WRK-NISSU-PTR                       PIC 9(03).
                05  WRK-NISSU-LASTYMD                   PIC X(08).
-           03  WRK-UUID                PIC X(36).
       *
        01  KEY-AREA.
            03  KEY-PTID                PIC 9(10).
@@ -361,9 +366,6 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    職員情報
-           COPY  "CPSK1010.INC".
-      *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
@@ -388,17 +390,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *   ＵＩＤ取得用エリア
-       01 UIDIO-AREA.
-           03  UIDIO-RET   PIC X(2).
-           03  UIDIO-UID   PIC X(36).
-       01  UIDIO-ST        PIC 9(2).
-      *
-           COPY    "CPORCSCOMMON.INC".
-      *
-      *    マシン日付取得サブ
-           COPY    "CPORCSMCNDATE.INC".
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -467,9 +458,6 @@
            MOVE    SPACE               TO  SPA-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    ＤＢオープン
-           PERFORM 120-DBOPEN-SEC
-      *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    WRK-PARA-PAFNAME
                                                WRK-PARA-TERMID
@@ -486,28 +474,9 @@
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  SPA-TERMID
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
-           MOVE    MCP-USER            TO  SPA-OPID
       *
-           INITIALIZE              ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"   USING
-                                   ORCSMCNDATEAREA
-      *
-           INITIALIZE              UIDIO-AREA.
-           CALL    "orcuidset"     USING
-                                   UIDIO-ST
-                                   UIDIO-AREA
-      *
-           MOVE    UIDIO-UID           TO  WRK-UUID
-      *
-      *    ＳＰＡ共通設定
-           INITIALIZE                  SYS-1010-REC
-           INITIALIZE                  ORCSCOMMONAREA
-           MOVE    "M00"               TO  ORCSCOMMON-PG
-           CALL    "ORCSCOMMON"        USING
-                                       MCPAREA
-                                       SPA-AREA
-                                       ORCSCOMMONAREA
-                                       SYS-1010-REC
+      *    ＤＢオープン
+           PERFORM 120-DBOPEN-SEC
       *
            CALL    "ORCSENCODING"          USING
                                            MCPAREA
@@ -679,18 +648,11 @@
                CLOSE   PRT-FILE
       *
                MOVE    SPACE           TO  SHELLTBL
-               MOVE    "HCALL_prv.sh"  TO  SHELLTBL-NAME
+               MOVE    "HCALL2.sh"     TO  SHELLTBL-NAME
       *
                MOVE    ASGNPARA (ASGNPARA-ST:)
                                        TO  SHELLTBL-ARG1
-               MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
-               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
-               MOVE    "0"             TO  SHELLTBL-ARG4
-               IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-                   MOVE    "患者照会検索結果"  TO  SHELLTBL-ARG5
-                   MOVE    SPA-CLIENT-SHOWDIALOG
-                                       TO  SHELLTBL-ARG6
-               END-IF
+               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG2
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
@@ -862,30 +824,23 @@
                MOVE    PTSRH-SRYCD     TO  CSV-SRYCD
                MOVE    PTSRH-SRYNAME   TO  CSV-SRYNAME
                MOVE    PTSRH-SRYKANANAME   TO  CSV-SRYKANANAME
-           END-IF
-      *
-           IF    ( PTSRH-SURYO-EDIT    =   1 )
-               PERFORM 8001-SRYSURYO-EDIT-SEC
-               MOVE    WRK-SRYSURYOX
+               IF    ( PTSRH-SURYO-EDIT    =   1 )
+                   PERFORM 8001-SRYSURYO-EDIT-SEC
+                   MOVE    WRK-SRYSURYOX
                                    TO  CSV-SRYSURYO
-           ELSE
-               IF    ( PTSRH-SRYYM     =   "999999" )
-                   MOVE    "合計"  TO  CSV-SRYSURYO
                END-IF
+      *
+               MOVE    PTSRH-ZAIKAISU  TO  WRK-ZAIKAISUZ
+               MOVE    WRK-ZAIKAISUZ   TO  CSV-ZAIKAISU
+      *
+               PERFORM 8001-SURYOTOTAL-EDIT-SEC
+               MOVE    WRK-SURYOTOTALX TO  CSV-SURYOTOTAL
            END-IF
       *
-           MOVE    PTSRH-ZAIKAISU  TO  WRK-ZAIKAISUZ
-           MOVE    WRK-ZAIKAISUZ   TO  CSV-ZAIKAISU
-      *
-           PERFORM 8001-SURYOTOTAL-EDIT-SEC
-           MOVE    WRK-SURYOTOTALX TO  CSV-SURYOTOTAL
-      *
-           IF    ( PTSRH-SRYYM     NOT =   "999999" )
-               MOVE    PTSRH-SRYYM(1:4)
-                                           TO  CSV-SRYYM (1:4)
-               MOVE    "/"                 TO  CSV-SRYYM (5:1)
-               MOVE    PTSRH-SRYYM(5:2)    TO  CSV-SRYYM (6:2)
-           END-IF
+           MOVE    PTSRH-SRYYM(1:4)
+                                   TO  CSV-SRYYM (1:4)
+           MOVE    "/"             TO  CSV-SRYYM (5:1)
+           MOVE    PTSRH-SRYYM(5:2) TO  CSV-SRYYM (6:2)
       *
            MOVE    ZERO            TO  IDXA
            MOVE    PTSRH-SRYYM     TO  WRK-SRYYM
@@ -993,29 +948,10 @@
                PERFORM 8001-PRT-EDIT-SEC
            END-IF
       *
-           IF    ( PTSRH-SURYO-EDIT    =   1 )
-               PERFORM 8001-SRYSURYO-EDIT-SEC
-               MOVE    WRK-SRYSURYOX
-                                   TO  HC28-SRYSURYO (CNT-LINE)
-           ELSE
-               IF    ( PTSRH-SRYYM     =   "999999" )
-                   MOVE    "    合計"
-                                   TO  HC28-SRYSURYO (CNT-LINE)
-               END-IF
-           END-IF
-      *
-           MOVE    PTSRH-ZAIKAISU  TO  WRK-ZAIKAISUZ
-           MOVE    WRK-ZAIKAISUZ   TO  HC28-ZAIKAISU (CNT-LINE)
-      *
-           PERFORM 8001-SURYOTOTAL-EDIT-SEC
-           MOVE    WRK-SURYOTOTALX TO  HC28-SURYOTOTAL (CNT-LINE)
-      *
-           IF    ( PTSRH-SRYYM     NOT =   "999999" )
-               MOVE    PTSRH-SRYYM TO  WRK-SYMD
-               MOVE    "01"        TO  WRK-SYMD(7:2)
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG1 TO HC28-SRYYM (CNT-LINE)
-           END-IF
+           MOVE    PTSRH-SRYYM     TO  WRK-SYMD
+           MOVE    "01"            TO  WRK-SYMD(7:2)
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG1    TO  HC28-SRYYM (CNT-LINE)
       *
       *    備考
            INITIALIZE                  WRK-NISSU-DAY-G
@@ -1093,6 +1029,18 @@
               MOVE    PTSRH-SRYNAME
                                    TO  HC28-SRYNAME (CNT-LINE)
            END-IF
+      *
+           IF    ( PTSRH-SURYO-EDIT    =   1 )
+               PERFORM 8001-SRYSURYO-EDIT-SEC
+               MOVE    WRK-SRYSURYOX
+                                   TO  HC28-SRYSURYO (CNT-LINE)
+           END-IF
+      *
+           MOVE    PTSRH-ZAIKAISU  TO  WRK-ZAIKAISUZ
+           MOVE    WRK-ZAIKAISUZ   TO  HC28-ZAIKAISU (CNT-LINE)
+      *
+           PERFORM 8001-SURYOTOTAL-EDIT-SEC
+           MOVE    WRK-SURYOTOTALX TO  HC28-SURYOTOTAL (CNT-LINE)
       *
            .
        8001-PRT-EDIT-EXT.
@@ -1226,26 +1174,10 @@
       *
       *
            MOVE    SPACE           TO  PRT-REC
-           INITIALIZE                  PRT-REC
-          MOVE    "HCM28B.red"    TO  PRT-PRTID
+           MOVE    "HCM28B.red"    TO  PRT-PRTID
            MOVE    WRK-PRTNM       TO  PRT-PRTNM
            MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
            MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
-      *
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-               MOVE    "5"         TO  PRT-PRTKBN
-           ELSE
-               MOVE    "6"         TO  PRT-PRTKBN
-           END-IF
-           MOVE    MCP-TEMPDIR     TO  PRT-OUT
-           MOVE    "ORCA0131"      TO  PRT-TBL-KEY
-           MOVE    1               TO  PRT-RENNUM
-           MOVE    SMCNDATE-YMD    TO  PRT-TBL-GROUP
-           MOVE    SMCNDATE-HMS    TO  PRT-TBL-GROUP(9:)
-           MOVE    1               TO  PRT-SHORI-RENNUM
-           MOVE    CNT-PAGE        TO  PRT-PAGE
-           MOVE    WRK-UUID        TO  PRT-UUID
-      *
            MOVE    "1"             TO  PRT-SITEKBN
            INITIALIZE                  SFIXREDDATA-AREA
            MOVE    "1"             TO  SFIXREDDATA-SITEKBN
