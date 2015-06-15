@@ -155,7 +155,10 @@
       *****************************************************************
       *
       *    ╟ЕлТий╫Щибл╬
+       01  TEKIOU-MEDICINE-REC.
            COPY    "CPTEKIOU-MEDICINE.INC".
+      *
+       01  TEKIOU-DISEASE-REC.
            COPY    "CPTEKIOU-DISEASE.INC".
       *
            COPY    "ENUM-VALUE".

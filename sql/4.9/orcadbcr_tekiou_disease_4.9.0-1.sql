@@ -6,9 +6,9 @@
 
 CREATE TABLE tbl_tekiou_disease (
   KONOCD          character varying(5) NOT NULL,
-  BYOMEI          character varying(100),
-  BEFORE_BYOMEI   character varying(50),
-  AFTER_BYOMEI    character varying(50),
+  BYOMEI          character varying(200),
+  BEFORE_BYOMEI   character varying(100),
+  AFTER_BYOMEI    character varying(100),
   BYOMEICD        character varying(7) NOT NULL,
   BEFORE_BYOMEICD character varying(4),
   AFTER_BYOMEICD  character varying(4),

@@ -22,11 +22,12 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  TEKIOU-DISEASE-REC.
+      *01  TEKIOU-DISEASE-REC.
+           03  TEKDIS-KEY.
       *効能コード
-           03  TEKDIS-KONOCD           PIC X(05).
+               05  TEKDIS-KONOCD       PIC X(05).
       *傷病名
-           03  TEKDIS-BYOMEI           PIC X(200).
+               05  TEKDIS-BYOMEI       PIC X(200).
       *前置修飾語
            03  TEKDIS-BEFORE-BYOMEI    PIC X(100).
       *後置修飾語
@@ -49,3 +50,7 @@
            03  TEKDIS-CREYMD           PIC X(08).
            03  TEKDIS-UPYMD            PIC X(08).
            03  TEKDIS-UPHMS            PIC X(06).
+      *検索用診療行為コード
+           03  TEKDIS-SELSRYCD         PIC X(09).
+      *検索用病名
+           03  TEKDIS-SELBYOMEI        PIC X(200).

@@ -210,6 +210,10 @@
            03  WRK-PAGE                PIC ZZZZZZZZZ9.
            03  WRK-PRT-PAGE            PIC 9(10).
            03  WRK-ROW                 PIC S9(09).
+           03  WRK-CHKKBN              PIC X(01).
+           03  WRK-SEL-SRYCD           PIC X(09).
+           03  WRK-NEW-SRYCD           PIC X(09).
+           03  WRK-OLD-SRYCD           PIC X(09).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -2341,6 +2345,7 @@
            PERFORM 41221-CHKMST-SRYCD-KOUSIN-SEC
       *
            IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41221-CHKMST-KOUSIN-SYORI-SEC
                PERFORM 41222-CHKMST-TEKCD-KOUSIN-SEC
            END-IF
       *
@@ -2349,6 +2354,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41221-CHKMST-KOUSIN-SYORI-SEC
                PERFORM 41224-CHKSND-TEKCD-KOUSIN-SEC
            END-IF
       *
@@ -2357,6 +2363,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41221-CHKMST-KOUSIN-SYORI-SEC
                PERFORM 41226-CHKTRD-TEKCD-KOUSIN-SEC
            END-IF
       *
@@ -2366,6 +2373,21 @@
       *
            .
        4122-CHKMST-KOUSIN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ更新処理
+      *****************************************************************
+       41221-CHKMST-KOUSIN-SYORI-SEC   SECTION.
+      *
+           MOVE    SPACE       TO  WRK-CHKKBN
+           MOVE    SPACE       TO  WRK-SEL-SRYCD
+           MOVE    SPA-GMN-OLD-SRYCD
+                               TO  WRK-OLD-SRYCD
+           MOVE    SPA-GMN-SRYCD
+                               TO  WRK-NEW-SRYCD
+      *
+           .
+       41221-CHKMST-KOUSIN-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ更新処理（診療行為コード）
@@ -2398,6 +2420,34 @@
                    IF    ( MCP-RC          NOT =   ZERO )
                        MOVE    "0200"      TO  SPA-ERRCD
                    END-IF
+      *
+                   PERFORM 900-CHKMST-KEY2-SEL-SEC
+      *
+                   PERFORM UNTIL ( FLG-TCHKMST NOT =   ZERO )
+                            OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                       MOVE    CHK-CD      TO  WRK-SRYCD
+                       PERFORM 900-SRYCDCHG-KEY2-SEL-SEC
+                       IF    ( FLG-SRYCDCHG    =   ZERO )
+                           MOVE    CHK-CHKKBN
+                                           TO  WRK-CHKKBN
+                           MOVE    SPA-GMN-SRYCD
+                                           TO  WRK-SEL-SRYCD
+                           MOVE    CHG-IPNSRYCD
+                                           TO  WRK-OLD-SRYCD
+                           MOVE    CHG-RJNSRYCD
+                                           TO  WRK-NEW-SRYCD
+                           PERFORM 41222-CHKMST-TEKCD-KOUSIN-SEC
+                       END-IF
+      *
+                       PERFORM 900-CHKMST-KEY2-FET-SEC
+      *
+                   END-PERFORM
+      *
+                   MOVE    "tbl_chk"       TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+      *
                END-IF
       *
                PERFORM 900-CHKMST-KEY18-FET-SEC
@@ -2416,7 +2466,7 @@
       *****************************************************************
        41222-CHKMST-TEKCD-KOUSIN-SEC   SECTION.
       *
-           PERFORM 900-CHKMST-KEY19-SEL-SEC
+           PERFORM 900-CHKMST-KEY22-SEL-SEC
       *
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
@@ -2434,7 +2484,7 @@
                        MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
                                                    CHK-UPYMD
                        MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
-                       MOVE    SPA-GMN-SRYCD   TO  CHK-CD
+                       MOVE    WRK-NEW-SRYCD   TO  CHK-CD
                        COMPUTE CHK-RENNUM      =   TCHK-RENNUM +   1
                        MOVE    CHK-REC         TO  MCPDATA-REC
                        MOVE    "tbl_chk"       TO  MCP-TABLE
@@ -2446,12 +2496,12 @@
                    END-IF
                END-IF
       *
-               PERFORM 900-CHKMST-KEY19-FET-SEC
+               PERFORM 900-CHKMST-KEY22-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_chk"       TO  MCP-TABLE
-           MOVE    "key19"         TO  MCP-PATHNAME
+           MOVE    "key22"         TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -2467,7 +2517,7 @@
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               PERFORM 900-CHKSND-KEY6-SEL-SEC
+               PERFORM 900-CHKSND-KEY30-SEL-SEC
                IF    ( FLG-TCHKSND     =   ZERO )
                    CONTINUE
                ELSE
@@ -2489,6 +2539,34 @@
                    IF    ( MCP-RC          NOT =   ZERO )
                        MOVE    "0202"          TO  SPA-ERRCD
                    END-IF
+      *
+                   PERFORM 900-CHKSND-KEY3-SEL-SEC
+      *
+                   PERFORM UNTIL ( FLG-TCHKSND NOT =   ZERO )
+                            OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                       MOVE    CHKSND-CD   TO  WRK-SRYCD
+                       PERFORM 900-SRYCDCHG-KEY2-SEL-SEC
+                       IF    ( FLG-SRYCDCHG    =   ZERO )
+                           MOVE    CHKSND-CHKKBN
+                                           TO  WRK-CHKKBN
+                           MOVE    SPA-GMN-SRYCD
+                                           TO  WRK-SEL-SRYCD
+                           MOVE    CHG-IPNSRYCD
+                                           TO  WRK-OLD-SRYCD
+                           MOVE    CHG-RJNSRYCD
+                                           TO  WRK-NEW-SRYCD
+                           PERFORM 41224-CHKSND-TEKCD-KOUSIN-SEC
+                       END-IF
+      *
+                       PERFORM 900-CHKSND-KEY3-FET-SEC
+      *
+                   END-PERFORM
+      *
+                   MOVE    "tbl_chksnd"    TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+      *
                END-IF
       *
                PERFORM 900-CHKSND-KEY19-FET-SEC
@@ -2507,7 +2585,7 @@
       *****************************************************************
        41224-CHKSND-TEKCD-KOUSIN-SEC   SECTION.
       *
-           PERFORM 900-CHKSND-KEY20-SEL-SEC
+           PERFORM 900-CHKSND-KEY32-SEL-SEC
       *
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
@@ -2525,7 +2603,7 @@
                        MOVE    SMCNDATE-YMD    TO  CHKSND-CREYMD
                                                    CHKSND-UPYMD
                        MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
-                       MOVE    SPA-GMN-SRYCD   TO  CHKSND-CD
+                       MOVE    WRK-NEW-SRYCD   TO  CHKSND-CD
                        COMPUTE CHKSND-RENNUM   =   TCHKSND-RENNUM +   1
                        MOVE    CHKSND-REC      TO  MCPDATA-REC
                        MOVE    "tbl_chksnd"    TO  MCP-TABLE
@@ -2537,12 +2615,12 @@
                    END-IF
                END-IF
       *
-               PERFORM 900-CHKSND-KEY20-FET-SEC
+               PERFORM 900-CHKSND-KEY32-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_chksnd"    TO  MCP-TABLE
-           MOVE    "key20"         TO  MCP-PATHNAME
+           MOVE    "key32"         TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -2580,6 +2658,34 @@
                    IF    ( MCP-RC          NOT =   ZERO )
                        MOVE    "0204"          TO  SPA-ERRCD
                    END-IF
+      *
+                   PERFORM 900-CHKTRD-KEY3-SEL-SEC
+      *
+                   PERFORM UNTIL ( FLG-TCHKTRD NOT =   ZERO )
+                            OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                       MOVE    CHKTRD-CD       TO  WRK-SRYCD
+                       PERFORM 900-SRYCDCHG-KEY2-SEL-SEC
+                       IF    ( FLG-SRYCDCHG    =   ZERO )
+                           MOVE    CHKTRD-CHKKBN
+                                           TO  WRK-CHKKBN
+                           MOVE    SPA-GMN-SRYCD
+                                           TO  WRK-SEL-SRYCD
+                           MOVE    CHG-IPNSRYCD
+                                           TO  WRK-OLD-SRYCD
+                           MOVE    CHG-RJNSRYCD
+                                           TO  WRK-NEW-SRYCD
+                           PERFORM 41226-CHKTRD-TEKCD-KOUSIN-SEC
+                       END-IF
+      *
+                       PERFORM 900-CHKTRD-KEY3-FET-SEC
+      *
+                   END-PERFORM
+      *
+                   MOVE    "tbl_chktrd"    TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+      *
                END-IF
       *
                PERFORM 900-CHKTRD-KEY19-FET-SEC
@@ -2598,7 +2704,7 @@
       *****************************************************************
        41226-CHKTRD-TEKCD-KOUSIN-SEC   SECTION.
       *
-           PERFORM 900-CHKTRD-KEY20-SEL-SEC
+           PERFORM 900-CHKTRD-KEY23-SEL-SEC
       *
            PERFORM UNTIL ( FLG-CHKTRD  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
@@ -2616,7 +2722,7 @@
                        MOVE    SMCNDATE-YMD    TO  CHKTRD-CREYMD
                                                    CHKTRD-UPYMD
                        MOVE    SMCNDATE-HMS    TO  CHKTRD-UPHMS
-                       MOVE    SPA-GMN-SRYCD   TO  CHKTRD-CD
+                       MOVE    WRK-NEW-SRYCD   TO  CHKTRD-CD
                        COMPUTE CHKTRD-RENNUM   =   TCHKTRD-RENNUM +   1
                        MOVE    CHKTRD-REC      TO  MCPDATA-REC
                        MOVE    "tbl_chktrd"    TO  MCP-TABLE
@@ -2628,12 +2734,12 @@
                    END-IF
                END-IF
       *
-               PERFORM 900-CHKTRD-KEY20-FET-SEC
+               PERFORM 900-CHKTRD-KEY23-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_chktrd"    TO  MCP-TABLE
-           MOVE    "key20"         TO  MCP-PATHNAME
+           MOVE    "key23"         TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -3390,6 +3496,85 @@
        990-SRYCDCHG-READ-EXT.
            EXIT.
       *****************************************************************
+      *    老人一般コード検索処理
+      *****************************************************************
+       900-SRYCDCHG-KEY2-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYCDCHG
+      *
+           INITIALIZE                      SRYCDCHG-REC
+           MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
+           MOVE    WRK-SRYCD           TO  CHG-IPNSRYCD
+           MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_srycdchg"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SRYCDCHG-REC
+               ELSE
+                   MOVE    1           TO  FLG-SRYCDCHG
+                   INITIALIZE              SRYCDCHG-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SRYCDCHG-REC
+               MOVE    1               TO  FLG-SRYCDCHG
+           END-IF
+      *
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-SRYCDCHG-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ検索処理
+      *****************************************************************
+       900-CHKMST-KEY2-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TCHKMST
+      *
+           MOVE    WRK-NEXTDAY         TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
+           MOVE    CHK-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-CHKMST-KEY2-FET-SEC
+           ELSE
+               MOVE    1               TO  FLG-TCHKMST
+               INITIALIZE                  CHK-REC
+           END-IF
+      *
+           .
+       900-CHKMST-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ検索処理
+      *****************************************************************
+       900-CHKMST-KEY2-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TCHKMST
+      *
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 920-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHK-REC
+           ELSE
+               MOVE    1               TO  FLG-TCHKMST
+               INITIALIZE                  CHK-REC
+           END-IF
+      *
+           .
+       900-CHKMST-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    チェックマスタ検索処理
       *****************************************************************
        900-CHKMST-KEY18-SEL-SEC        SECTION.
@@ -3473,33 +3658,35 @@
       *****************************************************************
       *    チェックマスタ検索処理
       *****************************************************************
-       900-CHKMST-KEY19-SEL-SEC        SECTION.
+       900-CHKMST-KEY22-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKMST
       *
            INITIALIZE                      CHK-REC
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    WRK-CHKKBN          TO  CHK-CHKKBN
+           MOVE    WRK-SEL-SRYCD       TO  CHK-SRYCD
            MOVE    SPA-NAI-YUKOYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-           MOVE    SPA-GMN-OLD-SRYCD   TO  CHK-CD
+           MOVE    WRK-OLD-SRYCD       TO  CHK-CD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key19"             TO  MCP-PATHNAME
+           MOVE    "key22"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               PERFORM 900-CHKMST-KEY19-FET-SEC
+               PERFORM 900-CHKMST-KEY22-FET-SEC
            ELSE
                MOVE    1               TO  FLG-CHKMST
                INITIALIZE                  CHK-REC
            END-IF
       *
            .
-       900-CHKMST-KEY19-SEL-EXT.
+       900-CHKMST-KEY22-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ検索処理
       *****************************************************************
-       900-CHKMST-KEY19-FET-SEC        SECTION.
+       900-CHKMST-KEY22-FET-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKMST
            MOVE    ZERO                TO  FLG-LOOPEND
@@ -3508,7 +3695,7 @@
                     OR   ( FLG-LOOPEND NOT =   ZERO )
       *
                MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key19"             TO  MCP-PATHNAME
+               MOVE    "key22"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  CHK-REC
@@ -3528,7 +3715,7 @@
            END-PERFORM
       *
            .
-       900-CHKMST-KEY19-FET-EXT.
+       900-CHKMST-KEY22-FET-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ検索処理
@@ -3538,7 +3725,7 @@
            MOVE    ZERO                TO  FLG-TCHKMST
       *
            MOVE    CHK-REC             TO  TCHK-REC
-           MOVE    SPA-GMN-SRYCD       TO  TCHK-CD
+           MOVE    WRK-NEW-SRYCD       TO  TCHK-CD
       *
            MOVE    TCHK-REC            TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
@@ -3602,6 +3789,50 @@
       *****************************************************************
       *    チェックマスタ２検索処理
       *****************************************************************
+       900-CHKSND-KEY3-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TCHKSND
+      *
+           MOVE    WRK-NEXTDAY         TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    "3"                 TO  CHKSND-CDKBN
+           MOVE    CHKSND-REC          TO  MCPDATA-REC
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-CHKSND-KEY3-FET-SEC
+           ELSE
+               MOVE    1               TO  FLG-TCHKSND
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *
+           .
+       900-CHKSND-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
+       900-CHKSND-KEY3-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TCHKSND
+      *
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 920-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+           ELSE
+               MOVE    1               TO  FLG-TCHKSND
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *
+           .
+       900-CHKSND-KEY3-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
        900-CHKSND-KEY19-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKSND
@@ -3648,20 +3879,21 @@
       *****************************************************************
       *    チェックマスタ２検索処理
       *****************************************************************
-       900-CHKSND-KEY6-SEL-SEC         SECTION.
+       900-CHKSND-KEY30-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-TCHKSND
       *
            MOVE    CHKSND-REC          TO  TCHKSND-REC
+           MOVE    "0"                 TO  TCHKSND-CDKBN
            MOVE    SPA-GMN-SRYCD       TO  TCHKSND-SRYCD
       *
            MOVE    TCHKSND-REC         TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    "tbl_chksnd"       TO  MCP-TABLE
-               MOVE    "key6"          TO  MCP-PATHNAME
+               MOVE    "tbl_chksnd"    TO  MCP-TABLE
+               MOVE    "key30"         TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  TCHKSND-REC
@@ -3673,43 +3905,46 @@
                MOVE    1               TO  FLG-TCHKSND
            END-IF
       *
-           MOVE    "tbl_chksnd"           TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
-       900-CHKSND-KEY6-SEL-EXT.
+       900-CHKSND-KEY30-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ２検索処理
       *****************************************************************
-       900-CHKSND-KEY20-SEL-SEC        SECTION.
+       900-CHKSND-KEY32-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKSND
       *
            INITIALIZE                      CHKSND-REC
            MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+           MOVE    WRK-CHKKBN          TO  CHKSND-CHKKBN
+           MOVE    WRK-SEL-SRYCD       TO  CHKSND-SRYCD
            MOVE    SPA-NAI-YUKOYMD     TO  CHKSND-YUKOSTYMD
                                            CHKSND-YUKOEDYMD
-           MOVE    SPA-GMN-OLD-SRYCD   TO  CHKSND-CD
+           MOVE    "3"                 TO  CHKSND-CDKBN
+           MOVE    WRK-OLD-SRYCD       TO  CHKSND-CD
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key20"             TO  MCP-PATHNAME
+           MOVE    "key32"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               PERFORM 900-CHKSND-KEY20-FET-SEC
+               PERFORM 900-CHKSND-KEY32-FET-SEC
            ELSE
                MOVE    1               TO  FLG-CHKSND
                INITIALIZE                  CHKSND-REC
            END-IF
       *
            .
-       900-CHKSND-KEY20-SEL-EXT.
+       900-CHKSND-KEY32-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ２検索処理
       *****************************************************************
-       900-CHKSND-KEY20-FET-SEC        SECTION.
+       900-CHKSND-KEY32-FET-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKSND
            MOVE    ZERO                TO  FLG-LOOPEND
@@ -3718,7 +3953,7 @@
                     OR   ( FLG-LOOPEND NOT =   ZERO )
       *
                MOVE    "tbl_chksnd"        TO  MCP-TABLE
-               MOVE    "key20"             TO  MCP-PATHNAME
+               MOVE    "key32"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  CHKSND-REC
@@ -3738,7 +3973,7 @@
            END-PERFORM
       *
            .
-       900-CHKSND-KEY20-FET-EXT.
+       900-CHKSND-KEY32-FET-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ２検索処理
@@ -3748,7 +3983,7 @@
            MOVE    ZERO                TO  FLG-TCHKSND
       *
            MOVE    CHKSND-REC          TO  TCHKSND-REC
-           MOVE    SPA-GMN-SRYCD       TO  TCHKSND-CD
+           MOVE    WRK-NEW-SRYCD       TO  TCHKSND-CD
       *
            MOVE    TCHKSND-REC         TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
@@ -3808,6 +4043,50 @@
       *
            .
        900-CHKSND-KEY21-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
+       900-CHKTRD-KEY3-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TCHKTRD
+      *
+           MOVE    WRK-NEXTDAY         TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
+           MOVE    "2"                 TO  CHKTRD-CDKBN
+           MOVE    CHKTRD-REC          TO  MCPDATA-REC
+           MOVE    "tbl_chktrd"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-CHKTRD-KEY3-FET-SEC
+           ELSE
+               MOVE    1               TO  FLG-TCHKTRD
+               INITIALIZE                  CHKTRD-REC
+           END-IF
+      *
+           .
+       900-CHKTRD-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
+       900-CHKTRD-KEY3-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TCHKTRD
+      *
+           MOVE    "tbl_chktrd"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 920-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKTRD-REC
+           ELSE
+               MOVE    1               TO  FLG-TCHKTRD
+               INITIALIZE                  CHKTRD-REC
+           END-IF
+      *
+           .
+       900-CHKTRD-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ３検索処理
@@ -3893,33 +4172,35 @@
       *****************************************************************
       *    チェックマスタ３検索処理
       *****************************************************************
-       900-CHKTRD-KEY20-SEL-SEC        SECTION.
+       900-CHKTRD-KEY23-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKTRD
       *
            INITIALIZE                      CHKTRD-REC
            MOVE    SPA-HOSPNUM         TO  CHKTRD-HOSPNUM
+           MOVE    WRK-CHKKBN          TO  CHKTRD-CHKKBN
+           MOVE    WRK-SEL-SRYCD       TO  CHKTRD-SRYCD
            MOVE    SPA-NAI-YUKOYMD     TO  CHKTRD-YUKOSTYMD
                                            CHKTRD-YUKOEDYMD
-           MOVE    SPA-GMN-OLD-SRYCD   TO  CHKTRD-CD
+           MOVE    WRK-OLD-SRYCD       TO  CHKTRD-CD
            MOVE    CHKTRD-REC          TO  MCPDATA-REC
            MOVE    "tbl_chktrd"        TO  MCP-TABLE
-           MOVE    "key20"             TO  MCP-PATHNAME
+           MOVE    "key23"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               PERFORM 900-CHKTRD-KEY20-FET-SEC
+               PERFORM 900-CHKTRD-KEY23-FET-SEC
            ELSE
                MOVE    1               TO  FLG-CHKTRD
                INITIALIZE                  CHKTRD-REC
            END-IF
       *
            .
-       900-CHKTRD-KEY20-SEL-EXT.
+       900-CHKTRD-KEY23-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ３検索処理
       *****************************************************************
-       900-CHKTRD-KEY20-FET-SEC        SECTION.
+       900-CHKTRD-KEY23-FET-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKTRD
            MOVE    ZERO                TO  FLG-LOOPEND
@@ -3928,7 +4209,7 @@
                     OR   ( FLG-LOOPEND NOT =   ZERO )
       *
                MOVE    "tbl_chktrd"        TO  MCP-TABLE
-               MOVE    "key20"             TO  MCP-PATHNAME
+               MOVE    "key23"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  CHKTRD-REC
@@ -3948,7 +4229,7 @@
            END-PERFORM
       *
            .
-       900-CHKTRD-KEY20-FET-EXT.
+       900-CHKTRD-KEY23-FET-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ３検索処理
@@ -3958,7 +4239,7 @@
            MOVE    ZERO                TO  FLG-TCHKTRD
       *
            MOVE    CHKTRD-REC          TO  TCHKTRD-REC
-           MOVE    SPA-GMN-SRYCD       TO  TCHKTRD-CD
+           MOVE    WRK-NEW-SRYCD       TO  TCHKTRD-CD
       *
            MOVE    TCHKTRD-REC         TO  MCPDATA-REC
            MOVE    "tbl_chktrd"        TO  MCP-TABLE
