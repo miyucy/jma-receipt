@@ -2537,9 +2537,9 @@
                    WHEN ( SPA-GMN-TEKBYOKBN   =   "9" )
                     AND ( SPA-NAI-SYS-TEKBYOKBN    =   "2" )
                     AND ( SPA-MST-MAX              =   ZERO )
-                       MOVE    "M"                 TO  WRK-CMB-CD
+                       MOVE    "M"             TO  WRK-CMB-CD
                        PERFORM 4200-SRCBYOKBNLST-CHK-SEC
-                       MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRCBYOKBN-G
+                       MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRCBYOKBN-G
                        PERFORM 4101-SRCBYOLST-SEC
                    END-EVALUATE
                END-IF

@@ -438,6 +438,7 @@
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-X91
                    MOVE    SPA-WORK        TO  SPA-X01KYOUTU
+                   MOVE    SPACE           TO  SPA-XID1-FLG
                    GO  TO  300-SCREEN-EXT
                END-IF
       *
