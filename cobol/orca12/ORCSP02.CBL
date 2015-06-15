@@ -55,14 +55,6 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/12/25  ´µ¼Ô¥ì¥»¥×¥ÈÊ¬³äÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/02/XX  ´µ¼Ô²ð¸î¾ðÊóÄÉ²ÃÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/03/XX  ÃÏ°èÊñ³ç¿ÇÎÅÂÐ¾Ý¼ÀÉÂÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  15/06/16  ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÁÈ¹ç¤»·ï¿ôÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  15/08/05  ÎÎ¼ý¡¦ÌÀºÙ¡¡ÀÁµá½ñÉÔÍ×ÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  15/11/XX  ¥ì¥»¥×¥ÈÊ¬³ä£µ£°·ïÂ¾ÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/03/XX  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/11/21  £Ñ£Ò¥³¡¼¥Éver.2.1ÂÐ±þ
-      * 05.00.00     NACL-Â¿¡¹Ç¼  16/12/15  ´µ¼Ô¸Ä¿ÍÈÖ¹æÂÐ±þ
-      * 05.00.00     NACL-Â¿¡¹Ç¼  16/12/XX  ´ÉÍýÎÁÅù¼«Æ°È¯À¸ÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  17/05/XX  ¶­³¦ÁØ³ºÅöÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,8 +89,6 @@
            03  FLG-PTCONF          PIC 9(01).
            03  FLG-PTCARE-HKNINF   PIC 9(01).
            03  FLG-PTCARE-NINTEI   PIC 9(01).
-           03  FLG-PTMYNUMBER      PIC 9(01).
-           03  FLG-TENSU           PIC 9(01).
       *
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
@@ -108,7 +98,6 @@
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-KOUSIN          PIC 9(01).
-           03  FLG-TENSU-OK        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -167,19 +156,12 @@
                05  WRK-TMSG1           PIC X(10).
                05  WRK-TMSG2           PIC X(02).
                05  WRK-TMSG3           PIC X(10).
-           03  WRK-TEIMSG              PIC X(30).
+           03  WRK-TEIMSG              PIC X(20).
       *
            03  WRK-IDOMSG              PIC X(10).
       *
            03  WRK-HFTNLST2-ROW        PIC S9(09).
            03  WRK-HKNKUMI-ROW         PIC S9(09).
-      *
-           03  WRK-P026-ROW1           PIC S9(09).
-           03  WRK-P026-ROW2           PIC S9(09).
-      *
-           03  WRK-SRYCD-NAME          PIC X(80).
-           03  WRK-SRYCD               PIC X(09).
-      *
       *   Ç¯ÎðÉ½¼¨
        01  WRK-NENREI-AREA.
            03  WRK-YMDS1.
@@ -395,18 +377,6 @@
        01  PTCARE-NINTEI-REC.
            COPY    "CPPTCARE-NINTEI.INC".
       *
-      *    ´µ¼Ô¸Ä¿ÍÈÖ¹æ¥Æ¡¼¥Ö¥ë
-       01  PTMYNUMBER-REC.
-           COPY    "CPPTMYNUMBER.INC".
-      *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
-      *01  TENSU-REC.
-           COPY    "CPTENSU.INC".
-      *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
-      *01  TNSWK-TENSU-REC.
-           COPY    "CPTENSUWK.INC".
-      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -478,10 +448,6 @@
                WHEN    "API"
       *            £Á£Ð£É½é´ü¥Ñ¥é¥á¥¿¡¢£Ó£Ð£Á½é´üÊÔ½¸
                    PERFORM 300-APIP02-SET-SEC
-      *H28.11
-               WHEN    "GMKOH"
-      *            ¸øÈñ²èÌÌÊÔ½¸
-                   PERFORM 20011-P02W1-KOHSET-SEC
            END-EVALUATE
       *
       *
@@ -1128,8 +1094,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            PERFORM VARYING IDX
                    FROM    1       BY  1
-     *******       UNTIL      (IDX             >   40    )   OR
-                   UNTIL      (IDX             >   99    )   OR
+                   UNTIL      (IDX             >   40    )   OR
                               (FLG-SYSKANRI    =   1     )
                MOVE    MCPDATA-REC             TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)    TO  SPA-GMN-SRYKA-LST
@@ -1394,10 +1359,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¥æ¡¼¥¶¥×¥í¥°¥é¥àµ¯Æ°½é´ü
       *v4.8
       *    ginbeeÂÐ±þ
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        INITIALIZE                      SPA-NAI-GYOUMU-FLG
-      *        INITIALIZE                      SPA-NAI-GYOUMU-ARI
-      **   ELSE
+           IF      SPA-MW              =   SPA-GINBEE
+               INITIALIZE                      SPA-NAI-GYOUMU-FLG
+               INITIALIZE                      SPA-NAI-GYOUMU-ARI
+           ELSE
       *
            INITIALIZE                      ORCSUSERCHKAREA
            MOVE    "P02"               TO  ORCSUSERCHK-GMNPG
@@ -1424,7 +1389,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-USERPG-LST (1)  TO  SPA-GMN-USERPG-G
            END-IF
       *
-      **** END-IF
+           END-IF
       *
       *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬
            MOVE    "0 ÀÁµá½ñ¡¦ÌÀºÙ½ñÉÔÍ×"
@@ -1443,13 +1408,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN-SKYPRTFLG-LST (7)
            MOVE    "7 ÀÁµá½ñÉ¬Í×¡ÊÀÁµá¤¢¤ê¡Ë¡ÊÌÀºÙ½ñÉ¬Í×¡Ë"
                                        TO  SPA-GMN-SKYPRTFLG-LST (8)
-           MOVE    "8 ÀÁµá½ñÉÔÍ×¡¦ÌÀºÙ½ñÉ¬Í×"
-                                       TO  SPA-GMN-SKYPRTFLG-LST (9)
-           MOVE    "9 ÀÁµá½ñÉÔÍ×¡¦ÌÀºÙ½ñÉ¬Í×¡ÊÀÁµá¤¢¤ê¡Ë"
-                                       TO  SPA-GMN-SKYPRTFLG-LST (10)
-           MOVE    "A ÀÁµá½ñÉÔÍ×¡¦ÌÀºÙ½ñÉ¬Í×¡ÊÄûÀµ»þ¤Ê¤·¡Ë"
-                                       TO  SPA-GMN-SKYPRTFLG-LST (11)
-           MOVE    11                  TO  SPA-SKYPRTFLG-MAX
+           MOVE    8                   TO  SPA-SKYPRTFLG-MAX
            MOVE    SPACE               TO  SPA-GMN-SKYPRTFLG-G
       *
       *    ½êÆÀ¼Ô£²¡Ê¹âÎð¼ÔÊ¡»ãÇ¯¶â¼õµë¼Ô¾Ú¡Ë
@@ -1481,19 +1440,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "4 ÃÏÊý¸øÈñ¡Ü¿©»öÉ¸½àÉéÃ´³ÛÂÐ¾Ý"
                                        TO  SPA-GMN24-TNKTEKKBN-LST (5)
            MOVE    5                   TO  SPA-GMN24-TNKTEKKBN-MAX
-      *H29.6
-      *    ½êÆÀ¼Ô£±¡Ê¶­³¦ÁØ³ºÅö¶èÊ¬¡Ë
-           MOVE    "0 ¶­³¦ÁØÈó³ºÅö"
-                                       TO  SPA-GMN24-TNKKYOUKAI-LST(1)
-           MOVE    "1 ¶­³¦ÁØ³ºÅö"
-                                       TO  SPA-GMN24-TNKKYOUKAI-LST(2)
-           MOVE    2                   TO  SPA-GMN24-TNKKYOUKAI-MAX
-      *    ½êÆÀ¼Ô£²¡Ê¶­³¦ÁØ³ºÅö¶èÊ¬¡Ë
-           MOVE    "0 ¶­³¦ÁØÈó³ºÅö"
-                                       TO  SPA-GMN24-TSYKYOUKAI-LST(1)
-           MOVE    "1 ¶­³¦ÁØ³ºÅö"
-                                       TO  SPA-GMN24-TSYKYOUKAI-LST(2)
-           MOVE    2                   TO  SPA-GMN24-TSYKYOUKAI-MAX
       *
       *ver.4.7
       *    ´µ¼Ô¸ÄÊÌÀßÄê
@@ -1502,17 +1448,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN28-MNOTE-QRKBN-LST(1)
            MOVE    "1 ½ÐÎÏ¤¹¤ë"
                                        TO  SPA-GMN28-MNOTE-QRKBN-LST(2)
-      *H28.11 ÄÉ²Ã
-           MOVE    "2 ½ÐÎÏ¤¹¤ë¡Ê£Ã£Ó£Ö½ÐÎÏ¤Ê¤·¡Ë"
-                                       TO  SPA-GMN28-MNOTE-QRKBN-LST(3)
-           MOVE    3                   TO  SPA-GMN28-QRKBN-MAX
+           MOVE    2                   TO  SPA-GMN28-QRKBN-MAX
       *    ¤ªÌô¼êÄ¢¡¡£Ã£Ó£Ö
            MOVE    "1 Ver.1.0"
                                        TO  SPA-GMN28-MNOTE-CSV-LST(1)
-      *H28.11 ÄÉ²Ã
-           MOVE    "2 Ver.2.1"
-                                       TO  SPA-GMN28-MNOTE-CSV-LST(2)
-           MOVE    2                   TO  SPA-GMN28-CSV-MAX
+           MOVE    1                   TO  SPA-GMN28-CSV-MAX
       *    ¾ðÊóÄó¶¡Æ±°ÕÍ­Ìµ
            MOVE    "0 Æ±°Õ¤·¤Ê¤¤"
                                        TO  SPA-GMN28-AGREEMENT-LST(1)
@@ -1520,9 +1460,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN28-AGREEMENT-LST(2)
            MOVE    2                   TO  SPA-GMN28-AGREEMENT-MAX
       *    Æü°å¥Ç¡¼¥¿¥Õ¥©¡¼¥Þ¥Ã¥È¶èÊ¬
-           MOVE    "1 Ver.0.9"         TO  SPA-GMN28-JMAMRVER-LST(1)
-           MOVE    "2 Ver.1.0"         TO  SPA-GMN28-JMAMRVER-LST(2)
-           MOVE    2                   TO  SPA-GMN28-JMAMRVER-MAX
+           MOVE    "1 Ver.0.9"
+                                       TO  SPA-GMN28-JMAMRVER-LST(1)
+           MOVE    1                   TO  SPA-GMN28-JMAMRVER-MAX
       *ver.4.7
       *    ´µ¼Ô²ð¸îÀßÄê
       *    Í×²ð¸î¾õÂÖ¶èÊ¬
@@ -1545,7 +1485,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "25 Í×²ð¸î£µ"
                                        TO  SPA-GMN28-CAREJOTAI-LST (9)
            MOVE    9                   TO  SPA-GMN28-CAREJOTAI-MAX
-      *
            .
        1005-COMB-SET-EXT.
            EXIT.
@@ -1558,15 +1497,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ´µ¼Ô¥Þ¥¹¥¿½é´üÊÔ½¸
            MOVE    SPACE               TO  PTINF-REC
            INITIALIZE                      PTINF-REC
-      *H29.11¡¡ºï½ü
-      **** IF      SPA-NAME        NOT =   SPACE
-      *        MOVE    SPA-NAME            TO  PTINF-NAME
-      *    END-IF
+           IF      SPA-NAME        NOT =   SPACE
+               MOVE    SPA-NAME            TO  PTINF-NAME
+           END-IF
       *
-      *    IF      SPA-NAME        NOT =   SPACE
-      *        MOVE    SPA-NAME            TO  SPA-GMN-NAMEH
-      *        MOVE    SPA-NAME            TO  SPA-GMN-NAME
-      **** END-IF
+           IF      SPA-NAME        NOT =   SPACE
+               MOVE    SPA-NAME            TO  SPA-GMN-NAMEH
+               MOVE    SPA-NAME            TO  SPA-GMN-NAME
+           END-IF
       *
       *    ´µ¼ÔÈÖ¹æÊÑ´¹¥Þ¥¹¥¿½é´üÊÔ½¸
            MOVE    SPACE               TO  PTNUM-REC
@@ -1760,9 +1698,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
       *    ´µ¼Ô²ð¸î¾ðÊóÊÔ½¸
            PERFORM 10028-PTCARE-SET-SEC
-      *H28.12
-      *    ´µ¼Ô¸Ä¿ÍÈÖ¹æÊÔ½¸
-           PERFORM 10028-PTMYNUBER-SET-SEC
       *
       *    ´µ¼ÔÏ«ºÒ¾ðÊóÊÔ½¸
            PERFORM 10023-RSIPARA-SET-SEC
@@ -2197,14 +2132,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    1               TO  FLG-UKETUKE
            END-IF
-           MOVE    ZERO                TO  IDX
-           PERFORM
-                   UNTIL      (FLG-UKETUKE     =   1 )
-                       OR     (IDX             >=  10 )
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       FLG-UKETUKE     =  1
                IF      UKE-UKEID           =   ZERO
                    CONTINUE
                ELSE
-                   ADD     1                   TO  IDX
                    MOVE    SPACE               TO  PARA-REC
                    INITIALIZE                      PARA-REC
                    MOVE    "UKETUKE"           TO  PARA-FILEMEI
@@ -3002,31 +2934,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ÃÏ°èÊñ³ç¿ÇÎÅÂÐ¾Ý¼ÀÉÂ
                        MOVE    PTCONF-CDATA(1:4)
                                            TO  SPA-GMN28-CHKHKTBYO-AREA
-      *H28.4
-                   WHEN    "NINTIHOKATU"
-      *            Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
-                       MOVE    PTCONF-CDATA(1:1)
-                                           TO  SPA-GMN28-NNCHIKBN
-                   WHEN    "SYOUNIKAKARI"
-      *            ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
-                       MOVE    PTCONF-CDATA(1:1)
-                                           TO  SPA-GMN28-SYOUNIKBN
-      *H28.12
-      *            »ØÆ³ÎÁÅù¼«Æ°»»Äê
-                   WHEN    "JIDOSANTEI-1"
-                       MOVE    PTCONF-CDATA(1:9)
-                                           TO  SPA-GMN28-AUTOSRYCD(1)
-                   WHEN    "JIDOSANTEI-2"
-                       MOVE    PTCONF-CDATA(1:9)
-                                           TO  SPA-GMN28-AUTOSRYCD(2)
-                   WHEN    "JIDOSANTEI-3"
-                       MOVE    PTCONF-CDATA(1:9)
-                                           TO  SPA-GMN28-AUTOSRYCD(3)
-      *H30.4
-                   WHEN    "NINPUKBN"
-      *            Ç¥ÉØ¶èÊ¬
-                       MOVE    PTCONF-CDATA(1:1)
-                                           TO  SPA-GMN28-NINPUKBN
                END-EVALUATE
                MOVE    "tbl_ptconf"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -3066,19 +2973,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN28-JMAMRVER-LST (IDX)
                                            TO  SPA-GMN28-JMAMRVER-G
                    MOVE    SPA-GMN28-JMAMRVER-MAX  TO  IDX
-               END-IF
-           END-PERFORM
-      *
-      *H28.12
-      *    »ØÆ³ÎÁÅù¼«Æ°»»Äê
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                    UNTIL    ( IDX     >   3 )
-               IF      SPA-GMN28-AUTOSRYCD (IDX)   NOT =   SPACE
-                    MOVE    SPA-GMN28-AUTOSRYCD (IDX)
-                                               TO  WRK-SRYCD
-                    PERFORM 910-TENSU-READ-SEC
-                    MOVE    WRK-SRYCD-NAME     TO  SPA-GMN28-AUTONAME
-                                                             (IDX)
                END-IF
            END-PERFORM
            .
@@ -3240,56 +3134,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    IDX                 TO  SPA-GMN28-CRNIN-MAX
            .
        100281-PTCARENINTEI-HEN-EXT.
-           EXIT.
-      *
-      *H28.12
-      *****************************************************************
-      *    ´µ¼Ô¸Ä¿ÍÈÖ¹æÊÔ½¸½èÍý
-      *****************************************************************
-       10028-PTMYNUBER-SET-SEC           SECTION.
-      *
-      *    ´µ¼Ô¸Ä¿ÍÈÖ¹æ¾ðÊó
-           MOVE    SPACE               TO  PTMYNUMBER-REC
-           INITIALIZE                  PTMYNUMBER-REC
-           MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTMYNUM-PTID
-      *
-           MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 930-PTMYNUMBER-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTMYNUMBER
-               INITIALIZE                  PTMYNUMBER-REC
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL      (FLG-PTMYNUMBER      =   1  )
-                          OR  (IDX                 >=  20 )
-               ADD     1                   TO  IDX
-               MOVE    IDX                 TO  SPA-GMN28-MYID-MAX
-               MOVE    IDX                 TO  SPA-GMN28-TMYNUM
-                                                             (IDX)
-               MOVE    PTMYNUM-ID-KEY      TO  SPA-GMN28-TMYIDKEY
-                                                             (IDX)
-               MOVE    PTMYNUM-MY-NUMBER   TO  SPA-GMN28-TMYNUMBER
-                                                             (IDX)
-               MOVE    PTMYNUM-DESCRIPTION TO  SPA-GMN28-TMYDESCRIP
-                                                             (IDX)
-      *
-               MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 930-PTMYNUMBER-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       10028-PTMYNUBER-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3511,16 +3355,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    P02-P027-HKNKUMI-ROW    TO  WRK-HKNKUMI-ROW
            END-IF
       *
-           IF     (SPA-NAI26-INIT      =   1      )
-             OR   (SPA-P02-GAMEN    NOT =   "P026")
-               MOVE    ZERO                TO  WRK-P026-ROW1
-               MOVE    ZERO                TO  WRK-P026-ROW2
-               MOVE    ZERO                TO  SPA-NAI26-INIT
-           ELSE
-               MOVE    P02-P026-HDLST-ROW  TO  WRK-P026-ROW2
-               MOVE    P02-P026-TOK-ROW    TO  WRK-P026-ROW1
-           END-IF
-      *
            MOVE    SPACE               TO  P02
            INITIALIZE                      P02
       *
@@ -3637,11 +3471,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *v4.8
       *    ginbeeÂÐ±þ
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        MOVE    WIDGET-INSENSITIVE  TO  P02-P02-USERPG-STATE
-      ***  ELSE
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-P02-USERPG-STATE
+           ELSE
                MOVE    WIDGET-NORMAL       TO  P02-P02-USERPG-STATE
-      **** END-IF
+           END-IF
            .
        200-P02-SET-EXT.
            EXIT.
@@ -3662,12 +3496,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  P02-P020-ULYYKTIME (IDX)(3:)
                MOVE    SPA-GMN20-TUKETIME (IDX)
                                        TO  P02-P020-ULUKETIME (IDX)(3:)
-      *H29.4
-               IF    SPA-NAI20-DELKBN(IDX)  =   1
-      *            ºï½üÊ¬
-                   MOVE    ALL "*"     TO  P02-P020-ULUKETIME(IDX)
-               END-IF
-      *
                MOVE    SPA-GMN20-TSRYKA   (IDX)
                                        TO  P02-P020-ULSRYKA   (IDX)
                MOVE    SPA-GMN20-TDRCD    (IDX)
@@ -3757,7 +3585,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDZ
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-HKNCOMBI-MAX )
-                           OR (IDZ     >=  30      )
+                           OR (IDZ     >=  15      )
                IF      SPA-NAI-THYOJIKBN (IDX) =   "1"
                    CONTINUE
                ELSE
@@ -3879,13 +3707,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    WRK-TEIMSG          TO  P02-TEIMSG-VALUE
            MOVE    "blue"              TO  P02-TEIMSG-STYLE
-      *H30.4
-      *TEST
-           IF      SPA-GMN28-NINPUKBN  =   "1"
-               MOVE    "¡ÊÇ¥ÉØ¡Ë"            TO  P02-TEIMSG3-VALUE
-               MOVE    "blue"              TO  P02-TEIMSG3-STYLE
-           END-IF
-      *TEST
       *
            IF      SPA-NAI-GRPHOSPNUM  =   ZERO
                MOVE    SPACE               TO  P02-TEIMSG2-VALUE
@@ -4122,70 +3943,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "  "            TO  P02-P02-HKNJAADRS2(IDX:2)
                END-IF
            END-PERFORM
-      *H28.11
-      *    ¸øÈñ²èÌÌÊÔ½¸
-           PERFORM 20011-P02W1-KOHSET-SEC
-      *
-      *    ¸øÈñ¼ïÎà¤òÊÔ½¸¤¹¤ë
-           PERFORM 20011-HOKNUM-HEN-SEC
-      *
-      *    ÊÝ¸±ÁÈ¹ç¤»
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  P02-HKNLIST-COUNT
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
-               ADD     1                   TO  IDX2
-               MOVE    SPA-GMN-THKNCOMBINUM(IDX)
-                                           TO   P02-HKNCOBNUM (IDX2)
-               MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
-                                           TO  P02-HKNCOBNAME (IDX2)
-      *
-               IF      SPA-GMN-THKNCOMBINUM (IDX)  =   SPA-GMN-SELNUM
-                   MOVE    "T"             TO  P02-HKNLIST-SELECT (IDX2)
-               ELSE
-                   MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
-               END-IF
-      *
-               ADD     1                   TO  IDX2
-               MOVE    SPA-GMN-TTEKSTYMD (IDX)
-                                           TO  P02-HKNCOBNAME (IDX2)
-               MOVE    "¡Á"                TO  P02-HKNCOBNAME (IDX2)
-                                                            (11:2)
-               MOVE    SPA-GMN-TTEKEDYMD (IDX)
-                                           TO  P02-HKNCOBNAME (IDX2)
-                                                            (14:)
-      *        ÈóÉ½¼¨
-               EVALUATE    SPA-NAI-THYOJIKBN (IDX)
-               WHEN    "1"
-                   MOVE    "¡üÈó"          TO  P02-HKNCOBNUM (IDX2)
-               WHEN    "2"
-                   MOVE    "¡üÆþ"          TO  P02-HKNCOBNUM (IDX2)
-               WHEN    "3"
-                   MOVE    "¡ü³°"          TO  P02-HKNCOBNUM (IDX2)
-               END-EVALUATE
-      *
-               MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
-           END-PERFORM
-           MOVE    IDX2                TO  P02-HKNLIST-COUNT
-      *
-           MOVE    SPA-GMN-SELNUM      TO  P02-P02-SELNUM
-      *
-      *    ¿ÇÎÅ²Ê
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-SRYKA-MAX
-               MOVE    SPA-GMN-SRYKA-LST (IDX)
-                                       TO  P02-SRYKA-ITEM (IDX)
-           END-PERFORM
-           MOVE    SPA-SRYKA-MAX       TO  P02-SRYKA-COUNT
-           MOVE    SPA-GMN-SRYKA-G     TO  P02-P02-SRYKA
-           .
-       2001-P02W1-SET-EXT.
-           EXIT.
-      *H28.11
-      *****************************************************************
-      *    ¸øÈñ²èÌÌÊÔ½¸½èÍý
-      *****************************************************************
-       20011-P02W1-KOHSET-SEC         SECTION.
       *
       *    ¸øÈñ¾ðÊó£±
            MOVE    SPA-GMN-KOHNUM-G (01)   TO  P02-P02-KOHNUM1
@@ -4254,8 +4011,60 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "F"                 TO  P02-BK3-VALUE
                MOVE    "Ì¤"                TO  P02-BK3-LABEL
            END-IF
+      *    ¸øÈñ¼ïÎà¤òÊÔ½¸¤¹¤ë
+           PERFORM 20011-HOKNUM-HEN-SEC
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  P02-HKNLIST-COUNT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
+               ADD     1                   TO  IDX2
+               MOVE    SPA-GMN-THKNCOMBINUM(IDX)
+                                           TO   P02-HKNCOBNUM (IDX2)
+               MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+      *
+               IF      SPA-GMN-THKNCOMBINUM (IDX)  =   SPA-GMN-SELNUM
+                   MOVE    "T"             TO  P02-HKNLIST-SELECT (IDX2)
+               ELSE
+                   MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
+               END-IF
+      *
+               ADD     1                   TO  IDX2
+               MOVE    SPA-GMN-TTEKSTYMD (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+               MOVE    "¡Á"                TO  P02-HKNCOBNAME (IDX2)
+                                                            (11:2)
+               MOVE    SPA-GMN-TTEKEDYMD (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+                                                            (14:)
+      *        ÈóÉ½¼¨
+               EVALUATE    SPA-NAI-THYOJIKBN (IDX)
+               WHEN    "1"
+                   MOVE    "¡üÈó"          TO  P02-HKNCOBNUM (IDX2)
+               WHEN    "2"
+                   MOVE    "¡üÆþ"          TO  P02-HKNCOBNUM (IDX2)
+               WHEN    "3"
+                   MOVE    "¡ü³°"          TO  P02-HKNCOBNUM (IDX2)
+               END-EVALUATE
+      *
+               MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
+           END-PERFORM
+           MOVE    IDX2                TO  P02-HKNLIST-COUNT
+      *
+           MOVE    SPA-GMN-SELNUM      TO  P02-P02-SELNUM
+      *
+      *    ¿ÇÎÅ²Ê
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               MOVE    SPA-GMN-SRYKA-LST (IDX)
+                                       TO  P02-SRYKA-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-SRYKA-MAX       TO  P02-SRYKA-COUNT
+           MOVE    SPA-GMN-SRYKA-G     TO  P02-P02-SRYKA
            .
-       20011-P02W1-KOHSET-EXT.
+       2001-P02W1-SET-EXT.
            EXIT.
       *****************************************************************
       *    ¸øÈñ¼ïÎàÊÔ½¸½èÍý
@@ -4680,9 +4489,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2001-P026-SET-SEC         SECTION.
       *
-           MOVE    WRK-P026-ROW1       TO  P02-P026-TOK-ROW
-           MOVE    WRK-P026-ROW2       TO  P02-P026-HDLST-ROW
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                     UNTIL    ( IDX     >   SPA-GMN26-TMAX )
                MOVE    IDX                     TO  WRK-RENNUMZ3
@@ -4724,9 +4530,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN26-TOKMAX    TO  P02-P026-TOKCD-COUNT
       *
       *    ¥ì¥»¥×¥ÈÊ¬³ä
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                     UNTIL    ( IDX     >   SPA-GMN26-HDLSTMAX )
-                        OR   ( IDX     >   50    )
+                        OR   ( IDX     >   10    )
                MOVE    SPA-GMN26-THDNUM (IDX)  TO  WRK-RENNUMZ3
                MOVE    WRK-RENNUMZ3            TO  P02-P026-THDNUM (IDX)
                MOVE    SPA-GMN26-THDSRYYM (IDX)
@@ -4822,10 +4629,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  P02-P024-TNKLNINYMD(IDY)
                  MOVE    SPA-GMN24-TNKLHKNKBN (IDX)
                                            TO  P02-P024-TNKLHKNKBN(IDY)
-      *H29.6
-      *          ¶­³¦ÁØ³ºÅö¶èÊ¬
-                 MOVE    SPA-GMN24-TNKLKYOUKAI (IDX)
-                                           TO  P02-P024-TNKLKYOUKAI(IDY)
       *
                  IF      IDX           =   SPA-NAI24-TNKSELNUM
                      MOVE    "T"           TO  P02-P024-TNKLIST-SELECT
@@ -4850,17 +4653,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                    (IDX)
            END-PERFORM
            MOVE    SPA-GMN24-TNKTEKKBN-MAX   TO  P02-P024-TNKTEKK-COUNT
-      *
-      *    ¶­³¦ÁØ³ºÅö¶èÊ¬
-           MOVE    SPA-GMN24-TNKKYOUKAI-G  TO  P02-P024-TNKKYOUKAI
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                    UNTIL      IDX     >   SPA-GMN24-TNKKYOUKAI-MAX
-               MOVE    SPA-GMN24-TNKKYOUKAI-LST (IDX)
-                                           TO  P02-P024-TNKKYOUKAI-ITEM
-                                                                  (IDX)
-           END-PERFORM
-           MOVE    SPA-GMN24-TNKKYOUKAI-MAX
-                                       TO  P02-P024-TNKKYOUKAI-COUNT
       *
            MOVE    SPA-GMN24-FUKUSHI-G TO  P02-P024-FUKUSHI
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -4892,9 +4684,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  P02-P024-TSYLNINYMD(IDY)
                  MOVE    SPA-GMN24-TSYLHKNKBN (IDX)
                                            TO  P02-P024-TSYLHKNKBN(IDY)
-      *          ¶­³¦ÁØ³ºÅö¶èÊ¬
-                 MOVE    SPA-GMN24-TSYLKYOUKAI (IDX)
-                                           TO  P02-P024-TSYLKYOUKAI(IDY)
       *
                  IF      IDX           =   SPA-NAI24-TSYSELNUM
                      MOVE    "T"           TO  P02-P024-TSYLIST-SELECT
@@ -4921,17 +4710,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                    (IDX)
            END-PERFORM
            MOVE    SPA-GMN24-TSYTEKKBN-MAX   TO  P02-P024-TSYTEKK-COUNT
-      *
-      *    ¶­³¦ÁØ³ºÅö¶èÊ¬
-           MOVE    SPA-GMN24-TSYKYOUKAI-G   TO  P02-P024-TSYKYOUKAI
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                    UNTIL      IDX     >   SPA-GMN24-TSYKYOUKAI-MAX
-               MOVE    SPA-GMN24-TSYKYOUKAI-LST (IDX)
-                                           TO  P02-P024-TSYKYOUKAI-ITEM
-                                                                  (IDX)
-           END-PERFORM
-           MOVE    SPA-GMN24-TSYKYOUKAI-MAX
-                                       TO  P02-P024-TSYKYOUKAI-COUNT
       *
       *    ¸øÈñÉéÃ´
            MOVE    ZERO                TO  IDY
@@ -5307,65 +5085,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "F"                 TO  P02-P028-CHKHKTBYO4
            END-IF
-      *H28.4
-      *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅÂÐ¾Ý
-           IF      SPA-GMN28-NNCHIKBN  =   "1"
-               MOVE    "T"                 TO  P02-P028-NNCHIKBN
-           ELSE
-               MOVE    "F"                 TO  P02-P028-NNCHIKBN
-           END-IF
-      *    ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅÂÐ¾Ý
-           IF      SPA-GMN28-SYOUNIKBN  =   "1"
-               MOVE    "T"                 TO  P02-P028-SYOUNIKBN
-           ELSE
-               MOVE    "F"                 TO  P02-P028-SYOUNIKBN
-           END-IF
-      *H28.12
-      *    ´µ¼Ô¸Ä¿ÍÈÖ¹æ¾ðÊó
-           PERFORM   VARYING     IDX     FROM   1   BY  1
-                     UNTIL     ( IDX     >   SPA-GMN28-MYID-MAX )
-               MOVE    SPA-GMN28-TMYNUM (IDX)  TO WRK-RENNUMZ2
-               MOVE    WRK-RENNUMZ2        TO  P02-P028-TMYNUM (IDX)
-               MOVE    SPA-GMN28-TMYIDKEY (IDX)
-                                           TO  P02-P028-TMYIDKEY
-                                                               (IDX)
-               MOVE    SPA-GMN28-TMYNUMBER (IDX)
-                                           TO  P02-P028-TMYNUMBER
-                                                               (IDX)
-               MOVE    SPA-GMN28-TMYDESCRIP(IDX)
-                                           TO  P02-P028-TMYDESCRIP
-                                                               (IDX)
-               IF      IDX             =   SPA-GMN28-MYSELNUM
-                   MOVE    "T"         TO  P02-P028-MYLIST-SELECT
-                                                              (IDX)
-               ELSE
-                   MOVE    "F"         TO  P02-P028-MYLIST-SELECT
-                                                              (IDX)
-               END-IF
-           END-PERFORM
-           MOVE    SPA-GMN28-MYID-MAX      TO  P02-P028-MYLIST-COUNT
-      *
-           MOVE    SPA-GMN28-MYSELNUM      TO  P02-P028-MYSELNUM
-      *
-           MOVE    SPA-GMN28-MYIDKEY       TO  P02-P028-MYIDKEY
-           MOVE    SPA-GMN28-MYNUMBER      TO  P02-P028-MY-NUMBER
-           MOVE    SPA-GMN28-MYDESCRIP     TO  P02-P028-MY-DESCRIP
-      *
-      *H28.12
-      *    »ØÆ³ÎÁÅù¼«Æ°»»Äê
-           MOVE    SPA-GMN28-AUTOSRYCD(1)  TO  P02-P028-AUTOSRYCD1
-           MOVE    SPA-GMN28-AUTOSRYCD(2)  TO  P02-P028-AUTOSRYCD2
-           MOVE    SPA-GMN28-AUTOSRYCD(3)  TO  P02-P028-AUTOSRYCD3
-           MOVE    SPA-GMN28-AUTONAME (1)  TO  P02-P028-AUTONAME1 
-           MOVE    SPA-GMN28-AUTONAME (2)  TO  P02-P028-AUTONAME2 
-           MOVE    SPA-GMN28-AUTONAME (3)  TO  P02-P028-AUTONAME3 
-      *H30.4
-      *    Ç¥ÉØ¶èÊ¬
-           IF      SPA-GMN28-NINPUKBN  =   "1"
-               MOVE    "T"                 TO  P02-P028-NINPUKBN
-           ELSE
-               MOVE    "F"                 TO  P02-P028-NINPUKBN
-           END-IF
            .
        2001-P028-SET-EXT.
            EXIT.
@@ -5425,7 +5144,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    PERFORM 10025-PTNUMPUBLIC-SET-SEC
       *ver.4.7
       *    ´µ¼Ô¸ÄÊÌ¾ðÊóÊÔ½¸
-           PERFORM 10028-PTCONF-SET-SEC
+      *****PERFORM 10028-PTCONF-SET-SEC
       *
       *    ´µ¼ÔÏ«ºÒ¾ðÊóÊÔ½¸
            PERFORM 10023-RSIPARA-SET-SEC
@@ -5833,98 +5552,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        930-PTCARENINTEI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸Ä¿ÍÈÖ¹æ¾ðÊó¥Ç¡¼¥¿ÆÉ¹þ½èÍý
-      *****************************************************************
-       930-PTMYNUMBER-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-PTMYNUMBER
-               MOVE    MCPDATA-REC         TO  PTMYNUMBER-REC
-           ELSE
-               MOVE    1                   TO  FLG-PTMYNUMBER
-               INITIALIZE                  PTMYNUMBER-REC
-           END-IF
-      *
-           .
-       930-PTMYNUMBER-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
-      *****************************************************************
-       910-TENSU-READ-SEC         SECTION.
-      *
-      *
-           INITIALIZE                      TNS-TENSU-REC
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
-           MOVE    SPA-SYSYMD          TO  TNS-YUKOEDYMD
-      *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 9110-TENSU-READ-SEC
-           END-IF
-           MOVE    ZERO                TO  FLG-TENSU-OK
-           PERFORM UNTIL  (FLG-TENSU       =   1 ) OR
-                          (FLG-TENSU-OK    =   1 )
-               IF     (TNS-YUKOSTYMD       <=  SPA-SYSYMD ) AND
-                      (TNS-YUKOEDYMD       >=  SPA-SYSYMD )
-                   MOVE    1                   TO  FLG-TENSU-OK
-                   MOVE    1                   TO  FLG-TENSU
-               ELSE
-                   MOVE    2                   TO  FLG-TENSU-OK
-                   MOVE    TNS-TENSU-REC       TO  TNSWK-TENSU-REC
-               END-IF
-               IF      FLG-TENSU           =   ZERO
-                   MOVE    "tbl_tensu"         TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 9110-TENSU-READ-SEC
-               END-IF
-           END-PERFORM
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    ÅöÆü´ü´Ö³°
-           IF      FLG-TENSU-OK        =   2
-               MOVE    TNSWK-TENSU-REC     TO  TNS-TENSU-REC
-               STRING  "¡Ú´ü´Ö³°¡Û"
-                      TNS-NAME
-                                       DELIMITED  BY  SPACE
-                                   INTO    WRK-SRYCD-NAME
-               END-STRING
-           ELSE
-               MOVE    TNS-NAME            TO  WRK-SRYCD-NAME
-           END-IF
-      *
-           .
-       910-TENSU-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÆÉ¹þ½èÍý
-      *****************************************************************
-       9110-TENSU-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-               MOVE    ZERO                TO  FLG-TENSU
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
-           .
-       9110-TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************
