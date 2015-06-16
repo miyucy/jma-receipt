@@ -457,7 +457,7 @@ P02 {
             textdata varchar(50);
           };
           count int;
-            item varchar(50)[15];
+            item varchar(50)[10];
         };
         P02_BIRTHWEIGHT {
           numdata number(4);
@@ -467,10 +467,6 @@ P02 {
           textdata varchar(20);
         };
         TEIMSG2 {
-          style varchar(20);
-          textdata varchar(10);
-        };
-        TEIMSG3 {
           style varchar(20);
           textdata varchar(10);
         };
@@ -851,7 +847,6 @@ P02 {
                 column4 varchar(12);
                 column5 varchar(10);
                 column6 varchar(10);
-                column7 varchar(20);
               }[20];
               selectdata bool[20];
           };
@@ -868,7 +863,6 @@ P02 {
                 column4 varchar(12);
                 column5 varchar(10);
                 column6 varchar(10);
-                column7 varchar(20);
               }[20];
               selectdata bool[20];
           };
@@ -890,25 +884,11 @@ P02 {
           count int;
             item varchar(30)[5];
         };
-        P024_TSYKYOUKAI_COB {
-          P024_TSYKYOUKAI {
-            textdata varchar(30);
-          };
-          count int;
-            item varchar(30)[5];
-        };
         P024_TNKNINSTYMD {
           textdata varchar(10);
         };
         P024_TNKTEKK_COB {
           P024_TNKTEKK {
-            textdata varchar(30);
-          };
-          count int;
-            item varchar(30)[5];
-        };
-        P024_TNKKYOUKAI_COB {
-          P024_TNKKYOUKAI {
             textdata varchar(30);
           };
           count int;
@@ -1103,8 +1083,8 @@ P02 {
                 column3 varchar(2);
                 column4 varchar(20);
                 column5 varchar(20);
-              }[50];
-              selectdata bool[50];
+              }[10];
+              selectdata bool[10];
           };
         };
         P026_HDSELNUM {
@@ -1298,66 +1278,6 @@ P02 {
           isactive bool;
         };
         P028_CHKHKTBYO4 {
-          isactive bool;
-        };
-        P028_NNCHIKBN {
-          isactive bool;
-        };
-        P028_SYOUNIKBN {
-          isactive bool;
-        };
-        scrolledwindow7 { #GtkScrolledWindow
-          P028_MYLIST { #GtkPandaCList
-            count int;
-            row int;
-            selectdata bool[20];
-            fgcolor varchar(16)[20];
-            bgcolor varchar(16)[20];
-            item {
-              column1 varchar(2);
-              column2 varchar(10);
-              column3 varchar(20);
-              column4 varchar(100);
-            }[20];
-          };
-        };
-        BCMY1 { #GtkButton
-          state int;
-        };
-        BCMY2 { #GtkButton
-          state int;
-        };
-        P028_MYSELNUM { #GtkNumberEntry
-          numdata number(2);
-        };
-        P028_MYIDKEY { #GtkPandaEntry
-          textdata varchar(10);
-        };
-        P028_MY_NUMBER { #GtkPandaEntry
-          textdata varchar(20);
-        };
-        P028_MY_DESCRIP { #GtkPandaEntry
-          textdata varchar(100);
-        };
-        P028_AUTOSRYCD1 { #GtkPandaEntry
-          textdata varchar(9);
-        };
-        P028_AUTOSRYCD2 { #GtkPandaEntry
-          textdata varchar(9);
-        };
-        P028_AUTOSRYCD3 { #GtkPandaEntry
-          textdata varchar(9);
-        };
-        P028_AUTONAME1 { #GtkLabel
-          textdata varchar(40);
-        };
-        P028_AUTONAME2 { #GtkLabel
-          textdata varchar(40);
-        };
-        P028_AUTONAME3 { #GtkLabel
-          textdata varchar(40);
-        };
-        P028_NINPUKBN { #GtkCheckButton
           isactive bool;
         };
       };

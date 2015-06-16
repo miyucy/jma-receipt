@@ -45,7 +45,6 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/12/19  ´µ¼Ô¥ì¥»Ê¬³äÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  13/07/19  ´µ¼Ô¸ÄÊÌÀßÄêÄÉ²ÃÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/01/20  ½ÐÀ¸»þÂÎ½ÅÄÉ²ÃÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  17/05/XX  ¶­³¦ÁØ³ºÅöÂÐ±þ
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -124,13 +123,9 @@
                        09  SPA-GMN-DISH        PIC X(01).
                        09  SPA-GMN-DISCOUNTKBN-MEI
                                                PIC X(20).
-                   07  SPA-GMN-DISCOUNT.
-                       09  SPA-GMN-DISCOUNT-CD     PIC X(02).
-                       09  SPA-GMN-DISCOUNT-MEI    PIC X(12).
-                   07  SPA-GMN-CONDITION       OCCURS   3.
-                       09  SPA-GMN-CONDITION-CD    PIC X(02).
-                       09  SPA-GMN-COND-H          PIC X(01).
-                       09  SPA-GMN-CONDITION-MEI   PIC X(20).
+                   07  SPA-GMN-DISCOUNT        PIC X(14).
+                   07  SPA-GMN-CONDITION       PIC X(23)
+                                               OCCURS   3.
       *            Æþ¶âÊýË¡
                    07  SPA-GMN-NYUKIN-HOHO-G.
                        09  SPA-GMN-NYUKIN-HOHO     PIC X(02).
@@ -184,7 +179,7 @@
                        09  SPA-GMN-SKYPRTFLG-MEI      PIC X(48).
                    07  SPA-GMN-SKYPRTFLG-COB.
                        09  SPA-GMN-SKYPRTFLG-LST      PIC X(50)
-                                                      OCCURS 15.
+                                                      OCCURS 10.
                    07  SPA-SKYPRTFLG-MAX              PIC 9(02).
       *            ½ÐÀ¸»þÂÎ½Å
                    07  SPA-GMN-BIRTHWEIGHT         PIC 9(04).
@@ -542,9 +537,6 @@
                        09  SPA-PTHKN-HONKZKFLG         PIC 9(01).
       *                Êä½õ¶èÊ¬·Ù¹ð
                        09  SPA-PTHKN-HOJOKEIFLG        PIC 9(01).
-      *APIV3 ÍÑ
-      *                API½èÍý¶èÊ¬
-                       09  SPA-PTHKN-MODE              PIC X(01).
       *
                    07  SPA-PTHKN-MAX               PIC 9(04).
       *
@@ -581,9 +573,6 @@
                        09  SPA-PTKOH-KAKUINFLG         PIC 9(01).
       *                À¸ÊÝ½ÅÊ£·Ù¹ð
                        09  SPA-PTKOH-JFKCHKFLG         PIC 9(01).
-      *APIV3 ÍÑ
-      *                API½èÍý¶èÊ¬
-                       09  SPA-PTKOH-MODE              PIC X(01).
       *
                    07  SPA-PTKOH-MAX               PIC 9(04).
       *
@@ -699,8 +688,6 @@
                            11  SPA-NAI20-SRYNAI      PIC X(02).
                            11  SPA-NAI20-YYKID       PIC 9(02).
                            11  SPA-NAI20-YYKTIME     PIC 9(04).
-      *H29.4               ºï½ü¶èÊ¬
-                           11  SPA-NAI20-DELKBN      PIC 9(01).
                    07  SPA-NAI20-COMBMAX             PIC 9(04).
       *
       *    P027(ÊÝ¸±KUMIAWASE¡Ë
@@ -831,7 +818,6 @@
                            11  SPA-GMN24-TSYLHKNKBN     PIC X(12).
                            11  SPA-GMN24-TSYLNINYMD     PIC X(10).
                            11  SPA-GMN24-TSYLSKJGNSTYMDW    PIC X(10).
-                           11  SPA-GMN24-TSYLKYOUKAI    PIC X(20).
       *
                            11  SPA-GMN24-TSYDPSTYMD     PIC X(08).
                            11  SPA-GMN24-TSYDPEDYMD     PIC X(08).
@@ -839,7 +825,6 @@
                            11  SPA-GMN24-TSYDELKBN      PIC X(01).
                            11  SPA-NAI24-TSYLHKNKBN     PIC X(01).
                            11  SPA-NAI24-TSYLNINYMD     PIC X(08).
-                           11  SPA-NAI24-TSYLKYOUKAI    PIC X(01).
                        09  SPA-TSY-MAX                  PIC 9(03).
       *
                    07  SPA-GMN24-TSYS-AREA.
@@ -857,12 +842,6 @@
                            11  SPA-GMN24-TSYTEKKBN          PIC X(01).
                            11  SPA-GMN24-TSYTEKKBN-F        PIC X(01).
                            11  SPA-GMN24-TSYTEKKBN-MEI      PIC X(28).
-      *H29.6
-      *                ¶­³¦ÁØ³ºÅö¶èÊ¬
-                       09  SPA-GMN24-TSYKYOUKAI-G.
-                           11  SPA-GMN24-TSYKYOUKAI          PIC X(01).
-                           11  SPA-GMN24-TSYKYOUKAI-F        PIC X(01).
-                           11  SPA-GMN24-TSYKYOUKAI-MEI      PIC X(28).
       *
                        09  SPA-NAI24-TSYSELNUM              PIC 9(04).
                        09  SPA-MAE24-TSYSELNUM              PIC X(04).
@@ -879,10 +858,8 @@
                            11  SPA-GMN24-TNKDPEDYMD     PIC X(08).
                            11  SPA-GMN24-TNKDELKBN      PIC X(01).
                            11  SPA-GMN24-TFUKUSHI-KBN   PIC X(01).
-                           11  SPA-GMN24-TNKLKYOUKAI    PIC X(20).
                            11  SPA-NAI24-TNKLHKNKBN     PIC X(01).
                            11  SPA-NAI24-TNKLNINYMD     PIC X(08).
-                           11  SPA-NAI24-TNKLKYOUKAI    PIC X(01).
                        09  SPA-TNK-MAX                  PIC 9(03).
                    07  SPA-GMN24-TNK-AREA.
                        09  SPA-GMN24-TNKSELNUM              PIC X(04).
@@ -905,13 +882,6 @@
                            11  SPA-GMN24-TNKTEKKBN          PIC X(01).
                            11  SPA-GMN24-TNKTEKKBN-F        PIC X(01).
                            11  SPA-GMN24-TNKTEKKBN-MEI      PIC X(28).
-      *H29.6
-      *                ¶­³¦ÁØ³ºÅö¶èÊ¬
-                       09  SPA-GMN24-TNKKYOUKAI-G.
-                           11  SPA-GMN24-TNKKYOUKAI         PIC X(01).
-                           11  SPA-GMN24-TNKKYOUKAI-F       PIC X(01).
-                           11  SPA-GMN24-TNKKYOUKAI-MEI     PIC X(28).
-      *
       *            ¸øÈñÉéÃ´
                    07  SPA-GMN24-KOHFTNTBL.
                        09  SPA-GMN24-FTNTBLO            OCCURS  60.
@@ -934,8 +904,6 @@
       *
                    07  SPA-GMN24-FTNMSG1             PIC X(16).
                    07  SPA-GMN24-FTNMSG2             PIC X(16).
-      *H28.9
-                   07  SPA-NAI24-FTNSYORI            PIC 9(01).
       *
                    07  SPA-GMN24-KOHFTNTBL2.
                        09  SPA-GMN24-FTNTBL2-OCC         OCCURS  300.
@@ -989,17 +957,6 @@
                            11  SPA-GMN24-TNKTEKKBN-LST   PIC X(30)
                                                          OCCURS   5.
                            11  SPA-GMN24-TNKTEKKBN-MAX   PIC 9(04).
-      *                ¶­³¦ÁØ³ºÅö¶èÊ¬
-                       09  SPA-GMN24-TNKKYOUKAI-LST-G.
-                           11  SPA-GMN24-TNKKYOUKAI-LST   PIC X(30)
-                                                          OCCURS   5.
-                           11  SPA-GMN24-TNKKYOUKAI-MAX   PIC 9(04).
-      *                ¶­³¦ÁØ³ºÅö¶èÊ¬
-                       09  SPA-GMN24-TSYKYOUKAI-LST-G.
-                           11  SPA-GMN24-TSYKYOUKAI-LST   PIC X(30)
-                                                         OCCURS   5.
-                           11  SPA-GMN24-TSYKYOUKAI-MAX   PIC 9(04).
-      *
       *            ¸øÈñÉéÃ´³Û½èÍýÈÏ°Ï
                    07  SPA-NAI24-KOHFTNETC.
                        09  SPA-NAI24-KOHFTNETC-OCC       OCCURS   300.
@@ -1069,7 +1026,6 @@
                05  SPA-GMN26-SYORI           PIC 9(01).
                05  SPA-P026-KOHKEIFLG        PIC 9(01).
                05  SPA-NAI26-HDSELNUM-CHK    PIC 9(03).
-               05  SPA-NAI26-INIT                PIC 9(01).
       *
       *        ½é´üÀßÄêÆâÍÆ
                05  SPA-GMN26-INIT.
@@ -1156,7 +1112,7 @@
       *
       *        ´µ¼Ô¥ì¥»¥×¥ÈÊ¬³ä¥ê¥¹¥È
                05  SPA-GMN26-HDLIST-TBL.
-                   07  SPA-GMN26-HDLIST-OCC         OCCURS  50.
+                   07  SPA-GMN26-HDLIST-OCC         OCCURS  20.
                        09  SPA-GMN26-THDNUM          PIC 9(03).
                        09  SPA-GMN26-THDSRYYM        PIC X(06).
                        09  SPA-GMN26-THDDAY          PIC X(02).
@@ -1308,43 +1264,7 @@
                05  SPA-GMN28-CHKHKTBYO-AREA.
                    07  SPA-GMN28-CHKHKTBYO         PIC X(01)
                                                    OCCURS   4.
-      *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅÂÐ¾Ý
-               05  SPA-GMN28-NNCHIKBN          PIC X(01).
-      *    ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅÂÐ¾Ý
-               05  SPA-GMN28-SYOUNIKBN         PIC X(01).
-      *H30.4
-      *    Ç¥ÉØ¶èÊ¬
-               05  SPA-GMN28-NINPUKBN          PIC X(01).
-      *H28.12
-      *        °åÎÅÅù£É£Ä¾ðÊó
-               05  SPA-GMN28-MYID-AREA.
-                   07  SPA-GMN28-MYLIST-G.
-                       09  SPA-GMN28-MYLIST-OCC OCCURS   20.
-                           11  SPA-GMN28-TMYNUM        PIC 9(02).
-                           11  SPA-GMN28-TMYIDKEY      PIC X(10).
-                           11  SPA-GMN28-TMYNUMBER     PIC X(20).
-                           11  SPA-GMN28-TMYDESCRIP    PIC X(100).
-                   07  SPA-GMN28-MYID-MAX          PIC 9(02).
       *
-                   07  SPA-GMN28-MYSELNUM          PIC 9(02).
-                   07  SPA-MAE28-MYSELNUM          PIC 9(02).
-      *
-                   07  SPA-GMN28-MYID-ING.
-                       09  SPA-GMN28-MYIDKEY       PIC X(10).
-                       09  SPA-GMN28-MYNUMBER      PIC X(20).
-                       09  SPA-GMN28-MYDESCRIP     PIC X(100).
-      *H28.12
-      *        »ØÆ³ÎÁÅù¼«Æ°È¯À¸
-               05  SPA-GMN28-AUTO-G.
-                   07  SPA-GMN28-AUTO-OCC   OCCURS   3.
-                       09  SPA-GMN28-AUTOSRYCD     PIC X(09).
-                       09  SPA-GMN28-AUTONAME      PIC X(40).
-      *H28.12
-               05  SPA-GMN28-AUTOIDX               PIC 9(02).
-               05  SPA-NAI28-KEIFLG                PIC 9(01).
-      *H30.4
-      *    Ç¥ÉØ¶èÊ¬·Ù¹ð
-               05  SPA-NAI28-KEININP               PIC 9(01).
       *
       *    P0201¡ÊÌ¤ÅÐÏ¿¼õÉÕ¼Ô°ìÍ÷¡Ë
            03  SPA-P0201-AREA.
@@ -1621,16 +1541,6 @@
                            11  SPA-GMN2D-D3-TOKKIKBN-H    PIC X(01).
                            11  SPA-GMN2D-D3-TOKKIKBN-MEI  PIC X(28).
                    07  SPA-GMN2D-D3-TOKKIKBN-MAX        PIC 9(02).
-      *H29.5
-      *            ¼«ÇåÀÕÅÀ¿ô»»Äê¶èÊ¬
-                   07  SPA-GMN2D-JIBAIKBN-G.
-                       09  SPA-GMN2D-JIBAIKBN          PIC X(01).
-                       09  SPA-GMN2D-JIBAIKBNH1        PIC X(01).
-                       09  SPA-GMN2D-JIBAIKBNMEI       PIC X(38).
-                   07  SPA-GMN2D-JIBAIKBN-LST-G.
-                       09  SPA-GMN2D-JIBAIKBN-LST      PIC X(40)
-                                                       OCCURS  5.
-                   07  SPA-GMN2D-JIBAIKBN-MAX          PIC 9(02).
       *
                05  SPA-NAI2D-AREA.
                    07  SPA-NAI2D-HKNKBN-MAE        PIC X(01).
@@ -1663,16 +1573,10 @@
       *            Á°Ï«Æ¯´ð½à´ÆÆÄ½ð¥³¡¼¥É
                    07  SPA-NAI2D-MAE-SYOCD         PIC  X(05).
                    07  SPA-NAI2D-SYOCDCHK          PIC  X(01).
-      *H29.5       Á°¼«ÇåÀÕÅÀ¿ô¶èÊ¬
-                   07  SPA-NAI2D-MAE-JIBAIKBN      PIC  X(01).
-      *            ·Ù¹ð£³
-                   07  SPA-NAI2D-KEIFLG3           PIC 9(01).
       *
       *     Âè»°¼ÔÂÐ±þ
       *        Ï«ºÒÊÝ¸±¤Î»þ¡¢Ï«ºÒÊÝ¸±¤ÎÏ¢ÈÖ
                05  SPA-NAI2D-RSHKN-EDANUM      PIC 9(04).
-      *H28.1   ¸½ÊªµëÉÕ½é´ü¶èÊ¬
-               05  SPA-DAISAN-GEN              PIC X(01).
       *
                05  SPA-NAI2D-HKNID             PIC 9(10).
                05  SPA-NAI2D-KOHID             PIC 9(10).
@@ -1882,9 +1786,6 @@
                05  SPA-P02Y1-NEXT                  PIC 9(04).
                05  SPA-P02Y1-PAGE                  PIC 9(04).
                05  SPA-P02Y1-GMN-CUR               PIC 9(03).
-      *H28.12
-               05  SPA-P02Y1-DATA                  PIC X(02).
-               05  SPA-P02Y1-MOTOPG                PIC X(08).
       *
                05  SPA-P02Y1-GMN-SELNUM-G.
                    07  SPA-P02Y1-GMN-SELNUM        PIC X(03)
