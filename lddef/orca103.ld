@@ -11,7 +11,6 @@ bind	"X04"		"OpenCOBOL"	"ORCGX04";
 bind	"X05"		"OpenCOBOL"	"ORCGX05";
 bind	"X06"		"OpenCOBOL"	"ORCGX06";
 bind	"X07"		"OpenCOBOL"	"ORCGX07";
-bind	"X08"		"OpenCOBOL"	"ORCGX08";
 bind	"X91"		"OpenCOBOL"	"ORCGX91";
 bind	"X97"		"OpenCOBOL"	"ORCGX97";
 bind	"X98"		"OpenCOBOL"	"ORCGX98";
@@ -34,7 +33,6 @@ data	{
 		X05;
 		X06;
 		X07;
-		X08;
 		X91;
 		X97;
 		X98;
@@ -65,9 +63,6 @@ db	{
 	tbl_prtdata;
 	tbl_prtkanri;
 	tbl_tekiou_disease;
-	tbl_material_s;
-	tbl_chk_master;
-	tbl_chk_user;
 };
 
 #include "orcadbh.inc"

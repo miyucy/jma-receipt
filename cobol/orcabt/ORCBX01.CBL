@@ -43,7 +43,7 @@
                                    FILE    STATUS  IS  STS-BX0101.
       *
 006900*    エラーファイル
-           SELECT  CHKMERR-FILE    ASSIGN  RECEERR
+           SELECT  CHKMERR-FILE    ASSIGN  WRK-PARA-CHKMERR
                                    FILE    STATUS  IS  STS-CHKMERR.
       *
        DATA                    DIVISION.
@@ -57,8 +57,6 @@
        01  CHKMERR-REC                             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "CPRECEERR.INC".
       *
       *    ステータス領域
        01  STS-AREA.
@@ -100,6 +98,7 @@
            03  WRK-PARA-SRTKBN                     PIC X(01).
            03  WRK-PARA-STSRYCD                    PIC X(09).
            03  WRK-PARA-EDSRYCD                    PIC X(09).
+           03  WRK-PARA-CHKMERR                    PIC X(50).
            03  WRK-PARA-KJNYMD                     PIC X(08).
       *
       *    一時領域
@@ -168,9 +167,6 @@
       *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -217,9 +213,6 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-           INITIALIZE                  TSS013-AREA
-      *
-           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -244,7 +237,7 @@
                                        WRK-PARA-SRTKBN
                                        WRK-PARA-STSRYCD
                                        WRK-PARA-EDSRYCD
-                                       RECEERR
+                                       WRK-PARA-CHKMERR
                                        WRK-PARA-KJNYMD
            END-UNSTRING
       *
@@ -297,12 +290,6 @@
            INITIALIZE                      JOBKANRI-REC
            PERFORM 800-ORCSJOB-SEC
       *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR TO SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
-      *
       *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC
       *
@@ -328,8 +315,6 @@
                MOVE    "1"             TO  WRK-TEKBYO-CHKKBN
            WHEN    "Z"
                MOVE    "2"             TO  WRK-TEKBYO-CHKKBN
-           WHEN    OTHER
-               MOVE    WRK-PARA-CHKKBN TO  WRK-TEKBYO-CHKKBN
            END-EVALUATE
       *
            .
@@ -370,14 +355,9 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           EVALUATE     WRK-PARA-CHKKBN
-           WHEN    "1"
-           WHEN    "2"
-               PERFORM 2002-TEKBYO-START-SEC
-           WHEN    "Y"
-           WHEN    "Z"
+           IF    ( WRK-PARA-CHKKBN     =   "Y" OR "Z" )
                PERFORM 2001-TEKBYO-START-SEC
-           END-EVALUATE
+           END-IF
       *
            INITIALIZE                      ORCHXLSTAREA
            MOVE    WRK-PARA-CHKKBN     TO  HXLST-CHKKBN
@@ -387,8 +367,6 @@
            MOVE    WRK-PARA-KJNYMD     TO  HXLST-KJNYMD
            MOVE    "2"                 TO  HXLST-PROCKBN
            MOVE    ORCSPRTAREA         TO  HXLST-PRTAREA
-           MOVE    TSS013-TEMP-NAME    TO  HXLST-TEMP-NAME
-           MOVE    TSS013-TEMP-KEY     TO  HXLST-TEMP-KEY
       *
            CALL    "ORCHXLST"          USING
                                        SPA-AREA
@@ -398,7 +376,7 @@
       *
            MOVE    1                   TO  FLG-END
       *
-           IF    ( WRK-PARA-CHKKBN     =   "1" OR "2" OR "Y" OR "Z" )
+           IF    ( WRK-PARA-CHKKBN     =   "Y" OR "Z" )
                PERFORM 2001-TEKBYO-END-SEC
            END-IF
       *
@@ -502,47 +480,6 @@
       *
            .
        2001-TEKBYO-START-EXT.
-           EXIT.
-      *****************************************************************
-      *    適応病名マスタ一覧表開始処理
-      *****************************************************************
-       2002-TEKBYO-START-SEC           SECTION.
-      *
-           INITIALIZE                      SS013-AREA
-           MOVE     "DBCREATE"         TO  SS013-FUNC
-           MOVE     WRK-TEKBYO-CHKKBN  TO  SS013-CHKKBN
-           MOVE     "2"                TO  SS013-CREATEKBN
-           MOVE     WRK-PARA-KJNYMD    TO  SS013-KJNYMD
-           CALL     "ORCSS013"         USING
-                                           SS013-AREA
-                                           SPA-AREA
-           MOVE     SS013-AREA         TO  TSS013-AREA
-      *
-           PERFORM 900-CHKSND-KEY23-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
-      *
-               INITIALIZE                      SS013-AREA
-               MOVE     "DBINSERT"         TO  SS013-FUNC
-               MOVE     WRK-TEKBYO-CHKKBN  TO  SS013-CHKKBN
-               MOVE     CHKSND-SRYCD       TO  SS013-SRYCD
-               MOVE     WRK-PARA-KJNYMD    TO  SS013-KJNYMD
-               MOVE     TSS013-TEMP-NAME   TO  SS013-TEMP-NAME
-               MOVE     TSS013-TEMP-KEY    TO  SS013-TEMP-KEY
-               CALL     "ORCSS013"         USING
-                                           SS013-AREA
-                                           SPA-AREA
-      *
-               PERFORM 900-CHKSND-KEY23-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_chksnd"    TO  MCP-TABLE
-           MOVE    "key23"         TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       2002-TEKBYO-START-EXT.
            EXIT.
       *****************************************************************
       *    適応病名マスタ一覧表開始処理
