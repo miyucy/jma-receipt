@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
-      *  04.08.00    NACL-多々納  15/06/16  診療科・保険組合せ件数対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -345,7 +344,6 @@
            END-IF
            PERFORM VARYING IDX
                    FROM    1       BY  1
-      *********    UNTIL      (IDX             >   40    )   OR
                    UNTIL      (IDX             >   99    )   OR
                               (FLG-SYSKANRI    =   1     )
                MOVE    MCPDATA-REC             TO  SYS-1005-REC
@@ -728,7 +726,6 @@
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPACE               TO  PID1
-           INITIALIZE                      PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
            MOVE    "戻る"              TO  PID1-B01
