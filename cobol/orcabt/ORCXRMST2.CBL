@@ -282,8 +282,6 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 100-DBOPEN-SEC
       *
-           PERFORM 800-MSTNAME-SEC
-      *
            INITIALIZE                  SGETTEMP-AREA
            MOVE    PARA-ERRFILE    TO  SGETTEMP-BASENAMES (1)
            CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
@@ -309,6 +307,9 @@ grpsys     COPY    "COMMON-SPA".
            END-IF
       *
            IF    ( FLG-END         =   ZERO )
+      *
+               PERFORM 800-MSTNAME-SEC
+      *
       *
       *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -449,6 +450,7 @@ grpsys     COPY    "COMMON-SPA".
        200111-EDIT-PRF-HEAD-SEC        SECTION.
       *
            INITIALIZE          PRF-HEAD-AREA
+           PERFORM 800-MSTNAME-SEC
            STRING  "【"            DELIMITED   BY  SIZE 
                    WRK-MSTNAME     DELIMITED   SPACE
                    "】"            DELIMITED   BY  SIZE
@@ -481,14 +483,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SMCNDATE-YMD    TO  MSTKANRI-UPYMD
                MOVE    SMCNDATE-HMS    TO  MSTKANRI-UPHMS
                MOVE    MSTKANRI-REC    TO  MCPDATA-REC
-               IF      MSTKANRI-KANRICD (7:2)  =           "01"
-                                OR "02" OR "15" OR "16"
-                   MOVE    "tbl_mstkanri_public"
-                                   TO  MCP-TABLE
-               ELSE
-                   MOVE    "tbl_mstkanri_master"
-                                   TO  MCP-TABLE
-               END-IF
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
 grpsys         PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
@@ -695,6 +690,8 @@ grpsys                                 SPA-AREA
                CLOSE   MSTERR-FILE
            ELSE
                OPEN    OUTPUT              MSTERR-FILE
+      *
+               PERFORM 800-MSTNAME-SEC
       *
                INITIALIZE          MSTERR-REC
                STRING  WRK-MSTERR      DELIMITED   BY  SPACE
