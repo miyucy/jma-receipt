@@ -125,7 +125,6 @@
                05  SPA-NAI-TEKBYOSRYKBN        PIC X(01).
                05  SPA-NAI-TENKIBYOMEIKBN      PIC X(01).
                05  SPA-NAI-SRYHEIMSTKBN        PIC X(01).
-               05  SPA-NAI-SRYMATERKKBN        PIC X(01).
                05  SPA-NAI-GSRAUTH-22          PIC X(01).
                05  SPA-NAI-GSRAUTH-103         PIC X(01).
                05  SPA-NAI-ERR-AREA.
@@ -150,7 +149,6 @@
                        09  SPA-NAI-TCHKNUM     PIC X(02).
                        09  SPA-NAI-TERRCD      PIC X(06).
                        09  SPA-NAI-TCHKKBN     PIC X(01).
-                       09  SPA-NAI-TCK4-1201   PIC X(500).
                05  SPA-NAI-BYOLST-AREA.
                    07  SPA-NAI-BYOLST-PTID     PIC 9(10).
                05  SPA-NAI-CHKLST-AREA.

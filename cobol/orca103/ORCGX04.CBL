@@ -587,7 +587,6 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -1215,7 +1214,6 @@
       *
            INITIALIZE                    SPA-MST-AREA
       *
-           MOVE    ZERO           TO   FLG-TEMPTBL
            PERFORM 900-CHKSND-KEY2-SEL-SEC
       *
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
@@ -1293,7 +1291,6 @@
       *
            PERFORM 31011-BYOLST-SEC
       *
-           MOVE    1                   TO  FLG-TEMPTBL
            PERFORM 900-CHKSND-KEY2-SEL-SEC
       *
            PERFORM UNTIL ( FLG-CHKSND  NOT =  ZERO )
@@ -4632,7 +4629,6 @@
                IF    ( SPA-GMN-BYOLST-MAX  >   ZERO )
                  OR  ( SPA-GMN-NYUGAIKBN   =   "0" )
                  OR  ( SPA-GMN-TEKBYOKBN   =   "1" OR "2" )
-                 OR  ( SPA-X06-MAX         >   ZERO )
                        CONTINUE
                ELSE
                    MOVE    "0108"      TO  SPA-ERRCD
@@ -4884,7 +4880,6 @@
                IF    ( SPA-MST-MAX         >   ZERO )
                 OR   ( SPA-GMN-NYUGAIKBN   =   "0" )
                 OR   ( SPA-GMN-TEKBYOKBN   =   "1" )
-                OR   ( SPA-X06-MAX         >   ZERO )
       *
                    INITIALIZE                  CHKSND-REC
                    MOVE    SPA-X01-CHKKBN      TO  CHKSND-CHKKBN
@@ -5848,12 +5843,8 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  XID1
-           INITIALIZE                      XID1
            MOVE    SPA-XIDCD           TO  XID1-ID1CODE
            MOVE    WRK-XIDMSG          TO  XID1-ID1MSG
-           MOVE    "Ã·§Î"              TO  XID1-B01
-           MOVE    "£œ£À"              TO  XID1-B12
-      *
            MOVE    "B12"               TO  MCP-WIDGET
       *
            MOVE    "X04"               TO  SPA-MOTOPG
@@ -5945,7 +5936,6 @@
            MOVE    SPA-X01-CHKKBN      TO  CHKSND-CHKKBN
            MOVE    SPA-X01-SRYCD       TO  CHKSND-SRYCD
            IF    ( SPA-X01-SEL-STYUKYMD    =    SPACE )
-            OR   ( FLG-TEMPTBL             =    1 )
                MOVE    SPA-X01-STYUKYMD
                                        TO  CHKSND-YUKOSTYMD
                                            CHKSND-YUKOEDYMD

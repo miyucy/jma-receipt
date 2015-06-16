@@ -41,7 +41,6 @@
       *  01.00.08    NACL-太田    04/07/07  検索画面戻り時のカーソル制御
       *                                     修正
       *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
-      *  05.01.00    NACL-多々納  17/09/XX  GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -274,7 +273,6 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -1394,8 +1392,7 @@
            MOVE    SPA-X01-SEL-STYUKYMD TO CHK-YUKOSTYMD
            MOVE    SPA-X01-SEL-EDYUKYMD TO CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
-     ******MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "tbl_chk_user"      TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          NOT =   ZERO  )
@@ -1734,8 +1731,7 @@
                END-IF
       *
                MOVE    CHK-REC         TO  MCPDATA-REC
-      ******   MOVE    "tbl_chk"       TO  MCP-TABLE
-               MOVE    "tbl_chk_user"  TO  MCP-TABLE
+               MOVE    "tbl_chk"       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC      NOT =   ZERO )
@@ -2213,11 +2209,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  XID1
-           INITIALIZE                       XID1
            MOVE    SPA-XIDCD            TO  XID1-ID1CODE
-           MOVE    "戻る"               TO  XID1-B01
-           MOVE    "ＯＫ"               TO  XID1-B12
-      *
            MOVE    WRK-XIDMSG           TO  XID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
       *

@@ -25,12 +25,16 @@ fi
 #
 ERR_FILE=${19}
 HOSPNUM=${14}
+LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb103_1.log
+echo $LOGFILE
 ##      エラーファイル削除
+	echo $#
+	echo "echo " $ERR_FILE
         if  [ -e $ERR_FILE ]; then
             rm  $ERR_FILE
         fi
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBX01 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20}," 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBX01 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20}," >  $LOGFILE 2>&1
         if  [ -e $ERR_FILE ]; then
             exit
         fi

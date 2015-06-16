@@ -82,8 +82,6 @@ db	{
 	tbl_tsyrrk;
 	tbl_spa_tmp;
 	tbl_tekiou_disease;
-    tbl_material_s;
-    tbl_material_k;
 };
 
 /* #include "orcadb.inc" */

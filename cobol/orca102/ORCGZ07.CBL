@@ -32,7 +32,6 @@
       *                                     薬情マスタ更新処理追加
       *  04.05.00    NACL-太田    09/11/24  経過措置医薬品置換えマスタ一覧
       *                                     印刷機能追加
-      *  05.00.00    NACL-森脇    17/12/18  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -346,10 +345,6 @@
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
-      *----(05.00.00)--ADD-START---
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -360,7 +355,26 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA102SCRAREA.INC".
+           COPY    "Z01.INC".
+           COPY    "Z02.INC".
+           COPY    "Z03.INC".
+           COPY    "Z04.INC".
+           COPY    "Z05.INC".
+           COPY    "Z06.INC".
+           COPY    "Z07.INC".
+           COPY    "Z08.INC".
+           COPY    "Z90.INC".
+           COPY    "Z91.INC".
+           COPY    "Z97.INC".
+           COPY    "Z98.INC".
+           COPY    "Z99.INC".
+           COPY    "ZERR.INC".
+           COPY    "ZID1.INC".
+           COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "CPAPIMOD.INC".
+           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -1979,17 +1993,9 @@
                EVALUATE    SPA-ZID1-FLG
                WHEN    "PV"
                    MOVE    "3"             TO  SHELLTBL-ARG17
-      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   IF      SPA-CLIENT-PRT-FLG  =  2
-                       MOVE    "5"         TO  SHELLTBL-ARG17
-                   ELSE
-                       MOVE    "2"         TO  SHELLTBL-ARG17
-                   END-IF
+                   MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-               MOVE    SPA-CLIENT-SHOWDIALOG
-                                           TO  SHELLTBL-ARG22
-      *----(05.00.00)--ADD-END-----
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SPACE               TO  SHELLTBL-ARG19
                MOVE    SPACE               TO  SHELLTBL-ARG20
@@ -3226,7 +3232,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  ZID1
-           INITIALIZE                       ZID1
            MOVE    SPA-ZIDCD            TO  ZID1-ID1CODE
            MOVE    WRK-ZIDMSG           TO  ZID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -3258,7 +3263,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  ZID3
-           INITIALIZE                      ZID3
            MOVE    SPA-ZIDCD           TO  ZID3-ID1CODE
            MOVE    WRK-ZIDMSG          TO  ZID3-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
