@@ -134,11 +134,6 @@
       *  04.08.01    NACL-Æ£¸¶    12/01/08  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­
       *                                     ºÜÂÐ±þ
       *  04.08.02    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
-      *  04.08.03    NACL-Æ£¸¶    16/08/24  »ý»²ÌôÂÐ±þ
-      *  04.08.04    NACL-Æ£¸¶    17/04/10  ´µ¼ÔÃ±°Ì¤Ç¤ÎÅÀ¿ô»»ÄêÀßÄê
-      *                                     ¡ÊÏ«ºÒ½àµòËô¤Ï·òÊÝ½àµò¡ËÂÐ±þ
-      *
-      *  04.09.01    NACL-Æ£¸¶    16/12/12  £È£Á£Ï£Ò£ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -175,7 +170,77 @@
            COPY    "ENUM-VALUE".
       *
       *    ²èÌÌÍÑ£Ó£Ð£Á
-           COPY    "R03SCR-SPA".
+       01  SPA-R03.
+           03  SPA-R03-AREA.
+               05  SPA-GMN-MAX                     PIC 9(04).
+               05  SPA-GMN-PAGE                    PIC 9(02).
+               05  SPA-GMN-CUR                     PIC 9(02).
+               05  SPA-GMN-AREA.
+                   07  SPA-GMN-SYOKBN              PIC X(01).
+                   07  SPA-GMN-SYOKBN-LABEL        PIC X(20).
+      *----(01.00.01) LINE UPD START ----------------------------------
+      ********     07  SPA-GMN-SRYYM               PIC X(06).
+                   07  SPA-GMN-SRYYM               PIC X(07).
+      *----(01.00.01) LINE UPD END   ----------------------------------
+                   07  SPA-GMN-IKKATU              PIC X(01).
+                   07  SPA-GMN-KOBETU              PIC X(01).
+      *                         
+                   07  SPA-GMN-NYUGAIKBNLST        OCCURS  2.
+                       09  SPA-GMN-NYUGAIKBNL      PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEIL   PIC X(06).    
+                   07  SPA-GMN-NYUGAIKBN-MAX       PIC 9(02).
+      *             
+                   07  SPA-GMN-NYUGAIKBN-G.
+                       09  SPA-GMN-NYUGAIKBN       PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEI    PIC X(06).
+      *                         
+                   07  SPA-GMN-PRTKBNLST           OCCURS  10.
+                       09  SPA-GMN-PRTKBNL         PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-PRTKBNMEIL      PIC X(30).    
+                   07  SPA-GMN-PRTKBN-MAX          PIC 9(02).
+      *             
+                   07  SPA-GMN-PRTKBN-G.
+                       09  SPA-GMN-PRTKBN          PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-PRTKBNMEI       PIC X(30).
+      *             
+                   07  SPA-GMN-PRTKBN-LABEL        PIC X(28).
+      *
+                   07  SPA-DATAKBN.         
+                       09  SPA-DATAKBN1-VALUE      PIC X(01).
+                       09  SPA-DATAKBN2-VALUE      PIC X(01).
+                       09  SPA-DATAKBN3-VALUE      PIC X(01).
+                       09  SPA-DATAKBN5-VALUE      PIC X(01).
+                       09  SPA-DATAKBN4-VALUE      PIC X(01).
+                       09  SPA-DATAKBN11-VALUE     PIC X(01).
+                       09  SPA-DATAKBN21-VALUE     PIC X(01).
+                       09  SPA-DATAKBN22-VALUE     PIC X(01).
+                       09  SPA-DATAKBN23-VALUE     PIC X(01).
+                       09  SPA-DATAKBN24-VALUE     PIC X(01).
+                       09  SPA-DATAKBN25-VALUE     PIC X(01).
+                       09  SPA-DATAKBN26-VALUE     PIC X(01).
+                       09  SPA-DATAKBN31-VALUE     PIC X(01).
+                       09  SPA-DATAKBN32-VALUE     PIC X(01).
+                       09  SPA-DATAKBN33-VALUE     PIC X(01).
+     *
+               05  SPA-NAIB-R03-AREA.
+                   07  SPA-NAI-SRYYM               PIC 9(06).
+                   07  SPA-NAI-SRYYMH              PIC X(16).
+                   07  SPA-NAI-NYUGAIKBN           PIC X(06).
+      *
+                   07  SPA-NAI-2005-AUTODSPKBN     PIC X(01).
+                   07  SPA-NAI-200501-INSPECT-ZERO-KBN
+                                                   PIC X(01).
+                   07  SPA-NAI-200501-RECEIPT-MAKE-KBN
+                                                   PIC X(01).
+                   07  SPA-NAI-200505-HKNJANUM     PIC X(08).
+                   07  SPA-NAI-200501-INSPECT-INCLUDE
+                                                   PIC X(01).
+                   07  SPA-NAI-9101-COOPBASE       PIC X(01).
+                   07  SPA-NAI-9102-EFOUT          PIC X(01).
       *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -395,7 +460,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA42SCRAREA.INC".
+           COPY    "R01.INC".
+           COPY    "R02.INC".
+           COPY    "R03.INC".
+           COPY    "R04.INC".
+           COPY    "R05.INC".
+           COPY    "R06.INC".
+           COPY    "R96.INC".
+           COPY    "R97.INC".
+           COPY    "R98.INC".
+           COPY    "R99.INC".
+           COPY    "RERR.INC".
+           COPY    "RID1.INC".
+           COPY    "RID2.INC".
+           COPY    "RID3.INC".
+           COPY    "RID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1063,11 +1142,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                            MOVE    "£°ÅÀ¸øÈñµ­ºÜÀßÄê"
                                                TO  SPA-GMN-PRTKBN-LABEL
                        WHEN    "0"     ALSO    "1"
-                           MOVE    "Êñ³ç¿ÇÎÅÊ¬¡¦»ý»²Ìôµ­ºÜÀßÄê"
+                           MOVE    "Êñ³ç¿ÇÎÅÊ¬µ­ºÜÀßÄê"
                                                TO  SPA-GMN-PRTKBN-LABEL
                        WHEN    "1"     ALSO    "1"
-                           MOVE
-                               "£°ÅÀ¸øÈñ¡¦Êñ³ç¿ÇÎÅÊ¬¡¦»ý»²Ìôµ­ºÜÀßÄê"
+                           MOVE    "£°ÅÀ¸øÈñ¡¦Êñ³ç¿ÇÎÅÊ¬µ­ºÜÀßÄê"
                                                TO  SPA-GMN-PRTKBN-LABEL
       ******           WHEN    "0"     ALSO    "0"
       ******               MOVE    "£°ÅÀ¸øÈñ¤òµ­ºÜ¤·¤Ê¤¤"
@@ -1417,11 +1495,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                            MOVE    "£°ÅÀ¸øÈñµ­ºÜÀßÄê"
                                                TO  SPA-GMN-PRTKBN-LABEL
                        WHEN    "0"    ALSO    "1"
-                           MOVE    "Êñ³ç¿ÇÎÅÊ¬¡¦»ý»²Ìôµ­ºÜÀßÄê"
+                           MOVE    "Êñ³ç¿ÇÎÅÊ¬µ­ºÜÀßÄê"
                                                TO  SPA-GMN-PRTKBN-LABEL
                        WHEN    "1"    ALSO    "1"
-                           MOVE
-                               "£°ÅÀ¸øÈñ¡¦Êñ³ç¿ÇÎÅÊ¬¡¦»ý»²Ìôµ­ºÜÀßÄê"
+                           MOVE    "£°ÅÀ¸øÈñ¡¦Êñ³ç¿ÇÎÅÊ¬µ­ºÜÀßÄê"
                                                TO  SPA-GMN-PRTKBN-LABEL
       ******           WHEN    "0"    ALSO    "0"
       ******               MOVE    "£°ÅÀ¸øÈñ¤òµ­ºÜ¤·¤Ê¤¤"
@@ -1888,10 +1965,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4501-JOBKANRI-CHK-SEC
            IF      SPA-ERRCD      NOT =   SPACE
-               IF      SPA-R01-JOB-PARAM  NOT =   SPACE
-      *            £È£Á£Ï£Ò£É¤Î¤È¤­²èÌÌ°Ü¹ÔÍÑ¤Î¥Ñ¥é¥á¥¿ÀßÄê
-                   PERFORM 45011-PARA-HENSYU-SEC
-               END-IF
                GO  TO  450-TOUROKU-EXT
            END-IF    
       *
@@ -1899,7 +1972,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM 45011-PARA-HENSYU-SEC
       *
       *    ¼«ÇåÀÕ¡Ê¿·ÍÍ¼°¡Ë¤Î¤È¤­·òÊÝ½àµò¤«Ï«ºÒ½àµò¤Î¥Á¥§¥Ã¥¯
-      *    Ê¿À®£²£¹Ç¯£··î¿ÇÎÅÊ¬°Ê¹ß¤Þ¤¿¤Ï¸ÄÊÌºîÀ®»þ¤Ï¥¨¥é¡¼¤È¤·¤Ê¤¤
            IF    ( SPA-R01-RECEKBN     =   "4" )
                EVALUATE    SPA-R01-FILEKBN
                    WHEN    "1"
@@ -1920,8 +1992,7 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-4001-HOSPNUM
                        ELSE
                            INITIALIZE                  SYS-4001-REC
                        END-IF
-                       IF    ( SYS-4001-JIBAIKBN   =   "2"    )
-                       AND   ( SPA-NAI-SRYYM       <   201707 )
+                       IF      SYS-4001-JIBAIKBN   =   "2"
                            MOVE    "0009"              TO  SPA-ERRCD
                            GO  TO  450-TOUROKU-EXT
                        END-IF
@@ -1958,10 +2029,10 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                        MOVE    "key8"              TO  MCP-PATHNAME
                        PERFORM 900-CLOSE-SEC
       *
-      *****            IF      FLG-4001-JIBAIKBN   =   ZERO
-      *****                MOVE    "0010"              TO  SPA-ERRCD
-      *****                GO  TO  450-TOUROKU-EXT
-      *****            END-IF
+                       IF      FLG-4001-JIBAIKBN   =   ZERO
+                           MOVE    "0010"              TO  SPA-ERRCD
+                           GO  TO  450-TOUROKU-EXT
+                       END-IF
                END-EVALUATE           
            END-IF
       *
@@ -2560,10 +2631,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                            TO  JOB-NYUGAIKBN
                    MOVE    "1"             TO  JOB-SYOKBN
                    MOVE    SPA-R01-SRYYM   TO  JOB-SRYYM
-                   MOVE    SPA-R01-JOB-KARTE-UID
-                                           TO  JOB-KARTE-UID
-                   MOVE    SPA-R01-JOB-ORCA-UID
-                                           TO  JOB-ORCA-UID
 grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
       *            °õºþÍÑ¥¹¥¯¥ê¥×¥È½èÍý
