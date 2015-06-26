@@ -1443,7 +1443,6 @@
            INITIALIZE                  SPA-P02Y1-AREA
            INITIALIZE                  SPA-P02Y1GMN-AREA 
            MOVE    "2"                 TO  SPA-P02Y1-TYPE
-           MOVE    "P02Y"              TO  SPA-MOTOPG
       *
            IF      WRK-INPUTCD         NOT =   SPACE
       *        ÆâÉþ
