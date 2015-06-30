@@ -206,27 +206,6 @@ C02 {
       count int;
         item varchar(12)[5];
     };
-    DISCHARGEFLGCOMBO {
-      DISCHARGEFLG {
-        textdata varchar(12);
-      };
-      count int;
-        item varchar(12)[2];
-    };
-    CLASS1COMBO {
-      CLASS1 {
-        textdata varchar(11);
-      };
-      count int;
-        item varchar(11)[10];
-    };
-    CLASS2COMBO {
-      CLASS2 {
-        textdata varchar(13);
-      };
-      count int;
-        item varchar(13)[10];
-    };
     scrolledwindow6 {
       HKNCOMBILST {
         count int;
@@ -260,13 +239,6 @@ C02 {
             column13 varchar(10);
             column14 varchar(4);
             column15 varchar(10);
-            column16 varchar(4);
-            column17 varchar(8);
-            column18 varchar(10);
-            column19 varchar(09);
-            column20 varchar(08);
-            column21 varchar(09);
-            column22 varchar(08);
           }[200];
           selectdata bool[200];
           fgcolor varchar(16)[200];
