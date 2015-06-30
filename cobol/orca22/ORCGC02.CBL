@@ -314,6 +314,7 @@
       *                                     同じときは難病の設定を行う
       *  04.07.16    NACL-藤原    15/04/24  疾患区分を外した自院病名入力
       *                                     時の疾患区分の表示の修正
+      *  04.07.17    NACL-藤原    15/06/19  診療科表示件数の変更
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
@@ -2294,7 +2295,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPA-GMN-C02-SRYKA-MAX   TO  IDX
            MOVE    ZERO                    TO  IDY
-           PERFORM         UNTIL       (IDX            >=  40   )
+           PERFORM         UNTIL       (IDX            >=  100  )
                            OR          (FLG-SYSKANRI   =   1    )
                ADD     1                     TO  IDX
                                                  IDY
