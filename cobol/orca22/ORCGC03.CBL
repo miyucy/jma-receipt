@@ -131,6 +131,7 @@
       *                                     の表示時のチェック追加
       *  04.07.09    NACL-藤原    14/03/14  複数自院病名登録時のコード
       *                                     存在チェックの修正
+      *  04.07.10    NACL-藤原    15/06/10  保険請求対象外傷病名コード対応
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
@@ -1932,7 +1933,7 @@
       *
                IF    ( SPA-CIDCD2          =   SPACE )
                AND   ( SPA-CIDCD6          =   SPACE ) 
-               AND   ( SPA-ERRCD           =   SPACE ) 
+               AND   ( SPA-ERRCD           =   SPACE   OR  "0076" ) 
                    PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
                    IF    ( WRK-HAISIYMDH       =   SPACE )
                    OR    ( SPA-C02-1042-MSG3-DSPKBN
@@ -6481,6 +6482,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-BYOMEI
                MOVE    MCPDATA-REC     TO  BYOMEI-REC
+               IF      BYO-HKNSKYKBN   =   1
+                   MOVE    1               TO  FLG-BYOMEI
+                   INITIALIZE                  BYOMEI-REC
+               END-IF  
            ELSE
                MOVE    1               TO  FLG-BYOMEI
                INITIALIZE                  BYOMEI-REC
