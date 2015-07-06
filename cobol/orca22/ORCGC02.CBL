@@ -4912,8 +4912,14 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
                        OR      SPA-ERRCD
                                    NOT =   SPACE
                    IF      SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
-                                               =   "¢£¢£¢£"
-                       MOVE    "0091"        TO  SPA-ERRCD
+                                                =   "¢£¢£¢£"
+                       MOVE    "0091"          TO  SPA-ERRCD
+                       IF      SPA-GMN-C02-BYOMEICD (1)
+                                            NOT =   SPACE
+                           COMPUTE SPA-GMN-C02-CUR  =   IDZ +   1
+                       ELSE
+                           MOVE    8                TO  SPA-GMN-C02-CUR
+                       END-IF
                    END-IF
                END-PERFORM       
            END-PERFORM       
