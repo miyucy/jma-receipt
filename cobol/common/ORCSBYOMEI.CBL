@@ -50,9 +50,7 @@
       *
       *  04.07.01    NACL-藤原    11/06/10  病名からコード検索時、複数の
       *                                     組み立てを返却可能にする
-      *
-      *  04.08.01    NACL-藤原    15/12/02  未コード化傷病名のときの廃止、
-      *                                     移行の初期化
+      *  04.07.02    NACL-藤原    15/06/10  保険請求対象外傷病名コード対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -429,10 +427,6 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SPACE               TO  LNK-BYO-KHNBUICD (1)
                                                LNK-BYO-KHNBUICD (2)
                                                LNK-BYO-KHNBUICD (3)
-                                               LNK-BYO-IKOSAKICD
-                                               LNK-BYO-IKOSAKICD-BYOMEI
-               MOVE    ZERO                TO  LNK-BYO-HAISIYMD-ERR
-                                               LNK-BYO-IKOSAKICD-INDEX
            END-IF
       *
            IF      LNK-BYO-BYOMEICD-ERR
@@ -1736,6 +1730,10 @@ grpsys                            SPA-AREA
                            END-IF
                       END-IF
                END-EVALUATE
+               IF      BYO-HKNSKYKBN   =   1
+                   MOVE    1               TO  FLG-BYOMEI
+                   INITIALIZE                  BYOMEI-REC
+               END-IF  
            ELSE
               MOVE    1               TO  FLG-BYOMEI
               INITIALIZE                  BYOMEI-REC

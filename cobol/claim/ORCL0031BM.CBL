@@ -77,14 +77,7 @@
       *  04.07.03    NACL-藤原    13/09/05  病名の補足コメント対応
       *  04.07.04    NACL-藤原    13/10/08  病名更新時のuserid 設定
       *  04.07.05    NACL-藤原    14/09/26  返却情報の強化対応
-      *  04.07.06    NACL-藤原    15/07/29  患者病名登録時の登録時間記録
-      *                                     と画面表示対応
-      *                                     登録時間を追加
-      *
-      *  04.08.01    NACL-藤原    16/03/02  入外区分による更新の修正
-      *  04.08.02    NACL-藤原    17/03/15  単独病名の病名コードのみ設定時の
-      *                                     取り込み修正
-      *                                     病名コード数の設定の修正
+      *  04.07.06    NACL-藤原    15/06/10  保険請求対象外傷病名コード対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -120,7 +113,6 @@
            03  FLG-DABURI-CHK      PIC 9(01).
            03  FLG-DIAG            PIC 9(01).
            03  FLG-HKNCOMBI-DABURI PIC 9(01).
-           03  FLG-PTBYOMEI-OK     PIC 9(01).
       *
       *    キー領域
        01  KEY-AREA                    VALUE   LOW-VALUE.
@@ -150,8 +142,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-OUT             PIC 9(04).
-           03  CNT-DIAG            PIC 9(04).
-           03  CNT-DELETE          PIC 9(04).
+           03  CNT-DIAG            PIC 9(04). 
       *
       *    一時領域
        01  WRK-AREA.
@@ -271,10 +262,6 @@
        01  CHK-PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
                                      BY         //CHK-PTBYO//.
-      *    同一病名情報
-       01  OK-PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
-                                     BY         //OK-PTBYO//.
       *
       *    転帰レセ電コード
            COPY    "CPMML0016.INC".
@@ -584,11 +571,9 @@
       *    病名のみ設定のときコードチェック
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       6
-                   OR   (  LF04-SNDSPITBL-SPINAME2(IDX IDY) 
+                   OR      LF04-SNDSPITBL-SPINAME2(IDX IDY) 
                                                =   SPACE
-                       AND LF04-SNDSPITBL-SPICOD2 (IDX IDY)
-                                               =   SPACE )
-                   OR   (  FLG-BYOMEI-CHK      =   1     )
+                   OR      FLG-BYOMEI-CHK      =   1
       *
                DISPLAY " IDY="                     IDY
                DISPLAY " diagnosis dxItem code ="
@@ -1038,40 +1023,14 @@
                END-IF     
            END-IF
       *
-      *    同一患者病名チェック処理
-           PERFORM 2008-BYOMEI-CHK-SEC
-      *??
-           DISPLAY "FLG-PTBYOMEI-OK="  FLG-PTBYOMEI-OK
-      *??
-      *
       *    マスタとの重複チェック
            INITIALIZE                  CHK-PTBYOMEI-REC
-           IF      FLG-PTBYOMEI-OK     =   1
-               MOVE    OK-PTBYOMEI-REC     TO  CHK-PTBYOMEI-REC
-           END-IF
            PERFORM 2009-BYOMEI-DABURI-CHK-SEC
            IF      FLG-BYOMEI-CHK      =   9
                GO  TO  200612-BYOMEI-HEN-EXT
            END-IF
       *
-      *    同一病名が存在するとき
-           IF      FLG-PTBYOMEI-OK     =   1
-               MOVE    OK-PTBYOMEI-REC     TO  PTBYOMEI-REC
-               PERFORM 2006124-KOUSIN-02-SEC
-      *        同期フラグ
-               IF      SYS-9000-BYOMEI-DOUKI-FLG
-                                           =   "1"
-                   PERFORM 2006125-KOUSIN-03-SEC
-               END-IF
-               GO  TO  200612-BYOMEI-HEN-EXT
-           END-IF
-      *
       *    患者病名マスタ検索（同一開始日・病名）
-      *
-           MOVE    SPACE               TO  WRK-ERR-SRYYMD
-                                           WRK-ERR-SRYKA
-           INITIALIZE                      PTBYOMEI-SRYKA-CNT
-      *
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    WRK-PTID            TO  PTBYO-PTID
@@ -1134,7 +1093,6 @@
                END-IF
       *        同一診療科の病名情報を取得
                IF      PTBYO-SRYKA         =   WRK-SRYKA
-                   ADD     1               TO  PTBYOMEI-SRYKA-CNT
                    IF      FLG-PTBYOMEI-UMU    >   2
                        CONTINUE
                    ELSE 
@@ -1165,17 +1123,6 @@
            MOVE    WRK-PTBYO-MCP-PATHNAME
                                        TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
-      *    同一診療科に病名が複数のときは更新しない
-           IF      PTBYOMEI-SRYKA-CNT  >   1
-               MOVE    "E05"               TO  WRK-DIAG-WARNING
-               MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
-               PERFORM 5001-SRYKA-HENSYU-SEC
-               MOVE    SYS-1005-SRYKANAME1
-                                           TO  WRK-ERR-SRYKA
-               PERFORM 500-WARNING-HENSYU-SEC
-               GO  TO  200612-BYOMEI-HEN-EXT
-           END-IF
       *
            IF      FLG-PTBYOMEI-UMU     =   ZERO
       *        同一開始日・病名で存在しないとき
@@ -1218,15 +1165,7 @@
                END-IF
            END-IF
       *
-           IF      FLG-BYOMEI-DELETE   =   1
-               IF      CNT-DELETE          =   0
-                   MOVE    "E06"               TO  WRK-DIAG-WARNING
-                   PERFORM 500-WARNING-HENSYU-SEC
-               END-IF
-               GO  TO  200612-BYOMEI-HEN-EXT
-           END-IF
-      *
-           IF      FLG-PTBYOMEI-OK     =   1 
+           IF      FLG-BYOMEI-DELETE   =   1 
                GO  TO  200612-BYOMEI-HEN-EXT
            END-IF
       *
@@ -1412,7 +1351,6 @@
       *
            MOVE    9999                TO  PTBYO-SEQNUM
            MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
-           MOVE    SMCNDATE-HMS        TO  PTBYO-CREHMS
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
       *
@@ -1504,7 +1442,6 @@
       *    疾患コードがエラー又は未コード化傷病名コード以外のとき
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5   AND 6
                MOVE    ZERO                TO  IDZ
-                                               PTBYO-BYOMEICDSU
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       6
                        OR      WRK-TBYOMEICD (IDY) =   SPACE
@@ -1735,7 +1672,6 @@
       *    疾患コードがエラー又は未コード化傷病名コード以外のとき
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5 AND 6
                MOVE    ZERO                TO  IDZ
-                                               PTBYO-BYOMEICDSU
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       6
                        OR      WRK-TBYOMEICD (IDY) =   SPACE
@@ -1938,9 +1874,6 @@
                                            TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
-               IF      FLG-BYOMEI-DELETE   =   1
-                   ADD     1                   TO  CNT-DELETE
-               END-IF
            END-IF
            .
        2006124-KOUSIN-02-EXT.
@@ -2008,29 +1941,18 @@
                INITIALIZE                  WRK-PTBYOMEI-DOUKI-REC
       *
                PERFORM         UNTIL   FLG-PTBYOMEI    =   1
-                               OR      PTBYO-SRYKA NOT =   KEY-N-SRYKA
+                               OR      PTBYO-SRYKA NOT =   KEY-N-SRYKA    
+      *
                    IF      WRK-PTBYO-DOUKI-RENNUM
                                                =   ZERO
-                       IF    ( FLG-PTBYOMEI-OK     =   1               )
-                       AND   ( WRK-NYUGAIKBN   NOT =   PTBYO-NYUGAIKBN )
-                           CONTINUE
-                       ELSE
-                           MOVE    PTBYOMEI-REC    TO
-                                               WRK-PTBYOMEI-DOUKI-REC
-                       END-IF
+                       MOVE    PTBYOMEI-REC    TO WRK-PTBYOMEI-DOUKI-REC
                    END-IF 
                    IF      WRK-BYOMEI1 (1:80)  =   PTBYO-BYOMEI
-                       IF    ( FLG-PTBYOMEI-OK     =   1               )
-                       AND   ( WRK-NYUGAIKBN   NOT =   PTBYO-NYUGAIKBN )
-                           CONTINUE
-                       ELSE
-                           MOVE    PTBYOMEI-REC    TO
-                                               WRK-PTBYOMEI-DOUKI-REC
-                       END-IF
-                   END-IF
+                       MOVE    PTBYOMEI-REC    TO WRK-PTBYOMEI-DOUKI-REC
+                   END-IF 
       *
                    MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-                   MOVE    WRK-PTBYO-MCP-PATHNAME
+                  MOVE    WRK-PTBYO-MCP-PATHNAME
                                                TO  MCP-PATHNAME
                    PERFORM 900-PTBYO-READ-SEC
                END-PERFORM
@@ -2038,15 +1960,9 @@
       *        対象病名の更新
                MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-TAIHI-REC
       *
-      *        同一病名があるとき同じ診療科は更新しない
-               IF    ( FLG-PTBYOMEI-OK     =   1                     )
-               AND   ( WRK-SRYKA           =   WRK-PTBYO-DOUKI-SRYKA )
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-PTBYOMEI-DOUKI-REC
-                                               TO  PTBYOMEI-REC
-                   PERFORM 2006124-KOUSIN-02-SEC
-               END-IF
+               MOVE    WRK-PTBYOMEI-DOUKI-REC
+                                           TO  PTBYOMEI-REC
+               PERFORM 2006124-KOUSIN-02-SEC
       *
                MOVE    WRK-PTBYOMEI-TAIHI-REC
                                            TO  PTBYOMEI-REC 
@@ -2355,56 +2271,6 @@
            EXIT.
       *
       *****************************************************************
-      *    同一病名チェック処理
-      *****************************************************************
-       2008-BYOMEI-CHK-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTBYOMEI-OK
-           INITIALIZE                      OK-PTBYOMEI-REC
-      *
-           IF      FLG-BYOMEI-DELETE   =   1
-               GO  TO  2008-BYOMEI-CHK-EXT
-           END-IF
-      *
-           INITIALIZE                      PTBYOMEI-REC
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
-           MOVE    WRK-PTID            TO  PTBYO-PTID
-           MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
-           MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
-                                           PTBYO-XXBYOMEI
-           MOVE    WRK-HOSOKU-COMMENT  TO  PTBYO-HOSOKU-COMMENT
-      *
-           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key47"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key47"             TO  MCP-PATHNAME
-               PERFORM 900-PTBYO-READ-N-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTBYOMEI
-           END-IF
-      *
-           PERFORM                 UNTIL   FLG-PTBYOMEI    =   1
-                                   OR      FLG-PTBYOMEI-OK =   1
-               IF    ( WRK-NYUGAIKBN       =   PTBYO-NYUGAIKBN )
-               AND   ( WRK-SRYKA           =   PTBYO-SRYKA     )
-                   MOVE    1                   TO  FLG-PTBYOMEI-OK
-                   MOVE    PTBYOMEI-REC        TO  OK-PTBYOMEI-REC
-               END-IF
-               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key47"             TO  MCP-PATHNAME
-               PERFORM 900-PTBYO-READ-N-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key47"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       2008-BYOMEI-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    マスタとの重複チェック処理（転帰等）
       *****************************************************************
        2009-BYOMEI-DABURI-CHK-SEC  SECTION.
@@ -2412,7 +2278,6 @@
            MOVE    SPACE           TO  WRK-ERR-SRYYMD
                                        WRK-ERR-SRYKA
                                        WRK-CHK-SRYKA
-           INITIALIZE                  CHK-PTBYOMEI-REC
       *
            IF      FLG-BYOMEI-DELETE   =   1
                GO  TO  2009-BYOMEI-DABURI-CHK-EXT
@@ -2726,16 +2591,6 @@
                WHEN    "E04"
                    MOVE    "補足コメントコードが不正です"
                                        TO  LNK-DIAG-MSG    (CNT-DIAG)
-               WHEN    "E05"
-                   STRING  "同名の病名が"      DELIMITED   BY  SIZE 
-                           WRK-ERR-SRYKA       DELIMITED   BY  SPACE
-                           "に"                DELIMITED   BY  SIZE 
-                           "複数存在します"    DELIMITED   BY  SIZE 
-                                       INTO    LNK-DIAG-MSG (CNT-DIAG)
-                   END-STRING
-               WHEN    "E06"
-                   MOVE    "削除対象の病名がありません"
-                                       TO  LNK-DIAG-MSG    (CNT-DIAG)
                WHEN    "E07"
                    STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYKA       DELIMITED   BY  SPACE
@@ -2937,6 +2792,10 @@
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  BYOMEI-REC
                    MOVE    ZERO                TO  FLG-BYOMEI
+                   IF      BYO-HKNSKYKBN   =   1
+                       MOVE    1               TO  FLG-BYOMEI
+                       INITIALIZE                  BYOMEI-REC
+                   END-IF  
                ELSE
                    MOVE    1                   TO  FLG-BYOMEI
                    INITIALIZE                  BYOMEI-REC

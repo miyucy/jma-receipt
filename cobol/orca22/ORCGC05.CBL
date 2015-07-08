@@ -61,6 +61,7 @@
       *
       *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
       *                                     組み立てへの移行を可能にする
+      *  04.07.02    NACL-藤原    15/06/10  保険請求対象外傷病名コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,7 +214,24 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA22SCRAREA.INC".
+           COPY    "C02.INC".
+           COPY    "C03.INC".
+           COPY    "C04.INC".
+           COPY    "C05.INC".
+           COPY    "C06.INC".
+           COPY    "C09.INC".
+           COPY    "C10.INC".
+           COPY    "C11.INC".
+           COPY    "C12.INC".
+           COPY    "C99.INC".
+           COPY    "CERR.INC".
+           COPY    "CID1.INC".
+           COPY    "CID2.INC".
+           COPY    "CID3.INC".
+           COPY    "CID4.INC".
+           COPY    "CID5.INC".
+           COPY    "CID6.INC".
+      *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
@@ -1886,6 +1904,10 @@ grpsys                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-BYOMEI
                MOVE    MCPDATA-REC     TO  BYOMEI-REC
+               IF      BYO-HKNSKYKBN   =   1
+                   MOVE    1               TO  FLG-BYOMEI
+                   INITIALIZE                  BYOMEI-REC
+               END-IF  
            ELSE
               MOVE    1               TO  FLG-BYOMEI
            END-IF
