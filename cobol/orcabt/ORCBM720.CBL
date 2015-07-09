@@ -29,12 +29,8 @@
       *  Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-藤原    15/06/18  光ディスク等送付書の媒体種類
       *                                     設定対応
-      *  04.07.02    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    17/04/12  平成２９年３月診療分からの
-      *                                     様式変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -99,8 +95,6 @@
                05  WRK-ADRS2       PIC X(40).
                05  WRK-ADRS3       PIC X(20).
       *
-           03  WRK-KAISETUNAME     PIC X(80).
-      *
            03  WRK-RSIIRYOCD       PIC X(07).
       *
       *    数字半角全角変換用
@@ -151,7 +145,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
       *
            COPY  "CPSK200501.INC".
       *
@@ -334,8 +327,6 @@
            END-IF
       *
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-ADRS
       *
       *    医療機関編集情報取得
@@ -444,7 +435,8 @@
            MOVE    WRK-ADRS3           TO  HCM78-ADRS-S3
       *
       *    開設者
-           MOVE    WRK-KAISETUNAME     TO  HCM78-KAISETUNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCM78-KAISETUNAME
       *
       *    医療機関コード
            MOVE    WRK-RSIIRYOCD       TO  HCM78-HOSPCD
@@ -518,11 +510,7 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           IF      LNK-PRTKANRI-SRYYM  <   "201702"
-               MOVE    "HCM78.red"         TO  SPRT-PRTID
-           ELSE
-               MOVE    "HCM78V01.red"      TO  SPRT-PRTID
-           END-IF
+           MOVE   "HCM78.red"          TO  SPRT-PRTID
            MOVE    "光ディスク等送付書（労災）"
                                        TO  SPRT-TITLE
            MOVE    HCM78               TO  SPRT-PRTDATA
@@ -722,8 +710,6 @@
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                 END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -792,36 +778,6 @@
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(21)
-                                   TO  SYS-1903-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1903-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *****************************************************************
