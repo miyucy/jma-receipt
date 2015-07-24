@@ -189,8 +189,7 @@
       *
       *    入院調剤料算定日退避ワーク
          02  TNYUIN-CHOZAI-AREA.
-           03  TNYUIN-CHOZAI-DAY-OCC                   OCCURS 3.
-               05  TNYUIN-CHOZAI-DAY                   PIC 9(01)
+           03  TNYUIN-CHOZAI-DAY                       PIC 9(01)
                                                        OCCURS 31.
       *
       *    入院診療行為日退避ワーク
@@ -225,12 +224,6 @@
                05  TKZI-058-SRYCD                      PIC X(09).
                05  TKZI-DAY-G.
                    07  TKZI-DAY                        PIC 9(01)
-                                                       OCCURS 31.
-           03  TKZI-MICD-MAX                           PIC 9(05).
-           03  TKZI-MICD-OCC                           OCCURS 30.
-               05  TKZI-MICD-SRYCD                     PIC X(09).
-               05  TKZI-MICD-DAY-G.
-                   07  TKZI-MICD-DAY                   PIC 9(01)
                                                        OCCURS 31.
       *
       *    チェックマスタ退避ワーク
