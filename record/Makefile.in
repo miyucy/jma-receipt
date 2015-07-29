@@ -490,6 +490,9 @@ RECORD_files = \
 	MMERR.rec \
 	MMID1.rec \
 	systeminfv2.rec \
+	medicalmodv31.rec \
+	medicalmodv32.rec \
+	medicalmodv33.rec \
 
 DEF_files = \
 
@@ -794,6 +797,13 @@ DB_files = \
 	monbatch_log.db \
 	tbl_tekiou_medicine.db \
 	tbl_tekiou_disease.db \
+	tbl_api_para.db \
+	xml_medicalv3req1.db \
+	xml_medicalv3req2.db \
+	xml_medicalv3req3.db \
+	xml_medicalv3res1.db \
+	xml_medicalv3res2.db \
+	xml_medicalv3res3.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

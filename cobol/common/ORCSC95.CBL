@@ -5646,6 +5646,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 2002-JYURRK-SET-SEC
       *    受診履歴より、診療科等を確定する
            PERFORM 10011-JYURRK-SEC
+      *V3対応
+      *    同日連番取得
+           MOVE    ZERO                TO  LNK-SC95-LAST-RENNUM
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   SPA-GMN-MAX1
+      *        診療日より後の履歴は対象外
+               IF     (SPA-SRYYMD      =   SPA-NAI-RRKYMD (IDX))
+                 AND  (SPA-SRYKA       =   SPA-NAI-RRK-SRYKA(IDX))
+                   IF      SPA-NAI-RENNUM (IDX)
+                                           >   LNK-SC95-LAST-RENNUM
+                       MOVE    SPA-NAI-RENNUM (IDX)
+                                       TO  LNK-SC95-LAST-RENNUM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
       *    保険組合せ名称編集
            PERFORM 10013-HKNCOMBI-SEC
       *

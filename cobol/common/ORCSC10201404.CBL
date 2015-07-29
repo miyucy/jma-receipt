@@ -1521,6 +1521,8 @@
            IF     (LNK-ORCSC-TELSAI-ARI    =   1  )
       ***  AND    (LNK-ORCSC-PG        =   "K02"  )
                IF     (FLG-GAIRAI          =   1  )
+      *H27.8      ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
+                  OR  (FLG-CHKCARKSN       =   1  )
                    INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
                    INITIALIZE              WRK-COM-TBLREC(IDX-Z)
                    GO    TO      100114-SYUGISYORI-CHK-EXT
@@ -1554,6 +1556,19 @@
                END-IF
            END-IF
       *!!
+      *H27.8
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ»»Äê»þ¡¢ºÆ¿Ç¤Î²Ã»»¤Ïºï½ü
+           IF      LNK-ORCSC-SYONIKA-ARI   =   1
+               IF    ((FLG-GAIRAI          =   1  )  AND
+                      (LNK-ORCSC-PG        =   "K02"  ))
+                  OR  (FLG-CHIIKKBN        =   1  )
+                  OR  (FLG-MEISAKBN        =   1  )
+                  OR  (FLG-CHKCARKSN       =   1  )
+                  OR  (FLG-GAIRAI          =   1  )
+                   PERFORM 1001149-GYODEL-SEC
+                   GO    TO      100114-SYUGISYORI-CHK-EXT
+               END-IF
+           END-IF
       *
       *    ³°Íè´ÉÍý²Ã»»¡¦·ÑÂ³´ÉÍý²Ã»»¤ÎºÞ¤Ï¡¢£±ÌÀºÙ¤Î¤ß¤È¤¹¤ë
            IF      WRK-KASAN-NASI      =   "1"
