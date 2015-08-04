@@ -5,5 +5,5 @@
 
 \set ON_ERROR_STOP
 
-alter table tbl_ptbyomei add column crehms char(6);
+alter table tbl_ptbyomei add column crehms character varying(6);
 update tbl_ptbyomei set crehms = '';
