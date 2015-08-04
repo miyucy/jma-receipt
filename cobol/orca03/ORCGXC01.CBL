@@ -48,7 +48,6 @@
       *                                     （枠なし）対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  05.00.00    NACL-太田     17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -95,7 +94,7 @@
                    07  SPA-GMN-TITLE2              PIC X(10).
                    07  SPA-GMN-ERRMSG              PIC X(60).
                    07  SPA-GMN-FILENAME            PIC X(200).
-      *            07  SPA-GMN-OBJECT              PIC X(08).
+                   07  SPA-GMN-OBJECT              PIC X(08).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-OCC             OCCURS  100.
                            11  SPA-GMN-TNO         PIC 9(05).
@@ -145,7 +144,7 @@
                            11  SPA-NAI-PTID        PIC 9(10).
                            11  SPA-NAI-MAKEOK-FLG  PIC 9(01).
                            11  SPA-NAI-UPDFLG      PIC X(01).
-      *                    11  SPA-NAI-OBJECT      PIC X(08).
+                           11  SPA-NAI-OBJECT      PIC X(08).
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *                 
@@ -700,7 +699,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-BANGO                TO  IDY
       *     
            MOVE    SPA-NAI-FILENAME (IDY)   TO  SPA-GMN-FILENAME 
-      *    MOVE    SPA-NAI-OBJECT   (IDY)   TO  SPA-GMN-OBJECT
+           MOVE    SPA-NAI-OBJECT   (IDY)   TO  SPA-GMN-OBJECT
       **** MOVE    SPA-GMN-TSHORI-RENNUM (IDY) TO
       ****                                     SPA-NAI-SHORI-RENNUM
       *                                 
@@ -725,8 +724,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 2013-PREVIEW-CHECK-SEC
            MOVE    SPA-NAI-FILENAME (IDY)
                                        TO  SPA-GMN-FILENAME
-      *    MOVE    SPA-NAI-OBJECT (IDY)
-      *                                TO  SPA-GMN-OBJECT
+           MOVE    SPA-NAI-OBJECT (IDY)
+                                       TO  SPA-GMN-OBJECT
       *
            IF      SPA-NAI-UPDFLG(IDY)      =   "1"
                MOVE    SPA-NAI-MEMO (IDY)
@@ -1119,7 +1118,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
-      *                                SPA-GMN-OBJECT
+                                       SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1145,7 +1144,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
-      *                                SPA-GMN-OBJECT
+                                       SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1233,7 +1232,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "preprint.sh"       TO  SHELLTBL-NAME
+           MOVE    "preprint.sh"       TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *     
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
@@ -1269,6 +1273,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
+           MOVE    LNK-PRTKANRI-TBL-UUID
+                                       TO  SHELLTBL-ARG18
       *    MOVE    SPA-GMN-STPAGE      TO  SHELLTBL-ARG15
       *    MOVE    SPA-GMN-EDPAGE      TO  SHELLTBL-ARG16                      
            IF      SPA-XCID1-FLG    =   "OK"
@@ -1289,14 +1295,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    SPA-NAI-PRTNM    (SPA-NAI-SELNUM)
                                        TO  SHELLTBL-ARG16                                 
            END-IF
-           IF    SPA-CLIENT-PRT-FLG  =  2
-               MOVE    "1"             TO  SHELLTBL-ARG17
+           IF      SPA-XCIDCD          =   "1005"
+                   MOVE    "3"         TO  SHELLTBL-ARG17                                   
+           ELSE
+                   MOVE    "1"         TO  SHELLTBL-ARG17                                   
            END-IF
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "allways"           TO  MCP-PATHNAME
+           MOVE    "shell"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1372,11 +1380,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SHELLTBL-ARG15
            MOVE    SPA-NAI-PAGE (SPA-NAI-SELNUM)
                                        TO  SHELLTBL-ARG16
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-               MOVE    "5"             TO  SHELLTBL-ARG17
-           ELSE
-               MOVE    "1"             TO  SHELLTBL-ARG17
-           END-IF
+           MOVE    "1"                 TO  SHELLTBL-ARG17
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
@@ -1711,15 +1715,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        SPA-NAI-MAKEOK-FLG (IDX)
                    MOVE   "*"          TO
                                         SPA-GMN-TPRFLG     (IDX)
-      *            MOVE    ORCF-FILE-NAME      TO  ORCA-BLOB-FILE
-      *            MOVE    "BLOBIMPORT"      TO  MCP-FUNC
-      *            MOVE    "blob"            TO  MCP-TABLE
-      *            MOVE    "key"             TO  MCP-PATHNAME
+                   MOVE    ORCF-FILE-NAME      TO  ORCA-BLOB-FILE
+                   MOVE    "BLOBIMPORT"      TO  MCP-FUNC
+                   MOVE    "blob"            TO  MCP-TABLE
+                   MOVE    "key"             TO  MCP-PATHNAME
 grpsys*            CALL    "MONFUNC"         USING MCPAREA
-grpsys*            CALL    "ORCDBMAIN"       USING MCPAREA
-      *                                      ORCA-BLOB
-grpsys*                                      SPA-AREA
-      *            MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
+grpsys             CALL    "ORCDBMAIN"       USING MCPAREA
+                                             ORCA-BLOB
+grpsys                                       SPA-AREA
+                   MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
                    MOVE    ORCF-FILE-NAME      TO  SPA-NAI-FILENAME(IDX)
                    GO        TO  20122-PSFILE-EXIST-EXT
            END-IF
@@ -1758,16 +1762,16 @@ grpsys*                                      SPA-AREA
                                                SPA-NAI-MAKEOK-FLG (IDX)
                      MOVE   "*"                TO
                                                SPA-GMN-TPRFLG     (IDX)
-      *              MOVE   "BLOBIMPORT"       TO  MCP-FUNC
-      *              MOVE   SPA-NAI-FILENAME (IDX)
-      *                                        TO  ORCA-BLOB-FILE
-      *              MOVE    "key"               TO  MCP-PATHNAME
-      *              MOVE    "blob"              TO  MCP-TABLE
-grpsys*              CALL    "ORCDBMAIN"       USING
-      *                                        MCPAREA
-      *                                        ORCA-BLOB
-      *                                        SPA-AREA
-      *              MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
+                     MOVE   "BLOBIMPORT"       TO  MCP-FUNC
+                     MOVE   SPA-NAI-FILENAME (IDX)
+                                               TO  ORCA-BLOB-FILE
+                     MOVE    "key"               TO  MCP-PATHNAME
+                     MOVE    "blob"              TO  MCP-TABLE
+grpsys               CALL    "ORCDBMAIN"       USING
+                                               MCPAREA
+                                               ORCA-BLOB
+                                               SPA-AREA
+                     MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
       ***************DISPLAY "take file = "  ORCA-BLOB-FILE
                    END-IF
             END-IF
@@ -1930,21 +1934,9 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-ERRMSG      TO  XC01-ERRMSG
            MOVE    "red"               TO  XC01-ERRMSG-STYLE
       *    MOVE    SPA-GMN-TITLE2      TO  XC01-HEAD2
-      *
+      *     
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
-      *
-           IF    ( SPA-GMN-FILENAME    NOT =   SPACE )
-               MOVE   "BLOBIMPORT"     TO  MCP-FUNC
-               MOVE   SPA-GMN-FILENAME TO  ORCA-BLOB-FILE
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "blob"          TO  MCP-TABLE
-               CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-               MOVE    ORCA-BLOB-OBJECT
-                                       TO  XC01-PSAREA
-           END-IF
+           MOVE    SPA-GMN-OBJECT      TO  XC01-PSAREA
       *
            MOVE    SPACE               TO  WRK-TITLE
            MOVE    SPACE               TO  WRK-PTNUM

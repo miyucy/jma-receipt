@@ -3,6 +3,25 @@ name	orcabt;
 arraysize	20;
 textsize	512;
 
+handler "RubyExec" {
+        class "Exec";
+        serialize "CGI";
+        start "/usr/bin/ruby -Ke %p/%m.rb %a";
+        locale "euc-jp";
+};
+
+
+handler "Ruby" {
+	class		"Ruby";
+	loadpath	"=/scripts/monthly";
+	locale 		"utf-8";
+};
+
+
+bind	"Sysbase"		    "RubyExec";
+bind	"Receden_check_start"	"Ruby";
+bind	"Rosai_receden_check_start"	"Ruby";
+
 bind    "ORCVTPTINF"    	"OpenCOBOL";
 bind    "ORCVTPTHKNINF" 	"OpenCOBOL";
 bind    "ORCVTPTHKNINF02" 	"OpenCOBOL";
@@ -299,56 +318,9 @@ bind    "ORCBNOMIMISV"  "OpenCOBOL";
 bind    "ORCBAUTH"      "OpenCOBOL";
 bind    "ORCBDASCONF"   "OpenCOBOL";
 bind    "ORCBM043"      "OpenCOBOL";
-bind    "ORCBM620"      "OpenCOBOL";
-bind    "ORCL0040"      "OpenCOBOL";
-bind    "ORCL0050"      "OpenCOBOL";
-bind	"ORCBI203"	    "OpenCOBOL";
-bind	"ORCBSETSYSBASE"	"OpenCOBOL";
-bind	"ORCBM400"	"OpenCOBOL";
-bind	"ORCBAPIFMTERM"	"OpenCOBOL";
-bind	"ORAPI052BR1V3"	"OpenCOBOL";
-bind	"ORAPI052BR2V3"	"OpenCOBOL";
-bind    "ORCBBLOBIMPORT"    "OpenCOBOL";
-bind	"ORAPI052BR3V3"	"OpenCOBOL";
-bind	"ORCBUPMAIN"	"OpenCOBOL";
-bind	"ORAPI052BR4V3"	"OpenCOBOL";
-bind	"ORAPI052BR5V3"	"OpenCOBOL";
-bind	"ORCBDELTEMPDIR"	"OpenCOBOL";
-bind	"ORCBJOBCHK1"	"OpenCOBOL";
-bind	"ORAPI052BR7V3"	"OpenCOBOL";
-bind	"ORCBM501"	"OpenCOBOL";
-bind	"ORCBM701"	"OpenCOBOL";
-bind	"ORAPI052BR8V3"	"OpenCOBOL";
-bind	"ORCBPUSH"	"OpenCOBOL";
-bind	"ORCBFILEMIS"	"OpenCOBOL";
-bind	"ORCBMRCSV10B"	"OpenCOBOL";
-
-db "xml2" {
- fm_payment_certificate;
- fm_invoice_receipt_h;
- xml_stock1;
- xml_disease_masterlst;
- xml_medication_masterlst;
- xml_patient_basis_all;
- xml_patient_disease_all;
- xml_patient_medical_all;
- xml_address_masterlst;
-};
-
-db "monblob" {
- monblob;
-};
 
 #include "orcadb.inc"
 db "shell" {
         shell;
-};
-db      "blob_body" {
-         blob;
-};
-db "push" {
-        push_find;
-        push_print001;
-        push_batch01;
 };
 
