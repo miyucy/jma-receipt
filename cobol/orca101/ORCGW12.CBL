@@ -8951,6 +8951,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            IF      SPA-GMN-ROUSAIPRTKBN   =   SPACE
                MOVE    SPACE           TO  SPA-GMN-ROUSAIPRTKBN-G
+                                           SPA-GMN-FRAME-ROUSAIPRTKBN-G
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-ROUSAIPRTKBN-MAX
@@ -9014,6 +9015,10 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                    TO
                                            SPA-GMN-FRAME-ROUSAIPRTKBN-G
                    END-IF 
+                   IF      SPA-GMN-ROUSAIPRTKBN   =   SPACE
+                       MOVE    SPACE               TO
+                                           SPA-GMN-FRAME-ROUSAIPRTKBN-G
+                   END-IF
                END-IF
            END-IF
       *
