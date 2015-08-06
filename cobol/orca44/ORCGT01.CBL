@@ -193,6 +193,8 @@
       *  04.08.05    NACL-太田    15/03/06  システム管理 8000番
       *                                     (印刷データ削除)の追加処理を
       *                                     バッチに移動
+      *  04.08.06    NACL-藤原    15/07/17  医療情報連携基盤のクライアン
+      *                                     ト保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3051,8 +3053,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            END-IF
       *
            IF      SPA-GMN-PRTKBN  =   "6" OR  "7"
-               MOVE    SPA-GMN-DATAKBNLST (2)
-                                       TO  SPA-GMN-DATAKBN-G
+               IF      SPA-GMN-DATAKBN     =   "4" OR  "5"
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-DATAKBNLST (2)
+                                           TO  SPA-GMN-DATAKBN-G
+               END-IF
            END-IF
       *
            IF      SPA-GMN-PRTKBN  =   "8"
@@ -3123,8 +3129,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            END-IF
       *
            IF      SPA-GMN-PRTKBN  =   "6" OR  "7"
-               MOVE    SPA-GMN-DATAKBNLST     (2)
-                                       TO  SPA-GMN-DATAKBN-G
+               IF      SPA-GMN-DATAKBN     =   "4" OR  "5"
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-DATAKBNLST (2)
+                                           TO  SPA-GMN-DATAKBN-G
+               END-IF
                MOVE    SPA-GMN-RECEDEN-CHKLST (1)
                                        TO  SPA-GMN-RECEDEN-CHK-G
            END-IF
@@ -3280,7 +3290,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                            MOVE    "0015"          TO  SPA-ERRCD
                            MOVE    5               TO  SPA-GMN-CUR
                        END-IF
-                       IF      SPA-GMN-DATAKBN =   "4"
+                       IF      SPA-GMN-DATAKBN =   "4" OR "5"
                            CONTINUE
                        ELSE
                            MOVE    "0016"          TO  SPA-ERRCD
