@@ -8969,6 +8969,14 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    311                 TO  SPA-GMN-CUR
                    MOVE    "0126"              TO  SPA-ERRCD
                ELSE
+                   IF      SPA-GMN-ROUSAIPRTKBN    =   "0"
+                       IF      SPA-GMN-FRAME-ROUSAIPRTKBN-G
+                                                       =   SPACE
+                           MOVE    SPA-GMN-FRAME-ROUSAIPRTKBNLST (1)
+                                                       TO
+                                           SPA-GMN-FRAME-ROUSAIPRTKBN-G
+                       END-IF
+                   END-IF 
                    IF      SPA-GMN-ROUSAIPRTKBN    =   "1"
                        MOVE    SPA-GMN-FRAME-ROUSAIPRTKBNLST (2)
                                                    TO
