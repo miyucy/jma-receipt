@@ -164,8 +164,8 @@
                     09  MDCRES-MDC-POINT             PIC X(08).
       *             ºÞ¶â³Û
                     09  MDCRES-MDC-MOENY             PIC X(08).
-      *             ºÞ¶èÊ¬¡Ê£±¡§Êñ³çºÞ¡Ë
-                    09  MDCRES-MDC-CODE              PIC X(01).
+      *             Êñ³ç¶èÊ¬¡ÊTrue¡§Êñ³çºÞ¡Ë
+                    09  MDCRES-INCLUSION-CLASS       PIC X(05).
       *
       *             ºÞºï½ü²ÄÇ½Ï¢ÈÖ
                     09  MDCRES-DEL-NUMBER            PIC X(02).

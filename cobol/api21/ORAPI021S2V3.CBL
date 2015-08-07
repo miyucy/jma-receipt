@@ -2585,7 +2585,7 @@
            END-IF
       *    ∫ﬁ∂Ë ¨°  Ò≥Á ¨°À
            IF      SPA-COM-HOUKATU-ZAI (IDX)   =   1
-                MOVE    "1"            TO  MDCRES-MDC-CODE (IDY)
+                MOVE    "True"         TO  MDCRES-INCLUSION-CLASS(IDY)
            END-IF
       *    ø«Œ≈∂Ë ¨
            MOVE    WRK-SRYKBN          TO  MDCRES-MDC-CLASS-KBN (IDY)
@@ -3272,8 +3272,11 @@
                                            TO  MDCRES-MDC-POINT (IDX)
                MOVE    ORAPISUB2-MDC-MOENY (IDX)
                                            TO  MDCRES-MDC-MOENY (IDX)
-               MOVE    ORAPISUB2-MDC-CODE (IDX)
-                                           TO  MDCRES-MDC-CODE (IDX)
+      *        ∫ﬁ∂Ë ¨°  Ò≥Á ¨°À
+               IF       ORAPISUB2-MDC-CODE (IDX)  =   "1"
+                    MOVE    "True"         TO  MDCRES-INCLUSION-CLASS
+                                                                (IDX)
+               END-IF
                MOVE    ORAPISUB2-DEL-NUMBER (IDX)
                                            TO  MDCRES-DEL-NUMBER(IDX)
       *        ∫ﬁ∆‚Õ∆

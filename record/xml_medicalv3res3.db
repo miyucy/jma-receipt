@@ -61,7 +61,7 @@ xml_medicalv3res3 {
 			Medical_Class_Number		varchar(03);
 			Medical_Point 			varchar(08);
 			Medical_Moeny			varchar(08);
-			Medical_Mdc_Code		varchar(01);
+			Medical_Inclusion_Class		varchar(05);
 			Medical_Delete_Number		varchar(02);
 			Medical_Delete_Info		varchar(06);
 			Medication_Info    {

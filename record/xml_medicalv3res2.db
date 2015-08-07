@@ -84,13 +84,13 @@ xml_medicalv3res2 {
 #--- 診療内容
 	Medical_Information  {
 		Medical_Info  {
-			Medical_Class_Code		varchar(02);
+			Medical_Class_Sub		varchar(02);
 			Medical_Class			varchar(03);
 			Medical_Class_Name		varchar(40);
 			Medical_Class_Number		varchar(03);
 			Medical_Point 			varchar(08);
 			Medical_Moeny			varchar(08);
-			Medical_Mdc_Code		varchar(01);
+			Medical_Inclusion_Class		varchar(05);
 			Medical_Delete_Number		varchar(02);
 			Medication_Info    {
 				Medication_Code	varchar(09);

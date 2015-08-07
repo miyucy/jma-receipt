@@ -783,13 +783,6 @@
       *    SPATMPからSPAの取得
            IF     (MDCREQ-ORCA-UID NOT =   SPACE  )
              AND  (WRK-ERRCD           =   SPACE  )
-      *        UIDコードをTERMID
-               MOVE    MDCREQ-ORCA-UID     TO  WRK-ORCA-UID
-               MOVE    SPACE               TO  SPA-TERMID
-               STRING  "API+"
-                       WRK-ORCA-UID        DELIMITED  BY  SPACE
-                                           INTO    SPA-TERMID
-               END-STRING
                PERFORM 2008-SPATMP-SEL-SEC
            END-IF
       *
@@ -1480,8 +1473,11 @@
                                            TO  MDCRES-MDC-POINT (IDX)
                MOVE    ORAPISUB2-MDC-MOENY (IDX)
                                            TO  MDCRES-MDC-MOENY (IDX)
-               MOVE    ORAPISUB2-MDC-CODE (IDX)
-                                           TO  MDCRES-MDC-CODE (IDX)
+      *        剤区分（包括分）
+               IF       ORAPISUB2-MDC-CODE (IDX)  =   "1"
+                    MOVE    "True"         TO  MDCRES-INCLUSION-CLASS
+                                                                (IDX)
+               END-IF
                MOVE    ORAPISUB2-DEL-NUMBER (IDX)
                                            TO  MDCRES-DEL-NUMBER(IDX)
       *        剤内容
