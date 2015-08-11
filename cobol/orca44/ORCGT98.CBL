@@ -46,6 +46,8 @@
       *
       *  04.08.01    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *  04.08.02    NACL-藤原    14/08/28  ４．８ミドル対応
+      *  04.08.03    NACL-藤原    15/08/07  医療情報連携基盤のクライアン
+      *                                     ト保存対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -449,17 +451,21 @@
            IF    ( SPA-GMN-T98-DATAKBNMEI
                                        =   SPACE       )
            OR    ( SPA-T01-PRTKBN      =   "6" OR  "7" )
-               MOVE    "4"                 TO  SPA-GMN-T98-DATAKBN
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-GMN-T98-DATAKBN-MAX
-                   IF        SPA-GMN-T98-DATAKBN
-                                   =   SPA-GMN-T98-DATAKBNL (IDX)
-                       MOVE    SPA-GMN-T98-DATAKBNMEIL (IDX)
+               IF      SPA-GMN-T98-DATAKBN =   "4" OR  "5"
+                   CONTINUE
+               ELSE
+                   MOVE    "4"                 TO  SPA-GMN-T98-DATAKBN
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       SPA-GMN-T98-DATAKBN-MAX
+                       IF        SPA-GMN-T98-DATAKBN
+                                       =   SPA-GMN-T98-DATAKBNL (IDX)
+                           MOVE    SPA-GMN-T98-DATAKBNMEIL (IDX)
                                            TO  SPA-GMN-T98-DATAKBNMEI
-                       MOVE    SPA-GMN-T98-DATAKBN-MAX
+                           MOVE    SPA-GMN-T98-DATAKBN-MAX
                                            TO  IDX
-                   END-IF
-               END-PERFORM
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF
            .
        41021-DATAKBN-CHK-EXT.

@@ -40,7 +40,7 @@
       *  00.00.00    NACL-伊藤    15. 2.18  自費保険分を作成
       *                                     地域連携IDが空白の場合は
       *                                     患者番号を記録
-      *  04.08.06    NACL-藤原    15/07/17  医療情報連携基盤のクライアン
+      *  04.08.06    NACL-藤原    15/08/07  医療情報連携基盤のクライアン
       *                                     ト保存対応
       *****************************************************************
       *
@@ -205,7 +205,7 @@
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
       *
-       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
+       01  WRK-SGETTEMP-TEMPDIR        PIC X(1024).
       *
       *    医療機関情報ワーク
            COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
