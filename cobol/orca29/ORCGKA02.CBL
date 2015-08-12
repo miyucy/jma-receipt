@@ -497,6 +497,7 @@
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
+      *
       *    ²èÌÌ£Ó£Ð£Á½ñ¹þ¤ß
            IF      FLG-END2            =   ZERO
                PERFORM 1003-KA02SPA-OUT-SEC
