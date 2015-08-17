@@ -23,7 +23,6 @@
            COPY    "W04.INC".
            COPY    "W05.INC".
            COPY    "W06.INC".
-           COPY    "W061.INC".
            COPY    "W07.INC". 
            COPY    "W08.INC". 
            COPY    "W09.INC".
@@ -35,8 +34,6 @@
            COPY    "W122.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
-           COPY    "W141.INC".
-           COPY    "W142.INC".
            COPY    "W15.INC".
            COPY    "W16.INC".
            COPY    "W17.INC".
@@ -71,7 +68,6 @@
            COPY    "W68.INC".
            COPY    "W91.INC".
            COPY    "W92.INC".
-           COPY    "W93.INC".
            COPY    "W96.INC".
            COPY    "W98.INC".
            COPY    "W981.INC".
