@@ -1152,7 +1152,7 @@ grpsys                                         SPA-AREA
       *
            MOVE    SPA-NAI-200501-RECEDEN-DATAKBN
                                    TO  SPA-GMN-DATAKBN
-           PERFORM 4104-DATAKBN-CHK-SEC                                   
+           PERFORM 4104-DATAKBN-CHK-SEC
            IF      SPA-NAI-200501-RECEDEN-DATAKBN
                                    =   "1" OR "2"
                MOVE    SPACE           TO  SPA-GMN-DATAKBN-G
@@ -3021,6 +3021,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
       *****************************************************************
        4104-DATAKBN-CHK-SEC            SECTION.
       *
+           IF    ( SPA-MW              =   SPA-GINBEE )
+           AND   ( SPA-GMN-DATAKBN-MAX =   ZERO       )
+               MOVE    SPACE               TO  SPA-GMN-DATAKBN-G
+               GO  TO  4104-DATAKBN-CHK-EXT
+           END-IF
+      *
            IF      SPA-GMN-DATAKBN     =   SPACE
                IF      SPA-MW              =   SPA-GINBEE
                    IF      SPA-GMN-DATAKBN-MAX >   ZERO
@@ -3047,26 +3053,27 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                    END-IF
                END-PERFORM        
                IF      SPA-GMN-DATAKBNMEI  =   SPACE  
-                   MOVE    SPA-GMN-DATAKBNLST (2)
+                   IF      SPA-MW              =   SPA-GINBEE
+                       MOVE    SPA-GMN-DATAKBNLST (1)
                                                TO  SPA-GMN-DATAKBN-G
+                   ELSE
+                       MOVE    SPA-GMN-DATAKBNLST (2)
+                                               TO  SPA-GMN-DATAKBN-G
+                   END-IF
                END-IF
            END-IF
       *
-           IF      SPA-GMN-PRTKBN  =   "6" OR  "7"
+           IF      SPA-GMN-PRTKBN  =   "6" OR  "7" OR  "8"
                IF      SPA-GMN-DATAKBN     =   "4" OR  "5"
                    CONTINUE
                ELSE
-                   MOVE    SPA-GMN-DATAKBNLST (2)
-                                           TO  SPA-GMN-DATAKBN-G
-               END-IF
-           END-IF
-      *
-           IF      SPA-GMN-PRTKBN  =   "8"
-               IF      SPA-GMN-DATAKBN     =   "4" OR  "5"
-                   CONTINUE
-               ELSE
-                   MOVE    SPA-GMN-DATAKBNLST (2)
-                                           TO  SPA-GMN-DATAKBN-G
+                   IF      SPA-MW              =   SPA-GINBEE
+                       MOVE    SPA-GMN-DATAKBNLST (1)
+                                               TO  SPA-GMN-DATAKBN-G
+                   ELSE
+                       MOVE    SPA-GMN-DATAKBNLST (2)
+                                               TO  SPA-GMN-DATAKBN-G
+                   END-IF
                END-IF
            END-IF
            .

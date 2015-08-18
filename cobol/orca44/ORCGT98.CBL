@@ -301,13 +301,9 @@
       *
            MOVE    SYS-200501-RECEDEN-DATAKBN
                                        TO  SPA-GMN-T98-DATAKBN
-           IF      SPA-T01-PRTKBN      =   "6" OR  "7"
-               MOVE    "4"                 TO  SPA-GMN-T98-DATAKBN
-           END-IF
            PERFORM 41021-DATAKBN-CHK-SEC                                 
            IF    ( SYS-200501-RECEDEN-DATAKBN
                                        =   "1" OR  "2" )
-           AND   ( SPA-T01-PRTKBN  NOT =   "6" OR  "7" )
                MOVE    SPACE           TO  SPA-GMN-T98-DATAKBN-G
            END-IF
       *
@@ -450,21 +446,32 @@
       *
            IF    ( SPA-GMN-T98-DATAKBNMEI
                                        =   SPACE       )
-           OR    ( SPA-T01-PRTKBN      =   "6" OR  "7" )
-               IF      SPA-GMN-T98-DATAKBN =   "4" OR  "5"
+               IF      SPA-MW              =   SPA-GINBEE
+                   MOVE    SPA-GMN-T98-DATAKBNLST (1)
+                                               TO  SPA-GMN-T98-DATAKBN-G
+               ELSE
+                   IF      SPA-GMN-T06-TEISYUTUSAKI4
+                                       =   "F"
+                       MOVE    SPA-GMN-T98-DATAKBNLST (2)
+                                               TO  SPA-GMN-T98-DATAKBN-G
+                   ELSE
+                       MOVE    SPA-GMN-T98-DATAKBNLST (1)
+                                               TO  SPA-GMN-T98-DATAKBN-G
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF      SPA-GMN-T98-PRTKBN  =   "6" OR  "7" OR  "8"
+               IF      SPA-GMN-T98-DATAKBN     =   "4" OR  "5"
                    CONTINUE
                ELSE
-                   MOVE    "4"                 TO  SPA-GMN-T98-DATAKBN
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       SPA-GMN-T98-DATAKBN-MAX
-                       IF        SPA-GMN-T98-DATAKBN
-                                       =   SPA-GMN-T98-DATAKBNL (IDX)
-                           MOVE    SPA-GMN-T98-DATAKBNMEIL (IDX)
-                                           TO  SPA-GMN-T98-DATAKBNMEI
-                           MOVE    SPA-GMN-T98-DATAKBN-MAX
-                                           TO  IDX
-                       END-IF
-                   END-PERFORM
+                   IF      SPA-MW              =   SPA-GINBEE
+                       MOVE    SPA-GMN-T98-DATAKBNLST (1)
+                                               TO  SPA-GMN-T98-DATAKBN-G
+                   ELSE
+                       MOVE    SPA-GMN-T98-DATAKBNLST (2)
+                                               TO  SPA-GMN-T98-DATAKBN-G
+                   END-IF
                END-IF
            END-IF
            .
