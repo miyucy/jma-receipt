@@ -3244,6 +3244,23 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
       *****************************************************************
        4101-KAKUTEI-CHK-SEC        SECTION.
       *
+           IF      SPA-MW          =   SPA-GINBEE
+               EVALUATE    MCP-WIDGET
+                   WHEN    "B06"
+                   WHEN    "B07"
+                   WHEN    "B08"
+                   WHEN    "B16"
+                   WHEN    "B17"
+                   WHEN    "B18"
+                   WHEN    "B19"
+                       IF      SPA-GMN-DATAKBN-MAX =   ZERO
+                           MOVE    "0021"          TO  SPA-ERRCD
+                           MOVE    4               TO  SPA-GMN-CUR
+                           GO  TO  4101-KAKUTEI-CHK-EXT
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
            EVALUATE    MCP-WIDGET
                WHEN    "B12"
       *            ÂÐ¾ÝÄ¢É¼¤¬Ì¤ÁªÂò
@@ -3330,24 +3347,6 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                        END-IF
                    END-IF
            END-EVALUATE
-      *
-           IF      SPA-ERRCD       =   SPACE
-               IF      SPA-MW          =   SPA-GINBEE
-                   EVALUATE    MCP-WIDGET
-                       WHEN    "B06"
-                       WHEN    "B07"
-                       WHEN    "B08"
-                       WHEN    "B16"
-                       WHEN    "B17"
-                       WHEN    "B18"
-                       WHEN    "B19"
-                           IF      SPA-GMN-DATAKBN-MAX =   ZERO
-                               MOVE    "0021"          TO  SPA-ERRCD
-                               MOVE    4               TO  SPA-GMN-CUR
-                           END-IF
-                   END-EVALUATE
-               END-IF
-           END-IF
       *
            .
        4101-KAKUTEI-CHK-EXT.
