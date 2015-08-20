@@ -28,6 +28,8 @@
            03  LNK-RIHASTDAY-NYUGAIKBN            PIC  X(01).
       *¥µº‘£…£ƒ
            03  LNK-RIHASTDAY-PTID                 PIC  9(10).
+      *ø«Œ≈≤ 
+           03  LNK-RIHASTDAY-SRYKA                PIC  X(02).
       *ø«Œ≈«Ø∑Ó
            03  LNK-RIHASTDAY-SRYYM                PIC  X(06).
       * ›∏±¡»πÁ§ª
@@ -39,7 +41,7 @@
            03  LNK-RIHASTDAY-OUT-AREA.
               04  LNK-RIHASTDAY-OUT-OCC           OCCURS   7.
                  05  LNK-RIHASTDAY-OUT-OCC2       OCCURS 100.
-                    06  LNK-RIHASTDAY-MARK        PIC  X(02).
+                    06  LNK-RIHASTDAY-MARK        PIC  X(01).
                     06  LNK-RIHASTDAY-YUKOKETA    PIC  9(03).
                     06  LNK-RIHASTDAY-COM         PIC  X(200).
       *

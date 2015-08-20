@@ -416,56 +416,62 @@
       *****************************************************************
        210-RIHASANTEI-HENSYU-SEC          SECTION.
       *
-           INITIALIZE                             SRYACCT-REC
-           MOVE    LNK-RIHASTDAY-HOSPNUM      TO  ACCT-HOSPNUM
-           MOVE    LNK-RIHASTDAY-NYUGAIKBN    TO  ACCT-NYUGAIKBN
-           MOVE    LNK-RIHASTDAY-PTID         TO  ACCT-PTID
-           MOVE    LNK-RIHASTDAY-SRYYM        TO  ACCT-SRYYM
-           MOVE    LNK-RIHASTDAY-HKNCOMBI     TO  ACCT-HKNCOMBI
-           MOVE    SRYACCT-REC                TO  MCPDATA-REC
-           MOVE    "tbl_sryacct"              TO  MCP-TABLE
-           MOVE    "key65"                    TO  MCP-PATHNAME
-           PERFORM  900-DBSELECT-SEC
-           IF       MCP-RC  =  ZERO
-              MOVE    "tbl_sryacct"           TO  MCP-TABLE
-              MOVE    "key65"                 TO  MCP-PATHNAME
-              PERFORM  900-SRYACCT-READ-SEC
-              PERFORM  UNTIL  FLG-SRYACCT =  1
-                INITIALIZE                        SRYACT-REC
-                MOVE    ACCT-HOSPNUM          TO  SRY-HOSPNUM
-                MOVE    ACCT-NYUGAIKBN        TO  SRY-NYUGAIKBN
-                MOVE    ACCT-PTID             TO  SRY-PTID
-                MOVE    ACCT-SRYYM            TO  SRY-SRYYM
-                MOVE    ACCT-ZAINUM           TO  SRY-ZAINUM
-                MOVE    SRYACT-REC            TO  MCPDATA-REC
-                MOVE    "tbl_sryact"          TO  MCP-TABLE
-                MOVE    "key9"                TO  MCP-PATHNAME
-                PERFORM  900-DBSELECT-SEC
-                IF       MCP-RC  =  ZERO
-                   MOVE    "tbl_sryact"       TO  MCP-TABLE
-                   MOVE    "key9"             TO  MCP-PATHNAME
-                   PERFORM  900-SRYACT-READ-SEC
-                   PERFORM  UNTIL  FLG-SRYACT =  1
-      *
-                     PERFORM  2101-RIHASANTEI-HANTEI-SEC
-      *
-                     MOVE    "tbl_sryact"     TO  MCP-TABLE
-                     MOVE    "key9"           TO  MCP-PATHNAME
-                     PERFORM  900-SRYACT-READ-SEC
-                   END-PERFORM
-                END-IF
-                MOVE    "tbl_sryact"          TO  MCP-TABLE
-                MOVE    "key9"                TO  MCP-PATHNAME
-                PERFORM  900-CLOSE-SEC
-      *
-                MOVE    "tbl_sryacct"         TO  MCP-TABLE
-                MOVE    "key65"               TO  MCP-PATHNAME
+           IF   LNK-RIHASTDAY-SRYKA  =  SPACE
+             INITIALIZE                             SRYACCT-REC
+             MOVE    LNK-RIHASTDAY-HOSPNUM      TO  ACCT-HOSPNUM
+             MOVE    LNK-RIHASTDAY-NYUGAIKBN    TO  ACCT-NYUGAIKBN
+             MOVE    LNK-RIHASTDAY-PTID         TO  ACCT-PTID
+             MOVE    LNK-RIHASTDAY-SRYYM        TO  ACCT-SRYYM
+             MOVE    LNK-RIHASTDAY-HKNCOMBI     TO  ACCT-HKNCOMBI
+             MOVE    SRYACCT-REC                TO  MCPDATA-REC
+             MOVE    "tbl_sryacct"              TO  MCP-TABLE
+             MOVE    "key65"                    TO  MCP-PATHNAME
+             PERFORM  900-DBSELECT-SEC
+             IF       MCP-RC  =  ZERO
+                MOVE    "tbl_sryacct"           TO  MCP-TABLE
+                MOVE    "key65"                 TO  MCP-PATHNAME
                 PERFORM  900-SRYACCT-READ-SEC
-              END-PERFORM
+                PERFORM  UNTIL  FLG-SRYACCT =  1
+      *
+                  PERFORM  2101-RIHASANTEI-HANTEI-SEC
+      *
+                  MOVE    "tbl_sryacct"         TO  MCP-TABLE
+                  MOVE    "key65"               TO  MCP-PATHNAME
+                  PERFORM  900-SRYACCT-READ-SEC
+                END-PERFORM
+             END-IF
+             MOVE    "tbl_sryacct"              TO  MCP-TABLE
+             MOVE    "key65"                    TO  MCP-PATHNAME
+             PERFORM  900-CLOSE-SEC
+           ELSE
+             INITIALIZE                             SRYACCT-REC
+             MOVE    LNK-RIHASTDAY-HOSPNUM      TO  ACCT-HOSPNUM
+             MOVE    LNK-RIHASTDAY-NYUGAIKBN    TO  ACCT-NYUGAIKBN
+             MOVE    LNK-RIHASTDAY-PTID         TO  ACCT-PTID
+             MOVE    LNK-RIHASTDAY-SRYKA        TO  ACCT-SRYKA
+             MOVE    LNK-RIHASTDAY-SRYYM        TO  ACCT-SRYYM
+             MOVE    LNK-RIHASTDAY-HKNCOMBI     TO  ACCT-HKNCOMBI
+             MOVE    SRYACCT-REC                TO  MCPDATA-REC
+             MOVE    "tbl_sryacct"              TO  MCP-TABLE
+             MOVE    "key66"                    TO  MCP-PATHNAME
+             PERFORM  900-DBSELECT-SEC
+             IF       MCP-RC  =  ZERO
+                MOVE    "tbl_sryacct"           TO  MCP-TABLE
+                MOVE    "key66"                 TO  MCP-PATHNAME
+                PERFORM  900-SRYACCT-READ-SEC
+                PERFORM  UNTIL  FLG-SRYACCT =  1
+      *
+                  PERFORM  2101-RIHASANTEI-HANTEI-SEC
+      *
+                  MOVE    "tbl_sryacct"         TO  MCP-TABLE
+                  MOVE    "key66"               TO  MCP-PATHNAME
+                  PERFORM  900-SRYACCT-READ-SEC
+                END-PERFORM
+             END-IF
+             MOVE    "tbl_sryacct"              TO  MCP-TABLE
+             MOVE    "key66"                    TO  MCP-PATHNAME
+             PERFORM  900-CLOSE-SEC
            END-IF
-           MOVE    "tbl_sryacct"              TO  MCP-TABLE
-           MOVE    "key65"                    TO  MCP-PATHNAME
-           PERFORM  900-CLOSE-SEC
       *
            .
        210-RIHASANTEI-HENSYU-EXT.
@@ -475,6 +481,42 @@
       *    リハビリ算定情報の取得
       *****************************************************************
        2101-RIHASANTEI-HANTEI-SEC          SECTION.
+      *
+           INITIALIZE                        SRYACT-REC
+           MOVE    ACCT-HOSPNUM          TO  SRY-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN        TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID             TO  SRY-PTID
+           MOVE    ACCT-SRYYM            TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM           TO  SRY-ZAINUM
+           MOVE    SRYACT-REC            TO  MCPDATA-REC
+           MOVE    "tbl_sryact"          TO  MCP-TABLE
+           MOVE    "key9"                TO  MCP-PATHNAME
+           PERFORM  900-DBSELECT-SEC
+           IF       MCP-RC  =  ZERO
+              MOVE    "tbl_sryact"       TO  MCP-TABLE
+              MOVE    "key9"             TO  MCP-PATHNAME
+              PERFORM  900-SRYACT-READ-SEC
+              PERFORM  UNTIL  FLG-SRYACT =  1
+      *
+                PERFORM  21011-RIHASANTEI-HANTEI2-SEC
+      *
+                MOVE    "tbl_sryact"     TO  MCP-TABLE
+                MOVE    "key9"           TO  MCP-PATHNAME
+                PERFORM  900-SRYACT-READ-SEC
+              END-PERFORM
+           END-IF
+           MOVE    "tbl_sryact"          TO  MCP-TABLE
+           MOVE    "key9"                TO  MCP-PATHNAME
+           PERFORM  900-CLOSE-SEC
+      *
+           .
+       2101-RIHASANTEI-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ算定情報の取得
+      *****************************************************************
+       21011-RIHASANTEI-HANTEI2-SEC          SECTION.
       *
            PERFORM  VARYING  IDX12  FROM  1  BY  1
                      UNTIL  (IDX12            >   5   )
@@ -653,7 +695,7 @@
            END-PERFORM
       *
            .
-       2101-RIHASANTEI-HANTEI-EXT.
+       21011-RIHASANTEI-HANTEI2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1383,7 +1425,7 @@
       *
            ADD          1     TO  IDX
            IF   IDX  <=  100
-             MOVE      "＊"   TO  LNK-RIHASTDAY-MARK(IDY IDX)
+             MOVE        "*"  TO  LNK-RIHASTDAY-MARK(IDY IDX)
              EVALUATE    IDY
                WHEN       1
                  MOVE    23   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
@@ -1507,7 +1549,7 @@
                        OR   (WK-FREE-NAME(IDZ) =  SPACE)
              ADD      1     TO  IDX
              IF   IDX  <=  100
-               MOVE  "　"   TO  LNK-RIHASTDAY-MARK(IDY IDX)
+               MOVE   SPACE TO  LNK-RIHASTDAY-MARK(IDY IDX)
                MOVE   WK-FREE-YUKOKETA(IDZ)
                             TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
                MOVE   WK-FREE-NAME(IDZ)
