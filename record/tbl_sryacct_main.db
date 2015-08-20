@@ -1481,7 +1481,7 @@ path	key65 	{
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			AND   HKNCOMBI    =   :HKNCOMBI
-		        AND   SRYKBN IN ('80')
+			AND   SRYKBN      =   :SRYKBN
 			AND   JIHOKBN    <>   '1'
 			ORDER  BY   ZAINUM
 		;
@@ -1499,7 +1499,7 @@ path	key66 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
 			AND   HKNCOMBI    =   :HKNCOMBI
-		        AND   SRYKBN IN ('80')
+			AND   SRYKBN      =   :SRYKBN
 			AND   JIHOKBN    <>   '1'
 			ORDER  BY   ZAINUM
 		;

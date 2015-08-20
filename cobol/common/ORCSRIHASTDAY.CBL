@@ -423,6 +423,7 @@
              MOVE    LNK-RIHASTDAY-PTID         TO  ACCT-PTID
              MOVE    LNK-RIHASTDAY-SRYYM        TO  ACCT-SRYYM
              MOVE    LNK-RIHASTDAY-HKNCOMBI     TO  ACCT-HKNCOMBI
+             MOVE    "80"                       TO  ACCT-SRYKBN
              MOVE    SRYACCT-REC                TO  MCPDATA-REC
              MOVE    "tbl_sryacct"              TO  MCP-TABLE
              MOVE    "key65"                    TO  MCP-PATHNAME
@@ -451,6 +452,7 @@
              MOVE    LNK-RIHASTDAY-SRYKA        TO  ACCT-SRYKA
              MOVE    LNK-RIHASTDAY-SRYYM        TO  ACCT-SRYYM
              MOVE    LNK-RIHASTDAY-HKNCOMBI     TO  ACCT-HKNCOMBI
+             MOVE    "80"                       TO  ACCT-SRYKBN
              MOVE    SRYACCT-REC                TO  MCPDATA-REC
              MOVE    "tbl_sryacct"              TO  MCP-TABLE
              MOVE    "key66"                    TO  MCP-PATHNAME
