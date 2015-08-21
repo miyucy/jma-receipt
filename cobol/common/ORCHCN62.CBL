@@ -283,7 +283,7 @@
            03  PARA-QRKBN              PIC X(01).
            03  PARA-SHOHIN             PIC X(01).
       *04.08.01*START
-           03  PARA-HYOUJI             PIC X(01).
+           03  PARA-KOUNOU             PIC X(01).
       *04.08.01*END
       *04.08.02*START
            03  PARA-BIKOU              PIC X(01).
@@ -467,9 +467,9 @@
            MOVE    WRK-PARA(1:1)   TO  PARA-SHOHIN
       *04.08.01*START
       *    効能効果・注意事項記載
-           MOVE    "HYOUJI"        TO  WRK-PARA-NAME
+           MOVE    "KOUNOU"        TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)   TO  PARA-HYOUJI
+           MOVE    WRK-PARA(1:1)   TO  PARA-KOUNOU
       *04.08.01*END
       *04.08.02*START
       *    処方せん備考欄コメント記載
@@ -677,7 +677,7 @@
       *
       *04.08.02*START
       *    処方せん備考欄コメント表示しない場合
-           IF      PARA-BIKOU      NOT =   "1"
+           IF      PARA-BIKOU      =   "0"
                IF      ORCHCN62-SRYKBN(IDX-ZAI) =   "98"
                    GO  TO  220-BODY-HENSYU-EXT
                END-IF
@@ -878,7 +878,7 @@
       *
       *04.08.01*START
       *    プログラムオプションの設定があれば
-           IF      PARA-HYOUJI =   "1"
+           IF      PARA-KOUNOU =   "1"
       *        用法と在用法が同じコードなら、注意事項・効能効果を差込
                IF      ORCHCN62-YSRYCD(IDX-ZAI)
                                        =   TNS-SRYCD
@@ -934,7 +934,7 @@
                MOVE    TNS-NAME            TO  WRK-YKZNAME
       *04.08.01*START
       *        プログラムオプションの設定があれば
-               IF      PARA-HYOUJI =   "1"
+               IF      PARA-KOUNOU =   "1"
                    IF    ( WRK-EFFECT      NOT =   SPACE ) OR
                          ( WRK-CAUTION     NOT =   SPACE )
                        PERFORM 240-EFFECT-HENSYU-SEC
