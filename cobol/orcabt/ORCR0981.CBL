@@ -49,14 +49,6 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
       *                                     （コンパイル時のワーニング修正）
-      *  04.08.03    NACL-門脇    16/03/28  平成２８年４月改正対応
-      *  04.08.04    NACL-門脇    16/05/20  標準負担額経過措置（精神）入院年月日
-      *                                     のコメント対応
-      *  04.08.05    NACL-門脇    16/08/23  持参薬対応
-      *  04.08.06    NACL-門脇    16/09/15  リハビリマスタ追加対応
-      *  04.08.07    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
-      *  04.08.08    NACL-門脇    18/03/01  平成３０年４月改正対応
-      *  04.08.09    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -300,7 +292,6 @@
            03  IDX29               PIC 9(02).
            03  IDX30               PIC 9(02).
            03  IDX32               PIC 9(02).
-           03  IDX33               PIC 9(02).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
@@ -471,7 +462,6 @@
            03  WRK-ZAIKYO-YMD                PIC X(08).
            03  WRK-BOKOHO-YMD                PIC X(08).
            03  WRK-CYOJKSN-YMD               PIC X(08).
-           03  WRK-HAIJRT-YMD                PIC X(08).
       *
            03  WRK-GANSIDO-YMD-AREA.
                05  WRK-GANSIDO-YMD           PIC X(08)
@@ -484,7 +474,6 @@
       *
            03  WRK-ZAIKYO-YMD9               PIC X(08).
            03  WRK-ZAIKYO-KAISU              PIC 9(02).
-           03  WRK-HAIJRT-KAISU              PIC 9(02).
       *
            03  WRK-CYOJKSN-TAIHIYM           PIC X(06).
            03  WRK-CYOJKSN-TAIHIDD           PIC X(02).
@@ -625,8 +614,6 @@
            03  CONS-SYOGAI          PIC X(09) VALUE "099800171".
       *    摂食療法開始日
            03  CONS-SESSYOKU        PIC X(09) VALUE "099800151".
-      *    廃用症候群リハ開始日
-           03  CONS-HAIYO           PIC X(09) VALUE "099800191".
       *
       *    心大リハ終了日
            03  CONS-SINDAI-E        PIC X(09) VALUE "099800112".
@@ -642,15 +629,6 @@
            03  CONS-SYOGAI-E        PIC X(09) VALUE "099800172".
       *    摂食療法終了日
            03  CONS-SESSYOKU-E      PIC X(09) VALUE "099800152".
-      *    廃用症候群リハ開始日
-           03  CONS-HAIYO-E         PIC X(09) VALUE "099800192".
-      *
-      *    心大リハ加算開始日
-           03  CONS-SINDAI-K        PIC X(09) VALUE "099800211".
-      *    呼吸器リハ加算開始日
-           03  CONS-KOKYUKI-K       PIC X(09) VALUE "099800241".
-      *    廃用症候群リハ加算開始日
-           03  CONS-HAIYO-K         PIC X(09) VALUE "099800291".
       *
       *    心大血管疾患リハビリテーション医学管理料（１）
            03  CONS-SINDAI-IGAKU1   PIC X(09) VALUE "180029910".
@@ -705,9 +683,6 @@
            03  CONS-BOKOHO1         PIC X(09) VALUE "099400001".
       *    磁気による膀胱等刺激法
            03  CONS-BOKOHO2         PIC X(09) VALUE "140055110".
-      *
-      *    排尿自立指導料
-           03  CONS-HAIJRT          PIC X(09) VALUE "113022810".
       *
       *    在宅患者共同診療料テーブル
        01  TBL-ZAIKYO-CHECK-AREA.
@@ -764,7 +739,6 @@
            03  TBL-HASSYO-NANBYO-COMMENT    PIC 9(01).
            03  TBL-HASSYO-SYOGAI-COMMENT    PIC 9(01).
            03  TBL-HASSYO-SESSYOKU-COMMENT  PIC 9(01).
-           03  TBL-HASSYO-HAIYO-COMMENT     PIC 9(01).
       *
            03  TBL-HASSYO-SINDAI-DAY-T.
                05  TBL-HASSYO-SINDAI-DAY-OCC      OCCURS  31.
@@ -787,29 +761,9 @@
            03  TBL-HASSYO-SESSYOKU-DAY-T.
                05  TBL-HASSYO-SESSYOKU-DAY-OCC    OCCURS  31.
                    07  TBL-HASSYO-SESSYOKU-SANTEI PIC 9(01).
-           03  TBL-HASSYO-HAIYO-DAY-T.
-               05  TBL-HASSYO-HAIYO-DAY-OCC       OCCURS  31.
-                   07  TBL-HASSYO-HAIYO-SANTEI    PIC 9(01).
            03  TBL-HASSYO-TAIHI-DAY-T.
                05  TBL-HASSYO-TAIHI-DAY-OCC       OCCURS  31.
                    07  TBL-HASSYO-TAIHI-SANTEI    PIC 9(01).
-      *
-      *****（リハ加算用）
-       01  TBL-HASSYO9-INF.
-           03  TBL-HASSYO9-SINDAI-COMMENT    PIC 9(01).
-           03  TBL-HASSYO9-KOKYUKI-COMMENT   PIC 9(01).
-           03  TBL-HASSYO9-HAIYO-COMMENT     PIC 9(01).
-      *
-           03  TBL-HASSYO9-SINDAI-DAY-T.
-               05  TBL-HASSYO9-SINDAI-DAY-OCC      OCCURS  31.
-                   07  TBL-HASSYO9-SINDAI-SANTEI   PIC 9(01).
-           03  TBL-HASSYO9-KOKYUKI-DAY-T.
-               05  TBL-HASSYO9-KOKYUKI-DAY-OCC     OCCURS  31.
-                   07  TBL-HASSYO9-KOKYUKI-SANTEI  PIC 9(01).
-           03  TBL-HASSYO9-HAIYO-DAY-T.
-               05  TBL-HASSYO9-HAIYO-DAY-OCC       OCCURS  31.
-                   07  TBL-HASSYO9-HAIYO-SANTEI    PIC 9(01).
-      *****
       *
        01  TBL-ZAISIEN-INF.
            03  TBL-ZAISIEN-COMMENT          PIC 9(01).
@@ -854,7 +808,7 @@
                    07  TBL-RYOCOM2-ADL-SRYCD-H22     PIC  X(09).
                    07  TBL-RYOCOM2-ADL-TEN-H22       PIC  9(02).
                    07  TBL-RYOCOM2-ADL-TEN-MOJI-H22  PIC  X(04).
-               05  TBL-RYOCOM2-INF5            OCCURS  31.
+               05  TBL-RYOCOM2-INF4            OCCURS  31.
                  06  TBL-RYOCOM2-DAY           PIC  9(01).
       *
        01  TBL-CYOJKSN-INF.
@@ -1141,7 +1095,6 @@
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                        TBL-HASSYO-INF
-           INITIALIZE                        TBL-HASSYO9-INF
            INITIALIZE                        TBL-ZAISIEN-INF
            INITIALIZE                        TBL-RYOCOM-INF
            INITIALIZE                        TBL-CYOJKSN-INF
@@ -1298,43 +1251,6 @@
                              END-IF
                             END-PERFORM
                          END-IF
-                         IF  RECE84-HAIYO-COMMENT       =  "1"
-                            MOVE   1   TO  TBL-HASSYO-HAIYO-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO-HAIYO-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
-      *
-                         IF  RECE84-SINDAI9-COMMENT       =  "1"
-                            MOVE   1   TO  TBL-HASSYO9-SINDAI-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO9-SINDAI-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
-                         IF  RECE84-KOKYUKI9-COMMENT      =  "1"
-                            MOVE   1   TO  TBL-HASSYO9-KOKYUKI-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO9-KOKYUKI-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
-                         IF  RECE84-HAIYO9-COMMENT       =  "1"
-                            MOVE   1   TO  TBL-HASSYO9-HAIYO-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO9-HAIYO-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
                    WHEN      "90"
                    WHEN      "92"
                          IF  (RECE82-CYOJKSNFLG  NOT = SPACE     )
@@ -1415,43 +1331,6 @@
                              END-IF
                             END-PERFORM
                          END-IF
-                         IF  RECE84-HAIYO-COMMENT       =  "1"
-                            MOVE   1   TO  TBL-HASSYO-HAIYO-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO-HAIYO-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
-      *
-                         IF  RECE84-SINDAI9-COMMENT       =  "1"
-                            MOVE   1   TO  TBL-HASSYO9-SINDAI-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO9-SINDAI-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
-                         IF  RECE84-KOKYUKI9-COMMENT      =  "1"
-                            MOVE   1   TO  TBL-HASSYO9-KOKYUKI-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO9-KOKYUKI-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
-                         IF  RECE84-HAIYO9-COMMENT       =  "1"
-                            MOVE   1   TO  TBL-HASSYO9-HAIYO-COMMENT
-                            PERFORM  VARYING  IDX1  FROM  1  BY  1
-                                      UNTIL   IDX1   >   31
-                             IF   RECE84-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE 1 TO TBL-HASSYO9-HAIYO-SANTEI(IDX1)
-                             END-IF
-                            END-PERFORM
-                         END-IF
       *               （在支援に関する診療のカウント）
                          IF  RECE84-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                             MOVE  RECE84-REC  TO  WRK-RECE84-REC
@@ -1520,21 +1399,6 @@
       *
            IF     RECE82-TAINFLG            =  "1"
                 PERFORM    2001-TAIN-TOKUBETU-COMMENT-SEC
-           END-IF
-      *
-      *    標準負担額経過措置（精神）入院年月日のコメント
-      *
-           IF   RECE82-SEISIN-SKJFLG        =   1
-           AND  RECE82-SEISIN-NYUINYMD  NOT =  SPACE
-             INITIALIZE                         STS-AREA-DAY
-             INITIALIZE                         LNK-DAY2-AREA
-             MOVE    "21"                   TO  LNK-DAY2-IRAI
-             MOVE  RECE82-SEISIN-NYUINYMD   TO  LNK-DAY2-YMD
-             CALL    "ORCSDAY"    USING     STS-AREA-DAY
-                                            LNK-DAY2-AREA
-             IF      STS-DAY-RC1            =   ZERO
-                PERFORM    2001-SEISIN-SKJ-COMMENT-SEC
-             END-IF
            END-IF
       *
            PERFORM 800-RECE82-SET84-SEC
@@ -1625,10 +1489,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GANSIDO-HANTEI-SEC
                       END-IF
-      *            （排尿自立指導料の初回算定日のセット）
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-HAIJRT-HANTEI-SEC
-                      END-IF
+      *
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
@@ -1846,10 +1707,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GANSIDO-HANTEI-SEC
                       END-IF
-      *            （排尿自立指導料の初回算定日のセット）
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-HAIJRT-HANTEI-SEC
-                      END-IF
+      *
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
@@ -2157,42 +2015,6 @@
                                            TO   TBL-HASSYO-TAIHI-DAY-T
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
-      ***
-           IF   TBL-HASSYO-HAIYO-COMMENT    =  1
-                MOVE      1                TO   FLG-COMOKIKAE
-                MOVE      CONS-HAIYO       TO   WRK-SRYCD
-                MOVE      CONS-HAIYO-E     TO   WRK-SRYCD2
-                MOVE      TBL-HASSYO-HAIYO-DAY-T
-                                           TO   TBL-HASSYO-TAIHI-DAY-T
-                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
-           END-IF
-      *####
-           IF   TBL-HASSYO9-SINDAI-COMMENT    =  1
-                MOVE      1                TO   FLG-COMOKIKAE
-                MOVE      CONS-SINDAI-K    TO   WRK-SRYCD
-                MOVE      "999999999"      TO   WRK-SRYCD2
-                MOVE      TBL-HASSYO9-SINDAI-DAY-T
-                                           TO   TBL-HASSYO-TAIHI-DAY-T
-                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
-           END-IF
-      ***
-           IF   TBL-HASSYO9-KOKYUKI-COMMENT   =  1
-                MOVE      1                TO   FLG-COMOKIKAE
-                MOVE      CONS-KOKYUKI-K   TO   WRK-SRYCD
-                MOVE      "999999999"      TO   WRK-SRYCD2
-                MOVE      TBL-HASSYO9-KOKYUKI-DAY-T
-                                           TO   TBL-HASSYO-TAIHI-DAY-T
-                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
-           END-IF
-      ***
-           IF   TBL-HASSYO9-HAIYO-COMMENT    =  1
-                MOVE      1                TO   FLG-COMOKIKAE
-                MOVE      CONS-HAIYO-K     TO   WRK-SRYCD
-                MOVE      "999999999"      TO   WRK-SRYCD2
-                MOVE      TBL-HASSYO9-HAIYO-DAY-T
-                                           TO   TBL-HASSYO-TAIHI-DAY-T
-                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
-           END-IF
       *
            .
        2001-HASSYO-HANTEI-EXT.
@@ -2442,19 +2264,11 @@
                                  MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
                                  COMPUTE  IDZ  =  IDZ - 1
                               END-IF
-                            WHEN     "840000058"
-                              IF   FLG-COMOKIKAE2 = ZERO
-                                 MOVE    3    TO  FLG-COMOKIKAE2
-                                 MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
-                                 MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
-                                 COMPUTE  IDZ  =  IDZ - 1
-                              END-IF
                           END-EVALUATE
                        END-IF
                        IF   FLG-COMOKIKAE  =   1
                           IF  SRY-SRYCD(IDX12) = "840000042" OR
-                                                 "840000101" OR
-                                                 "840000058"
+                                                 "840000101"
                             MOVE    1    TO   FLG-COMARI2
                           ELSE
                             MOVE    1    TO   FLG-COMARI
@@ -2524,14 +2338,6 @@
                       IF   SANTEIPLUS-COMMENT(1:12) = "急性増悪　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    2    TO  FLG-COMOKIKAE2
-                           MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
-                           MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
-                           COMPUTE  IDZ  =  IDZ - 1
-                        END-IF
-                      END-IF
-                      IF   SANTEIPLUS-COMMENT(1:8) = "診断　日"
-                        IF   FLG-COMOKIKAE2 = ZERO
-                           MOVE    3    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
                            MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
                            COMPUTE  IDZ  =  IDZ - 1
@@ -2661,7 +2467,7 @@
                MOVE    27   TO  IDC2
                MOVE    33   TO  IDC3
                PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-               COMPUTE WRK-ZAINUM    =    99980000
+               COMPUTE WRK-ZAINUM    =    99998000
                                      +   (IDX16 + 31)
                MOVE    "40" TO  WRK-SRYKBN
              WHEN       CONS-SINDAI
@@ -2673,54 +2479,9 @@
                MOVE    41   TO  IDC3
                PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
-                 MOVE    99980201      TO   WRK-ZAINUM
+                 MOVE    99998201      TO   WRK-ZAINUM
                ELSE
-                 COMPUTE WRK-ZAINUM    =    99980200
-                                       +   (IDX16 + 31)
-               END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
-                    MOVE    "80" TO  WRK-SRYKBN
-               ELSE
-                 EVALUATE  WRK-PARA-JIBAIPRTKBN
-                  WHEN     "0"
-                    MOVE    "40" TO  WRK-SRYKBN
-                    MOVE    "1"  TO  WRK-OKIKAEFLG
-                  WHEN     "1"
-                    MOVE    "80" TO  WRK-SRYKBN
-                 END-EVALUATE
-               END-IF
-             WHEN       CONS-SINDAI-K
-               EVALUATE   FLG-COMOKIKAE2
-                 WHEN       0
-                 WHEN       3
-                   MOVE    22  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE  "早期・初期リハ加算：発症　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    27  TO  IDC1
-                   MOVE    33  TO  IDC2
-                   MOVE    39  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       1
-                   MOVE    22  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE  "早期・初期リハ加算：手術　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    27  TO  IDC1
-                   MOVE    33  TO  IDC2
-                   MOVE    39  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       2
-                   MOVE    24  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE  "早期・初期リハ加算：急性増悪　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    31  TO  IDC1
-                   MOVE    37  TO  IDC2
-                   MOVE    43  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-               END-EVALUATE
-               IF      FLG-RIHA      =  1
-                 MOVE    99980401      TO   WRK-ZAINUM
-               ELSE
-                 COMPUTE WRK-ZAINUM    =    99980400
+                 COMPUTE WRK-ZAINUM    =    99998200
                                        +   (IDX16 + 31)
                END-IF
                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
@@ -2761,103 +2522,11 @@
                    MOVE    35  TO  IDC2
                    MOVE    41  TO  IDC3
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       3
-                   MOVE    21  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE    "脳血管疾患等リハ：診断　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    25  TO  IDC1
-                   MOVE    31  TO  IDC2
-                   MOVE    37  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
-                 MOVE    99980601      TO   WRK-ZAINUM
+                 MOVE    99998401      TO   WRK-ZAINUM
                ELSE
-                 COMPUTE WRK-ZAINUM    =    99980600
-                                       +   (IDX16 + 31)
-               END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
-                    MOVE    "80" TO  WRK-SRYKBN
-               ELSE
-                 EVALUATE  WRK-PARA-JIBAIPRTKBN
-                  WHEN     "0"
-                    MOVE    "40" TO  WRK-SRYKBN
-                    MOVE    "1"  TO  WRK-OKIKAEFLG
-                  WHEN     "1"
-                    MOVE    "80" TO  WRK-SRYKBN
-                 END-EVALUATE
-               END-IF
-             WHEN       CONS-HAIYO
-               EVALUATE   FLG-COMOKIKAE2
-                 WHEN       0
-                 WHEN       1
-                 WHEN       3
-                   MOVE    20  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE    "廃用症候群リハ：診断　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    23  TO  IDC1
-                   MOVE    29  TO  IDC2
-                   MOVE    35  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       2
-                   MOVE    22  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE
-                       "廃用症候群リハ：急性増悪　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    27  TO  IDC1
-                   MOVE    33  TO  IDC2
-                   MOVE    39  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-               END-EVALUATE
-               IF      FLG-RIHA      =  1
-                 MOVE    99980801      TO   WRK-ZAINUM
-               ELSE
-                 COMPUTE WRK-ZAINUM    =    99980800
-                                       +   (IDX16 + 31)
-               END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
-                    MOVE    "80" TO  WRK-SRYKBN
-               ELSE
-                 EVALUATE  WRK-PARA-JIBAIPRTKBN
-                  WHEN     "0"
-                    MOVE    "40" TO  WRK-SRYKBN
-                    MOVE    "1"  TO  WRK-OKIKAEFLG
-                  WHEN     "1"
-                    MOVE    "80" TO  WRK-SRYKBN
-                 END-EVALUATE
-               END-IF
-             WHEN       CONS-HAIYO-K
-               EVALUATE   FLG-COMOKIKAE2
-                 WHEN       0
-                 WHEN       3
-                   MOVE    22  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE  "早期・初期リハ加算：発症　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    27  TO  IDC1
-                   MOVE    33  TO  IDC2
-                   MOVE    39  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       1
-                   MOVE    22  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE  "早期・初期リハ加算：手術　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    27  TO  IDC1
-                   MOVE    33  TO  IDC2
-                   MOVE    39  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       2
-                   MOVE    24  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE  "早期・初期リハ加算：急性増悪　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    31  TO  IDC1
-                   MOVE    37  TO  IDC2
-                   MOVE    43  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-               END-EVALUATE
-               IF      FLG-RIHA      =  1
-                 MOVE    99981001      TO   WRK-ZAINUM
-               ELSE
-                 COMPUTE WRK-ZAINUM    =    99981000
+                 COMPUTE WRK-ZAINUM    =    99998400
                                        +   (IDX16 + 31)
                END-IF
                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
@@ -2897,19 +2566,11 @@
                    MOVE    29  TO  IDC2
                    MOVE    35  TO  IDC3
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       3
-                   MOVE    18  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE    "運動器リハ：診断　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    19  TO  IDC1
-                   MOVE    25  TO  IDC2
-                   MOVE    31  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
-                 MOVE    99981201      TO   WRK-ZAINUM
+                 MOVE    99998601      TO   WRK-ZAINUM
                ELSE
-                 COMPUTE WRK-ZAINUM    =    99981200
+                 COMPUTE WRK-ZAINUM    =    99998600
                                        +   (IDX16 + 31)
                END-IF
                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
@@ -2932,54 +2593,9 @@
                MOVE    35   TO  IDC3
                PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
-                 MOVE    99981401      TO   WRK-ZAINUM
+                 MOVE    99998801      TO   WRK-ZAINUM
                ELSE
-                 COMPUTE WRK-ZAINUM    =    99981400
-                                       +   (IDX16 + 31)
-               END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
-                    MOVE    "80" TO  WRK-SRYKBN
-               ELSE
-                 EVALUATE  WRK-PARA-JIBAIPRTKBN
-                  WHEN     "0"
-                    MOVE    "40" TO  WRK-SRYKBN
-                    MOVE    "1"  TO  WRK-OKIKAEFLG
-                  WHEN     "1"
-                    MOVE    "80" TO  WRK-SRYKBN
-                 END-EVALUATE
-               END-IF
-             WHEN       CONS-KOKYUKI-K
-               EVALUATE   FLG-COMOKIKAE2
-                 WHEN       0
-                 WHEN       3
-                   MOVE    22  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE  "早期・初期リハ加算：発症　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    27  TO  IDC1
-                   MOVE    33  TO  IDC2
-                   MOVE    39  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       1
-                   MOVE    22  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE  "早期・初期リハ加算：手術　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    27  TO  IDC1
-                   MOVE    33  TO  IDC2
-                   MOVE    39  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-                 WHEN       2
-                   MOVE    24  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE  "早期・初期リハ加算：急性増悪　　　年　　月　　日"
-                               TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-                   MOVE    31  TO  IDC1
-                   MOVE    37  TO  IDC2
-                   MOVE    43  TO  IDC3
-                   PERFORM 200111-HASSYO-COMMENT-DATE-SEC
-               END-EVALUATE
-               IF      FLG-RIHA      =  1
-                 MOVE    99981601      TO   WRK-ZAINUM
-               ELSE
-                 COMPUTE WRK-ZAINUM    =    99981600
+                 COMPUTE WRK-ZAINUM    =    99998800
                                        +   (IDX16 + 31)
                END-IF
                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
@@ -3002,9 +2618,9 @@
                MOVE    37   TO  IDC3
                PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
-                 MOVE    99981801      TO   WRK-ZAINUM
+                 MOVE    99999001      TO   WRK-ZAINUM
                ELSE
-                 COMPUTE WRK-ZAINUM    =    99981800
+                 COMPUTE WRK-ZAINUM    =    99999000
                                        +   (IDX16 + 31)
                END-IF
                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
@@ -3021,7 +2637,6 @@
              WHEN       CONS-NANBYO
                EVALUATE   FLG-COMOKIKAE2
                  WHEN       0
-                 WHEN       3
                    MOVE    19  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
                    MOVE    "難病患者リハ：発症　　　年　　月　　日"
                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
@@ -3047,9 +2662,9 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
-                 MOVE    99982001      TO   WRK-ZAINUM
+                 MOVE    99999201      TO   WRK-ZAINUM
                ELSE
-                 COMPUTE WRK-ZAINUM    =    99982000
+                 COMPUTE WRK-ZAINUM    =    99999200
                                        +   (IDX16 + 31)
                END-IF
                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
@@ -3072,9 +2687,9 @@
                MOVE    37   TO  IDC3
                PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                IF      FLG-RIHA      =  1
-                 MOVE    99982201      TO   WRK-ZAINUM
+                 MOVE    99999401      TO   WRK-ZAINUM
                ELSE
-                 COMPUTE WRK-ZAINUM    =    99982200
+                 COMPUTE WRK-ZAINUM    =    99999400
                                        +   (IDX16 + 31)
                END-IF
                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
@@ -3712,109 +3327,6 @@
            EXIT.
       *
       *****************************************************************
-      *    標準負担額経過措置（精神）入院年月日のコメント
-      *****************************************************************
-       2001-SEISIN-SKJ-COMMENT-SEC          SECTION.
-      *
-           PERFORM 800-RECE82-SET849-SEC
-           MOVE    99999975            TO  RECE849-ZAINUM
-           MOVE    "99"                TO  RECE849-SRYKBN
-           MOVE    "991"               TO  RECE849-SRYSYUKBN
-           MOVE    1                   TO  RECE849-MEISAISU
-      *
-           MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
-      *
-           PERFORM 800-RECE82-SET859-SEC
-           MOVE    99999975            TO  RECE859-ZAINUM
-           MOVE    "99"                TO  RECE859-SRYKBN
-           MOVE    "991"               TO  RECE859-SRYSYUKBN
-      *
-           MOVE    SPACE               TO  WRK-RECE85XX-REC
-           INITIALIZE                      WRK-RECE85XX-REC
-           EVALUATE   LNK-DAY2-EDTYMD1-G
-             WHEN       "H"
-               MOVE  "840000136" TO  WRK-RECE85XX-SRYCD(1 1)
-               MOVE   ZERO       TO  WRK-RECE85XX-SRYSURYO(1 1)
-               MOVE   31         TO  WRK-RECE85XX-YUKOKETA(1 1)
-               MOVE  "標準負担額経過措置（精神）入院年月日："
-                                 TO  WRK-RECE85XX-NAME(1 1)(1:38)
-               MOVE  "平成　　　年　　月　　日"
-                                 TO  WRK-RECE85XX-NAME(1 1)(39:24)
-             WHEN       "S"
-               MOVE  "840000140" TO  WRK-RECE85XX-SRYCD(1 1)
-               MOVE   ZERO       TO  WRK-RECE85XX-SRYSURYO(1 1)
-               MOVE   31         TO  WRK-RECE85XX-YUKOKETA(1 1)
-               MOVE  "標準負担額経過措置（精神）入院年月日："
-                                 TO  WRK-RECE85XX-NAME(1 1)(1:38)
-               MOVE  "昭和　　　年　　月　　日"
-                                 TO  WRK-RECE85XX-NAME(1 1)(39:24)
-           END-EVALUATE
-      *
-      ***  INITIALIZE                         STS-AREA-DAY
-      ***  INITIALIZE                         LNK-DAY2-AREA
-      ***  MOVE    "21"                   TO  LNK-DAY2-IRAI
-      ***  MOVE  RECE82-SEISIN-NYUINYMD   TO  LNK-DAY2-YMD
-      ***  CALL    "ORCSDAY"    USING     STS-AREA-DAY
-      ***                                 LNK-DAY2-AREA
-      ***  IF      STS-DAY-RC1            =   ZERO
-              MOVE    LNK-DAY2-EDTYMD1-Y  TO  WRK-TAIHI-XX
-              INITIALIZE                      ORCSKANACHKAREA
-              MOVE    "2"                 TO  KANACHK-SYORI
-              MOVE    WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
-              CALL    "ORCSKANACHK"    USING  ORCSKANACHKAREA
-              IF      KANACHK-RC      =   ZERO
-                 MOVE    KANACHK-OUT-INPUT(1:4)
-                                 TO  WRK-RECE85XX-NAME(1 1)(45:4)
-                 MOVE    KANACHK-OUT-INPUT(1:4)
-                          TO  WRK-RECE85XX-INPUTCOMENT(1 1)(1:4)
-              END-IF
-      *
-              MOVE    LNK-DAY2-EDTYMD1-M  TO  WRK-TAIHI-XX
-              INITIALIZE                      ORCSKANACHKAREA
-              MOVE    "2"                 TO  KANACHK-SYORI
-              MOVE    WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
-              CALL    "ORCSKANACHK"    USING  ORCSKANACHKAREA
-              IF      KANACHK-RC      =   ZERO
-                 MOVE    KANACHK-OUT-INPUT(1:4)
-                                 TO  WRK-RECE85XX-NAME(1 1)(51:4)
-                 MOVE    KANACHK-OUT-INPUT(1:4)
-                          TO  WRK-RECE85XX-INPUTCOMENT(1 1)(5:4)
-              END-IF
-      *
-              MOVE    LNK-DAY2-EDTYMD1-D  TO  WRK-TAIHI-XX
-              INITIALIZE                      ORCSKANACHKAREA
-              MOVE    "2"                 TO  KANACHK-SYORI
-              MOVE    WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
-              CALL    "ORCSKANACHK"    USING  ORCSKANACHKAREA
-              IF      KANACHK-RC      =   ZERO
-                 MOVE    KANACHK-OUT-INPUT(1:4)
-                                 TO  WRK-RECE85XX-NAME(1 1)(57:4)
-                 MOVE    KANACHK-OUT-INPUT(1:4)
-                          TO  WRK-RECE85XX-INPUTCOMENT(1 1)(9:4)
-              END-IF
-      *
-              PERFORM  VARYING  IDX33  FROM  1  BY  2
-                        UNTIL   IDX33    >  12
-                 IF  WRK-RECE85XX-INPUTCOMENT(1 1)(IDX33:2) = "　"
-                    MOVE  "０"   TO
-                              WRK-RECE85XX-INPUTCOMENT(1 1)(IDX33:2)
-                 END-IF
-              END-PERFORM
-      ***  END-IF
-      *
-           MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
-           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
-                                       TO  RECE859-SRYACT-TBL(1)
-           WRITE   RECE859-REC
-           ADD     1                   TO  CNT-RECE859
-      *
-           .
-       2001-SEISIN-SKJ-COMMENT-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    初診（同日複数診療科）があるか判定
       *****************************************************************
        2001-SYODOU-HANTEI-SEC          SECTION.
@@ -4047,7 +3559,7 @@
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    RECE82-SRYYM        TO  LNK-DAY6-KIJUN(1:6)
+               MOVE    RECE84-SRYYM        TO  LNK-DAY6-KIJUN(1:6)
                MOVE    "01"                TO  LNK-DAY6-KIJUN(7:2)
                MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
                MOVE     -1                 TO  LNK-DAY6-ZOGEN
@@ -4090,10 +3602,10 @@
        2001X-TAIIN-HANTEI-TOUGETU-SEC          SECTION.
       *
            INITIALIZE                    SRYACT-REC
-           MOVE    RECE82-HOSPNUM    TO  SRY-HOSPNUM
-           MOVE    RECE82-NYUGAIKBN  TO  SRY-NYUGAIKBN
-           MOVE    RECE82-PTID       TO  SRY-PTID
-           MOVE    RECE82-SRYYM      TO  SRY-SRYYM
+           MOVE    RECE84-HOSPNUM    TO  SRY-HOSPNUM
+           MOVE    RECE84-NYUGAIKBN  TO  SRY-NYUGAIKBN
+           MOVE    RECE84-PTID       TO  SRY-PTID
+           MOVE    RECE84-SRYYM      TO  SRY-SRYYM
            MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (1)
            MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (2)
            MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (3)
@@ -4127,9 +3639,9 @@
        2001Y-TAIIN-HANTEI-ZENGETU-SEC          SECTION.
       *
            INITIALIZE                    SRYACT-REC
-           MOVE    RECE82-HOSPNUM    TO  SRY-HOSPNUM
-           MOVE    RECE82-NYUGAIKBN  TO  SRY-NYUGAIKBN
-           MOVE    RECE82-PTID       TO  SRY-PTID
+           MOVE    RECE84-HOSPNUM    TO  SRY-HOSPNUM
+           MOVE    RECE84-NYUGAIKBN  TO  SRY-NYUGAIKBN
+           MOVE    RECE84-PTID       TO  SRY-PTID
            MOVE    WRK-ZENYYMM       TO  SRY-SRYYM
            MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (1)
            MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (2)
@@ -4222,7 +3734,7 @@
                  PERFORM  900-SANTEI-READ-SEC
                  PERFORM   UNTIL  ( FLG-SANTEI   =  1 )
                             OR    ( FLG-KAISIEN  =  1 )
-                   IF   SANTEI-SRYYM  <  RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <  RECE84-SRYYM
                      PERFORM  VARYING   IDX3   FROM  31  BY  -1
                                UNTIL  ( IDX3        <   1 )
                                 OR    ( FLG-KAISIEN =   1 )
@@ -4249,7 +3761,7 @@
                   PERFORM  VARYING   IDX3   FROM  1  BY  1
                             UNTIL    IDX3  >   31
                     IF   RECE84-KAISU(1 IDX3)  NOT =  ZERO
-                       MOVE  RECE82-SRYYM  TO  WRK-KAISIEN-YMD(1:6)
+                       MOVE  RECE84-SRYYM  TO  WRK-KAISIEN-YMD(1:6)
                        MOVE  IDX3          TO  WRK-KAISIEN-YMD(7:2)
                        MOVE  31            TO  IDX3
                     END-IF
@@ -4367,7 +3879,7 @@
                  PERFORM   UNTIL  ( FLG-SANTEI           =   1 )
                              OR   ( FLG-SINPESUR-COMMENT =   1 )
       *
-                   IF   SANTEI-SRYYM  <  RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <  RECE84-SRYYM
                      MOVE  SANTEI-SRYYM     TO  WRK-SINPESUR-YMD(1:6)
                      MOVE  SANTEI-MSANTEID  TO  WRK-SINPESUR-YMD(7:2)
                      MOVE    1              TO  FLG-SINPESUR-COMMENT
@@ -4500,8 +4012,8 @@
                  PERFORM  900-SANTEI-READ-SEC
                  PERFORM   UNTIL   FLG-SANTEI  =   1
       *
-      ***>         IF   SANTEI-SRYYM  <= RECE82-SRYYM
-                   IF   SANTEI-SRYYM  <  RECE82-SRYYM
+      ***>         IF   SANTEI-SRYYM  <= RECE84-SRYYM
+                   IF   SANTEI-SRYYM  <  RECE84-SRYYM
                      PERFORM  VARYING  IDX26  FROM  31  BY  -1
                                UNTIL   IDX26   <     1
                        IF  (SANTEI-DAY(IDX26)  NOT =  ZERO)
@@ -4538,7 +4050,7 @@
                  IF  WRK-GANSIDO-YMD(IDX26)  NOT =  SPACE
                   ADD        1       TO     IDZ
       *
-                  IF   WRK-GANSIDO-YMD(IDX26)(1:6) = RECE82-SRYYM
+                  IF   WRK-GANSIDO-YMD(IDX26)(1:6) = RECE84-SRYYM
                     MOVE     15      TO     WK-FREE-YUKOKETA2(IDZ)
                     MOVE   "当月算定日　　　年　　月　　日"
                                      TO     WK-FREE-NAME2(IDZ)
@@ -4632,155 +4144,6 @@
            EXIT.
       *
       *****************************************************************
-      *    排尿自立指導料があるか判定
-      *****************************************************************
-       2001-HAIJRT-HANTEI-SEC          SECTION.
-      *
-           IF     RECE84-FLG-HAIJRT-COMMENT   =    "1"
-             MOVE    SPACE               TO  WRK-HAIJRT-YMD
-             INITIALIZE                      SANTEI-REC
-             MOVE    RECE82-HOSPNUM      TO  SANTEI-HOSPNUM
-             MOVE    RECE82-PTID         TO  SANTEI-PTID
-             MOVE    RECE82-SRYYM        TO  SANTEI-SRYYM
-             MOVE    CONS-HAIJRT         TO  SANTEI-SRYCD
-             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-             MOVE    ZERO                TO  SANTEI-SRYKA
-             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-             MOVE    SANTEI-REC          TO  MCPDATA-REC
-             MOVE    "tbl_santei"        TO  WRK-MCP-TABLE
-             MOVE    "key"               TO  WRK-MCP-PATHNAME
-             PERFORM  900-SANTEI-INV-SEC
-             IF       FLG-SANTEI        =   ZERO
-                 MOVE SANTEI-FSANTEIYMD  TO  WRK-HAIJRT-YMD
-             END-IF
-      *
-             IF   WRK-HAIJRT-YMD   NOT =  SPACE
-      *
-                MOVE    ZERO             TO  WRK-HAIJRT-KAISU
-                INITIALIZE                   SANTEI-REC
-                MOVE    RECE82-HOSPNUM   TO  SANTEI-HOSPNUM
-                MOVE    RECE82-PTID      TO  SANTEI-PTID
-                MOVE    CONS-HAIJRT      TO  SANTEI-SRYCD
-                MOVE    ZERO             TO  SANTEI-NYUGAIKBN
-                MOVE    ZERO             TO  SANTEI-SRYKA
-                MOVE    ZERO             TO  SANTEI-HKNCOMBINUM
-                MOVE    SANTEI-REC       TO  MCPDATA-REC
-                MOVE    "tbl_santei"     TO  MCP-TABLE
-                MOVE    "key3"           TO  MCP-PATHNAME
-                PERFORM 900-DBSELECT-SEC
-                IF      MCP-RC              =   ZERO
-                  MOVE    "tbl_santei"      TO  MCP-TABLE
-                  MOVE    "key3"            TO  MCP-PATHNAME
-                  PERFORM  900-SANTEI-READ-SEC
-                  PERFORM   UNTIL   FLG-SANTEI  =   1
-                    IF   SANTEI-SRYYM  <=  RECE82-SRYYM
-                    AND  SANTEI-SRYYM  >=  WRK-HAIJRT-YMD(1:6)
-                      MOVE  WRK-HAIJRT-YMD(7:2)  TO  IDX28
-                      PERFORM  VARYING  IDX26  FROM  31  BY  -1
-                                UNTIL   IDX26   <     1
-                        IF   SANTEI-DAY(IDX26)  NOT =  ZERO
-                          IF  (SANTEI-SRYYM = WRK-HAIJRT-YMD(1:6))
-                          AND (IDX26        < IDX28              )
-                            CONTINUE
-                          ELSE
-                            ADD    1    TO   WRK-HAIJRT-KAISU
-                          END-IF
-                        END-IF
-                      END-PERFORM
-                    END-IF
-                    MOVE    "tbl_santei"    TO  MCP-TABLE
-                    MOVE    "key3"          TO  MCP-PATHNAME
-                    PERFORM  900-SANTEI-READ-SEC
-                  END-PERFORM
-                END-IF
-                MOVE    "tbl_santei"        TO  MCP-TABLE
-                MOVE    "key3"              TO  MCP-PATHNAME
-                PERFORM 900-CLOSE-SEC
-      *
-                INITIALIZE                WRK-JIDO-SETCOM-AREA
-                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       34      TO     WRK-JIDO-SETCOMATFLG
-                MOVE       99      TO     FLG-COMMENT
-      *
-                MOVE      ZERO     TO     IDZ
-                INITIALIZE                WRK-FREE-AREA2
-      *
-                ADD        1       TO     IDZ
-      *
-                MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "初回算定　　　月　　日"
-                                   TO     WK-FREE-NAME2(IDZ)
-      *
-                MOVE    WRK-HAIJRT-YMD(5:2)   TO  DAY-IDX2
-                MOVE    TBL-DAY(DAY-IDX2)
-                                   TO  WK-FREE-NAME2(IDZ)(11:4)
-                MOVE    WRK-HAIJRT-YMD(7:2)   TO  DAY-IDX2
-                MOVE    TBL-DAY(DAY-IDX2)
-                                   TO  WK-FREE-NAME2(IDZ)(17:4)
-      *
-                IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
-                  MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
-                  MOVE  WRK-JIDO-SETCOMATFLG
-                                   TO     WK-FREE-SETCOMATFLG2(IDZ)
-                END-IF
-      *
-                IF   WRK-HAIJRT-KAISU  NOT =  ZERO
-                AND  WRK-HAIJRT-KAISU     <=   31
-                  ADD        1       TO     IDZ
-      *
-                  MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE     "通算実施回数（　　回）"
-                                     TO     WK-FREE-NAME2(IDZ)
-                  MOVE      WRK-HAIJRT-KAISU TO  DAY-IDX2
-                  MOVE      TBL-DAY(DAY-IDX2)
-                                     TO     WK-FREE-NAME2(IDZ)(15:4)
-      *
-                  IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
-                    MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
-                    MOVE  WRK-JIDO-SETCOMATFLG
-                                     TO     WK-FREE-SETCOMATFLG2(IDZ)
-                  END-IF
-                END-IF
-      *
-                PERFORM  200111-RECE85-TAIHI-SEC
-      *
-      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
-                MOVE    ZERO                 TO  IDX-RECE85
-                MOVE    SPACE                TO  WRK-RECE85XX-REC
-                INITIALIZE                       WRK-RECE85XX-REC
-      *
-                MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
-      *
-                PERFORM   VARYING   IDX   FROM    1   BY  1
-                           UNTIL  ( IDX                >   50    )
-                            OR    ( WK-FREE-NAME2(IDX) =   SPACE )
-                  COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
-                  MOVE  "810000001"
-                          TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
-                  MOVE  ZERO
-                          TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
-                  MOVE  WK-FREE-YUKOKETA2(IDX)
-                          TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-                  MOVE  WK-FREE-NAME2(IDX)
-                          TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-                  MOVE  WK-FREE-MEISKYFLG2(IDX)
-                          TO  WRK-RECE85XX-MEISKYFLG(MAX-MEISAISU 1)
-                  MOVE  WK-FREE-SETCOMATFLG2(IDX)
-                          TO  WRK-RECE85XX-SETCOMATFLG(MAX-MEISAISU 1)
-                  MOVE  "1"
-                          TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
-                END-PERFORM
-      *
-                PERFORM    200111-SRYACTINF-HENSYU-SEC
-      *
-             END-IF
-           END-IF
-      *
-           .
-       2001-HAIJRT-HANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    訪問看護指示料があるか判定
       *****************************************************************
        2001-HOUSIJI-HANTEI-SEC          SECTION.
@@ -4836,7 +4199,7 @@
                     PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                      ( FLG-HINKAI-COMMENT =   1 )
       *
-                      IF   SANTEI-SRYYM  <=  RECE82-SRYYM
+                      IF   SANTEI-SRYYM  <=  RECE84-SRYYM
       ***              MOVE   SANTEI-SRYYM     TO  WRK-FSANTEIYMD(1:6)
       ***              MOVE   SANTEI-MSANTEID  TO  WRK-FSANTEIYMD(7:2)
                        MOVE   SANTEI-FSANTEIYMD
@@ -4852,14 +4215,14 @@
                                                        LNK-DAY6-AREA
                        MOVE    LNK-DAY6-KEISAN TO  WRK-AFTER2
       *
-                       MOVE    RECE82-SRYYM    TO  WRK-HINKAIYMD(1:6)
+                       MOVE    RECE84-SRYYM    TO  WRK-HINKAIYMD(1:6)
                        MOVE    WRK-DAY         TO  WRK-HINKAIYMD(7:2)
       *
                        IF     WRK-DAY      NOT  =  ZERO
                        AND    WRK-FSANTEIYMD   <=  WRK-HINKAIYMD
                          IF ((WRK-HINKAIYMD    <   WRK-AFTER2) AND
-                             (RECE82-SRYYM     <= "201003"   ))
-                         OR ( RECE82-SRYYM     >= "201004"    )
+                             (RECE84-SRYYM     <= "201003"   ))
+                         OR ( RECE84-SRYYM     >= "201004"    )
                              MOVE    1    TO   FLG-HINKAI-COMMENT
                              MOVE  WRK-FSANTEIYMD
                                           TO   WRK-TOSEKIYMD
@@ -4973,7 +4336,7 @@
                  PERFORM   UNTIL  ( FLG-SANTEI           =   1 )
                              OR   ( FLG-KAISYOKU-COMMENT =   1 )
       *
-                   IF   SANTEI-SRYYM  <  RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <  RECE84-SRYYM
                      MOVE  SANTEI-SRYYM     TO  WRK-KAISYOKU-YMD(1:6)
                      MOVE  SANTEI-MSANTEID  TO  WRK-KAISYOKU-YMD(7:2)
                      MOVE    1              TO  FLG-KAISYOKU-COMMENT
@@ -5201,7 +4564,7 @@
        2001-ZAIKYO-HANTEI-SEC          SECTION.
       *
            IF     RECE84-FLG-ZAIKYO-COMMENT   =    "1"
-             MOVE    RECE82-SRYYM        TO  WRK-ZAIKYO-YMD9(1:6)
+             MOVE    RECE84-SRYYM        TO  WRK-ZAIKYO-YMD9(1:6)
              MOVE    "99"                TO  WRK-ZAIKYO-YMD9(7:2)
       *
              MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
@@ -5225,12 +4588,12 @@
                  PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
                              OR   ( FLG-ZAIKYO-COMMENT  =   1 )
       *
-                   IF   SANTEI-SRYYM  <=  RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <=  RECE84-SRYYM
                      MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
                      MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
                      MOVE    1              TO  FLG-ZAIKYO-COMMENT
       *
-                     IF   SANTEI-SRYYM  =  RECE82-SRYYM
+                     IF   SANTEI-SRYYM  =  RECE84-SRYYM
                        MOVE   ZERO  TO  FLG-CHECK-MAE
                        MOVE   ZERO  TO  FLG-CHECK-ATO
                        MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
@@ -5287,7 +4650,7 @@
                  PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
                              OR   ( FLG-ZAIKYO-COMMENT  =   1 )
       *
-                   IF   SANTEI-SRYYM  <   RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <   RECE84-SRYYM
                      MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
                      MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
                      MOVE    1              TO  FLG-ZAIKYO-COMMENT
@@ -5330,7 +4693,7 @@
                       PERFORM  900-SANTEI-READ-SEC
                       PERFORM   UNTIL   FLG-SANTEI  =   1
       *
-                        IF   SANTEI-SRYYM  <=  RECE82-SRYYM
+                        IF   SANTEI-SRYYM  <=  RECE84-SRYYM
                         AND  SANTEI-SRYYM  >=  WRK-ZAIKYO-YMD(1:6)
                           MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
                           MOVE  WRK-ZAIKYO-YMD9(7:2) TO  IDX29
@@ -5571,7 +4934,7 @@
        2001-BOKOHO-HANTEI-SEC          SECTION.
       *
            IF     RECE84-FLG-BOKOHO-COMMENT   =    "1"
-             MOVE    RECE82-SRYYM        TO  WRK-BOKOHO-YMD9(1:6)
+             MOVE    RECE84-SRYYM        TO  WRK-BOKOHO-YMD9(1:6)
              MOVE    "99"                TO  WRK-BOKOHO-YMD9(7:2)
       *
              MOVE    ZERO                TO  FLG-BOKOHO-COMMENT
@@ -5595,12 +4958,12 @@
                  PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
                              OR   ( FLG-BOKOHO-COMMENT  =   1 )
       *
-                   IF   SANTEI-SRYYM  <=  RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <=  RECE84-SRYYM
                      MOVE  SANTEI-SRYYM     TO  WRK-BOKOHO-YMD(1:6)
                      MOVE  SANTEI-MSANTEID  TO  WRK-BOKOHO-YMD(7:2)
                      MOVE    1              TO  FLG-BOKOHO-COMMENT
       *
-                     IF   SANTEI-SRYYM  =  RECE82-SRYYM
+                     IF   SANTEI-SRYYM  =  RECE84-SRYYM
                        MOVE   ZERO  TO  FLG-CHECK-MAE
                        MOVE   ZERO  TO  FLG-CHECK-ATO
                        MOVE  WRK-BOKOHO-YMD(7:2)  TO  IDX28
@@ -5657,7 +5020,7 @@
                  PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
                              OR   ( FLG-BOKOHO-COMMENT  =   1 )
       *
-                   IF   SANTEI-SRYYM  <   RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <   RECE84-SRYYM
                      MOVE  SANTEI-SRYYM     TO  WRK-BOKOHO-YMD(1:6)
                      MOVE  SANTEI-MSANTEID  TO  WRK-BOKOHO-YMD(7:2)
                      MOVE    1              TO  FLG-BOKOHO-COMMENT
@@ -5693,7 +5056,7 @@
                  PERFORM  900-SANTEI-READ-SEC
                  PERFORM   UNTIL   FLG-SANTEI  =   1
       *
-                   IF   SANTEI-SRYYM  <=  RECE82-SRYYM
+                   IF   SANTEI-SRYYM  <=  RECE84-SRYYM
                    AND  SANTEI-SRYYM  >=  WRK-BOKOHO-YMD(1:6)
                      MOVE  WRK-BOKOHO-YMD(7:2)  TO  IDX28
                      MOVE  WRK-BOKOHO-YMD9(7:2) TO  IDX29
@@ -6388,48 +5751,8 @@
            ADD    1             TO  IDX-RECE85
            MOVE  "810000001"    TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
            MOVE   ZERO          TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
-      *
-           IF    RECE84-ZAIKBN  =  3 OR 4
-             EVALUATE  RECE84-JISANYAKKBN
-              WHEN     "1"
-               MOVE  19    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療・自院処方分）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-              WHEN     "2"
-               MOVE  19    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療・他院処方分）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-              WHEN     "3"
-               MOVE  20    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療外・自院処方分）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-              WHEN     "4"
-               MOVE  20    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療外・他院処方分）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-              WHEN     "5"
-               MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療・自院処方分・数量不明）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-              WHEN     "6"
-               MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療・他院処方分・数量不明）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-              WHEN     "7"
-               MOVE  25    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療外・自院処方分・数量不明）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-              WHEN     "8"
-               MOVE  25    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【持参薬】（入院契機治療外・他院処方分・数量不明）"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-             END-EVALUATE
-           ELSE
-               MOVE   6    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-               MOVE "【包括診療】"
-                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-           END-IF
-      *
+           MOVE   6             TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+           MOVE  "【包括診療】" TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
            MOVE  "1"            TO  WRK-RECE85XX-SIKFLG(IDX-RECE85 1)
       *
            PERFORM    200111-SRYACTINF-HENSYU-SEC
@@ -7195,13 +6518,13 @@
            MOVE          SPACE          TO  WRK-RIHAIGAKU-FSANTEIYMD
       *    医学管理：算定履歴検索
            INITIALIZE                       SANTEI-REC
-           MOVE    RECE82-HOSPNUM       TO  SANTEI-HOSPNUM
-           MOVE    RECE82-PTID          TO  SANTEI-PTID
-           MOVE    RECE82-SRYYM         TO  SANTEI-SRYYM
+           MOVE    RECE84-HOSPNUM       TO  SANTEI-HOSPNUM
+           MOVE    RECE84-PTID          TO  SANTEI-PTID
+           MOVE    RECE84-SRYYM         TO  SANTEI-SRYYM
            MOVE    WRK-RIHAIGAKU-SRYCD  TO  SANTEI-SRYCD
            MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO  SANTEI-SRYKA
-           MOVE    RECE82-HKNCOMBI      TO  SANTEI-HKNCOMBINUM
+           MOVE    RECE84-HKNCOMBI      TO  SANTEI-HKNCOMBINUM
            MOVE    SANTEI-REC           TO  MCPDATA-REC
            MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
            MOVE    "key"                TO  WRK-MCP-PATHNAME
@@ -7213,13 +6536,13 @@
            INITIALIZE      WRK-RIHAIGAKU-SANTEI-AREA
       *    リハ実施ダミー：算定履歴検索
            INITIALIZE                       SANTEI-REC
-           MOVE    RECE82-HOSPNUM       TO  SANTEI-HOSPNUM
-           MOVE    RECE82-PTID          TO  SANTEI-PTID
-           MOVE    RECE82-SRYYM         TO  SANTEI-SRYYM
+           MOVE    RECE84-HOSPNUM       TO  SANTEI-HOSPNUM
+           MOVE    RECE84-PTID          TO  SANTEI-PTID
+           MOVE    RECE84-SRYYM         TO  SANTEI-SRYYM
            MOVE    WRK-RIHAIGAKU-SRYCD2 TO  SANTEI-SRYCD
            MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO  SANTEI-SRYKA
-           MOVE    RECE82-HKNCOMBI      TO  SANTEI-HKNCOMBINUM
+           MOVE    RECE84-HKNCOMBI      TO  SANTEI-HKNCOMBINUM
            MOVE    SANTEI-REC           TO  MCPDATA-REC
            MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
            MOVE    "key"                TO  WRK-MCP-PATHNAME
@@ -7451,20 +6774,10 @@
            AND  (FLG-RECE85        =  ZERO                         )
            AND  (WRK-RECE85-SRYCD(1)  =  "190108890" OR "190142190"
                                       OR "190108790" OR "190142090"
-                                      OR "190109090"
+                                      OR "190108990" OR "190109090"
                                       OR "190142290" OR "190141590"
                                       OR "190153190" OR "190153390"
-                                      OR "190153290" OR "190153090"
-                                      OR "190182990"
-      ***                             OR "190161470" OR "190161570"
-      ***                             OR "190161870" OR "190162070"
-      ***                             OR "190161670" OR "190161770"
-      ***                             OR "190161970" OR "190162170"
-      ***                             OR "190198570" OR "190198670"
-                                      OR "190213790" OR "190214290"
-                                      OR "190213890" OR "190214090"
-                                      OR "190214390" OR "190213990"
-                                      OR "190214190"               )
+                                      OR "190153290" OR "190153090")
               MOVE    1     TO    FLG-NG
            END-IF
       *
@@ -7517,12 +6830,12 @@
       *
            IF     RECE84-ZAISKBKBN             =    "6"
            AND    RECE84-MEISAISU              =     1
-             IF (RECE84-FLG-KAKURI-COMMENT = "1"                     )
-             OR (RECE84-FLG-EISAPO-COMMENT = "1" OR "2"              )
-             OR (RECE84-FLG-KOKKEA-COMMENT = "1"                     )
-             OR (RECE84-FLG-JYUSYO-COMMENT = "1" OR "2" OR "3" OR "4")
-             OR (RECE84-FLG-SEIRIE-COMMENT = "1"                     )
-             OR (RECE84-FLG-BYOYAK-COMMENT = "1" OR "2" OR "3"       )
+             IF  (RECE84-FLG-KAKURI-COMMENT    =    "1"       )
+             OR  (RECE84-FLG-EISAPO-COMMENT    =    "1" OR "2")
+             OR  (RECE84-FLG-KOKKEA-COMMENT    =    "1"       )
+             OR  (RECE84-FLG-JYUSYO-COMMENT    =    "1" OR "2")
+             OR  (RECE84-FLG-SEIRIE-COMMENT    =    "1"       )
+             OR  (RECE84-FLG-BYOYAK-COMMENT    =    "1"       )
                PERFORM    20012-NYUKASAN-HENSYU-SEC
              END-IF
            END-IF
@@ -7616,42 +6929,20 @@
                               TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
            END-IF
            IF  (RECE84-FLG-JYUSYO-COMMENT    =    "2")
-            IF  RECE82-SRYYM   >=  "201404"
-              MOVE   20       TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-              MOVE  "重症者加算１（精神療養病棟入院料）算定日"
+             MOVE   9         TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE  "重症者加算１算定日"
                               TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-            ELSE
-              MOVE   9        TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-              MOVE  "重症者加算１算定日"
-                              TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-            END-IF
            END-IF
            IF  (RECE84-FLG-JYUSYO-COMMENT    =    "1")
-            IF  RECE82-SRYYM   >=  "201404"
-              MOVE   20       TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-              MOVE  "重症者加算２（精神療養病棟入院料）算定日"
+            IF  RECE82-SRYYM   >=  "201204"
+             MOVE   9         TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE  "重症者加算２算定日"
                               TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
             ELSE
-             IF  RECE82-SRYYM   >=  "201204"
-              MOVE   9        TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-              MOVE  "重症者加算２算定日"
+             MOVE   19        TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE  "重症者加算（精神療養病棟入院料）算定日"
                               TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-             ELSE
-              MOVE   19       TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-              MOVE  "重症者加算（精神療養病棟入院料）算定日"
-                              TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-             END-IF
             END-IF
-           END-IF
-           IF  (RECE84-FLG-JYUSYO-COMMENT    =    "3")
-              MOVE   24       TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-              MOVE  "重症者加算１（地域移行機能強化病棟入院料）算定日"
-                              TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-           END-IF
-           IF  (RECE84-FLG-JYUSYO-COMMENT    =    "4")
-              MOVE   24       TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-              MOVE  "重症者加算２（地域移行機能強化病棟入院料）算定日"
-                              TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
            END-IF
            IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
              MOVE   15        TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
@@ -7661,16 +6952,6 @@
            IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
              MOVE   13        TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
              MOVE  "病棟薬剤業務実施加算算定日"
-                              TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-           END-IF
-           IF  (RECE84-FLG-BYOYAK-COMMENT    =    "2")
-             MOVE   14        TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-             MOVE  "病棟薬剤業務実施加算１算定日"
-                              TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
-           END-IF
-           IF  (RECE84-FLG-BYOYAK-COMMENT    =    "3")
-             MOVE   14        TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
-             MOVE  "病棟薬剤業務実施加算２算定日"
                               TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
            END-IF
            IF  (RECE84-FLG-CHIRYO-COMMENT    =    "1")
@@ -7741,26 +7022,14 @@
                    IF  (RECE84-FLG-JYUSYO-COMMENT    =    "1")
                      COMPUTE RECE859-ZAINUM =  99994026
                    END-IF
-                   IF  (RECE84-FLG-JYUSYO-COMMENT    =    "3")
+                   IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
                      COMPUTE RECE859-ZAINUM =  99994031
                    END-IF
-                   IF  (RECE84-FLG-JYUSYO-COMMENT    =    "4")
+                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
                      COMPUTE RECE859-ZAINUM =  99994036
                    END-IF
-                   IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
-                     COMPUTE RECE859-ZAINUM =  99994041
-                   END-IF
-                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
-                     COMPUTE RECE859-ZAINUM =  99994046
-                   END-IF
-                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "2")
-                     COMPUTE RECE859-ZAINUM =  99994051
-                   END-IF
-                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "3")
-                     COMPUTE RECE859-ZAINUM =  99994056
-                   END-IF
                    IF  (RECE84-FLG-CHIRYO-COMMENT    =    "1")
-                     COMPUTE RECE859-ZAINUM =  99994061
+                     COMPUTE RECE859-ZAINUM =  99994041
                    END-IF
                    MOVE    "900"            TO   RECE859-SRYSYUKBN
                  WHEN      "92"
@@ -7782,26 +7051,14 @@
                    IF  (RECE84-FLG-JYUSYO-COMMENT    =    "1")
                      COMPUTE RECE859-ZAINUM =  99994526
                    END-IF
-                   IF  (RECE84-FLG-JYUSYO-COMMENT    =    "3")
+                   IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
                      COMPUTE RECE859-ZAINUM =  99994531
                    END-IF
-                   IF  (RECE84-FLG-JYUSYO-COMMENT    =    "4")
+                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
                      COMPUTE RECE859-ZAINUM =  99994536
                    END-IF
-                   IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
-                     COMPUTE RECE859-ZAINUM =  99994541
-                   END-IF
-                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
-                     COMPUTE RECE859-ZAINUM =  99994546
-                   END-IF
-                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "2")
-                     COMPUTE RECE859-ZAINUM =  99994551
-                   END-IF
-                   IF  (RECE84-FLG-BYOYAK-COMMENT    =    "3")
-                     COMPUTE RECE859-ZAINUM =  99994556
-                   END-IF
                    IF  (RECE84-FLG-CHIRYO-COMMENT    =    "1")
-                     COMPUTE RECE859-ZAINUM =  99994561
+                     COMPUTE RECE859-ZAINUM =  99994541
                    END-IF
                    MOVE    "920"            TO   RECE859-SRYSYUKBN
                END-EVALUATE
@@ -7850,26 +7107,14 @@
                IF  (RECE84-FLG-JYUSYO-COMMENT    =    "1")
                  COMPUTE RECE849-ZAINUM =  99994026
                END-IF
-               IF  (RECE84-FLG-JYUSYO-COMMENT    =    "3")
+               IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
                  COMPUTE RECE849-ZAINUM =  99994031
                END-IF
-               IF  (RECE84-FLG-JYUSYO-COMMENT    =    "4")
+               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
                  COMPUTE RECE849-ZAINUM =  99994036
                END-IF
-               IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
-                 COMPUTE RECE849-ZAINUM =  99994041
-               END-IF
-               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
-                 COMPUTE RECE849-ZAINUM =  99994046
-               END-IF
-               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "2")
-                 COMPUTE RECE849-ZAINUM =  99994051
-               END-IF
-               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "3")
-                 COMPUTE RECE849-ZAINUM =  99994056
-               END-IF
                IF  (RECE84-FLG-CHIRYO-COMMENT    =    "1")
-                 COMPUTE RECE849-ZAINUM =  99994061
+                 COMPUTE RECE849-ZAINUM =  99994041
                END-IF
              WHEN      "92"
                IF  (RECE84-FLG-KAKURI-COMMENT    =    "1")
@@ -7890,26 +7135,14 @@
                IF  (RECE84-FLG-JYUSYO-COMMENT    =    "1")
                  COMPUTE RECE849-ZAINUM =  99994526
                END-IF
-               IF  (RECE84-FLG-JYUSYO-COMMENT    =    "3")
+               IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
                  COMPUTE RECE849-ZAINUM =  99994531
                END-IF
-               IF  (RECE84-FLG-JYUSYO-COMMENT    =    "4")
+               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
                  COMPUTE RECE849-ZAINUM =  99994536
                END-IF
-               IF  (RECE84-FLG-SEIRIE-COMMENT    =    "1")
-                 COMPUTE RECE849-ZAINUM =  99994541
-               END-IF
-               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "1")
-                 COMPUTE RECE849-ZAINUM =  99994546
-               END-IF
-               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "2")
-                 COMPUTE RECE849-ZAINUM =  99994551
-               END-IF
-               IF  (RECE84-FLG-BYOYAK-COMMENT    =    "3")
-                 COMPUTE RECE849-ZAINUM =  99994556
-               END-IF
                IF  (RECE84-FLG-CHIRYO-COMMENT    =    "1")
-                 COMPUTE RECE849-ZAINUM =  99994561
+                 COMPUTE RECE849-ZAINUM =  99994541
                END-IF
            END-EVALUATE
            MOVE    RECE84-SRYKBN       TO  RECE849-SRYKBN
@@ -8500,8 +7733,7 @@
       *****************************************************************
        2001-JYUSYO-HANTEI-SEC          SECTION.
       *
-           IF      RECE84-FLG-JYUSYO-COMMENT     =
-                                         "1" OR "2" OR "3" OR "4"
+           IF      RECE84-FLG-JYUSYO-COMMENT    =    "1" OR "2"
                MOVE       99      TO     FLG-COMMENT
                PERFORM   2001-NYU-COMMENT-SEC
            END-IF
@@ -8531,7 +7763,7 @@
       *****************************************************************
        2001-BYOYAK-HANTEI-SEC          SECTION.
       *
-           IF      RECE84-FLG-BYOYAK-COMMENT    =    "1" OR "2" OR "3"
+           IF      RECE84-FLG-BYOYAK-COMMENT    =    "1"
                MOVE       99      TO     FLG-COMMENT
                PERFORM   2001-NYU-COMMENT-SEC
            END-IF
@@ -8713,14 +7945,6 @@
                   ADD    1             TO      IDX-RECE85
                   MOVE   RECE85-SRYACT-TBL(IDX)
                              TO   WRK-RECE85XX-SRYACT-TBL(IDX-RECE85 1)
-                  IF   RECE84-ZAITEN   =   ZERO
-                     PERFORM   2001111-SRYACTINF-NAME-HEN-SEC
-                  END-IF
-                  IF  (RECE84-JIHOKBN  NOT =  SPACE)
-                  AND (RECE84-ZAIKBN       =   4   )
-                     MOVE  ZERO
-                             TO   WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
-                  END-IF
              END-PERFORM 
       *
              PERFORM 990-RECE85-NEXT-SEC
@@ -8770,44 +7994,10 @@
              MOVE  WRK-JIDO-SETCOMFLG
                                      TO      RECE849-SETCOMFLG
            END-IF
-           IF  (RECE84-JIHOKBN  NOT =  SPACE)
-           AND (RECE84-ZAIKBN       =   4   )
-             MOVE  ZERO              TO      RECE849-ZAITEN
-             MOVE  ZERO              TO      RECE849-SYUTEN1
-             MOVE  ZERO              TO      RECE849-SYUTEN2
-             MOVE  ZERO              TO      RECE849-YKZTEN
-             MOVE  ZERO              TO      RECE849-KIZAITEN
-             MOVE  ZERO              TO      RECE849-HOKATU-ZAITEN
-             MOVE  ZERO              TO      RECE849-HOKATU-SYUTEN1
-             MOVE  ZERO              TO      RECE849-HOKATU-SYUTEN2
-             MOVE  ZERO              TO      RECE849-HOKATU-YKZTEN
-             MOVE  ZERO              TO      RECE849-HOKATU-KIZAITEN
-           END-IF
            PERFORM 800-RECE849-WRITE-SEC
       *
            .
        200111-SRYACTINF-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ０５　ＳＲＹＡＣＴＩＮＦ　名称編集処理
-      *****************************************************************
-       2001111-SRYACTINF-NAME-HEN-SEC     SECTION.
-      *
-           IF    RECE82-SRYYM      >=    "201604"
-             EVALUATE   WRK-RECE85XX-SRYCD(IDX-RECE85 1)
-      *
-               WHEN   "190111590"
-                 MOVE  "810000001" TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
-                 MOVE   ZERO    TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
-                 MOVE   8       TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                 MOVE  "外泊（選定療養）"
-                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-             END-EVALUATE
-           END-IF
-      *
-           .
-       2001111-SRYACTINF-NAME-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9876,7 +9066,6 @@
                        TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
              WHEN      "820000073"
              WHEN      "820000112"
-             WHEN      "820000229"
                 MOVE "「１７」"
                        TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
              WHEN      "820000074"
@@ -9885,7 +9074,6 @@
                        TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
              WHEN      "820000075"
              WHEN      "820000114"
-             WHEN      "820000230"
                 MOVE "「１９」"
                        TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
              WHEN      "820000076"
@@ -9902,7 +9090,6 @@
                        TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
              WHEN      "820000079"
              WHEN      "820000118"
-             WHEN      "820000231"
                 MOVE "「２３」"
                        TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
              WHEN      "820000080"
@@ -9960,9 +9147,6 @@
              WHEN      "820000093"
              WHEN      "820000132"
                 MOVE "「３７」"
-                       TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
-             WHEN      "820000232"
-                MOVE "「３８」"
                        TO  WRK-RECE85XX2-NAME(MAX-MEISAISU 1)
              WHEN      "820000158"
              WHEN      "820000160"
@@ -10362,10 +9546,15 @@
                     ELSE
                       EVALUATE   RECE851-SETCOMATFLG(IDX)
                         WHEN    1
-                        WHEN    3  THRU   35
+                        WHEN    3  THRU   16
+                        WHEN   18
+                        WHEN   20
+                        WHEN   24
+                        WHEN   26
+                        WHEN   27  THRU   29
+                        WHEN   31
                         WHEN  101  THRU  107
                         WHEN  204
-                        WHEN  225
                         WHEN  301
                           ADD  1                 TO  WRK-HEN-SEQNO-J
                           IF   WRK-HEN-SEQNO-J  >  3
@@ -10419,11 +9608,11 @@
                     IF   (RECE851-SRYCD(IDX) =
       *1
                           "113000410" OR "113000510" OR "180000110" OR
-                          "180000210" OR "113023910" OR
+                          "180000210" OR
       *3
                           "113001210" OR "113001310" OR "113002110" OR
       *4
-                          "111011810" OR "111012610" OR "111012810" OR
+                          "111011810" OR "111012610" OR
       *6
                           "180000710" OR
       *7
@@ -10442,16 +9631,6 @@
                           "180033910" OR "180034010" OR "180034110" OR
                           "180034210" OR "180034310" OR "180034410" OR
                           "180034510" OR "180034610" OR "180034710" OR
-                          "180044310" OR "180044410" OR "180044510" OR
-                          "180045810" OR "180045910" OR "180046010" OR
-                          "180044610" OR "180044710" OR "180044810" OR
-                          "180044910" OR "180045110" OR "180045310" OR
-                          "180050330" OR "180050430" OR "180050530" OR
-                          "180050630" OR "180050830" OR "180051030" OR
-                          "180052730" OR "180052830" OR "180052930" OR
-                          "180053030" OR "180053230" OR "180053430" OR
-                          "180051530" OR "180051630" OR "180051730" OR
-                          "180051830" OR "180052030" OR "180052230" OR
       *18
                           "113003410" OR
       *20
@@ -10476,14 +9655,10 @@
       *29
                           "114027610" OR "114027710" OR "114027810" OR
                           "114027910" OR
-      *34
-                          "113022810" OR
       *101
                           "113010710" OR "113010810" OR "120001610" OR
       *102
                           "113003310" OR "113014810" OR "113014910" OR
-                          "113017610" OR "113017710" OR "113017810" OR
-                          "113017910" OR
       *103
                           "190030310" OR
       *104
@@ -10495,17 +9670,14 @@
       *107
                           "180039030" OR "180036030" OR "180039130" OR
                           "180039230" OR "180039330" OR "180036130" OR
-                          "180039430" OR "180039530" OR
-                          "180048930" OR "180049030"               )
+                          "180039430" OR "180039530"               )
       *
       *16
                     OR   (RECE851-SRYCD(IDX) =
                           "101800230" OR "101800240" OR "101800250" OR
                           "101800260" OR "101800270" OR "101800280" OR
                           "101800290" OR "101800330" OR "101800340" OR
-                          "101800350" OR
-                          "101801110" OR "101801120" OR "101801130" OR
-                          "101801070" OR "101801080"               )
+                          "101800350"                              )
       *204
                     OR   (RECE851-SRYCD(IDX) = "101110040"         )
       *301
@@ -11013,7 +10185,6 @@
                    OR  (   RECE82-TSTPTNUMKBN  =   "1"    )
                    OR  (   RECE82-RECESYUBETU  =   ZERO
                                                OR  7061   )
-                   OR  (   RECE82-ERR-ERRKBN   >   ZERO   )
                    OR  (   RECE82-RSIIRYOKBN   =   "0"    )
                    OR  ((  RECE82-HKNKBN    = "1" OR "2" ) AND
                         (  RECE82-TOTALKIN        = ZERO ) AND
