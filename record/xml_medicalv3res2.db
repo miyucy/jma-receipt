@@ -127,7 +127,7 @@ xml_medicalv3res2 {
         };
 #--- 確認メッセージ
 	Medical_Select_Information {
-        Medical_Select_Message_Code	varchar(4);
+        Medical_Select			varchar(4);
         Medical_Select_Message		varchar(100);
 	};
 	};
