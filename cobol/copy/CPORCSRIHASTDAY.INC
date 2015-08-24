@@ -44,6 +44,10 @@
                     06  LNK-RIHASTDAY-MARK        PIC  X(01).
                     06  LNK-RIHASTDAY-YUKOKETA    PIC  9(03).
                     06  LNK-RIHASTDAY-COM         PIC  X(200).
+                 05  LNK-RIHASTDAY-OUT-OCC3.
+                    06  LNK-RIHASTDAY-SRYCD       PIC  X(09)
+                                                  OCCURS  50.
+                 05  LNK-RIHASTDAY-IDX            PIC  9(03).
       *
       *復帰コード
            03  LNK-RIHASTDAY-RC                   PIC  9(02).

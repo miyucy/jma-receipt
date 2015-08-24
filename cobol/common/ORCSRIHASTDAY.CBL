@@ -59,6 +59,7 @@
            03  FLG-KYUSEI-OK                 PIC 9(01).
            03  FLG-COMARI                    PIC 9(01).
            03  FLG-COMARI2                   PIC 9(01).
+           03  FLG-ARI                       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -68,6 +69,8 @@
            03  IDX13                         PIC 9(03).
            03  IDX15                         PIC 9(01).
            03  IDX16                         PIC 9(02).
+           03  IDX17                         PIC 9(02).
+           03  IDX18                         PIC 9(02).
            03  IDY                           PIC 9(02).
            03  IDZ                           PIC 9(03).
            03  IDC1                          PIC 9(02).
@@ -83,6 +86,7 @@
        01  WRK-AREA.
            03  WRK-SRYCD                     PIC X(09).
            03  WRK-SRYCD2                    PIC X(09).
+           03  WRK-SRYCD3                    PIC X(09).
            03  WRK-RIHA-HKNCOMBI             PIC 9(04).
            03  TBL-HASSYO-TAIHI-DAY-T.
                05  TBL-HASSYO-TAIHI-SANTEI   PIC 9(01)   OCCURS  31.
@@ -113,6 +117,7 @@
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                   OCCURS 49.
+               05  WK-FREE-SRYCD             PIC X(09).
                05  WK-FREE-YUKOKETA          PIC 9(03).
                05  WK-FREE-NAME              PIC X(200).
       *
@@ -123,6 +128,8 @@
                05  WRK-RIHASANTEI-FLG        PIC 9(01).
                05  WRK-RIHASANTEI-DAY-TBL.
                    06  WRK-RIHASANTEI-DAY    PIC 9(01)   OCCURS  31.
+               05  WRK-RIHASANTEI-SRYCD-TBL.
+                   06  WRK-RIHASANTEI-SRYCD  PIC X(09)   OCCURS  50.
       *
       *    固定値
        01  CONST-AREA.
@@ -523,6 +530,8 @@
            PERFORM  VARYING  IDX12  FROM  1  BY  1
                      UNTIL  (IDX12            >   5   )
                        OR   (SRY-SRYCD(IDX12) =  SPACE)
+             MOVE    ZERO        TO    IDX17
+             MOVE    SPACE       TO    WRK-SRYCD3
              IF   SRY-SRYCD(IDX12)  =    CONS-SINDAI1-COMMENT
                                    OR    CONS-SINDAI2-COMMENT
                  PERFORM  VARYING  IDX3  FROM  1  BY  1
@@ -530,6 +539,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(1)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(1 IDX3)
+                     MOVE   1    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
              END-IF
@@ -550,6 +562,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(2)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(2 IDX3)
+                     MOVE   2    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
              END-IF
@@ -564,6 +579,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(3)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(3 IDX3)
+                     MOVE   3    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
              END-IF
@@ -574,6 +592,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(4)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(4 IDX3)
+                     MOVE   4    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
              END-IF
@@ -583,6 +604,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(5)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(5 IDX3)
+                     MOVE   5    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
              END-IF
@@ -592,6 +616,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(6)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(6 IDX3)
+                     MOVE   6    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
              END-IF
@@ -603,6 +630,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(7)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(7 IDX3)
+                     MOVE   7    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
              END-IF
@@ -615,6 +645,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(1)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(1 IDX3)
+                     MOVE   1    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
@@ -626,6 +659,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(2)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(2 IDX3)
+                     MOVE   2    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
@@ -637,6 +673,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(3)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(3 IDX3)
+                     MOVE   3    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
@@ -647,6 +686,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(4)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(4 IDX3)
+                     MOVE   4    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
@@ -658,6 +700,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(1)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(1 IDX3)
+                     MOVE   1    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
@@ -669,6 +714,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(2)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(2 IDX3)
+                     MOVE   2    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
@@ -680,6 +728,9 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(3)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(3 IDX3)
+                     MOVE   3    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
@@ -690,14 +741,45 @@
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
                      MOVE   1    TO    WRK-RIHASANTEI-FLG(4)
                      MOVE   1    TO    WRK-RIHASANTEI-DAY(4 IDX3)
+                     MOVE   4    TO    IDX17
+                     MOVE   SRY-SRYCD(IDX12)
+                                 TO    WRK-SRYCD3
                    END-IF
                  END-PERFORM
                END-IF
              END-IF
+      *
+             IF    IDX17  NOT =  ZERO
+               PERFORM  210111-RIHA-SRYCD-HENSYU-SEC
+             END-IF
+      *
            END-PERFORM
       *
            .
        21011-RIHASANTEI-HANTEI2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ診療コード編集
+      *****************************************************************
+       210111-RIHA-SRYCD-HENSYU-SEC          SECTION.
+      *
+           MOVE     ZERO       TO   FLG-ARI
+           PERFORM  VARYING  IDX18  FROM  1  BY  1
+                     UNTIL  (IDX18                             >  50  )
+                      OR    (WRK-RIHASANTEI-SRYCD(IDX17 IDX18) = SPACE)
+                      OR    (FLG-ARI                           =   1  )
+             IF  WRK-SRYCD3  =  WRK-RIHASANTEI-SRYCD(IDX17 IDX18)
+                MOVE     1     TO   FLG-ARI
+             END-IF
+           END-PERFORM
+           IF    FLG-ARI  =  ZERO
+           AND   IDX18   <=   50
+             MOVE  WRK-SRYCD3  TO   WRK-RIHASANTEI-SRYCD(IDX17 IDX18)
+           END-IF
+      *
+           .
+       210111-RIHA-SRYCD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -721,6 +803,8 @@
              PERFORM   2201-RIHAKAISHI-HANTEI-SEC
              IF   FLG-KYUSEI-COMMENT  =  1
                PERFORM 2202-RIHAKAISHI-COMMENT-SEC
+               MOVE    WRK-RIHASANTEI-SRYCD-TBL(1)
+                                       TO   LNK-RIHASTDAY-OUT-OCC3(1)
              END-IF
            END-IF
       *
@@ -740,6 +824,8 @@
              PERFORM   2201-RIHAKAISHI-HANTEI-SEC
              IF   FLG-KYUSEI-COMMENT  =  1
                PERFORM 2202-RIHAKAISHI-COMMENT-SEC
+               MOVE    WRK-RIHASANTEI-SRYCD-TBL(2)
+                                       TO   LNK-RIHASTDAY-OUT-OCC3(2)
              END-IF
            END-IF
       *
@@ -759,6 +845,8 @@
              PERFORM   2201-RIHAKAISHI-HANTEI-SEC
              IF   FLG-KYUSEI-COMMENT  =  1
                PERFORM 2202-RIHAKAISHI-COMMENT-SEC
+               MOVE    WRK-RIHASANTEI-SRYCD-TBL(3)
+                                       TO   LNK-RIHASTDAY-OUT-OCC3(3)
              END-IF
            END-IF
       *
@@ -778,6 +866,8 @@
              PERFORM   2201-RIHAKAISHI-HANTEI-SEC
              IF   FLG-KYUSEI-COMMENT  =  1
                PERFORM 2202-RIHAKAISHI-COMMENT-SEC
+               MOVE    WRK-RIHASANTEI-SRYCD-TBL(4)
+                                       TO   LNK-RIHASTDAY-OUT-OCC3(4)
              END-IF
            END-IF
       *
@@ -797,6 +887,8 @@
              PERFORM   2201-RIHAKAISHI-HANTEI-SEC
              IF   FLG-KYUSEI-COMMENT  =  1
                PERFORM 2202-RIHAKAISHI-COMMENT-SEC
+               MOVE    WRK-RIHASANTEI-SRYCD-TBL(5)
+                                       TO   LNK-RIHASTDAY-OUT-OCC3(5)
              END-IF
            END-IF
       *
@@ -816,6 +908,8 @@
              PERFORM   2201-RIHAKAISHI-HANTEI-SEC
              IF   FLG-KYUSEI-COMMENT  =  1
                PERFORM 2202-RIHAKAISHI-COMMENT-SEC
+               MOVE    WRK-RIHASANTEI-SRYCD-TBL(6)
+                                       TO   LNK-RIHASTDAY-OUT-OCC3(6)
              END-IF
            END-IF
       *
@@ -835,6 +929,8 @@
              PERFORM   2201-RIHAKAISHI-HANTEI-SEC
              IF   FLG-KYUSEI-COMMENT  =  1
                PERFORM 2202-RIHAKAISHI-COMMENT-SEC
+               MOVE    WRK-RIHASANTEI-SRYCD-TBL(7)
+                                       TO   LNK-RIHASTDAY-OUT-OCC3(7)
              END-IF
            END-IF
       *
@@ -1282,6 +1378,7 @@
                        IF   SRY-INPUTNUM(IDX12)   NOT =   ZERO
                          PERFORM 900-PTCOM-READ-SEC
                          ADD     1           TO  IDZ
+                         MOVE    "810000001" TO  WK-FREE-SRYCD(IDZ)
                          MOVE    PTCOM-INPUTCOMENT
                                              TO  WK-FREE-NAME(IDZ)
                          PERFORM   VARYING   IDX13   FROM   200   BY  -1
@@ -1295,6 +1392,7 @@
                        ELSE
                          PERFORM 900-TENSU-READ-SEC
                          ADD     1           TO  IDZ
+                         MOVE    "810000001" TO  WK-FREE-SRYCD(IDZ)
                          MOVE    TNS-NAME    TO  WK-FREE-NAME(IDZ)
                          PERFORM   VARYING   IDX13   FROM   200   BY  -1
                                     UNTIL    IDX13    <    1
@@ -1310,6 +1408,7 @@
                             WHEN     "840000042"
                               IF   FLG-COMOKIKAE2 = ZERO
                                  MOVE    1   TO  FLG-COMOKIKAE2
+                                 MOVE  SPACE TO  WK-FREE-SRYCD(IDZ)
                                  MOVE  SPACE TO  WK-FREE-NAME(IDZ)
                                  MOVE  ZERO  TO  WK-FREE-YUKOKETA(IDZ)
                                  COMPUTE  IDZ  =  IDZ - 1
@@ -1317,6 +1416,7 @@
                             WHEN     "840000101"
                               IF   FLG-COMOKIKAE2 = ZERO
                                  MOVE    2   TO  FLG-COMOKIKAE2
+                                 MOVE  SPACE TO  WK-FREE-SRYCD(IDZ)
                                  MOVE  SPACE TO  WK-FREE-NAME(IDZ)
                                  MOVE  ZERO  TO  WK-FREE-YUKOKETA(IDZ)
                                  COMPUTE  IDZ  =  IDZ - 1
@@ -1373,6 +1473,7 @@
                                               LNK-RIHASTDAY-SRYYM))
                      IF  SANTEIPLUS-COMMENT  NOT =  SPACE
                       ADD     1         TO  IDZ
+                      MOVE  "810000001" TO  WK-FREE-SRYCD(IDZ)
                       MOVE  SANTEIPLUS-COMMENT
                                         TO  WK-FREE-NAME(IDZ)
                       PERFORM   VARYING   IDX13   FROM   200   BY  -1
@@ -1389,6 +1490,7 @@
                       IF   SANTEIPLUS-COMMENT(1:8)  = "手術　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    1    TO  FLG-COMOKIKAE2
+                           MOVE  SPACE  TO  WK-FREE-SRYCD(IDZ)
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
                            MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
                            COMPUTE  IDZ  =  IDZ - 1
@@ -1397,6 +1499,7 @@
                       IF   SANTEIPLUS-COMMENT(1:12) = "急性増悪　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    2    TO  FLG-COMOKIKAE2
+                           MOVE  SPACE  TO  WK-FREE-SRYCD(IDZ)
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
                            MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
                            COMPUTE  IDZ  =  IDZ - 1
@@ -1426,6 +1529,7 @@
        22022-RIHAKAISHI-COMHEN-SEC          SECTION.
       *
            ADD          1     TO  IDX
+           ADD          1     TO  LNK-RIHASTDAY-IDX(IDY)
            IF   IDX  <=  100
              MOVE        "*"  TO  LNK-RIHASTDAY-MARK(IDY IDX)
              EVALUATE    IDY
@@ -1547,10 +1651,11 @@
       *
       *    リハビリ開始日と同一剤のコメント
            PERFORM  VARYING  IDZ  FROM  1  BY  1
-                     UNTIL  (IDZ               >  49   )
-                       OR   (WK-FREE-NAME(IDZ) =  SPACE)
+                     UNTIL  (IDZ                >  49   )
+                       OR   (WK-FREE-SRYCD(IDZ) =  SPACE)
              ADD      1     TO  IDX
              IF   IDX  <=  100
+               ADD      1   TO  LNK-RIHASTDAY-IDX(IDY)
                MOVE   SPACE TO  LNK-RIHASTDAY-MARK(IDY IDX)
                MOVE   WK-FREE-YUKOKETA(IDZ)
                             TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
@@ -1744,7 +1849,7 @@
        900-TENSU-READ-SEC              SECTION.
       *
            INITIALIZE                     TNS-TENSU-REC
-           MOVE     SPA-HOSPNUM      TO   TNS-HOSPNUM
+           MOVE     SRY-HOSPNUM      TO   TNS-HOSPNUM
            MOVE     SRY-SRYCD(IDX12) TO   TNS-SRYCD
            MOVE     SRY-SRYYM        TO   TNS-YUKOSTYMD(1:6)
            MOVE     "01"             TO   TNS-YUKOSTYMD(7:2)
