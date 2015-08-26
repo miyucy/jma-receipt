@@ -153,9 +153,21 @@
                WHEN    "DBDISCONNECT"
                WHEN    "DBSTART"
                WHEN    "DBCOMMIT"
+      *!!!!!   WHEN    "PUTWINDOW"
+                   MOVE    LOW-VALUE       TO  MCP-TABLE
+                                               MCP-PATHNAME
+      *!!!!!!!!!!!!!!!
                WHEN    "PUTWINDOW"
                    MOVE    LOW-VALUE       TO  MCP-TABLE
                                                MCP-PATHNAME
+                   IF     (MCP-PUTTYPE     =   "CHANGE"  OR
+                                               "JOIN"    )
+                     AND  (MCP-WINDOW      =   "M01"    )
+                       IF        SPA-BEDFLG     >   ZERO
+                           MOVE    "M01N"          TO  MCP-WINDOW
+                       END-IF
+                   END-IF
+      *!!!!!!!!!!!!!!!
                WHEN    OTHER
                    IF  MCP-FUNC            =   "DBFETCH"
                        MOVE    LOW-VALUE   TO  MCPDATA-REC
