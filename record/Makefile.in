@@ -494,6 +494,8 @@ RECORD_files = \
 	medicalmodv32.rec \
 	medicalmodv33.rec \
 	manageusersv2.rec \
+	patientmodv31.rec \
+	patientmodv32.rec \
 
 DEF_files = \
 
@@ -807,6 +809,10 @@ DB_files = \
 	xml_medicalv3res3.db \
 	xml_manageusersv2req.db \
 	xml_manageusersv2res.db \
+	xml_patientmodv3req1.db \
+	xml_patientmodv3req2.db \
+	xml_patientmodv3res1.db \
+	xml_patientmodv3res2.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

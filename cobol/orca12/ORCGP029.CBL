@@ -2274,6 +2274,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
       *
                MOVE    SPA-OPID            TO  PTKOHFTN-OPID
+               MOVE    SPACE               TO  PTKOHFTN-TERMID
       *
       *        ¿·µ¬
                MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID

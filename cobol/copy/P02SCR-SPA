@@ -123,9 +123,13 @@
                        09  SPA-GMN-DISH        PIC X(01).
                        09  SPA-GMN-DISCOUNTKBN-MEI
                                                PIC X(20).
-                   07  SPA-GMN-DISCOUNT        PIC X(14).
-                   07  SPA-GMN-CONDITION       PIC X(23)
-                                               OCCURS   3.
+                   07  SPA-GMN-DISCOUNT.
+                       09  SPA-GMN-DISCOUNT-CD     PIC X(02).
+                       09  SPA-GMN-DISCOUNT-MEI    PIC X(12).
+                   07  SPA-GMN-CONDITION       OCCURS   3.
+                       09  SPA-GMN-CONDITION-CD    PIC X(02).
+                       09  SPA-GMN-COND-H          PIC X(01).
+                       09  SPA-GMN-CONDITION-MEI   PIC X(20).
       *            入金方法
                    07  SPA-GMN-NYUKIN-HOHO-G.
                        09  SPA-GMN-NYUKIN-HOHO     PIC X(02).

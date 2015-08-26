@@ -767,34 +767,41 @@
                                                TO  SPA-ERRMSG
       *    連絡先
                WHEN    "2101"
-                   MOVE    "連絡先名称は全角で入力して下さい"
+      *****        MOVE    "連絡先名称は全角で入力して下さい"
+                   MOVE    "連絡先名称入力エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2102"
-                   MOVE    "続柄は全角で入力して下さい"
+      ****         MOVE    "続柄は全角で入力して下さい"
+                   MOVE    "続柄入力エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2103"
                    MOVE    "連絡先郵便番号はありません"
                                                TO  SPA-ERRMSG
                WHEN    "2104"
-                   MOVE    "連絡先住所は全角で入力して下さい"
+      ****         MOVE    "連絡先住所は全角で入力して下さい"
+                   MOVE    "連絡先住所入力エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2105"
-                   MOVE    "勤務先名称は全角で入力して下さい"
+      ****         MOVE    "勤務先名称は全角で入力して下さい"
+                   MOVE    "勤務先名称入力エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2106"
                    MOVE    "勤務先郵便番号はありません"
                                                TO  SPA-ERRMSG
                WHEN    "2107"
-                   MOVE    "勤務先住所は全角で入力して下さい"
+      *****        MOVE    "勤務先住所は全角で入力して下さい"
+                   MOVE    "勤務先住所入力エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2108"
-                   MOVE    "帰省先名称は全角で入力して下さい"
+      ****         MOVE    "帰省先名称は全角で入力して下さい"
+                   MOVE    "帰省先名称入力エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "2109"
                    MOVE    "帰省先郵便番号はありません"
                                                TO  SPA-ERRMSG
                WHEN    "2110"
-                   MOVE    "帰省先住所は全角で入力して下さい"
+      ****         MOVE    "帰省先住所は全角で入力して下さい"
+                   MOVE    "帰省先住所入力エラーです"
                                                TO  SPA-ERRMSG
       *ver.4.7
                WHEN    "2111"

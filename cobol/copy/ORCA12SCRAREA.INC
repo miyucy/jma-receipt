@@ -44,3 +44,9 @@
            COPY    "PID1.INC".
            COPY    "CPAPIMOD.INC".
            COPY    "CPAPIMODV2.INC".
+      *ORAPI012S1V3
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST03-//.
+      *ORAPI012S2V3
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST04-//.
