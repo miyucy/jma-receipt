@@ -530,6 +530,7 @@
            PERFORM  VARYING  IDX12  FROM  1  BY  1
                      UNTIL  (IDX12            >   5   )
                        OR   (SRY-SRYCD(IDX12) =  SPACE)
+      *
              MOVE    ZERO        TO    IDX17
              MOVE    SPACE       TO    WRK-SRYCD3
              IF   SRY-SRYCD(IDX12)  =    CONS-SINDAI1-COMMENT
@@ -1529,8 +1530,8 @@
        22022-RIHAKAISHI-COMHEN-SEC          SECTION.
       *
            ADD          1     TO  IDX
-           ADD          1     TO  LNK-RIHASTDAY-IDX(IDY)
            IF   IDX  <=  100
+             ADD          1   TO  LNK-RIHASTDAY-IDX(IDY)
              MOVE        "*"  TO  LNK-RIHASTDAY-MARK(IDY IDX)
              EVALUATE    IDY
                WHEN       1

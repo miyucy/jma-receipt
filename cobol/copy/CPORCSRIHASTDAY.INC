@@ -44,9 +44,11 @@
                     06  LNK-RIHASTDAY-MARK        PIC  X(01).
                     06  LNK-RIHASTDAY-YUKOKETA    PIC  9(03).
                     06  LNK-RIHASTDAY-COM         PIC  X(200).
+      *          該当月に入力があったリハビリ診療行為コード
                  05  LNK-RIHASTDAY-OUT-OCC3.
                     06  LNK-RIHASTDAY-SRYCD       PIC  X(09)
                                                   OCCURS  50.
+      *          リハビリ開始日コメントの有効インデックス
                  05  LNK-RIHASTDAY-IDX            PIC  9(03).
       *
       *復帰コード
