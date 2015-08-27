@@ -846,9 +846,9 @@
            END-IF
       *
       *    ²èÌÌ£Ó£Ð£Á½ñ¹þ¤ß
-      *    IF      FLG-END2            =   ZERO
-      *        PERFORM 1003-J04SPA-OUT-SEC
-      *    END-IF
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-J04SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-J01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -5356,6 +5356,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¹¹¿·
            PERFORM 4501-SINKOUI-KOU-SEC
            IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    1                   TO  FLG-END2
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
@@ -5369,6 +5370,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 4504-SRYACCT-ADD-SEC
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    1                   TO  FLG-END2
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *    ¼ç²ÊÀßÄê
@@ -5403,6 +5405,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ½ªÎ»
                MOVE    WRK-ZAINUM          TO  SPA-MAE-ZAINUM
                PERFORM 410021-END-SYORI-SEC
+           ELSE
+               MOVE    1                   TO  FLG-END2
            END-IF
       *
            .

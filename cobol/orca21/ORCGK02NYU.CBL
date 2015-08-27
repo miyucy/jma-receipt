@@ -1047,9 +1047,10 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-      *    IF      FLG-END2            =   ZERO
-      *        PERFORM 1003-K02SPA-OUT-SEC
-      *    END-IF
+           IF     (FLG-END2            =   ZERO )
+             AND  (SPA-ERRCD       NOT =   "1999")
+               PERFORM 1003-K02SPA-OUT-SEC
+           END-IF
       *    クライアント印刷
       *    IF      FLG-CLIENT-OK       =   1
       *        PERFORM 600-CLIENT-DMY-SEC
@@ -7524,6 +7525,11 @@
 grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
+                   IF      MCP-RC          NOT =   ZERO
+                       MOVE    "1999"          TO  SPA-ERRCD
+                       DISPLAY "K02 WKSRYACT DEL MCP-RC:" MCP-RC
+                               ",KEY:" WKSRY-KEY
+                   END-IF
                END-IF
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -8116,6 +8122,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-AREA
                                        SPA-K02
                                        SPA-SCR-REC
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    1               TO  FLG-END2
+           END-IF
       *
            .
        4410-WSINPARA-EXT.
@@ -9689,6 +9698,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-AREA
                                        SPA-K02
                                        SPA-SCR-REC
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    1               TO  FLG-END2
+           END-IF
       *
            .
        45101-SNRYO-SYORI-EXT.
@@ -9730,6 +9742,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-AREA
            IF      LNK-ORDERPRT-RCD    NOT =   ZERO
                MOVE    "1200"              TO  SPA-ERRCD
+               MOVE    1                   TO  FLG-END2
            END-IF
       *
       *    帳票プログラム取得
@@ -10110,6 +10123,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-SET-SCREEN              SECTION.
       *
            PERFORM 500-GMNHEN-SEC
+      *
+      *    画面ＳＰＡ書込み
+      *    IF      FLG-END2            =   ZERO
+      *        PERFORM 1003-K02SPA-OUT-SEC
+      *    END-IF
       *
       *    老人保険編集エラーがある時、エラーとする
            IF      SPA-RJN-ERR         =   1
@@ -10495,9 +10513,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    行位置とカーソル位置の決定
            PERFORM 5002-GMNSPA-HEN-SEC
-      *H27.8
-      *    画面ＳＰＡ書込み
-           PERFORM 1003-K02SPA-OUT-SEC
       *
            IF     (FLG-GMN-INIT        =   1   )  OR
                   (SPA-GMN-MAX1        =   ZERO )
@@ -11622,6 +11637,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        900-PTINF-READ-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    パラメタデータ順読み

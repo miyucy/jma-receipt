@@ -4997,7 +4997,7 @@
                       (TNS-DATAKBN             =   "1"  )
                    MOVE    1                   TO  LNK-SC95-TENTEKI
                END-IF
-      *H27.5
+      *H27.8
       *        Êñ³çÊ¬ÆþÎÏ¤ÏÂÐ¾Ý³°
                IF     (ACCT-HKNCOMBI     =   "9999" )
                   OR  (ACCT-JIHOKBN      =   "1"    )
@@ -5330,6 +5330,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
+                       MOVE    "1999"          TO  SPA-ERRCD
                        DISPLAY "C95 WKSRYACT UPD ERR:" MCP-RC
                               ",KEY:" WKSRY-KEY
                    END-IF
@@ -5472,6 +5473,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "C95 WKSRYACT UPD ERR:" MCP-RC
                               ",KEY:" WKSRY-KEY
+                   MOVE    "1999"          TO  SPA-ERRCD
                END-IF
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -5627,6 +5629,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "C95 WKSRYACT UPD ERR:" MCP-RC
                               ",KEY:" WKSRY-KEY
+                   MOVE    "1999"          TO  SPA-ERRCD
                END-IF
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -5760,6 +5763,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "9999"              TO  SPA-ERRCD
                DISPLAY "K02 PARA INSERT ERR:"  MCP-RC
                        ",KEY:" PARA-KEY
+               MOVE    "1999"          TO  SPA-ERRCD
            END-IF
       *
            .
