@@ -34,6 +34,8 @@
       *                                     追加対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    15/08/24  レセ電データ作成時の請求区分
+      *                                     更新対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -53,6 +55,11 @@
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
+      *    請求ＤＢ更新用ファイル
+           SELECT  UPD-FILE        ASSIGN  RECEUPD
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL 
+                                   FILE    STATUS  IS  STS-RECEUPD.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -68,6 +75,11 @@
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200). 
+      *
+      *    請求ＤＢ更新用ファイル
+       FD  UPD-FILE.
+           COPY    "CPRCF010.INC"  REPLACING  //RECE10//
+                                   BY         //RECE10X//.
       *
        WORKING-STORAGE             SECTION.
       *
@@ -99,11 +111,17 @@
       *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
       *
+      *    請求ＤＢ更新用ファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEUPD//.
+      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE30              PIC X(02).
            03  STS-RECE3W              PIC X(02).
            03  STS-RECEERR             PIC X(02).
+           03  STS-RECEUPD             PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
@@ -113,11 +131,13 @@
            03  FLG-ONRECE-B            PIC 9(01).
            03  FLG-BTPARA              PIC 9(01).
            03  FLG-HENREI-B            PIC 9(01).
+           03  FLG-SEIKYU              PIC 9(01).
       *
            03  FLG-DATA                PIC 9(01).
            03  FLG-RECE3W              PIC 9(01).
            03  FLG-SET                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
+           03  FLG-UPDFILE             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -125,6 +145,7 @@
            03  CNT-OUT                 PIC 9(06).
            03  CNT-RECEDEN             PIC 9(06).
            03  CNT-RECE10              PIC 9(06).
+           03  CNT-UPDFILE             PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDW                     PIC 9(05).
@@ -343,6 +364,8 @@
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
       *
+           COPY    "CPRCF010.INC".
+      *
        01  ONRECE-B-REC.
            COPY    "CPONRECE-BODY.INC".
       *
@@ -446,14 +469,27 @@
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
+      *
+           DISPLAY "WRK-PARA-HOSPNUM     =" WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-PRTKBN      =" WRK-PARA-PRTKBN
+           DISPLAY "WRK-PARA-DATAKBN     =" WRK-PARA-DATAKBN
+           DISPLAY "LNK-PRTKANRI-SRYYM   =" LNK-PRTKANRI-SRYYM
+      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
+           MOVE    "RECEUPD"           TO  RECEUPD-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  RECEUPD-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECEUPD-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    RECEUPD-BASENAME    TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  RECEUPD
       *
            MOVE   SGETTEMP-TEMPDIR TO  WRK-SGETTEMP-TEMPDIR
            MOVE   SGETTEMP-ST      TO  WRK-SGETTEMP-ST
@@ -487,6 +523,8 @@
       *
       *    システム管理情報取得 
            PERFORM 110-SYSKANRI-HENSYU-SEC
+      *
+           OPEN    OUTPUT              UPD-FILE
            .
        100-INIT-EXT.
            EXIT.
@@ -726,6 +764,11 @@
                    PERFORM 2009-HENREI-BODY-HENSYU-SEC
                END-IF
       *
+      *        請求用で作成時請求ＤＢ更新用ファイル出力処理
+               IF      WRK-PARA-PRTKBN     =   "1"
+                   PERFORM 2010-UPD-FILE-HENSYU-SEC
+               END-IF
+      *
                PERFORM 900-ONRECE-BODY-FETCH-SEC
       *
       *        データ出力処理
@@ -875,6 +918,8 @@
                IF      STS-RECE3W          =   "00"
                    CONTINUE
                ELSE
+               CALL "coblog" USING   "file write err " RECE3WPARA
+      *
                    MOVE    SPACE               TO  WRK-ERR-AREA
                    INITIALIZE                      WRK-ERR-AREA
                    MOVE    3                   TO  WRK-ERR-FLG
@@ -1167,6 +1212,8 @@
            IF      STS-RECE30          =   "00"
                CONTINUE
            ELSE
+               CALL "coblog" USING   "file write err " RECE30PARA
+      *
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
                MOVE    3                   TO  WRK-ERR-FLG
@@ -1202,6 +1249,8 @@
                IF      STS-RECE30          =   "00"
                    CONTINUE
                ELSE
+                   CALL "coblog" USING   "file write err " RECE30PARA
+      *
                    MOVE    SPACE               TO  WRK-ERR-AREA
                    INITIALIZE                      WRK-ERR-AREA
                    MOVE    3                   TO  WRK-ERR-FLG
@@ -1312,6 +1361,8 @@
            IF      STS-RECE30          =   "00"
                CONTINUE
            ELSE
+               CALL "coblog" USING   "file write err " RECE30PARA
+      *
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
                MOVE    3                   TO  WRK-ERR-FLG
@@ -1624,9 +1675,65 @@
            EXIT.
       *
       *****************************************************************
+      *    請求ＤＢ更新用ファイル出力処理
+      *****************************************************************
+       2010-UPD-FILE-HENSYU-SEC         SECTION.
+      *
+           INITIALIZE                      RECE10X-REC
+           MOVE    ONRECE-B-HOSPNUM    TO  RECE10X-HOSPNUM
+           MOVE    ONRECE-B-SRYYM-B    TO  RECE10X-SRYYM
+           MOVE    ONRECE-B-NYUGAIKBN  TO  RECE10X-NYUGAIKBN
+           MOVE    ONRECE-B-PTID       TO  RECE10X-PTID
+           MOVE    ONRECE-B-RECEKA     TO  RECE10X-RECEKA
+           MOVE    ONRECE-B-TEISYUTUSAKI-B
+                                       TO  RECE10X-TEISYUTUSAKI
+           MOVE    ONRECE-B-RECESYUBETU
+                                       TO  RECE10X-RECESYUBETU
+           MOVE    ONRECE-B-HKNJANUM   TO  RECE10X-HKNJANUM 
+           MOVE    ONRECE-B-HOJOKBN    TO  RECE10X-HOJOKBN-KEY
+           MOVE    ONRECE-B-KOHID      TO  RECE10X-KOHID-KEY
+           MOVE    ONRECE-B-TEKSTYMD   TO  RECE10X-TEKSTYMD
+           MOVE    ONRECE-B-RECEIPT-KBN
+                                       TO  RECE10X-RECEIPT-KBN
+      *
+           MOVE    ONRECE-B-PTNUM      TO  RECE10X-PTNUM
+           INITIALIZE                      RECE10X-UPHKNJANUM
+                                           RECE10X-XXPREFNUM
+                                           RECE10X-XXSRYYM
+                                           RECE10X-XXSTHKNJANUM
+                                           RECE10X-XXEDHKNJANUM
+                                           RECE10X-XXTEISYUTUSAKI
+           WRITE   RECE10X-REC
+      *
+           IF      STS-RECEUPD         =   "00"
+               CONTINUE
+           ELSE
+               CALL "coblog" USING   "file write err " RECEUPD
+      *
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECEUPD             TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECEUPD         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF 
+      *
+           ADD     1                   TO  CNT-UPDFILE
+           .
+       2010-UPD-FILE-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
+      *
+           CLOSE   UPD-FILE
+      *
+           IF      CNT-UPDFILE    >   ZERO
+      *        請求管理ＤＢ更新処理
+               PERFORM 310-SEIKYU-UPD-SEC
+           END-IF    
       *
            IF      WRK-RECENUM-ALL =   ZERO
                MOVE    "処理対象のデータがありませんでした"
@@ -1643,6 +1750,7 @@
            PERFORM 900-DBDISCONNECT-SEC
            DISPLAY "RECE300  IN   " CNT-IN  
            DISPLAY "RECE300  OUT  " CNT-OUT
+           DISPLAY "         UPD  " CNT-UPDFILE 
            DISPLAY "RECE300  RE   " WRK-RECENUM-ALL
            DISPLAY "RECE300  FILE " WRK-FILE-RENNUM  
            DISPLAY "*** ORCBM710 END ***"
@@ -1748,7 +1856,82 @@
            .
        3001-FILE-INFO-INSERT-EXT.
            EXIT.
-      *            
+      *
+      *****************************************************************
+      *   請求管理ＤＢ更新処理
+      *****************************************************************
+       310-SEIKYU-UPD-SEC              SECTION.
+      *
+      *    請求用で作成時のみ処理を行う
+           IF      WRK-PARA-PRTKBN     =   "1"
+               CONTINUE
+           ELSE
+               GO  TO  310-SEIKYU-UPD-EXT
+           END-IF
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           OPEN    INPUT    UPD-FILE
+           IF      STS-RECEUPD         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECEUPD             TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECEUPD         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           PERFORM 900-UPD-FILE-READ-SEC
+           PERFORM             UNTIL   FLG-UPDFILE    =   1
+               MOVE    SPACE               TO  RECE10-REC   
+               INITIALIZE                      RECE10-REC
+               MOVE    RECE10X-KEY         TO  RECE10-KEY
+               MOVE    RECE10-REC          TO  MCPDATA-REC
+               PERFORM 910-SEIKYU-INV-SEC
+               IF      FLG-SEIKYU          =   ZERO
+                   MOVE    "2"             TO  RECE10-SKYKBN
+                   MOVE    LNK-PRTKANRI-SRYYM  
+                                           TO  RECE10-SKYYM
+                   MOVE    SMCNDATE-YMD    TO  RECE10-UPDYMD
+                   MOVE    SMCNDATE-HMS    TO  RECE10-UPDHMS
+                   MOVE    RECE10-REC      TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"      TO  MCP-FUNC
+                   MOVE    "tbl_seikyu"    TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC          =   ZERO
+                       PERFORM 900-UPD-FILE-READ-SEC
+                   ELSE
+                       MOVE    SPACE               TO  WRK-RECEERR
+                       STRING "請求管理ＤＢ　更新エラー　"
+                                               DELIMITED  BY  SIZE
+                               RECE10-KEY      DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                       END-STRING                                
+                       PERFORM 500-ERR-HENSYU-SEC
+                       PERFORM 500-COBABORT-SEC
+                   END-IF
+               ELSE
+                   STRING "請求管理ＤＢ　読込み更新エラー　"
+                                               DELIMITED  BY  SIZE
+                           RECE10X-KEY         DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                   END-STRING                                
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
+           END-PERFORM  
+      *
+           CLOSE   UPD-FILE
+           .
+       310-SEIKYU-UPD-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -1862,6 +2045,8 @@
            IF      STS-RECE3W          =   "00"
                CONTINUE
            ELSE
+               CALL "coblog" USING   "file write err " RECE3WPARA
+      *
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
                MOVE    3                   TO  WRK-ERR-FLG
@@ -2082,6 +2267,33 @@
            EXIT.
       *
       *****************************************************************
+      *    請求管理ＤＢ更新用ファイル読込
+      *****************************************************************
+       900-UPD-FILE-READ-SEC             SECTION.
+      *
+           READ    UPD-FILE
+               AT  END
+                   MOVE    1           TO  FLG-UPDFILE
+               NOT AT  END
+                   IF      STS-RECEUPD     =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECEUPD         TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECEUPD     TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
+                   MOVE    ZERO        TO  FLG-UPDFILE
+                   DISPLAY "UPD PTNUM="    RECE10X-PTNUM
+           END-READ
+           .
+       900-UPD-FILE-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    オンラインレセ電明細読込処理
       *****************************************************************
        900-ONRECE-BODY-SELECT-SEC     SECTION.
@@ -2148,6 +2360,35 @@
        900-ONRECE-BODY-FETCH-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    請求管理読込（更新時）
+      *****************************************************************
+       910-SEIKYU-INV-SEC         SECTION.
+      *
+           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_seikyu"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SEIKYU
+                   MOVE    MCPDATA-REC         TO  RECE10-REC
+               ELSE
+                   MOVE    1                   TO  FLG-SEIKYU
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SEIKYU
+           END-IF
+      *
+           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       910-SEIKYU-INV-EXT.
+           EXIT.
       *
       *****************************************************************
       *    レセ電ＤＢ読込処理
