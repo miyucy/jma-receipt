@@ -63,6 +63,7 @@
       * 04.08.02     NACL-森脇    14/11/13  OPID変更時対応
       * 04.08.03     NACL-森脇    14/11/19  パスワード削除処理対応
       * 04.08.04     NACL-森脇    14/12/10  職員情報削除時出力先設定削除
+      * 04.08.05     NACL-森脇    15/08/31  管理者有効期間チェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -415,6 +416,9 @@
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-USERID-UPD      PIC 9(01).
            03  FLG-USERMATCH       PIC 9(01).
+      *----(04.08.05)--ADD-START---
+           03  FLG-KIKAN           PIC 9(01).
+      *----(04.08.05)--ADD-END-----
       *
       *    カウント領域
       *
@@ -3207,7 +3211,7 @@
                IF      SPA-GMN-PRTCONF  =   SPACE
                    MOVE    SPACE           TO  SPA-GMN-PRTCONF-G
                ELSE
-                   MOVE    "0033"          TO  SPA-ERRCD
+                   MOVE    "0037"          TO  SPA-ERRCD
                    MOVE    103              TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -3499,6 +3503,13 @@
                END-IF
            END-IF
       *
+      *----(04.08.05)--ADD-START---
+           PERFORM 210-KANRISYA-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  210-BACK-CHK-EXT
+           END-IF
+      *----(04.08.05)--ADD-END-----
+      *
            PERFORM 210-BACK
            .
        210-BACK-CHK-EXT.
@@ -3521,7 +3532,60 @@
            .
        210-BACK-EXT.
            EXIT.
-
+      *----(04.08.05)--ADD-START---
+      *****************************************************************
+      *    システム管理者有効期限チェック処理
+      *****************************************************************
+       210-KANRISYA-CHK-SEC        SECTION.
+      *
+           MOVE    0               TO  FLG-KIKAN
+      *
+      *    当日有効レコードチェック
+           INITIALIZE                  SYS-1010-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-1010-HOSPNUM
+           MOVE    "1010"          TO  SYS-1010-KANRICD
+           MOVE    SPA-SYSYMD      TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1010-EDYUKYMD
+           MOVE    SYS-1010-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+                   OR    ( FLG-KIKAN       =   1 )
+               MOVE    MCPDATA-REC     TO  SYS-1010-REC
+      *
+               IF      SYS-1010-KANRIAUTHFLG   =   "T"
+                   MOVE    1               TO  FLG-KIKAN
+               END-IF
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    当日有効の存在エラー
+           IF      FLG-KIKAN           =   0
+               MOVE    "0038"          TO  SPA-ERRCD
+               GO  TO  210-KANRISYA-CHK-EXT
+           END-IF
+      *
+           .
+       210-KANRISYA-CHK-EXT.
+           EXIT.
+      *----(04.08.05)--ADD-END-----
       *****************************************************************
       *    クリア処理
       *****************************************************************
@@ -5236,9 +5300,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0036"
                    MOVE    "管理者はパスワードが必須です"
                                                TO  SPA-ERRMSG
-               WHEN    "0033"
+               WHEN    "0037"
                    MOVE    "プリンタへのデータ送信単位入力エラー"
                                                TO  SPA-ERRMSG
+      *----(04.08.05)--ADD-START---
+               WHEN    "0038"
+                   MOVE    "当日有効のレコードが存在しません"
+                                                      TO  SPA-ERRMSG
+               WHEN    "0039"
+                   MOVE    "有効気期間が不連続です"
+                                                      TO  SPA-ERRMSG
+               WHEN    "0040"
+                   MOVE    "最終期間の終了日が正しくありません"
+                                                      TO  SPA-ERRMSG                                                      
+      *----(04.08.05)--ADD-END-----
                WHEN    "0100"
                    MOVE
                    "オルカマスターはシステム管理を有効にして下さい"
