@@ -2512,6 +2512,7 @@
        430-SYS1001-CHK-SEC         SECTION.
       *
            MOVE    SPACE           TO  WRK-STYUKYMD
+           MOVE    SPACE           TO  SPA-ERRCD
       *
       *    当日有効レコードチェック
            INITIALIZE                  SYSKANRI-REC
@@ -2829,8 +2830,7 @@
                    MOVE    "当日有効のレコードが存在しません"
                                                       TO  SPA-ERRMSG
                WHEN    "0026"
-                   MOVE    "有効気期間が不連続です"
-                                                      TO  SPA-ERRMSG
+                   MOVE    "有効期間が不連続です"     TO  SPA-ERRMSG
                WHEN    "0027"
                    MOVE    "最終期間の終了日が正しくありません"
                                                       TO  SPA-ERRMSG                                                      
