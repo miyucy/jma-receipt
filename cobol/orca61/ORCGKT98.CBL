@@ -2728,7 +2728,7 @@
                  AND  (SPA-KT98-GMN-SYORI   NOT =   "S")
                    IF      SPA-KT98-GMN-INPUTCD(IDX)
                                            =   WRK-TBL-INPUCD
-     *****             MOVE    2               TO  KT98-ROWATTR
+                       MOVE    2               TO  KT98-ROWATTR
                        MOVE    IDX             TO  KT98-ROW
                    END-IF
                END-IF
