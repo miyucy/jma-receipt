@@ -2548,14 +2548,14 @@
            INITIALIZE                  SYSKANRI-REC
            MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    "1001"          TO  SYS-KANRICD
-           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    "*%"            TO  SYS-KBNCD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key5"          TO  MCP-PATHNAME
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYSKANRI-REC
@@ -2589,12 +2589,12 @@
                END-IF
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key5"          TO  MCP-PATHNAME
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-ERRCD       =   SPACE
