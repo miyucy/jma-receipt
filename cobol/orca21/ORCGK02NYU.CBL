@@ -9698,7 +9698,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-AREA
                                        SPA-K02
                                        SPA-SCR-REC
-           IF      SPA-ERRCD       NOT =   SPACE
+      *    DBエラー
+           IF      SPA-ERRCD           =   "1093"
+                                       OR  "9999"
                MOVE    1               TO  FLG-END2
            END-IF
       *
@@ -10123,11 +10125,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-SET-SCREEN              SECTION.
       *
            PERFORM 500-GMNHEN-SEC
-      *
-      *    画面ＳＰＡ書込み
-      *    IF      FLG-END2            =   ZERO
-      *        PERFORM 1003-K02SPA-OUT-SEC
-      *    END-IF
       *
       *    老人保険編集エラーがある時、エラーとする
            IF      SPA-RJN-ERR         =   1

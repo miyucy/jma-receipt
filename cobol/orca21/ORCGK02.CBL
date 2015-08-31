@@ -5546,6 +5546,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *        患者決定共編集処理
                MOVE    1               TO  FLG-CHKSET
                PERFORM 4102-PTNUM-HENSYU-SEC
+           ELSE
+               PERFORM 310-SPA-SET-SEC
            END-IF
       *
            IF     (SPA-ERRCD           =   SPACE )
@@ -12459,8 +12461,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-K02
                                        SPA-SCR-REC
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
+      *    DBエラー
+           IF      SPA-ERRCD           =   "1093"
+                                       OR  "9999"
                MOVE    1               TO  FLG-END2
            END-IF
            .
