@@ -2261,7 +2261,7 @@
       *        中途データあり
                MOVE    "True"              TO  MDCRES-TEMP-MEDICAL-FLAG
       *        対象を返却
-               PERFORM 200212-WKSRYACT-HENSYU-SEC
+      *********PERFORM 200212-WKSRYACT-HENSYU-SEC
       *
            ELSE
       *        中途データなし
