@@ -12,5 +12,6 @@ fi
 #       CUPS スプール削除
 #-------------------------------------------#
 #
-    lpstat -a | cut -f 1 -d " " | xargs cancel -u orca -a
+	cancel -u orca -a
+	cancel -u orca -a -x
 	exit 
