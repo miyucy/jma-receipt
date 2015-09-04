@@ -176,13 +176,13 @@
       *  04.07.18    NACL-藤原    15/07/17  労災診療費請求書及びアフター
       *                                     ケア委託費請求書のＯＣＲ様式
       *                                     対応
-      *  04.07.19    NACL-藤原    15/08/17  自賠責レセプトの請求金額欄端
-      *                                     数処理対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *  04.08.03    NACL-藤原    14/08/28  ４．８ミドル対応
+      *  04.08.04    NACL-藤原    15/08/17  自賠責レセプトの請求金額欄端
+      *                                     数処理対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3098,11 +3098,11 @@
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN1MEIL
                                                                      (1)
            MOVE    "1"             TO  SPA-GMN-JIBAI-FRACTION-KBN1L  (2)
-           MOVE    "医療機関情報を参照"
+           MOVE    "医療機関情報に準拠"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN1MEIL
                                                                      (2)
            MOVE    "2"             TO  SPA-GMN-JIBAI-FRACTION-KBN1L  (3)
-           MOVE    "医療機関情報を参照（患者請求時のみ）"
+           MOVE    "医療機関情報に準拠（患者請求時のみ）"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN1MEIL
                                                                      (3)
            MOVE    3               TO  SPA-GMN-JIBAI-FRACTION-KBN1-MAX 
@@ -3112,11 +3112,11 @@
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN2MEIL
                                                                      (1)
            MOVE    "1"             TO  SPA-GMN-JIBAI-FRACTION-KBN2L  (2)
-           MOVE    "医療機関情報を参照"
+           MOVE    "医療機関情報に準拠"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN2MEIL
                                                                      (2)
            MOVE    "2"             TO  SPA-GMN-JIBAI-FRACTION-KBN2L  (3)
-           MOVE    "医療機関情報を参照（患者請求時のみ）"
+           MOVE    "医療機関情報に準拠（患者請求時のみ）"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN2MEIL
                                                                      (3)
            MOVE    3               TO  SPA-GMN-JIBAI-FRACTION-KBN2-MAX 
