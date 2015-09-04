@@ -82,9 +82,13 @@
                        09  SPA-GMN-F1         PIC X(01).
                        09  SPA-GMN-KBNCDMEI   PIC X(18).
                    07  SPA-GMN-KOUMOKU1.
-                       09  SPA-GMN-HOSPNAME1  PIC X(80).
-                       09  SPA-GMN-HOSPNAME2  PIC X(80).
-                       09  SPA-GMN-HOSPNAME3  PIC X(80).
+                       09  SPA-GMN-HOSPNAME-G.
+                           11  SPA-GMN-HOSPNAME1
+                                              PIC X(80).
+                           11  SPA-GMN-HOSPNAME2
+                                              PIC X(80).
+                           11  SPA-GMN-HOSPNAME3
+                                              PIC X(80).
                        09  SPA-GMN-KAISETUNAME
                                               PIC X(80).
                        09  SPA-GMN-POST       PIC X(07).
@@ -164,6 +168,8 @@
                05  WRK-MOJISU      PIC 9(02).
            03  WRK-MOJI1           PIC X(04).
            03  WRK-MOJI2           PIC X(04).
+      *
+           03  WRK-PAGENO          PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -294,6 +300,11 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+      *
+               IF      SPA-WIDCD2      NOT =   SPACE
+                   PERFORM 530-WID2SET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -337,13 +348,24 @@
        330-WID-SET-SEC            SECTION.
       *
            IF      SPA-WID1-FLG    =   "OK"
-      *----(04.06.01)--UPD-START---
-               IF      SPA-WIDCD   =   "1005"
-                   PERFORM 490-SAKUJYO-SEC
-               ELSE
-                   PERFORM 490-KOUSHIN-SEC
-               END-IF
-      *----(04.06.01)--UPD-END-----
+               EVALUATE    SPA-WIDCD
+                   WHEN    "1005"
+                       PERFORM 490-SAKUJYO-SEC
+                   WHEN    "1003"
+                   WHEN    "1001"
+      *                登録時の医療機関名未入力の警告
+                       IF      SPA-GMN-HOSPNAME-G  =   SPACE
+                           MOVE    "1006"              TO  SPA-WIDCD2
+                           MOVE    SPACE               TO  SPA-WID1-FLG
+                           MOVE    SPACE               TO  SPA-WIDCD
+                           GO  TO  330-WID-SET-EXT
+                       ELSE
+                           PERFORM 490-KOUSHIN-SEC
+                       END-IF
+                   WHEN    OTHER
+                       PERFORM 490-KOUSHIN-SEC
+               END-EVALUATE
+      *
                EVALUATE    SPA-WIDCD
                    WHEN    "1003"
                    WHEN    "1004"
@@ -355,9 +377,7 @@
                EVALUATE    SPA-WIDCD
                    WHEN    "1001"
                    WHEN    "1003"
-      *----(04.06.01)--ADD-START---
                    WHEN    "1005"
-      *----(04.06.01)--ADD-END-----
                        MOVE    2            TO  SPA-GMN-CUR
                    WHEN    "1002"
                    WHEN    "1004"
@@ -366,7 +386,7 @@
            END-IF
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
-           MOVE    SPACE           TO  SPA-WIDCD      
+           MOVE    SPACE           TO  SPA-WIDCD
       *
            .
        330-WID-SET-EXT.
@@ -378,18 +398,41 @@
        330-WID2-SET-SEC            SECTION.
       *
            IF      SPA-WID2-FLG    =   "OK"
-               PERFORM 490-KOUSHIN-SEC
+               EVALUATE    SPA-WIDCD2
+                   WHEN    "1003"
+      *                登録時の医療機関名未入力の警告
+                       IF      SPA-GMN-HOSPNAME-G  =   SPACE
+                           MOVE    "1007"              TO  SPA-WIDCD2
+                           MOVE    SPACE               TO  SPA-WID2-FLG
+                           GO  TO  330-WID2-SET-EXT
+                       ELSE
+                           PERFORM 490-KOUSHIN-SEC
+                       END-IF
+                   WHEN    OTHER
+                       PERFORM 490-KOUSHIN-SEC
+               END-EVALUATE
+      *
+               EVALUATE    SPA-WIDCD2
+                   WHEN    "1003"
+                   WHEN    "1007"
+                       MOVE    101          TO  SPA-GMN-CUR
+                   WHEN    "1004"
+                   WHEN    "1006"
+                       MOVE    1            TO  SPA-GMN-CUR
+               END-EVALUATE
+           ELSE
+               EVALUATE    SPA-WIDCD2
+                   WHEN    "1003"
+                       MOVE    101          TO  SPA-GMN-CUR
+                   WHEN    "1004"
+                   WHEN    "1006"
+                   WHEN    "1007"
+                       MOVE    1            TO  SPA-GMN-CUR
+               END-EVALUATE
            END-IF
       *
-           EVALUATE    SPA-WIDCD2
-               WHEN    "1003"
-                   MOVE    101          TO  SPA-GMN-CUR
-               WHEN    "1004"
-                   MOVE    1            TO  SPA-GMN-CUR
-           END-EVALUATE
-      *
            MOVE    SPACE           TO  SPA-WID2-FLG
-           MOVE    SPACE           TO  SPA-WIDCD2    
+           MOVE    SPACE           TO  SPA-WIDCD2
            .
        330-WID2-SET-EXT.
            EXIT.
@@ -1034,7 +1077,7 @@
                    MOVE    "0001"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR 
                END-IF           
-           END-IF 
+           END-IF
            .
        4103-KAKUTEI-CHK-EXT.
            EXIT.
@@ -1044,7 +1087,7 @@
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
-           MOVE   W18-PAGENO           TO  IDX
+           MOVE   W18-PAGENO           TO  WRK-PAGENO
       *
       *    タグが変わったとき項目チェック
       *****IF      IDX              NOT =   W18-PAGENO
@@ -1055,7 +1098,7 @@
                MOVE    2                   TO  FLG-TOUROKU
                PERFORM 410-INPUT-CHK-SEC
                IF      SPA-ERRCD            =   SPACE
-                   EVALUATE    IDX
+                   EVALUATE    WRK-PAGENO
                        WHEN    0
                            IF      SPA-GMN-KOUMOKU2 =   SPACE
                                MOVE    1            TO  SPA-GMN-CUR
@@ -1397,8 +1440,12 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-           EVALUATE    W18-PAGENO
-               WHEN    0
+           EVALUATE    SPA-WIDCD    ALSO    SPA-WIDCD2
+               WHEN    "1003"       ALSO    ANY
+               WHEN    "1001"       ALSO    ANY
+               WHEN    ANY          ALSO    "1003"
+               WHEN    ANY          ALSO    "1006"
+               WHEN    ANY          ALSO    "1007"
       *            医療機関編集情報
                    IF      SPA-GMN-KBNCD       =   SPACE
                        CONTINUE
@@ -1408,8 +1455,10 @@
                        INITIALIZE                      SYS-1901-REC
                        MOVE    "1901"              TO  SYS-1901-KANRICD
                        MOVE    SPA-GMN-KBNCD       TO  SYS-1901-KBNCD
-                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1901-STYUKYMD
-                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1901-EDYUKYMD
+                       MOVE    SPA-W01-STYUKYMD
+                                                   TO  SYS-1901-STYUKYMD
+                       MOVE    SPA-W01-STYUKYMD
+                                                   TO  SYS-1901-EDYUKYMD
                        MOVE    SPA-HOSPNUM         TO  SYS-1901-HOSPNUM
                        MOVE    SYS-1901-REC        TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
@@ -1431,7 +1480,7 @@
                        MOVE    SPA-GMN-HOSPNAME3   TO
                                                    SYS-1901-HOSPNAME3
                        MOVE    SPA-NAI-HOSPNAME1MOJI   TO
-                                               SYS-1901-HOSPNAME1MOJI 
+                                               SYS-1901-HOSPNAME1MOJI
                        MOVE    SYS-1901-REC        TO  SYSKANRI-REC
                        PERFORM 800-MCNDATE-SEC
                        IF      FLG-SYSKANRI        =   ZERO
@@ -1470,8 +1519,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                        INITIALIZE                      SYS-1903-REC
                        MOVE    "1903"              TO  SYS-1903-KANRICD
                        MOVE    SPA-GMN-KBNCD       TO  SYS-1903-KBNCD
-                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1903-STYUKYMD
-                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1903-EDYUKYMD
+                       MOVE    SPA-W01-STYUKYMD
+                                                   TO  SYS-1903-STYUKYMD
+                       MOVE    SPA-W01-STYUKYMD
+                                                   TO  SYS-1903-EDYUKYMD
                        MOVE    SPA-HOSPNUM         TO  SYS-1903-HOSPNUM
                        MOVE    SYS-1903-REC        TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
@@ -1519,10 +1570,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                MOVE    SYS-KANRICD     TO  SYSUP-KANRICD
                                MOVE    SYS-KBNCD       TO  SYSUP-KBNCD
                                MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYSUP-STYUKYMD
+                                                       TO SYSUP-STYUKYMD
                                MOVE    SPA-W01-EDYUKYMD
-                                                   TO  SYSUP-EDYUKYMD
-                           MOVE    SPA-HOSPNUM     TO  SYSUP-HOSPNUM
+                                                       TO SYSUP-EDYUKYMD
+                               MOVE    SPA-HOSPNUM     TO  SYSUP-HOSPNUM
                                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                                MOVE    "upd1"          TO  MCP-PATHNAME
                                MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -1550,8 +1601,10 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                        INITIALIZE                      SYS-1902-REC
                        MOVE    "1902"              TO  SYS-1902-KANRICD
                        MOVE    SPA-GMN-KBNCD       TO  SYS-1902-KBNCD
-                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1902-STYUKYMD
-                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1902-EDYUKYMD
+                       MOVE    SPA-W01-STYUKYMD
+                                                   TO  SYS-1902-STYUKYMD
+                       MOVE    SPA-W01-STYUKYMD
+                                                   TO  SYS-1902-EDYUKYMD
                        MOVE    SPA-HOSPNUM         TO  SYS-1902-HOSPNUM
                        MOVE    SYS-1902-REC        TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
@@ -1643,14 +1696,16 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                    INITIALIZE                  SPA-GMN-KOUMOKU1
                                                SPA-GMN-KBNCD-G
                    MOVE    1                   TO  SPA-GMN-CUR
-               WHEN    1
+               WHEN    OTHER
       *            帳票別指定情報
                    MOVE    SPACE               TO  SYS-1900-REC
                    INITIALIZE                      SYS-1900-REC
                    MOVE    "1900"              TO  SYS-1900-KANRICD
                    MOVE    "*"                 TO  SYS-1900-KBNCD
-                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1900-STYUKYMD
-                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1900-EDYUKYMD
+                   MOVE    SPA-W01-STYUKYMD
+                                               TO  SYS-1900-STYUKYMD
+                   MOVE    SPA-W01-STYUKYMD
+                                               TO  SYS-1900-EDYUKYMD
                    MOVE    SPA-HOSPNUM         TO  SYS-1900-HOSPNUM
                    MOVE    SYS-1900-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
@@ -1732,10 +1787,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    101                 TO  SPA-GMN-CUR
            END-EVALUATE
-      *  
-           EVALUATE    SPA-WIDCD     
-               WHEN    "1003"
-               WHEN    "1004"
+      *
+           EVALUATE    SPA-WIDCD    ALSO    SPA-WIDCD2
+               WHEN    "1003"       ALSO    ANY
+               WHEN    "1004"       ALSO    ANY
+               WHEN    ANY          ALSO    "1006"
       *            医療機関編集情報
                    MOVE    SPACE               TO  SYSKANRI-REC
                    INITIALIZE                      SYSKANRI-REC
@@ -1757,7 +1813,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO 
+                   IF      MCP-RC          NOT =   ZERO
                        MOVE    "1003"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
                    END-IF
@@ -1782,7 +1838,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO 
+                   IF      MCP-RC          NOT =   ZERO
                        MOVE    "1003"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
                    END-IF
@@ -1807,7 +1863,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO 
+                   IF      MCP-RC          NOT =   ZERO
                        MOVE    "1005"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
                    END-IF
@@ -1832,11 +1888,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO 
+                   IF      MCP-RC          NOT =   ZERO
                        MOVE    "1001"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
                    END-IF
-           END-EVALUATE    
+           END-EVALUATE
            .
        490-KOUSHIN-EXT.
            EXIT.
@@ -2153,13 +2209,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE
                    "適用日を変更しますので、登録後選択画面へ戻ります"
                                                 TO  WRK-WIDMSG
-      *----(04.06.01)--ADD-START---
                WHEN    "1005"
                    MOVE
                    "医療機関編集情報（帳票別指定含む）を削除します。"
                                                 TO  WRK-WIDMSG(1:48)
                    MOVE    "よろしいですか？"   TO  WRK-WIDMSG(49:16)
-      *----(04.06.01)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
@@ -2197,6 +2251,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1004"
                    MOVE
                    "画面を切替えます。帳票別指定情報を登録しますか？"
+                                                TO  WRK-WIDMSG
+               WHEN    "1006"
+               WHEN    "1007"
+                   MOVE
+                   "医療機関名称が未入力ですが、このまま登録しますか？"
                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
