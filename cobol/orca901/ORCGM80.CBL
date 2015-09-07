@@ -30,6 +30,7 @@
       *  04.07.00    NACL-多々納  11/12/06  upgrade非活性対応
       *  04.07.00    NACL-多々納  12/07/11  ベンダー毎対応
       *  04.07.01    MACL-森脇    13/03/06  組込・取込、削除・取外まとめ
+      *  04.08.00    NACL-森脇
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,9 +39,12 @@
        FILE-CONTROL.
       *
       *    プラグインデータ
-           SELECT  PLUGINLIST-FILE     ASSIGN  FILE-NAME1
+      *----(04.08.00)--UPD-START---
+      *     SELECT  PLUGINLIST-FILE     ASSIGN  FILE-NAME1
+           SELECT  PLUGINLIST-FILE     ASSIGN  ASGNPARA
                                        ORGANIZATION   IS LINE SEQUENTIAL
                                        FILE    STATUS  IS  STS-DATA1.
+      *----(04.08.00)--UPD-END-----
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -54,10 +58,12 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *----(04.08.00)--UPD-START---
       *    プラグインデータ
        01  FILE-NAME1.
-           03  FILLER                  PIC X(09)   VALUE   "/var/tmp/".
+      *     03  FILLER                  PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER                  PIC X(14)   VALUE   "pluginlist".
+      *----(04.08.00)--UPD-END-----
       *
       *    フラグ領域
        01  STS-AREA.
@@ -69,6 +75,9 @@
       *    スパ領域
            COPY    "COMMON-SPA".
            COPY    "M901COMMON-SPA".
+      *----(04.08.00)--ADD-START---
+           COPY    "CPASGNPARA.INC".
+      *----(04.08.00)--ADD-END-----
       *
       *    画面スパ領域
        01  SPA-M80.
@@ -225,6 +234,10 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *----(04.08.00)--ADD-START---
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *----(04.08.00)--ADD-END-----
       *
       *****************************************************************
       *    連絡　領域
@@ -663,6 +676,14 @@
            COMPUTE IDX-STR             =  (SPA-GMN-PAGE  -   1  )
                                        *   MAX-LINE
                                        +   1
+      *----(04.08.01)--ADD-START---
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    FILE-NAME1          TO  SGETTEMP-BASENAMES (1)
+           CALL    "ORCSGETTEMP" USING     SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASGNPARA
+           MOVE    SGETTEMP-ST         TO  ASGNPARA-ST
+      *----(04.08.01)--ADD-END-----
       *
            OPEN    INPUT               PLUGINLIST-FILE
       *
@@ -1390,7 +1411,10 @@
                    MOVE    "並び替え"          TO  M80-B03-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B03-STATE
                END-IF
+      *----(04.08.00)--UPD-START---
       *        未選択の時
+      *        ginbee対応
+               IF      SPA-MW              NOT =   SPA-GINBEE
                IF   (SPA-GMN-SELNUM        =   ZERO )
                    MOVE    "一括更新"          TO  M80-B10-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B10-STATE
@@ -1400,6 +1424,8 @@
                        MOVE    WIDGET-NORMAL       TO  M80-B10-STATE
                    END-IF
                END-IF
+               END-IF
+      *----(04.08.00)--UPD-END-----
            END-IF
       *
       *    非活性処理

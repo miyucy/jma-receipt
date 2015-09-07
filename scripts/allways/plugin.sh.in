@@ -20,7 +20,7 @@ VERSION=$6
 
 PLUGIN_SHELL=${ORCA_DIR}/bin/jma-plugin
 JPPINFO=${SYSCONFDIR}/jppinfo.list
-PKGLIST=/var/tmp/pluginlist
+PKGLIST=${MCP_TEMPDIR}/pluginlist
 
 list4cobol () {
   ${PLUGIN_SHELL} -c ${JPPINFO} list4cobol | nkf -e > ${PKGLIST}
@@ -34,9 +34,11 @@ case "${COMMAND}" in
     list4cobol
     ;;
   list)
-    ${PLUGIN_SHELL} -c ${JPPINFO} update
-    if [ $? -ne 0 ]; then
-      exit $?
+    if [ "${MCP_MIDDLEWARE_NAME}" = "panda" ]; then
+      ${PLUGIN_SHELL} -c ${JPPINFO} update
+      if [ $? -ne 0 ]; then
+        exit $?
+      fi
     fi
     ${PLUGIN_SHELL} -c ${JPPINFO} list
     list4cobol
