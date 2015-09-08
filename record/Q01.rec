@@ -17,10 +17,10 @@ Q01 {
     };
     CMB_SELPATTERN {
       SELPATTERN {
-        textdata varchar(104);
+        textdata varchar(103);
       };
       count int;
-        item varchar(104)[200];
+        item varchar(103)[50];
     };
     STSRYYMD {
       textdata varchar(10);
@@ -78,17 +78,6 @@ Q01 {
           count int;
             item varchar(12)[2];
         };
-        CMB_DRCD {
-          DRCD {
-        	textdata varchar(29);
-          };
-      	  count int;
-          item varchar(29)[99];
-    	};
-        LBLMSG01{
-      		textdata varchar(100);
-      		style varchar(20);
-		};
         CMB_SRYKA {
           SRYKA {
             textdata varchar(23);
@@ -102,13 +91,6 @@ Q01 {
           };
           count int;
             item varchar(10)[2];
-        };
-        CMB_AGREEMENT {
-          AGREEMENT	{
-            textdata varchar(22);
-          };
-          count int;
-            item varchar(22)[5];
         };
     	LBLTSTPT {
       		textdata varchar(20);
@@ -371,38 +353,38 @@ Q01 {
         };
         CMB_HKNNUM1 {
           HKNNUM1 {
-            textdata varchar(30);
+            textdata varchar(20);
           };
           count int;
-            item varchar(30)[50];
+            item varchar(20)[50];
         };
         CMB_HKNNUM2 {
           HKNNUM2 {
-            textdata varchar(30);
+            textdata varchar(20);
           };
           count int;
-            item varchar(30)[50];
+            item varchar(20)[50];
         };
         CMB_HKNNUM3 {
           HKNNUM3 {
-            textdata varchar(30);
+            textdata varchar(20);
           };
           count int;
-            item varchar(30)[50];
+            item varchar(20)[50];
         };
         CMB_HKNNUM4 {
           HKNNUM4 {
-            textdata varchar(30);
+            textdata varchar(20);
           };
           count int;
-            item varchar(30)[50];
+            item varchar(20)[50];
         };
         CMB_HKNNUM5 {
           HKNNUM5 {
-            textdata varchar(30);
+            textdata varchar(20);
           };
           count int;
-            item varchar(30)[50];
+            item varchar(20)[50];
         };
         KIGO1 {
           textdata varchar(40);
@@ -823,52 +805,6 @@ Q01 {
           };
           count int;
             item varchar(10)[5];
-        };
-      };
-      fixed20 { #GtkFixed
-        CMB_KHSKBT { #GtkPandaCombo
-          KHSKBT { #GtkPandaEntry
-            textdata varchar(10);
-          };
-          count int;
-          item varchar(10)[5];
-        };
-        STKHYM { #GtkPandaEntry
-          textdata varchar(10);
-        };
-        LBLKHYM { #GtkLabel
-          textdata varchar(2);
-        };
-        EDKHYM { #GtkPandaEntry
-          textdata varchar(10);
-          state int;
-        };
-        KHHKNJANUM { #GtkPandaEntry
-          textdata varchar(6);
-        };
-        CMB_KNSKBT { #GtkPandaCombo
-          KNSKBT { #GtkPandaEntry
-            textdata varchar(10);
-          };
-          count int;
-          item varchar(10)[5];
-        };
-        STKNYM { #GtkPandaEntry
-          textdata varchar(10);
-        };
-        LBLKNYM { #GtkLabel
-          textdata varchar(2);
-        };
-        EDKNYM { #GtkPandaEntry
-          textdata varchar(10);
-          state int;
-        };
-        CMB_KNJOTAI { #GtkPandaCombo
-          KNJOTAI { #GtkPandaEntry
-            textdata varchar(20);
-          };
-          count int;
-          item varchar(20)[20];
         };
       };
       fixed19 {
