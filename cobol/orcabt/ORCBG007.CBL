@@ -60,7 +60,6 @@
            03  BG00701-SRYKADAY-G.
                05  BG00701-SRYKADAY            PIC 9(01)
                                                OCCURS  31.
-           03  BG00701-TSTPTNUMKBN             PIC X(01).
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -148,7 +147,6 @@
            03  WRK-PARA-SRYKAKBN                   PIC X(01).
            03  WRK-PARA-HIDEBYOKBN                 PIC X(01).
            03  WRK-PARA-HIDEHOKATSU                PIC X(01).
-           03  WRK-PARA-EDIT-MEDADL                PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -454,8 +452,6 @@ grpsys     END-UNSTRING
                    MOVE    "1"             TO  WRK-PARA-HIDEBYOKBN
                WHEN    "4"
                    MOVE    "1"             TO  WRK-PARA-HIDEHOKATSU
-               WHEN    "5"
-                   MOVE   "1"              TO  WRK-PARA-EDIT-MEDADL
                END-EVALUATE
       *
            END-PERFORM
@@ -537,11 +533,11 @@ grpsys     END-UNSTRING
       *****************************************************************
        110-SPA-SET-SEC                 SECTION.
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                        TO  SPA-SYSYMD
-           MOVE    WRK-PARA-SRYYM      TO  SPA-SRYYMD
-           MOVE    "01"                TO  SPA-SRYYMD(7:)
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
            MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
       *
            .
@@ -657,10 +653,10 @@ grpsys     END-UNSTRING
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    IF    ( WRK-PARA-STDAY  NOT =   SPACE )
-      *     OR   ( WRK-PARA-EDDAY  NOT =   SPACE )
-      *        PERFORM 800-TEMP-TABLE-CREATE-SEC
-      *    END-IF
+           IF    ( WRK-PARA-STDAY  NOT =   SPACE )
+            OR   ( WRK-PARA-EDDAY  NOT =   SPACE )
+               PERFORM 800-TEMP-TABLE-CREATE-SEC
+           END-IF
       *
            EVALUATE    WRK-PARA-NYUGAIKBN
                                    ALSO WRK-PARA-PTNUM
@@ -685,10 +681,10 @@ grpsys     END-UNSTRING
                PERFORM 2101-KAIKEI-HEN-SEC
            END-IF
       *
-      *    IF    ( WRK-PARA-STDAY  NOT =   SPACE )
-      *     OR   ( WRK-PARA-EDDAY  NOT =   SPACE )
-      *        PERFORM 800-TEMP-TABLE-DROP-SEC
-      *    END-IF
+           IF    ( WRK-PARA-STDAY  NOT =   SPACE )
+            OR   ( WRK-PARA-EDDAY  NOT =   SPACE )
+               PERFORM 800-TEMP-TABLE-DROP-SEC
+           END-IF
       *
            MOVE    1                   TO  FLG-END
       *
@@ -806,14 +802,18 @@ grpsys     END-UNSTRING
            IF    ( FLG-END     =   1 )
                GO  TO  21011-NYU-BG00701-HEN-EXT
            END-IF
+           IF    ( PTINF-TSTPTNUMKBN   =   "1" )
+               CONTINUE
+           ELSE
       *
-           MOVE    PTNYUINRRK-PTID     TO  WRK-PTID
-           PERFORM 800-ORCSS001-SEC
+               MOVE    PTNYUINRRK-PTID     TO  WRK-PTID
+               PERFORM 800-ORCSS001-SEC
       *
-           IF    ( SS001-SRYKA-MAX     >   ZERO )
-               PERFORM 21011-NYU-BG00701-OUT-SEC
-               IF    ( FLG-END     =   1 )
-                   GO  TO  21011-NYU-BG00701-HEN-EXT
+               IF    ( SS001-SRYKA-MAX     >   ZERO )
+                   PERFORM 21011-NYU-BG00701-OUT-SEC
+                   IF    ( FLG-END     =   1 )
+                       GO  TO  21011-NYU-BG00701-HEN-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -999,8 +999,6 @@ grpsys     END-UNSTRING
       *
            MOVE    SS001-SRYKA-NYURRK-DAY-G (IDX1)
                                            TO  BG00701-SRYKADAY-G
-      *
-           MOVE    PTINF-TSTPTNUMKBN       TO  BG00701-TSTPTNUMKBN
       *
            WRITE   BG00701-REC
       *
@@ -1313,8 +1311,6 @@ grpsys     END-UNSTRING
            END-IF
            MOVE    WRK-PARA-HIDEHOKATSU
                                        TO  ORCHCM34-HIDEHOKATSU
-           MOVE    WRK-PARA-EDIT-MEDADL
-                                       TO  ORCHCM34-EDIT-MEDADL
       *
            MOVE    ORCSPRTAREA         TO  ORCHCM34-PRTAREA
       *
@@ -2057,12 +2053,6 @@ grpsys     END-UNSTRING
                                             OR "7" OR "8" OR "9" ))
                        CONTINUE
                    ELSE
-                       MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-               END-IF
-      *
-               IF    ( WRK-PARA-PTNUM      =   SPACE )
-                   IF    ( BG00701-TSTPTNUMKBN =   "1" )
                        MOVE    ZERO    TO  FLG-LOOPEND
                    END-IF
                END-IF
