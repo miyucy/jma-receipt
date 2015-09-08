@@ -198,7 +198,9 @@
                    MOVE    0       TO  MCP-REDIRECT
                END-IF
       *
-               IF    ( MCP-TABLE   =   "tbl_chksnd" )
+               IF    ( MCP-TABLE   =   "tbl_chksnd"
+                                    OR "tbl_sryacct_main"
+                                    OR "tbl_sryacct_sub" )
                    IF    ( MCP-PATHNAME (1:3)  =   "tmp" )
                        MOVE    0   TO  MCP-REDIRECT
                    END-IF

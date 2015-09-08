@@ -50,6 +50,14 @@
                                                   OCCURS  50.
       *          リハビリ開始日コメントの有効インデックス
                  05  LNK-RIHASTDAY-IDX            PIC  9(03).
+      *       リハビリシステム予約コード一覧 (LNK-RIHASTDAY-HOSPNUM = ZERO の時返却)
+              04  LNK-RIHASTDAY-SYSCDLST          PIC  X(09)
+                                                  OCCURS  50.
+              04  LNK-RIHASTDAY-SYSCDLST-IDX      PIC  9(03).
+      *       リハビリコード一覧 (LNK-RIHASTDAY-HOSPNUM = ZERO の時返却)
+              04  LNK-RIHASTDAY-SRYCDLST          PIC  X(09)
+                                                  OCCURS  100.
+              04  LNK-RIHASTDAY-SRYCDLST-IDX      PIC  9(03).
       *
       *復帰コード
            03  LNK-RIHASTDAY-RC                   PIC  9(02).

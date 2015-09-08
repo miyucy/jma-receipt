@@ -52,6 +52,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDM                           PIC 9(03).
            03  IDX                           PIC 9(03).
            03  IDX5                          PIC 9(03).
            03  IDX6                          PIC 9(03).
@@ -264,6 +265,9 @@
       *
       *    剤まとめ編集
            PERFORM     240-TENTEKI-ZAI-MATOME-SEC
+      *
+      *    入院点滴の全体まとめ編集
+           PERFORM     250-TENTEKI-ALL-HENSYU-SEC
       *
            .
        200-MAIN-EXT.
@@ -962,6 +966,179 @@
        240-TENTEKI-ZAI-MATOME-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院点滴の全体まとめ編集
+      *****************************************************************
+       250-TENTEKI-ALL-HENSYU-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  IDM
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >   31
+      *
+             IF  ( LNK-ORCSTEN3-SYU-ZAITEN (IDY)   NOT =   ZERO )
+               COMPUTE IDM = IDM + 1
+               MOVE    "1"     TO  LNK-ORCSTEN3-SBT (IDM)
+               PERFORM VARYING IDY2    FROM    1   BY  1
+                       UNTIL ( IDY2    >   30 )
+                        OR   ( LNK-ORCSTEN3-SYU-SRYCD (IDY IDY2)
+                                       =   SPACE )
+      *
+                   COMPUTE LNK-ORCSTEN3-OCC2-MAX (IDM)
+                       =   LNK-ORCSTEN3-OCC2-MAX (IDM) +   1
+      *
+                   MOVE  LNK-ORCSTEN3-SYU-SRYCD    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SRYCD      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-SYU-SURYO    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SURYO      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-SYU-YUKOKETA (IDY IDY2)
+                               TO  LNK-ORCSTEN3-YUKOKETA   (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-SYU-COM      (IDY IDY2)  
+                               TO  LNK-ORCSTEN3-COM        (IDM IDY2)
+               END-PERFORM
+               MOVE    LNK-ORCSTEN3-SYU-ZAITEN     (IDY)
+                               TO  LNK-ORCSTEN3-ZAITEN     (IDM)
+               MOVE    LNK-ORCSTEN3-SYU-ZAIKAISU   (IDY)
+                               TO  LNK-ORCSTEN3-ZAIKAISU   (IDM)
+               MOVE    LNK-ORCSTEN3-SYU-DAY-G      (IDY)
+                               TO  LNK-ORCSTEN3-DAY-G      (IDM)
+               MOVE    LNK-ORCSTEN3-SYU-MEISAISU   (IDY)
+                               TO  LNK-ORCSTEN3-MEISAISU   (IDM)
+               MOVE    LNK-ORCSTEN3-SYU-SRYCDTOTAL (IDY)
+                               TO  LNK-ORCSTEN3-SRYCDTOTAL (IDM)
+               MOVE    LNK-ORCSTEN3-SYU-SURYOUTOTAL(IDY)
+                               TO  LNK-ORCSTEN3-SURYOUTOTAL(IDM)
+               MOVE    LNK-ORCSTEN3-SYU-RUIKEITOTAL(IDY)
+                               TO  LNK-ORCSTEN3-RUIKEITOTAL(IDM)
+               MOVE    LNK-ORCSTEN3-SYU-COMCNT     (IDY)
+                               TO  LNK-ORCSTEN3-COMCNT     (IDM)
+      *
+             END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >   31
+      *
+             IF  ( LNK-ORCSTEN3-SYU2-ZAITEN (IDY)   NOT =   ZERO )
+               COMPUTE IDM = IDM + 1
+               MOVE    "2"     TO  LNK-ORCSTEN3-SBT (IDM)
+               PERFORM VARYING IDY2    FROM    1   BY  1
+                       UNTIL ( IDY2    >   30 )
+                        OR   ( LNK-ORCSTEN3-SYU2-SRYCD (IDY IDY2)
+                                       =   SPACE )
+      *
+                   COMPUTE LNK-ORCSTEN3-OCC2-MAX (IDM)
+                       =   LNK-ORCSTEN3-OCC2-MAX (IDM) +   1
+      *
+                   MOVE  LNK-ORCSTEN3-SYU2-SRYCD    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SRYCD      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-SYU2-SURYO    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SURYO      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-SYU2-YUKOKETA (IDY IDY2)
+                               TO  LNK-ORCSTEN3-YUKOKETA   (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-SYU2-COM      (IDY IDY2)  
+                               TO  LNK-ORCSTEN3-COM        (IDM IDY2)
+               END-PERFORM
+               MOVE    LNK-ORCSTEN3-SYU2-ZAITEN     (IDY)
+                               TO  LNK-ORCSTEN3-ZAITEN     (IDM)
+               MOVE    LNK-ORCSTEN3-SYU2-ZAIKAISU   (IDY)
+                               TO  LNK-ORCSTEN3-ZAIKAISU   (IDM)
+               MOVE    LNK-ORCSTEN3-SYU2-DAY-G      (IDY)
+                               TO  LNK-ORCSTEN3-DAY-G      (IDM)
+               MOVE    LNK-ORCSTEN3-SYU2-MEISAISU   (IDY)
+                               TO  LNK-ORCSTEN3-MEISAISU   (IDM)
+               MOVE    LNK-ORCSTEN3-SYU2-SRYCDTOTAL (IDY)
+                               TO  LNK-ORCSTEN3-SRYCDTOTAL (IDM)
+               MOVE    LNK-ORCSTEN3-SYU2-SURYOUTOTAL(IDY)
+                               TO  LNK-ORCSTEN3-SURYOUTOTAL(IDM)
+               MOVE    LNK-ORCSTEN3-SYU2-RUIKEITOTAL(IDY)
+                               TO  LNK-ORCSTEN3-RUIKEITOTAL(IDM)
+               MOVE    LNK-ORCSTEN3-SYU2-COMCNT     (IDY)
+                               TO  LNK-ORCSTEN3-COMCNT     (IDM)
+      *
+             END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >   31
+      *
+             IF  ( LNK-ORCSTEN3-YAK-ZAITEN (IDY)   NOT =   ZERO )
+               COMPUTE IDM = IDM + 1
+               MOVE    "3"     TO  LNK-ORCSTEN3-SBT (IDM)
+               PERFORM VARYING IDY2    FROM    1   BY  1
+                       UNTIL ( IDY2    >   350 )
+                        OR   ( LNK-ORCSTEN3-YAK-SRYCD (IDY IDY2)
+                                       =   SPACE )
+      *
+                   COMPUTE LNK-ORCSTEN3-OCC2-MAX (IDM)
+                       =   LNK-ORCSTEN3-OCC2-MAX (IDM) +   1
+      *
+                   MOVE  LNK-ORCSTEN3-YAK-SRYCD    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SRYCD      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-YAK-SURYO    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SURYO      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-YAK-YUKOKETA (IDY IDY2)
+                               TO  LNK-ORCSTEN3-YUKOKETA   (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-YAK-COM      (IDY IDY2)  
+                               TO  LNK-ORCSTEN3-COM        (IDM IDY2)
+               END-PERFORM
+               MOVE    LNK-ORCSTEN3-YAK-ZAITEN     (IDY)
+                               TO  LNK-ORCSTEN3-ZAITEN     (IDM)
+               MOVE    LNK-ORCSTEN3-YAK-ZAIKAISU   (IDY)
+                               TO  LNK-ORCSTEN3-ZAIKAISU   (IDM)
+               MOVE    LNK-ORCSTEN3-YAK-DAY-G      (IDY)
+                               TO  LNK-ORCSTEN3-DAY-G      (IDM)
+               MOVE    LNK-ORCSTEN3-YAK-MEISAISU   (IDY)
+                               TO  LNK-ORCSTEN3-MEISAISU   (IDM)
+               MOVE    LNK-ORCSTEN3-YAK-SRYCDTOTAL (IDY)
+                               TO  LNK-ORCSTEN3-SRYCDTOTAL (IDM)
+               MOVE    LNK-ORCSTEN3-YAK-SURYOUTOTAL(IDY)
+                               TO  LNK-ORCSTEN3-SURYOUTOTAL(IDM)
+               MOVE    LNK-ORCSTEN3-YAK-RUIKEITOTAL(IDY)
+                               TO  LNK-ORCSTEN3-RUIKEITOTAL(IDM)
+               MOVE    LNK-ORCSTEN3-YAK-COMCNT     (IDY)
+                               TO  LNK-ORCSTEN3-COMCNT     (IDM)
+      *
+             END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >   50
+      *
+             IF  ( LNK-ORCSTEN3-KIZ-ZAITEN (IDY)   NOT =   ZERO )
+               COMPUTE IDM = IDM + 1
+               MOVE    "4"     TO  LNK-ORCSTEN3-SBT (IDM)
+               PERFORM VARYING IDY2    FROM    1   BY  1
+                       UNTIL ( IDY2    >   60 )
+                        OR   ( LNK-ORCSTEN3-KIZ-SRYCD (IDY IDY2)
+                                       =   SPACE )
+      *
+                   COMPUTE LNK-ORCSTEN3-OCC2-MAX (IDM)
+                       =   LNK-ORCSTEN3-OCC2-MAX (IDM) +   1
+      *
+                   MOVE  LNK-ORCSTEN3-KIZ-SRYCD    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SRYCD      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-KIZ-SURYO    (IDY IDY2)
+                               TO  LNK-ORCSTEN3-SURYO      (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-KIZ-YUKOKETA (IDY IDY2)
+                               TO  LNK-ORCSTEN3-YUKOKETA   (IDM IDY2)
+                   MOVE  LNK-ORCSTEN3-KIZ-COM      (IDY IDY2)  
+                               TO  LNK-ORCSTEN3-COM        (IDM IDY2)
+               END-PERFORM
+               MOVE    LNK-ORCSTEN3-KIZ-ZAITEN     (IDY)
+                               TO  LNK-ORCSTEN3-ZAITEN     (IDM)
+               MOVE    LNK-ORCSTEN3-KIZ-ZAIKAISU   (IDY)
+                               TO  LNK-ORCSTEN3-ZAIKAISU   (IDM)
+               MOVE    LNK-ORCSTEN3-KIZ-DAY-G      (IDY)
+                               TO  LNK-ORCSTEN3-DAY-G      (IDM)
+      *
+             END-IF
+           END-PERFORM
+      *
+           MOVE    IDM         TO  LNK-ORCSTEN3-MAX
+      *
+           .
+       250-TENTEKI-ALL-HENSYU-EXT.
+           EXIT.
       *****************************************************************
       *    剤まとめコメントチェック
       *****************************************************************

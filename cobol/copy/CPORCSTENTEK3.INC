@@ -36,6 +36,29 @@
       *返却項目
            03  LNK-ORCSTEN3-OUT-AREA.
       *
+      *       点滴まとめ（日別）
+              04  LNK-ORCSTEN3-TABLE.
+                05  LNK-ORCSTEN3-MAX                 PIC  9(05).
+                05  LNK-ORCSTEN3-OCC                 OCCURS   150.
+                  06  LNK-ORCSTEN3-SBT               PIC  X(01).
+                  06  LNK-ORCSTEN3-OCC2-MAX          PIC  9(05).
+                  06  LNK-ORCSTEN3-OCC2              OCCURS   350.
+                    07  LNK-ORCSTEN3-SRYCD           PIC  X(09).
+                    07  LNK-ORCSTEN3-SURYO           PIC  9(05)V9(05).
+                    07  LNK-ORCSTEN3-YUKOKETA        PIC  9(03).
+                    07  LNK-ORCSTEN3-COM             PIC  X(200).
+                  06  LNK-ORCSTEN3-ZAITEN            PIC  9(07).
+                  06  LNK-ORCSTEN3-ZAIKAISU          PIC  9(03).
+                  06  LNK-ORCSTEN3-DAY-G.
+                    07  LNK-ORCSTEN3-DAY             PIC  9(03)
+                                                     OCCURS   31.
+                  06  LNK-ORCSTEN3-MEISAISU          PIC  9(03).
+                  06  LNK-ORCSTEN3-SRYCDTOTAL        PIC  9(14).
+                  06  LNK-ORCSTEN3-SURYOUTOTAL       PIC  9(07)V9(05).
+                  06  LNK-ORCSTEN3-RUIKEITOTAL       PIC  9(13)V9(05).
+                  06  LNK-ORCSTEN3-COMCNT            PIC  9(03).
+      *
+      *       以下内訳
       *       点滴注射の手技・加算（日別）
               04  LNK-ORCSTEN3-SYU-TABLE.
                 05  LNK-ORCSTEN3-SYU-OCC             OCCURS   31.
@@ -46,8 +69,9 @@
                     07  LNK-ORCSTEN3-SYU-COM         PIC  X(200).
                   06  LNK-ORCSTEN3-SYU-ZAITEN        PIC  9(07).
                   06  LNK-ORCSTEN3-SYU-ZAIKAISU      PIC  9(03).
-                  06  LNK-ORCSTEN3-SYU-OCC3          OCCURS   31.
-                    07  LNK-ORCSTEN3-SYU-DAY         PIC  9(03).
+                  06  LNK-ORCSTEN3-SYU-DAY-G.
+                    07  LNK-ORCSTEN3-SYU-DAY         PIC  9(03)
+                                                     OCCURS   31.
                   06  LNK-ORCSTEN3-SYU-MEISAISU      PIC  9(03).
                   06  LNK-ORCSTEN3-SYU-SRYCDTOTAL    PIC  9(14).
                   06  LNK-ORCSTEN3-SYU-SURYOUTOTAL   PIC  9(07)V9(05).
@@ -64,8 +88,9 @@
                     07  LNK-ORCSTEN3-SYU2-COM        PIC  X(200).
                   06  LNK-ORCSTEN3-SYU2-ZAITEN       PIC  9(07).
                   06  LNK-ORCSTEN3-SYU2-ZAIKAISU     PIC  9(03).
-                  06  LNK-ORCSTEN3-SYU2-OCC3         OCCURS   31.
-                    07  LNK-ORCSTEN3-SYU2-DAY        PIC  9(03).
+                  06  LNK-ORCSTEN3-SYU2-DAY-G.
+                    07  LNK-ORCSTEN3-SYU2-DAY        PIC  9(03)
+                                                     OCCURS   31.
                   06  LNK-ORCSTEN3-SYU2-MEISAISU     PIC  9(03).
                   06  LNK-ORCSTEN3-SYU2-SRYCDTOTAL   PIC  9(14).
                   06  LNK-ORCSTEN3-SYU2-SURYOUTOTAL  PIC  9(07)V9(05).
@@ -82,8 +107,9 @@
                     07  LNK-ORCSTEN3-YAK-COM         PIC  X(200).
                   06  LNK-ORCSTEN3-YAK-ZAITEN        PIC  9(07).
                   06  LNK-ORCSTEN3-YAK-ZAIKAISU      PIC  9(03).
-                  06  LNK-ORCSTEN3-YAK-OCC3          OCCURS   31.
-                    07  LNK-ORCSTEN3-YAK-DAY         PIC  9(03).
+                  06  LNK-ORCSTEN3-YAK-DAY-G.
+                    07  LNK-ORCSTEN3-YAK-DAY         PIC  9(03)
+                                                     OCCURS   31.
                   06  LNK-ORCSTEN3-YAK-MEISAISU      PIC  9(03).
                   06  LNK-ORCSTEN3-YAK-SRYCDTOTAL    PIC  9(14).
                   06  LNK-ORCSTEN3-YAK-SURYOUTOTAL   PIC  9(07)V9(05).
@@ -100,8 +126,9 @@
                     07  LNK-ORCSTEN3-KIZ-COM         PIC  X(200).
                   06  LNK-ORCSTEN3-KIZ-ZAITEN        PIC  9(07).
                   06  LNK-ORCSTEN3-KIZ-ZAIKAISU      PIC  9(03).
-                  06  LNK-ORCSTEN3-KIZ-OCC3          OCCURS   31.
-                    07  LNK-ORCSTEN3-KIZ-DAY         PIC  9(03).
+                  06  LNK-ORCSTEN3-KIZ-DAY-G.
+                    07  LNK-ORCSTEN3-KIZ-DAY         PIC  9(03)
+                                                     OCCURS   31.
       *
       *       まとめ対象剤番号
               04  LNK-ORCSTEN3-ZAINUM-TABLE.

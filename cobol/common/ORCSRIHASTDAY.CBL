@@ -64,6 +64,7 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                           PIC 9(03).
+           03  IDX1                          PIC 9(03).
            03  IDX3                          PIC 9(02).
            03  IDX12                         PIC 9(02).
            03  IDX13                         PIC 9(03).
@@ -134,132 +135,141 @@
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
       *
-      *    ¿´Âç¥ê¥Ï³«»ÏÆü
-           03  CONS-SINDAI            PIC X(09)   VALUE  "099800111".
-      *    ¸ÆµÛ´ï¥ê¥Ï³«»ÏÆü
-           03  CONS-KOKYUKI           PIC X(09)   VALUE  "099800141".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï³«»ÏÆü
-           03  CONS-NOUKE             PIC X(09)   VALUE  "099800121".
-      *    ±¿Æ°´ï¥ê¥Ï³«»ÏÆü
-           03  CONS-UNDOKI            PIC X(09)   VALUE  "099800131".
-      *    ÆñÉÂ´µ¼Ô¥ê¥Ï³«»ÏÆü
-           03  CONS-NANBYO            PIC X(09)   VALUE  "099800161".
-      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï³«»ÏÆü
-           03  CONS-SYOGAI            PIC X(09)   VALUE  "099800171".
-      *    ÀÝ¿©ÎÅË¡³«»ÏÆü
-           03  CONS-SESSYOKU          PIC X(09)   VALUE  "099800151".
+      *    Äê·Á¥³¥á¥ó¥È
+           03  CONST-RIHA-SYSCD-VAL.
+      *        ¿´Âç¥ê¥Ï³«»ÏÆü
+               05  CONS-SINDAI            PIC X(09)   VALUE "099800111".
+      *        ¸ÆµÛ´ï¥ê¥Ï³«»ÏÆü
+               05  CONS-KOKYUKI           PIC X(09)   VALUE "099800141".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï³«»ÏÆü
+               05  CONS-NOUKE             PIC X(09)   VALUE "099800121".
+      *        ±¿Æ°´ï¥ê¥Ï³«»ÏÆü
+               05  CONS-UNDOKI            PIC X(09)   VALUE "099800131".
+      *        ÆñÉÂ´µ¼Ô¥ê¥Ï³«»ÏÆü
+               05  CONS-NANBYO            PIC X(09)   VALUE "099800161".
+      *        ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï³«»ÏÆü
+               05  CONS-SYOGAI            PIC X(09)   VALUE "099800171".
+      *        ÀÝ¿©ÎÅË¡³«»ÏÆü
+               05  CONS-SESSYOKU          PIC X(09)   VALUE "099800151".
       *
-      *    ¿´Âç¥ê¥Ï½ªÎ»Æü
-           03  CONS-SINDAI-E          PIC X(09)   VALUE  "099800112".
-      *    ¸ÆµÛ´ï¥ê¥Ï½ªÎ»Æü
-           03  CONS-KOKYUKI-E         PIC X(09)   VALUE  "099800142".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï½ªÎ»Æü
-           03  CONS-NOUKE-E           PIC X(09)   VALUE  "099800122".
-      *    ±¿Æ°´ï¥ê¥Ï½ªÎ»Æü
-           03  CONS-UNDOKI-E          PIC X(09)   VALUE  "099800132".
-      *    ÆñÉÂ´µ¼Ô¥ê¥Ï½ªÎ»Æü
-           03  CONS-NANBYO-E          PIC X(09)   VALUE  "099800162".
-      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï½ªÎ»Æü
-           03  CONS-SYOGAI-E          PIC X(09)   VALUE  "099800172".
-      *    ÀÝ¿©ÎÅË¡½ªÎ»Æü
-           03  CONS-SESSYOKU-E        PIC X(09)   VALUE  "099800152".
+      *        ¿´Âç¥ê¥Ï½ªÎ»Æü
+               05  CONS-SINDAI-E          PIC X(09)   VALUE "099800112".
+      *        ¸ÆµÛ´ï¥ê¥Ï½ªÎ»Æü
+               05  CONS-KOKYUKI-E         PIC X(09)   VALUE "099800142".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï½ªÎ»Æü
+               05  CONS-NOUKE-E           PIC X(09)   VALUE "099800122".
+      *        ±¿Æ°´ï¥ê¥Ï½ªÎ»Æü
+               05  CONS-UNDOKI-E          PIC X(09)   VALUE "099800132".
+      *        ÆñÉÂ´µ¼Ô¥ê¥Ï½ªÎ»Æü
+               05  CONS-NANBYO-E          PIC X(09)   VALUE "099800162".
+      *        ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï½ªÎ»Æü
+               05  CONS-SYOGAI-E          PIC X(09)   VALUE "099800172".
+      *        ÀÝ¿©ÎÅË¡½ªÎ»Æü
+               05  CONS-SESSYOKU-E        PIC X(09)   VALUE "099800152".
+           03  CONS-RIHA-SYSCD-R REDEFINES CONST-RIHA-SYSCD-VAL.
+               05  CONS-RIHA-SYSCD     PIC X(09)   OCCURS 14.
+           03  CONS-RIHA-SYSCD-MAX     PIC 9(03)   VALUE  14.
       *
       *****
-      *
-      *    ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-SINDAI1-COMMENT   PIC X(09)   VALUE  "180027410".
-      *    ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-SINDAI2-COMMENT   PIC X(09)   VALUE  "180027510".
-      *!   ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-SINDAI7-COMMENT   PIC X(09)   VALUE  "101800080".
-      *!   ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-SINDAI8-COMMENT   PIC X(09)   VALUE  "101800090".
-      *#   ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-SINDAI9-COMMENT   PIC X(09)   VALUE  "101800230".
-      *#   ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-SINDAI10-COMMENT  PIC X(09)   VALUE  "101800240".
-      *    ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-KOKYUKI1-COMMENT  PIC X(09)   VALUE  "180028010".
-      *    ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-KOKYUKI2-COMMENT  PIC X(09)   VALUE  "180028110".
-      *!   ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-KOKYUKI7-COMMENT  PIC X(09)   VALUE  "101800150".
-      *!   ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-KOKYUKI8-COMMENT  PIC X(09)   VALUE  "101800160".
-      *#   ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-KOKYUKI9-COMMENT  PIC X(09)   VALUE  "101800340".
-      *#   ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-KOKYUKI10-COMMENT PIC X(09)   VALUE  "101800350".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-NOUKE1-COMMENT    PIC X(09)   VALUE  "180027610".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-NOUKE2-COMMENT    PIC X(09)   VALUE  "180027710".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
-           03  CONS-NOUKE7-COMMENT    PIC X(09)   VALUE  "180030810".
-      *!   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-NOUKE8-COMMENT    PIC X(09)   VALUE  "101800100".
-      *!   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-NOUKE9-COMMENT    PIC X(09)   VALUE  "101800110".
-      *!   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
-           03  CONS-NOUKE10-COMMENT   PIC X(09)   VALUE  "101800120".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÇÑÍÑ¾É¸õ·²¡Ë
-           03  CONS-NOUKE11-COMMENT   PIC X(09)   VALUE  "180032410".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÇÑÍÑ¾É¸õ·²¡Ë
-           03  CONS-NOUKE12-COMMENT   PIC X(09)   VALUE  "180032510".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÇÑÍÑ¾É¸õ·²¡Ë
-           03  CONS-NOUKE13-COMMENT   PIC X(09)   VALUE  "180032610".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²°Ê³°¡Ë
-           03  CONS-NOUKE14-COMMENT   PIC X(09)   VALUE  "180033910".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²¡Ë
-           03  CONS-NOUKE15-COMMENT   PIC X(09)   VALUE  "180034010".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²°Ê³°¡Ë
-           03  CONS-NOUKE16-COMMENT   PIC X(09)   VALUE  "180034110".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²¡Ë
-           03  CONS-NOUKE17-COMMENT   PIC X(09)   VALUE  "180034210".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²°Ê³°¡Ë
-           03  CONS-NOUKE18-COMMENT   PIC X(09)   VALUE  "180034310".
-      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²¡Ë
-           03  CONS-NOUKE19-COMMENT   PIC X(09)   VALUE  "180034410".
-      *#   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-NOUKE20-COMMENT   PIC X(09)   VALUE  "101800250".
-      *#   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-NOUKE21-COMMENT   PIC X(09)   VALUE  "101800260".
-      *#   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
-           03  CONS-NOUKE22-COMMENT   PIC X(09)   VALUE  "101800270".
-      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-UNDOKI1-COMMENT   PIC X(09)   VALUE  "180027810".
-      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-UNDOKI2-COMMENT   PIC X(09)   VALUE  "180027910".
-      *!   ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-UNDOKI7-COMMENT   PIC X(09)   VALUE  "101800130".
-      *!   ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-UNDOKI8-COMMENT   PIC X(09)   VALUE  "101800140".
-      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-UNDOKI9-COMMENT   PIC X(09)   VALUE  "180032710".
-      *!   ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-UNDOKI10-COMMENT  PIC X(09)   VALUE  "101800125".
-      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÍ×²ð¸î¡Ë
-           03  CONS-UNDOKI11-COMMENT  PIC X(09)   VALUE  "180034510".
-      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÍ×²ð¸î¡Ë
-           03  CONS-UNDOKI12-COMMENT  PIC X(09)   VALUE  "180034610".
-      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÍ×²ð¸î¡Ë
-           03  CONS-UNDOKI13-COMMENT  PIC X(09)   VALUE  "180034710".
-      *#   ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
-           03  CONS-UNDOKI14-COMMENT  PIC X(09)   VALUE  "101800280".
-      *#   ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
-           03  CONS-UNDOKI15-COMMENT  PIC X(09)   VALUE  "101800290".
-      *#   ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
-           03  CONS-UNDOKI16-COMMENT  PIC X(09)   VALUE  "101800330".
-      *    ÆñÉÂ´µ¼Ô¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ
-           03  CONS-NANBYO-COMMENT    PIC X(09)   VALUE  "180017910".
-      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐÌ¤Ëþ¡Ë
-           03  CONS-SYOGAI1-COMMENT   PIC X(09)   VALUE  "180028210".
-      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐ°Ê¾å£±£¸ºÐÌ¤Ëþ¡Ë
-           03  CONS-SYOGAI2-COMMENT   PIC X(09)   VALUE  "180028310".
-      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±£¸ºÐ°Ê¾å¡Ë
-           03  CONS-SYOGAI3-COMMENT   PIC X(09)   VALUE  "180028410".
-      *    ÀÝ¿©µ¡Ç½ÎÅË¡
-           03  CONS-SESSYOKU-COMMENT  PIC X(09)   VALUE  "180016610".
+      *    ¥ê¥Ï¥Ó¥ê¼êµ»ÎÁ
+           03  CONS-RIHA-COMMENT-VAL.
+      *        ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-SINDAI1-COMMENT   PIC X(09)   VALUE "180027410".
+      *        ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-SINDAI2-COMMENT   PIC X(09)   VALUE "180027510".
+      *!       ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-SINDAI7-COMMENT   PIC X(09)   VALUE "101800080".
+      *!       ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-SINDAI8-COMMENT   PIC X(09)   VALUE "101800090".
+      *#       ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-SINDAI9-COMMENT   PIC X(09)   VALUE "101800230".
+      *#       ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-SINDAI10-COMMENT  PIC X(09)   VALUE "101800240".
+      *        ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-KOKYUKI1-COMMENT  PIC X(09)   VALUE "180028010".
+      *        ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-KOKYUKI2-COMMENT  PIC X(09)   VALUE "180028110".
+      *!       ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-KOKYUKI7-COMMENT  PIC X(09)   VALUE "101800150".
+      *!       ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-KOKYUKI8-COMMENT  PIC X(09)   VALUE "101800160".
+      *#       ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-KOKYUKI9-COMMENT  PIC X(09)   VALUE "101800340".
+      *#       ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-KOKYUKI10-COMMENT PIC X(09)   VALUE "101800350".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-NOUKE1-COMMENT    PIC X(09)   VALUE "180027610".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-NOUKE2-COMMENT    PIC X(09)   VALUE "180027710".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
+               05  CONS-NOUKE7-COMMENT    PIC X(09)   VALUE "180030810".
+      *!       Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-NOUKE8-COMMENT    PIC X(09)   VALUE "101800100".
+      *!       Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-NOUKE9-COMMENT    PIC X(09)   VALUE "101800110".
+      *!       Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
+               05  CONS-NOUKE10-COMMENT   PIC X(09)   VALUE "101800120".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÇÑÍÑ¾É¸õ·²¡Ë
+               05  CONS-NOUKE11-COMMENT   PIC X(09)   VALUE "180032410".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÇÑÍÑ¾É¸õ·²¡Ë
+               05  CONS-NOUKE12-COMMENT   PIC X(09)   VALUE "180032510".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÇÑÍÑ¾É¸õ·²¡Ë
+               05  CONS-NOUKE13-COMMENT   PIC X(09)   VALUE "180032610".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²°Ê³°¡Ë
+               05  CONS-NOUKE14-COMMENT   PIC X(09)   VALUE "180033910".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²¡Ë
+               05  CONS-NOUKE15-COMMENT   PIC X(09)   VALUE "180034010".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²°Ê³°¡Ë
+               05  CONS-NOUKE16-COMMENT   PIC X(09)   VALUE "180034110".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²¡Ë
+               05  CONS-NOUKE17-COMMENT   PIC X(09)   VALUE "180034210".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²°Ê³°¡Ë
+               05  CONS-NOUKE18-COMMENT   PIC X(09)   VALUE "180034310".
+      *        Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÍ×²ð¸î¡¦ÇÑÍÑ¾É¸õ·²¡Ë
+               05  CONS-NOUKE19-COMMENT   PIC X(09)   VALUE "180034410".
+      *#       Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-NOUKE20-COMMENT   PIC X(09)   VALUE "101800250".
+      *#       Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-NOUKE21-COMMENT   PIC X(09)   VALUE "101800260".
+      *#       Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
+               05  CONS-NOUKE22-COMMENT   PIC X(09)   VALUE "101800270".
+      *        ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-UNDOKI1-COMMENT   PIC X(09)   VALUE "180027810".
+      *        ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-UNDOKI2-COMMENT   PIC X(09)   VALUE "180027910".
+      *!       ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-UNDOKI7-COMMENT   PIC X(09)   VALUE "101800130".
+      *!       ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-UNDOKI8-COMMENT   PIC X(09)   VALUE "101800140".
+      *        ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-UNDOKI9-COMMENT   PIC X(09)   VALUE "180032710".
+      *!       ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-UNDOKI10-COMMENT  PIC X(09)   VALUE "101800125".
+      *        ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡ÊÍ×²ð¸î¡Ë
+               05  CONS-UNDOKI11-COMMENT  PIC X(09)   VALUE "180034510".
+      *        ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡ÊÍ×²ð¸î¡Ë
+               05  CONS-UNDOKI12-COMMENT  PIC X(09)   VALUE "180034610".
+      *        ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë¡ÊÍ×²ð¸î¡Ë
+               05  CONS-UNDOKI13-COMMENT  PIC X(09)   VALUE "180034710".
+      *#       ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+               05  CONS-UNDOKI14-COMMENT  PIC X(09)   VALUE "101800280".
+      *#       ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+               05  CONS-UNDOKI15-COMMENT  PIC X(09)   VALUE "101800290".
+      *#       ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
+               05  CONS-UNDOKI16-COMMENT  PIC X(09)   VALUE "101800330".
+      *        ÆñÉÂ´µ¼Ô¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ
+               05  CONS-NANBYO-COMMENT    PIC X(09)   VALUE "180017910".
+      *        ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐÌ¤Ëþ¡Ë
+               05  CONS-SYOGAI1-COMMENT   PIC X(09)   VALUE "180028210".
+      *        ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐ°Ê¾å£±£¸ºÐÌ¤Ëþ¡Ë
+               05  CONS-SYOGAI2-COMMENT   PIC X(09)   VALUE "180028310".
+      *        ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±£¸ºÐ°Ê¾å¡Ë
+               05  CONS-SYOGAI3-COMMENT   PIC X(09)   VALUE "180028410".
+      *        ÀÝ¿©µ¡Ç½ÎÅË¡
+               05  CONS-SESSYOKU-COMMENT  PIC X(09)   VALUE "180016610".
+           03  CONS-RIHA-COMMENT-R REDEFINES CONS-RIHA-COMMENT-VAL.
+               05  CONS-RIHA-COMMENT      PIC X(09)   OCCURS 47.
+           03  CONS-RIHA-COMMENT-MAX      PIC 9(03)   VALUE  47.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -338,6 +348,7 @@
       *    ¥Ñ¥é¥á¥¿¥Á¥§¥Ã¥¯
            PERFORM     100-PRM-CHK-SEC
            IF    LNK-RIHASTDAY-RC  =  ZERO
+            AND  LNK-RIHASTDAY-HOSPNUM NOT =   ZERO
              PERFORM   200-MAIN-SEC
            END-IF
       *
@@ -351,6 +362,28 @@
       *    ¥Ñ¥é¥á¥¿¥Á¥§¥Ã¥¯
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
+      *
+      *    °åÎÅµ¡´ØÈÖ¹æ¥Á¥§¥Ã¥¯(=ZERO¤Î»þ¤Ï°ìÍ÷ÊÖµÑ)
+           IF      LNK-RIHASTDAY-HOSPNUM   =  ZERO
+      *
+               PERFORM VARYING IDX1    FROM   1 BY 1
+                       UNTIL ( IDX1    >   CONS-RIHA-SYSCD-MAX )
+                   MOVE    CONS-RIHA-SYSCD (IDX1)
+                                TO     LNK-RIHASTDAY-SYSCDLST (IDX1)
+               END-PERFORM
+               MOVE    CONS-RIHA-SYSCD-MAX
+                                TO     LNK-RIHASTDAY-SYSCDLST-IDX
+      *
+               PERFORM VARYING IDX1    FROM   1 BY 1
+                       UNTIL ( IDX1    >   CONS-RIHA-COMMENT-MAX )
+                   MOVE    CONS-RIHA-COMMENT (IDX1)
+                                TO     LNK-RIHASTDAY-SRYCDLST (IDX1)
+               END-PERFORM
+               MOVE    CONS-RIHA-COMMENT-MAX
+                                TO     LNK-RIHASTDAY-SRYCDLST-IDX
+      *
+               GO  TO  100-PRM-CHK-EXT
+           END-IF
       *
       *    ´µ¼Ô£É£Ä¥Á¥§¥Ã¥¯
            IF      LNK-RIHASTDAY-PTID      =  ZERO
