@@ -272,12 +272,6 @@
            COPY    "P02SCR-SPA"
                               REPLACING  //SPA-// BY //APIS-//.
       *
-      *    保険組合せの保存
-       01  HZN-HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC"
-                              REPLACING  //COMB-// BY //HZN-//.
-      *
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -342,6 +336,9 @@
            COPY    "CPORAPI012SUB1.INC".
       *    処理終了パラメタ
            COPY    "CPORAPIV3SUB01.INC".
+      *
+      *    保険組合せ編集パラメタ
+           COPY    "CPORAPI012SUB2V3.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -659,6 +656,10 @@
       *
       *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
+           IF      PTMODREQ-ORCA-UID       =   SPACE
+               MOVE    APIV3SUB01-TERMID(5:)
+                                           TO  PTMODRES-ORCA-UID
+           END-IF
            .
        2099-CANCEL-EXT.
            EXIT.
@@ -1229,14 +1230,15 @@
                PERFORM 20012-PTINF-HEN-SEC
            END-IF
       *
+      *    保険情報編集
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 20013-HKNKOH-HENSYU-SEC
+           END-IF
+      *
       *    保険公費チェック、保険組合せ作成
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20022-HKNCOMBI-CHKSYORI-SEC
                MOVE    ZERO            TO  FLG-HKNKOHERR
-           END-IF
-      *    保険情報編集
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20013-HKNKOH-HENSYU-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
@@ -1313,7 +1315,7 @@
                        (PTMODREQ-SEX   NOT =    PTMODRES-SEX ))
                   OR  ((PTMODREQ-BIRTHDAY  NOT =   SPACE     )  AND
                        (PTMODREQ-BIRTHDAY  NOT =   PTMODRES-BIRTHDAY))
-                   MOVE    "75"            TO  WRK-ERRCD
+                   MOVE    "76"            TO  WRK-ERRCD
                    MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
                END-IF
            END-IF
@@ -1652,59 +1654,146 @@
       *    保険組合せ編集処理
       *****************************************************************
        20013-HKNCOMBI-HENSYU-SEC             SECTION.
+      *TEST
+           DISPLAY "FLG-SYORI:" FLG-SYORI
+                 ",SPA-SYSYMD:"  SPA-SYSYMD
+               ",SPA-TERMID:"  SPA-TERMID
+      *TEST
+      *
+           INITIALIZE                  ORAPI012SUB2V3AREA
+           MOVE    SPA-SYSYMD          TO  AP12SUB2V3-SYSYMD
+           IF      FLG-SYORI           =   2
+               MOVE    "2"             TO  AP12SUB2V3-SYORIKBN
+           ELSE
+               MOVE    "1"             TO  AP12SUB2V3-SYORIKBN
+           END-IF
+           CALL    "ORAPI012SUB2V3"    USING
+                                       ORAPI012SUB2V3AREA
+                                       SPA-AREA
+                                       SPA-P02SCRAREA
       *
            INITIALIZE                  PTMODRES-COMBINATION-INF-G
-      *    保険組合せ編集処理
-      *    最大件数
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "P02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   AP12SUB2V3-MAX )
+               PERFORM 200131-COMBINATION-HEN-SEC
+           END-PERFORM
       *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 990-PARA-READ-SEC
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      PARA-EDANUM         >   200
-      *        ３年前までを対象
-               MOVE    SPA-SYSYMD          TO  WRK-ENDYMD
-               COMPUTE WRK-ENDYY           =   WRK-ENDYY
-                                           -   3
-               MOVE    01                  TO  WRK-ENDDD
+           IF      AP12SUB2V3-ERRCD    NOT =   SPACE
       *        警告
-               MOVE    "73"                TO  WRK-ERRCD
+               MOVE    AP12SUB2V3-ERRCD    TO  WRK-ERRCD
                PERFORM 290-WARMSG-HEN-SEC
-           ELSE
-               MOVE    SPACE               TO  WRK-ENDYMD
            END-IF
-           PERFORM 200133-HKNCOMBI-HEN-SEC
       *
-           IF      IDY                 >   200
-      *        ２年前までを対象
-               MOVE    SPA-SYSYMD          TO  WRK-ENDYMD
-               COMPUTE WRK-ENDYY           =   WRK-ENDYY
-                                           -   2
-               MOVE    01                  TO  WRK-ENDDD
-      *        警告
-               MOVE    "74"                TO  WRK-ERRCD
-               PERFORM 290-WARMSG-HEN-SEC
-      *
-               PERFORM 200133-HKNCOMBI-HEN-SEC
-           END-IF
            .
        20013-HKNCOMBI-HENSYU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ出力領域保険情報編集処理
+      *****************************************************************
+       200131-COMBINATION-HEN-SEC     SECTION.
+      *
+      *    処理区分（新規・削除のみ）
+           MOVE    AP12SUB2V3-COMB-MODE (IDX)
+                                   TO  PTMODRES-COMB-MODE (IDX)
+      *    保険組合せ番号
+           MOVE    AP12SUB2V3-COMBINATION-NUMBER (IDX)
+                                   TO  PTMODRES-COMBINATION-NUMBER
+                                                           (IDX)
+      *    保険組合せ　負担割合（入院）
+           MOVE    AP12SUB2V3-COMBINATION-RATE-ADM (IDX)
+                                   TO  PTMODRES-COMBINATION-RATE-ADM
+                                                           (IDX)
+      *    保険組合せ　負担割合（外来）
+           MOVE    AP12SUB2V3-COMBINATION-RATE-OUT (IDX)
+                                   TO  PTMODRES-COMBINATION-RATE-OUT
+                                                           (IDX)
+      *    保険組合せの有効開始日
+           MOVE    AP12SUB2V3-COMB-START-DATE (IDX)
+                                   TO  PTMODRES-COMB-START-DATE
+                                                           (IDX)
+      *    保険組合せの有効終了日
+           MOVE    AP12SUB2V3-COMB-END-DATE (IDX)
+                                   TO  PTMODRES-COMB-END-DATE
+                                                           (IDX)
+      *
+      *    保険ＩＤ
+           MOVE    AP12SUB2V3-COMB-MAIN-ID  (IDX)
+                                   TO  PTMODRES-COMB-MAIN-ID (IDX)
+      *    保険の種類
+           MOVE    AP12SUB2V3-COMB-MAIN-CLASS  (IDX)
+                                   TO  PTMODRES-COMB-MAIN-CLASS (IDX)
+      *    保険者番号
+           MOVE    AP12SUB2V3-COMB-MAIN-NUMBER  (IDX)
+                                   TO  PTMODRES-COMB-MAIN-NUMBER
+                                                             (IDX)
+      *    保険の種類名称
+           MOVE    AP12SUB2V3-COMB-MAIN-NAME  (IDX)
+                                   TO  PTMODRES-COMB-MAIN-NAME (IDX)
+      *    記号
+           MOVE    AP12SUB2V3-COMB-MARK  (IDX)
+                                   TO  PTMODRES-COMB-MARK   (IDX)
+           MOVE    AP12SUB2V3-COMB-NUMBER  (IDX)
+                                   TO  PTMODRES-COMB-NUMBER  (IDX)
+      *    継続区分
+           MOVE    AP12SUB2V3-COMB-CONTINUATION  (IDX)
+                                   TO  PTMODRES-COMB-CONTINUATION(IDX)
+      *    補助区分
+           MOVE    AP12SUB2V3-COMB-ASSISTANCE  (IDX)
+                                   TO  PTMODRES-COMB-ASSISTANCE (IDX)
+           MOVE    AP12SUB2V3-COMB-ASSI-NAME  (IDX)
+                                   TO  PTMODRES-COMB-ASSI-NAME (IDX)
+      *    本人家族区分
+           MOVE    AP12SUB2V3-COMB-FAMILY  (IDX)
+                                   TO  PTMODRES-COMB-FAMILY  (IDX)
+      *
+      *    公費情報
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   4      )
+                          OR  (AP12SUB2V3-INSURANCE-CLASS (IDX IDY)
+                                           =   SPACE)
+      *        公費ＩＤ
+               MOVE    AP12SUB2V3-INSURANCE-ID (IDX IDY)
+                                       TO  PTMODRES-COMB-INSURANCE-ID
+                                                             (IDX IDY)
+      *        公費の種類
+               MOVE    AP12SUB2V3-INSURANCE-CLASS(IDX IDY)
+                                       TO  PTMODRES-COMB-INSURANCE-CLASS
+                                                             (IDX IDY)
+      *        公費の種類名称
+               MOVE    AP12SUB2V3-INSURANCE-NAME(IDX IDY)
+                                       TO  PTMODRES-COMB-INSURANCE-NAME
+                                                             (IDX IDY)
+      *        負担者番号
+               MOVE    AP12SUB2V3-PROVIDER-NUMBER (IDX IDY)
+                                       TO  PTMODRES-COMB-PROVIDER-NUMBER
+                                                             (IDX IDY)
+      *        受給者番号
+               MOVE    AP12SUB2V3-RECIPIENT-NUMBER (IDX IDY)
+                                     TO  PTMODRES-COMB-RECIPIENT-NUMBER
+                                                             (IDX IDY)
+      *        入院−負担率（割）
+               MOVE    AP12SUB2V3-RATE-ADMISSION (IDX IDY)
+                                     TO  PTMODRES-RATE-ADMISSION
+                                                             (IDX IDY)
+      *        入院−固定額
+               MOVE    AP12SUB2V3-MONEY-ADMISSION (IDX IDY)
+                                     TO  PTMODRES-MONEY-ADMISSION
+                                                             (IDX IDY)
+      *        外来−負担率（割）
+               MOVE    AP12SUB2V3-RATE-OUTPATIENT (IDX IDY)
+                                     TO  PTMODRES-RATE-OUTPATIENT
+                                                             (IDX IDY)
+      *        外来−固定額
+               MOVE    AP12SUB2V3-MONEY-OUTPATIENT (IDX IDY)
+                                     TO  PTMODRES-MONEY-OUTPATIENT
+                                                             (IDX IDY)
+           END-PERFORM
+           .
+       200131-COMBINATION-HEN-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    補助区分名称編集
       *****************************************************************
@@ -3771,6 +3860,12 @@
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "75"
+               STRING  "保険組合せが２００件以上存在します。"
+                       "１年前に終了となった保険組合せは返却しません"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "76"
                STRING  "患者氏名・性別・生年月日が送信内容と違います。"
                        "患者を確認して下さい。"
                                                DELIMITED  BY  SIZE
