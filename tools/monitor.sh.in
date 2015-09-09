@@ -24,6 +24,9 @@ fi
 
 . $JMARECEIPT_ENV
 
+# ミドルウェア
+# panda or ginbee (default panda)
+#export "__MCP_MIDDLEWARE_NAME=panda"
 
 # glserver を起動するか？
 Start_GLSERVER=true
