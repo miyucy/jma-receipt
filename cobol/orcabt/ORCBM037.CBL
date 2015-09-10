@@ -45,11 +45,6 @@
       *                                     追加対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    16/06/13  社保診療報酬請求書の災害該当
-      *                                     分のまとめ対応
-      *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -306,8 +301,6 @@
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-MARUCHO    PIC X(01).
            03  WRK-PARA-GENMENKBN  PIC X(01).
-           03  WRK-PARA-STSRYYM    PIC 9(06).
-           03  WRK-PARA-EDSRYYM    PIC 9(06).
       *
        01  WRK-PARA1.
            03  WRK-PARA-HKNJANUM-S PIC X(08).
@@ -398,11 +391,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1001-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD 
            MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
@@ -427,11 +416,7 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1002-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1002-STYUKYMD (7:2)
            MOVE    SYS-1002-STYUKYMD   TO  SYS-1002-EDYUKYMD 
            MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
@@ -504,8 +489,7 @@
       *        
                    PERFORM VARYING IDX1    FROM   1   BY  1
                            UNTIL   IDX1    >      2
-                       IF    ( SUM-GOK-KENSU (IDX3 IDX1 4) >   ZERO )
-                       OR    ( SUM-BIKOU-KENSU (IDX3 IDX1) >   ZERO )
+                       IF      SUM-GOK-KENSU (IDX3 IDX1 4)     >   ZERO 
                            MOVE    ZERO            TO  FLG-PRTKBN
       *           
       *                    帳票編集<見出し・ＨＣＭ３Ｃ>処理
@@ -595,7 +579,6 @@
       *    新潟県中越沖地震対応
            EVALUATE    WRK-PARA-GENMENKBN
                WHEN    ZERO
-               WHEN    "9"
                    MOVE    SYS-1005-SRYKANAME    TO  HCM3C-SRYKA
                WHEN    "1"
                    STRING  "（未確定分）"      DELIMITED   BY  SIZE
@@ -645,7 +628,6 @@
       *    新潟県中越沖地震対応
            EVALUATE    WRK-PARA-GENMENKBN
                WHEN    ZERO
-               WHEN    "9"
                    MOVE    SYS-1005-SRYKANAME    TO  HCM3D-SRYKA
                WHEN    "1"
                    STRING  "（未確定分）"      DELIMITED   BY  SIZE
@@ -959,10 +941,7 @@
            MOVE    WRK-GKENSUZ             TO  HCM3D-GKENSU
       *
       *    備考欄
-           IF    ( WRK-PARA-GENMENKBN  =   "1"     )
-           OR    ( WRK-PARA-GENMENKBN  =   "9" AND
-                   SUM-BIKOU-KENSU (IDX3 IDX1)
-                                       >   ZERO    )
+           IF      WRK-PARA-GENMENKBN  =   "1"
                MOVE    "未確定分："    TO  HCM3D-BIKOH-TITLE
                MOVE    "件数"          TO  HCM3D-BIKOH-TITLE-KENSU
                MOVE    "日数"          TO  HCM3D-BIKOH-TITLE-NISSU
@@ -1046,7 +1025,7 @@
                                                    TO  SPRT-TITLE
                END-EVALUATE
            END-IF
-           IF      WRK-PARA-GENMENKBN  =   "1" 
+           IF      WRK-PARA-GENMENKBN  =   "1"
                MOVE    SPRT-TITLE          TO  WRK-SPRT-TITLE
                MOVE    SPACE               TO  SPRT-TITLE
                STRING  "未確定分・"        DELIMITED  BY  SIZE
@@ -1171,11 +1150,8 @@
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
            MOVE    "*"             TO  SYS-1900-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1900-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1900-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1900-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
            MOVE    SYS-1900-STYUKYMD
                                    TO  SYS-1900-EDYUKYMD
@@ -1211,11 +1187,8 @@
            MOVE    "1901"          TO  SYS-1901-KANRICD
            MOVE    SYS-1900-PRTKBN(7)
                                    TO  SYS-1901-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1901-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1901-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1901-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
            MOVE    SYS-1901-STYUKYMD
                                    TO  SYS-1901-EDYUKYMD
@@ -1245,11 +1218,8 @@
            MOVE    "1902"          TO  SYS-1902-KANRICD
            MOVE    SYS-1900-PRTKBN(7)
                                    TO  SYS-1902-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1902-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1902-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1902-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
            MOVE    SYS-1902-STYUKYMD
                                    TO  SYS-1902-EDYUKYMD
@@ -1279,14 +1249,8 @@
            MOVE    "1903"          TO  SYS-1903-KANRICD
            MOVE    SYS-1900-PRTKBN(7)
                                    TO  SYS-1903-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1903-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1903-STYUKYMD (1:6)
-           END-IF
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
+           MOVE    WRK-SYMD        TO  SYS-1903-STYUKYMD
+                                       SYS-1903-EDYUKYMD
            MOVE    SYS-1903-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO

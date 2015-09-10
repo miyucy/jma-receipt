@@ -251,10 +251,7 @@
                05  FILLER              PIC X(03).
                05  WRK-9-X             PIC X(01).
       *    日付変換用
-           03  WRK-SYMD.
-               05  WRK-SYY             PIC X(04).
-               05  WRK-SMM             PIC X(02).
-               05  WRK-SDD             PIC X(02).
+           03  WRK-SYMD                PIC X(08).
       *
       *    パラメタＤＢ編集用
            03  WRK-BTPARA-INFO-PARA.
@@ -768,10 +765,7 @@
                END-IF
       *
       *        請求用で作成時請求ＤＢ更新用ファイル出力処理
-      *        ＨＡＯＲＩのチェック用レセ電データ作成時は更新しない
-               IF    ( WRK-PARA-PRTKBN     =   "1" )
-               AND   ( WRK-PARA-DATAKBN
-                                       NOT =   "8" )
+               IF      WRK-PARA-PRTKBN     =   "1"
                    PERFORM 2010-UPD-FILE-HENSYU-SEC
                END-IF
       *
@@ -1114,35 +1108,22 @@
            COMPUTE WRK-FILE-RENNUM =   WRK-FILE-RENNUM  +   1
            MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM
            MOVE    WRK-FILE-SEQNUM1    TO  RECE30PARA-SEQNUM1
-           IF      WRK-PARA-DATAKBN
-                                       =   "8"
-      *        ＨＡＯＲＩのチェック用レセ電データ作成時
-               EVALUATE    FLG-SYORI
-                   WHEN    1
-      *                一時請求分
+           EVALUATE    FLG-SYORI
+               WHEN    1
+      *            一時請求分
+                   IF      WRK-PARA-PRTKBN     =   "1"
+                       MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
+                   ELSE
                        MOVE    "TENKENT"           TO  RECE30PARA-FILENM
-                   WHEN    2
-      *                再請求分
+                   END-IF
+               WHEN    2
+      *            再請求分
+                   IF      WRK-PARA-PRTKBN     =   "1"
+                       MOVE    "UKSRECE"           TO  RECE30PARA-FILENM
+                   ELSE
                        MOVE    "UKSTENK"           TO  RECE30PARA-FILENM
-               END-EVALUATE
-           ELSE
-               EVALUATE    FLG-SYORI
-                   WHEN    1
-      *                一時請求分
-                       IF      WRK-PARA-PRTKBN     =   "1"
-                           MOVE    "RECEDEN"       TO  RECE30PARA-FILENM
-                       ELSE
-                           MOVE    "TENKENT"       TO  RECE30PARA-FILENM
-                       END-IF
-                   WHEN    2
-      *                再請求分
-                       IF      WRK-PARA-PRTKBN     =   "1"
-                           MOVE    "UKSRECE"       TO  RECE30PARA-FILENM
-                       ELSE
-                           MOVE    "UKSTENK"       TO  RECE30PARA-FILENM
-                       END-IF
-               END-EVALUATE
-           END-IF
+                   END-IF
+           END-EVALUATE
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECE30PARA-BASENAME
@@ -1580,15 +1561,6 @@
       *    返戻データ更新処理
       *****************************************************************
        20091-HENREI-B-UPDATE-SEC          SECTION.
-      *
-      *    点検用またはＨＡＯＲＩのチェック用レセ電データ作成時は更新しない
-           IF    ( WRK-PARA-PRTKBN     =   "1" )
-           AND   ( WRK-PARA-DATAKBN
-                                   NOT =   "8" )
-               CONTINUE
-           ELSE
-               GO  TO  20091-HENREI-B-UPDATE-EXT
-           END-IF
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
