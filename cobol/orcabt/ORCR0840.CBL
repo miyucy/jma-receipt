@@ -5501,7 +5501,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                END-IF
              END-IF
       *
-             IF  WRK-INPUTCOMENT(1:8)  =  "¼õÎÎÀè¡§"
+             IF  WRK-INPUTCOMENT(1:8)  =  "»ÙÊ§¸µ¡§"
                MOVE  WRK-INPUTCOMENT(9:30)
                                           TO  WRK-INPUTCOMENT3
                IF  WRK-INPUTCOMENT3 =
@@ -13077,12 +13077,16 @@ grpsys     PERFORM  900-DBSELECT-SEC
            END-IF
       *
            IF       RECE82-JIBAI-CHIKANNAMEFLG  =  1
-             IF     RECE82-JIBAI-JYUKINFLG      =  1
-               MOVE      1        TO  RECE82-JIBAI-JYUNAMEFLG
-               MOVE      RECE82-JIBAI-CHIKANNAME
+             IF  WRK-JIBAI-SKYKIN-A  >  ZERO
+               IF     RECE82-JIBAI-JYUKINFLG      =  1
+                 MOVE    1        TO  RECE82-JIBAI-JYUNAMEFLG
+                 MOVE    RECE82-JIBAI-CHIKANNAME
                                   TO  RECE82-JIBAI-JYUNAME
+               ELSE
+                 MOVE    2        TO  RECE82-JIBAI-CHIKANNAMEFLG
+               END-IF
              ELSE
-               MOVE      2        TO  RECE82-JIBAI-CHIKANNAMEFLG
+                 MOVE    2        TO  RECE82-JIBAI-CHIKANNAMEFLG
              END-IF
            END-IF
       *
