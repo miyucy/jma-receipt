@@ -803,18 +803,22 @@
            MOVE    SPACE               TO  WRK-YOH-NAME-G
            MOVE    ZERO                TO  IDX-QY
       *
-      *    £±∑ÔÃ‹§¿§±»÷πÊ…Ωº®
-           IF      CNT-SRY             =   1
-               MOVE    IDX-ZAI         TO  WRK-Z9
-               MOVE    WRK-Z9          TO  WRK-HEN-CNT(1:2)
-               MOVE    ")"             TO  WRK-HEN-CNT(3:1)
-      *        √ÌºÕ§œø«Œ≈ÃææŒ ‘Ω∏
-               IF      WRK-SRYKBN      =   "31"
-                                       OR  "32"
-                                       OR  "33"
-                   PERFORM 2301-SRYKBN-HENSYU-SEC
+      *04.08.02*START
+           IF      ORCHCN62-SRYKBN(IDX-ZAI)    NOT =   "98"
+      *        £±∑ÔÃ‹§¿§±»÷πÊ…Ωº®
+               IF      CNT-SRY             =   1
+                   MOVE    IDX-ZAI         TO  WRK-Z9
+                   MOVE    WRK-Z9          TO  WRK-HEN-CNT(1:2)
+                   MOVE    ")"             TO  WRK-HEN-CNT(3:1)
+      *            √ÌºÕ§œø«Œ≈ÃææŒ ‘Ω∏
+                   IF      WRK-SRYKBN      =   "31"
+                                           OR  "32"
+                                           OR  "33"
+                       PERFORM 2301-SRYKBN-HENSYU-SEC
+                   END-IF
                END-IF
            END-IF
+      *04.08.02*END
       *
            IF      TNS-SRYCD(1:3)  =   "001"
       *        Õ—À° ‘Ω∏

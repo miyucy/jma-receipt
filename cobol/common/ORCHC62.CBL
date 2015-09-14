@@ -722,12 +722,16 @@
            MOVE    SPACE               TO  WRK-YOH-NAME-G
            MOVE    ZERO                TO  IDX-QY
       *
-      *    １件目だけ番号表示
-           IF      CNT-SRY         =   1
-               MOVE    CNT-ZAI         TO  WRK-Z9
-               MOVE    WRK-Z9          TO  WRK-HENLINE(1:2)
-               MOVE    ")"             TO  WRK-HENLINE(3:1)
+      *04.08.02*START
+           IF      ORCHC62-SRYKBN(IDX-ZAI) NOT =   "98"
+      *        １件目だけ番号表示
+               IF      CNT-SRY         =   1
+                   MOVE    CNT-ZAI         TO  WRK-Z9
+                   MOVE    WRK-Z9          TO  WRK-HENLINE(1:2)
+                   MOVE    ")"             TO  WRK-HENLINE(3:1)
+               END-IF
            END-IF
+      *04.08.02*END
       *
            IF      TNS-SRYCD(1:3)  =   "001"
       *        用法編集
