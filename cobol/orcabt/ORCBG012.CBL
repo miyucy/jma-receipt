@@ -263,8 +263,8 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
                05  FILLER              PIC X(10)   VALUE   "choseikin_".
-               05  WRK-TO-DATA-NYUGAI  PIC X(01).
-               05  WRK-TO-DATA-KIKAN   PIC X(18).
+               05  WRK-TO-DATA-KIKAN   PIC X(24).
+           03  WRK-TO-DATA-NYUGAI      PIC X(06).
            03  WRK-TO-DATA1.
                05  FILLER              PIC X(04)   VALUE   ".csv".
            03  WRK-TO-DATA2.
@@ -602,18 +602,27 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
       *    ＣＳＶ出力ファイル名設定
            MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
       *
+           MOVE    SPACE           TO  WRK-TO-DATA-NYUGAI
+           MOVE    SPACE           TO  WRK-TO-DATA-KIKAN
+      *
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
-               MOVE    "N"             TO  WRK-TO-DATA-NYUGAI
+               MOVE    "nyuin"             TO  WRK-TO-DATA-NYUGAI
            ELSE
-               MOVE    "G"             TO  WRK-TO-DATA-NYUGAI
+               MOVE    "gairai"            TO  WRK-TO-DATA-NYUGAI
            END-IF
       *
            IF    ( WRK-PARA-KKNKBN     =   "1" )
                MOVE    WRK-PARA-KKNSTYM        TO  WRK-TO-DATA-STRYM
                MOVE    WRK-PARA-KKNEDYM        TO  WRK-TO-DATA-ENDYM
-               MOVE    WRK-TO-DATA2            TO  WRK-TO-DATA-KIKAN
+               STRING  WRK-TO-DATA-NYUGAI      DELIMITED BY SPACE
+                       WRK-TO-DATA2            DELIMITED BY SPACE
+                       INTO                    WRK-TO-DATA-KIKAN
+               END-STRING
            ELSE
-               MOVE    WRK-TO-DATA1            TO  WRK-TO-DATA-KIKAN
+               STRING  WRK-TO-DATA-NYUGAI      DELIMITED BY SPACE
+                       WRK-TO-DATA1            DELIMITED BY SPACE
+                       INTO                    WRK-TO-DATA-KIKAN
+               END-STRING
            END-IF
       *----(04.08.01)--ADD-END-----
            .
@@ -1447,6 +1456,7 @@ grpsys                                 SPA-AREA
       *
            MOVE    CSV-HEAD-01     TO  WRK-DATA
            MOVE    100             TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
@@ -1462,6 +1472,7 @@ grpsys                                 SPA-AREA
       *
            MOVE    CSV-HEAD-02     TO  WRK-DATA
            MOVE    120             TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
@@ -1531,6 +1542,7 @@ grpsys                                 SPA-AREA
       *    調整金（−）
            MOVE    WRK-CSV-CHOSEIM TO  WRK-DATA
            MOVE    8               TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
@@ -1577,6 +1589,7 @@ grpsys                                 SPA-AREA
       *
            MOVE    WRK-CHOSEI-SGK  TO  WRK-DATA
            MOVE    12              TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集

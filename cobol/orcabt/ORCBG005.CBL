@@ -1113,6 +1113,7 @@ grpsys                                     SPA-AREA
       *
            MOVE    CSV-HEAD-01     TO  WRK-DATA
            MOVE    100             TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
@@ -1128,6 +1129,7 @@ grpsys                                     SPA-AREA
       *
            MOVE    CSV-HEAD-03     TO  WRK-DATA
            MOVE    150             TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
@@ -1143,6 +1145,7 @@ grpsys                                     SPA-AREA
       *
            MOVE    CSV-HEAD-02     TO  WRK-DATA
            MOVE    120             TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
@@ -1233,6 +1236,7 @@ grpsys                                     SPA-AREA
       *    １８０日目
            MOVE    WRK-CSV-180YMD  TO  WRK-DATA
            MOVE    10              TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
