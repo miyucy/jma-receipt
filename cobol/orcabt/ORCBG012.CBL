@@ -285,6 +285,8 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  WRK-CSV-EDYMD       PIC X(10).
            03  WRK-CSV-CHOSEIP     PIC S9(07).
            03  WRK-CSV-CHOSEIM     PIC S9(07).
+           03  WRK-CSV-Z7          PIC -999999.
+           03  WRK-CSV-Z11         PIC -9999999999.
       *
       *    £Ã£Ó£Ö¥Ç¡¼¥¿¥Ø¥Ã¥À¡¼¾ðÊó
        01  CSV-HEAD-01.
@@ -1536,12 +1538,13 @@ grpsys                                 SPA-AREA
       *
       *    Ä´À°¶â¡Ê¡Ü¡Ë
            MOVE    WRK-CSV-CHOSEIP TO  WRK-DATA
-           MOVE    8               TO  WRK-NAGASA
+           MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    Ä´À°¶â¡Ê¡Ý¡Ë
-           MOVE    WRK-CSV-CHOSEIM TO  WRK-DATA
-           MOVE    8               TO  WRK-NAGASA
+           MOVE    WRK-CSV-CHOSEIM TO  WRK-CSV-Z7
+           MOVE    WRK-CSV-Z7      TO  WRK-DATA
+           MOVE    7               TO  WRK-NAGASA
            MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
@@ -1583,12 +1586,18 @@ grpsys                                 SPA-AREA
            MOVE    12              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-           MOVE    TTL-CHOSEIM     TO  WRK-DATA
+           MOVE    TTL-CHOSEIM     TO  WRK-CSV-Z11
+           MOVE    WRK-CSV-Z11     TO  WRK-DATA
            MOVE    12              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-           MOVE    WRK-CHOSEI-SGK  TO  WRK-DATA
-           MOVE    12              TO  WRK-NAGASA
+           IF      WRK-CHOSEI-SGK  <   0
+               MOVE    WRK-CHOSEI-SGK  TO  WRK-CSV-Z11
+               MOVE    WRK-CSV-Z11     TO  WRK-DATA
+           ELSE
+               MOVE    WRK-CHOSEI-SGK  TO  WRK-DATA
+           END-IF
+           MOVE    11              TO  WRK-NAGASA
            MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
