@@ -235,8 +235,10 @@
                05  WRK-HOSPTEL     PIC X(15).
            03  WRK-LINE-SEN.
                05  FILLER          PIC X(54)   VALUE
-               "¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
-      *
+               "______________________________________________________".
+           03  WRK-LINE-SEN2.
+               05  FILLER          PIC X(54)   VALUE
+               "   ___________________________________________________".
       *
       *    ºÇÂç¹Ô¿ô
        01  MAX-LINE                PIC 9(03)   VALUE    68.
@@ -724,6 +726,8 @@
                MOVE    CNT-ZAI         TO  WRK-Z9
                MOVE    WRK-Z9          TO  WRK-HENLINE(1:2)
                MOVE    ")"             TO  WRK-HENLINE(3:1)
+           ELSE
+               MOVE    WRK-LINE-SEN2   TO  HCM62-SEN(CNT-LINE)
            END-IF
       *
       *    ÌôºÞÌ¾ÊÔ½¸
@@ -732,20 +736,24 @@
            PERFORM 250-HENSYU-SYORI-SEC
       *
       *    ¸úÇ½ÊÔ½¸½èÍý
-           MOVE    SPACE           TO  WRK-HENSYUDATA
-           MOVE    "¡Ú¸úÇ½¸ú²Ì¡Û"  TO  WRK-HENSYUDATA
-           PERFORM 250-HENSYU-SYORI-SEC
-           MOVE    SPACE           TO  WRK-HENSYUDATA
-           MOVE    YAKUJYO-EFFECT  TO  WRK-HENSYUDATA
-           PERFORM 250-HENSYU-SYORI-SEC
+           IF      YAKUJYO-EFFECT  NOT =   SPACE
+               MOVE    SPACE           TO  WRK-HENSYUDATA
+               MOVE    "¡Ú¸úÇ½¸ú²Ì¡Û"  TO  WRK-HENSYUDATA
+               PERFORM 250-HENSYU-SYORI-SEC
+               MOVE    SPACE           TO  WRK-HENSYUDATA
+               MOVE    YAKUJYO-EFFECT  TO  WRK-HENSYUDATA
+               PERFORM 250-HENSYU-SYORI-SEC
+           END-IF
       *
       *    Ãí°Õ»ö¹àÊÔ½¸½èÍý
-           MOVE    SPACE           TO  WRK-HENSYUDATA
-           MOVE    "¡ÚÃí°Õ»ö¹à¡Û"  TO  WRK-HENSYUDATA
-           PERFORM 250-HENSYU-SYORI-SEC
-           MOVE    SPACE           TO  WRK-HENSYUDATA
-           MOVE    YAKUJYO-CAUTION TO  WRK-HENSYUDATA
-           PERFORM 250-HENSYU-SYORI-SEC
+           IF      YAKUJYO-CAUTION NOT =   SPACE
+               MOVE    SPACE           TO  WRK-HENSYUDATA
+               MOVE    "¡ÚÃí°Õ»ö¹à¡Û"  TO  WRK-HENSYUDATA
+               PERFORM 250-HENSYU-SYORI-SEC
+               MOVE    SPACE           TO  WRK-HENSYUDATA
+               MOVE    YAKUJYO-CAUTION TO  WRK-HENSYUDATA
+               PERFORM 250-HENSYU-SYORI-SEC
+           END-IF
            .
        230-KOUNOU-NAIYO-EXT.
            EXIT.
