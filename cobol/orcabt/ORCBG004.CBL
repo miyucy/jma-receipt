@@ -125,7 +125,6 @@
            03  CNT-PAGE                            PIC 9(03).
            03  CNT-BG004                           PIC 9(05).
            03  CNT-BG00401DYN                      PIC 9(03).
-           03  CNT-NO                              PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -164,13 +163,12 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
                05  WRK-SMM                         PIC 9(02).
                05  WRK-SDD                         PIC 9(02).
       *----(04.08.01)--UPD-END-----
-           03  WRK-EOMYMD                          PIC X(08).
+           03  WRK-YMD                             PIC X(08).
            03  WRK-EDTYMD1                         PIC X(10).
            03  WRK-EDTYMD3                         PIC X(22).
            03  WRK-KJNYMD                          PIC X(22).
            03  WRK-SYORIYMD                        PIC X(22).
            03  WRK-PAGE                            PIC ZZ9.
-           03  WRK-NO                              PIC ZZZ9.
            03  WRK-HCMG004.
                05  WRK-HCMG004-BTUNAME             PIC X(10).
                05  WRK-HCMG004-BRMNUM              PIC X(6).
@@ -498,18 +496,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  ORCBG00401PARA-HOSPNUM
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-           IF    ( WRK-PARA-PROCKBN    =   "0" OR "1" OR "2" )
-               CONTINUE
-           ELSE
-               MOVE    ZERO            TO  WRK-PARA-PROCKBN
-           END-IF
-      *
-           IF    ( WRK-PARA-PROCKBN    =   "2" )
-               MOVE    WRK-PARA-KJNYMD TO  WRK-SYMD
-               PERFORM 800-EOM-SEC
-               MOVE    WRK-EOMYMD      TO  WRK-PARA-KJNYMD
-           END-IF
-      *
       *    基準日
            MOVE    WRK-PARA-KJNYMD     TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
@@ -594,7 +580,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  ORCBG00401PARA-HOSPNUM
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                      PTNYUINRRK-REC
       *
-           IF    ( WRK-PARA-PROCKBN   =    "1" OR "2" )
+           IF    ( WRK-PARA-PROCKBN   =    "1" )
 grpsys*DD      MOVE    WRK-PARA-HOSPID     TO  PTNYUINRRK-HOSPID
 grpsys         MOVE    WRK-PARA-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
                MOVE    WRK-PARA-KJNYMD     TO  PTNYUINRRK-NYUINYMD
@@ -725,10 +711,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
        210-BODY-EDIT-SEC           SECTION.
       *
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
-           COMPUTE CNT-NO      =   CNT-NO      +   1
-      *
-           MOVE    CNT-NO          TO  WRK-NO
-           MOVE    WRK-NO          TO  HCMG004-NO (CNT-LINE)
       *
            MOVE    SPACE           TO      WRK-HCMG004-BTUNAME
                                            WRK-HCMG004-BRMNUM
@@ -878,8 +860,7 @@ grpsys                                         SPA-AREA
            MOVE    STUSANCHK-TSUSAN    TO  WRK-CSV-NISSU
       *
       *    ９１日以上
-           IF    ( STUSANCHK-DAY-91    NOT =  SPACE )
-            AND  ( STUSANCHK-DAY-91       <=   PTNYUINRRK-TAIINYMD )
+           IF    ( STUSANCHK-DAY-91       <=   PTNYUINRRK-TAIINYMD )
              IF  ( STUSANCHK-DAY-91-STS    =   ZERO OR "1" )
                MOVE    STUSANCHK-DAY-91    TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
@@ -897,8 +878,7 @@ grpsys                                         SPA-AREA
            END-IF
       *
       *    １８０日以上
-           IF   ( STUSANCHK-DAY-180    NOT =  SPACE )
-            AND ( STUSANCHK-DAY-180      <=   PTNYUINRRK-TAIINYMD )
+           IF    ( STUSANCHK-DAY-180      <=   PTNYUINRRK-TAIINYMD )
              IF    ( STUSANCHK-DAY-180-STS =   ZERO OR "2" )
                MOVE    STUSANCHK-DAY-180   TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
@@ -1112,7 +1092,7 @@ grpsys                                 SPA-AREA
        270-CSV-HEAD-SET-SEC        SECTION.
       *
            INITIALIZE                  WRK-REC
-           MOVE    1               TO  WRK-REC-LENGTH
+                                       WRK-REC-LENGTH
       *
            MOVE    CSV-HEAD-01     TO  WRK-DATA
            MOVE    100             TO  WRK-NAGASA
@@ -1120,14 +1100,15 @@ grpsys                                 SPA-AREA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
-           STRING  WRK-KAIGYO          DELIMITED  BY  SIZE
-           INTO    WRK-REC
-           WITH    POINTER  WRK-REC-LENGTH
+           STRING  WRK-REC(1:WRK-REC-LENGTH)
+                                       DELIMITED  BY  SIZE
+                   WRK-KAIGYO          DELIMITED  BY  SIZE
+                   INTO                WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
       *
            INITIALIZE                  WRK-REC
-           MOVE    1               TO  WRK-REC-LENGTH
+                                       WRK-REC-LENGTH
       *
            MOVE    CSV-HEAD-02     TO  WRK-DATA
            MOVE    120             TO  WRK-NAGASA
@@ -1135,9 +1116,10 @@ grpsys                                 SPA-AREA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
-           STRING  WRK-KAIGYO          DELIMITED  BY  SIZE
-           INTO    WRK-REC
-           WITH    POINTER  WRK-REC-LENGTH
+           STRING  WRK-REC(1:WRK-REC-LENGTH)
+                                       DELIMITED  BY  SIZE
+                   WRK-KAIGYO          DELIMITED  BY  SIZE
+                   INTO                WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
       *
@@ -1150,7 +1132,7 @@ grpsys                                 SPA-AREA
        270-CSV-BODY-SET-SEC        SECTION.
       *
            INITIALIZE                  WRK-REC
-           MOVE    1               TO  WRK-REC-LENGTH
+                                       WRK-REC-LENGTH
       *
       *    病棟
            MOVE    WRK-CSV-BTUNAME TO  WRK-DATA
@@ -1225,9 +1207,10 @@ grpsys                                 SPA-AREA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    改行コード編集
-           STRING  WRK-KAIGYO          DELIMITED  BY  SIZE
-           INTO    WRK-REC
-           WITH    POINTER  WRK-REC-LENGTH
+           STRING  WRK-REC(1:WRK-REC-LENGTH)
+                                       DELIMITED  BY  SIZE
+                   WRK-KAIGYO          DELIMITED  BY  SIZE
+                   INTO                WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
       *
@@ -1286,17 +1269,26 @@ grpsys                                 SPA-AREA
            IF      WRK-DATA            =   SPACE
                CONTINUE
            ELSE
-               STRING  FUNCTION TRIM(WRK-DATA) DELIMITED BY SIZE
-               INTO    WRK-REC
-               WITH    POINTER  WRK-REC-LENGTH
-               END-STRING
+               PERFORM VARYING IDW2    FROM    WRK-NAGASA  BY  -1
+                       UNTIL   IDW2    <       1
+                   IF      WRK-DATA (IDW2:1)   NOT =   SPACE
+                       STRING  WRK-REC(1:WRK-REC-LENGTH)
+                                                   DELIMITED   BY  SIZE
+                               WRK-DATA(1:IDW2)    DELIMITED   BY  SIZE
+                               INTO    WRK-REC
+                       END-STRING
+                       ADD     IDW2        TO  WRK-REC-LENGTH
+                       MOVE    1           TO  IDW2
+                   END-IF
+               END-PERFORM
            END-IF
       *
            IF      WRK-RECEND         =   ZERO
-               STRING  WRK-KUGIRI                DELIMITED  BY  SIZE
-               INTO    WRK-REC
-               WITH    POINTER  WRK-REC-LENGTH
+               STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                       WRK-KUGIRI                DELIMITED  BY  SIZE
+                       INTO        WRK-REC
                END-STRING
+               ADD     1                   TO  WRK-REC-LENGTH
            END-IF
       *
            INITIALIZE                      WRK-HENSYU-AREA
@@ -1400,20 +1392,19 @@ grpsys                                 SPA-AREA
       *****************************************************************
       *    月末日取得処理
       *****************************************************************
-       800-EOM-SEC                     SECTION.
-      *
-           INITIALIZE                  WRK-EOMYMD
+       800-GETUMATU-SEC      SECTION.
       *
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY1-AREA
-           MOVE    "71"                TO   LNK-DAY7-IRAI
-           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                       LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EOMYMD
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    WRK-SYMD (1 : 6)    TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"               USING
+                                           STS-AREA-DAY
+                                           LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-YMD
       *
            .
-       800-EOM-EXT.
+       800-GETUMATU-EXT.
             EXIT.
       *****************************************************************
       *    西暦日本語変換処理
