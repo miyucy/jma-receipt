@@ -1,6 +1,6 @@
 #!%RUBY%
 # coding : euc-jp
-
+Encoding.default_external = "utf-8"
 # Claim通信バージョン2
 # 受信XMLのシーケンシャルファイルへの変換処理
 
