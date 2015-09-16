@@ -211,8 +211,8 @@ grpsys     03  WRK-PARA-HOSPNUM        PIC 9(02).
        01  WRK-TO-DATA-G.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
-               05  FILLER              PIC X(13)   VALUE
-                                       "chouki_nyuin_".
+               05  FILLER              PIC X(12)   VALUE
+                                       "choki_nyuin_".
                05  WRK-TO-DATA-KJNYMD  PIC X(08).
                05  FILLER              PIC X(04)   VALUE   ".csv".
       *
