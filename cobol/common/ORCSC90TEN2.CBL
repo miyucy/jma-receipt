@@ -198,14 +198,12 @@
                ELSE
                    MOVE    LNK-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
                END-IF
-      *
-               MOVE    IDX                 TO  IDX-MAX
       *        ÌôÉ¾¤ÏÂÐ¾Ý³°
                IF      LNK-COM-YAKUHYO (IDX)   =   "1"
                    CONTINUE
                ELSE
       *
-      *****    MOVE    IDX                 TO  IDX-MAX
+               MOVE    IDX                 TO  IDX-MAX
                EVALUATE    WRK-MOJI
       *        ÌôºÞ
                WHEN    "6"
@@ -313,22 +311,9 @@
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN (IDX)
                                            *   WRK-SURYO-CHU
            ELSE
-      *H28.4
-      *        ¼¾ÉÛÌô¤ÎËç¿ôÊÑ¹¹
-               IF     (LNK-COM-SIPPUKBN (IDX)  =   "1" )
-                  AND (LNK-COM-SIPGEN (IDX)    =   "1"
-                                               OR  "2" )
-                   MOVE    LNK-COM-SIP-SURYO (IDX) TO  WRK-SURYO
-               ELSE
-                   MOVE    LNK-COM-SURYO  (IDX)    TO  WRK-SURYO
-               END-IF
-      *¤Ê¤¤
-               MOVE    LNK-COM-SURYO  (IDX)    TO  WRK-SURYO
-      *
       *        ÅÀ¿ô
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN(IDX)
-                                           *   WRK-SURYO
-      *???                                 *   LNK-COM-SURYO  (IDX)
+                                           *   LNK-COM-SURYO  (IDX)
            END-IF
       *
            ADD     WRK-SYOKEIS2        TO  WRK-ZAIKEI
