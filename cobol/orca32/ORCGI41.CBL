@@ -2311,6 +2311,8 @@
                MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
+           MOVE    SPACE               TO  SPA-GMN-UPYMD
+      *
            PERFORM UNTIL      (FLG-NYUINACCT     =   1)
       *
                ADD     1                   TO  IDX
@@ -2326,6 +2328,15 @@
                                                         099999920
                                MOVE   NACCT-DAY(WRK-MATSUDD)
                                                   TO  SPA-TAIHI-SHOKUJI
+                           END-IF
+      *                    食事剤の更新日を退避
+                           IF    NACCT-SRYCDTOTAL   =   099999918  OR
+                                                        099999919  OR
+                                                        099999920
+                               IF   SPA-GMN-UPYMD  <=   NACCT-UPYMD
+                                   MOVE   NACCT-UPYMD
+                                                  TO  SPA-GMN-UPYMD
+                               END-IF
                            END-IF
                        ELSE
       *                    食堂加算
@@ -3468,6 +3479,15 @@
            MOVE    SPA-GMN-SYUBETSU5   TO  I41-SYUBETSU5.
            MOVE    SPA-GMN-SYUBETSU6   TO  I41-SYUBETSU6.
            MOVE    SPA-GMN-LASTNYUIN   TO  I41-LASTNYUIN.
+      *    食事更新日
+           MOVE    "blue"              TO  I41-UPYMD-STYLE.
+           IF      SPA-GMN-UPYMD       NOT =  SPACE
+               MOVE  "食事更新日"      TO  I41-UPYMD(1:10)
+               DISPLAY "SPA-GMN-UPYMD = " SPA-GMN-UPYMD
+               MOVE    SPA-GMN-UPYMD   TO  WRK-SYMD
+               PERFORM 41012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  I41-UPYMD(12:9)
+           END-IF
       *    保険組合せ
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-HKNCOMBI-MAX
