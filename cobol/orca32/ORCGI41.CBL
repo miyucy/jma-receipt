@@ -3483,7 +3483,6 @@
            MOVE    "blue"              TO  I41-UPYMD-STYLE.
            IF      SPA-GMN-UPYMD       NOT =  SPACE
                MOVE  "食事更新日"      TO  I41-UPYMD(1:10)
-               DISPLAY "SPA-GMN-UPYMD = " SPA-GMN-UPYMD
                MOVE    SPA-GMN-UPYMD   TO  WRK-SYMD
                PERFORM 41012-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  I41-UPYMD(12:9)
