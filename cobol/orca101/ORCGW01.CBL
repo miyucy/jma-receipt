@@ -2827,13 +2827,23 @@
                    MOVE    "末日で入力して下さい"     TO  SPA-ERRMSG
       *----(04.08.02)--ADD-START---
                WHEN    "0025"
-                   MOVE    "当日有効のレコードが存在しません"
-                                                      TO  SPA-ERRMSG
+                   STRING  "「１００１　医療機関情報−基本」"
+                           "本日有効な情報が登録されていません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0026"
-                   MOVE    "有効期間が不連続です"     TO  SPA-ERRMSG
+                   STRING  "「１００１　医療機関情報−基本」"
+                           "情報が登録されていない期間があります。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0027"
-                   MOVE    "最終期間の終了日が正しくありません"
-                                                      TO  SPA-ERRMSG                                                      
+                   STRING  "「１００１　医療機関情報−基本」"
+                           "最終期間の終了日が正しくありません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING                                                    
       *----(04.08.02)--ADD-END-----
                WHEN    "1016" 
                    STRING  "外来迅速検体検査設定は平成２０年４月１日"
