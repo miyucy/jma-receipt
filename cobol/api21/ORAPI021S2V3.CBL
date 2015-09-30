@@ -1803,7 +1803,9 @@
            IF      WRK-ERRCD           =   SPACE
       *        パラメタ登録
                PERFORM 200231-WKSRYPARA-SEC
-               MOVE    "03"                TO  MDCRES-RESPONSE-NUMBER
+               IF      WRK-ERRCD           =   SPACE
+                   MOVE    "03"            TO  MDCRES-RESPONSE-NUMBER
+               END-IF
            END-IF
       *
       *    一時データ削除処理
