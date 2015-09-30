@@ -38,7 +38,7 @@ xml_medicalv3res1 {
 	Patient_Information {
 		Patient_ID			varchar(20);
         	WholeName			varchar(100);
-        	WholeName_inKana		varchar(100);
+        	WholeName_InKana		varchar(100);
         	BirthDate			varchar(10);
         	Sex				varchar(1);
 		HealthInsurance_Information  {
@@ -75,7 +75,7 @@ xml_medicalv3res1 {
 		Medical_Class				varchar(03);
 		Medical_Class_Name			varchar(40);
 		Medical_Class_Number			varchar(03);
-		Medication_info   {
+		Medication_Info   {
 			Medication_Code			varchar(09);
 			Medication_Name			varchar(80);
 			Medication_Number		varchar(11);
