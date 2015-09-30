@@ -93,6 +93,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYCNT              PIC 9(04).
+           03  CNT-WKSRY               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -2276,6 +2277,12 @@
       *****    MOVE    "AP03"            TO  WRK-MD-ERRCD
                MOVE    "43"              TO  WRK-ERRCD
            END-IF
+      *!!!
+      *    明細なし
+           IF     (IDY                 =   ZERO  )
+             AND  (WRK-ERRCD           =   SPACE )
+               MOVE    "20"            TO  WRK-ERRCD
+           END-IF
            .
        200222-MEDICAL-HEN-EXT.
            EXIT.
@@ -2664,6 +2671,7 @@
                INITIALIZE                  PARA-REC
                MOVE    1               TO  FLG-PARA
            END-IF
+           MOVE    ZERO                TO  CNT-WKSRY
            PERFORM
                UNTIL  (FLG-PARA            =   1     )
                MOVE    PARA-DATA-REC       TO  WKSRYACT-REC
@@ -2673,6 +2681,8 @@
                MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
                PERFORM 2002341-DBPARA-UPD-SEC
       *
+               ADD     1                   TO  CNT-WKSRY
+      *
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
@@ -2680,6 +2690,11 @@
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    明細なし
+           IF     (CNT-WKSRY           =   ZERO  )
+             AND  (WRK-ERRCD           =   SPACE )
+               MOVE    "20"            TO  WRK-ERRCD
+           END-IF
       *
            .
        200231-WKSRYPARA-EXT.
@@ -3003,6 +3018,7 @@
                                            SPA-K02
                                            SPA-SCR-REC
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
       *        確認メッセージ編集
                IF      SPA-KIDCD        NOT =   SPACE
                    PERFORM 200332-KIDCD-HEN-SEC
