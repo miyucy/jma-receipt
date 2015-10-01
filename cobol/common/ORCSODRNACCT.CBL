@@ -5739,7 +5739,15 @@
                        IF   NACCT-DAY(IDX-SKJ)   NOT =  0
                            ADD   1        TO  NACCT-ZAIKAISU
                        END-IF
-                   END-PERFORM   
+                   END-PERFORM
+      *
+      *            オペーレータＩＤ
+                   MOVE   SODRNACCT-OPID   TO   NACCT-OPID
+      *            更新年月日
+                   MOVE   SODRNACCT-UPYMD  TO   NACCT-UPYMD
+      *            更新時間
+                   MOVE   SODRNACCT-UPHMS  TO   NACCT-UPHMS
+      *
       *            食堂加算の編集用に退避
                    MOVE    NACCT-DAY(WRK-STARTYMD-D)  TO WRK-SHOKUDOU
       *
