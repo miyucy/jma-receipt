@@ -144,6 +144,10 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *   患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
+           COPY    "CPORCSPTNUM.INC".
+      *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -410,6 +414,7 @@
        4101-HENREI-BODY-HENSYU-SEC            SECTION.
       *
            INITIALIZE                      SPA-GMN-H03-BODY-TBL
+                                           SPA-NAI-H03-BODY-TBL
       *
            IF      SPA-NAI-H03-K-TTEISYUTUSAKI (SPA-NAI-H03-SELNUM)
                                        =   "3"
@@ -467,6 +472,24 @@
                                                                    (IDX)
                MOVE    HENREI-B-HR-MSG TO  SPA-GMN-H03-B-TERR      (IDX)
                MOVE    HENREI-B-ERRCD  TO  SPA-GMN-H03-B-TERRCD    (IDX)
+      *
+      *        患者ＩＤチェック
+               IF      HENREI-B-PTID   >   ZERO
+                   INITIALIZE                  ORCSPTIDAREA
+                   MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
+                   MOVE    HENREI-B-PTNUM  TO  SPTID-PTNUM
+                   CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                                   SPA-AREA
+                   IF      SPTID-RC        NOT =   ZERO
+                       MOVE    1               TO  SPA-NAI-H03-B-TERRFLG
+                                                                   (IDX)
+                   ELSE
+                       IF      SPTID-PTID      NOT =   HENREI-B-PTID
+                           MOVE    2           TO  SPA-NAI-H03-B-TERRFLG
+                                                                   (IDX)
+                       END-IF
+                   END-IF
+               END-IF
       *
                MOVE    "tbl_henrei_body"       TO  MCP-TABLE
                MOVE    "key4"                  TO  MCP-PATHNAME
@@ -699,8 +722,14 @@
       *
                IF      SPA-GMN-H03-B-TERRCD (IDX)
                                         NOT =   SPACE
-                   MOVE    "#FF0000"       TO
+                   MOVE    "#4169E1"       TO
                                            H03-BODY-LIST-FGCOLOR (IDX)
+               ELSE
+                   IF      SPA-NAI-H03-B-TERRFLG (IDX)
+                                               >   0
+                       MOVE    "#FF0000"       TO
+                                           H03-BODY-LIST-FGCOLOR (IDX)
+                   END-IF
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-H03-BODY-MAX
