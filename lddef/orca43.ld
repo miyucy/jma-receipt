@@ -43,7 +43,6 @@ db	{
 	tbl_henrei_kanri;
 	tbl_henrei_body;
 	tbl_receden;
-	tbl_jibai_prt;
 };
 
 /* #include "orcadb.inc" */
