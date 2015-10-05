@@ -80,7 +80,6 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
            03  WRK-PARA-SYOKBN     PIC X(01).
-           03  WRK-PARA-CDKBN      PIC X(01).
            03  WRK-PARA-PRTKBN     PIC X(01).
       *
        01  WRK-AREA.
@@ -188,7 +187,7 @@
            03  B03-FIL12               PIC X(02).
            03  B03-HKNSKYKBN           PIC 9(01).
            03  B03-FIL13               PIC X(01).
-           03  B03-HKNSKYKBN-NM        PIC X(06).
+           03  B03-HKNSKYKBN-NM        PIC X(10).
       *
        01  BODY-04.
            03  B04-FIL1                PIC X(14).
@@ -308,7 +307,6 @@
                                        WRK-PARA-HOSPNUM
                                        RECEERR
                                        WRK-PARA-SYOKBN
-                                       WRK-PARA-CDKBN
                                        WRK-PARA-PRTKBN
            END-UNSTRING
       *
@@ -316,7 +314,6 @@
                                    TO  SPA-HOSPNUM
       *
            DISPLAY "WRK-PARA-SYOKBN="  WRK-PARA-SYOKBN
-           DISPLAY "WRK-PARA-CDKBN ="  WRK-PARA-CDKBN
            DISPLAY "WRK-PARA-PRTKBN="  WRK-PARA-PRTKBN
       *
       *    ステップ管理開始処理
@@ -324,20 +321,20 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBG025"      TO  JOB-PGID
       *
-           EVALUATE    WRK-PARA-SYOKBN ALSO    WRK-PARA-CDKBN
-               WHEN    "0"             ALSO    "0"
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    "0"
                    MOVE    "傷病名マスタ一覧"  TO  JOB-SHELLMSG
-               WHEN    "0"             ALSO    "1"
-                   MOVE    "傷病名マスタ一覧（傷病名）"
+               WHEN    "1"
+                   MOVE     "傷病名マスタ一覧（傷病名）"
                                                TO  JOB-SHELLMSG
-               WHEN    "0"             ALSO    "2"
-                   MOVE    "傷病名マスタ一覧（修飾語）"
-                                               TO  JOB-SHELLMSG
-               WHEN    "1"             ALSO    ANY
+               WHEN    "2"
                    MOVE    "傷病名マスタ一覧（廃止病名のみ）"
                                                TO  JOB-SHELLMSG
-               WHEN    "2"             ALSO    ANY
+               WHEN    "3"
                    MOVE    "傷病名マスタ一覧（移行病名のみ）"
+                                               TO  JOB-SHELLMSG
+               WHEN    "9"
+                   MOVE    "傷病名マスタ一覧（修飾語）"
                                                TO  JOB-SHELLMSG
                WHEN    OTHER
                    MOVE    "傷病名マスタ一覧"  TO  JOB-SHELLMSG
@@ -351,17 +348,17 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                    TO  RECEERR
       *
-           EVALUATE    WRK-PARA-SYOKBN ALSO    WRK-PARA-CDKBN
-               WHEN    "0"             ALSO    "0"
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    "0"
                    MOVE    "　　　　　　"      TO  H01-TITLE
-               WHEN    "0"             ALSO    "1"
+               WHEN    "1"
                    MOVE    "（傷病名）　"      TO  H01-TITLE
-               WHEN    "0"             ALSO    "2"
-                   MOVE    "（修飾語）　"      TO  H01-TITLE
-               WHEN    "1"             ALSO    ANY
+               WHEN    "2"
                    MOVE    "（廃止病名のみ）"  TO  H01-TITLE
-               WHEN    "2"             ALSO    ANY
+               WHEN    "3"
                    MOVE    "（移行病名のみ）"  TO  H01-TITLE
+               WHEN    "9"
+                   MOVE    "（修飾語）　"      TO  H01-TITLE
                WHEN    OTHER
                    MOVE    "指定したパラメタが正しくありません"
                                                TO  WRK-RECEERR
@@ -400,19 +397,19 @@
            END-IF
       *
       *    傷病名
-           EVALUATE    WRK-PARA-SYOKBN ALSO    WRK-PARA-CDKBN
-               WHEN    "0"             ALSO    "0"
-               WHEN    "0"             ALSO    "1"
-               WHEN    "1"             ALSO    ANY
-               WHEN    "2"             ALSO    ANY
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    "0"
+               WHEN    "1"
+               WHEN    "2"
+               WHEN    "3"
                    MOVE    1               TO  FLG-SYORI
                    PERFORM 2001-PRINT-SEC
            END-EVALUATE
       *
       *    修飾語
-           EVALUATE    WRK-PARA-SYOKBN ALSO    WRK-PARA-CDKBN
-               WHEN    "0"             ALSO    "0"
-               WHEN    "0"             ALSO    "2"
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    "0"
+               WHEN    "9"
                    MOVE    2               TO  FLG-SYORI
                    PERFORM 2001-PRINT-SEC
            END-EVALUATE
@@ -430,21 +427,21 @@
            MOVE    ZERO            TO  CNT-PAGE
                                        CNT-OUT
       *
-           EVALUATE    WRK-PARA-SYOKBN ALSO    WRK-PARA-CDKBN
-               WHEN    "0"             ALSO    "0"
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    "0"
                    IF      FLG-SYORI       =   1
                        MOVE    "（傷病名）　"      TO  H01-TITLE
                    ELSE
                        MOVE    "（修飾語）　"      TO  H01-TITLE
                    END-IF
-               WHEN    "0"             ALSO    "1"
+               WHEN    "1"
                    MOVE    "（傷病名）　"      TO  H01-TITLE
-               WHEN    "0"             ALSO    "2"
-                   MOVE    "（修飾語）　"      TO  H01-TITLE
-               WHEN    "1"             ALSO    ANY
+               WHEN    "2"
                    MOVE    "（廃止病名のみ）"  TO  H01-TITLE
-               WHEN    "2"             ALSO    ANY
+               WHEN    "3"
                    MOVE    "（移行病名のみ）"  TO  H01-TITLE
+               WHEN    "9"
+                   MOVE    "（修飾語）　"      TO  H01-TITLE
            END-EVALUATE
       *
            INITIALIZE                  BYOMEI-REC
@@ -554,9 +551,9 @@
                MOVE    BYO-HKNSKYKBN       TO  B03-HKNSKYKBN
                EVALUATE    BYO-HKNSKYKBN
                    WHEN    "0"
-                       MOVE    "対象　"            TO  B03-HKNSKYKBN-NM
+                       MOVE    "請求対象　"        TO  B03-HKNSKYKBN-NM
                    WHEN    "1"
-                       MOVE    "対象外"            TO  B03-HKNSKYKBN-NM
+                       MOVE    "請求対象外"        TO  B03-HKNSKYKBN-NM
                END-EVALUATE
            END-IF
       *
@@ -664,14 +661,14 @@
            MOVE   "HCMSL80.red"        TO  SPRT-PRTID
            MOVE    HCMSL80             TO  SPRT-PRTDATA
            EVALUATE    WRK-PARA-SYOKBN
-               WHEN    "0"
-                   MOVE    "傷病名一覧"        TO  SPRT-TITLE
-               WHEN    "1"
+               WHEN    "2"
                    MOVE    "傷病名一覧（廃止病名）"
                                                TO  SPRT-TITLE
-               WHEN    "2"
+               WHEN    "3"
                    MOVE    "傷病名一覧（移行病名）"
                                                TO  SPRT-TITLE
+               WHEN    OTHER
+                   MOVE    "傷病名一覧"        TO  SPRT-TITLE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -777,7 +774,7 @@
                MOVE    ZERO            TO  FLG-END
                MOVE    MCPDATA-REC     TO  BYOMEI-REC
                EVALUATE    WRK-PARA-SYOKBN
-                   WHEN    "1"
+                   WHEN    "2"
                        IF      BYO-HAISIYMD   =   "99999999"
                            GO  TO  900-BYOMEI-READ-N-SEC
                        END-IF
@@ -785,7 +782,7 @@
                                           NOT =   SPACE
                            GO  TO  900-BYOMEI-READ-N-SEC
                        END-IF
-                   WHEN    "2"
+                   WHEN    "3"
                        IF      BYO-IKOSAKICD  =   SPACE
                            GO  TO  900-BYOMEI-READ-N-SEC
                        END-IF
