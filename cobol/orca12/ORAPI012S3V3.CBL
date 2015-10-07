@@ -938,10 +938,10 @@
                MOVE    ZERO            TO  FLG-CONTKBN
            END-IF
       *
-      *    診療日チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20011-BASEYMD-CHK-SEC
-           END-IF
+      *    基準日チェック
+      *    IF      WRK-ERRCD           =   SPACE
+      *        PERFORM 20011-BASEYMD-CHK-SEC
+      *    END-IF
       *    患者基本チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200211-KIHON-CHK-SEC
@@ -982,11 +982,11 @@
       *    PERFORM 802-DAYHEN02-SEC
       *    MOVE    WRK-SYMD                TO  WRK-BASE-YMD
       *    未設定時はシステム情報設定
-           IF      WRK-BASE-YMD         =   SPACE
-               MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
-           END-IF
+      *    IF      WRK-BASE-YMD         =   SPACE
+      *        MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
+      *    END-IF
       *    基準日をシステム日付へ
-           MOVE    WRK-BASE-YMD        TO  SPA-SYSYMD
+      *    MOVE    WRK-BASE-YMD        TO  SPA-SYSYMD
       *    画面表示編集
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
