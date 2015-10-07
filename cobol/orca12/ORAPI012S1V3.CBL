@@ -1,4 +1,4 @@
-     *******************************************************************
+      *******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -23,7 +23,7 @@
       *  コンポーネント名  : 患者基本情報設定（登録・削除）(V3)
       *  管理者            :
       *  作成日付    作業者        記述
-      *  15/06/XX    NACL−多々納　新規作成
+      *  15/10/XX    NACL−多々納　新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -505,6 +505,7 @@
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
                MOVE    "01"                TO  PTMODRES-RESPONSE-NUMBER
+               MOVE    WRK-PARA-PTNUM      TO  WRK-PTNUM
            END-EVALUATE
       *
            EVALUATE    PTMODREQ-PATIENT-MODE
@@ -727,7 +728,7 @@
       *
            MOVE    ZERO                TO  IDX
       *    ワーニングメッセージ編集
-           IF      WRK-ERRCD           =   SPACE
+           IF      WRK-ERRCD           =   ZERO
                IF      IDX-W           >   ZERO
                    MOVE    "W"             TO  WRK-ERRKBN
                    MOVE    "00"            TO  WRK-ERRCD
@@ -3242,7 +3243,7 @@
                MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
                PERFORM 20032-PTINF-UPDSYORI-SEC
            WHEN    OTHER
-               MOVE    "08"            TO  WRK-ERRCD
+               MOVE    "91"            TO  WRK-ERRCD
                MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
            END-EVALUATE
       *
@@ -3713,7 +3714,7 @@
                MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
                PERFORM 20042-PTINF-DELSYORI-SEC
            WHEN    OTHER
-               MOVE    "08"            TO  WRK-ERRCD
+               MOVE    "91"            TO  WRK-ERRCD
                MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
            END-EVALUATE
       *
@@ -3729,11 +3730,11 @@
       *    患者情報検索処理
            PERFORM 20030-PTNUM-INIT-SEC
       *
-           IF      WRK-ERRCD           =   SPACE
-               MOVE    "0103"              TO  PTMODRES-SELECT-CODE
-               PERFORM 8902-SELECTMSG-SEC
-               MOVE    "S"                 TO  WRK-ERRKBN
-           END-IF
+      *    IF      WRK-ERRCD           =   SPACE
+      *        MOVE    "0103"              TO  PTMODRES-SELECT-CODE
+      *        PERFORM 8902-SELECTMSG-SEC
+      *        MOVE    "S"                 TO  WRK-ERRKBN
+      *    END-IF
       *    パラメタ登録
            IF      WRK-ERRCD           =   SPACE
                MOVE    SPACE           TO  WRK-ENDKBN
@@ -3774,6 +3775,14 @@
            PERFORM 200210-ORCSP02-INT-SEC
       *    患者情報出力内容編集処理
            PERFORM 20021-PTMODRES-HEN-SEC
+           IF      WRK-ERRCD           =   SPACE
+               IF      WRK-SELECT-CODE     =   SPACE
+                   MOVE    "0103"              TO  PTMODRES-SELECT-CODE
+                   PERFORM 8902-SELECTMSG-SEC
+                   MOVE    "48"                TO  WRK-ERRCD
+                   MOVE    "S"                 TO  WRK-ERRKBN
+               END-IF
+           END-IF
       *
            IF      WRK-ERRCD           =   SPACE
                MOVE    ZERO                TO  FLG-DELETE
@@ -4159,22 +4168,22 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "患者番号未設定"
+               MOVE    "患者番号が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "02"
-               MOVE    "患者氏名未設定"
+               MOVE    "患者氏名が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "03"
-               MOVE    "患者カナ氏名未設定"
+               MOVE    "患者カナ氏名が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "04"
-               MOVE    "生年月日未設定"
+               MOVE    "生年月日が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "05"
-               MOVE    "性別未設定"
+               MOVE    "性別が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "06"
-               MOVE    "カルテＵＩＤが未設定です。"
+               MOVE    "電子カルテＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "07"
                MOVE    "オルカＵＩＤが未設定です。"
@@ -4239,11 +4248,11 @@
            WHEN    "43"
                MOVE    "患者番号登録済みエラー"
                                                TO  WRK-ERRMSG
-           WHEN    "44"
-               STRING  "新規登録は、初回接続から行って下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
+      *    WHEN    "44"
+      *        STRING  "新規登録は、初回接続から行って下さい。"
+      *                                        DELIMITED  BY  SIZE
+      *                                        INTO    WRK-ERRMSG
+      *        END-STRING
            WHEN    "49"
                MOVE    "二重登録疑いの患者が存在します。"
                                                TO  WRK-ERRMSG
@@ -4260,9 +4269,9 @@
            WHEN    "52"
                MOVE    "旧姓履歴登録エラー"
                                                TO  WRK-ERRMSG
-           WHEN    "53"
-               MOVE    "更新区分エラー"
-                                               TO  WRK-ERRMSG
+      ***  WHEN    "53"
+      *        MOVE    "更新区分エラー"
+      ***                                      TO  WRK-ERRMSG
       *
            WHEN    "60"
                STRING  "解除対象がありません。"

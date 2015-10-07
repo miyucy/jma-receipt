@@ -2090,9 +2090,9 @@
       *
            END-IF
       *
-           IF      SPA-GMN-HOJO-MAX    =   ZERO
-               MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
-           END-IF
+      *    IF      SPA-GMN-HOJO-MAX    =   ZERO
+      *        MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
+      *    END-IF
            PERFORM VARYING     IDT     FROM    1  BY  1
                    UNTIL       IDT     >   SPA-GMN-HOJO-MAX
                IF      SPA-GMN-HOJOKBNL (IDT)(1:1)
@@ -2101,6 +2101,17 @@
                                            TO  SPA-GMN-HOJOKBN-G
                END-IF
            END-PERFORM
+      *!!!!
+      *TEST
+      *V3  Êä½õ¶èÊ¬¥¯¥ê¥¢¤Ê¤·
+      *    IF      SPA-MCP-WIDGET      =   "APIV3"
+      *        GO  TO  31011-HKN-HEN-EXT
+      *    END-IF
+      *TEST
+      *
+           IF      SPA-GMN-HOJO-MAX    =   ZERO
+               MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
+           END-IF
       *
            .
        31011-HKN-HEN-EXT.
@@ -3037,6 +3048,11 @@
                    MOVE    2           TO  FLG-TOUROKU 
                    MOVE    1           TO  FLG-TOUROKU2
                    PERFORM 4198-APIV3-SYORI-SEC
+      *   APIV3Ï«ºÒÊÝ¸±¾ðÊó½èÍý
+               WHEN    "CLICKED"       ALSO    "APIV3D"
+                   MOVE    2           TO  FLG-TOUROKU 
+                   MOVE    1           TO  FLG-TOUROKU2
+                   PERFORM 41910-APIV3-RSISYORI-SEC
       *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       *!API
       *    ÊÌ²èÌÌ
@@ -8848,6 +8864,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  SPA-KOH-ERRIDX
            MOVE    2                   TO  FLG-APICHK
       *
+           MOVE    MCP-WIDGET          TO  SPA-MCP-WIDGET
+      *
            MOVE    ZERO                TO  FLG-CHK
            MOVE    SPA-NAI-HKNSTR      TO  WRK-NAI-HKNSTR
            IF      WRK-NAI-HKNSTR      =   ZERO
@@ -8878,13 +8896,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
                                                SPA-P02SCRAREA
                                                SPA-P02KYOUTU
-      *TEST
-              DISPLAY "ORCSP03A IDX:"  IDX
-              ",MODE:"  SPA-PTHKN-MODE (IDX)
-                ",HKNNUM:"  SPA-PTHKN-HKNNUM (IDX)
-                " SPA-ERRCD:"  SPA-ERRCD
-                   ",SPA-PIDCD:" SPA-PIDCD
-      *TEST
                    PERFORM 410312-HKN-SPATBL-SET-SEC
                END-IF
            END-PERFORM
@@ -9047,6 +9058,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        41982-APIKOHHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   APIV3¡¡Ï«ºÒÊÝ¸±¾ðÊó½èÍý
+      *****************************************************************
+       41910-APIV3-RSISYORI-SEC             SECTION.
+      *
+      *    Ç¯Îð·×»»
+           PERFORM 410121-NENREI-SET-SEC
+      *
+      *    ÊÝ¸±£Ô£Â£Ì¤«¤é£Ð£Á£Ò£Á¥Õ¥¡¥¤¥ë¤ØÊÔ½¸
+           PERFORM 4501-PTHKNINF-LNK-SEC
+      *    ¸øÈñ£Ô£Â£Ì¤«¤é£Ð£Á£Ò£Á¥Õ¥¡¥¤¥ë¤ØÊÔ½¸
+           PERFORM 4502-PTKOHINF-LNK-SEC
+      *    ¸øÈñ£Ô£Â£Ì¤«¤é¸øÈñÉéÃ´¤ØÊÔ½¸
+           PERFORM 4504-PTKOHFTN-HEN-SEC
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
+           PERFORM 4503-HKNCOMBI-SYORI-SEC
+           MOVE    90              TO  SPA-GMN-CUR
+      *
+           .
+       41910-APIV3-RSISYORI-EXT.
            EXIT.
       *!API
       *

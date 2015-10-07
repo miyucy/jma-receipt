@@ -1,9 +1,9 @@
-xml_patientmodv3res2 {
+xml_patientmodv3res3 {
 	context	        int;
 	object		object;
 	mode		int;
 	recordname	varchar(128);
-	patientmodv3res2 {
+	patientmodv3res3 {
 	Request_Number				varchar(02);
 	Response_Number				varchar(02);
 	Karte_Uid				varchar(36);
@@ -26,40 +26,92 @@ xml_patientmodv3res2 {
 			WholeAddress2		varchar(200);
         	};
     	};
-#---    •ÛŒ¯î•ñ
-	HealthInsurance_Information	{
-	    HealthInsurance_Info 	{
-            	InsuranceProvider_Mode			varchar(6);
-		InsuranceProvider_Id			varchar(10);
-		InsuranceProvider_Class			varchar(03);
-            	InsuranceProvider_Number		varchar(08);
-            	InsuranceProvider_WholeName		varchar(20);
-            	HealthInsuredPerson_Symbol		varchar(80);
-            	HealthInsuredPerson_Number		varchar(80);
-            	HealthInsuredPerson_Continuation	varchar(01);
-            	HealthInsuredPerson_Assistance		varchar(01);
-            	HealthInsuredPerson_Assistance_Name	varchar(20);
-            	RelationToInsuredPerson			varchar(01);
-            	HealthInsuredPerson_WholeName		varchar(100);
-            	Certificate_StartDate			varchar(10);
-            	Certificate_ExpiredDate			varchar(10);
-            	Certificate_GetDate			varchar(10);
-            	Certificate_CheckDate			varchar(10);
-            	} [40];
-        };
-#---    Œö”ïî•ñ
- 	PublicInsurance_Information   {
-            PublicInsurance_Info      {
-                PublicInsurance_Mode			varchar(6);
-                PublicInsurance_Id			varchar(10);
-                PublicInsurance_Class			varchar(03);
-                PublicInsurance_Name			varchar(20);
-                PublicInsurer_Number			varchar(08);
-                PublicInsuredPerson_Number		varchar(20);
-                Certificate_IssuedDate			varchar(10);
-                Certificate_ExpiredDate			varchar(10);
-            	Certificate_CheckDate			varchar(10);
-        	} [60];
+#-----> ˜JĞî•ñ
+	Accident_Insurance_Information	{
+	    Accident_Insurance_Info 	{
+#-----> 	ˆ—‹æ•ª
+            	Accident_Mode			varchar(6);
+#-----> 	˜JĞ•ÛŒ¯‚h‚c
+		InsuranceProvider_Id		varchar(10);
+#-----> 	˜JĞŒö”ï‚h‚c
+		PublicInsurance_Id		varchar(10);
+#-----> 	˜JĞ•ÛŒ¯‚Ìí—Ş
+		InsuranceProvider_Class		varchar(03);
+		InsuranceProvider_Name 		varchar(20);
+#-----> 	˜JĞ•ÛŒ¯‹æ•ª
+		Accident_Insurance          	varchar(01);
+#-----> 	˜JĞ•ÛŒ¯–¼Ì
+		Accident_Insurance_WholeName	varchar(50);
+#-----> 	•a‚Ì•”ˆÊ
+		Disease_Location		varchar(100);
+#-----> 	•a”NŒ“ú
+		Disease_Date			varchar(10);
+#-----> 	—Ã—{ŠJn“ú
+		Accident_StartDate		varchar(10);
+#-----> 	—Ã—{I—¹“ú
+		Accident_ExpiredDate		varchar(10);
+#-----> 	˜J“­•ÛŒ¯”Ô†
+		Accident_Insurance_Number	varchar(14);
+#-----> 	”N‹àØ‘”Ô†
+		PensionCertificate_Number	varchar(09);
+#-----> 	ĞŠQ‹æ•ª–¼Ì
+		Accident_Class			varchar(01);
+		Accident_Class_Name		varchar(20);
+#-----> 	˜J“­Šî€ŠÄ“ÂƒR[ƒh
+		Labor_Station_Code		varchar(05);
+		Labor_Station_Code_Name		varchar(50);
+#-----> 	V‹KŒp‘±‹æ•ª
+		Accident_Continuous		varchar(01);
+		Accident_Continuous_Name	varchar(10);
+#-----> 	“]‹A–—R
+		Outcome_Reason	     		varchar(01);
+		Outcome_Reason_Name 		varchar(10);
+#-----> 	lˆ“Á—á‹æ•ª
+		Limbs_Exception     		varchar(01);
+		Limbs_Exception_Name   		varchar(10);
+#----->
+		Liability_Office_Information	{
+#-----> 	–‹ÆŠ–¼Ì
+			L_WholeName		varchar(80);
+#-----> 	        Šİ’n“s“¹•{Œ§
+			Prefecture_Information	{
+				P_WholeName	varchar(20);
+				P_Class		varchar(01);
+				P_Class_Name	varchar(02);
+				};
+#-----> 	        Šİ’nŒSs
+			City_Information	{
+				C_WholeName	varchar(80);
+				C_Class		varchar(01);
+				C_Class_Name	varchar(02);
+				};
+			};
+#-----> 	˜JĞƒŒƒZ‰ñ”‹LÚ Šî€”NŒ
+		Accident_Base_Month		varchar(07);
+#-----> 	˜JĞƒŒƒZ‰ñ”‹LÚ ‰ñ”
+		Accident_Receipt_Count 		varchar(03);
+#-----> 	©”…Ó¿‹‹æ•ª
+		Liability_Insurance		varchar(01);
+		Liability_Insurance_Name	varchar(20);
+#-----> 	©”…Ó•ÛŒ¯‰ïĞ–¼
+		Liability_Insurance_Office_Name	varchar(80);
+#-----> 	©”…Ó’S“–ˆã
+		Liability_Physician_Code	varchar(05);
+		Liability_Physician_Code_Name	varchar(100);
+#-----> 	ƒAƒtƒ^[ƒPƒA  Œ’NŠÇ—è’ ”Ô†
+		PersonalHealthRecord_Number	varchar(13);
+		Damage_Class	{
+#-----> 	        ‘¹‹æ•ª
+			D_Code			varchar(03);
+			D_WholeName		varchar(100);
+			};
+#-----> 	‘æOÒsˆ×  Œ»•¨x‹‹‹æ•ª
+		Third_Party_Supply		varchar(1);
+		Third_Party_Supply_Name		varchar(20);
+#-----> 	‘æOÒsˆ×  “Á‹L–€‹æ•ª
+		Third_Party_Report		varchar(1);
+		Third_Party_Report_Name		varchar(20);
+            } [40];
         };
 #---    •ÛŒ¯‘g‡‚¹î•ñ
 	HealthInsurance_Combination_Information	{

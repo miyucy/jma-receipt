@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI012S2V3.
+       PROGRAM-ID.         ORAPI012S3V3.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 患者保険・公費情報設定（登録・削除）(V3)
+      *  コンポーネント名  : 患者労災・自賠責設定（登録・削除）(V3)
       *  管理者            :
       *  作成日付    作業者        記述
       *  15/10/XX    NACL−多々納　新規作成
@@ -53,6 +53,10 @@
            03  FLG-PTINF               PIC 9(01).
            03  FLG-PTNUM               PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
+           03  FLG-LABOR-SIO           PIC 9(01).
+      *    03  FLG-PTHKNINF            PIC 9(01).
+      *    03  FLG-PTKOHINF            PIC 9(01).
+      *    03  FLG-HKNJAINF            PIC 9(01).
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-SPATMP              PIC 9(01).
            03  FLG-APIPARA             PIC 9(01).
@@ -64,7 +68,11 @@
            03  FLG-SYORIEND            PIC 9(01).
            03  FLG-CONTKBN             PIC 9(01).
       *
+      *    03  FLG-P02A-SYORI          PIC 9(01).
+      *    03  FLG-DATA                PIC 9(01).
+      **** 03  FLG-DELETE              PIC 9(01).
            03  FLG-HKNKOHERR           PIC 9(01).
+           03  FLG-HENSYU              PIC 9(01).
            03  FLG-CANSEL              PIC 9(01).
       *
       *    添字領域
@@ -77,6 +85,9 @@
            03  IDY1                    PIC 9(04).
            03  IDX1                    PIC 9(04).
            03  IDX2                    PIC 9(04).
+           03  IDR                     PIC 9(04).
+           03  IDM                     PIC 9(04).
+           03  IDX-R                   PIC 9(04).
       *
            03  IDX-ERR                 PIC 9(04).
            03  IDX-WAR                 PIC 9(04).
@@ -137,6 +148,7 @@
            03  WRK-KEICD               PIC X(03).
            03  WRK-OKMSG               PIC X(100).
       *
+           03  WRK-CHK-HKNKBN          PIC X(01).
            03  WRK-CHK-HKNNUM          PIC X(03).
            03  WRK-CHK-KOHNUM          PIC X(03).
            03  WRK-HKNNUM              PIC X(03).
@@ -161,52 +173,39 @@
            03  WRK-FTNRATEMEI          PIC X(04).
            03  WRK-ZZ9                 PIC ZZZZZ9.
       *
-      *    保険・公費
-       01  WRK-HKNKOH-AREA.
       *    患者保険情報（最大４０件とする）共通で使用
-           03  WRK-PTHKNINF-AREA.
-               05  WRK-PTHKNINF-TBL        OCCURS   40.
-                   09  WRK-PTHKN-MODE          PIC X(01).
-                   09  WRK-PTHKN-HKNID         PIC 9(10).
-                   09  WRK-PTHKN-HKNNUM        PIC X(03).
-                   09  WRK-PTHKN-HKNNUM-MEI    PIC X(10).
-                   09  WRK-PTHKN-HKNJANUM      PIC X(08).
-                   09  WRK-PTHKN-HIHKNJANAME   PIC X(50).
-                   09  WRK-PTHKN-HONKZKKBN     PIC X(01).
-                   09  WRK-PTHKN-HOJOKBN       PIC X(01).
-                   09  WRK-PTHKN-CONTKBN       PIC X(01).
-                   09  WRK-PTHKN-KIGO          PIC X(40).
-                   09  WRK-PTHKN-NUM           PIC X(40).
-                   09  WRK-PTHKN-SKKGETYMD     PIC X(08).
-                   09  WRK-PTHKN-TEKSTYMD      PIC X(08).
-                   09  WRK-PTHKN-TEKEDYMD      PIC X(08).
-                   09  WRK-PTHKN-KAKUNINYMD    PIC X(08).
-                   09  WRK-PTHKN-SAKJOKBN      PIC X(01).
-                   09  WRK-PTHKN-SKKGETYMDW    PIC X(10).
-                   09  WRK-PTHKN-TEKSTYMDW     PIC X(10).
-                   09  WRK-PTHKN-TEKEDYMDW     PIC X(10).
-                   09  WRK-PTHKN-KAKUNINYMDW   PIC X(10).
-                   09  WRK-PTHKN-IDX           PIC 9(04).
-               05  WRK-PTHKN-MAX           PIC 9(04).
+       01  WRK-PTRSIINF-AREA.
+           03  WRK-PTHKNINF-TBL        OCCURS   40.
+               05  WRK-PTRSI-MODE          PIC X(01).
+               05  WRK-PTRSI-HKNID         PIC 9(10).
+               05  WRK-PTRSI-KOHID         PIC 9(10).
+      *        労災保険区分
+               05  WRK-PTRSI-HKNKBN        PIC  X(01).
+      *        保険番号
+               05  WRK-PTRSI-HKNNUM        PIC  X(03).
+               05  WRK-PTRSI-COMMENT       PIC  X(100).
+               05  WRK-PTRSI-HKNNUM-NAME   PIC  X(20).
+               05  WRK-PTRSI-JIGYOUNAME    PIC  X(80).
+               05  WRK-PTRSI-HOKENNAME     PIC  X(80).
+      *        傷病年月日
+               05  WRK-PTRSI-SHOBYOYMD     PIC  X(08).
+      *療養開始年月日
+               05  WRK-PTRSI-RYOSTYMD      PIC  X(08).
+      *療養終了年月日
+               05  WRK-PTRSI-RYOEDYMD      PIC  X(08).
+      *アフター療養開始年月日
+               05  WRK-PTRSI-SINSATUYMD    PIC  X(08).
+      *アフター療養終了年月日
+               05  WRK-PTRSI-SINSATUEND    PIC  X(08).
+      *労災レセ回数記載：基準年月
+               05  WRK-PTRSI-KIJYUNYM      PIC  X(06).
+               05  WRK-PTRSI-KAISU         PIC  9(03).
       *
-           03  WRK-PTKOHINF-AREA.
-               05  WRK-PTKOHINF-TBL        OCCURS   60.
-                   09  WRK-PTKOH-MODE          PIC X(01).
-                   09  WRK-PTKOH-KOHID         PIC 9(10).
-                   09  WRK-PTKOH-KOHNUM        PIC X(03).
-                   09  WRK-PTKOH-KOHNUM-MEI    PIC X(20).
-                   09  WRK-PTKOH-PAYKBN        PIC X(02).
-                   09  WRK-PTKOH-FTNJANUM      PIC X(08).
-                   09  WRK-PTKOH-JKYSNUM       PIC X(20).
-                   09  WRK-PTKOH-TEKSTYMD      PIC X(08).
-                   09  WRK-PTKOH-TEKEDYMD      PIC X(08).
-                   09  WRK-PTKOH-KAKUNINYMD    PIC X(08).
-                   09  WRK-PTKOH-SAKJOKBN      PIC X(01).
-                   09  WRK-PTKOH-IDX           PIC 9(04).
-                   09  WRK-PTKOH-TEKSTYMDW     PIC X(10).
-                   09  WRK-PTKOH-TEKEDYMDW     PIC X(10).
-                   09  WRK-PTKOH-KAKUNINYMDW   PIC X(10).
-               05  WRK-PTKOH-MAX           PIC 9(04).
+               05  WRK-IN-IDX              PIC 9(04).
+      *
+               05  WRK-PTRSI-IDX           PIC 9(04).
+           03  WRK-PTRSI-MAX           PIC 9(04).
+      *
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -252,6 +251,9 @@
       *    全角
            03  WRK-HENYMD-Z        PIC X(22).
       *
+       01  CONS-AREA.
+           03  TBL-MAX-KOH             PIC 9(02)  VALUE    60.
+           03  TBL-MAX-HKN             PIC 9(02)  VALUE    40.
       *
       *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
@@ -266,6 +268,21 @@
       *    患者画面スパ領域の保存
            COPY    "P02SCR-SPA"
                               REPLACING  //SPA-// BY //APIS-//.
+      *
+      *    保険組合せの保存
+       01  HZN-HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC"
+                              REPLACING  //COMB-// BY //HZN-//.
+      *    患者労災保険情報
+       01  TBL-PTRSIINF-AREA.
+           02  TBL-PTRSIINF-REC        OCCURS   50.
+           COPY    "CPPTRSIINF.INC"
+                              REPLACING  //PTRSI-// BY //TBL-PTRSI-//.
+      *
+               03  TBL-PARA-EDANUM     PIC 9(04).
+               03  TBL-PTRSI-MODE      PIC X(01).
+      *
+           02  TBL-PARA-MAX        PIC 9(04).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -317,9 +334,9 @@
       **    COPY    "CPORCSUSERCHK.INC".
       *
       *    API XML読込用定義体
-           COPY    "CPPATIENTMODV3REQ2.INC".
+           COPY    "CPPATIENTMODV3REQ3.INC".
       *    API XML出力用定義体
-           COPY    "CPPATIENTMODV3RES2.INC".
+           COPY    "CPPATIENTMODV3RES3.INC".
       *
       *    保険組合せ決定関数サブ
            COPY    "CPORCSAPIHKN.INC".
@@ -328,7 +345,7 @@
            COPY    "CPAPIV2REQ.INC".
       *
       *    補助区分名称編集パラメタ
-           COPY    "CPORAPI012SUB1.INC".
+      **** COPY    "CPORAPI012SUB1.INC".
       *    処理終了パラメタ
            COPY    "CPORAPIV3SUB01.INC".
       *
@@ -353,8 +370,8 @@
       *    COPY    "CPSK1005.INC".
       *    職員情報
            COPY  "CPSK1010.INC".
-      *    診療内容情報
-      **   COPY  "CPSK1012.INC".
+      *
+           COPY  "CPSK4002.INC".
       *
            COPY  "CPSK1009.INC".
       *    患者マスタ−
@@ -372,9 +389,18 @@
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
+      *
+      *    労働基準監督署マスタ
+       01  LABOR-SIO-REC.
+           COPY    "CPLABOR-SIO.INC".
+      *
+      *
       *    患者公費情報
-       01  PTKOHINF-REC.
-           COPY    "CPPTKOHINF.INC".
+      *01  PTKOHINF-REC.
+      *    COPY    "CPPTKOHINF.INC".
       *
       *    保険者号マスタ
        01  HKNJAINF-REC.
@@ -385,16 +411,16 @@
            COPY    "CPHKNNUM.INC".
       *
       *    受診履歴
-       01  JYURRK-REC.
-           COPY    "CPJYURRK.INC".
+      *01  JYURRK-REC.
+      *    COPY    "CPJYURRK.INC".
       *
       *    患者入院履歴
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
+      *01  PTNYUINRRK-REC.
+      *    COPY    "CPPTNYUINRRK.INC".
       *
       *    患者病名
-       01  PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC".
+      *01  PTBYOMEI-REC.
+      *    COPY    "CPPTBYOMEI.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
@@ -409,12 +435,6 @@
            COPY    "CPAPIPARA.INC".
       *
            COPY    "MCPDATA2.INC".
-      *
-      *   （ＣＬＡＩＭ接続）
-      *    COPY    "CPSK9000.INC".
-      *    COPY    "CPSK9001.INC".
-      *
-      *    COPY    "CPSHELLTBL.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -460,7 +480,7 @@
       *
            IF      WRK-ERRCD           =   "99"
       *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST04-HTTPSTATUS
+               MOVE   404                  TO  APILST05-HTTPSTATUS
            ELSE
       *        返却領域編集
                PERFORM 300-RGTXMLMAKE-SEC
@@ -481,7 +501,7 @@
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-PATIENTMODRES
-           INITIALIZE                      WRK-HKNKOH-AREA
+           INITIALIZE                      WRK-PTRSIINF-AREA
            INITIALIZE                      WRK-APIV3DATA-AREA
       *
            INITIALIZE                      SPA-P02SCRAREA
@@ -651,10 +671,6 @@
       *
       *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
-           IF      PTMODREQ-ORCA-UID       =   SPACE
-               MOVE    APIV3SUB01-TERMID(5:)
-                                           TO  PTMODRES-ORCA-UID
-           END-IF
            .
        2099-CANCEL-EXT.
            EXIT.
@@ -665,14 +681,14 @@
       *****************************************************************
        1000-RGTXMLREAD-SEC   SECTION.
       *
-           IF      APILST04-BODY   NOT =   LOW-VALUE
+           IF      APILST05-BODY   NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3req2"  TO  MCP-TABLE
+           MOVE    "xml_patientmodv3req3"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST04-BODY       TO  APIREQ-OBJECT
+           MOVE    APILST05-BODY       TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "patientmodreq"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
@@ -689,7 +705,7 @@
       *
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3req2"  TO  MCP-TABLE
+           MOVE    "xml_patientmodv3req3"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            MOVE    "patientmodreq"     TO  APIREQ-RECORDNAME
@@ -706,7 +722,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientmodv3req2"  TO  MCP-TABLE
+           MOVE    "xml_patientmodv3req3"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
@@ -783,27 +799,20 @@
                                            INTO  WRK-OKMSG
                        END-STRING
                    END-IF
-               ELSE
-                   MOVE    SPACE               TO  WRK-OKMSG
-                   STRING  "保険の変更で保険組合せ削除が発生します。"
-                           "変更内容を確認して下さい。"
-                                           DELIMITED  BY  SIZE
-                                           INTO  WRK-OKMSG
-                   END-STRING
                END-IF
                MOVE    WRK-ERRCD-G         TO  PTMODRES-API-RESULT
                MOVE    WRK-OKMSG           TO  PTMODRES-API-RESULT-MSG
            END-IF
       *
-           IF      APILST04-BODY     NOT =   LOW-VALUE
+           IF      APILST05-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3res2"   TO  MCP-TABLE
+           MOVE    "xml_patientmodv3res3"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  PTMODRES-MODE
-           MOVE    "patientmodv3res2"  TO  PTMODRES-RECORDNAME
+           MOVE    "patientmodv3res3"  TO  PTMODRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
@@ -815,9 +824,9 @@
            END-IF
       *
            MOVE    "XMLWRITE"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3res2"   TO  MCP-TABLE
+           MOVE    "xml_patientmodv3res3"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "patientmodv3res2"     TO  PTMODRES-RECORDNAME
+           MOVE    "patientmodv3res3"     TO  PTMODRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
@@ -829,15 +838,15 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientmodv3res2"   TO  MCP-TABLE
+           MOVE    "xml_patientmodv3res3"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
-               MOVE    PTMODRES-OBJECT     TO  APILST04-BODY
-               MOVE    "patientmod/xml"    TO  APILST04-CONTENT-TYPE
+               MOVE    PTMODRES-OBJECT     TO  APILST05-BODY
+               MOVE    "patientmod/xml"    TO  APILST05-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "accept xml write failure "
@@ -967,11 +976,11 @@
            MOVE    PTMODREQ-PATIENTID      TO  PTMODRES-PATIENTID
            MOVE    PTMODREQ-PATIENTID      TO  WRK-PTNUM
       *    基準日
-           MOVE    PTMODREQ-BASE-DATE      TO  PTMODRES-BASE-DATE
-           MOVE    PTMODREQ-BASE-DATE      TO  WRK-HEN-DATE
-           MOVE    SPACE                   TO  WRK-HEN-TIME
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD                TO  WRK-BASE-YMD
+      *    MOVE    PTMODREQ-BASE-DATE      TO  PTMODRES-BASE-DATE
+      *    MOVE    PTMODREQ-BASE-DATE      TO  WRK-HEN-DATE
+      *    MOVE    SPACE                   TO  WRK-HEN-TIME
+      *    PERFORM 802-DAYHEN02-SEC
+      *    MOVE    WRK-SYMD                TO  WRK-BASE-YMD
       *    未設定時はシステム情報設定
            IF      WRK-BASE-YMD         =   SPACE
                MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
@@ -1232,15 +1241,15 @@
                PERFORM 20012-PTINF-HEN-SEC
            END-IF
       *
-      *    保険情報編集
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20013-HKNKOH-HENSYU-SEC
-           END-IF
-      *
       *    保険公費チェック、保険組合せ作成
+      *    IF      WRK-ERRCD           =   SPACE
+      *        PERFORM 20022-HKNCOMBI-CHKSYORI-SEC
+      *        MOVE    ZERO            TO  FLG-HKNKOHERR
+      *    END-IF
+      *    労災保険情報編集
            IF      WRK-ERRCD           =   SPACE
-               PERFORM 20022-HKNCOMBI-CHKSYORI-SEC
-               MOVE    ZERO            TO  FLG-HKNKOHERR
+               MOVE    ZERO            TO  FLG-HENSYU
+               PERFORM 20013-RSIINF-HENSYU-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
@@ -1319,7 +1328,7 @@
                        (PTMODREQ-SEX   NOT =    PTMODRES-SEX ))
                   OR  ((PTMODREQ-BIRTHDAY  NOT =   SPACE     )  AND
                        (PTMODREQ-BIRTHDAY  NOT =   PTMODRES-BIRTHDAY))
-                   MOVE    "76"            TO  WRK-ERRCD
+                   MOVE    "75"            TO  WRK-ERRCD
                    MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
                END-IF
            END-IF
@@ -1498,170 +1507,452 @@
       *    公費法別一覧編集区分なし
            MOVE    "0"                 TO  SPA-NAI-KOHHBTKBN-FLG
       *
+      *    労災か自賠責が登録されていること
+           PERFORM 200121-HKNNUM-SET-SEC
+      *
            .
-       20012-PTINF-CHK-EXT.
+       20012-PTINF-HEN-EXT.
            EXIT.
       *
       ****************************************************************
-      *    保険情報編集処理
+      *    労災保険情報編集処理
       ****************************************************************
-       20013-HKNKOH-HENSYU-SEC           SECTION.
+       200121-HKNNUM-SET-SEC           SECTION.
       *
-           INITIALIZE                  PTMODRES-INSURANCE-INFO-G
-           INITIALIZE                  PTMODRES-PUBLIC-INSURANCE-INFG
-      *    保険情報
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-PTHKN-MAX )
-               MOVE   SPA-PTHKN-HKNID (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-ID(IDX)
-               MOVE   SPA-PTHKN-HKNNUM (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-CLASS
-                                                                 (IDX)
-               MOVE   SPA-PTHKN-HKNJANUM (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-NUMBER
-                                                                 (IDX)
-      *        保険の種類名称
-               MOVE   SPA-PTHKN-HKNNUM-MEI(IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-NAME
-                                                                 (IDX)
-      *        記号
-               MOVE   SPA-PTHKN-KIGO (IDX)
-                                   TO  PTMODRES-MAIN-MARK     (IDX)
-               MOVE   SPA-PTHKN-NUM  (IDX)
-                                   TO  PTMODRES-MAIN-NUMBER    (IDX)
-      *        継続区分
-               MOVE   SPA-PTHKN-CONTKBN  (IDX)
-                                   TO  PTMODRES-MAIN-CONTINUATION(IDX)
-      *        補助区分
-               MOVE   SPA-PTHKN-HOJOKBN  (IDX)
-                                   TO  PTMODRES-MAIN-ASSISTANCE (IDX)
-      *        補助区分名称
-               MOVE    SPA-PTHKN-HKNNUM (IDX)  TO  WRK-HKNNUM
-               MOVE    SPA-PTHKN-HOJOKBN(IDX)  TO  WRK-HOJOKBN
-               PERFORM 200131-HOJOKBN-NAME-HEN-SEC
-               MOVE    API012SUB1-HOJOKBN-NAME
-                                       TO  PTMODRES-MAIN-ASSI-NAME(IDX)
-      *
-      *        本人家族区分
-               MOVE    SPA-PTHKN-HONKZKKBN  (IDX)
-                                   TO  PTMODRES-MAIN-FAMILY (IDX)
-      *        被保険者名
-               MOVE    SPA-PTHKN-HIHKNJANAME  (IDX)
-                                   TO  PTMODRES-MAIN-POLICYHOLDER (IDX)
-      *        有効開始日
-               MOVE    SPA-PTHKN-TEKSTYMD (IDX) TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PTMODRES-MAIN-START-DATE(IDX)
-      *        有効終了日
-               MOVE    SPA-PTHKN-TEKEDYMD (IDX) TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PTMODRES-MAIN-END-DATE(IDX)
-      *        資格取得日
-               IF      SPA-PTHKN-SKKGETYMD(IDX)    NOT =   SPACE
-                   MOVE    SPA-PTHKN-SKKGETYMD(IDX) TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE    TO  PTMODRES-MAIN-GET-DATE
-                                                                (IDX)
-               END-IF
-      *        確認年月日
-               IF      SPA-PTHKN-KAKUNINYMD(IDX)   NOT =   SPACE
-                   MOVE   SPA-PTHKN-KAKUNINYMD(IDX) TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE    TO  PTMODRES-MAIN-CHECK-DATE
-                                                                 (IDX)
-               END-IF
-      *        処理区分
-               EVALUATE    SPA-PTHKN-MODE (IDX)
-                   WHEN    "1"
-      *            新規
-                       MOVE    "New"       TO  PTMODRES-MAIN-MODE(IDX)
-      *                保険ＩＤはゼロ
-                       MOVE    ZERO        TO
-                                       PTMODRES-MAIN-INSURANCE-ID(IDX)
-                   WHEN    "2"
-      *            更新
-                       MOVE    "Modify"    TO  PTMODRES-MAIN-MODE(IDX)
-                   WHEN    "3"
-      *            削除
-                       MOVE    "Delete"    TO  PTMODRES-MAIN-MODE(IDX)
-               END-EVALUATE
-           END-PERFORM
-      *
-      *    公費情報
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-PTKOH-MAX )
-               MOVE    SPA-PTKOH-KOHID (IDX)
-                                       TO   PTMODRES-INSURANCE-ID (IDX)
-               MOVE    SPA-PTKOH-KOHNUM (IDX)
-                                       TO  PTMODRES-INSURANCE-CLASS
-                                                                   (IDX)
-      *        公費の種類名称
-               MOVE    SPA-PTKOH-KOHNUM-MEI (IDX)
-                                       TO  PTMODRES-INSURANCE-NAME
-                                                                   (IDX)
-      *        負担者番号
-               MOVE   SPA-PTKOH-FTNJANUM (IDX)
-                                       TO  PTMODRES-PROVIDER-NUMBER
-                                                                 (IDX)
-      *        受給者番号
-               MOVE   SPA-PTKOH-JKYSNUM (IDX)
-                                       TO  PTMODRES-RECIPIENT-NUMBER
-                                                                 (IDX)
-      *        有効開始日
-               MOVE    SPA-PTKOH-TEKSTYMD (IDX) TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PTMODRES-INSURANCE-START-DATE
-                                                                 (IDX)
-      *        有効終了日
-               MOVE    SPA-PTKOH-TEKEDYMD (IDX) TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PTMODRES-INSURANCE-END-DATE
-                                                                 (IDX)
-      *        確認日付
-               IF      SPA-PTKOH-KAKUNINYMD (IDX) NOT =   SPACE
-                   MOVE    SPA-PTKOH-KAKUNINYMD (IDX) TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE    TO
-                                           PTMODRES-INSURANCE-CHECK-DATE
-                                                                 (IDX)
-               END-IF
-      *        処理区分
-               EVALUATE    SPA-PTKOH-MODE (IDX)
-                   WHEN    "1"
-      *            新規
-                       MOVE    "New"       TO  PTMODRES-INSURANCE-MODE
-                                                                  (IDX)
-      *                公費ＩＤはゼロ
-                       MOVE    ZERO        TO  PTMODRES-INSURANCE-ID
-                                                                  (IDX)
-                   WHEN    "2"
-      *            更新
-                       MOVE    "Modify"    TO  PTMODRES-INSURANCE-MODE
-                                                                  (IDX)
-                   WHEN    "3"
-      *            削除
-                       MOVE    "Delete"    TO  PTMODRES-INSURANCE-MODE
-                                                                  (IDX)
-               END-EVALUATE
-           END-PERFORM
-      *
-           IF      FLG-HKNKOHERR       =   1
-               GO      TO      20013-HKNKOH-HENSYU-EXT
+      *    労災か自賠責が登録されていること
+           INITIALIZE                  HKNNUM-REC
+           MOVE    "971"               TO  HKN-HKNNUM
+           PERFORM 9002-HKNNUM-KEYREAD-SEC
+           IF      FLG-HKNNUM          =   ZERO
+               MOVE    1               TO  SPA-ROSAI-FLG
+           ELSE
+               MOVE    ZERO            TO  SPA-ROSAI-FLG
            END-IF
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    "973"               TO  HKN-HKNNUM
+           PERFORM 9002-HKNNUM-KEYREAD-SEC
+           IF      FLG-HKNNUM          =   ZERO
+               MOVE    1               TO  SPA-JIBAI-FLG
+           ELSE
+               MOVE    ZERO            TO  SPA-JIBAI-FLG
+           END-IF
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    "970"               TO  HKN-HKNNUM
+           PERFORM 9002-HKNNUM-KEYREAD-SEC
+           IF      FLG-HKNNUM          =   ZERO
+               MOVE    1               TO  SPA-DAISAN-FLG
+           ELSE
+               MOVE    ZERO            TO  SPA-DAISAN-FLG
+           END-IF
+      *
+           .
+       200121-HKNNUM-SET-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    労災保険情報編集処理
+      ****************************************************************
+       20013-RSIINF-HENSYU-SEC           SECTION.
+      *
+           INITIALIZE                  PTMODRES-ACCIDENT-INFO-G
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-PARA       =   1 )
+                       OR  (IDX            >=  40)
+               MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
+      *
+               ADD     1                   TO  IDX
+               PERFORM 20013-RSIINF-PTMODRES-SEC
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    保険組合せ編集処理
            PERFORM 20013-HKNCOMBI-HENSYU-SEC
            .
-       20013-HKNKOH-HENSYU-EXT.
+       20013-RSIINF-HENSYU-EXT.
            EXIT.
+      *
+      ****************************************************************
+      *    労災保険情報編集処理
+      **************************************************************
+       20013-RSIINF-PTMODRES-SEC           SECTION.
+      *
+      *    保険ＩＤ
+           MOVE    PTRSI-HKNID         TO  PTMODRES-MAIN-INSURANCE-ID
+                                                                 (IDX)
+      *    公費ＩＤ
+           MOVE    PTRSI-KOHID         TO  PTMODRES-INSURANCE-ID (IDX)
+      *
+      *    処理モード
+           IF      FLG-HENSYU          =   1
+               MOVE    PARA-EDANUM         TO  IDR
+      *        新規
+               EVALUATE    TBL-PTRSI-MODE (IDR)
+                   WHEN    "1"
+                       MOVE    "New"           TO  PTMODRES-MAIN-MODE
+                                                                 (IDX)
+      *                保険・公費ＩＤはゼロとする
+                       MOVE    ZERO       TO  PTMODRES-MAIN-INSURANCE-ID
+                                                                 (IDX)
+                       MOVE    ZERO       TO  PTMODRES-INSURANCE-ID
+                                                                 (IDX)
+                   WHEN    "2"
+                       MOVE    "Modify"        TO  PTMODRES-MAIN-MODE
+                                                                 (IDX)
+                   WHEN    "3"
+                       MOVE    "Delete"        TO  PTMODRES-MAIN-MODE
+                                                                 (IDX)
+               END-EVALUATE
+           END-IF
+      *    保険番号
+           MOVE    PTRSI-HKNNUM        TO  PTMODRES-INSURANCE-CLASS
+                                                                (IDX)
+      *    保険種類名称
+           INITIALIZE                  HKNNUM-REC
+           MOVE    PTRSI-HKNNUM        TO  HKN-HKNNUM
+           PERFORM 9002-HKNNUM-KEYREAD-SEC
+           IF      FLG-HKNNUM          =   ZERO
+               MOVE    HKN-TANSEIDONAME    TO   PTMODRES-INSURANCE-NAME
+                                                                 (IDX)
+           END-IF
+      *    労災保険名称
+           MOVE    PTRSI-HKNKBN        TO  PTMODRES-ACCIDENT  (IDX)
+           EVALUATE    PTRSI-HKNKBN
+               WHEN    "1"
+                   MOVE    "短期給付"      TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+               WHEN    "2"
+                   MOVE    "傷病年金"      TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+               WHEN    "3"
+                   MOVE    "アフターケア"  TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+               WHEN    "4"
+                   MOVE    "自賠責保険"    TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+               WHEN    "5"
+                   MOVE    "公務災害"      TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+               WHEN    "6"
+                   MOVE    "第三者行為"    TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+           END-EVALUATE
+      *    傷病の部位
+           MOVE    PTRSI-COMMENT       TO  PTMODRES-DISEASE-LOCATION
+                                                                  (IDX)
+      *    傷病年月日
+           IF      PTRSI-SHOBYOYMD NOT =   SPACE
+               MOVE    PTRSI-SHOBYOYMD     TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-DISEASE-DATE
+                                                                  (IDX)
+           END-IF
+      *    アフターケア
+           IF      PTRSI-HKNKBN        =   "3"
+      *        療養開始年月日
+               MOVE    PTRSI-SINSATUYMD    TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-START-DATE(IDX)
+      *        療養終了年月日
+               MOVE    PTRSI-SINSATUEND    TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-END-DATE (IDX)
+           ELSE
+      *        療養開始年月日
+               MOVE    PTRSI-RYOSTYMD      TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-START-DATE(IDX)
+      *        療養終了年月日
+               MOVE    PTRSI-RYOEDYMD      TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-END-DATE (IDX)
+           END-IF
+      *
+           EVALUATE    PTRSI-HKNKBN
+               WHEN    "1"
+      *    労働保険番号
+                   MOVE    PTRSI-KOFUNUM   TO  PTMODRES-ACCIDENT-NUMBER
+                                                                (IDX)
+               WHEN    "2"
+      *    年金証書番号
+                   MOVE    PTRSI-KOFUNUM   TO
+                                           PTMODRES-PENSIONCERTIFICATE
+                                                                (IDX)
+               WHEN    "3"
+      *    健康管理手帳番号
+                   MOVE    PTRSI-KOFUNUM   TO
+                                           PTMODRES-KANRITCHO-NUMBER
+                                                                (IDX)
+           END-EVALUATE
+      *    災害区分（名称）
+           EVALUATE    PTRSI-SAIGAIKBN
+               WHEN    "1"
+                   MOVE    PTRSI-SAIGAIKBN
+                                           TO  PTMODRES-ACCIDENT-CLASS
+                                                                (IDX)
+                   MOVE    "業務中の災害"
+                                       TO  PTMODRES-ACCIDENT-CLASS-NAME
+                                                                (IDX)
+               WHEN    "2"
+                   MOVE    PTRSI-SAIGAIKBN
+                                           TO  PTMODRES-ACCIDENT-CLASS
+                                                                (IDX)
+                   MOVE    "通勤途上の災害"
+                                       TO  PTMODRES-ACCIDENT-CLASS-NAME
+                                                                (IDX)
+           END-EVALUATE
+      *    労働基準監督署コード
+           MOVE    PTRSI-SYOCD         TO  PTMODRES-LABOR-ST-CODE(IDX)
+           IF      PTRSI-SYOCD     NOT =   SPACE
+               PERFORM 20021012-SYOCD-HEN-SEC
+           END-IF
+      *    新継再別区分
+           MOVE    PTRSI-SINKEI        TO  PTMODRES-SINKEI (IDX)
+           EVALUATE    PTRSI-SINKEI
+               WHEN    "1"
+                   MOVE    "初診"      TO  PTMODRES-SINKEI-NAME(IDX)
+               WHEN    "3"
+                   MOVE    "転医始診"  TO  PTMODRES-SINKEI-NAME(IDX)
+               WHEN    "5"
+                   MOVE    "継続"      TO  PTMODRES-SINKEI-NAME(IDX)
+               WHEN    "7"
+                   MOVE    "再発"      TO  PTMODRES-SINKEI-NAME(IDX)
+           END-EVALUATE
+      *    転帰事由
+           MOVE    PTRSI-TENKI         TO  PTMODRES-TENKI (IDX)
+           EVALUATE    PTRSI-TENKI
+               WHEN    "1"
+                   MOVE    "治癒"      TO  PTMODRES-TENKI-NAME(IDX)
+               WHEN    "3"
+                   MOVE    "継続"      TO  PTMODRES-TENKI-NAME(IDX)
+               WHEN    "5"
+                   MOVE    "転医"      TO  PTMODRES-TENKI-NAME(IDX)
+               WHEN    "7"
+                   MOVE    "中止"      TO  PTMODRES-TENKI-NAME(IDX)
+               WHEN    "9"
+                   MOVE    "死亡"      TO  PTMODRES-TENKI-NAME(IDX)
+           END-EVALUATE
+      *    四肢特例区分
+           MOVE    PTRSI-SISIKBN       TO  PTMODRES-SISIKBN (IDX)
+           EVALUATE    PTRSI-SISIKBN
+               WHEN    "0"
+                   MOVE    "なし"      TO  PTMODRES-SISIKBN-NAME(IDX)
+               WHEN    "1"
+                   MOVE    "四肢"      TO  PTMODRES-SISIKBN-NAME(IDX)
+               WHEN    "2"
+                   MOVE    "手指"      TO  PTMODRES-SISIKBN-NAME(IDX)
+           END-EVALUATE
+      *
+      *    事業所名称
+           MOVE    PTRSI-JIGYOUNAME    TO  PTMODRES-JIGYOUNAME (IDX)
+      *    所在地都道府県名
+           MOVE    PTRSI-PREFNAME      TO  PTMODRES-PREFNAME (IDX)
+      *    所在地都道府県区分
+           MOVE    PTRSI-PREFKBN       TO  PTMODRES-PREFKBN (IDX)
+           EVALUATE    PTRSI-PREFKBN
+               WHEN    "1"
+                   MOVE    "都"        TO  PTMODRES-PREFKBN-NAME (IDX)
+               WHEN    "2"
+                   MOVE    "道"        TO  PTMODRES-PREFKBN-NAME (IDX)
+               WHEN    "3"
+                   MOVE    "府"        TO  PTMODRES-PREFKBN-NAME (IDX)
+               WHEN    "4"
+                   MOVE    "県"        TO  PTMODRES-PREFKBN-NAME (IDX)
+           END-EVALUATE
+      *    所在地郡市区名
+           MOVE    PTRSI-CITYNAME      TO  PTMODRES-CITYNAME (IDX)
+      *    所在地郡市区区分
+           MOVE    PTRSI-CITYKBN       TO  PTMODRES-CITYKBN (IDX)
+           EVALUATE    PTRSI-CITYKBN
+               WHEN    "1"
+                   MOVE    "郡"        TO  PTMODRES-CITYKBN-NAME (IDX)
+               WHEN    "2"
+                   MOVE    "市"        TO  PTMODRES-CITYKBN-NAME (IDX)
+               WHEN    "3"
+                   MOVE    "区"        TO  PTMODRES-CITYKBN-NAME (IDX)
+           END-EVALUATE
+      *    労災レセ回数記載 基準年月
+           IF      PTRSI-KIJYUNYM  NOT =   SPACE
+               MOVE    PTRSI-KIJYUNYM      TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE(1:7)   TO  PTMODRES-KIJYUNYM
+                                                                  (IDX)
+           END-IF
+      *    労災レセ回数記載 回数
+           IF      PTRSI-KAISU     NOT =   ZERO
+               MOVE    PTRSI-KAISU     TO  PTMODRES-RESEPUTO-COUNT(IDX)
+           END-IF
+      *自賠責
+      *    自賠責保険会社名
+           MOVE    PTRSI-HOKENNAME     TO  PTMODRES-HOKENNAME (IDX)
+      *    自賠責患者請求区分
+           MOVE    PTRSI-JIBAISEIKBN   TO  PTMODRES-JIBAISEIKBN (IDX)
+           EVALUATE    PTRSI-JIBAISEIKBN
+               WHEN    "1"
+                   MOVE    "患者請求する(100%)"
+                                       TO  PTMODRES-JIBAISEIKBN-NAME
+                                                            (IDX)
+               WHEN    "2"
+                   MOVE    "患者請求しない(0%)"
+                                       TO  PTMODRES-JIBAISEIKBN-NAME
+                                                            (IDX)
+           END-EVALUATE
+      *    自賠責担当医コード
+           IF      PTRSI-DRCD      NOT =   SPACE
+               MOVE    PTRSI-DRCD      TO  PTMODRES-RSI-DRCD (IDX)
+               PERFORM 20021013-RSI-DRCD-HEN-SEC
+           END-IF
+      *
+      *    アフターケア
+           EVALUATE    PTRSI-HKNKBN
+           WHEN    "3"
+      *        損傷区分
+               STRING  PTRSI-SONSHOUKBN
+                       PTRSI-SONSHOUKBN-EDANUM
+                                           DELIMITED  BY  SIZE
+                                           INTO   PTMODRES-DAMAGE-CLASS
+                                                                (IDX)
+               END-STRING
+      *        損傷区分名称取得
+               MOVE    SPACE               TO  SYSKANRI-REC
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "4002"              TO  SYS-KANRICD
+               MOVE    PTRSI-SINSATUYMD    TO  SYS-STYUKYMD
+               MOVE    PTRSI-SINSATUYMD    TO  SYS-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               MOVE    PTMODRES-DAMAGE-CLASS (IDX)
+                                           TO  SYS-KBNCD
+               PERFORM 900-SYSKANRI-KEYREAD-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    SYSKANRI-REC        TO  SYS-4002-REC
+                   MOVE    SYS-4002-SONSHOUNAME
+                                       TO  PTMODRES-DAMAGE-CLASS-NAME
+                                                                (IDX)
+               END-IF
+      *    第三者行為
+           WHEN    "6"
+      *        現物支給区分
+               MOVE    PTRSI-DAISAN-GENBTKBN
+                                       TO  PTMODRES-DS-GENBTKBN (IDX)
+               EVALUATE    PTRSI-DAISAN-GENBTKBN
+               WHEN    "1"
+                   MOVE    "対象外"
+                                   TO  PTMODRES-DS-GENBTKBN-NAME (IDX)
+               WHEN    "2"
+                   MOVE    "対象"
+                                   TO  PTMODRES-DS-GENBTKBN-NAME (IDX)
+               END-EVALUATE
+      *        特記事項区分
+               MOVE    PTRSI-DAISAN-TOKKIKBN
+                                       TO  PTMODRES-DS-TOKKIKBN (IDX)
+               EVALUATE    PTRSI-DAISAN-TOKKIKBN
+               WHEN    "1"
+                   MOVE    "「１０第三」記載有"
+                                   TO  PTMODRES-DS-TOKKIKBN-NAME (IDX)
+               WHEN    "2"
+                   MOVE    "「１０第三」記載無"
+                                   TO  PTMODRES-DS-TOKKIKBN-NAME (IDX)
+               END-EVALUATE
+           END-EVALUATE
+      *
+           .
+       20013-RSIINF-PTMODRES-EXT.
+           EXIT.
+      *****************************************************************
+      *    労働基準監督署名称編集処理
+      *****************************************************************
+       20021012-SYOCD-HEN-SEC             SECTION.
+      *
+           INITIALIZE                      LABOR-SIO-REC
+           MOVE    PTRSI-SYOCD         TO  LABOR-SIO-SYOCD
+           MOVE    PTRSI-RYOSTYMD      TO  LABOR-SIO-YUKOSTYMD
+           MOVE    PTRSI-RYOSTYMD      TO  LABOR-SIO-YUKOEDYMD
+      *
+           MOVE    LABOR-SIO-REC       TO  MCPDATA-REC
+           MOVE    "tbl_labor_sio"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_labor_sio"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-LABOR-SIO-READ-SEC
+           ELSE
+               INITIALIZE                  LABOR-SIO-REC
+               MOVE    1               TO  FLG-LABOR-SIO
+           END-IF
+           MOVE    "tbl_labor_sio"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-LABOR-SIO       =   ZERO
+               MOVE    LABOR-SIO-NAME      TO  PTMODRES-LABOR-ST-NAME
+                                                        (IDX)
+           ELSE
+               MOVE    SPACE               TO  PTMODRES-LABOR-ST-NAME
+                                                        (IDX)
+           END-IF
+           .
+       20021012-SYOCD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    自賠責担当医コード名称編集処理
+      *****************************************************************
+       20021013-RSI-DRCD-HEN-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1010"              TO  SYS-KANRICD
+           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    PTRSI-DRCD          TO  SYS-KBNCD
+           PERFORM 900-SYSKANRI-KEYREAD-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+               MOVE    SYS-1010-NAME       TO  PTMODRES-RSI-DRCD-NAME
+                                                                (IDX)
+           END-IF
+           .
+       20021013-RSI-DRCD-HEN-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    保険組合せ編集処理
       *****************************************************************
        20013-HKNCOMBI-HENSYU-SEC             SECTION.
       *
+      *
            INITIALIZE                  ORAPI012SUB2V3AREA
            MOVE    SPA-SYSYMD          TO  AP12SUB2V3-SYSYMD
-           IF      FLG-SYORI           =   2
+           IF      FLG-HENSYU          =   1
                MOVE    "2"             TO  AP12SUB2V3-SYORIKBN
            ELSE
                MOVE    "1"             TO  AP12SUB2V3-SYORIKBN
@@ -1791,24 +2082,22 @@
            .
        200131-COMBINATION-HEN-EXT.
            EXIT.
-      *
-      *
       *****************************************************************
       *    補助区分名称編集
       *****************************************************************
-       200131-HOJOKBN-NAME-HEN-SEC             SECTION.
+      *200131-HOJOKBN-NAME-HEN-SEC             SECTION.
       *
-           INITIALIZE                  ORAPI012SUB1AREA
-           MOVE    WRK-HKNNUM          TO  API012SUB1-HKNNUM
-           MOVE    WRK-HOJOKBN         TO  API012SUB1-HOJOKBN
-           MOVE    SPA-SYSYMD          TO  API012SUB1-SYSYMD
-           CALL    "ORAPI012SUB1"          USING
-                                           ORAPI012SUB1AREA
-                                           SPA-AREA
+      *    INITIALIZE                  ORAPI012SUB1AREA
+      *    MOVE    WRK-HKNNUM          TO  API012SUB1-HKNNUM
+      *    MOVE    WRK-HOJOKBN         TO  API012SUB1-HOJOKBN
+      *    MOVE    SPA-SYSYMD          TO  API012SUB1-SYSYMD
+      *    CALL    "ORAPI012SUB1"          USING
+      *                                    ORAPI012SUB1AREA
+      *                                    SPA-AREA
       *
-           .
-       200131-HOJOKBN-NAME-HEN-EXT.
-           EXIT.
+      *    .
+      *200131-HOJOKBN-NAME-HEN-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    患者保険確認処理
@@ -1824,17 +2113,18 @@
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20012-PTINF-HEN-SEC
            END-IF
-      *    保険・公費情報チェック
+      *    労災情報チェック
            IF      WRK-ERRCD           =   SPACE
-               PERFORM 20021-HKNKOH-CHK-SEC
+               PERFORM 20021-RSIHKN-CHK-SEC
            END-IF
-      *    保険公費チェック、保険組合せ作成
+      *    保険組合せ作成
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20022-HKNCOMBI-CHKSYORI-SEC
            END-IF
       *    情報編集
            IF      WRK-ERRCD           =   SPACE
-               PERFORM 20013-HKNKOH-HENSYU-SEC
+               MOVE    1               TO  FLG-HENSYU
+               PERFORM 20013-RSIINF-HENSYU-SEC
            END-IF
       *    エラー判定
            IF      WRK-ERRCD           =   SPACE
@@ -1866,322 +2156,420 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   40
+               MOVE    PTMODREQ-MAIN-MODE (IDX)
+                                       TO  PTMODRES-MAIN-MODE   (IDX)
                MOVE    PTMODREQ-MAIN-INSURANCE-ID (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-ID (IDX)
-               MOVE    PTMODREQ-MAIN-INSURANCE-CLASS (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-CLASS
+                                       TO  PTMODRES-MAIN-INSURANCE-ID
                                                                  (IDX)
-               MOVE    PTMODREQ-MAIN-INSURANCE-NUMBER (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-NUMBER
+               MOVE    PTMODREQ-INSURANCE-ID (IDX)
+                                       TO  PTMODRES-INSURANCE-ID (IDX)
+               MOVE    PTMODREQ-INSURANCE-CLASS (IDX)
+                                       TO  PTMODRES-INSURANCE-CLASS(IDX)
+               MOVE    PTMODREQ-INSURANCE-NAME (IDX)
+                                       TO  PTMODRES-INSURANCE-NAME(IDX)
+      *    労災情報
+               MOVE    PTMODREQ-ACCIDENT       (IDX)
+                                       TO  PTMODRES-ACCIDENT     (IDX)
+               MOVE    PTMODREQ-ACCIDENT-NAME (IDX)
+                                       TO  PTMODRES-ACCIDENT-NAME(IDX)
+      *        傷病の部位
+               MOVE    PTMODREQ-DISEASE-LOCATION (IDX)
+                                       TO  PTMODRES-DISEASE-LOCATION
                                                                  (IDX)
-               MOVE    PTMODREQ-MAIN-INSURANCE-NAME (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-NAME
+               MOVE    PTMODREQ-DISEASE-DATE (IDX)
+                                       TO  PTMODRES-DISEASE-DATE (IDX)
+               MOVE    PTMODREQ-START-DATE (IDX)
+                                       TO  PTMODRES-START-DATE (IDX)
+               MOVE    PTMODREQ-END-DATE (IDX)
+                                       TO  PTMODRES-END-DATE (IDX)
+      *労災
+               MOVE    PTMODREQ-ACCIDENT-NUMBER(IDX)
+                                       TO  PTMODRES-ACCIDENT-NUMBER
+                                                               (IDX)
+               MOVE    PTMODREQ-PENSIONCERTIFICATE(IDX)
+                                       TO  PTMODRES-PENSIONCERTIFICATE
+                                                                (IDX)
+      *        災害区分名称
+               MOVE    PTMODREQ-ACCIDENT-CLASS (IDX)
+                                       TO  PTMODRES-ACCIDENT-CLASS
+                                                              (IDX)
+      *        労働基準監督署コード
+               MOVE    PTMODREQ-LABOR-ST-CODE (IDX)
+                                       TO  PTMODRES-LABOR-ST-CODE
+                                                              (IDX)
+      *        新継再別区分
+               MOVE    PTMODREQ-SINKEI (IDX)
+                                       TO  PTMODRES-SINKEI   (IDX)
+      *        転帰事由
+               MOVE    PTMODREQ-TENKI (IDX)
+                                       TO  PTMODRES-TENKI    (IDX)
+      *        四肢特例区分
+               MOVE    PTMODREQ-SISIKBN (IDX)
+                                       TO  PTMODRES-SISIKBN  (IDX)
+      *
+      *        事業所名称
+               MOVE    PTMODREQ-JIGYOUNAME (IDX)
+                                       TO  PTMODRES-JIGYOUNAME (IDX)
+               MOVE    PTMODREQ-PREFNAME (IDX)
+                                       TO  PTMODRES-PREFNAME (IDX)
+      *        所在地都道府県区分
+               MOVE    PTMODREQ-PREFKBN (IDX)
+                                       TO  PTMODRES-PREFKBN (IDX)
+      ****     MOVE    PTMODREQ-PREFKBN-NAME (IDX)
+      ****                             TO  PTMODRES-PREFKBN-NAME(IDX)
+               MOVE    PTMODREQ-CITYNAME (IDX)
+                                       TO  PTMODRES-CITYNAME (IDX)
+      *        所在地郡市区区分
+               MOVE    PTMODREQ-CITYKBN (IDX)
+                                       TO  PTMODRES-CITYKBN (IDX)
+      *        労災レセ回数記載 基準年月
+               MOVE    PTMODREQ-KIJYUNYM (IDX)
+                                       TO  PTMODRES-KIJYUNYM (IDX)
+               MOVE    PTMODREQ-RESEPUTO-COUNT (IDX)
+                                       TO  PTMODRES-RESEPUTO-COUNT(IDX)
+      *自賠責
+      *        自賠責請求区分
+               MOVE    PTMODREQ-JIBAISEIKBN (IDX)
+                                       TO  PTMODRES-JIBAISEIKBN (IDX)
+               MOVE    PTMODREQ-HOKENNAME (IDX)
+                                       TO  PTMODRES-HOKENNAME (IDX)
+               MOVE    PTMODREQ-RSI-DRCD (IDX)
+                                       TO  PTMODRES-RSI-DRCD (IDX)
+      *アフターケア
+               MOVE    PTMODREQ-KANRITCHO-NUMBER(IDX)
+                                       TO  PTMODRES-KANRITCHO-NUMBER
                                                                  (IDX)
-               MOVE    PTMODREQ-MAIN-INSURANCE-NAME (IDX)
-                                   TO  PTMODRES-MAIN-INSURANCE-NAME
+               MOVE    PTMODREQ-DAMAGE-CLASS (IDX)
+                                       TO  PTMODRES-DAMAGE-CLASS
                                                                  (IDX)
-               MOVE    PTMODREQ-MAIN-MARK (IDX)
-                                   TO  PTMODRES-MAIN-MARK       (IDX)
-               MOVE    PTMODREQ-MAIN-NUMBER (IDX)
-                                   TO  PTMODRES-MAIN-NUMBER     (IDX)
-               MOVE    PTMODREQ-MAIN-CONTINUATION (IDX)
-                                   TO  PTMODRES-MAIN-CONTINUATION
+      *第三者行為
+               MOVE    PTMODREQ-DS-GENBTKBN (IDX)
+                                       TO  PTMODRES-DS-GENBTKBN
                                                                  (IDX)
-               MOVE    PTMODREQ-MAIN-ASSISTANCE (IDX)
-                                   TO  PTMODRES-MAIN-ASSISTANCE (IDX)
-               MOVE    PTMODREQ-MAIN-FAMILY (IDX)
-                                   TO  PTMODRES-MAIN-FAMILY    (IDX)
-               MOVE    PTMODREQ-MAIN-POLICYHOLDER (IDX)
-                                   TO  PTMODRES-MAIN-POLICYHOLDER
+               MOVE    PTMODREQ-DS-TOKKIKBN (IDX)
+                                       TO  PTMODRES-DS-TOKKIKBN
                                                                  (IDX)
-               MOVE    PTMODREQ-MAIN-START-DATE (IDX)
-                                   TO  PTMODRES-MAIN-START-DATE (IDX)
-               MOVE    PTMODREQ-MAIN-END-DATE (IDX)
-                                   TO  PTMODRES-MAIN-END-DATE    (IDX)
-               MOVE    PTMODREQ-MAIN-GET-DATE (IDX)
-                                   TO  PTMODRES-MAIN-GET-DATE   (IDX)
-               MOVE    PTMODREQ-MAIN-MODE   (IDX)
-                                   TO  PTMODRES-MAIN-MODE       (IDX)
-      *        高齢者負担区分
-      *        MOVE    PTMODREQ-RATE-CLASS (IDX)
-      *                            TO  PTMODRES-RATE-CLASS      (IDX)
            END-PERFORM
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   60
-               MOVE    PTMODREQ-INSURANCE-ID (IDX)
-                                   TO  PTMODRES-INSURANCE-ID (IDX)
-               MOVE    PTMODREQ-INSURANCE-CLASS (IDX)
-                                   TO  PTMODRES-INSURANCE-CLASS (IDX)
-               MOVE    PTMODREQ-INSURANCE-NAME (IDX)
-                                   TO  PTMODRES-INSURANCE-NAME (IDX)
-               MOVE    PTMODREQ-PROVIDER-NUMBER (IDX)
-                                   TO  PTMODRES-PROVIDER-NUMBER (IDX)
-               MOVE    PTMODREQ-RECIPIENT-NUMBER(IDX)
-                                   TO  PTMODRES-RECIPIENT-NUMBER(IDX)
-               MOVE    PTMODREQ-INSURANCE-START-DATE(IDX)
-                                   TO  PTMODRES-INSURANCE-START-DATE
-                                                               (IDX)
-               MOVE    PTMODREQ-INSURANCE-END-DATE(IDX)
-                                   TO  PTMODRES-INSURANCE-END-DATE(IDX)
-               MOVE    PTMODREQ-INSURANCE-MODE  (IDX)
-                                   TO  PTMODRES-INSURANCE-MODE (IDX)
-           END-PERFORM
            .
        20021-INPUT-HKNHEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    保険・公費情報チェック処理
+      *    労災保険情報チェック処理
       *****************************************************************
-       20021-HKNKOH-CHK-SEC         SECTION.
+       20021-RSIHKN-CHK-SEC         SECTION.
+      *
+      *    PARAから編集
+           PERFORM 200211-PARA-RSIINF-SEC
       *
            MOVE    SPA-P02SCRAREA      TO  APIS-P02SCRAREA
       *
-           INITIALIZE                  WRK-HKNKOH-AREA
+           INITIALIZE                  WRK-PTRSIINF-AREA
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   40
       *        保険の種類・保険者番号なし対象外
-               IF     (PTMODRES-MAIN-INSURANCE-CLASS(IDX)  =   SPACE)
-                  AND (PTMODRES-MAIN-INSURANCE-NUMBER(IDX) =   SPACE)
+               IF     (PTMODRES-INSURANCE-CLASS (IDX)  =   SPACE)
+                  AND (PTMODRES-ACCIDENT        (IDX)  =   SPACE)
                    CONTINUE
                ELSE
       *            保険基本チェック
-                   PERFORM 200211-HKNINF-INIT-CHK-SEC
-               END-IF
-           END-PERFORM
-      *    公費編集
-           MOVE    ZERO                TO  IDY
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   60
-      *        対象外
-               IF     (PTMODRES-INSURANCE-CLASS(IDX)   =   SPACE)
-                  AND (PTMODRES-PROVIDER-NUMBER(IDX)   =   SPACE)
-                   CONTINUE
-               ELSE
-      *            公費基本チェック
-                   PERFORM 200212-KOHINF-INIT-CHK-SEC
+                   PERFORM 200211-RSIHKN-INIT-CHK-SEC
                END-IF
            END-PERFORM
       *    基本エラー有
            IF      IDX-ERR             >   ZERO
                MOVE    "50"            TO  WRK-ERRCD
-               GO      TO      20021-HKNKOH-CHK-EXT
+               GO      TO      20021-RSIHKN-CHK-EXT
            END-IF
       *    保険ＳＰＡ編集
       *    更新分
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   WRK-PTHKN-MAX
-               IF     (WRK-PTHKN-IDX (IDY)     =   ZERO  )
-                 OR   (WRK-PTHKN-HKNID (IDY)   =   ZERO  )
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-PTHKN-IDX  (IDY)    TO  IDH
-                   IF     (WRK-PTHKN-HKNID (IDY)   =   SPA-PTHKN-HKNID
-                                                             (IDH))
-                    AND   (WRK-PTHKN-MODE  (IDY)   =   "2"
-                                                   OR  "3"        )
-                       PERFORM 200213-HKNINF-SPAHEN-SEC
-                   END-IF
+                   UNTIL       IDY     >   WRK-PTRSI-MAX
+               IF      (WRK-PTRSI-MODE  (IDY)  =   "2"   )
+                   AND (WRK-PTRSI-IDX(IDY) NOT =   ZERO  )
+                   MOVE    WRK-PTRSI-IDX  (IDY)    TO  IDH
+                   PERFORM 200213-RSIINF-SYORI-SEC
+               END-IF
+               IF      (WRK-PTRSI-MODE  (IDY)  =   "1"   )
+                   MOVE    ZERO                TO  IDH
+                   PERFORM 200213-RSIINF-SYORI-SEC
+               END-IF
+               IF      (WRK-PTRSI-MODE  (IDY)  =   "3"   )
+                   AND (WRK-PTRSI-IDX(IDY) NOT =   ZERO  )
+                   MOVE    WRK-PTRSI-IDX  (IDY)    TO  IDH
+      *            削除処理
+                   PERFORM 200213-RSIINF-DELETE-SEC
                END-IF
            END-PERFORM
-      *    追加分
-           MOVE    SPA-PTHKN-MAX       TO  IDH
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   WRK-PTHKN-MAX )
-                          OR  (SPA-ERRCD   NOT =   SPACE )
-               IF     (WRK-PTHKN-HKNID (IDY)   =   ZERO  )
-                AND   (WRK-PTHKN-MODE  (IDY)   =   "1"   )
-                   ADD     1                   TO  IDH
-                   IF      IDH                 >   40
-                       MOVE    "0107"          TO  SPA-ERRCD
-                   END-IF
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "1"             TO  SPA-PTHKN-SINKIKBN
-                                                               (IDH)
-                       PERFORM 200213-HKNINF-SPAHEN-SEC
-      *                SPAに編集
-                       MOVE    APIS-PTHKNINF-TBL(IDH)
-                                               TO  SPA-PTHKNINF-TBL(IDH)
-                       MOVE    "1"             TO  SPA-PTHKN-SINKIKBN
-                                                               (IDH)
-                       MOVE    WRK-PTHKN-MODE (IDY)
-                                               TO  SPA-PTHKN-MODE (IDH)
-                       MOVE    IDH             TO  SPA-PTHKN-MAX
-                   END-IF
-               END-IF
-           END-PERFORM
-      *    公費ＳＰＡ編集
-      *    更新分
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   WRK-PTKOH-MAX
-               IF     (WRK-PTKOH-IDX (IDY)     =   ZERO  )
-                 OR   (WRK-PTKOH-KOHID (IDY)   =   ZERO  )
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-PTKOH-IDX  (IDY)    TO  IDH
-                   IF     (WRK-PTKOH-KOHID(IDY)    =   SPA-PTKOH-KOHID
-                                                                (IDH))
-                    AND   (WRK-PTKOH-MODE  (IDY)   =   "2"
-                                                   OR  "3"        )
-                       PERFORM 200214-KOHINF-SPAHEN-SEC
-                   END-IF
-               END-IF
-           END-PERFORM
-      *    追加分
-           MOVE    SPA-PTKOH-MAX       TO  IDH
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   WRK-PTKOH-MAX )
-                          OR  (SPA-ERRCD   NOT =   SPACE )
-               IF     (WRK-PTKOH-KOHID (IDY)   =   ZERO)
-                AND   (WRK-PTKOH-MODE  (IDY)   =   "1" )
-                   ADD     1                   TO  IDH
-                   IF      IDH                 >   60
-                       MOVE    "0107"          TO  SPA-ERRCD
-                   END-IF
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "1"             TO  SPA-PTKOH-SINKIKBN
-                                                               (IDH)
-                       PERFORM 200214-KOHINF-SPAHEN-SEC
-      *                SPAに編集
-                       MOVE    APIS-PTKOHINF-TBL(IDH)
-                                               TO  SPA-PTKOHINF-TBL(IDH)
-                       MOVE    "1"             TO  SPA-PTKOH-SINKIKBN
-                                                               (IDH)
-                       MOVE    WRK-PTKOH-MODE (IDY)
-                                               TO  SPA-PTKOH-MODE (IDH)
-                       MOVE    IDH             TO  SPA-PTKOH-MAX
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               PERFORM 290-ERROR-HEN-SEC
-               IF      IDX-ERR             >   ZERO
-                   MOVE    "50"            TO  WRK-ERRCD
-               END-IF
+      *    エラー有
+           IF      IDX-ERR             >   ZERO
+               MOVE    "50"            TO  WRK-ERRCD
+               GO      TO      20021-RSIHKN-CHK-EXT
            END-IF
       *
+      *    ＳＰＡをパラメタへ
+           PERFORM 200219-PARAINS-RSIINF-SEC
            .
-       20021-HKNKOH-CHK-EXT.
+       20021-RSIHKN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災保険情報パラメタ編集処理
+      *****************************************************************
+       200211-PARA-RSIINF-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  IDR
+           INITIALIZE                  TBL-PTRSIINF-AREA
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           PERFORM UNTIL   (FLG-PARA       =   1 )
+                       OR  (IDR            >=  50)
+               MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
+      *
+               ADD     1                   TO  IDR
+               MOVE    PARA-DATA-REC       TO  TBL-PTRSIINF-REC(IDR)
+               MOVE    PARA-EDANUM         TO  TBL-PARA-EDANUM (IDR)
+               MOVE    IDR                 TO  TBL-PARA-MAX
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *
+           .
+       200211-PARA-RSIINF-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災保険情報パラメタ作成処理
+      *****************************************************************
+       200219-PARAINS-RSIINF-SEC      SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           PERFORM VARYING     IDR     FROM    1   BY   1
+                       UNTIL  (IDR         >   TBL-PARA-MAX )
+               INITIALIZE                      PARA-REC
+               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+               MOVE    "P02"               TO  PARA-GYOUMUID
+               MOVE    SPA-TERMID          TO  PARA-TERMID
+               MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+               MOVE    IDR                 TO  PARA-EDANUM
+      *
+               MOVE    PARA-EDANUM         TO  TBL-PARA-EDANUM (IDR)
+               MOVE    TBL-PTRSIINF-REC(IDR)
+                                           TO  PARA-DATA-REC
+      *
+               MOVE    PARA-REC            TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "80"                TO  WRK-ERRCD
+                   DISPLAY "API PARA INSERT ERR:"  MCP-RC
+                       ",KEY:" PARA-KEY
+               END-IF
+           END-PERFORM
+      *
+           .
+       200219-PARAINS-RSIINF-EXT.
            EXIT.
       *
       *****************************************************************
       *    保険情報ＳＰＡ編集処理
       *****************************************************************
-       200213-HKNINF-SPAHEN-SEC      SECTION.
+       200213-RSIINF-SPAHEN-SEC      SECTION.
       *
-           MOVE    WRK-PTHKN-HKNNUM (IDY)
-                                       TO  APIS-PTHKN-HKNNUM (IDH)
-           MOVE    WRK-PTHKN-HKNNUM-MEI (IDY)
-                                       TO  APIS-PTHKN-HKNNUM-MEI (IDH)
-           MOVE    WRK-PTHKN-HKNJANUM (IDY)
-                                       TO  APIS-PTHKN-HKNJANUM (IDH)
-           MOVE    WRK-PTHKN-HIHKNJANAME (IDY)
-                                       TO  APIS-PTHKN-HIHKNJANAME
-                                                                   (IDH)
-           MOVE    WRK-PTHKN-HONKZKKBN (IDY)
-                                       TO  APIS-PTHKN-HONKZKKBN (IDH)
-           MOVE    WRK-PTHKN-HOJOKBN (IDY)
-                                       TO  APIS-PTHKN-HOJOKBN (IDH)
-           MOVE    WRK-PTHKN-CONTKBN (IDY)
-                                       TO  APIS-PTHKN-CONTKBN (IDH)
-           MOVE    WRK-PTHKN-KIGO (IDY)
-                                       TO  APIS-PTHKN-KIGO (IDH)
-           MOVE    WRK-PTHKN-NUM (IDY)
-                                       TO  APIS-PTHKN-NUM (IDH)
-           MOVE    WRK-PTHKN-SKKGETYMD (IDY)
-                                       TO  APIS-PTHKN-SKKGETYMD(IDH)
-           MOVE    WRK-PTHKN-TEKSTYMD (IDY)
-                                       TO  APIS-PTHKN-TEKSTYMD (IDH)
-           MOVE    WRK-PTHKN-TEKEDYMD (IDY)
-                                       TO  APIS-PTHKN-TEKEDYMD (IDH)
-           MOVE    WRK-PTHKN-KAKUNINYMD (IDY)
-                                       TO  APIS-PTHKN-KAKUNINYMD(IDH)
-      *    確認年月日
-           IF     (WRK-PTHKN-KAKUNINYMD (IDY)  =   SPACE )
-             AND  (SPA-PTHKN-SINKIKBN   (IDH)  =   "1"   )
-               MOVE    SPA-SYSYMD      TO  APIS-PTHKN-KAKUNINYMD(IDH)
+           IF      IDH                 =   ZERO
+      *        新規分
+               MOVE    SPACE               TO  PTRSIINF-REC
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    SPA-HOSPNUM             TO  PTRSI-HOSPNUM
+               MOVE    SPA-GMN-PTID            TO  PTRSI-PTID
+               MOVE    WRK-PTRSI-HKNKBN(IDY)   TO  PTRSI-HKNKBN
+               MOVE    WRK-PTRSI-HKNNUM(IDY)   TO  PTRSI-HKNNUM
+           ELSE
+               MOVE    TBL-PTRSIINF-REC (IDH)  TO  PTRSIINF-REC
            END-IF
       *
-           MOVE    WRK-PTHKN-SKKGETYMD (IDY)
-                                       TO  APIS-PTHKN-SKKGETYMDW(IDH)
-           MOVE    WRK-PTHKN-TEKSTYMD (IDY)
-                                       TO  APIS-PTHKN-TEKSTYMDW (IDH)
-           MOVE    WRK-PTHKN-TEKEDYMD (IDY)
-                                       TO  APIS-PTHKN-TEKEDYMDW (IDH)
-           MOVE    APIS-PTHKN-KAKUNINYMD(IDH)
-                                       TO  APIS-PTHKN-KAKUNINYMDW(IDH)
-      *
-      *    削除区分
-           IF      WRK-PTHKN-MODE  (IDY)   =   "3"
-               MOVE    "1"                 TO  SPA-PTHKN-SAKJOKBN(IDH)
+           MOVE    WRK-PTRSI-SHOBYOYMD(IDY)
+                                       TO  PTRSI-SHOBYOYMD
+      *    療養開始年月日
+           IF      WRK-PTRSI-HKNKBN (IDY)  =   "3"
+      *        アフターケア
+               MOVE    WRK-PTRSI-RYOSTYMD (IDY)
+                                           TO  PTRSI-SINSATUYMD
+               MOVE    WRK-PTRSI-RYOEDYMD (IDY)
+                                           TO  PTRSI-SINSATUEND
+           ELSE
+               MOVE    WRK-PTRSI-RYOSTYMD (IDY)
+                                           TO  PTRSI-RYOSTYMD
+               MOVE    WRK-PTRSI-RYOEDYMD (IDY)
+                                           TO  PTRSI-RYOEDYMD
            END-IF
-      *    処理区分
-           MOVE    WRK-PTHKN-MODE (IDY)    TO  SPA-PTHKN-MODE (IDH)
       *
+           MOVE    WRK-IN-IDX (IDY)    TO  IDM
+      *    患者交付番号
+           EVALUATE    WRK-PTRSI-HKNKBN (IDY)
+               WHEN    "1"
+      *    労働保険番号
+                   MOVE    PTMODRES-ACCIDENT-NUMBER (IDM)
+                                           TO  PTRSI-KOFUNUM
+               WHEN    "2"
+      *    年金証書番号
+                   MOVE    PTMODRES-PENSIONCERTIFICATE (IDM)
+                                           TO  PTRSI-KOFUNUM
+               WHEN    "3"
+      *    健康管理手帳番号
+                   MOVE    PTMODRES-KANRITCHO-NUMBER (IDM)
+                                           TO  PTRSI-KOFUNUM
+           END-EVALUATE
+      *    被保険者名（患者氏名）
+           IF      PTRSI-HIHKNJANAME       =   SPACE
+               MOVE    SPA-GMN-NAME        TO  PTRSI-HIHKNJANAME
+           END-IF
+      *    事業所名称
+           MOVE    PTMODRES-JIGYOUNAME (IDM)
+                                           TO  PTRSI-JIGYOUNAME
+      *    所在地都道府県名
+           MOVE    PTMODRES-PREFNAME (IDM)
+                                           TO  PTRSI-PREFNAME
+      *    所在地都道府県区分
+           MOVE    PTMODRES-PREFKBN (IDM)
+                                           TO  PTRSI-PREFKBN
+      *    所在地郡市区名
+           MOVE    PTMODRES-CITYNAME (IDM)
+                                           TO  PTRSI-CITYNAME
+      *    所在地郡市区区分
+           MOVE    PTMODRES-CITYKBN (IDM)
+                                           TO  PTRSI-CITYKBN
+      *    新継再別
+           MOVE    PTMODRES-SINKEI (IDM)
+                                           TO  PTRSI-SINKEI
+      *    転帰事由
+           MOVE    PTMODRES-TENKI (IDM)
+                                           TO  PTRSI-TENKI
+      *    四肢特例区分
+           MOVE    PTMODRES-SISIKBN (IDM)
+                                           TO  PTRSI-SISIKBN
+      *    損傷区分
+           MOVE    PTMODRES-DAMAGE-CLASS(IDM)(1:2)
+                                           TO  PTRSI-SONSHOUKBN
+      *    損傷区分−枝番
+           MOVE    PTMODRES-DAMAGE-CLASS (IDM)(3:1)
+                                           TO  PTRSI-SONSHOUKBN-EDANUM
+      *    傷病の部位
+           MOVE    PTMODRES-DISEASE-LOCATION (IDM)
+                                           TO  PTRSI-COMMENT
+      *    災害区分
+           MOVE    PTMODRES-ACCIDENT-CLASS (IDM)
+                                           TO  PTRSI-SAIGAIKBN
+      *    自賠責患者請求区分
+           MOVE    PTMODRES-JIBAISEIKBN (IDM)
+                                           TO  PTRSI-JIBAISEIKBN
+      *    自賠責担当医コード
+           MOVE    PTMODRES-RSI-DRCD (IDM)
+                                           TO  PTRSI-DRCD
+      *    自賠責保険会社名
+           MOVE    PTMODRES-HOKENNAME (IDM)
+                                           TO  PTRSI-HOKENNAME
+      *    労災レセ回数記載：基準年月
+           MOVE    WRK-PTRSI-KIJYUNYM(IDY)
+                                           TO  PTRSI-KIJYUNYM
+      *    労災レセ回数記載：回数
+           MOVE    WRK-PTRSI-KAISU(IDY)    TO  PTRSI-KAISU
+      *    労働基準監督署コード
+           MOVE    PTMODRES-LABOR-ST-CODE (IDM)
+                                           TO  PTRSI-SYOCD
+      *
+      *    第三者　現物給付計算区分
+           MOVE    PTMODRES-DS-GENBTKBN (IDM)
+                                           TO  PTRSI-DAISAN-GENBTKBN
+      *    第三者　特記事項区分
+           MOVE    PTMODRES-DS-TOKKIKBN (IDM)
+                                           TO  PTRSI-DAISAN-TOKKIKBN
+      *
+      *    パラメタ登録
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "AP12"              TO  PARA-GYOUMUID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "AP12"              TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+           MOVE    1                   TO  PARA-EDANUM
+      *
+           MOVE    PTRSIINF-REC        TO  PARA-DATA-REC
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "80"                TO  WRK-ERRCD
+               DISPLAY "API PARA INSERT ERR:"  MCP-RC
+                       ",KEY:" PARA-KEY
+           END-IF
            .
-       200213-HKNINF-SPAHEN-EXT.
+       200213-RSIINF-SPAHEN-EXT.
            EXIT.
-      *
-      *
-      *****************************************************************
-      *    公費情報ＳＰＡ編集処理
-      *****************************************************************
-       200214-KOHINF-SPAHEN-SEC      SECTION.
-      *
-           MOVE    WRK-PTKOH-KOHNUM (IDY)
-                                       TO  APIS-PTKOH-KOHNUM (IDH)
-           MOVE    WRK-PTKOH-KOHNUM-MEI (IDY)
-                                       TO  APIS-PTKOH-KOHNUM-MEI
-                                                               (IDH)
-           IF      APIS-PTKOH-PAYKBN (IDH)  =   SPACE
-               MOVE    ZERO            TO  APIS-PTKOH-PAYKBN (IDH)
-           END-IF
-           MOVE    WRK-PTKOH-FTNJANUM (IDY)
-                                       TO  APIS-PTKOH-FTNJANUM (IDH)
-           MOVE    WRK-PTKOH-JKYSNUM (IDY)
-                                       TO  APIS-PTKOH-JKYSNUM(IDH)
-           MOVE    WRK-PTKOH-TEKSTYMD (IDY)
-                                       TO  APIS-PTKOH-TEKSTYMD (IDH)
-           MOVE    WRK-PTKOH-TEKEDYMD (IDY)
-                                       TO  APIS-PTKOH-TEKEDYMD (IDH)
-           MOVE    WRK-PTKOH-KAKUNINYMD (IDY)
-                                       TO  APIS-PTKOH-KAKUNINYMD(IDH)
-      *    確認年月日
-           IF     (WRK-PTKOH-KAKUNINYMD (IDY)  =   SPACE )
-              AND (SPA-PTKOH-SINKIKBN (IDH)    =   "1"   )
-               MOVE    SPA-SYSYMD      TO  APIS-PTKOH-KAKUNINYMD(IDH)
-           END-IF
-           MOVE    WRK-PTKOH-TEKSTYMD (IDY)
-                                       TO  APIS-PTKOH-TEKSTYMDW (IDH)
-           MOVE    WRK-PTKOH-TEKEDYMD (IDY)
-                                       TO  APIS-PTKOH-TEKEDYMDW (IDH)
-           MOVE    APIS-PTKOH-KAKUNINYMD(IDH)
-                                       TO  APIS-PTKOH-KAKUNINYMD(IDH)
-      *
-      *    削除区分
-           IF      WRK-PTKOH-MODE  (IDY)   =   "3"
-               MOVE    "1"                 TO  SPA-PTKOH-SAKJOKBN(IDH)
-           END-IF
-      *    処理区分
-           MOVE    WRK-PTKOH-MODE (IDY)    TO  SPA-PTKOH-MODE (IDH)
-      *
-           .
-       200214-KOHINF-SPAHEN-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    保険情報基本チェック処理
       *****************************************************************
-       200211-HKNINF-INIT-CHK-SEC      SECTION.
+       200211-RSIHKN-INIT-CHK-SEC     SECTION.
       *
       *    エラー用編集
-      *    保険種類
-           MOVE    PTMODREQ-MAIN-INSURANCE-CLASS(IDX)
+      *    労災区分
+           MOVE    PTMODREQ-ACCIDENT (IDX)
                                        TO  WRK-ERR-NUM
-           MOVE    PTMODREQ-MAIN-INSURANCE-NAME (IDX)
+           MOVE    PTMODREQ-ACCIDENT-NAME (IDX)
                                        TO  WRK-ERR-NUMMEI
            MOVE    SPACE               TO  WRK-CHK-HKNNUM
       *
@@ -2191,24 +2579,95 @@
            EVALUATE    PTMODREQ-MAIN-MODE (IDX)
                WHEN    "New"
       *        新規
-                   MOVE    "1"                 TO  WRK-PTHKN-MODE (IDY)
+                   MOVE    "1"                 TO  WRK-PTRSI-MODE (IDY)
                WHEN    "Modify"
       *        修正
-                   MOVE    "2"                 TO  WRK-PTHKN-MODE (IDY)
+                   MOVE    "2"                 TO  WRK-PTRSI-MODE (IDY)
                WHEN    "Delete"
       *        削除
-                   MOVE    "3"                 TO  WRK-PTHKN-MODE (IDY)
+                   MOVE    "3"                 TO  WRK-PTRSI-MODE (IDY)
                WHEN    SPACE
       *        変更なし
-                   MOVE    "0"                 TO  WRK-PTHKN-MODE (IDY)
+                   MOVE    "0"                 TO  WRK-PTRSI-MODE (IDY)
                WHEN    OTHER
                    MOVE    "19"                TO  WRK-ERRCD
                    PERFORM 290-ERROR-HEN-SEC
            END-EVALUATE
+      *    労災区分
+      *    労災保険区分
+           MOVE    PTMODREQ-ACCIDENT (IDX)
+                                       TO  WRK-PTRSI-HKNKBN(IDY)
+           EVALUATE    PTMODREQ-ACCIDENT (IDX)
+               WHEN    "1"
+                   MOVE    "短期給付"      TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+                   MOVE    "971"           TO  WRK-PTRSI-HKNNUM   (IDY)
+               WHEN    "2"
+                   MOVE    "傷病年金"      TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+                   MOVE    "971"           TO  WRK-PTRSI-HKNNUM   (IDY)
+               WHEN    "3"
+                   MOVE    "アフターケア"  TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+                   MOVE    "971"           TO  WRK-PTRSI-HKNNUM   (IDY)
+               WHEN    "4"
+                   MOVE    "自賠責保険"    TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+                   MOVE    "973"           TO  WRK-PTRSI-HKNNUM   (IDY)
+               WHEN    "5"
+                   MOVE    "公務災害"      TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+                   MOVE    "971"           TO  WRK-PTRSI-HKNNUM   (IDY)
+               WHEN    "6"
+                   MOVE    "第三者行為"    TO  PTMODRES-ACCIDENT-NAME
+                                                                  (IDX)
+                   MOVE    "970"           TO  WRK-PTRSI-HKNNUM   (IDY)
+               WHEN    OTHER
+                   MOVE    "20"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+           END-EVALUATE
+           MOVE    PTMODRES-ACCIDENT-NAME (IDX)
+                                       TO  WRK-ERR-NUMMEI
+      *
+      *    保険種類
+           IF      WRK-PTRSI-HKNNUM  (IDY)  NOT =   SPACE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    WRK-PTRSI-HKNNUM  (IDY) TO  HKN-HKNNUM
+               PERFORM 9002-HKNNUM-KEYREAD-SEC
+               IF      FLG-HKNNUM          =   ZERO
+                   MOVE    HKN-TANSEIDONAME    TO  WRK-PTRSI-HKNNUM-NAME
+                                                                 (IDY)
+               ELSE
+                   MOVE    WRK-PTRSI-HKNNUM  (IDY)
+                                               TO  WRK-ERR-NUM
+                   MOVE    "32"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           END-IF
+           IF     (WRK-PTRSI-HKNNUM (IDY)  =   PTMODREQ-INSURANCE-CLASS
+                                                               (IDX))
+              OR  (PTMODREQ-INSURANCE-CLASS (IDX)  =   SPACE )
+               MOVE    WRK-PTRSI-HKNNUM (IDY)
+                                           TO  PTMODRES-INSURANCE-CLASS
+                                                                  (IDX)
+               MOVE    WRK-PTRSI-HKNNUM-NAME (IDY)
+                                           TO  PTMODRES-INSURANCE-NAME
+                                                                  (IDX)
+           ELSE
+               MOVE    WRK-PTRSI-HKNNUM (IDY)
+                                           TO  PTMODRES-INSURANCE-CLASS
+                                                                  (IDX)
+               MOVE    WRK-PTRSI-HKNNUM-NAME (IDY)
+                                           TO  PTMODRES-INSURANCE-NAME
+                                                                  (IDX)
+      *        保険種類警告
+               MOVE    "K3"                TO  WRK-ERRCD
+               PERFORM 290-WARMSG-HEN-SEC
+           END-IF
       *
       *    保険ＩＤ数値チェック
-           IF      PTMODREQ-MAIN-INSURANCE-ID (IDX)    =   SPACE
-               MOVE    ZERO                TO  WRK-PTHKN-HKNID (IDY)
+           IF      PTMODREQ-MAIN-INSURANCE-ID (IDX)  =   SPACE
+               MOVE    ZERO                TO  WRK-PTRSI-HKNID (IDY)
            ELSE
                INITIALIZE                      ORCSNUMAREA
                MOVE    PTMODREQ-MAIN-INSURANCE-ID (IDX)
@@ -2216,226 +2675,15 @@
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF      SNUM-RC         NOT =   ZERO
-                   MOVE    "20"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               ELSE
-                   MOVE    SNUM-OUTNUM         TO  WRK-PTHKN-HKNID(IDY)
-               END-IF
-           END-IF
-      *
-      *    保険ＩＤ存在チェック
-           IF      WRK-PTHKN-HKNID(IDY)    =   ZERO
-      *        新規以外はエラー
-               IF      WRK-PTHKN-MODE (IDY)    NOT =   "1"
-                   MOVE    "19"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               END-IF
-           ELSE
-      *        新規はエラー
-               IF      WRK-PTHKN-MODE (IDY)        =   "1"
                    MOVE    "21"                TO  WRK-ERRCD
                    PERFORM 290-ERROR-HEN-SEC
                ELSE
-                   PERFORM VARYING     IDH     FROM    1   BY  1
-                       UNTIL      (IDH     >   SPA-PTHKN-MAX )
-                       IF     SPA-PTHKN-HKNID (IDH)
-                                           =   WRK-PTHKN-HKNID(IDY)
-                           MOVE    IDH             TO  WRK-PTHKN-IDX
-                                                             (IDY)
-                           MOVE    SPA-PTHKN-HKNNUM (IDH)
-                                                   TO  WRK-CHK-HKNNUM
-                           MOVE    SPA-PTHKN-MAX   TO  IDH
-                       END-IF
-                   END-PERFORM
-                   IF      WRK-PTHKN-IDX  (IDY)    =   ZERO
-                       MOVE    "22"                TO  WRK-ERRCD
-                       PERFORM 290-ERROR-HEN-SEC
-                  END-IF
+                   MOVE    SNUM-OUTNUM         TO  WRK-PTRSI-HKNID(IDY)
                END-IF
            END-IF
-      *
-      *    保険種類
-           MOVE    PTMODREQ-MAIN-INSURANCE-CLASS(IDX)
-                                       TO  WRK-PTHKN-HKNNUM (IDY)
-      *
-           IF      WRK-PTHKN-MODE (IDY)    =   "1"
-                                           OR  "2"
-                                           OR  "3"
-      *        労災・自賠責は変更なし
-               IF     (WRK-PTHKN-HKNNUM(IDY)   =   "971"
-                                               OR  "973")
-                 OR   (WRK-CHK-HKNNUM          =   "971"
-                                               OR  "973")
-                   MOVE    "34"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               END-IF
-           END-IF
-      *    保険の種類名称
-           MOVE    PTMODREQ-MAIN-INSURANCE-NAME(IDX)
-                                       TO  WRK-PTHKN-HKNNUM-MEI(IDY)
-      *    保険者番号
-           MOVE    PTMODREQ-MAIN-INSURANCE-NUMBER(IDX)
-                                       TO  WRK-PTHKN-HKNJANUM (IDY)
-      *    本人家族区分
-           MOVE    PTMODREQ-MAIN-FAMILY (IDX)
-                                       TO  WRK-PTHKN-HONKZKKBN (IDY)
-      *    補助区分
-           MOVE    PTMODREQ-MAIN-ASSISTANCE (IDX)
-                                       TO  WRK-PTHKN-HOJOKBN (IDY)
-      *    継続区分
-           MOVE    PTMODREQ-MAIN-CONTINUATION (IDX)
-                                       TO  WRK-PTHKN-CONTKBN (IDY)
-      *    記号
-           IF      PTMODREQ-MAIN-MARK(IDX) NOT =   SPACE
-      *        半角を全角へ
-               MOVE    PTMODREQ-MAIN-MARK (IDX)
-                                           TO  WRK-MAE-INPUT
-               MOVE    40                  TO  WRK-LEN
-               PERFORM 880-HALF-ZENCNG-SEC
-               MOVE    WRK-ATO-INPUT       TO  WRK-PTHKN-KIGO(IDY)
-               IF      FLG-ERR             =   1
-                   MOVE    "23"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               ELSE
-                   MOVE    WRK-PTHKN-KIGO(IDY) TO  PTMODRES-MAIN-MARK
-                                                              (IDX)
-               END-IF
-           END-IF
-      *    番号
-           IF      PTMODREQ-MAIN-NUMBER(IDX) NOT =   SPACE
-      *        半角を全角へ
-               MOVE    PTMODREQ-MAIN-NUMBER (IDX)
-                                           TO  WRK-MAE-INPUT
-               MOVE    40                  TO  WRK-LEN
-               PERFORM 880-HALF-ZENCNG-SEC
-               MOVE    WRK-ATO-INPUT       TO  WRK-PTHKN-NUM(IDY)
-               IF      FLG-ERR             =   1
-                   MOVE    "24"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               ELSE
-                   MOVE    WRK-PTHKN-NUM(IDY) TO  PTMODRES-MAIN-NUMBER
-                                                              (IDX)
-               END-IF
-           END-IF
-      *    被保険者名
-           MOVE    PTMODREQ-MAIN-POLICYHOLDER (IDX)
-                                       TO  WRK-PTHKN-HIHKNJANAME (IDY)
-      *    有効開始日
-           MOVE    PTMODREQ-MAIN-START-DATE(IDX)   TO  WRK-HEN-DATE
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD            TO  WRK-PTHKN-TEKSTYMD (IDY)
-           IF      WRK-SYMD        NOT =   SPACE
-               PERFORM 803-ORCSDAY-CHEK-SEC
-               IF      FLG-DAYERR          =   1
-                   MOVE    "25"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               ELSE
-                   MOVE    WRK-HENYMD      TO  WRK-PTHKN-TEKSTYMDW(IDY)
-               END-IF
-           END-IF
-      *    有効終了日
-           MOVE    PTMODREQ-MAIN-END-DATE(IDX) TO  WRK-HEN-DATE
-           PERFORM 802-DAYHEN02-SEC
-           IF      WRK-SYMD            =   SPACE
-               MOVE    "99999999"          TO  WRK-SYMD
-           END-IF
-           MOVE    WRK-SYMD            TO  WRK-PTHKN-TEKEDYMD (IDY)
-           IF      WRK-SYMD        NOT =   SPACE
-               PERFORM 803-ORCSDAY-CHEK-SEC
-               IF      FLG-DAYERR          =   1
-                   MOVE    "26"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               ELSE
-                   MOVE    WRK-HENYMD      TO  WRK-PTHKN-TEKEDYMDW(IDY)
-               END-IF
-           END-IF
-      *    資格取得日
-           MOVE    PTMODREQ-MAIN-GET-DATE(IDX) TO  WRK-HEN-DATE
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD            TO  WRK-PTHKN-SKKGETYMD (IDY)
-           IF      WRK-SYMD        NOT =   SPACE
-               PERFORM 803-ORCSDAY-CHEK-SEC
-               IF      FLG-DAYERR          =   1
-                   MOVE    "27"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               ELSE
-                   MOVE    WRK-HENYMD          TO  WRK-PTHKN-SKKGETYMDW
-                                                                 (IDY)
-               END-IF
-           END-IF
-      *    確認日付
-           MOVE    PTMODREQ-MAIN-CHECK-DATE(IDX)   TO  WRK-HEN-DATE
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD            TO  WRK-PTHKN-KAKUNINYMD (IDY)
-           IF      WRK-SYMD        NOT =   SPACE
-               PERFORM 803-ORCSDAY-CHEK-SEC
-               IF      FLG-DAYERR          =   1
-                   MOVE    "28"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               ELSE
-                   MOVE    WRK-HENYMD          TO  WRK-PTHKN-KAKUNINYMDW
-                                                                 (IDY)
-               END-IF
-           END-IF
-      *
-           MOVE    IDY                 TO  WRK-PTHKN-MAX
-      *
-           .
-       200211-HKNINF-INIT-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費情報基本チェック処理
-      *****************************************************************
-       200212-KOHINF-INIT-CHK-SEC      SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ERR-AREA
-      *    エラー用編集
-           MOVE    PTMODREQ-INSURANCE-CLASS(IDX)
-                                       TO  WRK-ERR-NUM
-           MOVE    PTMODREQ-INSURANCE-NAME (IDX)
-                                       TO  WRK-ERR-NUMMEI
-      *    受給者番号
-           IF      PTMODREQ-RECIPIENT-NUMBER (IDX) =   SPACE
-      *        負担者番号
-               MOVE    PTMODREQ-PROVIDER-NUMBER (IDX)
-                                       TO  WRK-ERR-NUMMEI2
-           ELSE
-      *        受給者番号
-               MOVE    PTMODREQ-RECIPIENT-NUMBER (IDX)
-                                       TO  WRK-ERR-NUMMEI2
-           END-IF
-           MOVE    SPACE               TO  WRK-CHK-KOHNUM
-      *
-           ADD     1                   TO  IDY
-      *
-      *    処理区分
-           EVALUATE    PTMODREQ-INSURANCE-MODE (IDX)
-               WHEN    "New"
-      *        新規
-                   MOVE    "1"                 TO  WRK-PTKOH-MODE (IDY)
-               WHEN    "Modify"
-      *        修正
-                   MOVE    "2"                 TO  WRK-PTKOH-MODE (IDY)
-               WHEN    "Delete"
-      *        削除
-                   MOVE    "3"                 TO  WRK-PTKOH-MODE (IDY)
-               WHEN    SPACE
-      *        変更なし
-                   MOVE    "0"                 TO  WRK-PTKOH-MODE (IDY)
-               WHEN    OTHER
-                   MOVE    "30"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-           END-EVALUATE
-      *
-      *    保険ＩＤ数値チェック
-           IF      PTMODREQ-INSURANCE-ID (IDX) =   SPACE
-               MOVE    ZERO                TO  WRK-PTKOH-KOHID (IDY)
-      *        新規以外はエラー
-               IF      WRK-PTKOH-MODE (IDY)    NOT =   "1"
-                   MOVE    "30"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               END-IF
+      *    公費ＩＤ数値チェック
+           IF      PTMODREQ-INSURANCE-ID (IDX)  =   SPACE
+               MOVE    ZERO                TO  WRK-PTRSI-KOHID (IDY)
            ELSE
                INITIALIZE                      ORCSNUMAREA
                MOVE    PTMODREQ-INSURANCE-ID (IDX)
@@ -2443,110 +2691,444 @@
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF      SNUM-RC         NOT =   ZERO
-                   MOVE    "31"                TO  WRK-ERRCD
+                   MOVE    "22"                TO  WRK-ERRCD
                    PERFORM 290-ERROR-HEN-SEC
                ELSE
-                   MOVE    SNUM-OUTNUM         TO  WRK-PTKOH-KOHID(IDY)
+                   MOVE    SNUM-OUTNUM         TO  WRK-PTRSI-KOHID(IDY)
                END-IF
            END-IF
-      *    公費ＩＤ存在チェック
-           IF      WRK-PTKOH-KOHID(IDY)    NOT =   ZERO
+      *
+      *    保険ＩＤ存在チェック
+           IF     (WRK-PTRSI-HKNID(IDY)    =   ZERO )
+             AND  (WRK-PTRSI-KOHID(IDY)    =   ZERO )
+      *        新規以外はエラー
+               IF      WRK-PTRSI-MODE (IDY)    NOT =   "1"
+                   MOVE    "23"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           ELSE
       *        新規はエラー
-               IF      WRK-PTKOH-MODE (IDY)        =   "1"
-                   MOVE    "32"                TO  WRK-ERRCD
+               IF      WRK-PTRSI-MODE (IDY)        =   "1"
+                   MOVE    "24"                TO  WRK-ERRCD
                    PERFORM 290-ERROR-HEN-SEC
                ELSE
                    PERFORM VARYING     IDH     FROM    1   BY  1
-                       UNTIL      (IDH     >   SPA-PTKOH-MAX )
-                       IF     SPA-PTKOH-KOHID (IDH)
-                                           =   WRK-PTKOH-KOHID(IDY)
-                           MOVE    IDH             TO  WRK-PTKOH-IDX
-                                                               (IDY)
-                           MOVE    SPA-PTKOH-KOHNUM (IDH)
-                                                   TO  WRK-CHK-KOHNUM
-                           MOVE    SPA-PTKOH-MAX   TO  IDH
+                           UNTIL      (IDH     >   TBL-PARA-MAX )
+                       IF    (TBL-PTRSI-HKNID (IDH)
+                                           =   WRK-PTRSI-HKNID(IDY))
+                         AND (TBL-PTRSI-KOHID (IDH)
+                                           =   WRK-PTRSI-KOHID(IDY))
+                           MOVE    IDH             TO  WRK-PTRSI-IDX
+                                                             (IDY)
+                           MOVE    TBL-PTRSI-HKNNUM (IDH)
+                                                   TO  WRK-CHK-HKNNUM
+                           MOVE    TBL-PTRSI-HKNKBN (IDH)
+                                                   TO  WRK-CHK-HKNKBN
+                           MOVE    TBL-PARA-MAX    TO  IDH
                        END-IF
                    END-PERFORM
-                   IF      WRK-PTKOH-IDX  (IDY)    =   ZERO
-                       MOVE    "33"                TO  WRK-ERRCD
+                   IF      WRK-PTRSI-IDX  (IDY)    =   ZERO
+                       MOVE    "23"                TO  WRK-ERRCD
                        PERFORM 290-ERROR-HEN-SEC
-                   END-IF
+                  END-IF
                END-IF
            END-IF
-      *    公費種類
-           MOVE    PTMODREQ-INSURANCE-CLASS(IDX)
-                                       TO  WRK-PTKOH-KOHNUM (IDY)
-           IF      WRK-PTKOH-MODE (IDY)    =   "1"
-                                           OR  "2"
-                                           OR  "3"
-      *        労災・自賠責は変更なし
-               IF     (WRK-PTKOH-KOHNUM(IDY)   =   "970")
-                 OR   (WRK-CHK-KOHNUM          =   "970")
-                   MOVE    "34"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-               END-IF
-           END-IF
-      *    公費種類
-           MOVE    PTMODREQ-INSURANCE-NAME(IDX)
-                                       TO  WRK-PTKOH-KOHNUM-MEI (IDY)
       *
-      *    負担者番号
-           MOVE    PTMODREQ-PROVIDER-NUMBER(IDX)
-                                       TO  WRK-PTKOH-FTNJANUM (IDY)
-      *    受給者番号
-           MOVE    PTMODREQ-RECIPIENT-NUMBER (IDX)
-                                       TO  WRK-PTKOH-JKYSNUM (IDY)
-      *    有効開始日
-           MOVE    PTMODREQ-INSURANCE-START-DATE(IDX)  TO  WRK-HEN-DATE
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD            TO  WRK-PTKOH-TEKSTYMD (IDY)
-           IF      WRK-SYMD        NOT =   SPACE
-               PERFORM 803-ORCSDAY-CHEK-SEC
-               IF      FLG-DAYERR          =   1
+           IF      WRK-PTRSI-MODE (IDY)    =   "2"
+                                           OR  "3"
+      *        保険変更はエラー
+               IF     (WRK-PTRSI-HKNKBN(IDY)   =   WRK-CHK-HKNKBN )
+                  AND (WRK-PTRSI-HKNNUM(IDY)   =   WRK-CHK-HKNNUM )
+                   CONTINUE
+               ELSE
                    MOVE    "25"                TO  WRK-ERRCD
                    PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           END-IF
+      *    傷病の部位
+           IF      PTMODREQ-DISEASE-LOCATION(IDX) NOT =   SPACE
+      *        半角を全角へ
+               MOVE    PTMODREQ-DISEASE-LOCATION(IDX)
+                                           TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
+               PERFORM 880-HALF-ZENCNG-SEC
+               MOVE    WRK-ATO-INPUT       TO  WRK-PTRSI-COMMENT (IDY)
+               IF      FLG-ERR             =   1
+                   MOVE    "35"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
                ELSE
-                   MOVE    WRK-HENYMD          TO  WRK-PTKOH-TEKSTYMDW
-                                                                 (IDY)
+                   MOVE    WRK-PTRSI-COMMENT(IDY)
+                                           TO  PTMODRES-DISEASE-LOCATION
+                                                              (IDX)
                END-IF
            END-IF
       *
-           MOVE    PTMODREQ-INSURANCE-END-DATE(IDX)    TO  WRK-HEN-DATE
-           PERFORM 802-DAYHEN02-SEC
-           IF      WRK-SYMD            =   SPACE
-               MOVE    "99999999"          TO  WRK-SYMD
-           END-IF
-           MOVE    WRK-SYMD            TO  WRK-PTKOH-TEKEDYMD (IDY)
-           IF      WRK-SYMD        NOT =   SPACE
-               PERFORM 803-ORCSDAY-CHEK-SEC
-               IF      FLG-DAYERR          =   1
+      *    事業所名称
+           IF      PTMODREQ-JIGYOUNAME(IDX) NOT =   SPACE
+      *        半角を全角へ
+               MOVE    PTMODREQ-JIGYOUNAME(IDX)
+                                           TO  WRK-MAE-INPUT
+               MOVE    80                  TO  WRK-LEN
+               PERFORM 880-HALF-ZENCNG-SEC
+               MOVE    WRK-ATO-INPUT       TO  WRK-PTRSI-JIGYOUNAME(IDY)
+               IF      FLG-ERR             =   1
                    MOVE    "26"                TO  WRK-ERRCD
                    PERFORM 290-ERROR-HEN-SEC
                ELSE
-                   MOVE    WRK-HENYMD          TO  WRK-PTKOH-TEKEDYMDW
-                                                                 (IDY)
+                   MOVE    WRK-PTRSI-JIGYOUNAME(IDY)
+                                               TO  PTMODRES-JIGYOUNAME
+                                                              (IDX)
                END-IF
            END-IF
       *
-           MOVE    PTMODREQ-INSURANCE-CHECK-DATE(IDX)  TO  WRK-HEN-DATE
+      *    所在地郡市区名
+           IF      PTMODREQ-CITYNAME(IDX) NOT =   SPACE
+      *        半角を全角へ
+               MOVE    PTMODREQ-CITYNAME(IDX)
+                                           TO  WRK-MAE-INPUT
+               MOVE    80                  TO  WRK-LEN
+               PERFORM 880-HALF-ZENCNG-SEC
+               MOVE    WRK-ATO-INPUT       TO  PTMODRES-CITYNAME(IDY)
+               IF      FLG-ERR             =   1
+                   MOVE    "36"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           END-IF
+      *    保険会社名称
+           IF      PTMODREQ-HOKENNAME(IDX) NOT =   SPACE
+      *        半角を全角へ
+               MOVE    PTMODREQ-HOKENNAME(IDX)
+                                           TO  WRK-MAE-INPUT
+               MOVE    80                  TO  WRK-LEN
+               PERFORM 880-HALF-ZENCNG-SEC
+               MOVE    WRK-ATO-INPUT       TO  WRK-PTRSI-HOKENNAME(IDY)
+               IF      FLG-ERR             =   1
+                   MOVE    "34"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+               ELSE
+                   MOVE    WRK-PTRSI-HOKENNAME(IDY)
+                                               TO  PTMODRES-HOKENNAME
+                                                              (IDX)
+               END-IF
+           END-IF
+      *    傷病年月日
+           MOVE    PTMODREQ-DISEASE-DATE(IDX)  TO  WRK-HEN-DATE
            PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD            TO  WRK-PTKOH-KAKUNINYMD (IDY)
+           MOVE    WRK-SYMD            TO  WRK-PTRSI-SHOBYOYMD(IDY)
+           IF      WRK-SYMD        NOT =   SPACE
+               PERFORM 803-ORCSDAY-CHEK-SEC
+               IF      FLG-DAYERR          =   1
+                   MOVE    "27"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           END-IF
+      *    療養開始年月日
+           MOVE    PTMODREQ-START-DATE(IDX)    TO  WRK-HEN-DATE
+           PERFORM 802-DAYHEN02-SEC
+           MOVE    WRK-SYMD            TO  WRK-PTRSI-RYOSTYMD (IDY)
            IF      WRK-SYMD        NOT =   SPACE
                PERFORM 803-ORCSDAY-CHEK-SEC
                IF      FLG-DAYERR          =   1
                    MOVE    "28"                TO  WRK-ERRCD
                    PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           END-IF
+           MOVE    PTMODREQ-END-DATE(IDX)  TO  WRK-HEN-DATE
+           PERFORM 802-DAYHEN02-SEC
+           MOVE    WRK-SYMD            TO  WRK-PTRSI-RYOEDYMD (IDY)
+           IF      WRK-SYMD        NOT =   SPACE
+               PERFORM 803-ORCSDAY-CHEK-SEC
+               IF      FLG-DAYERR          =   1
+                   MOVE    "29"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           END-IF
+      *    労災レセ回数記載 基準年月
+           MOVE    PTMODREQ-KIJYUNYM(IDX)  TO  WRK-HEN-DATE
+           PERFORM 802-DAYHEN02-SEC
+           MOVE    WRK-SYMD(1:6)           TO  WRK-PTRSI-KIJYUNYM (IDY)
+           IF      WRK-SYMD        NOT =   SPACE
+               PERFORM 803-ORCSDAY-CHEK-SEC
+               IF      FLG-DAYERR          =   1
+                   MOVE    "30"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+               END-IF
+           END-IF
+      *    労災レセ回数記載：回数
+           IF      PTMODREQ-RESEPUTO-COUNT (IDX)    =   SPACE
+               MOVE    ZERO            TO  WRK-PTRSI-KAISU (IDY)
+           ELSE
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    PTMODREQ-RESEPUTO-COUNT (IDX)
+                                           TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF      SNUM-RC         NOT =   ZERO
+                   MOVE    "31"                TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
                ELSE
-                   MOVE    WRK-HENYMD          TO  WRK-PTKOH-KAKUNINYMDW
-                                                                 (IDY)
+                   MOVE    SNUM-OUTNUM         TO  WRK-PTRSI-KAISU(IDY)
                END-IF
            END-IF
       *
-           MOVE    IDY                 TO  WRK-PTKOH-MAX
+           MOVE    IDX                 TO  WRK-IN-IDX (IDY)
+           MOVE    IDY                 TO  WRK-PTRSI-MAX
       *
            .
-       200212-KOHINF-INIT-CHK-EXT.
+       200211-RSIHKN-INIT-CHK-EXT.
            EXIT.
+      *
+      *
+      *****************************************************************
+      *    保険情報ＳＰＡ編集処理
+      *****************************************************************
+       200213-RSIINF-SYORI-SEC      SECTION.
+      *
+           PERFORM 200213-RSIINF-SPAHEN-SEC
+      *
+           MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    ZERO                TO  FLG-HKNEND
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPACE               TO  SPA-P02D-AREA
+           INITIALIZE                      SPA-P02D-AREA
+           PERFORM UNTIL    (FLG-HKNEND    =   1   )
+      *
+               MOVE    SPACE               TO  SPA-PIDCD
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-ERRMSG
+      *        労災画面初期表示
+               MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+               MOVE    SPA-AREA            TO  SPA-COMMON
+               MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+               MOVE    "PUTG"              TO  MCP-STATUS
+               MOVE    "CLICKED"           TO  MCP-EVENT
+               MOVE    "APIV3"             TO  MCP-WIDGET
+      *
+               CALL    "ORCGP02D"          USING
+                                           MCPAREA
+                                           SPAAREA
+                                           LINKAREA
+                                           SCRAREA
+      *
+               MOVE    SPA-COMMON      TO  SPA-AREA
+               MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+               MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+               IF     (SPA-ERRCD           =   SPACE )
+                  AND (SPA-PIDCD           =   SPACE )
+                   MOVE    1               TO  FLG-HKNEND
+               END-IF
+      *
+               IF      SPA-ERRCD       NOT =   SPACE
+      *            エラー用  労災区分
+                   MOVE    SPA-GMN2D-HKNKBN
+                                           TO  WRK-ERR-NUM
+                   MOVE    SPA-GMN2D-HKNKBN-G(3:)
+                                           TO  WRK-ERR-NUMMEI
+      *            エラーメッセージ
+                   MOVE    SPA-ERRMSG      TO  WRK-ERRMSG
+      ********     PERFORM 8901-PTERRCD-SET-SEC
+      *            警告は続行
+                   IF     (SPA-ERRCD(1:1)      =   "K" )
+                       OR (WRK-ERRMSG(1:4)     =   "警告")
+                       PERFORM 290-WARMSG-HEN-SEC
+                       MOVE    SPACE               TO  SPA-ERRCD
+      *                続行
+                       MOVE    "1"                 TO  SPA-RSIAPI-FLG
+                   END-IF
+               END-IF
+               IF     (SPA-ERRCD       NOT =   SPACE )
+                   MOVE    "H1"            TO  WRK-ERRCD
+                   PERFORM 290-ERROR-HEN-SEC
+                   MOVE    1               TO  FLG-HKNEND
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+      *        画面内容から編集
+      ***      PERFORM 2002131-GMNHENSYU-SEC
+               GO      TO      200213-RSIINF-SYORI-EXT
+           END-IF
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "AP12"              TO  PARA-GYOUMUID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+           MOVE    1                   TO  PARA-EDANUM
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PARA        NOT =   ZERO
+               DISPLAY "PARA READ ERR:"  FLG-PARA
+               GO      TO      200213-RSIINF-SYORI-EXT
+           END-IF
+           MOVE    PARA-DATA-REC   TO  PTRSIINF-REC
+           IF      IDH             =   ZERO
+      *        新規分追加
+               ADD     1               TO  TBL-PARA-MAX
+               MOVE    TBL-PARA-MAX    TO  IDH
+      *        TBL位置
+               MOVE    IDH             TO  WRK-PTRSI-IDX(IDY)
+           END-IF
+           MOVE    PTRSIINF-REC    TO  TBL-PTRSIINF-REC (IDH)
+           MOVE    WRK-PTRSI-MODE (IDY)
+                                   TO  TBL-PTRSI-MODE (IDH)
+      *    ＳＰＡ編集
+           IF      PTRSI-HKNKBN        =   "6"
+      *        第三者行為
+               PERFORM 2002132-SPAKOH-HEN-SEC
+           ELSE
+      *        労災・自賠責
+               PERFORM 2002131-SPAHKN-HEN-SEC
+           END-IF
+           .
+       200213-RSIINF-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＳＰＡ保険編集処理
+      *****************************************************************
+       2002131-SPAHKN-HEN-SEC         SECTION.
+      *
+           IF      WRK-PTRSI-MODE (IDY)  =   "1"
+      *        新規
+               IF      (SPA-PTHKN-MAX      >=  TBL-MAX-HKN )
+                   MOVE    "0107"          TO  SPA-ERRCD
+                   GO      TO      2002131-SPAHKN-HEN-EXT
+               ELSE
+                   ADD     1               TO  SPA-PTHKN-MAX
+                   MOVE    SPA-PTHKN-MAX   TO  IDX
+                   INITIALIZE                  SPA-PTHKNINF-TBL (IDX)
+               END-IF
+           ELSE
+               PERFORM VARYING IDX-R       FROM    1   BY  1
+                       UNTIL   IDX-R       >   SPA-PTHKN-MAX
+                  IF      (SPA-PTHKN-HKNNUM (IDX-R)  =   "971"  OR
+                                                         "973" )
+                     AND  (SPA-PTHKN-HKNID  (IDX-R)
+                                               =   PTRSI-HKNID )
+                      MOVE    IDX-R            TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    SPA-NAI-HKNID       TO  SPA-PTHKN-HKNID (IDX)
+           MOVE    SPA-GMN-HKNNUM      TO  SPA-PTHKN-HKNNUM (IDX)
+           MOVE    SPA-GMN-KIGO        TO  SPA-PTHKN-KIGO    (IDX)
+           MOVE    SPA-GMN-NUM         TO  SPA-PTHKN-NUM     (IDX)
+           MOVE    SPA-NAI-HTEKSTYMD   TO  SPA-PTHKN-TEKSTYMD (IDX)
+           MOVE    SPA-NAI-HTEKEDYMD   TO  SPA-PTHKN-TEKEDYMD (IDX)
+      *
+           MOVE    SPA-NAI-SAKJOKBN    TO  SPA-PTHKN-SAKJOKBN (IDX)
+      *
+           MOVE    SPA-GMN-HKNNUMMEI   TO  SPA-PTHKN-HKNNUM-MEI(IDX)
+      *
+      *    処理区分
+           MOVE    TBL-PTRSI-MODE (IDH)    TO  SPA-PTHKN-MODE (IDX)
+      *
+           .
+       2002131-SPAHKN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＳＰＡ保険編集処理
+      *****************************************************************
+       2002132-SPAKOH-HEN-SEC         SECTION.
+      *
+      *    新規
+           IF      WRK-PTRSI-MODE (IDY)  =   "1"
+      *        新規
+               IF      (SPA-PTKOH-MAX      >=  TBL-MAX-KOH )
+                   MOVE    "0107"          TO  SPA-ERRCD
+                   GO      TO      2002132-SPAKOH-HEN-EXT
+               ELSE
+                   ADD     1               TO  SPA-PTKOH-MAX
+                   MOVE    SPA-PTKOH-MAX   TO  IDX
+                   INITIALIZE                  SPA-PTKOHINF-TBL (IDX)
+               END-IF
+           ELSE
+               PERFORM VARYING IDX-R       FROM    1   BY  1
+                       UNTIL   IDX-R       >   SPA-PTKOH-MAX
+                  IF      (SPA-PTKOH-KOHNUM (IDX-R)  =   "970" )
+                     AND  (SPA-PTKOH-KOHID  (IDX-R)
+                                               =   PTRSI-KOHID )
+                      MOVE   IDX-R             TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    SPA-NAI2D-KOHID     TO  SPA-PTKOH-KOHID  (IDX)
+           MOVE    SPA-NAI2D-HKNNUM    TO  SPA-PTKOH-KOHNUM (IDX)
+      *    部位を受給者番号へ
+           MOVE    SPA-GMN2D-COMMENT   TO  SPA-PTKOH-JKYSNUM (IDX)
+           MOVE    SPA-NAI2D-RYOSTYMD  TO  SPA-PTKOH-TEKSTYMD (IDX)
+           MOVE    SPA-NAI2D-RYOEDYMD  TO  SPA-PTKOH-TEKEDYMD (IDX)
+      *
+           MOVE    SPA-NAI-SAKJOKBN    TO  SPA-PTKOH-SAKJOKBN (IDX)
+      *
+      *    処理区分
+           MOVE    TBL-PTRSI-MODE (IDH)    TO  SPA-PTKOH-MODE (IDX)
+      *
+           .
+       2002132-SPAKOH-HEN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    削除チェック処理
+      *****************************************************************
+       200213-RSIINF-DELETE-SEC         SECTION.
+      *
+           MOVE    "1"                 TO  TBL-PTRSI-SAKUJOKBN(IDH)
+           MOVE    WRK-PTRSI-MODE (IDY)
+                                       TO  TBL-PTRSI-MODE (IDH)
+      *
+           MOVE    TBL-PTRSIINF-REC (IDH)  TO  PTRSIINF-REC
+      *    ＳＰＡ編集
+           IF      PTRSI-HKNKBN        =   "6"
+      *        第三者
+               PERFORM VARYING IDX-R       FROM    1   BY  1
+                       UNTIL   IDX-R       >   SPA-PTKOH-MAX
+                  IF      (SPA-PTKOH-KOHNUM (IDX-R)  =   "970" )
+                     AND  (SPA-PTKOH-SAKJOKBN(IDX-R) =   SPACE )
+                     AND  (SPA-PTKOH-KOHID  (IDX-R)
+                                               =   PTRSI-KOHID )
+                      MOVE    "1"              TO  SPA-PTKOH-SAKJOKBN
+                                                           (IDX-R)
+                   END-IF
+               END-PERFORM
+           ELSE
+               PERFORM VARYING IDX-R       FROM    1   BY  1
+                       UNTIL   IDX-R       >   SPA-PTHKN-MAX
+                  IF      (SPA-PTHKN-HKNNUM (IDX-R)  =   "971"  OR
+                                                         "973" )
+                     AND  (SPA-PTHKN-SAKJOKBN(IDX-R) =   SPACE )
+                     AND  (SPA-PTHKN-HKNID  (IDX-R)
+                                               =   PTRSI-HKNID )
+                      MOVE    "1"              TO  SPA-PTHKN-SAKJOKBN
+                                                           (IDX-R)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       200213-RSIINF-DELETE-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    保険組合せチェック処理
@@ -2564,7 +3146,7 @@
            MOVE    "0"                 TO  SPA-NAI-SETAIKBN-FLG
       *
       *    LNK-SCRSPA にAPI内容を登録
-           MOVE    APIS-P02SCRAREA     TO  LNK-SCRSPA
+      **** MOVE    APIS-P02SCRAREA     TO  LNK-SCRSPA
       *
            MOVE    ZERO                TO  SPA-NAI-HKNSTR
            MOVE    ZERO                TO  SPA-NAI-KOHSTR
@@ -2575,7 +3157,7 @@
                MOVE    SPA-AREA            TO  SPA-COMMON
       *        基本情報チェック
                MOVE    "CLICKED"           TO  MCP-EVENT
-               MOVE    "APIV3"             TO  MCP-WIDGET
+               MOVE    "APIV3D"            TO  MCP-WIDGET
                MOVE    "PUTG"              TO  MCP-STATUS
                CALL    "ORCGP02W1"     USING   MCPAREA
                                                SPAAREA
@@ -2641,9 +3223,6 @@
                END-IF
            END-PERFORM
       *
-      *    新規保険の自動設定チェック
-           PERFORM 200223-HKNINF-AUTO-SEC
-      *
            IF      SPA-GMN-CUR         =   90
                MOVE    ZERO            TO  FLG-HKNKOHERR
            ELSE
@@ -2654,44 +3233,6 @@
       *
            .
        20022-HKNCOMBI-CHKSYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    新規保険の自動設定チェック編集処理
-      *****************************************************************
-       200223-HKNINF-AUTO-SEC        SECTION.
-      *
-      *    保険情報
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-PTHKN-MAX )
-               IF      SPA-PTHKN-MODE (IDX)    =   "1"
-                   MOVE    SPA-PTHKN-HKNNUM(IDX)   TO  WRK-ERR-NUM
-                   MOVE    SPA-PTHKN-HKNNUM-MEI(IDX)
-                                               TO  WRK-ERR-NUMMEI
-                   MOVE    SPACE               TO  WRK-ERR-NUMMEI2
-      *            保険種類
-                   IF      SPA-PTHKN-HKNNUM (IDX)
-                                       NOT =   APIS-PTHKN-HKNNUM (IDX)
-                       MOVE    "K3"            TO  WRK-ERRCD
-                       PERFORM 290-WARMSG-HEN-SEC
-                   END-IF
-      *            補助区分
-                   IF      SPA-PTHKN-HOJOKBN (IDX)
-                                       NOT =   APIS-PTHKN-HOJOKBN (IDX)
-                       MOVE    "K4"            TO  WRK-ERRCD
-                       PERFORM 290-WARMSG-HEN-SEC
-                   END-IF
-      *            本人家族区分
-                   IF      SPA-PTHKN-HONKZKKBN (IDX)
-                                       NOT =   APIS-PTHKN-HONKZKKBN(IDX)
-                       MOVE    "K5"            TO  WRK-ERRCD
-                       PERFORM 290-WARMSG-HEN-SEC
-                   END-IF
-      *
-               END-IF
-           END-PERFORM
-           .
-       200223-HKNINF-AUTO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2777,10 +3318,8 @@
            IF      WRK-SELECT-CODE NOT =   SPACE
                EVALUATE    PTMODREQ-SELECT-ANSWER
                WHEN    "Ok"
-               WHEN    "OK"
                    CONTINUE
                WHEN    "No"
-               WHEN    "NO"
                    MOVE    "02"        TO  PTMODRES-RESPONSE-NUMBER
                    PERFORM 2901-PARA-INS-SEC
                    MOVE    "61"        TO  WRK-ERRCD
@@ -2807,9 +3346,11 @@
       *        登録内容の再編集
                PERFORM 20012-PTINF-HEN-SEC
       *
-               PERFORM 20013-HKNKOH-HENSYU-SEC
+               MOVE    2               TO  FLG-HENSYU
+               PERFORM 20013-RSIINF-HENSYU-SEC
            ELSE
-               PERFORM 20013-HKNKOH-HENSYU-SEC
+               MOVE    1               TO  FLG-HENSYU
+               PERFORM 20013-RSIINF-HENSYU-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
@@ -2866,7 +3407,6 @@
                MOVE    "S"                 TO  WRK-ERRKBN
                MOVE    SPACE               TO  SPA-PIDCD
            END-IF
-      *
            IF     (WRK-ERRCD           =   SPACE )
       *        保険登録
                PERFORM 200233-PTHKN-INSERT-SEC
@@ -2902,6 +3442,7 @@
            MOVE    SPA-PTID            TO  SPA-GMN-PTID
            MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
            MOVE    "API"               TO  SPA-P02-GAMEN
+           MOVE    "1"                 TO  SPA-RSIAPI-FLG
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-P02SCRAREA      TO  SPA-FREE
@@ -2922,7 +3463,6 @@
                PERFORM 8901-PTERRCD-SET-SEC
                PERFORM 290-WARMSG-HEN-SEC
            END-IF
-      *
            .
        200233-PTHKN-INSERT-EXT.
            EXIT.
@@ -2952,15 +3492,6 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTNUM           =   ZERO
-      ****     IF     (SPA-MAE-HKNID       =   PTNUM-HKNID)
-      *           AND (SPA-MAE-KOHID       =   PTNUM-KOHID)
-      *           AND (SPA-MAE-AUTOCOMBINUM  =   PTNUM-AUTOCOMBINUM)
-      *           AND (SPA-MAE-MANUCOMBINUM  =   PTNUM-MANUCOMBINUM)
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    "51"            TO  WRK-ERRCD
-      *            GO      TO  20042-PTNUM-UPDATE-EXT
-      ****     END-IF
                IF      SPA-PTNUM       NOT =   PTNUM-PTNUM
                    MOVE    "10"                TO  WRK-ERRCD
                    GO      TO  20042-PTNUM-UPDATE-EXT
@@ -3073,11 +3604,6 @@
                END-IF
                END-IF
            END-IF
-      *    保険組合せ削除警告
-           IF      SPA-ERRCD           =   "K129"
-                                       OR  "K130"
-               MOVE    "K13"                TO  WRK-KEICD
-           END-IF
       *
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    SPACE               TO  WRK-ERRMSG
@@ -3093,7 +3619,9 @@
            IF      WRK-ERRCD           =   SPACE
                MOVE    "P1"                TO  WRK-ERRCD
            END-IF
-           PERFORM 890-ERRCD-MSG-SEC
+           IF      WRK-ERRMSG          =   SPACE
+               PERFORM 890-ERRCD-MSG-SEC
+           END-IF
            ADD     1                   TO  IDX-ERR
            IF      IDX-ERR             <=  50
                IF      SPA-ERRCD           =   SPACE
@@ -3110,7 +3638,7 @@
                                                            (IDX-ERR)
                ELSE
                IF      WRK-ERR-NUMMEI2     =   SPACE
-                   STRING  WRK-ERR-NUM         DELIMITED  BY  SIZE
+                   STRING  WRK-ERR-NUM         DELIMITED  BY  SPACE
                            " "                 DELIMITED  BY  SIZE
                            WRK-ERR-NUMMEI      DELIMITED  BY  SPACE
                            " "                 DELIMITED  BY  SIZE
@@ -3119,7 +3647,7 @@
                                                            (IDX-ERR)
                    END-STRING
                ELSE
-                   STRING  WRK-ERR-NUM         DELIMITED  BY  SIZE
+                   STRING  WRK-ERR-NUM         DELIMITED  BY  SPACE
                            " "                 DELIMITED  BY  SIZE
                            WRK-ERR-NUMMEI      DELIMITED  BY  SPACE
                            "("                 DELIMITED  BY  SIZE
@@ -3583,47 +4111,56 @@
            WHEN    "19"
                MOVE    "保険処理区分が違います"
                                                TO  WRK-ERRMSG
-           WHEN    "20"
-               MOVE    "保険ＩＤエラー"
+           WHEN    "2O"
+               MOVE    "労災保険区分が違います"
                                                TO  WRK-ERRMSG
            WHEN    "21"
-               MOVE    "新規に保険ＩＤは存在しません"
+               MOVE    "保険ＩＤエラー"
                                                TO  WRK-ERRMSG
            WHEN    "22"
-               MOVE    "保険ＩＤが存在しません"
-                                               TO  WRK-ERRMSG
-           WHEN    "23"
-               MOVE    "記号全角エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "24"
-               MOVE    "番号全角エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "25"
-               MOVE    "開始日暦日エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "26"
-               MOVE    "終了日暦日エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "27"
-               MOVE    "資格取得日暦日エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "28"
-               MOVE    "確認日付暦日エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "30"
-               MOVE    "公費処理区分が違います"
-                                               TO  WRK-ERRMSG
-           WHEN    "31"
                MOVE    "公費ＩＤエラー"
                                                TO  WRK-ERRMSG
+           WHEN    "24"
+               MOVE    "新規に保険ＩＤ・公費ＩＤは存在しません"
+                                               TO  WRK-ERRMSG
+           WHEN    "23"
+               MOVE    "保険ＩＤ・公費ＩＤが存在しません"
+                                               TO  WRK-ERRMSG
+           WHEN    "25"
+               MOVE    "保険区分の変更はできません。"
+                                               TO  WRK-ERRMSG
+           WHEN    "26"
+               MOVE    "事業所名全角エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "27"
+               MOVE    "傷病年月日暦日エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "28"
+               MOVE    "療養開始日暦日エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "29"
+               MOVE    "療養終了日暦日エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "30"
+               MOVE    "労災レセ回数記載基準年月暦日エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "31"
+               MOVE    "労災レセ回数記載回数数値エラー"
+                                               TO  WRK-ERRMSG
            WHEN    "32"
-               MOVE    "新規に公費ＩＤは存在しません"
+               MOVE    "保険番号マスタに登録がありません。"
                                                TO  WRK-ERRMSG
            WHEN    "33"
-               MOVE    "公費ＩＤが存在しません"
+               MOVE    "保険番号と保険区分が一致しません。"
                                                TO  WRK-ERRMSG
            WHEN    "34"
-               MOVE    "労災・自賠責は処理できません。"
+               MOVE    "事業所名全角エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "35"
+               MOVE    "傷病の部位全角エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "36"
+               MOVE    "郡市区名全角エラー"
                                                TO  WRK-ERRMSG
            WHEN    "50"
                MOVE    "保険・公費にエラーがあります。"
@@ -3637,7 +4174,10 @@
                PERFORM 8902-PTPIDCD-SET-SEC
       *更新
            WHEN    "51"
-               MOVE    "患者番号更新エラー"
+               MOVE    "患者情報更新エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "52"
+               MOVE    "患者番号と患者ＩＤが一致しません。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "60"
@@ -3665,6 +4205,11 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
+           WHEN    "72"
+               STRING  "選択結果エラーです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
            WHEN    "73"
                STRING  "保険組合せが２００件以上存在します。"
                        "３年前に終了となった保険組合せは返却しません"
@@ -3678,12 +4223,6 @@
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "75"
-               STRING  "保険組合せが２００件以上存在します。"
-                       "１年前に終了となった保険組合せは返却しません"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "76"
                STRING  "患者氏名・性別・生年月日が送信内容と違います。"
                        "患者を確認して下さい。"
                                                DELIMITED  BY  SIZE
@@ -3698,16 +4237,6 @@
       *警告
            WHEN    "K3"
                STRING  "保険の種類を変更しました。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "K4"
-               STRING  "補助区分を変更しました。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "K5"
-               STRING  "本人家族区分を変更しました。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
@@ -3934,7 +4463,6 @@
                    STRING  "保険組合せ更新で期間外の診療が"
                            "発生します。"
                            "更新内容を確認して下さい。"
-      ***                  "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
                    END-STRING
@@ -3943,7 +4471,6 @@
                    STRING  "保険組合せ更新で期間外の病名が"
                            "発生します。"
                            "更新内容を確認して下さい。"
-      **                   "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
                    END-STRING
@@ -3952,7 +4479,6 @@
                    STRING  "保険組合せ更新で期間外の診療と病名が"
                            "発生します。"
                            "更新内容を確認して下さい。"
-      ***                  "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
                    END-STRING
@@ -4079,7 +4605,7 @@
       *****************************************************************
       *    システム管理マスタ検索処理
       *****************************************************************
-       900-SYSKANRI-SEL-SEC         SECTION.
+       900-SYSKANRI-KEYREAD-SEC      SECTION.
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -4120,6 +4646,37 @@
            EXIT.
       *
       *****************************************************************
+      *    保険番号マスタ取得
+      *****************************************************************
+       9002-HKNNUM-KEYREAD-SEC              SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    ZERO                TO  HKN-PAYKBN
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 980-HKNNUM-READ-SEC
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       9002-HKNNUM-KEYREAD-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    保険番号マスタ次検索処理
       *****************************************************************
        980-HKNNUM-READ-SEC              SECTION.
@@ -4135,6 +4692,25 @@
            .
        980-HKNNUM-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    労働基準監督署マスタ読み込み
+      *****************************************************************
+       900-LABOR-SIO-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  LABOR-SIO-REC
+               MOVE    ZERO            TO  FLG-LABOR-SIO
+           ELSE
+               INITIALIZE                  LABOR-SIO-REC
+               MOVE    1               TO  FLG-LABOR-SIO
+           END-IF
+      *
+           .
+       900-LABOR-SIO-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    パラメタ情報読み込み
       *****************************************************************

@@ -37,5 +37,7 @@
                05  API012SUB1-HOJOKBN-NAME  PIC X(20).
       *        負担割合（高齢者）
                05  API012SUB1-RATE          PIC 9(03).
+      *        エラー区分（１：エラー）
+               05  API012SUB1-ERRCD         PIC 9(01).
       *
       *

@@ -33,6 +33,7 @@ bindapi "patientmod"    "OpenCOBOL"	"ORAPI012S1";
 bindapi "patientmodv2"  "OpenCOBOL"	"ORAPI012S1V2"; 
 bindapi "patientmodv31" "OpenCOBOL"	"ORAPI012S1V3"; 
 bindapi "patientmodv32" "OpenCOBOL"	"ORAPI012S2V3"; 
+bindapi "patientmodv33" "OpenCOBOL"	"ORAPI012S3V3"; 
 
 
 multiplex_group	orca12;
@@ -70,6 +71,7 @@ data	{
 		patientmodv2;
 		patientmodv31;
 		patientmodv32;
+		patientmodv33;
 	};
 };
 
@@ -145,6 +147,8 @@ db "xml2" {
  xml_patientmodv3res1;
  xml_patientmodv3req2;
  xml_patientmodv3res2;
+ xml_patientmodv3req3;
+ xml_patientmodv3res3;
 };
 
 #include "orcadb.inc"

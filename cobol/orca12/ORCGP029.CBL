@@ -390,17 +390,20 @@
                PERFORM 1001-HKNCOMBI-KIKANCHK-SEC
                MOVE    1               TO  FLG-END
            END-IF
+      *APIV3   ¥Á¥§¥Ã¥¯¤Î¤ß
+           IF      SPA-P02-GAMEN   =   "APICHK"
+               MOVE    1               TO  FLG-END
+           END-IF
       *
            IF      FLG-END         =   ZERO
                IF      SPA-P02-GAMEN   =   "API"
-      *        £Á£Ð£É¹¹¿·½èÍý
+      *            £Á£Ð£É¹¹¿·½èÍý
                    PERFORM 300-API-KOUSIN-SEC
                ELSE
       *
-      *        £Ä£Â¹¹¿·½èÍý
-               PERFORM 200-MAIN-SEC
-           END-IF
-      *
+      *            £Ä£Â¹¹¿·½èÍý
+                   PERFORM 200-MAIN-SEC
+               END-IF
            END-IF
       *
            MOVE    SPA-P02KYOUTU   TO  SPA-WORK
@@ -3009,6 +3012,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        ADD     1        TO  WRK-KOH-CNT
                    WHEN    "HKNCOMBI"
                        PERFORM 250-HKNCOMBI-SYORI-SEC
+      *            Ï«ºÒÊÝ¸±
+                   WHEN    "PTRSIINF"
+                       IF      SPA-RSIAPI-FLG      =   "1"
+                           PERFORM 292-PTRSIINF-SYORI-SEC
+                       END-IF
                END-EVALUATE
       *
                MOVE    "tbl_para"          TO  MCP-TABLE

@@ -13,7 +13,7 @@ xml_patientmodv3req1 {
 	Continue_Mode		varchar(05);
 	Patient_Information	{
 		WholeName		varchar(50);
-		WholeName_inKana	varchar(50);
+		WholeName_InKana	varchar(50);
 		BirthDate		varchar(10);
 		Sex			varchar(1);
 		HouseHolder_WholeName	varchar(50);

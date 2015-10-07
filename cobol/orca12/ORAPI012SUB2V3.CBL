@@ -59,6 +59,8 @@
            03  IDY2                PIC 9(04).
            03  IDH                 PIC 9(04).
            03  IDH2                PIC 9(04).
+           03  IDD1                PIC 9(04).
+           03  IDD2                PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -100,6 +102,9 @@
            03  WRK-Z9                  PIC 9.ZZ.
            03  WRK-FTNRATEMEI          PIC X(04).
            03  WRK-ZZ9                 PIC ZZZZZ9.
+      *
+           03  WRK-INDATA              PIC X(20).
+           03  WRK-OTDATA              PIC X(20).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -596,7 +601,9 @@
       *        ËÜ¿Í¡Ý³°Íè¡Ý²ó¡Ý¾å¸Â³Û
                MOVE    HKN-HON-GAIKKOTGAK  TO  WRK-ZZ9
            END-IF
-           MOVE    WRK-ZZ9             TO  AP12SUB2V3-MONEY-OUTPATIENT
+           MOVE    WRK-ZZ9             TO  WRK-INDATA
+           PERFORM 800-MOJIHEN-SEC
+           MOVE    WRK-OTDATA          TO  AP12SUB2V3-MONEY-OUTPATIENT
                                                              (IDY IDY2)
       *
       *    ËÜ¿Í¡ÝÆþ±¡¡Ý²ó¡ÝÉéÃ´³ä¹ç
@@ -614,10 +621,31 @@
       *        ËÜ¿Í¡ÝÆþ±¡¡Ý²ó¡Ý¾å¸Â³Û
                MOVE    HKN-HON-NYUKKOTGAK  TO  WRK-ZZ9
            END-IF
-           MOVE    WRK-ZZ9             TO  AP12SUB2V3-MONEY-ADMISSION
+           MOVE    WRK-ZZ9             TO  WRK-INDATA
+           PERFORM 800-MOJIHEN-SEC
+           MOVE    WRK-OTDATA          TO  AP12SUB2V3-MONEY-ADMISSION
                                                              (IDY IDY2)
            .
        200112-KOHFTN-HENSYU-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    º¸¤º¤áÊÔ½¸½èÍý
+      *****************************************************************
+       800-MOJIHEN-SEC                SECTION.
+      *
+           MOVE    SPACE              TO  WRK-OTDATA
+           MOVE    ZERO               TO  IDD2
+           PERFORM VARYING     IDD1   FROM    1   BY  1
+                   UNTIL       IDD1   >   20
+               IF      WRK-INDATA(IDD1:1)     NOT =   SPACE
+                   MOVE    WRK-INDATA(IDD1:)  TO  WRK-OTDATA
+                   MOVE    20                 TO  IDD1
+               END-IF
+           END-PERFORM
+           .
+       800-MOJIHEN-EXT.
            EXIT.
       *
       *

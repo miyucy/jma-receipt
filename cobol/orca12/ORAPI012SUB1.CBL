@@ -186,6 +186,10 @@
                        MOVE    "£³³äÄÌ¶Ð" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
+                   WHEN    SPACE
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
       *    ¸å´ü¹âÎð¼Ô
                WHEN    "039"
@@ -199,6 +203,8 @@
                        MOVE    "£³³ä" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
+                   WHEN    OTHER
+                       MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
       *        ¶¦ºÑ
                WHEN    "031"
@@ -233,6 +239,10 @@
                        MOVE    "£³³ä²¼Á¥" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
+                   WHEN    SPACE
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
       *        ¹ñÊÝ
                WHEN    "060"
@@ -266,6 +276,10 @@
                        MOVE    "³°£³³ä Æþ£²³ä"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
+                   WHEN    SPACE
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
       *        ¼£¸³
                WHEN    "900"
@@ -277,6 +291,8 @@
                    WHEN    "2"
                        MOVE    "Èó²ÝÀÇ"
                                            TO  API012SUB1-HOJOKBN-NAME
+                   WHEN    OTHER
+                       MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
       *        ¼«Èñ
                WHEN    "980"   THRU   "989"
@@ -287,6 +303,8 @@
                    WHEN    "2"
                        MOVE    "Èó²ÝÀÇ"
                                            TO  API012SUB1-HOJOKBN-NAME
+                   WHEN    OTHER
+                       MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
       *
                WHEN    OTHER
@@ -307,6 +325,10 @@
                            MOVE    "£³³ä" 
                                            TO  API012SUB1-HOJOKBN-NAME
                            MOVE    30      TO  API012SUB1-RATE
+                       WHEN    SPACE
+                           CONTINUE
+                       WHEN    OTHER
+                           MOVE    1           TO  API012SUB1-ERRCD
                    END-EVALUATE
                    END-IF
            END-EVALUATE
