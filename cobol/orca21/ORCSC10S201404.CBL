@@ -289,6 +289,7 @@
            03  WRK-KBN2                PIC X(01).
            03  WRK-KBN3                PIC X(01).
            03  WRK-KBN4                PIC X(01).
+           03  WRK-KBN5                PIC X(01).
       *    紹介・妥結率５割
            03  WRK-ETCKBN              PIC X(01).
       *
@@ -504,7 +505,7 @@
       *        D:同日再診、T：電話再診、S:同日電話再診、F:初診
                05  TBL-KBN             PIC X(01).
       *        G:院外、N:院内（小児科外来診察料）
-      *        D:同日初診
+      *        D:同日初診（同一日２科目）
                05  TBL-KBN2            PIC X(01).
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
@@ -5985,6 +5986,7 @@
            MOVE    ZERO                TO  FLG-DUMMY
            MOVE    ZERO                TO  FLG-SINSATU-ARI
            MOVE    SPACE               TO  WRK-KBN3
+           MOVE    SPACE               TO  WRK-KBN5
       *    時間外なし
            MOVE    1                   TO  FLG-JIKANKBN
       *    画面テーブル内容チェック
@@ -6022,6 +6024,8 @@
       *H24.4
       *    再診同一日２科目の時
            IF     (WRK-KBN3            =   "K"   )
+      *        同一日２科目
+              OR  (WRK-KBN5            =   "D"   )
                MOVE    ZERO                TO  FLG-HENKAN
            END-IF
       *
@@ -6126,6 +6130,8 @@
                        MOVE    TBL-ETCKBN(TBL-IDX) TO  WRK-ETCKBN
       *H26.4
                        MOVE    TBL-KAISU (TBL-IDX) TO  WRK-KAISU
+      *H27.10          同一日２科目
+                       MOVE    TBL-KBN2  (TBL-IDX) TO  WRK-KBN5
                    END-SEARCH
                END-IF
       *
@@ -6144,6 +6150,7 @@
                            MOVE    TBLR-KBN (TBL-RSI)
                                                    TO  WRK-KBN2
                            MOVE    TBLR-KBN (TBL-RSI)  TO  WRK-KBN3
+                           MOVE    TBLR-KBN2(TBL-RSI)  TO  WRK-KBN5
                    END-SEARCH
                END-IF
                IF      FLG-ARI             =   1
