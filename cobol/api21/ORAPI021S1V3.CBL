@@ -178,6 +178,11 @@
       *処理最大行
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.
       *
+      *    全業務解除
+       01  CONS-ORCA-UID       PIC X(64)   VALUE
+                   "267c5110-71b6-431e-baac-0989ab98a505".
+      *
+      *
       *    ワーク診療行為マスタ−
        01  LNK-WKSRYACT-AREA.
            02  LNK-WKSRYACT-REC          OCCURS   400.
@@ -469,8 +474,17 @@
            MOVE    SPACE               TO  WRK-KEICD-G
            MOVE    ZERO                TO  FLG-UIDOK
       *
+      *    全業務解除
+           IF     (MDCREQ-ORCA-UID         =   CONS-ORCA-UID)
+            AND   (MDCREQ-REQUEST-NUMBER   =   "99"      )
+               MOVE    MDCREQ-ORCA-UID     TO  SPA-TERMID
+           ELSE
+      *!!
+      *    UIDチェック
            IF      MDCREQ-ORCA-UID NOT =   SPACE
                PERFORM 2009-PARA-INIT-SEC
+           END-IF
+      *
            END-IF
       *
            MOVE    "01"                TO  MDCRES-RESPONSE-NUMBER
@@ -2609,7 +2623,7 @@
                MOVE    "ドクターが未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "04"
-               MOVE    "ＵＩＤが未設定です"
+               MOVE    "電子カルテＵＩＤが未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "05"
                MOVE    "オルカＵＩＤが未設定です"
@@ -2664,11 +2678,6 @@
            WHEN    "21"
                STRING  "入院中です。"
                        "外来で算定できる保険ではありません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "22"
-               STRING  "入院中ではありません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING

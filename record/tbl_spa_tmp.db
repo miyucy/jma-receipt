@@ -71,4 +71,13 @@ path	del2 	{
 		;
 	};
 };
+path	del4 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_spa_tmp
+		WHERE         HOSPNUM      =   :HOSPNUM
+			AND   TERMID       =   :TERMID
+		;
+	};
+};
 

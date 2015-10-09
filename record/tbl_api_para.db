@@ -71,6 +71,9 @@ path	all 	{
 		SELECT *
 		FROM tbl_api_para
 		WHERE 	HOSPNUM	= :HOSPNUM
+			ORDER   BY         TERMID,
+					   GYOUMUID,
+					   EDANUM
  		;
 	};
 };

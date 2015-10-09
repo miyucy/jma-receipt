@@ -66,6 +66,11 @@
       *
            03  WRK-MCP-TERM            PIC X(62).
       *
+      *    全業務解除
+       01  CONS-ORCA-UID       PIC X(64)   VALUE
+                   "267c5110-71b6-431e-baac-0989ab98a505".
+      *
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -125,8 +130,14 @@
       *
            PERFORM 100-INIT-SEC
       *
-           IF      APIV3SUB01-ERRCD     =   SPACE
-               PERFORM 200-CANCEL-SEC
+           IF      APIV3SUB01-TERMID   =    CONS-ORCA-UID
+      *        全業務　強制処理終了
+               PERFORM 400-ALL-CANCEL-SEC
+           ELSE
+               IF      APIV3SUB01-ERRCD     =   SPACE
+      *            強制処理終了
+                   PERFORM 200-CANCEL-SEC
+               END-IF
            END-IF
       *
            .
@@ -318,6 +329,70 @@
            PERFORM 910-SPATMP-CALL-SEC
            .
        20021-PARA-DELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全業務　強制処理終了
+      *****************************************************************
+       400-ALL-CANCEL-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  APIV3SUB01-PARA-GYOUMUID
+           MOVE    SPACE               TO  APIV3SUB01-ERRCD
+      *
+           INITIALIZE                      APIPARA-REC
+           MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
+      *
+           MOVE    APIPARA-REC         TO  MCPDATA-REC
+           MOVE    "tbl_api_para"      TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 990-APIPARA-READ-SEC
+           ELSE
+               INITIALIZE                  APIPARA-REC
+               MOVE    1               TO  FLG-APIPARA
+           END-IF
+           PERFORM
+               UNTIL  (FLG-APIPARA         =   1     )
+      *
+               MOVE    APIPARA-TERMID      TO  WRK-TERMID
+      *        API一時保存ファイル削除
+               INITIALIZE                  PARA-REC
+               MOVE    APIPARA-HOSPNUM     TO  PARA-HOSPNUM
+               MOVE    APIPARA-TERMID      TO  PARA-TERMID
+               MOVE    PARA-REC            TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "del4"              TO  MCP-PATHNAME
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               PERFORM 900-ORCDBMAIN-SEC
+      *        SPATMP
+               INITIALIZE                      SPATMP-REC
+               MOVE    APIPARA-HOSPNUM     TO  SPATMP-HOSPNUM
+               MOVE    APIPARA-TERMID      TO  SPATMP-TERMID
+      *
+               MOVE    SPATMP-REC          TO  MCPDATA2-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "del4"              TO  MCP-PATHNAME
+               PERFORM 910-SPATMP-CALL-SEC
+      *
+      *        排他制御解除
+               PERFORM 990-LOCK-OUT-SEC
+      *        APIPARA 削除
+               MOVE    APIPARA-REC         TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "tbl_api_para"      TO  MCP-TABLE
+               PERFORM 900-ORCDBMAIN-SEC
+      *
+               MOVE    "tbl_api_para"      TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 990-APIPARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_api_para"      TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       400-ALL-CANCEL-EXT.
            EXIT.
       *
       *****************************************************************
