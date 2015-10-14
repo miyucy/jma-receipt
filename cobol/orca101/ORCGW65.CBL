@@ -2493,7 +2493,7 @@
            INTO                        SPA-GMN-GNBKEIKBNKGMEIL (2)
            END-STRING
       *
-           MOVE  "1"               TO  SPA-GMN-GNBKEIKBNKGL    (3)
+           MOVE  "2"               TO  SPA-GMN-GNBKEIKBNKGL    (3)
            STRING    " １と同様（診療済み主保険負担相当額に"
                                        DELIMITED BY SIZE
                      "主保険単独分も含める）"
