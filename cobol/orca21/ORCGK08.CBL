@@ -4534,15 +4534,14 @@
       *    初期設定処理
            PERFORM 450121-GAIFTN-SYOKI-SEC
       *
-      *!!!!!!!!!!!!!!!!!11
+      *!!!!!!!!!!!!!!
       *H27.7
       *サブプロ対応
-           IF      SPA-SRYYMD          >   "20150630"
+           IF      SPA-SRYYMD          >=  "20151001"
                PERFORM 45012-SYUNOU-SYORI02-SEC
                GO      TO      45012-SYUNOU-SYORI-EXT
            END-IF
       *H27.7
-      *!!!!!!!!!!!!!!!!!11
       *
            MOVE    SPACE               TO  LNK-SYUNOU2-AREA
            INITIALIZE                  LNK-SYUNOU2-AREA

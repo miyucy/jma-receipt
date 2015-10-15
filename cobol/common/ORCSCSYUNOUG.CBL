@@ -90,6 +90,12 @@
            03  WRK-LNK-S01-SYUTEN      PIC S9(08).
            03  WRK-SINDAN              PIC S9(07).
            03  WRK-SEIKYU              PIC S9(07).
+           03  WRK-CHK-SRYSYUKBN       PIC X(03).
+           03  WRK-S01-TENSU           PIC 9(08).
+      *    粉砕判定用
+           03  WRK-FUNSA-AREA.
+               05  FLG-FUNSAI          PIC 9(01).
+               05  WRK-FUNSAI-CNT      PIC 9(04).
       *
            03  WRK-ZAINUM              PIC 9(08).
       *
@@ -332,8 +338,18 @@
            MOVE    ZERO                TO  IDY
            ADD     1                   TO  IDX-Y
       *
+           MOVE    ZERO                TO  FLG-FUNSAI
+           MOVE    ZERO                TO  WRK-FUNSAI-CNT
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
+      *        一部負担額計算用クリア（現在未使用）
+               IF     (IDX                 >   1    )  AND
+                      (LNK-WKSRY-ZAINUM (IDX) NOT =
+                                           LNK-WKSRY-ZAINUM (IDX - 1))
+                   MOVE    ZERO            TO  FLG-FUNSAI
+                   MOVE    ZERO            TO  WRK-FUNSAI-CNT
+               END-IF
       *
                IF     (LNK-WKSRY-HKNCOMBI (IDX)    =   "9999")
                    OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
@@ -346,7 +362,8 @@
                            UNTIL      (IDS         >   5   )  OR
                                       (LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   SPACE )
-      ***************  PERFORM 1002-ORCS01-SET-SEC
+      *                一部負担額計算用（現在未使用）
+                       PERFORM 1002-ORCS01-SET-SEC
       *                特定公費（診察料未算定扱い）判定
                        IF      LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   "099409905"
@@ -367,6 +384,22 @@
                                                OR  "13"
                                                OR  "14"
                    MOVE    "1"                 TO  LNK-S01-SINSATUFLG
+               END-IF
+           END-PERFORM
+      *
+      *一部負担額計算用（現在未使用）
+      *    剤ごとに点数を入れ直す
+           PERFORM VARYING     IDY     FROM    40 BY  -1
+                   UNTIL       IDY     <   1
+               IF      LNK-S01-SRYKBN (IDX-Y IDY)  NOT =   SPACE
+                   IF     (IDY                     =   40    )  OR
+                          (LNK-S01-ZAIBAN (IDX-Y IDY)  NOT =
+                                       LNK-S01-ZAIBAN (IDX-Y IDY + 1))
+                       MOVE    LNK-S01-TENSUU (IDX-Y IDY)
+                                               TO  WRK-S01-TENSU
+                   END-IF
+                   MOVE    WRK-S01-TENSU       TO  LNK-S01-TENSUU
+                                                       (IDX-Y IDY)
                END-IF
            END-PERFORM
       *
@@ -395,6 +428,79 @@
       *
            .
        1001-ORCS01-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一部負担額計算用セット処理　（未使用項目）
+      *****************************************************************
+       1002-ORCS01-SET-SEC            SECTION.
+      *
+      *    粉砕の時最初の１剤のみとする
+           IF      LNK-WKSRY-SRYCD(IDX IDS)    =   "099209901"
+               ADD     1                   TO  WRK-FUNSAI-CNT
+               MOVE    1                   TO  FLG-FUNSAI
+               GO      TO      1002-ORCS01-SET-EXT
+           END-IF
+           IF     (FLG-FUNSAI          =   1   )  AND
+                  (WRK-FUNSAI-CNT      >   1   )
+               MOVE    ZERO                TO  FLG-FUNSAI
+               GO      TO      1002-ORCS01-SET-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-FUNSAI
+           IF     (LNK-WKSRY-SRYCD(IDX IDS)(1:1) =   "6"  ) OR
+                  (LNK-WKSRY-SRYCD(IDX IDS)(1:3) =   "001")
+      *        院内薬剤のみとする
+               MOVE    LNK-WKSRY-SRYSYUKBN (IDX) TO
+                                                   WRK-CHK-SRYSYUKBN
+               IF      WRK-CHK-SRYSYUKBN       =   SPACE
+                   EVALUATE    LNK-WKSRY-SRYKBN (IDX)
+                       WHEN    "21"
+                           MOVE    "210"     TO  WRK-CHK-SRYSYUKBN
+                       WHEN    "22"
+                           MOVE    "220"     TO  WRK-CHK-SRYSYUKBN
+                       WHEN    "23"
+                           MOVE    "230"     TO  WRK-CHK-SRYSYUKBN
+                   END-EVALUATE
+               END-IF
+               IF     (WRK-CHK-SRYSYUKBN           =   "211"  OR
+                                                       "221"  OR
+                                                       "231"  OR
+                                                       "291"  OR
+                                                       "294" )  OR
+                     ((SPA-INGAIKBN            NOT =   "1"   ) AND
+                      (WRK-CHK-SRYSYUKBN           =   "210"  OR
+                                                       "220"  OR
+                                                       "230"  OR
+                                                       "290"  OR
+                                                       "293" ))
+                   ADD     1                   TO  IDY
+                   IF      IDY                 >   40
+                       GO      TO      1002-ORCS01-SET-EXT
+                   END-IF
+                   MOVE    LNK-WKSRY-SRYKBN(IDX)
+                                                   TO  LNK-S01-SRYKBN
+                                                          (IDX-Y IDY)
+                   MOVE    LNK-WKSRY-ZAINUM (IDX)
+                                                   TO  LNK-S01-ZAIBAN
+                                                          (IDX-Y IDY)
+                   MOVE    LNK-WKSRY-SRYCD (IDX IDS)
+                                                   TO  LNK-S01-SRYCD
+                                                          (IDX-Y IDY)
+                   MOVE    LNK-WKSRY-SRYSURYO(IDX IDS)
+                                                   TO  LNK-S01-SURYOU
+                                                          (IDX-Y IDY)
+                   MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)
+                                                   TO  LNK-S01-KAISUU
+                                                          (IDX-Y IDY)
+                   MOVE    LNK-WKSRY-ZAITENKEI(IDX)
+                                                   TO  LNK-S01-TENSUU
+                                                          (IDX-Y IDY)
+               END-IF
+           END-IF
+      *
+           .
+       1002-ORCS01-SET-EXT.
            EXIT.
       *****************************************************************
       *    初診料算定判定処理
@@ -494,19 +600,9 @@
       *
            MOVE    ZERO                TO  WRK-LNK-S01-SYUTEN
            MOVE    ZERO                TO  IDX-S1
-      *TEST
-      *    DISPLAY "WRK-HKNCOMBI:" WRK-HKNCOMBI
-      *       ",WRK-SRYKA:"  WRK-SRYKA
-      *TEST
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >  LNK-WKSRYACT-MAX
-      *TEST
-      *    DISPLAY "IDY:"  IDY
-      *          ",HKN:" LNK-WKSRY-HKNCOMBI(IDY) 
-      *       ",SRYKA:"  LNK-WKSRY-SRYKA   (IDY)
-      *       ",ZAINUM:"  LNK-WKSRY-ZAINUM   (IDY)
-      *TEST
                IF     (LNK-WKSRY-HKNCOMBI(IDY) =   WRK-HKNCOMBI)
                   AND (LNK-WKSRY-SRYKA   (IDY) =   WRK-SRYKA   )
       *            包括・薬評以外
@@ -551,10 +647,6 @@
                MOVE    SUM-SYU-HKNTEN(IDX)     TO  SYU-HKNTEN(IDX)
       *        保険合計点数
                ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN (17)
-      *TEST
-      *    DISPLAY "IDX:"  IDX
-      *               ",SYU-HKNTEN:" SYU-HKNTEN(IDX)
-      *TEST
            END-PERFORM
       *
       *    自賠責の手技点数
@@ -605,11 +697,6 @@
       *****************************************************************
        20011-HKNTEN-KEI-SEC             SECTION.
       *
-      *TEST
-           DISPLAY "SRYKBN:" LNK2-WKSRY-SRYKBN (1)
-           ",IDX-TS:" IDX-TS
-              ",ZAITENKEI:"  LNK2-WKSRY-ZAITENKEI(IDX-KOUI)
-      *TEST
            MOVE    LNK2-WKSRY-SRYKBN   (1) TO  WRK-SRYKBN
            MOVE    LNK2-WKSRY-SRYSYUKBN(1) TO  WRK-SRYSYUKBN
       *    集計位置決定
@@ -652,10 +739,6 @@
       *    自賠責の時、技術点を集計処理
       *****************************************************************
        200112-JIBAI-SYORI-SEC          SECTION.
-      *TEST
-           DISPLAY "200112-JIBAI-SYORI-SEC"
-              ",SRYKBN:"  LNK2-WKSRY-SRYKBN (IDX)
-      *TEST
       *
       *    診察料と診断料等の時、診療コードを判定する
            IF      LNK2-WKSRY-SRYKBN (IDX) =   "80"
@@ -666,6 +749,11 @@
       *
                    MOVE    LNK2-WKSRY-SRYCD (IDX IDS)  TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
+      *            自賠責金額入力
+                   IF      LNK2-WKSRY-SRYSYUKBN(IDX)    =   "809"
+                       MOVE    LNK2-WKSRY-JIHIMONEY(IDX IDS)
+                                                   TO  TNS-TEN
+                   END-IF
       *            自賠責金額集計
       *            自賠責診断書料集計
                    IF      LNK2-WKSRY-SRYCD (IDX IDS)(1:5)

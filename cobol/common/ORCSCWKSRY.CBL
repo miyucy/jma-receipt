@@ -2840,6 +2840,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    £Ó£Ð£ÁÊÝÂ¸¥Ñ¥é¥á¥¿¤òºîÀ®
            PERFORM 3001-PARA-SYORI-SEC
+      *
+           INITIALIZE                  TBL-K02SCR-AREA
+      *
       *    ÉéÃ´¶â»»Äê¡¦¼ýÇ¼¥Þ¥¹¥¿½èÍý 
            IF      SPA-NYUGAIKBN       =   "1"
                PERFORM 30021-SYUNOU-NYU-SYORI-SEC
@@ -3701,8 +3704,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¼ýÇ¼ÅÀ¿ô½¸·×
            INITIALIZE                  WRK-SUM-AREA
            MOVE    ZERO                TO  FLG-RSITEN
-      *!!!
-           INITIALIZE                  TBL-K02SCR-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
