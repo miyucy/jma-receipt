@@ -683,6 +683,20 @@
                        MOVE    6           TO  SPA-GMN-CUR
       *----(04.07.01)--UPD-END-----
                    END-IF
+               WHEN    "1003"
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 4031-DEL-SEC
+                   ELSE
+                       MOVE    2           TO  SPA-GMN-CUR
+                   END-IF
+      *----(04.07.01)--ADD-START---
+               WHEN    "1004"
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 210-BACK
+                   ELSE
+                       MOVE    6           TO  SPA-GMN-CUR
+                   END-IF
+      *----(04.07.01)--ADD-END-----
       *H27.10
       *        追加登録
                WHEN    "1005"
@@ -698,20 +712,6 @@
                        GO  TO  330-WID1-SET-EXT
                    END-IF
       *
-               WHEN    "1003"
-                   IF      SPA-WID1-FLG    =   "OK"
-                       PERFORM 4031-DEL-SEC
-                   ELSE
-                       MOVE    2           TO  SPA-GMN-CUR
-                   END-IF
-      *----(04.07.01)--ADD-START---
-               WHEN    "1004"
-                   IF      SPA-WID1-FLG    =   "OK"
-                       PERFORM 210-BACK
-                   ELSE
-                       MOVE    6           TO  SPA-GMN-CUR
-                   END-IF
-      *----(04.07.01)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
@@ -3925,8 +3925,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *H27.10
       *       有効開始日の変更は追加
-              IF     (SPA-GMN-SYORI        =   1    )
-                  MOVE    "1005"           TO  SPA-WIDCD
+               IF     (SPA-GMN-SYORI       =   1    )
+                   MOVE    "1005"          TO  SPA-WIDCD
                END-IF
            END-IF
            .
@@ -4014,7 +4014,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-GMN-SELNUM  NOT =   ZERO )
                IF     (SPA-NAI-STYUKYMD    =   SPA-NAI-TSTYUKYMD
                                                    (SPA-GMN-SELNUM))
-                 AND  (SPA-NAI-EDYUKYMD    =   SPA-NAI-TEDYUKYMD
+                 OR   (SPA-NAI-EDYUKYMD    =   SPA-NAI-TEDYUKYMD
                                                    (SPA-GMN-SELNUM))
                    CONTINUE
                ELSE
@@ -4805,8 +4805,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  W06
-      *
            INITIALIZE                      W06
+      *
            MOVE    SPA-GMN-SYOKUKBN-G      TO  W06-SYOKUKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYOKUKBN-MAX
@@ -5431,13 +5431,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1001"
                    MOVE    "職員情報を追加登録します"
                                                      TO  WRK-WIDMSG
-      *H27.10
-               WHEN    "1005"
-                   STRING  "ＯＫで職員情報を追加登録します。"
-                           "よろしいですか？"
-                                         DELIMITED  BY  SIZE
-                                         INTO    WRK-WIDMSG
-                   END-STRING
                WHEN    "1002"
                    MOVE    "職員情報を更新します"    TO  WRK-WIDMSG
       *----(04.08.03)--ADD-START---
@@ -5452,6 +5445,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1004"
                    MOVE    "編集中ですが中止しますか？"
                                                      TO  WRK-WIDMSG
+      *H27.10
+               WHEN    "1005"
+                   STRING  "ＯＫで職員情報を追加登録します。"
+                           "よろしいですか？"
+                                         DELIMITED  BY  SIZE
+                                         INTO    WRK-WIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
