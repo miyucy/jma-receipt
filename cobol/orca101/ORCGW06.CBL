@@ -64,6 +64,7 @@
       * 04.08.03     NACL-森脇    14/11/19  パスワード削除処理対応
       * 04.08.04     NACL-森脇    14/12/10  職員情報削除時出力先設定削除
       * 04.08.05     NACL-森脇    15/08/31  管理者有効期間チェック
+      * 04.08.00     NACL-多々納  15/10/22  期間変更追加処理対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -682,6 +683,21 @@
                        MOVE    6           TO  SPA-GMN-CUR
       *----(04.07.01)--UPD-END-----
                    END-IF
+      *H27.10
+      *        追加登録
+               WHEN    "1005"
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 490-KOUSHIN-SEC
+                   ELSE
+      *                更新へ
+                       MOVE    2               TO  SPA-GMN-SYORI
+                       MOVE    "1002"          TO  SPA-WIDCD
+      *                確認画面表示
+                       MOVE    SPACE           TO  SPA-WID1-FLG
+                       PERFORM 520-WIDSET-SEC
+                       GO  TO  330-WID1-SET-EXT
+                   END-IF
+      *
                WHEN    "1003"
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 4031-DEL-SEC
@@ -3903,9 +3919,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
               MOVE    "1002"           TO  SPA-WIDCD
       *       有効開始日の変更は追加
-              IF     (SPA-GMN-SELNUM       =   ZERO )  OR
-                     (SPA-GMN-SYORI        =   1    )
+              IF     (SPA-GMN-SELNUM       =   ZERO )
+     *********** OR  (SPA-GMN-SYORI        =   1    )
                   MOVE    "1001"           TO  SPA-WIDCD
+               END-IF
+      *H27.10
+      *       有効開始日の変更は追加
+              IF     (SPA-GMN-SYORI        =   1    )
+                  MOVE    "1005"           TO  SPA-WIDCD
                END-IF
            END-IF
            .
@@ -3986,23 +4007,42 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
            END-IF
-      *----(04.08.04)--UPD-START---
+      *H27.10
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    2                   TO  SPA-GMN-SYORI
+      *    期間変更時に、追加可能かのチェック
+           IF     (SPA-GMN-SELNUM  NOT =   ZERO )
+               IF     (SPA-NAI-STYUKYMD    =   SPA-NAI-TSTYUKYMD
+                                                   (SPA-GMN-SELNUM))
+                 AND  (SPA-NAI-EDYUKYMD    =   SPA-NAI-TEDYUKYMD
+                                                   (SPA-GMN-SELNUM))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO            TO  FLG-CHK
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL ( IDX     >   SPA-GMN-TBL-MAX )
+                           OR    ( FLG-CHK     =   1     )
+                       IF     (SPA-NAI-TEDYUKYMD (IDX)
+                                           <   SPA-NAI-STYUKYMD )  OR
+                              (SPA-NAI-TSTYUKYMD (IDX)
+                                           >   SPA-NAI-EDYUKYMD )
+                           CONTINUE
+                       ELSE
+                           MOVE    1            TO  FLG-CHK
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-CHK         =   ZERO
+      *                期間重複なし 追加処理
+                       MOVE    1                TO  SPA-GMN-SYORI
+                   END-IF
+               END-IF
+           END-IF
       *    期間重複チェック
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL ( IDX     >   SPA-GMN-TBL-MAX )
                    OR    ( SPA-ERRCD       NOT =   SPACE )
-               IF      SPA-GMN-SELNUM      =   IDX
-      *            選択された内容の開始日が変更された場合
-                   IF      SPA-NAI-STYUKYMD    =   SPA-NAI-TSTYUKYMD
-                                                               (IDX)
-                       MOVE    2           TO  SPA-GMN-SYORI
-                   ELSE
-                       MOVE    1           TO  SPA-GMN-SYORI
-                   END-IF
-               ELSE
-                   MOVE    1           TO  SPA-GMN-SYORI
-               END-IF
-               IF      SPA-GMN-SYORI   =   1
+                   OR    ( SPA-GMN-SYORI       =   1   )
+               IF     (SPA-GMN-SELNUM  NOT =   IDX )
                    IF     (SPA-NAI-TEDYUKYMD (IDX)
                                        <   SPA-NAI-STYUKYMD )  OR
                           (SPA-NAI-TSTYUKYMD (IDX)
@@ -4014,6 +4054,35 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *----(04.08.04)--UPD-START---
+      *    期間重複チェック
+      *    PERFORM VARYING IDX     FROM    1   BY  1
+      *            UNTIL ( IDX     >   SPA-GMN-TBL-MAX )
+      *            OR    ( SPA-ERRCD       NOT =   SPACE )
+      *        IF      SPA-GMN-SELNUM      =   IDX
+      *            選択された内容の開始日が変更された場合
+      *            IF      SPA-NAI-STYUKYMD    =   SPA-NAI-TSTYUKYMD
+      *                                                        (IDX)
+      *                MOVE    2           TO  SPA-GMN-SYORI
+      *            ELSE
+      *                MOVE    1           TO  SPA-GMN-SYORI
+      *            END-IF
+      *        ELSE
+      *            MOVE    1           TO  SPA-GMN-SYORI
+      *        END-IF
+      *        IF      SPA-GMN-SYORI   =   1
+      *            IF     (SPA-NAI-TEDYUKYMD (IDX)
+      *                                <   SPA-NAI-STYUKYMD )  OR
+      *                   (SPA-NAI-TSTYUKYMD (IDX)
+      *                                >   SPA-NAI-EDYUKYMD )
+      *                CONTINUE
+      *            ELSE
+      *                MOVE    "0020"           TO  SPA-ERRCD
+      *                MOVE    3                TO  SPA-GMN-CUR
+      *            END-IF
+      *        END-IF
+      **** END-PERFORM
       *----(04.08.04)--UPD-END-----
       ***
       *    オペレータＩＤ
@@ -5362,6 +5431,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1001"
                    MOVE    "職員情報を追加登録します"
                                                      TO  WRK-WIDMSG
+      *H27.10
+               WHEN    "1005"
+                   STRING  "ＯＫで職員情報を追加登録します。"
+                           "よろしいですか？"
+                                         DELIMITED  BY  SIZE
+                                         INTO    WRK-WIDMSG
+                   END-STRING
                WHEN    "1002"
                    MOVE    "職員情報を更新します"    TO  WRK-WIDMSG
       *----(04.08.03)--ADD-START---
