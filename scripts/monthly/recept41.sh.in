@@ -31,48 +31,31 @@ fi
 #            1:履歴保存する
 #        ${26} レセ電データチェックの有無
 #            1:チェックする
-#        ${29} MONBLOB-ID(data-id)
 #-------------------------------------------#
 
-        echo "window  ${MCP_WINDOW}"
-
-        if  [ "${MCP_WINDOW}" == "receiptdatamakev3" ]; then
-            mkdir -p  ${MCP_TEMPDIR}
-        fi
-
-cleanup(){
-##      パラメータファイル削除
-        if  [ -e "${PARA_FILE_FULL}" ]; then
-            rm   ${PARA_FILE_FULL}
-        fi
-}
-trap cleanup EXIT
-
-
     LOG_FILE="/var/log/jma-receipt/${20}recept41.log"
-    [ -e "${LOG_FILE}" ] && rm ${LOG_FILE}
-    echo "arg5 =  [" ${5} "]"  
-    echo "arg12 = [" ${12} "]" 
-    echo "arg13 = [" ${13} "]" 
-    echo "arg16 = [" ${16} "]" 
-    echo "arg17 = [" ${17} "]" 
-    echo "arg18 = [" ${18} "]" 
-    echo "arg19 = [" ${19} "]" 
-    echo "arg20 = [" ${20} "]" 
-    echo "arg21 = [" ${21} "]" 
-    echo "arg22 = [" ${22} "]" 
-    echo "arg23 = [" ${23} "]" 
-    echo "arg24 = [" ${24} "]" 
-    echo "arg26 = [" ${26} "]" 
-    echo "arg29 = [" ${29} "]" 
-#    echo "hostname =  [" `hostname`  "]" 
+
+    echo "arg5 =  [" ${5} "]"  >$LOG_FILE
+    echo "arg12 = [" ${12} "]" >>$LOG_FILE
+    echo "arg13 = [" ${13} "]" >>$LOG_FILE
+    echo "arg16 = [" ${16} "]" >>$LOG_FILE
+    echo "arg17 = [" ${17} "]" >>$LOG_FILE
+    echo "arg18 = [" ${18} "]" >>$LOG_FILE
+    echo "arg19 = [" ${19} "]" >>$LOG_FILE
+    echo "arg20 = [" ${20} "]" >>$LOG_FILE
+    echo "arg21 = [" ${21} "]" >>$LOG_FILE
+    echo "arg22 = [" ${22} "]" >>$LOG_FILE
+    echo "arg23 = [" ${23} "]" >>$LOG_FILE
+    echo "arg24 = [" ${24} "]" >>$LOG_FILE
+    echo "arg26 = [" ${26} "]" >>$LOG_FILE
+    echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
 
     rennum=0
 ##  2HD flesize  
     fixedsize=1441500
 
 ##  エラーファイル削除
-    echo "errfile = [" ${MCP_TEMPDIR}/${16}  "]" 
+    echo "errfile = [" ${MCP_TEMPDIR}/${16}  "]" >> $LOG_FILE
     rm  -f ${MCP_TEMPDIR}/${16}
 
 #   一時請求
@@ -87,7 +70,7 @@ trap cleanup EXIT
 	RECEFILE2="TENKENT"
 	RECEFILE3="TENC"
 	RECEFILE4="UKSTENK"
-	echo "file name change!" 
+	echo "file name change!" >>$LOG_FILE
     fi
 
 #   該当ファイル削除
@@ -103,9 +86,9 @@ trap cleanup EXIT
 
 
 #   レセ電ファイル作成
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM700 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${19},${17},$fixedsize,${21},${12},${20},${16} 
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM700 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${19},${17},$fixedsize,${21},${12},${20},${16} >> $LOG_FILE 2>&1
     if  [ -e ${MCP_TEMPDIR}/${16} ]; then
-        echo "--- BM700 err file exist ---" 
+        echo "--- BM700 err file exist ---" >> $LOG_FILE 2>&1
         exit 
     fi
 
@@ -114,9 +97,9 @@ trap cleanup EXIT
 #   光ディスク等送付書（提出用レセのときのみ）
     if  [ ${23} -eq '1' ] && [ ${21} -eq '1' ]; then
         rennum=$(expr $rennum + 1) 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM720 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${17},${14},${15},${20},${16} 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM720 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${17},${14},${15},${20},${16} >> $LOG_FILE 2>&1
         if  [ -e ${MCP_TEMPDIR}/${16} ]; then
-            echo "--- BM720 err file exist ---" 
+            echo "--- BM720 err file exist ---" >>$LOG_FILE
             exit 
         fi
     fi
@@ -129,27 +112,27 @@ trap cleanup EXIT
     fi
     OUT_FOLDER="${MCP_TEMPDIR}/$ROUSAI_FOLDER/"
 
-    echo "--- rm out folder [" ${OUT_FOLDER} "]" 
+    echo "--- rm out folder [" ${OUT_FOLDER} "]" >>$LOG_FILE
     rm -fr ${OUT_FOLDER}
 
     if ( [ ${17} -eq '3' ]|| [ ${17} -eq '4' ] ) && [ ${24} -eq '0' ]; then
-        echo "--- not out holder  ---" 
+        echo "--- not out holder  ---" >>$LOG_FILE
     else
-        echo "--- folder name  [" ${OUT_FOLDER} "]" 
+        echo "--- folder name  [" ${OUT_FOLDER} "]" >>$LOG_FILE
         if ! test -d  "$OUT_FOLDER"; then
             mkdir ${OUT_FOLDER}
             RC=$?
             if  [ $RC -ne '0' ]; then
                 ERRCD='0077'
-                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} 
-                echo "--- mkdir  err   ---" 
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} >> $LOG_FILE
+                echo "--- mkdir  err   ---" >>$LOG_FILE
                 exit
             fi
             chmod -R g+r ${OUT_FOLDER}
-            echo "--- mkdir out holder ---" 
+            echo "--- mkdir out holder ---" >>$LOG_FILE
         else
             rm ${OUT_FOLDER}*
-            echo "--- rm out holder file ---" 
+            echo "--- rm out holder file ---" >>$LOG_FILE
         fi
     fi
 
@@ -163,34 +146,34 @@ trap cleanup EXIT
     all=`ls  ${20}${RECEFILE2}*.txt`
  
     for f in $all ; do
-        echo "f= " $f 
-##      echo "mm = " ${f:9:2} 
-##      echo "nn = " ${f:11:2} 
+        echo "f= " $f >> $LOG_FILE 2>&1
+##      echo "mm = " ${f:9:2} >> $LOG_FILE 2>&1
+##      echo "nn = " ${f:11:2} >> $LOG_FILE 2>&1
 
 #       システム管理場所出力（履歴保存を行わない）のとき
         if ( [ ${17} -eq '3' ]|| [ ${17} -eq '4' ] ) && [ ${24} -eq '0' ]; then
-            echo ${13}${20}${RECEFILE1}${f:9:2}${f:11:2}.UKE 
+            echo ${13}${20}${RECEFILE1}${f:9:2}${f:11:2}.UKE >> $LOG_FILE 2>&1
             nkf -s $f > ${13}${20}${RECEFILE1}${f:9:2}${f:11:2}.UKE
         else
-            echo ${OUT_FOLDER}${RECEFILE1}${f:9:2}${f:11:2}.UKE 
+            echo ${OUT_FOLDER}${RECEFILE1}${f:9:2}${f:11:2}.UKE >> $LOG_FILE 2>&1
             nkf -s $f > ${OUT_FOLDER}${RECEFILE1}${f:9:2}${f:11:2}.UKE
         fi
     done
 
 #   再請求
-    all=`ls  ${20}${RECEFILE4}*.txt`
+    all=`ls  /tmp/${20}${RECEFILE4}*.txt`
  
     for f in $all ; do
-        echo "f= " $f 
-##      echo "mm = " ${f:9:2} 
-##      echo "nn = " ${f:11:2} 
+        echo "f= " $f >> $LOG_FILE 2>&1
+##      echo "mm = " ${f:9:2} >> $LOG_FILE 2>&1
+##      echo "nn = " ${f:11:2} >> $LOG_FILE 2>&1
 
 #       システム管理場所出力（履歴保存を行わない）のとき
         if ( [ ${17} -eq '3' ]|| [ ${17} -eq '4' ] ) && [ ${24} -eq '0' ]; then
-            echo ${13}${20}${RECEFILE3}${f:9:2}${f:11:2}.UKS 
+            echo ${13}${20}${RECEFILE3}${f:9:2}${f:11:2}.UKS >> $LOG_FILE 2>&1
             nkf -s $f > ${13}${20}${RECEFILE3}${f:9:2}${f:11:2}.UKS
         else
-            echo ${OUT_FOLDER}${RECEFILE3}${f:9:2}${f:11:2}.UKS 
+            echo ${OUT_FOLDER}${RECEFILE3}${f:9:2}${f:11:2}.UKS >> $LOG_FILE 2>&1
             nkf -s $f > ${OUT_FOLDER}${RECEFILE3}${f:9:2}${f:11:2}.UKS
         fi
     done
@@ -224,14 +207,14 @@ trap cleanup EXIT
         cleanup
 
         for f in $all ; do
-            echo "check f= " $f 
+            echo "check f= " $f >> $LOG_FILE 2>&1
 
             if ( [ ${17} -eq '3' ]|| [ ${17} -eq '4' ] ) && [ ${24} -eq '0' ]; then
 	      INFILE=${13}$f
             else
 	      INFILE=${OUT_FOLDER}$f
             fi
-            echo "INFILE= " ${INFILE} 
+            echo "INFILE= " ${INFILE} >> $LOG_FILE 2>&1
 	    UTF8FILE="${TMPFILEBASE}$(basename ${f}).euc"
 
             if  [ ${f: -4} = '.UKE' ]; then
@@ -251,20 +234,19 @@ trap cleanup EXIT
 	    [ -e ${INFILE}  ] &&  nkf --ic=CP932 --oc=UTF-8 ${INFILE} > ${UTF8FILE}
 
 
-	    echo "--- receden check start $(LANG=C date) ---" 
-	    rosai_receden_check.rb "$PRM" 
-		if [ $? -ne 0 ]; then
+	    rosai_receden_check.rb "$PRM" 2>  ${ERRLOG}
+	    if [ -s ${ERRLOG} ]; then
+	        cat ${ERRLOG} >> $LOG_FILE
 	        ERRCD='0099'
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} 
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} >> $LOG_FILE
 	        exit
 	    fi
-	    echo "--- receden check end   $(LANG=C date) ---" 
         done
 
         rennum=1
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM570 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${21},'0',${14},${15},'99999999',$(basename ${ERRFILE}),${20},${16} 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM570 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${21},'0',${14},${15},'99999999',$(basename ${ERRFILE}),${20},${16} >> $LOG_FILE 2>&1
         if  [ -e ${MCP_TEMPDIR}/${16} ]; then
-            echo "--- BM570 err file exist ---" 
+            echo "--- BM570 err file exist ---" >>$LOG_FILE
             exit 
         fi
     fi
@@ -274,22 +256,22 @@ trap cleanup EXIT
         if  [ ${24} -eq '1' ]; then
 #           履歴保存先のフォルダへファイル作成
             RIREKI_FOLDER="${13}$ROUSAI_FOLDER/"
-            echo "--- rireki folder name  [" ${RIREKI_FOLDER} "]" 
+            echo "--- rireki folder name  [" ${RIREKI_FOLDER} "]" >>$LOG_FILE
             if ! test -d  "${RIREKI_FOLDER}"; then
                  mkdir ${RIREKI_FOLDER}
                  RC=$?
-                 echo "--- mkdir end   ---[" $RC  "]" 
+                 echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
                  if  [ $RC -ne '0' ]; then
                      ERRCD='0077'
-                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} 
-                     echo "--- mkdir  err   ---" 
+                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} >> $LOG_FILE
+                     echo "--- mkdir  err   ---" >>$LOG_FILE
                      exit
                  fi
                  chmod -R g+r ${RIREKI_FOLDER}
-                 echo "--- mkdir rireki holder ---" 
+                 echo "--- mkdir rireki holder ---" >>$LOG_FILE
             else
                  rm ${RIREKI_FOLDER}*
-                 echo "--- rm rireki holder file ---" 
+                 echo "--- rm rireki holder file ---" >>$LOG_FILE
             fi
 #           一時請求
             cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${RIREKI_FOLDER}
@@ -307,55 +289,34 @@ trap cleanup EXIT
 #   クライアント保存
     if  [ ${17} -eq '5' ]; then
         cd  ${MCP_TEMPDIR}/
-        echo "--- zip name [" ${ROUSAI_FOLDER}.zip "]" 
+        echo "--- zip name [" ${ROUSAI_FOLDER}.zip "]" >>$LOG_FILE
         rm  ${ROUSAI_FOLDER}.zip
         zip -r ${ROUSAI_FOLDER}.zip ${ROUSAI_FOLDER}/
 	RC=$?
-        echo "--- zip end   ---[" $RC  "]" 
+        echo "--- zip end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} 
-            echo "--- zip err   ---" 
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} >> $LOG_FILE
+            echo "--- zip err   ---" >>$LOG_FILE
             exit
 	fi
     fi
 
 #   ＣＤ−Ｒ出力のときisoファイル作成
     if  [ ${17} -eq '6' ]; then
-        echo "--- iso start ---" 
+        echo "--- iso start ---" >>$LOG_FILE
         cd  ${MCP_TEMPDIR}/
-        echo "--- iso name [" ${MCP_TEMPDIR}/${ROUSAI_FOLDER}.iso "]" 
+        echo "--- iso name [" ${MCP_TEMPDIR}/${ROUSAI_FOLDER}.iso "]" >>$LOG_FILE
         mkisofs --input-charset cp437 -l -o ${MCP_TEMPDIR}/${ROUSAI_FOLDER}.iso ${ROUSAI_FOLDER}/
 	RC=$?
-        echo "--- iso end   ---[" $RC  "]" 
+        echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} 
-            echo "--- iso err   ---" 
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} >> $LOG_FILE
+            echo "--- iso err   ---" >>$LOG_FILE
             exit
 	fi
     fi
 
-
-#   大容量ＡＰＩ作成
-    if  [ ${17} -eq '9' ]; then
-        cd  ${MCP_TEMPDIR}/
-        zip -r ${ROUSAI_FOLDER}.zip ${ROUSAI_FOLDER}/
-	RC=$?
-        echo "--- zip end   ---[" $RC  "]" 
-	if  [ $RC -ne '0' ]; then
-	    ERRCD='0000'$RC
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} 
-            echo "--- zip err   ---" 
-            exit
-	fi
-        FILENM="${ROUSAI_FOLDER}.zip"
-        echo "filenm=[" $FILENM "]"
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter ${1},${2},${3},$rennum,${5},${6},${7},${8},${9},${10},${11},${14},${15},${20},${16},$FILENM,"csv",${29}
-        if  [ -e ${MCP_TEMPDIR}/${16} ]; then
-             exit
-        fi
-    fi
-
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${20} 
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${20} >> $LOG_FILE
     exit 
