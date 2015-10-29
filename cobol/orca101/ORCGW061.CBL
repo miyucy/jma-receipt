@@ -54,6 +54,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PASSWD          PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-SKIP            PIC 9(01).
@@ -84,6 +85,7 @@
            03  WRK-ZZ9                 PIC ZZZ9.
            03  WRK-ZZZZ                PIC ZZZZ.
            03  WRK-MIDASI              PIC X(100).
+           03  WRK-MIDASI2             PIC X(20).
       *
            03  WRK-MCP-PATHNAME        PIC X(64).
       *    ¥³¥é¥à¥ê¥¹¥È°ÌÃÖ
@@ -129,6 +131,9 @@
            COPY  "CPSK1010.INC".
       *    ¿¦°÷¾ðÊó£²
            COPY  "CPSK1050.INC".
+      *
+      *    ¥Ñ¥¹¥ï¡¼¥É
+           COPY    "CPPASSWD.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -433,6 +438,13 @@
       *    ´ÉÍý¼Ô¶èÊ¬
            MOVE    SYS-1010-KANRIAUTHFLG
                                        TO  SPA-NAI061-KANRIAUTHFLG(IDX)
+      *    ¥Ñ¥¹¥ï¡¼¥ÉÈ½Äê
+           PERFORM 900-PASSWD-READ-SEC
+           IF      FLG-PASSWD          =   ZERO
+               MOVE    "1"                 TO  SPA-W061-PASSWD (IDX)
+           ELSE
+               MOVE    SPACE               TO  SPA-W061-PASSWD (IDX)
+           END-IF
       *
            MOVE    IDX                 TO  SPA-W061-MAX
            .
@@ -457,11 +469,13 @@
                    MOVE    "¡Ú´ÉÍý¿¦°ìÍ÷¡Û"      TO  SPA-W061-MIDASI1
            END-EVALUATE
       *
+           MOVE    "¿¦°÷£Ã£Ä½ç"        TO  WRK-MIDASI2
            EVALUATE    SPA-W061-HYOJIKBN
                WHEN    "2"
                    MOVE    SPACE           TO  WRK-MIDASI
                    STRING    SPA-W061-MIDASI1
                              "¡ÊÁ´Éô¡Ë"
+                             "¡¡¿¦°÷£Ã£Ä½ç"
                                        DELIMITED  BY  SPACE
                                        INTO    WRK-MIDASI
                    END-STRING
@@ -470,6 +484,7 @@
                    MOVE    SPACE           TO  WRK-MIDASI
                    STRING    SPA-W061-MIDASI1
                              "¡ÊºÇ½ªÍúÎò¡Ë"
+                             "¡¡¿¦°÷£Ã£Ä½ç"
                                        DELIMITED  BY  SPACE
                                        INTO    WRK-MIDASI
                    END-STRING
@@ -478,6 +493,7 @@
                    MOVE    SPACE           TO  WRK-MIDASI
                    STRING    SPA-W061-MIDASI1
                              "¡ÊÅöÆüÍ­¸ú¡Ë"
+                             "¡¡¿¦°÷£Ã£Ä½ç"
                                        DELIMITED  BY  SPACE
                                        INTO    WRK-MIDASI
                    END-STRING
@@ -538,6 +554,10 @@
       *
                IF      SPA-W061-HIHYOUJI(IDX)  =   "1"
                    MOVE    "¡ß"            TO  W061-HIHHYOJI (IDX)
+               END-IF
+      *        ¥Ñ¥¹¥ï¡¼¥É
+               IF      SPA-W061-PASSWD (IDX)   =   "1"
+                   MOVE    "¡ý"            TO  W061-PASSWD (IDX)
                END-IF
       *
                IF     (SPA-W061-SELNUM     >   ZERO )
@@ -1799,6 +1819,37 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
             .
        900-SYSKANRI-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ðËÜÆÉ¹þ½èÍý
+      *****************************************************************
+       900-PASSWD-READ-SEC             SECTION.
+      *
+           INITIALIZE                  PASSWD-REC
+           MOVE    SYS-1010-USERID     TO  PASSWD-USERID
+           MOVE    PASSWD-REC          TO  MCPDATA-REC
+           MOVE    "tbl_passwd"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_passwd"    TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE   ZERO             TO  FLG-PASSWD
+               ELSE
+                   MOVE    1               TO  FLG-PASSWD
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PASSWD
+           END-IF
+      *
+           MOVE    "tbl_passwd"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       900-PASSWD-READ-EXT.
            EXIT.
       *
       *****************************************************************

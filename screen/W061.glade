@@ -325,8 +325,8 @@
           <has_focus>False</has_focus>
           <border_width>0</border_width>
           <show_titles>True</show_titles>
-          <columns>7</columns>
-          <column_widths>40,50,260,100,80,80,44</column_widths>
+          <columns>8</columns>
+          <column_widths>40,50,260,100,80,80,40,30</column_widths>
           <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
           <signal>
             <name>select_row</name>
@@ -446,6 +446,21 @@
             <xpad>0</xpad>
             <ypad>0</ypad>
             <label>表示</label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <child_name>CList:title</child_name>
+            <name>label7</name>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label>PW</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
