@@ -3803,6 +3803,7 @@
                        MOVE    "71"            TO  WRK-ERRCD
                    END-EVALUATE
                WHEN    "NO"
+               WHEN    "No"
       *            ºï½ü½èÍý½ªÎ»
                    MOVE    "00"            TO  PTMODRES-RESPONSE-NUMBER
                    MOVE    "73"            TO  WRK-ERRCD

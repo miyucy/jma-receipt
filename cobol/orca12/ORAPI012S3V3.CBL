@@ -3318,8 +3318,10 @@
            IF      WRK-SELECT-CODE NOT =   SPACE
                EVALUATE    PTMODREQ-SELECT-ANSWER
                WHEN    "Ok"
+               WHEN    "OK"
                    CONTINUE
                WHEN    "No"
+               WHEN    "NO"
                    MOVE    "02"        TO  PTMODRES-RESPONSE-NUMBER
                    PERFORM 2901-PARA-INS-SEC
                    MOVE    "61"        TO  WRK-ERRCD
