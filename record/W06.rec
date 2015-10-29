@@ -212,6 +212,13 @@ W06 {
           count int;
             item varchar(12)[2];
         };
+        HYOJIFLG_COMB {
+          HYOJIFLG  {
+            textdata varchar(10);
+          };
+          count int;
+            item varchar(10)[2];
+        };
       };
       TG2 {
         SKYPRTFLG_COMB {
@@ -441,6 +448,10 @@ W06 {
     };
     B03 {
       state int;
+    };
+    B05 {
+      state int;
+      label varchar(10);
     };
   };
 };

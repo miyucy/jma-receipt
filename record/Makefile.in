@@ -498,6 +498,7 @@ RECORD_files = \
 	patientmodv31.rec \
 	patientmodv32.rec \
 	patientmodv33.rec \
+	W061.rec \
 
 DEF_files = \
 

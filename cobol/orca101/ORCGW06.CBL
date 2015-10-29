@@ -65,6 +65,7 @@
       * 04.08.04     NACL-森脇    14/12/10  職員情報削除時出力先設定削除
       * 04.08.05     NACL-森脇    15/08/31  管理者有効期間チェック
       * 04.08.00     NACL-多々納  15/10/22  期間変更追加処理対応
+      * 04.08.00     NACL-多々納  15/11/XX  職員一覧処理対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,325 +84,7 @@
            COPY    "W01COMMON-SPA".
       *
       *    画面用ＳＰＡ
-       01  SPA-W06.
-           03  SPA-W06-AREA.
-               05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-LINE        PIC 9(02).
-               05  SPA-GMN-CUR         PIC 9(03).
-      *
-               05  SPA-GMN-PAGENO      PIC 9(02).
-               05  SPA-GMN-SYORI       PIC 9(01).
-      *
-               05  SPA-GMN-AREA.
-      *            職員区分
-                   07  SPA-GMN-SYOKUKBN-G.
-                       09  SPA-GMN-SYOKUKBN       PIC X(01).
-                       09  SPA-GMN-SYOKUKBNF      PIC X(01).
-                       09  SPA-GMN-SYOKUKBNMEI    PIC X(18).
-      *            職員コード
-                   07  SPA-GMN-SYOKUCOD-G.
-                       09  SPA-GMN-SYOKUCOD       PIC X(04).
-                       09  SPA-GMN-SYOKUCODF      PIC X(01).
-                       09  SPA-GMN-SYOKUCOD-MEI   PIC X(30).
-                   07  SPA-GMN-SYOKUCOD-LIST-G.
-                       09  SPA-GMN-SYOKUCOD-LIST  OCCURS   200.
-                           11  SPA-GMN-TSYOKUCOD      PIC X(04).
-                           11  SPA-GMN-TSYOKUCODF     PIC X(01).
-                           11  SPA-GMN-TSYOKUCOD-MEI  PIC X(30).
-                       09  SPA-SYOKUCOD-MAX       PIC 9(04).
-      *
-               05  SPA-GMN-AREA2.
-                   07  SPA-GMN-STYUKYMD       PIC X(10).
-                   07  SPA-GMN-EDYUKYMD       PIC X(10).
-      *
-                   07  SPA-GMN-KIKANTBL.
-                       09  SPA-GMN-TBLO          OCCURS  10.
-                           11  SPA-GMN-TBANGO     PIC 9(02).
-                           11  SPA-GMN-TSTYUKYMD  PIC X(09).
-                           11  SPA-GMN-TEDYUKYMD  PIC X(09).
-      *
-                           11  SPA-NAI-TSTYUKYMD  PIC X(08).
-                           11  SPA-NAI-TEDYUKYMD  PIC X(08).
-                       09  SPA-GMN-TBL-MAX        PIC 9(04).
-                   07  SPA-GMN-SELNUM             PIC 9(02).
-      *
-                   07  SPA-GMN-AREA3.
-                       09  SPA-GMN-USERID         PIC X(16).
-                       09  SPA-GMN-KANANAME       PIC X(80).
-                       09  SPA-GMN-NAME           PIC X(80).
-                       09  SPA-GMN-PASSWORD1      PIC X(16).
-                       09  SPA-GMN-PASSWORD2      PIC X(16).
-      *
-                   07  SPA-GMN-KOUMOKU.
-                       09  SPA-GMN-MAYAKULICENSE  PIC X(40).
-                       09  SPA-GMN-ISEKINUM       PIC X(08).
-                       09  SPA-GMN-HKNDRNUMS      PIC X(08).
-                       09  SPA-GMN-HKNDRNUMK      PIC X(12).
-      *                業務権限
-                       09  SPA-GMN-CHK-G.
-                           11  SPA-GMN-CHK        PIC X     OCCURS  36.
-      *            専門科
-                   07  SPA-GMN-SEMONKACD-G    OCCURS  5.
-                       09  SPA-GMN-SEMONKACD       PIC X(02).
-                       09  SPA-GMN-SEMONKACD-FL    PIC X(01).
-                       09  SPA-GMN-SEMONKACD-MEI   PIC X(14).
-      *            管理者権限
-                   07  SPA-GMN-KANRIAUTHFLG-G. 
-                       09  SPA-GMN-KANRIAUTH-MEI    PIC X(12).
-                   07  SPA-NAI-KANRIAUTHFLG         PIC X(01).
-      *            診療行為初期表示
-                   07  SPA-GMN-ORCA21FLG-G. 
-                       09  SPA-GMN-ORCA21FLG       PIC X(01).
-                       09  SPA-GMN-ORCA21FLGF1     PIC X(01).
-                       09  SPA-GMN-ORCA21FLG-MEI   PIC X(10).
-      *----(04.07.01)--ADD-START---
-      *            スーパーバイザー
-                   07  SPA-NAI-SUPERVISOR          PIC X(01).
-      *----(04.07.01)--ADD-END-----
-      *
-      *        診療科テーブル
-               05  SPA-GMN-SEMONKACD-AREA.
-                   07  SPA-GMN-SEMONKACD-TBL  OCCURS 99.
-                       09  SPA-GMN-SRYKA      PIC X(02).
-                       09  SPA-GMN-FL2        PIC X(01).
-                       09  SPA-GMN-SRYKAMEI   PIC X(14).
-                   07  SPA-SRYKA-MAX          PIC 9(04).
-                   07  SPA-SRYKA-YMD          PIC X(08).
-      *
-               05  SPA-GMN-INIT-G.
-      *            職員区分名称
-                   07  SPA-GMN-SYOKUKBN-LIST      PIC X(20)
-                                                  OCCURS   10.
-                   07  SPA-SYOKUKBN-MAX       PIC 9(04).
-      *            管理者権限
-                   07  SPA-GMN-KANRIAUTH-LSTG.
-                       09  SPA-GMN-KANRIAUTH-LST  PIC X(12)
-                                                  OCCURS  2. 
-                   07  SPA-KANRIAUTHFLG-MAX       PIC 9(04).  
-      *            診療行為初期表示
-                   07  SPA-GMN-ORCA21FLG-LSTG.
-                       09  SPA-GMN-ORCA21FLG-LST   PIC X(12)
-                                                   OCCURS  2. 
-                   07  SPA-ORCA21FLG-MAX       PIC 9(04).  
-      *            請求書初期表示
-                   07  SPA-GMN-SKYPRTFLG-LSTG.
-                       09  SPA-GMN-SKYPRTFLG-LST   PIC X(32)
-                                                   OCCURS  9.
-                   07  SPA-SKYPRTFLG-MAX       PIC 9(04).  
-      *            院外処方せん
-                   07  SPA-GMN-SYOHOPRTFLG-LSTG.
-                       09  SPA-GMN-SYOHOPRTFLG-LST   PIC X(30)
-                                                   OCCURS  5. 
-                   07  SPA-SYOHOPRTFLG-MAX      PIC 9(04).  
-      *            薬剤情報発行
-                   07  SPA-GMN-YAKUJYOFLG-LSTG.
-                       09  SPA-GMN-YAKUJYOFLG-LST   PIC X(30)
-                                                   OCCURS  5. 
-                   07  SPA-YAKUJYOFLG-MAX      PIC 9(04).  
-      *            診療費明細書
-                   07  SPA-GMN-MEIPRTFLG-LSTG.
-                       09  SPA-GMN-MEIPRTFLG-LST   PIC X(32)
-                                                   OCCURS  9. 
-                   07  SPA-MEIPRTFLG-MAX      PIC 9(04).  
-      *            検査正式名称表示
-                   07  SPA-GMN-FORMALFLG-LSTG.
-                       09  SPA-GMN-FORMALFLG-LST   PIC X(40)
-                                                   OCCURS  5. 
-                   07  SPA-FORMALFLG-MAX      PIC 9(04).  
-      *
-      *            入力スクロール行数
-                   07  SPA-GMN-GLINECNT       PIC 9(02).
-                   07  SPA-GMN-NLINECNT       PIC 9(02).
-      *
-      *            クライアント保存可否
-                   07  SPA-GMN-CLIENT-SAVE-LSTG.
-                       09  SPA-GMN-CLIENT-SAVE-LST PIC X(40)
-                                                   OCCURS  2. 
-                   07  SPA-CLIENT-SAVE-MAX    PIC 9(04).  
-      *            ユーザーログイン権限
-                   07  SPA-GMN-USER-KANRI-LSTG.
-                       09  SPA-GMN-USER-KANRI-LST  PIC X(40)
-                                                   OCCURS  5. 
-                   07  SPA-USER-KANRI-MAX      PIC 9(04).  
-      *            クライアント印刷可否
-                   07  SPA-GMN-CLIENT-PRT-LSTG.
-                       09  SPA-GMN-CLIENT-PRT-LST  PIC X(40)
-                                                   OCCURS  2. 
-                   07  SPA-CLIENT-PRT-MAX      PIC 9(04).  
-      *            プリンタへのデータ送信単位
-                   07  SPA-GMN-PRTCONF-LSTG.
-                       09  SPA-GMN-PRTCONF-LST    PIC X(40)
-                                                   OCCURS  2. 
-                   07  SPA-PRTCONF-MAX            PIC 9(04).  
-      *            ダイアログ表示
-                   07  SPA-GMN-DIALOGFLG-LSTG.
-                       09  SPA-GMN-DIALOGFLG-LST   PIC X(40)
-                                                   OCCURS  2. 
-                   07  SPA-DIALOGFLG-MAX       PIC 9(04).  
-                   07  SPA-GMN-ICCARDRW-LSTG.
-                       09  SPA-GMN-ICCARDRW-LST   PIC X(40)
-                                                   OCCURS  2. 
-                   07  SPA-ICCARDRW-MAX           PIC 9(04).  
-      *            基本情報の発行区分
-                   07  SPA-1001-SKYPRTFLG      PIC  X(01).
-                   07  SPA-1001-SYOHOPRTFLG    PIC  X(01).
-                   07  SPA-1001-YAKUJYOPRTFLG  PIC  X(01).
-                   07  SPA-1001-MEIPRTFLG      PIC  X(01).
-                   07  SPA-1038-FORMALFLG      PIC  X(01).
-      *
-               05  SPA-PAGE2-G.
-      *            請求書
-                   07  SPA-GMN-SKYPRTFLG-G. 
-                       09  SPA-GMN-SKYPRTFLG       PIC X(01).
-                       09  SPA-GMN-SKYPRTFLG-F1    PIC X(01).
-                       09  SPA-GMN-SKYPRTFLG-MEI   PIC X(30).
-      *            院外処方せん
-                   07  SPA-GMN-SYOHOPRTFLG-G. 
-                       09  SPA-GMN-SYOHOPRTFLG       PIC X(01).
-                       09  SPA-GMN-SYOHOPRTFLG-F1    PIC X(01).
-                       09  SPA-GMN-SYOHOPRTFLG-MEI   PIC X(28).
-      *            薬剤情報発行
-                   07  SPA-GMN-YAKUJYOFLG-G. 
-                       09  SPA-GMN-YAKUJYOFLG       PIC X(01).
-                       09  SPA-GMN-YAKUJYOFLG-F1    PIC X(01).
-                       09  SPA-GMN-YAKUJYOFLG-MEI   PIC X(28).
-      *            診療費明細書
-                   07  SPA-GMN-MEIPRTFLG-G. 
-                       09  SPA-GMN-MEIPRTFLG        PIC X(01).
-                       09  SPA-GMN-MEIPRTFLG-F1     PIC X(01).
-                       09  SPA-GMN-MEIPRTFLG-MEI    PIC X(30).
-      *            検査正式名称表示
-                   07  SPA-GMN-FORMALFLG-G. 
-                       09  SPA-GMN-FORMALFLG        PIC X(01).
-                       09  SPA-GMN-FORMALFLG-F1     PIC X(01).
-                       09  SPA-GMN-FORMALFLG-MEI    PIC X(24).
-      *            クライアント保存可否
-                   07  SPA-GMN-CLIENT-SAVE-G. 
-                       09  SPA-GMN-CLIENT-SAVE      PIC X(01).
-                       09  SPA-GMN-CLIENT-SAVE-F1   PIC X(01).
-                       09  SPA-GMN-CLIENT-SAVE-MEI  PIC X(24).
-      *            ユーザーログイン権限
-                   07  SPA-GMN-USER-KANRI-G. 
-                       09  SPA-GMN-USER-KANRI      PIC X(01).
-                       09  SPA-GMN-USER-KANRI-F1   PIC X(01).
-                       09  SPA-GMN-USER-KANRI-MEI  PIC X(24).
-      *            クライアント印刷可否
-                   07  SPA-GMN-CLIENT-PRT-G. 
-                       09  SPA-GMN-CLIENT-PRT      PIC X(01).
-                       09  SPA-GMN-CLIENT-PRT-F1   PIC X(01).
-                       09  SPA-GMN-CLIENT-PRT-MEI  PIC X(24).
-      *            プリンタへのデータ送信単位
-                   07  SPA-GMN-PRTCONF-G. 
-                       09  SPA-GMN-PRTCONF        PIC X(01).
-                       09  SPA-GMN-PRTCONF-F1     PIC X(01).
-                       09  SPA-GMN-PRTCONF-MEI    PIC X(24).
-      *            ダイアログ表示
-                   07  SPA-GMN-DIALOGFLG-G. 
-                       09  SPA-GMN-DIALOGFLG       PIC X(01).
-                       09  SPA-GMN-DIALOGFLG-F1    PIC X(01).
-                       09  SPA-GMN-DIALOGFLG-MEI   PIC X(24).
-      *            ＩＣカードリーダ／ライタ
-                   07  SPA-GMN-ICCARDRW-G. 
-                       09  SPA-GMN-ICCARDRW        PIC X(01).
-                       09  SPA-GMN-ICCARDRW-F1     PIC X(01).
-                       09  SPA-GMN-ICCARDRW-MEI    PIC X(24).
-      *
-               05  SPA-PAGE3-G.
-      *            他院医療機関情報
-                   07  SPA-GMN-GRPHOSP-G.
-                       09  SPA-GMN-GRPHOSP-MAX      PIC 9(02).
-                       09  SPA-GMN-GRPHOSP-OCC      OCCURS 9.
-                           11  SPA-GMN-GRPUSERID    PIC X(16).
-      *
-               05  SPA-NAIB-AREA.
-                   07  SPA-NAI-STYUKYMD       PIC X(08).
-                   07  SPA-NAI-EDYUKYMD       PIC X(08).
-                   07  SPA-MAE-STYUKYMD       PIC X(08).
-                   07  SPA-MAE-EDYUKYMD       PIC X(08).
-                   07  SPA-NAI-KEIFLG         PIC 9(01).
-                   07  SPA-NAI-PASSWD         PIC 9(01).
-      *
-      *----(04.07.01)--ADD-START---
-      *        変更項目領域
-               05  SPA-MAE-AREA.
-                   07  SPA-MAE-STYUKYMD2      PIC X(10).
-                   07  SPA-MAE-EDYUKYMD2      PIC X(10).
-      *
-                   07  SPA-MAE-USERID         PIC X(16).
-                   07  SPA-MAE-KANANAME       PIC X(80).
-                   07  SPA-MAE-NAME           PIC X(80).
-                   07  SPA-MAE-MAYAKULICENSE  PIC X(40).
-                   07  SPA-MAE-ISEKINUM       PIC X(08).
-                   07  SPA-MAE-HKNDRNUMS      PIC X(08).
-                   07  SPA-MAE-HKNDRNUMK      PIC X(12).
-                   07  SPA-MAE-CHK-G.
-                       09  SPA-MAE-CHK        PIC X     OCCURS  36.
-      *
-                   07  SPA-MAE-SEMONKACD-G    OCCURS  5.
-                       09  SPA-MAE-SEMONKACD       PIC X(02).
-                       09  SPA-MAE-SEMONKACD-FL    PIC X(01).
-                       09  SPA-MAE-SEMONKACD-MEI   PIC X(14).
-                   07  SPA-MAE-KANRIAUTHFLG-G. 
-                       09  SPA-MAE-KANRIAUTH-MEI   PIC X(12).
-                   07  SPA-MAE-ORCA21FLG-G. 
-                       09  SPA-MAE-ORCA21FLG       PIC X(01).
-                       09  SPA-MAE-ORCA21FLGF1     PIC X(01).
-                       09  SPA-MAE-ORCA21FLG-MEI   PIC X(10).
-      *
-                   07  SPA-MAE-SKYPRTFLG-G. 
-                       09  SPA-MAE-SKYPRTFLG       PIC X(01).
-                       09  SPA-MAE-SKYPRTFLG-F1    PIC X(01).
-                       09  SPA-MAE-SKYPRTFLG-MEI   PIC X(30).
-                   07  SPA-MAE-SYOHOPRTFLG-G. 
-                       09  SPA-MAE-SYOHOPRTFLG     PIC X(01).
-                       09  SPA-MAE-SYOHOPRTFLG-F1  PIC X(01).
-                       09  SPA-MAE-SYOHOPRTFLG-MEI PIC X(28).
-                   07  SPA-MAE-YAKUJYOFLG-G. 
-                       09  SPA-MAE-YAKUJYOFLG      PIC X(01).
-                       09  SPA-MAE-YAKUJYOFLG-F1   PIC X(01).
-                       09  SPA-MAE-YAKUJYOFLG-MEI  PIC X(28).
-                   07  SPA-MAE-MEIPRTFLG-G. 
-                       09  SPA-MAE-MEIPRTFLG       PIC X(01).
-                       09  SPA-MAE-MEIPRTFLG-F1    PIC X(01).
-                       09  SPA-MAE-MEIPRTFLG-MEI   PIC X(30).
-                   07  SPA-MAE-FORMALFLG-G. 
-                       09  SPA-MAE-FORMALFLG       PIC X(01).
-                       09  SPA-MAE-FORMALFLG-F1    PIC X(01).
-                       09  SPA-MAE-FORMALFLG-MEI   PIC X(24).
-                   07  SPA-MAE-CLIENT-SAVE-G. 
-                       09  SPA-MAE-CLIENT-SAVE     PIC X(01).
-                       09  SPA-MAE-CLIENT-SAVE-F1  PIC X(01).
-                       09  SPA-MAE-CLIENT-SAVE-MEI PIC X(24).
-                   07  SPA-MAE-USER-KANRI-G. 
-                       09  SPA-MAE-USER-KANRI      PIC X(01).
-                       09  SPA-MAE-USER-KANRI-F1   PIC X(01).
-                       09  SPA-MAE-USER-KANRI-MEI  PIC X(24).
-                   07  SPA-MAE-CLIENT-PRT-G. 
-                       09  SPA-MAE-CLIENT-PRT      PIC X(01).
-                       09  SPA-MAE-CLIENT-PRT-F1   PIC X(01).
-                       09  SPA-MAE-CLIENT-PRT-MEI  PIC X(24).
-                   07  SPA-MAE-PRTCONF-G. 
-                       09  SPA-MAE-PRTCONF        PIC X(01).
-                       09  SPA-MAE-PRTCONF-F1     PIC X(01).
-                       09  SPA-MAE-PRTCONF-MEI    PIC X(24).
-                   07  SPA-MAE-DIALOGFLG-G. 
-                       09  SPA-MAE-DIALOGFLG       PIC X(01).
-                       09  SPA-MAE-DIALOGFLG-F1    PIC X(01).
-                       09  SPA-MAE-DIALOGFLG-MEI   PIC X(24).
-                   07  SPA-MAE-ICCARDRW-G. 
-                       09  SPA-MAE-ICCARDRW        PIC X(01).
-                       09  SPA-MAE-ICCARDRW-F1     PIC X(01).
-                       09  SPA-MAE-ICCARDRW-MEI    PIC X(24).
-      *
-      *            入力スクロール行数
-                   07  SPA-MAE-GLINECNT       PIC 9(02).
-                   07  SPA-MAE-NLINECNT       PIC 9(02).
-      *
-                   07  SPA-MAE-GRPHOSP-G.
-                       09  SPA-MAE-GRPHOSP-MAX     PIC 9(02).
-                       09  SPA-MAE-GRPHOSP-OCC     OCCURS 9.
-                           11  SPA-MAE-GRPUSERID   PIC X(16).
-      *----(04.07.01)--ADD-END-----
+           COPY    "W06SCR-SPA".
       *
            COPY    "ENUM-VALUE".
       *
@@ -660,6 +343,23 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
+      *!!!
+      *H27.11
+               WHEN    "W061"
+                   IF     SPA-W061-SEL-SYOKUCD     =   SPACE
+                       IF     (SPA-GMN-SYOKUCOD    NOT =   SPACE)
+                         AND  (SPA-GMN-SELNUM          >   ZERO )
+      *                    最新の内容に置換える
+                           PERFORM 2002-SYOKUCOD-SYORI-SEC
+                           MOVE    SPA-GMN-SELNUM  TO  W06-SELNUM
+                           PERFORM 2003-SELNUM-CHK-SEC
+                       END-IF
+                   ELSE
+      *                職員選択
+                       PERFORM 340-W061-SET-SEC
+                   END-IF
+                   INITIALIZE                  SPA-W061-AREA
+      *!!!
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
            END-EVALUATE
@@ -667,6 +367,38 @@
            .
        300-SCREEN-EXT.
            EXIT.
+      *
+      *!!!
+      *H27.11
+      *****************************************************************
+      *    職員一覧選択後処理
+      *****************************************************************
+       340-W061-SET-SEC              SECTION.
+      *
+           MOVE    SPA-W061-SEL-SYOKUCD    TO  W06-SYOKUCOD
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM 2002-SYOKUCOD-SYORI-SEC
+      *
+           IF      SPA-GMN-TBL-MAX     >   1
+               PERFORM VARYING    IDX      FROM    1   BY  1
+                       UNTIL      IDX      >  SPA-GMN-TBL-MAX
+                   IF      SPA-NAI-TSTYUKYMD (IDX)
+                                           =   SPA-W061-SEL-STYUKYMD
+                       MOVE    IDX             TO  SPA-GMN-SELNUM
+                       MOVE    SPA-GMN-TBL-MAX TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      SPA-GMN-SELNUM      >   ZERO
+                   MOVE    SPA-GMN-SELNUM      TO  W06-SELNUM
+                   PERFORM 2003-SELNUM-CHK-SEC
+               END-IF
+           END-IF
+           .
+       340-W061-SET-EXT.
+           EXIT.
+      *H27.11
+      *!!!
+      *
       *
       *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
@@ -747,6 +479,11 @@
            MOVE    "1 入院画面"        TO  SPA-GMN-ORCA21FLG-LST (1)
            MOVE    "2 外来画面"        TO  SPA-GMN-ORCA21FLG-LST (2)
            MOVE    2                   TO  SPA-ORCA21FLG-MAX
+      *    表示区分
+           MOVE    "表示"              TO  SPA-GMN-HYOJIFLG-LST (1)
+           MOVE    "非表示"            TO  SPA-GMN-HYOJIFLG-LST (2)
+           MOVE    2                   TO  SPA-HYOJIFLG-MAX
+      *
       *    診療科をシステム日付で検索
            MOVE    SPA-SYSYMD          TO  SPA-SRYKA-YMD
            PERFORM 3201-SRYKA-HEN-SEC
@@ -874,6 +611,26 @@
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SYOKUCOD-G
            END-IF
+      *
+      *!!!!
+      *H27.11
+      *    入力者の管理者判定
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                      SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    SPA-STAFFCD         TO  SYS-1010-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+               IF     (SYS-1010-KANRIAUTHFLG   =   "T"  )
+                   MOVE    1               TO  SPA-NAI-STAFFKANRIKBN
+               END-IF
+           END-IF
+      *!!!!
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
@@ -1139,6 +896,13 @@
       *    登録
                WHEN    "CLICKED"      ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
+      *!!!
+      *H27.11
+      *    一覧へ
+               WHEN    "CLICKED"      ALSO    "B05"
+                   PERFORM 460-W061-SEL-SEC
+      *H27.11
+      *!!!
       *    タグ切替
                WHEN    "CLICKED"      ALSO    "B08"
                    PERFORM 480-BETUGAMEN-SEC
@@ -1453,6 +1217,8 @@
            MOVE    "0"                 TO  SPA-GMN-CLIENT-PRT
            MOVE    "0"                 TO  SPA-GMN-DIALOGFLG
            MOVE    "0"                 TO  SPA-GMN-ICCARDRW
+      *    表示区分
+           MOVE    "0"                 TO  SPA-NAI-HYOJIFLG
       *
            PERFORM 20091-PRTFLG-HEN-SEC
       *
@@ -1540,6 +1306,10 @@
       *    職員情報編集処理
       *****************************************************************
        2009-SYOKUIN-HENSYU-SEC       SECTION.
+      *
+           INITIALIZE                      SPA-GMN-KOUMOKU
+           INITIALIZE                      SPA-PAGE2-G
+           INITIALIZE                      SPA-PAGE3-G
       *
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                      SYS-1010-REC
@@ -1637,6 +1407,16 @@
                                                TO  SPA-GMN-ORCA21FLG-G
                        END-IF
                END-EVALUATE
+      *        表示区分
+               MOVE    SYS-1010-HYOJIFLG       TO  SPA-NAI-HYOJIFLG
+               IF      SPA-NAI-HYOJIFLG        =   "1"
+                   MOVE    SPA-GMN-HYOJIFLG-LST(2)
+                                               TO  SPA-GMN-HYOJIFLG-G
+               ELSE
+                   MOVE    SPA-GMN-HYOJIFLG-LST(1)
+                                               TO  SPA-GMN-HYOJIFLG-G
+                   MOVE    "0"                 TO  SPA-NAI-HYOJIFLG
+               END-IF
       *
       *        発行フラグ
                MOVE    SYS-1010-SKYPRTFLG      TO  SPA-GMN-SKYPRTFLG
@@ -2160,6 +1940,8 @@
            END-IF
       *
            MOVE    W06-ORCA21FLG       TO  SPA-GMN-ORCA21FLG-G
+      *    表示区分
+           MOVE    W06-HYOJIFLG        TO  SPA-GMN-HYOJIFLG-G
       *
       *    個別設定画面
            MOVE    W06-SKYPRTFLG       TO  SPA-GMN-SKYPRTFLG-G
@@ -2169,7 +1951,7 @@
            MOVE    W06-FORMALFLG       TO  SPA-GMN-FORMALFLG-G
            MOVE    W06-CLIENT-SAVE     TO  SPA-GMN-CLIENT-SAVE-G
            MOVE    W06-USER-KANRI      TO  SPA-GMN-USER-KANRI-G
-           MOVE    W06-PRTCONF        TO  SPA-GMN-PRTCONF-G
+           MOVE    W06-PRTCONF         TO  SPA-GMN-PRTCONF-G
            MOVE    W06-CLIENT-PRT      TO  SPA-GMN-CLIENT-PRT-G
            MOVE    W06-DIALOGFLG       TO  SPA-GMN-DIALOGFLG-G
            MOVE    W06-ICCARDRW        TO  SPA-GMN-ICCARDRW-G
@@ -2217,6 +1999,8 @@
            MOVE    SPA-GMN-KANRIAUTH-MEI   TO  SPA-MAE-KANRIAUTH-MEI
       *
            MOVE    SPA-GMN-ORCA21FLG-G     TO  SPA-MAE-ORCA21FLG-G
+      *    表示区分
+           MOVE    SPA-GMN-HYOJIFLG-G      TO  SPA-MAE-HYOJIFLG-G
       *
       *    個別設定画面
            MOVE    SPA-GMN-SKYPRTFLG-G     TO  SPA-MAE-SKYPRTFLG-G
@@ -2305,6 +2089,10 @@
            END-IF
       *
            IF      SPA-GMN-ORCA21FLG-G NOT =   SPA-MAE-ORCA21FLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *    表示区分
+           IF      SPA-GMN-HYOJIFLG-G  NOT =   SPA-MAE-HYOJIFLG-G
                MOVE    1               TO  FLG-OK
            END-IF
       *
@@ -2445,6 +2233,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4120-ORCA21FLG-CHK-SEC
+           END-IF
+      *    表示区分
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4120-HYOJIFLG-CHK-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -2993,6 +2785,29 @@
       *
            .
        4120-ORCA21FLG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    表示区分チェック処理
+      *****************************************************************
+       4120-HYOJIFLG-CHK-SEC        SECTION.
+      *
+           EVALUATE    SPA-GMN-HYOJIFLG-MEI
+      *        表示
+               WHEN    SPA-GMN-HYOJIFLG-LST(1)
+                   MOVE    "0"             TO  SPA-NAI-HYOJIFLG
+      *        非表示
+               WHEN    SPA-GMN-HYOJIFLG-LST(2)
+                   MOVE    "1"             TO  SPA-NAI-HYOJIFLG
+      *        表示
+               WHEN    OTHER
+                   MOVE    SPA-GMN-HYOJIFLG-LST(1)
+                                           TO  SPA-GMN-HYOJIFLG-MEI
+                   MOVE    "0"             TO  SPA-NAI-HYOJIFLG
+           END-EVALUATE
+      *
+           .
+       4120-HYOJIFLG-CHK-EXT.
            EXIT.
       *****************************************************************
       *    請求書発行フラグチェック処理
@@ -4008,6 +3823,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
            END-IF
+      *
       *H27.10
            MOVE    ZERO                TO  FLG-CHK
       *    期間変更時に、追加可能かのチェック
@@ -4067,7 +3883,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                                                        (IDX)
       *                MOVE    2           TO  SPA-GMN-SYORI
       *            ELSE
-      *                MOVE    1           TO  SPA-GMN-SYORI
+      *               MOVE    1           TO  SPA-GMN-SYORI
       *            END-IF
       *        ELSE
       *            MOVE    1           TO  SPA-GMN-SYORI
@@ -4212,6 +4028,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-KANRIAUTHFLG    TO  SYS-1010-KANRIAUTHFLG
       *
            MOVE    SPA-GMN-ORCA21FLG       TO  SYS-1010-ORCA21FLG
+      *    表示区分
+           MOVE    SPA-NAI-HYOJIFLG        TO  SYS-1010-HYOJIFLG
       *
            MOVE    SPA-GMN-SKYPRTFLG       TO  SYS-1010-SKYPRTFLG
            MOVE    SPA-GMN-SYOHOPRTFLG     TO  SYS-1010-SYOHOPRTFLG
@@ -4556,7 +4374,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  SYS-1050-HOSPNUM
            MOVE    SYS-1050-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEC
-           IF    ( FLG-SYSKANRI        =   ZERO )
+           IF     (FLG-SYSKANRI        =   ZERO ) AND
+                  (SPA-GMN-SYORI       =   2    )
+      *        更新
                PERFORM 49051-SYS1050-UPD-SEC
                MOVE    SMCNDATE-YMD        TO  SYS-1050-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-1050-UPHMS
@@ -4773,6 +4593,72 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4905-PASSWD-UPD-EXT.
            EXIT.
+      *!!!
+      *H27.11
+      *****************************************************************
+      *    職員一覧（Ｗ０６１）処理
+      *****************************************************************
+       460-W061-SEL-SEC           SECTION.
+      *
+      *
+           IF     (SPA-GMN-SYOKUKBN    =   "1"
+                                       OR  "2"
+                                       OR  "3"
+                                       OR  "4"
+                                       OR  "5" )
+             AND  (SPA-NAI-STAFFKANRIKBN   =   1   )
+               PERFORM 4601-W061-SYORI-SEC
+           ELSE
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       460-W061-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    職員一覧画面遷移処理
+      *****************************************************************
+       4601-W061-SYORI-SEC        SECTION.
+      *
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-W06             TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGW061"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-W06
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+      *
+           IF      SPA-W061-MAX        =   ZERO
+               MOVE    "0028"              TO  SPA-ERRCD
+               GO      TO      4601-W061-SYORI-EXT
+           END-IF
+      *
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+           MOVE    "W061"              TO  SPA-SAKIPG
+           MOVE    "W06"               TO  SPA-MOTOPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "W061"              TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       4601-W061-SYORI-EXT.
+           EXIT.
+      *H27.11
+      *!!!
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
@@ -4806,8 +4692,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  W06
-           INITIALIZE                      W06
       *
+           INITIALIZE                      W06
            MOVE    SPA-GMN-SYOKUKBN-G      TO  W06-SYOKUKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYOKUKBN-MAX
@@ -4930,6 +4816,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE  SPA-ORCA21FLG-MAX     TO  W06-ORCA21FLG-COUNT
            MOVE  SPA-GMN-ORCA21FLG-G   TO  W06-ORCA21FLG
+      *
+      *    表示区分
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HYOJIFLG-MAX
+               MOVE    SPA-GMN-HYOJIFLG-LST(IDX)
+                                       TO  W06-HYOJIFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE  SPA-HYOJIFLG-MAX      TO  W06-HYOJIFLG-COUNT
+           MOVE  SPA-GMN-HYOJIFLG-G    TO  W06-HYOJIFLG
       *
       *    請求書発行フラグ
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5240,6 +5135,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-NORMAL       TO  W06-PRTCONF-STATE
            END-IF
       *----(04.08.01)--ADD-END-----
+      *!!!
+      *H27.11
+      *    管理者のみ、職員一覧遷移可
+           IF     (SPA-NAI-STAFFKANRIKBN   =   1  )
+              AND (SPA-GMN-SYOKUKBN    NOT =   "0")
+               MOVE    "職員一覧"          TO  W06-B05-LABEL
+               MOVE    WIDGET-NORMAL       TO  W06-B05-STATE
+           ELSE
+               MOVE    SPACE               TO  W06-B05-LABEL
+               MOVE    WIDGET-INSENSITIVE  TO  W06-B05-STATE
+           END-IF
+      *
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -5545,6 +5452,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "KANRIAUTHFLG"   TO   MCP-WIDGET
                 WHEN    19
                     MOVE  "ORCA21FLG"      TO   MCP-WIDGET
+      *         表示区分
+                WHEN    20
+                    MOVE  "HYOJIFLG"       TO   MCP-WIDGET
       *    個別設定画面
                 WHEN    21
                     MOVE  "SKYPRTFLG"      TO   MCP-WIDGET
@@ -5666,6 +5576,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN     "KANRIAUTHFLG"
                    MOVE    19              TO  SPA-GMN-CUR
                WHEN     "ORCA21FLG"
+     ************* MOVE    99              TO  SPA-GMN-CUR
+                   MOVE    20              TO  SPA-GMN-CUR
+      *        表示区分
+               WHEN     "HYOJIFLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *    個別設定画面
                WHEN     "SKYPRTFLG"
