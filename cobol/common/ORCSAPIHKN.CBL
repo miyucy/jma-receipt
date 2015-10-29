@@ -1015,6 +1015,10 @@
                    MOVE    1               TO  FLG-COMBIOK
                END-IF
            END-PERFORM
+      *    ÂÐ¾Ý¤Ê¤·
+           IF      FLG-COMBIOK         =   ZERO
+               MOVE    4                   TO  ORCSAPIHKN-ERRCD
+           END-IF
            .
        291-HKNCOMBI-ONLYHEN-EXT.
            EXIT.
