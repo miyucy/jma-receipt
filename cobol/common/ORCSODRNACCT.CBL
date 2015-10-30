@@ -5640,6 +5640,7 @@
                MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
                MOVE    SODRNACCT-STARTYMD  TO  WRK-STARTYMD
+               MOVE    SODRNACCT-ENDYMD    TO  WRK-ENDYMD
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)  OR
                                  (NACCT-SRYYM >
                                      LNK-PTNYUINRRK-TAIINYMD(1:6))  OR
