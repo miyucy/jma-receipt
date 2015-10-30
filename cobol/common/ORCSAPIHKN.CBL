@@ -963,7 +963,9 @@
                    COMPUTE IDXH            =   IDXH    -   1
                END-PERFORM
                MOVE    20                  TO  IDX-TBL
-               MOVE    9                   TO  ORCSAPIHKN-ERRCD
+               IF      ORCSAPIHKN-ERRCD    =   ZERO
+                   MOVE    9                   TO  ORCSAPIHKN-ERRCD
+               END-IF
            ELSE
                MOVE    1                   TO  IDXH
                PERFORM VARYING     IDX      FROM    1   BY  1
@@ -993,6 +995,10 @@
                        MOVE    1               TO  FLG-COMBIOK
                    END-IF
                END-PERFORM
+      *        ÂÐ¾Ý¤Ê¤·
+               IF      FLG-COMBIOK         =   ZERO
+                   MOVE    4                   TO  ORCSAPIHKN-ERRCD
+               END-IF
            END-IF
            .
        290-HKNCOMBI-OUTHENSYU-EXT.
