@@ -1327,7 +1327,10 @@
                        MOVE    1               TO  FLG-PTINF-JFK
                    WHEN    "No"
                    WHEN    "NO"
-                       MOVE    ZERO        TO  FLG-PTINF-JFK
+      *                処理終了
+                       MOVE    1               TO  FLG-PTINF-JFK
+                       MOVE    "55"            TO  WRK-ERRCD
+                       MOVE    ZERO            TO  FLG-CONTKBN
                    WHEN    OTHER
                        IF      WRK-ERRCD       =   SPACE
                            MOVE    "72"        TO  WRK-ERRCD
@@ -1361,7 +1364,8 @@
                PERFORM 20022-JUFUKU-HEN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   SPACE
+           IF     (WRK-ERRCD           =   SPACE )
+             OR  ( WRK-ERRCD           =   "55"  )
       *        継続
                IF      FLG-CONTKBN         =   1
       *            保険登録へ
@@ -4263,6 +4267,9 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
+           WHEN    "55"
+               MOVE    "登録処理をキャンセルしました。"
+                                               TO  WRK-ERRMSG
       *更新
            WHEN    "51"
                MOVE    "患者情報更新エラー"
