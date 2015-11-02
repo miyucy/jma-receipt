@@ -832,11 +832,13 @@ grpsys                                         SPA-AREA
                                                    (SPA-GMN-PRTKBN-MAX)
                MOVE    "£≈£∆•’•°•§•Î"      TO  SPA-GMN-PRTKBNMEIL
                                                    (SPA-GMN-PRTKBN-MAX)
-               ADD     1                   TO  SPA-GMN-PRTKBN-MAX
-               MOVE    "9"                 TO  SPA-GMN-PRTKBNL
+               IF      SPA-BEDSU       >   ZERO
+                   ADD     1                   TO  SPA-GMN-PRTKBN-MAX
+                   MOVE    "9"                 TO  SPA-GMN-PRTKBNL
                                                    (SPA-GMN-PRTKBN-MAX)
-               MOVE    "ÕÕº∞£¥"            TO  SPA-GMN-PRTKBNMEIL
+                   MOVE    "ÕÕº∞£¥"            TO  SPA-GMN-PRTKBNMEIL
                                                    (SPA-GMN-PRTKBN-MAX)
+               END-IF
            END-IF
            MOVE    SPA-GMN-PRTKBNLST (1)
                                        TO  SPA-GMN-PRTKBN-G
@@ -1824,11 +1826,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    (SPA-GMN-PRTKBN-MAX)
                    MOVE    "£≈£∆•’•°•§•Î"      TO  SPA-GMN-PRTKBNMEIL
                                                    (SPA-GMN-PRTKBN-MAX)
-                   ADD     1                   TO  SPA-GMN-PRTKBN-MAX
-                   MOVE    "9"                 TO  SPA-GMN-PRTKBNL
+                   IF      SPA-BEDSU           >   ZERO
+                       ADD     1               TO  SPA-GMN-PRTKBN-MAX
+                       MOVE    "9"             TO  SPA-GMN-PRTKBNL
                                                    (SPA-GMN-PRTKBN-MAX)
-                   MOVE    "ÕÕº∞£¥"            TO  SPA-GMN-PRTKBNMEIL
+                       MOVE    "ÕÕº∞£¥"        TO  SPA-GMN-PRTKBNMEIL
                                                    (SPA-GMN-PRTKBN-MAX)
+                   END-IF
                END-IF
       *
                MOVE    SPACE               TO  SPA-GMN-TITLE
@@ -1854,11 +1858,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    (SPA-GMN-PRTKBN-MAX)
                    MOVE    "£≈£∆•’•°•§•Î"      TO  SPA-GMN-PRTKBNMEIL
                                                    (SPA-GMN-PRTKBN-MAX)
-                   ADD     1                   TO  SPA-GMN-PRTKBN-MAX
-                   MOVE    "9"                 TO  SPA-GMN-PRTKBNL
+                   IF      SPA-BEDSU           >   ZERO
+                       ADD     1               TO  SPA-GMN-PRTKBN-MAX
+                       MOVE    "9"             TO  SPA-GMN-PRTKBNL
                                                    (SPA-GMN-PRTKBN-MAX)
-                   MOVE    "ÕÕº∞£¥"            TO  SPA-GMN-PRTKBNMEIL
+                       MOVE    "ÕÕº∞£¥"        TO  SPA-GMN-PRTKBNMEIL
                                                    (SPA-GMN-PRTKBN-MAX)
+                   END-IF
                END-IF
       *
                STRING  "≥∫≈ˆ§Œø«Œ≈«Ø∑Ó§À£∞≈¿∏¯»Òµ≠∫‹§¢§Í§Œ≈¿∏°Õ—•Ï•ª"
@@ -3130,6 +3136,11 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                                                TO  SPA-GMN-NYUGAIKBN-G
                END-IF
            END-IF
+      *
+           IF      SPA-GMN-PRTKBN  =   "9"
+               MOVE    SPA-GMN-NYUGAIKBNLST (2)
+                                       TO  SPA-GMN-NYUGAIKBN-G
+           END-IF
            .
        4105-NYUGAIKBN-CHK-EXT.
            EXIT.
@@ -3178,6 +3189,11 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                    MOVE    SPA-GMN-DATAKBNLST (2)
                                            TO  SPA-GMN-DATAKBN-G
                END-IF
+           END-IF
+      *
+           IF      SPA-GMN-PRTKBN  =   "9"
+               MOVE    SPA-GMN-NYUGAIKBNLST (2)
+                                           TO  SPA-GMN-NYUGAIKBN-G
            END-IF
            .
        4106-PRTKBN-CHK-EXT.
@@ -4971,13 +4987,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        WHEN    "B17"         ALSO    "2"
                            MOVE    "1029"              TO  SPA-TIDCD
                        WHEN    "B18"         ALSO    ZERO
+                           MOVE    "1030"              TO  SPA-TIDCD
+                       WHEN    "B18"         ALSO    "1"
                            IF      SPA-GMN-PRTKBN    =   "8"
-                               MOVE    "1030"              TO  SPA-TIDCD
+                               MOVE    "1031"              TO  SPA-TIDCD
                            ELSE
                                MOVE    "1033"              TO  SPA-TIDCD
                            END-IF
-                       WHEN    "B18"         ALSO    "1"
-                           MOVE    "1031"              TO  SPA-TIDCD
                        WHEN    "B18"         ALSO    "2"
                            MOVE    "1032"              TO  SPA-TIDCD
                    END-EVALUATE
