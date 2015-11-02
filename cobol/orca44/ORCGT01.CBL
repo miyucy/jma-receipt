@@ -994,7 +994,6 @@ grpsys                                         SPA-AREA
      *
            IF      SPA-MW              =   SPA-GINBEE
                MOVE    "0"                 TO
-                                       SPA-NAI-200501-RECEDEN-CHK-KBN
                                        SPA-NAI-200501-RECEDEN-RIREKIKB
            END-IF
       *

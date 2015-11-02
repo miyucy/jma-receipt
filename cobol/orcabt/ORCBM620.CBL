@@ -528,8 +528,8 @@
       *        同日再入院情報取得
                PERFORM 2001-ORCSNYUINDAY-CALL-SEC
       *??
-              DISPLAY "WRK-SRYYM=" WRK-SRYYM "#" WRK-ST "#" WRK-ED 
-                           "#" WRK-DOUJITU-NYU "#" WRK-DOUJITU-TAI
+      *       DISPLAY "WRK-SRYYM=" WRK-SRYYM "#" WRK-ST "#" WRK-ED 
+      *                    "#" WRK-DOUJITU-NYU "#" WRK-DOUJITU-TAI
       *??
       *        入院会計チェック
                PERFORM 2002-NYUINACCT-CHECK-SEC
@@ -650,7 +650,7 @@
                    MOVE    WRK-DAY (2 IDX) TO  COMB-HKNCOMBINUM 
                    MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
       *??
-               DISPLAY "NYUACCT=" IDX "#" WRK-DAY (2 IDX)
+      *         DISPLAY "NYUACCT=" IDX "#" WRK-DAY (2 IDX)
       *??
                    PERFORM 20021-HKNCOMBI-CHECK-SEC
                    IF      WRK-HKNNUM      >   ZERO
@@ -708,7 +708,7 @@
                        END-IF
                END-EVALUATE
       *??
-              DISPLAY "WRK-HKNNUM=" COMB-HKNNUM "#" WRK-HKNNUM
+      *        DISPLAY "WRK-HKNNUM=" COMB-HKNNUM "#" WRK-HKNNUM
       *??
            END-IF
            .
@@ -749,7 +749,7 @@
            PERFORM             UNTIL   FLG-SRYACCT     =   1
                MOVE    ZERO                TO  FLG-OK
       *??
-               DISPLAY "ACCT=" ACCT-HKNCOMBI " SRYKA=" ACCT-SRYKA
+      *         DISPLAY "ACCT=" ACCT-HKNCOMBI " SRYKA=" ACCT-SRYKA
       *??
       *  
                IF   (( ACCT-SRYYM      =   PTNYUINRRK-NYUINYMD (1:6) )
@@ -763,7 +763,7 @@
                END-IF
       *
       *??
-               DISPLAY "ok=" flg-ok
+      *         DISPLAY "ok=" flg-ok
       *??
                IF      FLG-OK              =   1
                    INITIALIZE                      HKNCOMBI-REC
@@ -853,7 +853,7 @@
                    END-IF
                END-IF
       *??
-                   DISPLAY "JYURRK-RENNUM=" JYURRK-RENNUM "#" FLG-OK
+      *             DISPLAY "JYURRK-RENNUM=" JYURRK-RENNUM "#" FLG-OK
       *??
       *
                PERFORM 900-JYURRK-READ-SEC
@@ -941,10 +941,10 @@
            MOVE    "key24"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *??
-              DISPLAY "JIHI=" COMB-HKNNUM " 1:" 
-                                     WRK-CHK (1) " 2:" WRK-CHK (2) " 3:"
-                                     WRK-CHK (3) " 4:" WRK-CHK (4) " 5:"
-                                     WRK-CHK (5) "#"
+      *        DISPLAY "JIHI=" COMB-HKNNUM " 1:" 
+      *                               WRK-CHK (1) " 2:" WRK-CHK (2) " 3:"
+      *                               WRK-CHK (3) " 4:" WRK-CHK (4) " 5:"
+      *                               WRK-CHK (5) "#"
       *??
       *
            .
@@ -960,9 +960,9 @@
                GO  TO  2004-HENSYU-EXT
            END-IF
       *??
-              DISPLAY "CHK=1:"  WRK-CHK (1) " 2:" WRK-CHK (2) " 3:"
-                                WRK-CHK (3) " 4:" WRK-CHK (4) " 5:"
-                                WRK-CHK (5) "#"
+      *       DISPLAY "CHK=1:"  WRK-CHK (1) " 2:" WRK-CHK (2) " 3:"
+      *                         WRK-CHK (3) " 4:" WRK-CHK (4) " 5:"
+      *                         WRK-CHK (5) "#"
       *??
       *
            IF    ( WRK-CHK (1)     =   SPACE )
@@ -991,7 +991,7 @@
                END-IF
            END-IF
       *
-           DISPLAY "WRK-KBN=" WRK-KBN
+      *    DISPLAY "WRK-KBN=" WRK-KBN
       *    明細編集処理
            PERFORM 20041-BODY-PRINT-SEC
            .
@@ -1012,12 +1012,15 @@
            MOVE    WRK-PARA-PREFNUM    TO  B01-PREFNUM
            MOVE    WRK-PARA-HOSPCD     TO  B01-HOSPCD
       *
+           INITIALIZE                      ORCSPTIDAREA
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           MOVE    PTNYUINRRK-PTID     TO  SPTID-PTID
+           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                               SPA-AREA
+      *
+           DISPLAY "OUT PTNUM="  SPTID-PTNUM
+      *
            IF      SYS-9102-NUMBER     =   "0"
-               INITIALIZE                      ORCSPTIDAREA
-               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
-               MOVE    PTNYUINRRK-PTID     TO  SPTID-PTID
-               CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                                   SPA-AREA
                INITIALIZE                      ORCSNUMAREA
                MOVE    SPTID-PTNUM         TO  SNUM-INX
                CALL    "ORCSNUM"           USING   ORCSNUMAREA
