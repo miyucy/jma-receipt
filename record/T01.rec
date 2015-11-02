@@ -18,9 +18,6 @@ T01 {
     B10 {
       state int;
     };
-    B14 {
-      state int;
-    };
     B15 {
       state int;
     };
@@ -45,15 +42,6 @@ T01 {
     };
     B22 {
       state int;
-    };
-    SRYYMKBN_COMBO {
-      state int;
-      visible bool;
-      SRYYMKBN {
-        textdata varchar(18);
-      };
-      count int;
-        item varchar(18)[10];
     };
     SKYYMD {
       textdata varchar(10);
@@ -198,10 +186,6 @@ T01 {
     TITLE1 {
       style varchar(20);
       textdata varchar(90);
-    };
-    TITLE2 {
-      style varchar(20);
-      textdata varchar(50);
     };
     SYOKBN1 {
       state int;
