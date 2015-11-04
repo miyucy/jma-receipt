@@ -2669,10 +2669,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (WRK-SRT-HKNNUM  NOT =   SPACE)
                MOVE    2               TO  FLG-HKNOK
            END-IF
+      *H27.11
+      *    ¸øÈñÃ±ÆÈ¤â¤¹¤Ù¤ÆÂÐ¾Ý
+      *    IF      FLG-HKNOK           =   ZERO
+      *        MOVE    1               TO  FLG-HKNCOMBI-ERR
+      *    END-IF
       *
-           IF      FLG-HKNOK           =   ZERO
-               MOVE    1               TO  FLG-HKNCOMBI-ERR
-           END-IF
       *
            .
        410131-KOHONLY-CHK-EXT.
