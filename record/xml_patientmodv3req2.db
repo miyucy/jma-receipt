@@ -18,8 +18,8 @@ xml_patientmodv3req2 {
 		Sex			varchar(1);
         };
 #---    ï€åØèÓïÒ
-	InsuranceProvider_Information	{
-	    InsuranceProvider_Info 	{
+	HealthInsurance_Information	{
+	    HealthInsurance_Info 	{
             	InsuranceProvider_Mode			varchar(6);
 		InsuranceProvider_Id			varchar(10);
 		InsuranceProvider_Class			varchar(03);
