@@ -40,6 +40,7 @@
       *  04.07.00    NACL-太田    11/08/09  システム管理業務への遷移処理追加
       *                                     前回ＣＤボタン追加
       *  04.07.00    NACL-太田    11/08/09  システム管理業務への遷移処理追加
+      *  04.08.00    NACL-森脇    15/11/05  複写元保険番号を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -81,6 +82,9 @@
                        09  SPA-GMN-EDYUKYMD       PIC X(10).
                        09  SPA-GMN-TANSEIDONAME   PIC X(10).
                        09  SPA-GMN-PAYKBN         PIC X(02). 
+      *----(04.08.00)--ADD-START---
+                       09  SPA-GMN-CPHKNNUM       PIC X(03).
+      *----(04.08.00)--ADD-END-----
                    07  SPA-GMN-PREFNUM-G.
                        09  SPA-GMN-PREFNUM         PIC X(2).
                        09  SPA-GMN-PREFNUMFL       PIC X(1).
@@ -556,6 +560,23 @@
                WHEN    "ACTIVATE"       ALSO    "HKNNUM"
                    PERFORM  4104-HKNNUM-CHK-SEC
                    PERFORM  41041-HKNNUM-HENSYU-SEC
+      *----(04.08.00)--ADD-START---
+      *        都道府県番号
+               WHEN    "ACTIVATE"      ALSO    "PREFNUM"
+                   PERFORM 4101-PREFNUM-CHK-SEC
+      *        複写元保険番号
+               WHEN    "ACTIVATE"      ALSO    "CPHKNNUM"
+                   PERFORM 4101-CPHKNNUM-CHK-SEC
+      *        支払区分
+               WHEN    "ACTIVATE"      ALSO    "PAYKBN"
+                   PERFORM 4105-PAYKBN-CHK-SEC
+      *        有効開始年月日
+               WHEN    "ACTIVATE"      ALSO    "STYUKYMD"
+                   PERFORM 4102-STYUKYMD-CHK-SEC
+      *        有効終了年月日
+               WHEN    "ACTIVATE"      ALSO    "EDYUKYMD"
+                   PERFORM 4103-EDYUKYMD-CHK-SEC
+      *----(04.08.00)--ADD-END-----
       *        選択番号
                WHEN    "ACTIVATE"       ALSO    "SELNUM"
                    PERFORM  4101-SELNUM-CHK-SEC
@@ -776,6 +797,12 @@
                MOVE    ZERO               TO  SPA-NAI-STYUKYMD
            END-IF
       *
+      *----(04.08.00)--ADD-START---
+           IF      SPA-GMN-STYUKYMD    =   "00000000"
+               GO  TO  4102-STYUKYMD-CHK-EXT
+           END-IF
+      *----(04.08.00)--ADD-END-----
+      *
            MOVE    SPA-GMN-STYUKYMD    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
            IF      SPA-ERRCD           =   SPACE
@@ -805,6 +832,12 @@
                    GO      TO      4103-EDYUKYMD-CHK-EXT
                END-IF
            END-IF
+      *
+      *----(04.08.00)--ADD-START---
+           IF      SPA-GMN-EDYUKYMD    =   "99999999"
+               GO  TO  4103-EDYUKYMD-CHK-EXT
+           END-IF
+      *----(04.08.00)--ADD-END-----
       *
            MOVE    SPA-GMN-EDYUKYMD   TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
@@ -935,6 +968,11 @@
       *****************************************************************
        4101-PREFNUM-CHK-SEC            SECTION.
       *
+      *----(04.08.00)--ADD-START---
+           MOVE    V01-PREFNUM         TO  SPA-GMN-PREFNUM-G
+           MOVE    7                   TO  SPA-GMN-CUR
+      *----(04.08.00)--ADD-END-----
+      *
            IF    ( SPA-GMN-PREFNUM-G   =   SPACE )
                GO  TO  4101-PREFNUM-CHK-EXT
            END-IF
@@ -960,6 +998,20 @@
        4101-PREFNUM-CHK-EXT.
            EXIT.
       *
+      *----(04.08.00)--ADD-START---
+      *****************************************************************
+      *    複写元保険番号チェック処理
+      *****************************************************************
+       4101-CPHKNNUM-CHK-SEC       SECTION.
+      *
+           MOVE    V01-CPHKNNUM    TO  SPA-GMN-CPHKNNUM
+           MOVE    4               TO  SPA-GMN-CUR
+           .
+      *
+       4101-CPHKNNUM-CHK-EXT.
+           EXIT.
+      *
+      *----(04.08.00)--ADD-END-----
       *****************************************************************
       *    行選択処理
       *****************************************************************
@@ -1193,6 +1245,29 @@
       *    更新画面遷移処理
       *****************************************************************
        4101-KAKUTEI-SYORI-SEC         SECTION.
+      *
+      *----(04.08.00)--ADD-START---
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
+           MOVE    SPA-SYSYMD      TO  HKN-TEKSTYMD
+                                       HKN-TEKEDYMD
+           MOVE    SPA-GMN-CPHKNNUM
+                                   TO  HKN-HKNNUM
+           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  WRK-PATH-TABLE
+           MOVE    "key5"              TO  WRK-PATH-PATHNAME
+           PERFORM 900-HKNNUM-SELECT-SEC
+           IF      FLG-HKNNUM              =   ZERO
+               MOVE    MCPDATA-REC         TO  HKNNUM-REC
+           ELSE
+               INITIALIZE                      HKNNUM-REC
+           END-IF
+      *
+      *    複写元が存在すれば
+           IF      FLG-HKNNUM      =   ZERO
+               MOVE    SPA-GMN-CPHKNNUM    TO  SPA-V01-CPHKNNUM
+           END-IF
+      *----(04.08.00)--ADD-END-----
       *
       *    画面移行用のパラメタ
            MOVE    SPA-GMN-HKNNUM      TO  SPA-V01-HKNNUM
@@ -1436,6 +1511,18 @@
                                        TO  V01-MESSAGE-STYLE
            MOVE    SPA-GMN-DURATION    TO  V01-DURATION
       *
+      *----(04.08.00)--ADD-START---
+           IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
+                 ( SPA-GMN-HKNNUM-NO   <=  899 )  AND
+                 ( SPA-GMN-MAX         =   ZERO )
+               MOVE    WIDGET-NORMAL       TO  V01-CPHKNNUM-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  V01-CPHKNNUM-STATE
+           END-IF
+      *
+           MOVE    SPA-GMN-CPHKNNUM    TO  V01-CPHKNNUM
+      *----(04.08.00)--ADD-END-----
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1464,6 +1551,10 @@
                     MOVE  "EDYUKYMD"   TO  MCP-WIDGET
                 WHEN   6
                     MOVE  "PAYKBN"      TO  MCP-WIDGET
+      *----(04.08.00)--ADD-START---
+                WHEN   7
+                    MOVE  "CPHKNNUM"   TO  MCP-WIDGET
+      *----(04.08.00)--ADD-END-----
                 WHEN   12
                     MOVE  "B12"        TO  MCP-WIDGET
            END-EVALUATE
@@ -1486,6 +1577,10 @@
                    MOVE    5               TO  SPA-GMN-CUR
                WHEN    "EDYUKYMD"
                    MOVE    12              TO  SPA-GMN-CUR
+      *----(04.08.00)--ADD-START---
+                WHEN   "CPHKNNUM"
+                    MOVE    4              TO  SPA-GMN-CUR
+      *----(04.08.00)--ADD-END-----
            END-EVALUATE
       *
            .
