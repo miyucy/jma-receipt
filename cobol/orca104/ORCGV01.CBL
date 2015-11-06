@@ -792,16 +792,14 @@
       *****************************************************************
        4102-STYUKYMD-CHK-SEC          SECTION.
       *
+      *----(04.08.00)--ADD-START---
+           MOVE    V01-STYUKYMD        TO  SPA-GMN-STYUKYMD
+      *----(04.08.00)--ADD-END-----
+      *
            IF      SPA-GMN-STYUKYMD   =   SPACE
                MOVE    "00000000"         TO  SPA-GMN-STYUKYMD
                MOVE    ZERO               TO  SPA-NAI-STYUKYMD
            END-IF
-      *
-      *----(04.08.00)--ADD-START---
-           IF      SPA-GMN-STYUKYMD    =   "00000000"
-               GO  TO  4102-STYUKYMD-CHK-EXT
-           END-IF
-      *----(04.08.00)--ADD-END-----
       *
            MOVE    SPA-GMN-STYUKYMD    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
@@ -822,6 +820,10 @@
       *****************************************************************
        4103-EDYUKYMD-CHK-SEC          SECTION.
       *
+      *----(04.08.00)--ADD-START---
+           MOVE    V01-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
+      *----(04.08.00)--ADD-END-----
+      *
            IF      SPA-GMN-EDYUKYMD    =   SPACE
                IF     (MCP-WIDGET      =   "EDYUKYMD"  )  OR
                       (FLG-KOUSIN      =   2           )
@@ -832,12 +834,6 @@
                    GO      TO      4103-EDYUKYMD-CHK-EXT
                END-IF
            END-IF
-      *
-      *----(04.08.00)--ADD-START---
-           IF      SPA-GMN-EDYUKYMD    =   "99999999"
-               GO  TO  4103-EDYUKYMD-CHK-EXT
-           END-IF
-      *----(04.08.00)--ADD-END-----
       *
            MOVE    SPA-GMN-EDYUKYMD   TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
@@ -955,6 +951,10 @@
       *    »ÙÊ§¶èÊ¬¡¡ÆþÎÏ½èÍý
       *****************************************************************
        4105-PAYKBN-CHK-SEC       SECTION.
+      *
+      *----(04.08.00)--ADD-START---
+           MOVE    V01-PAYKBN          TO  SPA-GMN-PAYKBN
+      *----(04.08.00)--ADD-END-----
       *
            IF      SPA-GMN-PAYKBN  =   SPACE
                MOVE    ZERO           TO  SPA-GMN-PAYKBN
