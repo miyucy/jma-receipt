@@ -1268,6 +1268,18 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2643"
+                   STRING  "レセプト分割は５０件登録済みです。"
+                           "これ以上登録できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2644"
+                   STRING  "同月のレセプト分割は１０件までです。"
+                           "これ以上登録できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
       *        個別設定
                WHEN    "2801"
