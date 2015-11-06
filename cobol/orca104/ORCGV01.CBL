@@ -844,6 +844,13 @@
                MOVE    5                  TO  SPA-GMN-CUR
            END-IF
       *
+      *----(04.08.00)--ADD-START---
+           IF      SPA-NAI-STYUKYMD   >   SPA-NAI-EDYUKYMD
+               MOVE    "0008"             TO  SPA-ERRCD
+               MOVE    4                  TO  SPA-GMN-CUR
+           END-IF
+      *----(04.08.00)--ADD-END-----
+      *
            .
        4103-EDYUKYMD-CHK-EXT.
            EXIT.
@@ -1610,6 +1617,11 @@
                                                       TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "都道府県がちがいます"     TO  SPA-ERRMSG
+      *----(04.08.00)--ADD-START---
+               WHEN    "0008"
+                 MOVE    "有効開始日＜有効終了日で入力して下さい"
+                                                      TO  SPA-ERRMSG
+      *----(04.08.00)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE                TO  VERR
@@ -1997,7 +2009,6 @@
            .
        900-PUT-WINDOW-EXT.
            EXIT.
-
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
