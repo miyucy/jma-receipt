@@ -2092,7 +2092,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
-           IF      WRK-TUKICNT         >   10
+           IF      WRK-TUKICNT         >=  10
                MOVE    "2644"          TO  SPA-ERRCD
                MOVE    21              TO  SPA-GMN26-CUR
             END-IF
