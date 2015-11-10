@@ -2157,8 +2157,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   40
       *        保険の種類・保険者番号なし対象外
-               IF     (PTMODRES-INSURANCE-CLASS (IDX)  =   SPACE)
-                  AND (PTMODRES-ACCIDENT        (IDX)  =   SPACE)
+               IF     (PTMODREQ-INSURANCE-CLASS (IDX)  =   SPACE)
+                  AND (PTMODREQ-ACCIDENT        (IDX)  =   SPACE)
                    CONTINUE
                ELSE
       *
