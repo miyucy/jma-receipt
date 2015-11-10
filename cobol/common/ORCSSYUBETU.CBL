@@ -922,6 +922,9 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >       10
                        OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
+      *
                    MOVE    WRK-HKNCOMBI-REC (IDX2)
                                                TO  HKNCOMBI-REC    
                    PERFORM 20019-FILE-SYORI-SEC
