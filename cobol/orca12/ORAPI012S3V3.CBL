@@ -1801,7 +1801,7 @@
            END-EVALUATE
       *    労災レセ回数記載 基準年月
            IF      PTRSI-KIJYUNYM  NOT =   SPACE
-               MOVE    PTRSI-KIJYUNYM      TO  WRK-SYMD
+               MOVE    PTRSI-KIJYUNYM      TO  WRK-SYMD(1:6)
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE(1:7)   TO  PTMODRES-KIJYUNYM
                                                                   (IDX)
@@ -2156,6 +2156,12 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   40
+      *        保険の種類・保険者番号なし対象外
+               IF     (PTMODRES-INSURANCE-CLASS (IDX)  =   SPACE)
+                  AND (PTMODRES-ACCIDENT        (IDX)  =   SPACE)
+                   CONTINUE
+               ELSE
+      *
                MOVE    PTMODREQ-MAIN-MODE (IDX)
                                        TO  PTMODRES-MAIN-MODE   (IDX)
                MOVE    PTMODREQ-MAIN-INSURANCE-ID (IDX)
@@ -2249,6 +2255,7 @@
                MOVE    PTMODREQ-DS-TOKKIKBN (IDX)
                                        TO  PTMODRES-DS-TOKKIKBN
                                                                  (IDX)
+               END-IF
            END-PERFORM
       *
            .
@@ -2844,7 +2851,7 @@
                END-IF
            END-IF
       *    労災レセ回数記載 基準年月
-           MOVE    PTMODREQ-KIJYUNYM(IDX)  TO  WRK-HEN-DATE
+           MOVE    PTMODREQ-KIJYUNYM(IDX)  TO  WRK-HEN-DATE(1:7)
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD(1:6)           TO  WRK-PTRSI-KIJYUNYM (IDY)
            IF      WRK-SYMD        NOT =   SPACE
