@@ -2851,10 +2851,13 @@
                END-IF
            END-IF
       *    労災レセ回数記載 基準年月
-           MOVE    PTMODREQ-KIJYUNYM(IDX)  TO  WRK-HEN-DATE(1:7)
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD(1:6)           TO  WRK-PTRSI-KIJYUNYM (IDY)
-           IF      WRK-SYMD        NOT =   SPACE
+           IF      PTMODREQ-KIJYUNYM(IDX)  =   SPACE
+               MOVE    SPACE               TO  WRK-PTRSI-KIJYUNYM (IDY)
+           ELSE
+               MOVE    PTMODREQ-KIJYUNYM(IDX)  TO  WRK-HEN-DATE(1:7)
+               PERFORM 802-DAYHEN02-SEC
+               MOVE    WRK-SYMD(1:6)       TO  WRK-PTRSI-KIJYUNYM (IDY)
+               MOVE    "01"                TO  WRK-SDD
                PERFORM 803-ORCSDAY-CHEK-SEC
                IF      FLG-DAYERR          =   1
                    MOVE    "30"                TO  WRK-ERRCD
@@ -4120,7 +4123,7 @@
            WHEN    "19"
                MOVE    "保険処理区分が違います"
                                                TO  WRK-ERRMSG
-           WHEN    "2O"
+           WHEN    "20"
                MOVE    "労災保険区分が違います"
                                                TO  WRK-ERRMSG
            WHEN    "21"
