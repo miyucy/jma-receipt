@@ -44,7 +44,6 @@
       *                                     第三者行為対応
       *  04.07.00    NACL-多々納  14/10/XX  第三者現物支給対象等対応
       *  04.08.00    NACL-多々納  15/11/XX  APIV3(HAORI)対応
-      *  04.08.00    NACL-多々納  17/05/XX  自賠責点数算定区分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -677,25 +676,14 @@
       *            労働基準監督署コード
                    MOVE    PTRSI-SYOCD         TO  SPA-GMN2D-SYOCD
                    MOVE    PTRSI-SYOCD         TO  SPA-NAI2D-MAE-SYOCD
-      *H29.2       初期設定廃止
-      *            IF      PTRSI-SYOCD         =   SPACE
+                   IF      PTRSI-SYOCD         =   SPACE
       *                労働基準監督署コード初期設定
-      *                PERFORM 30011-SYOCD-INITSET-SEC
-      *****        END-IF
+                       PERFORM 30011-SYOCD-INITSET-SEC
+                   END-IF
                    IF      SPA-GMN2D-SYOCD     NOT =   SPACE
       *                労働基準監督署名称編集
                        PERFORM 30012-SYOCD-HEN-SEC
                    END-IF
-      *H29.5
-      *       自賠責
-               WHEN    "4"
-      *            自賠責点数区分
-                   IF      PTRSI-JIBAIKBN      =   SPACE
-                       MOVE    "0"             TO  PTRSI-JIBAIKBN
-                   END-IF
-                   MOVE    PTRSI-JIBAIKBN      TO  SPA-GMN2D-JIBAIKBN
-                   MOVE    PTRSI-JIBAIKBN      TO
-                                               SPA-NAI2D-MAE-JIBAIKBN
       *H26.10
       *        第三者
                WHEN    "6"
@@ -986,19 +974,13 @@
            MOVE    "1 「１０第三」記載有"
                                        TO  SPA-GMN2D-D3-TOKKIKBNLST (01)
            MOVE    "2 「１０第三」記載無"
-                                       TO  SPA-GMN2D-D3-TOKKIKBNLST(02)
+                                       TO  SPA-GMN2D-D3-TOKKIKBNLST (02)
            MOVE    2                   TO  SPA-GMN2D-D3-TOKKIKBN-MAX
       *
       *    損傷区分
            MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
            PERFORM 30021-SONSHOUKBN-SET-SEC
       *
-      *H29.5
-           MOVE    "0 労災自賠医療機関情報に準拠"
-                                       TO  SPA-GMN2D-JIBAIKBN-LST(01)
-           MOVE    "1 労災準拠"        TO  SPA-GMN2D-JIBAIKBN-LST(02)
-           MOVE    "2 健保準拠"        TO  SPA-GMN2D-JIBAIKBN-LST(03)
-           MOVE    3                   TO  SPA-GMN2D-JIBAIKBN-MAX
       *
            .
        3002-COMBBOX-HEX-EXT.
@@ -1189,23 +1171,6 @@
                    END-IF
                END-PERFORM
            END-IF
-      *
-      *    自賠責点数区分
-           IF      SPA-GMN2D-JIBAIKBN  =   SPACE
-               MOVE    SPACE           TO  SPA-GMN2D-JIBAIKBN-G
-           ELSE
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN2D-JIBAIKBN-MAX)
-                          OR  (FLG-OK  =   1    )
-                   IF      SPA-GMN2D-JIBAIKBN
-                                       =   SPA-GMN2D-JIBAIKBN-LST
-                                                          (IDX)(1:1)
-                       MOVE    SPA-GMN2D-JIBAIKBN-LST (IDX)
-                                           TO  SPA-GMN2D-JIBAIKBN-G
-                       MOVE    1           TO  FLG-OK
-                   END-IF
-               END-PERFORM
-           END-IF
            .
        3003-COMBBOX-SET-EXT.
            EXIT.
@@ -1242,15 +1207,12 @@
       *
            MOVE    SPACE               TO  SPA-JIBAI-SEI
            MOVE    SPACE               TO  SPA-KOMU-SEI
-           MOVE    SPACE               TO  SPA-DAISAN-GEN
            IF      (FLG-SYSKANRI       =   0  )
                MOVE    MCPDATA-REC         TO  SYS-4001-REC
       *        自賠責請求区分
                MOVE    SYS-4001-JIBAI-SEIKYUKBN    TO  SPA-JIBAI-SEI
       *        公務災害責請求区分
                MOVE    SYS-4001-KOMU-SEIKYUKBN     TO  SPA-KOMU-SEI
-      *H28.1   第三者行為現物給付区分
-               MOVE    SYS-4001-DAISAN-GENBTKBN    TO  SPA-DAISAN-GEN
            END-IF
            .
        30022-JIBAISEIKBN-SET-EXT.
@@ -1415,16 +1377,20 @@
            MOVE    SPA-GMN2D-SINSATUYMD    TO  P02D-SINSATUYMD
       *
            MOVE    SPA-GMN2D-SINSATUEND    TO  P02D-SINSATUEND
-      *H29.5
-      *    自賠責点数区分
-           MOVE    SPA-GMN2D-JIBAIKBN-G   TO  P02D-JIBAIKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN2D-JIBAIKBN-MAX
-               MOVE    SPA-GMN2D-JIBAIKBN-LST (IDX)
-                                       TO  P02D-JIBAIKBN-ITEM (IDX)
-           END-PERFORM
-           MOVE    SPA-GMN2D-JIBAIKBN-MAX  TO  P02D-JIBAIKBN-COUNT
       *
+      *****MOVE    SPA-GMN2D-KENSAYMD      TO  P02D-KENSAYMD
+      *
+      *    リスト
+      *****PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   SPA-GMN2D-SISI-MAX
+      *        MOVE    SPA-GMN2D-TSINSATUYMD (IDX)
+      *                                TO  P02D-TSINSATUYMD (IDX)
+      *        MOVE    SPA-GMN2D-TKENSAYMD   (IDX)
+      *                                TO  P02D-TKENSAYMD (IDX)
+      *        MOVE    SPA-GMN2D-TSONSHOUKBN (IDX)
+      *                                TO  P02D-TSONSHOUKBN (IDX)
+      *    END-PERFORM
+      *****MOVE    SPA-GMN2D-SISI-MAX   TO  P02D-SISIKBNLST-COUNT
       *    自賠責担当医
            MOVE    SPA-GMN2D-SRYKA-G   TO  P02D-SRYKA
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1543,10 +1509,6 @@
                    MOVE    "CITYNAME"          TO  MCP-WIDGET
                WHEN    15
                    MOVE    "CITYKBN"           TO  MCP-WIDGET
-      *H29.5
-               WHEN    33
-                   MOVE    "JIBAIKBN"          TO  MCP-WIDGET
-      *
                WHEN    25
                    MOVE    "SRYKA"             TO  MCP-WIDGET
                WHEN    26
@@ -1646,10 +1608,8 @@
                WHEN    "RYOEDYMD"
                    EVALUATE    SPA-GMN2D-HKNKBN
                        WHEN    "4"
-      *H29.5               自賠責　自賠責点数区分へ
-                           MOVE    33              TO  SPA-GMN2D-CUR
                        WHEN    "5"
-      *                    公務災害　担当医へ
+      *                    自賠責担当医へ
                            MOVE    25              TO  SPA-GMN2D-CUR
                        WHEN    "1"
       *                    事業所へ
@@ -1682,9 +1642,6 @@
                    END-EVALUATE
                WHEN    "SRYKA"
                    MOVE    26              TO  SPA-GMN2D-CUR
-      *H29.5
-               WHEN    "JIBAIKBN"
-                   MOVE    25              TO  SPA-GMN2D-CUR
                WHEN    "DRCD"
                    EVALUATE    SPA-GMN2D-HKNKBN
                        WHEN    "5"
@@ -1850,8 +1807,6 @@
            MOVE    P02D-SONSHOUKBN    TO  SPA-GMN2D-SONSHOUKBN-G
            MOVE    P02D-SINSATUYMD    TO  SPA-GMN2D-SINSATUYMD
            MOVE    P02D-SINSATUEND    TO  SPA-GMN2D-SINSATUEND
-      *    自賠責点数区分
-           MOVE    P02D-JIBAIKBN      TO  SPA-GMN2D-JIBAIKBN-G
       *    自賠責担当医他
            MOVE    P02D-SRYKA         TO  SPA-GMN2D-SRYKA-G
            MOVE    P02D-DRCD          TO  SPA-GMN2D-DRCD-G
@@ -1944,11 +1899,6 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4101-CITYKBN-CHK-SEC
            END-IF
-      *H29.5
-      *    自賠責点数区分
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4101-JIBAIKBN-CHK-SEC
-           END-IF
       *    自賠責診療科
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4101-SRYKA-CHK-SEC
@@ -1997,8 +1947,8 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4101-SINSATUEND-CHK-SEC
            END-IF
-           .
       *
+           .
        4102-KIHON-CHK-EXT.
            EXIT.
       *
@@ -2187,12 +2137,6 @@
                    IF      SPA-GMN2D-SISIKBN   =   SPACE
                        MOVE    SPA-GMN2D-SISIKBN-LST (01)
                                                TO  SPA-GMN2D-SISIKBN-G
-                   END-IF
-      *H29.5
-      *            自賠責点数区分
-                   IF      SPA-GMN2D-JIBAIKBN  =   SPACE
-                       MOVE    SPA-GMN2D-JIBAIKBN-LST (01)
-                                               TO  SPA-GMN2D-JIBAIKBN-G
                    END-IF
       *        公務災害
                WHEN    "5"
@@ -2783,61 +2727,6 @@
        4101-CITYKBN-CHK-EXT.
            EXIT.
       *
-      *H29.5
-      *****************************************************************
-      *    自賠責点数区分　処理
-      *****************************************************************
-       4101-JIBAIKBN-CHK-SEC           SECTION.
-      *
-      *    自賠責以外は入力なしとする
-           IF      SPA-GMN2D-HKNKBN    =   "4"
-               CONTINUE
-           ELSE
-               MOVE    SPACE           TO  SPA-GMN2D-JIBAIKBN-G
-               GO      TO  4101-JIBAIKBN-CHK-EXT
-           END-IF
-      *
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN2D-JIBAIKBN-MAX)
-                          OR  (FLG-OK  =   1    )
-               IF      SPA-GMN2D-JIBAIKBN  =   SPA-GMN2D-JIBAIKBN-LST
-                                                          (IDX)(1:1)
-                   MOVE    SPA-GMN2D-JIBAIKBN-LST (IDX)
-                                           TO  SPA-GMN2D-JIBAIKBN-G
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-      *    Ｈ２９年７月から適応
-           IF      SPA-NAI2D-RYOSTYMD  <   "20170701"
-               IF      SPA-GMN2D-JIBAIKBN  NOT =   "0"
-                   MOVE    "0057"              TO  SPA-ERRCD
-               END-IF
-               MOVE    SPA-GMN2D-JIBAIKBN-LST (01)
-                                           TO  SPA-GMN2D-JIBAIKBN-G
-           END-IF
-           IF      FLG-OK              =   ZERO
-               MOVE    "0055"              TO  SPA-ERRCD
-               MOVE    33                  TO  SPA-GMN2D-CUR
-           ELSE
-      *        訂正時の変更は警告
-               IF     (SPA-NAI2D-HKNKBN-MAE    NOT =   SPACE )
-                 AND  (SPA-NAI2D-MAE-JIBAIKBN
-                                           NOT =  SPA-GMN2D-JIBAIKBN)
-                   IF      SPA-NAI2D-KEIFLG3   =   ZERO
-                       MOVE    "K056"          TO  SPA-ERRCD
-                       MOVE    33              TO  SPA-GMN2D-CUR
-                       MOVE    1               TO  SPA-NAI2D-KEIFLG3
-                   END-IF
-               END-IF
-           END-IF
-      *
-           .
-       4101-JIBAIKBN-CHK-EXT.
-           EXIT.
-      *
-      *
       *****************************************************************
       *    自賠責診療科　処理
       *****************************************************************
@@ -3061,15 +2950,6 @@
                   AND (SPA-NAI2D-RYOSTYMD  NOT =   SPACE )
       *            傷病年月日・療養開始日の設定がある時
                    PERFORM 30011-SYOCD-INITSET-SEC
-      *H29.2
-      *            労働基準監督署コードが存在しないとき、複写中止
-                   IF      SPA-GMN2D-SYOCD     NOT =   SPACE
-                       PERFORM 30012-SYOCD-HEN-SEC
-                       IF     (FLG-LABOR-SIO       =   1   )
-                         AND  (SPA-NAI2D-RYOSTYMD  >=  "20080401" )
-                           MOVE    SPACE           TO  SPA-GMN2D-SYOCD
-                       END-IF
-                   END-IF
                END-IF
            END-IF
       *
@@ -3084,14 +2964,13 @@
                      AND ((FLG-TOUROKU         =   1      ) OR
                           (WRK-MCP-WIDGET      =   "SYOCD"))
                        MOVE    1                   TO  SPA-NAI2D-KEIFLG2
-      *H29.2           MOVE    "K049"              TO  SPA-ERRCD
-                       MOVE    "K052"              TO  SPA-ERRCD
+                       MOVE    "K049"              TO  SPA-ERRCD
                        MOVE    30                  TO  SPA-GMN2D-CUR
       *H25.7
-      ****             職業安定所判定
-      *                IF      SPA-GMN2D-SYOCD(3:1)    =   "3"
-      *                     MOVE    "K052"              TO  SPA-ERRCD
-      *****            END-IF
+      *                職業安定所判定
+                       IF      SPA-GMN2D-SYOCD(3:1)    =   "3"
+                            MOVE    "K052"              TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3109,11 +2988,6 @@
       *        第三者行為
                IF      SPA-GMN2D-D3-GENBTKBN   =   SPACE
                    MOVE    "1"             TO  SPA-GMN2D-D3-GENBTKBN
-      *H28.1       初期設定
-                   IF      SPA-DAISAN-GEN  NOT =   SPACE
-                       MOVE    SPA-DAISAN-GEN
-                                               TO  SPA-GMN2D-D3-GENBTKBN
-                   END-IF
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN2D-D3-GENBTKBN-G
@@ -3899,9 +3773,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "4"
                    MOVE    SPA-GMN2D-JIBAISEIKBN
                                                TO  PTRSI-JIBAISEIKBN
-      *H29.5
-                   MOVE    SPA-GMN2D-JIBAIKBN  TO  PTRSI-JIBAIKBN
-      *
       *    自賠責担当医
                    IF      SPA-GMN2D-DRCD      =   SPACE
                        MOVE    SPACE               TO  PTRSI-DRCD
@@ -4444,19 +4315,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K050"
-                   STRING  "警告！"
-      *H29.2               "労働基準監督署コードが未入力です。"
+                   STRING  "警告！！"
+                           "労働基準監督署コードが未入力です。"
                                                DELIMITED  BY  SIZE
-                           "管轄の労働基準監督署を確認し、該当する"
-                           "労働基準監督署コードを入力して下さい"
                                                INTO  SPA-ERRMSG
                    END-STRING
       *H25.7 
                WHEN    "K052"
-                   STRING  "警告！"
-      *H29.2               "労働基準監督署コードで再入力して下さい。"
-                           "管轄の労働基準監督署を確認し、該当する"
-                           "労働基準監督署コードを入力して下さい"
+                   STRING  "警告！！"
+                           "労働基準監督署コードで再入力して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
@@ -4478,25 +4345,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0054"
                    STRING  "第三者行為　特記事項がありません"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-      *H29.5
-               WHEN    "0055"
-                   STRING  "自賠責点数算定区分がありません"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0057"
-                   STRING  "自賠責点数算定区分は療養開始日が"
-                           "平成２９年７月１日以降で設定可能です。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "K056"
-                   STRING  "警告！"
-                           "自賠責点数算定区分が変更されました。"
-                           "登録済みの診療行為を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
