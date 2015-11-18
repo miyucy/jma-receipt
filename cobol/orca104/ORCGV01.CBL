@@ -1118,8 +1118,12 @@
                                    TO  SHELLTBL-ARG4
            MOVE    "HKNNUM"        TO  SHELLTBL-ARG5
            MOVE    SPA-GMN-PREFNUM TO  SHELLTBL-ARG6
-           MOVE    SPA-GMN-HKNNUM-NO
-                                   TO  SHELLTBL-ARG7
+           MOVE    SPA-GMN-HKNNUM  TO  SHELLTBL-ARG8
+           IF      SPA-GMN-CPHKNNUM    =   SPACE
+               MOVE    SPA-GMN-HKNNUM      TO  SHELLTBL-ARG7
+           ELSE
+               MOVE    SPA-GMN-CPHKNNUM    TO  SHELLTBL-ARG7
+           END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
