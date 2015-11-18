@@ -423,6 +423,7 @@ W06 {
       SYOKUKBN {
         textdata varchar(20);
       };
+      state int;
       count int;
         item varchar(20)[10];
     };
@@ -430,6 +431,7 @@ W06 {
       SYOKUCOD {
         textdata varchar(35);
       };
+      state int;
       count int;
         item varchar(35)[100];
     };

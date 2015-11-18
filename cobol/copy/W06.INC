@@ -263,12 +263,14 @@
               03  W06-SYOKUKBN-COMB.
                 04  W06-SYOKUKBN.
                   05  W06-VALUE   PIC X(20).
+                04  W06-SYOKUKBN-STATE   PIC S9(9)   BINARY.
                 04  W06-SYOKUKBN-COUNT   PIC S9(9)   BINARY.
                 04  W06-SYOKUKBN-ITEM
                         PIC X(20)   OCCURS  10 TIMES.
               03  W06-SYOKUCOD-COMB.
                 04  W06-SYOKUCOD.
                   05  W06-VALUE   PIC X(35).
+                04  W06-SYOKUCOD-STATE   PIC S9(9)   BINARY.
                 04  W06-SYOKUCOD-COUNT   PIC S9(9)   BINARY.
                 04  W06-SYOKUCOD-ITEM
                         PIC X(35)   OCCURS  100 TIMES.
