@@ -930,7 +930,10 @@
                                                    TO  SPA-GMN-PREFNUM
                            PERFORM 4101-PREFNUM-CHK-SEC
                            MOVE    ZERO            TO  SPA-GMN-PAYKBN
-                           MOVE    2               TO  SPA-GMN-CUR
+      *----(04.08.00)--UPD-START---
+      *                     MOVE    2               TO  SPA-GMN-CUR
+                           MOVE    7               TO  SPA-GMN-CUR
+      *----(04.08.00)--UPD-END-----
                        ELSE
                            MOVE    ZERO            TO  SPA-GMN-PAYKBN
                            MOVE    4               TO  SPA-GMN-CUR
@@ -946,7 +949,10 @@
                                                    SPA-GMN-TANSEIDONAME
                    MOVE    1                       TO  SPA-GMN-SELNUM
                    MOVE    1                       TO  SPA-NAI-SELNO 
-                   MOVE    12                      TO  SPA-GMN-CUR
+      *----(04.08.00)--UPD-START---
+      *             MOVE    12                      TO  SPA-GMN-CUR
+                   MOVE    4                       TO  SPA-GMN-CUR
+      *----(04.08.00)--UPD-END-----
                WHEN    OTHER
                    MOVE    3                       TO  SPA-GMN-CUR
            END-EVALUATE           
@@ -977,7 +983,7 @@
       *
       *----(04.08.00)--ADD-START---
            MOVE    V01-PREFNUM         TO  SPA-GMN-PREFNUM-G
-           MOVE    7                   TO  SPA-GMN-CUR
+           MOVE    4                   TO  SPA-GMN-CUR
       *----(04.08.00)--ADD-END-----
       *
            IF    ( SPA-GMN-PREFNUM-G   =   SPACE )
@@ -1012,7 +1018,7 @@
        4101-CPHKNNUM-CHK-SEC       SECTION.
       *
            MOVE    V01-CPHKNNUM    TO  SPA-GMN-CPHKNNUM
-           MOVE    4               TO  SPA-GMN-CUR
+           MOVE    2               TO  SPA-GMN-CUR
            .
       *
        4101-CPHKNNUM-CHK-EXT.
@@ -1590,7 +1596,7 @@
                    MOVE    12              TO  SPA-GMN-CUR
       *----(04.08.00)--ADD-START---
                 WHEN   "CPHKNNUM"
-                    MOVE    4              TO  SPA-GMN-CUR
+                    MOVE    2              TO  SPA-GMN-CUR
       *----(04.08.00)--ADD-END-----
            END-EVALUATE
       *
