@@ -3427,8 +3427,7 @@
       *        管理者でシステム管理がONの場合は対象
                IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )   AND
                      ( SYS-1010-GSRAUTH(61:1)  =   "1" )   AND
-                     ( SYS-1010-USERID     NOT =   "ormaster" ) AND
-                     ( SYS-1010-USERID     NOT =   SPA-GMN-USERID )
+                     ( SYS-1010-USERID     NOT =   "ormaster" ) 
                    MOVE    1               TO  FLG-OK
                END-IF
       *
@@ -3468,7 +3467,8 @@
                  ( SPA-GMN-TBL-MAX         =   1 )
                PERFORM 210-KANRISYA-CHK-SEC
       *        当日有効の管理者存在エラー
-               IF      FLG-OK          =   0
+               IF    ( FLG-OK              =   0 ) OR
+                     ( SYS-1010-USERID     =   SPA-GMN-USERID )
                    MOVE    "0040"          TO  SPA-ERRCD
                    GO  TO  403-DEL-EXT
                END-IF
