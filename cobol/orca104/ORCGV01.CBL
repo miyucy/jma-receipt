@@ -928,11 +928,11 @@
                            PERFORM 900-SYSKANRI-READ-SEC
                            MOVE    SYS-1001-PREFNUM
                                                    TO  SPA-GMN-PREFNUM
-                           PERFORM 4101-PREFNUM-CHK-SEC
-                           MOVE    ZERO            TO  SPA-GMN-PAYKBN
       *----(04.08.00)--UPD-START---
-      *                     MOVE    2               TO  SPA-GMN-CUR
+      *                     PERFORM 4101-PREFNUM-CHK-SEC
+                           MOVE    ZERO            TO  SPA-GMN-PAYKBN
                            MOVE    7               TO  SPA-GMN-CUR
+      *                     MOVE    2               TO  SPA-GMN-CUR
       *----(04.08.00)--UPD-END-----
                        ELSE
                            MOVE    ZERO            TO  SPA-GMN-PAYKBN
