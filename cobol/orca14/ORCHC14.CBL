@@ -106,9 +106,10 @@
       *
       *    ドクターテーブル
        01  TBL-DRCD-AREA.
-           03  TBL-DRCD-G              OCCURS   99.
+           03  TBL-DRCD-G              OCCURS   200.
                05  TBL-DRCD            PIC X(05).
                05  TBL-DRCDNAME        PIC X(30).
+           03  TBL-DRCD-MAX            PIC 9(03).
       *
       *    診療内容テーブル
        01  TBL-SRYNAIYO-AREA.
@@ -123,7 +124,7 @@
                05  TBL-SRYKANAME       PIC X(30).
       *    連絡先テーブル
        01  TBL-RENRAK-AREA.
-           03  TBL-RENRAK-G            OCCURS   9.
+           03  TBL-RENRAK-G            OCCURS   99.
                05  TBL-RENRAK-CD       PIC X(01).
                05  TBL-YYKKAKNAME      PIC X(10).
       *    予約内容テーブル
@@ -356,12 +357,14 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
-                       OR  (IDX            >=  99  )
+      ***********      OR  (IDX            >=  99  )
+                       OR  (IDX            >=  200 )
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1) =   "1"
                    ADD     1                   TO  IDX
                    MOVE    SYS-1010-KBNCD(1:5) TO  TBL-DRCD  (IDX)
                    MOVE    SYS-1010-NAME       TO  TBL-DRCDNAME (IDX)
+                   MOVE    IDX                 TO  TBL-DRCD-MAX
                END-IF
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -654,12 +657,12 @@
            MOVE    YYK-YYKTIME(3:2)    TO  HC14-YYKTIME (IDX)(4:2)
       *    ドクター
            PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL      (IDX-D   >   99  )
+                   UNTIL      (IDX-D   >   TBL-DRCD-MAX )
                           OR  (TBL-DRCD (IDX-D)    =   SPACE)
                IF     YYK-DRCD             =   TBL-DRCD (IDX-D)
                    MOVE    TBL-DRCDNAME (IDX-D)
                                            TO  HC14-DRNAME (IDX)
-                   MOVE    99              TO  IDX-D
+                   MOVE    TBL-DRCD-MAX    TO  IDX-D
                END-IF
            END-PERFORM
       *    診療内容をセット

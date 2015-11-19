@@ -153,11 +153,11 @@
       *    ø«Œ≈∆‚Õ∆æ Û
            COPY    "CPSK1012.INC".
       *    ø«Œ≈≤ 
-           COPY    "CPSK1005.INC".
+      *****COPY    "CPSK1005.INC".
       *    ø¶∞˜æ Û
-           COPY    "CPSK1010.INC".
+      **** COPY    "CPSK1010.INC".
       *    ÕΩÃÛ≥Œ«ß
-           COPY    "CPSK0051.INC".
+      **** COPY    "CPSK0051.INC".
       *
       *    ¥µº‘•ﬁ•π•ø°›
        01  PTINF-REC.

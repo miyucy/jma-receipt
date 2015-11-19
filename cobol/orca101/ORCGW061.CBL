@@ -1146,7 +1146,7 @@
            MOVE    1                   TO  SPA-W061-CUR
            IF      SPA-W061-SYORIKBN   =   SPACE
                MOVE    "2"             TO  SPA-W061-SYORIKBN
-               MOVE    2               TO  SPA-W061-CUR
+               MOVE    1               TO  SPA-W061-CUR
            ELSE
                IF      SPA-W061-SYORIKBN   =   "1"
                    MOVE    "0014"          TO  SPA-ERRCD
