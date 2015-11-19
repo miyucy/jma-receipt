@@ -630,18 +630,6 @@
       *
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
-               PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >   SPA-SYOKUKBN-MAX
-                   IF      SPA-STAFFCD(1:1)
-                            =  SPA-GMN-SYOKUKBN-LIST(IDX)(1:1)
-                       MOVE    SPA-GMN-SYOKUKBN-LIST(IDX)
-                                                TO  SPA-GMN-SYOKUKBN-G
-                       MOVE    SPA-SYOKUKBN-MAX    TO  IDX
-                   END-IF
-               END-PERFORM
-               IF      SPA-GMN-SYOKUKBN-G  =   SPACE
-                   MOVE    SPA-STAFFCD(1:1)    TO  SPA-GMN-SYOKUKBN-G
-               END-IF
                PERFORM 3101-INIT-GMN-SEC 
            END-IF
       *
@@ -688,6 +676,7 @@
                MOVE    2                   TO  SPA-GMN-CUR
                MOVE    1                   TO  SPA-GMN-PAGENO
            ELSE
+               MOVE    SPA-STAFFCD(1:1)    TO  SPA-GMN-SYOKUKBN-G
                PERFORM 320-SYOKUCOD-HENSYU-SEC
                MOVE    SPA-STAFFCD(2:4)    TO  SPA-GMN-SYOKUCOD-G
       *
