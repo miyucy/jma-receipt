@@ -574,25 +574,6 @@
                END-IF
            END-IF
       *!!!!
-           PERFORM 3101-INIT-GMN-SEC
-      *----(04.08.05)--UPD-END-----
-           . 
-       310-SPASET-EXT.
-           EXIT.
-      *
-      *----(04.08.05)--UPD-START--
-      *****************************************************************
-      *    職員情報初期表示編集処理
-      *****************************************************************
-       3101-INIT-GMN-SEC              SECTION.
-      *
-           INITIALIZE                      SPA-GMN-AREA
-           INITIALIZE                      SPA-GMN-SYORI
-           INITIALIZE                      SPA-GMN-AREA2
-           INITIALIZE                      SPA-NAIB-AREA
-           INITIALIZE                      SPA-PAGE2-G
-           INITIALIZE                      SPA-PAGE3-G
-      *
            IF      SPA-NAI-STAFFKANRIKBN   =   1
       *        職員情報初期表示
       *        １件目の職員情報読み込み
@@ -661,20 +642,54 @@
                IF      SPA-GMN-SYOKUKBN-G  =   SPACE
                    MOVE    SPA-STAFFCD(1:1)    TO  SPA-GMN-SYOKUKBN-G
                END-IF
+               PERFORM 3101-INIT-GMN-SEC 
+           END-IF
       *
+           MOVE    1                   TO  SPA-GMN-PAGENO
+      *----(04.08.05)--UPD-END-----
+           . 
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *----(04.08.05)--UPD-START--
+      *****************************************************************
+      *    職員情報初期表示編集処理
+      *****************************************************************
+       3101-INIT-GMN-SEC              SECTION.
+      *
+      *     INITIALIZE                      SPA-GMN-AREA
+           INITIALIZE                      SPA-GMN-SYORI
+           INITIALIZE                      SPA-GMN-AREA2
+           INITIALIZE                      SPA-NAIB-AREA
+           INITIALIZE                      SPA-PAGE2-G
+           INITIALIZE                      SPA-PAGE3-G
+      *
+           IF      SPA-NAI-STAFFKANRIKBN   =   1
                PERFORM 320-SYOKUCOD-HENSYU-SEC
-               PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >   SPA-SYOKUCOD-MAX
-                   IF      SPA-STAFFCD(2:4)
-                            =  SPA-GMN-SYOKUCOD-LIST(IDX)(1:4)
-                       MOVE    SPA-GMN-SYOKUCOD-LIST(IDX)
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   SPA-SYOKUCOD-MAX)
+                   IF      SPA-GMN-SYOKUCOD    =   SPA-GMN-TSYOKUCOD
+                                                             (IDX)
+                       MOVE    SPA-GMN-SYOKUCOD-LIST (IDX)
                                                TO  SPA-GMN-SYOKUCOD-G
                        MOVE    SPA-SYOKUCOD-MAX    TO  IDX
+                       MOVE    1                   TO  FLG-OK
                    END-IF
                END-PERFORM
-               IF      SPA-GMN-SYOKUCOD-G  =   SPACE
-                   MOVE    SPA-STAFFCD(2:4)    TO  SPA-GMN-SYOKUCOD-G
+               IF      FLG-OK              =   ZERO
+                   IF      SPA-SYOKUCOD-MAX    >   ZERO
+                       MOVE    SPA-GMN-SYOKUCOD-LIST(1)
+                                               TO  SPA-GMN-SYOKUCOD-G
+                   ELSE
+                       MOVE    SPACE           TO  SPA-GMN-SYOKUCOD-G
+                   END-IF
                END-IF
+               MOVE    2                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-GMN-PAGENO
+           ELSE
+               PERFORM 320-SYOKUCOD-HENSYU-SEC
+               MOVE    SPA-STAFFCD(2:4)    TO  SPA-GMN-SYOKUCOD-G
       *
       *        職員の情報を読み込み
                PERFORM 20021-SYOKUCOD-CHK-SEC
@@ -693,10 +708,10 @@
                    MOVE    SPA-GMN-SELNUM      TO  W06-SELNUM
                    PERFORM 2003-SELNUM-CHK-SEC
                END-IF
-               MOVE    3                    TO  SPA-GMN-CUR
+               MOVE    3                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-GMN-PAGENO
            END-IF
       *
-           MOVE    1                   TO  SPA-GMN-PAGENO
            . 
        3101-INIT-GMN-EXT.
            EXIT.
