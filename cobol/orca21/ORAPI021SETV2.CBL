@@ -2619,7 +2619,7 @@
            MOVE    ZERO                TO  FLG-SET-ARI
            MOVE    ZERO                TO  FLG-SET-OK
            PERFORM UNTIL    (FLG-INPUTSET  =   1   )
-                        OR  (FLG-SET-ARI   =   1   )
+                        OR  (FLG-SET-OK    =   1   )
                IF     (ISET-YUKOSTYMD      =   WRK-YUKOSTYMD)
                  AND  (ISET-YUKOEDYMD      =   WRK-YUKOEDYMD)
                    MOVE    1               TO  FLG-SET-OK
