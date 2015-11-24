@@ -913,6 +913,7 @@
        4104-HKNNUM-CHK-EXT.
            EXIT.
       *
+      *----(04.08.00)--UPD-START---
       *****************************************************************
       *    保険番号　編集処理
       *****************************************************************
@@ -923,22 +924,9 @@
                    IF      SPA-GMN-HKNNUM  =   "027"
                        MOVE    6                   TO  SPA-GMN-CUR
                    ELSE
-                       IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
-                             ( SPA-GMN-HKNNUM-NO   <=  899 )
-                           PERFORM 900-SYSKANRI-READ-SEC
-                           MOVE    SYS-1001-PREFNUM
-                                                   TO  SPA-GMN-PREFNUM
-      *----(04.08.00)--UPD-START---
-      *                     PERFORM 4101-PREFNUM-CHK-SEC
-                           MOVE    ZERO            TO  SPA-GMN-PAYKBN
-                           MOVE    7               TO  SPA-GMN-CUR
-      *                     MOVE    2               TO  SPA-GMN-CUR
-      *----(04.08.00)--UPD-END-----
-                       ELSE
-                           MOVE    ZERO            TO  SPA-GMN-PAYKBN
-                           MOVE    4               TO  SPA-GMN-CUR
-                       END-IF 
-                   END-IF         
+                       MOVE    ZERO            TO  SPA-GMN-PAYKBN
+                       MOVE    4               TO  SPA-GMN-CUR
+                   END-IF
                WHEN    1
                    MOVE    SPA-GMN-TSTYUKYMD (1)   TO  SPA-GMN-STYUKYMD
                    MOVE    SPA-NAI-TSTYUKYMD (1)   TO  SPA-NAI-STYUKYMD
@@ -949,17 +937,26 @@
                                                    SPA-GMN-TANSEIDONAME
                    MOVE    1                       TO  SPA-GMN-SELNUM
                    MOVE    1                       TO  SPA-NAI-SELNO 
-      *----(04.08.00)--UPD-START---
-      *             MOVE    12                      TO  SPA-GMN-CUR
                    MOVE    4                       TO  SPA-GMN-CUR
-      *----(04.08.00)--UPD-END-----
                WHEN    OTHER
                    MOVE    3                       TO  SPA-GMN-CUR
-           END-EVALUATE           
+           END-EVALUATE
+      *
+           IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
+                 ( SPA-GMN-HKNNUM-NO   <=  899 )
+               IF    ( SPA-GMN-MAX         =   ZERO )  OR
+                     ( SPA-NAI-TEDYUKYMD(SPA-GMN-MAX)
+                                           NOT =   "99999999" )
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   MOVE    SYS-1001-PREFNUM    TO  SPA-GMN-PREFNUM
+                   MOVE    7                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF 
+      *
            .
        41041-HKNNUM-HENSYU-EXT.
            EXIT.
-      *
+      *----(04.08.00)--UPD-END-----
       *****************************************************************
       *    支払区分　入力処理
       *****************************************************************
@@ -983,7 +980,11 @@
       *
       *----(04.08.00)--ADD-START---
            MOVE    V01-PREFNUM         TO  SPA-GMN-PREFNUM-G
-           MOVE    4                   TO  SPA-GMN-CUR
+           IF    ( SPA-GMN-MAX         =   ZERO )
+               MOVE    4                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    3                   TO  SPA-GMN-CUR
+           END-IF
       *----(04.08.00)--ADD-END-----
       *
            IF    ( SPA-GMN-PREFNUM-G   =   SPACE )
@@ -1186,6 +1187,15 @@
                MOVE    "0006"              TO  SPA-ERRCD
                GO  TO  410-KAKUTEI-EXT
            END-IF
+      *----(04.08.00)--ADD-START---
+           IF    ( SPA-GMN-MAX     >   1 )
+           AND   ( SPA-NAI-STYUKYMD    =   "00000000" )
+           AND   ( SPA-NAI-EDYUKYMD    =   "99999999" )
+               MOVE    4                   TO  SPA-GMN-CUR
+               MOVE    "0004"              TO  SPA-ERRCD 
+               GO  TO  410-KAKUTEI-EXT
+           END-IF
+      *----(04.08.00)--ADD-END-----
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL  (IDX >       SPA-GMN-MAX  )
@@ -1193,20 +1203,20 @@
                IF      SPA-GMN-SELNUM      =   IDX
                    CONTINUE
                ELSE
-                   IF      SPA-GMN-PAYKBN  =   SPA-GMN-TPAYKBN   (IDX)
-                       IF      SPA-NAI-STYUKYMD
-                                           >=  SPA-NAI-TSTYUKYMD (IDX)
-                       AND     SPA-NAI-STYUKYMD
-                                           <=  SPA-NAI-TEDYUKYMD (IDX)
-                           MOVE    "0004"      TO  SPA-ERRCD 
-                       END-IF
-                       IF      SPA-NAI-EDYUKYMD
-                                           >=  SPA-NAI-TSTYUKYMD (IDX)
-                       AND     SPA-NAI-EDYUKYMD
-                                           <=  SPA-NAI-TEDYUKYMD (IDX)
-                           MOVE    "0004"              TO  SPA-ERRCD 
-                       END-IF
-                   END-IF    
+      *----(04.08.00)--UPD-START---
+                   IF   (( SPA-NAI-STYUKYMD
+                                       <   SPA-NAI-TSTYUKYMD(IDX) )
+                     AND ( SPA-NAI-EDYUKYMD
+                                       <   SPA-NAI-TSTYUKYMD(IDX) ))
+                     OR (( SPA-NAI-STYUKYMD
+                                       >   SPA-NAI-TEDYUKYMD(IDX))
+                     AND ( SPA-NAI-EDYUKYMD
+                                       >   SPA-NAI-TEDYUKYMD(IDX) ))
+                       CONTINUE
+                   ELSE
+                       MOVE    "0004"      TO  SPA-ERRCD 
+                   END-IF
+      *----(04.08.00)--UPD-END-----
                END-IF
            END-PERFORM 
            IF      SPA-ERRCD           NOT =   SPACE
@@ -1498,14 +1508,22 @@
       *
            MOVE    "付加設定"          TO V01-B06
       *
+      *----(04.08.00)--UPD-START---
            IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
-                 ( SPA-GMN-HKNNUM-NO   <=  899 )  AND
-                 ( SPA-GMN-MAX         =   ZERO )
-               MOVE    WIDGET-NORMAL       TO  V01-PREFNUM-STATE
+                 ( SPA-GMN-HKNNUM-NO   <=  899 )
+               IF    ( SPA-GMN-MAX         =   ZERO )  OR
+                     ( SPA-NAI-TEDYUKYMD(SPA-GMN-MAX)
+                                           NOT =   "99999999" )
+                   MOVE    WIDGET-NORMAL       TO  V01-PREFNUM-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  V01-PREFNUM-STATE
+                   MOVE    SPACE               TO  SPA-GMN-PREFNUM-G
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  V01-PREFNUM-STATE
                MOVE    SPACE               TO  SPA-GMN-PREFNUM-G
            END-IF
+      *----(04.08.00)--UPD-END-----
       *
       *    都道府県番号
            MOVE    SPA-GMN-PREFNUM-G       TO  V01-PREFNUM
@@ -1530,9 +1548,14 @@
       *
       *----(04.08.00)--ADD-START---
            IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
-                 ( SPA-GMN-HKNNUM-NO   <=  899 )  AND
-                 ( SPA-GMN-MAX         =   ZERO )
-               MOVE    WIDGET-NORMAL       TO  V01-CPHKNNUM-STATE
+                 ( SPA-GMN-HKNNUM-NO   <=  899 )
+               IF    ( SPA-GMN-MAX         =   ZERO )  OR
+                     ( SPA-NAI-TEDYUKYMD(SPA-GMN-MAX)
+                                           NOT =   "99999999" )
+                   MOVE    WIDGET-NORMAL       TO  V01-CPHKNNUM-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  V01-CPHKNNUM-STATE
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  V01-CPHKNNUM-STATE
            END-IF
@@ -1586,8 +1609,14 @@
        50011-GMN-CUR-SET-SEC      SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
+      *----(04.08.00)--UPD-START---
                WHEN    "PREFNUM"
-                   MOVE    4               TO  SPA-GMN-CUR
+                   IF    ( SPA-GMN-MAX         =   ZERO )
+                       MOVE    4                   TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    3                   TO  SPA-GMN-CUR
+                   END-IF
+      *----(04.08.00)--UPD-END-----
                WHEN    "PAYKBN"
                    MOVE    4               TO  SPA-GMN-CUR
                WHEN    "STYUKYMD"
