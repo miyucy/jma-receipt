@@ -980,7 +980,8 @@
       *
       *----(04.08.00)--ADD-START---
            MOVE    V01-PREFNUM         TO  SPA-GMN-PREFNUM-G
-           IF    ( SPA-GMN-MAX         =   ZERO )
+           IF    ( SPA-GMN-MAX         =   ZERO )  OR
+                 ( SPA-GMN-CPHKNNUM    NOT =   SPACE )
                MOVE    4                   TO  SPA-GMN-CUR
            ELSE
                MOVE    3                   TO  SPA-GMN-CUR
@@ -1216,13 +1217,13 @@
                    ELSE
                        MOVE    "0004"      TO  SPA-ERRCD 
                    END-IF
-      *----(04.08.00)--UPD-END-----
                END-IF
            END-PERFORM 
            IF      SPA-ERRCD           NOT =   SPACE
-               MOVE    3                   TO  SPA-GMN-CUR
+               MOVE    4                   TO  SPA-GMN-CUR
                GO  TO  410-KAKUTEI-EXT
            END-IF      
+      *----(04.08.00)--UPD-END-----
       *
            INITIALIZE                  SPA-V01KYOUTU
       *
@@ -1535,7 +1536,7 @@
            END-PERFORM
       *
            IF        ( SPA-GMN-PREFNUM NOT =   SPACE )
-               AND   ( SPA-ERRCD           =   SPACE )
+      *         AND   ( SPA-ERRCD           =   SPACE )
                MOVE    WIDGET-NORMAL       TO  V01-B11-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  V01-B11-STATE
