@@ -605,12 +605,12 @@
                                             INTO    W061-MIDASI4
                END-STRING
            WHEN    "2"
-               MOVE    "≪非表示変更≫"
+               MOVE    "≪表示変更≫"
                                             TO  W061-MIDASI2
                MOVE    "red"                TO  W061-MIDASI2-STYLE
                MOVE    SPACE                TO  W061-MIDASI3
                STRING  "※「F2 クリア」「F12 登録」押下で"
-                       "非表示変更を終了します"
+                       "表示変更を終了します"
                                             DELIMITED  BY  SIZE
                                             INTO    W061-MIDASI4
                END-STRING
@@ -619,7 +619,7 @@
                                             TO  W061-MIDASI2
                MOVE    "black"              TO  W061-MIDASI2-STYLE
                MOVE    SPACE                TO  W061-MIDASI3
-               STRING  "※「F9 非表示変更」「F10 終了日変更」押下で"
+               STRING  "※「F9 表示変更」「F10 終了日変更」押下で"
                        "変更を開始します"
                                             DELIMITED  BY  SIZE
                                             INTO    W061-MIDASI4
@@ -1662,7 +1662,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "期間が重複します。"
                                        TO  SPA-ERRMSG
                WHEN    "0013"
-                   STRING  "非表示変更中です。"
+                   STRING  "表示変更中です。"
                            "「クリア」か「登録」を行って下さい。"
                                                    DELIMITED  BY  SIZE
                                                    INTO    SPA-ERRMSG
@@ -1710,7 +1710,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    INTO    WRK-WIDMSG
                    END-STRING
                WHEN    "1002"
-                   STRING  "画面内の非表示区分を変更します。"
+                   STRING  "画面内の表示区分を変更します。"
                            "よろしいですか？"
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-WIDMSG
