@@ -1383,8 +1383,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *H27.11
       *            √ÌºÕ∞ ≤º
                    IF     (SPA-HAIKIKBN-FLG    =   "2"   )   AND
-                          (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" ) AND
-                          (SPA-COM-SRYKBN (IDX-1)(1:1)  =   "4"
+                          (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" ) AND
+                          (SPA-COM-SRYKBN (IDX)(1:1)   =   "4"
                                                         OR  "5"
                                                         OR  "6"
                                                         OR  "7"
