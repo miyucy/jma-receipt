@@ -884,9 +884,6 @@
                INITIALIZE                      HKNNUM-REC
            END-IF
       *
-      *----(04.08.00)--ADD-START---
-           MOVE    ZERO                TO  FLG-OK
-      *----(04.08.00)--ADD-END-----
            MOVE    ZERO                TO  IDX
            PERFORM             UNTIL   FLG-HKNNUM   =   1
                                OR      IDX            >=  100
@@ -903,12 +900,6 @@
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG        TO  SPA-GMN-TEDYUKYMD (IDX)
                MOVE    IDX                TO  SPA-GMN-MAX
-      *----(04.08.00)--ADD-START---
-               IF    ( HKN-TEKSTYMD       =   "99999999" ) AND
-                     ( HKN-TEKEDYMD       =   "99999999" )
-                   MOVE    1                  TO  FLG-OK
-               END-IF
-      *----(04.08.00)--ADD-END-----
       *
                PERFORM 900-HKNNUM-FETCH-SEC
            END-PERFORM
@@ -957,9 +948,7 @@
                      ( SPA-NAI-TEDYUKYMD(SPA-GMN-MAX)
                                            NOT =   "99999999" )
                    PERFORM 900-SYSKANRI-READ-SEC
-                   MOVE    SYS-1001-PREFNUM    TO  V01-PREFNUM
-                   PERFORM 4101-PREFNUM-CHK-SEC
-                   MOVE    SPACE               TO  SPA-ERRCD
+                   MOVE    SYS-1001-PREFNUM    TO  SPA-GMN-PREFNUM
                    MOVE    7                   TO  SPA-GMN-CUR
                END-IF
            END-IF 
@@ -1088,21 +1077,15 @@
       *
            PERFORM 4104-HKNNUM-CHK-SEC
       *
-      *----(04.08.00)--UPD-START----
-           IF      FLG-OK          =   ZERO
+           IF      SPA-GMN-MAX     =   ZERO
                MOVE    SPACE           TO  SKBN-RUN
                MOVE    "該当データはありませんでした。"
                                        TO  SPA-GMN-MESSAGE
                MOVE    "blue"          TO  SPA-GMN-MESSAGE-STYLE
-               IF      V01-CPHKNNUM    =   SPACE
-                   MOVE    1               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    V01-CPHKNNUM    TO  SPA-GMN-CPHKNNUM
-                   MOVE    7               TO  SPA-GMN-CUR
-               END-IF
+               MOVE    SPACE           TO  SPA-GMN-PREFNUM-G
+               MOVE    4               TO  SPA-GMN-CUR
                GO  TO  400-JYOKYO-EXT
            END-IF
-      *----(04.08.00)--UPD-END-----
       *
            PERFORM 41041-HKNNUM-HENSYU-SEC
       *
@@ -1143,14 +1126,8 @@
                                    TO  SHELLTBL-ARG4
            MOVE    "HKNNUM"        TO  SHELLTBL-ARG5
            MOVE    SPA-GMN-PREFNUM TO  SHELLTBL-ARG6
-      *----(04.08.00)--UPD-START---
-           MOVE    SPA-GMN-HKNNUM  TO  SHELLTBL-ARG8
-           IF      SPA-GMN-CPHKNNUM    =   SPACE
-               MOVE    SPA-GMN-HKNNUM      TO  SHELLTBL-ARG7
-           ELSE
-               MOVE    SPA-GMN-CPHKNNUM    TO  SHELLTBL-ARG7
-           END-IF
-      *----(04.08.00)--UPD-END-----
+           MOVE    SPA-GMN-HKNNUM-NO
+                                   TO  SHELLTBL-ARG7
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1486,7 +1463,6 @@
       *
            MOVE    SPACE               TO  V01
       *
-           INITIALIZE                      V01
            MOVE    ZERO                TO  V01-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
@@ -1555,7 +1531,7 @@
            END-PERFORM
       *
            IF        ( SPA-GMN-PREFNUM NOT =   SPACE )
-      *         AND   ( SPA-ERRCD           =   SPACE )
+               AND   ( SPA-ERRCD           =   SPACE )
                MOVE    WIDGET-NORMAL       TO  V01-B11-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  V01-B11-STATE
@@ -1718,7 +1694,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  VID1
-           INITIALIZE                       VID1
            MOVE    SPA-VIDCD            TO  VID1-ID1CODE
            MOVE    WRK-VIDMSG           TO  VID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2068,6 +2043,7 @@
            .
        900-PUT-WINDOW-EXT.
            EXIT.
+
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************

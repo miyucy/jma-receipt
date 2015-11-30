@@ -644,7 +644,7 @@
                MOVE    SPA-SYSYMD              TO  HKN-TEKEDYMD
            ELSE
       *        保険番号マスタより編集  
-               INITIALIZE                      HKNNUM-REC
+               INITIALIZE                          HKNNUM-REC
                MOVE    SPA-V01-HKNNUM          TO  HKN-HKNNUM
                MOVE    SPA-V01-PAYKBN          TO  HKN-PAYKBN
                IF      SPA-OLD-STYUKYMD        =   SPACE
@@ -2478,7 +2478,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  VID1
-           INITIALIZE                       VID1
            MOVE    SPA-VIDCD            TO  VID1-ID1CODE
            MOVE    WRK-VIDMSG           TO  VID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
