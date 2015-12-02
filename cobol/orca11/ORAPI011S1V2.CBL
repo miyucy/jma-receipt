@@ -29,7 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  13/09/26  CLAIM診療区分名称編集
       *  04.07.00    NACL-多々納  14/06/XX  ワーニングメッセージ対応他
-      *  04.08.00    NACL-多々納  15/11/XX  保険組合せ番号送信追加
+      *  04.08.00    NACL-多々納  15/12/01  保険組合せ番号送信追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -1256,7 +1256,7 @@
        200231-HKNHEN-TBL-SEC              SECTION.
       *
            ADD     1                   TO  IDY
-      *H27.11
+      *H27.12
       *    保険組合せ番号
            MOVE    ORCSAPIHKN-THKNCOMBI (IDX)
                                        TO  ACCPTRES-COMBINATION-NUMBER
