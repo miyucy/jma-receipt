@@ -133,6 +133,8 @@
       *                                     存在チェックの修正
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
+      *  04.08.02    NACL-藤原    15/12/02  病名入力時の廃止年月日変換の
+      *                                     条件追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3890,11 +3892,16 @@ grpsys                                         SPA-AREA
                                        TO  SPA-NAI-C03-TOKSKNCD (IDZ)
                MOVE    LNK-BYO-TNANBYOCD  (IDX)
                                        TO  SPA-NAI-C03-NANBYOCD-O(IDZ)
-               MOVE    LNK-BYO-THAISIYMD (IDX)
-                                       TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    LNK-DAY2-EDTYMD3
-                                       TO  WRK-HAISIYMDH
+               IF      LNK-BYO-THAISIYMD (IDX)
+                                       =   ALL "9" OR  SPACE
+                   CONTINUE
+               ELSE
+                   MOVE    LNK-BYO-THAISIYMD (IDX)
+                                           TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3
+                                           TO  WRK-HAISIYMDH
+               END-IF
            END-PERFORM
       *
       *    病名コード最大個数オーバー
@@ -4046,7 +4053,7 @@ grpsys                                         SPA-AREA
                ELSE
                    MOVE    "0071"              TO  SPA-ERRCD
                    MOVE    12                  TO  SPA-GMN-C03-CUR
-                   GO  TO  41013-BYOMEI-CHK-EXT
+                   GO  TO 41022-CHARTBYOMEI-CHK-EXT
                END-IF
            END-IF    
       *
@@ -4063,7 +4070,7 @@ grpsys                                         SPA-AREA
            COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
            MOVE    WRK-MOJISU           TO  SPA-NAI-C03-CHARTBYOMEIMOJI
            .
-       41013-BYOMEI-CHK-EXT.
+       41022-CHARTBYOMEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
