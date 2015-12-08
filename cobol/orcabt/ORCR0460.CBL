@@ -172,6 +172,9 @@
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.04    NACL-門脇    15/12/02  ０点地域公費記載対応
+      *  04.08.05    NACL-門脇    15/12/08  労災コードの表用番号・公表順序番号
+      *                                     編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -800,6 +803,8 @@
            03  FILLER          PIC X(09)   VALUE   "120003610".
       *    処方料（紹介率が低い大病院３０日以上投薬減算）
            03  FILLER          PIC X(09)   VALUE   "120003870".
+      *    【レセプト】０点地域公費記載
+           03  FILLER          PIC X(09)   VALUE   "099999925".
       *
       *    再診（妥結率５割以下）
            03  FILLER          PIC X(09)   VALUE   "112016610".
@@ -841,9 +846,9 @@
            03  FILLER          PIC X(09)   VALUE   "101120080".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   79.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   80.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   79.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   80.
       *
       *    固定値
        01  CONST-AREA.
@@ -3935,6 +3940,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                    END-EVALUATE
                  ELSE
                    IF  WRK-ZAIW-SRYCD1(1:3) = "101"
+                   AND WRK-ZAIW-CDKBN-KBN   = SPACE
                        MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
                        MOVE  WRK-ZAIW-SRYCD1 TO  WRK-ZAIW-KOUHYOJYUNNUM
                    END-IF
