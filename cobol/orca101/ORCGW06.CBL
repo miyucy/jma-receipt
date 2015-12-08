@@ -151,6 +151,10 @@
            03  WRK-ERRCUR          PIC 9(03).
       *
            03  WRK-PASSWORD        PIC X(128).
+      *----(04.08.05)--ADD-START---
+           03  WRK-KEY-SYOKUCOD    PIC X(04).
+           03  WRK-KEY-FLG         PIC 9(01).
+      *----(04.08.05)--ADD-END-----
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -677,8 +681,19 @@
                MOVE    1                   TO  SPA-GMN-PAGENO
            ELSE
                MOVE    SPA-STAFFCD(1:1)    TO  SPA-GMN-SYOKUKBN-G
-               PERFORM 320-SYOKUCOD-HENSYU-SEC
                MOVE    SPA-STAFFCD(2:4)    TO  SPA-GMN-SYOKUCOD-G
+               PERFORM 320-SYOKUCOD-HENSYU-SEC
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   SPA-SYOKUCOD-MAX)
+                   IF      SPA-GMN-SYOKUCOD    =   SPA-GMN-TSYOKUCOD
+                                                             (IDX)
+                       MOVE    SPA-GMN-SYOKUCOD-LIST (IDX)
+                                               TO  SPA-GMN-SYOKUCOD-G
+                       MOVE    SPA-SYOKUCOD-MAX    TO  IDX
+                       MOVE    1                   TO  FLG-OK
+                   END-IF
+               END-PERFORM
       *
       *        ¿¦°÷¤Î¾ðÊó¤òÆÉ¤ß¹þ¤ß
                PERFORM 20021-SYOKUCOD-CHK-SEC
@@ -705,7 +720,6 @@
        3101-INIT-GMN-EXT.
            EXIT.
       *
-      *----(04.08.05)--UPD-END----
       *****************************************************************
       *    ¿¦°÷¶èÊ¬Ëè¤Î¿¦°÷ÊÔ½¸½èÍý 
       *****************************************************************
@@ -720,32 +734,47 @@
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key14"             TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           PERFORM  VARYING    IDX     FROM    1   BY  1
-               UNTIL          (IDX     >     100   )  OR
-                              (FLG-SYSKANRI    =   1 )
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-KEY-FLG
+           MOVE    SPACE               TO  WRK-KEY-SYOKUCOD
+           PERFORM UNTIL       (IDX             >= 100 )  OR
+                               (FLG-SYSKANRI    =   1  )
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
-               MOVE    SYS-1010-KBNCD(2:4) TO  SPA-GMN-TSYOKUCOD (IDX)
-               MOVE    SYS-1010-NAME       TO  SPA-GMN-TSYOKUCOD-MEI
-                                                               (IDX)
+               IF      SYS-1010-KBNCD(2:4) NOT =   WRK-KEY-SYOKUCOD
+                   ADD     1                   TO  IDX
+                   MOVE    ZERO                TO  WRK-KEY-FLG
+                   MOVE    SYS-1010-KBNCD(2:4) TO  WRK-KEY-SYOKUCOD
+                                               SPA-GMN-TSYOKUCOD(IDX)
+               END-IF
+               IF     (SYS-1010-STYUKYMD   <=  SPA-SYSYMD  ) AND
+                      (SYS-1010-EDYUKYMD   >=  SPA-SYSYMD  )
+                   MOVE    SYS-1010-NAME   TO
+                                           SPA-GMN-TSYOKUCOD-MEI(IDX)
+                   MOVE    1               TO  WRK-KEY-FLG
+               END-IF
+               IF      WRK-KEY-FLG         =   ZERO
+                   MOVE    SYS-1010-NAME   TO
+                                           SPA-GMN-TSYOKUCOD-MEI(IDX)
+               END-IF
                MOVE    IDX                 TO  SPA-SYOKUCOD-MAX
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key14"             TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF     (SPA-SYOKUCOD-MAX    =   100 )  AND
@@ -757,7 +786,7 @@
            . 
        320-SYOKUCOD-HENSYU-EXT.
            EXIT.
-      *
+      *----(04.08.05)--UPD-END----
       *****************************************************************
       *    ¿¦°÷¶èÊ¬Ëè¤Î¿¦°÷ÊÔ½¸½èÍý£²
       *****************************************************************
