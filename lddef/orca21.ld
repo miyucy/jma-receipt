@@ -31,8 +31,6 @@ bind	"KERR2"		"OpenCOBOL"	"ORCGKERR2";
 bind	"KID1"		"OpenCOBOL"	"ORCGKID1";
 bind	"KID2"		"OpenCOBOL"	"ORCGKID2";
 bind	"KHELP"		"OpenCOBOL"	"ORCGKHELP";
-bind	"K024"		"OpenCOBOL"	"ORCGK024";
-bind	"K0241"		"OpenCOBOL"	"ORCGK0241";
 bindapi "medicalsetv2"  "OpenCOBOL"	"ORAPI021SETV2"; 
 
 multiplex_group	orca21;
@@ -68,8 +66,6 @@ data	{
                 KID1;
                 KID2;
                 KHELP;
-                K024;
-                K0241;
 		medicalsetv2;
 	};
 };
@@ -77,19 +73,7 @@ data	{
 db "xml2" {
  xml_medicalsetv2req;
  xml_medicalsetv2res;
- fm_medicine_notebook;
- fm_prescription;
- fm_medicine_information;
- fm_appointment_form;
- fm_statement;
- fm_invoice_receipt;
- fm_prescription_h;
- fm_order_injection;
- fm_order_direction;
 };
 
 #include "orcadb.inc"
 #include "orcadbh.inc"
-db "push" {
-        push_medical01;
-};
