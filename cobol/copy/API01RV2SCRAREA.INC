@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
+      * 楠��4W?激Zプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -84,51 +84,4 @@
       *ORAPI012R5V2
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //APILST21-//.
-      *ORAPI042R1V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST22-//.
-      *ORAPICLAIM1RV2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST23-//.
-      *ORAPICLAIM2RV2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST24-//.
-      *ORAPI001R1V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST25-//.
-      *ORAPI021R4V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST26-//.
-      *ORAPI052R4V2
-      **   COPY    "CPAPILSTV2.INC"    REPLACING
-      **                               //APILST-// BY //APILST27-//.
-      *ORAPIRELR1V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST28-//.
-      *ORAPIRELR2V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST29-//.
-      *ORAPI000R2V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST30-//.
-      *ORAPI012R6V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST31-//.
-      *ORAPI001R2V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST32-//.
-      *ORAPI001R3V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST33-//.
-      *ORAPI025R1V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST34-//.
-      *ORAPI101R1V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST35-//.
-      *ORAPI031RC3V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST36-//.
-      *ORAPI000R3V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST37-//.
+      *
