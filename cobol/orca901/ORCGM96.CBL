@@ -170,6 +170,7 @@
            COPY    "M97.INC".
            COPY    "MMERR.INC".
            COPY    "MMID1.INC".
+           COPY    "MJOB.INC".
       *
       *
        PROCEDURE                   DIVISION    USING

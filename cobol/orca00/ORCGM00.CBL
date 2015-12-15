@@ -1238,6 +1238,26 @@
       *        感染症設定メッセージ
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 810-INFECTION-002-SEC
+      *ito debug start
+      *        ログ表示
+               WHEN    "CLICKED"       ALSO    "B05"
+      *    画面移行用のパラメタ変更
+           MOVE    "M00"               TO  SPA-MOTOPG
+           MOVE    "MJOB"              TO  SPA-SAKIPG
+           MOVE    SPACE               TO  SPA-MOTOPG2
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *    戻り時、画面を元へ戻す
+           MOVE    SPA-M00             TO  LNK-FREE
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "MJOB   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *ito debug end
       *        システム日付設定
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-M95-SEC

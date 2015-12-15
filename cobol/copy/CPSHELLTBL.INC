@@ -29,7 +29,8 @@
                 03  SHELLTBL-JOBID          PIC  9(07).
                 03  SHELLTBL-SHELLID        PIC  X(08).
                 03  SHELLTBL-RUN-OPID       PIC  X(16).
-                03  SHELLTBL-EXTRA-VALUE    PIC  X(481).
+                03  SHELLTBL-LOG-FILEID     PIC  X(08).
+                03  SHELLTBL-EXTRA-VALUE    PIC  X(473).
             02  SHELLTBL-PGID   PIC S9(09) BINARY.
             02  SHELLTBL-STARTTIME  PIC X(32).
             02  SHELLTBL-ARG1   PIC X(150).
