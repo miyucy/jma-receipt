@@ -4099,6 +4099,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *
            END-PERFORM
+      *H26.1
+           IF     (FLG-SYSKANRI        =   ZERO ) AND
+                  (SPA-GMN-SYORI       =   2    )
+               CONTINUE
+           ELSE
+      *        最大１０件の履歴とする
+               IF      SPA-GMN-TBL-MAX    =   10
+                   MOVE   "0050"              TO  SPA-ERRCD
+                   MOVE   5                   TO  SPA-GMN-CUR
+                   GO     TO      490-KOUSHIN-EXT
+               END-IF
+           END-IF
       *
            IF     (FLG-SYSKANRI        =   ZERO ) AND
                   (SPA-GMN-SYORI       =   2    )
@@ -5341,8 +5353,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                              "管理者を登録してください。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
-                   END-STRING                                                                                     
+                   END-STRING
       *----(04.08.05)--ADD-END-----
+               WHEN    "0050"
+                   STRING    "履歴１０件登録済みです。"
+                             "これ以上追加できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "0100"
                    MOVE
                    "オルカマスターはシステム管理を有効にして下さい"
