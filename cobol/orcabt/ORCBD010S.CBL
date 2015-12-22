@@ -583,7 +583,6 @@
                                            SRH-AREA
       *
            PERFORM 100-DBOPEN-SEC
-           DISPLAY "MCP-TERM=" MCP-TERM
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
