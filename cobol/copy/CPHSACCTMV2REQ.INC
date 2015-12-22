@@ -29,7 +29,6 @@
                05  HSACCTMREQ-REQNUM         PIC X(1).
                05  HSACCTMREQ-PTNUM          PIC X(20).
                05  HSACCTMREQ-NYUINYMD       PIC X(10).
-               05  HSACCTMREQ-ENDYM          PIC X(7).
                05  HSACCTMREQ-SRYYMD         PIC X(10).
                05  HSACCTMREQ-ENDYMD         PIC X(10).
                05  HSACCTMREQ-SKJ-AREA.
@@ -38,4 +37,3 @@
                        09  HSACCTMREQ-SKJTYPE    PIC X(1).
                        09  HSACCTMREQ-NISSU      PIC X(50).
                05  HSACCTMREQ-GAIHAKUKBN        PIC X(2).
-               05  HSACCTMREQ-SAGAKU            PIC X(7).

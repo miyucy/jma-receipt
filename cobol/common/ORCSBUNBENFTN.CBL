@@ -235,11 +235,6 @@
                PERFORM 2002-EDIT-SYUINF-SEC
            END-IF
       *
-           IF  ( BUNBEN-TEISYUTUSAKI   NOT =   SPACE )
-               MOVE    BUNBEN-TEISYUTUSAKI
-                                       TO  LNKBUNBEN-TEISYUTUSAKI
-           END-IF
-      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -626,17 +621,17 @@
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-      *    IF    ( BUNBEN-RIYOUKBN         =   "1" )
-      *        IF    ( BUNBEN-BUNBENKBN    =   "1" )
-      *                MOVE    "2"     TO  LNKBUNBEN-TEISYUTUSAKI
-      *        ELSE
-      *            IF    ( LNKBUNBEN-KANYUKBN  =    "2" )
-      *                MOVE    "2"     TO  LNKBUNBEN-TEISYUTUSAKI
-      *            ELSE
-      *                MOVE    "1"     TO  LNKBUNBEN-TEISYUTUSAKI
-      *            END-IF
-      *        END-IF
-      *    END-IF
+           IF    ( BUNBEN-RIYOUKBN         =   "1" )
+               IF    ( BUNBEN-BUNBENKBN    =   "1" )
+                       MOVE    "2"     TO  LNKBUNBEN-TEISYUTUSAKI
+               ELSE
+                   IF    ( LNKBUNBEN-KANYUKBN  =    "2" )
+                       MOVE    "2"     TO  LNKBUNBEN-TEISYUTUSAKI
+                   ELSE
+                       MOVE    "1"     TO  LNKBUNBEN-TEISYUTUSAKI
+                   END-IF
+               END-IF
+           END-IF
       *
            .
        2001-EDIT-HKNINF-EXT.
