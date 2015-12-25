@@ -4,7 +4,7 @@ U1ERR {
       textdata char(10);
     };
     ERRMSG {
-      textdata char(60);
+      textdata char(80);
     };
   };
 };

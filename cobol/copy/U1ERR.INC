@@ -22,4 +22,4 @@
          02  U1ERR.
             03  U1ERR-FIXED1.
               04  U1ERR-ERRCODE    PIC X(10).
-              04  U1ERR-ERRMSG PIC X(60).
+              04  U1ERR-ERRMSG     PIC X(80).
