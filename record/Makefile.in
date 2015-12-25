@@ -503,6 +503,7 @@ RECORD_files = \
 	insuranceinf1v2.rec \
 	MJOB.rec \
 	birthdeliveryv2.rec \
+	medicalmodv34.rec \
 
 DEF_files = \
 
@@ -829,6 +830,8 @@ DB_files = \
 	monbatch_clog.db \
 	xml_birthdeliveryv2req.db \
 	xml_birthdeliveryv2res.db \
+	xml_medicalv3req4.db \
+	xml_medicalv3res4.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
