@@ -328,6 +328,7 @@
        01  SCRAREA.
            COPY    "U01.INC".
            COPY    "U012.INC".
+           COPY    "UDR.INC".
            COPY    "U1ERR.INC". 
            COPY    "U1ID1.INC". 
       *
@@ -539,6 +540,11 @@
       *        ÁªÂò°ìÍ÷
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-U012-SYORI-SEC
+      *!!!!!!!!!!!!!
+      *TEST
+      *        Ã´Åö°åÅÐÏ¿
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 460-UDR-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -1113,6 +1119,35 @@
        440-ATOGMN-EXT.
            EXIT.
       *
+      *!!!!!!!!!!!!!
+      *TEST
+      *****************************************************************
+      *    Ã´Åö°åÅÐÏ¿¡¡½èÍý
+      *****************************************************************
+       460-UDR-SYORI-SEC             SECTION.
+      *
+      *
+           INITIALIZE                      SPA-U012-AREA
+      *
+           MOVE    "U01"               TO  SPA-U012-MOTOPG
+           MOVE    SPA-U01KYOUTU       TO  SPA-WORK
+           MOVE    SPACE               TO  LNK-KYOUTU
+      *
+           MOVE    "U01"               TO  SPA-MOTOPG
+           MOVE    "UDR"               TO  SPA-SAKIPG
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "UDR"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       460-UDR-SYORI-EXT.
+           EXIT.
+      *!!!!!!!!!!!!!
+      *TEST
       *****************************************************************
       *    ¼«²èÌÌÊÔ½¸½èÍý
       *****************************************************************

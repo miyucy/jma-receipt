@@ -504,6 +504,7 @@ RECORD_files = \
 	MJOB.rec \
 	birthdeliveryv2.rec \
 	medicalmodv34.rec \
+	UDR.rec \
 
 DEF_files = \
 
@@ -832,6 +833,7 @@ DB_files = \
 	xml_birthdeliveryv2res.db \
 	xml_medicalv3req4.db \
 	xml_medicalv3res4.db \
+	tbl_list_doctor.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
