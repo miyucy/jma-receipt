@@ -2146,17 +2146,6 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
-           WHEN    "22"
-               MOVE    "該当の受診履歴が存在しません"
-                                               TO  WRK-ERRMSG
-           WHEN    "23"
-               MOVE    "連番数値エラーです"
-                                               TO  WRK-ERRMSG
-           WHEN    "16"
-               MOVE    "診療内容が存在しません"
-                                               TO  WRK-ERRMSG
-           WHEN    "17"
-               MOVE     SPACE                  TO  WRK-ERRMSG
            WHEN    "18"
                STRING  "保険組合せ番号が存在しません。"
                                                DELIMITED  BY  SIZE
@@ -2172,6 +2161,12 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
+           WHEN    "22"
+               MOVE    "該当の受診履歴が存在しません"
+                                               TO  WRK-ERRMSG
+           WHEN    "23"
+               MOVE    "連番数値エラーです"
+                                               TO  WRK-ERRMSG
            WHEN    "25"
                MOVE    "削除処理をキャンセルしました。"
                                                TO  WRK-ERRMSG
