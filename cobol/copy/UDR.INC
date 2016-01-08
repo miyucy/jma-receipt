@@ -29,7 +29,8 @@
               03  UDR-B10.
                 04  UDR-STATE   PIC S9(9)   BINARY.
               03  UDR-B11.
-                04  UDR-STATE   PIC S9(9)   BINARY.
+                04  UDR-B11-STATE   PIC S9(9)   BINARY.
+                04  UDR-B11-LABEL   PIC X(10).
               03  UDR-B12.
                 04  UDR-STATE   PIC S9(9)   BINARY.
               03  UDR-SRYKA-COMB.

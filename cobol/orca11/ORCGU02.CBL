@@ -640,7 +640,9 @@
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
                MOVE    SPA-HZN-MOTOPG      TO  WRK-HZN-MOTOPG
       *H27.12
-               MOVE    SPA-DRCD            TO  WRK-HZN-DRCD
+               IF      WRK-MOTOPG          =   "UDR"
+                   MOVE    SPA-DRCD            TO  WRK-HZN-DRCD
+               END-IF
       *
       *        元の画面へ戻す
                IF      WRK-MOTOPG          =   "Y01"  OR  "U01"  OR
@@ -943,6 +945,16 @@
            IF      ORCSDR-DRCD-IDX     >   ZERO
                MOVE    SPA-GMN-DRCDLST  (ORCSDR-DRCD-IDX)
                                            TO  SPA-GMN-DRCD-G
+           ELSE
+               PERFORM VARYING   IDX       FROM    1   BY  1
+                   UNTIL     IDX           >   SPA-DRCD-MAX 
+                   IF      WRK-HZN-DRCD(2:4)   =   SPA-GMN-DRCDLST(IDX)
+                                                                 (1:4)
+                       MOVE    SPA-GMN-DRCDLST(IDX)
+                                               TO  SPA-GMN-DRCD-G
+                       MOVE    SPA-DRCD-MAX    TO  IDX
+                   END-IF
+               END-PERFORM
            END-IF
            MOVE    05                  TO  SPA-GMN-CUR
       *
@@ -1985,11 +1997,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *        選択一覧へ
                WHEN    "CLICKED"       ALSO    "B08S"
                    PERFORM 4908-B08S-SYORI-SEC
-      *TEST
-      *        担当医設定へ
-      *        WHEN    "CLICKED"       ALSO    "B03S"
-      *            PERFORM 4908-UDR-SYORI-SEC
-      *TEST
            END-EVALUATE
       *
            .
@@ -6556,12 +6563,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-DRCD-MAX        <   99
                MOVE    SPA-DRCD-MAX    TO  IDX
                ADD     1               TO  IDX
-           ELSE
-               MOVE    SPA-DRCD-MAX    TO  IDX
-           END-IF
-           MOVE    "****  医師一覧"
+               MOVE    "****  医師一覧"
                                        TO  U02-DRNAME-ITEM(IDX)
-           MOVE    IDX                 TO  U02-DRNAME-COUNT
+               MOVE    IDX             TO  U02-DRNAME-COUNT
+           END-IF
       *!!
       *
            PERFORM VARYING     IDX     FROM    1   BY  1

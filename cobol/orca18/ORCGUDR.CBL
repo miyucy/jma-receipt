@@ -508,8 +508,6 @@
            END-IF
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  IDX-S
-      *    ADD     1                   TO  IDX
-      *    MOVE    "00 全科"           TO  SPA-GMN-SRYKA-LIST (IDX)
            PERFORM 
                    UNTIL       (IDX            >=  100  )  OR
                                (FLG-SYSKANRI   =   1    )
@@ -598,13 +596,6 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
-      *TEST
-           DISPLAY "3101-TBL-HENSYU-EXT"
-               ",SPA-GMN-NEXT:"  SPA-GMN-NEXT
-                ",SPA-GMN-MAX:" SPA-GMN-MAX
-                ",SPA-GMN-PAGE:" SPA-GMN-PAGE
-              ",SPA-NAI-LISTKBN:" SPA-NAI-LISTKBN
-      *TEST
            .
        3101-TBL-HENSYU-EXT.
            EXIT.
@@ -1136,16 +1127,16 @@
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 440-UPDWN-SEL-SEC
       *           ＵＰボタン選択
-               WHEN    "CLICKED"       ALSO    "BUP"
-                   PERFORM 41011-UPSYORI-SEC
+      *        WHEN    "CLICKED"       ALSO    "BUP"
+      *            PERFORM 41011-UPSYORI-SEC
       *            ＤＷボタン選択
-               WHEN    "CLICKED"       ALSO    "BDW"
-                   PERFORM 41012-DWNSYORI-SEC
-      *        前頁
-               WHEN    "CLICKED"       ALSO    "B06"
+      *        WHEN    "CLICKED"       ALSO    "BDW"
+      *            PERFORM 41012-DWNSYORI-SEC
+      *        ＵＰボタン選択
+               WHEN    "CLICKED"       ALSO    "B06S"
                    PERFORM 41011-UPSYORI-SEC
-      *        次頁
-               WHEN    "CLICKED"       ALSO    "B07"
+      *        ＤＷボタン選択
+               WHEN    "CLICKED"       ALSO    "B07S"
                    PERFORM 41012-DWNSYORI-SEC
       *        診療科
                WHEN    "CLICKED"       ALSO    "B08"
@@ -1159,11 +1150,14 @@
       *        登録更新
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 4012-TOUROKU-SEC
+      *        選択のみ
+               WHEN    "CLICKED"       ALSO    "B11"
+                   PERFORM 4013-SEL-SYORI-SEC
       *        前頁
-               WHEN    "CLICKED"       ALSO    "B06S"
+               WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-MAE-PAGE-SEC
       *        次頁
-               WHEN    "CLICKED"       ALSO    "B07S"
+               WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-ATO-PAGE-SEC
            END-EVALUATE
       *
@@ -1295,6 +1289,14 @@
       *****************************************************************
        41021-SELNUM-HENSYU-SEC                SECTION.
       *
+           IF      SPA-NAI-SYORI   NOT =   1
+      *        選択医師のみ
+               IF      SPA-GMN-TSELECT (SPA-NAI-SELNUM)    =   SPACE
+      *            選択へ
+                   MOVE    1                   TO  SPA-NAI-SYORI
+               END-IF
+           END-IF
+      *
            IF      SPA-NAI-SYORI       =   1
       *        対象選択
                IF      SPA-GMN-TSELECT (SPA-NAI-SELNUM)    =   "1"
@@ -1323,11 +1325,11 @@
                PERFORM 41021-RENUM-HEN-SEC
                MOVE    ZERO                TO  SPA-NAI-SELNUM
                MOVE    ZERO                TO  SPA-GMN-SELNUM
-           ELSE
+      ***  ELSE
       *        選択医師のみ
-               IF      SPA-GMN-TSELECT (SPA-NAI-SELNUM)    =   SPACE
-                   MOVE    "0006"          TO  SPA-ERRCD
-               END-IF
+      *        IF      SPA-GMN-TSELECT (SPA-NAI-SELNUM)    =   SPACE
+      *            MOVE    "0006"          TO  SPA-ERRCD
+      ***      END-IF
            END-IF
            MOVE    1                   TO  SPA-NAI-SYORI-2
       *
@@ -2034,6 +2036,28 @@
            .
        40301-LSDOCTOR-INS-EXT.
            EXIT.
+      *****************************************************************
+      *    登録更新処理
+      *****************************************************************
+       4013-SEL-SYORI-SEC             SECTION.
+      *
+           IF     (SPA-NAI-MAE         =   ZERO )
+               GO      TO     4013-SEL-SYORI-EXT
+           END-IF
+           IF     (SPA-SEL-DRCD        =   ZERO )
+               MOVE    "0013"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-MAE         =   1
+                   MOVE    SPA-SEL-DRCD        TO  SPA-DRCD
+                   PERFORM 210-BACK
+               END-IF
+           END-IF
+      *
+           .
+       4013-SEL-SYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -2254,6 +2278,12 @@
            MOVE    SPA-GMN-MAX         TO  UDR-DRLIST-COUNT
       *
            MOVE    SPA-GMN-SELNUM      TO  UDR-SELNUM
+      *
+           IF     (SPA-NAI-MAE         =   1    )
+               MOVE    "今回選択"          TO  UDR-B11-LABEL
+           ELSE
+               MOVE    SPACE               TO  UDR-B11-LABEL
+           END-IF
       *    次頁あり
            IF      SPA-GMN-NEXT        =   1
                IF      SPA-GMN-PAGE        =   1
@@ -2333,7 +2363,8 @@
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0007"
-                   STRING  "受付中です。診療科の変更はできません。"
+                   STRING  "患者選択中です。"
+                           "診療科の変更はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
@@ -2364,6 +2395,11 @@
                    END-STRING
                WHEN    "0012"
                    STRING  "次頁はありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0013"
+                   STRING  "ドクターの選択がありません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
