@@ -49,10 +49,8 @@ report_title: "${REPORT_TITLE}"
 show_dialog: "$6"
 EOS
 
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2  >> ${LOG} 2>&1
 print_parent_prv.rb ${YAML_FILE} >> ${LOG} 2>&1
-if [ $?  -eq  0 ]; then
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2  >> ${LOG} 2>&1
-fi
 [ -e ${YAML_FILE} ] && rm ${YAML_FILE}
 
 #------ お薬手帳、処方せんQRイメージ削除
