@@ -43,9 +43,9 @@ class Jma_print
     yaml = YAML.load_file(yaml_file)
     @hospnum = yaml["hospnum"]
     @data_file = yaml["data_file"]
-    @form_dir = yaml["form_dir"]
-    @site_form_dir = yaml["site_form_dir"]
-    @patch_form_dir = yaml["patch_form_dir"]
+    @form_dir = format_dir(yaml["form_dir"])
+    @site_form_dir = format_dir(yaml["site_form_dir"])
+    @patch_form_dir = format_dir(yaml["patch_form_dir"])
     @mcp_temp_dir = yaml["mcp_temp_dir"]
     @report_title = (yaml["report_title"].blank? ? "no_title" : yaml["report_title"])
     @show_dialog = (yaml["show_dialog"]  == "1" ? true : false)
@@ -91,6 +91,10 @@ class Jma_print
   end
 
   private
+
+  def format_dir(dir_name)
+    dir_name.strip.sub(/\/$/,'')
+  end
 
   def stop_program?(stop_file)
     if File.exists?(stop_file)
@@ -143,7 +147,7 @@ class Jma_print
     item[:offset_y] = report_info[55, 5].strip unless report_info[55, 5].strip.empty?
     item[:site_program] = true if report_info[60, 1] == '2'
     item[:print_order] = report_info[61, 1].strip
-    item[:out_dir] = report_info[62, 165].strip
+    item[:out_dir] = format_dir(report_info[62, 165])
     item[:tbl_key] = report_info[227, 8].strip
     item[:seq] = report_info[235, 4].strip
     item[:tbl_group] = report_info[239, 14].strip
@@ -154,16 +158,9 @@ class Jma_print
 
     item[:offset]= "-x #{item[:offset_x]} -y #{item[:offset_y]}"
 
-    file_name = "#{@mcp_temp_dir}/#{@hospnum}#{item[:tbl_key]}#{item[:tbl_group]}"
-    file_name << "#{@uuid}#{sprintf("%05d",sequence)}"
-
-    if @print_order == "1"
-      item[:pdf_file] = "#{file_name}.pdf"
-    else
-      item[:pdf_file] = "#{item[:out_dir]}/#{@hospnum}#{item[:tbl_key]}"
-      item[:pdf_file] << "#{item[:seq]}#{item[:tbl_group]}#{item[:subseq]}"
-      item[:pdf_file] << "#{item[:page]}#{item[:uuid]}.pdf"
-    end
+    item[:pdf_file] = "#{item[:out_dir]}/#{@hospnum}#{item[:tbl_key]}"
+    item[:pdf_file] << "#{item[:seq]}#{item[:tbl_group]}#{item[:subseq]}"
+    item[:pdf_file] << "#{item[:page]}#{item[:uuid]}.pdf"
 
     if ["3", "4"].include?(@print_order)
       item[:red_file] = REPLACED_FORMS[item[:red_file]] if REPLACED_FORMS.key?(item[:red_file])
@@ -171,6 +168,10 @@ class Jma_print
 
     item[:red_file] = "#{proper_dir(item[:red_file],item[:site_program])}/#{item[:red_file]}"
 
+    file_name = "#{@mcp_temp_dir}/#{@hospnum}#{item[:tbl_key]}#{item[:tbl_group]}"
+    file_name << "#{@uuid}#{sprintf("%05d",sequence)}"
+
+    item[:temp_pdf_file] = "#{file_name}.pdf"
     item[:temp_file] = "#{file_name}.tmp"
     item[:temp_red_file] = "#{file_name}.tmp.red"
 
@@ -189,26 +190,29 @@ class Jma_print
     end
 
     execute("red2embed #{item[:red_file]} #{item[:temp_file]} -o #{item[:temp_red_file]}")
-    execute("monpe #{item[:temp_red_file]} #{item[:offset]} #{item[:layeroption]} -e #{item[:pdf_file]}")
+    # pdfファイルはテンポラリを作成した後、プレビュー用に後でリネームする。
+    # 日レセでプレビューする際にタイミングが悪いとプレビューデータ(glclientのキャッシュ）が壊れるのを回避する為。
+    execute("monpe #{item[:temp_red_file]} #{item[:offset]} #{item[:layeroption]} -e #{item[:temp_pdf_file]}")
 
     File.delete(item[:temp_red_file]) if File.exist?(item[:temp_red_file])
     File.delete(item[:temp_file]) if File.exist?(item[:temp_file])
-  end
 
-  def execute_lpr(item)
-    execute("lpr -P #{item[:lp_name]} #{item[:pdf_file]}") if ["1", "2"].include?(@print_order)
-    if @print_order == "1"
-      File.delete(item[:pdf_file]) if File.exist?(item[:pdf_file])
+    if ["1", "2"].include?(@print_order)
+      execute("lpr -P #{item[:lp_name]} #{item[:temp_pdf_file]}") if ["1", "2"].include?(@print_order)
     end
+
+    if @print_order == "1"
+      File.delete(item[:temp_pdf_file]) if File.exist?(item[:temp_pdf_file])
+    else
+      execute("mv #{item[:temp_pdf_file]} #{item[:pdf_file]}")
+    end
+
   end
 
   def print_reports
 
     if ["1", "2"].include?(@print_order)
-      @items.each do |item|
-        execute_monpe(item)
-        execute_lpr(item)
-      end
+      @items.each {|item| execute_monpe(item)}
     end
 
     if ["3", "4", "5", "6" ].include?(@print_order)

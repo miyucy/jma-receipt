@@ -49,6 +49,10 @@ report_title: "${REPORT_TITLE}"
 show_dialog: "$6"
 EOS
 
+echo "yaml"  >> ${LOG}
+cat ${YAML_FILE} >> ${LOG}
+echo "--" >> ${LOG}
+
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2  >> ${LOG} 2>&1
 print_parent_prv.rb ${YAML_FILE} >> ${LOG} 2>&1
 [ -e ${YAML_FILE} ] && rm ${YAML_FILE}
