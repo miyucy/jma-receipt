@@ -60,7 +60,7 @@ print_parent_prv.rb ${YAML_FILE} >> ${LOG} 2>&1
 #------ お薬手帳、処方せんQRイメージ削除
 #       （一時ディレクトリに作成されたpngファイルを削除）
 grep -Eo "${MCP_TEMPDIR}/([0-9a-zA-Z]|\.|\-|\_)+\.png" ${PRT_FILE_FULL} | xargs -r rm -f  >> ${LOG} 2>&1
-#[ -e ${PRT_FILE_FULL} ] && rm ${PRT_FILE_FULL}*
+[ -e ${PRT_FILE_FULL} ] && rm ${PRT_FILE_FULL}
 
 echo `date` >> ${LOG} 2>&1
 echo "HCALL end" >> ${LOG} 2>&1
