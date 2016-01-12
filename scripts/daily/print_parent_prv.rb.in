@@ -71,9 +71,6 @@ class Jma_print
             puts "print_order #{@print_order}"
           end
 
-          stop_file = "#{@mcp_temp_dir}/#{item[:tbl_key]}#{item[:tbl_group]}.tmp"
-          return 1 if stop_program?(stop_file)
-
           if @print_order == "5" and @show_dialog == false
             if @items.size >= MAX_PAGES
               print_reports
@@ -184,6 +181,13 @@ class Jma_print
   end
 
   def execute_monpe(item)
+
+    stop_file = "#{@mcp_temp_dir}/#{item[:tbl_key]}#{item[:tbl_group]}.tmp"
+    if stop_program?(stop_file)
+      puts "Print Cancelled"
+      exit 1
+    end
+
     open(item[:temp_file], "w") do |fp|
       fp.print item[:data]
       fp.print " " * 20000
@@ -273,4 +277,4 @@ end
 
 jma_print = Jma_print.new(ARGV[0])
 
-exit jma_print.main
+jma_print.main
