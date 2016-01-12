@@ -11,7 +11,7 @@ end
 DEFAULT_LP = 'lp1'
 
 #クライアント印刷最大ページ数（ダイアログ表示しない場合）
-MAX_PAGES = 100
+MAX_PAGES = 50
 
 #最大スレッド数
 MAX_THREADS = 2
