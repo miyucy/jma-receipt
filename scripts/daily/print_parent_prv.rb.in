@@ -159,7 +159,7 @@ class Jma_print
     item[:pdf_file] << "#{item[:seq]}#{item[:tbl_group]}#{item[:subseq]}"
     item[:pdf_file] << "#{item[:page]}#{item[:uuid]}.pdf"
 
-    if ["3", "4"].include?(@print_order)
+    if ["3", "4"].include?(item[:print_order])
       item[:red_file] = REPLACED_FORMS[item[:red_file]] if REPLACED_FORMS.key?(item[:red_file])
     end
 
