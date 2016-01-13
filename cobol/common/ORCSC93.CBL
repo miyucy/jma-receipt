@@ -841,6 +841,16 @@
                            MOVE    "1"             TO  SPA-COM-CUR(IDX)
                        END-IF
                    END-IF
+      *H28.1
+      *            ½é¿Ç¡¦ºÆ¿Ç²Ã»»¤Î¤ß¤Ï£È£²£·Ç¯£´·î¤«¤é
+                   IF      WRK-SRYSYUKBN       =   "114"
+                                               OR  "124"
+                                               OR  "133"
+                       IF      SPA-SRYYMD          <   "20150401"
+                           MOVE    "0506"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                       END-IF
+                   END-IF
                WHEN    OTHER
       *        ¤½¤ÎÂ¾
                    IF      FLG-JIHI            =   1
@@ -2742,6 +2752,16 @@
       *        ÉÂÍý¿ÇÃÇ²Ã»»¤Î¤ß
                IF     (WRK-SRYSYUKBN           =   "643" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "64"  )
+                   MOVE    1               TO  FLG-ARI
+               END-IF
+      *H28.1
+      *        ½é¿Ç¡¦ºÆ¿Ç²Ã»»¤Î¤ß
+               IF    ((WRK-SRYSYUKBN           =   "114" )  AND
+                      (SPA-COM-TNSSRYKBN (IDX) =   "11"  ))
+               OR    ((WRK-SRYSYUKBN           =   "124" )  AND
+                      (SPA-COM-TNSSRYKBN (IDX) =   "12"  ))
+               OR    ((WRK-SRYSYUKBN           =   "133" )  AND
+                      (SPA-COM-TNSSRYKBN (IDX) =   "13"  ))
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-IF

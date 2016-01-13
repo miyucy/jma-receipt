@@ -1096,6 +1096,13 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )   OR
                               (MSYU-SRYKBN (IDX)   =   SPACE )
+      *        ≤√ªª§œ¬–æ›≥∞
+             IF      MSYU-SRYSYUKBN (IDX)      =   "114"
+                                               OR  "124"
+                                               OR  "133"
+               CONTINUE
+             ELSE
+      *
       *        ø«Œ≈∂Ë ¨
                IF      (IDX-1          =   ZERO )  OR
                        (SPA-GMN-SRYKBN-L(IDX-1)(1:2)
@@ -1184,6 +1191,8 @@
                                                            (IDX-2)(1:3)
                MOVE    MSYU-SRYMEI    (IDX)    TO  SPA-GMN-SRYSYUKBNCOB
                                                            (IDX-2)(5:)
+      *
+             END-IF
            END-PERFORM
       *
            MOVE    IDX-1               TO  SPA-SRYKBN-MAX

@@ -2256,6 +2256,19 @@
                    GO      TO      1005-KASAN-CHK-EXT
                END-IF
            END-IF
+      *H28.1
+           IF      FLG-ARI             =   ZERO
+      *        ½é¿Ç¡¦ºÆ¿Ç²Ã»»¤Î¤ß
+               IF    ((WRK-COM-SRYSYUKBN (IDX-Z)   =   "114" )  AND
+                      (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "110" ))
+               OR    ((WRK-COM-SRYSYUKBN (IDX-Z)   =   "124" )  AND
+                      (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "120" ))
+               OR    ((WRK-COM-SRYSYUKBN (IDX-Z)   =   "133" )  AND
+                      (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "130" ))
+      *            ²Ã»»
+                   MOVE    1                       TO  FLG-ARI
+               END-IF
+           END-IF
       *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD

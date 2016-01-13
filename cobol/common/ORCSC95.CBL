@@ -5578,6 +5578,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      WKSRY-SRYKBN        =   "11"  OR  "12"
                MOVE    1               TO  FLG-CHK
            END-IF
+      *H28.1
+      *    ²Ã»»ÎÁ¤ÏÂÐ¾Ý
+           IF      WKSRY-SRYSYUKBN     =   "114"
+                                       OR  "124"
+                                       OR  "133"
+               MOVE    ZERO                TO  FLG-CHK
+           END-IF
       *
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤ÎÈ½Äê
            PERFORM VARYING     IDXF    FROM    1   BY  1

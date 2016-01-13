@@ -1871,6 +1871,14 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H28.1
+               WHEN    "0506"
+                   STRING   "この診療種別は平成２７年４月から"
+                            "有効です。"
+                            "入力できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *Ｈ２２．４から
                WHEN    "0270"
                    STRING  "ＣＴ、ＭＲＩが逓減になります。"
