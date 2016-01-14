@@ -1200,8 +1200,9 @@
       *    選択表示分
            PERFORM 4501-LISTCHNGE-HEN-SEC
       *
-           MOVE    ZERO            TO  SPA-GMN-SELNUM
-           MOVE    ZERO            TO  SPA-NAI-SELNUM
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           MOVE    ZERO                TO  SPA-NAI-SELNUM
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            .
        450-LIST-CHANGE-EXT.
@@ -1628,6 +1629,7 @@
       *    表示内容確定
            MOVE    ZERO                TO  SPA-NAI-LISTKBN
            PERFORM 4100-LISTHENSYU-SEC
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            IF      WRK-RENNUM          >   DRLST-MAX
       *********MOVE    "K010"          TO  SPA-ERRCD
@@ -1933,8 +1935,9 @@
       *    選択表示分
            PERFORM 4501-LISTCHNGE-HEN-SEC
       *
-           MOVE    ZERO            TO  SPA-GMN-SELNUM
-           MOVE    ZERO            TO  SPA-NAI-SELNUM
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           MOVE    ZERO                TO  SPA-NAI-SELNUM
+           MOVE    1                   TO  FLG-GMN-INIT
            . 
        490-HIHYOUJI-EXT.
            EXIT.
