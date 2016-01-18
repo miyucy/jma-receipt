@@ -52,7 +52,7 @@ W061 { #GtkWindow
           column5 varchar(12);
           column6 varchar(12);
           column7 varchar(2);
-          column8 varchar(2);
+          column8 varchar(12);
         }[100];
       };
     };

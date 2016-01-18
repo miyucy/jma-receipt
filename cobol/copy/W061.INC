@@ -45,7 +45,7 @@
                     06  W061-STYUKYMD    PIC X(12).
                     06  W061-EDYUKYMD    PIC X(12).
                     06  W061-HIHHYOJI    PIC X(2).
-                    06  W061-PASSWD      PIC X(2).
+                    06  W061-BIKOU       PIC X(12).
               03  W061-MIDASI2-G.
                 04  W061-MIDASI2-STYLE  PIC X(20).
                 04  W061-MIDASI2   PIC X(50).

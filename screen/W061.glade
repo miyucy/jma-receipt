@@ -10,7 +10,7 @@
   <widget>
     <class>GtkWindow</class>
     <name>W061</name>
-    <width>770</width>
+    <width>778</width>
     <height>607</height>
     <sensitive>True</sensitive>
     <can_focus>False</can_focus>
@@ -326,7 +326,7 @@
           <border_width>0</border_width>
           <show_titles>True</show_titles>
           <columns>8</columns>
-          <column_widths>40,50,260,100,80,80,40,30</column_widths>
+          <column_widths>40,50,260,100,70,70,40,60</column_widths>
           <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
           <signal>
             <name>select_row</name>
@@ -460,7 +460,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>PW</label>
+            <label>備考</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>

@@ -445,6 +445,17 @@
            ELSE
                MOVE    SPACE               TO  SPA-W061-PASSWD (IDX)
            END-IF
+      *    È÷¹ÍÊÔ½¸
+           IF      SYS-1010-KANRIAUTHFLG   =   "T"
+               MOVE    "´ÉÍý¼Ô"            TO  SPA-W061-BIKOU (IDX)
+               IF      SPA-W061-PASSWD (IDX)   =   "1"
+                   MOVE    "´ÉÍý¼Ô PW"         TO  SPA-W061-BIKOU (IDX)
+               END-IF
+           ELSE
+               IF      SPA-W061-PASSWD (IDX)   =   "1"
+                   MOVE    "PW"                TO  SPA-W061-BIKOU (IDX)
+               END-IF
+           END-IF
       *
            MOVE    IDX                 TO  SPA-W061-MAX
            .
@@ -555,10 +566,8 @@
                IF      SPA-W061-HIHYOUJI(IDX)  =   "1"
                    MOVE    "¡ß"            TO  W061-HIHHYOJI (IDX)
                END-IF
-      *        ¥Ñ¥¹¥ï¡¼¥É
-               IF      SPA-W061-PASSWD (IDX)   =   "1"
-                   MOVE    "¡ý"            TO  W061-PASSWD (IDX)
-               END-IF
+      *        È÷¹Í
+               MOVE    SPA-W061-BIKOU (IDX)    TO  W061-BIKOU (IDX)
       *
                IF     (SPA-W061-SELNUM     >   ZERO )
                   AND (SPA-W061-SELNUM     =   SPA-W061-TNUM (IDX) )
