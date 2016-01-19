@@ -2749,7 +2749,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>KIJUN10</name>
-        <x>592</x>
+        <x>610</x>
         <y>648</y>
         <width>48</width>
         <height>24</height>
