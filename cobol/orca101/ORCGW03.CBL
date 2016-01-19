@@ -2119,14 +2119,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    表示モード
            EVALUATE   SPA-HYOJI-FLG
                WHEN   0
-                   MOVE    "≪全コード表示≫"      TO  W03-MIDASI-DATA
-                   MOVE    "一覧"                  TO  W03-B10-LABEL
+                   MOVE    "≪全コード≫"    TO  W03-MIDASI-DATA
+                   MOVE    "有効分"          TO  W03-B10-LABEL
                WHEN   1
-                   MOVE    "≪施設基準一覧≫"      TO  W03-MIDASI-DATA
-                   MOVE    "設定分"                TO  W03-B10-LABEL
+                   MOVE    "≪有効分≫"      TO  W03-MIDASI-DATA
+                   MOVE    "設定分"          TO  W03-B10-LABEL
                WHEN   2
-                   MOVE    "≪施設基準設定分≫"    TO  W03-MIDASI-DATA
-                   MOVE    "全コード"              TO  W03-B10-LABEL
+                   MOVE    "≪設定分≫"      TO  W03-MIDASI-DATA
+                   MOVE    "全コード"        TO  W03-B10-LABEL
            END-EVALUATE
       *
       *    業務権限非活性処理
