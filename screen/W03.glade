@@ -2565,7 +2565,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>KIJUN02</name>
-        <x>160</x>
+        <x>156</x>
         <y>648</y>
         <width>48</width>
         <height>24</height>
@@ -2657,7 +2657,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>KIJUN06</name>
-        <x>380</x>
+        <x>365</x>
         <y>648</y>
         <width>48</width>
         <height>24</height>
@@ -2680,7 +2680,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>KIJUN07</name>
-        <x>432</x>
+        <x>436</x>
         <y>648</y>
         <width>48</width>
         <height>24</height>
@@ -2703,7 +2703,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>KIJUN08</name>
-        <x>484</x>
+        <x>488</x>
         <y>648</y>
         <width>48</width>
         <height>24</height>
@@ -2726,7 +2726,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>KIJUN09</name>
-        <x>536</x>
+        <x>540</x>
         <y>648</y>
         <width>48</width>
         <height>24</height>
@@ -2749,7 +2749,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>KIJUN10</name>
-        <x>588</x>
+        <x>592</x>
         <y>648</y>
         <width>48</width>
         <height>24</height>
