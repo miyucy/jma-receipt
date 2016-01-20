@@ -112,6 +112,7 @@ appointmodv2	orca14
 
 U01.glade	orca18	(U01)受付一覧
 U012.glade	orca18	(U012)受付一覧−選択一覧
+UDR.glade	orca18	(UDR)診療科担当医選択
 U1ERR.glade	orca18	(U1ERR)エラー情報
 U1ID1.glade	orca18	(U1ID1)確認画面
 
@@ -280,6 +281,7 @@ RID4.glade	orca42	(RID4)確認画面
 
 H01.glade	orca43	(H01)レセプト請求管理登録−手書き訂正入力
 H02.glade	orca43	(H02)返戻情報設定
+H03.glade	orca43	(H03)取込済み返戻データ一覧
 H99.glade	orca43	(H99)レセプト請求管理登録−レセプト検索
 HERR.glade	orca43	(HERR)エラー情報
 HID1.glade	orca43	(HID1)確認画面
@@ -351,6 +353,7 @@ W03.glade	orca101	(W03)システム管理情報−施設基準情報設定
 W04.glade	orca101	(W04)システム管理情報−患者番号構成管理設定
 W05.glade	orca101	(W05)システム管理情報−診療科目設定
 W06.glade	orca101	(W06)システム管理情報−職員情報設定
+W061.glade	orca101	(W061)職員登録−職員一覧
 W07.glade	orca101	(W07)システム管理情報−自動算定情報・チェック機能制御設定
 W08.glade	orca101	(W08)システム管理情報−レセプト種別情報設定
 W09.glade	orca101	(W09)システム管理情報−レセプト作成指示（印刷順）情報設定
@@ -474,3 +477,4 @@ M96.glade	orca901	(M96)マスタ更新管理一覧
 M97.glade	orca901	(M97)プログラム更新管理一覧
 MMERR.glade	orca901	(MMERR)エラー情報
 MMID1.glade	orca901	(MMID1)確認画面
+MJOB.glade	orca901	(MJOB)パッチ処理ログ
