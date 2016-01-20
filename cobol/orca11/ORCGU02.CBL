@@ -2080,8 +2080,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    U02-SRYKA           TO  SPA-GMN-SRYKA-G
       *!!!!!
       *H28.01
-           IF      U02-DRNAME(1:1)     =   "/"
-                                       OR  "*"
+           IF      U02-DRNAME(1:1)     =   "*"
                CONTINUE
            ELSE
                MOVE    U02-DRNAME          TO  SPA-GMN-DRCD-G
@@ -2118,8 +2117,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *H28.01
       *    ドクター一覧へ
            IF      WRK-MCP-WIDGET      =   "DRNAME"
-               IF      U02-DRNAME(1:1)     =   "/"
-                                           OR  "*"
+               IF      U02-DRNAME(1:1)     =   "*"
                    PERFORM 4908-UDR-SYORI-SEC
                    GO      TO      4102-KIHON-CHK-EXT
                END-IF
