@@ -196,6 +196,8 @@
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-門脇    15/12/02  ０点地域公費記載対応
+      *  04.08.04    NACL-門脇    16/01/12  点検用レセプト院外処方一般名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -813,11 +815,13 @@
            03  FILLER          PIC X(09)   VALUE   "099409908".
       *    短期滞在一部負担金徴収なし
            03  FILLER          PIC X(09)   VALUE   "099409909".
+      *    【レセプト】０点地域公費記載
+           03  FILLER          PIC X(09)   VALUE   "099999925".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   17.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   18.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   17.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   18.
       *
       *    固定値
        01  CONST-AREA.
@@ -1703,6 +1707,12 @@
                                      TO  TBL-ZAIW-SRYACTINF (IDY IDZ)
                        MOVE    RECE65-NAMEINF   (IDX)
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
+                       IF  RECE65-INGAIFLG-RECE(IDX) = "1"
+                         MOVE  RECE65-GENERICNAME(IDX)
+                                     TO  TBL-ZAIW-NAME(IDY IDZ)
+                         MOVE  RECE65-GENERICYUKOKETA(IDX)
+                                     TO  TBL-ZAIW-YUKOKETA(IDY IDZ)
+                       END-IF
                        MOVE    RECE65-RECEHENFLG(IDX)
                                      TO  TBL-ZAIW-RECEHENFLG(IDY IDZ)
                        MOVE    RECE65-SRYSYUKBN  TO
