@@ -1272,16 +1272,17 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            IF      FLG-GENERICNAME     =   ZERO
                MOVE    GENERIC-GENERICNAME TO  SPA-GMN-GENERICNAME
       *        単位
-               MOVE    SPACE               TO  WRK-TANINAME
-               PERFORM VARYING     IDX1    FROM    1   BY  1
-                       UNTIL       IDX1    >   SPA-GMN-TANICD-MAX
-                   IF      GENERIC-TANICD  =    SPA-GMN-TANICDL (IDX1)
-                       MOVE    SPA-GMN-TANICDMEIL(IDX1)
-                                           TO   WRK-TANINAME
-                       MOVE    SPA-GMN-TANICD-MAX
-                                           TO   IDX1
-                   END-IF
-               END-PERFORM
+      ******   MOVE    SPACE               TO  WRK-TANINAME
+      *        PERFORM VARYING     IDX1    FROM    1   BY  1
+      *                UNTIL       IDX1    >   SPA-GMN-TANICD-MAX
+      *            IF      GENERIC-TANICD  =    SPA-GMN-TANICDL (IDX1)
+      *                MOVE    SPA-GMN-TANICDMEIL(IDX1)
+      *                                    TO   WRK-TANINAME
+      *                MOVE    SPA-GMN-TANICD-MAX
+      *                                    TO   IDX1
+      *            END-IF
+      *****    END-PERFORM
+               MOVE    GENERIC-TANINAME    TO  WRK-TANINAME
                MOVE    SPACE               TO  SPA-GMN-GENERICHEN 
       *        換算値
                MOVE    GENERIC-KANZANCHI   TO  WRK-KANZANCHI
