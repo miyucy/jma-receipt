@@ -44,14 +44,10 @@
            03  FLG-PTINF               PIC 9(01).
            03  FLG-NYUINACCT           PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-           03  FLG-TENSU               PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
-           03  IDX2                    PIC 9(05).
-           03  IDX3                    PIC 9(05).
-           03  IDX4                    PIC 9(05).
            03  IDXA                    PIC 9(05).
            03  IDXD                    PIC 9(05).
            03  IDXK                    PIC 9(05).
@@ -119,8 +115,6 @@
                                        BY          //TGAIHAKU//.
       *
        01  CONST-AREA.
-           03  CONST-H3004             PIC X(06)   VALUE "201804".
-           03  CONST-H2804             PIC X(06)   VALUE "201604".
            03  CONST-H200401           PIC X(08)   VALUE "20080401".
            03  CONST-ASA               PIC 9(03)   VALUE 1.
            03  CONST-HIRU              PIC 9(03)   VALUE 2.
@@ -163,10 +157,6 @@
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
-      *
-      *    ÅÀ¿ô¥Þ¥¹¥¿
-           COPY    "CPTENSU.INC".
-           COPY    "CPTTNS.INC".
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSYSKANRI.INC".
@@ -224,7 +214,6 @@
            INITIALIZE                  TCOMB-AREA
            INITIALIZE                  TNACCT-AREA
            INITIALIZE                  TGAIHAKU-AREA
-           INITIALIZE                  TTNS-AREA
       *
       *    ½é´ü½èÍý
            PERFORM 100-INIT-SEC
@@ -431,90 +420,38 @@
            MOVE    TNACCT-DAY (CONST-GAIHAKU IDXD)
                                    TO  WRK-PTSTATUS-N
            MOVE    WRK-PTSTATUS-N  TO  SNINF03-PTSTATUS-DATA (IDXA)
-      *
-           EVALUATE    TRUE
-           WHEN  ( KEY-SRYYM       >=  CONST-H2804 )
-               EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
-               WHEN    ZERO
-                   MOVE    "Æþ±¡Ãæ"    TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    1
-                   MOVE    "³°Çñ"      TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    2
-                   MOVE    "¼£ÎÅ¤Î°Ù¤Î³°Çñ"
+           EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
+           WHEN    ZERO
+               MOVE    "Æþ±¡Ãæ"        TO  SNINF03-PTSTATUS-NAME (IDXA)
+           WHEN    1
+               MOVE    "³°Çñ"          TO  SNINF03-PTSTATUS-NAME (IDXA)
+           WHEN    2
+               MOVE    "¼£ÎÅ¤Î°Ù¤Î³°Çñ"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    3
-                   MOVE    "ÁªÄêÆþ±¡Ãæ¤Î³°Çñ"
+           WHEN    3
+               MOVE    "ÁªÄêÆþ±¡Ãæ¤Î³°Çñ"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    4
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£´£°¡ó¸º»»"
+           WHEN    4
+               MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£·£°¡ó¸º"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    5
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£°¡ó¸º»»"
+           WHEN    5
+               MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£³£°¡ó¸º"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    6
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£²£°¡ó¸º»»"
+           WHEN    6
+               MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£µ£µ¡ó¸º"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    8
-                   MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"
+           WHEN    7
+               MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£µ¡ó¸º"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    9
-                   MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»"
+           WHEN    8
+               MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    13
-                   MOVE   "ÆÃÄêÍËÆüÆþÂà±¡¸º»»¡ÜÂ¾°åÎÅµ¡´Ø¼õ¿Ç£±£°¡ó¸º»»"
+           WHEN    9
+               MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-               END-EVALUATE
-      *
-               IF  ( KEY-SRYYM         >=  CONST-H3004 )
-                   EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
-                   WHEN    14
-                       MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£µ¡ó¸º»»"
+           WHEN    13
+               MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»¡ÜÂ¾°åÎÅµ¡´Ø¼õ¿Ç£³£°¡ó¸º"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
-                   WHEN    15
-                       MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£³£µ¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-                   WHEN    16
-                       MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£µ¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-                   WHEN    17
-                       MOVE "ÆÃÄêÍËÆüÆþÂà±¡¸º»»¡ÜÂ¾°åÎÅµ¡´Ø¼õ¿Ç£µ¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-                   END-EVALUATE
-               END-IF
-           WHEN    OTHER
-               EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
-               WHEN    ZERO
-                   MOVE    "Æþ±¡Ãæ"    TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    1
-                   MOVE    "³°Çñ"      TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    2
-                   MOVE    "¼£ÎÅ¤Î°Ù¤Î³°Çñ"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    3
-                   MOVE    "ÁªÄêÆþ±¡Ãæ¤Î³°Çñ"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    4
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£·£°¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    5
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£³£°¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    6
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£µ£µ¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    7
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£µ¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    8
-                   MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    9
-                   MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               WHEN    13
-                   MOVE  "ÆÃÄêÍËÆüÆþÂà±¡¸º»»¡ÜÂ¾°åÎÅµ¡´Ø¼õ¿Ç£³£°¡ó¸º»»"
-                                       TO  SNINF03-PTSTATUS-NAME (IDXA)
-               END-EVALUATE
            END-EVALUATE
       *
            MOVE    "Ä«¿©"              TO  SNINF03-SKJ-ASA-LBL   (IDXA)
@@ -564,101 +501,8 @@
                MOVE    WRK-NUM7Z       TO  SNINF03-SAGAKU-DATA (IDXA)
            END-IF
       *
-           MOVE    ZERO                TO  IDX4
-           PERFORM 200111-NYUINRYO-EDIT-SEC
-      *
           .
        20011-NACCT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
-      *****************************************************************
-       200111-NYUINRYO-EDIT-SEC        SECTION.
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   SS009-HENKYAKU-MAX )
-      *
-               EVALUATE    SS009-ZAISKBKBN (IDX1)
-               WHEN    "1"
-               WHEN    "2"
-                   IF    ( SS009-SRYCDTOTAL (IDX1) NOT =   099999916 )
-                    AND  ( SS009-DAY (IDX1 IDXD)       >   ZERO )
-                       PERFORM 2001111-NYUKHN-EDIT-SEC
-                   END-IF
-               WHEN    "6"
-                   IF    ( SS009-DAY (IDX1 IDXD)       >   ZERO )
-                       PERFORM 2001111-NYUKSN-EDIT-SEC
-                   END-IF
-               END-EVALUATE
-      *
-           END-PERFORM
-      *
-          .
-       200111-NYUINRYO-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
-      *****************************************************************
-       2001111-NYUKHN-EDIT-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  IDX3
-      *
-           PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL ( IDX2    >   20 )
-                    OR   ( SS009-SRYCD (IDX1 IDX2)
-                                   =   SPACE )
-      *
-               MOVE    SS009-SRYCD (IDX1 IDX2)
-                                   TO  TTNS-CHK-SRYCD
-               MOVE    SPA-SRYYMD  TO  TTNS-CHK-YMD
-               PERFORM 900-TENSU-KEY-SEL-SEC
-               IF    ( FLG-TENSU   =   ZERO )
-                   IF    ( IDX3  <     5 )
-                       COMPUTE IDX3  = IDX3 +  1
-                       MOVE    TNS-SRYCD
-                                   TO  SNINF03-NYUKHN-DATA (IDXA IDX3)
-                       MOVE    TNS-NAME
-                                   TO  SNINF03-NYUKHN-NAME (IDXA IDX3)
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( IDX3    >   ZERO )
-               MOVE    "Æþ±¡´ðËÜÎÁÅù"
-                                   TO  SNINF03-NYUKHN-LBL (IDXA)
-           END-IF
-      *
-          .
-       2001111-NYUKHN-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æþ±¡ÎÁ²Ã»»ÊÔ½¸½èÍý
-      *****************************************************************
-       2001111-NYUKSN-EDIT-SEC         SECTION.
-      *
-           MOVE    SS009-SRYCD (IDX1 1)
-                                   TO  TTNS-CHK-SRYCD
-           MOVE    SPA-SRYYMD      TO  TTNS-CHK-YMD
-           PERFORM 900-TENSU-KEY-SEL-SEC
-           IF    ( FLG-TENSU   =   ZERO )
-               IF    ( IDX4        <   20 )
-      *
-                   COMPUTE IDX4  = IDX4    +   1
-      *
-                   MOVE    "Æþ±¡²Ã»»"
-                                   TO  SNINF03-NYUKSN-LBL (IDXA IDX4)
-      *
-                   MOVE    TNS-SRYCD
-                                   TO  SNINF03-NYUKSN-DATA (IDXA IDX4)
-                   MOVE    TNS-NAME
-                                   TO  SNINF03-NYUKSN-NAME (IDXA IDX4)
-               END-IF
-      *
-           END-IF
-      *
-          .
-       2001111-NYUKSN-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ¿©»ö³°Çñ¾ðÊóÊÔ½¸½èÍý
@@ -745,30 +589,15 @@
       *
            MOVE    SPACE               TO  WRK-SKJ-NAME
       *
-           IF    ( KEY-SRYYM       >=  CONST-H2804 )
-               EVALUATE    WRK-DAY
-               WHEN    ZERO
-                   MOVE    "¿©»ö¤Ê¤·"  TO  WRK-SKJ-NAME
-               WHEN    1
-                   MOVE    "¿©»ö¤¢¤ê"  TO  WRK-SKJ-NAME
-               WHEN    2
-                   MOVE    "¿©»ö¤¢¤ê¡ÊÆÃÊÌ¿©¡Ë"
+           EVALUATE    WRK-DAY
+           WHEN    ZERO
+               MOVE    "¿©»ö¤Ê¤·"      TO  WRK-SKJ-NAME
+           WHEN    1
+               MOVE    "¿©»ö¤¢¤ê"      TO  WRK-SKJ-NAME
+           WHEN    2
+               MOVE    "¿©»ö¤¢¤ê¡ÊÆÃÊÌ¿©¡Ë"
                                        TO  WRK-SKJ-NAME
-               WHEN    3
-                   MOVE    "¿©»ö¤¢¤ê¡ÊÎ®Æ°¿©¡Ë"
-                                       TO  WRK-SKJ-NAME
-               END-EVALUATE
-           ELSE
-               EVALUATE    WRK-DAY
-               WHEN    ZERO
-                   MOVE    "¿©»ö¤Ê¤·"  TO  WRK-SKJ-NAME
-               WHEN    1
-                   MOVE    "¿©»ö¤¢¤ê"  TO  WRK-SKJ-NAME
-               WHEN    2
-                   MOVE    "¿©»ö¤¢¤ê¡ÊÆÃÊÌ¿©¡Ë"
-                                       TO  WRK-SKJ-NAME
-               END-EVALUATE
-           END-IF
+           END-EVALUATE
       *
           .
        200111-SKJ-EDIT-EXT.
@@ -1150,93 +979,6 @@
       *
            .
        900-NYUINACCT-KEY51-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷½èÍý(KEY1)
-      *****************************************************************
-       900-TENSU-KEY-SEL-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TENSU
-      *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯¥Á¥§¥Ã¥¯
-           PERFORM 9001-TTNS-CHK-SEC
-      *
-      *    ÂàÈò¥ï¡¼¥¯¤ËÂ¸ºß¤·¤Ê¤¤¾ì¹ç¤Ï£Ä£Â¤ò¸¡º÷
-           IF    ( TTNS-FLG            =   ZERO )
-      *
-               INITIALIZE                      TNS-TENSU-REC
-               MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
-               MOVE    TTNS-CHK-YMD        TO  TNS-YUKOSTYMD
-                                               TNS-YUKOEDYMD
-               MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
-      *
-      *            ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯¤ËÊÔ½¸¤¹¤ë
-                   PERFORM 9001-TTNS-HEN-SEC
-               ELSE
-                   MOVE    1               TO  FLG-TENSU
-                   INITIALIZE                  TNS-TENSU-REC
-               END-IF
-      *
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
-           END-IF
-      *
-           .
-      *
-       900-TENSU-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       9001-TTNS-CHK-SEC               SECTION.
-      *
-           MOVE    ZERO                TO  TTNS-FLG
-           INITIALIZE                      TNS-TENSU-REC
-      *
-           PERFORM VARYING TTNS-IDX    FROM    1   BY  1
-                   UNTIL ( TTNS-IDX    >   TTNS-MAX )
-                    OR   ( TTNS-FLG    =   1 )
-               IF    ( TTNS-KEY-SRYCD (TTNS-IDX)
-                                       =   TTNS-CHK-SRYCD )
-                 AND ( TTNS-KEY-YUKOSTYMD (TTNS-IDX)
-                                      <=   TTNS-CHK-YMD )
-                 AND ( TTNS-KEY-YUKOEDYMD (TTNS-IDX)
-                                      >=   TTNS-CHK-YMD )
-                   MOVE    1           TO  TTNS-FLG
-                   MOVE    TTNS-DAT (TTNS-IDX)
-                                       TO  TNS-TENSU-REC
-               END-IF
-           END-PERFORM
-      *
-           .
-       9001-TTNS-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯ÊÔ½¸½èÍý
-      *****************************************************************
-       9001-TTNS-HEN-SEC               SECTION.
-      *
-           IF    ( TTNS-CONST-MAX  >   TTNS-MAX )
-               COMPUTE TTNS-MAX    =   TTNS-MAX    +   1
-               MOVE    TNS-SRYCD       TO  TTNS-KEY-SRYCD
-                                                   (TTNS-MAX)
-               MOVE    TNS-YUKOSTYMD   TO  TTNS-KEY-YUKOSTYMD
-                                                   (TTNS-MAX)
-               MOVE    TNS-YUKOEDYMD   TO  TTNS-KEY-YUKOEDYMD
-                                                   (TTNS-MAX)
-               MOVE    TNS-TENSU-REC   TO  TTNS-DAT
-                                                   (TTNS-MAX)
-           END-IF
-      *
-           .
-       9001-TTNS-HEN-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý
