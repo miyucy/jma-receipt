@@ -36,13 +36,6 @@
       *
       *  04.08.01    NACL-藤原    16/01/18  地方公費処理スクリプトの存在
       *                                     チェック対応
-      *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
-      *
-      *  04.09.01    NACL-藤原    17/02/24  レポジトリ名設定時は地方公費
-      *                                     処理スクリプトの存在チェック
-      *                                     を行わない
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -237,7 +230,22 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1366,12 +1374,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    UNTIL   IDX >       SPA-GMN-T02-SHELLID-MAX
                IF      SPA-GMN-T02-TSYORIFLG (IDX)
                                                =   "1"
-                 IF    ( SPA-MW      =   SPA-GINBEE )
-                 AND   ( SPA-NAI-T02-TNAME   (IDX)
-                                 NOT =   SPACE      )
-                   CONTINUE
-                 ELSE
-       *            ファイルデイレクトリ位置指定
+      *            ファイルデイレクトリ位置指定
                    MOVE    SPA-NAI-T02-TSHELLID (IDX)
                                            TO  WRK-SHELL-SHELL
                    INITIALIZE                  ORCSMKPASSAREA
@@ -1381,6 +1384,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    MKPASS-OT-01    TO  WRKPARA
       *
                    OPEN    INPUT               WRK-FILE
+      *??
+           DISPLAY "WRKPARA="  WRKPARA "#" STS-WRK 
+      *??
                    IF      STS-WRK         =   "00"
                        CLOSE   WRK-FILE
                    ELSE
@@ -1393,7 +1399,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                                    TO  WRK-CHK-SHORIMSG
                        END-IF
                    END-IF
-                 END-IF
                END-IF
            END-PERFORM
            .
@@ -1618,6 +1623,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                WRK-Z9          DELIMITED   BY  SIZE
                                "個の処理スクリプトが存在しません"
                                                DELIMITED   BY  SIZE
+                               "、システム管理で確認して下さい"
+                                               DELIMITED   BY  SIZE
                                                INTO    TERR-ERRMSG
                        END-STRING
                    END-IF
@@ -1716,20 +1723,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F11:印刷しない"     TO  TID2-B11-LABEL
            MOVE    "F12:印刷する"       TO  TID2-B12-LABEL
            MOVE    "black"              TO  TID2-ID1MSG-STYLE
-           MOVE    "blue"               TO  TID2-LABEL-STYLE
-      *
-           IF      SPA-GMN-SRYYMKBN-MAX
-                                       >   ZERO
-               STRING   "　【"         DELIMITED  BY  SPACE
-                        SPA-NAI-SRYYMKBN-ST-PRT(SPA-NAI-SRYYMKBN-SELNUM)
-                                       DELIMITED  BY  SPACE
-                        "〜"           DELIMITED  BY  SPACE
-                        SPA-NAI-SRYYMKBN-ED-PRT(SPA-NAI-SRYYMKBN-SELNUM)
-                                       DELIMITED  BY  SPACE
-                        "】"           DELIMITED  BY  SPACE
-                                       INTO       TID2-LABEL
-               END-STRING
-           END-IF
+                                            TID2-LABEL-STYLE
       *
            MOVE    "B12"                TO  MCP-WIDGET
       *

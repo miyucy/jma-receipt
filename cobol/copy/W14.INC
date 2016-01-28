@@ -17,7 +17,6 @@
       ********************************************************************
         02  W14.
                 04  W14-FIXED2.
-                  05  W14-B05-LABEL PIC X(06).
                   05  W14-MSG-STYLE PIC X(20).
                   05  W14-MSG.
                     06  W14-VALUE   PIC X(50).
@@ -62,7 +61,3 @@
                 04  W14-PRTKBN51     PIC X.
                 04  W14-PRTKBN52-STATE   PIC S9(9)   BINARY.
                 04  W14-PRTKBN52     PIC X.
-                04  W14-BD-G         OCCURS 25.
-                    05  W14-BD-VISIBLE  PIC X(01).
-                    05  W14-BD-STYLE    PIC X(20).
-                    05  W14-BD-LABEL    PIC X(01).
