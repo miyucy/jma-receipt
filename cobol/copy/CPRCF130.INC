@@ -26,7 +26,6 @@
       *
       *  04.08.01    NACL-門脇    16/01/12  点検用レセプト院外処方
       *                                     一般名記載対応
-      *  04.08.02    NACL-門脇    16/04/20  平成２８年４月改正対応
       ************************************************************
       *01  RECE130-REC.
            03  RECE130-KEY.
@@ -145,8 +144,6 @@
                    07  RECE130-INGAIFLG         PIC X(01).
       *一般名記載院外処方フラグ（レセプト用）
                    07  RECE130-INGAIFLG-RECE    PIC X(01).
-      *一般名記載院外処方フラグ（湿布薬コメント用）
-                   07  RECE130-INGAIFLG-SIPPU   PIC X(01).
       *一般名コード（薬価基準コード）
                    07  RECE130-YAKKAKJNCD       PIC X(12).
       *一般名処方加算区分
@@ -155,8 +152,4 @@
                    07  RECE130-GENERICNAME      PIC X(200).
       *漢字有効桁数
                    07  RECE130-GENERICYUKOKETA  PIC 9(03).
-      *
-      *湿布薬情報
-               05  RECE130-SIPPUINF.
-                   07  RECE130-SIPPUFLG         PIC X(01).
       *
