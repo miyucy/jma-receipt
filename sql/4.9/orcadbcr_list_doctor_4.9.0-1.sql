@@ -17,4 +17,4 @@ CREATE TABLE tbl_list_doctor (
 );
 
 ALTER TABLE ONLY tbl_list_doctor
-    ADD CONSTRAINT tbl_list_doctor_key PRIMARY KEY (HOSPNUM,SRYKA,RENNUM);
+    ADD CONSTRAINT tbl_list_doctor_primary_key PRIMARY KEY (HOSPNUM,SRYKA,RENNUM);
