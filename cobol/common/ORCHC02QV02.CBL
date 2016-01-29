@@ -88,6 +88,7 @@
       * 04.07.00     NACL-多々納  14/10/20  公費備考編集個別対応
       * 04.07.00     NACL-多々納  15/01/19  ＣＳＶデータ出力対応
       * 04.07.00     NACL-多々納  15/04/XX  後発変更不可処方毎対応
+      * 04.08.00     NACL-多々納  16/02/XX  備考コメントオプション対応
       *****************************************************************
       *
       *
@@ -195,6 +196,7 @@
            03  FLG-QRCHK               PIC 9(01).
       *H27.4
            03  FLG-ALLKISAI            PIC 9(01).
+           03  FLG-COMOK               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -247,6 +249,9 @@
            03  IDP                     PIC 9(01).
       *H27.4
            03  IDX-ALL                 PIC 9(04).
+      *H28.2
+           03  IDX-KB                  PIC 9(04).
+           03  IDP2                    PIC 9(03).
       *
       *    システム領域
        01  SYS-AREA.
@@ -350,7 +355,8 @@
       *    地方公費
            03  WRK-HEN-KOH-G.
                05  WRK-HEN-KOH         PIC X(86)
-                                       OCCURS   4.
+      *H28.2                           OCCURS   4.
+                                       OCCURS   7.
       *    保険医名称
            03  WRK-DRNAME              PIC X(50).
       *    交付年月日
@@ -400,6 +406,12 @@
            03  WRK-QRPAGE              PIC 9(03).
            03  WRK-QRYOBI              PIC 9(03).
            03  WRK-IDXMAX              PIC 9(03).
+      *H28.2
+      *    公費備考コメント編集
+           03  WRK-PARA-COM-KOHNUM-G.
+               05  WRK-PARA-COM-KOHNUM-TBL     OCCURS   3.
+                   07  WRK-PARA-COM-KOHNUM     PIC X(03)
+                                               OCCURS   9.
       *
       *    剤毎の内容
        01  WRK-NAIYOU-AREA.
@@ -599,9 +611,17 @@
                                        OCCURS   5.
       *    連携用ＣＶＳファイル名編集
            03  PARA-QR-CSVFILE         PIC X(01).
+      *H28.2
+      *    公費備考コメント編集
+           03  PARA-COM-KOHNUM-G.
+               05  PARA-COM-KOHNUM-TBL     OCCURS   3.
+                   07  PARA-COM-MEMO       PIC X(20).
+                   07  PARA-COM-KOHNUM     PIC X(35).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
+      *H28.2
+           03  WRK-PARA-MAX            PIC 9(03).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -810,6 +830,7 @@
        100-OPTION-SELECT-SEC             SECTION.
       *
            INITIALIZE                  PARA-AREA
+           MOVE    ZERO                TO  WRK-PARA-MAX
       *    ページ表示
            MOVE    "PAGE"              TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
@@ -876,6 +897,62 @@
            MOVE    "QRCSVFILE"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-QR-CSVFILE
+      *H28.2
+      *    公費備考コメント編集
+           PERFORM VARYING     IDP     FROM    1   BY  1
+                   UNTIL       IDP     >   3
+      *
+               MOVE    SPACE           TO  WRK-PARA-NAME
+               STRING  "COM_"
+                       IDP
+                       "_MEMO"         DELIMITED  BY  SIZE
+                                       INTO    WRK-PARA-NAME
+               END-STRING
+               MOVE    20                  TO  WRK-PARA-MAX
+               PERFORM 1001-OPTION-CALL-SEC
+               MOVE    WRK-PARA            TO  PARA-COM-MEMO(IDP)
+      *
+               MOVE    SPACE           TO  WRK-PARA-NAME
+               STRING  "COM_"
+                       IDP
+                       "_KOHNUM"       DELIMITED  BY  SIZE
+                                       INTO    WRK-PARA-NAME
+               END-STRING
+               MOVE    35                  TO  WRK-PARA-MAX
+               PERFORM 1001-OPTION-CALL-SEC
+               IF      ORCSPRGOPTION-OT-TYPE   =   1
+                   MOVE    WRK-PARA        TO  PARA-COM-KOHNUM (IDP)
+               END-IF
+           END-PERFORM
+      *
+      *    公費備考コメント編集
+           INITIALIZE                  WRK-PARA-COM-KOHNUM-G
+           PERFORM VARYING     IDP     FROM    1   BY  1
+                   UNTIL       IDP     >   3
+               IF      PARA-COM-MEMO(IDP)  NOT =   SPACE
+                   MOVE    1                   TO  IDP2
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL      (IDX     >   35)
+                                   OR (IDP2    >   9 )
+                       IF      PARA-COM-KOHNUM(IDP)(IDX:1)
+                                                   =   ","
+                           ADD     1               TO  IDP2
+                       ELSE
+                           IF     (PARA-COM-KOHNUM(IDP)(IDX:3)
+                                                   =   "000"  )
+                             OR   (PARA-COM-KOHNUM(IDP)(IDX:3)
+                                                   NOT NUMERIC )
+                               CONTINUE
+                           ELSE
+                               MOVE    PARA-COM-KOHNUM(IDP)(IDX:3)
+                                               TO  WRK-PARA-COM-KOHNUM
+                                                          (IDP IDP2)
+                           END-IF
+                           ADD     2           TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
       *
            .
        100-OPTION-SELECT-EXT.
@@ -897,6 +974,22 @@
       *H26.10
                IF      WRK-PARA-NAME(1:6)      =   "KOHNUM"
                    MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA
+               END-IF
+      *H28.2
+               IF      WRK-PARA-MAX        >   ZERO
+                   MOVE    ORCSPRGOPTION-OT-PARA(1:WRK-PARA-MAX)
+                                               TO  WRK-PARA
+               END-IF
+           ELSE
+               IF      WRK-PARA-MAX        >   ZERO
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    ORCSPRGOPTION-OT-PARA(1:WRK-PARA-MAX)
+                                               TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-PARA-MAX        TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT   TO  WRK-PARA
                END-IF
            END-IF
            .
@@ -1672,8 +1765,18 @@
                MOVE    SPACE               TO  WRK-HEN-SRYKANAME
            END-IF
       *
+      *H28.2
+      *    公費備考コメントを公費編集の次へ
+           IF      COMB-KOHHKNNUM(1)   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 40022-KOHMEMO-HEN-SEC
+           END-IF
+      *
       *    地方公費を備考へ（コメントの最初へ）
-           PERFORM VARYING     IDX-K3  FROM    4   BY  -1
+      *H28.2
+      *****PERFORM VARYING     IDX-K3  FROM    4   BY  -1
+           PERFORM VARYING     IDX-K3  FROM    7   BY  -1
                    UNTIL      (IDX-K3      <   1   )
                IF      (WRK-HEN-KOH (IDX-K3)   NOT =   SPACE )
                    PERFORM VARYING     IDX-B1  FROM    9   BY  -1
@@ -1691,7 +1794,7 @@
                    END-PERFORM
                END-IF
            END-PERFORM
-      *!!
+      *
       *    備考禁忌編集
            IF      PARA-TABOO          =   "1"
       *        禁忌１
@@ -1750,6 +1853,43 @@
            END-IF
            .
        40021-TABOO-HENSYU-EXT.
+           EXIT.
+      *
+      *H28.2
+      *****************************************************************
+      *    公費備考コメント編集処理
+      *****************************************************************
+       40022-KOHMEMO-HEN-SEC           SECTION.
+      *
+           PERFORM VARYING     IDX-KB  FROM    1   BY  1
+                   UNTIL      (IDX-KB      >   3   )
+                          OR  (IDX-K3      >=  7   )
+               MOVE    ZERO                TO  FLG-COMOK
+               IF     (PARA-COM-MEMO (IDX-KB)  =   SPACE )
+                   MOVE    2                   TO  FLG-COMOK
+               END-IF
+               PERFORM VARYING     IDP2    FROM    1   BY  1
+                       UNTIL      (IDP2        >   9   )
+                               OR (FLG-COMOK   NOT =   ZERO)
+                   IF     (WRK-PARA-COM-KOHNUM (IDX-KB IDP2)
+                                            NOT =   SPACE   )
+                   AND    (WRK-PARA-COM-KOHNUM (IDX-KB IDP2)
+                                               =   COMB-KOHHKNNUM(1)
+                                               OR  COMB-KOHHKNNUM(2)
+                                               OR  COMB-KOHHKNNUM(3)
+                                               OR  COMB-KOHHKNNUM(4))
+                       MOVE    1                   TO  FLG-COMOK
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-COMOK           =   1
+                   ADD     1                   TO  IDX-K3
+                   MOVE    PARA-COM-MEMO (IDX-KB)
+                                               TO  WRK-HEN-KOH (IDX-K3)
+               END-IF
+           END-PERFORM
+           .
+       40022-KOHMEMO-HEN-EXT.
            EXIT.
       *****************************************************************
       *    帳票編集処理
@@ -4914,7 +5054,8 @@
        6002-QRBIKOU-HENSYU-SEC           SECTION.
       *
       *    備考の最初に地方公費を編集
-           PERFORM VARYING     IDX-K3  FROM    4   BY  -1
+      **** PERFORM VARYING     IDX-K3  FROM    4   BY  -1
+           PERFORM VARYING     IDX-K3  FROM    7   BY  -1
                    UNTIL      (IDX-K3      <   1   )
                IF      WRK-HEN-KOH (IDX-K3)    NOT =   SPACE
                    PERFORM VARYING     IDX-QRB FROM  BIKOU-MAXQ  BY  -1
