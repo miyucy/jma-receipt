@@ -1620,8 +1620,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                WRK-Z9          DELIMITED   BY  SIZE
                                "個の処理スクリプトが存在しません"
                                                DELIMITED   BY  SIZE
-                               "、システム管理で確認して下さい"
-                                               DELIMITED   BY  SIZE
                                                INTO    TERR-ERRMSG
                        END-STRING
                    END-IF
