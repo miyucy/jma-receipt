@@ -12245,6 +12245,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-KIDCD       NOT =   SPACE )
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
+      *H28.2
+      *    画面ＳＰＡ書込み
+           PERFORM 1003-K02SPA-OUT-SEC
       *
       *    再度、排他のチェック
            IF      SPA-LOCK            =   ZERO
