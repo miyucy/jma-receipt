@@ -3438,6 +3438,33 @@
       </widget>
       <widget>
         <class>GtkButton</class>
+        <name>B01S</name>
+        <x>8</x>
+        <y>718</y>
+        <width>0</width>
+        <height>0</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <border_width>0</border_width>
+        <label></label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <accelerator>
+          <modifiers>GDK_SHIFT_MASK</modifiers>
+          <key>GDK_F1</key>
+          <signal>clicked</signal>
+        </accelerator>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
         <name>B01</name>
         <x>8</x>
         <y>718</y>
