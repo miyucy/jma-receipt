@@ -4693,7 +4693,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                      SYSUSER-REC
                MOVE    SYS-1010-USERID     TO  SYSUSER-USERID
                MOVE    SPA-HOSPNUM         TO  SYSUSER-HOSPNUM
-               MOVE    "F"                 TO  SYSUSER-SUPERVISOR
+               IF      SYS-1010-KBNCD      =   "00001"
+                 MOVE    "T"                   TO  SYSUSER-SUPERVISOR
+               ELSE
+                 MOVE    "F"                   TO  SYSUSER-SUPERVISOR
+               END-IF
                MOVE    SMCNDATE-YMD        TO  SYSUSER-UPYMD
       *
                MOVE    SYSUSER-REC         TO  MCPDATA-REC
@@ -5154,7 +5158,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    オルカマスターのみ削除不可能にする
            IF      (SPA-GMN-SYOKUKBN   =   "0"  )  AND
-                   (SPA-GMN-SYOKUCOD   =   "0001")
+                   (SPA-GMN-SYOKUCOD   =   "0001") AND
+                   (SPA-GMN-TBL-MAX    =   1    )
                MOVE    WIDGET-INSENSITIVE      TO  W06-B03-STATE
            END-IF
       *
