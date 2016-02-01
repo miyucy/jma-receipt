@@ -3570,7 +3570,8 @@
       *            当日有効か？
                    IF    ( SYS-1010-STYUKYMD   <=  SPA-SYSYMD ) AND
                          ( SYS-1010-EDYUKYMD   >=  SPA-SYSYMD )
-                       IF      SYS-1010-USERID =   SPA-GMN-USERID
+                       IF        ( SYS-1010-USERID =   SPA-GMN-USERID )
+                           AND   ( FLG-KIKAN3      =   ZERO )
                            MOVE    2               TO  FLG-KIKAN3
                        ELSE
                            MOVE    1               TO  FLG-KIKAN3
@@ -3585,7 +3586,8 @@
       *            当日有効か？
                    IF    ( SYS-1010-STYUKYMD   <=  SPA-SYSYMD ) AND
                          ( SYS-1010-EDYUKYMD   >=  SPA-SYSYMD )
-                       IF      SYS-1010-USERID =   SPA-GMN-USERID
+                       IF        ( SYS-1010-USERID =   SPA-GMN-USERID )
+                           AND   ( FLG-KIKAN1      =   ZERO )
                            MOVE    2               TO  FLG-KIKAN1
                        ELSE
                            MOVE    1               TO  FLG-KIKAN1
