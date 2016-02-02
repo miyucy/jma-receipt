@@ -150,6 +150,7 @@
       *  04.07.01    NACL-藤原    12/09/24  点検用レセプトの医師名記載対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-太田    16/02/02  レセプトプレビュー不具合対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -669,6 +670,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                                        TO  SHELLTBL-ARG1
                MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
+               IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                   MOVE    "1"         TO  SHELLTBL-ARG4
+               END-IF
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
