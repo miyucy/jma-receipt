@@ -1232,7 +1232,7 @@
                                            SPA-C02-KEIKOKU-MSG-AREA
                    INITIALIZE              SPA-C01-HENSYU-NUM-G
                                            SPA-C01-HENSYU-DATA-G
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
                END-IF
       *
                IF      SPA-CIDCD       =   "0107"
@@ -1243,6 +1243,19 @@
                            MOVE    "0106"          TO  SPA-CIDCD
                            GO  TO  300-SCREEN-EXT
                        ELSE
+                           INITIALIZE          WRK-KANTAN-HENSYU-AREA
+                           PERFORM VARYING IDX     FROM    1   BY  1
+                                   UNTIL   IDX     >       7
+                               MOVE    SPA-C01-HENSYU-DATA-O (IDX)
+                                           TO  WRK-HENSYU-DATA-O (IDX)
+                           END-PERFORM
+                           PERFORM VARYING IDX     FROM    1   BY  1
+                                   UNTIL   IDX     >       5
+                               MOVE    SPA-C01-STNUM-O (IDX)
+                                                   TO  WRK-STNUM-O (IDX)
+                               MOVE    SPA-C01-EDNUM-O (IDX)
+                                                   TO  WRK-EDNUM-O (IDX)
+                           END-PERFORM
       *                    簡単修正時の更新処理
                            PERFORM 410113-KANTAN-KOUSHIN-SEC
                        END-IF
@@ -1251,11 +1264,11 @@
                    END-IF
                    INITIALIZE                  SPA-CIDCD-AREA
                                                SPA-CID1-AREA  
-                   INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
-                                           SPA-C02-KEIKOKU-MSG-AREA
-                   GO      TO      300-SCREEN-EXT
+                   INITIALIZE                  SPA-C02-KEIKOKU-FLG-AREA
+                                               SPA-C02-KEIKOKU-MSG-AREA
+                   GO  TO  300-SCREEN-EXT
                END-IF
-           END-IF              
+           END-IF
       *
       *    病名移行確認画面より
            IF      SPA-MOTOPG(1:4)     =   "CID2"
