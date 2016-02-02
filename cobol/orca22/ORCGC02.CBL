@@ -4733,11 +4733,8 @@ grpsys                                         SPA-AREA
                INITIALIZE                  SPA-C02-KEIKOKU-FLG-AREA
                                            SPA-C02-KEIKOKU-MSG-AREA
       *
-      *        Â¾¿ÇÎÅ²Ê¤ÎÆ±°ìÉÂÌ¾¤Î·Ù¹ð¥Á¥§¥Ã¥¯
-               IF      SPA-C02-1042-MSG4-DSPKBN
-                                           =   1
-                   PERFORM 410115-KEIKOKU-CHK-SEC
-               END-IF
+      *        ·Ù¹ð¥Á¥§¥Ã¥¯
+               PERFORM 410115-KEIKOKU-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       NOT =   SPACE )
@@ -5406,6 +5403,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    Â¾¿ÇÎÅ²Ê¤ÎÆ±°ìÉÂÌ¾¤Î·Ù¹ð¥Á¥§¥Ã¥¯
+           IF      SPA-C02-1042-MSG4-DSPKBN
+                                           =   0
+               GO  TO  410115-KEIKOKU-CHK-EXT
+           END-IF
+      * 
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       5
       ************ OR      SPA-CIDCD           NOT =   SPACE

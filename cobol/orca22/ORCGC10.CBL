@@ -1308,11 +1308,7 @@
                                            SPA-C02-KEIKOKU-MSG-AREA
       *
       *        Â¾¿ÇÎÅ²Ê¤ÎÆ±°ìÉÂÌ¾¤Î·Ù¹ð¥Á¥§¥Ã¥¯¡Ê¿ÇÎÅ²ÊÊ£¼Ì°Ê³°¡Ë
-               IF    ( SPA-C02-1042-MSG4-DSPKBN
-                                           =   1     )
-               AND   ( SPA-GMN-C10-SRYKA   =   SPACE )
-                   PERFORM 41013-KEIKOKU-CHK-SEC
-               END-IF
+               PERFORM 41013-KEIKOKU-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -2062,6 +2058,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            END-IF
       *
       *    Â¾¿ÇÎÅ²Ê¤ÎÆ±°ìÉÂÌ¾¤Î·Ù¹ð¥Á¥§¥Ã¥¯
+           IF    ( SPA-C02-1042-MSG4-DSPKBN
+                                       =   1     )
+           AND   ( SPA-GMN-C10-SRYKA   =   SPACE )
+               CONTINUE
+           ELSE
+               GO  TO  41013-KEIKOKU-CHK-EXT
+           END-IF
+      * 
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       5
       ************ OR      SPA-CIDCD           NOT =   SPACE
