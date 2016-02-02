@@ -3562,40 +3562,39 @@
       *
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
                MOVE    MCPDATA-REC     TO  SYS-1010-REC
-      *        システムユーザーチェック
-               MOVE    SYS-1010-USERID     TO  WRK-USERID
-               PERFORM 49001-SYSUSER-CHK-SEC
-      *        システム管理者なら
-               IF      SYSUSER-SUPERVISOR  =   "T"
-      *            当日有効か？
-                   IF    ( SYS-1010-STYUKYMD   <=  SPA-SYSYMD ) AND
-                         ( SYS-1010-EDYUKYMD   >=  SPA-SYSYMD )
-                       IF        ( SYS-1010-USERID =   SPA-GMN-USERID )
-                           AND   ( FLG-KIKAN3      =   ZERO )
-                           MOVE    2               TO  FLG-KIKAN3
-                       ELSE
+      *        管理者なら
+               IF     (SYS-1010-KANRIAUTHFLG   =   "T"  )
+                   MOVE    SYS-1010-USERID     TO  WRK-USERID
+                   PERFORM 49001-SYSUSER-CHK-SEC
+      *            システム管理者なら
+                   IF    ( FLG-USERID-UPD  =   ZERO ) AND
+                         ( SYSUSER-SUPERVISOR  =   "T")
+      *                当日有効か？
+                       IF    ( SYS-1010-STYUKYMD   <=  SPA-SYSYMD ) AND
+                             ( SYS-1010-EDYUKYMD   >=  SPA-SYSYMD )
                            MOVE    1               TO  FLG-KIKAN3
                        END-IF
-                   END-IF
-      *            無期限有効か？
-                   IF      SYS-1010-EDYUKYMD   =   "99999999"
-                       MOVE    1               TO  FLG-KIKAN4
-                   END-IF
-      *        管理者なら
-               ELSE
-      *            当日有効か？
-                   IF    ( SYS-1010-STYUKYMD   <=  SPA-SYSYMD ) AND
-                         ( SYS-1010-EDYUKYMD   >=  SPA-SYSYMD )
-                       IF        ( SYS-1010-USERID =   SPA-GMN-USERID )
-                           AND   ( FLG-KIKAN1      =   ZERO )
-                           MOVE    2               TO  FLG-KIKAN1
-                       ELSE
-                           MOVE    1               TO  FLG-KIKAN1
+      *                無期限有効か？
+                       IF      SYS-1010-EDYUKYMD   =   "99999999"
+                           MOVE    1               TO  FLG-KIKAN4
                        END-IF
-                   END-IF
-      *            無期限有効か？
-                   IF      SYS-1010-EDYUKYMD   =   "99999999"
-                       MOVE    1               TO  FLG-KIKAN2
+                   ELSE
+      *                当日有効か？
+                       IF    ( SYS-1010-STYUKYMD   <=  SPA-SYSYMD ) AND
+                             ( SYS-1010-EDYUKYMD   >=  SPA-SYSYMD )
+      *                    自分のみの場合
+                           IF        ( SYS-1010-USERID
+                                                   =   SPA-GMN-USERID )
+                               AND   ( FLG-KIKAN1  =   ZERO )
+                               MOVE    2               TO  FLG-KIKAN1
+                           ELSE
+                               MOVE    1               TO  FLG-KIKAN1
+                           END-IF
+                       END-IF
+      *                無期限有効か？
+                       IF      SYS-1010-EDYUKYMD   =   "99999999"
+                           MOVE    1               TO  FLG-KIKAN2
+                       END-IF
                    END-IF
                END-IF
       *
