@@ -29,8 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *  04.08.00    NACL-多々納  16/02/03  プログラムオプションメモ対応
-      *  04.08.00    NACL-多々納  16/10/19  API(GINBEE)対応
-      *  05.00.00    NACL-太田    17/02/26  API(GINBEE)対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,8 +73,6 @@
       *
            03  FLG-HEN             PIC 9(01).
            03  FLG-OK              PIC 9(01).
-      *API
-           03  FLG-APISYORI        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -112,34 +108,18 @@
                05  WRK-HOSPNAME2       PIC X(40).
            03  WRK-HOSPTEL             PIC X(15).
       *
-           03  WRK-API-HOSPNAME        PIC X(120)  OCCURS 3.
-           03  WRK-API-HOSPADRS        PIC X(200)  OCCURS 3.
-           03  WRK-API-POST            PIC X(07).
-      *
            03  WRK-YYKYMD              PIC X(08).
            03  WRK-SYSYMD              PIC X(08).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-SRYKA-MEI           PIC X(10).
            03  WRK-DRCD                PIC X(05).
            03  WRK-DRCD-NAME           PIC X(50).
-           03  WRK-DRCD-KANANAME       PIC X(50).
       *
            03  CNT-LINE                PIC 9(03).
       *
            03  WRK-PAGE-CNT            PIC 9(03).
            03  WRK-PAGE                PIC 9(03).
            03  WRK-Z9                  PIC Z9.
-      *
-      *H28.10
-      *    API対応用
-       01  WRK-API-AREA.
-      *    日付編集
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
       *
       *    予約テーブル
        01  TBL-YY-AREA.
@@ -168,9 +148,6 @@
            03  PARA-YUKOSTYMD          PIC X(08).
            03  PARA-YUKOEDYMD          PIC X(08).
            03  PARA-MEMO               PIC X(100).
-      *H28.10  API
-           03  PARA-API-DATA           PIC X(01).
-           03  PARA-API-CUSTOM-ID      PIC X(30).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(100).
@@ -242,14 +219,6 @@
       *v4.8
       *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
-      *H28.10
-      * API対応
-      *    予約票情報構造体
-           COPY    "CPFMYYKHYO.INC".
-      *
-           COPY    "CPORCRPMAIN.INC".
-      *    画面色等
-           COPY    "ENUM-VALUE".
       *
       *****************************************************************
       *    連絡　領域
@@ -333,31 +302,6 @@
            IF      PARA-YUKOEDYMD      =   SPACE
                MOVE    "99999999"          TO  PARA-YUKOEDYMD
            END-IF
-      *H28.10
-      *API対応
-      *    ＡＰＩ返却データ（1:作成する 帳票印刷なし）
-           MOVE    "API_DATA"          TO  WRK-PARA-NAME
-           MOVE    1                   TO  WRK-PARA-MAX
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:WRK-PARA-MAX)
-                                       TO  PARA-API-DATA
-           IF     (PARA-API-DATA       =   "1"       )
-               CONTINUE
-           ELSE
-      *        API送信なし
-               MOVE    "0"             TO  PARA-API-DATA
-           END-IF
-      *    HAORI対応
-           IF      SPA-API-FLG         =   1
-               MOVE    "1"             TO  PARA-API-DATA
-           END-IF
-      *    ＡＰＩカスタムＩＤ
-           MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
-           MOVE    30                  TO  WRK-PARA-MAX
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:WRK-PARA-MAX)
-                                       TO  PARA-API-CUSTOM-ID
-      *
       *
            .
        100-OPTION-SELECT-EXT.
@@ -446,11 +390,8 @@
       *
       *    医療機関編集情報
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-                                           WRK-API-HOSPNAME (1)
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
-                                           WRK-API-HOSPADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
-           MOVE    SYS-1002-POST       TO  WRK-API-POST
       *    医療機関編集
            PERFORM 1010-HOSPHENSYU-SEC
       *
@@ -560,15 +501,6 @@
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
-      *H28.10
-           IF      PARA-API-DATA        =   "1"
-      *        ＡＰＩ送信内容編集処理
-               IF      TBL-MAX             >   ZERO
-                   PERFORM 2009-API-HENSYU-SEC
-               END-IF
-               GO  TO  200-MAIN-SYORI-EXT
-           END-IF
       *
            IF      TBL-MAX             >   ZERO
       *        予約票編集印刷処理
@@ -825,10 +757,8 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1010-REC
                MOVE    SYS-1010-NAME       TO  WRK-DRCD-NAME
-               MOVE    SYS-1010-KANANAME   TO  WRK-DRCD-KANANAME
            ELSE
                MOVE    SPACE               TO  WRK-DRCD-NAME
-               MOVE    SPACE               TO  WRK-DRCD-KANANAME
            END-IF
       *
            .
@@ -852,132 +782,6 @@
            .
        400-PRINT-SYORI-EXT.
            EXIT.
-      *H28.7
-      *****************************************************************
-      *    ＡＰＩ送信内容編集処理
-      *****************************************************************
-       2009-API-HENSYU-SEC          SECTION.
-      *
-           INITIALIZE                  FMYYKHYO-REC
-      *
-           MOVE    "yoyakuhyo"         TO  FMYH-FORM-ID
-           MOVE    SYS-1031-PRTNM(17)  TO  FMYH-PRINTER
-      *    発行日
-           MOVE    SPA-SYSYMD          TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  FMYH-KOFYMD
-      *    患者情報
-           MOVE    SPA-PTNUM           TO  FMYH-PTNUM
-           MOVE    PTINF-KANANAME      TO  FMYH-KANANAME
-           MOVE    PTINF-NAME          TO  FMYH-NAME
-           MOVE    PTINF-SEX           TO  FMYH-SEX
-      *    生年月日
-           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  FMYH-BIRTHDAY
-      *    医療機関名称
-           MOVE    WRK-API-HOSPNAME(1) TO  FMYH-HOSP-NAME (1)
-           MOVE    WRK-API-HOSPNAME(2) TO  FMYH-HOSP-NAME (2)
-           MOVE    WRK-API-HOSPNAME(3) TO  FMYH-HOSP-NAME (3)
-      *    医療機関住所
-           MOVE    WRK-API-HOSPADRS(1) TO  FMYH-HOSP-ADRS (1)
-           MOVE    WRK-API-HOSPADRS(2) TO  FMYH-HOSP-ADRS (2)
-           MOVE    WRK-API-HOSPADRS(3) TO  FMYH-HOSP-ADRS (3)
-      *
-           MOVE    WRK-API-POST        TO  FMYH-HOSP-POST
-           MOVE    WRK-HOSPTEL         TO  FMYH-HOSP-TEL
-      *    プログラムオプション編集
-           IF     (PARA-YUKOSTYMD      <=  SPA-SYSYMD )
-              AND (PARA-YUKOEDYMD      >=  SPA-SYSYMD )
-               MOVE    PARA-MEMO           TO  FMYH-MEMO
-           END-IF
-      *
-      *    予約明細編集
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   TBL-MAX
-      *        予約日
-               MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  FMYH-TYYKYMD(IDX)
-      *        予約時間
-               MOVE    TBL-YYKTIME(IDX)(1:2)   TO  WRK-THH
-               MOVE    TBL-YYKTIME(IDX)(3:2)   TO  WRK-TSS
-               MOVE    WRK-TIME-HEN        TO  FMYH-TYYKTIME(IDX)
-      *        診療科
-               MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYSYMD
-               MOVE    TBL-SRYKA  (IDX)    TO  WRK-SRYKA
-               PERFORM 2008-SRYKAMEI-HEN-SEC
-               MOVE    TBL-SRYKA  (IDX)    TO  FMYH-TSRYKA    (IDX)
-               MOVE    WRK-SRYKA-MEI       TO  FMYH-TSRYKANAME(IDX)
-      *        ドクター
-               MOVE    TBL-DRCD   (IDX)    TO  WRK-DRCD
-               PERFORM 2009-DRNAME-HEN-SEC
-               MOVE    TBL-DRCD   (IDX)    TO  FMYH-TDR-CODE (IDX)
-               MOVE    WRK-DRCD-NAME       TO  FMYH-TDR-NAME (IDX)
-               MOVE    WRK-DRCD-KANANAME   TO  FMYH-TDR-KANANAME(IDX)
-               PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL      (IDY     >   6  )    OR
-                                  (TBL-COMMENT (IDX IDY)   =   SPACE)
-      *            予約コメント編集
-                   MOVE    TBL-COMMENT (IDX IDY)
-                                           TO  FMYH-TCOMMENT (IDX IDY)
-               END-PERFORM
-           END-PERFORM
-      *
-      *    ＡＰＩ送信
-           PERFORM 20031-API-SYORI-SEC
-      *
-           .
-       2009-API-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＡＰＩ送信処理
-      *****************************************************************
-       20031-API-SYORI-SEC         SECTION.
-      *
-      *    カスタムＩＤ
-           MOVE    PARA-API-CUSTOM-ID  TO  FMYH-CUSTOM-ID
-      *
-           INITIALIZE                      RPMAIN-AREA
-           MOVE    "yoyakuhyo"         TO  RPMAIN-ID
-           MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "予約票"            TO  RPMAIN-TITLE
-           MOVE    "fm_appointment_form"
-                                       TO  MCP-TABLE
-           MOVE    FMYH-DATA           TO  RPMAIN-DATA
-           CALL    "ORCRPMAIN"         USING
-                                       MCPAREA
-                                       RPMAIN-AREA
-                                       SPA-AREA
-      *
-           .
-       20031-API-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    日付編集処理（API編集）
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE           TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYY             TO  WRK-HEN-YY
-               MOVE    WRK-SMM             TO  WRK-HEN-MM
-               MOVE    WRK-SDD             TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-      *
-           .
-       801-DAYHEN01-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
@@ -1042,11 +846,6 @@
                MOVE    SYSKANRI-REC        TO  SYS-1901-REC
                MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
                MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
-      *
-               MOVE    SYS-1901-HOSPNAME1  TO  WRK-API-HOSPNAME(1)
-               MOVE    SYS-1901-HOSPNAME2  TO  WRK-API-HOSPNAME(2)
-               MOVE    SYS-1901-HOSPNAME3  TO  WRK-API-HOSPNAME(3)
-      *
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -1075,11 +874,6 @@
                MOVE    SYS-1902-ADRS1      TO  WRK-HOSPADRS1
                MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL        TO  WRK-HOSPTEL
-      *
-               MOVE    SYS-1902-ADRS1      TO  WRK-API-HOSPADRS(1)
-               MOVE    SYS-1902-ADRS2      TO  WRK-API-HOSPADRS(2)
-               MOVE    SYS-1902-ADRS3      TO  WRK-API-HOSPADRS(3)
-               MOVE    SYS-1902-POST       TO  WRK-API-POST
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
