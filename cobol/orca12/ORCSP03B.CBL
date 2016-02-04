@@ -2095,7 +2095,13 @@
       *                ¾®»ùÆÃÄê¡¡£È£²£¶¡¥£±£²¤Þ¤Ç
                           OR ((SPA-GMN-KOHNUM(IDX-K)   =   "052" ) AND
                               (SPA-NAI-KTEKSTYMD (IDX-K)
-                                                       <=  "20141231")))
+                                                       <=  "20141231"))
+      *H28.2
+      *                µþÅÔÉÜ¡¡µþÅÔ»Ò¡¡H25.9.1¤«¤é
+                          OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND
+                              (SPA-PREFNUM             =   26    ) AND
+                              (SPA-NAI-KTEKSTYMD (IDX-K)
+                                                       >=  "20130901")))
                            CONTINUE
                        ELSE
       *
@@ -2253,6 +2259,12 @@
                          OR   (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
       *H27.1             ÆñÉÂ
                           OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
+      *H28.2
+      *                µþÅÔÉÜ¡¡µþÅÔ»Ò¡¡H25.9.1¤«¤é
+                          OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND
+                              (SPA-PREFNUM             =   26    ) AND
+                              (SPA-NAI-KTEKSTYMD (IDX-K)
+                                                       >=  "20130901"))
       *
                              MOVE    ZERO              TO  FLG-CHK
                        END-IF
