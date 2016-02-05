@@ -2029,47 +2029,46 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *****************************************************************
        41013-KEIKOKU-CHK-SEC                SECTION.
       *
-      *    死亡区分更新確認メッセージ表示のチェック
-           IF      SPA-C02-1042-MSG5-DSPKBN
-                                           =   0
-               INITIALIZE                      PTINF-REC
-               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-               MOVE    SPA-NAI-C02-PTID    TO  PTINF-PTID
-               PERFORM 900-PTINF-READ-SEC
-               IF      FLG-PTINF           =   ZERO
-      *            転帰区分が２で死亡区分が生存のとき
-                   IF      PTINF-DEATHKBN  NOT =   "1"
-                       IF      WRK-HENSYU-DATA-O (1)
-                                                   =   "2"
+      *    死亡区分更新のチェック
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SPA-NAI-C02-PTID    TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           IF      FLG-PTINF           =   ZERO
+      *        転帰区分が２で死亡区分が生存のとき
+               IF      PTINF-DEATHKBN  NOT =   "1"
+                   IF      WRK-HENSYU-DATA-O (1)
+                                               =   "2"
+                       IF      SPA-C02-1042-MSG5-DSPKBN
+                                                   =   0
                            MOVE    "0105"              TO  SPA-CIDCD
-                           MOVE    1           TO  SPA-C02-KEIKOKU-FLG4
                        END-IF
-                   ELSE
-      *                転帰区分を２以外に変更したときに死亡区分が死亡のとき
-                       IF      WRK-HENSYU-DATA-O (1)
-                                               NOT =   "2"
-                           MOVE    ZERO        TO  FLG-TENKIKBN
-                           PERFORM VARYING IDXX    FROM    1   BY  1
-                                   UNTIL   IDXX    >       5
-                                   OR      FLG-TENKIKBN    =   1
-                               IF      WRK-STNUM-O (IDXX)  >   ZERO
-                                   PERFORM VARYING IDX     FROM
+                       MOVE    1           TO  SPA-C02-KEIKOKU-FLG4
+                   END-IF
+               ELSE
+      *            転帰区分を２以外に変更したときに死亡区分が死亡のとき
+                   IF      WRK-HENSYU-DATA-O (1)
+                                           NOT =   "2"
+                       MOVE    ZERO        TO  FLG-TENKIKBN
+                       PERFORM VARYING IDXX    FROM    1   BY  1
+                               UNTIL   IDXX    >       5
+                               OR      FLG-TENKIKBN    =   1
+                           IF      WRK-STNUM-O (IDXX)  >   ZERO
+                               PERFORM VARYING IDX     FROM
                                                WRK-STNUM-O (IDXX)  BY  1
-                                           UNTIL   IDX     >
+                                       UNTIL   IDX     >
                                                    WRK-EDNUM-O (IDXX)
-                                           OR      FLG-TENKIKBN
-                                                           =   1
-                                       IF      SPA-NAI-C02-TTENKIKBN
-                                                                  (IDX)
-                                                           =   "2"
-                                           MOVE    1   TO  FLG-TENKIKBN
-                                       END-IF
-                                   END-PERFORM
-                              END-IF
-                           END-PERFORM
-                           IF      FLG-TENKIKBN     =   1
-                               PERFORM 410131-KEIKOKU-TENKIKBN-CHK-SEC
-                           END-IF
+                                       OR      FLG-TENKIKBN
+                                                       =   1
+                                   IF      SPA-NAI-C02-TTENKIKBN  (IDX)
+                                                       =   "2"
+                                       MOVE    1   TO  FLG-TENKIKBN
+                                   END-IF
+                               END-PERFORM
+                          END-IF
+                       END-PERFORM
+                       IF      FLG-TENKIKBN     =   1
+                           PERFORM 410131-KEIKOKU-TENKIKBN-CHK-SEC
                        END-IF
                    END-IF
                END-IF
@@ -2322,8 +2321,11 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            PERFORM 900-CLOSE-SEC
       *
       *    転帰区分２の病名が存在しないとき
-           IF      FLG-TENKIKBN        =   0
-               MOVE    "0108"      TO  SPA-CIDCD
+           IF      FLG-TENKIKBN    =   0
+               IF      SPA-C02-1042-MSG5-DSPKBN
+                                       =   0
+                   MOVE    "0108"          TO  SPA-CIDCD
+               END-IF
                MOVE    9           TO  SPA-C02-KEIKOKU-FLG4
            END-IF
            .
