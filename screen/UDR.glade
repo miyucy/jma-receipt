@@ -618,7 +618,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>MIDASI</name>
-        <x>290</x>
+        <x>280</x>
         <y>18</y>
         <width>100</width>
         <height>24</height>
@@ -696,7 +696,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>MIDASI2</name>
-        <x>400</x>
+        <x>390</x>
         <y>18</y>
         <width>150</width>
         <height>24</height>
@@ -714,7 +714,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>MIDASI3</name>
-        <x>600</x>
+        <x>606</x>
         <y>18</y>
         <width>300</width>
         <height>24</height>
