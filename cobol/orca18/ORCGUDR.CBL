@@ -1720,7 +1720,8 @@
                        END-IF
                    END-IF
                END-PERFORM
-               IF      IDX2                >   ZERO
+               IF     (IDX2                >   ZERO     )
+                  AND (IDX3                <   LINE-MAX )
                    ADD     1               TO  WRK-RENNUM
                    ADD     1               TO  IDX3
                    MOVE    WRK-SORT-TBLREC (IDX2)
@@ -1773,7 +1774,8 @@
                        MOVE    IDX                 TO  IDX2
                    END-IF
                END-PERFORM
-               IF      IDX2                >   ZERO
+               IF     (IDX2                >   ZERO     )
+                  AND (IDX3                <   LINE-MAX )
                    ADD     1                   TO  IDX3
                    ADD     1                   TO  IDX4
                    MOVE    WRK-SORT-TBLREC (IDX2)
@@ -1819,7 +1821,8 @@
                        MOVE    IDX                 TO  IDX2
                    END-IF
                END-PERFORM
-               IF      IDX2                >   ZERO
+               IF     (IDX2                >   ZERO     )
+                  AND (IDX3                <   LINE-MAX )
                    ADD     1                   TO  IDX3
                    ADD     1                   TO  IDX4
                    MOVE    WRK-SORT-TBLREC (IDX2)
@@ -1870,7 +1873,8 @@
                        MOVE    IDX                 TO  IDX2
                    END-IF
                END-PERFORM
-               IF      IDX2                >   ZERO
+               IF     (IDX2                >   ZERO     )
+                  AND (IDX3                <   999      )
                    ADD     1                   TO  IDX3
                    MOVE    WRK-SORT2-TBLREC (IDX2)
                                                TO  WRK-SYSKANRI-TBLREC
@@ -2223,7 +2227,8 @@
       *    °ìÍ÷
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   SPA-GMN-MAX
+                   UNTIL      (IDX             >   SPA-GMN-MAX)
+                           OR (IDX             >   LINE-MAX   )
       *
            IF      SPA-GMN-TDRCD (IDX)     =   "-----"
                MOVE    ALL "="             TO  UDR-TNO  (IDX)
