@@ -698,7 +698,7 @@
         <name>MIDASI2</name>
         <x>390</x>
         <y>18</y>
-        <width>150</width>
+        <width>166</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
