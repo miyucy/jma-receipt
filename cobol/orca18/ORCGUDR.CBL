@@ -1375,7 +1375,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
                IF      UDR-DRLIST-SELECTDATA (IDX)   =   "T"
-                   MOVE    IDX             TO  WRK-SELNUM
+                   IF      UDR-TNO  (IDX)(1:1)     =   "="
+                      MOVE    ZERO             TO  WRK-SELNUM
+                   ELSE
+                       MOVE    IDX             TO  WRK-SELNUM
+                   END-IF
                    MOVE    SPA-GMN-MAX     TO  IDX
                END-IF
            END-PERFORM
