@@ -1090,6 +1090,7 @@
       *
            MOVE    SPA-GMN-SRYKALST(01)
                                        TO  SPA-GMN-SRYKA-G
+           MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
       *
       *    Á´¿¦°÷¾ðÊó¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
       *
@@ -4265,6 +4266,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
                MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
            END-IF
+           MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
            MOVE    SPA-GMN-DRCDLST  (1)
                                        TO  SPA-GMN-DRCD-G
            MOVE    SPA-GMN-SRYNAILST(1)
