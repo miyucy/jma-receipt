@@ -1,88 +1,88 @@
-        01  HCN02V03.
-            02  HCN02V03-HOSPNAME
+        01  HCN02.
+            02  HCN02-HOSPNAME
                         PIC X(52).
-            02  HCN02V03-HOSPADRS
+            02  HCN02-HOSPADRS
                         PIC X(52).
-            02  HCN02V03-HOSPTEL
+            02  HCN02-HOSPTEL
                         PIC X(15).
-            02  HCN02V03-DRNAME
+            02  HCN02-DRNAME
                         PIC X(40).
-            02  HCN02V03-PTNAME
+            02  HCN02-PTNAME
                         PIC X(48).
-            02  HCN02V03-PTADRS
+            02  HCN02-PTADRS
                         PIC X(68).
-            02  HCN02V03-PTTEL
+            02  HCN02-PTTEL
                         PIC X(15).
-            02  HCN02V03-PTSEX
+            02  HCN02-PTSEX
                         PIC X(2)        OCCURS 2 TIMES.
-            02  HCN02V03-PTBIRTHG
+            02  HCN02-PTBIRTHG
                         PIC X(2)        OCCURS 4 TIMES.
-            02  HCN02V03-PTBIRTHYMD.
-              03  HCN02V03-PTBIRTHYY
+            02  HCN02-PTBIRTHYMD.
+              03  HCN02-PTBIRTHYY
                         PIC X(4).
-              03  HCN02V03-PTBIRTHMM
+              03  HCN02-PTBIRTHMM
                         PIC X(4).
-              03  HCN02V03-PTBIRTHDD
+              03  HCN02-PTBIRTHDD
                         PIC X(4).
-            02  HCN02V03-PTNENREI
+            02  HCN02-PTNENREI
                         PIC X(3).
-            02  HCN02V03-NYUINYMD.
-              03  HCN02V03-NYUINGEN
+            02  HCN02-NYUINYMD.
+              03  HCN02-NYUINGEN
                         PIC X(4).
-              03  HCN02V03-NYUINYY
+              03  HCN02-NYUINYY
                         PIC X(4).
-              03  HCN02V03-NYUINMM
+              03  HCN02-NYUINMM
                         PIC X(4).
-              03  HCN02V03-NYUINDD
+              03  HCN02-NYUINDD
                         PIC X(4).
-            02  HCN02V03-TAIINYMD.
-              03  HCN02V03-TAIINGEN
+            02  HCN02-TAIINYMD.
+              03  HCN02-TAIINGEN
                         PIC X(4).
-              03  HCN02V03-TAIINYY
+              03  HCN02-TAIINYY
                         PIC X(4).
-              03  HCN02V03-TAIINMM
+              03  HCN02-TAIINMM
                         PIC X(4).
-              03  HCN02V03-TAIINDD
+              03  HCN02-TAIINDD
                         PIC X(4).
-            02  HCN02V03-SYUBETU
+            02  HCN02-SYUBETU
                         PIC X(50)       OCCURS 3 TIMES.
-            02  HCN02V03-NISSU
+            02  HCN02-NISSU
                         PIC X(14)       OCCURS 3 TIMES.
-            02  HCN02V03-KIKAN
+            02  HCN02-KIKAN
                         PIC X(5).
-            02  HCN02V03-KIKANSTRYMD.
-              03  HCN02V03-KIKANSTRGEN
+            02  HCN02-KIKANSTRYMD.
+              03  HCN02-KIKANSTRGEN
                         PIC X(4).
-              03  HCN02V03-KIKANSTRYY
+              03  HCN02-KIKANSTRYY
                         PIC X(4).
-              03  HCN02V03-KIKANSTRMM
+              03  HCN02-KIKANSTRMM
                         PIC X(4).
-              03  HCN02V03-KIKANSTRDD
+              03  HCN02-KIKANSTRDD
                         PIC X(4).
-            02  HCN02V03-KIKANENDYMD.
-              03  HCN02V03-KIKANENDGEN
+            02  HCN02-KIKANENDYMD.
+              03  HCN02-KIKANENDGEN
                         PIC X(4).
-              03  HCN02V03-KIKANENDYY
+              03  HCN02-KIKANENDYY
                         PIC X(4).
-              03  HCN02V03-KIKANENDMM
+              03  HCN02-KIKANENDMM
                         PIC X(4).
-              03  HCN02V03-KIKANENDDD
+              03  HCN02-KIKANENDDD
                         PIC X(4).
-            02  HCN02V03-YOBI
+            02  HCN02-YOBI
                         PIC X(16).
-            02  HCN02V03-TKIKAN
+            02  HCN02-TKIKAN
                         PIC X(5).
-            02  HCN02V03-TKIKANYMD.
-              03  HCN02V03-TKIKANGEN
+            02  HCN02-TKIKANYMD.
+              03  HCN02-TKIKANGEN
                         PIC X(4).
-              03  HCN02V03-TKIKANYY
+              03  HCN02-TKIKANYY
                         PIC X(4).
-              03  HCN02V03-TKIKANMM
+              03  HCN02-TKIKANMM
                         PIC X(4).
-              03  HCN02V03-TKIKANDD
+              03  HCN02-TKIKANDD
                         PIC X(4).
-            02  HCN02V03-SONOTA
+            02  HCN02-SONOTA
                         PIC X(92)       OCCURS 8 TIMES.
-            02  HCN02V03-BYOMEI.
-              03  HCN02V03-BYOMEI-S
+            02  HCN02-BYOMEI.
+              03  HCN02-BYOMEI-S
                         PIC X(76)       OCCURS 2 TIMES.
