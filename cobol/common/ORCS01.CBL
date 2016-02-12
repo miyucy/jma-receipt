@@ -3313,12 +3313,18 @@
       *
       *    Ê¸½ñÎÁ¾ÃÈñÀÇ·×»»
       *
+                   DISPLAY "@@@@@"
            IF   WK-4001-TAXKBN   =   "2"
+                   DISPLAY "!!!!"
       *
                  PERFORM   VARYING   IDX4    FROM   1   BY   1
                             UNTIL   (IDX4                    >    20 )
                               OR    (WK-SONOTA91-SRYCD(IDX4) =  SPACE)
       *
+                   DISPLAY "WK-SONOTA91-SRYCD(IDX4)="
+                            WK-SONOTA91-SRYCD(IDX4)
+                   DISPLAY "WK-SONOTA91-TANKA(IDX4)="
+                            WK-SONOTA91-TANKA(IDX4)
                    COMPUTE  WK-KEISAN  =
                            (WK-SONOTA91-TANKA(IDX4)  *  WK-S4)  +  WK-S3
                    COMPUTE  WK-KEISAN  =  WK-KEISAN
