@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCHCM19V02.
+       PROGRAM-ID.             ORCHCM19V03.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為
       *  コンポーネント名  : 処方箋　印刷（Ａ５）（用紙Ａ４）
-      *                      平成２４年４月から使用
+      *                      平成２８年４月から使用
       *                      （ORCHC02QV02 の QR印刷を削除）
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -87,6 +87,8 @@
       * 04.07.00     NACL-多々納  14/10/07  頓服薬（臨時投薬）対応
       * 04.07.00     NACL-多々納  14/10/20  公費備考編集個別対応
       * 04.07.00     NACL-多々納  15/04/XX  後発変更不可処方毎対応
+      * 04.08.00     NACL-多々納  16/02/XX  備考コメントオプション対応
+      * 04.08.00     NACL-多々納  16/02/XX  Ｈ２８年４月改正対応
       *****************************************************************
       *
       *
@@ -110,7 +112,7 @@
        WORKING-STORAGE             SECTION.
       *
       *    処方せん
-           COPY    "HCM19V02.INC"   REPLACING   //HCM19V02//
+           COPY    "HCM19V03.INC"   REPLACING   //HCM19V03//
                                    BY           //HCM19//.
       *
       *     印刷用データ 名称領域 
@@ -194,6 +196,7 @@
            03  FLG-QRCHK               PIC 9(01).
       *H27.4
            03  FLG-ALLKISAI            PIC 9(01).
+           03  FLG-COMOK               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -246,6 +249,10 @@
            03  IDP                     PIC 9(01).
       *H27.4
            03  IDX-ALL                 PIC 9(04).
+      *H28.2
+           03  IDX-KB                  PIC 9(04).
+           03  IDP2                    PIC 9(03).
+           03  IDX-B2                  PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -349,7 +356,8 @@
       *    地方公費
            03  WRK-HEN-KOH-G.
                05  WRK-HEN-KOH         PIC X(86)
-                                       OCCURS   4.
+      *H28.2                           OCCURS   4.
+                                       OCCURS   7.
       *    保険医名称
            03  WRK-DRNAME              PIC X(50).
       *    交付年月日
@@ -399,6 +407,17 @@
            03  WRK-QRPAGE              PIC 9(03).
            03  WRK-QRYOBI              PIC 9(03).
            03  WRK-IDXMAX              PIC 9(03).
+      *H28.2
+      *    公費備考コメント編集
+           03  WRK-PARA-COM-KOHNUM-G.
+               05  WRK-PARA-COM-KOHNUM-TBL     OCCURS   3.
+                   07  WRK-PARA-COM-KOHNUM     PIC X(03)
+                                               OCCURS   9.
+      *    公費備考コメント内容
+           03  WRK-KHN-MEMO-G.
+               05  WRK-KOH-MEMO        PIC X(20)
+                                       OCCURS   3.
+           03  IDX-KM                  PIC 9(02).
       *
       *    剤毎の内容
        01  WRK-NAIYOU-AREA.
@@ -528,7 +547,9 @@
       *    名称桁数
        01  NAME-MAX                PIC 9(03)  VALUE 76.
       *    備考行
-       01  BIKOU-MAX               PIC 9(02)  VALUE 7.
+       01  BIKOU-MAX               PIC 9(02)  VALUE 5.
+      *    備考行
+       01  BIKOU2-MAX              PIC 9(02)  VALUE 2.
       *    ＱＲ備考行
        01  BIKOU-MAXQ              PIC 9(02)  VALUE 6.
       *
@@ -542,6 +563,11 @@
                05  WRK-BIKOU-NAME2     PIC X(86)
                                        OCCURS   18.
            03  IDX-BIKOU                   PIC 9(04).
+      *    備考コメント上段編集
+           03  WRK-BIKOMEI             PIC X(80).
+           03  WRK-BIKOMEI-R           REDEFINES   WRK-BIKOMEI.
+               05  WRK-BIKOMEI-1       PIC X(40).
+               05  WRK-BIKOMEI-2       PIC X(40).
       *    患者コメント
            03  WRK-COMMENT-HEN         PIC X(172).
            03  WRK-PTCOMMENT-G.
@@ -551,6 +577,11 @@
            03  IDX-COM                     PIC 9(04).
            03  IDX-COM2                    PIC 9(04).
            03  COM-MAX                     PIC 9(04).
+      *QR　処方せんコメント
+       01  WRK-QR-BIKOU-AREA.
+           03  WRK-QR-BIKOU-G.
+               05  WRK-QR-BIKOU-NAME       PIC X(100)
+                                           OCCURS   10.
       *
       *    ＱＲ位置
       *01  QR-FILE-NAME-PARA.
@@ -598,9 +629,17 @@
                                        OCCURS   5.
       *    連携用ＣＶＳファイル名編集
       *    03  PARA-QR-CSVFILE         PIC X(01).
+      *H28.2
+      *    公費備考コメント編集
+           03  PARA-COM-KOHNUM-G.
+               05  PARA-COM-KOHNUM-TBL     OCCURS   3.
+                   07  PARA-COM-MEMO       PIC X(20).
+                   07  PARA-COM-KOHNUM     PIC X(35).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
+      *H28.2
+           03  WRK-PARA-MAX            PIC 9(03).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -809,6 +848,7 @@
        100-OPTION-SELECT-SEC             SECTION.
       *
            INITIALIZE                  PARA-AREA
+           MOVE    ZERO                TO  WRK-PARA-MAX
       *    ページ表示
            MOVE    "PAGE"              TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
@@ -876,6 +916,63 @@
       *    PERFORM 1001-OPTION-CALL-SEC
       *    MOVE    WRK-PARA(1:1)       TO  PARA-QR-CSVFILE
       *
+      *H28.2
+      *    公費備考コメント編集
+           PERFORM VARYING     IDP     FROM    1   BY  1
+                   UNTIL       IDP     >   3
+      *
+               MOVE    SPACE           TO  WRK-PARA-NAME
+               STRING  "COM_"
+                       IDP
+                       "_MEMO"         DELIMITED  BY  SIZE
+                                       INTO    WRK-PARA-NAME
+               END-STRING
+               MOVE    20                  TO  WRK-PARA-MAX
+               PERFORM 1001-OPTION-CALL-SEC
+               MOVE    WRK-PARA            TO  PARA-COM-MEMO(IDP)
+      *
+               MOVE    SPACE           TO  WRK-PARA-NAME
+               STRING  "COM_"
+                       IDP
+                       "_KOHNUM"       DELIMITED  BY  SIZE
+                                       INTO    WRK-PARA-NAME
+               END-STRING
+               MOVE    35                  TO  WRK-PARA-MAX
+               PERFORM 1001-OPTION-CALL-SEC
+               IF      ORCSPRGOPTION-OT-TYPE   =   1
+                   MOVE    WRK-PARA        TO  PARA-COM-KOHNUM (IDP)
+               END-IF
+           END-PERFORM
+      *
+      *    公費備考コメント編集
+           INITIALIZE                  WRK-PARA-COM-KOHNUM-G
+           PERFORM VARYING     IDP     FROM    1   BY  1
+                   UNTIL       IDP     >   3
+               IF      PARA-COM-MEMO(IDP)  NOT =   SPACE
+                   MOVE    1                   TO  IDP2
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL      (IDX     >   35)
+                                   OR (IDP2    >   9 )
+                       IF      PARA-COM-KOHNUM(IDP)(IDX:1)
+                                                   =   ","
+                           ADD     1               TO  IDP2
+                       ELSE
+                           IF     (PARA-COM-KOHNUM(IDP)(IDX:3)
+                                                   =   "000"  )
+                             OR   (PARA-COM-KOHNUM(IDP)(IDX:3)
+                                                   NOT NUMERIC )
+                               CONTINUE
+                           ELSE
+                               MOVE    PARA-COM-KOHNUM(IDP)(IDX:3)
+                                               TO  WRK-PARA-COM-KOHNUM
+                                                          (IDP IDP2)
+                           END-IF
+                           ADD     2           TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
            .
        100-OPTION-SELECT-EXT.
            EXIT.
@@ -896,6 +993,22 @@
       *H26.10
                IF      WRK-PARA-NAME(1:6)      =   "KOHNUM"
                    MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA
+               END-IF
+      *H28.2
+               IF      WRK-PARA-MAX        >   ZERO
+                   MOVE    ORCSPRGOPTION-OT-PARA(1:WRK-PARA-MAX)
+                                               TO  WRK-PARA
+               END-IF
+           ELSE
+               IF      WRK-PARA-MAX        >   ZERO
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    ORCSPRGOPTION-OT-PARA(1:WRK-PARA-MAX)
+                                               TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-PARA-MAX        TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT   TO  WRK-PARA
                END-IF
            END-IF
            .
@@ -982,7 +1095,7 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HCM19V02.red"      TO  MKPRT-DIA
+            MOVE   "HCM19V03.red"      TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
       ******MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   ASGNPARA            TO  MKPRT-DAT
@@ -1671,25 +1784,35 @@
                MOVE    SPACE               TO  WRK-HEN-SRYKANAME
            END-IF
       *
+      *H28.2
+      *    公費備考コメントを公費編集の次へ
+           IF     (COMB-KOHHKNNUM(1)   =   SPACE )
+             OR   (PARA-COM-KOHNUM-G   =   SPACE )
+               CONTINUE
+           ELSE
+               PERFORM 40022-KOHMEMO-HEN-SEC
+           END-IF
+      *
       *    地方公費を備考へ（コメントの最初へ）
-           PERFORM VARYING     IDX-K3  FROM    4   BY  -1
-                   UNTIL      (IDX-K3      <   1   )
-               IF      (WRK-HEN-KOH (IDX-K3)   NOT =   SPACE )
-                   PERFORM VARYING     IDX-B1  FROM    9   BY  -1
-                           UNTIL      (IDX-B1      <   1   )
-                       IF      IDX-B1          =   1
-                           MOVE    WRK-HEN-KOH (IDX-K3)
-                                               TO  WRK-BIKOU-NAME
-                                                          (IDX-B1)
-                           ADD     1                   TO  IDX-BIKOU
-                       ELSE
-                           MOVE    WRK-BIKOU-NAME (IDX-B1 - 1)
-                                               TO  WRK-BIKOU-NAME
-                                                          (IDX-B1)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
+      *H28.2
+      *****PERFORM VARYING     IDX-K3  FROM    4   BY  -1
+      *            UNTIL      (IDX-K3      <   1   )
+      *        IF      (WRK-HEN-KOH (IDX-K3)   NOT =   SPACE )
+      *            PERFORM VARYING     IDX-B1  FROM    9   BY  -1
+      *                    UNTIL      (IDX-B1      <   1   )
+      *                IF      IDX-B1          =   1
+      *                    MOVE    WRK-HEN-KOH (IDX-K3)
+      *                                        TO  WRK-BIKOU-NAME
+      *                                                   (IDX-B1)
+      *                    ADD     1                   TO  IDX-BIKOU
+      *                ELSE
+      *                    MOVE    WRK-BIKOU-NAME (IDX-B1 - 1)
+      *                                        TO  WRK-BIKOU-NAME
+      *                                                   (IDX-B1)
+      *                END-IF
+      *            END-PERFORM
+      *        END-IF
+      *****END-PERFORM
       *!!
       *    備考禁忌編集
            IF      PARA-TABOO          =   "1"
@@ -1749,6 +1872,44 @@
            END-IF
            .
        40021-TABOO-HENSYU-EXT.
+           EXIT.
+      *
+      *H28.2
+      *****************************************************************
+      *    公費備考コメント編集処理
+      *****************************************************************
+       40022-KOHMEMO-HEN-SEC           SECTION.
+      *
+           INITIALIZE                  WRK-KHN-MEMO-G
+           MOVE    ZERO                TO  IDX-KM
+           PERFORM VARYING     IDX-KB  FROM    1   BY  1
+                   UNTIL      (IDX-KB      >   3   )
+               MOVE    ZERO                TO  FLG-COMOK
+               IF     (PARA-COM-MEMO (IDX-KB)  =   SPACE )
+                   MOVE    2                   TO  FLG-COMOK
+               END-IF
+               PERFORM VARYING     IDP2    FROM    1   BY  1
+                       UNTIL      (IDP2        >   9   )
+                               OR (FLG-COMOK   NOT =   ZERO)
+                   IF     (WRK-PARA-COM-KOHNUM (IDX-KB IDP2)
+                                            NOT =   SPACE   )
+                   AND    (WRK-PARA-COM-KOHNUM (IDX-KB IDP2)
+                                               =   COMB-KOHHKNNUM(1)
+                                               OR  COMB-KOHHKNNUM(2)
+                                               OR  COMB-KOHHKNNUM(3)
+                                               OR  COMB-KOHHKNNUM(4))
+                       MOVE    1                   TO  FLG-COMOK
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-COMOK           =   1
+                   ADD     1                   TO  IDX-KM
+                   MOVE    PARA-COM-MEMO (IDX-KB)
+                                               TO  WRK-KOH-MEMO(IDX-KM)
+               END-IF
+           END-PERFORM
+           .
+       40022-KOHMEMO-HEN-EXT.
            EXIT.
       *****************************************************************
       *    帳票編集処理
@@ -1873,16 +2034,57 @@
       *
       *備考欄
       *    ３歳未満・老人負担割合
-           MOVE    ZERO                TO  IDX-B
+           MOVE    ZERO                TO  IDX-B2
            IF      WRK-BIKOU       NOT =   SPACE
-               ADD     1               TO  IDX-B
-               MOVE    WRK-BIKOU       TO  HCM19-BIKOH (IDX-B)
+               ADD     1               TO  IDX-B2
+               MOVE    WRK-BIKOU       TO  HCM19-BIKOH2(IDX-B2)
            END-IF
+      *H28.2
+      *    公費備考コメント編集（上段）
+           PERFORM VARYING     IDX-KM  FROM    1   BY  1
+                   UNTIL      (IDX-KM  >   3   )
+                           OR (WRK-KOH-MEMO (IDX-KM)   =   SPACE)
+                           OR (IDX-B2      >   BIKOU2-MAX )
+               IF      IDX-B2              =   ZERO
+                   ADD     1                   TO  IDX-B2
+               END-IF
+               IF      HCM19-BIKOH2(IDX-B2)    =   SPACE
+                   MOVE    WRK-KOH-MEMO (IDX-KM)
+                                               TO  HCM19-BIKOH2(IDX-B2)
+               ELSE
+                   MOVE    SPACE               TO  WRK-BIKOMEI
+                   STRING  HCM19-BIKOH2 (IDX-B2)   DELIMITED  BY  SPACE
+                           "、"                    DELIMITED  BY  SIZE
+                           WRK-KOH-MEMO (IDX-KM)   DELIMITED  BY  SPACE
+                                               INTO    WRK-BIKOMEI
+                   END-STRING
+                   IF      WRK-BIKOMEI-2       =   SPACE
+                       MOVE    WRK-BIKOMEI     TO  HCM19-BIKOH2(IDX-B2)
+                   ELSE
+                       ADD     1               TO  IDX-B2
+                       IF      IDX-B2          <=  BIKOU2-MAX
+                           MOVE    WRK-KOH-MEMO (IDX-KM)
+                                               TO  HCM19-BIKOH2(IDX-B2)
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
       *
       *    麻薬編集
+           MOVE    ZERO                TO  IDX-B
            IF      FLG-MAYAKU          =   1
                PERFORM 31020-MAYAKU-HEN-SEC
            END-IF
+      *
+      *    地方公費を編集
+           PERFORM VARYING     IDX-K3  FROM    1   BY  1
+                   UNTIL      (IDX-K3      >   4   )
+                          OR  (IDX-B       >=  BIKOU-MAX   )
+                          OR  (WRK-HEN-KOH (IDX-K3)    =   SPACE)
+               ADD     1                   TO  IDX-B
+               MOVE    WRK-HEN-KOH (IDX-K3)
+                                           TO  HCM19-BIKOH (IDX-B)
+           END-PERFORM
       *
       *    備考欄コメント編集
            IF      IDX-BIKOU           >   ZERO
@@ -1933,22 +2135,6 @@
                    ADD     1                   TO  IDX-B
                    MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)
                                                TO  HCM19-BIKOH (IDX-B)
-      ***          ７行目から２５文字編集
-      *            IF      IDX-B               <   BIKOU-MAX2
-      *                MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)
-      *                                        TO  HCM19-BIKOH (IDX-B)
-      *            ELSE
-      *                MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)(1:50)
-      *                                        TO  HCM19-BIKOH (IDX-B)
-      *                IF      WRK-BIKOU-NAME2(IDX-BIKOU)(51:)
-      *                                        NOT =   SPACE
-      *                    ADD     1           TO  IDX-B
-      *                    IF      IDX-B       <=  BIKOU-MAX
-      *                       MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)(51:)
-      *                                        TO  HCM19-BIKOH (IDX-B)
-      *                    END-IF
-      *                END-IF
-      ***********  END-IF
                END-IF
            END-PERFORM
       *
@@ -1968,13 +2154,6 @@
                    ADD     1                   TO  IDX-B
                    MOVE    ZERO                TO  IDX-COM2
                    MOVE    86                  TO  COM-MAX
-      ***          ７行目までは８６文字編集
-      *            IF      IDX-B               <   BIKOU-MAX2
-      *                MOVE    86                  TO  COM-MAX
-      *            ELSE
-      *            ７行目から２５文字編集
-      *                MOVE    50                  TO  COM-MAX
-      ****         END-IF
                    MOVE    WRK-PTCOMMENT (IDX-COM)(1:COM-MAX)
                                                TO  WRK-PTCOMMENT-HEN
       *
@@ -2656,9 +2835,7 @@
                    UNTIL       FLG-JYURRK      =   1
       *
                IF      JYURRK-EDANUM       =   1
-      *H27.4       IF      IDX             >   ZERO
                    IF      WRK-ALL-MAX     >   ZERO
-      *H27.4
       *                伝票番号毎の印刷編集処理
                        PERFORM 2100-SYOHOU-SYORI-SEC
       *!!!!
@@ -3384,8 +3561,7 @@
            IF     (FLG-FUKACHK         =   ZERO    )
               AND (FLG-FUKACHK2        =   ZERO    )
              AND ((SYS-1030-KOUHATUKA  =   "0"     )
-      *H27.4
-      *            後発品変更不可（処方）判定
+      *H27.4       後発品変更不可（処方）判定
                OR (FLG-ALLKISAI            =   1   ))
       *        後発品変更可（処方）判定
                IF      FLG-ALLKISAI        =   2
@@ -4111,10 +4287,10 @@
            ADD     1                   TO  IDX-QRB
            IF      IDX-QRB             <=  BIKOU-MAXQ
                IF      WRK-SRY-SRYCD (IDXA)(1:3) =   "001"
-                   MOVE    WRK-YOH-NAME    TO  ORCSQRCSV-BIKOU
+                   MOVE    WRK-YOH-NAME    TO  WRK-QR-BIKOU-NAME
                                                            (IDX-QRB)
                ELSE
-                   MOVE    WRK-TNS-NAME    TO  ORCSQRCSV-BIKOU
+                   MOVE    WRK-TNS-NAME    TO  WRK-QR-BIKOU-NAME
                                                            (IDX-QRB)
                END-IF
            END-IF
@@ -4914,7 +5090,8 @@
        6002-QRBIKOU-HENSYU-SEC           SECTION.
       *
       *    備考の最初に地方公費を編集
-           PERFORM VARYING     IDX-K3  FROM    4   BY  -1
+      **** PERFORM VARYING     IDX-K3  FROM    4   BY  -1
+           PERFORM VARYING     IDX-K3  FROM    7   BY  -1
                    UNTIL      (IDX-K3      <   1   )
                IF      WRK-HEN-KOH (IDX-K3)    NOT =   SPACE
                    PERFORM VARYING     IDX-QRB FROM  BIKOU-MAXQ  BY  -1
