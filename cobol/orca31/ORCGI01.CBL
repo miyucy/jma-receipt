@@ -1867,14 +1867,32 @@
            MOVE    "1"             TO  SPA-GMN-I01-SKJKBNL (2)
            MOVE    "食あり"        TO  SPA-GMN-I01-SKJKBNMEIL (2)
       *
-           IF    ( SYS-5000-SHOKUJIRYOYOCD
+           IF     WRK-KJNYMD       <=  "20160331"
+             IF    ( SYS-5000-SHOKUJIRYOYOCD
                                    =   CONST-SKJRYOYO2 )
                MOVE    2           TO  SPA-GMN-I01-SKJKBN-CNT
-           ELSE
+             ELSE
                MOVE    3           TO  SPA-GMN-I01-SKJKBN-CNT
       *
                MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (3)
                MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (3)
+             END-IF
+           ELSE
+             IF    ( SYS-5000-SHOKUJIRYOYOCD
+                                     =   CONST-SKJRYOYO2 )
+               MOVE    3           TO  SPA-GMN-I01-SKJKBN-CNT
+      *
+               MOVE    "3"         TO  SPA-GMN-I01-SKJKBNL (3)
+               MOVE    "流動食"    TO  SPA-GMN-I01-SKJKBNMEIL (3)
+             ELSE
+               MOVE    4           TO  SPA-GMN-I01-SKJKBN-CNT
+      *
+               MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (3)
+               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (3)
+      *
+               MOVE    "3"         TO  SPA-GMN-I01-SKJKBNL (4)
+               MOVE    "流動食"    TO  SPA-GMN-I01-SKJKBNMEIL (4)
+             END-IF
            END-IF
       *
            .
@@ -11651,6 +11669,8 @@
                    MOVE   1     TO  LNK-SCNYUACCT-SHOKUJIKBN
                WHEN   "2"
                    MOVE   2     TO  LNK-SCNYUACCT-SHOKUJIKBN
+               WHEN   "3"
+                   MOVE   3     TO  LNK-SCNYUACCT-SHOKUJIKBN
            END-EVALUATE
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
@@ -11844,7 +11864,7 @@
       *    同日再入院でない、又は他院歴からの同日再入院の場合は、
       *    入院時食事時間区分に従い入院会計データを更新する。
            IF   PTNYUINRRK-NYUINYMD      >=   "20060401"
-             IF   PTNYUINRRK-SKJKBN        =    "1"   OR   "2"
+             IF   PTNYUINRRK-SKJKBN        =    "1"   OR   "2"  OR  "3"
                IF   PTNYUINRRK-DOUJITSUKBN     =   SPACE  OR  "2"
       *            通常の入院又は他院歴からの同日入院
       *
@@ -12069,6 +12089,9 @@
                            IF   PTNYUINRRK-SKJKBN        =    "2"
                                MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "3"
+                               MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
                            PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
@@ -12105,6 +12128,9 @@
                            IF   PTNYUINRRK-SKJKBN        =    "2"
                                MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "3"
+                               MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
                            PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
@@ -12140,6 +12166,9 @@
                            END-IF
                            IF   PTNYUINRRK-SKJKBN        =    "2"
                                MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "3"
+                               MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
@@ -12181,6 +12210,9 @@
                            IF   PTNYUINRRK-SKJKBN        =    "2"
                                MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "3"
+                               MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
                            PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
@@ -12216,6 +12248,9 @@
                            END-IF
                            IF   PTNYUINRRK-SKJKBN        =    "2"
                                MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "3"
+                               MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
@@ -12257,6 +12292,9 @@
                            IF   PTNYUINRRK-SKJKBN        =    "2"
                                MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "3"
+                               MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
                            PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
@@ -12297,7 +12335,7 @@
            IF      FLG-NYUINACCT        =   ZERO
                MOVE     PTNYUINRRK-NYUINYMD(7:2)
                                        TO  IDX-SHOKUJIX
-               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2  OR  3
                    MOVE    1           TO  WRK-SHOKUJI-ASA
                END-IF
            END-IF
@@ -12318,7 +12356,7 @@
            IF      FLG-NYUINACCT        =   ZERO
                MOVE     PTNYUINRRK-NYUINYMD(7:2)
                                        TO  IDX-SHOKUJIX
-               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2  OR  3
                    MOVE    1           TO  WRK-SHOKUJI-HIRU
                END-IF
            END-IF
@@ -12339,7 +12377,7 @@
            IF      FLG-NYUINACCT        =   ZERO
                MOVE     PTNYUINRRK-NYUINYMD(7:2)
                                        TO  IDX-SHOKUJIX
-               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2  OR  3
                    MOVE    1           TO  WRK-SHOKUJI-YORU
                END-IF
            END-IF
@@ -12887,7 +12925,7 @@
              IF      FLG-NYUINACCT        =   ZERO
                  MOVE     BAKRRK-NYUINYMD(7:2)
                                          TO  IDX-SHOKUJIX
-                 IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+                 IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2  OR  3
                      MOVE    1           TO  WRK-SHOKUJI-ASA
                  END-IF
              END-IF
@@ -12908,7 +12946,7 @@
              IF      FLG-NYUINACCT        =   ZERO
                  MOVE     BAKRRK-NYUINYMD(7:2)
                                          TO  IDX-SHOKUJIX
-                 IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+                 IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2  OR  3
                      MOVE    1           TO  WRK-SHOKUJI-HIRU
                  END-IF
              END-IF
@@ -12929,7 +12967,7 @@
              IF      FLG-NYUINACCT        =   ZERO
                  MOVE     BAKRRK-NYUINYMD(7:2)
                                          TO  IDX-SHOKUJIX
-                 IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+                 IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2  OR  3
                      MOVE    1           TO  WRK-SHOKUJI-YORU
                  END-IF
              END-IF
@@ -14755,6 +14793,8 @@
                       MOVE   1     TO  LNK-SCNYUACCT-SHOKUJIKBN
                WHEN   "2"
                       MOVE   2     TO  LNK-SCNYUACCT-SHOKUJIKBN
+               WHEN   "3"
+                      MOVE   3     TO  LNK-SCNYUACCT-SHOKUJIKBN
            END-EVALUATE
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC

@@ -1241,6 +1241,7 @@
       *
                MOVE    5                   TO  SPA-SAGAKU-MAX-41
            ELSE
+             IF   SPA-NAI-SRYYM       <=   "201603"
                MOVE    SPACE               TO  SPA-GMN-SAGAKUNO-41 (4)
                MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (4)
       *
@@ -1248,6 +1249,15 @@
                MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (5)
       *
                MOVE    3                   TO  SPA-SAGAKU-MAX-41
+             ELSE
+               MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (4)
+               MOVE    "流動食"            TO  SPA-GMN-SAGAKU-41   (4)
+      *
+               MOVE    SPACE               TO  SPA-GMN-SAGAKUNO-41 (5)
+               MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (5)
+      *
+               MOVE    4                   TO  SPA-SAGAKU-MAX-41
+             END-IF
            END-IF
       *
            .
@@ -4509,13 +4519,26 @@
                            END-IF
                        END-IF
                    ELSE
-                       IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                       OR  1
-                                                       OR  2
-                           CONTINUE
+                       IF      SPA-NAI-SRYYM         <=  "201603"
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  1
+                                                           OR  2
+                               CONTINUE
+                           ELSE
+                               IF      SPA-ERRCD       =   SPACE
+                                   MOVE    "0049"         TO  SPA-ERRCD
+                               END-IF
+                           END-IF
                        ELSE
-                           IF      SPA-ERRCD       =   SPACE
-                               MOVE    "0049"         TO  SPA-ERRCD
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  1
+                                                           OR  2
+                                                           OR  3
+                               CONTINUE
+                           ELSE
+                               IF      SPA-ERRCD       =   SPACE
+                                   MOVE    "0049"         TO  SPA-ERRCD
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -8758,10 +8781,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "療養担当手当の設定はできません。"
                                        TO  WRK-ERRMSG(33:)
                WHEN    "0049"
+                 IF   SPA-NAI-SRYYM     <=    "201603"
                    MOVE    "食事での入力可能な区分は０、１、２"
                                        TO  WRK-ERRMSG(1:34)
                    MOVE    "のいずれかです。"
                                        TO  WRK-ERRMSG(35:16)
+                 ELSE
+                   MOVE    "食事での入力可能な区分は０、１、２、３"
+                                       TO  WRK-ERRMSG(1:38)
+                   MOVE    "のいずれかです。"
+                                       TO  WRK-ERRMSG(39:16)
+                 END-IF
                WHEN    "0050"
                    MOVE    "入院時食事療養２の算定中は２（特食"
                                        TO  WRK-ERRMSG(1:34)
