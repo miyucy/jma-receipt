@@ -325,6 +325,8 @@
       *                                     行為のコラムリストへの表示
       *  04.08.04    NACL-藤原    16/01/20  転帰区分の死亡変更時の患者
       *                                     情報更新対応
+      *  04.08.05    NACL-藤原    16/02/10  自院病名への補足コメント追加
+      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2870,19 +2872,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF      SPA-C01-INDEX   =   ZERO
-      *      自院病名検索時
-             IF      SPA-C01-B10-FLG =   ZERO    OR  2
-                 PERFORM VARYING IDZ FROM    1   BY  1
-                         UNTIL   IDZ >       3      
-                   MOVE    SPA-C01-THOSOKUCD (IDZ)
+      *        自院病名検索時
+               IF      SPA-C01-B10-FLG =   ZERO    OR  2
+                   IF      SPA-C01-HOSOKU-COMMENT  =   SPACE
+                       PERFORM VARYING IDZ FROM    1   BY  1
+                               UNTIL   IDZ >       3      
+                           MOVE    SPA-C01-THOSOKUCD (IDZ)
                                                TO
                                            SPA-GMN-C02-HOSOKUCD (IDZ)
-                   MOVE    SPA-GMN-C02-HOSOKUCD (IDZ)
+                           MOVE    SPA-GMN-C02-HOSOKUCD (IDZ)
                                                TO  USBYO-BYOMEIINPUTCD
-                   PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
-                 END-PERFORM
-                 PERFORM 3202-C04SPASET-HOSOKU-HENSYU-SEC
-             END-IF  
+                           PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
+                       END-PERFORM
+                       PERFORM 3202-C04SPASET-HOSOKU-HENSYU-SEC
+                   ELSE
+                       MOVE    SPA-C01-HOSOKU-COMMENT
+                                       TO  SPA-GMN-C02-HOSOKU-COMMENT
+                   END-IF
+               END-IF  
            ELSE
       *        自院病名コード検索時
                MOVE    SPA-C01-INDEX   TO  IDZ
@@ -2924,6 +2931,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 41041-RECEDENFLG-CHK-SEC
            ELSE
                MOVE    SPACE               TO  SPA-NAI-C02-RECEDENFLG
+           END-IF
+      *    
+      *    複数病名のとき補足コメントの入力不可
+           IF    ( SPA-NAI-C02-BYOMEICD-MAX    >   1     )
+           AND   ( SPA-GMN-C02-HOSOKU-COMMENT
+                                           NOT =   SPACE )
+               INITIALIZE                  SPA-GMN-C02-HOSOKUCD-G
+                                           SPA-NAI-C02-HOSOKU-TBL
+               MOVE    SPACE           TO  SPA-GMN-C02-HOSOKU-COMMENT
            END-IF
       *
            MOVE    9               TO  SPA-GMN-C02-CUR
@@ -6258,6 +6274,18 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                    MOVE    "1"           TO
                                          SPA-NAI-C02-USERBYOMEIFLG(IDZ)
                    MOVE    USBYO-BYOMEI  TO  SPA-NAI-C02-BYOMEI   (IDZ)
+                   MOVE    USBYO-HOSOKU-COMMENT
+                                         TO  SPA-NAI-C02-HOSOKU-COMMENT
+                                                                  (IDZ)
+                   IF      USBYO-HOSOKU-COMMENT
+                                         =   SPACE
+                       CONTINUE
+                   ELSE
+                       INITIALIZE            SPA-GMN-C02-HOSOKUCD-G
+                                             SPA-NAI-C02-HOSOKU-TBL
+                       MOVE    USBYO-HOSOKU-COMMENT
+                                         TO  SPA-GMN-C02-HOSOKU-COMMENT
+                   END-IF
                    MOVE    USBYO-CHARTBYOMEI
                                          TO
                                          SPA-NAI-C02-CHARTBYOMEI  (IDZ)
@@ -7126,12 +7154,18 @@ grpsys                         MOVE    SPA-HOSPNUM
                AND   ( SPA-GMN-C02-HOSOKU-COMMENT
                                        NOT =   SPACE )
                    MOVE    "0094"              TO  SPA-ERRCD
+                   INITIALIZE                  SPA-GMN-C02-HOSOKUCD-G
+                                               SPA-NAI-C02-HOSOKU-TBL
+                   MOVE    SPACE               TO
+                                           SPA-GMN-C02-HOSOKU-COMMENT
                END-IF
            END-IF        
       *
-      *    括弧で始まる部位が末尾の警告以外のとき
+      *    括弧で始まる部位が末尾の警告又は複数病名のときの補足コメントの
+      *    入力以外のとき
            IF    ( SPA-ERRCD            NOT =   SPACE  )
-           AND   ( SPA-ERRCD            NOT =   "0079" )     
+           AND   ( SPA-ERRCD            NOT =   "0079"  AND
+                                                "0094" )
                GO  TO  41021-BYOMEICD-HENSYU-EXT
            END-IF
       *
@@ -7864,7 +7898,7 @@ grpsys                         MOVE    SPA-HOSPNUM
       *
                    COMPUTE SPA-GMN-C02-CUR     =   IDZ +   1
       *
-                   IF      SPA-ERRCD           =   "0075"
+                   IF      SPA-ERRCD           =   "0075"  OR "0094"
                        GO  TO  410261-BYOMEIINPUTSET-HENSYU-EXT
                    END-IF
                END-IF
@@ -10255,6 +10289,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            AND   ( SPA-GMN-C02-HOSOKU-COMMENT
                                            NOT =   SPACE )
                MOVE    "0094"              TO  SPA-ERRCD
+               INITIALIZE                  SPA-GMN-C02-HOSOKUCD-G
+                                           SPA-NAI-C02-HOSOKU-TBL
+               MOVE    SPACE               TO
+                                           SPA-GMN-C02-HOSOKU-COMMENT
+      *??
                MOVE    34                  TO  SPA-GMN-C02-CUR
                GO  TO  450-TOUROKU-EXT
            END-IF
@@ -12676,7 +12715,7 @@ grpsys                                          SPA-AREA
                                            TO  SPA-C01-TBYOMEISBT (IDY)
                    MOVE    IDX             TO  SPA-C01-TBYOMEICD-INDEX
                                                                   (IDY)
-               END-IF                              
+               END-IF
            END-PERFORM
       *
            MOVE    ZERO                TO  IDY
@@ -12693,6 +12732,11 @@ grpsys                                          SPA-AREA
                                                                   (IDY)
                END-IF
            END-PERFORM
+           IF      SPA-C01-THOSOKUCD (1)
+                                       =   SPACE
+               MOVE    SPA-GMN-C02-HOSOKU-COMMENT
+                                           TO  SPA-C01-HOSOKU-COMMENT
+           END-IF
       *
            EVALUATE    MCP-WIDGET
                WHEN    "HOSOKUCD_1"
@@ -14059,9 +14103,12 @@ grpsys                                          SPA-AREA
                    MOVE    "補足コメントが入力の途中です"
                                                TO  SPA-ERRMSG   
                WHEN    "0094"
-                   MOVE
+                   STRING
                      "複数病名の入力時は補足コメントの入力はできません"
-                                               TO  SPA-ERRMSG   
+                                                DELIMITED   BY  SIZE 
+                       "ので、クリアします"     DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0095"
                    MOVE    "補足コメントが長すぎます"
                                                TO  SPA-ERRMSG
