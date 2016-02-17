@@ -246,13 +246,10 @@
                   05   W06-GRPUSERID   PIC X(16)   OCCURS  9 TIMES.
               03  W06-STYUKYMD.
                 04  W06-VALUE   PIC X(10).
-                04  W06-STYUKYMD-STATE   PIC S9(9)   BINARY.
               03  W06-EDYUKYMD.
                 04  W06-VALUE   PIC X(10).
-                04  W06-EDYUKYMD-STATE   PIC S9(9)   BINARY.
               03  W06-USERID.
                 04  W06-VALUE   PIC X(16).
-                04  W06-USERID-STATE   PIC S9(9)   BINARY.
               03  W06-PASSWORD1.
                 04  W06-VALUE   PIC X(16).
               03  W06-PASSWORD2.
