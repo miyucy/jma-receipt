@@ -867,7 +867,7 @@
                                             LNK-NYULIFE2-SKJ-MONEY
                                                             (IDX1 IDX-T)
                             ELSE
-                              MOVE  "197333333"   TO
+                              MOVE  "197003510"   TO
                                             LNK-NYULIFE2-SKJ-SRYCD
                                                             (IDX1 IDX-T)
                               MOVE   500          TO
