@@ -340,27 +340,9 @@
            PERFORM    220-NANBYO-CHK-SEC
       *
       *
-      *
-      **     PERFORM   VARYING  IDX    FROM  1  BY  1 
-      **       UNTIL   IDX   >   31
-      **         DISPLAY "IDX = " IDX
-      **         DISPLAY "LNK-SKJKEEP-KBN = " LNK-SKJKEEP-KBN(IDX)
-      **         DISPLAY "LNK-SKJKEEP-TANKI2-KBN = "
-      **                  LNK-SKJKEEP-TANKI2-KBN(IDX)
-      **       DISPLAY "DOUJITSU = " LNK-SKJKEEP-DOUJITSU-KBN(IDX)
-      **       DISPLAY "HKNHEN   = " LNK-SKJKEEP-DOUJITSU-HKNHENKBN(IDX)
-      **       DISPLAY "TAI-SKJ  = " LNK-SKJKEEP-DOUJITSU-T-SKJKBN(IDX)
-      **       DISPLAY "TAI-HKN  = " LNK-SKJKEEP-DOUJITSU-T-HKNCOMBI(IDX)
-      **       DISPLAY "TAI-HKNSYU=" LNK-SKJKEEP-DOUJITSU-T-HKNSYU(IDX)
-      **       DISPLAY "NYU-SKJ  = " LNK-SKJKEEP-DOUJITSU-SKJKBN(IDX)
-      **       DISPLAY "NYU-HKN  = " LNK-SKJKEEP-DOUJITSU-HKNCOMBI(IDX)
-      **       DISPLAY "NYU-HKNSYU=" LNK-SKJKEEP-DOUJITSU-HKNSYU(IDX)
-      **     END-PERFORM
-      **     DISPLAY   "WRK-YOKUJITSU-YMD = " WRK-YOKUJITSU-YMD
-      *
-      *     IF       LNK-SKJKEEP-TBL   =    SPACE
-      *         MOVE     4              TO   LNK-SKJKEEP-RC
-      *     END-IF
+           IF       LNK-SKJKEEP-TBL   =    SPACE
+               MOVE     4              TO   LNK-SKJKEEP-RC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.
