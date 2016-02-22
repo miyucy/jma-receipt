@@ -55,6 +55,7 @@
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-SEISIN-CHK              PIC 9(01).
+           03  FLG-SEISIN-SANTEI           PIC 9(01).
            03  FLG-NANBYO                  PIC 9(01).
       *    添字領域
        01  IDX-AREA.
@@ -96,6 +97,8 @@
            03  WRK-TAIINYMDR   REDEFINES   WRK-TAIINYMD.
                05  WRK-TAIIN-YYMM          PIC 9(06).
                05  WRK-TAIIN-DD            PIC 9(02).
+      *    精神病棟入院開始日
+           03  WRK-SEI-NYUINYMD            PIC X(08).
       *
            03  WRK-MATCH                   PIC X(02).
       *
@@ -229,6 +232,8 @@
              DISPLAY "IDX = " IDX " LNK-SKJKEEP-KBN = "
                        LNK-SKJKEEP-KBN(IDX)
            END-PERFORM
+           DISPLAY "LNK-SKJKEEP-SEI-NYUINYMD = "
+                    LNK-SKJKEEP-SEI-NYUINYMD
       *
            .
        000-PROC-EXT.
@@ -354,6 +359,15 @@
       *    難病等の入院判定（診療行為で難病等に関わる診療が有る場合も対象）
            PERFORM    220-NANBYO-CHK-SEC
       *
+           PERFORM    VARYING   IDX   FROM  1  BY  1
+             UNTIL    IDX    >   31
+              IF     LNK-SKJKEEP-KBN(IDX)   =   "2"
+                 MOVE   1     TO   FLG-SEISIN-SANTEI
+              END-IF
+           END-PERFORM
+           IF      FLG-SEISIN-SANTEI   =   ZERO
+                MOVE   SPACE           TO  LNK-SKJKEEP-SEI-NYUINYMD
+           END-IF
       *
            IF       LNK-SKJKEEP-TBL   =    SPACE
                MOVE     4              TO   LNK-SKJKEEP-RC
@@ -428,6 +442,7 @@
                PERFORM   910-PTNYUINRRK-READ-SEC
                DISPLAY    "========  FLG-PTNYUINRRK(1) = "
                                      FLG-PTNYUINRRK
+               MOVE    PTNYUINRRK-NYUINYMD       TO  WRK-SEI-NYUINYMD
                IF      FLG-PTNYUINRRK     =   ZERO
                    MOVE    PTNYUINRRK-RRKNUM     TO  WRK-RRKNUM
                    MOVE    PTNYUINRRK-NYUINYMD   TO  WRK-NYUINYMD
@@ -495,6 +510,7 @@
            DISPLAY    "WRK-MATCH = " WRK-MATCH
       *
            IF        WRK-MATCH           =      "OK"
+      *        据え置き区分のセット
                IF    WRK-TAIINYMD        =   "99999999"
                    PERFORM    VARYING   IDX1  FROM  1  BY  1
                      UNTIL   (IDX1      >     WRK-GETSUMATSU-DD)
@@ -518,6 +534,8 @@
                      END-IF
                    END-IF
                END-IF
+      *        経過措置入院年月日のセット
+               MOVE   WRK-SEI-NYUINYMD  TO  LNK-SKJKEEP-SEI-NYUINYMD
            END-IF
            .
        210-SEISIN-CHK-EXT.
