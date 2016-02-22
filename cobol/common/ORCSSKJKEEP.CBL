@@ -51,9 +51,11 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-TANKI2                  PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
+           03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-SEISIN-CHK              PIC 9(01).
+           03  FLG-NANBYO                  PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -62,6 +64,8 @@
            03  IDX-ED                      PIC 9(02).
            03  IDX-TK3                     PIC 9(02).
            03  IDX-SYS                     PIC 9(03).
+           03  IDX-NANBYO                  PIC 9(03).
+           03  IDX-HKNCOMBI                PIC 9(03).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -94,6 +98,13 @@
                05  WRK-TAIIN-DD            PIC 9(02).
       *
            03  WRK-MATCH                   PIC X(02).
+      *
+      *    難病、小児慢性特定疾病の公費ＩＤ退避領域
+           03  WRK-NANBYO-KOHID-TAIHI-TBL.
+               05  WRK-NANBYO-KOHID        PIC 9(10)  OCCURS   10.
+      *    難病、小児慢性特定疾病の保険組合せ番号退避領域
+           03  WRK-NANBYO-HKNCOMBI-TAIHI-TBL.
+               05  WRK-NANBYO-HKNCOMBI     PIC 9(04)  OCCURS   10.
       *
       *    同日再入院日の翌日取得用
            03  WRK-DOUJITSU-YMD            PIC X(08).
@@ -154,6 +165,10 @@
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *    点数マスタ−
            COPY    "CPTENSU.INC".
@@ -513,10 +528,113 @@
       *****************************************************************
        220-NANBYO-CHK-SEC            SECTION.
       *
-      *    入院会計テーブル（初期処理で参照した保険組合せから）
-           PERFORM    VARYING IDX1   FROM   1   BY  1
-             UNTIL    IDX1   >   31
-                IF  WRK-HKNCOMBI-DAY(IDX1)  NOT =   ZERO
+      *    事前に該当患者が算定月に難病公費又は小児慢性特定疾病公費を
+      *    持つ患者か判定を行う
+           MOVE    ZERO                    TO  FLG-NANBYO
+           MOVE    ZERO                    TO  IDX-NANBYO
+           MOVE    ZERO                    TO  IDX-HKNCOMBI
+      *
+      *    難病
+           INITIALIZE                          PTKOHINF-REC
+           MOVE    LNK-SKJKEEP-HOSPNUM     TO  PTKOH-HOSPNUM
+           MOVE    LNK-SKJKEEP-PTID        TO  PTKOH-PTID
+           MOVE    "054"                   TO  PTKOH-KOHNUM
+           MOVE    LNK-SKJKEEP-SANTEIYM    TO  PTKOH-TEKSTYMD(1:6)
+           MOVE    "31"                    TO  PTKOH-TEKSTYMD(7:2)
+           MOVE    LNK-SKJKEEP-SANTEIYM    TO  PTKOH-TEKEDYMD(1:6)
+           MOVE    "01"                    TO  PTKOH-TEKEDYMD(7:2)
+           MOVE    "tbl_ptkohinf"          TO  MCP-TABLE
+           MOVE    "key6"                  TO  MCP-PATHNAME
+           PERFORM 910-PTKOHINF-SELECT-SEC
+           IF      FLG-PTKOHINF            =   ZERO
+               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+               MOVE    "key6"               TO  MCP-PATHNAME
+               PERFORM   910-PTKOHINF-READ-SEC
+               PERFORM   UNTIL   (FLG-PTKOHINF   =   1)  OR
+                                 (IDX-NANBYO     =   10)
+                   MOVE     1               TO  FLG-NANBYO
+                   ADD      1               TO  IDX-NANBYO
+                   MOVE     PTKOH-KOHID     TO  WRK-NANBYO-KOHID
+                                                     (IDX-NANBYO)
+                   MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                   MOVE    "key6"           TO  MCP-PATHNAME
+                   PERFORM 910-PTKOHINF-READ-SEC
+               END-PERFORM
+           END-IF
+      *    患者公費情報クローズ
+           MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+           MOVE    "key6"               TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    小児慢性特定疾病
+           INITIALIZE                          PTKOHINF-REC
+           MOVE    LNK-SKJKEEP-HOSPNUM     TO  PTKOH-HOSPNUM
+           MOVE    LNK-SKJKEEP-PTID        TO  PTKOH-PTID
+           MOVE    "052"                   TO  PTKOH-KOHNUM
+           MOVE    LNK-SKJKEEP-SANTEIYM    TO  PTKOH-TEKSTYMD(1:6)
+           MOVE    "31"                    TO  PTKOH-TEKSTYMD(7:2)
+           MOVE    LNK-SKJKEEP-SANTEIYM    TO  PTKOH-TEKEDYMD(1:6)
+           MOVE    "01"                    TO  PTKOH-TEKEDYMD(7:2)
+           MOVE    "tbl_ptkohinf"          TO  MCP-TABLE
+           MOVE    "key6"                  TO  MCP-PATHNAME
+           PERFORM 910-PTKOHINF-SELECT-SEC
+           IF      FLG-PTKOHINF            =   ZERO
+               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+               MOVE    "key6"               TO  MCP-PATHNAME
+               PERFORM   910-PTKOHINF-READ-SEC
+               PERFORM   UNTIL   (FLG-PTKOHINF   =   1)  OR
+                                 (IDX-NANBYO     =   10)
+                   MOVE     1               TO  FLG-NANBYO
+                   ADD      1               TO  IDX-NANBYO
+                   MOVE     PTKOH-KOHID     TO  WRK-NANBYO-KOHID
+                                                     (IDX-NANBYO)
+                   MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                   MOVE    "key6"           TO  MCP-PATHNAME
+                   PERFORM 910-PTKOHINF-READ-SEC
+               END-PERFORM
+           END-IF
+      *    患者公費情報クローズ
+           MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+           MOVE    "key6"               TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    食事負担据え置き区分のセット
+           IF        FLG-NANBYO      =     1
+      *
+      *      対象となる保険組合せ番号を検索
+             PERFORM    VARYING   IDX   FROM   1   BY   1
+               UNTIL   (IDX    >    10)    OR
+                       (WRK-NANBYO-KOHID(IDX)  =  ZERO)
+                 INITIALIZE                          HKNCOMBI-REC
+                 MOVE    LNK-SKJKEEP-HOSPNUM     TO  COMB-HOSPNUM
+                 MOVE    LNK-SKJKEEP-PTID        TO  COMB-PTID
+                 MOVE    WRK-NANBYO-KOHID(IDX)   TO  COMB-KOH1ID
+                                                     COMB-KOH2ID
+                                                     COMB-KOH3ID
+                                                     COMB-KOH4ID
+                 MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+                 MOVE    "key4"                  TO  MCP-PATHNAME
+                 PERFORM 910-HKNCOMBI-SELECT-SEC
+                 IF      FLG-HKNCOMBI            =   ZERO
+                     MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                     MOVE    "key4"              TO  MCP-PATHNAME
+                     PERFORM   910-HKNCOMBI-READ-SEC
+                     PERFORM    UNTIL   (FLG-HKNCOMBI   =   1)  OR
+                                        (IDX-HKNCOMBI   =   10)
+                       ADD      1               TO  IDX-HKNCOMBI
+                       MOVE  COMB-HKNCOMBINUM  TO  WRK-NANBYO-HKNCOMBI
+                                                     (IDX-HKNCOMBI)
+                     END-PERFORM
+                 END-IF
+      *          保険組合せクローズ
+                 MOVE    "tbl_hkncombi"    TO  MCP-TABLE
+                 MOVE    "key4"            TO  MCP-PATHNAME
+             END-PERFORM
+      *
+      *      入院会計テーブル（初期処理で参照した保険組合せから）
+             PERFORM    VARYING IDX1   FROM   1   BY  1
+               UNTIL    IDX1   >   31
+                 IF  WRK-HKNCOMBI-DAY(IDX1)  NOT =   ZERO
                     INITIALIZE                    HKNCOMBI-REC
                     MOVE   LNK-SKJKEEP-HOSPNUM    TO  COMB-HOSPNUM
                     MOVE   LNK-SKJKEEP-PTID       TO  COMB-PTID
@@ -547,8 +665,53 @@
                     MOVE    "tbl_hkncombi"  TO  MCP-TABLE
                     MOVE    "key"           TO  MCP-PATHNAME
                     PERFORM   900-CLOSE-SEC
-                END-IF
-           END-PERFORM
+                 END-IF
+             END-PERFORM
+      *
+      *      診療会計テーブル（暫定で包括分以外のみ判定対象としておく）
+             INITIALIZE                          SRYACCT-REC
+             MOVE    LNK-SKJKEEP-HOSPNUM     TO  ACCT-HOSPNUM
+             MOVE    "1"                     TO  ACCT-NYUGAIKBN
+             MOVE    LNK-SKJKEEP-PTID        TO  ACCT-PTID
+             MOVE    LNK-SKJKEEP-SANTEIYM    TO  ACCT-SRYYM
+             MOVE    "tbl_sryacct"           TO  MCP-TABLE
+             MOVE    "key30"                 TO  MCP-PATHNAME
+             PERFORM 910-SRYACCT-SELECT-SEC
+             IF      FLG-SRYACCT             =   ZERO
+                 MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                 MOVE    "key30"             TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+                 PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+      *
+                   IF    ACCT-HKNCOMBI   =   WRK-NANBYO-HKNCOMBI(1) OR
+                                             WRK-NANBYO-HKNCOMBI(2) OR
+                                             WRK-NANBYO-HKNCOMBI(3) OR
+                                             WRK-NANBYO-HKNCOMBI(4) OR
+                                             WRK-NANBYO-HKNCOMBI(5) OR
+                                             WRK-NANBYO-HKNCOMBI(6) OR
+                                             WRK-NANBYO-HKNCOMBI(7) OR
+                                             WRK-NANBYO-HKNCOMBI(8) OR
+                                             WRK-NANBYO-HKNCOMBI(9) OR
+                                             WRK-NANBYO-HKNCOMBI(10)
+                      PERFORM    VARYING   IDX   FROM   1   BY   1
+                        UNTIL    IDX    >    31
+                            IF   ACCT-DAY(1 IDX)  NOT =   ZERO
+                                MOVE   "1"  TO   LNK-SKJKEEP-KBN(IDX)
+                            END-IF
+                      END-PERFORM
+                   END-IF
+      *
+                   MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                   MOVE     "key30"            TO  MCP-PATHNAME
+                   PERFORM   910-SRYACCT-READ-SEC
+                 END-PERFORM
+             END-IF
+      *      診療会計クローズ
+             MOVE     "tbl_sryacct"    TO  MCP-TABLE
+             MOVE     "key30"          TO  MCP-PATHNAME
+             PERFORM   900-CLOSE-SEC
+      *
+           END-IF
       *
            .
        220-NANBYO-CHK-EXT.
@@ -857,6 +1020,41 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報マスター検索
+      *****************************************************************
+       910-PTKOHINF-SELECT-SEC        SECTION.
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-PTKOHINF
+           ELSE
+               MOVE    1                  TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       910-PTKOHINF-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報マスター読込
+      *****************************************************************
+       910-PTKOHINF-READ-SEC         SECTION.
+      *
+           PERFORM   900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTKOHINF-REC
+               MOVE    ZERO                TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                      PTKOHINF-REC
+               MOVE    1                   TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       910-PTKOHINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
