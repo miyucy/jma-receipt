@@ -348,6 +348,9 @@
       *    特定入院料コード取得サブ
            COPY  "CPORCSTOKNYUIN.INC".
       *
+      *    食事負担据え置き対象取得パラメタ
+           COPY    "CPORCSSKJKEEP.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -918,6 +921,14 @@
                  END-IF
                END-PERFORM
       *
+      *        食事負担据え置き対象取得サブ
+               INITIALIZE                      ORCSSKJKEEP-AREA
+               MOVE    LNK-NYULIFE2-HOSPNUM    TO  LNK-SKJKEEP-HOSPNUM
+               MOVE    LNK-NYULIFE2-PTID       TO  LNK-SKJKEEP-PTID
+               MOVE    LNK-NYULIFE2-SANTEIYM   TO  LNK-SKJKEEP-SANTEIYM
+               CALL    "ORCSSKJKEEP"    USING      ORCSSKJKEEP-AREA
+                                                   SPA-AREA
+      *
       *        生活療養食事標準負担額設定（軽減ありの患者）
                PERFORM   VARYING   IDX1   FROM   1  BY  1
                  UNTIL   IDX1   >    31
@@ -970,9 +981,38 @@
                                     MOVE  "197002710"   TO
                                          LNK-NYULIFE2-SKJFTN-SRYCD
                                                             (IDX1 IDX-T)
-                                    MOVE   260          TO
-                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                    IF    (LNK-NYULIFE2-SANTEIYM
+                                                        >= "201604") AND
+                                          (LNK-NYULIFE2-SANTEIYM
+                                                        <= "201803")
+                                       MOVE   360      TO
+                                           LNK-NYULIFE2-SKJFTN-MONEY
                                                             (IDX1 IDX-T)
+                                    ELSE
+                                       IF    (LNK-NYULIFE2-SANTEIYM
+                                                        >= "201804")
+                                          MOVE   460      TO
+                                             LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                       END-IF
+                                    END-IF
+      *                             難病等据え置き患者の置換
+                                    EVALUATE     LNK-SKJKEEP-KBN(IDX1)
+                                        WHEN     "1"
+                                           MOVE  "197003610"   TO
+                                              LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                           MOVE   260      TO
+                                             LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                        WHEN     "2"
+                                           MOVE  "197003710"   TO
+                                              LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                           MOVE   260      TO
+                                             LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-EVALUATE
                                 WHEN   "1"
       *                           （医療区分２、３（低２　９０日以下））
                                     MOVE  "197002810"   TO
