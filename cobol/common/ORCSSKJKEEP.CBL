@@ -190,6 +190,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    患者所得情報編集サブ
+           COPY    "CPORCSSYOTOKU.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -359,6 +362,26 @@
       *    難病等の入院判定（診療行為で難病等に関わる診療が有る場合も対象）
            PERFORM    220-NANBYO-CHK-SEC
       *
+      *    サブルーチンでの患者所得情報の取得を行い、低所得者は返却値を
+      *    クリアする
+           INITIALIZE                          ORCSSYOTOKUAREA
+           MOVE    LNK-SKJKEEP-HOSPNUM     TO  LNK-SYOTOKU-HOSPNUM
+           MOVE    LNK-SKJKEEP-PTID        TO  LNK-SYOTOKU-PTID
+           MOVE    LNK-SKJKEEP-SANTEIYM    TO  LNK-SYOTOKU-SRYYM
+           MOVE    "1"                     TO  LNK-SYOTOKU-SKJCHKFLG
+           CALL   "ORCSSYOTOKU"    USING    ORCSSYOTOKUAREA
+                                            SPA-AREA
+           IF    LNK-SYOTOKU-RC    =        ZERO
+                PERFORM   VARYING   IDX   FROM   1  BY  1
+                          UNTIL     IDX   >    31
+                    IF    LNK-SYOTOKU-SKJKBN(IDX)  NOT =  SPACE
+                         MOVE    SPACE   TO  LNK-SKJKEEP-KBN(IDX)
+                    END-IF
+                END-PERFORM
+           END-IF
+      *
+      *    精神病床の減額があるか判定し、無ければ返却する入院開始日を
+      *    クリアする
            PERFORM    VARYING   IDX   FROM  1  BY  1
              UNTIL    IDX    >   31
               IF     LNK-SKJKEEP-KBN(IDX)   =   "2"
