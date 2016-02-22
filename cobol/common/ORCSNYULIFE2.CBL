@@ -415,7 +415,8 @@
        100-PRM-CHK-SEC                     SECTION.
       *
       *    算定年月チェック
-           IF      LNK-NYULIFE2-SANTEIYM    =   SPACE
+           IF     (LNK-NYULIFE2-SANTEIYM    =   SPACE)   OR
+                  (LNK-NYULIFE2-SANTEIYM    <=  "201603")
                MOVE    1               TO  LNK-NYULIFE2-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
