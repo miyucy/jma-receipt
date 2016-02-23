@@ -583,7 +583,7 @@
                      END-IF
                    END-IF
                END-IF
-      *        経過措置入院年月日のセット
+      *        精神入院年月日のセット
                MOVE   WRK-SEI-NYUINYMD  TO  LNK-SKJKEEP-SEI-NYUINYMD
            END-IF
            .
@@ -675,11 +675,11 @@
              MOVE    WRK-SYSYYK-SRYYMD(IDX) TO  PTNYUINRRK-NYUINYMD
                                                 PTNYUINRRK-TAIINYMD
              MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
-             MOVE    "key24"                TO  MCP-PATHNAME
+             MOVE    "key68"                TO  MCP-PATHNAME
              PERFORM 910-PTNYUINRRK-SELECT-SEC
              IF      FLG-PTNYUINRRK         =   ZERO
                 MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-                MOVE    "key24"             TO  MCP-PATHNAME
+                MOVE    "key68"             TO  MCP-PATHNAME
                 PERFORM   910-PTNYUINRRK-READ-SEC
                 IF       FLG-PTNYUINRRK     =   ZERO
                     MOVE     PTNYUINRRK-RRKNUM
@@ -692,7 +692,7 @@
       *
       *         患者入院履歴クローズ
                 MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-                MOVE    "key24"                 TO  MCP-PATHNAME
+                MOVE    "key68"                 TO  MCP-PATHNAME
                 PERFORM   900-CLOSE-SEC
              END-IF
            END-PERFORM
