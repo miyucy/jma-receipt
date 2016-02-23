@@ -914,6 +914,7 @@ path	key49	{
 			AND     PTID      =   :PTID
 			AND     DISCHARGEFLG  =   '1'
 			AND   DLTFLG      =   ' '
+			ORDER  BY  SYUBYOFLG DESC,SRYYMD
 		;
 	};
 };
