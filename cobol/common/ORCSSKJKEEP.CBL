@@ -67,6 +67,8 @@
            03  IDX-SYS                     PIC 9(03).
            03  IDX-NANBYO                  PIC 9(03).
            03  IDX-HKNCOMBI                PIC 9(03).
+           03  IDX-YYK                     PIC 9(03).
+           03  IDX-ACCT                    PIC 9(02).
       *
       *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
        01  CONSTANT-AREA.
@@ -74,6 +76,10 @@
            03   CONS-NANBYO                PIC X(03) VALUE "054".
       *    ¾®»ùËýÀ­ÆÃÄê¼À´µ¸øÈñÈÖ¹æ
            03   CONS-SHOUNI                PIC X(03) VALUE "052".
+      *    ¥·¥¹¥Æ¥àÍ½Ìó¡ÝÀº¿ÀÉÂ¾²¿©»öÉéÃ´¿ø¤¨ÃÖ¤­ÂÐ¾Ý
+           03   CONS-SEISIN-ARI            PIC X(09) VALUE "099999926".
+      *    ¥·¥¹¥Æ¥àÍ½Ìó¡ÝÀº¿ÀÉÂ¾²¿©»öÉéÃ´¿ø¤¨ÃÖ¤­ÂÐ¾Ý³°
+           03   CONS-SEISIN-NASI           PIC X(09) VALUE "099999927".
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -101,6 +107,19 @@
            03  WRK-SEI-NYUINYMD            PIC X(08).
       *
            03  WRK-MATCH                   PIC X(02).
+      *
+      *    ¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥É¤ÎÆþÎÏÆü¤È³ºÅö¤¹¤ëÆþ±¡ÍúÎòÈÖ¹æ
+           03  WRK-SYSYYK-TBL              OCCURS  20.
+               05  WRK-SYSYYK-SRYYMD.
+                  07  WRK-SYSYYK-SRYYM     PIC X(06).
+                  07  WRK-SYSYYK-SRYDD     PIC X(02).
+               05  WRK-SYSYYK-RRKNUM       PIC 9(03).
+               05  WRK-SYSYYK-NYUINYMD.
+                  07  WRK-SYSYYK-NYUINYM   PIC X(06).
+                  07  WRK-SYSYYK-NYUINDD   PIC X(02).
+               05  WRK-SYSYYK-TAIINYMD.
+                  07  WRK-SYSYYK-TAIINYM   PIC X(06).
+                  07  WRK-SYSYYK-TAIINDD   PIC X(02).
       *
       *    ÆñÉÂ¡¢¾®»ùËýÀ­ÆÃÄê¼ÀÉÂ¤Î¸øÈñ£É£ÄÂàÈòÎÎ°è
            03  WRK-NANBYO-KOHID-TAIHI-TBL.
@@ -356,7 +375,12 @@
       *    Æþ±¡ÍúÎò¤è¤ê£²£·Ç¯£´·î£±Æü°ÊÁ°¤«¤é£²£¸Ç¯£´·î£±¤Þ¤Ç·ÑÂ³¤·¤Æ
       *    Àº¿ÀÉÂ¾²¤ËÆþ±¡¤·¤Æ¤¤¤ë¤«È½Äê
            IF    FLG-SEISIN-CHK     =     1
-               PERFORM    210-SEISIN-CHK-SEC
+               PERFORM    210-SEISIN-CHK1-SEC
+           END-IF
+      *
+      *    Àº¿ÀÉÂ¾²¤Î¿©»öÉéÃ´¿ø¤¨ÃÖ¤­¤ò¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥ÉÆþÎÏ¤«¤éÈ½Äê
+           IF    FLG-SEISIN-CHK     =     1
+               PERFORM    210-SEISIN-CHK2-SEC
            END-IF
       *
       *    ÆñÉÂÅù¤ÎÆþ±¡È½Äê¡Ê¿ÇÎÅ¹Ô°Ù¤ÇÆñÉÂÅù¤Ë´Ø¤ï¤ë¿ÇÎÅ¤¬Í­¤ë¾ì¹ç¤âÂÐ¾Ý¡Ë
@@ -401,8 +425,10 @@
       *
       *****************************************************************
       *    Àº¿ÀÉÂ¾²¿ø¤¨ÃÖ¤­È½Äê
+      *  ¡Ê£²£·Ç¯£´·î£±Æü°ÊÁ°¤«¤é£²£¸Ç¯£´·î£±¤Þ¤Ç·ÑÂ³¤·¤ÆÀº¿ÀÉÂ¾²¤Ë
+      *    Æþ±¡¤·¤Æ¤¤¤ë¤«È½Äê¡Ë
       *****************************************************************
-       210-SEISIN-CHK-SEC            SECTION.
+       210-SEISIN-CHK1-SEC            SECTION.
       *
       *    »öÁ°¤ËÉÂÅï¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¡Ë¤«¤éÀº¿ÀÉÂÅï¤ÎÉÂÅïÈÖ¹æ¤ò
       *    ¼èÆÀ¤·¤Æ¤ª¤¯
@@ -561,7 +587,147 @@
                MOVE   WRK-SEI-NYUINYMD  TO  LNK-SKJKEEP-SEI-NYUINYMD
            END-IF
            .
-       210-SEISIN-CHK-EXT.
+       210-SEISIN-CHK1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Àº¿ÀÉÂ¾²¿ø¤¨ÃÖ¤­È½Äê
+      *  ¡Ê¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥ÉÆþÎÏ¤«¤éÈ½Äê¡Ë
+      *****************************************************************
+       210-SEISIN-CHK2-SEC            SECTION.
+      *
+      *    ¿©»öÉéÃ´¿ø¤¨ÃÖ¤­ÂÐ¾Ý¤Î¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥ÉÆþÎÏÆü¤ò¸¡º÷
+           MOVE     ZERO                 TO   IDX-YYK
+           INITIALIZE                         SRYACT-REC
+           MOVE    LNK-SKJKEEP-HOSPNUM   TO   SRY-HOSPNUM
+           MOVE    "1"                   TO   SRY-NYUGAIKBN
+           MOVE    LNK-SKJKEEP-PTID      TO   SRY-PTID
+           MOVE    "201604"              TO   SRY-SRYYM
+           MOVE    CONS-SEISIN-ARI       TO   SRY-SRYCD(1)
+                                              SRY-SRYCD(2)
+                                              SRY-SRYCD(3)
+                                              SRY-SRYCD(4)
+                                              SRY-SRYCD(5)
+           MOVE    "tbl_sryact"          TO   MCP-TABLE
+           MOVE    "key21"               TO   MCP-PATHNAME
+           PERFORM 910-SRYACT-SELECT-SEC
+           IF      FLG-SRYACT            =    ZERO
+               MOVE     "tbl_sryact"     TO   MCP-TABLE
+               MOVE     "key21"          TO   MCP-PATHNAME
+               PERFORM   910-SRYACT-READ-SEC
+               PERFORM   UNTIL  (FLG-SRYACT   =   1)
+      *
+                  INITIALIZE                          SRYACCT-REC
+                  MOVE    LNK-SKJKEEP-HOSPNUM     TO  ACCT-HOSPNUM
+                  MOVE    LNK-SKJKEEP-PTID        TO  ACCT-PTID
+                  MOVE    SRY-ZAINUM              TO  ACCT-ZAINUM
+                  MOVE    "tbl_sryacct"           TO  MCP-TABLE
+                  MOVE    "key57"                 TO  MCP-PATHNAME
+                  PERFORM 910-SRYACCT-SELECT-SEC
+                  IF      FLG-SRYACCT             =   ZERO
+                     MOVE    "tbl_sryacct"        TO  MCP-TABLE
+                     MOVE    "key57"              TO  MCP-PATHNAME
+                     PERFORM   910-SRYACCT-READ-SEC
+                     PERFORM   UNTIL   (FLG-SRYACCT    =   1)  OR
+                                       (IDX-YYK        =  20)
+                        IF   ACCT-NYUGAIKBN   =     "1"
+                            PERFORM    VARYING  IDX-ACCT  FROM  1  BY  1
+                              UNTIL    IDX-ACCT   >  31
+                                IF   ACCT-DAY(1 IDX-ACCT)  NOT =  ZERO
+                                   ADD    1       TO  IDX-YYK
+                                   MOVE   ACCT-SRYYM
+                                                   TO  WRK-SYSYYK-SRYYM
+                                                             (IDX-YYK)
+                                   MOVE   IDX-ACCT TO  WRK-SYSYYK-SRYDD
+                                                             (IDX-YYK)
+                                END-IF
+                            END-PERFORM
+                        END-IF
+                        MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                        MOVE     "key57"            TO  MCP-PATHNAME
+                        PERFORM   910-SRYACCT-READ-SEC
+                    END-PERFORM
+      *             ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
+                    MOVE     "tbl_sryacct"   TO  MCP-TABLE
+                    MOVE     "key57"          TO  MCP-PATHNAME
+                    PERFORM   900-CLOSE-SEC
+                  END-IF
+                  MOVE     "tbl_sryact"     TO   MCP-TABLE
+                  MOVE     "key21"          TO   MCP-PATHNAME
+                  PERFORM   910-SRYACT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    ¿ÇÎÅ¹Ô°Ù¥¯¥í¡¼¥º
+           MOVE     "tbl_sryact"     TO  MCP-TABLE
+           MOVE     "key21"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+           DISPLAY  "WRK-SYSYYK-SRYYMD(1) = " WRK-SYSYYK-SRYYMD(1)
+           DISPLAY  "WRK-SYSYYK-SRYYMD(2) = " WRK-SYSYYK-SRYYMD(2)
+           DISPLAY  "WRK-SYSYYK-SRYYMD(3) = " WRK-SYSYYK-SRYYMD(3)
+      *
+           PERFORM    VARYING    IDX    FROM  1   BY  1
+             UNTIL    (IDX    >   20)   OR
+                      (WRK-SYSYYK-SRYYMD(IDX)  =  SPACE)
+             INITIALIZE                         PTNYUINRRK-REC
+             MOVE    LNK-SKJKEEP-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
+             MOVE    LNK-SKJKEEP-PTID       TO  PTNYUINRRK-PTID
+             MOVE    WRK-SYSYYK-SRYYMD(IDX) TO  PTNYUINRRK-NYUINYMD
+                                                PTNYUINRRK-TAIINYMD
+             MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
+             MOVE    "key24"                TO  MCP-PATHNAME
+             PERFORM 910-PTNYUINRRK-SELECT-SEC
+             IF      FLG-PTNYUINRRK         =   ZERO
+                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                MOVE    "key24"             TO  MCP-PATHNAME
+                PERFORM   910-PTNYUINRRK-READ-SEC
+                IF       FLG-PTNYUINRRK     =   ZERO
+                    MOVE     PTNYUINRRK-RRKNUM
+                                            TO  WRK-SYSYYK-RRKNUM(IDX)
+                    MOVE     PTNYUINRRK-NYUINYMD
+                                            TO  WRK-SYSYYK-NYUINYMD(IDX)
+                    MOVE     PTNYUINRRK-TAIINYMD
+                                            TO  WRK-SYSYYK-TAIINYMD(IDX)
+                END-IF
+      *
+      *         ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+                MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
+                MOVE    "key24"                 TO  MCP-PATHNAME
+                PERFORM   900-CLOSE-SEC
+             END-IF
+           END-PERFORM
+      *
+           DISPLAY  "WRK-SYSYYK-RRKNUM(1) = " WRK-SYSYYK-RRKNUM(1)
+           DISPLAY  "WRK-SYSYYK-RRKNUM(2) = " WRK-SYSYYK-RRKNUM(2)
+           DISPLAY  "WRK-SYSYYK-RRKNUM(3) = " WRK-SYSYYK-RRKNUM(3)
+      *
+           PERFORM    VARYING    IDX    FROM  1   BY  1
+             UNTIL    (IDX    >   20)   OR
+                      (WRK-SYSYYK-RRKNUM(IDX)  =  SPACE)
+                IF  (WRK-SYSYYK-NYUINYM(IDX) <=  LNK-SKJKEEP-SANTEIYM)
+                AND (WRK-SYSYYK-TAIINYM(IDX) >=  LNK-SKJKEEP-SANTEIYM)
+                  IF   WRK-SYSYYK-NYUINYM(IDX) <  LNK-SKJKEEP-SANTEIYM
+                      MOVE    1      TO    IDX-ST
+                  END-IF
+                  IF   WRK-SYSYYK-NYUINYM(IDX) =  LNK-SKJKEEP-SANTEIYM
+                      MOVE    WRK-SYSYYK-NYUINDD(IDX)    TO    IDX-ST
+                  END-IF
+                  IF   WRK-SYSYYK-TAIINYM(IDX) >  LNK-SKJKEEP-SANTEIYM
+                      MOVE    WRK-GETSUMATSU-DD   TO    IDX-ED
+                  END-IF
+                  IF   WRK-SYSYYK-TAIINYM(IDX) =  LNK-SKJKEEP-SANTEIYM
+                      MOVE    WRK-SYSYYK-TAIINDD(IDX)    TO    IDX-ED
+                  END-IF
+      *
+                  PERFORM    VARYING    IDX    FROM  IDX-ST   BY  1
+                    UNTIL    (IDX    >   IDX-ED)
+                        MOVE   "2"      TO    LNK-SKJKEEP-KBN(IDX)
+                  END-PERFORM
+                END-IF
+           END-PERFORM
+      *
+           .
+       210-SEISIN-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
