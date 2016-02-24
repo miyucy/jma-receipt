@@ -10534,10 +10534,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    退院証明書記載フラグ重複チェック処理
-           PERFORM 4508-DISCHARGEFLG-DABURI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    42                  TO  SPA-GMN-C02-CUR
-               GO  TO  450-TOUROKU-EXT
+           IF      SPA-GMN-C02-DISCHARGEFLG
+                                       =   "1"
+               PERFORM 4508-DISCHARGEFLG-DABURI-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    42                  TO  SPA-GMN-C02-CUR
+                   GO  TO  450-TOUROKU-EXT
+               END-IF
            END-IF
       *
       *    新規又は科変更、開始日変更時の行番号追加が可能か
