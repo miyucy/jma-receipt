@@ -27,7 +27,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  ORCSYAKINGEN-AREA.
+       01  ORCSYAKINTOKU-AREA.
       *
       *算定年月
            03  LNK-YAKINTOKU-SANTEIYM              PIC  X(06).
