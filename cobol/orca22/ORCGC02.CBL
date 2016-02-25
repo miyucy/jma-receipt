@@ -10534,8 +10534,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    退院証明書記載フラグ重複チェック処理
-           IF      SPA-GMN-C02-DISCHARGEFLG
-                                       =   "1"
+           IF    ( SPA-NAI-C02-BYOMEICD-MAX
+                                       =   1   )
+           AND   ( SPA-GMN-C02-DISCHARGEFLG
+                                       =   "1" )
                PERFORM 4508-DISCHARGEFLG-DABURI-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    42                  TO  SPA-GMN-C02-CUR
