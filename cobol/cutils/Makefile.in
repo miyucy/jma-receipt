@@ -5,6 +5,7 @@ CSRCS = \
 	orcfiledel.c \
 	orcfileio.c \
 	cobabort.c \
+	cobalert.c \
 	coblog.c \
 	cobsleep.c \
 	orcsjistoeuc.c \
