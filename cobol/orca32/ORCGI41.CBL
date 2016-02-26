@@ -713,6 +713,9 @@
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
       *
+      *    入院時生活療養費負担額取得サブ
+           COPY    "CPORCSNYULIFE2.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -4262,6 +4265,13 @@
            END-IF
       *
       *    日付のチェック
+      *    入院時生活療養費の情報取得
+           INITIALIZE                      ORCSNYULIFE2-AREA
+           MOVE    SPA-HOSPNUM         TO  LNK-NYULIFE2-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  LNK-NYULIFE2-PTID
+           MOVE    SPA-NAI-SRYYM       TO  LNK-NYULIFE2-SANTEIYM
+           CALL    "ORCSNYULIFE2"   USING  ORCSNYULIFE2-AREA
+                                           SPA-AREA
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    ZERO                TO  WRK-IDX
            MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
@@ -4558,6 +4568,16 @@
                                MOVE    "0039"         TO  SPA-ERRCD
                            END-IF
                         END-IF
+                   END-IF
+      *            入院時食事療養２で生活療養算定時は、流動食を入力不可とする
+                   IF      SPA-NAI-SRYYM         >=  "201604"
+                       IF  (LNK-NYULIFE2-KBN(IDX-D)      =  "1")   AND
+                           (LNK-NYULIFE2-SKJKBN(IDX-D)   =  "2")   AND
+                           (SPA-GMN-DAY-41 (IDX-D)       =   3)
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0056"      TO  SPA-ERRCD
+                           END-IF
+                       END-IF
                    END-IF
       *        保険
                WHEN    "5"
@@ -5003,6 +5023,13 @@
            END-PERFORM
       *
       *    日付のチェック
+      *    入院時生活療養費の情報取得
+           INITIALIZE                      ORCSNYULIFE2-AREA
+           MOVE    SPA-HOSPNUM         TO  LNK-NYULIFE2-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  LNK-NYULIFE2-PTID
+           MOVE    SPA-NAI-SRYYM       TO  LNK-NYULIFE2-SANTEIYM
+           CALL    "ORCSNYULIFE2"   USING  ORCSNYULIFE2-AREA
+                                           SPA-AREA
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    ZERO                TO  WRK-IDX
            MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
@@ -8816,6 +8843,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG(1:42)
                    MOVE    "です。"
                                        TO  WRK-ERRMSG(43:6)
+               WHEN    "0056"
+                   MOVE    "入院時生活療養（２）の算定中は３（流動食）"
+                                       TO  WRK-ERRMSG(1:42)
+                   MOVE    "は算定できません。"
+                                       TO  WRK-ERRMSG(43:18)
       *ver.4.7
                WHEN    "0071"
                    STRING  "プレビューできる入院登録がありません。"
