@@ -197,8 +197,23 @@
                  UNTIL  (SYS-5000-KSNCD(IDX7)    =   SPACE)  OR
                         (IDX7                    >   20)
                     IF   SYS-5000-KSNKBN(IDX7)   =   "2"
-                             ADD    1                TO  IDX8
-                             MOVE   SYS-5000-KSNCD(IDX7)  TO
+      *                 平成２８年４月以降の病院設定は乳幼児加算(病院）だけと
+      *                 なるので、患者年齢で置き換えする（診療所は従前のまま）
+                        IF   LNK-NYUKSNGET-SANTEIYM   >=  "201604"
+                           IF    SYS-5000-KSNCD(IDX7)   =   "190100470"
+                               PERFORM   4801-PT-AGE-SEC
+                               IF      WRK-NENREI          <      3
+                                   MOVE  "190100470"  TO
+                                                SYS-5000-KSNCD(IDX7)
+                               ELSE
+                                   MOVE  "190100770"  TO
+                                                SYS-5000-KSNCD(IDX7)
+                               END-IF
+                           END-IF
+                        END-IF
+      *
+                        ADD    1                TO  IDX8
+                        MOVE   SYS-5000-KSNCD(IDX7)  TO
                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                     END-IF
                END-PERFORM
