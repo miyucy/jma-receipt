@@ -564,10 +564,15 @@
                WHEN    "0303"
                WHEN    "0304"
                WHEN    "0305"
-                   IF   SODRNACCT-STARTYMD(1:6)  >= "200604"
-                       PERFORM   4801-SHOKUJI-200604-SEC
+               WHEN    "0306"
+                   IF   SODRNACCT-STARTYMD(1:6)  >= "201604"
+                       PERFORM   4801-SHOKUJI-201604-SEC
                    ELSE
-                       PERFORM   4801-SHOKUJI-SEC
+                     IF   SODRNACCT-STARTYMD(1:6)  >= "200604"
+                         PERFORM   4801-SHOKUJI-200604-SEC
+                     ELSE
+                         PERFORM   4801-SHOKUJI-SEC
+                     END-IF
                    END-IF
            END-EVALUATE
       *
@@ -6137,6 +6142,153 @@
       *-------------------食堂加算ここまで----------------------------
            .
        4801-SHOKUJI-200604-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    食事　会計テーブル編集処理（平成２８年４月以降）
+      *****************************************************************
+       4801-SHOKUJI-201604-SEC         SECTION.
+      *
+      *    食事のセット
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-PTNYUINRRK-HOSPNUM   TO  NACCT-HOSPNUM
+           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    SODRNACCT-STARTYMD(1:6) TO  NACCT-SRYYM
+           MOVE    "4"                     TO  NACCT-ZAISKBKBN
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           EVALUATE   SODRNACCT-SKJTIME
+              WHEN    "01"
+                  MOVE    "key30"          TO  MCP-PATHNAME
+              WHEN    "02"
+                  MOVE    "key31"          TO  MCP-PATHNAME
+              WHEN    "03"
+                  MOVE    "key32"          TO  MCP-PATHNAME
+           END-EVALUATE
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+               EVALUATE   SODRNACCT-SKJTIME
+                   WHEN    "01"
+                       MOVE   "key30"      TO  MCP-PATHNAME
+                   WHEN    "02"
+                       MOVE   "key31"      TO  MCP-PATHNAME
+                   WHEN    "03"
+                       MOVE   "key32"      TO  MCP-PATHNAME
+               END-EVALUATE
+               PERFORM   910-NYUINACCT-READ-SEC
+               IF        FLG-NYUINACCT     =   ZERO
+      *            食事区分のセット
+                   PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                            UNTIL     IDX-SKJ   >   31
+                       IF   SODRNACCT-DAY(IDX-SKJ)   =   1
+                           EVALUATE   SODRNACCT-ORDERID(3:2)
+                               WHEN   "01"
+                                   MOVE   1     TO   NACCT-DAY(IDX-SKJ)
+                               WHEN   "02"
+                                   MOVE   2     TO   NACCT-DAY(IDX-SKJ)
+                               WHEN   "05"
+                                   MOVE   0     TO   NACCT-DAY(IDX-SKJ)
+                               WHEN   "06"
+                                   MOVE   3     TO   NACCT-DAY(IDX-SKJ)
+                           END-EVALUATE
+                       END-IF
+                   END-PERFORM
+      *            剤回数再セット
+                   MOVE  ZERO           TO  NACCT-ZAIKAISU
+                   PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                            UNTIL     IDX-SKJ   >   31
+                       IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                           ADD   1        TO  NACCT-ZAIKAISU
+                       END-IF
+                   END-PERFORM
+      *
+      *            オペーレータＩＤ
+                   MOVE   SODRNACCT-OPID   TO   NACCT-OPID
+      *            更新年月日
+                   MOVE   SODRNACCT-UPYMD  TO   NACCT-UPYMD
+      *            更新時間
+                   MOVE   SODRNACCT-UPHMS  TO   NACCT-UPHMS
+      *
+      *            食堂加算の編集用に退避
+                   MOVE    NACCT-DAY(WRK-STARTYMD-D)  TO WRK-SHOKUDOU
+      *
+                   MOVE    NYUINACCT-REC   TO   MCPDATA-REC
+                   MOVE    "DBUPDATE"      TO   MCP-FUNC
+                   MOVE    "tbl_nyuinacct" TO   MCP-TABLE
+                   MOVE    "key"           TO   MCP-PATHNAME
+                   CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+               END-IF
+           END-IF
+      *    入院会計クローズ
+           MOVE     "tbl_nyuinacct"        TO  MCP-TABLE
+           EVALUATE   SODRNACCT-SKJTIME
+              WHEN    "01"
+                  MOVE    "key30"          TO  MCP-PATHNAME
+              WHEN    "02"
+                  MOVE    "key31"          TO  MCP-PATHNAME
+              WHEN    "03"
+                  MOVE    "key32"          TO  MCP-PATHNAME
+           END-EVALUATE
+           PERFORM   910-DBCLOSECURSOR-SEC
+      *
+      *-------------------食堂加算ここから----------------------------
+      *    食事のセット
+      *     INITIALIZE                          NYUINACCT-REC
+      *     MOVE    LNK-PTNYUINRRK-HOSPNUM   TO  NACCT-HOSPNUM
+      *     MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+      *     MOVE    SODRNACCT-STARTYMD(1:6) TO  NACCT-SRYYM
+      *     MOVE    "4"                     TO  NACCT-ZAISKBKBN
+      *     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+      *     MOVE    "key17"                 TO  MCP-PATHNAME
+      *     PERFORM 910-NYUINACCT-SELECT-SEC
+      *     IF      FLG-NYUINACCT           =   ZERO
+      *         MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+      *         MOVE     "key17"            TO  MCP-PATHNAME
+      *         PERFORM   910-NYUINACCT-READ-SEC
+      *         PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+      *           IF   NACCT-SRYCDTOTAL  =  197000570
+      *            食堂加算のセット
+      *             MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
+      *             IF    WRK-SHOKUDOU    NOT =  ZERO
+      *                   MOVE   1   TO   NACCT-DAY(WRK-STARTYMD-D)
+      *             ELSE
+      *                   MOVE   0   TO   NACCT-DAY(WRK-STARTYMD-D)
+      *             END-IF
+      *            剤回数再セット
+      *             MOVE  ZERO           TO  NACCT-ZAIKAISU
+      *             PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+      *                      UNTIL     IDX-SKJ   >   31
+      *                 IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+      *                     ADD   1        TO  NACCT-ZAIKAISU
+      *                 END-IF
+      *             END-PERFORM   
+      **
+      *             MOVE    NYUINACCT-REC   TO   MCPDATA-REC
+      *             MOVE    "DBUPDATE"      TO   MCP-FUNC
+      *             MOVE    "tbl_nyuinacct" TO   MCP-TABLE
+      *             MOVE    "key"           TO   MCP-PATHNAME
+      *             CALL    "ORCDBMAIN"         USING
+      *                                         MCPAREA
+      *                                         MCPDATA-REC
+      *                                         SPA-AREA
+      *
+      *           END-IF
+      *           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+      *           MOVE    "key17"             TO  MCP-PATHNAME
+      *           PERFORM 910-NYUINACCT-READ-SEC
+      *         END-PERFORM
+      *     END-IF
+      *    入院会計クローズ
+      *     MOVE     "tbl_nyuinacct"         TO  MCP-TABLE
+      *     MOVE     "key17"                 TO  MCP-PATHNAME
+      *     PERFORM   910-DBCLOSECURSOR-SEC
+      *-------------------食堂加算ここまで----------------------------
+           .
+       4801-SHOKUJI-201604-EXT.
            EXIT.
       *****************************************************************
       *    入院診療行為照会テーブル編集サブ呼び出し
