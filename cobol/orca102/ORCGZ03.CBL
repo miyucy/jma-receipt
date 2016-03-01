@@ -55,6 +55,7 @@
       *  04.06.00    NACL-多々納  10/10/19  傷病関連区分追加対応、施設基準４桁対応他
       *  04.07.00    NACL-多々納  14/03/XX  平成２６年４月改正対応
       *                                    （DPC区分、副鼻腔等加算等）
+      *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -289,6 +290,11 @@
            03  FILLER          PIC X(32)  VALUE   "2 HOKATUTEIGENKBN".
            03  FILLER          PIC X(32)  VALUE   "2 HOUKNSKBN".
            03  FILLER          PIC X(32)  VALUE   "2 CHPNAISIKSN".
+      *    非侵襲的血行動態モニタリング加算
+           03  FILLER          PIC X(32)  VALUE   "2 HISINSYUMONKSN".
+      *    凍結保存同種組織加算
+           03  FILLER          PIC X(32)  VALUE   "2 TOUKETUHOZONKSN".
+      *
            03  FILLER          PIC X(32)  VALUE   "2 NYUKHNKBN".
            03  FILLER          PIC X(32)  VALUE   "2 NYUKHNKSNKBN".
            03  FILLER          PIC X(32)  VALUE   "2 KANGOKSN".
@@ -321,6 +327,8 @@
            03  FILLER          PIC X(32)  VALUE "3 KOKUCHI_KBNNUM_EDA".
       *
            03  FILLER          PIC X(32)  VALUE   "3 KOKUCHI_KOUBAN".
+      *    点数表区分番号
+           03  FILLER          PIC X(32)  VALUE   "3 KUBUNBANGOU".
            03  FILLER          PIC X(32)  VALUE   "3 KOKUJISKBKBN1".
            03  FILLER          PIC X(32)  VALUE   "3 KOKUJISKBKBN2".
       *
@@ -331,13 +339,13 @@
       **** 03  TBL-GMN-OCC                 OCCURS  118
       **** 03  TBL-GMN-OCC                 OCCURS  119
       ***  03  TBL-GMN-OCC                 OCCURS  121
-           03  TBL-GMN-OCC                 OCCURS  125
+           03  TBL-GMN-OCC                 OCCURS  128
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   121.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   128.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
@@ -962,6 +970,11 @@
            MOVE  TNS-NYUKHNKSNKBN          TO  SPA-GMN-NYUKHNKSNKBN
            MOVE  TNS-KANGOKSN              TO  SPA-GMN-KANGOKSN 
            MOVE  TNS-CHIIKIKSN             TO  SPA-GMN-CHIIKIKSN       
+      *    非侵襲的血行動態モニタリング加算
+           MOVE  TNS-HISINSYUMONITORKSN    TO  SPA-GMN-HISINSYUMONKSN
+           MOVE  TNS-TOUKETUHOZONKSN       TO  SPA-GMN-TOUKETUHOZONKSN
+      *    点数表区分番号
+           MOVE  TNS-KUBUNBANGOU           TO  SPA-GMN-KUBUNBANGOU
       *                                          
            PERFORM  VARYING  IDXX
                     FROM  1  BY  1  UNTIL  IDXX  >  10
@@ -1862,6 +1875,11 @@
            MOVE    Z03-GAZOOPESUP      TO  SPA-GMN-GAZOOPESUP
       *    麻酔識別
            MOVE    Z03-MASUISKBKBN     TO  SPA-GMN-MASUISKBKBN
+      *H28.4
+      *    非侵襲的血行動態モニタリング加算
+           MOVE    Z03-HISINSYUMONKSN      TO  SPA-GMN-HISINSYUMONKSN
+           MOVE    Z03-TOUKETUHOZONKSN     TO  SPA-GMN-TOUKETUHOZONKSN
+           MOVE    Z03-KUBUNBANGOU         TO  SPA-GMN-KUBUNBANGOU
       *
       *        施設基準コード１〜１０
            MOVE    Z03-SSTKIJUNCD1     TO  SPA-GMN-SSTKIJUNCD(1)
@@ -4231,6 +4249,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-GMN-KANGOKSN              TO  TNS-KANGOKSN 
       *
            MOVE  SPA-GMN-CHIIKIKSN             TO  TNS-CHIIKIKSN 
+      *H28.4
+      *    非侵襲的血行動態モニタリング加算
+           MOVE  SPA-GMN-HISINSYUMONKSN    TO  TNS-HISINSYUMONITORKSN
+           MOVE  SPA-GMN-TOUKETUHOZONKSN   TO  TNS-TOUKETUHOZONKSN
+      *    点数表区分番号
+           MOVE  SPA-GMN-KUBUNBANGOU       TO  TNS-KUBUNBANGOU
       *
            PERFORM  VARYING  IDXX
                     FROM  1  BY  1  UNTIL  IDXX  >  10
@@ -4700,6 +4724,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-GMN-NYUKHNKSNKBN          TO  Z03-NYUKHNKSNKBN
            MOVE  SPA-GMN-KANGOKSN              TO  Z03-KANGOKSN 
            MOVE  SPA-GMN-CHIIKIKSN             TO  Z03-CHIIKIKSN       
+      *    非侵襲的血行動態モニタリング加算                                      
+           MOVE  SPA-GMN-HISINSYUMONKSN        TO  Z03-HISINSYUMONKSN       
+           MOVE  SPA-GMN-TOUKETUHOZONKSN       TO  Z03-TOUKETUHOZONKSN       
+           MOVE  SPA-GMN-KUBUNBANGOU           TO  Z03-KUBUNBANGOU       
       *                                          
            MOVE  SPA-GMN-SSTKIJUNCD(1)         TO  Z03-SSTKIJUNCD1     
            MOVE  SPA-GMN-SSTKIJUNCD(2)         TO  Z03-SSTKIJUNCD2     
