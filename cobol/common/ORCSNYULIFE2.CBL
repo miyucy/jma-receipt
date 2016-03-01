@@ -843,7 +843,14 @@
                END-EVALUATE
                PERFORM 910-NYUINACCT-SELECT-SEC
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key30"             TO  MCP-PATHNAME
+               EVALUATE   IDX-T
+                   WHEN   1
+                       MOVE    "key30"       TO  MCP-PATHNAME
+                   WHEN   2
+                       MOVE    "key31"       TO  MCP-PATHNAME
+                   WHEN   3
+                       MOVE    "key32"       TO  MCP-PATHNAME
+               END-EVALUATE
                PERFORM   910-NYUINACCT-READ-SEC
       *
       *       入院会計クローズ
