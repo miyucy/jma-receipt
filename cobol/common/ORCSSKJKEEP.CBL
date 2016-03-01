@@ -772,6 +772,11 @@
            MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
            MOVE    "key6"               TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
+           DISPLAY "WRK-NANBYO-KOHID(1) = " WRK-NANBYO-KOHID(1)
+           DISPLAY "WRK-NANBYO-KOHID(2) = " WRK-NANBYO-KOHID(2)
+           DISPLAY "WRK-NANBYO-KOHID(3) = " WRK-NANBYO-KOHID(3)
+           DISPLAY "WRK-NANBYO-KOHID(4) = " WRK-NANBYO-KOHID(4)
+           DISPLAY "WRK-NANBYO-KOHID(5) = " WRK-NANBYO-KOHID(5)
       *
       *    小児慢性特定疾病
            INITIALIZE                          PTKOHINF-REC
@@ -828,9 +833,12 @@
                      PERFORM   910-HKNCOMBI-READ-SEC
                      PERFORM    UNTIL   (FLG-HKNCOMBI   =   1)  OR
                                         (IDX-HKNCOMBI   =   10)
-                       ADD      1               TO  IDX-HKNCOMBI
-                       MOVE  COMB-HKNCOMBINUM  TO  WRK-NANBYO-HKNCOMBI
+                       ADD      1                TO  IDX-HKNCOMBI
+                       MOVE  COMB-HKNCOMBINUM    TO  WRK-NANBYO-HKNCOMBI
                                                      (IDX-HKNCOMBI)
+                       MOVE    "tbl_hkncombi"    TO  MCP-TABLE
+                       MOVE    "key4"            TO  MCP-PATHNAME
+                       PERFORM   910-HKNCOMBI-READ-SEC
                      END-PERFORM
                  END-IF
       *          保険組合せクローズ
@@ -876,6 +884,11 @@
                  END-IF
              END-PERFORM
       *
+             DISPLAY "WRK-NANBYO-HKNCOMBI(1) = " WRK-NANBYO-HKNCOMBI(1)
+             DISPLAY "WRK-NANBYO-HKNCOMBI(2) = " WRK-NANBYO-HKNCOMBI(2)
+             DISPLAY "WRK-NANBYO-HKNCOMBI(3) = " WRK-NANBYO-HKNCOMBI(3)
+             DISPLAY "WRK-NANBYO-HKNCOMBI(4) = " WRK-NANBYO-HKNCOMBI(4)
+             DISPLAY "WRK-NANBYO-HKNCOMBI(5) = " WRK-NANBYO-HKNCOMBI(5)
       *      診療会計テーブル（暫定で包括分以外のみ判定対象としておく）
              INITIALIZE                          SRYACCT-REC
              MOVE    LNK-SKJKEEP-HOSPNUM     TO  ACCT-HOSPNUM
