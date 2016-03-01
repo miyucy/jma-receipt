@@ -23048,6 +23048,25 @@
                                  WK-SKJ-ZEI
                      END-IF
                    WHEN       3
+                     ADD     1                TO WK-SHOKUJI-NISSU
+                                                 WK-SHOKUJI-NISSUL
+                     ADD     WK-NYULIFE2-SKJ-MONEY(IDY IDX23)
+                                              TO WK-SHOKUJI-RYOYOHI
+                                                 WK-SHOKUJI-RYOYOHIL
+                                                 WK-SHOKUJI-JIHI
+                     ADD     1                TO LNK-SYU-SHOKUJI6-NISSU
+                     MOVE    WK-NYULIFE2-SKJ-MONEY(IDY IDX23)
+                                              TO LNK-SYU-SHOKUJI6
+                     IF    LNK-SYU-SRYYMD(1:6)   >=   "200704"
+                       COMPUTE   WK-SKJ-ZEI   =
+                                (WK-NYULIFE2-SKJ-MONEY(IDY IDX23)
+                                                       * WK-S4)
+                                                       + WK-S3
+                       COMPUTE   WK-SKJ-ZEIKEI2L =
+                                 WK-SKJ-ZEIKEI2L +
+                                 WK-SKJ-ZEI
+                     END-IF
+      *
                      MOVE   31    TO   LNK-S02-RC
                  END-EVALUATE
                END-PERFORM
