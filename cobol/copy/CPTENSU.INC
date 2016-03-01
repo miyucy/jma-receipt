@@ -131,12 +131,20 @@
            03  TNS-GAZOOPESUP          PIC  9(01).
            03  TNS-IRYOKANSATUKBN      PIC  9(01).
            03  TNS-MASUISKBKBN         PIC  9(01).
-      *H24.4 ADD START
+      *H26.4 ADD START
            03  TNS-FUKUBIKUNAIKBN      PIC  9(01).
            03  TNS-FUKUBIKUKOTUKBN     PIC  9(01).
            03  TNS-TIMEMASUIKBN        PIC  9(01).
            03  TNS-DPCKBN              PIC  9(01).
-      *H24.4 ADD END
+      *H26.4 ADD END
+      *H28.4 ADD START
+      *    非侵襲的血行動態モニタリング加算
+           03  TNS-HISINSYUMONITORKSN  PIC  9(01).
+      *    凍結保存同種組織加算
+           03  TNS-TOUKETUHOZONKSN     PIC  9(01).
+      *    点数表区分番号
+           03  TNS-KUBUNBANGOU         PIC  X(30).
+      *H28.4 ADD END
            03  TNS-OLDTENSKB           PIC  9(01).
            03  TNS-OLDTEN              PIC  9(09)V99.
            03  TNS-MADOKUKBN           PIC  9(01).
@@ -185,14 +193,6 @@
            03  TNS-CHGYMD              PIC  X(08).
            03  TNS-HAISIYMD            PIC  X(08).
            03  TNS-KEIKASOCHIYMD       PIC  X(08).
-      *H28.4
-      *    非侵襲的血行動態モニタリング加算
-           03  TNS-HISINSYUMONITORKSN  PIC  9(01).
-      *    凍結保存同種組織加算
-           03  TNS-TOUKETUHOZONKSN     PIC  9(01).
-      *    点数表区分番号
-           03  TNS-KUBUNBANGOU         PIC  X(30).
-      *
            03  TNS-TERMID              PIC  X(16).
            03  TNS-OPID                PIC  X(16).
            03  TNS-CREYMD              PIC  X(08).
