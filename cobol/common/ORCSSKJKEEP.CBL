@@ -836,6 +836,7 @@
       *          保険組合せクローズ
                  MOVE    "tbl_hkncombi"    TO  MCP-TABLE
                  MOVE    "key4"            TO  MCP-PATHNAME
+                 PERFORM   900-CLOSE-SEC
              END-PERFORM
       *
       *      入院会計テーブル（初期処理で参照した保険組合せから）
