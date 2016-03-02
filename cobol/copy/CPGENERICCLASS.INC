@@ -22,7 +22,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  GECLASS-REC.
+      * 01  GECLASS-REC.
            03  GECLASS-KEY.
                05  GECLASS-YAKKAKJNCD  PIC X(12).
                05  GECLASS-YUKOSTYMD   PIC X(08).

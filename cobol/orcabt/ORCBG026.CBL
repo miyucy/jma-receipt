@@ -237,6 +237,7 @@
            COPY    "CPSRYACT.INC".
       *
       *    医薬品分類マスタ
+       01  GECLASS-REC.
            COPY    "CPGENERICCLASS.INC".
       *
       *    ジョブ管理マスタ
