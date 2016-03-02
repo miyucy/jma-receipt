@@ -16774,6 +16774,9 @@
       *                （栄管経過措置）
                        MOVE   "190718710"  TO  STUSAN-TOKUTEI-SRYCD(3)
                        MOVE   "190718810"  TO  STUSAN-TOKUTEI-SRYCD(4)
+      *                （平成２８年度コード変更）
+                       MOVE   "190194310"  TO  STUSAN-TOKUTEI-SRYCD(5)
+                       MOVE   "190194410"  TO  STUSAN-TOKUTEI-SRYCD(6)
                    WHEN   "13"
                        MOVE   "190024810"  TO  STUSAN-TOKUTEI-SRYCD(1)
                    WHEN   "17"
