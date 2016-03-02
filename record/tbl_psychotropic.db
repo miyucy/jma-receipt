@@ -1,13 +1,14 @@
 tbl_psychotropic {
-	CODE				char(7);
-	YUKOSTYMD			char(8);
-	YUKOEDYMD			char(8);
-	CLASS				char(1);
-	GROUPCODE			char(7);
+	CODE				varchar(7);
+	YUKOSTYMD			varchar(8);
+	YUKOEDYMD			varchar(8);
+	CLASS				varchar(1);
+	GROUPCODE			varchar(7);
+	UPYMD				varchar(8);
 #-----> 主キー更新用項目
-	UPCODE				char(7),virtual;
-	UPYUKOSTYMD			char(8),virtual;
-	UPYUKOEDYMD			char(8),virtual;
+	UPCODE				varchar(7),virtual;
+	UPYUKOSTYMD			varchar(8),virtual;
+	UPYUKOEDYMD			varchar(8),virtual;
 };
 primary	{
 	CODE,YUKOSTYMD,YUKOEDYMD;

@@ -34,6 +34,8 @@
            03  PSYCHOTROPIC-CLASS                PIC  X(01).
       *    グループコード
            03  PSYCHOTROPIC-GROUPCODE            PIC  X(07).
+      *    更新年月日
+           03  PSYCHOTROPIC-UPYMD                PIC  X(08).
       *更新用
            03  PSYCHOTROPIC-UP-KEY.
                05  PSYCHOTROPIC-UPCODE              PIC  X(07).

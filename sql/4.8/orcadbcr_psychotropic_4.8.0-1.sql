@@ -9,7 +9,8 @@ CREATE TABLE tbl_psychotropic (
     yukostymd  character varying(8) NOT NULL,
     yukoedymd  character varying(8) NOT NULL,
     class      character varying(1),
-    groupcode  character varying(7)
+    groupcode  character varying(7),
+    upymd      character varying(8)
 );
 
 ALTER TABLE ONLY tbl_psychotropic
