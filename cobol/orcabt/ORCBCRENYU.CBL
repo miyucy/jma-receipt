@@ -351,6 +351,12 @@
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
       *
+      *    夜勤時間特別入院基本料コード取得サブ
+           COPY "CPORCSYAKINTOKU.INC".
+      *
+      *    看護職員数等入院基本料コード取得サブ
+           COPY "CPORCSKANGOCHG.INC".
+      *
            COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
@@ -1918,10 +1924,13 @@
       *
       *****************************************************************
       *    夜勤時間超過減算コードへの置き換え処理
+      *    夜勤時間特別入院基本料コードへの置き換え処理
+      *    看護職員数等入院基本料コードへの置き換え処理
       *****************************************************************
        4801-YAKINGEN-CHG-SEC   SECTION.
       *
            IF    SYOKIKSN-IN-SANTEISTYMD   >=   "20140401"
+      *        夜勤時間超過減算入院料コード取得
                INITIALIZE    ORCSYAKINGEN-AREA
                MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
                                    TO    LNK-YAKINGEN-SANTEIYM
@@ -1933,6 +1942,36 @@
                                                 SPA-AREA
                IF   LNK-YAKINGEN-RC     =       ZERO
                     MOVE LNK-YAKINGEN-CHGSRYCD
+                                   TO    SYOKIKSN-IN-KHNSRYCD
+               END-IF
+           END-IF
+           IF    SYOKIKSN-IN-SANTEISTYMD   >=   "20160401"
+      *        夜勤時間特別入院基本料コード取得
+               INITIALIZE    ORCSYAKINTOKU-AREA
+               MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
+                                   TO    LNK-YAKINTOKU-SANTEIYM
+               MOVE   SYS-5001-BTU-NUM
+                                   TO    LNK-YAKINTOKU-BTU-NUM
+               MOVE   SYOKIKSN-IN-KHNSRYCD
+                                   TO    LNK-YAKINTOKU-SRYCD
+               CALL   "ORCSYAKINTOKU"    USING  ORCSYAKINTOKU-AREA
+                                                SPA-AREA
+               IF   LNK-YAKINTOKU-RC     =       ZERO
+                    MOVE LNK-YAKINTOKU-CHGSRYCD
+                                   TO    SYOKIKSN-IN-KHNSRYCD
+               END-IF
+      *        看護職員数等入院基本料コード取得
+               INITIALIZE    ORCSKANGOCHG-AREA
+               MOVE   SYOKIKSN-IN-SANTEISTYMD(1:6)
+                                   TO    LNK-KANGOCHG-SANTEIYM
+               MOVE   SYS-5001-BTU-NUM
+                                   TO    LNK-KANGOCHG-BTU-NUM
+               MOVE   SYOKIKSN-IN-KHNSRYCD
+                                   TO    LNK-KANGOCHG-SRYCD
+               CALL   "ORCSKANGOCHG"    USING   ORCSKANGOCHG-AREA
+                                                SPA-AREA
+               IF   LNK-KANGOCHG-RC     =       ZERO
+                    MOVE LNK-KANGOCHG-CHGSRYCD
                                    TO    SYOKIKSN-IN-KHNSRYCD
                END-IF
            END-IF

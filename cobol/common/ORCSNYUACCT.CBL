@@ -355,6 +355,12 @@
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
       *
+      *    夜勤時間特別入院基本料コード取得サブ
+           COPY "CPORCSYAKINTOKU.INC".
+      *
+      *    看護職員数等入院基本料コード取得サブ
+           COPY "CPORCSKANGOCHG.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -432,6 +438,7 @@
                CONTINUE
            ELSE
                IF   LNK-SCNYUACCT-NYUKHN-SRYCD (1)   NOT  =  SPACE
+      *             夜勤時間超過減算入院料コード取得
                     INITIALIZE    ORCSYAKINGEN-AREA
                     MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
                                            TO    LNK-YAKINGEN-SANTEIYM
@@ -445,6 +452,34 @@
                        MOVE LNK-YAKINGEN-CHGSRYCD   TO
                                          LNK-SCNYUACCT-NYUKHN-SRYCD (1)
                     END-IF
+      *             夜勤時間特別入院基本料コード取得
+                    INITIALIZE    ORCSYAKINTOKU-AREA
+                    MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO    LNK-YAKINTOKU-SANTEIYM
+                    MOVE  LNK-SCNYUACCT-BTU-NUM
+                                           TO    LNK-YAKINTOKU-BTU-NUM
+                    MOVE   LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                                           TO    LNK-YAKINTOKU-SRYCD
+                    CALL   "ORCSYAKINTOKU"   USING   ORCSYAKINTOKU-AREA
+                                                     SPA-AREA
+                    IF   LNK-YAKINTOKU-RC     =       ZERO
+                       MOVE LNK-YAKINTOKU-CHGSRYCD   TO
+                                         LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                    END-IF
+      *             看護職員数等入院基本料コード取得
+                    INITIALIZE    ORCSKANGOCHG-AREA
+                    MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO    LNK-KANGOCHG-SANTEIYM
+                    MOVE  LNK-SCNYUACCT-BTU-NUM
+                                           TO    LNK-KANGOCHG-BTU-NUM
+                    MOVE   LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                                           TO    LNK-KANGOCHG-SRYCD
+                    CALL   "ORCSKANGOCHG"    USING   ORCSKANGOCHG-AREA
+                                                     SPA-AREA
+                    IF   LNK-KANGOCHG-RC     =       ZERO
+                       MOVE LNK-KANGOCHG-CHGSRYCD   TO
+                                         LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                    END-IF
                END-IF
       *
                IF    LNK-SCNYUACCT-KAGEN-SRYCD(1)  NOT =  SPACE
@@ -452,6 +487,7 @@
                      UNTIL   (IDX-YAKIN     >   10)    OR
                              (LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
                                                   = SPACE)
+      *                 夜勤時間超過減算入院料コード取得
                         INITIALIZE    ORCSYAKINGEN-AREA
                         MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
                                            TO    LNK-YAKINGEN-SANTEIYM
@@ -463,6 +499,34 @@
                                                  SPA-AREA
                         IF   LNK-YAKINGEN-RC     =       ZERO
                              MOVE LNK-YAKINGEN-CHGSRYCD   TO
+                                 LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
+                        END-IF
+      *                 夜勤時間特別入院基本料コード取得
+                        INITIALIZE    ORCSYAKINTOKU-AREA
+                        MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO    LNK-YAKINTOKU-SANTEIYM
+                        MOVE  LNK-SCNYUACCT-BTU-NUM
+                                           TO    LNK-YAKINTOKU-BTU-NUM
+                        MOVE  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
+                                           TO    LNK-YAKINTOKU-SRYCD
+                        CALL "ORCSYAKINTOKU" USING ORCSYAKINTOKU-AREA
+                                                   SPA-AREA
+                        IF   LNK-YAKINTOKU-RC     =       ZERO
+                             MOVE LNK-YAKINTOKU-CHGSRYCD   TO
+                                 LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
+                        END-IF
+      *                 看護職員数等入院基本料コード取得
+                        INITIALIZE    ORCSKANGOCHG-AREA
+                        MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO    LNK-KANGOCHG-SANTEIYM
+                        MOVE  LNK-SCNYUACCT-BTU-NUM
+                                           TO    LNK-KANGOCHG-BTU-NUM
+                        MOVE  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
+                                           TO    LNK-KANGOCHG-SRYCD
+                        CALL "ORCSKANGOCHG" USING ORCSKANGOCHG-AREA
+                                                 SPA-AREA
+                        IF   LNK-KANGOCHG-RC     =       ZERO
+                             MOVE LNK-KANGOCHG-CHGSRYCD   TO
                                  LNK-SCNYUACCT-KAGEN-SRYCD (IDX-YAKIN)
                         END-IF
                    END-PERFORM
