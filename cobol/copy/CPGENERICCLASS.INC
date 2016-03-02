@@ -29,3 +29,8 @@
                05  GECLASS-YUKOEDYMD   PIC X(08).
            03  GECLASS-KOUHATU         PIC 9(01).
            03  GECLASS-UPYMD           PIC X(08).
+      *¹¹¿·ÍÑ
+           03  GECLASS-UP-KEY.
+               05  GECLASS-UPYAKKAKJNCD    PIC X(12).
+               05  GECLASS-UPYUKOSTYMD     PIC X(08).
+               05  GECLASS-UPYUKOEDYMD     PIC X(08).
