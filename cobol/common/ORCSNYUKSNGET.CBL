@@ -133,6 +133,12 @@
       *    夜勤時間超過減算入院料コード取得サブ
            COPY "CPORCSYAKINGEN.INC".
       *
+      *    夜勤時間特別入院基本料コード取得サブ
+           COPY "CPORCSYAKINTOKU.INC".
+      *
+      *    看護職員数等入院基本料コード取得サブ
+           COPY "CPORCSKANGOCHG.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -1382,6 +1388,7 @@
                    END-IF
                END-IF
       *
+      *        夜勤時間超過減算入院料コード取得
                INITIALIZE    ORCSYAKINGEN-AREA
                MOVE   LNK-NYUKSNGET-SANTEIYM
                                    TO    LNK-YAKINGEN-SANTEIYM
@@ -1393,6 +1400,34 @@
                                                 SPA-AREA
                IF   LNK-YAKINGEN-RC     =       ZERO
                     MOVE LNK-YAKINGEN-CHGSRYCD
+                                   TO    LNK-NYUKSNGET-NYUIN-SRYCD
+               END-IF
+      *        夜勤時間特別入院基本料コード取得
+               INITIALIZE    ORCSYAKINTOKU-AREA
+               MOVE   LNK-NYUKSNGET-SANTEIYM
+                                   TO    LNK-YAKINTOKU-SANTEIYM
+               MOVE   SYS-5001-BTU-NUM
+                                   TO    LNK-YAKINTOKU-BTU-NUM
+               MOVE   LNK-NYUKSNGET-NYUIN-SRYCD
+                                   TO    LNK-YAKINTOKU-SRYCD
+               CALL   "ORCSYAKINTOKU"    USING  ORCSYAKINTOKU-AREA
+                                                SPA-AREA
+               IF   LNK-YAKINTOKU-RC     =       ZERO
+                    MOVE LNK-YAKINTOKU-CHGSRYCD
+                                   TO    LNK-NYUKSNGET-NYUIN-SRYCD
+               END-IF
+      *        看護職員数等入院基本料コード取得
+               INITIALIZE    ORCSKANGOCHG-AREA
+               MOVE   LNK-NYUKSNGET-SANTEIYM
+                                   TO    LNK-KANGOCHG-SANTEIYM
+               MOVE   SYS-5001-BTU-NUM
+                                   TO    LNK-KANGOCHG-BTU-NUM
+               MOVE   LNK-NYUKSNGET-NYUIN-SRYCD
+                                   TO    LNK-KANGOCHG-SRYCD
+               CALL   "ORCSKANGOCHG"     USING  ORCSKANGOCHG-AREA
+                                                SPA-AREA
+               IF   LNK-KANGOCHG-RC     =       ZERO
+                    MOVE LNK-KANGOCHG-CHGSRYCD
                                    TO    LNK-NYUKSNGET-NYUIN-SRYCD
                END-IF
            END-IF
