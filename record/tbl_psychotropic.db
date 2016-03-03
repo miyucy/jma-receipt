@@ -36,4 +36,29 @@ path	all	{
  		;
 	};
 };
-
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_psychotropic_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_psychotropic
+			WHERE 	CODE	= :CODE
+			ORDER	BY	YUKOSTYMD
+		;
+	};
+};
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_psychotropic
+				SET
+				CODE     = :CODE,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				CLASS          = :CLASS,
+				GROUPCODE      = :GROUPCODE,
+				UPYMD      = :UPYMD 
+			WHERE 	CODE      =  :UPCODE
+			AND	YUKOSTYMD	=	:UPYUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
+	};
+};

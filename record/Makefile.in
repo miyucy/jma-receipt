@@ -506,6 +506,7 @@ RECORD_files = \
 	medicalmodv34.rec \
 	UDR.rec \
 	receiptinf1v2.rec \
+	W93.rec \
 
 DEF_files = \
 
