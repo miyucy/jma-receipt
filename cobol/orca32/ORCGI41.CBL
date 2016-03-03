@@ -1296,11 +1296,19 @@
            MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (3)
            MOVE    "選定入院中の外泊"  TO  SPA-GMN-SAGAKU-41   (3)
       *
-           MOVE    "04"                TO  SPA-GMN-SAGAKUNO-41 (4)
-           MOVE    "他医療機関受診７０％減"
+           IF       SPA-NAI-SRYYM      >=  "201604"
+             MOVE    "04"              TO  SPA-GMN-SAGAKUNO-41 (4)
+             MOVE    "他医療機関受診４０％減"
                                        TO  SPA-GMN-SAGAKU-41   (4)
       *
-           MOVE    4                   TO  SPA-SAGAKU-MAX-41
+             MOVE    4                   TO  SPA-SAGAKU-MAX-41
+           ELSE
+             MOVE    "04"              TO  SPA-GMN-SAGAKUNO-41 (4)
+             MOVE    "他医療機関受診７０％減"
+                                       TO  SPA-GMN-SAGAKU-41   (4)
+      *
+             MOVE    4                   TO  SPA-SAGAKU-MAX-41
+           END-IF
       *
            IF      (SPA-NAI-SRYYM      >=  "201004")   AND
                    (SPA-NAI-SRYYM      <=  "201203")
@@ -1311,7 +1319,26 @@
                MOVE    5                   TO  SPA-SAGAKU-MAX-41
            END-IF
       *
-           IF       SPA-NAI-SRYYM      >=  "201204"
+           IF       SPA-NAI-SRYYM      >=  "201604"
+               MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
+               MOVE    "他医療機関受診１０％減"
+                                       TO  SPA-GMN-SAGAKU-41   (5)
+               MOVE    "06"                TO  SPA-GMN-SAGAKUNO-41 (6)
+               MOVE    "他医療機関受診２０％減"
+                                       TO  SPA-GMN-SAGAKU-41   (6)
+               MOVE    "08"                TO  SPA-GMN-SAGAKUNO-41 (7)
+               MOVE    "特定時間退院減算"
+                                       TO  SPA-GMN-SAGAKU-41   (7)
+               MOVE    "09"                TO  SPA-GMN-SAGAKUNO-41 (8)
+               MOVE    "特定曜日入退院減算"
+                                       TO  SPA-GMN-SAGAKU-41   (8)
+               MOVE    "13"                TO  SPA-GMN-SAGAKUNO-41 (9)
+               MOVE    "特定曜日＋他受１０％減"
+                                       TO  SPA-GMN-SAGAKU-41   (9)
+      *
+               MOVE    9                   TO  SPA-SAGAKU-MAX-41
+           ELSE
+             IF       SPA-NAI-SRYYM      >=  "201204"
                MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
                MOVE    "他医療機関受診３０％減"
                                        TO  SPA-GMN-SAGAKU-41   (5)
@@ -1323,9 +1350,9 @@
                                        TO  SPA-GMN-SAGAKU-41   (7)
       *
                MOVE    7                   TO  SPA-SAGAKU-MAX-41
-           END-IF
+             END-IF
       *
-           IF       SPA-NAI-SRYYM      >=  "201210"
+             IF       SPA-NAI-SRYYM      >=  "201210"
                MOVE    "08"                TO  SPA-GMN-SAGAKUNO-41 (8)
                MOVE    "特定時間退院減算"
                                        TO  SPA-GMN-SAGAKU-41   (8)
@@ -1337,6 +1364,7 @@
                                        TO  SPA-GMN-SAGAKU-41   (10)
       *
                MOVE    10                  TO  SPA-SAGAKU-MAX-41
+             END-IF
            END-IF
       *
            .
@@ -3501,7 +3529,7 @@
       *    食事更新日
            MOVE    "blue"              TO  I41-UPYMD-STYLE.
            IF      SPA-GMN-UPYMD       NOT =  SPACE
-               MOVE  "食事更新日"      TO  I41-UPYMD(1:10)
+               MOVE  "会計更新日"      TO  I41-UPYMD(1:10)
                MOVE    SPA-GMN-UPYMD   TO  WRK-SYMD
                PERFORM 41012-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  I41-UPYMD(12:9)
@@ -4368,9 +4396,32 @@
                    END-IF
       *
                    IF      SPA-CHK-SENTEI(IDX-D)   =   SPACE
-                     IF      SPA-NAI-SRYYM         >=    "201204"
-                        IF  (SPA-NAI-SRYYM         >=    "201204") AND
-                            (SPA-NAI-SRYYM         <=    "201209")
+                      IF   SPA-NAI-SRYYM         <=    "201003"
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  1
+                                                           OR  2
+                                                           OR  3
+                                                           OR  4
+                               CONTINUE
+                           ELSE
+                               MOVE    "0035"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
+                      IF     (SPA-NAI-SRYYM      >=    "201004") AND
+                             (SPA-NAI-SRYYM      <=    "201203")
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  1
+                                                           OR  2
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                               CONTINUE
+                           ELSE
+                               MOVE    "0035"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
+                      IF  (SPA-NAI-SRYYM         >=    "201204") AND
+                          (SPA-NAI-SRYYM         <=    "201209")
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
@@ -4383,7 +4434,9 @@
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
-                        ELSE
+                      END-IF
+                      IF  (SPA-NAI-SRYYM         >=    "201210") AND
+                          (SPA-NAI-SRYYM         <=    "201603")
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
@@ -4399,74 +4452,26 @@
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
-                        END-IF
-                     ELSE
-                        IF     (SPA-NAI-SRYYM      >=    "201004") AND
-                               (SPA-NAI-SRYYM      <=    "201203")
+                      END-IF
+                      IF      SPA-NAI-SRYYM         >=    "201604"
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
                                                            OR  3
                                                            OR  4
                                                            OR  5
+                                                           OR  6
+                                                           OR  8
+                                                           OR  9
+                                                           OR 13
                                CONTINUE
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
-                        ELSE
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  1
-                                                           OR  2
-                                                           OR  3
-                                                           OR  4
-                               CONTINUE
-                           ELSE
-                               MOVE    "0035"         TO  SPA-ERRCD
-                           END-IF
-                        END-IF
-                     END-IF
+                      END-IF
                    ELSE
-      *                選定入院料算定日
-                     IF      SPA-NAI-SRYYM         >=    "201204"
-                        IF  (SPA-NAI-SRYYM         >=    "201204") AND
-                            (SPA-NAI-SRYYM         <=    "201209")
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  7
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                        ELSE
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  7
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                        END-IF
-                     ELSE
-                        IF     (SPA-NAI-SRYYM      >=    "201004") AND
-                               (SPA-NAI-SRYYM      <=    "201203")
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                        ELSE
+      *               選定入院料算定日
+                      IF      SPA-NAI-SRYYM      <=    "201003"
                            IF          SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  3
                                                            OR  4
@@ -4474,8 +4479,61 @@
                            ELSE
                                MOVE    "0036"         TO  SPA-ERRCD
                            END-IF
-                        END-IF
-                     END-IF
+                      END-IF
+                      IF     (SPA-NAI-SRYYM      >=    "201004") AND
+                             (SPA-NAI-SRYYM      <=    "201203")
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
+                      IF  (SPA-NAI-SRYYM         >=    "201204") AND
+                          (SPA-NAI-SRYYM         <=    "201209")
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  7
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
+                      IF  (SPA-NAI-SRYYM         >=    "201210") AND
+                          (SPA-NAI-SRYYM         <=    "201603")
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  7
+                                                           OR  8
+                                                           OR  9
+                                                           OR 13
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
+                      IF   SPA-NAI-SRYYM         >=    "201604"
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  8
+                                                           OR  9
+                                                           OR 13
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
                    END-IF
       *
       *            特定曜日入退院減算の土日曜日チェック
@@ -8739,60 +8797,72 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "入力可能な区分は０、１のいずれかです。"
                                        TO  WRK-ERRMSG
                WHEN    "0035"
-                 IF   SPA-NAI-SRYYM     >=    "201204"
-                   IF  (SPA-NAI-SRYYM     >=    "201204")  AND
-                       (SPA-NAI-SRYYM     <=    "201209")
-                     MOVE  "外泊で入力可能な区分は０〜７のいずれかです"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "。"
-                                       TO  WRK-ERRMSG(43:2)
-                   ELSE
-                     MOVE  "外泊で入力可能な区分は０〜９、１３のいずれ"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "かです。"
-                                       TO  WRK-ERRMSG(43:8)
-                   END-IF
-                 ELSE
-                   IF  (SPA-NAI-SRYYM     >=    "201004")   AND
-                       (SPA-NAI-SRYYM     <=    "201203")
-                     MOVE  "外泊で入力可能な区分は０〜５のいずれかです"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "。"
-                                       TO  WRK-ERRMSG(43:2)
-                   ELSE
+                 IF   SPA-NAI-SRYYM     <=    "201003"
                      MOVE  "外泊で入力可能な区分は０〜４のいずれかです"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE  "。"
                                        TO  WRK-ERRMSG(43:2)
-                   END-IF
+                 END-IF
+                 IF  (SPA-NAI-SRYYM     >=    "201004")   AND
+                     (SPA-NAI-SRYYM     <=    "201203")
+                     MOVE  "外泊で入力可能な区分は０〜５のいずれかです"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "。"
+                                       TO  WRK-ERRMSG(43:2)
+                 END-IF
+                 IF  (SPA-NAI-SRYYM     >=    "201204")  AND
+                     (SPA-NAI-SRYYM     <=    "201209")
+                     MOVE  "外泊で入力可能な区分は０〜７のいずれかです"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "。"
+                                       TO  WRK-ERRMSG(43:2)
+                 END-IF
+                 IF  (SPA-NAI-SRYYM     >=    "201210")  AND
+                     (SPA-NAI-SRYYM     <=    "201603")
+                     MOVE  "外泊で入力可能な区分は０〜９、１３のいずれ"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "かです。"
+                                       TO  WRK-ERRMSG(43:8)
+                 END-IF
+                 IF   SPA-NAI-SRYYM     >=    "201604"
+                     MOVE  "外泊で入力可能な区分は０〜６、８、９、１３"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "のいずれかです。"
+                                       TO  WRK-ERRMSG(43:16)
                  END-IF
                WHEN    "0036"
-                 IF   SPA-NAI-SRYYM     >=    "201204"
-                   IF  (SPA-NAI-SRYYM     >=    "201204")  AND
-                       (SPA-NAI-SRYYM     <=    "201209")
-                     MOVE  "選定入院料で入力可能な区分は０、３〜７のい"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE    "ずれかです。"
-                                       TO  WRK-ERRMSG(43:12)
-                   ELSE
-                     MOVE  "選定入院料で入力可能な区分は０、３〜９、１"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE    "３のいずれかです。"
-                                       TO  WRK-ERRMSG(43:18)
-                   END-IF
-                 ELSE
-                   IF  (SPA-NAI-SRYYM     >=    "201004")   AND
-                       (SPA-NAI-SRYYM     <=    "201203")
-                     MOVE  "選定入院料での入力可能な区分は０、３、４、"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "５のいずれかです。"
-                                       TO  WRK-ERRMSG(43:18)
-                   ELSE
+                 IF   SPA-NAI-SRYYM     <=    "201003"
                      MOVE  "選定入院料での入力可能な区分は０、３、４の"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE  "いずれかです。"
                                        TO  WRK-ERRMSG(43:14)
-                   END-IF
+                 END-IF
+                 IF  (SPA-NAI-SRYYM     >=    "201004")   AND
+                     (SPA-NAI-SRYYM     <=    "201203")
+                     MOVE  "選定入院料での入力可能な区分は０、３、４、"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "５のいずれかです。"
+                                       TO  WRK-ERRMSG(43:18)
+                 END-IF
+                 IF  (SPA-NAI-SRYYM     >=    "201204")  AND
+                     (SPA-NAI-SRYYM     <=    "201209")
+                     MOVE  "選定入院料で入力可能な区分は０、３〜７のい"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE    "ずれかです。"
+                                       TO  WRK-ERRMSG(43:12)
+                 END-IF
+                 IF  (SPA-NAI-SRYYM     >=    "201210")  AND
+                     (SPA-NAI-SRYYM     <=    "201603")
+                     MOVE  "選定入院料で入力可能な区分は０、３〜９、１"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE    "３のいずれかです。"
+                                       TO  WRK-ERRMSG(43:18)
+                 END-IF
+                 IF   SPA-NAI-SRYYM     >=    "201604"
+                     MOVE  "外泊で入力可能な区分は０、３〜６、８、９、"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "１３のいずれかです。"
+                                       TO  WRK-ERRMSG(43:20)
                  END-IF
                WHEN    "0037"
                    MOVE    "入力された数字は室料差額番号として設定され"
