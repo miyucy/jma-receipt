@@ -1174,9 +1174,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****MOVE    ZERO                TO  TNSWK-HISINSYUMONITORKSN
       *****MOVE    ZERO                TO  TNSWK-TOUKETUHOZONKSN
       *****MOVE    SPACE               TO  TNSWK-KUBUNBANGOU
+      *****MOVE    ZERO                TO  TNSWK-ROSAIKBN
+      *****MOVE    ZERO                TO  TNSWK-SISIKSN
            MOVE    ZERO                TO  TNSWK-TENSU-REC (1099 : 2)
            MOVE    SPACE               TO  TNSWK-TENSU-REC (1101 : 30)
-           MOVE    TNSWK-V06-AREA-02   TO  TNSWK-TENSU-REC (1131 :)
+           MOVE    ZERO                TO  TNSWK-TENSU-REC (1131 : 2)
+           MOVE    TNSWK-V06-AREA-02   TO  TNSWK-TENSU-REC (1133 :)
       *
           .
        900-TNSWK-V06-EXT.
