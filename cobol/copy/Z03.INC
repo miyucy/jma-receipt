@@ -150,6 +150,8 @@
                             PIC X(30)   OCCURS  5 TIMES.
                   05  Z03-DPCKBN.
                     06  Z03-VALUE   PIC S9(1).
+                  05  Z03-ROSAIKBN.
+                    06  Z03-VALUE   PIC S9(1).
                 04  Z03-FIXED10.
                   05  Z03-JITUDAY.
                     06  Z03-VALUE   PIC S9(1).
@@ -287,6 +289,8 @@
                   05  Z03-HISINSYUMONKSN.
                     06  Z03-NUMDATA PIC S9(1).
                   05  Z03-TOUKETUHOZONKSN.
+                    06  Z03-NUMDATA PIC S9(1).
+                  05  Z03-SISIKSN.
                     06  Z03-NUMDATA PIC S9(1).
                 04  Z03-FIXED12.
                   05  Z03-SSTKIJUNCD1.

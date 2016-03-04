@@ -228,6 +228,8 @@
                    07  SPA-GMN-TSUSOKUAGE      PIC 9(1).
                    07  SPA-GMN-KGNAGE          PIC X(2).
                    07  SPA-GMN-JGNAGE          PIC X(2).
+      *            œ´∫“ªªƒÍ…‘≤ƒ∂Ë ¨
+                   07  SPA-GMN-ROSAIKBN        PIC 9(01).
       *            ∫Œ∑ÏŒ¡∂Ë ¨
                    07  SPA-GMN-SAIKETUKBN-G.
                        09  SPA-GMN-SAIKETUKBN  PIC X(01).
@@ -330,6 +332,8 @@
                    07  SPA-GMN-HISINSYUMONKSN   PIC 9(1).
       *            ≈‡∑Î ›¬∏∆±ºÔ¡»ø•≤√ªª
                    07  SPA-GMN-TOUKETUHOZONKSN  PIC 9(1).
+      *            œ´∫“ªÕªË≤√ªª∂Ë ¨
+                   07  SPA-GMN-SISIKSN          PIC 9(01).
       *            
                05  SPA-GMN-BANGO.
                    07  SPA-GMN-SSTKIJUNCDTBL   OCCURS 10.

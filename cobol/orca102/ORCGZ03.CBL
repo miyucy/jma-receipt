@@ -213,6 +213,8 @@
            03  FILLER          PIC X(32)  VALUE   "0 TSUSOKUAGE".
            03  FILLER          PIC X(32)  VALUE   "0 KGNAGE".
            03  FILLER          PIC X(32)  VALUE   "0 JGNAGE".
+      *    Ï«ºÒ»»ÄêÉÔ²Ä
+           03  FILLER          PIC X(32)  VALUE   "0 ROSAIKBN".
       *    ºÎ·ìÎÁ¶èÊ¬
            03  FILLER          PIC X(32)  VALUE   "0 SAIKETUKBN".
       *    Á°²ó¸¡ººÆü¶èÊ¬
@@ -294,6 +296,8 @@
            03  FILLER          PIC X(32)  VALUE   "2 HISINSYUMONKSN".
       *    Åà·ëÊÝÂ¸Æ±¼ïÁÈ¿¥²Ã»»
            03  FILLER          PIC X(32)  VALUE   "2 TOUKETUHOZONKSN".
+      *    »Í»è²Ã»»¡ÊÏ«ºÒ¡Ë
+           03  FILLER          PIC X(32)  VALUE   "2 SISIKSN".
       *
            03  FILLER          PIC X(32)  VALUE   "2 NYUKHNKBN".
            03  FILLER          PIC X(32)  VALUE   "2 NYUKHNKSNKBN".
@@ -339,13 +343,13 @@
       **** 03  TBL-GMN-OCC                 OCCURS  118
       **** 03  TBL-GMN-OCC                 OCCURS  119
       ***  03  TBL-GMN-OCC                 OCCURS  121
-           03  TBL-GMN-OCC                 OCCURS  128
+           03  TBL-GMN-OCC                 OCCURS  130
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   128.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   130.
       *
       *    Ã±°Ì¤Î¹àÌÜ½ç¥Æ¡¼¥Ö¥ë
            COPY    "CMTANICD.INC".
@@ -969,12 +973,17 @@
            MOVE  TNS-NYUKHNKBN             TO  SPA-GMN-NYUKHNKBN
            MOVE  TNS-NYUKHNKSNKBN          TO  SPA-GMN-NYUKHNKSNKBN
            MOVE  TNS-KANGOKSN              TO  SPA-GMN-KANGOKSN 
-           MOVE  TNS-CHIIKIKSN             TO  SPA-GMN-CHIIKIKSN       
+           MOVE  TNS-CHIIKIKSN             TO  SPA-GMN-CHIIKIKSN
+      *H28.4
       *    Èó¿¯½±Åª·ì¹ÔÆ°ÂÖ¥â¥Ë¥¿¥ê¥ó¥°²Ã»»
            MOVE  TNS-HISINSYUMONITORKSN    TO  SPA-GMN-HISINSYUMONKSN
            MOVE  TNS-TOUKETUHOZONKSN       TO  SPA-GMN-TOUKETUHOZONKSN
       *    ÅÀ¿ôÉ½¶èÊ¬ÈÖ¹æ
            MOVE  TNS-KUBUNBANGOU           TO  SPA-GMN-KUBUNBANGOU
+      *    Ï«ºÒ»»ÄêÉÔ²Ä
+           MOVE  TNS-ROSAIKBN              TO  SPA-GMN-ROSAIKBN
+      *    »Í»è²Ã»»¡ÊÏ«ºÒ¡Ë
+           MOVE  TNS-SISIKSN               TO  SPA-GMN-SISIKSN
       *                                          
            PERFORM  VARYING  IDXX
                     FROM  1  BY  1  UNTIL  IDXX  >  10
@@ -1880,6 +1889,9 @@
            MOVE    Z03-HISINSYUMONKSN      TO  SPA-GMN-HISINSYUMONKSN
            MOVE    Z03-TOUKETUHOZONKSN     TO  SPA-GMN-TOUKETUHOZONKSN
            MOVE    Z03-KUBUNBANGOU         TO  SPA-GMN-KUBUNBANGOU
+      *    Ï«ºÒ»»ÄêÉÔ²Ä
+           MOVE    Z03-ROSAIKBN            TO  SPA-GMN-ROSAIKBN
+           MOVE    Z03-SISIKSN             TO  SPA-GMN-SISIKSN
       *
       *        »ÜÀß´ð½à¥³¡¼¥É£±¡Á£±£°
            MOVE    Z03-SSTKIJUNCD1     TO  SPA-GMN-SSTKIJUNCD(1)
@@ -3097,6 +3109,7 @@
                                        OR  "B3"
                                        OR  "BF"
                                        OR  "BK"
+                                       OR  "AE"
                CONTINUE
            ELSE
       *
@@ -3131,6 +3144,7 @@
                                        OR  "B3"
                                        OR  "BF"
                                        OR  "BK"
+                                       OR  "AE"
                CONTINUE
            ELSE
                MOVE    SPA-GMN-JGNAGE      TO  WRK-SNUM-INX
@@ -3190,6 +3204,7 @@
                                        OR  "B3"
                                        OR  "BF"
                                        OR  "BK"
+                                       OR  "AE"
                CONTINUE
            ELSE
                INITIALIZE                      ORCSNUMAREA
@@ -3221,6 +3236,7 @@
                                        OR  "B3"
                                        OR  "BF"
                                        OR  "BK"
+                                       OR  "AE"
                CONTINUE
            ELSE
                INITIALIZE                      ORCSNUMAREA
@@ -4255,6 +4271,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-GMN-TOUKETUHOZONKSN   TO  TNS-TOUKETUHOZONKSN
       *    ÅÀ¿ôÉ½¶èÊ¬ÈÖ¹æ
            MOVE  SPA-GMN-KUBUNBANGOU       TO  TNS-KUBUNBANGOU
+      *    Ï«ºÒ»»ÄêÉÔ²Ä
+           MOVE  SPA-GMN-ROSAIKBN          TO  TNS-ROSAIKBN
+           MOVE  SPA-GMN-SISIKSN           TO  TNS-SISIKSN
       *
            PERFORM  VARYING  IDXX
                     FROM  1  BY  1  UNTIL  IDXX  >  10
@@ -4728,6 +4747,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-GMN-HISINSYUMONKSN        TO  Z03-HISINSYUMONKSN       
            MOVE  SPA-GMN-TOUKETUHOZONKSN       TO  Z03-TOUKETUHOZONKSN       
            MOVE  SPA-GMN-KUBUNBANGOU           TO  Z03-KUBUNBANGOU       
+      *    Ï«ºÒ»»ÄêÉÔ²Ä
+           MOVE  SPA-GMN-ROSAIKBN              TO  Z03-ROSAIKBN
+           MOVE  SPA-GMN-SISIKSN               TO  Z03-SISIKSN
       *                                          
            MOVE  SPA-GMN-SSTKIJUNCD(1)         TO  Z03-SSTKIJUNCD1     
            MOVE  SPA-GMN-SSTKIJUNCD(2)         TO  Z03-SSTKIJUNCD2     

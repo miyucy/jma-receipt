@@ -285,7 +285,7 @@
             <class>GtkNumberEntry</class>
             <name>TSUSOKUAGE</name>
             <x>436</x>
-            <y>500</y>
+            <y>494</y>
             <width>40</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -308,7 +308,7 @@
             <class>GtkPandaEntry</class>
             <name>KGNAGE</name>
             <x>436</x>
-            <y>536</y>
+            <y>524</y>
             <width>40</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -334,7 +334,7 @@
             <class>GtkPandaEntry</class>
             <name>JGNAGE</name>
             <x>552</x>
-            <y>536</y>
+            <y>524</y>
             <width>40</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -662,10 +662,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label250</name>
-            <x>316</x>
-            <y>540</y>
+            <x>320</x>
+            <y>524</y>
             <width>116</width>
-            <height>20</height>
+            <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -680,10 +680,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label249</name>
-            <x>316</x>
+            <x>320</x>
             <y>496</y>
             <width>104</width>
-            <height>28</height>
+            <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -1619,7 +1619,7 @@
             <class>GtkLabel</class>
             <name>label251</name>
             <x>488</x>
-            <y>536</y>
+            <y>524</y>
             <width>80</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -1808,6 +1808,47 @@
             <name>DPCKBN</name>
             <x>120</x>
             <y>584</y>
+            <width>40</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>True</can_focus>
+            <has_focus>False</has_focus>
+            <editable>True</editable>
+            <format>9</format>
+            <signal>
+              <name>changed</name>
+              <handler>entry_changed</handler>
+              <data>CHANGED</data>
+            </signal>
+            <signal>
+              <name>activate</name>
+              <handler>send_event</handler>
+              <data>ACTIVATE</data>
+            </signal>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>label8</name>
+            <x>320</x>
+            <y>556</y>
+            <width>110</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label>労災算定不可</label>
+            <justify>GTK_JUSTIFY_RIGHT</justify>
+            <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkNumberEntry</class>
+            <name>ROSAIKBN</name>
+            <x>436</x>
+            <y>556</y>
             <width>40</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -4846,6 +4887,47 @@
             <name>TOUKETUHOZONKSN</name>
             <x>404</x>
             <y>284</y>
+            <width>40</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>True</can_focus>
+            <has_focus>False</has_focus>
+            <editable>True</editable>
+            <format>9</format>
+            <signal>
+              <name>changed</name>
+              <handler>entry_changed</handler>
+              <data>CHANGED</data>
+            </signal>
+            <signal>
+              <name>activate</name>
+              <handler>send_event</handler>
+              <data>ACTIVATE</data>
+            </signal>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>label9</name>
+            <x>272</x>
+            <y>322</y>
+            <width>108</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label>四肢加算（労災）</label>
+            <justify>GTK_JUSTIFY_RIGHT</justify>
+            <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkNumberEntry</class>
+            <name>SISIKSN</name>
+            <x>404</x>
+            <y>320</y>
             <width>40</width>
             <height>24</height>
             <sensitive>True</sensitive>
