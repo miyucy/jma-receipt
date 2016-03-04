@@ -197,6 +197,8 @@
       *H27.4
            03  FLG-ALLKISAI            PIC 9(01).
            03  FLG-COMOK               PIC 9(01).
+      *H28.4
+           03  FLG-CHKNO               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -395,6 +397,11 @@
                05  WRK-HOSPADRS1       PIC X(40).
                05  WRK-HOSPADRS2       PIC X(40).
            03  WRK-HOSPTEL             PIC X(15).
+      *H28.4
+      *    残量確認指示 
+           03  WRK-ZANSIJI-G.
+               05  WRK-ZANSIJI1            PIC X(01).
+               05  WRK-ZANSIJI2            PIC X(01).
       *
       *ＱＲ対応
            03  WRK-FILE-CNT            PIC 9(02).
@@ -2097,6 +2104,14 @@
       *
       *    後発医薬品変更可
            PERFORM 30010-KOUHATU-HEN-SEC
+      *H28.4
+      *    残量確認指示
+           IF      WRK-ZANSIJI1        =   "1"
+               MOVE    "×"                TO  HC02-CHK1
+           END-IF
+           IF      WRK-ZANSIJI2        =   "1"
+               MOVE    "×"                TO  HC02-CHK2
+           END-IF
       *
       *ＱＲ対応
       *    ＱＲイメージ編集
@@ -2658,16 +2673,11 @@
            MOVE    ZERO                TO  IDX-Z
            MOVE    ZERO                TO  FLG-MAYAKU
            MOVE    ZERO                TO  FLG-KOUHATUFUKA-IN
-      *    MOVE    ZERO                TO  FLG-KOUHATU-HEN
-      *    MOVE    ZERO                TO  FLG-KOUHATU-CHK
-      *    MOVE    ZERO                TO  FLG-KOUHATU-1-CHK
-      *---(04.02.00) LINE ADD START ------------------------------------
-      *    MOVE    ZERO                TO  FLG-KOUHATUFUKA-ARI
-      *    MOVE    ZERO                TO  FLG-KOUHATU-ARI
-      *---(04.02.00) LINE ADD END   ------------------------------------
            INITIALIZE                  WRK-BIKOU-AREA
       *H27.4
            INITIALIZE                  WRK-SRYACT-ALL-AREA
+      *H28.4
+           INITIALIZE                  WRK-ZANSIJI-G
       *
       *ＱＲ対応
            INITIALIZE                  ORCSQRCSVAREA
@@ -4234,19 +4244,25 @@
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   WRK-SRY-MAX   )  OR
                               (WRK-SRY-SRYCD (IDXA)   =   SPACE)
-      *---(04.02.00) LINE UPD START ------------------------------------
-               IF      WRK-SRY-SRYCD (IDXA)    =   "099209902"
-                                               OR  "099209904"
-                   CONTINUE
-      ****         IF      WRK-SRY-SRYCD (IDXA)    =   "099209902"
-      *                後発医薬品への変更
-      *                MOVE    1               TO  FLG-KOUHATU-HEN
-      *            ELSE
-      *                後発医薬品への変更不可
-      *                MOVE    1               TO  FLG-KOUHATUFUKA-IN
-      ****         END-IF
-      *---(04.02.00) LINE UPD END   ------------------------------------
-               ELSE
+               MOVE    ZERO                TO  FLG-CHKNO
+               IF     (WRK-SRY-SRYCD (IDXA)    =   "099209902"
+                                               OR  "099209904")
+      *H28.4       湿布薬枚数制限解除
+                  OR  (WRK-SRY-SRYCD (IDXA)    =   "099200201")
+                   MOVE    1                   TO  FLG-CHKNO
+               END-IF
+      *H28.4   保険医療機関へ疑義照会した上で調剤
+               IF     (WRK-SRY-SRYCD (IDXA)    =   "099209921")
+                   MOVE    "1"                 TO  WRK-ZANSIJI1
+                   MOVE    1                   TO  FLG-CHKNO
+               END-IF
+      *H28.4   保険医療機関へ情報提供
+               IF     (WRK-SRY-SRYCD (IDXA)    =   "099209922")
+                   MOVE    "1"                 TO  WRK-ZANSIJI2
+                   MOVE    1                   TO  FLG-CHKNO
+               END-IF
+      *
+               IF      FLG-CHKNO           =   ZERO
                    MOVE    WRK-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
       *            用法
