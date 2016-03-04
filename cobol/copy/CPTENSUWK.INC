@@ -144,8 +144,8 @@
            03  TNSWK-HISINSYUMONITORKSN  PIC  9(01).
            03  TNSWK-TOUKETUHOZONKSN     PIC  9(01).
            03  TNSWK-KUBUNBANGOU         PIC  X(30).
-           03  TNS-ROSAIKBN              PIC  9(01).
-           03  TNS-SISIKSN               PIC  9(01).
+           03  TNSWK-ROSAIKBN            PIC  9(01).
+           03  TNSWK-SISIKSN             PIC  9(01).
       *H28.4 ADD END
            03  TNSWK-OLDTENSKB           PIC  9(01).
            03  TNSWK-OLDTEN              PIC  9(09)V99.
