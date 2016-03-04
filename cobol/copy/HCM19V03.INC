@@ -89,3 +89,7 @@
                         PIC X(30).
             02  HCM19V03-JKYSNUM215
                         PIC X(30).
+            02  HCM19V03-CHK1
+                        PIC X(2).
+            02  HCM19V03-CHK2
+                        PIC X(2).

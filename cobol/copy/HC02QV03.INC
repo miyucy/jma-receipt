@@ -91,3 +91,7 @@
                         PIC X(30).
             02  HC02QV03-JKYSNUM215
                         PIC X(30).
+            02  HC02QV03-CHK1
+                        PIC X(2).
+            02  HC02QV03-CHK2
+                        PIC X(2).
