@@ -614,6 +614,7 @@
            03  WRK-NYUREKILST-ROW          PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
+           03  CONST-H280401               PIC X(08)   VALUE "20160401".
            03  CONST-H261001               PIC X(08)   VALUE "20141001".
            03  CONST-H260401               PIC X(08)   VALUE "20140401".
            03  CONST-H241001               PIC X(08)   VALUE "20121001".
@@ -5595,19 +5596,28 @@
                    PERFORM 410111-RYOYOKHN-EDIT-SEC
                END-IF
       *
+               IF    ( WRK-KJNYMD         >=   CONST-H280401 )
+                AND  ( SYS-5001-BTU-SBT    =   "04" )
+                   PERFORM 410111-RYOYOIPN-EDIT-SEC
+               END-IF
+      *
                IF    ( SYS-5001-BTU-TOKTEI-NYUIN   NOT =   SPACE )
                    EVALUATE    TRUE
                    WHEN  ( SYS-5001-BTU-TOKTEI-NYUIN
                                =   "01" OR "02" OR "14"
                                 OR "17" OR "26" )
                        PERFORM 41011-PT-AGE-SEC
-                       IF    ( WRK-NENREI  <   15 )
+                       EVALUATE    TRUE
+                       WHEN  ( WRK-KJNYMD >=   CONST-H280401 )
+                         AND ( WRK-NENREI  <   20 )
+                       WHEN  ( WRK-KJNYMD  <   CONST-H280401 )
+                         AND ( WRK-NENREI  <   15 )
                            MOVE    "5110"      TO  WRK-KANRICD
                            MOVE    SYS-5001-BTU-TOKTEI-NYUIN
                                                TO  WRK-KBNCD
                            MOVE    "2"         TO  WRK-TOKNYUIN-KBN
                            PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                       END-IF
+                       END-EVALUATE
                    WHEN    OTHER
                        MOVE    "5110"      TO  WRK-KANRICD
                        MOVE    SYS-5001-BTU-TOKTEI-NYUIN
@@ -5615,6 +5625,29 @@
                        MOVE    "2"         TO  WRK-TOKNYUIN-KBN
                        PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
                    END-EVALUATE
+      *
+                   IF    ( WRK-KJNYMD         >=   CONST-H280401 )
+                       IF    ( SYS-5001-BTU-TOKTEI-NYUIN   =   "03" )
+                           MOVE    "5110"      TO  WRK-KANRICD
+                           MOVE    "49"        TO  WRK-KBNCD
+                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                           MOVE    "5110"      TO  WRK-KANRICD
+                           MOVE    "50"        TO  WRK-KBNCD
+                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-IF
+                       IF    ( SYS-5001-BTU-TOKTEI-NYUIN   =   "04" )
+                           MOVE    "5110"      TO  WRK-KANRICD
+                           MOVE    "51"        TO  WRK-KBNCD
+                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                           MOVE    "5110"      TO  WRK-KANRICD
+                           MOVE    "52"        TO  WRK-KBNCD
+                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-IF
+                   END-IF
       *
                    IF    ( SYS-5001-BTU-TOKTEI-NYUIN   =   "11" )
                     AND  ( SPA-GMN-I01-SYORIKBN-CD NOT =   "01" )
@@ -5703,6 +5736,63 @@
                        PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
                    END-EVALUATE
       *
+                   IF    ( WRK-KJNYMD     >=  CONST-H280401 )
+                       IF    ( SYS-5002-BRM-TOKTEI-NYUIN   =   "01" )
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "BT"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "BU"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( WRK-KJNYMD     >=  CONST-H280401 )
+               IF    ( SPA-NAI-I01-BTUSBT  =   "05" )
+                   IF    ( SYS-5001-BTU-KHNSRYCD   =   "190126310" )
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BK"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BL"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   END-IF
+                   IF    ( SYS-5001-BTU-KHNSRYCD   =   "190093710" )
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BM"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BN"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   END-IF
+                   IF    ( SYS-5001-BTU-KHNSRYCD   =   "190093810" )
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BO"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BP"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   END-IF
+                   IF    ( SYS-5001-BTU-KHNSRYCD   =   "190093910" )
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BQ"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "BR"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -6118,6 +6208,49 @@
        410111-RYOYOKHN-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    ÎÅÍÜ¡¦°ìÈÌÉÂÅïÆþ±¡´ðËÜÎÁÊÔ½¸½èÍý
+      *****************************************************************
+       410111-RYOYOIPN-EDIT-SEC      SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "5111"          TO  SYS-KANRICD
+           MOVE    WRK-KJNYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY23-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+               MOVE    1           TO  FLG-TARGET
+      *
+               IF    ( SYS-5111-BRM-NYUINRYOKBN    =   "12" )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( FLG-TARGET  =   1 )
+                   MOVE    SYS-5111-KANRICD
+                                       TO  WRK-KANRICD
+                   MOVE    SYS-5111-KBNCD
+                                       TO  WRK-KBNCD
+                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                   PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-KEY23-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key23"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       410111-RYOYOIPN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    Æþ±¡ÎÁ²Ã»»¥³¥ó¥Ü½é´üÀßÄê½èÍý
       *****************************************************************
        4101-CMB-KSN-SET-SEC            SECTION.
@@ -6527,6 +6660,8 @@
       *****************************************************************
        4101-CMB-TOKNYUIN-DAT-SET-SEC   SECTION.
       *
+           INITIALIZE                  TNS-TENSU-REC
+      *
            MOVE    ZERO                TO  FLG-PASS
            IF    ( WRK-TOKNYUIN-NM     =   SPACE )
                MOVE    1               TO  FLG-PASS
@@ -6594,6 +6729,12 @@
                    COMPUTE SPA-GMN-I01-TOKNYUIN-SRYCDTTL
                        =   SPA-GMN-I01-TOKNYUIN-SRYCDTTL
                        +   WRK-TOKNYUIN-SRYCD
+               END-IF
+      *
+               IF    ( TNS-CDKBN-KBN       =   "A" )
+                 AND ( TNS-CDKBN-KBNNUM   >=   100 )
+                 AND ( TNS-CDKBN-KBNNUM   <=   199 )
+                   MOVE    1           TO  SPA-NAI-I01-SELNYUKHN
                END-IF
       *
            END-IF

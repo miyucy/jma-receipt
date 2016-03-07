@@ -468,8 +468,20 @@
                05  MEDH20-37FL08    PIC X(06)    VALUE  "£³£·¡¡".
                05  MEDH20-37FL09    PIC X(100)   VALUE  
            "ÁÏ½ý¡¢ÈéÉæÄÙáçËô¤ÏËªÁã±ê¡¢Ç¿Åù¤Î´¶À÷¾É¤ËÂÐ¤¹¤ë¼£ÎÅ¤ò¼Â»Ü".
-               05  MEDH20-91FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-91FLE     PIC X(08)    VALUE  "20120331".
+               05  MEDH28-38FLS     PIC X(08)    VALUE  "20160401".
+               05  MEDH28-38FLE     PIC X(08)    VALUE  "99999999".
+               05  MEDH28-38FL01    PIC X(09)    VALUE  "XXXXXXXXX".
+               05  MEDH28-38FL02    PIC X(09)    VALUE  "XXXXXXXXX".
+               05  MEDH28-38FL03    PIC X(01)    VALUE  "2".
+               05  MEDH28-38FL04    PIC 9(03)    VALUE 0.
+               05  MEDH28-38FL05    PIC 9(01)    VALUE 0.
+               05  MEDH28-38FL06    PIC 9(04)    VALUE  2038.
+               05  MEDH28-38FL07    PIC X(02)    VALUE  "38".
+               05  MEDH28-38FL08    PIC X(06)    VALUE  "£³£¸¡¡".
+               05  MEDH28-38FL09    PIC X(100)   VALUE  
+           "»ÀÁÇÎÅË¡¤ò¼Â»Ü¤·¤Æ¤¤¤ë¾õÂÖ¡Ê£±£·¤ò½ü¤¯¡£¡Ë".
+               05  MEDH22-91FLS     PIC X(08)    VALUE  "00000000".
+               05  MEDH22-91FLE     PIC X(08)    VALUE  "20120331".
                05  MEDH22-91FL01    PIC X(09)    VALUE  "820000158".
                05  MEDH22-91FL02    PIC X(09)    VALUE  "820000158".
                05  MEDH22-91FL03    PIC X(01)    VALUE  "0".
@@ -480,8 +492,8 @@
                05  MEDH22-91FL08    PIC X(06)    VALUE  "£¹£±¡¡".
                05  MEDH22-91FL09    PIC X(100)   VALUE  
            "êóáì¤ËÂÐ¤¹¤ë¼£ÎÅ¤ò¼Â»Ü¤·¤Æ¤¤¤ë¾õÂÖ¡Ê£³£±¤Î¾ì¹ç¤ò½ü¤¯¡Ë".
-               05  MEDH20-92FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-92FLE     PIC X(08)    VALUE  "20120331".
+               05  MEDH22-92FLS     PIC X(08)    VALUE  "00000000".
+               05  MEDH22-92FLE     PIC X(08)    VALUE  "20120331".
                05  MEDH22-92FL01    PIC X(09)    VALUE  "820000159".
                05  MEDH22-92FL02    PIC X(09)    VALUE  "820000159".
                05  MEDH22-92FL03    PIC X(01)    VALUE  "0".
@@ -505,7 +517,7 @@
                05  MEDH24-91FL09    PIC X(100)   VALUE  
            "¿ÈÂÎÍÞÀ©¤ò¼Â»Ü¤·¤Æ¤¤¤ë".
            03  MEDH20-R    REDEFINES   MEDH20-VAL.
-               05  MEDH20-OCC          OCCURS  40.
+               05  MEDH20-OCC          OCCURS  41.
                    07  MEDH20-STYMD.
                        09  MEDH20-STYM PIC X(06).
                        09  MEDH20-STDD PIC 9(02).
@@ -520,4 +532,4 @@
                    07  MEDH20-ZAINUM   PIC 9(04).
                    07  MEDH20-ID      PIC X(02).
                    07  MEDH20-MEIL     PIC X(106).
-       01  MEDH20-MAX                  PIC 9(03)     VALUE  40.
+       01  MEDH20-MAX                  PIC 9(03)     VALUE  41.
