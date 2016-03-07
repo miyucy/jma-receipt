@@ -1373,6 +1373,9 @@ UPDATE*    ¥«∏Óø¶∞˜ÃÎ¥÷«€√÷≤√ªª
       *    ø©∆≤≤√ªª
            PERFORM 3101-SYOKUDO-SET-SEC
       *
+      *    ÃÎ¥÷∂€µﬁ¬Œ¿©≥Œ ›≤√ªª
+           PERFORM 3101-YKNKNKYU-SET-SEC
+      *
       *    ∞Âª’«€√÷≤√ªª£±
            PERFORM 3101-DRTEK-SET-SEC
       *
@@ -1384,6 +1387,12 @@ UPDATE*    ¥«∏Óø¶∞˜ÃÎ¥÷«€√÷≤√ªª
       *
       *    ¥«∏Ó«€√÷≤√ªª£≤° ø«Œ≈ΩÍ°À
            PERFORM 3101-SNRHICH2-SET-SEC
+      *
+      *    ¥«∏Ó ‰Ωı«€√÷≤√ªª£±
+           PERFORM 3101-SNRHJO1-SET-SEC
+      *
+      *    ¥«∏Ó ‰Ωı«€√÷≤√ªª£≤
+           PERFORM 3101-SNRHJO2-SET-SEC
       *
       *    ÃÎ¥÷¥«∏Ó«€√÷≤√ªª£±
            PERFORM 3101-YKNHICH1-SET-SEC

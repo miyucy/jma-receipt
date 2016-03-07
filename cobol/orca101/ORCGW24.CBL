@@ -5644,7 +5644,7 @@
            MOVE    "Æþ±¡²ñ·×É½¼¨¾ðÊó"          TO  W24-FRAME4-LABEL
            MOVE    "ÁªÄêÆþ±¡ÎÁ"                TO  W24-FRAME5-LABEL
       *
-           MOVE    "±ÉÍÜ´ÉÍý·Ð²áÁ¼ÃÖ"          TO  W24-LBLEIYOUKSN
+           MOVE    "±ÉÍÜ´ÉÍýÂÎÀ©"              TO  W24-LBLEIYOUKSN
       *
            IF    ( SPA-HOSPSBT         =   2 )
             AND  ( SPA-W01-STYUKYMD   >=   CONST-H260401 )
