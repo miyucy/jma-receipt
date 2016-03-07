@@ -2820,6 +2820,9 @@
              MOVE    LNK-TOKNYUIN2-PTID     TO  STUSAN-PTID
              MOVE   "190075510"             TO  STUSAN-TOKUTEI-SRYCD(1)
              MOVE   "190075610"             TO  STUSAN-TOKUTEI-SRYCD(2)
+      *       ø¿Æ£≤£∏«Ø≈Ÿ≤˛¿µ§«ø«Œ≈π‘∞Ÿ•≥°º•… —ππ
+             MOVE   "190194310"             TO  STUSAN-TOKUTEI-SRYCD(3)
+             MOVE   "190194410"             TO  STUSAN-TOKUTEI-SRYCD(4)
              MOVE    LNK-TOKNYUIN2-SANTEIYMD TO STUSAN-KJNYMD
              CALL   "ORCSTUSAN"          USING  ORCSTUSANAREA
                                                 SPA-AREA
