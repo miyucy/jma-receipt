@@ -1291,8 +1291,10 @@
                                    MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                                 END-IF
-      *                      体制強化加算（回復期リハビリテーション病棟入院料１）
-                             WHEN    "190175270"
+      *                      体制強化加算１（回復期リハビリテーション病棟入院料１）
+      *                      体制強化加算２（回復期リハビリテーション病棟入院料１）
+                             WHEN    "190194870"
+                             WHEN    "190194970"
                                 IF  LNK-NYUKSNGET-NYUIN-SRYCD
                                                        = "190150110" OR
                                                          "190150210"
