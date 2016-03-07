@@ -2496,6 +2496,21 @@
                WHEN    "48"
       *                地域包括ケア病棟入院料２（生活療養）（特定地域）
                        MOVE   "190176610"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "49"
+      *                特殊疾患病棟入院料１（医療区分２の患者に相当するもの）
+                       MOVE   "190195010"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "50"
+      *                特殊疾患病棟入院料１（医療区分１の患者に相当するもの）
+                       MOVE   "190195110"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "51"
+      *                特殊疾患病棟入院料２（医療区分２の患者に相当するもの）
+                       MOVE   "190195210"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "52"
+      *                特殊疾患病棟入院料２（医療区分１の患者に相当するもの）
+                       MOVE   "190195310"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "53"
+      *                地域移行機能強化病棟入院料
+                       MOVE   "190195510"   TO  LNK-TOKNYUIN-SRYCD
              END-EVALUATE
            END-IF
       *
@@ -2505,30 +2520,12 @@
                WHEN    "01"
       *                特殊疾患入院医療管理料
                        MOVE   "190075710"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "02"
-      *                診療所後期高齢者医療管理料
-                       MOVE   "190774110"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "03"
       *                救命救急入院料１
                        MOVE   "190024510"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "04"
-      *                救命救急入院料１（高度）
-                       MOVE   "190110210"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "05"
-      *                救命救急入院料１（Ａ）
-                       MOVE   "190110310"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "06"
       *                救命救急入院料２
                        MOVE   "190024310"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "07"
-      *                救命救急入院料２（高度）
-                       MOVE   "190110410"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "08"
-      *                救命救急入院料２（Ａ）
-                       MOVE   "190110510"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "09"
-      *                特定集中治療室管理料（重症者等比率基準適合）
-                       MOVE   "190024610"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "10"
       *                新生児特定集中治療室管理料１
                        MOVE   "190024710"   TO  LNK-TOKNYUIN-SRYCD
@@ -2538,24 +2535,9 @@
                WHEN    "12"
       *                総合周産期特定集中治療室管理料（新生児）
                        MOVE   "190066810"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "13"
-      *                広範囲熱傷特定集中治療室管理料
-                       MOVE   "190024810"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "14"
-      *                一類感染症患者入院医療管理料
-                       MOVE   "190194310"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "15"
-      *                老人一般病棟入院医療管理料
-                       MOVE   "190788810"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "16"
       *                特定集中治療室管理料３
                        MOVE   "190116310"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "17"
-      *                ハイケアユニット入院医療管理料
-                       MOVE   "190117310"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "18"
-      *                亜急性期入院医療管理料１
-                       MOVE   "190117410"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "19"
       *                脳卒中ケアユニット入院医療管理料
                        MOVE   "190120810"   TO  LNK-TOKNYUIN-SRYCD
@@ -2568,9 +2550,6 @@
                WHEN    "22"
       *                特定入院基本料（一般病棟入院基本料）
                        MOVE   "190799410"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "23"
-      *                診療所後期高齢者医療管理料（３０日を経過しない日の再入院）
-                       MOVE   "190808910"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "24"
       *                特定入院基本料（特別入院基本料等算定患者）
                        MOVE   "190799510"   TO  LNK-TOKNYUIN-SRYCD
@@ -2742,18 +2721,6 @@
                WHEN    "50"
       *                短期滞在手術基本料２（生活療養）
                        MOVE   "190125310"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "51"
-      *                診療所後期高齢者医療管理料（３０日未経過の再入院）（生活療養）
-                       MOVE   "190125210"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "52"
-      *                短期滞在手術基本料３
-                       MOVE   "190130410"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "53"
-      *                短期滞在手術基本料３（生活療養）
-                       MOVE   "190130510"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "54"
-      *                亜急性期入院医療管理料２
-                       MOVE   "190129910"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "55"
       *                救命救急入院料３（救命救急入院料）
                        MOVE   "190138110"   TO  LNK-TOKNYUIN-SRYCD
@@ -2899,21 +2866,9 @@
                WHEN    "91"
       *                小児特定集中治療室管理料
                        MOVE   "190149910"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "92"
-      *                亜急性期入院医療管理料１（指定地域）
-                       MOVE   "190150310"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "93"
-      *                亜急性期入院医療管理料２（指定地域）
-                       MOVE   "190150410"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "94"
       *                児童・思春期精神科入院医療管理料
                        MOVE   "190151110"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "95"
-      *                特定一般病棟入院料（亜急性期入院医療管理）
-                       MOVE   "190152610"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "96"
-      *                特定一般病棟入院料（亜急性期入院医療管理・リハビリ算定患者）
-                       MOVE   "190152710"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "97"
       *                短手３（終夜睡眠ポリグラフィー１（携帯用装置使用））
                        MOVE   "190177610"   TO  LNK-TOKNYUIN-SRYCD
@@ -2963,16 +2918,16 @@
       *                短手３（胸腔鏡下交感神経節切除術（両側））（生活）
                        MOVE   "190179110"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "9N"
-      *                短手３（水晶体再建術・眼内レンズ挿入・その他のもの）
+      *                短手３（水晶体再建術・眼内レンズ挿入・その他・片側）
                        MOVE   "190179210"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "9O"
-      *                短手３（水晶体再建術・眼内レンズ挿入・その他のもの）（生活）
+      *                短手３（水晶体再建術・眼内レンズ挿入・その他・片側）（生活）
                        MOVE   "190179310"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "9P"
-      *                短手３（水晶体再建術（眼内レンズ挿入しない場合））
+      *                短手３（水晶体再建術（眼内レンズ挿入しない場合）・片側）
                        MOVE   "190179410"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "9Q"
-      *                短手３（水晶体再建術（眼内レンズ挿入しない場合））（生活）
+      *                短手３（水晶体再建術（眼内レンズ挿入しない場合）・片側）（生活）
                        MOVE   "190179510"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "9R"
       *                短手３（乳腺腫瘍摘出術（長径５ｃｍ未満））
@@ -3010,12 +2965,6 @@
                WHEN    "A2"
       *                短手３（鼠径ヘルニア手術（１５歳以上））（生活）
                        MOVE   "190180710"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "A3"
-      *                短手３（腹腔鏡下鼠径ヘルニア手術）（１５歳未満））
-                       MOVE   "190180810"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "A4"
-      *                短手３（腹腔鏡下鼠径ヘルニア手術）（１５歳未満））（生活）
-                       MOVE   "190180910"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "A5"
       *                短手３（腹腔鏡下鼠径ヘルニア手術）（１５歳以上））
                        MOVE   "190181010"   TO  LNK-TOKNYUIN-SRYCD
@@ -3097,12 +3046,117 @@
                WHEN    "AV"
       *                特定一般病棟入院料（地域包括ケア入院医療管理２）
                        MOVE   "190182410"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "AW"
-      *                短手３（水晶体再建術・水晶体嚢拡張リング・縫着なし）
-                       MOVE   "190182750"   TO  LNK-TOKNYUIN-SRYCD
-               WHEN    "AX"
-      *                短手３（水晶体再建術・水晶体嚢拡張リング・縫着なし）（生活）
-                       MOVE   "190182850"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "AY"
+      *                短手３（水晶体再建術・眼内レンズ挿入・その他・両側）
+                       MOVE   "190195910"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "AZ"
+      *                短手３（水晶体再建術・眼内レンズ挿入・その他・両側）（生活）
+                       MOVE   "190196010"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B0"
+      *                短手３（水晶体再建術・眼内レンズ挿入しない・両側）
+                       MOVE   "190196110"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B1"
+      *                短手３（水晶体再建術・眼内レンズ挿入しない・両側）（生活）
+                       MOVE   "190196210"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B2"
+      *                短手３（経皮的シャント拡張術・血栓除去術）
+                       MOVE   "190196310"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B3"
+      *                短手３（経皮的シャント拡張術・血栓除去術）（生活）
+                       MOVE   "190196410"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B4"
+      *                短手３（鼠径ヘルニア手術（３歳未満））
+                       MOVE   "190196510"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B5"
+      *                短手３（鼠径ヘルニア手術（３歳未満））（生活）
+                       MOVE   "190196810"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B6"
+      *                短手３（鼠径ヘルニア手術（３歳以上６歳未満））
+                       MOVE   "190196610"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B7"
+      *                短手３（鼠径ヘルニア手術（３歳以上６歳未満））（生活）
+                       MOVE   "190196910"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B8"
+      *                短手３（鼠径ヘルニア手術（６歳以上１５歳未満））
+                       MOVE   "190196710"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "B9"
+      *                短手３（鼠径ヘルニア手術（６歳以上１５歳未満））（生活）
+                       MOVE   "190197010"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BA"
+      *                短手３（腹腔鏡下鼠径ヘルニア手術）（３歳未満））
+                       MOVE   "190197110"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BB"
+      *                短手３（腹腔鏡下鼠径ヘルニア手術）（３歳未満））（生活）
+                       MOVE   "190197410"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BC"
+      *                短手３（腹腔鏡下鼠径ヘルニア手術）（３歳以上６歳未満））
+                       MOVE   "190197210"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BD"
+      *                短手３（腹腔鏡下鼠径ヘルニア手術）（３歳以上６歳未満））（生活）
+                       MOVE   "190197510"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BE"
+      *                短手３（腹腔鏡下鼠径ヘルニア手術）（６歳以上１５歳未満））
+                       MOVE   "190197310"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BF"
+      *                短手３（腹腔鏡下鼠径ヘルニア手術）（６歳以上１５歳未満））（生活）
+                       MOVE   "190197610"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BG"
+      *                短手３（体外衝撃波腎・尿管結石破砕術）
+                       MOVE   "190197710"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BH"
+      *                短手３（体外衝撃波腎・尿管結石破砕術）（生活）
+                       MOVE   "190197810"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BI"
+      *                短手３（ガンマナイフによる定位放射線治療）
+                       MOVE   "190197910"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BJ"
+      *                短手３（ガンマナイフによる定位放射線治療）（生活）
+                       MOVE   "190198010"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BK"
+      *                障害者施設等７対１入院基本料（医療区分２）
+                       MOVE   "190189410"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BL"
+      *                障害者施設等７対１入院基本料（医療区分１）
+                       MOVE   "190189510"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BM"
+      *                障害者施設等１０対１入院基本料（医療区分２）
+                       MOVE   "190189610"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BN"
+      *                障害者施設等１０対１入院基本料（医療区分１）
+                       MOVE   "190189710"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BO"
+      *                障害者施設等１３対１入院基本料（医療区分２）
+                       MOVE   "190189810"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BP"
+      *                障害者施設等１３対１入院基本料（医療区分１）
+                       MOVE   "190189910"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BQ"
+      *                障害者施設等１５対１入院基本料（医療区分２）
+                       MOVE   "190190010"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BR"
+      *                障害者施設等１５対１入院基本料（医療区分１）
+                       MOVE   "190190110"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BS"
+      *                一類感染症患者入院医療管理料
+                       MOVE   "190194310"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BT"
+      *                特殊疾患入院医療管理料（医療区分２）
+                       MOVE   "190194510"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BU"
+      *                特殊疾患入院医療管理料（医療区分１）
+                       MOVE   "190194610"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BV"
+      *                療養病棟・一般病棟７対１入院基本料
+                       MOVE   "190198110"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BW"
+      *                療養病棟・一般病棟１０対１入院基本料
+                       MOVE   "190198210"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BX"
+      *                療養病棟・一般病棟１３対１入院基本料
+                       MOVE   "190198310"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "BY"
+      *                療養病棟・一般病棟１５対１入院基本料
+                       MOVE   "190198410"   TO  LNK-TOKNYUIN-SRYCD
              END-EVALUATE
            END-IF
       *
