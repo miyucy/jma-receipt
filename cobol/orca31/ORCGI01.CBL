@@ -911,6 +911,39 @@
                    07  FILLER              PIC X(03)   VALUE   "3AW".
                    07  FILLER              PIC X(03)   VALUE   "3AX".
       *
+                   07  FILLER              PIC X(03)   VALUE   "3AY".
+                   07  FILLER              PIC X(03)   VALUE   "3AZ".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3B0".
+                   07  FILLER              PIC X(03)   VALUE   "3B1".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3B2".
+                   07  FILLER              PIC X(03)   VALUE   "3B3".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3B4".
+                   07  FILLER              PIC X(03)   VALUE   "3B5".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3B6".
+                   07  FILLER              PIC X(03)   VALUE   "3B7".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3B8".
+                   07  FILLER              PIC X(03)   VALUE   "3B9".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3BA".
+                   07  FILLER              PIC X(03)   VALUE   "3BB".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3BC".
+                   07  FILLER              PIC X(03)   VALUE   "3BD".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3BE".
+                   07  FILLER              PIC X(03)   VALUE   "3BF".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3BG".
+                   07  FILLER              PIC X(03)   VALUE   "3BH".
+      *
+                   07  FILLER              PIC X(03)   VALUE   "3BI".
+                   07  FILLER              PIC X(03)   VALUE   "3BJ".
+      *
                    07  FILLER              PIC X(03)   VALUE   "241".
                    07  FILLER              PIC X(03)   VALUE   "242".
       *
@@ -923,12 +956,12 @@
                    07  FILLER              PIC X(03)   VALUE   "247".
                    07  FILLER              PIC X(03)   VALUE   "248".
                05  CONST-TOK-LIFECD-R  REDEFINES   CONST-TOK-LIFECD-VAL.
-                   07  CONST-TOK-LIFECD-OCC    OCCURS   67.
+                   07  CONST-TOK-LIFECD-OCC    OCCURS   78.
                        09  CONST-TOK-LIFECD-IPN
                                            PIC X(03).
                        09  CONST-TOK-LIFECD-LIFE
                                            PIC X(03).
-               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   67.
+               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   78.
            03  CONST-GMN-KSN-MAX           PIC 9(05)   VALUE   3.
            03  CONST-KSNCD-G.
                05  CONST-KSNCD-MAX         PIC 9(05)   VALUE   8.
