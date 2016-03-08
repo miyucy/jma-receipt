@@ -339,7 +339,7 @@
                05  CONST-H28-A211          PIC X(09) VALUE "190101970".
       *        ¥«∏Ó«€√÷≤√ªª
                05  CONST-H28-A213          PIC X(09) VALUE "190102070".
-      *        ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı¬Œ¿©≤√ªª
+      *        ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı≤√ªª
                05  CONST-H28-A214C02       PIC X(09) VALUE "190191170".
       *        ÃÎ¥÷¥«∏Ó¬Œ¿©≤√ªª° £¡£≤£±£¥°À
                05  CONST-H28-A214C03       PIC X(09) VALUE "190191270".
@@ -1298,7 +1298,7 @@
       *    ¥«∏Ó ‰Ωı≤√ªª
            PERFORM 3101-KNGHJO-SET-SEC
       *
-NEW   *    ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı¬Œ¿©≤√ªª
+NEW   *    ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı≤√ªª
            PERFORM 3101-YKNKNGHJ-SET-SEC
       *
 NEW   *    ÃÎ¥÷¥«∏Ó¬Œ¿©≤√ªª° ¥«∏Ó ‰Ωı≤√ªª°À
@@ -5176,7 +5176,7 @@ UPDATE*    ¥«∏Óø¶∞˜ÃÎ¥÷«€√÷≤√ªª
                PERFORM 420121-BTU-KSN-EDIT-SEC
            END-IF
       *
-      *    ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı¬Œ¿©≤√ªª
+      *    ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı≤√ªª
            IF    ( SPA-GMN-W20-YKNKNGHJ    =   "2" )
                MOVE    CONST-H28-A214C02
                                    TO  WRK-KSNCD
@@ -8004,7 +8004,7 @@ UPDATE*    ¥«∏Óø¶∞˜ÃÎ¥÷«€√÷≤√ªª
                MOVE    CONST-H28-A211  TO  SPA-NAI-W20-TOKUSYU-CD
                MOVE    "¥«∏Ó«€√÷≤√ªª"  TO  SPA-GMN-W20-HICH-LBL
                MOVE    CONST-H28-A213  TO  SPA-NAI-W20-HICH-CD
-               MOVE    "ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı¬Œ¿©≤√ªª"
+               MOVE    "ÃÎ¥÷£∑£µ¬–£±¥«∏Ó ‰Ωı≤√ªª"
                                        TO  SPA-GMN-W20-YKNKNGHJ-LBL
                MOVE    CONST-H28-A214C02
                                        TO  SPA-NAI-W20-YKNKNGHJ-CD
