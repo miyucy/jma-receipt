@@ -437,6 +437,10 @@
       *                湿布薬減算有
                        09  SPA-COM-SIPGEN          PIC X(01).
                        09  SPA-COM-SIPKBN          PIC X(01).
+      *                労災　算定不可
+                       09  SPA-COM-ROSAIKBN        PIC  X(01).
+      *                労災　四肢加算
+                       09  SPA-COM-SISIKSN         PIC  X(01).
       *
       *    点数マスタ付加情報より
       *                採血区分

@@ -3193,6 +3193,11 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0101"
+                   STRING  "処方せん無交付加算の在宅料ではありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0236"
                    STRING  "外用薬院内投薬がゼロ点になります。"
                            "診療種別を.231に変更して下さい。"

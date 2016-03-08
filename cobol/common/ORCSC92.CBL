@@ -4144,6 +4144,10 @@
                MOVE    TNS-SSTKIJUNCD(2)   TO  SPA-COM-SIPRYO1 (IDX-T)
                MOVE    TNS-SSTKIJUNCD(4)   TO  SPA-COM-SIPRYO2 (IDX-T)
            END-IF
+      *H28.4
+      *    労災算定不可
+           MOVE    TNS-ROSAIKBN        TO  SPA-COM-ROSAIKBN (IDX-T)
+           MOVE    TNS-SISIKSN         TO  SPA-COM-SISIKSN  (IDX-T)
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC

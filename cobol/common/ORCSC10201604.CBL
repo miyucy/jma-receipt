@@ -555,9 +555,14 @@
       *H26.4
       *    ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
            03  TBL-CHKCARKSN       PIC X(09)   VALUE   "112017270".
-      *H26.5
+      *H28.4
       *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
            03  CONS-NNCHIKSN       PIC X(09)   VALUE   "112017570".
+      *
+      *½èÊý¤»¤óÌµ¸òÉÕ²Ã»»¡ÊºßÂð»þ°å¡Ë¡ÊC002-00)
+       01  CONS-C0020-KSN      PIC X(09)   VALUE   "114034370".
+      *½èÊý¤»¤óÌµ¸òÉÕ²Ã»»¡Ê»Ü°åÁí´É¡Ë¡ÊC002-00)
+       01  CONS-C0022-KSN      PIC X(09)   VALUE   "114039170".
       *
       *    Ï«ºÒ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-RSI-SINSATU-AREA.
@@ -606,10 +611,10 @@
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
            COPY   "CMSYONIKATBL.INC".
       *
-      *H26.4
+      *H28.4
       *    ºßÂð»þ°åÎÅÁí¹ç´ÉÍýÎÁ¥³¡¼¥É¥Æ¡¼¥Ö¥ë¡ÊH28.4Ê¬)
            COPY     "CMZISOTBL2016.INC".
-      *H26.4
+      *H28.4
       *    »þ´Ö³°²Ã»»¥Æ¡¼¥Ö¥ë(H28.4Ê¬¡Ë
            COPY     "CMTIMEKSN2016.INC".
       *
@@ -1851,8 +1856,12 @@
       *        »ÜÀß´ð½àÉÔÅ¬±þ
                    MOVE    2                   TO  FLG-KIJUNN
                    MOVE    SPACE               TO  WRK-SRYCD
+                   IF      WRK-COM-SRYKBN (IDX-Z)  =   "14"
       *            »ÜÀß´ð½àÉÔÅ¬¹ç¡ÊºßÂð¡Ë
-                   MOVE    "114035470"         TO  WRK-SRYCD
+                       MOVE    "114035470"         TO  WRK-SRYCD
+                   END-IF
+                   IF      WRK-SRYCD       NOT =   SPACE
+      *
                    IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
                        COMPUTE IDX-S               =   IDX-Z  +  1
                        MOVE    IDX-S               TO  IDX-T
@@ -1865,6 +1874,8 @@
                    IF      FLG-ADD             =   1
                        MOVE    2               TO  WRK-COM-SANFLG
                                                           (IDX-S)
+                   END-IF
+      *
                    END-IF
                END-IF
            END-IF
@@ -1987,7 +1998,7 @@
                MOVE    1                   TO  FLG-MEISAKBN
            END-IF
       *H26.4
-      *    ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
+      *    ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»¡¦Ç§ÃÎ¾ÉÃÏ°èÊñ³ç²Ã»»
            IF      WRK-COM-INPUTCD(IDX-Z)  =   TBL-CHKCARKSN
                                            OR  CONS-NNCHIKSN
                MOVE    1                   TO  FLG-CHKCARKSN
@@ -2311,7 +2322,7 @@
                    GO      TO      1005-KASAN-CHK-EXT
                END-IF
            END-IF
-      *H26.4
+      *H28.4
       *    ÃÏ°èÊñ³ç¿ÇÎÅÎÁ»þ´Ö³°
            IF      SPA-NNCHKT-ARI2     =   1
                IF     (WRK-COM-SRYSYUKBN (IDX-Z)  =   "130")
@@ -2336,6 +2347,27 @@
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               GO      TO      1005-KASAN-CHK-EXT
+           END-IF
+      *
+      *H28.4
+      *    ½èÊý¤»¤óÌµ¸òÉÕ²Ã»»¥Á¥§¥Ã¥¯
+           IF     (WRK-COM-INPUTCD (IDX-Z) =   CONS-C0020-KSN
+                                           OR  CONS-C0022-KSN )
+              AND (IDX-SYU                 >   ZERO   )
+      *        ¶èÊ¬ÈÖ¹æ¤¬°ìÃ×¤¹¤ë¤³¤È
+               IF     (WRK-COM-CDKBN-KBN(IDX-SYU)
+                                       =   WRK-COM-CDKBN-KBN(IDX-Z))
+               AND    (WRK-COM-CDKBN-KBNNUM(IDX-SYU)
+                                       =   WRK-COM-CDKBN-KBNNUM(IDX-Z))
+               AND    (WRK-COM-CDKBN-KBNNUM-EDA(IDX-SYU)
+                                       =   WRK-COM-CDKBN-KBNNUM-EDA
+                                                               (IDX-Z))
+                   CONTINUE
+               ELSE
+                   MOVE    "0101"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               END-IF
            END-IF
       *
            .
@@ -4316,7 +4348,7 @@
            .
        10015-SYOUNICA-CHK-EXT.
            EXIT.
-      *H26.4
+      *H28.4
       *****************************************************************
       *   ºßÂðÎÅÍÜ¼ÂÀÓ²Ã»»½èÍý
       *****************************************************************
