@@ -3271,9 +3271,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P02_DEATHKBN</name>
-            <x>716</x>
+            <x>704</x>
             <y>8</y>
-            <width>70</width>
+            <width>76</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
@@ -3300,7 +3300,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2010</name>
-            <x>656</x>
+            <x>640</x>
             <y>8</y>
             <width>62</width>
             <height>24</height>
@@ -3320,34 +3320,34 @@
             <name>TEIMSG</name>
             <x>462</x>
             <y>8</y>
-            <width>140</width>
+            <width>138</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>12345678901234568</label>
+            <label></label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
           <widget>
             <class>GtkLabel</class>
             <name>TEIMSG2</name>
-            <x>614</x>
+            <x>592</x>
             <y>8</y>
-            <width>54</width>
+            <width>48</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>123456</label>
+            <label></label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -4291,24 +4291,6 @@
             <ypad>0</ypad>
             <label>ｇ</label>
             <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>TEIMSG3</name>
-            <x>574</x>
-            <y>8</y>
-            <width>60</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
         </widget>
@@ -7395,10 +7377,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSRSELNUM</name>
-            <x>692</x>
-            <y>10</y>
+            <x>604</x>
+            <y>16</y>
             <width>48</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7421,10 +7403,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYSTYMD</name>
-            <x>692</x>
-            <y>36</y>
+            <x>604</x>
+            <y>44</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7447,10 +7429,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYEDYMD</name>
-            <x>840</x>
-            <y>36</y>
+            <x>752</x>
+            <y>44</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7473,10 +7455,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYSKJGNSTYMD</name>
-            <x>776</x>
-            <y>114</y>
+            <x>692</x>
+            <y>132</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7499,8 +7481,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BT2</name>
-            <x>636</x>
-            <y>172</y>
+            <x>560</x>
+            <y>164</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7526,8 +7508,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BT1</name>
-            <x>896</x>
-            <y>172</y>
+            <x>716</x>
+            <y>164</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7553,10 +7535,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKSELNUM</name>
-            <x>692</x>
-            <y>212</y>
+            <x>604</x>
+            <y>216</y>
             <width>48</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7579,10 +7561,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKSTYMD</name>
-            <x>692</x>
-            <y>238</y>
+            <x>604</x>
+            <y>244</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7605,10 +7587,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKEDYMD</name>
-            <x>848</x>
-            <y>236</y>
+            <x>760</x>
+            <y>244</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7631,8 +7613,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BN1</name>
-            <x>896</x>
-            <y>376</y>
+            <x>716</x>
+            <y>368</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7658,8 +7640,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BN2</name>
-            <x>636</x>
-            <y>376</y>
+            <x>560</x>
+            <y>368</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7907,10 +7889,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYNINSTYMD</name>
-            <x>776</x>
-            <y>88</y>
+            <x>692</x>
+            <y>104</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -7933,10 +7915,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2021</name>
-            <x>620</x>
-            <y>114</y>
+            <x>540</x>
+            <y>132</y>
             <width>136</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -7951,10 +7933,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2058</name>
-            <x>620</x>
-            <y>88</y>
+            <x>540</x>
+            <y>104</y>
             <width>148</width>
-            <height>20</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -7969,10 +7951,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2057</name>
-            <x>620</x>
-            <y>62</y>
+            <x>540</x>
+            <y>76</y>
             <width>67</width>
-            <height>20</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -7987,10 +7969,10 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKNINSTYMD</name>
-            <x>776</x>
-            <y>290</y>
+            <x>692</x>
+            <y>304</y>
             <width>88</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
@@ -8013,10 +7995,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1810</name>
-            <x>784</x>
-            <y>36</y>
+            <x>700</x>
+            <y>44</y>
             <width>54</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8031,10 +8013,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1809</name>
-            <x>620</x>
-            <y>36</y>
+            <x>540</x>
+            <y>44</y>
             <width>54</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8049,14 +8031,14 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1819</name>
-            <x>620</x>
-            <y>10</y>
+            <x>536</x>
+            <y>16</y>
             <width>62</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
@@ -8085,10 +8067,10 @@
           <widget>
             <class>GtkHSeparator</class>
             <name>hseparator47</name>
-            <x>-4</x>
+            <x>0</x>
             <y>192</y>
             <width>1015</width>
-            <height>20</height>
+            <height>16</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8117,8 +8099,8 @@
             <name>sc104</name>
             <x>8</x>
             <y>24</y>
-            <width>572</width>
-            <height>164</height>
+            <width>516</width>
+            <height>160</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8133,8 +8115,8 @@
               <has_focus>False</has_focus>
               <border_width>0</border_width>
               <show_titles>True</show_titles>
-              <columns>7</columns>
-              <column_widths>30,64,64,90,90,90,80</column_widths>
+              <columns>6</columns>
+              <column_widths>30,74,64,101,99,80</column_widths>
               <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
               <signal>
                 <name>select_row</name>
@@ -8242,30 +8224,15 @@
                 <justify>GTK_JUSTIFY_CENTER</justify>
                 <wrap>False</wrap>
               </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label2081</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>境界層該当</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
             </widget>
           </widget>
           <widget>
             <class>GtkLabel</class>
             <name>label1820</name>
-            <x>620</x>
-            <y>212</y>
+            <x>540</x>
+            <y>216</y>
             <width>62</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8280,10 +8247,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1817</name>
-            <x>792</x>
-            <y>240</y>
+            <x>704</x>
+            <y>244</y>
             <width>54</width>
-            <height>20</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8298,10 +8265,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1818</name>
-            <x>620</x>
-            <y>238</y>
+            <x>540</x>
+            <y>244</y>
             <width>50</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8316,10 +8283,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2060</name>
-            <x>620</x>
-            <y>264</y>
+            <x>540</x>
+            <y>276</y>
             <width>67</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8334,8 +8301,8 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P024_FUKUSHI_COMB</name>
-            <x>776</x>
-            <y>316</y>
+            <x>692</x>
+            <y>332</y>
             <width>156</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -8372,8 +8339,8 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2052</name>
-            <x>620</x>
-            <y>316</y>
+            <x>540</x>
+            <y>332</y>
             <width>148</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -8390,10 +8357,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2059</name>
-            <x>620</x>
-            <y>290</y>
+            <x>540</x>
+            <y>304</y>
             <width>148</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8409,9 +8376,9 @@
             <class>GtkHSeparator</class>
             <name>hseparator53</name>
             <x>0</x>
-            <y>398</y>
+            <y>396</y>
             <width>1014</width>
-            <height>20</height>
+            <height>16</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8440,8 +8407,8 @@
             <name>sc105</name>
             <x>8</x>
             <y>228</y>
-            <width>572</width>
-            <height>164</height>
+            <width>516</width>
+            <height>160</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8456,8 +8423,8 @@
               <has_focus>False</has_focus>
               <border_width>0</border_width>
               <show_titles>True</show_titles>
-              <columns>7</columns>
-              <column_widths>32,64,64,90,90,80,90</column_widths>
+              <columns>6</columns>
+              <column_widths>32,75,70,91,100,80</column_widths>
               <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
               <signal>
                 <name>select_row</name>
@@ -8562,21 +8529,6 @@
                 <xpad>0</xpad>
                 <ypad>0</ypad>
                 <label>年金受給者証</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label2082</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>境界層該当</label>
                 <justify>GTK_JUSTIFY_CENTER</justify>
                 <wrap>False</wrap>
               </widget>
@@ -8797,8 +8749,8 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P024_TSYTEKK_COB</name>
-            <x>690</x>
-            <y>62</y>
+            <x>604</x>
+            <y>72</y>
             <width>240</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -8835,8 +8787,8 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P024_TNKTEKK_COB</name>
-            <x>692</x>
-            <y>264</y>
+            <x>604</x>
+            <y>272</y>
             <width>240</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -9057,118 +9009,6 @@
             <label></label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P024_TSYKYOUKAI_COB</name>
-            <x>777</x>
-            <y>140</y>
-            <width>148</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P024_TSYKYOUKAI</name>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>30</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label59</name>
-            <x>620</x>
-            <y>140</y>
-            <width>76</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>境界層該当</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label60</name>
-            <x>620</x>
-            <y>342</y>
-            <width>94</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>境界層該当</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P024_TNKKYOUKAI_COB</name>
-            <x>776</x>
-            <y>342</y>
-            <width>156</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P024_TNKKYOUKAI</name>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>30</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
           </widget>
         </widget>
         <widget>
@@ -11113,7 +10953,7 @@
             <name>hseparator2</name>
             <x>0</x>
             <y>116</y>
-            <width>460</width>
+            <width>988</width>
             <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -11123,9 +10963,9 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P028_MNOTE_QRKBN_COMB</name>
-            <x>220</x>
+            <x>250</x>
             <y>56</y>
-            <width>226</width>
+            <width>164</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -11179,7 +11019,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label26</name>
-            <x>96</x>
+            <x>128</x>
             <y>88</y>
             <width>124</width>
             <height>20</height>
@@ -11197,9 +11037,9 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P028_MNOTE_CSV_COMB</name>
-            <x>220</x>
+            <x>250</x>
             <y>88</y>
-            <width>226</width>
+            <width>256</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -11235,7 +11075,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label21</name>
-            <x>8</x>
+            <x>16</x>
             <y>56</y>
             <width>100</width>
             <height>20</height>
@@ -11253,7 +11093,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1</name>
-            <x>8</x>
+            <x>16</x>
             <y>12</y>
             <width>90</width>
             <height>24</height>
@@ -11272,9 +11112,9 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P028_PATIENTID1</name>
-            <x>88</x>
+            <x>132</x>
             <y>12</y>
-            <width>170</width>
+            <width>200</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
@@ -11300,7 +11140,7 @@
             <name>hseparator3</name>
             <x>0</x>
             <y>36</y>
-            <width>460</width>
+            <width>988</width>
             <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -11311,7 +11151,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label22</name>
-            <x>260</x>
+            <x>372</x>
             <y>12</y>
             <width>62</width>
             <height>24</height>
@@ -11329,9 +11169,9 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P028_AGREEMENT_COMB</name>
-            <x>320</x>
+            <x>430</x>
             <y>12</y>
-            <width>126</width>
+            <width>140</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -11370,10 +11210,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label23</name>
-            <x>8</x>
+            <x>16</x>
             <y>140</y>
             <width>100</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -11388,9 +11228,9 @@
           <widget>
             <class>GtkHSeparator</class>
             <name>hseparator4</name>
-            <x>0</x>
-            <y>172</y>
-            <width>460</width>
+            <x>1</x>
+            <y>164</y>
+            <width>988</width>
             <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -11401,9 +11241,9 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P028_JMAMRVER_COMB</name>
-            <x>220</x>
+            <x>250</x>
             <y>140</y>
-            <width>220</width>
+            <width>256</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -11442,10 +11282,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label24</name>
-            <x>96</x>
+            <x>128</x>
             <y>140</y>
             <width>124</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -12002,7 +11842,7 @@
             <class>GtkLabel</class>
             <name>label43</name>
             <x>416</x>
-            <y>220</y>
+            <y>208</y>
             <width>60</width>
             <height>20</height>
             <visible>True</visible>
@@ -12021,7 +11861,7 @@
             <class>GtkLabel</class>
             <name>label44</name>
             <x>416</x>
-            <y>252</y>
+            <y>240</y>
             <width>60</width>
             <height>20</height>
             <visible>True</visible>
@@ -12040,7 +11880,7 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJAMEI</name>
             <x>480</x>
-            <y>218</y>
+            <y>208</y>
             <width>300</width>
             <height>20</height>
             <visible>True</visible>
@@ -12059,7 +11899,7 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJAADRS</name>
             <x>480</x>
-            <y>246</y>
+            <y>236</y>
             <width>384</width>
             <height>20</height>
             <visible>True</visible>
@@ -12078,7 +11918,7 @@
             <class>GtkLabel</class>
             <name>label45</name>
             <x>416</x>
-            <y>296</y>
+            <y>272</y>
             <width>60</width>
             <height>20</height>
             <visible>True</visible>
@@ -12097,9 +11937,9 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJATEL</name>
             <x>480</x>
-            <y>296</y>
+            <y>272</y>
             <width>100</width>
-            <height>24</height>
+            <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -12116,7 +11956,7 @@
             <class>GtkLabel</class>
             <name>P028_CAREHKNJAADRS2</name>
             <x>480</x>
-            <y>270</y>
+            <y>254</y>
             <width>384</width>
             <height>20</height>
             <visible>True</visible>
@@ -12442,8 +12282,8 @@
           <widget>
             <class>GtkLabel</class>
             <name>P028_CAREHKNMEI</name>
-            <x>408</x>
-            <y>200</y>
+            <x>416</x>
+            <y>184</y>
             <width>300</width>
             <height>20</height>
             <visible>True</visible>
@@ -12461,8 +12301,8 @@
           <widget>
             <class>GtkHSeparator</class>
             <name>hseparator5</name>
-            <x>580</x>
-            <y>316</y>
+            <x>588</x>
+            <y>352</y>
             <width>418</width>
             <height>20</height>
             <visible>True</visible>
@@ -12474,10 +12314,10 @@
           <widget>
             <class>GtkVSeparator</class>
             <name>vseparator1</name>
-            <x>572</x>
-            <y>328</y>
+            <x>580</x>
+            <y>360</y>
             <width>20</width>
-            <height>304</height>
+            <height>268</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -12487,8 +12327,8 @@
           <widget>
             <class>GtkLabel</class>
             <name>label54</name>
-            <x>596</x>
-            <y>388</y>
+            <x>612</x>
+            <y>372</y>
             <width>200</width>
             <height>24</height>
             <visible>True</visible>
@@ -12506,9 +12346,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P028_CHKHKTBYO1</name>
-            <x>616</x>
-            <y>412</y>
-            <width>90</width>
+            <x>664</x>
+            <y>400</y>
+            <width>140</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12536,9 +12376,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P028_CHKHKTBYO2</name>
-            <x>708</x>
-            <y>412</y>
-            <width>80</width>
+            <x>836</x>
+            <y>400</y>
+            <width>140</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12566,9 +12406,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P028_CHKHKTBYO3</name>
-            <x>792</x>
-            <y>412</y>
-            <width>100</width>
+            <x>664</x>
+            <y>428</y>
+            <width>140</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12596,9 +12436,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P028_CHKHKTBYO4</name>
-            <x>900</x>
-            <y>412</y>
-            <width>80</width>
+            <x>836</x>
+            <y>428</y>
+            <width>140</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12626,9 +12466,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P028_NNCHIKBN</name>
-            <x>596</x>
-            <y>450</y>
-            <width>206</width>
+            <x>616</x>
+            <y>490</y>
+            <width>194</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12656,9 +12496,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P028_SYOUNIKBN</name>
-            <x>596</x>
-            <y>488</y>
-            <width>216</width>
+            <x>616</x>
+            <y>524</y>
+            <width>190</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12666,501 +12506,6 @@
             <has_focus>False</has_focus>
             <border_width>0</border_width>
             <label>小児かかりつけ診療料算定</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkScrolledWindow</class>
-            <name>scrolledwindow7</name>
-            <x>468</x>
-            <y>10</y>
-            <width>530</width>
-            <height>132</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-            <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-            <widget>
-              <class>GtkPandaCList</class>
-              <name>P028_MYLIST</name>
-              <width>510</width>
-              <height>120</height>
-              <visible>True</visible>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <border_width>0</border_width>
-              <show_titles>True</show_titles>
-              <columns>4</columns>
-              <column_widths>20,75,150,240</column_widths>
-              <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-              <signal>
-                <name>select_row</name>
-                <handler>clist_send_event</handler>
-                <data>SELECT</data>
-                <after>True</after>
-              </signal>
-              <signal>
-                <name>select_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <signal>
-                <name>unselect_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1924</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1925</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>ＩＤ識別</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1926</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>ＩＤ番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1927</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>備考</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCMY1</name>
-            <x>528</x>
-            <y>180</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>削除</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCMY2</name>
-            <x>900</x>
-            <y>180</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>更新</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkNumberEntry</class>
-            <name>P028_MYSELNUM</name>
-            <x>470</x>
-            <y>150</y>
-            <width>36</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <format>ZZ</format>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_MYIDKEY</name>
-            <x>510</x>
-            <y>150</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text>1234567890</text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_MY_NUMBER</name>
-            <x>604</x>
-            <y>150</y>
-            <width>150</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>20</text_max_length>
-            <text>1234567890</text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_MY_DESCRIP</name>
-            <x>758</x>
-            <y>150</y>
-            <width>244</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>100</text_max_length>
-            <text>1234567890</text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label55</name>
-            <x>594</x>
-            <y>524</y>
-            <width>200</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>管理料等自動算定</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label56</name>
-            <x>596</x>
-            <y>549</y>
-            <width>32</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>１．</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_AUTOSRYCD1</name>
-            <x>620</x>
-            <y>546</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>9</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label57</name>
-            <x>596</x>
-            <y>573</y>
-            <width>32</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>２．</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_AUTOSRYCD2</name>
-            <x>620</x>
-            <y>570</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>9</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_AUTOSRYCD3</name>
-            <x>620</x>
-            <y>595</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>9</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label58</name>
-            <x>596</x>
-            <y>597</y>
-            <width>32</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>３．</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_AUTONAME1</name>
-            <x>712</x>
-            <y>548</y>
-            <width>290</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_AUTONAME2</name>
-            <x>712</x>
-            <y>569</y>
-            <width>290</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_AUTONAME3</name>
-            <x>712</x>
-            <y>595</y>
-            <width>290</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_NINPUKBN</name>
-            <x>596</x>
-            <y>352</y>
-            <width>110</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>妊婦</label>
             <relief>GTK_RELIEF_NORMAL</relief>
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>

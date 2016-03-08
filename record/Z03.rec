@@ -44,10 +44,10 @@ Z03 {
         };
         HOSPSRYKBNCOMB {
           HOSPSRYKBN {
-            textdata varchar(30);
+            textdata varchar(20);
           };
           count int;
-            item varchar(30)[70];
+            item varchar(20)[70];
         };
         TANICDCOB {
           TANICD {
@@ -397,9 +397,6 @@ Z03 {
         SISIKSN { #GtkNumberEntry
           numdata number(1);
         };
-        AKUSEIBYORIKSN { #GtkNumberEntry
-          numdata number(1);
-        };
       };
       fixed12 {
         SSTKIJUNCD1 {
@@ -499,19 +496,6 @@ Z03 {
     };
     YUKOEDYMDH {
       textdata varchar(9);
-    };
-    MIDASHI { #GtkLabel
-      style varchar(20);
-      textdata varchar(80);
-    };
-    B03 { #GtkButton
-      state int;
-    };
-    B10 { #GtkButton
-      state int;
-    };
-    B12 { #GtkButton
-      state int;
     };
   };
 };

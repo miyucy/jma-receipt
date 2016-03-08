@@ -88,17 +88,17 @@ Z04 {
     };
     TENSIKIBETU_COMBO {
       TENSIKIBETU {
-        textdata varchar(42);
+        textdata varchar(20);
       };
       count int;
-        item varchar(42)[9];
+        item varchar(20)[4];
     };
     OLDTENSKB_COMBO {
       OLDTENSKB {
-        textdata varchar(42);
+        textdata varchar(20);
       };
       count int;
-        item varchar(42)[9];
+        item varchar(20)[4];
     };
     SYUSAISKB {
       numdata number(1);
@@ -158,12 +158,6 @@ Z04 {
       textdata varchar(9);
     };
     CHNGENAME {
-      textdata varchar(100);
-    };
-    CHNGCDU {
-      textdata varchar(9);
-    };
-    CHNGENAMEU {
       textdata varchar(100);
     };
     CHOKINISSU {
@@ -358,16 +352,6 @@ Z04 {
     };
     SIPIRISU2 { #GtkNumberEntry
       numdata number(3);
-    };
-    B03 {
-      state int;
-    };
-    B12 {
-      state int;
-    };
-    MIDASHI { #GtkLabel
-      style varchar(20);
-      textdata varchar(80);
     };
   };
 };
