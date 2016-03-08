@@ -3171,6 +3171,35 @@
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
+      *H28.4　改正から
+               WHEN    "K107"
+                   STRING  "警告！"
+                           "認知症地域包括診療料が算定済みです。"
+                           "診察料は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K108"
+                   STRING  "警告！"
+                           "湿布薬が７０枚以上となります。"
+                           "減算対象となります。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K109"
+                   STRING  "警告！"
+                           "湿布薬の投薬があります。"
+                           "全量・１日量のコメントを入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0236"
+                   STRING  "外用薬院内投薬がゼロ点になります。"
+                           "診療種別を.231に変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      **
                WHEN    "K910"
                    STRING  "警告！"
                            "入院会計照会を確認して下さい。"
