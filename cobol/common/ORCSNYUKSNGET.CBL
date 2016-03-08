@@ -1302,15 +1302,6 @@
                                    MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                                 END-IF
-      *                      精神科急性期医師配置加算（精神科急性期治療病棟入院料１）
-                             WHEN    "190182270"
-                                IF  LNK-NYUKSNGET-NYUIN-SRYCD
-                                                       = "190121110" OR
-                                                         "190066910"
-                                   ADD    1            TO  IDX8
-                                   MOVE   SYS-5001-KSNCD(IDX7) TO
-                                            WRK-NYUKHNKSN-SRYCD(IDX8)
-                                END-IF
       *                      看護職員配置加算（地域包括ケア病棟入院料）
                              WHEN    "190176970"
                                    IF  LNK-NYUKSNGET-NYUIN-SRYCD
@@ -1897,7 +1888,7 @@
       *    表用番号の置き換え（平成２６年改正）
            IF     (TNS-CDKBN-KBNNUM  = 108)   AND
                   (TNS-CDKBN-KOUBAN  =  13)   AND
-                  (TNS-YUKOSTYMD    >=  "20040401")
+                  (TNS-YUKOSTYMD    >=  "20140401")
                MOVE   109           TO WRK-BTU-CDKBN-KBNNUM
                MOVE   ZERO          TO WRK-BTU-CDKBN-KBNNUM-EDA
            END-IF
@@ -1917,11 +1908,77 @@
                WHEN   88
                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
            END-EVALUATE
+      *    療養病棟入院基本料（特別入院基本料）
            IF  TNS-SRYCD      =    "190121810"
                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
            END-IF
+      *    特定入院基本料（一般病棟入院基本料）（特別入院基本料等算定患者）
            IF  TNS-SRYCD      =    "190799510"
                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+           END-IF
+      *
+      *    平成２８年改正から入院基本料区分が予備項目になった事から、
+      *    特別入院料の判定を表用番号に変更
+           IF   LNK-NYUKSNGET-SANTEIYM   >=   "201604"
+      *       一般病棟特別入院基本料
+      *       （選）一般病棟特別入院基本料
+              IF     (TNS-CDKBN-KBNNUM  = 100)   AND
+                     (TNS-CDKBN-KOUBAN  =   6)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       一般病棟入院基本料（夜勤時間超過減算）
+              IF     (TNS-CDKBN-KBNNUM  = 100)   AND
+                     (TNS-CDKBN-KOUBAN  =   7)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       一般病棟入院基本料（夜勤時間特別入院基本料）
+              IF     (TNS-CDKBN-KBNNUM  = 100)   AND
+                     (TNS-CDKBN-KOUBAN  =  18)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       療養病棟入院基本料２（特別入院基本料）
+      *       療養病棟入院基本料２（夜勤時間超過減算）
+              IF     (TNS-CDKBN-KBNNUM  = 101)   AND
+                     (TNS-CDKBN-KOUBAN  =   3)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       療養病棟入院基本料２（看護職員数等経過措置）
+              IF     (TNS-CDKBN-KBNNUM  = 101)   AND
+                     (TNS-CDKBN-KOUBAN  =   9)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       療養病棟入院基本料２（夜勤時間特別入院基本料）
+              IF     (TNS-CDKBN-KBNNUM  = 101)   AND
+                     (TNS-CDKBN-KOUBAN  =  10)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       結核病棟特別入院基本料
+      *       結核病棟入院基本料（夜勤時間超過減算）
+              IF     (TNS-CDKBN-KBNNUM  = 102)   AND
+                     (TNS-CDKBN-KOUBAN  =   7)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       結核病棟入院基本料（夜勤時間特別入院基本料）
+              IF     (TNS-CDKBN-KBNNUM  = 102)   AND
+                     (TNS-CDKBN-KOUBAN  =   9)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       精神病棟特別入院基本料
+      *       精神病棟入院基本料（夜勤時間超過減算）
+              IF     (TNS-CDKBN-KBNNUM  = 103)   AND
+                     (TNS-CDKBN-KOUBAN  =   6)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       精神病棟入院基本料（夜勤時間特別入院基本料）
+              IF     (TNS-CDKBN-KBNNUM  = 103)   AND
+                     (TNS-CDKBN-KOUBAN  =  11)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       障害者施設等入院基本料（夜勤時間超過減算）
+              IF     (TNS-CDKBN-KBNNUM  = 106)   AND
+                     (TNS-CDKBN-KOUBAN  =   5)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
            END-IF
            .
       *
