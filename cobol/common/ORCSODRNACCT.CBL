@@ -570,7 +570,7 @@
                WHEN    "0303"
                WHEN    "0304"
                WHEN    "0305"
-               WHEN    "0306"
+               WHEN    "0307"
                    IF   SODRNACCT-STARTYMD(1:6)  >= "201604"
                        PERFORM   4801-SHOKUJI-201604-SEC
                    ELSE
@@ -6267,7 +6267,7 @@
                                    MOVE   2     TO   NACCT-DAY(IDX-SKJ)
                                WHEN   "05"
                                    MOVE   0     TO   NACCT-DAY(IDX-SKJ)
-                               WHEN   "06"
+                               WHEN   "07"
                                    MOVE   3     TO   NACCT-DAY(IDX-SKJ)
                            END-EVALUATE
                        END-IF
