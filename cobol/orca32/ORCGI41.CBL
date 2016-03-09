@@ -3526,14 +3526,14 @@
            MOVE    SPA-GMN-SYUBETSU5   TO  I41-SYUBETSU5.
            MOVE    SPA-GMN-SYUBETSU6   TO  I41-SYUBETSU6.
            MOVE    SPA-GMN-LASTNYUIN   TO  I41-LASTNYUIN.
-      *    食事更新日
-           MOVE    "blue"              TO  I41-UPYMD-STYLE.
-           IF      SPA-GMN-UPYMD       NOT =  SPACE
-               MOVE  "会計更新日"      TO  I41-UPYMD(1:10)
-               MOVE    SPA-GMN-UPYMD   TO  WRK-SYMD
-               PERFORM 41012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  I41-UPYMD(12:9)
-           END-IF
+      *    食事更新日（改正作業中の為、更新日表示を保留とする）
+      **     MOVE    "blue"              TO  I41-UPYMD-STYLE.
+      **     IF      SPA-GMN-UPYMD       NOT =  SPACE
+      **         MOVE  "会計更新日"      TO  I41-UPYMD(1:10)
+      **         MOVE    SPA-GMN-UPYMD   TO  WRK-SYMD
+      **         PERFORM 41012-SEIWA-HEN-SEC
+      **         MOVE    WRK-HENYMDG     TO  I41-UPYMD(12:9)
+      **     END-IF
       *    保険組合せ
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-HKNCOMBI-MAX
