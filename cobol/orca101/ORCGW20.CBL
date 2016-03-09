@@ -2115,7 +2115,7 @@ UPDATE*    ´Ç¸î¿¦°÷Ìë´ÖÇÛÃÖ²Ã»»
                MOVE    "£±£¶ÂÐ£±ÇÛÃÖ²Ã»»"
                                    TO  SPA-GMN-W20-KNGYKNHICHIMEIL(4)
       *
-               MOVE    3           TO  SPA-GMN-W20-KNGYKNHICHI-MAX
+               MOVE    4           TO  SPA-GMN-W20-KNGYKNHICHI-MAX
            WHEN  OTHER
                MOVE    SPA-GMN-W20-KSNCOMMONLST-G
                                        TO  SPA-GMN-W20-KNGYKNHICHILST-G
