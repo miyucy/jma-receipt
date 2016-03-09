@@ -3309,8 +3309,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    行為名称
            MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO (IDG)
       *
-      *!!!!!!!!!!!!!!!!!!!!!!!
-      *!!!!!!!!!!!!!!!!!!!!!!!
       *H28.2
       *    一般名記載
            IF     (ORCSGETGE-GENERICNAME(IDX-GEN)  NOT =   SPACE)
@@ -3449,6 +3447,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        OR  "23"        )  AND
                   (SRY-AUTOKBN (IDZ)   =   "3"         )
                MOVE    2                   TO  SPA-NAI-ZAITENFLG (IDX)
+           END-IF
+      *H28.4
+      *    外用院内の湿布薬
+           IF     (SRY-SRYYM           >=  "201604" )
+              AND (SPA-NYUGAIKBN       =   "2"      )
+              AND (SRY-SRYKBN          =   "23"     )
+              AND (SRY-SRYCD (IDZ)(1:1)    =   "6"  )
+              AND (TNS-MEIUSESKB       =   1        )
+              AND (SPA-NAI-ZAITENFLG (IDX) =   ZERO )
+               IF   (SRY-SRYSYUKBN     =   "231"
+                                       OR  "294" )
+                OR ((SRY-SRYSYUKBN     =   SPACE
+                                       OR  "230" )  AND
+                    (ACCT-ZAITEN       >   ZERO  ))
+                   MOVE    3           TO  SPA-NAI-ZAITENFLG (IDX)
+               END-IF
            END-IF
       *
       *    算定履歴情報（剤内の最初に対象となるもの）
@@ -9101,6 +9115,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0027"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
+      *H28.4   湿布薬の剤は対象外
+           IF     (SPA-NAI-ZAITENFLG (SPA-NAI-BANGO)
+                                       =   3      )
+             AND  (SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
+                                       =   "23"   )
+             AND  (SPA-NAI-KEIFLG2     =   ZERO   )
+               MOVE    "K037"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-NAI-KEIFLG2
+           END-IF
+      *
            IF      SPA-ERRCD           =   SPACE
                MOVE    "0104"              TO  SPA-JIDCD
            END-IF
@@ -14523,6 +14548,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *H26.10      STRING  "対象の剤は内服薬剤料逓減に関する剤です。"
                    STRING  "対象の剤は薬剤料逓減に関する剤です。"
                            "剤変更はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
+      *H28.4
+               WHEN    "K037"
+                   STRING  "警告！"
+                           "対象の剤は湿布薬の院内投薬です。"
+                           "枚数が減点対象の時点数計算ができません。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-ERRMSG
                    END-STRING

@@ -3444,6 +3444,14 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K104"
+                   STRING  "警告！"
+                           "登録時と点数が違います。"
+                           "湿布薬減点対象であれば、"
+                           "訂正で点数を変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
