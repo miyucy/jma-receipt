@@ -64,7 +64,7 @@
            "傷病等によりリハビリテーションが必要な状態".
       *----------------------------------------------------------------
                05  MEDH20-04FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-04FLE     PIC X(08)    VALUE  "20180331".
+               05  MEDH20-04FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-04FL01    PIC X(09)    VALUE  "820000078".
                05  MEDH20-04FL02    PIC X(09)    VALUE  "820000099".
                05  MEDH20-04FL03    PIC X(01)    VALUE  "2".
@@ -75,19 +75,6 @@
                05  MEDH20-04FL08    PIC X(06)    VALUE  "　４　".
                05  MEDH20-04FL09    PIC X(100)   VALUE  
            "脱水に対する治療を実施、かつ、発熱を伴う状態".
-      *----------------------------------------------------------------
-               05  MEDH30-04FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-04FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-04FL01    PIC X(09)    VALUE  "820000078".
-               05  MEDH30-04FL02    PIC X(09)    VALUE  "820000099".
-               05  MEDH30-04FL03    PIC X(01)    VALUE  "2".
-               05  MEDH30-04FL04    PIC 9(03)    VALUE 7.
-               05  MEDH30-04FL05    PIC 9(01)    VALUE 0.
-               05  MEDH30-04FL06    PIC 9(04)    VALUE  2022.
-               05  MEDH30-04FL07    PIC X(02)    VALUE  "04".
-               05  MEDH30-04FL08    PIC X(06)    VALUE  "　４　".
-               05  MEDH30-04FL09    PIC X(100)   VALUE  
-           "８１、かつ、８３の状態".
       *----------------------------------------------------------------
                05  MEDH20-05FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-05FLE     PIC X(08)    VALUE  "99999999".
@@ -103,7 +90,7 @@
            "消化管等の体内からの出血が反復継続".
       *----------------------------------------------------------------
                05  MEDH20-06FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-06FLE     PIC X(08)    VALUE  "20180331".
+               05  MEDH20-06FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-06FL01    PIC X(09)    VALUE  "820000080".
                05  MEDH20-06FL02    PIC X(09)    VALUE  "820000101".
                05  MEDH20-06FL03    PIC X(01)    VALUE  "2".
@@ -114,19 +101,6 @@
                05  MEDH20-06FL08    PIC X(06)    VALUE  "　６　".
                05  MEDH20-06FL09    PIC X(100)   VALUE  
            "頻回の嘔吐に対する治療を実施、かつ、発熱を伴う状態".
-      *----------------------------------------------------------------
-               05  MEDH30-06FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-06FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-06FL01    PIC X(09)    VALUE  "820000080".
-               05  MEDH30-06FL02    PIC X(09)    VALUE  "820000101".
-               05  MEDH30-06FL03    PIC X(01)    VALUE  "2".
-               05  MEDH30-06FL04    PIC 9(03)    VALUE 3.
-               05  MEDH30-06FL05    PIC 9(01)    VALUE 0.
-               05  MEDH30-06FL06    PIC 9(04)    VALUE  2024.
-               05  MEDH30-06FL07    PIC X(02)    VALUE  "06".
-               05  MEDH30-06FL08    PIC X(06)    VALUE  "　６　".
-               05  MEDH30-06FL09    PIC X(100)   VALUE  
-           "８２、かつ、８３の状態".
       *----------------------------------------------------------------
                05  MEDH20-07FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-07FLE     PIC X(08)    VALUE  "99999999".
@@ -142,7 +116,7 @@
            "せん妄に対する治療を実施".
       *----------------------------------------------------------------
                05  MEDH20-08FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-08FLE     PIC X(08)    VALUE  "20180331".
+               05  MEDH20-08FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-08FL01    PIC X(09)    VALUE  "820000087".
                05  MEDH20-08FL02    PIC X(09)    VALUE  "820000103".
                05  MEDH20-08FL03    PIC X(01)    VALUE  "2".
@@ -153,19 +127,6 @@
                05  MEDH20-08FL08    PIC X(06)    VALUE  "　８　".
                05  MEDH20-08FL09    PIC X(100)   VALUE  
            "経鼻胃管や経腸栄養が行われており、発熱又は嘔吐を伴う状態".
-      *----------------------------------------------------------------
-               05  MEDH30-08FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-08FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-08FL01    PIC X(09)    VALUE  "820000087".
-               05  MEDH30-08FL02    PIC X(09)    VALUE  "820000103".
-               05  MEDH30-08FL03    PIC X(01)    VALUE  "2".
-               05  MEDH30-08FL04    PIC 9(03)    VALUE 7.
-               05  MEDH30-08FL05    PIC 9(01)    VALUE 0.
-               05  MEDH30-08FL06    PIC 9(04)    VALUE  2031.
-               05  MEDH30-08FL07    PIC X(02)    VALUE  "08".
-               05  MEDH30-08FL08    PIC X(06)    VALUE  "　８　".
-               05  MEDH30-08FL09    PIC X(100)   VALUE  
-           "８４、かつ、８２又は８３の状態".
       *----------------------------------------------------------------
                05  MEDH20-09FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-09FLE     PIC X(08)    VALUE  "99999999".
@@ -204,10 +165,10 @@
                05  MEDH20-11FL07    PIC X(02)    VALUE  "11".
                05  MEDH20-11FL08    PIC X(06)    VALUE  "１１　".
                05  MEDH20-11FL09    PIC X(100)   VALUE  
-           "重度の肢体不自由児（者）等（障害者施設等入院基本料）等".
+         "注１：重度の肢体不自由児（者）等（障害者施設等入院基本料）等".
       *----------------------------------------------------------------
                05  MEDH20-12FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-12FLE     PIC X(08)    VALUE  "20180331".
+               05  MEDH20-12FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-12FL01    PIC X(09)    VALUE  "820000058".
                05  MEDH20-12FL02    PIC X(09)    VALUE  "820000107".
                05  MEDH20-12FL03    PIC X(01)    VALUE  "3".
@@ -218,21 +179,6 @@
                05  MEDH20-12FL08    PIC X(06)    VALUE  "１２　".
                05  MEDH20-12FL09    PIC X(100)   VALUE  
            "医師及び看護職員により、常時、監視及び管理を実施".
-      *----------------------------------------------------------------
-               05  MEDH30-12FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-12FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-12FL01    PIC X(09)    VALUE  "820000058".
-               05  MEDH30-12FL02    PIC X(09)    VALUE  "820000107".
-               05  MEDH30-12FL03    PIC X(01)    VALUE  "3".
-               05  MEDH30-12FL04    PIC 9(03)    VALUE 0.
-               05  MEDH30-12FL05    PIC 9(01)    VALUE 0.
-               05  MEDH30-12FL06    PIC 9(04)    VALUE  2002.
-               05  MEDH30-12FL07    PIC X(02)    VALUE  "12".
-               05  MEDH30-12FL08    PIC X(06)    VALUE  "１２　".
-               05  MEDH30-12FL09-1  PIC X(50)    VALUE
-           "８６に該当、かつ、１〜３８（１２を除く。）に１項目".
-               05  MEDH30-12FL09-2   PIC X(50)    VALUE
-           "以上該当する状態".
       *----------------------------------------------------------------
                05  MEDH20-13FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-13FLE     PIC X(08)    VALUE  "99999999".
@@ -274,7 +220,7 @@
            "ドレーン法又は胸腔若しくは腹腔の洗浄を実施".
       *----------------------------------------------------------------
                05  MEDH20-16FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-16FLE     PIC X(08)    VALUE  "20180331".
+               05  MEDH20-16FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-16FL01    PIC X(09)    VALUE  "820000063".
                05  MEDH20-16FL02    PIC X(09)    VALUE  "820000111".
                05  MEDH20-16FL03    PIC X(01)    VALUE  "3".
@@ -286,21 +232,8 @@
                05  MEDH20-16FL09    PIC X(100)   VALUE  
            "気管切開又は気管内挿管が行われており、かつ、発熱を伴う状態".
       *----------------------------------------------------------------
-               05  MEDH30-16FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-16FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-16FL01    PIC X(09)    VALUE  "820000063".
-               05  MEDH30-16FL02    PIC X(09)    VALUE  "820000111".
-               05  MEDH30-16FL03    PIC X(01)    VALUE  "3".
-               05  MEDH30-16FL04    PIC 9(03)    VALUE 0.
-               05  MEDH30-16FL05    PIC 9(01)    VALUE 0.
-               05  MEDH30-16FL06    PIC 9(04)    VALUE  2007.
-               05  MEDH30-16FL07    PIC X(02)    VALUE  "16".
-               05  MEDH30-16FL08    PIC X(06)    VALUE  "１６　".
-               05  MEDH30-16FL09    PIC X(100)   VALUE  
-           "８５、かつ、８３の状態".
-      *----------------------------------------------------------------
                05  MEDH20-17FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-17FLE     PIC X(08)    VALUE  "20160331".
+               05  MEDH20-17FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-17FL01    PIC X(09)    VALUE  "820000064".
                05  MEDH20-17FL02    PIC X(09)    VALUE  "820000112".
                05  MEDH20-17FL03    PIC X(01)    VALUE  "3".
@@ -311,19 +244,6 @@
                05  MEDH20-17FL08    PIC X(06)    VALUE  "１７　".
                05  MEDH20-17FL09    PIC X(100)   VALUE  
            "酸素療法を実施".
-      *----------------------------------------------------------------
-               05  MEDH28-17FLS     PIC X(08)    VALUE  "20160401".
-               05  MEDH28-17FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH28-17FL01    PIC X(09)    VALUE  "820000064".
-               05  MEDH28-17FL02    PIC X(09)    VALUE  "820000229".
-               05  MEDH28-17FL03    PIC X(01)    VALUE  "3".
-               05  MEDH28-17FL04    PIC 9(03)    VALUE 0.
-               05  MEDH28-17FL05    PIC 9(01)    VALUE 0.
-               05  MEDH28-17FL06    PIC 9(04)    VALUE  2008.
-               05  MEDH28-17FL07    PIC X(02)    VALUE  "17".
-               05  MEDH28-17FL08    PIC X(06)    VALUE  "１７　".
-               05  MEDH28-17FL09    PIC X(100)   VALUE  
-           "酸素療法を実施（密度の高い治療を要する状態）".
       *----------------------------------------------------------------
                05  MEDH20-18FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-18FLE     PIC X(08)    VALUE  "99999999".
@@ -339,7 +259,7 @@
            "感染症の治療の必要性から隔離室での管理を実施".
       *----------------------------------------------------------------
                05  MEDH20-19FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-19FLE     PIC X(08)    VALUE  "20160331".
+               05  MEDH20-19FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-19FL01    PIC X(09)    VALUE  "820000067".
                05  MEDH20-19FL02    PIC X(09)    VALUE  "820000114".
                05  MEDH20-19FL03    PIC X(01)    VALUE  "2".
@@ -350,19 +270,6 @@
                05  MEDH20-19FL08    PIC X(06)    VALUE  "１９　".
                05  MEDH20-19FL09    PIC X(100)   VALUE  
            "筋ジストロフィー症".
-      *----------------------------------------------------------------
-               05  MEDH28-19FLS     PIC X(08)    VALUE  "20160401".
-               05  MEDH28-19FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH28-19FL01    PIC X(09)    VALUE  "820000067".
-               05  MEDH28-19FL02    PIC X(09)    VALUE  "820000230".
-               05  MEDH28-19FL03    PIC X(01)    VALUE  "2".
-               05  MEDH28-19FL04    PIC 9(03)    VALUE 0.
-               05  MEDH28-19FL05    PIC 9(01)    VALUE 1.
-               05  MEDH28-19FL06    PIC 9(04)    VALUE  2011.
-               05  MEDH28-19FL07    PIC X(02)    VALUE  "19".
-               05  MEDH28-19FL08    PIC X(06)    VALUE  "１９　".
-               05  MEDH28-19FL09    PIC X(100)   VALUE  
-           "筋ジストロフィー".
       *----------------------------------------------------------------
                05  MEDH20-20FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-20FLE     PIC X(08)    VALUE  "99999999".
@@ -404,7 +311,7 @@
            "パーキンソン病関連疾患".
       *----------------------------------------------------------------
                05  MEDH20-23FLS     PIC X(08)    VALUE  "00000000".
-               05  MEDH20-23FLE     PIC X(08)    VALUE  "20160331".
+               05  MEDH20-23FLE     PIC X(08)    VALUE  "99999999".
                05  MEDH20-23FL01    PIC X(09)    VALUE  "820000071".
                05  MEDH20-23FL02    PIC X(09)    VALUE  "820000118".
                05  MEDH20-23FL03    PIC X(01)    VALUE  "2".
@@ -415,19 +322,6 @@
                05  MEDH20-23FL08    PIC X(06)    VALUE  "２３　".
                05  MEDH20-23FL09    PIC X(100)   VALUE  
            "その他の難病（スモン及び２０〜２２までを除く。）".
-      *----------------------------------------------------------------
-               05  MEDH28-23FLS     PIC X(08)    VALUE  "20160401".
-               05  MEDH28-23FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH28-23FL01    PIC X(09)    VALUE  "820000071".
-               05  MEDH28-23FL02    PIC X(09)    VALUE  "820000231".
-               05  MEDH28-23FL03    PIC X(01)    VALUE  "2".
-               05  MEDH28-23FL04    PIC 9(03)    VALUE  0.
-               05  MEDH28-23FL05    PIC 9(01)    VALUE  1.
-               05  MEDH28-23FL06    PIC 9(04)    VALUE  2015.
-               05  MEDH28-23FL07    PIC X(02)    VALUE  "23".
-               05  MEDH28-23FL08    PIC X(06)    VALUE  "２３　".
-               05  MEDH28-23FL09    PIC X(100)   VALUE  
-           "その他の指定難病等（スモン、筋ジストロフィー等を除く）".
       *----------------------------------------------------------------
                05  MEDH20-24FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-24FLE     PIC X(08)    VALUE  "99999999".
@@ -479,7 +373,7 @@
                05  MEDH20-27FL07    PIC X(02)    VALUE  "27".
                05  MEDH20-27FL08    PIC X(06)    VALUE  "２７　".
                05  MEDH20-27FL09    PIC X(100)   VALUE  
-           "重度の肢体不自由児（者）等（障害者施設等入院基本料）等".
+         "注２：重度の肢体不自由児（者）等（障害者施設等入院基本料）等".
       *----------------------------------------------------------------
                05  MEDH20-28FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH20-28FLE     PIC X(08)    VALUE  "99999999".
@@ -613,8 +507,8 @@
       *----------------------------------------------------------------
                05  MEDH28-38FLS     PIC X(08)    VALUE  "20160401".
                05  MEDH28-38FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH28-38FL01    PIC X(09)    VALUE  "820000232".
-               05  MEDH28-38FL02    PIC X(09)    VALUE  "820000232".
+               05  MEDH28-38FL01    PIC X(09)    VALUE  "82900001".
+               05  MEDH28-38FL02    PIC X(09)    VALUE  "82900001".
                05  MEDH28-38FL03    PIC X(01)    VALUE  "2".
                05  MEDH28-38FL04    PIC 9(03)    VALUE 0.
                05  MEDH28-38FL05    PIC 9(01)    VALUE 0.
@@ -622,98 +516,7 @@
                05  MEDH28-38FL07    PIC X(02)    VALUE  "38".
                05  MEDH28-38FL08    PIC X(06)    VALUE  "３８　".
                05  MEDH28-38FL09    PIC X(100)   VALUE  
-           "酸素療法を実施（密度の高い治療を要する状態を除く）".
-      *----------------------------------------------------------------
-               05  MEDH30-39FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-39FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-39FL01    PIC X(09)    VALUE  "82xxxxxxx".
-               05  MEDH30-39FL02    PIC X(09)    VALUE  "82xxxxxxx".
-               05  MEDH30-39FL03    PIC X(01)    VALUE  "2".
-               05  MEDH30-39FL04    PIC 9(03)    VALUE 0.
-               05  MEDH30-39FL05    PIC 9(01)    VALUE 0.
-               05  MEDH30-39FL06    PIC 9(04)    VALUE  2039.
-               05  MEDH30-39FL07    PIC X(02)    VALUE  "39".
-               05  MEDH30-39FL08    PIC X(06)    VALUE  "３９　".
-               05  MEDH30-39FL09    PIC X(100)   VALUE  
-           "８６に該当、かつ、１〜３８（１２を除く。）に該当しない状態".
-      *----------------------------------------------------------------
-               05  MEDH30-81FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-81FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-81FL01    PIC X(09)    VALUE  "201804001".
-               05  MEDH30-81FL02    PIC X(09)    VALUE  "201804001".
-               05  MEDH30-81FL03    PIC X(01)    VALUE  "0".
-               05  MEDH30-81FL04    PIC 9(03)    VALUE  0.
-               05  MEDH30-81FL05    PIC 9(01)    VALUE  0.
-               05  MEDH30-81FL06    PIC 9(04)    VALUE  2081.
-               05  MEDH30-81FL07    PIC X(02)    VALUE  "81".
-               05  MEDH30-81FL08    PIC X(06)    VALUE  "８１　".
-               05  MEDH30-81FL09    PIC X(100)   VALUE  
-           "脱水に対する治療を実施している状態".
-      *----------------------------------------------------------------
-               05  MEDH30-82FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-82FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-82FL01    PIC X(09)    VALUE  "201804002".
-               05  MEDH30-82FL02    PIC X(09)    VALUE  "201804002".
-               05  MEDH30-82FL03    PIC X(01)    VALUE  "0".
-               05  MEDH30-82FL04    PIC 9(03)    VALUE  0.
-               05  MEDH30-82FL05    PIC 9(01)    VALUE  0.
-               05  MEDH30-82FL06    PIC 9(04)    VALUE  2082.
-               05  MEDH30-82FL07    PIC X(02)    VALUE  "82".
-               05  MEDH30-82FL08    PIC X(06)    VALUE  "８２　".
-               05  MEDH30-82FL09    PIC X(100)   VALUE  
-           "頻回の嘔吐に対する治療をしている状態".
-      *----------------------------------------------------------------
-               05  MEDH30-83FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-83FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-83FL01    PIC X(09)    VALUE  "201804003".
-               05  MEDH30-83FL02    PIC X(09)    VALUE  "201804003".
-               05  MEDH30-83FL03    PIC X(01)    VALUE  "0".
-               05  MEDH30-83FL04    PIC 9(03)    VALUE  0.
-               05  MEDH30-83FL05    PIC 9(01)    VALUE  0.
-               05  MEDH30-83FL06    PIC 9(04)    VALUE  2083.
-               05  MEDH30-83FL07    PIC X(02)    VALUE  "83".
-               05  MEDH30-83FL08    PIC X(06)    VALUE  "８３　".
-               05  MEDH30-83FL09    PIC X(100)   VALUE  
-           "発熱がある状態".
-      *----------------------------------------------------------------
-               05  MEDH30-84FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-84FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-84FL01    PIC X(09)    VALUE  "201804004".
-               05  MEDH30-84FL02    PIC X(09)    VALUE  "201804004".
-               05  MEDH30-84FL03    PIC X(01)    VALUE  "0".
-               05  MEDH30-84FL04    PIC 9(03)    VALUE  0.
-               05  MEDH30-84FL05    PIC 9(01)    VALUE  0.
-               05  MEDH30-84FL06    PIC 9(04)    VALUE  2084.
-               05  MEDH30-84FL07    PIC X(02)    VALUE  "84".
-               05  MEDH30-84FL08    PIC X(06)    VALUE  "８４　".
-               05  MEDH30-84FL09    PIC X(100)   VALUE  
-           "経鼻胃管や胃瘻等の経腸栄養が行われている状態".
-      *----------------------------------------------------------------
-               05  MEDH30-85FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-85FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-85FL01    PIC X(09)    VALUE  "201804005".
-               05  MEDH30-85FL02    PIC X(09)    VALUE  "201804005".
-               05  MEDH30-85FL03    PIC X(01)    VALUE  "0".
-               05  MEDH30-85FL04    PIC 9(03)    VALUE  0.
-               05  MEDH30-85FL05    PIC 9(01)    VALUE  0.
-               05  MEDH30-85FL06    PIC 9(04)    VALUE  2085.
-               05  MEDH30-85FL07    PIC X(02)    VALUE  "85".
-               05  MEDH30-85FL08    PIC X(06)    VALUE  "８５　".
-               05  MEDH30-85FL09    PIC X(100)   VALUE  
-           "気管切開又は気管内挿管が行われている状態".
-      *----------------------------------------------------------------
-               05  MEDH30-86FLS     PIC X(08)    VALUE  "20180401".
-               05  MEDH30-86FLE     PIC X(08)    VALUE  "99999999".
-               05  MEDH30-86FL01    PIC X(09)    VALUE  "201804006".
-               05  MEDH30-86FL02    PIC X(09)    VALUE  "201804006".
-               05  MEDH30-86FL03    PIC X(01)    VALUE  "0".
-               05  MEDH30-86FL04    PIC 9(03)    VALUE  0.
-               05  MEDH30-86FL05    PIC 9(01)    VALUE  0.
-               05  MEDH30-86FL06    PIC 9(04)    VALUE  2086.
-               05  MEDH30-86FL07    PIC X(02)    VALUE  "86".
-               05  MEDH30-86FL08    PIC X(06)    VALUE  "８６　".
-               05  MEDH30-86FL09    PIC X(100)   VALUE  
-         "医師及び看護職員により、常時、監視及び管理を実施している状態".
+           "酸素療法を実施している状態（１７を除く。）".
       *----------------------------------------------------------------
                05  MEDH22-91FLS     PIC X(08)    VALUE  "00000000".
                05  MEDH22-91FLE     PIC X(08)    VALUE  "20120331".
@@ -755,7 +558,7 @@
            "身体抑制を実施している".
       *----------------------------------------------------------------
            03  MEDH20-R    REDEFINES   MEDH20-VAL.
-               05  MEDH20-OCC          OCCURS  56.
+               05  MEDH20-OCC          OCCURS  41.
                    07  MEDH20-STYMD.
                        09  MEDH20-STYM PIC X(06).
                        09  MEDH20-STDD PIC 9(02).
@@ -770,4 +573,4 @@
                    07  MEDH20-ZAINUM   PIC 9(04).
                    07  MEDH20-ID       PIC X(02).
                    07  MEDH20-MEIL     PIC X(106).
-       01  MEDH20-MAX                  PIC 9(03)     VALUE  56.
+       01  MEDH20-MAX                  PIC 9(03)     VALUE  41.
