@@ -1729,7 +1729,8 @@
                COMPUTE WRK-SIP-SURYO2      =   WRK-COM-SURYO (IDX)
                                            /   WRK-COM-SIPRYO2(IDX)
            END-IF
-           IF      WRK-SIP-SURYO1      <=  WRK-SIP-SURYO2
+           IF     (WRK-SIP-SURYO1      <=  WRK-SIP-SURYO2)
+              OR  (WRK-SIP-SURYO2      =   ZERO     )
       *        ¹ÑÂÎÎÌ£±ÂÐ¾Ý
                MOVE    WRK-SIP-SURYO1      TO  WRK-SIP-SURYO
                MOVE    "1"                 TO  WRK-SIP-KBN

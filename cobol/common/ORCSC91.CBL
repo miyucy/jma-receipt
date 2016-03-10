@@ -346,7 +346,7 @@
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
       *01  TBL-MAX                     PIC 9(04)   VALUE   18.
       *01  TBL-MAX                     PIC 9(04)   VALUE   24.
-       01  TBL-MAX                     PIC 9(04)   VALUE   30.
+       01  TBL-MAX                     PIC 9(04)   VALUE   34.
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
