@@ -30,7 +30,7 @@
            03  SPA-GMN-TBL.
                05  SPA-GMN-TBLREC          OCCURS  400.
                    07  SPA-GMN-TBANGO      PIC 9(03).
-                   07  SPA-GMN-TMEISYO     PIC X(80).
+                   07  SPA-GMN-TMEISYO     PIC X(100).
                    07  SPA-GMN-TSURYO.
                        09  SPA-GMN-TSURYOU      PIC X(11).
                        09  SPA-GMN-TTANI1       PIC X(01).
@@ -42,8 +42,6 @@
                        09  SPA-GMN-TDAY    PIC X(03)
                                                    OCCURS  31.
                    07  SPA-GMN-TSRYCD      PIC X(09).
-      *            一般名称
-                   07  SPA-GMN-GENENAME        PIC X(80).
       *
            03  SPA-NAI-G.
                05  SPA-NAI-TBL.
@@ -108,6 +106,6 @@
                        09  SPA-NAI-NYUAUTO         PIC  9(01).
       *ver.4.7         院外処方点数
                        09  SPA-NAI-INGAITEN        PIC  9(07).
-      *H28.5           後発品変更不可（処方）あり
+      *H28.2           後発品変更不可（処方）あり
                        09  SPA-NAI-GENEFLG         PIC  X(01).
       *

@@ -45,8 +45,6 @@
       * 04.06.00     NACL-多々納  11/02/22  用法コメント対応
       * 04.07.00     NACL-多々納  12/11/02  薬剤毎のコメント対応
       * 04.07.00     NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
-      * 04.08.00     NACL-多々納  16/10/XX  用法コード服用時点対応
-      * 04.08.00     NACL-多々納  17/02/XX  自費コード薬剤対応
       *****************************************************************
       *
       *
@@ -84,7 +82,6 @@
            03  FLG-INNAI           PIC 9(01).
       *
            03  FLG-NO              PIC 9(01).
-           03  FLG-INPUTCHI        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -104,10 +101,6 @@
            03  IDX-ACT             PIC 9(02).
            03  IDX-REN             PIC 9(04).
            03  IDX-JYU             PIC 9(04).
-      *
-           03  IDX-SST             PIC 9(04).
-           03  IDXS                PIC 9(04).
-           03  IDXS2               PIC 9(04).
       *
            03  YOHO-MAX            PIC 9(04).
       *
@@ -136,34 +129,19 @@
                    07  TBL-YCOMMENT-OCC         OCCURS   20.
                        09  TBL-YCOMMENT             PIC X(09).
                        09  TBL-YINPUTCOMENT         PIC X(80).
-                       09  TBL-YCOM-CHK             PIC X(01).
-      *H28.10          服用数値
-                       09  TBL-YCOM-SURYO-G.
-                           11  TBL-YCOM-SURYO       PIC 9(05)V9(5)
-                                                    OCCURS  5.
                05  WRK-YSRYCD              PIC X(09).
                05  WRK-YSRYCD-NAME         PIC X(80).
-      *H28.10  服用数値
-               05  WRK-YSRYCD-SURYO-G.
-                   07  WRK-YSRYCD-SURYO     PIC 9(05)V9(5)
-                                                   OCCURS  5.
                05  WRK-YOHOU-G.
                    07  WRK-YOHOU-TBL       OCCURS  10.
                        09  WRK-YOHOU           PIC X(09).
                        09  WRK-YOHOU-NAME      PIC X(80).
                        09  WRK-YOHOU-KBN       PIC X(01).
-      *H28.10          服用数値
-                       09  WRK-YOHOU-SURYO-G.
-                           11  WRK-YOHOU-SURYO     PIC 9(05)V9(5)
-                                                   OCCURS  5.
       *        コメント
                05  TBL-COMMENT-G           OCCURS   20.
                    07  TBL-COMMENT             PIC X(09).
                    07  TBL-INPUTCOMENT         PIC X(80).
                    07  TBL-IDX-S               PIC 9(04).
                    07  TBL-IDXD                PIC 9(04).
-      *H28.10
-               05  TBL-CDCNT            PIC 9(04).
       *
            03  WRK-SRYNAME              PIC X(80).
       *
@@ -192,20 +170,6 @@
            03  WRK-DRCD            PIC X(05).
            03  WRK-HZN-DRCD        PIC X(05).
            03  WRK-WKSRY-DRCD      PIC X(05).
-      *H28.10
-           03  WRK-INPUTCHI-AREA.
-               05  WRK-INPUTCHI        PIC X(08)
-                                       OCCURS   5.
-           03  WRK-INPUTCHISURYO-AREA.
-               05  WRK-INPUTCHI-SURYO  PIC 9(5)V9(05)
-                                       OCCURS   5.
-           03  WRK-INPUTCHISURYO-AREA2.
-               05  WRK-INPUTCHI-SURYO2 PIC 9(5)V9(05)
-                                       OCCURS   5.
-      *
-           03  WRK-SSTKIJUNCD-AREA.
-               05  WRK-SSTKIJUNCD      PIC 9(04)
-                                       OCCURS 10.
       *
       *    剤内容テーブル
        01  TBL-SRYACT-GRP-AREA.
@@ -229,10 +193,6 @@
                05  TBL-SRY-INPUTNUM        PIC  9(03).
       *名称
                05  TBL-SRY-COM-NAME        PIC  X(80).
-      *用法数量
-               05  TBL-SRY-INPUTCHI-G.
-                   07  TBL-SRY-INPUTCHI    PIC X(08)
-                                           OCCURS   5.
       *
            03  TBL-SRY-MAX                 PIC 9(03).
       *
@@ -241,8 +201,6 @@
        01  CONS-TAZAI-SRYCD        PIC X(09)   VALUE    "630010005".
       * （精減）
        01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
-      * 湿布薬（減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -290,8 +248,6 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    数字変換領域
-           COPY    "CPORCSNUM.INC".
       *
       *    薬情報出力パラメタ
            COPY    "CPORCHC30.INC".
@@ -353,14 +309,10 @@
       *            UNTIL      IDX   >  ORCHC30-MAX
       *      DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
       *              ",ORCHC30-SURYO:" ORCHC30-SURYO (IDX)
+      *              ",ORCHC30-KANSURYO:" ORCHC30-KANSURYO (IDX)
+      *              ",ORCHC30-ZAIKBN:" ORCHC30-ZAIKBN (IDX)
       *              ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
-      *     DISPLAY "ORCHC30-INPUTSURYOU(1):"  ORCHC30-INPUTSURYOU
-      *                                                 (IDX 1)
-      *            ",(2):"  ORCHC30-INPUTSURYOU    (IDX 2)
-      *            ",(3):"  ORCHC30-INPUTSURYOU    (IDX 3)
-      *            ",(4):"  ORCHC30-INPUTSURYOU    (IDX 4)
-      *            ",(5):"  ORCHC30-INPUTSURYOU    (IDX 5)
-      *     DISPLAY  "ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
+      *              ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
       *              ",2:" ORCHC30-YOURYOU (IDX 2)
       *              ",3:" ORCHC30-YOURYOU (IDX 3)
       *              ",4:" ORCHC30-YOURYOU (IDX 4)
@@ -370,7 +322,6 @@
       *              ",CD:" ORCHC30-YOHOU (IDX 1)
       *      DISPLAY "ORCHC30-COMMENT1:"  ORCHC30-COMMENT-CD (IDX 1)
       *                 "," ORCHC30-COMMENT-MEI (IDX 1)
-      *                 "," ORCHC30-COMHENKBN (IDX 1)
       *      IF      ORCHC30-COMMENT-CD (IDX 2) NOT =   SPACE
       *      DISPLAY "ORCHC30-COMMENT2:"  ORCHC30-COMMENT-CD (IDX 2)
       *                 "," ORCHC30-COMMENT-MEI (IDX 2)
@@ -429,21 +380,6 @@
       *    印刷処理
       *****************************************************************
        300-HC30-PRINT-SEC             SECTION.
-      *
-      *H29.6
-      *HAORI対応
-           IF      SPA-API-FLG         =   1
-      *        ドクター変更
-               MOVE    SPA-DRCD            TO  WRK-HZN-DRCD
-               IF      WRK-DRCD        NOT =   SPACE
-                   MOVE    WRK-DRCD            TO  SPA-DRCD
-               END-IF
-               CALL    "ORCHC30"           USING
-                                           SPA-AREA
-                                           ORCHC30AREA
-               MOVE    WRK-HZN-DRCD        TO  SPA-DRCD
-               GO      TO      300-HC30-PRINT-EXT
-           END-IF
       *
       *    薬情報出力
            INITIALIZE                      ORCSPRTNMAREA
@@ -720,9 +656,6 @@
                                        OR  "21"
                                        OR  "22"
                                        OR  "23"
-      *H29.02
-                                       OR  "95"
-                                       OR  "96"
                MOVE    SRYACT-REC          TO  HZN-SRYACT-REC
                PERFORM
                    UNTIL   FLG-SRYACT      =   1
@@ -731,7 +664,7 @@
                                       (SRY-SRYCD (IDXA)   =   SPACE)
       *H26.10
                        MOVE    ZERO                TO  FLG-NO
-                       IF     (SRY-SRYCD (IDXA)(1:1)      =   "6")
+                       IF      SRY-SRYCD (IDXA)(1:1)      =   "6"
       *                    点数マスタを検索
                            MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
@@ -742,29 +675,12 @@
                                MOVE    1               TO  FLG-OK
                            END-IF
                        END-IF
-      *H29.2           自費薬剤のみ対象
-                       IF      SRY-SRYKBN          =   "95"
-                                                   OR  "96"
-                           IF     (SRY-SRYCD (IDXA)(1:3)   =   "095"
-                                                           OR  "096")
-      *                        点数マスタを検索
-                               MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
-                               PERFORM 910-TENSU-READ-SEC
-                               IF      TNS-YKZKBN          =   ZERO
-                                   MOVE    1               TO  FLG-NO
-                               ELSE
-                                   MOVE    1               TO  FLG-OK
-                               END-IF
-                           END-IF
-                       END-IF
-      *
                        IF     (SRY-SRYCD (IDXA)    =   "630010002"
                                                    OR  "630010004"
       *H25.4               （減）対象外
                                                    OR  "820000047"
       *H26.10               (精減）
-                                                   OR  CONS-SGEN-SRYCD
-                                                   OR  CONS-SPCM-SRYCD)
+                                                   OR  CONS-SGEN-SRYCD)
                        OR     (FLG-NO              =   1           )
                            CONTINUE
                        ELSE
@@ -930,17 +846,6 @@
                    END-IF
                END-IF
            END-IF
-      *H29.2
-      *    自費は院内とする
-           IF      WRK-SRYKBN          =   "95"
-                                       OR  "96"
-      *        院内
-               IF      FLG-INNAI           =   1
-                   MOVE    1               TO  FLG-HEN
-               ELSE
-                   MOVE    ZERO            TO  FLG-HEN
-               END-IF
-           END-IF
       *
            MOVE    SPACE               TO  WRK-TBL-AREA
            INITIALIZE                      WRK-TBL-AREA
@@ -974,9 +879,7 @@
        20022-TBLSET-SEC         SECTION.
       *
       *    薬剤編集
-           IF     (TBL-SRY-SRYCD (IDXA)(1:1)   =   "6")
-             OR   (TBL-SRY-SRYCD (IDXA)(1:3)   =   "095"
-                                               OR  "096") 
+           IF      TBL-SRY-SRYCD (IDXA)(1:1)   =   "6"
                ADD     1               TO  IDX-S
                IF      IDX-S           >   99
                    DISPLAY "ORCSHC30 TBL OVER !!"
@@ -995,11 +898,7 @@
            END-IF
       *    用法編集
            IF      TBL-SRY-SRYCD (IDXA)(1:3)   =   "001"
-      *H28.10
-               ADD     1                   TO  TBL-CDCNT
-      *
                MOVE    ZERO                TO  FLG-YSET
-               INITIALIZE                  WRK-INPUTCHISURYO-AREA
       *        点数マスタを検索して、用法時点を判定する
                MOVE    TBL-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
@@ -1010,17 +909,9 @@
                    IF     (TBL-SRY-INPUTNUM (IDXA) NOT =   ZERO )
                        PERFORM 200221-PTCOM-HEN-SEC
                        MOVE    PTCOM-INPUTCOMENT       TO  WRK-SRYNAME
-      *H28.10          埋め込み数値変換
-                       MOVE    PTCOM-INPUTCHI-AREA
-                                                   TO  WRK-INPUTCHI-AREA
-                       PERFORM 200221-PTCOM-INPUTCHI-SEC
                    ELSE
                        MOVE    TBL-SRY-COM-NAME (IDXA)
                                                        TO  WRK-SRYNAME
-      *H28.10          埋め込み数値変換
-                       MOVE    TBL-SRY-INPUTCHI-G (IDXA)
-                                                   TO  WRK-INPUTCHI-AREA
-                       PERFORM 200221-PTCOM-INPUTCHI-SEC
                    END-IF
       *
                    IF    ((TNS-SSTKIJUNCD(1)   =   ZERO )  AND
@@ -1039,10 +930,6 @@
                        MOVE    WRK-SRYNAME         TO  WRK-YOHOU-NAME
                                                                (IDXY)
                        MOVE    FLG-YSET            TO  WRK-YOHOU-KBN
-                                                               (IDXY)
-      *H28.10          埋め込み数量
-                       MOVE    WRK-INPUTCHISURYO-AREA
-                                                   TO  WRK-YOHOU-SURYO-G
                                                                (IDXY)
                    END-IF
                END-IF
@@ -1080,8 +967,6 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
-      *H28.10
-               ADD     1                   TO  TBL-CDCNT
       *ver.4.7
                IF     (IDX-S                   >   ZERO  )
                  AND  (IDXD                    <   20    )
@@ -1135,21 +1020,8 @@
                    PERFORM 200221-PTCOM-HEN-SEC
                    MOVE    PTCOM-INPUTCOMENT   TO  TBL-YINPUTCOMENT
                                                        (IDX-S IDXD)
-      *H28.10      埋め込み数値変換
-                   MOVE    PTCOM-INPUTCHI-AREA TO  WRK-INPUTCHI-AREA
-                   PERFORM 200221-PTCOM-INPUTCHI-SEC
-                   MOVE    WRK-INPUTCHISURYO-AREA
-                                               TO  TBL-YCOM-SURYO-G
-                                                       (IDX-S IDXD)
                ELSE
                    MOVE    TBL-SRY-COM-NAME (IDXA) TO  TBL-YINPUTCOMENT
-                                                       (IDX-S IDXD)
-      *H28.10      埋め込み数値変換
-                   MOVE    TBL-SRY-INPUTCHI-G (IDXA)
-                                                   TO  WRK-INPUTCHI-AREA
-                   PERFORM 200221-PTCOM-INPUTCHI-SEC
-                   MOVE    WRK-INPUTCHISURYO-AREA
-                                               TO  TBL-YCOM-SURYO-G
                                                        (IDX-S IDXD)
                END-IF
            END-IF
@@ -1176,77 +1048,12 @@
            EXIT.
       *
       *****************************************************************
-      *    コメントテーブル埋め込み数値変換編集処理
-      *****************************************************************
-       200221-PTCOM-INPUTCHI-SEC         SECTION.
-      *
-           INITIALIZE                  WRK-SSTKIJUNCD-AREA
-           MOVE    1                   TO  IDXS
-      *    起床(5)を先頭へ移動する
-           PERFORM VARYING IDX-SST     FROM    1   BY  1
-                   UNTIL   IDX-SST     >   5
-               IF      IDX-SST             <   5
-                   ADD     1               TO  IDXS
-               ELSE
-                   MOVE    1               TO  IDXS
-               END-IF
-               MOVE    TNS-SSTKIJUNCD (IDX-SST)
-                                       TO  WRK-SSTKIJUNCD (IDXS)
-           END-PERFORM
-      *
-           MOVE    ZERO                TO  IDXS
-           INITIALIZE                  WRK-INPUTCHISURYO-AREA
-      *
-           PERFORM VARYING IDX-SST     FROM    1   BY  1
-                   UNTIL   IDX-SST     >   5
-              IF      WRK-SSTKIJUNCD (IDX-SST) NOT =   ZERO
-                   ADD     1                   TO  IDXS
-      *            数値変換
-                   INITIALIZE                      ORCSNUMAREA
-                   MOVE    WRK-INPUTCHI (IDXS)
-                                               TO  SNUM-INX
-                   CALL    "ORCSNUM"           USING
-                                               ORCSNUMAREA
-                   IF     (SNUM-RC         NOT =   ZERO  )   OR
-                          (SNUM-MINKBN     NOT =   SPACE ) 
-                       MOVE    ZERO            TO  WRK-INPUTCHI-SURYO
-                                                        (IDX-SST)
-                   ELSE
-                       MOVE    SNUM-OUTNUM     TO  WRK-INPUTCHI-SURYO
-                                                        (IDX-SST)
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-      *    起床を（５）へ
-           INITIALIZE                  WRK-INPUTCHISURYO-AREA2
-           MOVE    ZERO                TO  IDXS
-           PERFORM VARYING IDX-SST     FROM    1   BY  1
-                   UNTIL   IDX-SST     >   5
-               IF      IDX-SST             =   1
-                   MOVE    5               TO  IDXS
-               ELSE
-                   ADD     1               TO  IDXS
-               END-IF
-               MOVE    WRK-INPUTCHI-SURYO (IDX-SST)
-                                       TO  WRK-INPUTCHI-SURYO2 (IDXS)
-               IF      IDXS            =   5
-                   MOVE    ZERO            TO  IDXS
-               END-IF
-           END-PERFORM
-           MOVE    WRK-INPUTCHISURYO-AREA2 TO  WRK-INPUTCHISURYO-AREA
-           .
-       200221-PTCOM-INPUTCHI-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    薬情報パラメタ編集処理
       *****************************************************************
        2003-HC30TBL-SET-SEC         SECTION.
       *
       *    用法は最後の用法コードとする
            MOVE    ZERO                TO  IDXY2
-           MOVE    ZERO                TO  WRK-YSRYCD-SURYO-G
            PERFORM VARYING     IDXY    FROM    10  BY  -1
                    UNTIL      (IDXY        <   1      )
                IF     (WRK-YOHOU(IDXY)     NOT =   SPACE )
@@ -1254,9 +1061,6 @@
                    MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
                    MOVE    WRK-YOHOU-NAME(IDXY)
                                                TO  WRK-YSRYCD-NAME
-      *H28.10      服用数値
-                   MOVE    WRK-YOHOU-SURYO-G (IDXY)
-                                               TO  WRK-YSRYCD-SURYO-G
                    MOVE    SPACE               TO  WRK-YOHOU(IDXY)
                    MOVE    1                   TO  IDXY
                ELSE
@@ -1316,31 +1120,6 @@
                MOVE    WRK-KAISU           TO  ORCHC30-KAISU (IDY)
                MOVE    WRK-YSRYCD          TO  ORCHC30-YSRYCD(IDY)
                MOVE    WRK-YSRYCD-NAME     TO  ORCHC30-YSRYCD-NAME(IDY)
-      *H28.10
-      *        用法コードの数量
-               MOVE    ZERO                TO  FLG-INPUTCHI
-               PERFORM VARYING     IDXC2   FROM    1   BY  1
-                       UNTIL      (IDXC2       >   10   )
-                              OR  (FLG-INPUTCHI    =   1  )
-                   IF     (TBL-YCOMMENT (IDX IDXC2)(1:3)   =   "001")
-                    AND   (TBL-YCOM-SURYO-G (IDX IDXC2)
-                                                       NOT =   ZERO)
-                        MOVE    TBL-YCOM-SURYO-G (IDX IDXC2)
-                                           TO  ORCHC30-INPUTSURYOU-TBL
-                                                              (IDY)
-                        MOVE    1          TO  FLG-INPUTCHI
-                        MOVE    "1"        TO  TBL-YCOM-CHK (IDX IDXC2)
-                        MOVE    10         TO  IDXC2
-                   END-IF
-               END-PERFORM
-               IF     (TBL-CDCNT           =   1     )
-                 AND  (FLG-INPUTCHI        =   ZERO  )
-                 AND  (WRK-YSRYCD      NOT =   SPACE )
-      *            用法レコードが１件のみの時、数量を全部編集
-                   MOVE    WRK-YSRYCD-SURYO-G
-                                           TO  ORCHC30-INPUTSURYOU-TBL
-                                                              (IDY)
-               END-IF
       *
                MOVE    ZERO                TO  IDXY2
                PERFORM VARYING     IDXY    FROM    1   BY  1
@@ -1368,9 +1147,6 @@
                                                             (IDY IDXD)
                    MOVE    TBL-YINPUTCOMENT (IDX IDXC2)
                                                TO  ORCHC30-COMMENT-MEI
-                                                            (IDY IDXD)
-                   MOVE    TBL-YCOM-CHK (IDX IDXC2)
-                                               TO  ORCHC30-COMHENKBN
                                                             (IDY IDXD)
                  END-IF
                END-PERFORM
@@ -1403,10 +1179,6 @@
       *            在宅
                    WHEN    "14"
                        MOVE    "4"         TO  ORCHC30-ZAIKBN(IDY)
-      *H29.2       自費
-                   WHEN    "95"
-                   WHEN    "96"
-                       MOVE    "9"         TO  ORCHC30-ZAIKBN(IDY)
                END-EVALUATE
            END-PERFORM
       *
@@ -1477,10 +1249,7 @@
                IF     (WKSRY-SRYKBN        =   "21"  OR
                                                "22"  OR
                                                "23"  OR
-                                               "14"
-      *H29.2
-                                           OR  "95"
-                                           OR  "96"    )
+                                               "14"    )
       *            包括保険は対象外
                    IF    ((WRK-HKNCOMBINUM     =   "9999")
                    AND    (FLG-YKJOKUKBN       =   ZERO  ) )
@@ -1544,37 +1313,13 @@
                MOVE    ZERO            TO  FLG-NO
                IF     (WKSRY-SRYCD (IDXA)(1:1) =   "6" )
       *            点数マスタを検索
-                   MOVE    WKSRY-SRYCD (IDXA)   TO  TNS-SRYCD
+                   MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
                    IF      TNS-TENSIKIBETU     =   7
       *                減点は対象外
                        MOVE    1               TO  FLG-NO
                    END-IF
                END-IF
-      *H29.2
-      *        自費コード
-               IF     WKSRY-SRYKBN         =   "95"
-                                           OR  "96"
-                   IF    (WKSRY-SRYCD (IDXA)(1:3) =   "095"
-                                                  OR  "096" )
-      *                点数マスタを検索
-                       MOVE    WKSRY-SRYCD (IDXA)  TO  TNS-SRYCD
-                       PERFORM 910-TENSU-READ-SEC
-                       IF      TNS-YKZKBN          =   ZERO
-      *                    対象外
-                           MOVE    1               TO  FLG-NO
-                       END-IF
-                   END-IF
-      *            薬剤・用法・コメントのみ対象
-                   IF     (WKSRY-SRYCD (IDXA)(1:1) =   "6"
-                                                   OR  "0"
-                                                   OR  "8" )
-                       CONTINUE
-                   ELSE
-                       MOVE    1               TO  FLG-NO
-                   END-IF
-               END-IF
-      *
                IF     (WKSRY-SRYCD (IDXA)      =   "630010002" )
                  OR   (WKSRY-SRYCD (IDXA)(1:4)     =   "0086" )
       *          （減）は対象外
@@ -1605,12 +1350,6 @@
                        MOVE    WKSRY-INPUTCOMENT (IDXA)
                                                TO  TBL-SRY-COM-NAME
                                                            (IDX)
-      *H28.10          数量
-                       IF      WKSRY-SRYCD (IDXA)(1:3) =    "001"
-                           MOVE    WKSRY-INPUTCHI-G (IDXA)
-                                               TO  TBL-SRY-INPUTCHI-G
-                                                           (IDX)
-                       END-IF
                    END-IF
                    MOVE    IDX                 TO  TBL-SRY-MAX
                END-IF
@@ -1618,14 +1357,6 @@
            IF      WKSRY-ZAIKAIKEI     >   ZERO
                MOVE    WKSRY-ZAITENKEI     TO  TBL-ACCT-ZAITEN
                MOVE    WKSRY-ZAIKAIKEI     TO  TBL-ACCT-KAISU
-           END-IF
-      *H29.2
-      *    自費
-           IF     (WKSRY-SRYKBN        =   "95"
-                                       OR  "96" )
-             AND  (WKSRY-JIHIMONEYTOTAL    >   ZERO )
-               MOVE    WKSRY-JIHIMONEYTOTAL    TO  TBL-ACCT-ZAITEN
-               MOVE    WKSRY-ZAIKAIKEI         TO  TBL-ACCT-KAISU
            END-IF
       *
            .
@@ -1675,10 +1406,7 @@
        3001-TBLSET-SEC         SECTION.
       *
       *    薬剤編集
-           IF     (ORCSCH30-SRYCD(IDT IDXA)(1:1)   =   "6" )
-      *H29.2
-             OR   (ORCSCH30-SRYCD(IDT IDXA)(1:3)   =   "095"
-                                                   OR  "096")
+           IF      ORCSCH30-SRYCD(IDT IDXA)(1:1)   =   "6"
                ADD     1               TO  IDX-S
                IF      IDX-S           >   99
                    DISPLAY "ORCSHC30 TBL OVER !!"
@@ -1699,8 +1427,6 @@
            END-IF
       *    用法編集
            IF      ORCSCH30-SRYCD(IDT IDXA)(1:3)   =   "001"
-      *H28.10
-               ADD     1                   TO  TBL-CDCNT
                MOVE    ZERO                TO  FLG-YSET
       *        点数マスタを検索して、用法時点を判定する
                MOVE    ORCSCH30-SRYCD(IDT IDXA)    TO  TNS-SRYCD
@@ -1726,13 +1452,6 @@
                                                    TO  WRK-YOHOU-NAME
                                                                (IDXY)
                        MOVE    FLG-YSET            TO  WRK-YOHOU-KBN
-                                                               (IDXY)
-      *H28.10          埋め込み数値変換
-                       MOVE    ORCSCH30-INPUTCHI-AREA(IDT IDXA)
-                                                   TO  WRK-INPUTCHI-AREA
-                       PERFORM 200221-PTCOM-INPUTCHI-SEC
-                       MOVE    WRK-INPUTCHISURYO-AREA
-                                                   TO  WRK-YOHOU-SURYO-G
                                                                (IDXY)
                    END-IF
                END-IF
@@ -1772,8 +1491,6 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
-      *H28.10
-               ADD     1                   TO  TBL-CDCNT
       *ver.4.7
                IF     (IDX-S                   >   ZERO  )
                  AND  (IDXD                    <   20    )
@@ -1817,12 +1534,6 @@
                                                        (IDX-S IDXD)
                MOVE    ORCSCH30-INPUTCOMENT(IDT IDXA)
                                                TO  TBL-YINPUTCOMENT
-                                                       (IDX-S IDXD)
-      *H28.10  埋め込み数値変換
-               MOVE    ORCSCH30-INPUTCHI-AREA(IDT IDXA)
-                                               TO  WRK-INPUTCHI-AREA
-               PERFORM 200221-PTCOM-INPUTCHI-SEC
-               MOVE    WRK-INPUTCHISURYO-AREA  TO  TBL-YCOM-SURYO-G
                                                        (IDX-S IDXD)
            END-IF
       *

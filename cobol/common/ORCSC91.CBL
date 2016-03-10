@@ -50,7 +50,6 @@
       *                                     ·ÑÂ³½é²óÆþ±¡ÆüÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  13/02/XX  Ï«ºÒ¥ì¥»ÅÅ¥³¡¼¥ÉÂÐ±þ(H25.7)
       *  04.07.00    NACL-Â¿¡¹Ç¼  13/07/14  Â¾·î¿ô¡¡£¶£°¡Ê£µÇ¯¡ËÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  18/03/XX  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -306,60 +305,21 @@
       *    ¿Í¹©¿ÕÂ¡¡Ê¤½¤ÎÂ¾¡Ë
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140007710".
-      *    ¿Í¹©¿ÕÂ¡¡Ê£´»þ´ÖÌ¤Ëþ¡Ë¡ÊH30.3¡¡¤Þ¤Ç¡Ë
+      *    ¿Í¹©¿ÕÂ¡¡Ê£´»þ´ÖÌ¤Ëþ¡Ë
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140036710".
-      *    ¿Í¹©¿ÕÂ¡¡Ê£´»þ´Ö°Ê¾å¤«¤é£µ»þ´ÖÌ¤Ëþ¡Ë¡ÊH30.3¡¡¤Þ¤Ç¡Ë
+      *    ¿Í¹©¿ÕÂ¡¡Ê£´»þ´Ö°Ê¾å¤«¤é£µ»þ´ÖÌ¤Ëþ¡Ë
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140051010".
-      *    ¿Í¹©¿ÕÂ¡¡Ê£µ»þ´Ö°Ê¾å¡Ë¡ÊH30.3¡¡¤Þ¤Ç¡Ë
+      *    ¿Í¹©¿ÕÂ¡¡Ê£µ»þ´Ö°Ê¾å¡Ë
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140051110".
       *    »ýÂ³´Ë½ù¼°·ì±ÕßÉ²á
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140029850".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏßÉ²á¡Ë¡ÊH30.3¡¡¤Þ¤Ç¡Ë
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏßÉ²á¡Ë
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140052810".
-      *
-      *£È£³£°¡¥£´¡¡¿Í¹©¿ÕÂ¡¤ÎÄÉ²Ã
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ê£´»þ´ÖÌ¤Ëþ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140057810".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140057910".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ê£µ»þ´Ö°Ê¾å¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058010".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£²¡Ê£´»þ´ÖÌ¤Ëþ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058110".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£²¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058210".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£²¡Ê£µ»þ´Ö°Ê¾å¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058310".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£³¡Ê£´»þ´ÖÌ¤Ëþ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058410".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£³¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058510".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£³¡Ê£µ»þ´Ö°Ê¾å¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058610".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ê£´»þ´ÖÌ¤Ëþ¡Ë¡Ê·Ð²áÁ¼ÃÖ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140059310".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë¡Ê·Ð²áÁ¼ÃÖ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140059410".
-      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ê£µ»þ´Ö°Ê¾å¡Ë¡Ê·Ð²áÁ¼ÃÖ¡Ë
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140059510".
-      *
       *
       *    ·ÑÂ³´ÉÍý²Ã»»¡Ê°ìÈÌ¡Ë
            03  FILLER                  PIC X(04)   VALUE   "006".
@@ -379,17 +339,14 @@
       *****03  TBL-DOUJI-OCC           OCCURS   9   INDEXED   TBL-IDX.
       *****03  TBL-DOUJI-OCC           OCCURS   13  INDEXED   TBL-IDX.
       **** 03  TBL-DOUJI-OCC           OCCURS   24  INDEXED   TBL-IDX.
-      *****03  TBL-DOUJI-OCC           OCCURS   34  INDEXED   TBL-IDX.
-      *H30.4
-           03  TBL-DOUJI-OCC           OCCURS   46  INDEXED   TBL-IDX.
+           03  TBL-DOUJI-OCC           OCCURS   34  INDEXED   TBL-IDX.
                05  TBL-CODE                PIC X(03).
                05  TBL-CHK                 PIC X(01).
                05  TBL-SRYCD               PIC X(09).
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
       *01  TBL-MAX                     PIC 9(04)   VALUE   18.
       *01  TBL-MAX                     PIC 9(04)   VALUE   24.
-      *01  TBL-MAX                     PIC 9(04)   VALUE   34.
-       01  TBL-MAX                     PIC 9(04)   VALUE   46.
+       01  TBL-MAX                     PIC 9(04)   VALUE   34.
       *
       *    ÊÝ¸±ÊÌ»»ÄêÍúÎò¥Æ¡¼¥Ö¥ë
            COPY   "CMSANTEITBL.INC".
@@ -519,14 +476,6 @@
                   AND (TNS-CDKBN-KBNNUM        =   "001"
                                                OR  "002"   )
                   AND (TNS-CDKBN-KBNNUM-EDA    =   "00"    )
-                   MOVE    1               TO  FLG-RIHA-OK
-               END-IF
-      *    H28.4 ÇÑÍÑ¾É¸õ·²
-               IF     (SPA-SRYYMD              >=  "20160401")
-                  AND (FLG-RIHA-OK             =   ZERO    )
-                  AND (TNS-CDKBN-KBN           =   "H"     )
-                  AND (TNS-CDKBN-KBNNUM        =   "001"   )
-                  AND (TNS-CDKBN-KBNNUM-EDA    =   "02"    )
                    MOVE    1               TO  FLG-RIHA-OK
                END-IF
       *
@@ -675,9 +624,6 @@
       *     (COPY ¤ËÄÉ²Ã¤¹¤ë¤Î¤Ï¡¢¥Ñ¥Ã¥±¡¼¥¸ÂÐ±þ¤Ç¡Ë
            IF      WRK-SRYCD           =   "099800181"
                                        OR  "099800182"
-      *H28.4
-             OR  (WRK-SRYCD(1:7)       =   "0998002"   )
-      *        Áá´ü¡¦½é´ü¥ê¥Ï³«»ÏÆü¡¦½ªÎ»Æü
       *        ¤¬¤ó´µ¼Ô¥ê¥Ï³«»ÏÆü¡¦½ªÎ»Æü
                MOVE    1               TO  FLG-HKNSAN
                MOVE    SPACE           TO  WRK-RIGAKU-RYO

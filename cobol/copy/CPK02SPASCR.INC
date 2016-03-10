@@ -96,9 +96,9 @@
       *                自費明細金額
                        09  SPA-COM-JIHIMONEY     PIC 9(07).
       *                点数
-                       09  SPA-COM-TEN           PIC 9(08)V9(4).
+                       09  SPA-COM-TEN           PIC 9(08)V99.
       *                点数（きざみ値計算後）
-                       09  SPA-COM-KISOTEN       PIC 9(08)V9(4).
+                       09  SPA-COM-KISOTEN       PIC 9(08)V99.
                        09  SPA-COM-KAISU         PIC 9(03).
                        09  SPA-COM-KEI           PIC 9(08).
       *                外用薬用入力用
@@ -184,16 +184,11 @@
                            11  SPA-COM-KZMFLG5       PIC X(01).
       *ver.4.7             処方せん料警告２
                            11  SPA-COM-KZMFLG6       PIC X(01).
-      *                    警告（湿布薬警告）
+      *                    警告（予備）
                            11  SPA-COM-KZMFLG7       PIC X(01).
-      *                    警告（リハビリ減点）
                            11  SPA-COM-KZMFLG8       PIC X(01).
-      *                    警告（包括算定入力警告(H29.9）
-                           11  SPA-COM-KZMFLG9       PIC X(01).
       *                    入院料併用警告
                            11  SPA-COM-KZMFLGNK      PIC X(01).
-      *                    翌月入院料なし警告
-                           11  SPA-COM-KZMFLGN2      PIC X(01).
       *
       *                自動発生済フラグ
                        09  SPA-COM-AUTOFLG           PIC X(01).
@@ -338,14 +333,12 @@
       *                検査用　区分番号
                        09  SPA-COM-CDKBN.
                            11  SPA-COM-CDKBN-KBN   PIC  X(01).
-      ****                 11  SPA-COM-CDKBN-SYO   PIC  X(01).
-      ****                 11  SPA-COM-CDKBN-BU    PIC  X(02).
+                           11  SPA-COM-CDKBN-SYO   PIC  X(01).
+                           11  SPA-COM-CDKBN-BU    PIC  X(02).
       *                    労災用　区分番号
                            11  SPA-COM-CDKBN-KBNNUM     PIC  X(03).
       *                    労災用　区分番号枝番
-                           11  SPA-COM-CDKBN-KBNNUM-EDA PIC  X(02).
-      *H28.9               項番
-                           11  SPA-COM-CDKBN-KOUBAN     PIC  X(02).
+                           11  SPA-COM-CDKBN-KBNNUM-EDA   PIC  X(02).
       *                算定履歴区分
                        09  SPA-COM-SANTEIRRKKBN    PIC  9(01).
       *                外来管理加算区分
@@ -430,7 +423,7 @@
       *                一般名記載区分（１：一般名）
                        09  SPA-COM-IPN-KISAIKBN        PIC  9(01).
       *                最低薬価
-                       09  SPA-COM-GEN-PRICE           PIC  9(09)V9(4).
+                       09  SPA-COM-GEN-PRICE           PIC  9(09)V99.
       *                薬価基準コード
                        09  SPA-COM-YAKKAKJNCD          PIC  X(12).
       *H28.4 改正分
@@ -444,22 +437,10 @@
       *                湿布薬減算有
                        09  SPA-COM-SIPGEN          PIC X(01).
                        09  SPA-COM-SIPKBN          PIC X(01).
-      *                湿布減対象剤
-                       09  SPA-COM-SIPZAI          PIC X(01).
-      *
       *                労災　算定不可
                        09  SPA-COM-ROSAIKBN        PIC  X(01).
       *                労災　四肢加算
                        09  SPA-COM-SISIKSN         PIC  X(01).
-      *                非侵襲的血行動態モニタリング加算
-                       09  SPA-COM-HISINKSN        PIC  X(01).
-      *                凍結保存同種組織加算
-                       09  SPA-COM-TOUKETUHOZONKSN PIC  X(01).
-      *H30.4
-      *                悪性腫瘍病理組織標本加算
-                       09  SPA-COM-AKUSEIBYORIKSN  PIC  X(01).
-      *H29.1           ユーザー管理区分
-                       09  SPA-COM-MASTER-CLASS    PIC  X(01).
       *
       *    点数マスタ付加情報より
       *                採血区分
@@ -507,12 +488,6 @@
                        09  SPA-COM-IPN-NAME            PIC X(100).
                        09  SPA-COM-IPN-TANINAME        PIC X(02).
                        09  SPA-COM-MEI-KBN             PIC X(01).
-      *H28.5           一般名記載区分
-                       09  SPA-COM-TNSP-KISAIKBN       PIC X(01).
-      *                向精神薬区分
-                       09  SPA-COM-PSY-CLASS           PIC X(01).
-      *H28.9           持参薬剤区分
-                       09  SPA-COM-JISANYAKU           PIC X(01).
       *ver.4.7 から予備
                        09  SPA-COM-YOBI1               PIC X(10).
                        09  SPA-COM-YOBI2               PIC X(10).
