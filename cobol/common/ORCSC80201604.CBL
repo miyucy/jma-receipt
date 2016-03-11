@@ -1870,9 +1870,10 @@
                MOVE    "8047"              TO  WRK-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
                MOVE    WRK-KYUSEI-30-MSG   TO  LNK-ORCSC-ERRMSG
+      *H28.4  ¤¹¤Ù¤Æ·Ù¹ð¤È¤¹¤ë
       *        Ï«ºÒ¤Ï·Ù¹ð¤È¤¹¤ë
-               IF     (SPA-HKNKBN          =   1   )
-                 AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *??      IF     (SPA-HKNKBN          =   1   )
+      *??        AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                    IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
                    AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
                        MOVE    "K845"          TO  WRK-ERRCD
@@ -1884,7 +1885,7 @@
                        MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
                        MOVE    SPACE           TO  WRK-COM-CUR(IDX-Z)
                    END-IF
-               END-IF
+      *??      END-IF
            END-IF
            .
        200111-RIHAKSN-CHK02-EXT.
@@ -1958,9 +1959,11 @@
                MOVE    "8070"              TO  WRK-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
                MOVE    WRK-KYUSEI-14-MSG   TO  LNK-ORCSC-ERRMSG
+      *H28.4  ¤¹¤Ù¤Æ·Ù¹ð¤È¤¹¤ë
       *        Ï«ºÒ¤Ï·Ù¹ð¤È¤¹¤ë
-               IF     (SPA-HKNKBN          =   1   )
-                 AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *??      IF    ((SPA-HKNKBN          =   1   )
+      *??        AND  (SPA-RSI-JUNKYO  NOT =   "1" ) )
+      *
                    IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
                    AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
                        MOVE    "K870"          TO  WRK-ERRCD
@@ -1972,7 +1975,7 @@
                        MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
                        MOVE    SPACE           TO  WRK-COM-CUR (IDX-Z)
                    END-IF
-               END-IF
+      *??      END-IF
            END-IF
            .
        200111-SYOKIKSN-CHK02-EXT.
