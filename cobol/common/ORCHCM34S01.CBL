@@ -3743,8 +3743,13 @@
                            PERFORM 2001111-SKJ-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN    2
-                       PERFORM 2001111-SKJ-RYOYO1-SET-SEC
-                       PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
+                       EVALUATE    WRK-SHOKUJIRYOYO
+                       WHEN    1
+                           PERFORM 2001111-SKJ-RYOYO1-SET-SEC
+                           PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
+                       WHEN    2
+                           PERFORM 2001111-SKJ-RYOYO2-SET-SEC
+                       END-EVALUATE
                    WHEN    3
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
@@ -4182,7 +4187,7 @@
                EVALUATE    FLG-SKJZAIPTN
                WHEN    ZERO
       *
-                   IF    ( NACCT-DAY (IDXD)    =   1  OR 2 )
+                   IF    ( NACCT-DAY (IDXD)    =   1  OR 2 OR 3)
                        EVALUATE    WRK-SKJCOMMENTCD
                        WHEN    CONST-SKJ-ASA
                            PERFORM 2001111-SKJ-ASA-SET-SEC
@@ -4204,8 +4209,13 @@
                            PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN    2
-                       PERFORM 2001111-LIFE-RYOYO1-SET-SEC
-                       PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
+                       EVALUATE    WRK-SHOKUJIRYOYO
+                       WHEN    1
+                           PERFORM 2001111-LIFE-RYOYO1-SET-SEC
+                           PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
+                       WHEN    2
+                           PERFORM 2001111-LIFE-RYOYO2-SET-SEC
+                       END-EVALUATE
                    WHEN    3
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
@@ -4549,7 +4559,7 @@
        20021-SKJ-SRYCDTTL-HEN-SEC      SECTION.
       *
            PERFORM VARYING IDXG    FROM    1   BY  1
-                   UNTIL ( IDXG    >   9 )
+                   UNTIL ( IDXG    >   11 )
       *
                IF    ( WSKJH1804-SRYCD-CNT (IDXG)
                                    >   ZERO )
