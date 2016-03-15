@@ -1953,9 +1953,6 @@
       *
       *                食堂加算
                        PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
-                   WHEN  2
-      *                入院時食事療養（２）
-                       PERFORM 2001111-SKJ-RYOYO2-SET-SEC
                    END-EVALUATE
                WHEN  3
                    EVALUATE    WRK-SHOKUJIRYOYO
@@ -1999,8 +1996,6 @@
                        WHEN    1
                            PERFORM 2001111-SKJ-RYOYO1-SET-SEC
                            PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
-                       WHEN    2
-                           PERFORM 2001111-SKJ-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN    3
                        EVALUATE    WRK-SHOKUJIRYOYO
@@ -2530,15 +2525,17 @@
                        PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                    END-EVALUATE
                WHEN  2
+                   EVALUATE    WRK-SHOKUJIRYOYO
+                   WHEN    1
+      *                入院時生活療養（１）
+                       PERFORM 2001111-LIFE-RYOYO1-SET-SEC
       *
-      *            入院時生活療養（１）
-                   PERFORM 2001111-LIFE-RYOYO1-SET-SEC
+      *                特別食加算
+                       PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
       *
-      *            特別食加算
-                   PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
-      *
-      *            食堂加算
-                   PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
+      *                食堂加算
+                       PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
+                   END-EVALUATE
                WHEN  3
                    EVALUATE    WRK-SHOKUJIRYOYO
                    WHEN    1
@@ -2546,10 +2543,6 @@
                        PERFORM 2001111-LIFE-RYOYO1-RDS-SET-SEC
       *                食堂加算
                        PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
-                   WHEN  2
-      ***              実際は無いパターンなので、（２）を設定しておく
-      *                入院時生活療養（２）
-                       PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                    END-EVALUATE
                END-EVALUATE
            ELSE
@@ -2582,15 +2575,11 @@
                        WHEN    1
                            PERFORM 2001111-LIFE-RYOYO1-SET-SEC
                            PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
-                       WHEN    2
-                           PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN    3
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
                            PERFORM 2001111-LIFE-RYOYO1-RDS-SET-SEC
-                       WHEN    2
-                           PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                        END-EVALUATE
                    END-EVALUATE
                WHEN    1
