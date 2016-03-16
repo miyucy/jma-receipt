@@ -449,6 +449,10 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "208"
                    MOVE    "短期滞在手術等基本料１" 
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
+      *H28.4
+               WHEN    "209"
+                   MOVE    "小児かかつけ診療料" 
+                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
       *入院
                WHEN    "504"
                    MOVE    "回復期リハビリテーション病棟入院料" 
@@ -764,7 +768,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            慢性維持透析患者管理料
                    PERFORM 200211-KBNCD-201-SEC
                WHEN    "202"
-      *            小児科外来診察料
+      *            小児科外来診療料
+               WHEN    "209"
+      *            小児かかりつけ診療料
                    PERFORM 200211-KBNCD-202-SEC
                WHEN    "203"
       *            生活習慣病管理料
@@ -1701,6 +1707,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    SPA-GMN-SANTEIKBN-LST (3)
                                                TO  SPA-GMN-SANTEIKBN-G
                WHEN    "202"
+               WHEN    "209"
       *            小児科外来診察料　算定日で包括
                    MOVE    SPA-GMN-SANTEIKBN-LST (2)
                                                TO  SPA-GMN-SANTEIKBN-G
@@ -1743,7 +1750,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "201"
       *            慢性維持透析管理料
                WHEN    "202"
-      *            小児科外来診察料
+      *            小児科外来診療料
+               WHEN    "209"
+      *            小児かかりつけ診療料
                WHEN    "203"
       *            生活習慣病管理料
                    MOVE    SPA-GMN-NYUGAIKBN-LST (1)
@@ -1783,9 +1792,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "201"
       *            慢性維持透析管理料
                WHEN    "202"
-      *            小児科外来診察料
+      *            小児科外来診療料
                WHEN    "203"
       *            生活習慣病管理料
+               WHEN    "209"
+      *            小児かかりつけ診療料
                    MOVE    SPA-GMN-HKNCOMBIKBN-LST (1)
                                                TO  SPA-GMN-HKNCOMBIKBN-G
            END-EVALUATE
