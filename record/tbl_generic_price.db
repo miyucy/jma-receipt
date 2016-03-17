@@ -22,7 +22,7 @@ path	key 	{
 		WHERE	YAKKAKJNCD    =  (
 			SELECT
 			    CASE
-				WHEN EXISTS ( SELECT * FROM tbl_generic_price WHERE yakkakjncd = :YAKKAKJNCD )
+				WHEN EXISTS ( SELECT * from tbl_generic_price WHERE yakkakjncd = :YAKKAKJNCD )
 				    THEN :YAKKAKJNCD
 				ELSE SUBSTR(:YAKKAKJNCD,1,9)
 			    END
@@ -54,13 +54,12 @@ path	key2	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_generic_price
+		UPDATE	tbl_generic_price
 				SET
 				YAKKAKJNCD     = :YAKKAKJNCD,
 				YUKOSTYMD      = :YUKOSTYMD,
 				YUKOEDYMD      = :YUKOEDYMD,
 				PRICE          = :PRICE,
-				GECODE         = :GECODE,
 				CREYMD      = :CREYMD,
 				UPYMD      = :UPYMD
 			WHERE 	YAKKAKJNCD      =  :UPYAKKAKJNCD
@@ -88,18 +87,6 @@ path	key4 	{
 		SELECT *
 		FROM tbl_generic_price
 		WHERE	GECODE           =  :GECODE
-			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-		;
-	};
-};
-
-path	key5 	{
-	DBSELECT	{
-		DECLARE tbl_generic_price_key5_csr CURSOR FOR
-		SELECT *
-		FROM tbl_generic_price
-		WHERE	YAKKAKJNCD    LIKE  :YAKKAKJNCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 		;
