@@ -474,7 +474,7 @@
                        11  SPA-KT98-GMN-SRYCD      PIC X(09).
                        11  SPA-KT98-GMN-NAME       PIC X(70).
                        11  SPA-KT98-GMN-TANI       PIC X(10).
-                       11  SPA-KT98-GMN-KISOTEN    PIC 9(07)V99.
+                       11  SPA-KT98-GMN-KISOTEN    PIC 9(07)V9(4).
                        11  SPA-KT98-GMN-SETCD      PIC X(10).
       *
                        11  SPA-KT98-NAI-NO         PIC 9(03).
