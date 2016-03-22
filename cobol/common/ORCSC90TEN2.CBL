@@ -320,6 +320,8 @@
                ELSE
                    MOVE    LNK-COM-SURYO  (IDX)    TO  WRK-SURYO
                END-IF
+      *ない
+               MOVE    LNK-COM-SURYO  (IDX)    TO  WRK-SURYO
       *
       *        点数
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN(IDX)

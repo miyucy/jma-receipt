@@ -356,6 +356,11 @@
       * ¡Ê¸º¡Ë¡ÊÆâÉþÄþ¸º¤ÈÆ±¤¸¡Ë
        01  CONS-TGEN-SRYCD         PIC X(09)   VALUE    "820000047".
       *
+      *H28.4
+      * ¼¾ÉÛÌôËç¿ô¸º»»
+       01  CONS-SPGEN-SRYCD        PIC X(09)   VALUE    "630010007".
+      * ¼¾ÉÛÌô¡Ê¸º¡Ë
+       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -3220,6 +3225,12 @@
                MOVE    1                   TO  WKSRYP-TEI-NKBN30
            END-IF
       *
+      *H28.4
+      *    ¼¾ÉÛÌô£·£°Ëç°Ê¾åÄþ¸ºÂÐ¾Ý
+           IF     (SPA-COM-SRYKBN(IDW2)    =   "23" )  AND
+                  (SPA-COM-INPUTCD(IDW2)   =   CONS-SPCM-SRYCD )
+               MOVE    1                   TO  WKSRYP-TEI-NKBN
+           END-IF
       *
            .
        30022-WKSRYACTPLUS-HEN-EXT.
@@ -4089,7 +4100,9 @@
       *H26.10
                                                OR  CONS-TAZAI-SRYCD
       *H27.4                   Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»¥³¡¼¥É
-                                                 OR  CONS-TEIHP-SRYCD
+                                               OR  CONS-TEIHP-SRYCD
+      *H28.4                   ¼¾ÉÛÌô¸º»»
+                                               OR  CONS-SPGEN-SRYCD
                            COMPUTE SUM-SYU-HKNTEN (04)
                                                =   SUM-SYU-HKNTEN(04)
                                                -   ORCSCWKSRY-KSN-TENSU
@@ -4307,6 +4320,15 @@
       *    Äã¾Ò²ðÎ¨ÉÂ±¡¡¡¸º»»
       *    ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
            IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   CONS-TEIHP-SRYCD
+               MOVE    1                   TO  WKSRYP-PLUSKBN
+      *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
+               MOVE    2                   TO  WKSRYP-TEI-NKBN30
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *
+      *H28.4
+      *    ¼¾ÉÛÌô¸ºÅÀ
+           IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   CONS-SPGEN-SRYCD
                MOVE    1                   TO  WKSRYP-PLUSKBN
       *        ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
                MOVE    2                   TO  WKSRYP-TEI-NKBN30
