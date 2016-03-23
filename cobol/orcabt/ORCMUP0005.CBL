@@ -33,7 +33,6 @@
       *                                     対応
       * 04.07.00     NACL-伊藤    14/03/06  点数マスタレイアウト変更
       *                                     対応
-      * 05.01.00     NACL-伊藤    17/02/09  マスター分離対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -101,6 +100,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            03  FLG-SYORI               PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
+           03  FLG-TENSUPLUS           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -143,10 +143,6 @@ grpsys     COPY    "COMMON-SPA".
       *    点数保存
            03  WRK-HZN-TEN             PIC  9(09)V99.
            03  WRK-HZN-OLDTEN          PIC  9(09)V99.
-      *    単位保存
-           03  WRK-HZN-TANICD          PIC  X(03).
-           03  WRK-HZN-TANIMOJISU      PIC  9(01).
-           03  WRK-HZN-TANINAME        PIC  X(24).
       *
            03  WRK-IN                  PIC X(01). 
       *
@@ -216,10 +212,6 @@ grpsys     COPY    "COMMON-SPA".
            03  TNSWK-V05-AREA-01       PIC X(1094).
            03  TNSWK-V05-AREA-02       PIC X(206).
       *---(04.06.00) LINE ADD START -------------------------------------
-      *    旧マスタデータ退避領域
-       01  TNSWK-TENSU-REC-V06.
-           03  TNSWK-V06-AREA-01       PIC X(1132).
-           03  TNSWK-V06-AREA-02       PIC X(193).
       *
        01  CONST-AREA.
            03  CONST-HOMEDIR           PIC X(28)  VALUE
@@ -251,6 +243,14 @@ grpsys     COPY    "COMMON-SPA".
                                        //TNSUP-// BY //WK-TNSUP-//
                                        //TNSXX-// BY //WK-TNSXX-//.
       *
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
+      *
+      *    点数マスタ付加コードワーク
+        01 WRK-TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC"    REPLACING
+                                       //TNSP// BY //WRK-TNSP//.
       *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -423,11 +423,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+               MOVE    "tbl_tensu"     TO  MCP-TABLE
                MOVE    "key4"          TO  MCP-PATHNAME
                PERFORM 910-TENSU-READ-SEC
            ELSE
@@ -440,24 +440,26 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                IF      FLG-TENSU           =   ZERO
                    PERFORM UNTIL    FLG-TENSU      =   1
       *                最後のデータを対象とする
-                       MOVE    TNS-TENSU-REC       TO  WRK-TNS-TENSU-REC
-                       MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-                       MOVE    "key4"              TO  MCP-PATHNAME
-                       PERFORM 910-TENSU-READ-SEC
+                       MOVE  TNS-TENSU-REC TO  WRK-TNS-TENSU-REC
+      *
+                       MOVE  "tbl_tensu"   TO  MCP-TABLE
+                       MOVE  "key4"        TO  MCP-PATHNAME
+                       PERFORM                 910-TENSU-READ-SEC
                    END-PERFORM
-                   MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
+                   MOVE  "tbl_tensu"   TO  MCP-TABLE
+                   MOVE  "key4"        TO  MCP-PATHNAME
                    PERFORM 990-DBCLOSE-SEC
       *
-                   MOVE    WRK-TNS-TENSU-REC   TO  TNS-TENSU-REC
-                   IF      TNSWK-YUKOSTYMD    <=   TNS-YUKOEDYMD
-                       MOVE    5                   TO  WRK-ERRCD
+                   MOVE    WRK-TNS-TENSU-REC
+                                           TO  TNS-TENSU-REC
+                   IF      TNSWK-YUKOSTYMD <=  TNS-YUKOEDYMD
+                       MOVE    5           TO  WRK-ERRCD
                        PERFORM 2040-ERR-SYORI-SEC
-                       GO  TO  2010-INSERT-SYORI-EXT
+                       GO      TO      2010-INSERT-SYORI-EXT
                    END-IF
                ELSE
-                   MOVE  "tbl_tensu_master"    TO  MCP-TABLE
-                   MOVE  "key4"                TO  MCP-PATHNAME
+                   MOVE  "tbl_tensu"   TO  MCP-TABLE
+                   MOVE  "key4"        TO  MCP-PATHNAME
                    PERFORM 990-DBCLOSE-SEC
                END-IF
       *
@@ -467,6 +469,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    追加更新
                MOVE    ZERO                TO  FLG-SYORI
+      ****         INITIALIZE                      WRK-TNS-TENSU-REC
                PERFORM UNTIL   (FLG-TENSU      =   1  )  OR
                                (FLG-SYORI      =   1  )
                    IF     (TNS-YUKOSTYMD   <=  TNSWK-YUKOEDYMD2 ) AND
@@ -480,14 +483,21 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        MOVE    1                   TO  FLG-SYORI
       *                ＤＢ追加
                        PERFORM 20101-TENSU-INS-SEC
+                       IF      WRK-ERRCD           =   ZERO
+      *                点数マスタ付加情報追加
+                           IF      WRK-TNSP-KEY    NOT =   SPACE
+                               PERFORM 20104-TENSUPLUS-INS-SEC
+                           END-IF
+                       END-IF
+      *
                    ELSE
-                       MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-                       MOVE    "key4"              TO  MCP-PATHNAME
-                       PERFORM 910-TENSU-READ-SEC
+                       MOVE  "tbl_tensu"       TO  MCP-TABLE
+                       MOVE  "key4"            TO  MCP-PATHNAME
+                       PERFORM                     910-TENSU-READ-SEC
                    END-IF
                END-PERFORM
-               MOVE    "tbl_tensu_master"      TO  MCP-TABLE
-               MOVE    "key4"                  TO  MCP-PATHNAME
+               MOVE  "tbl_tensu"   TO  MCP-TABLE
+               MOVE  "key4"        TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
       *
                IF      FLG-SYORI           =   ZERO
@@ -507,6 +517,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    点数マスタの確認
            INITIALIZE                  TNS-TENSU-REC
+      *****MOVE    TNSWK-KEY           TO  TNS-KEY
 grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
            MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOSTYMD
@@ -515,18 +526,18 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-TENSU-READ-SEC
+               PERFORM                     910-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
            END-IF
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE  "tbl_tensu"           TO  MCP-TABLE
+           MOVE  "key"                 TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF     (FLG-TENSU           =   ZERO )  AND
@@ -545,16 +556,21 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-YUKOEDYMD     TO  TNS-YUKOEDYMD
            MOVE    TNSWK-TENSU-REC(35:)
                                        TO  TNS-TENSU-REC(28:)
-           MOVE    1                   TO  TNS-MASTER-CLASS
-           MOVE    TNSWK-UP-KEY        TO  TNSUP-KEY
-           MOVE    TNSWK-STSRYKBN      TO  TNSXX-STSRYKBN
-           MOVE    TNSWK-EDSRYKBN      TO  TNSXX-EDSRYKBN
+      *    特定器材で金額の変更されている時、点数識別＝２の時
+           IF     (FLG-SYORI           =   1    )
+            AND   (TNS-SRYCD(1:1)      =   "7"  )
+      ***** AND  ((TNS-TENSIKIBETU     =   2    ) OR
+      *****       (TNS-OLDTEN      NOT =   WRK-TNS-TEN ))
+            AND   (TNS-TENSIKIBETU     =   2    )
+               MOVE    WRK-TNS-TEN         TO  TNS-TEN
+           END-IF
+      *
            MOVE    LNK-MNTYMD          TO  TNS-CREYMD
                                            TNS-UPYMD
            MOVE    LNK-MNTHMS          TO  TNS-UPHMS
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -577,7 +593,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  TNS-UPHMS
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -585,8 +601,117 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
+      *
+      *    点数マスタ付加情報更新
+           PERFORM 20103-TENSUPLUS-SYORI-SEC
            .
        20102-TENSU-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ更新  処理
+      *****************************************************************
+       20103-TENSUPLUS-SYORI-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNSUP-HOSPNUM       TO  TNSP-HOSPNUM
+           MOVE    TNSUP-SRYCD         TO  TNSP-SRYCD
+           MOVE    TNSUP-YUKOSTYMD     TO  TNSP-YUKOSTYMD
+           MOVE    TNSUP-YUKOEDYMD     TO  TNSP-YUKOEDYMD
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 980-TENSUPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    SPACE               TO  WRK-TENSUPLUS-REC
+           IF      FLG-TENSUPLUS       =   ZERO
+               MOVE    TENSUPLUS-REC       TO  WRK-TENSUPLUS-REC
+      *
+               MOVE    TNSP-KEY            TO  TNSP-UP-KEY
+               MOVE    TNS-KEY             TO  TNSP-KEY
+      *
+               MOVE    LNK-MNTYMD          TO  TNSP-UPYMD
+               MOVE    LNK-MNTHMS          TO  TNSP-UPHMS
+               MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "upd1"              TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    3               TO  LNK-RC
+                   MOVE    4               TO  WRK-ERRCD
+                   PERFORM 2040-ERR-SYORI-SEC
+               END-IF
+           END-IF
+      *
+           .
+       20103-TENSUPLUS-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ付加情報追加処理
+      *****************************************************************
+       20104-TENSUPLUS-INS-SEC           SECTION.
+      *
+           MOVE    WRK-TENSUPLUS-REC   TO  TENSUPLUS-REC
+      *
+           MOVE    TNS-KEY             TO  TNSP-KEY
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus" TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 980-TENSUPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-TENSUPLUS       =   ZERO
+               MOVE    6               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      20104-TENSUPLUS-INS-EXT
+           END-IF
+      *
+           MOVE    WRK-TENSUPLUS-REC   TO  TENSUPLUS-REC
+           MOVE    TNS-KEY             TO  TNSP-KEY
+      *
+           MOVE    LNK-MNTYMD          TO  TNSP-CREYMD
+                                           TNSP-UPYMD
+           MOVE    LNK-MNTHMS          TO  TNSP-UPHMS
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    4               TO  LNK-RC
+               MOVE    7               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+           END-IF
+      *
+           .
+       20104-TENSUPLUS-INS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -596,7 +721,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -622,13 +747,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+      *****MOVE    TNSWK-YUKOSTYMD     TO  ORC-DBYMD
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 910-TENSU-READ-SEC
+               MOVE    "tbl_tensu"     TO  MCP-TABLE
+               MOVE    "key4"          TO  MCP-PATHNAME
+               PERFORM                     910-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
            END-IF
@@ -636,18 +762,31 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                            (FLG-SYORI      =   1  )
                IF     (TNS-YUKOSTYMD   <=  TNSWK-YUKOSTYMD ) AND
                       (TNS-YUKOEDYMD   >=  TNSWK-YUKOSTYMD )
+      *            特定器材で点数識別＝２の時、点数を変更しない
+      *            特定器材で酸素の時、点数を変更しない
+                   IF     (TNSWK-SRYCD(1:1)    =   "7"  )  AND
+                         ((TNSWK-TENSIKIBETU   =   2    )  OR
+                          (TNSWK-SANSOKBN      =   2 OR 3 OR 4 OR 5) OR
+                          (TNSWK-OLDTEN    NOT =   TNS-TEN ))
+                       MOVE    TNS-TEN         TO  WRK-HZN-TEN
+                       MOVE    TNS-OLDTEN      TO  WRK-HZN-OLDTEN
+                   ELSE
+                       MOVE    TNSWK-TEN       TO  WRK-HZN-TEN
+                       MOVE    TNSWK-OLDTEN    TO  WRK-HZN-OLDTEN
+                   END-IF
+      *
       *            更新
                    MOVE    TNS-KEY             TO  WRK-TNSUP-KEY
+      *************MOVE    TNSWK-KEY           TO  TNS-KEY
 grpsys             MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                    MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
                    MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOSTYMD
                    MOVE    TNSWK-YUKOEDYMD     TO  TNS-YUKOEDYMD
                    MOVE    TNSWK-TENSU-REC(35:)
                                                TO  TNS-TENSU-REC(28:)
-                   MOVE    1                   TO  TNS-MASTER-CLASS
-                   MOVE    TNSWK-UP-KEY        TO  TNSUP-KEY
-                   MOVE    TNSWK-STSRYKBN      TO  TNSXX-STSRYKBN
-                   MOVE    TNSWK-EDSRYKBN      TO  TNSXX-EDSRYKBN
+      *            点数の入れ替え
+                   MOVE    WRK-HZN-TEN         TO  TNS-TEN
+                   MOVE    WRK-HZN-OLDTEN      TO  TNS-OLDTEN
       *
                    MOVE    WRK-TNSUP-KEY       TO  TNSUP-KEY
                    PERFORM 20102-TENSU-UPD-SEC
@@ -655,12 +794,12 @@ grpsys             MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
                    MOVE    1                   TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+                   MOVE    "tbl_tensu"         TO  MCP-TABLE
                    MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 910-TENSU-READ-SEC
+                   PERFORM                     910-TENSU-READ-SEC
                END-IF
            END-PERFORM
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -685,18 +824,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 910-TENSU-READ-SEC
+               MOVE    "tbl_tensu"     TO  MCP-TABLE
+               MOVE    "key4"          TO  MCP-PATHNAME
+               PERFORM                     910-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
            END-IF
            PERFORM UNTIL   (FLG-TENSU      =   1  )  OR
                            (FLG-SYORI      =   1  )
+      *********IF     (TNS-KEY          =  TNSWK-KEY )
                IF     (TNS-HOSPNUM      =  SPA-HOSPNUM)
                  AND  (TNS-SRYCD        =  TNSWK-SRYCD)
                  AND  (TNS-YUKOSTYMD    =  TNSWK-YUKOSTYMD)
@@ -706,12 +846,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    ADD     1                   TO  CNT-DEL
                    MOVE    1                   TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_tensu_master"  TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 910-TENSU-READ-SEC
+                   MOVE    "tbl_tensu"     TO  MCP-TABLE
+                   MOVE    "key4"          TO  MCP-PATHNAME
+                   PERFORM                 910-TENSU-READ-SEC
                END-IF
            END-PERFORM
-           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -903,10 +1043,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            WHEN    LNK-DBRVERSION (3:6)    <   "040700"
                PERFORM 900-TNSWK-V05-SET
       *
-           WHEN   (LNK-DBRVERSION (3:6)    =   "040800") AND
-                  (LNK-DBRVERSION (12:8)   <   "20180315")
-               PERFORM 900-TNSWK-V06-SET
-      *
            WHEN    OTHER
                MOVE    IN-REC      TO  TNSWK-TENSU-REC
            END-EVALUATE
@@ -1020,22 +1156,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *---(04.07.00) LINE ADD END   -------------------------------------
       *****************************************************************
-      *    変更後レイアウト移送処理
-      *****************************************************************
-       900-TNSWK-V06-SET          SECTION.
-      *
-           MOVE    IN-REC              TO  TNSWK-TENSU-REC-V06
-      *
-           MOVE    TNSWK-V06-AREA-01   TO  TNSWK-TENSU-REC (1    : 1132)
-      *****MOVE    ZERO                TO  TNSWK-AKUSEIBYORIKSN
-           MOVE    ZERO                TO  TNSWK-TENSU-REC (1133 : 1)
-           MOVE    TNSWK-V06-AREA-02   TO  TNSWK-TENSU-REC (1134 :)
-      *
-          .
-       900-TNSWK-V06-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
@@ -1052,6 +1172,26 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    点数マスタ付加情報読込
+      *****************************************************************
+       980-TENSUPLUS-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
+               MOVE    ZERO            TO  FLG-TENSUPLUS
+           ELSE
+               INITIALIZE                  TENSUPLUS-REC
+               MOVE    1               TO  FLG-TENSUPLUS
+           END-IF
+           .
+      *
+       980-TENSUPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
