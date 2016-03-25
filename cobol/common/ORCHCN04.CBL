@@ -2523,6 +2523,13 @@
            MOVE    HCM34S01-SRYCD(IDX IDX2)    TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
       *
+      *    出力名があれば出力名称
+           IF     (TNSP-SHONAME        =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    TNSP-SHONAME        TO  TNS-NAME
+           END-IF
+      *
            ADD     1                   TO  IDX-S
            MOVE    HCM34S01-SRYCD(IDX IDX2)
                                        TO  TBL-SRYCD (IDX-S)
