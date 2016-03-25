@@ -80,6 +80,7 @@
       *
       *  04.08.01    NACL-藤原    16/02/10  自院病名への補足コメント追加
       *                                     対応
+      *  04.08.02    NACL-藤原    16/03/17  セット入力時のエラー表示修正
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -384,7 +385,6 @@
                            END-IF
                        END-IF
                    END-IF
-                   
       *            画面編集
                    PERFORM 500-GMNHEN-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
@@ -798,6 +798,13 @@
                END-IF
            END-PERFORM
       *
+      *    存在しない自院病名のとき
+           IF      SPA-NAI-C04-BYOMEI (IDX)
+                                   =   "■■■"
+               MOVE    "1"             TO  SPA-NAI-C04-BYOMEITOP(IDX) 
+               GO  TO  3101-BYOMEITOP-HENSYU-EXT
+           END-IF
+      *
            COMPUTE IDW     =   IDX     -   1
            IF    ( SPA-GMN-C04-INPUTCD (IDW)
                                        =   SPACE )
@@ -814,6 +821,13 @@
                        END-IF
                    END-IF
                END-PERFORM
+           END-IF
+      *
+      *    前が存在しない自院病名のとき
+           IF      SPA-NAI-C04-BYOMEI (IDW)
+                                   =   "■■■"
+               MOVE    "1"             TO  SPA-NAI-C04-BYOMEITOP(IDX) 
+               GO  TO  3101-BYOMEITOP-HENSYU-EXT
            END-IF
       *
            EVALUATE    SPA-NAI-C04-BYOMEISBT(IDX)
@@ -1293,7 +1307,7 @@
                                                SPA-C04-CHANGE-INDEX-ED
                    END-IF         
            END-EVALUATE
-      *     
+      *
            INITIALIZE                  SPA-CIDCD-AREA
                                        SPA-CID1-AREA
            INITIALIZE                  SPA-C04-IKOSAKI-AREA
@@ -1752,6 +1766,7 @@
                                -    1
       *
                    MOVE    SPACE           TO  WRK-HAISIYMDH
+                                               SPA-ERRCD
       *
                    INITIALIZE              SPA-NAI-C04-BYOMEI-OCC (IDZ)
                    MOVE    SPA-C04-BYOSET-BYOMEIINPUTCD (IDWW)
@@ -1968,94 +1983,6 @@
       *
            .
        410024-HOSOKUCD-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    複数病名の先頭フラグ編集処理
-      *****************************************************************
-       4101111-BYOMEITOP-HENSYU-SEC      SECTION.
-      *
-      *****IF      SPA-GMN-C04-INPUTCD  (IDX3) 
-           IF      SPA-NAI-C04-BYOMEICD (IDX3) 
-                                   =   SPACE
-               MOVE    SPACE           TO  SPA-NAI-C04-BYOMEITOP(IDX3)
-               GO  TO  4101111-BYOMEITOP-HENSYU-EXT
-           END-IF
-      * 
-           IF      IDX3            =   1
-               MOVE    "1"             TO  SPA-NAI-C04-BYOMEITOP (IDX3)
-               GO  TO  4101111-BYOMEITOP-HENSYU-EXT
-           END-IF
-      *
-      *    自院病名の部位が入力されている場合は複数病名にはしない
-           IF      SPA-NAI-C04-BYOMEISBT (IDX3)
-                                   =   "1"
-               MOVE    SPACE           TO  SPA-NAI-C04-BYOMEITOP(IDX3)
-               GO  TO  4101111-BYOMEITOP-HENSYU-EXT
-           END-IF
-           PERFORM VARYING IDW FROM    1   BY  1
-                   UNTIL   IDW >       6
-               IF      SPA-C01-INDEX       =   IDW
-                   CONTINUE
-               ELSE
-                   IF    ( SPA-C01-TUSERBYOMEIFLG (IDW)
-                                               =   "1" )
-                   AND   ( SPA-NAI-C04-BYOMEISBT(IDW)
-                                               =   "1" )
-                       MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP(IDX3)
-                       GO  TO  4101111-BYOMEITOP-HENSYU-EXT
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           COMPUTE IDW     =   IDX3    -   1
-      *****IF    ( SPA-GMN-C04-INPUTCD (IDW)
-           IF    ( SPA-NAI-C04-BYOMEICD(IDW)
-                                       =   SPACE )
-           AND   ( IDW                 >   1     )
-               COMPUTE IDW     =   IDW    -   1
-           END-IF
-      *
-           EVALUATE    SPA-NAI-C04-BYOMEISBT (IDX3)
-               WHEN    "8"
-                   MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP (IDX3)
-               WHEN    "7"
-               WHEN    "0"
-                   IF      SPA-C01-TUSERBYOMEIFLG (IDW)
-                                                   =   "1"
-                       EVALUATE    SPA-NAI-C04-BYOMEISBT (IDW)
-                           WHEN    "7"
-                           WHEN    "1"
-                               MOVE    SPACE       TO
-                                       SPA-NAI-C04-BYOMEITOP (IDX3)
-                           WHEN    "8"
-                           WHEN    "0"
-                               MOVE    "1"     TO
-                                       SPA-NAI-C04-BYOMEITOP (IDX3)
-                       END-EVALUATE
-                   ELSE
-                       EVALUATE    SPA-GMN-C04-INPUTCD (IDW)(1:1)
-                                   ALSO   SPA-GMN-C04-INPUTCD (IDW)(4:1)
-                           WHEN    "Z" ALSO    "1"    THRU    "7"
-                               MOVE    SPACE       TO
-                                       SPA-NAI-C04-BYOMEITOP (IDX3)
-                           WHEN    "Z" ALSO    "8"
-                               MOVE    "1"         TO
-                                       SPA-NAI-C04-BYOMEITOP (IDX3)
-                           WHEN    "Z" ALSO    ANY
-                               MOVE    SPACE       TO
-                                       SPA-NAI-C04-BYOMEITOP (IDX3)
-                           WHEN    OTHER
-                               MOVE    "1"     TO
-                                       SPA-NAI-C04-BYOMEITOP (IDX3)
-                       END-EVALUATE
-                   END-IF
-               WHEN    "1"
-                   MOVE    SPACE       TO
-                                       SPA-NAI-C04-BYOMEITOP (IDX3)
-           END-EVALUATE    
-           .
-       4101111-BYOMEITOP-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
