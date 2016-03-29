@@ -9114,15 +9114,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
       *H28.4   撫幵泔及管反覆擂陸
-           IF     (SPA-NAI-ZAITENFLG (SPA-NAI-BANGO)
-                                       =   3      )
-             AND  (SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
-                                       =   "23"   )
-             AND  (SPA-NAI-KEIFLG2     =   ZERO   )
-               MOVE    "K037"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-CUR
-               MOVE    1                   TO  SPA-NAI-KEIFLG2
-           END-IF
+      *    IF     (SPA-NAI-ZAITENFLG (SPA-NAI-BANGO)
+      *                                =   3      )
+      *      AND  (SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
+      *                                =   "23"   )
+      *      AND  (SPA-NAI-KEIFLG2     =   ZERO   )
+      *        MOVE    "K037"              TO  SPA-ERRCD
+      *        MOVE    1                   TO  SPA-GMN-CUR
+      *        MOVE    1                   TO  SPA-NAI-KEIFLG2
+      ***  END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    "0104"              TO  SPA-JIDCD
