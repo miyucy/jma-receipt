@@ -22,9 +22,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-門脇    14/04/07  改正対応項目追加
       *  04.08.01    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.02    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
-      *  04.08.03    NACL-門脇    16/08/23  持参薬対応
       ************************************************************
       *01  RECE841-REC.
            03  RECE841-KEY.
@@ -107,12 +104,6 @@
                05  RECE841-ZAIKBN          PIC  9(03).
       *画像診断（２回目以降減算あり）
                05  RECE841-GAZOGEN         PIC  X(01).
-      *再診加算（入院）の剤
-               05  RECE841-NYUSAIFLG       PIC  X(01).
-      *１５円以下薬剤レセプト記載フラグ
-               05  RECE841-YKZKISAIFLG     PIC  X(01).
-      *持参薬区分
-               05  RECE841-JISANYAKKBN     PIC  X(01).
       *
       *リハビリ
                05  RECE841-RIHABIRI-COMMENT    PIC  X(01).
@@ -134,13 +125,6 @@
                05  RECE841-HAIYO-COMMENT       PIC  X(01).
       *介達牽引
                05  RECE841-KAITATU-COMMENT     PIC  X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-               05  RECE841-SINDAI9-COMMENT     PIC  X(01).
-      *リハビリ加算（呼吸器）
-               05  RECE841-KOKYUKI9-COMMENT    PIC  X(01).
-      *リハビリ加算（廃用症候群）
-               05  RECE841-HAIYO9-COMMENT      PIC  X(01).
       *
       *薬剤管理指導料
                05  RECE841-FLG-YAKUKAN-COMMENT PIC  X(01).
@@ -231,8 +215,6 @@
                05  RECE841-FLG-BOKOHO-COMMENT    PIC  X(01).
       *超重症児（者）入院診療加算・準超重症児（者）入院診療加算
                05  RECE841-FLG-CYOJKSN-COMMENT   PIC  X(01).
-      *排尿自立指導料
-               05  RECE841-FLG-HAIJRT-COMMENT    PIC  X(01).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE841-ACCTP-SYUGI-TBL-G.

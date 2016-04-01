@@ -54,9 +54,6 @@
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.03    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
-      *  04.08.04    NACL-門脇    16/08/23  持参薬対応
       ************************************************************
       *01  RECE84-REC.
            03  RECE84-KEY.
@@ -79,8 +76,6 @@
                05  RECE84-ZAINUM          PIC  9(08).
       *診療区分
            03  RECE84-SRYKBN              PIC  X(02).
-      *コード表用番号−区分番号
-           03  RECE84-CDKBN-KBNNUM        PIC  9(03).
       *
            03  RECE84-DATA-AREA. 
       *診療種別区分
@@ -139,12 +134,6 @@
                05  RECE84-ZAIKBN              PIC  9(03).
       *画像診断（２回目以降減算あり）
                05  RECE84-GAZOGEN             PIC  X(01).
-      *再診加算（入院）の剤
-               05  RECE84-NYUSAIFLG           PIC  X(01).
-      *１５円以下薬剤レセプト記載フラグ
-               05  RECE84-YKZKISAIFLG         PIC  X(01).
-      *持参薬区分
-               05  RECE84-JISANYAKKBN         PIC  X(01).
       *
       *リハビリ
                05  RECE84-RIHABIRI-COMMENT    PIC  X(01).
@@ -166,13 +155,6 @@
                05  RECE84-HAIYO-COMMENT       PIC  X(01).
       *介達牽引
                05  RECE84-KAITATU-COMMENT     PIC  X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-               05  RECE84-SINDAI9-COMMENT     PIC  X(01).
-      *リハビリ加算（呼吸器）
-               05  RECE84-KOKYUKI9-COMMENT    PIC  X(01).
-      *リハビリ加算（廃用症候群）
-               05  RECE84-HAIYO9-COMMENT      PIC  X(01).
       *
       *薬剤管理指導料
                05  RECE84-FLG-YAKUKAN-COMMENT PIC  X(01).
@@ -263,8 +245,6 @@
                05  RECE84-FLG-BOKOHO-COMMENT    PIC  X(01).
       *超重症児（者）入院診療加算・準超重症児（者）入院診療加算
                05  RECE84-FLG-CYOJKSN-COMMENT   PIC  X(01).
-      *排尿自立指導料
-               05  RECE84-FLG-HAIJRT-COMMENT    PIC  X(01).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE84-ACCTP-SYUGI-TBL-G.
@@ -310,3 +290,5 @@
                           11  RECE84-KAISU     PIC  9(03).
       *レセプト種別
                05  RECE84-RECESYUBETU          PIC 9(04).
+      *コード表用番号−区分番号
+           03  RECE84-CDKBN-KBNNUM        PIC  9(03).
