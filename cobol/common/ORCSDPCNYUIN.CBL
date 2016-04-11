@@ -4587,13 +4587,13 @@
                                                         <= "201803")
                                 EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
                                    WHEN   1
-                                      MOVE  260  TO 
+                                      MOVE  360  TO 
                                          LNK-DPCNYUIN-TEN(4 IDX3 IDX5)
                                    WHEN   2
-                                      MOVE  520  TO 
+                                      MOVE  720  TO 
                                          LNK-DPCNYUIN-TEN(4 IDX3 IDX5)
                                    WHEN   3
-                                      MOVE  780  TO 
+                                      MOVE 1080  TO 
                                          LNK-DPCNYUIN-TEN(4 IDX3 IDX5)
                                 END-EVALUATE
                               END-IF
