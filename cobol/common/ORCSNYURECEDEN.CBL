@@ -10782,17 +10782,36 @@
                         EVALUATE   WRK-SKJ7-SKJFTN(IDX1)
       *               ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∞Ï»Ã°À
                             WHEN   "197000810"
-                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
-                                   WHEN   1
-                                      MOVE  360  TO 
+                              IF  (LNK-NYURECEDEN-SANTEIYM
+                                                        >= "201604") AND
+                                  (LNK-NYURECEDEN-SANTEIYM
+                                                        <= "201803")
+                                 EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                     WHEN   1
+                                       MOVE  360  TO 
                                          LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
-                                   WHEN   2
-                                      MOVE  720  TO 
+                                     WHEN   2
+                                       MOVE  720  TO 
                                          LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
-                                   WHEN   3
-                                      MOVE 1080  TO 
+                                     WHEN   3
+                                       MOVE 1080  TO 
                                          LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
-                               END-EVALUATE
+                                 END-EVALUATE
+                              END-IF
+                              IF  (LNK-NYURECEDEN-SANTEIYM
+                                                        >= "201804")
+                                 EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                     WHEN   1
+                                       MOVE  460  TO 
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                                     WHEN   2
+                                       MOVE  920  TO 
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                                     WHEN   3
+                                       MOVE 1380  TO 
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                                 END-EVALUATE
+                              END-IF
       *               ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ªÿƒÍ∆Ò…¬°¶æÆª˘À˝¿≠∆√ƒÍº¿…¬¥µº‘°À° ∞Ï»Ã°À
                             WHEN   "197003310"
                                EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
@@ -11059,7 +11078,11 @@
                                END-EVALUATE
       *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¢£≥° ∞Ï»Ã°À°À
                             WHEN   "197002710"
-                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                              IF  (LNK-NYURECEDEN-SANTEIYM
+                                                        >= "201604") AND
+                                  (LNK-NYURECEDEN-SANTEIYM
+                                                        <= "201803")
+                                EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
                                    WHEN   1
                                       MOVE  360  TO 
                                          LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
@@ -11069,7 +11092,22 @@
                                    WHEN   3
                                       MOVE 1080  TO 
                                          LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
-                               END-EVALUATE
+                                END-EVALUATE
+                              END-IF
+                              IF  (LNK-NYURECEDEN-SANTEIYM
+                                                        >= "201804")
+                                EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  460  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  920  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE 1380  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                END-EVALUATE
+                              END-IF
       *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ªÿƒÍ∆Ò…¬°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ∞Ï»Ã°À
                             WHEN   "197003610"
                                EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
