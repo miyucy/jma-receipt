@@ -1420,11 +1420,11 @@
                                             WRK-CONS-SYOSIN103
       *
                EVALUATE  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                 WHEN      WRK-CONS-SYOSIN101
-                     MOVE   1    TO   IDX6
-                 WHEN      WRK-CONS-SYOSIN102
-                     MOVE   2    TO   IDX6
                  WHEN      WRK-CONS-SYOSIN103
+                     MOVE   1    TO   IDX6
+                 WHEN      WRK-CONS-SYOSIN101
+                     MOVE   2    TO   IDX6
+                 WHEN      WRK-CONS-SYOSIN102
                      MOVE   3    TO   IDX6
                END-EVALUATE
       *
@@ -2415,8 +2415,13 @@
                    MOVE    "＊"              TO  WRK-ZAI-MK
                    EVALUATE  IDX6
                      WHEN      2
+                      IF   RECE200-SRYYM   >=  "201604"
+                       MOVE  "初診（文書による紹介がない患者）"
+                                             TO  WRK-ZAI-NAME(1:32)
+                      ELSE
                        MOVE  "初診（他医療機関からの紹介状がない患者）"
                                              TO  WRK-ZAI-NAME(1:40)
+                      END-IF
                    END-EVALUATE
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
@@ -3023,6 +3028,10 @@
                MOVE    RECE220-ZAISKBKBN TO  RECE240-ZAISKBKBN
                IF    RECE220-ZAISKBKBN   =   "1" OR "2" OR "4"
                    MOVE   RECE220-ZAINUM TO  RECE240-ZAISKBBAN
+               END-IF
+               IF    RECE220-ZAISKBKBN  =   "6"
+               AND   RECE220-NYUSAIFLG  =   "1"
+                   MOVE   99999999       TO  RECE240-ZAISKBBAN
                END-IF
                MOVE    TBL-ZAI (IDY)     TO  RECE240-TEKIYO-INF
       *

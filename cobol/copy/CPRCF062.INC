@@ -1018,6 +1018,17 @@
                05  RECE62-SYUTANTEN-NYUTOK2     PIC S9(09).
            03  RECE62-SYUTANARIFLG              PIC 9(01).
       *
+      *標準負担額経過措置（精神）
+           03  RECE62-SEISIN-SKJFLG             PIC 9(01).
+           03  RECE62-SEISIN-NYUINYMD           PIC X(08).
+      *
+      *再診加算（入院）情報
+           03  RECE62-NYUSAIINF.
+               05  RECE62-NYUSAI-TENSU          PIC 9(08)  OCCURS  5.
+      *入院料日別診療区分情報
+           03  RECE62-NYUDAYINF.
+               05  RECE62-NYUDAY-SRYKBN         PIC X(02)  OCCURS 31.
+      *
       *予備
            03  RECE62-YOBIETC-AREA.
                05  RECE62-YOBIETCINF          OCCURS 20.
