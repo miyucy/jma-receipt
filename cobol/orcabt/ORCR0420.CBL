@@ -1123,7 +1123,6 @@
            03  CONS-NOUKE21-COMMENT  PIC X(09)  VALUE  "101800260".
       *#   脳血管疾患等リハビリテーション料（３）
            03  CONS-NOUKE22-COMMENT  PIC X(09)  VALUE  "101800270".
-      *
       *    脳血管疾患等リハビリテーション料１（要介・廃用症以外）基準不適合
            03  CONS-NOUKE23-COMMENT  PIC X(09)  VALUE  "180043430".
       *    脳血管疾患等リハビリテーション料１（要介・廃用症）基準不適合
@@ -1136,7 +1135,6 @@
            03  CONS-NOUKE27-COMMENT  PIC X(09)  VALUE  "180043830".
       *    脳血管疾患等リハビリテーション料３（要介・廃用症）基準不適合
            03  CONS-NOUKE28-COMMENT  PIC X(09)  VALUE  "180043930".
-      *
       *    運動器リハビリテーション料（１）
            03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
       *    運動器リハビリテーション料（２）
@@ -1169,14 +1167,16 @@
            03  CONS-UNDOKI15-COMMENT PIC X(09)  VALUE  "101800290".
       *#   運動器リハビリテーション料（３）
            03  CONS-UNDOKI16-COMMENT PIC X(09)  VALUE  "101800330".
-      *
       *    運動器リハビリテーション料（１）（要介護）（施設基準不適合）
            03  CONS-UNDOKI17-COMMENT PIC X(09)  VALUE  "180044030".
       *    運動器リハビリテーション料（２）（要介護）（施設基準不適合）
            03  CONS-UNDOKI18-COMMENT PIC X(09)  VALUE  "180044130".
       *    運動器リハビリテーション料（３）（要介護）（施設基準不適合）
            03  CONS-UNDOKI19-COMMENT PIC X(09)  VALUE  "180044230".
-      *
+      *#   運動器リハビリテーション料（１）（１．５倍）
+           03  CONS-UNDOKI20-COMMENT PIC X(09)  VALUE  "101801070".
+      *#   運動器リハビリテーション料（３）（１．５倍）
+           03  CONS-UNDOKI21-COMMENT PIC X(09)  VALUE  "101801080".
       *    難病患者リハビリテーション料
            03  CONS-NANBYO-COMMENT   PIC X(09)  VALUE  "180017910".
       *    障害児（者）リハビリテーション料（６歳未満）
@@ -1187,7 +1187,6 @@
            03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
       *    摂食機能療法
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
-      *
       *    廃用症候群リハビリテーション料（１）（１単位）
            03  CONS-HAIYO1-COMMENT   PIC X(09)  VALUE  "180044610".
       *    廃用症候群リハビリテーション料（２）（１単位）
@@ -2793,8 +2792,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       "09960" OR "09970" OR "09980" OR "09983"
                   MOVE    1     TO    FLG-HENSYU-NG
              END-IF
-             IF       SRY-SRYCD(IDX2)  =  "099140004" OR "099400001" OR
-                                          "099999926"
+             IF       SRY-SRYCD(IDX2)  =  "099140004" OR "099400001"
                   MOVE    1     TO    FLG-HENSYU-NG
              END-IF
       *
@@ -2837,7 +2835,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       "099999903" OR "099999904" OR
                       "099999905" OR "099999906" OR
                       "099999907" OR "099999908" OR
-                      "099200101"                           )
+                      "099200101" OR "099999926" OR
+                      "840000136"                           )
              OR     ( SRY-SRYCD(IDX2)       =  "099509901"  )
                   COMPUTE   RECE44-MEISAISU    =  RECE44-MEISAISU
                                                -  1
@@ -2888,7 +2887,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        "099999903" OR "099999904" OR
                        "099999905" OR "099999906" OR
                        "099999907" OR "099999908" OR
-                       "099200101"                           )
+                       "099200101" OR "099999926" OR
+                       "840000136"                           )
               OR     ( SRY-SRYCD(IDX2)       =  "099509901"  )
       *
                IF   FLG-KIN-OKIKAE   NOT =  ZERO
@@ -4648,7 +4648,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                             CONS-NOUKE22-COMMENT   OR
                                             CONS-UNDOKI14-COMMENT  OR
                                             CONS-UNDOKI15-COMMENT  OR
-                                            CONS-UNDOKI16-COMMENT
+                                            CONS-UNDOKI16-COMMENT  OR
+                                            CONS-UNDOKI20-COMMENT  OR
+                                            CONS-UNDOKI21-COMMENT
       *****             MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
                 END-IF
@@ -4766,6 +4768,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   IF   SRY-SRYCD(IDX2)  =   CONS-UNDOKI14-COMMENT
                                       OR    CONS-UNDOKI15-COMMENT
                                       OR    CONS-UNDOKI16-COMMENT
+                                      OR    CONS-UNDOKI20-COMMENT
+                                      OR    CONS-UNDOKI21-COMMENT
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-UNDOKI-COMMENT
                   END-IF
