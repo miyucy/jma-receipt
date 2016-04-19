@@ -357,6 +357,7 @@
            03  IDX29               PIC 9(02).
            03  IDX30               PIC 9(02).
            03  IDX32               PIC 9(02).
+           03  IDX33               PIC 9(02).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
@@ -1526,6 +1527,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
       *
            IF     RECE82-TAINFLG            =  "1"
                 PERFORM    2001-TAIN-TOKUBETU-COMMENT-SEC
+           END-IF
+      *
+      *    標準負担額経過措置（精神）入院年月日のコメント
+      *
+           IF   RECE82-SEISIN-SKJFLG        =   1
+           AND  RECE82-SEISIN-NYUINYMD  NOT =  SPACE
+              PERFORM      2001-SEISIN-SKJ-COMMENT-SEC
            END-IF
       *
            PERFORM 800-RECE82-SET84-SEC
@@ -3724,6 +3732,98 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        2001-TAIN-TOKUBETU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    標準負担額経過措置（精神）入院年月日のコメント
+      *****************************************************************
+       2001-SEISIN-SKJ-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE82-SET849-SEC
+           MOVE    99999989            TO  RECE849-ZAINUM
+           MOVE    "99"                TO  RECE849-SRYKBN
+           MOVE    "991"               TO  RECE849-SRYSYUKBN
+           MOVE    1                   TO  RECE849-MEISAISU
+      *
+           MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
+           WRITE   RECE849-REC
+           ADD     1                   TO  CNT-RECE849
+      *
+           PERFORM 800-RECE82-SET859-SEC
+           MOVE    99999989            TO  RECE859-ZAINUM
+           MOVE    "99"                TO  RECE859-SRYKBN
+           MOVE    "991"               TO  RECE859-SRYSYUKBN
+      *
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+           MOVE   "840000136"          TO  WRK-RECE85XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE85XX-SRYSURYO(1 1)
+           MOVE    31                  TO  WRK-RECE85XX-YUKOKETA(1 1)
+           MOVE   "標準負担額経過措置（精神）入院年月日："
+                                       TO  WRK-RECE85XX-NAME(1 1)(1:38)
+           MOVE    "平成　　　年　　月　　日"
+                                       TO  WRK-RECE85XX-NAME(1 1)(39:24)
+      *
+           INITIALIZE                         STS-AREA-DAY
+           INITIALIZE                         LNK-DAY2-AREA
+           MOVE    "21"                   TO  LNK-DAY2-IRAI
+           MOVE  RECE82-SEISIN-NYUINYMD   TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"    USING     STS-AREA-DAY
+                                          LNK-DAY2-AREA
+           IF      STS-DAY-RC1            =   ZERO
+              MOVE    LNK-DAY2-EDTYMD1-Y  TO  WRK-TAIHI-XX
+              INITIALIZE                      ORCSKANACHKAREA
+              MOVE    "2"                 TO  KANACHK-SYORI
+              MOVE    WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+              CALL    "ORCSKANACHK"    USING  ORCSKANACHKAREA
+              IF      KANACHK-RC      =   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                                 TO  WRK-RECE85XX-NAME(1 1)(45:4)
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                          TO  WRK-RECE85XX-INPUTCOMENT(1 1)(1:4)
+              END-IF
+      *
+              MOVE    LNK-DAY2-EDTYMD1-M  TO  WRK-TAIHI-XX
+              INITIALIZE                      ORCSKANACHKAREA
+              MOVE    "2"                 TO  KANACHK-SYORI
+              MOVE    WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+              CALL    "ORCSKANACHK"    USING  ORCSKANACHKAREA
+              IF      KANACHK-RC      =   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                                 TO  WRK-RECE85XX-NAME(1 1)(51:4)
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                          TO  WRK-RECE85XX-INPUTCOMENT(1 1)(5:4)
+              END-IF
+      *
+              MOVE    LNK-DAY2-EDTYMD1-D  TO  WRK-TAIHI-XX
+              INITIALIZE                      ORCSKANACHKAREA
+              MOVE    "2"                 TO  KANACHK-SYORI
+              MOVE    WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+              CALL    "ORCSKANACHK"    USING  ORCSKANACHKAREA
+              IF      KANACHK-RC      =   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                                 TO  WRK-RECE85XX-NAME(1 1)(57:4)
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                          TO  WRK-RECE85XX-INPUTCOMENT(1 1)(9:4)
+              END-IF
+      *
+              PERFORM  VARYING  IDX33  FROM  1  BY  2
+                        UNTIL   IDX33    >  12
+                 IF  WRK-RECE85XX-INPUTCOMENT(1 1)(IDX33:2) = "　"
+                    MOVE  "０"   TO
+                              WRK-RECE85XX-INPUTCOMENT(1 1)(IDX33:2)
+                 END-IF
+              END-PERFORM
+           END-IF
+      *
+           MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
+           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
+                                       TO  RECE859-SRYACT-TBL(1)
+           WRITE   RECE859-REC
+           ADD     1                   TO  CNT-RECE859
+      *
+           .
+       2001-SEISIN-SKJ-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
