@@ -6892,8 +6892,9 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                END-IF
            END-IF
            IF      SPA-ERRCD           =   SPACE
-      *        未来日入力チェック（警告）         
-               IF      SPA-NAI-C02-SRYYMD  >   SPA-NAI-C02-SYSYMD
+      *        未来日入力チェック（警告）登録時以外チェック
+               IF    ( SPA-NAI-C02-SRYYMD  >   SPA-NAI-C02-SYSYMD )
+               AND   ( FLG-TOUROKU         =   ZERO               )
                    MOVE    "0039"          TO  SPA-ERRCD
                END-IF
       *
@@ -10648,7 +10649,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    入力チェック
            MOVE    1                   TO  FLG-TOUROKU
            PERFORM 400-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
+           IF    ( SPA-ERRCD       NOT =   SPACE      )
            OR    ( SPA-CIDCD       NOT =   SPACE )
                GO  TO  450-TOUROKU-EXT
            END-IF
