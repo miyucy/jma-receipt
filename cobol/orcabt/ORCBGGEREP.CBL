@@ -245,13 +245,14 @@
        01  LST-PRT-AREA.
            03  LST-PRT-HEAD1.
                05  FILLER              PIC X(02)   VALUE   SPACE.
-               05  FILLER              PIC X(50)   VALUE
+               05  FILLER              PIC X(44)   VALUE
                    "＃＃　一般名処方加算誤算定疑い患者一覧　＃＃".
+               05  PRT-MIDASI          PIC X(10).
      ******    05  FILLER              PIC X(16)   VALUE   SPACE.
                05  PRT-SRYYM           PIC X(16).
                05  FILLER              PIC X(04)   VALUE
                    "分".
-               05  FILLER              PIC X(07)   VALUE   SPACE.
+               05  FILLER              PIC X(05)   VALUE   SPACE.
                05  PRT-SYSYMD          PIC X(10)   VALUE   SPACE.
                05  PRT-TIME            PIC X(07)   VALUE   SPACE.
                05  PRT-PAGE            PIC ZZZ9.
@@ -614,6 +615,12 @@
       *    処理終了年月
            MOVE    WRK-SRY-YYMM        TO  WRK-END-YMD(1:6)
            MOVE    31                  TO  WRK-END-DD
+      *
+           IF      WRK-PARA-SYORIKBN   =   "1"
+               MOVE    "（処理１）"        TO  PRT-MIDASI
+           ELSE
+               MOVE    SPACE               TO  PRT-MIDASI
+           END-IF
       *
       *    診療科をＴＢＬにセット
            PERFORM 1101-SRYKA-TBLSET-SEC
