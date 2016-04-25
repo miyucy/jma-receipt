@@ -206,6 +206,7 @@
            03  FLG-SANTEI              PIC 9(01).
            03  FLG-SANTEI-OK           PIC 9(01).
            03  FLG-BKOU-END            PIC 9(01).
+           03  FLG-NEXT-B              PIC 9(01).
       *
       *
       *    添字領域
@@ -2170,7 +2171,8 @@
            END-EVALUATE
       *
       *H28.4
-           IF      WRK-PAGE-SYOMAX     <   IDX
+           IF     (WRK-PAGE-SYOMAX     <   IDX )
+              AND (FLG-NEXT-B          =   1   )
       *        備考を処方内容へ編集
                PERFORM 3001-SYOHO-BIKOU-SEC
            ELSE
@@ -2253,7 +2255,8 @@
            END-PERFORM
       *
       *    備考欄編集（備考明細以外）
-           IF      IDX                 <=  WRK-PAGE-SYOMAX
+           IF     (IDX                 <=  WRK-PAGE-SYOMAX)
+              OR  (FLG-NEXT-B          =   ZERO    )
       *        備考を処方内容へ編集
                PERFORM 3002-BIKOU-HENSYU-SEC
            END-IF
@@ -2549,6 +2552,7 @@
            END-PERFORM
       *
            MOVE    WRK-PAGE-MAX        TO  WRK-PAGE-SYOMAX
+           MOVE    ZERO                TO  FLG-NEXT-B
       *
            IF      IDX-BM2             >   ZERO
       *        備考ページあり
@@ -2561,6 +2565,7 @@
                                                                 (50:)
                END-IF
                COMPUTE WRK-PAGE-MAX    =   WRK-PAGE-MAX   +   1
+               MOVE    1               TO  FLG-NEXT-B
            END-IF
            .
        4009-BIKOU-HENSYU-EXT.
