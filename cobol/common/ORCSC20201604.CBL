@@ -233,6 +233,9 @@
            03  IDX-GEN30           PIC 9(04).
            03  IDX-Z3              PIC 9(04).
       *
+           03  IDXG5               PIC 9(04).
+           03  IDXG6               PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
@@ -359,6 +362,8 @@
                    07  WRK-GEN30N-COMBI        PIC X(04).
                    07  WRK-GEN30N-CHIKEN       PIC X(01).
                    07  WRK-GEN30N-HKNKEI       PIC 9(08).
+                   07  WRK-GEN30N-HKNKEI5      PIC 9(08).
+                   07  WRK-GEN30N-HKNKEI6      PIC 9(08).
       *        ÆÜÉþ
                05  WRK-GEN30P-KEI          PIC 9(08).
                05  WRK-GEN30P-CNT          PIC 9(02).
@@ -366,11 +371,25 @@
                    07  WRK-GEN30P-COMBI        PIC X(04).
                    07  WRK-GEN30P-CHIKEN       PIC X(01).
                    07  WRK-GEN30P-HKNKEI       PIC 9(08).
+                   07  WRK-GEN30P-HKNKEI5      PIC 9(08).
+                   07  WRK-GEN30P-HKNKEI6      PIC 9(08).
                05  WRK-GEN30-TEN         PIC 9(08).
                05  WRK-GEN30-KEI         PIC 9(08).
                05  WRK-GEN30-KEIGK       PIC 9(08).
                05  WRK-GEN-RT            PIC 9(02).
                05  WRK-SANTEN30-KEI      PIC 9(08).
+      *H28.4
+               05  WRK-ZAITENSU5           PIC 9(08).
+               05  WRK-ZAITENSU6           PIC 9(08).
+               05  WRK-GEN30N-KEI5         PIC 9(08).
+               05  WRK-GEN30N-KEI6         PIC 9(08).
+               05  WRK-GEN30P-KEI5         PIC 9(08).
+               05  WRK-GEN30P-KEI6         PIC 9(08).
+               05  WRK-SANTEN-GEN5         PIC S9(08).
+               05  WRK-SANTEN-GEN6         PIC S9(08).
+               05  WRK-GEN30-TEN1          PIC 9(08).
+               05  WRK-GEN30-TEN5          PIC 9(08).
+               05  WRK-GEN30-TEN6          PIC 9(08).
       *
                05  WRK-ZAITENSU          PIC 9(08).
                05  WRK-GEN30-STR         PIC 9(04).
@@ -524,6 +543,12 @@
        01  HZN3-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN3-//.
+       01  HZN5-SCR-REC.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //HZN5-//.
+       01  HZN6-SCR-REC.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //HZN6-//.
       *H28.4
       *    ÊÝÂ¸ÍÑ
        01  HZNS-SCR-REC.
@@ -4086,6 +4111,13 @@
            MOVE    ZERO                TO  WRK-ZAITENSU
            MOVE    ZERO                TO  FLG-YAKZ-ARI
            COMPUTE IDX-STRG            =   WRK-GEN30-STR   +  1
+      *H28.4
+           INITIALIZE                  HZN5-SCR-REC
+           MOVE    ZERO                TO  IDXG5
+           INITIALIZE                  HZN6-SCR-REC
+           MOVE    ZERO                TO  IDXG6
+           MOVE    ZERO                TO  WRK-ZAITENSU5
+           MOVE    ZERO                TO  WRK-ZAITENSU6
       *
            MOVE    ZERO                TO  WRK-IDXG3
            PERFORM VARYING     IDXG3   FROM    IDX-STRG    BY  1
@@ -4114,6 +4146,20 @@
                    IF     (WRK-COM-INPUTCD (IDXG3)(1:1) =   "6" )
                        MOVE    1               TO  FLG-YAKZ-ARI
                    END-IF
+      *H28.4
+                   IF     (WRK-COM-INPUTCD (IDXG3)(1:1) =   "6" )
+                       IF     WRK-COM-YOBI1 (IDXG3)(7:1)    =   "1"
+      *                    ¸þÀº¿ÀÌô
+                           ADD     1                   TO  IDXG5
+                           MOVE    WRK-GMN-TBL (IDXG3) TO  HZN5-GMN-TBL
+                                                                (IDXG5)
+                       ELSE
+      *                    ¸þÀº¿ÀÌô°Ê³°
+                           ADD     1                   TO  IDXG6
+                           MOVE    WRK-GMN-TBL (IDXG3) TO  HZN6-GMN-TBL
+                                                                (IDXG6)
+                       END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *    ÌôºÞ¤Ê¤·¤ÏÂÐ¾Ý³°
@@ -4133,11 +4179,44 @@
                COMPUTE WRK-ZAITENSU        =   HZN3-COM-TENSU  (IDXG4)
                                            *   HZN3-COM-KAISU  (IDXG4)
            END-IF
+      *H28.4
+           IF      IDXG5               >   ZERO
+      *        ¹ç·×ÅÀ¿ô·×»»
+               INITIALIZE                  ORCSC90AREA
+               MOVE    "2"                 TO  LNK-SC90-KBN
+               MOVE    ZERO                TO  LNK-SC90-IDX
+               MOVE    1                   TO  LNK-SC90-IDX-STR
+               MOVE    IDXG5               TO  LNK-SC90-IDX-END
+               CALL    "ORCSC90TEN2"       USING
+                                           ORCSC90AREA
+                                           HZN5-SCR-REC
+               COMPUTE WRK-ZAITENSU5       =   HZN5-COM-TENSU  (IDXG5)
+                                           *   HZN5-COM-KAISU  (IDXG5)
+           END-IF
+           IF      IDXG6               >   ZERO
+      *        ¹ç·×ÅÀ¿ô·×»»
+               INITIALIZE                  ORCSC90AREA
+               MOVE    "2"                 TO  LNK-SC90-KBN
+               MOVE    ZERO                TO  LNK-SC90-IDX
+               MOVE    1                   TO  LNK-SC90-IDX-STR
+               MOVE    IDXG6               TO  LNK-SC90-IDX-END
+               CALL    "ORCSC90TEN2"       USING
+                                           ORCSC90AREA
+                                           HZN6-SCR-REC
+               COMPUTE WRK-ZAITENSU6       =   HZN6-COM-TENSU  (IDXG6)
+                                           *   HZN6-COM-KAISU  (IDXG6)
+           END-IF
       *TEST
       *    DISPLAY "WRK-ZAITENSU:"  WRK-ZAITENSU
       *          ",IDXG4:"  IDXG4
       *         ",TENSU:"  HZN3-COM-TENSU  (IDXG4)
       *         ",KAISU:"  HZN3-COM-KAISU  (IDXG4)
+      *    IF      IDXG5               >   ZERO
+      *    DISPLAY "WRK-ZAITENSU5:"  WRK-ZAITENSU5
+      *          ",IDXG5:"  IDXG5
+      *         ",TENSU:"  HZN5-COM-TENSU  (IDXG5)
+      *         ",KAISU:"  HZN5-COM-KAISU  (IDXG5)
+      *    END-IF
       *TEST
       *
            .
@@ -4174,6 +4253,13 @@
                    END-PERFORM
                    ADD     WRK-ZAITENSU        TO  WRK-GEN30N-HKNKEI
                                                        (WRK-GEN30N-CNT)
+      *H28.4
+                   ADD     WRK-ZAITENSU5       TO  WRK-GEN30N-KEI5
+                   ADD     WRK-ZAITENSU6       TO  WRK-GEN30N-KEI6
+                   ADD     WRK-ZAITENSU5       TO  WRK-GEN30N-HKNKEI5
+                                                       (WRK-GEN30N-CNT)
+                   ADD     WRK-ZAITENSU6       TO  WRK-GEN30N-HKNKEI6
+                                                       (WRK-GEN30N-CNT)
       *ÆÜÉþ¤òÂÐ¾Ý³°¤È¤¹¤ë¤Ê¤éºï½ü
                WHEN    "221"
                WHEN    "297"
@@ -4198,6 +4284,13 @@
                    END-PERFORM
                    ADD     WRK-ZAITENSU        TO  WRK-GEN30P-HKNKEI
                                                        (WRK-GEN30P-CNT)
+      *H28.4
+                   ADD     WRK-ZAITENSU5       TO  WRK-GEN30P-KEI5
+                   ADD     WRK-ZAITENSU6       TO  WRK-GEN30P-KEI6
+                   ADD     WRK-ZAITENSU5       TO  WRK-GEN30P-HKNKEI5
+                                                       (WRK-GEN30N-CNT)
+                   ADD     WRK-ZAITENSU6       TO  WRK-GEN30P-HKNKEI6
+                                                       (WRK-GEN30N-CNT)
            END-EVALUATE
            .
        300091-GEN30-ADD-EXT.
@@ -4837,12 +4930,6 @@
                MOVE    1               TO  FLG-GEN30-PSY
            END-IF
       *H26.10
-      *TEST
-          DISPLAY "WRK-ZAICNT:"  WRK-ZAICNT
-             ",WRK-ZAICNT-2:"  WRK-ZAICNT-2
-             ",WRK-KEIKEI:"  WRK-KEIKEI
-             ",WRK-KEIKEI-2:"  WRK-KEIKEI-2
-      *TEST
       *
            IF    ( WRK-ZAICNT          >=  7 )
       *H28.4
@@ -5104,11 +5191,11 @@
                    PERFORM 30022-INNAI-YAKUJYOUCHK-SEC
                END-IF
            END-IF
+      *
       *H28.4  ¼¾ÉÛ70Ëç°Ê¾å¤ÏÄ´´ð¤Ê¤·
            IF     (FLG-SIP70-ARI       =   1    )
                GO      TO      30021-INNAI-AUTO1-EXT
            END-IF
-      *
       *
       *    Ä´ºÞµ»½Ñ´ðËÜÎÁ¡ÊÆþ±¡³°¡Ë
            IF     (FLG-NAIYAK          =   1    )  OR
@@ -5953,9 +6040,6 @@
                               (WRK-COM-INPUTCD(IDX) =   SPACE ))
                ADD     1               TO  WRK-GMN-MAX
            END-PERFORM
-      *TEST
-          DISPLAY "WRK-KEIKEI21:" WRK-KEIKEI21
-      *TEST
       *
       * ÌôºÞÎÁÄþ¸º
       *    ÆâÉþ¤ÎÄþ¸º
@@ -6526,13 +6610,20 @@
       *
       *    ÆâÉþÁ´ÂÎ
            MOVE    WRK-GEN30N-KEI      TO  WRK-GEN30-TEN
-           IF      WRK-GEN-RT      NOT =   ZERO
-               COMPUTE WRK-SANTEN-9        =   WRK-GEN30N-KEI
-                                           *  (WRK-GEN-RT
-                                           /   100.00  )
-                                           +   0.5
-               MOVE    WRK-SANTEN-9        TO  WRK-GEN30-TEN
-           END-IF
+      *
+      *    IF      WRK-GEN-RT      NOT =   ZERO
+      *        COMPUTE WRK-SANTEN-9        =   WRK-GEN30N-KEI
+      *                                    *  (WRK-GEN-RT
+      *                                    /   100.00  )
+      *                                    +   0.5
+      *        MOVE    WRK-SANTEN-9        TO  WRK-GEN30-TEN
+      *    END-IF
+      *H28.4
+           MOVE    WRK-GEN30N-KEI      TO  WRK-GEN30-TEN1
+           MOVE    WRK-GEN30N-KEI5     TO  WRK-GEN30-TEN5
+           MOVE    WRK-GEN30N-KEI6     TO  WRK-GEN30-TEN6
+           PERFORM 300131-GEN30-KEISAN-SEC
+      *
       *    £³£°Æü°Ê¾å¤ÎÄþ¸º·×»»
            COMPUTE WRK-SANTEN-9        =   WRK-GEN30-TEN
                                        *   CONS-RT60
@@ -6561,14 +6652,13 @@
                ELSE
                    MOVE    WRK-GEN30N-HKNKEI(IDX-GEN)
                                                TO  WRK-GEN30-TEN
-                   IF      WRK-GEN-RT      NOT =   ZERO
-                       COMPUTE WRK-SANTEN-9    =   WRK-GEN30-TEN
-                                               *  (WRK-GEN-RT
-                                               /   100.00 )
-                                               +   0.5
-                       MOVE    WRK-SANTEN-9    TO  WRK-SANTENSU
-                       MOVE    WRK-SANTENSU    TO  WRK-GEN30-TEN
-                   END-IF
+                   MOVE    WRK-GEN30N-HKNKEI(IDX-GEN)
+                                               TO  WRK-GEN30-TEN1
+                   MOVE    WRK-GEN30N-HKNKEI5(IDX-GEN)
+                                               TO  WRK-GEN30-TEN5
+                   MOVE    WRK-GEN30N-HKNKEI6(IDX-GEN)
+                                               TO  WRK-GEN30-TEN6
+                   PERFORM 300131-GEN30-KEISAN-SEC
                    COMPUTE WRK-SANTEN-9    =   WRK-GEN30-TEN
                                            *  (CONS-RT60
                                            /   100.00  )
@@ -6600,19 +6690,72 @@
            EXIT.
       *
       *****************************************************************
+      *    £³£°Æü°Ê¾å¤ÎÄþ¸º·×»»½èÍý
+      *****************************************************************
+       300131-GEN30-KEISAN-SEC        SECTION.
+      *
+      *
+           IF      FLG-GEN30-PSY       =   1
+               MOVE    ZERO                TO  WRK-SANTEN-GEN5
+               MOVE    ZERO                TO  WRK-SANTEN-GEN6
+      *        ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿Äþ¸º¤¢¤ê
+               MOVE    CONS-RT80           TO  WRK-GEN-RT
+               COMPUTE WRK-SANTEN-9        =   WRK-GEN30-TEN5
+                                           *  (WRK-GEN-RT
+                                           /   100.00  )
+                                           +   0.5
+               MOVE    WRK-SANTEN-9        TO  WRK-SANTEN
+               COMPUTE WRK-SANTEN-GEN5     =   WRK-GEN30-TEN5
+                                           -   WRK-SANTEN
+               IF      FLG-GEN30-7GEN      =   1
+      *            £·¼ïÎà°Ê¾å¤ÎÄþ¸º¤¢¤ê
+                   MOVE    90                  TO  WRK-GEN-RT
+                   COMPUTE WRK-SANTEN-9        =   WRK-GEN30-TEN6
+                                               *  (WRK-GEN-RT
+                                               /   100.00  )
+                                               +   0.5
+                   MOVE    WRK-SANTEN-9        TO  WRK-SANTEN
+                   COMPUTE WRK-SANTEN-GEN6     =   WRK-GEN30-TEN6
+                                               -   WRK-SANTEN
+               END-IF
+               COMPUTE WRK-GEN30-TEN       =   WRK-GEN30-TEN1
+                                           -   WRK-SANTEN-GEN5
+                                           -   WRK-SANTEN-GEN6
+           ELSE
+      *        £·¼ïÎà°Ê¾å¤ÎÄþ¸º¤¢¤ê
+               IF      FLG-GEN30-7GEN      =   1
+                   MOVE    90                  TO  WRK-GEN-RT
+                   COMPUTE WRK-SANTEN-9        =   WRK-GEN30-TEN1
+                                               *  (WRK-GEN-RT
+                                               /   100.00  )
+                                               +   0.5
+                   MOVE    WRK-SANTEN-9        TO  WRK-GEN30-TEN
+               END-IF
+           END-IF
+           .
+       300131-GEN30-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    £³£°Æü°Ê¾å¤ÎÄþ¸º¡¡ÆÜÉþÄþ¸ºÊÔ½¸½èÍý
       *****************************************************************
        300132-GEN30-HEN22-SEC         SECTION.
       *
       *    ÆâÉþÁ´ÂÎ
            MOVE    WRK-GEN30P-KEI      TO  WRK-GEN30-TEN
-           IF      WRK-GEN-RT      NOT =   ZERO
-               COMPUTE WRK-SANTEN-9        =   WRK-GEN30P-KEI
-                                           *  (WRK-GEN-RT
-                                           /   100.00  )
-                                           +   0.5
-               MOVE    WRK-SANTEN-9        TO  WRK-GEN30-TEN
-           END-IF
+      **   IF      WRK-GEN-RT      NOT =   ZERO
+      *        COMPUTE WRK-SANTEN-9        =   WRK-GEN30P-KEI
+      *                                    *  (WRK-GEN-RT
+      *                                    /   100.00  )
+      *                                    +   0.5
+      *        MOVE    WRK-SANTEN-9        TO  WRK-GEN30-TEN
+      **   END-IF
+      *H28.4
+           MOVE    WRK-GEN30P-KEI      TO  WRK-GEN30-TEN1
+           MOVE    WRK-GEN30P-KEI5     TO  WRK-GEN30-TEN5
+           MOVE    WRK-GEN30P-KEI6     TO  WRK-GEN30-TEN6
+           PERFORM 300131-GEN30-KEISAN-SEC
+      *
       *    £³£°Æü°Ê¾å¤ÎÄþ¸º·×»»
            COMPUTE WRK-SANTEN-9        =   WRK-GEN30-TEN
                                        *  (CONS-RT60
@@ -6641,13 +6784,21 @@
                ELSE
                    MOVE    WRK-GEN30P-HKNKEI(IDX-GEN)
                                                TO  WRK-GEN30-TEN
-                   IF      WRK-GEN-RT      NOT =   ZERO
-                       COMPUTE WRK-SANTEN-9    =   WRK-GEN30-TEN
-                                               *  (WRK-GEN-RT
-                                               /   100.00)
-                                               +   0.5
-                       MOVE    WRK-SANTEN-9    TO  WRK-GEN30-TEN
-                   END-IF
+      *H28.4
+                   MOVE    WRK-GEN30P-HKNKEI(IDX-GEN)
+                                               TO  WRK-GEN30-TEN1
+                   MOVE    WRK-GEN30P-HKNKEI5(IDX-GEN)
+                                               TO  WRK-GEN30-TEN5
+                   MOVE    WRK-GEN30P-HKNKEI6(IDX-GEN)
+                                               TO  WRK-GEN30-TEN6
+                   PERFORM 300131-GEN30-KEISAN-SEC
+      **           IF      WRK-GEN-RT      NOT =   ZERO
+      *                COMPUTE WRK-SANTEN-9    =   WRK-GEN30-TEN
+      *                                        *  (WRK-GEN-RT
+      *                                        /   100.00)
+      *                                        +   0.5
+      *                MOVE    WRK-SANTEN-9    TO  WRK-GEN30-TEN
+      **           END-IF
                    COMPUTE WRK-SANTEN-9    =   WRK-GEN30-TEN
                                            *  (CONS-RT60
                                            /   100.00 )
