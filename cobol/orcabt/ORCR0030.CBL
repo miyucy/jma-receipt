@@ -14366,6 +14366,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *    初診のレセ点数欄の編集
                WHEN    "11"
                    IF   WRK-TNS-CHUKSNTUBAN(IDX3)   =   "0"
+                   AND  SRY-SRYCD(IDX3)(1:1)        =   "1"
                         ADD   WK-ZAIKAISU  TO   RECE02-KAISU(1)
                    END-IF
       *
@@ -14482,6 +14483,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
                                                      CONS-KEIZOKU2 )
                        OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT =  "0"  )
+                       OR ( SRY-SRYCD(IDX3)(1:1)       NOT =  "1"  )
                            CONTINUE
                        ELSE
                            ADD   WK-ZAIKAISU    TO   RECE02-KAISU(2)
@@ -14523,6 +14525,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
                                                      CONS-KEIZOKU2 )
                        OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"   )
+                       OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1"   )
                            CONTINUE
                        ELSE
                            ADD   WK-ZAIKAISU    TO   RECE02-KAISU(2)

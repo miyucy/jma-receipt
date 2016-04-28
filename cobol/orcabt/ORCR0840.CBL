@@ -8043,7 +8043,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                         END-EVALUATE
                       END-IF
                       IF    RECE82-KOMUKBN  =   "2"
-                        IF  TNS-CHUKSNTUBAN  NOT = "0"
+                        IF  TNS-CHUKSNTUBAN       NOT = "0"
+                        OR  SRY-SRYCD(IDX3)(1:1)  NOT = "1"
                             CONTINUE
                         ELSE
                             ADD   WK-ZAIKAISU  TO   RECE82-KAISU(1)

@@ -8473,6 +8473,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       **                 IF ( SRY-SRYCD(IDX3)     =   CONS-KEIZOKU1  OR
       **                                              CONS-KEIZOKU2 )
       **                 OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"  )
+      **                 OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1"  )
       **                     CONTINUE
       **                 ELSE
                              IF   FLG-COUNT-ARI  =  ZERO
@@ -8607,6 +8608,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                                CONS-DOUJITU2-GAI  OR
                                                CONS-DOUJITU3-GAI
                         IF   WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
+                        OR   SRY-SRYCD(IDX3)(1:1)       NOT = "1"
                             CONTINUE
                         ELSE
                             ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
@@ -8652,6 +8654,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         IF ( SRY-SRYCD(IDX3)     =   CONS-KEIZOKU1  OR
                                                      CONS-KEIZOKU2 )
                         OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"  )
+                        OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1"  )
                             CONTINUE
                         ELSE
                             ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
@@ -9463,6 +9466,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                       END-IF
                       IF    RECE41-KOMUKBN  =   "2"
                         IF  WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
+                        OR  SRY-SRYCD(IDX3)(1:1)       NOT = "1"
                             CONTINUE
                         ELSE
                             ADD   WK-ZAIKAISU  TO   RECE41-KAISU(1)
@@ -9517,6 +9521,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                            END-IF
                          END-IF
                          IF  WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
+                         OR  SRY-SRYCD(IDX3)(1:1)       NOT = "1"
                              CONTINUE
                          ELSE
                              ADD   WK-ZAIKAISU  TO   RECE41-KAISU(3)
@@ -9529,6 +9534,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                            IF ( SRY-SRYCD(IDX3)   =   CONS-KEIZOKU1  OR
                                                       CONS-KEIZOKU2  )
                            OR ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0" )
+                           OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1" )
                              CONTINUE
                            ELSE
                              ADD    WK-ZAIKAISU  TO  RECE41-KAISU(2)
