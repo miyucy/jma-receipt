@@ -7325,6 +7325,26 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 410-K98-SYORI-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
+      *TEST
+      *TEST
+      *TEST
+      *    ±¡³°ÅêÌôÌ¾¾ÎÊÑ´¹
+           IF     (LNK-SC97-INPUTCD(1:2)
+                                       =   "/G"
+                                       OR  "/g" )
+            AND   (LNK-SC97-INPUTCD(3:)    =   SPACE )
+               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+               IF      SPA-GENERICFLG      =   "1"
+                   MOVE    SPACE           TO  SPA-GENERICFLG
+               ELSE
+                   MOVE    "1"             TO  SPA-GENERICFLG
+               END-IF
+               GO      TO                  41011-KOUI-HEN2-EXT
+           END-IF
+      *TEST
+      *TEST
+      *TEST
       *    £ÐÆþÎÏ¤Ø
            IF      LNK-SC97-INPUTCD(1:1)
                                        =  "/"
@@ -13306,10 +13326,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
       *
       *TEST        °ìÈÌÌ¾É½¼¨
-                   IF      SPA-COM-MEI-KBN (WRK-IDX)   =   "1"
-                       MOVE    CL-GREEN        TO
-                                       K02-MEISYO-FGCOLOR (IDX)
-                   END-IF
+      *            IF      SPA-COM-MEI-KBN (WRK-IDX)   =   "1"
+      *                MOVE    CL-GREEN        TO
+      *                                K02-MEISYO-FGCOLOR (IDX)
+      *            END-IF
       *!!          ¶Ø´÷ÌôºÞ
                    IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
                        MOVE    CL-RED        TO
@@ -13570,6 +13590,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "red"               TO  K02-KOHMSG-STYLE
                MOVE    SPA-GMN-KOHMSG      TO  K02-KOHMSG-VALUE
+           END-IF
+      *TEST
+      *H28.5
+      *    ½èÊýÌ¾ÀÚÂØ¤¨
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               IF      SPA-GENERICFLG      =   SPACE
+                   MOVE    SPACE               TO  K02-MODE2-STYLE
+                   MOVE    "(ÌÃÊÁÌ¾)"          TO  K02-MODE2-VALUE
+               ELSE
+                   MOVE    SPACE               TO  K02-MODE2-STYLE
+                   MOVE    "(°ìÈÌÌ¾)"          TO  K02-MODE2-VALUE
+               END-IF
            END-IF
       *
       *    MOVE    SPA-DRCD-NAME       TO  K02-DRNAME

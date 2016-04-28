@@ -4316,7 +4316,6 @@
        300001-GENERICPRICE-CHEK-EXT.
            EXIT.
       *
-      *TEST
       *H28.2
       *****************************************************************
       *     ∞Ï»ÃÃææŒ ‘Ω∏ΩËÕ˝
@@ -4357,7 +4356,7 @@
            EVALUATE    TNSP-IPN-KISAIKBN
                WHEN    1
                    MOVE    SPACE               TO  WRK-MEISYO
-                   STRING  "°⁄»Ã°€"                DELIMITED  BY  SIZE
+                   STRING  "¢„»Ã¢‰"                DELIMITED  BY  SIZE
                            GENERIC-GENERICNAME     DELIMITED  BY  SPACE
                                                INTO    WRK-MEISYO
                    END-STRING
@@ -4370,7 +4369,7 @@
                                                                (IDX-T)
                WHEN    3
                    MOVE    SPACE               TO  WRK-MEISYO
-                   STRING  "°⁄»Ã°€"                DELIMITED  BY  SIZE
+                   STRING  "¢„»Ã¢‰"                DELIMITED  BY  SIZE
                            TNSP-SHONAME            DELIMITED  BY  SPACE
                                                INTO    WRK-MEISYO
                    END-STRING
@@ -4383,8 +4382,7 @@
            .
        300002-GENERICNAME-HEN-EXT.
            EXIT.
-      *TEST
-      *TEST
+      *
       *
       *****************************************************************
       *     ª¿¡«°¶√‚¡«§Œª˛°¢ª¿¡«∂Ë ¨∫∆¿ﬂƒÍΩËÕ˝

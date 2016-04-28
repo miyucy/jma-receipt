@@ -402,7 +402,8 @@
       *        ∞Ï»ÃÃæµ≠∫‹
                WHEN    1
                    MOVE    SPACE               TO  WRK-GENERICNAME
-                   STRING  "°⁄»Ã°€"                DELIMITED  BY  SIZE
+      *!!!         STRING  "°⁄»Ã°€"                DELIMITED  BY  SIZE
+                   STRING  "¢„»Ã¢‰"                DELIMITED  BY  SIZE
                            GENERIC-GENERICNAME     DELIMITED  BY  SPACE
                                                INTO    WRK-GENERICNAME
                    END-STRING
@@ -417,7 +418,8 @@
       *        ΩË ˝ÃææŒ§Ú∞Ï»ÃÃææŒ§»§π§Î
                WHEN    3
                    MOVE    SPACE               TO  WRK-GENERICNAME
-                   STRING  "°⁄»Ã°€"                DELIMITED  BY  SIZE
+      ***          STRING  "°⁄»Ã°€"                DELIMITED  BY  SIZE
+                   STRING  "¢„»Ã¢‰"                DELIMITED  BY  SIZE
                            TNSP-SHONAME            DELIMITED  BY  SPACE
                                                INTO    WRK-GENERICNAME
                    END-STRING

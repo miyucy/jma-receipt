@@ -323,6 +323,7 @@
       **       05  PRT-FIL26           PIC X(01).
                05  PRT-SRYCD           PIC X(09).
                05  PRT-FIL27           PIC X(01).
+               05  PRT-PSYKBN          PIC X(02).
                05  PRT-TNS-NAME        PIC X(50).
       *
            03  LST-PRT-BODY-03.
@@ -1688,6 +1689,9 @@
            MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
       *
       *    明細編集
+      *    明細あり
+           IF      WRK-PARA-SYORIKBN   =   "1"
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   400           )  OR
                              ((SPA-GMN-INPUTCD(IDX) =   SPACE) AND
@@ -1702,7 +1706,7 @@
                END-IF
                IF     (SPA-COM-SRYKBN (IDX)         =   "98")  AND
                       (SPA-COM-INPUTCD (IDX)        =   "099209910")
-                   MOVE    1               TO  FLG-CHK
+                   MOVE    ZERO            TO  FLG-CHK
                END-IF
                IF      FLG-CHK             =   1
       *保険組合せ
@@ -1712,7 +1716,10 @@
                    END-IF
                    MOVE    SPA-COM-SRYSYUKBN(IDX)
                                                    TO  PRT-SRYKBN
-                   MOVE    SPA-GMN-MEISYO (IDX)    TO  PRT-TNS-NAME
+                   IF      SPA-COM-YOBI1(IDX)(7:1) =   "1"
+                       MOVE    "☆"                TO  PRT-PSYKBN
+                   END-IF
+                   MOVE    SPA-COM-NAME   (IDX)    TO  PRT-TNS-NAME
                    MOVE    SPA-COM-INPUTCD (IDX)   TO  PRT-SRYCD
       *
                    IF      CNT-LINE               >=  MAX-LINE
@@ -1727,6 +1734,43 @@
                    MOVE    SPACE               TO  LST-PRT-BODY-02
                END-IF
            END-PERFORM
+      *    明細なし
+           ELSE
+               IF      CNT-LINE               >=  MAX-LINE
+                   PERFORM 400-PRINT-SEC
+                   MOVE    ZERO                TO  CNT-LINE
+                   PERFORM 280-HEAD-HENSYU-SEC
+               END-IF
+               ADD     1                   TO  CNT-LINE
+               MOVE    LST-PRT-BODY-02     TO  HCMSL80-MOJI
+                                                     (CNT-LINE)
+      *
+               MOVE    SPACE               TO  LST-PRT-BODY-02
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   400           )  OR
+                                 ((SPA-GMN-INPUTCD(IDX) =   SPACE) AND
+                                  (SPA-COM-INPUTCD(IDX) =   SPACE))
+                   MOVE    ZERO                TO  FLG-CHK
+                   IF     (SPA-COM-HKNCOMBI(IDX)   NOT =   SPACE
+                                                   AND     ZERO )
+                    AND   (WRK-HKNCOMBI    NOT =   SPA-COM-HKNCOMBI
+                                                               (IDX))
+                       MOVE    SPA-COM-HKNCOMBI(IDX)   TO  PRT-HKNCOMBI
+                       MOVE    SPA-COM-HKNCOMBI(IDX)   TO  WRK-HKNCOMBI
+                       IF      CNT-LINE               >=  MAX-LINE
+                           PERFORM 400-PRINT-SEC
+                           MOVE    ZERO                TO  CNT-LINE
+                           PERFORM 280-HEAD-HENSYU-SEC
+                       END-IF
+                       ADD     1                   TO  CNT-LINE
+                       MOVE    LST-PRT-BODY-02     TO  HCMSL80-MOJI
+                                                     (CNT-LINE)
+      *
+                       MOVE    SPACE               TO  LST-PRT-BODY-02
+                  END-IF
+               END-PERFORM
+           END-IF
+      *
       *
       *    一般名編集
       *    MOVE    SPACE               TO  LST-PRT-BODY-03
