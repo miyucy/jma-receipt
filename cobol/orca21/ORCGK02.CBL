@@ -7326,8 +7326,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
       *TEST
-      *TEST
-      *TEST
+      *!!!!
+      *H28.5
       *    院外投薬名称変換
            IF     (LNK-SC97-INPUTCD(1:2)
                                        =   "/G"
@@ -7342,7 +7342,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
-      *TEST
+      *
       *TEST
       *TEST
       *    Ｐ入力へ
@@ -13086,16 +13086,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                           (SPA-COM-CUR (WRK-IDX)     NOT =   SPACE)
                        MOVE    IDX             TO  WRK-MAP-MAX
                        MOVE    WRK-PAGE        TO  WRK-MAP-MAXPAGE
-      *********        前・次ページの時
-      *                IF     (SPA-GMN-CUR         =   88  OR  99 )
-      *                    IF      SPA-COM-CUR (WRK-IDX)   =   "1" 
-      *                       AND (SPA-ERRCD      NOT =   SPACE )
-      *                        IF      WRK-MAP-CUR         =   ZERO
-      *                            MOVE    IDX        TO  WRK-MAP-CUR
-      *                            MOVE    WRK-PAGE   TO  WRK-MAP-PAGE
-      *                        END-IF
-      *                    END-IF
-      *********        ELSE
       *                エラー位置
                        IF      SPA-COM-CUR (WRK-IDX)   =   "1"
                                                        OR  "3"
@@ -13129,7 +13119,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    2               TO  FLG-MAP-CUR4
                        END-IF
       *
-      ****             END-IF
                    END-IF
       *
                    MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
@@ -13217,7 +13206,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 5002-GMNSPA-HEN-SEC
       *H27.8
       *    画面ＳＰＡ書込み
-           PERFORM 1003-K02SPA-OUT-SEC
+      **** PERFORM 1003-K02SPA-OUT-SEC
       *
            IF     (FLG-GMN-INIT        =   1   )  OR
                   (SPA-GMN-MAX1        =   ZERO )
@@ -13325,11 +13314,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        K02-MEISYO-FGCOLOR (IDX)
                    END-IF
       *
-      *TEST        一般名表示
-      *            IF      SPA-COM-MEI-KBN (WRK-IDX)   =   "1"
-      *                MOVE    CL-GREEN        TO
-      *                                K02-MEISYO-FGCOLOR (IDX)
-      *            END-IF
       *!!          禁忌薬剤
                    IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
                        MOVE    CL-RED        TO
@@ -13682,6 +13666,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *         カーソルセット
                 PERFORM 5001-MAPCUR-SEC
             END-IF
+      *H27.8
+      *    画面ＳＰＡ書込み
+           PERFORM 1003-K02SPA-OUT-SEC
+      *
            .
        500-GMNHEN-EXT.
            EXIT.
@@ -13847,7 +13835,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                  ( SPA-COM-HOUKATU-ERR (WRK-IDX) NOT =   ZERO)   OR
                  ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
               AND (SPA-HKNCOMBINUM           NOT =   "9999" ))
-     *******  MOVE    "blue"         TO  K02-SURYO-FGCOLOR(IDX)
               MOVE    CL-BLUE        TO  K02-SURYO-FGCOLOR(IDX)
            END-IF
            .
