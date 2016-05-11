@@ -1047,6 +1047,8 @@
       *****************************************************************
        210-TANKI-NAMECHK-SEC            SECTION.
       *
+           MOVE    SPACE                    TO  WRK-TANKI-KBN2
+      *
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCHCN02SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCHCN02SUB-PTID     TO  PTNYUINRRK-PTID
@@ -1334,8 +1336,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        910-TTENSU-READ-SEC         SECTION.
       *
-      *
-           MOVE    SPACE               TO  WRK-TANKI-KBN2
            MOVE    SPA-HOSPNUM         TO  TTNS-HOSPNUM
            MOVE    TTNS-TENSU-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
