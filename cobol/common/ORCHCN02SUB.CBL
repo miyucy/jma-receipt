@@ -28,8 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
-      *平成３０年４月改定対応
-      *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
       *****************************************************************
       *
       *
@@ -229,19 +227,8 @@
                MOVE    "key48"             TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                IF    FLG-PTNYUINRRK        =   ZERO
-      *            期間算出処理
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY5-AREA
-                   MOVE    "51"                TO  LNK-DAY5-IRAI
-                   MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY5-START
-                   MOVE    PTNYUINRRK-TAIINYMD TO  LNK-DAY5-END
-                   CALL    "ORCSDAY"               USING
-                                                   STS-AREA-DAY
-                                                   LNK-DAY5-AREA
-                   IF     STS-DAY-RC1      =   ZERO
-                      ADD   LNK-DAY5-NISSU2
+                   ADD   PTNYUINRRK-TAISYONISSU
                                        TO   LNK-ORCHCN02SUB-NISSU(1)
-                   END-IF
                END-IF
            END-IF
       *    患者入院履歴クローズ
@@ -281,23 +268,11 @@
       *                記載対象であるかを再チェック
                        PERFORM    210-TANKI-NAMECHK-SEC
       *
-                       IF     (NACCT-ZAIKAISU    =  ZERO)
-                          IF  (WRK-TANKI-KBN     =      "1")  AND
+                       IF    ((NACCT-ZAIKAISU    NOT =  ZERO)  OR
+                              (WRK-TANKI-KBN     =      "1"))  AND
                               (WRK-TANKI-KBN2    =      SPACE)
-      *                      入院基本料単位の入院日数カウント
-                              PERFORM    210-NYUIN-COUNT-SEC
-                          END-IF
-                       END-IF
-                       IF     (NACCT-ZAIKAISU    NOT =  ZERO)
-                          IF  (WRK-TANKI-KBN     =      "1")  AND
-                              (WRK-TANKI-KBN2    =      SPACE)
-      *                      入院基本料単位の入院日数カウント
-                              PERFORM    210-NYUIN-COUNT-SEC
-                          END-IF
-                          IF  (WRK-TANKI-KBN     =      SPACE)
-      *                      入院基本料単位の入院日数カウント
-                              PERFORM    210-NYUIN-COUNT-SEC
-                          END-IF
+      *                  入院基本料単位の入院日数カウント
+                         PERFORM    210-NYUIN-COUNT-SEC
                        END-IF
                    END-IF
       *
@@ -351,7 +326,7 @@
            PERFORM    VARYING   NYUIN-IDX   FROM   1   BY   1
              UNTIL   (LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX) = SPACE) OR
                      (FLG-MATCH        =   1 )     OR
-                     (NYUIN-IDX    >   20)
+                     (NYUIN-IDX    >   10)
                DISPLAY  "NYUIN-IDX = " NYUIN-IDX
       *        点数マスタより入院料名称の取得（ワークとの比較用）
                INITIALIZE    TNS-TENSU-REC
@@ -360,7 +335,7 @@
                                             TNS-YUKOEDYMD(1:6)
                MOVE   "01"            TO    TNS-YUKOSTYMD(7:2)
                                             TNS-YUKOEDYMD(7:2)
-      *         DISPLAY  "TNS-NAME = " TNS-NAME
+               DISPLAY  "TNS-NAME = " TNS-NAME
                PERFORM    910-TENSU-READ-SEC
                EVALUATE   NSRY-SRYCD(1)
                    WHEN   "111111111"
@@ -657,13 +632,13 @@
                     ELSE
                         INITIALIZE  ORCSNYUINDAY-AREA
                     END-IF
-      *         DISPLAY "====(1)===================="
-      *         DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(1) = "
-      *                  LNK-ORCHCN02SUB-SYUBETUMEI(1)
-      *         DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(2) = "
-      *                  LNK-ORCHCN02SUB-SYUBETUMEI(2)
-      *         DISPLAY "ST-IDX = " ST-IDX
-      *         DISPLAY "ED-IDX = " ED-IDX
+               DISPLAY "====(1)===================="
+               DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(1) = "
+                        LNK-ORCHCN02SUB-SYUBETUMEI(1)
+               DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(2) = "
+                        LNK-ORCHCN02SUB-SYUBETUMEI(2)
+               DISPLAY "ST-IDX = " ST-IDX
+               DISPLAY "ED-IDX = " ED-IDX
       *
                     PERFORM   VARYING   IDX1   FROM  ST-IDX  BY  1
                       UNTIL   IDX1      >   ED-IDX
@@ -680,10 +655,10 @@
                END-IF
            END-PERFORM
       *
-      *     DISPLAY "FLG-MATCH = " FLG-MATCH
+           DISPLAY "FLG-MATCH = " FLG-MATCH
       *
            IF   (FLG-MATCH     =     ZERO)   AND
-                (NYUIN-IDX     <=       20)
+                (NYUIN-IDX     <=       10)
                MOVE  NSRY-SRYCD(1)   TO
                                  LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
       *        点数マスタより入院料名称の取得
@@ -1012,13 +987,13 @@
                    INITIALIZE  ORCSNYUINDAY-AREA
                END-IF
       *
-      *         DISPLAY "====(2)===================="
-      *         DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(1) = "
-      *                  LNK-ORCHCN02SUB-SYUBETUMEI(1)
-      *         DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(2) = "
-      *                  LNK-ORCHCN02SUB-SYUBETUMEI(2)
-      *         DISPLAY "ST-IDX = " ST-IDX
-      *         DISPLAY "ED-IDX = " ED-IDX
+               DISPLAY "====(2)===================="
+               DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(1) = "
+                        LNK-ORCHCN02SUB-SYUBETUMEI(1)
+               DISPLAY "LNK-ORCHCN02SUB-SYUBETUMEI(2) = "
+                        LNK-ORCHCN02SUB-SYUBETUMEI(2)
+               DISPLAY "ST-IDX = " ST-IDX
+               DISPLAY "ED-IDX = " ED-IDX
                PERFORM   VARYING   IDX1   FROM  ST-IDX  BY  1
                  UNTIL   IDX1      >   ED-IDX
                      IF   NACCT-DAY(IDX1)    NOT =  ZERO
@@ -1078,7 +1053,6 @@
            MOVE    LNK-ORCHCN02SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCHCN02SUB-PTID     TO  PTNYUINRRK-PTID
            MOVE    LNK-ORCHCN02SUB-NYUINYMD TO  PTNYUINRRK-NYUINYMD
-                                                PTNYUINRRK-TENNYUYMD
            MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
            MOVE    "key72"                  TO  MCP-PATHNAME
            PERFORM 910-PTNYUINRRK-SELECT-SEC
@@ -1087,14 +1061,8 @@
                MOVE    "key72"             TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                IF    FLG-PTNYUINRRK        =   ZERO
-      *             DISPLAY "PTNYUINRRK  KEY72  READ"
-      *             DISPLAY "PTNYUINRRK-TOKUTEI-KBN = "
-      *                      PTNYUINRRK-TOKUTEI-KBN
-      *             DISPLAY "PTNYUINRRK-TOKUTEI-NYUIN = "
-      *                      PTNYUINRRK-TOKUTEI-NYUIN
-      *****             ADD   PTNYUINRRK-TAISYONISSU
-      *****                                 TO   LNK-ORCHCN02SUB-NISSU(1)
-                    CONTINUE
+                   ADD   PTNYUINRRK-TAISYONISSU
+                                       TO   LNK-ORCHCN02SUB-NISSU(1)
                END-IF
            END-IF
       *
@@ -1343,9 +1311,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
       *            短期滞在の判定用
-                   IF    (TNS-CDKBN-KBN     =   "A")   AND
-                         (TNS-CDKBN-KBNNUM  =   400)   AND
-                         (TNS-CDKBN-KOUBAN  =   2  OR 3)
+                   IF     TNS-NYUKHNKSNKBN =  226  OR  240
                        MOVE   "1"       TO  WRK-TANKI-KBN
                    END-IF
                ELSE
@@ -1388,9 +1354,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TTNS-TENSU-REC
       *            短期滞在の判定用
-                   IF    (TTNS-CDKBN-KBN     =   "A")   AND
-                         (TTNS-CDKBN-KBNNUM  =   400)   AND
-                         (TTNS-CDKBN-KOUBAN  =   2  OR 3)
+                   IF     TTNS-NYUKHNKSNKBN =  226  OR  240
                        IF    TNS-SRYCD   =    TTNS-SRYCD
                           CONTINUE
                        ELSE
