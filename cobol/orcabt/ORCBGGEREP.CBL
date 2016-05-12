@@ -1623,7 +1623,7 @@
       *Ì¾¾Î¤Î¡ùºï½ü
       *    Ì¾¾Î
                IF     (SPA-COM-INPUTCD (IDX)(1:1)    =   "6"   )
-                 AND  (SPA-COM-YOBI1 (IDX)(7:1)  NOT =   SPACE )
+                 AND  (SPA-COM-PSY-CLASS(IDX)    NOT =   SPACE )
                  AND  (SPA-GMN-MEISYO(IDX)(1:2)  =   "¡ù"      )
                    MOVE    SPA-GMN-MEISYO(IDX)(3:)   TO  WRK-MEISYO
                    MOVE    WRK-MEISYO            TO  SPA-GMN-MEISYO(IDX)
