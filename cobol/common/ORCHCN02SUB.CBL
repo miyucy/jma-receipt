@@ -1042,7 +1042,7 @@
            EXIT.
       *
       *****************************************************************
-      *    入院履歴から短期滞在の名称を取得し、入院会計算定の名称と突合
+      *    入院履歴から短期滞在のコードを取得し、入院会計算定のコードと突合
       *    （不一致の場合は記載対象外）
       *****************************************************************
        210-TANKI-NAMECHK-SEC            SECTION.
@@ -1355,7 +1355,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    MCPDATA-REC         TO  TTNS-TENSU-REC
       *            短期滞在の判定用
                    IF     TTNS-NYUKHNKSNKBN =  226  OR  240
-                       IF    TNS-NAME   =    TTNS-NAME
+                       IF    TNS-SRYCD   =    TTNS-SRYCD
                           CONTINUE
                        ELSE
                           MOVE   "1"       TO  WRK-TANKI-KBN2
