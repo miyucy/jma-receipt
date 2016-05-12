@@ -79,6 +79,12 @@
       *選択対象剤番号
       *　老人区分
                05  SPA-ROUJIN          PIC  9(01).
+      *H28.2
+      *        後発医薬品への変更可署名
+               05  SPA-KOUHATUKA                 PIC X(01).
+      *        一般名表示
+               05  SPA-GENERICFLG                PIC X(01).
+      *
                05  SPA-ZAINUMSEL-AREA.
       *　診療区分
                    07  SPA-SRYKBN          PIC  X(02).

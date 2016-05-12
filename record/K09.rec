@@ -57,5 +57,9 @@ K09 {
       state int;
       label varchar(20);
     };
+    B04 {
+      state int;
+      label varchar(20);
+    };
   };
 };

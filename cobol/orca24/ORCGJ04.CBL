@@ -58,6 +58,7 @@
       * 04.08.00     NACL-多々納  13/06/XX  労災レセ電対応
       * 04.07.00     NACL-多々納  14/02/13  労災金額％加算対応
       * 04.08.00     NACL-多々納  14/12/XX  平成２７年１月改正対応
+      * 04.08.00     NACL-多々納  16/05/XX  一般名表示対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -450,6 +451,8 @@
            03  WRK-TENSUKEI-G          PIC S9(08).
            03  WRK-TENSUKEI-K          PIC S9(08).
       *
+           03  WRK-MAX                 PIC 9(04).
+      *
       *    行位置編集
        01  WRK-GMNGYO-AREA.
            03  WRK-MAP-MAX         PIC 9(04).
@@ -775,11 +778,10 @@
       *
       *    セット展開サブ
            COPY    "CPORCSCSETHEN.INC".
-      *TEST
-      *H28.2
+      *
+      *H28.3
       *    院外処方名編集パラメタ
            COPY    "CPORCSCGENNAME.INC".
-      *TEST
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1550,23 +1552,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *H27.1
       *    ステム管理共通（妥結率）
            PERFORM 1003-SYSKANRI-DAKETU-SEC
-      *H28.2
-      *    後発医薬品への変更可署名
-           MOVE    SPACE               TO  SYS-1030-REC
-           INITIALIZE                  SYS-1030-REC
-           MOVE    "1030"              TO  SYS-1030-KANRICD
-           MOVE    "*"                 TO  SYS-1030-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
-           MOVE    SYS-1030-REC        TO  SYSKANRI-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1030-REC
-               MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
-           ELSE
-               MOVE    "0"                 TO  SPA-KOUHATUKA
-           END-IF
       *
            .
        3101-SYSKANRI-SET-EXT.
@@ -4516,6 +4501,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *****MOVE    LNK-ORCSC-MAP-IDX   TO  SPA-MAP-IDX
       **** MOVE    LNK-ORCSC-GMN-IDX   TO  SPA-GMN-IDX
+      *H28.5
+      *    一般名記載
+           MOVE    IDX                 TO WRK-MAX
+           IF     (WRK-COM-SRYKBN (01) =   "21"
+                                       OR  "22"
+                                       OR  "23"
+                                       OR  "14" )
+             AND  (SPA-SRYYMD          >=  "20160401")
+             AND  (SPA-GENERICFLG      =   "1"   )
+      *        一般名記載
+               PERFORM 51023-MEIHENKAN-SEC
+           END-IF
+      *!!!!
       *
       *    編集後内容セット
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
@@ -4602,6 +4600,101 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        51022-TENSUPLUS2-CHK-EXT.
            EXIT.
+      *H28.4
+      *****************************************************************
+      *    投薬の名称再編集処理
+      *****************************************************************
+       51023-MEIHENKAN-SEC          SECTION.
+      *
+           IF     (WRK-COM-INGAITEN (WRK-MAX)  NOT =   ZERO )
+              OR  (WRK-COM-SRYSYUKBN (01)  =   "148"
+                                           OR  "149"
+                                           OR  "212"
+                                           OR  "222"
+                                           OR  "232"
+                                           OR  "292"
+                                           OR  "298"
+                                           OR  "295" )
+      *        院外投薬
+               PERFORM 510231-IPN-HEN-SEC
+           ELSE
+      *        院内
+               PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                       UNTIL       IDX-Z       >   WRK-MAX
+      *
+                   IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "6"  )
+                       MOVE    WRK-COM-MEI-NAME(IDX-Z)
+                                           TO  WRK-GMN-MEISYO(IDX-Z)
+                       MOVE    SPACE       TO  WRK-COM-MEI-KBN(IDX-Z)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       51023-MEIHENKAN-EXT.
+           EXIT.
+      *****************************************************************
+      *    投薬の名称再編集処理
+      *****************************************************************
+       510231-IPN-HEN-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSCGENNAMEAREA
+           MOVE    SPACE               TO  ORCSCGENN-SYORIKBN
+           MOVE    "1"                 TO  ORCSCGENN-SYORIKBN2
+           MOVE    SPA-SRYYMD          TO  ORCSCGENN-SRYYMD
+      *    後発医薬品への変更可署名(SYS-1030-KOUHATUKA)
+           MOVE    SPA-KOUHATUKA       TO  ORCSCGENN-1030-KOUHATUKA
+      *    後発品変更不可（処方毎）有
+           IF      SPA-GENEFUKAFLG     =   "1"
+               MOVE    "1"             TO  SPA-GENEFUKAFLG
+           END-IF
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z   >   WRK-MAX      )
+               MOVE    WRK-GMN-INPUTCD(IDX-Z)
+                                       TO  ORCSCGENN-INPUTCD(IDX-Z)
+               MOVE    WRK-COM-INPUTCD(IDX-Z)
+                                       TO  ORCSCGENN-SRYCD (IDX-Z)
+               MOVE    WRK-COM-KOUHATUKBN (IDX-Z)
+                                       TO  ORCSCGENN-TNS-KOUHATUKBN
+                                                            (IDX-Z) 
+               MOVE    WRK-COM-TNSP-KISAIKBN (IDX-Z)
+                                       TO  ORCSCGENN-IPN-KISAIKBN
+                                                            (IDX-Z)
+               MOVE    WRK-COM-YAKKAKJNCD (IDX-Z)
+                                       TO  ORCSGETGE-YAKKAKJNCD
+                                                            (IDX-Z)
+               MOVE    WRK-COM-IPN-NAME(IDX-Z)
+                                       TO  ORCSCGENN-HEN-NAME
+                                                            (IDX-Z)
+      *
+               MOVE    IDX-Z           TO  ORCSCGENN-TBLMAX
+           END-PERFORM
+      *
+           CALL    "ORCSCGENNAME"      USING    ORCSCGENNAMEAREA
+                                                SPA-AREA
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z   >   WRK-MAX      )
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "6"  )
+                   IF     (ORCSCGENN-NAME-KBN (IDX-Z)  =   "1"
+                                                       OR  "3"  )
+                      AND (ORCSCGENN-HEN-NAME(IDX-Z) NOT =   SPACE)
+      *                一般名
+                       MOVE    ORCSCGENN-HEN-NAME(IDX-Z)
+                                           TO  WRK-GMN-MEISYO(IDX-Z)
+                       MOVE    "1"         TO  WRK-COM-MEI-KBN(IDX-Z)
+                   ELSE
+      *                銘柄名
+                       MOVE    WRK-COM-MEI-NAME(IDX-Z)
+                                           TO  WRK-GMN-MEISYO(IDX-Z)
+                       MOVE    SPACE       TO  WRK-COM-MEI-KBN(IDX-Z)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       510231-IPN-HEN-EXT.
+           EXIT.
+      *H28.4
       *
       *****************************************************************
       *    禁忌チェック処理
@@ -6261,6 +6354,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COM-BUNGSU (IDX)
                                            TO  SRY-SRYKAISU(IDS)
            END-IF
+      *    外用の個別回数を設定
+           IF      SPA-COM-SRYKBN (IDX)    =   "23"
+               MOVE    SPA-COM-KAISU2 (IDX) TO  SRY-SRYKAISU(IDS)
+           END-IF
       *    自動算定区分
            MOVE    SPA-COM-AUTOKBN (IDX)   TO  SRY-AUTOKBN (IDS)
       *    数量の入力がある時
@@ -6270,7 +6367,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *!!
       *    器材商品コード対応
-           IF      SPA-COM-AUTOKBN2 (IDX)  =   "1"
+           IF     (SPA-COM-INPUTCD (IDX)(1:1)   =   "7"   )
+             AND  (SPA-COM-AUTOKBN2 (IDX)  =   "1"        )
                MOVE    "1"                 TO  SRY-MEISKYFLG (IDS)
            END-IF
       *!!!!

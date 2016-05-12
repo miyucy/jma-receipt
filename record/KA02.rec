@@ -233,5 +233,9 @@ KA02 {
       state int;
       label varchar(10);
     };
+    B05S {
+      state int;
+      label varchar(10);
+    };
   };
 };

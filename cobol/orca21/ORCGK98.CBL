@@ -54,7 +54,6 @@
       *  04.07.00    NACL-多々納  12/07/09  労災等名称編集追加
       *  04.07.00    NACL-多々納  13/03/01  労災レセ電対応
       *  04.08.00    NACL-多々納  15/09/XX  セット内容展開対応他
-      *  04.08.00    NACL-多々納  16/03/XX  平成２８年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -164,6 +163,7 @@
            03  WRK-NOZ             PIC ZZZ.
            03  WRK-TENSUS-X.
                05  WRK-TENSUS      PIC ZZZZZZ9.99.
+           05  WRK-TENSUS2         PIC ZZZZ9.99.
       *H28.4
            03  WRK-KISOTEN-CHK.
                05  WRK-KISOTEN-6C   PIC 9(07)V9(3).
@@ -224,7 +224,10 @@
                05  WRK-GEN-YAKKAKJNCD      PIC X(12).
                05  WRK-GEN-NAME            PIC X(80).
                05  WRK-GEN-TANI            PIC X(24).
-               05  WRK-GEN-KISOTEN         PIC 9(07)V9(3).
+               05  WRK-GEN-KISOTEN         PIC 9(07)V9(4).
+      *
+               05  WRK-GEN-GENCODE         PIC X(12).
+      *
            03  IDXG                        PIC 9(04).
            03  IDX3                        PIC 9(04).
            03  FLG-SYORI                   PIC 9(01).
@@ -246,6 +249,14 @@
            03  WRK-SRYSYUKBN               PIC X(03).
            03  WRK-SRYSYUKBNMEI            PIC X(50).
            03  WRK-GMN-SYORI               PIC X(01).
+      *
+           03  WRK-GENERICNAME             PIC X(200).
+           03  WRK-YAKKAKJNCD              PIC X(12).
+      *H28.4
+       01  TBL-YAKKAKJNCD-AREA.
+           03  TBL-YAKKAKJNCD-OCC          OCCURS   200.
+               05  TBL-YAKKAKJNCD          PIC X(12).
+       01  IDXK                            PIC 9(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -598,6 +609,7 @@
                MOVE    SPA-K98-GMN-NAME(1) TO  WRK-GEN-NAME
                MOVE    SPA-K98-GMN-TANI(1) TO  WRK-GEN-TANI
                MOVE    SPA-K98-GMN-KISOTEN(1)  TO  WRK-GEN-KISOTEN
+               MOVE    SPA-K98-NAI-GECODE(1)   TO  WRK-GEN-GENCODE
            END-IF
       *
            INITIALIZE                  SPA-K98-GMN-TBL
@@ -1583,80 +1595,6 @@
       *    共通編集処理
            PERFORM 310211-TENSU-KYOHEN-SEC
       *
-      *    MOVE    TNS-NAME            TO  SPA-K98-GMN-NAME    (IDX)
-      *    MOVE    TNS-TEN             TO  SPA-K98-GMN-KISOTEN (IDX)
-      *    薬剤・器材の時単位
-      *    IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
-      *         MOVE    TNS-TANINAME       TO  SPA-K98-GMN-TANI(IDX)
-      *    END-IF
-      *H24.4
-      *    薬価基準コード
-      *    IF      TNS-SRYCD (1:1)     =   "6"
-      *        MOVE    TNS-YAKKAKJNCD      TO  SPA-K98-GMN-INPUTCD(IDX)
-      *    END-IF
-      *
-      *    診療コードの時、種別
-      *    IF      TNS-SRYCD (1:1)     =   "1"
-      *        MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
-      *    END-IF
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *    診療行為で老人の時、再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-ROUTEKKBN       =   2  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "［老］"      DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   1  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【後発】"    DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   2  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【後発有】"  DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *!!
-      *    検査正式名称
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-SRYKBN          =   "60"
-      *                                OR  "64"  )  AND
-      *           (TNS-FORMALNAME  NOT =   SPACE )  AND
-      *           (TNS-FORMALNAME  NOT =   TNS-NAME )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  TNS-NAME           DELIMITED   BY  SPACE
-      *                 "　【"             DELIMITED   BY  SIZE
-      *                 TNS-FORMALNAME     DELIMITED   BY  SPACE
-      *                 "】"               DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *         PERFORM 310211-KENSA-NAME-SEC
-      *    END-IF
-      *!!
-      *    医療観察コード名称編集
-      *    IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
-      *            (TNS-IRYOKANSATUKBN =   4    )
-      *        医療観察区分
-      *        MOVE    SPACE               TO  SPA-K98-GMN-NAME (IDX)
-      *        STRING  "【医観】"          DELIMITED   BY  SIZE
-      *               TNS-NAME             DELIMITED   BY  SPACE
-      *               INTO                 SPA-K98-GMN-NAME(IDX)
-      *        END-STRING
-      **   END-IF
-      *!!
-      *
       *    入力ＣＤ
            IF      ICD-DSPSEQ          =   1
                MOVE    ICD-INPUTCD         TO  SPA-K98-GMN-SETCD (IDX)
@@ -2273,7 +2211,6 @@
                COMPUTE SPA-K98-GMN-KISOTEN (IDX)
                                            =   TNS-TEN   /  10
            END-IF
-      *
       *     薬剤・器材の時単位
            IF      TNS-SRYCD (1:1)     =   "6"  OR  "7"
                MOVE    TNS-TANINAME        TO  SPA-K98-GMN-TANI(IDX)
@@ -4283,15 +4220,25 @@
            END-IF
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  IDX
+           MOVE    SPACE               TO  WRK-GENERICNAME
            PERFORM
                UNTIL      (IDX         >    200 )   OR
                           (FLG-GENERICNAME  =   1   )
+      *H28.4
+      *      同じ名称は対象外
+             IF     (GENERIC-GENERICNAME      =   WRK-GENERICNAME)
+                 CONTINUE
+             ELSE
       *
                ADD     1               TO  IDX2
       *        次ページの時、表示分は読み飛ばし
                IF      IDX2            >=  WRK-STR
                    PERFORM 29001-GENERICNAME-HEN-SEC
                END-IF
+      *
+      *H28.4
+             END-IF
+             MOVE    GENERIC-GENERICNAME   TO  WRK-GENERICNAME
       *
                MOVE    "tbl_genericname"   TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -4334,10 +4281,15 @@
            MOVE    GENERIC-TANINAME    TO  SPA-K98-GMN-TANI(IDX)
       *
       *    金額
+           MOVE    GENERIC-YAKKAKJNCD  TO  WRK-YAKKAKJNCD
            PERFORM 9201-GENERICPRICE-READ-SEC
            IF      FLG-GENERICPRICE    =   ZERO
       *        最低薬価
                MOVE    GENERICPRICE-PRICE  TO  SPA-K98-GMN-KISOTEN
+                                                              (IDX)
+      *H28.3
+      *        一般名コード
+               MOVE    GENERICPRICE-GECODE TO  SPA-K98-NAI-GECODE
                                                               (IDX)
            END-IF
       *
@@ -4379,6 +4331,7 @@
            MOVE    SPA-K98-GMN-NAME (WRK-SELNO)    TO  WRK-GEN-NAME
            MOVE    SPA-K98-GMN-TANI (WRK-SELNO)    TO  WRK-GEN-TANI
            MOVE    SPA-K98-GMN-KISOTEN (WRK-SELNO) TO  WRK-GEN-KISOTEN
+           MOVE    SPA-K98-NAI-GECODE(WRK-SELNO)   TO  WRK-GEN-GENCODE
       *
            INITIALIZE                      SPA-K98-NAI-SELNUM-G
            INITIALIZE                      SPA-K98-GMN-SELNUM-G
@@ -4430,6 +4383,56 @@
       *    単位
            MOVE    WRK-GEN-TANI        TO  SPA-K98-GMN-TANI(IDX)
            MOVE    999                 TO  SPA-K98-NAI-NO  (IDX)
+      *H28.3
+           IF      WRK-GEN-GENCODE     NOT =   SPACE
+      *        一般名コードから一覧表示
+               PERFORM 41013-GECODE-HEN-SEC
+               GO      TO      410131-GENERIC-HENSYU-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  GENERICPRICE-REC
+           INITIALIZE                      GENERICPRICE-REC
+           IF      WRK-GEN-YAKKAKJNCD(10:)     =   SPACE
+               STRING  WRK-GEN-YAKKAKJNCD
+                       "%"                 DELIMITED  BY  SPACE
+                                       INTO    GENERICPRICE-YAKKAKJNCD
+               END-STRING
+               MOVE    "key5"              TO  WRK-PATH
+           ELSE
+               MOVE    WRK-GEN-YAKKAKJNCD  TO  GENERICPRICE-YAKKAKJNCD
+               MOVE    "key3"              TO  WRK-PATH
+           END-IF
+           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
+           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
+           MOVE    "tbl_generic_price" TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_generic_price"
+                                          TO  MCP-TABLE
+               MOVE    WRK-PATH             TO  MCP-PATHNAME
+               PERFORM 960-GENERICPRICE-READ-SEC
+           ELSE
+               INITIALIZE                  GENERICPRICE-REC
+               MOVE    1                   TO  FLG-GENERICPRICE
+           END-IF
+           INITIALIZE                  TBL-YAKKAKJNCD-AREA
+           MOVE    ZERO                TO  IDXK
+           PERFORM UNTIL    FLG-GENERICPRICE  =   1
+               IF      GENERICPRICE-GECODE    NOT =   WRK-GEN-GENCODE
+                   ADD     1                  TO  IDXK
+                   MOVE    GENERICPRICE-YAKKAKJNCD    TO  TBL-YAKKAKJNCD
+                                                       (IDXK)
+               END-IF
+               MOVE    "tbl_generic_price"
+                                          TO  MCP-TABLE
+               MOVE    WRK-PATH             TO  MCP-PATHNAME
+               PERFORM 960-GENERICPRICE-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_generic_price"    TO  MCP-TABLE
+           MOVE    WRK-PATH               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            INITIALIZE                      TNS-TENSU-REC
            STRING  WRK-GEN-YAKKAKJNCD
@@ -4449,6 +4452,10 @@
            PERFORM
                UNTIL      (IDX         >    200 )   OR
                           (FLG-TENSU   =   1   )
+      *H28.3
+      *        一般名コード存在チェック
+               PERFORM 410131-GENERIC-GECODE-CHK-SEC
+      *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
       *            次ページの時、表示分は読み飛ばし
@@ -4472,6 +4479,115 @@
            .
        410131-GENERIC-HENSYU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    最低薬価マスタ検索処理
+      *****************************************************************
+       410131-GENERIC-GECODE-CHK-SEC   SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDXK    FROM    1   BY  1
+                   UNTIL      (IDXK        >   200 )
+                       OR     (TBL-YAKKAKJNCD(IDXK)  =   SPACE)
+                       OR     (FLG-CHK     =   1   )
+               IF      TNS-YAKKAKJNCD      =   TBL-YAKKAKJNCD(IDXK)
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           .
+       410131-GENERIC-GECODE-CHK-EXT.
+           EXIT.
+      *H28.4
+      *
+      *****************************************************************
+      *    一般名コードから一覧表示処理
+      *****************************************************************
+       41013-GECODE-HEN-SEC   SECTION.
+      *TEST
+           DISPLAY "K98 WRK-GEN-GENCODE:" WRK-GEN-GENCODE
+      *TEST
+      *
+           MOVE    SPACE               TO  GENERICPRICE-REC
+           INITIALIZE                      GENERICPRICE-REC
+           MOVE    WRK-GEN-GENCODE     TO  GENERICPRICE-GECODE
+           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
+           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
+           MOVE    "tbl_generic_price" TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_generic_price" TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 960-GENERICPRICE-READ-SEC
+           ELSE
+               INITIALIZE                  GENERICPRICE-REC
+               MOVE    1                   TO  FLG-GENERICPRICE
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX3
+           PERFORM
+               UNTIL      (IDX         >    200 )   OR
+                          (FLG-GENERICPRICE =   1   )
+      *
+               MOVE    ZERO                TO  FLG-CHK
+      *
+               INITIALIZE                      TNS-TENSU-REC
+               IF      GENERICPRICE-YAKKAKJNCD(10:) =   SPACE
+                   STRING    GENERICPRICE-YAKKAKJNCD
+                             "%"
+                                           DELIMITED BY SPACE
+                                           INTO    TNS-YAKKAKJNCD
+                   END-STRING
+               ELSE
+                   MOVE    GENERICPRICE-YAKKAKJNCD
+                                           TO  TNS-YAKKAKJNCD
+               END-IF
+               IF      SPA-K98-GMN-ALL     =   SPACE
+                   MOVE    "key01gj"           TO  WRK-PATH
+               ELSE
+                   MOVE    "key01g"            TO  WRK-PATH
+               END-IF
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM 910-TENSU-SELECT-SEC
+               PERFORM UNTIL  ( FLG-TENSU   =   1  )
+                          OR  ( IDX         >   200 ) 
+      *
+      *TEST
+           DISPLAY "K98 TNS-SRYCD:"  TNS-SRYCD
+                   ","              TNS-YAKKAKJNCD
+      *TEST
+                   ADD     1               TO  IDX2
+      *            次ページの時、表示分は読み飛ばし
+                   IF      IDX2            >=  WRK-STR
+                       PERFORM 31021-TENSU-HEN-SEC
+      *                行番号変更
+                       ADD     1               TO  IDX3
+                       MOVE    IDX3            TO  SPA-K98-GMN-NO(IDX)
+                   END-IF
+      *
+                   MOVE    WRK-PATH            TO  MCP-PATHNAME
+                   PERFORM                     910-TENSU-READ-SEC
+               END-PERFORM
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+               MOVE    "tbl_generic_price" TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 960-GENERICPRICE-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_generic_price" TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
+           .
+       41013-GECODE-HEN-CHK-EXT.
+           EXIT.
+      *H28.4
+      *!!!!!!!!!!
       *H24.4
       *****************************************************************
       *    一般名検索処理
@@ -4526,9 +4642,19 @@
            MOVE    GENERIC-GENERICNAME TO  WRK-GEN-NAME
            MOVE    GENERIC-TANINAME    TO  WRK-GEN-TANI
       *    最低薬価
+           MOVE    SPA-K98-GMN-INPUTCD (WRK-SELNO)
+                                       TO  WRK-YAKKAKJNCD
            PERFORM 9201-GENERICPRICE-READ-SEC
            IF      FLG-GENERICPRICE    =   ZERO
                MOVE    GENERICPRICE-PRICE  TO  WRK-GEN-KISOTEN
+      *H28.3
+      *        一般名コード
+               MOVE    GENERICPRICE-GECODE TO  WRK-GEN-GENCODE
+      *TEST
+           DISPLAY "K98 YAK:"  SPA-K98-GMN-INPUTCD (WRK-SELNO)
+                    ",GENERIC-YAKKAKJNCD:"  GENERIC-YAKKAKJNCD
+                    ",GENERIC-YAKKAKJNCD:"  GENERICPRICE-YAKKAKJNCD
+                    ",GENERIC-GECODE:"  GENERICPRICE-GECODE
            END-IF
       *
            INITIALIZE                      SPA-K98-NAI-SELNUM-G
@@ -5571,7 +5697,8 @@
       *
            MOVE    SPACE               TO  GENERICPRICE-REC
            INITIALIZE                      GENERICPRICE-REC
-           MOVE    GENERIC-YAKKAKJNCD  TO  GENERICPRICE-YAKKAKJNCD
+      **   MOVE    GENERIC-YAKKAKJNCD  TO  GENERICPRICE-YAKKAKJNCD
+           MOVE    WRK-YAKKAKJNCD      TO  GENERICPRICE-YAKKAKJNCD
            MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
            MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
@@ -5604,6 +5731,26 @@
        9201-GENERICPRICE-READ-EXT.
            EXIT.
       *H24.4
+      *
+      *****************************************************************
+      *    最低薬価マスタ処理読込
+      *****************************************************************
+       960-GENERICPRICE-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_generic_price" TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  GENERICPRICE-REC
+               MOVE    ZERO                TO  FLG-GENERICPRICE
+           ELSE
+               INITIALIZE                      GENERICPRICE-REC
+               MOVE    1                   TO  FLG-GENERICPRICE
+           END-IF
+      *
+           .
+       960-GENERICPRICE-READ-EXT.
+           EXIT.
       *
       *
       *****************************************************************

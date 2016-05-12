@@ -3843,7 +3843,7 @@
                AND    (WRK-COM-TANDKKBN (IDX)  NOT =  "1"  )
                    MOVE    1               TO  WRK-KONGO
       *H28.4       向精神薬以外の集計
-                   IF      WRK-COM-YOBI1 (IDX)(7:1)    =   SPACE
+                   IF      WRK-COM-PSY-CLASS (IDX)     =   SPACE
                        MOVE    1               TO  WRK-KONGO-2
                    END-IF
                ELSE
@@ -3853,13 +3853,13 @@
                                            =   "099209901" )
                        MOVE    1               TO  WRK-KONGO
       *H28.4           向精神薬以外の集計
-                       IF      WRK-COM-YOBI1 (IDX)(7:1)    =   SPACE
+                       IF      WRK-COM-PSY-CLASS (IDX) =   SPACE
                            MOVE    1               TO  WRK-KONGO-2
                        END-IF
                    ELSE
                        ADD     1               TO  WRK-SONOTA
       *H28.4           向精神薬以外の集計
-                       IF      WRK-COM-YOBI1 (IDX)(7:1)    =   SPACE
+                       IF      WRK-COM-PSY-CLASS (IDX) =   SPACE
                            ADD     1               TO  WRK-SONOTA-2
                        END-IF
                    END-IF
@@ -3871,7 +3871,7 @@
                                            *   WRK-COM-SURYO  (IDX)
                ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN-G
       *H28.4   向精神薬以外の集計
-               IF      WRK-COM-YOBI1 (IDX)(7:1)    =   SPACE
+               IF      WRK-COM-PSY-CLASS (IDX) =   SPACE
                    ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN-G-2
                END-IF
       *
@@ -4148,7 +4148,7 @@
                    END-IF
       *H28.4
                    IF     (WRK-COM-INPUTCD (IDXG3)(1:1) =   "6" )
-                       IF     WRK-COM-YOBI1 (IDXG3)(7:1)    =   "1"
+                       IF     WRK-COM-PSY-CLASS (IDXG3)    =   "1"
       *                    向精神薬
                            ADD     1                   TO  IDXG5
                            MOVE    WRK-GMN-TBL (IDXG3) TO  HZN5-GMN-TBL
@@ -5819,7 +5819,7 @@
       *H28.4
       *        向精神薬以外あり
                IF     (WRK-COM-INPUTCD (IDX-G)(1:1) =  "6")
-                  AND (WRK-COM-YOBI1 (IDX-G)(7:1)   =  SPACE)
+                  AND (WRK-COM-PSY-CLASS (IDX-G)    =  SPACE)
                    MOVE    1               TO  FLG-ARI2
                END-IF
       *
@@ -6099,7 +6099,7 @@
       *****************************************************************
        300211-GENTUIKACHK-HAN-SEC         SECTION.
       *
-           IF      WRK-COM-YOBI1 (IDX-G)(7:1)  NOT =   SPACE
+           IF      WRK-COM-PSY-CLASS (IDX-G)   NOT =   SPACE
                MOVE    1                   TO  FLG-GENOK-ALL
                COMPUTE WRK-SYOKEIS2        =   WRK-COM-KISOTEN (IDX-G)
                                            *   WRK-COM-SURYO   (IDX-G)

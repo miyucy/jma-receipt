@@ -215,9 +215,9 @@
                05  SPA-NAI-RESPRVFLG             PIC X(01).
       *H28.2
       *        後発医薬品への変更可署名
-               05  SPA-KOUHATUKA                 PIC X(01).
+      *        05  SPA-KOUHATUKA                 PIC X(01).
       *        一般名表示
-               05  SPA-GENERICFLG                 PIC X(01).
+      *        05  SPA-GENERICFLG                 PIC X(01).
       *
       *        保険組合せ一覧
                05  SPA-HKNCOMI-AREA.

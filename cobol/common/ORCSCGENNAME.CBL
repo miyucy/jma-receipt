@@ -363,9 +363,16 @@
            END-IF
       *
       *    マスタ検索なし
-           IF      ORCSCGENN-SYORIKBN2 =   "1"
-      *        名称区分の編集
-               MOVE    WRK-IPN-KISAIKBN    TO  ORCSCGENN-NAME-KBN (IDX)
+           IF     (ORCSCGENN-SYORIKBN2 =   "1" )
+               IF     (WRK-IPN-KISAIKBN    =   "1"  )
+                 AND  (ORCSCGENN-HEN-NAME(IDX)  =   SPACE )
+      *            一般名名称編集処理
+                   PERFORM 20011-GENRICNAME-HEN-SEC
+               ELSE
+      *            名称区分の編集
+                   MOVE    WRK-IPN-KISAIKBN    TO  ORCSCGENN-NAME-KBN
+                                                               (IDX)
+               END-IF
            ELSE
       *        一般名名称編集処理
                PERFORM 20011-GENRICNAME-HEN-SEC
@@ -402,7 +409,6 @@
       *        一般名記載
                WHEN    1
                    MOVE    SPACE               TO  WRK-GENERICNAME
-      *!!!         STRING  "【般】"                DELIMITED  BY  SIZE
                    STRING  "≪般≫"                DELIMITED  BY  SIZE
                            GENERIC-GENERICNAME     DELIMITED  BY  SPACE
                                                INTO    WRK-GENERICNAME
@@ -418,7 +424,6 @@
       *        処方名称を一般名称とする
                WHEN    3
                    MOVE    SPACE               TO  WRK-GENERICNAME
-      ***          STRING  "【般】"                DELIMITED  BY  SIZE
                    STRING  "≪般≫"                DELIMITED  BY  SIZE
                            TNSP-SHONAME            DELIMITED  BY  SPACE
                                                INTO    WRK-GENERICNAME

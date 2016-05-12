@@ -1402,14 +1402,6 @@
                    WHEN    "295"
                        MOVE     1              TO  FLG-GAIYAK2
                END-EVALUATE
-      *TEST
-          DISPLAY "REP02 IDX:"  IDX
-               ",COM:"  SPA-COM-INPUTCD(IDX)
-               ",YOBI:"  SPA-COM-YOBI1(IDX)(7:1)
-              ",SYU:" SPA-COM-SRYSYUKBN (IDX)
-               ",KISOTEN:"  SPA-COM-KISOTEN(IDX)
-               ",ZAIEND:"  SPA-COM-ZAIEND(IDX)
-      *TEST
       *
       *        処方内容チェク
                PERFORM 3000-SYOHOU-CHK-SEC
@@ -1420,10 +1412,6 @@
       *
            END-PERFORM
            MOVE    ZERO            TO  FLG-ERRKBN
-      *TEST
-          DISPLAY "REP02 WRK-ZAICNT-2:"  WRK-ZAICNT-2
-               ",WRK-ZAICNT:"  WRK-ZAICNT
-      *TEST
       *
            IF     (WRK-ZAICNT-2        >=  7 )
       *        向精神薬以外で７種類以上
@@ -1536,7 +1524,7 @@
                AND    (SPA-COM-TANDKKBN (IDX)  NOT =  "1"  )
                    MOVE    1               TO  WRK-KONGO
       *H28.4       向精神薬以外の集計
-                   IF      SPA-COM-YOBI1 (IDX)(7:1)    =   SPACE
+                   IF      SPA-COM-PSY-CLASS (IDX) =   SPACE
                        MOVE    1               TO  WRK-KONGO-2
                    END-IF
                ELSE
@@ -1546,13 +1534,13 @@
                                            =   "099209901" )
                        MOVE    1               TO  WRK-KONGO
       *H28.4           向精神薬以外の集計
-                       IF      SPA-COM-YOBI1 (IDX)(7:1)    =   SPACE
+                       IF      SPA-COM-PSY-CLASS (IDX) =   SPACE
                            MOVE    1               TO  WRK-KONGO-2
                        END-IF
                    ELSE
                        ADD     1               TO  WRK-SONOTA
       *H28.4           向精神薬以外の集計
-                       IF      SPA-COM-YOBI1 (IDX)(7:1)    =   SPACE
+                       IF      SPA-COM-PSY-CLASS(IDX)  =   SPACE
                            ADD     1               TO  WRK-SONOTA-2
                        END-IF
                    END-IF
@@ -1563,7 +1551,7 @@
                                            *   SPA-COM-SURYO  (IDX)
                ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN-G
       *H28.4   向精神薬以外の集計
-               IF      SPA-COM-YOBI1 (IDX)(7:1)    =   SPACE
+               IF      SPA-COM-PSY-CLASS (IDX) =   SPACE
                    ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN-G-2
                END-IF
       *
@@ -1716,7 +1704,7 @@
                    END-IF
                    MOVE    SPA-COM-SRYSYUKBN(IDX)
                                                    TO  PRT-SRYKBN
-                   IF      SPA-COM-YOBI1(IDX)(7:1) =   "1"
+                   IF      SPA-COM-PSY-CLASS(IDX)  =   "1"
                        MOVE    "☆"                TO  PRT-PSYKBN
                    END-IF
                    MOVE    SPA-COM-NAME   (IDX)    TO  PRT-TNS-NAME

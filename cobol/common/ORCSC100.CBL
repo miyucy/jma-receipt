@@ -1935,7 +1935,7 @@
            END-PERFORM
       *
       *
-      *H28.2
+      *H28.5
       *!!! ±¡³°ÅêÌôÌ¾¾ÎÊÑ´¹
       *??  IF     (SPA-NYUGAIKBN       =   "2" )
            IF     (WRK-COM-SRYKBN (01) =   "21"
@@ -2435,12 +2435,16 @@
                MOVE    WRK-COM-KOUHATUKBN (IDX-Z)
                                        TO  ORCSCGENN-TNS-KOUHATUKBN
                                                             (IDX-Z) 
-               MOVE    WRK-COM-IPN-KISAIKBN (IDX-Z)
+               MOVE    WRK-COM-TNSP-KISAIKBN (IDX-Z)
                                        TO  ORCSCGENN-IPN-KISAIKBN
                                                             (IDX-Z)
                MOVE    WRK-COM-YAKKAKJNCD (IDX-Z)
                                        TO  ORCSGETGE-YAKKAKJNCD
                                                             (IDX-Z)
+               MOVE    WRK-COM-IPN-NAME(IDX-Z)
+                                       TO  ORCSCGENN-HEN-NAME
+                                                            (IDX-Z)
+      *
                MOVE    IDX-Z           TO  ORCSCGENN-TBLMAX
            END-PERFORM
       *
@@ -2452,9 +2456,9 @@
                IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "6"  )
                    IF     (ORCSCGENN-NAME-KBN (IDX-Z)  =   "1"
                                                        OR  "3"  )
-                      AND (WRK-COM-IPN-NAME(IDX-Z) NOT =   SPACE)
+                      AND (ORCSCGENN-HEN-NAME(IDX-Z) NOT =   SPACE)
       *                °ìÈÌÌ¾
-                       MOVE    WRK-COM-IPN-NAME(IDX-Z)
+                       MOVE    ORCSCGENN-HEN-NAME(IDX-Z)
                                            TO  WRK-GMN-MEISYO(IDX-Z)
                        MOVE    "1"         TO  WRK-COM-MEI-KBN(IDX-Z)
                    ELSE

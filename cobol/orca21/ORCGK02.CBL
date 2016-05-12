@@ -113,6 +113,7 @@
       *  04.08.00    NACL-¬ø°π«º  14/10/23  œ¢¬≥¡ﬁ∆˛¬–±˛
       *  04.08.00    NACL-¬ø°π«º  15/03/XX  £»£≤£∑«Ø£¥∑Ó≤˛¿µ¬–±˛
       *  04.08.00    NACL-¬ø°π«º  16/03/XX  £»£≤£∏«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  04.08.00    NACL-¬ø°π«º  16/05/XX  ∞Ï»ÃÃæ…Ωº®¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7326,17 +7327,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
       *TEST
-      *!!!!
+      *
       *H28.5
       *    ±°≥∞≈ÍÃÙÃææŒ —¥π
            IF     (LNK-SC97-INPUTCD(1:2)
                                        =   "/G"
                                        OR  "/g" )
             AND   (LNK-SC97-INPUTCD(3:)    =   SPACE )
+            AND   (SPA-SRYYMD          >=  "20160401")
                MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      SPA-GENERICFLG      =   "1"
-                   MOVE    SPACE           TO  SPA-GENERICFLG
+                   MOVE    "0"             TO  SPA-GENERICFLG
                ELSE
                    MOVE    "1"             TO  SPA-GENERICFLG
                END-IF
@@ -13578,13 +13580,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *TEST
       *H28.5
       *    ΩË ˝Ãæ¿⁄¬ÿ§®
-           IF      SPA-GMN-PTNUM   NOT =   SPACE
-               IF      SPA-GENERICFLG      =   SPACE
-                   MOVE    SPACE               TO  K02-MODE2-STYLE
-                   MOVE    "(Ã√ ¡Ãæ)"          TO  K02-MODE2-VALUE
-               ELSE
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE     )
+            AND   (SPA-SRYYMD          >=  "20160401")
+               IF      SPA-GENERICFLG      =   "1"
                    MOVE    SPACE               TO  K02-MODE2-STYLE
                    MOVE    "(∞Ï»ÃÃæ)"          TO  K02-MODE2-VALUE
+               ELSE
+                   MOVE    SPACE               TO  K02-MODE2-STYLE
+                   MOVE    "(Ã√ ¡Ãæ)"          TO  K02-MODE2-VALUE
                END-IF
            END-IF
       *

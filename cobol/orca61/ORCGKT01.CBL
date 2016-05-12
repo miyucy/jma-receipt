@@ -35,6 +35,7 @@
       *  04.06.00    NACL-多々納  11/02/16  用法コメント対応
       *  04.08.00    NACL-多々納  14/05/29  一時ファイル変更
       *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
+      *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4816,6 +4817,24 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 410-KT98-SYORI-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
+      *
+      *H28.5
+      *    院外投薬名称変換
+           IF     (LNK-SC97-INPUTCD(1:2)
+                                       =   "/G"
+                                       OR  "/g" )
+            AND   (LNK-SC97-INPUTCD(3:)    =   SPACE )
+            AND   (SPA-SRYYMD          >=  "20160401")
+               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+               IF      SPA-GENERICFLG      =   "1"
+                   MOVE    "0"             TO  SPA-GENERICFLG
+               ELSE
+                   MOVE    "1"             TO  SPA-GENERICFLG
+               END-IF
+               GO      TO                  41011-KOUI-HEN2-EXT
+           END-IF
+      *
       *    Ｐ入力なし
            IF      LNK-SC97-INPUTCD(1:1)
                                        =  "/"
@@ -8988,6 +9007,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "black"             TO  KT01-GRPMEI-STYLE
                MOVE    SPACE               TO  KT01-GRPMEI-VALUE
            END-IF
+      *
+      *H28.5
+      *    処方名切替え
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE     )
+            AND   (SPA-SRYYMD          >=  "20160401")
+               IF      SPA-GENERICFLG      =   "1"
+                   MOVE    SPACE               TO  KT01-MODE2-STYLE
+                   MOVE    "(一般名)"          TO  KT01-MODE2-VALUE
+               ELSE
+                   MOVE    SPACE               TO  KT01-MODE2-STYLE
+                   MOVE    "(銘柄名)"          TO  KT01-MODE2-VALUE
+               END-IF
+           END-IF
+      *
       *
       *    医院名称
       ***  MOVE    SPA-HOSPNAME        TO  KT01-TITLE

@@ -185,6 +185,11 @@
                    07  SPA-MAE-KOUFUYMD        PIC X(08).
       *        内容変更用テーブル最大
                05  SPA-WKSRY-MAX               PIC 9(04).
+      *H28.5
+      *        一般名表示区分
+               05  SPA-NAI-GENERICFLG      PIC X(01).
+               05  SPA-NAI-KOUHATUKA       PIC X(01).
+      *
       *    選択剤内容
            03  SPA-PARA-WKSRY-TBL.
                05  SPA-PARA-MAX                 PIC 9(04).

@@ -93,3 +93,15 @@ path	key4 	{
 		;
 	};
 };
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_generic_price_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_generic_price
+		WHERE	YAKKAKJNCD    LIKE  :YAKKAKJNCD
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+		;
+	};
+};

@@ -5206,6 +5206,24 @@
                PERFORM 410-K98-SYORI-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
+      *H28.5
+      *    ±¡³°ÅêÌôÌ¾¾ÎÊÑ´¹
+           IF     (LNK-SC97-INPUTCD(1:2)
+                                       =   "/G"
+                                       OR  "/g" )
+            AND   (LNK-SC97-INPUTCD(3:)    =   SPACE )
+            AND   (SPA-SRYYMD          >=  "20160401")
+               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+               IF      SPA-GENERICFLG      =   "1"
+                   MOVE    "0"             TO  SPA-GENERICFLG
+               ELSE
+                   MOVE    "1"             TO  SPA-GENERICFLG
+               END-IF
+               GO      TO                  41011-KOUI-HEN2-EXT
+           END-IF
+      *
+      *TEST
       *    £ÐÆþÎÏ¤Ø
            IF      LNK-SC97-INPUTCD(1:1)
                                        =  "/"

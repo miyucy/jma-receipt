@@ -31,6 +31,7 @@
       *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
       *  04.06.00    NACL-多々納  10/07/01  残量廃棄自動算定対応
       *  04.07.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正追加
+      *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -266,6 +267,10 @@
            COPY    "CPORCSSANTEI.INC".
       *    全角変換
            COPY    "CPORCSKANACHK.INC".
+      *
+      *H28.3
+      *    院外処方名編集パラメタ
+           COPY    "CPORCSCGENNAME.INC".
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -736,6 +741,7 @@
                PERFORM 51022-TENSUPLUS2-CHK02-SEC
            END-IF
       *@
+      *
       *    スパ領域へ戻す
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                  SPA-GMN-REC
@@ -1320,6 +1326,121 @@
            EXIT.
       *!!!
       *
+      *H28.4
+      *****************************************************************
+      *    投薬の名称再編集処理
+      *****************************************************************
+       51023-MEIHENKAN-SEC          SECTION.
+      *
+           IF     (WRK-COM-INGAITEN (WRK-MAX)  NOT =   ZERO )
+              OR  (WRK-COM-SRYSYUKBN (01)  =   "148"
+                                           OR  "149"
+                                           OR  "212"
+                                           OR  "222"
+                                           OR  "232"
+                                           OR  "292"
+                                           OR  "298"
+                                           OR  "295" )
+      *        院外投薬
+               PERFORM 510231-IPN-HEN-SEC
+           ELSE
+      *        院内
+               PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                       UNTIL       IDX-Z       >   WRK-MAX
+      *
+                   IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "6"  )
+                       MOVE    WRK-COM-MEI-NAME(IDX-Z)
+                                           TO  WRK-GMN-MEISYO(IDX-Z)
+                       MOVE    SPACE       TO  WRK-COM-MEI-KBN(IDX-Z)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       51023-MEIHENKAN-EXT.
+           EXIT.
+      *****************************************************************
+      *    投薬の名称再編集処理
+      *****************************************************************
+       510231-IPN-HEN-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSCGENNAMEAREA
+           MOVE    SPACE               TO  ORCSCGENN-SYORIKBN
+           MOVE    "1"                 TO  ORCSCGENN-SYORIKBN2
+           MOVE    SPA-SRYYMD          TO  ORCSCGENN-SRYYMD
+      *    後発医薬品への変更可署名(SYS-1030-KOUHATUKA)
+           MOVE    SPA-KOUHATUKA       TO  ORCSCGENN-1030-KOUHATUKA
+      *    後発品変更不可（処方毎）有
+           IF      SPA-GENECHG-KBN     =   1
+               MOVE    "1"             TO  ORCSCGENN-KOUHATU-IN
+           END-IF
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z   >   WRK-MAX      )
+               MOVE    WRK-GMN-INPUTCD(IDX-Z)
+                                       TO  ORCSCGENN-INPUTCD(IDX-Z)
+               MOVE    WRK-COM-INPUTCD(IDX-Z)
+                                       TO  ORCSCGENN-SRYCD (IDX-Z)
+               MOVE    WRK-COM-KOUHATUKBN (IDX-Z)
+                                       TO  ORCSCGENN-TNS-KOUHATUKBN
+                                                            (IDX-Z) 
+               MOVE    WRK-COM-TNSP-KISAIKBN (IDX-Z)
+                                       TO  ORCSCGENN-IPN-KISAIKBN
+                                                            (IDX-Z)
+               MOVE    WRK-COM-YAKKAKJNCD (IDX-Z)
+                                       TO  ORCSGETGE-YAKKAKJNCD
+                                                            (IDX-Z)
+               MOVE    WRK-COM-IPN-NAME(IDX-Z)
+                                       TO  ORCSCGENN-HEN-NAME
+                                                            (IDX-Z)
+      *
+               MOVE    IDX-Z           TO  ORCSCGENN-TBLMAX
+           END-PERFORM
+      *
+           CALL    "ORCSCGENNAME"      USING    ORCSCGENNAMEAREA
+                                                SPA-AREA
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z   >   WRK-MAX      )
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "6"  )
+                   IF     (ORCSCGENN-NAME-KBN (IDX-Z)  =   "1"
+                                                       OR  "3"  )
+                      AND (ORCSCGENN-HEN-NAME(IDX-Z) NOT =   SPACE)
+      *                一般名
+                       MOVE    ORCSCGENN-HEN-NAME(IDX-Z)
+                                           TO  WRK-GMN-MEISYO(IDX-Z)
+                       MOVE    "1"         TO  WRK-COM-MEI-KBN(IDX-Z)
+                   ELSE
+      *                銘柄名
+                       MOVE    WRK-COM-MEI-NAME(IDX-Z)
+                                           TO  WRK-GMN-MEISYO(IDX-Z)
+                       MOVE    SPACE       TO  WRK-COM-MEI-KBN(IDX-Z)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       510231-IPN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    投薬の銘柄記載編集処理
+      *****************************************************************
+       51024-MEIHENKAN02-SEC          SECTION.
+      *
+      *    院内
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL       IDX-Z       >   WRK-MAX
+      *
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "6"  )
+                   MOVE    WRK-COM-MEI-NAME(IDX-Z)
+                                           TO  WRK-GMN-MEISYO(IDX-Z)
+                   MOVE    SPACE           TO  WRK-COM-MEI-KBN(IDX-Z)
+               END-IF
+           END-PERFORM
+           .
+       51024-MEIHENKAN02-EXT.
+           EXIT.
+      *TEST
+      *
       *****************************************************************
       *    剤ごとの処理
       *****************************************************************
@@ -1821,6 +1942,23 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *H28.5
+      *    院外投薬名称変換
+           IF     (WRK-COM-SRYKBN (01) =   "21"
+                                       OR  "22"
+                                       OR  "23"
+                                       OR  "14" )
+             AND  (SPA-SRYYMD          >=  "20160401")
+               IF      (SPA-GENERICFLG      =   "1"   )
+      *            一般名記載
+                   PERFORM 51023-MEIHENKAN-SEC
+               ELSE
+      *            銘柄記載
+                   PERFORM 51024-MEIHENKAN02-SEC
+               END-IF
+           END-IF
+      *!!!!
       *
       *    点数再セット
       *    診察日を戻す

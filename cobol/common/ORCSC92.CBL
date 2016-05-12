@@ -4189,7 +4189,7 @@
            END-IF
       *H28.4
       *    ¸þÀº¿ÀÌô¾ðÊóÊÔ½¸
-           MOVE    SPACE           TO  SPA-COM-YOBI1 (IDX-T) (7:1)
+           MOVE    SPACE           TO  SPA-COM-PSY-CLASS (IDX-T)
            IF     (TNS-SRYCD(1:1)      =   "6" )
              AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
                PERFORM 3009-PSYCHOTROPIC-HEN-SEC
@@ -4226,12 +4226,14 @@
            MOVE    TNS-YAKKAKJNCD      TO  SPA-COM-YAKKAKJNCD (IDX-T)
       *!!
       *H28.2 °ìÈÌÌ¾É½¼¨ÂÐ±þ
-           IF     (SPA-SRYYMD          >=  "20140401")
+           IF     (SPA-SRYYMD          >=  "20160401")
             AND   (TNS-SRYCD(1:1)      =   "6"  )
       *        ÌÃÊÁÌ¾¾Î¡Ê½é´ü²èÌÌ¡Ë
                MOVE    SPA-GMN-MEISYO (IDX-T)
                                            TO  SPA-COM-MEI-NAME(IDX-T)
                MOVE    SPACE               TO  SPA-COM-IPN-NAME(IDX-T)
+               MOVE    TNSP-IPN-KISAIKBN   TO  SPA-COM-TNSP-KISAIKBN
+                                                                (IDX-T)
       *        °ìÈÌÌ¾¾Î
                IF     (TNS-YAKKAKJNCD      NOT =   SPACE )
                 AND   (TNSP-IPN-KISAIKBN   =   1
@@ -4245,7 +4247,7 @@
       *    ¸þÀº¿ÀÌôÀßÄê
            IF     (SPA-SRYYMD          >=  "20160401" )
            AND    (SPA-COM-INPUTCD(IDX-T)(1:1) =   "6" )
-           AND    (SPA-COM-YOBI1 (IDX-T)(7:1)  =   "1" )
+           AND    (SPA-COM-PSY-CLASS (IDX-T)   =   "1" )
                MOVE   SPA-GMN-MEISYO (IDX-T)   TO  WRK-MEISYO
                MOVE   SPACE              TO  SPA-GMN-MEISYO (IDX-T)
                STRING "¡ù"             DELIMITED   BY  SIZE
@@ -5443,8 +5445,8 @@
       *
                    IF     (PSYCHOTROPIC-CLASS  >=  1  AND  <=  4 )
       *                ¸þÀº¿ÀÌô
-                       MOVE    "1"             TO  SPA-COM-YOBI1 (IDX-T)
-                                                                  (7:1)
+                       MOVE    "1"             TO  SPA-COM-PSY-CLASS
+                                                               (IDX-T)
                    END-IF
                ELSE
                    INITIALIZE                  PSYCHOTROPIC-REC

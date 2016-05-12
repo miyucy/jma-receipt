@@ -62,3 +62,6 @@
               03  K09-B03.
                 04  K09-B03-STATE   PIC S9(9)   BINARY.
                 04  K09-B03-LABEL   PIC X(20).
+              03  K09-B04.
+                04  K09-B04-STATE   PIC S9(9)   BINARY.
+                04  K09-B04-LABEL   PIC X(20).
