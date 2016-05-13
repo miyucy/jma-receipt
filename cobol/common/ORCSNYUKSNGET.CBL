@@ -200,8 +200,8 @@
                MOVE    MCPDATA-REC TO   SYS-5000-REC
       *        入院料加算
                PERFORM   VARYING   IDX7   FROM   1  BY  1
-                 UNTIL  (SYS-5000-KSNCD(IDX7)    =   SPACE)  OR
-                        (IDX7                    >   20)
+                 UNTIL  (IDX7                    >   20)     OR
+                        (SYS-5000-KSNCD(IDX7)    =   SPACE)
                     IF   SYS-5000-KSNKBN(IDX7)   =   "2"
       *                 平成２８年４月以降の病院設定は乳幼児加算(病院）だけと
       *                 なるので、患者年齢で置き換えする（診療所は従前のまま）
@@ -2053,6 +2053,18 @@
       *       障害者施設等入院基本料（夜勤時間超過減算）
               IF     (TNS-CDKBN-KBNNUM  = 106)   AND
                      (TNS-CDKBN-KOUBAN  =   5)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       障害者施設等入院基本料（医療区分）（夜勤時間超過減算）
+      *       （表用番号で判定不可の為、算定コードを直判定）
+              IF      TNS-SRYCD       = "190198910"  OR
+                                        "190199010"  OR
+                                        "190199110"  OR
+                                        "190199210"  OR
+                                        "190199310"  OR
+                                        "190199410"  OR
+                                        "190199510"  OR
+                                        "190199610"
                     MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
               END-IF
            END-IF
