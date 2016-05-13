@@ -2593,12 +2593,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
       *!!!!
       *APIV3
-      *        APIの時、一般名記載分編集
+      *            APIの時、一般名記載分編集
                    IF     (FLG-SYORI           =   2  )
                      AND  (SPA-TERMID(1:4)     =   "API+")
                      AND  (SPA-COM-INPUTCD (IDX)(1:1) =   "6" )
-                     AND  (SPA-COM-YOBI1  (IDX)(10:1) =   "1"
-                                                      OR  "3" )
+                     AND  (SPA-COM-MEI-KBN(IDX)    =   "1"
+                                                   OR  "3"   )
                        PERFORM 2002-API-GENEHENSYU-SEC
                    END-IF
       *APIV3
@@ -2938,10 +2938,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        2002-API-GENEHENSYU-SEC              SECTION.
       *
       *    入力コメントに一般名区分編集
-           IF      SPA-COM-YOBI1  (IDX)(10:1) =   "1"
+           IF      SPA-COM-MEI-KBN(IDX)    =   "1"
                MOVE    "API+1"         TO  WKSRY-INPUTCOMENT (IDY)
            END-IF
-           IF      SPA-COM-YOBI1  (IDX)(10:1) =   "3"
+           IF      SPA-COM-MEI-KBN(IDX)    =   "3"
                MOVE    "API+3"         TO  WKSRY-INPUTCOMENT (IDY)
            END-IF
       *
