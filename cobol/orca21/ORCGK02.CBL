@@ -8421,17 +8421,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    凝價粗陸侳褲恓粗及凜﹜ヵ昦巨仿□反公及引引
-           IF     (SPA-SYONIKA-ARI3    NOT =   ZERO )   AND
-                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)  =   "1" )
+      *    IF     (SPA-SYONIKA-ARI3    NOT =   ZERO )   AND
+      *           (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)  =   "1" )
       *H26.6
-             AND  (SPA-COM-TNSSRYKBN (SPA-GMN-IDX)     =   "13")
+      *      AND  (SPA-COM-TNSSRYKBN (SPA-GMN-IDX)     =   "13")
       *H28.5
-             AND  (SPA-COM-INPUTCD (SPA-GMN-IDX)
-                                           NOT =   "113018210")
-               IF      SPA-ERRCD           =   "0032"
-                   MOVE    SPACE               TO  SPA-ERRCD
-               END-IF
-           END-IF
+      *      AND  (SPA-COM-INPUTCD (SPA-GMN-IDX)
+      *                                    NOT =   "113018210")
+      *        IF      SPA-ERRCD           =   "0032"
+      *            MOVE    SPACE               TO  SPA-ERRCD
+      *        END-IF
+      ***  END-IF
       *---(01.00.01) LINE ADD  START  ----
       *    煞屢�衝�
            IF      SPA-ERRCD(1:1)      =   "K"
@@ -12112,11 +12112,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
       *            凝價粗陸侳褲恓粗及凜﹜ヵ昦巨仿□反公及引引
-                   IF      SPA-SYONIKA-ARI3    NOT =   ZERO
-                       IF      LNK-SC92-ERRCD5 NOT =   SPACE
-                           MOVE    SPACE           TO  LNK-SC92-ERRCD5
-                       END-IF
-                   END-IF
+      *            IF      SPA-SYONIKA-ARI3    NOT =   ZERO
+      *                IF      LNK-SC92-ERRCD5 NOT =   SPACE
+      *                    MOVE    SPACE           TO  LNK-SC92-ERRCD5
+      *                END-IF
+      *            END-IF
       *
                    PERFORM VARYING     IDX-ERR FROM    1  BY  1
                            UNTIL      (IDX-ERR     >   10     )  OR
