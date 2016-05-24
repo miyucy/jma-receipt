@@ -4383,62 +4383,82 @@
       *    単位
            MOVE    WRK-GEN-TANI        TO  SPA-K98-GMN-TANI(IDX)
            MOVE    999                 TO  SPA-K98-NAI-NO  (IDX)
-      *H28.3
-           IF      WRK-GEN-GENCODE     NOT =   SPACE
-      *        一般名コードから一覧表示
-               PERFORM 41013-GECODE-HEN-SEC
-               GO      TO      410131-GENERIC-HENSYU-EXT
-           END-IF
       *
-           MOVE    SPACE               TO  GENERICPRICE-REC
-           INITIALIZE                      GENERICPRICE-REC
-           IF      WRK-GEN-YAKKAKJNCD(10:)     =   SPACE
-               STRING  WRK-GEN-YAKKAKJNCD
-                       "%"                 DELIMITED  BY  SPACE
-                                       INTO    GENERICPRICE-YAKKAKJNCD
-               END-STRING
-               MOVE    "key5"              TO  WRK-PATH
-           ELSE
-               MOVE    WRK-GEN-YAKKAKJNCD  TO  GENERICPRICE-YAKKAKJNCD
-               MOVE    "key3"              TO  WRK-PATH
-           END-IF
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
-           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-           MOVE    WRK-PATH            TO  MCP-PATHNAME
+      *H28.5
+      *    一般名称を取得
+           MOVE    SPACE               TO  GENERICNAME-REC
+           INITIALIZE                      GENERICNAME-REC
+           MOVE    WRK-GEN-YAKKAKJNCD  TO  GENERIC-YAKKAKJNCD
+      *
+           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_generic_price"
-                                          TO  MCP-TABLE
-               MOVE    WRK-PATH             TO  MCP-PATHNAME
-               PERFORM 960-GENERICPRICE-READ-SEC
+               PERFORM 9102-GENERICNAME-READ-SEC
            ELSE
-               INITIALIZE                  GENERICPRICE-REC
-               MOVE    1                   TO  FLG-GENERICPRICE
+               INITIALIZE                      GENERICNAME-REC
+               MOVE    1                   TO  FLG-GENERICNAME
            END-IF
-           INITIALIZE                  TBL-YAKKAKJNCD-AREA
-           MOVE    ZERO                TO  IDXK
-           PERFORM UNTIL    FLG-GENERICPRICE  =   1
-               IF      GENERICPRICE-GECODE    NOT =   WRK-GEN-GENCODE
-                   ADD     1                  TO  IDXK
-                   MOVE    GENERICPRICE-YAKKAKJNCD    TO  TBL-YAKKAKJNCD
-                                                       (IDXK)
-               END-IF
-               MOVE    "tbl_generic_price"
-                                          TO  MCP-TABLE
-               MOVE    WRK-PATH             TO  MCP-PATHNAME
-               PERFORM 960-GENERICPRICE-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_generic_price"    TO  MCP-TABLE
-           MOVE    WRK-PATH               TO  MCP-PATHNAME
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           IF      FLG-GENERICNAME     =   1
+               GO      TO   410131-GENERIC-HENSYU-EXT
+           END-IF
+      *
+      *    一般名で一般名を検索する
+           MOVE    GENERIC-GENERICNAME TO  WRK-GENERICNAME
+      *
+           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_genericname"   TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 9102-GENERICNAME-READ-SEC
+           ELSE
+               INITIALIZE                      GENERICNAME-REC
+               MOVE    1                   TO  FLG-GENERICNAME
+           END-IF
+           PERFORM UNTIL     FLG-GENERICNAME   =   1
+      *        一般名から対象を決定する
+               PERFORM 41013-GENERIC-SYORI-SEC
+      *
+               MOVE    "tbl_genericname"   TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 9102-GENERICNAME-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
+           .
+       410131-GENERIC-HENSYU-EXT.
+           EXIT.
+      *
+      *H28.5
+      *****************************************************************
+      *    名称から検索処理
+      *****************************************************************
+       41013-GENERIC-SYORI-SEC   SECTION.
+      *
+      *    薬価基準コードの一致する点数マスタの検索
+           MOVE    GENERIC-YAKKAKJNCD  TO  WRK-YAKKAKJNCD
+      *
            INITIALIZE                      TNS-TENSU-REC
-           STRING  WRK-GEN-YAKKAKJNCD
+           IF      GENERIC-YAKKAKJNCD(12:1)    =   SPACE
+               STRING  GENERIC-YAKKAKJNCD
                    "%"                 DELIMITED  BY  SPACE
                                        INTO    TNS-YAKKAKJNCD
-           END-STRING
+               END-STRING
+           ELSE
+               MOVE    GENERIC-YAKKAKJNCD  TO  TNS-YAKKAKJNCD
+           END-IF
            IF      SPA-K98-GMN-ALL     =   SPACE
                MOVE    "key01gj"           TO  WRK-PATH
            ELSE
@@ -4452,9 +4472,11 @@
            PERFORM
                UNTIL      (IDX         >    200 )   OR
                           (FLG-TENSU   =   1   )
-      *H28.3
-      *        一般名コード存在チェック
-               PERFORM 410131-GENERIC-GECODE-CHK-SEC
+               MOVE    ZERO            TO  FLG-CHK
+               IF      WRK-YAKKAKJNCD(10:3)    =  SPACE
+      *            一般名一致のチェック
+                   PERFORM 410131-GENERIC-GECODE-CHK-SEC
+               END-IF
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
@@ -4467,127 +4489,50 @@
                    END-IF
                END-IF
       *
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    WRK-PATH            TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
-      *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
            .
-       410131-GENERIC-HENSYU-EXT.
+       41013-GENERIC-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    最低薬価マスタ検索処理
+      *    一般名称検索処理
       *****************************************************************
        410131-GENERIC-GECODE-CHK-SEC   SECTION.
       *
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING     IDXK    FROM    1   BY  1
-                   UNTIL      (IDXK        >   200 )
-                       OR     (TBL-YAKKAKJNCD(IDXK)  =   SPACE)
-                       OR     (FLG-CHK     =   1   )
-               IF      TNS-YAKKAKJNCD      =   TBL-YAKKAKJNCD(IDXK)
-                   MOVE    1               TO  FLG-CHK
-               END-IF
-           END-PERFORM
+           MOVE    SPACE               TO  GENERICNAME-REC
+           INITIALIZE                      GENERICNAME-REC
+           MOVE    TNS-YAKKAKJNCD      TO  GENERIC-YAKKAKJNCD
+      *
+           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 9102-GENERICNAME-READ-SEC
+           ELSE
+               INITIALIZE                      GENERICNAME-REC
+               MOVE    1                   TO  FLG-GENERICNAME
+           END-IF
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      GENERIC-GENERICNAME =   WRK-GENERICNAME
+               MOVE    ZERO            TO  FLG-CHK
+           ELSE
+               MOVE    1               TO  FLG-CHK
+           END-IF
            .
        410131-GENERIC-GECODE-CHK-EXT.
            EXIT.
-      *H28.4
-      *
-      *****************************************************************
-      *    一般名コードから一覧表示処理
-      *****************************************************************
-       41013-GECODE-HEN-SEC   SECTION.
-      *TEST
-           DISPLAY "K98 WRK-GEN-GENCODE:" WRK-GEN-GENCODE
-      *TEST
-      *
-           MOVE    SPACE               TO  GENERICPRICE-REC
-           INITIALIZE                      GENERICPRICE-REC
-           MOVE    WRK-GEN-GENCODE     TO  GENERICPRICE-GECODE
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
-           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_generic_price" TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 960-GENERICPRICE-READ-SEC
-           ELSE
-               INITIALIZE                  GENERICPRICE-REC
-               MOVE    1                   TO  FLG-GENERICPRICE
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  IDX3
-           PERFORM
-               UNTIL      (IDX         >    200 )   OR
-                          (FLG-GENERICPRICE =   1   )
-      *
-               MOVE    ZERO                TO  FLG-CHK
-      *
-               INITIALIZE                      TNS-TENSU-REC
-               IF      GENERICPRICE-YAKKAKJNCD(10:) =   SPACE
-                   STRING    GENERICPRICE-YAKKAKJNCD
-                             "%"
-                                           DELIMITED BY SPACE
-                                           INTO    TNS-YAKKAKJNCD
-                   END-STRING
-               ELSE
-                   MOVE    GENERICPRICE-YAKKAKJNCD
-                                           TO  TNS-YAKKAKJNCD
-               END-IF
-               IF      SPA-K98-GMN-ALL     =   SPACE
-                   MOVE    "key01gj"           TO  WRK-PATH
-               ELSE
-                   MOVE    "key01g"            TO  WRK-PATH
-               END-IF
-               MOVE    WRK-PATH            TO  MCP-PATHNAME
-               PERFORM 910-TENSU-SELECT-SEC
-               PERFORM UNTIL  ( FLG-TENSU   =   1  )
-                          OR  ( IDX         >   200 ) 
-      *
-      *TEST
-           DISPLAY "K98 TNS-SRYCD:"  TNS-SRYCD
-                   ","              TNS-YAKKAKJNCD
-      *TEST
-                   ADD     1               TO  IDX2
-      *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  WRK-STR
-                       PERFORM 31021-TENSU-HEN-SEC
-      *                行番号変更
-                       ADD     1               TO  IDX3
-                       MOVE    IDX3            TO  SPA-K98-GMN-NO(IDX)
-                   END-IF
-      *
-                   MOVE    WRK-PATH            TO  MCP-PATHNAME
-                   PERFORM                     910-TENSU-READ-SEC
-               END-PERFORM
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    WRK-PATH            TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-      *
-               MOVE    "tbl_generic_price" TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 960-GENERICPRICE-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
-           .
-       41013-GECODE-HEN-CHK-EXT.
-           EXIT.
-      *H28.4
-      *!!!!!!!!!!
+      *H28.5
       *H24.4
       *****************************************************************
       *    一般名検索処理
@@ -4602,14 +4547,9 @@
                MOVE    1               TO  FLG-SYORI
                GO      TO   299-TENGENERIC-EXT
            END-IF
-      **   INITIALIZE                      TNS-TENSU-REC
-      *    MOVE    SPA-K98-GMN-SRYCD (WRK-SELNO)
-      *                                TO  TNS-SRYCD
-      *    PERFORM 9110-TENSU-KEYREAD-SEC
       *
            MOVE    SPACE               TO  GENERICNAME-REC
            INITIALIZE                      GENERICNAME-REC
-      *    MOVE    TNS-YAKKAKJNCD(1:9) TO  GENERIC-YAKKAKJNCD
            MOVE    SPA-K98-GMN-INPUTCD (WRK-SELNO)
                                        TO  GENERIC-YAKKAKJNCD
       *
@@ -4650,11 +4590,6 @@
       *H28.3
       *        一般名コード
                MOVE    GENERICPRICE-GECODE TO  WRK-GEN-GENCODE
-      *TEST
-           DISPLAY "K98 YAK:"  SPA-K98-GMN-INPUTCD (WRK-SELNO)
-                    ",GENERIC-YAKKAKJNCD:"  GENERIC-YAKKAKJNCD
-                    ",GENERIC-YAKKAKJNCD:"  GENERICPRICE-YAKKAKJNCD
-                    ",GENERIC-GECODE:"  GENERICPRICE-GECODE
            END-IF
       *
            INITIALIZE                      SPA-K98-NAI-SELNUM-G
