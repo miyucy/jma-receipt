@@ -349,13 +349,6 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    短期滞在手術基本料２と３の入院料未算定日について取得
-           INITIALIZE                             ORCSNYUINDAY-AREA
-           MOVE    LNK-BTUREC-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    LNK-BTUREC-PTID        TO  LNK-NYUINDAY-PTID
-           MOVE    LNK-BTUREC-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
-                                                  SPA-AREA
       *    事前に病棟情報（システム管理）から病棟コードを取得しておく
            MOVE    ZERO                TO  IDX-SYS
            MOVE    ZERO                TO  FLG-SYSKANRI
@@ -639,6 +632,19 @@
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
+      *    短期滞在手術基本料２と３の入院料未算定日について取得
+           INITIALIZE                             ORCSNYUINDAY-AREA
+           MOVE    LNK-BTUREC-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    LNK-BTUREC-PTID        TO  LNK-NYUINDAY-PTID
+           MOVE    LNK-BTUREC-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
+                                                  SPA-AREA
+           PERFORM   VARYING   IDX   FROM  1  BY  1
+            UNTIL   (IDX     >   31)
+               IF   LNK-NYUINDAY-TANKI2-KBN(IDX)  =  "1"  OR  "2"
+                  MOVE   "92"             TO  WRK-SRYSKB(IDX)
+               END-IF
+           END-PERFORM
       *
       *    返却エリアのセット
            PERFORM   VARYING   IDX   FROM  1  BY  1
