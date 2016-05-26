@@ -23,7 +23,7 @@ path	key 	{
 		WHERE	YAKKAKJNCD    =  (
 			SELECT
 			    CASE
-				WHEN EXISTS ( SELECT * FROM tbl_genericname WHERE yakkakjncd = :YAKKAKJNCD )
+				WHEN EXISTS ( SELECT * from tbl_genericname WHERE yakkakjncd = :YAKKAKJNCD )
 				    THEN :YAKKAKJNCD
 				ELSE SUBSTR(:YAKKAKJNCD,1,9)
 			    END
