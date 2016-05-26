@@ -28,6 +28,7 @@ bindapi	"systeminfv2"	"OpenCOBOL"	"ORAPI000R1V2";
 bindapi	"insuranceinf1v2"	"OpenCOBOL"	"ORAPI012R5V2";
 bindapi	"receiptinf1v2"		"OpenCOBOL"	"ORAPI042R1V2";
 bindapi	"claimfrontv2"	"OpenCOBOL"	"ORAPICLAIMR1V2";
+bindapi	"claimaccountv2"	"OpenCOBOL"	"ORAPICLAIMR2V2";
 
 multiplex_group	api01rv2;
 
@@ -59,6 +60,7 @@ data	{
 		insuranceinf1v2;
 		receiptinf1v2;
 		claimfrontv2;
+		claimaccountv2;
 	};
 };
 db "xml2" {
@@ -117,6 +119,8 @@ db "xml2" {
  xml_receipt_inf1v2res;
  xml_claim_frontv2req;
  xml_claim_frontv2res;
+ xml_claim_accountv2req;
+ xml_claim_accountv2res;
 
 };
 
