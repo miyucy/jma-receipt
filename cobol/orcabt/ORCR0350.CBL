@@ -409,6 +409,7 @@
       *  04.08.08    NACL-門脇    16/05/08  平成２８年４月改正対応
       *                                     （食事標準負担額追加）
       *  04.08.09    NACL-門脇    16/05/17  標準負担額区分の記載条件修正
+      *  04.08.10    NACL-藤原    16/05/26  病床機能報告データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -899,6 +900,19 @@
       *
       *    入退院履歴編集（自院歴−入院中区分）
            03  WRK-NYUINCHUKBN                 PIC X(01).
+      *
+           03  WRK-BTUREC-AREA.
+               05  WRK-BTUREC-HKNCOMBI         PIC 9(04).
+               05  WRK-BTUREC-SRYSKB           PIC X(02).
+               05  WRK-BTUREC-BTUCD            PIC X(09).
+               05  WRK-BTUREC-KAISU            PIC 9(02).
+               05  WRK-HKNCOMBI                PIC 9(04).
+               05  FLG-BTUREC                  PIC 9(01).
+      *
+      *    病棟情報
+       01  WRK-BTUREC-TBL.
+           03  WRK-BTUREC-T                    PIC 9(01)
+                                                   OCCURS  31.
       *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR                         PIC X(200).
@@ -1763,6 +1777,9 @@
       *    入院会計作成用パラメタ
            COPY    "CPORCSNYURECEDEN.INC".
       *
+      *    病床機能報告データ取得パラメタ
+           COPY    "CPORCSBTUREC.INC".
+      *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
@@ -2259,6 +2276,17 @@
       *
       *    患者保険組み合わせ取得処理
            PERFORM 2001-HKNCOMBI-GET-SEC
+      *
+      *    病床機能報告データ取得処理
+           INITIALIZE                      ORCSBTUREC-AREA
+           MOVE    RECE62-HOSPNUM      TO  LNK-BTUREC-HOSPNUM
+           MOVE    RECE62-PTID         TO  LNK-BTUREC-PTID
+           MOVE    RECE62-SRYYM        TO  LNK-BTUREC-SANTEIYM
+           CALL    "ORCSBTUREC"        USING   ORCSBTUREC-AREA
+                                               SPA-AREA
+           IF      LNK-BTUREC-RC   NOT =   ZERO
+               DISPLAY "LNK-BTUREC-RC="    LNK-BTUREC-RC
+           END-IF
       *
       *    診療年月・患者ID・レセ科別処理
            MOVE    KEY-NEW         TO  KEY-OLD
@@ -7839,6 +7867,12 @@
                IF      IDZ1            =   1 OR 2 OR 5
                   PERFORM 200771-NYUIN-COMMENT-HENSYU-SEC
                END-IF
+      *
+      *        病床機能報告編集
+               IF    ( IDZ1            =   1   OR  2 )
+               AND   ( LNK-BTUREC-RC   =   ZERO      )
+                   PERFORM 200774-BYOSHO-HENSYU-SEC
+               END-IF
            END-PERFORM
       *    摘要欄下部コメント編集
            MOVE    9                   TO  IDZ1 
@@ -8384,6 +8418,147 @@
       *
            .
        200773-SKJFTNFLG-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病床機能報告編集処理
+      *****************************************************************
+       200774-BYOSHO-HENSYU-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BTUREC
+      *
+           PERFORM                 UNTIL   FLG-BTUREC  =   9
+               INITIALIZE                  WRK-BTUREC-TBL
+                                           WRK-BTUREC-AREA
+               MOVE    ZERO            TO  FLG-BTUREC
+      *
+               PERFORM VARYING IDZ2    FROM    1   BY  1
+                       UNTIL   IDZ2    >       31
+                   IF      LNK-BTUREC-HKNCOMBI (IDZ2)
+                                               >   ZERO
+                       MOVE    ZERO                TO  FLG-CHK
+      *
+                       EVALUATE    IDZ1    ALSO
+                                               LNK-BTUREC-SRYSKB (IDZ2)
+                           WHEN    1       ALSO    "90"
+                           WHEN    2       ALSO    "92"
+                               MOVE    1               TO  FLG-BTUREC
+                               PERFORM VARYING IDXZ    FROM    1   BY  1
+                                       UNTIL   IDXZ    >       10
+                                       OR      RECE62-HKNCOMBI (IDXZ)
+                                                       =   ZERO
+                                   IF      LNK-BTUREC-HKNCOMBI (IDZ2)
+                                               =   RECE62-HKNCOMBI(IDXZ)
+                                       MOVE    1           TO  FLG-CHK
+                                       MOVE    10          TO  IDXZ
+                                   END-IF
+                               END-PERFORM
+      *                        該当しない保険組合せの日はクリア
+                               IF      FLG-CHK             =   0
+                                   INITIALIZE  LNK-BTUREC-HENKYAKU-TBL
+                                                               (IDZ2)
+                               END-IF
+                       END-EVALUATE
+      *
+                       IF      FLG-CHK             =   1
+                           IF      WRK-BTUREC-SRYSKB   =   SPACE
+                               MOVE    LNK-BTUREC-SRYSKB   (IDZ2)
+                                               TO  WRK-BTUREC-SRYSKB
+                               MOVE    LNK-BTUREC-HKNCOMBI (IDZ2)
+                                               TO  WRK-BTUREC-HKNCOMBI
+                               MOVE    LNK-BTUREC-BTUCD    (IDZ2)
+                                               TO  WRK-BTUREC-BTUCD
+                           END-IF
+                           IF    ( WRK-BTUREC-SRYSKB   =
+                                               LNK-BTUREC-SRYSKB(IDZ2) )
+                           AND   ( WRK-BTUREC-HKNCOMBI =
+                                               LNK-BTUREC-HKNCOMBI
+                                                                (IDZ2) )
+                           AND   ( WRK-BTUREC-BTUCD    =
+                                               LNK-BTUREC-BTUCD (IDZ2) )
+                               MOVE    1           TO  WRK-BTUREC-T
+                                                                (IDZ2)
+                               ADD     1           TO  WRK-BTUREC-KAISU
+                               INITIALIZE
+                                       LNK-BTUREC-HENKYAKU-TBL  (IDZ2)
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+      *        全て処理したとき
+               IF      FLG-BTUREC          =   0
+                   MOVE    9                   TO  FLG-BTUREC
+               END-IF
+      *
+               IF      WRK-BTUREC-KAISU    >   0
+      *            負担区分編集処理
+                   MOVE    1                   TO  IDZ2
+                   MOVE    LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
+                                               TO  WRK-HKNCOMBI
+                   MOVE    WRK-BTUREC-HKNCOMBI TO
+                                   LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
+                   PERFORM 200772-SKJ-FTNKBN-HENSYU-SEC
+                   MOVE    WRK-HKNCOMBI        TO
+                                   LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
+      *
+                   MOVE    SPACE               TO  WRK-REC
+                   MOVE    ZERO                TO  WRK-REC-LENGTH
+      *
+                   MOVE    "SI,"               TO  WRK-REC
+                   MOVE    3                   TO  WRK-REC-LENGTH
+      *            診療識別
+                   MOVE    WRK-BTUREC-SRYSKB   TO  WRK-DATA
+                   MOVE    2                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            負担区分
+                   MOVE    WRK-FTNKBN          TO  WRK-DATA
+                   MOVE    1                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+      *            診療行為コード
+                   MOVE    WRK-BTUREC-BTUCD    TO  WRK-DATA
+                   MOVE    9                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+      *            数量
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *           点数
+                   MOVE    "0"                 TO  WRK-DATA
+                   MOVE    1                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+      *            回数
+                   MOVE    WRK-BTUREC-KAISU    TO  WRK-NUM
+                   MOVE    3                   TO  WRK-NAGASA
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            コメントコード１
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            文字データ１
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード２
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            文字データ２
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード３
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            文字データ３
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            日付情報
+                   PERFORM VARYING IDV     FROM    1   BY  1
+                           UNTIL   IDV     >       31
+                       IF      WRK-BTUREC-T (IDV)  >   ZERO
+                           MOVE    1                   TO  WRK-NUM
+                           MOVE    1                   TO  WRK-NAGASA
+                       END-IF
+                       IF      IDV                 =   31
+                           MOVE    1                   TO  WRK-END
+                       END-IF
+                       PERFORM 5005-NUM-HENSYU-SEC
+                   END-PERFORM
+      *
+                   PERFORM 5001-FILE-WRITE-SEC
+               END-IF
+           END-PERFORM
+           .
+       200774-BYOSHO-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
