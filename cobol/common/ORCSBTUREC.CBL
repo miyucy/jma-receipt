@@ -51,7 +51,6 @@
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
-           03  FLG-ROUSAI                  PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-TENSUWRK                PIC 9(01).
            03  FLG-PTKOHINF                PIC 9(01).
@@ -264,7 +263,10 @@
        100-PRM-CHK-SEC                     SECTION.
       *
       *    算定年月チェック
-           IF    ( LNK-BTUREC-SANTEIYM    NOT =  "201606")
+           IF    ( LNK-BTUREC-SANTEIYM(1:4)  >=  "2016")  AND
+                 ( LNK-BTUREC-SANTEIYM(5:2)  =   "06")
+               CONTINUE
+           ELSE
                MOVE    1               TO  LNK-BTUREC-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
