@@ -458,6 +458,8 @@
       *
       *    最初にヒットした社保、国保、後期で自費等の保険組合せ番号を
       *    置換する
+           MOVE       ZERO           TO     FLG-HIT
+      *
            PERFORM    VARYING   IDX   FROM   1   BY   1
              UNTIL    (IDX       >    31)   OR
                       (FLG-HIT   =     1)
@@ -651,7 +653,8 @@
       *    返却エリアのセット
            PERFORM   VARYING   IDX   FROM  1  BY  1
             UNTIL   (IDX     >   31)
-                 IF   WRK-BTUNUM(IDX)  NOT =   SPACE
+                 IF  (WRK-BTUNUM(IDX)  NOT =   SPACE)   AND
+                     (WRK-BTUCD(IDX)   NOT =   SPACE)
                      MOVE   WRK-HKNCOMBI-DAY(IDX)
                                            TO  LNK-BTUREC-HKNCOMBI(IDX)
                      MOVE   WRK-SRYSKB(IDX)
