@@ -5580,8 +5580,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  SYS-9000-REC
            MOVE    "9000"              TO  SYS-9000-KANRICD
            MOVE    "*"                 TO  SYS-9000-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-9000-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-9000-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9000-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9000-EDYUKYMD
       *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
            MOVE    SYS-9000-REC        TO  SYSKANRI-REC
