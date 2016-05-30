@@ -5642,7 +5642,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        システム日付
                MOVE    SPA-SYSYMD          TO   SHELLTBL-ARG12
       *        患者番号
-               MOVE    SPA-GMN-PTNUM       TO   SHELLTBL-ARG13
+               MOVE    SPA-GMN-PTNUM       TO   SHELLTBL-ARG14
       *
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
