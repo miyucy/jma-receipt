@@ -119,7 +119,6 @@
                05  WRK-GETSUMATSU-YY       PIC 9(04).
                05  WRK-GETSUMATSU-MM       PIC 9(02).
                05  WRK-GETSUMATSU-DD       PIC 9(02).
-           03  WRK-DOUJITSU-KBN            PIC X(01).
       *
       *    システム管理病棟情報ワーク
            03  WRK-BTU-TABLE.
@@ -127,17 +126,28 @@
                    07  WRK-BTU-KBNCD       PIC X(02).
                    07  WRK-BTU-SRYCD       PIC X(09).
       *
-      *    入院会計ワーク
+           03  WRK-SYUHKN-TBL.
+               05  WRK-SYUHKN              PIC 9(01)  OCCURS  31.
+      *
+      *    返却項目編集ワーク
            03  WRK-NYUIN-TABLE.
                05  WRK-NYUIN-TBL           OCCURS  31.
                    07  WRK-HKNCOMBI-DAY    PIC 9(03).
                    07  WRK-HKNSYU-DAY      PIC 9(01).
                    07  WRK-BTUNUM          PIC X(02).
+                   07  WRK-BRMNUM          PIC X(08).
+      *            特定入院料区分（１：医療機関／２：病棟／３：病室）
+                   07  WRK-TOKUTEI-KBN     PIC X(01).
+      *            特定入院料
+                   07  WRK-TOKUTEI-NYUIN   PIC X(02).
                    07  WRK-SRYSKB          PIC X(02).
                    07  WRK-BTUCD           PIC X(09).
       *
       *    保険組合せ番号退避
            03  WRK-TAIHI-HKNCOMBI          PIC 9(03).
+           03  WRK-TAIHI-HKNCOMBI-SHAHO    PIC 9(03).
+           03  WRK-TAIHI-HKNCOMBI-KOKUHO   PIC 9(03).
+           03  WRK-TAIHI-HKNCOMBI-KOUKI    PIC 9(03).
       *
       *    診療コード計集計用
            03  WRK-SRYCD-X                 PIC X(09).
@@ -396,7 +406,164 @@
            PERFORM   900-CLOSE-SEC
       *
       *
-      *    保険組合せ番号から保険種類の取得
+      *    月末日を取得
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    LNK-BTUREC-SANTEIYM
+                                       TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY7-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-GETSUMATSU-YMD
+           END-IF
+      *
+      *
+      *    患者がもつ保険組合せから社保、国保、後期の期間を取得
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    LNK-BTUREC-HOSPNUM  TO  COMB-HOSPNUM
+           MOVE    LNK-BTUREC-PTID     TO  COMB-PTID
+           MOVE    LNK-BTUREC-SANTEIYM(1:6)
+                                       TO  COMB-TEKSTYMD(1:6)
+           MOVE    "31"                TO  COMB-TEKSTYMD(7:2)
+           MOVE    LNK-BTUREC-SANTEIYM(1:6)
+                                       TO  COMB-TEKEDYMD(1:6)
+           MOVE    "01"                TO  COMB-TEKEDYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM   910-HKNCOMBI-SELECT-SEC
+           IF      FLG-HKNCOMBI        =   ZERO
+               MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+               MOVE    "key6"          TO  MCP-PATHNAME
+               PERFORM  910-HKNCOMBI-READ-SEC
+               PERFORM  UNTIL  (FLG-HKNCOMBI   =   1)
+                  MOVE     COMB-TEKSTYMD   TO    WRK-YMDX
+                  MOVE     WRK-DD9         TO  IDX-ST
+                  MOVE     COMB-TEKEDYMD   TO  WRK-YMDX
+                  MOVE     WRK-DD9         TO  IDX-ED
+      *           国保
+                  IF     COMB-HKNNUM     = "060" OR "067" OR
+                                           "068" OR "069"
+                     IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
+                           UNTIL    IDX    >   IDX-ED
+                             MOVE   2     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  1  BY  1
+                           UNTIL    IDX    >   WRK-GETSUMATSU-DD
+                             MOVE   2     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  1  BY  1
+                           UNTIL    IDX    >   IDX-ED
+                             MOVE   2     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
+                           UNTIL    IDX    >   WRK-GETSUMATSU-DD
+                             MOVE   2     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                  END-IF
+      *           後期高齢者
+                  IF     COMB-HKNNUM     = "039" OR "040"
+                     IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
+                           UNTIL    IDX    >   IDX-ED
+                             MOVE   3     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  1  BY  1
+                           UNTIL    IDX    >   WRK-GETSUMATSU-DD
+                             MOVE   3     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  1  BY  1
+                           UNTIL    IDX    >   IDX-ED
+                             MOVE   3     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
+                           UNTIL    IDX    >   WRK-GETSUMATSU-DD
+                             MOVE   3     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                  END-IF
+      *           社保
+                  IF    (COMB-HKNNUM   NOT = "060" AND "067" AND
+                                             "068" AND "069" AND
+                                             "039" AND "040" AND
+                                             "971" AND "973" AND
+                                             "975" )   AND
+                        (COMB-HKNNUM(1:2)  NOT =    "98"  AND
+                                                    "90"  AND
+                                                    "91")
+                     IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
+                           UNTIL    IDX    >   IDX-ED
+                             MOVE   1     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  1  BY  1
+                           UNTIL    IDX    >   WRK-GETSUMATSU-DD
+                             MOVE   1     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  1  BY  1
+                           UNTIL    IDX    >   IDX-ED
+                             MOVE   1     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                     IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
+                        (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
+                         PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
+                           UNTIL    IDX    >   WRK-GETSUMATSU-DD
+                             MOVE   1     TO   WRK-SYUHKN(IDX)
+                         END-PERFORM
+                     END-IF
+                  END-IF
+      *
+                  MOVE    "tbl_hkncombi" TO  MCP-TABLE
+                  MOVE    "key6"         TO  MCP-PATHNAME
+                  PERFORM  910-HKNCOMBI-READ-SEC
+               END-PERFORM
+           END-IF
+      *    保険組合せ管理クローズ
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      **     PERFORM   VARYING   IDX   FROM  1  BY  1
+      **      UNTIL   (IDX     >   31)
+      **         DISPLAY "IDX = " IDX
+      **         DISPLAY "WRK-SYUHKN(IDX) = " WRK-SYUHKN(IDX)
+      **     END-PERFORM
+      *
+      *    入院会計の保険組合せ番号から保険種類の取得
+           MOVE       ZERO             TO  WRK-TAIHI-HKNCOMBI-SHAHO
+           MOVE       ZERO             TO  WRK-TAIHI-HKNCOMBI-KOKUHO
+           MOVE       ZERO             TO  WRK-TAIHI-HKNCOMBI-KOUKI
            PERFORM    VARYING   IDX   FROM   1   BY   1
                       UNTIL      IDX  >    31
                IF     WRK-HKNCOMBI-DAY(IDX)   NOT =   ZERO
@@ -417,10 +584,18 @@
                             IF     COMB-HKNNUM     = "060" OR "067" OR
                                                      "068" OR "069"
                                  MOVE    2      TO   WRK-HKNSYU-DAY(IDX)
+                                 IF WRK-TAIHI-HKNCOMBI-KOKUHO  = ZERO
+                                     MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
+                                             WRK-TAIHI-HKNCOMBI-KOKUHO
+                                 END-IF
                             END-IF
       *                     後期高齢者
                             IF     COMB-HKNNUM     = "039" OR "040"
                                  MOVE    3      TO   WRK-HKNSYU-DAY(IDX)
+                                 IF WRK-TAIHI-HKNCOMBI-KOUKI  = ZERO
+                                     MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
+                                             WRK-TAIHI-HKNCOMBI-KOUKI
+                                 END-IF
                             END-IF
       *                     労災、自賠責、公害
                             IF     COMB-HKNNUM     = "971" OR "973" OR
@@ -438,6 +613,10 @@
       *                     社保
                             IF     WRK-HKNSYU-DAY(IDX)  =    ZERO
                                  MOVE    1      TO   WRK-HKNSYU-DAY(IDX)
+                                 IF WRK-TAIHI-HKNCOMBI-SHAHO  = ZERO
+                                     MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
+                                             WRK-TAIHI-HKNCOMBI-SHAHO
+                                 END-IF
                             END-IF
                        ELSE
                            MOVE    4             TO  LNK-BTUREC-RC
@@ -456,40 +635,32 @@
                END-IF
            END-PERFORM
       *
-      *    最初にヒットした社保、国保、後期で自費等の保険組合せ番号を
-      *    置換する
-           MOVE       ZERO           TO     FLG-HIT
-      *
+      **     DISPLAY "WRK-TAIHI-HKNCOMBI-SHAHO = "
+      **              WRK-TAIHI-HKNCOMBI-SHAHO
+      **     DISPLAY "WRK-TAIHI-HKNCOMBI-KOKUHO = "
+      **              WRK-TAIHI-HKNCOMBI-KOKUHO
+      **     DISPLAY "WRK-TAIHI-HKNCOMBI-KOUKI = "
+      **              WRK-TAIHI-HKNCOMBI-KOUKI
+      *    社保、国保、後期で自費等の保険組合せ番号を置換する
            PERFORM    VARYING   IDX   FROM   1   BY   1
-             UNTIL    (IDX       >    31)   OR
-                      (FLG-HIT   =     1)
-               IF     WRK-HKNSYU-DAY(IDX)   =   1
-                      MOVE   1       TO     FLG-HIT
-                      MOVE   WRK-HKNCOMBI-DAY(IDX) TO WRK-TAIHI-HKNCOMBI
-               END-IF
-               IF     WRK-HKNSYU-DAY(IDX)   =   2
-                      MOVE   1       TO     FLG-HIT
-                      MOVE   WRK-HKNCOMBI-DAY(IDX) TO WRK-TAIHI-HKNCOMBI
-               END-IF
-               IF     WRK-HKNSYU-DAY(IDX)   =   3
-                      MOVE   1       TO     FLG-HIT
-                      MOVE   WRK-HKNCOMBI-DAY(IDX) TO WRK-TAIHI-HKNCOMBI
-               END-IF
+             UNTIL    (IDX       >    31)
+             IF     WRK-HKNSYU-DAY(IDX)   =   4  OR  5  OR  6
+                 IF   WRK-SYUHKN(IDX)    =   1
+                    MOVE   WRK-TAIHI-HKNCOMBI-SHAHO
+                                    TO   WRK-HKNCOMBI-DAY(IDX)
+                 END-IF
+                 IF   WRK-SYUHKN(IDX)    =   2
+                    MOVE   WRK-TAIHI-HKNCOMBI-KOKUHO
+                                    TO   WRK-HKNCOMBI-DAY(IDX)
+                 END-IF
+                 IF   WRK-SYUHKN(IDX)    =   3
+                    MOVE   WRK-TAIHI-HKNCOMBI-KOUKI
+                                    TO   WRK-HKNCOMBI-DAY(IDX)
+                 END-IF
+             END-IF
            END-PERFORM
-      **     DISPLAY "WRK-TAIHI-HKNCOMBI = " WRK-TAIHI-HKNCOMBI
-           IF    FLG-HIT   =   1
-             PERFORM    VARYING   IDX   FROM   1   BY   1
-               UNTIL    (IDX       >    31)
-               IF     WRK-HKNSYU-DAY(IDX)   =   4  OR  5  OR  6
-                      MOVE   WRK-TAIHI-HKNCOMBI
-                                      TO   WRK-HKNCOMBI-DAY(IDX)
-               END-IF
-             END-PERFORM
-           END-IF
       *
       *    入院履歴から対象月の入院履歴を取得
-      *    入院履歴より２７年４月１日以前から２８年４月１日まで継続して
-      *    精神病床に入院しているか判定
            INITIALIZE                        PTNYUINRRK-REC
            MOVE    LNK-BTUREC-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-BTUREC-PTID       TO  PTNYUINRRK-PTID
@@ -520,7 +691,7 @@
                     PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                       UNTIL    IDX    >   IDX-ED
                       IF   WRK-HKNSYU-DAY(IDX)   NOT =  ZERO
-                        MOVE   PTNYUINRRK-BTUNUM   TO  WRK-BTUNUM(IDX)
+                        PERFORM   210-WRK-SET-SEC
                       END-IF
                     END-PERFORM
                 END-IF
@@ -529,7 +700,7 @@
                     PERFORM    VARYING   IDX   FROM  1  BY  1
                       UNTIL    IDX    >   31
                       IF   WRK-HKNSYU-DAY(IDX)   NOT =  ZERO
-                        MOVE   PTNYUINRRK-BTUNUM   TO  WRK-BTUNUM(IDX)
+                        PERFORM   210-WRK-SET-SEC
                       END-IF
                     END-PERFORM
                 END-IF
@@ -538,7 +709,7 @@
                     PERFORM    VARYING   IDX   FROM  1  BY  1
                       UNTIL    IDX    >   IDX-ED
                       IF   WRK-HKNSYU-DAY(IDX)   NOT =  ZERO
-                        MOVE   PTNYUINRRK-BTUNUM   TO  WRK-BTUNUM(IDX)
+                        PERFORM   210-WRK-SET-SEC
                       END-IF
                     END-PERFORM
                 END-IF
@@ -547,7 +718,7 @@
                     PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                       UNTIL    IDX    >   31
                       IF   WRK-HKNSYU-DAY(IDX)   NOT =  ZERO
-                        MOVE   PTNYUINRRK-BTUNUM   TO  WRK-BTUNUM(IDX)
+                        PERFORM   210-WRK-SET-SEC
                       END-IF
                     END-PERFORM
                 END-IF
@@ -591,19 +762,6 @@
       **         DISPLAY "IDX = " IDX
       **         DISPLAY "WRK-BTUCD(IDX) = " WRK-BTUCD(IDX)
       **     END-PERFORM
-      *
-      *    月末に同日再入院時のレセ電対象保険組合せ番号の取得
-      *    月末日を取得
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    LNK-BTUREC-SANTEIYM
-                                       TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                           LNK-DAY7-AREA
-           IF      STS-DAY-RC1         =   ZERO
-               MOVE    LNK-DAY7-KOYOMI     TO  WRK-GETSUMATSU-YMD
-           END-IF
       *
       *
       *    入院料の取得
@@ -666,6 +824,26 @@
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院履歴からワーク領域にセット
+      *****************************************************************
+       210-WRK-SET-SEC            SECTION.
+      *
+           MOVE   PTNYUINRRK-BTUNUM   TO  WRK-BTUNUM(IDX)
+           MOVE   PTNYUINRRK-BRMNUM   TO  WRK-BRMNUM(IDX)
+           MOVE   PTNYUINRRK-TOKUTEI-KBN
+                                      TO  WRK-TOKUTEI-KBN(IDX)
+           MOVE   PTNYUINRRK-TOKUTEI-NYUIN
+                                      TO  WRK-TOKUTEI-NYUIN(IDX)
+           IF   PTNYUINRRK-TOKU-SANTEIYOUKENKBN  =  "1"
+               MOVE  SPACE            TO  WRK-TOKUTEI-KBN(IDX)
+               MOVE  SPACE            TO  WRK-TOKUTEI-NYUIN(IDX)
+           END-IF
+      *
+           .
+       210-WRK-SET-EXT.
            EXIT.
       *
       *****************************************************************
