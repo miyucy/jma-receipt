@@ -657,6 +657,9 @@
                     MOVE   WRK-TAIHI-HKNCOMBI-KOUKI
                                     TO   WRK-HKNCOMBI-DAY(IDX)
                  END-IF
+                 IF   WRK-SYUHKN(IDX)    =   ZERO
+                    MOVE   ZERO     TO   WRK-HKNCOMBI-DAY(IDX)
+                 END-IF
              END-IF
            END-PERFORM
       *
@@ -812,7 +815,8 @@
            PERFORM   VARYING   IDX   FROM  1  BY  1
             UNTIL   (IDX     >   31)
                  IF  (WRK-BTUNUM(IDX)  NOT =   SPACE)   AND
-                     (WRK-BTUCD(IDX)   NOT =   SPACE)
+                     (WRK-BTUCD(IDX)   NOT =   SPACE)   AND
+                     (WRK-HKNCOMBI-DAY(IDX)  NOT =  ZERO)
                      MOVE   WRK-HKNCOMBI-DAY(IDX)
                                            TO  LNK-BTUREC-HKNCOMBI(IDX)
                      MOVE   WRK-SRYSKB(IDX)
