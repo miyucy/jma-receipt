@@ -127,7 +127,9 @@
                    07  WRK-BTU-SRYCD       PIC X(09).
       *
            03  WRK-SYUHKN-TBL.
-               05  WRK-SYUHKN              PIC 9(01)  OCCURS  31.
+             04  WRK-SYUHKN-OCC            OCCURS  31.
+               05  WRK-SYUHKN              PIC 9(01).
+               05  WRK-SYUHKN-HKNCOMBI     PIC 9(03).
       *
       *    ÊÖµÑ¹àÌÜÊÔ½¸¥ï¡¼¥¯
            03  WRK-NYUIN-TABLE.
@@ -140,6 +142,8 @@
                    07  WRK-TOKUTEI-KBN     PIC X(01).
       *            ÆÃÄêÆþ±¡ÎÁ
                    07  WRK-TOKUTEI-NYUIN   PIC X(02).
+      *            Æþ±¡ÎÁ»»Äê¡Ê£±¡§Æþ±¡´ðËÜÎÁ¡¿£²¡§ÆÃÄêÆþ±¡ÎÁ¡Ë
+                   07  WRK-SANTEI-KBN      PIC X(01).
                    07  WRK-SRYSKB          PIC X(02).
                    07  WRK-BTUCD           PIC X(09).
       *
@@ -450,6 +454,8 @@
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   IDX-ED
                              MOVE   2     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
@@ -457,6 +463,8 @@
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
                              MOVE   2     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
@@ -464,6 +472,8 @@
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   IDX-ED
                              MOVE   2     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
@@ -471,6 +481,8 @@
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
                              MOVE   2     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                   END-IF
@@ -481,6 +493,8 @@
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   IDX-ED
                              MOVE   3     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
@@ -488,6 +502,8 @@
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
                              MOVE   3     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
@@ -495,6 +511,8 @@
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   IDX-ED
                              MOVE   3     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
@@ -502,6 +520,8 @@
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
                              MOVE   3     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                   END-IF
@@ -519,6 +539,8 @@
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   IDX-ED
                              MOVE   1     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
@@ -526,6 +548,8 @@
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
                              MOVE   1     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
@@ -533,6 +557,8 @@
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   IDX-ED
                              MOVE   1     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
@@ -540,6 +566,8 @@
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
                              MOVE   1     TO   WRK-SYUHKN(IDX)
+                             MOVE   COMB-HKNCOMBINUM
+                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
                          END-PERFORM
                      END-IF
                   END-IF
@@ -586,7 +614,7 @@
                                  MOVE    2      TO   WRK-HKNSYU-DAY(IDX)
                                  IF WRK-TAIHI-HKNCOMBI-KOKUHO  = ZERO
                                      MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
-                                             WRK-TAIHI-HKNCOMBI-KOKUHO
+                                         WRK-TAIHI-HKNCOMBI-KOKUHO
                                  END-IF
                             END-IF
       *                     ¸å´ü¹âÎð¼Ô
@@ -594,7 +622,7 @@
                                  MOVE    3      TO   WRK-HKNSYU-DAY(IDX)
                                  IF WRK-TAIHI-HKNCOMBI-KOUKI  = ZERO
                                      MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
-                                             WRK-TAIHI-HKNCOMBI-KOUKI
+                                          WRK-TAIHI-HKNCOMBI-KOUKI
                                  END-IF
                             END-IF
       *                     Ï«ºÒ¡¢¼«ÇåÀÕ¡¢¸ø³²
@@ -615,7 +643,7 @@
                                  MOVE    1      TO   WRK-HKNSYU-DAY(IDX)
                                  IF WRK-TAIHI-HKNCOMBI-SHAHO  = ZERO
                                      MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
-                                             WRK-TAIHI-HKNCOMBI-SHAHO
+                                          WRK-TAIHI-HKNCOMBI-SHAHO
                                  END-IF
                             END-IF
                        ELSE
@@ -646,15 +674,15 @@
              UNTIL    (IDX       >    31)
              IF     WRK-HKNSYU-DAY(IDX)   =   4  OR  5  OR  6
                  IF   WRK-SYUHKN(IDX)    =   1
-                    MOVE   WRK-TAIHI-HKNCOMBI-SHAHO
+                    MOVE   WRK-SYUHKN-HKNCOMBI(IDX)
                                     TO   WRK-HKNCOMBI-DAY(IDX)
                  END-IF
                  IF   WRK-SYUHKN(IDX)    =   2
-                    MOVE   WRK-TAIHI-HKNCOMBI-KOKUHO
+                    MOVE   WRK-SYUHKN-HKNCOMBI(IDX)
                                     TO   WRK-HKNCOMBI-DAY(IDX)
                  END-IF
                  IF   WRK-SYUHKN(IDX)    =   3
-                    MOVE   WRK-TAIHI-HKNCOMBI-KOUKI
+                    MOVE   WRK-SYUHKN-HKNCOMBI(IDX)
                                     TO   WRK-HKNCOMBI-DAY(IDX)
                  END-IF
                  IF   WRK-SYUHKN(IDX)    =   ZERO
@@ -785,6 +813,12 @@
                      UNTIL    IDX       >    31
                          IF    NACCT-DAY(IDX)  =   1
                              MOVE   NACCT-SRYKBN   TO  WRK-SRYSKB(IDX)
+                             EVALUATE   NACCT-SRYKBN
+                                 WHEN   "90"
+                                     MOVE  "1"  TO  WRK-SANTEI-KBN(IDX)
+                                 WHEN   "92"
+                                     MOVE  "2"  TO  WRK-SANTEI-KBN(IDX)
+                             END-EVALUATE
                          END-IF
                    END-PERFORM
                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
@@ -806,8 +840,9 @@
                                                   SPA-AREA
            PERFORM   VARYING   IDX   FROM  1  BY  1
             UNTIL   (IDX     >   31)
-               IF   LNK-NYUINDAY-TANKI2-KBN(IDX)  =  "1"  OR  "2"
+               IF   LNK-NYUINDAY-TANKI-KBN(IDX)  =  "1"
                   MOVE   "92"             TO  WRK-SRYSKB(IDX)
+                  MOVE   "1"              TO  WRK-SANTEI-KBN(IDX)
                END-IF
            END-PERFORM
       *
