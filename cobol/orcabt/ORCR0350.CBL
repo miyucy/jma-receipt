@@ -914,6 +914,11 @@
            03  WRK-BTUREC-T                    PIC 9(01)
                                                    OCCURS  31.
       *
+      *    病床機能報告データチェック情報
+       01  WRK-BTUREC-CHK-TBL.
+           03  WRK-BTUREC-CHK                  PIC 9(01)
+                                                   OCCURS  31.
+      *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR                         PIC X(200).
            03  WRK-ERRMSG                          PIC X(300).
@@ -7550,6 +7555,9 @@
       *****************************************************************
        20077-NYUIN-HENSYU-SEC           SECTION.
       *
+      *    病床機能報告データチェック情報クリア
+           INITIALIZE                  WRK-BTUREC-CHK-TBL
+      *
       *    入院料
            PERFORM VARYING IDZ1    FROM    1   BY  1
                    UNTIL   IDZ1    >       5
@@ -8434,8 +8442,10 @@
       *
                PERFORM VARYING IDZ2    FROM    1   BY  1
                        UNTIL   IDZ2    >       31
-                   IF      LNK-BTUREC-HKNCOMBI (IDZ2)
-                                               >   ZERO
+                   IF    ( LNK-BTUREC-HKNCOMBI (IDZ2)
+                                               >   ZERO )
+                   AND   ( WRK-BTUREC-CHK (IDZ2)
+                                               =   ZERO )
                        MOVE    ZERO                TO  FLG-CHK
       *
                        EVALUATE    IDZ1    ALSO
@@ -8454,9 +8464,9 @@
                                    END-IF
                                END-PERFORM
       *                        該当しない保険組合せの日はクリア
-                               IF      FLG-CHK             =   0
-                                   INITIALIZE  LNK-BTUREC-HENKYAKU-TBL
-                                                               (IDZ2)
+                               IF      FLG-CHK     =   0
+                                   MOVE    1           TO
+                                                   WRK-BTUREC-CHK (IDZ2)
                                END-IF
                        END-EVALUATE
       *
