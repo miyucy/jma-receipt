@@ -2137,6 +2137,7 @@
            MOVE    LNK-SC98-YAKUZAI-AREA   TO  SPA-YAKUZAI-AREA
            IF      LNK-SC98-ERRMSG     NOT =   SPACE
                MOVE    LNK-SC98-ERRMSG     TO  LNK-ORCSC-ERRMSG
+               MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
            END-IF
            .
        51022-TENSUPLUS2-CHK-EXT.
