@@ -908,6 +908,8 @@
                05  WRK-BTUREC-KAISU            PIC 9(02).
                05  WRK-HKNCOMBI                PIC 9(04).
                05  FLG-BTUREC                  PIC 9(01).
+           03  FLG-BTUREC-CHK                  PIC 9(01).
+           03  FLG-BTUREC-TAISYO               PIC 9(01).
       *
       *    病棟情報
        01  WRK-BTUREC-TBL.
@@ -8436,8 +8438,8 @@
            MOVE    ZERO            TO  FLG-BTUREC
       *
            PERFORM                 UNTIL   FLG-BTUREC  =   9
+               INITIALIZE                  WRK-BTUREC-AREA
                INITIALIZE                  WRK-BTUREC-TBL
-                                           WRK-BTUREC-AREA
                MOVE    ZERO            TO  FLG-BTUREC
       *
                PERFORM VARYING IDZ2    FROM    1   BY  1
@@ -8446,53 +8448,8 @@
                                                >   ZERO )
                    AND   ( WRK-BTUREC-CHK (IDZ2)
                                                =   ZERO )
-                       MOVE    ZERO                TO  FLG-CHK
-      *
-                       EVALUATE    IDZ1    ALSO
-                                               LNK-BTUREC-SRYSKB (IDZ2)
-                           WHEN    1       ALSO    "90"
-                           WHEN    2       ALSO    "92"
-                               MOVE    1               TO  FLG-BTUREC
-                               PERFORM VARYING IDXZ    FROM    1   BY  1
-                                       UNTIL   IDXZ    >       10
-                                       OR      RECE62-HKNCOMBI (IDXZ)
-                                                       =   ZERO
-                                   IF      LNK-BTUREC-HKNCOMBI (IDZ2)
-                                               =   RECE62-HKNCOMBI(IDXZ)
-                                       MOVE    1           TO  FLG-CHK
-                                       MOVE    10          TO  IDXZ
-                                   END-IF
-                               END-PERFORM
-      *                        該当しない保険組合せの日はクリア
-                               IF      FLG-CHK     =   0
-                                   MOVE    1           TO
-                                                   WRK-BTUREC-CHK (IDZ2)
-                               END-IF
-                       END-EVALUATE
-      *
-                       IF      FLG-CHK             =   1
-                           IF      WRK-BTUREC-SRYSKB   =   SPACE
-                               MOVE    LNK-BTUREC-SRYSKB   (IDZ2)
-                                               TO  WRK-BTUREC-SRYSKB
-                               MOVE    LNK-BTUREC-HKNCOMBI (IDZ2)
-                                               TO  WRK-BTUREC-HKNCOMBI
-                               MOVE    LNK-BTUREC-BTUCD    (IDZ2)
-                                               TO  WRK-BTUREC-BTUCD
-                           END-IF
-                           IF    ( WRK-BTUREC-SRYSKB   =
-                                               LNK-BTUREC-SRYSKB(IDZ2) )
-                           AND   ( WRK-BTUREC-HKNCOMBI =
-                                               LNK-BTUREC-HKNCOMBI
-                                                                (IDZ2) )
-                           AND   ( WRK-BTUREC-BTUCD    =
-                                               LNK-BTUREC-BTUCD (IDZ2) )
-                               MOVE    1           TO  WRK-BTUREC-T
-                                                                (IDZ2)
-                               ADD     1           TO  WRK-BTUREC-KAISU
-                               INITIALIZE
-                                       LNK-BTUREC-HENKYAKU-TBL  (IDZ2)
-                           END-IF
-                       END-IF
+                       PERFORM 2007741-BYOSHO-CHK-SEC
+                       MOVE    31              TO  IDZ2
                    END-IF
                END-PERFORM
       *
@@ -8569,6 +8526,139 @@
            END-PERFORM
            .
        200774-BYOSHO-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病床機能報告チェック処理
+      *****************************************************************
+       2007741-BYOSHO-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-BTUREC-CHK
+      *
+           EVALUATE    IDZ1    ALSO    LNK-BTUREC-SRYSKB (IDZ2)
+               WHEN    1       ALSO    "90"
+               WHEN    2       ALSO    "92"
+                   MOVE    1               TO  FLG-BTUREC
+      *
+                   PERFORM VARYING IDXZ    FROM    1   BY  1
+                           UNTIL   IDXZ    >       10
+                           OR      RECE62-HKNCOMBI (IDXZ)
+                                           =   ZERO
+                       IF      LNK-BTUREC-HKNCOMBI (IDZ2)
+                                           =   RECE62-HKNCOMBI (IDXZ)
+                           MOVE    LNK-BTUREC-SRYSKB   (IDZ2)
+                                               TO  WRK-BTUREC-SRYSKB
+                           MOVE    LNK-BTUREC-HKNCOMBI (IDZ2)
+                                               TO  WRK-BTUREC-HKNCOMBI
+                           MOVE    LNK-BTUREC-BTUCD    (IDZ2)
+                                               TO  WRK-BTUREC-BTUCD
+                           MOVE    1           TO  FLG-BTUREC-CHK
+                           MOVE    10          TO  IDXZ
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-BTUREC-CHK      =   0
+      *                  該当しないとき入院会計以外の保険組合せをチェック
+                       PERFORM VARYING IDV     FROM    1   BY  1
+                               UNTIL   IDV     >
+                                         LNK-BTUREC-SYU-HKNCOMBI-MEISAI
+                           IF      LNK-BTUREC-SYU-HKNCOMBI (IDV IDZ2)
+                                                   >   ZERO
+                               PERFORM VARYING IDXZ    FROM    1   BY  1
+                                       UNTIL   IDXZ    >       10
+                                       OR      RECE62-HKNCOMBI (IDXZ)
+                                                           =   ZERO
+                                   IF      LNK-BTUREC-SYU-HKNCOMBI
+                                                             (IDV IDZ2)
+                                               =   RECE62-HKNCOMBI(IDXZ)
+                                       MOVE    LNK-BTUREC-SRYSKB  (IDZ2)
+                                                   TO  WRK-BTUREC-SRYSKB
+                                       MOVE    LNK-BTUREC-SYU-HKNCOMBI
+                                                              (IDV IDZ2)
+                                                   TO
+                                                   WRK-BTUREC-HKNCOMBI
+                                       MOVE    LNK-BTUREC-BTUCD   (IDZ2)
+                                                   TO  WRK-BTUREC-BTUCD
+                                       MOVE    1   TO  FLG-BTUREC-CHK
+                                       MOVE    10  TO  IDXZ
+                                       MOVE
+                                          LNK-BTUREC-SYU-HKNCOMBI-MEISAI
+                                                   TO  IDV
+                                   END-IF
+                               END-PERFORM
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *            該当しない保険組合せの日はクリア
+                   IF      FLG-BTUREC-CHK      =   0
+                       MOVE    1               TO  WRK-BTUREC-CHK (IDZ2)
+                   END-IF
+           END-EVALUATE
+      *
+           IF      FLG-BTUREC-CHK             =   1
+               PERFORM VARYING IDZ3    FROM    IDZ2    BY  1
+                       UNTIL   IDZ3    >       31
+                   IF    ( LNK-BTUREC-HKNCOMBI (IDZ3)
+                                               >   ZERO )
+                   AND   ( WRK-BTUREC-CHK      (IDZ3)
+                                               =   ZERO )
+                       IF    ( WRK-BTUREC-SRYSKB   =
+                                               LNK-BTUREC-SRYSKB(IDZ3) )
+                       AND   ( WRK-BTUREC-BTUCD    =
+                                               LNK-BTUREC-BTUCD (IDZ3) )
+                           IF    ( WRK-BTUREC-HKNCOMBI =
+                                               LNK-BTUREC-HKNCOMBI
+                                                                (IDZ3) )
+                               MOVE    1           TO  WRK-BTUREC-T
+                                                                (IDZ3)
+                               ADD     1           TO  WRK-BTUREC-KAISU
+                               INITIALIZE
+                                       LNK-BTUREC-HENKYAKU-TBL  (IDZ3)
+                           ELSE
+                               MOVE    ZERO        TO  FLG-BTUREC-TAISYO
+      *                        入院会計の保険組合せがレセの対象のとき
+                               PERFORM VARYING IDXZ    FROM    1   BY  1
+                                       UNTIL   IDXZ    >       10
+                                       OR      RECE62-HKNCOMBI (IDXZ)
+                                                       =   ZERO
+                                   IF      LNK-BTUREC-HKNCOMBI (IDZ3)
+                                               =   RECE62-HKNCOMBI(IDXZ)
+                                       MOVE    1   TO  FLG-BTUREC-TAISYO
+                                       MOVE    10  TO  IDXZ
+                                   END-IF
+                               END-PERFORM
+                               IF     FLG-BTUREC-TAISYO    =   ZERO
+      *                            該当しないとき入院会計以外の保険組合せをチェック
+                                   PERFORM VARYING IDV FROM    1   BY  1
+                                           UNTIL   IDV >
+                                          LNK-BTUREC-SYU-HKNCOMBI-MEISAI
+                                       IF      LNK-BTUREC-SYU-HKNCOMBI
+                                                             (IDV IDZ3)
+                                                       >   ZERO
+                                           IF  LNK-BTUREC-SYU-HKNCOMBI
+                                                             (IDV IDZ3)
+                                               =   WRK-BTUREC-HKNCOMBI
+                                               MOVE    1   TO
+                                                   WRK-BTUREC-T   (IDZ3)
+                                               ADD     1   TO
+                                                   WRK-BTUREC-KAISU
+                                               INITIALIZE
+                                                 LNK-BTUREC-HENKYAKU-TBL
+                                                                 (IDZ3)
+                                               MOVE
+                                          LNK-BTUREC-SYU-HKNCOMBI-MEISAI
+                                                           TO  IDV
+                                           END-IF
+                                       END-IF
+                                   END-PERFORM
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-IF 
+               END-PERFORM
+           END-IF
+      *
+           .
+       2007741-BYOSHO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
