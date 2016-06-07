@@ -40,12 +40,19 @@
            03  LNK-BTUREC-HENKYAKU-AREA.
       *病棟情報返却テーブル
              04    LNK-BTUREC-HENKYAKU-TBL       OCCURS  31.
-      *保険組合せ
-                   07  LNK-BTUREC-HKNCOMBI       PIC  9(04).
+      *入院会計保険組合せ
+                05  LNK-BTUREC-HKNCOMBI          PIC  9(04).
       *診療識別
-                   07  LNK-BTUREC-SRYSKB         PIC  X(02).
+                05  LNK-BTUREC-SRYSKB            PIC  X(02).
       *病棟コード（診療行為コード）
-                   07  LNK-BTUREC-BTUCD          PIC  X(09).
+                05  LNK-BTUREC-BTUCD             PIC  X(09).
+      *患者保険組合せ返却テーブル明細数
+             04    LNK-BTUREC-SYU-HKNCOMBI-MEISAI
+                                                 PIC  9(02).
+      *患者保険組合せ返却テーブル
+             04    LNK-BTUREC-SYU-HKNCOMBI-TBL   OCCURS  31.
+      *患者保険組合せ
+                05  LNK-BTUREC-SYU-HKNCOMBI      PIC  9(04)  OCCURS 31.
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
       *            ３：入院会計なし　　４：保険組合せ取得エラー

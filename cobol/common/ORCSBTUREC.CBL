@@ -70,6 +70,7 @@
            03  IDX-SYS                     PIC 9(04).
            03  IDX-ST                      PIC 9(04).
            03  IDX-ED                      PIC 9(04).
+           03  IDX-SYUHKN                  PIC 9(04).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -121,11 +122,18 @@
                05  WRK-GETSUMATSU-DD       PIC 9(02).
       *
       *    システム管理病棟情報ワーク
-           03  WRK-BTU-TABLE.
-               05  WRK-BTU-TBL           OCCURS  100.
-                   07  WRK-BTU-KBNCD       PIC X(02).
-                   07  WRK-BTU-SRYCD       PIC X(09).
+           03  WRK-SYSBTU-TABLE.
+               05  WRK-SYSBTU-TBL          OCCURS  100.
+                   07  WRK-SYSBTU-KBNCD    PIC X(02).
+                   07  WRK-SYSBTU-SRYCD    PIC X(09).
+                   07  WRK-SYSBTU-TSRYCD   PIC X(09).
+      *    システム管理病室情報ワーク
+           03  WRK-SYSBRM-TABLE.
+               05  WRK-SYSBRM-TBL          OCCURS  500.
+                   07  WRK-SYSBRM-KBNCD    PIC X(08).
+                   07  WRK-SYSBRM-TSRYCD   PIC X(09).
       *
+      *    保険組合せ退避領域
            03  WRK-SYUHKN-TBL.
              04  WRK-SYUHKN-OCC            OCCURS  31.
                05  WRK-SYUHKN              PIC 9(01).
@@ -147,11 +155,6 @@
                    07  WRK-SRYSKB          PIC X(02).
                    07  WRK-BTUCD           PIC X(09).
       *
-      *    保険組合せ番号退避
-           03  WRK-TAIHI-HKNCOMBI          PIC 9(03).
-           03  WRK-TAIHI-HKNCOMBI-SHAHO    PIC 9(03).
-           03  WRK-TAIHI-HKNCOMBI-KOKUHO   PIC 9(03).
-           03  WRK-TAIHI-HKNCOMBI-KOUKI    PIC 9(03).
       *
       *    診療コード計集計用
            03  WRK-SRYCD-X                 PIC X(09).
@@ -174,6 +177,7 @@
            COPY    "CPSK1001.INC".
            COPY    "CPSK5000.INC".
            COPY    "CPSK5001.INC".
+           COPY    "CPSK5002.INC".
       *
       *    患者入院履歴マスタ−
        01  PTNYUINRRK-REC.
@@ -390,14 +394,62 @@
                  IF   SYS-5001-SRYCD   NOT =   SPACE
                     ADD    1           TO  IDX-SYS
                     MOVE   SYS-5001-KBNCD
-                                       TO  WRK-BTU-KBNCD(IDX-SYS)
+                                       TO  WRK-SYSBTU-KBNCD(IDX-SYS)
                     MOVE   SYS-5001-SRYCD
-                                       TO  WRK-BTU-SRYCD(IDX-SYS)
+                                       TO  WRK-SYSBTU-SRYCD(IDX-SYS)
+                    MOVE   SYS-5001-TSRYCD
+                                       TO  WRK-SYSBTU-TSRYCD(IDX-SYS)
       **              DISPLAY "IDX-SYS ="  IDX-SYS
-      **              DISPLAY "WRK-BTU-KBNCD(IDX-SYS) = "
-      **                       WRK-BTU-KBNCD(IDX-SYS)
-      **              DISPLAY "WRK-BTU-SRYCD(IDX-SYS) = "
-      **                       WRK-BTU-SRYCD(IDX-SYS)
+      **              DISPLAY "WRK-SYSBTU-KBNCD(IDX-SYS) = "
+      **                       WRK-SYSBTU-KBNCD(IDX-SYS)
+      **              DISPLAY "WRK-SYSBTU-SRYCD(IDX-SYS) = "
+      **                       WRK-SYSBTU-SRYCD(IDX-SYS)
+      **              DISPLAY "WRK-SYSBTU-TSRYCD(IDX-SYS) = "
+      **                       WRK-SYSBTU-TSRYCD(IDX-SYS)
+                 END-IF
+                 MOVE    "tbl_syskanri" TO  MCP-TABLE
+                 MOVE    "key5"         TO  MCP-PATHNAME
+                 PERFORM  910-SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    事前に病室情報（システム管理）から病棟コードを取得しておく
+           MOVE    ZERO                TO  IDX-SYS
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    LNK-BTUREC-HOSPNUM  TO  SYS-HOSPNUM
+           MOVE    "5002"              TO  SYS-KANRICD
+           MOVE    LNK-BTUREC-SANTEIYM(1:6)
+                                       TO  SYS-STYUKYMD(1:6)
+           MOVE    "31"                TO  SYS-STYUKYMD(7:2)
+           MOVE    LNK-BTUREC-SANTEIYM(1:6)
+                                       TO  SYS-EDYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-EDYUKYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM   910-SYSKANRI-SELECT-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
+               PERFORM  910-SYSKANRI-READ-SEC
+               PERFORM  UNTIL  (FLG-SYSKANRI   =   1)  OR
+                               (IDX-SYS        =   500)
+                 IF   SYS-5002-TSRYCD  NOT =   SPACE
+                    ADD    1           TO  IDX-SYS
+                    MOVE   SYS-5002-KBNCD
+                                       TO  WRK-SYSBRM-KBNCD(IDX-SYS)
+                    MOVE   SYS-5002-TSRYCD
+                                       TO  WRK-SYSBRM-TSRYCD(IDX-SYS)
+      **              DISPLAY "IDX-SYS ="  IDX-SYS
+      **              DISPLAY "WRK-SYSBRM-KBNCD(IDX-SYS) = "
+      **                       WRK-SYSBRM-KBNCD(IDX-SYS)
+      **              DISPLAY "WRK-SYSBRM-TSRYCD(IDX-SYS) = "
+      **                       WRK-SYSBRM-TSRYCD(IDX-SYS)
                  END-IF
                  MOVE    "tbl_syskanri" TO  MCP-TABLE
                  MOVE    "key5"         TO  MCP-PATHNAME
@@ -424,6 +476,7 @@
       *
       *
       *    患者がもつ保険組合せから社保、国保、後期の期間を取得
+           MOVE    ZERO                TO  IDX-SYUHKN
            INITIALIZE                      HKNCOMBI-REC
            MOVE    LNK-BTUREC-HOSPNUM  TO  COMB-HOSPNUM
            MOVE    LNK-BTUREC-PTID     TO  COMB-PTID
@@ -442,6 +495,7 @@
                MOVE    "key6"          TO  MCP-PATHNAME
                PERFORM  910-HKNCOMBI-READ-SEC
                PERFORM  UNTIL  (FLG-HKNCOMBI   =   1)
+                IF   COMB-DELKBN       =    SPACE
                   MOVE     COMB-TEKSTYMD   TO    WRK-YMDX
                   MOVE     WRK-DD9         TO  IDX-ST
                   MOVE     COMB-TEKEDYMD   TO  WRK-YMDX
@@ -449,79 +503,81 @@
       *           国保
                   IF     COMB-HKNNUM     = "060" OR "067" OR
                                            "068" OR "069"
+                     ADD        1       TO  IDX-SYUHKN
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   IDX-ED
-                             MOVE   2     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
-                             MOVE   2     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   IDX-ED
-                             MOVE   2     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
-                             MOVE   2     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                   END-IF
       *           後期高齢者
                   IF     COMB-HKNNUM     = "039" OR "040"
+                     ADD        1       TO  IDX-SYUHKN
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   IDX-ED
-                             MOVE   3     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
-                             MOVE   3     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   IDX-ED
-                             MOVE   3     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
-                             MOVE   3     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                   END-IF
@@ -534,53 +590,59 @@
                         (COMB-HKNNUM(1:2)  NOT =    "98"  AND
                                                     "90"  AND
                                                     "91")
+                     ADD        1       TO  IDX-SYUHKN
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   IDX-ED
-                             MOVE   1     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
-                             MOVE   1     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) < LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) = LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  1  BY  1
                            UNTIL    IDX    >   IDX-ED
-                             MOVE   1     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                      IF (COMB-TEKSTYMD(1:6) = LNK-BTUREC-SANTEIYM) AND
                         (COMB-TEKEDYMD(1:6) > LNK-BTUREC-SANTEIYM)
                          PERFORM    VARYING   IDX   FROM  IDX-ST  BY  1
                            UNTIL    IDX    >   WRK-GETSUMATSU-DD
-                             MOVE   1     TO   WRK-SYUHKN(IDX)
                              MOVE   COMB-HKNCOMBINUM
-                                          TO   WRK-SYUHKN-HKNCOMBI(IDX)
+                                          TO   LNK-BTUREC-SYU-HKNCOMBI
+                                                       (IDX-SYUHKN IDX)
                          END-PERFORM
                      END-IF
                   END-IF
+                END-IF
       *
-                  MOVE    "tbl_hkncombi" TO  MCP-TABLE
-                  MOVE    "key6"         TO  MCP-PATHNAME
-                  PERFORM  910-HKNCOMBI-READ-SEC
+                MOVE    "tbl_hkncombi" TO  MCP-TABLE
+                MOVE    "key6"         TO  MCP-PATHNAME
+                PERFORM  910-HKNCOMBI-READ-SEC
                END-PERFORM
            END-IF
+      *
       *    保険組合せ管理クローズ
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
+      *
+      *    患者保険組合せ返却テーブル明細数のセット
+           MOVE     IDX-SYUHKN     TO  LNK-BTUREC-SYU-HKNCOMBI-MEISAI
       *
       **     PERFORM   VARYING   IDX   FROM  1  BY  1
       **      UNTIL   (IDX     >   31)
@@ -589,9 +651,6 @@
       **     END-PERFORM
       *
       *    入院会計の保険組合せ番号から保険種類の取得
-           MOVE       ZERO             TO  WRK-TAIHI-HKNCOMBI-SHAHO
-           MOVE       ZERO             TO  WRK-TAIHI-HKNCOMBI-KOKUHO
-           MOVE       ZERO             TO  WRK-TAIHI-HKNCOMBI-KOUKI
            PERFORM    VARYING   IDX   FROM   1   BY   1
                       UNTIL      IDX  >    31
                IF     WRK-HKNCOMBI-DAY(IDX)   NOT =   ZERO
@@ -612,18 +671,10 @@
                             IF     COMB-HKNNUM     = "060" OR "067" OR
                                                      "068" OR "069"
                                  MOVE    2      TO   WRK-HKNSYU-DAY(IDX)
-                                 IF WRK-TAIHI-HKNCOMBI-KOKUHO  = ZERO
-                                     MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
-                                         WRK-TAIHI-HKNCOMBI-KOKUHO
-                                 END-IF
                             END-IF
       *                     後期高齢者
                             IF     COMB-HKNNUM     = "039" OR "040"
                                  MOVE    3      TO   WRK-HKNSYU-DAY(IDX)
-                                 IF WRK-TAIHI-HKNCOMBI-KOUKI  = ZERO
-                                     MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
-                                          WRK-TAIHI-HKNCOMBI-KOUKI
-                                 END-IF
                             END-IF
       *                     労災、自賠責、公害
                             IF     COMB-HKNNUM     = "971" OR "973" OR
@@ -641,10 +692,6 @@
       *                     社保
                             IF     WRK-HKNSYU-DAY(IDX)  =    ZERO
                                  MOVE    1      TO   WRK-HKNSYU-DAY(IDX)
-                                 IF WRK-TAIHI-HKNCOMBI-SHAHO  = ZERO
-                                     MOVE  WRK-HKNCOMBI-DAY(IDX)  TO
-                                          WRK-TAIHI-HKNCOMBI-SHAHO
-                                 END-IF
                             END-IF
                        ELSE
                            MOVE    4             TO  LNK-BTUREC-RC
@@ -663,33 +710,6 @@
                END-IF
            END-PERFORM
       *
-      **     DISPLAY "WRK-TAIHI-HKNCOMBI-SHAHO = "
-      **              WRK-TAIHI-HKNCOMBI-SHAHO
-      **     DISPLAY "WRK-TAIHI-HKNCOMBI-KOKUHO = "
-      **              WRK-TAIHI-HKNCOMBI-KOKUHO
-      **     DISPLAY "WRK-TAIHI-HKNCOMBI-KOUKI = "
-      **              WRK-TAIHI-HKNCOMBI-KOUKI
-      *    社保、国保、後期で自費等の保険組合せ番号を置換する
-           PERFORM    VARYING   IDX   FROM   1   BY   1
-             UNTIL    (IDX       >    31)
-             IF     WRK-HKNSYU-DAY(IDX)   =   4  OR  5  OR  6
-                 IF   WRK-SYUHKN(IDX)    =   1
-                    MOVE   WRK-SYUHKN-HKNCOMBI(IDX)
-                                    TO   WRK-HKNCOMBI-DAY(IDX)
-                 END-IF
-                 IF   WRK-SYUHKN(IDX)    =   2
-                    MOVE   WRK-SYUHKN-HKNCOMBI(IDX)
-                                    TO   WRK-HKNCOMBI-DAY(IDX)
-                 END-IF
-                 IF   WRK-SYUHKN(IDX)    =   3
-                    MOVE   WRK-SYUHKN-HKNCOMBI(IDX)
-                                    TO   WRK-HKNCOMBI-DAY(IDX)
-                 END-IF
-                 IF   WRK-SYUHKN(IDX)    =   ZERO
-                    MOVE   ZERO     TO   WRK-HKNCOMBI-DAY(IDX)
-                 END-IF
-             END-IF
-           END-PERFORM
       *
       *    入院履歴から対象月の入院履歴を取得
            INITIALIZE                        PTNYUINRRK-REC
@@ -771,29 +791,6 @@
       **         DISPLAY "WRK-BTUNUM(IDX) = " WRK-BTUNUM(IDX)
       **     END-PERFORM
       *
-      *    病棟情報コードのセット
-           PERFORM   VARYING   IDX   FROM  1  BY  1
-            UNTIL   (IDX     >   31)
-               IF   WRK-BTUNUM(IDX)  NOT =   SPACE
-                   MOVE   ZERO     TO    FLG-SET
-                   PERFORM   VARYING   IDX-SYS   FROM  1  BY  1
-                     UNTIL  (IDX-SYS   >   100 )  OR
-                            (FLG-SET   =   1)
-                     IF     WRK-BTUNUM(IDX)  =   WRK-BTU-KBNCD(IDX-SYS)
-                         MOVE   WRK-BTU-SRYCD(IDX-SYS)
-                                           TO  WRK-BTUCD(IDX)
-                         MOVE   1          TO  FLG-SET
-                     END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
-      *
-      **     PERFORM   VARYING   IDX   FROM  1  BY  1
-      **      UNTIL   (IDX     >   31)
-      **         DISPLAY "IDX = " IDX
-      **         DISPLAY "WRK-BTUCD(IDX) = " WRK-BTUCD(IDX)
-      **     END-PERFORM
-      *
       *
       *    入院料の取得
            INITIALIZE                      NYUINACCT-REC
@@ -845,6 +842,62 @@
                   MOVE   "1"              TO  WRK-SANTEI-KBN(IDX)
                END-IF
            END-PERFORM
+      *
+      *
+      *    病棟情報コードのセット
+           PERFORM   VARYING   IDX   FROM  1  BY  1
+            UNTIL   (IDX     >   31)
+              IF   WRK-BTUNUM(IDX)  NOT =   SPACE
+      *          入院基本料
+                 IF  WRK-SANTEI-KBN(IDX)    =   "1"
+                     MOVE   ZERO     TO    FLG-SET
+                     PERFORM   VARYING   IDX-SYS   FROM  1  BY  1
+                       UNTIL  (IDX-SYS   >   100 )  OR
+                              (FLG-SET   =   1)
+                       IF  WRK-BTUNUM(IDX)  =  WRK-SYSBTU-KBNCD(IDX-SYS)
+                           MOVE   WRK-SYSBTU-SRYCD(IDX-SYS)
+                                             TO  WRK-BTUCD(IDX)
+                           MOVE   1          TO  FLG-SET
+                       END-IF
+                     END-PERFORM
+                 END-IF
+      *          病棟の特定入院料
+                 IF (WRK-SANTEI-KBN(IDX)    =   "2")   AND
+                    (WRK-TOKUTEI-KBN(IDX)   =   "2")
+                     MOVE   ZERO     TO    FLG-SET
+                     PERFORM   VARYING   IDX-SYS   FROM  1  BY  1
+                       UNTIL  (IDX-SYS   >   100 )  OR
+                              (FLG-SET   =   1)
+                       IF  WRK-BTUNUM(IDX)  =  WRK-SYSBTU-KBNCD(IDX-SYS)
+                           MOVE   WRK-SYSBTU-TSRYCD(IDX-SYS)
+                                             TO  WRK-BTUCD(IDX)
+                           MOVE   1          TO  FLG-SET
+                       END-IF
+                     END-PERFORM
+                 END-IF
+      *          病室の特定入院料
+                 IF (WRK-SANTEI-KBN(IDX)    =   "2")   AND
+                    (WRK-TOKUTEI-KBN(IDX)   =   "3")
+                     MOVE   ZERO     TO    FLG-SET
+                     PERFORM   VARYING   IDX-SYS   FROM  1  BY  1
+                       UNTIL  (IDX-SYS   >   500 )  OR
+                              (FLG-SET   =   1)
+                       IF  WRK-BRMNUM(IDX)  =  WRK-SYSBRM-KBNCD(IDX-SYS)
+                           MOVE   WRK-SYSBRM-TSRYCD(IDX-SYS)
+                                             TO  WRK-BTUCD(IDX)
+                           MOVE   1          TO  FLG-SET
+                       END-IF
+                     END-PERFORM
+                 END-IF
+              END-IF
+           END-PERFORM
+      *
+      **     PERFORM   VARYING   IDX   FROM  1  BY  1
+      **      UNTIL   (IDX     >   31)
+      **         DISPLAY "IDX = " IDX
+      **         DISPLAY "WRK-BTUCD(IDX) = " WRK-BTUCD(IDX)
+      **     END-PERFORM
+      *
       *
       *    返却エリアのセット
            PERFORM   VARYING   IDX   FROM  1  BY  1
@@ -1253,11 +1306,13 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
                                                SYS-5000-REC
                                                SYS-5001-REC
+                                               SYS-5002-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                      SYS-1001-REC
                                                SYS-5000-REC
                                                SYS-5001-REC
+                                               SYS-5002-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
