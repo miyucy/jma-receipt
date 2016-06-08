@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  16/06/XX  包括ＣＤ対象修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -62,12 +63,15 @@
            03  FLG-SELNUM          PIC 9(01).
            03  FLG-ERR             PIC 9(01).
       *
+           03  FLG-CHKEND          PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDX-T               PIC 9(04).
            03  IDX-STR             PIC 9(04).
+           03  IDC                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -84,6 +88,8 @@
       *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-TNS-NAME            PIC X(80).
+           03  WRK-TNS-STYMD           PIC X(08).
+           03  WRK-TNS-EDYMD           PIC X(08).
       *
            03  WRK-MCP-PATHNAME        PIC X(64).
       *    コラムリスト位置
@@ -322,6 +328,7 @@
       *
            MOVE    1                   TO  FLG-GMN-INIT
            INITIALIZE                  SPA-W321-AREA
+           MOVE    SPA-GMN-SELNUM      TO  SPA-W321-IDX
       *
            MOVE    SPACE               TO  HKTSRYCD-REC
            INITIALIZE                      HKTSRYCD-REC
@@ -331,27 +338,36 @@
       *
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key7"              TO  MCP-PATHNAME
                PERFORM 900-HKTSRYCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-HKTSRYCD
            END-IF
+      *
            PERFORM UNTIL   (FLG-HKTSRYCD   =   1  )
                       OR   (SPA-W321-H-GROUP   NOT =   SPACE)
       *        補助レコード算定チェック
                PERFORM 3101-ETENSU1-CHEK-SEC
       *
                MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key7"              TO  MCP-PATHNAME
                PERFORM 900-HKTSRYCD-READ-SEC
            END-PERFORM
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *H28.6
+           IF      SPA-W321-H-GROUP    NOT =   SPACE
+      *        対象の期間を編集
+               PERFORM 3101-ETENSU1-KIKAN-SEC
+      *        対象の期間決定
+               PERFORM 3201-KIKAN-HEN-SEC
+           END-IF
       *
            IF      SPA-W321-H-GROUP    NOT =   SPACE
                MOVE    1               TO  SPA-W321-PAGE
@@ -372,47 +388,76 @@
            MOVE    SPACE               TO  ETENSU1-REC
            INITIALIZE                      ETENSU1-REC
            MOVE    HKTSRYCD-SRYCD      TO  ETENSU1-SRYCD
-           MOVE    SPA-NAI-EDYUKYMD    TO  ETENSU1-YUKOSTYMD
-           MOVE    SPA-NAI-EDYUKYMD    TO  ETENSU1-YUKOEDYMD
+     **    MOVE    SPA-NAI-EDYUKYMD    TO  ETENSU1-YUKOSTYMD
+     **    MOVE    SPA-NAI-EDYUKYMD    TO  ETENSU1-YUKOEDYMD
            MOVE    ETENSU1-REC         TO  MCPDATA-REC
       *
            MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-ETENSU1-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ETENSU1
                INITIALIZE                  ETENSU1-REC
            END-IF
+           PERFORM UNTIL       FLG-ETENSU1 =   1
+               IF     (ETENSU1-YUKOSTYMD   <=  SPA-NAI-EDYUKYMD)
+                  OR  (ETENSU1-YUKOEDYMD   >=  SPA-NAI-STYUKYMD)
+      *            グループ番号（１）を対象とする
+                   MOVE    ETENSU1-H-GROUP(1)  TO  SPA-W321-H-GROUP
+                   MOVE    1                   TO  FLG-ETENSU1
+               END-IF
+               IF      FLG-ETENSU1         =   ZERO
+                   MOVE    "tbl_etensu_1"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 910-ETENSU1-READ-SEC
+               END-IF
+           END-PERFORM
            MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      FLG-ETENSU1         =   ZERO
-               MOVE    ETENSU1-YUKOSTYMD   TO  SPA-W321-YUKOSTYMD
-               MOVE    ETENSU1-YUKOEDYMD   TO  SPA-W321-YUKOEDYMD
-               MOVE    SPA-W321-YUKOSTYMD  TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG         TO  WRK-H-STYMD
-               MOVE    SPA-W321-YUKOEDYMD  TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG         TO  WRK-H-EDYMD
-               STRING  "【"
-                       WRK-H-STYMD
-                       "〜"
-                       WRK-H-EDYMD
-                       "】"
-                                           DELIMITED  BY  SIZE
-                                       INTO      SPA-W321-HEN-KIKAN
-               END-STRING
-      *        グループ番号（１）を対象とする
-               MOVE    ETENSU1-H-GROUP(1)  TO  SPA-W321-H-GROUP
-           END-IF
            .
        3101-ETENSU1-CHEK-EXT.
+           EXIT.
+      *
+      *H28.6
+      *****************************************************************
+      *    包括コードリスト編集処理
+      *****************************************************************
+       3101-ETENSU1-KIKAN-SEC                  SECTION.
+      *
+           MOVE    SPA-NAI-STYUKYMD    TO  SPA-W321-YUKOSTYMD
+           MOVE    SPA-NAI-EDYUKYMD    TO  SPA-W321-YUKOEDYMD
+      *
+           .
+       3101-ETENSU1-KIKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象期間決定処理
+      *****************************************************************
+       3201-KIKAN-HEN-SEC                  SECTION.
+      *
+           MOVE    SPA-W321-YUKOSTYMD  TO  WRK-SYMD
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  WRK-H-STYMD
+           MOVE    SPA-W321-YUKOEDYMD  TO  WRK-SYMD
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  WRK-H-EDYMD
+           STRING  "【"
+                   WRK-H-STYMD
+                   "〜"
+                   WRK-H-EDYMD
+                   "】"
+                                       DELIMITED  BY  SIZE
+                                   INTO      SPA-W321-HEN-KIKAN
+           END-STRING
+           .
+       3201-KIKAN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -470,9 +515,16 @@
            END-IF
            PERFORM UNTIL  (FLG-ETENSU2     =   1 )
                     OR    (SPA-W321-NEXT   =   1 )
+      *H28.6
+               IF     (ETENSU2-YUKOSTYMD   >   SPA-W321-YUKOEDYMD)
+                  OR  (ETENSU2-YUKOEDYMD   <   SPA-W321-YUKOSTYMD)
+                   CONTINUE
+               ELSE
       *
                MOVE    ETENSU2-SRYCD      TO  WRK-SRYCD
                PERFORM 3201-TENSU-HENSYU-SEC
+      *
+               END-IF
       *
                MOVE    "tbl_etensu_2"     TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME   TO  MCP-PATHNAME
@@ -494,79 +546,81 @@
            MOVE    SPACE               TO  ETENSU2-REC
            INITIALIZE                  ETENSU2-REC
            MOVE    SPA-W321-H-GROUP    TO  ETENSU2-H-GROUP
-      ***  MOVE    SPA-W321-YUKOSTYMD  TO  ETENSU2-YUKOSTYMD
       *H24.4 開始日時点で有効
            MOVE    SPA-W321-YUKOSTYMD  TO  ETENSU2-YUKOSTYMD
            MOVE    SPA-W321-YUKOSTYMD  TO  ETENSU2-YUKOEDYMD
       *    検索用
            MOVE    SPA-HOSPNUM         TO  ETENSU2-TK-HOSPNUM
-           MOVE    "key2"              TO  WRK-MCP-PATHNAME
+      *****MOVE    "key2"              TO  WRK-MCP-PATHNAME
+      *
+           MOVE    "key22"             TO  WRK-MCP-PATHNAME
+      *
            EVALUATE    SPA-W321-SYORIKKBN
                WHEN    "01"
       *            投薬・処方せん料
-                   MOVE    "key4"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key42"             TO  WRK-MCP-PATHNAME
                    MOVE    "20"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "29"                TO  ETENSU2-TK-SRYKBN-2
                    MOVE    "820"               TO  ETENSU2-TK-SRYSYUKBN
                    MOVE    "820"             TO  ETENSU2-TK-SRYSYUKBN-2
                WHEN    "02"
       *            注射
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "30"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "39"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "03"
       *            処置
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "40"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "49"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "04"
       *            手術・麻酔
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "50"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "59"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "05"
       *            検査
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "60"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "60"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "06"
       *            画像診断
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "70"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "79"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "07"
       *            リハビリ・その他
-                   MOVE    "key5"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key52"             TO  WRK-MCP-PATHNAME
                    MOVE    "800"               TO  ETENSU2-TK-SRYSYUKBN
                    MOVE    "850"             TO  ETENSU2-TK-SRYSYUKBN-2
                WHEN    "08"
       *            精神科専門
-                   MOVE    "key5"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key52"             TO  WRK-MCP-PATHNAME
                    MOVE    "830"               TO  ETENSU2-TK-SRYSYUKBN
                    MOVE    "830"             TO  ETENSU2-TK-SRYSYUKBN-2
                WHEN    "09"
       *            放射線治療
-                   MOVE    "key5"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key52"             TO  WRK-MCP-PATHNAME
                    MOVE    "840"               TO  ETENSU2-TK-SRYSYUKBN
                    MOVE    "840"             TO  ETENSU2-TK-SRYSYUKBN-2
                WHEN    "10"
       *            病理診断
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "64"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "64"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "11"
       *            指導料
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "13"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "13"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "12"
       *            指導料
-                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
                    MOVE    "14"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "14"                TO  ETENSU2-TK-SRYKBN-2
                WHEN    "13"
       *            基本料
-                   MOVE    "key4"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key42"             TO  WRK-MCP-PATHNAME
                    MOVE    "11"                TO  ETENSU2-TK-SRYKBN
                    MOVE    "12"                TO  ETENSU2-TK-SRYKBN-2
                    MOVE    "890"               TO  ETENSU2-TK-SRYSYUKBN
@@ -580,6 +634,37 @@
       *    コード対象チェック処理
       *****************************************************************
        3201-TENSU-HENSYU-SEC                  SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKEND
+           PERFORM VARYING     IDC FROM    1   BY  1
+                   UNTIL      (IDC     >   500 )
+                         OR   (SPA-W321-TSRYCD (IDC) =   SPACE)
+                         OR   (FLG-CHKEND      =   1    )
+               IF      WRK-SRYCD       =   SPA-W321-TSRYCD (IDC)
+                   MOVE    1               TO  FLG-CHKEND
+                   IF      ETENSU2-YUKOSTYMD   >   SPA-W321-TSTYMD(IDC)
+                       MOVE    IDC                 TO  IDX
+      *                有効期間編集
+                       MOVE    ETENSU2-YUKOSTYMD   TO  SPA-W321-TSTYMD
+                                                           (IDX)
+                       MOVE    ETENSU2-YUKOEDYMD   TO  SPA-W321-TEDYMD
+                                                           (IDX)
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      FLG-CHKEND          =   1
+               GO      TO      3201-TENSU-HENSYU-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-TNS-NAME
+           MOVE    SPACE               TO  WRK-TNS-STYMD
+           MOVE    SPACE               TO  WRK-TNS-EDYMD
+      *
+           PERFORM 3209-TENSU-CHEK-SEC
+      *    点数マスタなしは対象外
+           IF      WRK-TNS-NAME        =   SPACE
+               GO      TO      3201-TENSU-HENSYU-EXT
+           END-IF
       *
            ADD     1                   TO  IDX-T
            IF      IDX-T               >=  IDX-STR
@@ -600,23 +685,6 @@
       *****************************************************************
        3202-TBL-HENSYU-SEC                  SECTION.
       *
-           MOVE    SPACE               TO  WRK-TNS-NAME
-      *
-           MOVE    SPACE               TO  TNS-TENSU-REC
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-      *H24.4 開始日時点で有効
-      *    MOVE    ETENSU2-YUKOSTYMD   TO  TNS-YUKOSTYMD
-      *    MOVE    ETENSU2-YUKOEDYMD   TO  TNS-YUKOEDYMD
-           MOVE    SPA-W321-YUKOSTYMD  TO  TNS-YUKOSTYMD
-           MOVE    SPA-W321-YUKOSTYMD  TO  TNS-YUKOEDYMD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU           =   1
-      *       マスタなし
-               PERFORM 3209-TENSU-CHEK-SEC
-           ELSE
-               MOVE    TNS-NAME            TO  WRK-TNS-NAME
-           END-IF
-      *
            MOVE    IDX             TO  SPA-W321-MAX
            MOVE    IDX-T           TO  SPA-W321-TNUM   (IDX)
            MOVE    WRK-SRYCD       TO  SPA-W321-TSRYCD (IDX)
@@ -624,10 +692,16 @@
            MOVE    ETENSU2-YUKOSTYMD   TO  SPA-W321-TSTYMD(IDX)
            MOVE    ETENSU2-YUKOEDYMD   TO  SPA-W321-TEDYMD(IDX)
       *
-           MOVE    ETENSU1-YUKOSTYMD   TO  WRK-SYMD
+           MOVE    ETENSU2-YUKOSTYMD   TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-STYMD
-           MOVE    ETENSU1-YUKOEDYMD   TO  WRK-SYMD
+      *
+           IF     (WRK-TNS-EDYMD   NOT =   SPACE)
+              AND (WRK-TNS-EDYMD       <   ETENSU2-YUKOEDYMD)
+               MOVE    WRK-TNS-EDYMD       TO  WRK-SYMD
+           ELSE
+               MOVE    ETENSU2-YUKOEDYMD   TO  WRK-SYMD
+           END-IF
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-EDYMD
            STRING      WRK-H-STYMD
@@ -650,11 +724,11 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    "key24"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
+               MOVE    "key24"             TO  MCP-PATHNAME
                PERFORM 900-TENSU-READ-SEC
            ELSE
                INITIALIZE                  TNS-TENSU-REC
@@ -662,23 +736,44 @@
            END-IF
            PERFORM UNTIL      FLG-TENSU    =   1
       *
-               MOVE    SPACE               TO  WRK-TNS-NAME
-               STRING  "【外】"
-                       TNS-NAME            DELIMITED   BY  SPACE
-                                           INTO    WRK-TNS-NAME
-               END-STRING
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-TENSU-READ-SEC
+      *
+      *        MOVE    SPACE               TO  WRK-TNS-NAME
+      *        STRING  "【外】"
+      *                TNS-NAME            DELIMITED   BY  SPACE
+      *                                    INTO    WRK-TNS-NAME
+      *        END-STRING
+      *        MOVE    TNS-YUKOSTYMD       TO  WRK-TNS-STYMD
+      *        MOVE    TNS-YUKOEDYMD       TO  WRK-TNS-EDYMD
+      *TEST
+               IF      TNS-YUKOEDYMD       >   WRK-TNS-EDYMD
+                   MOVE    TNS-YUKOEDYMD       TO  WRK-TNS-EDYMD
+               END-IF
+               IF     (SPA-W321-YUKOSTYMD   <= TNS-YUKOSTYMD)
+                 AND  (SPA-W321-YUKOEDYMD   >= TNS-YUKOEDYMD)
+                   MOVE    TNS-NAME            TO  WRK-TNS-NAME
+      *            電子点数表期間内
+                   IF     (TNS-YUKOSTYMD       <=  ETENSU2-YUKOSTYMD)
+                     OR   (TNS-YUKOEDYMD       >=  ETENSU2-YUKOEDYMD)
+                       MOVE    1                  TO  FLG-TENSU
+                   END-IF
+      *
+               END-IF
+      *
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    "tbl_tensu"         TO  MCP-TABLE
+                   MOVE    "key24"              TO  MCP-PATHNAME
+                   PERFORM 900-TENSU-READ-SEC
+               END-IF
            END-PERFORM
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    "key24"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *?
+      *    IF      WRK-TNS-NAME        =   SPACE
+      *        MOVE    ALL "＊"            TO  WRK-TNS-NAME
       *
-           IF      WRK-TNS-NAME        =   SPACE
-               MOVE    ALL "＊"            TO  WRK-TNS-NAME
-           END-IF
+      *?   END-IF
            .
        3209-TENSU-CHEK-EXT.
            EXIT.
@@ -708,7 +803,15 @@
       *
                MOVE    ETNSJMA-SRYCD       TO  WRK-SRYCD
                MOVE    ETENSU2-JMA-REC     TO  ETENSU2-REC
+      *TEST
+               IF     (ETENSU2-YUKOSTYMD   >   SPA-W321-YUKOEDYMD)
+                  OR  (ETENSU2-YUKOEDYMD   <   SPA-W321-YUKOSTYMD)
+                   CONTINUE
+               ELSE
+      *
                PERFORM 3201-TENSU-HENSYU-SEC
+      *
+               END-IF
       *
                MOVE    "tbl_etensu_2_jma"  TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1231,10 +1334,33 @@
       *****************************************************************
        290-MAE-RIREKI-SEC             SECTION.
       *
-           IF      SPA-W321-YUKOSTYMD  =   SPA-NAI-STYUKYMD
+      *!!!
+      *    履歴毎の表示とする
+           IF     (SPA-W321-IDX        =   ZERO
+                                       OR  1   )
                MOVE    "0021"              TO  SPA-ERRCD
                GO      TO      290-MAE-RIREKI-EXT
            END-IF
+           COMPUTE SPA-W321-IDX        =   SPA-W321-IDX
+                                       -   1
+           MOVE    SPA-NAI-TSTYUKYMD (SPA-W321-IDX)
+                                       TO  SPA-W321-YUKOSTYMD
+           MOVE    SPA-NAI-TEDYUKYMD (SPA-W321-IDX)
+                                       TO  SPA-W321-YUKOEDYMD
+      *    対象の期間決定
+           PERFORM 3201-KIKAN-HEN-SEC
+           MOVE    1               TO  SPA-W321-PAGE
+           MOVE    ZERO            TO  SPA-W321-NEXT
+      *    包括コードリスト
+           PERFORM 320-HKTLIST-SYORI-SEC
+           IF      SPA-W321-MAX        =   ZERO
+               MOVE    "0022"              TO  SPA-ERRCD
+           END-IF
+      *
+      *
+      *
+      *
+               GO      TO      290-MAE-RIREKI-EXT
       *
            MOVE    SPACE               TO  ETENSU1-REC
            INITIALIZE                      ETENSU1-REC

@@ -105,3 +105,16 @@ path	all	{
  		;
 	};
 };
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_hktsrycd_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hktsrycd
+			WHERE   KANRICD     =   :KANRICD
+                        AND     RENNUM      =   1
+			AND     YUKOEDYMD  >=   :YUKOSTYMD
+			ORDER   BY         YUKOSTYMD DESC
+		;
+	};
+};
