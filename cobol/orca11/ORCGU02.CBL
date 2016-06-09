@@ -5609,7 +5609,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    CLAIM-FILE          TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
       *
-               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+               MOVE    "HL04.sh"           TO  SHELLTBL-NAME
       *
                MOVE    SPA-GMN-SCODE       TO  SHELLTBL-ARG1
                MOVE    SPA-PTID            TO  WRK-PTID
@@ -5647,7 +5647,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "shell"             TO  MCP-PATHNAME
+               MOVE    "allways"           TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA

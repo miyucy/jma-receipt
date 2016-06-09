@@ -117,6 +117,7 @@ shell_sources = \
 	allways/jmamr.sh.in \
 	allways/client_print.sh.in \
 	daily/execoprg.sh.in \
+	allways/HL04.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \
