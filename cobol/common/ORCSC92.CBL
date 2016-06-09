@@ -350,6 +350,8 @@
       *    最低薬価
            03  WRK-CHKTEN               PIC 9(09)V9(4).
       *
+           03  WRK-PSY-MEI              PIC X(02).
+      *
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
            03  WRK-TBL-SSTKIJUN-OCC       OCCURS  8500.
@@ -3876,6 +3878,16 @@
                PERFORM 3000-RSIJIB-HEN-SEC
            END-IF
       *
+      *H28.4
+      *    向精神薬情報編集
+           MOVE    SPACE           TO  SPA-COM-PSY-CLASS (IDX-T)
+           MOVE    SPACE           TO  WRK-PSY-MEI
+           IF     (TNS-SRYCD(1:1)      =   "6" )
+             AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
+               PERFORM 3009-PSYCHOTROPIC-HEN-SEC
+           END-IF
+      *
+      *
       *    名称(フリーコメントの時、前回のコメントをのこす）
            IF    ((SPA-COM-INPUTCD (IDX-T)   =   "810000001"
                                              OR  "008500000"
@@ -4200,13 +4212,6 @@
            IF     (TNS-SRYCD(1:1)      =   "6" )
                PERFORM 3007-TENSUPLUS2-HEN-SEC
            END-IF
-      *H28.4
-      *    向精神薬情報編集
-           MOVE    SPACE           TO  SPA-COM-PSY-CLASS (IDX-T)
-           IF     (TNS-SRYCD(1:1)      =   "6" )
-             AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
-               PERFORM 3009-PSYCHOTROPIC-HEN-SEC
-           END-IF
       *
       *    患者禁忌薬剤情報
            IF     (TNS-SRYCD(1:1)      =   "6" )
@@ -4255,31 +4260,6 @@
                END-IF
            END-IF
       *
-      *TEST
-      *H28.5
-      *    向精神薬設定
-           IF     (SPA-SRYYMD          >=  "20160401" )
-           AND    (SPA-COM-INPUTCD(IDX-T)(1:1) =   "6" )
-           AND    (SPA-COM-PSY-CLASS (IDX-T)   =   "1" )
-               MOVE   SPA-GMN-MEISYO (IDX-T)   TO  WRK-MEISYO
-               MOVE   SPACE              TO  SPA-GMN-MEISYO (IDX-T)
-               STRING "☆"             DELIMITED   BY  SIZE
-                      WRK-MEISYO       DELIMITED   BY  SPACE
-                               INTO             SPA-GMN-MEISYO (IDX-T)
-               END-STRING
-               MOVE    SPA-GMN-MEISYO (IDX-T)
-                                           TO  SPA-COM-MEI-NAME(IDX-T)
-      *
-               IF      SPA-COM-IPN-NAME(IDX-T) NOT =   SPACE
-                   MOVE   SPA-COM-IPN-NAME(IDX-T)   TO  WRK-MEISYO
-                   MOVE   SPACE                TO  SPA-COM-IPN-NAME
-                                                                (IDX-T)
-                   STRING "☆"             DELIMITED   BY  SIZE
-                          WRK-MEISYO       DELIMITED   BY  SPACE
-                               INTO             SPA-COM-IPN-NAME(IDX-T)
-                   END-STRING
-               END-IF
-           END-IF
            .
        300-TENSU-HENSYU-EXT.
            EXIT.
@@ -4501,6 +4481,7 @@
       *            後発品（先発品のある後発品）
                    MOVE    SPACE                TO  WRK-MEISYO
                    STRING      "【"             DELIMITED   BY  SIZE
+                               WRK-PSY-MEI      DELIMITED   BY  SPACE
                                WRK-MSG1         DELIMITED   BY  SPACE
                                "後】"           DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
@@ -4510,6 +4491,7 @@
       *            後発品のある先発品
                    MOVE    SPACE               TO  WRK-MEISYO
                    STRING      "【"             DELIMITED   BY  SIZE
+                               WRK-PSY-MEI      DELIMITED   BY  SPACE
                                WRK-MSG1         DELIMITED   BY  SPACE
                                "先】"           DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
@@ -4518,10 +4500,12 @@
       *??
                WHEN    0
       *            後発品のない先発品で一般名記載区分あり
-                   IF      WRK-MSG1        NOT =   SPACE
+                   IF     (WRK-MSG1        NOT =   SPACE )
+                     OR   (WRK-PSY-MEI     NOT =   SPACE )
                        MOVE    SPACE               TO  WRK-MEISYO
                        STRING  "【"             DELIMITED   BY  SIZE
                                WRK-MSG1         DELIMITED   BY  SPACE
+                               WRK-PSY-MEI      DELIMITED   BY  SPACE
                                "】"             DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
                                INTO             WRK-MEISYO
@@ -4532,11 +4516,24 @@
       *            先発品のない後発品
                    MOVE    SPACE                TO  WRK-MEISYO
                    STRING      "【"             DELIMITED   BY  SIZE
+                               WRK-PSY-MEI      DELIMITED   BY  SPACE
                                WRK-MSG1         DELIMITED   BY  SPACE
                                "無】"           DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
                                INTO             WRK-MEISYO
                    END-STRING
+      *H28.6
+               WHEN    OTHER
+      *            なし
+                   IF      WRK-PSY-MEI     NOT =   SPACE
+                       MOVE    SPACE                TO  WRK-MEISYO
+                       STRING  "【"             DELIMITED   BY  SIZE
+                               WRK-PSY-MEI      DELIMITED   BY  SPACE
+                                "】"            DELIMITED   BY  SIZE
+                               TNS-NAME         DELIMITED   BY  SIZE
+                               INTO             WRK-MEISYO
+                       END-STRING
+                   END-IF
            END-EVALUATE
       *!!!!
       *ver.4.5（削除かも〜）
@@ -5458,7 +5455,8 @@
       *
                    IF     (PSYCHOTROPIC-CLASS  >=  1  AND  <=  4 )
       *                向精神薬
-                       MOVE    "1"             TO  SPA-COM-PSY-CLASS
+                       MOVE    PSYCHOTROPIC-CLASS
+                                               TO  SPA-COM-PSY-CLASS
                                                                (IDX-T)
                    END-IF
                ELSE
@@ -5472,6 +5470,18 @@
            MOVE    "tbl_psychotropic" TO  MCP-TABLE
            MOVE    "key"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *    向精神薬設定
+           EVALUATE    SPA-COM-PSY-CLASS (IDX-T)
+               WHEN    "1"
+                   MOVE    "不"            TO  WRK-PSY-MEI
+               WHEN    "2"
+                   MOVE    "睡"            TO  WRK-PSY-MEI
+               WHEN    "3"
+                   MOVE    "う"            TO  WRK-PSY-MEI
+               WHEN    "4"
+                   MOVE    "精"            TO  WRK-PSY-MEI
+           END-EVALUATE
       *
            .
        3009-PSYCHOTROPIC-HEN-EXT.
