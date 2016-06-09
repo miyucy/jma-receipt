@@ -9,6 +9,7 @@ SRCS = \
 	ORCL0012P.CBL  \
 	ORCL0012.CBL  \
 	ORCL0031BM.CBL  \
+	ORCL0040.CBL \
 
 CSRCS = \
 	orcuidset.c
