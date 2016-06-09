@@ -104,7 +104,7 @@
       *
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(100).
+           02  FILLER      PIC X(512).
       *PROCEDURE                   DIVISION.
        PROCEDURE           DIVISION
                USING
