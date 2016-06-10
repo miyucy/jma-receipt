@@ -2172,7 +2172,8 @@
                IF     (SPA-HKNKBN          =   1   )
                  AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *          労災加算ありのみ
-                 AND  (FLG-ROUSAI-KSN      =   1   )
+                 AND ((FLG-ROUSAI-KSN      =   1   ) OR
+                      (IDX-R-SYU           >   ZERO ))
       *            労災の時、合計に時間外加算計算
                    PERFORM 10062-RSI-JIKAN-SEC
                END-IF
@@ -2386,15 +2387,18 @@
                    COMPUTE WRK-TENSUKEI        =   WRK-SUM-TENSUKEI-K
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100.00
-                                               +   0.9
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+                   ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-G
                    MOVE    1                   TO  FLG-ROUSAI-KSN
                END-IF
            END-PERFORM
       *
-           COMPUTE WRK-SUM-TENSUKEI-K  =   WRK-SUM-TENSUKEI-K
-                                       +   WRK-TENSUKEI-G
+      *    端数切り上げ
+           IF      FLG-ROUSAI-KSN      =   1
+               COMPUTE WRK-SUM-TENSUKEI    =   WRK-SUM-TENSUKEI-K
+                                           +   WRK-TENSUKEI-G
+                                           +   0.9
+               MOVE    WRK-SUM-TENSUKEI    TO  WRK-SUM-TENSUKEI-K
+           END-IF
       *
            .
        10061-RSI-KSAN-EXT.
@@ -2473,6 +2477,9 @@
                    MOVE    ZERO                TO  WRK-RSI-TENSU-M
                END-IF
            END-IF
+      *TEST
+           DISPLAY "WRK-RSI-TENSUKEI:" WRK-RSI-TENSUKEI
+      *TEST
       *
       *    初診時ブラシング料時間外加算
            MOVE    ZERO                TO  WRK-TENSUKEI-G
