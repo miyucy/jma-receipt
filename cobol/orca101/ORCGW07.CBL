@@ -2089,9 +2089,10 @@
            MOVE    "0 通常表示"        TO  SPA-GMN-PRVLAYOUT038-LST(1)
            MOVE    "1 一画面表示"      TO  SPA-GMN-PRVLAYOUT038-LST(2)
            MOVE    2                   TO  SPA-GMN-PRVLAYOUT038-MAX
-      *    セット展開表示
+      *H28.6
+      *    セット内容展開表示
            MOVE    "0 通常展開"        TO  SPA-GMN-SETALLKBN-LST(1)
-           MOVE    "1 全部展開"        TO  SPA-GMN-SETALLKBN-LST(2)
+           MOVE    "1 全展開"          TO  SPA-GMN-SETALLKBN-LST(2)
            MOVE    2                   TO  SPA-GMN-SETALLKBN-MAX
       *
       *    入金・返金額初期設定区分
