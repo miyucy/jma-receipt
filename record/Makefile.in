@@ -847,6 +847,7 @@ DB_files = \
 	xml_claim_accountv2req.db \
 	xml_claim_accountv2res.db \
 	push_accept01.rec \
+	push_account01.rec \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
