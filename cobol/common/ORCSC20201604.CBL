@@ -66,7 +66,6 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  15/04/XX  ¸åÈ¯ÉÊÊÑ¹¹ÉÔ²Ä½èÊýËè¤ÎÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  16/03/XX  £È£²£¸Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  16/04/2X  ¸þÀº¿ÀÌôÄþ¸º¤ÎÆâÉþÄþ¸ºÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  16/06/2X  £³£°Æü°Ê¾å¤Î¸þÀº¿ÀÌôÄþ¸ºÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -236,6 +235,8 @@
       *
            03  IDXG5               PIC 9(04).
            03  IDXG6               PIC 9(04).
+      *H28.6
+           03  IDX-80              PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -2414,6 +2415,8 @@
       *
            MOVE    ZERO                TO  IDXS
            MOVE    SPACE               TO  LNK-ORCSC-KIDCD
+      *H28.6   Àº¿ÀÍÑ
+           MOVE    ZERO                TO  IDX-80
       *
            PERFORM VARYING     IDX-KA  FROM    1   BY  1
                    UNTIL      (IDX-KA      >   10   )  OR
@@ -2907,6 +2910,20 @@
       *        Â¿ºÞÅêÍ¿ÂÐ¾Ý
                MOVE    1               TO  FLG-TAZAI-ARI
            END-IF
+      *
+      *TEST 
+      *H28.6
+      *    Àº¿ÀÄþ¸ºÍÑ
+           ADD     1                   TO  IDX-80
+           MOVE    WRK-SRYKA           TO  SPA-PSY80-KA (IDX-80)
+           IF    (ORCSPSYCHO-COUNT (3) >=  3 )
+             OR  (ORCSPSYCHO-COUNT (4) >=  3 )
+      *         ¹³¤¦¤ÄÌô(3)¡¢¹³Àº¿ÀÌô(4)¤ò£³¼ïÎà°Ê¾å
+               MOVE    1               TO  SPA-PSY80-ARI(IDX-80)
+           ELSE
+               MOVE    ZERO            TO  SPA-PSY80-ARI(IDX-80)
+           END-IF
+      *!!
            .
        30003-PSYCHO-CHK-EXT.
            EXIT.
@@ -4149,7 +4166,7 @@
                    END-IF
       *H28.4
                    IF     (WRK-COM-INPUTCD (IDXG3)(1:1) =   "6" )
-                       IF     WRK-COM-PSY-CLASS (IDXG3)    =   "1"
+                       IF     WRK-COM-PSY-CLASS (IDXG3) NOT =   SPACE
       *                    ¸þÀº¿ÀÌô
                            ADD     1                   TO  IDXG5
                            MOVE    WRK-GMN-TBL (IDXG3) TO  HZN5-GMN-TBL

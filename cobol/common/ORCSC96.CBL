@@ -3307,6 +3307,21 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H28.7 から
+               WHEN    "K877"
+                   STRING  "警告！"
+                           "３種類以上抗うつ薬等の投与はありせん。"
+                           "減算のコードが算定されています"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K878"
+                   STRING  "警告！"
+                           "３種類以上抗うつ薬等の投与となります。"
+                           "減算のコードを算定して下さい"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       **
                WHEN    "K910"
                    STRING  "警告！"

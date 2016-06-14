@@ -56,6 +56,7 @@
       * 04.07.00     NACL-多々納  14/05/02  労災リハビリ加算計算対応
       * 04.07.00     NACL-多々納  14/07/14  労災リハ（1.2倍）対応
       * 04.08.00     NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
+      * 04.08.00     NACL-多々納  16/06/XX  Ｈ２８年７月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -134,6 +135,8 @@
            03  FLG-KAIGO               PIC 9(01).
       *
            03  FLG-RIHA-OK             PIC 9(01).
+      *H28.6
+           03  FLG-CHK-PSY             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -194,6 +197,8 @@
            03  IDX-ZS3                PIC 9(04).
            03  IDX-Z3                 PIC 9(04).
       *
+           03  IDX-80                 PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
@@ -223,11 +228,9 @@
       *
            03  WRK-TENSUKEI        PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC S9(08).
-           03  WRK-TENSUKEI-G      PIC S9(08).
-           03  WRK-TENSUKEI-K      PIC S9(08).
+           03  WRK-TENSUKEI-G      PIC S9(08)V99.
+           03  WRK-TENSUKEI-K      PIC S9(08)V99.
            03  WRK-TENSUKEI-RSI    PIC S9(08).
-           03  WRK-TENGAKEI-G      PIC S9(10).
-           03  WRK-TENGAKEI-K      PIC S9(10).
       *
            03  WRK-TENSU-KEISAN.
                05  WRK-SUM-TENSUKEI    PIC 9(08)V99.
@@ -3335,10 +3338,31 @@
                    PERFORM 10211-GAIRI-SEISINAUTO-SEC
                END-IF
            ELSE
+      *!!!!!!!!!!!
+      *        心身医学療法は入力時のみとする
+      *      IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
+      *             (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "004")
+      *         IF     (WRK-COM-KSNAUTO(IDX-Z)  =   "1" )
+      *              CONTINUE
+      *         ELSE
+      *            MOVE   IDX-Z           TO  IDX-ZS3
+      *            PERFORM 10021-JIDO-AGEKASAN-SEC
+      *            IF      FLG-ADD             =   1
+      *                MOVE    1           TO  WRK-COM-SANFLG (IDX-S)
+      *                MOVE    "1"       TO  WRK-COM-KSNAUTO (IDX-ZS3)
+      *                MOVE    SPACE       TO  WRK-COM-AUTOKBN (IDX-S)
+      *            END-IF
+      *        END-IF
+      *      ELSE
+      *!!!!
+      *!!!!!
                PERFORM 10021-JIDO-AGEKASAN-SEC
                IF      FLG-ADD             =   1
                    MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
                END-IF
+      *!!!!
+      *        END-IF
+      *!!!!
            END-IF
       *
            COMPUTE IDX-Z2              =   IDX-ZS2     +   1
@@ -3698,9 +3722,10 @@
                                                              (IDX-SYU)
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
-                                               +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
+                   ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-K
+      *                                        +   0.5
+      *            MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
                END-IF
       *        ％減算（労災減算も計算する）
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -3711,9 +3736,10 @@
                                                              (IDX-SYU)
                                                *  (WRK-COM-KISOTEN(IDX)
                                                /   100 )
-                                               +   0.4
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+                   ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-G
+      *                                        +   0.4
+      *            MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
                END-IF
            END-PERFORM
       *
@@ -3734,14 +3760,16 @@
                    COMPUTE WRK-TENSUKEI        =   WRK-SUM-TENSUKEI
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
-                                               +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
+                   ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-K
+      *                                        +   0.5
+      *            MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
                END-IF
            END-PERFORM
       *
            COMPUTE LNK-SC90-TENSU      =   WRK-SUM-TENSUKEI
                                        +   WRK-TENSUKEI-K
+                                       +   0.5
       *
       *    労災の時、労災加算
            IF      SPA-HKNKBN          =   1
@@ -4670,6 +4698,14 @@
                END-IF
            END-IF
       *
+      *TEST
+      *H27.7 から
+      *    抗不安・抗精神薬３種類以上ありの逓減チェック処理
+           IF     (SPA-SRYYMD          >=  "20160701")
+            AND   (SPA-ERRCD           =   SPACE     )
+               PERFORM 3002-PSY-TEIGEN-SEC
+           END-IF
+      *
            .
        300-AUTO-SYORI-EXT.
            EXIT.
@@ -4703,6 +4739,84 @@
            .
        3001-SEISINSYORI-EXT.
            EXIT.
+      *TEST
+      *TEST
+      *****************************************************************
+      *    抗不安・抗精神薬３種類以上ありの逓減処理
+      *****************************************************************
+       3002-PSY-TEIGEN-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE      )  OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+               IF     (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+                   CONTINUE
+               ELSE
+      *            精神通院、精神科継続外来支援・指導料
+                   IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I"  )  AND
+                          (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002")  AND
+                          (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z) =   "00"
+                                                           OR  "02")
+                    AND   (WRK-COM-DATAKBN (IDX-Z)     =   "1"  )
+      *                警告チェック判定
+                       IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
+                              (LNK-ORCSC-KEI-IDX        =   ZERO )
+                           PERFORM 30021-PSY-CHEKE-SEC
+                       END-IF
+                    END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       3002-PSY-TEIGEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    抗不安・抗精神薬３種類以上ありチェック処理
+      *****************************************************************
+       30021-PSY-CHEKE-SEC         SECTION.
+      *
+      *    診療科判定
+           MOVE    ZERO                TO  FLG-CHK-PSY
+           PERFORM VARYING     IDX-80  FROM    1   BY  1
+                   UNTIL     ( IDX-80      >   10  )
+                        OR   ( SPA-PSY80-KA (IDX-80)   =   SPACE)
+               IF      SPA-PSY80-KA (IDX-80)   =   WRK-COM-SRYKA
+                                                            (IDX-Z)
+                   MOVE    SPA-PSY80-ARI (IDX-80)  TO  FLG-CHK-PSY
+                   MOVE    10                      TO  IDX-80
+               END-IF
+           END-PERFORM
+      *    減点コード
+           IF      FLG-CHK-PSY         =   ZERO
+      *        精神薬３種類以上なし
+               IF      WRK-COM-KOKUJISKBKBN1 (IDX-Z)  =   "3"
+      *            合成コードは、減点コードとする
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-CUR
+                                                           (IDX-Z)
+                   MOVE    "K877"          TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        精神薬３種類以上あり
+               IF      WRK-COM-KOKUJISKBKBN1 (IDX-Z)  NOT =   "3"
+      *            合成コードは、減点コードとする
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-CUR
+                                                           (IDX-Z)
+                   MOVE    "K878"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       30021-PSY-CHEKE-EXT.
+           EXIT.
+      *TEST
+      *TEST
       *****************************************************************
       *    算定歴マスタ読み込み
       *****************************************************************
