@@ -66,6 +66,7 @@
       * 04.08.05     NACL-森脇    15/08/31  管理者有効期間チェック
       * 04.08.00     NACL-多々納  15/10/22  期間変更追加処理対応
       * 04.08.00     NACL-多々納  15/11/XX  職員一覧処理対応
+      * 04.08.06     NACL-森脇    16/06/14  一般ユーザー処理制限
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -708,7 +709,9 @@
                PERFORM 2003-SELNUM-CHK-SEC
            END-IF
       *
-           MOVE    3                   TO  SPA-GMN-CUR
+      *----(04.08.06)--UPD-START---
+           MOVE    81                  TO  SPA-GMN-CUR
+      *----(04.08.06)--UPD-END-----
            MOVE    1                   TO  SPA-GMN-PAGENO
            . 
        3102-INIT-GMN-IPPAN-EXT.
@@ -5312,9 +5315,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE  TO  W06-SYOKUKBN-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W06-SYOKUCOD-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W06-KANRIAUTHFLG-STATE
+      *----(04.08.06)--ADD-START---
+               MOVE    WIDGET-INSENSITIVE  TO  W06-B03-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  W06-STYUKYMD-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  W06-EDYUKYMD-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  W06-USERID-STATE
+      *----(04.08.06)--ADD-END-----
            ELSE
                MOVE    WIDGET-NORMAL       TO  W06-SYOKUKBN-STATE
                MOVE    WIDGET-NORMAL       TO  W06-SYOKUCOD-STATE
+      *----(04.08.06)--ADD-START---
+               MOVE    WIDGET-NORMAL       TO  W06-STYUKYMD-STATE
+               MOVE    WIDGET-NORMAL       TO  W06-EDYUKYMD-STATE
+               MOVE    WIDGET-NORMAL       TO  W06-USERID-STATE
+      *----(04.08.06)--ADD-END-----
            END-IF
       *----(04.08.05)--ADD-END-----
       *

@@ -397,12 +397,15 @@ W06 {
     };
     STYUKYMD {
       textdata varchar(10);
+      state int;
     };
     EDYUKYMD {
       textdata varchar(10);
+      state int;
     };
     USERID {
       textdata varchar(16);
+      state int;
     };
     PASSWORD1 {
       textdata varchar(16);
@@ -425,7 +428,7 @@ W06 {
       };
       state int;
       count int;
-        item varchar(20)[10];
+      item varchar(20)[10];
     };
     SYOKUCOD_COMB {
       SYOKUCOD {
@@ -433,7 +436,7 @@ W06 {
       };
       state int;
       count int;
-        item varchar(35)[100];
+      item varchar(35)[100];
     };
     scrolledwindow1 {
       KIKAN_LIST {
