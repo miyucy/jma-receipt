@@ -2353,7 +2353,6 @@
                IF      FLG-CLAIM       =   1
       *            Á÷¿®
                    PERFORM 4906-CLAIM-SOUSIN-SEC
-                   PERFORM 49061-API-CLMAI-SEC
                END-IF
            ELSE
                MOVE    "9000"              TO  SPA-ERRCD
