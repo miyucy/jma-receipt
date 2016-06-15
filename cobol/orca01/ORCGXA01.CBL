@@ -1664,8 +1664,10 @@
                        MOVE    JOB-ENDTIME(5:2)
                                                TO  WRK-SS
                        MOVE    WRK-HENTIME     TO  XA99-ENDTIME  (IDX)
-                       MOVE    JOB-UPDCNT      TO  WRK-PAGE
-                       MOVE    WRK-PAGE (5:6)  TO  XA99-PAGE     (IDX)
+                       IF    ( JOB-UPDCNT  NOT =   ZERO )
+                           MOVE    JOB-UPDCNT      TO  WRK-PAGE
+                           MOVE    WRK-PAGE (5:6)  TO  XA99-PAGE (IDX)
+                       END-IF
                        MOVE    JOB-YOBI        TO  XA99-ERRMSG   (IDX)
                        IF      JOB-ENDYMD      =   SPACE
                            MOVE    "処理中です"    TO  XA99-MSG
@@ -2007,6 +2009,9 @@
       *
            MOVE    SPACE                TO  XAID2
            INITIALIZE                       XAID2
+      *
+           MOVE    "T"                  TO  XAID2-B10-VISIBLE
+      *
            MOVE    SPA-XAIDCD2          TO  XAID2-ID1CODE
            MOVE    WRK-XAIDMSG          TO  XAID2-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

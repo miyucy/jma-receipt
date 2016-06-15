@@ -97,6 +97,7 @@ utf8_shell_sources = \
 	allways/log_shell.sh.in \
 	monthly/recept42.sh.in \
 	allways/mask.sh.in \
+	daily/push_report.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \
@@ -152,6 +153,7 @@ ruby_sources = \
 	monthly/rosai_receden_common.rb.in \
 	monthly/rosai_receden_common_const.rb.in \
 	monthly/rosai_receden_error.rb.in \
+	daily/shrink_rp.rb.in \
 
 claim_sources = \
 	claim/rb/clm_rcv.rb.in \
