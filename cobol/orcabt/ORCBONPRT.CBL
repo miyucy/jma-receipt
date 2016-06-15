@@ -104,14 +104,13 @@
                    07  WRK-PARA-TITLE0           PIC X(40).
                    07  WRK-PARA-FORMID           PIC X(20).
                    07  WRK-PARA-SYOHMS           PIC X(06).
-                   07  WRK-PARA-TYPE             PIC X(16).
+                   07  WRK-PARA-PARA-CNT         PIC X(05).
                    07  WRK-PARA-DATASETNAME      PIC X(100).
                    07  WRK-PARA-TITLE            PIC X(40).
                    07  WRK-PARA-SRYYM            PIC X(06).
                    07  WRK-PARA-TERMID           PIC X(16).
                    07  WRK-PARA-HOSPNUM          PIC 9(02).
                    07  WRK-PARA-TEMP-KBN         PIC X(01).
-                   07  WRK-PARA-API-ID           PIC X(20).
       *
            COPY    "CPORCSPRTLNK.INC".
       *
@@ -159,7 +158,8 @@
       *
       ****************************************************************
        LINKAGE                 SECTION.
-           COPY    "CPCOMMAND-PARAM.INC".
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(2000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -218,11 +218,10 @@
                                              WRK-PARA-TITLE0
                                              WRK-PARA-SYOHMS
                                              WRK-PARA-FORMID
-                                             WRK-PARA-TYPE
+                                             WRK-PARA-PARA-CNT
                                              WRK-PARA-DATASETNAME
                                              WRK-PARA-HOSPNUM
                                              WRK-PARA-TEMP-KBN
-                                             WRK-PARA-API-ID
            END-UNSTRING                                  
       *
            MOVE    WRK-PARA-HOSPNUM    TO    SPA-HOSPNUM 
@@ -273,9 +272,6 @@
        201-MAIN-SEC                    SECTION.
       *
            OPEN    INPUT               PRT2-FILE
-           IF    ( STS-PRT2    NOT =   ZERO )
-               MOVE    1           TO  FLG-END
-           END-IF
       *
            PERFORM 900-PRTKANRI-KEY-SEL-SEC
       *
@@ -283,8 +279,7 @@
       *
            MOVE    ZERO                TO  CNT-OUT
       *
-           PERFORM UNTIL ( FLG-END     NOT =   ZERO )
-                    OR   ( FLG-PRT2    NOT =   ZERO )
+           PERFORM UNTIL ( FLG-PRT2    NOT =   ZERO )
       *
                COMPUTE CNT-OUT =   CNT-OUT +   1
       *
@@ -347,8 +342,6 @@
            END-IF
       *    
            MOVE    WRK-PARA-PTID       TO  SPRT-PTID
-           MOVE    WRK-PARA-TYPE       TO  SPRT-DATA-TYPE
-           MOVE    WRK-PARA-API-ID     TO  SPRT-API-ID
       *
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA

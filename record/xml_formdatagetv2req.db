@@ -5,5 +5,6 @@ xml_formdatagetv2req {
 	recordname	varchar(128);
 	data {
 		Data_ID			varchar(80);
+		Offset			varchar(10);
 	};
 };

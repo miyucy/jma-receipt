@@ -17,7 +17,5 @@
       ********************************************************************
         01  RPMAIN-AREA.
             03  RPMAIN-ID              PIC X(20).
-            03  RPMAIN-CUSTOM-ID       PIC X(20).
             03  RPMAIN-TITLE           PIC X(100).
-            03  RPMAIN-TBL-KEY         PIC X(8).
-            03  RPMAIN-DATA            PIC X(3000000).
+            03  RPMAIN-DATA            PIC X(1000000).

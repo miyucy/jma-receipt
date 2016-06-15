@@ -124,7 +124,6 @@
                            11  SPA-NAI-PTID        PIC 9(10).
                            11  SPA-NAI-TBL-GROUP   PIC X(14).
                            11  SPA-NAI-API         PIC X(1).
-                           11  SPA-NAI-API-ID      PIC X(20).
       *      
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-OCC             OCCURS  300.
@@ -135,7 +134,6 @@
                            11  SPA-NAI-LPTID       PIC 9(10).
                            11  SPA-NAI-TSKYYMD     PIC X(09).
                            11  SPA-NAI-TAPI        PIC X(1).
-                           11  SPA-NAI-TAPI-ID     PIC X(20).
       *
                05  SPA-WRK-TBL-KEY                 PIC X(08).
                05  SPA-NAI-SMCNDATE-YMD            PIC 9(08).
@@ -680,13 +678,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                                            TO  SPA-GMN-TSHORI-RENNUM
                                                                   (IDX)
                MOVE    PRTKANRI-PAGE       TO  SPA-GMN-TPAGE      (IDX)
-               MOVE    PRTKANRI-TITLE      TO  SPA-GMN-TPRT-TITLE (IDX)
+               IF    ( PRTKANRI-SHELLID    =   "API" )
+                   MOVE    SPACE           TO  SPA-GMN-TPRT-TITLE (IDX)
+                   STRING  "¡ö"                DELIMITED BY SIZE
+                           PRTKANRI-TITLE      DELIMITED BY SPACE
+                   INTO    SPA-GMN-TPRT-TITLE (IDX)
+                   END-STRING
+               ELSE
+                   MOVE    PRTKANRI-TITLE  TO  SPA-GMN-TPRT-TITLE (IDX)
+               END-IF
                MOVE    PRTKANRI-PRTFLG     TO  SPA-NAI-TPRTFLG    (IDX)
       *
-               IF    ( PRTKANRI-SHELLID    =   "API" OR "API_01" )
-                   MOVE    "1"             TO  SPA-NAI-TAPI       (IDX)
+               IF    ( PRTKANRI-SHELLID    =   "API" )
+                   MOVE    "1"             TO  SPA-NAI-TAPI    (IDX)
                END-IF
-               MOVE    PRTKANRI-API-ID     TO  SPA-NAI-TAPI-ID    (IDX)
       *
                PERFORM 3101-SPA-PTINFO-SEC
       *
@@ -1041,7 +1046,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
            MOVE    SPA-NAI-LPTID       (IDY)   TO  SPA-NAI-PTID
            MOVE    SPA-GMN-TPRT-TITLE  (IDY)   TO  SPA-GMN-PRT-TITLE
            MOVE    SPA-NAI-TAPI (IDY)          TO  SPA-NAI-API
-           MOVE    SPA-NAI-TAPI-ID (IDY)       TO  SPA-NAI-API-ID
       *
            MOVE    SPA-NAI-SELNUM      TO  XA02-ROW
       *
@@ -1652,21 +1656,12 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SPA-NAI-TBL-GROUP   TO  PRTDATA-TBL-GROUP
            MOVE    SPA-GMN-TBL-UUID    TO  PRTDATA-TBL-UUID
            MOVE    SPA-GMN-SHORI-RENNUM
-                                       TO  PRTDATA-SHORI-RENNUM
-           MOVE    SPA-GMN-RENNUM      TO  PRTDATA-RENNUM
+                                       TO  PRTKANRI-SHORI-RENNUM
+           MOVE    SPA-GMN-RENNUM      TO  PRTKANRI-RENNUM
 grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_prtdata"       TO  MCP-TABLE
-           MOVE    "delmb2"            TO  MCP-PATHNAME
-           PERFORM 900-ORCDBMAIN-SEC
-      *
-           IF      MCP-RC         NOT  =   ZERO
-               MOVE    "1006"              TO  SPA-ERRCD
-               GO  TO  430-DELETE-EXT
-           END-IF
-      *
            MOVE    "tbl_prtdata"       TO  MCP-TABLE
            MOVE    "del14"             TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
@@ -2504,8 +2499,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                    MOVE    "Ä¢É¼´ÉÍý£Ä£Â¤¬ºï½ü¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-               WHEN    "1003"
-               WHEN    "1006"
                    MOVE    "Ä¢É¼£Ä£Â¤¬ºï½ü¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
                                                TO  SPA-ERRMSG
                WHEN    "1004"
@@ -2610,40 +2603,45 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SPACE                TO  XAID2
            INITIALIZE                       XAID2
       *
-           MOVE    ZERO                TO  CNT-MONPE
+           IF    ( SPA-MW      =   SPA-GINBEE )
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX     >   SPA-GMN-MAX )
+               MOVE    ZERO                TO  CNT-MONPE
       *
-               MOVE    ZERO            TO  WRK-RENNUM
-                                           WRK-SHORI-RENNUM
-               IF    ( SPA-GMN-RENNUM  NOT =   ZERO )
-                   MOVE    SPA-GMN-TRENNUM (IDX)
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL ( IDX     >   SPA-GMN-MAX )
+      *
+                   MOVE    ZERO            TO  WRK-RENNUM
+                                               WRK-SHORI-RENNUM
+                   IF    ( SPA-GMN-RENNUM  NOT =   ZERO )
+                       MOVE    SPA-GMN-TRENNUM (IDX)
                                        TO  WRK-RENNUM
-               END-IF
+                   END-IF
       *
-               IF    ( SPA-GMN-SHORI-RENNUM
+                   IF    ( SPA-GMN-SHORI-RENNUM
                                        NOT =   ZERO )
-                   MOVE    SPA-GMN-TSHORI-RENNUM (IDX)
+                       MOVE    SPA-GMN-TSHORI-RENNUM (IDX)
                                        TO  WRK-SHORI-RENNUM
-               END-IF
+                   END-IF
       *
-               IF    ( SPA-NAI-TTBL-GROUP (IDX)
+                   IF    ( SPA-NAI-TTBL-GROUP (IDX)
                                        =   SPA-NAI-TBL-GROUP )
-                 AND ( SPA-NAI-TTBL-UUID (IDX)
+                     AND ( SPA-NAI-TTBL-UUID (IDX)
                                        =   SPA-GMN-TBL-UUID )
-                 AND ( WRK-RENNUM  =   SPA-GMN-RENNUM )
-                 AND ( WRK-SHORI-RENNUM
+                     AND ( WRK-RENNUM  =   SPA-GMN-RENNUM )
+                     AND ( WRK-SHORI-RENNUM
                                        =   SPA-GMN-SHORI-RENNUM )
-                 AND ( SPA-NAI-TAPI (IDX)    NOT =   "1" )
-                    COMPUTE CNT-MONPE = CNT-MONPE   +   1
-               END-IF
-           END-PERFORM
+                     AND ( SPA-NAI-TAPI (IDX)    NOT =   "1" )
+                       COMPUTE CNT-MONPE = CNT-MONPE   +   1
+                   END-IF
+               END-PERFORM
       *
-           IF    ( CNT-MONPE        >   ZERO )
-               MOVE    "T"          TO  XAID2-B10-VISIBLE
+               IF    ( CNT-MONPE        >   ZERO )
+                   MOVE    "T"          TO  XAID2-B10-VISIBLE
+               ELSE
+                   MOVE    "F"          TO  XAID2-B10-VISIBLE
+               END-IF
            ELSE
-               MOVE    "F"          TO  XAID2-B10-VISIBLE
+               MOVE    "T"              TO  XAID2-B10-VISIBLE
            END-IF
       *
            MOVE    SPA-XAIDCD2          TO  XAID2-ID1CODE

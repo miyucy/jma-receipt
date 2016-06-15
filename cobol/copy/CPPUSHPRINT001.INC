@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * “úˆã•W€ƒŒƒZƒvƒgƒ\ƒtƒgiJMA standard receipt softwarej
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -20,12 +20,9 @@
            03  PUSHP001-OPID                   PIC X(16).
            03  PUSHP001-BODY.
                05  PUSHP001-OCC                OCCURS 10.
-      *            ¥ì¥Ý¡¼¥È£É£Ä
-                   07  PUSHP001-FORMID         PIC X(20).
-      *            ¥«¥¹¥¿¥à£É£Ä
-                   07  PUSHP001-CUSTOMID       PIC X(20).
-      *            ¥ì¥Ý¡¼¥ÈÌ¾¾Î
-                   07  PUSHP001-FORMNAME       PIC X(100).
-      *            ¥Ç¡¼¥¿£É£Ä
+      *            ƒOƒ‹[ƒv‚h‚c
+                   07  PUSHP001-GROUPID        PIC X(20).
+      *            ƒOƒ‹[ƒv–¼Ì
+                   07  PUSHP001-GROUPNAME      PIC X(100).
+      *            ƒf[ƒ^‚h‚c
                    07  PUSHP001-DATAID         PIC X(80).
-

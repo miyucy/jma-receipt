@@ -20,4 +20,4 @@
            03  XMLDATA-OBJECT              PIC X(8).
            03  XMLDATA-MODE                PIC S9(9)   BINARY.
            03  XMLDATA-RECORDNAME          PIC X(128).
-           03  XMLDATA-DATA                PIC X(3000000).
+           03  XMLDATA-DATA                PIC X(1000000).
