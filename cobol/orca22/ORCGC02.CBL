@@ -331,6 +331,8 @@
       *                                     合併症に係わる情報追加対応
       *  04.08.07    NACL-藤原    16/02/17  一括入力対応（病名コード除く）
       *  04.08.08    NACL-藤原    16/03/17  セット入力時のエラー表示修正
+      *  04.08.09    NACL-藤原    16/06/14  自院コード検索より戻ったときの
+      *                                     移行病名の疑いフラグの表示をする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2913,6 +2915,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-NAI-C02-TOKSKNCD (IDZ)
                                        MOVE    BYO-NANBYOCD    TO
                                            SPA-NAI-C02-NANBYOCD-O(IDZ)
+                                       MOVE    BYO-UTAGAIFLG   TO
+                                           SPA-NAI-C02-UTAGAIFLG (IDZ)
                                    END-IF 
                                END-IF
                                MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
@@ -3888,8 +3892,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                        SPA-NAI-C02-TOKSKNCD (IDZ)
                                MOVE    BYO-NANBYOCD    TO
                                        SPA-NAI-C02-NANBYOCD-O(IDZ)
-                               MOVE    BYO-TANDOKUKBN
-                                               TO
+                               MOVE    BYO-TANDOKUKBN  TO
                                        SPA-NAI-C02-TANDOKUKBN-O
                                                              (IDZ IDXX)
                            END-IF
