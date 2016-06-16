@@ -226,8 +226,6 @@
                05  WRK-GEN-TANI            PIC X(24).
                05  WRK-GEN-KISOTEN         PIC 9(07)V9(4).
       *
-               05  WRK-GEN-GENCODE         PIC X(12).
-      *
            03  IDXG                        PIC 9(04).
            03  IDX3                        PIC 9(04).
            03  FLG-SYORI                   PIC 9(01).
@@ -609,7 +607,6 @@
                MOVE    SPA-K98-GMN-NAME(1) TO  WRK-GEN-NAME
                MOVE    SPA-K98-GMN-TANI(1) TO  WRK-GEN-TANI
                MOVE    SPA-K98-GMN-KISOTEN(1)  TO  WRK-GEN-KISOTEN
-               MOVE    SPA-K98-NAI-GECODE(1)   TO  WRK-GEN-GENCODE
            END-IF
       *
            INITIALIZE                  SPA-K98-GMN-TBL
@@ -4331,7 +4328,6 @@
            MOVE    SPA-K98-GMN-NAME (WRK-SELNO)    TO  WRK-GEN-NAME
            MOVE    SPA-K98-GMN-TANI (WRK-SELNO)    TO  WRK-GEN-TANI
            MOVE    SPA-K98-GMN-KISOTEN (WRK-SELNO) TO  WRK-GEN-KISOTEN
-           MOVE    SPA-K98-NAI-GECODE(WRK-SELNO)   TO  WRK-GEN-GENCODE
       *
            INITIALIZE                      SPA-K98-NAI-SELNUM-G
            INITIALIZE                      SPA-K98-GMN-SELNUM-G
@@ -4411,6 +4407,9 @@
       *    一般名で一般名を検索する
            MOVE    GENERIC-GENERICNAME TO  WRK-GENERICNAME
       *
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX3
+      *
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -4467,8 +4466,6 @@
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            PERFORM 910-TENSU-SELECT-SEC
       *
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  IDX3
            PERFORM
                UNTIL      (IDX         >    200 )   OR
                           (FLG-TENSU   =   1   )
@@ -4587,9 +4584,6 @@
            PERFORM 9201-GENERICPRICE-READ-SEC
            IF      FLG-GENERICPRICE    =   ZERO
                MOVE    GENERICPRICE-PRICE  TO  WRK-GEN-KISOTEN
-      *H28.3
-      *        一般名コード
-               MOVE    GENERICPRICE-GECODE TO  WRK-GEN-GENCODE
            END-IF
       *
            INITIALIZE                      SPA-K98-NAI-SELNUM-G
@@ -5666,27 +5660,6 @@
        9201-GENERICPRICE-READ-EXT.
            EXIT.
       *H24.4
-      *
-      *****************************************************************
-      *    最低薬価マスタ処理読込
-      *****************************************************************
-       960-GENERICPRICE-READ-SEC         SECTION.
-      *
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  GENERICPRICE-REC
-               MOVE    ZERO                TO  FLG-GENERICPRICE
-           ELSE
-               INITIALIZE                      GENERICPRICE-REC
-               MOVE    1                   TO  FLG-GENERICPRICE
-           END-IF
-      *
-           .
-       960-GENERICPRICE-READ-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    入力コードマスター読込
