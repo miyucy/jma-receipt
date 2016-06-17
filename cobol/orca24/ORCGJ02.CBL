@@ -13717,7 +13717,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (WRK-NYUIN-ERR2  NOT =   SPACE )
               AND (IDX-D               <   2     )
                ADD     1                    TO  IDX-D
-               STRING  "面琅脚换年:"
+               STRING  "面琅脚换年¨"
                        WRK-NYUIN-ERR2(1:38)  DELIMITED  BY  SIZE
                        INTO                 SPA-GMN-NYUINMSG(IDX-D)
                END-STRING
