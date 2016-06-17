@@ -2915,6 +2915,9 @@
       *H28.6
       *    Àº¿ÀÄþ¸ºÍÑ
            ADD     1                   TO  IDX-80
+           IF      IDX-80              >   10
+               MOVE    10                  TO  IDX-80
+           END-IF
            MOVE    WRK-SRYKA           TO  SPA-PSY80-KA (IDX-80)
            IF    (ORCSPSYCHO-COUNT (3) >=  3 )
              OR  (ORCSPSYCHO-COUNT (4) >=  3 )

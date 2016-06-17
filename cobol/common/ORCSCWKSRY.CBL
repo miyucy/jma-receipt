@@ -3196,6 +3196,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    "1"                 TO  WKSRYP-ADDKBN
                ADD     1                   TO  IDW
+               IF      IDW                 >   5
+                   GO      TO      30022-WKSRYACTPLUS-HEN-EXT
+               END-IF
+      *
       *        開始手技コード
                MOVE    SPA-COM-INPUTCD(IDW2)   TO  WKSRYP-SRYCD (IDW)
       *        手技点数
@@ -3212,6 +3216,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        フィルム点数のみ
                IF      SPA-COM-FIRTEN-M(IDW2)  NOT =  ZERO
                    ADD     1                   TO  IDW
+                   IF      IDW                 >   5
+                       GO      TO      30022-WKSRYACTPLUS-HEN-EXT
+                   END-IF
+      *
                    MOVE    "1"                 TO  WKSRYP-ADDKBN
       *            その他器材点数（フィルム・酸素・窒素以外）
                    MOVE    SPA-COM-KIZTEN-M(IDW2)
