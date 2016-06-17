@@ -5254,6 +5254,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SRY-SRYCD (IDX2)
                                                TO  SPA-ACCT2-SRYCD-JYO2
                    END-IF
+      *H28.6       面看琅坍庙纪(竣掐房カテ〖テル∷
+                   IF      SPA-SRYYMD          >=  "20160401"
+                       IF     (TNS-CDKBN-KBNNUM        =   006) AND
+                              (TNS-CDKBN-KBNNUM-EDA    =   00 )
+                           MOVE    SRY-SRYCD (IDX2)
+                                               TO  SPA-ACCT2-SRYCD-JYO2
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
