@@ -74,6 +74,7 @@
       *  04.08.00    NACL-多々納  14/05/XX  一時データ変更対応
       *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
+      *  04.08.00    NACL-多々納  16/06/XX  中心静脈（植入型カテーテル）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -522,6 +523,9 @@
       *    入院エラー
            03  WRK-NYUIN-ERR           PIC X(200).
            03  IDX-N2                  PIC 9(02).
+      *    入院エラー２
+           03  WRK-NYUIN-ERR2           PIC X(200).
+           03  IDX-N22                  PIC 9(02).
       *    受診履歴追加用
            03  WRK-RRK-HKNKBN          PIC X(01).
            03  WRK-RRK-RENNUM          PIC 9(01).
@@ -11336,6 +11340,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                               (SPA-ERRCD   NOT =   SPACE )
                PERFORM 49011-JYURRK-PARAUPD-SEC
            END-PERFORM
+      *TEST
+           DISPLAY "49011-JYURRK-UPD-SEC"
+                     ",SPA-SYUNOU-KOUSIN:" SPA-SYUNOU-KOUSIN
+      *TEST
       *D   収納変更時、再計算
       *    IF      SPA-SYUNOU-KOUSIN   =   1
       *        PERFORM 49012-SYUNOU-SAIKEISAN-SEC
@@ -11443,6 +11451,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
+      *
       *
            IF      FLG-ERR             =   ZERO
                IF     (TBL-MAE-ZAINUM-AREA =   ZERO ) AND
@@ -11865,6 +11874,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    収納マスタの更新処理
       *****************************************************************
        490113-SYUNOU-UPD-SEC           SECTION.
+      *TEST
+           DISPLAY "490113-SYUNOU-UPD-SEC"
+      *TEST
       *
       *    包括入力の時対象外
            IF      SPA-RRK-HKNCOMBI(IDX)   =   "9999"
@@ -13654,6 +13666,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  WRK-NYUIN-ERR
            MOVE    1                   TO  IDX-N
+      *
+           MOVE    SPACE               TO  WRK-NYUIN-ERR2
+           MOVE    1                   TO  IDX-N22
            PERFORM VARYING     IDX-N2  FROM    1   BY  1
                    UNTIL       IDX-N2  >   31
                IF      ORCSTEN-MIIVH-DAY (IDX-N2) =   1
@@ -13666,19 +13681,55 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            (IDX-N:2)
                    ADD     2               TO  IDX-N
                END-IF
+      *        重複
+               IF      ORCSTEN-MIIVH-DAY (IDX-N2) =   9
+                   IF      IDX-N22      >   1
+                       MOVE    ","         TO  WRK-NYUIN-ERR2
+                                                            (IDX-N22:1)
+                       ADD     1           TO  IDX-N22
+                   END-IF
+                   MOVE    IDX-N2          TO  WRK-NYUIN-ERR2
+                                                           (IDX-N22:2)
+                   ADD     2               TO  IDX-N22
+               END-IF
            END-PERFORM
-           IF      WRK-NYUIN-ERR       =   SPACE
+           IF     (WRK-NYUIN-ERR       =   SPACE )
+             AND  (WRK-NYUIN-ERR2      =   SPACE )
                GO      TO     420013-MIIVHDAY-HEN-EXT 
            END-IF
-           ADD     1                   TO  IDX-D
-           MOVE    "中静未算定："      TO  SPA-GMN-NYUINMSG(IDX-D)
-           MOVE    WRK-NYUIN-ERR(1:38) TO  SPA-GMN-NYUINMSG(IDX-D)(13:)
-           IF     (WRK-NYUIN-ERR(39:)  NOT =   SPACE )  AND
-                  (IDX-D               <   2         )
+      *
+           IF     (WRK-NYUIN-ERR   NOT =   SPACE )
                ADD     1                   TO  IDX-D
-               MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG(IDX-D)
+               STRING  "中静未算定："
+                       WRK-NYUIN-ERR(1:38)  DELIMITED  BY  SIZE
+                       INTO                 SPA-GMN-NYUINMSG(IDX-D)
+               END-STRING
+               IF     (WRK-NYUIN-ERR(39:)  NOT =   SPACE )  AND
+                      (IDX-D               <   2         )
+                   ADD     1                   TO  IDX-D
+                   MOVE    WRK-NYUIN-ERR(39:)  TO  SPA-GMN-NYUINMSG
+                                                           (IDX-D)
+               END-IF
+      *
+               MOVE    "0056"              TO  SPA-ERRCD
            END-IF
-           MOVE    "0056"              TO  SPA-ERRCD
+      *
+           IF     (WRK-NYUIN-ERR2  NOT =   SPACE )
+              AND (IDX-D               <   2     )
+               ADD     1                    TO  IDX-D
+               STRING  "中静重算定:"
+                       WRK-NYUIN-ERR2(1:38)  DELIMITED  BY  SIZE
+                       INTO                 SPA-GMN-NYUINMSG(IDX-D)
+               END-STRING
+               IF     (WRK-NYUIN-ERR2(39:)  NOT =   SPACE )  AND
+                      (IDX-D               <   2         )
+                   ADD     1                   TO  IDX-D
+                   MOVE    WRK-NYUIN-ERR2(39:) TO  SPA-GMN-NYUINMSG
+                                                           (IDX-D)
+               END-IF
+               MOVE    "0066"              TO  SPA-ERRCD
+           END-IF
+      *
            MOVE    1                   TO  SPA-GMN-CUR
       *
            .
@@ -14690,6 +14741,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0056"
                    MOVE    "中心静脈注射料が算定できる日があります。"
                                        TO  WRK-ERRMSG
+      *
+               WHEN    "0066"
+                   STRING  "中心静脈注射料が重複算定"
+                           "している日があります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
+      *
                WHEN    "0057"
                    MOVE
                    "麻毒・生物学的製剤加算が算定できる日があります。"
