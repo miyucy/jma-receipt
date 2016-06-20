@@ -3310,15 +3310,17 @@
       *H28.7 から
                WHEN    "K877"
                    STRING  "警告！"
-                           "３種類以上抗うつ薬等の投与はありせん。"
-                           "減算のコードが算定されています"
+                           "通院・在宅精神療法等の減算規定に"
+                           "該当しません。"
+                           "算定コードを確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K878"
                    STRING  "警告！"
-                           "３種類以上抗うつ薬等の投与となります。"
-                           "減算のコードを算定して下さい"
+                           "通院・在宅精神療法等の減算規定に"
+                           "該当します。"
+                           "算定コードを確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

@@ -3338,31 +3338,10 @@
                    PERFORM 10211-GAIRI-SEISINAUTO-SEC
                END-IF
            ELSE
-      *!!!!!!!!!!!
-      *        ¿´¿È°å³ØÎÅË¡¤ÏÆþÎÏ»þ¤Î¤ß¤È¤¹¤ë
-      *      IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
-      *             (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "004")
-      *         IF     (WRK-COM-KSNAUTO(IDX-Z)  =   "1" )
-      *              CONTINUE
-      *         ELSE
-      *            MOVE   IDX-Z           TO  IDX-ZS3
-      *            PERFORM 10021-JIDO-AGEKASAN-SEC
-      *            IF      FLG-ADD             =   1
-      *                MOVE    1           TO  WRK-COM-SANFLG (IDX-S)
-      *                MOVE    "1"       TO  WRK-COM-KSNAUTO (IDX-ZS3)
-      *                MOVE    SPACE       TO  WRK-COM-AUTOKBN (IDX-S)
-      *            END-IF
-      *        END-IF
-      *      ELSE
-      *!!!!
-      *!!!!!
                PERFORM 10021-JIDO-AGEKASAN-SEC
                IF      FLG-ADD             =   1
                    MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
                END-IF
-      *!!!!
-      *        END-IF
-      *!!!!
            END-IF
       *
            COMPUTE IDX-Z2              =   IDX-ZS2     +   1
@@ -3727,7 +3706,7 @@
       *            MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
       *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
                END-IF
-      *        ¡ó¸º»»¡ÊÏ«ºÒ¸º»»¤â·×»»¤¹¤ë¡Ë
+      *        ¡ó¸º»»
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   6   )  AND
                       (WRK-COM-SANFLG     (IDX)    =   ZERO)
@@ -3737,9 +3716,6 @@
                                                *  (WRK-COM-KISOTEN(IDX)
                                                /   100 )
                    ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-G
-      *                                        +   0.4
-      *            MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-      *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
                END-IF
            END-PERFORM
       *
@@ -3761,9 +3737,6 @@
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
                    ADD     WRK-TENSUKEI        TO  WRK-TENSUKEI-K
-      *                                        +   0.5
-      *            MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-      *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
                END-IF
            END-PERFORM
       *
@@ -3773,7 +3746,6 @@
       *
       *    Ï«ºÒ¤Î»þ¡¢Ï«ºÒ²Ã»»
            IF      SPA-HKNKBN          =   1
-      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                PERFORM 10061-RSIKASAN-SET-SEC
            END-IF
