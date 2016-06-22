@@ -716,6 +716,7 @@
       *                                     のコメント対応
       *  04.08.18    NACL-門脇    16/05/20  減免・災害該当の対象チェック
       *  04.08.19    NACL-門脇    16/05/30  １９原爆一般の特殊計算対応
+      *  04.08.20    NACL-門脇    16/06/22  災害対応（記号あり、番号なしの場合）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3674,10 +3675,16 @@
                        MOVE    3           TO  RECE62-RJNGAIKOHFTN (1)
                    ELSE
       *                記号・番号が不明のとき
-                       IF    ( RECE62-HKNNUM   NOT =   SPACE )
-                       AND   ( RECE62-KIGO         =   SPACE )
-                       AND   ( RECE62-NUM          =   SPACE )
+                       IF       RECE62-HKNNUM   NOT =   SPACE
+                         IF    (RECE62-KIGO         =   SPACE)
+                         AND   (RECE62-NUM          =   SPACE)
                            MOVE    1       TO  RECE62-RJNGAIKOHFTN (1)
+                         ELSE
+                           IF  (RECE62-KIGO     NOT =   SPACE)
+                           AND (RECE62-NUM          =   SPACE)
+                             MOVE  1       TO  RECE62-RJNGAIKOHFTN (1)
+                           END-IF
+                         END-IF
                        END-IF   
       *                老人保健の受給者番号が不明のとき
                        IF    ( RECE62-RJNHKNNUM
@@ -3914,6 +3921,17 @@
                             MOVE    97   TO      FLG-TOKKI
                             PERFORM   21013-TOKKI-HENSYU-SEC
                        END-EVALUATE
+                     END-IF
+                     IF  (RECE62-SRYYM        >= "201101")
+                     AND (RECE62-HKNNUM    NOT =  SPACE  )
+                     AND (RECE62-HKNJANUM  NOT =  SPACE  )
+                     AND (RECE62-KIGO      NOT =  SPACE  )
+                     AND (RECE62-NUM           =  SPACE  )
+                     AND (RECE62-RJNGAIKOHFTN(1) =  5    )
+                       MOVE  SPACE   TO   RECE62-KIGO
+                       MOVE  "0000000000"
+                                     TO   RECE62-OCR2(6:10)
+                       MOVE  "0"     TO   RECE62-OCR2(26:1)
                      END-IF
                    ELSE
                      MOVE    ZERO    TO   RECE62-RJNGAIKOHFTN (1)
