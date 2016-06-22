@@ -54,6 +54,4 @@
            03  ORCSUSERPG-PRTNM            PIC X(16).
       *伝票番号(K03)
            03  ORCSUSERPG-DENPNUM          PIC 9(07).
-      *リポジトリ名
-           03  ORCSUSERPG-REPOS-NAME       PIC X(128).
       *
