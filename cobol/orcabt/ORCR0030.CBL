@@ -744,6 +744,8 @@
       *  04.08.25    NACL-ÌçÏÆ    16/05/20  ¸ºÌÈ¡¦ºÒ³²³ºÅö¤ÎÂÐ¾Ý¥Á¥§¥Ã¥¯
       *  04.08.26    NACL-ÌçÏÆ    16/05/30  £±£¹¸¶Çú°ìÈÌ¤ÎÆÃ¼ì·×»»ÂÐ±þ
       *  04.08.27    NACL-ÌçÏÆ    16/06/22  ºÒ³²ÂÐ±þ¡Êµ­¹æ¤¢¤ê¡¢ÈÖ¹æ¤Ê¤·¤Î¾ì¹ç¡Ë
+      *  04.08.28    NACL-ÌçÏÆ    16/06/22  ¼çÊÝ¸±¤¬¤Ê¤¤¥ì¥»¥×¥È¤ÎÁ´¹ñ¸øÈñ°ìÉô
+      *                                     ÉéÃ´¶âµ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -26434,6 +26436,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   IF   RECE02-KOHNUM(KOHFTN-IDX) =  "054"
                     MOVE  "1"   TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
                     MOVE  "1"   TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
+      *
+                IF    RECE02-SRYYM        >=  "201604"
+                  IF  (RECE02-HKNNUM       =   SPACE               )
+                  AND (RECE02-KOHNUM(KOHFTN-IDX) =
+                       "015" OR "016" OR "021" OR "024" OR "038" OR
+                       "051" OR "052" OR "054" OR "079" OR
+                       "012" OR "025"                              )
+                  AND (TBL-HKNFTNDATA-JGNXXX(KOHFTN-IDX) = ZERO    )
+                    MOVE SPACE  TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
                 END-IF
       *
