@@ -762,6 +762,14 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H28.6
+               WHEN    "K804"
+                   STRING  "·Ù¹ð¡ª"
+                           "»Í»è²Ã»»¤¬¤Ç¤­¤Ê¤¤¥³¡¼¥É¤Ç¤¹¡£"
+                           "Ï«ºÒ²Ã»»¤òºï½ü¤·¤Æ²¼¤µ¤¤¡£"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "8005"
                    MOVE    "Ï«ºÒ²Ã»»¤Ï£±¡¥£µÇÜ¤Î¤ß¤Ç¤¹¡£"
                                        TO  SPA-ERRMSG
@@ -3321,6 +3329,29 @@
                            "ÄÌ±¡¡¦ºßÂðÀº¿ÀÎÅË¡Åù¤Î¸º»»µ¬Äê¤Ë"
                            "³ºÅö¤·¤Þ¤¹¡£"
                            "»»Äê¥³¡¼¥É¤ò³ÎÇ§¤·¤Æ²¼¤µ¤¤¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *H28.7
+               WHEN    "8055"
+                   STRING  "Ï«ºÒ²Ã»»¤Ï£±¡¥£µÇÜ¤Î¤ß¤Ç¤¹¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8056"
+                   STRING  "Ï«ºÒ²Ã»»¤Ï£²ÇÜ¤Î¤ß¤Ç¤¹¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K805"
+                   STRING  "·Ù¹ð¡ª"
+                           "Ï«ºÒ²Ã»»¤Ï£±¡¥£µÇÜ¤Î¤ß¤Ç¤¹¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K806"
+                   STRING  "·Ù¹ð¡ª"
+                           "Ï«ºÒ²Ã»»¤Ï£²ÇÜ¤Î¤ß¤Ç¤¹¡£"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
