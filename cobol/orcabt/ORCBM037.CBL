@@ -491,7 +491,8 @@
       *        
                    PERFORM VARYING IDX1    FROM   1   BY  1
                            UNTIL   IDX1    >      2
-                       IF      SUM-GOK-KENSU (IDX3 IDX1 4)     >   ZERO 
+                       IF    ( SUM-GOK-KENSU (IDX3 IDX1 4) >   ZERO )
+                       OR    ( SUM-BIKOU-KENSU (IDX3 IDX1) >   ZERO )
                            MOVE    ZERO            TO  FLG-PRTKBN
       *           
       *                    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£³£Ã>½èÍý
