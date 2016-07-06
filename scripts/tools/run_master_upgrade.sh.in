@@ -88,9 +88,10 @@ export MON_BATCH_ID=$(uuidgen)
 export MON_BATCH_NAME="master_upgrade.sh"
 export MON_BATCH_GROUPNAME="${HOSPNUM}"
 export MON_BATCH_EXTRA="0000001MSTMNT"
+export MON_DIRECTORY_PATH="${LDDIRECTORY}"
 export MCP_TENANT=1
 
-  /usr/lib/panda/bin/monbatch  -dir ${LDDIRECTORY} "master_upgrade.sh \"${HOSPNUM}\" T \"${HOSPID}\" \"${MNTERRFS}\" 0000001 MSTMNT \"${MLIERRFS}\" 0000001 MSTMLI"
+  /usr/lib/panda/bin/monbatch  "master_upgrade.sh \"${HOSPNUM}\" T \"${HOSPID}\" \"${MNTERRFS}\" 0000001 MSTMNT \"${MLIERRFS}\" 0000001 MSTMLI"
   MSTMNT=$?
   if [ ${MSTMNT} -ne 0 ] ; then
     exit ${MSTMNT}
