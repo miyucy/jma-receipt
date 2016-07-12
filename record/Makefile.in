@@ -509,6 +509,7 @@ RECORD_files = \
 	W93.rec \
 	claimfrontv2.rec \
 	claimaccountv2.rec \
+	claimreceivev2.rec \
 
 DEF_files = \
 
@@ -848,6 +849,8 @@ DB_files = \
 	xml_claim_accountv2res.db \
 	push_accept01.rec \
 	push_account01.rec \
+	xml_claim_receivev2req.db \
+	xml_claim_receivev2res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
