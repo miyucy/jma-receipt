@@ -44,7 +44,6 @@
       *         PTINF-CREYMD
                 07  RPKARTE1-CREYMD             PIC X(10).
       *         KARRK-SYOSINYMD2
-                07  RPKARTE1-SYOSHINYMD         PIC X(10).
                 07  RPKARTE1-JOB                PIC X(20).
                 07  RPKARTE1-SETAINUSI          PIC X(50).
                 07  RPKARTE1-HOME-ADDRESS-G.
@@ -94,6 +93,7 @@
                   09  RPKARTE1-HIHKNJANAME      PIC X(100).
                   09  RPKARTE1-TEKSTYMD         PIC X(10).
                   09  RPKARTE1-TEKEDYMD         PIC X(10).
+                  09  RPKARTE1-SKKGETYMD        PIC X(10).
                 07  RPKARTE1-ROSAI-G.
                   09  RPKARTE1-RSI-HKNKBN        PIC X(1).
                   09  RPKARTE1-RSI-KOFUNUM       PIC X(14).
@@ -128,3 +128,6 @@
                 07  RPKARTE1-TENKIYMD            PIC X(10).
       *             PTBYO-TENKIKBN
                 07  RPKARTE1-TENKIKBN            PIC X(1).
+      *           îıçl
+              05  RPKARTE1-MEMO                  PIC X(100)
+                                                 OCCURS  5.
