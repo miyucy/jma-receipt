@@ -41,6 +41,7 @@
                 07  RPKARTE1-CREYMD             PIC X(10).
                 07  RPKARTE1-JOB                PIC X(20).
                 07  RPKARTE1-SETAINUSI          PIC X(50).
+                07  RPKARTE1-ZOKUGARA           PIC X(30).
                 07  RPKARTE1-HOME-ADDRESS-G.
       *           HOME-ADRS(1):PTINF-HOME-ADRS / (2):PTINF-HOME-BANTI
                   09  RPKARTE1-HOME-ADRS        PIC X(100)  OCCURS  2.
