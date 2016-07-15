@@ -21,7 +21,7 @@
             03  RPKARTE1-MODE                   PIC S9(9)   BINARY.
             03  RPKARTE1-RECORDNAME             PIC X(128).
             03  RPKARTE1-DATA.
-      *       karte_no1Çê›íË
+      *       karte-no1Çê›íË
               05  RPKARTE1-REPORT-ID            PIC X(30).
       *       SYS-1031-PRTNM(1)
               05  RPKARTE1-PRINTER              PIC X(20).
@@ -31,10 +31,6 @@
                 07  RPKARTE1-KANANAME           PIC X(50).
                 07  RPKARTE1-BIRTHDAY           PIC X(10).
                 07  RPKARTE1-SEX                PIC X(1).
-      *         KYUSEI-NAME
-                07  RPKARTE1-KYUSEI-NAME        PIC X(50).
-      *         KYUSEI-KANANAME
-                07  RPKARTE1-KYUSEI-KANANAME    PIC X(50).
                 07  RPKARTE1-TABOO              PIC X(100)  OCCURS  2.
                 07  RPKARTE1-ALLERGY            PIC X(100)  OCCURS  2.
                 07  RPKARTE1-KANSENSYO          PIC X(100)  OCCURS  2.
@@ -43,7 +39,6 @@
                 07  RPKARTE1-CONDITION          PIC X(20)   OCCURS  3.
       *         PTINF-CREYMD
                 07  RPKARTE1-CREYMD             PIC X(10).
-      *         KARRK-SYOSINYMD2
                 07  RPKARTE1-JOB                PIC X(20).
                 07  RPKARTE1-SETAINUSI          PIC X(50).
                 07  RPKARTE1-HOME-ADDRESS-G.
@@ -54,30 +49,31 @@
                   09  RPKARTE1-HOME-TEL1        PIC X(15).
                   09  RPKARTE1-HOME-TEL2        PIC X(15).
                 07  RPKARTE1-RENRAKU-G.
-                  09  RPKARTE1-RENRAKU_ADRS     PIC X(100)  OCCURS  2.
-                  09  RPKARTE1-RENRAKU_ZOKUGARA PIC X(30).
-                  09  RPKARTE1-RENRAKU_POST     PIC X(8).
-                  09  RPKARTE1-RENRAKU_TEL1     PIC X(15).
-                  09  RPKARTE1-RENRAKU_TEL2     PIC X(15).
+                  09  RPKARTE1-RENRAKU-ADRS     PIC X(100)  OCCURS  2.
+                  09  RPKARTE1-RENRAKU-ZOKUGARA PIC X(30).
+                  09  RPKARTE1-RENRAKU-POST     PIC X(8).
+                  09  RPKARTE1-RENRAKU-TEL1     PIC X(15).
+                  09  RPKARTE1-RENRAKU-TEL2     PIC X(15).
                 07  RPKARTE1-OFFICE-G.
                   09  RPKARTE1-OFFICE-NAME      PIC X(50).
                   09  RPKARTE1-OFFICE-ADRS      PIC X(100)  OCCURS  2.
                   09  RPKARTE1-OFFICE-POST      PIC X(8).
-                  09  RPKARTE1-OFFICE_TEL       PIC X(15).
+                  09  RPKARTE1-OFFICE-TEL       PIC X(15).
                 07  RPKARTE1-KISEI-G.
-                  09  RPKARTE1-KISEI_NAME       PIC X(50).
-                  09  RPKARTE1-KISEI_ADRS       PIC X(100)  OCCURS  2.
-                  09  RPKARTE1-KISEI_POST       PIC X(8).
-                  09  RPKARTE1-KISEI_TEL        PIC X(15).
+                  09  RPKARTE1-KISEI-NAME       PIC X(50).
+                  09  RPKARTE1-KISEI-ADRS       PIC X(100)  OCCURS  2.
+                  09  RPKARTE1-KISEI-POST       PIC X(8).
+                  09  RPKARTE1-KISEI-TEL        PIC X(15).
               05  RPKARTE1-HKNCOMBI-G.
                 07  RPKARTE1-HKNCOMBI           PIC X(4).
-      *             COMB-GAI-KFTNRATE
                 07  RPKARTE1-GAI-KFTNRATE       PIC X(3).
-      *             COMB-NYU-KFTNRATE
                 07  RPKARTE1-NYU-KFTNRATE       PIC X(3).
                 07  RPKARTE1-HKNNUM             PIC X(3).
       *             ï€åØÇÃéÌóﬁñºèÃ
                 07  RPKARTE1-HKNNAME            PIC X(20).
+      *         ï€åØîNóÓ
+                09  RPKARTE1-HOKEN-AGE          PIC X(3).
+                09  RPKARTE1-HOKEN-RATE         PIC X(3).
                 07  RPKARTE1-HOKEN-G.
                   09  RPKARTE1-HKNJANAME        PIC X(100).
                   09  RPKARTE1-HKNJANUM         PIC X(8).
@@ -87,8 +83,6 @@
                   09  RPKARTE1-NUM              PIC X(80).
                   09  RPKARTE1-CONTKBN          PIC X(1).
                   09  RPKARTE1-HOJOKBN          PIC X(1).
-      *           ï€åØîNóÓ
-                  09  RPKARTE1-HOKEN-AGE        PIC X(3).
                   09  RPKARTE1-HONKZKKBN        PIC X(1).
                   09  RPKARTE1-HIHKNJANAME      PIC X(100).
                   09  RPKARTE1-TEKSTYMD         PIC X(10).
@@ -114,7 +108,7 @@
                   09  RPKARTE1-KOH-FTNJANUM      PIC X(8).
                   09  RPKARTE1-KOH-JKYSNUM       PIC X(20).
                   09  RPKARTE1-KOH-TEKSTYMD      PIC X(10).
-                  09  RPKARTE1-KOH-TEKEDTYMD     PIC X(10).
+                  09  RPKARTE1-KOH-TEKEDYMD      PIC X(10).
               05  RPKARTE1-HOSP-G.
                 07  RPKARTE1-HOSPNAME            PIC X(60).
               05  RPKARTE1-BYOMEI-G              OCCURS  1000.
