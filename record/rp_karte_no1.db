@@ -53,6 +53,10 @@ rp_karte_no1 {
 			Rate_Outpatient					varchar(03);
 			InsuranceProvider_Class	varchar(03);
 			InsuranceProvider_Name	varchar(20);
+#--¡¡ÊÝ¸±Ç¯Îð
+			HealthInsuredPerson_Age	varchar(03);
+#--¡¡ÉéÃ´³ä¹ç
+			HealthInsuredPerson_Rate	varchar(03);
 			HealthInsurance_Information	 {
 				InsuranceProvider_Name							varchar(100);
 				InsuranceProvider_Number						varchar(08);
@@ -62,7 +66,6 @@ rp_karte_no1 {
 				HealthInsuredPerson_Number					varchar(80);
 				HealthInsuredPerson_Continuation		varchar(01);
 				HealthInsuredPerson_Assistance			varchar(01);
-				HealthInsuredPerson_Age							varchar(03);
 				RelationToInsuredPerson							varchar(01);
 				HealthInsuredPerson_Name						varchar(100);
 				Certificate_StartDate								varchar(10);
