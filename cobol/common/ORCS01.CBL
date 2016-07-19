@@ -470,6 +470,7 @@
       *                                     ø¿∏Õª‘¬–±˛
       *  04.08.07    NACL-ÃÁœ∆    16/04/27  ≈Ïµ˛≈‘√œ ˝∏¯»Ò¬–±˛
       *  04.08.08    NACL-ÃÁœ∆    16/05/30  £±£π∏∂«˙∞Ï»Ã§Œ∆√ºÏ∑◊ªª¬–±˛
+      *  04.08.09    NACL-ÃÁœ∆    16/06/28  ∑ßÀ‹∏©√œ ˝∏¯»Ò¬–±˛
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -620,6 +621,9 @@
            03  FLG-KEIKASOCHI-IPAN     PIC 9(01).
            03  FLG-TOKYO               PIC 9(01).
            03  FLG-HIKAKU              PIC 9(01).
+           03  FLG-HIKAKU2             PIC 9(01).
+           03  FLG-HIKAKU3             PIC 9(01).
+           03  FLG-HIKAKU4             PIC 9(01).
            03  FLG-KOHININBARAI        PIC 9(01).
            03  FLG-KOHYONKAIME         PIC 9(01).
            03  FLG-GENBUTU70           PIC 9(01).
@@ -7291,6 +7295,9 @@
                 OR ((WK-1001-PREFNUM         =  43           ) AND
                     (COMB-KOHHKNNUM(IDX-CYO) = "143" OR "342") AND
                     (LNK-SYU-SRYYMD(1:6)    >= "200912"      ))
+                OR ((WK-1001-PREFNUM         =  43           ) AND
+                    (COMB-KOHHKNNUM(IDX-CYO) = "443"         ) AND
+                    (LNK-SYU-SRYYMD(1:6)    >= "201608"      ))
                   MOVE     1     TO   FLG-IKTKEISANKBN
                 END-IF
              END-PERFORM
@@ -7319,6 +7326,9 @@
                   OR ((WK-1001-PREFNUM         =  43           ) AND
                       (COMB-KOHHKNNUM(IDX-CYO) = "143" OR "342") AND
                       (LNK-SYU-SRYYMD(1:6)    >= "200912"      ))
+                  OR ((WK-1001-PREFNUM         =  43           ) AND
+                      (COMB-KOHHKNNUM(IDX-CYO) = "443"         ) AND
+                      (LNK-SYU-SRYYMD(1:6)    >= "201608"      ))
                     MOVE     ZERO     TO   WK-CYO-OKIKAE(IDX-CYO)
                   ELSE
                     MOVE     1        TO   WK-CYO-OKIKAE(IDX-CYO)
@@ -13154,6 +13164,23 @@
              END-IF
            END-IF.
       *
+           IF  (WK-1001-PREFNUM          =  43      ) AND
+               (LNK-SYU-SRYYMD(1:6)     >= "201608" )
+             IF   SYU-NYUGAIKBN   =  "2"
+              IF  ((LNK-SYU-KOH1HKNNUM  = "443") OR
+                   (LNK-SYU-KOH2HKNNUM  = "443") OR
+                   (LNK-SYU-KOH3HKNNUM  = "443") OR
+                   (LNK-SYU-KOH4HKNNUM  = "443"))
+              AND ((SYU-KOH1HKNNUM      = "443") OR
+                   (SYU-KOH2HKNNUM      = "443") OR
+                   (SYU-KOH3HKNNUM      = "443") OR
+                   (SYU-KOH4HKNNUM      = "443"))
+                 COMPUTE  WK-KUMAMOTO-HANTEIKIN  =
+                          WK-KUMAMOTO-HANTEIKIN  +  SYU-JYO-HKNFTNMONEY
+              END-IF
+             END-IF
+           END-IF.
+      *
            IF   (WK-1001-PREFNUM       =  35 OR 34)
            AND  (LNK-SYU-SRYYMD(1:6)  >= "201309" )
              IF  ((LNK-SYU-KOH1HKNNUM  = "781") OR
@@ -14608,6 +14635,9 @@
                        OR ((WK-1001-PREFNUM    =  43           ) AND
                            (LNK-SYU-KOH2HKNNUM = "143" OR "342") AND
                            (LNK-SYU-SRYYMD(1:6)  >=  "200912"  ))
+                       OR ((WK-1001-PREFNUM    =  43           ) AND
+                           (LNK-SYU-KOH2HKNNUM = "443"         ) AND
+                           (LNK-SYU-SRYYMD(1:6)  >=  "201608"  ))
                        OR ( FLG-FTNRATE100     =  2             )
                          COMPUTE  WK-KOUREI-IRYOHI70  =
                                   WK-KOUREI-IRYOHI70  +
@@ -23813,6 +23843,7 @@
              OR  (FLG-KOUREI-KBN               =  "1")
                MOVE      100     TO   WK-GAIKFTNRATE
                MOVE    SPACE     TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+               MOVE    ZERO      TO   WK-KUMAMOTO-SYUCOMPFTN
              ELSE
                COMPUTE  WK-KUMAMOTO-HANTEIKIN = WK-KUMAMOTO-HANTEIKIN
                                               + WK-KUMAMOTO-SYUCOMPFTN
@@ -23852,6 +23883,44 @@
                MOVE      100     TO   WK-GAIKFTNRATE
                MOVE    SPACE     TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
              END-IF
+           END-IF.
+      *
+           IF     (WK-1001-PREFNUM         =  43           ) AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "443"         ) AND
+                  (LNK-SYU-SRYYMD(1:6)    >= "201608"      )
+            IF    COMB-KOH-GAIJGNKBN(KOH-IDX)  =  SPACE
+             MOVE      ZERO      TO   WK-KUMAMOTO-SYUCOMPFTN
+            ELSE
+             IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =  "1")
+             OR  (FLG-KOUREI-KBN               =  "1")
+               MOVE      100     TO   WK-GAIKFTNRATE
+               MOVE    SPACE     TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+               MOVE    ZERO      TO   WK-KUMAMOTO-SYUCOMPFTN
+             ELSE
+               IF  (COMB-KOH1HKNNUM  =  "443")
+               AND (COMB-KOH2HKNNUM  =  SPACE)
+               AND (COMB-KOH3HKNNUM  =  SPACE)
+               AND (COMB-KOH4HKNNUM  =  SPACE)
+                 COMPUTE  WK-KUMAMOTO-HANTEIKIN = WK-KUMAMOTO-HANTEIKIN
+                                                + WK-KUMAMOTO-SYUCOMPFTN
+                 MOVE     "1"           TO  LNK-S01-TOKUSYU-SAI-KBN
+                 MOVE  MAX-KIN-KOHI1-M  TO  WK-KUMAMOTO-HANTEIJGN
+                 IF   WK-KUMAMOTO-HANTEIKIN  >= WK-KUMAMOTO-HANTEIJGN
+                   MOVE    100     TO   WK-GAIKFTNRATE
+                   MOVE  SPACE     TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+                   IF  FLG-GENBUTU70  NOT =  ZERO
+                      MOVE   "1"   TO   FLG-SYOUKAN(KOH-IDX)
+                   END-IF
+                 END-IF
+               ELSE
+                 MOVE      100     TO   WK-GAIKFTNRATE
+                 MOVE    SPACE     TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+                 IF    FLG-GENBUTU70  NOT =  ZERO
+                    MOVE     "1"   TO   FLG-SYOUKAN(KOH-IDX)
+                 END-IF
+               END-IF
+             END-IF
+            END-IF
            END-IF.
       *
            MOVE      ZERO      TO        FLG-MIYAGI.
@@ -24712,9 +24781,12 @@
                END-IF
       *        ∆√ºÏ∑◊ªª
       *********° ∑ßÀ‹∏©°À
-               IF  (WK-1001-PREFNUM             =  43           ) AND
+               IF ((WK-1001-PREFNUM             =  43           ) AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "143" OR "342") AND
-                   (LNK-SYU-SRYYMD(1:6)        >= "200912"      )
+                   (LNK-SYU-SRYYMD(1:6)        >= "200912"      ))
+               OR ((WK-1001-PREFNUM             =  43           ) AND
+                   (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "443"         ) AND
+                   (LNK-SYU-SRYYMD(1:6)        >= "201608"      ))
                   MOVE   1    TO  WK-TAIHI-FTNGAKEN(KOH-IDX)
                   MOVE  "1"   TO  WK-TAIHI-RECEFTNDSPKBN(KOH-IDX)
                   PERFORM   23061-KUMAMOTO-KOHI2-SEC
@@ -28384,7 +28456,7 @@
                 WHEN     12
                   IF  (FLG-KOUGAKUCYO-GEN70K NOT = ZERO)
                   AND (FLG-SYOUKAN(2) =    "1"         )
-                  AND (FLG-HIKAKU     =     2          )
+                  AND (FLG-HIKAKU2    =     2          )
                     CONTINUE
                   ELSE
                     MOVE    ZERO   TO    FLG-KOUGAKUCYO-GEN70
@@ -28406,17 +28478,17 @@
                END-IF
            END-IF.
            IF   WK-TAIHI-FTNGAKEN(2)    =    1
-               IF   FLG-HIKAKU     =     2
+               IF   FLG-HIKAKU2    =     2
                     MOVE    1      TO    FLG-FTNGAKEN
                END-IF
            END-IF.
            IF   WK-TAIHI-FTNGAKEN(3)    =    1
-               IF   FLG-HIKAKU     =     3
+               IF   FLG-HIKAKU3    =     3
                     MOVE    1      TO    FLG-FTNGAKEN
                END-IF
            END-IF.
            IF   WK-TAIHI-FTNGAKEN(4)    =    1
-               IF   FLG-HIKAKU     =     4
+               IF   FLG-HIKAKU4    =     4
                     MOVE    1      TO    FLG-FTNGAKEN
                END-IF
            END-IF.
@@ -28508,6 +28580,9 @@
       ****************************
       *
            MOVE    ZERO               TO    FLG-HIKAKU
+           MOVE    ZERO               TO    FLG-HIKAKU2
+           MOVE    ZERO               TO    FLG-HIKAKU3
+           MOVE    ZERO               TO    FLG-HIKAKU4
       *    ¿¡µ·≥€»Ê≥”
            MOVE    ZERO               TO    WK-KNJFTNKIN
       *
@@ -28539,7 +28614,12 @@
                MOVE    1                    TO    FLG-HIKAKU
                MOVE    LNK-SYU-KOH1COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH2COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   2                       TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH2COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    2              TO    FLG-HIKAKU2
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE    2              TO    FLG-HIKAKU2
+                   END-IF
                    MOVE   LNK-SYU-KOH2COMPFTN     TO  WK-KNJFTNKIN
                END-IF
                MOVE    WK-KOH1-YAKFTN       TO    LNK-SYU-YKZ-FTN
@@ -28558,11 +28638,22 @@
                MOVE    1                    TO    FLG-HIKAKU
                MOVE    LNK-SYU-KOH1COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH2COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   2                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH2COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    2              TO    FLG-HIKAKU2
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE    2              TO    FLG-HIKAKU2
+                   END-IF
                    MOVE   LNK-SYU-KOH2COMPFTN TO  WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-KOH3COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   3                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH3COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    3              TO    FLG-HIKAKU3
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE    3              TO    FLG-HIKAKU3
+                   END-IF
                    MOVE   LNK-SYU-KOH3COMPFTN TO  WK-KNJFTNKIN
                END-IF
                MOVE    WK-KOH1-YAKFTN       TO    LNK-SYU-YKZ-FTN
@@ -28581,6 +28672,8 @@
            AND  COMB-HKNNUM            NOT   =   SPACE
                IF  LNK-SYU-SYUCOMPFTN       <     WK-KNJFTNKIN
                    MOVE   ZERO                  TO   FLG-HIKAKU
+                   MOVE   ZERO                  TO   FLG-HIKAKU2
+                   MOVE   ZERO                  TO   FLG-HIKAKU3
                    MOVE   LNK-SYU-SYUCOMPFTN    TO   WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-SYUCOMPYKZFTN    <     LNK-SYU-YKZ-FTN
@@ -28590,6 +28683,8 @@
       *
            IF    WK-CYOKI-ZAN  <  WK-KNJFTNKIN
                MOVE     ZERO            TO     FLG-HIKAKU
+               MOVE     ZERO            TO     FLG-HIKAKU2
+               MOVE     ZERO            TO     FLG-HIKAKU3
                MOVE     WK-CYOKI-ZAN    TO     WK-KNJFTNKIN
            END-IF
       *
@@ -28689,6 +28784,9 @@
       ****************************
       *
            MOVE    ZERO               TO    FLG-HIKAKU
+           MOVE    ZERO               TO    FLG-HIKAKU2
+           MOVE    ZERO               TO    FLG-HIKAKU3
+           MOVE    ZERO               TO    FLG-HIKAKU4
       *    ¿¡µ·≥€»Ê≥”
            MOVE    ZERO               TO    WK-KNJFTNKIN
       *    ºÁ ›∏±§Œ§ﬂ
@@ -28696,7 +28794,6 @@
               (COMB-KOH2HKNNUM              =    SPACE)    AND
               (COMB-KOH3HKNNUM              =    SPACE)    AND
               (COMB-KOH4HKNNUM              =    SPACE)
-               MOVE   ZERO                  TO   FLG-HIKAKU
                MOVE   LNK-SYU-SYUCOMPFTN    TO   WK-KNJFTNKIN
                MOVE   LNK-SYU-SYUCOMPYKZFTN TO   LNK-SYU-YKZ-FTN
            END-IF
@@ -28717,7 +28814,12 @@
                MOVE    1                    TO    FLG-HIKAKU
                MOVE    LNK-SYU-KOH1COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH2COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   2                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH2COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    2              TO    FLG-HIKAKU2
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE    2              TO    FLG-HIKAKU2
+                   END-IF
                    MOVE   LNK-SYU-KOH2COMPFTN TO  WK-KNJFTNKIN
                END-IF
                MOVE    WK-KOH1-YAKFTN       TO    LNK-SYU-YKZ-FTN
@@ -28733,11 +28835,22 @@
                MOVE    1                    TO    FLG-HIKAKU
                MOVE    LNK-SYU-KOH1COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH2COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   2                       TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH2COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    2              TO    FLG-HIKAKU2
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE    2              TO    FLG-HIKAKU2
+                   END-IF
                    MOVE   LNK-SYU-KOH2COMPFTN     TO  WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-KOH3COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   3                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH3COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    3              TO    FLG-HIKAKU3
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE    3              TO    FLG-HIKAKU3
+                   END-IF
                    MOVE   LNK-SYU-KOH3COMPFTN TO  WK-KNJFTNKIN
                END-IF
                MOVE    WK-KOH1-YAKFTN       TO    LNK-SYU-YKZ-FTN
@@ -28756,15 +28869,33 @@
                MOVE    1                    TO    FLG-HIKAKU
                MOVE    LNK-SYU-KOH1COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH2COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   2                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH2COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    2              TO    FLG-HIKAKU2
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE    2              TO    FLG-HIKAKU2
+                   END-IF
                    MOVE   LNK-SYU-KOH2COMPFTN TO  WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-KOH3COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   3                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH3COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    3              TO    FLG-HIKAKU3
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE    3              TO    FLG-HIKAKU3
+                   END-IF
                    MOVE   LNK-SYU-KOH3COMPFTN TO  WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-KOH4COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   4                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH4COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    4              TO    FLG-HIKAKU4
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE   ZERO            TO    FLG-HIKAKU3
+                     MOVE    4              TO    FLG-HIKAKU4
+                   END-IF
                    MOVE   LNK-SYU-KOH4COMPFTN TO  WK-KNJFTNKIN
                END-IF
                MOVE    WK-KOH1-YAKFTN       TO    LNK-SYU-YKZ-FTN
@@ -28783,6 +28914,9 @@
            AND  COMB-HKNNUM            NOT   =   SPACE
                IF  LNK-SYU-SYUCOMPFTN       <     WK-KNJFTNKIN
                    MOVE   ZERO                  TO   FLG-HIKAKU
+                   MOVE   ZERO                  TO   FLG-HIKAKU2
+                   MOVE   ZERO                  TO   FLG-HIKAKU3
+                   MOVE   ZERO                  TO   FLG-HIKAKU4
                    MOVE   LNK-SYU-SYUCOMPFTN    TO   WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-SYUCOMPYKZFTN    <     LNK-SYU-YKZ-FTN
@@ -28846,6 +28980,9 @@
       ****************************
       *
            MOVE    ZERO               TO    FLG-HIKAKU
+           MOVE    ZERO               TO    FLG-HIKAKU2
+           MOVE    ZERO               TO    FLG-HIKAKU3
+           MOVE    ZERO               TO    FLG-HIKAKU4
       *    ¿¡µ·≥€»Ê≥”
            MOVE    ZERO               TO    WK-KNJFTNKIN
       *
@@ -28854,7 +28991,7 @@
               (COMB-KOH2HKNNUM              NOT = SPACE)   AND
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
-               MOVE    2                    TO    FLG-HIKAKU
+               MOVE    2                    TO    FLG-HIKAKU2
                MOVE    LNK-SYU-KOH2COMPFTN  TO    WK-KNJFTNKIN
            END-IF
       *    ∏¯»Ò£±§»∏¯»Ò£≤§»∏¯»Ò£≥§»∏¯»Ò£¥
@@ -28862,10 +28999,15 @@
               (COMB-KOH2HKNNUM              NOT = SPACE)   AND
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              NOT = SPACE)
-               MOVE    2                    TO    FLG-HIKAKU
+               MOVE    2                    TO    FLG-HIKAKU2
                MOVE    LNK-SYU-KOH2COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH3COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   3                       TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH3COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    3              TO    FLG-HIKAKU3
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE    3              TO    FLG-HIKAKU3
+                   END-IF
                    MOVE   LNK-SYU-KOH3COMPFTN     TO  WK-KNJFTNKIN
                END-IF
            END-IF
@@ -28877,14 +29019,16 @@
              IF   COMB-KOH1HKNNUM        NOT   =   "027" 
              AND  COMB-HKNNUM            NOT   =   SPACE
                IF  LNK-SYU-SYUCOMPFTN       <     WK-KNJFTNKIN
-                   MOVE   ZERO                  TO   FLG-HIKAKU
+                   MOVE   ZERO                  TO   FLG-HIKAKU2
+                   MOVE   ZERO                  TO   FLG-HIKAKU3
                    MOVE   LNK-SYU-SYUCOMPFTN    TO   WK-KNJFTNKIN
                END-IF
              END-IF
            END-IF
       *
            IF    WK-CYOKI-ZAN  <  WK-KNJFTNKIN
-               MOVE     ZERO            TO     FLG-HIKAKU
+               MOVE     ZERO            TO     FLG-HIKAKU2
+               MOVE     ZERO            TO     FLG-HIKAKU3
                MOVE     WK-CYOKI-ZAN    TO     WK-KNJFTNKIN
            END-IF
       *
@@ -28958,6 +29102,9 @@
       ****************************
       *
            MOVE    ZERO               TO    FLG-HIKAKU
+           MOVE    ZERO               TO    FLG-HIKAKU2
+           MOVE    ZERO               TO    FLG-HIKAKU3
+           MOVE    ZERO               TO    FLG-HIKAKU4
       *    ¿¡µ·≥€»Ê≥”
            MOVE    ZERO               TO    WK-KNJFTNKIN
       *
@@ -28966,7 +29113,7 @@
               (COMB-KOH2HKNNUM              NOT = SPACE)   AND
               (COMB-KOH3HKNNUM              =     SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
-               MOVE    2                    TO    FLG-HIKAKU
+               MOVE    2                    TO    FLG-HIKAKU2
                MOVE    LNK-SYU-KOH2COMPFTN  TO    WK-KNJFTNKIN
            END-IF
       *    ∏¯»Ò£±§»∏¯»Ò£≤§»∏¯»Ò£≥
@@ -28974,10 +29121,15 @@
               (COMB-KOH2HKNNUM              NOT = SPACE)   AND
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
-               MOVE    2                    TO    FLG-HIKAKU
+               MOVE    2                    TO    FLG-HIKAKU2
                MOVE    LNK-SYU-KOH2COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH3COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   3                       TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH3COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    3              TO    FLG-HIKAKU3
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE    3              TO    FLG-HIKAKU3
+                   END-IF
                    MOVE   LNK-SYU-KOH3COMPFTN     TO  WK-KNJFTNKIN
                END-IF
            END-IF
@@ -28986,14 +29138,25 @@
               (COMB-KOH2HKNNUM              NOT = SPACE)   AND
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              NOT = SPACE)
-               MOVE    2                    TO    FLG-HIKAKU
+               MOVE    2                    TO    FLG-HIKAKU2
                MOVE    LNK-SYU-KOH2COMPFTN  TO    WK-KNJFTNKIN
                IF  LNK-SYU-KOH3COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   3                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH3COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    3              TO    FLG-HIKAKU3
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE    3              TO    FLG-HIKAKU3
+                   END-IF
                    MOVE   LNK-SYU-KOH3COMPFTN TO  WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-KOH4COMPFTN      <=    WK-KNJFTNKIN
-                   MOVE   4                   TO  FLG-HIKAKU
+                   IF  LNK-SYU-KOH4COMPFTN  =  WK-KNJFTNKIN
+                     MOVE    4              TO    FLG-HIKAKU4
+                   ELSE
+                     MOVE   ZERO            TO    FLG-HIKAKU2
+                     MOVE   ZERO            TO    FLG-HIKAKU3
+                     MOVE    4              TO    FLG-HIKAKU4
+                   END-IF
                    MOVE   LNK-SYU-KOH4COMPFTN TO  WK-KNJFTNKIN
                END-IF
            END-IF
@@ -29005,7 +29168,9 @@
              IF   COMB-KOH1HKNNUM        NOT   =   "027" 
              AND  COMB-HKNNUM            NOT   =   SPACE
                IF  LNK-SYU-SYUCOMPFTN       <     WK-KNJFTNKIN
-                   MOVE   ZERO                  TO   FLG-HIKAKU
+                   MOVE   ZERO                  TO   FLG-HIKAKU2
+                   MOVE   ZERO                  TO   FLG-HIKAKU3
+                   MOVE   ZERO                  TO   FLG-HIKAKU4
                    MOVE   LNK-SYU-SYUCOMPFTN    TO   WK-KNJFTNKIN
                END-IF
                IF  LNK-SYU-SYUCOMPYKZFTN    <     LNK-SYU-YKZ-FTN
@@ -29176,9 +29341,34 @@
                 (LNK-SYU-KOH2HKNNUM  =  "143" OR "342") OR
                 (LNK-SYU-KOH3HKNNUM  =  "143" OR "342") OR
                 (LNK-SYU-KOH4HKNNUM  =  "143" OR "342"))
+             IF   WK-KUMAMOTO-SYUCOMPFTN  NOT = ZERO
+                 MOVE  WK-KUMAMOTO-SYUCOMPFTN
+                                           TO  LNK-SYU-JYO-HKNFTNMONEY
+             END-IF
+           END-IF
       *
-             MOVE  WK-KUMAMOTO-SYUCOMPFTN  TO  LNK-SYU-JYO-HKNFTNMONEY
-      *
+           IF  (WK-1001-PREFNUM             =  43      )
+           AND (LNK-SYU-SRYYMD(1:6)        >= "201608" )
+           AND ((LNK-SYU-KOH1HKNNUM  =  "443"         ) OR
+                (LNK-SYU-KOH2HKNNUM  =  "443"         ) OR
+                (LNK-SYU-KOH3HKNNUM  =  "443"         ) OR
+                (LNK-SYU-KOH4HKNNUM  =  "443"         ))
+             IF   WK-KUMAMOTO-SYUCOMPFTN  NOT = ZERO
+               IF  (LNK-SYU-KOH1HKNNUM  =  "443")
+               AND (LNK-SYU-KOH2HKNNUM  =  SPACE)
+               AND (LNK-SYU-KOH3HKNNUM  =  SPACE)
+               AND (LNK-SYU-KOH4HKNNUM  =  SPACE)
+                   MOVE  WK-KUMAMOTO-SYUCOMPFTN
+                                           TO  LNK-SYU-JYO-HKNFTNMONEY
+               ELSE
+                   COMPUTE  LNK-SYU-JYO-HKNFTNMONEY =
+                            LNK-SYU-SKYMONEY        +  5
+                   COMPUTE  LNK-SYU-JYO-HKNFTNMONEY =
+                            LNK-SYU-JYO-HKNFTNMONEY / 10
+                   COMPUTE  LNK-SYU-JYO-HKNFTNMONEY =
+                            LNK-SYU-JYO-HKNFTNMONEY * 10
+               END-IF
+             END-IF
            END-IF
       *
            IF  (WK-1001-PREFNUM             =  35 OR 34)
