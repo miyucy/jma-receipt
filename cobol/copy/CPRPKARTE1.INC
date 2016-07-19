@@ -46,24 +46,24 @@
       *           HOME-ADRS(1):PTINF-HOME-ADRS / (2):PTINF-HOME-BANTI
                   09  RPKARTE1-HOME-ADRS        PIC X(100)  OCCURS  2.
       *           XXX-XXXX
-                  09  RPKARTE1-HOME-POST        PIC X(8).
+                  09  RPKARTE1-HOME-POST        PIC X(7).
                   09  RPKARTE1-HOME-TEL1        PIC X(15).
                   09  RPKARTE1-HOME-TEL2        PIC X(15).
                 07  RPKARTE1-RENRAKU-G.
                   09  RPKARTE1-RENRAKU-ADRS     PIC X(100)  OCCURS  2.
                   09  RPKARTE1-RENRAKU-ZOKUGARA PIC X(30).
-                  09  RPKARTE1-RENRAKU-POST     PIC X(8).
+                  09  RPKARTE1-RENRAKU-POST     PIC X(7).
                   09  RPKARTE1-RENRAKU-TEL1     PIC X(15).
                   09  RPKARTE1-RENRAKU-TEL2     PIC X(15).
                 07  RPKARTE1-OFFICE-G.
                   09  RPKARTE1-OFFICE-NAME      PIC X(50).
                   09  RPKARTE1-OFFICE-ADRS      PIC X(100)  OCCURS  2.
-                  09  RPKARTE1-OFFICE-POST      PIC X(8).
+                  09  RPKARTE1-OFFICE-POST      PIC X(7).
                   09  RPKARTE1-OFFICE-TEL       PIC X(15).
                 07  RPKARTE1-KISEI-G.
                   09  RPKARTE1-KISEI-NAME       PIC X(50).
                   09  RPKARTE1-KISEI-ADRS       PIC X(100)  OCCURS  2.
-                  09  RPKARTE1-KISEI-POST       PIC X(8).
+                  09  RPKARTE1-KISEI-POST       PIC X(7).
                   09  RPKARTE1-KISEI-TEL        PIC X(15).
               05  RPKARTE1-HKNCOMBI-G.
                 07  RPKARTE1-HKNCOMBI           PIC X(4).
@@ -73,8 +73,8 @@
       *             ï€åØÇÃéÌóﬁñºèÃ
                 07  RPKARTE1-HKNNAME            PIC X(20).
       *         ï€åØîNóÓ
-                09  RPKARTE1-HOKEN-AGE          PIC X(3).
-                09  RPKARTE1-HOKEN-RATE         PIC X(3).
+                07  RPKARTE1-HOKEN-AGE          PIC X(3).
+                07  RPKARTE1-HOKEN-RATE         PIC X(3).
                 07  RPKARTE1-HOKEN-G.
                   09  RPKARTE1-HKNJANAME        PIC X(100).
                   09  RPKARTE1-HKNJANUM         PIC X(8).
@@ -96,7 +96,6 @@
                   09  RPKARTE1-RSI-RYOSTYMD      PIC X(10).
                   09  RPKARTE1-RSI-RYOEDYMD      PIC X(10).
                   09  RPKARTE1-RSI-SAIGAIKBN     PIC X(1).
-                  09  RPKARTE1-RSI-SAIGAINAME    PIC X(20).
                   09  RPKARTE1-RSI-SHOBYOYMD     PIC X(10).
                   09  RPKARTE1-RSI-JIGYOUNAME    PIC X(50).
       *           ìåãûìsÅAñkäCìπìô
