@@ -25,6 +25,7 @@
               05  RPKARTE1-REPORT-ID            PIC X(30).
       *       SYS-1031-PRTNM(1)
               05  RPKARTE1-PRINTER              PIC X(20).
+              05  RPKARTE1-HAKKOKBN             PIC X(1).
               05  RPKARTE1-PTINF.
                 07  RPKARTE1-PTNUM              PIC X(20).
                 07  RPKARTE1-NAME               PIC X(50).
@@ -45,7 +46,6 @@
                 07  RPKARTE1-HOME-ADDRESS-G.
       *           HOME-ADRS(1):PTINF-HOME-ADRS / (2):PTINF-HOME-BANTI
                   09  RPKARTE1-HOME-ADRS        PIC X(100)  OCCURS  2.
-      *           XXX-XXXX
                   09  RPKARTE1-HOME-POST        PIC X(7).
                   09  RPKARTE1-HOME-TEL1        PIC X(15).
                   09  RPKARTE1-HOME-TEL2        PIC X(15).

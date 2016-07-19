@@ -6,6 +6,7 @@ rp_karte_no1 {
 	data {
 		Report_ID				varchar(30);
 		Printer					varchar(20);
+		Order_Class			varchar(1);
 		Patient	{
 			ID	 				    varchar(20);
 			Name 				    varchar(50);
