@@ -36,6 +36,7 @@ db "xml" {
 db "xml2" {
  xml_acceptv2req;
  xml_acceptv2res;
+ rp_karte_no1;
 };
 /*
 db	{

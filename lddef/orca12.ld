@@ -149,6 +149,7 @@ db "xml2" {
  xml_patientmodv3res2;
  xml_patientmodv3req3;
  xml_patientmodv3res3;
+ rp_karte_no1;
 };
 
 #include "orcadb.inc"
