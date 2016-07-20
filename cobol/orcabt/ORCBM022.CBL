@@ -99,11 +99,6 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-藤原    16/06/13  社保診療報酬請求書の災害該当
       *                                     分のまとめ対応
-      *  04.08.02    NACL-藤原    16/09/13  公費番号まとめ情報の公費番号
-      *                                     の追加
-      *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -196,8 +191,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-MARUCHO    PIC X(01).
            03  WRK-PARA-GENMENKBN  PIC X(01).
-           03  WRK-PARA-STSRYYM    PIC 9(06).
-           03  WRK-PARA-EDSRYYM    PIC 9(06).
       *
        01  WRK-PARA1.
            03  WRK-PARA-HKNJANUM-S PIC X(08).
@@ -230,7 +223,7 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-2007-MEISYO PIC X(44).
                05  WRK-2007-KOH-AREA.
                    07  WRK-2007-KOHNUM
-                                   PIC X(03)   OCCURS  30.
+                                   PIC X(03)   OCCURS  10.
            03  WRK-2007-MAX        PIC 9(03).
       *
        01  WRK-ERR-AREA.
@@ -355,7 +348,7 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPHKNJAINF.INC".
       *
       *    医療機関情報情報
-      *     COPY    "CPSK1001.INC".
+           COPY    "CPSK1001.INC".
       *
            COPY    "CPSK2007.INC".
       *
@@ -436,15 +429,11 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-MARUCHO
                                                WRK-PARA-GENMENKBN 
                                                WRK-PARA-HKNJANUM-S
-                                               WRK-PARA-STSRYYM
-                                               WRK-PARA-EDSRYYM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            DISPLAY "WRK-PARA-HKNJANUM-S="  WRK-PARA-HKNJANUM-S
-           DISPLAY "WRK-PARA-STSRYYM   ="  WRK-PARA-STSRYYM
-           DISPLAY "WRK-PARA-EDSRYYM   ="  WRK-PARA-EDSRYYM
       *
            EVALUATE    WRK-PARA-HKNJANUM-S
                WHEN    "99999999"
@@ -511,6 +500,25 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    システム管理マスタ情報取得
       *****************************************************************
        110-SYSKANRI-GET-SEC            SECTION.
+      *
+      *    医療機関情報
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
+           MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC        TO  SYS-1001-REC
+           ELSE
+               MOVE    "医療機関情報が取得できませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+           END-IF 
       *         
       *    レセプト編集区分情報
            INITIALIZE                      SYS-2009-REC
@@ -565,20 +573,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                ELSE
                    MOVE    SYS-2007-MEISYO (2) TO  WRK-2007-MEISYO (IDX)
                END-IF
-               MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       10
                        OR      SYS-2007-KOHNUM (IDY)   =   SPACE
-                   ADD     1               TO  IDZ
                    MOVE    SYS-2007-KOHNUM (IDY)
-                                           TO WRK-2007-KOHNUM (IDX IDZ)
-               END-PERFORM
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       20
-                       OR      SYS-2007-KOHNUM1(IDY)   =   SPACE
-                   ADD     1               TO  IDZ
-                   MOVE    SYS-2007-KOHNUM1(IDY)
-                                           TO WRK-2007-KOHNUM (IDX IDZ)
+                                           TO WRK-2007-KOHNUM (IDX IDY)
                END-PERFORM
       *
                MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
@@ -1699,7 +1698,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                    PERFORM VARYING IDZ1    FROM    1   BY  1
                            UNTIL   IDZ1    >       WRK-2007-MAX
                        PERFORM VARYING IDZ2    FROM    1   BY  1
-                               UNTIL   IDZ2    >       30
+                               UNTIL   IDZ2    >       10
                                OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
                                                =   SPACE
                            IF      RECE10-KOHNUM (IDZ)
@@ -1708,7 +1707,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                TO  RECE10-KOHNUM (IDZ)
                                MOVE    WRK-2007-MEISYO (IDZ1)
                                                TO  WRK-MEISYO
-                               MOVE    30      TO  IDZ2
+                               MOVE    10      TO  IDZ2
                                MOVE    WRK-2007-MAX
                                                TO  IDZ1
                            END-IF
@@ -2056,15 +2055,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECE10
                MOVE    MCPDATA-REC         TO  RECE10-REC
-      *
-               IF      WRK-PARA-STSRYYM    =   "999999"
-                   CONTINUE
-               ELSE
-                   IF    ( RECE10-SRYYM    <   WRK-PARA-STSRYYM )
-                   OR    ( RECE10-SRYYM    >   WRK-PARA-EDSRYYM )
-                       GO  TO  900-SEIKYU-READ-SEC
-                   END-IF
-               END-IF
       *
                IF      RECE10-NYUGAIKBN
                                    NOT =   WRK-NYUGAIKBN
