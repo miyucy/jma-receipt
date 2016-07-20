@@ -69,8 +69,6 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    16/07/20  ＥＦファイル作成対応
-      *  04.08.03    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -721,8 +719,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0102 start = [" WRK-ARG "]"
@@ -993,8 +989,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0102 start = [" WRK-ARG "]"
@@ -1295,8 +1289,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0500 start = [" WRK-ARG "]"
@@ -1627,8 +1619,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0500 start = [" WRK-ARG "]"
@@ -1798,9 +1788,8 @@
                                            WRK-ARG
            END-IF
       *
-      *    労災準拠のとき又は平成２９年７月診療分以降のとき（新様式）
-           IF    ( WRK-PARA-A3     =   "1"      )
-           OR    ( WRK-PARA0-A8    >=  "201707" )
+      *    労災準拠のとき（新様式）
+           IF      WRK-PARA-A3     =   "1"
                PERFORM 100-DBOPEN-SEC
                IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
                    PERFORM 20011-REAL-DB-MAKE-SEC
@@ -2072,8 +2061,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0500 start = [" WRK-ARG "]"
@@ -2246,9 +2233,8 @@
                                            WRK-ARG
            END-IF
       *
-      *    労災準拠のとき又は平成２９年７月診療分以降のとき（新様式）
-           IF    ( WRK-PARA-A3     =   "1"      )
-           OR    ( WRK-PARA0-A8    >=  "201707" )
+      *    労災準拠のとき（新様式）
+           IF      WRK-PARA-A3     =   "1"
                PERFORM 100-DBOPEN-SEC
                IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
                    PERFORM 20011-REAL-DB-MAKE-SEC
@@ -2525,8 +2511,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0500 start = [" WRK-ARG "]"
@@ -2697,8 +2681,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0500 start = [" WRK-ARG "]"
@@ -2885,8 +2867,6 @@
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    "orca"      DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0500 start = [" WRK-ARG "]"
