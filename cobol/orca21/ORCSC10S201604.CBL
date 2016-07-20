@@ -1693,7 +1693,7 @@
                WHEN    "113003810"
                    ADD     SANTEI-MSANTEICNT   TO  WRK-NYUYOJI
                    ADD     WRK-DAYCNT          TO  WRK-DAYCNT-SUM
-      *
+      *H28.5
       *            小児科外来診療料当日算定あり
                    IF     (SPA-SYONIKA         =   ZERO )
                     AND   (WRK-DAYCNT-SUM      >   ZERO )
@@ -2740,18 +2740,7 @@
            IF      SPA-RSI-JUNKYO      =   "1"
                MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
            ELSE
-      *
-      *    発生日を求める　(使用なし　労災コード変更対応なし）
-      *    救急医療管理加算のチェック
-      *    MOVE    SPACE               TO  WRK-HASSYOYMD
-      *    MOVE    "101110030"         TO  WRK-SRYCD
-      *    PERFORM 10001-RSI-JYURRK-CHK-SEC
-      *    IF      WRK-HASSYOYMD       =   SPACE
                MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
-      *    ELSE
-      *        MOVE    WRK-HASSYOYMD       TO  SPA-RSI-HASSYOYMD
-      *    END-IF
-      *
            END-IF
       *
       *    発生日から３ヶ月の計算（現在使用なし）
@@ -5736,9 +5725,11 @@
                            IF      FLG-OK          =   1
                                CONTINUE
                            ELSE
+                           IF      SPA-HKTSANTEI-202   =   ZERO
                                MOVE    "0044"      TO  SPA-ERRCD
                                MOVE    "1"         TO  SPA-COM-CUR
                                                                 (IDX)
+                            END-IF
                            END-IF
       *
                        WHEN    "13"
@@ -5821,7 +5812,7 @@
                            END-IF
                          END-IF
                        WHEN    OTHER
-                           IF      SPA-HKTSANTEI-202   =   ZERO
+                           IF     (SPA-HKTSANTEI-202   =   ZERO)
                              AND  (SPA-SYONIKA-ARI NOT =   ZERO) 
       *
                             MOVE    "0044"      TO  SPA-ERRCD
@@ -5837,6 +5828,16 @@
       *                    その他の診療種別
                            IF      SPA-GMN-INPUTCD(IDX)(1:4)  =   ".800"
                                                               OR  ".850"
+      *H28.7                   自賠責対応
+                                                              OR  ".809"
+                               MOVE    SPACE       TO  SPA-ERRCD
+                               MOVE    SPACE       TO  SPA-COM-CUR
+                                                                (IDX)
+                           END-IF
+      *H28.7               自費コード(自賠責）
+                           IF     (SPA-COM-INPUTCD (IDX) (1:3)
+                                                       =   "095"
+                                                       OR  "096" )
                                MOVE    SPACE       TO  SPA-ERRCD
                                MOVE    SPACE       TO  SPA-COM-CUR
                                                                 (IDX)
