@@ -2065,7 +2065,7 @@
            MOVE    PTHKN-KIGO          TO  RPKARTE1-KIGO
            MOVE    PTHKN-NUM           TO  RPKARTE1-NUM
       *    »Ô ›∏±º‘Ãæ
-           MOVE    PTHKN-HIHKNJANAME   TO  RPKARTE1-HKNJANAME
+           MOVE    PTHKN-HIHKNJANAME   TO  RPKARTE1-HIHKNJANAME
       *    ∑—¬≥∂Ë ¨
            MOVE    PTHKN-CONTKBN       TO  RPKARTE1-CONTKBN
       *     ‰Ωı∂Ë ¨
