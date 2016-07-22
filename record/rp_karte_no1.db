@@ -54,9 +54,9 @@ rp_karte_no1 {
 			Rate_Outpatient					varchar(03);
 			InsuranceProvider_Class	varchar(03);
 			InsuranceProvider_Name	varchar(20);
-#--¡¡Êİ¸±Ç¯Îğ
+#--ã€€ä¿é™ºå¹´é½¢
 			HealthInsuredPerson_Age	varchar(03);
-#--¡¡ÉéÃ´³ä¹ç
+#--ã€€è² æ‹…å‰²åˆ
 			HealthInsuredPerson_Rate	varchar(03);
 			HealthInsurance_Information	 {
 				InsuranceProvider_Name							varchar(100);
