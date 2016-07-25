@@ -5,6 +5,7 @@ rp_medication_note {
     recordname	varchar(128);
 	data {
 		Report_ID				varchar(30);
+		Custom_ID				varchar(30);
 		Printer					varchar(20);
 		Prescription_Date varchar(10);
 		Invoice_Number varchar(7);

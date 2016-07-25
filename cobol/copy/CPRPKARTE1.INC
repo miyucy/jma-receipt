@@ -21,8 +21,10 @@
             03  RPKARTE1-MODE                   PIC S9(9)   BINARY.
             03  RPKARTE1-RECORDNAME             PIC X(128).
             03  RPKARTE1-DATA.
-      *       karte-no1Çê›íË
+      *       karte_no1Çê›íË
               05  RPKARTE1-REPORT-ID            PIC X(30).
+      *       ÉJÉXÉ^ÉÄÇhÇc
+              05  RPKARTE1-CUSTOM-ID            PIC X(30).
       *       SYS-1031-PRTNM(1)
               05  RPKARTE1-PRINTER              PIC X(20).
               05  RPKARTE1-HAKKOKBN             PIC X(1).
