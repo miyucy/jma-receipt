@@ -291,9 +291,11 @@
       ***  03  PARA-CSVDIR             PIC X(256).
       *H28.6
            03  PARA-API-DATA           PIC X(01).
+           03  PARA-API-CUSTOM-ID      PIC X(30).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
+           03  WRK-PARA2               PIC X(50).
       *
       *H28.6
       * API対応
@@ -477,6 +479,11 @@
                MOVE    WRK-PARA(1:1)   TO  PARA-API-DATA
            END-IF
       *
+      *    ＡＰＩカスタムＩＤ
+           MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA2           TO  PARA-API-CUSTOM-ID
+      *
       *****CSVファイル作成
       *    MOVE    "CSVKBN"        TO  WRK-PARA-NAME
       *    PERFORM 1001-OPTION-CALL-SEC
@@ -548,6 +555,8 @@
       *        半角で１文字目を値とする
                MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
            END-IF
+      *    全桁
+           MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA2
       *
            .
        1001-OPTION-CALL-EXT.
@@ -1805,6 +1814,8 @@
       *
       *    項目編集
            PERFORM 6001-API-HENSYU-SEC
+      *    カスタムＩＤ
+           MOVE    PARA-API-CUSTOM-ID  TO  RPMNOTE-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "okusuri_techo"     TO  RPMAIN-ID

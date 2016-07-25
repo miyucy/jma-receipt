@@ -24,7 +24,7 @@
       *            í†ï[ÇhÇc
                05  RPMNOTE-REPORTID                PIC X(30).
       *            ÉJÉXÉ^ÉÄÇhÇc
-               05  RPMNOTE-CUSTOMID                PIC X(30).
+               05  RPMNOTE-CUSTOM-ID               PIC X(30).
       *            ÉvÉäÉìÉ^ñº
                05  RPMNOTE-PRINTER                 PIC X(20).
       *            êfó√ì˙ YYYY-MM-DD
