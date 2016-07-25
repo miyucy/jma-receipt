@@ -21,7 +21,7 @@ err () {
 run() {
     /bin/bash "$@" 2> >(while read line; do
 	if [[ "$line" =~ "ERROR:" ]]; then
-	    echo -e "${line/ERROR:/\e[1;31mERROR:\e[m}"
+	    echo -e "${line/ERROR:/\\e[1;31mERROR:\\e[m}"
 	    echo "($@)"
 	    if [ ${JMSG} -eq 1 ] ; then
 		err "データベース構造変更処理は異常終了しました。" 99
