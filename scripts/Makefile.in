@@ -237,7 +237,6 @@ filecheck:
 	-name "claim" -o \
 	-name "def" -o \
 	-name "dtd" -o \
-	-name "link" -o \
 	-name "rb" -o \
 	-name "rb2" -o \
 	-name "template" -o \
@@ -270,7 +269,6 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/claim/dtd
 	$(INSTALL) -d $(scriptsdir)/claim/rb
 	$(INSTALL) -d $(scriptsdir)/claim/rb2
-	$(INSTALL) -d $(scriptsdir)/claim/link
 	$(INSTALL) -d $(scriptsdir)/claim/template
 	for file in $(shell_scripts) $(ruby_scripts) $(claim_scripts); do \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
