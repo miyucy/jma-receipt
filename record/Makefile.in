@@ -513,6 +513,7 @@ RECORD_files = \
 	I4ID2.rec \
 	formdatagetv2.rec \
 	push_print001.rec \
+	contraindicationcheckv2.rec \
 
 DEF_files = \
 
@@ -857,6 +858,8 @@ DB_files = \
 	rp_karte_no1.db \
 	rp_medication_note.db \
 	xml_formdatagetv2req.db \
+	xml_contraindication_checkv2req.db \
+	xml_contraindication_checkv2res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
