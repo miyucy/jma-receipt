@@ -44,7 +44,7 @@ xml_contraindication_checkv2res {
 #---            症状
 		Symptom_Content		varchar(2048);
 #---            作用機与
-		Symptom_detail		varchar(2048);
+		Symptom_Detail		varchar(2048);
 		} [50];
    	};
 };
