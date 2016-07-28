@@ -18,33 +18,33 @@ xml_contraindication_checkv2res {
         	Sex				varchar(1);
         };
 	Medical_Information  {
-#---            –òÜƒR[ƒh
+#---            ÌôºÞ¥³¡¼¥É
 		Medication_Code			varchar(09);
 		Medication_Name			varchar(80);
         	Medical_Result			varchar(2);
         	Medical_Result_Message		varchar(80);
 		Medical_Info  {
-#---            ‹ÖŠõ–òÜƒR[ƒh
-			Drugcd_Code		varchar(09);
-			Drugcd_Name		varchar(80);
-#---            ÇóÚ‹L‹æ•ª
+#---            ¶Ø´÷ÌôºÞ¥³¡¼¥É
+			Contra_Code		varchar(09);
+			Contra_Name		varchar(80);
+#---            ¾É¾õ¾Üµ­¶èÊ¬
 			Interact_Code		varchar(7);
-#---            “Š—^“ú
-			Touyo_Date		varchar(10);
-#---            ¡‰ñ“Š—^‹æ•ª
-			In_Kbn			varchar(1);
-#---            •ûŒü«
-			Touyo_Kbn		varchar(2);
+#---            ÅêÍ¿Æü
+			Administer_Date		varchar(10);
+#---            º£²óÅêÍ¿¶èÊ¬
+			Administer_Class	varchar(1);
+#---            Êý¸þÀ­(-> : before . <-:after)
+			Context_Class		varchar(6);
 			} [30];
 		} [30];
-#---    ÇóÚ‹L“à—e
-	Sskijyo_Information  {
-#---            ÇóÚ‹L‹æ•ª
-		Sskijyo_Code		varchar(7);
-#---            Çó
-		Syojyou			varchar(2048);
-#---            ì—p‹@—^
-		Sayokijyo		varchar(2048);
+#---    ¾É¾õ¾Üµ­ÆâÍÆ
+	Symptom_Information  {
+#---            ¾É¾õ¾Üµ­¶èÊ¬
+		Symptom_Code		varchar(7);
+#---            ¾É¾õ
+		Symptom_Content		varchar(2048);
+#---            ºîÍÑµ¡Í¿
+		Symptom_detail		varchar(2048);
 		} [50];
    	};
 };

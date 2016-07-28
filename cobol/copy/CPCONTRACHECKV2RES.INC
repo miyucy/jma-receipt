@@ -20,9 +20,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ＡＰＩレスポンス診療行為登録情報 (一体化)
-      *                                      COPY (CPCONTRACHECKV2RES.INC)
-      *         禁忌薬剤チェック
+      *    ＡＰＩレスポンス併用禁忌薬剤チェック情報
+      *                                   COPY (CPCONTRACHECKV2RES.INC)
       ******************************************************************
        01  XML-CONTRA-CHECKV2RES.
             03  CHKRES-CONTEXT             PIC S9(9)   BINARY.
@@ -71,11 +70,11 @@
       *                        症状詳記区分
                                11  CHKRES-INTERACT-CODE    PIC X(07).
       *                        投与日
-                               11  CHKRES-TOUYO-DATE       PIC X(10).
+                               11  CHKRES-ADMINISTE-DATE   PIC X(10).
       *                        今回分
-                               11  CHKRES-INPUT-KBN        PIC X(01).
+                               11  CHKRES-ADMINISTE-KBN    PIC X(01).
       *                        方向性
-                               11  CHKRES-TOUYO-KBN        PIC X(02).
+                               11  CHKRES-CONTEXT-CLASS    PIC X(06).
       *
       *        症状詳記内容返却
                05  CHKRES-SSKIJYO-INF-G.

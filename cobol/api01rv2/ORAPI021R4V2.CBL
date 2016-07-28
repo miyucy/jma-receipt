@@ -982,14 +982,14 @@
       *            投与日
                    MOVE    SPA-KNK-TOUYMD (IDX-S)  TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  CHKRES-TOUYO-DATE
+                   MOVE    WRK-HEN-DATE        TO  CHKRES-ADMINISTE-DATE
                                                         (IDX IDX-K2)
       *            方向性
                    IF      FLG-KINKI-CHK       =   2
-                       MOVE     "←"           TO  CHKRES-TOUYO-KBN
+                       MOVE    "after"         TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
                    ELSE
-                       MOVE     "→"           TO  CHKRES-TOUYO-KBN
+                       MOVE    "before"        TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
                    END-IF
                END-IF
@@ -1029,19 +1029,19 @@
                                                TO  CHKRES-INTERACT-CODE
                                                         (IDX IDX-K2)
       *                今回入力分
-                       MOVE    "1"             TO  CHKRES-INPUT-KBN
+                       MOVE    "1"             TO  CHKRES-ADMINISTE-KBN
                                                         (IDX IDX-K2)
       *                方向性
-                       MOVE     "→"           TO  CHKRES-TOUYO-KBN
+                       MOVE    "before"        TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
       *
                    ELSE
       *            今回入力を優先とする
       *                投与日は削除
-                       MOVE    SPACE           TO  CHKRES-TOUYO-DATE
+                       MOVE    SPACE           TO  CHKRES-ADMINISTE-DATE
                                                         (IDX IDX-K2)
       *                今回入力分
-                       MOVE    "1"             TO  CHKRES-INPUT-KBN
+                       MOVE    "1"             TO  CHKRES-ADMINISTE-KBN
                                                         (IDX IDX-K2)
       *
                    END-IF
