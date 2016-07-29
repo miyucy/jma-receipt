@@ -77,10 +77,8 @@ rp_karte_no1 {
 			Accident_Insurance_Information	{
 				Accident_Insurance_Class		varchar(01);
 				Accident_Insurance_Number 	varchar(14);
-				PensionCertificate_Number		varchar(09);
 				Accident_StartDate					varchar(10);
 				Accident_ExpiredDate				varchar(10);
-				Accident_Class							varchar(01);
 				Disease_Date								varchar(10);
 				Office_Name									varchar(50);
 				Pref_Name										varchar(10);
