@@ -94,10 +94,8 @@
                 07  RPKARTE1-ROSAI-G.
                   09  RPKARTE1-RSI-HKNKBN        PIC X(1).
                   09  RPKARTE1-RSI-KOFUNUM       PIC X(14).
-                  09  RPKARTE1-RSI-NENKINNUM     PIC X(9).
                   09  RPKARTE1-RSI-RYOSTYMD      PIC X(10).
                   09  RPKARTE1-RSI-RYOEDYMD      PIC X(10).
-                  09  RPKARTE1-RSI-SAIGAIKBN     PIC X(1).
                   09  RPKARTE1-RSI-SHOBYOYMD     PIC X(10).
                   09  RPKARTE1-RSI-JIGYOUNAME    PIC X(50).
       *           ìåãûìsÅAñkäCìπìô

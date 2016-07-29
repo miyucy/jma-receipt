@@ -2127,18 +2127,8 @@
                PERFORM 900-DBCLOSE-SEC
                IF      FLG-PTRSIINF        =   ZERO
                    MOVE    PTRSI-HKNKBN    TO  RPKARTE1-RSI-HKNKBN
-      *            患者交付番号・健康管理手帳番号
+      *            患者交付番号・年金証書番号・健康管理手帳番号
                    MOVE    PTRSI-KOFUNUM   TO  RPKARTE1-RSI-KOFUNUM
-                   IF      PTRSI-HKNKBN    =   "2"
-      *                年金証書番号
-                       MOVE    PTRSI-KOFUNUM
-                                           TO  RPKARTE1-RSI-NENKINNUM
-                       MOVE    SPACE       TO  RPKARTE1-RSI-KOFUNUM
-                   END-IF
-      *
-      *            災害区分
-                   MOVE    PTRSI-SAIGAIKBN
-                                           TO  RPKARTE1-RSI-SAIGAIKBN
       *            事業所名称
                    MOVE    PTRSI-JIGYOUNAME
                                            TO  RPKARTE1-RSI-JIGYOUNAME
