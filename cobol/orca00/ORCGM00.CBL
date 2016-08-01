@@ -1276,6 +1276,10 @@
                WHEN    "CLICKED"       ALSO    "B10"
                    IF    ( SPA-MW    = SPA-PANDA )
                        PERFORM 470-MLOG-SEC
+                   ELSE
+                       IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+                           PERFORM 470-GINBEE-PLUGIN-SEC
+                       END-IF
                    END-IF
       *!!!!!!!
       *    各業務移動へ
@@ -1622,6 +1626,31 @@
            EXIT.
       *
       *****************************************************************
+      *    GINBEE環境でプラグイン設定画面へ
+      *****************************************************************
+       470-GINBEE-PLUGIN-SEC       SECTION.
+      *
+           MOVE    "M00"               TO  SPA-MOTOPG
+           MOVE    "M80"               TO  SPA-SAKIPG
+           MOVE    SPACE               TO  SPA-MOTOPG2
+      *
+      *del ok? INITIALIZE  SPA-KYOTUKEY
+           INITIALIZE  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+      *del ok? MOVE    SPA-M00             TO  LNK-FREE
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       470-GINBEE-PLUGIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    JOBLOG表示画面へ
       *****************************************************************
        480-M98-SEC                     SECTION.
@@ -1867,7 +1896,7 @@
            IF    ( SPA-MW                 =   SPA-PANDA )
                MOVE    "ユーザ管理"       TO  M00-B10-LABEL
            ELSE
-               MOVE    SPACE              TO  M00-B10-LABEL
+               MOVE    "プラグイン"       TO  M00-B10-LABEL
            END-IF
       *
            IF    ( SPA-NAI-REDL           =   1 )

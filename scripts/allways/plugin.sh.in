@@ -40,7 +40,6 @@ case "${COMMAND}" in
         exit $?
       fi
     fi
-    ${PLUGIN_SHELL} -c ${JPPINFO} list
     list4cobol
     ;;
   install|uninstall|enable|disable|upgrade2|restore|force_restore)

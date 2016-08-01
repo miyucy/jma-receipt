@@ -383,7 +383,11 @@
       *        インストール
                WHEN    "0101"
                    IF      SPA-MMID1-FLG       =   "OK"
-                       MOVE    "install+enable"   TO  WRK-COMMAND
+                       IF      SPA-MW              NOT =   SPA-PANDA
+                           MOVE    "enable"            TO  WRK-COMMAND
+                       ELSE
+                           MOVE    "install+enable"    TO  WRK-COMMAND
+                       END-IF
                        PERFORM 4010-SHELL-SYORI-SEC
                    ELSE
                        MOVE    1           TO  SPA-GMN-CUR
@@ -391,7 +395,11 @@
       *        アンインストール
                WHEN    "0102"
                    IF      SPA-MMID1-FLG       =   "OK"
-                       MOVE    "uninstall" TO  WRK-COMMAND
+                       IF      SPA-MW              NOT =   SPA-PANDA
+                           MOVE    "disable"           TO  WRK-COMMAND
+                       ELSE
+                           MOVE    "uninstall"         TO  WRK-COMMAND
+                       END-IF
                        PERFORM 4010-SHELL-SYORI-SEC
                    ELSE
                        MOVE    1           TO  SPA-GMN-CUR
@@ -496,7 +504,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M97"               TO  SPA-SAKIPG
+           IF      SPA-MW          NOT =   SPA-PANDA
+               MOVE    "M00"               TO  SPA-SAKIPG
+           ELSE
+               MOVE    "M97"               TO  SPA-SAKIPG
+           END-IF
            MOVE    "M80"               TO  SPA-MOTOPG
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
@@ -777,10 +789,12 @@
                    MOVE    PLUGIN-DATA     TO  SPA-NAI-TLINK (IDY)
                    IF      SPA-NAI-TLINK (IDY) =   "FALSE"
                        MOVE    "-"             TO  SPA-GMN-TLINK (IDY)
-                       IF      SPA-GMN-TVERSION (IDY)
-                                               NOT =  "-"
-                           MOVE    "ERROR"         TO
-                                               SPA-GMN-TLINK (IDY)
+                       IF      SPA-MW                  =   SPA-PANDA
+                           IF      SPA-GMN-TVERSION (IDY)
+                                                   NOT =  "-"
+                               MOVE    "ERROR"         TO
+                                                   SPA-GMN-TLINK (IDY)
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    "○"            TO  SPA-GMN-TLINK (IDY)
@@ -1236,12 +1250,16 @@
            IF      SPA-ERRCD           =   SPACE
                EVALUATE    SPA-NAI-LINK
                    WHEN    1
-                       IF     (SPA-NAI-VERSION     NOT =   SPACE)  AND
-                              (SPA-NAI-VERSION     =
-                                                   SPA-NAI-VERSION2)
-                           MOVE    "0111"              TO  SPA-MMID1CD
-                       ELSE
+                       IF      SPA-MW              NOT =   SPA-PANDA
                            MOVE    "0101"              TO  SPA-MMID1CD
+                       ELSE
+                           IF     (SPA-NAI-VERSION     NOT =   SPACE)
+                             AND  (SPA-NAI-VERSION     =
+                                                       SPA-NAI-VERSION2)
+                               MOVE    "0111"          TO  SPA-MMID1CD
+                           ELSE
+                               MOVE    "0101"          TO  SPA-MMID1CD
+                           END-IF
                        END-IF
                    WHEN    2
                        MOVE    "0102"              TO  SPA-MMID1CD
@@ -1283,6 +1301,7 @@
                WHEN    "upgrade"
                WHEN    "upgrade2"
                    MOVE    SPA-NAI-VERSION2    TO  WRK-VERSION
+               WHEN    "disable"
                WHEN    "uninstall"
                    MOVE    SPA-NAI-VERSION     TO  WRK-VERSION
                WHEN    OTHER

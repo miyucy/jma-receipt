@@ -60,6 +60,29 @@ module JMA::Plugin
         #FileUtils.move(tmpstoredir,storedir)
         FileUtils.cp_r(tmpstoredir,@root)
 
+        link = File.join(storedir,"meta","link")
+        raise "link file not found:#{link}" unless File.exist?(link)
+        dotlinked = File.join(storedir,".linked")
+        #--# if !force && File.exist?(dotlinked) 
+        if File.exist?(dotlinked) 
+          raise "#{name}-#{version} already linked"
+        end
+        list = YAML.load(File.read(link))
+        linked = []
+        begin
+          list.each{|l|
+              from = File.join(storedir,l[0])
+              to = File.expand_path(File.join(@linkprefix,l[1]))
+              FileUtils.symlink(from,to,{:force=>true})
+              to = File.join(to,File.basename(from)) if File.directory?(to)
+              linked << to
+          }
+        rescue Exception => ex
+          linked.each{|f| FileUtils.rm_f(f) }
+          raise ex
+        end
+        FileUtils.touch(dotlinked)
+
         postinst = File.join(storedir,"meta","postinst")
         if File.exist?(postinst)
           @log.debug("exec #{postinst} #{action}")
@@ -89,6 +112,25 @@ module JMA::Plugin
           postrm.close
           FileUtils.chmod(0755,postrm.path)
         end
+
+        link = File.join(storedir,"meta","link")
+        raise "link file not found:#{link}" unless File.exist?(link)
+        dotlinked = File.join(storedir,".linked")
+        raise "#{name}-#{version} not linked" unless File.exist?(dotlinked)
+        list = YAML.load(File.read(link))
+        list.each{|l|
+          begin
+            to = File.expand_path(File.join(@linkprefix,l[1]))
+            to = File.join(to,File.basename(l[0])) if File.ftype(to) == "directory"
+            unless to.index(@linkprefix) == 0
+              raise "invalid link #{l[0]} to #{l[1]}, over linkprefix violation"
+            end
+            FileUtils.rm_f(to)
+          rescue Exception => ex
+            next
+          end
+        }
+        FileUtils.rm_f(dotlinked)
 
         if File.exist?(prerm)
           @log.debug("exec #{prerm} #{action}")
@@ -120,37 +162,16 @@ module JMA::Plugin
       begin
         storedir = File.join(@root,"#{name}-#{version}") 
         raise "package #{name}-#{version} is not installed" unless File.exist?(storedir)
-        link = File.join(storedir,"meta","link")
-        raise "link file not found:#{link}" unless File.exist?(link)
-        dotlinked = File.join(storedir,".linked")
-        if !force && File.exist?(dotlinked) 
-          raise "#{name}-#{version} already linked"
-        end
-        list = YAML.load(File.read(link))
         prelink = File.join(storedir,"meta","prelink")
         if File.exist?(prelink)
           @log.debug("exec #{prelink} #{action}")
           JMA::Plugin::Util::exec_script(prelink,name,version,action)
         end
-        linked = []
-        begin
-          list.each{|l|
-              from = File.join(storedir,l[0])
-              to = File.expand_path(File.join(@linkprefix,l[1]))
-              FileUtils.symlink(from,to,{:force=>true})
-              to = File.join(to,File.basename(from)) if File.directory?(to)
-              linked << to
-          }
-          postlink = File.join(storedir,"meta","postlink")
-          if File.exist?(postlink)
-            @log.debug("exec #{postlink} #{action}")
-            JMA::Plugin::Util::exec_script(postlink,name,version,action) 
-          end
-        rescue Exception => ex
-          linked.each{|f| FileUtils.rm_f(f) }
-          raise ex
+        postlink = File.join(storedir,"meta","postlink")
+        if File.exist?(postlink)
+          @log.debug("exec #{postlink} #{action}")
+          JMA::Plugin::Util::exec_script(postlink,name,version,action) 
         end
-        FileUtils.touch(dotlinked)
       rescue Exception => ex
         @log.debug("link failed:#{ex}")
         raise ex
@@ -163,29 +184,11 @@ module JMA::Plugin
       begin
         storedir = File.join(@root,"#{name}-#{version}") 
         raise "package #{name}-#{version} is not installed" unless File.exist?(storedir)
-        link = File.join(storedir,"meta","link")
-        raise "link file not found:#{link}" unless File.exist?(link)
-        dotlinked = File.join(storedir,".linked")
-        raise "#{name}-#{version} not linked" unless File.exist?(dotlinked)
-        list = YAML.load(File.read(link))
         preunlink = File.join(storedir,"meta","preunlink")
         if File.exist?(preunlink)
           @log.debug("exec #{preunlink} #{action}")
           JMA::Plugin::Util::exec_script(preunlink,name,version,action)
         end
-        list.each{|l|
-          begin
-            to = File.expand_path(File.join(@linkprefix,l[1]))
-            to = File.join(to,File.basename(l[0])) if File.ftype(to) == "directory"
-            unless to.index(@linkprefix) == 0
-              raise "invalid link #{l[0]} to #{l[1]}, over linkprefix violation"
-            end
-            FileUtils.rm_f(to)
-          rescue Exception => ex
-            next
-          end
-        }
-        FileUtils.rm_f(dotlinked)
         postunlink = File.join(storedir,"meta","postunlink")
         if File.exist?(postunlink)
           @log.debug("exec #{postunlink} #{action}")
