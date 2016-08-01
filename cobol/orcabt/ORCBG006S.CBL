@@ -1265,6 +1265,7 @@
            MOVE    WRK-SRYCD       TO  TOKEI-SRYCD
            MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
            MOVE    TNS-TEN         TO  TOKEI-TEN
+           MOVE    TNS-YUKOEDYMD   TO  TOKEI-ENDYMD
            PERFORM 900-TOKEI-READ-SEC
       *
            IF      FLG-TOKEI       =   1
@@ -1288,7 +1289,6 @@
                                        *   WRK-KAISU
                COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
                                        +   WRK-GSURYO
-               MOVE    TNS-YUKOEDYMD   TO  TOKEI-ENDYMD
                IF    ( TOKEI-ENDYMD    <   WRK-PARA-ENDYMD )
                    MOVE    "*"         TO  TOKEI-KOME
                    MOVE    1               TO  FLG-KOME
@@ -1332,6 +1332,7 @@
            MOVE    SS009-BRMNUM-DAY(IDX-D)(1:2)
                                    TO  TOKEI-SRYKA
            MOVE    TNS-TEN         TO  TOKEI-TEN
+           MOVE    TNS-YUKOEDYMD   TO  TOKEI-ENDYMD
            PERFORM 900-TOKEI-READ-SEC
       *
            IF      FLG-TOKEI       =   1
@@ -1355,7 +1356,6 @@
                                        *   ACCT-DAY (1 IDX-D)
                COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
                                        +   WRK-GSURYO
-               MOVE    TNS-YUKOEDYMD   TO  TOKEI-ENDYMD
                IF    ( TOKEI-ENDYMD    <   WRK-PARA-ENDYMD )
                    MOVE    "*"         TO  TOKEI-KOME
                    MOVE    1               TO  FLG-KOME
