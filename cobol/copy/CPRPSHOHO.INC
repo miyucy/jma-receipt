@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * 擔堛昗弨儗僙僾僩僜僼僩乮JMA standard receipt software乯
+      * 泣板筛洁レセプトソフト∈JMA standard receipt software∷
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -24,25 +24,21 @@
               05  RPSHOHO-REPORT-ID            PIC X(30).
               05  RPSHOHO-CUSTOM-ID            PIC X(30).
               05  RPSHOHO-PRINTER              PIC X(20).
-      *       1:慜夞張曽丄嬻敀丗崱夞張曽丄2:摢彂偺傒丄3:堾撪暘
-      *       4:拞搑廔椆帪乮堾奜乯丄5:拞搑廔椆帪乮堾撪乯
-      *       A:張曽撪梕曄峏丄B:慜夞張曽乮堾奜乯
-      *       C:慜夞張曽乮堾撪乯丄D:慜夞張曽乮慖戰乯
+      *       1:涟搀借数、鄂球¨海搀借数、2:片今のみ、3:薄柒尸
+      *       4:面庞姜位箕∈薄嘲∷、5:面庞姜位箕∈薄柒∷
+      *       A:借数柒推恃构、B:涟搀借数∈薄嘲∷
+      *       C:涟搀借数∈薄柒∷、D:涟搀借数∈联买∷
               05  RPSHOHO-KBN                  PIC X(1).
-      *       岎晅擔
+      *       壳闻泣
+              05  RPSHOHO-SRYYMD               PIC X(10).
+      *       蛤烧泣
               05  RPSHOHO-KOFYMD               PIC X(10).
-      *       1:曐尟堛椕婡娭傊媈媊徠夛偟偨忋偱挷嵻
-      *       2:曐尟堛椕婡娭傊忣曬採嫙
-              05  RPSHOHO-ZANSIJI              PIC X(1).
-      *       恌椕壢乮擔儗僙乯
+      *       壳闻彩∈泣レセ∷
               05  RPSHOHO-SRYKA                PIC X(2).
               05  RPSHOHO-SRYKANAME            PIC X(40).
-      *       恌椕壢乮儗僙揹乯
-              05  RPSHOHO-RECESRYKA            PIC X(2).
-      *       1:杻栻傪婰嵹偟偨張曽偣傫
-              05  RPSHOHO-MAYAKU               PIC X(1).
-      *       1:旛峫偵曐尟堛柤偺婰嵹偑昁梫
-              05  RPSHOHO-KOUHATUFUKA-IN       PIC X(1).
+      *       ペ〖ジ试礁(1:试礁する∷
+              05  RPSHOHO-PAGE                 PIC X(1).
+      *
               05  RPSHOHO-PTINF.
                 07  RPSHOHO-PTNUM              PIC X(20).
                 07  RPSHOHO-NAME               PIC X(50).
@@ -56,11 +52,13 @@
               05  RPSHOHO-HKNCOMBI-AREA.
                 07  RPSHOHO-HKNCOMBI           PIC X(4).
                 07  RPSHOHO-HKNNUM             PIC X(3).
-      *             曐尟偺庬椶柤徧
+      *             瘦副の硷梧叹疚
                 07  RPSHOHO-HKNNAME            PIC X(20).
                 07  RPSHOHO-HOKEN-AGE          PIC X(3).
                 07  RPSHOHO-HOKEN-RATE         PIC X(3).
-      *         1:崅楊幰堦斒丄2:崅楊幰俈妱丄3:俇嵨枹枮
+      *         砷么充圭惰尸
+                07  RPSHOHO-HOKEN-RATEKBN      PIC X(1).
+      *         1:光勿荚办忍、2:光勿荚７充、3:６盒踏塔
                 07  RPSHOHO-BIKOU-FTN          PIC X(1).
                 07  RPSHOHO-HOKEN-G.
                   09  RPSHOHO-HKNJANUM         PIC X(8).
@@ -73,10 +71,8 @@
                 07  RPSHOHO-ROSAI-AREA.
                   09  RPSHOHO-RSI-HKNKBN       PIC X(1).
                   09  RPSHOHO-RSI-KOFUNUM      PIC X(14).
-                  09  RPSHOHO-RSI-NENKINNUM    PIC X(9).
                   09  RPSHOHO-RSI-RYOSTYMD     PIC X(10).
                   09  RPSHOHO-RSI-RYOEDYMD     PIC X(10).
-                  09  RPSHOHO-RSI-SAIGAIKBN    PIC X(1).
                   09  RPSHOHO-RSI-SHOBYOYMD    PIC X(10).
                 07  RPSHOHO-KOHI-AREA          OCCURS  4.
                   09  RPSHOHO-KOH-HKNNUM        PIC X(3).
@@ -92,7 +88,7 @@
                   09  RPSHOHO-HOSP-NAME         PIC X(120)
                                                 OCCURS   3.
                 07  RPSHOHO-HOSP-POST           PIC X(7).
-      *         廧強
+      *         交疥
                 07  RPSHOHO-HOSP-ADRS-G.
                   09  RPSHOHO-HOSP-ADRS         PIC X(200)
                                                 OCCURS   3.
@@ -102,22 +98,31 @@
                 07  RPSHOHO-DR-NAME             PIC X(50).
                 07  RPSHOHO-DR-KANANAME         PIC X(50).
                 07  RPSHOHO-DR-MAYAKULICENSE    PIC X(15).
+      *
+      *       1:瘦副板闻怠簇へ悼盗救柴した惧で拇恨
+      *       2:瘦副板闻怠簇へ攫鼠捏丁
+              05  RPSHOHO-ZANSIJI              PIC X(1).
+      *       1:算挑を淡很した借数せん
+              05  RPSHOHO-MAYAKU               PIC X(1).
+      *       1:恃构稍材瘦副板叹の淡很が涩妥
+              05  RPSHOHO-KOUHATUFUKA-IN       PIC X(1).
               05  RPSHOHO-ZAI-AREA              OCCURS  50 TIMES.
                 07  RPSHOHO-SRYKBN              PIC X(2).
                 07  RPSHOHO-ZAIKAISU            PIC X(3).
-                07  RPSHOHO-NAIHENKBN           PIC X(1).
-                07  RPSHOHO-ZAITANINAME         PIC X(12).
+      *         泣尸、搀尸
+                07  RPSHOHO-ZAITANINAME         PIC X(04).
                 07  RPSHOHO-MEDICATION          OCCURS  50 TIMES.
-      *           栻嵻柤
-                  09  RPSHOHO-YKZNAME           PIC X(80).
-      *           悢検(ZZZZ9.99999) 堦斒柤張曽偱姺嶼抣偺愝掕偑偁傞応崌姺嶼屻偺悢検
+      *           挑恨叹
+                  09  RPSHOHO-YKZNAME           PIC X(210).
+      *           眶翁(ZZZZ9.99999) 办忍叹借数で垂换猛の肋年がある眷圭垂换稿の眶翁
                   09  RPSHOHO-SURYO             PIC X(12).
-      *           堦斒柤張曽偱姺嶼抣偺愝掕偑偁傞応崌姺嶼屻偺扨埵
+      *           办忍叹借数で垂换猛の肋年がある眷圭垂换稿の帽疤
                   09  RPSHOHO-TANINAME          PIC X(12).
                   09  RPSHOHO-SRYCD             PIC X(9).
-      *           1:堦斒柤婰嵹
+      *           1:办忍叹淡很
                   09  RPSHOHO-KISAIKBN          PIC X(1).
                   09  RPSHOHO-YAKKAKJNCD        PIC X(13).
-      *           1:曄峏晄壜
+      *           1:恃构稍材
                   09  RPSHOHO-FUKA              PIC X(1).
-              05  RPSHOHO-MEMO    PIC X(100)    OCCURS  20 TIMES.
+              05  RPSHOHO-MEMO2   PIC X(40)     OCCURS  4  TIMES.
+              05  RPSHOHO-MEMO    PIC X(100)    OCCURS  50 TIMES.
