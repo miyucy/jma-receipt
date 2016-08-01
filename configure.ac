@@ -185,6 +185,9 @@ do
     fdw_command=$d/bin/fdw
     dbsync_command=$d/bin/dbsync
     monupload_command=$d/bin/monupload
+    monbatch_command=$d/bin/monbatch
+    moninfo_command=$d/bin/moninfo
+    monsql_command=$d/bin/monsql
     break
   fi
 done
@@ -196,6 +199,9 @@ if test x$dbstub_command != x; then
   FDW=$fdw_command
   DBSYNC=$dbsync_command
   MONUPLOAD=$monupload_command
+  MONBATCH=$monbatch_command
+  MONINFO=$moninfo_command
+  MONSQL=$monsql_command
 else
   AC_MSG_RESULT(no)
   AC_MSG_ERROR(MONTSUQI(panda) not found.)
@@ -206,6 +212,9 @@ AC_SUBST(COPYGEN)
 AC_SUBST(FDW)
 AC_SUBST(DBSYNC)
 AC_SUBST(MONUPLOAD)
+AC_SUBST(MONBATCH)
+AC_SUBST(MONINFO)
+AC_SUBST(MONSQL)
 dnl Checks for libraries.
 
 dnl Checks for header files.
