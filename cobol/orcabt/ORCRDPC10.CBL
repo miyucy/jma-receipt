@@ -129,6 +129,8 @@
       *
       *              NACL-小豆沢  16/07/04  平成２８年度対応
       *                           16/07/07  入院料の包括対象か判定
+      *              NACL-小豆沢  16/08/01  医療区分、ＡＤＬ点数コメントの
+      *                                     記録対応（平成２８年１０月診療分から）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -336,6 +338,7 @@
            03  II                      PIC 9(01).
            03  IJ                      PIC 9(02).
            03  IDX-HOUKATU             PIC 9(02).
+           03  IDX-COM                 PIC 9(03).
       *
        01  KEY-AREA                          VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -4876,16 +4879,31 @@
            MOVE    "E"                 TO  WRK-FEDT-REC-FLG
       *退院年月日、入院年月日のセット
            PERFORM 200799-ZAI-HENSYU-0-SEC
+      *
+      *AZU-ADD START 2016.8.1
+      *Ｅファイルは医療区分、ＡＤＬ点数コメントを読み飛ばし
+           PERFORM    VARYING   IDX-COM   FROM  1  BY  1
+             UNTIL    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDX-COM) (1:1)
+                                   NOT =  "8"
+                 CONTINUE
+           END-PERFORM
+      *AZU-ADD END   2016.8.1
+      *
       *診療コード、名称、解釈番号編集のセット
-           MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)
+      **   MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)
+      **                               TO  WRK-FEDT-SRYCD
+           MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDX-COM)
                                        TO  WRK-FEDT-SRYCD
            INITIALIZE                      TNS-TENSU-REC
-           MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)
+      **   MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)
+      **                               TO  TNS-SRYCD
+           MOVE    LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDX-COM)
                                        TO  TNS-SRYCD
            PERFORM 900-TENSU-READ-SEC
            MOVE    TNS-NAME            TO  WRK-FEDT-NAME
            MOVE    2                   TO  WRK-FEDT-KBNNUM-FLG
-           IF      LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+      **   IF      LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+           IF      LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDX-COM)
                                        =   "97"
                MOVE    SPACE           TO  WRK-KBNNUM-EDIT
                MOVE    3               TO  WRK-FEDT-KBNNUM-FLG
@@ -4898,14 +4916,18 @@
            MOVE    LNK-DPCNYUIN-HOSPNUM   TO  RECE900-HOSPNUM
            MOVE    LNK-DPCNYUIN-SANTEIYM  TO  RECE900-SRYYM
            MOVE    LNK-DPCNYUIN-PTID      TO  RECE900-PTID
-           MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+      **   MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+      **                                  TO  RECE900-SRYKBN
+           MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDX-COM)
                                           TO  RECE900-SRYKBN
            PERFORM   900-RECE900-READ-SEC
            IF      FLG-RECE900         =   1
                MOVE    LNK-DPCNYUIN-HOSPNUM   TO  RECE900-HOSPNUM
                MOVE    LNK-DPCNYUIN-SANTEIYM  TO  RECE900-SRYYM
                MOVE    LNK-DPCNYUIN-PTID      TO  RECE900-PTID
-               MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+      **       MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDXZ)
+      **                                  TO  RECE900-SRYKBN
+               MOVE    LNK-DPCNYUIN-SRYSKB (IDZ1 IDZ2 IDX-COM)
                                           TO  RECE900-SRYKBN
                MOVE    WRK-RENNUM  TO  RECE900-RENNUM
                WRITE      RECE900-REC
@@ -5025,6 +5047,13 @@
                MOVE    SPACE           TO  WRK-KBNNUM-EDIT
                MOVE    3               TO  WRK-FEDT-KBNNUM-FLG
            END-IF
+      *AZU-ADD START 2016.8.1
+      *医療区分、ＡＤＬ点数コメントは解釈番号をセットしない
+           IF      LNK-DPCNYUIN-SRYCD (IDZ1 IDZ2 IDXZ)(1:1)  =  "8"
+               MOVE    SPACE           TO  WRK-KBNNUM-EDIT
+               MOVE    3               TO  WRK-FEDT-KBNNUM-FLG
+           END-IF
+      *AZU-ADD START 2016.8.1
       *退院年月日から順序番号まで
            PERFORM 200799-ZAI-HENSYU-1-SEC
       *行為明細番号から診療行為名称まで
