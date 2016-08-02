@@ -135,6 +135,9 @@
       *  04.08.02    NACL-門脇    16/02/10  地方公費の保険組合せ作成修正
       *                                     （同一保険番号が重複する
       *                                       保険組合せは作成しない）
+      *  04.08.03    NACL-門脇    16/08/02  災害該当分のレセプト作成対応
+      *                                     （非減免対象分と減免対象分の診療が
+      *                                     混在する場合）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -605,8 +608,11 @@
                        "956" OR "957" OR "958" OR "959" OR
                        "976" OR "977" OR "978" OR "979"       )
                OR     (PTKOH-KOHNUM(1:2)   =   "96"           )
-                   IF   (PTKOH-KOHNUM    = "950" OR "951")
-                   AND  (PTKOH-SAKJOKBN  =  SPACE        )
+                   IF  ((PTKOH-KOHNUM     = "950" OR "951") AND
+                        (PTKOH-SAKJOKBN   =  SPACE        ))
+                   OR  ((PTKOH-KOHNUM     = "959"         ) AND
+                        (PTKOH-SAKJOKBN   =  SPACE        ) AND
+                        (PTKOH-TEKSTYMD  >= "20160901"    ))
                      MOVE    1             TO  FLG-NYUSYO
                      ADD     1             TO  IDY3
                      MOVE  PTKOH-TEKSTYMD  TO  WRK-NYUSYO-TEKSTYMD(IDY3)
