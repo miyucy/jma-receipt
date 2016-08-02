@@ -1384,37 +1384,6 @@
       *
                MOVE     ZERO                TO  WRK-MEISAISU
       *
-      *        °åÎÅ¶èÊ¬¡¢£Á£Ä£ÌÅÀ¿ô¥³¥á¥ó¥È¡ÊÊ¿À®£²£¸Ç¯£±£°·î¿ÇÎÅÊ¬°Ê¹ß¡Ë
-               IF     LNK-DPCNYUIN-SANTEIYM       >=  "201610"
-                 IF     LNK-RYOCOM-NYUINKBN(IDX1)    =   "1"
-                   PERFORM    VARYING  IDX-COM  FROM  1  BY  1
-                     UNTIL   (IDX-COM    >   30)   OR
-                             (LNK-RYOCOM-IRYO-SRYCD(IDX1 IDX-COM) =
-                                                             SPACE)
-                       ADD    1             TO  WRK-MEISAISU
-                       MOVE     LNK-RYOCOM-IRYO-SRYCD(IDX1 IDX-COM)
-                                            TO  WRK-SO-SRYCD
-                                                (IDX1 WRK-MEISAISU)
-                   END-PERFORM
-                   ADD      1               TO  WRK-MEISAISU
-                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 1)
-                                            TO  WRK-SO-SRYCD
-                                                (IDX1 WRK-MEISAISU)
-                   ADD      1               TO  WRK-MEISAISU
-                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 2)
-                                            TO  WRK-SO-SRYCD
-                                                (IDX1 WRK-MEISAISU)
-                   ADD      1               TO  WRK-MEISAISU
-                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 3)
-                                            TO  WRK-SO-SRYCD
-                                                (IDX1 WRK-MEISAISU)
-                   ADD      1               TO  WRK-MEISAISU
-                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 4)
-                                            TO  WRK-SO-SRYCD
-                                                (IDX1 WRK-MEISAISU)
-                 END-IF
-               END-IF
-      *
       *        Æþ±¡´ðËÜÎÁ
                IF         WRK-NYUINKHN(IDX1)  NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
@@ -1675,6 +1644,38 @@
                            INITIALIZE   WRK-NYUIN-SORT-TBL(IDX1)
                    END-EVALUATE
                END-IF
+      *
+      *        °åÎÅ¶èÊ¬¡¢£Á£Ä£ÌÅÀ¿ô¥³¥á¥ó¥È¡ÊÊ¿À®£²£¸Ç¯£±£°·î¿ÇÎÅÊ¬°Ê¹ß¡Ë
+               IF     LNK-DPCNYUIN-SANTEIYM       >=  "201610"
+                 IF     LNK-RYOCOM-NYUINKBN(IDX1)    =   "1"
+                   PERFORM    VARYING  IDX-COM  FROM  1  BY  1
+                     UNTIL   (IDX-COM    >   30)   OR
+                             (LNK-RYOCOM-IRYO-SRYCD(IDX1 IDX-COM) =
+                                                             SPACE)
+                       ADD    1             TO  WRK-MEISAISU
+                       MOVE     LNK-RYOCOM-IRYO-SRYCD(IDX1 IDX-COM)
+                                            TO  WRK-SO-SRYCD
+                                                (IDX1 WRK-MEISAISU)
+                   END-PERFORM
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 1)
+                                            TO  WRK-SO-SRYCD
+                                                (IDX1 WRK-MEISAISU)
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 2)
+                                            TO  WRK-SO-SRYCD
+                                                (IDX1 WRK-MEISAISU)
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 3)
+                                            TO  WRK-SO-SRYCD
+                                                (IDX1 WRK-MEISAISU)
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE     LNK-RYOCOM-ADL-SRYCD-H28(IDX1 4)
+                                            TO  WRK-SO-SRYCD
+                                                (IDX1 WRK-MEISAISU)
+                 END-IF
+               END-IF
+      *
            END-PERFORM
       *
       *    ºÆ¹½ÃÛ¤·¤¿Æþ±¡²ñ·×¾ðÊó¤«¤éÅÀ¿ô¤Î»»Äê
