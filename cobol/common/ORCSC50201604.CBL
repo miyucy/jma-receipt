@@ -47,7 +47,8 @@
       * 04.07.00     NACL-¬ø°π«º  14/03/XX  £»£≤£∂«Ø£¥∑Ó≤˛¿µƒ…≤√
       * 04.07.00     NACL-¬ø°π«º  15/03/XX  £»£≤£∑«Ø£¥∑Ó≤˛¿µƒ…≤√
       * 04.08.00     NACL-¬ø°π«º  15/03/XX  £»£≤£∏«Ø£¥∑Ó≤˛¿µƒ…≤√
-      * 04.08.00     NACL-¬ø°π«º  16/07/XX  œ´∫“ªÕªË≤√ªª∂Ë ¨¬–±˛¬æ
+      * 04.08.00     NACL-¬ø°π«º  16/09/XX  œ´∫“ªÕªË≤√ªª∂Ë ¨¬–±˛
+      *                                     √ºøÙΩËÕ˝¬–±˛
       *****************************************************************
       *
       *
@@ -412,7 +413,7 @@
                        MOVE    IDX-Z           TO  IDX-ZS
                        MOVE    IDX-Z           TO  IDX-ZS2
                    END-IF
-      *
+      *H28.9
       *            ƒÃ¬ß%≤√ªª¬–æ›≥∞¿ﬂƒÍ° Õ¢∑Ï°¶ºÍΩ—∞ÂŒ≈¥Ô≤√ªª°À
                    IF      (WRK-COM-CDKBN-KBNNUM(IDX-Z)  >=  "920")
                      AND   (WRK-COM-TSUSOKUAGE (IDX-Z) =   ZERO )
@@ -747,22 +748,27 @@
                    ADD     1                       TO  WRK-SCNT
       *        œ´∫“Õ—°°∂Ë ¨»÷πÊ
                    MOVE    SPACE                   TO  WRK-SRYCD
-      *            ªÕªË≤√ªª∂Ë ¨§Œ»ΩƒÍ
-                   IF      WRK-COM-SISIKSN (IDX1)  NOT =  ZERO
-                       MOVE    1               TO  FLG-ROUSAI
-                   END-IF
+      *H28.9
+      *     H28/10/1§´§ÈªÕªË≤√ªª∂Ë ¨§Úª»Õ—
+                   IF      SPA-SRYYMD              >=  "20161001"
+      *                ªÕªË≤√ªª∂Ë ¨§Œ»ΩƒÍ
+                       IF      WRK-COM-SISIKSN (IDX1)  NOT =  ZERO
+                           MOVE    1               TO  FLG-ROUSAI
+                       END-IF
+                   ELSE
+      *     H28/9/30§ﬁ§«§œ°°∂Ë ¨»÷πÊ»ΩƒÍ
       *
-      *            EVALUATE    WRK-COM-CDKBN-KBNNUM (IDX1)
-      *            WHEN    "000"  THRU  "002"
+                   EVALUATE    WRK-COM-CDKBN-KBNNUM (IDX1)
+                   WHEN    "000"  THRU  "002"
       *            ∂⁄π¸≥ ∑œ°¶ªÕªË°¶¬Œ¥¥ºÍΩ—
-      *            WHEN    "023"  THRU  "144"
+                   WHEN    "023"  THRU  "144"
       *            ø¿∑–∑œ°¶∆¨≥∏π¸° °©°©§≥§Ï§œ§…§¶§´§œ§Ô§´§È§ §§°À
-      *            WHEN    "145"  THRU  "198"
+                   WHEN    "145"  THRU  "198"
       *∞ ≤º§œ°©°©°©WHEN    "001"
-      *                MOVE    1               TO  FLG-ROUSAI
-      *            END-EVALUATE
+                       MOVE    1               TO  FLG-ROUSAI
+                   END-EVALUATE
       *
-      *            END-IF
+                   END-IF
       *
                    IF      FLG-ROUSAI          =   1
       *                ªÕªË≤√ªª§¢§Í
@@ -824,10 +830,12 @@
                PERFORM 1002-KASAN-SET-SEC
                IF      FLG-ADD             =   1
                    MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
-      *H28.7
-                   MOVE    IDX-SYU         TO  IDX-SYU2
-      *            ºÍµªŒ¡§ŒªÕªË≤√ªª∂Ë ¨•¡•ß•√•Ø
-                   PERFORM 100131-RISIKASAN-CHK-SEC
+      *H28.9
+                   IF      SPA-SRYYMD              >=  "20161001"
+                       MOVE    IDX-SYU         TO  IDX-SYU2
+      *                ºÍµªŒ¡§ŒªÕªË≤√ªª∂Ë ¨•¡•ß•√•Ø
+                       PERFORM 100131-RISIKASAN-CHK-SEC
+                   END-IF
       *
                END-IF
            END-IF
@@ -837,7 +845,7 @@
        10013-RISIKASAN-SET-EXT.
            EXIT.
       *
-      *H28.7
+      *H28.9
       *****************************************************************
       *    ºÍµªŒ¡§ŒªÕªË≤√ªª∂Ë ¨•¡•ß•√•ØΩËÕ˝
       *****************************************************************
@@ -1609,9 +1617,11 @@
            END-IF
       *
       *!!!
+      *H28.9
       *    œ´∫“≤√ªª§Œ»ΩƒÍ
            IF     (IDX-SYU2            >   ZERO )
               AND (SPA-ERRCD           =   SPACE )
+              AND (SPA-SRYYMD              >=  "20161001"  )
               AND (WRK-COM-INPUTCD (IDX-Z) =   "101500010"
                                            OR  "101500020")
       *        ºÍµªŒ¡§ŒªÕªË≤√ªª∂Ë ¨•¡•ß•√•Ø
