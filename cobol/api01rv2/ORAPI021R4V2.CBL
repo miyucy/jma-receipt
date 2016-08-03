@@ -788,7 +788,7 @@
       *    相互作用チェック期間の投薬編集
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSCKNKCHKAREA
-           MOVE    "1"                 TO  ORCSCKNKCHK-KBN 
+           MOVE    "4"                 TO  ORCSCKNKCHK-KBN 
            CALL    "ORCSCKNKCHK"       USING
                                        ORCSCKNKCHKAREA
                                        SPA-AREA
@@ -986,9 +986,11 @@
                                                         (IDX IDX-K2)
       *            方向性
                    IF      FLG-KINKI-CHK       =   2
+      *                "←"
                        MOVE    "after"         TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
                    ELSE
+      *                "→"
                        MOVE    "before"        TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
                    END-IF
@@ -1032,6 +1034,7 @@
                        MOVE    "1"             TO  CHKRES-ADMINISTE-KBN
                                                         (IDX IDX-K2)
       *                方向性
+      *                "→"
                        MOVE    "before"        TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
       *
