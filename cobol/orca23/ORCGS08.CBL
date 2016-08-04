@@ -2021,15 +2021,17 @@
                PERFORM UNTIL ( FLG-BUNBEN  NOT =   ZERO )
                          OR  ( SPA-ERRCD   NOT =   SPACE )
       *
-                   IF    ( SPA-HOSPNUM =   BUNBEN-HOSPNUM )
-                    AND  ( SPA-PTID    =   BUNBEN-PTID )
-                    AND  ( SPA-S08-NYUGAIKBN
-                                       =   BUNBEN-NYUGAIKBN )
-                    AND  ( SPA-S08-RRKNUM
-                                       =   BUNBEN-RRKNUM )
-                       CONTINUE
-                   ELSE
-                       MOVE    "0013"  TO  SPA-ERRCD
+                   IF    ( BUNBEN-BUNBENKBN    =   "1" OR "2" )
+                       IF    ( SPA-HOSPNUM =   BUNBEN-HOSPNUM )
+                        AND  ( SPA-PTID    =   BUNBEN-PTID )
+                        AND  ( SPA-S08-NYUGAIKBN
+                                           =   BUNBEN-NYUGAIKBN )
+                        AND  ( SPA-S08-RRKNUM
+                                           =   BUNBEN-RRKNUM )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0013"  TO  SPA-ERRCD
+                       END-IF
                    END-IF
       *
                    PERFORM 900-BUNBEN-KEY5-FET-SEC
