@@ -17506,6 +17506,8 @@
            MOVE    NRRK-RRKNUM     TO  WRK-BUNBENRRKNUM
            PERFORM 900-BUNBEN-KEY3-SEL-SEC
            IF    ( FLG-BUNBEN      =   ZERO )
+            AND  ( SPA-GMN-I01-BUNBEN-CD
+                                   =   "1" OR "2" )
                MOVE    "000000"    TO  BUNBEN-SKYYM
                INITIALIZE              BUNBEN-TEISYUTUBIKBN
                                        BUNBEN-SKYKBN
