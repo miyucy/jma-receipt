@@ -10,6 +10,7 @@ xml_claim_receivev2req	{
 # MmlHeader[1]/masterId[1]/mmlCm:Id[1]
 # LF04-PTID1
 		Patient_ID		varchar(20);
+# MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:information[1]@claim:orderTime
 # LF04-ORDER-TIME オーダー発行日時 
     		Order_Date		varchar(19);
 # MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:information[1]@claim:performTime
@@ -20,10 +21,10 @@ xml_claim_receivev2req	{
 		Department_Code		varchar(20);
 		Diagnosis_Information  {
 			HealthInsurance_Information  {
-# MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:information[1]/claim:appoint[1]/claim:memo[1]
+# MmlBody[1]/MmlModuleItem[X]/content[1]/mmlHi:HealthInsuranceModule[1]/mmlHi:insuranceClass[1]
 # LF04-HKN-HKNSBT
 				InsuranceProvider_WholeName	varchar(20);
-# MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:information[1]/mmlHi:insuranceClass[1]@mmlHi:ClassCode
+# MmlBody[1]/MmlModuleItem[X]/content[1]/mmlHi:HealthInsuranceModule[1]/mmlHi:insuranceClass[1]@mmlHi:ClassCode
 # LF04-HKN-HKNSBTCODE
 				InsuranceProvider_Class		varchar(02);
 # MmlBody[1]/MmlModuleItem[X]/content[1]/mmlHi:HealthInsuranceModule[1]/mmlHi:insuranceNumber[1]
@@ -106,10 +107,10 @@ xml_claim_receivev2req	{
 			Medical_Class			varchar(03);
 # MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:bundle[1]@claim:classCodeId
 # LF04-SRYCDTBL 診療行為区分コードのテーブル名 (claim:classCodeId) (Claim002)
-			Medical_Class_Codeld		varchar(08);
+			Medical_Class_Codeid		varchar(08);
 # MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:bundle[1]/claim:administration[1]@claim:adminCode
 # LF04-ADMINCODE 用法コード (claim:adminCode)
-			Medical_Admin_Codeld		varchar(09);
+			Medical_Admin_Codeid		varchar(09);
 # MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:bundle[1]/claim:admMemo[1]
 # LF04-ADMMEMO 用法コメント
 			Medical_Admin_Memo		varchar(100);
