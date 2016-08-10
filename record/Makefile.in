@@ -506,7 +506,6 @@ RECORD_files = \
 	medicalmodv34.rec \
 	UDR.rec \
 	receiptinf1v2.rec \
-	W93.rec \
 	claimfrontv2.rec \
 	claimaccountv2.rec \
 	claimreceivev2.rec \
