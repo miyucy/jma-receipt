@@ -2535,10 +2535,10 @@
            END-IF               
            MOVE    SPACE               TO WRK-RECE61-RECEKA
       *
-      *    ºÒ³²³ºÅö¤ÎÍ­Ìµ¡ÊÊ¿À®£²£¸Ç¯£¹·î°Ê¹ß¡Ë
+      *    ºÒ³²³ºÅö¤ÎÍ­Ìµ¡ÊÊ¿À®£²£¸Ç¯£±£°·î°Ê¹ß¡Ë
            IF    ( SYS-200501-DISASTER-RECEIPT
                                            =   "1"     )
-           AND   ( WRK-RECE61-SRYYM        >=   201609 )
+           AND   ( WRK-RECE61-SRYYM        >=   201610 )
                IF    ( WRK-RECE61-RECEIPT-KBN (5:1)
                                                =   SPACE )
                AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
@@ -4688,10 +4688,10 @@
       *
            INITIALIZE                      TABLE-PTKOHINF-AREA
       *
-      *    £¹£µ£¹¡ÊºÒ³²³ºÅö¡Ë
+      *    £¹£µ£¹¡ÊºÒ³²³ºÅö¡Ë¡ÊÊ¿À®£²£¸Ç¯£±£°·î°Ê¹ß¡Ë
            IF    ( SYS-200501-DISASTER-RECEIPT
                                            =   "1"     )
-           AND   ( WRK-SYUKA-SRYYM         >=   201609 )
+           AND   ( WRK-SYUKA-SRYYM         >=   201610 )
                INITIALIZE                      PTKOHINF-REC
                MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    WRK-SYUKA-PTID      TO  PTKOH-PTID

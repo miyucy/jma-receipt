@@ -2043,10 +2043,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                END-PERFORM
            END-IF
       *
-      *    ºÒ³²³ºÅö¤ÎÍ­Ìµ¡ÊÊ¿À®£²£¸Ç¯£¹·î°Ê¹ß¡Ë
+      *    ºÒ³²³ºÅö¤ÎÍ­Ìµ¡ÊÊ¿À®£²£¸Ç¯£±£°·î°Ê¹ß¡Ë
            IF    ( SYS-200501-DISASTER-RECEIPT
                                            =   "1"     )
-           AND   ( WRK-RECE01-SRYYM        >=   201609 )
+           AND   ( WRK-RECE01-SRYYM        >=   201610 )
                IF    ( WRK-RECE01-RECEIPT-KBN (5:1)
                                                =   SPACE )
                AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
@@ -4177,10 +4177,10 @@ grpsys                                     SPA-AREA
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    £¹£µ£¹¡ÊºÒ³²³ºÅö¡Ë
+      *    £¹£µ£¹¡ÊºÒ³²³ºÅö¡Ë¡ÊÊ¿À®£²£¸Ç¯£±£°·î°Ê¹ß¡Ë
            IF    ( SYS-200501-DISASTER-RECEIPT
                                            =   "1"     )
-           AND   ( WRK-SYUKA-SRYYM         >=   201609 )
+           AND   ( WRK-SYUKA-SRYYM         >=   201610 )
                INITIALIZE                      PTKOHINF-REC
                MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    WRK-SYUKA-PTID      TO  PTKOH-PTID
