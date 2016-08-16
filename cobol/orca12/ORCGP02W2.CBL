@@ -612,7 +612,7 @@
                         (PTKOH-SAKJOKBN   =  SPACE        ))
                    OR  ((PTKOH-KOHNUM     = "959"         ) AND
                         (PTKOH-SAKJOKBN   =  SPACE        ) AND
-                        (PTKOH-TEKSTYMD  >= "20160901"    ))
+                        (PTKOH-TEKSTYMD  >= "20161001"    ))
                      MOVE    1             TO  FLG-NYUSYO
                      ADD     1             TO  IDY3
                      MOVE  PTKOH-TEKSTYMD  TO  WRK-NYUSYO-TEKSTYMD(IDY3)
