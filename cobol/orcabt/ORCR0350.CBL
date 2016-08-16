@@ -412,6 +412,8 @@
       *  04.08.10    NACL-藤原    16/05/26  病床機能報告データ対応
       *  04.08.11    NACL-藤原    16/06/20  診療行為データ用テーブル
       *                                    （加算項目扱いの基本項目）を増やす
+      *  04.08.12    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
+      *                                     レセプトの分割対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -756,6 +758,7 @@
            03  WRK-SJ-CHK              PIC 9(01).
       *
            03  WRK-CHUKSNCD            PIC X(04).
+           03  WRK-DISASTER            PIC 9(01).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -2953,18 +2956,22 @@
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    記録条件仕様年月情報
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    請求情報（連係基盤用の時は入院日、以外は作成日時）
+      *    請求情報（連係基盤用の時は入院日、以外は作成日時、災害区分）
            IF      WRK-PARA-PRTKBN =   "9"
                MOVE    RECE62-TAIINYMD TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMD          TO  WRK-DATA
                MOVE    7                   TO  WRK-NAGASA
            ELSE
+               MOVE    RECE62-RJNGAIKOHFTN (1)
+                                           TO  WRK-DISASTER
                STRING  WRK-PARA-CREYMD     DELIMITED  BY SIZE
-                       WRK-PARA-CREHMS     DELIMITED  BY SIZE
+                       WRK-PARA-CREHMS (1:6)
+                                           DELIMITED  BY SIZE
+                       WRK-DISASTER        DELIMITED  BY SIZE
                                            INTO  WRK-DATA
                END-STRING
-               MOVE    14                  TO  WRK-NAGASA
+               MOVE    15                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    診療科名１

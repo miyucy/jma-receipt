@@ -230,6 +230,13 @@ W12 {
           count int;
             item varchar(30)[2];
         };
+        DISASTER_RECEIPT_COMBO {
+          DISASTER_RECEIPT {
+            textdata varchar(20);
+          };
+          count int;
+            item varchar(20)[5];
+        };
       };
       fi30 {
         SYAPRTNM {

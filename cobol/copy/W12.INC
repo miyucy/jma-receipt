@@ -191,6 +191,12 @@
                     06  W12-COMPRESS-COUNT   PIC S9(9)   BINARY.
                     06  W12-COMPRESSLST
                             PIC X(30)   OCCURS  2 TIMES.
+                  05  W12-DISASTER-RECEIPT-COMBO.
+                    06  W12-DISASTER-RECEIPT.
+                      07  W12-VALUE   PIC X(20).
+                    06  W12-DISASTER-RECEIPT-COUNT   PIC S9(9)   BINARY.
+                    06  W12-DISASTER-RECEIPTLST
+                            PIC X(20)   OCCURS  5 TIMES.
                 04  W12-FI30.
                   05  W12-SYAPRTNM.
                     06  W12-VALUE   PIC X(16).

@@ -439,6 +439,8 @@
       *  04.08.06    NACL-藤原    16/04/01  平成２８年４月改正対応
       *  04.08.07    NACL-藤原    16/06/20  診療行為データ用テーブル
       *                                    （加算項目扱いの基本項目）を増やす
+      *  04.08.08    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
+      *                                     レセプトの分割対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -770,6 +772,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-SJ-CHK              PIC 9(01).
       *
            03  WRK-CHUKSNCD            PIC X(04).
+           03  WRK-DISASTER            PIC 9(01).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -2621,12 +2624,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    記録条件仕様年月情報
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    請求情報（作成日時）
+      *    請求情報（作成日時、災害区分）
+           MOVE    RECE02-RJNGAIKOHFTN (1)
+                                       TO  WRK-DISASTER
            STRING  WRK-PARA-CREYMD     DELIMITED  BY SIZE
-                   WRK-PARA-CREHMS     DELIMITED  BY SIZE
+                   WRK-PARA-CREHMS (1:6)
+                                       DELIMITED  BY SIZE
+                   WRK-DISASTER        DELIMITED  BY SIZE
                                        INTO  WRK-DATA
            END-STRING
-           MOVE    14                  TO  WRK-NAGASA
+           MOVE    15                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    診療科名１
            IF      RECE02-SYUKA    NOT =   SPACE
