@@ -1565,10 +1565,10 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
                END-PERFORM
            END-IF
       *
-      *    ºÒ³²³ºÅö¤ÎÍ­Ìµ¡ÊÊ¿À®£²£¸Ç¯£¹·î°Ê¹ß¡Ë
+      *    ºÒ³²³ºÅö¤ÎÍ­Ìµ¡ÊÊ¿À®£²£¸Ç¯£±£°·î°Ê¹ß¡Ë
            IF    ( SYS-200501-DISASTER-RECEIPT
                                            =   "1"     )
-           AND   ( WRK-RECE61-SRYYM        >=   201609 )
+           AND   ( WRK-RECE61-SRYYM        >=   201610 )
                IF    ( WRK-RECE61-RECEIPT-KBN (5:1)
                                                =   SPACE )
                AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
@@ -2861,7 +2861,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
       *    £¹£µ£¹¡ÊºÒ³²³ºÅö¡Ë
            IF    ( SYS-200501-DISASTER-RECEIPT
                                            =   "1"     )
-           AND   ( LNK-SYUBETU-SRYYM       >=   201609 )
+           AND   ( LNK-SYUBETU-SRYYM       >=   201610 )
                INITIALIZE                      PTKOHINF-REC
                MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    LNK-SYUBETU-PTID    TO  PTKOH-PTID
