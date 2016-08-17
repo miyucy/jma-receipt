@@ -617,7 +617,10 @@
                      ADD     1             TO  IDY3
                      MOVE  PTKOH-TEKSTYMD  TO  WRK-NYUSYO-TEKSTYMD(IDY3)
                      MOVE  PTKOH-TEKEDYMD  TO  WRK-NYUSYO-TEKEDYMD(IDY3)
-                     MOVE  PTKOH-JKYSNUM   TO  WRK-NYUSYO-JKYSNUM(IDY3)
+                     IF   (PTKOH-KOHNUM     = "950" OR "951")
+                     AND  (PTKOH-SAKJOKBN   =  SPACE        )
+                       MOVE  PTKOH-JKYSNUM TO  WRK-NYUSYO-JKYSNUM(IDY3)
+                     END-IF
                    END-IF
                ELSE
                    ADD     1               TO  CNT-KOH
