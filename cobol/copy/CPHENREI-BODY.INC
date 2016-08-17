@@ -61,7 +61,7 @@
                05  HENREI-B-KO-OCC OCCURS  4.
                    07  HENREI-B-FTNNUM PIC X(8).
                    07  HENREI-B-JKYNUM PIC X(7).
-           03  HENREI-B-DISASTER   PIC X(1).
+           03  HENREI-B-DISASTER   PIC X(2).
       *
            03  HENREI-B-SEARCH-NO  PIC X(30).
            03  HENREI-B-CHECK-NO   PIC X(100).
@@ -92,7 +92,7 @@
                    07  HENREI-B-S-RECEIPT-KBN  PIC X(10).
       *
                    07  HENREI-B-S-KIGO         PIC X(40).
-                   07  HENREI-B-S-DISASTER     PIC X(01).
+                   07  HENREI-B-S-DISASTER     PIC X(02).
       *Ã¼Ëö£É£Ä
            03  HENREI-B-TERMID     PIC X(64).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

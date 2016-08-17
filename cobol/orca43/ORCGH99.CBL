@@ -538,11 +538,10 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                        MOVE    "老健"          TO
                                            SPA-H99GMN-TRECEIPT-KBN (IDX)
                END-EVALUATE
-               EVALUATE    RECE10-RECEIPT-KBN (5:1)
-                   WHEN    "1"
-                       MOVE    "災"            TO
-                                             SPA-H99GMN-TDISASTER (IDX)
-               END-EVALUATE
+               IF      RECE10-ETC-YKZFTN (1)   >   ZERO
+                   MOVE    "災"            TO
+                                           SPA-H99GMN-TDISASTER (IDX)
+               END-IF
       *
       *       公費単独で生保又は中国残留邦人等、自立支援のとき負担者番号、
       *       受給者番号をセット

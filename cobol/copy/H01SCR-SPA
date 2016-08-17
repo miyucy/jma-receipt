@@ -203,7 +203,7 @@
                    07  SPA-RECE10-FTNJANUM     PIC  X(08).
                    07  SPA-RECE10-JKYSNUM      PIC  X(07).
                    07  SPA-RECE10-SKYYM        PIC  X(06).
-                   07  SPA-RECE10-DISASTER     PIC 9(01).
+                   07  SPA-RECE10-DISASTER     PIC 9(02).
       *
                05  SPA-SYS-1001-HOSPSBT1       PIC 9(01).
       *
@@ -356,7 +356,7 @@
                                                        PIC X(10).
                            11  SPA-NAI-H03-B-TRECEIPT-KBN
                                                        PIC X(4).
-                           11  SPA-NAI-H03-B-TDISASTER PIC X(1).
+                           11  SPA-NAI-H03-B-TDISASTER PIC X(2).
                            11  SPA-NAI-H03-B-TERRFLG   PIC 9(1).
       *
                    07  SPA-NAI-H03-KOUMOKU.

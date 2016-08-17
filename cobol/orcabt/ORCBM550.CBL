@@ -199,7 +199,7 @@
            03  WRK-SEIKYU-DATA-R.
                05  WRK-SEIKYU-CREYMD   PIC X(08).
                05  WRK-SEIKYU-CREHMS   PIC X(06).
-               05  WRK-SEIKYU-DISASTER PIC X(01).
+               05  WRK-SEIKYU-DISASTER PIC X(02).
       *
        01  CNT-RESEDEN.
            03  PATIENT-CNT             PIC 9(05).
@@ -2062,7 +2062,7 @@
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-SEIKYU-DATA-R
                            IF      WRK-SEIKYU-DISASTER =   SPACE
-                               MOVE    "0"     TO  WRK-HENREI-B-DISASTER
+                               MOVE    "00"    TO  WRK-HENREI-B-DISASTER
                            ELSE
                                MOVE    WRK-SEIKYU-DISASTER
                                                TO  WRK-HENREI-B-DISASTER
@@ -2258,9 +2258,9 @@
                            MOVE    "3"             TO
                                        WRK-HENREI-K-TEISYUTUSAKI
       *
-                           MOVE    PATIENT-CNT         TO
+                           MOVE    PATIENT-CNT     TO
                                                WRK-HENREI-B-RECEIPT-NO
-                           MOVE    "0"                 TO
+                           MOVE    "00"            TO
                                                WRK-HENREI-B-DISASTER
       *
                            MOVE    0               TO  

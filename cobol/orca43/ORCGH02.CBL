@@ -427,7 +427,7 @@
                                                                   (IDY)
                END-EVALUATE
                EVALUATE    TBL-HENREI-B-DISASTER (IDZZ)
-                   WHEN    "0"
+                   WHEN    "00"
                        CONTINUE
                    WHEN    OTHER
                        MOVE    "บา"            TO  SPA-H02GMN-TDISASTER
@@ -542,7 +542,7 @@
                    END-EVALUATE
       *
                    EVALUATE    TBL-HENREI-B-S-DISASTER (IDZZ IDX)
-                       WHEN    "0"
+                       WHEN    "00"
                        WHEN    SPACE
                            MOVE    SPACE           TO
                                        SPA-H02GMN-TS-DISASTER (IDY)

@@ -29,7 +29,7 @@ tbl_henrei_body	{
 	JKYNUM_3		varchar(7);
 	FTNNUM_4		varchar(8);
 	JKYNUM_4		varchar(7);
-	DISASTER		char(1);
+	DISASTER		char(2);
 #---->  検索番号(再請求で使用する番号 HRレコードよりセット)
 	SEARCH_NO		varchar(30);
 #---->  確か西川さんが管理情報は振替しないとゆってたから
@@ -63,7 +63,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_1		char(8);
 	S_RECEIPT_KBN_1		char(10);
 	S_KIGO_1		varchar(40);
-	S_DISASTER_1		char(1);
+	S_DISASTER_1		char(2);
 	S_SYORIYMD_2		char(8);
 	S_MAKE_FLG_2		number(1,0);
 	S_HENREIYM_2		char(6);
@@ -78,7 +78,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_2		char(8);
 	S_RECEIPT_KBN_2		char(10);
 	S_KIGO_2		varchar(40);
-	S_DISASTER_2		char(1);
+	S_DISASTER_2		char(2);
 	S_SYORIYMD_3		char(8);
 	S_MAKE_FLG_3		number(1,0);
 	S_HENREIYM_3		char(6);
@@ -93,7 +93,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_3		char(8);
 	S_RECEIPT_KBN_3		char(10);
 	S_KIGO_3		varchar(40);
-	S_DISASTER_3		char(1);
+	S_DISASTER_3		char(2);
 	S_SYORIYMD_4		char(8);
 	S_MAKE_FLG_4		number(1,0);
 	S_HENREIYM_4		char(6);
@@ -108,7 +108,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_4		char(8);
 	S_RECEIPT_KBN_4		char(10);
 	S_KIGO_4		varchar(40);
-	S_DISASTER_4		char(1);
+	S_DISASTER_4		char(2);
 	S_SYORIYMD_5		char(8);
 	S_MAKE_FLG_5		number(1,0);
 	S_HENREIYM_5		char(6);
@@ -123,7 +123,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_5		char(8);
 	S_RECEIPT_KBN_5		char(10);
 	S_KIGO_5		varchar(40);
-	S_DISASTER_5		char(1);
+	S_DISASTER_5		char(2);
 	S_SYORIYMD_6		char(8);
 	S_MAKE_FLG_6		number(1,0);
 	S_HENREIYM_6		char(6);
@@ -138,7 +138,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_6		char(8);
 	S_RECEIPT_KBN_6		char(10);
 	S_KIGO_6		varchar(40);
-	S_DISASTER_6		char(1);
+	S_DISASTER_6		char(2);
 	S_SYORIYMD_7		char(8);
 	S_MAKE_FLG_7		number(1,0);
 	S_HENREIYM_7		char(6);
@@ -153,7 +153,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_7		char(8);
 	S_RECEIPT_KBN_7		char(10);
 	S_KIGO_7		varchar(40);
-	S_DISASTER_7		char(1);
+	S_DISASTER_7		char(2);
 	S_SYORIYMD_8		char(8);
 	S_MAKE_FLG_8		number(1,0);
 	S_HENREIYM_8		char(6);
@@ -168,7 +168,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_8		char(8);
 	S_RECEIPT_KBN_8		char(10);
 	S_KIGO_8		varchar(40);
-	S_DISASTER_8		char(1);
+	S_DISASTER_8		char(2);
 	S_SYORIYMD_9		char(8);
 	S_MAKE_FLG_9		number(1,0);
 	S_HENREIYM_9		char(6);
@@ -183,7 +183,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_9		char(8);
 	S_RECEIPT_KBN_9		char(10);
 	S_KIGO_9		varchar(40);
-	S_DISASTER_9		char(1);
+	S_DISASTER_9		char(2);
 	S_SYORIYMD_10		char(8);
 	S_MAKE_FLG_10		number(1,0);
 	S_HENREIYM_10		char(6);
@@ -198,7 +198,7 @@ tbl_henrei_body	{
 	S_TEKSTYMD_10		char(8);
 	S_RECEIPT_KBN_10	char(10);
 	S_KIGO_10		varchar(40);
-	S_DISASTER_10		char(1);
+	S_DISASTER_10		char(2);
 #-----> ここまで
 	TERMID			varchar(64);
 	OPID			varchar(16);

@@ -772,7 +772,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-SJ-CHK              PIC 9(01).
       *
            03  WRK-CHUKSNCD            PIC X(04).
-           03  WRK-DISASTER            PIC 9(01).
+           03  WRK-DISASTER            PIC 9(02).
       *
       *    1∑ÂÃ‹:¿∏ › 2∑ÂÃ‹:∑Î≥À 3∑ÂÃ‹:¿∫ø¿
            03  WRK-3SYU-KBN.
@@ -2633,7 +2633,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                    WRK-DISASTER        DELIMITED  BY SIZE
                                        INTO  WRK-DATA
            END-STRING
-           MOVE    15                  TO  WRK-NAGASA
+           MOVE    16                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ø«Œ≈≤ Ãæ£±
            IF      RECE02-SYUKA    NOT =   SPACE

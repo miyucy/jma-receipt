@@ -760,7 +760,7 @@
                                                                   (IDX)
                END-EVALUATE
                EVALUATE    SPA-NAI-H03-B-TDISASTER (IDX)
-                   WHEN    "0"
+                   WHEN    "00"
                        CONTINUE
                    WHEN    OTHER
                        MOVE    "บา"            TO  H03-BODY-TDISASTER
