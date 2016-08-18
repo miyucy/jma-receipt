@@ -49,6 +49,7 @@
       * 04.08.00     NACL-多々納  15/03/XX  Ｈ２８年４月改正追加
       * 04.08.00     NACL-多々納  16/09/XX  労災四肢加算区分対応
       *                                     端数処理対応
+      *                                     K142（脊椎固定術等）きざみ値対応
       *****************************************************************
       *
       *
@@ -198,6 +199,12 @@
            03  WRK-KEI-TEN             PIC 9(08)V9(04).
            03  WRK-KEI-TEN1            PIC 9(08)V9(04).
            03  WRK-KEI-TEN2            PIC 9(08).
+      *
+      *H28.9
+           03  WRK-K142-CNT            PIC 9(03).
+           03  WRK-K142-CNT2           PIC 9(03).
+           03  WRK-K142-SURYO          PIC 9(05).
+           03  IDX-HZN                 PIC 9(04).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -439,6 +446,15 @@
                                                    OR  CONS-JIKOYK3
                                                    OR  CONS-JIKOYK4)
                        PERFORM 100114-JIKOYUKETU-COM-SEC
+                   END-IF
+      *H28.9
+      *            脊椎固定術、脊弓切開術等のチェック
+                   IF     (WRK-COM-DATAKBN         (IDX-Z) =   "1"  )
+                     AND  (WRK-COM-CDKBN-KBN       (IDX-Z) =   "K"  )
+                     AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "142")
+                     AND  (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z) =   "00" )
+                     AND  (WRK-COM-KZMCOMPSIKIBETU (IDX-Z) =   "1"  )
+                       PERFORM 100115-K142-CHKSYORI-SEC
                    END-IF
       *
       *        薬剤
@@ -950,6 +966,36 @@
            END-IF
            .
        100114-JIKOYUKETU-COM-EXT.
+           EXIT.
+      *H28.9
+      *****************************************************************
+      *    脊椎固定術、脊弓切開術等のチェック処理
+      *****************************************************************
+       100115-K142-CHKSYORI-SEC        SECTION.
+      *
+           ADD     1                   TO  WRK-K142-CNT
+      *
+           IF      WRK-K142-CNT        =   1
+               MOVE    IDX-Z               TO  IDX-HZN
+           END-IF
+      *
+           IF      WRK-K142-CNT        >   1
+      *        複数存在する時、剤の1件目が加算でないこと
+               IF      WRK-COM-KOKUJISKBKBN2(IDX-HZN)  =   1
+                   CONTINUE
+               ELSE
+                   IF     (WRK-COM-KZMFLG (IDX-HZN)    =   SPACE)
+                   AND    (LNK-ORCSC-KEI-IDX           =   ZERO )
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                             (IDX-HZN)
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-HZN)
+                       MOVE    "K511"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+           .
+       100115-K142-CHKSYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1806,6 +1852,15 @@
                                            OR  CONS-JIKOYK4)
                PERFORM 1002122-JIKOYUKETU-KEI-SEC
            END-IF
+      *H28.9
+      *    脊椎固定術、脊弓切開術等の点数再計算
+           IF     (WRK-COM-DATAKBN         (IDX-Z) =   "1"  )
+             AND  (WRK-COM-CDKBN-KBN       (IDX-Z) =   "K"  )
+             AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "142")
+             AND  (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z) =   "00" )
+             AND  (WRK-COM-KZMCOMPSIKIBETU (IDX-Z) =   "1"  )
+               PERFORM 1002123-K142-SAIKEISAN-SEC
+           END-IF
       *
       *    労災の手技の時、
            IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
@@ -1938,6 +1993,121 @@
            .
        1002122-JIKOYUKETU-KEI-EXT.
            EXIT.
+      *
+      *H28.9
+      *****************************************************************
+      *    脊椎固定術、脊弓切開術等の点数再計算処理
+      *****************************************************************
+       1002123-K142-SAIKEISAN-SEC            SECTION.
+      *
+           IF      WRK-COM-KOKUJISKBKBN2(IDX-Z)  =   1
+      *    告示識別区分２＝１　手技料
+      *        数量計算
+               MOVE    1                   TO  WRK-K142-CNT
+               COMPUTE WRK-K142-SURYO      =   WRK-COM-SURYO (IDX-Z)
+                                           -   1
+               MOVE    IDX-Z               TO  IDX-HZN
+           ELSE
+      *        きざみ数量変更
+               IF     (WRK-K142-SURYO  +   WRK-COM-SURYO (IDX-Z))
+                                       >   WRK-COM-KZMJGN (IDX-Z)
+                   IF     (WRK-K142-SURYO  <   WRK-COM-KZMJGN (IDX-Z))
+                       COMPUTE WRK-SURYO   =   WRK-COM-KZMJGN (IDX-Z)
+                                           -   WRK-K142-SURYO
+                   ELSE
+                       MOVE    ZERO        TO  WRK-SURYO
+                   END-IF
+               ELSE
+                   MOVE    WRK-COM-SURYO (IDX-Z)   TO  WRK-SURYO
+               END-IF
+               PERFORM 10021231-KZM-KEISAN-SEC
+               ADD     WRK-COM-SURYO (IDX-Z)   TO  WRK-K142-SURYO
+           END-IF
+      *
+           .
+       1002123-K142-SAIKEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手技料の計算処理
+      *****************************************************************
+       10021231-KZM-KEISAN-SEC            SECTION.
+      *
+      *    きざみ値計算
+           MOVE    ZERO                    TO  WRK-KEI-TEN2
+      *    きざみ値判定
+           EVALUATE    TRUE
+      *            データ≦（下限値−きざみ値）
+               WHEN    WRK-SURYO       <=  (WRK-COM-KZMKGN(IDX-Z)
+                                        -   WRK-COM-KZM   (IDX-Z) )
+      *            IF      WRK-COM-KZMERR (IDX-Z)  =   2  OR  3
+      *                MOVE    "0021"          TO  SPA-ERRCD
+      *            END-IF
+                   IF      WRK-SURYO       =   1
+                       MOVE    WRK-COM-TEN (IDX-Z)     TO  WRK-KEI-TEN2
+                   END-IF
+      *
+      *            下限値＜データ≦上限値
+               WHEN     (WRK-COM-KZMKGN (IDX-Z)    <   WRK-SURYO )   AND
+                        (WRK-COM-KZMJGN (IDX-Z)    >=  WRK-SURYO )
+      *            点数計算式１
+                   COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
+                                           -   WRK-COM-KZMKGN (IDX-Z))
+                                           /   WRK-COM-KZM (IDX-Z)
+                                           +   0.999
+                   MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+                   COMPUTE WRK-KEI-TEN     =   WRK-COM-TEN (IDX-Z)
+                                           + ( WRK-KEI-TEN2
+                                           *   WRK-COM-KZMTEN (IDX-Z))
+                   COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
+      *
+      *            上限値＜データ
+               WHEN    WRK-COM-KZMJGN (IDX-Z)  <   WRK-SURYO
+                   IF      WRK-COM-KZMERR (IDX-Z)  =   0  OR  2
+      *            警告エラーとする
+                       MOVE    "K030"          TO  SPA-ERRCD
+      *            点数計算式１
+                       COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
+                                               -   WRK-COM-KZMKGN
+                                                               (IDX-Z))
+                                               /   WRK-COM-KZM (IDX-Z)
+                                               +   0.999
+                       MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+                       COMPUTE WRK-KEI-TEN     =   WRK-COM-TEN (IDX-Z)
+                                               + ( WRK-KEI-TEN2
+                                               *   WRK-COM-KZMTEN
+                                                               (IDX-Z))
+                       COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
+                   ELSE
+      *            点数計算式２
+                       COMPUTE WRK-KEI-TEN1    =  (WRK-COM-KZMJGN(IDX-Z)
+                                               -   WRK-COM-KZMKGN
+                                                                (IDX-Z))
+                                               /   WRK-COM-KZM  (IDX-Z)
+                                               +   0.999
+                       MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+                       COMPUTE WRK-KEI-TEN     =   WRK-COM-TEN (IDX-Z)
+                                               + ( WRK-KEI-TEN2
+                                               *   WRK-COM-KZMTEN
+                                                               (IDX-Z))
+                       COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN  +  0.5
+                   END-IF
+           END-EVALUATE
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-KEI-TEN2        >   ZERO
+                   MOVE    WRK-KEI-TEN2    TO  WRK-COM-KISOTEN  (IDX-Z)
+               ELSE
+                   IF      WRK-SURYO       =   ZERO
+                       MOVE    ZERO        TO  WRK-COM-KISOTEN  (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       10021231-KZM-KEISAN-EXT.
+           EXIT.
+      *H28.9
+      *
       *
       *****************************************************************
       *    手技料の計算処理

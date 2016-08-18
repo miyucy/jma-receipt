@@ -3168,6 +3168,14 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H28.9
+               WHEN    "K257"
+                   STRING  "警告！"
+                           "認知症地域包括診療の算定があります。"
+                           "投薬種類数が算定上限を超えています。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *==
       *
                WHEN    "1316"
@@ -3352,6 +3360,15 @@
                WHEN    "K806"
                    STRING  "警告！"
                            "労災加算は２倍のみです。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *H28.9
+               WHEN    "K511"
+                   STRING  "警告！"
+                           "多椎間又は多椎弓実施加算の"
+                           "下に手術の入力があります。"
+                           "数量まとめは行いません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
