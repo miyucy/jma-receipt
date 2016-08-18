@@ -414,6 +414,7 @@
       *                                    （加算項目扱いの基本項目）を増やす
       *  04.08.12    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
       *                                     レセプトの分割対応
+      *  04.08.13    NACL-門脇    16/08/18  法別５１の一部負担金の記録修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3698,14 +3699,14 @@
            MOVE    8                      TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（公費）
-           IF     RECE62-KOHFTNJANUM (IDY) (1:2)
-                                           =   "51"
-               IF      RECE62-KOHFTNJANUM (IDY) (5:3)
-                                               =   "602"
-                   MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
-                   MOVE    8                      TO  WRK-NAGASA
-               END-IF
-           ELSE
+      ***  IF     RECE62-KOHFTNJANUM (IDY) (1:2)
+      ***                                  =   "51"
+      ***      IF      RECE62-KOHFTNJANUM (IDY) (5:3)
+      ***                                      =   "602"
+      ***          MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
+      ***          MOVE    8                      TO  WRK-NAGASA
+      ***      END-IF
+      ***  ELSE
              IF  ((RECE62-PREFNUM     =   "45"      ) AND
                   (RECE62-KOHNUM(IDY) =   "190"     ) AND
                   (RECE62-SRYYM      <=  "200803"   ))
@@ -3719,7 +3720,7 @@
                    MOVE    8                      TO  WRK-NAGASA
                END-IF
              END-IF
-           END-IF    
+      ***  END-IF
       *
       *    県単用項目
            IF      FLG-RECE67          =   ZERO
