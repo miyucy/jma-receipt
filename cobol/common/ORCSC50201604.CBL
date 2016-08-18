@@ -2040,12 +2040,7 @@
       *            データ≦（下限値−きざみ値）
                WHEN    WRK-SURYO       <=  (WRK-COM-KZMKGN(IDX-Z)
                                         -   WRK-COM-KZM   (IDX-Z) )
-      *            IF      WRK-COM-KZMERR (IDX-Z)  =   2  OR  3
-      *                MOVE    "0021"          TO  SPA-ERRCD
-      *            END-IF
-                   IF      WRK-SURYO       =   1
-                       MOVE    WRK-COM-TEN (IDX-Z)     TO  WRK-KEI-TEN2
-                   END-IF
+                   CONTINUE
       *
       *            下限値＜データ≦上限値
                WHEN     (WRK-COM-KZMKGN (IDX-Z)    <   WRK-SURYO )   AND
@@ -2093,6 +2088,13 @@
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN  +  0.5
                    END-IF
            END-EVALUATE
+      *
+           IF      WRK-KEI-TEN2        =   ZERO
+               IF      WRK-SURYO           =   1
+                    MOVE    WRK-COM-TEN (IDX-Z)     TO  WRK-KEI-TEN2
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-KEI-TEN2        >   ZERO
                    MOVE    WRK-KEI-TEN2    TO  WRK-COM-KISOTEN  (IDX-Z)
