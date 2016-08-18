@@ -1,4 +1,4 @@
-prescription {
+rp_prescription {
 	context	int;
 	object	object;
 	mode	int;
@@ -8,12 +8,11 @@ prescription {
 		Custom_ID				varchar(30);
 		Printer					varchar(20);
 		Isuue_Class			varchar(01);
- 		Perform_Date		varchar(10);
+ 		Perform_Date			varchar(10);
 		IssueDate				varchar(10);
-		ExpiredDate			varchar(10);
 		Department_Code			varchar(02);
 		Department_Name			varchar(40);
-		EditPageNumber_Flg  varchar(01);
+		EditPageNumber_Flg 		varchar(01);
 		Patient	{
 			ID	 				    varchar(20);
 			Name 				    varchar(50);
