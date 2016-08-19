@@ -202,6 +202,13 @@
       *    時間外対応加算３
            03  TBL-CHISRYCD3       PIC X(09)   VALUE   "112016170".
       *
+      *H28.9
+      *持参薬予約コード
+           03  CONS-JSNYCD1        PIC X(09)    VALUE   "099209811".
+           03  CONS-JSNYCD2        PIC X(09)    VALUE   "099209812".
+           03  CONS-JSNYCD3        PIC X(09)    VALUE   "099209821".
+           03  CONS-JSNYCD4        PIC X(09)    VALUE   "099209822".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -2160,6 +2167,28 @@
                                                                   (IDX)
                            ELSE
                                MOVE    "2071"        TO  SPA-ERRCD
+                           END-IF
+      *H28.9 持参薬予約コード
+                       WHEN    CONS-JSNYCD1
+                       WHEN    CONS-JSNYCD2
+                       WHEN    CONS-JSNYCD3
+                       WHEN    CONS-JSNYCD4
+      *                    投薬の１件目とする
+                           IF     (IDX             >   ZERO )
+                             AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
+                                                   =   "."  )
+                             AND  (SPA-COM-SRYKBN(IDX - 1) =   "21"
+                                                           OR  "22"
+                                                           OR  "23"
+                                                           OR  "14" )
+                               MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                                     TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
+                                                   TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+                           ELSE
+                               MOVE    "0227"        TO  SPA-ERRCD
                            END-IF
       *H27.4
       *                後発医薬品への変更可（処方せん毎）

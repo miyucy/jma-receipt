@@ -3372,6 +3372,11 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0227"
+                   STRING  "持参薬予約コードは剤の最初に入力して下さい"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       **
                WHEN    "K910"
                    STRING  "警告！"
