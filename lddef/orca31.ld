@@ -48,6 +48,7 @@ db "xml2" {
  xml_birthdeliveryv2res;
  xml_hsacctmodv2req;
  xml_hsacctmodv2res;
+ rp_prescription;
 };
 
 #include "orcadb.inc"
