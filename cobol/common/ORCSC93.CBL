@@ -67,6 +67,7 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  15/03/XX  £È£²£·Ç¯£´·î²þÀµÂÐ±þÂ¾
       * 04.08.00     NACL-Â¿¡¹Ç¼  16/03/XX  £È£²£¸Ç¯£´·î²þÀµÂÐ±þÂ¾
+      * 04.08.00     NACL-Â¿¡¹Ç¼  16/08/XX  »ý»²ÌôÍ½Ìó¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
       *
@@ -114,6 +115,8 @@
            03  FLG-YAKUHYO         PIC 9(01).
       *    ¸ºÅÀÊ¬
            03  FLG-GENTEN          PIC 9(01).
+      *H28.9 »ý»²ÌôÍ½Ìó¥³¡¼¥É
+           03  FLG-JISANYAKU       PIC 9(01).
       *
        01  FLG-AREA2.
            03  FLG-KENSA-CHK       PIC 9(01).
@@ -450,6 +453,8 @@
            MOVE    ZERO                TO  FLG-HOUKATU
            MOVE    ZERO                TO  FLG-YAKUHYO
            MOVE    ZERO                TO  FLG-GENTEN
+      *H28.9 »ý»²ÌôÍ½Ìó¥³¡¼¥É
+           MOVE    ZERO                TO  FLG-JISANYAKU
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
@@ -462,6 +467,9 @@
                END-IF
                IF     (SPA-COM-YAKUHYO(IDX)    =   "1"  )
                    MOVE    1                   TO  FLG-YAKUHYO
+               END-IF
+               IF     (SPA-COM-JISANYAKU(IDX)   =   "1"  )
+                   MOVE    1                   TO  FLG-JISANYAKU
                END-IF
                IF     (SPA-COM-ZAIEND (IDX)    =   "1"   )
                    PERFORM VARYING     IDX-Z   FROM    IDX-S  BY  1
@@ -478,11 +486,23 @@
                        ELSE
                            MOVE    SPACE       TO  SPA-COM-YAKUHYO (IDX)
                        END-IF
+      *H28.9 »ý»²ÌôÍ½Ìó¥³¡¼¥É
+                       IF      FLG-JISANYAKU     =   1
+                           MOVE    "1"         TO  SPA-COM-JISANYAKU
+                                                              (IDX-Z)
+      *                    Êñ³ç°·¤¤
+                           MOVE    1           TO  SPA-COM-HOUKATU-ZAI
+                                                              (IDX-Z)
+                       ELSE
+                           MOVE    SPACE       TO  SPA-COM-JISANYAKU
+                                                              (IDX-Z)
+                       END-IF
                    END-PERFORM
                    MOVE    IDX-Z               TO  IDX-S
                    MOVE    ZERO                TO  FLG-HOUKATU
                    MOVE    ZERO                TO  FLG-YAKUHYO
                    MOVE    ZERO                TO  FLG-GENTEN
+                   MOVE    ZERO                TO  FLG-JISANYAKU
                END-IF
            END-PERFORM
            .
@@ -2187,8 +2207,17 @@
                                MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
                                                    TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
+      *                        »ý»²Ìô¶èÊ¬
+                               MOVE    "1"         TO  SPA-COM-JISANYAKU
+                                                              (IDX)
+                               MOVE    "1"         TO  SPA-COM-JISANYAKU
+                                                              (IDX - 1)
                            ELSE
                                MOVE    "0227"        TO  SPA-ERRCD
+                           END-IF
+      *                    Êñ³çÊÝ¸±¤Ï¥¨¥é¡¼
+                           IF      SPA-COM-HKNCOMBI (IDX)  =   "9999"
+                               MOVE    "0228"        TO  SPA-ERRCD
                            END-IF
       *H27.4
       *                ¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹²Ä¡Ê½èÊý¤»¤óËè¡Ë

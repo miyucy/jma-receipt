@@ -59,6 +59,7 @@
       * 04.07.00     NACL-多々納  14/02/13  労災金額％加算対応
       * 04.08.00     NACL-多々納  14/12/XX  平成２７年１月改正対応
       * 04.08.00     NACL-多々納  16/05/XX  一般名表示対応
+      *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5747,6 +5748,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      SPA-COM-GENTEN  (IDX)   =   "1"
                        MOVE    2                   TO  WRK-ZAIKBN
                    END-IF
+      *
+      *H28.9
+      *            持参薬
+                   IF      SPA-COM-JISANYAKU(IDX)  =   "1"
+                       MOVE    3                   TO  WRK-ZAIKBN
+                   END-IF
                END-IF
       *
       *        各附加情報
@@ -5786,6 +5793,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE   "1"                  TO  SPA-J04-JIHOKBN
            ELSE
                MOVE   SPACE                TO  SPA-J04-JIHOKBN
+           END-IF
+      *H28.9
+      *    持参薬は包括診療へ
+           IF      WRK-ZAIKBN          =   3
+               MOVE   "1"                  TO  SPA-J04-JIHOKBN
            END-IF
       *
       *    診療会計剤チェックサブ
@@ -6354,6 +6366,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COM-BUNGSU (IDX)
                                            TO  SRY-SRYKAISU(IDS)
            END-IF
+      *
       *    外用の個別回数を設定
            IF      SPA-COM-SRYKBN (IDX)    =   "23"
                MOVE    SPA-COM-KAISU2 (IDX) TO  SRY-SRYKAISU(IDS)
@@ -6434,6 +6447,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-COM-GENTEN  (IDX)   =   "1"
                    MOVE    2                   TO  WRK-ZAIKBN
                END-IF
+      *TEST
+      *H28.9
+      *        持参薬
+               IF      SPA-COM-JISANYAKU(IDX)  =   "1"
+                   MOVE    3                   TO  WRK-ZAIKBN
+               END-IF
+      *TEST
            END-IF
       *****IF      SPA-COM-KEIFLG (IDX)    =   "1" OR  "2"
       *        MOVE    SPA-COM-KEI  (IDX)      TO  SRY-JIHIMONEY

@@ -198,12 +198,14 @@
                ELSE
                    MOVE    LNK-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
                END-IF
+      *
+               MOVE    IDX                 TO  IDX-MAX
       *        ÌôÉ¾¤ÏÂÐ¾Ý³°
                IF      LNK-COM-YAKUHYO (IDX)   =   "1"
                    CONTINUE
                ELSE
       *
-               MOVE    IDX                 TO  IDX-MAX
+      *****    MOVE    IDX                 TO  IDX-MAX
                EVALUATE    WRK-MOJI
       *        ÌôºÞ
                WHEN    "6"
