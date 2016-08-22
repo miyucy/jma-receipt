@@ -1580,11 +1580,20 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
                                            <=  TBL-PTKOH-TEKEDYMD(IDXX))
                            IF      TBL-PTKOH-KOHNUM (IDXX)
                                                =   "959"
-                               MOVE    "1"         TO
+                               IF      WRK-RECE61-HKNNUM   =   SPACE
+                                   IF        TBL-PTKOH-FTNJANUM
+                                                        (IDXX) (1:1)
+                                                               =   "1"
+                                       MOVE    "1"         TO
                                            WRK-RECE61-RECEIPT-KBN (5:1)
-                           END-IF
-                           MOVE    TBL-PTKOHINF-MAX
+                                   END-IF
+                               ELSE
+                                   MOVE    "1"         TO
+                                           WRK-RECE61-RECEIPT-KBN (5:1)
+                               END-IF
+                               MOVE    TBL-PTKOHINF-MAX
                                                    TO  IDXX
+                           END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -2880,7 +2889,8 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                PERFORM     UNTIL   FLG-PTKOHINF    =   1
                            OR      TBL-PTKOHINF-MAX
                                                    >=  100
-                   IF      PTKOH-SAKJOKBN      =  SPACE
+                   IF    ( PTKOH-SAKJOKBN      =   SPACE      )
+                   AND   ( PTKOH-TEKSTYMD      >=  "20161001" )
                        ADD     1               TO  TBL-PTKOHINF-MAX
                        MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
                                                    (TBL-PTKOHINF-MAX)

@@ -2550,11 +2550,21 @@
                                            <=  TBL-PTKOH-TEKEDYMD(IDX1))
                            IF      TBL-PTKOH-KOHNUM (IDX1)
                                                =   "959"
-                               MOVE    "1" TO  WRK-RECE61-RECEIPT-KBN
+                               IF      WRK-RECE61-HKNNUM   =   SPACE
+                                   IF        TBL-PTKOH-FTNJANUM
+                                                       (IDX1) (1:1)
+                                                               =   "1"
+                                       MOVE    "1"         TO
+                                           WRK-RECE61-RECEIPT-KBN  (5:1)
+                                   END-IF
+                               ELSE
+                                   MOVE    "1"         TO
+                                               WRK-RECE61-RECEIPT-KBN
                                                                    (5:1)
+                               END-IF
+                               MOVE    TBL-PTKOHINF-MAX
+                                                   TO  IDX1
                            END-IF
-                           MOVE    TBL-PTKOHINF-MAX
-                                               TO  IDX1
                        END-IF
                    END-PERFORM
                END-IF
@@ -4710,7 +4720,8 @@
                PERFORM     UNTIL   FLG-PTKOHINF    =   1
                            OR      TBL-PTKOHINF-MAX
                                                    >=  100
-                   IF      PTKOH-SAKJOKBN      =  SPACE
+                   IF    ( PTKOH-SAKJOKBN      =   SPACE      )
+                   AND   ( PTKOH-TEKSTYMD      >=  "20161001" )
                        ADD     1               TO  TBL-PTKOHINF-MAX
                        MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
                                                    (TBL-PTKOHINF-MAX)
