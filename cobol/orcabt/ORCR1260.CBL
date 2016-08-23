@@ -73,6 +73,7 @@
       *  04.08.05    NACL-門脇    16/03/03  公害の療養担当手当は
       *                                     薬剤・器材点の取り扱いとする
       *  04.08.06    NACL-門脇    16/03/28  平成２８年４月改正対応
+      *  04.08.07    NACL-門脇    16/08/23  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3344,8 +3345,8 @@
                        MOVE   4                TO  RECE240-KNSJISKBN
                    END-IF
                END-IF
-               IF   (RECE240-SAFLG     NOT =   SPACE )
-               OR   (RECE240-ZAIKBN        =   1 OR 2)
+               IF   (RECE240-SAFLG   NOT =  SPACE)
+               OR   (RECE240-ZAIKBN  NOT =  ZERO )
                    MOVE    9               TO  RECE240-KNSJISKBN
                END-IF
            END-IF

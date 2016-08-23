@@ -135,6 +135,7 @@
       *  04.08.04    NACL-ÌçÏÆ    16/03/28  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.05    NACL-ÌçÏÆ    16/05/20  É¸½àÉéÃ´³Û·Ð²áÁ¼ÃÖ¡ÊÀº¿À¡ËÆþ±¡Ç¯·îÆü
       *                                     ¤Î¥³¥á¥ó¥ÈÂÐ±þ
+      *  04.08.06    NACL-ÌçÏÆ    16/08/23  »ý»²ÌôÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6418,8 +6419,32 @@ grpsys       PERFORM 900-DBSELECT-SEC
            ADD    1             TO  IDX-RECE85
            MOVE  "810000001"    TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
            MOVE   ZERO          TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
-           MOVE   6             TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-           MOVE  "¡ÚÊñ³ç¿ÇÎÅ¡Û" TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+      *
+           IF    RECE84-ZAIKBN  =  3
+             EVALUATE  RECE84-JISANYAKKBN
+               WHEN     "1"
+                 MOVE  22    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤ë¡¦¼«±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               WHEN     "2"
+                 MOVE  22    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤ë¡¦Â¾±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               WHEN     "3"
+                 MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤é¤Ê¤¤¡¦¼«±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               WHEN     "4"
+                 MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤é¤Ê¤¤¡¦Â¾±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+             END-EVALUATE
+           ELSE
+                 MOVE   6    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+                 MOVE "¡ÚÊñ³ç¿ÇÎÅ¡Û"
+                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+           END-IF
+      *
            MOVE  "1"            TO  WRK-RECE85XX-SIKFLG(IDX-RECE85 1)
       *
            PERFORM    200111-SRYACTINF-HENSYU-SEC

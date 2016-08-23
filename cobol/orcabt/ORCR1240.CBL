@@ -83,6 +83,7 @@
       *  04.08.03    NACL-ÌçÏÆ    14/07/23  £³£²Ê¸»ú°Ê¾å¤ÎÊ¸»úÎó½¤Àµ
       *                                     ¡Ê¥³¥ó¥Ñ¥¤¥ë»þ¤Î¥ï¡¼¥Ë¥ó¥°½¤Àµ¡Ë
       *  04.08.04    NACL-ÌçÏÆ    16/03/28  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.05    NACL-ÌçÏÆ    16/08/23  »ý»²ÌôÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5323,8 +5324,31 @@
            ADD    1             TO IDX-RECE230
            MOVE  "810000001"    TO WRK-RECE230XX-SRYCD(IDX-RECE230 1)
            MOVE   ZERO          TO WRK-RECE230XX-SRYSURYO(IDX-RECE230 1)
-           MOVE   6             TO WRK-RECE230XX-YUKOKETA(IDX-RECE230 1)
-           MOVE  "¡ÚÊñ³ç¿ÇÎÅ¡Û" TO WRK-RECE230XX-NAME(IDX-RECE230 1)
+      *
+           IF    RECE220-ZAIKBN  =  3
+             EVALUATE  RECE220-JISANYAKKBN
+               WHEN     "1"
+                 MOVE  22    TO  WRK-RECE230XX-YUKOKETA(IDX-RECE230 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤ë¡¦¼«±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE230XX-NAME(IDX-RECE230 1)
+               WHEN     "2"
+                 MOVE  22    TO  WRK-RECE230XX-YUKOKETA(IDX-RECE230 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤ë¡¦Â¾±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE230XX-NAME(IDX-RECE230 1)
+               WHEN     "3"
+                 MOVE  24    TO  WRK-RECE230XX-YUKOKETA(IDX-RECE230 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤é¤Ê¤¤¡¦¼«±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE230XX-NAME(IDX-RECE230 1)
+               WHEN     "4"
+                 MOVE  24    TO  WRK-RECE230XX-YUKOKETA(IDX-RECE230 1)
+                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤é¤Ê¤¤¡¦Â¾±¡½èÊýÊ¬¡Ë"
+                             TO  WRK-RECE230XX-NAME(IDX-RECE230 1)
+             END-EVALUATE
+           ELSE
+                 MOVE   6    TO  WRK-RECE230XX-YUKOKETA(IDX-RECE230 1)
+                 MOVE "¡ÚÊñ³ç¿ÇÎÅ¡Û"
+                             TO  WRK-RECE230XX-NAME(IDX-RECE230 1)
+           END-IF
       *
            PERFORM  200111-SRYACTINF-HENSYU-SEC
       *
