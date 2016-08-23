@@ -131,6 +131,9 @@
       *                           16/07/07  入院料の包括対象か判定
       *              NACL-小豆沢  16/08/01  医療区分、ＡＤＬ点数コメントの
       *                                     記録対応（平成２８年１０月診療分から）
+      *              NACL-小豆沢  16/08/18  再診の時間外加算対応
+      *                                     RECE641-NYUSAIFLG="1"が対象
+      *                                     （平成２８年４月診療分から）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2320,14 +2323,16 @@
                                          NOT =   RECE641-RECEIPT-KBN  )
                OR     ( RECE641-SRYKBN       >=  "90"                 )
       *
-      *        明細テーブル退避処理
-               PERFORM 20071-ZAI-TAIHI-SEC
-      *        摘要データ編集処理
-               IF      FLG-END           =   ZERO
-                   PERFORM 20074-ZAI-KOUI-SORT-SEC
-                   PERFORM 20072-ZAI-HENSYU-SEC
+               IF      RECE641-NYUSAIFLG  =   SPACE
+      *           明細テーブル退避処理
+                  PERFORM 20071-ZAI-TAIHI-SEC
+      *           摘要データ編集処理
+                  IF      FLG-END           =   ZERO
+                      PERFORM 20074-ZAI-KOUI-SORT-SEC
+                      PERFORM 20072-ZAI-HENSYU-SEC
       *
-                   PERFORM 990-RECE641-NEXT-SEC
+                      PERFORM 990-RECE641-NEXT-SEC
+                  END-IF
                END-IF
            END-PERFORM
       *
@@ -2377,7 +2382,8 @@
                                          NOT =   RECE641-RECEIPT-KBN  )
                OR     ( RECE641-SRYKBN       >=  "91"                 )
       *
-               IF       RECE641-SRYKBN   =   "90"
+               IF      (RECE641-SRYKBN   =   "90")   AND
+                       (RECE641-NYUSAIFLG  =  SPACE)
       *            明細テーブル退避処理
                    PERFORM 20071-ZAI-TAIHI-SEC
       *            摘要データ編集処理
@@ -2393,7 +2399,7 @@
                    MOVE   1     TO   FLG-END
                END-IF
            END-PERFORM
-      *   AZU-END START 2015.6.9
+      *   AZU-ADD END 2015.6.9
       *
       *    入院会計編集処理（入院料）
            PERFORM 20077-NYUIN-HENSYU-SEC
@@ -2448,7 +2454,8 @@
                         MOVE   1         TO   FLG-END
                END-IF
                IF      (FLG-END          =   0)   AND
-                       (RECE641-SRYKBN   =   "90")
+                       (RECE641-SRYKBN   =   "90") AND
+                       (RECE641-NYUSAIFLG =  SPACE)
       *            明細テーブル退避処理
                    PERFORM 20071-ZAI-TAIHI-SEC
       *            摘要データ編集処理
@@ -2465,11 +2472,71 @@
                   MOVE   1     TO   FLG-END
                END-IF
            END-PERFORM
+      *   AZU-END END 2015.6.9
+      *
+      *
+      *   AZU-ADD START 2016.8.18
+      *    摘要情報（再診の時間外加算等）
+           INITIALIZE                      RECE641-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE641-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE641-PTID
+           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE641-KOHID
+           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
+           MOVE    RECE62-RECEIPT-KBN  TO  RECE641-RECEIPT-KBN
+      *
+           START   RECE641-FILE
+               KEY IS    >=   RECE641-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE64
+               NOT INVALID
+                   PERFORM 990-RECE641-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-END              =   1                   )
+               OR     ( FLG-RECE64           =   1                   )
+               OR     ( RECE62-HOSPNUM   NOT =   RECE641-HOSPNUM      )
+               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
+               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
+               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
+               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
+               OR     ( RECE62-TEISYUTUSAKI
+                                         NOT =   RECE641-TEISYUTUSAKI )
+               OR     ( RECE62-RECESYUBETU
+                                         NOT =   RECE641-RECESYUBETU  )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE641-HKNJANUM     )
+               OR     ( RECE62-HOJOKBN-KEY
+                                         NOT =   RECE641-HOJOKBN      )
+               OR     ( RECE62-KOHID-KEY NOT =   RECE641-KOHID        )
+               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
+               OR     ( RECE62-RECEIPT-KBN
+                                         NOT =   RECE641-RECEIPT-KBN  )
+               OR     ( RECE641-SRYKBN       >=  "93"                 )
+      *
+               IF      (RECE641-SRYKBN     =   "90"  OR  "92")   AND
+                       (RECE641-NYUSAIFLG  =   "1")
+      *          明細テーブル退避処理
+                 PERFORM 20071-ZAI-TAIHI-SEC
+      *          摘要データ編集処理
+                 IF      FLG-END           =   ZERO
+                     PERFORM 20074-ZAI-KOUI-SORT-SEC
+                     PERFORM 20072-ZAI-HENSYU-SEC
+                 END-IF
+               END-IF
+               PERFORM 990-RECE641-NEXT-SEC
+           END-PERFORM
+      *   AZU-ADD END 2016.8.18
       *
       *    入院会計編集処理（食事等）
            PERFORM 200771-NYUIN-HENSYU-SEC
       *
-      *   AZU-END START 2015.6.9
            .
        2007-HENSYU-EXT.
            EXIT. 
@@ -2661,6 +2728,9 @@
                         RECE65-SRYCD (IDX)       NOT =  "190128310" AND
                         RECE65-SRYCD (IDX)       NOT =  "190128410" AND
                         RECE65-SRYCD (IDX)       NOT =  "190128570" AND
+      *   AZU-ADD START 2016.8.18
+                        RECE65-SRYCD (IDX) (1:3) NOT =  "112"       AND
+      *   AZU-ADD END   2016.8.18
       *   AZU-ADD START 2015.6.8
                         WRK-FEDT-HOUKATU-FLG     NOT =   "6")
       *   AZU-ADD END   2015.6.8
@@ -2895,7 +2965,7 @@
                END-IF
            END-IF
            .
-       200711-KOUI-TAIHI-EXT.
+       2007111-KOUI-TAIHI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3214,7 +3284,8 @@
       *****************************************************************
        20072-ZAI-HENSYU-SEC          SECTION.
       *
-           IF      RECE641-SRYKBN   >=   "90"
+           IF     (RECE641-SRYKBN   >=   "90")   AND
+                  (RECE641-NYUSAIFLG  =  SPACE)
               GO  TO   20072-ZAI-HENSYU-EXT
            END-IF
       *
@@ -3463,8 +3534,8 @@
                                       PERFORM 200721-ZAI-E-HENSYU-SEC
                                       PERFORM 5001-FILE-WRITE-SEC
                                   END-IF
-                                  DISPLAY  "###  F-SET"
-                                  DISPLAY  "WRK-RENNUM = " WRK-RENNUM
+      *                            DISPLAY  "###  F-SET"
+      *                            DISPLAY  "WRK-RENNUM = " WRK-RENNUM
                                   MOVE   "92"   TO   WRK-FEDT-SRYKBN
                                   PERFORM 200721-ZAI-F-HENSYU-SEC
                                   PERFORM 5001-FILE-F-WRITE-SEC
@@ -4838,13 +4909,17 @@
                            END-IF
                    END-EVALUATE
       *
-      *            明細テーブル退避処理
-                   PERFORM 20071-ZAI-TAIHI-SEC
-      *            摘要データ編集処理
-                   IF      FLG-END           =   ZERO
-                       PERFORM 20072-ZAI-HENSYU-SEC
+                   IF    RECE641-NYUSAIFLG  =  SPACE
+      *              明細テーブル退避処理
+                     PERFORM 20071-ZAI-TAIHI-SEC
+      *              摘要データ編集処理
+                     IF      FLG-END           =   ZERO
+                         PERFORM 20072-ZAI-HENSYU-SEC
       *
-                       PERFORM 990-RECE641-NEXT-SEC
+                         PERFORM 990-RECE641-NEXT-SEC
+                     END-IF
+                   ELSE
+                     PERFORM 990-RECE641-NEXT-SEC
                    END-IF
            END-PERFORM
            .
@@ -6739,7 +6814,7 @@
              MOVE    RECE62-SRYYM        TO  ACCT-SRYYM
              MOVE    RECE62-NYUGAIKBN    TO  ACCT-NYUGAIKBN
              MOVE    RECE62-PTID         TO  ACCT-PTID
-             DISPLAY "RECE62-SRYKA = " RECE62-SRYKA(IDX-HOUKATU)
+      *       DISPLAY "RECE62-SRYKA = " RECE62-SRYKA(IDX-HOUKATU)
              MOVE    RECE62-SRYKA(IDX-HOUKATU)
                                          TO  ACCT-SRYKA
              MOVE    9999                TO  ACCT-HKNCOMBI
