@@ -193,6 +193,7 @@
       *                                     分のまとめ対応
       *  04.08.08    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
       *                                     レセプトの分割対応
+      *  04.08.09    NACL-藤原    16/08/24  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -422,7 +423,7 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-INSPECT-INCLUDE-KBNMEI
-                                              PIC X(22).
+                                              PIC X(30).
                        09  SPA-GMN-INSPECT-GENERAL-KBN-G.
                            11  SPA-GMN-INSPECT-GENERAL-KBN
                                               PIC X(01).
@@ -1204,7 +1205,7 @@
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-INSPECT-INCLUDE-KBNMEIL
-                                              PIC X(22).
+                                              PIC X(30).
                    07  SPA-GMN-INSPECT-INCLUDE-KBN-MAX
                                               PIC 9(02).    
       *
@@ -2722,12 +2723,12 @@
       *     
            MOVE    "0"                 TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNL   (1)
-           MOVE    "包括診療分を記載しない"
+           MOVE    "包括診療分・持参薬を記載しない"
                                        TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNMEIL(1)
            MOVE    "1"                 TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNL   (2)
-           MOVE    "包括診療分を記載する"
+           MOVE    "包括診療分・持参薬を記載する"
                                        TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNMEIL(2)
            MOVE    2                   TO

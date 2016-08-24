@@ -701,11 +701,11 @@
                             PIC X(24)   OCCURS  5 TIMES.
                   05  W12-INSPECT-INCLUDE-KBN-COMBO.
                     06  W12-INSPECT-INCLUDE-KBN.
-                      07  W12-VALUE   PIC X(24).
+                      07  W12-VALUE   PIC X(32).
                     06  W12-INSPECT-INCLUDE-KBN-COUNT
                                       PIC S9(9)   BINARY.
                     06  W12-INSPECT-INCLUDE-KBNLST
-                            PIC X(24)   OCCURS  5 TIMES.
+                            PIC X(32)   OCCURS  5 TIMES.
                   05  W12-INSPECT-GENERAL-KBN-COMBO.
                     06  W12-INSPECT-GENERAL-KBN.
                       07  W12-VALUE   PIC X(30).

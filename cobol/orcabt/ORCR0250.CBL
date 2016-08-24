@@ -729,7 +729,17 @@
                                    MOVE    1               TO  FLG-READ
                                END-IF
                            ELSE
-                               MOVE    1           TO  FLG-READ
+                               IF      WRK-PARA-PRTKBN =   "6"
+                                   IF    ( RECE64-JIHOKBN
+                                                       NOT =   SPACE )
+                                   AND   ( RECE64-ZAIKBN   =   "3"   )
+                                       CONTINUE
+                                   ELSE
+                                       MOVE    1           TO  FLG-READ
+                                   END-IF
+                               ELSE 
+                                   MOVE    1           TO  FLG-READ
+                               END-IF
                            END-IF
                        END-IF      
       *
@@ -739,6 +749,8 @@
       *
                            DISPLAY "RECE64  PTNUM=" RECE64-PTNUM
                                     " RECESYUBETU=" RECE64-RECESYUBETU
+                                    " " RECE64-JIHOKBN
+                                    " " RECE64-ZAIKBN
                        END-IF
                END-READ
            END-PERFORM
