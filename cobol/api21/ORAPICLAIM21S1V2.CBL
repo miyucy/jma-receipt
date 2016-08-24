@@ -598,6 +598,11 @@
       *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
       *
+      *    医療機関ＩＤチェック
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 20011-HOSPNUM-CHK-SEC
+           END-IF
+      *
       *    診療日チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PERFORM-CHK-SEC
@@ -644,6 +649,19 @@
            END-IF
            .
        20010-INPUT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関ＩＤチェック
+      *****************************************************************
+       20011-HOSPNUM-CHK-SEC    SECTION.
+      *
+      *    作成者 施設ID
+           IF      CLREREQ-CRE001-FACILITYID   NOT =   SPA-HOSPID
+               MOVE    "02"                TO  WRK-ERRCD
+           END-IF
+           .
+       20010-HOSPNUM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1035,6 +1053,9 @@
            EVALUATE    WRK-ERRCD
            WHEN    "01"
                MOVE    "患者番号が未設定です"
+                                               TO  WRK-ERRMSG
+           WHEN    "02"
+               MOVE    "医療機関番号が一致しません。"
                                                TO  WRK-ERRMSG
            WHEN    "10"
                MOVE    "患者番号に該当する患者が存在しません"
