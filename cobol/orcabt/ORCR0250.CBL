@@ -287,6 +287,8 @@
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
+           DISPLAY "WRK-PARA-PRTKBN=" WRK-PARA-PRTKBN
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -729,7 +731,7 @@
                                    MOVE    1               TO  FLG-READ
                                END-IF
                            ELSE
-                               IF      WRK-PARA-PRTKBN =   "6"
+                               IF      WRK-PARA-PRTKBN =   "9"
                                    IF    ( RECE64-JIHOKBN
                                                        NOT =   SPACE )
                                    AND   ( RECE64-ZAIKBN   =   "3"   )
