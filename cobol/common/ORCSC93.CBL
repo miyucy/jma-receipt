@@ -212,6 +212,11 @@
            03  CONS-JSNYCD3        PIC X(09)    VALUE   "099209821".
            03  CONS-JSNYCD4        PIC X(09)    VALUE   "099209822".
       *
+           03  CONS-JSNYCD5        PIC X(09)    VALUE   "099209711".
+           03  CONS-JSNYCD6        PIC X(09)    VALUE   "099209712".
+           03  CONS-JSNYCD7        PIC X(09)    VALUE   "099209721".
+           03  CONS-JSNYCD8        PIC X(09)    VALUE   "099209722".
+      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -2193,6 +2198,10 @@
                        WHEN    CONS-JSNYCD2
                        WHEN    CONS-JSNYCD3
                        WHEN    CONS-JSNYCD4
+                       WHEN    CONS-JSNYCD5
+                       WHEN    CONS-JSNYCD6
+                       WHEN    CONS-JSNYCD7
+                       WHEN    CONS-JSNYCD8
       *                    ÅêÌô¤Î£±·ïÌÜ¤È¤¹¤ë
                            IF     (IDX             >   ZERO )
                              AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
