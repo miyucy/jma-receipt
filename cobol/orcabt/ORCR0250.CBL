@@ -734,7 +734,8 @@
                                IF      WRK-PARA-PRTKBN =   "9"
                                    IF    ( RECE64-JIHOKBN
                                                        NOT =   SPACE )
-                                   AND   ( RECE64-ZAIKBN   =   3     )
+                                   AND   ( RECE64-ZAIKBN   =   3   OR
+                                                               4     )
                                        CONTINUE
                                    ELSE
                                        MOVE    1           TO  FLG-READ
