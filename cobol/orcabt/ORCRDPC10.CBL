@@ -134,6 +134,13 @@
       *              NACL-小豆沢  16/08/18  再診の時間外加算対応
       *                                     RECE641-NYUSAIFLG="1"が対象
       *                                     （平成２８年４月診療分から）
+      *              NACL-小豆沢  16/08/23  持参薬対応
+      *                                     F-12（使用量）、F-13（基準単位）、
+      *                                     F-18（出来高実績点数）はそのままセット。
+      *                                     E-11（行為点数）、E-12（行為薬剤料）は
+      *                                     ゼロをセット。
+      *                                     F-19(2)（持参薬区分）、F-19(3)（持参薬
+      *                                     処方区分）をセット。
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5489,6 +5496,12 @@
            ELSE
                MOVE    WRK-FEDT-ZAITEN TO  WRK-TENSU
            END-IF
+      *--- AZU-ADD START 2016.08.23
+      *    持参薬は行為点数にゼロをセット
+           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4"
+                 MOVE     ZERO         TO  WRK-TENSU
+           END-IF
+      *--- AZU-ADD END 2016.08.23
            MOVE    WRK-TENSU           TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -5498,6 +5511,12 @@
            ELSE
                MOVE    WRK-FEDT-YKZTEN TO  WRK-TENSU
            END-IF
+      *--- AZU-ADD START 2016.08.23
+      *    持参薬は行為薬剤料にゼロをセット
+           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4"
+                 MOVE     ZERO         TO  WRK-TENSU
+           END-IF
+      *--- AZU-ADD END 2016.08.23
            MOVE    WRK-TENSU           TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -5649,9 +5668,33 @@
                ELSE
                   MOVE    ZERO             TO  WRK-FEDT-KOUI-MEISAI2
                END-IF
-               MOVE    ZERO                TO  WRK-FEDT-KOUI-MEISAI3
-                                               WRK-FEDT-KOUI-MEISAI4
-                                               WRK-FEDT-KOUI-MEISAI6
+      *--- AZU-ADD START 2016.08.23
+      *        持参薬区分
+               IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
+                                                     "3" OR "4"
+                  IF     RECE641-JISANYAKKBN        =   "1" OR "2"
+                     MOVE    1             TO  WRK-FEDT-KOUI-MEISAI3
+                  END-IF
+                  IF     RECE641-JISANYAKKBN        =   "3" OR "4"
+                     MOVE    2             TO  WRK-FEDT-KOUI-MEISAI3
+                  END-IF
+               ELSE
+                  MOVE   ZERO              TO  WRK-FEDT-KOUI-MEISAI3
+               END-IF
+      *        持参薬処方区分
+               IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
+                                                     "3" OR "4"
+                  IF     RECE641-JISANYAKKBN        =   "1" OR "3"
+                     MOVE    1             TO  WRK-FEDT-KOUI-MEISAI4
+                  END-IF
+                  IF     RECE641-JISANYAKKBN        =   "2" OR "4"
+                     MOVE    2             TO  WRK-FEDT-KOUI-MEISAI4
+                  END-IF
+               ELSE
+                  MOVE   ZERO              TO  WRK-FEDT-KOUI-MEISAI4
+               END-IF
+      *--- AZU-ADD END   2016.08.23
+               MOVE    ZERO                TO  WRK-FEDT-KOUI-MEISAI6
                                                WRK-FEDT-KOUI-MEISAI7
                                                WRK-FEDT-KOUI-MEISAI8
                                                WRK-FEDT-KOUI-MEISAI9
@@ -6511,7 +6554,15 @@
                    MOVE    1         TO  FLG-RECE64
                NOT AT  END
                    IF      STS-RECE64          =   "00"
-                       CONTINUE
+      *--- AZU-ADD START 2016.08.23
+      *                持参薬の時は、自保区分をクリアする
+                       IF   (RECE641-SRYKBN  =  "21" OR "22" OR "23" OR
+                                                "14")   AND
+                            (RECE641-JIHOKBN =  "1")    AND
+                            (RECE641-ZAIKBN  =   3)
+                            MOVE    SPACE    TO   RECE641-JIHOKBN
+                       END-IF
+      *--- AZU-ADD END   2016.08.23
                    ELSE
                        MOVE    SPACE               TO  WRK-ERR-AREA
                        INITIALIZE                      WRK-ERR-AREA
