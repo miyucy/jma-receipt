@@ -315,6 +315,7 @@
       *        ÃÙ…æ•Ø•Í•¢
                MOVE    SPACE               TO  SPA-COM-YAKUHYO (IDX)
                MOVE    SPACE               TO  SPA-COM-GENTEN  (IDX)
+               MOVE    SPACE               TO  SPA-COM-JISANYAKU(IDX)
       *
                IF      (SPA-GMN-INPUTCD(IDX) =   SPACE )   AND
                        (SPA-COM-INPUTCD(IDX) =   SPACE )
