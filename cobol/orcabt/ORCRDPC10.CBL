@@ -5498,7 +5498,8 @@
            END-IF
       *--- AZU-ADD START 2016.08.23
       *    持参薬は行為点数にゼロをセット
-           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4"
+           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4" OR
+                                         "5" OR "6" OR "7" OR "8"
                  MOVE     ZERO         TO  WRK-TENSU
            END-IF
       *--- AZU-ADD END 2016.08.23
@@ -5513,7 +5514,8 @@
            END-IF
       *--- AZU-ADD START 2016.08.23
       *    持参薬は行為薬剤料にゼロをセット
-           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4"
+           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4" OR
+                                         "5" OR "6" OR "7" OR "8"
                  MOVE     ZERO         TO  WRK-TENSU
            END-IF
       *--- AZU-ADD END 2016.08.23
@@ -5599,6 +5601,12 @@
              MOVE  ZERO                TO  WRK-NUM
            ELSE
              MOVE  WRK-FEDT-SRYSURYO   TO  WRK-SRYSURYO
+      *--- AZU-ADD START 2016.08.23
+      *      持参薬で使用量不明はゼロをセット
+             IF    RECE641-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
+                 MOVE     ZERO         TO  WRK-SRYSURYO
+             END-IF
+      *--- AZU-ADD END 2016.08.23
              MOVE  WRK-SRYSURYO        TO  WRK-NUM
            END-IF
            MOVE    11                  TO  WRK-NAGASA
@@ -5633,6 +5641,12 @@
                    MOVE    ZERO        TO  WRK-FEDT-DEKIDAKA-TEN
                 END-IF
            END-IF
+      *--- AZU-ADD START 2016.08.23
+      *    持参薬で使用量不明はゼロをセット
+           IF    RECE641-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
+               MOVE     ZERO         TO  WRK-FEDT-DEKIDAKA-TEN
+           END-IF
+      *--- AZU-ADD END 2016.08.23
            MOVE    WRK-FEDT-DEKIDAKA-TEN
                                        TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
@@ -5671,11 +5685,15 @@
       *--- AZU-ADD START 2016.08.23
       *        持参薬区分
                IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
-                                                     "3" OR "4"
-                  IF     RECE641-JISANYAKKBN        =   "1" OR "2"
+                                                     "3" OR "4" OR
+                                                     "5" OR "6" OR
+                                                     "7" OR "8"
+                  IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
+                                                        "5" OR "6"
                      MOVE    1             TO  WRK-FEDT-KOUI-MEISAI3
                   END-IF
-                  IF     RECE641-JISANYAKKBN        =   "3" OR "4"
+                  IF     RECE641-JISANYAKKBN        =   "3" OR "4" OR
+                                                        "7" OR "8"
                      MOVE    2             TO  WRK-FEDT-KOUI-MEISAI3
                   END-IF
                ELSE
@@ -5683,11 +5701,15 @@
                END-IF
       *        持参薬処方区分
                IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
-                                                     "3" OR "4"
-                  IF     RECE641-JISANYAKKBN        =   "1" OR "3"
+                                                     "3" OR "4" OR
+                                                     "5" OR "6" OR
+                                                     "7" OR "8"
+                  IF     RECE641-JISANYAKKBN        =   "1" OR "3" OR
+                                                        "5" OR "7"
                      MOVE    1             TO  WRK-FEDT-KOUI-MEISAI4
                   END-IF
-                  IF     RECE641-JISANYAKKBN        =   "2" OR "4"
+                  IF     RECE641-JISANYAKKBN        =   "2" OR "4" OR
+                                                        "6" OR "8"
                      MOVE    2             TO  WRK-FEDT-KOUI-MEISAI4
                   END-IF
                ELSE
@@ -6559,7 +6581,7 @@
                        IF   (RECE641-SRYKBN  =  "21" OR "22" OR "23" OR
                                                 "14")   AND
                             (RECE641-JIHOKBN =  "1")    AND
-                            (RECE641-ZAIKBN  =   3)
+                            (RECE641-ZAIKBN  =   3  OR  4)
                             MOVE    SPACE    TO   RECE641-JIHOKBN
                        END-IF
       *--- AZU-ADD END   2016.08.23
