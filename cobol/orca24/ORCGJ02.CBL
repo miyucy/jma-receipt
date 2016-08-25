@@ -3233,6 +3233,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *H28.9  持参薬
            IF      ACCT-ZAIKBN         =   3
+                                       OR  4
                MOVE    SPACE               TO  WRK-SRYSYUMEI2
                IF      WRK-SRYSYUMEI(15:)  =   SPACE
                    MOVE    WRK-SRYSYUMEI       TO  WRK-SRYSYUMEI2
@@ -5393,7 +5394,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *H28.9
       *    持参薬は対象外とする
-           IF     (SPA-NAI-ZAIKBN (SPA-NAI-BANGO)  =   3      )
+           IF     (SPA-NAI-ZAIKBN (SPA-NAI-BANGO)  =   3
+                                                   OR  4   )
                MOVE    ZERO                TO  SPA-NAI-HKTGAIFLG
            END-IF
       *

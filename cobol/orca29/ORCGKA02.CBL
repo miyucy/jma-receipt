@@ -1691,6 +1691,7 @@
       *H28.9
       *       持参薬は対象外
               OR  (ACCT-ZAIKBN         =   3    )
+              OR  (ACCT-ZAIKBN         =   4    )
                CONTINUE
            ELSE
                PERFORM 410121-WKSRYACT-HEN-SEC

@@ -339,6 +339,7 @@
                END-IF
       *H28.9   持参薬　対象外
                IF      ACCT-ZAIKBN         =   3
+                                           OR  4
                    MOVE    ZERO            TO  WRK-ZAIKAISU
                END-IF
                IF      WRK-ZAIKAISU        >   ZERO

@@ -1900,7 +1900,8 @@
            END-IF
       *TEST
       *H28.9  »ý»²Ìô
-           IF     (LNK-WKSRY-ZAIKBN  (1)   =   3  )
+           IF     (LNK-WKSRY-ZAIKBN  (1)   =   3
+                                           OR  4  )
                MOVE    "1"                 TO  WRK-JISANKBN
            ELSE
                MOVE    SPACE               TO  WRK-JISANKBN
@@ -3620,8 +3621,9 @@
       *      ÌôÉ¾¡¦´ïÉ¾°Ê³°
              IF     (LNK-WKSRY-ZAIKBN  (IDX)   =   1  )
              OR     (LNK-WKSRY-ZAIKBN  (IDX)   =   2  )
-      *H28.9
-             OR     (LNK-WKSRY-ZAIKBN  (IDX)   =   3  )
+      *H28.9 »ý»²Ìô
+             OR     (LNK-WKSRY-ZAIKBN  (IDX)   =   3
+                                               OR  4  )
                CONTINUE
              ELSE
                IF     (LNK-WKSRY-SRYKBN (IDX)  =   "21"

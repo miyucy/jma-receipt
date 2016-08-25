@@ -474,6 +474,7 @@
                OR   (ACCT-ZAIKBN       =   1      )
       *        持参薬は対象外とする
                OR   (ACCT-ZAIKBN       =   3      )
+               OR   (ACCT-ZAIKBN       =   4      )
                CONTINUE
              ELSE
       *H26.7
@@ -782,6 +783,7 @@
                  OR   (ACCT-ZAIKBN       =   1      )
       *          持参薬は対象外とする
                  OR   (ACCT-ZAIKBN       =   3      )
+                 OR   (ACCT-ZAIKBN       =   4      )
                    CONTINUE
                ELSE
       *

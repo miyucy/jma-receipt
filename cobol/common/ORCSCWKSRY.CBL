@@ -1503,6 +1503,9 @@
            IF      LNK-WKSRY-ZAIKBN  (IDX) =   3
                MOVE    "1"                 TO  SPA-COM-JISANYAKU(IDX2)
            END-IF
+           IF      LNK-WKSRY-ZAIKBN  (IDX) =   4
+               MOVE    "2"                 TO  SPA-COM-JISANYAKU(IDX2)
+           END-IF
       *!!
            IF      LNK-WKSRY-INPUTCD (IDX IDY) =   SPACE
                MOVE    SPA-COM-INPUTCD (IDX2)
@@ -2747,6 +2750,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-COM-JISANYAKU(IDX)  =   "1"
                MOVE    3               TO  WKSRY-ZAIKBN
            END-IF
+           IF      SPA-COM-JISANYAKU(IDX)  =   "2"
+               MOVE    4               TO  WKSRY-ZAIKBN
+           END-IF
       *
       *@
       *    ドクター
@@ -3060,6 +3066,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    持参薬
            IF      WRK-JISANYAKU       =   "1"
                MOVE    3               TO  WKSRY-ZAIKBN
+           END-IF
+           IF      WRK-JISANYAKU       =   "2"
+               MOVE    4               TO  WKSRY-ZAIKBN
            END-IF
       *@
       *    ドクター

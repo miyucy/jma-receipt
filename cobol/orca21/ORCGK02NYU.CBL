@@ -746,7 +746,6 @@
       *緑
        01  CL-GREEN                PIC X(07)   VALUE   "#00B000".
       *
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -9597,6 +9596,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              OR     (SPA-GMN-INPUTCD (IDX)(1:1)
                                              =   "."
                                              OR  "*"  )
+      *H28.9
+      *    持参薬
+              OR    (SPA-COM-JISANYAKU(IDX)  =   "1"
+                                             OR  "2"  )
+      *
                CONTINUE
              ELSE
                IF     (SPA-COM-SRYKBN (IDX)    =   "21"
