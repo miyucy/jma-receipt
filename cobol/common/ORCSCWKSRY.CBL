@@ -2753,6 +2753,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-COM-JISANYAKU(IDX)  =   "2"
                MOVE    4               TO  WKSRY-ZAIKBN
            END-IF
+      *TEST
+           DISPLAY "WKSRY IDX:"  IDX
+                  ",COM;"  SPA-COM-INPUTCD (IDX)
+              ",JISANYAKU:"  SPA-COM-JISANYAKU(IDX)
+              ",WKSRY-ZAIKBN:"  WKSRY-ZAIKBN
+      *TEST
       *
       *@
       *    ドクター
