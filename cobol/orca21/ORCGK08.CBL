@@ -1898,18 +1898,15 @@
                    MOVE    "1"                 TO  WRK-HKTZAI
                END-IF
            END-IF
-      *TEST
+      *
       *H28.9  »ý»²Ìô
            IF     (LNK-WKSRY-ZAIKBN  (1)   =   3
                                            OR  4  )
                MOVE    "1"                 TO  WRK-JISANKBN
-               IF     (LNK-WKSRY-ZAIKBN (1)    =   4  )
-                   MOVE    "2"                 TO  WRK-JISANKBN
-               END-IF
            ELSE
                MOVE    SPACE               TO  WRK-JISANKBN
            END-IF
-      *TEST
+      *
       *    ºÞÊÌÊÔ½¸
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI )
@@ -2643,13 +2640,10 @@
            IF      WRK-HKTZAI          =   "1"
                MOVE    "¡ÚÊñ³ç¿ÇÎÅ¡Û"  TO   SPA-GMN-TMEISYO1(IDG)(57:)
            END-IF
-      *TEST
+      *
       *H28.9  »ý»²Ìô
            IF      WRK-JISANKBN        =   "1"
                MOVE    "¡Ú»ý»²Ìô¡Û"    TO   SPA-GMN-TMEISYO1(IDG)(57:)
-           END-IF
-           IF      WRK-JISANKBN        =   "2"
-               MOVE    "¡Ú»ý»²ÌôÉÔ¡Û"  TO   SPA-GMN-TMEISYO1(IDG)(57:)
            END-IF
       *
            INSPECT SPA-GMN-TMEISYO1 (IDG)  REPLACING  ALL "  "  BY "¡¡"

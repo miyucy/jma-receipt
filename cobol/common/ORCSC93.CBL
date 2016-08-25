@@ -510,11 +510,6 @@
       *                    Êñ³ç°·¤¤
                            MOVE    1           TO  SPA-COM-HOUKATU-ZAI
                                                               (IDX-Z)
-      *TEST
-           DISPLAY "C93 IDX-Z:"  IDX-Z
-                  ",COM;"  SPA-COM-INPUTCD (IDX-Z)
-              ",JISANYAKU:"  SPA-COM-JISANYAKU(IDX-Z)
-      *TEST
                        END-IF
                    END-PERFORM
                    MOVE    IDX-Z               TO  IDX-S
