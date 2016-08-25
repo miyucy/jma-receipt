@@ -2610,7 +2610,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             IF   (ACCT-ZAIKAISU     NOT =  ZERO )
                             AND  (FLG-TENTEKIMATOME     =  ZERO )
                             AND  (ACCT-JIHOKBN      NOT =  SPACE)
-                            AND  (ACCT-ZAIKBN           =  3    )
+                            AND  (ACCT-ZAIKBN       =  3 OR 4   )
                                  PERFORM   2201-RECE84-TENSOU-SEC
                                  PERFORM   2202-RECE85-HENSYU-SEC
                                  IF    FLG-WRITE85  =   1
@@ -3006,6 +3006,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      "099999927" OR "099999928" OR
                      "099209811" OR "099209812" OR
                      "099209821" OR "099209822" OR
+                     "099209711" OR "099209712" OR
+                     "099209721" OR "099209722" OR
                      "840000136" OR "840000140"            )
             OR     ( SRY-SRYCD(IDX2)       =  "099509901"  )
                   COMPUTE   RECE84-MEISAISU    =  RECE84-MEISAISU
@@ -3086,6 +3088,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        "099999927" OR "099999928" OR
                        "099209811" OR "099209812" OR
                        "099209821" OR "099209822" OR
+                       "099209711" OR "099209712" OR
+                       "099209721" OR "099209722" OR
                        "840000136" OR "840000140"            )
               OR     ( SRY-SRYCD(IDX2)       =  "099509901"  )
       *
@@ -3126,6 +3130,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
                IF      SRY-SRYCD(IDX2)    =     "099209822"
                   MOVE   "4"    TO    RECE84-JISANYAKKBN
+               END-IF
+      *
+               IF      SRY-SRYCD(IDX2)    =     "099209711"
+                  MOVE   "5"    TO    RECE84-JISANYAKKBN
+               END-IF
+               IF      SRY-SRYCD(IDX2)    =     "099209712"
+                  MOVE   "6"    TO    RECE84-JISANYAKKBN
+               END-IF
+               IF      SRY-SRYCD(IDX2)    =     "099209721"
+                  MOVE   "7"    TO    RECE84-JISANYAKKBN
+               END-IF
+               IF      SRY-SRYCD(IDX2)    =     "099209722"
+                  MOVE   "8"    TO    RECE84-JISANYAKKBN
                END-IF
       *
               ELSE

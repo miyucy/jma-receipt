@@ -6385,29 +6385,45 @@
            MOVE  "810000001"    TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
            MOVE   ZERO          TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
       *
-           IF    RECE84-ZAIKBN  =  3
+           IF    RECE84-ZAIKBN  =  3 OR 4
              EVALUATE  RECE84-JISANYAKKBN
-               WHEN     "1"
-                 MOVE  22    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤ë¡¦¼«±¡½èÊýÊ¬¡Ë"
-                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-               WHEN     "2"
-                 MOVE  22    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤ë¡¦Â¾±¡½èÊýÊ¬¡Ë"
-                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-               WHEN     "3"
-                 MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤é¤Ê¤¤¡¦¼«±¡½èÊýÊ¬¡Ë"
-                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-               WHEN     "4"
-                 MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                 MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¤Ë·¸¤é¤Ê¤¤¡¦Â¾±¡½èÊýÊ¬¡Ë"
-                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "1"
+               MOVE  19    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¡¦¼«±¡½èÊýÊ¬¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "2"
+               MOVE  19    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¡¦Â¾±¡½èÊýÊ¬¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "3"
+               MOVE  20    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ³°¡¦¼«±¡½èÊýÊ¬¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "4"
+               MOVE  20    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ³°¡¦Â¾±¡½èÊýÊ¬¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "5"
+               MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¡¦¼«±¡½èÊýÊ¬¡¦¿ôÎÌÉÔÌÀ¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "6"
+               MOVE  24    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ¡¦Â¾±¡½èÊýÊ¬¡¦¿ôÎÌÉÔÌÀ¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "7"
+               MOVE  25    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ³°¡¦¼«±¡½èÊýÊ¬¡¦¿ôÎÌÉÔÌÀ¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+              WHEN     "8"
+               MOVE  25    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡Ú»ý»²Ìô¡Û¡ÊÆþ±¡·Àµ¡¼£ÎÅ³°¡¦Â¾±¡½èÊýÊ¬¡¦¿ôÎÌÉÔÌÀ¡Ë"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
              END-EVALUATE
            ELSE
-                 MOVE   6    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                 MOVE "¡ÚÊñ³ç¿ÇÎÅ¡Û"
-                             TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE   6    TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE "¡ÚÊñ³ç¿ÇÎÅ¡Û"
+                           TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
            END-IF
       *
            MOVE  "1"            TO  WRK-RECE85XX-SIKFLG(IDX-RECE85 1)
@@ -8684,6 +8700,11 @@
                   ADD    1             TO      IDX-RECE85
                   MOVE   RECE85-SRYACT-TBL(IDX)
                              TO   WRK-RECE85XX-SRYACT-TBL(IDX-RECE85 1)
+                  IF  (RECE84-JIHOKBN  NOT =  SPACE)
+                  AND (RECE84-ZAIKBN       =   4   )
+                     MOVE  ZERO
+                             TO   WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
+                  END-IF
              END-PERFORM 
       *
              PERFORM 990-RECE85-NEXT-SEC
@@ -8732,6 +8753,19 @@
            IF   WRK-JIDO-SETCOMFLG   =  "1"
              MOVE  WRK-JIDO-SETCOMFLG
                                      TO      RECE849-SETCOMFLG
+           END-IF
+           IF  (RECE84-JIHOKBN  NOT =  SPACE)
+           AND (RECE84-ZAIKBN       =   4   )
+             MOVE  ZERO              TO      RECE849-ZAITEN
+             MOVE  ZERO              TO      RECE849-SYUTEN1
+             MOVE  ZERO              TO      RECE849-SYUTEN2
+             MOVE  ZERO              TO      RECE849-YKZTEN
+             MOVE  ZERO              TO      RECE849-KIZAITEN
+             MOVE  ZERO              TO      RECE849-HOKATU-ZAITEN
+             MOVE  ZERO              TO      RECE849-HOKATU-SYUTEN1
+             MOVE  ZERO              TO      RECE849-HOKATU-SYUTEN2
+             MOVE  ZERO              TO      RECE849-HOKATU-YKZTEN
+             MOVE  ZERO              TO      RECE849-HOKATU-KIZAITEN
            END-IF
            PERFORM 800-RECE849-WRITE-SEC
       *

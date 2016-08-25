@@ -7133,7 +7133,7 @@
                                IF   (ACCT-ZAIKAISU     NOT =  ZERO )
                                AND  (FLG-TENTEKIMATOME     =  ZERO )
                                AND  (ACCT-JIHOKBN      NOT =  SPACE)
-                               AND  (ACCT-ZAIKBN           =  3    )
+                               AND  (ACCT-ZAIKBN       =  3 OR 4   )
                                       PERFORM   21011-RECE64-TENSOU-SEC
                                       PERFORM   21012-RECE65-HENSYU-SEC
                                       IF    FLG-WRITE65  =   1
@@ -7511,6 +7511,8 @@
                      "099999927" OR "099999928" OR
                      "099209811" OR "099209812" OR
                      "099209821" OR "099209822" OR
+                     "099209711" OR "099209712" OR
+                     "099209721" OR "099209722" OR
                      "840000136" OR "840000140"            )
                   COMPUTE   RECE64-MEISAISU    =  RECE64-MEISAISU
                                                -  1
@@ -7627,6 +7629,8 @@
                        "099999927" OR "099999928" OR
                        "099209811" OR "099209812" OR
                        "099209821" OR "099209822" OR
+                       "099209711" OR "099209712" OR
+                       "099209721" OR "099209722" OR
                        "840000136" OR "840000140"            )
       *
                IF   FLG-KIN-OKIKAE   NOT =  ZERO
@@ -7679,6 +7683,19 @@
                END-IF
                IF      SRY-SRYCD(IDX2)    =     "099209822"
                   MOVE   "4"    TO    RECE64-JISANYAKKBN
+               END-IF
+      *
+               IF      SRY-SRYCD(IDX2)    =     "099209711"
+                  MOVE   "5"    TO    RECE64-JISANYAKKBN
+               END-IF
+               IF      SRY-SRYCD(IDX2)    =     "099209712"
+                  MOVE   "6"    TO    RECE64-JISANYAKKBN
+               END-IF
+               IF      SRY-SRYCD(IDX2)    =     "099209721"
+                  MOVE   "7"    TO    RECE64-JISANYAKKBN
+               END-IF
+               IF      SRY-SRYCD(IDX2)    =     "099209722"
+                  MOVE   "8"    TO    RECE64-JISANYAKKBN
                END-IF
       *
               ELSE
