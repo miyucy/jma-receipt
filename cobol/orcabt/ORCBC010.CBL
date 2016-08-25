@@ -1710,13 +1710,19 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT =   1
                                    OR      KEY-NEW NOT =   KEY-OLD
-                           PERFORM 2003-SRYACCT-HENSYU-SEC
+      *                    持参薬以外の時、編集処理を行う
+                           IF    ACCT-ZAIKBN   NOT =   3  AND  4
+                               PERFORM 2003-SRYACCT-HENSYU-SEC
+                           END-IF
                            MOVE    "tbl_sryacct"      TO  MCP-TABLE
                            MOVE    "key9"             TO  MCP-PATHNAME
                            PERFORM 900-SRYACCT-READ-SEC
                        END-PERFORM
                    ELSE
-                       PERFORM 2003-SRYACCT-HENSYU-SEC
+      *                持参薬以外の時、編集処理を行う
+                       IF    ACCT-ZAIKBN   NOT =   3  AND  4
+                           PERFORM 2003-SRYACCT-HENSYU-SEC
+                       END-IF
                        MOVE    "tbl_sryacct"      TO  MCP-TABLE
                        MOVE    "key9"             TO  MCP-PATHNAME
                        PERFORM 900-SRYACCT-READ-SEC
