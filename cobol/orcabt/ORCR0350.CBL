@@ -415,6 +415,7 @@
       *  04.08.12    NACL-Æ£¸¶    16/08/08  ºÒ³²³ºÅöÊ¬¡ÊÈó¸ºÌÈÂÐ¾Ý¤È¸ºÌÈÂÐ¾Ý¡Ë
       *                                     ¥ì¥»¥×¥È¤ÎÊ¬³äÂÐ±þ
       *  04.08.13    NACL-ÌçÏÆ    16/08/18  Ë¡ÊÌ£µ£±¤Î°ìÉôÉéÃ´¶â¤Îµ­Ï¿½¤Àµ
+      *  04.08.14    NACL-ÌçÏÆ    16/08/23  »ý»²ÌôÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6086,7 +6087,9 @@
                                                =   WRK-CONS-TEIGEN
                        CONTINUE
                    ELSE
-                       IF      WRK-RECE65-SRYSURYO (1) >   ZERO
+                       IF  ( WRK-RECE65-SRYSURYO(1)  >  ZERO   )
+                       OR  ((WRK-RECE641-JIHOKBN  NOT =  SPACE) AND
+                            (WRK-RECE641-ZAIKBN       =   4   ))
                            MOVE    WRK-RECE65-SRYSURYO (1)
                                                        TO  WRK-SRYSURYO
                            MOVE    WRK-SRYSURYO        TO  WRK-NUM
@@ -6102,7 +6105,8 @@
                            MOVE    WRK-RECE641-ZAITEN  TO  WRK-NUM
                            MOVE    7                   TO  WRK-NAGASA
                        ELSE
-                           IF      WRK-RECE641-YKZTEN  >   ZERO
+                           IF    WRK-RECE641-YKZTEN          >   ZERO
+                           OR    WRK-RECE641-TOYAKUFLG   NOT =   SPACE
                                MOVE    WRK-RECE641-YKZTEN
                                                        TO  WRK-NUM
                                MOVE    7               TO  WRK-NAGASA
@@ -7060,7 +7064,9 @@
                                        =   WRK-CONS-TEIGEN
                CONTINUE
            ELSE
-               IF      TBL-ZAIW-SRYSURYO (1 IDX) >   ZERO
+               IF  ( TBL-ZAIW-SRYSURYO (1 IDX)  >  ZERO )
+               OR  ((RECE641-JIHOKBN  NOT =  SPACE) AND
+                    (RECE641-ZAIKBN       =   4   )     )
                    MOVE    TBL-ZAIW-SRYSURYO (1 IDX) TO  WRK-SRYSURYO
                    MOVE    WRK-SRYSURYO              TO  WRK-NUM
                    MOVE    11                        TO  WRK-NAGASA
@@ -7075,7 +7081,8 @@
                    MOVE    RECE641-ZAITEN      TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
                ELSE
-                   IF      RECE641-YKZTEN      >   ZERO
+                   IF    RECE641-YKZTEN          >   ZERO
+                   OR    RECE641-TOYAKUFLG   NOT =   SPACE
                        MOVE    RECE641-YKZTEN      TO  WRK-NUM
                        MOVE    7                   TO  WRK-NAGASA
                    END-IF

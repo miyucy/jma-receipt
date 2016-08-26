@@ -300,7 +300,8 @@
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
-               05  WRK-SURYO-Z1    PIC ZZZZZ.
+      *********05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z1    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-SURYO-N.
@@ -2581,7 +2582,12 @@
       *
            IF      TBL-ZAIW-SRYSURYO (WRK-WIDX1 WRK-WIDX2)
                                    =   ZERO
+             IF  (RECE220-JIHOKBN  NOT =  SPACE)
+             AND (RECE220-ZAIKBN       =   4   )
+               CONTINUE
+             ELSE
                GO  TO  4301-SURYO-HEN1-EXT  
+             END-IF
            END-IF
       * 
       *    数字表示用編集（半角）
