@@ -66,26 +66,10 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
+      *
       *    印刷用データ
        FD  PRT-FILE.
-       01  PRT-REC.
-           03  PRT-PRTID           PIC X(30).
-           03  PRT-PRTNM           PIC X(20).
-           03  PRT-OFFSET-X        PIC X(05).
-           03  PRT-OFFSET-Y        PIC X(05).
-           03  PRT-SITEKBN         PIC X(01).
-      *  01.01.02  ADD START 
-           03  PRT-PRTKBN          PIC X(01).
-           03  PRT-PSFILE-AREA.
-             05  PRT-PSFILE-FOLDER     PIC X(165).
-             05  PRT-PSFILE-TBL-KEY    PIC X(08).
-             05  PRT-PSFILE-RENNUM     PIC X(04).
-             05  PRT-PSFILE-GROUP      PIC X(14).
-             05  PRT-PSFILE-SRENNUM    PIC X(04).
-             05  PRT-PSFILE-PAGE       PIC X(05).
-             05  PRT-PSFILE-UUID       PIC X(36).
-      *  01.01.02  ADD END
-           03  PRT-PRTDATA         PIC X(20000).
+           COPY    "CPPRTALL.INC".
       *
       *    PUSH用データ
        FD  PUSH-FILE.
@@ -694,13 +678,13 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE WRK-PARA-PRTFLG                TO  PRT-PRTKBN
            MOVE    ZERO                        TO  CNT-KETA
       *****MOVE    "/var/lib/jma-receipt/orca_ps/"        
-           MOVE    WRK-SGETTEMP-TEMPDIR        TO  PRT-PSFILE-FOLDER
-           MOVE    LNK-PRTKANRI-TBL-KEY        TO  PRT-PSFILE-TBL-KEY
-           MOVE    PRTDATA-RENNUM              TO  PRT-PSFILE-RENNUM
-           MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRT-PSFILE-GROUP 
-           MOVE    PRTDATA-SHORI-RENNUM        TO  PRT-PSFILE-SRENNUM
-           MOVE    PRTDATA-PAGE                TO  PRT-PSFILE-PAGE  
-           MOVE    LNK-PRTKANRI-TBL-UUID       TO  PRT-PSFILE-UUID
+           MOVE    WRK-SGETTEMP-TEMPDIR        TO  PRT-OUT
+           MOVE    LNK-PRTKANRI-TBL-KEY        TO  PRT-TBL-KEY
+           MOVE    PRTDATA-RENNUM              TO  PRT-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRT-TBL-GROUP 
+           MOVE    PRTDATA-SHORI-RENNUM        TO  PRT-SHORI-RENNUM
+           MOVE    PRTDATA-PAGE                TO  PRT-PAGE  
+           MOVE    LNK-PRTKANRI-TBL-UUID       TO  PRT-UUID
       *  01.01.02  END
            INITIALIZE                  SFIXREDDATA-AREA
            MOVE    PRT-SITEKBN     TO  SFIXREDDATA-SITEKBN
