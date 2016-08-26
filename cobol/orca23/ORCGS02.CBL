@@ -6295,6 +6295,7 @@
                     MOVE     "1"          TO   LNK-ORCSSKS-IKTKEISANKBN
                     MOVE     "1"          TO   LNK-ORCSSKS-IKTGENKEIFLG
                   END-IF
+                  MOVE       "1"          TO   LNK-ORCSSKS-IKTJISSIFLG
       *
                   CALL    "ORCSSAIKEISAN"     USING
                                               SPA-AREA
