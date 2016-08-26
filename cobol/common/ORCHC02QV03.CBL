@@ -6101,9 +6101,18 @@
                    GO      TO      7004-APIMEI-HENSYU-EXT
                END-IF
       *
-               MOVE    WRK-KAISU           TO  WRK-KAISU-9
-               MOVE    WRK-KAISU-G         TO  RPSHOHO-ZAIKAISU
+               IF      ORCHC19-KBN         =   "1"
+                                           OR  "B"
+                                           OR  "C"
+                                           OR  "D"
+      *            ≤ÛøÙ ‘Ω∏§ §∑
+                   CONTINUE
+               ELSE
+      *            ≤ÛøÙ ‘Ω∏
+                   MOVE    WRK-KAISU           TO  WRK-KAISU-9
+                   MOVE    WRK-KAISU-G         TO  RPSHOHO-ZAIKAISU
                                                            (IDX-AP1)
+               END-IF
       *        ∫ﬁ∑ø∂Ë ¨
                MOVE    WRK-SRYKBN          TO  RPSHOHO-SRYKBN(IDX-AP1)
                EVALUATE    WRK-SRYKBN
