@@ -77,6 +77,7 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03   NACL-藤原    16/08/24  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -173,7 +174,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-RECEPRTKBN      PIC X(24).
+           03  WRK-RECEPRTKBN      PIC X(32).
            03  WRK-RECEKBN         PIC X(20).
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
@@ -475,7 +476,7 @@
                    MOVE    "【点検用】"    TO  WRK-RECEPRTKBN
                WHEN    "4"
                WHEN    "5"
-                   MOVE    "【点検用（包括診療分）】"
+                   MOVE    "【点検用（包括診療分・持参薬）】"
                                            TO  WRK-RECEPRTKBN
                WHEN    OTHER
                    MOVE    SPACE           TO  WRK-RECEPRTKBN
