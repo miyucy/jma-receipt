@@ -20,10 +20,6 @@ T06 {
       style varchar(20);
       textdata varchar(10);
     };
-    TITLE3 {
-      style varchar(20);
-      textdata varchar(50);
-    };
     SELNUM {
       numdata number(4);
     };
@@ -41,15 +37,6 @@ T06 {
     };
     SRYYM_H {
       textdata varchar(7);
-    };
-    SRYYMKBN_COMBO {
-      state int;
-      visible bool;
-      SRYYMKBN {
-        textdata varchar(18);
-      };
-      count int;
-        item varchar(18)[10];
     };
     SKYYMD_H {
       textdata varchar(10);

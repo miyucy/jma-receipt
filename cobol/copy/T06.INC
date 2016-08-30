@@ -7,8 +7,6 @@
               03  T06-TITLE1       PIC X(14).
               03  T06-TITLE2-STYLE PIC X(20).
               03  T06-TITLE2       PIC X(10).
-              03  T06-TITLE3-STYLE PIC X(20).
-              03  T06-TITLE3       PIC X(50).
               03  T06-SELNUM.
                 04  T06-VALUE   PIC S9(4).
               03  T06-SRYYM.
@@ -21,14 +19,6 @@
                 04  T06-VALUE   PIC X(40).
               03  T06-SRYYM-H.
                 04  T06-VALUE   PIC X(7).
-              03  T06-SRYYMKBN-COMBO.
-                04  T06-SRYYMKBN-COM-STATE    PIC S9(9)   BINARY.
-                04  T06-SRYYMKBN-COM-VISIBLE  PIC X(01).
-                04  T06-SRYYMKBN.
-                  05  T06-VALUE    PIC X(18).
-                04  T06-SRYYMKBN-COUNT PIC S9(9)   BINARY.
-                04  T06-SRYYMKBN-ITEM
-                        PIC X(18)   OCCURS  10 TIMES.
               03  T06-SKYYMD-H.
                 04  T06-VALUE   PIC X(10).
               03  T06-HKNJANAME-STYLE    PIC X(20).
