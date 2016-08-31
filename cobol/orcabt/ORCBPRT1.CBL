@@ -500,6 +500,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            ADD     1                   TO  CNT-PUSH
       *
            MOVE    PRTKANRI-PRTNM  TO  TPUSHP001-RPID (CNT-PUSH)
+      *
+           PERFORM 900-PRTDATA-SELECT-SEC
+           IF    ( FLG-PRTDATA     =   ZERO )
+              MOVE    PRTDATA-PRTID TO TPUSHP001-CUSTOMID (CNT-PUSH)
+           END-IF
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
            MOVE    PRTKANRI-TITLE  TO  TPUSHP001-RPNAME (CNT-PUSH)
            STRING  PRTKANRI-TBL-KEY    DELIMITED BY SPACE
                    "#"                 DELIMITED BY SIZE

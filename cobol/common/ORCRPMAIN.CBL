@@ -255,7 +255,10 @@
       *    DIA
       *    MOVE    MKPRT-ID            TO  SHELLTBL-ARG18
       *    FORM
-           MOVE    RPMAIN-ID           TO  SHELLTBL-ARG19
+           IF    ( RPMAIN-CUSTOM-ID    NOT =   SPACE )
+               MOVE    RPMAIN-CUSTOM-ID
+                                       TO  SHELLTBL-ARG19
+           END-IF
       *    DEF
            MOVE    SPACE               TO  SHELLTBL-ARG20
       *    データ内容

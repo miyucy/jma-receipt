@@ -1819,6 +1819,7 @@
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "okusuri_techo"     TO  RPMAIN-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "¤ªÌô¼êÄ¢"          TO  RPMAIN-TITLE
            MOVE    "rp_medication_note"
                                        TO  MCP-TABLE

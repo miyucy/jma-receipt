@@ -2445,6 +2445,7 @@
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "karte_no1"         TO  RPMAIN-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "カルテ１号紙"      TO  RPMAIN-TITLE
            MOVE    "rp_karte_no1"
                                        TO  MCP-TABLE

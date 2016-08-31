@@ -5751,7 +5751,7 @@
       *
       *****INITIALIZE                  RPSHOHO-REC
       *
-           MOVE    "prescription"      TO  RPSHOHO-REPORT-ID
+           MOVE    "shohosen"          TO  RPSHOHO-REPORT-ID
       *    プリンタ名
            MOVE    SYS-1031-PRTNM(2)   TO  RPSHOHO-PRINTER
       *    退院時院外処方せん（入院）
@@ -6171,7 +6171,8 @@
            MOVE    PARA-API-CUSTOM-ID  TO  RPSHOHO-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "prescription"      TO  RPMAIN-ID
+           MOVE    "shohosen"          TO  RPMAIN-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "処方せん"          TO  RPMAIN-TITLE
            MOVE    "rp_prescription"
                                        TO  MCP-TABLE
