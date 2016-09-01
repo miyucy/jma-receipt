@@ -38,7 +38,6 @@
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
       *  04.07.00    NACL-多々納  12/08/XX  サンプル薬（サ）対応
       *  04.07.00    NACL-多々納  14/04/01  出来高算定（剤）等対応
-      *  04.08.00    NACL-多々納  16/10/XX  H28.10月途中で麻毒変更対応
       *****************************************************************
       *
       *
@@ -172,14 +171,6 @@
                05  WRK-CHK-SRYYM       PIC X(06).
                05  WRK-CHK-DD          PIC 9(02).
       *H26.7
-      *H28.10
-      *    麻薬開始
-           03  WRK-MADOKU-ST           PIC 9(02).
-      *    マスタ開始日付
-           03  WRK-YKSTYMD.
-               05  WRK-YKSTYM          PIC X(06).
-               05  WRK-YKSTDD          PIC 9(02).
-           03  WRK-HZN-DD              PIC 9(02).
       *
       *    投薬日
        01  TBL-TOUYAKU-AREA.
@@ -628,8 +619,6 @@
            END-IF
       *    麻毒算定
            IF      FLG-MADOKU          =   1
-      *H28.10
-            AND   (WRK-MADOKU-ST       <=  IDX3  )
                IF     (WRK-DDAY            =   IDX3 )
                  AND  (WRK-RENNUM          =   1    )
       *            同日再入院日で退院分がない時
@@ -860,7 +849,6 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  FLG-ARI2
            MOVE    ZERO                TO  FLG-MADOKU
-           MOVE    ZERO                TO   WRK-MADOKU-ST
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
@@ -904,7 +892,7 @@
            PERFORM UNTIL      FLG-SRYACT   =   1
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2            >   5   )  OR
-      ************                (FLG-MADOKU      =   1    )  OR
+                                  (FLG-MADOKU      =   1    )  OR
                                   (SRY-SRYCD(IDX2) =   SPACE )
       *            薬剤
                    IF      SRY-SRYCD (IDX2)(1:1)   =   "6"
@@ -912,24 +900,7 @@
       *                点数マスタ
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
-      *
-      *H28.10
                        IF      TNS-MADOKUKBN       NOT =   ZERO
-                           IF     (TNS-YUKOSTYMD(7:2)  NOT =  "01")
-                             AND  (TNS-YUKOSTYMD(1:6)
-                                                     =   ORCSCHO-SRYYM)
-                               MOVE    TNS-YUKOSTYMD
-                                                     TO  WRK-YKSTYMD
-      *                        月途中麻毒開始日
-                               PERFORM 6001110-TENSU-CHK-SEC
-                               IF     (WRK-MADOKU-ST   =   ZERO )
-                                  OR  (WRK-MADOKU-ST   >   WRK-YKSTDD)
-                                   MOVE    WRK-YKSTDD
-                                                   TO   WRK-MADOKU-ST
-                               END-IF
-                           ELSE
-                               MOVE    01          TO   WRK-MADOKU-ST
-                           END-IF
                            MOVE    1               TO  FLG-MADOKU
                        END-IF
                    END-IF
@@ -957,26 +928,6 @@
       *
            .
        600111-SRYACT-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    月途中麻毒開始日処理
-      *****************************************************************
-       6001110-TENSU-CHK-SEC             SECTION.
-      *
-      *    １日の算定
-           MOVE    WRK-DD              TO  WRK-HZN-DD
-           MOVE    01                  TO  WRK-DD
-           MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-      *
-           IF      TNS-MADOKUKBN       NOT =   ZERO
-      *        １日分が麻毒の時、１日から
-               MOVE    01              TO  WRK-YKSTDD
-           END-IF
-           MOVE    WRK-HZN-DD          TO  WRK-DD
-      *
-           .
-       6001110-TENSU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院・外泊の編集処理
