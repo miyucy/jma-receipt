@@ -77,10 +77,7 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-藤原    16/08/24  持参薬対応
-      *  04.08.04    NACL-藤原    17/08/29  一時保存テーブル削除対応
-      *
-      *  04.09.01    NACL-藤原    16/12/12  ＨＡＯＲＩ対応
+      *  04.08.03   NACL-藤原    16/08/24  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -297,10 +294,6 @@
       *
            COPY    "CPRCF008.INC".
       *
-      *    ＳＰＡ一時テーブル
-       01  SPATMP-REC.
-           COPY    "CPSPA-TMP.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -321,9 +314,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "MCPDATA2.INC".
-      *
-           COPY    "MONBLOB".
       *
       *****************************************************************
       *    連絡　領域
@@ -336,7 +326,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA42SCRAREA.INC".
+           COPY    "R01.INC".
+           COPY    "R02.INC".
+           COPY    "R03.INC".
+           COPY    "R04.INC".
+           COPY    "R05.INC".
+           COPY    "R06.INC".
+           COPY    "R96.INC".
+           COPY    "R97.INC".
+           COPY    "R98.INC".
+           COPY    "R99.INC".
+           COPY    "RERR.INC".
+           COPY    "RID1.INC".
+           COPY    "RID2.INC".
+           COPY    "RID3.INC".
+           COPY    "RID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1497,9 +1501,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
-      *    一時保存テーブル削除処理
-           PERFORM 900-SPATMP-DBDELETE-SEC
-      *
            MOVE    SPACE           TO  SPA-R99-FLG
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
@@ -1729,15 +1730,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-TERMID      TO  JOB-TERMID
-           MOVE    SPA-R01-JOB-KARTE-UID
-                                   TO  JOB-KARTE-UID
-           MOVE    SPA-R01-JOB-ORCA-UID
-                                   TO  JOB-ORCA-UID
+           MOVE    SPA-TERMID      TO  JOB-TERMID                        
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    帳票ファイル作成処理
-           MOVE    ZERO             TO  WRK-RECE08-PRTJYUN
+           MOVE    ZERO             TO  WRK-RECE08-PRTJYUN  
       *
            EVALUATE    SPA-R01-RECE07-RECEKBN
                WHEN    "3"
@@ -1883,24 +1880,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG25
            MOVE    SPA-R01-RECE07-RECEKBN
                                    TO  SHELLTBL-ARG26
-           IF      SPA-R01-JOB-PARAM
-                               NOT =   SPACE
-               MOVE    SPA-R01-JOB-PARAM
-                                       TO  SHELLTBL-ARG27
-      *
-               MOVE    "MONBLOBNEW"    TO  MCP-FUNC
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "monblob"       TO  MCP-TABLE
-               CALL    "MONFUNC"       USING
-                                           MCPAREA
-                                           MONBLOB
-               MOVE    MONBLOB-ID      TO  SHELLTBL-ARG28
-                                           SPA-R01-MONBLOB-ID
-      *
-               DISPLAY "SPA-R01-MONBLOB-ID=" SPA-R01-MONBLOB-ID "#"
-           ELSE
-               MOVE    "orca"          TO  SHELLTBL-ARG27
-           END-IF
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1926,12 +1905,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       24
                    OR      SPA-NAI-R04-PRTJYUNI(IDX)   =   SPACE
-                   OR      SPA-ERRCD           NOT =   SPACE
-      *??
-              DISPLAY "R04=" IDX "#" SPA-GMN-R04-TCHK-VALUE  (IDX) "#"
-               SPA-GMN-R04-TPAGE       (IDX) "#"
-               SPA-NAI-R04-TEISYUTUSAKI (IDX) "#"
-      *??
+                   OR      SPA-ERRCD           NOT =   SPACE    
                IF      SPA-GMN-R04-TCHK-VALUE  (IDX)   =   "T"
                AND     SPA-GMN-R04-TPAGE       (IDX)   >   ZERO
                AND     SPA-NAI-R04-TEISYUTUSAKI (IDX)  =
@@ -3029,39 +3003,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                                    SPA-AREA
            .
        900-CALL-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時保存テーブル削除処理
-      *****************************************************************
-       900-SPATMP-DBDELETE-SEC         SECTION.
-      *
-           INITIALIZE                      SPATMP-REC
-           MOVE    "R01"               TO  SPATMP-GYOUMUID
-           MOVE    SPA-TERMID          TO  SPATMP-TERMID
-           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
-      *
-           MOVE    SPATMP-REC          TO  MCPDATA2-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "del2"              TO  MCP-PATHNAME
-           PERFORM 900-SPATMP-CALL-SEC
-      *
-           .
-       900-SPATMP-DBDELETE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時保存テーブル検索処理
-      *****************************************************************
-       900-SPATMP-CALL-SEC                SECTION.
-      *
-           MOVE    "tbl_spa_tmp"       TO  MCP-TABLE
-           CALL    "ORCDBSPATMP"       USING   MCPAREA
-                                               MCPDATA2-REC
-                                               SPA-AREA
-      *
-           .
-       900-SPATMP-CALL-EXT.
            EXIT.
       *
       *****************************************************************

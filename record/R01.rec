@@ -41,7 +41,7 @@ R01 {
     };
     RENNUM {
       state int;
-      numdata number(4);
+      numdata number(3);
     };
     SRYYM {
       state int;
@@ -76,8 +76,8 @@ R01 {
             column10 varchar(4);
             column11 varchar(4);
             column12 varchar(4);
-          }[2000];
-          selectdata bool[2000];
+          }[500];
+          selectdata bool[500];
       };
     };
     SYOKBN {
@@ -117,7 +117,7 @@ R01 {
       textdata varchar(13);
     };
     KENSU {
-      textdata varchar(9);
+      textdata varchar(7);
     };
   };
 };
