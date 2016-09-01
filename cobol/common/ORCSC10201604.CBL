@@ -4383,6 +4383,14 @@
                    MOVE    TBL-ZS-KBN (TBL-ZSIDX)  TO  WRK-ZS-KBN
                    MOVE    TBL-ZS-KBN2(TBL-ZSIDX)  TO  WRK-ZS-KBN2
            END-SEARCH
+      *
+      *H28.9
+      *    ¡Êºß»Ù¿ÇÅù°Ê³°¡Ë¤Î²Ã»»¤Ï£±²ó¤Î¤ß
+           IF     (WRK-ZS-GRP(2:1)     =   "4"  )
+            AND   (WRK-COM-KSNAUTO (IDX-Z) =   "1" )
+               GO      TO      10016-ZATAKUKSN-AUTO-EXT
+           END-IF
+      *
            EVALUATE    WRK-ZS-GRP(1:1)
               WHEN    "0" 
       *       ºß°åÁí´É(ºß»Ù¿ÇÅù)
@@ -4395,17 +4403,6 @@
                       MOVE    "114034870"      TO  WRK-ZAIKSN-SRYCD(2)
       *               ¼ÂÀÓ²Ã»»£²
                       MOVE    "114035170"      TO  WRK-ZAIKSN-SRYCD(3)
-      *?????????????  EVALUATE    XXXX
-      *               ´ËÏÂ¥±¥¢½¼¼Â
-      *               WHEN    XXXX
-      *                   MOVE    "114034570"      TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£±
-      *               WHEN    XXX
-      *                   MOVE    "114034870"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£²
-      *               WHEN    XXX
-      *                   MOVE    "114035170"         TO  WRK-SRYCD
-      *               END-EVALUATE
                   WHEN    "2"
       *          ¡Ê£²¿Í¡Á£¹¿Í¡Ë
       *               ´ËÏÂ¥±¥¢½¼¼Â
@@ -4414,17 +4411,6 @@
                       MOVE    "114034970"      TO  WRK-ZAIKSN-SRYCD(2)
       *               ¼ÂÀÓ²Ã»»£²
                       MOVE    "114035270"      TO  WRK-ZAIKSN-SRYCD(3)
-      *               EVALUATE    XXXX
-      *               ´ËÏÂ¥±¥¢½¼¼Â
-      *               WHEN    XXXX
-      *                   MOVE    "114034670"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£±
-      *               WHEN    XXX
-      *                   MOVE    "114034970"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£²
-      *               WHEN    XXX
-      *                   MOVE    "114035270"         TO  WRK-SRYCD
-      *               END-EVALUATE
                   WHEN    "3"
       *          ¡Ê£±£°¿Í¡Á¡Ë
       *               ´ËÏÂ¥±¥¢½¼¼Â
@@ -4433,17 +4419,6 @@
                       MOVE    "114035070"      TO  WRK-ZAIKSN-SRYCD(2)
       *               ¼ÂÀÓ²Ã»»£²
                       MOVE    "114035370"      TO  WRK-ZAIKSN-SRYCD(3)
-      *               EVALUATE    XXXX
-      *               ´ËÏÂ¥±¥¢½¼¼Â
-      *               WHEN    XXXX
-      *                   MOVE    "114034770"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£±
-      *               WHEN    XXX
-      *                   MOVE    "114035070"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£²
-      *               WHEN    XXX
-      *                   MOVE    "114035370"         TO  WRK-SRYCD
-      *               END-EVALUATE
                   END-EVALUATE
               WHEN    "1"
       *           ÆÃ°åÁí´É(ºß»Ù¿ÇÅù)
@@ -4456,17 +4431,6 @@
                       MOVE    "114039670"      TO  WRK-ZAIKSN-SRYCD(2)
       *               ¼ÂÀÓ²Ã»»£²
                       MOVE    "114039970"      TO  WRK-ZAIKSN-SRYCD(3)
-      *               EVALUATE    XXXX
-      *               ´ËÏÂ¥±¥¢½¼¼Â
-      *               WHEN    XXXX
-      *                   MOVE    "114039370"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£±
-      *               WHEN    XXX
-      *                   MOVE    "114039670"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£²
-      *               WHEN    XXX
-      *                   MOVE    "114039970"         TO  WRK-SRYCD
-      *               END-EVALUATE
                   WHEN    "2"
       *          ¡Ê£²¿Í¡Á£¹¿Í¡Ë
       *               ´ËÏÂ¥±¥¢½¼¼Â
@@ -4475,17 +4439,6 @@
                       MOVE    "114039770"      TO  WRK-ZAIKSN-SRYCD(2)
       *               ¼ÂÀÓ²Ã»»£²
                       MOVE    "114040070"      TO  WRK-ZAIKSN-SRYCD(3)
-      *               EVALUATE    XXXX
-      *               ´ËÏÂ¥±¥¢½¼¼Â
-      *               WHEN    XXXX
-      *                   MOVE    "114039470"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£±
-      *               WHEN    XXX
-      *                   MOVE    "114039770"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£²
-      *               WHEN    XXX
-      *                   MOVE    "114040070"         TO  WRK-SRYCD
-      *               END-EVALUATE
                   WHEN    "3"
       *          ¡Ê£±£°¿Í¡Á¡Ë
       *               ´ËÏÂ¥±¥¢½¼¼Â
@@ -4494,17 +4447,6 @@
                       MOVE    "114039870"      TO  WRK-ZAIKSN-SRYCD(2)
       *               ¼ÂÀÓ²Ã»»£²
                       MOVE    "114040170"      TO  WRK-ZAIKSN-SRYCD(3)
-      *               EVALUATE    XXXX
-      *               ´ËÏÂ¥±¥¢½¼¼Â
-      *               WHEN    XXXX
-      *                   MOVE    "114039570"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£±
-      *               WHEN    XXX
-      *                   MOVE    "114039870"         TO  WRK-SRYCD
-      *               ¼ÂÀÓ²Ã»»£²
-      *               WHEN    XXX
-      *                   MOVE    "114040170"         TO  WRK-SRYCD
-      *               END-EVALUATE
                   END-EVALUATE
               WHEN    "2"
       *       ºßÂð¤¬¤ó°åÁí¹ç(ºß»Ù¿ÇÅù)
@@ -4514,17 +4456,6 @@
                       MOVE    "114040370"      TO  WRK-ZAIKSN-SRYCD(2)
       *               ¼ÂÀÓ²Ã»»£²
                       MOVE    "114040470"      TO  WRK-ZAIKSN-SRYCD(3)
-      *           EVALUATE    XXXX
-      *           ´ËÏÂ¥±¥¢½¼¼Â
-      *           WHEN    XXXX
-      *               MOVE    "114040270"         TO  WRK-SRYCD
-      *           ¼ÂÀÓ²Ã»»£±
-      *           WHEN    XXX
-      *               MOVE    "114040370"         TO  WRK-SRYCD
-      *           ¼ÂÀÓ²Ã»»£²
-      *           WHEN    XXX
-      *               MOVE    "114040470"         TO  WRK-SRYCD
-      *           END-EVALUATE
            END-EVALUATE
       *
            MOVE    SPACE               TO  WRK-SRYCD
@@ -4538,6 +4469,15 @@
                    MOVE    IDX-Z               TO  IDX-S
                    PERFORM 1100-KASAN-SET-SEC
                    IF      FLG-ADD         =   1
+      *H28.9
+      *               ¡Êºß»Ù¿ÇÅù°Ê³°¡Ë¤Î²Ã»»¤Ï¼êÆþÎÏÊ¬¤È¤¹¤ë
+                       IF     (WRK-ZS-GRP(2:1)     =   "4" )
+                           MOVE    "1"         TO  WRK-COM-KSNAUTO
+                                                        (IDX-Z)
+                           MOVE    SPACE       TO  WRK-COM-AUTOKBN
+                                                        (IDX-S)
+                       END-IF
+      *
                        MOVE    3               TO  IDX3
                    END-IF
                ELSE

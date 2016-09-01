@@ -246,6 +246,11 @@
            03  WRK-TENSUKEI-K          PIC S9(08).
       *
            03  WRK-TIME-KBN2           PIC X(01).
+      *H26.4
+      *    在医総管判定
+           03  WRK-ZS-GRP                  PIC X(02).
+           03  WRK-ZS-KBN                  PIC X(01).
+           03  WRK-ZS-KBN2                 PIC X(01).
       *
       *TEST
       *    収納集計点数内容
@@ -370,6 +375,10 @@
       * 湿布薬（減）
        01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
       *
+      *
+      *H28.9
+      *    在宅時医療総合管理料コードテーブル（H28.4分)
+           COPY     "CMZISOTBL2016.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -989,6 +998,14 @@
                                                              (IDX-1)
                        END-IF
                    END-IF
+      *H28.9
+      *            （在支診等以外）の加算は自動発生なし
+                   IF     (SPA-SRYYMD              >=  "20160401")
+                      AND (ORCSCWKSRY-SYORIFLG     =   ZERO      )
+                      AND (SPA-COM-CDKBN-KBN (IDX-1)   =   "C"  )
+                      AND (SPA-COM-CDKBN-KBNNUM(IDX-1) =   "002")
+                       PERFORM 10026-ZAITAKU-AUTO-SEC
+                   END-IF
       *
       *            回数の入力（外来のみ）
                    IF     (SPA-NYUGAIKBN       =   "2" )  AND
@@ -1259,6 +1276,42 @@
       *
            .
        10025-HAIKI-CHKI-EXT.
+           EXIT.
+      *
+      *H28.9
+      *****************************************************************
+      *    （在支診等以外）の加算処理
+      *****************************************************************
+       10026-ZAITAKU-AUTO-SEC              SECTION.
+      *
+      *    在宅時医学総合管理料等判定（在医総管・特医総管）
+           SET     TBL-ZSIDX           TO  1
+           SEARCH  TBL-ZISOSIN-OCC     VARYING   TBL-ZSIDX
+              AT   END
+                   MOVE    SPACE                   TO  WRK-ZS-KBN
+                   MOVE    SPACE                   TO  WRK-ZS-KBN2
+                   MOVE    SPACE                   TO  WRK-ZS-GRP
+               WHEN   (TBL-ZS-SRYCD (TBL-ZSIDX)
+                                           =   SPA-COM-INPUTCD (IDX-1)) 
+                   MOVE    TBL-ZS-GRP (TBL-ZSIDX)  TO  WRK-ZS-GRP
+                   MOVE    TBL-ZS-KBN (TBL-ZSIDX)  TO  WRK-ZS-KBN
+                   MOVE    TBL-ZS-KBN2(TBL-ZSIDX)  TO  WRK-ZS-KBN2
+           END-SEARCH
+      *
+           IF      SPA-COM-DATAKBN(IDX-1) =  "1"
+      *        （在支診等以外）　自動発生なし
+               IF     (WRK-ZS-GRP(2:1)     =   "4" )
+                   MOVE    "1"             TO  SPA-COM-KSNAUTO(IDX-1)
+      *            直下の自動発生分は手入力とする
+                   IF     (SPA-COM-INPUTCD (IDX-1 + 1)(1:1)  =   "1")
+                      AND (SPA-COM-AUTOKBN (IDX-1 + 1)     =  "2"  )
+                        MOVE   SPACE           TO  SPA-COM-AUTOKBN
+                                                          (IDX-1 + 1)
+                   END-IF
+               END-IF
+           END-IF
+           .
+       10026-ZAITAKU-AUTO-EXT.
            EXIT.
       *
       *****************************************************************
