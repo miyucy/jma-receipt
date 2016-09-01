@@ -860,6 +860,8 @@ DB_files = \
 	xml_formdatagetv2req.db \
 	xml_contraindication_checkv2req.db \
 	xml_contraindication_checkv2res.db \
+	rp_prescription.db \
+	rp_medichine_information.db \
 	xml_patientmodv3req4.db \
 	xml_patientmodv3res4.db \
 

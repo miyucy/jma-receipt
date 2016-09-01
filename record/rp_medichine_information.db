@@ -1,0 +1,50 @@
+rp_medichine_information {
+	context	int;
+	object	object;
+	mode	int;
+	recordname	varchar(128);
+	data {
+		Report_ID				varchar(30);
+		Custom_ID				varchar(30);
+		Printer					varchar(20);
+ 		Perform_Date			varchar(10);
+		IssueDate				varchar(10);
+		Patient	{
+			ID	 				    varchar(20);
+			Name 				    varchar(50);
+			KanaName  			varchar(50);
+			BirthDate 			varchar(10);
+			Sex					    varchar(1);
+		};
+		Hospital	{
+			Name								varchar(120)[3];
+			Zipcode         		varchar(7);
+			Address							varchar(200)[3];
+			PhoneNumber					varchar(15);
+		};
+		Doctor	{
+			Code								varchar(5);
+			Name 								varchar(50);
+			KanaName 						varchar(50);
+		};
+		NumberOfType					varchar(3);
+		Medichine_Information	{
+			Name								varchar(100);
+			Code								varchar(9);
+			Image_ID						varchar(36);
+			Effect							varchar(1000);
+			Shape								varchar(180);
+			Color								varchar(180);
+			Mark								varchar(180);
+			Caution							varchar(2000);
+			Usage								varchar(100)[30];
+			Dosage{
+				Risingtime				varchar(3);
+				Morning						varchar(3);
+				Afternoon					varchar(3);
+				Evening						varchar(3);
+				Bedtime						varchar(3);
+			};
+		}[50];
+	};
+};
