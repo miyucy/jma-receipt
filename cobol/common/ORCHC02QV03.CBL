@@ -6100,6 +6100,11 @@
                IF      IDX-AP1             >   50
                    GO      TO      7004-APIMEI-HENSYU-EXT
                END-IF
+      *        内服で総量表示の薬剤のみの場合、外用と同様の表示とする
+               IF     (WRK-SRYKBN          =   "21"  )  AND
+                      (FLG-SOURYOHEN       =   1     )
+                   MOVE    "23"                TO  WRK-SRYKBN
+               END-IF
       *
                IF      ORCHC19-KBN         =   "1"
                                            OR  "B"
@@ -6109,9 +6114,13 @@
                    CONTINUE
                ELSE
       *            回数編集
-                   MOVE    WRK-KAISU           TO  WRK-KAISU-9
-                   MOVE    WRK-KAISU-G         TO  RPSHOHO-ZAIKAISU
+                   EVALUATE    WRK-SRYKBN
+                       WHEN    "21"
+                       WHEN    "22"
+                           MOVE    WRK-KAISU       TO  WRK-KAISU-9
+                           MOVE    WRK-KAISU-G     TO  RPSHOHO-ZAIKAISU
                                                            (IDX-AP1)
+                   END-EVALUATE
                END-IF
       *        剤型区分
                MOVE    WRK-SRYKBN          TO  RPSHOHO-SRYKBN(IDX-AP1)
