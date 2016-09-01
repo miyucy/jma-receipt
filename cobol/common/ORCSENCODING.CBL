@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-多々納  16/09/01  システム管理判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -41,6 +42,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
       *01  IDX-AREA.
       *    03  IDX                   PIC 9(03).
@@ -56,6 +58,9 @@
       *
       *    システムカタログ
            COPY    "CPDBCTG.INC".
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -85,6 +90,12 @@
       *
       *    エンコード取得処理
            PERFORM 100-DBCATLG-GET-SEC
+      *H28.9
+      *    "UTF8"の時、システム管理検索
+           IF      SPA-ENCODING        =   2
+               PERFORM 1001-SYSKANRI-9901-SEC
+           END-IF
+      *
            .
            EXIT    PROGRAM
            .
@@ -164,6 +175,51 @@
       *
            .
        100-DBCATLG-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       1001-SYSKANRI-9901-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "9901"              TO  SYS-KANRICD
+           MOVE    "0001"              TO  SYS-KBNCD
+           MOVE    "00000000"          TO  SYS-STYUKYMD
+           MOVE    "99999999"          TO  SYS-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+      *        拡張漢字不可　　"EUC_JP" とする
+               IF      SYS-KANRITBL(1:1)   =   "0"
+                   MOVE    1               TO  SPA-ENCODING
+               END-IF
+           END-IF
+      *
+           .
+       1001-SYSKANRI-9901-EXT.
            EXIT.
       *
       *****************************************************************
