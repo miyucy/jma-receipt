@@ -1553,6 +1553,24 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *H27.1
       *    ステム管理共通（妥結率）
            PERFORM 1003-SYSKANRI-DAKETU-SEC
+      *H28.2
+      *    後発医薬品への変更可署名
+           MOVE    SPACE               TO  SYS-1030-REC
+           INITIALIZE                  SYS-1030-REC
+           MOVE    "1030"              TO  SYS-1030-KANRICD
+           MOVE    "*"                 TO  SYS-1030-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
+           MOVE    SYS-1030-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1030-REC
+               MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
+           ELSE
+               MOVE    "0"                 TO  SPA-KOUHATUKA
+           END-IF
+      *
       *
            .
        3101-SYSKANRI-SET-EXT.
