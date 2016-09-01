@@ -660,14 +660,6 @@
       * ７０枚を超えて湿布薬を投与した理由
        01  CONS-SP70-COMT          PIC X(09)   VALUE    "830000052".
       *
-      *H28.9
-      *持参薬予約コード
-       01  CONS-AREA.
-           03  CONS-JSNYCD1        PIC X(09)    VALUE   "099209811".
-           03  CONS-JSNYCD2        PIC X(09)    VALUE   "099209812".
-           03  CONS-JSNYCD3        PIC X(09)    VALUE   "099209821".
-           03  CONS-JSNYCD4        PIC X(09)    VALUE   "099209822".
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
