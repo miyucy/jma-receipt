@@ -1500,6 +1500,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "25 Í×²ð¸î£µ"
                                        TO  SPA-GMN28-CAREJOTAI-LST (9)
            MOVE    9                   TO  SPA-GMN28-CAREJOTAI-MAX
+      *
            .
        1005-COMB-SET-EXT.
            EXIT.
@@ -5193,7 +5194,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    PERFORM 10025-PTNUMPUBLIC-SET-SEC
       *ver.4.7
       *    ´µ¼Ô¸ÄÊÌ¾ðÊóÊÔ½¸
-      *****PERFORM 10028-PTCONF-SET-SEC
+           PERFORM 10028-PTCONF-SET-SEC
       *
       *    ´µ¼ÔÏ«ºÒ¾ðÊóÊÔ½¸
            PERFORM 10023-RSIPARA-SET-SEC
