@@ -94,7 +94,7 @@
                    07  SPA-GMN-TITLE2              PIC X(10).
                    07  SPA-GMN-ERRMSG              PIC X(60).
                    07  SPA-GMN-FILENAME            PIC X(200).
-                   07  SPA-GMN-OBJECT              PIC X(08).
+      *            07  SPA-GMN-OBJECT              PIC X(08).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-OCC             OCCURS  100.
                            11  SPA-GMN-TNO         PIC 9(05).
@@ -144,7 +144,7 @@
                            11  SPA-NAI-PTID        PIC 9(10).
                            11  SPA-NAI-MAKEOK-FLG  PIC 9(01).
                            11  SPA-NAI-UPDFLG      PIC X(01).
-                           11  SPA-NAI-OBJECT      PIC X(08).
+      *                    11  SPA-NAI-OBJECT      PIC X(08).
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *                 
@@ -699,7 +699,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-BANGO                TO  IDY
       *     
            MOVE    SPA-NAI-FILENAME (IDY)   TO  SPA-GMN-FILENAME 
-           MOVE    SPA-NAI-OBJECT   (IDY)   TO  SPA-GMN-OBJECT
+      *    MOVE    SPA-NAI-OBJECT   (IDY)   TO  SPA-GMN-OBJECT
       **** MOVE    SPA-GMN-TSHORI-RENNUM (IDY) TO
       ****                                     SPA-NAI-SHORI-RENNUM
       *                                 
@@ -724,8 +724,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 2013-PREVIEW-CHECK-SEC
            MOVE    SPA-NAI-FILENAME (IDY)
                                        TO  SPA-GMN-FILENAME
-           MOVE    SPA-NAI-OBJECT (IDY)
-                                       TO  SPA-GMN-OBJECT
+      *    MOVE    SPA-NAI-OBJECT (IDY)
+      *                                TO  SPA-GMN-OBJECT
       *
            IF      SPA-NAI-UPDFLG(IDY)      =   "1"
                MOVE    SPA-NAI-MEMO (IDY)
@@ -1118,7 +1118,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
-                                       SPA-GMN-OBJECT
+      *                                SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1144,7 +1144,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
-                                       SPA-GMN-OBJECT
+      *                                SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1715,15 +1715,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        SPA-NAI-MAKEOK-FLG (IDX)
                    MOVE   "*"          TO
                                         SPA-GMN-TPRFLG     (IDX)
-                   MOVE    ORCF-FILE-NAME      TO  ORCA-BLOB-FILE
-                   MOVE    "BLOBIMPORT"      TO  MCP-FUNC
-                   MOVE    "blob"            TO  MCP-TABLE
-                   MOVE    "key"             TO  MCP-PATHNAME
+      *            MOVE    ORCF-FILE-NAME      TO  ORCA-BLOB-FILE
+      *            MOVE    "BLOBIMPORT"      TO  MCP-FUNC
+      *            MOVE    "blob"            TO  MCP-TABLE
+      *            MOVE    "key"             TO  MCP-PATHNAME
 grpsys*            CALL    "MONFUNC"         USING MCPAREA
-grpsys             CALL    "ORCDBMAIN"       USING MCPAREA
-                                             ORCA-BLOB
-grpsys                                       SPA-AREA
-                   MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
+grpsys*            CALL    "ORCDBMAIN"       USING MCPAREA
+      *                                      ORCA-BLOB
+grpsys*                                      SPA-AREA
+      *            MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
                    MOVE    ORCF-FILE-NAME      TO  SPA-NAI-FILENAME(IDX)
                    GO        TO  20122-PSFILE-EXIST-EXT
            END-IF
@@ -1762,16 +1762,16 @@ grpsys                                       SPA-AREA
                                                SPA-NAI-MAKEOK-FLG (IDX)
                      MOVE   "*"                TO
                                                SPA-GMN-TPRFLG     (IDX)
-                     MOVE   "BLOBIMPORT"       TO  MCP-FUNC
-                     MOVE   SPA-NAI-FILENAME (IDX)
-                                               TO  ORCA-BLOB-FILE
-                     MOVE    "key"               TO  MCP-PATHNAME
-                     MOVE    "blob"              TO  MCP-TABLE
-grpsys               CALL    "ORCDBMAIN"       USING
-                                               MCPAREA
-                                               ORCA-BLOB
-                                               SPA-AREA
-                     MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
+      *              MOVE   "BLOBIMPORT"       TO  MCP-FUNC
+      *              MOVE   SPA-NAI-FILENAME (IDX)
+      *                                        TO  ORCA-BLOB-FILE
+      *              MOVE    "key"               TO  MCP-PATHNAME
+      *              MOVE    "blob"              TO  MCP-TABLE
+grpsys*              CALL    "ORCDBMAIN"       USING
+      *                                        MCPAREA
+      *                                        ORCA-BLOB
+      *                                        SPA-AREA
+      *              MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
       ***************DISPLAY "take file = "  ORCA-BLOB-FILE
                    END-IF
             END-IF
@@ -1934,9 +1934,21 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-ERRMSG      TO  XC01-ERRMSG
            MOVE    "red"               TO  XC01-ERRMSG-STYLE
       *    MOVE    SPA-GMN-TITLE2      TO  XC01-HEAD2
-      *     
+      *
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
-           MOVE    SPA-GMN-OBJECT      TO  XC01-PSAREA
+      *
+           IF    ( SPA-GMN-FILENAME    NOT =   SPACE )
+               MOVE   "BLOBIMPORT"     TO  MCP-FUNC
+               MOVE   SPA-GMN-FILENAME TO  ORCA-BLOB-FILE
+               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "blob"          TO  MCP-TABLE
+               CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+               MOVE    ORCA-BLOB-OBJECT
+                                       TO  XC01-PSAREA
+           END-IF
       *
            MOVE    SPACE               TO  WRK-TITLE
            MOVE    SPACE               TO  WRK-PTNUM
