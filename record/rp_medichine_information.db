@@ -39,11 +39,16 @@ rp_medichine_information {
 			Caution							varchar(2000);
 			Usage								varchar(100)[30];
 			Dosage{
-				Risingtime				varchar(3);
-				Morning						varchar(3);
-				Afternoon					varchar(3);
-				Evening						varchar(3);
-				Bedtime						varchar(3);
+				Risingtime						varchar(3);
+				Risingtime_Unit_Name	varchar(2);
+				Morning								varchar(3);
+				Morning_Unit_Name			varchar(2);
+				Afternoon							varchar(3);
+				Afternoon_Unit_Name		varchar(2);
+				Evening								varchar(3);
+				Evening_Unit_Name			varchar(2);
+				Bedtime								varchar(3);
+				Bedtime_Unit_Name			varchar(2);
 			};
 		}[50];
 	};
