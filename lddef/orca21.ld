@@ -75,6 +75,7 @@ db "xml2" {
  xml_medicalsetv2res;
  rp_medication_note;
  rp_prescription;
+ rp_medichine_information;
 };
 
 #include "orcadb.inc"
