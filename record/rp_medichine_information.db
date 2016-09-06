@@ -50,6 +50,6 @@ rp_medichine_information {
 				Bedtime								varchar(3);
 				Bedtime_Unit_Name			varchar(2);
 			};
-		}[50];
+		}[99];
 	};
 };
