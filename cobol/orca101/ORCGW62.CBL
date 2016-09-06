@@ -29,6 +29,7 @@
       *  Maj/Min/Rev 修正者        日付      内容
       *  00.00.01    NACL-森脇     06.08.02  労災、自賠のプリンタ追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  04.08.01    NACL-森脇     16/09/06  GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -447,6 +448,31 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE           TO  W62
            INITIALIZE                  W62
+      *
+      *----(04.08.01)--ADD-START---
+      *    ファイル位置決定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-CONS-FILENAME
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING
+                                       ORCSMKPASSAREA
+      *
+      *    ファイル存在チェック
+           INITIALIZE                  ORCSFILECHKAREA
+           MOVE    MKPASS-OT-01    TO  FILECHK-NAME
+           CALL    "ORCSFILECHK"       USING
+                                       ORCSFILECHKAREA
+           IF          FILECHK-RC      =   0
+               MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+               MOVE    "blob"          TO  MCP-TABLE
+               MOVE    "primary"       TO  MCP-PATHNAME
+               MOVE    MKPASS-OT-01    TO  ORCA-BLOB-FILE
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   ORCA-BLOB
+                                                   SPA-AREA
+               MOVE    ORCA-BLOB-OBJECT    TO  SPA-W62-OBJECT
+           END-IF
+      *----(04.08.01)--ADD-END-----
       *
            MOVE    SPA-W62-OBJECT  TO  W62-PSAREA
            MOVE    SPA-W62-PRTNUM-G    TO  W62-PRTNUM
