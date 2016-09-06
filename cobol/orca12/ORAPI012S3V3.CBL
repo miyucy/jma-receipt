@@ -235,6 +235,8 @@
            03  WRK-APIV3DATA-REC.
       *        レスポンス番号
                05  WRK-RESPONSE-NUMBER     PIC X(02).
+      *        処理ＰＧ
+               05  WRK-PARA-SYORIPG        PIC X(02).
       *        確認コード
                05  WRK-SELECT-CODE         PIC X(04).
       *        登録終了
@@ -903,6 +905,14 @@
                PERFORM 990-LOCK-OUT-SEC
            END-IF
       *
+           IF     (WRK-ERRCD               =   SPACE )
+             AND  (PTMODREQ-REQUEST-NUMBER NOT =   "01"  )
+      *        リクエスト０１以外は、同じ処理の続きであること
+               IF      WRK-PARA-SYORIPG    NOT =   "03"
+                   MOVE    "08"                TO  WRK-ERRCD
+               END-IF
+           END-IF
+      *
            .
        2009-PARA-INIT-EXT.
            EXIT.
@@ -1432,6 +1442,8 @@
                                        TO  WRK-RESPONSE-NUMBER
            MOVE    PTMODRES-SELECT-CODE    TO  WRK-SELECT-CODE
            MOVE    WRK-ENDKBN          TO  WRK-PARA-ENDKBN
+      *    処理ＰＧ
+           MOVE    "03"                TO  WRK-PARA-SYORIPG
       *
            MOVE    WRK-APIV3DATA-REC   TO  APIPARA-DATA-REC
       *
