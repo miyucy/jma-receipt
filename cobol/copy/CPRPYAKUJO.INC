@@ -42,14 +42,14 @@
       *         ½»½ê
                 07  RPYAKUJO-HOSP-ADRS-G.
                   09  RPYAKUJO-HOSP-ADRS         PIC X(200)
-                                                NOCCURS   3.
+                                                 OCCURS   3.
                 07  RPYAKUJO-HOSP-TEL            PIC X(15).
               05  RPYAKUJO-DOCTOR-AREA.
                 07  RPYAKUJO-DR-CODE             PIC X(5).
                 07  RPYAKUJO-DR-NAME             PIC X(50).
                 07  RPYAKUJO-DR-KANANAME         PIC X(50).
               05  RPYAKUJO-SHURUISU              PIC X(3).
-              05  RPYAKUJO-YAKUJO-AREA           OCCURS   50.
+              05  RPYAKUJO-YAKUJO-AREA           OCCURS   99.
                 07  RPYAKUJO-YKZNAME             PIC X(100).
                 07  RPYAKUJO-SRYCD               PIC X(9).
                 07  RPYAKUJO-IMAGE-ID            PIC X(36).
@@ -61,7 +61,12 @@
                 07  RPYAKUJO-YOHO                PIC X(100) OCCURS 30.
                 07  RPYAKUJO-FUKUYOJITEN.
                     09  RPYAKUJO-KISHOJI         PIC X(3).
+                    09  RPYAKUJO-KISHOJI-TANI    PIC X(2).
                     09  RPYAKUJO-ASA             PIC X(3).
+                    09  RPYAKUJO-ASA-TANI        PIC X(2).
                     09  RPYAKUJO-HIRU            PIC X(3).
+                    09  RPYAKUJO-HIRU-TANI       PIC X(2).
                     09  RPYAKUJO-YU              PIC X(3).
+                    09  RPYAKUJO-YU-TANI         PIC X(2).
                     09  RPYAKUJO-SHUSHINJI       PIC X(3).
+                    09  RPYAKUJO-SHUSHINJI-TANI  PIC X(2).
