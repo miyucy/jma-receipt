@@ -2955,11 +2955,10 @@
                           OR  (SPA-YOUKAIGO-ARI    NOT =   ZERO )
       *
       *        要介護状態
-               IF       PTCRNIN-CAREJOTAICD    =   "21"
-                                               OR  "22"
-                                               OR  "23"
-                                               OR  "24"
-                                               OR  "25"
+               IF       PTCRNIN-CAREJOTAICD    =   "01"
+      *            自立　は対象外
+                   CONTINUE
+               ELSE
                    MOVE    1               TO  SPA-YOUKAIGO-ARI
                END-IF
       *
