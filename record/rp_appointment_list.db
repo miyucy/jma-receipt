@@ -1,0 +1,48 @@
+rp_appointment_list {
+	context	int;
+	object	object;
+	mode	int;
+	recordname	varchar(128);
+	data {
+		Report_ID				varchar(30);
+		Custom_ID				varchar(30);
+		Printer					varchar(20);
+		Perform_Date		varchar(10);
+		IssueDate				varchar(10);
+		Medical_Information	{
+			Code					varchar(2);
+			Name					varchar(20);
+		};
+		Doctor{
+			Code					varchar(5);
+			Name 					varchar(50);
+			KanaName 			varchar(50);
+		};
+		Appointment_List	{
+			Time								varchar(5);
+			Department_Code			varchar(02);
+			Department_Name			varchar(40);
+			Medical_Information	{
+				Code					varchar(2);
+				Name					varchar(20);
+			};
+			Doctor{
+				Code					varchar(5);
+				Name 					varchar(50);
+				KanaName 			varchar(50);
+			};
+			Patient	{
+				ID	 				    varchar(20);
+				Name 				    varchar(50);
+				KanaName  			varchar(50);
+				BirthDate 			varchar(10);
+				Sex					    varchar(1);
+			};
+			Detail_Code				varchar(02);
+			Detail_Name				varchar(30);
+			Contact_Code			varchar(02);
+			Contact_Name			varchar(20);
+			Visit_Flg					varchar(01);
+		}[1000];
+	};
+};
