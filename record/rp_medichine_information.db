@@ -8,7 +8,7 @@ rp_medichine_information {
 		Custom_ID				varchar(30);
 		Printer					varchar(20);
  		Perform_Date			varchar(10);
-		IssueDate				varchar(10);
+		Issue_Date				varchar(10);
 		Patient	{
 			ID	 				    varchar(20);
 			Name 				    varchar(50);
