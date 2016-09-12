@@ -8,7 +8,7 @@ rp_appointment_list {
 		Custom_ID				varchar(30);
 		Printer					varchar(20);
 		Perform_Date		varchar(10);
-		Issue_Date			varchar(10);
+		IssuedDate			varchar(10);
 		Medical_Information	{
 			Code					varchar(2);
 			Name					varchar(20);
