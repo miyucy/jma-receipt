@@ -18,7 +18,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_nyuincdchg_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_nyuincdchg
+		FROM master.tbl_nyuincdchg
 			WHERE SRYCD_BF  =   :SRYCD_BF
 			AND   SRYCD_AF  =   :SRYCD_AF
 			AND   YUKOSTYMD <=  :YUKOSTYMD
@@ -31,7 +31,7 @@ path	key2 	{
 	DBSELECT	{
 		DECLARE tbl_nyuincdchg_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_nyuincdchg
+		FROM master.tbl_nyuincdchg
 			WHERE SRYCD_BF  =   :SRYCD_BF
 			AND   YUKOSTYMD <=  :YUKOSTYMD
 			AND   YUKOEDYMD >=  :YUKOEDYMD

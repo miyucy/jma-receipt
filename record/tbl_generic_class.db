@@ -4,7 +4,7 @@ tbl_generic_class {
 	YUKOEDYMD		varchar(8);
 	KOUHATU	    		number(1,0);
 	UPYMD    		varchar(8);
-#-----> 主キー更新用項目
+#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
 	UPYAKKAKJNCD			char(12),virtual;
 	UPYUKOSTYMD			char(8),virtual;
 	UPYUKOEDYMD 			char(8),virtual;
@@ -17,7 +17,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_generic_class_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_generic_class
+		FROM master.tbl_generic_class
 			WHERE YAKKAKJNCD =   :YAKKAKJNCD
  			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -28,7 +28,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_generic_class_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_generic_class
+		FROM master.tbl_generic_class
 			WHERE 	YAKKAKJNCD	= :YAKKAKJNCD
 			ORDER	BY	YUKOSTYMD
 		;
@@ -36,7 +36,7 @@ path	key2	{
 };
 path	upd1	{
 	DBUPDATE		{
-		UPDATE	tbl_generic_class
+		UPDATE master.tbl_generic_class
 				SET
 				YAKKAKJNCD     = :YAKKAKJNCD,
 				YUKOSTYMD      = :YUKOSTYMD,

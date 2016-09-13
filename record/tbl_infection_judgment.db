@@ -16,7 +16,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_infection_judgment_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_infection_judgment
+		FROM master.tbl_infection_judgment
 		WHERE        DISEASE  =  :DISEASE
 		;
 	};
@@ -26,7 +26,7 @@ path	key2		{
 	DBSELECT	{
 		DECLARE tbl_infection_judgment_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_infection_judgment
+		FROM master.tbl_infection_judgment
 		WHERE        DISEASE  =  :DISEASE
 			AND  CODE_KBN =  :CODE_KBN
 		;
@@ -37,7 +37,7 @@ path	key3		{
 	DBSELECT	{
 		DECLARE tbl_infection_judgment_key3_csr CURSOR FOR
 		SELECT *
-		FROM tbl_infection_judgment
+		FROM master.tbl_infection_judgment
 		WHERE        ID  =  :ID
 		;
 	};
@@ -47,7 +47,7 @@ path	key4		{
 	DBSELECT	{
 		DECLARE tbl_infection_judgment_key4_csr CURSOR FOR
 		SELECT DISEASE
-		FROM tbl_infection_judgment
+		FROM master.tbl_infection_judgment
 		WHERE JUDGMENT_CODE != '0000000'
 		  AND JUDGMENT_CODE != '000000000'
 		GROUP BY DISEASE
@@ -59,7 +59,7 @@ path	key4		{
 path	del1		{
 	DBDELETE	{
 		DELETE
-		FROM tbl_infection_judgment
+		FROM master.tbl_infection_judgment
 		WHERE        ID  =  :ID
 		;
 	};
@@ -69,7 +69,7 @@ path	all		{
 	DBSELECT	{
 		DECLARE tbl_infection_judgment_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_infection_judgment
+		FROM master.tbl_infection_judgment
 		ORDER BY DISEASE,CODE_KBN,JUDGMENT_CODE
 		;
 	};
@@ -77,7 +77,7 @@ path	all		{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE	tbl_infection_judgment
+		UPDATE master.tbl_infection_judgment
 				SET
 				ID      = :ID,
 				DISEASE      = :DISEASE,

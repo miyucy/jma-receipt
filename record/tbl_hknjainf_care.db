@@ -22,7 +22,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_hknjainf_care_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_hknjainf_care
+		FROM master.tbl_hknjainf_care
 			WHERE   HKNJANUM	=   :HKNJANUM
 		;
 	};
@@ -33,7 +33,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_hknjainf_care_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_hknjainf_care
+		FROM master.tbl_hknjainf_care
 			ORDER	BY	HKNJANUM
  		;
 	};

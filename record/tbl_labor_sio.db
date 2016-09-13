@@ -23,7 +23,7 @@ path	key	{
 	DBSELECT	{
 		DECLARE tbl_labor_sio_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_labor_sio
+		FROM master.tbl_labor_sio
 			WHERE	SYOCD        =  :SYOCD
 			AND	YUKOSTYMD   <=  :YUKOSTYMD
 			AND	YUKOEDYMD   >=  :YUKOEDYMD
@@ -35,7 +35,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_labor_sio_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_labor_sio
+		FROM master.tbl_labor_sio
       		;
 	};
 };
@@ -44,7 +44,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_labor_sio_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_labor_sio
+		FROM master.tbl_labor_sio
 			WHERE	SYOCD        =  :SYOCD
 			ORDER	BY	YUKOSTYMD
 		;
@@ -53,7 +53,7 @@ path	key2	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE	tbl_labor_sio
+		UPDATE master.tbl_labor_sio
 				SET
 				SYOCD          = :SYOCD,
 				YUKOSTYMD      = :YUKOSTYMD,

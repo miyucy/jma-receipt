@@ -14,7 +14,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_tekiou_medicine_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_tekiou_medicine
+		FROM master.tbl_tekiou_medicine
 			WHERE SRYCD	=	:SRYCD
 		;
 	};
@@ -24,7 +24,7 @@ path	all 	{
 	DBSELECT	{
 		DECLARE tbl_tekiou_medicine_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_tekiou_medicine
+		FROM master.tbl_tekiou_medicine
 		ORDER   BY  SRYCD
 		;
 	};

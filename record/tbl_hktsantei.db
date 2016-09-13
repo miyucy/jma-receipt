@@ -20,7 +20,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_hktsantei_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_hktsantei
+		FROM master.tbl_hktsantei
 			WHERE   KANRICD    =   :KANRICD
 			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
@@ -33,7 +33,7 @@ path	key2		{
 	DBSELECT	{
 		DECLARE tbl_hktsantei_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_hktsantei
+		FROM master.tbl_hktsantei
 			WHERE   KANRICD     =   :KANRICD
 			AND   YUKOSTYMD    <=   :YUKOSTYMD
 			AND   YUKOEDYMD    >=   :YUKOEDYMD
@@ -46,7 +46,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_hktsantei_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_hktsantei
+		FROM master.tbl_hktsantei
 			ORDER   BY         KANRICD,
 			                   YUKOSTYMD,
 			                   SRYCD

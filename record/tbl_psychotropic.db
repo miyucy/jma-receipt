@@ -18,7 +18,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_psychotropic_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_psychotropic
+		FROM master.tbl_psychotropic
 		WHERE   CODE     =   :CODE
  		AND   YUKOSTYMD  <=  :YUKOSTYMD
 		AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -30,7 +30,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_psychotropic_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_psychotropic
+		FROM master.tbl_psychotropic
 			ORDER   BY  CODE,
 				    YUKOSTYMD
  		;
@@ -40,7 +40,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_psychotropic_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_psychotropic
+		FROM master.tbl_psychotropic
 			WHERE 	CODE	= :CODE
 			ORDER	BY	YUKOSTYMD
 		;
@@ -48,7 +48,7 @@ path	key2	{
 };
 path	upd1	{
 	DBUPDATE		{
-		UPDATE	tbl_psychotropic
+		UPDATE master.tbl_psychotropic
 				SET
 				CODE     = :CODE,
 				YUKOSTYMD      = :YUKOSTYMD,
