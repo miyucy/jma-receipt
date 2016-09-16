@@ -1423,7 +1423,13 @@
                          ( WRK-HENSURYO(2:1)   =   "." )
                        COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
                                                +   1
-                       MOVE    "£±"        TO  WRK-YKJ-KBN(IDX-KBN)
+      *----(04.08.02)--UPD-START---
+                       IF      PARA-API-DATA       =   "1"
+                           MOVE    "1"        TO  WRK-YKJ-KBN(IDX-KBN)
+                       ELSE
+                           MOVE    "£±"        TO  WRK-YKJ-KBN(IDX-KBN)
+                       END-IF
+      *----(04.08.02)--UPD-END-----
                        MOVE    "Êñ"        TO  WRK-TANINAME
                    ELSE
                        IF      WRK-HENSURYO(4:)    NOT =   SPACE
@@ -1431,6 +1437,11 @@
                        ELSE
                            COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
                                                    +   WRK-SURYO
+      *----(04.08.02)--UPD-START---
+                           IF      PARA-API-DATA       =   "1"
+                               MOVE    WRK-HENSURYO(1:3)
+                                   TO  WRK-YKJ-KBN(IDX-KBN)
+                           ELSE
                            IF      WRK-HENSURYO(2:)    NOT =   SPACE
                                MOVE    WRK-HENSURYO(1:3)
                                                TO  WRK-YKJ-KBN(IDX-KBN)
@@ -1446,6 +1457,8 @@
                                MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                                TO  WRK-YKJ-KBN(IDX-KBN)
                            END-IF
+                           END-IF
+      *----(04.08.02)--UPD-END-----
                        END-IF
                    END-IF
                    IF   (( WRK-TANINAME    =   "Êñ" )  AND
@@ -2119,17 +2132,18 @@
                                    RPYAKUJO-YOHO(CNT-KENSU IDX-GYO)
            END-PERFORM
       *
-           MOVE    WRK-YKJ-KBN(1)  TO  RPYAKUJO-KISHOJI(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(1) TO  RPYAKUJO-KISHOJI-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(2)  TO  RPYAKUJO-ASA(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(2) TO  RPYAKUJO-ASA-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(3)  TO  RPYAKUJO-HIRU(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(3) TO  RPYAKUJO-HIRU-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(4)  TO  RPYAKUJO-YU(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(4) TO  RPYAKUJO-YU-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(5)  TO  RPYAKUJO-SHUSHINJI(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(5) TO
+
+           MOVE    WRK-YKJ-KBN(1)  TO  RPYAKUJO-ASA(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(1) TO  RPYAKUJO-ASA-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(2)  TO  RPYAKUJO-HIRU(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(2) TO  RPYAKUJO-HIRU-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(3)  TO  RPYAKUJO-YU(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(3) TO  RPYAKUJO-YU-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(4)  TO  RPYAKUJO-SHUSHINJI(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(4) TO
                                    RPYAKUJO-SHUSHINJI-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(5)  TO  RPYAKUJO-KISHOJI(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(5) TO  RPYAKUJO-KISHOJI-TANI(CNT-KENSU)
       *
            .
        740-API-NAIYO-SET-EXT.
