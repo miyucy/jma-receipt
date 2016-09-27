@@ -56,6 +56,7 @@
       * 04.03.02     NACL-森脇     08/12/04  薬剤情報複写機能追加
       * 04.07.01     NACL-森脇     14/04/02  画像表示方法変更
       * 04.08.01     NACL-森脇     14/08/07  画像イメージ作成機能追加
+      * 04.08.02     NACL-森脇     16/09/27  GINBEE(API)対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -452,8 +453,8 @@
            INITIALIZE                  SPA-N21-AREA
            INITIALIZE                  WRK-PIN-AREA
       *
-           MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
-                                       SPA-NAI-OBJECT
+      *     MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+      *                                 SPA-NAI-OBJECT
       *
            MOVE    2               TO  SPA-GMN-CUR
       *
@@ -574,8 +575,8 @@
       *
            INITIALIZE                  SPA-GMN-AREA
            INITIALIZE                  SPA-NAI-AREA
-           MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
-                                       SPA-NAI-OBJECT
+      *     MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+      *                                 SPA-NAI-OBJECT
            MOVE    SPACE           TO  SPA-GMN-EVENT
       *
            .
@@ -589,8 +590,8 @@
       *
            INITIALIZE                  SPA-GMN-ENTRY
            INITIALIZE                  SPA-NAI-ENTRY
-           MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
-                                       SPA-NAI-OBJECT
+      *     MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+      *                                 SPA-NAI-OBJECT
       *
            .
        401-CLEAR-ENTRY-EXT.
@@ -1163,8 +1164,11 @@
       *****************************************************************
        430-GAZOCHK-HENSYU-SEC      SECTION.
       *
+           MOVE    SPACE           TO  SPA-N21FIL-PHOTO
+           MOVE    LOW-VALUE       TO  N21-PHOTOAREA
+      *
            IF      SPA-GMN-PHOTO   =   SPACE
-               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+      *         MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
@@ -1175,8 +1179,7 @@
       *
       *    カナチェック
            IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
-                 ( KANACHK-RC          NOT =   ZERO )  OR
-                 ( KANACHK-RC2             =   7    )
+                 ( KANACHK-RC          NOT =   ZERO ) 
                MOVE    "0003"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
                GO  TO  430-GAZOCHK-HENSYU-EXT
@@ -1187,70 +1190,16 @@
            IF      FLG-OK          =   1
                MOVE    "0015"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
-               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+      *         MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
+           MOVE    SPA-GMN-PHOTO   TO  SPA-N21FIL-PHOTO
+      *
       *    パス名をフォルダ名とファイル名に分ける
            PERFORM 431-GAZO-PATH-CHK-SEC
-           IF      FLG-OK          =   ZERO
-               MOVE    SPACE           TO  ORCA-BLOB-FILE
-               STRING  MCP-TEMPDIR         DELIMITED BY SPACE
-                       "/"                 DELIMITED BY SIZE
-                       WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
-                       "/"                 DELIMITED BY SIZE
-                       WRK-FILEMEI         DELIMITED BY SPACE
-                                   INTO    ORCA-BLOB-FILE
-               END-STRING
-           END-IF
-      *
-           IF    ( SPA-N21FIL-PHOTO    NOT =   SPACE )
-      *        画像ファイルがない場合はファイル作成する
-      *         INITIALIZE                  ORCSFILECHKAREA
-      *         MOVE     ORCA-BLOB-FILE TO  FILECHK-NAME
-      *         CALL    "ORCSFILECHK"       USING
-      *                                     ORCSFILECHKAREA
-      *        IF      FILECHK-RC      NOT =   0
-                   MOVE    SPA-N21FIL-OBJECT
-                                       TO  ORCA-BLOB-OBJECT
-      *            画像イメージを表示
-                   MOVE    "BLOBEXPORT"    TO  MCP-FUNC
-                   MOVE    "blob"          TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               ORCA-BLOB
-                                               SPA-AREA
-      *
-                   INITIALIZE                  ORCSMIAREA
-                   MOVE    "misizechk"     TO  ORCSMI-SRYCD
-                   MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
-                   MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
-                   CALL    "ORCSMISAVE"        USING
-                                               ORCSMIAREA
-                                               SPA-AREA
-                   IF      ORCSMI-RETCD    NOT =   ZERO
-                       MOVE    SPACE               TO  SPA-N21FIL-PHOTO
-                       MOVE    LOW-VALUE           TO  SPA-N21FIL-OBJECT
-                       MOVE    N21-PHOTO           TO  SPA-GMN-PHOTO
-                       MOVE    "0022"              TO  SPA-ERRCD
-                       GO  TO  430-GAZOCHK-HENSYU-EXT
-                   END-IF
-      *         END-IF
-           ELSE
-               MOVE    SPACE           TO  SPA-N21FIL-PHOTO
-               MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
-           END-IF
-      *
-      *    画像イメージを表示
-           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-           MOVE    "blob"          TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-           MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
+      *    画像ファイルを表示
+           PERFORM 500-GAZO-OBJECT-SEC
            .
        430-GAZOCHK-HENSYU-EXT.
            EXIT.
@@ -1261,22 +1210,12 @@
        431-GAZOCHK-SYOKI-SEC       SECTION.
       *
            IF      SPA-GMN-PHOTO   =   SPACE
-               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+      *         MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  431-GAZOCHK-SYOKI-EXT
            END-IF
       *
       *    パス名をフォルダ名とファイル名に分ける
            PERFORM 431-GAZO-PATH-CHK-SEC
-           IF      FLG-OK          =   ZERO
-               MOVE    SPACE           TO  ORCA-BLOB-FILE
-               STRING  MCP-TEMPDIR         DELIMITED BY SPACE
-                       "/"                 DELIMITED BY SIZE
-                       WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
-                       "/"                 DELIMITED BY SIZE
-                       WRK-FILEMEI         DELIMITED BY SPACE
-                                   INTO    ORCA-BLOB-FILE
-               END-STRING
-           END-IF
       *
       *    データからイメージファイル作成
            INITIALIZE                  ORCSMIAREA
@@ -1286,16 +1225,6 @@
            CALL    "ORCSMILOAD"        USING
                                        ORCSMIAREA
                                        SPA-AREA
-      *
-      *    画像イメージを表示
-           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-           MOVE    "blob"          TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-           MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
            .
        431-GAZOCHK-SYOKI-EXT.
            EXIT.
@@ -1339,7 +1268,11 @@
       *
            INITIALIZE                  WRK-FILE-AREA
       *
-           MOVE    SPA-GMN-PHOTO   TO  WRK-PASSMEI
+           IF      SPA-N21FIL-PHOTO    NOT =   SPACE
+               MOVE    SPA-N21FIL-PHOTO    TO  WRK-PASSMEI
+           ELSE
+               MOVE    SPA-GMN-PHOTO   TO  WRK-PASSMEI
+           END-IF
            MOVE    SPACE           TO  WRK-FILEMEI
            MOVE    ZERO            TO  FLG-OK
       *
@@ -1692,6 +1625,16 @@
       *    画像処理
       *****************************************************************
        440-GAZOU-SEC               SECTION.
+      *
+           PERFORM 430-TEXTCHK-SEC
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               IF      SPA-ERRCD   =   "0014"
+                   MOVE    SPACE       TO  SPA-ERRCD
+               ELSE
+                   GO  TO  440-GAZOU-EXT
+               END-IF
+           END-IF
       *
            MOVE    SPA-N21KYOUTU   TO  SPA-WORK
            MOVE    SPA-N21SCRAREA  TO  SPA-FREE
@@ -2339,6 +2282,8 @@ grpsys     CALL    "ORCDBMAIN"         USING
                ELSE
                    MOVE    WRK-FILEMEI     TO  N21-PHOTO
                END-IF
+      *        画像ファイルを表示
+               PERFORM 500-GAZO-OBJECT-SEC
            END-IF
       *
       *    参照ボタン非活性
@@ -2379,6 +2324,32 @@ grpsys     CALL    "ORCDBMAIN"         USING
        500-GMNHEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    画像表示処理
+      *****************************************************************
+       500-GAZO-OBJECT-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  ORCA-BLOB-FILE
+           STRING  MCP-TEMPDIR         DELIMITED BY SPACE
+                   "/"                 DELIMITED BY SIZE
+                   WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
+                   "/"                 DELIMITED BY SIZE
+                   WRK-FILEMEI         DELIMITED BY SPACE
+                               INTO    ORCA-BLOB-FILE
+           END-STRING
+      *
+      *    画像イメージを表示
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           MOVE    ORCA-BLOB-OBJECT    TO  N21-PHOTOAREA
+           .
+       500-GAZO-OBJECT-EXT.
+           EXIT.
       *****************************************************************
       *    エラーメッセージ表示処理
       *****************************************************************

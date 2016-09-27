@@ -26,7 +26,8 @@
       *  08/06/25    NACL−森脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
+      * Maj/Min/Rev  修正者        日付      内容
+      * 04.08.01     NACL-森脇     16/09/27  GINBEE(API)対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -57,6 +58,9 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *
+      *    画像イメージ作成パラメタ
+           COPY    "CPORCSMIAREA.INC".
       *
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
@@ -131,7 +135,7 @@
            MOVE    SPACE           TO  N21FIL-PHOTO
            MOVE    LOW-VALUE       TO  N21FIL-PHOTOAREA
            MOVE    SPACE           TO  SPA-N21FIL-PHOTO
-           MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
+      *     MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
       *
            .
        100-INIT-EXT.
@@ -185,15 +189,8 @@
                IF      FLG-OK          =   1
       *            画像がなければアップロードする
                    PERFORM 431-GAZO-PATH-CHK-SEC
-                   MOVE    SPACE           TO  SPA-N21FIL-PHOTO
-                   STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
-                           WRK-FILEMEI         DELIMITED  BY  SPACE
-                                       INTO    SPA-N21FIL-PHOTO
-                   END-STRING
-                   MOVE    SPA-N21FIL-PHOTO    TO  SPA-GMN-PHOTO
-                   IF      N21FIL-PHOTOAREA    NOT =   LOW-VALUE
-                       MOVE    N21FIL-PHOTOAREA    TO  SPA-N21FIL-OBJECT
-                   END-IF
+      *            画像ファイル作成処理
+                   PERFORM 500-GAZO-OBJECT-SEC
                ELSE
                    MOVE    N21FIL-PHOTO        TO  SPA-GMN-PHOTO
                END-IF
@@ -259,6 +256,50 @@
       *
            .
        431-GAZO-PATH-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像ファイル作成処理
+      *****************************************************************
+       500-GAZO-OBJECT-SEC         SECTION.
+      *
+           IF      N21FIL-PHOTOAREA    =   LOW-VALUE
+               GO  TO  500-GAZO-OBJECT-EXT
+           ELSE
+               MOVE    N21FIL-PHOTOAREA
+                                   TO  ORCA-BLOB-OBJECT
+           END-IF
+      *
+           MOVE    SPACE           TO  ORCA-BLOB-FILE
+           STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
+                   WRK-FILEMEI         DELIMITED  BY  SPACE
+                               INTO    ORCA-BLOB-FILE
+           END-STRING
+      *
+      *    画像ファイルを作成
+           MOVE    "BLOBEXPORT"    TO  MCP-FUNC
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+      *
+      *    画像データを保存
+           INITIALIZE                  ORCSMIAREA
+           MOVE    "misizechk"     TO  ORCSMI-SRYCD
+           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+           MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
+           CALL    "ORCSMISAVE"        USING
+                                       ORCSMIAREA
+                                       SPA-AREA
+           IF      ORCSMI-RETCD    NOT =   ZERO
+               GO  TO  500-GAZO-OBJECT-EXT
+           END-IF
+      *
+           MOVE    ORCA-BLOB-FILE  TO  SPA-GMN-PHOTO
+           .
+       500-GAZO-OBJECT-EXT.
            EXIT.
       *
       *****************************************************************
