@@ -623,21 +623,26 @@
                                    UNTIL ( IDX-PARA
                                                >   WRK-CONS-PARA-MAX )
       *
-                               EVALUATE    IDX-PARA
-                               WHEN    9
-                                   MOVE    TKIMEMO-PARA09
+                               IF ( SPA-GMN-G01-PARAHYOJI (IDX IDX-PARA)
+                                           NOT =   SPACE )
+      *
+                                   EVALUATE    IDX-PARA
+                                   WHEN    9
+                                       MOVE    TKIMEMO-PARA09
                                                TO  SPA-GMN-G01-PARA
                                                          (IDX  IDX-PARA)
-                               WHEN    10
-                                   MOVE    TKIMEMO-PARA10
+                                   WHEN    10
+                                       MOVE    TKIMEMO-PARA10
                                                TO  SPA-GMN-G01-PARA
                                                          (IDX  IDX-PARA)
-                               WHEN    OTHER
-                                   MOVE    TKIMEMO-PARA (IDX-PARA)
+                                   WHEN    OTHER
+                                       MOVE    TKIMEMO-PARA (IDX-PARA)
                                                TO  SPA-GMN-G01-PARA
                                                          (IDX  IDX-PARA)
       *
-                               END-EVALUATE
+                                   END-EVALUATE
+      *
+                               END-IF
       *
                            END-PERFORM
       *
