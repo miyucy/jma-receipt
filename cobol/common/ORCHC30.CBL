@@ -1917,7 +1917,9 @@
       *
            INITIALIZE                  RPYAKUJO-REC
       *
-           MOVE    "yakujo"        TO  RPYAKUJO-REPORT-ID
+           MOVE    PARA-STYLE      TO  RPYAKUJO-STYLE
+      *
+           MOVE    "okusuri_joho"  TO  RPYAKUJO-REPORT-ID
            MOVE    PARA-API-CUSTOM-ID
                                    TO  RPYAKUJO-CUSTOM-ID
            MOVE    SYS-1031-PRTNM(8)
@@ -2154,9 +2156,10 @@
       *****************************************************************
        790-API-CALL-SEC            SECTION.
       *
-           MOVE    CNT-KENSU       TO  RPYAKUJO-SHURUISU
+           MOVE    CNT-KENSU       TO  WRK-ZZ9
+           MOVE    WRK-ZZ9         TO  RPYAKUJO-SHURUISU
       *
-           MOVE    "yakujo"        TO  RPMAIN-ID
+           MOVE    "okusuri_joho"  TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID
                                    TO  RPMAIN-CUSTOM-ID
            MOVE    "薬剤情報提供書" 
