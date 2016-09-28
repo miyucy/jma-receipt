@@ -7,6 +7,7 @@ rp_medichine_information {
 		Report_ID				varchar(30);
 		Custom_ID				varchar(30);
 		Printer					varchar(20);
+		Style_Class			varchar(1);
  		Perform_Date			varchar(10);
 		IssuedDate				varchar(10);
 		Patient	{

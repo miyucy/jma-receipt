@@ -24,6 +24,7 @@
               05  RPYAKUJO-REPORT-ID            PIC X(30).
               05  RPYAKUJO-CUSTOM-ID            PIC X(30).
               05  RPYAKUJO-PRINTER              PIC X(20).
+              05  RPYAKUJO-STYLE                PIC X(1).
       *       ¿ÇÎÅÆü
               05  RPYAKUJO-SRYYMD               PIC X(10).
       *       ¸òÉÕÆü
