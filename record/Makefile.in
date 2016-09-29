@@ -514,6 +514,7 @@ RECORD_files = \
 	push_print001.rec \
 	contraindicationcheckv2.rec \
 	patientmodv34.rec\
+	patientmodv35.rec\
 
 DEF_files = \
 
@@ -867,6 +868,8 @@ DB_files = \
 	rp_appointment_form.db \
 	rp_appointment_list.db \
 	rp_appointment_list_patient.db \
+	xml_patientmodv3req5.db \
+	xml_patientmodv3res5.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

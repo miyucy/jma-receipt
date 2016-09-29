@@ -14,7 +14,6 @@ xml_patientmodv3res4 {
 	Api_Result		varchar(3);
 	Api_Result_Message	varchar(100);
        	Reskey			varchar(100);
-	Base_Date		varchar(10);
 	Patient_Information	{
 		Patient_ID		varchar(20);
 		WholeName		varchar(100);
@@ -22,102 +21,97 @@ xml_patientmodv3res4 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
     	};
-#---    ’áŠ“¾Ò‚Qî•ñi’áŠ“¾Ò—š—ğj
+#---    Äã½êÆÀ¼Ô£²¾ğÊó¡ÊÄã½êÆÀ¼ÔÍúÎò¡Ë
 	Income_Information	{
 	    Income_Info 	{
-#---            ”F’èŠJn“ú
+#---            Ç§Äê³«»ÏÆü
             	Income_StartDate			varchar(10);
             	Income_ExpiredDate			varchar(10);
-#---            •W€•‰’SŠzŒ¸ŠzŠJn“ú
+#---            É¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
             	Income_Reduction_Date			varchar(10);
-#---            ’·Šú“ü‰@ŠY“–”NŒ“ú
+#---            Ä¹´üÆş±¡³ºÅöÇ¯·îÆü
             	Income_Long_Period_Date			varchar(10);
-#---            ”F’è”ÍˆÍ‹æ•ª
+#---            Ç§ÄêÈÏ°Ï¶èÊ¬
             	Income_Certificate_Code			varchar(01);
             	Income_Certificate_Code_Name		varchar(40);
-#---            ƒGƒ‰[ƒR[ƒh
+#---            ¥¨¥é¡¼¥³¡¼¥É
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
             	} [20];
         };
-#---    ’áŠ“¾Ò‚Pî•ñi”N‹à—š—ğj
+#---    Äã½êÆÀ¼Ô£±¾ğÊó¡ÊÇ¯¶âÍúÎò¡Ë
 	Pension_Information	{
 	    Pension_Info 	{
-#---            ”F’èŠJn“ú
+#---            Ç§Äê³«»ÏÆü
             	Pension_StartDate			varchar(10);
             	Pension_ExpiredDate			varchar(10);
-#---            •W€•‰’SŠzŒ¸ŠzŠJn“ú
+#---            É¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
             	Pension_Reduction_Date			varchar(10);
-#---            ˜V—î•Ÿƒ”N‹àó‹‹ÒØ‹æ•ª
+#---            Ï·ÎğÊ¡»ãÇ¯¶â¼õµë¼Ô¾Ú¶èÊ¬
             	Pension_Welfare_Code			varchar(01);
-#---            ”F’è”ÍˆÍ‹æ•ª
+#---            Ç§ÄêÈÏ°Ï¶èÊ¬
             	Pension_Certificate_Code		varchar(01);
             	Pension_Certificate_Code_Name		varchar(40);
-#---            ƒGƒ‰[ƒR[ƒh
+#---            ¥¨¥é¡¼¥³¡¼¥É
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
             	} [20];
         };
-#---    ‹Œ©—š—ğ
+#---    µìÀ«ÍúÎò
 	Maiden_Information	{
 	    Maiden_Info 	{
-#---            •ÏX“ú•t
+#---            ÊÑ¹¹ÆüÉÕ
             	Maiden_Change_Date		varchar(10);
-#---            ‹Œ©ƒJƒi–¼
+#---            µìÀ«¥«¥Ê»áÌ¾
 		WholeName_InKana 		varchar(100);
-#---            ‹Œ©–¼
+#---            µìÀ«»áÌ¾
 		WholeName			varchar(100);
-#---            ‹Œ©’ÊÌ–¼
+#---            µìÀ«ÄÌ¾ÎÌ¾
 		NickName			varchar(100);
-#---            ƒGƒ‰[ƒR[ƒh
+#---            ¥¨¥é¡¼¥³¡¼¥É
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
             	} [20];
         };
-#---    “Á‹L–€
+#---    ÆÃµ­»ö¹à
 	Special_Notes_Information	{
 	    Special_Notes_Info 	{
-#---            “üŠO‹æ•ª
+#---            Æş³°¶èÊ¬
             	Special_Notes_InOut		varchar(1);
             	Special_Notes_InOut_Name	varchar(10);
-#---            ƒŒƒZ“d‹æ•ª
+#---            ¥ì¥»ÅÅ¶èÊ¬
             	Special_Notes_Receipt_Code	varchar(02);
-#---            ƒŒƒZ“d‹æ•ª–¼Ì
+#---            ¥ì¥»ÅÅ¶èÊ¬Ì¾¾Î
             	Special_Notes_Receipt_Code_Name		varchar(12);
-#---            ŠJn”NŒ
+#---            ³«»ÏÇ¯·î
             	Special_Notes_StartDate			varchar(7);
             	Special_Notes_ExpiredDate		varchar(7);
-#---            ƒGƒ‰[ƒR[ƒh
+#---            ¥¨¥é¡¼¥³¡¼¥É
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
             	} [50];
         };
-#---    Š³ÒŒÂ•Êî•ñ
+#---    ´µ¼Ô¸ÄÊÌ¾ğÊó
 	Personally_Information	{
 	    Personally_Info 	{
-#---            o¶‘Ìd
+#---            ½ĞÀ¸»şÂÎ½Å
             	Birth_Weight			varchar(4);
-#---            ’nˆæ•ïŠ‡f—Ã‘ÎÛ¾•a
+#---            ÃÏ°èÊñ³ç¿ÇÎÅÂĞ¾İ¼ÀÉÂ
 		Community_Disease  {
 			Target_Disease			varchar(05);
 	            	} [4];
-#---            ”F’mÇ’nˆæ•ïŠ‡f—Ã
+#---            Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
             	Community_Disease2		varchar(05);
-#---            ¬™‚©‚©‚è‚Â‚¯f—Ã
+#---            ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
             	Community_Disease3		varchar(05);
             	};
         };
-#---    ƒGƒ‰[ƒƒbƒZ[ƒW
+#---    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
 	Patient_Message_Information	{
 	Patient_Message_Info	{
-		Patient_Result		varchar(2);
+		Patient_Result		varchar(4);
 		Patient_Result_Message	varchar(100);
       	  } [50];
         };
-#--- Šm”FƒƒbƒZ[ƒW
-	Patient_Select_Information	{
-        Patient_Select			varchar(4);
-        Patient_Select_Message		varchar(100);
-   	};
    };
 };

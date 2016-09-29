@@ -49,8 +49,6 @@
              03  PTMODRES-API-RESULT-MSG    PIC X(100).
       *
              03  PTMODRES-RESKEY              PIC X(100).
-      *      基準日付
-             03  PTMODRES-BASE-DATE        PIC X(10).
       *      患者番号
              03  PTMODRES-PATIENTID        PIC X(20).
       *      患者情報
@@ -63,7 +61,6 @@
                05  PTMODRES-BIRTHDAY         PIC X(10).
       *        性別
                05  PTMODRES-SEX              PIC X(01).
-      *
       *
       *       低所得者２情報（低所得者履歴）
               03  PTMODRES-TSYRRK-INFO-G.
@@ -164,16 +161,6 @@
       *      エラーメッセージ
              03  PTMODRES-PATIENT-ERRMSG-G.
                  05  PTMODRES-PATIENT-ERRMSG-INF  OCCURS   50.
-                     07  PTMODRES-ERROR        PIC X(02).
+                     07  PTMODRES-ERROR        PIC X(04).
                      07  PTMODRES-ERROR-MSG    PIC X(100).
-      *      ワーニングメッセージ
-      *      03  PTMODRES-WARNING-MSG-G.
-      *          05  PTMODRES-WARNING-INF    OCCURS   50.
-      *              07  PTMODRES-WARNING      PIC X(04).
-      *              07  PTMODRES-WARNING-MSG  PIC X(200).
-      *
-      *      確認メッセージ
-             03  PTMODRES-SELECT-G.
-                 05  PTMODRES-SELECT-CODE      PIC X(04).
-                 05  PTMODRES-SELECT-MSG       PIC X(100).
       *

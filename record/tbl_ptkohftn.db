@@ -108,3 +108,30 @@ path	all 	{
 		;
 	};
 };
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptkohftn
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+		;
+	};
+};
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftn_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftn
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			AND   TEKSTYMD    LIKE :TEKSTYMD
+			ORDER   BY        TEKSTYMD
+		;
+	};
+};
+
+
