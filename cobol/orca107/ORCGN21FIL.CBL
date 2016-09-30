@@ -135,7 +135,7 @@
            MOVE    SPACE           TO  N21FIL-PHOTO
            MOVE    LOW-VALUE       TO  N21FIL-PHOTOAREA
            MOVE    SPACE           TO  SPA-N21FIL-PHOTO
-      *     MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
+           MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
       *
            .
        100-INIT-EXT.
@@ -153,6 +153,7 @@
       *        登録
                WHEN    OTHER
                    PERFORM 210-GAZO
+                   PERFORM 210-BACK
            END-EVALUATE
       *
            .
@@ -184,19 +185,33 @@
        210-GAZO                    SECTION.
       *
       *    画像チェック
-           IF      N21FIL-PHOTO    NOT =   SPACE
-               PERFORM 431-GAZO-FILE-CHK
-               IF      FLG-OK          =   1
-      *            画像がなければアップロードする
-                   PERFORM 431-GAZO-PATH-CHK-SEC
-      *            画像ファイル作成処理
-                   PERFORM 500-GAZO-OBJECT-SEC
-               ELSE
-                   MOVE    N21FIL-PHOTO        TO  SPA-GMN-PHOTO
-               END-IF
+           IF      N21FIL-PHOTO    =   SPACE
+               GO  TO  210-GAZO-EXT
            END-IF
       *
-           PERFORM 210-BACK
+           MOVE    N21FIL-PHOTO    TO  SPA-GMN-PHOTO
+      *
+      *    拡張子が違えば処理抜ける
+           PERFORM 431-GAZO-TYPE-CHK-SEC
+           IF      FLG-OK          =   1
+               GO  TO  210-GAZO-EXT
+           END-IF
+      *
+      *    画像ファイルがあれば処理抜ける
+           PERFORM 431-GAZO-FILE-CHK
+           IF      FLG-OK          =   0
+               GO  TO  210-GAZO-EXT
+           END-IF
+      *
+      *    画像イメージなければ処理抜ける
+           IF      N21FIL-PHOTOAREA    =   LOW-VALUE
+               GO  TO  210-GAZO-EXT
+           END-IF
+      *
+      *    画像パスチェック
+           PERFORM 431-GAZO-PATH-CHK-SEC
+      *    画像ファイル作成処理
+           PERFORM 500-GAZO-OBJECT-SEC
       *
            .
        210-GAZO-EXT.
@@ -211,7 +226,7 @@
       *
       *    画像ファイルがない場合は処理抜ける
            INITIALIZE                  ORCSFILECHKAREA
-           MOVE    N21FIL-PHOTO    TO  FILECHK-NAME
+           MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
            CALL    "ORCSFILECHK"       USING
                                        ORCSFILECHKAREA
            IF      FILECHK-RC      NOT =   0
@@ -223,13 +238,45 @@
            EXIT.
       *
       *****************************************************************
+      *    拡張子チェック
+      *****************************************************************
+       431-GAZO-TYPE-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-OK
+      *
+           PERFORM VARYING IDX     FROM    256 BY -1 
+                   UNTIL   IDX     <       1
+               IF      SPA-GMN-PHOTO(IDX:1)    NOT =   SPACE
+                   COMPUTE IDX     =   IDX     -   3
+                   IF      IDX     >   ZERO
+                       EVALUATE    SPA-GMN-PHOTO(IDX:4)
+                           WHEN    ".JPG"
+                           WHEN    ".GIF"
+                           WHEN    ".PNG"
+                           WHEN    ".jpg"
+                           WHEN    ".gif"
+                           WHEN    ".png"
+                               CONTINUE
+                           WHEN    OTHER
+                               MOVE    1           TO  FLG-OK
+                       END-EVALUATE
+                       MOVE    1               TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       431-GAZO-TYPE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    画像パス名編集
       *****************************************************************
-       431-GAZO-PATH-CHK-SEC            SECTION.
+       431-GAZO-PATH-CHK-SEC       SECTION.
       *
            INITIALIZE                  WRK-AREA
       *
-           MOVE    N21FIL-PHOTO    TO  WRK-PASSMEI
+           MOVE    SPA-GMN-PHOTO   TO  WRK-PASSMEI
            MOVE    SPACE           TO  WRK-FILEMEI
            MOVE    ZERO            TO  FLG-OK
       *
@@ -263,17 +310,13 @@
       *****************************************************************
        500-GAZO-OBJECT-SEC         SECTION.
       *
-           IF      N21FIL-PHOTOAREA    =   LOW-VALUE
-               GO  TO  500-GAZO-OBJECT-EXT
-           ELSE
-               MOVE    N21FIL-PHOTOAREA
+           MOVE    N21FIL-PHOTOAREA
                                    TO  ORCA-BLOB-OBJECT
-           END-IF
       *
            MOVE    SPACE           TO  ORCA-BLOB-FILE
            STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
                    WRK-FILEMEI         DELIMITED  BY  SPACE
-                               INTO    ORCA-BLOB-FILE
+                   INTO                ORCA-BLOB-FILE
            END-STRING
       *
       *    画像ファイルを作成
@@ -293,11 +336,6 @@
            CALL    "ORCSMISAVE"        USING
                                        ORCSMIAREA
                                        SPA-AREA
-           IF      ORCSMI-RETCD    NOT =   ZERO
-               GO  TO  500-GAZO-OBJECT-EXT
-           END-IF
-      *
-           MOVE    ORCA-BLOB-FILE  TO  SPA-GMN-PHOTO
            .
        500-GAZO-OBJECT-EXT.
            EXIT.
@@ -305,13 +343,13 @@
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
-       900-PUT-WINDOW          SECTION.
+       900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"  TO  MCP-FUNC
-           CALL   "ORCDBMAIN"      USING
-                                   MCPAREA
-                                   MCPDATA-REC
-                                   SPA-AREA
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

@@ -453,8 +453,8 @@
            INITIALIZE                  SPA-N21-AREA
            INITIALIZE                  WRK-PIN-AREA
       *
-      *     MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
-      *                                 SPA-NAI-OBJECT
+           MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+                                       SPA-NAI-OBJECT
       *
            MOVE    2               TO  SPA-GMN-CUR
       *
@@ -575,8 +575,8 @@
       *
            INITIALIZE                  SPA-GMN-AREA
            INITIALIZE                  SPA-NAI-AREA
-      *     MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
-      *                                 SPA-NAI-OBJECT
+           MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+                                       SPA-NAI-OBJECT
            MOVE    SPACE           TO  SPA-GMN-EVENT
       *
            .
@@ -590,8 +590,8 @@
       *
            INITIALIZE                  SPA-GMN-ENTRY
            INITIALIZE                  SPA-NAI-ENTRY
-      *     MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
-      *                                 SPA-NAI-OBJECT
+           MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+                                       SPA-NAI-OBJECT
       *
            .
        401-CLEAR-ENTRY-EXT.
@@ -1168,7 +1168,7 @@
            MOVE    LOW-VALUE       TO  N21-PHOTOAREA
       *
            IF      SPA-GMN-PHOTO   =   SPACE
-      *         MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
@@ -1190,14 +1190,22 @@
            IF      FLG-OK          =   1
                MOVE    "0015"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
-      *         MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
-           MOVE    SPA-GMN-PHOTO   TO  SPA-N21FIL-PHOTO
-      *
       *    パス名をフォルダ名とファイル名に分ける
            PERFORM 431-GAZO-PATH-CHK-SEC
+      *
+      *    ファイル存在チェック
+           PERFORM 431-GAZO-FILE-CHK
+           IF      FLG-OK    =   1
+               MOVE    "0014"      TO  SPA-ERRCD
+               MOVE    10          TO  SPA-GMN-CUR
+               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           END-IF
+      *
       *    画像ファイルを表示
            PERFORM 500-GAZO-OBJECT-SEC
            .
@@ -1209,8 +1217,10 @@
       *****************************************************************
        431-GAZOCHK-SYOKI-SEC       SECTION.
       *
+           MOVE    LOW-VALUE       TO  N21-PHOTOAREA
+      *
            IF      SPA-GMN-PHOTO   =   SPACE
-      *         MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  431-GAZOCHK-SYOKI-EXT
            END-IF
       *
@@ -1227,6 +1237,35 @@
                                        SPA-AREA
            .
        431-GAZOCHK-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像ファイル存在チェック
+      *****************************************************************
+       431-GAZO-FILE-CHK           SECTION.
+      *
+           MOVE    SPACE           TO  ORCA-BLOB-FILE
+           STRING  MCP-TEMPDIR         DELIMITED BY SPACE
+                   "/"                 DELIMITED BY SIZE
+                   WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
+                   "/"                 DELIMITED BY SIZE
+                   WRK-FILEMEI         DELIMITED BY SPACE
+                               INTO    ORCA-BLOB-FILE
+           END-STRING
+      *
+           MOVE    ZERO            TO  FLG-OK
+      *
+      *    画像ファイルがない場合は処理抜ける
+           INITIALIZE                  ORCSFILECHKAREA
+           MOVE    ORCA-BLOB-FILE  TO  FILECHK-NAME
+           CALL    "ORCSFILECHK"       USING
+                                       ORCSFILECHKAREA
+           IF      FILECHK-RC      NOT =   0
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *
+           .
+       431-GAZO-FILE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1268,11 +1307,7 @@
       *
            INITIALIZE                  WRK-FILE-AREA
       *
-           IF      SPA-N21FIL-PHOTO    NOT =   SPACE
-               MOVE    SPA-N21FIL-PHOTO    TO  WRK-PASSMEI
-           ELSE
-               MOVE    SPA-GMN-PHOTO   TO  WRK-PASSMEI
-           END-IF
+           MOVE    SPA-GMN-PHOTO   TO  WRK-PASSMEI
            MOVE    SPACE           TO  WRK-FILEMEI
            MOVE    ZERO            TO  FLG-OK
       *
@@ -2272,17 +2307,21 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPA-GMN-SHAPE       TO  N21-SHAPE
            MOVE    SPA-GMN-MARK        TO  N21-MARK
            MOVE    SPA-GMN-CAUTION     TO  N21-CAUTION
-           MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
+      *
+           MOVE    LOW-VALUE           TO  N21-PHOTOAREA
       *
       *    画像パス編集
-           IF      SPA-GMN-PHOTO   NOT =   SPACE
-               PERFORM 431-GAZO-PATH-CHK-SEC
-               IF      FLG-OK      =   1
-                   MOVE    WRK-PASSMEI     TO  N21-PHOTO
-               ELSE
-                   MOVE    WRK-FILEMEI     TO  N21-PHOTO
-               END-IF
-      *        画像ファイルを表示
+           PERFORM 431-GAZO-PATH-CHK-SEC
+           IF      FLG-OK      =   1
+               MOVE    WRK-PASSMEI     TO  N21-PHOTO
+           ELSE
+               MOVE    WRK-FILEMEI     TO  N21-PHOTO
+           END-IF
+      *
+      *    ファイル存在チェック
+           PERFORM 431-GAZO-FILE-CHK
+           IF      FLG-OK    =   0
+      *        画像イメージを表示
                PERFORM 500-GAZO-OBJECT-SEC
            END-IF
       *
@@ -2328,15 +2367,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    画像表示処理
       *****************************************************************
        500-GAZO-OBJECT-SEC         SECTION.
-      *
-           MOVE    SPACE           TO  ORCA-BLOB-FILE
-           STRING  MCP-TEMPDIR         DELIMITED BY SPACE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-FILEMEI         DELIMITED BY SPACE
-                               INTO    ORCA-BLOB-FILE
-           END-STRING
       *
       *    画像イメージを表示
            MOVE    "BLOBIMPORT"    TO  MCP-FUNC
