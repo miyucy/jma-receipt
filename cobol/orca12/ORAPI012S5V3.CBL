@@ -1894,7 +1894,7 @@
                WHEN    SPACE
                    MOVE    ZERO            TO  FLG-MODE
                WHEN    OTHER
-                   MOVE    "36"            TO  WRK-ERRCD
+                   MOVE    "30"            TO  WRK-ERRCD
                END-EVALUATE
            END-IF
       *
@@ -2070,14 +2070,6 @@
                        END-IF
                    END-IF
                ELSE
-      **           IF      (PTMODREQ-PTKOHFTN-LMODE (IDX)  =   "New"
-      *                                                    OR  SPACE)
-      *                CONTINUE
-      *            ELSE
-      *                IF      SPA-ERRCD           =   SPACE
-      *                    MOVE    "AP42"              TO  SPA-ERRCD
-      *                END-IF
-      *            END-IF 
                    IF      (PTMODREQ-PTKOHFTN-LMODE (IDX)  =   "New"  )
                        AND (PTMODREQ-PTKOHFTN-TEKSTYMD(IDX)  =   SPACE)
                        IF      SPA-ERRCD           =   SPACE
@@ -2220,7 +2212,7 @@
       *****************************************************************
        2003110-ERRCDMSG-HEN-SEC         SECTION.
       *
-           MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    SPACE               TO  WRK-ERRMSG
            IF      SPA-ERRCD(1:1)      =   "A"
                PERFORM 8901-PTERRCD-SETAPI-SEC
            ELSE
@@ -3823,9 +3815,6 @@
            WHEN    "35"
                MOVE    "公費負担額にエラーがあります"
                                                TO  WRK-ERRMSG
-           WHEN    "36"
-               MOVE    "公費負担額更新区分エラー"
-                                               TO  WRK-ERRMSG
       *
            WHEN    "40"
                MOVE    "他一部負担入力対象外公費です。"
@@ -3959,7 +3948,7 @@
            WHEN    "AP42"
                MOVE    "連番がありません"
                                                TO  WRK-ERRMSG
-           WHEN    "AP44"
+           WHEN    "AP45"
                STRING  "同一開始年月で他一部負担履歴が"
                        "登録されています。"
                        "他一部負担累計は他一部負担履歴を"
