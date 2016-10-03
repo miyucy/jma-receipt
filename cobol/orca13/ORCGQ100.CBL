@@ -96,7 +96,19 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA13SCRAREA.INC".
+           COPY    "Q01.INC".
+           COPY    "Q02.INC".
+           COPY    "Q02A.INC".
+           COPY    "Q02B.INC".
+           COPY    "Q03.INC".
+           COPY    "Q04.INC".
+           COPY    "Q96.INC".
+           COPY    "Q97.INC".
+           COPY    "Q98.INC".
+           COPY    "Q99.INC".
+           COPY    "Q100.INC".
+           COPY    "QERR.INC".
+           COPY    "QID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -200,9 +212,7 @@
                    MOVE    "£Å£Õ£Ã"        TO  SPA-GMN-Q100-CDKBNMEIL(1)
                    MOVE    "2"             TO  SPA-GMN-Q100-CDKBNL   (2)
                    MOVE    "£Ó¡Ý£ê£é£ó"    TO  SPA-GMN-Q100-CDKBNMEIL(2)
-                   MOVE    "3"             TO  SPA-GMN-Q100-CDKBNL   (3)
-                   MOVE    "£Õ£Ô£Æ¡Ý£¸"    TO  SPA-GMN-Q100-CDKBNMEIL(3)
-                   MOVE    3               TO  SPA-GMN-Q100-CDKBN-MAX
+                   MOVE    2               TO  SPA-GMN-Q100-CDKBN-MAX
                    MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-CDKBN-STATE
       *
                    IF    ( SPA-MW          =   SPA-GINBEE )
