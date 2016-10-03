@@ -1322,8 +1322,6 @@
       *****************************************************************
        240-KBN-SET-SEC             SECTION.
       *
-           MOVE    SPACE           TO  WRK-YKJ-KBN-G
-           MOVE    SPACE           TO  WRK-YKJ-TANI-G
       *    ºßÂð¤Ê¤éÈ´¤±¤ë
            IF    ( ORCHC30-ZAIKBN(CNT-PARA)     =   4 ) OR
                  ( ORCHC30-ZAIKBN(CNT-PARA)     =   3 ) OR
@@ -1974,6 +1972,8 @@
       *    £Á£Ð£É£Â£Ï£Ä£Ù¥»¥Ã¥È½èÍý
       *****************************************************************
        720-API-BODY-SET-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-YKJ-BODY
       *
            COMPUTE CNT-KENSU   =   CNT-KENSU   +     1
       *
