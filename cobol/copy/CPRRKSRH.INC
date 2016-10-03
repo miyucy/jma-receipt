@@ -33,8 +33,6 @@
             03  RRKSRH-NYUGAIKBN       PIC X(1).
       *診療科
             03  RRKSRH-SRYKA           PIC X(2).
-      *ドクター
-            03  RRKSRH-DRCD            PIC X(5).
       *保険組合せ
             03  RRKSRH-HKNCOMBINUM     PIC 9(4).
       *診療日
@@ -53,6 +51,4 @@
       *公費の種類
             03  RRKSRH-KOHNUM-G.
                 05 RRKSRH-KOHNUM       PIC X(3) OCCURS 5.
-      *日付＋時刻
-            03  RRKSRH-YMDHMS          PIC X(14).
 
