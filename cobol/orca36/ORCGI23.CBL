@@ -75,7 +75,6 @@
       *
        01  CONST-AREA.
            03  CONST-JOBID         PIC 9(07)   VALUE   1.
-           03  CONST-JOB-SHELLID   PIC X(08)   VALUE   "ORCBI201".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -241,8 +240,7 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID
-                                   TO  JOB-SHELLID
+           MOVE    SPA-I23-SHELLID TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
@@ -365,8 +363,7 @@
       *
            INITIALIZE                  ORCSFILESVAREA
            MOVE    "R"             TO  SFILESV-MODE
-           MOVE    CONST-JOB-SHELLID
-                                   TO  SFILESV-TBL-KEY
+           MOVE    SPA-I23-SHELLID TO  SFILESV-TBL-KEY
            MOVE    SPA-I23-SELHMS  TO  SFILESV-SRYYM(1)
            CALL    "ORCSFILESV"    USING
                                        ORCSFILESVAREA

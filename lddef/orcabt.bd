@@ -310,6 +310,7 @@ bind    "ORCBDASCONF"   "OpenCOBOL";
 bind    "ORCBM043"      "OpenCOBOL";
 bind    "ORCBM620"      "OpenCOBOL";
 bind    "ORCL0040"      "OpenCOBOL";
+bind	"ORCBI203"	    "OpenCOBOL";
 
 #include "orcadb.inc"
 db "shell" {

@@ -98,6 +98,7 @@ utf8_shell_sources = \
 	monthly/recept42.sh.in \
 	allways/mask.sh.in \
 	daily/push_report.sh.in \
+	allways/orcbi203.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \
