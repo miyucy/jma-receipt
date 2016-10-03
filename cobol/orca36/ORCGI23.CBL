@@ -116,8 +116,13 @@
       *
            COPY    "LINKAREA".
       *
-       01 SCRAREA.
-           COPY    "ORCA36SCRAREA.INC".
+       01  SCRAREA.
+           COPY    "I20.INC".
+           COPY    "I21.INC".
+           COPY    "I22.INC".
+           COPY    "I23.INC".
+           COPY    "I2ERR.INC".
+           COPY    "I2ID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -225,7 +230,6 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  I23
-           INITIALIZE                      I23
            MOVE    ZERO                TO  I23-COUNT
       *
            MOVE    5                   TO  I23-DURATION
