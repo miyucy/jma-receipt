@@ -33,7 +33,7 @@ xml_patientmodv3res5 {
         	} [60];
         };
 #---    公費負担額情報（リクエスト＝２、３）
-	Ptkohftn_Information	{
+	Pi_Money_Information	{
 #---        選択公費ＩＤ
             Sel_PublicInsurance_Id		varchar(10);
 #---        選択公費種類
@@ -45,53 +45,53 @@ xml_patientmodv3res5 {
             Sel_Certificate_IssuedDate		varchar(10);
             Sel_Certificate_ExpiredDate		varchar(10);
 #---        負担額１名称
-            Sel_Ptkohftn_Name1			varchar(20);
-            Sel_Ptkohftn_Name2			varchar(20);
+            Sel_Pi_Money_Name1			varchar(20);
+            Sel_Pi_Money_Name2			varchar(20);
 #---        公費負担額状態
-            Sel_Ptkohftn_Class			varchar(01);
+            Sel_Pi_Money_Class			varchar(01);
 #---        公費負担額一覧
-	    Ptkohftn_Info 	{
+	    Pi_Money_Info 	{
 #---            処理区分
-            	Ptkohftn_L_Mode			varchar(6);
+            	Pi_Money_Line_Mode		varchar(6);
 #---            連番
-            	Ptkohftn_Number			varchar(03);
+            	Pi_Money_Number			varchar(03);
 #---            開始日
-            	Ptkohftn_StartDate		varchar(10);
-            	Ptkohftn_ExpiredDate		varchar(10);
+            	Pi_Money_StartDate		varchar(10);
+            	Pi_Money_ExpiredDate		varchar(10);
 #---            上限額１
-            	Ptkohftn_Money1			varchar(7);
+            	Pi_Money_Money1			varchar(7);
 #---            上限額２
-            	Ptkohftn_Money2			varchar(7);
+            	Pi_Money_Money2			varchar(7);
 #---            公費他一部負担額設定有
-            	Ptkohftn_Etc_Class		varchar(1);
+            	Pi_Money_Etc_Class		varchar(1);
 #---            エラーコード
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
             	} [300];
         };
 #---    他一部負担額情報
-	Ptkohftnetc_Information	{
+	Pi_Etc_Money_Information	{
 #---        選択連番
-            Sel_Ptkohftn_Number			varchar(03);
+            Sel_Pi_Etc_Money_Number			varchar(03);
 #---        開始日
-            Sel_Ptkohftn_StartDate		varchar(10);
+            Sel_Pi_Etc_Money_StartDate		varchar(10);
 #---        期間開始日
-            Chk_Ptkohftnetc_StartDate		varchar(10);
+            Chk_Pi_Etc_Money_StartDate		varchar(10);
 #---        期間終了日（開始日の月末）
-            Chk_Ptkohftnetc_EndDate		varchar(10);
+            Chk_Pi_Etc_Money_EndDate		varchar(10);
 #---        上限額１
-            Chk_Ptkohftn_Money1			varchar(7);
+            Chk_Pi_Etc_Money_Money1		varchar(7);
 #---        他一部負担額累計
             Chk_Total_Money2		varchar(7);
 #---        自院負担額合計
-            Chk_Total_Jiin_Money		varchar(7);
-	    Ptkohftnetc_Info 	{
+            Chk_Total_My_Money		varchar(7);
+	    Pi_Etc_Money_Info 	{
 #---            年月日
-            	Ptkohftnetc_Date		varchar(10);
+            	Pi_Etc_Money_Date		varchar(10);
 #---            入外区分
-		Ptkohftnetc_InOut 		varchar(01);
+		Pi_Etc_Money_InOut 		varchar(01);
 #---            負担金額
-		Ptkohftnetc_Money		varchar(7);
+		Pi_Etc_Money_Money		varchar(7);
 #---            エラーコード
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
