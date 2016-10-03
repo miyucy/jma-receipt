@@ -1322,6 +1322,8 @@
       *****************************************************************
        240-KBN-SET-SEC             SECTION.
       *
+           MOVE    SPACE           TO  WRK-YKJ-KBN-G
+           MOVE    SPACE           TO  WRK-YKJ-TANI-G
       *    在宅なら抜ける
            IF    ( ORCHC30-ZAIKBN(CNT-PARA)     =   4 ) OR
                  ( ORCHC30-ZAIKBN(CNT-PARA)     =   3 ) OR
