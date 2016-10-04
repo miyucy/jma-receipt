@@ -13897,7 +13897,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   5
+      **           UNTIL       IDX2    >   5
+                   UNTIL       IDX2    >   6
                MOVE    ZERO                TO  IDY2
                EVALUATE    SPA-GMNHYOKBN (IDX2)
                WHEN    "1"
@@ -13915,6 +13916,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "5"
       *            ¥³¥á¥ó¥È
                    MOVE    4              TO  IDY2
+      *H28.10
+               WHEN    "6"
+      *            ²ð¸î
+                   MOVE    6              TO  IDY2
                END-EVALUATE
       *
                EVALUATE    IDY2
@@ -13950,6 +13955,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                (IDY)
                        END-IF
                    END-PERFORM
+      *H28.10
+               WHEN    6
+      *            ²ð¸î¾ðÊó
+                   IF      (IDY                <   40 )
+                      AND  (SPA-GMN-YOUKAIGO   NOT =   SPACE)
+                       ADD     1               TO  IDY
+                       MOVE    SPA-GMN-YOUKAIGO
+                                                   TO  K02-TABOO-ITEM
+                                                               (IDY)
+                   END-IF
                END-EVALUATE
            END-PERFORM
       *
