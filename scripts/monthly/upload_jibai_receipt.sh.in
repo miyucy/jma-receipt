@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+trap "cleanup" EXIT
+
+#-------------------------------------------#
+#    自賠責レセプトＰＤＦクライアント保存
+#
+#        $1 HOSPNUM
+#        $2 請求年月
+#        $3 データファイル
+#-------------------------------------------#
+
+LOGFILE=/var/log/jma-receipt/$1$(baesname ${0%.sh}).log
+
+LOCAL_TEMPDIR=$(mktemp -dp ${MCP_TEMPDIR})
+
+cleanup () {
+	rm -Rf ${LOCAL_TEMPDIR}
+}
+
