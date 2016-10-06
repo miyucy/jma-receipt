@@ -54,5 +54,8 @@ done < ${DATA_FILE}
 for f in $(ls ${LOCAL_TEMPDIR}/*.tmp.pdf | cut -b 1-$((${#tmpfile} - 7))) ; do
   pdftk  $f*.tmp.pdf cat output ${MONTH_DIR}/$(basename $f).pdf
 done
-zip -r ${MONTH_DIR}.zip ${MONTH_DIR}/
-${MONUPLOAD} -t misc -s -f JIBAI_RECEIPT_$2.zip ${MONTH_DIR}.zip 
+
+pushd ${LOCAL_TEMPDIR}
+zip -r $2.zip $2/
+${MONUPLOAD} -t misc -s -f JIBAI_RECEIPT_$2.zip $2.zip
+popd
