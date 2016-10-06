@@ -9,7 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 
-# trap "cleanup" EXIT
+trap "cleanup" EXIT
 
 #-------------------------------------------#
 #    自賠責レセプトＰＤＦクライアント保存
