@@ -117,6 +117,9 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
+           03  WRK-HEN-DATE-R          REDEFINES  WRK-HEN-DATE.
+               05  WRK-HEN-DATE-1      PIC X(07).
+               05  WRK-HEN-H3-1        PIC X(03).
       *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
@@ -1753,15 +1756,15 @@
            MOVE    PTTOKKI-NAIYO       TO  PTMODRES-PTTOKKI-NAIYO
                                                                  (IDX)
       *    開始年月
-           MOVE    PTTOKKI-STYM        TO  WRK-SYMD
+           MOVE    PTTOKKI-STYM        TO  WRK-SYMD(1:6)
+           MOVE    "01"                TO  WRK-SDD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE(1:7)   TO  PTMODRES-PTTOKKI-STYM
-                                                                  (IDX)
+           MOVE    WRK-HEN-DATE-1      TO  PTMODRES-PTTOKKI-STYM (IDX)
       *    終了年月
-           MOVE    PTTOKKI-EDYM        TO  WRK-SYMD
+           MOVE    PTTOKKI-EDYM        TO  WRK-SYMD(1:6)
+           MOVE    "99"                TO  WRK-SDD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE(1:7)   TO  PTMODRES-PTTOKKI-EDYM
-                                                                  (IDX)
+           MOVE    WRK-HEN-DATE-1      TO  PTMODRES-PTTOKKI-EDYM (IDX)
       *
            .
        20016-PTTOKKI-PTMODRES-EXT.
@@ -2116,6 +2119,12 @@
                IF      TBL-TSYRRK-NINEDYMD (IDX)   =   SPACE
                    MOVE    "99999999"          TO  TBL-TSYRRK-NINEDYMD
                                                                  (IDX)
+                   MOVE    TBL-TSYRRK-NINEDYMD (IDX)
+                                               TO  WRK-SYMD
+                   MOVE    ZERO                TO  WRK-THMS
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE    TO  PTMODRES-TSYRRK-NINEDYMD
+                                                                (IDX)
                ELSE
                    MOVE    TBL-TSYRRK-NINEDYMD (IDX)   TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
@@ -2484,6 +2493,12 @@
                IF      TBL-TNKRRK-EDYMD (IDX)   =   SPACE
                    MOVE    "99999999"          TO  TBL-TNKRRK-EDYMD
                                                                  (IDX)
+                   MOVE    TBL-TNKRRK-EDYMD(IDX)
+                                               TO  WRK-SYMD
+                   MOVE    ZERO                TO  WRK-THMS
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE        TO  PTMODRES-TNKRRK-EDYMD
+                                                                (IDX)
                ELSE
                    MOVE    TBL-TNKRRK-EDYMD (IDX)   TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
@@ -2948,9 +2963,9 @@
                IF      PTMODREQ-PTTOKKI-STYM (IDX)  =   SPACE
                    CONTINUE
                ELSE
+                   MOVE    SPACE           TO  WRK-HEN-DATE
                    MOVE    PTMODREQ-PTTOKKI-STYM(IDX)
-                                           TO  WRK-HEN-DATE
-                   MOVE    SPACE           TO  WRK-HEN-TIME
+                                           TO  WRK-HEN-DATE-1
                    PERFORM 802-DAYHEN02-SEC
                    MOVE    WRK-SYMD(1:6)   TO  TBL-PTTOKKI-STYM
                                                          (IDX)
@@ -2959,9 +2974,9 @@
                IF      PTMODREQ-PTTOKKI-EDYM (IDX)  =   SPACE
                    CONTINUE
                ELSE
+                   MOVE    SPACE           TO  WRK-HEN-DATE
                    MOVE    PTMODREQ-PTTOKKI-EDYM(IDX)
-                                           TO  WRK-HEN-DATE
-                   MOVE    SPACE           TO  WRK-HEN-TIME
+                                           TO  WRK-HEN-DATE-1
                    PERFORM 802-DAYHEN02-SEC
                    MOVE    WRK-SYMD(1:6)   TO  TBL-PTTOKKI-EDYM
                                                          (IDX)
@@ -3002,7 +3017,7 @@
                         OR    (TBL-PTTOKKI-STYM (IDX)   =   SPACE )
       *        開始日
                MOVE    TBL-PTTOKKI-STYM (IDX)  TO  WRK-SYMD(1:6)
-               MOVE    "01"                    TO  WRK-SYMD(7:2)
+               MOVE    "01"                    TO  WRK-SDD
                PERFORM 803-ORCSDAY-CHEK-SEC
                IF     (FLG-DAYERR          =   1   )
                  AND  (PTMODRES-PTTOKKI-ERRCD (IDX) =   SPACE )
@@ -3012,10 +3027,15 @@
                END-IF
       *        終了年月
                IF      TBL-PTTOKKI-EDYM(IDX)   =   SPACE
+                                               OR  "999999"
                    MOVE    "999999"            TO  TBL-PTTOKKI-EDYM(IDX)
+                   MOVE    "99999999"          TO  WRK-SYMD
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE-1      TO  PTMODRES-PTTOKKI-EDYM
+                                                                (IDX)
                ELSE
                    MOVE    TBL-PTTOKKI-EDYM(IDX)   TO  WRK-SYMD(1:6)
-                   MOVE    "01"                    TO  WRK-SYMD(7:2)
+                   MOVE    "01"                    TO  WRK-SDD
                    PERFORM 803-ORCSDAY-CHEK-SEC
                    IF     (FLG-DAYERR          =   1   )
                     AND  (PTMODRES-PTTOKKI-ERRCD (IDX) =   SPACE )

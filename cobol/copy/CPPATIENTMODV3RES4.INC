@@ -118,11 +118,9 @@
       *       特記事項
               03  PTMODRES-PTTOKKI-INFO-G.
                  05  PTMODRES-PTTOKKI-INFO     OCCURS   50.
-      *            連番
-      **           07  PTMODRES-PTTOKKI-RENNUM      PIC X(02).
       *            入外区分
-                   07  PTMODRES-PTTOKKI-NYUGAIKBN   PIC X(01).
-                   07  PTMODRES-PTTOKKI-NYUGAI-NAME  PIC X(10).
+                   07  PTMODRES-PTTOKKI-NYUGAIKBN    PIC X(01).
+                   07  PTMODRES-PTTOKKI-NYUGAI-NAME  PIC X(12).
       *            レセ電区分
                    07  PTMODRES-PTTOKKI-CD          PIC X(02).
       *            紙レセプト（特記区分内容）

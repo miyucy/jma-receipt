@@ -78,7 +78,7 @@ xml_patientmodv3res4 {
 	    Special_Notes_Info 	{
 #---            入外区分
             	Special_Notes_InOut		varchar(1);
-            	Special_Notes_InOut_Name	varchar(10);
+            	Special_Notes_InOut_Name	varchar(12);
 #---            レセ電区分
             	Special_Notes_Receipt_Code	varchar(02);
 #---            レセ電区分名称

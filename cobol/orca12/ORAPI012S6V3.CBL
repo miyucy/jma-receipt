@@ -16,15 +16,15 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI012S5V3.
+       PROGRAM-ID.         ORAPI012S6V3.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 患者　公費負担額情報等設定
+      *  コンポーネント名  : 患者　介護保険情報・介護認定情報等設定
       *                                               （登録・削除）(V3)
       *  管理者            :
       *  作成日付    作業者        記述
-      *  16/09/XX    NACL−多々納　新規作成
+      *  16/10/XX    NACL−多々納　新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -53,8 +53,8 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-PTNUM               PIC 9(01).
-           03  FLG-PTKOHFTN            PIC 9(01).
-           03  FLG-PTKOHFTNETC         PIC 9(01).
+           03  FLG-PTCARE-HKNINF       PIC 9(01).
+           03  FLG-PTCARE-NINTEI       PIC 9(01).
            03  FLG-SPATMP              PIC 9(01).
            03  FLG-APIPARA             PIC 9(01).
       *
@@ -65,17 +65,14 @@
            03  FLG-SYORIEND            PIC 9(01).
            03  FLG-CONTKBN             PIC 9(01).
            03  FLG-ERR-01              PIC 9(01).
-           03  FLG-ERR-02              PIC 9(01).
            03  FLG-OK                  PIC 9(01).
-           03  FLG-CHK                 PIC 9(01).
       *
       *    03  FLG-P02A-SYORI          PIC 9(01).
       *    03  FLG-DATA                PIC 9(01).
       **** 03  FLG-DELETE              PIC 9(01).
-           03  FLG-HKNKOHERR           PIC 9(01).
+           03  FLG-CHKERR              PIC 9(01).
            03  FLG-HENSYU              PIC 9(01).
            03  FLG-CANSEL              PIC 9(01).
-           03  FLG-MODE                PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -91,17 +88,15 @@
            03  IDM                     PIC 9(04).
            03  IDX-R                   PIC 9(04).
       *
-      *    03  IDX-ERR                 PIC 9(04).
-      *    03  IDX-WAR                 PIC 9(04).
+           03  IDX-ERR                 PIC 9(04).
+           03  IDX-WAR                 PIC 9(04).
       *
-           03  IDF                     PIC 9(04).
            03  IDD                     PIC 9(04).
            03  IDD2                    PIC 9(04).
-           03  IDX-TBL                 PIC 9(04).
-           03  IDX3                    PIC 9(04).
-           03  IDX-T                   PIC 9(04).
-           03  IDX-K                   PIC 9(04).
-           03  TBL-IDX                 PIC 9(04).
+           03  IDF                     PIC 9(04).
+           03  IDX3                     PIC 9(04).
+           03  IDX-T                    PIC 9(04).
+           03  IDX-N                    PIC 9(04).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -160,6 +155,9 @@
                05  WRK-ERRCD-TBL       OCCURS   100.
                    07  WRK-ERRCD-T         PIC X(02).
       *
+      *    要介護状態
+           03  WRK-CAREJOTAICD         PIC X(02).
+      *
       *    オルカUID
            03  WRK-ORCA-UID            PIC X(36).
            03  WRK-OPID                PIC X(16).
@@ -173,18 +171,6 @@
       *    MCP-TERMID
            03  WRK-MCP-TERM            PIC X(64).
       *
-           03  WRK-RENNUM              PIC 9(03).
-           03  WRK-DAYCNT              PIC 9(03).
-      *    他一部負担累計
-           03  WRK-NYUJGNGAK           PIC 9(07).
-      *
-           03  WRK-KEY-SRYYMD          PIC X(08).
-           03  WRK-SRYYM               PIC X(06).
-      *
-           03  TBL-FTN-MAX             PIC 9(04).
-           03  TBL-ETC-MAX             PIC 9(04).
-      *
-           03  WRK-MONEY               PIC 9(07).
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -203,15 +189,8 @@
                05  WRK-BYY             PIC 9(04).
                05  WRK-BMM             PIC 9(02).
                05  WRK-BDD             PIC 9(02).
-      *    公費ＩＤ
-           03  WRK-KOHID               PIC 9(10).
-      *    公費開始日
-           03   WRK-KOH-TEKSTYMD       PIC X(08).
       *
-      *    他一部負担
-           03   WRK-SEL-RENNUM         PIC 9(03).
-           03   WRK-SEL-TEKSTYMD       PIC X(08).
-      *
+           03  WRK-WEIGHT              PIC 9(04).
       *
       *    共通パラメタ内容
        01  WRK-APIV3DATA-AREA.
@@ -224,10 +203,6 @@
                05  WRK-RESPONSE-NUMBER     PIC X(02).
       *        処理ＰＧ
                05  WRK-PARA-SYORIPG        PIC X(02).
-      *        公費ＩＤ
-               05  WRK-PARA-KOHID          PIC X(10).
-      *        選択番号
-               05  WRK-PARA-SELNUM         PIC 9(03).
       *        登録終了
                05  WRK-PARA-ENDKBN         PIC X(01).
       *
@@ -257,22 +232,16 @@
            COPY    "P02SCR-SPA"
                               REPLACING  //SPA-// BY //APIS-//.
       *
-      *    患者公費負担
-       01  TBL-PTKOHFTN-AREA.
-           02  TBL-PTKOHFTN-REC        OCCURS   300.
-           COPY    "CPPTKOHFTN.INC"     REPLACING
-                                   //PTKOHFTN-// BY //TBL-PTKOHFTN-//.
-      *    他一部有
-           03  TBL-PTKOHFTN-ETCKBN      PIC X(01).
-      *    削除区分
-           03  TBL-PTKOHFTN-DELKBN      PIC X(01).
-           03  TBL-SPA-IDX              PIC 9(03).
-      *
-      *    患者公費他一部負担
-       01  TBL-PTKOHFTNETC-AREA.
-           02  TBL-PTKOHFTNETC-REC         OCCURS   100.
-           COPY    "CPPTKOHFTNETC.INC"     REPLACING
-                             //PTKOHFTNETC-// BY //TBL-PTKOHFTNETC-//.
+      *    患者介護保険情報テーブル
+       01  TBL-PTCARE-HKNINF-AREA.
+           02  TBL-PTCARE-HKNINF-REC    OCCURS   10.
+           COPY    "CPPTCARE-HKNINF.INC"   REPLACING
+                                     //PTCRHKN-// BY //TBL-PTCRHKN-//.
+      *    患者介護認定者情報テーブル
+       01  TBL-PTCARE-NINTEI-AREA.
+           02  TBL-PTCARE-NINTEI-REC   OCCURS   50.
+           COPY    "CPPTCARE-NINTEI.INC"   REPLACING
+                                    //PTCRNIN-// BY //TBL-PTCRNIN-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -322,9 +291,9 @@
            COPY    "CPORCSLOCK.INC".
       *
       *    API XML読込用定義体
-           COPY    "CPPATIENTMODV3REQ5.INC".
+           COPY    "CPPATIENTMODV3REQ6.INC".
       *    API XML出力用定義体
-           COPY    "CPPATIENTMODV3RES5.INC".
+           COPY    "CPPATIENTMODV3RES6.INC".
       *
       *    保険組合せ決定関数サブ
       *    COPY    "CPORCSAPIHKN.INC".
@@ -369,13 +338,12 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    患者公費負担
-       01  PTKOHFTN-REC.
-           COPY    "CPPTKOHFTN.INC".
-      *
-      *    他一部負担
-       01  PTKOHFTNETC-REC.
-           COPY    "CPPTKOHFTNETC.INC".
+      *    患者介護保険情報テーブル
+       01  PTCARE-HKNINF-REC.
+           COPY    "CPPTCARE-HKNINF.INC".
+      *    患者介護認定者情報テーブル
+       01  PTCARE-NINTEI-REC.
+           COPY    "CPPTCARE-NINTEI.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
@@ -435,7 +403,7 @@
       *
            IF      WRK-ERRCD           =   "99"
       *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST07-HTTPSTATUS
+               MOVE   404                  TO  APILST08-HTTPSTATUS
            ELSE
       *        返却領域編集
                PERFORM 300-RGTXMLMAKE-SEC
@@ -456,8 +424,8 @@
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-PATIENTMODRES
-           INITIALIZE                      TBL-PTKOHFTN-AREA
-           INITIALIZE                      TBL-PTKOHFTNETC-AREA
+           INITIALIZE                      TBL-PTCARE-HKNINF-AREA
+           INITIALIZE                      TBL-PTCARE-NINTEI-AREA
            INITIALIZE                      WRK-APIV3DATA-AREA
       *
            INITIALIZE                      SPA-P02SCRAREA
@@ -522,6 +490,8 @@
       *
            MOVE    ZERO                TO  PTMODRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    ZERO                TO  IDX-WAR
+           MOVE    ZERO                TO  IDX-ERR
       *
            MOVE    PTMODREQ-REQUEST-NUMBER
                                        TO  PTMODRES-REQUEST-NUMBER
@@ -539,12 +509,8 @@
                MOVE    1                   TO  FLG-SYORI
            WHEN    "02"
                MOVE    2                   TO  FLG-SYORI
-           WHEN    "03"
-               MOVE    3                   TO  FLG-SYORI
-           WHEN    "04"
-               MOVE    4                   TO  FLG-SYORI
-           WHEN    "05"
-               MOVE    5                   TO  FLG-SYORI
+      *    WHEN    "03"
+      *        MOVE    3                   TO  FLG-SYORI
            WHEN    "99"
       *        強制処理終了
                PERFORM 2099-CANCEL-SEC
@@ -581,17 +547,11 @@
       *        初期処理
                PERFORM 2001-PTINF-SYORI-SEC
            WHEN    "02"
-      *        公費負担確認処理
-               PERFORM 2002-PTKOHFTN-SYORI-SEC
-           WHEN    "03"
-      *        公費負担更新処理
-               PERFORM 2003-PTKOHFTN-UPDATE-SEC
-           WHEN    "04"
-      *        他一部負担額確認処理
-               PERFORM 2004-KOHETC-SYORI-SEC
-           WHEN    "05"
-      *        他一部負担額更新処理
-               PERFORM 2005-KOHETC-UPDATE-SEC
+      *        確認処理
+               PERFORM 2002-CHECK-SYORI-SEC
+      *    WHEN    "03"
+      *        更新処理
+      *        PERFORM 2003-UPDATE-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -645,18 +605,18 @@
       *****************************************************************
        1000-RGTXMLREAD-SEC   SECTION.
       *
-           IF      APILST07-BODY   NOT =   LOW-VALUE
+           IF      APILST08-BODY   NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-PATIENTMODREQ
            INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3req5"  TO  MCP-TABLE
+           MOVE    "xml_patientmodv3req6"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST07-BODY       TO  APIREQ-OBJECT
+           MOVE    APILST08-BODY       TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "patientmodv3req5"  TO  APIREQ-RECORDNAME
+           MOVE    "patientmodv3req6"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -671,10 +631,10 @@
       *
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3req5"  TO  MCP-TABLE
+           MOVE    "xml_patientmodv3req6"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "patientmodv3req5"  TO  APIREQ-RECORDNAME
+           MOVE    "patientmodv3req6"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -688,7 +648,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientmodv3req5"  TO  MCP-TABLE
+           MOVE    "xml_patientmodv3req6"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
@@ -713,23 +673,16 @@
       *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    1
-                   WHEN    2
-                   WHEN    4
                        MOVE    "検索処理終了"
                                            TO  WRK-OKMSG
-                   WHEN    3
-                   WHEN    5
-                       EVALUATE    FLG-MODE
-                       WHEN    ZERO
-                           MOVE    "処理終了"
-                                           TO  WRK-OKMSG
-                       WHEN    1
+                   WHEN    2
+                       IF      PTMODRES-RESPONSE-NUMBER    =  "00"
                            MOVE    "登録処理終了"
                                            TO  WRK-OKMSG
-                       WHEN    2
-                           MOVE    "削除処理終了"
+                       ELSE
+                           MOVE    "登録処理終了"
                                            TO  WRK-OKMSG
-                       END-EVALUATE
+                       END-IF
                    WHEN    9
                        MOVE    "解除処理終了"
                                            TO  WRK-OKMSG
@@ -755,15 +708,19 @@
                MOVE    WRK-ERRMSG          TO  PTMODRES-API-RESULT-MSG
            END-IF
       *
-           IF      APILST07-BODY     NOT =   LOW-VALUE
+           IF     (IDX-ERR             >   ZERO )
+               PERFORM 290-ERROR-HEN-SEC
+           END-IF
+      *
+           IF      APILST08-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3res5"   TO  MCP-TABLE
+           MOVE    "xml_patientmodv3res6"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  PTMODRES-MODE
-           MOVE    "patientmodv3res5"  TO  PTMODRES-RECORDNAME
+           MOVE    "patientmodv3res6"  TO  PTMODRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
@@ -775,9 +732,9 @@
            END-IF
       *
            MOVE    "XMLWRITE"           TO  MCP-FUNC
-           MOVE    "xml_patientmodv3res5"   TO  MCP-TABLE
+           MOVE    "xml_patientmodv3res6"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "patientmodv3res5"     TO  PTMODRES-RECORDNAME
+           MOVE    "patientmodv3res6"     TO  PTMODRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
@@ -789,15 +746,15 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientmodv3res5"   TO  MCP-TABLE
+           MOVE    "xml_patientmodv3res6"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
-               MOVE    PTMODRES-OBJECT     TO  APILST07-BODY
-               MOVE    "patientmod/xml"    TO  APILST07-CONTENT-TYPE
+               MOVE    PTMODRES-OBJECT     TO  APILST08-BODY
+               MOVE    "patientmod/xml"    TO  APILST08-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "accept xml write failure "
@@ -855,7 +812,7 @@
            IF     (WRK-ERRCD               =   SPACE )
              AND  (PTMODREQ-REQUEST-NUMBER NOT =   "01"  )
       *        リクエスト０１以外は、同じ処理の続きであること
-               IF      WRK-PARA-SYORIPG    NOT =   "05"
+               IF      WRK-PARA-SYORIPG    NOT =   "06"
                    MOVE    "08"                TO  WRK-ERRCD
                END-IF
            END-IF
@@ -896,6 +853,7 @@
            ELSE
                MOVE    ZERO            TO  FLG-CONTKBN
            END-IF
+      *
       *    患者基本チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200211-KIHON-CHK-SEC
@@ -929,6 +887,30 @@
       *    患者番号
            MOVE    PTMODREQ-PATIENTID      TO  PTMODRES-PATIENTID
            MOVE    PTMODREQ-PATIENTID      TO  WRK-PTNUM
+      *    基準日
+      *    MOVE    PTMODREQ-BASE-DATE      TO  PTMODRES-BASE-DATE
+      *    MOVE    PTMODREQ-BASE-DATE      TO  WRK-HEN-DATE
+      *    MOVE    SPACE                   TO  WRK-HEN-TIME
+      *    PERFORM 802-DAYHEN02-SEC
+      *    MOVE    WRK-SYMD                TO  WRK-BASE-YMD
+      *    未設定時はシステム情報設定
+      *    IF      WRK-BASE-YMD         =   SPACE
+      *        MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
+      *    END-IF
+      *    基準日をシステム日付へ
+      *    MOVE    WRK-BASE-YMD        TO  SPA-SYSYMD
+      *    画面表示編集
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    SPA-SYSYMD          TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           IF      STS-DAY-RC1         =   ZERO 
+               MOVE    LNK-DAY2-EDTYMD1    TO  SPA-SYSYMDWH
+           ELSE
+               MOVE    SPA-SYSYMD          TO  SPA-SYSYMDWH
+           END-IF
       *
       *    患者情報
            MOVE    PTMODREQ-NAME           TO  PTMODRES-NAME
@@ -1147,8 +1129,12 @@
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
-      *        公費負担対象一覧編集処理
-               PERFORM 20013-PTKOH-HENSYU-SEC
+      *        介護保険情報編集処理
+               PERFORM 20013-PTCARE-HKNINF-HENSYU-SEC
+           END-IF
+           IF      WRK-ERRCD           =   SPACE
+      *        介護認定者情報編集処理
+               PERFORM 20014-PTCARE-NINTEI-HENSYU-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
@@ -1159,6 +1145,12 @@
                    MOVE    PTMODREQ-ORCA-UID   TO  PTMODRES-ORCA-UID
                END-IF
            END-IF
+      *    エラー判定
+           IF      WRK-ERRCD           =   SPACE
+               IF      IDX-ERR             >   ZERO
+                   MOVE    "60"               TO  WRK-ERRCD
+               END-IF
+           END-IF
       *    パラメタ登録
            IF      FLG-SYORIEND    =   1
                IF      PTMODRES-ORCA-UID   NOT =   SPACE
@@ -1166,7 +1158,6 @@
                END-IF
            ELSE
                PERFORM 2901-PARA-INS-SEC
-               PERFORM 2008-SPATMP-INS-SEC
            END-IF
       *
            .
@@ -1329,11 +1320,7 @@
                                        TO  WRK-RESPONSE-NUMBER
            MOVE    WRK-ENDKBN          TO  WRK-PARA-ENDKBN
       *    処理ＰＧ
-           MOVE    "05"                TO  WRK-PARA-SYORIPG
-      *    公費ＩＤ
-           MOVE    WRK-KOHID           TO  WRK-PARA-KOHID
-      *    選択番号
-           MOVE    WRK-SEL-RENNUM      TO  WRK-PARA-SELNUM
+           MOVE    "06"                TO  WRK-PARA-SYORIPG
       *
            MOVE    WRK-APIV3DATA-REC   TO  APIPARA-DATA-REC
       *
@@ -1411,433 +1398,190 @@
            EXIT.
       *
       ****************************************************************
-      *    公費負担対象一覧編集処理
+      *    介護保険情報情報編集処理
       ****************************************************************
-       20013-PTKOH-HENSYU-SEC           SECTION.
+       20013-PTCARE-HKNINF-HENSYU-SEC           SECTION.
       *
-           INITIALIZE                  PTMODRES-PUBLIC-INSURANCE-INFG
+           INITIALIZE                  PTMODRES-CARE-INFO-G
+      *    患者介護保険情報
+           MOVE    SPACE               TO  PTCARE-HKNINF-REC
+           INITIALIZE                  PTCARE-HKNINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
+           MOVE    PTINF-PTID          TO  PTCRHKN-PTID
       *
-           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
-      *    公費負担対象
-           MOVE    "CLICKED"           TO  MCP-EVENT
-           MOVE    "APIV3D"            TO  MCP-WIDGET
-           MOVE    "PUTG"              TO  MCP-STATUS
-           CALL    "ORCGP02W1"     USING   MCPAREA
-                                           SPAAREA
-                                           LINKAREA
-                                           SCRAREA
-           MOVE    SPA-COMMON          TO  SPA-AREA
-           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL   (IDX2       >   60 )
-                         OR    (IDX2       >   SPA-FTN1-MAX)
-               IF      SPA-NAI24-FTNDELKBN (IDX2)  =   SPACE
-                   ADD     1                   TO  IDX
-                   PERFORM 200131-PTKOH-PTMODRES-SEC
-               END-IF
-           END-PERFORM
-      *    対象なし
-           IF      IDX                 =   ZERO
-               MOVE   "30"             TO  WRK-ERRCD
-           END-IF
-           .
-       20013-PTKOH-HENSYU-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    公費編集処理
-      **************************************************************
-       200131-PTKOH-PTMODRES-SEC           SECTION.
-      *
-      *    公費ＩＤ
-           MOVE    SPA-NAI24-KOHID (IDX2)  TO  PTMODRES-INSURANCE-ID
-                                                                  (IDX)
-      *    公費の種類
-           MOVE    SPA-NAI24-KOHNUM(IDX2)  TO  PTMODRES-INSURANCE-CLASS
-                                                                  (IDX)
-      *    公費の種類名称
-           MOVE    SPA-GMN24-TFTNKOHMEI(IDX2)
-                                           TO  PTMODRES-INSURANCE-NAME
-                                                                  (IDX)
-      *    負担者番号
-      *    MOVE    SPA-GMN24-TXXXXXXXXI(IDX2)
-      *                                    TO  PTMODRES-PROVIDER-NUMBER
-      *                                                           (IDX)
-      *    受給者番号
-           MOVE    SPA-NAI24-TJKYSNUM(IDX2)
-                                           TO  PTMODRES-RECIPIENT-NUMBER
-                                                                  (IDX)
-      *    開始年月日
-           MOVE    SPA-NAI24-TKOHSTYMD(IDX2)   TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTMODRES-INSURANCE-START-DATE
-                                                                  (IDX)
-      *    終了年月日
-           MOVE    SPA-NAI24-TKOHEDYMD(IDX2)   TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTMODRES-INSURANCE-END-DATE
-                                                                  (IDX)
-      *
-           .
-       200131-PTKOH-PTMODRES-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担確認処理
-      *****************************************************************
-       2002-PTKOHFTN-SYORI-SEC     SECTION.
-      *
-      *    患者番号判定
-           PERFORM 20011-PTINF-INITCHK-SEC
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        ＰＡＲＡのＳＰＡ編集処理
-               PERFORM 2031-SPA-PARA-SEC
-           END-IF
-      *    項目チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20021-PTKOHFTN-CHK-SEC
-           END-IF
-      *    公費負担一覧編集処理
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20022-PTKOHFTN-HENSYU-SEC
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-               MOVE    "03"            TO  PTMODRES-RESPONSE-NUMBER
-           ELSE
-               IF      PTMODRES-RESPONSE-NUMBER    =   SPACE
-                   MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
-               END-IF
-           END-IF
-      *    パラメタ登録
-           PERFORM 2901-PARA-INS-SEC
-      *    SPAの保存
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 2008-SPATMP-INS-SEC
-           END-IF
-      *
-           .
-       2002-PTKOHFTN-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費ＩＤ選択チェック処理
-      *****************************************************************
-       200211-KOHID-SEL-SEC     SECTION.
-      *
-      *    レスポンス編集
-           MOVE    PTMODREQ-INSURANCE-ID
-                                       TO  PTMODRES-SEL-INSURANCE-ID
-           MOVE    PTMODREQ-INSURANCE-CLASS
-                                       TO  PTMODRES-SEL-INSURANCE-CLASS
-           MOVE    PTMODREQ-RECIPIENT-NUMBER
-                                       TO  PTMODRES-SEL-RECIPIENT-NUMBER
-           MOVE    PTMODREQ-INSURANCE-START-DATE
-                                       TO  PTMODRES-SEL-INSURANCE-START
-      *
-           MOVE    ZERO                TO  WRK-KOHID
-           MOVE    SPACE               TO  WRK-KOH-TEKSTYMD
-      *    公費ＩＤチェック
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    PTMODREQ-INSURANCE-ID   TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF      SNUM-RC         NOT =   ZERO
-               MOVE    "31"                TO  WRK-ERRCD
-           ELSE
-               MOVE    SNUM-OUTNUM         TO  WRK-KOHID
-               MOVE    WRK-KOHID           TO  PTMODRES-SEL-INSURANCE-ID
-           END-IF
-      *
-           IF      PTMODREQ-INSURANCE-START-DATE   NOT =   SPACE
-               MOVE    PTMODREQ-INSURANCE-START-DATE
-                                           TO  WRK-HEN-DATE
-               MOVE    SPACE               TO  WRK-HEN-TIME
-               PERFORM 802-DAYHEN02-SEC
-               MOVE    WRK-SYMD            TO  WRK-KOH-TEKSTYMD
-           END-IF
-           .
-       200211-KOHID-SEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    項目チェック処理
-      *****************************************************************
-       20021-PTKOHFTN-CHK-SEC     SECTION.
-      *
-      *    公費ＩＤ選択チェック
-           PERFORM 200211-KOHID-SEL-SEC
-      *
-           MOVE    ZERO                TO  SPA-GMN24-FTNSELNUM
-           MOVE    ZERO                TO  SPA-NAI24-FTNSELNUM
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL   (IDX        >   60 )
-                         OR    (IDX        >   SPA-FTN1-MAX)
-                         OR    (WRK-ERRCD  NOT =   SPACE  )
-                         OR    (FLG-OK     =   1   )
-               IF     (WRK-KOHID           =   SPA-NAI24-KOHID (IDX))
-                 AND  (SPA-NAI24-FTNDELKBN (IDX)  =   SPACE )
-                   PERFORM 2001211-PTKOHTBL-CHK-SEC
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-      *
-           IF      FLG-OK              =   ZERO
-               IF      WRK-ERRCD           =   SPACE
-                   MOVE    "32"                TO  WRK-ERRCD
-               END-IF
-           END-IF
-           .
-       20021-PTKOHFTN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費チェック処理
-      *****************************************************************
-       2001211-PTKOHTBL-CHK-SEC     SECTION.
-      *
-           IF    ((PTMODREQ-INSURANCE-CLASS    NOT =   SPACE)
-              AND (PTMODREQ-INSURANCE-CLASS
-                                       NOT =   SPA-NAI24-KOHNUM(IDX)))
-           OR    ((PTMODREQ-RECIPIENT-NUMBER   NOT =   SPACE )
-              AND (PTMODREQ-RECIPIENT-NUMBER
-                                       NOT =   SPA-NAI24-TJKYSNUM(IDX)))
-           OR    ((WRK-KOH-TEKSTYMD    NOT =   SPACE )
-              AND (WRK-KOH-TEKSTYMD
-                                       NOT =   SPA-NAI24-TKOHSTYMD
-                                                                (IDX)))
-               MOVE    "32"                TO  WRK-ERRCD
-           ELSE
-      *        公費選択
-               MOVE    IDX             TO  SPA-GMN24-FTNSELNUM
-               MOVE    IDX             TO  SPA-NAI24-FTNSELNUM
-      *        公費負担額編集
-               MOVE    FLG-SYORI           TO  FLG-HENSYU
-               PERFORM 2001212-PTKOHFTN-SELHENSYU-SEC
-           END-IF
-           .
-       2001211-PTKOHTBL-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    対象の公費編集処理
-      *****************************************************************
-       2001212-PTKOHFTN-SELHENSYU-SEC     SECTION.
-      *
-           MOVE    SPA-NAI24-FTNSELNUM TO  IDF
-      *
-           INITIALIZE                  PTMODRES-KOHFTN-INFO-G
-      *    公費ＩＤ
-           MOVE    SPA-NAI24-KOHID(IDF)
-                                       TO  PTMODRES-SEL-INSURANCE-ID
-           MOVE    SPA-NAI24-KOHNUM(IDF)
-                                       TO  PTMODRES-SEL-INSURANCE-CLASS
-           MOVE    SPA-GMN24-TFTNKOHMEI(IDF)
-                                       TO  PTMODRES-SEL-INSURANCE-NAME
-           MOVE    SPA-NAI24-TJKYSNUM(IDF)
-                                       TO  PTMODRES-SEL-RECIPIENT-NUMBER
-      *    開始年月日
-           MOVE    SPA-NAI24-TKOHSTYMD(IDF)    TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTMODRES-SEL-INSURANCE-START
-      *    終了年月日
-           MOVE    SPA-NAI24-TKOHEDYMD(IDF)    TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTMODRES-SEL-INSURANCE-END
-      *
-      *    公費選択時のみ
-           IF      FLG-HENSYU           =   2
-      *        対象の公費負担のみ検索
-               PERFORM 2001212-PTKOHFTN-PARASET-SEC
-      *        公費負担リスト編集
-               MOVE    "02"                TO  SPA-MCP-WIDGET
-           ELSE
-      *        見出しのみ編集
-               MOVE    "01"                TO  SPA-MCP-WIDGET
-           END-IF
-           PERFORM 2001211-P024-SYORI-SEC
-      *    見出編集
-           MOVE    SPA-GMN24-FTNMSG1   TO  PTMODRES-SEL-KOHFTN-NAME1
-           MOVE    SPA-GMN24-FTNMSG2   TO  PTMODRES-SEL-KOHFTN-NAME2
-      *    公費種類
-           MOVE    SPA-NAI24-FTNSYORI  TO  PTMODRES-SEL-KOHFTN-CLASS
-           .
-       2001212-PTKOHFTN-SELHENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    対象の公費負担のみ編集処理
-      *****************************************************************
-       2001212-PTKOHFTN-PARASET-SEC     SECTION.
-      *
-      *    PARA削除
-      *    パラメタ削除
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "P02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
-      *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "del3"              TO  MCP-PATHNAME
-           PERFORM 900-ORCDBMAIN-SEC
-      *
-           INITIALIZE                      PTKOHFTN-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTN-PTID
-           MOVE    WRK-KOHID           TO  PTKOHFTN-KOHID
-           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
+           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 910-PTKOHFTN-READ-SEC
-           ELSE 
-               MOVE    1               TO  FLG-PTKOHFTN
+               MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCAREHKNINF-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTCARE-HKNINF
+               INITIALIZE                  PTCARE-HKNINF-REC
            END-IF
       *
-           MOVE    ZERO                TO  IDH
-           PERFORM
-               UNTIL    FLG-PTKOHFTN       =   1
-               ADD     1                   TO  IDH
-               MOVE    SPACE               TO  PARA-REC
-               INITIALIZE                      PARA-REC
-               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-               MOVE    "P02"               TO  PARA-GYOUMUID
-               MOVE    SPA-TERMID          TO  PARA-TERMID
-               MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
-               MOVE    IDH                 TO  PARA-EDANUM
-      *        他一部負担金判定の為、クリア
-               MOVE    SPACE               TO  PTKOHFTN-TERMID
-               MOVE    PTKOHFTN-REC        TO  PARA-DATA-REC
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL      (FLG-PTCARE-HKNINF   =   1  )
+                          OR  (IDX                 >=  10 )
+               ADD     1                       TO  IDX
+      *        保険者番号
+               MOVE    PTCRHKN-HKNJANUM    TO
+                                       PTMODRES-CARE-INSURANCE-NUMBER
+                                                             (IDX)
+      *        被保険者番号
+               MOVE    PTCRHKN-HIHKNJANUM  TO
+                                           PTMODRES-CARE-POLICYHOLDER
+                                                             (IDX)
+      *        開始日
+               MOVE    PTCRHKN-TEKSTYMD    TO  WRK-SYMD
+               MOVE    ZERO                TO  WRK-THMS
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-CARE-START-DATE
+                                                             (IDX)
+      *        終了日
+               MOVE    PTCRHKN-TEKEDYMD    TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-CARE-END-DATE
+                                                             (IDX)
       *
-               MOVE    PARA-REC            TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-ORCDBMAIN-SEC
-               IF      MCP-RC          NOT =   ZERO
-                   MOVE    "80"                TO  WRK-ERRCD
-                   DISPLAY "API PARA INSERT ERR:"  MCP-RC
-                           ",KEY:" PARA-KEY
-               END-IF
-      *
-               MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 910-PTKOHFTN-READ-SEC
+               MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCAREHKNINF-READ-SEC
            END-PERFORM
+           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       20013-PTCARE-HKNINF-HENSYU-EXT.
+           EXIT.
       *
-           MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
+      ****************************************************************
+      *    介護認定者情報編集処理
+      **************************************************************
+       20014-PTCARE-NINTEI-HENSYU-SEC           SECTION.
+      *
+           INITIALIZE                  PTMODRES-NEED-INFO-G
+      *    患者介護保険情報
+           INITIALIZE                  PTCARE-NINTEI-REC
+           MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
+           MOVE    PTINF-PTID          TO  PTCRNIN-PTID
+      *
+           MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
+           MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCARENINTEI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTCARE-NINTEI
+               INITIALIZE                  PTCARE-NINTEI-REC
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL      (FLG-PTCARE-NINTEI   =   1  )
+                          OR  (IDX                 >=  50 )
+               ADD     1                   TO  IDX
+      *        要介護状態
+               MOVE    PTCRNIN-CAREJOTAICD TO
+                                           PTMODRES-NEED-CARE-STATE-CODE
+                                                             (IDX)
+      *        要介護状態名称編集
+               MOVE    PTCRNIN-CAREJOTAICD TO  WRK-CAREJOTAICD
+               PERFORM 200221-PTCARE-CARESTATE-SEC
+      *        認定年月日
+               MOVE    PTCRNIN-NINTEIYMD   TO  WRK-SYMD
+               MOVE    ZERO                TO  WRK-THMS
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-NEED-DATE
+                                                             (IDX)
+      *        開始日
+               MOVE    PTCRNIN-TEKSTYMD    TO  WRK-SYMD
+               MOVE    ZERO                TO  WRK-THMS
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-NEED-START-DATE
+                                                             (IDX)
+      *        終了日
+               MOVE    PTCRNIN-TEKEDYMD    TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  PTMODRES-NEED-END-DATE
+                                                             (IDX)
+      *
+               MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCARENINTEI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
-       2001212-PTKOHFTN-PARASET-EXT.
+       20014-PTCARE-NINTEI-HENSYU-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    負担額見出し編集処理
+      *    要介護状態名称編集処理
       *****************************************************************
-       2001211-P024-SYORI-SEC     SECTION.
+       200221-PTCARE-CARESTATE-SEC       SECTION.
       *
-           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
-      *
-           MOVE    "CLICKED"           TO  MCP-EVENT
-           MOVE    "APIV3"             TO  MCP-WIDGET
-           MOVE    "PUTG"              TO  MCP-STATUS
-           CALL    "ORCGP024"      USING   MCPAREA
-                                           SPAAREA
-                                           LINKAREA
-                                           SCRAREA
-           MOVE    SPA-COMMON          TO  SPA-AREA
-           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-      *
+           MOVE    ZERO                TO  FLG-CHKERR
+      *    要介護状態区分
+           EVALUATE    WRK-CAREJOTAICD
+               WHEN    "01"
+                   MOVE    "自立"      TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "11"
+                   MOVE    "要支援"    TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "12"
+                   MOVE    "要支援１"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "13"
+                   MOVE    "要支援２"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "21"
+                   MOVE    "要介護１"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "22"
+                   MOVE    "要介護２"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "23"
+                   MOVE    "要介護３"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "24"
+                   MOVE    "要介護４"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    "25"
+                   MOVE    "要介護５"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+               WHEN    OTHER
+                   MOVE    1           TO  FLG-CHKERR
+           END-EVALUATE
            .
-       2001211-P024-SYORI-EXT.
+       200221-PTCARE-CARESTATE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    公費負担一覧編集処理
+      *    更新確認処理
       *****************************************************************
-       20022-PTKOHFTN-HENSYU-SEC     SECTION.
+       2002-CHECK-SYORI-SEC     SECTION.
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-FTN2-MAX
-      **       MOVE    SPA-NAI24-TRENNUM  (IDX)
-      **                               TO  PTMODRES-PTKOHFTN-RENNUM
-      **                                                       (IDX)
-               MOVE    IDX             TO  WRK-RENNUM
-               MOVE    WRK-RENNUM      TO  PTMODRES-PTKOHFTN-RENNUM
-                                                               (IDX)
-      *        開始日
-               MOVE    SPA-NAI24-TFTNSTYMD(IDX)    TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PTMODRES-PTKOHFTN-TEKSTYMD
-                                                               (IDX)
-      *        終了日
-               MOVE    SPA-NAI24-TFTNEDYMD(IDX)    TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PTMODRES-PTKOHFTN-TEKEDYMD
-                                                               (IDX)
-      *        外来上限額
-               MOVE    SPA-GMN24-TGAIJGNGAK (IDX)
-                                       TO  PTMODRES-PTKOHFTN-GAIJGNGAK
-                                                               (IDX)
-               MOVE    SPA-GMN24-TNYUJGNGAK (IDX)
-                                       TO  PTMODRES-PTKOHFTN-NYUJGNGAK
-                                                               (IDX)
-      *
-      *        公費他一部負担額設定有
-               IF      SPA-NAI24-TFTNETCKBN (IDX)  =   "1"
-                   MOVE    "1"         TO  PTMODRES-PTKOHFTN-ETC-KBN
-                                                               (IDX)
-               END-IF
-           END-PERFORM
-      *
-           .
-       20022-PTKOHFTN-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担更新処理
-      *****************************************************************
-       2003-PTKOHFTN-UPDATE-SEC     SECTION.
+           MOVE    ZERO                TO  IDX-ERR
       *
       *    患者番号判定
            PERFORM 20011-PTINF-INITCHK-SEC
-      *
-           IF      WRK-RESPONSE-NUMBER NOT =   "03"
-               MOVE    "19"                TO  WRK-ERRCD
-               MOVE    WRK-RESPONSE-NUMBER
-                                           TO  PTMODRES-RESPONSE-NUMBER
-           END-IF
-      *
+      * 
+      *    基本情報処理
            IF      WRK-ERRCD           =   SPACE
-      *        ＰＡＲＡのＳＰＡ編集処理
-               PERFORM 2031-SPA-PARA-SEC
+               PERFORM 20012-PTINF-HEN-SEC
            END-IF
       *    項目チェック
            IF      WRK-ERRCD           =   SPACE
-               PERFORM 20031-PTKOHFTN-UPD-CHK-SEC
+               PERFORM 20021-KOUSIN-CHK-SEC
            END-IF
       *    更新処理
            IF     (WRK-ERRCD           =   SPACE )
-              AND (FLG-MODE        NOT =   ZERO  )
-               PERFORM 20032-PTKOHFTN-UPDATE-SEC
+              AND (IDX-ERR             =   ZERO  )
+               PERFORM 20022-KOUSIN-SYORI-SEC
+           END-IF
+      *    エラー判定
+           IF      WRK-ERRCD           =   SPACE
+               IF      IDX-ERR             >   ZERO
+                   MOVE    "60"               TO  WRK-ERRCD
+               END-IF
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
@@ -1846,1449 +1590,640 @@
       *            パラメタ削除
                    PERFORM 2902-PARA-ALLDEL-SEC
                    PERFORM 2009-SPATMP-DEL-SEC
-      *            公費選択へ
-                   MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
+      *            保険登録へ
+                   MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
       *            継続区分終了
                    MOVE    "1"             TO  WRK-ENDKBN
       *            APIパラメタ登録
-                   PERFORM 2901-PARA-INS-SEC
-                   PERFORM 2008-SPATMP-INS-SEC
+                   PERFORM 2902-APIPARA-INS-SEC
                ELSE
                    MOVE    "00"            TO  PTMODRES-RESPONSE-NUMBER
       *            パラメタ削除・排他解除処理
                    PERFORM 2900-SYORI-END-SEC
                END-IF
            ELSE
-               IF      PTMODRES-RESPONSE-NUMBER    =   SPACE
-                   MOVE    "03"            TO  PTMODRES-RESPONSE-NUMBER
-               END-IF
                IF      FLG-CANSEL      =   ZERO
       *            SPA再編集
                    PERFORM 2901-PARA-INS-SEC
-      **********   PERFORM 2008-SPATMP-INS-SEC
+                   PERFORM 2008-SPATMP-INS-SEC
                END-IF
-           END-IF
-      *
-           .
-       2003-PTKOHFTN-UPDATE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    更新チェック処理
-      *****************************************************************
-       20031-PTKOHFTN-UPD-CHK-SEC         SECTION.
-      *
-      *    公費ＩＤ選択チェック
-           PERFORM 20031-KOHIDPARA-CHK-SEC
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        公費負担額更新チェック
-               EVALUATE    PTMODREQ-PTKOHFTN-MODE
-               WHEN    "DELETE"
-               WHEN    "Delete"
-                   MOVE    2               TO  FLG-MODE
-               WHEN    "MODIFY"
-               WHEN    "Modify"
-                   MOVE    1               TO  FLG-MODE
-                   PERFORM 200311-PTKOHFTN-CHK-SEC
-               WHEN    SPACE
-                   MOVE    ZERO            TO  FLG-MODE
-               WHEN    OTHER
-                   MOVE    "30"            TO  WRK-ERRCD
-               END-EVALUATE
-           END-IF
-      *
-           .
-       20031-PTKOHFTN-UPD-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＰＡＲＡチェック処理
-      *****************************************************************
-       20031-KOHIDPARA-CHK-SEC         SECTION.
-      *
-      *    公費ＩＤ選択チェック
-           PERFORM 200211-KOHID-SEL-SEC
-      *
-           IF     (WRK-KOHID       NOT =   WRK-PARA-KOHID)
-               MOVE    "33"                TO  WRK-ERRCD
-           END-IF
-           IF      SPA-NAI24-FTNSELNUM NOT =   ZERO
-               IF      SPA-NAI24-KOHID (SPA-NAI24-FTNSELNUM)
-                                       NOT =   WRK-KOHID
-                   MOVE    "33"                TO  WRK-ERRCD
-               END-IF
-           END-IF
-      *
-           IF      WRK-ERRCD       NOT =   SPACE
                MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
            END-IF
-           IF     (SPA-NAI24-FTNSELNUM NOT =   ZERO ) 
-              AND (WRK-ERRCD           =   SPACE )
-      *        公費負担額編集
-               MOVE    FLG-SYORI           TO  FLG-HENSYU
-               PERFORM 2001212-PTKOHFTN-SELHENSYU-SEC
-           END-IF
+      *
            .
-       220031-PARA-CHK-EXT.
+       2002-CHECK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
       *    更新チェック処理
       *****************************************************************
-       200311-PTKOHFTN-CHK-SEC         SECTION.
+       20021-KOUSIN-CHK-SEC         SECTION.
       *
-           INITIALIZE                  TBL-PTKOHFTN-AREA
+      *    介護保険情報
+           EVALUATE    PTMODREQ-CARE-MODE
+               WHEN    "DELETE"
+               WHEN    "Delete"
+                   CONTINUE
+               WHEN    "MODIFY"
+               WHEN    "Modify"
+                   PERFORM 200212-PTCARE-HKNINF-CHK-SEC
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    OTHER
+                   ADD     1               TO  IDX-ERR
+                   MOVE    "20"            TO  WRK-ERRCD-T (IDX-ERR)
+           END-EVALUATE
+      *
+      *    要介護認定情報
+           EVALUATE    PTMODREQ-NEED-MODE
+               WHEN    "DELETE"
+               WHEN    "Delete"
+                   CONTINUE
+               WHEN    "MODIFY"
+               WHEN    "Modify"
+                   PERFORM 200222-PTCARE-NINTEI-CHK-SEC
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    OTHER
+                   ADD     1               TO  IDX-ERR
+                   MOVE    "30"            TO  WRK-ERRCD-T (IDX-ERR)
+           END-EVALUATE
+      *
+           .
+       20021-KOUSIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       20022-KOUSIN-SYORI-SEC         SECTION.
+      *
+      *    介護保険情報
+           EVALUATE    PTMODREQ-CARE-MODE
+               WHEN    "DELETE"
+               WHEN    "Delete"
+                   PERFORM 200221-HKNINF-DELETE-SEC
+               WHEN    "MODIFY"
+               WHEN    "Modify"
+                   PERFORM 200221-HKNINF-UPDATE-SEC
+           END-EVALUATE
+      *
+      *    要介護認定情報
+           EVALUATE    PTMODREQ-NEED-MODE
+               WHEN    "DELETE"
+               WHEN    "Delete"
+                   PERFORM 200223-NINTEI-DELETE-SEC
+               WHEN    "MODIFY"
+               WHEN    "Modify"
+                   PERFORM 200224-NINTEI-UPDATE-SEC
+           END-EVALUATE
+      *
+           .
+       20022-KOUSIN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    介護保険情報チェック処理
+      *****************************************************************
+       200212-PTCARE-HKNINF-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  TBL-PTCARE-HKNINF-AREA
            MOVE    ZERO                TO  FLG-ERR-01
-      *
+      *    送信内容チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   300 )
-               MOVE    PTMODREQ-PTKOHFTN-LMODE  (IDX)
-                                       TO  PTMODRES-PTKOHFTN-LMODE
-                                                               (IDX)
-               MOVE    PTMODREQ-PTKOHFTN-RENNUM  (IDX)
-                                       TO  PTMODRES-PTKOHFTN-RENNUM
-                                                               (IDX)
-               MOVE    PTMODREQ-PTKOHFTN-TEKSTYMD (IDX)
-                                       TO  PTMODRES-PTKOHFTN-TEKSTYMD
-                                                               (IDX)
-               MOVE    PTMODREQ-PTKOHFTN-TEKEDYMD (IDX)
-                                       TO  PTMODRES-PTKOHFTN-TEKEDYMD
-                                                               (IDX)
-               MOVE    PTMODREQ-PTKOHFTN-GAIJGNGAK (IDX)
-                                       TO  PTMODRES-PTKOHFTN-GAIJGNGAK
-                                                               (IDX)
-               MOVE    PTMODREQ-PTKOHFTN-NYUJGNGAK (IDX)
-                                       TO  PTMODRES-PTKOHFTN-NYUJGNGAK
-                                                               (IDX)
-      *
-               MOVE    SPACE               TO  WRK-ERRCD
+                       UNTIL  (IDX         >   10   )
                MOVE    SPACE               TO  SPA-ERRCD
-               EVALUATE    PTMODREQ-PTKOHFTN-LMODE (IDX)
-                   WHEN    "Modify"
-                   WHEN    "New"
-                   WHEN    SPACE
+               MOVE    PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
+                                   TO  PTMODRES-CARE-INSURANCE-NUMBER
+                                                                (IDX)
+               MOVE    PTMODREQ-CARE-POLICYHOLDER (IDX)
+                                       TO  PTMODRES-CARE-POLICYHOLDER
+                                                                (IDX)
+               MOVE    PTMODREQ-CARE-START-DATE (IDX)
+                                       TO  PTMODRES-CARE-START-DATE
+                                                                (IDX)
+               MOVE    PTMODREQ-CARE-END-DATE (IDX)
+                                       TO  PTMODRES-CARE-END-DATE
+                                                                (IDX)
+      *        保険者番号
+               IF       PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
+                                       NOT =   SPACE
+      *            半角６文字
+                   MOVE     PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
+                                                   TO  WRK-MAE-INPUT
+                   MOVE    6                       TO  WRK-LEN
+                   PERFORM 891-HALF-CHK-SEC
+                   IF      FLG-ERR             =   ZERO
+                       MOVE     PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
+                                               TO  TBL-PTCRHKN-HKNJANUM
+                                                                (IDX)
+                   ELSE
+                       MOVE    "2811"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *        被保険者番号
+               IF       PTMODREQ-CARE-POLICYHOLDER (IDX)
+                                       NOT =   SPACE
+      *            半角１０文字
+                   MOVE     PTMODREQ-CARE-POLICYHOLDER (IDX)
+                                                   TO  WRK-MAE-INPUT
+                   MOVE    10                      TO  WRK-LEN
+                   PERFORM 891-HALF-CHK-SEC
+                   IF      FLG-ERR             =   ZERO
+                       MOVE     PTMODREQ-CARE-POLICYHOLDER (IDX)
+                                           TO  TBL-PTCRHKN-HIHKNJANUM
+                                                                (IDX)
+                   ELSE
+                       IF      SPA-ERRCD       =   SPACE
+                          MOVE    "2812"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+      *        開始年月日
+               IF      PTMODREQ-CARE-START-DATE (IDX)  =   SPACE
+                   CONTINUE
+               ELSE
+                   MOVE    PTMODREQ-CARE-START-DATE(IDX)
+                                           TO  WRK-HEN-DATE
+                   MOVE    SPACE           TO  WRK-HEN-TIME
+                   PERFORM 802-DAYHEN02-SEC
+                   MOVE    WRK-SYMD        TO  TBL-PTCRHKN-TEKSTYMD
+                                                         (IDX)
+      *            暦日チェック
+                   MOVE    TBL-PTCRHKN-TEKSTYMD (IDX)  TO  WRK-SYMD
+                   PERFORM 803-ORCSDAY-CHEK-SEC
+                   IF     (FLG-DAYERR          =   1    )
+                     AND  (SPA-ERRCD           =   SPACE)
+                       MOVE    "2815"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *        終了年月日
+               IF      PTMODREQ-CARE-END-DATE(IDX)  =   SPACE
+                   CONTINUE
+               ELSE
+                   MOVE    PTMODREQ-CARE-END-DATE(IDX)
+                                           TO  WRK-HEN-DATE
+                   MOVE    SPACE           TO  WRK-HEN-TIME
+                   PERFORM 802-DAYHEN02-SEC
+                   MOVE    WRK-SYMD        TO  TBL-PTCRHKN-TEKEDYMD
+                                                         (IDX)
+      *            暦日チェック
+                   MOVE    TBL-PTCRHKN-TEKEDYMD (IDX)  TO  WRK-SYMD
+                   PERFORM 803-ORCSDAY-CHEK-SEC
+                   IF     (FLG-DAYERR          =   1    )
+                     AND  (SPA-ERRCD           =   SPACE)
+                       MOVE    "2816"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *        必須項目チェック（開始年月日）
+               IF      PTMODREQ-CARE-START-DATE (IDX)  =   SPACE
+      *            他項目は空白であること
+                   IF     (PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
+                                                       =   SPACE )
+                      AND (PTMODREQ-CARE-POLICYHOLDER (IDX)
+                                                       =   SPACE )
+                      AND (PTMODREQ-CARE-END-DATE (IDX)
+                                                       =   SPACE )
                        CONTINUE
-                   WHEN    "Delete"
-                       MOVE    "1"             TO  TBL-PTKOHFTN-DELKBN
-                                                               (IDX)
-                   WHEN    OTHER
-                       MOVE    "AP34"          TO  SPA-ERRCD
-               END-EVALUATE
-      *
-      *        連番　数値チェック
-               MOVE    ZERO                TO  WRK-RENNUM
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    PTMODREQ-PTKOHFTN-RENNUM  (IDX)
-                                           TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF      SNUM-RC             NOT =   ZERO
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "AP35"                TO  SPA-ERRCD
-                   END-IF
-               ELSE
-                   MOVE    SNUM-OUTNUM         TO  WRK-RENNUM
-               END-IF
-               MOVE    WRK-RENNUM      TO  TBL-PTKOHFTN-RENNUM(IDX)
-      *        認定開始年月日
-               IF      PTMODREQ-PTKOHFTN-TEKSTYMD(IDX)  =   SPACE
-                   CONTINUE
-               ELSE
-                   MOVE    PTMODREQ-PTKOHFTN-TEKSTYMD(IDX)
-                                           TO  WRK-HEN-DATE
-                   MOVE    SPACE           TO  WRK-HEN-TIME
-                   PERFORM 802-DAYHEN02-SEC
-                   MOVE    WRK-SYMD        TO  TBL-PTKOHFTN-TEKSTYMD
-                                                         (IDX)
-      *            暦日チェック
-                   PERFORM 803-ORCSDAY-CHEK-SEC
-                   IF      FLG-DAYERR          =   1
-                       IF     (SPA-ERRCD           =   SPACE )
-                           MOVE    "2432"              TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               END-IF
-      *        終了日
-               IF      PTMODREQ-PTKOHFTN-TEKEDYMD(IDX)  =   SPACE
-                   CONTINUE
-               ELSE
-                   MOVE    PTMODREQ-PTKOHFTN-TEKEDYMD(IDX)
-                                           TO  WRK-HEN-DATE
-                   MOVE    SPACE           TO  WRK-HEN-TIME
-                   PERFORM 802-DAYHEN02-SEC
-                   MOVE    WRK-SYMD        TO  TBL-PTKOHFTN-TEKEDYMD
-                                                         (IDX)
-      *            暦日チェック
-                   PERFORM 803-ORCSDAY-CHEK-SEC
-                   IF      FLG-DAYERR          =   1
-                       IF     (SPA-ERRCD           =   SPACE )
-                         AND  (WRK-ERRCD           =   SPACE )
-                           MOVE    "2433"              TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               END-IF
-      *        外来上限額
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    PTMODREQ-PTKOHFTN-GAIJGNGAK  (IDX)
-                                           TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF     (SNUM-RC         NOT =   ZERO  )   OR
-                      (SNUM-MINKBN     NOT =   SPACE )   OR
-                      (SNUM-SYOKBN     NOT =   SPACE )
-      *            整数であること
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "AP36"              TO  SPA-ERRCD
-                   END-IF
-               ELSE
-                   MOVE    SNUM-OUTNUM     TO  TBL-PTKOHFTN-GAIJGNGAK
-                                                              (IDX)
-               END-IF
-      *        入院上限額
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    PTMODREQ-PTKOHFTN-NYUJGNGAK  (IDX)
-                                           TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF     (SNUM-RC         NOT =   ZERO  )   OR
-                      (SNUM-MINKBN     NOT =   SPACE )   OR
-                      (SNUM-SYOKBN     NOT =   SPACE )
-      *            整数であること
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "AP37"                TO  SPA-ERRCD
-                   END-IF
-               ELSE
-                   MOVE    SNUM-OUTNUM     TO  TBL-PTKOHFTN-NYUJGNGAK
-                                                              (IDX)
-               END-IF
-      *        必須チェック
-               IF     (TBL-PTKOHFTN-RENNUM(IDX)    NOT =   ZERO )
-                   IF      (PTMODREQ-PTKOHFTN-TEKSTYMD(IDX)  =   SPACE)
-                       IF      SPA-ERRCD           =   SPACE
-                           MOVE    "AP38"                TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               ELSE
-                   IF      (PTMODREQ-PTKOHFTN-LMODE (IDX)  =   "New"  )
-                       AND (PTMODREQ-PTKOHFTN-TEKSTYMD(IDX)  =   SPACE)
-                       IF      SPA-ERRCD           =   SPACE
-                           MOVE    "AP38"              TO  SPA-ERRCD
+                   ELSE
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    "2818"          TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
       *
                IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 2003110-ERRCDMSG-HEN-SEC
+                   MOVE    SPA-ERRCD           TO  PTMODRES-CARE-ERRCD
+                                                         (IDX)
                    MOVE    1                   TO  FLG-ERR-01
                END-IF
            END-PERFORM
       *
-      *    関連チェック
-           MOVE    ZERO                TO  FLG-ERR-02
-           MOVE    ZERO                TO  TBL-FTN-MAX
+      *    基本チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   300 )
-                       OR     (FLG-ERR-01  =   1    )
-                       OR    ((TBL-PTKOHFTN-RENNUM(IDX)    =   ZERO )
-                          AND (TBL-PTKOHFTN-TEKSTYMD(IDX)  =   SPACE))
-               ADD     1                   TO  TBL-FTN-MAX
+                       UNTIL  (IDX         >   10   )
+                        OR    (TBL-PTCRHKN-TEKSTYMD (IDX)   =   SPACE )
                MOVE    SPACE               TO  SPA-ERRCD
-               MOVE    SPACE               TO  WRK-ERRCD
-      *        連番チェック
-               IF      TBL-PTKOHFTN-RENNUM(IDX)    NOT =   ZERO
-                   PERFORM 2003111-RENNUM-CHK-SEC
-               END-IF
-      *        開始日チェック
-               IF     (TBL-PTKOHFTN-TEKSTYMD(IDX)  NOT =   SPACE )
-                 AND  (WRK-ERRCD           =   SPACE  )
-      *            終了日未設定
-                   IF      TBL-PTKOHFTN-TEKEDYMD (IDX) =   SPACE
-                       MOVE    "99999999"      TO  TBL-PTKOHFTN-TEKEDYMD
+      *        終了年月日
+               IF      TBL-PTCRHKN-TEKEDYMD (IDX)  =   SPACE
+                   MOVE    "99999999"          TO  TBL-PTCRHKN-TEKEDYMD
                                                                  (IDX)
-                       MOVE    TBL-PTKOHFTN-TEKEDYMD (IDX)
+                   MOVE    TBL-PTCRHKN-TEKEDYMD (IDX)
                                                TO  WRK-SYMD
-                       MOVE    ZERO                TO  WRK-THMS
-                       PERFORM 801-DAYHEN01-SEC
-                       MOVE    WRK-HEN-DATE    TO
-                                           PTMODRES-PTKOHFTN-TEKEDYMD
+                   MOVE    ZERO                TO  WRK-THMS
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE    TO  PTMODRES-CARE-END-DATE
                                                                 (IDX)
+               END-IF
+      *        開始日＞終了日　エラー
+               IF      TBL-PTCRHKN-TEKSTYMD (IDX)
+                                           >  TBL-PTCRHKN-TEKEDYMD (IDX)
+                   IF      SPA-ERRCD          =   SPACE
+                       MOVE    "2817"              TO  SPA-ERRCD
                    END-IF
-      *            項目チェック
-                   IF     TBL-PTKOHFTN-DELKBN (IDX)    =   "1"
-      *                削除
-                       IF    (TBL-PTKOHFTN-TEKSTYMD(IDX)
-                                           NOT =   SPA-NAI24-TFTNSTYMD
-                                                          (IDX-TBL))
-                        AND  (TBL-PTKOHFTN-ETCKBN (IDX)
-                                                =   "1"    )
-                        AND  (SPA-ERRCD         =   SPACE  )
-      *                    開始日変更はエラー
-                           MOVE    "AP39"            TO  SPA-ERRCD
-                       END-IF
-                   ELSE
-                       PERFORM 2003112-PTKOHFTN-CHK-SEC
+               END-IF
+      *        保険者番号・被保険者番号どちらか必須
+               IF    (PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
+                                           =   SPACE )
+                 AND (PTMODREQ-CARE-POLICYHOLDER (IDX)
+                                           =   SPACE )
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "2813"          TO  SPA-ERRCD
                    END-IF
                END-IF
       *
                IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 2003110-ERRCDMSG-HEN-SEC
-                   MOVE    1               TO  FLG-ERR-02
-               END-IF
-      *
+                   MOVE    SPA-ERRCD           TO  PTMODRES-CARE-ERRCD
+                                                         (IDX)
+                   MOVE    1                   TO  FLG-ERR-01
+                END-IF
            END-PERFORM
       *
-           IF      (FLG-ERR-02         =   1   )
-               OR  (FLG-ERR-01         =   1   )
-               MOVE    "35"                TO  WRK-ERRCD
-           END-IF
-      *
-      *    ＳＰＡの連番がすべて返却されていること
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL      (IDX2    >   SPA-FTN2-MAX)
-                          OR  (WRK-ERRCD   NOT =   SPACE )
-               MOVE    ZERO                TO  FLG-CHK
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX         >   TBL-FTN-MAX )
-                               OR (FLG-CHK     =   1     )
-                   IF      IDX2            =   TBL-PTKOHFTN-RENNUM(IDX)
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-               END-PERFORM
-               IF      FLG-CHK         =   ZERO
-                   MOVE    "34"            TO  WRK-ERRCD
-               END-IF
-           END-PERFORM
-           .
-       200311-PTKOHFTN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    連番チェック処理
-      *****************************************************************
-       2003111-RENNUM-CHK-SEC         SECTION.
-      *
-      *    同じ番号がないこと
-           MOVE    SPACE               TO  SPA-ERRCD
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL      (IDX2    >   TBL-FTN-MAX )
-                          OR  (SPA-ERRCD   NOT =   SPACE )
-               IF     (IDX         NOT =   IDX2      )
-                  AND (TBL-PTKOHFTN-RENNUM(IDX)
-                                       =   TBL-PTKOHFTN-RENNUM(IDX2))
-                   MOVE    "AP40"              TO  SPA-ERRCD
-               END-IF
-           END-PERFORM
-      *    ＳＰＡに存在していること
-           MOVE    ZERO                TO  FLG-CHK
-           MOVE    ZERO                TO  TBL-IDX
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL      (IDX2    >   SPA-FTN2-MAX)
-                          OR  (FLG-CHK     =   1     )
-                          OR  (SPA-ERRCD   NOT =   SPACE )
-               IF      IDX2            =   TBL-PTKOHFTN-RENNUM(IDX)
-      *            他一部有
-                   IF      SPA-NAI24-TFTNETCKBN (IDX2)  =   "1"
-                       MOVE    "1"         TO  TBL-PTKOHFTN-ETCKBN
-                                                             (IDX)
-                   END-IF
-                   MOVE    IDX2            TO  TBL-SPA-IDX (IDX)
-                   MOVE    IDX2            TO  TBL-IDX
-                   MOVE    1               TO  FLG-CHK
-               END-IF
-           END-PERFORM
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      PTMODREQ-PTKOHFTN-LMODE (IDX)  =   "New"
-                   IF      FLG-CHK         NOT =   ZERO
-                       MOVE    "AP41"              TO  SPA-ERRCD
-                   END-IF
-               ELSE
-                   IF      FLG-CHK             =   ZERO
-                       MOVE    "AP42"              TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF
-           .
-       2003111-RENNUM-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担項目エラーメッセージ処理
-      *****************************************************************
-       2003110-ERRCDMSG-HEN-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ERRMSG
-           IF      SPA-ERRCD(1:1)      =   "A"
-               PERFORM 8901-PTERRCD-SETAPI-SEC
-           ELSE
-               PERFORM 8901-PTERRCD-SET-SEC
-           END-IF
-           MOVE    SPA-ERRCD           TO  PTMODRES-PTKOHFTN-ERRCD
-                                                                (IDX)
-           MOVE    WRK-ERRMSG          TO  PTMODRES-PTKOHFTN-ERRCD-MSG
-                                                                (IDX)
-           MOVE    SPACE               TO  SPA-ERRCD
-           MOVE    SPACE               TO  WRK-ERRMSG
-           MOVE    SPACE               TO  WRK-ERRCD
-           .
-       2003110-ERRCDMSG-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担項目チェック処理
-      *****************************************************************
-       2003112-PTKOHFTN-CHK-SEC         SECTION.
-      *
-      *    選択行
-           IF      TBL-IDX             =   ZERO
-               MOVE    ZERO            TO  SPA-GMN24-FTNSELNUM2
-               MOVE    ZERO            TO  SPA-NAI24-FTNSELNUM2
-           ELSE
-               MOVE    TBL-IDX         TO  SPA-GMN24-FTNSELNUM2
-               MOVE    TBL-IDX         TO  SPA-NAI24-FTNSELNUM2
-           END-IF
-      *    対象のデータを編集する
-           INITIALIZE                  SPA-GMN24-FTN-AREA2
-           MOVE    TBL-PTKOHFTN-TEKSTYMD(IDX)  TO  SPA-NAI24-FTNSTYMD
-           MOVE    TBL-PTKOHFTN-TEKEDYMD(IDX)  TO  SPA-NAI24-FTNEDYMD
-           MOVE    TBL-PTKOHFTN-GAIJGNGAK(IDX) TO  SPA-NAI24-GAIJGNGAK
-           MOVE    TBL-PTKOHFTN-NYUJGNGAK(IDX) TO  SPA-NAI24-NYUJGNGAK
-           MOVE    TBL-PTKOHFTN-ETCKBN  (IDX)  TO  SPA-NAI24-FTNETCKBN
-      *
-           MOVE    TBL-PTKOHFTN-TEKSTYMD(IDX)  TO  SPA-GMN24-FTNSTYMD
-           MOVE    TBL-PTKOHFTN-TEKEDYMD(IDX)  TO  SPA-GMN24-FTNEDYMD
-           MOVE    SPA-NAI24-GAIJGNGAK         TO  SPA-GMN24-GAIJGNGAK
-           MOVE    SPA-NAI24-NYUJGNGAK         TO  SPA-GMN24-NYUJGNGAK
-      *
-      *    リクエスト番号
-           MOVE    "03"                TO  SPA-MCP-WIDGET
-           PERFORM 2001211-P024-SYORI-SEC
-      *    重複等チェック
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 2003112-KOHFTN-CHK-SEC
-           END-IF
-      *
-           .
-       2003112-PTKOHFTN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担情報更新処理
-      *****************************************************************
-       2003112-KOHFTN-CHK-SEC         SECTION.
-      *
-      *    期間が重複しないこと
-           PERFORM VARYING     IDX3    FROM    1  BY  1
-                   UNTIL      (IDX3    >   TBL-FTN-MAX   )
-                         OR   (SPA-ERRCD   NOT =   SPACE )
-               IF     (IDX                 NOT =   IDX3  )
-                 AND  (TBL-PTKOHFTN-DELKBN (IDX3)  =   SPACE )
-                   IF     (TBL-PTKOHFTN-TEKEDYMD(IDX3)
-                                           <   SPA-NAI24-FTNSTYMD )
-                     OR   (TBL-PTKOHFTN-TEKSTYMD(IDX3)
-                                           >   SPA-NAI24-FTNEDYMD )
+      *    期間重複チェック
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL  (IDX         >   10   )
+                        OR    (FLG-ERR-01  NOT =   ZERO  )
+                        OR    (TBL-PTCRHKN-TEKSTYMD (IDX)   =   SPACE )
+               COMPUTE IDX2            =   IDX     +  1
+               PERFORM VARYING     IDX3    FROM    IDX2    BY  1
+                           UNTIL  (IDX3        >   10   )
+                            OR    (FLG-ERR-01  NOT =   ZERO  )
+                            OR    (TBL-PTCRHKN-TEKSTYMD (IDX3)
+                                                   =   SPACE )
+                   IF      (TBL-PTCRHKN-TEKEDYMD (IDX3)
+                                               <   TBL-PTCRHKN-TEKSTYMD
+                                                             (IDX) )
+                      OR   (TBL-PTCRHKN-TEKSTYMD (IDX3)
+                                               >   TBL-PTCRHKN-TEKEDYMD
+                                                             (IDX) )
                        CONTINUE
                    ELSE
-                       MOVE    "2434"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-PERFORM
-      *    期間変更時の他一部負担履歴チェック
-           IF      TBL-IDX             =   ZERO
-      *        新規の時、同一開始年月で他一部履歴がある時
-               PERFORM VARYING     IDX3    FROM    1  BY  1
-                       UNTIL      (IDX3    >   TBL-FTN-MAX   )
-                             OR   (SPA-ERRCD   NOT =   SPACE )
-                             OR   (WRK-ERRCD   NOT =   SPACE )
-                   IF     (IDX                 NOT =   IDX3  )
-                     AND  (TBL-PTKOHFTN-DELKBN (IDX3)  =   SPACE )
-                       IF     (TBL-PTKOHFTN-TEKSTYMD(IDX3)(1:6)
-                                           =   SPA-NAI24-FTNSTYMD(1:6))
-                          AND (TBL-PTKOHFTN-ETCKBN (IDX3)
-                                           =   "1"               )
-                           IF    TBL-PTKOHFTN-NYUJGNGAK(IDX)
-                                               >   ZERO
-                               MOVE    "AP45"            TO  SPA-ERRCD
-                           END-IF
-                       END-IF
+                       MOVE    "2820"          TO  PTMODRES-CARE-ERRCD
+                                                                 (IDX)
+                       MOVE    1               TO  FLG-ERR-01
                    END-IF
                END-PERFORM
-           END-IF
+           END-PERFORM
       *
-      *    他一部負担履歴あり
-           IF     (TBL-PTKOHFTN-ETCKBN (IDX)   =   "1" )
-             AND  (WRK-ERRCD           =   SPACE )
-             AND  (SPA-ERRCD           =   SPACE )
-      *        開始年月変更、他負担額累計変更不可
-               IF     (SPA-NAI24-FTNSTYMD(1:6)
-                                       NOT =   SPA-NAI24-TFTNSTYMD
-                                                   (TBL-IDX) (1:6))
-                   MOVE    "2447"          TO  SPA-ERRCD
-               ELSE
-                   IF    (SPA-NAI24-NYUJGNGAK
-                                       NOT =   SPA-GMN24-TNYUJGNGAK
-                                                      (TBL-IDX))
-                       MOVE    "AP45"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF
-           .
-       2003112-KOHFTN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担情報更新処理
-      *****************************************************************
-       20032-PTKOHFTN-UPDATE-SEC         SECTION.
-      *
-      *    公費負担額
-           EVALUATE    PTMODREQ-PTKOHFTN-MODE
-               WHEN    "DELETE"
-               WHEN    "Delete"
-                   PERFORM 200321-PTKOHFTN-DELETE-SEC
-      *            他一部負担一括削除
-                   IF      WRK-ERRCD       =   SPACE
-                       PERFORM 200321-PTKOHETC-ALLDEL-SEC
-                   END-IF
-               WHEN    "MODIFY"
-               WHEN    "Modify"
-                   PERFORM 200322-PTKOHFTN-UPDATE-SEC
-           END-EVALUATE
-      *
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      20032-PTKOHFTN-UPDATE-EXT
-           END-IF
-      *
-      *    更新後のテーブルから再度表示（連番を変更する為）
-      *    公費負担更新編集処理
-           PERFORM 200322-PTKOHFTN-SAIHENSYU-SEC
-      *
-           .
-       20032-PTKOHFTN-UPDATE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担情報削除処理
-      *****************************************************************
-       200321-PTKOHFTN-DELETE-SEC      SECTION.
-      *
-      *    公費ＩＤで削除
-           INITIALIZE                      PTKOHFTN-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTN-PTID
-           MOVE    WRK-KOHID           TO  PTKOHFTN-KOHID
-      *
-           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-           MOVE    "del2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-       200321-PTKOHFTN-DELETE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担情報削除処理
-      *****************************************************************
-       200321-PTKOHETC-ALLDEL-SEC      SECTION.
-      *
-      *    公費ＩＤで削除
-           INITIALIZE                      PTKOHFTNETC-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTNETC-PTID
-           MOVE    WRK-KOHID           TO  PTKOHFTNETC-KOHID
-      *
-           MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-           MOVE    "del2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               MOVE   "61"             TO  WRK-ERRCD
-           END-IF
-           .
-       200321-PTKOHETC-ALLDEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担情報更新処理
-      *****************************************************************
-       200322-PTKOHFTN-UPDATE-SEC         SECTION.
-      *
-      *    公費負担情報削除処理
-           PERFORM 200321-PTKOHFTN-DELETE-SEC
-      *    削除分の他一部負担額累計変更
-           MOVE    ZERO                TO  FLG-CHK
+      *    エラーメッセージ編集
            PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL  (IDX         >   TBL-FTN-MAX )
-                           OR (FLG-CHK     =   1    )
-               IF     (TBL-PTKOHFTN-DELKBN(IDX)    =   "1" )
-                 AND  (TBL-PTKOHFTN-ETCKBN(IDX)    =   "1" )
-                 AND  (TBL-PTKOHFTN-NYUJGNGAK(IDX) >   ZERO)
-                   PERFORM VARYING     IDZ     FROM    1     BY  1
-                               UNTIL  (IDZ         >   TBL-FTN-MAX )
-                                   OR (FLG-CHK     =   1    )
-                       IF     (IDX             NOT =   IDZ)
-                          AND (TBL-PTKOHFTN-DELKBN(IDZ)  =   SPACE)
-                          AND (TBL-PTKOHFTN-TEKSTYMD(IDX)(1:6)
-                                               =   TBL-PTKOHFTN-TEKSTYMD
-                                                             (IDZ)(1:6))
-                          AND (TBL-PTKOHFTN-ETCKBN(IDZ)
-                                               =   "1"        )
-                           MOVE    TBL-PTKOHFTN-NYUJGNGAK(IDX)
-                                           TO  TBL-PTKOHFTN-NYUJGNGAK
-                                                             (IDZ)
-                           MOVE    1       TO  FLG-CHK
-                        END-IF
-                   END-PERFORM
-      *            他一部負担削除なし
-                   IF      FLG-CHK         =   1
-                       MOVE    "2"         TO  TBL-PTKOHFTN-DELKBN(IDX)
-                   END-IF
+                      UNTIL   (IDX         >   10   )
+               IF      PTMODRES-CARE-ERRCD (IDX) NOT =  SPACE
+                   MOVE    PTMODRES-CARE-ERRCD (IDX) TO SPA-ERRCD
+                   PERFORM 8901-PTERRCD-SET-SEC
+                   MOVE    WRK-ERRMSG     TO  PTMODRES-CARE-ERRCD-MSG
+                                                            (IDX)
+                   MOVE    SPACE          TO  WRK-ERRMSG
+                   MOVE    SPACE          TO  SPA-ERRCD
                END-IF
            END-PERFORM
       *
-      *    追加処理
-           MOVE    ZERO                TO  WRK-RENNUM
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL  (IDX         >   300   )
-                        OR    (TBL-PTKOHFTN-TEKSTYMD (IDX)
-                                           =   SPACE )
-                        OR    (WRK-ERRCD   NOT =   SPACE )
-               IF      TBL-PTKOHFTN-DELKBN(IDX)   =   SPACE
-      *
-                   PERFORM 2003221-PTKOHFTN-INS-SEC
-               ELSE
-      *            他一部負担削除
-                   IF     (TBL-PTKOHFTN-DELKBN(IDX)    =   "1")
-                      AND (TBL-PTKOHFTN-ETCKBN(IDX)    =   "1" )
-                       MOVE    TBL-PTKOHFTN-TEKSTYMD (IDX)(1:6)
-                                                   TO  WRK-SRYYM
-                       PERFORM 2003221-PTKOHETC-DEL-SEC
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
+           IF      FLG-ERR-01      NOT =   ZERO
+               ADD    1                TO  IDX-ERR
+               MOVE    "21"            TO  WRK-ERRCD-T (IDX-ERR)
+           END-IF
+      *    対象なし
+           IF     (TBL-PTCRHKN-TEKSTYMD (1) =   SPACE )
+             AND  (FLG-ERR-01              =   ZERO  )
+               ADD     1               TO  IDX-ERR
+               MOVE    "22"            TO  WRK-ERRCD-T(IDX-ERR)
+           END-IF
            .
-       200322-PTKOHFTN-UPDATE-EXT.
+       200212-PTCARE-HKNINF-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    公費負担情報追加処理
+      *    要介護認定情報チェック処理
       *****************************************************************
-       2003221-PTKOHFTN-INS-SEC         SECTION.
+       200222-PTCARE-NINTEI-CHK-SEC         SECTION.
       *
-           MOVE    TBL-PTKOHFTN-REC (IDX)  TO  PTKOHFTN-REC
-      *    1から連番
-           ADD     1                   TO  WRK-RENNUM
-           MOVE    WRK-RENNUM          TO  PTKOHFTN-RENNUM
-      *
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTN-PTID
-           MOVE    WRK-KOHID           TO  PTKOHFTN-KOHID
-      *
-           MOVE    SPA-NAI24-KOHNUM  (SPA-NAI24-FTNSELNUM)
-                                       TO  PTKOHFTN-KOHNUM
-           MOVE    SPA-NAI24-PAYKBN  (SPA-NAI24-FTNSELNUM)
-                                       TO  PTKOHFTN-PAYKBN
-      *
-           MOVE    SMCNDATE-YMD        TO  PTKOHFTN-CREYMD
-           MOVE    SMCNDATE-YMD        TO  PTKOHFTN-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
-      *
-           MOVE    WRK-OPID            TO  PTKOHFTN-OPID
-      *
-           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               MOVE    "62"                TO  WRK-ERRCD
-           END-IF
-      *
-           .
-       2003221-PTKOHFTN-INS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    公費負担情報削除処理
-      *****************************************************************
-       2003221-PTKOHETC-DEL-SEC      SECTION.
-      *
-      *    公費ＩＤの開始年月で削除
-           INITIALIZE                      PTKOHFTNETC-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTNETC-PTID
-           MOVE    WRK-KOHID           TO  PTKOHFTNETC-KOHID
-           MOVE    WRK-SRYYM           TO  PTKOHFTNETC-SRYYMD(1:6)
-           MOVE    "%"                 TO  PTKOHFTNETC-SRYYMD(7:1)
-      *
-           MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-           MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               MOVE   "63"             TO  WRK-ERRCD
-           END-IF
-           .
-       2003221-PTKOHETC-DEL-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    公費負担更新編集処理
-      ****************************************************************
-       200322-PTKOHFTN-SAIHENSYU-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN24-KOHFTNTBL2
-           MOVE    ZERO                TO  SPA-GMN24-FTNSELNUM
-           MOVE    ZERO                TO  SPA-NAI24-FTNSELNUM
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL   (IDX        >   60 )
-                     OR    (IDX        >   SPA-FTN1-MAX)
-                     OR    (FLG-OK     =   1   )
-               IF     (WRK-KOHID           =   SPA-NAI24-KOHID (IDX))
-                 AND  (SPA-NAI24-FTNDELKBN (IDX)  =   SPACE )
-      *            公費選択
-                   MOVE    IDX             TO  SPA-GMN24-FTNSELNUM
-                   MOVE    IDX             TO  SPA-NAI24-FTNSELNUM
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      SPA-NAI24-FTNSELNUM NOT =   ZERO
-      *        公費負担額編集
-               MOVE    2                   TO  FLG-HENSYU
-               PERFORM 2001212-PTKOHFTN-SELHENSYU-SEC
-           END-IF
-      *    公費負担一覧編集処理
-           PERFORM 20022-PTKOHFTN-HENSYU-SEC
-           .
-       200322-PTKOHFTN-SAIHENSYU-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額確認処理
-      ****************************************************************
-       2004-KOHETC-SYORI-SEC           SECTION.
-      *
-      *    患者番号判定
-           PERFORM 20011-PTINF-INITCHK-SEC
-      *
-      *    公費選択後のみ
-           IF      WRK-RESPONSE-NUMBER     =   "03"
-                                           OR  "04"
-                                           OR  "05"
-               CONTINUE
-           ELSE
-               MOVE    "19"                TO  WRK-ERRCD
-               MOVE    WRK-RESPONSE-NUMBER
-                                           TO  PTMODRES-RESPONSE-NUMBER
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        ＰＡＲＡのＳＰＡ編集処理
-               PERFORM 2031-SPA-PARA-SEC
-           END-IF
-      *    項目チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20041-PTKOHFTNETC-CHK-SEC
-           END-IF
-      *    公費負担一覧編集処理
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 200412-PTMODRES-FTNETC-HEN-SEC
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-               MOVE    "05"            TO  PTMODRES-RESPONSE-NUMBER
-           ELSE
-               IF      PTMODRES-RESPONSE-NUMBER    =   SPACE
-                   MOVE    "04"            TO  PTMODRES-RESPONSE-NUMBER
-               END-IF
-           END-IF
-      *    パラメタ登録
-           PERFORM 2901-PARA-INS-SEC
-      *    SPAの保存
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 2008-SPATMP-INS-SEC
-           END-IF
-           .
-       2004-KOHETC-SYORI-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額項目チェック処理
-      ****************************************************************
-       20041-PTKOHFTNETC-CHK-SEC           SECTION.
-      *
-      *    PARA公費ＩＤとSPA公費ＩＤに変更がないこと
-           PERFORM 20031-KOHIDPARA-CHK-SEC
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        他一部負担額対象外
-               IF      SPA-NAI24-FTNSYORI  NOT =   1
-                   MOVE    "40"                TO  WRK-ERRCD
-      ******       MOVE    "2445"              TO  SPA-ERRCD
-                   MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
-               END-IF
-           END-IF
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      20041-PTKOHFTNETC-CHK-EXT
-           END-IF
-      *
-      *    選択項目チェック
-           PERFORM 200410-FTNETC-SELCHK-SEC
-      *
-           MOVE    ZERO                TO  TBL-IDX
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-FTN2-MAX )
-                           OR (WRK-ERRCD   NOT =   SPACE )
-               IF     (IDX                         =   WRK-SEL-RENNUM)
-                  AND (SPA-NAI24-TFTNSTYMD(IDX)    =   WRK-SEL-TEKSTYMD)
-                   MOVE    IDX             TO   SPA-NAI24-FTNSELNUM2
-                   MOVE    IDX                 TO  TBL-IDX
-                   MOVE    SPA-FTN2-MAX        TO  IDX
-               END-IF
-           END-PERFORM
-           IF      (WRK-ERRCD          =   SPACE )
-              AND  (TBL-IDX            =   ZERO  )
-               MOVE    "43"                TO  WRK-ERRCD
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 200411-PTKOHFTNETC-HEN-SEC
-               IF      SPA-P02K-FTNRUIKBN      =   "9"
-      *            他一部負担額をゼロにすること
-                   MOVE    "44"                TO  WRK-ERRCD
-                   MOVE    "03"            TO  PTMODRES-RESPONSE-NUMBER
-               END-IF
-           END-IF
-           .
-       20041-PTKOHFTNETC-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    更新チェック処理
-      *****************************************************************
-       200410-FTNETC-SELCHK-SEC      SECTION.
-      *
-      *    選択連番
-           MOVE    ZERO                TO  WRK-SEL-RENNUM
-           MOVE    SPACE               TO  WRK-SEL-TEKSTYMD
-      *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    PTMODREQ-FTN-SEL-RENNUM TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF      SNUM-RC         NOT =   ZERO
-               MOVE    "41"                TO  WRK-ERRCD
-           ELSE
-               MOVE    SNUM-OUTNUM         TO  WRK-SEL-RENNUM
-               MOVE    WRK-SEL-RENNUM      TO  PTMODRES-FTN-SEL-RENNUM
-           END-IF
-      *    開始日
-           MOVE    PTMODREQ-FTN-SEL-TEKSTYMD
-                                       TO  PTMODRES-FTN-SEL-TEKSTYMD
-           IF      PTMODREQ-FTN-SEL-TEKSTYMD   =   SPACE
-               MOVE    "42"                TO  WRK-ERRCD
-           ELSE
-               MOVE    PTMODREQ-FTN-SEL-TEKSTYMD
-                                           TO  WRK-HEN-DATE
-               MOVE    SPACE               TO  WRK-HEN-TIME
-               PERFORM 802-DAYHEN02-SEC
-               MOVE    WRK-SYMD            TO  WRK-SEL-TEKSTYMD
-           END-IF
-      *
-           .
-       200410-FTNETC-SELCHK-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額編集処理
-      ****************************************************************
-       200411-PTKOHFTNETC-HEN-SEC           SECTION.
-      *
-      *    リクエスト番号
-           MOVE    "04"                TO  SPA-MCP-WIDGET
-           PERFORM 2001211-P024-SYORI-SEC
-      *
-           PERFORM 2004111-FTNETC-PTMODRES-SEC
-           IF      SPA-P02K-KOHID  NOT =   WRK-KOHID
-               MOVE    "23"                TO  WRK-ERRCD
-           END-IF
-           .
-       200411-PTKOHFTNETC-HEN-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額編集処理
-      ****************************************************************
-       2004111-FTNETC-PTMODRES-SEC           SECTION.
-      *
-      *    開始
-           MOVE    SPA-P02K-NAI-SRYYMD TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTMODRES-FTNETC-STRYMD
-      *    終了日
-           MOVE    SPA-P02K-NAI-ENDYMD TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTMODRES-FTNETC-ENDYMD
-      *    上限額（同月分を集計）
-           MOVE    SPA-P02K-GAIJGNGAKKEI   TO  WRK-MONEY
-           MOVE    WRK-MONEY           TO  PTMODRES-FTNETC-GAIJGNGAK
-      *    他一部負担累計
-           IF      SPA-P02K-FTNRUIKBN      =   "9"
-               MOVE    SPA-P02K-TNYUJGNGAK
-                                       TO  WRK-MONEY
-           ELSE
-               MOVE    SPA-P02K-TAGOKEI
-                                       TO  WRK-MONEY
-           END-IF
-           MOVE    WRK-MONEY           TO  PTMODRES-FTNETC-NYUJGNGAK
-      *    自院集計額（収納合計額）
-           MOVE    SPA-P02K-JIGOKEI    TO  WRK-MONEY
-           MOVE    WRK-MONEY           TO  PTMODRES-FTNETC-SYUTOTAL
-      *
-           .
-       2004111-FTNETC-PTMODRES-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額編集処理
-      ****************************************************************
-       200412-PTMODRES-FTNETC-HEN-SEC           SECTION.
-      *
-           INITIALIZE                      PTKOHFTNETC-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTNETC-PTID
-           MOVE    SPA-P02K-KOHID      TO  PTKOHFTNETC-KOHID
-           MOVE    SPA-P02K-NAI-SRYYM
-                                       TO  PTKOHFTNETC-SRYYMD(1:6)
-           MOVE    "%"                 TO  PTKOHFTNETC-SRYYMD(7:1)
-      *
-           MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
-           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 990-PTKOHFTNETC-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTKOHFTNETC
-           END-IF
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL    FLG-PTKOHFTNETC    =   1
-               ADD     1                   TO  IDX
-               MOVE    PTKOHFTNETC-SRYYMD  TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  PTMODRES-FTNETC-SRYYMD
-                                                                (IDX)
-               MOVE    PTKOHFTNETC-NYUGAIKBN
-                                           TO  PTMODRES-FTNETC-NYUGAIKBN
-                                                                (IDX)
-               MOVE    PTKOHFTNETC-FTNMONEY
-                                           TO  PTMODRES-FTNETC-FTNMONEY
-                                                                (IDX)
-      *
-               MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 990-PTKOHFTNETC-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       200412-PTMODRES-FTNETC-HEN-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額更新処理
-      ****************************************************************
-       2005-KOHETC-UPDATE-SEC           SECTION.
-      *
-      *    患者番号判定
-           PERFORM 20011-PTINF-INITCHK-SEC
-      *
-      *    公費選択後のみ
-           IF      WRK-RESPONSE-NUMBER     =   "05"
-               CONTINUE
-           ELSE
-               MOVE    "19"                TO  WRK-ERRCD
-               MOVE    WRK-RESPONSE-NUMBER
-                                           TO  PTMODRES-RESPONSE-NUMBER
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        ＰＡＲＡのＳＰＡ編集処理
-               PERFORM 2031-SPA-PARA-SEC
-           END-IF
-      *    項目チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20051-PTKOHFTNETC-UPDCHK-SEC
-           END-IF
-      *    更新処理
-           IF     (WRK-ERRCD           =   SPACE )
-              AND (FLG-MODE        NOT =   ZERO  )
-               PERFORM 20052-PTKOHFTNETC-UPDATE-SEC
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        継続
-               IF      FLG-CONTKBN         =   1
-      *            パラメタ削除
-                   PERFORM 2902-PARA-ALLDEL-SEC
-                   PERFORM 2009-SPATMP-DEL-SEC
-      *            公費選択へ
-                   MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
-      *            継続区分終了
-                   MOVE    "1"             TO  WRK-ENDKBN
-      *            APIパラメタ登録
-                   PERFORM 2901-PARA-INS-SEC
-                   PERFORM 2008-SPATMP-INS-SEC
-               ELSE
-                   MOVE    "00"            TO  PTMODRES-RESPONSE-NUMBER
-      *            パラメタ削除・排他解除処理
-                   PERFORM 2900-SYORI-END-SEC
-               END-IF
-           ELSE
-               IF      PTMODRES-RESPONSE-NUMBER    =   SPACE
-                   MOVE    "05"            TO  PTMODRES-RESPONSE-NUMBER
-               END-IF
-               IF      FLG-CANSEL      =   ZERO
-      *            SPA再編集
-                   PERFORM 2901-PARA-INS-SEC
-      **********   PERFORM 2008-SPATMP-INS-SEC
-               END-IF
-           END-IF
-           .
-       2005-KOHETC-UPDATE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    更新チェック処理
-      *****************************************************************
-       20051-PTKOHFTNETC-UPDCHK-SEC     SECTION.
-      *
-      *    PARA公費ＩＤとSPA公費ＩＤに変更がないこと
-           PERFORM 20031-KOHIDPARA-CHK-SEC
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        選択番号変更なし
-               PERFORM 200410-FTNETC-SELCHK-SEC
-      *        前回と一致
-               IF      WRK-SEL-RENNUM      NOT =   WRK-PARA-SELNUM
-                   MOVE    "24"            TO  WRK-ERRCD
-                   MOVE    "04"            TO  PTMODRES-RESPONSE-NUMBER
-               END-IF
-      *
-               IF      WRK-ERRCD           =   SPACE
-                   PERFORM 2004111-FTNETC-PTMODRES-SEC
-               END-IF
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        公費負担額更新チェック
-               EVALUATE    PTMODREQ-FTNETC-MODE
-               WHEN    "DELETE"
-               WHEN    "Delete"
-                   MOVE    2               TO  FLG-MODE
-               WHEN    "MODIFY"
-               WHEN    "Modify"
-                   PERFORM 200511-PTKOHFTNETC-CHK-SEC
-                   MOVE    1               TO  FLG-MODE
-               WHEN    SPACE
-                   MOVE    ZERO            TO  FLG-MODE
-               WHEN    OTHER
-                   MOVE    "50"            TO  WRK-ERRCD
-               END-EVALUATE
-           END-IF
-      *
-           .
-       20051-PTKOHFTNETC-UPDCHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    更新チェック処理
-      *****************************************************************
-       200511-PTKOHFTNETC-CHK-SEC      SECTION.
-      *
-           INITIALIZE                  TBL-PTKOHFTNETC-AREA
+           INITIALIZE                  TBL-PTCARE-NINTEI-AREA
            MOVE    ZERO                TO  FLG-ERR-01
-      *
+      *    送信内容チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   100 )
-               MOVE    PTMODREQ-FTNETC-SRYYMD (IDX)
-                                       TO  PTMODRES-FTNETC-SRYYMD
-                                                               (IDX)
-               MOVE    PTMODREQ-FTNETC-NYUGAIKBN (IDX)
-                                       TO  PTMODRES-FTNETC-NYUGAIKBN
-                                                               (IDX)
-               MOVE    PTMODREQ-FTNETC-FTNMONEY (IDX)
-                                       TO  PTMODRES-FTNETC-FTNMONEY
-                                                               (IDX)
+                       UNTIL  (IDX         >   50   )
                MOVE    SPACE               TO  SPA-ERRCD
-      *        年月日
-               IF      PTMODREQ-FTNETC-SRYYMD(IDX)  =   SPACE
+               MOVE    PTMODREQ-NEED-CARE-STATE-CODE (IDX)
+                                       TO  PTMODRES-NEED-CARE-STATE-CODE
+                                                                (IDX)
+               MOVE    PTMODREQ-NEED-DATE (IDX)
+                                       TO  PTMODRES-NEED-DATE
+                                                                (IDX)
+               MOVE    PTMODREQ-NEED-START-DATE (IDX)
+                                       TO  PTMODRES-NEED-START-DATE
+                                                                (IDX)
+               MOVE    PTMODREQ-NEED-END-DATE (IDX)
+                                       TO  PTMODRES-NEED-END-DATE
+                                                                (IDX)
+      *        要介護状態区分
+               IF       PTMODREQ-NEED-CARE-STATE-CODE (IDX)
+                                       NOT =   SPACE
+      *            要介護状態名称編集
+                   MOVE    PTMODREQ-NEED-CARE-STATE-CODE (IDX)
+                                               TO  WRK-CAREJOTAICD
+                   PERFORM 200221-PTCARE-CARESTATE-SEC
+                   IF      FLG-CHKERR          =   1
+                       MOVE    "2813"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    PTMODREQ-NEED-CARE-STATE-CODE (IDX)
+                                           TO  TBL-PTCRNIN-CAREJOTAICD
+                                                                (IDX)
+                   END-IF
+               END-IF
+      *        認定年月日
+               IF      PTMODREQ-NEED-DATE (IDX)  =   SPACE
                    CONTINUE
                ELSE
-                   MOVE    PTMODREQ-FTNETC-SRYYMD(IDX)
+                   MOVE    PTMODREQ-NEED-DATE  (IDX)
                                            TO  WRK-HEN-DATE
                    MOVE    SPACE           TO  WRK-HEN-TIME
                    PERFORM 802-DAYHEN02-SEC
-                   MOVE    WRK-SYMD        TO  TBL-PTKOHFTNETC-SRYYMD
+                   MOVE    WRK-SYMD        TO  TBL-PTCRNIN-NINTEIYMD
                                                          (IDX)
       *            暦日チェック
+                   MOVE    TBL-PTCRNIN-NINTEIYMD (IDX) TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
-                   IF      FLG-DAYERR          =   1
-                       MOVE    "AP51"              TO  SPA-ERRCD
+                   IF     (FLG-DAYERR          =   1    )
+                     AND  (SPA-ERRCD           =   SPACE)
+                       MOVE    "2822"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        入外区分
-               MOVE    PTMODREQ-FTNETC-NYUGAIKBN (IDX)
-                                           TO  TBL-PTKOHFTNETC-NYUGAIKBN
-                                                         (IDX)
-               IF      PTMODREQ-FTNETC-NYUGAIKBN (IDX)
-                                           =   "1"
-                                           OR  "2"
-                                           OR  SPACE
+      *        開始年月日
+               IF      PTMODREQ-NEED-START-DATE (IDX)  =   SPACE
                    CONTINUE
                ELSE
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "AP52"              TO  SPA-ERRCD
+                   MOVE    PTMODREQ-NEED-START-DATE(IDX)
+                                           TO  WRK-HEN-DATE
+                   MOVE    SPACE           TO  WRK-HEN-TIME
+                   PERFORM 802-DAYHEN02-SEC
+                   MOVE    WRK-SYMD        TO  TBL-PTCRNIN-TEKSTYMD
+                                                         (IDX)
+      *            暦日チェック
+                   MOVE    TBL-PTCRNIN-TEKSTYMD (IDX)  TO  WRK-SYMD
+                   PERFORM 803-ORCSDAY-CHEK-SEC
+                   IF     (FLG-DAYERR          =   1    )
+                     AND  (SPA-ERRCD           =   SPACE)
+                       MOVE    "2815"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        負担額
-               IF      PTMODREQ-FTNETC-FTNMONEY  (IDX)
-                                       NOT =   SPACE
-                   INITIALIZE                      ORCSNUMAREA
-                   MOVE    PTMODREQ-FTNETC-FTNMONEY  (IDX)
-                                               TO  SNUM-INX
-                   CALL    "ORCSNUM"           USING
-                                               ORCSNUMAREA
-                   IF     (SNUM-RC         NOT =   ZERO  )   OR
-                          (SNUM-MINKBN     NOT =   SPACE )   OR
-                          (SNUM-SYOKBN     NOT =   SPACE )
-      *                整数であること
-                       IF      SPA-ERRCD           =   SPACE
-                           MOVE    "AP53"                TO  SPA-ERRCD
-                       END-IF
-                   ELSE
-                       MOVE    SNUM-OUTNUM
-                                           TO  TBL-PTKOHFTNETC-FTNMONEY
-                                                              (IDX)
+      *        終了年月日
+               IF      PTMODREQ-NEED-END-DATE(IDX)  =   SPACE
+                   CONTINUE
+               ELSE
+                   MOVE    PTMODREQ-NEED-END-DATE(IDX)
+                                           TO  WRK-HEN-DATE
+                   MOVE    SPACE           TO  WRK-HEN-TIME
+                   PERFORM 802-DAYHEN02-SEC
+                   MOVE    WRK-SYMD        TO  TBL-PTCRNIN-TEKEDYMD
+                                                         (IDX)
+      *            暦日チェック
+                   MOVE    TBL-PTCRNIN-TEKEDYMD (IDX)  TO  WRK-SYMD
+                   PERFORM 803-ORCSDAY-CHEK-SEC
+                   IF     (FLG-DAYERR          =   1    )
+                     AND  (SPA-ERRCD           =   SPACE)
+                       MOVE    "2816"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        必須チェック
-               IF      TBL-PTKOHFTNETC-SRYYMD (IDX)  =   SPACE
-                   IF      (PTMODREQ-FTNETC-NYUGAIKBN (IDX)  =   SPACE)
-                       AND (PTMODREQ-FTNETC-FTNMONEY  (IDX)  =   SPACE)
+      *        必須項目チェック（開始年月日）
+               IF      PTMODREQ-NEED-START-DATE (IDX)  =   SPACE
+      *            他項目は空白であること
+                   IF     (PTMODREQ-NEED-CARE-STATE-CODE (IDX)
+                                                       =   SPACE )
+                      AND (PTMODREQ-NEED-DATE (IDX)
+                                                       =   SPACE )
+                      AND (PTMODREQ-NEED-END-DATE (IDX)
+                                                       =   SPACE )
                        CONTINUE
                    ELSE
-                       IF      SPA-ERRCD           =   SPACE
-                           MOVE    "AP54"                TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               ELSE
-                   IF      (PTMODREQ-FTNETC-NYUGAIKBN (IDX)  =   SPACE)
-                       IF      SPA-ERRCD           =   SPACE
-                           MOVE    "AP52"              TO  SPA-ERRCD
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    "2818"          TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
       *
                IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 8901-PTERRCD-SETAPI-SEC
-                   MOVE    SPA-ERRCD       TO  PTMODRES-FTNETC-ERRCD
-                                                                (IDX)
-                   MOVE    WRK-ERRMSG      TO
-                                           PTMODRES-FTNETC-ERRCD-MSG
-                                                                (IDX)
-                   MOVE    1               TO  FLG-ERR-01
-                   MOVE    SPACE           TO  SPA-ERRCD
-                   MOVE    SPACE           TO  WRK-ERRMSG
-               END-IF
+                   MOVE    SPA-ERRCD           TO  PTMODRES-NEED-ERRCD
+                                                         (IDX)
+                   MOVE    1                   TO  FLG-ERR-01
+                END-IF
            END-PERFORM
       *
-      *    関連チェック
-           MOVE    ZERO                TO  TBL-ETC-MAX
+      *    基本チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   100 )
-                       OR     (FLG-ERR-01  =   1    )
-                       OR     (TBL-PTKOHFTNETC-SRYYMD(IDX) =   SPACE)
-               MOVE    IDX                 TO  TBL-ETC-MAX
-      *
+                       UNTIL  (IDX         >   50   )
+                        OR    (TBL-PTCRNIN-TEKSTYMD (IDX)   =   SPACE )
                MOVE    SPACE               TO  SPA-ERRCD
-               MOVE    SPACE               TO  WRK-ERRCD
-      *        年月日チェック
-               PERFORM 2005111-FTNETC-SRYYMD-SEC
+      *        終了年月日
+               IF      TBL-PTCRNIN-TEKEDYMD (IDX)  =   SPACE
+                   MOVE    "99999999"          TO  TBL-PTCRNIN-TEKEDYMD
+                                                                 (IDX)
+                   MOVE    TBL-PTCRNIN-TEKEDYMD (IDX)
+                                               TO  WRK-SYMD
+                   MOVE    ZERO                TO  WRK-THMS
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE    TO  PTMODRES-NEED-END-DATE
+                                                                (IDX)
+               END-IF
+      *        開始日＞終了日　エラー
+               IF      TBL-PTCRNIN-TEKSTYMD (IDX)
+                                           >  TBL-PTCRNIN-TEKEDYMD (IDX)
+                   IF      SPA-ERRCD          =   SPACE
+                       MOVE    "2817"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *        介護状態必須
+               IF    (TBL-PTCRNIN-CAREJOTAICD (IDX)
+                                           =   SPACE )
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "2821"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
       *
                IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 8901-PTERRCD-SETAPI-SEC
-                   MOVE    SPA-ERRCD       TO  PTMODRES-FTNETC-ERRCD
-                                                                (IDX)
-                   MOVE    WRK-ERRMSG      TO
-                                           PTMODRES-FTNETC-ERRCD-MSG
-                                                                (IDX)
-                   MOVE    1               TO  FLG-ERR-02
-                   MOVE    SPACE           TO  SPA-ERRCD
-                   MOVE    SPACE           TO  WRK-ERRMSG
-               END-IF
+                   MOVE    SPA-ERRCD           TO  PTMODRES-NEED-ERRCD
+                                                         (IDX)
+                   MOVE    1                   TO  FLG-ERR-01
+                END-IF
            END-PERFORM
       *
-           IF      (FLG-ERR-02         =   1   )
-               OR  (FLG-ERR-01         =   1   )
-               MOVE    "52"                TO  WRK-ERRCD
-           END-IF
-      *
-           .
-       200511-PTKOHFTNETC-CHK-EXT.
-           EXIT.
-      *
-      *
-      ****************************************************************
-      *    年月日チェック処理
-      ****************************************************************
-       2005111-FTNETC-SRYYMD-SEC           SECTION.
-      *
-      *    公費期間チェック
-           IF     (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                       >   TBL-PTKOHFTNETC-SRYYMD
-                                                       (IDX))
-             OR   (SPA-NAI24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)
-                                       <   TBL-PTKOHFTNETC-SRYYMD
-                                                       (IDX))
-      ***      MOVE    "0006"              TO  SPA-ERRCD
-               MOVE    "AP55"              TO  SPA-ERRCD
-           END-IF
-      *    履歴期間
-           IF      SPA-ERRCD           =   SPACE
-               IF     (TBL-PTKOHFTNETC-SRYYMD (IDX)(1:6)
-                                           =   SPA-P02K-NAI-SRYYMD
-                                                             (1:6))
-                   IF     (TBL-PTKOHFTNETC-SRYYMD (IDX)
-                                           <   SPA-P02K-NAI-SRYYMD)
-                     OR   (TBL-PTKOHFTNETC-SRYYMD (IDX)
-                                           >   SPA-P02K-NAI-ENDYMD)
-      *                同月内で期間外
-      *****            MOVE    "K004"              TO  SPA-ERRCD
-                       MOVE    "AP56"              TO  SPA-ERRCD
-                   END-IF
-               ELSE
-      *            期間外
-                   MOVE    "AP56"              TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-      *    同一日は９９件まで
-           MOVE    ZERO                TO  WRK-DAYCNT
-           PERFORM VARYING     IDZ     FROM    1   BY   1
-                   UNTIL      (IDZ     >   100  )
-                          OR  (TBL-PTKOHFTNETC-SRYYMD(IDZ) =   SPACE)
-              IF      (TBL-PTKOHFTNETC-SRYYMD (IDX)
-                                           =   TBL-PTKOHFTNETC-SRYYMD
-                                                               (IDZ))
-                   ADD     1               TO  WRK-DAYCNT
-              END-IF
-           END-PERFORM
-           IF      WRK-DAYCNT          >   99
-      ****     MOVE    "0011"          TO  SPA-ERRCD
-               MOVE    "AP57"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       2005111-FTNETC-SRYYMD-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額更新処理
-      ****************************************************************
-       20052-PTKOHFTNETC-UPDATE-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  SPA-P02K-TAGOKEI
-      *
-           EVALUATE    PTMODREQ-FTNETC-MODE
-               WHEN    "DELETE"
-               WHEN    "Delete"
-                   MOVE    SPA-P02K-NAI-SRYYMD(1:6)
-                                                   TO  WRK-SRYYM
-                   PERFORM 2003221-PTKOHETC-DEL-SEC
-               WHEN    "MODIFY"
-               WHEN    "Modify"
-                   PERFORM 200522-PTKOHFTNETC-INS-SEC
-           END-EVALUATE
-      *
-      *    公費負担額の他一部負担額更新
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 200523-PTKOHFTN-MONEYUPD-SEC
-           END-IF
-      *
-           IF      WRK-ERRCD           =   SPACE
-      *        公費負担更新編集処理
-               PERFORM 200322-PTKOHFTN-SAIHENSYU-SEC
-           END-IF
-           .
-       20052-PTKOHFTNETC-UPDATE-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    他一部負担額更新処理
-      ****************************************************************
-       200522-PTKOHFTNETC-INS-SEC           SECTION.
-      *
-      *     一括削除
-           MOVE    SPA-P02K-NAI-SRYYMD(1:6)   TO  WRK-SRYYM
-           PERFORM 2003221-PTKOHETC-DEL-SEC
-      *
-           INITIALIZE                      PTKOHFTNETC-REC
-           MOVE    ZERO                TO  WRK-RENNUM
-           PERFORM VARYING     IDX     FROM    1   BY   1
-                   UNTIL      (IDX     >   TBL-ETC-MAX  )
-                           OR (WRK-ERRCD   NOT =   SPACE )
-      *        年月日順で登録
-               MOVE    "99999999"          TO  WRK-KEY-SRYYMD
-               MOVE    ZERO                TO  IDX-K
-               PERFORM VARYING     IDY     FROM    1   BY   1
-                       UNTIL      (IDY     >   TBL-ETC-MAX   )
-                   IF     (TBL-PTKOHFTNETC-SRYYMD (IDY) =   SPACE )
+      *    期間重複チェック
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL  (IDX         >   50   )
+                        OR    (FLG-ERR-01  NOT =   ZERO  )
+                        OR    (TBL-PTCRNIN-TEKSTYMD (IDX)   =   SPACE )
+               COMPUTE IDX2            =   IDX     +  1
+               PERFORM VARYING     IDX3    FROM    IDX2    BY  1
+                           UNTIL  (IDX3        >   50   )
+                            OR    (FLG-ERR-01  NOT =   ZERO  )
+                            OR    (TBL-PTCRNIN-TEKSTYMD (IDX3)
+                                                   =   SPACE )
+                   IF      (TBL-PTCRNIN-TEKEDYMD (IDX3)
+                                               <   TBL-PTCRNIN-TEKSTYMD
+                                                             (IDX) )
+                      OR   (TBL-PTCRNIN-TEKSTYMD (IDX3)
+                                               >   TBL-PTCRNIN-TEKEDYMD
+                                                             (IDX) )
                        CONTINUE
                    ELSE
-                       IF      TBL-PTKOHFTNETC-SRYYMD (IDY)
-                                                   <   WRK-KEY-SRYYMD
-                           MOVE    IDY             TO  IDX-K
-                           MOVE    TBL-PTKOHFTNETC-SRYYMD (IDY)
-                                                   TO  WRK-KEY-SRYYMD
-                       END-IF
+                       MOVE    "2820"          TO  PTMODRES-NEED-ERRCD
+                                                                 (IDX)
+                       MOVE    1               TO  FLG-ERR-01
                    END-IF
                END-PERFORM
+           END-PERFORM
       *
-               IF      IDX-K           >   ZERO
-                   PERFORM 200521-PTKOHFTNETC-INSERT-SEC
-                   MOVE    SPACE           TO  TBL-PTKOHFTNETC-SRYYMD
-                                                              (IDX-K)
+      *    エラーメッセージ編集
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                      UNTIL   (IDX         >   50   )
+               IF      PTMODRES-NEED-ERRCD (IDX) NOT =  SPACE
+                   MOVE    PTMODRES-NEED-ERRCD (IDX) TO SPA-ERRCD
+                   PERFORM 8901-PTERRCD-SET-SEC
+                   MOVE    WRK-ERRMSG     TO  PTMODRES-NEED-ERRCD-MSG
+                                                            (IDX)
+                   MOVE    SPACE          TO  WRK-ERRMSG
+                   MOVE    SPACE          TO  SPA-ERRCD
                END-IF
            END-PERFORM
-           .
-       20052-PTKOHFTNETC-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    公費負担額テーブル編集処理
-      *****************************************************************
-       200521-PTKOHFTNETC-INSERT-SEC           SECTION.
       *
-           IF      PTKOHFTNETC-SRYYMD  =   TBL-PTKOHFTNETC-SRYYMD
-                                                               (IDX-K)
-               ADD     1                   TO  WRK-RENNUM
-           ELSE
-               MOVE    1                   TO  WRK-RENNUM
+           IF      FLG-ERR-01      NOT =   ZERO
+               ADD    1                TO  IDX-ERR
+               MOVE    "31"            TO  WRK-ERRCD-T (IDX-ERR)
            END-IF
+      *    対象なし
+           IF     (TBL-PTCRNIN-TEKSTYMD (1) =   SPACE )
+             AND  (FLG-ERR-01              =   ZERO  )
+               ADD     1               TO  IDX-ERR
+               MOVE    "32"            TO  WRK-ERRCD-T(IDX-ERR)
+           END-IF
+           .
+       200222-PTCARE-NINTEI-CHK-EXT.
+           EXIT.
       *
-           INITIALIZE                      PTKOHFTNETC-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTNETC-PTID
-           MOVE    SPA-P02K-KOHID      TO  PTKOHFTNETC-KOHID
-           MOVE    SPA-P02K-KOHNUM     TO  PTKOHFTNETC-KOHNUM
-           MOVE    TBL-PTKOHFTNETC-SRYYMD (IDX-K)
-                                       TO  PTKOHFTNETC-SRYYMD
-           MOVE    WRK-RENNUM          TO  PTKOHFTNETC-RENNUM
-           MOVE    TBL-PTKOHFTNETC-NYUGAIKBN (IDX-K)
-                                       TO  PTKOHFTNETC-NYUGAIKBN
-           MOVE    TBL-PTKOHFTNETC-FTNMONEY (IDX-K)
-                                       TO  PTKOHFTNETC-FTNMONEY
-      *    他一部負担額集計
-           ADD     TBL-PTKOHFTNETC-FTNMONEY (IDX-K)
-                                       TO  SPA-P02K-TAGOKEI
+      *****************************************************************
+      *    介護保険情報削除処理
+      *****************************************************************
+       200221-HKNINF-DELETE-SEC         SECTION.
       *
-           MOVE    SMCNDATE-YMD        TO  PTKOHFTNETC-CREYMD
-           MOVE    SMCNDATE-YMD        TO  PTKOHFTNETC-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTKOHFTNETC-UPHMS
-      *
-           MOVE    WRK-OPID            TO  PTKOHFTNETC-OPID
-      *
-           MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+      *    介護保険情報　削除
+           INITIALIZE                      PTCARE-HKNINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
+           MOVE    SPA-PTID            TO  PTCRHKN-PTID
+           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
-               MOVE    "64"                TO  WRK-ERRCD
+               MOVE   "62"             TO  WRK-ERRCD
            END-IF
       *
            .
-       200521-PTKOHFTNETC-INSERT-EXT.
+       200221-HKNINF-DELETE-EXT.
            EXIT.
       *
-      ****************************************************************
-      *    公費負担額の他一部負担額更新処理
-      ****************************************************************
-       200523-PTKOHFTN-MONEYUPD-SEC           SECTION.
+      *****************************************************************
+      *    介護保険情報更新処理
+      *****************************************************************
+       200221-HKNINF-UPDATE-SEC         SECTION.
       *
-           INITIALIZE                      PTKOHFTN-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOHFTN-PTID
-           MOVE    WRK-KOHID           TO  PTKOHFTN-KOHID
-           MOVE    SPA-P02K-NAI-SRYYMD(1:6)
-                                       TO  PTKOHFTN-TEKSTYMD(1:6)
-           MOVE    "%"                 TO  PTKOHFTN-TEKSTYMD(7:1)
-           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
-               PERFORM 910-PTKOHFTN-READ-SEC
-           ELSE 
-               MOVE    1                   TO  FLG-PTKOHFTN
-           END-IF
+      *    介護保険情報削除処理
+           PERFORM 200221-HKNINF-DELETE-SEC
+      *    追加処理
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL  (IDX         >   10   )
+                        OR    (TBL-PTCRHKN-TEKSTYMD (IDX)  =   SPACE )
+                        OR    (WRK-ERRCD   NOT =   SPACE )
+               MOVE    TBL-PTCARE-HKNINF-REC (IDX)
+                                           TO  PTCARE-HKNINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
+               MOVE    SPA-PTID            TO  PTCRHKN-PTID
       *
-           MOVE    SPA-P02K-TAGOKEI        TO  WRK-NYUJGNGAK
-           PERFORM
-               UNTIL    FLG-PTKOHFTN       =   1
-      *        最初の開始日に他一部負担額を設定する
-               MOVE    WRK-NYUJGNGAK       TO  PTKOHFTN-NYUJGNGAK
+               MOVE    SMCNDATE-YMD        TO  PTCRHKN-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTCRHKN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTCRHKN-UPHMS
       *
-               MOVE    ZERO                TO  WRK-NYUJGNGAK
+               MOVE    WRK-OPID            TO  PTCRHKN-OPID
       *
-               MOVE    SMCNDATE-YMD        TO  PTKOHFTN-UPYMD
-               MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
-               MOVE    WRK-OPID            TO  PTKOHFTN-OPID
-      *
-               MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
+               MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_ptcare_hkninf"     TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
                IF      MCP-RC          NOT =   ZERO
-                    MOVE    "65"               TO  WRK-ERRCD
+                   MOVE    "61"                TO  WRK-ERRCD
                END-IF
-      *
-               MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
-               PERFORM 910-PTKOHFTN-READ-SEC
            END-PERFORM
       *
-           MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            .
-       200523-PTKOHFTN-MONEYUPD-EXT.
+       200221-HKNINF-UPDATE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    要介護認定情報削除処理
+      *****************************************************************
+       200223-NINTEI-DELETE-SEC         SECTION.
+      *
+      *    要介護認定　削除
+           INITIALIZE                      PTCARE-NINTEI-REC
+           MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
+           MOVE    SPA-PTID            TO  PTCRNIN-PTID
+           MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               MOVE   "64"             TO  WRK-ERRCD
+           END-IF
+      *
+           .
+       200223-NINTEI-DELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    要介護認定情報更新処理
+      *****************************************************************
+       200224-NINTEI-UPDATE-SEC         SECTION.
+      *
+      *    要介護認定情報削除処理
+           PERFORM 200223-NINTEI-DELETE-SEC
+      *    追加処理
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL  (IDX         >   50   )
+                        OR    (TBL-PTCRNIN-TEKSTYMD (IDX)  =   SPACE )
+                        OR    (WRK-ERRCD   NOT =   SPACE )
+               MOVE    TBL-PTCARE-NINTEI-REC (IDX)
+                                           TO  PTCARE-NINTEI-REC
+               MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
+               MOVE    SPA-PTID            TO  PTCRNIN-PTID
+      *
+               MOVE    SMCNDATE-YMD        TO  PTCRNIN-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTCRNIN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTCRNIN-UPHMS
+      *
+               MOVE    WRK-OPID            TO  PTCRNIN-OPID
+      *
+      *        追加
+               MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "63"                TO  WRK-ERRCD
+               END-IF
+           END-PERFORM
+      *
+           .
+       200224-NINTEI-UPDATE-EXT.
+           EXIT.
+      *
       *
       ****************************************************************
       *    ＰＡＲＡのＳＰＡ編集処理
@@ -3306,7 +2241,6 @@
                MOVE    SPATMP-DATA-REC     TO  SPA-P02SCRAREA
            ELSE
                MOVE    "08"                TO  WRK-ERRCD
-               MOVE    "01"                TO  PTMODRES-RESPONSE-NUMBER
            END-IF
       *
            INITIALIZE                      PARA-REC
@@ -3321,7 +2255,6 @@
                MOVE    PARA-DATA-REC       TO  SPA-P02KYOUTU
            ELSE
                MOVE    "08"                TO  WRK-ERRCD
-               MOVE    "01"                TO  PTMODRES-RESPONSE-NUMBER
            END-IF
            .
        2031-SPA-PARA-EXT.
@@ -3330,21 +2263,23 @@
       ****************************************************************
       *    エラーメッセージ編集処理
       ****************************************************************
-      *290-ERROR-HEN-SEC           SECTION.
+       290-ERROR-HEN-SEC           SECTION.
       *
-      *    PERFORM VARYING   IDX       FROM   1   BY  1
-      *            UNTIL    (IDX       >   50     )
-      *               OR    (WRK-ERRCD-T (IDX)    =   SPACE )
-      *        MOVE    WRK-ERRCD-T (IDX)   TO  WRK-ERRCD
-      *        PERFORM 890-ERRCD-MSG-SEC
-      *        MOVE    WRK-ERRCD-T (IDX)   TO  PTMODRES-ERROR
-      *                                                    (IDX)
-      *        MOVE    WRK-ERRMSG          TO  PTMODRES-ERROR-MSG
-      *                                                    (IDX)
-      *    END-PERFORM
-      *    .
-      *290-ERROR-HEN-EXT.
-      *    EXIT.
+           PERFORM VARYING   IDX       FROM   1   BY  1
+                   UNTIL    (IDX       >   50     )
+                      OR    (WRK-ERRCD-T (IDX)    =   SPACE )
+               MOVE    WRK-ERRCD-T (IDX)   TO  WRK-ERRCD
+               PERFORM 8901-PTERRCD-SETAPI-SEC
+               MOVE    "AP"                TO  SPA-ERRCD(1:2)
+               MOVE    WRK-ERRCD-T (IDX)   TO  SPA-ERRCD(3:2)
+               MOVE    SPA-ERRCD           TO  PTMODRES-ERROR
+                                                           (IDX)
+               MOVE    WRK-ERRMSG          TO  PTMODRES-ERROR-MSG
+                                                           (IDX)
+           END-PERFORM
+           .
+       290-ERROR-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    確認メッセージ編集処理
       *****************************************************************
@@ -3726,6 +2661,30 @@
            EXIT.
       *
       *****************************************************************
+      *    全角チェック処理
+      *****************************************************************
+       891-HALF-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
+           IF     (KANACHK-RC          =   ZERO  )  AND
+                  (KANACHK-SYUBETU     =   1     )
+      *        半角
+               MOVE    ZERO                TO  FLG-ERR
+           ELSE
+               MOVE    1                   TO  FLG-ERR
+           END-IF
+      *
+           .
+       891-HALF-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
@@ -3761,7 +2720,7 @@
            WHEN    "10"
                MOVE    "患者番号に該当する患者が存在しません"
                                                TO  WRK-ERRMSG
-      *    WHEN    "11"
+      **   WHEN    "11"
       *        MOVE    "基準日の暦日エラー"
       *                                        TO  WRK-ERRMSG
       *    WHEN    "12"
@@ -3788,82 +2747,27 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
-           WHEN    "19"
-               MOVE    "処理順が違います。"
-                                               TO  WRK-ERRMSG
+      *
            WHEN    "22"
                MOVE    "前回と患者番号が違います。"
                                                TO  WRK-ERRMSG
-           WHEN    "23"
-               MOVE    "前回と公費ＩＤが違います。"
-                                               TO  WRK-ERRMSG
-           WHEN    "24"
-               MOVE    "前回と選択連番が違います。"
-                                               TO  WRK-ERRMSG
       *
-           WHEN    "30"
-               MOVE    "公費負担額の対象はありません。"
-                                               TO  WRK-ERRMSG
-      *
-           WHEN    "31"
-               MOVE    "公費ＩＤ数値エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "32"
-               MOVE    "公費選択対象がありません。"
-                                               TO  WRK-ERRMSG
-           WHEN    "33"
-               STRING   "公費ＩＤが一致しません。"
-                        "再度公費選択を行って下さい。"
-                                               INTO  WRK-ERRMSG
-               END-STRING
-           WHEN    "34"
-               MOVE    "送信されていない連番があります。"
-                                               TO  WRK-ERRMSG
-           WHEN    "35"
-               MOVE    "公費負担額にエラーがあります"
-                                               TO  WRK-ERRMSG
-      *
-           WHEN    "40"
-               MOVE    "他一部負担入力対象外公費です。"
-                                               TO  WRK-ERRMSG
-           WHEN    "41"
-               MOVE    "選択連番エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "42"
-               MOVE    "適応開始日エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "43"
-               MOVE    "対象の公費負担額がありません。"
-                                               TO  WRK-ERRMSG
-           WHEN    "44"
-               STRING  "対象の他一部負担累計は公費負担額履歴で"
-                       "登録されています。"
-                       "他一部負担累計をゼロにして下さい。"
+           WHEN    "60"
+               STRING  "エラーがあります。"
                                                DELIMITED  BY  SIZE
-                                               INTO  WRK-ERRMSG
+                                               INTO    WRK-ERRMSG
                END-STRING
-      *
-           WHEN    "50"
-               MOVE    "他一部負担更新区分エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "52"
-               MOVE    "他一部負担額にエラーがあります"
-                                               TO  WRK-ERRMSG
-      *
            WHEN    "61"
-               MOVE    "公費負担額削除エラー"
+               MOVE    "介護保険情報更新エラー"
                                                TO  WRK-ERRMSG
            WHEN    "62"
-               MOVE    "公費負担額登録エラー"
+               MOVE    "介護保険情報削除エラー"
                                                TO  WRK-ERRMSG
            WHEN    "63"
-               MOVE    "他一部負担額削除エラー"
+               MOVE    "要介護認定情報更新エラー"
                                                TO  WRK-ERRMSG
            WHEN    "64"
-               MOVE    "他一部負担額登録エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "65"
-               MOVE    "公費負担額更新エラー"
+               MOVE    "要介護認定情報削除エラー"
                                                TO  WRK-ERRMSG
       *
            WHEN    "80"
@@ -3926,72 +2830,30 @@
       *****************************************************************
        8901-PTERRCD-SETAPI-SEC              SECTION.
       *
-           EVALUATE    SPA-ERRCD
+           EVALUATE    WRK-ERRCD
+           WHEN    "20"
+               MOVE    "介護保険情報更新区分エラー"
+                                               TO  WRK-ERRMSG
+           WHEN    "21"
+               MOVE    "介護保険情報の項目にエラーがあります。"
+                                               TO  WRK-ERRMSG
+           WHEN    "22"
+               MOVE    "介護保険情報の更新対象がありません。"
+                                               TO  WRK-ERRMSG
       *
-           WHEN    "AP34"
-               MOVE    "公費負担額更新区分エラー"
+           WHEN    "30"
+               MOVE    "要介護認定情報更新区分エラー"
                                                TO  WRK-ERRMSG
-           WHEN    "AP35"
-               MOVE    "連番数値エラー"
+           WHEN    "31"
+               MOVE    "要介護認定情報にエラーがあります。"
                                                TO  WRK-ERRMSG
-           WHEN    "AP36"
-               MOVE    "上限額１数値エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP37"
-               MOVE    "上限額２数値エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP38"
-               MOVE    "開始日付未入力"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP39"
-               MOVE    "開始日付は変更できません。"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP40"
-               MOVE    "同じ連番があります。"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP41"
-               MOVE    "登録済みの連番です。"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP42"
-               MOVE    "連番がありません"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP45"
-               STRING  "同一開始年月で他一部負担履歴が"
-                       "登録されています。"
-                       "他一部負担累計は他一部負担履歴を"
-                       "更新して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  WRK-ERRMSG
-               END-STRING
-      *
-           WHEN    "AP51"
-               MOVE    "年月日暦日エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP52"
-               MOVE    "入外区分エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP53"
-               MOVE    "負担額数値エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP54"
-               MOVE    "年月日が未入力です"
-                                               TO  WRK-ERRMSG
-           WHEN    "AP55"
-               STRING  "公費適用期間外です。"
-                                               INTO  WRK-ERRMSG
-               END-STRING
-           WHEN    "AP56"
-               STRING  "選択中の上限額履歴の期間外の日です。"
-                                               INTO  WRK-ERRMSG
-               END-STRING
-           WHEN    "AP57"
-               MOVE    "同一日が９９件以上です。"
+           WHEN    "32"
+               MOVE    "要介護認定情報の更新対象がありません。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
-           .
+            .
        8901-PTERRCD-SETAPI-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    患者登録エラーメッセージ編集処理
@@ -4165,39 +3027,39 @@
            EXIT.
       *
       *****************************************************************
-      *    患者公費負担テーブル読み込み
+      *    患者介護保険情報データデータ読込処理
       *****************************************************************
-       910-PTKOHFTN-READ-SEC         SECTION.
+       930-PTCAREHKNINF-READ-SEC         SECTION.
       *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
-               MOVE    ZERO            TO  FLG-PTKOHFTN
+               MOVE    ZERO                TO  FLG-PTCARE-HKNINF
+               MOVE    MCPDATA-REC         TO  PTCARE-HKNINF-REC
            ELSE
-               INITIALIZE                  PTKOHFTN-REC
-               MOVE    1               TO  FLG-PTKOHFTN
+               MOVE    1                   TO  FLG-PTCARE-HKNINF
+               INITIALIZE                  PTCARE-HKNINF-REC
            END-IF
       *
            .
-       910-PTKOHFTN-READ-EXT.
+       930-PTCAREHKNINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    患者公費負担テーブル読み込み
+      *    患者介護者認定情報データ読込処理
       *****************************************************************
-       990-PTKOHFTNETC-READ-SEC         SECTION.
+       930-PTCARENINTEI-READ-SEC         SECTION.
       *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTKOHFTNETC-REC
-               MOVE    ZERO            TO  FLG-PTKOHFTNETC
+               MOVE    ZERO                TO  FLG-PTCARE-NINTEI
+               MOVE    MCPDATA-REC         TO  PTCARE-NINTEI-REC
            ELSE
-               INITIALIZE                  PTKOHFTNETC-REC
-               MOVE    1               TO  FLG-PTKOHFTNETC
+               MOVE    1                   TO  FLG-PTCARE-NINTEI
+               INITIALIZE                 PTCARE-NINTEI-REC
            END-IF
       *
            .
-       990-PTKOHFTNETC-READ-EXT.
+       930-PTCARENINTEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
