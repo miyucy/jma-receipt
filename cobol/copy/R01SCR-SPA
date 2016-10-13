@@ -89,7 +89,7 @@
                    07  SPA-GMN-R01-KOUMOKU.
                        09  SPA-GMN-R01-STJYUSINYMD PIC X(10).
                        09  SPA-GMN-R01-EDJYUSINYMD PIC X(10).
-                       09  SPA-GMN-R01-RENNUM      PIC 9(03).
+                       09  SPA-GMN-R01-RENNUM      PIC 9(04).
                        09  SPA-GMN-R01-PTNUM       PIC X(20).
                        09  SPA-GMN-R01-NAME        PIC X(50).
       *----(01.00.04) LINE UPD START ----------------------------------
@@ -111,7 +111,7 @@
                        09  SPA-GMN-R01-BTPARA-SRYYMH   PIC X(22).
       *
              04  SPA-R01-NAI.
-               05  SPA-NAI-R01-SELNO               PIC 9(03).                   
+               05  SPA-NAI-R01-SELNO               PIC 9(04).                   
       *
                05  SPA-NAI-R01-AREA.
                    07  SPA-NAI-R01-HYO-SRYYM       PIC 9(06).
