@@ -39,6 +39,7 @@
       *  04.07.00    NACL-多々納  13/08/01  手帳ＣＳＶ対応
       *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
+      *  04.08.00    NACL-多々納  16/10/XX  薬情に用法コード服用時点対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -256,6 +257,10 @@
                            11  SPA-WKSRY-INPUTCOMENT   PIC  X(80).
       *H28.5
                            11  SPA-WKSRY-GENE-NAME     PIC  X(80).
+      *H28.10
+                           11  SPA-WKSRY-INPUTCHI-G.
+                               13  SPA-WKSRY-INPUTCHI      PIC  X(08)
+                                                       OCCURS   5.
       *
                            11  SPA-WKSRY-KANZANCHI     PIC  9(05)V9(5).
                            11  SPA-WKSRY-KANZANTANINAME
@@ -1909,6 +1914,7 @@
        490111-PTCOM-SET-EXT.
            EXIT.
       *
+      *TEST
       *H28.5
       *****************************************************************
       *     一般名編集処理
@@ -2161,6 +2167,11 @@
                                                    (SPA-WKSRY-MAX IDX-W)
            MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                        TO  SPA-WKSRY-INPUTCOMENT
+                                                   (SPA-WKSRY-MAX IDX-W)
+      *H28.10
+      *    入力値
+           MOVE    LNK-WKSRY-INPUTCHI-G(IDX IDZ)
+                                       TO  SPA-WKSRY-INPUTCHI-G
                                                    (SPA-WKSRY-MAX IDX-W)
       *H28.5
       *    一般名
@@ -4440,6 +4451,11 @@
                                                              (IDX1 IDX2)
                            MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  ORCSCH30-INPUTCOMENT
+                                                             (IDX1 IDX2)
+      *H28.10
+      *    入力値
+                           MOVE    SPA-WKSRY-INPUTCHI-G (IDX-W IDX-W2)
+                                           TO  ORCSCH30-INPUTCHI-AREA
                                                              (IDX1 IDX2)
                        END-IF
                    END-PERFORM
