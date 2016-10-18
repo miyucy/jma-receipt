@@ -346,7 +346,7 @@
            03  WRK-ERRCD           PIC X(04).
       *
            03  WRK-KBNCD-X.
-               05  WRK-KBNCD-9     PIC 9(03).
+               05  WRK-KBNCD-9     PIC 9(04).
       * 
            03  WRK-PREFNUM         PIC 9(02).
       *
@@ -4341,6 +4341,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
 grpsys         MOVE    SPA-HOSPNUM         TO  SYS-2002-HOSPNUM
                MOVE    SYS-2002-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   1
+                   INITIALIZE                  SYS-2002-REC
+                   MOVE    "2002"              TO  SYS-2002-KANRICD
+                   MOVE    "0001"              TO  SYS-2002-KBNCD
+                   MOVE    SPA-SYSYMD          TO  SYS-2002-STYUKYMD
+                                                   SYS-2002-EDYUKYMD
+grpsys             MOVE    SPA-HOSPNUM         TO  SYS-2002-HOSPNUM
+                   MOVE    SYS-2002-REC        TO  MCPDATA-REC
+                   PERFORM 900-SYSKANRI-INV-SEC
+               END-IF
                IF      FLG-SYSKANRI        =   ZERO
                    INITIALIZE                      SYS-2002-REC
                    MOVE    "2002"                  TO  SYS-2002-KANRICD
