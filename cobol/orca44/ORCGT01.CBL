@@ -200,6 +200,9 @@
       *                                     チェック対応
       *  04.08.09    NACL-藤原    16/06/13  社保診療報酬請求書の災害該当
       *                                     分のまとめ対応
+      *  04.08.10    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -303,9 +306,10 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
-           03  WRK-WRNO-X          PIC Z9.   
-           03  WRK-WRNO            PIC 9(02).   
+           03  WRK-WRNO-X.
+               05  WRK-WRNO        PIC 9(02).
            03  WRK-SKYYM-OLD       PIC 9(06).
+           03  WRK-PRTKBN-OLD      PIC X(01).
       *     
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
@@ -356,11 +360,32 @@
                                    PIC X(40).
            03  WRK-Z9              PIC Z9.
       *
+           03  WRK-SRYYMKBN.
+               05  WRK-SRYYMKBN-ST PIC X(06).
+               05  WRK-SRYYMKBN-FL PIC X(01).
+               05  WRK-SRYYMKBN-ED PIC X(06).
+               05  WRK-SRYYMKBN-ERR
+                                   PIC X(02).
+      *
+           03  WRK-STYUKYMD        PIC X(08).
+           03  WRK-EDYUKYMD        PIC X(08).
+      *
        01  WRKPARA                 PIC X(200).
       *
       *    直接請求する保険者番号
        01  WRK-HKNJANUM-AREA.
-           03  WRK-HKNJANUM-S      PIC X(08)   OCCURS  10.  
+           03  WRK-HKNJANUM-S      PIC X(08)   OCCURS  10.
+      *
+      *    医療機関コード別
+       01  WRK-1001-TABLE.
+           07  WRK-1001-OCC        OCCURS  10.
+               09  WRK-1001-TSTYUKYMD
+                                   PIC X(08).
+               09  WRK-1001-TEDYUKYMD
+                                   PIC X(08).
+               09  WRK-1001-THOSPCD
+                                   PIC 9(07).
+           07  WRK-1001-MAX        PIC 9(02).
       *      
       *    システム領域
        01  SYS-AREA.
@@ -1153,6 +1178,218 @@ grpsys                                         SPA-AREA
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
+      *    医療機関情報（医療機関コード別）
+           INITIALIZE                      WRK-1001-TABLE
+      *
+           INITIALIZE                      SYS-1001-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-IF
+      *
+           PERFORM     UNTIL   FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *??
+           DISPLAY "SYS=" SYS-1001-HOSPCD "#" 
+                            SYS-1001-STYUKYMD "#"
+                                   SYS-1001-EDYUKYMD "#"
+      *??
+      *
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       10
+                   IF      WRK-1001-THOSPCD (IDX)
+                                           =   ZERO
+                       MOVE    SYS-1001-STYUKYMD
+                                           TO  WRK-1001-TSTYUKYMD
+                                                               (IDX)
+                       MOVE    SYS-1001-EDYUKYMD
+                                           TO  WRK-1001-TEDYUKYMD
+                                                               (IDX)
+                       MOVE    SYS-1001-HOSPCD
+                                           TO  WRK-1001-THOSPCD
+                                                               (IDX)
+                       MOVE    IDX         TO  WRK-1001-MAX
+                   END-IF
+                   IF      WRK-1001-THOSPCD (IDX)
+                                           =   SYS-1001-HOSPCD
+                       IF      SYS-1001-STYUKYMD
+                                           <   WRK-1001-TSTYUKYMD
+                                                               (IDX)
+                           MOVE    SYS-1001-STYUKYMD
+                                           TO  WRK-1001-TSTYUKYMD
+                                                               (IDX)
+                       END-IF
+                       MOVE    100         TO  IDX
+                   END-IF
+               END-PERFORM
+               MOVE    "tbl_syskanri"    TO  MCP-TABLE
+               MOVE    "key8"            TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+                   OR      WRK-1001-THOSPCD (IDX)
+                                       =   ZERO
+               MOVE    SPACE           TO  WRK-STYUKYMD
+                                           WRK-EDYUKYMD
+      *        有効終了年月日チェック
+               IF      WRK-1001-TEDYUKYMD (IDX)
+                                       NOT =   "99999999"
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY7-AREA
+                   MOVE    "71"                TO  LNK-DAY7-IRAI
+                   MOVE    WRK-1001-TEDYUKYMD (IDX) (1:6)
+                                               TO  LNK-DAY7-YM
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY7-AREA
+      *            末日以外の時
+                   IF      LNK-DAY7-KOYOMI NOT =
+                                               WRK-1001-TEDYUKYMD (IDX)
+                       MOVE    WRK-1001-TEDYUKYMD (IDX)
+                                               TO  WRK-STYUKYMD
+                       MOVE    "01"            TO  WRK-STYUKYMD (7:2)
+                       MOVE     LNK-DAY7-KOYOMI
+                                               TO  WRK-EDYUKYMD
+      *                前月の末日設定
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    WRK-1001-TEDYUKYMD (IDX)
+                                               TO  LNK-DAY6-KIJUN
+                       MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
+                       MOVE    -1              TO  LNK-DAY6-ZOGEN
+                       CALL    "ORCSDAY"           USING
+                                                   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY7-AREA
+                       MOVE    "71"            TO  LNK-DAY7-IRAI
+                       MOVE    LNK-DAY6-KEISAN (1:6)
+                                               TO  LNK-DAY7-YM
+                       CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                       LNK-DAY7-AREA
+                       MOVE    LNK-DAY7-KOYOMI TO
+                                               WRK-1001-TEDYUKYMD (IDX)
+                   END-IF
+               END-IF
+      *        有効開始年月日チェック
+               IF    ( WRK-1001-TSTYUKYMD (IDX)
+                                           =   "00000000" )
+               OR    ( WRK-1001-TSTYUKYMD (IDX) (7:2)
+                                           =   "01"       )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-1001-TSTYUKYMD (IDX)
+                                           TO  WRK-STYUKYMD
+                   MOVE    "01"            TO  WRK-STYUKYMD (7:2)
+                   INITIALIZE                  STS-AREA-DAY
+                   INITIALIZE                  LNK-DAY7-AREA
+                   MOVE    "71"            TO  LNK-DAY7-IRAI
+                   MOVE    WRK-1001-TSTYUKYMD (IDX) (1:6)
+                                           TO  LNK-DAY7-YM
+                   CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+                   MOVE    LNK-DAY7-KOYOMI TO  WRK-EDYUKYMD
+      *            次月設定
+                   INITIALIZE                  STS-AREA-DAY
+                   INITIALIZE                  LNK-DAY6-AREA
+                   MOVE    "61"            TO  LNK-DAY6-IRAI
+                   MOVE    WRK-1001-TSTYUKYMD (IDX)
+                                           TO  LNK-DAY6-KIJUN
+                   MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
+                   MOVE    1               TO  LNK-DAY6-ZOGEN
+                   CALL    "ORCSDAY"           USING
+                                               STS-AREA-DAY
+                                               LNK-DAY6-AREA
+                   MOVE    LNK-DAY6-KEISAN TO  WRK-1001-TSTYUKYMD (IDX)
+                   MOVE    "01"            TO
+                                           WRK-1001-TSTYUKYMD (IDX)(7:2)
+               END-IF
+      *
+               PERFORM VARYING IDXX FROM    1   BY  1
+                       UNTIL   IDXX >       10
+                   IF      SPA-NAI-1001-THOSPCD (IDXX)
+                                           =   ZERO
+                       MOVE    WRK-1001-TSTYUKYMD (IDX)
+                                           TO  SPA-NAI-1001-TSTYUKYMD
+                                                               (IDXX)
+                       MOVE    WRK-1001-TEDYUKYMD (IDX)
+                                           TO  SPA-NAI-1001-TEDYUKYMD
+                                                               (IDXX)
+                       MOVE    WRK-1001-THOSPCD   (IDX)
+                                           TO  SPA-NAI-1001-THOSPCD
+                                                               (IDXX)
+                       MOVE    IDXX        TO  SPA-NAI-1001-MAX
+                   END-IF
+                   IF    ( WRK-1001-TSTYUKYMD (IDX)
+                                           =   SPA-NAI-1001-TSTYUKYMD
+                                                               (IDXX) )
+                   AND   ( WRK-1001-TEDYUKYMD (IDX)
+                                           =   SPA-NAI-1001-TEDYUKYMD
+                                                               (IDXX) )
+                       MOVE    10          TO  IDXX
+                   END-IF
+               END-PERFORM
+      *
+               IF      WRK-STYUKYMD    NOT =   SPACE
+                   PERFORM VARYING IDXX FROM    1   BY  1
+                           UNTIL   IDXX >       10
+                     IF      SPA-NAI-1001-THOSPCD (IDXX)
+                                           =   ZERO
+                       MOVE    WRK-STYUKYMD
+                                           TO  SPA-NAI-1001-TSTYUKYMD
+                                                               (IDXX)
+                       MOVE    WRK-EDYUKYMD
+                                           TO  SPA-NAI-1001-TEDYUKYMD
+                                                               (IDXX)
+                       MOVE    9999999     TO  SPA-NAI-1001-THOSPCD
+                                                               (IDXX)
+                       MOVE    IDXX        TO  SPA-NAI-1001-MAX
+                     END-IF
+                     IF    ( WRK-STYUKYMD  =   SPA-NAI-1001-TSTYUKYMD
+                                                               (IDXX) )
+                     AND   ( WRK-EDYUKYMD  =   SPA-NAI-1001-TEDYUKYMD
+                                                               (IDXX) )
+                       MOVE    10          TO  IDXX
+                     END-IF
+                   END-PERFORM
+               END-IF    
+           END-PERFORM
+      *??
+           DISPLAY "SPA-NAI-1001-MAX=" SPA-NAI-1001-MAX
+      *??
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-NAI-1001-MAX
+               MOVE    SPA-NAI-1001-TSTYUKYMD (IDX)
+                                           TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG (1:6)   TO  SPA-NAI-1001-TSTYUKYM
+                                                                 (IDX)
+               MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-1001-TSTYUKYM-G
+                                                                 (IDX)
+               MOVE    SPA-NAI-1001-TEDYUKYMD (IDX)
+                                           TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG (1:6)   TO  SPA-NAI-1001-TEDYUKYM
+                                                                 (IDX)
+               MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-1001-TEDYUKYM-G
+                                                                 (IDX)
+           END-PERFORM
+      *
       *    クライアント保存可否情報取得サブ
            INITIALIZE                      ORCSCLIENTSVAREA
            CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
@@ -1253,6 +1490,9 @@ grpsys                                         SPA-AREA
       *
       *    診療年月によるシステム管理の取得処理
            PERFORM 3103-SYSKANRI-HENSYU-SEC
+      *
+      *    診療年月期間設定処理
+           PERFORM 3105-SRYYMKBN-HENSYU-SEC
       *
       *    未実施の未請求解除データのチェック処理
            PERFORM 3101-SYUKA-CHECK-SEC
@@ -1929,6 +2169,92 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    診療年月期間設定処理
+      *****************************************************************
+       3105-SRYYMKBN-HENSYU-SEC        SECTION.
+      *
+           INITIALIZE                      SPA-GMN-SRYYMKBN-G
+           MOVE    ZERO                TO  SPA-GMN-SRYYMKBN-MAX
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+               INITIALIZE      SPA-GMN-SRYYMKBNLST (IDX)
+                               SPA-NAI-SRYYMKBNLST (IDX)
+           END-PERFORM
+      *
+      *??? IF      SPA-NAI-SKYYM   <   201604
+      *???     GO  TO  3105-SRYYMKBN-HENSYU-EXT
+      *??? END-IF
+      *
+           IF      SPA-GMN-PRTKBN      =   "1" OR  "2"
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-NAI-1001-MAX
+                 IF      SPA-NAI-1001-TSTYUKYMD (IDX) (1:6)
+                                       >   SPA-NAI-SKYYM
+                   CONTINUE
+                 ELSE
+                   ADD     1               TO  SPA-GMN-SRYYMKBN-MAX
+                   INITIALIZE                  SPA-GMN-SRYYMKBNLST
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                                               SPA-NAI-SRYYMKBNLST
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                   MOVE    SPA-GMN-SRYYMKBN-MAX
+                                           TO  WRK-WRNO
+                   MOVE    WRK-WRNO-X      TO  SPA-GMN-SRYYMKBNL
+                                               (SPA-GMN-SRYYMKBN-MAX)
+      *
+                   MOVE    SPACE           TO  WRK-SRYYMKBN
+                   MOVE    SPA-NAI-1001-TSTYUKYMD (IDX) (1:6)
+                                           TO  SPA-NAI-SRYYMKBN-ST
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                   MOVE    SPA-NAI-1001-TSTYUKYM-G (IDX) 
+                                           TO  SPA-NAI-SRYYMKBN-ST-PRT
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                   MOVE    SPA-NAI-1001-TSTYUKYM (IDX) 
+                                           TO  WRK-SRYYMKBN-ST
+      *
+                   MOVE    SPA-NAI-1001-TEDYUKYMD (IDX) (1:6)
+                                           TO  SPA-NAI-SRYYMKBN-ED
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                   MOVE    SPA-NAI-1001-TEDYUKYM-G (IDX)
+                                           TO  SPA-NAI-SRYYMKBN-ED-PRT
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                   MOVE    SPA-NAI-1001-TEDYUKYM (IDX)
+                                           TO  WRK-SRYYMKBN-ED
+                   MOVE    "-"             TO  WRK-SRYYMKBN-FL
+                   IF      SPA-NAI-1001-THOSPCD  (IDX)
+                                           =   9999999
+                       MOVE    "*"             TO  WRK-SRYYMKBN-ERR
+                       MOVE    "1"             TO  SPA-NAI-SRYYMKBN-ERR
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                   END-IF
+                   MOVE    WRK-SRYYMKBN    TO  SPA-GMN-SRYYMKBNNML
+                                               (SPA-GMN-SRYYMKBN-MAX)
+                 END-IF
+               END-PERFORM
+               IF      SPA-GMN-SRYYMKBN-MAX    >   1
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       SPA-GMN-SRYYMKBN-MAX
+                       IF      SPA-NAI-SRYYMKBN-ERR (IDX)
+                                               =   SPACE
+                           MOVE    SPA-GMN-SRYYMKBNLST (IDX)
+                                               TO  SPA-GMN-SRYYMKBN-G
+                           MOVE    SPA-GMN-SRYYMKBN-MAX
+                                               TO  IDX
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   MOVE    ZERO                TO  SPA-GMN-SRYYMKBN-MAX
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       10
+                       INITIALIZE      SPA-GMN-SRYYMKBNLST (IDX)
+                   END-PERFORM
+               END-IF
+           END-IF
+           .
+       3105-SRYYMKBN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理結果画面（Ｔ９９）戻り処理
       *****************************************************************
        320-T99-SET-SEC            SECTION.
@@ -2329,6 +2655,20 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                    MOVE    ERRFLPARA-BASENAME
                                            TO  SHELLTBL-ARG15
                    MOVE    "1"             TO  SHELLTBL-ARG16
+      *
+                   IF      SPA-GMN-SRYYMKBN-MAX
+                                           =   ZERO
+                       MOVE    "999999"        TO  SHELLTBL-ARG17
+                       MOVE    "999999"        TO  SHELLTBL-ARG18
+                   ELSE
+                       MOVE    SPA-NAI-SRYYMKBN-ST
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                               TO  SHELLTBL-ARG17
+                       MOVE    SPA-NAI-SRYYMKBN-ED
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                               TO  SHELLTBL-ARG18
+                   END-IF
+      *
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
@@ -2700,6 +3040,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                GO      TO      410-INPUT-CHK-EXT
            END-IF
       *
+      *    基本チェック後ＳＰＡ再セット
+           PERFORM 4104-GMN-SPA-HENSYU-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
            IF      FLG-TOUROKU         =   1
       *        処理開始前チェック処理
                PERFORM 4101-KAKUTEI-CHK-SEC
@@ -2714,6 +3060,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
+      *    入力前データ
+           MOVE    SPA-GMN-PRTKBN      TO  WRK-PRTKBN-OLD
+      *
            MOVE    T01-SKYYM           TO  SPA-GMN-SKYYM
            MOVE    T01-SKYYMD          TO  SPA-GMN-SKYYMD
            MOVE    T01-HKNJANUM        TO  SPA-GMN-HKNJANUM
@@ -2723,6 +3072,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    T01-PRTKBN          TO  SPA-GMN-PRTKBN-G
            MOVE    T01-DIRECT-HKNJANUM TO  SPA-GMN-DIRECT-HKNJANUM-G
            MOVE    T01-RECEDEN-CHK     TO  SPA-GMN-RECEDEN-CHK-G
+           MOVE    T01-SRYYMKBN        TO  SPA-GMN-SRYYMKBN
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2734,6 +3084,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        4102-KIHON-CHK-SEC       SECTION.
       *
            PERFORM 4101-SKYYM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4109-SRYYMKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -2947,6 +3302,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *        診療年月によるシステム管理の取得処理
                PERFORM 3103-SYSKANRI-HENSYU-SEC
+      *
+      *****    診療年月期間設定処理
+      *****    PERFORM 3105-SRYYMKBN-HENSYU-SEC
       *
       *        診療年月によるレセ電作成区分の設定
                IF      SPA-NAI-SKYYM      <   200804
@@ -3309,6 +3667,59 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    診療年月期間入力処理
+      *****************************************************************
+       4109-SRYYMKBN-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO               TO  SPA-NAI-SRYYMKBN-SELNUM
+      *
+           IF      SPA-GMN-SRYYMKBN-MAX
+                                      =   ZERO
+               GO  TO  4109-SRYYMKBN-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-SRYYMKBN   =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-SRYYMKBNNM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-SRYYMKBN-MAX
+                   IF        SPA-GMN-SRYYMKBN
+                                       =   SPA-GMN-SRYYMKBNL (IDX)
+                       IF      SPA-NAI-SRYYMKBN-ERR (IDX)
+                                           =   SPACE
+                           MOVE    SPA-GMN-SRYYMKBNNML (IDX)
+                                               TO  SPA-GMN-SRYYMKBNNM
+                           MOVE    IDX         TO
+                                               SPA-NAI-SRYYMKBN-SELNUM
+                       ELSE
+                           MOVE    "0050"      TO  SPA-ERRCD
+                       END-IF
+                       MOVE    SPA-GMN-SRYYMKBN-MAX
+                                               TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           IF      SPA-GMN-SRYYMKBNNM  =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-SRYYMKBN-MAX
+                   IF      SPA-NAI-SRYYMKBN-ERR (IDX)
+                                           =   SPACE
+                       MOVE    SPA-GMN-SRYYMKBNLST (IDX)
+                                               TO  SPA-GMN-SRYYMKBN-G
+                       MOVE    IDX             TO
+                                               SPA-NAI-SRYYMKBN-SELNUM
+                       MOVE    SPA-GMN-SRYYMKBN-MAX
+                                               TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       4109-SRYYMKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理開始前チェック処理
       *****************************************************************
        4101-KAKUTEI-CHK-SEC        SECTION.
@@ -3423,6 +3834,42 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    基本チェック後ＳＰＡ再セット
+      *****************************************************************
+       4104-GMN-SPA-HENSYU-SEC         SECTION.
+      *
+           IF    ( SPA-NAI-SKYYM  NOT =   WRK-SKYYM-OLD  )
+           OR    ( SPA-GMN-PRTKBN NOT =   WRK-PRTKBN-OLD )
+      *        診療年月期間設定処理
+               PERFORM 3105-SRYYMKBN-HENSYU-SEC
+      *
+      *        月途中変更の診療年月かチェック
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       SPA-GMN-SRYYMKBN-MAX
+                   IF      ( SPA-NAI-SRYYMKBN-ST (IDX)
+                                       <=   SPA-NAI-SKYYM )
+                   AND     ( SPA-NAI-SRYYMKBN-ED (IDX)
+                                       >=   SPA-NAI-SKYYM )
+                       IF      SPA-NAI-SRYYMKBN-ERR (IDX)
+                                           =   "1"
+                           MOVE    ZERO    TO  SPA-GMN-SRYYMKBN-MAX
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX >       10
+                               INITIALIZE  SPA-GMN-SRYYMKBNLST (IDX)
+                           END-PERFORM
+                           MOVE    "0051"      TO  SPA-ERRCD
+                       END-IF
+                       MOVE    SPA-GMN-SRYYMKBN-MAX
+                                               TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+     *
+           .
+       4104-GMN-SPA-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -3485,7 +3932,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
       *
       *****************************************************************
-      *    戻る　処理
+      *    戻る処理
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
@@ -4019,6 +4466,20 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                    MOVE    ERRFLPARA-BASENAME
                                            TO  SHELLTBL-ARG15
                    MOVE    "0"             TO  SHELLTBL-ARG16
+      *
+                   IF      SPA-GMN-SRYYMKBN-MAX
+                                           =   ZERO
+                       MOVE    "999999"        TO  SHELLTBL-ARG17
+                       MOVE    "999999"        TO  SHELLTBL-ARG18
+                   ELSE
+                       MOVE    SPA-NAI-SRYYMKBN-ST
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                               TO  SHELLTBL-ARG17
+                       MOVE    SPA-NAI-SRYYMKBN-ED
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                               TO  SHELLTBL-ARG18
+                   END-IF
+      *
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
@@ -4286,6 +4747,17 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                    MOVE    "00000000"             TO  SHELLTBL-ARG27
            END-EVALUATE
       *
+           IF      SPA-GMN-SRYYMKBN-MAX
+                                   =   ZERO
+               MOVE    "999999"        TO  SHELLTBL-ARG28
+               MOVE    "999999"        TO  SHELLTBL-ARG29
+           ELSE
+               MOVE    SPA-NAI-SRYYMKBN-ST (SPA-NAI-SRYYMKBN-SELNUM)
+                                       TO  SHELLTBL-ARG28
+               MOVE    SPA-NAI-SRYYMKBN-ED (SPA-NAI-SRYYMKBN-SELNUM)
+                                       TO  SHELLTBL-ARG29
+           END-IF
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -4435,6 +4907,17 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
                        MOVE    "2"             TO  SHELLTBL-ARG19
                END-EVALUATE
            END-IF    
+      *
+           IF      SPA-GMN-SRYYMKBN-MAX
+                                   =   ZERO
+               MOVE    "999999"        TO  SHELLTBL-ARG20
+               MOVE    "999999"        TO  SHELLTBL-ARG21
+           ELSE
+               MOVE    SPA-NAI-SRYYMKBN-ST (SPA-NAI-SRYYMKBN-SELNUM)
+                                       TO  SHELLTBL-ARG20
+               MOVE    SPA-NAI-SRYYMKBN-ED (SPA-NAI-SRYYMKBN-SELNUM)
+                                       TO  SHELLTBL-ARG21
+           END-IF
       *
            MOVE    SHELLTBL    TO  MCPDATA-REC
            MOVE    "SHELL"     TO  MCP-FUNC
@@ -5533,6 +6016,17 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
                END-IF
            END-IF 
       *
+           IF      SPA-GMN-SRYYMKBN-MAX
+                                   =   ZERO
+               MOVE    "999999"        TO  SHELLTBL-ARG27
+               MOVE    "999999"        TO  SHELLTBL-ARG28
+           ELSE
+               MOVE    SPA-NAI-SRYYMKBN-ST (SPA-NAI-SRYYMKBN-SELNUM)
+                                       TO  SHELLTBL-ARG27
+               MOVE    SPA-NAI-SRYYMKBN-ED (SPA-NAI-SRYYMKBN-SELNUM)
+                                       TO  SHELLTBL-ARG28
+           END-IF
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -6281,6 +6775,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-T01-NYUGAIKBN
            MOVE    SPA-NAI-9101-FILE-DIR
                                        TO  SPA-T01-9101-FILE-DIR
+           MOVE    SPA-NAI-1001-T      TO  SPA-T01-1001-T
       *
            MOVE    SPA-T01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -6591,12 +7086,18 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
-           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
-               MOVE    SPACE               TO  WRK-HGO
-               MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
-               MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
-               MOVE    WRK-SYMD(7:2)       TO  WRK-HDD
-               MOVE    WRK-HENYMD          TO  WRK-HENYMDG
+           MOVE    SPACE               TO  WRK-HENYMDG
+                                           WRK-HENYMDG3
+      *
+           IF      WRK-SYMD            =   ALL "9"  OR   SPACE OR
+                                           ZERO
+               MOVE    WRK-SYMD (1:8)      TO  WRK-HENYMDG
+               EVALUATE    WRK-SYMD (1:6)
+                   WHEN    "000000"
+                       MOVE    "００００００００"  TO  WRK-HENYMDG3
+                   WHEN    "999999"
+                       MOVE    "９９９９９９９９"  TO  WRK-HENYMDG3
+               END-EVALUATE
            ELSE
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY2-AREA
@@ -6874,6 +7375,22 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-GMN-DIRECT-HKNJANUM-MAX
                                    TO  T01-DIRECT-HKNJANUM-COUNT
       *
+           IF      SPA-GMN-SRYYMKBN-MAX
+                                       =   ZERO
+               MOVE    "F"         TO  T01-SRYYMKBN-COM-VISIBLE
+           ELSE
+               MOVE    "T"         TO  T01-SRYYMKBN-COM-VISIBLE
+               MOVE    SPA-GMN-SRYYMKBN-G
+                                   TO  T01-SRYYMKBN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-SRYYMKBN-MAX
+                   MOVE    SPA-GMN-SRYYMKBNLST (IDX)
+                                       TO  T01-SRYYMKBN-ITEM(IDX)
+               END-PERFORM
+           END-IF
+           MOVE    SPA-GMN-SRYYMKBN-MAX
+                                   TO  T01-SRYYMKBN-COUNT
+      *
            IF      SPA-NAI-9102-EFOUT  =   "1"
                MOVE    "Ｅ・Ｆ"            TO  T01-B18-LABEL
                IF      SPA-GMN-PRTKBN      =   "9"
@@ -6921,6 +7438,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
              WHEN   10
                     MOVE  "RECEDEN_CHK"
                                        TO  MCP-WIDGET   
+             WHEN   11
+                    MOVE  "SRYYMKBN"   TO  MCP-WIDGET
          END-EVALUATE
       *
            .
@@ -6934,6 +7453,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "SKYYM"
+                   IF      SPA-GMN-SRYYMKBN-MAX    >   ZERO
+                       MOVE    11              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    2               TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "SRYYMKBN"
                    MOVE    2               TO  SPA-GMN-CUR
                WHEN    "SKYYMD"
                    MOVE    7               TO  SPA-GMN-CUR
@@ -7061,6 +7586,23 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE
                        "職員情報でクライアント保存の設定をして下さい"
                                                        TO  TERR-ERRMSG
+      *
+               WHEN    "0050"
+                   STRING
+                       "月途中に医療機関コードが変更されているので、"
+                                                   DELIMITED  BY  SIZE
+                       "この期間の処理はできません"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    TERR-ERRMSG
+                   END-STRING
+               WHEN    "0051"
+                   STRING
+                       "月途中に医療機関コードが変更されている診療年月"
+                                                   DELIMITED  BY  SIZE
+                       "のため、別途手順書に従って処理を行って下さい"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    TERR-ERRMSG
+                   END-STRING
       *
                WHEN    "0200"
                    MOVE
@@ -7551,7 +8093,75 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "T"             TO  TID2-B11-VISIBLE
                    MOVE    "F12:印刷する"  TO  TID2-B12-LABEL
            END-EVALUATE
-      * 
+      *
+           EVALUATE    SPA-TIDCD
+               WHEN    "1010"
+               WHEN    "1014"
+               WHEN    "1015"
+               WHEN    "1016"
+               WHEN    "1017"
+               WHEN    "1018"
+               WHEN    "1020"
+               WHEN    "1021"
+               WHEN    "1022"
+               WHEN    "1023"
+               WHEN    "1024"
+               WHEN    "1025"
+      *            レセ電データ作成時
+                   IF      SPA-GMN-PRTKBN      =   "6" OR  "7"
+                       CONTINUE
+                   ELSE 
+                       IF      SPA-GMN-SRYYMKBN-MAX
+                                                   >   ZERO
+                           STRING   TID2-LABEL     DELIMITED  BY  SPACE
+                                    "　【"         DELIMITED  BY  SPACE
+                                    SPA-NAI-SRYYMKBN-ST-PRT
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                                   DELIMITED  BY  SPACE
+                                    "〜"           DELIMITED  BY  SPACE
+                                    SPA-NAI-SRYYMKBN-ED-PRT
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                                   DELIMITED  BY  SPACE
+                                    "】"           DELIMITED  BY  SPACE
+                                                   INTO       TID2-LABEL
+                           END-STRING
+                       END-IF
+                   END-IF
+               WHEN    "1027"
+               WHEN    "1028"
+               WHEN    "1029"
+      *            レセ電データ（労災）作成時 
+                   CONTINUE
+               WHEN    "1001"
+               WHEN    "1002"
+               WHEN    "1003"  
+               WHEN    "1004"
+               WHEN    "1005"
+               WHEN    "1006"
+               WHEN    "1007"
+               WHEN    "1008"
+               WHEN    "1009"
+               WHEN    "1011"
+               WHEN    "1026"
+               WHEN    "1019"  
+      *            総括表作成時 
+                   IF      SPA-GMN-SRYYMKBN-MAX
+                                               >   ZERO
+                       STRING   TID2-LABEL     DELIMITED  BY  SPACE
+                                "　【"         DELIMITED  BY  SPACE
+                                SPA-NAI-SRYYMKBN-ST-PRT
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                               DELIMITED  BY  SPACE
+                                "〜"           DELIMITED  BY  SPACE
+                                SPA-NAI-SRYYMKBN-ED-PRT
+                                               (SPA-NAI-SRYYMKBN-SELNUM)
+                                               DELIMITED  BY  SPACE
+                                "】"           DELIMITED  BY  SPACE
+                                               INTO       TID2-LABEL
+                       END-STRING
+                   END-IF     
+           END-EVALUATE
+      *
            MOVE    ZERO            TO  FLG-RECEDEN-CHK
       *
            MOVE    "B12"           TO  MCP-WIDGET
@@ -7564,7 +8174,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1               TO  FLG-END              
+           MOVE    1               TO  FLG-END
       *
            .
        530-TID2SET-EXT.
