@@ -43,6 +43,9 @@ db "xml" {
 db "xml2" {
  xml_appointv2req;
  xml_appointv2res;
+ rp_appointment_form;
+ rp_appointment_list;
+ rp_appointment_list_patient;
 };
 
 #include "orcadb.inc"

@@ -20,7 +20,7 @@ rp_appointment_list_patient {
 		Appointment_Information	{
 			Date					varchar(10);
 			Appointment_List	{
-				Time								varchar(5);
+				Time				varchar(5);
 				Department_Code			varchar(02);
 				Department_Name			varchar(40);
 				Medical_Information	{
@@ -34,6 +34,7 @@ rp_appointment_list_patient {
 				};
 				Patient	{
 					ID	 				    varchar(20);
+					YYKName 			    varchar(50);
 					Name 				    varchar(50);
 					KanaName  			varchar(50);
 					BirthDate 			varchar(10);
@@ -41,8 +42,9 @@ rp_appointment_list_patient {
 				};
 				Detail_Code				varchar(02);
 				Detail_Name				varchar(30);
-				Contact_Class			varchar(01);
+				Contact_Class			varchar(02);
 				Contact_Name			varchar(20);
+				Visit_Flg				varchar(01);
 			}[1000];
 		}[6];
 	};

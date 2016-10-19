@@ -26,7 +26,6 @@
               05  RPYPL-CUSTOM-ID          PIC X(30).
               05  RPYPL-PRINTER            PIC X(20).
               05  RPYPL-PRTYMD             PIC X(10).
-              05  RPYPL-SRYYMD             PIC X(10).
               05  RPYPL-SRYNAIYO-AREA.
                 07  RPYPL-SRYNAIYO         PIC X(02).
                 07  RPYPL-SRYNAIYONAME     PIC X(20).
@@ -35,6 +34,7 @@
                 07  RPYPL-DR-NAME          PIC X(50).
                 07  RPYPL-DR-KANANAME      PIC X(50).
               05  RPYPL-TBL                OCCURS 6.
+                07  RPYPL-TSRYYMD          PIC X(10).
                 07  RPYPL-TBL2             OCCURS 1000.
                   09  RPYPL-TYYKTIME         PIC X(5).
                   09  RPYPL-TSRYKA           PIC X(2).
@@ -48,6 +48,7 @@
                     11  RPYPL-TDR-KANANAME   PIC X(50).
                   09  RPYPL-TPTINF.
                     11  RPYPL-TPTNUM         PIC X(20).
+                    11  RPYPL-TYYKNAME       PIC X(50).
                     11  RPYPL-TNAME          PIC X(50).
                     11  RPYPL-TKANANAME      PIC X(50).
                     11  RPYPL-TBIRTHDAY      PIC X(10).

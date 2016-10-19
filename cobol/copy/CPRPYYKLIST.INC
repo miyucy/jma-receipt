@@ -27,6 +27,8 @@
               05  RPYL-PRINTER                 PIC X(20).
               05  RPYL-PRTYMD                  PIC X(10).
               05  RPYL-SRYYMD                  PIC X(10).
+      *       ½èÍý¶èÊ¬¡Ê£±¡§Í½Ìó°ìÍ÷¡¢£²¡§Ì¤±¡°ìÍ÷¡Ë
+              05  RPYL-HAKKOKBN                PIC X(01).
               05  RPYL-SRYNAIYO-AREA.
                 07  RPYL-SRYNAIYO              PIC X(02).
                 07  RPYL-SRYNAIYONAME          PIC X(20).
@@ -47,6 +49,9 @@
                   09  RPYL-TDR-KANANAME        PIC X(50).
                 07  RPYL-TPTINF.
                   09  RPYL-TPTNUM              PIC X(20).
+      *           Í½Ìó´µ¼Ô»áÌ¾
+                  09  RPYL-TYYKNAME            PIC X(50).
+      *           ´µ¼Ô¾ðÊó
                   09  RPYL-TNAME               PIC X(50).
                   09  RPYL-TKANANAME           PIC X(50).
                   09  RPYL-TBIRTHDAY           PIC X(10).

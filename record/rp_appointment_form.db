@@ -16,9 +16,9 @@ rp_appointment_form {
 			Sex					    varchar(1);
 		};
 		Hospital	{
-			Name								varchar(120)[3];
+			Name						varchar(40)[2];
 			Zipcode         		varchar(7);
-			Address							varchar(200)[3];
+			Address						varchar(40)[2];
 			PhoneNumber					varchar(15);
 		};
 		Memo									varchar(100);

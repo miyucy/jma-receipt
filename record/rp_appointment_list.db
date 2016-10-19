@@ -9,6 +9,7 @@ rp_appointment_list {
 		Printer					varchar(20);
 		Perform_Date		varchar(10);
 		IssuedDate			varchar(10);
+		Order_Class			varchar(1);
 		Medical_Information	{
 			Code					varchar(2);
 			Name					varchar(20);
@@ -19,7 +20,7 @@ rp_appointment_list {
 			KanaName 			varchar(50);
 		};
 		Appointment_List	{
-			Time								varchar(5);
+			Time						varchar(5);
 			Department_Code			varchar(02);
 			Department_Name			varchar(40);
 			Medical_Information	{
@@ -33,6 +34,7 @@ rp_appointment_list {
 			};
 			Patient	{
 				ID	 				    varchar(20);
+				YYKName 				    varchar(50);
 				Name 				    varchar(50);
 				KanaName  			varchar(50);
 				BirthDate 			varchar(10);

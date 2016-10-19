@@ -34,6 +34,7 @@
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  04.05.00    NACL-多々納  09/06/XX  カスタマイズ帳票対応
       *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
+      *  04.08.00    NACL-多々納  16/10/19  API(GINBEE)対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,14 +72,19 @@
            03  FLG-END             PIC 9(01).
            03  FLG-YYK             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
+      *API
+           03  FLG-APISYORI        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDX-D               PIC 9(04).
+           03  IDX-API             PIC 9(04).
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
@@ -108,30 +114,62 @@
        01  TBL-DRCD-AREA.
            03  TBL-DRCD-G              OCCURS   200.
                05  TBL-DRCD            PIC X(05).
-               05  TBL-DRCDNAME        PIC X(30).
+               05  TBL-DRCDNAME        PIC X(50).
+      *API
+               05  TBL-DRCDKANANAME    PIC X(50).
            03  TBL-DRCD-MAX            PIC 9(03).
       *
       *    診療内容テーブル
        01  TBL-SRYNAIYO-AREA.
            03  TBL-SRYNAIYO-G          OCCURS   99.
                05  TBL-SRYNAIYO        PIC X(02).
-               05  TBL-SRYNAIYOMEI     PIC X(24).
+               05  TBL-SRYNAIYOMEI     PIC X(30).
+           03  TBL-SRYNAI-MAX          PIC 9(02).
       *
       *    診療科テーブル
        01  TBL-SRYKA-AREA.
            03  TBL-SRYKA-G             OCCURS   99.
                05  TBL-SRYKA-CD        PIC X(02).
                05  TBL-SRYKANAME       PIC X(30).
+           03  TBL-SRYKA-MAX           PIC 9(02).
       *    連絡先テーブル
        01  TBL-RENRAK-AREA.
            03  TBL-RENRAK-G            OCCURS   99.
                05  TBL-RENRAK-CD       PIC X(01).
-               05  TBL-YYKKAKNAME      PIC X(10).
+               05  TBL-YYKKAKNAME      PIC X(30).
+           03  TBL-RENRAK-MAX          PIC 9(02).
       *    予約内容テーブル
        01  TBL-YYKKBN-AREA.
            03  TBL-YYKKBN-G            OCCURS   99.
                05  TBL-YYKKBN-CD       PIC X(02).
                05  TBL-YYKKBNNAME      PIC X(30).
+           03  TBL-YYKKBN-MAX          PIC 9(02).
+      *
+      *H28.10
+      *    API対応用
+       01  WRK-API-AREA.
+      *    日付編集
+           03  WRK-HEN-DATE.
+               05  WRK-HEN-YY          PIC X(04).
+               05  WRK-HEN-H1          PIC X(01).
+               05  WRK-HEN-MM          PIC X(02).
+               05  WRK-HEN-H2          PIC X(01).
+               05  WRK-HEN-DD          PIC X(02).
+      *
+       01  WRK-TIME-HEN.
+           03  WRK-THH             PIC 9(02).
+           03  WRK-F1              PIC X(01)   VALUE    ":".
+           03  WRK-TSS             PIC 9(02).
+      *
+      *H28.10  API
+      *    プログラムオプションパラメタ
+       01  PARA-AREA.
+           03  PARA-API-DATA           PIC X(01).
+           03  PARA-API-CUSTOM-ID      PIC X(30).
+      *
+           03  WRK-PARA-NAME           PIC X(25).
+           03  WRK-PARA                PIC X(100).
+           03  WRK-PARA-MAX            PIC 9(04).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -190,6 +228,19 @@
       *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
+      *H28.10
+      *    プログラムオプション編集パラメタ
+           COPY    "CPORCSPRGOPTION.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      * API対応
+      *    予約一覧表構造体
+           COPY    "CPRPYYKLIST.INC".
+      *
+           COPY    "CPORCRPMAIN.INC".
+      *    画面色等
+           COPY    "ENUM-VALUE".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -230,13 +281,82 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
+      *
+      *H28.10
+      *    プログラムオプション取込み
+           PERFORM 100-OPTION-SELECT-SEC
       *
       *    各ＤＢ読込
            PERFORM 100-SYORI-SEC
            .
        100-INIT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プログラムオプション取込み処理
+      *****************************************************************
+       100-OPTION-SELECT-SEC             SECTION.
+      *
+      *    ＡＰＩ返却データ（1:作成する 帳票印刷なし）
+           MOVE    "API_DATA"          TO  WRK-PARA-NAME
+           MOVE    1                   TO  WRK-PARA-MAX
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:WRK-PARA-MAX)
+                                       TO  PARA-API-DATA
+      *    ginbeeのみ対応
+           IF     (SPA-MW              =   SPA-GINBEE)
+              AND (PARA-API-DATA       =   "1"       )
+               CONTINUE
+           ELSE
+      *        API送信なし
+               MOVE    "0"             TO  PARA-API-DATA
+           END-IF
+      *    ＡＰＩカスタムＩＤ
+           MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
+           MOVE    30                  TO  WRK-PARA-MAX
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:WRK-PARA-MAX)
+                                       TO  PARA-API-CUSTOM-ID
+      *
+           .
+       100-OPTION-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    プログラムオプションパラメタ取得処理
+      *****************************************************************
+       1001-OPTION-CALL-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSPRGOPTIONAREA
+           MOVE    "ORCHC14"           TO  ORCSPRGOPTION-PRGID
+           MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
+           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
+                                               ORCSPRGOPTIONAREA
+           MOVE    SPACE               TO  WRK-PARA
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
+               IF      WRK-PARA-MAX        >   ZERO
+                    MOVE    ORCSPRGOPTION-OT-PARA(1:WRK-PARA-MAX)
+                                                   TO  WRK-PARA
+               END-IF
+           ELSE
+      *        全角判定
+               IF      WRK-PARA-MAX        >   ZERO
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    ORCSPRGOPTION-OT-PARA(1:WRK-PARA-MAX)
+                                               TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-PARA-MAX        TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT   TO  WRK-PARA
+               END-IF
+           END-IF
+           .
+       1001-OPTION-CALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -364,6 +484,8 @@
                    ADD     1                   TO  IDX
                    MOVE    SYS-1010-KBNCD(1:5) TO  TBL-DRCD  (IDX)
                    MOVE    SYS-1010-NAME       TO  TBL-DRCDNAME (IDX)
+                   MOVE    SYS-1010-KANANAME   TO  TBL-DRCDKANANAME
+                                                               (IDX)
                    MOVE    IDX                 TO  TBL-DRCD-MAX
                END-IF
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -397,7 +519,8 @@
                MOVE    MCPDATA-REC         TO  SYS-1012-REC
                ADD     1                   TO  IDX
                MOVE    SYS-1012-KBNCD(1:2) TO  TBL-SRYNAIYO  (IDX)
-               MOVE    SYS-1012-SRYNAIYODSP    TO  TBL-SRYNAIYOMEI (IDX)
+               MOVE    SYS-1012-SRYNAIYODSP    TO  TBL-SRYNAIYOMEI(IDX)
+               MOVE    IDX                 TO  TBL-SRYNAI-MAX
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -432,6 +555,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD(1:2) TO  TBL-SRYKA-CD  (IDX)
                MOVE    SYS-1005-SRYKANAME1 TO  TBL-SRYKANAME (IDX)
+               MOVE    IDX                 TO  TBL-SRYKA-MAX
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -461,11 +585,12 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
-                       OR  (IDX            >=  9   )
+                       OR  (IDX            >=  99  )
                ADD     1                   TO  IDX
                MOVE    MCPDATA-REC         TO  SYS-0051-REC
                MOVE    SYS-0051-KBNCD(1:2) TO  TBL-RENRAK-CD (IDX)
                MOVE    SYS-0051-YYKKAKNAME TO  TBL-YYKKAKNAME (IDX)
+               MOVE    IDX                 TO  TBL-RENRAK-MAX
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -501,6 +626,7 @@
                MOVE    SYS-1028-KBNCD(1:2) TO  TBL-YYKKBN-CD (IDX)
                MOVE    SYS-1028-YYKKBNNAME
                                            TO  TBL-YYKKBNNAME (IDX)
+               MOVE    IDX                 TO  TBL-YYKKBN-MAX
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -580,6 +706,12 @@
                    IF      (ORCHC14-KBN        =   "1"     )  OR
                           ((ORCHC14-KBN        =   "2"  ) AND
                            (YYK-RAIINZUMI      =   SPACE ))
+      *H28.10
+                     IF      PARA-API-DATA        =   "1"
+      *                ＡＰＩ送信内容編集処理
+                       PERFORM 2009-API-HENSYU-SEC
+                     ELSE
+      *!
                        ADD     1               TO  IDX
                        IF      IDX             >   34
       *                    帳票印刷開始処理
@@ -588,6 +720,8 @@
                        END-IF
       *                明細編集処理
                        PERFORM 300-HC14-HEN-SEC
+      *
+                     END-IF
                    END-IF
                END-IF
       *
@@ -603,6 +737,12 @@
            IF      IDX             >   ZERO
       *        帳票印刷開始処理
                PERFORM 200-HC14-PRINT-SEC
+           END-IF
+      *H28.10
+           IF     (PARA-API-DATA        =   "1")
+            AND   (IDX-API              >   ZERO)
+      *        ＡＰＩ送信
+               PERFORM 20091-API-SYORI-SEC
            END-IF
       *
            .
@@ -667,12 +807,11 @@
            END-PERFORM
       *    診療内容をセット
            PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL      (IDX-D   >   99  )
-                          OR  (TBL-SRYNAIYO (IDX-D)    =   SPACE)
+                   UNTIL      (IDX-D   >   TBL-SRYNAI-MAX )
                IF     YYK-SRYNAIYO         =   TBL-SRYNAIYO (IDX-D)
                    MOVE    TBL-SRYNAIYOMEI (IDX-D)
                                            TO  HC14-SRYNAIYO (IDX)
-                   MOVE    99              TO  IDX-D
+                   MOVE    TBL-SRYNAI-MAX  TO  IDX-D
                END-IF
            END-PERFORM
       *
@@ -683,39 +822,267 @@
       *
       *    診療科
            PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL      (IDX-D   >   99  )
+                   UNTIL      (IDX-D   >   TBL-SRYKA-MAX  )
                           OR  (TBL-SRYKA-CD (IDX-D)    =   SPACE)
                IF     YYK-SRYKA            =   TBL-SRYKA-CD (IDX-D)
                    MOVE    TBL-SRYKANAME (IDX-D)
                                            TO  HC14-SRYKA  (IDX)
-                   MOVE    99              TO  IDX-D
+                   MOVE    TBL-SRYKA-MAX   TO  IDX-D
                END-IF
            END-PERFORM
       *
       *    予約確認連絡コード
            PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL      (IDX-D   >   9   )
+                   UNTIL      (IDX-D   >   TBL-RENRAK-MAX )
                           OR  (TBL-RENRAK-CD (IDX-D)   =   SPACE)
                IF     YYK-KAKREN            =   TBL-RENRAK-CD (IDX-D)
                    MOVE    TBL-YYKKAKNAME (IDX-D)
                                            TO  HC14-RENRAKU  (IDX)
-                   MOVE    9               TO  IDX-D
+                   MOVE    TBL-RENRAK-MAX  TO  IDX-D
                END-IF
            END-PERFORM
       *
       *    予約内容コード
            PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL      (IDX-D   >   99   )
+                   UNTIL      (IDX-D   >   TBL-YYKKBN-MAX   )
                           OR  (TBL-YYKKBN-CD (IDX-D)   =   SPACE)
                IF     YYK-YYKKBN            =   TBL-YYKKBN-CD (IDX-D)
                    MOVE    TBL-YYKKBNNAME (IDX-D)
                                            TO  HC14-YOYAKUNAIY (IDX)
-                   MOVE    99              TO  IDX-D
+                   MOVE    TBL-YYKKBN-MAX  TO  IDX-D
                END-IF
            END-PERFORM
       *
            .
        310-HC14-HEN-EXT.
+           EXIT.
+      *
+      *H28.10
+      *****************************************************************
+      *    ＡＰＩ送信内容編集処理
+      *****************************************************************
+       2009-API-HENSYU-SEC           SECTION.
+      *
+           IF     IDX-API             =   ZERO
+               PERFORM 20090-API-INIT-SEC
+           END-IF
+      *
+           ADD    1                   TO  IDX-API
+           IF     IDX-API             >   1000
+               GO      TO      2009-API-HENSYU-EXT
+           END-IF
+      *
+      *    予約時間
+           MOVE    YYK-YYKTIME(1:2)    TO  WRK-THH
+           MOVE    YYK-YYKTIME(3:2)    TO  WRK-TSS
+           MOVE    WRK-TIME-HEN        TO  RPYL-TYYKTIME(IDX-API)
+      *    診療科
+           MOVE    YYK-SRYKA           TO  RPYL-TSRYKA (IDX-API)
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   TBL-SRYKA-MAX  )
+               IF     YYK-SRYKA            =   TBL-SRYKA-CD (IDX-D)
+                   MOVE    TBL-SRYKANAME (IDX-D)
+                                           TO  RPYL-TSRYKANAME(IDX-API)
+                   MOVE    TBL-SRYKA-MAX   TO  IDX-D
+               END-IF
+           END-PERFORM
+      *    診療内容
+           MOVE    YYK-SRYNAIYO        TO  RPYL-TSRYNAIYO(IDX-API)
+           IF      ORCHC14-SRYNAIYO    =   YYK-SRYNAIYO
+               MOVE    RPYL-SRYNAIYONAME   TO  RPYL-TSRYNAIYONAME
+                                                              (IDX-API)
+           ELSE
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL      (IDX-D   >   TBL-SRYNAI-MAX  )
+                   IF      YYK-SRYNAIYO    =   TBL-SRYNAIYO (IDX-D)
+                       MOVE    TBL-SRYNAIYOMEI (IDX-D)
+                                               TO  RPYL-TSRYNAIYONAME
+                                                              (IDX-API)
+                       MOVE    TBL-SRYNAI-MAX  TO  IDX-D
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    ドクター
+           MOVE    YYK-DRCD            TO  RPYL-TDR-CODE(IDX-API)
+           IF      ORCHC14-DRCD-G      =   YYK-DRCD
+               MOVE    RPYL-DR-NAME        TO  RPYL-TDR-NAME
+                                                              (IDX-API)
+               MOVE    RPYL-DR-KANANAME    TO  RPYL-TDR-KANANAME
+                                                              (IDX-API)
+           ELSE
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL      (IDX-D   >   TBL-DRCD-MAX )
+                              OR  (TBL-DRCD (IDX-D)    =   SPACE)
+                   IF     YYK-DRCD             =   TBL-DRCD (IDX-D)
+                       MOVE    TBL-DRCDNAME (IDX-D)
+                                               TO  RPYL-TDR-NAME
+                                                              (IDX-API)
+                       MOVE    TBL-DRCDKANANAME (IDX-D)
+                                               TO  RPYL-TDR-KANANAME
+                                                              (IDX-API)
+                       MOVE    TBL-DRCD-MAX    TO  IDX-D
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    患者番号
+           IF      YYK-PTID            =   ZERO
+               MOVE    SPACE               TO  RPYL-TPTNUM (IDX-API)
+           ELSE
+               PERFORM 3001-KNJNO-HENSYU-SEC
+               MOVE    WRK-PTNUM           TO  RPYL-TPTNUM (IDX-API)
+      *        患者情報
+               INITIALIZE                      PTINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+               MOVE    YYK-PTID            TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+               MOVE    PTINF-KANANAME      TO  RPYL-TKANANAME(IDX-API)
+               MOVE    PTINF-NAME          TO  RPYL-TNAME  (IDX-API)
+               MOVE    PTINF-SEX           TO  RPYL-TSEX  (IDX-API)
+      *        生年月日
+               MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  RPYL-TBIRTHDAY (IDX-API)
+           END-IF
+      *    予約患者名称
+           MOVE    YYK-NAME            TO  RPYL-TYYKNAME (IDX-API)
+      *
+      *    予約確認連絡コード
+           MOVE    YYK-KAKREN          TO  RPYL-TKAKREN (IDX-API)
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   TBL-RENRAK-MAX )
+               IF     YYK-KAKREN            =   TBL-RENRAK-CD (IDX-D)
+                   MOVE    TBL-YYKKAKNAME (IDX-D)
+                                           TO  RPYL-TKAKRENNAME(IDX-API)
+                   MOVE    TBL-RENRAK-MAX  TO  IDX-D
+               END-IF
+           END-PERFORM
+      *
+      *    予約内容コード
+           MOVE    YYK-YYKKBN          TO  RPYL-TYYKKBN (IDX-API)
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   TBL-YYKKBN-MAX   )
+               IF     YYK-YYKKBN            =   TBL-YYKKBN-CD (IDX-D)
+                   MOVE    TBL-YYKKBNNAME (IDX-D)
+                                           TO  RPYL-TYYKKBNNAME
+                                                        (IDX-API)
+                   MOVE    TBL-YYKKBN-MAX  TO  IDX-D
+               END-IF
+           END-PERFORM
+      *    来院済み
+           IF      YYK-RAIINZUMI       =   "1"
+               MOVE    "1"             TO  RPYL-TRAIINZUMI (IDX-API)
+           END-IF
+      *
+           .
+       2009-API-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＡＰＩ初期編集処理
+      *****************************************************************
+       20090-API-INIT-SEC         SECTION.
+      *
+           INITIALIZE                   RPYYKLIST-REC
+      *
+           MOVE    "yoyaku_list"       TO  RPYL-REPORT-ID
+           MOVE    SYS-1031-PRTNM(18)  TO  RPYL-PRINTER
+      *    発行日
+           MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  RPYL-PRTYMD
+      *    予約日
+           MOVE    ORCHC14-YYKYMD      TO  WRK-SYMD
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  RPYL-SRYYMD
+      *    診療内容
+           MOVE    ORCHC14-SRYNAIYO    TO  RPYL-SRYNAIYO
+           IF      ORCHC14-SRYNAIYO    =   "00"
+               MOVE    "全体"              TO  RPYL-SRYNAIYONAME
+           ELSE
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL      (IDX-D   >   TBL-SRYNAI-MAX  )
+                   IF      ORCHC14-SRYNAIYO    =   TBL-SRYNAIYO (IDX-D)
+                       MOVE    TBL-SRYNAIYOMEI (IDX-D)
+                                               TO  RPYL-SRYNAIYONAME
+                       MOVE    TBL-SRYNAI-MAX  TO  IDX-D
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    ドクター
+           MOVE    ORCHC14-DRCD-G      TO  RPYL-DR-CODE
+           IF      ORCHC14-DRCD        =   "9999"
+               MOVE    "指定なし"          TO  RPYL-DR-NAME
+           ELSE
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL      (IDX-D   >   TBL-DRCD-MAX )
+                   IF      ORCHC14-DRCD-G  =   TBL-DRCD (IDX-D)
+                       MOVE    TBL-DRCDNAME (IDX-D)
+                                               TO  RPYL-DR-NAME
+                       MOVE    TBL-DRCDKANANAME (IDX-D)
+                                               TO  RPYL-DR-KANANAME
+                       MOVE    TBL-DRCD-MAX    TO  IDX-D
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      ORCHC14-KBN         =   "1"
+               MOVE    "1"                 TO  RPYL-HAKKOKBN
+           ELSE
+               MOVE    "2"                 TO  RPYL-HAKKOKBN
+           END-IF
+           .
+       20090-API-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＡＰＩ送信処理
+      *****************************************************************
+       20091-API-SYORI-SEC         SECTION.
+      *
+      *    カスタムＩＤ
+           MOVE    PARA-API-CUSTOM-ID  TO  RPYL-CUSTOM-ID
+      *
+           INITIALIZE                      RPMAIN-AREA
+           MOVE    "yoyaku_list"       TO  RPMAIN-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
+           IF      ORCHC14-KBN         =   "1"
+               MOVE    "予約一覧表"        TO  RPMAIN-TITLE
+           ELSE
+               MOVE    "未院一覧表"        TO  RPMAIN-TITLE
+           END-IF
+           MOVE    "rp_appointment_list"
+                                       TO  MCP-TABLE
+           MOVE    RPYL-DATA           TO  RPMAIN-DATA
+           CALL    "ORCRPMAIN"         USING
+                                       MCPAREA
+                                       RPMAIN-AREA
+                                       SPA-AREA
+      *
+           .
+       20091-API-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    日付編集処理（API編集）
+      *****************************************************************
+       801-DAYHEN01-SEC                SECTION.
+      *
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE           TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYY             TO  WRK-HEN-YY
+               MOVE    WRK-SMM             TO  WRK-HEN-MM
+               MOVE    WRK-SDD             TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
+      *
+           .
+       801-DAYHEN01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -811,6 +1178,35 @@
            .
       *
        900-YOYAKU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者マスター読み込み
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
+                   MOVE    ZERO            TO  FLG-PTINF
+               ELSE
+                   MOVE    1               TO  FLG-PTINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

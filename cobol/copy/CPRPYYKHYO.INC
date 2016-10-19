@@ -34,12 +34,12 @@
                 07  RPYH-SEX                PIC X(1).
               05  RPYH-HOSP-AREA.
                 07  RPYH-HOSP-NAME-G.
-                  09  RPYH-HOSP-NAME        PIC X(120)
-                                            OCCURS   3.
+                  09  RPYH-HOSP-NAME        PIC X(40)
+                                            OCCURS   2.
                 07  RPYH-HOSP-POST          PIC X(7).
                 07  RPYH-HOSP-ADRS-G.
-                  09  RPSHOHO-HOSP-ADRS     PIC X(200)
-                                            OCCURS   3.
+                  09  RPYH-HOSP-ADRS        PIC X(40)
+                                            OCCURS   2.
                 07  RPYH-HOSP-TEL           PIC X(15).
               05  RPYH-MEMO                 PIC X(100).
               05  RPYH-TBL                  OCCURS 50.
