@@ -122,6 +122,8 @@
            03  FLG-INNO            PIC 9(01).
            03  FLG-COMEND          PIC 9(01).
            03  FLG-ALLKOH          PIC 9(01).
+      *H28.10
+           03  FLG-HKNCOMBI-ARI    PIC 9(01).
       *API
            03  FLG-APISYORI        PIC 9(01).
       *
@@ -279,7 +281,7 @@
       *
       *    保険組合せテーブル
        01  TBL-HKNCOMBI-AREA.
-           03  TBL-HKNCOMBI-OCC        OCCURS   20.
+           03  TBL-HKNCOMBI-OCC        OCCURS   100.
                05  TBL-HKNCOMBINUM     PIC X(04).
                05  TBL-HKNNUM          PIC X(03).
                05  TBL-KOHID           PIC 9(10).
@@ -1595,8 +1597,8 @@
                ELSE
       *            労災・自賠責は対象外
                    PERFORM VARYING IDX-H   FROM    1   BY  1
-                           UNTIL   (IDX-H          >   20  )  OR
-                                   (TBL-HKNCOMBINUM (IDX-H)  =   SPACE)
+                           UNTIL   (IDX-H          >   100  )
+                               OR  (TBL-HKNCOMBINUM (IDX-H)  =   SPACE)
                        IF      PTBYO-HKNCOMBI      =   TBL-HKNCOMBINUM
                                                                (IDX-H)
                            IF      TBL-HKNNUM (IDX-H)  =   "971"
@@ -1604,7 +1606,7 @@
                                                        OR  "970"
                                MOVE    1                   TO  FLG-INNO
                            END-IF
-                           MOVE    20                  TO  IDX-H
+                           MOVE    100                 TO  IDX-H
                        END-IF
                    END-PERFORM
       *ver.47
@@ -1886,23 +1888,32 @@
            INITIALIZE                      HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
-           MOVE    SPA-SYSYMD          TO  COMB-TEKSTYMD
-           MOVE    SPA-SYSYMD          TO  COMB-TEKEDYMD
+      *H28.10
+      *    全件対象とする
+      *    MOVE    SPA-SYSYMD          TO  COMB-TEKSTYMD
+      *    MOVE    SPA-SYSYMD          TO  COMB-TEKEDYMD
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+      ***  MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key6"               TO  MCP-PATHNAME
+               MOVE    "key2"               TO  MCP-PATHNAME
                PERFORM 909-HKNCOMBI-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
            PERFORM UNTIL   (FLG-HKNCOMBI   =   1  )
-                       OR  (IDX-H          >=  20 )
-               IF      COMB-DELKBN         =   SPACE
+                       OR  (IDX-H          >=  100 )
+      ****     IF      COMB-DELKBN         =   SPACE
+      *H28.10
+      *        労災・自賠責・第三者のみすべて編集
+               IF     (COMB-HKNNUM         =   "971"
+                                           OR  "973"
+                                           OR  "970" )
+                 OR   (COMB-KOH1HKNNUM     =   "970" )
                    ADD     1                   TO  IDX-H
                    MOVE    COMB-HKNCOMBINUM    TO  TBL-HKNCOMBINUM
                                                                (IDX-H)
@@ -1916,11 +1927,11 @@
                    END-IF
                END-IF
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 909-HKNCOMBI-NEXT-SEC
            END-PERFORM
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-DBCLOSE-SEC
            .
        2009-HKNCOMBI-HEN-EXT.
