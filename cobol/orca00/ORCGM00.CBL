@@ -71,6 +71,7 @@
       *  04.06.00    NACL-多々納  12/03/26  平成２４年４月改正対応
       *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
       *  04.08.00    NACL-伊藤    14/09/24  プログラム更新を別LDへ移動
+      *  05.00.00    NACL-伊藤    16/09/30  DB構造バージョンチェック追加
       *****************************************************************
       *
       *
@@ -371,6 +372,10 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 5101-ERRSET-SEC
                    MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG
+                   IF      SPA-ERRCD       =   "1019"
+                       MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG2
+                       MOVE    SPACE           TO  SPA-GMN-LBLMSG
+                   END-IF
       *            １回のみの警告表示
                    IF      SPA-ERRCD       =   "K001"
                        MOVE    1           TO  SPA-ERR-FLG
@@ -1042,16 +1047,8 @@
       *
            IF    ( FLG-DBKANRI         =   ZERO )
                MOVE    SPACE           TO  WRK-DBVERSION
-               MOVE    ZERO            TO  IDX-PNT
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   64 )
-                   IF    ( DBKANRI-VERSION (IDX1 : 1)
-                                       NOT =   SPACE )
-                       COMPUTE IDX-PNT =   IDX-PNT +   1
-                       MOVE    DBKANRI-VERSION (IDX1 : 1)
-                                       TO  WRK-DBVERSION (IDX-PNT : 1)
-                   END-IF
-               END-PERFORM
+               MOVE    FUNCTION TRIM (DBKANRI-VERSION)
+                                       TO  WRK-DBVERSION
                IF    ( DBKANRI-DBSVERSION1 NOT =   DBKANRI-DBSVERSION2 )
                    MOVE    "1010"      TO  SPA-ERRCD
                ELSE
@@ -1060,8 +1057,20 @@
                    IF    ( SVERSION-VERSION    NOT =   SPACE )
                        IF    ( WRK-DBVERSION
                                        NOT =   SVERSION-VERSION)
-                           MOVE    "1012"
-                                       TO  SPA-ERRCD
+                           MOVE    "1012"      TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+                   IF    ( SVERSION-DBVERSION-1    NOT =   SPACE )
+                     AND ( DBKANRI-DBSVERSION2
+                                       NOT =   SVERSION-DBVERSION-1)
+                       IF    ( SVERSION-DBVERSION-2    NOT =   SPACE )
+                         AND ( DBKANRI-DBSVERSION2
+                                           =   SVERSION-DBVERSION-2)
+                           CONTINUE
+                       ELSE
+                           MOVE    "1019"      TO  SPA-ERRCD
+                           MOVE    "0"         TO  SYS-1010-GSRAUTH(1:2)
+                                                   SYS-1010-GSRAUTH(4:)
                        END-IF
                    END-IF
                END-IF
@@ -1866,15 +1875,23 @@
            MOVE    WIDGET-INSENSITIVE      TO  M00-G01-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       *
-           MOVE    WIDGET-NORMAL           TO  M00-B09-STATE
-           MOVE    WIDGET-NORMAL           TO  M00-B10-STATE
-           MOVE    WIDGET-NORMAL           TO  M00-B11-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M00-B04-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M00-B06-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M00-B09-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M00-B10-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M00-B11-STATE
       *
            MOVE    "T"                     TO  M00-G03-VISIBLE
       *
-           IF      SYS-1010-GSRAUTH(1:1)    =  "1"
-               MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
+           IF      SYS-1010-GSRAUTH(1:1)   =   "1"
+               MOVE    WIDGET-NORMAL       TO  M00-G01-STATE
+               MOVE    WIDGET-NORMAL       TO  M00-B04-STATE
+               MOVE    WIDGET-NORMAL       TO  M00-B06-STATE
+               MOVE    WIDGET-NORMAL       TO  M00-B09-STATE
+               MOVE    WIDGET-NORMAL       TO  M00-B10-STATE
+               MOVE    WIDGET-NORMAL       TO  M00-B11-STATE
            END-IF
+      *
       *----(01.02.16)--UPD-START---
            IF    ( SPA-SUPERVISOR          =   "T" )
            AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
@@ -1913,7 +1930,6 @@
                END-IF
            END-IF
       *
-      *
       *2001.8.7 強制プロテクト（ＰＧ未作成）
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G04-STATE
@@ -1951,7 +1967,7 @@
                MOVE    SPACE               TO  M00-HTML1     
            END-IF
       *----(03.04.01)--ADD-END-----------------------------------------
-          .
+           .
        51O-GSRAUTH-EXT.
            EXIT.
       *
@@ -2094,6 +2110,13 @@
                WHEN    "1018"
                    STRING  "あなたは管理者ではありませんので参加"
                            "する場合は管理者まで連絡してください。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1019"
+                   STRING  "プログラムのＤＢ構造バージョンと"
+                           "ＤＢ管理テーブルの構造バージョンが"
+                           "不整合です！！"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING

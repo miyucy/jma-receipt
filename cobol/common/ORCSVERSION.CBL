@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.00    NACL-伊藤    16/09/30  DB構造バージョン取得追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,8 +36,8 @@
        FILE-CONTROL.
       *
            SELECT  IN01-FILE       ASSIGN   IN01PARA
-                                   ORGANIZATION    IS  LINE SEQUENTIAL.
-       
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-IN01.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -47,6 +48,9 @@
       *
        01  IN01PARA                PIC X(1000).
       *
+       01  STS-AREA.
+           03  STS-IN01            PIC X(02).
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -55,7 +59,6 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
-           03  IDX-DATA            PIC 9(05).
       *
        01  CNT-AREA.
            03  CNT-VERSION         PIC 9(05).
@@ -63,8 +66,8 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-VERSION         PIC X(64).
-           03  WRK-DATA            PIC X(1000).
            03  WRK-FIL             PIC X(1000).
+           03  WRK-DATA            PIC X(1000).
       *
        01  CONST-AREA.
            03  CONST-MAXLEN        PIC 9(05)   VALUE   1000.
@@ -97,6 +100,7 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  STS-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
@@ -105,7 +109,6 @@
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
-           MOVE    WRK-VERSION     TO  SVERSION-VERSION
       *
            .
        000-PROC-EXT.
@@ -117,11 +120,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    "doc/version"   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  IN01PARA
-      *
+           INITIALIZE  SVERSION-AREA
            .
        100-INIT-EXT.
            EXIT.
@@ -130,11 +129,31 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    for doc/version
+           PERFORM 2001-GET-VERSION-SEC
+      *
+      *    for doc/dbversion
+           PERFORM 2002-GET-DBVERSION-SEC
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    システムバージョン処理
+      *****************************************************************
+       2001-GET-VERSION-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "doc/version"   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  IN01PARA
            OPEN    INPUT   IN01-FILE
-           MOVE    SPACE       TO  WRK-VERSION
+           IF      STS-IN01    NOT =   ZERO
+               DISPLAY "version not found."
+               GO  TO  2001-GET-VERSION-EXT
+           END-IF
+           MOVE    SPACE           TO  WRK-VERSION
       *
            PERFORM 900-IN01-READ-SEC
-      *
            PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
                     OR   ( WRK-VERSION NOT =   SPACE )
       *
@@ -142,58 +161,92 @@
                INSPECT IN01-REC    TALLYING
                        CNT-VERSION FOR ALL "version"
                IF    ( CNT-VERSION     >   ZERO )
-                   PERFORM 2001-GET-VERSION-SEC
+                   PERFORM 900-GET-VERSION-SEC
                END-IF
       *
                PERFORM 900-IN01-READ-SEC
-      *
            END-PERFORM
-      *
            CLOSE   IN01-FILE
       *
+           MOVE    WRK-VERSION     TO  SVERSION-VERSION
            .
-       200-MAIN-EXT.
+       2001-GET-VERSION-EXT.
            EXIT.
       *****************************************************************
-      *    システムバージョン取得処理
+      *    データベースバージョン処理
       *****************************************************************
-       2001-GET-VERSION-SEC            SECTION.
+       2002-GET-DBVERSION-SEC      SECTION.
       *
-           MOVE    SPACE           TO  WRK-DATA
-           MOVE    ZERO            TO  IDX-DATA
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-MAXLEN )
-                    OR   ( IN01-REC (IDX1 : )  =   SPACE )
+      *    patch-libに存在？
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "patch-lib/doc/dbversion"   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  IN01PARA
+           OPEN    INPUT   IN01-FILE
+           IF      STS-IN01    NOT =   ZERO
+               INITIALIZE                  ORCSMKPASSAREA
+               MOVE    "doc/dbversion" TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  IN01PARA
+               OPEN    INPUT   IN01-FILE
+               IF      STS-IN01    NOT =   ZERO
+                   DISPLAY "dbversion not found."
+                   GO  TO  2002-GET-DBVERSION-EXT
+               END-IF
+           END-IF
       *
-               IF    ( IN01-REC (IDX1 : 1) NOT =   SPACE )
-                   COMPUTE IDX-DATA    =   IDX-DATA    +   1
+           MOVE    SPACE           TO  WRK-VERSION
       *
-                   MOVE    IN01-REC (IDX1 : 1)
-                                   TO  WRK-DATA (IDX-DATA : 1)
+           PERFORM 900-IN01-READ-SEC
+           PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
       *
+               MOVE    SPACE           TO  WRK-DATA
+               MOVE    FUNCTION TRIM (IN01-REC)
+                                       TO  WRK-DATA
+               IF     (SVERSION-DBVERSION-1    =   SPACE)  AND
+                      (WRK-DATA            NOT =   SPACE)  AND
+                      (WRK-DATA (1:1)      NOT =   "#")
+                   MOVE    WRK-DATA        TO  SVERSION-DBVERSION-1
+                   MOVE    SPACE           TO  WRK-DATA
+               END-IF
+               IF     (SVERSION-DBVERSION-2    =   SPACE)  AND
+                      (WRK-DATA            NOT =   SPACE)  AND
+                      (WRK-DATA (1:1)      NOT =   "#")
+                   MOVE    WRK-DATA        TO  SVERSION-DBVERSION-2
                END-IF
       *
+               PERFORM 900-IN01-READ-SEC
            END-PERFORM
+           CLOSE   IN01-FILE
+           .
+       2002-GET-DBVERSION-EXT.
+           EXIT.
+      *****************************************************************
+      *    バージョン取得処理
+      *****************************************************************
+       900-GET-VERSION-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  WRK-DATA
+           MOVE    FUNCTION TRIM (IN01-REC)
+                                   TO  WRK-DATA
       *
            UNSTRING    WRK-DATA    DELIMITED   BY  "(" OR ")"
                                    INTO    WRK-FIL
                                            WRK-VERSION
            END-UNSTRING
-      *
            .
-       2001-GET-VERSION-EXT.
+       900-GET-VERSION-EXT.
            EXIT.
       *****************************************************************
-      *    主　　処理
+      *    ファイル読込処理
       *****************************************************************
-       900-IN01-READ-SEC               SECTION.
+       900-IN01-READ-SEC           SECTION.
       *
            MOVE    ZERO            TO  FLG-IN01
            READ    IN01-FILE
            AT  END
                MOVE    1           TO  FLG-IN01
            END-READ
-      *
            .
        900-IN01-READ-EXT.
            EXIT.
