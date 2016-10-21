@@ -3,15 +3,6 @@ name	orcabt;
 arraysize	20;
 textsize	512;
 
-handler "RubyExec" {
-        class "Exec";
-        serialize "CGI";
-        start "/usr/bin/ruby -Ke %p/%m.rb %a";
-        locale "euc-jp";
-};
-
-bind	"Sysbase"		    "RubyExec";
-
 bind    "ORCVTPTINF"    	"OpenCOBOL";
 bind    "ORCVTPTHKNINF" 	"OpenCOBOL";
 bind    "ORCVTPTHKNINF02" 	"OpenCOBOL";
@@ -311,6 +302,7 @@ bind    "ORCBM043"      "OpenCOBOL";
 bind    "ORCBM620"      "OpenCOBOL";
 bind    "ORCL0040"      "OpenCOBOL";
 bind	"ORCBI203"	    "OpenCOBOL";
+bind	"ORCBSETSYSBASE"	"OpenCOBOL";
 
 #include "orcadb.inc"
 db "shell" {

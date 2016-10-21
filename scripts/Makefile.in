@@ -127,12 +127,9 @@ ruby_sources = \
 	daily/print_parent2.rb.in \
 	daily/print_parent_prv.rb.in \
 	daily/print_parent_common.rb.in \
-	daily/apslib.rb.in \
-	daily/monlib.rb.in \
 	allways/cachedl.rb.in \
 	allways/run.rb.in \
 	allways/orcadt_verify.rb.in \
-	allways/Sysbase.rb.in \
 	allways/das-profile.rb.in \
 	monthly/das-upload.rb.in \
 	monthly/lib/orcadas/command.rb.in \

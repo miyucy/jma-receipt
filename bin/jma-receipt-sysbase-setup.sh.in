@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV" ; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
 FLAG=`id -u`
@@ -26,8 +24,8 @@ if [ $# -eq 0 ] ; then
   exit 1
 fi
 
-APS_EXEC_PATH="$SCRIPTSDIR"/allways
-export APS_EXEC_PATH
+COB_LIBRARY_PATH="$PATCHLIBDIR":"$ORCALIBDIR":"$PANDALIB"
+export COB_LIBRARY_PATH
 
 CMDNAME=`basename $0`
 
@@ -109,7 +107,7 @@ else
   PARAM="${PARAM},${RECORD}"
 fi
 
-su $ORCAUSER -c "$DBSTUB -dir $LDDIRECTORY -bd orcabt Sysbase -parameter $PARAM"
+su $ORCAUSER -c "$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBSETSYSBASE -parameter $PARAM | nkf -w"
 
 exit 0
 
