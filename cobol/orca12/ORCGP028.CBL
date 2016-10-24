@@ -30,6 +30,7 @@
       *  04.07.00    NACL-多々納  13/11/26  患者個別設定追加対応
       *  04.07.00    NACL-多々納  14/02/XX  患者介護情報追加対応
       *  04.07.00    NACL-多々納  14/03/XX  地域包括診療対象疾病対応
+      *  05.00.00    NACL-森脇    16/10/24  患者地域連携情報項目追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -311,6 +312,11 @@
                    MOVE    "P028_NNCHIKBN"     TO  MCP-WIDGET
                WHEN    35
                    MOVE    "P028_SYOUNIKBN"    TO  MCP-WIDGET
+      *ver.5.0
+               WHEN    36
+                   MOVE    "P028_PATIENTID2"   TO  MCP-WIDGET
+               WHEN    37
+                   MOVE    "P028_PATIENTID3"   TO  MCP-WIDGET
       *
                WHEN    90
                    MOVE    "B08"                TO  MCP-WIDGET
@@ -332,8 +338,10 @@
                    MOVE    3           TO  SPA-GMN28-CUR
                WHEN    "P028_MNOTE_QRKBN"
                    MOVE    4           TO  SPA-GMN28-CUR
+      *ver.5.0
                WHEN    "P028_MNOTE_CSV"
-                   MOVE    5           TO  SPA-GMN28-CUR
+      *             MOVE    5           TO  SPA-GMN28-CUR
+                   MOVE    36           TO  SPA-GMN28-CUR
                WHEN    "P028_JMAMRVER"
       *******      MOVE    90          TO  SPA-GMN28-CUR
                    MOVE    10          TO  SPA-GMN28-CUR
@@ -387,6 +395,11 @@
                    MOVE    35              TO  SPA-GMN28-CUR
                WHEN    "P028_SYOUNIKBN"
                    MOVE    90              TO  SPA-GMN28-CUR
+      *ver.5.0
+               WHEN    "P028_PATIENTID2"
+                   MOVE    37           TO  SPA-GMN28-CUR
+               WHEN    "P028_PATIENTID3"
+                   MOVE    5            TO  SPA-GMN28-CUR
            END-EVALUATE
       *
            .
@@ -691,6 +704,11 @@
                                        TO  SPA-GMN28-CRTEKSTYMD
            MOVE    P02-P028-CRTEKEDYMD
                                        TO  SPA-GMN28-CRTEKEDYMD
+      *ver.5.0
+      *    医療等ＩＤ
+           MOVE    P02-P028-PATIENTID2 TO  SPA-GMN28-PATIENTID2
+      *    共通番号
+           MOVE    P02-P028-PATIENTID3 TO  SPA-GMN28-PATIENTID3
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
