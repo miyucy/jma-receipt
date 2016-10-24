@@ -12541,7 +12541,7 @@
             <name>label55</name>
             <x>612</x>
             <y>56</y>
-            <width>60</width>
+            <width>80</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12560,7 +12560,7 @@
             <name>label56</name>
             <x>612</x>
             <y>88</y>
-            <width>60</width>
+            <width>80</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12577,7 +12577,7 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P028_PATIENTID2</name>
-            <x>680</x>
+            <x>700</x>
             <y>56</y>
             <width>200</width>
             <height>24</height>
@@ -12603,7 +12603,7 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P028_PATIENTID3</name>
-            <x>680</x>
+            <x>700</x>
             <y>88</y>
             <width>200</width>
             <height>24</height>
