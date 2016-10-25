@@ -33,7 +33,7 @@ mkdir -p ${MONTH_DIR}
 
 while read LINE; do
   name=$(echo ${LINE:0:42}| sed -e 's/[[:space:]]*$//')
-  sn=${LINE:45:2}
+  sn=${LINE:44:2}
   tmpfile=${LOCAL_TEMPDIR}/${name}.${sn}.tmp
   redname=${LINE:100:30}
   redfile=$(find ${SITEFORMDIR} ${PATCHFORMDIR} ${FORMDIR} -maxdepth 1 -type f -name ${redname} | head -n 1)
