@@ -32,13 +32,13 @@ cleanup () {
 mkdir -p ${MONTH_DIR}
 
 while read LINE; do
-  name=$(echo ${LINE:0:43}| sed -e 's/[[:space:]]*$//')
-  sn=${LINE:46:2}
+  name=$(echo ${LINE:0:42}| sed -e 's/[[:space:]]*$//')
+  sn=${LINE:45:2}
   tmpfile=${LOCAL_TEMPDIR}/${name}.${sn}.tmp
-  redname=${LINE:48:25}
+  redname=${LINE:100:30}
   redfile=$(find ${SITEFORMDIR} ${PATCHFORMDIR} ${FORMDIR} -maxdepth 1 -type f -name ${redname} | head -n 1)
 
-  printf '%-20000s' "${LINE:78:20000}" > ${tmpfile}
+  printf '%-20000s' "${LINE:130:20000}" > ${tmpfile}
 
   layeroption=""
   [[ $(cat ${tmpfile}) =~ MonpeLayerIn(.*)MonpeLayerOut ]]
