@@ -23,7 +23,7 @@ INSTALLDIR=$3
 case "${SYORI}" in
   clear)
       TEMP=$(mktemp)
-      grep -v ':E:' ${PGUP_PROOF} | grep -v '9999:' > ${TEMP}
+      grep -av ':E:' ${PGUP_PROOF} | grep -av '9999:' > ${TEMP}
       mv ${TEMP} ${PGUP_PROOF}
       exit 0
       ;;

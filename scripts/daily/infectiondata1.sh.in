@@ -105,7 +105,7 @@ make_infection_file () {
   if [ -s $INFECGFILE ]; then
     if [ -s $INFECNFILE ]; then
       cp $INFECGFILE $INFECFILE
-      grep -v "I," $INFECNFILE >> $INFECFILE
+      grep -av "I," $INFECNFILE >> $INFECFILE
     else
       cp $INFECGFILE $INFECFILE
     fi
