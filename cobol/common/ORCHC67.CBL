@@ -850,7 +850,7 @@
       *
            INITIALIZE                  RPYYKHYO-REC
       *
-           MOVE    "yoyaku_hyo"        TO  RPYH-REPORT-ID
+           MOVE    "yoyakuhyo"         TO  RPYH-REPORT-ID
            MOVE    SYS-1031-PRTNM(17)  TO  RPYH-PRINTER
       *    È¯¹ÔÆü
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
@@ -928,7 +928,7 @@
            MOVE    PARA-API-CUSTOM-ID  TO  RPYH-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "yoyaku_hyo"        TO  RPMAIN-ID
+           MOVE    "yoyakuhyo"         TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "Í½ÌóÉ¼"            TO  RPMAIN-TITLE
            MOVE    "rp_appointment_form"

@@ -985,7 +985,7 @@
       *
            INITIALIZE                   RPYYKLIST-REC
       *
-           MOVE    "yoyaku_list"       TO  RPYL-REPORT-ID
+           MOVE    "yoyakulist"        TO  RPYL-REPORT-ID
            MOVE    SYS-1031-PRTNM(18)  TO  RPYL-PRINTER
       *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
@@ -1043,7 +1043,7 @@
            MOVE    PARA-API-CUSTOM-ID  TO  RPYL-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "yoyaku_list"       TO  RPMAIN-ID
+           MOVE    "yoyakulist"        TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            IF      ORCHC14-KBN         =   "1"
                MOVE    "予約一覧表"        TO  RPMAIN-TITLE

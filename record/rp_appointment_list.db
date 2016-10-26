@@ -34,7 +34,7 @@ rp_appointment_list {
 			};
 			Patient	{
 				ID	 				    varchar(20);
-				YYKName 				    varchar(50);
+				TemporaryName 	varchar(50);
 				Name 				    varchar(50);
 				KanaName  			varchar(50);
 				BirthDate 			varchar(10);

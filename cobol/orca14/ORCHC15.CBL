@@ -1097,7 +1097,7 @@
       *
            INITIALIZE                   RPYYKPTLIST-REC
       *
-           MOVE    "yoyaku_kanja_list" TO  RPYPL-REPORT-ID
+           MOVE    "yoyakukanjalist"   TO  RPYPL-REPORT-ID
            MOVE    SYS-1031-PRTNM(19)  TO  RPYPL-PRINTER
       *    È¯¹ÔÆü
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
@@ -1146,7 +1146,7 @@
            MOVE    PARA-API-CUSTOM-ID  TO  RPYPL-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "yoyaku_kanja_list" TO  RPMAIN-ID
+           MOVE    "yoyakukanjalist"   TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "Í½Ìó´µ¼Ô°ìÍ÷"      TO  RPMAIN-TITLE
            MOVE    "rp_appointment_list_patient"

@@ -7,7 +7,7 @@ rp_appointment_form {
 		Report_ID				varchar(30);
 		Custom_ID				varchar(30);
 		Printer					varchar(20);
-		Issue_Date			varchar(10);
+		IssuedDate			varchar(10);
 		Patient	{
 			ID	 				    varchar(20);
 			Name 				    varchar(50);
