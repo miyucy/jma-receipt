@@ -50,7 +50,7 @@
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/07/01  »ÄÎÌÇÑ´þ¼«Æ°»»ÄêÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  13/02/XX  Ï«ºÒ¥ì¥»ÅÅÍÑÅÀ¿ôÅÐÏ¿ÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/03/XX  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/09/XX  Ï«ºÒ»Í»è²Ã»»¶èÊ¬ÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  16/10/XX  Ï«ºÒ»Í»è²Ã»»¶èÊ¬ÂÐ±þ
       *****************************************************************
       *
       *
@@ -141,6 +141,8 @@
       *
            03  IDX-TUS             PIC 9(04).
            03  IDS                 PIC 9(04).
+      *
+           03  IDX-RKSN            PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -1048,6 +1050,7 @@
       *
       *    ´û¤ËÂ¾¤ÎÏ«ºÒ²Ã»»¤¬ÆþÎÏ¤µ¤ì¤Æ¤¤¤ë»þ¤Ï¼«Æ°»»Äê¤·¤Ê¤¤
            MOVE    ZERO                TO  FLG-ROU-ARI
+           MOVE    ZERO                TO  IDX-RKSN
            COMPUTE IDX-Z2              =   IDX-ZS      +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
                    UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
@@ -1058,6 +1061,7 @@
                                                    "099509901"
                    IF      WRK-COM-AUTOKBN (IDX1)  =   SPACE
                         MOVE    1                  TO  FLG-ROU-ARI
+                        MOVE    IDX1               TO  IDX-RKSN
                    END-IF
                END-IF
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
@@ -1066,6 +1070,12 @@
                END-IF
            END-PERFORM
            IF      FLG-ROU-ARI         =   1
+      *H28.10
+      *    H28/10/1¡¡¤«¤é·Ù¹ð¤È¤¹¤ë
+               IF      SPA-SRYYMD           >=  "20161001"
+      *            ¼êµ»ÎÁ¤Î»Í»è²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯
+                   PERFORM 100131-RISIKASAN-CHK-SEC
+               ELSE
                EVALUATE    FLG-ROUSAI
       *            »Í»è²Ã»»¤Ê¤·
                    WHEN    ZERO
@@ -1082,6 +1092,7 @@
                            MOVE    "1"         TO  WRK-COM-CUR(IDX1 - 1)
                        END-IF
                END-EVALUATE
+               END-IF
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
@@ -1127,6 +1138,48 @@
            MOVE    IDX-S               TO  IDX-Z
            .
        100113-RSIHKN-SYORI-EXT.
+           EXIT.
+      *H28.10
+      *****************************************************************
+      *    ¼êµ»ÎÁ¤Î»Í»è²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       100131-RISIKASAN-CHK-SEC        SECTION.
+      *
+      *
+           EVALUATE    WRK-COM-SISIKSN(IDX-ZS)
+               WHEN    "0"
+      *            ÉÔ²Ä
+                   IF      WRK-COM-INPUTCD (IDX-RKSN)  =   "101400020"
+                                                       OR  "101400010"
+                       MOVE    "K407"              TO  WRK-ERRCD
+                   END-IF
+               WHEN    "2"
+      *            £±¡¥£µÇÜ¤Î¤ß
+                   IF      WRK-COM-INPUTCD (IDX-RKSN)  =   "101400010"
+                       MOVE    "K805"          TO  WRK-ERRCD
+                   END-IF
+               WHEN    "3"
+      *            £²ÇÜ¤Î¤ß
+                   IF      WRK-COM-INPUTCD (IDX-RKSN)  =   "101400020"
+                       MOVE    "K806"          TO  WRK-ERRCD
+                   END-IF
+           END-EVALUATE
+      *
+           IF     WRK-ERRCD(1:1)      =   "K"
+               IF     (WRK-COM-KZMFLG (IDX-RKSN)   =   SPACE)
+               AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-RKSN)
+                   MOVE    "1"             TO  WRK-COM-CUR    (IDX-RKSN)
+               ELSE
+                   MOVE    SPACE           TO  WRK-ERRCD
+               END-IF
+           ELSE
+               IF      WRK-ERRCD       NOT =   SPACE
+                   MOVE    "1"             TO  WRK-COM-CUR    (IDX-RKSN)
+               END-IF
+           END-IF
+           .
+       100131-RISIKASAN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2403,7 +2456,7 @@
                END-IF
            END-IF
       *TEST
-           DISPLAY "WRK-RSI-TENSUKEI:" WRK-RSI-TENSUKEI
+      *    DISPLAY "WRK-RSI-TENSUKEI:" WRK-RSI-TENSUKEI
       *TEST
       *
       *    ½é¿Ç»þ¥Ö¥é¥·¥ó¥°ÎÁ»þ´Ö³°²Ã»»
