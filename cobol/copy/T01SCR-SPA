@@ -87,6 +87,7 @@
       *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *  04.08.04    NACL-藤原    16/10/07  自賠責ＰＤＦファイル作成対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -220,6 +221,7 @@
                    07  SPA-B08-STATE               PIC S9(09)  BINARY.
                    07  SPA-B09-STATE               PIC S9(09)  BINARY.
                    07  SPA-B10-STATE               PIC S9(09)  BINARY.
+                   07  SPA-B14-STATE               PIC S9(09)  BINARY.
                    07  SPA-B15-STATE               PIC S9(09)  BINARY.
                    07  SPA-B16-STATE               PIC S9(09)  BINARY.
                    07  SPA-B17-STATE               PIC S9(09)  BINARY.
@@ -296,6 +298,7 @@
                                                    PIC X(01).
                05  SPA-NAI-200501-DISASTER-SYAPRTKBN
                                                    PIC X(01).
+               05  SPA-NAI-200501-JIBAI-PDF        PIC X(01).
       *
                05  SPA-NAI-4100-KGISKYKBN          PIC X(02).
       *

@@ -6,6 +6,7 @@
               03  T01-B08-STATE   PIC S9(9)   BINARY.
               03  T01-B09-STATE   PIC S9(9)   BINARY.
               03  T01-B10-STATE   PIC S9(9)   BINARY.
+              03  T01-B14-STATE   PIC S9(9)   BINARY.
               03  T01-B15-STATE   PIC S9(9)   BINARY.
               03  T01-B16-STATE   PIC S9(9)   BINARY.
               03  T01-B17-STATE   PIC S9(9)   BINARY.

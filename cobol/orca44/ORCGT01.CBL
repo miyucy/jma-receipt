@@ -203,6 +203,7 @@
       *  04.08.10    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *  04.08.11    NACL-藤原    16/10/07  自賠責ＰＤＦファイル作成対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1013,6 +1014,11 @@ grpsys                                         SPA-AREA
                                        =   SPACE
                MOVE    "0"             TO  SYS-200501-DISASTER-SYAPRTKBN
            END-IF
+           IF      SYS-200501-JIBAI-PDF
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-200501-JIBAI-PDF
+           END-IF
+      *
            MOVE    SYS-200501-KOUIKIKBN
                                        TO  SPA-NAI-200501-KOUIKIKBN
            MOVE    SYS-200501-KOUIKIRECEKBN
@@ -1045,6 +1051,8 @@ grpsys                                         SPA-AREA
            MOVE    SYS-200501-DISASTER-SYAPRTKBN
                                        TO
                                        SPA-NAI-200501-DISASTER-SYAPRTKBN
+           MOVE    SYS-200501-JIBAI-PDF
+                                       TO  SPA-NAI-200501-JIBAI-PDF
      *
            IF      SPA-MW              =   SPA-GINBEE
                MOVE    "0"                 TO
@@ -1521,6 +1529,7 @@ grpsys                                         SPA-AREA
                                            SPA-DATAKBN8-STATE
                                            SPA-B09-STATE
                                            SPA-B10-STATE
+                                           SPA-B14-STATE
                                            SPA-B19-STATE
                                            SPA-B20-STATE
                                            SPA-B21-STATE
@@ -1650,6 +1659,15 @@ grpsys                                         SPA-AREA
                ELSE
                    MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
                END-IF
+           END-IF
+      *
+      *    クライアント保存可否情報とシステム管理の設定より
+      *    自賠責ＰＤＦファイル作成のボタン設定
+           IF    ( SPA-NAI-200501-JIBAI-PDF
+                                       =   "0" )
+           OR    ( SCLIENTSV-CLIENT-SAVE
+                                   NOT =   "1" )
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-B14-STATE
            END-IF
            .
        3100-STATE-SET-EXT.
@@ -2376,6 +2394,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "2002"
                        MOVE    "2004"          TO  SPA-TIDCD
                        GO  TO  330-TID1-SET-EXT
+                   WHEN    "1034"
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD      =   SPACE
+                           PERFORM 480-JIBAI-PDF-SEC
+                           GO  TO  330-TID1-SET-EXT
+                       END-IF
                    WHEN    "2004"
       *                定点調査 ファイル送信なし
                        MOVE    ZERO            TO  WRK-DASUPLOAD
@@ -2940,6 +2964,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *     印刷
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-PRINT-GID-SEC
+      *     自賠責ＰＤＦ作成
+               WHEN    "CLICKED"       ALSO    "B14"
+                   PERFORM 480-JIBAI-PDF-GID-SEC
       *     データ取り込み
                WHEN    "CLICKED"       ALSO    "B15"
                    PERFORM 480-DATA-EXPORT-SEC
@@ -6356,6 +6383,147 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    自賠責ＰＤＦ作成前処理
+      *****************************************************************
+       480-JIBAI-PDF-GID-SEC                SECTION.
+      *
+      *    入力チェック
+           MOVE    1               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  460-RECEDEN-GID-EXT
+           END-IF
+      *
+      *    ジョブ管理チェック処理
+           IF      SPA-ERRCD       =   SPACE
+               PERFORM 4501-JOBKANRI-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   MOVE    MCP-WIDGET          TO  SPA-NAI-WIDGET
+      *            ガイドメッセージセット
+                   MOVE    "1034"              TO  SPA-TIDCD
+               END-IF
+           END-IF
+           .
+       480-JIBAI-PDF-GID-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責ＰＤＦ作成処理
+      *****************************************************************
+       480-JIBAI-PDF-SEC                SECTION.
+      *
+      *    ジョブ管理削除処理
+           MOVE    "ALL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF      SJOBKANRI-RETURN    =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "1004"              TO  SPA-ERRCD
+               GO  TO  480-JIBAI-PDF-EXT
+           END-IF
+      *
+           INITIALIZE                  SPA-T01-TBL-GROUP
+           MOVE    ZERO            TO  SPA-T01-TIMER-FLG
+      *     
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID
+                                           WRK-PRTKANRI-RENNUM
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
+      *
+      *    印刷ＤＢのＫＥＹ用
+           MOVE    SMCNDATE-YMD     TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
+           MOVE    SMCNDATE-HMS     TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  SPA-T01-TBL-GROUP
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *                                 
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           ADD     1               TO  WRK-PRTKANRI-RENNUM
+           MOVE    WRK-PRTKANRI-RENNUM
+                                   TO  LNK-PRTKANRI-RENNUM 
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-NAI-SKYYM   TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-NAI-SKYYMD  TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "recept43.sh"   TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           MOVE    SPA-NAI-1031-PRTNM
+                                   TO  LNK-PRTKANRI-PRTNM
+      *
+           MOVE    SPACE           TO  SHELLTBL
+           MOVE    "recept43.sh"   TO  SHELLTBL-NAME
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG2
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG3
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG6
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG7
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG11
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG13
+      *****MOVE    SPA-GMN-NYUGAIKBN
+           MOVE    "0"             TO  SHELLTBL-ARG14
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
+           MOVE    ERRFLPARA-BASENAME
+                                   TO  SHELLTBL-ARG16
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "monthly"       TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+      *    ＪＯＢＩＤ更新処理
+           PERFORM 45012-JOBID-UPD-SEC
+      *
+      **** MOVE    1                   TO  SPA-T01-WRNO
+      **** MOVE    1                   TO  SPA-T01-SYORIFLG
+      *****MOVE    LNK-PRTKANRI-AREA   TO  SPA-LNK-PRTKANRI-AREA
+      * 
+           MOVE    WRK-CONS-JOB-JOBID  TO  SPA-T01-JOB-JOBID
+      *     
+      *    情報確認画面を表示                                                   
+           PERFORM 490-KAKUNIN-SEC
+           .
+       480-JIBAI-PDF-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    印刷前処理（チェック・集計表）
       *****************************************************************
        480-PRINT-GID-SEC                SECTION.
@@ -6896,6 +7064,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
+      *??
+           DISPLAY "490-KAKUNIN-SEC"
+      *??
            MOVE    ZERO                TO  WRK-PRT-PAGE
                                            WRK-PRT-PAGE1
                                            WRK-PRT-PAGE2
@@ -7155,9 +7326,13 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *                ＥＦファイル、様式４作成時 
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
+                   WHEN    "1034"
+      *                自賠責ＰＤＦファイル作成時 
+                       PERFORM 520-TIDSET-SEC
+                       GO  TO  500-SET-SCREEN-EXT
                    WHEN    "1001"
                    WHEN    "1002"
-                   WHEN    "1003"  
+                   WHEN    "1003"
                    WHEN    "1004"
                    WHEN    "1005"
                    WHEN    "1006"
@@ -7208,6 +7383,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-B06-STATE       TO  T01-B06-STATE
            MOVE    SPA-B07-STATE       TO  T01-B07-STATE
            MOVE    SPA-B08-STATE       TO  T01-B08-STATE
+           MOVE    SPA-B14-STATE       TO  T01-B14-STATE
            MOVE    SPA-B15-STATE       TO  T01-B15-STATE
            MOVE    SPA-B16-STATE       TO  T01-B16-STATE
            MOVE    SPA-B17-STATE       TO  T01-B17-STATE
@@ -7666,6 +7842,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  WRK-TIDMSG
                WHEN    "1013"
                    MOVE    "集計表（国保）の印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "1034"
+                   MOVE    "自賠責ＰＤＦファイルを作成します"
                                        TO  WRK-TIDMSG
                WHEN    "2002"
                    STRING   "定点調査研究事業（データ収集）用の"

@@ -873,6 +873,7 @@ DB_files = \
 	xml_patientmodv3res5.db \
 	xml_patientmodv3req6.db \
 	xml_patientmodv3res6.db \
+	tbl_jibai_prt.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

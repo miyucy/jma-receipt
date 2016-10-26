@@ -100,6 +100,7 @@ utf8_shell_sources = \
 	daily/push_report.sh.in \
 	allways/orcbi203.sh.in \
 	monthly/upload_jibai_receipt.sh.in \
+	monthly/recept43.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \
