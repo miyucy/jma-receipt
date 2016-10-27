@@ -348,7 +348,12 @@
                PERFORM         UNTIL   FLG-JIBAI-PRT =   1
                    MOVE    SPACE               TO  PRT-REC
                    MOVE    SYS-1001-HOSPCD     TO  PRT-HOSPCD
-                   MOVE    JIBAI-PRT-NYUGAIKBN TO  PRT-NYUGAIKBN
+                   EVALUATE    JIBAI-PRT-NYUGAIKBN
+                       WHEN    "1"
+                           MOVE    "0"             TO  PRT-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "1"             TO  PRT-NYUGAIKBN
+                   END-EVALUATE
                    MOVE    JIBAI-PRT-SRYYM     TO  PRT-SRYYM
                    MOVE    JIBAI-PRT-PRTKBN    TO  PRT-PRTKBN
                    MOVE    "orca"              TO  PRT-MAKERCD
