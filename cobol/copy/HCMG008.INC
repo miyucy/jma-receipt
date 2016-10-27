@@ -1,0 +1,27 @@
+        01  HCMG008.
+            02  HCMG008-NYUGAIKBN
+                        PIC X(8).
+            02  HCMG008-SRYKBN
+                        PIC X(10).
+            02  HCMG008-JYOKEN
+                        PIC X(30).
+            02  HCMG008-KIKAN
+                        PIC X(34).
+            02  HCMG008-PAGE
+                        PIC X(3).
+            02  HCMG008-TBL
+                                        OCCURS 52 TIMES.
+              03  HCMG008-PTNUM
+                        PIC X(10).
+              03  HCMG008-NAME
+                        PIC X(22).
+              03  HCMG008-NAIYO
+                        PIC X(46).
+              03  HCMG008-TENSU
+                        PIC X(13).
+              03  HCMG008-TENLBL
+                        PIC X(2).
+              03  HCMG008-SRYYMD
+                        PIC X(9).
+            02  HCMG008-PRTYMD
+                        PIC X(22).
