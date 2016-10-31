@@ -73,7 +73,7 @@ xml_medicalv3res5 {
 	Rehabilitation_Comment_Information  {
 		Rehabilitation_Comment_Day_Info  {
 			Rehabilitation_Comment_Day	varchar(02);
-			Perform_End_Datey		varchar(10);
+			Perform_End_Date		varchar(10);
 			Rehabilitation_Comment_Info    {
 				Rehabilitation_Comment		varchar(80);
 				Rehabilitation_Comment_End_Date	varchar(10);
