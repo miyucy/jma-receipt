@@ -97,6 +97,8 @@
            03  FLG-JIBAI-PRT           PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
       *
+           03  FLG-SET                 PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
@@ -115,6 +117,12 @@
            03  IDXX                    PIC 9(05).
            03  IDYY                    PIC 9(05).
            03  IDZZ                    PIC 9(05).
+      *
+      *    医療機関情報領域
+       01  TBL-SYS1001-T.
+           03  TBL-SYS1001-OCC         OCCURS  10.
+               05  TBL-SYS1001         PIC X(610).
+           03  TBL-SYS1001-MAX         PIC 9(02).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -160,7 +168,8 @@
       *****************************************************************
       *
       *    医療機関情報
-           COPY   "CPSK1001.INC".
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK1001.INC".
       *
            COPY    "CPRCF010.INC".
       *
@@ -281,21 +290,43 @@
            PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    医療機関情報取得
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
-           MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
-           ELSE
+           MOVE     SPACE              TO  TBL-SYS1001-T
+           INITIALIZE                      TBL-SYS1001-T
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1001"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-N-SEC
+               PERFORM UNTIL ( FLG-SYSKANRI    =   1  )
+                       OR    ( TBL-SYS1001-MAX >=  10 )
+                   MOVE    MCPDATA-REC         TO  SYS-1001-REC
+                   ADD     1             TO  TBL-SYS1001-MAX
+                   MOVE    SYS-1001-REC  TO  TBL-SYS1001
+                                                   (TBL-SYS1001-MAX)
+      *
+                   MOVE    "tbl_syskanri"    TO  MCP-TABLE
+                   MOVE    "key8"            TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-N-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      TBL-SYS1001-MAX     =   ZERO
                MOVE    "医療機関情報が取得できませんでした。"
-                                           TO  WRK-RECEERR
+                                         TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
       *
            OPEN    OUTPUT              PRT-FILE
@@ -347,7 +378,32 @@
                ADD     1                   TO  WRK-RECENUM
                PERFORM         UNTIL   FLG-JIBAI-PRT =   1
                    MOVE    SPACE               TO  PRT-REC
+      *
+      *            医療機関情報
+                   MOVE    ZERO                TO  FLG-SET
+      *
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       TBL-SYS1001-MAX
+                           OR      FLG-SET =       1
+                       MOVE    TBL-SYS1001 (IDX)   TO  SYS-1001-REC
+                       IF    ( SYS-1001-STYUKYMD (1:6)
+                                               <=  JIBAI-PRT-SRYYM     )
+                       AND   ( JIBAI-PRT-SRYYM <=
+                                               SYS-1001-EDYUKYMD (1:6) )
+                           MOVE     1                  TO  FLG-SET
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-SET             =   ZERO
+                       STRING  "医療機関情報が取得できませんでした。"
+                               "診療年月＝"    DELIMITED  BY  SIZE
+                               JIBAI-PRT-SRYYM DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                       END-STRING
+                       PERFORM 500-ERR-HENSYU-SEC
+                       PERFORM 500-COBABORT-SEC
+                   END-IF
                    MOVE    SYS-1001-HOSPCD     TO  PRT-HOSPCD
+      *
                    EVALUATE    JIBAI-PRT-NYUGAIKBN
                        WHEN    "1"
                            MOVE    "0"             TO  PRT-NYUGAIKBN
@@ -362,6 +418,20 @@
                    MOVE    WRK-RECENUM         TO  PRT-RECENUM
                    MOVE    JIBAI-PRT-RENNUM    TO  PRT-RENNUM
                    MOVE    JIBAI-PRT-FORMID    TO  PRT-PRTID
+      *            枠無しを枠有りに変更
+                   EVALUATE    JIBAI-PRT-FORMID
+                       WHEN    "HCM23V06.red"
+                           MOVE    "HCM48V02.red"  TO  PRT-PRTID
+                       WHEN    "HCM53V02.red"
+                           MOVE    "HCM54V02.red"  TO  PRT-PRTID
+                       WHEN    "HCN23V08.red"
+                           MOVE    "HCN48V04.red"  TO  PRT-PRTID
+                       WHEN    "HCN53V04.red"
+                           MOVE    "HCN54V04.red"  TO  PRT-PRTID
+      *                    続紙
+                       WHEN    "HCM29V04.red"
+                           MOVE    "HCM49V02.red"  TO  PRT-PRTID
+                   END-EVALUATE
                    MOVE    JIBAI-PRT-PRTDATA   TO  PRT-PRTDATA
                    WRITE   PRT-REC
       *
@@ -558,6 +628,22 @@
       *
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-SYSKANRI-N-SEC         SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-N-EXT.
            EXIT.
       *
       *****************************************************************
