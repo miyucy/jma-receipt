@@ -516,6 +516,7 @@ RECORD_files = \
 	patientmodv34.rec\
 	patientmodv35.rec\
 	patientmodv36.rec\
+	medicalmodv35.rec \
 
 DEF_files = \
 
@@ -874,6 +875,8 @@ DB_files = \
 	xml_patientmodv3req6.db \
 	xml_patientmodv3res6.db \
 	tbl_jibai_prt.db \
+	xml_medicalv3req5.db \
+	xml_medicalv3res5.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
