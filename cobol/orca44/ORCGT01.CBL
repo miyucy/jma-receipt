@@ -8048,7 +8048,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE           TO  TID2
       *
            MOVE    "black"         TO  TID2-ID1MSG-STYLE
-                                       TID2-LABEL-STYLE
+           MOVE    "blue"          TO  TID2-LABEL-STYLE
       *
            MOVE    SPA-TIDCD       TO  TID2-ID1CODE
       *
@@ -8306,23 +8306,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                            END-STRING
                        END-IF
                    END-IF
-               WHEN    "1027"
-               WHEN    "1028"
-               WHEN    "1029"
-      *            レセ電データ（労災）作成時 
-                   CONTINUE
                WHEN    "1001"
                WHEN    "1002"
                WHEN    "1003"  
                WHEN    "1004"
                WHEN    "1005"
-               WHEN    "1006"
-               WHEN    "1007"
                WHEN    "1008"
-               WHEN    "1009"
-               WHEN    "1011"
-               WHEN    "1026"
-               WHEN    "1019"  
       *            総括表作成時 
                    IF      SPA-GMN-SRYYMKBN-MAX
                                                >   ZERO

@@ -1721,7 +1721,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F11:°õºþ¤·¤Ê¤¤"     TO  TID2-B11-LABEL
            MOVE    "F12:°õºþ¤¹¤ë"       TO  TID2-B12-LABEL
            MOVE    "black"              TO  TID2-ID1MSG-STYLE
-                                            TID2-LABEL-STYLE
+           MOVE    "blue"               TO  TID2-LABEL-STYLE
       *
            IF      SPA-GMN-SRYYMKBN-MAX
                                        >   ZERO
