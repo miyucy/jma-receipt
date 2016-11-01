@@ -93,6 +93,7 @@
       * 04.08.00     NACL-多々納  16/04/XX  地域包括診療編集対応
       *                                     備考続きを処方欄へ記載
       * 04.08.00     NACL-多々納  16/08/18  API(GINBEE)対応
+      * 04.08.00     NACL-多々納  16/11/01  残薬確認プログラムオプション対応
       *****************************************************************
       *
       *
@@ -420,6 +421,8 @@
            03  WRK-ZANSIJI-G.
                05  WRK-ZANSIJI1            PIC X(01).
                05  WRK-ZANSIJI2            PIC X(01).
+      *H28.11
+               05  WRK-ZANSIJIDEL          PIC X(01).
       *
       *ＱＲ対応
            03  WRK-FILE-CNT            PIC 9(02).
@@ -714,6 +717,10 @@
       *H28.4
       *    地域包括表示
            03  PARA-CHIIKI             PIC X(01).
+      *H28.11
+      *    残薬確認区分
+           03  PARA-ZANYAKU01          PIC X(01).
+           03  PARA-ZANYAKU02          PIC X(01).
       *H28.8
       *    gingee API
            03  PARA-API-DATA           PIC X(01).
@@ -1021,6 +1028,15 @@
            MOVE    "CHIIKI"            TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-CHIIKI
+      *H28.11
+      *    残薬確認区分（保険医療機関へ疑義照会した上で調剤）
+           MOVE    "ZANYAKU_1"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-ZANYAKU01
+      *    残薬確認区分（保険医療機関へ情報提供）
+           MOVE    "ZANYAKU_2"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-ZANYAKU02
       *H28.2
       *    公費備考コメント編集
            PERFORM VARYING     IDP     FROM    1   BY  1
@@ -2065,6 +2081,23 @@
                END-EVALUATE
            END-IF
       *!!
+      *H28.11
+      *    残量確認指示
+           IF      WRK-ZANSIJIDEL      =   "1"
+      *        プログラムオプション解除
+               CONTINUE
+           ELSE
+               IF      WRK-ZANSIJI1        =   SPACE
+                   IF      PARA-ZANYAKU01      =   "1"
+                       MOVE    "1"                 TO  WRK-ZANSIJI1
+                   END-IF
+               END-IF
+               IF      WRK-ZANSIJI2        =   SPACE
+                   IF      PARA-ZANYAKU02      =   "1"
+                       MOVE    "1"                 TO  WRK-ZANSIJI2
+                   END-IF
+               END-IF
+           END-IF
            .
        4002-USER-SETHEN-EXT.
            EXIT.
@@ -4651,6 +4684,11 @@
       *H28.4   保険医療機関へ情報提供
                IF     (WRK-SRY-SRYCD (IDXA)    =   "099209922")
                    MOVE    "1"                 TO  WRK-ZANSIJI2
+                   MOVE    1                   TO  FLG-CHKNO
+               END-IF
+      *H28.11  残薬確認解除
+               IF     (WRK-SRY-SRYCD (IDXA)    =   "099209923")
+                   MOVE    "1"                 TO  WRK-ZANSIJIDEL
                    MOVE    1                   TO  FLG-CHKNO
                END-IF
       *
