@@ -21,7 +21,9 @@ trap "cleanup" EXIT
 
 LOG_FILE=/var/log/jma-receipt/$1$(basename ${0%.sh}).log
 LOCAL_TEMPDIR=$(mktemp -dp ${MCP_TEMPDIR})
-MONTH_DIR=${LOCAL_TEMPDIR}/$2
+MONTH=JIBAI_RECEIPT_$2
+ZIP_FILE=${MONTH}.zip
+MONTH_DIR=${LOCAL_TEMPDIR}/${MONTH}
 DATA_FILE=${MCP_TEMPDIR}/$3
 
 cleanup () {
@@ -56,6 +58,6 @@ for f in $(ls ${LOCAL_TEMPDIR}/*.tmp.pdf | cut -b 1-$((${#tmpfile} - 7))) ; do
 done
 
 pushd ${LOCAL_TEMPDIR}
-zip -r $2.zip $2/
-${MONUPLOAD} -t misc -s -f JIBAI_RECEIPT_$2.zip $2.zip
+zip -r ${ZIP_FILE} ${MONTH}/
+${MONUPLOAD} -t misc -s -f ${ZIP_FILE} ${ZIP_FILE} 
 popd
