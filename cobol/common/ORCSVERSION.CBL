@@ -203,16 +203,14 @@
                MOVE    SPACE           TO  WRK-DATA
                MOVE    FUNCTION TRIM (IN01-REC)
                                        TO  WRK-DATA
-               IF     (SVERSION-DBVERSION-1    =   SPACE)  AND
-                      (WRK-DATA            NOT =   SPACE)  AND
-                      (WRK-DATA (1:1)      NOT =   "#")
-                   MOVE    WRK-DATA        TO  SVERSION-DBVERSION-1
-                   MOVE    SPACE           TO  WRK-DATA
+               IF     (WRK-DATA (1:2)      =   "1:")
+                   MOVE    WRK-DATA (3:)   TO  SVERSION-DBVERSION-1
                END-IF
-               IF     (SVERSION-DBVERSION-2    =   SPACE)  AND
-                      (WRK-DATA            NOT =   SPACE)  AND
-                      (WRK-DATA (1:1)      NOT =   "#")
-                   MOVE    WRK-DATA        TO  SVERSION-DBVERSION-2
+               IF     (WRK-DATA (1:2)      =   "2:")
+                   MOVE    WRK-DATA (3:)   TO  SVERSION-DBVERSION-2
+               END-IF
+               IF     (WRK-DATA (1:2)      =   "3:")
+                   MOVE    WRK-DATA (3:)   TO  SVERSION-DBVERSION-3
                END-IF
       *
                PERFORM 900-IN01-READ-SEC

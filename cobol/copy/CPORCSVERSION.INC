@@ -26,7 +26,8 @@
        01  SVERSION-AREA.
            03  SVERSION-VERSION        PIC X(64).
       *    パッケージリリース時の最大バージョン番号
-      *    またはパッチリリース時の最大バージョン番号
            03  SVERSION-DBVERSION-1    PIC X(64).
-      *    オリジナルダンプのバージョン番号
+      *    パッチリリース時の最大バージョン番号
            03  SVERSION-DBVERSION-2    PIC X(64).
+      *    オリジナルダンプのバージョン番号
+           03  SVERSION-DBVERSION-3    PIC X(64).

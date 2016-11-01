@@ -374,7 +374,13 @@
                    MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG
                    IF      SPA-ERRCD       =   "1019"
                        MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG2
-                       MOVE    SPACE           TO  SPA-GMN-LBLMSG
+                       MOVE    "jma-setup 処理を実施してください。"
+                                               TO  SPA-GMN-LBLMSG
+                   END-IF
+                   IF      SPA-ERRCD       =   "1020"
+                       MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG2
+                       MOVE    "プログラム更新処理を実施してください。"
+                                               TO  SPA-GMN-LBLMSG
                    END-IF
       *            １回のみの警告表示
                    IF      SPA-ERRCD       =   "K001"
@@ -1060,18 +1066,9 @@
                            MOVE    "1012"      TO  SPA-ERRCD
                        END-IF
                    END-IF
-                   IF    ( SVERSION-DBVERSION-1    NOT =   SPACE )
-                     AND ( DBKANRI-DBSVERSION2
-                                       NOT =   SVERSION-DBVERSION-1)
-                       IF    ( SVERSION-DBVERSION-2    NOT =   SPACE )
-                         AND ( DBKANRI-DBSVERSION2
-                                           =   SVERSION-DBVERSION-2)
-                           CONTINUE
-                       ELSE
-                           MOVE    "1019"      TO  SPA-ERRCD
-                           MOVE    "0"         TO  SYS-1010-GSRAUTH(1:2)
-                                                   SYS-1010-GSRAUTH(4:)
-                       END-IF
+                   IF    ( SPA-ERRCD                   =   SPACE ) AND
+                         ( SVERSION-DBVERSION-1    NOT =   SPACE )
+                       PERFORM 3101-DBVERSION-CHK-SEC
                    END-IF
                END-IF
            ELSE
@@ -1085,6 +1082,37 @@
            MOVE    SPACE           TO  SPA-MIDCD
            .
        310-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    データベース整合性判定処理
+      *****************************************************************
+       3101-DBVERSION-CHK-SEC      SECTION.
+      *
+           IF    ( DBKANRI-DBSVERSION1 =   SVERSION-DBVERSION-2 )
+               DISPLAY "DBVERSION-CHK P1"
+               GO  TO  3101-DBVERSION-CHK-EXT
+           END-IF
+      *
+           IF   (( DBKANRI-DBSVERSION1 =   SVERSION-DBVERSION-1 )  OR
+                 ( DBKANRI-DBSVERSION1 =   SVERSION-DBVERSION-3 )) AND
+                 ( SVERSION-DBVERSION-2    =   SPACE )
+               DISPLAY "DBVERSION-CHK P2"
+               GO  TO  3101-DBVERSION-CHK-EXT
+           END-IF
+      *
+           IF    ( DBKANRI-DBSVERSION1 <   SVERSION-DBVERSION-1 )
+               MOVE    "1019"              TO  SPA-ERRCD
+               MOVE    "0"                 TO  SYS-1010-GSRAUTH
+               DISPLAY "DBVERSION-CHK P3"
+               GO  TO  3101-DBVERSION-CHK-EXT
+           END-IF
+      *
+           MOVE    "1020"              TO  SPA-ERRCD
+           MOVE    "0"                 TO  SYS-1010-GSRAUTH(1:2)
+                                           SYS-1010-GSRAUTH(4:)
+               DISPLAY "DBVERSION-CHK P4"
+           .
+       3101-DBVERSION-CHK-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ更新判定処理
@@ -2114,6 +2142,7 @@
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1019"
+               WHEN    "1020"
                    STRING  "プログラムのＤＢ構造バージョンと"
                            "ＤＢ管理テーブルの構造バージョンが"
                            "不整合です！！"
