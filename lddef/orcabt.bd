@@ -301,6 +301,7 @@ bind    "ORCBDASCONF"   "OpenCOBOL";
 bind    "ORCBM043"      "OpenCOBOL";
 bind    "ORCBM620"      "OpenCOBOL";
 bind    "ORCL0040"      "OpenCOBOL";
+bind    "ORCL0050"      "OpenCOBOL";
 bind	"ORCBI203"	    "OpenCOBOL";
 bind	"ORCBSETSYSBASE"	"OpenCOBOL";
 bind	"ORCBM400"	"OpenCOBOL";
