@@ -60,6 +60,7 @@
       * 04.08.00     NACL-多々納  14/12/XX  平成２７年１月改正対応
       * 04.08.00     NACL-多々納  16/05/XX  一般名表示対応
       *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
+      *  04.08.00    NACL-多々納  16/11/XX  投薬投与量チェック区分対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1489,9 +1490,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SYS-1008-SURYOZERO-FLG
                                            TO  SPA-SURYOZERO-FLG
                END-IF
+      *H28.11
+      *        薬剤投与量チェック
+               IF      SYS-1008-TOUYOCHK-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-TOUYOCHK-FLG
+               ELSE
+                   MOVE    SYS-1008-TOUYOCHK-FLG
+                                           TO  SPA-TOUYOCHK-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
+               MOVE    "0"                 TO  SPA-TOUYOCHK-FLG
            END-IF
       *
       *    システム管理検索（診療行為一括入金管理情報）
@@ -4609,6 +4619,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-NENREI-YY   TO  LNK-SC98-NENREI-YY
            MOVE    SPA-NAI-NENREI-MM   TO  LNK-SC98-NENREI-MM
            MOVE    SPA-NAI-NENREI-DD   TO  LNK-SC98-NENREI-DD
+      *H28.11
+      *    薬剤投与量チェック区分
+           MOVE    SPA-TOUYOCHK-FLG    TO  LNK-SC98-TOUYOCHK-FLG
            CALL    "ORCSC98"           USING
                                        SPA-AREA
                                        ORCSC98AREA
