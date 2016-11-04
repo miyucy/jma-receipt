@@ -823,6 +823,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-PTPUBLIC        =   ZERO
                IF     (SPA-GMN28-PATIENTID1    =   SPACE )
                   AND (SPA-GMN28-AGREEMENT     =   SPACE )
+      *ver.5.0
+                  AND (SPA-GMN28-PATIENTID2    =   SPACE )
+                  AND (SPA-GMN28-PATIENTID3    =   SPACE )
       *            ÃÏ°èÏ¢·È£É£Ä¤¬¶õÇò¤Ê¤éºï½ü
                    MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -843,6 +846,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                IF     (SPA-GMN28-PATIENTID1    =   SPACE )
                   AND (SPA-GMN28-AGREEMENT     =   SPACE )
+      *ver.5.0
+                  AND (SPA-GMN28-PATIENTID2    =   SPACE )
+                  AND (SPA-GMN28-PATIENTID3    =   SPACE )
                    CONTINUE
                ELSE
       *            ÃÏ°èÏ¢·È¾ð£É£Ä¡¦Æ±°Õ¶èÊ¬¤¢¤ì¤ÐÅÐÏ¿
