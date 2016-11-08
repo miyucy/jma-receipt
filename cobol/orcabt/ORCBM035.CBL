@@ -502,8 +502,11 @@
            INITIALIZE              SYS-1002-REC
            MOVE    "1002"          TO  SYS-1002-KANRICD
            MOVE    "*"             TO  SYS-1002-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1002-STYUKYMD (1:6)
+           IF      WRK-PARA-STSRYYM    =   "999999"
+               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
+           ELSE
+               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1002-STYUKYMD (1:6)
+           END-IF
            MOVE    "01"            TO  SYS-1002-STYUKYMD (7:2)
            MOVE    SYS-1002-STYUKYMD
                                    TO  SYS-1002-EDYUKYMD

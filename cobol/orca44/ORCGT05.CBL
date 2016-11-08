@@ -138,6 +138,7 @@
            03  WRK-PREFNUM             PIC X(02).
            03  WRK-HOSPCD              PIC X(07).
            03  WRK-TEISYUTUSAKI        PIC X(01).
+           03 WRK-SRYYM                PIC X(06).
       *
            03  WRK-INDEX.
                05  WRK-INDEX-9         PIC 9(02).
@@ -1532,14 +1533,29 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "RECEIP"
                WHEN    "receip"
       *            診療年月に該当する医療機関コードを取得
+                   MOVE    WRK-HOSPCD      TO  SPA-NAI-T05-THOSPCD (IDY)
+      *
+      *            請求年月の前月の医療機関コードを取得とチェック
+                   INITIALIZE                  STS-AREA-DAY
+                   INITIALIZE                  LNK-DAY6-AREA
+                   MOVE    "61"            TO  LNK-DAY6-IRAI
+                   MOVE    SPA-NAI-T05-TSRYYM (IDY)
+                                           TO  LNK-DAY6-KIJUN (1:6)
+                   MOVE    "01"            TO  LNK-DAY6-KIJUN (7:2)
+                   MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
+                   MOVE    -1              TO  LNK-DAY6-ZOGEN
+                   CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                  MOVE    LNK-DAY6-KEISAN(1:6)
+                                           TO  WRK-SRYYM
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       100
                            OR      SPA-NAI-1001-TSTYUKYMD  (IDX)
                                        =       SPACE
-                       IF    ( SPA-NAI-T05-TSRYYM-B (IDY)
+                       IF    ( WRK-SRYYM
                                        >=  SPA-NAI-1001-TSTYUKYMD (IDX)
                                                             (1:6) )
-                       AND   ( SPA-NAI-T05-TSRYYM-B (IDY)
+                       AND   ( WRK-SRYYM
                                        <=  SPA-NAI-1001-TEDYUKYMD (IDX)
                                                             (1:6) )
                            IF      SPA-NAI-1001-THOSPCD (IDX)
@@ -1547,22 +1563,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 MOVE    "旧"       TO
                                                SPA-GMN-T05-THOSPCD (IDY)
                            END-IF
-                           MOVE    SPA-NAI-1001-THOSPCD (IDX)
-                                                   TO
-                                               SPA-NAI-T05-THOSPCD (IDY)
                            MOVE    100            TO  IDX
                        END-IF
                    END-PERFORM
-                   IF      SPA-NAI-T05-THOSPCD (IDY)
-                                              =   SPACE
-                       MOVE    6                  TO  WRK-ERRMSG1
-                   END-IF
                WHEN    "RRECEC"
                WHEN    "rrecec"
                    INITIALIZE                  WRK-SRYYM-HOSPCD
                                                WRK-SYORIYM-HOSPCD
       *??
-           DISPLAY "SRYYM=" SPA-NAI-T05-TSRYYM (IDY)
+           DISPLAY "SRYYM=" SPA-NAI-T05-TSRYYM (IDY) 
                         "#" SPA-NAI-T05-TSRYYM-B (IDY) "#"
       *??
                    PERFORM VARYING IDX FROM    1   BY  1
