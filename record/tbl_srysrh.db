@@ -37,7 +37,6 @@ tbl_srysrh {
 	EDSRYYM				char(6),virtual;
 	DRCD				  char(5),virtual;
 	SQL                             dbcode(15000),virtual;
-	YMDHMS				varchar(12),virtual;
 };
 
 path	all 	{
@@ -734,13 +733,3 @@ path	del2 	{
 	};
 };
 
-
-path	del3 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_srysrh
-		WHERE  HOSPNUM      =   :HOSPNUM
-		AND    UPYMD||UPHMS <   :YMDHMS
-		;
-	};
-};
