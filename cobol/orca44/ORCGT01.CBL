@@ -7775,7 +7775,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    STRING
                        "月途中に医療機関コードが変更されている診療年月"
                                                    DELIMITED  BY  SIZE
-                       "のため、別途手順書に従って処理を行って下さい"
+                       "のため、期間指定による処理はできません"
                                                    DELIMITED  BY  SIZE
                                                    INTO    TERR-ERRMSG
                    END-STRING
