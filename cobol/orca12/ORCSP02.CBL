@@ -1468,7 +1468,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    お薬手帳　ＣＳＶ
            MOVE    "1 Ver.1.0"
                                        TO  SPA-GMN28-MNOTE-CSV-LST(1)
-           MOVE    1                   TO  SPA-GMN28-CSV-MAX
+      *H28.11 追加
+           MOVE    "2 Ver.2.1"
+                                       TO  SPA-GMN28-MNOTE-CSV-LST(2)
+           MOVE    2                   TO  SPA-GMN28-CSV-MAX
       *    情報提供同意有無
            MOVE    "0 同意しない"
                                        TO  SPA-GMN28-AGREEMENT-LST(1)

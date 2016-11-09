@@ -4923,6 +4923,7 @@
       *
       *    ¼êÄ¢£Ã£Ó£Ö
            IF      SPA-NAI-MNOTE-CSV   =   "1"
+                                       OR  "2"
                MOVE    WIDGET-NORMAL       TO  KA01-B12S-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  KA01-B12S-STATE
