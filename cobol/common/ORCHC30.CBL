@@ -58,6 +58,7 @@
       *  04.08.00    NACL-多々納   14/07/30  一時ディレクトリ対応
       *  04.08.01    NACL-森脇     14/08/08  画像イメージ作成機能追加
       *  04.08.02    NACL-森脇     16/09/06  API(GINBEE)対応
+      *  04.08.03    NACL-森脇     16/10/26  服用方法コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,6 +144,9 @@
            03  IDX-KBN             PIC 9(01).
            03  IDX-LAYER           PIC 9(03).
            03  IDX-KBN2            PIC 9(04).
+      *----(04.08.03)--ADD-START---
+           03  IDX-KBN3            PIC 9(01).
+      *----(04.08.03)--ADD-END-----
       *
            03  IDX-NAIYO           PIC 9(04).
            03  IDX-KEIJYO          PIC 9(04).
@@ -938,6 +942,10 @@
                MOVE    TNS-NAME        TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
            ELSE
+      *----(04.08.01)--ADD-START---
+               MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
+               PERFORM 900-TENSU-READ-SEC
+      *----(04.08.01)--ADD-END-----
                MOVE    ORCHC30-YSRYCD-NAME(CNT-PARA)
                                        TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
@@ -1291,6 +1299,12 @@
                    UNTIL  (IDX-KBN2    >   10 )
                    OR     (ORCHC30-COMMENT-CD(CNT-PARA IDX-KBN2)
                                        =   SPACE )
+      *----(04.08.03)--ADD-START---
+               IF    ( WRK-HENKBN-G    NOT =   SPACE ) AND
+                     ( ORCHC30-COMHENKBN(CNT-PARA IDX-KBN2) =   "1" )
+                   COMPUTE IDX-KBN2    =   IDX-KBN2    +   1
+               END-IF
+      *----(04.08.03)--ADD-END-----
       *      コメント表示あり、または、用法コメント
              IF     (PARA-COMMENT        =   "1"     )
                OR   (ORCHC30-COMMENT-CD(CNT-PARA IDX-KBN2)(1:3)
@@ -1365,6 +1379,17 @@
                    END-IF
                END-IF
            END-PERFORM
+      *----(04.08.03)--ADD-START---
+      *    エラー、 数量なくなれば処理抜ける
+           IF    ( FLG-KBN  =   1 ) OR
+                (( WRK-KAISU   NOT =   ZERO )  AND
+                 ( WRK-SURYO       =   ZERO ))
+               MOVE    ZERO            TO  WRK-HENKBN-G
+               GO  TO  240-KBN-SET-EXT
+           END-IF
+      *    帳票区分データ服用用法コード編集処理
+           PERFORM 241-KBN-INPUTSURYOU-SET-SEC
+      *----(04.08.03)--ADD-END-----
       *    エラーなら処理抜ける
            IF      FLG-KBN  =   1
                MOVE    ZERO            TO  WRK-HENKBN-G
@@ -1479,7 +1504,58 @@
            .
        240-KBN-SET-EXT.
            EXIT.
+      *----(04.08.01)--ADD-START---
+      *****************************************************************
+      *    帳票区分データ服用用法コード編集処理
+      *****************************************************************
+       241-KBN-INPUTSURYOU-SET-SEC SECTION.
       *
+           IF      WRK-HENKBN-G    NOT =   ZERO
+               GO  TO  241-KBN-INPUTSURYOU-SET-EXT
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-KBN
+           MOVE    ZERO            TO  IDX-KBN3
+           PERFORM VARYING IDX-KBN     FROM    1   BY  1
+                   UNTIL ( IDX-KBN     >   5 )
+                   OR    ( FLG-KBN     =   1 )
+      *        服用方法コードがあった場合
+               IF      ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)   >   ZERO
+                   EVALUATE    IDX-KBN
+                       WHEN    1
+                           MOVE    5   TO  IDX-KBN3
+                       WHEN    2
+                           MOVE    1   TO  IDX-KBN3
+                       WHEN    3
+                           MOVE    2   TO  IDX-KBN3
+                       WHEN    4
+                           MOVE    3   TO  IDX-KBN3
+                       WHEN    5
+                           MOVE    4   TO  IDX-KBN3
+                   END-EVALUATE
+      *            指定してない服用時点ならエラー
+                   IF    WRK-SSTKIJUNCD(IDX-KBN3:1)    NOT  =   "1"
+                       MOVE    1               TO  FLG-KBN
+                   ELSE
+      *                服用方法コードの方が多い場合エラー
+                       IF      WRK-SURYO       <
+                                   ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
+                           MOVE    1               TO  FLG-KBN
+                       ELSE
+                           MOVE    ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
+                                               TO  WRK-HENKBN(IDX-KBN3)
+      *                    服用方法コード使用分は計算にいれない
+                           COMPUTE WRK-SURYO   =   WRK-SURYO
+                               -   ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
+                           COMPUTE WRK-KAISU   =   WRK-KAISU   -   1
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       241-KBN-INPUTSURYOU-SET-EXT.
+           EXIT.
+      *----(04.08.01)--ADD-END-----
       *****************************************************************
       *   帳票区分データ用量コード編集処理
       *****************************************************************
@@ -2027,6 +2103,10 @@
                MOVE    TNS-NAME        TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
            ELSE
+      *----(04.08.03)--ADD-START---
+               MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
+               PERFORM 900-TENSU-READ-SEC
+      *----(04.08.03)--ADD-END-----
                MOVE    ORCHC30-YSRYCD-NAME(CNT-PARA)
                                        TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
