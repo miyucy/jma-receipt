@@ -2689,6 +2689,13 @@
       *
                MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (IDX)
+      *H28.11
+      *        診療区分変更はエラー
+               IF     (SPA-SRYKBN      NOT =   WRK-SRYKBN)
+                   MOVE    "1019"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  SPA-COM-CUR (IDX)
+               END-IF
+      *
                IF      IDX                 >   1
                    MOVE    "1017"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  SPA-COM-CUR (IDX)
@@ -3780,6 +3787,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                    MOVE    "手技料を入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "1019"
+                   MOVE    "診療区分は変更できません。"
+                                       TO  SPA-ERRMSG
                WHEN    "1020"
                    MOVE    "内容がありませんので、更新はできません。"
                                        TO  SPA-ERRMSG
