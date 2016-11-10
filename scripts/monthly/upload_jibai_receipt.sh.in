@@ -23,6 +23,7 @@ LOG_FILE=/var/log/jma-receipt/$1$(basename ${0%.sh}).log
 LOCAL_TEMPDIR=$(mktemp -dp ${MCP_TEMPDIR})
 MONTH=JIBAI_RECEIPT_$2
 ZIP_FILE=${MONTH}.zip
+JRP_FILE=${MONTH}-$(date +"%Y%m%d%H%M%S").jrp
 MONTH_DIR=${LOCAL_TEMPDIR}/${MONTH}
 DATA_FILE=${MCP_TEMPDIR}/$3
 
@@ -59,5 +60,5 @@ done
 
 pushd ${LOCAL_TEMPDIR}
 zip -r ${ZIP_FILE} ${MONTH}/
-${MONUPLOAD} -t misc -s -f ${ZIP_FILE} ${ZIP_FILE} 
+${MONUPLOAD} -t misc -s -f ${JRP_FILE} ${ZIP_FILE} 
 popd
