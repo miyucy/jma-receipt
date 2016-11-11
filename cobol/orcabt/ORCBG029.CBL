@@ -510,6 +510,8 @@
                  ( WRK-PARA-NYUGAIKBN  NOT =   "2" )
                MOVE    "%"             TO  WRK-PARA-NYUGAIKBN
            END-IF
+      *
+      *    印刷区分セット
            IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
                MOVE    "0"             TO  WRK-PARA-SYORIKBN
            END-IF
@@ -575,6 +577,24 @@
                END-STRING
            ELSE
                MOVE    WRK-STRYM           TO  WRK-PRT-KIKAN
+           END-IF
+      *
+      *    合計ページ項目セット
+           IF    ( WRK-PARA-NYUGAIKBN NOT =   "2" )
+               MOVE    "1"                TO  WRK-GOKEI-NYUGAIKBN(1)
+                                              WRK-GOKEI-NYUGAIKBN(2)
+                                              WRK-GOKEI-NYUGAIKBN(3)
+               MOVE    WRK-PARA-SRYKBN(1) TO  WRK-GOKEI-SRYKBN(1)
+               MOVE    WRK-PARA-SRYKBN(2) TO  WRK-GOKEI-SRYKBN(2)
+               MOVE    WRK-PARA-SRYKBN(3) TO  WRK-GOKEI-SRYKBN(3)
+           END-IF
+           IF    ( WRK-PARA-NYUGAIKBN NOT =   "1" )
+               MOVE    "2"                TO  WRK-GOKEI-NYUGAIKBN(4)
+                                              WRK-GOKEI-NYUGAIKBN(5)
+                                              WRK-GOKEI-NYUGAIKBN(6)
+               MOVE    WRK-PARA-SRYKBN(1) TO  WRK-GOKEI-SRYKBN(4)
+               MOVE    WRK-PARA-SRYKBN(2) TO  WRK-GOKEI-SRYKBN(5)
+               MOVE    WRK-PARA-SRYKBN(3) TO  WRK-GOKEI-SRYKBN(6)
            END-IF
       *
            MOVE    WRK-PRT-KIKAN   TO  WRK-PRT-G-KIKAN
@@ -945,7 +965,6 @@
       *
            MOVE    ZERO            TO  CNT-PAGE
            MOVE    ZERO            TO  CNT-LINE
-           INITIALIZE                  WRK-GOKEI-G
       *
            INITIALIZE                  TOKEI-REC
       *    統計ファイル読み込み
@@ -979,8 +998,6 @@
       *****************************************************************
        270-TOKEI-OUT-GOUKEI-SEC    SECTION.
       *
-           INITIALIZE                  WRK-GOKEI-G
-      *
            INITIALIZE                  TOKEI-REC
       *    統計ファイル読み込み
            PERFORM 900-TOKEI-NEXT-SEC
@@ -1003,12 +1020,12 @@
       *
                PERFORM VARYING IDX-G   FROM 1 BY 1
                        UNTIL ( IDX-G   >   6 )
-                       OR    ( WRK-GOKEI-PTCNT(IDX-G)  =   ZERO )
-                   CONTINUE
+                   IF    ( WRK-GOKEI-NYUGAIKBN(IDX-G) =  WRK-NYUGAIKBN)
+                     AND ( WRK-GOKEI-SRYKBN(IDX-G) =  WRK-SRYKBN )
+                       MOVE    WRK-PTCNT   TO  WRK-GOKEI-PTCNT(IDX-G)
+                       MOVE    6           TO  IDX-G
+                   END-IF
                END-PERFORM
-               MOVE    WRK-NYUGAIKBN   TO  WRK-GOKEI-NYUGAIKBN(IDX-G)
-               MOVE    WRK-SRYKBN      TO  WRK-GOKEI-SRYKBN(IDX-G)
-               MOVE    WRK-PTCNT       TO  WRK-GOKEI-PTCNT(IDX-G)
            END-PERFORM
       *
       *    合計ページ印刷
@@ -1160,12 +1177,12 @@
       *    合計集計
            PERFORM VARYING IDX-G   FROM 1 BY 1
                    UNTIL ( IDX-G   >   6 )
-                   OR    ( WRK-GOKEI-PTCNT(IDX-G)  =   ZERO )
-               CONTINUE
+               IF    ( WRK-GOKEI-NYUGAIKBN(IDX-G) =  WRK-NYUGAIKBN)
+                 AND ( WRK-GOKEI-SRYKBN(IDX-G) =  WRK-SRYKBN )
+                   MOVE    WRK-PTCNT   TO  WRK-GOKEI-PTCNT(IDX-G)
+                   MOVE    6           TO  IDX-G
+               END-IF
            END-PERFORM
-           MOVE    WRK-NYUGAIKBN   TO  WRK-GOKEI-NYUGAIKBN(IDX-G)
-           MOVE    WRK-SRYKBN      TO  WRK-GOKEI-SRYKBN(IDX-G)
-           MOVE    WRK-PTCNT       TO  WRK-GOKEI-PTCNT(IDX-G)
            .
        330-PRT-GOKEI-EXT.
            EXIT.
@@ -1192,49 +1209,50 @@
       *
            PERFORM VARYING IDX-G   FROM 1 BY 1
                    UNTIL ( IDX-G   >   6 )
-                   OR    ( WRK-GOKEI-PTCNT(IDX-G)  =   ZERO )
+               IF      WRK-GOKEI-SRYKBN(IDX-G) NOT =   SPACE
       *
-               EVALUATE    WRK-GOKEI-NYUGAIKBN(IDX-G)
-                   WHEN    "1"
-                       MOVE    "入院"          TO  WRK-PRT-G-NYUGAIKBN
-                   WHEN    "2"
-                       MOVE    "外来"          TO  WRK-PRT-G-NYUGAIKBN
-               END-EVALUATE
+                   EVALUATE    WRK-GOKEI-NYUGAIKBN(IDX-G)
+                       WHEN    "1"
+                           MOVE    "入院"      TO  WRK-PRT-G-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "外来"      TO  WRK-PRT-G-NYUGAIKBN
+                   END-EVALUATE
       *
-               EVALUATE    WRK-GOKEI-SRYKBN(IDX-G)
-                   WHEN    "11"
-                       MOVE    "初　　診"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "12"
-                       MOVE    "再　　診"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "13"
-                       MOVE    "医学管理"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "14"
-                       MOVE    "在　　宅"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "20"
-                       MOVE    "投　　薬"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "30"
-                       MOVE    "注　　射"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "40"
-                       MOVE    "処　　置"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "50"
-                       MOVE    "手　　術"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "54"
-                       MOVE    "麻　　酔"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "60"
-                       MOVE    "検　　査"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "70"
-                       MOVE    "画像診断"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "80"
-                       MOVE    "そ の 他"      TO  WRK-PRT-G-SRYKBN
-                   WHEN    "90"
-                       MOVE    "入　　院"      TO  WRK-PRT-G-SRYKBN
-               END-EVALUATE
+                   EVALUATE    WRK-GOKEI-SRYKBN(IDX-G)
+                       WHEN    "11"
+                           MOVE    "初　　診"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "12"
+                           MOVE    "再　　診"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "13"
+                           MOVE    "医学管理"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "14"
+                           MOVE    "在　　宅"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "20"
+                           MOVE    "投　　薬"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "30"
+                           MOVE    "注　　射"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "40"
+                           MOVE    "処　　置"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "50"
+                           MOVE    "手　　術"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "54"
+                           MOVE    "麻　　酔"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "60"
+                           MOVE    "検　　査"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "70"
+                           MOVE    "画像診断"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "80"
+                           MOVE    "そ の 他"      TO  WRK-PRT-G-SRYKBN
+                       WHEN    "90"
+                           MOVE    "入　　院"      TO  WRK-PRT-G-SRYKBN
+                   END-EVALUATE
       *
-               MOVE    WRK-GOKEI-PTCNT(IDX-G)  TO  WRK-Z10
-               MOVE    WRK-Z10                 TO  WRK-PRT-G-NINZU
+                   MOVE    WRK-GOKEI-PTCNT(IDX-G)  TO  WRK-Z10
+                   MOVE    WRK-Z10                 TO  WRK-PRT-G-NINZU
       *
-               COMPUTE CNT-LINE    =   CNT-LINE    +   1
-               MOVE    WRK-PRT-G-MEISAI    TO  HCMSL80-MOJI(CNT-LINE)
+                   COMPUTE CNT-LINE    =   CNT-LINE    +   1
+                   MOVE    WRK-PRT-G-MEISAI  TO  HCMSL80-MOJI(CNT-LINE)
+               END-IF
            END-PERFORM
       *
       *    印刷処理
@@ -1404,6 +1422,12 @@ grpsys                                     SPA-AREA
            MOVE    TOKEIPARA       TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
+      *
+           IF      CNT-TOKEI       =   ZERO
+               MOVE    "処理対象のデータがありませんでした"
+                                   TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *
            DISPLAY "*** ORCBG029 IN "      CNT-TOKEI
            DISPLAY "*** ORCBG029 END ***"
