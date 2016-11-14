@@ -60,6 +60,7 @@
       * 04.08.00     NACL-Â¿¡¹Ç¼  15/11/XX  ¥ì¥»¥×¥ÈÊ¬³ä£µ£°·ïÂ¾ÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  16/03/XX  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
       * 05.00.00     NACL-¿¹ÏÆ    16/10/24  ´µ¼ÔÃÏ°èÏ¢·È¾ðÊó¹àÌÜÄÉ²Ã
+      * 04.08.00     NACL-Â¿¡¹Ç¼  16/11/XX  ¸øÈñ²èÌÌÊÔ½¸ÄÉ²Ã¡ÊP02H)ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -457,6 +458,10 @@
                WHEN    "API"
       *            £Á£Ð£É½é´ü¥Ñ¥é¥á¥¿¡¢£Ó£Ð£Á½é´üÊÔ½¸
                    PERFORM 300-APIP02-SET-SEC
+      *H28.11
+               WHEN    "GMKOH"
+      *            ¸øÈñ²èÌÌÊÔ½¸
+                   PERFORM 20011-P02W1-KOHSET-SEC
            END-EVALUATE
       *
       *
@@ -3987,6 +3992,70 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "  "            TO  P02-P02-HKNJAADRS2(IDX:2)
                END-IF
            END-PERFORM
+      *H28.11
+      *    ¸øÈñ²èÌÌÊÔ½¸
+           PERFORM 20011-P02W1-KOHSET-SEC
+      *
+      *    ¸øÈñ¼ïÎà¤òÊÔ½¸¤¹¤ë
+           PERFORM 20011-HOKNUM-HEN-SEC
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  P02-HKNLIST-COUNT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
+               ADD     1                   TO  IDX2
+               MOVE    SPA-GMN-THKNCOMBINUM(IDX)
+                                           TO   P02-HKNCOBNUM (IDX2)
+               MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+      *
+               IF      SPA-GMN-THKNCOMBINUM (IDX)  =   SPA-GMN-SELNUM
+                   MOVE    "T"             TO  P02-HKNLIST-SELECT (IDX2)
+               ELSE
+                   MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
+               END-IF
+      *
+               ADD     1                   TO  IDX2
+               MOVE    SPA-GMN-TTEKSTYMD (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+               MOVE    "¡Á"                TO  P02-HKNCOBNAME (IDX2)
+                                                            (11:2)
+               MOVE    SPA-GMN-TTEKEDYMD (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+                                                            (14:)
+      *        ÈóÉ½¼¨
+               EVALUATE    SPA-NAI-THYOJIKBN (IDX)
+               WHEN    "1"
+                   MOVE    "¡üÈó"          TO  P02-HKNCOBNUM (IDX2)
+               WHEN    "2"
+                   MOVE    "¡üÆþ"          TO  P02-HKNCOBNUM (IDX2)
+               WHEN    "3"
+                   MOVE    "¡ü³°"          TO  P02-HKNCOBNUM (IDX2)
+               END-EVALUATE
+      *
+               MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
+           END-PERFORM
+           MOVE    IDX2                TO  P02-HKNLIST-COUNT
+      *
+           MOVE    SPA-GMN-SELNUM      TO  P02-P02-SELNUM
+      *
+      *    ¿ÇÎÅ²Ê
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               MOVE    SPA-GMN-SRYKA-LST (IDX)
+                                       TO  P02-SRYKA-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-SRYKA-MAX       TO  P02-SRYKA-COUNT
+           MOVE    SPA-GMN-SRYKA-G     TO  P02-P02-SRYKA
+           .
+       2001-P02W1-SET-EXT.
+           EXIT.
+      *H28.11
+      *****************************************************************
+      *    ¸øÈñ²èÌÌÊÔ½¸½èÍý
+      *****************************************************************
+       20011-P02W1-KOHSET-SEC         SECTION.
       *
       *    ¸øÈñ¾ðÊó£±
            MOVE    SPA-GMN-KOHNUM-G (01)   TO  P02-P02-KOHNUM1
@@ -4055,60 +4124,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "F"                 TO  P02-BK3-VALUE
                MOVE    "Ì¤"                TO  P02-BK3-LABEL
            END-IF
-      *    ¸øÈñ¼ïÎà¤òÊÔ½¸¤¹¤ë
-           PERFORM 20011-HOKNUM-HEN-SEC
-      *
-      *    ÊÝ¸±ÁÈ¹ç¤»
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  P02-HKNLIST-COUNT
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
-               ADD     1                   TO  IDX2
-               MOVE    SPA-GMN-THKNCOMBINUM(IDX)
-                                           TO   P02-HKNCOBNUM (IDX2)
-               MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
-                                           TO  P02-HKNCOBNAME (IDX2)
-      *
-               IF      SPA-GMN-THKNCOMBINUM (IDX)  =   SPA-GMN-SELNUM
-                   MOVE    "T"             TO  P02-HKNLIST-SELECT (IDX2)
-               ELSE
-                   MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
-               END-IF
-      *
-               ADD     1                   TO  IDX2
-               MOVE    SPA-GMN-TTEKSTYMD (IDX)
-                                           TO  P02-HKNCOBNAME (IDX2)
-               MOVE    "¡Á"                TO  P02-HKNCOBNAME (IDX2)
-                                                            (11:2)
-               MOVE    SPA-GMN-TTEKEDYMD (IDX)
-                                           TO  P02-HKNCOBNAME (IDX2)
-                                                            (14:)
-      *        ÈóÉ½¼¨
-               EVALUATE    SPA-NAI-THYOJIKBN (IDX)
-               WHEN    "1"
-                   MOVE    "¡üÈó"          TO  P02-HKNCOBNUM (IDX2)
-               WHEN    "2"
-                   MOVE    "¡üÆþ"          TO  P02-HKNCOBNUM (IDX2)
-               WHEN    "3"
-                   MOVE    "¡ü³°"          TO  P02-HKNCOBNUM (IDX2)
-               END-EVALUATE
-      *
-               MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
-           END-PERFORM
-           MOVE    IDX2                TO  P02-HKNLIST-COUNT
-      *
-           MOVE    SPA-GMN-SELNUM      TO  P02-P02-SELNUM
-      *
-      *    ¿ÇÎÅ²Ê
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-SRYKA-MAX
-               MOVE    SPA-GMN-SRYKA-LST (IDX)
-                                       TO  P02-SRYKA-ITEM (IDX)
-           END-PERFORM
-           MOVE    SPA-SRYKA-MAX       TO  P02-SRYKA-COUNT
-           MOVE    SPA-GMN-SRYKA-G     TO  P02-P02-SRYKA
            .
-       2001-P02W1-SET-EXT.
+       20011-P02W1-KOHSET-EXT.
            EXIT.
       *****************************************************************
       *    ¸øÈñ¼ïÎàÊÔ½¸½èÍý
