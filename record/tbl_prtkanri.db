@@ -13,10 +13,9 @@ tbl_prtkanri	{
 	PAGE    		number(5);
 	PRTFLG			char(1);
 	TITLE	        varchar(100);
-	PRTNM			varchar(16);
-	API_ID		    varchar(20);
 	TERMID			varchar(32);
 	OPID			varchar(16);
+	PRTNM			varchar(16);
 	CREYMD 			varchar(8);
 #-----> virtual 項目
 	SELLIMIT		number(8),virtual;
