@@ -21,7 +21,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_sample_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_sample
+		FROM tbl_etensu_2_sample
 		WHERE   H_GROUP  =   :H_GROUP
 		AND     SRYCD    =   :SRYCD
  		AND   YUKOSTYMD  <=  :YUKOSTYMD
@@ -35,7 +35,7 @@ path	key2 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_sample_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_sample
+		FROM tbl_etensu_2_sample
 		WHERE 	H_GROUP    =   :H_GROUP
 		AND     SRYCD      =   :SRYCD
 		AND	YUKOSTYMD  <=  :YUKOSTYMD
@@ -49,7 +49,7 @@ path	key3 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_sample_key3_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_sample
+		FROM tbl_etensu_2_sample
 		WHERE 	H_GROUP    =   :H_GROUP
 		AND	YUKOSTYMD  <=  :YUKOSTYMD
 		AND	YUKOEDYMD  >=  :YUKOEDYMD
@@ -63,7 +63,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_jma
+		FROM tbl_etensu_2_jma
 			ORDER   BY  H_GROUP,
 				    SRYCD,
 				    YUKOSTYMD,
@@ -76,7 +76,7 @@ path	key4 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_sample_key4_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_sample
+		FROM tbl_etensu_2_sample
 		WHERE   H_GROUP  =   :H_GROUP
 		AND     SRYCD    =   :SRYCD
 			ORDER   BY  YUKOSTYMD,
@@ -87,7 +87,7 @@ path	key4 	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_etensu_2_sample
+		UPDATE tbl_etensu_2_sample
 				SET
 				H_GROUP      = :H_GROUP,
 				SRYCD      = :SRYCD,

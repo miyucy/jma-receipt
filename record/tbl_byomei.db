@@ -33,7 +33,7 @@ path	key	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE   BYOMEICD    =   :BYOMEICD
 		;
 
@@ -44,7 +44,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE  (BYOMEI       LIKE :BYOMEI
 			OR      BYOMEIKANA   LIKE :BYOMEI)
 			ORDER BY             BYOMEIKANA
@@ -56,7 +56,7 @@ path	key3	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key3_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE  (BYOMEIKANA   LIKE :BYOMEIKANA)
 			ORDER BY             BYOMEI
 		;
@@ -67,7 +67,7 @@ path	key4	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key4_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE   BYOMEI       =   :BYOMEI
 			AND     BYOMEICD     <   'ZZZ0000'
 		;
@@ -78,7 +78,7 @@ path	key5	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key5_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE   BYOMEI       =   :BYOMEI
 			AND     BYOMEICD     >=   'ZZZ0000'
 		;
@@ -90,7 +90,7 @@ path	key6	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key6_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE   BYOMEI       =   :BYOMEI
 		;
 	};
@@ -100,7 +100,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_byomei_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 		;
 	};
 };
@@ -109,7 +109,7 @@ path	key7	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key7_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE  (BYOMEI       LIKE :BYOMEI
 			OR      BYOMEIKANA   LIKE :BYOMEI)
 			AND     BYOMEICD     >=   :BYOMEICD
@@ -123,7 +123,7 @@ path	key8	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key8_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE   BYOMEICD     >=   :BYOMEICD
 			AND     BYOMEICD     <    :IKOSAKICD
 			ORDER BY             BYOMEICD
@@ -135,7 +135,7 @@ path	key9	{
 	DBSELECT	{
 		DECLARE tbl_byomei_key9_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_byomei
+		FROM tbl_byomei
 			WHERE   BYOMEICD     >=   :BYOMEICD
 			AND     BYOMEICD     <    :IKOSAKICD
 			ORDER BY             BYOMEIKANA

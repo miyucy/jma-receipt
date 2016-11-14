@@ -10,7 +10,7 @@ path	key	{
 	DBSELECT	{
 		DECLARE tbl_synonym_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_synonym
+		FROM tbl_synonym
 			WHERE   BYOMEI     =   :BYOMEI
 		;
 
@@ -19,7 +19,7 @@ path	key	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_synonym
+		UPDATE tbl_synonym
 				SET
 				BYOMEI      = :BYOMEI,
 				BYOMEICD      = :BYOMEICD,
@@ -34,7 +34,7 @@ path	upd1	{
 path	del1 	{
 	DBDELETE	{
 		DELETE
-		FROM master.tbl_synonym
+		FROM tbl_synonym
 			WHERE   BYOMEI     =   :BYOMEI
 		;
 	};

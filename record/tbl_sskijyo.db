@@ -17,7 +17,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_sskijyo_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_sskijyo
+		FROM tbl_sskijyo
 			WHERE   SYOJYOUCD   =   :SYOJYOUCD
                 ;
 	};
@@ -27,7 +27,7 @@ path	all		{
 	DBSELECT	{
 		DECLARE tbl_sskijyo_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_sskijyo
+		FROM tbl_sskijyo
 ;
 	};
 };

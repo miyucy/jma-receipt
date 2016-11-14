@@ -25,7 +25,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_jma
+		FROM tbl_etensu_2_jma
 		WHERE   H_GROUP  =   :H_GROUP
 		AND     SRYCD    =   :SRYCD
  		AND   YUKOSTYMD  <=  :YUKOSTYMD
@@ -38,7 +38,7 @@ path	key2 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_jma
+		FROM tbl_etensu_2_jma
 		WHERE 	H_GROUP      = :H_GROUP
 		AND	YUKOSTYMD  <=  :YUKOSTYMD
 		AND	YUKOEDYMD  >=  :YUKOEDYMD
@@ -52,7 +52,7 @@ path	key3 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key3_csr CURSOR FOR
 		SELECT a.*
-		FROM master.tbl_etensu_2_jma a,tbl_tensu b
+		FROM tbl_etensu_2_jma a,tbl_tensu b
 		WHERE 	a.H_GROUP      = :H_GROUP
 		AND	a.YUKOSTYMD  <=  :YUKOSTYMD
 		AND	a.YUKOEDYMD  >=  :YUKOEDYMD
@@ -74,7 +74,7 @@ path	key4	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key4_csr CURSOR FOR
 		SELECT a.*
-		FROM master.tbl_etensu_2_jma a,tbl_tensu b
+		FROM tbl_etensu_2_jma a,tbl_tensu b
 		WHERE 	a.H_GROUP      = :H_GROUP
 		AND	a.YUKOSTYMD  <=  :YUKOSTYMD
 		AND	a.YUKOEDYMD  >=  :YUKOEDYMD
@@ -98,7 +98,7 @@ path	key5	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key5_csr CURSOR FOR
 		SELECT a.*
-		FROM master.tbl_etensu_2_jma a,tbl_tensu b
+		FROM tbl_etensu_2_jma a,tbl_tensu b
 		WHERE 	a.H_GROUP      = :H_GROUP
 		AND	a.YUKOSTYMD  <=  :YUKOSTYMD
 		AND	a.YUKOEDYMD  >=  :YUKOEDYMD
@@ -121,7 +121,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_jma
+		FROM tbl_etensu_2_jma
 			ORDER   BY  H_GROUP,
 				    SRYCD,
 				    YUKOSTYMD
@@ -133,7 +133,7 @@ path	key6 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key6_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_2_jma
+		FROM tbl_etensu_2_jma
 		WHERE   H_GROUP  =   :H_GROUP
 		AND     SRYCD    =   :SRYCD
 			ORDER   BY  YUKOSTYMD
@@ -143,7 +143,7 @@ path	key6 	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_etensu_2_jma
+		UPDATE tbl_etensu_2_jma
 				SET
 				H_GROUP      = :H_GROUP,
 				SRYCD      = :SRYCD,
@@ -163,7 +163,7 @@ path	key22 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key22_csr CURSOR FOR
 		SELECT  *
-		FROM master.tbl_etensu_2_jma
+		FROM tbl_etensu_2_jma
 		WHERE 	H_GROUP      = :H_GROUP
 		AND	YUKOEDYMD  >=  :YUKOSTYMD
 			ORDER   BY SRYCD,
@@ -176,7 +176,7 @@ path	key32	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key32_csr CURSOR FOR
 		SELECT DISTINCT a.*,b.CDKBN_KBN,b.CDKBN_KBNNUM
-		FROM master.tbl_etensu_2_jma a,tbl_tensu b
+		FROM tbl_etensu_2_jma a,tbl_tensu b
 		WHERE 	a.H_GROUP      = :H_GROUP
 		AND	a.YUKOEDYMD  >=  :YUKOSTYMD
 		AND     a.SRYCD       =  b.SRYCD 
@@ -195,7 +195,7 @@ path	key42	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key42_csr CURSOR FOR
 		SELECT DISTINCT a.*,b.CDKBN_KBN,b.CDKBN_KBNNUM
-		FROM master.tbl_etensu_2_jma a,tbl_tensu b
+		FROM tbl_etensu_2_jma a,tbl_tensu b
 		WHERE 	a.H_GROUP      = :H_GROUP
 		AND	a.YUKOEDYMD  >=  :YUKOSTYMD
 		AND     a.SRYCD       =  b.SRYCD 
@@ -216,7 +216,7 @@ path	key52	{
 	DBSELECT	{
 		DECLARE tbl_etensu_2_jma_key52_csr CURSOR FOR
 		SELECT DISTINCT a.*,b.CDKBN_KBN,b.CDKBN_KBNNUM
-		FROM master.tbl_etensu_2_jma a,tbl_tensu b
+		FROM tbl_etensu_2_jma a,tbl_tensu b
 		WHERE 	a.H_GROUP      = :H_GROUP
 		AND	a.YUKOEDYMD  >=  :YUKOSTYMD
 		AND     a.SRYCD       =  b.SRYCD 

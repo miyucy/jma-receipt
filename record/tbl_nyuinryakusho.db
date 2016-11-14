@@ -22,7 +22,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_nyuinryakusho_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_nyuinryakusho
+		FROM tbl_nyuinryakusho
 			WHERE	SRYCD      =  :SRYCD
 			AND		YUKOSTYMD     <=  :YUKOSTYMD
 			AND		YUKOEDYMD     >=  :YUKOEDYMD
@@ -34,7 +34,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_nyuinryakusho_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_nyuinryakusho
+		FROM tbl_nyuinryakusho
       		;
 	};
 };
@@ -43,7 +43,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_nyuinryakusho_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_nyuinryakusho
+		FROM tbl_nyuinryakusho
 		WHERE 	SRYCD	= :SRYCD
 			ORDER	BY	YUKOSTYMD
 		;
@@ -52,7 +52,7 @@ path	key2	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_nyuinryakusho
+		UPDATE tbl_nyuinryakusho
 				SET
 				SRYCD      = :SRYCD,
 				YUKOSTYMD      = :YUKOSTYMD,

@@ -13,7 +13,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_interact_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_interact
+		FROM tbl_interact
 			WHERE   DRUGCD   =   :DRUGCD
                 ;
 	};
@@ -23,7 +23,7 @@ path	key1		{
 	DBSELECT	{
 		DECLARE tbl_interact_key1_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_interact
+		FROM tbl_interact
 			WHERE	DRUGCD2	 =   :DRUGCD2
 		;
 	};
@@ -33,7 +33,7 @@ path	key2		{
 	DBSELECT	{
 		DECLARE tbl_interact_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_interact
+		FROM tbl_interact
 			WHERE	DRUGCD 	 =   :DRUGCD
 			   OR	DRUGCD2	 =   :DRUGCD
 		;
@@ -44,7 +44,7 @@ path	all		{
 	DBSELECT	{
 		DECLARE tbl_interact_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_interact
+		FROM tbl_interact
 ;
 	};
 };
@@ -53,7 +53,7 @@ path	key3		{
 	DBSELECT	{
 		DECLARE tbl_interact_key3_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_interact
+		FROM tbl_interact
 			WHERE	DRUGCD 	 =   :DRUGCD
 			AND	DRUGCD2	 =   :DRUGCD2
 		;
@@ -81,7 +81,7 @@ path	upd1	{
 path	del1 	{
 	DBDELETE	{
 		DELETE
-		FROM master.tbl_interact
+		FROM tbl_interact
 			WHERE   DRUGCD    =   :DRUGCD
 			AND     DRUGCD2   =   :DRUGCD2
 		;

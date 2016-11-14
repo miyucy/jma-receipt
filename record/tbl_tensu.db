@@ -1019,7 +1019,7 @@ path	key42k	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key42k_csr CURSOR FOR
 		SELECT a.*
-		FROM tbl_tensu a,master.tbl_kensasort b
+		FROM tbl_tensu a,tbl_kensasort b
 			WHERE a.HOSPNUM	 =   :HOSPNUM
 			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
@@ -1036,7 +1036,7 @@ path	key42jk	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key42jk_csr CURSOR FOR
 		SELECT distinct a.*,c.DSPSEQ
-		FROM tbl_tensu a,tbl_inputcd b,master.tbl_kensasort c
+		FROM tbl_tensu a,tbl_inputcd b,tbl_kensasort c
 			WHERE a.HOSPNUM	 =   :HOSPNUM
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD

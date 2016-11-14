@@ -18,11 +18,11 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_generic_price_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_price
+		FROM tbl_generic_price
 		WHERE	YAKKAKJNCD    =  (
 			SELECT
 			    CASE
-				WHEN EXISTS ( SELECT * FROM master.tbl_generic_price WHERE yakkakjncd = :YAKKAKJNCD )
+				WHEN EXISTS ( SELECT * FROM tbl_generic_price WHERE yakkakjncd = :YAKKAKJNCD )
 				    THEN :YAKKAKJNCD
 				ELSE SUBSTR(:YAKKAKJNCD,1,9)
 			    END
@@ -37,7 +37,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_generic_price_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_price
+		FROM tbl_generic_price
  		;
 	};
 };
@@ -45,7 +45,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_generic_price_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_price
+		FROM tbl_generic_price
 		WHERE 	YAKKAKJNCD	= :YAKKAKJNCD
 			ORDER	BY	YUKOSTYMD
 		;
@@ -54,7 +54,7 @@ path	key2	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_generic_price
+		UPDATE tbl_generic_price
 				SET
 				YAKKAKJNCD     = :YAKKAKJNCD,
 				YUKOSTYMD      = :YUKOSTYMD,
@@ -74,7 +74,7 @@ path	key3 	{
 	DBSELECT	{
 		DECLARE tbl_generic_price_key3_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_price
+		FROM tbl_generic_price
 		WHERE	YAKKAKJNCD    =  :YAKKAKJNCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -86,7 +86,7 @@ path	key4 	{
 	DBSELECT	{
 		DECLARE tbl_generic_price_key4_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_price
+		FROM tbl_generic_price
 		WHERE	GECODE           =  :GECODE
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -98,7 +98,7 @@ path	key5 	{
 	DBSELECT	{
 		DECLARE tbl_generic_price_key5_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_price
+		FROM tbl_generic_price
 		WHERE	YAKKAKJNCD    LIKE  :YAKKAKJNCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD

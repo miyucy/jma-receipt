@@ -48,7 +48,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_tekioubyomei_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_tekioubyomei
+		FROM tbl_tekioubyomei
 			WHERE   CHKKBN	=	:CHKKBN
 			AND		SRYCD	=	:SRYCD
 			AND		RENNUM	=	:RENNUM
@@ -59,7 +59,7 @@ path	key2 	{
 	DBSELECT	{
 		DECLARE tbl_tekioubyomei_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_tekioubyomei
+		FROM tbl_tekioubyomei
 			WHERE   CHKKBN	=	:CHKKBN
 			AND		SRYCD	LIKE :SRYCD
             ORDER BY CHKKBN,SRYCD,BYOMEI ;
@@ -70,7 +70,7 @@ path	key3 	{
 	DBSELECT	{
 		DECLARE tbl_tekioubyomei_key3_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_tekioubyomei
+		FROM tbl_tekioubyomei
 			WHERE CHKKBN		=	:CHKKBN
 			AND   SRYCD			=	:SRYCD
 			AND   BYOMEI       LIKE :BYOMEI
@@ -81,7 +81,7 @@ path	key3 	{
 path	key4	{ 	
 	DBSELECT	{
 		DECLARE tbl_tekioubyomei_key4_csr CURSOR FOR
-		SELECT A.* FROM master.tbl_tekioubyomei A,TBL_TENSU B
+		SELECT A.* FROM tbl_tekioubyomei A,TBL_TENSU B
 		WHERE  A.CHKKBN	       = :CHKKBN
 		AND    A.RENNUM	       = 1
 		AND    B.SRYCD         = A.SRYCD
@@ -98,7 +98,7 @@ path	all 	{
 	DBSELECT	{
 		DECLARE tbl_tekioubyomei_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_tekioubyomei
+		FROM tbl_tekioubyomei
 		;
 	};
 };

@@ -28,7 +28,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_1_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_1
+		FROM tbl_etensu_1
 		WHERE   SRYCD    =   :SRYCD
  		AND   YUKOSTYMD  <=  :YUKOSTYMD
 		AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -40,7 +40,7 @@ path	key2 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_1_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_1
+		FROM tbl_etensu_1
 		WHERE 	SRYCD      = :SRYCD
 			ORDER   BY  YUKOSTYMD
 		;
@@ -51,7 +51,7 @@ path	key3 	{
 	DBSELECT	{
 		DECLARE tbl_etensu_1_key3_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_1
+		FROM tbl_etensu_1
 		WHERE 	H_GROUP1      = :H_GROUP1
 		    OR  H_GROUP2      = :H_GROUP1
 		    OR  H_GROUP3      = :H_GROUP1
@@ -64,7 +64,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_etensu_1_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_etensu_1
+		FROM tbl_etensu_1
 			ORDER   BY  SRYCD,
 				    YUKOSTYMD
  		;
@@ -73,7 +73,7 @@ path	all	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_etensu_1
+		UPDATE tbl_etensu_1
 				SET
 				SRYCD      = :SRYCD,
 				YUKOSTYMD      = :YUKOSTYMD,

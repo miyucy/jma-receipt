@@ -19,7 +19,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			WHERE   KANRICD     =   :KANRICD
 			AND   RENNUM        =   :RENNUM
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
@@ -32,7 +32,7 @@ path	key2		{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			WHERE   KANRICD     =   :KANRICD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -45,7 +45,7 @@ path	key3		{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_key3_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			WHERE   KANRICD     =   :KANRICD
 			ORDER   BY         RENNUM,
 			                   YUKOSTYMD
@@ -57,7 +57,7 @@ path	key4	{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_key4_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			WHERE  YUKOSTYMD  <=   :YUKOSTYMD
 			AND    YUKOEDYMD  >=   :YUKOEDYMD
 			ORDER   BY         KANRICD,
@@ -71,7 +71,7 @@ path	key5	{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_key5_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			WHERE  RENNUM     =  1
 			ORDER   BY         KANRICD,
 			                   RENNUM,
@@ -84,7 +84,7 @@ path	key6		{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_key6_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			WHERE   KANRICD     =   :KANRICD
                         AND     RENNUM      =   1
 			AND     YUKOEDYMD  <=   :YUKOEDYMD
@@ -97,7 +97,7 @@ path	all	{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_all_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			ORDER   BY         KANRICD,
 			                   RENNUM,
 			                   YUKOSTYMD
@@ -110,7 +110,7 @@ path	key7		{
 	DBSELECT	{
 		DECLARE tbl_hktsrycd_key7_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_hktsrycd
+		FROM tbl_hktsrycd
 			WHERE   KANRICD     =   :KANRICD
                         AND     RENNUM      =   1
 			AND     YUKOEDYMD  >=   :YUKOSTYMD

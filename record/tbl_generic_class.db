@@ -17,7 +17,7 @@ path	key 	{
 	DBSELECT	{
 		DECLARE tbl_generic_class_key_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_class
+		FROM tbl_generic_class
 			WHERE YAKKAKJNCD =   :YAKKAKJNCD
  			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -28,7 +28,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_generic_class_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_generic_class
+		FROM tbl_generic_class
 			WHERE 	YAKKAKJNCD	= :YAKKAKJNCD
 			ORDER	BY	YUKOSTYMD
 		;
@@ -36,7 +36,7 @@ path	key2	{
 };
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_generic_class
+		UPDATE tbl_generic_class
 				SET
 				YAKKAKJNCD     = :YAKKAKJNCD,
 				YUKOSTYMD      = :YUKOSTYMD,

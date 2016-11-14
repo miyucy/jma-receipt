@@ -24,7 +24,7 @@ path	key		{
 	DBSELECT	{
 		DECLARE tbl_nyuksnchk_key_csr	CURSOR FOR
 		SELECT *
-		FROM master.tbl_nyuksnchk
+		FROM tbl_nyuksnchk
 			WHERE NYUINKBN    =   :NYUINKBN
 			AND   KSNKBN      =   :KSNKBN
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
@@ -37,7 +37,7 @@ path	all		{
 	DBSELECT	{
 		DECLARE tbl_nyuksnchk_all_csr	CURSOR FOR
 		SELECT *
-		FROM master.tbl_nyuksnchk
+		FROM tbl_nyuksnchk
 		;
 	};
 };
@@ -46,7 +46,7 @@ path	key2	{
 	DBSELECT	{
 		DECLARE tbl_nyuksnchk_key2_csr CURSOR FOR
 		SELECT *
-		FROM master.tbl_nyuksnchk
+		FROM tbl_nyuksnchk
 			WHERE NYUINKBN        = :NYUINKBN
 			AND   KSNKBN          = :KSNKBN
 			ORDER	BY	YUKOSTYMD
@@ -56,7 +56,7 @@ path	key2	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE master.tbl_nyuksnchk
+		UPDATE tbl_nyuksnchk
 				SET
 				NYUINKBN      = :NYUINKBN,
 				KSNKBN      = :KSNKBN,
