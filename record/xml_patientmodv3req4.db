@@ -13,7 +13,7 @@ xml_patientmodv3req4 {
 	Patient_Information	{
 		Patient_ID		varchar(20);
 		WholeName		varchar(100);
-		WholeName_InKana	varchar(100);
+		WholeName_inKana	varchar(100);
 		BirthDate		varchar(10);
 		Sex			varchar(1);
         };
@@ -54,7 +54,7 @@ xml_patientmodv3req4 {
 #---            ÊÑ¹¹ÆüÉÕ
             	Maiden_Change_Date		varchar(10);
 #---            µìÀ«¥«¥Ê»áÌ¾
-		WholeName_InKana 		varchar(100);
+		WholeName_inKana 		varchar(100);
 #---            µìÀ«»áÌ¾
 		WholeName			varchar(100);
 #---            µìÀ«ÄÌ¾ÎÌ¾

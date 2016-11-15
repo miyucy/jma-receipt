@@ -11,7 +11,7 @@ xml_patientmodv3req5 {
 	Patient_Information	{
 		Patient_ID		varchar(20);
 		WholeName		varchar(100);
-		WholeName_InKana	varchar(100);
+		WholeName_inKana	varchar(100);
 		BirthDate		varchar(10);
 		Sex			varchar(1);
         };

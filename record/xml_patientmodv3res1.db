@@ -17,7 +17,7 @@ xml_patientmodv3res1 {
 	Patient_Information	{
 		Patient_ID		varchar(20);
 		WholeName		varchar(50);
-		WholeName_InKana	varchar(50);
+		WholeName_inKana	varchar(50);
 		BirthDate		varchar(10);
 		Sex			varchar(1);
 		HouseHolder_WholeName	varchar(50);
@@ -88,7 +88,7 @@ xml_patientmodv3res1 {
 	Patient2_Information	{
 		Patient_ID		varchar(20);
 		WholeName		varchar(50);
-		WholeName_InKana	varchar(50);
+		WholeName_inKana	varchar(50);
 		BirthDate		varchar(10);
 		Sex			varchar(1);
 		WholeAddress1		varchar(100);
