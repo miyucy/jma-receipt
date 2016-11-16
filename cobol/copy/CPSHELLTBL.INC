@@ -31,6 +31,8 @@
                 03  SHELLTBL-RUN-OPID       PIC  X(16).
                 03  SHELLTBL-LOG-FILEID     PIC  X(08).
                 03  SHELLTBL-EXTRA-VALUE    PIC  X(473).
+            02  SHELLTBL-REG-URL            PIC  X(256).
+            02  SHELLTBL-REPOS-NAME         PIC  X(256).
             02  SHELLTBL-PGID   PIC S9(09) BINARY.
             02  SHELLTBL-STARTTIME  PIC X(32).
             02  SHELLTBL-ARG1   PIC X(150).
