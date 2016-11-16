@@ -21,9 +21,17 @@ VERSION=$6
 PLUGIN_SHELL=${ORCA_DIR}/bin/jma-plugin
 JPPINFO=${SYSCONFDIR}/jppinfo.list
 PKGLIST=${MCP_TEMPDIR}/pluginlist
+COND_FILE=/var/lib/jma-receipt/plugin/plugin_condition_error
 
 list4cobol () {
   ${PLUGIN_SHELL} -c ${JPPINFO} list4cobol | nkf -e > ${PKGLIST}
+
+  ERRCNT=`cat ${PKGLIST} | tr -d ' ' | grep -c "link:ERROR"`
+  if [ ${ERRCNT} -gt 0 ]; then
+    echo "$(date +'%Y-%m-%d %T')" > ${COND_FILE}
+  else
+    rm -f ${COND_FILE}
+  fi
 }
 
 echo $JPPINFO

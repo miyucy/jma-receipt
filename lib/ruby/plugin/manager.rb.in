@@ -180,6 +180,27 @@ module JMA::Plugin
       return upgradable
     end
 
+    def list_check
+      list = []
+      lock {
+        @log.info("list_check")
+        @db.list.each{ |c|
+          if c[:install] == "TRUE"
+            unless @store.install?(c[:name],c[:version])
+              c[:install] = "ERROR"
+            end
+          end
+          if c[:link] == "TRUE"
+            unless @store.link?(c[:name],c[:version])
+              c[:link] = "ERROR"
+            end
+          end
+          list << c
+        }
+      }
+      return list
+    end
+
     def list(type="all")
       case type
       when "install"
@@ -189,7 +210,7 @@ module JMA::Plugin
       when "upgrade"
         return list_upgrade
       else
-        return @db.list
+        return list_check
       end
     end
 
@@ -245,6 +266,10 @@ module JMA::Plugin
         raise "#{name}-#{version} is not in the list"
       end
       unless @db.install?(name,version)
+        raise "#{name}-#{version} does not installed"
+      end
+      unless @store.install?(name,version)
+        @db.uninstall(name,version)
         raise "#{name}-#{version} does not installed"
       end
       @store.unlink(name,version,action) rescue nil
