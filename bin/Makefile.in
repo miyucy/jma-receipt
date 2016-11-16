@@ -20,7 +20,8 @@ shell_sources = \
 	create_dbgroup.sh.in \
 	passwd_store.sh.in \
 	medphoto_store.sh.in \
-	dasconf_store.sh.in
+	dasconf_store.sh.in \
+	plugin_check.sh.in
 
 ruby_sources = \
 	jma-receipt-plugin-db-convert.rb.in \

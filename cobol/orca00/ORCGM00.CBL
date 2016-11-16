@@ -1075,6 +1075,12 @@
                    MOVE    "1011"      TO  SPA-ERRCD
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+      *        プラグイン起動時設定チェックの結果取得
+      *        正常:SPA-ERRCD=SPACE 異常:SPA-ERRCD="1021"
+               CALL    "ORCSPLUGINCHECK"   USING   SPA-AREA
+           END-IF
+      *
       *    感染症
            PERFORM 810-INFECTION-001-SEC
       *
@@ -2146,6 +2152,12 @@
                    STRING  "プログラムのＤＢ構造バージョンと"
                            "ＤＢ管理テーブルの構造バージョンが"
                            "不整合です！！"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1021"
+                   STRING  "プラグイン設定に矛盾があります。"
+                           "管理者まで連絡してください。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING

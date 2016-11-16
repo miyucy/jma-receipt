@@ -787,17 +787,21 @@
                WHEN    "link "
       *            LINK
                    MOVE    PLUGIN-DATA     TO  SPA-NAI-TLINK (IDY)
-                   IF      SPA-NAI-TLINK (IDY) =   "FALSE"
-                       MOVE    "-"             TO  SPA-GMN-TLINK (IDY)
-                       IF      SPA-MW                  =   SPA-PANDA
-                           IF      SPA-GMN-TVERSION (IDY)
-                                                   NOT =  "-"
-                               MOVE    "ERROR"         TO
-                                                   SPA-GMN-TLINK (IDY)
-                           END-IF
-                       END-IF
+                   IF      SPA-NAI-TLINK(IDY)  =   "ERROR"
+                       MOVE    "NOT FOUND"     TO  SPA-GMN-TLINK(IDY)
                    ELSE
-                       MOVE    "¡û"            TO  SPA-GMN-TLINK (IDY)
+                       IF      SPA-NAI-TLINK (IDY) =   "FALSE"
+                           MOVE    "-"         TO  SPA-GMN-TLINK (IDY)
+                           IF      SPA-MW                  =   SPA-PANDA
+                               IF      SPA-GMN-TVERSION (IDY)
+                                                       NOT =  "-"
+                                   MOVE    "ERROR"         TO
+                                                   SPA-GMN-TLINK (IDY)
+                               END-IF
+                           END-IF
+                       ELSE
+                           MOVE    "¡û"        TO  SPA-GMN-TLINK (IDY)
+                       END-IF
                    END-IF
                END-EVALUATE
            END-IF
@@ -918,10 +922,14 @@
                WHEN    "link "
       *            LINK
                    MOVE    PLUGIN-DATA     TO  WRK-NAI-TLINK(1)
-                   IF      WRK-NAI-TLINK(1)    =   "FALSE"
-                       MOVE    "-"             TO  WRK-GMN-TLINK(1)
+                   IF      WRK-NAI-TLINK(1)    =   "ERROR"
+                       MOVE    "NOT FOUND"     TO  WRK-GMN-TLINK(1)
                    ELSE
-                       MOVE    "¡û"            TO  WRK-GMN-TLINK(1)
+                       IF      WRK-NAI-TLINK(1)    =   "FALSE"
+                           MOVE    "-"             TO  WRK-GMN-TLINK(1)
+                       ELSE
+                           MOVE    "¡û"            TO  WRK-GMN-TLINK(1)
+                       END-IF
                    END-IF
            END-EVALUATE
       *
@@ -1009,10 +1017,14 @@
                WHEN    "link "
       *            LINK
                    MOVE    PLUGIN-DATA     TO  WRK-NAI-TLINK(IDX)
-                   IF      WRK-NAI-TLINK(IDX)  =   "FALSE"
-                       MOVE    "-"             TO  WRK-GMN-TLINK(IDX)
+                   IF      WRK-NAI-TLINK(IDX)  =   "ERROR"
+                       MOVE    "NOT FOUND"     TO  WRK-GMN-TLINK(IDX)
                    ELSE
-                       MOVE    "¡û"            TO  WRK-GMN-TLINK(IDX)
+                       IF      WRK-NAI-TLINK(IDX)  =   "FALSE"
+                           MOVE    "-"         TO  WRK-GMN-TLINK(IDX)
+                       ELSE
+                           MOVE    "¡û"        TO  WRK-GMN-TLINK(IDX)
+                       END-IF
                    END-IF
            END-EVALUATE
       *
@@ -1273,7 +1285,11 @@
       *****************************************************************
        410-UPGRADE-SEC             SECTION.
       *
-           MOVE    "0105"              TO  SPA-MMID1CD
+           IF      SPA-NAI-TLINK (SPA-NAI-IDX) =   "ERROR"
+               MOVE    "0111"              TO  SPA-MMID1CD
+           ELSE
+               MOVE    "0105"              TO  SPA-MMID1CD
+           END-IF
            .
        410-UPGRADE-EXT.
            EXIT.
