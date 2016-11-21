@@ -4,7 +4,6 @@ shell	{
 	comment 	varchar(200);
 	groupname   varchar(64);
 	extra		varchar(512);
-	reg_url		varchar(256);
 	repos_name	varchar(256);
 	pgid 		int;
 	starttime	varchar(32);
