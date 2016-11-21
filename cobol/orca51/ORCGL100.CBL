@@ -124,6 +124,7 @@
            COPY    "CPSK0044.INC".
            COPY    "CPSK3001.INC".
            COPY    "CPSK3002.INC".
+           COPY    "CPSK3101.INC".
       *
       *    統計メモ
        01  TOUKEIMEMO-REC.
@@ -662,6 +663,22 @@
                END-IF
       *
                IF    ( SPA-ERRCD     =   SPACE )
+                   INITIALIZE                  SYS-3101-REC
+                   MOVE    SPA-HOSPNUM     TO  SYS-3101-HOSPNUM
+                   MOVE    "3101"          TO  SYS-3101-KANRICD
+                   MOVE    SYS-KBNCD       TO  SYS-3101-KBNCD
+                   MOVE    SYS-STYUKYMD    TO  SYS-3101-STYUKYMD
+                   MOVE    SYS-EDYUKYMD    TO  SYS-3101-EDYUKYMD
+                   MOVE    SYS-3101-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBDELETE-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "4006"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+               IF    ( SPA-ERRCD     =   SPACE )
                    INITIALIZE                  TOUKEIMEMO-REC
                    MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
                    MOVE    SYS-KANRICD     TO  TKIMEMO-KANRICD
@@ -734,7 +751,13 @@
            IF    ( WRK-BF-KBNCD    = WRK-AF-KBNCD )
                CONTINUE
            ELSE
+               MOVE    SPA-NAI-KANRICD
+                                   TO  WRK-KANRICD
                PERFORM 4801-SYSKANRI-TOUROKU-SEC
+               IF    ( SPA-ERRCD           =   SPACE )
+                   MOVE    "3101"  TO  WRK-KANRICD
+                   PERFORM 4801-SYSKANRI-TOUROKU-SEC
+               END-IF
                IF    ( SPA-ERRCD           =   SPACE )
                    PERFORM 4801-TOUKEIMEMO-TOUROKU-SEC
                END-IF
@@ -787,7 +810,7 @@
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    SPA-NAI-KANRICD TO  SYS-KANRICD
+           MOVE    WRK-KANRICD     TO  SYS-KANRICD
            MOVE    "TMP001"        TO  SYS-KBNCD
            MOVE    "TMP999"        TO  SYS-UPYMD
            MOVE    "99999999"      TO  SYS-STYUKYMD
@@ -810,7 +833,7 @@
       *
            INITIALIZE                      SYSKANRI-REC
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    SPA-NAI-KANRICD     TO  SYS-KANRICD
+           MOVE    WRK-KANRICD         TO  SYS-KANRICD
            MOVE    WRK-STKBNCD         TO  SYS-KBNCD
            MOVE    WRK-EDKBNCD         TO  SYSUP-KBNCD
            MOVE    "99999999"          TO  SYS-STYUKYMD
@@ -829,12 +852,11 @@
                ELSE
                    IF    ( FLG-TMP         =   1 )
                        MOVE    "TMP"       TO  WRK-TMPKBNCD-LBL
-                       IF    ( SYS-KBNCD   =   WRK-BF-KBNCD )
+                       MOVE    SYS-KBNCD   TO  WRK-KBNCD-G
+                       IF    ( WRK-KBNCD-G =   WRK-BF-KBNCD )
                            MOVE    WRK-AF-KBNCD    TO  WRK-KBNCD-G
                            MOVE    WRK-KBNCD-G     TO  WRK-TMPKBNCD
                        ELSE
-                           MOVE    SYS-KBNCD
-                                           TO  WRK-KBNCD
                            IF    ( WRK-BF-KBNCD    <  WRK-AF-KBNCD )
                                COMPUTE WRK-TMPKBNCD = WRK-KBNCD    -   1
                            ELSE
@@ -1172,7 +1194,7 @@
                                                DELIMITED BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
-           WHEN    "4001" THRU "4008"
+           WHEN    "4001" THRU "4009"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE

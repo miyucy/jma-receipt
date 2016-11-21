@@ -146,7 +146,6 @@
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK0044.INC".
            COPY    "CPSK3002.INC".
-           COPY    "CPSK3003.INC".
       *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -371,6 +370,9 @@
            END-PERFORM
       *
            MOVE    SPA-G01-SEL         TO  WRK-KBNCD
+      *
+           MOVE    SPA-GMN-G01-REPOSITORY (IDX0)
+                                       TO  SPA-GMN-G03-REPOSITORY
       *
            PERFORM 3102-TOKEIMEMO-SEL-SEC
            MOVE    TOUKEIMEMO-REC  TO  WTMEMO-AREA
@@ -1010,40 +1012,6 @@
       *****************************************************************
        2301-DEL-SEC                     SECTION.
       *
-           INITIALIZE                SYSKANRI-REC
-           MOVE    SPA-HOSPNUM   TO  SYS-HOSPNUM
-           MOVE    "3002"        TO  SYS-KANRICD
-           MOVE    SPA-G01-SEL   TO  WRK-KBNCD
-           MOVE    WRK-KBNCD-G   TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD    TO  SYS-STYUKYMD
-                                     SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           IF    ( FLG-SYSKANRI  = ZERO )
-      *
-               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBDELETE-SEC
-               IF    ( MCP-RC      NOT =   ZERO )
-                   MOVE    "4002"      TO  SPA-ERRCD
-               END-IF
-      *
-               IF    ( SPA-ERRCD     =   SPACE )
-                   INITIALIZE                  TOUKEIMEMO-REC
-                   MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
-                   MOVE    SYS-KANRICD     TO  TKIMEMO-KANRICD
-                   MOVE    SYS-KBNCD       TO  TKIMEMO-KBNCD
-                   MOVE    SPA-SYSYMD      TO  TKIMEMO-STYUKYMD
-                                               TKIMEMO-EDYUKYMD
-                   MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
-                   MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
-                   MOVE    "del2"              TO  MCP-PATHNAME
-                   PERFORM 910-DBDELETE-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       MOVE    "4003"      TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF
       *
            .
        2301-DEL-EXT.
@@ -1292,6 +1260,8 @@
       *
            MOVE    SPA-GMN-G03-NUM     TO  G03-NUM
            MOVE    SPA-GMN-G03-PRGNAME TO  G03-PRGNAME
+           MOVE    SPA-GMN-G03-REPOSITORY
+                                       TO  G03-REPOSITORY
            MOVE    SPA-GMN-G03-CHK-VALUE
                                        TO  G03-CHK-VALUE
            MOVE    SPA-GMN-G03-HCNAME  TO  G03-CHK-LABEL

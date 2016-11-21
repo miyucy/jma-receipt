@@ -20,53 +20,35 @@
                 04  W10-B03-STATE       PIC S9(9)   BINARY.
               03  W10-B06               PIC X(08).
               03  W10-B07               PIC X(08).
+              03  W10-LBLTITLE          PIC X(20).
               03  W10-LBLKANRICD-G.
                 04  W10-LBLKANRICD-STYLE
                                         PIC X(20).
                 04  W10-LBLKANRICD      PIC X(08).
               03  W10-LBLKIKAN-G.
                 04  W10-LBLKIKAN-STYLE  PIC X(20).
-              03  W10-STYUKYMD.
-                04  W10-VALUE           PIC X(9).
-              03  W10-EDYUKYMD.
-                04  W10-VALUE           PIC X(9).
-              03  W10-NOTEBOOK.
-                04  W10-PAGENO          PIC S9(9)   BINARY.
-                04  W10-FIXED.
-                  05  W10-PROGNAME.
-                    06  W10-VALUE       PIC X(24).
-                  05  W10-HCNAME.
-                    06  W10-VALUE       PIC X(80).
-                  05  W10-HCNUM.
-                    06  W10-VALUE       PIC S9(3).
-                  05  W10-CHK-SAVEPARA      PIC X(01).
-                  05  W10-CHK-SAVEPARA-STATE   PIC S9(9)   BINARY.
-                  05  W10-PARA-G        OCCURS  8.
-                      06  W10-PARAHYOJI PIC X(20).
-                      06  W10-PARA      PIC X(10).
-                  05  W10-OPTHISSU-KBN-G        OCCURS  8.
-                      06  W10-OPTHISSU  PIC X.
-                      06  W10-OPTNINI   PIC X.
-                  05  W10-SCROLLEDWINDOW1.
-                    06  W10-MEMO        PIC X(6000).
-                04  W10-N01.
-                  05  W10-N01-STATE     PIC S9(9)   BINARY.
-                04  W10-FIXED1.
-                  05  W10-PROGNAME1.
-                    06  W10-VALUE       PIC X(24).
-                  05  W10-HCNAME1.
-                    06  W10-VALUE       PIC X(80).
-                  05  W10-HCNUM1.
-                    06  W10-VALUE       PIC S9(3).
-                  05  W10-CHK-SAVEPARA1     PIC X(01).
-                  05  W10-CHK-SAVEPARA1-STATE  PIC S9(9)   BINARY.
-                  05  W10-PARA1-G        OCCURS  10.
-                      06  W10-PARAHYOJI1 PIC X(20).
-                      06  W10-PARA1      PIC X(10).
-                  05  W10-OPTHISSU-KBN1-G        OCCURS  10.
-                      06  W10-OPTHISSU1 PIC X.
-                      06  W10-OPTNINI1  PIC X.
-                  05  W10-SCROLLEDWINDOW2.
-                    06  W10-MEMO1       PIC X(6000).
-                04  W10-N02.
-                  05  W10-N02-STATE     PIC S9(9)   BINARY.
+              03  W10-STYUKYMD          PIC X(9).
+              03  W10-EDYUKYMD          PIC X(9).
+              03  W10-CHK-SAVEPARA         PIC X(01).
+              03  W10-CHK-SAVEPARA-STATE   PIC S9(9)   BINARY.
+              03  W10-PROGNAME          PIC X(24).
+              03  W10-LBLREPOSITORY     PIC X(20).
+              03  W10-REPOSITORY        PIC X(128).
+              03  W10-REPOSITORY-VISIBLE   PIC X.
+              03  W10-HCNAME            PIC X(80).
+              03  W10-LBLHCNUM          PIC X(20).
+              03  W10-HCNUM             PIC S9(3).
+              03  W10-LBLPARA09            PIC X(20).
+              03  W10-LBLPARA10            PIC X(20).
+              03  W10-PARA-G        OCCURS  10.
+                  04  W10-PARAHYOJI PIC X(20).
+                  04  W10-PARAHYOJI-VISIBLE PIC X.
+                  04  W10-PARA      PIC X(10).
+                  04  W10-PARA-VISIBLE PIC X.
+              03  W10-OPTHISSU-KBN-G        OCCURS  10.
+                  04  W10-OPTHISSU  PIC X.
+                  04  W10-OPTHISSU-VISIBLE PIC X.
+                  04  W10-OPTNINI   PIC X.
+                  04  W10-OPTNINI-VISIBLE PIC X.
+              03  W10-SCROLLEDWINDOW1.
+                  04  W10-MEMO        PIC X(6000).

@@ -243,6 +243,7 @@
            COPY    "CPSK1031.INC".
            COPY    "CPSK3001.INC".
            COPY    "CPSK3003.INC".
+           COPY    "CPSK3101.INC".
       *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -615,6 +616,14 @@
                            END-IF
                        END-PERFORM
       *
+                       MOVE    SYS-3001-KBNCD
+                                       TO  WRK-KBNCD-G
+                       PERFORM 31011-SYS-3101-SEL-SEC
+                       IF    ( SPA-MW      =   SPA-GINBEE )
+                           MOVE    SYS-3101-REPOSITORY
+                                       TO  SPA-GMN-L01-REPOSITORY (IDX)
+                       END-IF
+      *
                        MOVE    SPA-GMN-L01-PRGNAME (IDX)
                                            TO  WRK-PGID
                        MOVE    IDX         TO  WRK-KBNCD
@@ -657,6 +666,23 @@
       *
            .
        3101-PARA-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    日次統計付加情報検索処理
+      *****************************************************************
+       31011-SYS-3101-SEL-SEC          SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "3101"          TO  SYS-KANRICD
+           MOVE    WRK-KBNCD-G     TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-3101-REC
+      *
+           .
+       31011-SYS-3101-SEL-EXT.
            EXIT.
       *****************************************************************
       *    確認画面（ＬＩＤ１）ＯＫ処理
@@ -753,6 +779,10 @@
                                TO  SPA-NAI-L01-HISSU-KBN  (IDX0 IDX1)
       *
                END-PERFORM
+               IF    ( SPA-MW      =   SPA-GINBEE )
+                   MOVE    SPA-GMN-L03-REPOSITORY
+                                   TO  SPA-GMN-L01-REPOSITORY (IDX0)
+               END-IF
            WHEN    3
                MOVE    SPA-L01-SEL     TO  IDX
                INITIALIZE                  SPA-GMN-L01-TBL (IDX)
@@ -862,6 +892,15 @@
                                    TO  SPA-NAI-L01-HISSU-KBN(IDX IDY)
                    END-IF
                END-PERFORM
+      *
+               IF    ( SPA-NAI-L07-KANRICD =   "3001" )
+                   MOVE    IDX         TO  WRK-KBNCD
+                   PERFORM 31011-SYS-3101-SEL-SEC
+                   IF    ( SPA-MW      =   SPA-GINBEE )
+                       MOVE    SYS-3101-REPOSITORY
+                                       TO  SPA-GMN-L01-REPOSITORY (IDX)
+                   END-IF
+               END-IF
       *
                MOVE    SPA-GMN-L01-PRGNAME (IDX)
                                    TO  WRK-PGID

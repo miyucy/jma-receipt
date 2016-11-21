@@ -131,6 +131,9 @@ G03 {
     PRGNAME {
       textdata varchar(20);
     };
+    REPOSITORY {
+      textdata varchar(256);
+    };
     scrolledwindow1 {
       MEMO {
         textdata varchar(6000);

@@ -242,6 +242,24 @@
                                        "/"        SYS-3001-KBNCD
                                        "/"        WRK-PGID
                            END-IF
+      *
+                           INITIALIZE                  SYSKANRI-REC
+                           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+                           IF    ( SYS-3001-KANRICD = "3001" )
+                               MOVE    "3101"      TO  SYS-KANRICD
+                           ELSE
+                               MOVE    "3102"      TO  SYS-KANRICD
+                           END-IF
+                           MOVE    SYS-3001-KBNCD  TO  SYS-KBNCD
+                           MOVE    SYS-3001-STYUKYMD
+                                                   TO  SYS-STYUKYMD
+                           MOVE    SYS-3001-EDYUKYMD
+                                                   TO  SYS-EDYUKYMD
+                           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                           MOVE    "key"           TO  MCP-PATHNAME
+                           PERFORM 910-DBDELETE-SEC
+      *
                        END-IF
                    END-IF
       *
@@ -398,4 +416,19 @@
            .
       *
        910-DBUPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    �ģ£ģţ̣ţԣŽ���
+      *****************************************************************
+       910-DBDELETE-SEC            SECTION.
+      *
+           MOVE    "DBDELETE"  TO  MCP-FUNC
+           CALL    "ORCDBMAIN"     USING
+                                   MCPAREA
+                                   MCPDATA-REC
+                                   SPA-AREA
+      *
+           .
+      *
+       910-DBDELETE-EXT.
            EXIT.

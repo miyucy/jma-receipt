@@ -113,6 +113,7 @@
            COPY    "CPSK0044.INC".
            COPY    "CPSK3001.INC".
            COPY    "CPSK3002.INC".
+           COPY    "CPSK3101.INC".
       *
       *    統計メモ
        01  TOUKEIMEMO-REC.
@@ -820,6 +821,11 @@
                    END-IF
                END-IF
            END-IF
+       *
+           IF    ( SPA-ERRCD               =   SPACE )
+            AND  ( SPA-NAI-L07-KANRICD     =   "3001" )
+               PERFORM 48011-SYS-3101-INS-SEC
+           END-IF
       *
            IF    ( SPA-ERRCD               =   SPACE )
                PERFORM 48011-TOUKEIMEMO-INS-SEC
@@ -857,6 +863,22 @@
                PERFORM 910-DBDELETE-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    "4002"      TO  SPA-ERRCD
+               END-IF
+      *
+               IF    ( SPA-ERRCD     =   SPACE )
+                   INITIALIZE                  SYS-3101-REC
+                   MOVE    SPA-HOSPNUM     TO  SYS-3101-HOSPNUM
+                   MOVE    "3101"          TO  SYS-3101-KANRICD
+                   MOVE    SYS-KBNCD       TO  SYS-3101-KBNCD
+                   MOVE    SYS-STYUKYMD    TO  SYS-3101-STYUKYMD
+                   MOVE    SYS-EDYUKYMD    TO  SYS-3101-EDYUKYMD
+                   MOVE    SYS-3101-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBDELETE-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "4007"      TO  SPA-ERRCD
+                   END-IF
                END-IF
       *
                IF    ( SPA-ERRCD     =   SPACE )
@@ -936,6 +958,43 @@
       *
            .
        48011-KIKAN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    日次付加情報更新処理
+      *****************************************************************
+       48011-SYS-3101-INS-SEC        SECTION.
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "3101"              TO  SYS-KANRICD
+           MOVE    SPA-NAI-L07-KBNCD   TO  SYS-KBNCD
+           MOVE    SYS-TOUKEI-STYUKYMD TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI        NOT = ZERO )
+               MOVE    "4009"          TO  SPA-ERRCD
+           ELSE
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-3101-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-3101-HOSPNUM
+               MOVE    SPA-L01-SEL     TO  WRK-KBNCD
+               MOVE    WRK-KBNCD-G     TO  SYS-3101-KBNCD
+               MOVE    WRK-STYUKYMD    TO  SYS-3101-STYUKYMD
+               MOVE    WRK-EDYUKYMD    TO  SYS-3101-EDYUKYMD
+               MOVE    SMCNDATE-YMD    TO  SYS-3101-CREYMD
+                                           SYS-3101-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SYS-3101-UPHMS
+               MOVE    SYS-3101-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC      NOT =    ZERO )
+                   MOVE    "4008"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       48011-SYS-3101-INS-EXT.
            EXIT.
       *****************************************************************
       *    統計メモ更新処理
@@ -1186,7 +1245,7 @@
                                                DELIMITED BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
-           WHEN    "4001" THRU "4006"
+           WHEN    "4001" THRU "4009"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE

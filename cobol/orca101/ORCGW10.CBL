@@ -135,6 +135,7 @@
            03  WRK-MNTCD-G.
                05  WRK-MNTCD-GRP   PIC X(01).
                05  WRK-MNTCD-NUM   PIC 9(03).
+           03  WRK-PARA-VISIBLE    PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -162,6 +163,7 @@
        01  CONST-AREA.
            03  CONST-3001-PARA-MAX PIC 9(05)   VALUE 8.
            03  CONST-3002-PARA-MAX PIC 9(05)   VALUE 10.
+           03  CONST-PARA-MAX      PIC 9(05)   VALUE 10.
            03  CONST-MEMO-MAX    PIC 9(05)     VALUE 6000.
       *
            COPY    "CPSK0043.INC"              REPLACING    //0043//
@@ -182,6 +184,8 @@
            COPY    "CPSK0044.INC".
            COPY    "CPSK3001.INC".
            COPY    "CPSK3002.INC".
+           COPY    "CPSK3101.INC".
+           COPY    "CPSK3102.INC".
       *
       *    統計メモ
        01  TOUKEIMEMO-REC.
@@ -369,87 +373,65 @@
       *
            IF    ( FLG-SYSKANRI        =   ZERO )
       *
-               IF    ( SPA-W10-KANRICD =   "3001" OR "0043" )
-                   MOVE    MCPDATA-REC TO  SYS-TOUKEI-REC
-                   MOVE    SYS-TOUKEI-HCNAME
+               MOVE    MCPDATA-REC     TO  SYS-TOUKEI-REC
+      *
+               MOVE    SYS-TOUKEI-HCNAME
                                        TO  SPA-GMN-W10-HCNAME
-                   MOVE    SYS-TOUKEI-PRGNAME
+               MOVE    SYS-TOUKEI-PRGNAME
                                        TO  SPA-GMN-W10-PRGNAME
                                            SPA-W10-PRGNAME
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       CONST-3001-PARA-MAX
-                       MOVE    SYS-TOUKEI-PARAHYOJI(IDX)
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-W10-PARA-MAX
+                   MOVE    SYS-TOUKEI-PARAHYOJI(IDX)
                                        TO  SPA-GMN-W10-PARAHYOJI(IDX)
-                       MOVE    SYS-TOUKEI-PARA     (IDX)
+                   MOVE    SYS-TOUKEI-PARA     (IDX)
                                        TO  SPA-GMN-W10-PARA     (IDX)
-                       IF    ( SYS-TOUKEI-HISSU-KBN(IDX)
-                                               =   SPACE OR "1" )
-                           MOVE    "T" TO  SPA-GMN-W10-OPTHISSU (IDX)
-                           MOVE    "F" TO  SPA-GMN-W10-OPTNINI  (IDX)
-                       ELSE
-                           MOVE    "F" TO  SPA-GMN-W10-OPTHISSU (IDX)
-                           MOVE    "T" TO  SPA-GMN-W10-OPTNINI  (IDX)
-                       END-IF
-                   END-PERFORM
-      *
-                   MOVE    SYS-TOUKEI-REC  TO  SYSKANRI-REC
-                   MOVE    SYS-TOUKEI-PRGNAME
-                                           TO  WRK-PGID
-      *
-                   PERFORM 3101-TOKEIMEMO-SEL-SEC
-                   IF    ( TKIMEMO-SAVEPARA =   "1" )
-                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                   IF    ( SYS-TOUKEI-HISSU-KBN(IDX)
+                                           =   SPACE OR "1" )
+                       MOVE    "T" TO  SPA-GMN-W10-OPTHISSU (IDX)
+                       MOVE    "F" TO  SPA-GMN-W10-OPTNINI  (IDX)
                    ELSE
-                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                       MOVE    "F" TO  SPA-GMN-W10-OPTHISSU (IDX)
+                       MOVE    "T" TO  SPA-GMN-W10-OPTNINI  (IDX)
                    END-IF
-                   IF    ( SYS-TOUKEI-KANRICD  =   "0043" )
-                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+               END-PERFORM
+      *
+               IF    ( WRK-KANRICD         =   "3001" OR "3002" )
+                   MOVE    SPACE           TO  SYSKANRI-REC
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+                   MOVE    SPA-W10-KANRICD2
+                                           TO  SYS-KANRICD
+                   MOVE    WRK-KBNCD       TO  SYS-KBNCD
+                   MOVE    SPA-W10-SEL-STYUKYMD
+                                           TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   MOVE    SYSKANRI-REC    TO  SYS-3101-REC
+                   IF    ( SPA-MW          =   SPA-GINBEE )
+                       MOVE    SYS-3101-REPOSITORY
+                                           TO  SPA-GMN-W10-REPOSITORY
                    END-IF
-      *
-                   MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO
-      *
-                   MOVE    1               TO  SPA-GMN-W10-CUR
-               ELSE
-                   MOVE    MCPDATA-REC     TO  SYS-TOUKEI-REC
-                   MOVE    SYS-TOUKEI-HCNAME
-                                       TO  SPA-GMN-W10-HCNAME1
-                   MOVE    SYS-TOUKEI-PRGNAME
-                                       TO  SPA-GMN-W10-PRGNAME1
-                                           SPA-W10-PRGNAME
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       CONST-3002-PARA-MAX
-                       MOVE    SYS-TOUKEI-PARAHYOJI(IDX)
-                                       TO  SPA-GMN-W10-PARAHYOJI1(IDX)
-                       MOVE    SYS-TOUKEI-PARA     (IDX)
-                                       TO  SPA-GMN-W10-PARA1     (IDX)
-                       IF    ( SYS-TOUKEI-HISSU-KBN(IDX)
-                                               =   SPACE OR "1" )
-                           MOVE    "T" TO  SPA-GMN-W10-OPTHISSU1 (IDX)
-                           MOVE    "F" TO  SPA-GMN-W10-OPTNINI1  (IDX)
-                       ELSE
-                           MOVE    "F" TO  SPA-GMN-W10-OPTHISSU1 (IDX)
-                           MOVE    "T" TO  SPA-GMN-W10-OPTNINI1  (IDX)
-                       END-IF
-                   END-PERFORM
-                   MOVE    SYS-TOUKEI-REC  TO  SYSKANRI-REC
-                   MOVE    SYS-TOUKEI-PRGNAME
-                                           TO  WRK-PGID
-      *
-                   PERFORM 3101-TOKEIMEMO-SEL-SEC
-      *
-                   IF    ( TKIMEMO-SAVEPARA =   "1" )
-                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                   ELSE
-                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                   END-IF
-                   IF    ( SYS-TOUKEI-KANRICD  =   "0044" )
-                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                   END-IF
-      *
-                   MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO1
-      *
-                   MOVE    101             TO  SPA-GMN-W10-CUR
                END-IF
+      *
+               MOVE    SYS-TOUKEI-REC      TO  SYSKANRI-REC
+               MOVE    SYS-TOUKEI-PRGNAME
+                                           TO  WRK-PGID
+      *
+               PERFORM 3101-TOKEIMEMO-SEL-SEC
+               IF    ( TKIMEMO-SAVEPARA =   "1" )
+                   MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+               ELSE
+                   MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
+               END-IF
+               IF    ( SYS-TOUKEI-KANRICD  =   "0043" OR "0044" )
+                   MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+               END-IF
+      *
+               MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO
+      *
+               MOVE    1               TO  SPA-GMN-W10-CUR
+      *
            ELSE
                    MOVE    1               TO  FLG-PARA-SET
            END-IF
@@ -504,8 +486,18 @@
                                        TO  SPA-W10-SEL-EDYUKYMD
            END-IF
       *
-           MOVE    SPA-W01-KANRICD     TO SPA-W10-KANRICD
+           MOVE    SPA-W01-KANRICD     TO  SPA-W10-KANRICD
+           IF    ( SPA-W01-KANRICD     =   "3001" )
+               MOVE    "3101"          TO  SPA-W10-KANRICD2
+           ELSE
+               MOVE    "3102"          TO  SPA-W10-KANRICD2
+           END-IF
            MOVE    SPA-W01-KBNCD       TO SPA-W10-KBNCD
+           IF    ( SPA-W01-KANRICD     =  "3001" )
+               MOVE    CONST-3001-PARA-MAX TO  SPA-W10-PARA-MAX
+           ELSE
+               MOVE    CONST-3002-PARA-MAX TO  SPA-W10-PARA-MAX
+           END-IF
       *
            MOVE    1                   TO  SPA-GMN-W10-CUR
       *
@@ -520,90 +512,55 @@
            MOVE    SPA-HOSPNUM         TO  SYS-3001-HOSPNUM
            MOVE    SYS-3001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
-      *     
-           EVALUATE    SPA-W10-KANRICD
-               WHEN    "3001"    
-                   IF      FLG-SYSKANRI            =   ZERO
-                       MOVE    MCPDATA-REC         
-                                       TO  SYS-3001-REC
-                       MOVE    SYS-3001-HCNAME     
-                                       TO  SPA-GMN-W10-HCNAME
-                       MOVE    SYS-3001-PRGNAME    
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-3001-REC
+               MOVE    SYS-3001-HCNAME TO  SPA-GMN-W10-HCNAME
+               MOVE    SYS-3001-PRGNAME
                                        TO  SPA-GMN-W10-PRGNAME
                                            SPA-W10-PRGNAME
-
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       CONST-3001-PARA-MAX
-                           MOVE    SYS-3001-PARAHYOJI(IDX)
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-W10-PARA-MAX
+                   MOVE    SYS-3001-PARAHYOJI(IDX)
                                        TO  SPA-GMN-W10-PARAHYOJI(IDX)
-                           MOVE    SYS-3001-PARA     (IDX)
+                   MOVE    SYS-3001-PARA     (IDX)
                                        TO  SPA-GMN-W10-PARA     (IDX)
-                           IF    ( SYS-3001-HISSU-KBN(IDX)
-                                                   =   SPACE OR "1" )
-                               MOVE    "T"     TO  SPA-GMN-W10-OPTHISSU
-                                                                 (IDX)
-                               MOVE    "F"     TO  SPA-GMN-W10-OPTNINI
-                                                                 (IDX)
-                           ELSE
-                               MOVE    "F"     TO  SPA-GMN-W10-OPTHISSU
-                                                                 (IDX)
-                               MOVE    "T"     TO  SPA-GMN-W10-OPTNINI
-                                                                 (IDX)
-                           END-IF
-                       END-PERFORM
-      *
-                       MOVE    SYS-3001-REC    TO  SYSKANRI-REC
-                       MOVE    SYS-3001-PRGNAME
-                                               TO  WRK-PGID
-                       PERFORM 3101-TOKEIMEMO-SEL-SEC
-                       IF    ( TKIMEMO-SAVEPARA =   "1" )
-                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
-                       ELSE
-                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
-                       END-IF
-                       MOVE    TKIMEMO-MEMO        TO  SPA-GMN-W10-MEMO
+                   IF    ( SYS-3001-HISSU-KBN(IDX)
+                                           =   SPACE OR "1" )
+                       MOVE    "T"     TO  SPA-GMN-W10-OPTHISSU (IDX)
+                       MOVE    "F"     TO  SPA-GMN-W10-OPTNINI  (IDX)
+                   ELSE
+                       MOVE    "F"     TO  SPA-GMN-W10-OPTHISSU (IDX)
+                       MOVE    "T"     TO  SPA-GMN-W10-OPTNINI  (IDX)
                    END-IF
-                   MOVE    1                   TO  SPA-GMN-W10-CUR
-               WHEN    "3002"    
-                   IF      FLG-SYSKANRI            =   ZERO
-                       MOVE    MCPDATA-REC     TO  SYS-3002-REC
-                       MOVE    SYS-3002-HCNAME TO  SPA-GMN-W10-HCNAME1
-                       MOVE    SYS-3002-PRGNAME
-                                               TO  SPA-GMN-W10-PRGNAME1
-                                                   SPA-W10-PRGNAME
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       CONST-3002-PARA-MAX
-                           MOVE    SYS-3002-PARAHYOJI(IDX)
-                                       TO  SPA-GMN-W10-PARAHYOJI1(IDX)
-                           MOVE    SYS-3002-PARA     (IDX)
-                                       TO  SPA-GMN-W10-PARA1     (IDX)
-                           IF    ( SYS-3002-HISSU-KBN(IDX)
-                                                   =   SPACE OR "1" )
-                               MOVE    "T"     TO  SPA-GMN-W10-OPTHISSU1
-                                                                 (IDX)
-                               MOVE    "F"     TO  SPA-GMN-W10-OPTNINI1
-                                                                 (IDX)
-                           ELSE
-                               MOVE    "F"     TO  SPA-GMN-W10-OPTHISSU1
-                                                                 (IDX)
-                               MOVE    "T"     TO  SPA-GMN-W10-OPTNINI1
-                                                                 (IDX)
-                           END-IF
-                       END-PERFORM
+               END-PERFORM
       *
-                       MOVE    SYS-3002-REC    TO  SYSKANRI-REC
-                       MOVE    SYS-3002-PRGNAME
-                                               TO  WRK-PGID
-                       PERFORM 3101-TOKEIMEMO-SEL-SEC
-                       IF    ( TKIMEMO-SAVEPARA =   "1" )
-                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                       ELSE
-                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                       END-IF
-                       MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO1
-                   END-IF
-                   MOVE    101                 TO  SPA-GMN-W10-CUR
-           END-EVALUATE                                           
+               INITIALIZE                 SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    SPA-W10-KANRICD2 TO SYS-KANRICD
+               MOVE    SPA-W10-KBNCD   TO  SYS-KBNCD
+               MOVE    SPA-W10-SEL-STYUKYMD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-3101-REC
+               IF    ( SPA-MW          =   SPA-GINBEE )
+                   MOVE    SYS-3101-REPOSITORY
+                                           TO  SPA-GMN-W10-REPOSITORY
+               END-IF
+      *
+               MOVE    SYS-3001-REC        TO  SYSKANRI-REC
+               MOVE    SYS-3001-PRGNAME    TO  WRK-PGID
+               PERFORM 3101-TOKEIMEMO-SEL-SEC
+               IF    ( TKIMEMO-SAVEPARA =   "1" )
+                   MOVE    "T"         TO  SPA-GMN-W10-CHK-SAVEPARA
+               ELSE
+                   MOVE    "F"         TO  SPA-GMN-W10-CHK-SAVEPARA
+               END-IF
+               MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO
+           END-IF
+      *
+           MOVE    1                   TO  SPA-GMN-W10-CUR
+      *
            . 
        31O-SPASET-EXT.
            EXIT.
@@ -617,18 +574,11 @@
                         SPA-NAI-W10-AREA
       *
            MOVE        "T"             TO  SPA-GMN-W10-CHK-SAVEPARA
-                                           SPA-GMN-W10-CHK-SAVEPARA1
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >       CONST-3001-PARA-MAX )
+                   UNTIL ( IDX >       CONST-PARA-MAX )
                MOVE    "T"             TO  SPA-GMN-W10-OPTHISSU (IDX)
                MOVE    "F"             TO  SPA-GMN-W10-OPTNINI  (IDX)
-           END-PERFORM
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >       CONST-3002-PARA-MAX )
-               MOVE    "T"             TO  SPA-GMN-W10-OPTHISSU1(IDX)
-               MOVE    "F"             TO  SPA-GMN-W10-OPTNINI1 (IDX)
            END-PERFORM
       *
            MOVE    SPA-W10-STYUKYMDH   TO  SPA-GMN-W10-STYUKYMD
@@ -636,19 +586,14 @@
       *
            EVALUATE    SPA-W10-KANRICD
            WHEN    "0043"
+           WHEN    "0044"
                MOVE    SPA-W10-KBNCD(2:3)
                                        TO  SPA-GMN-W10-HCNUM
                MOVE    1               TO  SPA-GMN-W10-CUR
            WHEN    "3001"
+           WHEN    "3002"
                MOVE    SPA-W10-KBNCD   TO  SPA-GMN-W10-HCNUM
                MOVE    1               TO  SPA-GMN-W10-CUR
-           WHEN    "0044"
-               MOVE    SPA-W10-KBNCD(2:3)
-                                       TO  SPA-GMN-W10-HCNUM1
-               MOVE    101             TO  SPA-GMN-W10-CUR
-           WHEN    "3002"
-               MOVE    SPA-W10-KBNCD   TO  SPA-GMN-W10-HCNUM1
-               MOVE    101             TO  SPA-GMN-W10-CUR
            END-EVALUATE
       *
            . 
@@ -757,58 +702,18 @@
                    PERFORM 490-TOUROKU-SEC
       *    必須オプションボタン
                WHEN    "CLICKED"       ALSO    "OPTHISSU01"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU02"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU03"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU04"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU05"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU06"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU07"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU08"
+                                         THRU  "OPTHISSU10"
                    MOVE    MCP-WIDGET  TO      WRK-WIDGET
                    PERFORM 4201-OPTHISSU-CHK-SEC
-               WHEN    "CLICKED"       ALSO    "OPTHISSU011"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU021"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU031"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU041"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU051"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU061"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU071"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU081"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU091"
-               WHEN    "CLICKED"       ALSO    "OPTHISSU101"
-                   MOVE    MCP-WIDGET  TO      WRK-WIDGET
-                   PERFORM 4211-OPTHISSU-CHK-SEC
       *    任意オプションボタン
                WHEN    "CLICKED"       ALSO    "OPTNINI01"
-               WHEN    "CLICKED"       ALSO    "OPTNINI02"
-               WHEN    "CLICKED"       ALSO    "OPTNINI03"
-               WHEN    "CLICKED"       ALSO    "OPTNINI04"
-               WHEN    "CLICKED"       ALSO    "OPTNINI05"
-               WHEN    "CLICKED"       ALSO    "OPTNINI06"
-               WHEN    "CLICKED"       ALSO    "OPTNINI07"
-               WHEN    "CLICKED"       ALSO    "OPTNINI08"
+                                         THRU  "OPTNINI10"
                    MOVE    MCP-WIDGET  TO      WRK-WIDGET
                    PERFORM 4202-OPTNINI-CHK-SEC
-               WHEN    "CLICKED"       ALSO    "OPTNINI011"
-               WHEN    "CLICKED"       ALSO    "OPTNINI021"
-               WHEN    "CLICKED"       ALSO    "OPTNINI031"
-               WHEN    "CLICKED"       ALSO    "OPTNINI041"
-               WHEN    "CLICKED"       ALSO    "OPTNINI051"
-               WHEN    "CLICKED"       ALSO    "OPTNINI061"
-               WHEN    "CLICKED"       ALSO    "OPTNINI071"
-               WHEN    "CLICKED"       ALSO    "OPTNINI081"
-               WHEN    "CLICKED"       ALSO    "OPTNINI091"
-               WHEN    "CLICKED"       ALSO    "OPTNINI101"
-                   MOVE    MCP-WIDGET  TO      WRK-WIDGET
-                   PERFORM 4212-OPTNINI-CHK-SEC
                WHEN    "CLICKED"       ALSO    "CHK_SAVEPARA"
                    PERFORM 4101-GMN-SPA-SET-SEC
                    MOVE    W10-CHK-SAVEPARA
                                        TO  SPA-GMN-W10-CHK-SAVEPARA
-               WHEN    "CLICKED"       ALSO    "CHK_SAVEPARA1"
-                   PERFORM 4101-GMN-SPA-SET-SEC
-                   MOVE    W10-CHK-SAVEPARA1
-                                       TO  SPA-GMN-W10-CHK-SAVEPARA1
           END-EVALUATE
       *
            .
@@ -851,26 +756,16 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
-      *    日次統計情報
            MOVE    W10-HCNAME          TO  SPA-GMN-W10-HCNAME
            MOVE    W10-PROGNAME        TO  SPA-GMN-W10-PRGNAME
+           MOVE    W10-REPOSITORY      TO  SPA-GMN-W10-REPOSITORY
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   CONST-3001-PARA-MAX
+                   UNTIL       IDZ     >   SPA-W10-PARA-MAX
                MOVE    W10-PARAHYOJI (IDZ)
                                        TO  SPA-GMN-W10-PARAHYOJI(IDZ)
                MOVE    W10-PARA (IDZ)  TO  SPA-GMN-W10-PARA(IDZ)
            END-PERFORM
            MOVE    W10-MEMO            TO  SPA-GMN-W10-MEMO
-      *    月次統計情報
-           MOVE    W10-HCNAME1         TO  SPA-GMN-W10-HCNAME1
-           MOVE    W10-PROGNAME1       TO  SPA-GMN-W10-PRGNAME1
-           PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   CONST-3002-PARA-MAX
-               MOVE    W10-PARAHYOJI1(IDZ) 
-                                       TO  SPA-GMN-W10-PARAHYOJI1(IDZ)
-               MOVE    W10-PARA1(IDZ)  TO  SPA-GMN-W10-PARA1(IDZ)
-           END-PERFORM
-           MOVE    W10-MEMO1           TO  SPA-GMN-W10-MEMO1
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -881,62 +776,36 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-           EVALUATE    SPA-W10-KANRICD
-               WHEN    "0043"
-               WHEN    "3001"
-      *            日次統計情報チェック
-                   PERFORM 4101-HCNAME-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4102-PRGNAME-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4103-PARAHYOJI-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4104-PARA-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4105-MEMO-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-               WHEN    "0044"
-               WHEN    "3002"
-      *            月次統計情報
-                   PERFORM 4111-HCNAME-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4112-PRGNAME-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4113-PARAHYOJI-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4114-PARA-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4115-MEMO-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-           END-EVALUATE
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-HCNAME-CHK-SEC
+           END-IF
       *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4102-PRGNAME-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4102-REPOSITORY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4103-PARAHYOJI-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4104-PARA-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4105-MEMO-CHK-SEC
+           END-IF
       *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    帳票名チェック（日次統計情報）
+      *    帳票名チェック
       *****************************************************************
        4101-HCNAME-CHK-SEC       SECTION.
       *
@@ -956,7 +825,7 @@
            EXIT.
       *
       *****************************************************************
-      *    プログラム名チェック（日次統計情報）
+      *    プログラム名チェック
       *****************************************************************
        4102-PRGNAME-CHK-SEC     SECTION.
       *
@@ -974,12 +843,29 @@
            EXIT.
       *
       *****************************************************************
-      *    パラメタ表示名称チェック（日次統計情報）
+      *    レポジトリ名チェック
+      *****************************************************************
+       4102-REPOSITORY-CHK-SEC     SECTION.
+      *
+           MOVE    SPA-GMN-W10-REPOSITORY  TO  WRK-MAE-INPUT
+           PERFORM 5002-HANKAKU-CHK-SEC
+           MOVE    WRK-OUT-INPUT           TO  SPA-GMN-W10-REPOSITORY
+           IF    ( FLG-HANKAKU NOT =   ZERO )
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    24                  TO  SPA-GMN-W10-CUR
+           END-IF
+      *
+           .
+       4102-REPOSITORY-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ表示名称チェック
       *****************************************************************
        4103-PARAHYOJI-CHK-SEC     SECTION.
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL     ( IDZ         >   CONST-3001-PARA-MAX )
+                   UNTIL     ( IDZ         >   SPA-W10-PARA-MAX )
                           OR ( SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-W10-PARAHYOJI(IDZ)  =   SPACE
                    MOVE    SPACE       TO  SPA-GMN-W10-PARA (IDZ)
@@ -1008,12 +894,12 @@
            EXIT.
       *
       *****************************************************************
-      *    パラメタチェック（日次統計情報）
+      *    パラメタチェック
       *****************************************************************
        4104-PARA-CHK-SEC     SECTION.
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL      (IDZ     >   CONST-3001-PARA-MAX   )   OR
+                   UNTIL      (IDZ     >   SPA-W10-PARA-MAX )   OR
                               (SPA-ERRCD   NOT =   SPACE )
                MOVE    SPA-GMN-W10-PARA (IDZ)
                                            TO  WRK-MAE-INPUT
@@ -1037,7 +923,7 @@
            END-IF
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL      (IDZ     >   CONST-3001-PARA-MAX   )   OR
+                   UNTIL      (IDZ     >   SPA-W10-PARA-MAX   )   OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-W10-PARAHYOJI(IDZ)  =   SPACE
                    IF      SPA-GMN-W10-PARA (IDZ)  NOT =   SPACE
@@ -1094,29 +980,6 @@
        4201-OPTHISSU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    必須オプションボタンチェック
-      *****************************************************************
-       4211-OPTHISSU-CHK-SEC       SECTION.
-      *
-      *    画面をＳＰＡセット
-           PERFORM 4101-GMN-SPA-SET-SEC
-      *
-           MOVE    WRK-WIDGET8         TO  IDZ
-      *
-           IF    ( SPA-GMN-W10-PARAHYOJI1(IDZ)  =   SPACE )
-               MOVE    "T"             TO  SPA-GMN-W10-OPTHISSU1 (IDZ)
-               MOVE    "F"             TO  SPA-GMN-W10-OPTNINI1  (IDZ)
-           ELSE
-               MOVE    W10-OPTHISSU1 (IDZ)
-                                       TO  SPA-GMN-W10-OPTHISSU1 (IDZ)
-               MOVE    W10-OPTNINI1  (IDZ)
-                                       TO  SPA-GMN-W10-OPTNINI1  (IDZ)
-           END-IF
-      *
-           .
-       4211-OPTHISSU-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    任意オプションボタンチェック
       *****************************************************************
        4202-OPTNINI-CHK-SEC        SECTION.
@@ -1138,164 +1001,6 @@
       *
            .
        4202-OPTNINI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    任意オプションボタンチェック
-      *****************************************************************
-       4212-OPTNINI-CHK-SEC        SECTION.
-      *
-      *    画面をＳＰＡセット
-           PERFORM 4101-GMN-SPA-SET-SEC
-      *
-           MOVE    WRK-WIDGET7         TO  IDZ
-      *
-           IF    ( SPA-GMN-W10-PARAHYOJI1(IDZ)  =   SPACE )
-               MOVE    "T"             TO  SPA-GMN-W10-OPTHISSU1(IDZ)
-               MOVE    "F"             TO  SPA-GMN-W10-OPTNINI1 (IDZ)
-           ELSE
-               MOVE    W10-OPTHISSU1 (IDZ)
-                                      TO  SPA-GMN-W10-OPTHISSU1(IDZ)
-               MOVE    W10-OPTNINI1  (IDZ)
-                                      TO  SPA-GMN-W10-OPTNINI1 (IDZ)
-           END-IF
-      *
-           .
-       4212-OPTNINI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    帳票名チェック（月次統計情報）
-      *****************************************************************
-       4111-HCNAME-CHK-SEC       SECTION.
-      *
-           MOVE    SPA-GMN-W10-HCNAME1     TO  WRK-MAE-INPUT
-           PERFORM 5002-ZENKAKU-CHK-SEC
-           MOVE    WRK-OUT-INPUT           TO  SPA-GMN-W10-HCNAME1
-           IF    ( FLG-ZENKAKU NOT =   ZERO )
-               MOVE    "0002"          TO  SPA-ERRCD
-               MOVE    101             TO  SPA-GMN-W10-CUR
-               GO  TO  4111-HCNAME-CHK-EXT
-           END-IF
-      *
-           MOVE    WRK-OUT-INPUT       TO  SPA-GMN-W10-HCNAME1
-      *
-           .
-       4111-HCNAME-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    プログラム名チェック（月次統計情報）
-      *****************************************************************
-       4112-PRGNAME-CHK-SEC     SECTION.
-      *
-           MOVE    SPA-GMN-W10-PRGNAME1     TO  WRK-MAE-INPUT
-           PERFORM 5002-HANKAKU-CHK-SEC
-           MOVE    WRK-OUT-INPUT            TO  SPA-GMN-W10-PRGNAME1
-           IF    ( FLG-HANKAKU NOT =   ZERO )
-               MOVE    "0003"          TO  SPA-ERRCD
-               MOVE    103             TO  SPA-GMN-W10-CUR
-               GO  TO  4112-PRGNAME-CHK-EXT
-           END-IF
-      *
-           .
-       4112-PRGNAME-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    パラメタ表示名称チェック（月次統計情報）
-      *****************************************************************
-       4113-PARAHYOJI-CHK-SEC     SECTION.
-      *
-      *
-           PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL      (IDZ     >   CONST-3002-PARA-MAX   )   OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-GMN-W10-PARAHYOJI1(IDZ)  =   SPACE
-                   MOVE    SPACE           TO  SPA-GMN-W10-PARA1 (IDZ)
-               ELSE
-                   MOVE    SPA-GMN-W10-PARAHYOJI1(IDZ)
-                                       TO  WRK-MAE-INPUT
-                   PERFORM 5002-ZENKAKU-CHK-SEC
-                   MOVE    WRK-OUT-INPUT
-                                       TO  SPA-GMN-W10-PARAHYOJI1(IDZ)
-                   IF    ( FLG-ZENKAKU NOT =   ZERO )
-                       MOVE    "0004"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-      *
-               IF      SPA-ERRCD       NOT =   SPACE
-                       COMPUTE SPA-GMN-W10-CUR
-                           =   ( IDZ - 1 ) * 2 + 104
-               END-IF
-           END-PERFORM
-           .
-       4113-PARAHYOJI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    パラメタチェック（月次統計情報）
-      *****************************************************************
-       4114-PARA-CHK-SEC     SECTION.
-      *
-           PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL      (IDZ     >   CONST-3002-PARA-MAX   )   OR
-                              (SPA-ERRCD   NOT =   SPACE )
-      *
-               MOVE    SPA-GMN-W10-PARA1 (IDZ)
-                                           TO  WRK-MAE-INPUT
-               PERFORM 5002-HANKAKU-CHK-SEC
-               MOVE    WRK-OUT-INPUT       TO  SPA-GMN-W10-PARA1 (IDZ)
-               IF    ( FLG-HANKAKU NOT =   ZERO )
-                   MOVE    "0005"          TO  SPA-ERRCD
-               END-IF
-               IF      SPA-ERRCD       NOT =   SPACE
-                   COMPUTE SPA-GMN-W10-CUR
-                       =   ( IDZ - 1 ) * 2 + 105
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4114-PARA-CHK-EXT
-           END-IF
-      *
-           IF      FLG-TOUROKU         =   ZERO
-               GO      TO      4114-PARA-CHK-EXT
-           END-IF
-      *
-           PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL      (IDZ     >   CONST-3002-PARA-MAX   )   OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-GMN-W10-PARAHYOJI1(IDZ) =   SPACE
-                   IF      SPA-GMN-W10-PARA1 (IDZ) NOT =   SPACE
-                       MOVE    "0001"              TO  SPA-ERRCD
-                   END-IF
-               ELSE
-                   IF      SPA-GMN-W10-PARA1 (IDZ)  =   SPACE
-                       MOVE    "0001"           TO  SPA-ERRCD
-                   END-IF
-               END-IF
-               IF      SPA-ERRCD       NOT =   SPACE
-                   COMPUTE SPA-GMN-W10-CUR
-                       =   ( IDZ - 1 ) * 2 + 105
-               END-IF
-           END-PERFORM
-           .
-       4114-PARA-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    メモ欄チェック処理
-      *****************************************************************
-       4115-MEMO-CHK-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-W10-MEMO1 (CONST-MEMO-MAX : 1)
-                                      >=   X"A1" )
-               MOVE    SPACE   TO  SPA-GMN-W10-MEMO1 (CONST-MEMO-MAX: )
-           END-IF
-      *
-           .
-       4115-MEMO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -1413,25 +1118,49 @@
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *
            IF    ( MCP-RC              NOT =   ZERO  )
-               MOVE    "1002"              TO  SPA-ERRCD
-               GO  TO  4031-DEL-EXT
+               MOVE    "4002"              TO  SPA-ERRCD
            END-IF
       *
-           IF    ( SPA-W10-MODE            =   ZERO )
-               PERFORM 4032-TOUKEIMEMO-DEL-SEC
-           ELSE
-               MOVE    SPA-W10-PRGNAME     TO  WRK-PRGNAME
-               PERFORM 4032-TOUKEIMEMO-ORG-DEL-SEC
-           END-IF
-           IF    ( SPA-ERRCD           NOT =   SPACE )
-               MOVE    "1004"              TO  SPA-ERRCD
-               GO  TO  4031-DEL-EXT
+           IF    ( SPA-ERRCD               =   SPACE )
+            AND  ( SPA-W10-KANRICD         =   "3001" OR "3002" )
+               MOVE    SPACE               TO  SYS-3101-REC
+               INITIALIZE                      SYS-3101-REC
+               MOVE    SPA-W10-KANRICD2    TO  SYS-3101-KANRICD
+               MOVE    SPA-W10-KBNCD       TO  SYS-3101-KBNCD
+               MOVE    SPA-W10-SEL-STYUKYMD TO SYS-3101-STYUKYMD
+               MOVE    SPA-W10-SEL-EDYUKYMD TO SYS-3101-EDYUKYMD
+               MOVE    SPA-HOSPNUM          TO SYS-3101-HOSPNUM
+               MOVE    SYS-3101-REC        TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF    ( MCP-RC              NOT =   ZERO  )
+                   MOVE    "4008"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
-           PERFORM 210-BACK
+           IF    ( SPA-ERRCD               =   SPACE )
+      *
+               IF    ( SPA-W10-MODE            =   ZERO )
+                   PERFORM 4032-TOUKEIMEMO-DEL-SEC
+               ELSE
+                   MOVE    SPA-W10-PRGNAME     TO  WRK-PRGNAME
+                   PERFORM 4032-TOUKEIMEMO-ORG-DEL-SEC
+               END-IF
+      *
+               IF    ( SPA-ERRCD           NOT =   SPACE )
+                   MOVE    "4004"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD               =   SPACE )
+               MOVE   "JOIN"               TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
            .
        4031-DEL-EXT.
            EXIT.
@@ -1456,7 +1185,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
            IF    ( MCP-RC              NOT =   ZERO )
-               MOVE    "1004"              TO  SPA-ERRCD
+               MOVE    "4005"              TO  SPA-ERRCD
                GO  TO  4032-TOUKEIMEMO-DEL-EXT
            END-IF
       *
@@ -1485,7 +1214,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
            IF    ( MCP-RC              NOT =   ZERO )
-               MOVE    "1004"              TO  SPA-ERRCD
+               MOVE    "4006"              TO  SPA-ERRCD
                GO  TO  4032-TOUKEIMEMO-ORG-DEL-EXT
            END-IF
       *
@@ -1521,7 +1250,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE                   TO  WRK-PRGNAME
       *
            MOVE    SPACE                   TO  SYS-3001-REC 
-           INITIALIZE                      SYS-3001-REC
+           INITIALIZE                          SYS-3001-REC
+      *
            MOVE    SPA-W10-KANRICD         TO  SYS-3001-KANRICD
            MOVE    SPA-W10-KBNCD           TO  SYS-3001-KBNCD
            MOVE    SPA-W10-SEL-STYUKYMD    TO  SYS-3001-STYUKYMD
@@ -1529,75 +1259,36 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  SYS-3001-HOSPNUM
            MOVE    SYS-3001-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
-      *
-           EVALUATE    SPA-W10-KANRICD
-               WHEN    "0043"     
-               WHEN    "3001"     
-                   IF      FLG-SYSKANRI        =   ZERO
-                       MOVE    MCPDATA-REC     TO  SYS-3001-REC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-3001-REC
+           ELSE
+               MOVE    SPACE           TO  SYS-3001-REC
+               INITIALIZE                  SYS-3001-REC
+               MOVE    SPA-W10-KANRICD TO  SYS-3001-KANRICD
+               MOVE    SPA-W10-KBNCD   TO  SYS-3001-KBNCD
+           END-IF 
+           MOVE    SPA-W10-STYUKYMD    TO  SYS-3001-STYUKYMD
+           MOVE    SPA-W10-EDYUKYMD    TO  SYS-3001-EDYUKYMD
+           MOVE    SPA-GMN-W10-HCNAME  TO  SYS-3001-HCNAME 
+           MOVE    SPA-GMN-W10-PRGNAME TO  SYS-3001-PRGNAME
+                                           WRK-PRGNAME
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-W10-PARA-MAX
+               MOVE    SPA-GMN-W10-PARAHYOJI (IDX)
+                                       TO  SYS-3001-PARAHYOJI(IDX)
+               MOVE    SPA-GMN-W10-PARA (IDX)
+                                       TO  SYS-3001-PARA     (IDX)
+               IF    ( SPA-GMN-W10-PARAHYOJI (IDX) NOT = SPACE )
+                   IF    ( SPA-GMN-W10-OPTHISSU(IDX)   =   "T" )
+                       MOVE    "1"     TO  SYS-3001-HISSU-KBN(IDX)
                    ELSE
-                       MOVE    SPACE           TO  SYS-3001-REC
-                       INITIALIZE                  SYS-3001-REC
-                       MOVE    SPA-W10-KANRICD TO  SYS-3001-KANRICD
-                       MOVE    SPA-W10-KBNCD   TO  SYS-3001-KBNCD
-                   END-IF 
-                   MOVE    SPA-W10-STYUKYMD    TO  SYS-3001-STYUKYMD
-                   MOVE    SPA-W10-EDYUKYMD    TO  SYS-3001-EDYUKYMD
-                   MOVE    SPA-GMN-W10-HCNAME      TO  SYS-3001-HCNAME 
-                   MOVE    SPA-GMN-W10-PRGNAME     TO  SYS-3001-PRGNAME
-                                                       WRK-PRGNAME
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       CONST-3001-PARA-MAX
-                       MOVE    SPA-GMN-W10-PARAHYOJI (IDX)
-                                           TO  SYS-3001-PARAHYOJI(IDX)
-                       MOVE    SPA-GMN-W10-PARA (IDX)
-                                           TO  SYS-3001-PARA     (IDX)
-                       IF    ( SPA-GMN-W10-PARAHYOJI (IDX) NOT = SPACE )
-                           IF    ( SPA-GMN-W10-OPTHISSU(IDX)   =   "T" )
-                               MOVE    "1" TO  SYS-3001-HISSU-KBN(IDX)
-                           ELSE
-                               MOVE    "2" TO  SYS-3001-HISSU-KBN(IDX)
-                           END-IF
-                       ELSE
-                               MOVE    SPACE
-                                           TO  SYS-3001-HISSU-KBN(IDX)
-                       END-IF
-                   END-PERFORM
-                   MOVE    SYS-3001-REC         TO  SYSKANRI-REC
-               WHEN    "0044"
-               WHEN    "3002"
-                   IF      FLG-SYSKANRI        =   ZERO
-                       MOVE    MCPDATA-REC     TO  SYS-3002-REC
-                   ELSE
-                       MOVE    SPACE           TO  SYS-3002-REC
-                       INITIALIZE                  SYS-3002-REC
-                       MOVE    SPA-W10-KANRICD TO  SYS-3002-KANRICD
-                       MOVE    SPA-W10-KBNCD   TO  SYS-3002-KBNCD
-                   END-IF 
-                   MOVE    SPA-W10-STYUKYMD    TO  SYS-3002-STYUKYMD
-                   MOVE    SPA-W10-EDYUKYMD    TO  SYS-3002-EDYUKYMD
-                   MOVE    SPA-GMN-W10-HCNAME1     TO  SYS-3002-HCNAME 
-                   MOVE    SPA-GMN-W10-PRGNAME1    TO  SYS-3002-PRGNAME
-                                                       WRK-PRGNAME
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       CONST-3002-PARA-MAX
-                       MOVE    SPA-GMN-W10-PARAHYOJI1(IDX)
-                                           TO  SYS-3002-PARAHYOJI(IDX)
-                       MOVE    SPA-GMN-W10-PARA1     (IDX)
-                                           TO  SYS-3002-PARA     (IDX)
-                       IF    ( SPA-GMN-W10-PARAHYOJI1 (IDX) NOT = SPACE)
-                           IF    ( SPA-GMN-W10-OPTHISSU1(IDX)   =   "T")
-                               MOVE    "1" TO  SYS-3002-HISSU-KBN(IDX)
-                           ELSE
-                               MOVE    "2" TO  SYS-3002-HISSU-KBN(IDX)
-                           END-IF
-                       ELSE
-                               MOVE    SPACE
-                                           TO  SYS-3002-HISSU-KBN(IDX)
-                       END-IF
-                   END-PERFORM
-                   MOVE    SYS-3002-REC         TO  SYSKANRI-REC
-           END-EVALUATE       
+                       MOVE    "2"     TO  SYS-3001-HISSU-KBN(IDX)
+                   END-IF
+               ELSE
+                       MOVE    SPACE   TO  SYS-3001-HISSU-KBN(IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SYS-3001-REC        TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
@@ -1626,8 +1317,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1001"                  TO  SPA-ERRCD
+               MOVE    "4001"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
+           END-IF
+      *
+           IF    ( SYS-KANRICD             =   "3001" OR "3002" )
+               PERFORM 491-SYS-3101-3102-UPD-SEC
            END-IF
       *
            IF    ( SYS-KANRICD             =   "0043" OR "0044" )
@@ -1670,6 +1365,51 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    日次・月次統計付加情報
+      *****************************************************************
+       491-SYS-3101-3102-UPD-SEC        SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    SPACE                   TO  SYS-3101-REC
+           INITIALIZE                          SYS-3101-REC
+           MOVE    SPA-HOSPNUM             TO  SYS-3101-HOSPNUM
+           MOVE    SPA-W10-KANRICD2        TO  SYS-3101-KANRICD
+           MOVE    SYS-KBNCD               TO  SYS-3101-KBNCD
+           MOVE    SPA-W10-SEL-STYUKYMD    TO  SYS-3101-STYUKYMD
+                                               SYS-3101-EDYUKYMD
+           MOVE    SPA-GMN-W10-REPOSITORY  TO  SYS-3101-REPOSITORY
+           MOVE    SMCNDATE-YMD            TO  SYS-3101-CREYMD
+                                               SYS-3101-UPYMD
+           MOVE    SMCNDATE-HMS            TO  SYS-3101-UPHMS
+           MOVE    SYS-3101-REC            TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYS-KEY                 TO  SYS-3101-UPD-KEY
+           MOVE    SPA-W10-STYUKYMD        TO  SYS-3101-STYUKYMD
+           MOVE    SPA-W10-EDYUKYMD        TO  SYS-3101-EDYUKYMD
+           IF    ( FLG-SYSKANRI            =   ZERO )
+               MOVE    SYS-CREYMD          TO  SYS-3101-CREYMD
+               MOVE    SYS-3101-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "upd1"              TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    "4009"          TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    SYS-3101-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    "4010"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       491-SYS-3101-3102-UPD-EXT.
+           EXIT.
+      *****************************************************************
       *    統計メモテーブル更新処理
       *****************************************************************
        491-TOUKEIMEMO-UPD-SEC      SECTION.
@@ -1679,11 +1419,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( SPA-W10-MODE            =   ZERO )
       *
                INITIALIZE                          TOUKEIMEMO-REC
-               IF    ( SPA-W10-KANRICD     =   "3001" )
-                   MOVE    SPA-GMN-W10-PRGNAME TO  TKIMEMO-PGID
-               ELSE
-                   MOVE    SPA-GMN-W10-PRGNAME1 TO TKIMEMO-PGID
-               END-IF
+               MOVE    SPA-GMN-W10-PRGNAME     TO  TKIMEMO-PGID
                MOVE    SPA-W10-KANRICD         TO  TKIMEMO-KANRICD
                MOVE    SPA-W10-KBNCD           TO  TKIMEMO-KBNCD
                MOVE    SPA-W10-SEL-STYUKYMD    TO  TKIMEMO-STYUKYMD
@@ -1698,57 +1434,31 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-W10-PRGNAME TO  WRK-PRGNAME
                PERFORM 4032-TOUKEIMEMO-ORG-DEL-SEC
       *
-               IF    ( SPA-W10-KANRICD     =   "0043" )
-                   MOVE    SPA-GMN-W10-PRGNAME
+               MOVE    SPA-GMN-W10-PRGNAME
                                        TO  WRK-PRGNAME
-               ELSE
-                   MOVE    SPA-GMN-W10-PRGNAME1
-                                       TO  WRK-PRGNAME
-               END-IF
                PERFORM 4032-TOUKEIMEMO-ORG-DEL-SEC
            END-IF
            IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    "1005"          TO  SPA-ERRCD
+               MOVE    "4007"          TO  SPA-ERRCD
                GO  TO  491-TOUKEIMEMO-UPD-EXT
            END-IF
       *
            INITIALIZE              TOUKEIMEMO-REC
       *
-           IF    ( SPA-W10-KANRICD     =   "3001" OR "0043" )
-               MOVE    SPA-GMN-W10-PRGNAME
+           MOVE    SPA-GMN-W10-PRGNAME
                                        TO  TKIMEMO-PGID
-               MOVE    SPA-GMN-W10-MEMO
-                                       TO  TKIMEMO-MEMO
-               MOVE    WTMEMO-USERMEMO
-                                       TO  TKIMEMO-USERMEMO
+           MOVE    SPA-GMN-W10-MEMO    TO  TKIMEMO-MEMO
+           MOVE    WTMEMO-USERMEMO     TO  TKIMEMO-USERMEMO
       *
-               IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "T" )
-                   MOVE    "1"         TO  TKIMEMO-SAVEPARA
-               ELSE
-                   MOVE    " "         TO  TKIMEMO-SAVEPARA
-               END-IF
-      *
-      *        IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "F" )
-                   MOVE    SPACE       TO  TKIMEMO-PARA-G
-      *        END-IF
-      *
+           IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "T" )
+               MOVE    "1"             TO  TKIMEMO-SAVEPARA
            ELSE
-               MOVE    SPA-GMN-W10-PRGNAME1
-                                       TO  TKIMEMO-PGID
-               MOVE    SPA-GMN-W10-MEMO1
-                                       TO  TKIMEMO-MEMO
-               MOVE    WTMEMO-USERMEMO
-                                       TO  TKIMEMO-USERMEMO
-               IF    ( SPA-GMN-W10-CHK-SAVEPARA1   =   "T" )
-                   MOVE    "1"         TO  TKIMEMO-SAVEPARA
-               ELSE
-                   MOVE    " "         TO  TKIMEMO-SAVEPARA
-               END-IF
-      *
-      *        IF    ( SPA-GMN-W10-CHK-SAVEPARA1   =   "F" )
-                   MOVE    SPACE       TO  TKIMEMO-PARA-G
-      *        END-IF
+               MOVE    " "             TO  TKIMEMO-SAVEPARA
            END-IF
+      *
+      *    IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "F" )
+               MOVE    SPACE           TO  TKIMEMO-PARA-G
+      *    END-IF
       *
            IF    ( SPA-W10-MODE        =   ZERO )
                MOVE    SPA-W10-KANRICD TO  TKIMEMO-KANRICD
@@ -1830,7 +1540,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    CLOSE   MST-TMEMO
                END-IF
            ELSE
-               MOVE    "1003"          TO  SPA-ERRCD
+               MOVE    "4003"          TO  SPA-ERRCD
            END-IF
       *
            .
@@ -1843,49 +1553,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE                TO  SPA-ERRCD
       *
-           EVALUATE    SPA-W10-KANRICD
-               WHEN    "0043"     
-               WHEN    "3001"     
-                   PERFORM 4901-TAG1-CHK-SEC
-               WHEN    "0044"     
-               WHEN    "3002"     
-                   PERFORM 4902-TAG2-CHK-SEC
-           END-EVALUATE        
-      *   
-           .
-       4900-KANRENCHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       日次統計情報タグの関連チェック処理
-      *****************************************************************
-       4901-TAG1-CHK-SEC           SECTION.
-      *
            IF      SPA-GMN-W10-HCNAME      =   SPACE    
            OR      SPA-GMN-W10-PRGNAME     =   SPACE   
                MOVE  "0099"                TO  SPA-ERRCD
                MOVE   1                    TO  SPA-GMN-W10-CUR
-               GO  TO  4901-TAG1-CHK-EXT
            END-IF
-      *
+      *   
            .
-       4901-TAG1-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       月次統計情報タグの関連チェック処理
-      *****************************************************************
-       4902-TAG2-CHK-SEC           SECTION.
-      *
-           IF      SPA-GMN-W10-HCNAME1     =   SPACE    
-           OR      SPA-GMN-W10-PRGNAME1    =   SPACE   
-               MOVE  "0099"                TO  SPA-ERRCD
-               MOVE   101                  TO  SPA-GMN-W10-CUR
-               GO  TO  4902-TAG2-CHK-EXT
-           END-IF
-      *
-           .
-       4902-TAG2-CHK-EXT.
+       4900-KANRENCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1992,6 +1667,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                       W10
       *
+           IF    ( SPA-W01-KANRICD      =   "3001" )
+               MOVE    "日次統計"       TO  W10-LBLTITLE
+            ELSE
+               MOVE    "月次統計"       TO  W10-LBLTITLE
+            END-IF
+      *
            IF    ( SPA-W10-MODE     NOT =   ZERO )
       *
                MOVE    "帳票選択"           TO  W10-B06
@@ -2027,7 +1708,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-W10-STYUKYMD     TO  W10-STYUKYMD
            MOVE    SPA-GMN-W10-EDYUKYMD     TO  W10-EDYUKYMD
       *
-      *    日次統計情報 
            MOVE    SPA-GMN-W10-HCNUM        TO  W10-HCNUM
            MOVE    SPA-GMN-W10-CHK-SAVEPARA TO  W10-CHK-SAVEPARA
            IF    ( SPA-W10-MODE     NOT =   ZERO )
@@ -2037,39 +1717,43 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    SPA-GMN-W10-HCNAME       TO  W10-HCNAME
            MOVE    SPA-GMN-W10-PRGNAME      TO  W10-PROGNAME
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       CONST-3001-PARA-MAX
+           MOVE    SPA-GMN-W10-REPOSITORY   TO  W10-REPOSITORY
+           PERFORM VARYING IDX FROM    1    BY  1
+                   UNTIL   IDX >            CONST-PARA-MAX
                MOVE    SPA-GMN-W10-PARAHYOJI (IDX)
-                                              TO  W10-PARAHYOJI(IDX)
-               MOVE    SPA-GMN-W10-PARA (IDX)     TO  W10-PARA (IDX)
+                                            TO  W10-PARAHYOJI(IDX)
+               MOVE    SPA-GMN-W10-PARA (IDX)
+                                            TO  W10-PARA (IDX)
                MOVE    SPA-GMN-W10-OPTHISSU (IDX)
                                         TO  W10-OPTHISSU (IDX)
                MOVE    SPA-GMN-W10-OPTNINI  (IDX)
                                         TO  W10-OPTNINI  (IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-W10-MEMO     TO  W10-MEMO
       *
-      *    月次統計情報 
-           MOVE    SPA-GMN-W10-HCNUM1       TO  W10-HCNUM1
-           MOVE    SPA-GMN-W10-CHK-SAVEPARA1 TO  W10-CHK-SAVEPARA1
-           IF    ( SPA-W10-MODE     NOT =   ZERO )
-               MOVE    WIDGET-INSENSITIVE   TO  W10-CHK-SAVEPARA1-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL        TO  W10-CHK-SAVEPARA1-STATE
-           END-IF
-           MOVE    SPA-GMN-W10-HCNAME1      TO  W10-HCNAME1
-           MOVE    SPA-GMN-W10-PRGNAME1     TO  W10-PROGNAME1
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       CONST-3002-PARA-MAX
-               MOVE    SPA-GMN-W10-PARAHYOJI1(IDX)
-                                              TO  W10-PARAHYOJI1(IDX)
-               MOVE    SPA-GMN-W10-PARA1(IDX)     TO  W10-PARA1 (IDX)
-               MOVE    SPA-GMN-W10-OPTHISSU1 (IDX)
-                                        TO  W10-OPTHISSU1 (IDX)
-               MOVE    SPA-GMN-W10-OPTNINI1  (IDX)
-                                        TO  W10-OPTNINI1  (IDX)
+               IF    ( IDX              <=  SPA-W10-PARA-MAX )
+                   MOVE    "T"          TO  WRK-PARA-VISIBLE
+               ELSE
+                   MOVE    "F"          TO  WRK-PARA-VISIBLE
+               END-IF
+               MOVE    WRK-PARA-VISIBLE TO  W10-PARAHYOJI-VISIBLE (IDX)
+                                            W10-PARA-VISIBLE(IDX)
+                                            W10-OPTHISSU-VISIBLE (IDX)
+                                            W10-OPTNINI-VISIBLE  (IDX)
+      *
            END-PERFORM
-           MOVE    SPA-GMN-W10-MEMO1    TO  W10-MEMO1
+      *
+           IF    ( SPA-W01-KANRICD      =   "3002" )
+               MOVE    "　　　　　　　　９" TO  W10-LBLPARA09
+               MOVE    "　　　　　　　１０" TO  W10-LBLPARA10
+           END-IF
+      *
+           IF    ( SPA-MW               =   SPA-GINBEE )
+               MOVE    "T"              TO  W10-REPOSITORY-VISIBLE
+               MOVE    "レポジトリ名"   TO  W10-LBLREPOSITORY
+           ELSE
+               MOVE    "F"              TO  W10-REPOSITORY-VISIBLE
+           END-IF
+      *
+           MOVE    SPA-GMN-W10-MEMO     TO  W10-MEMO
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2087,18 +1771,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-W10-SELNUM          >   ZERO    
                MOVE    WIDGET-NORMAL      TO  W10-B03-STATE
            END-IF
-      *      
-           MOVE    WIDGET-INSENSITIVE     TO  W10-N01-STATE
-                                              W10-N02-STATE
-      *             
-           EVALUATE    SPA-W10-KANRICD
-               WHEN    "0043"
-               WHEN    "3001"
-                   MOVE    WIDGET-NORMAL   TO  W10-N01-STATE
-               WHEN    "0044"
-               WHEN    "3002" 
-                   MOVE    WIDGET-NORMAL   TO  W10-N02-STATE
-           END-EVALUATE
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -2124,26 +1796,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0005"
                    MOVE    "帳票パラメータＩＤは半角で指定してください" 
                                                TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "レポジトリ名は半角で指定してください" 
+                                               TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
-               WHEN    "1001"
-                   MOVE    "更新処理ができませんでした"
-                                               TO  SPA-ERRMSG
-               WHEN    "1002"
-                   MOVE    "削除処理ができませんでした"
-                                               TO  SPA-ERRMSG
-               WHEN    "1003"
-                   MOVE    "更新処理ができませんでした"
-                                               TO  SPA-ERRMSG
-               WHEN    "1004"
-                   MOVE    "削除処理ができませんでした"
-                                               TO  SPA-ERRMSG
-               WHEN    "1005"
-                   MOVE    "更新処理ができませんでした"
-                                               TO  SPA-ERRMSG
-               WHEN    "1006"
-                   MOVE    "更新処理ができませんでした"
+               WHEN    "4001"    THRU    "4010"
+                   MOVE    "更新処理に失敗しました"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -2209,100 +1869,68 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 50011-CUR-SET-SEC
           END-IF
       *
+          IF    ( SPA-GMN-W10-CUR              =   24 )
+           AND  ( W10-REPOSITORY-VISIBLE       =   "F" )
+              MOVE    4                        TO  SPA-GMN-W10-CUR
+          END-IF
+      *
+          IF    ( SPA-GMN-W10-CUR              =   20 )
+           AND  ( W10-PARAHYOJI-VISIBLE (9)    =   "F" )
+              MOVE    999                  TO  SPA-GMN-W10-CUR
+          END-IF
+      *
           EVALUATE    SPA-GMN-W10-CUR
-      *         日次統計情報    
                 WHEN    01
                     MOVE  "HCNAME"         TO   MCP-WIDGET
                 WHEN    03
                     MOVE  "PROGNAME"       TO   MCP-WIDGET
                 WHEN    04
-                    MOVE  "PARAHYOJI1"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI01"    TO   MCP-WIDGET
                 WHEN    05
-                    MOVE  "PARA1"          TO   MCP-WIDGET
+                    MOVE  "PARA01"         TO   MCP-WIDGET
                 WHEN    06
-                    MOVE  "PARAHYOJI2"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI02"    TO   MCP-WIDGET
                 WHEN    07
-                    MOVE  "PARA2"          TO   MCP-WIDGET
+                    MOVE  "PARA02"         TO   MCP-WIDGET
                 WHEN    08
-                    MOVE  "PARAHYOJI3"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI03"    TO   MCP-WIDGET
                 WHEN    09
-                    MOVE  "PARA3"          TO   MCP-WIDGET
+                    MOVE  "PARA03"         TO   MCP-WIDGET
                 WHEN    10
-                    MOVE  "PARAHYOJI4"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI04"    TO   MCP-WIDGET
                 WHEN    11
-                    MOVE  "PARA4"          TO   MCP-WIDGET
+                    MOVE  "PARA04"         TO   MCP-WIDGET
                 WHEN    12
-                    MOVE  "PARAHYOJI5"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI05"    TO   MCP-WIDGET
                 WHEN    13
-                    MOVE  "PARA5"          TO   MCP-WIDGET
+                    MOVE  "PARA05"         TO   MCP-WIDGET
                 WHEN    14
-                    MOVE  "PARAHYOJI6"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI06"    TO   MCP-WIDGET
                 WHEN    15
-                    MOVE  "PARA6"          TO   MCP-WIDGET
+                    MOVE  "PARA06"         TO   MCP-WIDGET
                 WHEN    16
-                    MOVE  "PARAHYOJI7"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI07"    TO   MCP-WIDGET
                 WHEN    17
-                    MOVE  "PARA7"          TO   MCP-WIDGET
+                    MOVE  "PARA07"         TO   MCP-WIDGET
                 WHEN    18
-                    MOVE  "PARAHYOJI8"     TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI08"    TO   MCP-WIDGET
                 WHEN    19
-                    MOVE  "PARA8"          TO   MCP-WIDGET
-      *         月次統計情報    
-                WHEN    101
-                    MOVE  "HCNAME1"        TO   MCP-WIDGET
-                WHEN    103
-                    MOVE  "PROGNAME1"      TO   MCP-WIDGET
-                WHEN    104
-                    MOVE  "PARAHYOJI11"    TO   MCP-WIDGET
-                WHEN    105
-                    MOVE  "PARA11"         TO   MCP-WIDGET
-                WHEN    106
-                    MOVE  "PARAHYOJI21"    TO   MCP-WIDGET
-                WHEN    107
-                    MOVE  "PARA21"         TO   MCP-WIDGET
-                WHEN    108
-                    MOVE  "PARAHYOJI31"    TO   MCP-WIDGET
-                WHEN    109
-                    MOVE  "PARA31"         TO   MCP-WIDGET
-                WHEN    110
-                    MOVE  "PARAHYOJI41"    TO   MCP-WIDGET
-                WHEN    111
-                    MOVE  "PARA41"         TO   MCP-WIDGET
-                WHEN    112
-                    MOVE  "PARAHYOJI51"    TO   MCP-WIDGET
-                WHEN    113
-                    MOVE  "PARA51"         TO   MCP-WIDGET
-                WHEN    114
-                    MOVE  "PARAHYOJI61"    TO   MCP-WIDGET
-                WHEN    115
-                    MOVE  "PARA61"         TO   MCP-WIDGET
-                WHEN    116
-                    MOVE  "PARAHYOJI71"    TO   MCP-WIDGET
-                WHEN    117
-                    MOVE  "PARA71"         TO   MCP-WIDGET
-                WHEN    118
-                    MOVE  "PARAHYOJI81"    TO   MCP-WIDGET
-                WHEN    119
-                    MOVE  "PARA81"         TO   MCP-WIDGET
-                WHEN    120
-                    MOVE  "PARAHYOJI91"    TO   MCP-WIDGET
-                WHEN    121
-                    MOVE  "PARA91"         TO   MCP-WIDGET
-                WHEN    122
-                    MOVE  "PARAHYOJI101"   TO   MCP-WIDGET
-                WHEN    123
-                    MOVE  "PARA101"        TO   MCP-WIDGET
+                    MOVE  "PARA08"         TO   MCP-WIDGET
+                WHEN    20
+                    MOVE  "PARAHYOJI09"    TO   MCP-WIDGET
+                WHEN    21
+                    MOVE  "PARA09"         TO   MCP-WIDGET
+                WHEN    22
+                    MOVE  "PARAHYOJI10"    TO   MCP-WIDGET
+                WHEN    23
+                    MOVE  "PARA10"         TO   MCP-WIDGET
+                WHEN    24
+                    MOVE  "REPOSITORY"     TO   MCP-WIDGET
       *
                 WHEN    999
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE
       *
-           EVALUATE    SPA-W01-KANRICD
-           WHEN    "3001"
-               MOVE    0               TO  W10-PAGENO
-           WHEN    "3002"
-               MOVE    1               TO  W10-PAGENO
-           END-EVALUATE                       
            .
        5001-MAPCUR-EXT.
            EXIT.
@@ -2316,83 +1944,48 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "HCNAME"
                    MOVE    3           TO  SPA-GMN-W10-CUR
                WHEN    "PROGNAME"
+                   MOVE    24          TO  SPA-GMN-W10-CUR
+               WHEN    "REPOSITORY"
                    MOVE    4           TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI1"
+               WHEN    "PARAHYOJI01"
                    MOVE    5           TO  SPA-GMN-W10-CUR
-               WHEN    "PARA1 "
+               WHEN    "PARA01 "
                    MOVE    6           TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI2 "
+               WHEN    "PARAHYOJI02 "
                    MOVE    7           TO  SPA-GMN-W10-CUR
-               WHEN    "PARA2 "
+               WHEN    "PARA02 "
                    MOVE    8           TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI3 "
+               WHEN    "PARAHYOJI03 "
                    MOVE    9           TO  SPA-GMN-W10-CUR
-               WHEN    "PARA3 "
+               WHEN    "PARA03 "
                    MOVE    10          TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI4 "
+               WHEN    "PARAHYOJI04 "
                    MOVE    11          TO  SPA-GMN-W10-CUR
-               WHEN    "PARA4 "
+               WHEN    "PARA04 "
                    MOVE    12          TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI5 "
+               WHEN    "PARAHYOJI05 "
                    MOVE    13          TO  SPA-GMN-W10-CUR
-               WHEN    "PARA5 "
+               WHEN    "PARA05 "
                    MOVE    14          TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI6 "
+               WHEN    "PARAHYOJI06 "
                    MOVE    15          TO  SPA-GMN-W10-CUR
-               WHEN    "PARA6 "
+               WHEN    "PARA06 "
                    MOVE    16          TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI7 "
+               WHEN    "PARAHYOJI07 "
                    MOVE    17          TO  SPA-GMN-W10-CUR
-               WHEN    "PARA7 "
+               WHEN    "PARA07 "
                    MOVE    18          TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI8 "
+               WHEN    "PARAHYOJI08 "
                    MOVE    19          TO  SPA-GMN-W10-CUR
-               WHEN    "PARA8 "
-                   MOVE    999         TO  SPA-GMN-W10-CUR
-      *
-               WHEN    "HCNAME1"
-                   MOVE    103         TO  SPA-GMN-W10-CUR
-               WHEN    "PROGNAME1"
-                   MOVE    104         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI11"
-                   MOVE    105         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA11"
-                   MOVE    106         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI21"
-                   MOVE    107         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA21"
-                   MOVE    108         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI31"
-                   MOVE    109         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA31"
-                   MOVE    110         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI41"
-                   MOVE    111         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA41"
-                   MOVE    112         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI51"
-                   MOVE    113         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA51"
-                   MOVE    114         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI61"
-                   MOVE    115         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA61"
-                   MOVE    116         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI71"
-                   MOVE    117         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA71"
-                   MOVE    118         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI81"
-                   MOVE    119         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA81"
-                   MOVE    120         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI91"
-                   MOVE    121         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA91"
-                   MOVE    122         TO  SPA-GMN-W10-CUR
-               WHEN    "PARAHYOJI101"
-                   MOVE    123         TO  SPA-GMN-W10-CUR
-               WHEN    "PARA101"
+               WHEN    "PARA08 "
+                   MOVE    20          TO  SPA-GMN-W10-CUR
+               WHEN    "PARAHYOJI09 "
+                   MOVE    21          TO  SPA-GMN-W10-CUR
+               WHEN    "PARA09 "
+                   MOVE    22          TO  SPA-GMN-W10-CUR
+               WHEN    "PARAHYOJI10 "
+                   MOVE    23          TO  SPA-GMN-W10-CUR
+               WHEN    "PARA10 "
                    MOVE    999         TO  SPA-GMN-W10-CUR
            END-EVALUATE
       *
@@ -2565,6 +2158,31 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-SYSKANRI-INV-EXT.
            EXIT.
       *****************************************************************
+      *    管理マスター読込（キー）
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+      *
+           .
+       900-SYSKANRI-KEY10-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    管理マスター検索処理
       *****************************************************************
        900-SYSKANRI-KEY22-SEL-SEC         SECTION.
@@ -2647,6 +2265,93 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-TOUKEIMEMO-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       910-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"          TO      MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＤＥＬＥＴＥ処理
+      *****************************************************************
+       910-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＵＰＤＡＴＥ処理
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＩＮＳＥＲＴ処理
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
