@@ -530,6 +530,11 @@
                IF      ORCHC62-QRKBN       =   "1"
                    MOVE    "1"             TO  WRK-QRKBN
                END-IF
+      *H28.11
+      *        CSV¤Ê¤·
+               IF      ORCHC62-QRKBN       =   "2"
+                   MOVE    "2"             TO  WRK-QRKBN
+               END-IF
            END-IF
       *H28.6
       *    ginbeeÂÐ±þ
@@ -611,7 +616,8 @@
       *
       *H24.9
       *    £Ñ£Ò°õºþ
-           IF     (WRK-QRKBN           =   "1"  )
+           IF     (WRK-QRKBN           =   "1"
+                                       OR  "2"  )
               OR  (ORCHC62-CSVKBN  NOT =   SPACE )
                PERFORM 500-QR-SYORI-SEC
            END-IF
@@ -1571,6 +1577,8 @@
            MOVE    WRK-SYS-TIME        TO  ORCSQRCSV62-SYSTIME
       *
            IF      ORCHC62-CSVKBN  NOT =   SPACE
+      *H28.11      CSV¤Ê¤·
+              AND (WRK-QRKBN       NOT =   "2"   )
       *        £Ã£Ó£ÖÊÝÂ¸¥Õ¥¡¥¤¥ëÌ¾ 
                PERFORM 50034-QRCSVFILE-SEC
                MOVE    WRK-CSV-FILE        TO  ORCSQRCSV62-CSV-FILENAME
@@ -1578,6 +1586,10 @@
       *
            MOVE    ORCHC62-CSVKBN      TO  ORCSQRCSV62-CSV-KBN
            MOVE    WRK-QRKBN           TO  ORCSQRCSV62-QR-KBN
+      *H28.11
+           IF      WRK-QRKBN           =   "2"
+               MOVE    "1"             TO  ORCSQRCSV62-QR-KBN
+           END-IF
            MOVE    ORCHC62-CNT         TO  ORCSQRCSV62-CNT
            MOVE    ORCHC62-PGKBN       TO  ORCSQRCSV62-PGKBN
       *
@@ -1588,7 +1600,8 @@
       *    £Ñ£Ò¥¤¥á¡¼¥¸°õºþ
            IF     (ORCSQRCSV62-RET-COUNT   >   ZERO)
              AND  (ORCSQRCSV62-RET-COUNT   <=  12  )
-             AND  (WRK-QRKBN               =   "1"  )
+             AND  (WRK-QRKBN               =   "1"
+                                           OR  "2" )
              AND  (ORCHC62-PRTKBN          =   SPACE)
       *!API
              AND  (PARA-API-DATA           =   "0"  )

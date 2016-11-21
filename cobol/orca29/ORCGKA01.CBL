@@ -40,6 +40,7 @@
       *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
       *  04.08.00    NACL-多々納  16/10/XX  薬情に用法コード服用時点対応
+      *  04.08.00    NACL-多々納  16/11/21  ＱＲコードver.2.1対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1007,6 +1008,20 @@
            PERFORM 970-PTCONF-READ-SEC
            IF      FLG-PTCONF          =   ZERO
                MOVE    PTCONF-CDATA(1:1)   TO  SPA-NAI-MNOTE-CSV
+           END-IF
+      *H28.11
+      *    ＱＲ出力設定
+           MOVE    SPACE               TO  PTCONF-REC
+           INITIALIZE                  PTCONF-REC
+           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
+           MOVE    SPA-PTID            TO  PTCONF-PTID
+           MOVE    "MNOTEQR"           TO  PTCONF-CKEY
+           PERFORM 970-PTCONF-READ-SEC
+           IF      FLG-PTCONF          =   ZERO
+      *        CSV出力なし
+               IF      PTCONF-CDATA(1:1)   =   "2"
+                   MOVE    SPACE           TO  SPA-NAI-MNOTE-CSV
+               END-IF
            END-IF
       *
       *    保険組合せ
