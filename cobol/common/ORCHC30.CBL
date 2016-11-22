@@ -58,7 +58,7 @@
       *  04.08.00    NACL-多々納   14/07/30  一時ディレクトリ対応
       *  04.08.01    NACL-森脇     14/08/08  画像イメージ作成機能追加
       *  04.08.02    NACL-森脇     16/09/06  API(GINBEE)対応
-      *  04.08.03    NACL-森脇     16/10/26  服用方法コード対応
+      *  04.08.03    NACL-森脇     16/11/22  服用方法コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -144,9 +144,6 @@
            03  IDX-KBN             PIC 9(01).
            03  IDX-LAYER           PIC 9(03).
            03  IDX-KBN2            PIC 9(04).
-      *----(04.08.03)--ADD-START---
-           03  IDX-KBN3            PIC 9(01).
-      *----(04.08.03)--ADD-END-----
       *
            03  IDX-NAIYO           PIC 9(04).
            03  IDX-KEIJYO          PIC 9(04).
@@ -942,10 +939,10 @@
                MOVE    TNS-NAME        TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
            ELSE
-      *----(04.08.01)--ADD-START---
+      *----(04.08.03)--ADD-START---
                MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
                PERFORM 900-TENSU-READ-SEC
-      *----(04.08.01)--ADD-END-----
+      *----(04.08.03)--ADD-END-----
                MOVE    ORCHC30-YSRYCD-NAME(CNT-PARA)
                                        TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
@@ -1504,7 +1501,7 @@
            .
        240-KBN-SET-EXT.
            EXIT.
-      *----(04.08.01)--ADD-START---
+      *----(04.08.03)--ADD-START---
       *****************************************************************
       *    帳票区分データ服用用法コード編集処理
       *****************************************************************
@@ -1515,26 +1512,13 @@
            END-IF
       *
            MOVE    ZERO            TO  FLG-KBN
-           MOVE    ZERO            TO  IDX-KBN3
            PERFORM VARYING IDX-KBN     FROM    1   BY  1
                    UNTIL ( IDX-KBN     >   5 )
                    OR    ( FLG-KBN     =   1 )
       *        服用方法コードがあった場合
                IF      ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)   >   ZERO
-                   EVALUATE    IDX-KBN
-                       WHEN    1
-                           MOVE    5   TO  IDX-KBN3
-                       WHEN    2
-                           MOVE    1   TO  IDX-KBN3
-                       WHEN    3
-                           MOVE    2   TO  IDX-KBN3
-                       WHEN    4
-                           MOVE    3   TO  IDX-KBN3
-                       WHEN    5
-                           MOVE    4   TO  IDX-KBN3
-                   END-EVALUATE
       *            指定してない服用時点ならエラー
-                   IF    WRK-SSTKIJUNCD(IDX-KBN3:1)    NOT  =   "1"
+                   IF    WRK-SSTKIJUNCD(IDX-KBN:1)     NOT  =   "1"
                        MOVE    1               TO  FLG-KBN
                    ELSE
       *                服用方法コードの方が多い場合エラー
@@ -1543,7 +1527,7 @@
                            MOVE    1               TO  FLG-KBN
                        ELSE
                            MOVE    ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
-                                               TO  WRK-HENKBN(IDX-KBN3)
+                                               TO  WRK-HENKBN(IDX-KBN)
       *                    服用方法コード使用分は計算にいれない
                            COMPUTE WRK-SURYO   =   WRK-SURYO
                                -   ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
@@ -1555,7 +1539,7 @@
            .
        241-KBN-INPUTSURYOU-SET-EXT.
            EXIT.
-      *----(04.08.01)--ADD-END-----
+      *----(04.08.03)--ADD-END-----
       *****************************************************************
       *   帳票区分データ用量コード編集処理
       *****************************************************************
