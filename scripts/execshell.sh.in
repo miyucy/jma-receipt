@@ -1,3 +1,4 @@
 #!/bin/bash
 
-. ${0%.sh}_main.sh
+. ${0%.sh}_main.sh "$@"
+
