@@ -155,7 +155,7 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label></label>
+        <label>Ｄ一覧</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -165,6 +165,11 @@
           <key>GDK_F5</key>
           <signal>clicked</signal>
         </accelerator>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
       </widget>
       <widget>
         <class>GtkButton</class>
@@ -6178,10 +6183,10 @@
       <widget>
         <class>GtkHSeparator</class>
         <name>hseparator2</name>
-        <x>864</x>
-        <y>680</y>
-        <width>145</width>
-        <height>16</height>
+        <x>884</x>
+        <y>689</y>
+        <width>124</width>
+        <height>0</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -6226,7 +6231,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label166</name>
-        <x>880</x>
+        <x>890</x>
         <y>60</y>
         <width>100</width>
         <height>16</height>
@@ -6244,7 +6249,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label167</name>
-        <x>880</x>
+        <x>890</x>
         <y>80</y>
         <width>100</width>
         <height>16</height>
@@ -6262,7 +6267,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label168</name>
-        <x>880</x>
+        <x>890</x>
         <y>100</y>
         <width>100</width>
         <height>16</height>
@@ -6280,7 +6285,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label169</name>
-        <x>880</x>
+        <x>890</x>
         <y>120</y>
         <width>130</width>
         <height>16</height>
@@ -6298,10 +6303,10 @@
       <widget>
         <class>GtkLabel</class>
         <name>label175</name>
-        <x>865</x>
-        <y>440</y>
-        <width>140</width>
-        <height>20</height>
+        <x>885</x>
+        <y>435</y>
+        <width>121</width>
+        <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -6316,10 +6321,10 @@
       <widget>
         <class>GtkLabel</class>
         <name>label177</name>
-        <x>871</x>
+        <x>890</x>
         <y>470</y>
-        <width>40</width>
-        <height>20</height>
+        <width>35</width>
+        <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -6334,10 +6339,10 @@
       <widget>
         <class>GtkLabel</class>
         <name>label181</name>
-        <x>871</x>
+        <x>890</x>
         <y>530</y>
         <width>70</width>
-        <height>20</height>
+        <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -6352,7 +6357,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label180</name>
-        <x>871</x>
+        <x>890</x>
         <y>580</y>
         <width>80</width>
         <height>20</height>
@@ -6370,9 +6375,9 @@
       <widget>
         <class>GtkHSeparator</class>
         <name>hseparator1</name>
-        <x>864</x>
+        <x>884</x>
         <y>420</y>
-        <width>145</width>
+        <width>124</width>
         <height>16</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -6382,9 +6387,9 @@
       <widget>
         <class>GtkVSeparator</class>
         <name>vseparator1</name>
-        <x>856</x>
+        <x>884</x>
         <y>427</y>
-        <width>16</width>
+        <width>0</width>
         <height>262</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -6394,9 +6399,9 @@
       <widget>
         <class>GtkVSeparator</class>
         <name>vseparator2</name>
-        <x>1000</x>
+        <x>1006</x>
         <y>427</y>
-        <width>16</width>
+        <width>0</width>
         <height>262</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -6406,9 +6411,9 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN12</name>
-        <x>960</x>
+        <x>965</x>
         <y>470</y>
-        <width>45</width>
+        <width>40</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -6435,10 +6440,10 @@
       <widget>
         <class>GtkLabel</class>
         <name>label176</name>
-        <x>871</x>
+        <x>890</x>
         <y>500</y>
-        <width>40</width>
-        <height>20</height>
+        <width>35</width>
+        <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -6453,9 +6458,9 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN21</name>
-        <x>912</x>
+        <x>920</x>
         <y>500</y>
-        <width>50</width>
+        <width>45</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -6482,7 +6487,7 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN22</name>
-        <x>960</x>
+        <x>965</x>
         <y>500</y>
         <width>45</width>
         <height>24</height>
@@ -7323,7 +7328,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label182</name>
-        <x>871</x>
+        <x>885</x>
         <y>630</y>
         <width>100</width>
         <height>20</height>
@@ -7341,7 +7346,7 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN32</name>
-        <x>960</x>
+        <x>965</x>
         <y>600</y>
         <width>45</width>
         <height>24</height>
@@ -7370,9 +7375,9 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN11</name>
-        <x>912</x>
+        <x>920</x>
         <y>470</y>
-        <width>50</width>
+        <width>45</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -7399,9 +7404,9 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN31</name>
-        <x>912</x>
+        <x>920</x>
         <y>600</y>
-        <width>50</width>
+        <width>45</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -7428,7 +7433,7 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN42</name>
-        <x>960</x>
+        <x>965</x>
         <y>550</y>
         <width>45</width>
         <height>24</height>
@@ -7457,9 +7462,9 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN51</name>
-        <x>912</x>
+        <x>920</x>
         <y>650</y>
-        <width>50</width>
+        <width>45</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -7486,7 +7491,7 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN52</name>
-        <x>960</x>
+        <x>965</x>
         <y>650</y>
         <width>45</width>
         <height>24</height>
@@ -7515,9 +7520,9 @@
       <widget>
         <class>GtkRadioButton</class>
         <name>PRTKBN41</name>
-        <x>912</x>
+        <x>920</x>
         <y>550</y>
-        <width>50</width>
+        <width>45</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -7559,6 +7564,606 @@
         <label>処理スクリプトがインストールされていません</label>
         <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD01</name>
+        <x>860</x>
+        <y>75</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD02</name>
+        <x>860</x>
+        <y>100</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD03</name>
+        <x>860</x>
+        <y>125</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD04</name>
+        <x>860</x>
+        <y>150</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD05</name>
+        <x>860</x>
+        <y>175</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD06</name>
+        <x>860</x>
+        <y>200</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD07</name>
+        <x>860</x>
+        <y>225</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD08</name>
+        <x>860</x>
+        <y>250</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD09</name>
+        <x>860</x>
+        <y>275</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD10</name>
+        <x>860</x>
+        <y>300</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD11</name>
+        <x>860</x>
+        <y>325</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD12</name>
+        <x>860</x>
+        <y>350</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD13</name>
+        <x>860</x>
+        <y>375</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD14</name>
+        <x>860</x>
+        <y>400</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD15</name>
+        <x>860</x>
+        <y>425</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD16</name>
+        <x>860</x>
+        <y>450</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD17</name>
+        <x>860</x>
+        <y>475</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD18</name>
+        <x>860</x>
+        <y>500</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD19</name>
+        <x>860</x>
+        <y>525</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD20</name>
+        <x>860</x>
+        <y>550</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD21</name>
+        <x>860</x>
+        <y>575</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD22</name>
+        <x>860</x>
+        <y>600</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD23</name>
+        <x>860</x>
+        <y>625</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD24</name>
+        <x>860</x>
+        <y>650</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>BD25</name>
+        <x>860</x>
+        <y>675</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <receives_default>True</receives_default>
+        <border_width>0</border_width>
+        <label>D</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
       </widget>
     </widget>
   </widget>

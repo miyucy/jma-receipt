@@ -39,6 +39,8 @@
       *
       *  04.08.01    NACL-Æ£¸¶    16/01/18  ÃÏÊý¸øÈñ½èÍý¥¹¥¯¥ê¥×¥È¤ÎÂ¸ºß
       *                                     ¥Á¥§¥Ã¥¯ÂÐ±þ
+      *
+      *  04.09.01    NACL-Æ£¸¶    16/11/18  £Ä£ï£ã£ë£å£òÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -72,56 +74,15 @@
            COPY    "W01COMMON-SPA".
       *
       *    ²èÌÌÍÑ£Ó£Ð£Á
-       01  SPA-W14.
-           03  SPA-W14-AREA.
-               05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-LINE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(04).
-               05  SPA-GMN-PAGE-MAX    PIC 9(02).
-               05  SPA-GMN-CUR         PIC 9(03).
+           COPY    "W14SCR-SPA".
       *
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-STYUKYMD    PIC X(09).
-                   07  SPA-GMN-EDYUKYMD    PIC X(09).
-                   07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLO            OCCURS  25.
-                           11  SPA-GMN-TCD         PIC X(04).
-                           11  SPA-GMN-SHELLID     PIC X(20).
-                           11  SPA-GMN-SHORIMSG    PIC X(40).
-                           11  SPA-GMN-CHK.
-                              13  SPA-GMN-CHKFLG   PIC X(01)
-                                                   OCCURS   4.
-                           11  SPA-GMN-PRTNM       PIC X(16).
-                           11  SPA-GMN-PARAKBN-G.
-                               13  SPA-GMN-PARAKBN PIC X(01).
-                               13  SPA-GMN-F1      PIC X(01).
-                               13  SPA-GMN-PARAKBNMEI
-                                                   PIC X(12).
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLO            OCCURS  25.
-                           11  SPA-NAI-SHELLID-CHK PIC X(01).
-                   07  SPA-GMN-PARAKBNLST          OCCURS  3.
-                       09  SPA-GMN-PARAKBNL        PIC X(01).
-                       09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-PARAKBNMEIL     PIC X(12).
-                   07  SPA-GMN-PARAKBN-MAX         PIC 9(02).
-                   07  SPA-GMN-PRTKBN11    PIC X(01).
-                   07  SPA-GMN-PRTKBN12    PIC X(01).
-                   07  SPA-GMN-PRTKBN21    PIC X(01).
-                   07  SPA-GMN-PRTKBN22    PIC X(01).
-                   07  SPA-GMN-PRTKBN31    PIC X(01).
-                   07  SPA-GMN-PRTKBN32    PIC X(01).
-                   07  SPA-GMN-PRTKBN41    PIC X(01).
-                   07  SPA-GMN-PRTKBN42    PIC X(01).
-                   07  SPA-GMN-PRTKBN51    PIC X(01).
-                   07  SPA-GMN-PRTKBN52    PIC X(01).
-      *                                                             
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -139,7 +100,11 @@
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(06).
                05  WRK-WIDGET2     PIC 9(03).
-               05  WRK-WIDGET-FIL  PIC X(03). 
+               05  WRK-WIDGET-FIL  PIC X(03).
+           03  WRK-WIDGET-R        REDEFINES    WRK-WIDGET.
+               05  WRK-WIDGET-R1   PIC X(02).
+               05  WRK-WIDGET-R2   PIC 9(02).
+               05  WRK-WIDGET-FIL  PIC X(08).
            03  WRK-HENFLG          PIC 9(01).
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
@@ -228,7 +193,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-W14
+           MOVE    SPA-FREE        TO  SPA-W14FREE
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -249,7 +214,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-W14         TO  SPA-FREE
+           MOVE    SPA-W14FREE     TO  SPA-FREE
            MOVE    SPA-W01KYOUTU   TO  SPA-WORK 
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
@@ -285,9 +250,9 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "W14    "           TO  MCP-WINDOW.
+           MOVE    "W14    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
            .
@@ -432,6 +397,7 @@
                MOVE    SYS-3004-CHK        TO  SPA-GMN-CHK     (IDX)
                MOVE    SYS-3004-PRTNM      TO  SPA-GMN-PRTNM   (IDX)
                MOVE    SYS-3004-PARAKBN    TO  SPA-GMN-PARAKBN (IDX)
+               MOVE    SYS-3004-NAME       TO  SPA-GMN-NAME    (IDX)
                PERFORM VARYING IDZ FROM    1   BY  1
                        UNTIL   IDZ >       SPA-GMN-PARAKBN-MAX
                    IF      SPA-GMN-PARAKBN (IDX)
@@ -461,7 +427,7 @@
            MOVE    WRK-CONS-LINE-MAX   TO  SPA-GMN-MAX
       *
            COMPUTE SPA-GMN-PAGE-MAX    =   (SPA-GMN-MAX - 1)     /
-                                            WRK-CONS-LINE-MAX    + 1
+                                            WRK-CONS-LINE-MAX    +   1
            MOVE    1                   TO  SPA-GMN-PAGE
            MOVE    1                   TO  SPA-GMN-CUR
       *
@@ -526,6 +492,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM  210-BACK
+      *       £Ä£ï£ã£ë£å£ò°ìÍ÷
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 470-DOCER-LIST-SEC
       *       Á°²èÌÌ
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 430-MAEGMN-SEC
@@ -567,6 +536,13 @@
                            MOVE    MCP-WIDGET          TO  WRK-WIDGET
                            MOVE    WRK-WIDGET2         TO  IDX 
                            PERFORM 420-CHKFLG-CHK-SEC
+                  END-EVALUATE
+      *        £Ä£ï£ã£ë£å£òÅÐÏ¿
+                   EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET(1:2)
+                       WHEN    "CLICKED"   ALSO    "BD"
+                           MOVE    MCP-WIDGET       TO  WRK-WIDGET
+                           MOVE    WRK-WIDGET-R2    TO  SPA-NAI-SELCD
+                           PERFORM 460-DOCER-SEC
                   END-EVALUATE    
            END-EVALUATE
            .
@@ -1079,7 +1055,7 @@
       *****************************************************************
       *    É¸½à¥ì¥»ÅÅ¹­°èÏ¢¹çÁí³çÉ½°õºþ»Ø¼¨½èÍý
       *****************************************************************
-       450-PRTKBN52-SEC          SECTION.
+       450-PRTKBN52-SEC            SECTION.
       *
            MOVE    W14-PRTKBN52    TO  SPA-GMN-PRTKBN52
       *
@@ -1089,6 +1065,108 @@
            .
        450-PRTKBN52-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    £Ä£ï£ã£ë£å£òÅÐÏ¿²èÌÌ
+      *****************************************************************
+       460-DOCER-SEC               SECTION.
+      *
+      *    ¥·¥§¥ëÌ¾Åù¤¬Ì¤ÆþÎÏ¤Î¾ì¹ç¤ÏÁ«°Ü¤·¤Ê¤¤
+           IF    ( SPA-GMN-SHORIMSG (SPA-NAI-SELCD) 
+                                   =   SPACE )
+           OR    ( SPA-GMN-SHELLID  (SPA-NAI-SELCD) 
+                                   =   SPACE )
+               MOVE    ZERO            TO  SPA-NAI-SELCD
+               GO  TO  460-DOCER-EXT
+           END-IF
+      *
+      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+           MOVE    ZERO            TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               MOVE    ZERO            TO  SPA-NAI-SELCD
+               GO  TO  460-DOCER-EXT
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-MOTOPG
+      *
+           MOVE    SPA-W14FREE     TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGW141"      USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-W01KYOUTU
+           MOVE    SPA-FREE        TO  SPA-W14FREE
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       460-DOCER-EXT.
+      *
+      *****************************************************************
+      *    £Ä£ï£ã£ë£å£ò°ìÍ÷²èÌÌ
+      *****************************************************************
+       470-DOCER-LIST-SEC          SECTION.
+      *
+           IF      SPA-MW          =   SPA-GINBEE
+               CONTINUE
+           ELSE
+               GO  TO  470-DOCER-LIST-EXT
+           END-IF
+      *
+      *    £Ä£ï£ã£ë£å£ò¤¬Ì¤ÅÐÏ¿¤Î¾ì¹ç¤ÏÁ«°Ü¤·¤Ê¤¤
+           MOVE    ZERO            TO  FLG-CHK
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       25
+               IF      SPA-GMN-NAME (IDX) 
+                                   NOT =   SPACE
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    25              TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK         =   ZERO
+               GO  TO  470-DOCER-LIST-EXT
+           END-IF
+      *
+      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+           MOVE    ZERO            TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  470-DOCER-LIST-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-W14FREE     TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU   TO  SPA-WORK 
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGW142"      USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-W01KYOUTU
+           MOVE    SPA-FREE        TO  SPA-W14FREE
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       470-DOCER-LIST-EXT.
       *
       *****************************************************************
       *    ³ÎÄê
@@ -1206,7 +1284,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-CHK      (IDX)  TO  SYS-3004-CHK
                    MOVE    SPA-GMN-PRTNM    (IDX)  TO  SYS-3004-PRTNM
                    MOVE    SPA-GMN-PARAKBN  (IDX)  TO  SYS-3004-PARAKBN
-      *
+                   MOVE    SPA-GMN-NAME     (IDX)  TO  SYS-3004-NAME
+     *
                    MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
                    MOVE    SYS-3004-REC            TO  MCPDATA-REC
                    MOVE    "DBINSERT"              TO  MCP-FUNC
@@ -1368,6 +1447,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
                MOVE    SPA-GMN-PARAKBN-MAX
                                        TO  W14-PARAKBN-COUNT (IDX)
+      *
+               MOVE    "black"         TO  W14-BD-STYLE (IDX)
+               IF      SPA-MW          =   SPA-GINBEE
+                   MOVE    "T"             TO  W14-BD-VISIBLE (IDX)
+                   IF      SPA-GMN-NAME (IDX)
+                                           =   SPACE
+                       MOVE    "black"         TO  W14-BD-STYLE (IDX)
+                   ELSE
+                       MOVE    "blue"          TO  W14-BD-STYLE (IDX)
+                   END-IF
+               ELSE
+                   MOVE    "F"             TO  W14-BD-VISIBLE (IDX)
+               END-IF
            END-PERFORM
       *
            MOVE    SPA-GMN-STYUKYMD     TO  W14-STYUKYMD
@@ -1384,6 +1476,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PRTKBN52     TO  W14-PRTKBN52
       *
            MOVE    "red"                TO  W14-MSG-STYLE
+      *
+           IF      SPA-MW          =   SPA-GINBEE
+               MOVE    "£Ä°ìÍ÷"        TO  W14-B05-LABEL
+           ELSE
+               MOVE    SPACE           TO  W14-B05-LABEL
+           END-IF
       *
       *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
            MOVE    "F"                 TO  W14-PRTKBN51

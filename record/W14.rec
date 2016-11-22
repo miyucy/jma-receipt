@@ -1,5 +1,8 @@
 W14 {
   fixed2 {
+    B05 {
+      label varchar(6);
+    };
     MSG {
       style varchar(20);
       textdata varchar(50);
@@ -843,6 +846,106 @@ W14 {
     PRTKBN52 {
       state int;
       isactive bool;
+    };
+    BD01 {
+      visible bool;
+      style varchar(20);
+    };
+    BD02 {
+      visible bool;
+      style varchar(20);
+    };
+    BD03 {
+      visible bool;
+      style varchar(20);
+    };
+    BD04 {
+      visible bool;
+      style varchar(20);
+    };
+    BD05 {
+      visible bool;
+      style varchar(20);
+    };
+    BD06 {
+      visible bool;
+      style varchar(20);
+    };
+    BD07 {
+      visible bool;
+      style varchar(20);
+    };
+    BD08 {
+      visible bool;
+      style varchar(20);
+    };
+    BD09 {
+      visible bool;
+      style varchar(20);
+    };
+    BD10 {
+      visible bool;
+      style varchar(20);
+    };
+    BD11 {
+      visible bool;
+      style varchar(20);
+    };
+    BD12 {
+      visible bool;
+      style varchar(20);
+    };
+    BD13 {
+      visible bool;
+      style varchar(20);
+    };
+    BD14 {
+      visible bool;
+      style varchar(20);
+    };
+    BD15 {
+      visible bool;
+      style varchar(20);
+    };
+    BD16 {
+      visible bool;
+      style varchar(20);
+    };
+    BD17 {
+      visible bool;
+      style varchar(20);
+    };
+    BD18 {
+      visible bool;
+      style varchar(20);
+    };
+    BD19 {
+      visible bool;
+      style varchar(20);
+    };
+    BD20 {
+      visible bool;
+      style varchar(20);
+    };
+    BD21 {
+      visible bool;
+      style varchar(20);
+    };
+    BD22 {
+      visible bool;
+      style varchar(20);
+    };
+    BD23 {
+      visible bool;
+      style varchar(20);
+    };
+    BD24 {
+      visible bool;
+      style varchar(20);
+    };
+    BD25 {
+      visible bool;
+      style varchar(20);
     };
   };
 };
