@@ -37,6 +37,7 @@
       *  04.07.00    NACL-多々納  13/07/XX  ＱＲ患者個別設定対応
       *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
+      *  04.08.00    NACL-多々納  16/11/XX   用法コード数量追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2085,6 +2086,10 @@
       *        コメント区分
                MOVE    TNS-KENTAICOMMENT   TO  SPA-WKSRY-KENTAICOMMENT
                                                    (SPA-WKSRY-MAX IDX-W)
+      *H28.11  数量
+               MOVE    LNK-WKSRY-INPUTCHI-G (IDX IDZ)
+                                       TO  SPA-WKSRY-INPUTCHI-G
+                                                   (SPA-WKSRY-MAX IDX-W)
       *        服用時点設定判定
                IF    ((TNS-SSTKIJUNCD(1)   =   ZERO )  AND
                       (TNS-SSTKIJUNCD(2)   =   ZERO )  AND
@@ -3834,6 +3839,10 @@
                                            TO  SPA-PARA-INPUTCOMENT
                                                              (IDX1 IDX2)
                    END-IF
+      *H28.11      用法コード数量
+                   MOVE    SPA-WKSRY-INPUTCHI-G (IDX-W IDX-W2)
+                                           TO  SPA-PARA-INPUTCHI-G
+                                                             (IDX1 IDX2)
       *
                    MOVE    SPA-WKSRY-KENTAICOMMENT (IDX-W IDX-W2)
                                            TO  SPA-PARA-KENTAICOMMENT
@@ -4341,6 +4350,13 @@
                        MOVE    SPA-PARA-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  ORCSHCN30-INPUTCOMENT
                                                              (IDX1 IDX2)
+      *H28.11          用法コード数量
+                       IF      SPA-PARA-SRYCD (IDX-W IDX-W2)(1:3)
+                                               =   "001"
+                           MOVE    SPA-PARA-INPUTCHI-G (IDX-W IDX-W2)
+                                           TO  ORCSHCN30-INPUTCHI-G
+                                                             (IDX1 IDX2)
+                       END-IF
                    END-PERFORM
                END-IF
            END-PERFORM

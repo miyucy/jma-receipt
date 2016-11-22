@@ -304,7 +304,7 @@
            03  FLG-CHK2            PIC 9(01).
            03  FLG-INNAI           PIC 9(01).
       *
-           03  FLG-CHIKHKT         PIC 9(01).
+      ***  03  FLG-CHIKHKT         PIC 9(01).
       *
            03  FLG-INGAI           PIC 9(01).
            03  FLG-FUKA            PIC 9(01).
@@ -1226,7 +1226,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
       *H28.4
-           MOVE    ZERO                TO  FLG-CHIKHKT
+      *****MOVE    ZERO                TO  FLG-CHIKHKT
            PERFORM VARYING     IDX-J   FROM    1   BY  1
                    UNTIL      (IDX-J   >   IDX     )   OR
                               (FLG-OK  =   1       )
@@ -1322,25 +1322,26 @@
                END-IF
            END-PERFORM
       *H28.4
-           IF     (JYURRK-SRYYMD       >=  "20160401" )
-              AND (SRY-SRYKBN          =   "12" )
-               PERFORM
-                   UNTIL  (FLG-SRYACT          =   1  )  OR
-                          (FLG-CHIKHKT         =   1  )
-                   PERFORM VARYING     IDX-S   FROM    1   BY  1
-                           UNTIL      (IDX-S   >   5   )  OR
-                                      (SRY-SRYCD (IDX-S)  =   SPACE)
-                       IF      SRY-SRYCD (IDX-S)   =   CONS-CHKHTKSN
-                           MOVE    1               TO  FLG-CHIKHKT
-                       END-IF
-                       IF      SRY-SRYCD (IDX-S)   =   CONS-NNCHIKSN
-                           MOVE    2               TO  FLG-CHIKHKT
-                       END-IF
-                   END-PERFORM
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 930-SRYACT-READ-SEC
-               END-PERFORM
-           END-IF
+      *ÇÑ»ß
+      *    IF     (JYURRK-SRYYMD       >=  "20160401" )
+      *       AND (SRY-SRYKBN          =   "12" )
+      *        PERFORM
+      *            UNTIL  (FLG-SRYACT          =   1  )  OR
+      *                   (FLG-CHIKHKT         =   1  )
+      *            PERFORM VARYING     IDX-S   FROM    1   BY  1
+      *                    UNTIL      (IDX-S   >   5   )  OR
+      *                               (SRY-SRYCD (IDX-S)  =   SPACE)
+      *                IF      SRY-SRYCD (IDX-S)   =   CONS-CHKHTKSN
+      *                    MOVE    1               TO  FLG-CHIKHKT
+      *                END-IF
+      *                IF      SRY-SRYCD (IDX-S)   =   CONS-NNCHIKSN
+      *                    MOVE    2               TO  FLG-CHIKHKT
+      *                END-IF
+      *            END-PERFORM
+      *            MOVE    "key2"              TO  MCP-PATHNAME
+      *            PERFORM 930-SRYACT-READ-SEC
+      *        END-PERFORM
+      *****END-IF
       *
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
