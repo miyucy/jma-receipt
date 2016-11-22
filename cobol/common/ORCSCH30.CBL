@@ -198,6 +198,9 @@
            03  WRK-INPUTCHISURYO-AREA.
                05  WRK-INPUTCHI-SURYO  PIC 9(5)V9(05)
                                        OCCURS   5.
+           03  WRK-INPUTCHISURYO-AREA2.
+               05  WRK-INPUTCHI-SURYO2 PIC 9(5)V9(05)
+                                       OCCURS   5.
       *
            03  WRK-SSTKIJUNCD-AREA.
                05  WRK-SSTKIJUNCD      PIC 9(04)
@@ -1167,6 +1170,23 @@
                END-IF
            END-PERFORM
       *
+      *    起床を（５）へ
+           INITIALIZE                  WRK-INPUTCHISURYO-AREA2
+           MOVE    ZERO                TO  IDXS
+           PERFORM VARYING IDX-SST     FROM    1   BY  1
+                   UNTIL   IDX-SST     >   5
+               IF      IDX-SST             =   1
+                   MOVE    5               TO  IDXS
+               ELSE
+                   ADD     1               TO  IDXS
+               END-IF
+               MOVE    WRK-INPUTCHI-SURYO (IDX-SST)
+                                       TO  WRK-INPUTCHI-SURYO2 (IDXS)
+               IF      IDXS            =   5
+                   MOVE    ZERO            TO  IDXS
+               END-IF
+           END-PERFORM
+           MOVE    WRK-INPUTCHISURYO-AREA2 TO  WRK-INPUTCHISURYO-AREA
            .
        200221-PTCOM-INPUTCHI-EXT.
            EXIT.
