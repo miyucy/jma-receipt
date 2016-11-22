@@ -311,14 +311,12 @@
       *    END-IF
       *
       *    £Ñ£Ò¥Ç¡¼¥¿ºï½ü¡Ê£Ã£Ó£Ö¤Ê¤·¡Ë
-           IF      SPA-API-FLG         =   ZERO
-               IF      ORCSQRCSV62-CSV-FILENAME
+           IF      ORCSQRCSV62-CSV-FILENAME
                                        =   SPACE
-                   MOVE    ZERO                TO  IF-RESULT
-                   MOVE    FILE-NAME1          TO  IF-FILENAME
-                   CALL    "orcfiledel"        USING
-                                               ORCSFDELAREA
-               END-IF
+               MOVE    ZERO                TO  IF-RESULT
+               MOVE    FILE-NAME1          TO  IF-FILENAME
+               CALL    "orcfiledel"        USING
+                                           ORCSFDELAREA
            END-IF
            .
        000-PROC-EXT.
