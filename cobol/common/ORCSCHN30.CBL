@@ -311,9 +311,6 @@
            MOVE    ORCSHCN30-BTUNAME   TO  ORCHCN30-BTUNAME
       *    病室
            MOVE    ORCSHCN30-ROOMNO    TO  ORCHCN30-ROOMNO
-      *API(GINBEE)対応
-      *    病棟番号
-           MOVE    ORCSHCN30-BTUNUM    TO  ORCHCN30-BTUNUM
       *
            IF      WRK-YAKJYO-PG   NOT =   SPACE
       *ver.4.7 プレビューの為、直接印刷へ変更
