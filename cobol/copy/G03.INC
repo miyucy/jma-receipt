@@ -41,7 +41,7 @@
               03  G03-NUM-G.
                 04  G03-NUM           PIC X(03).
               03  G03-PRGNAME         PIC X(20).
-              03  G03-REPOSITORY      PIC X(256).
+              03  G03-REPOS-NAME      PIC X(256).
               03  G03-SCROLLEDWINDOW1.
                 06  G03-MEMO          PIC X(6000).
               03  G03-SCROLLEDWINDOW2.

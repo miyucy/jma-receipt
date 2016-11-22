@@ -367,8 +367,8 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-L01-REPOSITORY (IDX0)
-                                       TO  SPA-GMN-L03-REPOSITORY
+           MOVE    SPA-GMN-L01-REPOS-NAME (IDX0)
+                                       TO  SPA-GMN-L03-REPOS-NAME
       *
            MOVE    SPA-L01-SEL         TO  WRK-KBNCD
       *
@@ -1261,8 +1261,8 @@
            MOVE    SPA-GMN-L03-CHK-VALUE
                                        TO  L03-CHK-VALUE
            MOVE    SPA-GMN-L03-HCNAME  TO  L03-CHK-LABEL
-           MOVE    SPA-GMN-L03-REPOSITORY
-                                       TO  L03-REPOSITORY
+           MOVE    SPA-GMN-L03-REPOS-NAME
+                                       TO  L03-REPOS-NAME
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >       WRK-CONS-PARA-MAX )

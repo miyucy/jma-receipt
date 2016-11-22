@@ -409,8 +409,8 @@
                    PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                    MOVE    SYSKANRI-REC    TO  SYS-3101-REC
                    IF    ( SPA-MW          =   SPA-GINBEE )
-                       MOVE    SYS-3101-REPOSITORY
-                                           TO  SPA-GMN-W10-REPOSITORY
+                       MOVE    SYS-3101-REPOS-NAME
+                                           TO  SPA-GMN-W10-REPOS-NAME
                    END-IF
                END-IF
       *
@@ -544,8 +544,8 @@
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                MOVE    SYSKANRI-REC    TO  SYS-3101-REC
                IF    ( SPA-MW          =   SPA-GINBEE )
-                   MOVE    SYS-3101-REPOSITORY
-                                           TO  SPA-GMN-W10-REPOSITORY
+                   MOVE    SYS-3101-REPOS-NAME
+                                           TO  SPA-GMN-W10-REPOS-NAME
                END-IF
       *
                MOVE    SYS-3001-REC        TO  SYSKANRI-REC
@@ -758,7 +758,7 @@
       *
            MOVE    W10-HCNAME          TO  SPA-GMN-W10-HCNAME
            MOVE    W10-PROGNAME        TO  SPA-GMN-W10-PRGNAME
-           MOVE    W10-REPOSITORY      TO  SPA-GMN-W10-REPOSITORY
+           MOVE    W10-REPOS-NAME      TO  SPA-GMN-W10-REPOS-NAME
            PERFORM VARYING     IDZ     FROM    1   BY  1
                    UNTIL       IDZ     >   SPA-W10-PARA-MAX
                MOVE    W10-PARAHYOJI (IDZ)
@@ -785,7 +785,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4102-REPOSITORY-CHK-SEC
+               PERFORM 4102-REPOS-NAME-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
@@ -845,18 +845,18 @@
       *****************************************************************
       *    レポジトリ名チェック
       *****************************************************************
-       4102-REPOSITORY-CHK-SEC     SECTION.
+       4102-REPOS-NAME-CHK-SEC     SECTION.
       *
-           MOVE    SPA-GMN-W10-REPOSITORY  TO  WRK-MAE-INPUT
+           MOVE    SPA-GMN-W10-REPOS-NAME  TO  WRK-MAE-INPUT
            PERFORM 5002-HANKAKU-CHK-SEC
-           MOVE    WRK-OUT-INPUT           TO  SPA-GMN-W10-REPOSITORY
+           MOVE    WRK-OUT-INPUT           TO  SPA-GMN-W10-REPOS-NAME
            IF    ( FLG-HANKAKU NOT =   ZERO )
                MOVE    "0006"              TO  SPA-ERRCD
                MOVE    24                  TO  SPA-GMN-W10-CUR
            END-IF
       *
            .
-       4102-REPOSITORY-CHK-EXT.
+       4102-REPOS-NAME-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1378,7 +1378,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-KBNCD               TO  SYS-3101-KBNCD
            MOVE    SPA-W10-SEL-STYUKYMD    TO  SYS-3101-STYUKYMD
                                                SYS-3101-EDYUKYMD
-           MOVE    SPA-GMN-W10-REPOSITORY  TO  SYS-3101-REPOSITORY
+           MOVE    SPA-GMN-W10-REPOS-NAME  TO  SYS-3101-REPOS-NAME
            MOVE    SMCNDATE-YMD            TO  SYS-3101-CREYMD
                                                SYS-3101-UPYMD
            MOVE    SMCNDATE-HMS            TO  SYS-3101-UPHMS
@@ -1717,7 +1717,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    SPA-GMN-W10-HCNAME       TO  W10-HCNAME
            MOVE    SPA-GMN-W10-PRGNAME      TO  W10-PROGNAME
-           MOVE    SPA-GMN-W10-REPOSITORY   TO  W10-REPOSITORY
+           MOVE    SPA-GMN-W10-REPOS-NAME   TO  W10-REPOS-NAME
            PERFORM VARYING IDX FROM    1    BY  1
                    UNTIL   IDX >            CONST-PARA-MAX
                MOVE    SPA-GMN-W10-PARAHYOJI (IDX)
@@ -1747,10 +1747,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF    ( SPA-MW               =   SPA-GINBEE )
-               MOVE    "T"              TO  W10-REPOSITORY-VISIBLE
-               MOVE    "レポジトリ名"   TO  W10-LBLREPOSITORY
+               MOVE    "T"              TO  W10-REPOS-NAME-VISIBLE
+               MOVE    "レポジトリ名"   TO  W10-LBLREPOS-NAME
            ELSE
-               MOVE    "F"              TO  W10-REPOSITORY-VISIBLE
+               MOVE    "F"              TO  W10-REPOS-NAME-VISIBLE
            END-IF
       *
            MOVE    SPA-GMN-W10-MEMO     TO  W10-MEMO
@@ -1870,7 +1870,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           END-IF
       *
           IF    ( SPA-GMN-W10-CUR              =   24 )
-           AND  ( W10-REPOSITORY-VISIBLE       =   "F" )
+           AND  ( W10-REPOS-NAME-VISIBLE       =   "F" )
               MOVE    4                        TO  SPA-GMN-W10-CUR
           END-IF
       *
@@ -1925,7 +1925,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    23
                     MOVE  "PARA10"         TO   MCP-WIDGET
                 WHEN    24
-                    MOVE  "REPOSITORY"     TO   MCP-WIDGET
+                    MOVE  "REPOS_NAME"     TO   MCP-WIDGET
       *
                 WHEN    999
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -1945,7 +1945,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    3           TO  SPA-GMN-W10-CUR
                WHEN    "PROGNAME"
                    MOVE    24          TO  SPA-GMN-W10-CUR
-               WHEN    "REPOSITORY"
+               WHEN    "REPOS_NAME"
                    MOVE    4           TO  SPA-GMN-W10-CUR
                WHEN    "PARAHYOJI01"
                    MOVE    5           TO  SPA-GMN-W10-CUR

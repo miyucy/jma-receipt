@@ -37,7 +37,7 @@
                05  SYS-3101-EDYUKYMD    PIC  X(08).
       *´ÉÍý¥Æ¡¼¥Ö¥ë
            03  SYS-3101-TBL.
-               05  SYS-3101-REPOSITORY  PIC  X(256).
+               05  SYS-3101-REPOS-NAME  PIC  X(256).
       *Í½È÷
                05  SYS-3101-YOBI        PIC  X(244).
       *Ã¼Ëö£É£Ä

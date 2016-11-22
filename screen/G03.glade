@@ -1238,7 +1238,7 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
-        <name>REPOSITORY</name>
+        <name>REPOS_NAME</name>
         <x>20</x>
         <y>116</y>
         <width>130</width>

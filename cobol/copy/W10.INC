@@ -32,9 +32,9 @@
               03  W10-CHK-SAVEPARA         PIC X(01).
               03  W10-CHK-SAVEPARA-STATE   PIC S9(9)   BINARY.
               03  W10-PROGNAME          PIC X(24).
-              03  W10-LBLREPOSITORY     PIC X(20).
-              03  W10-REPOSITORY        PIC X(128).
-              03  W10-REPOSITORY-VISIBLE   PIC X.
+              03  W10-LBLREPOS-NAME     PIC X(20).
+              03  W10-REPOS-NAME        PIC X(128).
+              03  W10-REPOS-NAME-VISIBLE   PIC X.
               03  W10-HCNAME            PIC X(80).
               03  W10-LBLHCNUM          PIC X(20).
               03  W10-HCNUM             PIC S9(3).

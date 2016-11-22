@@ -32,10 +32,10 @@ W10 {
     PROGNAME {
       textdata varchar(24);
     };
-    LBLREPOSITORY {
+    LBLREPOS_NAME {
       textdata varchar(20);
     };
-    REPOSITORY {
+    REPOS_NAME {
       textdata varchar(128);
       visible  bool;
     };

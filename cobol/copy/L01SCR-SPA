@@ -36,7 +36,7 @@
                        09  SPA-GMN-L01-NUM         PIC X(03).
                        09  SPA-GMN-L01-HCNAME      PIC X(80).
                        09  SPA-GMN-L01-PRGNAME     PIC X(24).
-                       09  SPA-GMN-L01-REPOSITORY  PIC X(256).
+                       09  SPA-GMN-L01-REPOS-NAME  PIC X(256).
                        09  SPA-GMN-L01-PARAHYOJI-G OCCURS  8.
                            11  SPA-GMN-L01-PARAHYOJI
                                                    PIC X(20).
@@ -70,7 +70,7 @@
                    07  SPA-GMN-L03-NUM             PIC X(03).
                    07  SPA-GMN-L03-HCNAME          PIC X(80).
                    07  SPA-GMN-L03-PRGNAME         PIC X(24).
-                   07  SPA-GMN-L03-REPOSITORY      PIC X(256).
+                   07  SPA-GMN-L03-REPOS-NAME      PIC X(256).
                    07  SPA-GMN-L03-PARAHYOJI-G.
                        09  SPA-GMN-L03-PARAHYOJI   PIC X(20)
                                                    OCCURS  8.

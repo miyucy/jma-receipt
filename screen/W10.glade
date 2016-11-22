@@ -1786,7 +1786,7 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
-        <name>LBLREPOSITORY</name>
+        <name>LBLREPOS_NAME</name>
         <x>40</x>
         <y>124</y>
         <width>112</width>
@@ -1804,7 +1804,7 @@
       </widget>
       <widget>
         <class>GtkPandaEntry</class>
-        <name>REPOSITORY</name>
+        <name>REPOS_NAME</name>
         <x>152</x>
         <y>124</y>
         <width>832</width>

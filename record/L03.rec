@@ -109,7 +109,7 @@ L03 {
     PRGNAME {
       textdata varchar(20);
     };
-    REPOSITORY {
+    REPOS_NAME {
       textdata varchar(256);
     };
     scrolledwindow1 {

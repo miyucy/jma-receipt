@@ -617,8 +617,8 @@
                                            TO  WRK-KBNCD-G
                        PERFORM 31011-SYS-3102-SEL-SEC
                        IF    ( SPA-MW      =   SPA-GINBEE )
-                           MOVE    SYS-3102-REPOSITORY
-                                       TO  SPA-GMN-G01-REPOSITORY (IDX)
+                           MOVE    SYS-3102-REPOS-NAME
+                                       TO  SPA-GMN-G01-REPOS-NAME (IDX)
                        END-IF
       *
                        MOVE    SPA-GMN-G01-PRGNAME (IDX)
@@ -795,8 +795,8 @@
       *
                END-PERFORM
                IF    ( SPA-MW      =   SPA-GINBEE )
-                   MOVE    SPA-GMN-G03-REPOSITORY
-                                   TO  SPA-GMN-G01-REPOSITORY (IDX0)
+                   MOVE    SPA-GMN-G03-REPOS-NAME
+                                   TO  SPA-GMN-G01-REPOS-NAME (IDX0)
                END-IF
            WHEN    3
                MOVE    SPA-G01-SEL     TO  IDX
@@ -912,8 +912,8 @@
                    MOVE    IDX         TO  WRK-KBNCD
                    PERFORM 31011-SYS-3102-SEL-SEC
                    IF    ( SPA-MW         =   SPA-GINBEE )
-                       MOVE    SYS-3102-REPOSITORY
-                                       TO  SPA-GMN-G01-REPOSITORY (IDX)
+                       MOVE    SYS-3102-REPOS-NAME
+                                       TO  SPA-GMN-G01-REPOS-NAME (IDX)
                    END-IF
                END-IF
       *
@@ -1948,6 +1948,10 @@
                                            TO   SHELLTBL-JOBID
                    MOVE     WRK-CONS-JOB-SHELLID
                                            TO   SHELLTBL-SHELLID
+                   IF    ( SPA-MW          =   SPA-GINBEE )
+                       MOVE    SPA-GMN-G01-REPOS-NAME (IDY)
+                                           TO  SHELLTBL-REPOS-NAME
+                   END-IF
       *
                    MOVE    LNK-PRTKANRI-RENNUM
                                            TO  SHELLTBL-ARG1

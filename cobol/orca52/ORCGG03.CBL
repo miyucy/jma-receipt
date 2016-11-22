@@ -371,8 +371,8 @@
       *
            MOVE    SPA-G01-SEL         TO  WRK-KBNCD
       *
-           MOVE    SPA-GMN-G01-REPOSITORY (IDX0)
-                                       TO  SPA-GMN-G03-REPOSITORY
+           MOVE    SPA-GMN-G01-REPOS-NAME (IDX0)
+                                       TO  SPA-GMN-G03-REPOS-NAME
       *
            PERFORM 3102-TOKEIMEMO-SEL-SEC
            MOVE    TOUKEIMEMO-REC  TO  WTMEMO-AREA
@@ -1260,8 +1260,8 @@
       *
            MOVE    SPA-GMN-G03-NUM     TO  G03-NUM
            MOVE    SPA-GMN-G03-PRGNAME TO  G03-PRGNAME
-           MOVE    SPA-GMN-G03-REPOSITORY
-                                       TO  G03-REPOSITORY
+           MOVE    SPA-GMN-G03-REPOS-NAME
+                                       TO  G03-REPOS-NAME
            MOVE    SPA-GMN-G03-CHK-VALUE
                                        TO  G03-CHK-VALUE
            MOVE    SPA-GMN-G03-HCNAME  TO  G03-CHK-LABEL
