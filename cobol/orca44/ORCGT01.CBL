@@ -204,6 +204,8 @@
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
       *  04.08.11    NACL-藤原    16/10/07  自賠責ＰＤＦファイル作成対応
+      *
+      *  04.09.01    NACL-藤原    16/11/18  Ｄｏｃｋｅｒ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1950,6 +1952,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    SYS-3004-SHORIMSG
                                            TO  SPA-3004-SHORIMSG
                                                                 (IDX)
+                   MOVE    SYS-3004-NAME   TO  SPA-3004-NAME    (IDX)
                    IF      SYS-3004-PARAKBN    =   SPACE
                        MOVE    "0"             TO  SYS-3004-PARAKBN
                    END-IF
@@ -1984,6 +1987,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    SYS-3004-SHORIMSG
                                            TO  SPA-GMN-T02-TSHORIMSG
                                                                    (IDY)
+                           MOVE    SYS-3004-NAME
+                                           TO  SPA-NAI-T02-TNAME   (IDY)
                            MOVE    SYS-3004-PARAKBN
                                            TO  SPA-NAI-T02-TPARAKBN(IDY)
                            MOVE    SPA-3004-PRTNM (IDX)
@@ -2696,6 +2701,10 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                        MOVE    SPA-NAI-SRYYMKBN-ED
                                                (SPA-NAI-SRYYMKBN-SELNUM)
                                                TO  SHELLTBL-ARG18
+                   END-IF
+                   IF      SPA-MW          =   SPA-GINBEE
+                       MOVE    SPA-NAI-T02-TNAME (IDX)
+                                           TO  SHELLTBL-REPOS-NAME
                    END-IF
       *
                    MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -4511,6 +4520,10 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                                                (SPA-NAI-SRYYMKBN-SELNUM)
                                                TO  SHELLTBL-ARG18
                    END-IF
+                   IF      SPA-MW          =   SPA-GINBEE
+                       MOVE    SPA-3004-NAME (IDX)
+                                           TO  SHELLTBL-REPOS-NAME
+                   END-IF
       *
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
@@ -4949,6 +4962,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
                                        TO  SHELLTBL-ARG20
                MOVE    SPA-NAI-SRYYMKBN-ED (SPA-NAI-SRYYMKBN-SELNUM)
                                        TO  SHELLTBL-ARG21
+           END-IF
+      *
+           IF      SPA-MW          =   SPA-GINBEE
+               MOVE    SPA-3004-NAME (IDX)
+                                       TO  SHELLTBL-REPOS-NAME
            END-IF
       *
            MOVE    SHELLTBL    TO  MCPDATA-REC
@@ -7069,9 +7087,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
-      *??
-           DISPLAY "490-KAKUNIN-SEC"
-      *??
            MOVE    ZERO                TO  WRK-PRT-PAGE
                                            WRK-PRT-PAGE1
                                            WRK-PRT-PAGE2

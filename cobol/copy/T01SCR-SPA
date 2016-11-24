@@ -88,6 +88,8 @@
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
       *  04.08.04    NACL-藤原    16/10/07  自賠責ＰＤＦファイル作成対応
+      *
+      *  04.09.01    NACL-藤原    16/11/18  ＤＯＣＥＲ対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -277,6 +279,7 @@
                            11  SPA-3004-CHKFLG     PIC  X(01)
                                                    OCCURS   4.
                        09  SPA-3004-SHORIMSG       PIC X(40).
+                       09  SPA-3004-NAME           PIC X(128).
       *
                05  SPA-NAI-1031-PRTNM              PIC X(16). 
       *
@@ -393,6 +396,7 @@
                            11  SPA-NAI-T02-TSHELLID    PIC X(20).
                            11  SPA-NAI-T02-TKBNCD      PIC 9(03).
                            11  SPA-NAI-T02-TPRTNM      PIC X(16).
+                           11  SPA-NAI-T02-TNAME       PIC X(128).
                            11  SPA-NAI-T02-TJOBID      PIC 9(03).
       * 
                    07  SPA-NAI-T02-PARA-TBL.
