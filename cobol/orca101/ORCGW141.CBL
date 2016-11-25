@@ -336,7 +336,7 @@
       *****************************************************************
        410-DELETE-SEC              SECTION.
       *
-           MOVE    SPACE           TO  SPA-GMN-NAME (SPA-NAI-SELCD)
+           MOVE    SPACE           TO  W141-NAME
       *
            PERFORM 410-KAKUTEI-SEC
            .
@@ -347,6 +347,12 @@
       *    登録処理
       *****************************************************************
        410-KAKUTEI-SEC             SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  410-KAKUTEI-EXT
+           END-IF
       *
            INITIALIZE                  SYS-3004-REC
            MOVE    SPA-HOSPNUM     TO  SYS-3004-HOSPNUM
@@ -399,12 +405,12 @@
                                                SPA-AREA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1001"                  TO  SPA-ERRCD
-               GO  TO  490-KOUSHIN-EXT
+               GO  TO  410-KAKUTEI-EXT
            END-IF
       *
            PERFORM 210-BACK
            .
-       490-KOUSHIN-EXT.
+       410-KAKUTEI-EXT.
            EXIT.
       *
      ******************************************************************
