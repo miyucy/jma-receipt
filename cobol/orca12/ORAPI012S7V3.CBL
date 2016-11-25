@@ -1691,7 +1691,7 @@
            END-PERFORM
       *
            IF      FLG-ERR-01      NOT =   ZERO
-               MOVE    "21"            TO  WRK-ERRCD
+               MOVE    "60"            TO  WRK-ERRCD
            END-IF
            .
        200212-PTKINKI-CHK-EXT.
@@ -2354,11 +2354,12 @@
            WHEN    "20"
                MOVE    "更新区分エラー"
                                                TO  WRK-ERRMSG
-           WHEN    "21"
-               MOVE    "患者禁忌薬剤情報の項目にエラーがあります。"
-                                               TO  WRK-ERRMSG
            WHEN    "22"
                MOVE    "前回と患者番号が違います。"
+                                               TO  WRK-ERRMSG
+      *
+           WHEN    "60"
+               MOVE    "エラーがあります。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "61"
