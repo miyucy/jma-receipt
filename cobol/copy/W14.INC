@@ -65,3 +65,4 @@
                 04  W14-BD-G         OCCURS 25.
                     05  W14-BD-VISIBLE  PIC X(01).
                     05  W14-BD-STYLE    PIC X(20).
+                    05  W14-BD-LABEL    PIC X(01).

@@ -1449,6 +1449,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W14-PARAKBN-COUNT (IDX)
       *
                MOVE    "black"         TO  W14-BD-STYLE (IDX)
+               MOVE    SPACE           TO  W14-BD-LABEL (IDX)
                IF      SPA-MW          =   SPA-GINBEE
                    MOVE    "T"             TO  W14-BD-VISIBLE (IDX)
                    IF      SPA-GMN-NAME (IDX)
@@ -1456,29 +1457,30 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "black"         TO  W14-BD-STYLE (IDX)
                    ELSE
                        MOVE    "blue"          TO  W14-BD-STYLE (IDX)
+                       MOVE    "*"             TO  W14-BD-LABEL (IDX)
                    END-IF
                ELSE
                    MOVE    "F"             TO  W14-BD-VISIBLE (IDX)
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-GMN-STYUKYMD     TO  W14-STYUKYMD
-           MOVE    SPA-GMN-EDYUKYMD     TO  W14-EDYUKYMD
-           MOVE    SPA-GMN-PRTKBN11     TO  W14-PRTKBN11
-           MOVE    SPA-GMN-PRTKBN12     TO  W14-PRTKBN12
-           MOVE    SPA-GMN-PRTKBN21     TO  W14-PRTKBN21
-           MOVE    SPA-GMN-PRTKBN22     TO  W14-PRTKBN22
-           MOVE    SPA-GMN-PRTKBN31     TO  W14-PRTKBN31
-           MOVE    SPA-GMN-PRTKBN32     TO  W14-PRTKBN32
-           MOVE    SPA-GMN-PRTKBN41     TO  W14-PRTKBN41
-           MOVE    SPA-GMN-PRTKBN42     TO  W14-PRTKBN42
-           MOVE    SPA-GMN-PRTKBN51     TO  W14-PRTKBN51
-           MOVE    SPA-GMN-PRTKBN52     TO  W14-PRTKBN52
+           MOVE    SPA-GMN-STYUKYMD    TO  W14-STYUKYMD
+           MOVE    SPA-GMN-EDYUKYMD    TO  W14-EDYUKYMD
+           MOVE    SPA-GMN-PRTKBN11    TO  W14-PRTKBN11
+           MOVE    SPA-GMN-PRTKBN12    TO  W14-PRTKBN12
+           MOVE    SPA-GMN-PRTKBN21    TO  W14-PRTKBN21
+           MOVE    SPA-GMN-PRTKBN22    TO  W14-PRTKBN22
+           MOVE    SPA-GMN-PRTKBN31    TO  W14-PRTKBN31
+           MOVE    SPA-GMN-PRTKBN32    TO  W14-PRTKBN32
+           MOVE    SPA-GMN-PRTKBN41    TO  W14-PRTKBN41
+           MOVE    SPA-GMN-PRTKBN42    TO  W14-PRTKBN42
+           MOVE    SPA-GMN-PRTKBN51    TO  W14-PRTKBN51
+           MOVE    SPA-GMN-PRTKBN52    TO  W14-PRTKBN52
       *
-           MOVE    "red"                TO  W14-MSG-STYLE
+           MOVE    "red"               TO  W14-MSG-STYLE
       *
            IF      SPA-MW          =   SPA-GINBEE
-               MOVE    "Ｄ一覧"        TO  W14-B05-LABEL
+               MOVE    "一覧"          TO  W14-B05-LABEL
            ELSE
                MOVE    SPACE           TO  W14-B05-LABEL
            END-IF

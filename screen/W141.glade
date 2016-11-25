@@ -17,7 +17,7 @@
     <has_focus>False</has_focus>
     <border_width>0</border_width>
     <type>GTK_WINDOW_DIALOG</type>
-    <title>(W141)Ｄｏｃｋｅｒ登録</title>
+    <title>(W141)レポジトリ登録</title>
     <modal>True</modal>
     <position>GTK_WIN_POS_CENTER</position>
     <wmclass_class>jma-receipt.dialog</wmclass_class>
@@ -125,9 +125,9 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>NAME</name>
-        <x>55</x>
+        <x>85</x>
         <y>40</y>
-        <width>650</width>
+        <width>640</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -169,9 +169,9 @@
       <widget>
         <class>GtkLabel</class>
         <name>label502</name>
-        <x>10</x>
+        <x>5</x>
         <y>40</y>
-        <width>49</width>
+        <width>80</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -180,7 +180,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>名　前</label>
+        <label>レポジトリ名</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>

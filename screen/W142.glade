@@ -17,7 +17,7 @@
     <has_focus>False</has_focus>
     <border_width>0</border_width>
     <type>GTK_WINDOW_DIALOG</type>
-    <title>(W142)Ｄｏｃｋｅｒ一覧</title>
+    <title>(W142)レポジトリ一覧</title>
     <modal>True</modal>
     <x>295</x>
     <y>295</y>
@@ -145,7 +145,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>名　前</label>
+            <label>レポジトリ名</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>

@@ -51,7 +51,7 @@
            03  SYS-3004-PARAKBN         PIC  X(01).
       *プリンタ名
            03  SYS-3004-PRTNM           PIC  X(16).
-      *名前
+      *レポジトリ名
            03  SYS-3004-NAME            PIC  X(128).
       *予備
            03  SYS-3004-YOBI            PIC  X(290).
