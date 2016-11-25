@@ -345,8 +345,9 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    IN-DRUGCD2          TO  INTERACT-DRUGCD2
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            IF      MCP-RC              =   ZERO
@@ -355,8 +356,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    1                   TO  FLG-INTERACT
            END-IF
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    あればそのまま
@@ -388,7 +390,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  INTERACT-UPHMS
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_interact"      TO  MCP-TABLE
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -411,8 +414,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    IN-DRUGCD2          TO  INTERACT-DRUGCD2
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            IF      MCP-RC              =   ZERO
@@ -421,8 +425,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    1                   TO  FLG-INTERACT
            END-IF
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    なければそのまま
@@ -453,8 +458,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  INTERACT-UPHMS
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -476,8 +482,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    IN-DRUGCD2          TO  INTERACT-DRUGCD2
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
       *        相互作用マスタ読み込み
@@ -485,8 +492,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    1                   TO  FLG-INTERACT
            END-IF
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    削除エラー
@@ -516,8 +524,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    IN-REC(2:)          TO  INTERACT-REC
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    3               TO  LNK-RC
@@ -686,8 +695,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        910-INTERACT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    "tbl_interact"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_interact_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  INTERACT-REC

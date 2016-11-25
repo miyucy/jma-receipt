@@ -339,11 +339,11 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    BYOWK-KEY           TO  BYO-KEY
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "tbl_byomei_master" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "tbl_byomei_master" TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-BYOMEI-READ-SEC
            ELSE
@@ -351,7 +351,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    病名マスタクローズ
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "tbl_byomei_master" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -381,11 +381,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    BYOWK-KEY           TO  BYO-KEY
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "tbl_byomei_master" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "tbl_byomei_master" TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-BYOMEI-READ-SEC
            ELSE
@@ -393,7 +393,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    病名マスタクローズ
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "tbl_byomei_master" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -436,7 +436,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  BYO-UPHMS
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "tbl_byomei_master" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -460,7 +460,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  BYO-UPHMS
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "tbl_byomei_master" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

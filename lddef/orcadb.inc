@@ -199,4 +199,8 @@ db	{
 	tbl_generic_class;
 	tbl_psychotropic;
         tbl_jibai_prt;
+	tbl_byomei_master;
+	tbl_kensasort_master;
+	tbl_interact_master;
+	tbl_sskijyo_master;
 };

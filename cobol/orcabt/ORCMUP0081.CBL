@@ -350,17 +350,20 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    IN-KEY              TO  SSKIJYO-KEY
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+               MOVE    "tbl_sskijyo_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-SSKIJYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SSKIJYO
            END-IF
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -394,7 +397,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  SSKIJYO-UPHMS
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -416,17 +420,20 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    IN-KEY              TO  SSKIJYO-KEY
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+               MOVE    "tbl_sskijyo_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-SSKIJYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SSKIJYO
            END-IF
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -459,7 +466,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  SSKIJYO-UPHMS
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -483,17 +491,20 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    IN-KEY              TO  SSKIJYO-KEY
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+               MOVE    "tbl_sskijyo_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-SSKIJYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SSKIJYO
            END-IF
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -518,7 +529,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "tbl_sskijyo_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
