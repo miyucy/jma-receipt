@@ -135,7 +135,7 @@
         <editable>True</editable>
         <text_max_length>128</text_max_length>
         <text>123456789A123456789B123456789C123456789D123456789E123456789A123456789B123456789C123456789D123456789E1234567890123456789012345678</text>
-        <input_mode>XIM</input_mode>
+        <input_mode>ASCII</input_mode>
         <xim_enabled>True</xim_enabled>
         <signal>
           <name>changed</name>

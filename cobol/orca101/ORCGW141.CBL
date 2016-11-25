@@ -303,7 +303,7 @@
            EXIT.
       *
       *****************************************************************
-      *    名前入力処理
+      *    レポジトリ名入力処理
       *****************************************************************
        4101-NAME-CHK-SEC           SECTION.
       *
@@ -315,8 +315,8 @@
                MOVE    "1"             TO  KANACHK-SYORI
                MOVE    SPA-GMN-NAME (SPA-NAI-SELCD)
                                        TO  KANACHK-MAE-INPUT
-      ****     CALL    "ORCSKANACHK"   USING
-      ****                             ORCSKANACHKAREA
+               CALL    "ORCSKANACHK"   USING
+                                       ORCSKANACHKAREA
                IF    ( KANACHK-RC      NOT =   ZERO  )
                OR    ( KANACHK-SYUBETU     =   2     )
                    MOVE    "0001"          TO  SPA-ERRCD
@@ -470,7 +470,7 @@
            MOVE    SPA-ERRCD            TO  WERR-ERRCODE
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "名前は半角で入力して下さい"
+                   MOVE    "レポジトリ名は半角で入力して下さい"
                                                 TO  WERR-ERRMSG
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
