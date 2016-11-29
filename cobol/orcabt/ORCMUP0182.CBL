@@ -355,18 +355,21 @@
            MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
            MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+               MOVE    "tbl_nyuinkhn_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-NYUKHN-READ-SEC
            ELSE
                MOVE    1               TO  FLG-NYUKHN
            END-IF
       *
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -394,11 +397,13 @@
            MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
            MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+               MOVE    "tbl_nyuinkhn_master"
+                                       TO  MCP-TABLE
                MOVE    "key3"          TO  MCP-PATHNAME
                PERFORM 910-NYUKHN-READ-SEC
            ELSE
@@ -418,13 +423,15 @@
                    PERFORM 20101-NYUKHN-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+                   MOVE    "tbl_nyuinkhn_master"
+                                           TO  MCP-TABLE
                    MOVE    "key3"          TO  MCP-PATHNAME
                    PERFORM 910-NYUKHN-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -448,11 +455,13 @@
            MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
            MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+               MOVE    "tbl_nyuinkhn_master"
+                                       TO  MCP-TABLE
                MOVE    "key3"          TO  MCP-PATHNAME
                PERFORM 910-NYUKHN-READ-SEC
            ELSE
@@ -472,13 +481,15 @@
                    PERFORM 20101-NYUKHN-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+                   MOVE    "tbl_nyuinkhn_master"
+                                           TO  MCP-TABLE
                    MOVE    "key3"          TO  MCP-PATHNAME
                    PERFORM 910-NYUKHN-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -502,11 +513,13 @@
            MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
            MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+               MOVE    "tbl_nyuinkhn_master"
+                                       TO  MCP-TABLE
                MOVE    "key3"          TO  MCP-PATHNAME
                PERFORM 910-NYUKHN-READ-SEC
            ELSE
@@ -521,13 +534,15 @@
                    PERFORM 20101-NYUKHN-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+                   MOVE    "tbl_nyuinkhn_master"
+                                           TO  MCP-TABLE
                    MOVE    "key3"          TO  MCP-PATHNAME
                    PERFORM 910-NYUKHN-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -553,7 +568,8 @@
            MOVE    LNK-MNTHMS      TO  NYUKHN-UPHMS
            MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
@@ -578,8 +594,9 @@
            MOVE    LNK-MNTHMS      TO  NYUKHN-UPHMS
            MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
-           MOVE    "upd1"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -601,7 +618,8 @@
       *
            MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO

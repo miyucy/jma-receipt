@@ -312,11 +312,13 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    TEKBYOWK-KEY        TO  TEKBYO-KEY
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+               MOVE    "tbl_tekioubyomei_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-TEKIOUBYOMEI-READ-SEC
            ELSE
@@ -324,7 +326,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    適応病名マスタクローズ
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -353,11 +356,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    TEKBYOWK-KEY        TO  TEKBYO-KEY
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+               MOVE    "tbl_tekioubyomei_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-TEKIOUBYOMEI-READ-SEC
            ELSE
@@ -365,7 +370,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    適応病名マスタクローズ
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -394,11 +401,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    TEKBYOWK-KEY        TO  TEKBYO-KEY
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+               MOVE    "tbl_tekioubyomei_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-TEKIOUBYOMEI-READ-SEC
            ELSE
@@ -406,7 +415,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    適応病名マスタクローズ
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -439,7 +449,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  TEKBYO-UPHMS
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -463,7 +474,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  TEKBYO-UPHMS
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -485,7 +497,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        TO  TEKIOUBYOMEI-REC
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

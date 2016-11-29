@@ -86,7 +86,6 @@ path	key	{
 				:BYOMEIKANA,
 				:IKOSAKICD,
 				:TOKSKNCD,
-				:NANBYOCD,
 				:UTAGAIFLG,
 				:TANDOKUKBN,
 				:HKNSKYKBN,
@@ -94,7 +93,6 @@ path	key	{
 				:SAITAKUKBN,
 				:BYOMEICHGCD,
 				:ICD10_1,
-				:ICD10_2,
 				:SYUSAIYMD,
 				:CHGYMD,
 				:HAISIYMD,
@@ -102,7 +100,9 @@ path	key	{
 				:OPID,
 				:CREYMD,
 				:UPYMD,
-				:UPHMS
+				:UPHMS,
+				:ICD10_2,
+				:NANBYOCD
 			)
 		;
 	};

@@ -336,18 +336,21 @@
                                    TO  SYNONYM-BYOMEI
            MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_synonym"   TO  MCP-TABLE
+               MOVE    "tbl_synonym_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM  910-SYNONYM-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYNONYM
            END-IF
       *
-           MOVE    "tbl_synonym" TO  MCP-TABLE
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -374,18 +377,21 @@
                                    TO  SYNONYM-BYOMEI
            MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_synonym"   TO  MCP-TABLE
+               MOVE    "tbl_synonym_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM  910-SYNONYM-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYNONYM
            END-IF
       *
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -411,18 +417,21 @@
                                    TO  SYNONYM-BYOMEI
            MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_synonym"   TO  MCP-TABLE
+               MOVE    "tbl_synonym_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM  910-SYNONYM-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYNONYM
            END-IF
       *
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -451,7 +460,8 @@
            MOVE    LNK-MNTHMS      TO  SYNONYM-UPHMS
            MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -478,8 +488,9 @@
            MOVE    LNK-MNTHMS      TO  SYNONYM-UPHMS
            MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
-           MOVE    "upd1"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -501,8 +512,9 @@
       *
            MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_synonym"   TO  MCP-TABLE
-           MOVE    "del1"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym_master"
+                                   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    3               TO  LNK-RC

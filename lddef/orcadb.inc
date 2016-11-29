@@ -203,4 +203,13 @@ db	{
 	tbl_kensasort_master;
 	tbl_interact_master;
 	tbl_sskijyo_master;
+	tbl_tekioubyomei_master;
+	tbl_genericname_master;
+	tbl_hktsantei_master;
+	tbl_hktsrycd_master;
+	tbl_infection_judgment_master;
+	tbl_nyuinkhn_master;
+	tbl_nyuksnchk_master;
+	tbl_nyuinryakusho_master;
+	tbl_synonym_master;
 };

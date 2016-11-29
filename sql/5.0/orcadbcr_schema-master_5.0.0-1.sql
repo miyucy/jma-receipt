@@ -27,25 +27,33 @@ CREATE VIEW tbl_interact AS SELECT * FROM master.tbl_interact;
 -- 症状措置
 ALTER TABLE IF EXISTS tbl_sskijyo SET SCHEMA master;
 CREATE VIEW tbl_sskijyo AS SELECT * FROM master.tbl_sskijyo;
-
--- -- 適応病名
--- ALTER TABLE IF EXISTS tbl_tekioubyomei SET SCHEMA master;
--- -- 一般名
--- ALTER TABLE IF EXISTS tbl_genericname SET SCHEMA master;
--- -- 包括チェック
--- ALTER TABLE IF EXISTS tbl_hktsantei SET SCHEMA master;
--- -- 包括診療コード
--- ALTER TABLE IF EXISTS tbl_hktsrycd SET SCHEMA master;
--- -- 感染症判定
--- ALTER TABLE IF EXISTS tbl_infection_judgment SET SCHEMA master;
--- -- 入院基本料
--- ALTER TABLE IF EXISTS tbl_nyuinkhn SET SCHEMA master;
--- -- 入院料加算チェック
--- ALTER TABLE IF EXISTS tbl_nyuksnchk SET SCHEMA master;
--- -- 入院レセプト記載略称
--- ALTER TABLE IF EXISTS tbl_nyuinryakusho SET SCHEMA master;
--- -- 同義語
--- ALTER TABLE IF EXISTS tbl_synonym SET SCHEMA master;
+-- 適応病名
+ALTER TABLE IF EXISTS tbl_tekioubyomei SET SCHEMA master;
+CREATE VIEW tbl_tekioubyomei AS SELECT * FROM master.tbl_tekioubyomei;
+-- 一般名
+ALTER TABLE IF EXISTS tbl_genericname SET SCHEMA master;
+CREATE VIEW tbl_genericname AS SELECT * FROM master.tbl_genericname;
+-- 包括チェック
+ALTER TABLE IF EXISTS tbl_hktsantei SET SCHEMA master;
+CREATE VIEW tbl_hktsantei AS SELECT * FROM master.tbl_hktsantei;
+-- 包括診療コード
+ALTER TABLE IF EXISTS tbl_hktsrycd SET SCHEMA master;
+CREATE VIEW tbl_hktsrycd AS SELECT * FROM master.tbl_hktsrycd;
+-- 感染症判定
+ALTER TABLE IF EXISTS tbl_infection_judgment SET SCHEMA master;
+CREATE VIEW tbl_infection_judgment AS SELECT * FROM master.tbl_infection_judgment;
+-- 入院基本料
+ALTER TABLE IF EXISTS tbl_nyuinkhn SET SCHEMA master;
+CREATE VIEW tbl_nyuinkhn AS SELECT * FROM master.tbl_nyuinkhn;
+-- 入院料加算チェック
+ALTER TABLE IF EXISTS tbl_nyuksnchk SET SCHEMA master;
+CREATE VIEW tbl_nyuksnchk AS SELECT * FROM master.tbl_nyuksnchk;
+-- 入院レセプト記載略称
+ALTER TABLE IF EXISTS tbl_nyuinryakusho SET SCHEMA master;
+CREATE VIEW tbl_nyuinryakusho AS SELECT * FROM master.tbl_nyuinryakusho;
+-- 同義語
+ALTER TABLE IF EXISTS tbl_synonym SET SCHEMA master;
+CREATE VIEW tbl_synonym AS SELECT * FROM master.tbl_synonym;
 
 
 -- -- 電子点数表

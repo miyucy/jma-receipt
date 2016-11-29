@@ -336,11 +336,13 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    HKTSRYCDWK-KEY      TO  HKTSRYCD-KEY
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+               MOVE    "tbl_hktsrycd_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-HKTSRYCD-READ-SEC
            ELSE
@@ -348,7 +350,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    包括診療コードマスタクローズ
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -377,11 +380,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    HKTSRYCDWK-KEY      TO  HKTSRYCD-KEY
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+               MOVE    "tbl_hktsrycd_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-HKTSRYCD-READ-SEC
            ELSE
@@ -389,7 +394,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    包括診療コードマスタクローズ
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -418,11 +424,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    HKTSRYCDWK-KEY      TO  HKTSRYCD-KEY
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+               MOVE    "tbl_hktsrycd_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-HKTSRYCD-READ-SEC
            ELSE
@@ -430,7 +438,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    包括診療コードマスタクローズ
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -462,7 +471,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  HKTSRYCD-UPHMS
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -486,7 +496,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  HKTSRYCD-UPHMS
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -508,7 +519,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        TO  HKTSRYCD-REC
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "tbl_hktsrycd_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

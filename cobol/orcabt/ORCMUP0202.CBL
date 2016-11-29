@@ -360,12 +360,12 @@
            MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
            MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_nyuinryakusho"
+               MOVE    "tbl_nyuinryakusho_master"
                                        TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM  910-RYAKUSHO-READ-SEC
@@ -373,7 +373,7 @@
                MOVE    1               TO  FLG-RYAKUSHO
            END-IF
       *
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -402,12 +402,12 @@
            MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
            MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinryakusho"
+               MOVE    "tbl_nyuinryakusho_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-RYAKUSHO-READ-SEC
@@ -428,14 +428,14 @@
                    PERFORM 20101-RYAKUSHO-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinryakusho"
+                   MOVE    "tbl_nyuinryakusho_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-RYAKUSHO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -460,12 +460,12 @@
            MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
            MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinryakusho"
+               MOVE    "tbl_nyuinryakusho_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM  910-RYAKUSHO-READ-SEC
@@ -489,14 +489,14 @@
                    PERFORM 20101-RYAKUSHO-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinryakusho"
+                   MOVE    "tbl_nyuinryakusho_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM  910-RYAKUSHO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -521,12 +521,12 @@
            MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
            MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinryakusho"
+               MOVE    "tbl_nyuinryakusho_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM  910-RYAKUSHO-READ-SEC
@@ -542,14 +542,15 @@
                    PERFORM 20101-RYAKUSHO-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinryakusho"
+                   MOVE    "tbl_nyuinryakusho_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM  910-RYAKUSHO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinryakusho" TO  MCP-TABLE
+           MOVE    "tbl_nyuinryakusho_master"
+                                   TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -575,7 +576,7 @@
            MOVE    LNK-MNTHMS      TO  RYAKUSHO-UPHMS
            MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
@@ -601,9 +602,9 @@
            MOVE    LNK-MNTHMS      TO  RYAKUSHO-UPHMS
            MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
-           MOVE    "upd1"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -625,7 +626,7 @@
       *
            MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
+           MOVE    "tbl_nyuinryakusho_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC

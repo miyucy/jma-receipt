@@ -324,20 +324,23 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    GENERICWK-KEY       TO  GENERIC-KEY
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_genericname"   TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "tbl_genericname_master"
+                                           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-GENERICNAME-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-GENERICNAME
            END-IF
       *
       *    一般名マスタクローズ
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    追加エラー（同一キー存在）
@@ -365,20 +368,23 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    GENERICWK-KEY       TO  GENERIC-KEY
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_genericname"   TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "tbl_genericname_master"
+                                           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-GENERICNAME-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-GENERICNAME
            END-IF
       *
       *    一般名マスタクローズ
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    更新エラー（同一キーなし）
@@ -406,20 +412,23 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    GENERICWK-KEY       TO  GENERIC-KEY
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_genericname"   TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "tbl_genericname_master"
+                                           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-GENERICNAME-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-GENERICNAME
            END-IF
       *
       *    一般名マスタクローズ
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    削除エラー（同一キーなし）
@@ -453,7 +462,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  GENERIC-UPHMS
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -477,7 +487,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  GENERIC-UPHMS
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -499,7 +510,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        TO  GENERICNAME-REC
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "tbl_genericname_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
