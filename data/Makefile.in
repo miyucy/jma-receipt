@@ -9,6 +9,9 @@ ORCADATA_files = \
 	TENSUKBNNAME.TXT \
 	transparent.jpg \
 	test.pdf \
+	SKDEF1001.yml \
+	SKDEF1002.yml \
+	SKDEF1003.yml \
 
 all:   
 
