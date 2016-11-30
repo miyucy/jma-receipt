@@ -66,11 +66,7 @@
            03  WRK-DATA            PIC X(1000).
            03  WRK-STR             PIC X(26).
       *
-           03  WRK-FILENAME.
-               05  WRK-FN-1        PIC X(05).
-               05  WRK-FN-KANRICD  PIC X(04).
-               05  WRK-FN-KBNCD    PIC X(08).
-               05  WRK-FN-2        PIC X(04).
+           03  WRK-FILENAME        PIC X(50).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -128,28 +124,34 @@
            INITIALIZE  IDX-AREA
            INITIALIZE  WRK-AREA
       *
-           MOVE    "SKDEF"             TO  WRK-FN-1
-           MOVE    ORCSSKDEF-KANRICD   TO  WRK-FN-KANRICD
-           MOVE    ORCSSKDEF-KBNCD     TO  WRK-FN-KBNCD
-           MOVE    ".yml"              TO  WRK-FN-2
+           MOVE    SPACE           TO  WRK-FILENAME
+           STRING  "data/SKDEF"        DELIMITED BY SIZE
+                   ORCSSKDEF-KANRICD   DELIMITED BY SPACE
+                   ORCSSKDEF-KBNCD     DELIMITED BY SPACE
+                   ".yml"              DELIMITED BY SIZE
+                   INTO                WRK-FILENAME
+           END-STRING
       *
       *    patch-libに存在？
-           INITIALIZE  ORCSMKPASSAREA
-           STRING  "patch-lib/data/"   DELIMITED BY SIZE
+           INITIALIZE                  ORCSMKPASSAREA
+           STRING  "patch-lib/"        DELIMITED BY SIZE
                    WRK-FILENAME        DELIMITED BY SPACE
-               INTO    MKPASS-IN-01
+                   INTO                MKPASS-IN-01
            END-STRING
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  IN01PARA
+           CALL    "ORCSMKPASS"        USING
+                                       ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  IN01PARA
+      *
            OPEN    INPUT   IN01-FILE
+      *
+      *    ファイルがない場合
            IF      STS-IN01        NOT =   ZERO
-               INITIALIZE  ORCSMKPASSAREA
-               STRING  "data/"             DELIMITED BY SIZE
-                       WRK-FILENAME        DELIMITED BY SPACE
-                   INTO    MKPASS-IN-01
-               END-STRING
-               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  IN01PARA
+               INITIALIZE                  ORCSMKPASSAREA
+               MOVE    WRK-FILENAME    TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"        USING
+                                           ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  IN01PARA
+      *
                OPEN    INPUT   IN01-FILE
                IF      STS-IN01        NOT =   ZERO
                    DISPLAY "SKDEFnnnn.yml not found."
