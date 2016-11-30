@@ -316,11 +316,12 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    NYUINCDCHGWK-KEY    TO  NYUINCDCHG-KEY
                MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
+               MOVE    "tbl_nyuincdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_nyuincdchg"
+                   MOVE    "tbl_nyuincdchg_master"
                                            TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM  910-NYUINCDCHG-READ-SEC
@@ -329,7 +330,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                END-IF
       *
       *        入院料置換クローズ
-               MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
+               MOVE    "tbl_nyuincdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-TBL-CLOSE-SEC
       *
@@ -404,7 +406,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  NYUINCDCHG-UPHMS
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_nyuincdchg"      TO  MCP-TABLE
+           MOVE    "tbl_nyuincdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -427,7 +430,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  NYUINCDCHG-UPHMS
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_nyuincdchg"      TO  MCP-TABLE
+           MOVE    "tbl_nyuincdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -449,7 +453,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        TO  NYUINCDCHG-REC
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
+           MOVE    "tbl_nyuincdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

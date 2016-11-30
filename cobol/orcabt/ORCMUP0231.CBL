@@ -355,18 +355,21 @@
            MOVE    LABOR-SIOWK-KEY TO  LABOR-SIO-KEY
            MOVE    LABOR-SIO-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_labor_sio" TO  MCP-TABLE
+               MOVE    "tbl_labor_sio_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-LABOR-SIO-READ-SEC
            ELSE
                MOVE    1               TO  FLG-LABOR-SIO
            END-IF
       *
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -394,11 +397,13 @@
            MOVE    LABOR-SIOWK-KEY TO  LABOR-SIO-KEY
            MOVE    LABOR-SIO-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_labor_sio" TO  MCP-TABLE
+               MOVE    "tbl_labor_sio_master"
+                                       TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-LABOR-SIO-READ-SEC
            ELSE
@@ -418,13 +423,15 @@
                    PERFORM 20101-LABOR-SIO-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_labor_sio" TO  MCP-TABLE
+                   MOVE    "tbl_labor_sio_master"
+                                           TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-LABOR-SIO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -448,11 +455,13 @@
            MOVE    LABOR-SIOWK-KEY TO  LABOR-SIO-KEY
            MOVE    LABOR-SIO-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_labor_sio" TO  MCP-TABLE
+               MOVE    "tbl_labor_sio_master"
+                                       TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-LABOR-SIO-READ-SEC
            ELSE
@@ -472,13 +481,15 @@
                    PERFORM 20101-LABOR-SIO-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_labor_sio" TO  MCP-TABLE
+                   MOVE    "tbl_labor_sio_master"
+                                           TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-LABOR-SIO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -502,11 +513,13 @@
            MOVE    LABOR-SIOWK-KEY    TO  LABOR-SIO-KEY
            MOVE    LABOR-SIO-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_labor_sio" TO  MCP-TABLE
+               MOVE    "tbl_labor_sio_master"
+                                       TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-LABOR-SIO-READ-SEC
            ELSE
@@ -522,13 +535,15 @@
                    PERFORM 20101-LABOR-SIO-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_labor_sio" TO  MCP-TABLE
+                   MOVE    "tbl_labor_sio_master"
+                                           TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-LABOR-SIO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -554,7 +569,8 @@
            MOVE    LNK-MNTHMS      TO  LABOR-SIO-UPHMS
            MOVE    LABOR-SIO-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
@@ -579,8 +595,9 @@
            MOVE    LNK-MNTHMS      TO  LABOR-SIO-UPHMS
            MOVE    LABOR-SIO-REC   TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
-           MOVE    "upd1"          TO  MCP-PATHNAME
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -602,7 +619,8 @@
       *
            MOVE    LABOR-SIO-REC   TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_labor_sio" TO  MCP-TABLE
+           MOVE    "tbl_labor_sio_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO

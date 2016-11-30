@@ -360,22 +360,22 @@
            MOVE    GENERICWK-KEY   TO  GENERIC-KEY
            MOVE    GENERIC-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_generic_price"
+               MOVE    "tbl_generic_price_master"
                                        TO  MCP-TABLE
-               MOVE    "key3"          TO  MCP-PATHNAME
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-GENERIC-READ-SEC
            ELSE
                MOVE    1               TO  FLG-GENERIC
            END-IF
       *
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    追加エラー（同一キー存在）
@@ -402,12 +402,12 @@
            MOVE    GENERICWK-KEY   TO  GENERIC-KEY
            MOVE    GENERIC-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_generic_price"
+               MOVE    "tbl_generic_price_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-GENERIC-READ-SEC
@@ -428,14 +428,14 @@
                    PERFORM 20101-GENERIC-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_generic_price"
+                   MOVE    "tbl_generic_price_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-GENERIC-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -460,12 +460,12 @@
            MOVE    GENERICWK-KEY   TO  GENERIC-KEY
            MOVE    GENERIC-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_generic_price"
+               MOVE    "tbl_generic_price_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-GENERIC-READ-SEC
@@ -486,14 +486,14 @@
                    PERFORM 20101-GENERIC-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_generic_price"
+                   MOVE    "tbl_generic_price_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-GENERIC-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -518,12 +518,12 @@
            MOVE    GENERICWK-KEY   TO  GENERIC-KEY
            MOVE    GENERIC-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_generic_price"
+               MOVE    "tbl_generic_price_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-GENERIC-READ-SEC
@@ -539,14 +539,14 @@
                    PERFORM 20101-GENERIC-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_generic_price"
+                   MOVE    "tbl_generic_price_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-GENERIC-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -572,7 +572,7 @@
                                        GENERIC-UPYMD
            MOVE    GENERIC-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
@@ -597,9 +597,9 @@
            MOVE    LNK-MNTYMD      TO  GENERIC-UPYMD
            MOVE    GENERIC-REC     TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
-           MOVE    "upd1"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -621,7 +621,7 @@
       *
            MOVE    GENERIC-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_generic_price"
+           MOVE    "tbl_generic_price_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC

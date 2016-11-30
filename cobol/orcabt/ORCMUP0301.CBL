@@ -358,12 +358,12 @@
            MOVE    PSYCHOWK-KEY    TO  PSYCHO-KEY
            MOVE    PSYCHO-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_psychotropic"
+               MOVE    "tbl_psychotropic_master"
                                        TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-PSYCHO-READ-SEC
@@ -371,7 +371,7 @@
                MOVE    1               TO  FLG-PSYCHO
            END-IF
       *
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -400,12 +400,12 @@
            MOVE    PSYCHOWK-KEY    TO  PSYCHO-KEY
            MOVE    PSYCHO-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_psychotropic"
+               MOVE    "tbl_psychotropic_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-PSYCHO-READ-SEC
@@ -426,14 +426,14 @@
                    PERFORM 20101-PSYCHO-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_psychotropic"
+                   MOVE    "tbl_psychotropic_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-PSYCHO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -458,12 +458,12 @@
            MOVE    PSYCHOWK-KEY    TO  PSYCHO-KEY
            MOVE    PSYCHO-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_psychotropic"
+               MOVE    "tbl_psychotropic_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-PSYCHO-READ-SEC
@@ -484,14 +484,14 @@
                    PERFORM 20101-PSYCHO-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_psychotropic"
+                   MOVE    "tbl_psychotropic_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-PSYCHO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -516,12 +516,12 @@
            MOVE    PSYCHOWK-KEY    TO  PSYCHO-KEY
            MOVE    PSYCHO-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_psychotropic"
+               MOVE    "tbl_psychotropic_master"
                                        TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-PSYCHO-READ-SEC
@@ -537,14 +537,14 @@
                    PERFORM 20101-PSYCHO-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_psychotropic"
+                   MOVE    "tbl_psychotropic_master"
                                            TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
                    PERFORM 910-PSYCHO-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
@@ -569,7 +569,7 @@
            MOVE    LNK-MNTYMD      TO  PSYCHO-UPYMD
            MOVE    PSYCHO-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
@@ -594,9 +594,9 @@
            MOVE    LNK-MNTYMD      TO  PSYCHO-UPYMD
            MOVE    PSYCHO-REC      TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
-           MOVE    "upd1"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -618,7 +618,7 @@
       *
            MOVE    PSYCHO-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_psychotropic"
+           MOVE    "tbl_psychotropic_master"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC

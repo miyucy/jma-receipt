@@ -132,8 +132,8 @@
       *
            03  WRK-IN                  PIC X(01).
       *
-           03  WRK-TABLE               PIC X(20).
-           03  WRK-PATHNAME            PIC X(05).
+           03  WRK-TABLE               PIC X(64).
+           03  WRK-PATHNAME            PIC X(64).
            03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
@@ -373,34 +373,36 @@
       *
            EVALUATE    ETENSUWK-TBLKBN
                WHEN    10
-                   MOVE    "tbl_etensu_1"          TO  WRK-TABLE
+                   MOVE    "tbl_etensu_1_master"   TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    20
-                   MOVE    "tbl_etensu_2"          TO  WRK-TABLE
-                   MOVE    "key6"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_2_master"   TO  WRK-TABLE
+                   MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    21
-                   MOVE    "tbl_etensu_2_jma"      TO  WRK-TABLE
-                   MOVE    "key6"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_2_jma_master"
+                                                   TO  WRK-TABLE
+                   MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    22
-                   MOVE    "tbl_etensu_2_sample"   TO  WRK-TABLE
-                   MOVE    "key4"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_2_sample_master"
+                                                   TO  WRK-TABLE
+                   MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    31
-                   MOVE    "tbl_etensu_3_1"        TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_1_master" TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    32
-                   MOVE    "tbl_etensu_3_2"        TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_2_master" TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    33
-                   MOVE    "tbl_etensu_3_3"        TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_3_master" TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    34
-                   MOVE    "tbl_etensu_3_4"        TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_4_master" TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    40
-                   MOVE    "tbl_etensu_4"          TO  WRK-TABLE
-                   MOVE    "key3"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_4_master"   TO  WRK-TABLE
+                   MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    50
-                   MOVE    "tbl_etensu_5"          TO  WRK-TABLE
+                   MOVE    "tbl_etensu_5_master"   TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
            END-EVALUATE
       *
@@ -869,7 +871,7 @@
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    "upd1"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                MOVE    2               TO  LNK-RC

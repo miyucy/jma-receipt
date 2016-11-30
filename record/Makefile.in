@@ -882,6 +882,38 @@ DB_files = \
 	xml_medicalv3res5.db \
 	xml_patientmodv3req7.db \
 	xml_patientmodv3res7.db \
+	tbl_byomei_master.db \
+	tbl_etensu_1_master.db \
+	tbl_etensu_2_jma_master.db \
+	tbl_etensu_2_master.db \
+	tbl_etensu_2_sample_master.db \
+	tbl_etensu_3_1_master.db \
+	tbl_etensu_3_2_master.db \
+	tbl_etensu_3_3_master.db \
+	tbl_etensu_3_4_master.db \
+	tbl_etensu_4_master.db \
+	tbl_etensu_5_master.db \
+	tbl_generic_class_master.db \
+	tbl_generic_price_master.db \
+	tbl_genericname_master.db \
+	tbl_hknjainf_care_master.db \
+	tbl_hktsantei_master.db \
+	tbl_hktsrycd_master.db \
+	tbl_infection_judgment_master.db \
+	tbl_interact_master.db \
+	tbl_kensasort_master.db \
+	tbl_labor_sio_master.db \
+	tbl_nyuincdchg_master.db \
+	tbl_nyuinkhn_master.db \
+	tbl_nyuinryakusho_master.db \
+	tbl_nyuksnchk_master.db \
+	tbl_psychotropic_master.db \
+	tbl_senteicdchg_master.db \
+	tbl_sskijyo_master.db \
+	tbl_synonym_master.db \
+	tbl_tekiou_disease_master.db \
+	tbl_tekiou_medicine_master.db \
+	tbl_tekioubyomei_master.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

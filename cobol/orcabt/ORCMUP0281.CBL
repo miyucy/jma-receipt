@@ -124,7 +124,7 @@
       *
            03  WRK-SYORI               PIC X(01).
            03  WRK-RECKBN              PIC X(01).
-           03  WRK-TABLE               PIC X(20).
+           03  WRK-TABLE               PIC X(64).
            03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
@@ -333,10 +333,10 @@
       *
            EVALUATE    WRK-RECKBN
                WHEN    "M"
-                   MOVE    "tbl_tekiou_medicine"
+                   MOVE    "tbl_tekiou_medicine_master"
                                                TO  WRK-TABLE
                WHEN    "D"
-                   MOVE    "tbl_tekiou_disease"
+                   MOVE    "tbl_tekiou_disease_master"
                                                TO  WRK-TABLE
            END-EVALUATE
       *

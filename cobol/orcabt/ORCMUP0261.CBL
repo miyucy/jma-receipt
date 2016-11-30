@@ -361,7 +361,8 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    LNK-MNTHMS          TO  SENCHG-UPHMS
            MOVE    SENTEICDCHG-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_senteicdchg"   TO  MCP-TABLE
+           MOVE    "tbl_senteicdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -383,7 +384,8 @@ grpsys     COPY    "COMMON-SPA".
                                        TO  SENTEICDCHG-REC
            MOVE    SENTEICDCHG-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_senteicdchg"   TO  MCP-TABLE
+           MOVE    "tbl_senteicdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

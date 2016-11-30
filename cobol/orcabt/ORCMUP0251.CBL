@@ -336,7 +336,8 @@
            MOVE    LNK-MNTHMS          TO  HKNJAC-UPHMS
            MOVE    HKNJAINFCARE-REC    TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_care_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
@@ -379,7 +380,8 @@
            MOVE    LNK-MNTHMS          TO  HKNJAC-UPHMS
            MOVE    HKNJAINFCARE-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_care_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
@@ -418,7 +420,8 @@
       *
            MOVE    HKNJAINFCARE-REC    TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_care_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
@@ -609,17 +612,20 @@
            MOVE    IN-HKNJANUM         TO  HKNJAC-HKNJANUM
            MOVE    HKNJAINFCARE-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_care_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+               MOVE    "tbl_hknjainf_care_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-HKNJA-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-HKNJA
            END-IF
-           MOVE    "tbl_hknjainf_care" TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_care_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
