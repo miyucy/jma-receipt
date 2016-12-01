@@ -1,0 +1,72 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+
+#-------------------------------------------#
+#        ＰＤＦファイルＤＢ保存
+#
+#        $1 HOSPNUM
+#        $2 データファイル名
+#-------------------------------------------#
+LOG_MAX_SIZE=1000
+LOG_FILE=/var/log/jma-receipt/$1$(basename ${0%.sh}).log
+DATA_FILE=${MCP_TEMPDIR}/$2
+
+cleanup () {
+  rm -Rf ${DATA_FILE}*
+}
+
+set_layeroption() {
+  tmpfile=$1
+  layeroption=""
+  [[ $(cat ${tmpfile}) =~ MonpeLayerIn(.*)MonpeLayerOut ]]
+  if [ -n "${BASH_REMATCH[0]}" ]; then
+    layeroption=$(echo "${BASH_REMATCH[1]}" | sed -e "s/ *-L */,/g" | sed -e "s/,/-H /")
+    sed -i -e "s/${BASH_REMATCH[0]}/$(printf %-${#BASH_REMATCH[0]}s ' ')/"  ${tmpfile}
+  fi
+  echo ${layeroption}
+}
+
+trap "cleanup" EXIT
+
+LINE=$(head -n 1 ${DATA_FILE})
+echo "LINE=${LINE}"
+tmpfile=${DATA_FILE}.tmp
+redname=${LINE:0:20}
+offset_x="0"${LINE:20:5}
+offset_y="0"${LINE:25:5}
+site=${LINE:30:1}
+pdffile=${MCP_TEMPDIR}/${LINE:31:1024}
+printf '%-20000s' "${LINE:1055:20000}" > ${tmpfile}
+
+form_path="${PATCHFORMDIR} ${FORMDIR}"
+[ "${site}" == '2' ] &&  form_path="${SITEFORMDIR} ${form_path}"
+redfile=$(find ${form_path} -maxdepth 1 -type f -name ${redname} | head -n 1)
+
+date +"%Y/%m/%d %H:%M:%S" >> ${LOG_FILE} 
+
+echo red2embed ${redfile} ${tmpfile} -o ${tmpfile}.red >> ${LOG_FILE} 2>&1
+red2embed ${redfile} ${tmpfile} -o ${tmpfile}.red >> ${LOG_FILE} 2>&1
+
+layeroption=$(set_layeroption ${DATA_FILE})
+echo monpe -x ${offset_x} -y ${offset_y} ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf >> ${LOG_FILE} 2>&1
+monpe -x ${offset_x} -y ${offset_y} ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf >> ${LOG_FILE} 2>&1
+
+echo ${MONBLOB} -dir ${LDDIRECTORY}  -import ${tmpfile}.pdf          >>${LOG_FILE} 2>&1
+${MONBLOB} -dir ${LDDIRECTORY}  -import ${tmpfile}.pdf > ${pdffile} 2>>${LOG_FILE}
+cat ${pdffile} >>${LOG_FILE}
+
+log_size=$(wc -l < ${LOG_FILE})
+if [ ${log_size} -gt ${LOG_MAX_SIZE} ]; then
+  eol=$((${log_size} - ${LOG_MAX_SIZE}))
+  sed -i -e "1,${eol}d" ${LOG_FILE}
+fi
+

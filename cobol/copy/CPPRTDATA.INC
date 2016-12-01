@@ -61,6 +61,8 @@
            03  PRTDATA-SITEKBN        PIC X(01).
       *プリンタ名
            03  PRTDATA-PRTNM          PIC X(16).
+      *データの種類
+           03  PRTDATA-DATA-TYPE      PIC X(16).
       *帳票データ
            03  PRTDATA-PRTDATA        PIC X(20000).
       *作成日

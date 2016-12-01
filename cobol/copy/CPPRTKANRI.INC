@@ -53,12 +53,12 @@
            03  PRTKANRI-PRTFLG         PIC X(01).
       *帳票タイトル
            03  PRTKANRI-TITLE          PIC X(100).
+      *プリンタ名
+           03  PRTKANRI-PRTNM          PIC X(16).
       *端末ＩＤ
            03  PRTKANRI-TERMID         PIC X(32).
       *オペレータＩＤ
            03  PRTKANRI-OPID           PIC X(16).
-      *プリンタ名
-           03  PRTKANRI-PRTNM          PIC X(16).
       *作成日
            03  PRTKANRI-CREYMD         PIC X(8).
       *LIMIT

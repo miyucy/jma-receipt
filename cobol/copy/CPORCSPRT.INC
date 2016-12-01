@@ -68,3 +68,7 @@
            03  SPRT-SITEKBN        PIC X(01).
       *    印刷済フラグ	
            03  SPRT-PRTFLG         PIC X(01).
+      *    データの種類
+           03  SPRT-DATA-TYPE      PIC X(16).
+      *    PDF(UUID)
+           03  SPRT-PDF            PIC X(36).

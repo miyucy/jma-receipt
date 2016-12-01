@@ -1232,11 +1232,22 @@
                MOVE    "1002"              TO  SPA-ERRCD
                GO  TO  430-DELETE-EXT
            END-IF
-      *         
+      *
            INITIALIZE                      PRTDATA-REC
            MOVE    SPA-WRK-TBL-KEY     TO  PRTDATA-TBL-KEY
            MOVE    SPA-GMN-TBL-GROUP   TO  PRTDATA-TBL-GROUP
            MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
+           MOVE    PRTDATA-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "delmb1"            TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           IF      MCP-RC         NOT  =   ZERO
+               MOVE    "1006"              TO  SPA-ERRCD
+               GO  TO  430-DELETE-EXT
+           END-IF
+      *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_prtdata"       TO  MCP-TABLE
@@ -1910,6 +1921,8 @@
                    MOVE    "帳票管理ＤＢが削除できませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
+               WHEN    "1003"
+               WHEN    "1006"
                    MOVE    "帳票ＤＢが削除できませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1004"

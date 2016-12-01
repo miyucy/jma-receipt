@@ -417,6 +417,7 @@ SRCS = ORCHC01.CBL \
        ORCRPMAIN.CBL \
        ORCSC30201604.CBL \
        ORCSPLUGINCHECK.CBL \
+       ORCSPDF.CBL \
        ORCSSKDEF.CBL \
 
 top_builddir = ../..

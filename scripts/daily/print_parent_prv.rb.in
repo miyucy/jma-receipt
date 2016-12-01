@@ -25,13 +25,16 @@ require 'print_parent_common'
 #   +-------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
 #   |redファイル(30Byte)|LP名(20Byte)|offset-x(5byte)|offset-y(5byte)|site区分(1Byte)|出力区分(1Byte)|出力先フォルダ(165byte)|
 #   +-------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
-#   +-------------------+-----------+----------------+-----------------+-------------+------------+--------------------------+
-#   |tbl_key情報(8byte) |連番(4byte)|グループ(14byte)|処理内連番(4byte)|ページ(5byte)|UUID(36byte)|帳票データ(Max20000バイト)|
-#   +-------------------+-----------+----------------+-----------------+-------------+------------+--------------------------+
+#   +-------------------+-----------+----------------+-----------------+-------------+------------+--------------------+--------------------------+
+#   |tbl_key情報(8byte) |連番(4byte)|グループ(14byte)|処理内連番(4byte)|ページ(5byte)|UUID(36byte)|データの種類(16Byte)|帳票データ(Max20000バイト)|
+#   +-------------------+-----------+----------------+-----------------+-------------+------------+--------------------+--------------------------+
 #   ファイル名に、拡張子とディレクトリ名を付加したものを子プロセスの引数に渡す
 #      site区分
-#        1 = orca標準
-#        2 = site-libのカスタマイズ帳票
+#        1 : orca標準
+#        2 : site-libのカスタマイズ帳票
+#      データの種類
+#        空白 : red埋め込み用テキストデータ
+#        pdf  : pdfファイル export用uuid
 #
 
 # ============================================================
@@ -64,7 +67,7 @@ class Jma_print
         item = set_item(report_info)
         unless item.empty?
           @items << item
-          @print_data << [item[:lp_name], item[:pdf_file]]
+          @print_data << item.select{|k,v| [:lp_name, :data_type, :pdf_file].include?(k)}
 
           if @items.size == 1
             @print_order = item[:print_order]
@@ -151,7 +154,8 @@ class Jma_print
     item[:subseq] = report_info[253, 4].strip
     item[:page] = report_info[257, 5].strip
     item[:uuid] = report_info[262,36].strip
-    item[:data] = report_info[298..-1]
+    item[:data_type] = report_info[298,16].strip
+    item[:data] = report_info[314..-1].rstrip
 
     item[:offset]= "-x #{item[:offset_x]} -y #{item[:offset_y]}"
 
@@ -180,7 +184,7 @@ class Jma_print
     system(cmd)
   end
 
-  def execute_monpe(item)
+  def create_pdf(item)
 
     stop_file = "#{@mcp_temp_dir}/#{item[:tbl_key]}#{item[:tbl_group]}.tmp"
     if stop_program?(stop_file)
@@ -188,8 +192,22 @@ class Jma_print
       exit 1
     end
 
+    case item[:data_type]
+    when 'pdf'
+       execute_monblob(item)
+    else
+       execute_monpe(item)
+    end
+  end
+
+  def execute_monblob(item)
+    execute("monblob -dir #{ENV['LDDIRECTORY']} -export #{item[:data]} -output #{item[:pdf_file]}")
+  end
+
+  def execute_monpe(item)
+
     open(item[:temp_file], "w") do |fp|
-      fp.print item[:data].chomp
+      fp.print item[:data]
       fp.print " " * 20000
     end
 
@@ -216,14 +234,14 @@ class Jma_print
   def print_reports
 
     if ["1", "2"].include?(@print_order)
-      @items.each {|item| execute_monpe(item)}
+      @items.each {|item| create_pdf(item)}
     end
 
     if ["3", "4", "5", "6" ].include?(@print_order)
       threads=[]
       MAX_THREADS.times.each_with_index do |index|
         threads << Thread.start do
-          index.step(@items.count - 1, MAX_THREADS){|i| execute_monpe(@items[i])}
+          index.step(@items.count - 1, MAX_THREADS){|i| create_pdf(@items[i])}
         end
       end
       threads.each {|t| t.join}
@@ -253,18 +271,18 @@ class Jma_print
   end
 
   def concatenate_pdf
-    printer = @print_data[0][0]
+    printer = @print_data.first[:lp_name]
     pdf_files=Array.new
 
     @print_data.each do |data|
       if @show_dialog == false
-        unless printer == data[0]
+        unless printer == data[:lp_name]
           execute_concat(pdf_files,printer)
           pdf_files.clear
-          printer = data[0]
+          printer = data[:lp_name]
         end
       end
-      pdf_files << data[1]
+      pdf_files << data[:pdf_file]
     end
 
     execute_concat(pdf_files,printer) unless pdf_files.empty?

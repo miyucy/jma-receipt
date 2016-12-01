@@ -71,9 +71,6 @@
       *    サブプロ用領域
       *****************************************************************
       *
-      *    monpe印刷データ泣き別れ修正サブ
-           COPY    "CPORCSFIXREDDATA.INC".
-      *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -162,7 +159,8 @@ grpsys     COPY    "COMMON-SPA".
       *    印刷管理ＤＢ更新処理
       *****************************************************************
        200-PRTKANRI-HENSYU-SEC         SECTION.
-      * 
+      *
+      *
            MOVE    SPACE               TO  PRTKANRI-REC
            INITIALIZE                      PRTKANRI-REC
            MOVE    SPRT-TBL-KEY        TO  PRTKANRI-TBL-KEY
@@ -335,15 +333,17 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                MOVE    SPRT-SITEKBN        TO  PRTDATA-SITEKBN
            END-IF    
            MOVE    SPRT-PRTNM          TO  PRTDATA-PRTNM
+           MOVE    FUNCTION LOWER-CASE (SPRT-DATA-TYPE)
+                                           TO  PRTDATA-DATA-TYPE
       *
-           INITIALIZE                      SFIXREDDATA-AREA
-           MOVE    PRTDATA-SITEKBN     TO  SFIXREDDATA-SITEKBN
-           MOVE    PRTDATA-PRTID       TO  SFIXREDDATA-FORMID
-           MOVE    SPRT-PRTDATA        TO  SFIXREDDATA-DATA
-           CALL    "ORCSFIXREDDATA"        USING
-                                           SFIXREDDATA-AREA
-                                           SPA-AREA
-           MOVE    SFIXREDDATA-DATA    TO  PRTDATA-PRTDATA
+           IF    ( PRTDATA-DATA-TYPE   =   "pdf" )
+               CALL    "ORCSPDF"       USING
+                                       ORCSPRTAREA
+                                       SPA-AREA
+               MOVE    SPRT-PDF        TO  PRTDATA-PRTDATA
+           ELSE
+               MOVE    SPRT-PRTDATA    TO  PRTDATA-PRTDATA
+           END-IF
       *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "tbl_prtdata"       TO  MCP-TABLE

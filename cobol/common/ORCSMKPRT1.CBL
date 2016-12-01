@@ -144,9 +144,6 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *    monpe印刷データ泣き別れ修正サブ
-           COPY  "CPORCSFIXREDDATA.INC".
-      *
       *    オフセット用
            COPY   "CPSK1044.INC".
       *    ディレクトリ位置編集サブ
@@ -454,8 +451,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    MKPRT-ID        TO  SHELLTBL-ARG18
       *    FORM
            MOVE    MKPRT-DIA       TO  SHELLTBL-ARG19
-      *    DEF
-           MOVE    MKPRT-PRTNM     TO  SHELLTBL-ARG20
+      *    TYPE
+           MOVE    MKPRT-TYPE      TO  SHELLTBL-ARG20
       *    データ内容
            MOVE    HOUTPARA (HOUTPARA-ST:)
                                    TO  SHELLTBL-ARG21

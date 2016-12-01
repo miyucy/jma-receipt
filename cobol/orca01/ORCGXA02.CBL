@@ -1656,12 +1656,21 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SPA-NAI-TBL-GROUP   TO  PRTDATA-TBL-GROUP
            MOVE    SPA-GMN-TBL-UUID    TO  PRTDATA-TBL-UUID
            MOVE    SPA-GMN-SHORI-RENNUM
-                                       TO  PRTKANRI-SHORI-RENNUM
-           MOVE    SPA-GMN-RENNUM      TO  PRTKANRI-RENNUM
+                                       TO  PRTDATA-SHORI-RENNUM
+           MOVE    SPA-GMN-RENNUM      TO  PRTDATA-RENNUM
 grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "delmb2"            TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           IF      MCP-RC         NOT  =   ZERO
+               MOVE    "1006"              TO  SPA-ERRCD
+               GO  TO  430-DELETE-EXT
+           END-IF
+      *
            MOVE    "tbl_prtdata"       TO  MCP-TABLE
            MOVE    "del14"             TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
@@ -2499,6 +2508,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                    MOVE    "帳票管理ＤＢが削除できませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
+               WHEN    "1003"
+               WHEN    "1006"
                    MOVE    "帳票ＤＢが削除できませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1004"

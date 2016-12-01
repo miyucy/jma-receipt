@@ -202,9 +202,6 @@ grpsys     COPY    "COMMON-SPA".
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    monpe印刷データ泣き別れ修正サブ
-           COPY  "CPORCSFIXREDDATA.INC".
-      *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -685,6 +682,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-EVALUATE                                                                
       *  01.01.02  SATRT
            MOVE WRK-PARA-PRTFLG                TO  PRT-PRTKBN
+           MOVE    PRTDATA-DATA-TYPE           TO  PRT-DATA-TYPE
            MOVE    ZERO                        TO  CNT-KETA
       *****MOVE    "/var/lib/jma-receipt/orca_ps/"        
            MOVE    WRK-SGETTEMP-TEMPDIR        TO  PRT-OUT
@@ -695,15 +693,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    PRTDATA-PAGE                TO  PRT-PAGE  
            MOVE    LNK-PRTKANRI-TBL-UUID       TO  PRT-UUID
       *  01.01.02  END
-           INITIALIZE                  SFIXREDDATA-AREA
-           MOVE    PRT-SITEKBN     TO  SFIXREDDATA-SITEKBN
-           MOVE    PRT-PRTID       TO  SFIXREDDATA-FORMID
-           MOVE    PRTDATA-PRTDATA TO  SFIXREDDATA-DATA
-           CALL    "ORCSFIXREDDATA"    USING
-                                       SFIXREDDATA-AREA
-                                       SPA-AREA
-           MOVE    SFIXREDDATA-DATA
-                                   TO  PRT-PRTDATA
+           MOVE    PRTDATA-PRTDATA TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
       *  01.01.02  SATRT

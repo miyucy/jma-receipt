@@ -38,5 +38,6 @@
                05  PRT-SHORI-RENNUM    PIC 9(04).
                05  PRT-PAGE            PIC 9(05).
                05  PRT-UUID            PIC X(36).
+           03  PRT-DATA-TYPE           PIC X(16).
            03  PRT-PRTDATA             PIC X(20000).
 

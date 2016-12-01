@@ -152,6 +152,7 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-太田    16/02/02  レセプトプレビュー不具合対応
       *  04.08.03    NACL-藤原    16/11/01  リアルタイムプレビュー時の修正
+      *  04.08.04    NACL-太田    16/11/30  PRT-RECをコピー句に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,21 +175,7 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-       01  PRT-REC.
-           03  PRT-PRTID           PIC X(30).
-           03  PRT-PRTNM           PIC X(20).
-           03  PRT-OFFSET-X        PIC X(05).
-           03  PRT-OFFSET-Y        PIC X(05).
-           03  PRT-SITEKBN         PIC X(01).
-           03  PRT-PRTKBN          PIC X(01).
-           03  PRT-OUT             PIC X(165).
-           03  PRT-TBL-KEY         PIC X(08).
-           03  PRT-RENNUM          PIC 9(04).
-           03  PRT-TBL-GROUP       PIC X(14).
-           03  PRT-SHORI-RENNUM    PIC 9(04).
-           03  PRT-PAGE            PIC 9(05).
-           03  PRT-UUID            PIC X(36).
-           03  PRT-PRTDATA         PIC X(20000).
+           COPY    "CPPRTALL.INC".
       *
       *    エラーファイル
        FD  RECEERR-FILE.

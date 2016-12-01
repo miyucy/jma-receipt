@@ -31,6 +31,7 @@
       *  04.08.00    NACL-太田    15/03/06  入院オーダー追加
       *                                     印刷データ等削除機能情報
       *                                     の追加処理を追加
+      *  04.08.00    NACL-太田    16/11/30  MONBLOB削除機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -343,6 +344,12 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    PRTDATA-REC     TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_prtdata"   TO  MCP-TABLE
+               MOVE    "delmb3"        TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+      *       
+               MOVE    PRTDATA-REC     TO  MCPDATA-REC
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               MOVE    "tbl_prtdata"   TO  MCP-TABLE
                MOVE    "del16"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
       *       
@@ -399,6 +406,12 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                        TO  PRTDATA-SRYYM
                MOVE    WRK-PARA-HOSPNUM
                                        TO  PRTDATA-HOSPNUM
+               MOVE    PRTDATA-REC     TO  MCPDATA-REC
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               MOVE    "tbl_prtdata"   TO  MCP-TABLE
+               MOVE    "delmb4"        TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+      *
                MOVE    PRTDATA-REC     TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_prtdata"   TO  MCP-TABLE

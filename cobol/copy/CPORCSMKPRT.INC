@@ -28,7 +28,9 @@
       *    帳票名
            03  MKPRT-DIA                PIC  X(50).
       *    ＤＥＦ名
-           03  MKPRT-DEF                PIC  X(50).
+           03  MKPRT-DEF                PIC  X(34).
+      *    データの種類
+           03  MKPRT-TYPE               PIC  X(16).
       *    データ内容
            03  MKPRT-DAT                PIC  X(1024).
       *    印刷位置

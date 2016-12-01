@@ -104,7 +104,7 @@
                    07  WRK-PARA-TITLE0           PIC X(40).
                    07  WRK-PARA-FORMID           PIC X(20).
                    07  WRK-PARA-SYOHMS           PIC X(06).
-                   07  WRK-PARA-PARA-CNT         PIC X(05).
+                   07  WRK-PARA-TYPE             PIC X(16).
                    07  WRK-PARA-DATASETNAME      PIC X(100).
                    07  WRK-PARA-TITLE            PIC X(40).
                    07  WRK-PARA-SRYYM            PIC X(06).
@@ -218,7 +218,7 @@
                                              WRK-PARA-TITLE0
                                              WRK-PARA-SYOHMS
                                              WRK-PARA-FORMID
-                                             WRK-PARA-PARA-CNT
+                                             WRK-PARA-TYPE
                                              WRK-PARA-DATASETNAME
                                              WRK-PARA-HOSPNUM
                                              WRK-PARA-TEMP-KBN
@@ -342,6 +342,7 @@
            END-IF
       *    
            MOVE    WRK-PARA-PTID       TO  SPRT-PTID
+           MOVE    WRK-PARA-TYPE       TO  SPRT-DATA-TYPE
       *
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
