@@ -59,7 +59,6 @@
       * 04.08.00     NACL-多々納  15/08/05  領収・明細　請求書不要対応
       * 04.08.00     NACL-多々納  15/11/XX  レセプト分割５０件他対応
       * 04.08.00     NACL-多々納  16/03/XX  平成２８年４月改正対応
-      * 05.00.00     NACL-森脇    16/10/24  患者地域連携情報項目追加
       * 04.08.00     NACL-多々納  16/11/21  ＱＲコードver.2.1対応
       *****************************************************************
       *
@@ -2912,11 +2911,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN28-AGREEMENT-MAX    TO  IDX
                END-IF
            END-PERFORM
-      *ver.5.0
-      *    医療等ＩＤ
-           MOVE    PTPUBLIC-PATIENT-ID2    TO  SPA-GMN28-PATIENTID2
-      *    共通番号
-           MOVE    PTPUBLIC-PATIENT-ID3    TO  SPA-GMN28-PATIENTID3
            .
        10025-PTNUMPUBLIC-SET-EXT.
            EXIT.
@@ -5164,11 +5158,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "F"                 TO  P02-P028-SYOUNIKBN
            END-IF
-      *ver.5.0
-      *    医療等ＩＤ
-           MOVE    SPA-GMN28-PATIENTID2     TO  P02-P028-PATIENTID2
-      *    共通番号
-           MOVE    SPA-GMN28-PATIENTID3     TO  P02-P028-PATIENTID3
            .
        2001-P028-SET-EXT.
            EXIT.

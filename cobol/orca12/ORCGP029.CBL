@@ -54,7 +54,6 @@
       *  04.07.00    NACL-多々納  14/03/XX  地域包括診療対象疾病対応
       *  04.08.00    NACL-多々納  15/11/XX  APIV3(HAORI)対応
       *  04.08.00    NACL-多々納  16/03/XX  平成２８年４月改正対応
-      *  05.00.00    NACL-森脇    16/10/24  患者地域連携情報項目追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -823,9 +822,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-PTPUBLIC        =   ZERO
                IF     (SPA-GMN28-PATIENTID1    =   SPACE )
                   AND (SPA-GMN28-AGREEMENT     =   SPACE )
-      *ver.5.0
-                  AND (SPA-GMN28-PATIENTID2    =   SPACE )
-                  AND (SPA-GMN28-PATIENTID3    =   SPACE )
       *            地域連携ＩＤが空白なら削除
                    MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -846,9 +842,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                IF     (SPA-GMN28-PATIENTID1    =   SPACE )
                   AND (SPA-GMN28-AGREEMENT     =   SPACE )
-      *ver.5.0
-                  AND (SPA-GMN28-PATIENTID2    =   SPACE )
-                  AND (SPA-GMN28-PATIENTID3    =   SPACE )
                    CONTINUE
                ELSE
       *            地域連携情ＩＤ・同意区分あれば登録
@@ -871,11 +864,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  PTPUBLIC-PATIENT-ID1
            MOVE    SPA-GMN28-AGREEMENT
                                        TO  PTPUBLIC-AGREEMENT
-      *ver.5.0
-           MOVE    SPA-GMN28-PATIENTID2
-                                       TO  PTPUBLIC-PATIENT-ID2
-           MOVE    SPA-GMN28-PATIENTID3
-                                       TO  PTPUBLIC-PATIENT-ID3
       *    作成年月日
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
@@ -908,11 +896,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  PTPUBLIC-PATIENT-ID1
            MOVE    SPA-GMN28-AGREEMENT
                                        TO  PTPUBLIC-AGREEMENT
-      *ver.5.0
-           MOVE    SPA-GMN28-PATIENTID2
-                                       TO  PTPUBLIC-PATIENT-ID2
-           MOVE    SPA-GMN28-PATIENTID3
-                                       TO  PTPUBLIC-PATIENT-ID3
       *    更新年月日
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTPUBLIC-UPHMS

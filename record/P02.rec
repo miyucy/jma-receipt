@@ -1286,12 +1286,6 @@ P02 {
         P028_SYOUNIKBN {
           isactive bool;
         };
-        P028_PATIENTID2 {
-          textdata varchar(20);
-        };
-        P028_PATIENTID3 {
-          textdata varchar(20);
-        };
       };
     };
   };
