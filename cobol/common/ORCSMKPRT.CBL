@@ -192,8 +192,8 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
       *    FROM
            MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
-      *    DEF
-           MOVE    "DUMMY"             TO  SHELLTBL-ARG3
+      *    イメージ削除フラグ（T:削除）
+           MOVE    "T"                 TO  SHELLTBL-ARG3
       *    データ内容
            MOVE    MKPRT-DAT (WRK-MKPRT-ST:)
                                        TO  SHELLTBL-ARG4

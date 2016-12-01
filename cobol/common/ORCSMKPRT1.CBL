@@ -274,8 +274,11 @@
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
       *    FROM
            MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
-      *    DEF
-           MOVE    "DUMMY"             TO  SHELLTBL-ARG3
+      *    イメージ保持フラグ（T:保持）
+           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
+            AND  ( SPA-CLIENT-TEMP-FLG =   2 )
+               MOVE    "T"             TO  SHELLTBL-ARG3
+           END-IF
       *    データ内容
            MOVE    MKPRT-DAT (ASGNPARA-ST:)
                                        TO  SHELLTBL-ARG4

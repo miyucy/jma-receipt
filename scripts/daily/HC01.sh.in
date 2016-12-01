@@ -31,6 +31,7 @@ patch_file=$PATCHFORMDIR/$file
 normal_file=$FORMDIR/$file
 site_file=$SITEFORMDIR/$file
 usr_form=$2
+remove_images=$3
 
 if ! test -f $site_file
 then
@@ -67,16 +68,9 @@ fi
 #----------------------------------------------------------------------#
 
   if [ -e ${PRT_FILE} ]	;then
-        echo ${PRT_FILE}
-#------ 処方せんQRイメージ削除
-	if      [[ ${PRT_FILE} =~ ^${MCP_TEMPDIR}/..HC2Q ]]   ;then
-		grep -Eo "${MCP_TEMPDIR}.*\.png" ${PRT_FILE} | sed -e "s/ \+/ /" | xargs rm -f
-	fi
-
-	if      [[ ${PRT_FILE} =~ ^${MCP_TEMPDIR}/..HC62 ]]   ;then
-		grep -Eo "${MCP_TEMPDIR}.*\.png" ${PRT_FILE} | sed -e "s/ \+/ /" | xargs rm -f
-	fi
-
+    echo ${PRT_FILE}
+#------ イメージ削除
+    [ "${remove_images}" == "T" ] &&  grep -Eo "${MCP_TEMPDIR}.*\.(jpg|png)" ${PRT_FILE} | sed -e "s/ \+/ /" | xargs rm -f
 	rm ${PRT_FILE}
   fi
 #----------------------------------------------------------------------#
@@ -84,3 +78,4 @@ fi
 #----------------------------------------------------------------------#
 	echo "The end"
 exit $RET
+
