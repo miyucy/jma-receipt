@@ -4088,6 +4088,10 @@
            INITIALIZE                  WRK-KENSA-AREA
            INITIALIZE                  WRK-NYUINDAY-AREA
            INITIALIZE                  TBL-NYUINDAY-AREA
+      *H28.12
+      *    £Ó£Ð£Á¤òÊÝÂ¸¤¹¤ë
+           MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
@@ -4290,7 +4294,7 @@
            END-PERFORM
       *
       *    £Ó£Ð£Á¤òÊÝÂ¸¤¹¤ë
-           MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
+      *****MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
            MOVE    ZERO                TO  IDXS-KENTAI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -4526,6 +4530,9 @@
       *****************************************************************
        3001-NOUHAKNS-HEN-SEC             SECTION.
       *
+      *    £Ó£Ð£Á¤òÊÝÂ¸¤¹¤ë
+           MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
+      *
            MOVE    SPACE             TO  WRK-HAN-SRYCD
       *    Ç¾ÇÈ¸¡ººÈ½ÃÇÎÁ£±
            MOVE    CONS-NHHND11      TO  WRK-SRYCD
@@ -4541,6 +4548,8 @@
                END-IF
            END-IF
            MOVE    WRK-HAN-SRYCD     TO  WRK-KEN-SRYCD  (IDX)
+      *    £Ó£Ð£Á¤ò¸µ¤ØÌá¤¹
+           MOVE    HZN-SCR-REC       TO  WRK-SCR-REC
            .
        3001-NOUHAKNS-HEN-EXT.
            EXIT.
