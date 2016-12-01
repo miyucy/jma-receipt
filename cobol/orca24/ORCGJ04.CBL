@@ -7972,6 +7972,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-SYUNOU          =   ZERO
                MOVE    "1"                 TO  SYU-ACCT-UPDKBN
+      *H28.12
+               MOVE    SPACE               TO  SYU-SAIKEISANKBN
+      *
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
                MOVE    SPA-OPID            TO  SYU-OPID

@@ -2870,6 +2870,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SYU-SYUCOMPYKZFTN
                                            SYU-SYUCOMPTOTAL
            MOVE    SPACE               TO  SYU-SYUYKZFTNKBN
+      *H28.12
+           MOVE    SPACE               TO  SYU-SAIKEISANKBN
       *
            PERFORM   VARYING   IDX4   FROM   1    BY   1
                       UNTIL    IDX4    >     4
