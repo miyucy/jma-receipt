@@ -2857,6 +2857,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-J021-ATO-HKNCOMBI
                                        TO  SYU-HKNCOMBINUM
            MOVE    WRK-PTFTNRATE       TO  SYU-PTFTNRATE
+      *H28.12
+           IF     (SYU-SYUHKNNUM   NOT =   SPACE )
+              AND (SYU-KOH1HKNNUM      =   SPACE )
+              AND (COMB-HKNNUM     NOT =   SPACE )
+              AND (COMB-KOH1HKNNUM NOT =   SPACE )
+               MOVE    SPACE               TO  SYU-SAIKEISANKBN
+           END-IF
+      *
       *    ÊÝ¸±¾ðÊó
            MOVE    COMB-HKNNUM         TO  SYU-SYUHKNNUM
            MOVE    COMB-KOH1HKNNUM     TO  SYU-KOH1HKNNUM
@@ -2870,8 +2878,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SYU-SYUCOMPYKZFTN
                                            SYU-SYUCOMPTOTAL
            MOVE    SPACE               TO  SYU-SYUYKZFTNKBN
-      *H28.12
-           MOVE    SPACE               TO  SYU-SAIKEISANKBN
       *
            PERFORM   VARYING   IDX4   FROM   1    BY   1
                       UNTIL    IDX4    >     4

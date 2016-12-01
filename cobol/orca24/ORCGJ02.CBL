@@ -11947,9 +11947,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-SYUNOU          =   ZERO
       *        会計変更区分
                MOVE    "1"                 TO  SYU-ACCT-UPDKBN
-      *H28.12
-               MOVE    SPACE               TO  SYU-SAIKEISANKBN
-      *
                MOVE    1                   TO  SPA-SYUNOU-KOUSIN
       *
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
