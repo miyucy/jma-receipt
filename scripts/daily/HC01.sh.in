@@ -70,7 +70,7 @@ fi
   if [ -e ${PRT_FILE} ]	;then
     echo ${PRT_FILE}
 #------ イメージ削除
-    [ "${remove_images}" == "T" ] &&  grep -Eo "${MCP_TEMPDIR}[^ ]*\.(jpg|png)" ${PRT_FILE} | sed -e "s/ \+/ /" | xargs rm -f
+    [ "${remove_images}" == "T" ] &&  grep -Eo "${MCP_TEMPDIR}[^ ]*\.(jpg|png)" ${PRT_FILE} |  xargs -r rm -f
 	rm ${PRT_FILE}
   fi
 #----------------------------------------------------------------------#

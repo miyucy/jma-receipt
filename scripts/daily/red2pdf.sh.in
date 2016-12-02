@@ -21,7 +21,7 @@ LOG_FILE=/var/log/jma-receipt/$1$(basename ${0%.sh}).log
 DATA_FILE=${MCP_TEMPDIR}/$2
 
 cleanup () {
-  grep -Eo "${MCP_TEMPDIR}[^ ]*\.(jpg|png)" ${DATA_FILE} | sed -e "s/ \+/ /" | xargs rm -f
+  grep -Eo "${MCP_TEMPDIR}[^ ]*\.(jpg|png)" ${DATA_FILE} | xargs -r rm -f
   rm -Rf ${DATA_FILE}*
 }
 
