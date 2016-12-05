@@ -94,6 +94,7 @@
       *                                     備考続きを処方欄へ記載
       * 04.08.00     NACL-多々納  16/08/18  API(GINBEE)対応
       * 04.08.00     NACL-多々納  16/11/01  残薬確認プログラムオプション対応
+      * 04.08.00     NACL-多々納  16/12/05  再印刷処理対応
       *****************************************************************
       *
       *
@@ -1239,6 +1240,7 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HC02QV03.red"      TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
+            MOVE   "pdf"               TO  MKPRT-TYPE
       ******MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(2)   TO  MKPRT-PRTNM
@@ -1250,7 +1252,7 @@
             END-IF
       *---(04.03.00) LINE ADD START ------------------------------------
             MOVE   "処方せん"          TO  MKPRT-INFO
-            CALL   "ORCSMKPRT"         USING
+            CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *

@@ -36,6 +36,7 @@
       *  04.08.01    NACL-森脇    15/08/12  処方せん備考欄コメント表示
       *  04.08.02    NACL-森脇    15/09/14  注意事項・効能効果表示
       *  04.08.00    NACL-多々納  16/11/XX  ＱＲコードver.2.1対応
+      *  05.00.00    NACL-多々納  16/12/05  再印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1768,12 +1769,13 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCM62Q.red"    TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
+           MOVE   "pdf"            TO  MKPRT-TYPE
       **** MOVE    HC01PARA        TO  MKPRT-DAT
            MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1034-PRTNM(11)
                                    TO  MKPRT-PRTNM
            MOVE   "お薬手帳"       TO  MKPRT-INFO
-           CALL   "ORCSMKPRT"          USING
+           CALL   "ORCSMKPRT1"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *
