@@ -642,7 +642,7 @@
       *
            INITIALIZE                  WRK-HENSYU-AREA
            MOVE    1               TO  IDX-GYO
-           MOVE    64              TO  GYO-MAX
+           MOVE    62              TO  GYO-MAX
            MOVE    30              TO  KOU-MAX
            MOVE    YAKUJYO-EFFECT  TO  WRK-HENSYUDATA
            PERFORM 250-HENSYU-SYORI-SEC
@@ -1637,14 +1637,13 @@
            INITIALIZE                  ORCSMKPRTAREA
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCN301.red"    TO  MKPRT-DIA
-           MOVE    SPACE           TO  MKPRT-DEF
+           MOVE    "pdf"           TO  MKPRT-TYPE
       *****MOVE    HC01PARA        TO  MKPRT-DAT
            MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(10)
                                    TO  MKPRT-PRTNM
            MOVE   "¤ªÌô¾ðÊó"       TO  MKPRT-INFO
-      *     CALL   "ORCSMKPRT1"         USING
-           CALL   "ORCSMKPRT"         USING
+           CALL   "ORCSMKPRT1"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *
