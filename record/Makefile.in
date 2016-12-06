@@ -520,6 +520,8 @@ RECORD_files = \
 	W141.rec \
 	W142.rec \
 	patientmodv37.rec\
+	receiptmakev3.rec \
+	receiptprintv3.rec \
 
 DEF_files = \
 
