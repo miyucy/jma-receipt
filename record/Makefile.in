@@ -914,6 +914,10 @@ DB_files = \
 	tbl_tekiou_disease_master.db \
 	tbl_tekiou_medicine_master.db \
 	tbl_tekioubyomei_master.db \
+	xml_receipt_makev3req.db \
+	xml_receipt_makev3res.db \
+	xml_receipt_printv3req.db \
+	xml_receipt_printv3res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
