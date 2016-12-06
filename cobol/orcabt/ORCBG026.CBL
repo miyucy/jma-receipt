@@ -606,10 +606,12 @@
            END-IF
       *----(04.08.01)--ADD-END-----
       *
-      *    保険組合せ読み込み
-           PERFORM 900-HKNCOMBI-READ-SEC
-           IF      FLG-HKNCOMBI       =   1
-               GO  TO  230-MAIN-SRYACCT-EXT
+           IF      ACCT-HKNCOMBI   NOT =   9999
+      *        保険組合せ読み込み
+               PERFORM 900-HKNCOMBI-READ-SEC
+               IF      FLG-HKNCOMBI       =   1
+                   GO  TO  230-MAIN-SRYACCT-EXT
+               END-IF
            END-IF
       *
       *    院内チェック
