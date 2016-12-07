@@ -1106,7 +1106,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>（＋：行挿入、−：剤削除、先頭空白・数量０：行削除、//：検索）（/G:処方名）</label>
+        <label>（＋：行挿入、−：剤削除、先頭空白・数量０：行削除、//：検索）</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
