@@ -164,15 +164,15 @@
       *πÁ∑◊≈¿øÙæ Û
            03  RECE10-TOTALTENINF         OCCURS  5.
       *πÁ∑◊≈¿øÙ
-               05  RECE10-TOTALTEN        PIC  9(08).
+               05  RECE10-TOTALTEN        PIC S9(08).
       *…È√¥∂‚≥€æ Û
            03  RECE10-FTNMONEYINF         OCCURS  5.
       *…È√¥∂‚≥€
-               05  RECE10-FTNMONEY        PIC  9(09).
+               05  RECE10-FTNMONEY        PIC S9(09).
       *…È√¥∂‚≥€° ∞Ï…Ù…È√¥≥€°À
-               05  RECE10-FTNMONEY-FTN    PIC  9(09).
+               05  RECE10-FTNMONEY-FTN    PIC S9(09).
       *…È√¥∂‚≥€° πµΩ¸≥€°À
-               05  RECE10-FTNMONEY-KOJ    PIC  9(09).
+               05  RECE10-FTNMONEY-KOJ    PIC S9(09).
       *
       *ø©ªˆŒ≈Õ‹»Òæ Û
            03  RECE10-SHOKUJIINF          OCCURS  5.
@@ -200,12 +200,12 @@
                    07  RECE10-ETC-JNISSU   PIC  9(02)   OCCURS  4.
       *µ≠∫‹≥∞∏¯»Ò°›πÁ∑◊≈¿øÙ
                05  RECE10-ETC-TOTALTENINF.
-                   07  RECE10-ETC-TOTALTEN PIC  9(08)   OCCURS  4.
+                   07  RECE10-ETC-TOTALTEN PIC S9(08)   OCCURS  4.
       *µ≠∫‹≥∞∏¯»Ò°›…È√¥∂‚≥€
                05  RECE10-ETC-FTNMONEYINF               OCCURS  4.
-                   07  RECE10-ETC-FTNMONEY     PIC  9(09).
-                   07  RECE10-ETC-FTNMONEY-FTN PIC  9(09).
-                   07  RECE10-ETC-FTNMONEY-KOJ PIC  9(09).
+                   07  RECE10-ETC-FTNMONEY     PIC S9(09).
+                   07  RECE10-ETC-FTNMONEY-FTN PIC S9(09).
+                   07  RECE10-ETC-FTNMONEY-KOJ PIC S9(09).
       *µ≠∫‹≥∞∏¯»Ò°›ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚æ Û
                05  RECE10-ETC-YKZFTNINF.
                    07  RECE10-ETC-YKZFTN   PIC  9(05)   OCCURS  4.
@@ -224,14 +224,14 @@
       *º¬∆¸øÙ
                05  RECE10-SKYIRYO-NISSU    PIC 9(02).
       *¿¡µ·≈¿
-               05  RECE10-SKYIRYO-TOTALTEN PIC 9(08).
+               05  RECE10-SKYIRYO-TOTALTEN PIC S9(08).
       *¥µº‘…È√¥
                05  RECE10-SKYIRYO-ICHIBUFTN
-                                           PIC 9(09).
+                                           PIC S9(09).
       * ›∏±º‘…È√¥
-               05  RECE10-SKYIRYO-HOKENJA  PIC 9(09).
+               05  RECE10-SKYIRYO-HOKENJA  PIC S9(09).
       *∏¯»Ò…È√¥
-               05  RECE10-SKYIRYO-KOHFTN   PIC 9(09).
+               05  RECE10-SKYIRYO-KOHFTN   PIC S9(09).
       *
       *¿¡µ·≥€æ Û° ø©ªˆ°À
            03  RECE10-SKYSKJ-INF.

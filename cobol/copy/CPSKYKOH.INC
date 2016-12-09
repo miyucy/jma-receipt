@@ -82,15 +82,15 @@
       *合計点数情報
            03  SKYKOH-TOTALTENINF.
       *合計点数
-               05  SKYKOH-TOTALTEN        PIC  9(08).
+               05  SKYKOH-TOTALTEN        PIC S9(08).
       *負担金額情報
            03  SKYKOH-FTNMONEYINF.
       *負担金額
-               05  SKYKOH-FTNMONEY        PIC  9(09).
+               05  SKYKOH-FTNMONEY        PIC S9(09).
       *負担金額（一部負担額）
-               05  SKYKOH-FTNMONEY-FTN    PIC  9(09).
+               05  SKYKOH-FTNMONEY-FTN    PIC S9(09).
       *負担金額（控除額）
-               05  SKYKOH-FTNMONEY-KOJ    PIC  9(09).
+               05  SKYKOH-FTNMONEY-KOJ    PIC S9(09).
       *
       *食事療養費情報
            03  SKYKOH-SHOKUJIINF.

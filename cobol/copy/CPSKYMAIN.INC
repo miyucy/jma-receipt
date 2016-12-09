@@ -124,15 +124,15 @@
       *πÁ∑◊≈¿øÙæ Û
            03  SKYMAIN-TOTALTENINF.
       *πÁ∑◊≈¿øÙ
-               05  SKYMAIN-TOTALTEN        PIC  9(08).
+               05  SKYMAIN-TOTALTEN        PIC S9(08).
       *…È√¥∂‚≥€æ Û
            03  SKYMAIN-FTNMONEYINF.
       *…È√¥∂‚≥€
-               05  SKYMAIN-FTNMONEY        PIC  9(09).
+               05  SKYMAIN-FTNMONEY        PIC S9(09).
       *…È√¥∂‚≥€° ∞Ï…Ù…È√¥≥€°À
-               05  SKYMAIN-FTNMONEY-FTN    PIC  9(09).
+               05  SKYMAIN-FTNMONEY-FTN    PIC S9(09).
       *…È√¥∂‚≥€° πµΩ¸≥€°À
-               05  SKYMAIN-FTNMONEY-KOJ    PIC  9(09).
+               05  SKYMAIN-FTNMONEY-KOJ    PIC S9(09).
       *
       *ø©ªˆŒ≈Õ‹»Òæ Û
            03  SKYMAIN-SHOKUJIINF.
@@ -157,14 +157,14 @@
                05  SKYMAIN-SKYIRYO-NISSU   PIC 9(02).
       *¿¡µ·≈¿
                05  SKYMAIN-SKYIRYO-TOTALTEN
-                                           PIC 9(08).
+                                           PIC S9(08).
       *¥µº‘…È√¥
                05  SKYMAIN-SKYIRYO-ICHIBUFTN
-                                           PIC 9(09).
+                                           PIC S9(09).
       * ›∏±º‘…È√¥
-               05  SKYMAIN-SKYIRYO-HOKENJA PIC 9(09).
+               05  SKYMAIN-SKYIRYO-HOKENJA PIC S9(09).
       *∏¯»Ò…È√¥
-               05  SKYMAIN-SKYIRYO-KOHFTN  PIC 9(09).
+               05  SKYMAIN-SKYIRYO-KOHFTN  PIC S9(09).
       *
       *¿¡µ·≥€æ Û° ø©ªˆ°À
            03  SKYMAIN-SKYSKJ-INF.

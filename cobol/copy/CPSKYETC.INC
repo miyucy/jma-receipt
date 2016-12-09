@@ -64,12 +64,12 @@
                    07  SKYETC-ETC-JNISSU   PIC  9(02)   OCCURS  4.
       *µ≠∫‹≥∞∏¯»Ò°›πÁ∑◊≈¿øÙ
                05  SKYETC-ETC-TOTALTENINF.
-                   07  SKYETC-ETC-TOTALTEN PIC  9(08)   OCCURS  4.
+                   07  SKYETC-ETC-TOTALTEN PIC S9(08)   OCCURS  4.
       *µ≠∫‹≥∞∏¯»Ò°›…È√¥∂‚≥€
                05  SKYETC-ETC-FTNMONEYINF               OCCURS  4.
-                   07  SKYETC-ETC-FTNMONEY     PIC  9(09).
-                   07  SKYETC-ETC-FTNMONEY-FTN PIC  9(09).
-                   07  SKYETC-ETC-FTNMONEY-KOJ PIC  9(09).
+                   07  SKYETC-ETC-FTNMONEY     PIC S9(09).
+                   07  SKYETC-ETC-FTNMONEY-FTN PIC S9(09).
+                   07  SKYETC-ETC-FTNMONEY-KOJ PIC S9(09).
       *µ≠∫‹≥∞∏¯»Ò°›ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚æ Û
                05  SKYETC-ETC-YKZFTNINF.
                    07  SKYETC-ETC-YKZFTN   PIC  9(05)   OCCURS  4.
