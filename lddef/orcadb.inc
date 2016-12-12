@@ -231,4 +231,18 @@ db	{
 	tbl_tekiou_medicine_master;
 	tbl_generic_class_master;
 	tbl_psychotropic_master;
+        tbl_dpc_act1;
+        tbl_dpc_act2;
+        tbl_dpc_age;
+        tbl_dpc_bunrui;
+        tbl_dpc_byotai;
+        tbl_dpc_cdchg;
+        tbl_dpc_icd10;
+        tbl_dpc_jusho;
+        tbl_dpc_mdc;
+        tbl_dpc_ope;
+        tbl_dpc_subbyo;
+        tbl_dpc_tensu;
+        tbl_dpc_ptinf;
+        tbl_dpc_ptkhn;
 };

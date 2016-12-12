@@ -920,6 +920,20 @@ DB_files = \
 	xml_receipt_makev3res.db \
 	xml_receipt_printv3req.db \
 	xml_receipt_printv3res.db \
+	tbl_dpc_act1.db \
+	tbl_dpc_act2.db \
+	tbl_dpc_age.db \
+	tbl_dpc_bunrui.db \
+	tbl_dpc_byotai.db \
+	tbl_dpc_cdchg.db \
+	tbl_dpc_icd10.db \
+	tbl_dpc_jusho.db \
+	tbl_dpc_mdc.db \
+	tbl_dpc_ope.db \
+	tbl_dpc_subbyo.db \
+	tbl_dpc_tensu.db \
+	tbl_dpc_ptinf.db \
+	tbl_dpc_ptkhn.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
