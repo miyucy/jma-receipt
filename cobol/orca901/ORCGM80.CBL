@@ -1054,6 +1054,13 @@
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   WRK-TBL-MAX
+               IF      WRK-NAI-TLINK(IDX)  =   "ERROR"
+                   PERFORM 40424-LIST042-INIT-SEC
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX         >   WRK-TBL-MAX
                IF      WRK-NAI-TLINK(IDX)  =   "FALSE"
                    PERFORM 40424-LIST042-INIT-SEC
                END-IF
@@ -1320,6 +1327,9 @@
                WHEN    "disable"
                WHEN    "uninstall"
                    MOVE    SPA-NAI-VERSION     TO  WRK-VERSION
+                   IF      SPA-NAI-VERSION     =   "-"
+                       MOVE    SPA-NAI-VERSION2    TO  WRK-VERSION
+                   END-IF
                WHEN    OTHER
                    MOVE    SPA-NAI-VERSION2    TO  WRK-VERSION
            END-EVALUATE
