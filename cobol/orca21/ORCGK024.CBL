@@ -207,7 +207,7 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *    患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
+      *    COPY    "CPORCSPTID.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -290,9 +290,6 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
-      *
-           INITIALIZE                  WRK-MEISAI-AREA
-           INITIALIZE                  WRK-DATA-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
@@ -403,6 +400,7 @@
            MOVE    ZERO                TO  SPA-K024-NEXT
            INITIALIZE                  SPA-K024-LIST
            MOVE    ZERO                TO  SPA-K024-MAX
+           MOVE    ZERO                TO  SPA-K024-SELNUM
       *
            IF     (SPA-K024-PAGE       =   ZERO )
                MOVE    1                   TO  SPA-K024-PAGE
@@ -647,8 +645,6 @@
            MOVE    ZERO                TO  IDX-C
            MOVE    ZERO                TO  WRK-CNT 
       *
-           MOVE    1                   TO  FLG-GMN-INIT2
-      *
            PERFORM VARYING     IDX   FROM   1   BY  1
                    UNTIL       IDX   >   SPA-K024-MAX
               IF      SPA-K024-SELNUM      =   SPA-K024G-TNUM(IDX)
@@ -875,8 +871,9 @@
            IF      SPA-K024-SELNUM     >=  01     AND
                                        <=  SPA-K024-MAX
                MOVE    "0101"              TO  SPA-KIDCD
+               PERFORM 4101-MEISAI-HENSYU-SEC
            ELSE
-               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-K024-CUR
            END-IF
            .
@@ -972,7 +969,6 @@
            PERFORM 3101-KANRILIST-HEN-SEC
       *    未登録分判定
            PERFORM 3102-OKUSURI-KANRI-CHK-SEC
-           MOVE    ZERO               TO  SPA-K024-SELNUM
            .
        4401-KAIJO-UPDATE-EXT.
            EXIT.
@@ -1164,6 +1160,7 @@
            ELSE
                MOVE    K024-KANRILIST-ROW  TO  WRK-K024-ROW
            END-IF
+      *
       *
            MOVE    SPACE               TO  K024
            INITIALIZE                      K024
