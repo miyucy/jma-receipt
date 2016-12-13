@@ -114,6 +114,8 @@
       *  04.08.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
       *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
+      *  04.08.00    NACL-多々納  16/06/XX  中心静脈（植入型カテーテル）対応
+      *  04.08.00    NACL-多々納  16/12/XX  電子お薬手帳連携対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1567,6 +1569,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            入力コード設定
                    PERFORM 30014-K023-SET-SEC
                    MOVE    2                   TO  FLG-GMN
+      *H28.12
+      *        電子お薬手帳画面
+               WHEN    "K024"
+                   MOVE    2                   TO  FLG-GMN
+      *!!!
                WHEN    "KID1"
       *            確認画面より
                    PERFORM 30010-KID1-SET-SEC
@@ -4753,7 +4760,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
-      *
            .
        3104-WKSRYACT-HEN-EXT.
            EXIT.
@@ -7350,7 +7356,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 410-K98-SYORI-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
-      *TEST
+      *H28.12
+      *    電子お薬手帳画面
+           IF     (LNK-SC97-INPUTCD(1:2)
+                                       =   "/O"
+                                       OR  "/o" )
+            AND   (LNK-SC97-INPUTCD(3:)    =   SPACE )
+               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+               PERFORM 410-K024-SYORI-SEC
+               GO      TO                  41011-KOUI-HEN2-EXT
+           END-IF
       *
       *H28.5
       *    院外投薬名称変換
@@ -11602,6 +11618,72 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4001-K01-SYORI-EXT.
            EXIT.
+      *H28.12
+      *****************************************************************
+      *    電子お薬手帳情報画面処理
+      *****************************************************************
+       410-K024-SYORI-SEC             SECTION.
+      *
+      *    更新前の基本チェック
+      *    PERFORM 41001-KIHON-CHK-SEC
+      *    IF     (SPA-ERRCD       NOT =   SPACE  )  OR
+      *           (SPA-KIDCD       NOT =   SPACE )
+      *****       (SPA-KIDCD           =   "0180" )
+      *        GO      TO      410-K022-SYORI-EXT
+      *    END-IF
+      *
+      *    更新前のチェック
+      *    MOVE    "1"                 TO  FLG-TOROKU
+      *    PERFORM 510-TBLHEN-SEC
+      *    MOVE    SPACE               TO  FLG-TOROKU
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      410-K022-SYORI-EXT
+      *    END-IF
+      *
+      *    初期表示
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-K02             TO  SPA-FREE
+      *    画面ＳＰＡ書込み
+           PERFORM 1003-K02SPA-OUT-SEC
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGK024"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-K02
+           MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+      *
+      *    画面カーソルセット処理
+           MOVE    1                   TO  SPA-K024-CUR
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+      *    診療行為一覧へ
+           MOVE    "K024"              TO  SPA-SAKIPG
+           MOVE    "K02"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "K024"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       410-K024-SYORI-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    算定処理へ

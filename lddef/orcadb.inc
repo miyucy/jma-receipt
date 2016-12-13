@@ -245,4 +245,6 @@ db	{
         tbl_dpc_tensu;
         tbl_dpc_ptinf;
         tbl_dpc_ptkhn;
+        tbl_okusuri_kanri;
+        tbl_okusuri_data;
 };

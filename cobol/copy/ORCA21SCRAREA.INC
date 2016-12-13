@@ -25,5 +25,7 @@
            COPY    "KID1.INC".
            COPY    "KID2.INC".
            COPY    "KHELP.INC".
+           COPY    "K024.INC".
+           COPY    "K0241.INC".
       *ORAPI012SETV2
            COPY    "CPAPILSTV2.INC".
