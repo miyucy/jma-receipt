@@ -737,7 +737,7 @@ ito   *
                        09  SPA-K024G-THOSPNAME PIC X(200).
       *
       *                医療機関コード
-                       09  SPA-K024-THOSPCD    PIC 9(07).
+                       09  SPA-K024-THOSPCD    PIC X(07).
                        09  SPA-K024-TRENNUM    PIC 9(03).
       *                調剤日
                        09  SPA-K024-TSRYYMD    PIC X(08).
@@ -760,7 +760,7 @@ ito   *
                        09  SPA-K0241-THOSPNAME PIC X(200).
       *
       *                医療機関コード
-                       09  SPA-K0241-THOSPCD    PIC 9(07).
+                       09  SPA-K0241-THOSPCD    PIC X(07).
       *                調剤日
                        09  SPA-K0241-TSRYYMD    PIC X(08).
       *                連番
