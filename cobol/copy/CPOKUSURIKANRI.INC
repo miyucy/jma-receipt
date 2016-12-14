@@ -32,7 +32,7 @@
       *調剤日
                05  OKUKAN-SRYYMD            PIC  X(08).
       *医療機関コード
-               05  OKUKAN-HOSPCD            PIC  9(07).
+               05  OKUKAN-HOSPCD            PIC  X(07).
       *連番
                05  OKUKAN-RENNUM            PIC  9(03).
       *患者氏名

@@ -4,7 +4,7 @@ CREATE TABLE tbl_okusuri_kanri (
     hospnum smallint DEFAULT 0 NOT NULL,
     ptid    bigint   DEFAULT 0 NOT NULL,
     sryymd character varying(8) NOT NULL,
-    hospcd integer DEFAULT 0 NOT NULL,
+    hospcd character varying(7) NOT NULL,
     rennum smallint DEFAULT 0 NOT NULL,
     name character varying(100),
     sex character varying(1),
