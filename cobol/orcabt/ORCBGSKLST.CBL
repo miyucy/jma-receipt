@@ -413,8 +413,10 @@
            PERFORM 900-SYSKANRI-DBSELECT-SEC
       *
            PERFORM UNTIL   FLG-SYSKANRI    =   1
-      *        システム管理定義取得サブチェック
-               PERFORM 220-MAIN-SUBCHK-SEC
+               IF      SYS-KANRICD     >=  "1001"
+      *            システム管理定義取得サブチェック
+                   PERFORM 220-MAIN-SUBCHK-SEC
+               END-IF
       *        システム管理読み込み
                PERFORM 900-SYSKANRI-DBFETCH-SEC
            END-PERFORM
@@ -459,7 +461,9 @@
                                        ORCSSKDEFAREA
       *        設定内容がない場合はベタ打ち
                IF      ORCSSKDEF-ITEM-MAX  =   ZERO
-                   MOVE    "（不明）"      TO  ORCSSKDEF-NAME
+      *             MOVE    "（不明）"      TO  ORCSSKDEF-NAME
+                   MOVE    "（システム定義未提供）"
+                                           TO  ORCSSKDEF-NAME
                    MOVE    1               TO  ORCSSKDEF-ITEM-MAX
                    MOVE    "管理テーブル"  TO  ORCSSKDEF-ITEM-JP(1)
                    MOVE    1               TO  ORCSSKDEF-START(1)
