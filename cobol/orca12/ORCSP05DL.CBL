@@ -31,7 +31,8 @@
       * 04.07.00     NACL-多々納  12/12/19  患者レセプト分割対応
       * 04.07.00     NACL-多々納  13/07/XX  患者個別設定対応
       * 04.07.00     NACL-多々納  14/02/XX  患者介護情報追加対応
-      * 05.00.00     NACL-多々納  16/12/15  患者個人番号対応
+      * 05.00.00     NACL-多々納  16/12/15  患者個人番号
+      *                                     お薬手帳管理・データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -50,6 +51,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-YYK             PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
+           03  FLG-OKUKAN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -306,6 +308,14 @@
       *    患者個人番号テーブル
        01  PTMYNUMBER-REC.
            COPY    "CPPTMYNUMBER.INC".
+      *
+      *    お薬手帳管理データ
+       01  OKUSURIKANRI-REC.
+           COPY    "CPOKUSURIKANRI.INC".
+      *
+      *    お薬手帳薬剤データ
+       01  OKUSURIDATA-REC.
+           COPY    "CPOKUSURIDATA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1130,6 +1140,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    同一患者識別テーブル
            PERFORM 2002-PTSAME-DELETE-SEC
+      *H28.12
+      *    電子お薬手帳連携テーブル
+           PERFORM 2003-OKUSURIKANRI-DELETE-SEC
       *
       *
            .
@@ -1291,6 +1304,65 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2002-PTSAME-DELETE-EXT.
            EXIT.
       *
+      *H28.12
+      *
+      *****************************************************************
+      *    電子お薬手帳連携テーブル削除処理
+      *****************************************************************
+       2003-OKUSURIKANRI-DELETE-SEC    SECTION.
+      *
+           INITIALIZE                  OKUSURIKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  OKUKAN-HOSPNUM
+           MOVE    SPA-PTID            TO  OKUKAN-PTID
+      *
+           MOVE    OKUSURIKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-OKUSURIKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  OKUSURIKANRI-REC
+               MOVE    1               TO  FLG-OKUKAN
+           END-IF
+           PERFORM
+               UNTIL   (FLG-OKUKAN     =   1   )
+      *
+      *        お薬手帳データ削除
+               INITIALIZE                  OKUSURIDATA-REC
+               MOVE    OKUKAN-DATA-KEY     TO  OKUDAT-DATA-KEY
+               MOVE    OKUSURIDATA-REC     TO  MCPDATA-REC
+               MOVE    "tbl_okusuri_data"  TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+      *
+               MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-OKUSURIKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    お薬手帳管理データ削除
+           INITIALIZE                  OKUSURIKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  OKUKAN-HOSPNUM
+           MOVE    SPA-PTID            TO  OKUKAN-PTID
+           MOVE    OKUSURIKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       2003-OKUSURIKANRI-DELETE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    予約マスター読込処理
@@ -1326,6 +1398,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-PTSAME-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    お薬手帳データ連携　管理マスター読込
+      *****************************************************************
+       910-OKUSURIKANRI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  OKUSURIKANRI-REC
+               MOVE    ZERO            TO  FLG-OKUKAN
+           ELSE
+               INITIALIZE                  OKUSURIKANRI-REC
+               MOVE    1               TO  FLG-OKUKAN
+           END-IF
+      *
+           .
+       910-OKUSURIKANRI-EXT.
            EXIT.
       *
       *****************************************************************

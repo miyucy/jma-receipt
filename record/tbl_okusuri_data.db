@@ -39,3 +39,12 @@ path	key2		{
 		;
 	};
 };
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_okusuri_data
+			WHERE   DATA_KEY = :DATA_KEY
+		;
+	};
+};
