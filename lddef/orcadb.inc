@@ -247,4 +247,5 @@ db	{
         tbl_dpc_ptkhn;
         tbl_okusuri_kanri;
         tbl_okusuri_data;
+        tbl_ptmynumber;
 };

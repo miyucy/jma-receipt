@@ -1281,6 +1281,24 @@
                05  SPA-GMN28-NNCHIKBN          PIC X(01).
       *    ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅÂÐ¾Ý
                05  SPA-GMN28-SYOUNIKBN         PIC X(01).
+      *H28.12
+      *        °åÎÅÅù£É£Ä¾ðÊó
+               05  SPA-GMN28-MYID-AREA.
+                   07  SPA-GMN28-MYLIST-G.
+                       09  SPA-GMN28-MYLIST-OCC OCCURS   20.
+                           11  SPA-GMN28-TMYNUM        PIC 9(02).
+                           11  SPA-GMN28-TMYIDKEY      PIC X(10).
+                           11  SPA-GMN28-TMYNUMBER     PIC X(20).
+                           11  SPA-GMN28-TMYDESCRIP    PIC X(100).
+                   07  SPA-GMN28-MYID-MAX          PIC 9(02).
+      *
+                   07  SPA-GMN28-MYSELNUM          PIC 9(02).
+                   07  SPA-MAE28-MYSELNUM          PIC 9(02).
+      *
+                   07  SPA-GMN28-MYID-ING.
+                       09  SPA-GMN28-MYIDKEY       PIC X(10).
+                       09  SPA-GMN28-MYNUMBER      PIC X(20).
+                       09  SPA-GMN28-MYDESCRIP     PIC X(100).
       *
       *    P0201¡ÊÌ¤ÅÐÏ¿¼õÉÕ¼Ô°ìÍ÷¡Ë
            03  SPA-P0201-AREA.

@@ -60,6 +60,7 @@
       * 04.08.00     NACL-多々納  15/11/XX  レセプト分割５０件他対応
       * 04.08.00     NACL-多々納  16/03/XX  平成２８年４月改正対応
       * 04.08.00     NACL-多々納  16/11/21  ＱＲコードver.2.1対応
+      * 05.00.00     NACL-多々納  16/12/15  患者個人番号対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -94,6 +95,7 @@
            03  FLG-PTCONF          PIC 9(01).
            03  FLG-PTCARE-HKNINF   PIC 9(01).
            03  FLG-PTCARE-NINTEI   PIC 9(01).
+           03  FLG-PTMYNUMBER      PIC 9(01).
       *
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
@@ -385,6 +387,10 @@
       *    患者介護認定者情報テーブル
        01  PTCARE-NINTEI-REC.
            COPY    "CPPTCARE-NINTEI.INC".
+      *
+      *    患者個人番号テーブル
+       01  PTMYNUMBER-REC.
+           COPY    "CPPTMYNUMBER.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1725,6 +1731,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
       *    患者介護情報編集
            PERFORM 10028-PTCARE-SET-SEC
+      *H28.12
+      *    患者個人番号編集
+           PERFORM 10028-PTMYNUBER-SET-SEC
       *
       *    患者労災情報編集
            PERFORM 10023-RSIPARA-SET-SEC
@@ -3170,6 +3179,56 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    IDX                 TO  SPA-GMN28-CRNIN-MAX
            .
        100281-PTCARENINTEI-HEN-EXT.
+           EXIT.
+      *
+      *H28.12
+      *****************************************************************
+      *    患者個人番号編集処理
+      *****************************************************************
+       10028-PTMYNUBER-SET-SEC           SECTION.
+      *
+      *    患者個人番号情報
+           MOVE    SPACE               TO  PTMYNUMBER-REC
+           INITIALIZE                  PTMYNUMBER-REC
+           MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTMYNUM-PTID
+      *
+           MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTMYNUMBER-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTMYNUMBER
+               INITIALIZE                  PTMYNUMBER-REC
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL      (FLG-PTMYNUMBER      =   1  )
+                          OR  (IDX                 >=  20 )
+               ADD     1                   TO  IDX
+               MOVE    IDX                 TO  SPA-GMN28-MYID-MAX
+               MOVE    IDX                 TO  SPA-GMN28-TMYNUM
+                                                             (IDX)
+               MOVE    PTMYNUM-ID-KEY      TO  SPA-GMN28-TMYIDKEY
+                                                             (IDX)
+               MOVE    PTMYNUM-MY-NUMBER   TO  SPA-GMN28-TMYNUMBER
+                                                             (IDX)
+               MOVE    PTMYNUM-DESCRIPTION TO  SPA-GMN28-TMYDESCRIP
+                                                             (IDX)
+      *
+               MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTMYNUMBER-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       10028-PTMYNUBER-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5158,6 +5217,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "F"                 TO  P02-P028-SYOUNIKBN
            END-IF
+      *H28.12
+      *    患者個人番号情報
+           PERFORM   VARYING     IDX     FROM   1   BY  1
+                     UNTIL     ( IDX     >   SPA-GMN28-MYID-MAX )
+               MOVE    SPA-GMN28-TMYNUM (IDX)  TO WRK-RENNUMZ2
+               MOVE    WRK-RENNUMZ2        TO  P02-P028-TMYNUM (IDX)
+               MOVE    SPA-GMN28-TMYIDKEY (IDX)
+                                           TO  P02-P028-TMYIDKEY
+                                                               (IDX)
+               MOVE    SPA-GMN28-TMYNUMBER (IDX)
+                                           TO  P02-P028-TMYNUMBER
+                                                               (IDX)
+               MOVE    SPA-GMN28-TMYDESCRIP(IDX)
+                                           TO  P02-P028-TMYDESCRIP
+                                                               (IDX)
+               IF      IDX             =   SPA-GMN28-MYSELNUM
+                   MOVE    "T"         TO  P02-P028-MYLIST-SELECT
+                                                              (IDX)
+               ELSE
+                   MOVE    "F"         TO  P02-P028-MYLIST-SELECT
+                                                              (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN28-MYID-MAX      TO  P02-P028-MYLIST-COUNT
+      *
+           MOVE    SPA-GMN28-MYSELNUM      TO  P02-P028-MYSELNUM
+      *
+           MOVE    SPA-GMN28-MYIDKEY       TO  P02-P028-MYIDKEY
+           MOVE    SPA-GMN28-MYNUMBER      TO  P02-P028-MY-NUMBER
+           MOVE    SPA-GMN28-MYDESCRIP     TO  P02-P028-MY-DESCRIP
            .
        2001-P028-SET-EXT.
            EXIT.
@@ -5625,6 +5714,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        930-PTCARENINTEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者個人番号情報データ読込処理
+      *****************************************************************
+       930-PTMYNUMBER-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTMYNUMBER
+               MOVE    MCPDATA-REC         TO  PTMYNUMBER-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTMYNUMBER
+               INITIALIZE                  PTMYNUMBER-REC
+           END-IF
+      *
+           .
+       930-PTMYNUMBER-READ-EXT.
            EXIT.
       *
       *****************************************************************

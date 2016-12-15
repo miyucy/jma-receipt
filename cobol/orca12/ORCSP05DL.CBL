@@ -31,6 +31,7 @@
       * 04.07.00     NACL-多々納  12/12/19  患者レセプト分割対応
       * 04.07.00     NACL-多々納  13/07/XX  患者個別設定対応
       * 04.07.00     NACL-多々納  14/02/XX  患者介護情報追加対応
+      * 05.00.00     NACL-多々納  16/12/15  患者個人番号対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -301,6 +302,10 @@
       *    患者介護認定者情報テーブル
        01  PTCARE-NINTEI-REC.
            COPY    "CPPTCARE-NINTEI.INC".
+      *H28.12
+      *    患者個人番号テーブル
+       01  PTMYNUMBER-REC.
+           COPY    "CPPTMYNUMBER.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1081,6 +1086,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *    患者個人番号情報
+           INITIALIZE                      PTMYNUMBER-REC
+           MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
+           MOVE    SPA-PTID            TO  PTMYNUM-PTID
+           MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC

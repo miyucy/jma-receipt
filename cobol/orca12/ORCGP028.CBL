@@ -30,6 +30,7 @@
       *  04.07.00    NACL-多々納  13/11/26  患者個別設定追加対応
       *  04.07.00    NACL-多々納  14/02/XX  患者介護情報追加対応
       *  04.07.00    NACL-多々納  14/03/XX  地域包括診療対象疾病対応
+      *  05.00.00    NACL-多々納  16/12/15  患者個人番号対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -228,11 +229,11 @@
                        MOVE    SPA-GMN28-TCRHKNJANUM (IDX)
                                            TO  SPA-GMN28-CR-HKNJANUM
                        PERFORM 41012-CR-HKNJANUM-CHK-SEC
-                       STRING  "保険者番号　"
-                               SPA-GMN28-CR-HKNJANUM
-                                           DELIMITED  BY  SPACE
-                                           INTO   SPA-P028-CAREHKNMEI
-                       END-STRING
+      ***              STRING  "保険者番号　"
+      *                        SPA-GMN28-CR-HKNJANUM
+      *                                    DELIMITED  BY  SPACE
+      *                                    INTO   SPA-P028-CAREHKNMEI
+      ***              END-STRING
                    END-IF
                    MOVE    SPACE               TO  SPA-GMN28-CR-HKNJANUM
                    MOVE    SPA-GMN28-CRHKN-MAX TO  IDX
@@ -312,6 +313,18 @@
                WHEN    35
                    MOVE    "P028_SYOUNIKBN"    TO  MCP-WIDGET
       *
+      *H28.12
+               WHEN    40
+                   MOVE    "P028_MYSELNUM"     TO  MCP-WIDGET
+               WHEN    41
+                   MOVE    "P028_MYIDKEY"      TO  MCP-WIDGET
+               WHEN    42
+                   MOVE    "P028_MY_NUMBER"    TO  MCP-WIDGET
+               WHEN    43
+                   MOVE    "P028_MY_DESCRIP"   TO  MCP-WIDGET
+               WHEN    44
+                   MOVE    "BCMY2"             TO  MCP-WIDGET
+      *
                WHEN    90
                    MOVE    "B08"                TO  MCP-WIDGET
            END-EVALUATE
@@ -336,7 +349,8 @@
                    MOVE    5           TO  SPA-GMN28-CUR
                WHEN    "P028_JMAMRVER"
       *******      MOVE    90          TO  SPA-GMN28-CUR
-                   MOVE    10          TO  SPA-GMN28-CUR
+      *H28.12      MOVE    10          TO  SPA-GMN28-CUR
+                   MOVE    40          TO  SPA-GMN28-CUR
       *
                WHEN    "P028_CRHSELNUM"
                    MOVE    11          TO  SPA-GMN28-CUR
@@ -387,6 +401,21 @@
                    MOVE    35              TO  SPA-GMN28-CUR
                WHEN    "P028_SYOUNIKBN"
                    MOVE    90              TO  SPA-GMN28-CUR
+      *H28.12
+               WHEN    "P028_MYSELNUM"
+                   MOVE    41              TO  SPA-GMN28-CUR
+               WHEN    "P028_MYIDKEY"
+                   MOVE    42              TO  SPA-GMN28-CUR
+               WHEN    "P028_MY_NUMBER"
+                   MOVE    43              TO  SPA-GMN28-CUR
+               WHEN    "P028_MY_DESCRIP"
+                   IF     (SPA-GMN28-MYIDKEY   =   SPACE )
+                      AND (SPA-GMN28-MYNUMBER  =   SPACE )
+                      AND (SPA-GMN28-MYDESCRIP =   SPACE )
+                       MOVE    10              TO  SPA-GMN28-CUR
+                   ELSE
+                       MOVE    44              TO  SPA-GMN28-CUR
+                   END-IF
            END-EVALUATE
       *
            .
@@ -430,6 +459,13 @@
       *    小児かかりつけ診療対象
                WHEN    "CLICKED"       ALSO    "P028_SYOUNIKBN"
                    PERFORM 4802-SYOUNIKBN-SEC
+      *H28.12
+      *    患者個人番号登録
+               WHEN    "CLICKED"       ALSO    "BCMY2"
+                   PERFORM 4803-MYID-TOUROKU-SEC
+      *    患者個人番号削除
+               WHEN    "CLICKED"       ALSO    "BCMY1"
+                   PERFORM 4802-MYID-DELETE-SEC
       *     以外はエラー
                WHEN    "CLICKED"       ALSO     ANY
                    MOVE    "0110"          TO  SPA-ERRCD
@@ -467,6 +503,10 @@
       *        介護リスト選択
                WHEN    ANY             ALSO    "P028_CARENINLST"
                    PERFORM 4101-CARELST-SYORI-SEC
+      *H28.12
+      *        患者個人番号リスト選択
+               WHEN    ANY             ALSO    "P028_MYLIST"
+                   PERFORM 4101-MYLIST-SYORI-SEC
                WHEN    OTHER
                    MOVE    ZERO                TO  FLG-TOUROKU
       *            入力チェック処理
@@ -536,6 +576,38 @@
            END-IF
            .
        4101-CARELST-SYORI-EXT.
+           EXIT.
+      *
+      *H28.12
+      *****************************************************************
+      *    患者個人番号リスト選択処理
+      *****************************************************************
+       4101-MYLIST-SYORI-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN28-MYID-MAX
+               IF      P02-P028-MYLIST-SELECT (IDX)  =   "T"
+                   IF      IDX               =   SPA-GMN28-MYSELNUM
+                       CONTINUE
+                   ELSE
+                       MOVE    IDX               TO  WRK-SELNUM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM      NOT =   ZERO
+               MOVE    WRK-SELNUM          TO  SPA-GMN28-MYSELNUM
+           END-IF
+      *
+           IF      SPA-GMN28-MYSELNUM  NOT =   ZERO
+               MOVE    SPA-GMN28-MYSELNUM  TO  P02-P028-MYSELNUM
+               PERFORM 41012-MYSELNUM-CHK-SEC
+               MOVE    41                  TO  SPA-GMN28-CUR
+           END-IF
+           .
+       4101-MYLIST-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -691,6 +763,12 @@
                                        TO  SPA-GMN28-CRTEKSTYMD
            MOVE    P02-P028-CRTEKEDYMD
                                        TO  SPA-GMN28-CRTEKEDYMD
+      *H28.12
+      *    患者個人番号情報
+           MOVE    P02-P028-MYSELNUM   TO  SPA-GMN28-MYSELNUM
+           MOVE    P02-P028-MYIDKEY    TO  SPA-GMN28-MYIDKEY
+           MOVE    P02-P028-MY-NUMBER  TO  SPA-GMN28-MYNUMBER
+           MOVE    P02-P028-MY-DESCRIP TO  SPA-GMN28-MYDESCRIP
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -720,6 +798,25 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-JMAMRVER-CHK-SEC
            END-IF
+      *H28.12
+      *    患者個人番号
+      *    選択番号
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-MYSELNUM-CHK-SEC
+           END-IF
+      *    ＩＤ識別
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-MYIDKEY-CHK-SEC
+           END-IF
+      *    ＩＤ番号
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-MYNUMBER-CHK-SEC
+           END-IF
+      *    備考
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-MYDESCRIP-CHK-SEC
+           END-IF
+      *
       *    介護保険情報
       *    選択番号
            IF      SPA-ERRCD           =   SPACE
@@ -900,6 +997,110 @@
        41012-JMAMRVER-CHK-EXT.
            EXIT.
       *
+      *H28.12
+      *
+      *****************************************************************
+      *    患者個人番号番号チェック処理
+      *****************************************************************
+       41012-MYSELNUM-CHK-SEC           SECTION.
+      *
+           IF      SPA-GMN28-MYSELNUM  NOT =   SPA-MAE28-MYSELNUM
+               IF      SPA-GMN28-MYSELNUM  =   ZERO
+                   MOVE    SPA-GMN28-MYSELNUM  TO  SPA-MAE28-MYSELNUM
+                   INITIALIZE                  SPA-GMN28-MYID-ING
+               END-IF
+           END-IF
+      *
+           IF     (SPA-GMN28-MYSELNUM  NOT =   ZERO   )
+             AND  (SPA-GMN28-MYSELNUM  NOT =   SPA-MAE28-MYSELNUM)
+               IF      SPA-GMN28-MYSELNUM  >   SPA-GMN28-MYID-MAX
+                   MOVE    "2840"          TO  SPA-ERRCD
+                   MOVE    40              TO  SPA-GMN28-CUR
+               ELSE
+                   PERFORM 410121-MYNUMBER-HEN-SEC
+               END-IF
+           END-IF
+           .
+       41012-MYSELNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者個人番号情報編集処理
+      *****************************************************************
+       410121-MYNUMBER-HEN-SEC           SECTION.
+      *
+           MOVE    SPA-GMN28-MYSELNUM  TO  SPA-MAE28-MYSELNUM
+           MOVE    SPA-GMN28-MYSELNUM  TO  IDX
+           MOVE    SPA-GMN28-TMYIDKEY (IDX)
+                                       TO  SPA-GMN28-MYIDKEY
+           MOVE    SPA-GMN28-TMYNUMBER (IDX)
+                                       TO  SPA-GMN28-MYNUMBER
+           MOVE    SPA-GMN28-TMYDESCRIP (IDX)
+                                       TO  SPA-GMN28-MYDESCRIP
+           .
+       410121-MYNUMBER-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者個人番号ＩＤ識別チェック処理
+      *****************************************************************
+       41012-MYIDKEY-CHK-SEC           SECTION.
+      *
+      *    半角チェック
+           IF      SPA-GMN28-MYIDKEY   NOT =   SPACE
+               MOVE    SPA-GMN28-MYIDKEY   TO  WRK-MAE-INPUT
+               MOVE    10                  TO  WRK-MAX
+               PERFORM 891-HALF-CHK-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN28-MYIDKEY
+               IF      FLG-ERR         NOT =   ZERO
+                   MOVE    "2841"          TO  SPA-ERRCD
+                   MOVE    41              TO  SPA-GMN28-CUR
+               END-IF
+           END-IF
+           .
+       41012-MYIDKEY-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者個人番号ＩＤ番号チェック処理
+      *****************************************************************
+       41012-MYNUMBER-CHK-SEC           SECTION.
+      *
+      *    外字チェック
+           IF      SPA-GMN28-MYNUMBER  NOT =   SPACE
+               MOVE    SPA-GMN28-MYNUMBER  TO  WRK-MAE-INPUT
+               MOVE    20                  TO  WRK-MAX
+               PERFORM 891-HALF-CHK02-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN28-MYNUMBER
+      *        IF      FLG-ERR         NOT =   ZERO
+      *            MOVE    "2842"          TO  SPA-ERRCD
+      *            MOVE    42              TO  SPA-GMN28-CUR
+      *        END-IF
+           END-IF
+           .
+       41012-MYNUMBER-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者個人番号備考チェック処理
+      *****************************************************************
+       41012-MYDESCRIP-CHK-SEC           SECTION.
+      *
+      *    外字チェック
+           IF      SPA-GMN28-MYDESCRIP  NOT =   SPACE
+               MOVE    SPA-GMN28-MYDESCRIP  TO  WRK-MAE-INPUT
+               MOVE    100                  TO  WRK-MAX
+               PERFORM 891-HALF-CHK02-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN28-MYDESCRIP
+      *        IF      FLG-ERR         NOT =   ZERO
+      *            MOVE    "2843"          TO  SPA-ERRCD
+      *            MOVE    43              TO  SPA-GMN28-CUR
+      *        END-IF
+           END-IF
+           .
+       41012-MYDESCRIP-CHK-EXT.
+           EXIT.
+      *H28.12
       *
       *****************************************************************
       *    介護選択番号チェック処理
@@ -967,7 +1168,7 @@
                GO      TO      41012-CR-HKNJANUM-CHK-EXT
            END-IF
       *
-           MOVE    SPACE               TO  SPA-P028-CAREHKNMEI
+      **** MOVE    SPACE               TO  SPA-P028-CAREHKNMEI
            MOVE    SPACE               TO  SPA-P028-CRHKNJANAME
            MOVE    SPACE               TO  SPA-P028-CRHKNJAADRS
            MOVE    SPACE               TO  SPA-P028-CRHKNJAADRS2
@@ -1663,6 +1864,165 @@
        4802-CRNIN-TOUROKU-EXT.
            EXIT.
       *
+      *H28.12
+      ****************************************************************
+      **    患者個人番号削除処理
+      ****************************************************************
+       4802-MYID-DELETE-SEC             SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN28-MYSELNUM  =   ZERO
+                   MOVE    "2844"          TO  SPA-ERRCD
+                   MOVE    40              TO  SPA-GMN28-CUR
+               ELSE
+      *            削除処理
+                   PERFORM 48021-MYID-TBLDEL-SEC
+               END-IF
+           END-IF
+           .
+       4802-MYID-DELETE-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      **    患者個人番号削除処理
+      ****************************************************************
+       48021-MYID-TBLDEL-SEC             SECTION.
+      *
+           PERFORM VARYING    IDX      FROM   1   BY  1
+                   UNTIL     (IDX      >   SPA-GMN28-MYID-MAX)
+               IF     (SPA-GMN28-MYSELNUM  =   IDX )
+                   MOVE    SPA-GMN28-MYLIST-OCC (IDX + 1)
+                                       TO  SPA-GMN28-MYLIST-OCC(IDX)
+                   INITIALIZE              SPA-GMN28-MYLIST-OCC
+                                                            (IDX + 1)
+               ELSE
+                   IF      SPA-GMN28-TMYNUM (IDX)  =   ZERO
+                       MOVE    SPA-GMN28-MYLIST-OCC (IDX + 1)
+                                       TO  SPA-GMN28-MYLIST-OCC(IDX)
+                       INITIALIZE          SPA-GMN28-MYLIST-OCC
+                                                              (IDX + 1)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *
+           MOVE    ZERO                TO  SPA-GMN28-MYID-MAX
+           PERFORM VARYING    IDX      FROM   1   BY  1
+                   UNTIL     (IDX      >   20     )
+               IF      SPA-GMN28-TMYIDKEY(IDX) NOT =   SPACE
+                   MOVE    IDX             TO  SPA-GMN28-TMYNUM (IDX)
+                   ADD     1               TO  SPA-GMN28-MYID-MAX
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                  SPA-GMN28-MYID-ING
+           MOVE    ZERO                TO  SPA-GMN28-MYSELNUM
+           MOVE    ZERO                TO  SPA-MAE28-MYSELNUM
+           MOVE    40                  TO  SPA-GMN28-CUR
+      *
+           .
+       48021-MYID-TBLDEL-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      **    患者個人番号登録処理
+      ****************************************************************
+       4803-MYID-TOUROKU-SEC            SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 48031-MYID-TOUROKU-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 48032-MIYD-TOUROKU-SEC
+           END-IF
+           .
+       4803-MYID-TOUROKU-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      **    患者個人番号登録前関連チェック処理
+      ****************************************************************
+       48031-MYID-TOUROKU-CHK-SEC             SECTION.
+      *
+      *    必須チェック
+           IF     (SPA-GMN28-MYIDKEY   =   SPACE )
+             AND  (SPA-ERRCD           =   SPACE )
+               MOVE    "2844"          TO  SPA-ERRCD
+               MOVE    41              TO  SPA-GMN28-CUR
+           END-IF
+           IF     (SPA-GMN28-MYNUMBER  =   SPACE)
+             AND  (SPA-ERRCD           =   SPACE )
+               MOVE    "2845"          TO  SPA-ERRCD
+               MOVE    42              TO  SPA-GMN28-CUR
+           END-IF
+      *
+      *    ＩＤ識別重複チェック
+           PERFORM VARYING    IDY      FROM   1   BY  1
+                   UNTIL     (IDY      >   SPA-GMN28-MYID-MAX)
+                       OR    (SPA-ERRCD    NOT =   SPACE )
+               IF     (SPA-GMN28-MYSELNUM      NOT =   IDY )
+                   IF      SPA-GMN28-MYIDKEY   =   SPA-GMN28-TMYIDKEY
+                                                           (IDY)
+                       MOVE    "2846"          TO  SPA-ERRCD
+                       MOVE    41              TO  SPA-GMN28-CUR
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF     (SPA-GMN28-MYSELNUM  =   ZERO  )
+             AND  (SPA-ERRCD           =   SPACE )
+      *        新規追加
+               IF      SPA-GMN28-MYID-MAX  >=  20
+                   MOVE    "2847"          TO  SPA-ERRCD
+                   MOVE    40              TO  SPA-GMN28-CUR
+               END-IF
+           END-IF
+           .
+       48031-MYID-TOUROKU-CHK-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      **    患者個人番号登録処理
+      ****************************************************************
+       48032-MIYD-TOUROKU-SEC             SECTION.
+      *
+           IF      SPA-GMN28-MYSELNUM  =   ZERO
+               ADD     1                   TO  SPA-GMN28-MYID-MAX
+               MOVE    SPA-GMN28-MYID-MAX  TO  IDX
+           ELSE
+               MOVE    SPA-GMN28-MYSELNUM  TO  IDX
+           END-IF
+      *
+           INITIALIZE                  SPA-GMN28-MYLIST-OCC (IDX)
+           MOVE    IDX                 TO  SPA-GMN28-TMYNUM (IDX)
+      *
+           MOVE    SPA-GMN28-MYIDKEY
+                                       TO  SPA-GMN28-TMYIDKEY (IDX)
+           MOVE    SPA-GMN28-MYNUMBER
+                                       TO  SPA-GMN28-TMYNUMBER (IDX)
+           MOVE    SPA-GMN28-MYDESCRIP
+                                       TO  SPA-GMN28-TMYDESCRIP(IDX)
+      *
+           INITIALIZE                  SPA-GMN28-MYID-ING
+           MOVE    ZERO                TO  SPA-GMN28-MYSELNUM
+           MOVE    ZERO                TO  SPA-MAE28-MYSELNUM
+           MOVE    40                  TO  SPA-GMN28-CUR
+      *
+           .
+       48032-MIYD-TOUROKU-EXT.
+           EXIT.
+      *
       ****************************************************************
       **    登録前関連チェック処理
       ****************************************************************
@@ -1687,6 +2047,30 @@
            MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   1     )
+      *        半角
+               MOVE    ZERO                TO  FLG-ERR
+           ELSE
+               MOVE    1                   TO  FLG-ERR
+           END-IF
+      *
+           .
+       891-HALF-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    全角チェック処理
+      *****************************************************************
+       891-HALF-CHK02-SEC         SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    SPACE               TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
+           IF     (KANACHK-RC2         =   ZERO  )
       *        半角
                MOVE    ZERO                TO  FLG-ERR
            ELSE
