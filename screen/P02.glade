@@ -12524,25 +12524,12 @@
             </signal>
           </widget>
           <widget>
-            <class>GtkVSeparator</class>
-            <name>vseparator4</name>
-            <x>516</x>
-            <y>48</y>
-            <width>20</width>
-            <height>72</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <orientation>GTK_ORIENTATION_VERTICAL</orientation>
-          </widget>
-          <widget>
             <class>GtkScrolledWindow</class>
             <name>scrolledwindow7</name>
             <x>468</x>
-            <y>26</y>
+            <y>10</y>
             <width>530</width>
-            <height>100</height>
+            <height>132</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
@@ -12554,7 +12541,7 @@
               <class>GtkPandaCList</class>
               <name>P028_MYLIST</name>
               <width>510</width>
-              <height>100</height>
+              <height>120</height>
               <visible>True</visible>
               <sensitive>True</sensitive>
               <can_focus>True</can_focus>
@@ -12645,7 +12632,7 @@
           <widget>
             <class>GtkButton</class>
             <name>BCMY1</name>
-            <x>580</x>
+            <x>528</x>
             <y>180</y>
             <width>62</width>
             <height>24</height>
@@ -12668,7 +12655,7 @@
           <widget>
             <class>GtkButton</class>
             <name>BCMY2</name>
-            <x>904</x>
+            <x>900</x>
             <y>180</y>
             <width>62</width>
             <height>24</height>
@@ -12789,96 +12776,6 @@
               <handler>send_event</handler>
               <data>ACTIVATE</data>
             </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label55</name>
-            <x>500</x>
-            <y>4</y>
-            <width>100</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>医療等ＩＤ</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label56</name>
-            <x>520</x>
-            <y>132</y>
-            <width>60</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>ＩＤ識別</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label57</name>
-            <x>472</x>
-            <y>132</y>
-            <width>40</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>番号</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label58</name>
-            <x>612</x>
-            <y>132</y>
-            <width>60</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>ＩＤ番号</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label59</name>
-            <x>760</x>
-            <y>130</y>
-            <width>60</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>備考</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
           </widget>
         </widget>
         <widget>
