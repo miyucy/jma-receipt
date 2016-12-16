@@ -81,6 +81,7 @@ db "xml2" {
  rp_prescription;
  rp_medichine_information;
  rp_appointment_form;
+ rp_statement;
 };
 
 #include "orcadb.inc"
