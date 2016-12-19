@@ -152,7 +152,7 @@
            03  WRK-HKNCOMBI            PIC X(04).
       *
            03  WRK-WARI                PIC 9(02)V9.
-           03  WRK-Z6                  PIC ZZZ.
+           03  WRK-Z6                  PIC ZZ9.
            03  WRK-Z62                 PIC Z9.9.
       *
            03  WRK-ZZZ                 PIC ZZZ.
