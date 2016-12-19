@@ -1,10 +1,8 @@
 --                            --
--- monblob                    --
+-- tbl_ptmynumber             --
 --                            --
 -- Create Date : 2016/12/02   --
 --                            --
-
-
 
 CREATE TABLE tbl_ptmynumber (
 	hospnum		smallint NOT NULL,
@@ -20,6 +18,4 @@ CREATE TABLE tbl_ptmynumber (
 );
 
 ALTER TABLE ONLY tbl_ptmynumber
-    ADD CONSTRAINT tbl_ptmynumber_pkey PRIMARY KEY (hospnum,ptid,id_key);
-
-
+    ADD CONSTRAINT tbl_ptmynumber_primary_key PRIMARY KEY (hospnum,ptid,id_key);
