@@ -137,6 +137,9 @@
            03  IDX5                PIC 9(04).
            03  IDH1                PIC 9(02).
       *
+           03  IDH2                PIC 9(02).
+           03  IDH3                PIC 9(02).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SYSYMD.
@@ -1008,6 +1011,46 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 2111-PTCONF-DBSYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      211-PTCONF-SYORI-EXT
+           END-IF
+      *H28.12
+      *    »ØÆ³ÎÁÅù¼«Æ°»»Äê
+           MOVE    ZERO                TO  IDH2
+           PERFORM VARYING     IDH1    FROM    1   BY  1
+                   UNTIL      (IDH1    >   3    )
+                          OR  (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN28-AUTOSRYCD(IDH1)   =   SPACE
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDH2
+                   MOVE    SPA-GMN28-AUTOSRYCD(IDH1)
+                                           TO  WRK-CONF-CDATA
+                   EVALUATE    IDH2
+                   WHEN    1
+                       MOVE    "JIDOSANTEI-1"      TO  WRK-CONF-CKEY
+                   WHEN    2
+                       MOVE    "JIDOSANTEI-2"      TO  WRK-CONF-CKEY
+                   WHEN    3
+                       MOVE    "JIDOSANTEI-3"      TO  WRK-CONF-CKEY
+                   END-EVALUATE
+                   PERFORM 2111-PTCONF-DBSYORI-SEC
+               END-IF
+           END-PERFORM
+           IF      IDH2                <   3
+               COMPUTE IDH3            =   IDH2    +   1
+               PERFORM VARYING     IDH1    FROM    IDH3  BY  1
+                       UNTIL      (IDH1    >   3    )
+                              OR  (SPA-ERRCD   NOT =   SPACE )
+                   MOVE    SPACE           TO  WRK-CONF-CDATA
+                   EVALUATE    IDH1
+                   WHEN    1
+                       MOVE    "JIDOSANTEI-1"      TO  WRK-CONF-CKEY
+                   WHEN    2
+                       MOVE    "JIDOSANTEI-2"      TO  WRK-CONF-CKEY
+                   WHEN    3
+                       MOVE    "JIDOSANTEI-3"      TO  WRK-CONF-CKEY
+                   END-EVALUATE
+                   PERFORM 2111-PTCONF-DBSYORI-SEC
+               END-PERFORM
            END-IF
            .
        211-PTCONF-SYORI-EXT.

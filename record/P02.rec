@@ -1319,6 +1319,24 @@ P02 {
         P028_MY_DESCRIP { #GtkPandaEntry
           textdata varchar(100);
         };
+        P028_AUTOSRYCD1 { #GtkPandaEntry
+          textdata varchar(9);
+        };
+        P028_AUTOSRYCD2 { #GtkPandaEntry
+          textdata varchar(9);
+        };
+        P028_AUTOSRYCD3 { #GtkPandaEntry
+          textdata varchar(9);
+        };
+        P028_AUTONAME1 { #GtkLabel
+          textdata varchar(40);
+        };
+        P028_AUTONAME2 { #GtkLabel
+          textdata varchar(40);
+        };
+        P028_AUTONAME3 { #GtkLabel
+          textdata varchar(40);
+        };
       };
     };
   };

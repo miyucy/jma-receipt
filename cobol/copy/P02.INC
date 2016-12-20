@@ -966,3 +966,16 @@
                     06  P02-TEXTDATA    PIC X(20).
                   05  P02-P028-MY-DESCRIP.
                     06  P02-TEXTDATA    PIC X(100).
+                  05  P02-P028-AUTOSRYCD1.
+                    06  P02-TEXTDATA    PIC X(9).
+                  05  P02-P028-AUTOSRYCD2.
+                    06  P02-TEXTDATA    PIC X(9).
+                  05  P02-P028-AUTOSRYCD3.
+                    06  P02-TEXTDATA    PIC X(9).
+                  05  P02-P028-AUTONAME1.
+                    06  P02-TEXTDATA    PIC X(40).
+                  05  P02-P028-AUTONAME2.
+                    06  P02-TEXTDATA    PIC X(40).
+                  05  P02-P028-AUTONAME3.
+                    06  P02-TEXTDATA    PIC X(40).
+

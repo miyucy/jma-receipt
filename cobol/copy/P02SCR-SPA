@@ -1299,6 +1299,15 @@
                        09  SPA-GMN28-MYIDKEY       PIC X(10).
                        09  SPA-GMN28-MYNUMBER      PIC X(20).
                        09  SPA-GMN28-MYDESCRIP     PIC X(100).
+      *H28.12
+      *        指導料等自動発生
+               05  SPA-GMN28-AUTO-G.
+                   07  SPA-GMN28-AUTO-OCC   OCCURS   3.
+                       09  SPA-GMN28-AUTOSRYCD     PIC X(09).
+                       09  SPA-GMN28-AUTONAME      PIC X(40).
+      *H28.12
+               05  SPA-GMN28-AUTOIDX               PIC 9(02).
+               05  SPA-NAI28-KEIFLG                PIC 9(01).
       *
       *    P0201（未登録受付者一覧）
            03  SPA-P0201-AREA.
@@ -1822,6 +1831,9 @@
                05  SPA-P02Y1-NEXT                  PIC 9(04).
                05  SPA-P02Y1-PAGE                  PIC 9(04).
                05  SPA-P02Y1-GMN-CUR               PIC 9(03).
+      *H28.12
+               05  SPA-P02Y1-DATA                  PIC X(02).
+               05  SPA-P02Y1-MOTOPG                PIC X(08).
       *
                05  SPA-P02Y1-GMN-SELNUM-G.
                    07  SPA-P02Y1-GMN-SELNUM        PIC X(03)

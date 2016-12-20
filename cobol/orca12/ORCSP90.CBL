@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  16/12/XX  指導料等自動算定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1403,6 +1404,28 @@
                WHEN    "2847"
                    STRING  "個人番号情報は２０件登録済みです。"
                            "これ以上登録できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "2850"
+                   STRING  "点数マスタに存在しません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2851"
+                   STRING  "設定できないコードです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2852"
+                   STRING  "システム日付で有効期間外です。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K285"
+                   STRING  "警告！"
+                           "システム日付で有効期間外です。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING

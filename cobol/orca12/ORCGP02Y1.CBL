@@ -336,10 +336,10 @@
       *    ¸¡º÷µ­¹æÀßÄê
            COPY    "CPORCSADDSIGN.INC".
       *
+           COPY    "ENUM-VALUE".
+      *
       *    £Ä£Â¸¡º÷
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -472,6 +472,8 @@
       *D   INITIALIZE                  SPA-P02Y1GMN-AREA
       *
       *****MOVE    ZERO                TO  SPA-P02Y1-RC
+           MOVE    SPA-MOTOPG          TO  SPA-P02Y1-MOTOPG
+      *
            MOVE    SPA-P02Y1-INPUTCD   TO  SPA-P02Y1-GMN-INPUT
            MOVE    ZERO                TO  SPA-P02Y1-NEXT
            MOVE    1                   TO  SPA-P02Y1-PAGE
@@ -486,6 +488,11 @@
       *    MOVE    "7:¼ê½Ñ¡¦Ëã¿ì"      TO  SPA-P02Y1-JIINLST (7)
       *    MOVE    "8:²èÁü¿ÇÃÇ"        TO  SPA-P02Y1-JIINLST (8)
       ***  MOVE    "9:¤½¤ÎÂ¾"          TO  SPA-P02Y1-JIINLST (9)
+           IF      SPA-P02Y1-DATA      =   "13"
+               MOVE    "5:¿Ç»¡"            TO  SPA-P02Y1-JIINLST (1)
+               MOVE    SPACE               TO  SPA-P02Y1-JIINLST (2)
+               MOVE    SPACE               TO  SPA-P02Y1-JIINLST (3)
+           END-IF
            MOVE    SPACE               TO  SPA-P02Y1-JIIN-G
       *
       *    ¥æ¡¼¥¶¡¼ÅÐÏ¿Â¾
@@ -1653,11 +1660,22 @@
        31021-TENSU-CHK-SEC                  SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK
+           IF      SPA-P02Y1-DATA      =   "13"
+               IF     (TNS-SRYCD(1:1)      =   "1" )
+                 AND  (TNS-SRYKBN          =   "13"
+                                           OR  "14" )
+                   CONTINUE
+               ELSE
+                   MOVE   1                TO  FLG-CHK
+               END-IF
+           ELSE
+      *
       *    ÌôºÞ°Ê³°ÂÐ¾Ý³°
            IF      TNS-SRYCD(1:1)      =   "6"
                CONTINUE
            ELSE
                MOVE   1                TO  FLG-CHK
+           END-IF
            END-IF
            .
        31021-TENSU-CHK-EXT.
@@ -2131,6 +2149,9 @@
                    MOVE    "black"             TO  P02Y1-NEXT-STYLE
                END-IF
            END-IF
+      *H28.12
+      *    Èó³èÀ­½èÍý
+           PERFORM 510-GSRAUTH-SEC
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -2222,6 +2243,27 @@
            EXIT.
       *
       *****************************************************************
+      *    Èó³èÀ­½èÍý
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+           IF      SPA-P02Y1-DATA      =   "13"
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y1-B02-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y1-B03-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y1-B04-STATE
+               MOVE    WIDGET-NORMAL       TO  P02Y1-B05-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  P02Y1-B02-STATE
+               MOVE    WIDGET-NORMAL       TO  P02Y1-B03-STATE
+               MOVE    WIDGET-NORMAL       TO  P02Y1-B04-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y1-B05-STATE
+           END-IF
+      *
+           .
+       51O-GSRAUTH-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ²èÌÌ¥«¡¼¥½¥ë¥»¥Ã¥È½èÍý
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
@@ -2282,8 +2324,8 @@
       *        WHEN    "CLICKED"       ALSO    "B05"
       *            PERFORM 270-KIZAI-SEC
       *        ¿ÇÎÅ¹Ô°Ù
-      *        WHEN    "CLICKED"       ALSO    "B06"
-      *            PERFORM 280-SINRYOU-SEC
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 280-SINRYOU-SEC
       *        ¸¡ºº
       *        WHEN    "CLICKED"       ALSO    "B08"
       ********     PERFORM 290-KENSA-SEC
@@ -2880,6 +2922,10 @@
       *****************************************************************
        230-NAIFUKU-SEC                   SECTION.
       *
+           IF      SPA-P02Y1-DATA      =   "13"
+               GO      TO      230-NAIFUKU-EXT
+           END-IF
+      *
            MOVE    "3"                 TO  SPA-P02Y1-GMN-SYORI
            MOVE    "2"                 TO  SPA-P02Y1-TYPE
            MOVE    SPA-P02Y1-GMN-SYORI   TO  SPA-P02Y1-OLD-SYORI
@@ -2907,6 +2953,10 @@
       *    ³°ÍÑÌôÁªÂò½èÍý
       *****************************************************************
        240-GAIYOU-SEC                   SECTION.
+      *
+           IF      SPA-P02Y1-DATA      =   "13"
+               GO      TO      240-GAIYOU-EXT
+           END-IF
       *
            MOVE    "4"                 TO  SPA-P02Y1-GMN-SYORI
            MOVE    "2"                 TO  SPA-P02Y1-TYPE
@@ -2936,6 +2986,10 @@
       *    Ãí¼ÍÌôÁªÂò½èÍý
       *****************************************************************
        250-CHUUSYA-SEC                   SECTION.
+      *
+           IF      SPA-P02Y1-DATA      =   "13"
+               GO      TO      250-CHUUSYA-EXT
+           END-IF
       *
            MOVE    "5"                 TO  SPA-P02Y1-GMN-SYORI
            MOVE    "2"                 TO  SPA-P02Y1-TYPE
@@ -2999,6 +3053,10 @@
       *    ¿ÇÎÅ¹Ô°ÙÁªÂò½èÍý
       *****************************************************************
        280-SINRYOU-SEC                   SECTION.
+      *
+           IF      SPA-P02Y1-DATA  NOT =   "13"
+               GO      TO      280-SINRYOU-EXT
+           END-IF
       *
            MOVE    "8"                 TO  SPA-P02Y1-GMN-SYORI
            MOVE    "2"                 TO  SPA-P02Y1-TYPE
@@ -3130,6 +3188,9 @@
                    ELSE
       *                ÆâÉþ
                        MOVE    "3"             TO  SPA-P02Y1-GMN-SYORI
+                       IF     SPA-P02Y1-DATA   =   "13"
+                           MOVE    "8"         TO  SPA-P02Y1-GMN-SYORI
+                       END-IF
                    END-IF
                    MOVE    "2"                 TO  SPA-P02Y1-TYPE
       *
@@ -3354,7 +3415,12 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "P02Y"                TO  SPA-SAKIPG
+      ***  MOVE    "P02Y"                TO  SPA-SAKIPG
+           IF      SPA-P02Y1-MOTOPG      =   SPACE
+               MOVE    "P02Y"                TO  SPA-SAKIPG
+           ELSE
+               MOVE    SPA-P02Y1-MOTOPG      TO  SPA-SAKIPG
+           END-IF
            MOVE    "P02Y1"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
@@ -3365,6 +3431,11 @@
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
+      *
+           IF      SPA-P02Y1-MOTOPG    =   "P02"
+               MOVE    ZERO                TO  SPA-FLG-END
+               MOVE    "P028"              TO  SPA-P02-GAMEN
+           END-IF
       *
            .
        210-BACK-EXT.

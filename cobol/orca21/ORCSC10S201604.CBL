@@ -86,6 +86,7 @@
       * 04.08.00     NACL-Â¿¡¹Ç¼  16/08/XX  ¼«ÇåÀÕ¾®»ù²Ê³°Íè¿ÇÎÅÎÁÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  16/09/XX  Ê¿À®£²£¸Ç¯£±£°·î²þÀµÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  16/10/06  ¾®»ùÆÃÎãµÙÆüÅùÊÑ´¹ÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  16/12/XX  »ØÆ³ÎÁÅù¼«Æ°»»ÄêÂÐ±þ
       *****************************************************************
       *
       *
@@ -3278,6 +3279,9 @@
       *        ÎÅÍÜÃ´Åö¼êÅöÈ¯À¸
                PERFORM 330123-RYOYOU-TEATE-SEC
            ELSE
+      *H28.12
+      *        »ØÆ³ÎÁÅù¼«Æ°»»Äê½èÍý
+               PERFORM 33014-AUTOSIDOU-SYORI-SEC
       *        »ØÆ³ÎÁ¤Î¼«Æ°È¯À¸
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
                PERFORM 33012-SIDOU-SYORI-SEC
@@ -4712,6 +4716,25 @@
       *
            .
        330123-RYOYOU-TEATE-EXT.
+           EXIT.
+      *
+      *H28.12
+      *****************************************************************
+      *    »ØÆ³ÎÁÅù¼«Æ°»»Äê½èÍý
+      *****************************************************************
+       33014-AUTOSIDOU-SYORI-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   3   )
+               IF      SPA-AUTOSIDOU (IDX) NOT =   SPACE
+                   MOVE    SPA-AUTOSIDOU (IDX) TO  WRK-SRYCD
+                   MOVE    ZERO                TO  WRK-IDX-IN
+                   PERFORM 33041-SRYCD-ADD-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       33014-AUTOSIDOU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
