@@ -69,6 +69,7 @@
            03  FLG-INPUT           PIC 9(01).
            03  FLG-KANJI           PIC 9(01).
            03  FLG-TENSU-OK        PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -246,6 +247,18 @@
            IF      IDY                 =   ZERO
                MOVE    1               TO  IDY
            END-IF
+           IF      SPA-P02Y1-SRYCD-G   =   SPACE
+               MOVE    SPACE           TO  SPA-GMN28-AUTOSRYCD(IDY)
+               EVALUATE    IDY
+                   WHEN    1
+                       MOVE    46          TO  SPA-GMN28-CUR
+                   WHEN    2
+                       MOVE    47          TO  SPA-GMN28-CUR
+                   WHEN    3
+                       MOVE    48          TO  SPA-GMN28-CUR
+               END-EVALUATE
+           ELSE
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX     >   10   )
                           OR ( IDY     >   3    )
@@ -263,10 +276,12 @@
                    ADD     1           TO  IDY
                END-IF
            END-PERFORM
+           END-IF
            INITIALIZE                  SPA-P02Y1-AREA
            INITIALIZE                  SPA-P02Y1GMN-AREA 
       *
            MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    1                   TO  FLG-CHK
            PERFORM 41012-AUTOSRYCD-CHK-SEC
       *
            .
@@ -1927,6 +1942,7 @@
                    PERFORM 400211-INPUTCD-CHK-SEC
                    IF     (FLG-INPUT       =   ZERO ) AND
                           (SPA-ERRCD       =   SPACE )
+                    AND   (FLG-CHK         =   ZERO  )
       *                ÆþÎÏ¥³¡¼¥É¸¡º÷
                        PERFORM 408-P02Y1-SYORI-SEC
                    END-IF
