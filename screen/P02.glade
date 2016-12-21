@@ -12801,7 +12801,7 @@
             <name>label56</name>
             <x>600</x>
             <y>549</y>
-            <width>20</width>
+            <width>24</width>
             <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12846,7 +12846,7 @@
             <name>label57</name>
             <x>600</x>
             <y>573</y>
-            <width>20</width>
+            <width>24</width>
             <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
@@ -12917,7 +12917,7 @@
             <name>label58</name>
             <x>600</x>
             <y>597</y>
-            <width>20</width>
+            <width>24</width>
             <height>20</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
