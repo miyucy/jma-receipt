@@ -70,6 +70,7 @@
            03  FLG-KANJI           PIC 9(01).
            03  FLG-TENSU-OK        PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -97,6 +98,30 @@
            03  WRK-MAE-INPUT       PIC X(400).
            03  WRK-ATO-INPUT       PIC X(400).
            03  WRK-MAX             PIC 9(04).
+      *
+      *    »ØÆ³ÎÁÂÐ¾Ý³°¥Æ¡¼¥Ö¥ë
+       01  TBL-SINSATU-AREA.
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡³°½èÊý ½é¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113003510".
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡Æâ½èÊý ½é¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113003710".
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡³°½èÊý ºÆ¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113003610".
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(±¡Æâ½èÊý ºÆ¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113003810".
+      *    ¾®»ù²Ê¤«¤«¤ê¤Ä¤±¿Ç»¡ÎÁ(±¡³°½èÊý ½é¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113019910".
+      *    ¾®»ù²Ê¤«¤«¤ê¤Ä¤±¿Ç»¡ÎÁ(±¡Æâ½èÊý ½é¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113019710".
+      *    ¾®»ù²Ê¤«¤«¤ê¤Ä¤±¿Ç»¡ÎÁ(±¡³°½èÊý ºÆ¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113020010".
+      *    ¾®»ù²Ê¤«¤«¤ê¤Ä¤±¿Ç»¡ÎÁ(±¡Æâ½èÊý ºÆ¿Ç)
+           03  FILLER              PIC X(09)   VALUE   "113019810".
+       01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
+           03  TBL-SINSATU-OCC         OCCURS  8     INDEXED  TBL-IDX.
+      *        ¿ÇÎÅ¥³¡¼¥É
+               05  TBL-SRYCD           PIC X(09).
+      *
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1878,12 +1903,18 @@
       *
            MOVE    WRK-SRYCD-NAME      TO  SPA-GMN28-AUTONAME
                                                              (IDX)
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡¦¾®»ù¤«¤«¤ê¤Ä¤±ÂÐ¾Ý³°¸¡º÷
+           SET     TBL-IDX             TO  1
+           SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+               AT   END
+                   MOVE    ZERO            TO  FLG-ARI
+               WHEN   TNS-SRYCD        =   TBL-SRYCD (TBL-IDX)
+                   MOVE    1               TO  FLG-ARI
+           END-SEARCH
+      *
            IF     (TNS-SRYKBN          =   "13" )
             AND   (TNS-DATAKBN         =   "1"  )
-      *        ¼ÂÆü¿ô¡¢Æü¿ô¡¦²ó¿ôÈ½Äê¡Ê¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡¦¤«¤«¤ê¤Ä¤±¡Ë
-               IF     (TNS-JITUDAY         =   2  )
-                   MOVE    "2851"          TO  SPA-ERRCD
-               END-IF
+            AND   (FLG-ARI             =   ZERO )
       *        Æþ±¡¤Ï¥¨¥é¡¼
                IF      TNS-NYUGAITEKKBN    =   1
                    MOVE    "2851"          TO  SPA-ERRCD

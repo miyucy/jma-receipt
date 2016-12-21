@@ -414,6 +414,7 @@
                    PERFORM 200-ENTRY
            END-EVALUATE
       *
+      *
       *    画面編集後、表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
@@ -1662,8 +1663,7 @@
            MOVE    ZERO                TO  FLG-CHK
            IF      SPA-P02Y1-DATA      =   "13"
                IF     (TNS-SRYCD(1:1)      =   "1" )
-                 AND  (TNS-SRYKBN          =   "13"
-                                           OR  "14" )
+                 AND  (TNS-SRYKBN          =   "13")
                    CONTINUE
                ELSE
                    MOVE   1                TO  FLG-CHK
@@ -2351,7 +2351,7 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 290-KAKUTEI-SEC
            END-EVALUATE
-          .
+           .
       *
        200-GMNSENI-EXT.
            EXIT.
