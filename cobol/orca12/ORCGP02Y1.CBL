@@ -2046,9 +2046,9 @@
                    IF      SPA-P02Y1-GMN-INPUT(1:1) =   "*"
                        PERFORM 5001-SENTAKU-MEI-SEC
                    END-IF
-                   IF      SPA-P02Y1-GMN-INPUT(1:1) =   "/"
-                       MOVE    "検査点数別"   TO  P02Y1-SENTAKU
-                   END-IF
+      *!!!!        IF      SPA-P02Y1-GMN-INPUT(1:1) =   "/"
+      *                MOVE    "検査点数別"   TO  P02Y1-SENTAKU
+      *            END-IF
       *TEST
            END-EVALUATE
       *
