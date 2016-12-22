@@ -4477,7 +4477,7 @@
       *****************************************************************
       *    指導料初診日チェック処理（ORCSC10 と同様のチェック）
       *****************************************************************
-       330121-SIDOU-CHK-SEC               SECTION.
+       330121-SIDOU-CHK-SEC            SECTION.
       *
            MOVE    SPA-SYOYMD          TO  WRK-SYOYMD
            MOVE    ZERO                TO  FLG-SYOHEN
@@ -4730,6 +4730,12 @@
                    MOVE    SPA-AUTOSIDOU (IDX) TO  WRK-SRYCD
                    MOVE    ZERO                TO  WRK-IDX-IN
                    PERFORM 33041-SRYCD-ADD-SEC
+                   IF      FLG-ADD             =   1
+                       MOVE    SPACE           TO  SPA-COM-HCHKFLG
+                                                   (SPA-GMN-IDX)
+                       MOVE    SPACE           TO  SPA-COM-HKEIFLG
+                                                   (SPA-GMN-IDX)
+                   END-IF
                END-IF
            END-PERFORM
       *
