@@ -1,0 +1,750 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION      DIVISION.
+       PROGRAM-ID.         ORAPI052R1V2.
+      *****************************************************************
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 薬剤情報返却  (xml2)
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/01/XX    NACL−多々納　新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT         DIVISION.
+       CONFIGURATION       SECTION.
+       INPUT-OUTPUT        SECTION.
+       FILE-CONTROL.
+       DATA                DIVISION.
+       FILE                    SECTION.
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END                 PIC 9(01).
+           03  FLG-TEND                PIC 9(01).
+           03  FLG-SYSKANRI            PIC 9(01).
+      *
+           03  FLG-SYORI               PIC 9(01).
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-SRYCNT              PIC 9(04).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC X(04).
+               05  WRK-SMM             PIC X(02).
+               05  WRK-SDD             PIC X(02).
+           03  WRK-HEN-DATE.
+               05  WRK-HEN-YY          PIC X(04).
+               05  WRK-HEN-H1          PIC X(01).
+               05  WRK-HEN-MM          PIC X(02).
+               05  WRK-HEN-H2          PIC X(01).
+               05  WRK-HEN-DD          PIC X(02).
+      *    時間編集
+           03  WRK-THMS.
+               05  WRK-THH             PIC X(02).
+               05  WRK-TMM             PIC X(02).
+               05  WRK-TSS             PIC X(02).
+           03  WRK-HEN-TIME.
+               05  WRK-HEN-THH         PIC X(02).
+               05  WRK-HEN-T1          PIC X(01).
+               05  WRK-HEN-TMM         PIC X(02).
+               05  WRK-HEN-T2          PIC X(01).
+               05  WRK-HEN-TSS         PIC X(02).
+      *    エラーコード
+           03  WRK-ERRCD               PIC X(02).
+           03  WRK-ERRMSG              PIC X(100).
+           03  WRK-KEICD               PIC X(02).
+      *
+           03  WRK-MCP-PATHNAME        PIC X(62).
+           03  WRK-MCP-WINDOW          PIC X(62).
+      *
+      *
+       01  WRK-XML-AREA.
+           03  WRK-BASE-DATE           PIC X(10).
+           03  WRK-BASE-YMD            PIC X(08).
+      *
+      *    ファイル名
+       01  ZAIKO-FILE.
+           03  FILLER              PIC X(30)   VALUE
+               "scripts/allways/zaiko1.sh".
+      *    エラーファイル名
+       01  ERR-FILE.
+           03  FILLER              PIC X(30)   VALUE
+               "scripts/allways/zaiko1.sh".
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+           COPY    "CPORCSCOMMON.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
+           COPY    "CPORCSKANACHK.INC".
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
+      *
+      *    API XML読み込み用定義体
+           COPY    "CPSTOCK1V2REQ.INC".
+      *    API XML書き込み用定義体
+           COPY    "CPSTOCK1V2RES.INC".
+      *
+      *    API XML読み込み共通定義
+           COPY    "CPAPIV2REQ.INC".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+           COPY    "CPSYSKANRI.INC".
+      *    （職員情報）
+           COPY    "CPSK1010.INC".
+      *    （医療機関情報）
+      *    COPY    "CPSK1001.INC".
+      *
+           COPY    "MCPDATA.INC".
+      *
+           COPY    "CPSHELLTBL.INC".
+      *
+           COPY    "ORCA-BLOB".
+      *****************************************************************
+      *    連絡領域
+      *****************************************************************
+       LINKAGE                 SECTION.
+            COPY    "MCPAREA".
+            COPY    "ORCA-SPA".
+            COPY    "LINKAREA".
+       01  SCRAREA.
+           COPY    "API01RV2SCRAREA.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
+      *
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       000-MAIN-SEC                SECTION.
+      *
+           DISPLAY   "*******************"
+           DISPLAY   "* stock1     start*"
+           DISPLAY   "*******************"
+      *
+           INITIALIZE                      FLG-AREA
+           INITIALIZE                      IDX-AREA
+           INITIALIZE                      WRK-AREA
+           INITIALIZE                      SPA-AREA
+           INITIALIZE                      CNT-AREA
+      *
+      *    初期処理
+           PERFORM 100-INIT-SEC
+      *    主処理
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 200-MAIN-SEC
+           END-IF
+      *
+           IF      WRK-ERRCD           =   "99"
+      *        ユーザＩＤエラー
+               MOVE   404                  TO  APILST27-HTTPSTATUS
+           ELSE
+      *        返却領域編集
+               PERFORM 300-APTXMLMAKE-SEC
+           END-IF
+      *
+           DISPLAY   "*******************"
+           DISPLAY   "* stock1     end  *"
+           DISPLAY   "*******************"
+           .
+       000-MAIN-EXIT.
+           EXIT    PROGRAM.
+      *
+      *
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+           INITIALIZE                      WRK-XML-AREA
+           INITIALIZE                      XML-STOCKRES
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           MOVE   "Medical Info"       TO  STOCKRES-RESKEY
+      *
+           MOVE    MCP-USER            TO  SPA-OPID
+           MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
+      *    日付・時間出力編集
+           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
+           MOVE    SMCNDATE-HMS        TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  STOCKRES-INFORMATION-DATE
+           MOVE    WRK-HEN-TIME        TO  STOCKRES-INFORMATION-TIME
+      *
+      *    医療機関識別番号セット 
+           MOVE    "API"               TO  SPA-MOTOPG
+           CALL    "ORCSHOSPNUM"       USING
+                                       MCPAREA
+                                       SPA-AREA
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE   "99"             TO  WRK-ERRCD
+               GO  TO         100-INIT-EXT
+           END-IF
+      *    ＳＰＡ共通設定
+           INITIALIZE                  SYS-1010-REC
+           INITIALIZE                  ORCSCOMMONAREA
+           MOVE    "M00"               TO  ORCSCOMMON-PG
+           CALL    "ORCSCOMMON"        USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSCOMMONAREA
+                                       SYS-1010-REC
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE   "89"             TO  WRK-ERRCD
+           END-IF
+      *
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主　処理
+      *****************************************************************
+       200-MAIN-SEC                SECTION.
+      *
+      *    XML情報取り出し
+           PERFORM 1000-APTXMLREAD-SEC
+           IF      WRK-ERRCD       NOT =   SPACE
+               GO      TO      200-MAIN-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    SPACE               TO  WRK-KEICD
+      *
+           MOVE    ZERO                TO  FLG-SYORI
+           EVALUATE    STOCKREQ-REQUEST-NUMBER
+           WHEN    "01"
+               MOVE    1                   TO  FLG-SYORI
+           WHEN    "02"
+               MOVE    2                   TO  FLG-SYORI
+           WHEN    OTHER
+               MOVE    "91"                TO  WRK-ERRCD
+           END-EVALUATE
+      *    入力項目チェック処理
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 2001-INPUT-CHK-SEC
+           END-IF
+           IF      WRK-ERRCD       NOT =   SPACE
+               GO      TO      200-MAIN-EXT
+           END-IF
+      *
+           EVALUATE    STOCKREQ-REQUEST-NUMBER
+           WHEN    "01"
+      *        処理実施
+               PERFORM 2002-SYORI-01-SEC
+           WHEN    "02"
+      *        結果情報返却
+               PERFORM 2003-SYORI-02-SEC
+           END-EVALUATE
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    XML情報から内容を取り出す
+      *****************************************************************
+       1000-APTXMLREAD-SEC   SECTION.
+      *
+           IF      APILST27-BODY     NOT =   LOW-VALUE
+               DISPLAY "MDCRES-OBJECT not low_value"
+           END-IF
+           INITIALIZE                      XML-APIREQ
+           INITIALIZE                      XML-STOCKREQ
+      * XML情報取り出し
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_stock1v2req"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    APILST27-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    "stock1v2req"       TO  APIREQ-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-APIREQ
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO  OR  1  )
+               CONTINUE
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+               MOVE   "97"             TO  WRK-ERRCD
+               GO     TO   1000-APTXMLREAD-EXT
+           END-IF
+      *
+           MOVE    "XMLREAD"           TO  MCP-FUNC
+           MOVE    "xml_stock1v2req"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    "stock1v2req"       TO  APIREQ-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-APIREQ
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ          TO  XML-STOCKREQ
+               PERFORM 10001-XML-REMAKE-SEC
+           ELSE
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "98"             TO  WRK-ERRCD
+           END-IF
+      *
+           MOVE    "XMLCLOSE"          TO  MCP-FUNC
+           MOVE    "xml_stock1v2req"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-APIREQ
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               CONTINUE
+           END-IF
+      *
+           .
+       1000-APTXMLREAD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    XML情報書き込み処理
+      *****************************************************************
+       300-APTXMLMAKE-SEC   SECTION.
+      *
+      *    エラーメッセージ編集
+           IF      WRK-ERRCD           =   SPACE
+               MOVE    WRK-KEICD           TO  WRK-ERRCD
+           END-IF
+           IF      WRK-ERRCD           =   SPACE
+               MOVE    ZERO                TO  STOCKRES-API-RESULT
+               EVALUATE    FLG-SYORI
+                   WHEN    1
+                       MOVE    "処理を起動しました"
+                                           TO  STOCKRES-API-RESULT-MSG
+                   WHEN    2
+                       MOVE    "処理終了"
+                                           TO  STOCKRES-API-RESULT-MSG
+               END-EVALUATE
+           ELSE
+               IF      WRK-ERRMSG          =   SPACE
+      *        エラー・警告メッセージ
+                   PERFORM 890-ERRCD-MSG-SEC
+               END-IF
+               MOVE    WRK-ERRCD           TO  STOCKRES-API-RESULT
+               MOVE    WRK-ERRMSG          TO  STOCKRES-API-RESULT-MSG
+           END-IF
+      *
+           PERFORM 3001-STOCKRES-SEC
+      *
+           .
+       300-APTXMLMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    XML情報書き込み処理
+      *****************************************************************
+       3001-STOCKRES-SEC        SECTION.
+      *
+           IF      APILST27-BODY     NOT =   LOW-VALUE
+               DISPLAY "MDCRES-OBJECT not low_value"
+           END-IF
+      *
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_stock1v2res"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  STOCKRES-MODE
+           MOVE    "stock1v2res"       TO  STOCKRES-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-STOCKRES
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO  OR  1  )
+               CONTINUE
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+           END-IF
+      *
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
+           MOVE    "xml_stock1v2res"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "stock1v2res"       TO  STOCKRES-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-STOCKRES
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO  OR  1  )
+               CONTINUE
+           ELSE
+               DISPLAY "XMLWRITE failure = " MCP-RC
+           END-IF
+      *
+           MOVE    "XMLCLOSE"          TO  MCP-FUNC
+           MOVE    "xml_stock1v2res"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-STOCKRES
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    STOCKRES-OBJECT     TO  APILST27-BODY 
+               MOVE    "application/xml"   TO  APILST27-CONTENT-TYPE
+           ELSE
+               DISPLAY "XMLCLOSE failure = " MCP-RC
+               DISPLAY "medicalget xml write failure "
+           END-IF
+      *
+          .
+       3001-STOCKRES-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
+      *****************************************************************
+       10001-XML-REMAKE-SEC        SECTION.
+      *
+      *
+           .
+       10001-XML-REMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    情報設定内容チェック
+      *****************************************************************
+       2001-INPUT-CHK-SEC      SECTION.
+      *
+      *    編集処理
+           PERFORM 20010-INPUT-HEN-SEC
+      *
+      *    診療日チェック
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 20011-PERFORM-CHK-SEC
+           END-IF
+      *
+           .
+       2001-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力項目変換編集処理
+      *****************************************************************
+       20010-INPUT-HEN-SEC             SECTION.
+      *
+      *    診療日付
+           MOVE    STOCKREQ-BASE-DATE      TO  STOCKRES-BASE-DATE
+      *
+           MOVE    STOCKREQ-BASE-DATE      TO  WRK-HEN-DATE
+           MOVE    SPACE                   TO  WRK-HEN-TIME
+           PERFORM 802-DAYHEN02-SEC
+           MOVE    WRK-SYMD                TO  WRK-BASE-YMD
+      *    未設定時はシステム情報設定
+           IF      WRK-BASE-YMD            =   SPACE
+               MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
+               MOVE    STOCKRES-INFORMATION-DATE
+                                           TO  STOCKRES-BASE-DATE
+           END-IF
+      *    入外区分（外来のみ）
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
+      *    入外区分（外来のみ）
+           MOVE    SPA-NYUGAIKBN       TO  STOCKRES-INOUT
+      *
+           MOVE    STOCKREQ-REQUEST-NUMBER TO  STOCKRES-REQUEST-NUMBER
+           MOVE    STOCKREQ-REQUEST-NUMBER TO  STOCKRES-RESPONSE-NUMBER
+      *
+           .
+       20010-INPUT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基準日チェック
+      *****************************************************************
+       20011-PERFORM-CHK-SEC    SECTION.
+      *
+      *    日付チェックサブ
+           MOVE    SPACE               TO  STS-AREA-DAY
+           INITIALIZE                      STS-AREA-DAY
+           MOVE    SPACE               TO  LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-BASE-YMD        TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
+                                       LNK-DAY2-AREA
+           IF      STS-DAY-RC1     NOT =   ZERO
+               MOVE    "11"                TO  WRK-ERRCD
+           END-IF
+           MOVE    WRK-BASE-YMD        TO  WRK-SYMD
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  WRK-BASE-DATE
+      *
+           .
+       20011-PERFORM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理実施処理
+      *****************************************************************
+       2002-SYORI-01-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    ZAIKO-FILE          TO  SHELLTBL-NAME
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
+           MOVE    SPA-TERMID          TO  SHELLTBL-ARG2
+           MOVE    WRK-BASE-YMD        TO  SHELLTBL-ARG3
+           MOVE    ERR-FILE            TO  SHELLTBL-ARG4
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "allways"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       2002-SYORI-01-EXT.
+           EXIT.
+      *****************************************************************
+      *    結果情報返却処理
+      *****************************************************************
+       2003-SYORI-02-SEC           SECTION.
+      *
+           .
+       2003-SYORI-02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       801-DAYHEN01-SEC                SECTION.
+      *
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE           TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYY             TO  WRK-HEN-YY
+               MOVE    WRK-SMM             TO  WRK-HEN-MM
+               MOVE    WRK-SDD             TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
+      *
+           INITIALIZE                  WRK-HEN-TIME
+           MOVE    WRK-THH             TO  WRK-HEN-THH
+           MOVE    WRK-TMM             TO  WRK-HEN-TMM
+           MOVE    WRK-TSS             TO  WRK-HEN-TSS
+           MOVE    ":"                 TO  WRK-HEN-T1
+           MOVE    ":"                 TO  WRK-HEN-T2
+           .
+       801-DAYHEN01-EXT.
+           EXIT.
+      *****************************************************************
+      *    日付変換編集処理
+      *****************************************************************
+       802-DAYHEN02-SEC                SECTION.
+      *
+           INITIALIZE                  WRK-SYMD
+           MOVE    WRK-HEN-YY          TO  WRK-SYY
+           MOVE    WRK-HEN-MM          TO  WRK-SMM
+           MOVE    WRK-HEN-DD          TO  WRK-SDD
+           IF      WRK-SYMD            =   "99991231"
+               MOVE    "99"                TO  WRK-SMM
+               MOVE    "99"                TO  WRK-SDD
+           END-IF
+      *
+           INITIALIZE                  WRK-THMS
+           MOVE    WRK-HEN-THH         TO  WRK-THH
+           MOVE    WRK-HEN-TMM         TO  WRK-TMM
+           MOVE    WRK-HEN-TSS         TO  WRK-TSS
+           .
+       802-DAYHEN02-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       890-ERRCD-MSG-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           EVALUATE    WRK-ERRCD
+           WHEN    "11"
+               MOVE    "基準日が暦日ではありません"
+                                               TO  WRK-ERRMSG
+      *警告
+           WHEN    "K1"
+               MOVE    "基準日を設定しました"
+                                               TO  WRK-ERRMSG
+      *共通エラー
+           WHEN    "89"
+      *        ORCSCOMMON のエラー
+               EVALUATE    SPA-ERRCD
+               WHEN    "1001"
+                   MOVE    "職員情報が取得できません"
+                                               TO  WRK-ERRMSG
+               WHEN    "1002"
+                   MOVE    "医療機関情報が取得できません"
+                                               TO  WRK-ERRMSG
+               WHEN    "1003"
+                   MOVE    "システム日付が取得できません"
+                                               TO  WRK-ERRMSG
+               WHEN    "1005"
+                   MOVE    "患者番号構成情報が取得できません"
+                                               TO  WRK-ERRMSG
+               WHEN    "1015"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+                   END-STRING
+               WHEN    OTHER
+                   MOVE    "システム項目が設定できません"
+                                               TO  WRK-ERRMSG
+               END-EVALUATE
+           WHEN    "90"
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
+           WHEN    "91"
+               MOVE    "処理区分未設定"        TO  WRK-ERRMSG
+           WHEN    "97"
+               MOVE   "送信内容に誤りがあります。"
+                                               TO  WRK-ERRMSG
+           WHEN    "98"
+               MOVE   "送信内容の読込ができませんでした"
+                                               TO  WRK-ERRMSG
+           WHEN    "99"
+               MOVE    "ユーザＩＤ未登録。"
+                                               TO  WRK-ERRMSG
+           END-EVALUATE
+           .
+       890-ERRCD-MSG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ検索処理
+      *****************************************************************
+       900-SYSKANRI-SEL-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI         =   ZERO
+                   MOVE    MCPDATA-REC      TO  SYSKANRI-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       900-SYSKANRI-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ　ＲＥＡＤ
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *
+           PERFORM 910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
+           .
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *
