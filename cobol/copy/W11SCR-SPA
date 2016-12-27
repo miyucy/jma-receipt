@@ -35,7 +35,6 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD    PIC X(09).
                    07  SPA-GMN-EDYUKYMD    PIC X(09).
-                   07  SPA-GMN-USE-PRINT-SERVER    PIC X(01).
       *
                    07  SPA-GMN-PAGENO      PIC 9(01).
       *            出力先プリンタ割り当て情報
@@ -134,16 +133,6 @@
                                                       OCCURS  5.
                            11  SPA-GMN-ORGPGNM04-MAX  PIC 9(04).
       *
-                       09  SPA-GMN-CSTPGNMLST-G.
-                           11  SPA-GMN-CSTPGNMLST          OCCURS 12.
-                               13  SPA-GMN-CSTPGNMLST-MAX  PIC 9(04).
-                               13  SPA-GMN-CSTPGNMMEIL PIC X(20)
-                                                       OCCURS  10.
-                       09  SPA-GMN-CSTPGNM-NLST-G.
-                           11  SPA-GMN-CSTPGNM-NLST          OCCURS 10.
-                               13  SPA-GMN-CSTPGNM-NLST-MAX  PIC 9(04).
-                               13  SPA-GMN-CSTPGNM-NMEIL PIC X(20)
-                                                       OCCURS  10.
       *            帳票編集区分情報
                    07  SPA-GMN-1030-AREA.
                        09  SPA-GMN-SYOHOGEPRTFLG-G.
