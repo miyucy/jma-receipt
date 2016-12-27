@@ -78,6 +78,8 @@
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03   NACL-藤原    16/08/24  持参薬対応
+      *
+      *  04.09.01    NACL-藤原    16/12/12  ＨＡＯＲＩ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1716,11 +1718,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-TERMID      TO  JOB-TERMID                        
+           MOVE    SPA-TERMID      TO  JOB-TERMID
+           MOVE    SPA-R01-JOB-PARAM
+                                   TO  JOB-PARAM
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    帳票ファイル作成処理
-           MOVE    ZERO             TO  WRK-RECE08-PRTJYUN  
+           MOVE    ZERO             TO  WRK-RECE08-PRTJYUN
       *
            EVALUATE    SPA-R01-RECE07-RECEKBN
                WHEN    "3"
@@ -1891,7 +1895,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       24
                    OR      SPA-NAI-R04-PRTJYUNI(IDX)   =   SPACE
-                   OR      SPA-ERRCD           NOT =   SPACE    
+                   OR      SPA-ERRCD           NOT =   SPACE
+      *??
+              DISPLAY "R04=" IDX "#" SPA-GMN-R04-TCHK-VALUE  (IDX) "#"
+               SPA-GMN-R04-TPAGE       (IDX) "#"
+               SPA-NAI-R04-TEISYUTUSAKI (IDX) "#"
+      *??
                IF      SPA-GMN-R04-TCHK-VALUE  (IDX)   =   "T"
                AND     SPA-GMN-R04-TPAGE       (IDX)   >   ZERO
                AND     SPA-NAI-R04-TEISYUTUSAKI (IDX)  =

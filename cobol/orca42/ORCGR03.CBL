@@ -135,6 +135,8 @@
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03    NACL-藤原    16/08/24  持参薬対応
+      *
+      *  04.09.01    NACL-藤原    16/12/12  ＨＡＯＲＩ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -171,77 +173,7 @@
            COPY    "ENUM-VALUE".
       *
       *    画面用ＳＰＡ
-       01  SPA-R03.
-           03  SPA-R03-AREA.
-               05  SPA-GMN-MAX                     PIC 9(04).
-               05  SPA-GMN-PAGE                    PIC 9(02).
-               05  SPA-GMN-CUR                     PIC 9(02).
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-SYOKBN              PIC X(01).
-                   07  SPA-GMN-SYOKBN-LABEL        PIC X(20).
-      *----(01.00.01) LINE UPD START ----------------------------------
-      ********     07  SPA-GMN-SRYYM               PIC X(06).
-                   07  SPA-GMN-SRYYM               PIC X(07).
-      *----(01.00.01) LINE UPD END   ----------------------------------
-                   07  SPA-GMN-IKKATU              PIC X(01).
-                   07  SPA-GMN-KOBETU              PIC X(01).
-      *                         
-                   07  SPA-GMN-NYUGAIKBNLST        OCCURS  2.
-                       09  SPA-GMN-NYUGAIKBNL      PIC X(01).
-                       09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-NYUGAIKBNMEIL   PIC X(06).    
-                   07  SPA-GMN-NYUGAIKBN-MAX       PIC 9(02).
-      *             
-                   07  SPA-GMN-NYUGAIKBN-G.
-                       09  SPA-GMN-NYUGAIKBN       PIC X(01).
-                       09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-NYUGAIKBNMEI    PIC X(06).
-      *                         
-                   07  SPA-GMN-PRTKBNLST           OCCURS  10.
-                       09  SPA-GMN-PRTKBNL         PIC X(01).
-                       09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-PRTKBNMEIL      PIC X(30).    
-                   07  SPA-GMN-PRTKBN-MAX          PIC 9(02).
-      *             
-                   07  SPA-GMN-PRTKBN-G.
-                       09  SPA-GMN-PRTKBN          PIC X(01).
-                       09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-PRTKBNMEI       PIC X(30).
-      *             
-                   07  SPA-GMN-PRTKBN-LABEL        PIC X(36).
-      *
-                   07  SPA-DATAKBN.         
-                       09  SPA-DATAKBN1-VALUE      PIC X(01).
-                       09  SPA-DATAKBN2-VALUE      PIC X(01).
-                       09  SPA-DATAKBN3-VALUE      PIC X(01).
-                       09  SPA-DATAKBN5-VALUE      PIC X(01).
-                       09  SPA-DATAKBN4-VALUE      PIC X(01).
-                       09  SPA-DATAKBN11-VALUE     PIC X(01).
-                       09  SPA-DATAKBN21-VALUE     PIC X(01).
-                       09  SPA-DATAKBN22-VALUE     PIC X(01).
-                       09  SPA-DATAKBN23-VALUE     PIC X(01).
-                       09  SPA-DATAKBN24-VALUE     PIC X(01).
-                       09  SPA-DATAKBN25-VALUE     PIC X(01).
-                       09  SPA-DATAKBN26-VALUE     PIC X(01).
-                       09  SPA-DATAKBN31-VALUE     PIC X(01).
-                       09  SPA-DATAKBN32-VALUE     PIC X(01).
-                       09  SPA-DATAKBN33-VALUE     PIC X(01).
-     *
-               05  SPA-NAIB-R03-AREA.
-                   07  SPA-NAI-SRYYM               PIC 9(06).
-                   07  SPA-NAI-SRYYMH              PIC X(16).
-                   07  SPA-NAI-NYUGAIKBN           PIC X(06).
-      *
-                   07  SPA-NAI-2005-AUTODSPKBN     PIC X(01).
-                   07  SPA-NAI-200501-INSPECT-ZERO-KBN
-                                                   PIC X(01).
-                   07  SPA-NAI-200501-RECEIPT-MAKE-KBN
-                                                   PIC X(01).
-                   07  SPA-NAI-200505-HKNJANUM     PIC X(08).
-                   07  SPA-NAI-200501-INSPECT-INCLUDE
-                                                   PIC X(01).
-                   07  SPA-NAI-9101-COOPBASE       PIC X(01).
-                   07  SPA-NAI-9102-EFOUT          PIC X(01).
+           COPY    "R03SCR-SPA".
       *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -2131,6 +2063,11 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                    END-IF    
            END-EVALUATE
       *
+      *??
+           DISPLAY "R03 450 SPA-R01-RECEKBN=" SPA-R01-RECEKBN "#"
+           DISPLAY "R03 450 SPA-GMN-SYOKBN =" SPA-GMN-SYOKBN "#"
+           DISPLAY "R03 450 SPA-R01-FILEKBN=" SPA-R01-FILEKBN "#"
+      *??
       *    ガイドメッセージセット
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "4"
@@ -2179,6 +2116,9 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                        WHEN    "F"             ALSO    "2"
                            MOVE    "1004"              TO  SPA-RIDCD
                    END-EVALUATE
+      *??
+           DISPLAY "R03 450 SPA-RIDCD=" SPA-RIDCD "#"
+      *??
            END-EVALUATE
            .
        450-TOUROKU-EXT.
@@ -2620,6 +2560,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                            TO  JOB-NYUGAIKBN
                    MOVE    "1"             TO  JOB-SYOKBN
                    MOVE    SPA-R01-SRYYM   TO  JOB-SRYYM
+                   MOVE    SPA-R01-JOB-PARAM
+                                           TO  JOB-PARAM
 grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
       *            印刷用スクリプト処理

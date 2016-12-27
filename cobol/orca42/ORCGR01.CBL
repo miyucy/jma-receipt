@@ -179,6 +179,8 @@
       *                                     ÀßÄê¤Î½¤Àµ
       *  04.08.05    NACL-Æ£¸¶    16/08/24  »ý»²ÌôÂÐ±þ
       *  04.08.06    NACL-Æ£¸¶    16/10/10  ¸ÄÊÌºîÀ®¤ÎºÇÂç¤ò£²£°£°£°¤ËÊÑ¹¹
+      *
+      *  04.09.01    NACL-Æ£¸¶    16/12/12  £È£Á£Ï£Ò£ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4489,6 +4491,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "2"                 TO  JOB-SYOKBN
            MOVE    SPA-R01-SRYYM       TO  JOB-SRYYM
            MOVE    SPA-TERMID          TO  JOB-TERMID                        
+           MOVE    SPA-R01-JOB-PARAM   TO  JOB-PARAM
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID

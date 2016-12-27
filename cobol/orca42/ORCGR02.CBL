@@ -157,6 +157,8 @@
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03    NACL-藤原    16/03/07  プリンタ設定の修正
       *  04.08.04    NACL-藤原    16/08/24  持参薬対応
+      *
+      *  04.09.01    NACL-藤原    16/12/12  ＨＡＯＲＩ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5530,6 +5532,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        450-PRINT-SEC                SECTION.
       *
+      *??
+           DISPLAY "SPA-GMN-PRTJYUN=" SPA-GMN-PRTJYUN "#"
+      *??
       *    フラグ初期化
            MOVE    ZERO            TO  SPA-R01-JOBCNT       
                                        SPA-R01-STOPFLG    
@@ -5586,6 +5591,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID                        
+           MOVE    SPA-R01-JOB-PARAM
+                                   TO  JOB-PARAM
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    帳票ファイル作成処理
@@ -6134,6 +6141,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        45011-RECEPRT-HENSYU-SEC         SECTION.
       *
+      *??
+           DISPLAY "SPA-NAI-SYUBETU=" IDW "#" IDX "#" IDY "#" 
+                      SPA-NAI-SYUBETU (IDW IDX IDY) "#"
+           DISPLAY "WRK-TEISYUTUSAKI=" WRK-TEISYUTUSAKI "#"
+                    WRK-PREFKBN "#"
+      *??
       *    印刷用パラメタ
            INITIALIZE                      WRK-RECE09-REC
                                            WRK-RECE09-STDATA
