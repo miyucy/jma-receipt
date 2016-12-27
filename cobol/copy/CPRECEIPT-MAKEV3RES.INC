@@ -54,7 +54,7 @@
       *
                03  RECEMAKES-PERFORM-MONTH     PIC X(7).
       *
-               03  RECEMAKES-PERFORM-TIME      PIC X(8).
+               03  RECEMAKES-PERFORM-TITLE     PIC X(100).
       *        エラー患者一覧
                03  RECEMAKES-ERR-INFOMATION        OCCURS  100.
                     05  RECEMAKES-PATIENT-ID   PIC X(20).
@@ -68,7 +68,7 @@
                03  RECEMAKES-ALL-NUMBER        PIC X(5).
       *        総枚数
                03  RECEMAKES-ALL-NUMBER-OF-SHEETS PIC X(5).
-     *
+      *
                03  RECEMAKES-RECEIPT-INFOMATION.
                    05  RECEMAKES-SUBMISSION-INFOMATION OCCURS  19.
       *                連番

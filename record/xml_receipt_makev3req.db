@@ -16,7 +16,8 @@ xml_receipt_makev3req {
 		Receipt_Mode		varchar(10);
 #---     印刷モード(Check:点検用 Ckeck以外:提出用)
 		Print_Mode		varchar(6);
-#---     提出先(医保 01:全件 02:社保 03:国保 04:広域  労災 05
+#---     提出先(医保 01:全件 02:社保 03:国保 04:広域
+#---            労災 05
 #---            自賠責 06:新様式 07:従来様式 08:第三者行為
 #---            公害 09)
 		Submission_Mode		varchar(2);

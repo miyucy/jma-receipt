@@ -53,14 +53,19 @@
                03  RECEPRINTS-RESKEY            PIC X(100).
       *
                03  RECEPRINTS-PERFORM-MONTH     PIC X(7).
-      *
-               03  RECEPRINTS-PERFORM-TIME      PIC X(8).
+      *        
+               03  RECEPRINTS-ALL-NUMBER-OF-SHEETS
+                                                PIC X(5).
       *        エラー明細一覧
                03  RECEPRINTS-ERR-INFOMATION.
                    05  RECEPRINTS-SUBMISSION OCCURS  19.
       *                連番
                        07  RECEPRINTS-SUBMISSION-POSITION
                                                PIC X(5).
+      *                エラー
+                       07  RECEPRINTS-ERROR-CODE
+                                               PIC X(3).
+      *
                        07  RECEPRINTS-DETAIL-INFOMATION OCCURS  36.
       *                    連番
                            09  RECEPRINTS-DETAIL-POSITION
@@ -85,6 +90,6 @@
       *                    枚数
                            09  RECEPRINTS-NUMBER-OF-SHEETS
                                                    PIC X(5).
-      *                    枚数
-                           09  RECEPRINTS-ERROR-CODE
+      *                    エラー
+                           09  RECEPRINTS-DETAIL-ERROR-CODE
                                                    PIC X(3).

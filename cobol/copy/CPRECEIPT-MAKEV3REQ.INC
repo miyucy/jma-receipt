@@ -30,7 +30,7 @@
             02  RECEMAKEQ-RECORDNAME       PIC X(128).
             02  RECEMAKEQ-PATIENTREQ.
       *         リクエスト番号
-                03  RECEMAKEQ-REQUET-NUMBER PIC X(2).
+                03  RECEMAKEQ-REQUEST-NUMBER PIC X(2).
       *         カルテUID
                 03  RECEMAKEQ-KARTE-UID    PIC X(36).
       *         オルカUID

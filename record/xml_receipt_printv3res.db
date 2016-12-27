@@ -19,18 +19,22 @@ xml_receipt_printv3res {
 #---- (Receipt_Print 固定値)
 		Reskey			varchar(100);
 		Perform_Month		varchar(7);
-		Perform_Time		varchar(8);
+		All_Number_Of_Sheets    varchar(5);
 #---     エラー明細一覧(実際の明細と内容の異なるもの)
 		Err_Receipt_Information {
 			Submission_Information	{
 				Submission_Position	varchar(5);
+				Error_Code		varchar(3);
 				Detail_Information	{
 					Detail_Position		varchar(5);
+					Print_Instruct		varchar(05);
+					Submission_Printer1	varchar(16);
+					Submission_Printer2	varchar(16);
 					Submission_Code		varchar(10);
 					Submission_Type		varchar(100);
 					Number			varchar(5);
 					Number_Of_Sheets	varchar(5);
-					Error_Code		varchar(3);
+					Detail_Error_Code	varchar(3);
 				} [36];
 			} [19];
 		};

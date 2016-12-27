@@ -30,7 +30,7 @@
             02  RECEPRINTQ-RECORDNAME      PIC X(128).
             02  RECEPRINTQ-PATIENTREQ.
       *         リクエスト番号
-                03  RECEPRINTQ-REQUET-NUMBER PIC X(2).
+                03  RECEPRINTQ-REQUEST-NUMBER PIC X(2).
       *         カルテUID
                 03  RECEPRINTQ-KARTE-UID   PIC X(36).
       *         オルカUID
@@ -47,11 +47,7 @@
                 03  RECEPRINTQ-PRINT-MODE  PIC X(5).
       *         提出先
                 03  RECEPRINTQ-SUBMISSION-MODE  PIC X(2).
-      *         プリンタ（一号用紙）
-                03  RECEPRINTQ-PRINTER1    PIC X(16).
-      *         プリンタ（続紙）
-                03  RECEPRINTQ-PRINTER2    PIC X(16).
-      *
+      *         明細一覧
                 03  RECEPRINTQ-RECEIPT-INFOMATION.
                    05  RECEPRINTQ-SUBMISSION OCCURS  19.
       *                連番

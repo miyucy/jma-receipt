@@ -17,7 +17,7 @@ xml_receipt_makev3res {
 #---- (Receipt_Make 固定値)
 		Reskey			varchar(100);
 		Perform_Month		varchar(7);
-		Perform_Time		varchar(8);
+		Perform_Title		varchar(100);
 		Err_Patient_Infomation {
 			Patient_id	varchar(20);
 			Perform_Month	varchar(7);
