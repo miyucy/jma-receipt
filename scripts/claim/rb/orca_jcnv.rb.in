@@ -8,7 +8,7 @@
 #          3:mode
 
 require 'kconv'
-require 'uconv'
+require 'nkf'
 
 
 # @jcnv_debug = 1	# DebugModeである
@@ -292,7 +292,7 @@ $stderr.puts '[word_code_conversion] Start'			if @jcnv_debug == 1
 		when	2	# 変換後は、Shift_JISコード
 			word1 = Kconv::tosjis(in_word)
 		when	3	# 変換後は、UTF-8コード
-			word1 = Uconv::euctou8(in_word)
+			word1 = NKF.nkf( '-xm0 --ic=EUC-JP --oc=UTF-8', in_word )
 		when	4	# 変換後は、JISコード
 			word1 = Kconv::tojis(in_word)
 		else
@@ -307,7 +307,7 @@ $stderr.puts '[word_code_conversion] Start'			if @jcnv_debug == 1
 			# 何もしない
 			word1 = in_word
 		when	3	# 変換後は、UTF-8コード
-			word1 = Uconv::sjistou8(in_word)
+			word1 = NKF.nkf( '-xm0 --ic=CP932 --oc=UTF-8', in_word )
 		when	4	# 変換後は、JISコード
 			word1 = Kconv::tojis(in_word)
 		else
@@ -317,14 +317,14 @@ $stderr.puts '[word_code_conversion] Start'			if @jcnv_debug == 1
 	when	3	# 変換前は、UTF-8コード
 		case	after_code
 		when	1	# 変換後は、EUCコード
-			word1 = Uconv::u8toeuc(in_word)
+			word1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', in_word )
 		when	2	# 変換後は、Shift_JISコード
-			word1 = Uconv::u8tosjis(in_word)
+			word1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', in_word )
 		when	3	# 変換後は、UTF-8コード
 			# 何もしない
 			word1 = in_word
 		when	4	# 変換後は、JISコード
-			word1 = Uconv::u8toeuc(Kconv::tojis(in_word))
+			word1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=ISO-2022-JP', in_word )
 		else
 			ret = [-2, nil, '変換後文字コードの指定が不正です(after_code==[' + String(after_code) + '])']
 			return ret
@@ -336,7 +336,7 @@ $stderr.puts '[word_code_conversion] Start'			if @jcnv_debug == 1
 		when	2	# 変換後は、Shift_JISコード
 			word1 = Kconv::tosjis(in_word)
 		when	3	# 変換後は、UTF-8コード
-			word1 = Uconv::euctou8(Kconv::toeuc(in_word))
+			word1 = NKF.nkf( '-xm0 --ic=ISO-2022-JP --oc=UTF-8', in_word )
 		when	4	# 変換後は、JISコード
 			# 何もしない
 			word1 = in_word

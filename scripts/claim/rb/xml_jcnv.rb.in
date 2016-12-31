@@ -9,7 +9,6 @@
 #                  '01-10-30 by Yamamoto
 
 require 'nkf'
-require 'uconv'
 in_file, out_code, mode = ARGV
 
 #----- Define Classes ----------------------------------------
@@ -91,17 +90,16 @@ class XmlJCnv
           when "tou8"
             print @buf
           when "toeuc"
-            print Uconv::u8toeuc(@buf)
+            print NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', @buf )
           when "tosjis"
-            @buf = Uconv::u8toeuc(@buf)
-            print NKF.nkf('-W -s', @buf)
+            print NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', @buf )
           when "tojis"
-            print Uconv::u8tojis(@buf)
+            print NKF.nkf( '-xm0 --ic=UTF-8 --oc=ISO-2022-JP', @buf )
           end
         when "euc"
           case @to
           when "tou8"
-            print Uconv::euctou8(@buf)
+            print NKF.nkf( '-xm0 --ic=EUC-JP --oc=UTF-8', @buf )
           when "toeuc"
             print @buf
           when "tosjis"
@@ -112,8 +110,7 @@ class XmlJCnv
         when "sjis"
           case @to
           when "tou8"
-            @buf =  NKF.nkf('-e -S', @buf)
-            print Uconv::euctou8(@buf)
+            print NKF.nkf( '-xm0 --ic=CP932 --oc=UTF-8', @buf )
           when "toeuc"
             print NKF.nkf('-S -e', @buf)
           when "tosjis"
@@ -124,8 +121,7 @@ class XmlJCnv
         when "jis"
           case @to
           when "tou8"
-            @buf = Kconv::toeuc(@buf)
-            print Uconv::euctou8(@buf)
+            print NKF.nkf( '-xm0 --ic=ISO-2022-JP --oc=UTF-8', @buf )
           when "toeuc"
             print NKF.nkf('-J -e', @buf)
           when "tosjis"

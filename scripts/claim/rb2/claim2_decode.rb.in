@@ -127,8 +127,7 @@ end
 require_relative 'claim2_lib'
 require 'xmlparser'
 require 'kconv'
-require 'uconv'
-include Uconv
+require 'nkf'
 
 
 
@@ -970,10 +969,10 @@ class Xml_listdata
 		when "EUC-JP"
 			w_xml1 = euctou8(w_xml1)
 		when "Shift_JIS"
-			w_xml1 = Uconv.euctou8(Kconv::toeuc(w_xml1))
+			w_xml1 = NKF.nkf( '-xm0 --ic=CP932 --oc=UTF-8', w_xml1 )
 #			w_xml1 = sjistou8(w_xml1)
 		when "JIS"
-			w_xml1 = Uconv::euctou8(Kconv::toeuc(w_xml1))
+			w_xml1 = NKF.nkf( '-xm0 --ic=ISO-2022-JP --oc=UTF-8', w_xml1 )
 		when "UTF-8"
 			w_xml1 = w_xml1.encode("UTF-8", "UTF-8", :invalid => :replace)
 			#w_xml1 = euctou8(Uconv.u8toeuc(w_xml1))
@@ -1003,9 +1002,9 @@ class Xml_listdata
 				# 開始タグ
 				case o_encoding
 				when "EUC-JP"
-					wd_name1 = Uconv.u8toeuc(name)
+					wd_name1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', name )
 				when "Shift_JIS"
-					wd_name1 = Kconv::tosjis(Uconv.u8toeuc(name))
+					wd_name1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', name )
 #				when "UTF-8"
 #					wd_name1 = name
 				end
@@ -1045,11 +1044,11 @@ class Xml_listdata
 					wd_atrname1 = '' ; wd_atrdata1 = ''		# デバッグが済んだら消すこと
 					case o_encoding
 					when "EUC-JP"
-						wd_atrname1 = Uconv.u8toeuc(key)
-						wd_atrdata1 = Uconv.u8toeuc(value)
+						wd_atrname1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', key )
+						wd_atrdata1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', value )
 					when "Shift_JIS"
-						wd_atrname1 = Kconv::tosjis(Uconv.u8toeuc(key))
-						wd_atrdata1 = Kconv::tosjis(Uconv.u8toeuc(value))
+						wd_atrname1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', key )
+						wd_atrdata1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', value )
 #					when "UTF-8"
 #						wd_atrname1 = key
 #						wd_atrdata1 = value
@@ -1071,11 +1070,11 @@ class Xml_listdata
 					# dataの内容はnilではない
 					case o_encoding
 					when "EUC-JP"
-						wd_cdata1 = Uconv.u8toeuc data
+						wd_cdata1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', data )
 					when "Shift_JIS"
 #						wd_cdata1 = Uconv.u8toeuc data
 #						wd_cdata1 = Kconv::tosjis c_data
-						wd_cdata1 = Kconv::tosjis(Uconv.u8toeuc(data))
+						wd_cdata1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', data )
 #						wd_cdata1 = Uconv.u8tosjis data
 #					when "UTF-8"
 #						wd_cdata1 = data
@@ -1568,10 +1567,10 @@ class Xml_listdata
 			case	out_word_code
 			when	'1'
 				# 変換後の文字コードはEUCコード
-				h_data0 = Uconv.u8toeuc(hierarcy_data)
+				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', hierarcy_data )
 			when	'2'
 				# 変換後の文字コードはシフトJISコード
-				h_data0 = Kconv::tosjis(Uconv.u8toeuc(hierarcy_data))
+				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', hierarcy_data )
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
@@ -1832,10 +1831,10 @@ class Xml_listdata
 			case	out_word_code
 			when	'1'
 				# 変換後の文字コードはEUCコード
-				h_data0 = Uconv.u8toeuc(hierarcy_data)
+				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', hierarcy_data )
 			when	'2'
 				# 変換後の文字コードはシフトJISコード
-				h_data0 = Kconv::tosjis(Uconv.u8toeuc(hierarcy_data))
+				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', hierarcy_data )
 				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
