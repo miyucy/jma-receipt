@@ -683,10 +683,6 @@
                MOVE    WRK-PARA(1:1)       TO  PARA-API-DATA
            END-IF
       *    ginbeeのみ対応
-      *TEST
-      *TEST
-           MOVE    SPA-GINBEE       TO  SPA-MW
-      *TEST
            IF     (SPA-MW              =   SPA-GINBEE)
               AND (PARA-API-DATA       =   "1"       )
                CONTINUE
