@@ -1548,18 +1548,6 @@ path	key28   	{
 	};
 };
 
-path	key29   	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key29_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu HOSPNUM    =   :HOSPNUM
-			AND    YUKOEDYMD  =   :YUKOEDYMD
-			ORDER  BY  YKZKBN,
-			           KANANAME
-		;
-	};
-};
-
 path	key30   	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key30_csr CURSOR FOR
