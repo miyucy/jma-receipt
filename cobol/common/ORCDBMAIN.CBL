@@ -343,16 +343,17 @@
       *
            IF    ( MCP-FUNC    =   "DBINSERT"
                                 OR "DBUPDATE" )
-               MOVE    ZERO            TO  IDX1
+               MOVE    1               TO  IDX1
                MOVE    ZERO            TO  KANACONV-RETURN
                PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
                         OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
                         OR   ( KANACONV-RETURN NOT =   ZERO )
       *
-                   COMPUTE IDX1    =   IDX1    +   1
                    MOVE    MCPDATA-REC (1 :IDX1)
                                        TO  WKMCPDATA-REC
                    PERFORM 800-KANACONV-SEC
+      *
+                   COMPUTE IDX1    =   IDX1    +   1
       *
                END-PERFORM
       *
@@ -368,11 +369,9 @@
       *
                MOVE    MCPDATA-REC     TO  WKMCPDATA-REC
                PERFORM 800-KANACONV-SEC
-               MOVE    ZERO            TO  IDX1
+               MOVE    1               TO  IDX1
                PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
                         OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
-      *
-                   COMPUTE IDX1    =   IDX1    +   1
       *
                    IF    ( MCPDATA-REC (IDX1 : 1)
                                    NOT =  KANACONV-OUTDATA  (IDX1 : 1))
@@ -403,6 +402,8 @@
                            PERFORM 800-KANACONV-SEC
                        END-PERFORM
                    END-IF
+      *
+                   COMPUTE IDX1    =   IDX1    +   1
       *
                END-PERFORM
            END-IF
