@@ -524,6 +524,8 @@ RECORD_files = \
 	receiptprintv3.rec \
 	K024.rec \
 	K0241.rec \
+    findv2.rec \
+    findinfv2.rec \
 
 DEF_files = \
 
@@ -938,8 +940,14 @@ DB_files = \
 	tbl_dpc_ptkhn.db \
 	tbl_okusuri_kanri.db \
 	tbl_okusuri_data.db \
-    tbl_ptmynumber.db \
-    rp_statement.db \
+  tbl_ptmynumber.db \
+  rp_statement.db \
+  push_find.db  \
+  xml_findv2req.db  \
+  xml_findv2res.db  \
+  xml_findinfv2req.db  \
+  xml_findinfv2res.db  \
+
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

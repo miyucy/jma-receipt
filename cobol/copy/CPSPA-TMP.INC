@@ -36,3 +36,7 @@
       *データ領域
            03  SPATMP-DATA-REC              PIC X(600000).
       *
+      *更新年月日
+           03  SPATMP-UPYMD                 PIC X(08).
+      *更新時間
+           03  SPATMP-UPHMS                 PIC X(06).

@@ -42,3 +42,7 @@
                05  PARA-DATA-REC3         PIC X(1000).
                05  PARA-DATA-REC4         PIC X(1000).
                05  PARA-DATA-REC5         PIC X(1000).
+      *更新年月日
+           03  PARA-UPYMD                 PIC X(08).
+      *更新時間
+           03  PARA-UPHMS                 PIC X(06).

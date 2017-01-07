@@ -5,6 +5,8 @@ tbl_spa_tmp {
 	FILEMEI 			varchar(20);
 	EDANUM  			number(3,0);
 	DATA_REC 			varchar(600000);
+	UPYMD				char(8);
+	UPHMS				char(6);
 };
 primary	{
 	HOSPNUM,GYOUMUID,TERMID,FILEMEI,EDANUM;

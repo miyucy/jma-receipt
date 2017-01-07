@@ -312,3 +312,7 @@ db "shell" {
         shell;
 };
 
+db "push" {
+        push_find;
+};
+

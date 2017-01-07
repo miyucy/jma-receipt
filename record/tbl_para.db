@@ -5,6 +5,8 @@ tbl_para {
 	FILEMEI 			char(20);
 	EDANUM  			number(3,0);
 	DATA_REC 			char(5000);
+	UPYMD				char(8);
+	UPHMS				char(6);
 };
 primary	{
 	HOSPNUM,GYOUMUID,TERMID,FILEMEI,EDANUM;

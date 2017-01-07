@@ -96,7 +96,6 @@ utf8_shell_sources = \
 	allways/orcbi202.sh.in \
 	allways/log_shell.sh.in \
 	monthly/recept42.sh.in \
-	allways/mask.sh.in \
 	daily/push_report.sh.in \
 	allways/orcbi203.sh.in \
 	monthly/upload_jibai_receipt.sh.in \
@@ -125,6 +124,7 @@ shell_sources = \
 	daily/execoprg.sh.in \
 	allways/HL04.sh.in \
 	allways/HL05.sh.in \
+	allways/mask.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \
