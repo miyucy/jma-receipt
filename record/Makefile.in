@@ -524,7 +524,7 @@ RECORD_files = \
 	receiptprintv3.rec \
 	K024.rec \
 	K0241.rec \
-    findv2.rec \
+    findv3.rec \
     findinfv2.rec \
 
 DEF_files = \
@@ -943,8 +943,8 @@ DB_files = \
   tbl_ptmynumber.db \
   rp_statement.db \
   push_find.db  \
-  xml_findv2req.db  \
-  xml_findv2res.db  \
+  xml_findv3req.db  \
+  xml_findv3res.db  \
   xml_findinfv2req.db  \
   xml_findinfv2res.db  \
 

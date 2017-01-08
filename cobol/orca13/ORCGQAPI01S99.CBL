@@ -91,7 +91,7 @@
       *****************************************************************
       *
       *    API XML書き込み用定義体
-           COPY    "CPFINDV2RES.INC".
+           COPY    "CPFINDV3RES.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -127,12 +127,12 @@
        01  SCRAREA.
            COPY    "ORCA13SCRAREA.INC".
       *
-           COPY    "CPFINDV2REQ.INC".
+           COPY    "CPFINDV3REQ.INC".
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
                                                SCRAREA
-                                               XML-FINDV2REQ
+                                               XML-FINDV3REQ
                                                SPA-AREA.
       *
       *****************************************************************
@@ -167,7 +167,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-FINDV2RES
+           INITIALIZE                  XML-FINDV3RES
       *
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -461,38 +461,38 @@
            END-IF
            MOVE    SPA-Q01-ERRMSG  TO  FINDRES-API-RESULT-MSG
       *
-           MOVE    "xml_findv2res" TO  MCP-TABLE
+           MOVE    "xml_findv3res" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    1               TO  FINDRES-MODE
            MOVE    "XMLOPEN"       TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       XML-FINDV2RES
+                                       XML-FINDV3RES
            IF    ( MCP-RC          =   ZERO  OR  1  )
                CONTINUE
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
            END-IF
       *
-           MOVE    "xml_findv2res" TO  MCP-TABLE
+           MOVE    "xml_findv3res" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    "findv2res"     TO  FINDRES-RECORDNAME
+           MOVE    "findv3res"     TO  FINDRES-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       XML-FINDV2RES
+                                       XML-FINDV3RES
            IF     (MCP-RC          =   ZERO  OR  1  )
                CONTINUE
            ELSE
                DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
-           MOVE    "xml_findv2res" TO  MCP-TABLE
+           MOVE    "xml_findv3res" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    "XMLCLOSE"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       XML-FINDV2RES
+                                       XML-FINDV3RES
            IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    FINDRES-OBJECT      TO  QAPI01-BODY
                MOVE    "application/xml"   TO  QAPI01-CONTENT-TYPE
@@ -650,7 +650,7 @@
            MOVE    "XMLOPEN"       TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       XML-FINDV2RES
+                                       XML-FINDV3RES
       *
            .
       *
@@ -664,7 +664,7 @@
            MOVE    "XMLWRITE"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       XML-FINDV2RES
+                                       XML-FINDV3RES
       *
            .
       *
@@ -678,7 +678,7 @@
            MOVE    "XMLCLOSE"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       XML-FINDV2RES
+                                       XML-FINDV3RES
       *
            .
       *
