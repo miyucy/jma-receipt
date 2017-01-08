@@ -744,6 +744,9 @@
                                                        DELIMITED BY SIZE
                INTO  SPA-Q01-ERRMSG
                END-STRING
+           WHEN    "1049"
+               MOVE    "検索条件処理に失敗しました"
+                                       TO  SPA-Q01-ERRMSG
            WHEN    "4001"      THRU    "4010"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-Q01-ERRMSG

@@ -333,9 +333,16 @@
                                        TO  RES-COUNT
                END-IF
       *
-               IF    ( RESULT-CNT-ALL       =   ZERO )
-                   MOVE    "1041"          TO  SPA-ERRCD
-                   MOVE    "01"            TO  RES-RESNUM
+               IF    ( RESULT-DBERR    NOT =   ZERO )
+                   MOVE    "1049"      TO  SPA-ERRCD
+                   MOVE    "01"        TO  RES-RESNUM
+               END-IF
+      *
+               IF    ( SPA-ERRCD           =   SPACE )
+                   IF    ( RESULT-CNT-ALL      =   ZERO )
+                       MOVE    "1041"          TO  SPA-ERRCD
+                       MOVE    "01"            TO  RES-RESNUM
+                   END-IF
                END-IF
            END-IF
       *

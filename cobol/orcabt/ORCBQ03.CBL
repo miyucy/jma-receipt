@@ -221,6 +221,7 @@
                05  FLG-TARGET-SRYCD    PIC 9(01)
                                        OCCURS  5.
            03  FLG-TARGET-ACCT         PIC 9(01).
+           03  FLG-DBERR               PIC 9(01).
       *
        01  CNT-AREA.
            03  CNT-TMP03               PIC 9(03).
@@ -733,9 +734,7 @@
            MOVE    "tbl_rrksrh"    TO  MCP-TABLE
            MOVE    "crtv01"        TO  MCP-PATHNAME
            MOVE    "DBCREATE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            IF   ( SEL-SKYSRH       =   1 )
                PERFORM 900-SKYSRH-DEL1-SEC
@@ -800,6 +799,7 @@
                                        PTSRH-UPYMD
            MOVE    SEL-UPHMS       TO  PTSRH-UPHMS
            MOVE    SPA-Q01-OUTKBN  TO  PTSRH-OUTKBN
+           MOVE    FLG-DBERR       TO  PTSRH-DBERR
            MOVE    BQ01-SQL-ORDER  TO  PTSRH-ORDER
            MOVE    PTSRH-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptsrh"     TO  MCP-TABLE
@@ -811,6 +811,11 @@
            MOVE    "upd1"          TO  MCP-PATHNAME
            PERFORM 910-DBUPDATE-SEC
       *
+          IF    ( WRK-KARTE-UID    NOT =   SPACE )
+              PERFORM 2003-STATE-UPD-SEC
+              PERFORM 2003-PUSH-SEC
+          END-IF
+      *
            PERFORM 910-DBCOMMIT-SEC
            PERFORM 910-DBSTART-SEC
       *
@@ -819,14 +824,7 @@
            MOVE    "tbl_rrksrh"    TO  MCP-TABLE
            MOVE    "drtv01"        TO  MCP-PATHNAME
            MOVE    "DBDROP"        TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-          IF    ( WRK-KARTE-UID    NOT =   SPACE )
-              PERFORM 2003-STATE-UPD-SEC
-              PERFORM 2003-PUSH-SEC
-          END-IF
+           PERFORM 990-DBMAIN-SEC
       *
            .
        200-MAIN-EXT.
@@ -2854,16 +2852,12 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
            .
        120-DBOPEN-EXT.
            EXIT.
@@ -2875,16 +2869,12 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
        900-DBDISCONNECT-EXT.
@@ -2896,9 +2886,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2913,9 +2901,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
@@ -2927,9 +2913,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
@@ -2941,9 +2925,7 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
@@ -2955,9 +2937,7 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
@@ -2969,9 +2949,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
@@ -2983,9 +2961,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
@@ -2997,9 +2973,7 @@
        910-DBCOMMIT-SEC                SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
@@ -3011,11 +2985,25 @@
        910-DBSTART-SEC                SECTION.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 990-DBMAIN-SEC
       *
            .
       *
        910-DBSTART-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Í£Á£É£Î½èÍý
+      *****************************************************************
+       990-DBMAIN-SEC                  SECTION.
+      *
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF    ( MCP-RC              <       ZERO )
+               MOVE    1               TO      FLG-DBERR
+           END-IF
+      *
+           .
+      *
+       990-DBMAIN-EXT.
            EXIT.

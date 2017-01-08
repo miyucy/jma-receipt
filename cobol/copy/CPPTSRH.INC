@@ -84,8 +84,9 @@
                    07  PTSRH-CNT-PTID       PIC 9(10).
                    07  PTSRH-CNT-SRYCD      PIC 9(10).
                    07  PTSRH-OUTKBN         PIC X(01).
+                   07  PTSRH-DBERR          PIC 9(01).
                    07  PTSRH-ORDER          PIC X(500).
-                   07  PTSRH-R2-FIL   PIC X(29469).
+                   07  PTSRH-R2-FIL   PIC X(29468).
                05  PTSRH-MEMO-R3      REDEFINES    PTSRH-MEMO.
                    07  PTSRH-HKNCOMBI       PIC X(04).
                    07  PTSRH-HKNID          PIC 9(10).
