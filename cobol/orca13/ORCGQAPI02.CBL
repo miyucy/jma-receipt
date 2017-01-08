@@ -190,7 +190,7 @@
                                        MCPAREA
                                        SPA-AREA
            IF    ( SPA-ERRCD   NOT =   SPACE )
-               MOVE   "8099"       TO  SPA-ERRCD
+               MOVE   "0099"       TO  SPA-ERRCD
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
@@ -250,7 +250,7 @@
                    PERFORM 2003-RESPONSE-EDIT-SEC
                END-IF
            WHEN    OTHER
-               MOVE    "0204"          TO  SPA-ERRCD
+               MOVE    "0091"          TO  SPA-ERRCD
                PERFORM 2003-RESPONSE-EDIT-SEC
            END-EVALUATE
       *
@@ -534,11 +534,11 @@
                    CONTINUE
                ELSE
                    DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "8098"       TO  SPA-ERRCD
+                   MOVE   "0098"       TO  SPA-ERRCD
                END-IF
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "8097"           TO  SPA-ERRCD
+               MOVE   "0097"           TO  SPA-ERRCD
            END-IF
       *
            MOVE    XML-FINDINFV2REQ       TO  TXML-FINDINFV2REQ
@@ -571,7 +571,12 @@
            MOVE    WRK-TIME        TO  FINDINFRES-INFORMATION-TIME
       *
            PERFORM 890-ERRCD-MSG-SEC
-           MOVE    SPA-ERRCD       TO  FINDINFRES-API-RESULT
+           IF    ( SPA-ERRCD       =   ZERO )
+               MOVE    ZERO        TO  FINDINFRES-API-RESULT
+           ELSE
+               MOVE    "E"         TO  FINDINFRES-API-RESULT
+               MOVE    SPA-ERRCD   TO  FINDINFRES-API-RESULT(2:)
+           END-IF
            MOVE    SPA-Q01-ERRMSG  TO  FINDINFRES-API-RESULT-MSG
       *
            MOVE    "xml_findinfv2res"     TO  MCP-TABLE
@@ -623,7 +628,7 @@
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *
-           IF    ( SPA-ERRCD           =   "8099" )
+           IF    ( SPA-ERRCD           =   "0099" )
                MOVE    404             TO  QAPI02-HTTPSTATUS
            ELSE
                PERFORM 900-XML-WRITE-SEC

@@ -1392,7 +1392,7 @@
            END-EVALUATE
       *
            IF  ( WRK-PTNUM-LENGTH  NOT =   WRK-SYS-LENGTH1 )
-               MOVE    "0002"      TO  SPA-ERRCD
+               MOVE    "0211"      TO  SPA-ERRCD
            END-IF
       *
            .
@@ -1439,7 +1439,7 @@
       *
       *    パラメータ（IN）の患者番号桁数が設定された桁数を超えた場合
            IF    ( WRK-PTNUM-LENGTH    >   WRK-SYS-LENGTH1 )
-               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    "0211"          TO  SPA-ERRCD
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -1452,7 +1452,7 @@
       *
                IF  ( WRK-ST                =   ZERO )
                 OR ( WRK-ST                >   20   )
-                   MOVE    "0002"          TO  SPA-ERRCD
+                   MOVE    "0211"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -5326,7 +5326,12 @@
            MOVE    WRK-TIME        TO  FINDRES-INFORMATION-TIME
       *
            PERFORM 890-ERRCD-MSG-SEC
-           MOVE    SPA-ERRCD       TO  FINDRES-API-RESULT
+           IF    ( SPA-ERRCD       =   ZERO )
+               MOVE    ZERO        TO  FINDRES-API-RESULT
+           ELSE
+               MOVE    "E"         TO  FINDRES-API-RESULT
+               MOVE    SPA-ERRCD   TO  FINDRES-API-RESULT(2:)
+           END-IF
            MOVE    SPA-Q01-ERRMSG  TO  FINDRES-API-RESULT-MSG
       *
            MOVE    WRK-TIME        TO  FINDRES-INFORMATION-TIME

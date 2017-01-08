@@ -3699,7 +3699,7 @@
            END-EVALUATE
       *
            IF  ( WRK-PTNUM-KETA    NOT =   WRK-SYS-KETA )
-               MOVE    "0002"      TO  SPA-ERRCD
+               MOVE    "0211"      TO  SPA-ERRCD
            END-IF
       *
            .
@@ -3740,7 +3740,7 @@
       *
       *    パラメータ（IN）の患者番号桁数が設定された桁数を超えた場合
            IF  ( WRK-PTNUM-KETA        >   WRK-SYS-KETA )
-               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    "0211"          TO  SPA-ERRCD
                GO  TO                  41091-KETA-CNT-CHK2-EXT
            END-IF
       *
@@ -3750,7 +3750,7 @@
       *
            IF  ( WRK-ST                =   ZERO )  OR
                ( WRK-ST                >   20   )
-               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    "0211"          TO  SPA-ERRCD
                GO  TO                  41091-KETA-CNT-CHK2-EXT
            END-IF
       *
@@ -11632,9 +11632,6 @@
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
                MOVE    "入力に誤りがあります"    TO  SPA-ERRMSG
-           WHEN    "0002"
-               MOVE    "患者番号の桁数が違います" 
-                                       TO  SPA-ERRMSG
            WHEN    "0003"
                MOVE    "対象件数が２００件をオーバーしました" 
                                        TO  SPA-ERRMSG
@@ -11844,6 +11841,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0162"
                MOVE    "ドクター入力に誤りがあります"
+                                       TO  SPA-ERRMSG
+           WHEN    "0211"
+               MOVE    "患者番号の桁数が違います" 
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"

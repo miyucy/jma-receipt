@@ -6,7 +6,7 @@ xml_findinfv2res{
   findinfv2res  {
     Information_Date                 varchar(10);
     Information_Time                 varchar(8);
-    Api_Result                       varchar(4);
+    Api_Result                       varchar(5);
     Api_Result_Message               varchar(100);
     Request_Number                   varchar(2);
     Patient_Information{

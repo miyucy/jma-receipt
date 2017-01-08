@@ -23,7 +23,7 @@
             02  FINDINFRES-FINDINFV2RES.
               03  FINDINFRES-INFORMATION-DATE      PIC X(10).
               03  FINDINFRES-INFORMATION-TIME      PIC X(8).
-              03  FINDINFRES-API-RESULT            PIC X(4).
+              03  FINDINFRES-API-RESULT            PIC X(5).
               03  FINDINFRES-API-RESULT-MSG        PIC X(100).
               03  FINDINFRES-REQNUM                PIC X(2).
               03  FINDINFRES-KIHON-AREA.

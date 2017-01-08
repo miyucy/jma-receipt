@@ -990,9 +990,12 @@
            PERFORM 800-TIME-SEC
            MOVE    WRK-TIME        TO  FINDRES-INFORMATION-TIME
       *
-           PERFORM 890-ERRCD-MSG-SEC
-           MOVE    WRK-TIME        TO  FINDRES-INFORMATION-TIME
-           MOVE    SPA-ERRCD       TO  FINDRES-API-RESULT
+           IF    ( SPA-ERRCD       =   ZERO )
+               MOVE    ZERO        TO  FINDRES-API-RESULT
+           ELSE
+               MOVE    "E"         TO  FINDRES-API-RESULT
+               MOVE    SPA-ERRCD   TO  FINDRES-API-RESULT(2:)
+           END-IF
            MOVE    SPA-Q01-ERRMSG  TO  FINDRES-API-RESULT-MSG
       *
            MOVE    RES-COUNT       TO  FINDRES-COUNT
