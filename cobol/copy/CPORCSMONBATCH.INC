@@ -15,31 +15,18 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      ************************************************************
-      *    APIV3パラメタ　  COPY  (CPAPIPARA.INC)               *
-      ************************************************************
+      *----------------------------------------------------------*
+      *    バッチジョブ制御パラメタ　   COPY (CPORSMONBATCH.INC)
+      *----------------------------------------------------------*
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *01  APIPARA-REC.
-           03  APIPARA-KEY.
-               05  APIPARA-HOSPNUM           PIC 9(2).
-      *業務ＩＤ
-               05  APIPARA-GYOUMUID          PIC X(08).
-      *端末ＩＤ（ORCA-UID)
-               05  APIPARA-TERMID            PIC X(64).
-      *ファイル名
-               05  APIPARA-FILEMEI           PIC X(20).
-      *枝番
-               05  APIPARA-EDANUM            PIC 9(03).
-      *カルテUID
-           03  APIPARA-KARTE-UID             PIC X(36).
-      *患者番号
-           03  APIPARA-PTNUM                 PIC X(20).
-      *データ領域
-           03  APIPARA-DATA-REC              PIC X(5000).
-      *更新年月日
-           03  APIPARA-UPYMD                 PIC X(08).
-      *更新時間
-           03  APIPARA-UPHMS                 PIC X(06).
+       01  SMONBATCH-AREA.
+           03  SMONBATCH-MODE                  PIC X(10).
+           03  SMONBATCH-KEY.
+               05  SMONBATCH-OPID              PIC X(16).
+               05  SMONBATCH-TERMID            PIC X(64).
+               05  SMONBATCH-SHELLID           PIC X(08).
+           03  SMONBATCH-FOUND                 PIC 9(01).
+           03  SMONBATCH-RC                    PIC S9(9).
