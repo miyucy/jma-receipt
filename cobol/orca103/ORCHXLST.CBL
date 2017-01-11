@@ -111,11 +111,11 @@
       *    診療コード（薬剤コード）
            03  CHKCSV-SRYCD            PIC X(09).
       *    診療行為名（薬剤名）
-           03  CHKCSV-NAME             PIC X(50).
+           03  CHKCSV-NAME             PIC X(100).
       *    診療コード（薬剤コード）
            03  CHKCSV-SRYCD2           PIC X(09).
       *    診療行為名（薬剤名）
-           03  CHKCSV-NAME2            PIC X(50).
+           03  CHKCSV-NAME2            PIC X(100).
       *    入外区分
            03  CHKCSV-NYUGAIKBN        PIC X(04).
       *    入外別にチェック
@@ -136,9 +136,9 @@
                    07  CHKCSV-KEY-CD       PIC X(07).
                    07  CHKCSV-KEY-CDSEP    PIC X(01).
       *    病名
-           03  CHKCSV-BYOMEI           PIC X(50).
+           03  CHKCSV-BYOMEI           PIC X(100).
       *    補足コメント
-           03  CHKCSV-HOSOKU           PIC X(50).
+           03  CHKCSV-HOSOKU           PIC X(100).
       *    病名一致条件
            03  CHKCSV-COMPKBNMEI       PIC X(08).
       *    補足コメント一致条件
@@ -1281,6 +1281,15 @@
            PERFORM 210-MEISAI-B01L-SEC
       *
            PERFORM 900-CHKSND-KEY2-SEL-SEC
+      *
+      *----(04.08.01)--ADD-START---
+      *    チェックしない分だったら
+           IF      FLG-CHK002      =   1
+               MOVE    TCHKSND-REC     TO  CHKSND-REC
+               PERFORM 420-CSV-BODY-01-SET-SEC
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *----(04.08.01)--ADD-END-----
       *
            PERFORM UNTIL ( FLG-CHK002  NOT =   ZERO )
       *
@@ -2634,17 +2643,14 @@
       *
            INITIALIZE                  CHKCSV-REC
       *
-           IF    ( KEY-TEKCD   NOT =   CHKSND-SRYCD )
-               MOVE    CHKSND-SRYCD    TO  KEY-TEKCD
-               MOVE    CHKSND-SRYCD    TO  CHKCSV-SRYCD
-               IF    ( CHKSND-SRYCD(1:1)   =   "S" OR "P" )
-                   MOVE    CHKSND-SRYCD    TO  WRK-TNS-SRYCD
-                   PERFORM 2001-INPUTCD-HEN-SEC
-                   MOVE    WRK-NAME        TO  CHKCSV-NAME
-               ELSE
-                   MOVE    WRK-SRYNAME(5:) TO  CHKCSV-NAME
-               END-IF
+           MOVE    CHKSND-SRYCD    TO  CHKCSV-SRYCD
+           MOVE    CHKSND-SRYCD    TO  WRK-TNS-SRYCD
+           IF    ( CHKSND-SRYCD(1:1)   =   "S" OR "P" )
+               PERFORM 2001-INPUTCD-HEN-SEC
+           ELSE
+               PERFORM 2001-SRYCD-HEN-SEC
            END-IF
+           MOVE    WRK-NAME        TO  CHKCSV-NAME
       *
            IF    ( HXLST-TEMP-NAME NOT =   SPACE )
                AND  ( CHKSND-TERMID   =   HXLST-TEMP-NAME )
@@ -2657,7 +2663,7 @@
            MOVE    CHKSND-BYOMEI   TO  CHKCSV-BYOMEI
            MOVE    CHKSND-HOSOKU   TO  CHKCSV-HOSOKU
       *
-           EVALUATE    CHKSND-NYUGAIKBN
+           EVALUATE    TCHKSND-NYUGAIKBN
                WHEN    "1"
                    MOVE    "入院"        TO  CHKCSV-NYUGAIKBN
                WHEN    "2"
@@ -2680,10 +2686,7 @@
       *
            EVALUATE    CHKSND-COMPKBN
                WHEN    "1"
-                   IF    ( CHKSND-CHKKBN      =   "1" OR "2" )
-                    AND  ( CHKSND-HOSOKU  NOT =   SPACE )
-                       MOVE    "部分一致"  TO  CHKCSV-COMPKBNMEI
-                   END-IF
+                   MOVE    "部分一致"  TO  CHKCSV-COMPKBNMEI
                WHEN    "2"
                    MOVE    "完全一致"      TO  CHKCSV-COMPKBNMEI
                WHEN    "3"
@@ -2722,27 +2725,33 @@
       *
            INITIALIZE                  CHKCSV-REC
       *
-           MOVE    B02-SRYCD1      TO  CHKCSV-SRYCD
-           MOVE    B02-NAME1(5:)   TO  CHKCSV-NAME
+           MOVE    CHKTRD-SRYCD    TO  CHKCSV-SRYCD
+           MOVE    CHKTRD-SRYCD    TO  WRK-TNS-SRYCD
+           PERFORM 2001-SRYCD-HEN-SEC
+           MOVE    WRK-NAME        TO  CHKCSV-NAME
+           MOVE    CHKTRD-CD       TO  CHKCSV-SRYCD2
+           MOVE    CHKTRD-CD       TO  WRK-TNS-SRYCD
+           PERFORM 2001-SRYCD-HEN-SEC
+           MOVE    WRK-NAME        TO  CHKCSV-NAME2
       *
-           IF      B02-SRYCD1      NOT =   SPACE
-               EVALUATE    CHKTRD-NYUGAIKBN
-                   WHEN    "1"
-                       MOVE    "入院"      TO  CHKCSV-NYUGAIKBN
-                   WHEN    "2"
-                       MOVE    "外来"      TO  CHKCSV-NYUGAIKBN
-                END-EVALUATE
+           EVALUATE    CHKTRD-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "入院"      TO  CHKCSV-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "外来"      TO  CHKCSV-NYUGAIKBN
+           END-EVALUATE
       *
-               IF      CHKTRD-NYUGAIBNDKBN =   "2"
-                   MOVE    "する"      TO  CHKCSV-NYUGAIBNDKBN
-               ELSE
-                   MOVE    "しない"    TO  CHKCSV-NYUGAIBNDKBN
-               END-IF
+           IF      CHKTRD-NYUGAIBNDKBN =   "2"
+               MOVE    "する"      TO  CHKCSV-NYUGAIBNDKBN
+           ELSE
+               MOVE    "しない"    TO  CHKCSV-NYUGAIBNDKBN
            END-IF
       *
-           MOVE    B02-SRYCD2      TO  CHKCSV-SRYCD2
-           MOVE    B02-NAME2(5:)   TO  CHKCSV-NAME2
-           MOVE    B02-DMKBN       TO  CHKCSV-DMKBN
+           IF    ( CHKTRD-DAYMONTHKBN =   "0" )
+               MOVE    "日"        TO  CHKCSV-DMKBN
+           ELSE
+               MOVE    "月"        TO  CHKCSV-DMKBN
+           END-IF
       *
            WRITE   CHKCSV-REC
            COMPUTE CNT-CHKCSV      =   CNT-CHKCSV  +   1
@@ -2760,24 +2769,32 @@
       *
            INITIALIZE                  CHKCSV-REC
       *
-           IF    ( KEY-TEKCD   NOT =   WKCHK005-CD )
-               MOVE    WKCHK005-CD     TO  KEY-TEKCD
-               MOVE    WKCHK005-CD     TO  CHKCSV-KEY-CD-G
-               MOVE    WKCHK005-BYOMEI TO  CHKCSV-BYOMEI
+           MOVE    WKCHK005-CD     TO  CHKCSV-KEY-CD-G
+           MOVE    WKCHK005-BYOMEI TO  CHKCSV-BYOMEI
       *
-               EVALUATE    WKCHK005-COMPKBN
-                   WHEN    "2"
-                       MOVE    "完全一致"  TO  CHKCSV-COMPKBNMEI
-                   WHEN    "3"
-                       MOVE    "前方一致"  TO  CHKCSV-COMPKBNMEI
-                   WHEN    "4"
-                       MOVE    "後方一致"  TO  CHKCSV-COMPKBNMEI
-               END-EVALUATE
+           EVALUATE    WKCHK005-COMPKBN
+               WHEN    "1"
+                   MOVE    "部分一致"  TO  CHKCSV-COMPKBNMEI
+               WHEN    "2"
+                   MOVE    "完全一致"  TO  CHKCSV-COMPKBNMEI
+               WHEN    "3"
+                   MOVE    "前方一致"  TO  CHKCSV-COMPKBNMEI
+               WHEN    "4"
+                   MOVE    "後方一致"  TO  CHKCSV-COMPKBNMEI
+           END-EVALUATE
+      *
+           IF    ( WRK-DMKBN (CNT-TEKCD)   =   "0" )
+               MOVE    "日"        TO  CHKCSV-DMKBN
+           ELSE
+               MOVE    "月"        TO  CHKCSV-DMKBN
            END-IF
       *
-           MOVE    B03-SRYCD       TO  CHKCSV-SRYCD
-           MOVE    B03-NAME(5:)    TO  CHKCSV-NAME
-           MOVE    B03-DMKBN       TO  CHKCSV-DMKBN
+           MOVE    WRK-TEKCD(CNT-TEKCD)
+                                   TO  CHKCSV-SRYCD
+           MOVE    WRK-TEKCD(CNT-TEKCD)
+                                   TO  WRK-TNS-SRYCD
+           PERFORM 2001-SRYCD-HEN-SEC
+           MOVE    WRK-NAME        TO  CHKCSV-NAME
       *
            WRITE   CHKCSV-REC
            COMPUTE CNT-CHKCSV      =   CNT-CHKCSV  +   1
@@ -2795,10 +2812,14 @@
       *
            INITIALIZE                  CHKCSV-REC
       *
-           MOVE    B04-SRYCD1      TO  CHKCSV-SRYCD
-           MOVE    B04-NAME1(5:)   TO  CHKCSV-NAME
-           MOVE    B04-SRYCD2      TO  CHKCSV-SRYCD2
-           MOVE    B04-NAME2(5:)   TO  CHKCSV-NAME2
+           MOVE    CHK-SRYCD       TO  CHKCSV-SRYCD
+           MOVE    CHK-SRYCD       TO  WRK-TNS-SRYCD
+           PERFORM 2001-SRYCD-HEN-SEC
+           MOVE    WRK-NAME        TO  CHKCSV-NAME
+           MOVE    CHK-CD          TO  CHKCSV-SRYCD2
+           MOVE    CHK-CD          TO  WRK-TNS-SRYCD
+           PERFORM 2001-SRYCD-HEN-SEC
+           MOVE    WRK-NAME        TO  CHKCSV-NAME2
       *
            IF      CHK-NYUGAIBNDKBN    =  "1"
                MOVE    "する"          TO  CHKCSV-NYUGAIBNDKBN
@@ -2810,7 +2831,7 @@
                WHEN    "8"
                    MOVE    "チェックしない"    TO  CHKCSV-NASI
                WHEN    "9"
-                   MOVE    "警告エラー"    TO  CHKCSV-KEIKOKU
+                   MOVE    "警告"              TO  CHKCSV-KEIKOKU
            END-EVALUATE
       *
            IF      CHK-DATAKBN     =   "1" 
@@ -2983,10 +3004,7 @@
                    STRING  "薬剤コード,"       DELIMITED BY SIZE
                            "薬剤名,"           DELIMITED BY SIZE
                            "薬剤コード,"       DELIMITED BY SIZE
-                           "薬剤名,"           DELIMITED BY SIZE
-                           "入外別にチェック," DELIMITED BY SIZE
-                           "警告エラー,"       DELIMITED BY SIZE
-                           "チェックしない"    DELIMITED BY SIZE
+                           "薬剤名"            DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "5"
@@ -3254,12 +3272,6 @@
                            CHKCSV-SRYCD2       DELIMITED  BY  SPACE
                            ","                 DELIMITED  BY  SIZE
                            CHKCSV-NAME2        DELIMITED  BY  SPACE
-                           ","                 DELIMITED  BY  SIZE
-                           CHKCSV-NYUGAIBNDKBN DELIMITED  BY  SPACE
-                           ","                 DELIMITED  BY  SIZE
-                           CHKCSV-KEIKOKU      DELIMITED  BY  SPACE
-                           ","                 DELIMITED  BY  SIZE
-                           CHKCSV-NASI         DELIMITED  BY  SPACE
                            INTO                WRK-REC
                    END-STRING
                WHEN    "5"
@@ -3481,8 +3493,7 @@
            MOVE    "2"                 TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-REC             TO  STOUKEICSV-CSVDATA
            MOVE    SPACE               TO  STOUKEICSV-TITLE
-           STRING  "チェックマスタＣＳＶ作成"
-                                           DELIMITED BY SIZE
+           STRING  "チェックマスタＣＳＶ"  DELIMITED BY SIZE
                    WRK-CSV-TITLE           DELIMITED BY SPACE
                                    INTO    STOUKEICSV-TITLE
            END-STRING
