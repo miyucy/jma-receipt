@@ -33,25 +33,11 @@
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200). 
-      *
        WORKING-STORAGE             SECTION.
-      *
-      *    エラーファイル名称
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECEERR//.
-      *
-      *    エラーファイル名称領域 
-           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -67,35 +53,12 @@
       *
        01  SPA-SCR-REC.
            COPY    "CPR02SPASCR.INC".
-      *   
+      *
            COPY    "ENUM-VALUE".
       *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-RECEERR         PIC X(02).
-      *
        01  FLG-AREA.
-           03  FLG-END             PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-RECE07          PIC 9(01).
-           03  FLG-BTPARA          PIC 9(01).
-           03  FLG-SYUKA           PIC 9(01).
-           03  FLG-RECE08          PIC 9(01).
-           03  FLG-PTINF           PIC 9(01).
-           03  FLG-SRYACCT         PIC 9(01).
-           03  FLG-HKNCOMBI        PIC 9(01). 
-           03  FLG-NYUINACCT       PIC 9(01).
-           03  FLG-SEIKYU          PIC 9(01).
-      *
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
-           03  FLG-ROW             PIC 9(01).
-           03  FLG-ZAISKBKBN       PIC 9(01). 
-           03  FLG-TOUROKU         PIC 9(01).
-           03  FLG-SEIKYU-UMU      PIC 9(01).
-           03  FLG-TAISYO          PIC 9(01).
-           03  FLG-4001-RSIIRYOKBN PIC X(01).
-           03  FLG-4001-JIBAIKBN   PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-SPATMP          PIC 9(01).
@@ -184,37 +147,18 @@
                05  WRK-REGIST-TSS      PIC X(02).
            03  WRK-PTNUM               PIC X(20).
       *
-       01  SPA-RECE07-REC. 
-           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
-                                   BY         //SPA-RECE07//.
-           03  SPA-RECE07-SRYKA-KOKUHO
-                                   PIC X(02).
-           03  SPA-RECE07-SRYKA-KOUIKI
-                                   PIC X(02).
-           03  SPA-RECE07-RECE-PUTH-T   OCCURS 2.
-               05  SPA-RECE07-ZAITAKU-KBN-T
-                                   PIC  X(01).
-               05  SPA-RECE07-CHOUKI-KBN-T
-                                   PIC  X(01).
-               05  SPA-RECE07-SRT-LAST-T
-                                   PIC  X(01).
-               05  SPA-RECE07-KOUGAKU-TEN-T
-                                   PIC  9(07).
-           03  SPA-RECE08-DRCD-SRYKA
-                                   PIC X(02).
-           03  SPA-RECE08-SORT-1   PIC X(10).
-           03  SPA-RECE08-SORT-2   PIC X(50).
-           03  SPA-RECE08-RECESYUBETU-SRT
-                                   PIC X(03).
-           03  SPA-RECE07-FUMEI-PAGE
-                                   PIC 9(05).
-           03  SPA-RECE07-HKNJANUM-SYAHO-T.
-               05  SPA-RECE07-HKNJANUM-SRT-SYAHO
-                                   PIC X(01).
-               05  SPA-RECE07-HKNJANUM-SYAHO-MAX
-                                   PIC  9(02).
-               05  SPA-RECE07-HKNJANUM-SYAHO
-                                   PIC X(08)   OCCURS  10.
+      *    チェック用
+           03  WRK-CHK-TABLE-AREA.
+               05  WRK-CHK-R02-TBL.
+                   07  WRK-CHK-R02-TBL-OCC     OCCURS  19.
+                       09  WRK-CHK-R02-TBL-G   OCCURS  36.
+                           11  WRK-CHK-R02-CHK
+                                       PIC X(01).
+      *
+               05  WRK-CHK-R04-TBL.
+                   07  WRK-CHK-R04-TBL-G       OCCURS  25.
+                       09  WRK-CHK-R04-CHK
+                                       PIC X(01).
       * 
            COPY    "MCPAREA"       REPLACING  //MCP//
                                    BY         //TAIHI-MCP//.
@@ -231,15 +175,6 @@
                                    PIC X(08)   VALUE   "RECEPT2".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
       *
-      *    印刷管理ＤＢのキー値  
-           03  WRK-CONS-PRTKANRI-TBL-KEY
-                                   PIC X(08)   VALUE   "RECEPT2".
-           03  WRK-CONS-PRTKANRI-TBL-GROUP
-                                   PIC X(14)   VALUE   SPACE.
-      *
-      *    エラーファイルＩＤ
-           03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR042ERR".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -253,11 +188,6 @@
            COPY    "CPORCSNUM.INC".
       *    日付変換サブ
            COPY     "CPORCSGDAY.INC".
-      *    日付変換サブ
-           COPY    "CPORCSDAY.INC".
-           COPY    "CPORCSLNK.INC".
-      *    排他制御サブパラメタ
-           COPY    "CPORCSLOCK.INC".
       *    API XML読み込み用定義体
            COPY    "CPRECEIPT-PRINTV3REQ.INC".
       *    API XML読み込み用定義体
@@ -269,17 +199,8 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    レセプト管理     
-       01  RECE07-REC. 
-           COPY    "CPRCF007.INC".
-      *
-           COPY    "CPRCF008.INC".
-      *
       *    ＤＢ検索
-           COPY    "MCPDATA.INC".
            COPY    "MCPDATA2.INC".
-      *
-           COPY    "CPSHELLTBL.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
@@ -287,11 +208,6 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    システム管理マスタ
-           COPY    "CPSYSKANRI.INC".
-      *
-      *    医療機関情報
-           COPY    "CPSK1001.INC".
       *    職員情報
            COPY    "CPSK1010.INC".
       *
@@ -413,7 +329,7 @@
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE   "089"            TO  WRK-ERRCD
+               MOVE   "E89"            TO  WRK-ERRCD
            END-IF
       *
            .
@@ -437,18 +353,18 @@
       *
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    RECEPRINTQ-REQUEST-NUMBER
-           WHEN    "01"
-      *        処理実施
-               MOVE    1                   TO  FLG-SYORI
-           WHEN    "02"
-      *        処理確認
-               MOVE    2                   TO  FLG-SYORI
-           WHEN    "03"
-      *        キャンセル
-               MOVE    3                   TO  FLG-SYORI
+               WHEN    "01"
+      *            処理実施
+                   MOVE    1                   TO  FLG-SYORI
+               WHEN    "02"
+      *            処理確認
+                   MOVE    2                   TO  FLG-SYORI
+      ****     WHEN    "03"
+      ****        キャンセル
+      ****         MOVE    3                   TO  FLG-SYORI
       *
-           WHEN    OTHER
-               MOVE    "091"               TO  WRK-ERRCD
+               WHEN    OTHER
+                   MOVE    "E91"               TO  WRK-ERRCD
            END-EVALUATE
       *
       *    入力項目チェック処理
@@ -503,7 +419,7 @@
                CONTINUE
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "097"             TO  WRK-ERRCD
+               MOVE   "E97"             TO  WRK-ERRCD
            END-IF
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
@@ -521,7 +437,7 @@
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
-               MOVE   "098"             TO  WRK-ERRCD
+               MOVE   "E98"             TO  WRK-ERRCD
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
@@ -667,7 +583,7 @@
                WHEN    "O"
                    MOVE    "2"             TO  SPA-R01-NYUGAIKBN
                WHEN    OTHER
-                   MOVE    "012"           TO  WRK-ERRCD
+                   MOVE    "E12"           TO  WRK-ERRCD
            END-EVALUATE
       *
       *    提出先
@@ -692,7 +608,7 @@
                    WHEN    "09"
                        MOVE    "6"         TO  SPA-R01-RECEKBN
                    WHEN    OTHER
-                       MOVE    "013"       TO  WRK-ERRCD
+                       MOVE    "E13"       TO  WRK-ERRCD
                END-EVALUATE
            END-IF
       *
@@ -715,7 +631,7 @@
                    IF      SGDAY-RC        =   ZERO
                        CONTINUE
                    ELSE
-                       MOVE    "011"            TO  WRK-ERRCD
+                       MOVE    "E11"            TO  WRK-ERRCD
                    END-IF
                WHEN    "2"
                    MOVE    ZERO            TO  SPA-R01-SRYYM
@@ -738,6 +654,11 @@
       *??
       *
            IF      WRK-ERRCD   NOT =   SPACE
+               GO  TO  2001-INPUT-CHK-EXT
+           END-IF
+      *
+           IF      RECEPRINTQ-REQUEST-NUMBER
+                                   =   "02"
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
@@ -773,20 +694,6 @@
                        PERFORM 800-ORCGR02-CALL-SEC
                    END-IF
            END-EVALUATE
-      *??
-           DISPLAY "WRK-ERRCD        =" WRK-ERRCD "#" 
-                   IF      SPA-R01-RECEKBN
-                                       =   "0" OR  "1" OR  "2" OR  "7"
-                       CONTINUE
-                   ELSE
-                       PERFORM VARYING IDZZ    FROM    1   BY  1
-                               UNTIL   IDZZ    >       25
-                           DISPLAY "CHK=" IDZZ "#"
-                                      SPA-GMN-R04-TPAGE   (IDZZ) "#"
-                                   SPA-GMN-R04-TCHK-VALUE (IDZZ) "#"
-                       END-PERFORM
-                   END-IF
-      *??
       *
            IF      WRK-ERRCD   NOT =   SPACE
                GO  TO  2001-INPUT-CHK-EXT
@@ -826,7 +733,7 @@
                    END-PERFORM
                END-IF    
                IF      FLG-CHK         =   ZERO
-                   MOVE    "024"           TO  SPA-ERRCD
+                   MOVE    "E24"           TO  WRK-ERRCD
                END-IF
            END-IF
        *
@@ -839,15 +746,13 @@
       *****************************************************************
        20011-SUBMISSION-CHECK-SEC     SECTION.
       *
+           INITIALIZE                  WRK-CHK-TABLE-AREA
+      *
       *    個別の項目チェック
            PERFORM VARYING IDYY    FROM    1   BY  1
                    UNTIL   IDYY    >       19
                    OR      RECEPRINTQ-SUBMISSION-POSITION (IDYY)
                                    =   SPACE
-      *??
-           DISPLAY "SUBMISSION-POSITION=" IDYY "#"
-                        RECEPRINTQ-SUBMISSION-POSITION (IDYY) "#"
-      *??
                MOVE    SPACE           TO  WRK-ERRCD
                MOVE    ZERO            TO  FLG-ERR
       *
@@ -863,15 +768,15 @@
                    IF      SPA-R01-RECEKBN
                                        =   "0" OR  "1" OR  "2" OR  "7"
                        IF      IDY              >   SPA-GMN-PAGE-MAX
-                           MOVE    "020"               TO  WRK-ERRCD
+                           MOVE    "E20"               TO  WRK-ERRCD
                        END-IF
                    ELSE
                        IF      IDY              >   1
-                           MOVE    "020"               TO  WRK-ERRCD
+                           MOVE    "E20"               TO  WRK-ERRCD
                        END-IF
                    END-IF
                ELSE
-                   MOVE    "020"               TO  WRK-ERRCD
+                   MOVE    "E20"               TO  WRK-ERRCD
                END-IF
       *
                IF      WRK-ERRCD       =   SPACE
@@ -884,6 +789,16 @@
                        PERFORM 200111-CHECK-SEC
       *
                        IF      WRK-ERRCD       =   SPACE
+      *
+                           IF      SPA-R01-RECEKBN
+                                       =   "0" OR  "1" OR  "2" OR  "7"
+                               MOVE    "1"         TO
+                                           WRK-CHK-R02-CHK  (IDY IDZ)
+                           ELSE
+                               MOVE    "1"         TO
+                                           WRK-CHK-R04-CHK  (IDZ)
+                           END-IF
+      *
                            IF      RECEPRINTQ-PRINT-INSTRUCT (IDYY IDZZ)
                                                    =   "Yes"
                                IF      SPA-R01-RECEKBN
@@ -913,11 +828,46 @@
       *    明細一覧にエラーがあるとき
            IF      WRK-ERR-SUBMISSION-MAX
                                        >   ZERO
-               MOVE    "050"               TO  WRK-ERRCD
+               MOVE    "E50"               TO  WRK-ERRCD
+               GO  TO  20011-SUBMISSION-CHECK-EXT
+           END-IF
+      *
+      *    明細一覧が全て設定されているか
+           MOVE    ZERO                    TO  FLG-CHK
+           IF      SPA-R01-RECEKBN
+                                   =   "0" OR  "1" OR  "2" OR  "7"
+               PERFORM VARYING IDYY    FROM    1   BY  1
+                       UNTIL   IDYY    >       SPA-GMN-PAGE-MAX
+                   PERFORM VARYING IDZZ    FROM    1   BY  1
+                           UNTIL   IDZZ    >       WRK-CONS-LINE-MAX
+                       IF    ( SPA-NAI-PRTJYUNI (IDYY IDZZ)
+                                           NOT =   SPACE )
+                       AND   ( WRK-CHK-R02-CHK  (IDYY IDZZ)
+                                               =   SPACE )
+                           MOVE    1                   TO  FLG-CHK
+                           MOVE    SPA-GMN-PAGE-MAX    TO  IDYY
+                           MOVE    WRK-CONS-LINE-MAX   TO  IDZZ
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+           ELSE
+               PERFORM VARYING IDZZ    FROM    1   BY  1
+                       UNTIL   IDZZ    >       25
+                   IF    ( SPA-NAI-R04-PRTJYUNI (IDZZ)
+                                           NOT =   SPACE )
+                   AND   ( WRK-CHK-R04-CHK  (IDZZ)
+                                               =   SPACE )
+                       MOVE    1               TO  FLG-CHK
+                       MOVE    25              TO  IDZZ
+                   END-IF
+               END-PERFORM
+           END-IF    
+           IF      FLG-CHK         =   1
+               MOVE    "E23"           TO  WRK-ERRCD
            END-IF
       *
            .
-       20011-SUBMISSION-CHK-EXT.
+       20011-SUBMISSION-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -940,27 +890,27 @@
                IF      SPA-R01-RECEKBN
                                    =   "0" OR  "1" OR  "2" OR  "7"
                    IF      SNUM-OUTNUM     >   36
-                       MOVE    "015"           TO  WRK-ERRCD
+                       MOVE    "E15"           TO  WRK-ERRCD
                    ELSE
       *                印刷対象があるか
                        IF      SPA-NAI-PRTJYUNI (IDY IDZ)
                                                =   SPACE
-                           MOVE    "018"           TO  WRK-ERRCD
+                           MOVE    "E18"           TO  WRK-ERRCD
                        END-IF
                    END-IF
                ELSE
                    IF      SNUM-OUTNUM     >   25
-                       MOVE    "015"           TO  WRK-ERRCD
+                       MOVE    "E15"           TO  WRK-ERRCD
                    ELSE
       *                印刷対象があるか
                        IF      SPA-NAI-R04-PRTJYUNI (IDZ)
                                                =   SPACE
-                           MOVE    "018"           TO  WRK-ERRCD
+                           MOVE    "E18"           TO  WRK-ERRCD
                        END-IF
                    END-IF
                END-IF
            ELSE
-               MOVE    "015"           TO  WRK-ERRCD
+               MOVE    "E15"           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD    NOT =   SPACE
                GO  TO  200111-CHECK-EXT
@@ -976,7 +926,7 @@
            AND   ( SNUM-SEISUU     <   6    )
                MOVE    SNUM-OUTNUM     TO  WRK-KENSU
            ELSE
-               MOVE    "016"           TO  WRK-ERRCD
+               MOVE    "E16"           TO  WRK-ERRCD
                GO  TO  200111-CHECK-EXT
            END-IF
       *
@@ -990,7 +940,7 @@
            AND   ( SNUM-SEISUU     <   6    )
                MOVE    SNUM-OUTNUM     TO  WRK-PAGE
            ELSE
-               MOVE    "017"           TO  WRK-ERRCD
+               MOVE    "E17"           TO  WRK-ERRCD
                GO  TO  200111-CHECK-EXT
            END-IF
       *
@@ -1006,7 +956,7 @@
                                            (IDYY IDZZ) )
                    CONTINUE
                ELSE
-                   MOVE    "019"           TO  WRK-ERRCD
+                   MOVE    "E19"           TO  WRK-ERRCD
                    GO  TO  200111-CHECK-EXT
                END-IF
            ELSE
@@ -1019,7 +969,7 @@
                                            (IDYY IDZZ) )
                    CONTINUE
                ELSE
-                   MOVE    "019"           TO  WRK-ERRCD
+                   MOVE    "E19"           TO  WRK-ERRCD
                    GO  TO  200111-CHECK-EXT
                END-IF
            END-IF
@@ -1031,12 +981,12 @@
                                        =   "0" OR  "1" OR  "2" OR  "7"
                    IF      SPA-GMN-TPAGE   (IDY IDZ)
                                            =   ZERO
-                       MOVE    "021"           TO  WRK-ERRCD
+                       MOVE    "E21"           TO  WRK-ERRCD
                    END-IF
                ELSE
                    IF      SPA-GMN-R04-TPAGE   (IDZ)
                                            =   ZERO
-                       MOVE    "021"           TO  WRK-ERRCD
+                       MOVE    "E21"           TO  WRK-ERRCD
                    END-IF
                END-IF
            END-IF    
@@ -1059,7 +1009,7 @@
                                        TO
                                        RECEPRINTS-SUBMISSION-POSITION
                                                (WRK-ERR-SUBMISSION-MAX)
-               IF      WRK-ERRCD       =   "020"
+               IF      WRK-ERRCD       =   "E20"
                    MOVE    WRK-ERRCD       TO  RECEPRINTS-ERROR-CODE
                                                (WRK-ERR-SUBMISSION-MAX)
                    MOVE    SPACE           TO  WRK-ERRCD
@@ -1131,9 +1081,7 @@
                                    NOT =   JOB-SYOKBN    )
                OR    ( SPA-R01-SRYYM
                                    NOT =   JOB-SRYYM     )
-                   MOVE    "022"           TO  WRK-ERRCD
-                   MOVE    "該当する処理はありません"
-                                           TO  WRK-ERRMSG
+                   MOVE    "E41"           TO  WRK-ERRCD
                    GO  TO  20013-RECEIPT-CHK-EXT
                END-IF
       *
@@ -1162,8 +1110,8 @@
                    WHEN    "処理は正常に終了しました"
                        CONTINUE
                    WHEN    "処理中です"
-                       MOVE    "001"           TO  RECEPRINTS-API-RESULT
-                       MOVE    "073"           TO  WRK-ERRCD
+                       MOVE    "E01"           TO  RECEPRINTS-API-RESULT
+                       MOVE    "E30"           TO  WRK-ERRCD
                        MOVE    R99-SHORINM (1) TO  WRK-ERRMSG
                    WHEN    OTHER
                        MOVE    R99-MSG         TO  WRK-WARNING-MSG
@@ -1173,7 +1121,8 @@
                            WHEN   "対象のレセプトが作成されていません"
                                MOVE    "W02"   TO  WRK-WARNING
                            WHEN   "該当する処理はありません" 
-                               MOVE    "023"   TO  WRK-ERRCD
+                               MOVE    "E32"   TO  WRK-ERRCD
+                               MOVE    R99-MSG TO  WRK-ERRMSG
                            WHEN   OTHER
                                MOVE    SPACE   TO  WRK-WARNING-MSG
                        END-EVALUATE
@@ -1267,9 +1216,7 @@
                END-STRING
       *
                IF      WRK-PARAM   NOT =   JOB-PARAM
-                   MOVE    "022"           TO  WRK-ERRCD
-                   MOVE    "該当する処理はありません"
-                                           TO  WRK-ERRMSG
+                   MOVE    "E41"           TO  WRK-ERRCD
                    GO  TO  2003-RECEIPT-CHECK-EXT
                END-IF
       *
@@ -1311,8 +1258,7 @@
                    WHEN    "処理は正常に終了しました　処理枚数は"
                        CONTINUE
                    WHEN    "処理中です"
-                       MOVE    "001"           TO  RECEPRINTS-API-RESULT
-                       MOVE    "073"           TO  WRK-ERRCD
+                       MOVE    "E30"           TO  WRK-ERRCD
                        MOVE    R99-SHORINM (1) TO  WRK-ERRMSG
                    WHEN    OTHER
                        MOVE    R99-MSG         TO   WRK-WARNING-MSG
@@ -1322,11 +1268,14 @@
                            WHEN   "対象のレセプトが作成されていません"
                                MOVE    "W02"   TO  WRK-WARNING
                            WHEN   "該当する処理はありません" 
-                               MOVE    "022"   TO  WRK-ERRCD
+                               MOVE    "E32"   TO  WRK-ERRCD
+                               MOVE    R99-MSG TO  WRK-ERRMSG
                            WHEN   OTHER
                                MOVE    SPACE   TO  WRK-WARNING-MSG
                        END-EVALUATE
                END-EVALUATE
+           ELSE
+               MOVE    "E40"           TO  WRK-ERRCD
            END-IF
            .
        2003-RECEIPT-CHECK-EXT.
@@ -1480,7 +1429,7 @@
            IF      SJOBKANRI-RETURN
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "070"           TO  WRK-ERRCD
+                   MOVE    "E70"           TO  WRK-ERRCD
                    STRING  "レセプト印刷処理中です【"
                                              DELIMITED  BY  SIZE
                            JOB-SHELLMSG      DELIMITED  BY  SPACE
@@ -1546,70 +1495,81 @@
        890-ERRCD-MSG-SEC            SECTION.
       *
            EVALUATE    WRK-ERRCD
-               WHEN    "070"
-               WHEN    "071"
+               WHEN    "E70"
+      *            レセプト印刷処理中
                    GO  TO  890-ERRCD-MSG-EXT
-               WHEN    "072"
-                   MOVE    "002"           TO  WRK-ERRCD
-                   GO  TO  890-ERRCD-MSG-EXT
-               WHEN    "073"
-                   MOVE    "001"           TO  WRK-ERRCD
-                   GO  TO  890-ERRCD-MSG-EXT
-               WHEN    "019"
-               WHEN    "020"
-                   MOVE    "003"           TO  WRK-ERRCD
+      *
+      *??         WHEN    "E19"
+      *??         WHEN    "E20"
+      *??             MOVE    "E03"           TO  WRK-ERRCD
+      *??             GO  TO  890-ERRCD-MSG-EXT
+               WHEN    "E30"
+               WHEN    "E31"
+               WHEN    "E32"
+      *            レセプト作成結果
                    GO  TO  890-ERRCD-MSG-EXT
            END-EVALUATE
       * 
            MOVE    SPACE               TO  WRK-ERRMSG
       *
            EVALUATE    WRK-ERRCD
-               WHEN    "011"
+               WHEN    "E11"
                    MOVE    "診療年月が暦日ではありません"
                                                TO  WRK-ERRMSG
-               WHEN    "012"
+               WHEN    "E12"
                    MOVE    "入外区分設定誤り"      TO  WRK-ERRMSG
-               WHEN    "013"
+               WHEN    "E13"
                    MOVE    "提出先設定誤り"        TO  WRK-ERRMSG
-               WHEN    "014"
+               WHEN    "E14"
                    STRING  "印刷順が入力順、チェックデジットのときは"
                                            DELIMITED   BY  SIZE
                            "個別指示での印刷はできません"
                                            DELIMITED   BY  SIZE
                                            INTO        WRK-ERRMSG
                    END-STRING
-               WHEN    "015"
+               WHEN    "E15"
                    MOVE    "連番設定誤り"          TO  WRK-ERRMSG
-               WHEN    "016"
+               WHEN    "E16"
                    MOVE    "件数設定誤り"          TO  WRK-ERRMSG
-               WHEN    "017"
+               WHEN    "E17"
                    MOVE    "枚数設定誤り"          TO  WRK-ERRMSG
-               WHEN    "018"
+               WHEN    "E18"
                    MOVE    "対象のレセプトがありません"
                                                    TO  WRK-ERRMSG
-               WHEN    "019"
+               WHEN    "E19"
                    MOVE    "設定内容が違います"    TO  WRK-ERRMSG
-               WHEN    "020"
+               WHEN    "E20"
                    MOVE    "連番設定誤り"          TO  WRK-ERRMSG
-               WHEN    "021"
+               WHEN    "E21"
                    MOVE    "印刷するレセプトがありません"
                                                    TO  WRK-ERRMSG
-               WHEN    "022"
-               WHEN    "023"
+               WHEN    "E23"
+                   MOVE    "明細一覧に設定されていない種別があります"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E24"
+                   MOVE    "印刷するレセプトが選択してありません"
+                                                   TO  WRK-ERRMSG
+      *
+               WHEN    "E40"
+                   MOVE    "対象のジョブ管理がありません"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E41"
                    MOVE    "該当する処理はありません"
                                                    TO  WRK-ERRMSG
-               WHEN    "024"
-                   MOVE    "印刷するレセプトが選択してありません"
-                                                       
+      *
+               WHEN    "E50"
+                   MOVE    "明細の設定に誤りがあります"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E51"
+                   MOVE    "明細の設定に誤りがあります"
                                                    TO  WRK-ERRMSG
       *        共通エラー
-               WHEN    "089"
-                   MOVE    SPACE                   TO  WRK-ERRMSG
+               WHEN    "E89"
       *            ORCSCOMMON のエラー
                    EVALUATE    SPA-ERRCD
                        WHEN    "1001"
                            MOVE    "職員情報が取得できません"
-                                                   TO  WRK-ERRMSG
+                                                  TO  WRK-ERRMSG
                        WHEN    "1002"
                            MOVE    "医療機関情報が取得できません"
                                                    TO  WRK-ERRMSG
@@ -1621,69 +1581,29 @@
                                                    TO  WRK-ERRMSG
                        WHEN    "1015"
                            STRING  "グループ医療機関が不整合です。"
-                                               DELIMITED  BY  SIZE
-                                   "処理を終了して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
+                               "処理を終了して下さい。"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    WRK-ERRMSG
                            END-STRING
                        WHEN    OTHER
                            MOVE    "システム項目が設定できません"
                                                    TO  WRK-ERRMSG
                    END-EVALUATE
-               WHEN    "090"
+               WHEN    "E90"
                    MOVE    "他端末使用中"          TO  WRK-ERRMSG
-               WHEN    "091"
+               WHEN    "E91"
                    MOVE    "処理区分未設定"        TO  WRK-ERRMSG
-               WHEN    "097"
+               WHEN    "E97"
                    MOVE   "送信内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
-               WHEN    "098"
+               WHEN    "E98"
                    MOVE   "送信内容の読込ができませんでした"
                                                    TO  WRK-ERRMSG
-               WHEN    "099"
+               WHEN    "E99"
                    MOVE    "ユーザＩＤ未登録。"    TO  WRK-ERRMSG
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    管理マスター読込（キー）
-      *****************************************************************
-       900-SYSKANRI-INV-SEC         SECTION.
-      *
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       900-SYSKANRI-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    システム管理マスタＲＥＡＤ
-      *****************************************************************
-       900-SYSKANRI-READ-SEC         SECTION.
-      *
-           PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           .
-       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1778,85 +1698,3 @@
            .
        900-CALL-ORCSJOB-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ＤＢＳＥＬＥＣＴ処理
-      *****************************************************************
-       900-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
-           .
-       900-DBSELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢＦＥＴＣＨ処理
-      *****************************************************************
-       900-DBFETCH-SEC                SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルクローズ処理
-      *****************************************************************
-       900-CLOSE-SEC               SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    No Commit処理
-      *****************************************************************
-       900-NOCOMMIT-SEC            SECTION.
-      *
-      * For Debug
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      * For Debug
-      *
-           .
-       900-NOCOMMIT-EXT.
-           EXIT.
-      *

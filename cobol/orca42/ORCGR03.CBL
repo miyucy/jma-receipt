@@ -1886,6 +1886,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    ジョブ管理チェック処理
            PERFORM 4501-JOBKANRI-CHK-SEC
            IF      SPA-ERRCD      NOT =   SPACE
+               IF      SPA-R01-JOB-PARAM  NOT =   SPACE
+      *            ＨＡＯＲＩのとき画面移行用のパラメタ設定
+                   PERFORM 45011-PARA-HENSYU-SEC
+               END-IF
                GO  TO  450-TOUROKU-EXT
            END-IF    
       *
@@ -2063,11 +2067,6 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                    END-IF    
            END-EVALUATE
       *
-      *??
-           DISPLAY "R03 450 SPA-R01-RECEKBN=" SPA-R01-RECEKBN "#"
-           DISPLAY "R03 450 SPA-GMN-SYOKBN =" SPA-GMN-SYOKBN "#"
-           DISPLAY "R03 450 SPA-R01-FILEKBN=" SPA-R01-FILEKBN "#"
-      *??
       *    ガイドメッセージセット
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "4"
@@ -2116,9 +2115,6 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                        WHEN    "F"             ALSO    "2"
                            MOVE    "1004"              TO  SPA-RIDCD
                    END-EVALUATE
-      *??
-           DISPLAY "R03 450 SPA-RIDCD=" SPA-RIDCD "#"
-      *??
            END-EVALUATE
            .
        450-TOUROKU-EXT.

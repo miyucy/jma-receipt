@@ -57,9 +57,10 @@
                03  RECEMAKES-PERFORM-TITLE     PIC X(100).
       *        エラー患者一覧
                03  RECEMAKES-ERR-INFOMATION        OCCURS  100.
-                    05  RECEMAKES-PATIENT-ID   PIC X(20).
-                    05  RECEMAKES-PERFORM-DATE PIC X(7).
-                    05  RECEMAKES-ERROR-CODE   PIC X(3).
+                   05  RECEMAKES-PATIENT-ID   PIC X(20).
+                   05  RECEMAKES-PERFORM-DATE PIC X(7).
+                   05  RECEMAKES-ERROR-CODE   PIC X(3).
+                   05  RECEMAKES-ERROR-MSG    PIC X(100).
       *        印刷順
                03  RECEMAKES-RECEIPT-PRINT-ORDER
                                                PIC X(30)
@@ -74,6 +75,9 @@
       *                連番
                        07  RECEMAKES-SUBMISSION-POSITION
                                                    PIC X(5).
+      *
+                       07  RECEMAKES-SUBMISSION-TITLE
+                                                   PIC X(30).
                        07  RECEMAKES-DETAIL-INFOMATION OCCURS  36.
       *                    連番
                            09  RECEMAKES-DETAIL-POSITION

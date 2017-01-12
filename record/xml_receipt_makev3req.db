@@ -23,7 +23,7 @@ xml_receipt_makev3req {
 		Submission_Mode		varchar(2);
 #---     個別対象患者一覧
 		Patient_Infomation {
-			Patient_id	varchar(20);
+			Patient_ID	varchar(20);
 			Patient_Perform_Month	varchar(07);
 		} [100];
 	};

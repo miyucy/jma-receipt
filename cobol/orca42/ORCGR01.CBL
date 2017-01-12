@@ -2785,7 +2785,8 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
            MOVE    SPACE                   TO  SPA-ERRCD
       * 
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       WRK-CONS-LINE-MAX
+      *************UNTIL   IDX     >       WRK-CONS-LINE-MAX
+                   UNTIL   IDX     >       SPA-GMN-R01-MAX
                    OR      SPA-ERRCD   NOT =   SPACE
                IF      IDX         =   IDY 
                    CONTINUE
@@ -2837,7 +2838,7 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
       * 
            INITIALIZE                  SPA-GMN-R01-KOUMOKU
                                        SPA-NAI-R01-KOUMOKU
-           MOVE    ZERO                TO  SPA-NAI-R01-SELNO                             
+           MOVE    ZERO                TO  SPA-NAI-R01-SELNO
       *
           .
        4201-INTBL-SET-EXT.
