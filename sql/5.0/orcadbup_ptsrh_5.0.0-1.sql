@@ -18,7 +18,7 @@ CREATE TABLE tbl_ptsrh (
     sryname character varying(100),
     srykananame character varying(100),
     sryseq smallint,
-    memo character varying(50000),
+    memo character varying(30000),
     datakbn character(1),
     seqnum integer,
     creymd character(8),
