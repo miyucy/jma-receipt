@@ -619,6 +619,23 @@
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
+      *    カルテUID
+           IF      RECEMAKEQ-KARTE-UID =   SPACE
+               MOVE    "E04"               TO  WRK-ERRCD
+               GO  TO  2001-INPUT-CHK-EXT
+           END-IF
+      *
+      *   オルカUID
+           IF      RECEMAKEQ-REQUEST-NUMBER
+                                       =   "01"
+               CONTINUE
+           ELSE
+               IF      RECEMAKEQ-ORCA-UID  =   SPACE
+                   MOVE    "E05"               TO  WRK-ERRCD
+                   GO  TO  2001-INPUT-CHK-EXT
+               END-IF
+           END-IF
+      *
       *    初画面情報
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
@@ -726,10 +743,16 @@
            EVALUATE    SPA-GMN-R03-IKKATU
                WHEN    "T"
       *            診療年月
-                    MOVE    RECEMAKEQ-PERFORM-MONTH
-                                               TO  WRK-HEN-DATE
-                   PERFORM 802-DAYHEN02-SEC
-                   MOVE    WRK-SYMD (1:6)      TO  R03-SRYYM
+                   IF      RECEMAKEQ-PERFORM-MONTH
+                                               =   SPACE
+                       MOVE    "E14"              TO  WRK-ERRCD  
+                       GO  TO  2001-INPUT-CHK-EXT
+                   ELSE
+                       MOVE    RECEMAKEQ-PERFORM-MONTH
+                                                  TO  WRK-HEN-DATE
+                       PERFORM 802-DAYHEN02-SEC
+                       MOVE    WRK-SYMD (1:6)      TO  R03-SRYYM
+                   END-IF
            END-EVALUATE
       *
            STRING  RECEMAKEQ-KARTE-UID DELIMITED  BY  SPACE
@@ -823,28 +846,44 @@
                                        =   SPACE
                            AND RECEMAKEQ-PATIENT-PERFORM-DATE (IDZZ)
                                        =   SPACE )
-      *            患者番号
-                   MOVE    RECEMAKEQ-PATIENT-ID (IDZZ)
-                                               TO  R01-PTNUM
-      *            診療年月
-                   MOVE    RECEMAKEQ-PATIENT-PERFORM-DATE (IDZZ)
-                                               TO  WRK-HEN-DATE
-                   PERFORM 802-DAYHEN02-SEC
-                   MOVE    WRK-SYMD (1:6)      TO  R01-SRYYM
       *
                    MOVE    SPACE           TO  LINKAREA
                                                SPA-MOTOPG
                                                SPA-RIDCD-AREA
                                                SPA-RID1-AREA
+      *            患者番号
+                   IF      RECEMAKEQ-PATIENT-ID (IDZZ)
+                                               =   SPACE
+                       MOVE    "E001"              TO  SPA-ERRCD
+                       MOVE    "患者番号が未設定です"
+                                                   TO  SPA-ERRMSG
+                   ELSE
+                       MOVE    RECEMAKEQ-PATIENT-ID (IDZZ)
+                                                   TO  R01-PTNUM
+                   END-IF
+      *            診療年月
+                   IF      RECEMAKEQ-PATIENT-PERFORM-DATE (IDZZ)
+                                               =   SPACE
+                       MOVE    "E014"              TO  SPA-ERRCD
+                       MOVE    "診療年月が未設定です"
+                                                   TO  SPA-ERRMSG
+                   ELSE
+                       MOVE    RECEMAKEQ-PATIENT-PERFORM-DATE (IDZZ)
+                                                   TO  WRK-HEN-DATE
+                       PERFORM 802-DAYHEN02-SEC
+                       MOVE    WRK-SYMD (1:6)      TO  R01-SRYYM
+                   END-IF
       *
-                   MOVE    SPACE           TO  MCP-STATUS
-                   MOVE    "ACTIVATE"      TO  MCP-EVENT
-                   MOVE    SPACE           TO  MCP-WIDGET
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    SPACE           TO  MCP-STATUS
+                       MOVE    "ACTIVATE"      TO  MCP-EVENT
+                       MOVE    SPACE           TO  MCP-WIDGET
       *
-                   PERFORM 800-ORCGR01-CALL-SEC
+                       PERFORM 800-ORCGR01-CALL-SEC
       *??
            DISPLAY "SPA-ERRCD=" IDZZ "#" RECEMAKEQ-PATIENT-ID (IDZZ) "#"
                      SPA-ERRCD "#" SPA-RIDCD "#" SPA-GMN-R01-MAX "#"
+                   END-IF
       *??
       *
                    EVALUATE    SPA-RIDCD
@@ -852,34 +891,33 @@
                        WHEN    "1009"
                        WHEN    "1010"
       *                    診療なしの請求管理削除処理
-                           MOVE    SPACE           TO  LINKAREA
-                                                       SPA-MOTOPG
-                                                       SPA-RIDCD-AREA
-                                                       SPA-RID1-AREA
+                           MOVE    SPACE       TO  LINKAREA
+                                                   SPA-MOTOPG
+                                                   SPA-RIDCD-AREA
+                                                   SPA-RID1-AREA
       *
-                           MOVE    "OK"            TO  SPA-RID1-FLG
-                           MOVE    "RID1"          TO  SPA-MOTOPG
-                           MOVE    "1008"          TO  SPA-RIDCD
+                           MOVE    "OK"        TO  SPA-RID1-FLG
+                           MOVE    "RID1"      TO  SPA-MOTOPG
+                           MOVE    "1008"      TO  SPA-RIDCD
       *
-                           MOVE    "LINK"          TO  MCP-STATUS
-                           MOVE    SPACE           TO  MCP-EVENT
+                           MOVE    "LINK"      TO  MCP-STATUS
+                           MOVE    SPACE       TO  MCP-EVENT
       *
                            PERFORM 800-ORCGR01-CALL-SEC
       *
-                           MOVE    "1008"          TO  SPA-RIDCD
+                           MOVE    "1008"      TO  SPA-RIDCD
                            PERFORM 20012-PATIENT-ERR-SEC
                        WHEN    OTHER
-                           IF      SPA-ERRCD       =   SPACE
+                           IF      SPA-ERRCD   =   SPACE
                                IF      SPA-NAI-R01-TCHK
                                                    (SPA-GMN-R01-MAX)
-                                                       =   1
+                                                   =   1
                                    PERFORM 20013-PATIENT-WARNING-SEC
                                END-IF
                            ELSE
                                PERFORM 20012-PATIENT-ERR-SEC
                            END-IF
                    END-EVALUATE
-      *
                END-PERFORM
       *
       *        エラーがあれば処理終了
@@ -943,32 +981,36 @@
                END-IF
            ELSE
                ADD     1               TO  WRK-ERR-PATIENT-MAX1
-    *****      IF      SPA-ERRCD   NOT =  SPACE
-                   EVALUATE    SPA-ERRCD
-                       WHEN    "0003"
-                           MOVE    "E10"       TO  RECEMAKES-ERROR-CODE
+               EVALUATE    SPA-ERRCD
+                   WHEN    "0003"
+                       MOVE    "E10"       TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
-                       WHEN    "0009"
-                           MOVE    "E11"       TO  RECEMAKES-ERROR-CODE
+                   WHEN    "0009"
+                       MOVE    "E11"       TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
-                       WHEN    OTHER
-                           MOVE    "E63"       TO  RECEMAKES-ERROR-CODE
+                   WHEN    "E001"
+                       MOVE    "E01"       TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
-                   END-EVALUATE
-                   MOVE    SPA-ERRMSG      TO  RECEMAKES-ERROR-MSG
+                   WHEN    "E014"
+                       MOVE    "E14"       TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
-     *****     ELSE
-     *****          MOVE    WRK-ERRCD       TO  RECEMAKES-ERROR-CODE
-     *****                                         (WRK-ERR-PATIENT-MAX)
-     *****     END-IF
+                   WHEN    OTHER
+                       MOVE    "E63"       TO  RECEMAKES-ERROR-CODE
+                                                   (WRK-ERR-PATIENT-MAX)
+               END-EVALUATE
+               MOVE    SPA-ERRMSG      TO  RECEMAKES-ERROR-MSG
+                                                   (WRK-ERR-PATIENT-MAX)
       *
                IF      WRK-ERRCD       =   SPACE
                    MOVE    "E63"           TO  WRK-ERRCD
+                   MOVE    RECEMAKES-ERROR-MSG (WRK-ERR-PATIENT-MAX)
+                                           TO  WRK-ERRMSG
                END-IF
            END-IF
             .
        20012-PATIENT-ERR-EXT.
            EXIT.
+      *
       *****************************************************************
       *    個別対象患者ワーニング処理
       *****************************************************************
@@ -1648,6 +1690,7 @@
                    GO  TO  890-ERRCD-MSG-EXT
                WHEN    "E63"
       *            個別対象患者エラー
+                   GO  TO  890-ERRCD-MSG-EXT
                    MOVE    RECEMAKES-ERROR-CODE (1)
                                            TO  WRK-ERRCD
                    MOVE    RECEMAKES-ERROR-MSG  (1)
@@ -1658,6 +1701,14 @@
            MOVE    SPACE               TO  WRK-ERRMSG
       *
            EVALUATE    WRK-ERRCD
+               WHEN    "E01"
+                   MOVE    "患者番号が未設定です"  TO  WRK-ERRMSG
+               WHEN    "E04"
+                   MOVE    "電子カルテＵＩＤが未設定です"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E05"
+                   MOVE    "オルカＵＩＤが未設定です"
+                                                   TO  WRK-ERRMSG
                WHEN    "E10"
                    MOVE    "患者番号に該当する患者が存在しません"
                                                    TO  WRK-ERRMSG
@@ -1668,7 +1719,9 @@
                    MOVE    "入外区分設定誤り"      TO  WRK-ERRMSG
                WHEN    "E13"
                    MOVE    "提出先設定誤り"        TO  WRK-ERRMSG
-      *
+               WHEN    "E14"
+                   MOVE    "診療年月が未設定です"  TO  WRK-ERRMSG
+       *
                WHEN    "E40"
                    MOVE    "対象のジョブ管理がありません"
                                                    TO  WRK-ERRMSG

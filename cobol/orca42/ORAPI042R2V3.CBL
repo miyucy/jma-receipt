@@ -565,6 +565,19 @@
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
+      *    カルテUID
+           IF      RECEPRINTQ-KARTE-UID
+                                       =   SPACE
+               MOVE    "E04"               TO  WRK-ERRCD
+               GO  TO  2001-INPUT-CHK-EXT
+           END-IF
+      *
+      *   オルカUID
+           IF      RECEPRINTQ-ORCA-UID =   SPACE
+               MOVE    "E05"               TO  WRK-ERRCD
+               GO  TO  2001-INPUT-CHK-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  WRK-ERR-SUBMISSION-MAX
                                            WRK-ERR-DETAIL-MAX
       *
@@ -1513,6 +1526,12 @@
            MOVE    SPACE               TO  WRK-ERRMSG
       *
            EVALUATE    WRK-ERRCD
+               WHEN    "E04"
+                   MOVE    "電子カルテＵＩＤが未設定です"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E05"
+                   MOVE    "オルカＵＩＤが未設定です"
+                                                   TO  WRK-ERRMSG
                WHEN    "E11"
                    MOVE    "診療年月が暦日ではありません"
                                                TO  WRK-ERRMSG
