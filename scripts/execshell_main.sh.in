@@ -67,9 +67,9 @@ echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$$" "END" "$@")  >>  ${LOG_TE
   else
     gzip -c ${LOG_TEMP} >> ${LOG_GZ}
     if [ -f ${LOG_GZ} ];  then
-      if [ $(stat -c "%s" ${LOG_GZ}) -ge 5242880 ] ; then
+      if [ $(stat -c "%s" ${LOG_GZ}) -ge 524288 ] ; then
     	  mv ${LOG_GZ}  ${LOG_GZ}.0
-   	    for NUM in $(seq 5 -1 1)
+   	    for NUM in $(seq 1 -1 1)
         do
           LOG_NEW="${LOG_GZ}.${NUM}"
           NUM=$(expr ${NUM} - 1)
