@@ -31,8 +31,8 @@ esac
 export PATH
 
 SHELL_NAME=$(basename $2)
-LOG_FILE=${LOGDIR}/${SHELL_NAME%.sh}.log
-LOG_GZ=${LOG_FILE}.gz
+LOG_FILE=${SHELL_NAME%.sh}.log
+LOG_GZ=${LOGDIR}/${LOG_FILE}.gz
 LOG_TEMP=$(mktemp ${LOGDIR}/${SHELL_NAME%.sh}.XXXXXX)
 LOG_LOCK=${LOGDIR}/.jma-log.lock
 
@@ -62,17 +62,21 @@ echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$$" "END" "$@")  >>  ${LOG_TE
     exit 1;
   }
 
-  gzip -c ${LOG_TEMP} >> ${LOG_GZ}
-  if [ -f ${LOG_GZ} ];  then
-    if [ $(stat -c "%s" ${LOG_GZ}) -ge 5242880 ] ; then
-  	  mv ${LOG_GZ}  ${LOG_GZ}.0
-   	  for NUM in $(seq 5 -1 1)
-      do
-        LOG_NEW="${LOG_GZ}.${NUM}"
-        NUM=$(expr ${NUM} - 1)
-        LOG_OLD="${LOG_GZ}.${NUM}"
-        mv ${LOG_OLD} ${LOG_NEW} 2>/dev/null
-      done
+  if [ ${MCP_MIDDLEWARE_NAME} == "ginbee" ]; then
+    cat ${LOG_TEMP} >> "${MCP_LOGFILE_PREFIX}${LOG_FILE}"
+  else
+    gzip -c ${LOG_TEMP} >> ${LOG_GZ}
+    if [ -f ${LOG_GZ} ];  then
+      if [ $(stat -c "%s" ${LOG_GZ}) -ge 5242880 ] ; then
+    	  mv ${LOG_GZ}  ${LOG_GZ}.0
+   	    for NUM in $(seq 5 -1 1)
+        do
+          LOG_NEW="${LOG_GZ}.${NUM}"
+          NUM=$(expr ${NUM} - 1)
+          LOG_OLD="${LOG_GZ}.${NUM}"
+          mv ${LOG_OLD} ${LOG_NEW} 2>/dev/null
+        done
+      fi
     fi
   fi
 ) 200> "${LOG_LOCK}"
