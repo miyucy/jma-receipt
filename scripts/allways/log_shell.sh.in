@@ -17,7 +17,7 @@ LOG="/var/log/jma-receipt/shell.log"
 LOGGZ=${LOG}.gz
 
 if [ -f ${LOGGZ} ];  then
-    if [ $(stat -c "%s" ${LOGGZ}) -ge 5242880 ] ; then
+    if [ $(stat -c "%s" ${LOGGZ}) -ge 524288 ] ; then
 	mv ${LOGGZ}  ${LOGGZ}.0
 	for NUM in $(seq 5 -1 1)
 	do
