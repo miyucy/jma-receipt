@@ -19,7 +19,8 @@ fi
 
 FILE_PROFILE=${DASDIR}/${HOSPNUM}/profile.tar.gz
 CSV_PROFILE=${MCP_TEMPDIR}/profile.csv
-LOGFILE=${LOGDIR}/${HOSPNUM}das-profile.log
+LOG_FILE=${LOGDIR}/${HOSPNUM}das-profile.log
+[ -e "${LOG_FILE}"] && rm ${LOG_FILE}
 
 if [ -e ${PATCHLIBDIR}/etc/das-upload.conf ]; then 
   DASCONF_HEAD="${PATCHLIBDIR}/etc/das-upload.conf"
@@ -32,8 +33,7 @@ CLIENT_CONFIG_FILE="${DASCONFIG}"
 DAS_CHECK_HOSPID=${HOSPID}
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
-          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD}," \
-          2>&1 | tee $LOGFILE
+          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD},"
 
 if [ ! -f ${CLIENT_CONFIG_FILE} ]; then
   exit
@@ -45,19 +45,19 @@ fi
 
 # delete login check log
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-          -parameter "das-profile,D,,,,$HOSPNUM," 2>&1 | tee -a $LOGFILE
+          -parameter "das-profile,D,,,,$HOSPNUM,"
 
 trap "rm -f ${DASCONFIG}" EXIT
 
 export CLIENT_CONFIG_FILE
 export CSV_PROFILE
 
-RESULT=`$PROFILE_COMMAND 2>&1 | tee -a $LOGFILE`
+RESULT=`$PROFILE_COMMAND`
 if [ -e $CSV_PROFILE ]; then
   tar cvzf $FILE_PROFILE -C${MCP_TEMPDIR} profile.csv
   rm -f $CSV_PROFILE
 else
-  echo "$CSV_PROFILE not found" | tee -a $LOGFILE
+  echo "$CSV_PROFILE not found"
 fi
 
 export DAS_CHECK_HOSPID
@@ -65,23 +65,19 @@ export DAS_CHECK_HOSPID
 if [ -e $FILE_PROFILE ]; then
   UPTARGEFILE=1
   RESULT=`$UPLOAD_COMMAND -p $FILE_PROFILE 2>&1|head -1`
-  echo ${RESULT} | tee -a $LOGFILE
+  echo ${RESULT}
   if [ "UP $FILE_PROFILE" = "$RESULT" ]; then
     echo "000" $RESULT
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
-              -parameter "R,${HOSPNUM},${HOSPID},000,,," \
-              2>&1 | tee -a $LOGFILE
+              -parameter "R,${HOSPNUM},${HOSPID},000,,,"
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-              -parameter "das-profile,2,0,,000,$HOSPNUM,Upload success" \
-              2>&1 | tee -a $LOGFILE
+              -parameter "das-profile,2,0,,000,$HOSPNUM,Upload success"
   else
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
-              -parameter "R,${HOSPNUM},${HOSPID},${RESULT:0:3},,," \
-              2>&1 | tee -a $LOGFILE
+              -parameter "R,${HOSPNUM},${HOSPID},${RESULT:0:3},,,"
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-              -parameter "das-profile,2,1,,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}" \
-              2>&1 | tee -a $LOGFILE
-    echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
+              -parameter "das-profile,2,1,,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}"
+    echo "${RESULT:0:3}","${RESULT:4}"
   fi
   rm $FILE_PROFILE
 fi
@@ -89,9 +85,8 @@ fi
 if [ x$UPTARGEFILE != "x1" ]; then
   RESULT="900 No file"
   ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
-            -parameter "R,${HOSPNUM},${HOSPID},${RESULT:0:3},,," \
-            2>&1 | tee -a $LOGFILE
-  echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
+            -parameter "R,${HOSPNUM},${HOSPID},${RESULT:0:3},,,"
+  echo "${RESULT:0:3}","${RESULT:4}"
 fi
 
 exit

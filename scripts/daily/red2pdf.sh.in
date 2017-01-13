@@ -16,8 +16,6 @@ fi
 #        $1 HOSPNUM
 #        $2 データファイル名
 #-------------------------------------------#
-LOG_MAX_SIZE=1000
-LOG_FILE=/var/log/jma-receipt/$1$(basename ${0%.sh}).log
 DATA_FILE=${MCP_TEMPDIR}/$2
 
 cleanup () {
@@ -36,7 +34,7 @@ set_layeroption() {
   echo ${layeroption}
 }
 
-trap "cleanup" EXIT
+trap "cleanup" 1 2 3 15
 
 LINE=$(head -n 1 ${DATA_FILE})
 echo "LINE=${LINE}"
@@ -52,22 +50,14 @@ form_path="${PATCHFORMDIR} ${FORMDIR}"
 [ "${site}" == '2' ] &&  form_path="${SITEFORMDIR} ${form_path}"
 redfile=$(find ${form_path} -maxdepth 1 -type f -name ${redname} | head -n 1)
 
-date +"%Y/%m/%d %H:%M:%S" >> ${LOG_FILE} 
-
-echo red2embed ${redfile} ${tmpfile} -o ${tmpfile}.red >> ${LOG_FILE} 2>&1
-red2embed ${redfile} ${tmpfile} -o ${tmpfile}.red >> ${LOG_FILE} 2>&1
+echo red2embed ${redfile} ${tmpfile} -o ${tmpfile}.red
+red2embed ${redfile} ${tmpfile} -o ${tmpfile}.red
 
 layeroption=$(set_layeroption ${DATA_FILE})
-echo monpe -x ${offset_x} -y ${offset_y} ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf >> ${LOG_FILE} 2>&1
-monpe -x ${offset_x} -y ${offset_y} ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf >> ${LOG_FILE} 2>&1
+echo monpe -x ${offset_x} -y ${offset_y} ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf
+monpe -x ${offset_x} -y ${offset_y} ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf
 
-echo ${MONBLOB} -dir ${LDDIRECTORY}  -import ${tmpfile}.pdf          >>${LOG_FILE} 2>&1
-${MONBLOB} -dir ${LDDIRECTORY}  -import ${tmpfile}.pdf > ${pdffile} 2>>${LOG_FILE}
-cat ${pdffile} >>${LOG_FILE}
-
-log_size=$(wc -l < ${LOG_FILE})
-if [ ${log_size} -gt ${LOG_MAX_SIZE} ]; then
-  eol=$((${log_size} - ${LOG_MAX_SIZE}))
-  sed -i -e "1,${eol}d" ${LOG_FILE}
-fi
+echo ${MONBLOB} -dir ${LDDIRECTORY}  -import ${tmpfile}.pdf          
+${MONBLOB} -dir ${LDDIRECTORY}  -import ${tmpfile}.pdf > ${pdffile} 
+cat ${pdffile}
 

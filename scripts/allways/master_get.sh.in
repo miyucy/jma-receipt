@@ -39,7 +39,7 @@ LOG="$LOGDIR"/${HOSPNUM}master_get.log
 
 # echo message (default character-code EUC)
 echomsg() {
-  echo `echo ${1} | nkf | tee -a ${2}`
+  echo `echo ${1} | nkf`
 }
 
 jobend() {
@@ -96,7 +96,7 @@ sed -e "s/:HOSPNUM:/${HOSPNUM}/g" \
 rm -f ${MCP_TEMPDIR}/${FILENAME}
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
-          -parameter ${HOSPNUM},${MCP_TEMPDIR}/${FILENAME}.sql 2>&1 >> ${LOG}
+          -parameter ${HOSPNUM},${MCP_TEMPDIR}/${FILENAME}.sql
 if [ $? -ne 0 ] ; then 
   rm -f ${MCP_TEMPDIR}/${FILENAME}.sql
   ERRMSG="マスター登録処理でエラーが発生しました"

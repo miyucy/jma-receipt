@@ -15,7 +15,8 @@ if [ -e ${PATCHSCRIPTSDIR}/monthly/das-upload.rb ]; then
 else
   UPLOAD_COMMAND=$SCRIPTSDIR/monthly/das-upload.rb
 fi
-LOGFILE=$LOGDIR/"$HOSPNUM"das-check.log
+LOG_FILE=$LOGDIR/"$HOSPNUM"das-check.log
+[ -e "${LOG_FILE}"] && rm ${LOG_FILE}
 
 if [ -e ${PATCHLIBDIR}/etc/das-upload.conf ]; then 
   DASCONF_HEAD="${PATCHLIBDIR}/etc/das-upload.conf"
@@ -28,8 +29,7 @@ CLIENT_CONFIG_FILE="${DASCONFIG}"
 DAS_CHECK_HOSPID=${HOSPID}
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
-          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD}," \
-          2>&1 | tee $LOGFILE
+          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD},"
 
 if [ ! -f ${CLIENT_CONFIG_FILE} ]; then
   exit
@@ -42,18 +42,15 @@ export DAS_CHECK_HOSPID
 
 # delete login check log
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-          -parameter "das-check,D,,,,$HOSPNUM," \
-          2>&1 | tee -a $LOGFILE
+          -parameter "das-check,D,,,,$HOSPNUM,"
 
 RESULT=`$UPLOAD_COMMAND -a 2>&1|head -1`
 if [ "LOGIN OK" = "$RESULT" ]; then
   ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-            -parameter "das-check,2,0,,200,$HOSPNUM,login success" \
-            2>&1 | tee -a $LOGFILE
+            -parameter "das-check,2,0,,200,$HOSPNUM,login success"
 else
   ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-            -parameter "das-check,2,1,,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}" \
-            2>&1 | tee -a $LOGFILE
+            -parameter "das-check,2,1,,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}"
 fi
 
 exit

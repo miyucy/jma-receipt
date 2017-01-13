@@ -34,8 +34,6 @@ LOG_FILE="/var/log/jma-receipt/${7}orcb013_1.log"
 
 [ -e "${LOG_FILE}" ] &&  rm ${LOG_FILE}
 
-    printf "[%s]\n" "$@" > $LOG_FILE
-
 PARA_FILE_BASE=$3
 PARA_FILE_FULL=${MCP_TEMPDIR}/${3}
 
@@ -47,7 +45,7 @@ WKCSV_FILE_FULL=${MCP_TEMPDIR}/${15}
         [ ${16} == "1" ] && PGNAME=ORCBQ01A
         [ ${16} == "2" ] && PGNAME=ORCBQ01B
 ##
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGNAME} -parameter ${PARA_FILE_BASE},$4,$5,$6,$7,$8,${11},${13},${14},${WKCSV_FILE_BASE},${16} >> $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGNAME} -parameter ${PARA_FILE_BASE},$4,$5,$6,$7,$8,${11},${13},${14},${WKCSV_FILE_BASE},${16} 
 
 ##      £Ã£Ó£Ö¥Õ¥¡¥¤¥ëºîÀ®
         if  [ $1 -eq "0" ]; then
@@ -75,6 +73,6 @@ WKCSV_FILE_FULL=${MCP_TEMPDIR}/${15}
             rm  ${PARA_FILE_FULL}
         fi
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$9${10},$7" >> $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$9${10},$7" 
 
         exit

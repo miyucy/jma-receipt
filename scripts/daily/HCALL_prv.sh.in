@@ -30,12 +30,11 @@ YAML_FILE=$(mktemp --suffix=.yaml ${MCP_TEMPDIR}/print_parent_prv.XXXXX)
 
 REPORT_TITLE=""
 [ -n "$5" ] && REPORT_TITLE=$(echo $5 | nkf -w)
-LOG_MAX_SIZE=1000
-LOG=${LOGDIR}/${HOSPNUM}$(basename ${0%.*}).log
-[ -e ${LOG} ] && rm ${LOG}
+LOG_FILE=${LOGDIR}/${HOSPNUM}$(basename ${0%.*}).log
+[ -e ${LOG_FILE} ] && rm ${LOG_FILE}
 
-echo  `date` >> ${LOG} 2>&1
-echo  $#  >> ${LOG} 2>&1
+echo  `date`
+echo  $#  
 
 
  cat << EOS > ${YAML_FILE}
@@ -49,30 +48,24 @@ report_title: "${REPORT_TITLE}"
 show_dialog: "$6"
 EOS
 
-echo "yaml"  >> ${LOG}
-cat ${YAML_FILE} >> ${LOG}
-echo "--" >> ${LOG}
+echo "yaml"  
+cat ${YAML_FILE} 
+echo "--" 
 
 if [ "$4"  == "1" ]; then
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2  >> ${LOG} 2>&1
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2
 else
-  echo "ORCBPREV skipped" >> ${LOG} 2>&1
+  echo "ORCBPREV skipped"
 fi
 
-print_parent_prv.rb ${YAML_FILE} >> ${LOG} 2>&1
+print_parent_prv.rb ${YAML_FILE}
 [ -e ${YAML_FILE} ] && rm ${YAML_FILE}
 
 #------ お薬手帳、処方せんQRイメージ削除
 #       （一時ディレクトリに作成されたpngファイルを削除）
-grep -Eo "${MCP_TEMPDIR}/([0-9a-zA-Z]|\.|\-|\_)+\.png" ${PRT_FILE_FULL} | xargs -r rm -f  >> ${LOG} 2>&1
+grep -Eo "${MCP_TEMPDIR}/([0-9a-zA-Z]|\.|\-|\_)+\.png" ${PRT_FILE_FULL} | xargs -r rm -f  
 [ -e ${PRT_FILE_FULL} ] && rm ${PRT_FILE_FULL}
 
-echo `date` >> ${LOG} 2>&1
-echo "HCALL end" >> ${LOG} 2>&1
-
-log_size=$(wc -l < ${LOG})
-if [ ${log_size} -gt ${LOG_MAX_SIZE} ]; then
-  eol=$((${log_size} - ${LOG_MAX_SIZE}))
-  sed -i -e "1,${eol}d" ${LOG}
-fi
+echo `date`
+echo "HCALL end"
 

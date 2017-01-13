@@ -28,28 +28,29 @@ fi
 #-------------------------------------------#
 
         LOG_FILE="/var/log/jma-receipt/${1}orcputcsv.log"
+        [ -e "${LOG_FILE}"] && rm ${LOG_FILE}
 #
 ##      エラーファイル削除
-        echo "errfile = [" ${MCP_TEMPDIR}/${12}  "]" >> $LOG_FILE
+        echo "errfile = [" ${MCP_TEMPDIR}/${12}  "]" 
         rm  -f ${MCP_TEMPDIR}/${12}
 
         FILE_1=${MCP_TEMPDIR}/${1}"PUTCSV01.txt"
         FILE_3=${MCP_TEMPDIR}/${1}${8}
 
-        echo "arg6  = [" ${6} "]"   >$LOG_FILE
-        echo "arg7  = [" ${7} "]"   >>$LOG_FILE
-        echo "arg8  = [" ${8} "]"   >>$LOG_FILE
-        echo "arg13 = [" ${13} "]"  >>$LOG_FILE
-        echo "arg14 = [" ${14} "]"  >>$LOG_FILE
-        echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
-        echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
-        echo "file3= [" $FILE_3 "]"  >> $LOG_FILE
+        echo "arg6  = [" ${6} "]"   
+        echo "arg7  = [" ${7} "]"   
+        echo "arg8  = [" ${8} "]"   
+        echo "arg13 = [" ${13} "]"  
+        echo "arg14 = [" ${14} "]"  
+#        echo "hostname =  [" `hostname`  "]" 
+        echo "file1= [" $FILE_1 "]"  
+        echo "file3= [" $FILE_3 "]"  
 
 #       該当ファイル削除
 	rm -f $FILE_1
 	rm -f $FILE_3
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUTCSV -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${15},${12} >> $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUTCSV -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${15},${12} 
         if  [ -e ${MCP_TEMPDIR}/${12} ]; then
             exit
         fi
@@ -64,11 +65,11 @@ fi
                  nkf -Esx -Lw $FILE_1 > $FILE_3
             fi
             RC=$?
-            echo "--- nkf end   ---[" $RC  "]" >>$LOG_FILE
+            echo "--- nkf end   ---[" $RC  "]" 
             if  [ $RC -ne '0' ]; then
                 ERRCD='0000'$RC
-                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE
-                echo "--- nkf err   ---" >>$LOG_FILE
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} 
+                echo "--- nkf err   ---" 
                 exit
             fi
         else
@@ -78,15 +79,15 @@ fi
                  cp $FILE_1  $FILE_3
             fi
             RC=$?
-            echo "--- cp end   ---[" $RC  "]" >>$LOG_FILE
+            echo "--- cp end   ---[" $RC  "]" 
             if  [ $RC -ne '0' ]; then
                 ERRCD='0000'$RC
-                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE
-                echo "--- cp err   ---" >>$LOG_FILE
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} 
+                echo "--- cp err   ---" 
                 exit
             fi
         fi
          
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11},${1} >> $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11},${1} 
 
         exit 

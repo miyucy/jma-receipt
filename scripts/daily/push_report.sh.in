@@ -30,34 +30,8 @@ elif [ -e ${PATCHRECORDDIR}/${RECFILE} ]; then
   RECDIR=${PATCHRECORDDIR}
 fi
 
-LOG=${LOGDIR}/${HOSPNUM}$(basename ${0%.*}).log
-LOGGZ=${LOG}.gz
+echo ${MONPUSHEVENT} ${RECDIR}/${RECFILE} ${DATA_FILE_FULL}
+${MONPUSHEVENT} ${RECDIR}/${RECFILE} ${DATA_FILE_FULL}
 
-[ -e ${LOG} ] && rm ${LOG}
-echo >> ${LOG}
-echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$@") >> ${LOG}
-
-
-echo ${MONPUSHEVENT} ${RECDIR}/${RECFILE} ${DATA_FILE_FULL}  >> ${LOG} 2>&1
-${MONPUSHEVENT} ${RECDIR}/${RECFILE} ${DATA_FILE_FULL}  >> ${LOG} 2>&1
-cat ${DATA_FILE_FULL}  >> ${LOG} 2>&1
 
 [ -e ${DATA_FILE_FULL} ] && rm ${DATA_FILE_FULL}
-
-
-if [ -f ${LOGGZ} ];  then
-    if [ $(stat -c "%s" ${LOGGZ}) -ge 5242880 ] ; then
-    mv ${LOGGZ}  ${LOGGZ}.0
-    for NUM in $(seq 5 -1 1)
-    do
-      NEWLOG="${LOGGZ}.${NUM}"
-      NUM=$(expr ${NUM} - 1)
-      OLDLOG="${LOGGZ}.${NUM}"
-      echo mv ${OLDLOG} ${NEWLOG}
-      mv ${OLDLOG} ${NEWLOG} 2>/dev/null
-    done
-    fi
-fi
-
-gzip -c  ${LOG} >> ${LOGGZ}
-[ -e ${LOG} ] && rm ${LOG}

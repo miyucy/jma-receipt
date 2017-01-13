@@ -16,8 +16,9 @@ fi
 #
            LOG_FILE="/var/log/jma-receipt/${3}prtdbdel.log"
         
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPRTDBDEL -parameter ${1},${2},${3}  > $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPRTDBDEL -parameter ${1},${2},${3}
+        [ -e ${LOG_FILE} ] && rm ${LOG_FILE}
 
-########$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${1}${2},${3} >> $LOG_FILE 2>&1
+########$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${1}${2},${3}
 
         exit 

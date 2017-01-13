@@ -9,10 +9,10 @@ fi
 
 . $JMARECEIPT_ENV
 
-LOG=/var/log/jma-receipt/"$2"orcbi202.log
-GZ=${LOG}.gz
+LOG_FILE=/var/log/jma-receipt/"$2"orcbi202.log
+GZ=${LOG_FILE}.gz
 
-[ -e "${LOG}" ] &&  rm ${LOG}
+[ -e "${LOG_FILE}" ] &&  rm ${LOG_FILE}
 [ -e "${GZ}" ]  &&  rm ${GZ}
 
 
@@ -43,12 +43,10 @@ done
 n=1
 while [ $n -lt 3 ] ; do
     n=$(expr $n + 1)
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBI202 -parameter "$1,$2,$3,$4,$5,$6,"  > $LOG 2>&1
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBI202 -parameter "$1,$2,$3,$4,$5,$6,"
     [ $? -eq 0 ] && break
     sleep 3
 done
-
-gzip $LOG
 
         exit
 

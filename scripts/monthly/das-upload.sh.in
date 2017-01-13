@@ -16,7 +16,7 @@ if [ -e ${PATCHSCRIPTSDIR}/monthly/das-upload.rb ]; then
 else
   UPLOAD_COMMAND=$SCRIPTSDIR/monthly/das-upload.rb
 fi
-LOGFILE=${LOGDIR}/${HOSPNUM}datacollect1.log
+LOG_FILE=${LOGDIR}/${HOSPNUM}datacollect1.log
 
 if [ -e ${PATCHLIBDIR}/etc/das-upload.conf ]; then 
   DASCONF_HEAD="${PATCHLIBDIR}/etc/das-upload.conf"
@@ -29,8 +29,7 @@ CLIENT_CONFIG_FILE="${DASCONFIG}"
 DAS_CHECK_HOSPID=$HOSPID
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBDASCONF \
-          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD}," \
-          2>&1 | tee $LOGFILE
+          -parameter "M,${HOSPNUM},${HOSPID},,${DASCONFIG},${DASCONF_HEAD},"
 
 if [ ! -f ${CLIENT_CONFIG_FILE} ]; then
   exit
@@ -49,21 +48,19 @@ do
   if [ "UP $file" = "$RESULT" ]; then
      echo "000" $RESULT
      ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-               -parameter "das-upload,2,0,$OBJECTYYM,000,$HOSPNUM,Upload success" \
-               2>&1 | tee -a $LOGFILE
+               -parameter "das-upload,2,0,$OBJECTYYM,000,$HOSPNUM,Upload success"
      rm $file
   else
      ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOBLOG \
-               -parameter "das-upload,2,1,$OBJECTYYM,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}" \
-               2>&1 | tee -a $LOGFILE
-     echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
+               -parameter "das-upload,2,1,$OBJECTYYM,${RESULT:0:3},$HOSPNUM,${RESULT:4:200}"
+     echo "${RESULT:0:3}","${RESULT:4}"
   fi
   sleep 1
 done
 
 if [ x$UPTARGEFILE != "x1" ]; then
   RESULT="900 No file"
-  echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
+  echo "${RESULT:0:3}","${RESULT:4}"
 fi
 
 exit

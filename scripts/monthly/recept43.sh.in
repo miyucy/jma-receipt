@@ -20,30 +20,31 @@ fi
 #-------------------------------------------#
 
     LOG_FILE="/var/log/jma-receipt/${15}recept43.log"
+    [ -e ${LOG_FILE} ] && rm ${LOG_FILE}
 
-    echo "arg5 =  [" ${5} "]"  >$LOG_FILE
-    echo "arg12 = [" ${12} "]" >>$LOG_FILE
-    echo "arg13 = [" ${13} "]" >>$LOG_FILE
-    echo "arg14 = [" ${14} "]" >>$LOG_FILE
-    echo "arg15 = [" ${15} "]" >>$LOG_FILE
-    echo "arg16 = [" ${16} "]" >>$LOG_FILE
+    echo "arg5 =  [" ${5} "]"  
+    echo "arg12 = [" ${12} "]" 
+    echo "arg13 = [" ${13} "]" 
+    echo "arg14 = [" ${14} "]" 
+    echo "arg15 = [" ${15} "]" 
+    echo "arg16 = [" ${16} "]" 
 
     rennum=0
 
 #   エラーファイル削除
-    echo "errfile = [" ${MCP_TEMPDIR}/${16}  "]" >> $LOG_FILE
+    echo "errfile = [" ${MCP_TEMPDIR}/${16}  "]" 
     rm  -f ${MCP_TEMPDIR}/${16}
 
 #   該当ファイル削除
     PDFFILE="JIBAI"
-    echo "pdffile = [" ${MCP_TEMPDIR}/${15}${PDFFILE}  "]" >> $LOG_FILE
+    echo "pdffile = [" ${MCP_TEMPDIR}/${15}${PDFFILE}  "]" 
     rm  ${MCP_TEMPDIR}/${15}${PDFFILE}*.dat
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM400 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16} >> $LOG_FILE 2>&1
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM400 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16}
     if  [ -e ${MCP_TEMPDIR}/${16} ]; then
         exit 
     fi
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13},${15} >> $LOG_FILE
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13},${15}
 
     exit 

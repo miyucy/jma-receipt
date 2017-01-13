@@ -39,18 +39,18 @@ fi
 #
 
 BASENAME=$(basename ${0%%.sh})
-LOG=/var/log/jma-receipt/$2${BASENAME}.log
+LOG_FILE=/var/log/jma-receipt/$2${BASENAME}.log
 CSV_FILE_BASE=${19}
 CSV_FILE_FULL=${MCP_TEMPDIR}/${CSV_FILE_BASE}
 
-[ -e "${LOG}" ] && rm -f ${LOG}
+[ -e "${LOG_FILE}" ] && rm -f ${LOG_FILE}
 
-echo $(printf "argv=")$(printf "[%s]" "$@") >> ${LOG}
+echo $(printf "argv=")$(printf "[%s]" "$@")
 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBMNOTE -parameter $(printf "%s," "$@")  >>${LOG} 2>&1
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBMNOTE -parameter $(printf "%s," "$@")
 
 [ -e "${CSV_FILE_FULL}" ] && rm -f ${CSV_FILE_FULL}
 
-echo "CHECK AND DELETE OLD CSVFILES "  >>${LOG} 2>&1
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBDELMNOTE -parameter $(printf "%s," "$@")  >>${LOG} 2>&1 
+echo "CHECK AND DELETE OLD CSVFILES "
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBDELMNOTE -parameter $(printf "%s," "$@")
 

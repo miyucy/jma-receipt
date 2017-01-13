@@ -29,7 +29,7 @@ INFECFILE=$DASDIR/${HOSPNUM}/infection.csv
 ERRFILE=/tmp/${HOSPNUM}infectionerror
 INFECREC=$DASDIR/${HOSPNUM}/infection/infection${HOSPNUM}
 LOG=/var/log/jma-receipt/${HOSPNUM}infectiondata.log
-LOGFILE=/var/log/jma-receipt/${HOSPNUM}infectiondata1.log
+LOG_FILE=/var/log/jma-receipt/${HOSPNUM}infectiondata1.log
 
 DASUPLOAD=das-infection2.sh
 
@@ -45,12 +45,12 @@ syoribi () {
   if [ -e $INFECREC ]; then
     STARTYMD=`head -1 $INFECREC`
     if [ "$STARTYMD" = "" ]; then
-      echo "$INFECREC is empty" | tee -a $LOGFILE
+      echo "$INFECREC is empty"
       SYORIBI=$ENDYMD
       return
     fi
     if [ `expr length $STARTYMD` -lt 8 ]; then
-      echo "YMD in $INFECREC size error `expr length $STARTYMD`" | tee -a $LOGFILE
+      echo "YMD in $INFECREC size error `expr length $STARTYMD`"
       SYORIBI=$ENDYMD
       return
     fi
@@ -79,7 +79,7 @@ make_infection_file () {
   rm -f $INFECGFILE
   PARA0="${TERMID},${HOSPNUM},${SRYYMD},2,${JOBID},${SHELLID}"
   PARAM="${PARA0},${INFECGFILE},${ERRFILE},${PKGVER}"
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF1 -parameter ${PARAM} 2>&1 | tee -a $LOGFILE
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF1 -parameter ${PARAM}
   if [ -e $ERRFILE ]; then
     rm -f $INFECGFILE
     return
@@ -91,7 +91,7 @@ make_infection_file () {
   if [ $BEDFLG -eq '1' ]; then
     PARA0="${TERMID},${HOSPNUM},${SRYYMD},1,${JOBID},${SHELLID}"
     PARAM="${PARA0},${INFECNFILE},${ERRFILE},${PKGVER}"
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF1 -parameter ${PARAM} 2>&1 | tee -a $LOGFILE
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF1 -parameter ${PARAM}
     if [ -e $ERRFILE ]; then
       rm -f $INFECNFILE
       return
@@ -140,21 +140,21 @@ fi
 #if [ -e $LOGFILE ]; then
 #  cat $LOGFILE >> $LOG
 #fi
-rm -f $LOGFILE
+rm -f ${LOG_FILE}
 
 #処理日を求める
 syoribi
-echo "SYORIBI [ $SYORIBI ]" | tee -a $LOGFILE
+echo "SYORIBI [ $SYORIBI ]"
 
 for sryymd in $SYORIBI; do
   #感染症データ作成
-  echo "execute $sryymd" | tee -a $LOGFILE
+  echo "execute $sryymd"
   make_infection_file $sryymd
 done
 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${JOBID}${SHELLID},${HOSPNUM} 2>&1 | tee -a $LOGFILE
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${JOBID}${SHELLID},${HOSPNUM}
 
-echo "感染症データ送信処理 起動" 2>&1 | tee -a $LOGFILE
+echo "感染症データ送信処理 起動"
 $DASUPLOAD ${HOSPNUM} ${HOSPID} 1 &
 
 rm -f $INFECREC

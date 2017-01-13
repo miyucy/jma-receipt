@@ -9,8 +9,6 @@ fi
 
 . $JMARECEIPT_ENV
 
-trap "cleanup" EXIT
-
 #-------------------------------------------#
 #    自賠責レセプトＰＤＦクライアント保存
 #
@@ -19,7 +17,6 @@ trap "cleanup" EXIT
 #        $3 データファイル
 #-------------------------------------------#
 
-LOG_FILE=/var/log/jma-receipt/$1$(basename ${0%.sh}).log
 LOCAL_TEMPDIR=$(mktemp -dp ${MCP_TEMPDIR})
 MONTH=JIBAI_RECEIPT_$2
 ZIP_FILE=${MONTH}.zip
@@ -31,6 +28,9 @@ cleanup () {
 	rm -Rf ${LOCAL_TEMPDIR}
   rm -Rf ${DATA_FILE}
 }
+
+trap "cleanup" 1 2 3 15 
+
 
 mkdir -p ${MONTH_DIR}
 

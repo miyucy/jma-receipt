@@ -25,7 +25,7 @@ INFECFILE=$DASDIR/${HOSPNUM}/infection.csv.$$
 INFECRFILE=$DASDIR/${HOSPNUM}/infection.csv
 ERRFILE=/tmp/${HOSPNUM}infectionerror
 LOG=/var/log/jma-receipt/${HOSPNUM}infectiondata.log
-LOGFILE=/var/log/jma-receipt/${HOSPNUM}infectionagree.log
+LOG_FILE=/var/log/jma-receipt/${HOSPNUM}infectionagree.log
 
 DASUPLOAD=das-infection2.sh
 
@@ -43,14 +43,14 @@ fi
 #if [ -e $LOGFILE ]; then
 #  cat $LOGFILE >> $LOG
 #fi
-rm -f $LOGFILE
+rm -f ${LOG_FILE}
 
 #感染症データ作成
 
 rm -f $ERRFILE
 
 PARAM="${HOSPNUM},${INFECFILE},${ERRFILE},${PKGVER}"
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINFA -parameter ${PARAM} 2>&1 | tee -a $LOGFILE
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINFA -parameter ${PARAM}
 
 if [ -e $ERRFILE ]; then
   rm -f $INFECFILE
@@ -67,9 +67,9 @@ if [ -e $INFECFILE ]; then
   fi
 fi
 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${JOBID}${SHELLID},${HOSPNUM} 2>&1 | tee -a $LOGFILE
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${JOBID}${SHELLID},${HOSPNUM}
 
-echo "感染症データ送信処理 起動" 2>&1 | tee -a $LOGFILE
+echo "感染症データ送信処理 起動"
 $DASUPLOAD ${HOSPNUM} ${HOSPID} 2 &
 
 exit 0

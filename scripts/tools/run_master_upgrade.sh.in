@@ -7,7 +7,6 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
-LOGFILE="$LOGDIR"/${0%.sh}.log
 RUNDATE=$(date  '+%Y%m%d%H%M%S')
 FLG_TEMPDIR_GEN=0
 if [ -z "${MCP_TEMPDIR}" ]; then
@@ -16,7 +15,7 @@ if [ -z "${MCP_TEMPDIR}" ]; then
   FLG_TEMPDIR_GEN=1
 fi 
 
-export PATH=${SITESCRIPTSDIR}/allways:${PATCHSCRIPTSDIR}/allways:${SCRIPTSDIR}/allways:$PATH
+export PATH=${PATCHSCRIPTSDIR}:${SCRIPTSDIR}:$PATH
 export COB_LIBRARY_PATH=${PATCHLIBDIR}:${ORCALIBDIR}:/usr/lib/panda
 if [ `whoami` != "${ORCAUSER}" ]; then
     echo   "${ORCAUSER}ユーザーで実行してください。"
@@ -91,7 +90,7 @@ export MON_BATCH_EXTRA="0000001MSTMNT"
 export MON_DIRECTORY_PATH="${LDDIRECTORY}"
 export MCP_TENANT=1
 
-  /usr/lib/panda/bin/monbatch  "master_upgrade.sh \"${HOSPNUM}\" T \"${HOSPID}\" \"${MNTERRFS}\" 0000001 MSTMNT \"${MLIERRFS}\" 0000001 MSTMLI"
+  /usr/lib/panda/bin/monbatch  "execshell.sh \"allways\" \"master_upgrade.sh\"  \"${HOSPNUM}\" T \"${HOSPID}\" \"${MNTERRFS}\" 0000001 MSTMNT \"${MLIERRFS}\" 0000001 MSTMLI"
   MSTMNT=$?
   if [ ${MSTMNT} -ne 0 ] ; then
     exit ${MSTMNT}

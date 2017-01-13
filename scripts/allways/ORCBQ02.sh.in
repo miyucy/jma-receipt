@@ -9,9 +9,9 @@ fi
 
 . $JMARECEIPT_ENV
 
-LOG=/var/log/jma-receipt/"$5"orcb013_2.log
+LOG_FILE=/var/log/jma-receipt/"$5"orcb013_2.log
 
-[ -e "${LOG}" ] &&  rm ${LOG}
+[ -e "${LOG_FILE}" ] &&  rm ${LOG_FILE}
 
 
 #-------------------------------------------#
@@ -42,7 +42,7 @@ ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
         fi
 ##
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ02 -parameter ${PARA_FILE_BASE},$2,$3,$4,$5,$6,${ERR_FILE_BASE},$8,$9,${10} > ${LOG} 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ02 -parameter ${PARA_FILE_BASE},$2,$3,$4,$5,$6,${ERR_FILE_BASE},$8,$9,${10}
         if  [ -e $7 ]; then
             exit
         fi

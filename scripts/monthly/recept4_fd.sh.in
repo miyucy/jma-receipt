@@ -32,21 +32,23 @@ fi
 
         rm -r /home/orca/recept4_fd.log
         LOG_FILE="/var/log/jma-receipt/${7}recept4_fd.log"
+        [ -e "${LOGFILE}"] && rm ${LOGFILE}
 
-        echo "arg1 = [" ${1} "]"  >$LOG_FILE
-        echo "arg5 = [" ${5} "]" >>$LOG_FILE
-        echo "arg8 = [" ${8} "]" >>$LOG_FILE
-        echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
+
+        echo "arg1 = [" ${1} "]" 
+        echo "arg5 = [" ${5} "]" 
+        echo "arg8 = [" ${8} "]" 
+#        echo "hostname =  [" `hostname`  "]" 
 
         RECEFILE1="RECEIPTC"
 
         if  [ ${8} -eq '2' ]; then
 	RECEFILE1="TENKENRC"
-	echo "file name change!" >>$LOG_FILE
+	echo "file name change!" 
     fi
 
     if  [ -e ${1}${7}${RECEFILE1}${6}.UKE ]; then
-        echo "--- RECEIPTC.UKE exist ---" >>$LOG_FILE
+        echo "--- RECEIPTC.UKE exist ---" 
     fi
     FDDHOST=`echo ${5}|tr \[\] "  "`
     echo "FDDHOST = " $FDDHOST
@@ -55,17 +57,17 @@ fi
 ##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3},${7} >> /home/orca/recept4_fd.log
 ##    exit 
 ##
-        echo "--- fdw-> fd start ---" >>$LOG_FILE
+        echo "--- fdw-> fd start ---" 
 	$FDW -host $FDDHOST -command fd-write.sh ${1}${7}${RECEFILE1}${6}.UKE ${RECEFILE1}.UKE
 	RC=$?
-        echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
+        echo "--- fdw-> fd end   ---[" $RC  "]" 
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3}'  '${ERRCD:${#ERRCD}-4:4},${7} >> $LOG_FILE 2>&1
-        echo "--- fdw-> fd err   ---" >>/home/orca/recept4_fd.log
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3}'  '${ERRCD:${#ERRCD}-4:4},${7} 
+        echo "--- fdw-> fd err   ---" 
             exit
     fi
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3},${7} >> $LOG_FILE 2>&1
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3},${7}
 
     exit 

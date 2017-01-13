@@ -36,7 +36,7 @@ INFECFILE=$DASDIR/${HOSPNUM}/infection.csv.$$
 INFECRFILE=$DASDIR/${HOSPNUM}/infection.csv
 ERRFILE=/tmp/${HOSPNUM}infectionerror_real
 LOG=/var/log/jma-receipt/${HOSPNUM}infectiondata2.log
-LOGFILE=/var/log/jma-receipt/${HOSPNUM}infectiondata2_real.log
+LOG_FILE=/var/log/jma-receipt/${HOSPNUM}infectiondata2_real.log
 
 DASUPLOAD=das-infection2.sh
 
@@ -53,10 +53,10 @@ fi
 #if [ -e $LOGFILE ]; then
 #  cat $LOGFILE >> $LOG
 #fi
-rm -f $LOGFILE
+rm -f ${LOG_FILE}
 
-echo "SYORIBI [ $SRYYMD ]" | tee -a $LOGFILE
-echo "SYORIFLG [ $SYORIFLG ]" | tee -a $LOGFILE
+echo "SYORIBI [ $SRYYMD ]"
+echo "SYORIFLG [ $SYORIFLG ]"
 
 #感染症データ作成
 
@@ -64,7 +64,7 @@ rm -f $ERRFILE
 
 PARA0="${GMNID},${HOSPNUM},${SYORIFLG},${NYUGAI},${PTID},${SRYYMD}"
 PARAM="${PARA0},${SRYKA},${INFECFILE},${ERRFILE},${PKGVER}"
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF2 -parameter ${PARAM} 2>&1 | tee -a $LOGFILE
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF2 -parameter ${PARAM}
 
 if [ -e $ERRFILE ]; then
   rm -f $INFECFILE
@@ -81,7 +81,7 @@ if [ -e $INFECFILE ]; then
   fi
 fi
 
-echo "感染症データ送信処理 起動" 2>&1 | tee -a $LOGFILE
+echo "感染症データ送信処理 起動"
 $DASUPLOAD ${HOSPNUM} ${HOSPID} 2 &
 
 exit 0
