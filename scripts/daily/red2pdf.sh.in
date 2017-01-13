@@ -37,7 +37,6 @@ set_layeroption() {
 trap "cleanup" 1 2 3 15
 
 LINE=$(head -n 1 ${DATA_FILE})
-echo "LINE=${LINE}"
 tmpfile=${DATA_FILE}.tmp
 redname=${LINE:0:20}
 offset_x="0"${LINE:20:5}
