@@ -34,7 +34,7 @@ SHELL_NAME=$(basename $2)
 LOG_FILE=${LOGDIR}/${SHELL_NAME%.sh}.log
 LOG_GZ=${LOG_FILE}.gz
 LOG_TEMP=$(mktemp ${LOGDIR}/${SHELL_NAME%.sh}.XXXXXX)
-LOG_LOCK=${LOGDIR}/jma-log.lock
+LOG_LOCK=${LOGDIR}/.jma-log.lock
 
 echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$$" "BGN" "$@") >> ${LOG_TEMP}
 
