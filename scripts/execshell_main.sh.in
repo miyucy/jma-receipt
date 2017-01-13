@@ -58,7 +58,7 @@ echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$$" "END" "$@")  >>  ${LOG_TE
 
 (
   flock -w 10 -x 200 || {
-    echo "ERROR: $2 lock timeout" 1>&2
+    echo "ERROR: $2 lock timeout"
     exit 1;
   }
 
@@ -71,7 +71,6 @@ echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$$" "END" "$@")  >>  ${LOG_TE
         LOG_NEW="${LOG_GZ}.${NUM}"
         NUM=$(expr ${NUM} - 1)
         LOG_OLD="${LOG_GZ}.${NUM}"
-        echo mv ${LOG_OLD} ${LOG_NEW}
         mv ${LOG_OLD} ${LOG_NEW} 2>/dev/null
       done
     fi
