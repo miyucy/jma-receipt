@@ -19,25 +19,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_interact_master_key_csr
-			INTO
-				:DRUGCD,
-				:DRUGCD2,
-				:SYOJYOUCD,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_interact_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_interact
 			VALUES(

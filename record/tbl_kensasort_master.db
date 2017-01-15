@@ -22,25 +22,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_kensasort_master_key_csr
-			INTO
-				:KNSBUNRUI,
-				:SRYCD,
-				:DSPSEQ,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_kensasort_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_kensasort
 			VALUES(

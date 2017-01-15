@@ -26,27 +26,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_nyuincdchg_master_key_csr
-			INTO
-				:SRYCD_BF,
-				:SRYCD_AF,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:NYUINRYOCD,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_nyuincdchg_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_nyuincdchg
 			VALUES(

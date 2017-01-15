@@ -28,24 +28,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_etensu_3_2_master_key_csr
-			INTO
-				:SRYCD1,
-				:SRYCD2,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:HAIHAN,
-				:TOKUREI,
-				:CHGYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_etensu_3_2_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_etensu_3_2
 			VALUES(
@@ -95,24 +77,6 @@ path	key2 	{
 			WHERE   SRYCD1 = :SRYCD1
 			AND     SRYCD2 = :SRYCD2
 			ORDER   BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_etensu_3_2_master_key2_csr
-			INTO
-				:SRYCD1,
-				:SRYCD2,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:HAIHAN,
-				:TOKUREI,
-				:CHGYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_etensu_3_2_master_key2_csr
 		;
 	};
 };

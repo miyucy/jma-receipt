@@ -31,31 +31,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_tekiou_disease_master_key_csr
-			INTO
-				:KONOCD,
-				:BYOMEI,
-				:BEFORE_BYOMEI,
-				:AFTER_BYOMEI,
-				:BYOMEICD,
-				:BEFORE_BYOMEICD,
-				:AFTER_BYOMEICD,
-				:ICD,
-				:KAITEIYM,
-				:HOJYOKBN,
-				:KONOMEINO,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_tekiou_disease_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_tekiou_disease
 			VALUES(

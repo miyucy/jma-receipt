@@ -24,28 +24,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_genericname_master_key_csr
-			INTO
-				:YAKKAKJNCD,
-				:YUKOKETA,
-				:GENERICNAME,
-				:TANICD,
-				:TANINAME,
-				:KANZANCHI,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_genericname_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_genericname
 			VALUES(

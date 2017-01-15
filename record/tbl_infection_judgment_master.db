@@ -21,25 +21,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_infection_judgment_master_key_csr
-			INTO
-				:ID,
-				:DISEASE,
-				:JUDGMENT_CODE,
-				:CODE_KBN,
-				:SRYKBN,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_infection_judgment_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_infection_judgment
 			VALUES(

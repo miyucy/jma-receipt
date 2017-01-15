@@ -25,23 +25,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_psychotropic_master_key_csr
-			INTO
-				:CODE,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:CLASS,
-				:GROUPCODE,
-				:UPYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_psychotropic_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_psychotropic
 			VALUES(
@@ -86,23 +69,6 @@ path	key2	{
 		FROM master.tbl_psychotropic
 			WHERE 	CODE = :CODE
 			ORDER	BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_psychotropic_master_key2_csr
-			INTO
-				:CODE,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:CLASS,
-				:GROUPCODE,
-				:UPYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_psychotropic_master_key2_csr
 		;
 	};
 };

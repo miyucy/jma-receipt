@@ -19,23 +19,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_tekiou_medicine_master_key_csr
-			INTO
-				:SRYCD,
-				:KONOCD,
-				:KAITEIYM,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_tekiou_medicine_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_tekiou_medicine
 			VALUES(

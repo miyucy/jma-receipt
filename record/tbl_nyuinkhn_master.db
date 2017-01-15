@@ -43,40 +43,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_nyuinkhn_master_key_csr
-			INTO
-				:KHN_SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:IPROUKBN,
-				:SSTKIJUNKBN,
-				:BTUSBTKBN,
-				:HEIKINZAIKBN,
-				:KANGOHAICHIKBN,
-				:KANGOHIRITUKBN,
-				:KANGOHOJOHAICHIKBN,
-				:KHN_TEN,
-				:KAGEN_SRYCD1,
-				:KAGEN_SRYCD2,
-				:KAGEN_SRYCD3,
-				:KAGEN_SRYCD4,
-				:KAGEN_SRYCD5,
-				:KAGEN_SRYCD6,
-				:KAGEN_SRYCD7,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_nyuinkhn_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_nyuinkhn
 			VALUES(
@@ -155,40 +121,6 @@ path	key3	{
 		FROM master.tbl_nyuinkhn
 			WHERE 	KHN_SRYCD = :KHN_SRYCD
 			ORDER	BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_nyuinkhn_master_key3_csr
-			INTO
-				:KHN_SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:IPROUKBN,
-				:SSTKIJUNKBN,
-				:BTUSBTKBN,
-				:HEIKINZAIKBN,
-				:KANGOHAICHIKBN,
-				:KANGOHIRITUKBN,
-				:KANGOHOJOHAICHIKBN,
-				:KHN_TEN,
-				:KAGEN_SRYCD1,
-				:KAGEN_SRYCD2,
-				:KAGEN_SRYCD3,
-				:KAGEN_SRYCD4,
-				:KAGEN_SRYCD5,
-				:KAGEN_SRYCD6,
-				:KAGEN_SRYCD7,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_nyuinkhn_master_key3_csr
 		;
 	};
 };

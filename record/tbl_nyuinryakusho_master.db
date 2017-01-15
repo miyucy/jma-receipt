@@ -29,27 +29,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_nyuinryakusho_master_key_csr
-			INTO
-				:SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:RYAKUSHO,
-				:NAME,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_nyuinryakusho_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_nyuinryakusho
 			VALUES(
@@ -102,27 +81,6 @@ path	key2	{
 		FROM master.tbl_nyuinryakusho
 		WHERE 	SRYCD	= :SRYCD
 			ORDER	BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_nyuinryakusho_master_key2_csr
-			INTO
-				:SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:RYAKUSHO,
-				:NAME,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_nyuinryakusho_master_key2_csr
 		;
 	};
 };

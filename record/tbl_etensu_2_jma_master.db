@@ -33,23 +33,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_etensu_2_jma_master_key_csr
-			INTO
-				:H_GROUP,
-				:SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:CHGYMD,
-				:TOKUREI
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_etensu_2_jma_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_etensu_2_jma
 			VALUES(
@@ -97,23 +80,6 @@ path	key2 	{
 			WHERE   H_GROUP = :H_GROUP
 			AND     SRYCD   = :SRYCD
 			ORDER   BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_etensu_2_jma_master_key2_csr
-			INTO
-				:H_GROUP,
-				:SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:CHGYMD,
-				:TOKUREI
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_etensu_2_jma_master_key2_csr
 		;
 	};
 };

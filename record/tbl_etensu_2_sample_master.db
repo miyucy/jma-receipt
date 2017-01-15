@@ -30,24 +30,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_etensu_2_sample_master_key_csr
-			INTO
-				:H_GROUP,
-				:SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:RENNUM,
-				:SAMPLECD,
-				:CHGYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_etensu_2_sample_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_etensu_2_sample
 			VALUES(
@@ -100,24 +82,6 @@ path	key2 	{
 			AND     SRYCD   = :SRYCD
 			ORDER   BY	YUKOSTYMD,
 					RENNUM
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_etensu_2_sample_master_key2_csr
-			INTO
-				:H_GROUP,
-				:SRYCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:RENNUM,
-				:SAMPLECD,
-				:CHGYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_etensu_2_sample_master_key2_csr
 		;
 	};
 };

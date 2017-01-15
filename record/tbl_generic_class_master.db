@@ -24,22 +24,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_generic_class_master_key_csr
-			INTO
-				:YAKKAKJNCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:KOUHATU,
-				:UPYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_generic_class_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_generic_class
 			VALUES(
@@ -82,22 +66,6 @@ path	key2	{
 		FROM master.tbl_generic_class
 			WHERE 	YAKKAKJNCD = :YAKKAKJNCD
 			ORDER	BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_generic_class_master_key2_csr
-			INTO
-				:YAKKAKJNCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:KOUHATU,
-				:UPYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_generic_class_master_key2_csr
 		;
 	};
 };

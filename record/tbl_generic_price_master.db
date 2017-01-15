@@ -25,24 +25,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_generic_price_master_key_csr
-			INTO
-				:YAKKAKJNCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:PRICE,
-				:GECODE,
-				:CREYMD,
-				:UPYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_generic_price_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_generic_price
 			VALUES(
@@ -89,24 +71,6 @@ path	key2	{
 		FROM master.tbl_generic_price
 			WHERE   YAKKAKJNCD = :YAKKAKJNCD
 			ORDER	BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_generic_price_master_key2_csr
-			INTO
-				:YAKKAKJNCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:PRICE,
-				:GECODE,
-				:CREYMD,
-				:UPYMD
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_generic_price_master_key2_csr
 		;
 	};
 };

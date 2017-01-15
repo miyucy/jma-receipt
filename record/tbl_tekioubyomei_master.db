@@ -55,53 +55,6 @@ path	key 	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_tekioubyomei_master_key_csr
-			INTO
-				:CHKKBN,
-				:SRYCD,
-				:RENNUM,
-				:BYOMEI,
-				:BYOMEICDSU,
-				:BYOMEICD_1,
-				:BYOMEICD_2,
-				:BYOMEICD_3,
-				:BYOMEICD_4,
-				:BYOMEICD_5,
-				:BYOMEICD_6,
-				:BYOMEICD_7,
-				:BYOMEICD_8,
-				:BYOMEICD_9,
-				:BYOMEICD_10,
-				:BYOMEICD_11,
-				:BYOMEICD_12,
-				:BYOMEICD_13,
-				:BYOMEICD_14,
-				:BYOMEICD_15,
-				:BYOMEICD_16,
-				:BYOMEICD_17,
-				:BYOMEICD_18,
-				:BYOMEICD_19,
-				:BYOMEICD_20,
-				:BYOMEICD_21,
-				:BYOMEIHENFLG,
-				:KHNBYOMEICD,
-				:KHNBUICD_1,
-				:KHNBUICD_2,
-				:KHNBUICD_3,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_tekioubyomei_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_tekioubyomei
 			VALUES(

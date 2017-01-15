@@ -27,30 +27,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_hknjainf_care_master_key_csr
-			INTO
-				:HKNJANUM,
-				:HKNJANAME,
-				:POST,
-				:ADRS,
-				:BANTI,
-				:TEL,
-				:IDOKBN,
-				:IDOYMD,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_hknjainf_care_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_hknjainf_care
 			VALUES(

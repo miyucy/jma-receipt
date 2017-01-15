@@ -16,22 +16,6 @@ path	key	{
 
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_synonym_master_key_csr
-			INTO
-				:BYOMEI,
-				:BYOMEICD,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_synonym_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_synonym
 			VALUES(

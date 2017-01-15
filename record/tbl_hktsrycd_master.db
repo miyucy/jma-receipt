@@ -27,27 +27,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_hktsrycd_master_key_csr
-			INTO
-				:KANRICD,
-				:RENNUM,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:SRYCD,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_hktsrycd_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_hktsrycd
 			VALUES(

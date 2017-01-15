@@ -28,28 +28,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_hktsantei_master_key_csr
-			INTO
-				:KANRICD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:SRYCD,
-				:SANTEIKBN,
-				:KENTAIKBN,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_hktsantei_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_hktsantei
 			VALUES(

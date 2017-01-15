@@ -39,42 +39,6 @@ path	key	{
 
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_byomei_master_key_csr
-			INTO
-				:BYOMEICD,
-				:BYOMEI,
-				:BYOMEIMOJI,
-				:TANBYOMEI,
-				:TANBYOMEIMOJI,
-				:BYOMEIKANA,
-				:IKOSAKICD,
-				:TOKSKNCD,
-				:NANBYOCD,
-				:UTAGAIFLG,
-				:TANDOKUKBN,
-				:HKNSKYKBN,
-				:HYOJUNCD,
-				:SAITAKUKBN,
-				:BYOMEICHGCD,
-				:ICD10_1,
-				:ICD10_2,
-				:SYUSAIYMD,
-				:CHGYMD,
-				:HAISIYMD,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_byomei_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_byomei
 			VALUES(

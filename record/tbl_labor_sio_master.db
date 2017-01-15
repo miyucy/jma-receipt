@@ -30,26 +30,6 @@ path	key	{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_labor_sio_master_key_csr
-			INTO
-				:SYOCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:NAME,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_labor_sio_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_labor_sio
 			VALUES(
@@ -100,26 +80,6 @@ path	key2	{
 		FROM master.tbl_labor_sio
 			WHERE	SYOCD = :SYOCD
 			ORDER	BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_labor_sio_master_key2_csr
-			INTO
-				:SYOCD,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:NAME,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_labor_sio_master_key2_csr
 		;
 	};
 };

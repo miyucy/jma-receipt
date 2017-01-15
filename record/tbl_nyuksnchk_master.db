@@ -32,27 +32,6 @@ path	key		{
 		;
 	};
 
-	DBFETCH	{
-		FETCH FROM	tbl_nyuksnchk_master_key_csr
-			INTO
-				:NYUINKBN,
-				:KSNKBN,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:CHKKBN,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_nyuksnchk_master_key_csr
-		;
-	};
-
 	DBINSERT	{
 		INSERT INTO 	master.tbl_nyuksnchk
 			VALUES(
@@ -108,27 +87,6 @@ path	key2	{
 			WHERE   NYUINKBN = :NYUINKBN
 			AND     KSNKBN   = :KSNKBN
 			ORDER	BY	YUKOSTYMD
-		;
-	};
-
-	DBFETCH	{
-		FETCH FROM	tbl_nyuksnchk_master_key2_csr
-			INTO
-				:NYUINKBN,
-				:KSNKBN,
-				:YUKOSTYMD,
-				:YUKOEDYMD,
-				:CHKKBN,
-				:TERMID,
-				:OPID,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-		;
-	};
-
-	DBCLOSECURSOR	{
-		CLOSE	tbl_nyuksnchk_master_key2_csr
 		;
 	};
 };
