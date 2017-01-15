@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-小豆沢  06/05/22  MONFUNC対応
       * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
+      * 05.00.00     NACL-伊藤    17/01/11  構造変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -58,14 +59,14 @@
       *
       *    入力：病名マスタ更新データ
        FD  IN-FILE.
-       01  BYOMEIWK-REC.
-           COPY    "CPBYOMEIWK.INC".
+       01  IN-REC                      PIC X(2000).
       *
       *    出力：エラーファイル
        FD  ERR-FILE.
        01  ERR-BYOMEIWK-REC.
-           COPY    "CPBYOMEIWK.INC"    REPLACING
-                                       //BYOWK-// BY //ERR-BYOWK-//.
+           03  ERR-BYOWK-SYORIKBN  PIC  X(01).
+           COPY    "CPBYOMEI.INC"      REPLACING
+                                       //BYO-// BY //ERR-BYOWK-//.
       *
       *    出力：プルーフファイル
        FD  PLF-FILE.
@@ -155,6 +156,12 @@ grpsys     COPY    "COMMON-SPA".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  WRK-BYOMEICD            PIC X(07).
       *
+      *    旧マスタデータ退避領域
+       01  BYOWK-BYOMEI-REC-V01.
+           03  BYOWK-V01-AREA-01       PIC X(623).
+           03  BYOWK-V01-AREA-02       PIC X(22).
+           03  BYOWK-V01-AREA-03       PIC X(94).
+      *
        01  CONST-AREA.
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
@@ -172,6 +179,11 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
+      *
+       01  BYOMEIWK-REC.
+           03  BYOWK-SYORIKBN      PIC X(01).
+           COPY    "CPBYOMEI.INC"      REPLACING   //BYO-//
+                                              BY   //BYOWK-//.
       *
       *    病名マスタ
        01  BYOMEI-REC.
@@ -604,17 +616,54 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
-          READ    IN-FILE
-              AT  END
-                  MOVE    1               TO  FLG-IN
-              NOT AT  END
-                  MOVE    ZERO            TO  FLG-IN
-                  ADD     1               TO  CNT-IN
-          END-READ
+           READ    IN-FILE
+               AT  END
+                   MOVE    1                   TO  FLG-IN
+               NOT AT  END
+                   MOVE    ZERO                TO  FLG-IN
+                   ADD     1                   TO  CNT-IN
+           END-READ
       *
-          .
+           IF       FLG-IN             =   ZERO
+               PERFORM 900-IN-DATA-SET-SEC
+           END-IF
+           .
        900-IN-KENSAKU-EXT.
           EXIT.
+      *
+      *****************************************************************
+      *    病名マスタ変更データ設定処理
+      *****************************************************************
+       900-IN-DATA-SET-SEC         SECTION.
+      *
+           IF      LNK-DBRVERSION (3:6)    <   "040600"
+               PERFORM 900-BYOWK-V01-SET
+           ELSE
+               MOVE    IN-REC              TO  BYOMEIWK-REC
+           END-IF
+           .
+       900-IN-DATA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更後レイアウト移送処理
+      *****************************************************************
+       900-BYOWK-V01-SET           SECTION.
+      *
+           MOVE    IN-REC              TO  BYOWK-BYOMEI-REC-V01
+      *
+           MOVE    BYOWK-V01-AREA-01   TO  BYOMEIWK-REC (1   : 623)
+      *難病外来コード
+           MOVE    ZERO                TO  BYOMEIWK-REC (624 : 2)
+           MOVE    BYOWK-V01-AREA-02   TO  BYOMEIWK-REC (626 : 22)
+      *ＩＣＤ１０−２
+      *ＩＣＤ１０−１−２
+      *ＩＣＤ１０−２−２
+           MOVE    SPACE               TO  BYOMEIWK-REC (648 : 15)
+           MOVE    BYOWK-V01-AREA-03   TO  BYOMEIWK-REC (663 :)
+           .
+       900-BYOWK-V01-EXT.
+           EXIT.
       *
       *****************************************************************
       *    病名マスター読込
