@@ -629,7 +629,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
            .
        900-IN-KENSAKU-EXT.
-          EXIT.
+           EXIT.
       *
       *****************************************************************
       *    病名マスタ変更データ設定処理

@@ -155,11 +155,6 @@ grpsys     COPY    "COMMON-SPA".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  WRK-BYOMEICD            PIC X(07).
       *
-      *    µÏ•ﬁ•π•ø•«°º•ø¬‡»ÚŒŒ∞Ë
-       01  BYOWK-BYOMEI-REC-V02.
-           03  BYOWK-V02-AREA-01       PIC X(652).
-           03  BYOWK-V02-AREA-02       PIC X(94).
-      *
        01  CONST-AREA.
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
