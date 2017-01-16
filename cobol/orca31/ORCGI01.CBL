@@ -1664,45 +1664,37 @@
       *
            INITIALIZE              SPA-GMN-I01-CMB-SKJKBN
       *
-           DISPLAY "*** SKJ-CMB-SET ***"
-           DISPLAY "I01-SYORIKBN = "
-                    I01-SYORIKBN(1:2)
-           DISPLAY "SPA-GMN-I01-SYORIKBN-CD = "
-                    SPA-GMN-I01-SYORIKBN-CD
+           MOVE    "0"             TO  SPA-GMN-I01-SKJKBNL (1)
+           MOVE    "食なし"        TO  SPA-GMN-I01-SKJKBNMEIL (1)
       *
-           MOVE    "A"             TO  SPA-GMN-I01-SKJKBNL (1)
-           MOVE    "変更無"        TO  SPA-GMN-I01-SKJKBNMEIL (1)
-      *
-           MOVE    "0"             TO  SPA-GMN-I01-SKJKBNL (2)
-           MOVE    "食なし"        TO  SPA-GMN-I01-SKJKBNMEIL (2)
-      *
-           MOVE    "1"             TO  SPA-GMN-I01-SKJKBNL (3)
-           MOVE    "食あり"        TO  SPA-GMN-I01-SKJKBNMEIL (3)
+           MOVE    "1"             TO  SPA-GMN-I01-SKJKBNL (2)
+           MOVE    "食あり"        TO  SPA-GMN-I01-SKJKBNMEIL (2)
       *
            IF     WRK-KJNYMD       <=  "20160331"
              IF    ( SYS-5000-SHOKUJIRYOYOCD
                                    =   CONST-SKJRYOYO2 )
-               MOVE    3           TO  SPA-GMN-I01-SKJKBN-CNT
+               MOVE    2           TO  SPA-GMN-I01-SKJKBN-CNT
              ELSE
-               MOVE    4           TO  SPA-GMN-I01-SKJKBN-CNT
+               MOVE    3           TO  SPA-GMN-I01-SKJKBN-CNT
       *
-               MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (4)
-               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (4)
+               MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (3)
+               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (3)
              END-IF
            ELSE
              IF    ( SYS-5000-SHOKUJIRYOYOCD
-                                   =   CONST-SKJRYOYO2 )
+                                     =   CONST-SKJRYOYO2 )
+               MOVE    3           TO  SPA-GMN-I01-SKJKBN-CNT
+      *
+               MOVE    "3"         TO  SPA-GMN-I01-SKJKBNL (3)
+               MOVE    "流動食"    TO  SPA-GMN-I01-SKJKBNMEIL (3)
+             ELSE
                MOVE    4           TO  SPA-GMN-I01-SKJKBN-CNT
+      *
+               MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (3)
+               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (3)
       *
                MOVE    "3"         TO  SPA-GMN-I01-SKJKBNL (4)
                MOVE    "流動食"    TO  SPA-GMN-I01-SKJKBNMEIL (4)
-             ELSE
-               MOVE    5           TO  SPA-GMN-I01-SKJKBN-CNT
-      *
-               MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (4)
-               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (4)
-               MOVE    "3"         TO  SPA-GMN-I01-SKJKBNL (5)
-               MOVE    "流動食"    TO  SPA-GMN-I01-SKJKBNMEIL (5)
              END-IF
            END-IF
       *
@@ -3262,16 +3254,9 @@
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-DR (3)
       *
       *    食事区分
-           DISPLAY "================================================"
-           DISPLAY "PTNYUINRRK-SKJKBN = " PTNYUINRRK-SKJKBN
-           DISPLAY "SPA-GMN-I01-SYORIKBN-CD = " SPA-GMN-I01-SYORIKBN-CD
            MOVE    PTNYUINRRK-SKJKBN
                                    TO  WRK-CMB-CD
-           IF      SPA-GMN-I01-SYORIKBN-CD  =  "08"
-               MOVE    "A"         TO  WRK-CMB-CD
-           END-IF
            PERFORM 4103-CMB-SKJKBN-CHK-SEC
-           DISPLAY "WRK-CMB-ITM = " WRK-CMB-ITM
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
            ELSE
@@ -6771,12 +6756,6 @@
                MOVE    "0"         TO  SPA-GMN-I01-TIMEKBN-CD
            END-IF
       *
-           IF   SPA-GMN-I01-SYORIKBN-CD  =   "01"   AND
-                SPA-GMN-I01-SKJKBN-CD    =   "A"
-               MOVE    "1049"      TO  SPA-ERRCD
-               MOVE    21          TO  SPA-GMN-I01-CUR
-               GO  TO  4101-SKJKBN-CHK-EXT
-           END-IF
            .
       *
        4101-SKJKBN-CHK-EXT.
@@ -14150,7 +14129,7 @@
            INITIALIZE                          WRK-TENROOM-SKJ-TABLE
       *
            IF  SPA-NAI-I01-IDOYMD(1:6)  >= "200604"
-            IF  PTNYUINRRK-SKJKBN       =  "A"
+      *
       *      前月末日の食事会計取得
       *     （異動日の入院会計が存在しない場合、前月末の食事情報取得の為）
              MOVE    SPA-NAI-I01-IDOYMD(1:6)
@@ -14414,7 +14393,6 @@
                END-EVALUATE
                PERFORM 910-DBCLOSECURSOR-SEC
              END-PERFORM
-            END-IF
            ELSE
       *       ここから２００６年３月以前の食事退避処理
       *      （異動月分）
@@ -14986,7 +14964,6 @@
       *
       *    入院会計作成後に退避データの食事区分を復元
            IF  SPA-NAI-I01-IDOYMD(1:6)  >= "200604"
-             IF  PTNYUINRRK-SKJKBN       =  "A"
       *       （異動月分）
                IF   WRK-TENROOM-SKJ-SRYYM(1)  NOT =   SPACE
                 PERFORM    VARYING  IDX-SKJ-TAIHI  FROM  1  BY  1
@@ -15145,7 +15122,6 @@
                    PERFORM 910-DBCLOSECURSOR-SEC
                END-PERFORM
                END-IF
-             END-IF
            ELSE
       *       （異動月分）
                INITIALIZE                      NYUINACCT-REC
@@ -18295,8 +18271,6 @@
       *    患者年齢
            MOVE    SPA-GMN-I01-AGE         TO  I01-AGE
       *    処理区分
-           DISPLAY "500-GMNHEN-SEC SPA-GMN-I01-SYORIKBN = "
-                    SPA-GMN-I01-SYORIKBN
            MOVE    SPA-GMN-I01-SYORIKBN    TO  I01-SYORIKBN
            MOVE    SPA-GMN-I01-SYORIKBN-CNT
                                            TO  I01-SYORIKBN-CNT
@@ -18769,8 +18743,8 @@
       *
                MOVE    WIDGET-INSENSITIVE
                                    TO  I01-B07-STT
-      **                                 I01-SKJKBN-STT
-      **                                 I01-SKJKBN-ITM-STT
+                                       I01-SKJKBN-STT
+                                       I01-SKJKBN-ITM-STT
                                        I01-TIMEKBN-STT
                                        I01-TIMEKBN-ITM-STT
                                        I01-NYUINYMD-STT
@@ -19617,9 +19591,6 @@
                                        TO  SPA-ERRMSG
            WHEN    "1048"
                MOVE    "入院会計を入力して下さい"
-                                       TO  SPA-ERRMSG
-           WHEN    "1049"
-               MOVE    "入院登録時は選択できない食事区分です"
                                        TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
