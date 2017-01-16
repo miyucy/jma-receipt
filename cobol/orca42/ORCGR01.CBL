@@ -4113,7 +4113,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
                    MOVE    SPACE             TO  WRK-RECEERR
-                   STRING  "処理中です【"    DELIMITED  BY  SIZE
+                   STRING  "レセプト作成処理中です【"
+                                             DELIMITED  BY  SIZE
                            JOB-SHELLMSG      DELIMITED  BY  SPACE
                            "】"              DELIMITED  BY  SIZE      
                                              INTO  WRK-RECEERR
@@ -5606,7 +5607,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            INTO        SPA-ERRMSG
                    END-STRING
                WHEN    "0039"
-                   STRING  "改正前と改正後（平成２０年４月）の"
+                   STRING  "改正前と改正後（２００８年４月）の"
                                            DELIMITED   BY  SIZE
                            "レセプトは同時に処理できません"
                                            DELIMITED   BY  SIZE

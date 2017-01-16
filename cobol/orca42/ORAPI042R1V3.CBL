@@ -851,6 +851,8 @@
                                                SPA-MOTOPG
                                                SPA-RIDCD-AREA
                                                SPA-RID1-AREA
+                                               SPA-ERRCD
+                                               SPA-ERRMSG
       *            患者番号
                    IF      RECEMAKEQ-PATIENT-ID (IDZZ)
                                                =   SPACE
@@ -881,10 +883,11 @@
       *
                        PERFORM 800-ORCGR01-CALL-SEC
       *??
-           DISPLAY "SPA-ERRCD=" IDZZ "#" RECEMAKEQ-PATIENT-ID (IDZZ) "#"
+           DISPLAY "R01 SPA-ERRCD=" IDZZ "#"
+                       RECEMAKEQ-PATIENT-ID (IDZZ) "#"
                      SPA-ERRCD "#" SPA-RIDCD "#" SPA-GMN-R01-MAX "#"
-                   END-IF
       *??
+                   END-IF
       *
                    EVALUATE    SPA-RIDCD
                        WHEN    "1008"
@@ -938,7 +941,13 @@
                PERFORM 800-ORCGR01-CALL-SEC
       *
                IF      SPA-ERRCD   NOT =   SPACE
-                   MOVE    "E61"          TO  WRK-ERRCD
+                   EVALUATE    SPA-ERRCD
+                       WHEN    "7777"
+                           MOVE    "E70"           TO  WRK-ERRCD
+                           MOVE    SPA-ERRMSG      TO  WRK-ERRMSG
+                       WHEN    OTHER
+                           MOVE    "E61"           TO  WRK-ERRCD
+                   END-EVALUATE
                END-IF
            END-IF
       *
@@ -977,6 +986,9 @@
       *
                    IF      WRK-WARNING     =   SPACE
                        MOVE    "W20"           TO  WRK-WARNING
+                       MOVE    RECEMAKES-ERROR-MSG (WRK-ERR-PATIENT-MAX)
+                                               TO  WRK-WARNING-MSG
+
                    END-IF
                END-IF
            ELSE
@@ -995,7 +1007,7 @@
                        MOVE    "E14"       TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
                    WHEN    OTHER
-                       MOVE    "E63"       TO  RECEMAKES-ERROR-CODE
+                       MOVE    "E50"       TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
                END-EVALUATE
                MOVE    SPA-ERRMSG      TO  RECEMAKES-ERROR-MSG
@@ -1691,11 +1703,6 @@
                WHEN    "E63"
       *            個別対象患者エラー
                    GO  TO  890-ERRCD-MSG-EXT
-                   MOVE    RECEMAKES-ERROR-CODE (1)
-                                           TO  WRK-ERRCD
-                   MOVE    RECEMAKES-ERROR-MSG  (1)
-                                           TO  WRK-ERRMSG
-                   GO  TO  890-ERRCD-MSG-EXT
            END-EVALUATE
       * 
            MOVE    SPACE               TO  WRK-ERRMSG
@@ -1763,7 +1770,7 @@
                WHEN    "E90"
                    MOVE    "他端末使用中"          TO  WRK-ERRMSG
                WHEN    "E91"
-                   MOVE    "処理区分未設定"        TO  WRK-ERRMSG
+                   MOVE    "リクエスト番号不正"    TO  WRK-ERRMSG
                WHEN    "E97"
                    MOVE   "送信内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
