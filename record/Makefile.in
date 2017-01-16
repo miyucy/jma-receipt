@@ -526,6 +526,7 @@ RECORD_files = \
 	K0241.rec \
     findv3.rec \
     findinfv3.rec \
+    stock1v2.rec \
 
 DEF_files = \
 
@@ -947,6 +948,8 @@ DB_files = \
   xml_findv3res.db  \
   xml_findinfv3req.db  \
   xml_findinfv3res.db  \
+  xml_stock1v2req.db  \
+  xml_stock1v2res.db  \
 
 
 shell.db: shell.db.in
