@@ -264,17 +264,17 @@
                  MOVE     9     TO   LNK-ORCSSYUNOUCHK-IKTFLG(IDX2)
                  IF    LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)  =  ZERO
                    IF  WRK-TOTALTENKBN-B1(IDX1)  =  1
-                     MOVE   11  TO   LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)
+                     MOVE   5   TO   LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)
                    END-IF
                  END-IF
                  IF    LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)  =  ZERO
                    IF  WRK-TOTALTENKBN-B2(IDX1)  =  1
-                     MOVE   12  TO   LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)
+                     MOVE   6   TO   LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)
                    END-IF
                  END-IF
                  IF    LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)  =  ZERO
                    IF  WRK-TOTALTENKBN-B3(IDX1)  =  1
-                     MOVE   13  TO   LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)
+                     MOVE   7   TO   LNK-ORCSSYUNOUCHK-GAITOKBN(IDX2)
                    END-IF
                  END-IF
                ELSE
