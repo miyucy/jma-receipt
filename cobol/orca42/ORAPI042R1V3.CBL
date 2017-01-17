@@ -1766,9 +1766,10 @@
                                                    TO  WRK-ERRMSG
                    END-EVALUATE
                WHEN    "E90"
-                   MOVE    "他端末使用中。"        TO  WRK-ERRMSG
+                   MOVE    "他端末で使用中です。"  TO  WRK-ERRMSG
                WHEN    "E91"
-                   MOVE    "リクエスト番号不正。"  TO  WRK-ERRMSG
+                   MOVE    "リクエスト番号が不正です。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E97"
                    MOVE   "送信内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
@@ -1776,7 +1777,8 @@
                    MOVE   "送信内容の読込ができませんでした。"
                                                    TO  WRK-ERRMSG
                WHEN    "E99"
-                   MOVE    "ユーザＩＤ未登録。"    TO  WRK-ERRMSG
+                   MOVE    "ユーザＩＤが未登録です。"
+                                                   TO  WRK-ERRMSG
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
