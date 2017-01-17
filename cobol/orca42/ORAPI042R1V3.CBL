@@ -980,7 +980,7 @@
                IF       SPA-RIDCD      =   "1008"
                    MOVE    "W20"               TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
-                   MOVE    "診療がないので請求管理を削除しました"
+                   MOVE    "診療がないので請求管理を削除しました。"
                                                TO  RECEMAKES-ERROR-MSG
                                                    (WRK-ERR-PATIENT-MAX)
       *
@@ -1037,7 +1037,7 @@
                                                (WRK-WARNING-PATIENT-MAX)
            MOVE    "W21"           TO  WRK-WARNING-ERROR-CODE
                                                (WRK-WARNING-PATIENT-MAX)
-           MOVE    "請求しない設定の請求管理を削除しました"
+           MOVE    "請求しない設定の請求管理を削除しました。"
                                    TO  WRK-WARNING-ERROR-MSG
                                                (WRK-WARNING-PATIENT-MAX)
       *
@@ -1172,27 +1172,21 @@
                    WHEN    "処理は正常に終了しました"
                        CONTINUE
                    WHEN    "処理中です"
-      *****            MOVE    "E30"           TO  RECEMAKES-API-RESULT
-                       MOVE    "E30"           TO  WRK-ERRCD
-                       MOVE    R99-SHORINM (1) TO  WRK-ERRMSG
+                       MOVE    "E70"           TO  WRK-ERRCD
+                       STRING  "レセプト作成処理中です【"
+                                                 DELIMITED  BY  SIZE
+                               R99-SHORINM (1)   DELIMITED  BY  SPACE
+                               "】"              DELIMITED  BY  SIZE
+                                                 INTO  WRK-ERRMSG
+                       END-STRING
                    WHEN    OTHER
-                       MOVE    R99-MSG         TO  WRK-WARNING-MSG
-                       EVALUATE   R99-MSG
-                           WHEN   "対象データがありませんでした"
-                               MOVE    "W01"   TO  WRK-WARNING
-                           WHEN   "対象のレセプトが作成されていません"
-                               MOVE    "W02"   TO  WRK-WARNING
-                           WHEN   "主科未設定分又は種別不明分があります"
-                               MOVE    "W03"   TO  WRK-WARNING
-                           WHEN   "該当する処理はありません" 
-                               MOVE    "E32"   TO  WRK-ERRCD
-                               MOVE    R99-MSG TO  WRK-ERRMSG
-                           WHEN   OTHER
-      *****                    MOVE    "E31"   TO  RECEMAKES-API-RESULT
-                               MOVE    "E31"   TO  WRK-ERRCD
-                               MOVE    R99-MSG TO  WRK-ERRMSG
-                               MOVE    SPACE   TO  WRK-WARNING-MSG
-                       END-EVALUATE
+                       IF      R99-B12-STATE   =   WIDGET-NORMAL
+                           MOVE    R99-MSG         TO  WRK-WARNING-MSG
+                           MOVE    "W01"           TO  WRK-WARNING
+                       ELSE
+                           MOVE    "E31"           TO  WRK-ERRCD
+                           MOVE    R99-MSG         TO  WRK-ERRMSG
+                       END-IF
                END-EVALUATE
       *
                IF      R99-B12-STATE   =   WIDGET-NORMAL
@@ -1709,53 +1703,57 @@
       *
            EVALUATE    WRK-ERRCD
                WHEN    "E01"
-                   MOVE    "患者番号が未設定です"  TO  WRK-ERRMSG
+                   MOVE    "患者番号が未設定です。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E04"
-                   MOVE    "電子カルテＵＩＤが未設定です"
+                   MOVE    "電子カルテＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E05"
-                   MOVE    "オルカＵＩＤが未設定です"
+                   MOVE    "オルカＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E10"
-                   MOVE    "患者番号に該当する患者が存在しません"
+                   MOVE    "患者番号に該当する患者が存在しません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E11"
-                   MOVE    "診療年月が暦日ではありません"
+                   MOVE    "診療年月が暦日ではありません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E12"
-                   MOVE    "入外区分設定誤り"      TO  WRK-ERRMSG
+                   MOVE    "入外区分の設定に誤りがあります。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E13"
-                   MOVE    "提出先設定誤り"        TO  WRK-ERRMSG
+                   MOVE    "提出先の設定に誤りがあります。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E14"
-                   MOVE    "診療年月が未設定です"  TO  WRK-ERRMSG
+                   MOVE    "診療年月が未設定です。"
+                                                   TO  WRK-ERRMSG
        *
                WHEN    "E40"
-                   MOVE    "対象のジョブ管理がありません"
+                   MOVE    "対象のジョブ管理がありません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E41"
-                   MOVE    "対象の処理はありません"
+                   MOVE    "対象の処理はありません。"
                                                    TO  WRK-ERRMSG
       *
                WHEN    "E60"
                WHEN    "E61"
                WHEN    "E62"
       *            画面エラー
-                   MOVE    SPA-ERRMSG             TO  WRK-ERRMSG
+                   MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
       *        共通エラー
                WHEN    "E89"
       *            ORCSCOMMON のエラー
                    EVALUATE    SPA-ERRCD
                        WHEN    "1001"
-                           MOVE    "職員情報が取得できません"
-                                                  TO  WRK-ERRMSG
+                           MOVE    "職員情報が取得できません。"
+                                                   TO  WRK-ERRMSG
                        WHEN    "1002"
-                           MOVE    "医療機関情報が取得できません"
+                           MOVE    "医療機関情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1003"
-                           MOVE    "システム日付が取得できません"
+                           MOVE    "システム日付が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1005"
-                           MOVE    "患者番号構成情報が取得できません"
+                           MOVE    "患者番号構成情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1015"
                            STRING  "グループ医療機関が不整合です。"
@@ -1764,18 +1762,18 @@
                                                    INTO    WRK-ERRMSG
                            END-STRING
                        WHEN    OTHER
-                           MOVE    "システム項目が設定できません"
+                           MOVE    "システム項目が設定できません。"
                                                    TO  WRK-ERRMSG
                    END-EVALUATE
                WHEN    "E90"
-                   MOVE    "他端末使用中"          TO  WRK-ERRMSG
+                   MOVE    "他端末使用中。"        TO  WRK-ERRMSG
                WHEN    "E91"
-                   MOVE    "リクエスト番号不正"    TO  WRK-ERRMSG
+                   MOVE    "リクエスト番号不正。"  TO  WRK-ERRMSG
                WHEN    "E97"
                    MOVE   "送信内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E98"
-                   MOVE   "送信内容の読込ができませんでした"
+                   MOVE   "送信内容の読込ができませんでした。"
                                                    TO  WRK-ERRMSG
                WHEN    "E99"
                    MOVE    "ユーザＩＤ未登録。"    TO  WRK-ERRMSG
