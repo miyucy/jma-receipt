@@ -3234,12 +3234,12 @@
                    MOVE     3          TO  FLG-MISYORI
                  END-IF
                END-IF
-               IF    SPA-GMN-SIKIBETUFLG(IDXL)  =  "7"
+               IF    SPA-GMN-TNYUGAIKBN(IDXL)(3:2)  =  "☆"
                  IF  FLG-MISYORI  NOT =  1 AND 2 AND 3
                    MOVE     4          TO  FLG-MISYORI
                  END-IF
                END-IF
-               IF    SPA-GMN-TNYUGAIKBN(IDXL)(3:2)  =  "☆"
+               IF    SPA-GMN-SIKIBETUFLG(IDXL)  =  "7"
                  IF  FLG-MISYORI  NOT =  1 AND 2 AND 3 AND 4
                    MOVE     5          TO  FLG-MISYORI
                  END-IF
@@ -3267,11 +3267,6 @@
        MOVE "★★　【高齢者現物給付】一括再計算を行ってください　★★"
                                   TO    S02-LBLMSG
                WHEN       4
-                 MOVE    "red"    TO    S02-LBLMSG-STYLE
-       MOVE "★★　【該当者チェック抽出分】一括再計算を行ってください"
-                                  TO    S02-LBLMSG(1:56)
-       MOVE "　★"                TO    S02-LBLMSG(57:)
-               WHEN       5
                  MOVE    "blue"   TO    S02-LBLMSG-STYLE
                  MOVE    SPACE    TO    S02-LBLMSG
                  STRING  "☆　再計算を行ってください"
@@ -3280,6 +3275,11 @@
                                         DELIMITED BY SIZE
                  INTO    S02-LBLMSG
                  END-STRING
+               WHEN       5
+                 MOVE    "red"    TO    S02-LBLMSG-STYLE
+       MOVE "★★　【該当者チェック抽出分】一括再計算を行ってください"
+                                  TO    S02-LBLMSG(1:56)
+       MOVE "　★"                TO    S02-LBLMSG(57:)
            END-EVALUATE
       *
            MOVE    WIDGET-NORMAL       TO  S02-B06-STATE
