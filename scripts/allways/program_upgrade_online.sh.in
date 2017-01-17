@@ -39,7 +39,7 @@ echo ${LOG}
 # echo message (default character-code EUC)
 echomsg() {
   if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.utf8" ]; then
-    echo `echo $1 | nkf -wE
+    echo `echo $1 | nkf -wE`
   else
     echo $1
   fi
