@@ -192,6 +192,8 @@
                            11  SPA-COM-KZMFLG9       PIC X(01).
       *                    入院料併用警告
                            11  SPA-COM-KZMFLGNK      PIC X(01).
+      *                    翌月入院料なし警告
+                           11  SPA-COM-KZMFLGN2      PIC X(01).
       *
       *                自動発生済フラグ
                        09  SPA-COM-AUTOFLG           PIC X(01).
@@ -453,6 +455,8 @@
                        09  SPA-COM-HISINKSN        PIC  X(01).
       *                凍結保存同種組織加算
                        09  SPA-COM-TOUKETUHOZONKSN PIC  X(01).
+      *H29.1           ユーザー管理区分
+                       09  SPA-COM-MASTER-CLASS    PIC  X(01).
       *
       *    点数マスタ付加情報より
       *                採血区分

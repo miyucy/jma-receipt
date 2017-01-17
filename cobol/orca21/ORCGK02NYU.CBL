@@ -74,6 +74,7 @@
       * 04.08.00     NACL-多々納  14/05/27  一時ファイル変更
       * 04.08.00     NACL-多々納  14/08/11  クライアント印刷変更
       * 04.08.00     NACL-多々納  14/10/23  連続挿入対応
+      * 04.08.00     NACL-多々納  17/01/17  翌月入院料チェック対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -590,6 +591,11 @@
       *    改頁行数
       **** 03  WRK-PAGE-LINE           PIC 9(02).
       *!!!!!!!!!!!!!!!!!!
+      *H29.1
+      *    翌月入院料チェック
+           03  FLG-NEXTTUKI            PIC 9(01).
+           03  IDN3                    PIC 9(04).
+           03  IDN4                    PIC 9(04).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -2885,6 +2891,8 @@
            MOVE    ORCSCHKTCHK-NYUHKT-G    TO  SPA-NYUHKT-G
       *    入院料算定なし
            MOVE    ORCSCHKTCHK-NYUERR  TO  SPA-NYU-ERR
+      *    翌月入院料算定なし
+           MOVE    ORCSCHKTCHK-NYUERR-2    TO  SPA-NYU-ERR-2
            .
        3101-HKTCHK-INIT-EXT.
            EXIT.
@@ -3010,6 +3018,8 @@
                MOVE    "1"                 TO  SPA-COM-KZMFLG6(IDX)
                MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG1(IDX)
                MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG(IDX)
+      *
+               MOVE    "1"                 TO  SPA-COM-KZMFLGN2 (IDX)
            END-PERFORM
       *    内分泌負荷試験検査情報
            INITIALIZE              SPA-NAI-FUKATEN-AREA
@@ -3034,6 +3044,8 @@
                       (SPA-COM-NYU-KZMFLG-G(IDX)    NOT =   SPACE )
       *ver.4.7        入院料併用警告
                  OR   (SPA-COM-KZMFLGNK(IDX)   NOT =   SPACE )
+      *H29.1        入院料併用警告
+                 OR   (SPA-COM-KZMFLGN2(IDX)   NOT =   SPACE )
       *            約束セット
                    IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )
       *?              OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S" )
@@ -3982,6 +3994,7 @@
                    MOVE    ZERO                TO  SPA-HKN-ERR
                    MOVE    ZERO                TO  SPA-RJN-ERR
                    MOVE    ZERO                TO  SPA-NYU-ERR
+                   MOVE    ZERO                TO  SPA-NYU-ERR-2
                    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
                    MOVE    ZERO                TO  SPA-NAI-KOHFLG
                    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
@@ -4921,6 +4934,9 @@
       *            入院料併用チェック
                    WHEN    "K910"
                        MOVE    SPACE           TO  SPA-COM-KZMFLGNK(IDX)
+      *H29.1       入院料併用チェック
+                   WHEN    "K190"
+                       MOVE    SPACE           TO  SPA-COM-KZMFLGN2(IDX)
                    WHEN    "K227"
                        MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1
                                                                   (IDX)
@@ -6083,6 +6099,13 @@
       *    回数に変更があった時、剤内の警告はクリアする
            IF     SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                    NOT =   SPA-MAE-INPUTCD(SPA-GMN-IDX)
+      *H29.1
+              IF      (SPA-COM-KZMFLGN2(SPA-GMN-IDX)   =   "1" )
+                AND   (SPA-MAE-INPUTCD(SPA-GMN-IDX)    =   SPACE )
+                  CONTINUE
+              ELSE
+      *
+               MOVE    SPACE           TO  SPA-COM-KZMFLGN2(SPA-GMN-IDX)
                COMPUTE IDX-K           =   SPA-GMN-IDX   -   1
                PERFORM VARYING     IDX-K2  FROM    IDX-K  BY  -1
                        UNTIL       IDX-K2  <   1
@@ -6108,11 +6131,15 @@
                END-PERFORM
            END-IF
       *
+           END-IF
+      *
       *    クリア
            MOVE    SPACE           TO  SPA-COM-INPUTCD(SPA-GMN-IDX)
            MOVE    SPA-COM-IN4(SPA-GMN-IDX)    TO  WRK-FLG-IN4
+           MOVE    SPA-COM-KZMFLGN2(SPA-GMN-IDX)   TO  WRK-KINKIFLG
            INITIALIZE                  SPA-COM-TBLREC (SPA-GMN-IDX)
            MOVE    WRK-FLG-IN4     TO  SPA-COM-IN4 (SPA-GMN-IDX)
+           MOVE    WRK-KINKIFLG    TO  SPA-COM-KZMFLGN2 (SPA-GMN-IDX)
       *
       *    回数（未入力時、１回）
            IF      WRK-ACCT-MCNT       =   ZERO
@@ -6375,6 +6402,13 @@
                       (SPA-HKTSANTEI-08    =   1     )  OR
                       (SPA-NYUHKTCHK       =   1     )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
+      *H29.1
+      *            投薬調剤料の翌月チェック
+                   IF     (SPA-KIDCD           =   SPACE )
+                      AND (SPA-K02N-TAIINYMD   =   "99999999")
+                      AND (SPA-NYU-ERR-2       =   1     )
+                       PERFORM 51092-NEXTCHOZAI-CHK-SEC
+                   END-IF
                END-IF
            END-IF
       *    包括のクリア
@@ -6470,6 +6504,78 @@
            .
        51091-HKTSANTEI-DEL-EXT.
            EXIT.
+      *
+      *H29.1
+      *****************************************************************
+      *    投薬調剤料の翌月チェック処理
+      *****************************************************************
+       51092-NEXTCHOZAI-CHK-SEC             SECTION.
+      *
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE   )
+                          OR ((SPA-GMN-INPUTCD(IDX) =   SPACE) AND
+                              (SPA-COM-INPUTCD(IDX) =   SPACE))
+                          OR  (SPA-ERRCD        NOT =   SPACE )
+      *
+      *        薬評・減点・持参薬対象外
+               IF     (SPA-COM-SRYKBN   (IDX)  =   "21"  )
+                AND   (SPA-COM-YAKUHYO  (IDX)  =   SPACE  )
+                AND   (SPA-COM-GENTEN   (IDX)  =   SPACE  )
+                AND   (SPA-COM-JISANYAKU(IDX)  =   SPACE  )
+                AND   (SPA-COM-HOUKATU-ZAI(IDX)    =   1  )
+                AND   (SPA-COM-SRYSYUKBN (IDX) NOT =   "214" )
+                   IF      SPA-COM-ZAIEND (IDX)    =   "1"
+                       PERFORM 51921-DAYCHEK-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       51092-NEXTCHOZAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    最終行に回数の入力があるかのチェック処理
+      *****************************************************************
+       51921-DAYCHEK-SEC             SECTION.
+      *
+      *
+           MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
+           IF      WRK-KAISU           =   ZERO
+               MOVE    1               TO  WRK-KAISU
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-NEXTTUKI
+      *    投薬で入院回数の時、回数集計
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL      (IDN1    >   31  )
+                           OR (FLG-NEXTTUKI    =   1 )
+               IF      SPA-COM-NYUINDAY (IDX IDN1) >   ZERO
+                   MOVE    IDN1                TO  IDN4
+                   PERFORM VARYING     IDN3    FROM    1   BY  1
+                           UNTIL      (IDN3    >   WRK-KAISU )
+                                   OR (FLG-NEXTTUKI    =   1 )
+      *                翌月あり
+                       IF      IDN4            >   SPA-SRYLST-DD
+                           MOVE    1               TO  FLG-NEXTTUKI
+                       END-IF
+                       ADD     1                   TO  IDN4
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-NEXTTUKI        =   1
+               IF      SPA-COM-KZMFLGN2 (IDX)  =   SPACE
+                   MOVE    "K190"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  SPA-COM-CUR  (IDX)
+                   MOVE    "1"             TO  SPA-COM-KZMFLGN2(IDX)
+               END-IF
+           END-IF
+           .
+       51921-DAYCHEK-EXT.
+           EXIT.
+      *H29.1
+      *H29.1
       *
       *****************************************************************
       *    最終行に回数の入力があるかのチェック処理
