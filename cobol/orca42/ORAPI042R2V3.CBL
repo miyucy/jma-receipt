@@ -1119,6 +1119,17 @@
                    GO  TO  20013-RECEIPT-CHK-EXT
                END-IF
       *
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "E70"           TO  WRK-ERRCD
+                   STRING  "レセプト作成処理中です【"
+                                             DELIMITED  BY  SIZE
+                           JOB-SHELLMSG      DELIMITED  BY  SPACE
+                           "】"              DELIMITED  BY  SIZE
+                                             INTO  WRK-ERRMSG
+                   END-STRING
+                  GO  TO  20013-RECEIPT-CHK-EXT
+               END-IF
+      *
                MOVE    "PUTG"          TO  MCP-STATUS
                MOVE    "CLICKED"       TO  MCP-EVENT
                MOVE    "B11"           TO  MCP-WIDGET
@@ -1144,17 +1155,10 @@
                EVALUATE    R99-MSG
                    WHEN    "処理は正常に終了しました"
                        CONTINUE
-                   WHEN    "処理中です"
-                       MOVE    "E70"           TO  WRK-ERRCD
-                       STRING  "レセプト作成処理中です【"
-                                                 DELIMITED  BY  SIZE
-                               R99-SHORINM (1)   DELIMITED  BY  SPACE
-                               "】"              DELIMITED  BY  SIZE
-                                                 INTO  WRK-ERRMSG
-                       END-STRING
                    WHEN    OTHER
                        IF      R99-B12-STATE   =   WIDGET-NORMAL
-                           CONTINUE
+                           MOVE    R99-MSG         TO  WRK-WARNING-MSG
+                           MOVE    "W01"           TO  WRK-WARNING
                        ELSE
                            MOVE    "E31"           TO  WRK-ERRCD
                            MOVE    R99-MSG         TO  WRK-ERRMSG
