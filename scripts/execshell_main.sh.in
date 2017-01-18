@@ -53,7 +53,7 @@ RET=$?
 
 ${LOGSHDIR}/${LOGSH} "$$" "END" "$@" &
 
-echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$$" "END" "$@")  >>  ${LOG_TEMP}
+echo $(date +"%Y-%m-%d %H:%M:%S") $(printf "[%s]" "$$" "END")  >>  ${LOG_TEMP}
 
 
 (
