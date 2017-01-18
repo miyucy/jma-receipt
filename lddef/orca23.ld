@@ -42,6 +42,9 @@ data	{
                 SID4;
 	};
 };
+db "xml2" {
+ rp_statement;
+};
 
 #include "orcadb.inc"
 #include "orcadbh.inc"
