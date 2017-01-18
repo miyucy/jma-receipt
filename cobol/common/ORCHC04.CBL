@@ -203,6 +203,8 @@
       *
            03  WRK-DENPNUM             PIC 9(07).
            03  WRK-GRP-DENPNUM         PIC 9(07).
+           03  WRK-KINGAKU-X.
+               05  WRK-KINGAKU-Z1      PIC Z(8)9.
       *
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -320,6 +322,7 @@
            03  WRK-API-ENDYMD          PIC X(08).
            03  WRK-API-HAKYMD          PIC X(08).
            03  WRK-API-GRPNUM          PIC 9(03).
+           03  WRK-API-GRPNUM-HEAD     PIC 9(03).
       *
            03  WRK-KAISU-G.
                05  WRK-KAISU-9         PIC 9(03).
@@ -528,6 +531,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  WRK-API-AREA
       *
            MOVE    ZERO           TO   ORCHC04-PAGE
       *
@@ -2610,9 +2614,13 @@
                                            TO  RPMEISAI-TENSU
                                                      (IDX-API)
       *        合計
-               MOVE    ORCHC04SUB-H-KINGAKU(IDX)
-                                           TO  RPMEISAI-TOTAL
+               IF    ( ORCHC04SUB-H-KINGAKU(IDX)
+                                       NOT =   SPACE )
+                   MOVE    FUNCTION NUMVAL(ORCHC04SUB-H-KINGAKU(IDX))
+                                           TO  WRK-KINGAKU-Z1
+                   MOVE    WRK-KINGAKU-X   TO  RPMEISAI-TOTAL
                                                      (IDX-API)
+               END-IF
       *        円
                MOVE    ORCHC04SUB-H-ENKBN (IDX)
                                            TO  RPMEISAI-TENSU-MARK
@@ -2640,9 +2648,13 @@
                GO      TO      7003-API-KEYHENSYU-EXT
            END-IF
       *
-           MOVE    ALL "9"             TO  RPMEISAI-GRPNUM (IDX-API)
+           MOVE    "1"                 TO  RPMEISAI-GRPHEAD(IDX-API)
       *
-           MOVE    ALL "―"            TO  RPMEISAI-SRYKBN (IDX-API)
+           COMPUTE WRK-API-GRPNUM-HEAD
+               =   WRK-API-GRPNUM  +   1
+           MOVE    WRK-API-GRPNUM-HEAD TO  RPMEISAI-GRPNUM (IDX-API)
+      *
+      *    MOVE    ALL "―"            TO  RPMEISAI-SRYKBN (IDX-API)
            EVALUATE    TRUE
                WHEN   (WRK-SRYKA-MEI   NOT =   SPACE )  AND
                       (WRK-HKNCOMBIMEI NOT =   SPACE )
@@ -2679,8 +2691,8 @@
                END-STRING
            END-IF
       *
-           INSPECT RPMEISAI-SRYNAME-G(IDX-API)
-                           REPLACING    ALL    "  "   BY  "―"
+      *    INSPECT RPMEISAI-SRYNAME-G(IDX-API)
+      *                    REPLACING    ALL    "  "   BY  "―"
            .
        7003-API-KEYHENSYU-EXT.
            EXIT.
@@ -2694,7 +2706,7 @@
            PERFORM 4001-DB-KENSAKU-SEC
       *
       *
-           MOVE    "statement"         TO  RPMEISAI-REPORT-ID
+           MOVE    "meisaisho"         TO  RPMEISAI-REPORT-ID
       *    プリンタ名
            MOVE    SYS-1031-PRTNM(14)  TO  RPMEISAI-PRINTER
       *    伝票番号
@@ -2704,7 +2716,9 @@
       *    患者番号
            MOVE    SPA-PTNUM           TO  RPMEISAI-PTNUM
       *    カナ氏名
-           MOVE    SPA-KANANAME        TO  RPMEISAI-KANANAME
+           IF    ( PARA-KANANAME       =   "1" )
+               MOVE    SPA-KANANAME    TO  RPMEISAI-KANANAME
+           END-IF
       *    患者名称
            MOVE    SPA-NAME            TO  RPMEISAI-NAME
       *    保険種別
@@ -2739,10 +2753,10 @@
       *
            IF      PARA-GOKEITANI      =   "1"
       *        点数表示
-               MOVE    "1"             TO  RPMEISAI-YEN-FLG
+               MOVE    "0"             TO  RPMEISAI-YEN-FLG
            ELSE
       *        単価表示
-               MOVE    "0"             TO  RPMEISAI-YEN-FLG
+               MOVE    "1"             TO  RPMEISAI-YEN-FLG
            END-IF
       *
       *    注意
@@ -2770,7 +2784,7 @@
            MOVE    PARA-API-CUSTOM-ID  TO  RPMEISAI-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "statement"         TO  RPMAIN-ID
+           MOVE    "meisaisho"         TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "診療費明細書"      TO  RPMAIN-TITLE
            MOVE    "rp_statement"
