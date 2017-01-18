@@ -47,50 +47,52 @@
       *         医療機関電話番号
                 07  RPMEISAI-HOSP-TEL          PIC X(15).
       *
-              05  RPMEISAI-MEISAI-AREA.
-      *         開始診療日
-                07  RPMEISAI-STSRYYMD          PIC X(10).
-      *         終了診療日
-                07  RPMEISAI-EDSRYYMD          PIC X(10).
-      *         伝票発行日
-                07  RPMEISAI-DENPPRTYMD        PIC X(10).
+      *       開始診療日
+              05  RPMEISAI-STSRYYMD          PIC X(10).
+      *       終了診療日
+              05  RPMEISAI-EDSRYYMD          PIC X(10).
+      *       伝票発行日
+              05  RPMEISAI-DENPPRTYMD        PIC X(10).
       *
-      *         診療科
-                07  RPMEISAI-SRYKANAME         PIC X(20).
-      *         保険情報
-                07  RPMEISAI-HOKENNAME         PIC X(100).
+      *       診療科
+              05  RPMEISAI-SRYKANAME         PIC X(20).
+      *       保険情報
+              05  RPMEISAI-HOKENNAME         PIC X(100).
+              05  RPMEISAI-FUTAN-G.
       *         負担割合
-                07  RPMEISAI-FUTANMEI-G.
-                    09  RPMEISAI-FUTAN             PIC X(04).
-                    09  RPMEISAI-FUTANMEI          PIC X(02).
-      *         伝票番号（一括以外）
-                07  RPMEISAI-DENPNUM           PIC X(07).
+                07  RPMEISAI-FUTAN         PIC X(04).
+      *         負担割合
+                07  RPMEISAI-FUTANMEI      PIC X(02).
+      *       伝票番号（一括以外）
+              05  RPMEISAI-DENPNUM           PIC X(07).
       *
-      *         明細情報
-                07  RPMEISAI-SRY-ITEM-AREA     OCCURS   2000.
-      *           連番（伝票番号が変わる度に増加）（999：伝票情報行）
-                  09   RPMEISAI-GRPNUM         PIC X(03).
-      *           診療区分名
-                  09   RPMEISAI-SRYKBN         PIC X(10).
-      *           名称
-                  09   RPMEISAI-SRYNAME-G.
-      *               剤開始（＊など
-                      11  RPMEISAI-ZAIHEN          PIC X(02).
-      *               診療内容名称
-                      11   RPMEISAI-SRYNAME        PIC X(148).
-      *           点数記載円立てフラグ
-                  09   RPMEISAI-TENSU-MARK     PIC X(1).
-      *           点数
-                  09   RPMEISAI-TENSU          PIC X(09).
-      *           回数
-                  09   RPMEISAI-KAISU          PIC X(03).
-      *           合計
-                  09   RPMEISAI-TOTAL          PIC X(11).
-      *           剤終了（１：剤最終行）
-                  09  RPMEISAI-ZAIEND          PIC X(01).
+      *       明細情報
+              05   RPMEISAI-SRY-ITEM-AREA  OCCURS   2000.
+      *         グループヘッダ（１：伝票番号が変わる度の先頭）
+                07   RPMEISAI-GRPHEAD        PIC X(01).
+      *         連番（伝票番号が変わる度に増加）（999：伝票情報行）
+                07   RPMEISAI-GRPNUM         PIC X(03).
+      *         診療区分名
+                07   RPMEISAI-SRYKBN         PIC X(10).
+      *         名称
+                07  RPMEISAI-SRYNAME-G.
+      *           剤開始（＊など
+                  09  RPMEISAI-ZAIHEN        PIC X(02).
+      *           診療内容名称
+                  09  RPMEISAI-SRYNAME       PIC X(148).
+      *         点数記載円立てフラグ
+                07   RPMEISAI-TENSU-MARK     PIC X(1).
+      *         点数
+                07   RPMEISAI-TENSU          PIC X(09).
+      *         回数
+                07   RPMEISAI-KAISU          PIC X(03).
+      *         合計
+                07   RPMEISAI-TOTAL          PIC X(11).
+      *         剤終了（１：剤最終行）
+                07  RPMEISAI-ZAIEND          PIC X(01).
       *
       *       明細情報金額編集フラグ
-              05  RPMEISAI-YEN-FLG             PIC X(1).
+              05  RPMEISAI-YEN-FLG           PIC X(1).
       *
       *       注意書き
-              05  RPMEISAI-CAUTION             PIC X(100).
+              05  RPMEISAI-CAUTION           PIC X(100).
