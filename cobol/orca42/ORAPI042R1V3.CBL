@@ -1153,6 +1153,7 @@
       *
                MOVE    SPACE           TO  LINKAREA
                MOVE    "R03"           TO  SPA-MOTOPG
+               MOVE    SPACE           TO  SPA-R01-GMNKBN
       *
                MOVE    SPA-R01KYOUTU   TO  SPA-WORK
                MOVE    SPA-AREA        TO  SPA-COMMON

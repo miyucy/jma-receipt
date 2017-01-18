@@ -632,19 +632,25 @@
            EVALUATE    SPA-R01-FILEKBN
                WHEN    "1"
       *            診療年月
-                   MOVE    RECEPRINTQ-PERFORM-MONTH
-                                               TO  WRK-HEN-DATE
-                   PERFORM 802-DAYHEN02-SEC
-                   MOVE    WRK-SYMD (1:6)      TO  SPA-R01-SRYYM
-      *
-                   INITIALIZE                  ORCSGDAYAREA
-                   MOVE    "1"             TO  SGDAY-INTYPE
-                   MOVE    SPA-R01-SRYYM   TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"      USING   ORCSGDAYAREA
-                   IF      SGDAY-RC        =   ZERO
-                       CONTINUE
+                   IF      RECEPRINTQ-PERFORM-MONTH
+                                               =   SPACE
+                       MOVE    "E14"              TO  WRK-ERRCD  
+                       GO  TO  2001-INPUT-CHK-EXT
                    ELSE
-                       MOVE    "E11"            TO  WRK-ERRCD
+                       MOVE    RECEPRINTQ-PERFORM-MONTH
+                                                   TO  WRK-HEN-DATE
+                       PERFORM 802-DAYHEN02-SEC
+                       MOVE    WRK-SYMD (1:6)      TO  SPA-R01-SRYYM
+      *
+                       INITIALIZE                  ORCSGDAYAREA
+                       MOVE    "1"             TO  SGDAY-INTYPE
+                       MOVE    SPA-R01-SRYYM   TO  SGDAY-INDAY
+                       CALL    "ORCSGDAY"      USING   ORCSGDAYAREA
+                       IF      SGDAY-RC        =   ZERO
+                           CONTINUE
+                       ELSE
+                           MOVE    "E11"            TO  WRK-ERRCD
+                       END-IF
                    END-IF
                WHEN    "2"
                    MOVE    ZERO            TO  SPA-R01-SRYYM
@@ -746,7 +752,7 @@
                    END-PERFORM
                END-IF    
                IF      FLG-CHK         =   ZERO
-                   MOVE    "E24"           TO  WRK-ERRCD
+                   MOVE    "E28"           TO  WRK-ERRCD
                END-IF
            END-IF
        *
@@ -760,6 +766,13 @@
        20011-SUBMISSION-CHECK-SEC     SECTION.
       *
            INITIALIZE                  WRK-CHK-TABLE-AREA
+      *
+           IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2" OR  "7"
+               IF      SPA-GMN-PRTJYUN    =   "05"    OR  "13"
+                   MOVE    "E15"              TO  WRK-ERRCD
+                   GO  TO  20011-SUBMISSION-CHECK-EXT
+               END-IF
+           END-IF
       *
       *    個別の項目チェック
            PERFORM VARYING IDYY    FROM    1   BY  1
@@ -777,14 +790,17 @@
                                            ORCSNUMAREA
                IF    ( SNUM-RC             =   ZERO )
                AND   ( SNUM-SEISUU         <   6    )
+               AND   ( SNUM-SYOSUU         =   0    )
                    MOVE    SNUM-OUTNUM          TO  IDY
                    IF      SPA-R01-RECEKBN
                                        =   "0" OR  "1" OR  "2" OR  "7"
-                       IF      IDY              >   SPA-GMN-PAGE-MAX
+                       IF    ( SNUM-OUTNUM     >   SPA-GMN-PAGE-MAX )
+                       OR    ( SNUM-OUTNUM     =   ZERO             )
                            MOVE    "E20"               TO  WRK-ERRCD
                        END-IF
                    ELSE
-                       IF      IDY              >   1
+                       IF    ( SNUM-OUTNUM     >   1    )
+                       OR    ( SNUM-OUTNUM     =   ZERO )
                            MOVE    "E20"               TO  WRK-ERRCD
                        END-IF
                    END-IF
@@ -876,7 +892,7 @@
                END-PERFORM
            END-IF    
            IF      FLG-CHK         =   1
-               MOVE    "E23"           TO  WRK-ERRCD
+               MOVE    "E27"           TO  WRK-ERRCD
            END-IF
       *
            .
@@ -899,31 +915,34 @@
                                        ORCSNUMAREA
            IF    ( SNUM-RC         =   ZERO )
            AND   ( SNUM-SEISUU     <   6    )
+           AND   ( SNUM-SYOSUU     =   0    )
                MOVE    SNUM-OUTNUM     TO  IDZ
                IF      SPA-R01-RECEKBN
                                    =   "0" OR  "1" OR  "2" OR  "7"
-                   IF      SNUM-OUTNUM     >   36
-                       MOVE    "E15"           TO  WRK-ERRCD
+                   IF    ( SNUM-OUTNUM     >   36   )
+                   OR    ( SNUM-OUTNUM     =   ZERO )
+                       MOVE    "E21"           TO  WRK-ERRCD
                    ELSE
       *                印刷対象があるか
                        IF      SPA-NAI-PRTJYUNI (IDY IDZ)
                                                =   SPACE
-                           MOVE    "E18"           TO  WRK-ERRCD
+                           MOVE    "E24"           TO  WRK-ERRCD
                        END-IF
                    END-IF
                ELSE
-                   IF      SNUM-OUTNUM     >   25
-                       MOVE    "E15"           TO  WRK-ERRCD
+                   IF    ( SNUM-OUTNUM     >   25   )
+                   OR    ( SNUM-OUTNUM     =   ZERO )
+                       MOVE    "E21"           TO  WRK-ERRCD
                    ELSE
       *                印刷対象があるか
                        IF      SPA-NAI-R04-PRTJYUNI (IDZ)
                                                =   SPACE
-                           MOVE    "E18"           TO  WRK-ERRCD
+                           MOVE    "E24"           TO  WRK-ERRCD
                        END-IF
                    END-IF
                END-IF
            ELSE
-               MOVE    "E15"           TO  WRK-ERRCD
+               MOVE    "E21"           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD    NOT =   SPACE
                GO  TO  200111-CHECK-EXT
@@ -937,9 +956,10 @@
                                    ORCSNUMAREA
            IF    ( SNUM-RC         =   ZERO )
            AND   ( SNUM-SEISUU     <   6    )
+           AND   ( SNUM-SYOSUU     =   0    )
                MOVE    SNUM-OUTNUM     TO  WRK-KENSU
            ELSE
-               MOVE    "E16"           TO  WRK-ERRCD
+               MOVE    "E22"           TO  WRK-ERRCD
                GO  TO  200111-CHECK-EXT
            END-IF
       *
@@ -951,9 +971,10 @@
                                    ORCSNUMAREA
            IF    ( SNUM-RC         =   ZERO )
            AND   ( SNUM-SEISUU     <   6    )
+           AND   ( SNUM-SYOSUU     =   0    )
                MOVE    SNUM-OUTNUM     TO  WRK-PAGE
            ELSE
-               MOVE    "E17"           TO  WRK-ERRCD
+               MOVE    "E23"           TO  WRK-ERRCD
                GO  TO  200111-CHECK-EXT
            END-IF
       *
@@ -969,7 +990,7 @@
                                            (IDYY IDZZ) )
                    CONTINUE
                ELSE
-                   MOVE    "E19"           TO  WRK-ERRCD
+                   MOVE    "E25"           TO  WRK-ERRCD
                    GO  TO  200111-CHECK-EXT
                END-IF
            ELSE
@@ -982,7 +1003,7 @@
                                            (IDYY IDZZ) )
                    CONTINUE
                ELSE
-                   MOVE    "E19"           TO  WRK-ERRCD
+                   MOVE    "E25"           TO  WRK-ERRCD
                    GO  TO  200111-CHECK-EXT
                END-IF
            END-IF
@@ -994,12 +1015,12 @@
                                        =   "0" OR  "1" OR  "2" OR  "7"
                    IF      SPA-GMN-TPAGE   (IDY IDZ)
                                            =   ZERO
-                       MOVE    "E21"           TO  WRK-ERRCD
+                       MOVE    "E26"           TO  WRK-ERRCD
                    END-IF
                ELSE
                    IF      SPA-GMN-R04-TPAGE   (IDZ)
                                            =   ZERO
-                       MOVE    "E21"           TO  WRK-ERRCD
+                       MOVE    "E26"           TO  WRK-ERRCD
                    END-IF
                END-IF
            END-IF    
@@ -1104,6 +1125,7 @@
       *
                MOVE    SPACE           TO  LINKAREA
                MOVE    "R03"           TO  SPA-MOTOPG
+               MOVE    SPACE           TO  SPA-R01-GMNKBN
       *
                MOVE    SPA-R01KYOUTU   TO  SPA-WORK
                MOVE    SPA-AREA        TO  SPA-COMMON
@@ -1123,28 +1145,28 @@
                    WHEN    "処理は正常に終了しました"
                        CONTINUE
                    WHEN    "処理中です"
-                       MOVE    "E01"           TO  RECEPRINTS-API-RESULT
-                       MOVE    "E30"           TO  WRK-ERRCD
-                       MOVE    R99-SHORINM (1) TO  WRK-ERRMSG
+                       MOVE    "E70"           TO  WRK-ERRCD
+                       STRING  "レセプト作成処理中です【"
+                                                 DELIMITED  BY  SIZE
+                               R99-SHORINM (1)   DELIMITED  BY  SPACE
+                               "】"              DELIMITED  BY  SIZE
+                                                 INTO  WRK-ERRMSG
+                       END-STRING
                    WHEN    OTHER
-                       MOVE    R99-MSG         TO  WRK-WARNING-MSG
-                       EVALUATE   R99-MSG
-                           WHEN   "対象データがありませんでした"
-                               MOVE    "W01"   TO  WRK-WARNING
-                           WHEN   "対象のレセプトが作成されていません"
-                               MOVE    "W02"   TO  WRK-WARNING
-                           WHEN   "該当する処理はありません" 
-                               MOVE    "E32"   TO  WRK-ERRCD
-                               MOVE    R99-MSG TO  WRK-ERRMSG
-                           WHEN   OTHER
-                               MOVE    SPACE   TO  WRK-WARNING-MSG
-                       END-EVALUATE
+                       IF      R99-B12-STATE   =   WIDGET-NORMAL
+                           CONTINUE
+                       ELSE
+                           MOVE    "E31"           TO  WRK-ERRCD
+                           MOVE    R99-MSG         TO  WRK-ERRMSG
+                       END-IF
                END-EVALUATE
       *
                IF      R99-B12-STATE   =   WIDGET-NORMAL
       *            頁・件数の編集処理
                    PERFORM 3101-HENSYU-SEC
                END-IF
+           ELSE
+               MOVE    "E40"           TO  WRK-ERRCD
            END-IF
            .
        20013-RECEIPT-CHK-EXT.
@@ -1249,8 +1271,10 @@
                MOVE    SPACE           TO  LINKAREA
                IF      SPA-R01-RECEKBN =   "0" OR  "1" OR  "2" OR  "7"
                    MOVE    "R02"           TO  SPA-MOTOPG
+                                               SPA-R01-GMNKBN
                ELSE
                    MOVE    "R04"           TO  SPA-MOTOPG
+                                               SPA-R01-GMNKBN
                END-IF
       *
                MOVE    SPA-R01KYOUTU   TO  SPA-WORK
@@ -1267,26 +1291,23 @@
       *
                MOVE    TAIHI-MCPAREA   TO  MCPAREA
       *
-               EVALUATE    R99-MSG
-                   WHEN    "処理は正常に終了しました　処理枚数は"
-                       CONTINUE
-                   WHEN    "処理中です"
-                       MOVE    "E30"           TO  WRK-ERRCD
-                       MOVE    R99-SHORINM (1) TO  WRK-ERRMSG
-                   WHEN    OTHER
-                       MOVE    R99-MSG         TO   WRK-WARNING-MSG
-                       EVALUATE   R99-MSG
-                           WHEN   "対象データがありませんでした"
-                               MOVE    "W01"   TO  WRK-WARNING
-                           WHEN   "対象のレセプトが作成されていません"
-                               MOVE    "W02"   TO  WRK-WARNING
-                           WHEN   "該当する処理はありません" 
-                               MOVE    "E32"   TO  WRK-ERRCD
-                               MOVE    R99-MSG TO  WRK-ERRMSG
-                           WHEN   OTHER
-                               MOVE    SPACE   TO  WRK-WARNING-MSG
-                       END-EVALUATE
-               END-EVALUATE
+               IF      JOB-UPDCNT      >   ZERO
+                   CONTINUE
+               ELSE
+                   EVALUATE    R99-MSG
+                       WHEN    "処理中です"
+                           MOVE    "E70"           TO  WRK-ERRCD
+                           STRING  "レセプト印刷処理中です【"
+                                                   DELIMITED  BY  SIZE
+                                   R99-SHORINM (1) DELIMITED  BY  SPACE
+                                   "】"            DELIMITED  BY  SIZE
+                                                   INTO  WRK-ERRMSG
+                           END-STRING
+                       WHEN    OTHER
+                           MOVE    "E31"           TO  WRK-ERRCD
+                           MOVE    R99-MSG         TO  WRK-ERRMSG
+                   END-EVALUATE
+               END-IF
            ELSE
                MOVE    "E40"           TO  WRK-ERRCD
            END-IF
@@ -1351,7 +1372,6 @@
       *
            INITIALIZE                      SPA-SCR-REC
            MOVE    ZERO                TO  FLG-SPASCR
-      *??  MOVE    ZERO                TO  IDX
       *
            INITIALIZE                      SPATMP-REC
            MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
@@ -1511,11 +1531,6 @@
                WHEN    "E70"
       *            レセプト印刷処理中
                    GO  TO  890-ERRCD-MSG-EXT
-      *
-      *??         WHEN    "E19"
-      *??         WHEN    "E20"
-      *??             MOVE    "E03"           TO  WRK-ERRCD
-      *??             GO  TO  890-ERRCD-MSG-EXT
                WHEN    "E30"
                WHEN    "E31"
                WHEN    "E32"
@@ -1527,76 +1542,82 @@
       *
            EVALUATE    WRK-ERRCD
                WHEN    "E04"
-                   MOVE    "電子カルテＵＩＤが未設定です"
+                   MOVE    "電子カルテＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E05"
-                   MOVE    "オルカＵＩＤが未設定です"
+                   MOVE    "オルカＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E11"
-                   MOVE    "診療年月が暦日ではありません"
-                                               TO  WRK-ERRMSG
+                   MOVE    "診療年月が暦日ではありません。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E12"
-                   MOVE    "入外区分設定誤り"      TO  WRK-ERRMSG
+                   MOVE    "入外区分の設定に誤りがあります。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E13"
-                   MOVE    "提出先設定誤り"        TO  WRK-ERRMSG
+                   MOVE    "提出先の設定に誤りがあります。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E14"
-                   STRING  "印刷順が入力順、チェックデジットのときは"
+                   MOVE    "診療年月が未設定です。"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E15"
+                   STRING  "印刷順が入力順、ターミナルデジットのときは"
                                            DELIMITED   BY  SIZE
-                           "個別指示での印刷はできません"
+                           "個別指示での印刷はできません。"
                                            DELIMITED   BY  SIZE
                                            INTO        WRK-ERRMSG
                    END-STRING
-               WHEN    "E15"
-                   MOVE    "連番設定誤り"          TO  WRK-ERRMSG
-               WHEN    "E16"
-                   MOVE    "件数設定誤り"          TO  WRK-ERRMSG
-               WHEN    "E17"
-                   MOVE    "枚数設定誤り"          TO  WRK-ERRMSG
-               WHEN    "E18"
-                   MOVE    "対象のレセプトがありません"
-                                                   TO  WRK-ERRMSG
-               WHEN    "E19"
-                   MOVE    "設定内容が違います"    TO  WRK-ERRMSG
                WHEN    "E20"
-                   MOVE    "連番設定誤り"          TO  WRK-ERRMSG
+                   MOVE    "連番の設定に誤りがあります。"
+                                               TO  WRK-ERRMSG
                WHEN    "E21"
-                   MOVE    "印刷するレセプトがありません"
-                                                   TO  WRK-ERRMSG
+                   MOVE    "連番の設定に誤りがあります。"
+                                               TO  WRK-ERRMSG
+               WHEN    "E22"
+                   MOVE    "件数の設定に誤りがあります。"
+                                               TO  WRK-ERRMSG
                WHEN    "E23"
-                   MOVE    "明細一覧に設定されていない種別があります"
-                                                   TO  WRK-ERRMSG
+                   MOVE    "枚数の設定に誤りがあります。"
+                                               TO  WRK-ERRMSG
                WHEN    "E24"
-                   MOVE    "印刷するレセプトが選択してありません"
+                   MOVE    "対象のレセプトがありません。"
+                                               TO  WRK-ERRMSG
+               WHEN    "E25"
+                   MOVE    "設定内容が違います。"  TO  WRK-ERRMSG
+               WHEN    "E26"
+                   MOVE    "印刷するレセプトがありません。"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E27"
+                   MOVE    "明細一覧に設定されていない種別があります。"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E28"
+                   MOVE    "印刷するレセプトが選択してありません。"
                                                    TO  WRK-ERRMSG
       *
                WHEN    "E40"
-                   MOVE    "対象のジョブ管理がありません"
+                   MOVE    "対象のジョブ管理がありません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E41"
-                   MOVE    "該当する処理はありません"
+                   MOVE    "該当する処理はありません。"
                                                    TO  WRK-ERRMSG
       *
                WHEN    "E50"
-                   MOVE    "明細の設定に誤りがあります"
-                                                   TO  WRK-ERRMSG
-               WHEN    "E51"
-                   MOVE    "明細の設定に誤りがあります"
+                   MOVE    "明細の設定に誤りがあります。"
                                                    TO  WRK-ERRMSG
       *        共通エラー
                WHEN    "E89"
       *            ORCSCOMMON のエラー
                    EVALUATE    SPA-ERRCD
                        WHEN    "1001"
-                           MOVE    "職員情報が取得できません"
-                                                  TO  WRK-ERRMSG
+                           MOVE    "職員情報が取得できません。"
+                                                   TO  WRK-ERRMSG
                        WHEN    "1002"
-                           MOVE    "医療機関情報が取得できません"
+                           MOVE    "医療機関情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1003"
-                           MOVE    "システム日付が取得できません"
+                           MOVE    "システム日付が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1005"
-                           MOVE    "患者番号構成情報が取得できません"
+                           MOVE    "患者番号構成情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1015"
                            STRING  "グループ医療機関が不整合です。"
@@ -1605,21 +1626,23 @@
                                                    INTO    WRK-ERRMSG
                            END-STRING
                        WHEN    OTHER
-                           MOVE    "システム項目が設定できません"
+                           MOVE    "システム項目が設定できません。"
                                                    TO  WRK-ERRMSG
                    END-EVALUATE
                WHEN    "E90"
-                   MOVE    "他端末使用中"          TO  WRK-ERRMSG
+                   MOVE    "他端末で使用中です。"  TO  WRK-ERRMSG
                WHEN    "E91"
-                   MOVE    "処理区分未設定"        TO  WRK-ERRMSG
+                   MOVE    "リクエスト番号が不正です。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E97"
                    MOVE   "送信内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E98"
-                   MOVE   "送信内容の読込ができませんでした"
+                   MOVE   "送信内容の読込ができませんでした。"
                                                    TO  WRK-ERRMSG
                WHEN    "E99"
-                   MOVE    "ユーザＩＤ未登録。"    TO  WRK-ERRMSG
+                   MOVE    "ユーザＩＤが未登録です。"
+                                                   TO  WRK-ERRMSG
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
