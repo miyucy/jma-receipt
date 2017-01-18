@@ -950,6 +950,7 @@ DB_files = \
   xml_findinfv3res.db  \
   xml_stock1v2req.db  \
   xml_stock1v2res.db  \
+	tbl_access_key.db \
 
 
 shell.db: shell.db.in

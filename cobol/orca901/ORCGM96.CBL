@@ -41,6 +41,7 @@
       *  04.06.00    NACL-伊藤    11/03/10  新マスター追加
       *  04.07.00    NACL-伊藤    11/10/12  新マスター追加
       *  04.07.00    NACL-伊藤    12/03/19  新マスター追加
+      *  05.00.00    NACL-伊藤    17/01/03  アクセスキー取得処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -84,6 +85,7 @@
            03  FLG-RUNNING         PIC 9(01).
            03  FLG-MONBATCH        PIC 9(01).
            03  FLG-LOOPEND         PIC 9(01).
+           03  FLG-ACCESSKEY       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -115,13 +117,16 @@
        01  SHELL-AREA.
            03  SHELL-NAME          PIC X(17)  VALUE
                "master_upgrade.sh".
+           03  SHELL-NAME1         PIC X(25)  VALUE
+               "get_license_access_key.sh".
       *
        01  CONST-AREA.
            03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
            03  CONST-MNTSHELLID    PIC X(08)  VALUE    "MSTMNT".
            03  CONST-MLIJOBID      PIC 9(07)  VALUE    1.
            03  CONST-MLISHELLID    PIC X(08)  VALUE    "MSTMLI".
-      *
+           03  CONST-MKYJOBID      PIC 9(07)  VALUE    1.
+           03  CONST-MKYSHELLID    PIC X(08)  VALUE    "MSTKEY".
       *
       *****************************************************************
       *    連絡　領域
@@ -151,6 +156,8 @@
        01  JOBKANRI1-REC.
            COPY    "CPJOBKANRI.INC"    REPLACING  //JOB-//
                                        BY         //JOB1-//.
+      *
+           COPY    "CPACCESSKEY.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -330,10 +337,32 @@
                    IF      SPA-MMID1-FLG       =   "OK"
                        PERFORM 2001-BACK-SYORI-SEC
                    END-IF
+               WHEN    "0401"
+      *            アクセスキー取得処理
+                   IF      SPA-MMID1-FLG       =   "OK"
+                       PERFORM 30021-GET-ACCESSKEY-SEC
+                   END-IF
+               WHEN    "0402"
+      *            アクセスキー取得処理
+                   IF      SPA-MMID1-FLG       =   "OK"
+                       MOVE    SPACE               TO  M96-B05-LABEL
+                   END-IF
+               WHEN    "0404"
+      *            アクセスキー削除処理
+                   IF      SPA-MMID1-FLG       =   "OK"
+                       PERFORM 900-ACCESSKEY-DELETE-SEC
+                   END-IF
+               WHEN    "0410"
+      *            アクセスキー取得確認
+                   IF      SPA-MMID1-FLG       =   "OK"
+                       PERFORM 30022-GET-ACCESSKEY-RES-SEC
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-MMID1-FLG
-           MOVE    WRK-MIDCD           TO  SPA-MMID1CD
+           IF      SPA-MMID1CD     NOT =   "0410"
+               MOVE    WRK-MIDCD           TO  SPA-MMID1CD
+           END-IF
       *
            .
        30010-MID1-SET-EXT.
@@ -772,6 +801,12 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 211-JYOUKYOU-SEC
                    PERFORM 201-DELETE-SEC
+      *        キー取得
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 221-GETKEY-SEC
+      *        キー削除
+               WHEN    "CLICKED"       ALSO    "B05C"
+                   PERFORM 221-DELKEY-SEC
       *        再印刷画面
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 209-REPRINT-SEC
@@ -1049,6 +1084,31 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
        212-UPDATE-EXT.
            EXIT.
       *****************************************************************
+      *    アクセスキー取得処理
+      *****************************************************************
+       221-GETKEY-SEC              SECTION.
+      *
+           IF      M96-B05-LABEL   NOT =   SPACE
+               MOVE    "0401"              TO  SPA-MMID1CD
+               MOVE    1                   TO  SPA-M96-CUR
+           END-IF
+           .
+       221-GETKEY-EXT.
+           EXIT.
+      *****************************************************************
+      *    アクセスキー削除処理
+      *****************************************************************
+       221-DELKEY-SEC              SECTION.
+      *
+           IF     (SPA-HOSPID(4:2) NOT =   "50")   AND
+                  (M96-B05-LABEL       =   SPACE)
+               MOVE    "0404"              TO  SPA-MMID1CD
+               MOVE    1                   TO  SPA-M96-CUR
+           END-IF
+           .
+       221-GETKEY-EXT.
+           EXIT.
+      *****************************************************************
       *    マスタ更新処理
       *****************************************************************
        30012-KOUSIN-SYORI-SEC                  SECTION.
@@ -1136,16 +1196,15 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG1
            MOVE    SPA-SUPERVISOR       TO  SHELLTBL-ARG2
            MOVE    SPA-HOSPID           TO  SHELLTBL-ARG3
-      *
            MOVE    MNTERRFL (MNTERRFL-ST:)
                                         TO  SHELLTBL-ARG4
            MOVE    CONST-MNTJOBID       TO  SHELLTBL-ARG5
            MOVE    CONST-MNTSHELLID     TO  SHELLTBL-ARG6
-      *
            MOVE    MLIERRFL (MLIERRFL-ST:)
                                         TO  SHELLTBL-ARG7
            MOVE    CONST-MLIJOBID       TO  SHELLTBL-ARG8
            MOVE    CONST-MLISHELLID     TO  SHELLTBL-ARG9
+           MOVE    SPA-ACCESS-KEY-1     TO  SHELLTBL-ARG10
       *
            MOVE    SHELLTBL             TO  MCPDATA-REC
       *
@@ -1219,7 +1278,72 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        30011-DELETE-SYORI-EXT.
            EXIT.
+      *****************************************************************
+      *    アクセスキー取得処理
+      *****************************************************************
+       30021-GET-ACCESSKEY-SEC     SECTION.
       *
+           PERFORM 820-JOBKANRI-READ3-SEC
+      *
+           IF      FLG-SJOBKANRI       =   ZERO
+               MOVE    "DEL"               TO  SJOBKANRI-MODE
+               INITIALIZE  JOBKANRI-REC
+               MOVE    CONST-MKYJOBID      TO  JOB-JOBID
+               MOVE    CONST-MKYSHELLID    TO  JOB-SHELLID
+               MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+               CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA
+                                               JOBKANRI-REC
+                                               SPA-AREA
+           END-IF
+      *
+           MOVE    "JBS"               TO  SJOBKANRI-MODE
+           INITIALIZE  JOBKANRI-REC
+           MOVE    CONST-MKYJOBID      TO  JOB-JOBID
+           MOVE    CONST-MKYSHELLID    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+                                           SPA-AREA
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    SHELL-NAME1         TO  SHELLTBL-NAME
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG2
+           MOVE    CONST-MKYJOBID      TO  SHELLTBL-ARG3
+           MOVE    CONST-MKYSHELLID    TO  SHELLTBL-ARG4
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "allways"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "0410"          TO  SPA-MMID1CD
+               PERFORM 520-MIDSET-SEC
+           END-IF
+           .
+       30021-GET-ACCESSKEY-EXT.
+           EXIT.
+      *****************************************************************
+      *    アクセスキー取得処理確認
+      *****************************************************************
+       30022-GET-ACCESSKEY-RES-SEC SECTION.
+      *
+           PERFORM 820-JOBKANRI-READ3-SEC
+      *
+           IF      FLG-SJOBKANRI       =   ZERO
+               IF      JOB-ERRCD           =   "0000"
+                   MOVE    "0402"          TO  SPA-MMID1CD
+               ELSE
+                   MOVE    "0403"          TO  SPA-MMID1CD
+               END-IF
+               PERFORM 520-MIDSET-SEC
+           END-IF
+           .
+       30022-GET-ACCESSKEY-RES-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -1384,6 +1508,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                M96-B12-VISIBLE
            END-IF
       *
+           IF      SPA-HOSPID(4:2)     =   "50"
+               MOVE    SPACE               TO  M96-B05-LABEL
+           ELSE
+               PERFORM 900-ACCESSKEY-READ-SEC
+               IF      ACCESS-KEY-1        =   SPACE
+                   MOVE    "キー取得"          TO  M96-B05-LABEL
+               ELSE
+                   MOVE    ACCESS-KEY-1        TO  SPA-ACCESS-KEY-1
+                   MOVE    SPACE               TO  M96-B05-LABEL
+               END-IF
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
            .
       *
@@ -1444,13 +1580,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-ERRCD            TO  MMERR-ERRCODE
            MOVE    SPA-ERRMSG           TO  MMERR-ERRMSG
       *
-           MOVE    "B01"               TO  MCP-WIDGET.
-           MOVE    "M96"               TO  SPA-MOTOPG.
-           MOVE    "MMERR"             TO  SPA-SAKIPG.
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "B01"               TO  MCP-WIDGET
+           MOVE    "M96"               TO  SPA-MOTOPG
+           MOVE    "MMERR"             TO  SPA-SAKIPG
+           MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "MMERR"             TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
            .
@@ -1479,6 +1615,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0301"
                    MOVE    "マスタ更新中です。よろしいですか？"
                                        TO  MMID1-ID1MSG
+               WHEN    "0401"
+                   MOVE
+                       "アクセスキーを取得します。よろしいですか？"
+                                       TO  MMID1-ID1MSG
+               WHEN    "0402"
+                   MOVE
+                       "アクセスキーを取得しました"
+                                       TO  MMID1-ID1MSG
+               WHEN    "0403"
+                   MOVE    JOB-YOBI    TO  MMID1-ID1MSG
+      *            MOVE
+      *                "アクセスキーの取得に失敗しました"
+      *                                TO  MMID1-ID1MSG
+               WHEN    "0404"
+                   MOVE
+                       "アクセスキーを削除します。よろしいですか？"
+                                       TO  MMID1-ID1MSG
+               WHEN    "0410"
+                   MOVE
+                       "２〜３秒待ってからボタンをクリックして下さい"
+                                       TO  MMID1-ID1MSG
                WHEN    OTHER
                    MOVE    SPA-MMID1CD
                                        TO  MMID1-ID1MSG
@@ -1495,10 +1652,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "M96"               TO  SPA-MOTOPG
            MOVE    "MMID1"             TO  SPA-SAKIPG
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "MMID1"             TO  MCP-WINDOW.
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "MMID1"             TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
       *
@@ -1603,7 +1760,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        820-JOBKANRI-READ2-EXT.
            EXIT.
+      *****************************************************************
+      *    ジョブ管理読込
+      *****************************************************************
+       820-JOBKANRI-READ3-SEC      SECTION.
       *
+      *    アクセスキー取得チェック
+           MOVE    ZERO                TO  FLG-SJOBKANRI
+           INITIALIZE  ORCSJOBKANRIAREA
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
+           INITIALIZE  JOBKANRI-REC
+           MOVE    CONST-MKYJOBID      TO  JOB-JOBID
+           MOVE    CONST-MKYSHELLID    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+                                           SPA-AREA
+           IF      SJOBKANRI-RETURN    NOT =   ZERO
+               MOVE    1                   TO  FLG-SJOBKANRI
+               INITIALIZE  JOBKANRI-REC
+           END-IF
+           .
+       820-JOBKANRI-READ2-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢ管理読込み処理
       *****************************************************************
@@ -1746,21 +1925,55 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-JOBKANRI-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ＤＢＳＥＬＥＣＴ処理
+      *    アクセスキー読込処理
       *****************************************************************
-       910-DBSELECT-SEC               SECTION.
+       900-ACCESSKEY-READ-SEC      SECTION.
       *
-           MOVE    "DBSELECT"          TO      MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF    ( MCP-RC          =   ZERO )
+           MOVE    ZERO                TO  FLG-ACCESSKEY
+           INITIALIZE  ACCESS-KEY-REC
+           MOVE    SPA-HOSPNUM         TO  ACCESS-KEY-HOSPNUM
+           MOVE    ACCESS-KEY-REC      TO  MCPDATA-REC
+           MOVE    "tbl_access_key"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_access_key"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  ACCESS-KEY-REC
+               ELSE
+                   MOVE    1               TO  FLG-ACCESSKEY
+                   INITIALIZE  ACCESS-KEY-REC
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-ACCESSKEY
+               INITIALIZE  ACCESS-KEY-REC
            END-IF
-      *
+           MOVE    "tbl_access_key"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 910-DBCLOSECURSOR-SEC
            .
+       900-ACCESSKEY-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    アクセスキー削除処理
+      *****************************************************************
+       900-ACCESSKEY-DELETE-SEC    SECTION.
       *
-       910-DBSELECT-EXT.
+           MOVE    ZERO                TO  FLG-ACCESSKEY
+           INITIALIZE  ACCESS-KEY-REC
+           MOVE    SPA-HOSPNUM         TO  ACCESS-KEY-HOSPNUM
+           MOVE    ACCESS-KEY-REC      TO  MCPDATA-REC
+           MOVE    "tbl_access_key"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    1               TO  FLG-ACCESSKEY
+               INITIALIZE  ACCESS-KEY-REC
+           END-IF
+           .
+       900-ACCESSKEY-DELETE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

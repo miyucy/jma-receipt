@@ -1,0 +1,37 @@
+#!/bin/bash
+
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
+fi
+. $JMARECEIPT_ENV
+
+#------------------------------------
+# $1 : 医療機関識別番号(HOSPNUM)
+# $2 : 医療機関ID(HOSPID)
+# $3 : ジョブＩＤ
+# $4 : シェルＩＤ
+#------------------------------------
+
+HOSPNUM=${1}
+HOSPID=${2}
+JOBID=${3}
+SHELLID=$(printf "%-8s" ${4})
+
+export ACCESSKEYPATH
+
+RESULT=`get_license_access_key.rb ${HOSPID} 2>&1`
+
+if [ "${RESULT:0:3}" = "200" ]; then
+  AKEY=${RESULT:4:64}
+  SQLSTR="INSERT INTO tbl_access_key VALUES (${HOSPNUM},'${AKEY}',to_char(now(),'yyyymmdd'),to_char(now(),'hh24miss'));"
+  ${MONSQL} -dir ${LDDIRECTORY} -c "${SQLSTR}"
+else
+  ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},,,アクセスキーの取得に失敗しました(${RESULT:0:3})"
+  exit 1
+fi
+
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,アクセスキーを取得しました"
+
+exit 0

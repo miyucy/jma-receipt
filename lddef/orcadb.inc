@@ -248,4 +248,5 @@ db	{
         tbl_okusuri_kanri;
         tbl_okusuri_data;
         tbl_ptmynumber;
+	tbl_access_key;
 };

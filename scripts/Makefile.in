@@ -125,6 +125,7 @@ shell_sources = \
 	allways/HL04.sh.in \
 	allways/HL05.sh.in \
 	allways/mask.sh.in \
+	allways/get_license_access_key.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \
@@ -156,6 +157,7 @@ ruby_sources = \
 	monthly/rosai_receden_common_const.rb.in \
 	monthly/rosai_receden_error.rb.in \
 	daily/shrink_rp.rb.in \
+	allways/get_license_access_key.rb.in \
 
 claim_sources = \
 	claim/rb/clm_rcv.rb.in \

@@ -17,6 +17,7 @@ fi
 # $7 : ライセンスマスタエラーファイル名
 # $8 : ライセンスマスタジョブＩＤ
 # $9 : ライセンスマスタシェルＩＤ
+# $10: アクセスキー
 #------------------------------------
 HOSPNUM=$1
 MNTRET=0
@@ -28,7 +29,7 @@ MNTRET=$?
 if [ ${MNTRET} -ne 1 ]; then
     #ライセンスマスタ更新
     sleep 1
-    master_license_upgrade.sh $1 $2 $3 $7 $8 $9 
+    master_license_upgrade.sh $1 $2 $3 $7 $8 $9 ${10}
     MLIRET=$?
 fi
 

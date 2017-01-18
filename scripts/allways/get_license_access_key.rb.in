@@ -1,0 +1,32 @@
+#!%RUBY%
+# coding : utf-8
+
+require "uri"
+require "net/https"
+require "json"
+
+APIURL = ENV['ACCESSKEYPATH']
+ID = ARGV[0]
+
+#STDERR.puts "#{APIURL}"
+#STDERR.puts "#{ID}"
+
+url = URI.parse("#{APIURL}/generate?id=#{ID}")
+http = Net::HTTP.new(url.host, url.port)
+http.use_ssl = true
+http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+req = Net::HTTP::Get.new(url)
+req["Content-Type"] = "application/json"
+
+json = http.request(req)
+res = JSON.parse(json.body)
+
+if json.code.to_i == 200
+  STDERR.puts "200,#{res['key']}"
+else
+  STDERR.puts "#{res['error']['code']},#{res['error']['message']}"
+end
+
+#puts "code -> #{res.code}"
+#puts "msg -> #{res.message}"
+#puts "body -> #{res.body}"

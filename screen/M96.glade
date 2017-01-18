@@ -780,6 +780,33 @@
       </widget>
       <widget>
         <class>GtkButton</class>
+        <name>B05C</name>
+        <x>348</x>
+        <y>720</y>
+        <width>1</width>
+        <height>1</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <border_width>0</border_width>
+        <label></label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <accelerator>
+          <modifiers>GDK_CONTROL_MASK</modifiers>
+          <key>GDK_F5</key>
+          <signal>clicked</signal>
+        </accelerator>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
         <name>B06</name>
         <x>432</x>
         <y>720</y>

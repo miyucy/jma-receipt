@@ -32,6 +32,7 @@ db	{
 	tbl_sysuser;
 	tbl_dbkanri;
 	tbl_mstkanri;
+	tbl_access_key;
 	monbatch_log;
 	monbatch_clog;
 };
