@@ -4384,13 +4384,6 @@
                    MOVE    TBL-ZS-KBN2(TBL-ZSIDX)  TO  WRK-ZS-KBN2
            END-SEARCH
       *
-      *H28.9
-      *    （在支診等以外）の加算は１回のみ
-           IF     (WRK-ZS-GRP(2:1)     =   "4"  )
-            AND   (WRK-COM-KSNAUTO (IDX-Z) =   "1" )
-               GO      TO      10016-ZATAKUKSN-AUTO-EXT
-           END-IF
-      *
            EVALUATE    WRK-ZS-GRP(1:1)
               WHEN    "0" 
       *       在医総管(在支診等)
@@ -4459,6 +4452,13 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  WRK-SRYCD
+      *H29.1
+      *    （在支診等以外）の加算は１回のみ
+      *    IF     (WRK-ZS-GRP(2:1)     =   "4"  )
+      *     AND   (WRK-COM-KSNAUTO (IDX-Z) =   "1" )
+      *        GO      TO      10016-ZATAKUKSN-AUTO-EXT
+      *****END-IF
+      *
       *
            PERFORM VARYING     IDX3    FROM    1   BY  1
                    UNTIL      (IDX3    >   3  )
@@ -4469,14 +4469,14 @@
                    MOVE    IDX-Z               TO  IDX-S
                    PERFORM 1100-KASAN-SET-SEC
                    IF      FLG-ADD         =   1
-      *H28.9
+      *H29.1
       *               （在支診等以外）の加算は手入力分とする
-                       IF     (WRK-ZS-GRP(2:1)     =   "4" )
-                           MOVE    "1"         TO  WRK-COM-KSNAUTO
-                                                        (IDX-Z)
-                           MOVE    SPACE       TO  WRK-COM-AUTOKBN
-                                                        (IDX-S)
-                       END-IF
+      *                IF     (WRK-ZS-GRP(2:1)     =   "4" )
+      *                    MOVE    "1"         TO  WRK-COM-KSNAUTO
+      *                                                 (IDX-Z)
+      *                    MOVE    SPACE       TO  WRK-COM-AUTOKBN
+      *                                                 (IDX-S)
+      *****            END-IF
       *
                        MOVE    3               TO  IDX3
                    END-IF
