@@ -111,6 +111,7 @@
                    07  WRK-PARA-TERMID           PIC X(16).
                    07  WRK-PARA-HOSPNUM          PIC 9(02).
                    07  WRK-PARA-TEMP-KBN         PIC X(01).
+                   07  WRK-PARA-API-ID           PIC X(20).
       *
            COPY    "CPORCSPRTLNK.INC".
       *
@@ -222,6 +223,7 @@
                                              WRK-PARA-DATASETNAME
                                              WRK-PARA-HOSPNUM
                                              WRK-PARA-TEMP-KBN
+                                             WRK-PARA-API-ID
            END-UNSTRING                                  
       *
            MOVE    WRK-PARA-HOSPNUM    TO    SPA-HOSPNUM 
@@ -343,6 +345,7 @@
       *    
            MOVE    WRK-PARA-PTID       TO  SPRT-PTID
            MOVE    WRK-PARA-TYPE       TO  SPRT-DATA-TYPE
+           MOVE    WRK-PARA-API-ID     TO  SPRT-API-ID
       *
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA

@@ -243,7 +243,7 @@
                                        TO  SHELLTBL-ARG9
            MOVE    LNK-PRTKANRI-OPID
                                        TO  SHELLTBL-ARG10
-           MOVE    RPMAIN-ID           TO  SHELLTBL-ARG11
+           MOVE    SPACE               TO  SHELLTBL-ARG11
            MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG12
            MOVE    SPA-PRT-UUID        TO  SHELLTBL-ARG13
            MOVE    SPA-PTID            TO  SHELLTBL-ARG14
@@ -272,6 +272,7 @@
                MOVE    "1"             TO  SHELLTBL-ARG23
       *    END-IF
            MOVE    HC01PARA-BASENAME   TO  SHELLTBL-ARG24
+           MOVE    RPMAIN-ID           TO  SHELLTBL-ARG25
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC

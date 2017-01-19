@@ -17,6 +17,7 @@ tbl_prtdata	{
 	SITEKBN			char(1);
 	PRTNM			char(16);
 	DATA_TYPE	    varchar(16);
+	API_ID		    varchar(20);
 	PRTDATA			varchar(20000);
 	CREYMD 			varchar(8);
 #-----> 検索用項目

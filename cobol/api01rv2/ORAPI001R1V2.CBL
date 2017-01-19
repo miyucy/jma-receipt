@@ -388,7 +388,7 @@
            MOVE    "["                 TO  BODY-REC
            WRITE   BODY-REC
       *
-           MOVE    PRTKANRI-PRTNM      TO  FDGRES-FORMID
+           MOVE    PRTKANRI-API-ID     TO  FDGRES-FORMID
            MOVE    PRTKANRI-TITLE      TO  FDGRES-FORMNAME
       *
            MOVE    KEY-GROUP(1:8)      TO  WRK-SYMD
@@ -397,7 +397,6 @@
            MOVE    KEY-GROUP(9:6)      TO  WRK-HMS
            PERFORM 800-TIME-SEC
            MOVE    WRK-TIME            TO  FDGRES-PRTHMS
-           MOVE    PRTKANRI-SKYYMD     TO  FDGRES-SRYYMD
       *
            PERFORM 900-PRTDATA-KEY3-SEL-SEC
       *
@@ -911,15 +910,6 @@
                    PERFORM 911-JSON-WRITE-SEC
                END-IF
       *
-           END-IF
-      *
-           IF    ( FDGRES-SRYYMD
-                                   NOT =   SPACE )
-               MOVE    "Perform_Date"
-                                   TO  WRK-ELEMENT
-               MOVE    FDGRES-SRYYMD
-                                   TO  WRK-TEXT
-               PERFORM 910-JSON-WRITE-SEC
            END-IF
       *
            IF    ( FDGRES-DATAID

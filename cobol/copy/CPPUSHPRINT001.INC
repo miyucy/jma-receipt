@@ -21,11 +21,11 @@
            03  PUSHP001-BODY.
                05  PUSHP001-OCC                OCCURS 10.
       *            レポートＩＤ
-                   07  PUSHP001-RPID           PIC X(20).
+                   07  PUSHP001-FORMID         PIC X(20).
       *            カスタムＩＤ
                    07  PUSHP001-CUSTOMID       PIC X(20).
       *            レポート名称
-                   07  PUSHP001-RPNAME         PIC X(100).
+                   07  PUSHP001-FORMNAME       PIC X(100).
       *            データＩＤ
                    07  PUSHP001-DATAID         PIC X(80).
 

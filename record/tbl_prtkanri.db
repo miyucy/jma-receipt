@@ -14,6 +14,7 @@ tbl_prtkanri	{
 	PRTFLG			char(1);
 	TITLE	        varchar(100);
 	PRTNM			varchar(16);
+	API_ID		    varchar(20);
 	TERMID			varchar(32);
 	OPID			varchar(16);
 	CREYMD 			varchar(8);

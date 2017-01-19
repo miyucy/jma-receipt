@@ -232,6 +232,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                MOVE    SPRT-TERMID         TO  PRTKANRI-TERMID
                MOVE    SPRT-OPID           TO  PRTKANRI-OPID
                MOVE    SPRT-PRTNM          TO  PRTKANRI-PRTNM
+               MOVE    SPRT-API-ID         TO  PRTKANRI-API-ID
            END-IF
       *
            MOVE    SPRT-TBL-GROUP(1:8) TO  PRTKANRI-CREYMD
@@ -335,6 +336,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
            MOVE    SPRT-PRTNM          TO  PRTDATA-PRTNM
            MOVE    FUNCTION LOWER-CASE (SPRT-DATA-TYPE)
                                            TO  PRTDATA-DATA-TYPE
+           MOVE    SPRT-API-ID         TO  PRTDATA-API-ID
       *
            IF    ( PRTDATA-DATA-TYPE   =   "pdf" )
                CALL    "ORCSPDF"       USING

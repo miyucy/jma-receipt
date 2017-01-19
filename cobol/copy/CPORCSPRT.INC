@@ -72,3 +72,5 @@
            03  SPRT-DATA-TYPE      PIC X(16).
       *    PDF(UUID)
            03  SPRT-PDF            PIC X(36).
+      *    API-ID
+           03  SPRT-API-ID         PIC X(20).

@@ -63,6 +63,8 @@
            03  PRTDATA-PRTNM          PIC X(16).
       *¥Ç¡¼¥¿¤Î¼ïÎà
            03  PRTDATA-DATA-TYPE      PIC X(16).
+      *£Á£Ð£É¡Ý£É£Ä
+           03  PRTDATA-API-ID         PIC X(20).
       *Ä¢É¼¥Ç¡¼¥¿
            03  PRTDATA-PRTDATA        PIC X(20000).
       *ºîÀ®Æü

@@ -55,6 +55,8 @@
            03  PRTKANRI-TITLE          PIC X(100).
       *¥×¥ê¥ó¥¿Ì¾
            03  PRTKANRI-PRTNM          PIC X(16).
+      *£Á£Ð£É¡Ý£É£Ä
+           03  PRTKANRI-API-ID         PIC X(20).
       *Ã¼Ëö£É£Ä
            03  PRTKANRI-TERMID         PIC X(32).
       *¥ª¥Ú¥ì¡¼¥¿£É£Ä
