@@ -1061,12 +1061,6 @@
            MOVE    RECEPRINTQ-PRINT-INSTRUCT     (IDYY IDZZ)
                                    TO  RECEPRINTS-PRINT-INSTRUCT
                            (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
-           MOVE    RECEPRINTQ-SUBMISSION-PRINTER1  (IDYY IDZZ)
-                                   TO  RECEPRINTS-SUBMISSION-PRINTER1
-                           (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
-           MOVE    RECEPRINTQ-SUBMISSION-PRINTER2  (IDYY IDZZ)
-                                   TO  RECEPRINTS-SUBMISSION-PRINTER2
-                           (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
            MOVE    RECEPRINTQ-SUBMISSION-CODE      (IDYY IDZZ)
                                    TO  RECEPRINTS-SUBMISSION-CODE
                            (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
@@ -1090,7 +1084,7 @@
       *****************************************************************
        20013-RECEIPT-CHK-SEC     SECTION.
       *
-      *    ジョブ管理チェック処理
+      *    ジョブ管理チェック処理（レセプト作成）
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
@@ -1115,7 +1109,7 @@
                                    NOT =   JOB-SYOKBN    )
                OR    ( SPA-R01-SRYYM
                                    NOT =   JOB-SRYYM     )
-                   MOVE    "E41"           TO  WRK-ERRCD
+                   MOVE    "E42"           TO  WRK-ERRCD
                    GO  TO  20013-RECEIPT-CHK-EXT
                END-IF
       *
@@ -1127,6 +1121,11 @@
                            "】"              DELIMITED  BY  SIZE
                                              INTO  WRK-ERRMSG
                    END-STRING
+                  GO  TO  20013-RECEIPT-CHK-EXT
+               END-IF
+      *
+               IF      RECEPRINTQ-REQUEST-NUMBER
+                                       =   "02"
                   GO  TO  20013-RECEIPT-CHK-EXT
                END-IF
       *
@@ -1157,8 +1156,9 @@
                        CONTINUE
                    WHEN    OTHER
                        IF      R99-B12-STATE   =   WIDGET-NORMAL
-                           MOVE    R99-MSG         TO  WRK-WARNING-MSG
-                           MOVE    "W01"           TO  WRK-WARNING
+      ****                 MOVE    R99-MSG         TO  WRK-WARNING-MSG
+      ****                 MOVE    "W01"           TO  WRK-WARNING
+                           CONTINUE
                        ELSE
                            MOVE    "E31"           TO  WRK-ERRCD
                            MOVE    R99-MSG         TO  WRK-ERRMSG
@@ -1255,7 +1255,7 @@
                END-STRING
       *
                IF      WRK-PARAM   NOT =   JOB-PARAM
-                   MOVE    "E41"           TO  WRK-ERRCD
+                   MOVE    "E43"           TO  WRK-ERRCD
                    GO  TO  2003-RECEIPT-CHECK-EXT
                END-IF
       *
@@ -1266,54 +1266,23 @@
                    MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
                    MOVE    WRK-UPDCNT-X    TO
                                        RECEPRINTS-ALL-NUMBER-OF-SHEETS
-               END-IF
-      *
-               MOVE    "PUTG"          TO  MCP-STATUS
-               MOVE    "CLICKED"       TO  MCP-EVENT
-               MOVE    "B11"           TO  MCP-WIDGET
-      *
-               MOVE    SPACE           TO  LINKAREA
-               IF      SPA-R01-RECEKBN =   "0" OR  "1" OR  "2" OR  "7"
-                   MOVE    "R02"           TO  SPA-MOTOPG
-                                               SPA-R01-GMNKBN
                ELSE
-                   MOVE    "R04"           TO  SPA-MOTOPG
-                                               SPA-R01-GMNKBN
-               END-IF
-      *
-               MOVE    SPA-R01KYOUTU   TO  SPA-WORK
-               MOVE    SPA-AREA        TO  SPA-COMMON
-      *
-               CALL    "ORCGR99"           USING
-                                           MCPAREA
-                                           SPAAREA
-                                           LINKAREA
-                                           SCRAREA
-      *
-               MOVE    SPA-COMMON      TO  SPA-AREA
-               MOVE    SPA-WORK        TO  SPA-R01KYOUTU
-      *
-               MOVE    TAIHI-MCPAREA   TO  MCPAREA
-      *
-               IF      JOB-UPDCNT      >   ZERO
-                   CONTINUE
-               ELSE
-                   EVALUATE    R99-MSG
-                       WHEN    "処理中です"
-                           MOVE    "E70"           TO  WRK-ERRCD
-                           STRING  "レセプト印刷処理中です【"
-                                                   DELIMITED  BY  SIZE
-                                   R99-SHORINM (1) DELIMITED  BY  SPACE
-                                   "】"            DELIMITED  BY  SIZE
-                                                   INTO  WRK-ERRMSG
-                           END-STRING
-                       WHEN    OTHER
-                           MOVE    "E31"           TO  WRK-ERRCD
-                           MOVE    R99-MSG         TO  WRK-ERRMSG
-                   END-EVALUATE
+                   IF      JOB-ENDYMD      =   SPACE
+                       MOVE    "E70"           TO  WRK-ERRCD
+                       STRING  "レセプト印刷処理中です【"
+                                                 DELIMITED  BY  SIZE
+                               JOB-SHELLMSG      DELIMITED  BY  SPACE
+                               "】"              DELIMITED  BY  SIZE
+                                                 INTO  WRK-ERRMSG
+                       END-STRING
+                   ELSE
+                       MOVE    "E31"           TO  WRK-ERRCD
+                       MOVE    "該当のレセプトはありませんでした"
+                                               TO  WRK-ERRMSG
+                   END-IF
                END-IF
            ELSE
-               MOVE    "E40"           TO  WRK-ERRCD
+               MOVE    "E41"           TO  WRK-ERRCD
            END-IF
            .
        2003-RECEIPT-CHECK-EXT.
@@ -1598,9 +1567,11 @@
                                                    TO  WRK-ERRMSG
       *
                WHEN    "E40"
+               WHEN    "E41"
                    MOVE    "対象のジョブ管理がありません。"
                                                    TO  WRK-ERRMSG
-               WHEN    "E41"
+               WHEN    "E42"
+               WHEN    "E43"
                    MOVE    "該当する処理はありません。"
                                                    TO  WRK-ERRMSG
       *

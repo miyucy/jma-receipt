@@ -73,12 +73,6 @@
       *                    印刷指示(Yes :印刷 それ以外 :印刷しない)
                            09  RECEPRINTS-PRINT-INSTRUCT
                                                    PIC X(5).
-      *                    プリンタ（一号用紙）
-                           09  RECEPRINTS-SUBMISSION-PRINTER1
-                                                   PIC X(16).
-      *                    プリンタ（続紙）
-                           09  RECEPRINTS-SUBMISSION-PRINTER2
-                                                   PIC X(16).
       *                    種別等コード
                            09  RECEPRINTS-SUBMISSION-CODE
                                                    PIC X(10).

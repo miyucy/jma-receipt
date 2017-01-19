@@ -28,8 +28,6 @@ xml_receipt_printv3res {
 				Detail_Information	{
 					Detail_Position		varchar(5);
 					Print_Instruct		varchar(05);
-					Submission_Printer1	varchar(16);
-					Submission_Printer2	varchar(16);
 					Submission_Code		varchar(10);
 					Submission_Type		varchar(100);
 					Number			varchar(5);

@@ -29,8 +29,6 @@ xml_receipt_printv3req {
 				Detail_Position	varchar(05);
 #---- 印刷指示(Yes :印刷 それ以外 :印刷しない)
 				Print_Instruct	varchar(05);
-				Submission_Printer1	varchar(16);
-				Submission_Printer2	varchar(16);
 #---- 種別コード
 				Submission_Code	varchar(10);
 #---- 種別

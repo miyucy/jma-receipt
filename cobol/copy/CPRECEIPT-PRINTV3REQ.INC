@@ -60,12 +60,6 @@
       *                    印刷指示(Yes :印刷 それ以外 :印刷しない)
                            09  RECEPRINTQ-PRINT-INSTRUCT
                                                    PIC X(5).
-      *                    プリンタ（一号用紙）
-                           09  RECEPRINTQ-SUBMISSION-PRINTER1
-                                                   PIC X(16).
-      *                    プリンタ（続紙）
-                           09  RECEPRINTQ-SUBMISSION-PRINTER2
-                                                   PIC X(16).
       *                    種別等コード
                            09  RECEPRINTQ-SUBMISSION-CODE
                                                    PIC X(10).
