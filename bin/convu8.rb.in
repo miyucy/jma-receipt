@@ -2,7 +2,6 @@
 # coding : utf-8
 
 require 'optparse'
-require 'iconv'
 
 BACKUP_SUFIX = "_backup"
 TEMP_SUFIX = "_temp"
@@ -91,8 +90,12 @@ def createdb_eucjp(dbconnoption, dbname)
   system("createdb #{dbconnoption} -lC -Ttemplate0 -EEUC-JP #{dbname}")
 end
 
+def failerr(str)
+  str.encode('UTF-8', :undef => :replace, :invalid => :replace, :replace => "☒")
+end
+
 def checkdb(dbconnoption, dbname, toeuc, lcheck)
-  checkcode = "EUC-JISX0213"
+  checkcode = "EUC-JIS-2004"
   if toeuc
     checkcode = "ISO-2022-JP"
   end
@@ -126,7 +129,6 @@ def checkdb(dbconnoption, dbname, toeuc, lcheck)
     printf("データベースに不正な文字が入っていないかチェックします...\n")
   end
   if encoding == "UTF8"
-    iconv = Iconv.new(checkcode, "UTF-8")
     regexp = UTF8MJ.map {|i,j| j}.join("|")
     IO.popen("pg_dump #{dbconnoption} #{dbname}", "r+") {|pipe|
       while line = pipe.gets
@@ -141,21 +143,26 @@ def checkdb(dbconnoption, dbname, toeuc, lcheck)
             line.gsub!(/\xE2\x80\x94/, "\x22\x12")
           end
           if line =~ Regexp.new(regexp)
-            err_file.printf("#{table_name}\n")
+            err_file.printf("TABLENAME: #{table_name}\n")
+            err_file.printf("#{failerr(line)}\n")
             err_file.printf("ERROR1: %s〓%s%s\n", $~.pre_match, $~, $~.post_match)
             err_count += 1
           end
-          iconv.iconv(line)
-        rescue Iconv::Failure => ex
-          err_file.printf("#{table_name}\n")
-          err_file.printf("ERROR2: %s〓%s\n", Iconv.iconv("UTF-8", checkcode, ex.success), ex.failed)
+          line.encode( checkcode, "UTF-8")
+        rescue Encoding::UndefinedConversionError => ex
+          err_file.printf("TABLENAME: #{table_name}\n")
+          err_file.printf("#{failerr(line)}\n")
+          err_file.printf("ERROR2: %s〓%s (%s)\n", ex.error_char, ex.message, ex.class)
+          err_count += 1
+        rescue Encoding::InvalidByteSequenceError => ex
+          err_file.printf("TABLENAME: #{table_name}\n")
+          err_file.printf("#{failerr(line)}\n")
+          err_file.printf("ERROR2: 〓%s (%s)\n", ex.message, ex.class)
           err_count += 1
         end
       end
     }
-    iconv.close
   elsif encoding == "EUC_JP"
-    iconv = Iconv.new("ISO-2022-JP", "EUC-JP")
     IO.popen("pg_dump #{dbconnoption} #{dbname}", "r+") {|pipe|
       pipe.set_encoding("EUC-JP")
       while line = pipe.gets
@@ -163,15 +170,24 @@ def checkdb(dbconnoption, dbname, toeuc, lcheck)
           table_name = $1
         end
         begin
-          iconv.iconv(line)
-        rescue Iconv::Failure => ex
-          err_file.printf("#{table_name}\n")
-          err_file.printf("ERROR2: %s〓%s\n", Iconv.iconv("UTF-8", "ISO-2022-JP", ex.success), Iconv.iconv("UTF-8", "EUC-JP-MS", ex.failed))
+          line.encode('ISO-2022-JP', 'EUC-JP')
+        rescue Encoding::UndefinedConversionError => ex
+          err_file.printf("TABLENAME: #{table_name}\n")
+          s = ex.error_char
+          s.force_encoding('ASCII-8BIT')
+          s.gsub!(/\x8F\xF4\xFB/n, "\xFC\xE2".force_encoding('ASCII-8BIT'))
+          s.force_encoding('CP51932')
+          err_file.printf("#{failerr(line)}\n")
+          err_file.printf("ERROR2: %s〓%s (%s)\n", failerr(s), ex.message, ex.class)
+          err_count += 1
+        rescue Encoding::InvalidByteSequenceError => ex
+          err_file.printf("TABLENAME: #{table_name}\n")
+          err_file.printf("#{failerr(line)}\n")
+          err_file.printf("ERROR2: 〓%s (%s)\n", ex.message, ex.class)
           err_count += 1
         end
       end
     }
-    iconv.close
   end
   printf("\n")
   if err_count > 0
