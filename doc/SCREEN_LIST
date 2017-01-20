@@ -124,6 +124,8 @@ K02.glade	orca21	(K02)診療行為入力−診療行為入力
 K02N.glade	orca21	(K02N)診療行為入力−入院診療行為入力
 K021.glade	orca21	(K021)診療行為−禁忌薬剤一覧
 K023.glade	orca21	(K023)診療行為−入力コード設定
+K024.glade	orca21	(K024)診療行為入力−電子お薬手帳連携
+K0241.glade	orca21	(K0241)診療行為入力−電子お薬手帳連携未設定一覧
 K03.glade	orca21	(K03)診療行為入力−請求確認
 K04.glade	orca21	(K04)診療行為入力−算定
 K05.glade	orca21	(K05)診療行為入力−行為セット入力
@@ -230,6 +232,7 @@ I49.glade	orca32	(I49)ｐカ入力
 I411.glade	orca32	(I411)入院会計照会−保険組合せ選択
 I4ERR.glade	orca32	(I4ERR)エラー情報
 I4ID1.glade	orca32	(I4ID1)確認画面
+I4ID2.glade	orca32	(I4ID2)確認画面
 
 O01.glade	orca33	(O01)患者請求−定期請求
 O02.glade	orca33	(O02)患者請求−個別指示
@@ -365,6 +368,8 @@ W121.glade	orca101	(W121)編綴詳細設定
 W122.glade	orca101	(W122)公費記載設定
 W13.glade	orca101	(W13)システム管理情報−労災自賠医療機関情報設定
 W14.glade	orca101	(W14)システム管理情報−県単独情報設定
+W141.glade	orca101	(W141)レポジトリ登録
+W142.glade	orca101	(W142)レポジトリ一覧
 W15.glade	orca101	(W15)システム管理情報−県内扱い保険者情報
 W16.glade	orca101	(W16)システム管理情報−高額請求資料用薬剤分類情報設定
 W17.glade	orca101	(W17)システム管理情報−データチェック機能情報
@@ -477,4 +482,3 @@ M96.glade	orca901	(M96)マスタ更新管理一覧
 M97.glade	orca901	(M97)プログラム更新管理一覧
 MMERR.glade	orca901	(MMERR)エラー情報
 MMID1.glade	orca901	(MMID1)確認画面
-MJOB.glade	orca901	(MJOB)バッチ処理ログ
