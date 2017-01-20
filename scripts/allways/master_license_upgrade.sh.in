@@ -133,10 +133,16 @@ cleanup () {
     fi
 }
 
-if [ "${LIUPWD:3:2}" != "50" -a -z ${7} ]; then
+if [ "${LIUPWD:3:2}" != "50" ]; then
+  if [ -z ${ACCESSKEY} ]; then
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8102,${HOSPNUM},${ERR_FILE_BASE},,アクセスキーがありません"
     echo "${ERRMSG}"
     exit 99
+  fi
+else
+  if [ -z ${ACCESSKEY} ]; then
+    ACCESSKEY=${LIUPWD} 
+  fi
 fi
 
 # disk space check

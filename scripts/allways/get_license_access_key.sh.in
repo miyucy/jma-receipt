@@ -19,9 +19,12 @@ HOSPID=${2}
 JOBID=${3}
 SHELLID=$(printf "%-8s" ${4})
 
-export ACCESSKEYPATH
-
-RESULT=`get_license_access_key.rb ${HOSPID} 2>&1`
+if [ -n "${ACCESSKEYPATH}" ]; then
+  export ACCESSKEYPATH
+  RESULT=`get_license_access_key.rb ${HOSPID} 2>&1`
+else
+  RESULT="999"
+fi
 
 if [ "${RESULT:0:3}" = "200" ]; then
   AKEY=${RESULT:4:64}

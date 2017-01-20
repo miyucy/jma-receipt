@@ -15,16 +15,25 @@ url = URI.parse("#{APIURL}/generate?id=#{ID}")
 http = Net::HTTP.new(url.host, url.port)
 http.use_ssl = true
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-req = Net::HTTP::Get.new(url)
-req["Content-Type"] = "application/json"
 
-json = http.request(req)
-res = JSON.parse(json.body)
+begin
+  req = Net::HTTP::Get.new(url)
+  req["Content-Type"] = "application/json"
 
-if json.code.to_i == 200
-  STDERR.puts "200,#{res['key']}"
-else
-  STDERR.puts "#{res['error']['code']},#{res['error']['message']}"
+  begin
+    json = http.request(req)
+    res = JSON.parse(json.body)
+  
+    if json.code.to_i == 200
+      STDERR.puts "200,#{res['key']}"
+    else
+      STDERR.puts "#{res['error']['code']},#{res['error']['message']}"
+    end
+  rescue
+    STDERR.puts "#{json.code}"
+  end
+rescue
+  STDERR.puts "998"
 end
 
 #puts "code -> #{res.code}"
