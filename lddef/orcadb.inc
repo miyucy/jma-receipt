@@ -249,4 +249,6 @@ db	{
         tbl_okusuri_data;
         tbl_ptmynumber;
 	tbl_access_key;
+	tbl_mstkanri_public;
+	tbl_mstkanri_master;
 };
