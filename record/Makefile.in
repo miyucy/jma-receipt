@@ -951,6 +951,8 @@ DB_files = \
   xml_stock1v2req.db  \
   xml_stock1v2res.db  \
 	tbl_access_key.db \
+	tbl_mstkanri_master.db \
+	tbl_mstkanri_public.db \
 
 
 shell.db: shell.db.in
