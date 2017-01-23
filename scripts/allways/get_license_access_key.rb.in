@@ -11,13 +11,13 @@ ID = ARGV[0]
 #STDERR.puts "#{APIURL}"
 #STDERR.puts "#{ID}"
 
-url = URI.parse("#{APIURL}/generate?id=#{ID}")
-http = Net::HTTP.new(url.host, url.port)
+uri = URI.parse("#{APIURL}/generate?id=#{ID}")
+http = Net::HTTP.new(uri.host, uri.port)
 http.use_ssl = true
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 begin
-  req = Net::HTTP::Get.new(url)
+  req = Net::HTTP::Get.new(uri.request_uri)
   req["Content-Type"] = "application/json"
 
   begin

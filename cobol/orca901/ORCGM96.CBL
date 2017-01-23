@@ -1334,10 +1334,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 820-JOBKANRI-READ3-SEC
       *
            IF      FLG-SJOBKANRI       =   ZERO
-               IF      JOB-ERRCD           =   "0000"
-                   MOVE    "0402"          TO  SPA-MMID1CD
+               IF    ( JOB-ENDTIME     NOT =   SPACE )
+               AND   ( JOB-ENDYMD      NOT =   SPACE )
+                   IF      JOB-ERRCD           =   "0000"
+                       MOVE    "0402"          TO  SPA-MMID1CD
+                   ELSE
+                       MOVE    "0403"          TO  SPA-MMID1CD
+                   END-IF
                ELSE
-                   MOVE    "0403"          TO  SPA-MMID1CD
+                   MOVE    "0410"          TO  SPA-MMID1CD
                END-IF
                PERFORM 520-MIDSET-SEC
            END-IF
