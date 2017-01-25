@@ -18,7 +18,7 @@ xml_receipt_makev3res {
 		Reskey			varchar(100);
 		Perform_Month		varchar(7);
 		Perform_Title		varchar(100);
-		Err_Patient_Infomation {
+		Err_Patient_Information {
 			Patient_ID	varchar(20);
 			Perform_Month	varchar(7);
 			Error_Code	varchar(3);

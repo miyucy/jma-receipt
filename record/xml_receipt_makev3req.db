@@ -22,7 +22,7 @@ xml_receipt_makev3req {
 #---            给巢 09)
 		Submission_Mode		varchar(2);
 #---     改侍滦据吹荚办枉
-		Patient_Infomation {
+		Patient_Information {
 			Patient_ID	varchar(20);
 			Patient_Perform_Month	varchar(07);
 		} [100];
