@@ -35,7 +35,7 @@
        FILE-CONTROL.
       *
       *    在庫管理データ
-           SELECT  ZAIKOUT-FILE    ASSIGN  ASS-ZAIKOUT
+           SELECT  ZAIKOUT-FILE    ASSIGN  ZAIKO01PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ZAIKOUT.
       *    エラーファイル
@@ -78,13 +78,12 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01PARA//
+                                   BY         //ZAIKO01PARA//.
       *
       *    一時ファイル対応
            COPY    "CPRECEERR.INC".
-      *
-      *    ファイル指定領域
-       01  ASS-AREA.
-           03  ASS-ZAIKOUT             PIC X(256).
       *
       *    スパ領域
        01  STS-AREA.
@@ -147,8 +146,8 @@
       *
       *    一時領域
        01  WRK-AREA.
-      *
            03  WRK-RECEERR             PIC X(200).
+           03  WRK-ERRMSG              PIC X(300).
       *
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -216,11 +215,6 @@
            03  TBL-SRYKACD-OCC         OCCURS   99.
                05  TBL-SRYKACD         PIC X(02).
                05  TBL-SRYKA-NAME      PIC X(20).
-      *
-      *    在庫データ名
-       01  WRK-ZAIKOFILE.
-           03  FILLER                  PIC X(30)   VALUE
-                  "/home/orca/tatano/ZAIKO1.dat".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -290,7 +284,6 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
-      *    COPY    "ORCA-DBPATH".
       *
            COPY    "COMMON-SPA".
       *
@@ -360,36 +353,44 @@
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    一時ファイル名取得
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
+           MOVE    "ZAIKO010"          TO  ZAIKO01PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  ZAIKO01PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  ZAIKO01PARA-HOSPNUM
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    ZAIKO01PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (2)
+           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
+           MOVE    SPACE               TO  RECEERR
            MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
-      *    在庫データファイル名
-           MOVE    WRK-ZAIKOFILE       TO  ASS-ZAIKOUT
+                                       TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  ZAIKO01PARA-FULLNAME
       *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBSTC001"        TO  JOB-PGID
            MOVE    "在庫管理データ作成"
                                        TO  JOB-SHELLMSG
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"               USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
-                                           SPA-AREA
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    ファイルオープン
            OPEN    OUTPUT              ZAIKOUT-FILE
-           IF      STS-ZAIKOUT     NOT =   ZERO
-               DISPLAY "*** ORCBST001 OPNE ERR:" STS-ZAIKOUT   " ***"
-               MOVE    1               TO  FLG-END
+           IF      STS-ZAIKOUT     =   "00"
+                CONTINUE
+            ELSE
+                MOVE   SPACE           TO  WRK-RECEERR
+                STRING "在庫管理データＯＰＥＮエラー　STS="
+                                           DELIMITED  BY  SIZE
+                       STS-ZAIKOUT         DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
                GO  TO  100-INIT-EXT
            END-IF
       *
@@ -721,12 +722,17 @@
            END-IF
       *
            WRITE       ZAIKOUT-REC
-           IF      STS-ZAIKOUT     NOT =   ZERO
-               DISPLAY "*** ORCBST001 WRITE ERR:" STS-ZAIKOUT   " ***"
-               MOVE    1               TO  FLG-END
-               MOVE    "ＤＢ出力エラー"
-                                       TO  WRK-RECEERR
+           IF      STS-ZAIKOUT     =   "00"
+                CONTINUE
+            ELSE
+                MOVE   SPACE           TO  WRK-RECEERR
+                STRING "在庫管理データ書き込みエラー　STS="
+                                           DELIMITED  BY  SIZE
+                       STS-ZAIKOUT         DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        20022-STOCKRES-HEN-EXT.
@@ -891,31 +897,24 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           IF      CNT-OUT             =   ZERO
-               MOVE    "処理対象のデータがありませんでした"
-                                   TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
            CLOSE   ZAIKOUT-FILE
       *
-           DISPLAY "*** ORCBST001 PAGE:" CNT-OUT   " ***"
-           DISPLAY "*** ORCBST001 END ***"
+           IF      CNT-OUT         =   ZERO
+               MOVE    "処理対象のデータがありませんでした"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    CNT-OUT         TO  JOB-UPDCNT
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-                                       SPA-AREA
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "*** ORCBST001 PAGE:" CNT-OUT   " ***"
+           DISPLAY "*** ORCBST001 END ***"
       *
            .
        300-END-EXT.
@@ -939,23 +938,34 @@
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
-                                       SPA-AREA
+               PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
-           MOVE    1                   TO  FLG-END     
+           MOVE    1                   TO  FLG-END
       *
            .
        500-ERR-HENSYU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBSTC001 "       DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    システム管理マスタ検索処理
@@ -1088,6 +1098,24 @@
            .
        910-TENSU-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

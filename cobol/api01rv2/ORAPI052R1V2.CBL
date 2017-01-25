@@ -38,6 +38,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *    エラーファイル 名称領域
+           COPY    "CPERRFL.INC".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -88,23 +91,35 @@
            03  WRK-MCP-PATHNAME        PIC X(62).
            03  WRK-MCP-WINDOW          PIC X(62).
       *
+           03  WRK-TEMPDIR-ROOT        PIC X(1024).
+      *
+       01  WRK-LNK-AREA.
+           COPY    "CPORCSPRTLNK.INC".
       *
        01  WRK-XML-AREA.
            03  WRK-BASE-DATE           PIC X(10).
            03  WRK-BASE-YMD            PIC X(08).
       *
-      *    ファイル名
-       01  ZAIKO-FILE.
-           03  FILLER              PIC X(30)   VALUE
-               "scripts/allways/zaiko1.sh".
-      *    エラーファイル名
-       01  ERR-FILE.
-           03  FILLER              PIC X(30)   VALUE
-               "scripts/allways/zaiko1.sh".
+       01  WRK-CONS-AREA.
+      *    ジョブ管理ＤＢの値
+           03  WRK-CONS-JOB-SHELLID    PIC X(08)   VALUE   "ZAIKO".
+           03  WRK-CONS-JOB-JOBID      PIC 9(07)   VALUE   1.
+      *
+      *    印刷管理ＤＢの値  
+           03  WRK-CONS-PRTKANRI-TBL-KEY
+                                       PIC X(08)   VALUE   "ZAIKO".
+           03  WRK-CONS-PRTKANRI-TBL-GROUP
+                                       PIC X(14)   VALUE   SPACE.
+      *
+      *    エラーファイルＩＤ
+           03  WRK-CONS-FILE-ID        PIC X(08)   VALUE   "ORAPIERR".
       *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *   ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSCOMMON.INC".
       *
@@ -141,6 +156,11 @@
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "ORCA-BLOB".
+      *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -528,12 +548,134 @@
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
+      *    ＳＰＡ共通設定
+           INITIALIZE                  SYS-1010-REC
+           INITIALIZE                  ORCSCOMMONAREA
+           MOVE    "M00"           TO  ORCSCOMMON-PG
+           CALL    "ORCSCOMMON"        USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSCOMMONAREA
+                                       SYS-1010-REC
+      *
+           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
+           MOVE    SPACE           TO  SPA-TERMID (37:)
+      *
+      *    一時ディレクトリのルートディレクトリ取得
+           ACCEPT  WRK-TEMPDIR-ROOT
+                               FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
+      *    一時ディレクトリ名組み立て
+           STRING  WRK-TEMPDIR-ROOT    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   SPA-TERMID          DELIMITED   BY  SPACE
+                   LOW-VALUE           DELIMITED   BY  SIZE
+                                       INTO        MCP-TEMPDIR
+           END-STRING
+      *
+      *    環境変数［MCP_TEMPDIR］を生成（MCP-TEMPDIRの値を設定）
+           SET ENVIRONMENT "MCP_TEMPDIR"
+                                   TO  MCP-TEMPDIR
+      *    環境変数［ORCA_UID］を生成（SPA-TERMID値を設定）
+           SET ENVIRONMENT "ORCA_UID"
+                                   TO  SPA-TERMID
+      *
+      *    一時ディレクトリ作成
+           CALL    "CBL_CREATE_DIR"    USING   MCP-TEMPDIR
+           IF    ( RETURN-CODE     NOT =   ZERO )
+               MOVE    "80"                TO  WRK-ERRCD
+           END-IF
+      *
+      *    マシン日付取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+      *    ジョブ管理処理
+           MOVE    "ALL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF      SJOBKANRI-RETURN    =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "20"                TO  WRK-ERRCD
+               GO  TO  2002-SYORI-01-EXT
+           END-IF
+      *
+           MOVE    "JBS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF      SJOBKANRI-RETURN    =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "21"                TO  WRK-ERRCD
+               GO  TO  2002-SYORI-01-EXT
+           END-IF
+      *
+      *    エラーファイル名
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID
+                                       TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+      *
+      *    印刷用スクリプト
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
+           STRING  SMCNDATE-YMD    DELIMITED  BY  SIZE
+                   SMCNDATE-HMS    DELIMITED  BY  SIZE
+                                   INTO    WRK-CONS-PRTKANRI-TBL-GROUP
+           END-STRING
+      *
+           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+           INITIALIZE                      LNK-PRTKANRI-AREA
+           MOVE    1                   TO  LNK-PRTKANRI-RENNUM
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  LNK-PRTKANRI-TBL-KEY
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                       TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    "000000"            TO  LNK-PRTKANRI-SRYYM
+           MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "zaiko01.sh"        TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+      **** MOVE    SYS-1031-PRTNM (6)  TO  LNK-PRTKANRI-PRTNM
+      *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    ZAIKO-FILE          TO  SHELLTBL-NAME
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
-           MOVE    SPA-TERMID          TO  SHELLTBL-ARG2
-           MOVE    WRK-BASE-YMD        TO  SHELLTBL-ARG3
-           MOVE    ERR-FILE            TO  SHELLTBL-ARG4
+           MOVE    "zaiko01.sh"        TO  SHELLTBL-NAME
+           MOVE     SPA-HOSPNUM        TO  SHELLTBL-HOSPNUM
+           MOVE     WRK-CONS-JOB-JOBID
+                                       TO  SHELLTBL-JOBID
+           MOVE     WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-SHELLID
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SHELLTBL-ARG2
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SHELLTBL-ARG3
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
+           MOVE    LNK-PRTKANRI-SHELLID
+                                       TO  SHELLTBL-ARG7
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG13
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG14
+           MOVE    ERRFLPARA-BASENAME
+                                       TO  SHELLTBL-ARG15
+           MOVE    WRK-BASE-YMD        TO  SHELLTBL-ARG16
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -548,6 +690,43 @@
       *    結果情報返却処理
       *****************************************************************
        2003-SYORI-02-SEC           SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF      SJOBKANRI-RETURN
+                                   =   ZERO
+      *??
+               DISPLAY "JOB-UPDCNT=" JOB-UPDCNT
+      *??
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "70"            TO  WRK-ERRCD
+                   STRING  "処理中です【"  DELIMITED  BY  SIZE
+                           JOB-SHELLMSG    DELIMITED  BY  SPACE
+                           "】"            DELIMITED  BY  SIZE
+                                           INTO  WRK-ERRMSG
+                   END-STRING
+               ELSE
+                   IF      JOB-ERRCD   =   SPACE
+                       CONTINUE
+                   ELSE
+                       MOVE    "30"           TO  WRK-ERRCD
+                       STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                               "【"        DELIMITED  BY  SIZE
+                              JOB-SHELLMSG DELIMITED  BY  SPACE
+                              "】"         DELIMITED  BY  SIZE
+                                           INTO  WRK-ERRMSG
+                       END-STRING
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    "40"           TO  WRK-ERRCD
+           END-IF
       *
            .
        2003-SYORI-02-EXT.
@@ -608,10 +787,30 @@
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
+           EVALUATE    WRK-ERRCD
+               WHEN    "30"
+               WHEN    "70"
+                   GO  TO  890-ERRCD-MSG-EXT
+           END-EVALUATE
+      *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "11"
                MOVE    "基準日が暦日ではありません"
+                                               TO  WRK-ERRMSG
+           WHEN    "20"
+               MOVE    "ジョブ管理が削除できませんでした"
+                                               TO  WRK-ERRMSG
+           WHEN    "21"
+               MOVE    "ジョブ管理が更新できませんでした"
+                                               TO  WRK-ERRMSG
+      *
+               WHEN    "40"
+                   MOVE    "対象のジョブ管理がありません。"
+                                               TO  WRK-ERRMSG
+      *
+               WHEN    "80"
+                   MOVE    "一時ディレクトリが取得できません"
                                                TO  WRK-ERRMSG
       *警告
            WHEN    "K1"
@@ -659,6 +858,20 @@
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
            EXIT.
       *
       *****************************************************************
