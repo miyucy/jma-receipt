@@ -198,10 +198,21 @@ class Jma_print
     else
        execute_monpe(item)
     end
+
+    if ["1", "2"].include?(@print_order)
+      execute("lpr -P #{item[:lp_name]} #{item[:temp_pdf_file]}") if ["1", "2"].include?(@print_order)
+    end
+
+    if @print_order == "1"
+      File.delete(item[:temp_pdf_file]) if File.exist?(item[:temp_pdf_file])
+    else
+      execute("mv #{item[:temp_pdf_file]} #{item[:pdf_file]}")
+    end
+
   end
 
   def execute_monblob(item)
-    execute("monblob -dir #{ENV['LDDIRECTORY']} -export #{item[:data]} -output #{item[:pdf_file]}")
+    execute("monblob -dir #{ENV['LDDIRECTORY']} -export #{item[:data]} -output #{item[:temp_pdf_file]}")
   end
 
   def execute_monpe(item)
@@ -218,16 +229,6 @@ class Jma_print
 
     File.delete(item[:temp_red_file]) if File.exist?(item[:temp_red_file])
     File.delete(item[:temp_file]) if File.exist?(item[:temp_file])
-
-    if ["1", "2"].include?(@print_order)
-      execute("lpr -P #{item[:lp_name]} #{item[:temp_pdf_file]}") if ["1", "2"].include?(@print_order)
-    end
-
-    if @print_order == "1"
-      File.delete(item[:temp_pdf_file]) if File.exist?(item[:temp_pdf_file])
-    else
-      execute("mv #{item[:temp_pdf_file]} #{item[:pdf_file]}")
-    end
 
   end
 
