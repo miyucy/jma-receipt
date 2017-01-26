@@ -17,6 +17,7 @@ fi
 #        ${14} 医療機関番号 
 #        ${15} エラーファイル名 
 #        ${16} 基準日
+#        ${17} 入外区分
 #-------------------------------------------#
 
 cleanup(){
@@ -25,8 +26,7 @@ echo "${PARA_FILE_FULL}" >> $LOG
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
-##      環境変数［ORCA_UID］が設定されていた場合、一時ディレクトリを削
-除
+##      環境変数［ORCA_UID］が設定されていた場合、一時ディレクトリを削除
         if  [ -n "${ORCA_UID}" ]; then
             rm  -rf ${MCP_TEMPDIR}
         fi
@@ -47,7 +47,7 @@ echo $(basename ${LOG_FILE})
 echo $#
 
 RENNUM=$(expr $RENNUM + 1) 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBSTC001 -parameter "$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16}"
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBSTC001 -parameter "$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17}"
 if  [ -e ${ERR_FILE_FULL} ]; then
 	exit
 fi

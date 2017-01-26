@@ -35,6 +35,8 @@
               05  STOCKRES-RESPONSE-NUMBER   PIC X(2).
       *       UID（電子カルテ）
               05  STOCKRES-KARTE-UID         PIC X(36).
+      *       オルカUID
+              05  STOCKRES-ORCA-UID          PIC X(36).
       *       実施日
               05  STOCKRES-INFORMATION-DATE  PIC X(10).
       *       実施時間
@@ -49,4 +51,5 @@
               05  STOCKRES-BASE-DATE         PIC X(10).
       *       入外区分（外来のみ）
               05  STOCKRES-INOUT             PIC X(01).
-      *
+      *       件数
+              05  STOCKRES-OUTPUT-COUNT      PIC X(10).

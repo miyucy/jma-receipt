@@ -88,10 +88,12 @@
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
       *
-           03  WRK-MCP-PATHNAME        PIC X(62).
-           03  WRK-MCP-WINDOW          PIC X(62).
+           03  WRK-PARAM               PIC X(256).
       *
            03  WRK-TEMPDIR-ROOT        PIC X(1024).
+      *
+           03  WRK-UPDCNT-X.
+               05  WRK-UPDCNT          PIC 9(10).
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
@@ -140,6 +142,12 @@
       *
       *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
+      *
+      *    ＵＩＤ取得用エリア
+       01  UIDIO-AREA.
+           03  C-RET               PIC X(2).
+           03  C-UID               PIC X(36).
+       01  ST                      PIC 9(2).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -227,7 +235,7 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE   "Medical Info"       TO  STOCKRES-RESKEY
+           MOVE   "Stock Info"         TO  STOCKRES-RESKEY
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
@@ -380,16 +388,17 @@
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
+               MOVE    "02"                TO  STOCKRES-RESPONSE-NUMBER
                MOVE    ZERO                TO  STOCKRES-API-RESULT
                EVALUATE    FLG-SYORI
                    WHEN    1
                        MOVE    "処理を起動しました"
                                            TO  STOCKRES-API-RESULT-MSG
                    WHEN    2
-                       MOVE    "処理終了"
-                                           TO  STOCKRES-API-RESULT-MSG
+                       MOVE    "処理終了"  TO  STOCKRES-API-RESULT-MSG
                END-EVALUATE
            ELSE
+               MOVE    "01"                TO  STOCKRES-RESPONSE-NUMBER
                IF      WRK-ERRMSG          =   SPACE
       *        エラー・警告メッセージ
                    PERFORM 890-ERRCD-MSG-SEC
@@ -397,6 +406,9 @@
                MOVE    WRK-ERRCD           TO  STOCKRES-API-RESULT
                MOVE    WRK-ERRMSG          TO  STOCKRES-API-RESULT-MSG
            END-IF
+      *
+           MOVE    STOCKREQ-KARTE-UID  TO  STOCKRES-KARTE-UID
+           MOVE    STOCKREQ-ORCA-UID   TO  STOCKRES-ORCA-UID
       *
            PERFORM 3001-STOCKRES-SEC
       *
@@ -479,6 +491,24 @@
       *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
       *
+      *    カルテUID
+           IF      STOCKREQ-KARTE-UID  =   SPACE
+               MOVE    "04"                TO  WRK-ERRCD
+               GO  TO  2001-INPUT-CHK-EXT
+           END-IF
+      *
+      *    オルカUID
+           IF      STOCKREQ-REQUEST-NUMBER
+                                       =   "01"
+               CONTINUE
+           ELSE
+               IF      STOCKREQ-ORCA-UID
+                                       =   SPACE
+                   MOVE    "05"            TO  WRK-ERRCD
+                   GO  TO  2001-INPUT-CHK-EXT
+               END-IF
+           END-IF
+      *
       *    診療日チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PERFORM-CHK-SEC
@@ -507,12 +537,10 @@
                                            TO  STOCKRES-BASE-DATE
            END-IF
       *    入外区分（外来のみ）
-           MOVE    "2"                 TO  SPA-NYUGAIKBN
-      *    入外区分（外来のみ）
-           MOVE    SPA-NYUGAIKBN       TO  STOCKRES-INOUT
+      *****MOVE    STOCKREQ-INOUT      TO  STOCKRES-INOUT
+           MOVE    "O"                 TO  STOCKRES-INOUT
       *
            MOVE    STOCKREQ-REQUEST-NUMBER TO  STOCKRES-REQUEST-NUMBER
-           MOVE    STOCKREQ-REQUEST-NUMBER TO  STOCKRES-RESPONSE-NUMBER
       *
            .
        20010-INPUT-HEN-EXT.
@@ -547,6 +575,10 @@
       *    処理実施処理
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
+      *
+      *    UIDコード取得処理
+           PERFORM 20021-UID-GET-SEC
+           MOVE    C-UID           TO  STOCKREQ-ORCA-UID
       *
       *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
@@ -583,6 +615,7 @@
            CALL    "CBL_CREATE_DIR"    USING   MCP-TEMPDIR
            IF    ( RETURN-CODE     NOT =   ZERO )
                MOVE    "80"                TO  WRK-ERRCD
+               GO  TO  2002-SYORI-01-EXT
            END-IF
       *
       *    マシン日付取得
@@ -610,6 +643,11 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
+           STRING  STOCKREQ-KARTE-UID  DELIMITED  BY  SPACE
+                   STOCKREQ-ORCA-UID   DELIMITED  BY  SPACE
+                                       INTO    JOB-PARAM
+           END-STRING
+      *
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
@@ -648,10 +686,9 @@
       *
            MOVE    SPACE               TO  SHELLTBL
            MOVE    "zaiko01.sh"        TO  SHELLTBL-NAME
-           MOVE     SPA-HOSPNUM        TO  SHELLTBL-HOSPNUM
-           MOVE     WRK-CONS-JOB-JOBID
-                                       TO  SHELLTBL-JOBID
-           MOVE     WRK-CONS-JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-SHELLID
            MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -676,6 +713,14 @@
            MOVE    ERRFLPARA-BASENAME
                                        TO  SHELLTBL-ARG15
            MOVE    WRK-BASE-YMD        TO  SHELLTBL-ARG16
+      *****EVALUATE    STOCKREQ-INOUT
+      *****    WHEN    "O"
+      *****        MOVE    "2"                 TO  SHELLTBL-ARG17
+      *****    WHEN    "I"
+      *****        MOVE    "1"                 TO  SHELLTBL-ARG17
+      *****END-EVALUATE
+           MOVE    "2"                 TO  SHELLTBL-ARG17
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -686,6 +731,22 @@
            .
        2002-SYORI-01-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    UIDコード取得処理
+      *****************************************************************
+       20021-UID-GET-SEC           SECTION.
+      *
+      *    UIDコード取得処理
+           INITIALIZE                  UIDIO-AREA
+           CALL    "orcuidset"         USING
+                                       ST
+                                       UIDIO-AREA
+      *
+           .
+       20021-UID-GET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    結果情報返却処理
       *****************************************************************
@@ -701,27 +762,44 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
+      *        パラメータとカルテUID+オルカUID をチェック
+               MOVE    SPACE           TO  WRK-PARAM
+               STRING  STOCKREQ-KARTE-UID  DELIMITED   BY  SPACE
+                       STOCKREQ-ORCA-UID   DELIMITED   BY  SPACE
+                                           INTO    WRK-PARAM
+               END-STRING
+      *
+               IF      WRK-PARAM   NOT =   JOB-PARAM
+                   MOVE    "41"            TO  WRK-ERRCD
+                   GO  TO  2003-SYORI-02-EXT
+               END-IF
+      *
       *??
                DISPLAY "JOB-UPDCNT=" JOB-UPDCNT
       *??
-               IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "70"            TO  WRK-ERRCD
-                   STRING  "処理中です【"  DELIMITED  BY  SIZE
-                           JOB-SHELLMSG    DELIMITED  BY  SPACE
-                           "】"            DELIMITED  BY  SIZE
-                                           INTO  WRK-ERRMSG
-                   END-STRING
+               IF      JOB-UPDCNT      >   ZERO
+                   MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
+                   MOVE    WRK-UPDCNT-X    TO  STOCKRES-OUTPUT-COUNT
                ELSE
-                   IF      JOB-ERRCD   =   SPACE
-                       CONTINUE
-                   ELSE
-                       MOVE    "30"           TO  WRK-ERRCD
-                       STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                               "【"        DELIMITED  BY  SIZE
-                              JOB-SHELLMSG DELIMITED  BY  SPACE
-                              "】"         DELIMITED  BY  SIZE
+                   IF      JOB-ENDYMD      =   SPACE
+                       MOVE    "70"            TO  WRK-ERRCD
+                       STRING  "処理中です【"  DELIMITED  BY  SIZE
+                               JOB-SHELLMSG    DELIMITED  BY  SPACE
+                               "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-ERRMSG
                        END-STRING
+                   ELSE
+                       IF      JOB-ERRCD   =   SPACE
+                           CONTINUE
+                       ELSE
+                           MOVE    "30"           TO  WRK-ERRCD
+                           STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                                   "【"        DELIMITED  BY  SIZE
+                                  JOB-SHELLMSG DELIMITED  BY  SPACE
+                                  "】"         DELIMITED  BY  SIZE
+                                               INTO  WRK-ERRMSG
+                           END-STRING
+                       END-IF
                    END-IF
                END-IF
            ELSE
@@ -795,6 +873,12 @@
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
+           WHEN    "04"
+               MOVE    "電子カルテＵＩＤが未設定です。"
+                                               TO  WRK-ERRMSG
+           WHEN    "05"
+               MOVE    "オルカＵＩＤが未設定です。"
+                                               TO  WRK-ERRMSG
            WHEN    "11"
                MOVE    "基準日が暦日ではありません"
                                                TO  WRK-ERRMSG
@@ -805,12 +889,15 @@
                MOVE    "ジョブ管理が更新できませんでした"
                                                TO  WRK-ERRMSG
       *
-               WHEN    "40"
-                   MOVE    "対象のジョブ管理がありません。"
+           WHEN    "40"
+               MOVE    "対象のジョブ管理がありません。"
+                                               TO  WRK-ERRMSG
+           WHEN    "41"
+               MOVE    "対象の処理はありません。"
                                                TO  WRK-ERRMSG
       *
-               WHEN    "80"
-                   MOVE    "一時ディレクトリが取得できません"
+           WHEN    "80"
+               MOVE    "一時ディレクトリが取得できません"
                                                TO  WRK-ERRMSG
       *警告
            WHEN    "K1"

@@ -33,6 +33,8 @@
               03  STOCKREQ-REQUEST-NUMBER    PIC X(2).
       *       UID（電子カルテ）
               03  STOCKREQ-KARTE-UID         PIC X(36).
+      *       オルカUID
+              03  STOCKREQ-ORCA-UID          PIC X(36).
       *       基準日
               03  STOCKREQ-BASE-DATE         PIC X(10).
       *
