@@ -6,6 +6,9 @@ MJOB {
     B07 {
       label varchar(10);
     };
+    B08 {
+      state int;
+    };
     B11 {
       state int;
     };

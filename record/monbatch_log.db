@@ -1,7 +1,7 @@
 monbatch_log {
-	id			varchar(37);
+	id		varchar(37);
 	pgid		integer;
-	rc			integer;
+	rc		integer;
 	message		varchar(512);
 	starttime	varchar(64);
 	endtime		varchar(64);
@@ -16,6 +16,8 @@ monbatch_log {
 	exuser		varchar(256);
 	exhost		varchar(256);
 	exec_record varchar(8192);
+#-----> カーソル移動用
+	movecount	integer,virtual;
 );
 
 primary	{
@@ -31,7 +33,12 @@ path	list1		{
 			tenant,	name, comment, extra, exwindow, exwidget,
 			exevent, exterm, exuser, exhost, exec_record
 		FROM monbatch_log
+		WHERE tenant = :tenant
+		AND to_char(starttime, 'YYYYMMDD') >= :starttime 
                 ORDER BY starttime DESC
+		;
+
+		MOVE FORWARD :movecount IN monbatch_log_list1_csr
 		;
 	};
 };

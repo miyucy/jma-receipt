@@ -39,4 +39,4 @@
             03  MBL-EXUSER             PIC X(256).
             03  MBL-EXHOST             PIC X(256).
             03  MBL-EXEC-RECORD        PIC X(8192).
-
+            03  MBL-MOVECOUNT          PIC S9(9)   BINARY.

@@ -19,6 +19,7 @@
             03  MJOB-FIXED12.
               04  MJOB-B06-LABEL                PIC X(10).
               04  MJOB-B07-LABEL                PIC X(10).
+              04  MJOB-B08-STATE                PIC S9(9)   BINARY.
               04  MJOB-B11-STATE                PIC S9(9)   BINARY.
               04  MJOB-B12-STATE                PIC S9(9)   BINARY.
               04  MJOB-NOTEBOOK1.

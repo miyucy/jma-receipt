@@ -77,6 +77,7 @@
                        09  SPA-GMN-TCOMMENT    PIC X(512).
                05  SPA-GMN-DATAVIEW  PIC X(63000).
                05  SPA-GMN-CNTHEN    PIC X(50).
+               05  SPA-GMN-PAGE      PIC 9(01).
       *
                05  SPA-NAI-TBL.
                    07  SPA-NAI-OCC             OCCURS  100.
@@ -126,6 +127,7 @@
            03  WRK-Z2              PIC ZZZ,ZZ9.
            03  WRK-ZZ              PIC ZZ9.
            03  WRK-SELIDX          PIC 9(03).
+           03  WRK-MOVECOUNT       PIC 9(09).
       *
            COPY    "CPSHELLTBL.INC".
       *                             
@@ -356,6 +358,7 @@
            INITIALIZE  SPA-MJOB-AREA
            PERFORM 400-MBL-SPASET-SEC
            MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-GMN-PAGE
            .
        310-SPASET-EXT.
            EXIT.
@@ -366,6 +369,10 @@
        400-MBL-SPASET-SEC          SECTION.
       *
            INITIALIZE  MBL-REC
+           MOVE    SPA-HOSPNUM         TO  MBL-TENANT
+           MOVE    SPA-SYSYMD          TO  MBL-STARTTIME
+ito           MOVE    "20170125"          TO  MBL-STARTTIME
+ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            MOVE    MBL-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "monbatch_log"      TO  MCP-TABLE
@@ -423,6 +430,7 @@
               END-IF
            END-PERFORM
       *
+ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
            IF      FLG-SELLOG          =   1
                PERFORM 4001-FILE-OUTPUT-SEC
                PERFORM 4001-DATA-HENSYU-SEC
@@ -712,7 +720,9 @@
                MOVE    "html"              TO  SHELLTBL-ARG3
            END-IF
       *    ファイル名
-           STRING  SHELLTBL-LOG-FILEID     DELIMITED   BY  SPACE
+           STRING  "batchlog-"             DELIMITED   BY  SIZE
+                   SPA-GMN-TPID (WRK-SELIDX)
+                                           DELIMITED   BY  SIZE
                    "."                     DELIMITED   BY  SIZE
                    SHELLTBL-ARG3           DELIMITED   BY  SPACE
                INTO    SHELLTBL-ARG4
@@ -767,6 +777,10 @@
       *****************************************************************
        490-TAB-CHANGE-SEC          SECTION.
       *
+           DISPLAY "MJOB-PAGENO = " MJOB-PAGENO
+           IF      MJOB-PAGENO         =   ZERO
+               PERFORM 400-JOB-SELECT-SEC
+           END-IF
            EVALUATE    MCP-WIDGET
                WHEN    "B08"
                    IF      MJOB-PAGENO         >=  1
@@ -840,9 +854,11 @@
       *
            EVALUATE    SPA-GMN-CUR
                WHEN    1
+                   MOVE    WIDGET-INSENSITIVE  TO  MJOB-B08-STATE
                    MOVE    WIDGET-INSENSITIVE  TO  MJOB-B11-STATE
                    MOVE    WIDGET-INSENSITIVE  TO  MJOB-B12-STATE
                WHEN    2
+                   MOVE    WIDGET-NORMAL       TO  MJOB-B08-STATE
                    MOVE    WIDGET-NORMAL       TO  MJOB-B11-STATE
                    MOVE    WIDGET-NORMAL       TO  MJOB-B12-STATE
            END-EVALUATE
