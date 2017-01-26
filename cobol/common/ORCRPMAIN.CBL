@@ -159,6 +159,8 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  OUTPARA
       *
+           DISPLAY "OUTPARA[" OUTPARA(1:100) "]"
+      *
            .
       *
        100-INIT-EXT.

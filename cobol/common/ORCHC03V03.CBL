@@ -75,6 +75,8 @@
            COPY    "HCM03B.INC"    REPLACING   //HCM03B//
                                    BY          //HC03V01//.
       *
+           COPY    "CPRPSEIKYU.INC".
+      *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
 @@@@@@*    ファイル名編集用のコピー句を追加
@@ -106,6 +108,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-HIZUKECHK       PIC 9(01).
+           03  FLG-JOIN            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -114,7 +117,7 @@
            03  IDX-Z               PIC 9(04).
            03  IDX-S               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
-           03  IDXA                PIC 9(04).
+           03  IDXA                PIC 9(05).
            03  IDX-ACT             PIC 9(02).
            03  IDX-REN             PIC 9(04).
            03  IDX-JYU             PIC 9(04).
@@ -138,6 +141,12 @@
       *    一時領域
        01  WRK-AREA.
       *
+           03  WRK-DATE.
+               05  WRK-DATE-YY         PIC 9(04).
+               05  WRK-DATE-FL1        PIC X(01).
+               05  WRK-DATE-MM         PIC 9(02).
+               05  WRK-DATE-FL2        PIC X(01).
+               05  WRK-DATE-DD         PIC 9(02).
            03  WRK-YMD             PIC X(10).
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -179,6 +188,8 @@
            03  WRK-Z72-HS              REDEFINES   WRK-Z72-H
                                        PIC -,---,---.
            03  WRK-Z72-H9              PIC Z,ZZZ,ZZ9.
+           03  WRK-MZ                  PIC --------.
+           03  WRK-M9                  PIC -------9.
       *    自費集計
            03  WRK-JIHI-REC.
                05  WRK-JIHI            PIC S9(07)   OCCURS 10.
@@ -230,6 +241,21 @@
                05  WRK-FILEMEI-YMD     PIC X(08).
                05  WRK-FILEMEI-HMS     PIC X(06).
                05  WRK-FILEMEI-CD      PIC X(06).
+           03  WRK-HOSPPOST            PIC X(07).
+           03  WRK-API-HOSPNAME-G.
+               05  WRK-API-HOSPNAME    PIC X(120)
+                                       OCCURS 3.
+           03  WRK-API-HOSPADRS-G.
+               05  WRK-API-HOSPADRS    PIC X(120)
+                                       OCCURS 3.
+           03  WRK-SRYKIKANKBN         PIC X(01).
+      *
+       01  TAPI-AREA.
+           03  TAPI-MEISAI-G.
+               05  TAPI-HKNTEN-KBN     PIC X(03)
+                                       OCCURS 16.
+           03  TAPI-CHOSEI1            PIC X(08).
+           03  TAPI-CHOSEI2            PIC X(08).
       *
       *    プログラムオプションパラメタ
        01  TPARA-AREA.
@@ -247,6 +273,8 @@
            03  TPARA-CHUI-YUKOSTYMD     PIC X(08).
            03  TPARA-CHUI-YUKOEDYMD     PIC X(08).
            03  TPARA-CHUI               PIC X(100).
+           03  TPARA-API-DATA           PIC X(1).
+           03  TPARA-API-CUSTOM-ID      PIC X(20).
       *
        01  CONST-AREA.
            03  CONST-H200401           PIC X(08)   VALUE "20080401".
@@ -373,6 +401,10 @@
       *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
+      *    API対応
+           COPY    "CPORCRPMAIN.INC".
+      *    画面色等
+           COPY    "ENUM-VALUE".
       *
       *
            COPY    "MCPAREA".
@@ -429,24 +461,27 @@
       *****************************************************************
        400-SYOKI-PRINT-SEC             SECTION.
       *
-      *    ファイルＯＰＥＮ
-           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
-           MOVE    "HC03"              TO  HC01PARA-FORM-ID
-           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
-           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
-      *    変更★★★★★★
            ADD     1                   TO  WRK-PAGE
-           MOVE    WRK-PAGE            TO  HC01PARA-CNT
       *
-@@@@@@*    サブプログラムより一時ファイル名の編集を行う。
-@@@@@@*    返却値をASGNPARAに設定する。
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+           IF    ( TPARA-API-DATA      NOT =   "1" )
+      *        ファイルＯＰＥＮ
+               MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
+               MOVE    "HC03"              TO  HC01PARA-FORM-ID
+               MOVE    SPA-TERMID          TO  HC01PARA-TERMID
+               MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+      *        変更★★★★★★
+               MOVE    WRK-PAGE            TO  HC01PARA-CNT
       *
-           OPEN    OUTPUT              PRT-FILE
+@@@@@@*        サブプログラムより一時ファイル名の編集を行う。
+@@@@@@*        返却値をASGNPARAに設定する。
+               INITIALIZE                      SGETTEMP-AREA
+               MOVE    HC01PARA            TO  SGETTEMP-BASENAME
+               CALL    "ORCSGETTEMP"       USING
+                                           SGETTEMP-AREA
+               MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
+      *
+               OPEN    OUTPUT              PRT-FILE
+           END-IF
       *
            .
        400-SYOKI-PRINT-EXT.
@@ -455,7 +490,22 @@
       *****************************************************************
       *    帳票印刷処理
       *****************************************************************
-       400-PRINT-SEC                SECTION.
+       400-PRINT-SEC                   SECTION.
+      *
+           IF    ( TPARA-API-DATA      NOT =   "1" )
+               PERFORM 4000-PRINT-SEC
+           ELSE
+               PERFORM 4000-API-PRINT-SEC
+           END-IF
+      *
+           .
+       400-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票印刷処理
+      *****************************************************************
+       4000-PRINT-SEC                  SECTION.
       *
             MOVE     WKPRT-REC         TO  PRT-REC
       *
@@ -505,11 +555,32 @@
       *            MCPAREA
       **********   MCPDATA-REC
       *
+           .
+       4000-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    帳票印刷処理
+      *****************************************************************
+       4000-API-PRINT-SEC              SECTION.
+      *
+      *    カスタムＩＤ
+           MOVE    TPARA-API-CUSTOM-ID  TO  RPSEIKYU-CUSTOM-ID
+      *
+           INITIALIZE                      RPMAIN-AREA
+           MOVE    "seikyusho"         TO  RPMAIN-ID
+           MOVE    TPARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
+           MOVE    "請求書兼領収書"    TO  RPMAIN-TITLE
+           MOVE    "rp_invoice_receipt"
+                                       TO  MCP-TABLE
+           MOVE    RPSEIKYU-DATA       TO  RPMAIN-DATA
+           CALL    "ORCRPMAIN"         USING
+                                       MCPAREA
+                                       RPMAIN-AREA
+                                       SPA-AREA
       *
            .
-       400-PRINT-EXT.
+       4000-API-PRINT-EXT.
            EXIT.
-      *
       *****************************************************************
       *    帳票印刷処理 (印刷ＤＢに出力）
       *****************************************************************
@@ -731,8 +802,11 @@
       *
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+                                           WRK-API-HOSPNAME (1)
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
+                                           WRK-API-HOSPADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
+           MOVE    SYS-1002-POST       TO  WRK-HOSPPOST
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
       *----(03.04.01)--ADD-END-----
@@ -914,9 +988,18 @@
                    MOVE    SYS-1005-SRYKANAME2
                                                TO  WRK-SRYKA-MEI
                ELSE
-                   IF      WRK-SRYKA-MEI(19:2) NOT =   SPACE
-                       CONTINUE
+                   MOVE    ZERO                TO  FLG-JOIN
+                   IF    ( TPARA-API-DATA      =   "1" )
+                       IF    ( WRK-SRYKA-MEI(29:)  =   SPACE )
+                           MOVE    1           TO  FLG-JOIN
+                       END-IF
                    ELSE
+                       IF    ( WRK-SRYKA-MEI(19:)  =   SPACE )
+                           MOVE    1           TO  FLG-JOIN
+                       END-IF
+                   END-IF
+      *
+                   IF    ( FLG-JOIN            =   1 )
                        STRING  WRK-SRYKA-MEI   DELIMITED  BY  SPACE
                                "、"            DELIMITED  BY  SIZE
                                SYS-1005-SRYKANAME2
@@ -951,6 +1034,7 @@
            MOVE    "99999999"      TO  TPARA-YUKOEDYMD
            MOVE    "00000000"      TO  TPARA-CHUI-YUKOSTYMD
            MOVE    "99999999"      TO  TPARA-CHUI-YUKOEDYMD
+           MOVE    "0"             TO  TPARA-API-DATA
       *
       *    診療科名
            MOVE    "SRYKA"         TO  WRK-PARA-NAME
@@ -1061,6 +1145,21 @@
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA        TO  TPARA-CHUI
       *
+      *
+           IF    ( SPA-MW              =   SPA-GINBEE )
+      *        API_DATA
+               MOVE    "API_DATA"      TO  WRK-PARA-NAME
+               PERFORM 1001-OPTION-CALL-SEC
+               IF    ( WRK-PARA        =   "1" )
+                   MOVE    WRK-PARA    TO  TPARA-API-DATA
+               END-IF
+      *
+      *        API_CUSTOM_ID
+               MOVE    "API_CUSTOM_ID" TO  WRK-PARA-NAME
+               PERFORM 1001-OPTION-CALL-SEC
+               MOVE    WRK-PARA        TO  TPARA-API-CUSTOM-ID
+           END-IF
+      *
            .
        100-OPTION-SELECT-EXT.
            EXIT.
@@ -1131,6 +1230,8 @@
       *
            INITIALIZE                  HC03
            INITIALIZE                  WKPRT-REC
+           INITIALIZE                  WRK-JNISSU
+           INITIALIZE                  TAPI-AREA
       *
       *    伝票番号
            MOVE    WRK-DENPNUM         TO  WRK-NO  
@@ -1313,32 +1414,35 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-GOKTEN
       *
-      *    労災・自賠で患者請求が無い場合、点数表示なし
-           IF    ( COMB-HKNNUM             =    "971"
-               AND PTRSI-HKNKBN        NOT =    "5"
-               AND SYS-4001-RSIIRYOKBN     =    "1" )
-            OR   ( COMB-HKNNUM             =    "971"
-               AND PTRSI-HKNKBN            =    "5"
-               AND SYU-PTFTNRATE           =    ZERO )
-            OR   ( COMB-HKNNUM             =    "973"
-               AND SYU-PTFTNRATE           =    ZERO )
-               MOVE    SPACE               TO  HC03-HKNRYO1
-               MOVE    SPACE               TO  HC03-HKNRYO2
-               MOVE    SPACE               TO  HC03-HKNRYO3
-               MOVE    SPACE               TO  HC03-HKNRYO4
-               MOVE    SPACE               TO  HC03-HKNRYO5
-               MOVE    SPACE               TO  HC03-HKNRYO6
-               MOVE    SPACE               TO  HC03-HKNRYO7
-               MOVE    SPACE               TO  HC03-HKNRYO8
-               MOVE    SPACE               TO  HC03-HKNRYO9
-               MOVE    SPACE               TO  HC03-HKNRYO10
-               MOVE    SPACE               TO  HC03-HKNRYO11
-               MOVE    SPACE               TO  HC03-HKNRYO12
-               MOVE    SPACE               TO  HC03-HKNRYO13
-               MOVE    SPACE               TO  HC03-HKNRYO14
-               MOVE    SPACE               TO  HC03-HKNRYO15
-               MOVE    SPACE               TO  HC03-HKNRYO16
-               MOVE    ALL "*"             TO  HC03-GOKTEN
+           IF    ( TPARA-API-DATA      NOT =   "1" )
+      *        労災・自賠で患者請求が無い場合、点数表示なし
+               IF    ( COMB-HKNNUM             =    "971"
+                  AND  PTRSI-HKNKBN        NOT =    "5"
+                  AND  SYS-4001-RSIIRYOKBN     =    "1" )
+                OR   ( COMB-HKNNUM             =    "971"
+                  AND PTRSI-HKNKBN             =    "5"
+                  AND SYU-PTFTNRATE            =    ZERO )
+                OR   ( COMB-HKNNUM             =    "973"
+                   AND SYU-PTFTNRATE           =    ZERO )
+      *
+                   MOVE    SPACE               TO  HC03-HKNRYO1
+                   MOVE    SPACE               TO  HC03-HKNRYO2
+                   MOVE    SPACE               TO  HC03-HKNRYO3
+                   MOVE    SPACE               TO  HC03-HKNRYO4
+                   MOVE    SPACE               TO  HC03-HKNRYO5
+                   MOVE    SPACE               TO  HC03-HKNRYO6
+                   MOVE    SPACE               TO  HC03-HKNRYO7
+                   MOVE    SPACE               TO  HC03-HKNRYO8
+                   MOVE    SPACE               TO  HC03-HKNRYO9
+                   MOVE    SPACE               TO  HC03-HKNRYO10
+                   MOVE    SPACE               TO  HC03-HKNRYO11
+                   MOVE    SPACE               TO  HC03-HKNRYO12
+                   MOVE    SPACE               TO  HC03-HKNRYO13
+                   MOVE    SPACE               TO  HC03-HKNRYO14
+                   MOVE    SPACE               TO  HC03-HKNRYO15
+                   MOVE    SPACE               TO  HC03-HKNRYO16
+                  MOVE    ALL "*"              TO  HC03-GOKTEN
+               END-IF
            END-IF
       *
       *    保険適用分
@@ -1467,6 +1571,15 @@
            MOVE    SYU-CHOSEI          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-CHOSEI
+      *
+           MOVE    SYU-CHOSEI1         TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  TAPI-CHOSEI1
+      *
+           MOVE    SYU-CHOSEI2         TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  TAPI-CHOSEI2
+      *
       *    今回請求額
            MOVE    WRK-SKYMONEY        TO  WRK-Z72
            PERFORM 810-HENKAN-SEC
@@ -1524,40 +1637,45 @@
                PERFORM 3001-TUKIBETU-HEN-SEC
            END-IF
       *
-           IF    ( SYU-SRYYMD          >=  CONST-H200401 )
-               EVALUATE    ORCHC03-SIZE
-               WHEN    "V1"
-                   MOVE    "HCM03BN.red"       TO  WRK-FORMID
-                   PERFORM 2002-HC03V01-HEN-SEC
-                   MOVE    HC03V01             TO  WKPRT-REC
-               WHEN    "V2"
-                   MOVE    "HCM03V02BN.red"    TO  WRK-FORMID
-                   PERFORM 2002-HC03V02-HEN-SEC
-                   MOVE    HC03V02             TO  WKPRT-REC
-               WHEN    "A5"
-                   MOVE    "HCM03V03A5BN.red"  TO  WRK-FORMID
-                   MOVE    HC03                TO  WKPRT-REC
-               WHEN    OTHER
-                   MOVE    "HCM03V03BN.red"    TO  WRK-FORMID
-                   MOVE    HC03                TO  WKPRT-REC
-               END-EVALUATE
+           DISPLAY "TPARA-API-DATA=" TPARA-API-DATA
+           IF    ( TPARA-API-DATA      =   "1" )
+               PERFORM 2002-APIRES-HEN-SEC
            ELSE
-               EVALUATE    ORCHC03-SIZE
-               WHEN    "V1"
-                   MOVE    "HCM03BO.red"       TO  WRK-FORMID
-                   PERFORM 2002-HC03V01-HEN-SEC
-                   MOVE    HC03V01             TO  WKPRT-REC
-               WHEN    "V2"
-                   MOVE    "HCM03V02BO.red"    TO  WRK-FORMID
-                   PERFORM 2002-HC03V02-HEN-SEC
-                   MOVE    HC03V02             TO  WKPRT-REC
-               WHEN    "A5"
-                   MOVE    "HCM03V03A5BO.red"  TO  WRK-FORMID
-                   MOVE    HC03                TO  WKPRT-REC
-               WHEN    OTHER
-                   MOVE    "HCM03V03BO.red"    TO  WRK-FORMID
-                   MOVE    HC03                TO  WKPRT-REC
-               END-EVALUATE
+               IF    ( SYU-SRYYMD          >=  CONST-H200401 )
+                   EVALUATE    ORCHC03-SIZE
+                   WHEN    "V1"
+                       MOVE    "HCM03BN.red"       TO  WRK-FORMID
+                       PERFORM 2002-HC03V01-HEN-SEC
+                       MOVE    HC03V01             TO  WKPRT-REC
+                   WHEN    "V2"
+                       MOVE    "HCM03V02BN.red"    TO  WRK-FORMID
+                       PERFORM 2002-HC03V02-HEN-SEC
+                       MOVE    HC03V02             TO  WKPRT-REC
+                   WHEN    "A5"
+                       MOVE    "HCM03V03A5BN.red"  TO  WRK-FORMID
+                       MOVE    HC03                TO  WKPRT-REC
+                   WHEN    OTHER
+                       MOVE    "HCM03V03BN.red"    TO  WRK-FORMID
+                       MOVE    HC03                TO  WKPRT-REC
+                   END-EVALUATE
+               ELSE
+                   EVALUATE    ORCHC03-SIZE
+                   WHEN    "V1"
+                       MOVE    "HCM03BO.red"       TO  WRK-FORMID
+                       PERFORM 2002-HC03V01-HEN-SEC
+                       MOVE    HC03V01             TO  WKPRT-REC
+                   WHEN    "V2"
+                       MOVE    "HCM03V02BO.red"    TO  WRK-FORMID
+                       PERFORM 2002-HC03V02-HEN-SEC
+                       MOVE    HC03V02             TO  WKPRT-REC
+                   WHEN    "A5"
+                       MOVE    "HCM03V03A5BO.red"  TO  WRK-FORMID
+                       MOVE    HC03                TO  WKPRT-REC
+                   WHEN    OTHER
+                       MOVE    "HCM03V03BO.red"    TO  WRK-FORMID
+                       MOVE    HC03                TO  WKPRT-REC
+                   END-EVALUATE
+               END-IF
            END-IF
       *
       *
@@ -1572,48 +1690,197 @@
       *
            MOVE    "初 ・ 再 診 料"
                                        TO  HC03-MEISAI (1)
+           MOVE    "A00"               TO  TAPI-HKNTEN-KBN (1)
+      *
            MOVE    "医 学 管 理 等"
                                        TO  HC03-MEISAI (2)
+           MOVE    "B00"               TO  TAPI-HKNTEN-KBN (2)
+      *
            MOVE    "在　宅　医　療"
                                        TO  HC03-MEISAI (3)
+           MOVE    "C00"               TO  TAPI-HKNTEN-KBN (3)
+      *
            MOVE    "投　　　　　薬"
                                        TO  HC03-MEISAI (4)
+           MOVE    "F00"               TO  TAPI-HKNTEN-KBN (4)
+      *
            MOVE    "注　　　　　射"
                                        TO  HC03-MEISAI (5)
+           MOVE    "G00"               TO  TAPI-HKNTEN-KBN (5)
+      *
            MOVE    "処　　　　　置"
                                        TO  HC03-MEISAI (6)
+           MOVE    "J00"               TO  TAPI-HKNTEN-KBN (6)
+      *
            MOVE    "手　　　　　術"
                                        TO  HC03-MEISAI (7)
+           MOVE    "K00"               TO  TAPI-HKNTEN-KBN (7)
+      *
            MOVE    "麻　　　　　酔"
                                        TO  HC03-MEISAI (8)
+           MOVE    "L00"               TO  TAPI-HKNTEN-KBN (8)
+      *
            MOVE    "検　　　　　査"
                                        TO  HC03-MEISAI (9)
+           MOVE    "D00"               TO  TAPI-HKNTEN-KBN (9)
+      *
            MOVE    "画　像　診　断"
                                        TO  HC03-MEISAI (10)
+           MOVE    "E00"               TO  TAPI-HKNTEN-KBN (10)
+      *
            MOVE    "リハビリテーション"
                                        TO  HC03-MEISAI (11)
+           MOVE    "H00"               TO  TAPI-HKNTEN-KBN (11)
+      *
            MOVE    "精神科専門療法"
                                        TO  HC03-MEISAI (12)
+           MOVE    "I00"               TO  TAPI-HKNTEN-KBN (12)
+      *
            MOVE    "放 射 線 治 療"
                                        TO  HC03-MEISAI (13)
+           MOVE    "M00"               TO  TAPI-HKNTEN-KBN (13)
+      *
            MOVE    "病　理　診　断"
                                        TO  HC03-MEISAI (14)
+           MOVE    "N00"               TO  TAPI-HKNTEN-KBN (14)
+      *
            MOVE    "入　院　料　等"
                                        TO  HC03-MEISAI (15)
+           MOVE    "A10"               TO  TAPI-HKNTEN-KBN (15)
+      *
            MOVE    "療養担当手当"
                                        TO  HC03-MEISAI (16)
+           MOVE    "001"               TO  TAPI-HKNTEN-KBN (16)
+      *
       *    明細削除
       *    療養担当手当て
            IF     (SYU-HKNTEN (16)     =   ZERO ) AND
                   (SYU-TGMONEY (16)    =   ZERO ) AND
                   (SYU-TGMONEY-TAX(16) =   ZERO )
-               MOVE    SPACE               TO  HC03-MEISAI (16)
+               MOVE    SPACE           TO  HC03-MEISAI (16)
+                                           TAPI-HKNTEN-KBN (16)
            END-IF
       *
            .
        3001-MEISAI-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    帳票編集処理（API）
+      *****************************************************************
+       2002-APIRES-HEN-SEC                 SECTION.
+      *
+           INITIALIZE                      RPSEIKYU-REC
+           MOVE    "seikyusho"         TO  RPSEIKYU-REPORT-ID
+           MOVE    TPARA-API-CUSTOM-ID TO  RPSEIKYU-CUSTOM-ID
+           MOVE    SYS-1031-PRTNM(3)   TO  RPSEIKYU-PRINTER
+           MOVE    ORCHC03-MOTOID      TO  RPSEIKYU-MOTOID
+           MOVE    HC03-KNJNO          TO  RPSEIKYU-PTNUM
+           MOVE    PTINF-KANANAME      TO  RPSEIKYU-KANANAME
+           MOVE    SPA-NAME            TO  RPSEIKYU-NAME
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+               MOVE    WRK-API-HOSPNAME (IDXA)
+                                       TO  RPSEIKYU-HOSP-NAME (IDXA)
+           END-PERFORM
+           MOVE    WRK-HOSPPOST        TO  RPSEIKYU-HOSP-POST
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+               MOVE    WRK-API-HOSPADRS (IDXA)
+                                       TO  RPSEIKYU-HOSP-ADRS (IDXA)
+           END-PERFORM
+           MOVE    WRK-HOSPTEL         TO  RPSEIKYU-HOSP-TEL
+           IF    ( ORCHC03-MOTOID      =   2 OR 5 )
+               MOVE    WRK-JNISSU      TO  RPSEIKYU-JNISSU
+           END-IF
+           MOVE    WRK-SRYKA-MEI       TO  RPSEIKYU-SRYKANAME
+      *
+           MOVE    WRK-SRYKIKANKBN     TO  RPSEIKYU-SRYKIKANKBN
+      *
+           IF    ( WRK-SRYKIKANKBN     =   "1" )
+               MOVE    WRK-STSRYYMDG   TO  RPSEIKYU-STSRYYMD
+               MOVE    WRK-EDSRYYMDG   TO  RPSEIKYU-EDSRYYMD
+           ELSE
+               MOVE    WRK-STSRYYMDG   TO  RPSEIKYU-SRYYM
+           END-IF
+      *
+           MOVE    HC03-HAKYMD         TO  RPSEIKYU-DENPPRTYMD
+           MOVE    HC03-HOKEN          TO  RPSEIKYU-HOKENNAME
+           MOVE    HC03-FUTAN          TO  RPSEIKYU-FUTAN
+           MOVE    HC03-LBLFTNRATE     TO  RPSEIKYU-FUTANMEI
+           MOVE    HC03-NO             TO  RPSEIKYU-DENPNUM
+           IF    ( HC03-MIDASHI    NOT =   SPACE )
+               MOVE    "1"             TO  RPSEIKYU-TEISEI-KBN
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA        >   16 )
+      *
+               MOVE    TAPI-HKNTEN-KBN (IDXA)
+                                       TO  RPSEIKYU-HKNTEN-KBN (IDXA)
+               MOVE    HC03-MEISAI (IDXA)
+                                       TO  RPSEIKYU-HKNTEN-NAME (IDXA)
+               MOVE    HC03-JIHIBUN (IDXA)
+                                       TO  RPSEIKYU-TGMONEY (IDXA)
+      *
+           END-PERFORM
+      *
+           MOVE    HC03-HKNRYO1        TO  RPSEIKYU-HKNTEN (1)
+           MOVE    HC03-HKNRYO2        TO  RPSEIKYU-HKNTEN (2)
+           MOVE    HC03-HKNRYO3        TO  RPSEIKYU-HKNTEN (3)
+           MOVE    HC03-HKNRYO4        TO  RPSEIKYU-HKNTEN (4)
+           MOVE    HC03-HKNRYO5        TO  RPSEIKYU-HKNTEN (5)
+           MOVE    HC03-HKNRYO6        TO  RPSEIKYU-HKNTEN (6)
+           MOVE    HC03-HKNRYO7        TO  RPSEIKYU-HKNTEN (7)
+           MOVE    HC03-HKNRYO8        TO  RPSEIKYU-HKNTEN (8)
+           MOVE    HC03-HKNRYO9        TO  RPSEIKYU-HKNTEN (9)
+           MOVE    HC03-HKNRYO10       TO  RPSEIKYU-HKNTEN (10)
+           MOVE    HC03-HKNRYO11       TO  RPSEIKYU-HKNTEN (11)
+           MOVE    HC03-HKNRYO12       TO  RPSEIKYU-HKNTEN (12)
+           MOVE    HC03-HKNRYO13       TO  RPSEIKYU-HKNTEN (13)
+           MOVE    HC03-HKNRYO14       TO  RPSEIKYU-HKNTEN (14)
+           MOVE    HC03-HKNRYO15       TO  RPSEIKYU-HKNTEN (15)
+           MOVE    HC03-HKNRYO16       TO  RPSEIKYU-HKNTEN (16)
+           MOVE    HC03-GOKTEN         TO  RPSEIKYU-TOTAL-TEN
+           MOVE    HC03-HOKENBUN       TO  RPSEIKYU-HKNTEKMONEY
+           MOVE    HC03-RSIMIDASI      TO  RPSEIKYU-LBL-RSI-TOTAL
+           MOVE    HC03-RSIBUN         TO  RPSEIKYU-RSI-TOTAL
+           MOVE    HC03-KOUHI          TO  RPSEIKYU-KOH-FTN
+           MOVE    HC03-HOKENGAI       TO  RPSEIKYU-TOTAL-TGMONEY
+           MOVE    HC03-HOKENZEI       TO  RPSEIKYU-TOTAL-TGMONEY-TAX
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   10 )
+      *
+               MOVE   WRK-JIHIMEI (IDXA)
+                                       TO  RPSEIKYU-JIHI-NAME (IDXA)
+               MOVE   HC03-JIHI   (IDX)
+                                       TO  RPSEIKYU-JIHI (IDXA)
+      *
+           END-PERFORM
+           MOVE   HC03-JIHI(11)        TO  RPSEIKYU-JIHI-TOTAL
+           MOVE   HC03-JIHI(12)        TO  RPSEIKYU-JIHI-TOTAL-TAX
+      *
+           MOVE   TAPI-CHOSEI1         TO  RPSEIKYU-CHOSEI1
+           MOVE   TAPI-CHOSEI2         TO  RPSEIKYU-CHOSEI2
+           MOVE   HC03-KONSEIKYU       TO  RPSEIKYU-SKYMONEY
+           MOVE   HC03-SEIKYUZEI       TO  RPSEIKYU-SKYMONEY-TAX
+           MOVE   HC03-ZENMISYU        TO  RPSEIKYU-SKYMONEY-LAST
+           MOVE   HC03-GOUKEIGAK       TO  RPSEIKYU-SKYMONEY-TOTAL
+           MOVE   HC03-KONNYUKIN       TO  RPSEIKYU-NYUKIN
+           MOVE   HC03-CHUI            TO  RPSEIKYU-CAUTION
+           PERFORM VARYING IDXA FROM    1   BY  1
+                   UNTIL ( IDXA >   10 )
+               MOVE  HC03-MEMO (IDXA)
+                                       TO  RPSEIKYU-MEMO (IDXA)
+           END-PERFORM
+      *
+           DISPLAY "RPSEIKYU-DATA!![" RPSEIKYU-DATA (1:100) "]"
+      *
+           .
+       2002-APIRES-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    帳票編集処理（HC03V01）
       *****************************************************************
@@ -1965,11 +2232,16 @@
                    END-IF
                END-IF
       *
-               IF    ( ORCHC03-HAKKOFLG    =   4 )
-                   MOVE    SPACE           TO  WRK-SRYKA-MEI
-               ELSE
-                   MOVE    SYUPARA03-SRYKAMEI
+               IF    ( TPARA-API-DATA      =   "1" )
+                       MOVE    SYUPARA03-SRYKAMEI2
                                            TO  WRK-SRYKA-MEI
+               ELSE
+                   IF    ( ORCHC03-HAKKOFLG    =   4 )
+                       MOVE    SPACE       TO  WRK-SRYKA-MEI
+                   ELSE
+                       MOVE    SYUPARA03-SRYKAMEI
+                                           TO  WRK-SRYKA-MEI
+                   END-IF
                END-IF
       *
                INITIALIZE                      HKNCOMBI-REC
@@ -2033,21 +2305,25 @@
       *    半角全角変換処理
       *****************************************************************
        800-HENKAN-SEC             SECTION.
-     *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
-      *****MOVE    WRK-Z72             TO  KANACHK-MAE-INPUT
-           IF      WRK-Z72             <   ZERO
-               MOVE    WRK-Z72             TO  WRK-Z72-HS
-               MOVE    WRK-Z72-HS          TO  KANACHK-MAE-INPUT
+      *
+           IF    ( TPARA-API-DATA      =   "1" )
+               MOVE    WRK-Z72         TO  WRK-MZ
+               MOVE    WRK-MZ          TO  WRK-Z72-G
            ELSE
-               MOVE    WRK-Z72             TO  WRK-Z72-H
-               MOVE    WRK-Z72-H           TO  KANACHK-MAE-INPUT
-           END-IF
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT(1:18)    TO  WRK-Z72-G
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI
+               IF      WRK-Z72         <   ZERO
+                   MOVE    WRK-Z72     TO  WRK-Z72-HS
+                   MOVE    WRK-Z72-HS  TO  KANACHK-MAE-INPUT
+               ELSE
+                   MOVE    WRK-Z72     TO  WRK-Z72-H
+                   MOVE    WRK-Z72-H   TO  KANACHK-MAE-INPUT
+               END-IF
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   MOVE    KANACHK-OUT-INPUT(1:18)    TO  WRK-Z72-G
+               END-IF
            END-IF
            .
        800-HENKAN-EXT.
@@ -2057,20 +2333,25 @@
       *    半角全角変換処理（ゼロ表示用）
       *****************************************************************
        810-HENKAN-SEC             SECTION.
-     *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
-           IF      WRK-Z72             <   ZERO
-               MOVE    WRK-Z72             TO  WRK-Z72-HS
-               MOVE    WRK-Z72-HS          TO  KANACHK-MAE-INPUT
+      *
+           IF    ( TPARA-API-DATA      =   "1" )
+               MOVE    WRK-Z72         TO  WRK-M9
+               MOVE    WRK-M9          TO  WRK-Z72-G
            ELSE
-               MOVE    WRK-Z72             TO  WRK-Z72-H9
-               MOVE    WRK-Z72-H9          TO  KANACHK-MAE-INPUT
-           END-IF
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT(1:18)    TO  WRK-Z72-G
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               IF      WRK-Z72             <   ZERO
+                   MOVE    WRK-Z72             TO  WRK-Z72-HS
+                   MOVE    WRK-Z72-HS          TO  KANACHK-MAE-INPUT
+               ELSE
+                   MOVE    WRK-Z72             TO  WRK-Z72-H9
+                   MOVE    WRK-Z72-H9          TO  KANACHK-MAE-INPUT
+               END-IF
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   MOVE    KANACHK-OUT-INPUT(1:18)    TO  WRK-Z72-G
+               END-IF
            END-IF
            .
        810-HENKAN-EXT.
@@ -2162,6 +2443,10 @@
       *
            MOVE    SPACE                   TO  WRK-SRYYMDG
                                                WRK-LBLSRYYMD
+                                               WRK-STSRYYMDG
+                                               WRK-EDSRYYMDG
+      *
+           MOVE    "1"                     TO  WRK-SRYKIKANKBN
       *
            IF    ( ORCHC03-HAKKOFLG    =   4 )
                IF    ( SYUPARA03-KIKANKBN  =   "1" )
@@ -2174,13 +2459,20 @@
                        MOVE    SYU-SRYYMD  TO  WRK-SYMD
                        PERFORM 31012-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG TO  WRK-SRYYMDG
+                                               WRK-STSRYYMDG
                    END-IF
                ELSE
+                   MOVE    "2"             TO  WRK-SRYKIKANKBN
                    MOVE    "診療年月"      TO  WRK-LBLSRYYMD
                    MOVE    SYU-SRYYMD      TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG  (1:16)
+                   IF    ( TPARA-API-DATA  =   "1" )
+                       MOVE    WRK-HENYMDG  (1:7)
+                                           TO  WRK-STSRYYMDG
+                   ELSE
+                       MOVE    WRK-HENYMDG  (1:16)
                                            TO  WRK-SRYYMDG
+                   END-IF
                END-IF
            ELSE
                IF    ( ORCHC03-PARAFLG         =   1 )
@@ -2192,6 +2484,7 @@
                    MOVE    SYU-SRYYMD      TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG     TO  WRK-SRYYMDG
+                                               WRK-STSRYYMDG
                END-IF
            END-IF
       *
@@ -2226,7 +2519,21 @@
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
-       31012-SEIWA-HEN-SEC        SECTION.
+       31012-SEIWA-HEN-SEC             SECTION.
+      *
+           IF    ( TPARA-API-DATA      =   "1" )
+               PERFORM 800-DATE-SEC
+           ELSE
+               PERFORM 800-SEIWA-HEN-SEC
+           END-IF
+      *
+           .
+       31012-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    西暦日本語変換処理
+      *****************************************************************
+       800-SEIWA-HEN-SEC        SECTION.
       *
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
@@ -2236,7 +2543,7 @@
                                                LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
            .
-       31012-SEIWA-HEN-EXT.
+       800-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2265,6 +2572,31 @@
       *
            .
        800-HIZUKE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       800-DATE-SEC                    SECTION.
+      *
+           MOVE    SPACE               TO  WRK-DATE
+      *
+           IF    ( WRK-SYMD        NOT  =   SPACE )
+               INITIALIZE                  WRK-DATE
+               MOVE    WRK-SYY             TO  WRK-DATE-YY
+               MOVE    WRK-SMM             TO  WRK-DATE-MM
+               MOVE    WRK-SDD             TO  WRK-DATE-DD
+               MOVE    "-"                 TO  WRK-DATE-FL1
+               MOVE    "-"                 TO  WRK-DATE-FL2
+               IF    ( WRK-SYMD            =   "99999999" )
+                   MOVE    12              TO  WRK-DATE-MM
+                   MOVE    31              TO  WRK-DATE-DD
+               END-IF
+           END-IF
+      *
+           MOVE    WRK-DATE            TO  WRK-HENYMDG
+      *
+           .
+       800-DATE-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ
@@ -2330,6 +2662,9 @@
                MOVE    SYSKANRI-REC        TO  SYS-1901-REC
                MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME(1:50)
                MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME(51:50)
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-API-HOSPNAME (1)
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-API-HOSPNAME (2)
+               MOVE    SYS-1901-HOSPNAME3  TO  WRK-API-HOSPNAME (3)
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -2359,6 +2694,10 @@
                MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS(1:50)
                MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS(51:50)
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
+               MOVE    SYS-1902-ADRS1  TO  WRK-API-HOSPADRS (1)
+               MOVE    SYS-1902-ADRS2  TO  WRK-API-HOSPADRS (2)
+               MOVE    SYS-1902-ADRS3  TO  WRK-API-HOSPADRS (3)
+               MOVE    SYS-1902-POST   TO  WRK-HOSPPOST
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF

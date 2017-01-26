@@ -55,9 +55,9 @@
               05  RPMEISAI-DENPPRTYMD        PIC X(10).
       *
       *       ø«Œ≈≤ 
-              05  RPMEISAI-SRYKANAME         PIC X(20).
+              05  RPMEISAI-SRYKANAME         PIC X(30).
       *        ›∏±æ Û
-              05  RPMEISAI-HOKENNAME         PIC X(100).
+              05  RPMEISAI-HOKENNAME         PIC X(40).
               05  RPMEISAI-FUTAN-G.
       *         …È√¥≥‰πÁ
                 07  RPMEISAI-FUTAN         PIC X(04).

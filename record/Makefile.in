@@ -953,6 +953,7 @@ DB_files = \
 	tbl_access_key.db \
 	tbl_mstkanri_master.db \
 	tbl_mstkanri_public.db \
+	rp_invoice_receipt.db \
 
 
 shell.db: shell.db.in

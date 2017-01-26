@@ -274,6 +274,9 @@
        201-MAIN-SEC                    SECTION.
       *
            OPEN    INPUT               PRT2-FILE
+           IF    ( STS-PRT2    NOT =   ZERO )
+               MOVE    1           TO  FLG-END
+           END-IF
       *
            PERFORM 900-PRTKANRI-KEY-SEL-SEC
       *
@@ -281,7 +284,8 @@
       *
            MOVE    ZERO                TO  CNT-OUT
       *
-           PERFORM UNTIL ( FLG-PRT2    NOT =   ZERO )
+           PERFORM UNTIL ( FLG-END     NOT =   ZERO )
+                    OR   ( FLG-PRT2    NOT =   ZERO )
       *
                COMPUTE CNT-OUT =   CNT-OUT +   1
       *
