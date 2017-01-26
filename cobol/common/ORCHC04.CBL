@@ -2710,7 +2710,8 @@
       *    •◊•Í•Û•øÃæ
            MOVE    SYS-1031-PRTNM(14)  TO  RPMEISAI-PRINTER
       *    ≈¡…º»÷πÊ
-           MOVE    WRK-H-DENPNUM       TO  RPMEISAI-DENPNUM
+           MOVE    WRK-H-DENPNUM       TO  WRK-NO
+           MOVE    WRK-NO              TO  RPMEISAI-DENPNUM
       *    ø«Œ≈≤ 
            MOVE    WRK-SRYKA-MEI       TO  RPMEISAI-SRYKANAME
       *    ¥µº‘»÷πÊ
