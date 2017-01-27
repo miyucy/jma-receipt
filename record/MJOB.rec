@@ -1,10 +1,10 @@
 MJOB {
   fixed12 {
     B06 {
-      label varchar(10);
+      state int;
     };
     B07 {
-      label varchar(10);
+      state int;
     };
     B08 {
       state int;
@@ -52,6 +52,12 @@ MJOB {
           textdata varchar(28);
         };
       };
+    };
+    LOGDATE { #GtkPandaEntry
+      textdata varchar(10);
+    };
+    MIDASI1 {
+      textdata varchar(18);
     };
   };
 };

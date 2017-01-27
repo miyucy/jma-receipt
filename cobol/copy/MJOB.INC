@@ -17,8 +17,8 @@
       ********************************************************************
         02  MJOB.
             03  MJOB-FIXED12.
-              04  MJOB-B06-LABEL                PIC X(10).
-              04  MJOB-B07-LABEL                PIC X(10).
+              04  MJOB-B06-STATE                PIC S9(9)   BINARY.
+              04  MJOB-B07-STATE                PIC S9(9)   BINARY.
               04  MJOB-B08-STATE                PIC S9(9)   BINARY.
               04  MJOB-B11-STATE                PIC S9(9)   BINARY.
               04  MJOB-B12-STATE                PIC S9(9)   BINARY.
@@ -30,7 +30,7 @@
                     07  MJOB-VPOS    PIC S9(9)   BINARY.
                     07  MJOB-LIST.
                       08  MJOB-COUNT   PIC S9(9)   BINARY.
-                      08  MJOB-ROW PIC S9(9)   BINARY.
+                      08  MJOB-ROW     PIC S9(9)   BINARY.
                       08  MJOB-ITEM        OCCURS  100 TIMES.
                         09  MJOB-VALUE1  PIC X(16).
                         09  MJOB-VALUE2  PIC X(5).
@@ -51,3 +51,7 @@
                     07  MJOB-VALUE   PIC X(18).
                   06  MJOB-CNTHEN.
                     07  MJOB-VALUE   PIC X(28).
+              05  MJOB-LOGDATE.
+                06  MJOB-TEXTDATA   PIC X(10).
+              05  MJOB-MIDASI1.
+                06  MJOB-MIDASI1-VALUE   PIC X(18).

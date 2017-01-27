@@ -75,20 +75,37 @@
                        09  SPA-GMN-TRESULT     PIC X(04).
                        09  SPA-GMN-TMSG        PIC X(200).
                        09  SPA-GMN-TCOMMENT    PIC X(512).
+                   07  SPA-GMN-LSTMAX          PIC 9(03).
+      *
                05  SPA-GMN-DATAVIEW  PIC X(63000).
                05  SPA-GMN-CNTHEN    PIC X(50).
-               05  SPA-GMN-PAGE      PIC 9(01).
+      *        タブページ
+               05  SPA-TAB-PAGE            PIC 9(01).
+      *        ログ次頁あり
+               05  SPA-NAI-NEXT01          PIC 9(01).
+      *        ログ開始日
+               05  SPA-GMN-LOGDATE         PIC X(10).
+               05  SPA-NAI-LOGDATE         PIC X(08).
+      *        ログ最終件数
+               05  SPA-STR-MOVECOUNT       PIC 9(09).
+               05  SPA-END-MOVECOUNT       PIC 9(09).
       *
                05  SPA-NAI-TBL.
                    07  SPA-NAI-OCC             OCCURS  100.
                        09  SPA-NAI-TID        PIC X(37).
                        09  SPA-NAI-EXTRA      PIC X(512).
-               05  SPA-NAI-CNT       PIC 9(06).
-               05  SPA-NAI-NEXT      PIC 9(01).
-               05  SPA-NAI-PAGE      PIC 9(06).
-               05  SPA-NAI-TOTALPAGE PIC 9(06).
-               05  SPA-NAI-PAGECNT   OCCURS 200
-                                     PIC S9(09) BINARY.
+                   07  SPA-NAI-SELIDX       PIC 9(04).
+      *
+      *        タブ２
+               05  SPA-NAI-TAB02.
+                   07  SPA-NAI-CNT       PIC 9(06).
+                   07  SPA-NAI-NEXT      PIC 9(01).
+                   07  SPA-NAI-PAGE      PIC 9(06).
+                   07  SPA-NAI-TOTALPAGE PIC 9(06).
+                   07  SPA-NAI-PAGECNT   OCCURS 200
+                                         PIC S9(09) BINARY.
+      *    ログファイルパス 
+           03  ASS-LOGF            PIC X(256).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -102,6 +119,7 @@
            03  FLG-LOGF            PIC 9(01).
            03  FLG-OVR             PIC 9(01).
            03  FLG-SELLOG          PIC 9(01).
+           03  FLG-INIT            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -116,8 +134,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-      *    ログファイルパス 
-           03  ASS-LOGF            PIC X(256).
            03  WRK-DATA-MAX        PIC 9(06).
            03  WRK-DATAVIEW-G      PIC X(63000).
            03  WRK-DATAVIEW        PIC X(63000). 
@@ -128,6 +144,9 @@
            03  WRK-ZZ              PIC ZZ9.
            03  WRK-SELIDX          PIC 9(03).
            03  WRK-MOVECOUNT       PIC 9(09).
+      *    コラムリスト位置
+           03  WRK-ROW             PIC S9(09).
+           03  WRK-ROWATTR         PIC S9(09).
       *
            COPY    "CPSHELLTBL.INC".
       *                             
@@ -137,6 +156,8 @@
       *     
        01  WRK-CONS-AREA.
            03  WRK-CONS-MAX-LEN    PIC 9(05)   VALUE   63000.
+      *
+           03  WRK-CONS-LSTMAX     PIC 9(05)   VALUE   100.
       *
            COPY    "ENUM-VALUE".
       *****************************************************************
@@ -157,6 +178,13 @@
       *
       *    半角チェックサブ
       *     COPY    "CPORCSKANACHK.INC".
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *    画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
       *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
@@ -201,6 +229,11 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE  FLG-AREA
+           INITIALIZE  WRK-AREA
+           INITIALIZE  STS-AREA
+           INITIALIZE  IDX-AREA
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-MJOB-AREA
@@ -300,11 +333,12 @@
       *        ジョブ選択
                WHEN    "SELECT"        ALSO    "LIST"
                    PERFORM 400-JOB-SELECT-SEC
-      *            ログタブに切り替え
-                   MOVE    2                   TO  SPA-GMN-CUR
       *        タブ切り替え
                WHEN    "SWITCH"        ALSO    "nb1"
                    PERFORM 490-TAB-CHANGE-SEC
+      *        ログ日付入力
+               WHEN    "ACTIVATE"      ALSO    "LOGDATE"
+                   PERFORM 4001-LOGDATE-SEC
            END-EVALUATE
            .
        200-ENTRY-EXT.
@@ -358,7 +392,7 @@
            INITIALIZE  SPA-MJOB-AREA
            PERFORM 400-MBL-SPASET-SEC
            MOVE    1                   TO  SPA-GMN-CUR
-           MOVE    1                   TO  SPA-GMN-PAGE
+           MOVE    1                   TO  SPA-TAB-PAGE
            .
        310-SPASET-EXT.
            EXIT.
@@ -368,10 +402,23 @@
       *****************************************************************
        400-MBL-SPASET-SEC          SECTION.
       *
+           INITIALIZE  SPA-GMN-TBL
+           INITIALIZE  SPA-NAI-TBL
+           MOVE    1                   TO  FLG-INIT
+           MOVE    SPA-END-MOVECOUNT   TO  WRK-MOVECOUNT
+           MOVE    ZERO                TO  SPA-STR-MOVECOUNT
+           MOVE    ZERO                TO  SPA-NAI-NEXT01
+      *
            INITIALIZE  MBL-REC
            MOVE    SPA-HOSPNUM         TO  MBL-TENANT
-           MOVE    SPA-SYSYMD          TO  MBL-STARTTIME
-ito           MOVE    "20170125"          TO  MBL-STARTTIME
+           IF      SPA-NAI-LOGDATE     =   SPACE
+               MOVE    SPA-SYSYMD          TO  MBL-STARTTIME
+           ELSE
+               MOVE    SPA-NAI-LOGDATE     TO  MBL-STARTTIME
+           END-IF
+      *    前頁の最終件数から
+           MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
+ito  ****     MOVE    "20170125"          TO  MBL-STARTTIME
 ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            MOVE    MBL-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -388,7 +435,7 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
       *
            MOVE    ZERO                TO  IDX
            PERFORM             UNTIL  (FLG-MBL    =   1)
-                               OR     (IDX        =   99)
+                               OR     (IDX        =   WRK-CONS-LSTMAX)
                ADD     1                   TO  IDX
                MOVE    MBL-ID              TO  SPA-NAI-TID      (IDX)
                MOVE    MBL-EXUSER          TO  SPA-GMN-TUSER    (IDX)
@@ -401,6 +448,12 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
                MOVE    MBL-COMMENT         TO  SPA-GMN-TCOMMENT (IDX)
                MOVE    MBL-EXTRA           TO  SPA-NAI-EXTRA    (IDX)
       *
+               MOVE    IDX                 TO  SPA-GMN-LSTMAX
+               ADD     1                   TO  WRK-MOVECOUNT
+               IF      SPA-STR-MOVECOUNT   =   ZERO
+                   MOVE    WRK-MOVECOUNT       TO  SPA-STR-MOVECOUNT
+               END-IF
+      *
                PERFORM 900-MBL-FET-SEC
            END-PERFORM
       *
@@ -410,6 +463,12 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
+      *
+           MOVE    WRK-MOVECOUNT       TO  SPA-END-MOVECOUNT
+      *    次画面あり
+           IF      FLG-MBL             =   ZERO
+               MOVE    1                   TO  SPA-NAI-NEXT01
+           END-IF
            .
        400-MBL-SPASET-EXT.
            EXIT.
@@ -420,9 +479,10 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
        400-JOB-SELECT-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-SELLOG
+           MOVE    ZERO                TO  WRK-SELIDX
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >   99
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >   WRK-CONS-LSTMAX
                IF      MJOB-SELECT (IDX)   =   "T"
                    MOVE    1                   TO  FLG-SELLOG
                    MOVE    IDX                 TO  WRK-SELIDX
@@ -430,10 +490,29 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
               END-IF
            END-PERFORM
       *
-ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
+      *    クリア
+           INITIALIZE                      SPA-NAI-TAB02
+           MOVE    WRK-SELIDX         TO  SPA-NAI-SELIDX
+      *
            IF      FLG-SELLOG          =   1
                PERFORM 4001-FILE-OUTPUT-SEC
+               MOVE    ZERO            TO  SPA-NAI-PAGE
                PERFORM 4001-DATA-HENSYU-SEC
+           ELSE
+      *        前に処理したログファイルを削除する
+               PERFORM 900-LOGF-DEL-SEC
+               MOVE    SPACE               TO  SPA-GMN-DATAVIEW
+               MOVE    SPACE               TO  SPA-GMN-CNTHEN
+      *
+               MOVE    "0001"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        ログタブに切り替え
+               MOVE    2                   TO  SPA-TAB-PAGE
+           ELSE
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-TAB-PAGE
            END-IF
            .
        400-JOB-SELECT-EXT.
@@ -454,6 +533,9 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
            MOVE    C-UID               TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAME   TO  ASS-LOGF
+      *TEST
+      **   DISPLAY "ASS-LOGF:" ASS-LOGF
+      *TEST
       *
            OPEN    OUTPUT  LOGT-FILE
       *
@@ -508,14 +590,8 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
            END-IF
            MOVE    WRK-DATA-MAX      TO  SPA-NAI-PAGECNT (SPA-NAI-PAGE)
       *
-      *#   IF      SPA-NAI-TOTALPAGE   =   0
-      *#           PERFORM 4100-DATA-HENSYU-SEC
-      *#       DISPLAY "ORCGMJOB : SPA-NAI-TOTALPAGE = "
-      *#               SPA-NAI-TOTALPAGE
-      *#   END-IF
-      *
-           OPEN    INPUT   LOG-FILE
            MOVE    ZERO                TO  FLG-LOGF
+           OPEN    INPUT   LOG-FILE
            IF      STS-LOGF        NOT =   ZERO
       *        データなし
                MOVE   1                TO  FLG-LOGF
@@ -562,9 +638,13 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
                                        INTO  SPA-GMN-CNTHEN
                END-STRING
                IF      SPA-NAI-NEXT        =   1
-                   MOVE    2                   TO  SPA-GMN-CUR
+                   MOVE    4                   TO  SPA-GMN-CUR
                ELSE
-                   MOVE    9                   TO  SPA-GMN-CUR
+                   IF      SPA-NAI-PAGE        >   1
+                       MOVE    5                   TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    6                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
            .
@@ -638,7 +718,7 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
            EXIT.
       *
       *****************************************************************
-      *    確認画面（ＣＩＤ１）ＯＫ処理
+      *    データ編集処理
       *****************************************************************
        40011-DATA-HEN-SEC          SECTION.
       *
@@ -709,7 +789,8 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
            INITIALIZE  SHELLTBL
            MOVE    SHELL-NAME          TO  SHELLTBL-NAME
            MOVE    ASS-LOGF            TO  SHELLTBL-ARG1
-           MOVE    SPA-NAI-EXTRA (WRK-SELIDX)
+      **** MOVE    SPA-NAI-EXTRA (WRK-SELIDX)
+           MOVE    SPA-NAI-EXTRA (SPA-NAI-SELIDX)
                                        TO  SHELLTBL-EXTRA
       *    説明
            MOVE    SHELLTBL-LOG-FILEID TO  SHELLTBL-ARG2
@@ -721,7 +802,7 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
            END-IF
       *    ファイル名
            STRING  "batchlog-"             DELIMITED   BY  SIZE
-                   SPA-GMN-TPID (WRK-SELIDX)
+                   SPA-GMN-TPID (SPA-NAI-SELIDX)
                                            DELIMITED   BY  SIZE
                    "."                     DELIMITED   BY  SIZE
                    SHELLTBL-ARG3           DELIMITED   BY  SPACE
@@ -745,6 +826,42 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
       *****************************************************************
        470-PREV-SYORI-SEC          SECTION.
       *
+           IF      SPA-TAB-PAGE        =   1
+      *        ログ一覧
+               PERFORM 4701-PREV-SYORI01-SEC 
+           ELSE
+      *        ログ内容
+               PERFORM 4702-PREV-SYORI02-SEC
+           END-IF
+           .
+       400-LOG-UPLOAD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前内容処理(ログ一覧)
+      *****************************************************************
+       4701-PREV-SYORI01-SEC        SECTION.
+      *
+           IF      SPA-STR-MOVECOUNT   >   WRK-CONS-LSTMAX
+      *        先頭行の-100件目-1　から表示
+               COMPUTE WRK-MOVECOUNT   =   SPA-STR-MOVECOUNT
+                                       -   WRK-CONS-LSTMAX
+                                       -   1
+               MOVE    WRK-MOVECOUNT       TO  SPA-END-MOVECOUNT
+               MOVE    ZERO                TO  SPA-STR-MOVECOUNT
+               PERFORM 400-MBL-SPASET-SEC
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+           END-IF
+           .
+       4701-PREV-SYORI01-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前内容処理(ログ内容)
+      *****************************************************************
+       4702-PREV-SYORI02-SEC           SECTION.
+      *
            IF      SPA-NAI-PAGE        >   1
                COMPUTE SPA-NAI-PAGE        =   SPA-NAI-PAGE  -  1
                MOVE    SPA-NAI-PAGECNT (SPA-NAI-PAGE)
@@ -755,7 +872,7 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
                MOVE    "0003"              TO  SPA-ERRCD
            END-IF
            .
-       470-PREV-SYORI-EXT.
+       4702-PREV-SYORI02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -763,13 +880,44 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
       *****************************************************************
        470-NEXT-SYORI-SEC          SECTION.
       *
+           IF      SPA-TAB-PAGE        =   1
+      *        ログ一覧
+               PERFORM 4701-NEXT-SYORI01-SEC 
+           ELSE
+      *        ログ内容
+               PERFORM 4702-NEXT-SYORI02-SEC
+           END-IF
+           .
+       470-NEXT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    次内容処理（ログ一覧）
+      *****************************************************************
+       4701-NEXT-SYORI01-SEC         SECTION.
+      *
+           IF      SPA-NAI-NEXT01      =   1
+               PERFORM 400-MBL-SPASET-SEC
+           ELSE
+               MOVE    "0002"              TO  SPA-ERRCD
+           END-IF
+           .
+       4701-NEXT-SYORI01-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    次内容処理（ログ内容）
+      *****************************************************************
+       4702-NEXT-SYORI02-SEC         SECTION.
+      *
+      *
            IF      SPA-NAI-NEXT        =   1
                PERFORM 4001-DATA-HENSYU-SEC
            ELSE
                MOVE    "0002"              TO  SPA-ERRCD
            END-IF
            .
-       470-NEXT-SYORI-EXT.
+       4702-NEXT-SYORI02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -777,9 +925,14 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
       *****************************************************************
        490-TAB-CHANGE-SEC          SECTION.
       *
-           DISPLAY "MJOB-PAGENO = " MJOB-PAGENO
-           IF      MJOB-PAGENO         =   ZERO
+           IF      SPA-TAB-PAGE        =   1
                PERFORM 400-JOB-SELECT-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-TAB-PAGE
+                   MOVE    ZERO                TO  MJOB-PAGENO
+                   GO      TO      490-TAB-CHANGE-EXT
+               END-IF
            END-IF
            EVALUATE    MCP-WIDGET
                WHEN    "B08"
@@ -796,11 +949,54 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
            EVALUATE    IDX-P
                WHEN    ZERO
                    MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-TAB-PAGE
                WHEN    1
                    MOVE    2                   TO  SPA-GMN-CUR
+                   MOVE    2                   TO  SPA-TAB-PAGE
            END-EVALUATE
+      *
            .
        490-TAB-CHANGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ログ日付入力処理
+      *****************************************************************
+       4001-LOGDATE-SEC           SECTION.
+      *
+           IF      SPA-TAB-PAGE        =   2
+               GO      TO  4001-LOGDATE-EXT
+           END-IF
+      *
+           MOVE    MJOB-LOGDATE        TO  SPA-GMN-LOGDATE
+      *
+           IF      SPA-GMN-LOGDATE     =   SPACE
+               MOVE    SPACE               TO  SPA-NAI-LOGDATE
+           ELSE
+      *
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-LOGDATE     TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-GMN-LOGDATE
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI-LOGDATE
+               ELSE
+                   MOVE    "0004"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN-CUR
+               END-IF
+      *
+           END-IF
+      *
+           IF      SPA-ERRCD       =   SPACE
+               MOVE    ZERO                TO  SPA-END-MOVECOUNT
+               MOVE    ZERO                TO  SPA-STR-MOVECOUNT
+               PERFORM 400-MBL-SPASET-SEC
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-TAB-PAGE
+           END-IF
+           .
+       4001-LOGDATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -828,10 +1024,23 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           IF      FLG-INIT            =   1
+               MOVE    ZERO                TO  WRK-ROW
+               MOVE    ZERO                TO  WRK-ROWATTR
+           ELSE
+               MOVE    MJOB-ROW            TO  WRK-ROW
+      **       MOVE    MJOB-ROWATTR        TO  WRK-ROWATTR
+           END-IF
+      *
+           MOVE    SPACE               TO  MJOB
            INITIALIZE  MJOB
       *
+           IF      WRK-ROW         NOT =   ZERO
+               MOVE    WRK-ROW             TO  MJOB-ROW
+           END-IF
+      *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL  (IDX                 >   99)
+                   UNTIL  (IDX             >   SPA-GMN-LSTMAX)
                      OR   (SPA-GMN-TSTART(IDX) =   SPACE)
       *
                MOVE    SPA-GMN-TUSER     (IDX) TO  MJOB-VALUE1 (IDX)
@@ -841,18 +1050,47 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
                MOVE    SPA-GMN-TEND      (IDX) TO  MJOB-VALUE5 (IDX)
                MOVE    SPA-GMN-TMSG      (IDX) TO  MJOB-VALUE6 (IDX)
                MOVE    SPA-GMN-TCOMMENT  (IDX) TO  MJOB-VALUE7 (IDX)
+      *        選択行
+               IF      (SPA-NAI-SELIDX     =   IDX  )
+                   MOVE    "T"             TO  MJOB-SELECT (IDX)
+               ELSE
+                   MOVE    "F"             TO  MJOB-SELECT (IDX)
+               END-IF
+      *
+               MOVE    IDX                 TO  MJOB-COUNT
+      *
            END-PERFORM
       *
-           MOVE    IDX                 TO  MJOB-COUNT
+           MOVE    SPA-GMN-LOGDATE     TO  MJOB-LOGDATE
+      *    バッチ処理タブのみ
+           IF      SPA-TAB-PAGE        =   1
+               IF      SPA-NAI-NEXT01      =   1
+                   MOVE    "《次ページあり》"  TO  MJOB-MIDASI1
+                   IF      SPA-STR-MOVECOUNT   >   WRK-CONS-LSTMAX
+                       MOVE    "《前次ページあり》"  TO  MJOB-MIDASI1
+                   END-IF
+               ELSE
+                   IF      SPA-STR-MOVECOUNT   >   WRK-CONS-LSTMAX
+                       MOVE    "《前ページあり》"  TO  MJOB-MIDASI1
+                   END-IF
+               END-IF
+           END-IF
       *
            MOVE    SPA-GMN-DATAVIEW    TO  MJOB-DATAVIEW
            MOVE    SPA-GMN-CNTHEN      TO  MJOB-CNTHEN
       *
            IF      SPA-NAI-NEXT        =   1
                MOVE    "《次ページあり》"  TO  MJOB-MIDASI
+               IF      SPA-NAI-PAGE        >   1
+                   MOVE    "《前次ページあり》"  TO  MJOB-MIDASI
+               END-IF
+           ELSE
+               IF      SPA-NAI-PAGE        >   1
+                   MOVE    "《前ページあり》"  TO  MJOB-MIDASI
+               END-IF
            END-IF
       *
-           EVALUATE    SPA-GMN-CUR
+           EVALUATE    SPA-TAB-PAGE
                WHEN    1
                    MOVE    WIDGET-INSENSITIVE  TO  MJOB-B08-STATE
                    MOVE    WIDGET-INSENSITIVE  TO  MJOB-B11-STATE
@@ -861,6 +1099,16 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
                    MOVE    WIDGET-NORMAL       TO  MJOB-B08-STATE
                    MOVE    WIDGET-NORMAL       TO  MJOB-B11-STATE
                    MOVE    WIDGET-NORMAL       TO  MJOB-B12-STATE
+           END-EVALUATE
+           MOVE    WIDGET-NORMAL       TO  MJOB-B07-STATE
+           MOVE    WIDGET-NORMAL       TO  MJOB-B06-STATE
+      *
+           EVALUATE    SPA-TAB-PAGE
+               WHEN    0
+               WHEN    1
+                   MOVE    ZERO                TO  MJOB-PAGENO
+               WHEN    2
+                   MOVE    1                   TO  MJOB-PAGENO
            END-EVALUATE
       *
            PERFORM 5001-MAPCUR-SEC
@@ -880,11 +1128,17 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
       *
            EVALUATE    SPA-GMN-CUR
                WHEN    1
-                   MOVE    ZERO                TO  MJOB-PAGENO
-                   MOVE    "LIST"              TO  MCP-WIDGET   
+                   MOVE    "LIST"              TO  MCP-WIDGET
                WHEN    2
-                   MOVE    1                   TO  MJOB-PAGENO
-                   MOVE    "dataview"          TO  MCP-WIDGET   
+                   MOVE    "dataview"          TO  MCP-WIDGET
+               WHEN    3
+                   MOVE    "LOGDATE"           TO  MCP-WIDGET
+               WHEN    4
+                   MOVE    "B07"               TO  MCP-WIDGET
+               WHEN    5
+                   MOVE    "B06"               TO  MCP-WIDGET
+               WHEN    6
+                   MOVE    "B08"               TO  MCP-WIDGET
            END-EVALUATE
            .
        5001-MAPCUR-EXT.
@@ -904,6 +1158,7 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
       *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -915,6 +1170,9 @@ ito        DISPLAY "FLG-SELLOG = " FLG-SELLOG
                                                TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "前頁はありません。" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "ログ日付暦日エラーです。" 
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
