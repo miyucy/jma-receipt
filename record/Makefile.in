@@ -511,7 +511,7 @@ RECORD_files = \
 	claimreceivev2.rec \
 	I4ID2.rec \
 	formdatagetv2.rec \
-	push_print001.rec \
+	push_print001.db \
 	contraindicationcheckv2.rec \
 	patientmodv34.rec\
 	patientmodv35.rec\
@@ -868,18 +868,18 @@ DB_files = \
 	push_account01.rec \
 	xml_claim_receivev2req.db \
 	xml_claim_receivev2res.db \
-	rp_karte_no1.db \
-	rp_medication_note.db \
+	fm_karte_no1.db \
+	fm_medication_note.db \
 	xml_formdatagetv2req.db \
 	xml_contraindication_checkv2req.db \
 	xml_contraindication_checkv2res.db \
-	rp_prescription.db \
-	rp_medichine_information.db \
+	fm_prescription.db \
+	fm_medichine_information.db \
 	xml_patientmodv3req4.db \
 	xml_patientmodv3res4.db \
-	rp_appointment_form.db \
-	rp_appointment_list.db \
-	rp_appointment_list_patient.db \
+	fm_appointment_form.db \
+	fm_appointment_list.db \
+	fm_appointment_list_patient.db \
 	xml_patientmodv3req5.db \
 	xml_patientmodv3res5.db \
 	xml_patientmodv3req6.db \
@@ -942,7 +942,7 @@ DB_files = \
 	tbl_okusuri_kanri.db \
 	tbl_okusuri_data.db \
   tbl_ptmynumber.db \
-  rp_statement.db \
+  fm_statement.db \
   push_find.db  \
   xml_findv3req.db  \
   xml_findv3res.db  \
@@ -953,7 +953,7 @@ DB_files = \
 	tbl_access_key.db \
 	tbl_mstkanri_master.db \
 	tbl_mstkanri_public.db \
-	rp_invoice_receipt.db \
+	fm_invoice_receipt.db \
 
 
 shell.db: shell.db.in

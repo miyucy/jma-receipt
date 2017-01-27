@@ -96,7 +96,7 @@ utf8_shell_sources = \
 	allways/orcbi202.sh.in \
 	allways/log_shell.sh.in \
 	monthly/recept42.sh.in \
-	daily/push_report.sh.in \
+	daily/push_form.sh.in \
 	allways/orcbi203.sh.in \
 	monthly/upload_jibai_receipt.sh.in \
 	monthly/recept43.sh.in \

@@ -165,7 +165,7 @@ db "xml2" {
  xml_patientmodv3res6;
  xml_patientmodv3req7;
  xml_patientmodv3res7;
- rp_karte_no1;
+ fm_karte_no1;
 };
 
 #include "orcadb.inc"

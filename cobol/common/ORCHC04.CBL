@@ -501,7 +501,7 @@
       *H28.12
       * APIÂÐ±þ
       *    ¿ÇÎÅÈñÌÀºÙ½ñ¹½Â¤ÂÎ
-           COPY    "CPRPMEISAI.INC".
+           COPY    "CPFMMEISAI.INC".
       *
            COPY    "CPORCRPMAIN.INC".
       *    ²èÌÌ¿§Åù
@@ -1485,7 +1485,7 @@
            MOVE    1                   TO  WRK-PAGE
            MOVE    ZERO                TO  IDX-H
       *API
-           INITIALIZE                  RPMEISAI-REC
+           INITIALIZE                  FMMEISAI-REC
            MOVE    ZERO                TO  IDX-API
            MOVE    ZERO                TO  WRK-API-GRPNUM
       *
@@ -1510,7 +1510,7 @@
            MOVE    1                   TO  WRK-PAGE
            MOVE    ZERO                TO  IDX-H
       *API
-           INITIALIZE                  RPMEISAI-REC
+           INITIALIZE                  FMMEISAI-REC
            MOVE    ZERO                TO  IDX-API
            MOVE    ZERO                TO  WRK-API-GRPNUM
       *
@@ -2583,7 +2583,7 @@
                         OR    (IDX-API     >=   2000 )
              IF      ORCHC04SUB-SRYCD (IDX)    NOT =   "999999999"
                ADD     1                   TO  IDX-API
-               MOVE    WRK-API-GRPNUM      TO  RPMEISAI-GRPNUM(IDX-API)
+               MOVE    WRK-API-GRPNUM      TO  FMMEISAI-GRPNUM(IDX-API)
       *        Ì¾¾Î¡Ü¿ôÎÌÊÔ½¸
                IF     (ORCHC04SUB-SURYO  (IDX) =   ZERO  )
                  OR   (ORCHC04SUB-SRYKBN (IDX) =   "95"
@@ -2600,38 +2600,38 @@
                    END-STRING
                END-IF
       *        Ì¾¾Î
-               MOVE    WRK-H-NAME          TO  RPMEISAI-SRYNAME
+               MOVE    WRK-H-NAME          TO  FMMEISAI-SRYNAME
                                                      (IDX-API)
                MOVE    ORCHC04SUB-H-SRYKBN(IDX)
-                                           TO  RPMEISAI-SRYKBN
+                                           TO  FMMEISAI-SRYKBN
                                                      (IDX-API)
       *        ºÞ³«»Ï¡Ê¡ö¡Ë
                MOVE    ORCHC04SUB-H-ZAIHEN (IDX)
-                                           TO  RPMEISAI-ZAIHEN
+                                           TO  FMMEISAI-ZAIHEN
                                                      (IDX-API)
       *        ÅÀ¿ô¡ÊÃ±²Á¡Ë
                MOVE    ORCHC04SUB-H-TENSU (IDX)
-                                           TO  RPMEISAI-TENSU
+                                           TO  FMMEISAI-TENSU
                                                      (IDX-API)
       *        ¹ç·×
                IF    ( ORCHC04SUB-H-KINGAKU(IDX)
                                        NOT =   SPACE )
                    MOVE    FUNCTION NUMVAL(ORCHC04SUB-H-KINGAKU(IDX))
                                            TO  WRK-KINGAKU-Z1
-                   MOVE    WRK-KINGAKU-X   TO  RPMEISAI-TOTAL
+                   MOVE    WRK-KINGAKU-X   TO  FMMEISAI-TOTAL
                                                      (IDX-API)
                END-IF
       *        ±ß
                MOVE    ORCHC04SUB-H-ENKBN (IDX)
-                                           TO  RPMEISAI-TENSU-MARK
+                                           TO  FMMEISAI-TENSU-MARK
                                                      (IDX-API)
       *        ²ó¿ô
                MOVE    ORCHC04SUB-H-KAISU (IDX)
-                                           TO  RPMEISAI-KAISU
+                                           TO  FMMEISAI-KAISU
                                                       (IDX-API)
       *        ºÞ½ªÎ»
                MOVE    ORCHC04SUB-ZAIEND (IDX)
-                                          TO  RPMEISAI-ZAIEND(IDX-API)
+                                          TO  FMMEISAI-ZAIEND(IDX-API)
              END-IF
       *
            END-PERFORM
@@ -2648,13 +2648,13 @@
                GO      TO      7003-API-KEYHENSYU-EXT
            END-IF
       *
-           MOVE    "1"                 TO  RPMEISAI-GRPHEAD(IDX-API)
+           MOVE    "1"                 TO  FMMEISAI-GRPHEAD(IDX-API)
       *
            COMPUTE WRK-API-GRPNUM-HEAD
                =   WRK-API-GRPNUM  +   1
-           MOVE    WRK-API-GRPNUM-HEAD TO  RPMEISAI-GRPNUM (IDX-API)
+           MOVE    WRK-API-GRPNUM-HEAD TO  FMMEISAI-GRPNUM (IDX-API)
       *
-      *    MOVE    ALL "¡½"            TO  RPMEISAI-SRYKBN (IDX-API)
+      *    MOVE    ALL "¡½"            TO  FMMEISAI-SRYKBN (IDX-API)
            EVALUATE    TRUE
                WHEN   (WRK-SRYKA-MEI   NOT =   SPACE )  AND
                       (WRK-HKNCOMBIMEI NOT =   SPACE )
@@ -2664,34 +2664,34 @@
                              "¡Ú"
                              WRK-HKNCOMBIMEI
                              "¡Û"              DELIMITED  BY  SPACE
-                                   INTO    RPMEISAI-SRYNAME-G(IDX-API)
+                                   INTO    FMMEISAI-SRYNAME-G(IDX-API)
                    END-STRING
                WHEN   (WRK-SRYKA-MEI   NOT =   SPACE )  AND
                       (WRK-HKNCOMBIMEI     =   SPACE )
                    STRING    "¢ã"
                              WRK-SRYKA-MEI
                              "¢ä"              DELIMITED  BY  SPACE
-                                   INTO    RPMEISAI-SRYNAME-G(IDX-API)
+                                   INTO    FMMEISAI-SRYNAME-G(IDX-API)
                    END-STRING
                WHEN   (WRK-SRYKA-MEI       =   SPACE )  AND
                       (WRK-HKNCOMBIMEI NOT =   SPACE )
                    STRING    "¡Ú"
                              WRK-HKNCOMBIMEI
                              "¡Û"              DELIMITED  BY  SPACE
-                                   INTO    RPMEISAI-SRYNAME-G(IDX-API)
+                                   INTO    FMMEISAI-SRYNAME-G(IDX-API)
                    END-STRING
            END-EVALUATE
       *
            IF      FLG-SYORI           =   2
-               MOVE    RPMEISAI-SRYNAME-G(IDX-API) TO  WRK-SRYMEI-H
-               MOVE    SPACE           TO  RPMEISAI-SRYNAME-G(IDX-API)
+               MOVE    FMMEISAI-SRYNAME-G(IDX-API) TO  WRK-SRYMEI-H
+               MOVE    SPACE           TO  FMMEISAI-SRYNAME-G(IDX-API)
                STRING  WRK-DAY-HEN
                        WRK-SRYMEI-H         DELIMITED  BY  SIZE
-                                   INTO    RPMEISAI-SRYNAME-G(IDX-API)
+                                   INTO    FMMEISAI-SRYNAME-G(IDX-API)
                END-STRING
            END-IF
       *
-      *    INSPECT RPMEISAI-SRYNAME-G(IDX-API)
+      *    INSPECT FMMEISAI-SRYNAME-G(IDX-API)
       *                    REPLACING    ALL    "  "   BY  "¡½"
            .
        7003-API-KEYHENSYU-EXT.
@@ -2706,70 +2706,70 @@
            PERFORM 4001-DB-KENSAKU-SEC
       *
       *
-           MOVE    "meisaisho"         TO  RPMEISAI-REPORT-ID
+           MOVE    "meisaisho"         TO  FMMEISAI-FORM-ID
       *    ¥×¥ê¥ó¥¿Ì¾
-           MOVE    SYS-1031-PRTNM(14)  TO  RPMEISAI-PRINTER
+           MOVE    SYS-1031-PRTNM(14)  TO  FMMEISAI-PRINTER
       *    ÅÁÉ¼ÈÖ¹æ
            MOVE    WRK-H-DENPNUM       TO  WRK-NO
-           MOVE    WRK-NO              TO  RPMEISAI-DENPNUM
+           MOVE    WRK-NO              TO  FMMEISAI-DENPNUM
       *    ¿ÇÎÅ²Ê
-           MOVE    WRK-SRYKA-MEI       TO  RPMEISAI-SRYKANAME
+           MOVE    WRK-SRYKA-MEI       TO  FMMEISAI-SRYKANAME
       *    ´µ¼ÔÈÖ¹æ
-           MOVE    SPA-PTNUM           TO  RPMEISAI-PTNUM
+           MOVE    SPA-PTNUM           TO  FMMEISAI-PTNUM
       *    ¥«¥Ê»áÌ¾
            IF    ( PARA-KANANAME       =   "1" )
-               MOVE    SPA-KANANAME    TO  RPMEISAI-KANANAME
+               MOVE    SPA-KANANAME    TO  FMMEISAI-KANANAME
            END-IF
       *    ´µ¼ÔÌ¾¾Î
-           MOVE    SPA-NAME            TO  RPMEISAI-NAME
+           MOVE    SPA-NAME            TO  FMMEISAI-NAME
       *    ÊÝ¸±¼ïÊÌ
-           MOVE    WRK-HKNCOMBIMEI     TO  RPMEISAI-HOKENNAME
+           MOVE    WRK-HKNCOMBIMEI     TO  FMMEISAI-HOKENNAME
       *    ÉéÃ´³ä¹ç
-           MOVE    WRK-FUTAN           TO  RPMEISAI-FUTAN
-           MOVE    WRK-FUTAN-MEI       TO  RPMEISAI-FUTANMEI
+           MOVE    WRK-FUTAN           TO  FMMEISAI-FUTAN
+           MOVE    WRK-FUTAN-MEI       TO  FMMEISAI-FUTANMEI
       *
       *    ¿ÇÎÅÆü
            MOVE    WRK-API-SRYYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPMEISAI-STSRYYMD
+           MOVE    WRK-HEN-DATE        TO  FMMEISAI-STSRYYMD
       *    ½ªÎ»Æü
            IF      WRK-API-ENDYMD  NOT =   SPACE
                MOVE    WRK-API-ENDYMD      TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  RPMEISAI-EDSRYYMD
+               MOVE    WRK-HEN-DATE        TO  FMMEISAI-EDSRYYMD
            END-IF
       *    È¯¹ÔÆü
            MOVE    WRK-API-HAKYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPMEISAI-DENPPRTYMD
+           MOVE    WRK-HEN-DATE        TO  FMMEISAI-DENPPRTYMD
       *
       *    °åÎÅµ¡´ØÌ¾¾Î
-           MOVE    WRK-HOSPNAME        TO  RPMEISAI-HOSP-NAME-G
+           MOVE    WRK-HOSPNAME        TO  FMMEISAI-HOSP-NAME-G
       *    °åÎÅµ¡´Ø½»½êÌ¾¾Î
-           MOVE    WRK-HOSPADRS        TO  RPMEISAI-HOSP-ADRS-G
+           MOVE    WRK-HOSPADRS        TO  FMMEISAI-HOSP-ADRS-G
       *    °åÎÅµ¡´ØÍ¹ÊØÈÖ¹æ
-           MOVE    SYS-1002-POST       TO  RPMEISAI-HOSP-POST
+           MOVE    SYS-1002-POST       TO  FMMEISAI-HOSP-POST
       *    °åÎÅµ¡´ØÅÅÏÃ
-           MOVE    WRK-HOSPTEL         TO  RPMEISAI-HOSP-TEL
+           MOVE    WRK-HOSPTEL         TO  FMMEISAI-HOSP-TEL
       *
            IF      PARA-GOKEITANI      =   "1"
       *        ÅÀ¿ôÉ½¼¨
-               MOVE    "0"             TO  RPMEISAI-YEN-FLG
+               MOVE    "0"             TO  FMMEISAI-YEN-FLG
            ELSE
       *        Ã±²ÁÉ½¼¨
-               MOVE    "1"             TO  RPMEISAI-YEN-FLG
+               MOVE    "1"             TO  FMMEISAI-YEN-FLG
            END-IF
       *
       *    Ãí°Õ
            IF      (SMCNDATE-YMD       >=  PARA-CHUI-YUKOSTYMD )
               AND  (SMCNDATE-YMD       <=  PARA-CHUI-YUKOEDYMD )
-               MOVE    PARA-CHUI           TO  RPMEISAI-CAUTION
+               MOVE    PARA-CHUI           TO  FMMEISAI-CAUTION
            END-IF
       *
       *    £Á£Ð£ÉÁ÷¿®½èÍý
            PERFORM 7009-API-CALLSYORI-SEC
       *
-           INITIALIZE                  RPMEISAI-REC
+           INITIALIZE                  FMMEISAI-REC
            MOVE    ZERO                TO  IDX-API
            MOVE    ZERO                TO  WRK-API-GRPNUM
            .
@@ -2782,15 +2782,15 @@
        7009-API-CALLSYORI-SEC         SECTION.
       *
       *    ¥«¥¹¥¿¥à£É£Ä
-           MOVE    PARA-API-CUSTOM-ID  TO  RPMEISAI-CUSTOM-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  FMMEISAI-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "meisaisho"         TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "¿ÇÎÅÈñÌÀºÙ½ñ"      TO  RPMAIN-TITLE
-           MOVE    "rp_statement"
+           MOVE    "fm_statement"
                                        TO  MCP-TABLE
-           MOVE    RPMEISAI-DATA       TO  RPMAIN-DATA
+           MOVE    FMMEISAI-DATA       TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA

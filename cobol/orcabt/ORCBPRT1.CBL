@@ -460,7 +460,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                IF    ( SPA-MW              =   SPA-GINBEE )
                 AND  ( PRTKANRI-SHELLID    =   "API" )
                     IF    ( CNT-PUSH       <   CONST-PUSH-MAX )
-                        PERFORM 20011-PUSH-REPORT-SEC
+                        PERFORM 20011-PUSH-FORM-SEC
                     END-IF
                ELSE
                     PERFORM 20011-BIND-PRINT-SEC
@@ -478,7 +478,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            IF    ( CNT-PUSH        >   ZERO )
       *
-               PERFORM 20012-PUSH-REPORT-SEC
+               PERFORM 20012-PUSH-FORM-SEC
       *
            END-IF
       *
@@ -488,7 +488,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *****************************************************************
       *   PUSH情報編集処理
       *****************************************************************
-       20011-PUSH-REPORT-SEC           SECTION.
+       20011-PUSH-FORM-SEC           SECTION.
       *
       *    PUSH分はカウントから除外
       *    ADD     1                   TO  CNT-OUT
@@ -523,12 +523,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            PERFORM 20021-PRTDATA-UPD-SEC
       *
            .
-       20011-PUSH-REPORT-EXT.
+       20011-PUSH-FORM-EXT.
            EXIT.
       *****************************************************************
       *   PUSH情報編集処理
       *****************************************************************
-       20012-PUSH-REPORT-SEC           SECTION.
+       20012-PUSH-FORM-SEC           SECTION.
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    HC01PARA-BASENAME
@@ -550,7 +550,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            CLOSE   PUSH-FILE
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "push_report.sh"    TO  SHELLTBL-NAME
+           MOVE    "push_form.sh"    TO  SHELLTBL-NAME
            MOVE    PUSHPARA (PUSHPARA-ST:)
                                        TO  SHELLTBL-ARG1
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
@@ -561,7 +561,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            PERFORM 900-ORCDBMAIN-SEC
       *
            .
-       20012-PUSH-REPORT-EXT.
+       20012-PUSH-FORM-EXT.
            EXIT.
       *****************************************************************
       *    帳票毎印刷処理

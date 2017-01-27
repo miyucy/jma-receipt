@@ -35,9 +35,9 @@
        FILE-CONTROL.
       *
       *    返却データ
-           SELECT  REPORT-FILE     ASSIGN  REPORTPARA
+           SELECT  FORM-FILE     ASSIGN  FORMPARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-REPORT.
+                                   FILE    STATUS  IS  STS-FORM.
            SELECT  BODY-FILE       ASSIGN  BODYPARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-BODY.
@@ -45,8 +45,8 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-       FD  REPORT-FILE.
-       01  REPORT-REC              PIC X(20000).
+       FD  FORM-FILE.
+       01  FORM-REC              PIC X(20000).
       *
        FD  BODY-FILE.
        01  BODY-REC                PIC X(20000).
@@ -54,7 +54,7 @@
        WORKING-STORAGE             SECTION.
       *
            COPY    "CPASGNPARA.INC"    REPLACING   //ASGN//
-                                       BY          //REPORT//.
+                                       BY          //FORM//.
       *
            COPY    "CPASGNPARA.INC"    REPLACING   //ASGN//
                                        BY          //BODY//.
@@ -66,7 +66,7 @@
            COPY    "COMMON-SPA".
       *
        01  STS-AREA.
-           03  STS-REPORT              PIC X(02).
+           03  STS-FORM              PIC X(02).
            03  STS-BODY                PIC X(02).
       *
        01  FLG-AREA.
@@ -296,11 +296,11 @@
            INTO    WRK-TEXT
            END-STRING
       *
-           MOVE    SPACE           TO  REPORTPARA
+           MOVE    SPACE           TO  FORMPARA
            STRING  "/tmp/"         DELIMITED BY SIZE
                    "RPH"           DELIMITED BY SIZE
                    WRK-TEXT        DELIMITED BY SPACE
-           INTO    REPORTPARA
+           INTO    FORMPARA
            END-STRING
       *
            MOVE    SPACE           TO  BODYPARA
@@ -706,13 +706,13 @@
                DISPLAY "formdatagetv2 object is not low_value"
            END-IF
       *
-           OPEN    OUTPUT              REPORT-FILE
+           OPEN    OUTPUT              FORM-FILE
            OPEN    INPUT               BODY-FILE
       *
            PERFORM 9001-HEADER-EDIT-SEC
       *
-           MOVE    WRK-JSON        TO  REPORT-REC
-           WRITE   REPORT-REC
+           MOVE    WRK-JSON        TO  FORM-REC
+           WRITE   FORM-REC
       *
            MOVE    ZERO            TO  IDXR
       *
@@ -723,29 +723,29 @@
                COMPUTE IDXR    =   IDXR    +   1
       *
                IF    ( IDXR    =   1 )
-                   MOVE    ',"Reports":'
-                                       TO  REPORT-REC
-                   WRITE   REPORT-REC
+                   MOVE    ',"Forms":'
+                                       TO  FORM-REC
+                   WRITE   FORM-REC
                END-IF
       *
-               MOVE    BODY-REC    TO  REPORT-REC
-               WRITE   REPORT-REC
+               MOVE    BODY-REC    TO  FORM-REC
+               WRITE   FORM-REC
       *
                PERFORM 900-BODY-READ-SEC
       *
            END-PERFORM
       *
-           MOVE    "}"             TO  REPORT-REC
-           WRITE   REPORT-REC
+           MOVE    "}"             TO  FORM-REC
+           WRITE   FORM-REC
       *
-           CLOSE   REPORT-FILE
+           CLOSE   FORM-FILE
            CLOSE   BODY-FILE
       *
            CALL    "SYSTEM"    USING
                                FUNCTION CONCATENATE
                                ("nkf --ic=eucJP-ms "
                                "--oc=utf-8 "
-                               REPORTPARA 
+                               FORMPARA 
                                " > "
                                UTFPARA
                                )
@@ -778,7 +778,7 @@
                                        ORCSFDELAREA
       *
            MOVE    ZERO                TO  IF-RESULT
-           MOVE    REPORTPARA          TO  IF-FILENAME
+           MOVE    FORMPARA          TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
@@ -823,7 +823,7 @@
       *
            IF    ( FDGRES-FORMID
                                    NOT =   SPACE )
-               MOVE    "Report_ID"
+               MOVE    "Form_ID"
                                    TO  WRK-ELEMENT
                MOVE    FDGRES-FORMID
                                    TO  WRK-TEXT
@@ -832,7 +832,7 @@
       *
            IF    ( FDGRES-FORMNAME
                                    NOT =   SPACE )
-               MOVE    "Report_Name"
+               MOVE    "Form_Name"
                                    TO  WRK-ELEMENT
                MOVE    FDGRES-FORMNAME
                                    TO  WRK-TEXT

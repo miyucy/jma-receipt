@@ -43,8 +43,8 @@ data	{
 	};
 };
 db "xml2" {
- rp_statement;
- rp_invoice_receipt;
+ fm_statement;
+ fm_invoice_receipt;
 };
 
 #include "orcadb.inc"

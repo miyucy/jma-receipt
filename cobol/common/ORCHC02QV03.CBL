@@ -886,7 +886,7 @@
       *H28.8
       * API対応
       *    処方せん情報構造体
-           COPY    "CPRPSHOHO.INC".
+           COPY    "CPFMSHOHO.INC".
       *
            COPY    "CPORCRPMAIN.INC".
       *    画面色等
@@ -3088,7 +3088,7 @@
                                        +   WRK-FILE-CNT2
       *H28.8
       *API対応
-           INITIALIZE                  RPSHOHO-REC
+           INITIALIZE                  FMSHOHO-REC
            MOVE    ZERO                TO  IDX-AP1
            MOVE    ZERO                TO  IDX-AP2
       *
@@ -5789,125 +5789,125 @@
       *****************************************************************
        700-API-SYORI-SEC           SECTION.
       *
-      *****INITIALIZE                  RPSHOHO-REC
+      *****INITIALIZE                  FMSHOHO-REC
       *
-           MOVE    "shohosen"          TO  RPSHOHO-REPORT-ID
+           MOVE    "shohosen"          TO  FMSHOHO-FORM-ID
       *    プリンタ名
-           MOVE    SYS-1031-PRTNM(2)   TO  RPSHOHO-PRINTER
+           MOVE    SYS-1031-PRTNM(2)   TO  FMSHOHO-PRINTER
       *    退院時院外処方せん（入院）
            IF     (ORCHC19-KBN         =   "N"       )  AND
                   (SYS-1034-PRTNM(12)  NOT =   SPACE )
-               MOVE   SYS-1034-PRTNM(12)   TO  RPSHOHO-PRINTER
+               MOVE   SYS-1034-PRTNM(12)   TO  FMSHOHO-PRINTER
            END-IF
       *    処理区分
-           MOVE    ORCHC19-KBN         TO  RPSHOHO-KBN
+           MOVE    ORCHC19-KBN         TO  FMSHOHO-KBN
       *    診療日
            MOVE    SPA-SRYYMD          TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPSHOHO-SRYYMD
+           MOVE    WRK-HEN-DATE        TO  FMSHOHO-SRYYMD
       *    交付日
            IF      PARA-KOFYMDKBN      =   "1"
-               MOVE    SPACE               TO  RPSHOHO-KOFYMD
+               MOVE    SPACE               TO  FMSHOHO-KOFYMD
            ELSE
                MOVE    SPA-SRYYMD          TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  RPSHOHO-KOFYMD
+               MOVE    WRK-HEN-DATE        TO  FMSHOHO-KOFYMD
            END-IF
       *    診療科
-           MOVE    WRK-SRYKA           TO  RPSHOHO-SRYKA
+           MOVE    WRK-SRYKA           TO  FMSHOHO-SRYKA
            IF      PARA-SRYKAKBN       =   "1"
-               MOVE    SYS-1005-SRYKANAME1 TO  RPSHOHO-SRYKANAME
+               MOVE    SYS-1005-SRYKANAME1 TO  FMSHOHO-SRYKANAME
            ELSE
-               MOVE    SPACE               TO  RPSHOHO-SRYKANAME
+               MOVE    SPACE               TO  FMSHOHO-SRYKANAME
            END-IF
       *    診療科（レセ電）
-      **** MOVE    SYS-1005-RECESRYKA  TO  RPSHOHO-RECESRYKA
+      **** MOVE    SYS-1005-RECESRYKA  TO  FMSHOHO-RECESRYKA
       *    県番号
-           MOVE    SYS-1001-PREFNUM    TO  RPSHOHO-PREFNUM
+           MOVE    SYS-1001-PREFNUM    TO  FMSHOHO-PREFNUM
       *    医療機関コード
-           MOVE    SYS-1001-HOSPCD     TO  RPSHOHO-HOSPCD
+           MOVE    SYS-1001-HOSPCD     TO  FMSHOHO-HOSPCD
       *    医療機関名称
-           MOVE    WRK-HOSPNAME1       TO  RPSHOHO-HOSP-NAME (1)
-           MOVE    WRK-HOSPNAME2       TO  RPSHOHO-HOSP-NAME (2)
+           MOVE    WRK-HOSPNAME1       TO  FMSHOHO-HOSP-NAME (1)
+           MOVE    WRK-HOSPNAME2       TO  FMSHOHO-HOSP-NAME (2)
       *    医療機関住所名称
-           MOVE    WRK-HOSPADRS1       TO  RPSHOHO-HOSP-ADRS (1)
-           MOVE    WRK-HOSPADRS2       TO  RPSHOHO-HOSP-ADRS (2)
+           MOVE    WRK-HOSPADRS1       TO  FMSHOHO-HOSP-ADRS (1)
+           MOVE    WRK-HOSPADRS2       TO  FMSHOHO-HOSP-ADRS (2)
       *    医療機関郵便番号
-           MOVE    SYS-1002-POST       TO  RPSHOHO-HOSP-POST
+           MOVE    SYS-1002-POST       TO  FMSHOHO-HOSP-POST
       *    医療機関電話
-           MOVE    SYS-1002-TEL        TO  RPSHOHO-HOSP-TEL
+           MOVE    SYS-1002-TEL        TO  FMSHOHO-HOSP-TEL
       *    ドクターコード
-           MOVE    WRK-DRCD            TO  RPSHOHO-DR-CODE 
+           MOVE    WRK-DRCD            TO  FMSHOHO-DR-CODE 
       *    医師情報
            IF      PARA-DRKBN          =   "1"
-               MOVE    SPACE               TO  RPSHOHO-DR-NAME
-               MOVE    SPACE               TO  RPSHOHO-DR-KANANAME
-               MOVE    SPACE               TO  RPSHOHO-DR-MAYAKULICENSE
+               MOVE    SPACE               TO  FMSHOHO-DR-NAME
+               MOVE    SPACE               TO  FMSHOHO-DR-KANANAME
+               MOVE    SPACE               TO  FMSHOHO-DR-MAYAKULICENSE
            ELSE
-               MOVE    SYS-1010-KANANAME   TO  RPSHOHO-DR-KANANAME
-               MOVE    SYS-1010-NAME       TO  RPSHOHO-DR-NAME
+               MOVE    SYS-1010-KANANAME   TO  FMSHOHO-DR-KANANAME
+               MOVE    SYS-1010-NAME       TO  FMSHOHO-DR-NAME
                MOVE    SYS-1010-MAYAKULICENSE
-                                       TO  RPSHOHO-DR-MAYAKULICENSE
+                                       TO  FMSHOHO-DR-MAYAKULICENSE
            END-IF
       *
       *    患者情報
-           MOVE    SPA-PTNUM           TO  RPSHOHO-PTNUM
-           MOVE    PTINF-NAME          TO  RPSHOHO-NAME
-           MOVE    PTINF-KANANAME      TO  RPSHOHO-KANANAME
-           MOVE    PTINF-SEX           TO  RPSHOHO-SEX
+           MOVE    SPA-PTNUM           TO  FMSHOHO-PTNUM
+           MOVE    PTINF-NAME          TO  FMSHOHO-NAME
+           MOVE    PTINF-KANANAME      TO  FMSHOHO-KANANAME
+           MOVE    PTINF-SEX           TO  FMSHOHO-SEX
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPSHOHO-BIRTHDAY
+           MOVE    WRK-HEN-DATE        TO  FMSHOHO-BIRTHDAY
       *
-           MOVE    PTINF-TABOO-1       TO  RPSHOHO-TABOO (1)
-           MOVE    PTINF-TABOO-2       TO  RPSHOHO-TABOO (2)
-           MOVE    PTINF-ALLERGY-1     TO  RPSHOHO-ALLERGY (1)
-           MOVE    PTINF-ALLERGY-2     TO  RPSHOHO-ALLERGY (2)
-           MOVE    PTINF-KANSENSYO-1   TO  RPSHOHO-KANSENSYO (1)
-           MOVE    PTINF-KANSENSYO-2   TO  RPSHOHO-KANSENSYO (2)
-           MOVE    PTINF-COMMENT-1     TO  RPSHOHO-COMMENT (1)
-           MOVE    PTINF-COMMENT-2     TO  RPSHOHO-COMMENT (2)
+           MOVE    PTINF-TABOO-1       TO  FMSHOHO-TABOO (1)
+           MOVE    PTINF-TABOO-2       TO  FMSHOHO-TABOO (2)
+           MOVE    PTINF-ALLERGY-1     TO  FMSHOHO-ALLERGY (1)
+           MOVE    PTINF-ALLERGY-2     TO  FMSHOHO-ALLERGY (2)
+           MOVE    PTINF-KANSENSYO-1   TO  FMSHOHO-KANSENSYO (1)
+           MOVE    PTINF-KANSENSYO-2   TO  FMSHOHO-KANSENSYO (2)
+           MOVE    PTINF-COMMENT-1     TO  FMSHOHO-COMMENT (1)
+           MOVE    PTINF-COMMENT-2     TO  FMSHOHO-COMMENT (2)
       *    保険情報
-           MOVE    WRK-HKNCOMBINUM     TO  RPSHOHO-HKNCOMBI
-           MOVE    COMB-HKNNUM         TO  RPSHOHO-HKNNUM
+           MOVE    WRK-HKNCOMBINUM     TO  FMSHOHO-HKNCOMBI
+           MOVE    COMB-HKNNUM         TO  FMSHOHO-HKNNUM
            MOVE    COMB-SYU-TANSEIDONAME
-                                       TO  RPSHOHO-HKNNAME
-           MOVE    PTHKN-HKNJANUM      TO  RPSHOHO-HKNJANUM
-           MOVE    PTHKN-KIGO          TO  RPSHOHO-KIGO
-           MOVE    PTHKN-NUM           TO  RPSHOHO-NUM
-           MOVE    PTHKN-HOJOKBN       TO  RPSHOHO-HOJOKBN
-           MOVE    PTHKN-HONKZKKBN     TO  RPSHOHO-HONKZKKBN
+                                       TO  FMSHOHO-HKNNAME
+           MOVE    PTHKN-HKNJANUM      TO  FMSHOHO-HKNJANUM
+           MOVE    PTHKN-KIGO          TO  FMSHOHO-KIGO
+           MOVE    PTHKN-NUM           TO  FMSHOHO-NUM
+           MOVE    PTHKN-HOJOKBN       TO  FMSHOHO-HOJOKBN
+           MOVE    PTHKN-HONKZKKBN     TO  FMSHOHO-HONKZKKBN
            MOVE    PTHKN-TEKSTYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPSHOHO-TEKSTYMD
+           MOVE    WRK-HEN-DATE        TO  FMSHOHO-TEKSTYMD
            MOVE    PTHKN-TEKEDYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPSHOHO-TEKEDYMD
+           MOVE    WRK-HEN-DATE        TO  FMSHOHO-TEKEDYMD
       *    労災情報
            IF      COMB-HKNNUM         =   "971"  OR  "973"
-               MOVE    PTRSI-HKNKBN        TO  RPSHOHO-RSI-HKNKBN
-               MOVE    PTRSI-KOFUNUM       TO  RPSHOHO-RSI-KOFUNUM
+               MOVE    PTRSI-HKNKBN        TO  FMSHOHO-RSI-HKNKBN
+               MOVE    PTRSI-KOFUNUM       TO  FMSHOHO-RSI-KOFUNUM
                IF      PTRSI-HKNKBN        =   "3"
       *            アフター療養開始年月日
                    MOVE    PTRSI-SINSATUYMD    TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  RPSHOHO-RSI-RYOSTYMD
+                   MOVE    WRK-HEN-DATE        TO  FMSHOHO-RSI-RYOSTYMD
       *            アフター療養終了年月日
                    MOVE    PTRSI-SINSATUEND    TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  RPSHOHO-RSI-RYOEDYMD
+                   MOVE    WRK-HEN-DATE        TO  FMSHOHO-RSI-RYOEDYMD
                ELSE
       *            療養開始年月日
                    MOVE    PTRSI-RYOSTYMD      TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  RPSHOHO-RSI-RYOSTYMD
+                   MOVE    WRK-HEN-DATE        TO  FMSHOHO-RSI-RYOSTYMD
                    MOVE    PTRSI-RYOEDYMD      TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  RPSHOHO-RSI-RYOEDYMD
+                   MOVE    WRK-HEN-DATE        TO  FMSHOHO-RSI-RYOEDYMD
       *            傷病年月日
                    MOVE    PTRSI-SHOBYOYMD     TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  RPSHOHO-RSI-SHOBYOYMD
+                   MOVE    WRK-HEN-DATE        TO  FMSHOHO-RSI-SHOBYOYMD
                END-IF
            END-IF
       *    公費情報
@@ -5918,26 +5918,26 @@
                PERFORM 7001-APIKOH-HENSYU-SEC
            END-PERFORM
       *
-           MOVE    AGECHK-NENREI       TO  RPSHOHO-HOKEN-AGE
-           MOVE    AGECHK-FTNRATE      TO  RPSHOHO-HOKEN-RATE
+           MOVE    AGECHK-NENREI       TO  FMSHOHO-HOKEN-AGE
+           MOVE    AGECHK-FTNRATE      TO  FMSHOHO-HOKEN-RATE
       *    プログラムオプション情報
-           MOVE    PARA-FTNKBN         TO  RPSHOHO-HOKEN-RATEKBN
+           MOVE    PARA-FTNKBN         TO  FMSHOHO-HOKEN-RATEKBN
       *    ページ編集(1:編集する）
-           MOVE    PARA-PAGE           TO  RPSHOHO-PAGE
+           MOVE    PARA-PAGE           TO  FMSHOHO-PAGE
       *
       *    1:高齢者一般、2:高齢者７割、3:６歳未満
-           MOVE    WRK-BIKOU-FTN       TO  RPSHOHO-BIKOU-FTN
+           MOVE    WRK-BIKOU-FTN       TO  FMSHOHO-BIKOU-FTN
       *    残薬確認指示
            IF      WRK-ZANSIJI1        =   "1"
-               MOVE    "1"                 TO  RPSHOHO-ZANSIJI
+               MOVE    "1"                 TO  FMSHOHO-ZANSIJI
            END-IF
            IF      WRK-ZANSIJI2        =   "1"
-               MOVE    "2"                 TO  RPSHOHO-ZANSIJI
+               MOVE    "2"                 TO  FMSHOHO-ZANSIJI
            END-IF
       *    麻毒フラグ
-           MOVE    FLG-MAYAKU          TO  RPSHOHO-MAYAKU
+           MOVE    FLG-MAYAKU          TO  FMSHOHO-MAYAKU
       *    保険医名記載
-           MOVE    FLG-KOUHATUFUKA-IN  TO  RPSHOHO-KOUHATUFUKA-IN
+           MOVE    FLG-KOUHATUFUKA-IN  TO  FMSHOHO-KOUHATUFUKA-IN
       *    処方内容編集
       *    備考編集
            PERFORM 7002-APIBIKOU-HENSYU-SEC
@@ -5989,22 +5989,22 @@
                PERFORM 940-PTKOHINF-READ-SEC
                IF      FLG-PTKOHINF        =   ZERO
                    MOVE    COMB-KOHHKNNUM (IDX-K)
-                                       TO  RPSHOHO-KOH-HKNNUM (IDX-K2)
+                                       TO  FMSHOHO-KOH-HKNNUM (IDX-K2)
                    MOVE    COMB-KOH-TANSEIDONAME (IDX-K)
-                                       TO  RPSHOHO-KOH-TANSEIDONAME
+                                       TO  FMSHOHO-KOH-TANSEIDONAME
                                                               (IDX-K2)
                    MOVE    PTKOH-FTNJANUM
-                                       TO  RPSHOHO-KOH-FTNJANUM(IDX-K2)
+                                       TO  FMSHOHO-KOH-FTNJANUM(IDX-K2)
                    MOVE    PTKOH-JKYSNUM
-                                       TO  RPSHOHO-KOH-JKYSNUM (IDX-K2)
+                                       TO  FMSHOHO-KOH-JKYSNUM (IDX-K2)
                    MOVE    PTKOH-TEKSTYMD  TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE
-                                       TO  RPSHOHO-KOH-TEKSTYMD(IDX-K2)
+                                       TO  FMSHOHO-KOH-TEKSTYMD(IDX-K2)
                    MOVE    PTKOH-TEKEDYMD  TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE
-                                       TO  RPSHOHO-KOH-TEKEDYMD(IDX-K2)
+                                       TO  FMSHOHO-KOH-TEKEDYMD(IDX-K2)
                END-IF
            END-IF
            .
@@ -6020,12 +6020,12 @@
       *    ３歳未満・老人負担割合
            IF      WRK-BIKOU       NOT =   SPACE
                ADD     1                   TO  IDX-APB2
-               MOVE    WRK-BIKOU           TO  RPSHOHO-MEMO2(IDX-APB2)
+               MOVE    WRK-BIKOU           TO  FMSHOHO-MEMO2(IDX-APB2)
            END-IF
       *    地域包括診療（上段）
            IF      WRK-BIKOU-CHIK  NOT =   SPACE
                ADD     1                   TO  IDX-APB2
-               MOVE    WRK-BIKOU-CHIK      TO  RPSHOHO-MEMO2(IDX-APB2)
+               MOVE    WRK-BIKOU-CHIK      TO  FMSHOHO-MEMO2(IDX-APB2)
            END-IF
       *
       *    公費備考コメント編集（上段）
@@ -6035,7 +6035,7 @@
                            OR (IDX-APB2    >   4   )
                ADD     1                   TO  IDX-APB2
                MOVE    WRK-KOH-MEMO (IDX-KM)
-                                           TO  RPSHOHO-MEMO2(IDX-APB2)
+                                           TO  FMSHOHO-MEMO2(IDX-APB2)
            END-PERFORM
       *
       *    麻薬編集
@@ -6044,7 +6044,7 @@
                           OR  (IDX-APB     >=  50  )
                IF      WRK-HENSYU (IDX-H)  NOT =   SPACE
                    ADD     1                   TO  IDX-APB
-                   MOVE    WRK-HENSYU (IDX-H)  TO  RPSHOHO-MEMO
+                   MOVE    WRK-HENSYU (IDX-H)  TO  FMSHOHO-MEMO
                                                        (IDX-APB)
                END-IF
            END-PERFORM
@@ -6055,7 +6055,7 @@
                           OR  (WRK-HEN-KOH (IDX-K3)    =   SPACE)
                ADD     1                   TO  IDX-APB
                MOVE    WRK-HEN-KOH (IDX-K3)
-                                           TO  RPSHOHO-MEMO(IDX-APB)
+                                           TO  FMSHOHO-MEMO(IDX-APB)
            END-PERFORM
       *    処方せん備考コメント
            PERFORM VARYING     IDX-COM     FROM    1   BY  1
@@ -6064,7 +6064,7 @@
                           OR  (WRK-QR-BIKOU-NAME(IDX-COM)  =   SPACE)
                ADD     1                   TO  IDX-APB
                MOVE    WRK-QR-BIKOU-NAME (IDX-COM)
-                                           TO  RPSHOHO-MEMO(IDX-APB)
+                                           TO  FMSHOHO-MEMO(IDX-APB)
            END-PERFORM
       *
       *    禁忌〜コメント編集
@@ -6073,12 +6073,12 @@
                IF     (PTINF-TABOO-1   NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-TABOO-1       TO  RPSHOHO-MEMO(IDX-APB)
+                   MOVE    PTINF-TABOO-1       TO  FMSHOHO-MEMO(IDX-APB)
                END-IF
                IF     (PTINF-TABOO-2   NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-TABOO-2       TO  RPSHOHO-MEMO(IDX-APB)
+                   MOVE    PTINF-TABOO-2       TO  FMSHOHO-MEMO(IDX-APB)
                END-IF
            END-IF
       *    備考アレルギー編集
@@ -6086,13 +6086,13 @@
                IF     (PTINF-ALLERGY-1 NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-ALLERGY-1     TO  RPSHOHO-MEMO
+                   MOVE    PTINF-ALLERGY-1     TO  FMSHOHO-MEMO
                                                           (IDX-APB)
                END-IF
                IF     (PTINF-ALLERGY-2 NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-ALLERGY-2     TO  RPSHOHO-MEMO
+                   MOVE    PTINF-ALLERGY-2     TO  FMSHOHO-MEMO
                                                           (IDX-APB)
                END-IF
            END-IF
@@ -6101,13 +6101,13 @@
                IF     (PTINF-KANSENSYO-1   NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-KANSENSYO-1   TO  RPSHOHO-MEMO
+                   MOVE    PTINF-KANSENSYO-1   TO  FMSHOHO-MEMO
                                                           (IDX-APB)
                END-IF
                IF     (PTINF-KANSENSYO-2   NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-KANSENSYO-2   TO  RPSHOHO-MEMO
+                   MOVE    PTINF-KANSENSYO-2   TO  FMSHOHO-MEMO
                                                           (IDX-APB)
                END-IF
            END-IF
@@ -6116,13 +6116,13 @@
                IF     (PTINF-COMMENT-1 NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-COMMENT-1     TO  RPSHOHO-MEMO
+                   MOVE    PTINF-COMMENT-1     TO  FMSHOHO-MEMO
                                                           (IDX-APB)
                END-IF
                IF     (PTINF-COMMENT-2 NOT =   SPACE )
                   AND (IDX-APB             <   50    )
                    ADD     1                   TO  IDX-APB
-                   MOVE    PTINF-COMMENT-2     TO  RPSHOHO-MEMO
+                   MOVE    PTINF-COMMENT-2     TO  FMSHOHO-MEMO
                                                           (IDX-APB)
                END-IF
            END-IF
@@ -6158,52 +6158,52 @@
                        WHEN    "21"
                        WHEN    "22"
                            MOVE    WRK-KAISU       TO  WRK-KAISU-9
-                           MOVE    WRK-KAISU-G     TO  RPSHOHO-ZAIKAISU
+                           MOVE    WRK-KAISU-G     TO  FMSHOHO-ZAIKAISU
                                                            (IDX-AP1)
                    END-EVALUATE
                END-IF
       *        剤型区分
-               MOVE    WRK-SRYKBN          TO  RPSHOHO-SRYKBN(IDX-AP1)
+               MOVE    WRK-SRYKBN          TO  FMSHOHO-SRYKBN(IDX-AP1)
                EVALUATE    WRK-SRYKBN
                    WHEN    "21"
-                       MOVE    "日分"      TO  RPSHOHO-ZAITANINAME
+                       MOVE    "日分"      TO  FMSHOHO-ZAITANINAME
                                                               (IDX-AP1)
                    WHEN    "22"
-                       MOVE    "回分"      TO  RPSHOHO-ZAITANINAME
+                       MOVE    "回分"      TO  FMSHOHO-ZAITANINAME
                                                               (IDX-AP1)
                END-EVALUATE
            END-IF
            ADD     1                   TO  IDX-AP2
       *    編集名
-           MOVE    WRK-TNS-NAME        TO  RPSHOHO-YKZNAME
+           MOVE    WRK-TNS-NAME        TO  FMSHOHO-YKZNAME
                                                   (IDX-AP1 IDX-AP2)
-           MOVE    WRK-SRY-SRYCD(IDXA) TO  RPSHOHO-SRYCD
+           MOVE    WRK-SRY-SRYCD(IDXA) TO  FMSHOHO-SRYCD
                                                   (IDX-AP1 IDX-AP2)
       *    数量
            IF     (WRK-SRY-SRYCD(IDXA)(1:1)    =   "6"
                                                OR  "7" )
               OR  (WRK-SRY-SRYCD(IDXA)(1:3)    =   "059")
                MOVE    WRK-SRY-SRYSURYO(IDXA)  TO  WRK-SRYSURYO-9
-               MOVE    WRK-SRYSURYO-G      TO  RPSHOHO-SURYO
+               MOVE    WRK-SRYSURYO-G      TO  FMSHOHO-SURYO
                                                   (IDX-AP1 IDX-AP2)
-               MOVE    TNS-TANINAME        TO  RPSHOHO-TANINAME
+               MOVE    TNS-TANINAME        TO  FMSHOHO-TANINAME
                                                   (IDX-AP1 IDX-AP2)
            END-IF
       *
-           MOVE    TNS-YAKKAKJNCD      TO  RPSHOHO-YAKKAKJNCD
+           MOVE    TNS-YAKKAKJNCD      TO  FMSHOHO-YAKKAKJNCD
                                                   (IDX-AP1 IDX-AP2)
       *    1:一般名記載
-           MOVE    TNSP-IPN-KISAIKBN   TO  RPSHOHO-KISAIKBN
+           MOVE    TNSP-IPN-KISAIKBN   TO  FMSHOHO-KISAIKBN
                                                   (IDX-AP1 IDX-AP2)
            IF      TNSP-IPN-KISAIKBN   =   3
-               MOVE    "1"             TO  RPSHOHO-KISAIKBN
+               MOVE    "1"             TO  FMSHOHO-KISAIKBN
                                                   (IDX-AP1 IDX-AP2)
            END-IF
       *
       *    後発品変更不可区分  1:変更不可
            IF     (WRK-SRY-SRYCD(IDXA)(1:1)    =   "6" )
                IF      WRK-HEN-FUKA    NOT =   SPACE
-                   MOVE    "1"             TO  RPSHOHO-FUKA
+                   MOVE    "1"             TO  FMSHOHO-FUKA
                                                   (IDX-AP1 IDX-AP2)
                END-IF
            END-IF
@@ -6217,15 +6217,15 @@
        7009-API-CALLSYORI-SEC         SECTION.
       *
       *    カスタムＩＤ
-           MOVE    PARA-API-CUSTOM-ID  TO  RPSHOHO-CUSTOM-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  FMSHOHO-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "shohosen"          TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "処方せん"          TO  RPMAIN-TITLE
-           MOVE    "rp_prescription"
+           MOVE    "fm_prescription"
                                        TO  MCP-TABLE
-           MOVE    RPSHOHO-DATA        TO  RPMAIN-DATA
+           MOVE    FMSHOHO-DATA        TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA

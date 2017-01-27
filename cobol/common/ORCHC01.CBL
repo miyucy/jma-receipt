@@ -396,7 +396,7 @@
       *H28.7
       * API対応
       *    カルテ１号紙情報構造体
-           COPY    "CPRPKARTE1.INC".
+           COPY    "CPFMKARTE1.INC".
       *    医療機関情報−基本情報
            COPY    "CPSK1001.INC".
       *
@@ -508,8 +508,8 @@
            INITIALIZE                  HC01
            MOVE    ZERO                TO  WRK-PAGE
       *
-           MOVE    SPACE               TO  RPKARTE1-REC
-           INITIALIZE                  RPKARTE1-REC
+           MOVE    SPACE               TO  FMKARTE1-REC
+           INITIALIZE                  FMKARTE1-REC
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
@@ -1943,15 +1943,15 @@
       *****************************************************************
        20019-API-PTINFHEN-SEC          SECTION.
       *
-           INITIALIZE                  RPKARTE1-REC
+           INITIALIZE                  FMKARTE1-REC
       *    印刷処理区分
-           MOVE    ORCHC01-SYORIKBN    TO  RPKARTE1-HAKKOKBN
+           MOVE    ORCHC01-SYORIKBN    TO  FMKARTE1-HAKKOKBN
            IF      ORCHC01-SYORIKBN    =   "4"
-               MOVE    "3"                 TO  RPKARTE1-HAKKOKBN
+               MOVE    "3"                 TO  FMKARTE1-HAKKOKBN
            END-IF
       *
-           MOVE    "karte_no1"         TO  RPKARTE1-REPORT-ID
-           MOVE    SYS-1031-PRTNM(1)   TO  RPKARTE1-PRINTER
+           MOVE    "karte_no1"         TO  FMKARTE1-FORM-ID
+           MOVE    SYS-1031-PRTNM(1)   TO  FMKARTE1-PRINTER
       *    医療機関名
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
@@ -1967,83 +1967,83 @@
            ELSE
                INITIALIZE                  SYS-1001-REC
            END-IF
-           MOVE    SYS-1001-HOSPNAME   TO  RPKARTE1-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME   TO  FMKARTE1-HOSPNAME
       *
       *    患者マスターより
-           MOVE    SPA-PTNUM           TO  RPKARTE1-PTNUM
-           MOVE    PTINF-KANANAME      TO  RPKARTE1-KANANAME
-           MOVE    PTINF-NAME          TO  RPKARTE1-NAME
-           MOVE    PTINF-SEX           TO  RPKARTE1-SEX
+           MOVE    SPA-PTNUM           TO  FMKARTE1-PTNUM
+           MOVE    PTINF-KANANAME      TO  FMKARTE1-KANANAME
+           MOVE    PTINF-NAME          TO  FMKARTE1-NAME
+           MOVE    PTINF-SEX           TO  FMKARTE1-SEX
       *    生年月日
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-BIRTHDAY
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-BIRTHDAY
       *
       *    自宅−住所
-           MOVE    PTINF-HOME-POST     TO  RPKARTE1-HOME-POST
-           MOVE    PTINF-HOME-ADRS     TO  RPKARTE1-HOME-ADRS (1)
-           MOVE    PTINF-HOME-BANTI    TO  RPKARTE1-HOME-ADRS (2)
-           MOVE    PTINF-HOME-TEL1     TO  RPKARTE1-HOME-TEL1
-           MOVE    PTINF-HOME-TEL2     TO  RPKARTE1-HOME-TEL2
+           MOVE    PTINF-HOME-POST     TO  FMKARTE1-HOME-POST
+           MOVE    PTINF-HOME-ADRS     TO  FMKARTE1-HOME-ADRS (1)
+           MOVE    PTINF-HOME-BANTI    TO  FMKARTE1-HOME-ADRS (2)
+           MOVE    PTINF-HOME-TEL1     TO  FMKARTE1-HOME-TEL1
+           MOVE    PTINF-HOME-TEL2     TO  FMKARTE1-HOME-TEL2
       *    続柄
-           MOVE    PTINF-ZOKUGARA      TO  RPKARTE1-ZOKUGARA
+           MOVE    PTINF-ZOKUGARA      TO  FMKARTE1-ZOKUGARA
       *    職業
-           MOVE    PTINF-JOB           TO  RPKARTE1-JOB
+           MOVE    PTINF-JOB           TO  FMKARTE1-JOB
       *    世帯主
-           MOVE    PTINF-SETAINUSI     TO  RPKARTE1-SETAINUSI
+           MOVE    PTINF-SETAINUSI     TO  FMKARTE1-SETAINUSI
       *    登録日
            MOVE    PTINF-CREYMD        TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-CREYMD
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-CREYMD
       *    状態名称１〜３
            MOVE    PTINF-CONDITION-1   TO  WRK-CONDITION
            MOVE    "1018"              TO  WRK-KANRICD
            PERFORM 200190-API-CONDITION-SEC
-           MOVE    WRK-CONDITION-MEI   TO  RPKARTE1-CONDITION (1)
+           MOVE    WRK-CONDITION-MEI   TO  FMKARTE1-CONDITION (1)
       *
            MOVE    PTINF-CONDITION-2   TO  WRK-CONDITION
            MOVE    "1019"              TO  WRK-KANRICD
            PERFORM 200190-API-CONDITION-SEC
-           MOVE    WRK-CONDITION-MEI   TO  RPKARTE1-CONDITION (2)
+           MOVE    WRK-CONDITION-MEI   TO  FMKARTE1-CONDITION (2)
       *
            MOVE    PTINF-CONDITION-3   TO  WRK-CONDITION
            MOVE    "1020"              TO  WRK-KANRICD
            PERFORM 200190-API-CONDITION-SEC
-           MOVE    WRK-CONDITION-MEI   TO  RPKARTE1-CONDITION (3)
+           MOVE    WRK-CONDITION-MEI   TO  FMKARTE1-CONDITION (3)
       *
       *
       *事業所
       *    名称
-           MOVE    PTINF-OFFICE-NAME   TO  RPKARTE1-OFFICE-NAME
-           MOVE    PTINF-OFFICE-POST   TO  RPKARTE1-OFFICE-POST
-           MOVE    PTINF-OFFICE-ADRS   TO  RPKARTE1-OFFICE-ADRS (1)
-           MOVE    PTINF-OFFICE-BANTI  TO  RPKARTE1-OFFICE-ADRS (2)
+           MOVE    PTINF-OFFICE-NAME   TO  FMKARTE1-OFFICE-NAME
+           MOVE    PTINF-OFFICE-POST   TO  FMKARTE1-OFFICE-POST
+           MOVE    PTINF-OFFICE-ADRS   TO  FMKARTE1-OFFICE-ADRS (1)
+           MOVE    PTINF-OFFICE-BANTI  TO  FMKARTE1-OFFICE-ADRS (2)
       *    電話番号
-           MOVE    PTINF-OFFICE-TEL    TO  RPKARTE1-OFFICE-TEL
+           MOVE    PTINF-OFFICE-TEL    TO  FMKARTE1-OFFICE-TEL
       *連絡先
       *    名称
            MOVE    PTINF-RENRAKU-ZOKUGARA
-                                       TO  RPKARTE1-RENRAKU-ZOKUGARA
-           MOVE    PTINF-RENRAKU-POST  TO  RPKARTE1-RENRAKU-POST
-           MOVE    PTINF-RENRAKU-ADRS  TO  RPKARTE1-RENRAKU-ADRS (1)
-           MOVE    PTINF-RENRAKU-BANTI TO  RPKARTE1-RENRAKU-ADRS (2)
+                                       TO  FMKARTE1-RENRAKU-ZOKUGARA
+           MOVE    PTINF-RENRAKU-POST  TO  FMKARTE1-RENRAKU-POST
+           MOVE    PTINF-RENRAKU-ADRS  TO  FMKARTE1-RENRAKU-ADRS (1)
+           MOVE    PTINF-RENRAKU-BANTI TO  FMKARTE1-RENRAKU-ADRS (2)
       *    電話番号
-           MOVE    PTINF-RENRAKU-TEL1  TO  RPKARTE1-RENRAKU-TEL1
-           MOVE    PTINF-RENRAKU-TEL2  TO  RPKARTE1-RENRAKU-TEL2
+           MOVE    PTINF-RENRAKU-TEL1  TO  FMKARTE1-RENRAKU-TEL1
+           MOVE    PTINF-RENRAKU-TEL2  TO  FMKARTE1-RENRAKU-TEL2
       *連絡先
       *    名称
-           MOVE    PTINF-KISEI-NAME    TO  RPKARTE1-KISEI-NAME
-           MOVE    PTINF-KISEI-POST    TO  RPKARTE1-KISEI-POST
-           MOVE    PTINF-KISEI-ADRS    TO  RPKARTE1-KISEI-ADRS (1)
-           MOVE    PTINF-KISEI-BANTI   TO  RPKARTE1-KISEI-ADRS (2)
+           MOVE    PTINF-KISEI-NAME    TO  FMKARTE1-KISEI-NAME
+           MOVE    PTINF-KISEI-POST    TO  FMKARTE1-KISEI-POST
+           MOVE    PTINF-KISEI-ADRS    TO  FMKARTE1-KISEI-ADRS (1)
+           MOVE    PTINF-KISEI-BANTI   TO  FMKARTE1-KISEI-ADRS (2)
       *    電話番号
-           MOVE    PTINF-KISEI-TEL     TO  RPKARTE1-KISEI-TEL
+           MOVE    PTINF-KISEI-TEL     TO  FMKARTE1-KISEI-TEL
       *
       *保険組合せ情報
-           MOVE    SPA-HKNCOMBINUM     TO  RPKARTE1-HKNCOMBI
+           MOVE    SPA-HKNCOMBINUM     TO  FMKARTE1-HKNCOMBI
       *    負担割合
-           MOVE    COMB-GAI-KFTNRATE   TO  RPKARTE1-GAI-KFTNRATE
-           MOVE    COMB-NYU-KFTNRATE   TO  RPKARTE1-NYU-KFTNRATE
+           MOVE    COMB-GAI-KFTNRATE   TO  FMKARTE1-GAI-KFTNRATE
+           MOVE    COMB-NYU-KFTNRATE   TO  FMKARTE1-NYU-KFTNRATE
       *    保険年齢
       *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
@@ -2058,16 +2058,16 @@
                                        SPA-AREA
            IF      AGECHK-FTNRATE  NOT =   ZERO
       *        負担率
-               MOVE    AGECHK-FTNRATE      TO  RPKARTE1-HOKEN-RATE
+               MOVE    AGECHK-FTNRATE      TO  FMKARTE1-HOKEN-RATE
            END-IF
       *    年齢
-           MOVE    AGECHK-NENREI       TO  RPKARTE1-HOKEN-AGE
+           MOVE    AGECHK-NENREI       TO  FMKARTE1-HOKEN-AGE
       *
       *保険情報
-           MOVE    COMB-HKNNUM         TO  RPKARTE1-HKNNUM
+           MOVE    COMB-HKNNUM         TO  FMKARTE1-HKNNUM
       *    短縮制度名
            MOVE    COMB-SYU-TANSEIDONAME
-                                       TO  RPKARTE1-HKNNAME
+                                       TO  FMKARTE1-HKNNAME
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
@@ -2076,43 +2076,43 @@
            PERFORM 930-HKNNUM-READ-SEC
            IF      FLG-HKNNUM          =   ZERO
                MOVE    HKN-TANSEIDONAME
-                                       TO  RPKARTE1-HKNNAME
+                                       TO  FMKARTE1-HKNNAME
            END-IF
       *    保険者番号
-           MOVE    PTHKN-HKNJANUM      TO  RPKARTE1-HKNJANUM
+           MOVE    PTHKN-HKNJANUM      TO  FMKARTE1-HKNJANUM
       *    記号・番号
-           MOVE    PTHKN-KIGO          TO  RPKARTE1-KIGO
-           MOVE    PTHKN-NUM           TO  RPKARTE1-NUM
+           MOVE    PTHKN-KIGO          TO  FMKARTE1-KIGO
+           MOVE    PTHKN-NUM           TO  FMKARTE1-NUM
       *    被保険者名
-           MOVE    PTHKN-HIHKNJANAME   TO  RPKARTE1-HIHKNJANAME
+           MOVE    PTHKN-HIHKNJANAME   TO  FMKARTE1-HIHKNJANAME
       *    継続区分
-           MOVE    PTHKN-CONTKBN       TO  RPKARTE1-CONTKBN
+           MOVE    PTHKN-CONTKBN       TO  FMKARTE1-CONTKBN
       *    補助区分
-           MOVE    PTHKN-HOJOKBN       TO  RPKARTE1-HOJOKBN
+           MOVE    PTHKN-HOJOKBN       TO  FMKARTE1-HOJOKBN
       *    本人家族区分
-           MOVE    PTHKN-HONKZKKBN     TO  RPKARTE1-HONKZKKBN
+           MOVE    PTHKN-HONKZKKBN     TO  FMKARTE1-HONKZKKBN
       *    資格取得日
            IF      PTHKN-SKKGETYMD     =   SPACE
                CONTINUE
            ELSE
                MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  RPKARTE1-SKKGETYMD
+               MOVE    WRK-HEN-DATE        TO  FMKARTE1-SKKGETYMD
            END-IF
       *    適用開始年月日
            MOVE    PTHKN-TEKSTYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-TEKSTYMD
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-TEKSTYMD
       *    適用終了年月日
            MOVE    PTHKN-TEKEDYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-TEKEDYMD
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-TEKEDYMD
       *
       *保険者情報
-           MOVE    HKNJA-HKNJANAME     TO  RPKARTE1-HKNJANAME
-           MOVE    HKNJA-ADRS          TO  RPKARTE1-HKNJA-ADRS (1)
-           MOVE    HKNJA-BANTI         TO  RPKARTE1-HKNJA-ADRS (2)
-           MOVE    HKNJA-TEL           TO  RPKARTE1-HKNJA-TEL
+           MOVE    HKNJA-HKNJANAME     TO  FMKARTE1-HKNJANAME
+           MOVE    HKNJA-ADRS          TO  FMKARTE1-HKNJA-ADRS (1)
+           MOVE    HKNJA-BANTI         TO  FMKARTE1-HKNJA-ADRS (2)
+           MOVE    HKNJA-TEL           TO  FMKARTE1-HKNJA-TEL
       *
       *労災保険情報
            IF      COMB-HKNNUM         =   "971"  OR  "973"
@@ -2137,30 +2137,30 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-DBCLOSE-SEC
                IF      FLG-PTRSIINF        =   ZERO
-                   MOVE    PTRSI-HKNKBN    TO  RPKARTE1-RSI-HKNKBN
+                   MOVE    PTRSI-HKNKBN    TO  FMKARTE1-RSI-HKNKBN
       *            患者交付番号・年金証書番号・健康管理手帳番号
-                   MOVE    PTRSI-KOFUNUM   TO  RPKARTE1-RSI-KOFUNUM
+                   MOVE    PTRSI-KOFUNUM   TO  FMKARTE1-RSI-KOFUNUM
       *            事業所名称
                    MOVE    PTRSI-JIGYOUNAME
-                                           TO  RPKARTE1-RSI-JIGYOUNAME
+                                           TO  FMKARTE1-RSI-JIGYOUNAME
       *            所在地都道府県名
                    PERFORM 200191-RSI-PREFNAME-SEC
       *            所在地都道府県名
                    STRING  PTRSI-PREFNAME
                            WRK-KEIMEI      DELIMITED  BY  SPACE
-                                           INTO    RPKARTE1-PREFNAME
+                                           INTO    FMKARTE1-PREFNAME
                    END-STRING
       *            所在地郡市区名
                    STRING  PTRSI-CITYNAME
                            WRK-SIKUMEI     DELIMITED  BY  SPACE
-                                           INTO    RPKARTE1-CITYNAME
+                                           INTO    FMKARTE1-CITYNAME
                    END-STRING
       *            傷病年月日
                    IF      PTRSI-SHOBYOYMD NOT =   SPACE
                        MOVE    PTRSI-SHOBYOYMD     TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE
-                                           TO  RPKARTE1-RSI-SHOBYOYMD
+                                           TO  FMKARTE1-RSI-SHOBYOYMD
                    END-IF
                    IF      PTRSI-HKNKBN    =   "3"
       *            アフターケア
@@ -2168,23 +2168,23 @@
                        MOVE    PTRSI-SINSATUYMD    TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE        TO
-                                                   RPKARTE1-RSI-RYOSTYMD
+                                                   FMKARTE1-RSI-RYOSTYMD
       *                療養終了日
                        MOVE    PTRSI-SINSATUEND    TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE        TO
-                                                   RPKARTE1-RSI-RYOEDYMD
+                                                   FMKARTE1-RSI-RYOEDYMD
                    ELSE
       *                療養開始日
                        MOVE    PTRSI-RYOSTYMD      TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE        TO
-                                                   RPKARTE1-RSI-RYOSTYMD
+                                                   FMKARTE1-RSI-RYOSTYMD
       *                療養終了日
                        MOVE    PTRSI-RYOEDYMD      TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE        TO
-                                                   RPKARTE1-RSI-RYOEDYMD
+                                                   FMKARTE1-RSI-RYOEDYMD
                    END-IF
                END-IF
            END-IF
@@ -2214,72 +2214,72 @@
            END-IF
       *
       *    備考禁忌編集
-           MOVE    PTINF-TABOO-1       TO  RPKARTE1-TABOO (1)
-           MOVE    PTINF-TABOO-2       TO  RPKARTE1-TABOO (2)
+           MOVE    PTINF-TABOO-1       TO  FMKARTE1-TABOO (1)
+           MOVE    PTINF-TABOO-2       TO  FMKARTE1-TABOO (2)
            IF      PARA-TABOO          =   "1"
       *        禁忌１
                IF     (PTINF-TABOO-1   NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-TABOO-1       TO  RPKARTE1-MEMO
+                   MOVE    PTINF-TABOO-1       TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
       *        禁忌２
                IF     (PTINF-TABOO-2   NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-TABOO-2       TO  RPKARTE1-MEMO
+                   MOVE    PTINF-TABOO-2       TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
            END-IF
       *    備考アレルギー編集
-           MOVE    PTINF-ALLERGY-1     TO  RPKARTE1-ALLERGY (1)
-           MOVE    PTINF-ALLERGY-2     TO  RPKARTE1-ALLERGY (2)
+           MOVE    PTINF-ALLERGY-1     TO  FMKARTE1-ALLERGY (1)
+           MOVE    PTINF-ALLERGY-2     TO  FMKARTE1-ALLERGY (2)
            IF      PARA-ALLERGY        =   "1"
                IF     (PTINF-ALLERGY-1 NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-ALLERGY-1     TO  RPKARTE1-MEMO
+                   MOVE    PTINF-ALLERGY-1     TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
                IF     (PTINF-ALLERGY-2 NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-ALLERGY-2     TO  RPKARTE1-MEMO
+                   MOVE    PTINF-ALLERGY-2     TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
            END-IF
       *    備考感染症編集
-           MOVE    PTINF-KANSENSYO-1    TO  RPKARTE1-KANSENSYO (1)
-           MOVE    PTINF-KANSENSYO-2    TO  RPKARTE1-KANSENSYO (2)
+           MOVE    PTINF-KANSENSYO-1    TO  FMKARTE1-KANSENSYO (1)
+           MOVE    PTINF-KANSENSYO-2    TO  FMKARTE1-KANSENSYO (2)
            IF      PARA-KANSENSYO      =   "1"
                IF     (PTINF-KANSENSYO-1   NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-KANSENSYO-1    TO  RPKARTE1-MEMO
+                   MOVE    PTINF-KANSENSYO-1    TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
                IF     (PTINF-KANSENSYO-2   NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-KANSENSYO-2    TO  RPKARTE1-MEMO
+                   MOVE    PTINF-KANSENSYO-2    TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
            END-IF
       *    備考コメント編集
-           MOVE    PTINF-COMMENT-1     TO  RPKARTE1-COMMENT (1)
-           MOVE    PTINF-COMMENT-2     TO  RPKARTE1-COMMENT (2)
+           MOVE    PTINF-COMMENT-1     TO  FMKARTE1-COMMENT (1)
+           MOVE    PTINF-COMMENT-2     TO  FMKARTE1-COMMENT (2)
            IF      PARA-COMMENT        =   "1"
                IF     (PTINF-COMMENT-1 NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-COMMENT-1     TO  RPKARTE1-MEMO
+                   MOVE    PTINF-COMMENT-1     TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
                IF     (PTINF-COMMENT-2 NOT =   SPACE )
                  AND  (IDX-COM             <   5 )
                    ADD     1                   TO  IDX-COM
-                   MOVE    PTINF-COMMENT-2     TO  RPKARTE1-MEMO
+                   MOVE    PTINF-COMMENT-2     TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
            END-IF
@@ -2351,13 +2351,13 @@
       *****************************************************************
        200192-APIKOHHENSYU-SEC         SECTION.
       *
-           MOVE    PTKOH-KOHNUM        TO  RPKARTE1-KOH-HKNNUM
+           MOVE    PTKOH-KOHNUM        TO  FMKARTE1-KOH-HKNNUM
                                                        (IDX-KOH)
       *    保険者情報
-           MOVE    PTKOH-FTNJANUM      TO  RPKARTE1-KOH-FTNJANUM
+           MOVE    PTKOH-FTNJANUM      TO  FMKARTE1-KOH-FTNJANUM
                                                        (IDX-KOH)
       *    受給者番号
-           MOVE    PTKOH-JKYSNUM       TO  RPKARTE1-KOH-JKYSNUM
+           MOVE    PTKOH-JKYSNUM       TO  FMKARTE1-KOH-JKYSNUM
                                                        (IDX-KOH)
       *    短縮制度名
       *    保険番号マスター検索
@@ -2370,19 +2370,19 @@
            PERFORM 930-HKNNUM-READ-SEC
            IF      FLG-HKNNUM          =   ZERO
                MOVE    HKN-TANSEIDONAME
-                                       TO  RPKARTE1-KOH-TANSEIDONAME
+                                       TO  FMKARTE1-KOH-TANSEIDONAME
                                                        (IDX-KOH)
            END-IF
       *
       *    適用開始年月日
            MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-KOH-TEKSTYMD
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-KOH-TEKSTYMD
                                                        (IDX-KOH)
       *    適用終了年月日
            MOVE    PTKOH-TEKEDYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-KOH-TEKEDYMD
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-KOH-TEKEDYMD
                                                        (IDX-KOH)
       *
            IF      COMB-KOH1HKNNUM     =   "970"
@@ -2406,7 +2406,7 @@
                        END-STRING
                    END-IF
                    ADD     1                   TO  IDX-COM
-                   MOVE    WRK-COMMENT-G       TO  RPKARTE1-MEMO
+                   MOVE    WRK-COMMENT-G       TO  FMKARTE1-MEMO
                                                             (IDX-COM)
                END-IF
            END-IF
@@ -2426,22 +2426,22 @@
            END-IF
       *    病名編集
            PERFORM 200211-BYOMEI-HEN-SEC
-           MOVE    WRK-BYOMEI          TO  RPKARTE1-BYOMEI (IDX-BYO)
+           MOVE    WRK-BYOMEI          TO  FMKARTE1-BYOMEI (IDX-BYO)
       *    主病区分
-           MOVE    PTBYO-SYUBYOFLG     TO  RPKARTE1-SYUBYOFLG (IDX-BYO)
+           MOVE    PTBYO-SYUBYOFLG     TO  FMKARTE1-SYUBYOFLG (IDX-BYO)
       *    疑い区分
-           MOVE    PTBYO-UTAGAIFLG     TO  RPKARTE1-UTAGAIFLG (IDX-BYO)
+           MOVE    PTBYO-UTAGAIFLG     TO  FMKARTE1-UTAGAIFLG (IDX-BYO)
       *
       *    開始年月日（診療年月日）
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-SRYYMD  (IDX-BYO)
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-SRYYMD  (IDX-BYO)
       *    転帰日付
            MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-TENKIYMD  (IDX-BYO)
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-TENKIYMD  (IDX-BYO)
       *    転帰区分
-           MOVE    PTBYO-TENKIKBN      TO  RPKARTE1-TENKIKBN (IDX-BYO)
+           MOVE    PTBYO-TENKIKBN      TO  FMKARTE1-TENKIKBN (IDX-BYO)
            .
        20093-API-BYOMEIHEN-EXT.
            EXIT.
@@ -2452,15 +2452,15 @@
        20031-API-SYORI-SEC         SECTION.
       *
       *    カスタムＩＤ
-           MOVE    PARA-API-CUSTOM-ID  TO  RPKARTE1-CUSTOM-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  FMKARTE1-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "karte_no1"         TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "カルテ１号紙"      TO  RPMAIN-TITLE
-           MOVE    "rp_karte_no1"
+           MOVE    "fm_karte_no1"
                                        TO  MCP-TABLE
-           MOVE    RPKARTE1-DATA       TO  RPMAIN-DATA
+           MOVE    FMKARTE1-DATA       TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA
@@ -2506,12 +2506,12 @@
       *****************************************************************
        3001-API-HEADSYORI-SEC          SECTION.
       *
-           INITIALIZE                  RPKARTE1-REC
+           INITIALIZE                  FMKARTE1-REC
       *    印刷処理区分
-           MOVE    "2"                 TO  RPKARTE1-HAKKOKBN
+           MOVE    "2"                 TO  FMKARTE1-HAKKOKBN
       *
-           MOVE    "karte_no1"         TO  RPKARTE1-REPORT-ID
-           MOVE    SYS-1031-PRTNM(1)   TO  RPKARTE1-PRINTER
+           MOVE    "karte_no1"         TO  FMKARTE1-FORM-ID
+           MOVE    SYS-1031-PRTNM(1)   TO  FMKARTE1-PRINTER
       *    医療機関名
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
@@ -2527,17 +2527,17 @@
            ELSE
                INITIALIZE                  SYS-1001-REC
            END-IF
-           MOVE    SYS-1001-HOSPNAME   TO  RPKARTE1-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME   TO  FMKARTE1-HOSPNAME
       *
       *    患者マスターより
-           MOVE    SPA-PTNUM           TO  RPKARTE1-PTNUM
-           MOVE    PTINF-KANANAME      TO  RPKARTE1-KANANAME
-           MOVE    PTINF-NAME          TO  RPKARTE1-NAME
-           MOVE    PTINF-SEX           TO  RPKARTE1-SEX
+           MOVE    SPA-PTNUM           TO  FMKARTE1-PTNUM
+           MOVE    PTINF-KANANAME      TO  FMKARTE1-KANANAME
+           MOVE    PTINF-NAME          TO  FMKARTE1-NAME
+           MOVE    PTINF-SEX           TO  FMKARTE1-SEX
       *    生年月日
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPKARTE1-BIRTHDAY
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1-BIRTHDAY
       *
       *    ＡＰＩ送信
            PERFORM 20031-API-SYORI-SEC

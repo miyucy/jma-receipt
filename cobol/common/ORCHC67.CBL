@@ -240,7 +240,7 @@
       *H28.10
       * API対応
       *    予約票情報構造体
-           COPY    "CPRPYYKHYO.INC".
+           COPY    "CPFMYYKHYO.INC".
       *
            COPY    "CPORCRPMAIN.INC".
       *    画面色等
@@ -848,36 +848,36 @@
       *****************************************************************
        2009-API-HENSYU-SEC          SECTION.
       *
-           INITIALIZE                  RPYYKHYO-REC
+           INITIALIZE                  FMYYKHYO-REC
       *
-           MOVE    "yoyakuhyo"         TO  RPYH-REPORT-ID
-           MOVE    SYS-1031-PRTNM(17)  TO  RPYH-PRINTER
+           MOVE    "yoyakuhyo"         TO  FMYH-FORM-ID
+           MOVE    SYS-1031-PRTNM(17)  TO  FMYH-PRINTER
       *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPYH-KOFYMD
+           MOVE    WRK-HEN-DATE        TO  FMYH-KOFYMD
       *    患者情報
-           MOVE    SPA-PTNUM           TO  RPYH-PTNUM
-           MOVE    PTINF-KANANAME      TO  RPYH-KANANAME
-           MOVE    PTINF-NAME          TO  RPYH-NAME
-           MOVE    PTINF-SEX           TO  RPYH-SEX
+           MOVE    SPA-PTNUM           TO  FMYH-PTNUM
+           MOVE    PTINF-KANANAME      TO  FMYH-KANANAME
+           MOVE    PTINF-NAME          TO  FMYH-NAME
+           MOVE    PTINF-SEX           TO  FMYH-SEX
       *    生年月日
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPYH-BIRTHDAY
+           MOVE    WRK-HEN-DATE        TO  FMYH-BIRTHDAY
       *    医療機関名称
-           MOVE    WRK-HOSPNAME1       TO  RPYH-HOSP-NAME (1)
-           MOVE    WRK-HOSPNAME2       TO  RPYH-HOSP-NAME (2)
+           MOVE    WRK-HOSPNAME1       TO  FMYH-HOSP-NAME (1)
+           MOVE    WRK-HOSPNAME2       TO  FMYH-HOSP-NAME (2)
       *    医療機関住所
-           MOVE    WRK-HOSPADRS1       TO  RPYH-HOSP-ADRS (1)
-           MOVE    WRK-HOSPADRS2       TO  RPYH-HOSP-ADRS (2)
+           MOVE    WRK-HOSPADRS1       TO  FMYH-HOSP-ADRS (1)
+           MOVE    WRK-HOSPADRS2       TO  FMYH-HOSP-ADRS (2)
       *
-           MOVE    SYS-1002-POST       TO  RPYH-HOSP-POST
-           MOVE    WRK-HOSPTEL         TO  RPYH-HOSP-TEL
+           MOVE    SYS-1002-POST       TO  FMYH-HOSP-POST
+           MOVE    WRK-HOSPTEL         TO  FMYH-HOSP-TEL
       *    プログラムオプション編集
            IF     (PARA-YUKOSTYMD      <=  SPA-SYSYMD )
               AND (PARA-YUKOEDYMD      >=  SPA-SYSYMD )
-               MOVE    PARA-MEMO           TO  RPYH-MEMO
+               MOVE    PARA-MEMO           TO  FMYH-MEMO
            END-IF
       *
       *    予約明細編集
@@ -886,29 +886,29 @@
       *        予約日
                MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  RPYH-TYYKYMD(IDX)
+               MOVE    WRK-HEN-DATE        TO  FMYH-TYYKYMD(IDX)
       *        予約時間
                MOVE    TBL-YYKTIME(IDX)(1:2)   TO  WRK-THH
                MOVE    TBL-YYKTIME(IDX)(3:2)   TO  WRK-TSS
-               MOVE    WRK-TIME-HEN        TO  RPYH-TYYKTIME(IDX)
+               MOVE    WRK-TIME-HEN        TO  FMYH-TYYKTIME(IDX)
       *        診療科
                MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYSYMD
                MOVE    TBL-SRYKA  (IDX)    TO  WRK-SRYKA
                PERFORM 2008-SRYKAMEI-HEN-SEC
-               MOVE    TBL-SRYKA  (IDX)    TO  RPYH-TSRYKA    (IDX)
-               MOVE    WRK-SRYKA-MEI       TO  RPYH-TSRYKANAME(IDX)
+               MOVE    TBL-SRYKA  (IDX)    TO  FMYH-TSRYKA    (IDX)
+               MOVE    WRK-SRYKA-MEI       TO  FMYH-TSRYKANAME(IDX)
       *        ドクター
                MOVE    TBL-DRCD   (IDX)    TO  WRK-DRCD
                PERFORM 2009-DRNAME-HEN-SEC
-               MOVE    TBL-DRCD   (IDX)    TO  RPYH-TDR-CODE (IDX)
-               MOVE    WRK-DRCD-NAME       TO  RPYH-TDR-NAME (IDX)
-               MOVE    WRK-DRCD-KANANAME   TO  RPYH-TDR-KANANAME(IDX)
+               MOVE    TBL-DRCD   (IDX)    TO  FMYH-TDR-CODE (IDX)
+               MOVE    WRK-DRCD-NAME       TO  FMYH-TDR-NAME (IDX)
+               MOVE    WRK-DRCD-KANANAME   TO  FMYH-TDR-KANANAME(IDX)
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   6  )    OR
                                   (TBL-COMMENT (IDX IDY)   =   SPACE)
       *            予約コメント編集
                    MOVE    TBL-COMMENT (IDX IDY)
-                                           TO  RPYH-TCOMMENT (IDX IDY)
+                                           TO  FMYH-TCOMMENT (IDX IDY)
                END-PERFORM
            END-PERFORM
       *
@@ -925,15 +925,15 @@
        20031-API-SYORI-SEC         SECTION.
       *
       *    カスタムＩＤ
-           MOVE    PARA-API-CUSTOM-ID  TO  RPYH-CUSTOM-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  FMYH-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "yoyakuhyo"         TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "予約票"            TO  RPMAIN-TITLE
-           MOVE    "rp_appointment_form"
+           MOVE    "fm_appointment_form"
                                        TO  MCP-TABLE
-           MOVE    RPYH-DATA           TO  RPMAIN-DATA
+           MOVE    FMYH-DATA           TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA

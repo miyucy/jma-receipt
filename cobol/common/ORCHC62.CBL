@@ -307,7 +307,7 @@
       *H28.6
       * API対応
       *    お薬手帳情報構造体
-           COPY    "CPRPMNOTE.INC".
+           COPY    "CPFMMNOTE.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1842,15 +1842,15 @@
       *    項目編集
            PERFORM 6001-API-HENSYU-SEC
       *    カスタムＩＤ
-           MOVE    PARA-API-CUSTOM-ID  TO  RPMNOTE-CUSTOM-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  FMMNOTE-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "okusuri_techo"     TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "お薬手帳"          TO  RPMAIN-TITLE
-           MOVE    "rp_medication_note"
+           MOVE    "fm_medication_note"
                                        TO  MCP-TABLE
-           MOVE    RPMNOTE-DATA        TO  RPMAIN-DATA
+           MOVE    FMMNOTE-DATA        TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA
@@ -1865,50 +1865,50 @@
       *****************************************************************
        6001-API-HENSYU-SEC                 SECTION.
       *
-           INITIALIZE                  RPMNOTE-REC
+           INITIALIZE                  FMMNOTE-REC
       *
-           MOVE    "okusuri_techo"     TO  RPMNOTE-REPORTID
-           MOVE    SYS-1031-PRTNM(16)  TO  RPMNOTE-PRINTER
+           MOVE    "okusuri_techo"     TO  FMMNOTE-FORM-ID
+           MOVE    SYS-1031-PRTNM(16)  TO  FMMNOTE-PRINTER
       *
       *    診療日 YYYY-MM-DD
            MOVE    ORCHC62-SRYYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPMNOTE-SRYYMD
+           MOVE    WRK-HEN-DATE        TO  FMMNOTE-SRYYMD
       *    伝票番号
-           MOVE    ORCHC62-DENPNUM     TO  RPMNOTE-DENPNUM
+           MOVE    ORCHC62-DENPNUM     TO  FMMNOTE-DENPNUM
       *    患者情報
       *    患者番号
-           MOVE    SPA-PTNUM           TO  RPMNOTE-PTNUM
+           MOVE    SPA-PTNUM           TO  FMMNOTE-PTNUM
       *    氏名
-           MOVE    SPA-NAME            TO  RPMNOTE-NAME
-           MOVE    SPA-KANANAME        TO  RPMNOTE-KANANAME
+           MOVE    SPA-NAME            TO  FMMNOTE-NAME
+           MOVE    SPA-KANANAME        TO  FMMNOTE-KANANAME
       *    性別区分
            EVALUATE    SPA-SEX
            WHEN    "男"
-               MOVE    "1"             TO  RPMNOTE-SEX
+               MOVE    "1"             TO  FMMNOTE-SEX
            WHEN    "女"
-               MOVE    "2"             TO  RPMNOTE-SEX
+               MOVE    "2"             TO  FMMNOTE-SEX
            END-EVALUATE
       *    誕生日
            MOVE    SPA-BIRTHDAY        TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPMNOTE-BIRTHDAY
+           MOVE    WRK-HEN-DATE        TO  FMMNOTE-BIRTHDAY
       *    医療機関情報
       *    県番
-           MOVE    SYS-1001-PREFNUM    TO  RPMNOTE-PREFNUM
+           MOVE    SYS-1001-PREFNUM    TO  FMMNOTE-PREFNUM
       *    名称
-           MOVE    WRK-AP-HOSPNAME     TO  RPMNOTE-HOSP-NAME(1)
-           MOVE    WRK-AP-HOSPNAME2    TO  RPMNOTE-HOSP-NAME(2)
-           MOVE    WRK-AP-HOSPNAME3    TO  RPMNOTE-HOSP-NAME(3)
+           MOVE    WRK-AP-HOSPNAME     TO  FMMNOTE-HOSP-NAME(1)
+           MOVE    WRK-AP-HOSPNAME2    TO  FMMNOTE-HOSP-NAME(2)
+           MOVE    WRK-AP-HOSPNAME3    TO  FMMNOTE-HOSP-NAME(3)
       *    住所
-           MOVE    WRK-AP-HOSPADRS     TO  RPMNOTE-HOSP-ADRS(1)
-           MOVE    WRK-AP-HOSPADRS2    TO  RPMNOTE-HOSP-ADRS(2)
-           MOVE    WRK-AP-HOSPADRS3    TO  RPMNOTE-HOSP-ADRS(3)
+           MOVE    WRK-AP-HOSPADRS     TO  FMMNOTE-HOSP-ADRS(1)
+           MOVE    WRK-AP-HOSPADRS2    TO  FMMNOTE-HOSP-ADRS(2)
+           MOVE    WRK-AP-HOSPADRS3    TO  FMMNOTE-HOSP-ADRS(3)
       *    電話番号
-           MOVE    WRK-HOSPTEL         TO  RPMNOTE-HOSP-TEL
+           MOVE    WRK-HOSPTEL         TO  FMMNOTE-HOSP-TEL
       *    ドクター
-           MOVE    SYS-1010-NAME       TO  RPMNOTE-DR-NAME
-           MOVE    ORCHC62-DRCD        TO  RPMNOTE-DR-CODE
+           MOVE    SYS-1010-NAME       TO  FMMNOTE-DR-NAME
+           MOVE    ORCHC62-DRCD        TO  FMMNOTE-DR-CODE
       *
       *    明細
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1916,23 +1916,23 @@
                            OR (ORCSQRCSV62-SRYKBN (IDX)  =   SPACE )
       *        診療区分
                MOVE    ORCSQRCSV62-SRYKBN (IDX)
-                                       TO  RPMNOTE-SRYKBN (IDX)
+                                       TO  FMMNOTE-SRYKBN (IDX)
       *        剤回数
                MOVE    ORCSQRCSV62-KAISU (IDX)
                                        TO  WRK-SURYO
                IF      WRK-SURYO       >   0
                    PERFORM 250-ZHEN-SURYO-SET-SEC
                    MOVE    WRK-HENSURYO    TO  WRK-KAISUU
-                   MOVE    WRK-KAISUU      TO  RPMNOTE-ZAIKAISU
+                   MOVE    WRK-KAISUU      TO  FMMNOTE-ZAIKAISU
                                                            (IDX)
                END-IF
       *        剤単位名（回数／回分）
                EVALUATE    ORCSQRCSV62-SRYKBN (IDX)
                    WHEN    "21"
-                       MOVE    "日分"          TO  RPMNOTE-ZAITANINAME
+                       MOVE    "日分"          TO  FMMNOTE-ZAITANINAME
                                                            (IDX)
                    WHEN    "22"
-                       MOVE    "回分"          TO  RPMNOTE-ZAITANINAME
+                       MOVE    "回分"          TO  FMMNOTE-ZAITANINAME
                                                            (IDX)
                END-EVALUATE
       *        診療明細
@@ -1942,7 +1942,7 @@
                                                    =   SPACE )
       *            薬剤名
                    MOVE    ORCSQRCSV62-TNS-NAME (IDX IDY)
-                                               TO  RPMNOTE-YKZNAME
+                                               TO  FMMNOTE-YKZNAME
                                                            (IDX IDY)
       *            数量(ZZZZ9.99999)
                    IF     (ORCSQRCSV62-SRYCD (IDX IDY)(1:1)
@@ -1953,27 +1953,27 @@
                        MOVE    ORCSQRCSV62-SURYOU (IDX IDY)
                                                TO  WRK-SURYO
                        PERFORM 250-ZHEN-SURYO-SET-SEC
-                       MOVE    WRK-HENSURYO    TO  RPMNOTE-SURYO
+                       MOVE    WRK-HENSURYO    TO  FMMNOTE-SURYO
                                                            (IDX IDY)
                    END-IF
       *            単位名
                    MOVE    ORCSQRCSV62-TANINAME (IDX IDY)
-                                               TO  RPMNOTE-TANINAME
+                                               TO  FMMNOTE-TANINAME
                                                            (IDX IDY)
       *            診療コード
                    MOVE    ORCSQRCSV62-SRYCD (IDX IDY)
-                                               TO  RPMNOTE-SRYCD
+                                               TO  FMMNOTE-SRYCD
                                                            (IDX IDY)
       *            内服点剤
                    IF      ORCSQRCSV62-NAIHENKBN (IDX IDY)
                                                =   "1"
-                       MOVE    "1"             TO  RPMNOTE-NAIHENKBN
+                       MOVE    "1"             TO  FMMNOTE-NAIHENKBN
                                                            (IDX)
                    END-IF
                END-PERFORM
       *        内服点剤ありは、単位名なし
-               IF      RPMNOTE-NAIHENKBN (IDX) =   "1"
-                   MOVE    SPACE               TO  RPMNOTE-ZAITANINAME
+               IF      FMMNOTE-NAIHENKBN (IDX) =   "1"
+                   MOVE    SPACE               TO  FMMNOTE-ZAITANINAME
                                                            (IDX)
                END-IF
            END-PERFORM
@@ -1982,7 +1982,7 @@
                    UNTIL      (IDX         >   10   )
                            OR (ORCSQRCSV62-BIKOU (IDX)  =   SPACE )
                MOVE    ORCSQRCSV62-BIKOU (IDX)
-                                       TO  RPMNOTE-MEMO (IDX)
+                                       TO  FMMNOTE-MEMO (IDX)
            END-PERFORM
            .
        600-API-SYORI-EXT.

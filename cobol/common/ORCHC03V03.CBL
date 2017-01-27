@@ -75,7 +75,7 @@
            COPY    "HCM03B.INC"    REPLACING   //HCM03B//
                                    BY          //HC03V01//.
       *
-           COPY    "CPRPSEIKYU.INC".
+           COPY    "CPFMSEIKYU.INC".
       *
       *     °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
@@ -564,15 +564,15 @@
        4000-API-PRINT-SEC              SECTION.
       *
       *    ¥«¥¹¥¿¥à£É£Ä
-           MOVE    TPARA-API-CUSTOM-ID  TO  RPSEIKYU-CUSTOM-ID
+           MOVE    TPARA-API-CUSTOM-ID  TO  FMSEIKYU-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "seikyusho"         TO  RPMAIN-ID
            MOVE    TPARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "ÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  RPMAIN-TITLE
-           MOVE    "rp_invoice_receipt"
+           MOVE    "fm_invoice_receipt"
                                        TO  MCP-TABLE
-           MOVE    RPSEIKYU-DATA       TO  RPMAIN-DATA
+           MOVE    FMSEIKYU-DATA       TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA
@@ -1770,113 +1770,113 @@
       *****************************************************************
        2002-APIRES-HEN-SEC                 SECTION.
       *
-           INITIALIZE                      RPSEIKYU-REC
-           MOVE    "seikyusho"         TO  RPSEIKYU-REPORT-ID
-           MOVE    TPARA-API-CUSTOM-ID TO  RPSEIKYU-CUSTOM-ID
-           MOVE    SYS-1031-PRTNM(3)   TO  RPSEIKYU-PRINTER
-           MOVE    ORCHC03-MOTOID      TO  RPSEIKYU-MOTOID
-           MOVE    HC03-KNJNO          TO  RPSEIKYU-PTNUM
-           MOVE    PTINF-KANANAME      TO  RPSEIKYU-KANANAME
-           MOVE    SPA-NAME            TO  RPSEIKYU-NAME
+           INITIALIZE                      FMSEIKYU-REC
+           MOVE    "seikyusho"         TO  FMSEIKYU-FORM-ID
+           MOVE    TPARA-API-CUSTOM-ID TO  FMSEIKYU-CUSTOM-ID
+           MOVE    SYS-1031-PRTNM(3)   TO  FMSEIKYU-PRINTER
+           MOVE    ORCHC03-MOTOID      TO  FMSEIKYU-MOTOID
+           MOVE    HC03-KNJNO          TO  FMSEIKYU-PTNUM
+           MOVE    PTINF-KANANAME      TO  FMSEIKYU-KANANAME
+           MOVE    SPA-NAME            TO  FMSEIKYU-NAME
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   3 )
                MOVE    WRK-API-HOSPNAME (IDXA)
-                                       TO  RPSEIKYU-HOSP-NAME (IDXA)
+                                       TO  FMSEIKYU-HOSP-NAME (IDXA)
            END-PERFORM
-           MOVE    WRK-HOSPPOST        TO  RPSEIKYU-HOSP-POST
+           MOVE    WRK-HOSPPOST        TO  FMSEIKYU-HOSP-POST
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   3 )
                MOVE    WRK-API-HOSPADRS (IDXA)
-                                       TO  RPSEIKYU-HOSP-ADRS (IDXA)
+                                       TO  FMSEIKYU-HOSP-ADRS (IDXA)
            END-PERFORM
-           MOVE    WRK-HOSPTEL         TO  RPSEIKYU-HOSP-TEL
+           MOVE    WRK-HOSPTEL         TO  FMSEIKYU-HOSP-TEL
            IF    ( ORCHC03-MOTOID      =   2 OR 5 )
-               MOVE    WRK-JNISSU      TO  RPSEIKYU-JNISSU
+               MOVE    WRK-JNISSU      TO  FMSEIKYU-JNISSU
            END-IF
-           MOVE    WRK-SRYKA-MEI       TO  RPSEIKYU-SRYKANAME
+           MOVE    WRK-SRYKA-MEI       TO  FMSEIKYU-SRYKANAME
       *
-           MOVE    WRK-SRYKIKANKBN     TO  RPSEIKYU-SRYKIKANKBN
+           MOVE    WRK-SRYKIKANKBN     TO  FMSEIKYU-SRYKIKANKBN
       *
            IF    ( WRK-SRYKIKANKBN     =   "1" )
-               MOVE    WRK-STSRYYMDG   TO  RPSEIKYU-STSRYYMD
-               MOVE    WRK-EDSRYYMDG   TO  RPSEIKYU-EDSRYYMD
+               MOVE    WRK-STSRYYMDG   TO  FMSEIKYU-STSRYYMD
+               MOVE    WRK-EDSRYYMDG   TO  FMSEIKYU-EDSRYYMD
            ELSE
-               MOVE    WRK-STSRYYMDG   TO  RPSEIKYU-SRYYM
+               MOVE    WRK-STSRYYMDG   TO  FMSEIKYU-SRYYM
            END-IF
       *
-           MOVE    HC03-HAKYMD         TO  RPSEIKYU-DENPPRTYMD
-           MOVE    HC03-HOKEN          TO  RPSEIKYU-HOKENNAME
-           MOVE    HC03-FUTAN          TO  RPSEIKYU-FUTAN
-           MOVE    HC03-LBLFTNRATE     TO  RPSEIKYU-FUTANMEI
-           MOVE    HC03-NO             TO  RPSEIKYU-DENPNUM
+           MOVE    HC03-HAKYMD         TO  FMSEIKYU-DENPPRTYMD
+           MOVE    HC03-HOKEN          TO  FMSEIKYU-HOKENNAME
+           MOVE    HC03-FUTAN          TO  FMSEIKYU-FUTAN
+           MOVE    HC03-LBLFTNRATE     TO  FMSEIKYU-FUTANMEI
+           MOVE    HC03-NO             TO  FMSEIKYU-DENPNUM
            IF    ( HC03-MIDASHI    NOT =   SPACE )
-               MOVE    "1"             TO  RPSEIKYU-TEISEI-KBN
+               MOVE    "1"             TO  FMSEIKYU-TEISEI-KBN
            END-IF
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA        >   16 )
       *
                MOVE    TAPI-HKNTEN-KBN (IDXA)
-                                       TO  RPSEIKYU-HKNTEN-KBN (IDXA)
+                                       TO  FMSEIKYU-HKNTEN-KBN (IDXA)
                MOVE    HC03-MEISAI (IDXA)
-                                       TO  RPSEIKYU-HKNTEN-NAME (IDXA)
+                                       TO  FMSEIKYU-HKNTEN-NAME (IDXA)
                MOVE    HC03-JIHIBUN (IDXA)
-                                       TO  RPSEIKYU-TGMONEY (IDXA)
+                                       TO  FMSEIKYU-TGMONEY (IDXA)
       *
            END-PERFORM
       *
-           MOVE    HC03-HKNRYO1        TO  RPSEIKYU-HKNTEN (1)
-           MOVE    HC03-HKNRYO2        TO  RPSEIKYU-HKNTEN (2)
-           MOVE    HC03-HKNRYO3        TO  RPSEIKYU-HKNTEN (3)
-           MOVE    HC03-HKNRYO4        TO  RPSEIKYU-HKNTEN (4)
-           MOVE    HC03-HKNRYO5        TO  RPSEIKYU-HKNTEN (5)
-           MOVE    HC03-HKNRYO6        TO  RPSEIKYU-HKNTEN (6)
-           MOVE    HC03-HKNRYO7        TO  RPSEIKYU-HKNTEN (7)
-           MOVE    HC03-HKNRYO8        TO  RPSEIKYU-HKNTEN (8)
-           MOVE    HC03-HKNRYO9        TO  RPSEIKYU-HKNTEN (9)
-           MOVE    HC03-HKNRYO10       TO  RPSEIKYU-HKNTEN (10)
-           MOVE    HC03-HKNRYO11       TO  RPSEIKYU-HKNTEN (11)
-           MOVE    HC03-HKNRYO12       TO  RPSEIKYU-HKNTEN (12)
-           MOVE    HC03-HKNRYO13       TO  RPSEIKYU-HKNTEN (13)
-           MOVE    HC03-HKNRYO14       TO  RPSEIKYU-HKNTEN (14)
-           MOVE    HC03-HKNRYO15       TO  RPSEIKYU-HKNTEN (15)
-           MOVE    HC03-HKNRYO16       TO  RPSEIKYU-HKNTEN (16)
-           MOVE    HC03-GOKTEN         TO  RPSEIKYU-TOTAL-TEN
-           MOVE    HC03-HOKENBUN       TO  RPSEIKYU-HKNTEKMONEY
-           MOVE    HC03-RSIMIDASI      TO  RPSEIKYU-LBL-RSI-TOTAL
-           MOVE    HC03-RSIBUN         TO  RPSEIKYU-RSI-TOTAL
-           MOVE    HC03-KOUHI          TO  RPSEIKYU-KOH-FTN
-           MOVE    HC03-HOKENGAI       TO  RPSEIKYU-TOTAL-TGMONEY
-           MOVE    HC03-HOKENZEI       TO  RPSEIKYU-TOTAL-TGMONEY-TAX
+           MOVE    HC03-HKNRYO1        TO  FMSEIKYU-HKNTEN (1)
+           MOVE    HC03-HKNRYO2        TO  FMSEIKYU-HKNTEN (2)
+           MOVE    HC03-HKNRYO3        TO  FMSEIKYU-HKNTEN (3)
+           MOVE    HC03-HKNRYO4        TO  FMSEIKYU-HKNTEN (4)
+           MOVE    HC03-HKNRYO5        TO  FMSEIKYU-HKNTEN (5)
+           MOVE    HC03-HKNRYO6        TO  FMSEIKYU-HKNTEN (6)
+           MOVE    HC03-HKNRYO7        TO  FMSEIKYU-HKNTEN (7)
+           MOVE    HC03-HKNRYO8        TO  FMSEIKYU-HKNTEN (8)
+           MOVE    HC03-HKNRYO9        TO  FMSEIKYU-HKNTEN (9)
+           MOVE    HC03-HKNRYO10       TO  FMSEIKYU-HKNTEN (10)
+           MOVE    HC03-HKNRYO11       TO  FMSEIKYU-HKNTEN (11)
+           MOVE    HC03-HKNRYO12       TO  FMSEIKYU-HKNTEN (12)
+           MOVE    HC03-HKNRYO13       TO  FMSEIKYU-HKNTEN (13)
+           MOVE    HC03-HKNRYO14       TO  FMSEIKYU-HKNTEN (14)
+           MOVE    HC03-HKNRYO15       TO  FMSEIKYU-HKNTEN (15)
+           MOVE    HC03-HKNRYO16       TO  FMSEIKYU-HKNTEN (16)
+           MOVE    HC03-GOKTEN         TO  FMSEIKYU-TOTAL-TEN
+           MOVE    HC03-HOKENBUN       TO  FMSEIKYU-HKNTEKMONEY
+           MOVE    HC03-RSIMIDASI      TO  FMSEIKYU-LBL-RSI-TOTAL
+           MOVE    HC03-RSIBUN         TO  FMSEIKYU-RSI-TOTAL
+           MOVE    HC03-KOUHI          TO  FMSEIKYU-KOH-FTN
+           MOVE    HC03-HOKENGAI       TO  FMSEIKYU-TOTAL-TGMONEY
+           MOVE    HC03-HOKENZEI       TO  FMSEIKYU-TOTAL-TGMONEY-TAX
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   10 )
       *
                MOVE   WRK-JIHIMEI (IDXA)
-                                       TO  RPSEIKYU-JIHI-NAME (IDXA)
+                                       TO  FMSEIKYU-JIHI-NAME (IDXA)
                MOVE   HC03-JIHI   (IDX)
-                                       TO  RPSEIKYU-JIHI (IDXA)
+                                       TO  FMSEIKYU-JIHI (IDXA)
       *
            END-PERFORM
-           MOVE   HC03-JIHI(11)        TO  RPSEIKYU-JIHI-TOTAL
-           MOVE   HC03-JIHI(12)        TO  RPSEIKYU-JIHI-TOTAL-TAX
+           MOVE   HC03-JIHI(11)        TO  FMSEIKYU-JIHI-TOTAL
+           MOVE   HC03-JIHI(12)        TO  FMSEIKYU-JIHI-TOTAL-TAX
       *
-           MOVE   TAPI-CHOSEI1         TO  RPSEIKYU-CHOSEI1
-           MOVE   TAPI-CHOSEI2         TO  RPSEIKYU-CHOSEI2
-           MOVE   HC03-KONSEIKYU       TO  RPSEIKYU-SKYMONEY
-           MOVE   HC03-SEIKYUZEI       TO  RPSEIKYU-SKYMONEY-TAX
-           MOVE   HC03-ZENMISYU        TO  RPSEIKYU-SKYMONEY-LAST
-           MOVE   HC03-GOUKEIGAK       TO  RPSEIKYU-SKYMONEY-TOTAL
-           MOVE   HC03-KONNYUKIN       TO  RPSEIKYU-NYUKIN
-           MOVE   HC03-CHUI            TO  RPSEIKYU-CAUTION
+           MOVE   TAPI-CHOSEI1         TO  FMSEIKYU-CHOSEI1
+           MOVE   TAPI-CHOSEI2         TO  FMSEIKYU-CHOSEI2
+           MOVE   HC03-KONSEIKYU       TO  FMSEIKYU-SKYMONEY
+           MOVE   HC03-SEIKYUZEI       TO  FMSEIKYU-SKYMONEY-TAX
+           MOVE   HC03-ZENMISYU        TO  FMSEIKYU-SKYMONEY-LAST
+           MOVE   HC03-GOUKEIGAK       TO  FMSEIKYU-SKYMONEY-TOTAL
+           MOVE   HC03-KONNYUKIN       TO  FMSEIKYU-NYUKIN
+           MOVE   HC03-CHUI            TO  FMSEIKYU-CAUTION
            PERFORM VARYING IDXA FROM    1   BY  1
                    UNTIL ( IDXA >   10 )
                MOVE  HC03-MEMO (IDXA)
-                                       TO  RPSEIKYU-MEMO (IDXA)
+                                       TO  FMSEIKYU-MEMO (IDXA)
            END-PERFORM
       *
-           DISPLAY "RPSEIKYU-DATA!![" RPSEIKYU-DATA (1:100) "]"
+           DISPLAY "FMSEIKYU-DATA!![" FMSEIKYU-DATA (1:100) "]"
       *
            .
        2002-APIRES-HEN-EXT.

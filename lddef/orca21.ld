@@ -77,12 +77,12 @@ data	{
 db "xml2" {
  xml_medicalsetv2req;
  xml_medicalsetv2res;
- rp_medication_note;
- rp_prescription;
- rp_medichine_information;
- rp_appointment_form;
- rp_statement;
- rp_invoice_receipt;
+ fm_medication_note;
+ fm_prescription;
+ fm_medichine_information;
+ fm_appointment_form;
+ fm_statement;
+ fm_invoice_receipt;
 };
 
 #include "orcadb.inc"

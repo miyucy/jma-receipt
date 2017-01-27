@@ -348,7 +348,7 @@
       *
       *----(04.08.02)--ADD-START---
       *    薬剤情報提供書構造体
-           COPY    "CPRPYAKUJO.INC".
+           COPY    "CPFMYAKUJO.INC".
       *    API対応
            COPY    "CPORCRPMAIN.INC".
       *    画面色等
@@ -1975,52 +1975,52 @@
       *****************************************************************
        710-API-HEAD-SET-SEC            SECTION.
       *
-           INITIALIZE                  RPYAKUJO-REC
+           INITIALIZE                  FMYAKUJO-REC
       *
-           MOVE    PARA-STYLE      TO  RPYAKUJO-STYLE
+           MOVE    PARA-STYLE      TO  FMYAKUJO-STYLE
       *
-           MOVE    "okusuri_joho"  TO  RPYAKUJO-REPORT-ID
+           MOVE    "okusuri_joho"  TO  FMYAKUJO-FORM-ID
            MOVE    PARA-API-CUSTOM-ID
-                                   TO  RPYAKUJO-CUSTOM-ID
+                                   TO  FMYAKUJO-CUSTOM-ID
            MOVE    SYS-1031-PRTNM(8)
-                                   TO  RPYAKUJO-PRINTER
+                                   TO  FMYAKUJO-PRINTER
       *
            MOVE    SPA-SRYYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE    TO  RPYAKUJO-SRYYMD
+           MOVE    WRK-HEN-DATE    TO  FMYAKUJO-SRYYMD
       *
            MOVE    SPA-SYSYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE    TO  RPYAKUJO-KOFYMD
+           MOVE    WRK-HEN-DATE    TO  FMYAKUJO-KOFYMD
       *
-           MOVE    SPA-PTNUM       TO  RPYAKUJO-PTNUM
-           MOVE    SPA-NAME        TO  RPYAKUJO-NAME
-           MOVE    SPA-KANANAME    TO  RPYAKUJO-KANANAME
+           MOVE    SPA-PTNUM       TO  FMYAKUJO-PTNUM
+           MOVE    SPA-NAME        TO  FMYAKUJO-NAME
+           MOVE    SPA-KANANAME    TO  FMYAKUJO-KANANAME
       *
            EVALUATE    SPA-SEX
                WHEN    "男"
-                   MOVE    "1"         TO  RPYAKUJO-SEX
+                   MOVE    "1"         TO  FMYAKUJO-SEX
                WHEN    "女"
-                   MOVE    "2"         TO  RPYAKUJO-SEX
+                   MOVE    "2"         TO  FMYAKUJO-SEX
            END-EVALUATE
       *
            MOVE    SPA-BIRTHDAY    TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE    TO  RPYAKUJO-BIRTHDAY
+           MOVE    WRK-HEN-DATE    TO  FMYAKUJO-BIRTHDAY
       *
-           MOVE    WRK-HOSPNAME1   TO  RPYAKUJO-HOSP-NAME(1)
-           MOVE    WRK-HOSPNAME2   TO  RPYAKUJO-HOSP-NAME(2)
+           MOVE    WRK-HOSPNAME1   TO  FMYAKUJO-HOSP-NAME(1)
+           MOVE    WRK-HOSPNAME2   TO  FMYAKUJO-HOSP-NAME(2)
       *
-           MOVE    WRK-HOSPPOST    TO  RPYAKUJO-HOSP-POST
+           MOVE    WRK-HOSPPOST    TO  FMYAKUJO-HOSP-POST
       *
-           MOVE    WRK-HOSPADRS1   TO  RPYAKUJO-HOSP-ADRS(1)
-           MOVE    WRK-HOSPADRS2   TO  RPYAKUJO-HOSP-ADRS(2)
+           MOVE    WRK-HOSPADRS1   TO  FMYAKUJO-HOSP-ADRS(1)
+           MOVE    WRK-HOSPADRS2   TO  FMYAKUJO-HOSP-ADRS(2)
       *
-           MOVE    WRK-HOSPTEL     TO  RPYAKUJO-HOSP-TEL
+           MOVE    WRK-HOSPTEL     TO  FMYAKUJO-HOSP-TEL
       *
-           MOVE    SPA-DRCD        TO  RPYAKUJO-DR-CODE
-           MOVE    WRK-DRNAME      TO  RPYAKUJO-DR-NAME
-           MOVE    WRK-DRKANANAME  TO  RPYAKUJO-DR-KANANAME
+           MOVE    SPA-DRCD        TO  FMYAKUJO-DR-CODE
+           MOVE    WRK-DRNAME      TO  FMYAKUJO-DR-NAME
+           MOVE    WRK-DRKANANAME  TO  FMYAKUJO-DR-KANANAME
       *
            MOVE    ZERO            TO  CNT-KENSU
       *
@@ -2041,26 +2041,26 @@
            PERFORM 900-YAKUJYO-READ-SEC
       *
            MOVE    ORCHC30-SRYCD(CNT-PARA)
-                                       TO  RPYAKUJO-SRYCD(CNT-KENSU)
+                                       TO  FMYAKUJO-SRYCD(CNT-KENSU)
       *
            IF      FLG-YAKUJYO     =   ZERO
-               MOVE    YAKUJYO-NAME    TO  RPYAKUJO-YKZNAME(CNT-KENSU)
-               MOVE    YAKUJYO-EFFECT  TO  RPYAKUJO-EFFECT(CNT-KENSU)
-               MOVE    YAKUJYO-SHAPE   TO  RPYAKUJO-SHAPE(CNT-KENSU)
-               MOVE    YAKUJYO-COLOR   TO  RPYAKUJO-COLOR(CNT-KENSU)
-               MOVE    YAKUJYO-MARK    TO  RPYAKUJO-MARK(CNT-KENSU)
-               MOVE    YAKUJYO-CAUTION TO  RPYAKUJO-CAUTION(CNT-KENSU)
+               MOVE    YAKUJYO-NAME    TO  FMYAKUJO-YKZNAME(CNT-KENSU)
+               MOVE    YAKUJYO-EFFECT  TO  FMYAKUJO-EFFECT(CNT-KENSU)
+               MOVE    YAKUJYO-SHAPE   TO  FMYAKUJO-SHAPE(CNT-KENSU)
+               MOVE    YAKUJYO-COLOR   TO  FMYAKUJO-COLOR(CNT-KENSU)
+               MOVE    YAKUJYO-MARK    TO  FMYAKUJO-MARK(CNT-KENSU)
+               MOVE    YAKUJYO-CAUTION TO  FMYAKUJO-CAUTION(CNT-KENSU)
                IF      YAKUJYO-PHOTO   NOT =   SPACE
                    MOVE    ORCHC30-SRYCD(CNT-PARA)
-                                       TO  RPYAKUJO-IMAGE-ID(CNT-KENSU)
+                                       TO  FMYAKUJO-IMAGE-ID(CNT-KENSU)
                END-IF
            END-IF
       *
       *    内容
            PERFORM 740-API-NAIYO-SET-SEC
       *
-           IF      RPYAKUJO-YKZNAME(CNT-KENSU) =   SPACE
-               MOVE    WRK-YKZNAME     TO  RPYAKUJO-YKZNAME(CNT-KENSU)
+           IF      FMYAKUJO-YKZNAME(CNT-KENSU) =   SPACE
+               MOVE    WRK-YKZNAME     TO  FMYAKUJO-YKZNAME(CNT-KENSU)
            END-IF
       *
            .
@@ -2197,21 +2197,21 @@
                    UNTIL   IDX-GYO     >   GYO-MAX
                MOVE    WRK-HENSYU(IDX-GYO)
                                    TO
-                                   RPYAKUJO-YOHO(CNT-KENSU IDX-GYO)
+                                   FMYAKUJO-YOHO(CNT-KENSU IDX-GYO)
            END-PERFORM
       *
 
-           MOVE    WRK-YKJ-KBN(1)  TO  RPYAKUJO-ASA(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(1) TO  RPYAKUJO-ASA-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(2)  TO  RPYAKUJO-HIRU(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(2) TO  RPYAKUJO-HIRU-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(3)  TO  RPYAKUJO-YU(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(3) TO  RPYAKUJO-YU-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(4)  TO  RPYAKUJO-SHUSHINJI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(1)  TO  FMYAKUJO-ASA(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(1) TO  FMYAKUJO-ASA-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(2)  TO  FMYAKUJO-HIRU(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(2) TO  FMYAKUJO-HIRU-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(3)  TO  FMYAKUJO-YU(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(3) TO  FMYAKUJO-YU-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(4)  TO  FMYAKUJO-SHUSHINJI(CNT-KENSU)
            MOVE    WRK-YKJ-TANI(4) TO
-                                   RPYAKUJO-SHUSHINJI-TANI(CNT-KENSU)
-           MOVE    WRK-YKJ-KBN(5)  TO  RPYAKUJO-KISHOJI(CNT-KENSU)
-           MOVE    WRK-YKJ-TANI(5) TO  RPYAKUJO-KISHOJI-TANI(CNT-KENSU)
+                                   FMYAKUJO-SHUSHINJI-TANI(CNT-KENSU)
+           MOVE    WRK-YKJ-KBN(5)  TO  FMYAKUJO-KISHOJI(CNT-KENSU)
+           MOVE    WRK-YKJ-TANI(5) TO  FMYAKUJO-KISHOJI-TANI(CNT-KENSU)
       *
            .
        740-API-NAIYO-SET-EXT.
@@ -2223,16 +2223,16 @@
        790-API-CALL-SEC            SECTION.
       *
            MOVE    CNT-KENSU       TO  WRK-ZZ9
-           MOVE    WRK-ZZ9         TO  RPYAKUJO-SHURUISU
+           MOVE    WRK-ZZ9         TO  FMYAKUJO-SHURUISU
       *
            MOVE    "okusuri_joho"  TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID
                                    TO  RPMAIN-CUSTOM-ID
            MOVE    "薬剤情報提供書" 
                                    TO  RPMAIN-TITLE
-           MOVE    "rp_medichine_information"
+           MOVE    "fm_medichine_information"
                                    TO  MCP-TABLE
-           MOVE    RPYAKUJO-DATA   TO  RPMAIN-DATA
+           MOVE    FMYAKUJO-DATA   TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA

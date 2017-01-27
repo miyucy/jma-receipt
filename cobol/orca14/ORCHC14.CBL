@@ -235,7 +235,7 @@
            COPY    "CPORCSKANACHK.INC".
       * API対応
       *    予約一覧表構造体
-           COPY    "CPRPYYKLIST.INC".
+           COPY    "CPFMYYKLIST.INC".
       *
            COPY    "CPORCRPMAIN.INC".
       *    画面色等
@@ -875,39 +875,39 @@
       *    予約時間
            MOVE    YYK-YYKTIME(1:2)    TO  WRK-THH
            MOVE    YYK-YYKTIME(3:2)    TO  WRK-TSS
-           MOVE    WRK-TIME-HEN        TO  RPYL-TYYKTIME(IDX-API)
+           MOVE    WRK-TIME-HEN        TO  FMYL-TYYKTIME(IDX-API)
       *    診療科
-           MOVE    YYK-SRYKA           TO  RPYL-TSRYKA (IDX-API)
+           MOVE    YYK-SRYKA           TO  FMYL-TSRYKA (IDX-API)
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL      (IDX-D   >   TBL-SRYKA-MAX  )
                IF     YYK-SRYKA            =   TBL-SRYKA-CD (IDX-D)
                    MOVE    TBL-SRYKANAME (IDX-D)
-                                           TO  RPYL-TSRYKANAME(IDX-API)
+                                           TO  FMYL-TSRYKANAME(IDX-API)
                    MOVE    TBL-SRYKA-MAX   TO  IDX-D
                END-IF
            END-PERFORM
       *    診療内容
-           MOVE    YYK-SRYNAIYO        TO  RPYL-TSRYNAIYO(IDX-API)
+           MOVE    YYK-SRYNAIYO        TO  FMYL-TSRYNAIYO(IDX-API)
            IF      ORCHC14-SRYNAIYO    =   YYK-SRYNAIYO
-               MOVE    RPYL-SRYNAIYONAME   TO  RPYL-TSRYNAIYONAME
+               MOVE    FMYL-SRYNAIYONAME   TO  FMYL-TSRYNAIYONAME
                                                               (IDX-API)
            ELSE
                PERFORM VARYING     IDX-D   FROM    1   BY  1
                        UNTIL      (IDX-D   >   TBL-SRYNAI-MAX  )
                    IF      YYK-SRYNAIYO    =   TBL-SRYNAIYO (IDX-D)
                        MOVE    TBL-SRYNAIYOMEI (IDX-D)
-                                               TO  RPYL-TSRYNAIYONAME
+                                               TO  FMYL-TSRYNAIYONAME
                                                               (IDX-API)
                        MOVE    TBL-SRYNAI-MAX  TO  IDX-D
                    END-IF
                END-PERFORM
            END-IF
       *    ドクター
-           MOVE    YYK-DRCD            TO  RPYL-TDR-CODE(IDX-API)
+           MOVE    YYK-DRCD            TO  FMYL-TDR-CODE(IDX-API)
            IF      ORCHC14-DRCD-G      =   YYK-DRCD
-               MOVE    RPYL-DR-NAME        TO  RPYL-TDR-NAME
+               MOVE    FMYL-DR-NAME        TO  FMYL-TDR-NAME
                                                               (IDX-API)
-               MOVE    RPYL-DR-KANANAME    TO  RPYL-TDR-KANANAME
+               MOVE    FMYL-DR-KANANAME    TO  FMYL-TDR-KANANAME
                                                               (IDX-API)
            ELSE
                PERFORM VARYING     IDX-D   FROM    1   BY  1
@@ -915,10 +915,10 @@
                               OR  (TBL-DRCD (IDX-D)    =   SPACE)
                    IF     YYK-DRCD             =   TBL-DRCD (IDX-D)
                        MOVE    TBL-DRCDNAME (IDX-D)
-                                               TO  RPYL-TDR-NAME
+                                               TO  FMYL-TDR-NAME
                                                               (IDX-API)
                        MOVE    TBL-DRCDKANANAME (IDX-D)
-                                               TO  RPYL-TDR-KANANAME
+                                               TO  FMYL-TDR-KANANAME
                                                               (IDX-API)
                        MOVE    TBL-DRCD-MAX    TO  IDX-D
                    END-IF
@@ -927,51 +927,51 @@
       *
       *    患者番号
            IF      YYK-PTID            =   ZERO
-               MOVE    SPACE               TO  RPYL-TPTNUM (IDX-API)
+               MOVE    SPACE               TO  FMYL-TPTNUM (IDX-API)
            ELSE
                PERFORM 3001-KNJNO-HENSYU-SEC
-               MOVE    WRK-PTNUM           TO  RPYL-TPTNUM (IDX-API)
+               MOVE    WRK-PTNUM           TO  FMYL-TPTNUM (IDX-API)
       *        患者情報
                INITIALIZE                      PTINF-REC
                MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    YYK-PTID            TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
-               MOVE    PTINF-KANANAME      TO  RPYL-TKANANAME(IDX-API)
-               MOVE    PTINF-NAME          TO  RPYL-TNAME  (IDX-API)
-               MOVE    PTINF-SEX           TO  RPYL-TSEX  (IDX-API)
+               MOVE    PTINF-KANANAME      TO  FMYL-TKANANAME(IDX-API)
+               MOVE    PTINF-NAME          TO  FMYL-TNAME  (IDX-API)
+               MOVE    PTINF-SEX           TO  FMYL-TSEX  (IDX-API)
       *        生年月日
                MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  RPYL-TBIRTHDAY (IDX-API)
+               MOVE    WRK-HEN-DATE        TO  FMYL-TBIRTHDAY (IDX-API)
            END-IF
       *    予約患者名称
-           MOVE    YYK-NAME            TO  RPYL-TYYKNAME (IDX-API)
+           MOVE    YYK-NAME            TO  FMYL-TYYKNAME (IDX-API)
       *
       *    予約確認連絡コード
-           MOVE    YYK-KAKREN          TO  RPYL-TKAKREN (IDX-API)
+           MOVE    YYK-KAKREN          TO  FMYL-TKAKREN (IDX-API)
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL      (IDX-D   >   TBL-RENRAK-MAX )
                IF     YYK-KAKREN            =   TBL-RENRAK-CD (IDX-D)
                    MOVE    TBL-YYKKAKNAME (IDX-D)
-                                           TO  RPYL-TKAKRENNAME(IDX-API)
+                                           TO  FMYL-TKAKRENNAME(IDX-API)
                    MOVE    TBL-RENRAK-MAX  TO  IDX-D
                END-IF
            END-PERFORM
       *
       *    予約内容コード
-           MOVE    YYK-YYKKBN          TO  RPYL-TYYKKBN (IDX-API)
+           MOVE    YYK-YYKKBN          TO  FMYL-TYYKKBN (IDX-API)
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL      (IDX-D   >   TBL-YYKKBN-MAX   )
                IF     YYK-YYKKBN            =   TBL-YYKKBN-CD (IDX-D)
                    MOVE    TBL-YYKKBNNAME (IDX-D)
-                                           TO  RPYL-TYYKKBNNAME
+                                           TO  FMYL-TYYKKBNNAME
                                                         (IDX-API)
                    MOVE    TBL-YYKKBN-MAX  TO  IDX-D
                END-IF
            END-PERFORM
       *    来院済み
            IF      YYK-RAIINZUMI       =   "1"
-               MOVE    "1"             TO  RPYL-TRAIINZUMI (IDX-API)
+               MOVE    "1"             TO  FMYL-TRAIINZUMI (IDX-API)
            END-IF
       *
            .
@@ -983,52 +983,52 @@
       *****************************************************************
        20090-API-INIT-SEC         SECTION.
       *
-           INITIALIZE                   RPYYKLIST-REC
+           INITIALIZE                   FMYYKLIST-REC
       *
-           MOVE    "yoyakulist"        TO  RPYL-REPORT-ID
-           MOVE    SYS-1031-PRTNM(18)  TO  RPYL-PRINTER
+           MOVE    "yoyakulist"        TO  FMYL-FORM-ID
+           MOVE    SYS-1031-PRTNM(18)  TO  FMYL-PRINTER
       *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPYL-PRTYMD
+           MOVE    WRK-HEN-DATE        TO  FMYL-PRTYMD
       *    予約日
            MOVE    ORCHC14-YYKYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  RPYL-SRYYMD
+           MOVE    WRK-HEN-DATE        TO  FMYL-SRYYMD
       *    診療内容
-           MOVE    ORCHC14-SRYNAIYO    TO  RPYL-SRYNAIYO
+           MOVE    ORCHC14-SRYNAIYO    TO  FMYL-SRYNAIYO
            IF      ORCHC14-SRYNAIYO    =   "00"
-               MOVE    "全体"              TO  RPYL-SRYNAIYONAME
+               MOVE    "全体"              TO  FMYL-SRYNAIYONAME
            ELSE
                PERFORM VARYING     IDX-D   FROM    1   BY  1
                        UNTIL      (IDX-D   >   TBL-SRYNAI-MAX  )
                    IF      ORCHC14-SRYNAIYO    =   TBL-SRYNAIYO (IDX-D)
                        MOVE    TBL-SRYNAIYOMEI (IDX-D)
-                                               TO  RPYL-SRYNAIYONAME
+                                               TO  FMYL-SRYNAIYONAME
                        MOVE    TBL-SRYNAI-MAX  TO  IDX-D
                    END-IF
                END-PERFORM
            END-IF
       *    ドクター
-           MOVE    ORCHC14-DRCD-G      TO  RPYL-DR-CODE
+           MOVE    ORCHC14-DRCD-G      TO  FMYL-DR-CODE
            IF      ORCHC14-DRCD        =   "9999"
-               MOVE    "指定なし"          TO  RPYL-DR-NAME
+               MOVE    "指定なし"          TO  FMYL-DR-NAME
            ELSE
                PERFORM VARYING     IDX-D   FROM    1   BY  1
                        UNTIL      (IDX-D   >   TBL-DRCD-MAX )
                    IF      ORCHC14-DRCD-G  =   TBL-DRCD (IDX-D)
                        MOVE    TBL-DRCDNAME (IDX-D)
-                                               TO  RPYL-DR-NAME
+                                               TO  FMYL-DR-NAME
                        MOVE    TBL-DRCDKANANAME (IDX-D)
-                                               TO  RPYL-DR-KANANAME
+                                               TO  FMYL-DR-KANANAME
                        MOVE    TBL-DRCD-MAX    TO  IDX-D
                    END-IF
                END-PERFORM
            END-IF
            IF      ORCHC14-KBN         =   "1"
-               MOVE    "1"                 TO  RPYL-HAKKOKBN
+               MOVE    "1"                 TO  FMYL-HAKKOKBN
            ELSE
-               MOVE    "2"                 TO  RPYL-HAKKOKBN
+               MOVE    "2"                 TO  FMYL-HAKKOKBN
            END-IF
            .
        20090-API-INIT-EXT.
@@ -1040,7 +1040,7 @@
        20091-API-SYORI-SEC         SECTION.
       *
       *    カスタムＩＤ
-           MOVE    PARA-API-CUSTOM-ID  TO  RPYL-CUSTOM-ID
+           MOVE    PARA-API-CUSTOM-ID  TO  FMYL-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "yoyakulist"        TO  RPMAIN-ID
@@ -1050,9 +1050,9 @@
            ELSE
                MOVE    "未院一覧表"        TO  RPMAIN-TITLE
            END-IF
-           MOVE    "rp_appointment_list"
+           MOVE    "fm_appointment_list"
                                        TO  MCP-TABLE
-           MOVE    RPYL-DATA           TO  RPMAIN-DATA
+           MOVE    FMYL-DATA           TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
                                        MCPAREA
                                        RPMAIN-AREA

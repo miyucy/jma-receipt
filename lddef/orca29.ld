@@ -69,9 +69,9 @@ db	{
 	tbl_santei;
 };
 db "xml2" {
- rp_medication_note;
- rp_prescription;
- rp_medichine_information;
+ fm_medication_note;
+ fm_prescription;
+ fm_medichine_information;
 };
 
 
