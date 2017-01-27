@@ -1065,11 +1065,11 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
                MOVE    SPA-GMN-TMSG      (IDX) TO  MJOB-VALUE6 (IDX)
                MOVE    SPA-GMN-TCOMMENT  (IDX) TO  MJOB-VALUE7 (IDX)
       *        ÁªÂò¹Ô
-               IF      (SPA-NAI-SELIDX     =   IDX  )
-                   MOVE    "T"             TO  MJOB-SELECT (IDX)
-               ELSE
-                   MOVE    "F"             TO  MJOB-SELECT (IDX)
-               END-IF
+      **       IF      (SPA-NAI-SELIDX     =   IDX  )
+      *            MOVE    "T"             TO  MJOB-SELECT (IDX)
+      *        ELSE
+      *            MOVE    "F"             TO  MJOB-SELECT (IDX)
+      **       END-IF
       *
                MOVE    IDX                 TO  MJOB-COUNT
       *
