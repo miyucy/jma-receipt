@@ -42,7 +42,7 @@
       *       実施時間
               05  STOCKRES-INFORMATION-TIME  PIC X(8).
       *       返却コード
-              05  STOCKRES-API-RESULT        PIC X(02).
+              05  STOCKRES-API-RESULT        PIC X(03).
       *       返却メッセージ
               05  STOCKRES-API-RESULT-MSG    PIC X(100).
       *
