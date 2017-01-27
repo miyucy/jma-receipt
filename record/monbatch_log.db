@@ -34,7 +34,7 @@ path	list1		{
 			exevent, exterm, exuser, exhost, exec_record
 		FROM monbatch_log
 		WHERE tenant = :tenant
-		AND to_char(starttime, 'YYYYMMDD') >= :starttime 
+		AND to_char(starttime, 'YYYYMMDD') = :starttime 
                 ORDER BY starttime DESC
 		;
 
