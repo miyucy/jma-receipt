@@ -252,7 +252,10 @@ module JMA::Plugin
         old.each {|o|
           @log.info("uninstall old version ... #{o[:name]}-#{o[:version]}")
           do_link = @db.link?(o[:name],o[:version])
-          _uninstall(o[:name],o[:version],action) #rescue nil
+          begin
+            _uninstall(o[:name],o[:version],action) #rescue nil
+          rescue Exception
+          end
         }
       end
       @store.install(name,version,package_path,action)
