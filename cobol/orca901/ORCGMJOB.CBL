@@ -485,11 +485,11 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            MOVE    ZERO                TO  WRK-SELIDX
       *
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >   WRK-CONS-LSTMAX
+                   UNTIL  (IDX     >   SPA-GMN-LSTMAX )
+                       OR (FLG-SELLOG  =   1    )
                IF      MJOB-SELECT (IDX)   =   "T"
                    MOVE    1                   TO  FLG-SELLOG
                    MOVE    IDX                 TO  WRK-SELIDX
-                   EXIT    PERFORM
               END-IF
            END-PERFORM
       *
@@ -954,7 +954,6 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
                    MOVE    1                   TO  SPA-GMN-CUR
                    MOVE    1                   TO  SPA-TAB-PAGE
                WHEN    1
-                   MOVE    2                   TO  SPA-GMN-CUR
                    MOVE    2                   TO  SPA-TAB-PAGE
            END-EVALUATE
       *
@@ -1065,11 +1064,11 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
                MOVE    SPA-GMN-TMSG      (IDX) TO  MJOB-VALUE6 (IDX)
                MOVE    SPA-GMN-TCOMMENT  (IDX) TO  MJOB-VALUE7 (IDX)
       *        ÁªÂò¹Ô
-      **       IF      (SPA-NAI-SELIDX     =   IDX  )
-      *            MOVE    "T"             TO  MJOB-SELECT (IDX)
-      *        ELSE
-      *            MOVE    "F"             TO  MJOB-SELECT (IDX)
-      **       END-IF
+               IF      (SPA-NAI-SELIDX     =   IDX  )
+                   MOVE    "T"             TO  MJOB-SELECT (IDX)
+               ELSE
+                   MOVE    "F"             TO  MJOB-SELECT (IDX)
+               END-IF
       *
                MOVE    IDX                 TO  MJOB-COUNT
       *
@@ -1106,7 +1105,7 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
       *
            EVALUATE    SPA-TAB-PAGE
                WHEN    1
-                   MOVE    WIDGET-INSENSITIVE  TO  MJOB-B08-STATE
+                   MOVE    WIDGET-NORMAL       TO  MJOB-B08-STATE
                    MOVE    WIDGET-INSENSITIVE  TO  MJOB-B11-STATE
                    MOVE    WIDGET-INSENSITIVE  TO  MJOB-B12-STATE
                WHEN    2
