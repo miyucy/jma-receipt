@@ -307,6 +307,9 @@
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
+      *        クリア
+               WHEN    "CLICKED"       ALSO    "B02"
+                   PERFORM 220-CLREA-SEC
       *        前
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 470-PREV-SYORI-SEC
@@ -997,6 +1000,17 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            END-IF
            .
        4001-LOGDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クリア処理
+      *****************************************************************
+       220-CLREA-SEC          SECTION.
+      *
+      *    初期画面
+           PERFORM 310-SPASET-SEC
+           .
+       220-CLREA-EXT.
            EXIT.
       *
       *****************************************************************
