@@ -76,6 +76,20 @@ path	key4		{
 	};
 };
 
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_okusuri_kanri_key5_csr CURSOR FOR
+		SELECT
+			MAX(RENNUM) AS RENNUM
+		FROM tbl_okusuri_kanri
+			WHERE   HOSPNUM = :HOSPNUM
+			 AND	PTID    = :PTID
+			 AND	SRYYMD  = :SRYYMD
+			 AND	HOSPCD  = :HOSPCD
+		;
+	};
+};
+
 path	del1 	{
 	DBDELETE	{
 		DELETE
