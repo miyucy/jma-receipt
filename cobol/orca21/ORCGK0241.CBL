@@ -100,7 +100,7 @@
       *
            03  WRK-KIDMSG          PIC X(80).
       *
-      **** 03  WRK-PATH            PIC X(64).
+           03  WRK-PATHNAME        PIC X(64).
            03  WRK-RENNUM          PIC 9(03).
       *
            03  WRK-ZZ              PIC ZZZ.
@@ -317,14 +317,7 @@
       *    管理画面編集処理
            PERFORM 3101-KANRILIST-HEN-SEC
       *
-           STRING  "(生年月日："
-                   SPA-GMN-BIRTHDAY
-                   "　性別："
-                   SPA-GMN-SEX
-                   "）"
-                                   DELIMITED  BY  SIZE
-                                   INTO  SPA-K0241-MIDASI
-           END-STRING
+           PERFORM 31011-MIDASI-HENSYU-SEC
       *
            MOVE    1                   TO  SPA-K0241-CUR
            .
@@ -343,6 +336,12 @@
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  FLG-HENSYU
       *
+           IF      SPA-K0241-FUMEI     =   1
+               MOVE    "key2"              TO  WRK-PATHNAME
+           ELSE
+               MOVE    "key3"              TO  WRK-PATHNAME
+           END-IF
+      *
            INITIALIZE                  OKUSURIKANRI-REC
            MOVE    SPA-HOSPNUM         TO  OKUKAN-HOSPNUM
            MOVE    ZERO                TO  OKUKAN-PTID
@@ -351,11 +350,11 @@
       *
            MOVE    OKUSURIKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 910-OKUSURIKANRI-READ-SEC
            ELSE
                INITIALIZE                  OKUSURIKANRI-REC
@@ -372,15 +371,43 @@
                END-IF
       *
                MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 910-OKUSURIKANRI-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
        3101-KANRILIST-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    見出し編集処理
+      *****************************************************************
+       31011-MIDASI-HENSYU-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SPA-K0241-MIDASI
+           IF      SPA-K0241-FUMEI     =   1
+               STRING  "(生年月日："
+                       SPA-GMN-BIRTHDAY
+                       "　性別："
+                       SPA-GMN-SEX
+                       "）＋不明分"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-K0241-MIDASI
+               END-STRING
+           ELSE
+               STRING  "(生年月日："
+                       SPA-GMN-BIRTHDAY
+                       "　性別："
+                       SPA-GMN-SEX
+                       "）"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-K0241-MIDASI
+               END-STRING
+           END-IF
+           .
+       31011-MIDASI-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    画面編集用処理
@@ -420,6 +447,15 @@
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 220-CLREA-SEC
+      *        不明分
+               WHEN    "CLICKED"       ALSO    "B09"
+                   IF      SPA-K0241-FUMEI     =   ZERO
+                       MOVE    1                   TO  SPA-K0241-FUMEI
+                   ELSE
+                       MOVE    ZERO                TO  SPA-K0241-FUMEI
+                   END-IF
+                   PERFORM 3101-KANRILIST-HEN-SEC
+                   PERFORM 31011-MIDASI-HENSYU-SEC
       *        更新へ
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 4120-KOUSIN-SYORI-SEC

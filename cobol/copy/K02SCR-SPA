@@ -772,4 +772,5 @@ ito   *
                05  SPA-K0241-SELNUM     PIC 9(03).
                05  SPA-K0241-MIDASI     PIC X(80).
                05  SPA-K0241-SYORI      PIC 9(01).
+               05  SPA-K0241-FUMEI      PIC 9(01).
       *
