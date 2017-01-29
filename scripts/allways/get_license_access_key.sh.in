@@ -18,6 +18,8 @@ HOSPNUM=${1}
 HOSPID=${2}
 JOBID=${3}
 SHELLID=$(printf "%-8s" ${4})
+REMSG=""
+ERRCD="0001"
 
 if [ -n "${ACCESSKEYPATH}" ]; then
   export ACCESSKEYPATH
@@ -26,15 +28,37 @@ else
   RESULT="999"
 fi
 
-if [ "${RESULT:0:3}" = "200" ]; then
-  AKEY=${RESULT:4:64}
-  SQLSTR="INSERT INTO tbl_access_key VALUES (${HOSPNUM},'${AKEY}',to_char(now(),'yyyymmdd'),to_char(now(),'hh24miss'));"
-  ${MONSQL} -dir ${LDDIRECTORY} -c "${SQLSTR}"
-else
-  ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},,,アクセスキーの取得に失敗しました(${RESULT:0:3})"
-  exit 1
-fi
+case "${RESULT:0:3}" in
+  200)
+    AKEY=${RESULT:4:64}
+    SQLSTR="INSERT INTO tbl_access_key VALUES (${HOSPNUM},'${AKEY}',to_char(now(),'yyyymmdd'),to_char(now(),'hh24miss'));"
+    ${MONSQL} -dir ${LDDIRECTORY} -c "${SQLSTR}"
+    REMSG="アクセスキーを取得しました"
+    ERRCD="0000"
+    ;;
+  401)
+    REMSG="アクセスキーは発行済みです(401)"
+    ;;
+  402)
+    REMSG="アクセスキーを発行できません(402)"
+    ;;
+  500)
+    REMSG="サーバ内部エラーが発生しました(500)"
+    ;;
+  503)
+    REMSG="サービス利用ができませんでした(503)"
+    ;;
+  404|998)
+    REMSG="ページが見つかりませんでした(${RESULT:0:3})"
+    ;;
+  999)
+    REMSG="環境変数の設定がありません(999)"
+    ;;
+  *)
+    REMSG="その他のエラーが発生しました(${RESULT:0:3})"
+    ;;
+esac
 
-${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,アクセスキーを取得しました"
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}${ERRCD},${HOSPNUM},,,${REMSG}"
 
 exit 0
