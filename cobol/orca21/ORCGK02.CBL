@@ -368,6 +368,8 @@
       *H28.4
            03  FLG-CHUEND              PIC 9(01).
       *
+           03  FLG-INGAI-ARI           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -13345,6 +13347,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  WRK-PAGE
            MOVE    ZERO                TO  FLG-BGCOLORS
            MOVE    ZERO                TO  IDX2
+      *H29.1
+      *    院外投薬あり
+           MOVE    ZERO                TO  FLG-INGAI-ARI
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL      (WRK-IDX     >   SPA-MAX-LINE)  OR
@@ -13399,6 +13404,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  K02-INPUTCD(IDX)
                    MOVE    SPA-GMN-MEISYO-G(WRK-IDX)
                                                TO  K02-MEISYO(IDX)
+      *
                    PERFORM 5002-SURYO-HEN-SEC
       *H26.10
       *            診療人数合計
@@ -13433,6 +13439,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        K02-MEISYO-FGCOLOR (IDX)
                    END-IF
       *!
+      *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"
                         MOVE    ALL "#"             TO  K02-SRYKBN(IDX)
                         MOVE    ALL "#"             TO  K02-SURYO (IDX)
@@ -13458,6 +13465,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    ZERO            TO  FLG-BGCOLORS
                        END-IF
                    END-IF
+               END-IF
+      *H29.1
+      *        院外投薬あり
+               IF      (SPA-COM-SRYSYUKBN(WRK-IDX) =   "212"
+                                                   OR  "292"
+                                                   OR  "222"
+                                                   OR  "298"
+                                                   OR  "232"
+                                                   OR  "148"
+                                                   OR  "295")
+                   OR (SPA-COM-INGAITEN (WRK-IDX)  NOT =   ZERO)
+                   MOVE    1               TO  FLG-INGAI-ARI
                END-IF
       *
            END-PERFORM
@@ -13693,6 +13712,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    処方名切替え
            IF     (SPA-GMN-PTNUM   NOT =   SPACE     )
             AND   (SPA-SRYYMD          >=  "20160401")
+      *     院外投薬がある時
+            AND   (FLG-INGAI-ARI       =   1         )
                IF      SPA-GENERICFLG      =   "1"
                    MOVE    SPACE               TO  K02-MODE2-STYLE
                    MOVE    "(一般名)"          TO  K02-MODE2-VALUE

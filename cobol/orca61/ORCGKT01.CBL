@@ -323,6 +323,8 @@
       *    悪性区分前
            03  FLG-MAE-AKUSEI          PIC 9(01).
       *
+           03  FLG-INGAI-ARI           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -8754,6 +8756,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PAGE
+      *H29.1
+      *    院外投薬あり
+           MOVE    ZERO                TO  FLG-INGAI-ARI
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL      (WRK-IDX     >   SPA-MAX-LINE)  OR
@@ -8805,6 +8810,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 MOVE    ALL "="             TO  KT01-SURYO (IDX)
       *             END-IF
       *!
+               END-IF
+      *H29.1
+      *        院外投薬あり
+               IF      (SPA-COM-SRYSYUKBN(WRK-IDX) =   "212"
+                                                   OR  "292"
+                                                   OR  "222"
+                                                   OR  "298"
+                                                   OR  "232"
+                                                   OR  "148"
+                                                   OR  "295")
+                   OR (SPA-COM-INGAITEN (WRK-IDX)  NOT =   ZERO)
+                   MOVE    1               TO  FLG-INGAI-ARI
                END-IF
       *
            END-PERFORM
@@ -9019,6 +9036,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    処方名切替え
            IF     (SPA-GMN-PTNUM   NOT =   SPACE     )
             AND   (SPA-SRYYMD          >=  "20160401")
+      *     院外投薬がある時
+            AND   (FLG-INGAI-ARI       =   1         )
                IF      SPA-GENERICFLG      =   "1"
                    MOVE    SPACE               TO  KT01-MODE2-STYLE
                    MOVE    "(一般名)"          TO  KT01-MODE2-VALUE
