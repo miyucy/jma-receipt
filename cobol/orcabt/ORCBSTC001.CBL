@@ -109,7 +109,7 @@
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
-           03  CNT-OUT                 PIC 9(05).
+           03  CNT-OUT                 PIC 9(10).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -142,6 +142,7 @@
            03  WRK-PARA-HOSPNUM        PIC X(02).
            03  WRK-PARA-TERMID         PIC X(64).
            03  WRK-PARA-BASE-YMD       PIC X(08).
+           03  WRK-PARA-NYUGAIKBN      PIC X(01).
            03  WRK-PARA-ERRFILE        PIC X(64).
       *
       *    °ì»þÎÎ°è
@@ -348,7 +349,10 @@
                                                WRK-PARA-HOSPNUM
                                                RECEERR
                                                WRK-PARA-BASE-YMD
+                                               WRK-PARA-NYUGAIKBN
            END-UNSTRING
+      *
+           DISPLAY "NYUGAIKBN=" WRK-PARA-NYUGAIKBN
       *
       *    £Ó£Ð£ÁÀßÄê
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -391,7 +395,6 @@
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
-               GO  TO  100-INIT-EXT
            END-IF
       *
       *    ½é´üÃÍ¥»¥Ã¥È
@@ -421,7 +424,7 @@
            END-IF
       *
       *    Æþ³°¶èÊ¬
-           MOVE    "2"                 TO  SPA-NYUGAIKBN
+           MOVE    WRK-PARA-NYUGAIKBN  TO  SPA-NYUGAIKBN
       *
            .
        110-SYOKI-SET-EXT.
@@ -913,7 +916,7 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "*** ORCBST001 PAGE:" CNT-OUT   " ***"
+           DISPLAY "*** ORCBST001 OUT:" CNT-OUT
            DISPLAY "*** ORCBST001 END ***"
       *
            .
