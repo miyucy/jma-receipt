@@ -1973,8 +1973,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_access_key"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
-           IF      MCP-RC          NOT =   ZERO
-               MOVE    1               TO  FLG-ACCESSKEY
+           IF      MCP-RC              =   ZERO
+               MOVE    SPACE               TO  SPA-ACCESS-KEY-1
+           ELSE
+               MOVE    1                   TO  FLG-ACCESSKEY
                INITIALIZE  ACCESS-KEY-REC
            END-IF
            .
