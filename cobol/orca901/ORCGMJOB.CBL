@@ -147,6 +147,12 @@
       *    コラムリスト位置
            03  WRK-ROW             PIC S9(09).
            03  WRK-ROWATTR         PIC S9(09).
+           03  WRK-START-EDIT.
+               05  WRK-STE-Y       PIC X(04).
+               05  WRK-STE-F1      PIC X(01).
+               05  WRK-STE-M       PIC X(02).
+               05  WRK-STE-F2      PIC X(01).
+               05  WRK-STE-D       PIC X(02).
       *
            COPY    "CPSHELLTBL.INC".
       *                             
@@ -377,12 +383,7 @@
                MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
            END-IF
       *
-      **     EVALUATE    SPA-MOTOPG
-      **         WHEN    "xxxx"
-      **             PERFORM XXXX-SEC
-      **         WHEN    OTHER
-                   PERFORM 310-SPASET-SEC
-      **     END-EVALUATE
+           PERFORM 310-SPASET-SEC
            .
        300-SCREEN-EXT.
            EXIT.
@@ -421,8 +422,6 @@
            END-IF
       *    前頁の最終件数から
            MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
-ito  ****     MOVE    "20170125"          TO  MBL-STARTTIME
-ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            MOVE    MBL-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "monbatch_log"      TO  MCP-TABLE
@@ -536,9 +535,6 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            MOVE    C-UID               TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAME   TO  ASS-LOGF
-      *TEST
-      **   DISPLAY "ASS-LOGF:" ASS-LOGF
-      *TEST
       *
            OPEN    OUTPUT  LOGT-FILE
       *
@@ -799,12 +795,18 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
            MOVE    SHELLTBL-LOG-FILEID TO  SHELLTBL-ARG2
       *    ログデータ型式
            IF      MCP-WIDGET          =   "B12"
-               MOVE    "txt"               TO  SHELLTBL-ARG3
+               MOVE    "log"               TO  SHELLTBL-ARG3
            ELSE
                MOVE    "html"              TO  SHELLTBL-ARG3
            END-IF
       *    ファイル名
-           STRING  "batchlog-"             DELIMITED   BY  SIZE
+           MOVE    SPA-GMN-TSTART (SPA-NAI-SELIDX)
+                                       TO  WRK-START-EDIT
+           STRING  "batch-"                DELIMITED   BY  SIZE
+                   WRK-STE-Y               DELIMITED   BY  SIZE
+                   WRK-STE-M               DELIMITED   BY  SIZE
+                   WRK-STE-D               DELIMITED   BY  SIZE
+                   "-"                     DELIMITED   BY  SIZE
                    SPA-GMN-TPID (SPA-NAI-SELIDX)
                                            DELIMITED   BY  SIZE
                    "."                     DELIMITED   BY  SIZE
@@ -1064,11 +1066,11 @@ ito   ***        MOVE    WRK-MOVECOUNT       TO  MBL-MOVECOUNT
                MOVE    SPA-GMN-TMSG      (IDX) TO  MJOB-VALUE6 (IDX)
                MOVE    SPA-GMN-TCOMMENT  (IDX) TO  MJOB-VALUE7 (IDX)
       *        選択行
-               IF      (SPA-NAI-SELIDX     =   IDX  )
-                   MOVE    "T"             TO  MJOB-SELECT (IDX)
-               ELSE
+      *         IF      (SPA-NAI-SELIDX     =   IDX  )
+      *             MOVE    "T"             TO  MJOB-SELECT (IDX)
+      *         ELSE
                    MOVE    "F"             TO  MJOB-SELECT (IDX)
-               END-IF
+      *         END-IF
       *
                MOVE    IDX                 TO  MJOB-COUNT
       *

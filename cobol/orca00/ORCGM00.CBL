@@ -1281,26 +1281,9 @@
       *        感染症設定メッセージ
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 810-INFECTION-002-SEC
-      *ito debug start
-      *        ログ表示
+      *        バッチログ
                WHEN    "CLICKED"       ALSO    "B05"
-      *    画面移行用のパラメタ変更
-           MOVE    "M00"               TO  SPA-MOTOPG
-           MOVE    "MJOB"              TO  SPA-SAKIPG
-           MOVE    SPACE               TO  SPA-MOTOPG2
-      *
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *    戻り時、画面を元へ戻す
-           MOVE    SPA-M00             TO  LNK-FREE
-      *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE   "MJOB   "            TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-      *ito debug end
+                   PERFORM 450-MJOB-SEC
       *        システム日付設定
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-M95-SEC
@@ -1543,6 +1526,30 @@
            .
        420-SYS1006-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    バッチログ画面
+      *****************************************************************
+       450-MJOB-SEC                SECTION.
+      *
+           MOVE    "M00"               TO  SPA-MOTOPG
+           MOVE    "MJOB"              TO  SPA-SAKIPG
+           MOVE    SPACE               TO  SPA-MOTOPG2
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *    戻り時、画面を元へ戻す
+           MOVE    SPA-M00             TO  LNK-FREE
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "MJOB   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       450-MJOB-EXT.
+           EXIT.
+      *
       *H24.4
       *
       *****************************************************************
@@ -1910,6 +1917,7 @@
            MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       *
            MOVE    WIDGET-INSENSITIVE      TO  M00-B04-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M00-B05-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M00-B06-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M00-B09-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M00-B10-STATE
@@ -1962,6 +1970,12 @@
                IF    ( M00-B11-LABEL  NOT =   SPACE )
                    MOVE    WIDGET-INSENSITIVE TO  M00-B11-STATE
                END-IF
+           END-IF
+      *
+           IF    ( SPA-SUPERVISOR          =   "T" )   OR
+                 ( SYS-1010-KANRIAUTHFLG   =   "T" )
+               MOVE    WIDGET-NORMAL       TO  M00-B05-STATE
+               MOVE    "バッチログ"        TO  M00-B05-LABEL
            END-IF
       *
       *2001.8.7 強制プロテクト（ＰＧ未作成）

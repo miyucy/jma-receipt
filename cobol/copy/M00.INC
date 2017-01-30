@@ -57,6 +57,9 @@
                 05  M00-HTML1          PIC X(200).
               04  M00-B04-G.
                 05  M00-B04-STATE      PIC S9(9)   BINARY.
+              04  M00-B05-G.
+                05  M00-B05-LABEL      PIC X(10).
+                05  M00-B05-STATE      PIC S9(9)   BINARY.
               04  M00-B06-G.
                 05  M00-B06-STATE      PIC S9(9)   BINARY.
               04  M00-B09-G.
