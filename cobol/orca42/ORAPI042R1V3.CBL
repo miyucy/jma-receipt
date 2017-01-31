@@ -106,9 +106,9 @@
            03  WRK-ERR-PATIENT-MAX1    PIC 9(03).
       *
       *    ワーニング患者一覧
-           03  WRK-WARNING-INFOMATION.
+           03  WRK-WARNING-INFORMATION.
                05  WRK-WARNING-PATIENT-MAX PIC 9(03).
-               05  WRK-WARNING-INFOMATION-OCC  OCCURS  100.
+               05  WRK-WARNING-INFORMATION-OCC OCCURS  100.
                    07  WRK-WARNING-PATIENT-ID  PIC X(20).
                    07  WRK-WARNING-PERFORM-DATE
                                                PIC X(7).
@@ -117,41 +117,14 @@
       *
            03  WRK-OPID                PIC X(16).
       *
-           03  WRK-KBNCD-X.
-               05  WRK-KBNCD-9         PIC 9(03).
-      *
-           03  WRK-PREFNUM             PIC 9(02).
-      *
-           03  WRK-SHELL-ARG1.
-             05  WRK-SHELL-SRYYM       PIC X(06).
-             05  WRK-SHELL-TERMID      PIC X(16).
-             05  WRK-SHELL-SYSYMD      PIC X(08).  
-      *
-           03  WRK-MCP-TABLE           PIC X(64).
-           03  WRK-MCP-PATHNAME        PIC X(64).
-      *
            03  WRK-PARAM               PIC X(256).
-      *
-           03  WRK-SRYYM               PIC 9(06).
-      *
-           03  WRK-ACCT-SRYYM          PIC 9(06).
-           03  WRK-ACCT-PTID           PIC 9(10).
-           03  WRK-ACCT-NYUGAIKBN      PIC X(01).
       *
            03  WRK-X.
                05  WRK-9               PIC 9(05).
       *
            03  WRK-FILEMEI             PIC X(20).
       *
-       01  KEY-AREA                        VALUE   LOW-VALUE.
-           03  KEY-NEW.
-               05  KEY-N-PTID          PIC 9(10).
-               05  KEY-N-HKNCOMBI      PIC 9(04).
-               05  KEY-N-SRYKA         PIC X(02).
-           03  KEY-OLD.
-               05  KEY-O-PTID          PIC 9(10).
-               05  KEY-O-HKNCOMBI      PIC 9(04).
-               05  KEY-O-SRYKA         PIC X(02).
+           03  WRK-TEMPDIR-ROOT        PIC X(1024).
       *
        01  WRK-XML-AREA.
            03  WRK-REGIST-YMD10        PIC X(10).
@@ -162,7 +135,6 @@
                05  WRK-REGIST-THH      PIC X(02).
                05  WRK-REGIST-TMM      PIC X(02).
                05  WRK-REGIST-TSS      PIC X(02).
-           03  WRK-PTNUM               PIC X(20).
       * 
            COPY    "MCPAREA"       REPLACING  //MCP//
                                    BY         //TAIHI-MCP//.
@@ -175,6 +147,8 @@
            03  WRK-CONS-JOB-SHELLID1
                                    PIC X(08)   VALUE   "TEIKI1".
            03  WRK-CONS-JOB-JOBID1 PIC 9(07)   VALUE   1.
+           03  WRK-CONS-JOB-SHELLID2
+                                   PIC X(08)   VALUE   "RECEPT2".
       *
       *    個別対象患者一覧
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.
@@ -956,15 +930,6 @@
            EXIT.
       *
       *****************************************************************
-      *    個別対象患者編集処理
-      *****************************************************************
-       20012-PATIENT-HENSYU-SEC     SECTION.
-      *
-           .
-       20012-PATIENT-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    個別対象患者エラー処理
       *****************************************************************
        20012-PATIENT-ERR-SEC     SECTION.
@@ -988,7 +953,6 @@
                        MOVE    "W20"           TO  WRK-WARNING
                        MOVE    RECEMAKES-ERROR-MSG (WRK-ERR-PATIENT-MAX)
                                                TO  WRK-WARNING-MSG
-
                    END-IF
                END-IF
            ELSE
@@ -1068,6 +1032,11 @@
                    RECEMAKEQ-ORCA-UID  DELIMITED  BY  SPACE
                                        INTO    SPA-R01-JOB-PARAM
            END-STRING
+      *
+      *****PERFORM 800-TEMPDIR-SEC
+      *****IF      WRK-ERRCD   NOT =   SPACE
+      *****    GO  TO  2002-RECEIPT-MAKE-EXT
+      *****END-IF
       *
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
@@ -1258,17 +1227,63 @@
                            MOVE    WRK-X           TO
                                     RECEMAKES-DETAIL-POSITION(IDW IDZ)
                            MOVE    SPA-GMN-TKENSU      (IDW IDX)
-                                           TO
-                                   RECEMAKES-NUMBER          (IDW IDZ)
+                                                   TO
+                                   RECEMAKES-COUNT           (IDW IDZ)
                            MOVE    SPA-GMN-TPAGE       (IDW IDX)
-                                           TO
+                                                   TO
                                    RECEMAKES-NUMBER-OF-SHEETS(IDW IDZ)
                            MOVE    SPA-NAI-SYUBETU    (IDW IDX 1)
-                                           TO
+                                                   TO
                                    RECEMAKES-SUBMISSION-CODE (IDW IDZ)
                            MOVE    SPA-GMN-TSYURUINAME (IDW IDX)
-                                           TO
+                                                   TO
                                    RECEMAKES-SUBMISSION-TYPE (IDW IDZ)
+                           EVALUATE    SPA-NAI-SYUBETU    (IDW IDX 1)
+                               WHEN    "0000"
+                               WHEN    "8888"
+                                   MOVE    "99"    TO
+                                       RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                               WHEN    "6666"
+                                   IF      IDX         =   33
+                                       MOVE    "04"    TO
+                                           RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                                   ELSE
+                                       MOVE    "03"    TO
+                                           RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                                   END-IF
+                               WHEN    OTHER
+                                   IF      SPA-GMN-PRTJYUN =
+                                                   "07"    OR  "08"  OR
+                                                   "11"    OR  "12"  OR
+                                                   "13"
+                                     MOVE    "99"    TO
+                                             RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                                   ELSE
+                                       EVALUATE  SPA-NAI-TEISYUTUSAKI
+                                                           (IDW IDX)
+                                           WHEN    "1"
+                                             MOVE    "02"    TO
+                                             RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                                            WHEN    "2"
+                                              MOVE    "03"    TO
+                                              RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                                           WHEN    "6"
+                                              MOVE    "04"    TO
+                                              RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                                           WHEN    OTHER
+                                              MOVE    "99"    TO
+                                              RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                                       END-EVALUATE
+                                   END-IF
+                           END-EVALUATE
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -1279,8 +1294,7 @@
                                        RECEMAKES-RECEIPT-PRINT-ORDER (2)
                MOVE    SPA-GMN-PRTJYUN2MEI TO
                                        RECEMAKES-RECEIPT-PRINT-ORDER (3)
-               MOVE    SPA-GMN-PAGEH       TO
-                                       RECEMAKES-ALL-NUMBER
+               MOVE    SPA-GMN-PAGEH       TO  RECEMAKES-ALL-COUNT
                MOVE    SPA-GMN-KENSUH      TO
                                        RECEMAKES-ALL-NUMBER-OF-SHEETS
                MOVE    SPA-GMN-FILEKBN     TO  RECEMAKES-PERFORM-TITLE
@@ -1314,7 +1328,7 @@
                                     RECEMAKES-DETAIL-POSITION(IDW IDZ)
                        MOVE    SPA-GMN-R04-TKENSU      (IDX)
                                            TO
-                                   RECEMAKES-NUMBER          (IDW IDZ)
+                                   RECEMAKES-COUNT           (IDW IDZ)
                        MOVE    SPA-GMN-R04-TPAGE       (IDX)
                                            TO
                                    RECEMAKES-NUMBER-OF-SHEETS(IDW IDZ)
@@ -1324,6 +1338,9 @@
                        MOVE    SPA-GMN-R04-TSYURUINAME (IDX)
                                            TO
                                    RECEMAKES-SUBMISSION-TYPE (IDW IDZ)
+                       MOVE    SPA-R01-RECEKBN    TO
+                                   RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
                    END-IF
                END-PERFORM
       *
@@ -1331,7 +1348,7 @@
                                            TO
                                        RECEMAKES-RECEIPT-PRINT-ORDER (1)
                MOVE    SPA-GMN-R04-PAGEH   TO
-                                       RECEMAKES-ALL-NUMBER
+                                       RECEMAKES-ALL-COUNT
                MOVE    SPA-GMN-R04-KENSUH  TO
                                        RECEMAKES-ALL-NUMBER-OF-SHEETS
                MOVE    SPA-GMN-R04-FILEKBN TO  RECEMAKES-PERFORM-TITLE
@@ -1408,10 +1425,10 @@
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "E70"           TO  WRK-ERRCD
                    STRING  "レセプト作成処理中です【"
-                                             DELIMITED  BY  SIZE
-                           JOB-SHELLMSG      DELIMITED  BY  SPACE
-                           "】"              DELIMITED  BY  SIZE
-                                             INTO  WRK-ERRMSG
+                                           DELIMITED  BY  SIZE
+                           JOB-SHELLMSG    DELIMITED  BY  SPACE
+                           "】"            DELIMITED  BY  SIZE
+                                           INTO  WRK-ERRMSG
                    END-STRING
                END-IF
            END-IF    
@@ -1435,6 +1452,28 @@
                IF    ( STEIKIJOB-ERRCD NOT =   SPACE )
                    MOVE    "E70"               TO  WRK-ERRCD
                    MOVE    STEIKIJOB-ERRMSG    TO  WRK-ERRMSG
+               END-IF
+           END-IF
+      *
+           IF      WRK-ERRCD       =   SPACE
+               MOVE    "CHK"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-CONS-JOB-JOBID
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID2
+                                       TO  JOB-SHELLID
+               PERFORM 900-CALL-ORCSJOB-SEC
+               IF      SJOBKANRI-RETURN
+                                       =   ZERO
+                   IF      JOB-ENDYMD      =   SPACE
+                       MOVE    "E70"           TO  WRK-ERRCD
+                       STRING  "レセプト印刷処理中です【"
+                                               DELIMITED  BY  SIZE
+                               JOB-SHELLMSG    DELIMITED  BY  SPACE
+                               "】"            DELIMITED  BY  SIZE
+                                               INTO  WRK-ERRMSG
+                       END-STRING
+                   END-IF
                END-IF
            END-IF
            .
@@ -1636,6 +1675,50 @@
        000-R02SPA-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    一時ディレクトリ作成処理
+      *****************************************************************
+       800-TEMPDIR-SEC             SECTION.
+      *
+      *    ＳＰＡ共通設定
+           INITIALIZE                  SYS-1010-REC
+           INITIALIZE                  ORCSCOMMONAREA
+           MOVE    "M00"           TO  ORCSCOMMON-PG
+           CALL    "ORCSCOMMON"        USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSCOMMONAREA
+                                       SYS-1010-REC
+      *
+           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
+           MOVE    SPACE           TO  SPA-TERMID (37:)
+      *
+      *    一時ディレクトリのルートディレクトリ取得
+           ACCEPT  WRK-TEMPDIR-ROOT
+                               FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
+      *    一時ディレクトリ名組み立て
+           STRING  WRK-TEMPDIR-ROOT    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   SPA-TERMID          DELIMITED   BY  SPACE
+                   LOW-VALUE           DELIMITED   BY  SIZE
+                                       INTO        MCP-TEMPDIR
+           END-STRING
+      *
+      *    環境変数［MCP_TEMPDIR］を生成（MCP-TEMPDIRの値を設定）
+           SET ENVIRONMENT "MCP_TEMPDIR"
+                                   TO  MCP-TEMPDIR
+      *    環境変数［ORCA_UID］を生成（SPA-TERMID値を設定）
+           SET ENVIRONMENT "ORCA_UID"
+                                   TO  SPA-TERMID
+      *
+      *    一時ディレクトリ作成
+           CALL    "CBL_CREATE_DIR"    USING   MCP-TEMPDIR
+           IF    ( RETURN-CODE     NOT =   ZERO )
+               MOVE    "E80"               TO  WRK-ERRCD
+           END-IF
+           .
+       800-TEMPDIR-EXT.
+           EXIT.
       *
       *****************************************************************
       *    日付編集処理
@@ -1743,6 +1826,10 @@
                WHEN    "E62"
       *            画面エラー
                    MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
+      *
+               WHEN    "E80"
+                   MOVE    "一時ディレクトリが取得できません"
+                                               TO  WRK-ERRMSG
       *        共通エラー
                WHEN    "E89"
       *            ORCSCOMMON のエラー

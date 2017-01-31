@@ -27,7 +27,7 @@ xml_receipt_makev3res {
 		Print_Order1		varchar(30);
 		Print_Order2		varchar(30);
 		Print_Order3		varchar(30);
-		All_Number		varchar(05);
+		All_Count		varchar(05);
 		All_Number_Of_Sheets	varchar(05);
 		Receipt_Information {
 			Submission_Information	{
@@ -35,12 +35,13 @@ xml_receipt_makev3res {
 				Submission_Title	varchar(30);
 				Detail_Information	{
 					Detail_Position	varchar(5);
+					Submission_Identification	varchar(2);
 #---- 
 					Submission_Code	varchar(10);
 #---- 種別
 					Submission_Type	varchar(100);
 #---- 件数
-					Number		varchar(05);
+					Count		varchar(05);
 #---- 枚数
 					Number_Of_Sheets	varchar(05);
 				} [36];

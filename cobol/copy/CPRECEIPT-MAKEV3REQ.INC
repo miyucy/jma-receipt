@@ -48,7 +48,7 @@
       *         捏叫黎
                 03  RECEMAKEQ-SUBMISSION-MODE  PIC X(2).
       *         改侍滦据吹荚办枉
-                03  RECEMAKEQ-PATIENT-INFOMATION   OCCURS  100.
+                03  RECEMAKEQ-PATIENT-INFORMATION  OCCURS  100.
       *             改侍滦据≥吹荚戎规
                     05  RECEMAKEQ-PATIENT-ID   PIC X(20).
       *             改侍滦据≥壳闻钳奉

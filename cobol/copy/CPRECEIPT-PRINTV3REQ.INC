@@ -48,18 +48,21 @@
       *         提出先
                 03  RECEPRINTQ-SUBMISSION-MODE  PIC X(2).
       *         明細一覧
-                03  RECEPRINTQ-RECEIPT-INFOMATION.
+                03  RECEPRINTQ-RECEIPT-INFORMATION.
                    05  RECEPRINTQ-SUBMISSION OCCURS  19.
       *                連番
                        07  RECEPRINTQ-SUBMISSION-POSITION
                                                PIC X(5).
-                       07  RECEPRINTQ-DETAIL-INFOMATION OCCURS  36.
+                       07  RECEPRINTQ-DETAIL-INFORMATION OCCURS  36.
       *                    連番
                            09  RECEPRINTQ-DETAIL-POSITION
                                                    PIC X(5).
       *                    印刷指示(Yes :印刷 それ以外 :印刷しない)
                            09  RECEPRINTQ-PRINT-INSTRUCT
                                                    PIC X(5).
+      *                    提出先
+                           09  RECEPRINTQ-SUBMISSION-IDENT
+                                               PIC X(2).
       *                    種別等コード
                            09  RECEPRINTQ-SUBMISSION-CODE
                                                    PIC X(10).
@@ -67,7 +70,7 @@
                            09  RECEPRINTQ-SUBMISSION-TYPE
                                                    PIC X(100).
       *                    件数
-                           09  RECEPRINTQ-NUMBER   PIC X(5).
+                           09  RECEPRINTQ-COUNT    PIC X(5).
       *                    枚数
                            09  RECEPRINTQ-NUMBER-OF-SHEETS
                                                    PIC X(5).

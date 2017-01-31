@@ -109,32 +109,15 @@
       *
            03  WRK-OPID                PIC X(16).
       *
-           03  WRK-KBNCD-X.
-               05  WRK-KBNCD-9         PIC 9(03).
-      *
-           03  WRK-PREFNUM             PIC 9(02).
-      *
-           03  WRK-SHELL-ARG1.
-             05  WRK-SHELL-SRYYM       PIC X(06).
-             05  WRK-SHELL-TERMID      PIC X(16).
-             05  WRK-SHELL-SYSYMD      PIC X(08).  
-      *
-           03  WRK-MCP-TABLE           PIC X(64).
-           03  WRK-MCP-PATHNAME        PIC X(64).
-      *
            03  WRK-PARAM               PIC X(256).
-      *
-           03  WRK-SRYYM               PIC 9(06).
-      *
-           03  WRK-ACCT-SRYYM          PIC 9(06).
-           03  WRK-ACCT-PTID           PIC 9(10).
-           03  WRK-ACCT-NYUGAIKBN      PIC X(01).
       *
            03  WRK-X.
                05  WRK-9               PIC 9(05).
       *
            03  WRK-ERR-SUBMISSION-MAX  PIC 9(03).
            03  WRK-ERR-DETAIL-MAX      PIC 9(03).
+      *
+           03  WRK-TEMPDIR-ROOT        PIC X(1024).
       *
        01  WRK-XML-AREA.
            03  WRK-REGIST-YMD10        PIC X(10).
@@ -950,7 +933,7 @@
       *
       *    件数
            INITIALIZE              ORCSNUMAREA
-           MOVE    RECEPRINTQ-NUMBER (IDYY IDZZ)
+           MOVE    RECEPRINTQ-COUNT (IDYY IDZZ)
                                    TO  SNUM-INX
            CALL    "ORCSNUM"       USING
                                    ORCSNUMAREA
@@ -1061,14 +1044,17 @@
            MOVE    RECEPRINTQ-PRINT-INSTRUCT     (IDYY IDZZ)
                                    TO  RECEPRINTS-PRINT-INSTRUCT
                            (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
+           MOVE    RECEPRINTQ-SUBMISSION-IDENT   (IDYY IDZZ)
+                                   TO  RECEPRINTS-SUBMISSION-IDENT
+                           (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
            MOVE    RECEPRINTQ-SUBMISSION-CODE      (IDYY IDZZ)
                                    TO  RECEPRINTS-SUBMISSION-CODE
                            (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
            MOVE    RECEPRINTQ-SUBMISSION-TYPE      (IDYY IDZZ)
                                    TO  RECEPRINTS-SUBMISSION-TYPE
                            (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
-           MOVE    RECEPRINTQ-NUMBER               (IDYY IDZZ)
-                                   TO  RECEPRINTS-NUMBER
+           MOVE    RECEPRINTQ-COUNT                (IDYY IDZZ)
+                                   TO  RECEPRINTS-COUNT
                            (WRK-ERR-SUBMISSION-MAX WRK-ERR-DETAIL-MAX)
            MOVE    RECEPRINTQ-NUMBER-OF-SHEETS     (IDYY IDZZ)
                                    TO  RECEPRINTS-NUMBER-OF-SHEETS
@@ -1211,6 +1197,12 @@
                    RECEPRINTQ-ORCA-UID     DELIMITED  BY  SPACE
                                           INTO    SPA-R01-JOB-PARAM
            END-STRING
+      *
+      *****PERFORM 800-TEMPDIR-SEC
+      *****IF      WRK-ERRCD   NOT =   SPACE
+      *****    GO  TO  2002-RECEIPT-PRINT-EXT
+      *****END-IF
+      *
       *
            MOVE    "RID3"          TO  SPA-MOTOPG
            MOVE    "NO"            TO  SPA-RID1-FLG
@@ -1449,6 +1441,52 @@
            EXIT.
       *
       *****************************************************************
+      *    一時ディレクトリ作成処理
+      *****************************************************************
+       800-TEMPDIR-SEC             SECTION.
+      *
+      *    ＳＰＡ共通設定
+           INITIALIZE                  SYS-1010-REC
+           INITIALIZE                  ORCSCOMMONAREA
+           MOVE    "M00"           TO  ORCSCOMMON-PG
+           CALL    "ORCSCOMMON"        USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSCOMMONAREA
+                                       SYS-1010-REC
+      *
+           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
+           MOVE    SPACE           TO  SPA-TERMID (37:)
+      *
+      *    一時ディレクトリのルートディレクトリ取得
+           ACCEPT  WRK-TEMPDIR-ROOT
+                               FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
+      *    一時ディレクトリ名組み立て
+           STRING  WRK-TEMPDIR-ROOT    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   SPA-TERMID          DELIMITED   BY  SPACE
+                   LOW-VALUE           DELIMITED   BY  SIZE
+                                       INTO        MCP-TEMPDIR
+           END-STRING
+      *
+      *    環境変数［MCP_TEMPDIR］を生成（MCP-TEMPDIRの値を設定）
+           SET ENVIRONMENT "MCP_TEMPDIR"
+                                   TO  MCP-TEMPDIR
+      *    環境変数［ORCA_UID］を生成（SPA-TERMID値を設定）
+           SET ENVIRONMENT "ORCA_UID"
+                                   TO  SPA-TERMID
+      *
+      *    一時ディレクトリ作成
+           CALL    "CBL_CREATE_DIR"    USING   MCP-TEMPDIR
+           IF    ( RETURN-CODE     NOT =   ZERO )
+               DISPLAY "RETURN-CODE="RETURN-CODE
+               MOVE    "E80"               TO  WRK-ERRCD
+           END-IF
+           .
+       800-TEMPDIR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
@@ -1578,6 +1616,10 @@
                WHEN    "E50"
                    MOVE    "明細の設定に誤りがあります。"
                                                    TO  WRK-ERRMSG
+      *
+               WHEN    "E80"
+                   MOVE    "一時ディレクトリが取得できません"
+                                               TO  WRK-ERRMSG
       *        共通エラー
                WHEN    "E89"
       *            ORCSCOMMON のエラー

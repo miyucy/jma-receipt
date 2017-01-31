@@ -28,9 +28,10 @@ xml_receipt_printv3res {
 				Detail_Information	{
 					Detail_Position		varchar(5);
 					Print_Instruct		varchar(05);
+					Submission_Identification	varchar(2);
 					Submission_Code		varchar(10);
 					Submission_Type		varchar(100);
-					Number			varchar(5);
+					Count			varchar(5);
 					Number_Of_Sheets	varchar(5);
 					Detail_Error_Code	varchar(3);
 				} [36];

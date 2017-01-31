@@ -57,7 +57,7 @@
                03  RECEPRINTS-ALL-NUMBER-OF-SHEETS
                                                 PIC X(5).
       *        エラー明細一覧
-               03  RECEPRINTS-ERR-INFOMATION.
+               03  RECEPRINTS-ERR-INFORMATION.
                    05  RECEPRINTS-SUBMISSION OCCURS  19.
       *                連番
                        07  RECEPRINTS-SUBMISSION-POSITION
@@ -66,13 +66,16 @@
                        07  RECEPRINTS-ERROR-CODE
                                                PIC X(3).
       *
-                       07  RECEPRINTS-DETAIL-INFOMATION OCCURS  36.
+                       07  RECEPRINTS-DETAIL-INFORMATION OCCURS  36.
       *                    連番
                            09  RECEPRINTS-DETAIL-POSITION
                                                    PIC X(5).
       *                    印刷指示(Yes :印刷 それ以外 :印刷しない)
                            09  RECEPRINTS-PRINT-INSTRUCT
                                                    PIC X(5).
+      *                    提出先
+                           09  RECEPRINTS-SUBMISSION-IDENT
+                                                   PIC X(2).
       *                    種別等コード
                            09  RECEPRINTS-SUBMISSION-CODE
                                                    PIC X(10).
@@ -80,7 +83,7 @@
                            09  RECEPRINTS-SUBMISSION-TYPE
                                                    PIC X(100).
       *                    件数
-                           09  RECEPRINTS-NUMBER   PIC X(5).
+                           09  RECEPRINTS-COUNT    PIC X(5).
       *                    枚数
                            09  RECEPRINTS-NUMBER-OF-SHEETS
                                                    PIC X(5).

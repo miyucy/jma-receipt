@@ -56,7 +56,7 @@
       *
                03  RECEMAKES-PERFORM-TITLE     PIC X(100).
       *        エラー患者一覧
-               03  RECEMAKES-ERR-INFOMATION        OCCURS  100.
+               03  RECEMAKES-ERR-INFORMATION       OCCURS  100.
                    05  RECEMAKES-PATIENT-ID   PIC X(20).
                    05  RECEMAKES-PERFORM-DATE PIC X(7).
                    05  RECEMAKES-ERROR-CODE   PIC X(3).
@@ -66,22 +66,25 @@
                                                PIC X(30)
                                                        OCCURS  3.
       *        総件数
-               03  RECEMAKES-ALL-NUMBER        PIC X(5).
+               03  RECEMAKES-ALL-COUNT             PIC X(5).
       *        総枚数
-               03  RECEMAKES-ALL-NUMBER-OF-SHEETS PIC X(5).
+               03  RECEMAKES-ALL-NUMBER-OF-SHEETS  PIC X(5).
       *
-               03  RECEMAKES-RECEIPT-INFOMATION.
-                   05  RECEMAKES-SUBMISSION-INFOMATION OCCURS  19.
+               03  RECEMAKES-RECEIPT-INFORMATION.
+                   05  RECEMAKES-SUBMISSION-INFO   OCCURS  19.
       *                連番
                        07  RECEMAKES-SUBMISSION-POSITION
                                                    PIC X(5).
       *
                        07  RECEMAKES-SUBMISSION-TITLE
                                                    PIC X(30).
-                       07  RECEMAKES-DETAIL-INFOMATION OCCURS  36.
+                       07  RECEMAKES-DETAIL-INFORMATION OCCURS  36.
       *                    連番
                            09  RECEMAKES-DETAIL-POSITION
                                                        PIC X(5).
+      *                    提出先
+                           09  RECEMAKES-SUBMISSION-IDENT
+                                                       PIC X(2).
       *                    種別等コード
                            09  RECEMAKES-SUBMISSION-CODE
                                                        PIC X(10).
@@ -89,6 +92,6 @@
                            09  RECEMAKES-SUBMISSION-TYPE
                                                        PIC X(100).
       *                    件数
-                           09  RECEMAKES-NUMBER        PIC X(5).
+                           09  RECEMAKES-COUNT         PIC X(5).
       *                    枚数
                            09  RECEMAKES-NUMBER-OF-SHEETS PIC X(5).

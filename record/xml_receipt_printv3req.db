@@ -29,12 +29,13 @@ xml_receipt_printv3req {
 				Detail_Position	varchar(05);
 #---- 印刷指示(Yes :印刷 それ以外 :印刷しない)
 				Print_Instruct	varchar(05);
+				Submission_Identification	varchar(2);
 #---- 種別コード
 				Submission_Code	varchar(10);
 #---- 種別
 				Submission_Type	varchar(100);
 #---- 件数
-				Number		varchar(05);
+				Count		varchar(05);
 #---- 枚数
 				Number_Of_Sheets	varchar(05);
 			} [36];
