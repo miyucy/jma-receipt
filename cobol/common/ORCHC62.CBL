@@ -610,7 +610,8 @@
       *----(04.08.02)--ADD-END-----
       *
       *H28.5
-           IF      PARA-API-DATA        =   "1"
+           IF     (PARA-API-DATA       =   "1"  )
+            AND   (ORCHC62-PRTKBN  NOT =   "1"  )
       *        £Á£Ð£ÉÁ÷¿®½èÍý
                PERFORM 600-API-SYORI-SEC
            END-IF
