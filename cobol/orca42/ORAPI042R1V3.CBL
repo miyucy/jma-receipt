@@ -126,6 +126,8 @@
       *
            03  WRK-TEMPDIR-ROOT        PIC X(1024).
       *
+           03  WRK-SPA-TERMID          PIC X(64).
+      *
        01  WRK-XML-AREA.
            03  WRK-REGIST-YMD10        PIC X(10).
            03  WRK-REGIST-TIME8        PIC X(08).
@@ -1033,10 +1035,10 @@
                                        INTO    SPA-R01-JOB-PARAM
            END-STRING
       *
-      *****PERFORM 800-TEMPDIR-SEC
-      *****IF      WRK-ERRCD   NOT =   SPACE
-      *****    GO  TO  2002-RECEIPT-MAKE-EXT
-      *****END-IF
+           PERFORM 800-TEMPDIR-SEC
+           IF      WRK-ERRCD   NOT =   SPACE
+               GO  TO  2002-RECEIPT-MAKE-EXT
+           END-IF
       *
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
@@ -1327,20 +1329,46 @@
                        MOVE    WRK-X           TO
                                     RECEMAKES-DETAIL-POSITION(IDW IDZ)
                        MOVE    SPA-GMN-R04-TKENSU      (IDX)
-                                           TO
+                                               TO
                                    RECEMAKES-COUNT           (IDW IDZ)
                        MOVE    SPA-GMN-R04-TPAGE       (IDX)
-                                           TO
+                                               TO
                                    RECEMAKES-NUMBER-OF-SHEETS(IDW IDZ)
                        MOVE    SPA-NAI-R04-SYUBETU     (IDX 1)
-                                           TO
+                                               TO
                                    RECEMAKES-SUBMISSION-CODE (IDW IDZ)
                        MOVE    SPA-GMN-R04-TSYURUINAME (IDX)
-                                           TO
+                                               TO
                                    RECEMAKES-SUBMISSION-TYPE (IDW IDZ)
-                       MOVE    SPA-R01-RECEKBN    TO
-                                   RECEMAKES-SUBMISSION-IDENT
+                       IF      SPA-NAI-R04-SYUBETU (IDX 1)
+                                               =   "0000"
+                           MOVE    "99"        TO
+                                       RECEMAKES-SUBMISSION-IDENT
                                                              (IDW IDZ)
+                       ELSE
+                           EVALUATE    SPA-R01-RECEKBN
+                               WHEN    "3"
+                                   MOVE    "05"        TO
+                                           RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                               WHEN    "4"
+                                   MOVE    "06"        TO
+                                           RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                               WHEN    "5"
+                                   MOVE    "07"        TO
+                                           RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                               WHEN    "8"
+                                   MOVE    "08"        TO
+                                           RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                               WHEN    "6"
+                                   MOVE    "09"        TO
+                                           RECEMAKES-SUBMISSION-IDENT
+                                                             (IDW IDZ)
+                           END-EVALUATE
+                       END-IF
                    END-IF
                END-PERFORM
       *
@@ -1680,15 +1708,7 @@
       *****************************************************************
        800-TEMPDIR-SEC             SECTION.
       *
-      *    £Ó£Ð£Á¶¦ÄÌÀßÄê
-           INITIALIZE                  SYS-1010-REC
-           INITIALIZE                  ORCSCOMMONAREA
-           MOVE    "M00"           TO  ORCSCOMMON-PG
-           CALL    "ORCSCOMMON"        USING
-                                       MCPAREA
-                                       SPA-AREA
-                                       ORCSCOMMONAREA
-                                       SYS-1010-REC
+           MOVE    SPA-TERMID      TO  WRK-SPA-TERMID
       *
            INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
            MOVE    SPACE           TO  SPA-TERMID (37:)
@@ -1716,6 +1736,9 @@
            IF    ( RETURN-CODE     NOT =   ZERO )
                MOVE    "E80"               TO  WRK-ERRCD
            END-IF
+      *
+           MOVE    WRK-SPA-TERMID  TO  SPA-TERMID
+      *
            .
        800-TEMPDIR-EXT.
            EXIT.

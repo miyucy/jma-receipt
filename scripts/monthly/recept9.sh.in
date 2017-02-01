@@ -40,6 +40,20 @@ fi
 #            0:レセプト 1:会計照会 2:入院会計照会 3:診療行為
 #-------------------------------------------#
 
+cleanup(){
+echo "${PARA_FILE_FULL}" >> $LOG
+##      パラメータファイル削除
+        if  [ -e "${PARA_FILE_FULL}" ]; then
+            rm   ${PARA_FILE_FULL}
+        fi
+##      環境変数［ORCA_UID］が設定されていた場合、一時ディレクトリを削
+除
+        if  [ -n "${ORCA_UID}" ]; then
+            rm  -rf ${MCP_TEMPDIR}
+        fi
+}
+trap cleanup 1 2 3 15
+
         if [ ${2} -eq  '1' ]; then
             if [ ${18} -eq  '9' ]; then
                 LOG_FILE="/var/log/jma-receipt/${16}recept9a_renkei.log"
