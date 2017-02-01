@@ -45,7 +45,7 @@ cleanup(){
             rm   ${PARA_FILE_FULL}
         fi
         if  [ "${MCP_WINDOW}" == "findv3" ]; then
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBDELTEMPDIR
+            rm  -rf ${MCP_TEMPDIR}
         fi
 }
 
