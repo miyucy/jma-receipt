@@ -110,6 +110,8 @@
            03  FLG-LINE            PIC 9(01).
       *
            03  FLG-HIZUKECHK       PIC 9(01).
+      *API
+           03  FLG-NEXTPRT         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -956,10 +958,8 @@
       *H28.12
       *    GINGEEÂÐ±þ
            IF      PARA-API-DATA        =   "1"
-               IF      WRK-PAGE            >   PAGE-MAX
-                   CONTINUE
-               ELSE
-      *        £Á£Ð£ÉÁ÷¿®
+               IF      FLG-NEXTPRT          =   ZERO
+      *            £Á£Ð£ÉÁ÷¿®
                    PERFORM 700-API-SYORI-SEC
                END-IF
                INITIALIZE                  TBL-MEISAI-AREA
@@ -2103,8 +2103,10 @@
                ADD     1                   TO  WRK-PAGE
       *        ¥Æ¡¼¥Ö¥ëºÇÂç
                IF      WRK-PAGE            >   PAGE-MAX
+                   MOVE    1               TO  FLG-NEXTPRT
       *            Ä¢É¼°õºþ
                    PERFORM 400-PRINT-SYORI-SEC
+                   MOVE    ZERO             TO  FLG-NEXTPRT
                END-IF
       *
                MOVE    1                   TO  IDX-H
@@ -2356,8 +2358,10 @@
                ADD     1                   TO  WRK-PAGE
       *        ¥Æ¡¼¥Ö¥ëºÇÂç
                IF      WRK-PAGE            >   PAGE-MAX2
+                   MOVE    1               TO  FLG-NEXTPRT
       *            Ä¢É¼°õºþ
                    PERFORM 400-PRINT-SYORI-SEC
+                   MOVE    ZERO             TO  FLG-NEXTPRT
                END-IF
       *
                MOVE    1                   TO  IDX-H
