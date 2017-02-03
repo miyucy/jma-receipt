@@ -1949,8 +1949,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    SSANTEI-SRYYMD      TO  TNSP-YUKOSTYMD
+           MOVE    SSANTEI-SRYYMD      TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

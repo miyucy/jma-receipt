@@ -130,6 +130,8 @@
            03  WRK-DD                  PIC 9(02).
            03  WRK-LSTYMD              PIC X(08).
       *
+           03  WRK-YUKOSTYMD           PIC X(08).
+      *
            03  WRK-CNT                 PIC 9(03).
            03  WRK-CNT-SYOSIN          PIC 9(03).
       *
@@ -3947,6 +3949,8 @@
                MOVE    WRK-SRYYM           TO  TNS-YUKOSTYMD (1:6)
            END-IF
            MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
+      *
+           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
@@ -3997,8 +4001,9 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      **** MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

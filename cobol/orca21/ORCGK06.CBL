@@ -151,6 +151,8 @@
                05  WRK-SANYM-X        PIC X(06).
                05  WRK-SANDD          PIC X(02).
       *
+           03  WRK-YUKOSTYMD           PIC X(08).
+      *
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -2981,6 +2983,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
            MOVE    SPA-NAI-SRYYM       TO  TNS-YUKOEDYMD (1:6)
            MOVE    "01"                TO  TNS-YUKOEDYMD (7:2)
+           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
@@ -3030,8 +3033,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

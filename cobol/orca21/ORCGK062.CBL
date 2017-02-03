@@ -150,6 +150,8 @@
                    09  TBL-K062-TENDYMD        PIC X(08).
                    09  TBL-K062-INFLG          PIC X(01).
       *
+           03  WRK-YUKOSTYMD           PIC X(08).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -2173,6 +2175,8 @@
            MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
       *
+           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
+      *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -2221,8 +2225,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
